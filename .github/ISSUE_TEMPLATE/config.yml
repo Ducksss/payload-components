@@ -6,3 +6,6 @@ contact_links:
   - name: Payload CMS documentation
     url: https://payloadcms.com/docs
     about: Check upstream Payload CMS behavior and APIs.
+  - name: Report a security vulnerability
+    url: https://github.com/Ducksss/payload-components/security/advisories/new
+    about: Report a security issue privately via GitHub Security Advisories.
