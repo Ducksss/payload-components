@@ -1,8 +1,5 @@
-import Link from 'next/link'
-
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { ArrowRight } from 'lucide-react'
+import { WaitlistForm } from '@/components/landing/WaitlistForm'
 
 export const FinalCta = () => {
   return (
@@ -26,26 +23,8 @@ export const FinalCta = () => {
               </p>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button
-                asChild
-                size="lg"
-                className="rounded-full bg-background text-foreground hover:bg-background/90"
-              >
-                <Link href="#catalog">
-                  Explore the catalog
-                  <ArrowRight data-icon="inline-end" />
-                </Link>
-              </Button>
-
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="rounded-full border-background/20 bg-transparent text-background hover:bg-background/10 hover:text-background"
-              >
-                <Link href="#how-it-works">Review the install flow</Link>
-              </Button>
+            <div className="w-full max-w-xl">
+              <WaitlistForm />
             </div>
           </div>
         </div>
