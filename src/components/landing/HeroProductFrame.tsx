@@ -1,0 +1,160 @@
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/utilities/ui'
+import { CheckCircle2, FileCode2, FolderTree, Sparkles } from 'lucide-react'
+
+import styles from './landing.module.css'
+
+const installLog = [
+  'Detected Payload v3 website starter',
+  'Added hero-pricing-faq manifest',
+  'Wired block config + render components',
+  'Ran generate:types and generate:importmap',
+]
+
+const generatedFiles = [
+  'src/blocks/HeroKit/config.ts',
+  'src/blocks/HeroKit/Component.tsx',
+  'src/blocks/PricingKit/config.ts',
+  'src/blocks/FaqKit/config.ts',
+]
+
+export const HeroProductFrame = () => {
+  return (
+    <div
+      className={cn(
+        styles.productFrame,
+        styles.scan,
+        'relative mx-auto w-full max-w-6xl overflow-hidden rounded-[2rem] border border-foreground/10 bg-foreground text-background shadow-[0_40px_120px_-56px_rgba(15,23,42,0.5)]',
+      )}
+    >
+      <div className="flex items-center justify-between gap-4 border-b border-background/10 px-5 py-4">
+        <div className="flex items-center gap-2">
+          <span className="size-2.5 rounded-full bg-background/40" />
+          <span className="size-2.5 rounded-full bg-background/25" />
+          <span className="size-2.5 rounded-full bg-background/15" />
+        </div>
+        <Badge
+          variant="secondary"
+          className="rounded-full border-0 bg-background/12 px-3 py-1 font-medium text-background/80"
+        >
+          Product proof
+        </Badge>
+      </div>
+
+      <div className="grid gap-0 lg:grid-cols-[1.08fr_0.92fr]">
+        <div className="border-b border-background/10 p-6 lg:border-r lg:border-b-0 lg:p-8">
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-wrap items-center gap-3 text-sm text-background/70">
+              <span className="inline-flex items-center gap-2 rounded-full border border-background/10 px-3 py-1">
+                <Sparkles className="size-4" />
+                Curated kit install
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-background/10 px-3 py-1">
+                <FolderTree className="size-4" />
+                Payload-aware wiring
+              </span>
+            </div>
+
+            <div className="rounded-[1.5rem] border border-background/10 bg-background/6 p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.22em] text-background/55">
+                    Command line
+                  </p>
+                  <p className="mt-2 text-xl font-semibold tracking-[-0.04em] text-background">
+                    Install the kit, wire the repo, keep going
+                  </p>
+                </div>
+                <SquareCommand />
+              </div>
+
+              <div className="overflow-hidden rounded-2xl border border-background/10 bg-black/30">
+                <pre className="overflow-x-auto px-4 py-4 text-sm leading-7 text-background/82">
+                  <code>
+                    $ npx payload-kit init{'\n'}$ npx payload-kit add hero-pricing-faq{'\n'}$ pnpm
+                    payload generate:types{'\n'}$ pnpm payload generate:importmap
+                  </code>
+                </pre>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {installLog.map((item) => (
+                <div
+                  key={item}
+                  className="flex items-start gap-3 rounded-2xl border border-background/10 bg-background/6 px-4 py-4 text-sm text-background/76"
+                >
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-background" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-0 sm:grid-cols-2 lg:grid-cols-1">
+          <div className="border-b border-background/10 p-6 lg:p-8">
+            <p className="text-xs uppercase tracking-[0.22em] text-background/55">
+              Generated files
+            </p>
+            <div className="mt-4 flex flex-col gap-3 rounded-[1.5rem] border border-background/10 bg-background/6 p-5">
+              {generatedFiles.map((filePath) => (
+                <div key={filePath} className="flex items-center gap-3 text-sm text-background/78">
+                  <FileCode2 className="size-4 shrink-0 text-background" />
+                  <span className="truncate">{filePath}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-6 lg:p-8">
+            <p className="text-xs uppercase tracking-[0.22em] text-background/55">
+              Installed surface
+            </p>
+            <div className="mt-4 grid gap-3">
+              <div className="rounded-[1.5rem] border border-background/10 bg-background text-foreground">
+                <div className="border-b border-border/80 px-5 py-4">
+                  <p className="text-sm font-medium">Hero Kit</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Headline, CTA, proof ribbon, and Payload-safe defaults.
+                  </p>
+                </div>
+                <div className="grid gap-3 px-5 py-5">
+                  <div className="h-3 w-20 rounded-full bg-foreground/15" />
+                  <div className="h-7 w-4/5 rounded-full bg-foreground/75" />
+                  <div className="h-7 w-3/5 rounded-full bg-foreground/20" />
+                  <div className="flex gap-3 pt-2">
+                    <div className="h-10 w-28 rounded-full bg-foreground" />
+                    <div className="h-10 w-28 rounded-full border border-border" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
+                {['Pricing kit', 'FAQ kit'].map((name) => (
+                  <div
+                    key={name}
+                    className="rounded-[1.5rem] border border-background/10 bg-background/6 p-4"
+                  >
+                    <p className="text-sm font-medium text-background">{name}</p>
+                    <p className="mt-2 text-sm text-background/68">
+                      Full block config, renderer, and docs metadata bundled together.
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const SquareCommand = () => {
+  return (
+    <div className="grid size-12 place-items-center rounded-2xl border border-background/10 bg-background/6">
+      <div className="text-lg font-semibold tracking-[-0.08em] text-background/88">&gt;_</div>
+    </div>
+  )
+}
