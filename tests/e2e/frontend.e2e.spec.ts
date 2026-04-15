@@ -7,7 +7,7 @@ test.describe('Frontend', () => {
     await expect(
       page.getByRole('heading', {
         level: 1,
-        name: 'Payload Kits installs production-ready Payload blocks with one command.',
+        name: 'Payload Kits installs production-ready blocks with one command.',
       }),
     ).toBeVisible()
   })

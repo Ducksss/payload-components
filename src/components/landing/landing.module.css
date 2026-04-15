@@ -6,12 +6,12 @@
 .heroShell::before {
   content: '';
   position: absolute;
-  inset: -10rem 16% auto;
-  height: 22rem;
+  inset: -9rem 18% auto;
+  height: 21rem;
   border-radius: 9999px;
-  background: radial-gradient(circle, rgba(15, 23, 42, 0.14) 0%, transparent 72%);
-  filter: blur(12px);
-  opacity: 0.85;
+  background: radial-gradient(circle, rgba(15, 23, 42, 0.13) 0%, transparent 72%);
+  filter: blur(16px);
+  opacity: 0.82;
   pointer-events: none;
 }
 
@@ -20,11 +20,11 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(15, 23, 42, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(15, 23, 42, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.055) 1px, transparent 1px);
   background-size: 3rem 3rem;
-  mask-image: linear-gradient(to bottom, black, transparent 82%);
-  opacity: 0.7;
+  mask-image: linear-gradient(to bottom, black, transparent 80%);
+  opacity: 0.64;
   pointer-events: none;
 }
 

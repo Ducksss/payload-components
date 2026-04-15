@@ -68,7 +68,7 @@ export const WaitlistForm = () => {
   }
 
   return (
-    <div className="rounded-[1.5rem] border border-background/15 bg-background/8 p-5 backdrop-blur-sm sm:p-6">
+    <div className="rounded-[1.5rem] border border-background/15 bg-background/8 p-4 backdrop-blur-sm sm:p-6">
       <div className="space-y-2">
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-background/70">
           Join the waitlist
@@ -117,7 +117,7 @@ export const WaitlistForm = () => {
             type="submit"
             size="lg"
             disabled={isPending}
-            className="rounded-full bg-background px-6 text-foreground hover:bg-background/90"
+            className="w-full rounded-full bg-background px-6 text-foreground hover:bg-background/90 sm:w-auto"
           >
             {isPending ? 'Joining...' : 'Join the waitlist'}
           </Button>

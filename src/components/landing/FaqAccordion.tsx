@@ -11,7 +11,7 @@ import { faqItems } from './content'
 
 export const FaqAccordion = () => {
   return (
-    <div className="rounded-[1.75rem] border border-border/70 bg-background/80 px-6 py-2 shadow-none backdrop-blur-sm">
+    <div className="rounded-[1.75rem] border border-border/70 bg-background/75 px-5 py-2 shadow-none backdrop-blur-sm sm:px-6">
       <Accordion type="single" collapsible className="w-full">
         {faqItems.map((item, index) => (
           <AccordionItem

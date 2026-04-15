@@ -24,10 +24,10 @@ export const HeroProductFrame = () => {
       className={cn(
         styles.productFrame,
         styles.scan,
-        'relative mx-auto w-full max-w-6xl overflow-hidden rounded-[2rem] border border-foreground/10 bg-foreground text-background shadow-[0_40px_120px_-56px_rgba(15,23,42,0.5)]',
+        'relative mx-auto w-full max-w-6xl overflow-hidden rounded-[1.85rem] border border-foreground/10 bg-foreground text-background shadow-[0_40px_120px_-56px_rgba(15,23,42,0.5)]',
       )}
     >
-      <div className="flex items-center justify-between gap-4 border-b border-background/10 px-5 py-4">
+      <div className="flex items-center justify-between gap-4 border-b border-background/10 px-4 py-3.5 sm:px-5">
         <div className="flex items-center gap-2">
           <span className="size-2.5 rounded-full bg-background/40" />
           <span className="size-2.5 rounded-full bg-background/25" />
@@ -42,8 +42,8 @@ export const HeroProductFrame = () => {
       </div>
 
       <div className="grid gap-0 lg:grid-cols-[1.08fr_0.92fr]">
-        <div className="border-b border-background/10 p-6 lg:border-r lg:border-b-0 lg:p-8">
-          <div className="flex flex-col gap-6">
+        <div className="border-b border-background/10 p-5 lg:border-r lg:border-b-0 lg:p-7">
+          <div className="flex flex-col gap-5">
             <div className="flex flex-wrap items-center gap-3 text-sm text-background/70">
               <span className="inline-flex items-center gap-2 rounded-full border border-background/10 px-3 py-1">
                 <Sparkles className="size-4" />
@@ -55,7 +55,7 @@ export const HeroProductFrame = () => {
               </span>
             </div>
 
-            <div className="rounded-[1.5rem] border border-background/10 bg-background/6 p-5">
+            <div className="rounded-[1.5rem] border border-background/10 bg-background/6 p-4 sm:p-5">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-xs uppercase tracking-[0.22em] text-background/55">
@@ -82,7 +82,7 @@ export const HeroProductFrame = () => {
               {installLog.map((item) => (
                 <div
                   key={item}
-                  className="flex items-start gap-3 rounded-2xl border border-background/10 bg-background/6 px-4 py-4 text-sm text-background/76"
+                  className="flex items-start gap-3 rounded-2xl border border-background/10 bg-background/6 px-4 py-3.5 text-sm text-background/76"
                 >
                   <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-background" />
                   <span>{item}</span>
@@ -93,11 +93,11 @@ export const HeroProductFrame = () => {
         </div>
 
         <div className="grid gap-0 sm:grid-cols-2 lg:grid-cols-1">
-          <div className="border-b border-background/10 p-6 lg:p-8">
+          <div className="border-b border-background/10 p-5 lg:p-7">
             <p className="text-xs uppercase tracking-[0.22em] text-background/55">
               Generated files
             </p>
-            <div className="mt-4 flex flex-col gap-3 rounded-[1.5rem] border border-background/10 bg-background/6 p-5">
+            <div className="mt-4 flex flex-col gap-3 rounded-[1.5rem] border border-background/10 bg-background/6 p-4 sm:p-5">
               {generatedFiles.map((filePath) => (
                 <div key={filePath} className="flex items-center gap-3 text-sm text-background/78">
                   <FileCode2 className="size-4 shrink-0 text-background" />
@@ -107,7 +107,7 @@ export const HeroProductFrame = () => {
             </div>
           </div>
 
-          <div className="p-6 lg:p-8">
+          <div className="p-5 lg:p-7">
             <p className="text-xs uppercase tracking-[0.22em] text-background/55">
               Installed surface
             </p>
