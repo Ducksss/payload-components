@@ -111,11 +111,32 @@
 
 .terminalLine {
   display: inline-block;
-  width: 0;
   max-width: var(--line-width);
   overflow: hidden;
   white-space: nowrap;
+}
+
+.terminalTyped {
+  width: 0;
   animation: terminal-type var(--line-duration) steps(40, end) var(--line-delay) both;
+}
+
+.terminalReveal {
+  opacity: 0;
+  width: var(--line-width);
+  animation: terminal-reveal var(--line-duration) ease-out var(--line-delay) both;
+}
+
+.terminalCommand {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.terminalOutput {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.terminalSuccess {
+  color: rgba(220, 252, 231, 0.9);
 }
 
 .spawnItem,
@@ -275,6 +296,18 @@
 
   to {
     width: var(--line-width);
+  }
+}
+
+@keyframes terminal-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

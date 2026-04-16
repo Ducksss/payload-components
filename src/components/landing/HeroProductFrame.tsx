@@ -7,10 +7,10 @@ import { CheckCircle2, FileCode2, FolderTree, Sparkles } from 'lucide-react'
 import styles from './landing.module.css'
 
 const installLog = [
-  'Detected Payload v3 website starter',
-  'Added hero-pricing-faq manifest',
-  'Wired block config + render components',
-  'Ran generate:types and generate:importmap',
+  'Detected supported Payload v3 target',
+  'Installed hero-pricing-faq kit files',
+  'Registered block config and renderer',
+  'Generated types and updated import map',
 ]
 
 const generatedFiles = [
@@ -21,14 +21,39 @@ const generatedFiles = [
 ]
 
 const commandLines = [
-  { duration: 460, text: '$ npx payload-kit init', width: '22ch' },
-  { duration: 660, text: '$ npx payload-kit add hero-pricing-faq', width: '38ch' },
-  { duration: 560, text: '$ pnpm payload generate:types', width: '29ch' },
-  { duration: 660, text: '$ pnpm payload generate:importmap', width: '33ch' },
-]
+  { animation: 'type', duration: 380, kind: 'command', text: '$ npx payload-kit init', width: '22ch' },
+  {
+    animation: 'type',
+    duration: 540,
+    kind: 'command',
+    text: '$ npx payload-kit add hero-pricing-faq',
+    width: '38ch',
+  },
+  {
+    animation: 'reveal',
+    duration: 150,
+    kind: 'output',
+    text: 'payload-kit: generating types',
+    width: '29ch',
+  },
+  {
+    animation: 'reveal',
+    duration: 150,
+    kind: 'output',
+    text: 'payload-kit: updating import map',
+    width: '32ch',
+  },
+  {
+    animation: 'reveal',
+    duration: 150,
+    kind: 'success',
+    text: 'payload-kit: install complete',
+    width: '29ch',
+  },
+] as const
 
-const lineBaseDelay = 980
-const lineGap = 100
+const lineBaseDelay = 760
+const lineGap = 70
 
 type MotionStyle = CSSProperties & {
   '--line-delay'?: string
@@ -63,9 +88,9 @@ const typingCompleteAt =
   (typingTimeline[typingTimeline.length - 1] ?? lineBaseDelay) +
   (commandLines[commandLines.length - 1]?.duration ?? 0)
 
-const logRevealStart = typingCompleteAt + 220
-const filesRevealStart = logRevealStart + 180
-const installedSurfaceRevealStart = filesRevealStart + 140
+const logRevealStart = typingCompleteAt + 140
+const filesRevealStart = logRevealStart + 120
+const installedSurfaceRevealStart = filesRevealStart + 100
 
 export const HeroProductFrame = () => {
   return (
@@ -123,7 +148,15 @@ export const HeroProductFrame = () => {
                     {commandLines.map((line, index) => (
                       <span key={line.text} className={styles.terminalRow}>
                         <span
-                          className={styles.terminalLine}
+                          className={cn(
+                            styles.terminalLine,
+                            line.animation === 'type' ? styles.terminalTyped : styles.terminalReveal,
+                            line.kind === 'command'
+                              ? styles.terminalCommand
+                              : line.kind === 'success'
+                                ? styles.terminalSuccess
+                                : styles.terminalOutput,
+                          )}
                           style={terminalLineStyle(
                             typingTimeline[index] ?? lineBaseDelay,
                             line.duration,

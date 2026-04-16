@@ -172,6 +172,8 @@ export const addCommand = async ({
   for (const script of manifest.postInstall) {
     const command = getRunScriptCommand(project.packageManager, script)
 
+    printHeader(`payload-kit: running ${script}`)
+
     await executeStage('post-install', () =>
       runCommand({
         args: command.args,

@@ -9,7 +9,6 @@ import { StepCard } from '@/components/landing/StepCard'
 import {
   githubRepoUrl,
   installSteps,
-  launchPaths,
   productDifferentiators,
   proofChecks,
   proofPills,
@@ -251,60 +250,6 @@ export function LandingPage() {
       </section>
 
       <section id="catalog" className="container py-16 lg:py-24">
-        <SectionHeading
-          eyebrow="Next step"
-          title="Choose the surface that matches how you evaluate developer tools."
-          description="Open the public proof on GitHub, read the Payload-native guides, or raise your hand for the design partner track."
-        />
-
-        <div className="mb-12 grid gap-6 lg:grid-cols-3">
-          {launchPaths.map((path) => (
-            <Card
-              key={path.title}
-              className="rounded-[1.75rem] border-border/70 bg-background/80 shadow-none"
-            >
-              <CardHeader className="gap-4">
-                <div className="flex items-center justify-between gap-4">
-                  <Badge
-                    variant="outline"
-                    className="rounded-full px-3 py-1 uppercase tracking-[0.18em]"
-                  >
-                    {path.label}
-                  </Badge>
-                  <path.icon className="size-5 text-foreground" />
-                </div>
-                <div className="space-y-2">
-                  <CardTitle className="text-2xl tracking-[-0.05em]">{path.title}</CardTitle>
-                  <CardDescription className="text-base leading-7">
-                    {path.description}
-                  </CardDescription>
-                </div>
-              </CardHeader>
-              <CardContent className="flex h-full flex-col gap-5">
-                <div className="space-y-3">
-                  {path.points.map((point) => (
-                    <div key={point} className="flex items-start gap-3 text-sm text-muted-foreground">
-                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-foreground" />
-                      <span>{point}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <Button asChild variant="ghost" className="mt-auto justify-start px-0">
-                  <Link
-                    href={path.href}
-                    target={path.href.startsWith('http') ? '_blank' : undefined}
-                    rel={path.href.startsWith('http') ? 'noreferrer' : undefined}
-                  >
-                    Explore this path
-                    <ArrowRight data-icon="inline-end" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
         <SectionHeading
           eyebrow="Kit catalog"
           title="Start with the blocks agencies and freelancers actually install on repeat."
