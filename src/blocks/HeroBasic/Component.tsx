@@ -1,21 +1,35 @@
 import React from 'react'
 
-import type { HeroBasicBlock as HeroBasicBlockProps } from '@/payload-types'
+import type { HeroBasicBlock as HeroBasicBlockData } from '@/payload-types'
 
 import { Badge } from '@/components/ui/badge'
 import { CMSLink } from '@/components/Link'
+import { cn } from '@/utilities/ui'
 
-export const HeroBasicBlock: React.FC<HeroBasicBlockProps> = ({
+type Props = HeroBasicBlockData & {
+  id?: string
+  className?: string
+  disableInnerContainer?: boolean
+}
+
+export const HeroBasicBlock: React.FC<Props> = ({
+  className,
   description,
+  disableInnerContainer,
   eyebrow,
+  id,
   links,
   proofItems,
   title,
 }) => {
   return (
-    <section className="container">
+    <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
       <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
-        <div className="mx-auto flex max-w-4xl flex-col gap-8">
+        <div
+          className={cn('flex flex-col gap-8', {
+            'mx-auto max-w-4xl': !disableInnerContainer,
+          })}
+        >
           <div className="flex flex-col gap-4">
             {eyebrow ? (
               <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]">

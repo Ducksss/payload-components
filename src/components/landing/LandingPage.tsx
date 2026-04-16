@@ -7,7 +7,9 @@ import { HeroProductFrame } from '@/components/landing/HeroProductFrame'
 import { KitCatalog } from '@/components/landing/KitCatalog'
 import { StepCard } from '@/components/landing/StepCard'
 import {
+  githubRepoUrl,
   installSteps,
+  launchPaths,
   productDifferentiators,
   proofChecks,
   proofPills,
@@ -87,8 +89,8 @@ export function LandingPage() {
               )}
             >
               <Button asChild size="lg" className="w-full rounded-full px-6 sm:w-auto">
-                <Link href="#product">
-                  See the product proof
+                <Link href="/?intent=waitlist&source=landing-hero#early-access">
+                  Join early access
                   <ArrowRight data-icon="inline-end" />
                 </Link>
               </Button>
@@ -99,8 +101,26 @@ export function LandingPage() {
                 size="lg"
                 className="w-full rounded-full px-6 sm:w-auto"
               >
-                <Link href="#how-it-works">How it works</Link>
+                <Link href={githubRepoUrl} target="_blank" rel="noreferrer">
+                  View the public proof
+                  <ArrowRight data-icon="inline-end" />
+                </Link>
               </Button>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+              <Link
+                href="/?intent=design-partner&source=landing-hero-design-partner#early-access"
+                className="font-medium text-foreground transition-opacity hover:opacity-75"
+              >
+                Apply as a design partner
+              </Link>
+              <span aria-hidden="true" className="hidden text-border sm:inline">
+                /
+              </span>
+              <Link href="#how-it-works" className="transition-opacity hover:text-foreground">
+                See how the install flow works
+              </Link>
             </div>
           </div>
 
@@ -231,6 +251,60 @@ export function LandingPage() {
       </section>
 
       <section id="catalog" className="container py-16 lg:py-24">
+        <SectionHeading
+          eyebrow="Next step"
+          title="Choose the surface that matches how you evaluate developer tools."
+          description="Open the public proof on GitHub, read the Payload-native guides, or raise your hand for the design partner track."
+        />
+
+        <div className="mb-12 grid gap-6 lg:grid-cols-3">
+          {launchPaths.map((path) => (
+            <Card
+              key={path.title}
+              className="rounded-[1.75rem] border-border/70 bg-background/80 shadow-none"
+            >
+              <CardHeader className="gap-4">
+                <div className="flex items-center justify-between gap-4">
+                  <Badge
+                    variant="outline"
+                    className="rounded-full px-3 py-1 uppercase tracking-[0.18em]"
+                  >
+                    {path.label}
+                  </Badge>
+                  <path.icon className="size-5 text-foreground" />
+                </div>
+                <div className="space-y-2">
+                  <CardTitle className="text-2xl tracking-[-0.05em]">{path.title}</CardTitle>
+                  <CardDescription className="text-base leading-7">
+                    {path.description}
+                  </CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="flex h-full flex-col gap-5">
+                <div className="space-y-3">
+                  {path.points.map((point) => (
+                    <div key={point} className="flex items-start gap-3 text-sm text-muted-foreground">
+                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-foreground" />
+                      <span>{point}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Button asChild variant="ghost" className="mt-auto justify-start px-0">
+                  <Link
+                    href={path.href}
+                    target={path.href.startsWith('http') ? '_blank' : undefined}
+                    rel={path.href.startsWith('http') ? 'noreferrer' : undefined}
+                  >
+                    Explore this path
+                    <ArrowRight data-icon="inline-end" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
         <SectionHeading
           eyebrow="Kit catalog"
           title="Start with the blocks agencies and freelancers actually install on repeat."

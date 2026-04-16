@@ -3,68 +3,118 @@ import path from 'node:path'
 
 import type { DetectedProject, KitManifest, PayloadFragment, SupportMatrix } from './types'
 
+import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from './constants'
 import { detectPackageManager, extractMajor, readJsonFile, repoRoot } from './utils'
 
 const supportMatrixPath = path.join(repoRoot, 'payload-kits', 'support-matrix.json')
+const renderBlocksAnchor = 'const blockComponents = {'
+const pagesAnchor = 'export const Pages: CollectionConfig'
+const layoutAnchor = "name: 'layout'"
 
-const insertBeforeAnchor = (source: string, text: string, anchor: string) => {
-  if (source.includes(text)) {
+const getAbsolutePath = (cwd: string, filePath: string) => path.join(cwd, filePath)
+
+const normalizeFileList = (files: string[]) => [...new Set(files)].sort()
+
+const insertLineBeforeAnchor = ({
+  anchor,
+  line,
+  source,
+}: {
+  anchor: string
+  line: string
+  source: string
+}) => {
+  const lines = source.split('\n')
+
+  if (lines.includes(line)) {
     return source
   }
 
-  const anchorIndex = source.indexOf(anchor)
+  const anchorIndex = lines.findIndex((currentLine) => currentLine.includes(anchor))
 
   if (anchorIndex === -1) {
     throw new Error(`Unable to find insertion anchor "${anchor}".`)
   }
 
-  return `${source.slice(0, anchorIndex)}${text}\n${source.slice(anchorIndex)}`
+  lines.splice(anchorIndex, 0, line)
+
+  return lines.join('\n')
 }
 
 const applyRenderBlocksFragment = (source: string, fragment: Extract<PayloadFragment, { kind: 'renderBlocks' }>) => {
-  const importStatement = `import { ${fragment.importName} } from '${fragment.importPath}'`
-  let updated = insertBeforeAnchor(source, `${importStatement}\n`, 'const blockComponents = {')
+  const importLine = `import { ${fragment.importName} } from '${fragment.importPath}'`
+  const propertyLine = `  ${fragment.blockSlug}: ${fragment.importName},`
+  const lines = insertLineBeforeAnchor({
+    anchor: renderBlocksAnchor,
+    line: importLine,
+    source,
+  }).split('\n')
 
-  if (updated.includes(`${fragment.blockSlug}: ${fragment.importName}`)) {
-    return updated
+  const objectStartIndex = lines.findIndex((line) => line.includes(renderBlocksAnchor))
+
+  if (objectStartIndex === -1) {
+    throw new Error('Unable to find the blockComponents object in RenderBlocks.tsx.')
   }
 
-  updated = updated.replace(
-    /const blockComponents = \{([\s\S]*?)\n\}/,
-    (match, body: string) =>
-      `const blockComponents = {${body}\n  ${fragment.blockSlug}: ${fragment.importName},\n}`,
-  )
+  const objectEndIndex = lines.findIndex((line, index) => index > objectStartIndex && line === '}')
 
-  if (!updated.includes(`${fragment.blockSlug}: ${fragment.importName}`)) {
-    throw new Error('Unable to register the block inside RenderBlocks.tsx.')
+  if (objectEndIndex === -1) {
+    throw new Error('Unable to find the end of the blockComponents object in RenderBlocks.tsx.')
   }
 
-  return updated
+  const objectLines = lines.slice(objectStartIndex, objectEndIndex + 1)
+
+  if (objectLines.includes(propertyLine)) {
+    return lines.join('\n')
+  }
+
+  lines.splice(objectEndIndex, 0, propertyLine)
+
+  return lines.join('\n')
 }
 
 const applyPagesLayoutFragment = (source: string, fragment: Extract<PayloadFragment, { kind: 'pagesLayout' }>) => {
-  const importStatement = `import { ${fragment.importName} } from '${fragment.importPath}'`
-  let updated = insertBeforeAnchor(source, `${importStatement}\n`, 'export const Pages: CollectionConfig')
-
-  updated = updated.replace(/blocks:\s*\[([\s\S]*?)\],/, (match, blockList: string) => {
-    if (blockList.includes(fragment.blockName)) {
-      return match
-    }
-
-    const trimmed = blockList.trim()
-    const suffix = trimmed.length > 0 ? `${trimmed}, ${fragment.blockName}` : fragment.blockName
-
-    return `blocks: [${suffix}],`
+  const importLine = `import { ${fragment.importName} } from '${fragment.importPath}'`
+  const sourceWithImport = insertLineBeforeAnchor({
+    anchor: pagesAnchor,
+    line: importLine,
+    source,
   })
+  const layoutIndex = sourceWithImport.indexOf(layoutAnchor)
 
-  const layoutBlocksMatch = updated.match(/blocks:\s*\[([\s\S]*?)\],/)
-
-  if (!layoutBlocksMatch?.[1]?.includes(fragment.blockName)) {
-    throw new Error('Unable to register the block in Pages collection layout blocks.')
+  if (layoutIndex === -1) {
+    throw new Error('Unable to find the layout tab in Pages collection config.')
   }
 
-  return updated
+  const layoutSlice = sourceWithImport.slice(layoutIndex)
+  const blocksMatch = layoutSlice.match(/blocks:\s*\[([\s\S]*?)\],/)
+
+  if (!blocksMatch || typeof blocksMatch.index !== 'number') {
+    throw new Error('Unable to find the layout block list in Pages collection config.')
+  }
+
+  const absoluteMatchStart = layoutIndex + blocksMatch.index
+  const absoluteMatchEnd = absoluteMatchStart + blocksMatch[0].length
+  const currentEntries = blocksMatch[1]
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+
+  if (currentEntries.includes(fragment.blockName)) {
+    return sourceWithImport
+  }
+
+  const replacement = `blocks: [${[...currentEntries, fragment.blockName].join(', ')}],`
+
+  return `${sourceWithImport.slice(0, absoluteMatchStart)}${replacement}${sourceWithImport.slice(absoluteMatchEnd)}`
 }
+
+export const getExpectedPatchedFiles = (manifest: Pick<KitManifest, 'payloadFragments'>) =>
+  normalizeFileList(
+    manifest.payloadFragments.map((fragment) =>
+      fragment.kind === 'renderBlocks' ? RENDER_BLOCKS_FILE : PAGES_LAYOUT_FILE,
+    ),
+  )
 
 export const detectProject = async (cwd: string): Promise<DetectedProject> => {
   const supportMatrix = await readJsonFile<SupportMatrix>(supportMatrixPath)
@@ -125,7 +175,7 @@ export const detectProject = async (cwd: string): Promise<DetectedProject> => {
   }
 
   throw new Error(
-    `Unsupported project shape in ${cwd}. The POC currently supports Payload website-style repos with components.json, src/blocks/RenderBlocks.tsx, and src/collections/Pages/index.ts.`,
+    `Unsupported project shape in ${cwd}. The alpha install flow currently supports Payload website-style repos with components.json, ${RENDER_BLOCKS_FILE}, and ${PAGES_LAYOUT_FILE}.`,
   )
 }
 
@@ -152,65 +202,115 @@ export const applyPayloadFragments = async (cwd: string, fragments: PayloadFragm
 
   for (const fragment of fragments) {
     if (fragment.kind === 'renderBlocks') {
-      const filePath = path.join(cwd, 'src/blocks/RenderBlocks.tsx')
+      const filePath = getAbsolutePath(cwd, RENDER_BLOCKS_FILE)
       const existing = await readFile(filePath, 'utf8')
       const updated = applyRenderBlocksFragment(existing, fragment)
 
       if (updated !== existing) {
         await writeFile(filePath, updated, 'utf8')
-        touchedFiles.add('src/blocks/RenderBlocks.tsx')
       }
+
+      touchedFiles.add(RENDER_BLOCKS_FILE)
     }
 
     if (fragment.kind === 'pagesLayout') {
-      const filePath = path.join(cwd, 'src/collections/Pages/index.ts')
+      const filePath = getAbsolutePath(cwd, PAGES_LAYOUT_FILE)
       const existing = await readFile(filePath, 'utf8')
       const updated = applyPagesLayoutFragment(existing, fragment)
 
       if (updated !== existing) {
         await writeFile(filePath, updated, 'utf8')
-        touchedFiles.add('src/collections/Pages/index.ts')
       }
+
+      touchedFiles.add(PAGES_LAYOUT_FILE)
     }
   }
 
-  return [...touchedFiles]
+  return normalizeFileList([...touchedFiles])
 }
 
-export const isKitAlreadyPresent = async (cwd: string, manifest: KitManifest) => {
-  const installedFilesPresent = await Promise.all(
-    manifest.files.map(async (file) => {
-      try {
-        await access(path.join(cwd, file))
-        return true
-      } catch {
-        return false
-      }
-    }),
-  )
+export const verifyInstalledManifestFiles = async ({
+  cwd,
+  manifest,
+}: {
+  cwd: string
+  manifest: Pick<KitManifest, 'files'>
+}) => {
+  const missingFiles: string[] = []
 
-  if (installedFilesPresent.includes(false)) {
-    return false
+  for (const filePath of manifest.files) {
+    try {
+      await access(getAbsolutePath(cwd, filePath))
+    } catch {
+      missingFiles.push(filePath)
+    }
   }
+
+  return {
+    isValid: missingFiles.length === 0,
+    missingFiles,
+  }
+}
+
+export const verifyInstalledPayloadFragments = async ({
+  cwd,
+  manifest,
+}: {
+  cwd: string
+  manifest: Pick<KitManifest, 'payloadFragments'>
+}) => {
+  const missingFragments: string[] = []
 
   for (const fragment of manifest.payloadFragments) {
     if (fragment.kind === 'renderBlocks') {
-      const renderBlocksSource = await readFile(path.join(cwd, 'src/blocks/RenderBlocks.tsx'), 'utf8')
+      const renderBlocksSource = await readFile(getAbsolutePath(cwd, RENDER_BLOCKS_FILE), 'utf8')
+
+      if (!renderBlocksSource.includes(`import { ${fragment.importName} } from '${fragment.importPath}'`)) {
+        missingFragments.push(`renderBlocks.import:${fragment.importName}`)
+      }
 
       if (!renderBlocksSource.includes(`${fragment.blockSlug}: ${fragment.importName}`)) {
-        return false
+        missingFragments.push(`renderBlocks.block:${fragment.blockSlug}`)
       }
     }
 
     if (fragment.kind === 'pagesLayout') {
-      const pagesSource = await readFile(path.join(cwd, 'src/collections/Pages/index.ts'), 'utf8')
-      const layoutBlocksMatch = pagesSource.match(/blocks:\s*\[([\s\S]*?)\],/)
+      const pagesSource = await readFile(getAbsolutePath(cwd, PAGES_LAYOUT_FILE), 'utf8')
 
-      if (!layoutBlocksMatch?.[1]?.includes(fragment.blockName)) {
-        return false
+      if (!pagesSource.includes(`import { ${fragment.importName} } from '${fragment.importPath}'`)) {
+        missingFragments.push(`pagesLayout.import:${fragment.importName}`)
+      }
+
+      const layoutIndex = pagesSource.indexOf(layoutAnchor)
+      const layoutSlice = layoutIndex === -1 ? '' : pagesSource.slice(layoutIndex)
+      const blocksMatch = layoutSlice.match(/blocks:\s*\[([\s\S]*?)\],/)
+
+      if (!blocksMatch?.[1]?.split(',').map((entry) => entry.trim()).includes(fragment.blockName)) {
+        missingFragments.push(`pagesLayout.block:${fragment.blockName}`)
       }
     }
   }
 
-  return true
+  return {
+    isValid: missingFragments.length === 0,
+    missingFragments,
+  }
+}
+
+export const isKitAlreadyPresent = async (cwd: string, manifest: KitManifest) => {
+  const fileCheck = await verifyInstalledManifestFiles({
+    cwd,
+    manifest,
+  })
+
+  if (!fileCheck.isValid) {
+    return false
+  }
+
+  const fragmentCheck = await verifyInstalledPayloadFragments({
+    cwd,
+    manifest,
+  })
+
+  return fragmentCheck.isValid
 }

@@ -1,11 +1,14 @@
 import type { LucideIcon } from 'lucide-react'
 import {
   Blocks,
+  BookOpenText,
   Boxes,
   CheckCircle2,
   CircleDollarSign,
   FileCode2,
   FolderTree,
+  Github,
+  Handshake,
   LayoutTemplate,
   LockKeyhole,
   MessageSquareQuote,
@@ -64,6 +67,19 @@ export type FaqItem = {
   answer: string
   question: string
 }
+
+export type LaunchPath = {
+  description: string
+  href: string
+  icon: LucideIcon
+  label: string
+  points: string[]
+  title: string
+}
+
+export const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
+export const githubEarlyAccessIssueUrl =
+  'https://github.com/Ducksss/payload-components/issues/new?template=early-access.yml'
 
 export const proofPills: ProofPill[] = [
   { label: 'Payload v3 only' },
@@ -335,5 +351,47 @@ export const proofChecks = [
   {
     icon: CheckCircle2,
     text: 'Keeps multi-kit installs legible as the catalog grows',
+  },
+]
+
+export const launchPaths: LaunchPath[] = [
+  {
+    description:
+      'Start with the public proof layer if you want to verify the product shape, alpha kit contract, and install story before raising your hand.',
+    href: githubRepoUrl,
+    icon: Github,
+    label: 'Public proof',
+    points: [
+      'Inspect the repo, CLI contract, and alpha-kit scaffold',
+      'Best fit for technical evaluators and GitHub traffic',
+      'Supports the open-core trust layer described on the page',
+    ],
+    title: 'Review the public proof on GitHub',
+  },
+  {
+    description:
+      'Read the first Payload-native implementation guides to understand why generic block libraries usually break once schema wiring and import maps enter the picture.',
+    href: '/resources',
+    icon: BookOpenText,
+    label: 'Guides',
+    points: [
+      'Built around narrow, high-intent Payload search terms',
+      'Turns owned content into a real acquisition surface',
+      'Gives community posts somewhere useful to point people',
+    ],
+    title: 'Browse the launch resources',
+  },
+  {
+    description:
+      'If you ship Payload sites for clients, join the design partner track so the earliest installs get tested against real delivery constraints instead of idealized demos.',
+    href: '/?intent=design-partner&source=landing-launch-path#early-access',
+    icon: Handshake,
+    label: 'Design partner',
+    points: [
+      'Prioritizes agencies and freelancers shipping repeatedly',
+      'Creates a higher-signal path than a generic waitlist alone',
+      'Helps qualify the first serious customer conversations',
+    ],
+    title: 'Apply for the design partner track',
   },
 ]

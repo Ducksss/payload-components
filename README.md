@@ -13,9 +13,13 @@
     <br />
     <br />
     <a href="https://github.com/Ducksss/payload-components"><strong>Explore the repo »</strong></a>
+    ·
+    <a href="https://github.com/Ducksss/payload-components/issues/new?template=early-access.yml"><strong>Request early access »</strong></a>
     <br />
     <br />
     <a href="./PAYLOAD-PLAN.md">Read the product plan</a>
+    ·
+    <a href="./marketing/README.md">Open the launch assets</a>
     ·
     <a href="https://github.com/Ducksss/payload-components/issues">Report Bug</a>
     ·
@@ -54,13 +58,26 @@ This repository started from Payload's website template and now serves as a Payl
 
 Today, the codebase already includes:
 
-- A custom product landing page at `/landing`
+- A custom product landing page at `/` (with `/landing` redirecting to `/`)
 - Payload CMS collections for pages, posts, media, categories, and users
 - Globals for header and footer content
 - SEO, redirects, search, form builder, live preview, and scheduled jobs
 - A Next.js App Router frontend alongside the Payload admin
 
 The important boundary: the marketing narrative talks about `payload-kit init`, `payload-kit add`, and `payload-kit doctor`, but that CLI and registry workflow are still roadmap items, not implemented in this repo yet. The shipped code is the website and CMS foundation around that concept.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Early Access
+
+This repo now includes a few concrete launch surfaces for the early channel plan:
+
+- GitHub intake: use the [early access / design partner issue template](https://github.com/Ducksss/payload-components/issues/new?template=early-access.yml)
+- Site CTA flow: the homepage waitlist now captures `source`, `intent`, `role`, and `utm_*` context before proxying to your webhook
+- Owned-content layer: the app includes a `/resources` hub with static Payload-native guides you can use for SEO and community sharing
+- Operator assets: see [`marketing/README.md`](./marketing/README.md) for launch playbooks, community post drafts, and outreach templates
+
+This keeps the first push aligned with a waitlist + design-partner motion instead of broad paid acquisition.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -80,7 +97,7 @@ The important boundary: the marketing narrative talks about `payload-kit init`, 
 
 ## Getting Started
 
-This project runs as a standard Payload + Next.js app. The main local goal is to get the CMS, frontend, and `/landing` page running against a Postgres database.
+This project runs as a standard Payload + Next.js app. The main local goal is to get the CMS, frontend, and homepage resources running against a Postgres database.
 
 > [!IMPORTANT]
 > The current app config in [`src/payload.config.ts`](./src/payload.config.ts) uses `POSTGRES_URL`, but the committed [`.env.example`](./.env.example) and [`docker-compose.yml`](./docker-compose.yml) still reflect the older Mongo-based upstream template. Use Postgres for local setup.
@@ -141,7 +158,8 @@ This project runs as a standard Payload + Next.js app. The main local goal is to
 
 6. Open the app:
    - Frontend: [http://localhost:3000](http://localhost:3000)
-   - Product landing page: [http://localhost:3000/landing](http://localhost:3000/landing)
+   - Product landing page: [http://localhost:3000](http://localhost:3000)
+   - Resources hub: [http://localhost:3000/resources](http://localhost:3000/resources)
    - Payload admin: [http://localhost:3000/admin](http://localhost:3000/admin)
 
 7. Create your first admin user when prompted, then optionally use the dashboard seed flow to populate demo content.
@@ -153,7 +171,8 @@ This project runs as a standard Payload + Next.js app. The main local goal is to
 This repo is most useful in three modes:
 
 1. Marketing site prototype
-   - Visit `/landing` to review the Payload Kits positioning, product proof, FAQ, and pricing narrative.
+   - Visit `/` to review the Payload Kits positioning, product proof, GitHub CTA path, and early-access flow.
+   - Visit `/resources` to browse the first Payload-native guides for SEO and community distribution.
 
 2. Payload CMS starter
    - Use `/admin` to manage pages, posts, media, categories, header, and footer content.
@@ -162,6 +181,7 @@ This repo is most useful in three modes:
 3. Component and content workflow sandbox
    - Iterate on blocks, frontend components, and admin-safe content models inside a real Payload v3 project.
    - The homepage waitlist form forwards signups to your external webhook instead of storing them in Payload.
+   - The GitHub issue template and `marketing/` docs give you an executable early-channel operating layer inside the repo.
 
 Useful scripts:
 
@@ -190,6 +210,8 @@ If you change collections, globals, or field schemas, regenerate types. If you a
 - [ ] Add deeper docs and screenshots for real kit installation flows
 
 For the broader direction, see [PAYLOAD-PLAN.md](./PAYLOAD-PLAN.md).
+
+For the current execution assets, see [`marketing/README.md`](./marketing/README.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

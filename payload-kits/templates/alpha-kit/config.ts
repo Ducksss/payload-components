@@ -2,9 +2,9 @@ import type { Block } from 'payload'
 
 import { linkGroup } from '@/fields/linkGroup'
 
-export const HeroBasic: Block = {
-  slug: 'heroBasic',
-  interfaceName: 'HeroBasicBlock',
+export const ExampleBasic: Block = {
+  slug: 'exampleBasic',
+  interfaceName: 'ExampleBasicBlock',
   fields: [
     {
       name: 'eyebrow',
@@ -29,24 +29,9 @@ export const HeroBasic: Block = {
         minRows: 1,
       },
     }),
-    {
-      name: 'proofItems',
-      type: 'array',
-      admin: {
-        initCollapsed: true,
-      },
-      fields: [
-        {
-          name: 'label',
-          type: 'text',
-          required: true,
-        },
-      ],
-      maxRows: 4,
-    },
   ],
   labels: {
-    plural: 'Hero Basic Blocks',
-    singular: 'Hero Basic',
+    plural: 'Example Basic Blocks',
+    singular: 'Example Basic',
   },
 }

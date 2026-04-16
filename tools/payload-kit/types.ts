@@ -1,4 +1,9 @@
+import type { INSTALL_STAGES } from './constants'
+
 export type PackageManager = 'bun' | 'npm' | 'pnpm' | 'yarn'
+export type InstallStage = (typeof INSTALL_STAGES)[number]
+export type InstallStatus = 'installed' | 'partial'
+export type DependencyMap = Record<string, string>
 
 export type PayloadFragment =
   | {
@@ -16,13 +21,18 @@ export type PayloadFragment =
 
 export type KitManifest = {
   $schema?: string
+  dependencies: DependencyMap
   description: string
   files: string[]
   name: string
   payloadFragments: PayloadFragment[]
+  peerDependencies: DependencyMap
   postInstall: string[]
   preview: {
     summary: string
+  }
+  recovery: {
+    patchedFiles: string[]
   }
   registryItemName: string
   sampleContent: Record<string, unknown>
@@ -35,13 +45,38 @@ export type KitManifest = {
   version: string
 }
 
+export type InstallError = {
+  message: string
+  stage: InstallStage
+}
+
+export type InstallStateEntry = {
+  installedAt: string | null
+  installedFiles: string[]
+  lastAttemptAt: string
+  lastError: InstallError | null
+  manifestVersion: string
+  patchedFiles: string[]
+  registryItemName: string
+  status: InstallStatus
+  targetId: string
+}
+
 export type InstallState = {
+  kits: Record<
+    string,
+    InstallStateEntry
+  >
+  version: 2
+}
+
+export type InstallStateV1 = {
   kits: Record<
     string,
     {
       installedAt: string
       manifestVersion: string
-      status: 'installed' | 'partial'
+      status: InstallStatus
       touchedFiles: string[]
     }
   >
@@ -71,4 +106,18 @@ export type DetectedProject = {
   packageManager: PackageManager
   payloadMajor: number
   target: SupportedTarget
+}
+
+export type RegistryDefinition = {
+  $schema?: string
+  items: Array<{
+    files?: Array<{
+      path: string
+      target: string
+      type: string
+    }>
+    name: string
+    type?: string
+  }>
+  name: string
 }

@@ -34,10 +34,10 @@ export const extractMajor = (version: string | undefined, dependencyName: string
 
 export const detectPackageManager = async (cwd: string): Promise<PackageManager> => {
   const lockfiles: Array<[PackageManager, string]> = [
-    ['pnpm', 'pnpm-lock.yaml'],
-    ['bun', 'bun.lockb'],
-    ['yarn', 'yarn.lock'],
-    ['npm', 'package-lock.json'],
+    ['pnpm', getLockfileName('pnpm')],
+    ['bun', getLockfileName('bun')],
+    ['yarn', getLockfileName('yarn')],
+    ['npm', getLockfileName('npm')],
   ]
 
   for (const [manager, lockfile] of lockfiles) {
@@ -50,6 +50,22 @@ export const detectPackageManager = async (cwd: string): Promise<PackageManager>
   }
 
   return 'npm'
+}
+
+export const getLockfileName = (packageManager: PackageManager) => {
+  if (packageManager === 'pnpm') {
+    return 'pnpm-lock.yaml'
+  }
+
+  if (packageManager === 'bun') {
+    return 'bun.lockb'
+  }
+
+  if (packageManager === 'yarn') {
+    return 'yarn.lock'
+  }
+
+  return 'package-lock.json'
 }
 
 export const getShadcnCommand = (packageManager: PackageManager) => {

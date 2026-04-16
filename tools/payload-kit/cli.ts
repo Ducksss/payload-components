@@ -12,10 +12,10 @@ Usage:
   payload-kit doctor [--cwd <path>]
   payload-kit --help
 
-POC commands:
-  add     Install the golden kit through a shadcn-compatible registry flow.
-  init    Placeholder command shell for the post-POC roadmap.
-  doctor  Placeholder command shell for the post-POC roadmap.
+Alpha commands:
+  add     Install an alpha kit through the payload-kit wrapper and shadcn-compatible registry flow.
+  init    Non-gating command shell reserved for a later alpha phase.
+  doctor  Non-gating command shell reserved for the next alpha tranche.
 `
 
 const parseArgs = (argv: string[]) => {
@@ -65,7 +65,7 @@ const placeholderCommand = async (commandName: 'doctor' | 'init', cwd: string) =
 
     process.stdout.write(
       `${commandName}: detected ${project.target.id} in ${cwd}. ` +
-        `This POC only implements "payload-kit add hero-basic". ` +
+        `This alpha tranche focuses on "payload-kit add"; ${commandName} remains non-gating for now. ` +
         `Installed kits: ${installedKits.length ? installedKits.join(', ') : 'none'}.\n`,
     )
   } catch (error) {

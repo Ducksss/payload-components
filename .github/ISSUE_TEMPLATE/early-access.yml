@@ -1,0 +1,66 @@
+name: Early Access / Design Partner
+description: Raise your hand for early access, design-partner testing, or ecosystem collaboration.
+title: "[early-access] "
+labels:
+  - early-access
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the interest. This intake is meant to keep GitHub as a lightweight top-of-funnel path for technical evaluators and early design partners.
+
+  - type: dropdown
+    id: interest
+    attributes:
+      label: What are you interested in?
+      options:
+        - Early access updates
+        - Design partner testing
+        - Ecosystem partnership
+        - Something else
+    validations:
+      required: true
+
+  - type: dropdown
+    id: role
+    attributes:
+      label: Which best describes you?
+      options:
+        - Agency
+        - Freelancer / consultant
+        - In-house team
+        - Content creator / educator
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: website
+    attributes:
+      label: Website or portfolio
+      placeholder: https://example.com
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: What are you hoping Payload Kits will help you ship?
+      description: Tell us about the client work, block types, or install workflow you care about most.
+      placeholder: We ship 3-5 Payload marketing sites per quarter and keep rebuilding hero, pricing, FAQ, and form sections...
+    validations:
+      required: true
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: What constraints should we know about?
+      description: Repo shape, version constraints, preview needs, multi-site reuse, or other delivery details.
+      placeholder: We start from the official website template, customize layouts quickly, and need installs that survive generated types and import-map updates.
+
+  - type: checkboxes
+    id: followup
+    attributes:
+      label: Follow-up
+      options:
+        - label: I am open to a short feedback call or async install review.
+        - label: I can test an alpha install in a real project.
+        - label: I would rather stay on updates for now.

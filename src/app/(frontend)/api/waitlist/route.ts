@@ -1,11 +1,13 @@
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const MAX_REQUEST_SIZE = 1_024
-const WAITLIST_SOURCE = 'homepage-final-cta'
+import {
+  normalizeMarketingToken,
+  normalizeWaitlistIntent,
+  normalizeWaitlistRole,
+  type WaitlistRequestBody,
+} from '@/utilities/waitlist'
 
-type WaitlistRequestBody = {
-  email?: unknown
-  honey?: unknown
-}
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const MAX_REQUEST_SIZE = 2_048
+const WAITLIST_SOURCE = 'homepage-final-cta'
 
 const invalidRequest = (message: string) =>
   Response.json(
@@ -43,6 +45,38 @@ export async function POST(request: Request): Promise<Response> {
 
   const email = typeof body.email === 'string' ? body.email.trim() : ''
   const honey = typeof body.honey === 'string' ? body.honey.trim() : ''
+  const source = normalizeMarketingToken(
+    typeof body.source === 'string' ? body.source : undefined,
+    WAITLIST_SOURCE,
+  )
+  const intent = normalizeWaitlistIntent(
+    typeof body.intent === 'string' ? body.intent : undefined,
+    'waitlist',
+  )
+  const role = normalizeWaitlistRole(typeof body.role === 'string' ? body.role : undefined)
+  const currentPath =
+    typeof body.currentPath === 'string' && body.currentPath.trim()
+      ? body.currentPath.trim().slice(0, 200)
+      : undefined
+  const referrer =
+    typeof body.referrer === 'string' && body.referrer.trim()
+      ? body.referrer.trim().slice(0, 500)
+      : undefined
+  const utmSource = normalizeMarketingToken(
+    typeof body.utmSource === 'string' ? body.utmSource : undefined,
+  )
+  const utmMedium = normalizeMarketingToken(
+    typeof body.utmMedium === 'string' ? body.utmMedium : undefined,
+  )
+  const utmCampaign = normalizeMarketingToken(
+    typeof body.utmCampaign === 'string' ? body.utmCampaign : undefined,
+  )
+  const utmContent = normalizeMarketingToken(
+    typeof body.utmContent === 'string' ? body.utmContent : undefined,
+  )
+  const utmTerm = normalizeMarketingToken(
+    typeof body.utmTerm === 'string' ? body.utmTerm : undefined,
+  )
 
   if (!email || !EMAIL_PATTERN.test(email)) {
     return invalidRequest('Enter a valid email address.')
@@ -65,9 +99,18 @@ export async function POST(request: Request): Promise<Response> {
       method: 'POST',
       headers,
       body: JSON.stringify({
+        currentPath,
         email,
-        source: WAITLIST_SOURCE,
+        intent,
+        referrer,
+        role,
+        source,
         submittedAt: new Date().toISOString(),
+        utmCampaign,
+        utmContent,
+        utmMedium,
+        utmSource,
+        utmTerm,
       }),
       cache: 'no-store',
     })
