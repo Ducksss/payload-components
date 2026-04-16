@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "payload-kits",
+  "homepage": "https://github.com/Ducksss/payload-components",
+  "items": [
+    {
+      "name": "hero-basic",
+      "type": "registry:item",
+      "title": "Hero Basic",
+      "description": "Payload Kits proof-of-concept hero block.",
+      "files": [
+        {
+          "path": "src/blocks/HeroBasic/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroBasic/config.ts"
+        },
+        {
+          "path": "src/blocks/HeroBasic/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroBasic/Component.tsx"
+        }
+      ]
+    }
+  ]
+}

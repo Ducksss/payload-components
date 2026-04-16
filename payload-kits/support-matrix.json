@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "targets": [
+    {
+      "id": "payload-website-starter",
+      "description": "Payload v3 + Next.js App Router projects that render page layout blocks through src/blocks/RenderBlocks.tsx and register page blocks in src/collections/Pages/index.ts.",
+      "allowedPayloadMajors": [3],
+      "allowedNextMajors": [15, 16],
+      "requiredFiles": [
+        "components.json",
+        "src/payload.config.ts",
+        "src/blocks/RenderBlocks.tsx",
+        "src/collections/Pages/index.ts"
+      ],
+      "requiredAnchors": [
+        {
+          "file": "src/blocks/RenderBlocks.tsx",
+          "text": "const blockComponents = {"
+        },
+        {
+          "file": "src/collections/Pages/index.ts",
+          "text": "name: 'layout'"
+        },
+        {
+          "file": "src/collections/Pages/index.ts",
+          "text": "type: 'blocks'"
+        }
+      ]
+    }
+  ]
+}

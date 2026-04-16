@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react'
+
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/utilities/ui'
 import { CheckCircle2, FileCode2, FolderTree, Sparkles } from 'lucide-react'
@@ -17,6 +19,53 @@ const generatedFiles = [
   'src/blocks/PricingKit/config.ts',
   'src/blocks/FaqKit/config.ts',
 ]
+
+const commandLines = [
+  { duration: 460, text: '$ npx payload-kit init', width: '22ch' },
+  { duration: 660, text: '$ npx payload-kit add hero-pricing-faq', width: '38ch' },
+  { duration: 560, text: '$ pnpm payload generate:types', width: '29ch' },
+  { duration: 660, text: '$ pnpm payload generate:importmap', width: '33ch' },
+]
+
+const lineBaseDelay = 980
+const lineGap = 100
+
+type MotionStyle = CSSProperties & {
+  '--line-delay'?: string
+  '--line-duration'?: string
+  '--line-width'?: string
+  '--spawn-delay'?: string
+}
+
+const terminalLineStyle = (delay: number, duration: number, width: string): MotionStyle => ({
+  '--line-delay': `${delay}ms`,
+  '--line-duration': `${duration}ms`,
+  '--line-width': width,
+})
+
+const spawnStyle = (delay: number): MotionStyle => ({
+  '--spawn-delay': `${delay}ms`,
+})
+
+const typingTimeline = commandLines.reduce<number[]>((acc, line, index) => {
+  if (index === 0) {
+    acc.push(lineBaseDelay)
+    return acc
+  }
+
+  const previousDelay = acc[index - 1] ?? lineBaseDelay
+  const previousDuration = commandLines[index - 1]?.duration ?? 0
+  acc.push(previousDelay + previousDuration + lineGap)
+  return acc
+}, [])
+
+const typingCompleteAt =
+  (typingTimeline[typingTimeline.length - 1] ?? lineBaseDelay) +
+  (commandLines[commandLines.length - 1]?.duration ?? 0)
+
+const logRevealStart = typingCompleteAt + 220
+const filesRevealStart = logRevealStart + 180
+const installedSurfaceRevealStart = filesRevealStart + 140
 
 export const HeroProductFrame = () => {
   return (
@@ -69,20 +118,36 @@ export const HeroProductFrame = () => {
               </div>
 
               <div className="overflow-hidden rounded-2xl border border-background/10 bg-black/30">
-                <pre className="overflow-x-auto px-4 py-4 text-sm leading-7 text-background/82">
-                  <code>
-                    $ npx payload-kit init{'\n'}$ npx payload-kit add hero-pricing-faq{'\n'}$ pnpm
-                    payload generate:types{'\n'}$ pnpm payload generate:importmap
+                <div className="px-4 py-4 text-sm leading-7 text-background/82">
+                  <code className={styles.terminalBlock}>
+                    {commandLines.map((line, index) => (
+                      <span key={line.text} className={styles.terminalRow}>
+                        <span
+                          className={styles.terminalLine}
+                          style={terminalLineStyle(
+                            typingTimeline[index] ?? lineBaseDelay,
+                            line.duration,
+                            line.width,
+                          )}
+                        >
+                          {line.text}
+                        </span>
+                      </span>
+                    ))}
                   </code>
-                </pre>
+                </div>
               </div>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              {installLog.map((item) => (
+              {installLog.map((item, index) => (
                 <div
                   key={item}
-                  className="flex items-start gap-3 rounded-2xl border border-background/10 bg-background/6 px-4 py-3.5 text-sm text-background/76"
+                  className={cn(
+                    styles.spawnItem,
+                    'flex items-start gap-3 rounded-2xl border border-background/10 bg-background/6 px-4 py-3.5 text-sm text-background/76',
+                  )}
+                  style={spawnStyle(logRevealStart + index * 120)}
                 >
                   <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-background" />
                   <span>{item}</span>
@@ -93,7 +158,13 @@ export const HeroProductFrame = () => {
         </div>
 
         <div className="grid gap-0 sm:grid-cols-2 lg:grid-cols-1">
-          <div className="border-b border-background/10 p-5 lg:p-7">
+          <div
+            className={cn(
+              styles.spawnSection,
+              'border-b border-background/10 p-5 lg:p-7',
+            )}
+            style={spawnStyle(filesRevealStart)}
+          >
             <p className="text-xs uppercase tracking-[0.22em] text-background/55">
               Generated files
             </p>
@@ -107,7 +178,10 @@ export const HeroProductFrame = () => {
             </div>
           </div>
 
-          <div className="p-5 lg:p-7">
+          <div
+            className={cn(styles.spawnSection, 'p-5 lg:p-7')}
+            style={spawnStyle(installedSurfaceRevealStart)}
+          >
             <p className="text-xs uppercase tracking-[0.22em] text-background/55">
               Installed surface
             </p>

@@ -45,26 +45,47 @@ export function LandingPage() {
   return (
     <main className="bg-background text-foreground">
       <section className={cn(styles.heroShell, 'overflow-hidden border-b border-border/60')}>
+        <div aria-hidden="true" className={styles.heroAtmosphere} />
         <div className="container relative flex flex-col gap-10 py-8 sm:py-12 lg:gap-12 lg:py-16">
-          <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 text-center">
+          <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center gap-4 text-center">
             <Badge
               variant="outline"
-              className="rounded-full bg-background/90 px-3.5 py-1 text-[0.72rem] font-medium uppercase tracking-[0.18em] backdrop-blur-sm sm:px-4"
+              className={cn(
+                styles.heroEyebrow,
+                'rounded-full bg-background/90 px-3.5 py-1 text-[0.72rem] font-medium uppercase tracking-[0.18em] backdrop-blur-sm sm:px-4',
+              )}
             >
               Payload Kits for agencies and freelancers
             </Badge>
 
             <div className="flex flex-col gap-3">
-              <h1 className="max-w-5xl text-[clamp(2.7rem,9vw,6.5rem)] font-medium leading-[0.92] tracking-[-0.085em] text-balance">
-                Payload Kits installs production-ready blocks with one command.
-              </h1>
-              <p className="mx-auto max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
+              <div className={styles.heroHeadlineFrame}>
+                <h1
+                  className={cn(
+                    styles.heroHeadline,
+                    'max-w-5xl text-[clamp(2.7rem,9vw,6.5rem)] font-medium leading-[0.92] tracking-[-0.085em] text-balance',
+                  )}
+                >
+                  Payload Kits installs production-ready blocks with one command.
+                </h1>
+              </div>
+              <p
+                className={cn(
+                  styles.heroBody,
+                  'mx-auto max-w-xl text-base leading-7 text-muted-foreground sm:text-lg',
+                )}
+              >
                 Curated kits wire schema, render components, generated types, and import-map
                 updates into real Payload v3 repos.
               </p>
             </div>
 
-            <div className="flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
+            <div
+              className={cn(
+                styles.heroActions,
+                'flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center',
+              )}
+            >
               <Button asChild size="lg" className="w-full rounded-full px-6 sm:w-auto">
                 <Link href="#product">
                   See the product proof
@@ -81,10 +102,11 @@ export function LandingPage() {
                 <Link href="#how-it-works">How it works</Link>
               </Button>
             </div>
-
           </div>
 
-          <HeroProductFrame />
+          <div className={styles.heroProof}>
+            <HeroProductFrame />
+          </div>
         </div>
       </section>
 

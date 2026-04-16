@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://payloadkits.dev/schema/poc-manifest.schema.json",
+  "title": "Payload Kits POC Manifest",
+  "type": "object",
+  "required": [
+    "name",
+    "version",
+    "title",
+    "description",
+    "registryItemName",
+    "supportedTargets",
+    "supports",
+    "files",
+    "payloadFragments",
+    "postInstall",
+    "preview",
+    "sampleContent"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "registryItemName": {
+      "type": "string"
+    },
+    "supportedTargets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "supports": {
+      "type": "object",
+      "required": ["payloadMajors", "nextMajors"],
+      "properties": {
+        "payloadMajors": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1
+        },
+        "nextMajors": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "payloadFragments": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "minItems": 1
+    },
+    "postInstall": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "preview": {
+      "type": "object",
+      "required": ["summary"],
+      "properties": {
+        "summary": {
+          "type": "string"
+        }
+      }
+    },
+    "sampleContent": {
+      "type": "object"
+    }
+  }
+}
