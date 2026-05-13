@@ -6,6 +6,7 @@ node_modules
 !.env.example
 .next
 next-env.d.ts
+tsconfig.tsbuildinfo
 .vercel
 .payload-kit
 .playwright-cli
@@ -13,6 +14,7 @@ output
 
 # Payload default media upload directory
 public/media/
+public/r/
 
 public/robots.txt
 public/sitemap*.xml
