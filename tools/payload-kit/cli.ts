@@ -16,6 +16,10 @@ Alpha commands:
   add     Install an alpha kit through the payload-kit wrapper and shadcn-compatible registry flow.
   init    Non-gating command shell reserved for a later alpha phase.
   doctor  Non-gating command shell reserved for the next alpha tranche.
+
+Current alpha kits:
+  hero-basic
+  feature-grid-basic
 `
 
 const parseArgs = (argv: string[]) => {
@@ -88,7 +92,9 @@ const main = async () => {
     const [kitName] = rest
 
     if (!kitName) {
-      throw new Error('payload-kit add requires a kit name. Try "payload-kit add hero-basic".')
+      throw new Error(
+        'payload-kit add requires a kit name. Try "payload-kit add hero-basic" or "payload-kit add feature-grid-basic".',
+      )
     }
 
     await addCommand({

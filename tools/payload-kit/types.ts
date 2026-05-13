@@ -110,13 +110,20 @@ export type DetectedProject = {
 
 export type RegistryDefinition = {
   $schema?: string
+  homepage: string
   items: Array<{
+    description?: string
     files?: Array<{
+      content?: string
       path: string
       target: string
       type: string
     }>
+    docs?: string
+    meta?: Record<string, unknown>
     name: string
+    registryDependencies?: string[]
+    title?: string
     type?: string
   }>
   name: string
