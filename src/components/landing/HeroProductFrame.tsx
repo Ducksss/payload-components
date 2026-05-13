@@ -8,26 +8,25 @@ import styles from './landing.module.css'
 
 const installLog = [
   'Detected supported Payload v3 target',
-  'Installed hero-pricing-faq kit files',
+  'Installed feature-grid-basic kit files',
   'Registered block config and renderer',
   'Generated types and updated import map',
 ]
 
 const generatedFiles = [
-  'src/blocks/HeroKit/config.ts',
-  'src/blocks/HeroKit/Component.tsx',
-  'src/blocks/PricingKit/config.ts',
-  'src/blocks/FaqKit/config.ts',
+  'src/blocks/FeatureGridBasic/config.ts',
+  'src/blocks/FeatureGridBasic/Component.tsx',
+  'src/blocks/RenderBlocks.tsx',
+  'src/collections/Pages/index.ts',
 ]
 
 const commandLines = [
-  { animation: 'type', duration: 380, kind: 'command', text: '$ npx payload-kit init', width: '22ch' },
   {
     animation: 'type',
     duration: 540,
     kind: 'command',
-    text: '$ npx payload-kit add hero-pricing-faq',
-    width: '38ch',
+    text: '$ npx payload-kit add feature-grid-basic',
+    width: '40ch',
   },
   {
     animation: 'reveal',
@@ -136,7 +135,7 @@ export const HeroProductFrame = () => {
                     Command line
                   </p>
                   <p className="mt-2 text-xl font-semibold tracking-[-0.04em] text-background">
-                    Install the kit, wire the repo, keep going
+                    Install one of the shipped alpha kits and keep moving
                   </p>
                 </div>
                 <SquareCommand />
@@ -199,7 +198,7 @@ export const HeroProductFrame = () => {
             style={spawnStyle(filesRevealStart)}
           >
             <p className="text-xs uppercase tracking-[0.22em] text-background/55">
-              Generated files
+              Installed and updated files
             </p>
             <div className="mt-4 flex flex-col gap-3 rounded-[1.5rem] border border-background/10 bg-background/6 p-4 sm:p-5">
               {generatedFiles.map((filePath) => (
@@ -221,7 +220,7 @@ export const HeroProductFrame = () => {
             <div className="mt-4 grid gap-3">
               <div className="rounded-[1.5rem] border border-background/10 bg-background text-foreground">
                 <div className="border-b border-border/80 px-5 py-4">
-                  <p className="text-sm font-medium">Hero Kit</p>
+                  <p className="text-sm font-medium">Hero Basic</p>
                   <p className="mt-1 text-sm text-muted-foreground">
                     Headline, CTA, proof ribbon, and Payload-safe defaults.
                   </p>
@@ -238,14 +237,23 @@ export const HeroProductFrame = () => {
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
-                {['Pricing kit', 'FAQ kit'].map((name) => (
+                {[
+                  {
+                    copy: 'Text-first feature grid with clean layout registration and an optional CTA row.',
+                    name: 'Feature Grid Basic',
+                  },
+                  {
+                    copy: 'Two real public kits shipped today while init and doctor remain the next steps.',
+                    name: 'Alpha boundary',
+                  },
+                ].map((item) => (
                   <div
-                    key={name}
+                    key={item.name}
                     className="rounded-[1.5rem] border border-background/10 bg-background/6 p-4"
                   >
-                    <p className="text-sm font-medium text-background">{name}</p>
+                    <p className="text-sm font-medium text-background">{item.name}</p>
                     <p className="mt-2 text-sm text-background/68">
-                      Full block config, renderer, and docs metadata bundled together.
+                      {item.copy}
                     </p>
                   </div>
                 ))}

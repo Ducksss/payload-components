@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { FormEvent, useEffect, useId, useState, useTransition } from 'react'
+import { FormEvent, useId, useState, useTransition } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -53,16 +53,15 @@ export const WaitlistForm = ({
   const searchRole = searchParams.get('role')
   const [email, setEmail] = useState('')
   const [honey, setHoney] = useState('')
-  const [intent, setIntent] = useState<WaitlistIntent>(defaultIntent)
-  const [role, setRole] = useState<WaitlistRole | undefined>()
+  const [intent, setIntent] = useState<WaitlistIntent>(() =>
+    normalizeWaitlistIntent(searchIntent, defaultIntent),
+  )
+  const [role, setRole] = useState<WaitlistRole | undefined>(() =>
+    normalizeWaitlistRole(searchRole),
+  )
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
-
-  useEffect(() => {
-    setIntent(normalizeWaitlistIntent(searchIntent, defaultIntent))
-    setRole(normalizeWaitlistRole(searchRole))
-  }, [defaultIntent, searchIntent, searchRole])
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()

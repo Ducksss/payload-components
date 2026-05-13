@@ -49,17 +49,6 @@ export type ReliabilityItem = {
   title: string
 }
 
-export type KitCategory = {
-  description: string
-  kits: {
-    description: string
-    includes: string[]
-    name: string
-  }[]
-  label: string
-  value: string
-}
-
 export type FaqItem = {
   answer: string
   question: string
@@ -79,40 +68,40 @@ export const proofPills: ProofPill[] = [
 
 export const installSteps: Step[] = [
   {
-    command: 'npx payload-kit init',
+    command: 'npx payload-kit add hero-basic',
     description:
-      'Detect the repo shape, confirm it is a supported Payload v3 + Next.js app, and prepare the registry config before anything touches your blocks.',
+      'The current alpha starts with one real command: install a shipped kit and let the wrapper handle the Payload-aware wiring around it.',
     items: [
-      'Validates project shape before install',
-      'Sets up the Payload-specific registry workflow',
-      'Keeps the install path opinionated from day one',
+      'Installs a real public alpha kit today',
+      'Applies the registry workflow through payload-kit',
+      'Keeps the install surface legible from the first proof',
     ],
     label: '01',
-    title: 'Prepare the repo',
+    title: 'Install a shipped alpha kit',
   },
   {
-    command: 'npx payload-kit add hero-pricing-faq',
+    command: 'npx payload-kit add feature-grid-basic',
     description:
-      'Install a complete kit with its frontend block, Payload schema, admin-safe defaults, dependency wiring, and the repo changes required to make it real.',
+      'The second shipped kit proves the multi-kit path: files land cleanly, registrations dedupe correctly, and the repo still finishes in a usable state.',
     items: [
-      'Adds the render component and config fragments',
-      'Installs peer dependencies and sample content',
+      'Registers the second block without duplicate wiring',
+      'Leaves separate installed state entries per kit',
       'Generates types and updates the import map automatically',
     ],
     label: '02',
-    title: 'Add a production-ready kit',
+    title: 'Prove the second-kit install path',
   },
   {
     command: 'npx payload-kit doctor',
     description:
-      'Audit the project after upgrades and repeated installs so you can see version drift, missing peers, and compatibility gaps before they become delivery risk.',
+      'Doctor is next on the roadmap. It is not shipped yet, but it is the next operational layer after the two real public kits.',
     items: [
-      'Flags unsupported versions and missing peers',
-      'Surfaces multi-kit conflicts before deploy',
-      'Keeps repeatable client builds from drifting',
+      'Will flag unsupported versions and missing peers',
+      'Will surface drift after repeated installs',
+      'Follows the gallery and two-kit alpha proof',
     ],
     label: '03',
-    title: 'Verify before shipping',
+    title: 'See what lands next',
   },
 ]
 
@@ -212,90 +201,15 @@ export const whyPayloadKits: FeatureCard[] = [
   },
   {
     description:
-      'Testimonials, forms, pricing, hero, and FAQ kits move from idea to Payload-ready code in minutes.',
+      'Hero Basic and Feature Grid Basic already move from idea to Payload-ready code through the shipped alpha install path.',
     icon: MessageSquareQuote,
-    title: 'Catalog tuned for websites first',
+    title: 'Catalog starts narrow on purpose',
   },
   {
     description:
       'Doctor and post-install checks make the platform feel safer to adopt in real client repos.',
     icon: Wrench,
     title: 'Reliability over novelty',
-  },
-]
-
-export const kitCategories: KitCategory[] = [
-  {
-    description: 'The pieces that give a new Payload site its backbone fast.',
-    kits: [
-      {
-        description:
-          'Headline-led hero blocks with strong payload wiring and preview-safe defaults.',
-        includes: ['hero block', 'render component', 'seed content'],
-        name: 'Hero kit',
-      },
-      {
-        description: 'Stats and logo sections for establishing trust without manual layout work.',
-        includes: ['stats block', 'logo cloud', 'spacing presets'],
-        name: 'Proof kit',
-      },
-      {
-        description: 'Flexible content sections that still feel deliberate in a real client build.',
-        includes: ['content block', 'layout variants', 'docs metadata'],
-        name: 'Content kit',
-      },
-    ],
-    label: 'Foundation',
-    value: 'foundation',
-  },
-  {
-    description: 'The conversion surfaces agencies rebuild on nearly every marketing site.',
-    kits: [
-      {
-        description:
-          'Pricing layouts with opinionated tier structure and clean editorial hierarchy.',
-        includes: ['pricing block', 'tier schema', 'responsive layout'],
-        name: 'Pricing kit',
-      },
-      {
-        description: 'Focused CTA sections that plug into layouts without awkward wrapper work.',
-        includes: ['cta block', 'button treatments', 'copy slots'],
-        name: 'CTA kit',
-      },
-      {
-        description:
-          'FAQ blocks that ship with admin-friendly editing and stable frontend rendering.',
-        includes: ['faq block', 'accordion UI', 'example content'],
-        name: 'FAQ kit',
-      },
-    ],
-    label: 'Conversion',
-    value: 'conversion',
-  },
-  {
-    description: 'The trust and capture modules that turn a site from pretty to usable.',
-    kits: [
-      {
-        description:
-          'Testimonials and quote sections designed for easy payload editing and visual consistency.',
-        includes: ['testimonial block', 'quote variants', 'avatar-safe defaults'],
-        name: 'Testimonial kit',
-      },
-      {
-        description:
-          'Newsletter and contact forms with the shape agencies expect in content-heavy sites.',
-        includes: ['form block', 'validation-ready fields', 'submission states'],
-        name: 'Form kit',
-      },
-      {
-        description:
-          'About and team sections for faster client-site assembly without generic filler layouts.',
-        includes: ['team block', 'about section', 'image treatments'],
-        name: 'About kit',
-      },
-    ],
-    label: 'Trust & capture',
-    value: 'trust',
   },
 ]
 
