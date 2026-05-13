@@ -11,7 +11,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MAX_REQUEST_SIZE = 2_048
 const RESEND_EMAILS_URL = 'https://api.resend.com/emails'
 const WAITLIST_EMAIL_TO = 'chaipinzheng@gmail.com'
-const WAITLIST_EMAIL_FROM = 'Payload Kits <onboarding@resend.dev>'
+const WAITLIST_EMAIL_FROM = 'onboarding@resend.dev'
 const WAITLIST_SOURCE = 'homepage-final-cta'
 
 type WaitlistSubmission = {
