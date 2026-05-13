@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+import { KitGalleryTeaser } from '@/components/gallery/KitGalleryTeaser'
 import { FinalCta } from '@/components/landing/FinalCta'
 import { FaqAccordion } from '@/components/landing/FaqAccordion'
 import { HeroProductFrame } from '@/components/landing/HeroProductFrame'
-import { KitCatalog } from '@/components/landing/KitCatalog'
 import { StepCard } from '@/components/landing/StepCard'
 import {
   githubRepoUrl,
@@ -251,12 +251,12 @@ export function LandingPage() {
 
       <section id="catalog" className="container py-16 lg:py-24">
         <SectionHeading
-          eyebrow="Kit catalog"
-          title="Start with the blocks agencies and freelancers actually install on repeat."
-          description="v1 stays deliberately focused on website blocks first: heroes, pricing, testimonials, FAQs, CTAs, forms, proof sections, and the supporting content layouts around them."
+          eyebrow="Live gallery"
+          title="Browse the real kits that ship in the current alpha."
+          description="The gallery stays narrow on purpose: two shipped kits, real install commands, and live previews rendered from the actual block components."
         />
 
-        <KitCatalog />
+        <KitGalleryTeaser />
       </section>
 
       <section id="pricing" className="border-y border-border/60">

@@ -1,8 +1,8 @@
 'use client'
 import { cn } from '@/utilities/ui'
-import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
-import React, { Fragment } from 'react'
+import { useRouter } from 'next/navigation'
+import React, { Fragment, type MouseEvent } from 'react'
 
 import type { Post } from '@/payload-types'
 
@@ -18,7 +18,7 @@ export const Card: React.FC<{
   showCategories?: boolean
   title?: string
 }> = (props) => {
-  const { card, link } = useClickableCard({})
+  const router = useRouter()
   const { className, doc, relationTo, showCategories, title: titleFromProps } = props
 
   const { slug, categories, meta, title } = doc || {}
@@ -28,6 +28,13 @@ export const Card: React.FC<{
   const titleToUse = titleFromProps || title
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `/${relationTo}/${slug}`
+  const handleCardClick = (event: MouseEvent<HTMLElement>) => {
+    if ((event.target as Element).closest('a')) {
+      return
+    }
+
+    router.push(href)
+  }
 
   return (
     <article
@@ -35,7 +42,7 @@ export const Card: React.FC<{
         'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer',
         className,
       )}
-      ref={card.ref}
+      onClick={handleCardClick}
     >
       <div className="relative w-full ">
         {!metaImage && <div className="">No image</div>}
@@ -67,7 +74,7 @@ export const Card: React.FC<{
         {titleToUse && (
           <div className="prose">
             <h3>
-              <Link className="not-prose" href={href} ref={link.ref}>
+              <Link className="not-prose" href={href}>
                 {titleToUse}
               </Link>
             </h3>

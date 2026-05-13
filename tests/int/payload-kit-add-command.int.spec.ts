@@ -148,10 +148,10 @@ describe('payload-kit add command orchestration', () => {
       }
     })
 
-    const module = await import('../../tools/payload-kit/commands/add')
+    const addCommandModule = await import('../../tools/payload-kit/commands/add')
 
     return {
-      addCommand: module.addCommand,
+      addCommand: addCommandModule.addCommand,
       mocks: {
         applyPayloadFragments,
         buildRegistry,

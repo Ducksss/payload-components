@@ -1,29 +1,19 @@
 <a id="readme-top"></a>
 
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-
 <div align="center">
-  <h3 align="center">Payload Components</h3>
+  <h1 align="center">Payload Kits</h1>
 
   <p align="center">
-    A Payload CMS v3 + Next.js App Router codebase customized into a marketing site for the Payload Kits product concept.
+    <strong>Registry-backed block kits for Payload CMS v3 + Next.js projects.</strong>
+    <br />
+    Install curated sections with Payload schema, render components, generated types, and import-map updates already wired.
     <br />
     <br />
-    <a href="https://github.com/Ducksss/payload-components"><strong>Explore the repo »</strong></a>
+    <a href="https://payload-components.xyz"><strong>Live site</strong></a>
     ·
-    <a href="https://github.com/Ducksss/payload-components/issues/new?template=early-access.yml"><strong>Request early access »</strong></a>
-    <br />
-    <br />
-    <a href="./PAYLOAD-PLAN.md">Read the product plan</a>
+    <a href="./payload-kits/README.md"><strong>Registry docs</strong></a>
     ·
-    <a href="./marketing/README.md">Open the launch assets</a>
-    ·
-    <a href="https://github.com/Ducksss/payload-components/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/Ducksss/payload-components/issues">Request Feature</a>
+    <a href="https://github.com/Ducksss/payload-components/issues/new?template=early-access.yml"><strong>Early access</strong></a>
   </p>
 </div>
 
@@ -64,7 +54,7 @@ Today, the codebase already includes:
 - SEO, redirects, search, form builder, live preview, and scheduled jobs
 - A Next.js App Router frontend alongside the Payload admin
 
-The important boundary: the marketing narrative talks about `payload-kit init`, `payload-kit add`, and `payload-kit doctor`, but that CLI and registry workflow are still roadmap items, not implemented in this repo yet. The shipped code is the website and CMS foundation around that concept.
+The important boundary: the CLI is now only partially real. `payload-kit add` ships in alpha for `hero-basic` and `feature-grid-basic`, while `payload-kit init` and `payload-kit doctor` still remain placeholders. The broader CLI and registry story is still in progress, but it is no longer roadmap-only.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -163,6 +153,7 @@ This project runs as a standard Payload + Next.js app. The main local goal is to
 6. Open the app:
    - Frontend: [http://localhost:3000](http://localhost:3000)
    - Product landing page: [http://localhost:3000](http://localhost:3000)
+   - Live components gallery: [http://localhost:3000/components](http://localhost:3000/components)
    - Resources hub: [http://localhost:3000/resources](http://localhost:3000/resources)
    - Payload admin: [http://localhost:3000/admin](http://localhost:3000/admin)
 
@@ -176,6 +167,7 @@ This repo is most useful in three modes:
 
 1. Marketing site prototype
    - Visit `/` to review the Payload Kits positioning, product proof, GitHub CTA path, and early-access flow.
+   - Visit `/components` to browse the live gallery for the two shipped alpha kits.
    - Visit `/resources` to browse the first Payload-native guides for SEO and community distribution.
 
 2. Payload CMS starter
@@ -195,6 +187,12 @@ pnpm build                # Create a production build
 pnpm start                # Run the production build
 pnpm generate:types       # Refresh payload-types.ts after schema changes
 pnpm generate:importmap   # Refresh the admin import map after component changes
+pnpm registry:build       # Generate deployable shadcn registry JSON under ignored public/r
+pnpm registry:check       # Verify registry generation is reproducible from source
+pnpm test:registry        # Run the public shadcn registry check
+pnpm test:install         # Run fast payload-kit wrapper fixture tests
+pnpm test:fresh           # Run the fresh Payload repo smoke test
+pnpm test:release         # Run the full release verification suite
 pnpm lint                 # Run ESLint
 pnpm test                 # Run integration + E2E tests
 pnpm exec tsc --noEmit    # Validate TypeScript correctness
@@ -204,12 +202,29 @@ If you change collections, globals, or field schemas, regenerate types. If you a
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Registry
+
+The public registry source lives at [`payload-kits/registry.json`](./payload-kits/registry.json). `public/r` is generated build output and is intentionally ignored by git.
+
+```sh
+pnpm registry:build
+pnpm registry:check
+pnpm payload-kit add hero-basic
+pnpm payload-kit add feature-grid-basic
+```
+
+`pnpm build` runs `registry:build` first, so production deploys refresh the public `/r/*.json` endpoints automatically. Detailed publishing and verification notes live in [payload-kits/README.md](./payload-kits/README.md).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Roadmap
 
 - [x] Rework the stock Payload website template into a Payload Kits marketing experience
 - [x] Add a custom `/landing` route and supporting UI components
-- [ ] Implement the `payload-kit` CLI workflows described on the landing page
-- [ ] Define installable kit manifests and a registry delivery model
+- [x] Ship alpha `payload-kit add` for `hero-basic` and `feature-grid-basic`
+- [x] Define installable kit manifests and a registry delivery model
+- [ ] Implement `payload-kit init`
+- [ ] Implement `payload-kit doctor`
 - [ ] Align local infrastructure files with the current Postgres adapter setup
 - [ ] Add deeper docs and screenshots for real kit installation flows
 

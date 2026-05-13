@@ -36,7 +36,8 @@ export const FinalCta = () => {
               </h2>
               <p className="mt-4 text-base leading-7 text-background/72">
                 Built for agencies and freelancers who want curated blocks, reliable repo wiring,
-                and a chance to influence the earliest install flow before the catalog opens up.
+                and a chance to influence the next layer of the install flow after the public
+                gallery and first shipped kits.
               </p>
             </div>
 

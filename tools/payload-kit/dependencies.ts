@@ -13,11 +13,6 @@ type PackageJson = {
   devDependencies?: Record<string, string>
 }
 
-type DependencyCheckOptions = {
-  allowMissing: boolean
-  label: 'dependencies' | 'peerDependencies'
-}
-
 type DependencyCheckResult = {
   installed: Record<string, string>
   missing: string[]

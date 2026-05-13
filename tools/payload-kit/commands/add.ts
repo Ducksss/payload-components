@@ -23,7 +23,7 @@ import {
 } from '../state'
 import { getRunScriptCommand, printHeader, runCommand } from '../utils'
 
-import type { InstallStage, KitManifest } from '../types'
+import type { InstallStage } from '../types'
 
 const postInstallEnv = {
   ...process.env,
