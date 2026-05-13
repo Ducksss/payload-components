@@ -32,12 +32,13 @@ test.describe('Frontend', () => {
 
     await page.goto('http://localhost:3000')
     await page.getByLabel('Email address').fill('hello@payloadkits.dev')
-    await page.getByRole('button', { name: 'Join the waitlist' }).click()
+    await page.getByRole('button', { name: 'Join the waitlist', exact: true }).click()
 
     await expect(
       page.getByText("You're on the list. We'll email you when early access opens."),
     ).toBeVisible()
     expect(requestBody).toMatchObject({
+      currentPath: '/',
       email: 'hello@payloadkits.dev',
       honey: '',
       intent: 'waitlist',

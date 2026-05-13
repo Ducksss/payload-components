@@ -9,7 +9,6 @@
   },
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
-    "postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
@@ -19,11 +18,19 @@
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation eslint . --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "payload-kit": "node ./bin/payload-kit.mjs",
+    "postbuild": "next-sitemap --config next-sitemap.config.cjs",
+    "prebuild": "pnpm registry:build",
+    "registry:build": "cross-env NODE_OPTIONS=--no-deprecation pnpm dlx shadcn@4.7.0 build payload-kits/registry.json --output public/r --cwd .",
+    "registry:check": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-kit/check-public-registry.ts",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
-    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
+    "test:fresh": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-kit/smoke/fresh-payload-repo.ts",
+    "test:install": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int/payload-kit.int.spec.ts tests/int/payload-kit-registry.int.spec.ts tests/int/payload-kit-add-command.int.spec.ts",
+    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
+    "test:registry": "pnpm registry:check",
+    "test:release": "pnpm lint && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm run test:e2e && pnpm build && pnpm test:fresh"
   },
   "dependencies": {
     "@payloadcms/admin-bar": "3.82.1",

@@ -1,0 +1,146 @@
+name: Registry Verification
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '18 19 * * *'
+  workflow_dispatch:
+    inputs:
+      registry_url:
+        description: 'Optional deployed registry URL template, e.g. https://example.com/r/{name}.json'
+        required: false
+        type: string
+
+env:
+  CRON_SECRET: ci-cron-secret
+  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/payload_components
+  NEXT_PUBLIC_SERVER_URL: http://localhost:3000
+  NEXT_TELEMETRY_DISABLED: '1'
+  PAYLOAD_SECRET: ci-payload-secret
+  POSTGRES_URL: postgresql://postgres:postgres@127.0.0.1:5432/payload_components
+  PREVIEW_SECRET: ci-preview-secret
+  RESEND_API_KEY: re_ci_placeholder
+  VERCEL_PROJECT_PRODUCTION_URL: localhost:3000
+  WAITLIST_EMAIL_FROM: Payload Kits <onboarding@resend.dev>
+  WAITLIST_EMAIL_TO: ci@example.com
+
+jobs:
+  pr-gate:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: payload_components
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.24.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec playwright install --with-deps chromium
+
+      - name: PR verification
+        shell: bash
+        run: |
+          set -o pipefail
+          {
+            pnpm lint
+            pnpm exec tsc --noEmit
+            pnpm registry:check
+            pnpm run test:int
+            pnpm run test:e2e
+            pnpm build
+          } 2>&1 | tee payload-kit-pr.log
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-gate-artifacts
+          path: |
+            payload-kit-pr.log
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+
+  nightly-release:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: payload_components
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.24.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec playwright install --with-deps chromium
+
+      - name: Nightly release verification
+        shell: bash
+        run: |
+          set -o pipefail
+          pnpm test:release 2>&1 | tee payload-kit-release.log
+
+      - name: Deployed registry smoke
+        if: github.event_name == 'workflow_dispatch' && inputs.registry_url != ''
+        shell: bash
+        run: |
+          set -o pipefail
+          pnpm test:fresh -- --registry-url '${{ inputs.registry_url }}' --keep-temp 2>&1 | tee payload-kit-deployed-registry.log
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: |
+            payload-kit-release.log
+            payload-kit-deployed-registry.log
+            playwright-report
+            test-results
+            /tmp/payload-kit-fresh-smoke-*
+          if-no-files-found: ignore
