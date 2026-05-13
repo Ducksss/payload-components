@@ -83,6 +83,11 @@ const copyProjectFixture = async () => {
   })
 
   await symlink(path.join(repoRoot, 'node_modules'), path.join(tempDir, 'node_modules'), 'dir')
+  await writeFile(
+    path.join(tempDir, '.npmrc'),
+    `legacy-peer-deps=true\nenable-pre-post-scripts=true\nvirtual-store-dir=${path.join(repoRoot, 'node_modules', '.pnpm')}\n`,
+    'utf8',
+  )
 
   return tempDir
 }
@@ -120,16 +125,27 @@ export const removeInstalledKitFromFixture = async ({
 }
 
 export const createInstallFixture = async (kitName: string) => {
-  const fixtureDir = await copyProjectFixture()
-  const manifest = await loadManifest(kitName)
-
-  await removeInstalledKitFromFixture({
-    fixtureDir,
-    manifest,
-  })
+  const { fixtureDir, manifests } = await createInstallFixtureForKits([kitName])
 
   return {
     fixtureDir,
-    manifest,
+    manifest: manifests[0],
+  }
+}
+
+export const createInstallFixtureForKits = async (kitNames: string[]) => {
+  const fixtureDir = await copyProjectFixture()
+  const manifests = await Promise.all([...new Set(kitNames)].map((kitName) => loadManifest(kitName)))
+
+  for (const manifest of manifests) {
+    await removeInstalledKitFromFixture({
+      fixtureDir,
+      manifest,
+    })
+  }
+
+  return {
+    fixtureDir,
+    manifests,
   }
 }

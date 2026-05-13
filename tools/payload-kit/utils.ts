@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url'
 import type { PackageManager } from './types'
 
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
+export const shadcnCliPackage = 'shadcn@4.7.0'
 
 export const readJsonFile = async <T>(filePath: string): Promise<T> => {
   const raw = await readFile(filePath, 'utf8')
@@ -71,27 +72,27 @@ export const getLockfileName = (packageManager: PackageManager) => {
 export const getShadcnCommand = (packageManager: PackageManager) => {
   if (packageManager === 'pnpm') {
     return {
-      args: ['dlx', 'shadcn@latest'],
+      args: ['dlx', shadcnCliPackage],
       command: 'pnpm',
     }
   }
 
   if (packageManager === 'yarn') {
     return {
-      args: ['dlx', 'shadcn@latest'],
+      args: ['dlx', shadcnCliPackage],
       command: 'yarn',
     }
   }
 
   if (packageManager === 'bun') {
     return {
-      args: ['shadcn@latest'],
+      args: [shadcnCliPackage],
       command: 'bunx',
     }
   }
 
   return {
-    args: ['shadcn@latest'],
+    args: [shadcnCliPackage],
     command: 'npx',
   }
 }
@@ -129,18 +130,24 @@ export const runCommand = async ({
   command,
   cwd,
   env,
+  stdin,
 }: {
   args: string[]
   command: string
   cwd: string
   env?: NodeJS.ProcessEnv
+  stdin?: string
 }) => {
   await new Promise<void>((resolve, reject) => {
     const child = spawn(command, args, {
       cwd,
       env: env ?? process.env,
-      stdio: 'inherit',
+      stdio: [stdin ? 'pipe' : 'inherit', 'inherit', 'inherit'],
     })
+
+    if (stdin) {
+      child.stdin?.end(stdin)
+    }
 
     child.on('error', reject)
     child.on('close', (code) => {

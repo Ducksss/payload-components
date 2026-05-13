@@ -105,7 +105,6 @@ const normalizeState = (state: InstallState): InstallState => ({
 })
 
 const upsertEntry = ({
-  currentEntry,
   installedAt,
   installedFiles,
   lastAttemptAt,
@@ -115,7 +114,6 @@ const upsertEntry = ({
   status,
   targetId,
 }: {
-  currentEntry?: InstallStateEntry
   installedAt: string | null
   installedFiles: string[]
   lastAttemptAt: string
@@ -183,7 +181,6 @@ export const recordInstallAttempt = async ({
   const currentEntry = state.kits[manifest.name]
 
   state.kits[manifest.name] = upsertEntry({
-    currentEntry,
     installedAt: currentEntry?.installedAt ?? null,
     installedFiles,
     lastAttemptAt: now,
@@ -219,7 +216,6 @@ export const recordInstallFailure = async ({
   const currentEntry = state.kits[manifest.name]
 
   state.kits[manifest.name] = upsertEntry({
-    currentEntry,
     installedAt: currentEntry?.installedAt ?? null,
     installedFiles,
     lastAttemptAt: now,
@@ -255,7 +251,6 @@ export const recordInstalledState = async ({
   const now = new Date().toISOString()
 
   state.kits[manifest.name] = upsertEntry({
-    currentEntry: state.kits[manifest.name],
     installedAt: installedAt ?? now,
     installedFiles,
     lastAttemptAt: now,

@@ -54,6 +54,7 @@ const baseManifest: KitManifest = {
 }
 
 const baseRegistry: RegistryDefinition = {
+  homepage: 'https://example.com',
   items: [
     {
       name: 'hero-basic',
@@ -87,10 +88,10 @@ const loadManifestWithMocks = async (manifest: unknown, registry: RegistryDefini
     runCommand: vi.fn(),
   }))
 
-  const module = await import('../../tools/payload-kit/manifest')
+  const manifestModule = await import('../../tools/payload-kit/manifest')
 
   return {
-    loadManifest: module.loadManifest,
+    loadManifest: manifestModule.loadManifest,
     readJsonFile,
   }
 }
