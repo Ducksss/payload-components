@@ -75,7 +75,7 @@ The fast fixture suite remains the normal PR gate because it is deterministic an
 - repeated installs are idempotent
 - `RenderBlocks.tsx` and `Pages/index.ts` are wired exactly once
 - `.payload-kit/state.json` records success and partial failure stages correctly
-- the wrapper strips public `registryDependencies` from its temporary shadcn item before install
+- the wrapper installs missing public `registryDependencies`, then strips them from its temporary shadcn item before installing the block files
 
 The fresh smoke lives at `../tools/payload-kit/smoke/fresh-payload-repo.ts` and accepts:
 

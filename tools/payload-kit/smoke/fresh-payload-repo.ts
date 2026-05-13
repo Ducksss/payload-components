@@ -69,7 +69,8 @@ type StaticRegistryServer = {
   urlTemplate: string
 }
 
-const repoRoot = path.resolve(import.meta.dirname, '..', '..', '..')
+const dirname = path.dirname(fileURLToPath(import.meta.url))
+const repoRoot = path.resolve(dirname, '..', '..', '..')
 const rootPackagePath = path.join(repoRoot, 'package.json')
 
 const parseNextValue = (argv: string[], index: number, flag: string) => {
@@ -201,6 +202,7 @@ export const getDirectShadcnAddArgs = ({ cwd, itemName, registryUrl }: DirectSha
   '--cwd',
   cwd,
   '--yes',
+  '--overwrite',
 ]
 
 const getRootPackage = async () =>
@@ -516,7 +518,6 @@ const runDirectShadcnUrlSmoke = async ({
       command: 'pnpm',
       cwd: repoRoot,
       stage: `direct shadcn URL install: ${kit}`,
-      stdin: 'n\nn\nn\nn\n',
       timeoutMs,
     })
     await assertRegistryDependenciesDelivered(targetPath, kit)
@@ -537,12 +538,13 @@ const writeSeedScript = async (targetPath: string, manifests: KitManifest[]) => 
 
   await writeFile(
     scriptPath,
-    `import { loadEnvFile } from 'node:process'
+    `import { config as loadEnv } from 'dotenv'
 
 import { getPayload } from 'payload'
-import config from '../src/payload.config'
 
-loadEnvFile('.env')
+loadEnv({ path: '.env' })
+
+const { default: config } = await import('../src/payload.config')
 
 const layout = ${JSON.stringify(layout, null, 2)}
 
@@ -551,6 +553,9 @@ const slug = 'payload-kit-smoke'
 
 await payload.delete({
   collection: 'pages',
+  context: {
+    disableRevalidate: true,
+  },
   overrideAccess: true,
   where: {
     slug: {
@@ -561,6 +566,9 @@ await payload.delete({
 
 await payload.create({
   collection: 'pages',
+  context: {
+    disableRevalidate: true,
+  },
   data: {
     title: 'Payload Kit Smoke',
     slug,
@@ -708,13 +716,6 @@ const runFreshPayloadRepoSmoke = async ({
     stage: 'fresh project TypeScript',
     timeoutMs,
   })
-  await runCommand({
-    args: ['build'],
-    command: 'pnpm',
-    cwd: targetPath,
-    stage: 'fresh project build',
-    timeoutMs,
-  })
 
   await writeSeedScript(targetPath, manifests)
   await runCommand({
@@ -726,10 +727,18 @@ const runFreshPayloadRepoSmoke = async ({
     timeoutMs,
   })
 
+  await runCommand({
+    args: ['build'],
+    command: 'pnpm',
+    cwd: targetPath,
+    stage: 'fresh project build',
+    timeoutMs,
+  })
+
   const port = await getFreePort()
   const routeUrl = `http://127.0.0.1:${port}/payload-kit-smoke`
   const devServer = startProcess({
-    args: ['dev', '--', '--hostname', '127.0.0.1', '--port', String(port)],
+    args: ['dev', '--hostname', '127.0.0.1', '--port', String(port)],
     command: 'pnpm',
     cwd: targetPath,
     env: smokeEnvForTarget(`http://127.0.0.1:${port}`),
