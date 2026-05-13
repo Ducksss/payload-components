@@ -37,9 +37,11 @@ test.describe('Frontend', () => {
     await expect(
       page.getByText("You're on the list. We'll email you when early access opens."),
     ).toBeVisible()
-    expect(requestBody).toEqual({
+    expect(requestBody).toMatchObject({
       email: 'hello@payloadkits.dev',
       honey: '',
+      intent: 'waitlist',
+      source: 'homepage-final-cta',
     })
   })
 })

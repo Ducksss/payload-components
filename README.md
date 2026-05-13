@@ -73,7 +73,7 @@ The important boundary: the marketing narrative talks about `payload-kit init`, 
 This repo now includes a few concrete launch surfaces for the early channel plan:
 
 - GitHub intake: use the [early access / design partner issue template](https://github.com/Ducksss/payload-components/issues/new?template=early-access.yml)
-- Site CTA flow: the homepage waitlist now captures `source`, `intent`, `role`, and `utm_*` context before proxying to your webhook
+- Site CTA flow: the homepage waitlist now captures `source`, `intent`, `role`, and `utm_*` context before emailing the signup through Resend
 - Owned-content layer: the app includes a `/resources` hub with static Payload-native guides you can use for SEO and community sharing
 - Operator assets: see [`marketing/README.md`](./marketing/README.md) for launch playbooks, community post drafts, and outreach templates
 
@@ -143,12 +143,14 @@ This project runs as a standard Payload + Next.js app. The main local goal is to
    NEXT_PUBLIC_SERVER_URL=http://localhost:3000
    PREVIEW_SECRET=replace_me
    CRON_SECRET=replace_me
-   WAITLIST_WEBHOOK_URL=https://example.com/api/waitlist
-   WAITLIST_WEBHOOK_SECRET=
+   RESEND_API_KEY=re_xxxxxxxxx
+   WAITLIST_EMAIL_TO=chaipinzheng@gmail.com
+   WAITLIST_EMAIL_FROM="Payload Kits <onboarding@resend.dev>"
    ```
 
-   The homepage waitlist CTA proxies signups to `WAITLIST_WEBHOOK_URL` server-side. Those entries
-   intentionally bypass Payload storage and are not saved in the CMS.
+   The homepage waitlist CTA sends signup notifications through Resend server-side. Use a verified
+   sender domain for `WAITLIST_EMAIL_FROM` in production. Those entries intentionally bypass Payload
+   storage and are not saved in the CMS.
 
 5. Start the development server.
 
@@ -180,7 +182,7 @@ This repo is most useful in three modes:
 
 3. Component and content workflow sandbox
    - Iterate on blocks, frontend components, and admin-safe content models inside a real Payload v3 project.
-   - The homepage waitlist form forwards signups to your external webhook instead of storing them in Payload.
+   - The homepage waitlist form emails signups through Resend instead of storing them in Payload.
    - The GitHub issue template and `marketing/` docs give you an executable early-channel operating layer inside the repo.
 
 Useful scripts:

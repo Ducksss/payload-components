@@ -2,7 +2,8 @@ build
 dist / media
 node_modules
 .DS_Store
-.env
+.env*
+!.env.example
 .next
 next-env.d.ts
 .vercel

@@ -285,7 +285,7 @@ export const WaitlistForm = ({
         >
           {errorMessage ||
             successMessage ||
-            'We capture channel context so we can tell which early-access paths are working.'}
+            'We email this signup with channel context so we can tell which early-access paths are working.'}
         </p>
       </form>
     </div>
