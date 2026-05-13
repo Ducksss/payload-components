@@ -100,7 +100,7 @@ describe('waitlist route', () => {
     expect(headers.get('Authorization')).toBe('Bearer re_test_key')
     expect(headers.get('Idempotency-Key')).toMatch(/^waitlist-/)
     expect(init?.cache).toBe('no-store')
-    expect(body.from).toBe('Payload Kits <onboarding@resend.dev>')
+    expect(body.from).toBe('onboarding@resend.dev')
     expect(body.to).toEqual(['chaipinzheng@gmail.com'])
     expect(body.reply_to).toBe('hello@example.com')
     expect(body.subject).toBe('New Payload Kits design partner request')

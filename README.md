@@ -145,12 +145,14 @@ This project runs as a standard Payload + Next.js app. The main local goal is to
    CRON_SECRET=replace_me
    RESEND_API_KEY=re_xxxxxxxxx
    WAITLIST_EMAIL_TO=chaipinzheng@gmail.com
-   WAITLIST_EMAIL_FROM="Payload Kits <onboarding@resend.dev>"
+   WAITLIST_EMAIL_FROM=onboarding@resend.dev
    ```
 
-   The homepage waitlist CTA sends signup notifications through Resend server-side. Use a verified
-   sender domain for `WAITLIST_EMAIL_FROM` in production. Those entries intentionally bypass Payload
-   storage and are not saved in the CMS.
+   The homepage waitlist CTA sends signup notifications through Resend server-side. Without a
+   verified sending domain, `onboarding@resend.dev` is Resend's sandbox sender and can only send to
+   the email address on your Resend account. To email any recipient, verify a domain in Resend and
+   change `WAITLIST_EMAIL_FROM` to an address from that domain. These entries intentionally bypass
+   Payload storage and are not saved in the CMS.
 
 5. Start the development server.
 
