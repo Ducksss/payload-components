@@ -27,7 +27,7 @@ This project centralizes public URL and metadata behavior around the Payload Kit
 
 ## Crawlability
 
-- `next-sitemap.config.cjs` normalizes `NEXT_PUBLIC_SERVER_URL` and `VERCEL_PROJECT_PRODUCTION_URL`, strips trailing path fragments, and generates robots rules for admin/API/preview routes.
+- `next-sitemap.config.cjs` normalizes `NEXT_PUBLIC_SERVER_URL` and `VERCEL_PROJECT_PRODUCTION_URL`, strips trailing path fragments, and generates robots rules for admin/API/preview routes while keeping public Payload media file URLs crawlable.
 - Dynamic sitemaps include static public routes and Payload documents while avoiding duplicate `/home` and excluding `/search`.
 - Pagination uses crawlable links; `/posts/page/1` redirects to `/posts`, and invalid/out-of-range page numbers 404.
 

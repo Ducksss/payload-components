@@ -29,6 +29,7 @@ module.exports = {
     policies: [
       {
         userAgent: '*',
+        allow: ['/api/media/file/'],
         disallow: ['/admin', '/admin/', '/admin/*', '/api/*', '/next/preview', '/next/seed'],
       },
     ],

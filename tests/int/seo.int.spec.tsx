@@ -25,6 +25,11 @@ const sitemapConfigPath = path.resolve(process.cwd(), 'next-sitemap.config.cjs')
 type SitemapConfig = {
   robotsTxtOptions?: {
     additionalSitemaps?: string[]
+    policies?: {
+      allow?: string | string[]
+      disallow?: string | string[]
+      userAgent: string
+    }[]
   }
   siteUrl: string
 }
@@ -103,6 +108,15 @@ describe('SEO metadata', () => {
       'http://localhost:3000/pages-sitemap.xml',
       'http://localhost:3000/posts-sitemap.xml',
     ])
+  })
+
+  it('keeps public Payload media URLs crawlable while disallowing API routes', () => {
+    const policy = loadSitemapConfig().robotsTxtOptions?.policies?.find(
+      (item) => item.userAgent === '*',
+    )
+
+    expect(policy?.allow).toEqual(expect.arrayContaining(['/api/media/file/']))
+    expect(policy?.disallow).toEqual(expect.arrayContaining(['/api/*']))
   })
 
   it('builds canonical CMS metadata with the correct public route', async () => {
