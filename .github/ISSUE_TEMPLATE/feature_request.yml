@@ -1,0 +1,43 @@
+name: Feature Request
+description: Suggest a kit, CLI workflow, registry improvement, or docs enhancement.
+title: '[feature] '
+labels:
+  - enhancement
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - New kit
+        - Existing kit improvement
+        - payload-kit CLI
+        - Registry format or delivery
+        - Payload CMS integration
+        - Documentation
+        - Marketing site
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or opportunity
+      description: What should this make easier for Payload developers?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the behavior, API, component, or workflow you would like to see.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Include existing workarounds, similar libraries, or constraints if relevant.

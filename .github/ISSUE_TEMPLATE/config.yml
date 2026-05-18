@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Payload Kits website
+    url: https://payload-components.xyz
+    about: Visit the live site and component gallery.
+  - name: Payload CMS documentation
+    url: https://payloadcms.com/docs
+    about: Check upstream Payload CMS behavior and APIs.
