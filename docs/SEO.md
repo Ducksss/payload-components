@@ -40,8 +40,6 @@ pnpm generate:types
 pnpm exec tsc --noEmit
 pnpm lint
 pnpm run test:int
-pnpm exec playwright test --config=playwright.config.ts tests/e2e/frontend.e2e.spec.ts tests/e2e/geo.e2e.spec.ts
+pnpm run test:e2e
 pnpm build
 ```
-
-The admin E2E spec currently fails in dev with a Payload admin runtime overlay unrelated to the public SEO surface: `Cannot assign to read only property 'i18n' of object '#<Object>'`.
