@@ -7,6 +7,7 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
+import { buildSEOMetadata } from '@/utilities/seo'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -57,7 +58,9 @@ export default async function Page() {
 }
 
 export function generateMetadata(): Metadata {
-  return {
-    title: `Payload Website Template Posts`,
-  }
+  return buildSEOMetadata({
+    description: 'Read Payload Kits posts about reusable Payload blocks, install workflows, and kit delivery.',
+    path: '/posts',
+    title: 'Payload Kits Posts',
+  })
 }

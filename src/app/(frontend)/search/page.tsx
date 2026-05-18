@@ -7,6 +7,7 @@ import React from 'react'
 import { Search } from '@/search/Component'
 import PageClient from './page.client'
 import { CardPostData } from '@/components/Card'
+import { buildSEOMetadata } from '@/utilities/seo'
 
 type Args = {
   searchParams: Promise<{
@@ -82,7 +83,13 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
 }
 
 export function generateMetadata(): Metadata {
-  return {
-    title: `Payload Website Template Search`,
-  }
+  return buildSEOMetadata({
+    description: 'Search Payload Kits resources, posts, and kit documentation.',
+    path: '/search',
+    robots: {
+      follow: true,
+      index: false,
+    },
+    title: 'Payload Kits Search',
+  })
 }

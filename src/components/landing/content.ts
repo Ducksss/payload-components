@@ -4,28 +4,38 @@ import {
   Boxes,
   CheckCircle2,
   CircleDollarSign,
+  Cpu,
   FileCode2,
   FolderTree,
   LayoutTemplate,
   LockKeyhole,
   MessageSquareQuote,
+  Package,
   PanelsTopLeft,
   RefreshCcw,
   SearchCheck,
   ShieldCheck,
   SquareTerminal,
+  Triangle,
+  Type,
   Wrench,
+  Zap,
 } from 'lucide-react'
 
 export type ProofPill = {
+  icon?: LucideIcon
   label: string
 }
+
+export type StepStatus = 'shipped' | 'roadmap'
 
 export type Step = {
   command: string
   description: string
   items: string[]
   label: string
+  status: StepStatus
+  statusLabel: string
   title: string
 }
 
@@ -37,9 +47,16 @@ export type FeatureCard = {
 
 export type RegistryColumn = {
   badge: string
+  cta: {
+    href: string
+    label: string
+  }
   description: string
+  highlight?: boolean
   icon: LucideIcon
   points: string[]
+  price: string
+  priceUnit?: string
   title: string
 }
 
@@ -54,16 +71,40 @@ export type FaqItem = {
   question: string
 }
 
+export type HeroStat = {
+  detail: string
+  label: string
+  value: string
+}
+
 export const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 export const githubEarlyAccessIssueUrl =
   'https://github.com/Ducksss/payload-components/issues/new?template=early-access.yml'
 
+export const heroStats: HeroStat[] = [
+  {
+    detail: 'Shipped kits live in the public alpha today.',
+    label: 'Kits shipped',
+    value: '2',
+  },
+  {
+    detail: 'Manual repo cleanup steps after a kit install.',
+    label: 'Manual cleanup',
+    value: '0',
+  },
+  {
+    detail: 'Single command to install a kit and finish wiring.',
+    label: 'CLI calls to ship',
+    value: '1',
+  },
+]
+
 export const proofPills: ProofPill[] = [
-  { label: 'Payload v3 only' },
-  { label: 'Next.js App Router' },
-  { label: 'Type-safe installs' },
-  { label: 'Import-map aware' },
-  { label: 'Preview friendly' },
+  { icon: Triangle, label: 'Payload v3 only' },
+  { icon: Zap, label: 'Next.js App Router' },
+  { icon: Type, label: 'Type-safe installs' },
+  { icon: Package, label: 'Import-map aware' },
+  { icon: Cpu, label: 'Preview friendly' },
 ]
 
 export const installSteps: Step[] = [
@@ -77,6 +118,8 @@ export const installSteps: Step[] = [
       'Keeps the install surface legible from the first proof',
     ],
     label: '01',
+    status: 'shipped',
+    statusLabel: 'Shipped',
     title: 'Install a shipped alpha kit',
   },
   {
@@ -89,6 +132,8 @@ export const installSteps: Step[] = [
       'Generates types and updates the import map automatically',
     ],
     label: '02',
+    status: 'shipped',
+    statusLabel: 'Shipped',
     title: 'Prove the second-kit install path',
   },
   {
@@ -101,6 +146,8 @@ export const installSteps: Step[] = [
       'Follows the gallery and two-kit alpha proof',
     ],
     label: '03',
+    status: 'roadmap',
+    statusLabel: 'Roadmap',
     title: 'See what lands next',
   },
 ]
@@ -135,6 +182,10 @@ export const productDifferentiators: FeatureCard[] = [
 export const registryColumns: RegistryColumn[] = [
   {
     badge: 'Open core',
+    cta: {
+      href: githubRepoUrl,
+      label: 'Browse the public registry',
+    },
     description:
       'Use the public registry to evaluate install quality, preview the kits, and adopt a dependable baseline into every new client project.',
     icon: Boxes,
@@ -143,18 +194,27 @@ export const registryColumns: RegistryColumn[] = [
       'Curated starter kits and documentation',
       'Strong SEO footprint for the catalog itself',
     ],
+    price: 'Free',
+    priceUnit: 'forever',
     title: 'Public registry',
   },
   {
     badge: 'Paid Pro',
+    cta: {
+      href: '/?intent=design-partner&source=pricing-pro#early-access',
+      label: 'Request Pro early access',
+    },
     description:
       'Unlock the private namespace for premium kits, higher-value bundles, and the install workflows that matter once delivery volume starts climbing.',
+    highlight: true,
     icon: CircleDollarSign,
     points: [
       'Private authenticated registry namespace',
       'Premium kit bundles for repeatable site builds',
       'Commercial-friendly path for agencies and freelancers',
     ],
+    price: 'From $19',
+    priceUnit: 'per seat / month',
     title: 'Private Pro registry',
   },
 ]

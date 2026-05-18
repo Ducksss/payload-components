@@ -42,7 +42,7 @@ export const KitGalleryTeaser = () => {
 
               <Button asChild variant="ghost" className="mt-auto justify-start px-0">
                 <Link href={`${componentsGalleryRoute}#${entry.slug}`}>
-                  Open live preview
+                  Open {entry.title} live preview
                   <ArrowRight data-icon="inline-end" />
                 </Link>
               </Button>

@@ -4,6 +4,7 @@ import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
 import { draftMode } from 'next/headers'
+import { permanentRedirect } from 'next/navigation'
 import React, { cache } from 'react'
 import { homeStatic } from '@/endpoints/seed/home-static'
 
@@ -48,6 +49,10 @@ export default async function Page({ params: paramsPromise }: Args) {
   const { slug = 'home' } = await paramsPromise
   // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
+  if (decodedSlug === 'home') {
+    permanentRedirect('/')
+  }
+
   const url = '/' + decodedSlug
   let page: RequiredDataFromCollectionSlug<'pages'> | null
 
@@ -88,7 +93,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
     slug: decodedSlug,
   })
 
-  return generateMeta({ doc: page })
+  return generateMeta({ collectionSlug: 'pages', doc: page })
 }
 
 const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {

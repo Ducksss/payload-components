@@ -7,9 +7,11 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
+import { buildSEOMetadata } from '@/utilities/seo'
 
 export const revalidate = 600
+const POSTS_PER_PAGE = 12
 
 type Args = {
   params: Promise<{
@@ -23,15 +25,18 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   const sanitizedPageNumber = Number(pageNumber)
 
-  if (!Number.isInteger(sanitizedPageNumber)) notFound()
+  if (!Number.isInteger(sanitizedPageNumber) || sanitizedPageNumber < 1) notFound()
+  if (sanitizedPageNumber === 1) permanentRedirect('/posts')
 
   const posts = await payload.find({
     collection: 'posts',
     depth: 1,
-    limit: 12,
+    limit: POSTS_PER_PAGE,
     page: sanitizedPageNumber,
     overrideAccess: false,
   })
+
+  if (posts.totalPages === 0 || sanitizedPageNumber > posts.totalPages) notFound()
 
   return (
     <div className="pt-24 pb-24">
@@ -46,7 +51,7 @@ export default async function Page({ params: paramsPromise }: Args) {
         <PageRange
           collection="posts"
           currentPage={posts.page}
-          limit={12}
+          limit={POSTS_PER_PAGE}
           totalDocs={posts.totalDocs}
         />
       </div>
@@ -64,9 +69,11 @@ export default async function Page({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { pageNumber } = await paramsPromise
-  return {
-    title: `Payload Website Template Posts Page ${pageNumber || ''}`,
-  }
+  return buildSEOMetadata({
+    description: `Browse Payload Kits posts, page ${pageNumber}.`,
+    path: `/posts/page/${pageNumber}`,
+    title: `Payload Kits Posts Page ${pageNumber || ''}`,
+  })
 }
 
 export async function generateStaticParams() {
@@ -76,11 +83,11 @@ export async function generateStaticParams() {
     overrideAccess: false,
   })
 
-  const totalPages = Math.ceil(totalDocs / 10)
+  const totalPages = Math.ceil(totalDocs / POSTS_PER_PAGE)
 
   const pages: { pageNumber: string }[] = []
 
-  for (let i = 1; i <= totalPages; i++) {
+  for (let i = 2; i <= totalPages; i++) {
     pages.push({ pageNumber: String(i) })
   }
 

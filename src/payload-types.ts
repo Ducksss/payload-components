@@ -284,7 +284,7 @@ export interface Post {
  */
 export interface Media {
   id: number;
-  alt?: string | null;
+  alt: string;
   caption?: {
     root: {
       type: string;

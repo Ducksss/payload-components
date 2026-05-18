@@ -3,12 +3,15 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { githubRepoUrl } from '@/components/landing/content'
+import { JsonLd } from '@/components/JsonLd'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   getMarketingResourceBySlug,
   marketingResources,
 } from '@/content/marketingResources'
+import { buildResourceJsonLd, getJsonLdGraphNodes } from '@/seo/geo'
+import { buildSEOMetadata } from '@/utilities/seo'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 
 type Args = {
@@ -31,10 +34,12 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
     return {}
   }
 
-  return {
-    title: `${resource.title} | Payload Kits Resources`,
+  return buildSEOMetadata({
     description: resource.description,
-  }
+    openGraphType: 'article',
+    path: `/resources/${resource.slug}`,
+    title: `${resource.title} | Payload Kits Resources`,
+  })
 }
 
 export default async function MarketingResourcePage({ params }: Args) {
@@ -47,6 +52,8 @@ export default async function MarketingResourcePage({ params }: Args) {
 
   return (
     <main className="border-t border-border/60">
+      <JsonLd data={getJsonLdGraphNodes(buildResourceJsonLd(resource))} />
+
       <article className="container py-16 lg:py-24">
         <div className="mx-auto max-w-3xl">
           <Link

@@ -156,11 +156,12 @@ export const WaitlistForm = ({
       </div>
 
       <form className="mt-5 flex flex-col gap-3" onSubmit={handleSubmit}>
-        <div className="grid gap-2">
-          <span className="text-sm font-medium text-background">I want</span>
+        <fieldset className="grid gap-2">
+          <legend className="text-sm font-medium text-background">I want</legend>
           <div className="grid gap-2 sm:grid-cols-2">
             <button
               type="button"
+              aria-pressed={intent === 'waitlist'}
               onClick={() => setIntent('waitlist')}
               className={[
                 'flex items-start gap-3 rounded-3xl border px-4 py-3 text-left transition-colors',
@@ -180,6 +181,7 @@ export const WaitlistForm = ({
 
             <button
               type="button"
+              aria-pressed={intent === 'design-partner'}
               onClick={() => setIntent('design-partner')}
               className={[
                 'flex items-start gap-3 rounded-3xl border px-4 py-3 text-left transition-colors',
@@ -197,7 +199,7 @@ export const WaitlistForm = ({
               </span>
             </button>
           </div>
-        </div>
+        </fieldset>
 
         <label className="space-y-2" htmlFor={emailId}>
           <span className="text-sm font-medium text-background">Email address</span>

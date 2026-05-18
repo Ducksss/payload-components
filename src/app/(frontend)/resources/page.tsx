@@ -2,21 +2,27 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { githubRepoUrl, githubEarlyAccessIssueUrl } from '@/components/landing/content'
+import { JsonLd } from '@/components/JsonLd'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 import { marketingResources } from '@/content/marketingResources'
+import { buildResourcesIndexJsonLd, getJsonLdGraphNodes } from '@/seo/geo'
+import { buildSEOMetadata } from '@/utilities/seo'
 import { ArrowRight } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Payload Kits Resources | Payload-native guides for agencies and freelancers',
+export const metadata: Metadata = buildSEOMetadata({
   description:
     'Browse Payload Kits launch resources focused on Payload CMS blocks, the Payload + Next.js website template, and shadcn-compatible registry workflows.',
-}
+  path: '/resources',
+  title: 'Payload Kits Resources | Payload-native guides for agencies and freelancers',
+})
 
 export default function ResourcesPage() {
   return (
     <main className="border-t border-border/60">
+      <JsonLd data={getJsonLdGraphNodes(buildResourcesIndexJsonLd())} />
+
       <section className="container py-16 lg:py-24">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
           <Badge
@@ -49,7 +55,9 @@ export default function ResourcesPage() {
                   <span className="text-sm text-muted-foreground">{resource.readingTime}</span>
                 </div>
                 <div className="space-y-2">
-                  <CardTitle className="text-2xl tracking-[-0.05em]">{resource.title}</CardTitle>
+                  <h2 className="text-2xl font-semibold leading-tight tracking-[-0.05em]">
+                    <Link href={`/resources/${resource.slug}`}>{resource.title}</Link>
+                  </h2>
                   <CardDescription className="text-base leading-7">
                     {resource.description}
                   </CardDescription>
@@ -57,9 +65,13 @@ export default function ResourcesPage() {
               </CardHeader>
               <CardContent className="flex h-full flex-col gap-5">
                 <p className="text-sm leading-7 text-muted-foreground">{resource.summary}</p>
-                <Button asChild variant="ghost" className="mt-auto justify-start px-0">
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="mt-auto h-auto max-w-full justify-start whitespace-normal px-0 text-left leading-6"
+                >
                   <Link href={`/resources/${resource.slug}`}>
-                    Read the guide
+                    Read {resource.title}
                     <ArrowRight data-icon="inline-end" />
                   </Link>
                 </Button>

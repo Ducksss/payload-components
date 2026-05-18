@@ -7,9 +7,73 @@ test.describe('Frontend', () => {
     await expect(
       page.getByRole('heading', {
         level: 1,
-        name: 'Payload Kits installs production-ready blocks with one command.',
+        name: 'Install production-ready Payload blocks with one command.',
       }),
     ).toBeVisible()
+  })
+
+  test('exposes crawlable SEO metadata and semantic public pages', async ({ page }) => {
+    const routes = [
+      {
+        canonical: 'http://localhost:3000',
+        h1: 'Install production-ready Payload blocks with one command.',
+        path: '/',
+        title: /Payload Kits/,
+      },
+      {
+        canonical: 'http://localhost:3000/components',
+        h1: 'Browse the real kits that ship in the current alpha.',
+        path: '/components',
+        title: /Payload Kits Components Gallery/,
+      },
+      {
+        canonical: 'http://localhost:3000/resources',
+        h1: 'Payload-native guides for teams evaluating installable kits.',
+        path: '/resources',
+        title: /Payload Kits Resources/,
+      },
+      {
+        canonical: 'http://localhost:3000/resources/payload-cms-blocks',
+        h1: 'Payload CMS blocks that survive real client repos',
+        path: '/resources/payload-cms-blocks',
+        title: /Payload CMS blocks/,
+      },
+    ]
+
+    for (const route of routes) {
+      await page.goto(`http://localhost:3000${route.path}`)
+
+      await expect(page).toHaveTitle(route.title)
+      await expect(page.getByRole('heading', { level: 1, name: route.h1 })).toBeVisible()
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', route.canonical)
+      await expect(page.locator('meta[property="og:title"]')).not.toHaveAttribute(
+        'content',
+        /Payload Website Template/,
+      )
+      await expect(page.locator('img:not([alt])')).toHaveCount(0)
+
+      const hasHorizontalOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+      )
+      expect(hasHorizontalOverflow).toBe(false)
+    }
+
+    await page.goto('http://localhost:3000/search?q=payload')
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/)
+  })
+
+  test('exposes selected waitlist intent state', async ({ page }) => {
+    await page.goto('http://localhost:3000')
+
+    await expect(page.getByRole('button', { name: /Launch updates/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
+    await page.getByRole('button', { name: /Design partner/ }).click()
+    await expect(page.getByRole('button', { name: /Design partner/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    )
   })
 
   test('can submit the homepage waitlist form', async ({ page }) => {
