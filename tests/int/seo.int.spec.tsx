@@ -11,6 +11,7 @@ import { marketingResources } from '@/content/marketingResources'
 import { normalizeServerURL } from '@/utilities/getURL'
 import { normalizePathname, normalizeSiteURL } from '@/utilities/site'
 import { generateMeta } from '@/utilities/generateMeta'
+import { buildOrganizationJsonLd, buildWebSiteJsonLd } from '@/utilities/seo'
 
 vi.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
@@ -142,6 +143,24 @@ describe('SEO metadata', () => {
 })
 
 describe('SEO structured data', () => {
+  it('defines canonical global identity nodes for graph references', () => {
+    expect(buildOrganizationJsonLd()).toMatchObject({
+      '@context': 'https://schema.org',
+      '@id': 'http://localhost:3000/#organization',
+      '@type': 'Organization',
+      description: expect.stringContaining('Payload-native kit platform'),
+      name: 'Payload Kits',
+    })
+
+    expect(buildWebSiteJsonLd()).toMatchObject({
+      '@context': 'https://schema.org',
+      '@id': 'http://localhost:3000/#website',
+      '@type': 'WebSite',
+      publisher: { '@id': 'http://localhost:3000/#organization' },
+      url: 'http://localhost:3000/',
+    })
+  })
+
   it('emits software application and FAQ JSON-LD on the landing page', () => {
     const { container } = render(<LandingPage />)
 

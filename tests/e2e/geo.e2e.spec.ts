@@ -83,6 +83,9 @@ const expectArray = (value: unknown, label: string) => {
   return value as unknown[]
 }
 
+const countNodes = (nodes: JsonLdNode[], type: string, id?: string) =>
+  nodes.filter((node) => nodeHasType(node, type) && (!id || node['@id'] === id)).length
+
 test.describe('Generative Engine Optimization surfaces', () => {
   test('homepage exposes a Payload Kits Organization, SoftwareApplication, and FAQPage JSON-LD graph', async ({
     page,
@@ -92,9 +95,13 @@ test.describe('Generative Engine Optimization surfaces', () => {
     const documents = await getJsonLdDocuments(page)
     const { nodes } = findDocumentsContaining(documents, [
       'Organization',
+      'WebSite',
       'SoftwareApplication',
       'FAQPage',
     ])
+
+    expect(countNodes(nodes, 'Organization', `${baseURL}/#organization`)).toBe(1)
+    expect(countNodes(nodes, 'WebSite', `${baseURL}/#website`)).toBe(1)
 
     const organization = findNode(
       nodes,

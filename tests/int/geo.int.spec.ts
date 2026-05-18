@@ -24,15 +24,12 @@ const findGraphNode = (graph: JsonLdNode[], type: string) => {
 }
 
 describe('GEO structured surfaces', () => {
-  it('builds a homepage entity graph with answer-ready organization, product, and FAQ facts', () => {
+  it('builds homepage product, page, and FAQ facts without duplicating global identity nodes', () => {
     const jsonLd = buildHomeJsonLd()
     const graph = jsonLd['@graph'] as JsonLdNode[]
 
-    const organization = findGraphNode(graph, 'Organization')
-    expect(organization.name).toBe('Payload Kits')
-    expect(organization.description).toContain('Payload-native kit platform')
-    expect(organization.sameAs).toEqual(
-      expect.arrayContaining(['https://github.com/Ducksss/payload-components']),
+    expect(graph.map((node) => node['@type'])).not.toEqual(
+      expect.arrayContaining(['Organization', 'WebSite']),
     )
 
     const software = findGraphNode(graph, 'SoftwareApplication')
@@ -44,6 +41,10 @@ describe('GEO structured surfaces', () => {
       price: '0',
       priceCurrency: 'USD',
     })
+    expect(software.publisher).toMatchObject({ '@id': 'http://localhost:3000/#organization' })
+
+    const webpage = findGraphNode(graph, 'WebPage')
+    expect(webpage.isPartOf).toMatchObject({ '@id': 'http://localhost:3000/#website' })
 
     const faq = findGraphNode(graph, 'FAQPage')
     expect((faq.mainEntity as JsonLdNode[]).map((question) => question.name)).toEqual(
