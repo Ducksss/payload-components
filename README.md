@@ -250,7 +250,7 @@ If you are changing schemas or admin components, please regenerate types and the
 
 ## License
 
-This repo is marked as MIT in [package.json](./package.json). A dedicated `LICENSE` file has not been added yet.
+Distributed under the MIT License. See [`LICENSE`](./LICENSE) for details.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
