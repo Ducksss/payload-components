@@ -190,6 +190,7 @@ export const buildItemListJsonLd = ({
 
 export const buildWebSiteJsonLd = (): JsonLdNode => ({
   '@context': 'https://schema.org',
+  '@id': `${absoluteURL('/')}#website`,
   '@type': 'WebSite',
   description: siteConfig.defaultDescription,
   name: siteConfig.name,
@@ -241,6 +242,7 @@ export const buildOrganizationJsonLd = (): JsonLdNode => ({
   '@context': 'https://schema.org',
   '@id': `${absoluteURL('/')}#organization`,
   '@type': 'Organization',
+  description: siteConfig.defaultDescription,
   name: siteConfig.name,
   sameAs: [siteConfig.githubUrl],
   url: absoluteURL('/'),

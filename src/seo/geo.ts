@@ -65,23 +65,6 @@ export const buildHomeJsonLd = (): JsonLdGraph => {
     '@context': 'https://schema.org',
     '@graph': [
       {
-        '@id': siteNodeId('organization'),
-        '@type': 'Organization',
-        description: siteIdentity.description,
-        name: siteIdentity.name,
-        sameAs: [siteIdentity.repoUrl],
-        url: homeUrl,
-      },
-      {
-        '@id': siteNodeId('website'),
-        '@type': 'WebSite',
-        description: siteIdentity.description,
-        inLanguage: 'en',
-        name: siteIdentity.name,
-        publisher: { '@id': siteNodeId('organization') },
-        url: homeUrl,
-      },
-      {
         '@id': siteNodeId('software'),
         '@type': 'SoftwareApplication',
         applicationCategory: 'DeveloperApplication',
