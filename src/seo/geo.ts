@@ -93,7 +93,7 @@ export const buildHomeJsonLd = (): JsonLdGraph => {
         description: siteIdentity.description,
         isPartOf: { '@id': siteNodeId('website') },
         name: `${siteIdentity.name} | ${siteIdentity.tagline}`,
-        primaryImageOfPage: getSiteUrl('/website-template-OG.webp'),
+        primaryImageOfPage: getSiteUrl(siteConfig.defaultOgImagePath),
         url: homeUrl,
       },
       {

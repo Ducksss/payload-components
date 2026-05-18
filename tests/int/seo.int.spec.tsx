@@ -74,6 +74,24 @@ describe('SEO metadata', () => {
     expect(normalizePathname('http://[::1')).toBe('/')
   })
 
+  it('falls back to normalized server URLs when client URL normalization fails on the server', async () => {
+    vi.resetModules()
+    vi.doMock('@/utilities/canUseDOM', () => ({
+      default: false,
+    }))
+
+    process.env.VERCEL_PROJECT_PRODUCTION_URL = 'http://[::1'
+    process.env.NEXT_PUBLIC_SERVER_URL = 'payloadkits.dev/path'
+
+    const { getClientSideURL } = await import('@/utilities/getURL')
+
+    expect(getClientSideURL()).toBe('https://payloadkits.dev')
+
+    process.env.NEXT_PUBLIC_SERVER_URL = 'http://[::1'
+
+    expect(getClientSideURL()).toBe('http://localhost:3000')
+  })
+
   it('falls back to the local URL when next-sitemap receives malformed environment URLs', () => {
     process.env.NEXT_PUBLIC_SERVER_URL = 'http://[::1'
     delete (process.env as Partial<NodeJS.ProcessEnv>).VERCEL_PROJECT_PRODUCTION_URL

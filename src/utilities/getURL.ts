@@ -31,9 +31,9 @@ export const getClientSideURL = () => {
     return `${protocol}//${domain}${port ? `:${port}` : ''}`
   }
 
-  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return normalizeServerURL(process.env.VERCEL_PROJECT_PRODUCTION_URL) || ''
-  }
-
-  return normalizeServerURL(process.env.NEXT_PUBLIC_SERVER_URL) || ''
+  return (
+    normalizeServerURL(process.env.VERCEL_PROJECT_PRODUCTION_URL) ||
+    normalizeServerURL(process.env.NEXT_PUBLIC_SERVER_URL) ||
+    getServerSideURL()
+  )
 }
