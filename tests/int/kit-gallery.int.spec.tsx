@@ -31,10 +31,14 @@ describe('KitGalleryTeaser', () => {
     expect(screen.getAllByText('Feature Grid Basic').length).toBeGreaterThan(0)
     expect(screen.queryByText('Pricing kit')).toBeNull()
 
-    const previewLinks = screen.getAllByRole('link', { name: 'Open live preview' })
-    expect(previewLinks).toHaveLength(2)
-    expect(previewLinks[0]?.getAttribute('href')).toBe('/components#hero-basic')
-    expect(previewLinks[1]?.getAttribute('href')).toBe('/components#feature-grid-basic')
+    expect(
+      screen.getByRole('link', { name: 'Open Hero Basic live preview' }).getAttribute('href'),
+    ).toBe('/components#hero-basic')
+    expect(
+      screen
+        .getByRole('link', { name: 'Open Feature Grid Basic live preview' })
+        .getAttribute('href'),
+    ).toBe('/components#feature-grid-basic')
     expect(
       screen.getByRole('link', { name: 'Browse the live components gallery' }).getAttribute('href'),
     ).toBe('/components')

@@ -10,13 +10,15 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { AdminBar } from '@/components/AdminBar'
 import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
+import { JsonLd } from '@/components/JsonLd'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 
 import './globals.css'
-import { getServerSideURL } from '@/utilities/getURL'
+import { buildOrganizationJsonLd, buildWebSiteJsonLd } from '@/utilities/seo'
+import { getSiteURL, siteConfig } from '@/utilities/site'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
@@ -37,6 +39,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
 
           <Header />
+          <JsonLd data={[buildOrganizationJsonLd(), buildWebSiteJsonLd()]} />
           {children}
           <Footer />
           <Analytics />
@@ -48,10 +51,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(getServerSideURL()),
+  description: siteConfig.defaultDescription,
+  metadataBase: new URL(getSiteURL()),
   openGraph: mergeOpenGraph(),
+  title: siteConfig.defaultTitle,
   twitter: {
     card: 'summary_large_image',
-    creator: '@payloadcms',
+    creator: siteConfig.twitterCreator,
+    description: siteConfig.defaultDescription,
+    images: [
+      {
+        alt: `${siteConfig.name} social preview`,
+        height: 630,
+        url: siteConfig.defaultOgImagePath,
+        width: 1200,
+      },
+    ],
+    title: siteConfig.defaultTitle,
   },
 }
