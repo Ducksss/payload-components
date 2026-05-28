@@ -9,6 +9,7 @@
     "version",
     "title",
     "description",
+    "installMode",
     "registryItemName",
     "dependencies",
     "peerDependencies",
@@ -36,6 +37,9 @@
     },
     "description": {
       "type": "string"
+    },
+    "installMode": {
+      "enum": ["payload-kit-required", "shadcn-native"]
     },
     "registryItemName": {
       "type": "string"
@@ -139,14 +143,14 @@
           }
         ]
       },
-      "minItems": 1
+      "minItems": 0
     },
     "postInstall": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "minItems": 1
+      "minItems": 0
     },
     "preview": {
       "type": "object",
@@ -169,12 +173,41 @@
             "type": "string",
             "minLength": 1
           },
-          "minItems": 1
+          "minItems": 0
         }
       }
     },
     "sampleContent": {
       "type": "object"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "installMode": {
+            "const": "payload-kit-required"
+          }
+        },
+        "required": ["installMode"]
+      },
+      "then": {
+        "properties": {
+          "payloadFragments": {
+            "minItems": 1
+          },
+          "postInstall": {
+            "minItems": 1
+          },
+          "recovery": {
+            "properties": {
+              "patchedFiles": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

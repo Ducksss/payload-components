@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "title": "Feature Grid Basic",
   "description": "A text-first Payload block for shipping a responsive feature grid with optional CTA wiring.",
+  "installMode": "payload-kit-required",
   "registryItemName": "feature-grid-basic",
   "dependencies": {},
   "peerDependencies": {
@@ -16,6 +17,7 @@
     "nextMajors": [15, 16]
   },
   "files": [
+    "src/utilities/ui.ts",
     "src/blocks/FeatureGridBasic/config.ts",
     "src/blocks/FeatureGridBasic/Component.tsx"
   ],

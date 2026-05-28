@@ -1,0 +1,37 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "newsletter-callout",
+  "version": "0.1.0",
+  "title": "Newsletter Callout",
+  "description": "A shadcn-native newsletter callout for Payload post pages and editorial resources.",
+  "installMode": "shadcn-native",
+  "registryItemName": "newsletter-callout",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/utilities/ui.ts",
+    "src/components/posts/NewsletterCallout.tsx"
+  ],
+  "payloadFragments": [],
+  "recovery": {
+    "patchedFiles": []
+  },
+  "postInstall": [],
+  "preview": {
+    "summary": "A configurable newsletter form section with title, description, email field, and submit button."
+  },
+  "sampleContent": {
+    "title": "Follow the kit catalog",
+    "description": "Get the next Payload kit release notes before they ship.",
+    "action": "/api/newsletter",
+    "buttonLabel": "Join list"
+  }
+}

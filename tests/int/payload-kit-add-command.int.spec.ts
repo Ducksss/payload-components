@@ -7,6 +7,7 @@ const baseManifest: KitManifest = {
   dependencies: {},
   description: 'Test manifest',
   files: ['src/blocks/HeroBasic/config.ts', 'src/blocks/HeroBasic/Component.tsx'],
+  installMode: 'payload-kit-required',
   name: 'hero-basic',
   payloadFragments: [
     {

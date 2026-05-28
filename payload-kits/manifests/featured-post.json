@@ -1,0 +1,50 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "featured-post",
+  "version": "0.1.0",
+  "title": "Featured Post",
+  "description": "A shadcn-native featured post surface that renders one Payload post without schema or renderer patching.",
+  "installMode": "shadcn-native",
+  "registryItemName": "featured-post",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/utilities/ui.ts",
+    "src/components/posts/types.ts",
+    "src/components/posts/FeaturedPost.tsx"
+  ],
+  "payloadFragments": [],
+  "recovery": {
+    "patchedFiles": []
+  },
+  "postInstall": [],
+  "preview": {
+    "summary": "A larger editorial feature surface with image, category, date, summary, and CTA."
+  },
+  "sampleContent": {
+    "label": "Featured guide",
+    "post": {
+      "slug": "payload-component-workflow",
+      "title": "Build a reusable Payload component workflow",
+      "publishedAt": "2026-04-21T10:00:00.000Z",
+      "categories": [{ "title": "Strategy", "slug": "strategy" }],
+      "meta": {
+        "description": "A practical guide to shipping reusable Payload website surfaces.",
+        "image": {
+          "alt": "Payload dashboard preview",
+          "url": "/media/payload-dashboard.webp",
+          "width": 1280,
+          "height": 720
+        }
+      }
+    }
+  }
+}

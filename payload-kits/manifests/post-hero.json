@@ -1,0 +1,48 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "post-hero",
+  "version": "0.1.0",
+  "title": "Post Hero",
+  "description": "A shadcn-native article hero for Payload posts with category, author, date, summary, and hero image support.",
+  "installMode": "shadcn-native",
+  "registryItemName": "post-hero",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/utilities/ui.ts",
+    "src/components/posts/types.ts",
+    "src/components/posts/PostHero.tsx"
+  ],
+  "payloadFragments": [],
+  "recovery": {
+    "patchedFiles": []
+  },
+  "postInstall": [],
+  "preview": {
+    "summary": "A first-viewport article hero for Payload posts that needs no Payload config mutation."
+  },
+  "sampleContent": {
+    "slug": "payload-component-workflow",
+    "title": "Build a reusable Payload component workflow",
+    "publishedAt": "2026-04-21T10:00:00.000Z",
+    "categories": [{ "title": "Strategy", "slug": "strategy" }],
+    "populatedAuthors": [{ "name": "Payload Kits Team" }],
+    "meta": {
+      "description": "A practical guide to shipping reusable Payload website surfaces.",
+      "image": {
+        "alt": "Payload dashboard preview",
+        "url": "/media/payload-dashboard.webp",
+        "width": 1280,
+        "height": 720
+      }
+    }
+  }
+}

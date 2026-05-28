@@ -20,16 +20,16 @@ export const KitGalleryPage = () => {
             Live components gallery
           </Badge>
           <h1 className="text-4xl font-medium tracking-[-0.06em] text-balance sm:text-5xl">
-            Browse the real kits that ship in the current alpha.
+            Browse the real kits that ship in the current registry.
           </h1>
           <p className="text-base leading-7 text-muted-foreground sm:text-lg">
-            This route renders the actual shipped block components with typed preset data. Use it to
-            inspect what `payload-kit add` installs today before touching a repo.
+            This route renders the actual shipped blocks and shadcn-native components with typed
+            preset data. Use it to inspect what each install path delivers before touching a repo.
           </p>
           <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             <Button asChild size="lg" className="rounded-full px-6">
-              <Link href="#hero-basic">
-                Start with Hero Basic
+              <Link href="#post-card">
+                Start with Post Card
                 <ArrowRight data-icon="inline-end" />
               </Link>
             </Button>
@@ -101,11 +101,12 @@ export const KitGalleryPage = () => {
                 Current alpha boundary
               </Badge>
               <h2 className="text-3xl font-medium tracking-[-0.05em]">
-                `payload-kit add` is real. `init` and `doctor` still follow.
+                Direct shadcn for UI. `payload-kit` for Payload-aware wiring.
               </h2>
               <p className="text-base leading-7 text-muted-foreground">
-                The shipped surface today is the two public kits above. The next engineering tranche
-                returns to `payload-kit doctor`, not a third kit.
+                Pages blocks use `payload-kit add`; Posts presentation components use
+                `npx shadcn add @payload-kits/...`; `payload-kit doctor` verifies the manifests,
+                rendered files, and generated registry stay aligned.
               </p>
             </div>
 

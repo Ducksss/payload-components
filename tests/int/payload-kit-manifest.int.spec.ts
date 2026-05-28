@@ -14,6 +14,7 @@ const baseManifest: KitManifest = {
   dependencies: {},
   description: 'Test manifest',
   files: ['src/blocks/HeroBasic/config.ts', 'src/blocks/HeroBasic/Component.tsx'],
+  installMode: 'payload-kit-required',
   name: 'hero-basic',
   payloadFragments: [
     {
@@ -112,6 +113,48 @@ describe('payload-kit manifest validation', () => {
     const { loadManifest } = await loadManifestWithMocks(manifest)
 
     await expect(loadManifest('hero-basic')).rejects.toThrow('supports.payloadMajors')
+  })
+
+  it('fails when installMode is missing', async () => {
+    const { installMode: _installMode, ...manifest } = baseManifest
+    const { loadManifest } = await loadManifestWithMocks(manifest)
+
+    await expect(loadManifest('hero-basic')).rejects.toThrow('installMode')
+  })
+
+  it('allows shadcn-native manifests without Payload patch fragments or post-install scripts', async () => {
+    const manifest: KitManifest = {
+      ...baseManifest,
+      installMode: 'shadcn-native',
+      payloadFragments: [],
+      postInstall: [],
+      recovery: {
+        patchedFiles: [],
+      },
+    }
+    const { loadManifest } = await loadManifestWithMocks(manifest)
+
+    await expect(loadManifest('hero-basic')).resolves.toMatchObject({
+      installMode: 'shadcn-native',
+      payloadFragments: [],
+      postInstall: [],
+      recovery: {
+        patchedFiles: [],
+      },
+    })
+  })
+
+  it('rejects wrapper-required manifests without Payload patch fragments', async () => {
+    const manifest: KitManifest = {
+      ...baseManifest,
+      payloadFragments: [],
+      recovery: {
+        patchedFiles: [],
+      },
+    }
+    const { loadManifest } = await loadManifestWithMocks(manifest)
+
+    await expect(loadManifest('hero-basic')).rejects.toThrow('payloadFragments')
   })
 
   it('fails when a payload fragment is malformed', async () => {

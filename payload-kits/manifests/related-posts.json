@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "related-posts",
+  "version": "0.1.0",
+  "title": "Related Posts",
+  "description": "A shadcn-native related posts section for rendering compact Payload post recommendations.",
+  "installMode": "shadcn-native",
+  "registryItemName": "related-posts",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/utilities/ui.ts",
+    "src/components/posts/types.ts",
+    "src/components/posts/PostCard.tsx",
+    "src/components/posts/RelatedPosts.tsx"
+  ],
+  "payloadFragments": [],
+  "recovery": {
+    "patchedFiles": []
+  },
+  "postInstall": [],
+  "preview": {
+    "summary": "A compact related-posts section with an empty state and reusable post cards."
+  },
+  "sampleContent": {
+    "title": "Related implementation guides",
+    "description": "Continue reading about the registry delivery surface.",
+    "posts": []
+  }
+}

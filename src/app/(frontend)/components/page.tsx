@@ -5,9 +5,9 @@ import { buildSEOMetadata } from '@/utilities/seo'
 
 export const metadata: Metadata = buildSEOMetadata({
   description:
-    'Browse the live Payload Kits gallery for the currently shipped alpha kits, including Hero Basic and Feature Grid Basic, with real install commands and rendered block previews.',
+    'Browse the live Payload Kits gallery for wrapper-required Payload blocks and shadcn-native Posts components, with real install commands and rendered previews.',
   path: '/components',
-  title: 'Payload Kits Components Gallery | Live previews for shipped alpha kits',
+  title: 'Payload Kits Components Gallery | Live previews for shipped kits',
 })
 
 export default KitGalleryPage

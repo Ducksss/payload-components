@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "title": "Hero Basic",
   "description": "A golden-kit Payload block used to prove that shadcn-compatible registry installs can be wrapped with Payload-specific wiring.",
+  "installMode": "payload-kit-required",
   "registryItemName": "hero-basic",
   "dependencies": {},
   "peerDependencies": {
@@ -16,6 +17,7 @@
     "nextMajors": [15, 16]
   },
   "files": [
+    "src/utilities/ui.ts",
     "src/blocks/HeroBasic/config.ts",
     "src/blocks/HeroBasic/Component.tsx"
   ],

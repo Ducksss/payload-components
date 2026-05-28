@@ -1,0 +1,39 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "post-archive",
+  "version": "0.1.0",
+  "title": "Post Archive",
+  "description": "A shadcn-native post archive grid that renders Payload post arrays without schema or renderer patching.",
+  "installMode": "shadcn-native",
+  "registryItemName": "post-archive",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/utilities/ui.ts",
+    "src/components/posts/types.ts",
+    "src/components/posts/PostCard.tsx",
+    "src/components/posts/PostArchive.tsx"
+  ],
+  "payloadFragments": [],
+  "recovery": {
+    "patchedFiles": []
+  },
+  "postInstall": [],
+  "preview": {
+    "summary": "A section wrapper and responsive grid for listing Payload posts."
+  },
+  "sampleContent": {
+    "eyebrow": "Latest posts",
+    "title": "Payload implementation notes",
+    "description": "A shadcn-native archive that only needs post-shaped data.",
+    "posts": []
+  }
+}

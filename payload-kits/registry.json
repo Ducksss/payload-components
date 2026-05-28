@@ -9,9 +9,10 @@
       "title": "Hero Basic",
       "description": "Payload Kits proof-of-concept hero block.",
       "registryDependencies": ["badge"],
-      "docs": "Payload Kits installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-kit add hero-basic\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/hero-basic.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-kit add hero-basic` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "docs": "Payload Kits installs this as a Payload CMS block for the Payload website starter shape.\n\nComplete install with Payload wiring:\n\n```bash\npnpm dlx payload-kit add hero-basic\n```\n\nDirect shadcn URL install:\n\n```bash\npnpm dlx shadcn@latest add https://payload-components.xyz/r/hero-basic.json\n```\n\nNamespace install after adding `{\"registries\":{\"@payload-kits\":\"https://payload-components.xyz/r/{name}.json\"}}` to `components.json`:\n\n```bash\npnpm dlx shadcn@latest add @payload-kits/hero-basic\n```\n\nDirect shadcn installs copy files and shadcn UI dependencies only. Use `payload-kit add hero-basic` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, `generate:importmap`, idempotency, and recovery state handled for you.",
       "meta": {
         "payloadKit": {
+          "installMode": "payload-kit-required",
           "installCommand": "payload-kit add hero-basic",
           "postInstall": ["generate:types", "generate:importmap"],
           "requiresPayloadKitWrapper": true,
@@ -19,6 +20,11 @@
         }
       },
       "files": [
+        {
+          "path": "src/utilities/ui.ts",
+          "type": "registry:file",
+          "target": "~/src/utilities/ui.ts"
+        },
         {
           "path": "src/blocks/HeroBasic/config.ts",
           "type": "registry:file",
@@ -37,9 +43,10 @@
       "title": "Feature Grid Basic",
       "description": "Text-first Payload feature grid with optional CTA wiring.",
       "registryDependencies": ["badge", "card"],
-      "docs": "Payload Kits installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-kit add feature-grid-basic\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/feature-grid-basic.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-kit add feature-grid-basic` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "docs": "Payload Kits installs this as a Payload CMS block for the Payload website starter shape.\n\nComplete install with Payload wiring:\n\n```bash\npnpm dlx payload-kit add feature-grid-basic\n```\n\nDirect shadcn URL install:\n\n```bash\npnpm dlx shadcn@latest add https://payload-components.xyz/r/feature-grid-basic.json\n```\n\nNamespace install after adding `{\"registries\":{\"@payload-kits\":\"https://payload-components.xyz/r/{name}.json\"}}` to `components.json`:\n\n```bash\npnpm dlx shadcn@latest add @payload-kits/feature-grid-basic\n```\n\nDirect shadcn installs copy files and shadcn UI dependencies only. Use `payload-kit add feature-grid-basic` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, `generate:importmap`, idempotency, and recovery state handled for you.",
       "meta": {
         "payloadKit": {
+          "installMode": "payload-kit-required",
           "installCommand": "payload-kit add feature-grid-basic",
           "postInstall": ["generate:types", "generate:importmap"],
           "requiresPayloadKitWrapper": true,
@@ -47,6 +54,11 @@
         }
       },
       "files": [
+        {
+          "path": "src/utilities/ui.ts",
+          "type": "registry:file",
+          "target": "~/src/utilities/ui.ts"
+        },
         {
           "path": "src/blocks/FeatureGridBasic/config.ts",
           "type": "registry:file",
@@ -56,6 +68,283 @@
           "path": "src/blocks/FeatureGridBasic/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureGridBasic/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "post-card",
+      "type": "registry:component",
+      "title": "Post Card",
+      "description": "shadcn-native Payload post card with image, categories, date, title, and summary.",
+      "registryDependencies": ["badge", "card"],
+      "docs": "Payload Kits installs this as a shadcn-native Posts presentation component.\n\nDirect shadcn URL install:\n\n```bash\npnpm dlx shadcn@latest add https://payload-components.xyz/r/post-card.json\n```\n\nNamespace install after adding `{\"registries\":{\"@payload-kits\":\"https://payload-components.xyz/r/{name}.json\"}}` to `components.json`:\n\n```bash\npnpm dlx shadcn@latest add @payload-kits/post-card\n```\n\nThis kit copies frontend component files and shadcn UI dependencies only. It does not patch Payload collection config, `RenderBlocks`, generated types, or admin import maps.",
+      "meta": {
+        "payloadKit": {
+          "installMode": "shadcn-native",
+          "installCommand": "shadcn add @payload-kits/post-card",
+          "postInstall": [],
+          "requiresPayloadKitWrapper": false,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "src/utilities/ui.ts",
+          "type": "registry:file",
+          "target": "~/src/utilities/ui.ts"
+        },
+        {
+          "path": "src/components/posts/types.ts",
+          "type": "registry:file",
+          "target": "~/src/components/posts/types.ts"
+        },
+        {
+          "path": "src/components/posts/PostCard.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/posts/PostCard.tsx"
+        }
+      ]
+    },
+    {
+      "name": "post-archive",
+      "type": "registry:component",
+      "title": "Post Archive",
+      "description": "shadcn-native Payload post archive grid for rendering arrays of post-shaped data.",
+      "registryDependencies": ["badge", "card"],
+      "docs": "Payload Kits installs this as a shadcn-native Posts presentation component.\n\nDirect shadcn URL install:\n\n```bash\npnpm dlx shadcn@latest add https://payload-components.xyz/r/post-archive.json\n```\n\nNamespace install after adding `{\"registries\":{\"@payload-kits\":\"https://payload-components.xyz/r/{name}.json\"}}` to `components.json`:\n\n```bash\npnpm dlx shadcn@latest add @payload-kits/post-archive\n```\n\nThis kit copies frontend component files and shadcn UI dependencies only. It does not patch Payload collection config, `RenderBlocks`, generated types, or admin import maps.",
+      "meta": {
+        "payloadKit": {
+          "installMode": "shadcn-native",
+          "installCommand": "shadcn add @payload-kits/post-archive",
+          "postInstall": [],
+          "requiresPayloadKitWrapper": false,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "src/utilities/ui.ts",
+          "type": "registry:file",
+          "target": "~/src/utilities/ui.ts"
+        },
+        {
+          "path": "src/components/posts/types.ts",
+          "type": "registry:file",
+          "target": "~/src/components/posts/types.ts"
+        },
+        {
+          "path": "src/components/posts/PostCard.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/posts/PostCard.tsx"
+        },
+        {
+          "path": "src/components/posts/PostArchive.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/posts/PostArchive.tsx"
+        }
+      ]
+    },
+    {
+      "name": "post-hero",
+      "type": "registry:component",
+      "title": "Post Hero",
+      "description": "shadcn-native Payload post hero with category, author, date, summary, and image support.",
+      "registryDependencies": ["badge"],
+      "docs": "Payload Kits installs this as a shadcn-native Posts presentation component.\n\nDirect shadcn URL install:\n\n```bash\npnpm dlx shadcn@latest add https://payload-components.xyz/r/post-hero.json\n```\n\nNamespace install after adding `{\"registries\":{\"@payload-kits\":\"https://payload-components.xyz/r/{name}.json\"}}` to `components.json`:\n\n```bash\npnpm dlx shadcn@latest add @payload-kits/post-hero\n```\n\nThis kit copies frontend component files and shadcn UI dependencies only. It does not patch Payload collection config, `RenderBlocks`, generated types, or admin import maps.",
+      "meta": {
+        "payloadKit": {
+          "installMode": "shadcn-native",
+          "installCommand": "shadcn add @payload-kits/post-hero",
+          "postInstall": [],
+          "requiresPayloadKitWrapper": false,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "src/utilities/ui.ts",
+          "type": "registry:file",
+          "target": "~/src/utilities/ui.ts"
+        },
+        {
+          "path": "src/components/posts/types.ts",
+          "type": "registry:file",
+          "target": "~/src/components/posts/types.ts"
+        },
+        {
+          "path": "src/components/posts/PostHero.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/posts/PostHero.tsx"
+        }
+      ]
+    },
+    {
+      "name": "featured-post",
+      "type": "registry:component",
+      "title": "Featured Post",
+      "description": "shadcn-native featured Payload post surface with image, category, date, summary, and CTA.",
+      "registryDependencies": ["badge", "card"],
+      "docs": "Payload Kits installs this as a shadcn-native Posts presentation component.\n\nDirect shadcn URL install:\n\n```bash\npnpm dlx shadcn@latest add https://payload-components.xyz/r/featured-post.json\n```\n\nNamespace install after adding `{\"registries\":{\"@payload-kits\":\"https://payload-components.xyz/r/{name}.json\"}}` to `components.json`:\n\n```bash\npnpm dlx shadcn@latest add @payload-kits/featured-post\n```\n\nThis kit copies frontend component files and shadcn UI dependencies only. It does not patch Payload collection config, `RenderBlocks`, generated types, or admin import maps.",
+      "meta": {
+        "payloadKit": {
+          "installMode": "shadcn-native",
+          "installCommand": "shadcn add @payload-kits/featured-post",
+          "postInstall": [],
+          "requiresPayloadKitWrapper": false,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "src/utilities/ui.ts",
+          "type": "registry:file",
+          "target": "~/src/utilities/ui.ts"
+        },
+        {
+          "path": "src/components/posts/types.ts",
+          "type": "registry:file",
+          "target": "~/src/components/posts/types.ts"
+        },
+        {
+          "path": "src/components/posts/FeaturedPost.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/posts/FeaturedPost.tsx"
+        }
+      ]
+    },
+    {
+      "name": "post-list",
+      "type": "registry:component",
+      "title": "Post List",
+      "description": "shadcn-native compact Payload post list with dates, categories, descriptions, and empty state.",
+      "registryDependencies": ["badge"],
+      "docs": "Payload Kits installs this as a shadcn-native Posts presentation component.\n\nDirect shadcn URL install:\n\n```bash\npnpm dlx shadcn@latest add https://payload-components.xyz/r/post-list.json\n```\n\nNamespace install after adding `{\"registries\":{\"@payload-kits\":\"https://payload-components.xyz/r/{name}.json\"}}` to `components.json`:\n\n```bash\npnpm dlx shadcn@latest add @payload-kits/post-list\n```\n\nThis kit copies frontend component files and shadcn UI dependencies only. It does not patch Payload collection config, `RenderBlocks`, generated types, or admin import maps.",
+      "meta": {
+        "payloadKit": {
+          "installMode": "shadcn-native",
+          "installCommand": "shadcn add @payload-kits/post-list",
+          "postInstall": [],
+          "requiresPayloadKitWrapper": false,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "src/utilities/ui.ts",
+          "type": "registry:file",
+          "target": "~/src/utilities/ui.ts"
+        },
+        {
+          "path": "src/components/posts/types.ts",
+          "type": "registry:file",
+          "target": "~/src/components/posts/types.ts"
+        },
+        {
+          "path": "src/components/posts/PostList.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/posts/PostList.tsx"
+        }
+      ]
+    },
+    {
+      "name": "author-card",
+      "type": "registry:component",
+      "title": "Author Card",
+      "description": "shadcn-native Payload author profile card for article pages and editorial sidebars.",
+      "registryDependencies": ["badge", "card"],
+      "docs": "Payload Kits installs this as a shadcn-native Posts presentation component.\n\nDirect shadcn URL install:\n\n```bash\npnpm dlx shadcn@latest add https://payload-components.xyz/r/author-card.json\n```\n\nNamespace install after adding `{\"registries\":{\"@payload-kits\":\"https://payload-components.xyz/r/{name}.json\"}}` to `components.json`:\n\n```bash\npnpm dlx shadcn@latest add @payload-kits/author-card\n```\n\nThis kit copies frontend component files and shadcn UI dependencies only. It does not patch Payload collection config, `RenderBlocks`, generated types, or admin import maps.",
+      "meta": {
+        "payloadKit": {
+          "installMode": "shadcn-native",
+          "installCommand": "shadcn add @payload-kits/author-card",
+          "postInstall": [],
+          "requiresPayloadKitWrapper": false,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "src/utilities/ui.ts",
+          "type": "registry:file",
+          "target": "~/src/utilities/ui.ts"
+        },
+        {
+          "path": "src/components/posts/types.ts",
+          "type": "registry:file",
+          "target": "~/src/components/posts/types.ts"
+        },
+        {
+          "path": "src/components/posts/AuthorCard.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/posts/AuthorCard.tsx"
+        }
+      ]
+    },
+    {
+      "name": "newsletter-callout",
+      "type": "registry:component",
+      "title": "Newsletter Callout",
+      "description": "shadcn-native newsletter callout for Payload post pages and editorial resources.",
+      "registryDependencies": ["input"],
+      "docs": "Payload Kits installs this as a shadcn-native Posts presentation component.\n\nDirect shadcn URL install:\n\n```bash\npnpm dlx shadcn@latest add https://payload-components.xyz/r/newsletter-callout.json\n```\n\nNamespace install after adding `{\"registries\":{\"@payload-kits\":\"https://payload-components.xyz/r/{name}.json\"}}` to `components.json`:\n\n```bash\npnpm dlx shadcn@latest add @payload-kits/newsletter-callout\n```\n\nThis kit copies frontend component files and shadcn UI dependencies only. It does not patch Payload collection config, `RenderBlocks`, generated types, or admin import maps.",
+      "meta": {
+        "payloadKit": {
+          "installMode": "shadcn-native",
+          "installCommand": "shadcn add @payload-kits/newsletter-callout",
+          "postInstall": [],
+          "requiresPayloadKitWrapper": false,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "src/utilities/ui.ts",
+          "type": "registry:file",
+          "target": "~/src/utilities/ui.ts"
+        },
+        {
+          "path": "src/components/posts/NewsletterCallout.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/posts/NewsletterCallout.tsx"
+        }
+      ]
+    },
+    {
+      "name": "related-posts",
+      "type": "registry:component",
+      "title": "Related Posts",
+      "description": "shadcn-native related posts section for compact Payload post recommendations.",
+      "registryDependencies": ["badge", "card"],
+      "docs": "Payload Kits installs this as a shadcn-native Posts presentation component.\n\nDirect shadcn URL install:\n\n```bash\npnpm dlx shadcn@latest add https://payload-components.xyz/r/related-posts.json\n```\n\nNamespace install after adding `{\"registries\":{\"@payload-kits\":\"https://payload-components.xyz/r/{name}.json\"}}` to `components.json`:\n\n```bash\npnpm dlx shadcn@latest add @payload-kits/related-posts\n```\n\nThis kit copies frontend component files and shadcn UI dependencies only. It does not patch Payload collection config, `RenderBlocks`, generated types, or admin import maps.",
+      "meta": {
+        "payloadKit": {
+          "installMode": "shadcn-native",
+          "installCommand": "shadcn add @payload-kits/related-posts",
+          "postInstall": [],
+          "requiresPayloadKitWrapper": false,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "src/utilities/ui.ts",
+          "type": "registry:file",
+          "target": "~/src/utilities/ui.ts"
+        },
+        {
+          "path": "src/components/posts/types.ts",
+          "type": "registry:file",
+          "target": "~/src/components/posts/types.ts"
+        },
+        {
+          "path": "src/components/posts/PostCard.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/posts/PostCard.tsx"
+        },
+        {
+          "path": "src/components/posts/RelatedPosts.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/posts/RelatedPosts.tsx"
         }
       ]
     }

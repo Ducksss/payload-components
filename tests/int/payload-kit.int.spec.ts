@@ -133,6 +133,23 @@ const expectInstalledKits = async (fixtureDir: string, manifests: KitManifest[])
   }
 }
 
+const expectShadcnNativeKitInstalled = async (fixtureDir: string, manifest: KitManifest) => {
+  await expectManifestFilesInstalled(fixtureDir, manifest)
+
+  const [renderBlocksSource, pagesSource, state] = await Promise.all([
+    readFixtureFile(fixtureDir, path.join('src', 'blocks', 'RenderBlocks.tsx')),
+    readFixtureFile(fixtureDir, path.join('src', 'collections', 'Pages', 'index.ts')),
+    readInstallState(fixtureDir),
+  ])
+
+  expect(manifest.payloadFragments).toEqual([])
+  expect(manifest.postInstall).toEqual([])
+  expect(manifest.recovery.patchedFiles).toEqual([])
+  expect(renderBlocksSource).not.toContain('PostCard')
+  expect(pagesSource).not.toContain('PostCard')
+  expectInstalledStateEntry(state, manifest)
+}
+
 describe('payload-kit add', () => {
   const tempDirs: string[] = []
 
@@ -168,6 +185,19 @@ describe('payload-kit add', () => {
 
       expect(parsedState.version).toBe(2)
       await expectInstalledKits(fixtureDir, [manifest])
+    },
+    180000,
+  )
+
+  it(
+    'installs a shadcn-native post-card kit without Payload registrations',
+    async () => {
+      const { fixtureDir, manifest } = await createInstallFixture('post-card')
+      tempDirs.push(fixtureDir)
+
+      await runAddCommand(fixtureDir, manifest.name)
+
+      await expectShadcnNativeKitInstalled(fixtureDir, manifest)
     },
     180000,
   )

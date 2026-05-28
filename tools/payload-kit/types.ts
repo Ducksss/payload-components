@@ -1,6 +1,7 @@
 import type { INSTALL_STAGES } from './constants'
 
 export type PackageManager = 'bun' | 'npm' | 'pnpm' | 'yarn'
+export type KitInstallMode = 'payload-kit-required' | 'shadcn-native'
 export type InstallStage = (typeof INSTALL_STAGES)[number]
 export type InstallStatus = 'installed' | 'partial'
 export type DependencyMap = Record<string, string>
@@ -24,6 +25,7 @@ export type KitManifest = {
   dependencies: DependencyMap
   description: string
   files: string[]
+  installMode: KitInstallMode
   name: string
   payloadFragments: PayloadFragment[]
   peerDependencies: DependencyMap

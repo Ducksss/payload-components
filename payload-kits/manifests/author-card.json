@@ -1,0 +1,45 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "author-card",
+  "version": "0.1.0",
+  "title": "Author Card",
+  "description": "A shadcn-native author profile card for Payload post pages and editorial sidebars.",
+  "installMode": "shadcn-native",
+  "registryItemName": "author-card",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/utilities/ui.ts",
+    "src/components/posts/types.ts",
+    "src/components/posts/AuthorCard.tsx"
+  ],
+  "payloadFragments": [],
+  "recovery": {
+    "patchedFiles": []
+  },
+  "postInstall": [],
+  "preview": {
+    "summary": "An author profile card with avatar fallback, role, bio, and compact label."
+  },
+  "sampleContent": {
+    "author": {
+      "name": "Maya Chen",
+      "role": "Payload architect",
+      "bio": "Maya helps Payload teams turn reusable CMS patterns into reliable delivery systems.",
+      "avatar": {
+        "alt": "Portrait of Maya Chen",
+        "url": "/media/maya-chen.webp",
+        "width": 320,
+        "height": 320
+      }
+    }
+  }
+}

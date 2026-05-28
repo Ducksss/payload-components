@@ -1,0 +1,37 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "post-list",
+  "version": "0.1.0",
+  "title": "Post List",
+  "description": "A shadcn-native compact list for rendering Payload post-shaped data without Payload project mutation.",
+  "installMode": "shadcn-native",
+  "registryItemName": "post-list",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/utilities/ui.ts",
+    "src/components/posts/types.ts",
+    "src/components/posts/PostList.tsx"
+  ],
+  "payloadFragments": [],
+  "recovery": {
+    "patchedFiles": []
+  },
+  "postInstall": [],
+  "preview": {
+    "summary": "A compact posts list with dates, categories, descriptions, links, and empty state."
+  },
+  "sampleContent": {
+    "title": "Recent notes",
+    "description": "Compact Payload posts for sidebars, index pages, and editorial modules.",
+    "posts": []
+  }
+}
