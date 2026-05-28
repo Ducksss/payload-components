@@ -162,12 +162,14 @@ test.describe('Generative Engine Optimization surfaces', () => {
     expect(body).toContain('> Payload-native kit platform')
     expect(body).toContain('## Key links')
     expect(body).toContain(`- [Payload Kits home](${baseURL}/)`)
+    expect(body).toContain(`- [Payload Kits documentation](${baseURL}/docs)`)
     expect(body).toContain(`- [Payload Kits components gallery](${baseURL}/components)`)
     expect(body).toContain(`- [Payload Kits resources](${baseURL}/resources)`)
     expect(body).toContain(`- [Payload Kits public registry](${baseURL}/r/registry.json)`)
     expect(body).toContain(`- [Payload Kits GitHub repository](${githubRepoUrl})`)
     expect(body).toContain('## Answer-ready facts')
     expect(body).toContain('Payload Kits is a public registry for Payload-native kits')
+    expect(body).toContain('payload-kit add hero-basic')
 
     for (const resource of marketingResources) {
       expect(body).toContain(`- [${resource.title}](${baseURL}/resources/${resource.slug})`)

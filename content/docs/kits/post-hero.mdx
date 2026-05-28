@@ -1,0 +1,43 @@
+---
+title: Post Hero
+description: Documentation for the post-hero shadcn-native kit, including direct shadcn install behavior and hero props.
+---
+
+`post-hero` installs a first-viewport article hero for an existing Payload post detail page.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-hero.json
+```
+
+Namespace installs require this `components.json` registry mapping first:
+
+```json
+{
+  "registries": {
+    "@payload-kits": "https://payload-components.xyz/r/{name}.json"
+  }
+}
+```
+
+```bash
+pnpm dlx shadcn@latest add @payload-kits/post-hero
+```
+
+<KitPreview slug="post-hero" />
+
+## Installed Files
+
+```txt
+src/utilities/ui.ts
+src/components/posts/types.ts
+src/components/posts/PostHero.tsx
+```
+
+## Props
+
+- `post`: object with `title`, `publishedAt`, optional `categories`, optional `populatedAuthors`, and optional image data from `meta.image` or `heroImage`
+- `className`: optional wrapper class
+
+## Install Mode
+
+This kit has `installMode: shadcn-native`. It assumes the page already has a post document and does not edit Payload collections or renderers.

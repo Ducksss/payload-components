@@ -1,0 +1,46 @@
+---
+title: Featured Post
+description: Documentation for the featured-post shadcn-native kit, including direct shadcn install behavior and featured article props.
+---
+
+`featured-post` installs a larger editorial surface for one Payload post-shaped object. It is shadcn-native, so direct shadcn install is complete for this kit.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/featured-post.json
+```
+
+Namespace installs require this `components.json` registry mapping first:
+
+```json
+{
+  "registries": {
+    "@payload-kits": "https://payload-components.xyz/r/{name}.json"
+  }
+}
+```
+
+```bash
+pnpm dlx shadcn@latest add @payload-kits/featured-post
+```
+
+<KitPreview slug="featured-post" />
+
+## Installed Files
+
+```txt
+src/utilities/ui.ts
+src/components/posts/types.ts
+src/components/posts/FeaturedPost.tsx
+```
+
+## Props
+
+- `post`: object with `title`, `slug`, `publishedAt`, `categories`, and optional `meta.description` plus `meta.image`
+- `basePath`: optional post route prefix, defaulting to `/posts`
+- `label`: optional badge copy, defaulting to `Featured post`
+- `ctaLabel`: optional CTA label, defaulting to `Read featured guide`
+- `className`: optional wrapper class
+
+## Install Mode
+
+This kit has `installMode: shadcn-native`. It does not patch Payload collections, renderers, generated types, or admin import maps.

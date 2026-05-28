@@ -46,6 +46,8 @@ pnpm registry:check
 
 Production builds run `registry:build` automatically through the package `prebuild` script. `registry:check` builds the registry into a temp directory and verifies the generated output against `payload-kits/registry.json` and the source block files.
 
+Public-facing registry guidance is authored in Fumadocs MDX under `content/docs/reference/registry-contract.mdx` and `content/docs/reference/shadcn-directory.mdx`. Keep those docs in sync with this workspace README when changing the install contract.
+
 Direct public installs use the generated item URLs:
 
 ```bash

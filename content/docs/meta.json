@@ -1,0 +1,21 @@
+{
+  "title": "Payload Kits Docs",
+  "pages": [
+    "index",
+    "getting-started",
+    "---Kits---",
+    "kits/hero-basic",
+    "kits/feature-grid-basic",
+    "kits/post-card",
+    "kits/post-archive",
+    "kits/post-hero",
+    "kits/featured-post",
+    "kits/post-list",
+    "kits/author-card",
+    "kits/newsletter-callout",
+    "kits/related-posts",
+    "---Reference---",
+    "reference/registry-contract",
+    "reference/shadcn-directory"
+  ]
+}

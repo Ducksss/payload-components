@@ -77,8 +77,10 @@ describe('GEO structured surfaces', () => {
     expect(concise).toContain('# Payload Kits')
     expect(concise).toContain('> Payload-native kit platform')
     expect(concise).toContain('- [Payload Kits home](http://localhost:3000/)')
+    expect(concise).toContain('- [Payload Kits documentation](http://localhost:3000/docs)')
     expect(concise).toContain('## Answer-ready facts')
     expect(concise).toContain('Payload Kits is a public registry for Payload-native kits')
+    expect(concise).toContain('payload-kit add hero-basic')
 
     for (const resource of marketingResources) {
       expect(concise).toContain(
@@ -87,6 +89,9 @@ describe('GEO structured surfaces', () => {
     }
 
     const full = buildLlmsFullTxt()
+    expect(full).toContain('## Payload Kits documentation')
+    expect(full).toContain('### Hero Basic')
+    expect(full).toContain('npx payload-kit add hero-basic')
     expect(full).toContain('## Payload CMS blocks that survive real client repos')
     expect(full).toContain('### The block is not the whole install')
     expect(full).toContain(
@@ -127,6 +132,12 @@ describe('GEO structured surfaces', () => {
       expect.arrayContaining([
         '/',
         '/components',
+        '/docs',
+        '/docs/getting-started',
+        '/docs/kits/hero-basic',
+        '/docs/kits/feature-grid-basic',
+        '/docs/reference/registry-contract',
+        '/docs/reference/shadcn-directory',
         '/posts',
         '/resources',
         ...marketingResources.map((resource) => `/resources/${resource.slug}`),

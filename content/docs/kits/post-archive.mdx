@@ -1,0 +1,48 @@
+---
+title: Post Archive
+description: Documentation for the post-archive shadcn-native kit, including direct shadcn install behavior and archive props.
+---
+
+`post-archive` installs a responsive archive section that renders an array of Payload post-shaped objects.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-archive.json
+```
+
+Namespace installs require this `components.json` registry mapping first:
+
+```json
+{
+  "registries": {
+    "@payload-kits": "https://payload-components.xyz/r/{name}.json"
+  }
+}
+```
+
+```bash
+pnpm dlx shadcn@latest add @payload-kits/post-archive
+```
+
+<KitPreview slug="post-archive" />
+
+## Installed Files
+
+```txt
+src/utilities/ui.ts
+src/components/posts/types.ts
+src/components/posts/PostCard.tsx
+src/components/posts/PostArchive.tsx
+```
+
+## Props
+
+- `posts`: array of post-shaped objects
+- `title`: optional section title
+- `description`: optional supporting copy
+- `eyebrow`: optional badge text
+- `basePath`: optional post route prefix, defaulting to `/posts`
+- `className`: optional wrapper class
+
+## Install Mode
+
+This kit has `installMode: shadcn-native`. It copies frontend files and shadcn UI dependencies only.

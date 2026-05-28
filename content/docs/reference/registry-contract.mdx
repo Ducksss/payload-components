@@ -1,0 +1,79 @@
+---
+title: Registry contract
+description: The public registry and manifest contract that Payload Kits uses to distribute shadcn-compatible files plus Payload-specific install metadata.
+---
+
+The public registry source is `payload-kits/registry.json`. Production builds generate installable registry items under `public/r`.
+
+```bash
+pnpm registry:build
+pnpm registry:check
+```
+
+## Public Files
+
+```txt
+public/r/registry.json
+public/r/hero-basic.json
+public/r/feature-grid-basic.json
+public/r/post-card.json
+public/r/post-archive.json
+public/r/post-hero.json
+public/r/featured-post.json
+public/r/post-list.json
+public/r/author-card.json
+public/r/newsletter-callout.json
+public/r/related-posts.json
+```
+
+Direct shadcn installs can consume the generated item URLs immediately. The `@payload-kits` namespace is also supported after consumers configure a `components.json` registry mapping. For shadcn-native kits, that is the complete install path. For wrapper-required kits, use `payload-kit add` because Payload also needs schema registration, renderer registration, generated types, import-map updates, idempotency, and recovery state.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/hero-basic.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-card.json
+pnpm dlx payload-kit add hero-basic
+```
+
+```json
+{
+  "registries": {
+    "@payload-kits": "https://payload-components.xyz/r/{name}.json"
+  }
+}
+```
+
+```bash
+pnpm dlx shadcn@latest add @payload-kits/post-card
+```
+
+## Directory Split
+
+- shadcn one-shot kits: frontend Posts presentation components that only need files, dependencies, registry dependencies, CSS, or env examples
+- Payload-aware kits: blocks or schema changes that need existing project files patched and generation commands run
+
+Pages blocks such as `hero-basic` and `feature-grid-basic` remain valid shadcn registry items, but the complete install is `payload-kit add` because Pages blocks must be registered in the Pages layout and frontend block renderer.
+
+Posts components such as `post-card`, `post-archive`, `post-hero`, `featured-post`, `post-list`, `author-card`, `newsletter-callout`, and `related-posts` are shadcn-native. Direct shadcn install is the complete install path for those kits.
+
+## Manifest Responsibilities
+
+- kit identity and version
+- `installMode: shadcn-native` or `payload-kit-required`
+- supported Payload and Next.js majors
+- dependencies and peer dependencies
+- owned files
+- Payload registration fragments
+- recovery metadata for patched files
+- post-install tasks
+- preview metadata and sample content
+
+## Release Gate
+
+Use the full release verification before publishing changes to the kit contract.
+
+```bash
+pnpm test:registry
+pnpm test:shadcn
+pnpm test:install
+pnpm test:release
+```

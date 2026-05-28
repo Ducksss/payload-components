@@ -1,0 +1,76 @@
+---
+title: shadcn Directory strategy
+description: How Payload Kits uses shadcn Directory for one-shot Posts UI installs while keeping Payload schema wiring in payload-kit.
+---
+
+shadcn Directory is the right discovery channel for kits that can be installed by copying files, installing npm dependencies, and resolving shadcn registry dependencies. Posts presentation kits are the first clean target.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-card.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-archive.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-hero.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/featured-post.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-list.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/author-card.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/newsletter-callout.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/related-posts.json
+```
+
+Namespace installs are a convenience once the consumer configures the registry in `components.json`:
+
+```json
+{
+  "registries": {
+    "@payload-kits": "https://payload-components.xyz/r/{name}.json"
+  }
+}
+```
+
+```bash
+pnpm dlx shadcn@latest add @payload-kits/post-card
+```
+
+## One-Shot Kit Shape
+
+- `post-card`
+- `post-archive`
+- `post-hero`
+- `featured-post`
+- `post-list`
+- `author-card`
+- `newsletter-callout`
+- `related-posts`
+
+These kits should install under stable component paths, depend on structural props instead of generated `payload-types`, and include any local helpers they import. They may use `registryDependencies`, dependencies, CSS, and normal file targets.
+
+## Keep These Out Of shadcn-Only Installs
+
+- `src/collections/Posts/index.ts`
+- `src/collections/Pages/index.ts`
+- `src/blocks/RenderBlocks.tsx`
+- generated `src/payload-types.ts`
+- generated admin import maps
+
+Those changes need `payload-kit` because they require Payload-aware validation, idempotent patching, and post-install generation.
+
+## Posts Before Pages
+
+Posts are a better first Directory wedge than Pages blocks because the common public surfaces are already frontend components: cards, archives, heroes, and related-post sections. They can consume existing Payload posts data without modifying the Posts collection.
+
+Pages blocks remain important, but they need complete Payload registration.
+
+```bash
+npx payload-kit add hero-basic
+```
+
+## Verification
+
+```bash
+pnpm registry:build
+pnpm registry:check
+pnpm test:shadcn
+```
+
+```bash
+pnpm test:fresh -- --registry-url https://payload-components.xyz/r/{name}.json
+```

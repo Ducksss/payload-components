@@ -1,0 +1,44 @@
+---
+title: Author Card
+description: Documentation for the author-card shadcn-native kit, including direct shadcn install behavior and author profile props.
+---
+
+`author-card` installs a profile card for Payload author-shaped data. It can live under post content, in a sidebar, or inside an editorial resource page.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/author-card.json
+```
+
+Namespace installs require this `components.json` registry mapping first:
+
+```json
+{
+  "registries": {
+    "@payload-kits": "https://payload-components.xyz/r/{name}.json"
+  }
+}
+```
+
+```bash
+pnpm dlx shadcn@latest add @payload-kits/author-card
+```
+
+<KitPreview slug="author-card" />
+
+## Installed Files
+
+```txt
+src/utilities/ui.ts
+src/components/posts/types.ts
+src/components/posts/AuthorCard.tsx
+```
+
+## Props
+
+- `author`: object with `name`, optional `role`, optional `bio`, and optional `avatar`
+- `eyebrow`: optional badge copy, defaulting to `Author`
+- `className`: optional wrapper class
+
+## Install Mode
+
+This kit has `installMode: shadcn-native`. It does not need Payload schema mutations or post-install generation.

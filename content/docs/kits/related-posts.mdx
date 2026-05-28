@@ -1,0 +1,47 @@
+---
+title: Related Posts
+description: Documentation for the related-posts shadcn-native kit, including direct shadcn install behavior and related post props.
+---
+
+`related-posts` installs a compact related content section that reuses the shared `PostCard`.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/related-posts.json
+```
+
+Namespace installs require this `components.json` registry mapping first:
+
+```json
+{
+  "registries": {
+    "@payload-kits": "https://payload-components.xyz/r/{name}.json"
+  }
+}
+```
+
+```bash
+pnpm dlx shadcn@latest add @payload-kits/related-posts
+```
+
+<KitPreview slug="related-posts" />
+
+## Installed Files
+
+```txt
+src/utilities/ui.ts
+src/components/posts/types.ts
+src/components/posts/PostCard.tsx
+src/components/posts/RelatedPosts.tsx
+```
+
+## Props
+
+- `posts`: array of post-shaped objects
+- `title`: optional section title, defaulting to `Related posts`
+- `description`: optional supporting copy
+- `basePath`: optional post route prefix, defaulting to `/posts`
+- `className`: optional wrapper class
+
+## Install Mode
+
+This kit has `installMode: shadcn-native`. It includes an empty state and does not require `payload-kit`.

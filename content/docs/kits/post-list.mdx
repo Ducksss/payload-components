@@ -1,0 +1,46 @@
+---
+title: Post List
+description: Documentation for the post-list shadcn-native kit, including direct shadcn install behavior and compact list props.
+---
+
+`post-list` installs a compact list for Payload post-shaped arrays. It is useful for sidebars, resource indexes, and article footers.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-list.json
+```
+
+Namespace installs require this `components.json` registry mapping first:
+
+```json
+{
+  "registries": {
+    "@payload-kits": "https://payload-components.xyz/r/{name}.json"
+  }
+}
+```
+
+```bash
+pnpm dlx shadcn@latest add @payload-kits/post-list
+```
+
+<KitPreview slug="post-list" />
+
+## Installed Files
+
+```txt
+src/utilities/ui.ts
+src/components/posts/types.ts
+src/components/posts/PostList.tsx
+```
+
+## Props
+
+- `posts`: array of post-shaped objects with `title`, `slug`, `publishedAt`, optional `categories`, and optional `meta.description`
+- `basePath`: optional post route prefix, defaulting to `/posts`
+- `title`: optional section title, defaulting to `Latest posts`
+- `description`: optional supporting copy
+- `className`: optional wrapper class
+
+## Install Mode
+
+This kit has `installMode: shadcn-native`. It copies files and shadcn dependencies only.

@@ -1,4 +1,5 @@
 import { faqItems, githubRepoUrl } from '@/components/landing/content'
+import { docsPages } from '@/content/docs'
 import type { MarketingResource } from '@/content/marketingResources'
 import { marketingResources } from '@/content/marketingResources'
 import { absoluteURL, siteConfig } from '@/utilities/site'
@@ -46,6 +47,8 @@ const asQuestionNode = (item: (typeof faqItems)[number]): JsonLdNode => ({
 const getResourcePath = (resource: MarketingResource) => `/resources/${resource.slug}`
 
 const getResourceUrl = (resource: MarketingResource) => getSiteUrl(getResourcePath(resource))
+
+const getDocsUrl = (path: string) => getSiteUrl(path)
 
 export const stringifyJsonLd = (data: JsonLdGraph) =>
   JSON.stringify(data).replace(/[<>]/g, (character) =>
@@ -223,6 +226,11 @@ export const getStaticSitemapEntries = (): StaticSitemapEntry[] => [
     path: '/components',
     priority: 0.8,
   },
+  ...docsPages.map((page): StaticSitemapEntry => ({
+    changeFrequency: 'weekly',
+    path: page.path,
+    priority: page.path === '/docs' ? 0.9 : 0.75,
+  })),
   {
     changeFrequency: 'weekly',
     path: '/resources',
@@ -237,14 +245,20 @@ export const getStaticSitemapEntries = (): StaticSitemapEntry[] => [
 
 const answerReadyFacts = [
   'Payload Kits is a public registry for Payload-native kits and this project owns the current alpha catalog.',
-  'The current public alpha ships hero-basic and feature-grid-basic kits.',
+  'The current public alpha ships 10 kits: hero-basic, feature-grid-basic, post-card, post-archive, post-hero, featured-post, post-list, author-card, newsletter-callout, and related-posts.',
   'The target stack is Payload CMS v3 with Next.js App Router.',
-  'Each kit is expected to include schema wiring, render components, generated types, and import-map updates.',
+  'Posts presentation kits are shadcn-native shadcn Directory one-shot installs because they install as frontend files without Payload schema mutation.',
+  'Payload block kits that edit existing collection or renderer files still need payload-kit for schema wiring, generated types, and import-map updates.',
+  'The documentation includes install guidance, kit references, live previews, and the registry contract.',
+  'Developers can install wrapper-required kits with npx payload-kit add hero-basic or shadcn-native kits with pnpm dlx shadcn@latest add @payload-kits/post-card.',
   'The primary audience is agencies and freelancers shipping repeated Payload websites.',
 ]
 
 const formatResourceLink = (resource: MarketingResource) =>
   `- [${resource.title}](${getResourceUrl(resource)}): ${resource.description}`
+
+const formatDocsLink = (page: (typeof docsPages)[number]) =>
+  `- [${page.title}](${getDocsUrl(page.path)}): ${page.description}`
 
 export const buildLlmsTxt = () => {
   const lines = [
@@ -253,6 +267,7 @@ export const buildLlmsTxt = () => {
     '',
     '## Key links',
     `- [Payload Kits home](${getSiteUrl()}): Product positioning, proof points, pricing, FAQ, and early-access CTA.`,
+    `- [Payload Kits documentation](${getSiteUrl('/docs')}): Installation guides, kit references, registry contract, and live component previews.`,
     `- [Payload Kits components gallery](${getSiteUrl('/components')}): Shipped alpha kit previews and install commands.`,
     `- [Payload Kits resources](${getSiteUrl('/resources')}): Payload-native guides for agencies evaluating installable kits.`,
     `- [Payload Kits public registry](${getSiteUrl('/r/registry.json')}): Machine-readable shadcn registry index for shipped alpha kits.`,
@@ -260,6 +275,9 @@ export const buildLlmsTxt = () => {
     '',
     '## Resource guides',
     ...marketingResources.map(formatResourceLink),
+    '',
+    '## Documentation pages',
+    ...docsPages.map(formatDocsLink),
     '',
     '## Answer-ready facts',
     ...answerReadyFacts.map((fact) => `- ${fact}`),
@@ -271,6 +289,16 @@ export const buildLlmsTxt = () => {
 
   return `${lines.join('\n')}\n`
 }
+
+const formatDocsBody = (page: (typeof docsPages)[number]) => [
+  `### ${page.title}`,
+  '',
+  `Canonical URL: ${getDocsUrl(page.path)}`,
+  `Source file: ${page.sourceFile}`,
+  `Summary: ${page.description}`,
+  '',
+  ...page.answerReadyFacts.map((fact) => `- ${fact}`),
+]
 
 const formatResourceBody = (resource: MarketingResource) => {
   const sections = resource.sections.flatMap((section) => [
@@ -296,6 +324,10 @@ const formatResourceBody = (resource: MarketingResource) => {
 export const buildLlmsFullTxt = () => {
   const lines = [
     buildLlmsTxt().trim(),
+    '',
+    '## Payload Kits documentation',
+    '',
+    ...docsPages.flatMap(formatDocsBody),
     '',
     '## Complete public resource text',
     '',

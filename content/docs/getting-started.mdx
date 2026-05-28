@@ -1,0 +1,84 @@
+---
+title: Getting started
+description: Install the Payload Kits alpha in a Payload CMS v3 and Next.js App Router project.
+---
+
+The alpha is designed for Payload CMS v3 projects that already use the App Router and the Payload website-template style repo layout.
+
+## Requirements
+
+- Payload CMS v3
+- Next.js App Router
+- TypeScript
+- pnpm, npm, or yarn
+- a repo shape with `src/blocks/RenderBlocks.tsx` and `src/collections/Pages/index.ts`
+
+The wrapper CLI validates and patches Payload-specific wiring that a plain shadcn registry install cannot safely own by itself.
+
+## Choose The Install Surface
+
+Use shadcn Directory for kits that only add frontend files and dependencies.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-card.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-archive.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-hero.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/featured-post.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-list.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/author-card.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/newsletter-callout.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/related-posts.json
+```
+
+Namespace commands such as `@payload-kits/post-card` work after adding a matching `registries` entry to `components.json`.
+
+Use `payload-kit` when a kit must patch Payload config or run generation. That includes kits that modify Pages layout blocks, Posts collection fields, Lexical editor block registration, `RenderBlocks.tsx`, generated types, or admin import maps.
+
+```bash
+npx payload-kit add hero-basic
+```
+
+## Install A Kit
+
+For the first-draft product promise, install a shadcn-native Posts kit:
+
+```bash
+npx shadcn add @payload-kits/post-card
+```
+
+For a Payload-wired page block, use the wrapper:
+
+```bash
+npx payload-kit add hero-basic
+```
+
+That command:
+
+1. resolves the kit manifest
+2. installs the shadcn-compatible registry item
+3. wires the Payload block into the renderer
+4. wires the block config into the Pages collection
+5. runs type generation and import-map generation
+6. records installation state for idempotency and recovery
+
+## Verify The Repo
+
+```bash
+pnpm generate:types
+pnpm generate:importmap
+pnpm exec tsc --noEmit
+```
+
+For registry-level checks in this source repo, use the registry build, registry check, and fast install fixture suite.
+
+```bash
+pnpm registry:build
+pnpm registry:check
+pnpm test:install
+```
+
+## Preview Before Installing
+
+The live gallery renders the actual current alpha components with typed sample data. Use it before installing into a client repo.
+
+[Open the components gallery](/components)

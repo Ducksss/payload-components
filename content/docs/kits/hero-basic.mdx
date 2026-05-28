@@ -1,0 +1,43 @@
+---
+title: Hero Basic
+description: Documentation for the hero-basic Payload kit, including install command, owned files, schema fields, and live preview behavior.
+---
+
+`hero-basic` installs a headline-first marketing hero block with CTA support and proof items.
+
+```bash
+npx payload-kit add hero-basic
+```
+
+<KitPreview slug="hero-basic" />
+
+## Installed Files
+
+```txt
+src/blocks/HeroBasic/config.ts
+src/blocks/HeroBasic/Component.tsx
+```
+
+The block config export is `HeroBasic`. The render component export is `HeroBasicBlock`.
+
+## Payload Fields
+
+- `eyebrow`
+- `title`
+- `description`
+- `links`
+- `proofItems`
+
+The generated Payload type is `HeroBasicBlock`.
+
+## Wiring Responsibilities
+
+- registers the block config in `src/collections/Pages/index.ts`
+- registers the render component in `src/blocks/RenderBlocks.tsx`
+- runs `generate:types`
+- runs `generate:importmap`
+- records install state so a second install is idempotent
+
+## Best Use
+
+Use `hero-basic` for the first viewport of product, agency, and service pages where the section needs a clear title, one or more CTAs, and visible delivery proof.

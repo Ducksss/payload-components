@@ -1,0 +1,43 @@
+---
+title: Feature Grid Basic
+description: Documentation for the feature-grid-basic Payload kit, including install command, owned files, schema fields, and live preview behavior.
+---
+
+`feature-grid-basic` installs a text-first feature section for product and agency landing pages.
+
+```bash
+npx payload-kit add feature-grid-basic
+```
+
+<KitPreview slug="feature-grid-basic" />
+
+## Installed Files
+
+```txt
+src/blocks/FeatureGridBasic/config.ts
+src/blocks/FeatureGridBasic/Component.tsx
+```
+
+The block config export is `FeatureGridBasic`. The render component export is `FeatureGridBasicBlock`.
+
+## Payload Fields
+
+- `eyebrow`
+- `title`
+- `description`
+- `items`
+- `links`
+
+The generated Payload type is `FeatureGridBasicBlock`.
+
+## Wiring Responsibilities
+
+- registers the block config in `src/collections/Pages/index.ts`
+- registers the render component in `src/blocks/RenderBlocks.tsx`
+- runs `generate:types`
+- runs `generate:importmap`
+- records install state so repeated installs stay clean
+
+## Best Use
+
+Use `feature-grid-basic` when the page needs to explain a product layer, service package, or delivery workflow without introducing a large visual dependency.

@@ -1,0 +1,45 @@
+---
+title: Post Card
+description: Documentation for the post-card shadcn-native kit, including direct shadcn install behavior and structural post props.
+---
+
+`post-card` installs a reusable card for Payload post-shaped data. It is shadcn-native, so direct shadcn install is complete for this kit.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-card.json
+```
+
+Namespace installs require this `components.json` registry mapping first:
+
+```json
+{
+  "registries": {
+    "@payload-kits": "https://payload-components.xyz/r/{name}.json"
+  }
+}
+```
+
+```bash
+pnpm dlx shadcn@latest add @payload-kits/post-card
+```
+
+<KitPreview slug="post-card" />
+
+## Installed Files
+
+```txt
+src/utilities/ui.ts
+src/components/posts/types.ts
+src/components/posts/PostCard.tsx
+```
+
+## Props
+
+- `post`: object with `title`, `slug`, `publishedAt`, `categories`, and optional `meta.description` plus `meta.image`
+- `basePath`: optional post route prefix, defaulting to `/posts`
+- `showCategories`: optional category toggle
+- `className`: optional wrapper class
+
+## Install Mode
+
+This kit has `installMode: shadcn-native`. It does not patch `src/collections/Posts/index.ts`, `src/blocks/RenderBlocks.tsx`, generated types, or admin import maps.

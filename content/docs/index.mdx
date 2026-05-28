@@ -1,0 +1,42 @@
+---
+title: Payload Kits documentation
+description: Technical documentation for installing Payload-native block kits, understanding the registry contract, and previewing the current alpha catalog.
+---
+
+Payload Kits ships installable Payload CMS v3 kits through a shadcn-compatible registry. shadcn-native kits are the public front door; `payload-kit` is reserved for kits that need Payload-aware project mutation.
+
+## What These Docs Cover
+
+- how `npx shadcn add @payload-kits/post-card` works
+- what `payload-kit add` changes when a kit needs Payload wiring
+- which kits can be pure shadcn Directory installs
+- which files a kit owns
+- how schema registration, render wiring, generated types, and import maps are handled
+- where to preview the actual shipped components before installation
+
+## Current Alpha Surface
+
+The public alpha now ships wrapper-required Payload page blocks and shadcn-native Posts presentation components. The registry source lives in `payload-kits/registry.json`; generated public registry files are emitted under `public/r` during the registry build step.
+
+- [Hero Basic](/docs/kits/hero-basic): headline-first marketing hero block with CTA and proof-item support.
+- [Feature Grid Basic](/docs/kits/feature-grid-basic): text-first feature section for product and agency landing pages.
+- [Post Card](/docs/kits/post-card): shadcn-native card for Payload post-shaped data.
+- [Post Archive](/docs/kits/post-archive): shadcn-native archive grid for post arrays.
+- [Post Hero](/docs/kits/post-hero): shadcn-native article hero for one post.
+- [Featured Post](/docs/kits/featured-post): shadcn-native feature surface for one highlighted article.
+- [Post List](/docs/kits/post-list): shadcn-native compact list for sidebars and resource indexes.
+- [Author Card](/docs/kits/author-card): shadcn-native author profile card for post pages.
+- [Newsletter Callout](/docs/kits/newsletter-callout): shadcn-native newsletter form callout.
+- [Related Posts](/docs/kits/related-posts): shadcn-native related content section.
+
+## The Installation Contract
+
+Payload Kits has two install contracts. shadcn-native kits are complete after file and dependency delivery. payload-kit-required kits are complete only after block source, Payload config, renderer registration, generated types, and import-map updates are in a consistent state.
+
+```bash
+npx shadcn add @payload-kits/post-card
+npx payload-kit add hero-basic
+```
+
+- [Getting started](/docs/getting-started): supported project shape, install flow, and verification commands.
+- [shadcn Directory strategy](/docs/reference/shadcn-directory): when to use shadcn Directory and when to use `payload-kit`.

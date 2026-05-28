@@ -1,0 +1,47 @@
+---
+title: Newsletter Callout
+description: Documentation for the newsletter-callout shadcn-native kit, including direct shadcn install behavior and form props.
+---
+
+`newsletter-callout` installs a configurable form section for post pages, resources, and editorial hubs. It is intentionally frontend-only: wire the `action` prop to the route or service your app already owns.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/newsletter-callout.json
+```
+
+Namespace installs require this `components.json` registry mapping first:
+
+```json
+{
+  "registries": {
+    "@payload-kits": "https://payload-components.xyz/r/{name}.json"
+  }
+}
+```
+
+```bash
+pnpm dlx shadcn@latest add @payload-kits/newsletter-callout
+```
+
+<KitPreview slug="newsletter-callout" />
+
+## Installed Files
+
+```txt
+src/utilities/ui.ts
+src/components/posts/NewsletterCallout.tsx
+```
+
+## Props
+
+- `title`: optional heading, defaulting to `Subscribe for updates`
+- `description`: optional supporting copy
+- `action`: optional form action, defaulting to `/api/newsletter`
+- `method`: optional form method, defaulting to `post`
+- `emailName`: optional email input name, defaulting to `email`
+- `buttonLabel`: optional submit label, defaulting to `Subscribe`
+- `className`: optional wrapper class
+
+## Install Mode
+
+This kit has `installMode: shadcn-native`. It copies files and shadcn dependencies only.

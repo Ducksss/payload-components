@@ -4,6 +4,7 @@ import { cn } from '@/utilities/ui'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import React from 'react'
+import { RootProvider } from 'fumadocs-ui/provider/next'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
@@ -31,20 +32,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body>
-        <Providers>
-          <AdminBar
-            adminBarProps={{
-              preview: isEnabled,
-            }}
-          />
+        <RootProvider search={{ enabled: false }} theme={{ enabled: false }}>
+          <Providers>
+            <AdminBar
+              adminBarProps={{
+                preview: isEnabled,
+              }}
+            />
 
-          <Header />
-          <JsonLd data={[buildOrganizationJsonLd(), buildWebSiteJsonLd()]} />
-          {children}
-          <Footer />
-          <Analytics />
-          <SpeedInsights />
-        </Providers>
+            <Header />
+            <JsonLd data={[buildOrganizationJsonLd(), buildWebSiteJsonLd()]} />
+            {children}
+            <Footer />
+            <Analytics />
+            <SpeedInsights />
+          </Providers>
+        </RootProvider>
       </body>
     </html>
   )
