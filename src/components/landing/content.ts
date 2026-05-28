@@ -83,9 +83,9 @@ export const githubEarlyAccessIssueUrl =
 
 export const heroStats: HeroStat[] = [
   {
-    detail: 'Shipped kits live in the public alpha today.',
+    detail: '8 shadcn-native Posts kits and 2 payload-kit page blocks ship in the public alpha.',
     label: 'Kits shipped',
-    value: '2',
+    value: '10',
   },
   {
     detail: 'Manual repo cleanup steps after a kit install.',
@@ -93,9 +93,9 @@ export const heroStats: HeroStat[] = [
     value: '0',
   },
   {
-    detail: 'Single command to install a kit and finish wiring.',
-    label: 'CLI calls to ship',
-    value: '1',
+    detail: 'shadcn-native and payload-kit-required installs stay deliberately separate.',
+    label: 'Install modes',
+    value: '2',
   },
 ]
 
@@ -109,55 +109,55 @@ export const proofPills: ProofPill[] = [
 
 export const installSteps: Step[] = [
   {
-    command: 'npx payload-kit add hero-basic',
+    command: 'npx shadcn add @payload-kits/post-card',
     description:
-      'The current alpha starts with one real command: install a shipped kit and let the wrapper handle the Payload-aware wiring around it.',
+      'The public front door is shadcn. Start with Posts presentation components that install as ordinary registry files without mutating Payload project config.',
     items: [
       'Installs a real public alpha kit today',
-      'Applies the registry workflow through payload-kit',
-      'Keeps the install surface legible from the first proof',
+      'Copies frontend files and shadcn UI dependencies only',
+      'Keeps the first product promise native to shadcn Directory discovery',
     ],
     label: '01',
     status: 'shipped',
     statusLabel: 'Shipped',
-    title: 'Install a shipped alpha kit',
+    title: 'Install a shadcn-native kit',
   },
   {
-    command: 'npx payload-kit add feature-grid-basic',
+    command: 'npx payload-kit add hero-basic',
     description:
-      'The second shipped kit proves the multi-kit path: files land cleanly, registrations dedupe correctly, and the repo still finishes in a usable state.',
+      'When a kit needs Payload schema registration, renderer wiring, generated types, or import-map updates, the wrapper owns those project mutations.',
     items: [
-      'Registers the second block without duplicate wiring',
-      'Leaves separate installed state entries per kit',
+      'Registers page blocks without duplicate wiring',
+      'Records install state for recovery and doctor checks',
       'Generates types and updates the import map automatically',
     ],
     label: '02',
     status: 'shipped',
     statusLabel: 'Shipped',
-    title: 'Prove the second-kit install path',
+    title: 'Use the CLI for Payload wiring',
   },
   {
     command: 'npx payload-kit doctor',
     description:
-      'Doctor is next on the roadmap. It is not shipped yet, but it is the next operational layer after the two real public kits.',
+      'Doctor inspects shadcn copies, wrapper state, missing Payload registration, dependency drift, and partial install failures.',
     items: [
-      'Will flag unsupported versions and missing peers',
-      'Will surface drift after repeated installs',
-      'Follows the gallery and two-kit alpha proof',
+      'Flags unsupported versions and missing peers',
+      'Surfaces drift after repeated installs',
+      'Separates shadcn-native kits from wrapper-required kits',
     ],
     label: '03',
-    status: 'roadmap',
-    statusLabel: 'Roadmap',
-    title: 'See what lands next',
+    status: 'shipped',
+    statusLabel: 'Shipped',
+    title: 'Audit the install boundary',
   },
 ]
 
 export const productDifferentiators: FeatureCard[] = [
   {
     description:
-      'Every kit is designed to drop into Payload layouts instead of fighting them with generic component-library assumptions.',
+      'shadcn-native kits consume existing Payload-shaped data, while page blocks use the CLI only when the repo needs actual Payload layout wiring.',
     icon: LayoutTemplate,
-    title: 'Layouts-aware by default',
+    title: 'Payload-aware by default',
   },
   {
     description:
@@ -261,7 +261,7 @@ export const whyPayloadKits: FeatureCard[] = [
   },
   {
     description:
-      'Hero Basic and Feature Grid Basic already move from idea to Payload-ready code through the shipped alpha install path.',
+      'The first catalog now covers Posts cards, archives, heroes, lists, authors, newsletters, related content, and two wired page blocks.',
     icon: MessageSquareQuote,
     title: 'Catalog starts narrow on purpose',
   },
@@ -291,7 +291,7 @@ export const faqItems: FaqItem[] = [
   },
   {
     answer:
-      'Each installable kit ships as a complete unit: the block config, frontend component, Payload wiring, sample content, and the post-install tasks required to make it work.',
+      'shadcn-native kits install frontend files and shadcn UI dependencies. payload-kit-required kits add Payload schema registration, renderer wiring, generated types, import-map updates, state tracking, and doctor checks.',
     question: 'What actually gets installed when I add a kit?',
   },
   {

@@ -7,17 +7,17 @@ import { CheckCircle2, FileCode2, FolderTree, Sparkles } from 'lucide-react'
 import styles from './landing.module.css'
 
 const installLog = [
-  'Detected supported Payload v3 target',
-  'Installed feature-grid-basic kit files',
-  'Registered block config and renderer',
-  'Generated types and updated import map',
+  'Resolved @payload-kits/post-card',
+  'Installed Posts UI files',
+  'Pulled shadcn UI dependencies',
+  'No Payload config mutation required',
 ]
 
 const generatedFiles = [
-  'src/blocks/FeatureGridBasic/config.ts',
-  'src/blocks/FeatureGridBasic/Component.tsx',
-  'src/blocks/RenderBlocks.tsx',
-  'src/collections/Pages/index.ts',
+  'src/components/posts/types.ts',
+  'src/components/posts/PostCard.tsx',
+  'src/components/ui/badge.tsx',
+  'src/components/ui/card.tsx',
 ]
 
 const commandLines = [
@@ -25,28 +25,28 @@ const commandLines = [
     animation: 'type',
     duration: 540,
     kind: 'command',
-    text: '$ npx payload-kit add feature-grid-basic',
-    width: '40ch',
+    text: '$ npx shadcn add @payload-kits/post-card',
+    width: '43ch',
   },
   {
     animation: 'reveal',
     duration: 150,
     kind: 'output',
-    text: 'payload-kit: generating types',
-    width: '29ch',
-  },
-  {
-    animation: 'reveal',
-    duration: 150,
-    kind: 'output',
-    text: 'payload-kit: updating import map',
+    text: 'shadcn: resolving registry item',
     width: '32ch',
   },
   {
     animation: 'reveal',
     duration: 150,
+    kind: 'output',
+    text: 'shadcn: installing dependencies',
+    width: '34ch',
+  },
+  {
+    animation: 'reveal',
+    duration: 150,
     kind: 'success',
-    text: 'payload-kit: install complete',
+    text: 'post-card: install complete',
     width: '29ch',
   },
 ] as const
@@ -120,11 +120,11 @@ export const HeroProductFrame = () => {
             <div className="flex flex-wrap items-center gap-3 text-sm text-background/70">
               <span className="inline-flex items-center gap-2 rounded-full border border-background/10 px-3 py-1">
                 <Sparkles className="size-4" />
-                Curated kit install
+                shadcn registry install
               </span>
               <span className="inline-flex items-center gap-2 rounded-full border border-background/10 px-3 py-1">
                 <FolderTree className="size-4" />
-                Payload-aware wiring
+                Payload-aware components
               </span>
             </div>
 
@@ -135,7 +135,7 @@ export const HeroProductFrame = () => {
                     Command line
                   </p>
                   <p className="mt-2 text-xl font-semibold tracking-[-0.04em] text-background">
-                    Install one of the shipped alpha kits and keep moving
+                    Install the first Payload kit through shadcn
                   </p>
                 </div>
                 <SquareCommand />
@@ -198,7 +198,7 @@ export const HeroProductFrame = () => {
             style={spawnStyle(filesRevealStart)}
           >
             <p className="text-xs uppercase tracking-[0.22em] text-background/55">
-              Installed and updated files
+              Installed files
             </p>
             <div className="mt-4 flex flex-col gap-3 rounded-[1.5rem] border border-background/10 bg-background/6 p-4 sm:p-5">
               {generatedFiles.map((filePath) => (
@@ -220,9 +220,9 @@ export const HeroProductFrame = () => {
             <div className="mt-4 grid gap-3">
               <div className="rounded-[1.5rem] border border-background/10 bg-background text-foreground">
                 <div className="border-b border-border/80 px-5 py-4">
-                  <p className="text-sm font-medium">Hero Basic</p>
+                  <p className="text-sm font-medium">Post Card</p>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Headline, CTA, proof ribbon, and Payload-safe defaults.
+                    Image, category, date, title, summary, and route-safe links.
                   </p>
                 </div>
                 <div className="grid gap-3 px-5 py-5">
@@ -239,12 +239,12 @@ export const HeroProductFrame = () => {
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
                 {[
                   {
-                    copy: 'Text-first feature grid with clean layout registration and an optional CTA row.',
-                    name: 'Feature Grid Basic',
+                    copy: '8 direct shadcn Posts kits ship alongside 2 payload-kit page blocks.',
+                    name: '10 public kits',
                   },
                   {
-                    copy: 'Two real public kits shipped today while init and doctor remain the next steps.',
-                    name: 'Alpha boundary',
+                    copy: 'Use payload-kit when a kit edits Payload collections, renderers, types, or import maps.',
+                    name: 'CLI boundary',
                   },
                 ].map((item) => (
                   <div

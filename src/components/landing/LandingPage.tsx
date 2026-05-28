@@ -30,12 +30,12 @@ export const landingMetadata: Metadata = {
   alternates: {
     canonical: '/',
   },
-  title: 'Payload Kits | Install production-ready Payload blocks with one command',
+  title: 'Payload Kits | shadcn-native kits for Payload CMS',
   description:
-    'Payload Kits is a Payload-native kit platform for agencies and freelancers. Install curated block kits with one command, including schema wiring, render components, type generation, and import-map updates.',
+    'Payload Kits is a shadcn registry for Payload CMS teams. Start with npx shadcn add @payload-kits/post-card, then use payload-kit when a kit needs Payload-aware wiring.',
   openGraph: {
     description:
-      'Payload Kits is a Payload-native kit platform for agencies and freelancers. Install curated block kits with one command, including schema wiring, render components, type generation, and import-map updates.',
+      'Payload Kits is a shadcn registry for Payload CMS teams. Start with npx shadcn add @payload-kits/post-card, then use payload-kit when a kit needs Payload-aware wiring.',
     images: [
       {
         alt: 'Payload Kits social preview',
@@ -45,7 +45,7 @@ export const landingMetadata: Metadata = {
       },
     ],
     siteName: 'Payload Kits',
-    title: 'Payload Kits | Install production-ready Payload blocks with one command',
+    title: 'Payload Kits | shadcn-native kits for Payload CMS',
     type: 'website',
     url: '/',
   },
@@ -53,7 +53,7 @@ export const landingMetadata: Metadata = {
     card: 'summary_large_image',
     creator: '@payloadcms',
     description:
-      'Payload Kits is a Payload-native kit platform for agencies and freelancers. Install curated block kits with one command, including schema wiring, render components, type generation, and import-map updates.',
+      'Payload Kits is a shadcn registry for Payload CMS teams. Start with npx shadcn add @payload-kits/post-card, then use payload-kit when a kit needs Payload-aware wiring.',
     images: [
       {
         alt: 'Payload Kits social preview',
@@ -62,7 +62,7 @@ export const landingMetadata: Metadata = {
         width: 1200,
       },
     ],
-    title: 'Payload Kits | Install production-ready Payload blocks with one command',
+    title: 'Payload Kits | shadcn-native kits for Payload CMS',
   },
 }
 
@@ -95,8 +95,8 @@ export function LandingPage() {
                     'max-w-5xl text-[clamp(2.6rem,8.4vw,6rem)] font-medium leading-[0.94] tracking-[-0.085em] text-balance',
                   )}
                 >
-                  Install production-ready Payload blocks{' '}
-                  <span className={styles.heroHeadlineAccent}>with one command.</span>
+                  Install Payload kits{' '}
+                  <span className={styles.heroHeadlineAccent}>with shadcn.</span>
                 </h1>
               </div>
               <p
@@ -105,8 +105,9 @@ export function LandingPage() {
                   'mx-auto max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg',
                 )}
               >
-                Payload Kits wires schema, render components, generated types, and import-map
-                updates straight into your Payload v3 repo — so blocks belong, not just paste.
+                Start with `npx shadcn add @payload-kits/post-card` for frontend-only Posts UI.
+                Use `payload-kit` when a kit needs Payload schema wiring, type generation, and
+                import-map updates.
               </p>
             </div>
 
@@ -241,7 +242,7 @@ export function LandingPage() {
           <SectionHeading
             eyebrow="How it works"
             title="A three-command flow built for repeatable delivery, not demo theatrics."
-            description="Detect the repo, add the kit, and verify the result before shipping. Two steps are live in the public alpha today, the third is on the roadmap."
+            description="Start with shadcn for frontend-only Posts UI, use payload-kit for Payload mutations, and run doctor when a repo needs install-state clarity."
           />
 
           <div
@@ -331,8 +332,8 @@ export function LandingPage() {
         <div className="container py-20 lg:py-28">
           <SectionHeading
             eyebrow="Live gallery"
-            title="Two real kits. Two real install commands. Live previews."
-            description="The gallery stays narrow on purpose: every kit you see here installs cleanly into a Payload v3 repo today, with type generation and import-map updates handled for you."
+            title="10 real kits. Two install modes. Live previews."
+            description="The gallery shows the actual registry components: shadcn-native Posts surfaces install as files and dependencies, while page blocks use payload-kit for Payload wiring."
           />
 
           <KitGalleryTeaser />

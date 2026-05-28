@@ -4,9 +4,9 @@ const DEFAULT_SITE_URL = 'http://localhost:3000'
 
 export const siteConfig = {
   defaultDescription:
-    'Payload Kits is a Payload-native kit platform for agencies and freelancers. Install curated block kits with one command, including schema wiring, render components, type generation, and import-map updates.',
+    'Payload Kits is a shadcn registry for Payload CMS teams. Start with npx shadcn add @payload-kits/post-card, then use payload-kit when a kit needs Payload-aware wiring.',
   defaultOgImagePath: '/website-template-OG.webp',
-  defaultTitle: 'Payload Kits | Install production-ready Payload blocks with one command',
+  defaultTitle: 'Payload Kits | shadcn-native kits for Payload CMS',
   githubUrl: 'https://github.com/Ducksss/payload-components',
   name: 'Payload Kits',
   twitterCreator: '@payloadcms',

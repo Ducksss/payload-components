@@ -146,7 +146,7 @@ export const WaitlistForm = ({
         <h3 className="text-2xl font-medium tracking-[-0.05em] text-balance">
           {intent === 'design-partner'
             ? 'Raise your hand for the design partner track.'
-            : 'Get notified when the first kits are ready to install.'}
+            : 'Get notified as the kit catalog expands.'}
         </h3>
         <p className="text-sm leading-6 text-background/72">
           {intent === 'design-partner'

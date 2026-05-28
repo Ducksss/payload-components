@@ -4,9 +4,9 @@
   <h1 align="center">Payload Kits</h1>
 
   <p align="center">
-    <strong>Registry-backed block kits for Payload CMS v3 + Next.js projects.</strong>
+    <strong>shadcn-installable Payload kits for Payload CMS v3 + Next.js projects.</strong>
     <br />
-    Install curated sections with Payload schema, render components, generated types, and import-map updates already wired.
+    Install Posts UI with `npx shadcn add @payload-kits/post-card`, and use `payload-kit` only when a kit needs Payload-aware wiring.
     <br />
     <br />
     <a href="https://payload-components.xyz"><strong>Live site</strong></a>
@@ -54,7 +54,7 @@ Today, the codebase already includes:
 - SEO, redirects, search, form builder, live preview, and scheduled jobs
 - A Next.js App Router frontend alongside the Payload admin
 
-The important boundary: the CLI is now only partially real. `payload-kit add` ships in alpha for `hero-basic` and `feature-grid-basic`, while `payload-kit init` and `payload-kit doctor` still remain placeholders. The broader CLI and registry story is still in progress, but it is no longer roadmap-only.
+The important boundary: shadcn is the front door, and the CLI is the Payload-aware wiring layer. The current alpha ships 10 public kits: 8 shadcn-native Posts components (`post-card`, `post-archive`, `post-hero`, `featured-post`, `post-list`, `author-card`, `newsletter-callout`, `related-posts`) and 2 wrapper-required page blocks (`hero-basic`, `feature-grid-basic`). `payload-kit doctor` can inspect whether a kit is fully installed, shadcn-only copied, partially installed, or missing Payload registration. `payload-kit init` remains a placeholder.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -64,8 +64,7 @@ This repo now includes a few concrete launch surfaces for the early channel plan
 
 - GitHub intake: use the [early access / design partner issue template](https://github.com/Ducksss/payload-components/issues/new?template=early-access.yml)
 - Site CTA flow: the homepage waitlist now captures `source`, `intent`, `role`, and `utm_*` context before emailing the signup through Resend
-- Owned-content layer: the app includes a `/resources` hub with static Payload-native guides you can use for SEO and community sharing
-- Operator assets: see [`marketing/README.md`](./marketing/README.md) for launch playbooks, community post drafts, and outreach templates
+- Owned-content layer: the app includes Fumadocs-backed `/docs`, plus `/components` and `/resources` surfaces for install guidance, kit previews, and SEO-ready guides
 
 This keeps the first push aligned with a waitlist + design-partner motion instead of broad paid acquisition.
 
@@ -79,6 +78,7 @@ This keeps the first push aligned with a waitlist + design-partner motion instea
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
+- [Fumadocs](https://fumadocs.dev/)
 - [Vercel Postgres Adapter for Payload](https://www.npmjs.com/package/@payloadcms/db-vercel-postgres)
 - [Playwright](https://playwright.dev/)
 - [Vitest](https://vitest.dev/)
@@ -94,7 +94,7 @@ This project runs as a standard Payload + Next.js app. The main local goal is to
 
 ### Prerequisites
 
-- Node.js `^18.20.2 || >=20.9.0`
+- Node.js `>=20.9.0`
 - `pnpm` `^9 || ^10`
 - A running Postgres database
 - Values for:
@@ -153,6 +153,7 @@ This project runs as a standard Payload + Next.js app. The main local goal is to
 6. Open the app:
    - Frontend: [http://localhost:3000](http://localhost:3000)
    - Product landing page: [http://localhost:3000](http://localhost:3000)
+   - Documentation: [http://localhost:3000/docs](http://localhost:3000/docs)
    - Live components gallery: [http://localhost:3000/components](http://localhost:3000/components)
    - Resources hub: [http://localhost:3000/resources](http://localhost:3000/resources)
    - Payload admin: [http://localhost:3000/admin](http://localhost:3000/admin)
@@ -167,7 +168,8 @@ This repo is most useful in three modes:
 
 1. Marketing site prototype
    - Visit `/` to review the Payload Kits positioning, product proof, GitHub CTA path, and early-access flow.
-   - Visit `/components` to browse the live gallery for the two shipped alpha kits.
+   - Visit `/docs` to read the Fumadocs MDX install, kit, and registry documentation.
+   - Visit `/components` to browse the live gallery for the shipped wrapper-required blocks and shadcn-native Posts components.
    - Visit `/resources` to browse the first Payload-native guides for SEO and community distribution.
 
 2. Payload CMS starter
@@ -177,7 +179,7 @@ This repo is most useful in three modes:
 3. Component and content workflow sandbox
    - Iterate on blocks, frontend components, and admin-safe content models inside a real Payload v3 project.
    - The homepage waitlist form emails signups through Resend instead of storing them in Payload.
-   - The GitHub issue template and `marketing/` docs give you an executable early-channel operating layer inside the repo.
+   - The GitHub issue template keeps early-access intake organized without adding internal launch docs to the repo.
 
 Useful scripts:
 
@@ -190,6 +192,7 @@ pnpm generate:importmap   # Refresh the admin import map after component changes
 pnpm registry:build       # Generate deployable shadcn registry JSON under ignored public/r
 pnpm registry:check       # Verify registry generation is reproducible from source
 pnpm test:registry        # Run the public shadcn registry check
+pnpm test:shadcn          # Run the focused direct shadcn registry compatibility smoke
 pnpm test:install         # Run fast payload-kit wrapper fixture tests
 pnpm test:fresh           # Run the fresh Payload repo smoke test
 pnpm test:release         # Run the full release verification suite
@@ -209,11 +212,37 @@ The public registry source lives at [`payload-kits/registry.json`](./payload-kit
 ```sh
 pnpm registry:build
 pnpm registry:check
-pnpm payload-kit add hero-basic
-pnpm payload-kit add feature-grid-basic
+pnpm test:shadcn
+pnpm dlx shadcn@latest add @payload-kits/hero-basic
+pnpm dlx payload-kit add hero-basic
+pnpm dlx payload-kit doctor
 ```
 
 `pnpm build` runs `registry:build` first, so production deploys refresh the public `/r/*.json` endpoints automatically. Detailed publishing and verification notes live in [payload-kits/README.md](./payload-kits/README.md).
+
+The shadcn Directory path is the preferred discovery surface for one-shot installs, but only for kits that shadcn can install by copying files and dependencies. Current Pages block kits are `payload-kit-required`: direct shadcn installs copy files and shadcn UI dependencies, while `payload-kit add` also applies Payload registration, generation commands, idempotency checks, and recovery state. Posts presentation kits such as `post-card`, `post-archive`, `post-hero`, `featured-post`, `post-list`, `author-card`, `newsletter-callout`, and `related-posts` are `shadcn-native`: direct shadcn install is complete for those kits because they do not mutate Payload schema, renderer, generated type, or import-map files.
+
+```sh
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/post-card.json
+pnpm dlx shadcn@latest add @payload-kits/post-card
+```
+
+The `@payload-kits/*` namespace form works after adding `{"@payload-kits":"https://payload-components.xyz/r/{name}.json"}` to `components.json` under `registries`.
+
+Payload schema mutations remain a `payload-kit` responsibility. If a kit needs to patch `src/collections/Pages/index.ts`, `src/collections/Posts/index.ts`, `src/blocks/RenderBlocks.tsx`, generated types, or the admin import map, it is not a pure shadcn one-shot kit.
+
+## Documentation
+
+The public docs route is powered by Fumadocs MDX:
+
+- `content/docs/**/*.mdx`: human-authored guide and reference pages
+- `content/docs/meta.json`: Fumadocs page-tree order for the sidebar
+- `source.config.ts`: Fumadocs MDX collection definition
+- `src/lib/source.ts`: Fumadocs source loader for `/docs`
+- `src/components/mdx.tsx`: shared MDX component map, including live kit previews
+- `src/content/docs.ts`: metadata used by sitemaps, `/llms.txt`, and docs contract tests
+
+`next dev` and `next build` generate `.source` automatically. The generated folder is not required for `pnpm exec tsc --noEmit`; `src/types/fumadocs-collections.d.ts` keeps the pre-build typecheck stable.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -223,14 +252,12 @@ pnpm payload-kit add feature-grid-basic
 - [x] Add a custom `/landing` route and supporting UI components
 - [x] Ship alpha `payload-kit add` for `hero-basic` and `feature-grid-basic`
 - [x] Define installable kit manifests and a registry delivery model
+- [x] Implement `payload-kit doctor`
+- [x] Rebuild the public docs surface on Fumadocs MDX
+- [x] Ship 8 Posts presentation kits as true shadcn Directory one-shot installs
 - [ ] Implement `payload-kit init`
-- [ ] Implement `payload-kit doctor`
 - [ ] Align local infrastructure files with the current Postgres adapter setup
 - [ ] Add deeper docs and screenshots for real kit installation flows
-
-For the broader direction, see [PAYLOAD-PLAN.md](./PAYLOAD-PLAN.md).
-
-For the current execution assets, see [`marketing/README.md`](./marketing/README.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
