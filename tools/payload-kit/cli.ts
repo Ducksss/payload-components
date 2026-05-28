@@ -1,6 +1,7 @@
 import path from 'node:path'
 
 import { addCommand } from './commands/add'
+import { doctorCommand } from './commands/doctor'
 import { detectProject } from './project'
 import { loadState } from './state'
 
@@ -13,13 +14,21 @@ Usage:
   payload-kit --help
 
 Alpha commands:
-  add     Install an alpha kit through the payload-kit wrapper and shadcn-compatible registry flow.
+  add     Install wrapper-required kits through the payload-kit flow, or mirror shadcn-native kits into supported Payload repos.
   init    Non-gating command shell reserved for a later alpha phase.
-  doctor  Non-gating command shell reserved for the next alpha tranche.
+  doctor  Inspect shadcn copy state, payload-kit wrapper state, Payload registration, and dependencies.
 
 Current alpha kits:
   hero-basic
   feature-grid-basic
+  post-card
+  post-archive
+  post-hero
+  featured-post
+  post-list
+  author-card
+  newsletter-callout
+  related-posts
 `
 
 const parseArgs = (argv: string[]) => {
@@ -61,7 +70,7 @@ const parseArgs = (argv: string[]) => {
   }
 }
 
-const placeholderCommand = async (commandName: 'doctor' | 'init', cwd: string) => {
+const placeholderCommand = async (commandName: 'init', cwd: string) => {
   try {
     const project = await detectProject(cwd)
     const state = await loadState(cwd)
@@ -93,7 +102,7 @@ const main = async () => {
 
     if (!kitName) {
       throw new Error(
-        'payload-kit add requires a kit name. Try "payload-kit add hero-basic" or "payload-kit add feature-grid-basic".',
+        'payload-kit add requires a kit name. Try "payload-kit add hero-basic" or "payload-kit add post-card".',
       )
     }
 
@@ -104,7 +113,14 @@ const main = async () => {
     return
   }
 
-  if (command === 'init' || command === 'doctor') {
+  if (command === 'doctor') {
+    await doctorCommand({
+      cwd,
+    })
+    return
+  }
+
+  if (command === 'init') {
     await placeholderCommand(command, cwd)
     return
   }

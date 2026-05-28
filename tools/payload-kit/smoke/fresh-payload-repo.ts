@@ -20,12 +20,24 @@ import { loadManifest } from '../manifest'
 import { shadcnCliPackage } from '../utils'
 import type { KitManifest } from '../types'
 
-export const DEFAULT_SMOKE_KITS = ['hero-basic', 'feature-grid-basic'] as const
+export const DEFAULT_SMOKE_KITS = [
+  'hero-basic',
+  'feature-grid-basic',
+  'post-card',
+  'post-archive',
+  'post-hero',
+  'featured-post',
+  'post-list',
+  'author-card',
+  'newsletter-callout',
+  'related-posts',
+] as const
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
 
 type MutableSmokeKits = Array<(typeof DEFAULT_SMOKE_KITS)[number] | string>
 
 export type SmokeOptions = {
+  directOnly: boolean
   keepTemp: boolean
   kits: MutableSmokeKits
   registryUrl?: string
@@ -73,6 +85,9 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(dirname, '..', '..', '..')
 const rootPackagePath = path.join(repoRoot, 'package.json')
 
+export const getPayloadLayoutManifests = (manifests: KitManifest[]) =>
+  manifests.filter((manifest) => typeof manifest.sampleContent.blockType === 'string')
+
 const parseNextValue = (argv: string[], index: number, flag: string) => {
   const value = argv[index + 1]
 
@@ -85,6 +100,7 @@ const parseNextValue = (argv: string[], index: number, flag: string) => {
 
 export const parseSmokeArgs = (argv: string[]): SmokeOptions => {
   const options: SmokeOptions = {
+    directOnly: false,
     keepTemp: false,
     kits: [...DEFAULT_SMOKE_KITS],
     registryUrl: undefined,
@@ -125,6 +141,11 @@ export const parseSmokeArgs = (argv: string[]): SmokeOptions => {
 
     if (arg === '--keep-temp') {
       options.keepTemp = true
+      continue
+    }
+
+    if (arg === '--direct-only') {
+      options.directOnly = true
       continue
     }
 
@@ -292,12 +313,25 @@ const killProcess = async (child: ChildProcess) => {
     return
   }
 
-  child.kill('SIGTERM')
+  const killChild = (signal: NodeJS.Signals) => {
+    if (child.pid && process.platform !== 'win32') {
+      try {
+        process.kill(-child.pid, signal)
+        return
+      } catch {
+        // Fall back to the direct child if the process group is already gone.
+      }
+    }
+
+    child.kill(signal)
+  }
+
+  killChild('SIGTERM')
   await Promise.race([
     new Promise<void>((resolve) => child.once('close', () => resolve())),
     sleep(5000).then(() => {
       if (child.exitCode === null && child.signalCode === null) {
-        child.kill('SIGKILL')
+        killChild('SIGKILL')
       }
     }),
   ])
@@ -316,6 +350,7 @@ const startProcess = ({
 
   return spawn(command, args, {
     cwd,
+    detached: process.platform !== 'win32',
     env: {
       ...process.env,
       ...env,
@@ -462,6 +497,30 @@ const removeManifestFiles = async (targetPath: string, manifests: KitManifest[])
   }
 }
 
+const readPublicRegistryItem = async (kitName: string) => {
+  const itemPath = path.join(repoRoot, 'public', 'r', `${kitName}.json`)
+
+  return JSON.parse(await readFile(itemPath, 'utf8')) as {
+    registryDependencies?: string[]
+  }
+}
+
+const removeDirectInstallPreexistingFiles = async (targetPath: string, kitName: string) => {
+  const item = await readPublicRegistryItem(kitName)
+
+  for (const dependency of item.registryDependencies ?? []) {
+    await rm(path.join(targetPath, 'src', 'components', 'ui', `${dependency}.tsx`), {
+      force: true,
+    })
+  }
+
+  if ((item.registryDependencies ?? []).length > 0) {
+    await rm(path.join(targetPath, 'src', 'utilities', 'ui.ts'), {
+      force: true,
+    })
+  }
+}
+
 const assertFilesDelivered = async (targetPath: string, manifests: KitManifest[]) => {
   for (const manifest of manifests) {
     for (const file of manifest.files) {
@@ -473,16 +532,21 @@ const assertFilesDelivered = async (targetPath: string, manifests: KitManifest[]
 }
 
 const assertRegistryDependenciesDelivered = async (targetPath: string, kitName: string) => {
-  const itemPath = path.join(repoRoot, 'public', 'r', `${kitName}.json`)
-  const item = JSON.parse(await readFile(itemPath, 'utf8')) as {
-    registryDependencies?: string[]
-  }
+  const item = await readPublicRegistryItem(kitName)
 
   for (const dependency of item.registryDependencies ?? []) {
     const dependencyPath = path.join(targetPath, 'src', 'components', 'ui', `${dependency}.tsx`)
 
     if (!(await exists(dependencyPath))) {
       throw new Error(`Direct shadcn smoke did not deliver registry dependency "${dependency}".`)
+    }
+  }
+
+  if ((item.registryDependencies ?? []).length > 0) {
+    const utilityPath = path.join(targetPath, 'src', 'utilities', 'ui.ts')
+
+    if (!(await exists(utilityPath))) {
+      throw new Error('Direct shadcn smoke did not deliver the configured shadcn utils helper.')
     }
   }
 }
@@ -509,6 +573,7 @@ const runDirectShadcnUrlSmoke = async ({
   await removeManifestFiles(targetPath, manifests)
 
   for (const kit of kits) {
+    await removeDirectInstallPreexistingFiles(targetPath, kit)
     await runCommand({
       args: getDirectShadcnAddArgs({
         cwd: targetPath,
@@ -524,12 +589,19 @@ const runDirectShadcnUrlSmoke = async ({
   }
 
   await assertFilesDelivered(targetPath, manifests)
+  await runCommand({
+    args: ['exec', 'tsc', '--noEmit'],
+    command: 'pnpm',
+    cwd: targetPath,
+    stage: 'direct shadcn target TypeScript',
+    timeoutMs,
+  })
 
   return targetPath
 }
 
 const writeSeedScript = async (targetPath: string, manifests: KitManifest[]) => {
-  const layout = manifests.map((manifest) => manifest.sampleContent)
+  const layout = getPayloadLayoutManifests(manifests).map((manifest) => manifest.sampleContent)
   const scriptPath = path.join(targetPath, '.payload-kit', 'smoke-seed.ts')
 
   await mkdir(path.dirname(scriptPath), {
@@ -579,6 +651,8 @@ await payload.create({
 })
 
 console.log('Seeded /payload-kit-smoke')
+await payload.db.destroy?.()
+process.exit(0)
 `,
   )
 
@@ -628,7 +702,7 @@ const assertRouteRendersWithPlaywright = async ({
       waitUntil: 'networkidle',
     })
 
-    for (const manifest of manifests) {
+    for (const manifest of getPayloadLayoutManifests(manifests)) {
       const title = manifest.sampleContent.title
 
       if (typeof title !== 'string') {
@@ -821,17 +895,20 @@ export const runSmoke = async (options: SmokeOptions) => {
       timeoutMs: options.timeoutMs,
     })
 
-    const freshResult = await runFreshPayloadRepoSmoke({
-      dbConnectionString: process.env.POSTGRES_URL,
-      kits,
-      manifests,
-      stageLog: summary.stageLog,
-      tempRoot,
-      timeoutMs: options.timeoutMs,
-    })
+    if (!options.directOnly) {
+      const freshResult = await runFreshPayloadRepoSmoke({
+        dbConnectionString: process.env.POSTGRES_URL,
+        kits,
+        manifests,
+        stageLog: summary.stageLog,
+        tempRoot,
+        timeoutMs: options.timeoutMs,
+      })
 
-    summary.routeUrl = freshResult.routeUrl
-    summary.targetPath = freshResult.targetPath
+      summary.routeUrl = freshResult.routeUrl
+      summary.targetPath = freshResult.targetPath
+    }
+
     success = true
     await writeSummary(summary)
   } catch (error) {

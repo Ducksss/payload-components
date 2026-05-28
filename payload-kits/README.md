@@ -19,7 +19,7 @@ The POC passes only if all of the following are true:
 
 If any of those fail because of brittle repo patching or unreliable generation, we should stop and reconsider the product shape before building private registries, auth, or a larger kit catalog.
 
-Alpha reality in this workspace: `payload-kit add` is real, while `payload-kit init` and `payload-kit doctor` remain placeholders.
+Alpha reality in this workspace: `payload-kit add` and `payload-kit doctor` are real, while `payload-kit init` remains a placeholder.
 
 ## Public Registry Contract
 
@@ -119,9 +119,10 @@ This is why Pages blocks are not pure shadcn one-shot installs in the current al
 Use both verification tiers:
 
 - `pnpm test:registry`: checks that the public registry can be reproduced from source.
+- `pnpm test:shadcn`: builds the public registry, serves it locally, direct-installs each item URL with shadcn, and verifies file plus `registryDependencies` delivery.
 - `pnpm test:install`: runs the fast wrapper fixture suite against temp-copy Payload website targets.
 - `pnpm test:fresh`: runs the slower fresh Payload website smoke test for nightly and pre-release confidence.
-- `pnpm test:release`: runs lint, TypeScript, registry checks, integration tests, Playwright E2E, build, and the fresh smoke.
+- `pnpm test:release`: runs lint, TypeScript, registry checks, direct shadcn smoke, integration tests, Playwright E2E, build, and the fresh smoke.
 
 The fast fixture suite remains the normal PR gate because it is deterministic and proves the wrapper contract:
 
@@ -136,7 +137,8 @@ The fast fixture suite remains the normal PR gate because it is deterministic an
 The fresh smoke lives at `../tools/payload-kit/smoke/fresh-payload-repo.ts` and accepts:
 
 ```bash
-pnpm test:fresh -- --kits hero-basic,feature-grid-basic
+pnpm test:shadcn -- --registry-url https://<your-domain>/r/{name}.json
+pnpm test:fresh -- --kits hero-basic,feature-grid-basic,post-card,post-archive,post-hero,featured-post,post-list,author-card,newsletter-callout,related-posts
 pnpm test:fresh -- --registry-url https://<your-domain>/r/{name}.json
 pnpm test:fresh -- --keep-temp --timeout 1200000
 ```
@@ -196,6 +198,7 @@ Normalized alpha-kit blocks should:
 ```bash
 pnpm payload-kit add hero-basic
 pnpm payload-kit add feature-grid-basic
+pnpm payload-kit doctor
 ```
 
-`payload-kit init` and `payload-kit doctor` remain placeholder commands in this alpha tranche.
+`payload-kit doctor` reports whether each kit is fully installed, shadcn-only copied, partially installed, missing, or missing Payload registration. `payload-kit init` remains a placeholder command in this alpha tranche.

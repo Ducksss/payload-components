@@ -1,3 +1,4 @@
+import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 
 import Ajv2020 from 'ajv/dist/2020.js'
@@ -12,6 +13,7 @@ import { readJsonFile, repoRoot } from './utils'
 
 import type { RegistryDefinition } from './types'
 
+const manifestDir = path.join(repoRoot, 'payload-kits', 'manifests')
 const manifestSchemaPath = path.join(repoRoot, 'payload-kits', 'schema', 'poc-manifest.schema.json')
 const registryDefinitionPath = path.join(repoRoot, 'payload-kits', 'registry.json')
 const ajv = new Ajv2020({
@@ -21,7 +23,13 @@ const ajv = new Ajv2020({
 let validatorPromise: Promise<ValidateFunction<KitManifest>> | undefined
 
 export const getManifestPath = (kitName: string) =>
-  path.join(repoRoot, 'payload-kits', 'manifests', `${kitName}.json`)
+  path.join(manifestDir, `${kitName}.json`)
+
+export const listManifestNames = async () =>
+  (await readdir(manifestDir))
+    .filter((fileName) => fileName.endsWith('.json'))
+    .map((fileName) => fileName.replace(/\.json$/, ''))
+    .sort()
 
 const getExpectedPatchedFiles = (manifest: KitManifest) => {
   const patchedFiles = new Set<string>()
