@@ -1,51 +1,48 @@
----
-title: Queries
-description: Local API, REST, and GraphQL query patterns
-tags: [payload, queries, local-api, rest, graphql]
----
+# Payload CMS Querying Reference
 
-# Payload CMS Queries
+Complete reference for querying data across Local API, REST, and GraphQL.
 
 ## Query Operators
 
-```typescript
+```ts
+import type { Where } from 'payload'
+
 // Equals
-{ color: { equals: 'blue' } }
+const equalsQuery: Where = { color: { equals: 'blue' } }
 
 // Not equals
-{ status: { not_equals: 'draft' } }
+const notEqualsQuery: Where = { status: { not_equals: 'draft' } }
 
 // Greater/less than
-{ price: { greater_than: 100 } }
-{ age: { less_than_equal: 65 } }
+const greaterThanQuery: Where = { price: { greater_than: 100 } }
+const lessThanEqualQuery: Where = { age: { less_than_equal: 65 } }
 
 // Contains (case-insensitive)
-{ title: { contains: 'payload' } }
+const containsQuery: Where = { title: { contains: 'payload' } }
 
 // Like (all words present)
-{ description: { like: 'cms headless' } }
+const likeQuery: Where = { description: { like: 'cms headless' } }
 
 // In/not in
-{ category: { in: ['tech', 'news'] } }
+const inQuery: Where = { category: { in: ['tech', 'news'] } }
 
 // Exists
-{ image: { exists: true } }
+const existsQuery: Where = { image: { exists: true } }
 
 // Near (point fields)
-{ location: { near: [10, 20, 5000] } } // [lng, lat, maxDistance]
+const nearQuery: Where = { location: { near: '-122.4194,37.7749,10000' } }
 ```
 
 ## AND/OR Logic
 
-```typescript
-{
+```ts
+import type { Where } from 'payload'
+
+const complexQuery: Where = {
   or: [
     { color: { equals: 'mint' } },
     {
-      and: [
-        { color: { equals: 'white' } },
-        { featured: { equals: false } },
-      ],
+      and: [{ color: { equals: 'white' } }, { featured: { equals: false } }],
     },
   ],
 }
@@ -53,8 +50,10 @@ tags: [payload, queries, local-api, rest, graphql]
 
 ## Nested Properties
 
-```typescript
-{
+```ts
+import type { Where } from 'payload'
+
+const nestedQuery: Where = {
   'author.role': { equals: 'editor' },
   'meta.featured': { exists: true },
 }
@@ -62,7 +61,7 @@ tags: [payload, queries, local-api, rest, graphql]
 
 ## Local API
 
-```typescript
+```ts
 // Find documents
 const posts = await payload.find({
   collection: 'posts',
@@ -70,7 +69,7 @@ const posts = await payload.find({
     status: { equals: 'published' },
     'author.name': { contains: 'john' },
   },
-  depth: 2, // Populate relationships
+  depth: 2,
   limit: 10,
   page: 1,
   sort: '-createdAt',
@@ -121,16 +120,43 @@ const count = await payload.count({
 })
 ```
 
-## Access Control in Local API
+### Threading req Parameter
 
-**CRITICAL**: Local API bypasses access control by default (`overrideAccess: true`).
+When performing operations in hooks or nested operations, pass the `req` parameter to maintain transaction context:
 
-```typescript
+```ts
+// ✅ CORRECT: Pass req for transaction safety
+const afterChange: CollectionAfterChangeHook = async ({ doc, req }) => {
+  await req.payload.create({
+    collection: 'audit-log',
+    data: { action: 'created', docId: doc.id },
+    req, // Maintains transaction atomicity
+  })
+}
+
+// ❌ WRONG: Missing req breaks transaction
+const afterChange: CollectionAfterChangeHook = async ({ doc, req }) => {
+  await req.payload.create({
+    collection: 'audit-log',
+    data: { action: 'created', docId: doc.id },
+    // Missing req - runs in separate transaction
+  })
+}
+```
+
+This is critical for MongoDB replica sets and Postgres. See [ADAPTERS.md#threading-req-through-operations](ADAPTERS.md#threading-req-through-operations) for details.
+
+### Access Control in Local API
+
+**Important**: Local API bypasses access control by default (`overrideAccess: true`). When passing a `user` parameter, you must explicitly set `overrideAccess: false` to respect that user's permissions.
+
+```ts
 // ❌ WRONG: User is passed but access control is bypassed
 const posts = await payload.find({
   collection: 'posts',
   user: currentUser,
-  // Result: Operation runs with ADMIN privileges
+  // Missing: overrideAccess: false
+  // Result: Operation runs with ADMIN privileges, ignoring user's permissions
 })
 
 // ✅ CORRECT: Respects user's access control permissions
@@ -138,12 +164,15 @@ const posts = await payload.find({
   collection: 'posts',
   user: currentUser,
   overrideAccess: false, // Required to enforce access control
+  // Result: User only sees posts they have permission to read
 })
 
 // Administrative operation (intentionally bypass access control)
 const allPosts = await payload.find({
   collection: 'posts',
-  // No user parameter, overrideAccess defaults to true
+  // No user parameter
+  // overrideAccess defaults to true
+  // Result: Returns all posts regardless of access control
 })
 ```
 
@@ -152,10 +181,19 @@ const allPosts = await payload.find({
 - Performing operations on behalf of a user
 - Testing access control logic
 - API routes that should respect user permissions
+- Any operation where `user` parameter is provided
+
+**When `overrideAccess: true` is appropriate:**
+
+- Administrative operations (migrations, seeds, cron jobs)
+- Internal system operations
+- Operations explicitly intended to bypass access control
+
+See [ACCESS-CONTROL.md#important-notes](ACCESS-CONTROL.md#important-notes) for more details.
 
 ## REST API
 
-```typescript
+```ts
 import { stringify } from 'qs-esm'
 
 const query = {
@@ -177,7 +215,7 @@ const data = await response.json()
 
 ### REST Endpoints
 
-```
+```txt
 GET    /api/{collection}           - Find documents
 GET    /api/{collection}/{id}      - Find by ID
 POST   /api/{collection}           - Create
@@ -210,6 +248,19 @@ mutation {
   createPost(data: { title: "New Post", status: draft }) {
     id
     title
+  }
+}
+
+mutation {
+  updatePost(id: "123", data: { status: published }) {
+    id
+    status
+  }
+}
+
+mutation {
+  deletePost(id: "123") {
+    id
   }
 }
 ```

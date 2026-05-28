@@ -1,16 +1,12 @@
----
-title: Database Adapters & Transactions
-description: Database adapters, storage, email, and transaction patterns
-tags: [payload, database, mongodb, postgres, sqlite, transactions]
----
+# Payload CMS Adapters Reference
 
-# Payload CMS Adapters
+Complete reference for database, storage, and email adapters.
 
 ## Database Adapters
 
 ### MongoDB
 
-```typescript
+```ts
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 
 export default buildConfig({
@@ -22,7 +18,7 @@ export default buildConfig({
 
 ### Postgres
 
-```typescript
+```ts
 import { postgresAdapter } from '@payloadcms/db-postgres'
 
 export default buildConfig({
@@ -38,7 +34,7 @@ export default buildConfig({
 
 ### SQLite
 
-```typescript
+```ts
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 
 export default buildConfig({
@@ -53,13 +49,50 @@ export default buildConfig({
 
 ## Transactions
 
-Payload automatically uses transactions for all-or-nothing database operations.
+Payload automatically uses transactions for all-or-nothing database operations. Pass `req` to include operations in the same transaction.
+
+```ts
+import type { CollectionAfterChangeHook } from 'payload'
+
+const afterChange: CollectionAfterChangeHook = async ({ req, doc }) => {
+  // This will be part of the same transaction
+  await req.payload.create({
+    req, // Pass req to use same transaction
+    collection: 'audit-log',
+    data: { action: 'created', docId: doc.id },
+  })
+}
+
+// Manual transaction control
+const transactionID = await payload.db.beginTransaction()
+try {
+  await payload.create({
+    collection: 'orders',
+    data: orderData,
+    req: { transactionID },
+  })
+  await payload.update({
+    collection: 'inventory',
+    id: itemId,
+    data: { stock: newStock },
+    req: { transactionID },
+  })
+  await payload.db.commitTransaction(transactionID)
+} catch (error) {
+  await payload.db.rollbackTransaction(transactionID)
+  throw error
+}
+```
+
+**Note**: MongoDB requires replicaset for transactions. SQLite requires `transactionOptions: {}` to enable.
 
 ### Threading req Through Operations
 
-**CRITICAL**: When performing nested operations in hooks, always pass `req` to maintain transaction context.
+**Critical**: When performing nested operations in hooks, always pass `req` to maintain transaction context. Failing to do so breaks atomicity and can cause partial updates.
 
-```typescript
+```ts
+import type { CollectionAfterChangeHook } from 'payload'
+
 // ✅ CORRECT: Thread req through nested operations
 const resaveChildren: CollectionAfterChangeHook = async ({ collection, doc, req }) => {
   // Find children - pass req
@@ -106,28 +139,18 @@ const brokenHook: CollectionAfterChangeHook = async ({ collection, doc, req }) =
 - **SQLite (with transactions enabled)**: Ensures rollback on errors
 - **Without req**: Each operation runs independently, breaking atomicity
 
-### Manual Transaction Control
+**When req is Required:**
 
-```typescript
-const transactionID = await payload.db.beginTransaction()
-try {
-  await payload.create({
-    collection: 'orders',
-    data: orderData,
-    req: { transactionID },
-  })
-  await payload.update({
-    collection: 'inventory',
-    id: itemId,
-    data: { stock: newStock },
-    req: { transactionID },
-  })
-  await payload.db.commitTransaction(transactionID)
-} catch (error) {
-  await payload.db.rollbackTransaction(transactionID)
-  throw error
-}
-```
+- All mutating operations in hooks (create, update, delete)
+- Operations that must succeed/fail together
+- When using MongoDB replica sets or Postgres
+- Any operation that relies on `req.context` or `req.user`
+
+**When req is Optional:**
+
+- Read-only lookups independent of current transaction
+- Operations with `disableTransaction: true`
+- Administrative operations with `overrideAccess: true`
 
 ## Storage Adapters
 
@@ -142,7 +165,7 @@ Available storage adapters:
 
 ### AWS S3
 
-```typescript
+```ts
 import { s3Storage } from '@payloadcms/storage-s3'
 
 export default buildConfig({
@@ -164,11 +187,112 @@ export default buildConfig({
 })
 ```
 
+### Azure Blob Storage
+
+```ts
+import { azureStorage } from '@payloadcms/storage-azure'
+
+export default buildConfig({
+  plugins: [
+    azureStorage({
+      collections: {
+        media: true,
+      },
+      connectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
+      containerName: process.env.AZURE_STORAGE_CONTAINER_NAME,
+    }),
+  ],
+})
+```
+
+### Google Cloud Storage
+
+```ts
+import { gcsStorage } from '@payloadcms/storage-gcs'
+
+export default buildConfig({
+  plugins: [
+    gcsStorage({
+      collections: {
+        media: true,
+      },
+      bucket: process.env.GCS_BUCKET,
+      options: {
+        projectId: process.env.GCS_PROJECT_ID,
+        credentials: JSON.parse(process.env.GCS_CREDENTIALS),
+      },
+    }),
+  ],
+})
+```
+
+### Cloudflare R2
+
+```ts
+import { r2Storage } from '@payloadcms/storage-r2'
+
+export default buildConfig({
+  plugins: [
+    r2Storage({
+      collections: {
+        media: true,
+      },
+      bucket: process.env.R2_BUCKET,
+      config: {
+        credentials: {
+          accessKeyId: process.env.R2_ACCESS_KEY_ID,
+          secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+        },
+        region: 'auto',
+        endpoint: process.env.R2_ENDPOINT,
+      },
+    }),
+  ],
+})
+```
+
+### Vercel Blob
+
+```ts
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+
+export default buildConfig({
+  plugins: [
+    vercelBlobStorage({
+      collections: {
+        media: true,
+      },
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    }),
+  ],
+})
+```
+
+### Uploadthing
+
+```ts
+import { uploadthingStorage } from '@payloadcms/storage-uploadthing'
+
+export default buildConfig({
+  plugins: [
+    uploadthingStorage({
+      collections: {
+        media: true,
+      },
+      options: {
+        token: process.env.UPLOADTHING_TOKEN,
+        acl: 'public-read',
+      },
+    }),
+  ],
+})
+```
+
 ## Email Adapters
 
 ### Nodemailer (SMTP)
 
-```typescript
+```ts
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
 export default buildConfig({
@@ -189,7 +313,7 @@ export default buildConfig({
 
 ### Resend
 
-```typescript
+```ts
 import { resendAdapter } from '@payloadcms/email-resend'
 
 export default buildConfig({
@@ -200,10 +324,3 @@ export default buildConfig({
   }),
 })
 ```
-
-## Important Notes
-
-1. **MongoDB Transactions**: Require replica set configuration
-2. **SQLite Transactions**: Disabled by default, enable with `transactionOptions: {}`
-3. **Pass req**: Always pass `req` to nested operations in hooks for transaction safety
-4. **Point Fields**: Not supported in SQLite

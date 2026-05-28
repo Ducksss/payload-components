@@ -1,18 +1,14 @@
----
-title: Hooks
-description: Collection hooks, field hooks, and context patterns
-tags: [payload, hooks, lifecycle, context]
----
+# Payload CMS Hooks Reference
 
-# Payload CMS Hooks
+Complete reference for collection hooks, field hooks, and hook context patterns.
 
 ## Collection Hooks
 
-```typescript
+```ts
 export const Posts: CollectionConfig = {
   slug: 'posts',
   hooks: {
-    // Before validation - format data
+    // Before validation
     beforeValidate: [
       async ({ data, operation }) => {
         if (operation === 'create') {
@@ -22,7 +18,7 @@ export const Posts: CollectionConfig = {
       },
     ],
 
-    // Before save - business logic
+    // Before save
     beforeChange: [
       async ({ data, req, operation, originalDoc }) => {
         if (operation === 'update' && data.status === 'published') {
@@ -32,12 +28,9 @@ export const Posts: CollectionConfig = {
       },
     ],
 
-    // After save - side effects
+    // After save
     afterChange: [
-      async ({ doc, req, operation, previousDoc, context }) => {
-        // Check context to prevent loops
-        if (context.skipNotification) return
-
+      async ({ doc, req, operation, previousDoc }) => {
         if (operation === 'create') {
           await sendNotification(doc)
         }
@@ -45,7 +38,7 @@ export const Posts: CollectionConfig = {
       },
     ],
 
-    // After read - computed fields
+    // After read
     afterRead: [
       async ({ doc, req }) => {
         doc.viewCount = await getViewCount(doc.id)
@@ -53,14 +46,10 @@ export const Posts: CollectionConfig = {
       },
     ],
 
-    // Before delete - cascading deletes
+    // Before delete
     beforeDelete: [
       async ({ req, id }) => {
-        await req.payload.delete({
-          collection: 'comments',
-          where: { post: { equals: id } },
-          req, // Important for transaction
-        })
+        await cleanupRelatedData(id)
       },
     ],
   },
@@ -69,8 +58,8 @@ export const Posts: CollectionConfig = {
 
 ## Field Hooks
 
-```typescript
-import type { FieldHook } from 'payload'
+```ts
+import type { EmailField, FieldHook } from 'payload'
 
 const beforeValidateHook: FieldHook = ({ value }) => {
   return value.trim().toLowerCase()
@@ -84,7 +73,7 @@ const afterReadHook: FieldHook = ({ value, req }) => {
   return value
 }
 
-{
+const emailField: EmailField = {
   name: 'email',
   type: 'email',
   hooks: {
@@ -98,7 +87,9 @@ const afterReadHook: FieldHook = ({ value, req }) => {
 
 Share data between hooks or control hook behavior using request context:
 
-```typescript
+```ts
+import type { CollectionConfig } from 'payload'
+
 export const Posts: CollectionConfig = {
   slug: 'posts',
   hooks: {
@@ -114,16 +105,18 @@ export const Posts: CollectionConfig = {
       },
     ],
   },
+  fields: [{ name: 'title', type: 'text' }],
 }
 ```
 
-## Next.js Revalidation Pattern
+## Next.js Revalidation with Context Control
 
-```typescript
-import type { CollectionAfterChangeHook } from 'payload'
+```ts
+import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
 import { revalidatePath } from 'next/cache'
+import type { Page } from '../payload-types'
 
-export const revalidatePage: CollectionAfterChangeHook = ({
+export const revalidatePage: CollectionAfterChangeHook<Page> = ({
   doc,
   previousDoc,
   req: { payload, context },
@@ -138,8 +131,17 @@ export const revalidatePage: CollectionAfterChangeHook = ({
     // Revalidate old path if unpublished
     if (previousDoc?._status === 'published' && doc._status !== 'published') {
       const oldPath = previousDoc.slug === 'home' ? '/' : `/${previousDoc.slug}`
+      payload.logger.info(`Revalidating old page at path: ${oldPath}`)
       revalidatePath(oldPath)
     }
+  }
+  return doc
+}
+
+export const revalidateDelete: CollectionAfterDeleteHook<Page> = ({ doc, req: { context } }) => {
+  if (!context.disableRevalidate) {
+    const path = doc?.slug === 'home' ? '/' : `/${doc?.slug}`
+    revalidatePath(path)
   }
   return doc
 }
@@ -147,10 +149,20 @@ export const revalidatePage: CollectionAfterChangeHook = ({
 
 ## Date Field Auto-Set
 
-```typescript
-{
+Automatically set date when document is published:
+
+```ts
+import type { DateField } from 'payload'
+
+const publishedOnField: DateField = {
   name: 'publishedOn',
   type: 'date',
+  admin: {
+    date: {
+      pickerAppearance: 'dayAndTime',
+    },
+    position: 'sidebar',
+  },
   hooks: {
     beforeChange: [
       ({ siblingData, value }) => {
@@ -164,12 +176,11 @@ export const revalidatePage: CollectionAfterChangeHook = ({
 }
 ```
 
-## Best Practices
+## Hook Patterns Best Practices
 
 - Use `beforeValidate` for data formatting
 - Use `beforeChange` for business logic
 - Use `afterChange` for side effects
 - Use `afterRead` for computed fields
 - Store expensive operations in `context`
-- Pass `req` to nested operations for transaction safety
-- Use context flags to prevent infinite loops
+- Pass `req` to nested operations for transaction safety (see [ADAPTERS.md#threading-req-through-operations](ADAPTERS.md#threading-req-through-operations))
