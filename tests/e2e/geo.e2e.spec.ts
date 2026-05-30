@@ -140,7 +140,7 @@ test.describe('Generative Engine Optimization surfaces', () => {
           '@type': 'Question',
           acceptedAnswer: expect.objectContaining({
             '@type': 'Answer',
-            text: expect.stringContaining('complete unit'),
+            text: expect.stringContaining('shadcn-native kits install frontend files'),
           }),
           name: 'What actually gets installed when I add a kit?',
         }),
