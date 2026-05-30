@@ -38,7 +38,8 @@
     "test:install": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int/payload-kit.int.spec.ts tests/int/payload-kit-registry.int.spec.ts tests/int/payload-kit-add-command.int.spec.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
     "test:registry": "pnpm registry:check",
-    "test:release": "pnpm lint && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm run test:e2e && pnpm build && pnpm test:fresh"
+    "test:shadcn": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-kit/smoke/fresh-payload-repo.ts --direct-only",
+    "test:release": "pnpm lint && pnpm exec tsc --noEmit && pnpm test:registry && pnpm test:shadcn && pnpm run test:int && pnpm run test:e2e && pnpm build && pnpm test:fresh"
   },
   "dependencies": {
     "@payloadcms/admin-bar": "3.84.1",
