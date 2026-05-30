@@ -7,7 +7,7 @@ test.describe('Frontend', () => {
     await expect(
       page.getByRole('heading', {
         level: 1,
-        name: 'Install production-ready Payload blocks with one command.',
+        name: 'Install Payload kits with shadcn.',
       }),
     ).toBeVisible()
   })
@@ -16,7 +16,7 @@ test.describe('Frontend', () => {
     const routes = [
       {
         canonical: 'http://localhost:3000',
-        h1: 'Install production-ready Payload blocks with one command.',
+        h1: 'Install Payload kits with shadcn.',
         path: '/',
         title: /Payload Kits/,
       },
@@ -25,6 +25,18 @@ test.describe('Frontend', () => {
         h1: 'Browse the real kits that ship in the current registry.',
         path: '/components',
         title: /Payload Kits Components Gallery/,
+      },
+      {
+        canonical: 'http://localhost:3000/docs',
+        h1: 'Payload Kits documentation',
+        path: '/docs',
+        title: /Payload Kits documentation/,
+      },
+      {
+        canonical: 'http://localhost:3000/docs/kits/hero-basic',
+        h1: 'Hero Basic',
+        path: '/docs/kits/hero-basic',
+        title: /Hero Basic/,
       },
       {
         canonical: 'http://localhost:3000/resources',

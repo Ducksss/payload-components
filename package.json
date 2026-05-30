@@ -57,9 +57,7 @@
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-select": "^2.0.0",
-    "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.0.2",
-    "@radix-ui/react-tabs": "^1.1.13",
     "@types/mdx": "^2.0.13",
     "@vercel/analytics": "2.0.1",
     "@vercel/speed-insights": "^2.0.0",
@@ -86,18 +84,15 @@
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.2.0",
     "@playwright/test": "1.58.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
     "@testing-library/react": "16.3.0",
-    "@types/escape-html": "^1.0.2",
     "@types/node": "22.19.9",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@types/semver": "^7.7.1",
     "@vitejs/plugin-react": "4.5.2",
-    "autoprefixer": "^10.4.19",
     "eslint": "^9.16.0",
     "eslint-config-next": "16.2.3",
     "jsdom": "28.0.0",
@@ -111,7 +106,7 @@
     "vitest": "4.0.18"
   },
   "engines": {
-    "node": "^18.20.2 || >=20.9.0",
+    "node": ">=20.9.0",
     "pnpm": "^9 || ^10"
   },
   "pnpm": {

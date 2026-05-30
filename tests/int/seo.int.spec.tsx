@@ -6,8 +6,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import LandingPage, { landingMetadata } from '@/components/landing/LandingPage'
 import { KitGalleryTeaser } from '@/components/gallery/KitGalleryTeaser'
+import { JsonLd } from '@/components/JsonLd'
 import ResourcesPage from '@/app/(frontend)/resources/page'
 import { marketingResources } from '@/content/marketingResources'
+import { buildHomeJsonLd, getJsonLdGraphNodes } from '@/seo/geo'
 import { normalizeServerURL } from '@/utilities/getURL'
 import { normalizePathname, normalizeSiteURL } from '@/utilities/site'
 import { generateMeta } from '@/utilities/generateMeta'
@@ -163,13 +165,13 @@ describe('SEO metadata', () => {
   it('declares a canonical landing page with share-card metadata', () => {
     expect(landingMetadata.alternates).toEqual({ canonical: '/' })
     expect(landingMetadata.openGraph).toMatchObject({
-      title: 'Payload Kits | Install production-ready Payload blocks with one command',
+      title: 'Payload Kits | shadcn-native kits for Payload CMS',
       type: 'website',
       url: '/',
     })
     expect(landingMetadata.twitter).toMatchObject({
       card: 'summary_large_image',
-      title: 'Payload Kits | Install production-ready Payload blocks with one command',
+      title: 'Payload Kits | shadcn-native kits for Payload CMS',
     })
   })
 })
@@ -180,7 +182,7 @@ describe('SEO structured data', () => {
       '@context': 'https://schema.org',
       '@id': 'http://localhost:3000/#organization',
       '@type': 'Organization',
-      description: expect.stringContaining('Payload-native kit platform'),
+      description: expect.stringContaining('shadcn registry for Payload CMS teams'),
       name: 'Payload Kits',
     })
 
@@ -193,8 +195,8 @@ describe('SEO structured data', () => {
     })
   })
 
-  it('emits software application and FAQ JSON-LD on the landing page', () => {
-    const { container } = render(<LandingPage />)
+  it('serializes software application and FAQ JSON-LD for the landing page', () => {
+    const { container } = render(<JsonLd data={getJsonLdGraphNodes(buildHomeJsonLd())} />)
 
     const jsonLd = Array.from(container.querySelectorAll('script[type="application/ld+json"]')).map(
       (script) => JSON.parse(script.textContent || '{}') as Record<string, unknown>,

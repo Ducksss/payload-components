@@ -14,7 +14,7 @@ const WaitlistFormFallback = () => (
         Early access
       </p>
       <h3 className="text-2xl font-medium tracking-[-0.05em] text-balance">
-        Get notified when the first kits are ready to install.
+        Get notified as the kit catalog expands.
       </h3>
       <p className="text-sm leading-6 text-background/72">
         Join the waitlist for launch updates, public-kit drops, and early install access.
@@ -64,7 +64,7 @@ export const FinalCta = () => {
               <p className="mt-4 max-w-xl text-base leading-7 text-background/75 sm:text-lg">
                 Built for agencies and freelancers who want curated blocks, reliable repo wiring,
                 and a chance to influence the next layer of the install flow after the public
-                gallery and the first shipped kits.
+                gallery and the shipped public kits.
               </p>
 
               <ul className="mt-7 grid gap-2.5 text-sm leading-6 text-background/72 sm:grid-cols-2">
