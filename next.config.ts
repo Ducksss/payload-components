@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
       {
         pathname: '/api/media/file/**',
       },
+      {
+        pathname: '/website-template-OG.webp',
+      },
     ],
     qualities: [100],
     remotePatterns: [
