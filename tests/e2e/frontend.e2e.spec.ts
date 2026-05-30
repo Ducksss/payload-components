@@ -22,7 +22,7 @@ test.describe('Frontend', () => {
       },
       {
         canonical: 'http://localhost:3000/components',
-        h1: 'Browse the real kits that ship in the current alpha.',
+        h1: 'Browse the real kits that ship in the current registry.',
         path: '/components',
         title: /Payload Kits Components Gallery/,
       },
