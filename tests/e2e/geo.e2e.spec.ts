@@ -110,7 +110,7 @@ test.describe('Generative Engine Optimization surfaces', () => {
     )
     expect(organization).toMatchObject({
       '@type': 'Organization',
-      description: expect.stringContaining('Payload-native kit platform'),
+      description: expect.stringContaining('shadcn registry for Payload CMS teams'),
       name: 'Payload Kits',
       url: `${baseURL}/`,
     })
