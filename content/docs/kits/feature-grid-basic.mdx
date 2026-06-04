@@ -1,0 +1,31 @@
+---
+title: Feature Grid Basic
+description: A text-first feature grid Payload block with repeatable fields and optional CTA wiring.
+---
+
+`feature-grid-basic` proves the second-kit path and repeatable content fields.
+
+```bash
+npx payload-kit add feature-grid-basic
+```
+
+## What it installs
+
+- `src/blocks/FeatureGridBasic/config.ts`
+- `src/blocks/FeatureGridBasic/Component.tsx`
+- render-block registration for `featureGridBasic`
+- Pages layout registration for `FeatureGridBasic`
+
+## Content model
+
+The block supports:
+
+- eyebrow text
+- required title
+- optional description
+- three to six feature items
+- one optional CTA link
+
+## Acceptance criteria
+
+The kit is valid when it can install before or after `hero-basic`, dedupe all fragments, and keep each feature item readable on mobile and desktop.

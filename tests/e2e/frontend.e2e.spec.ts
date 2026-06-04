@@ -1,112 +1,82 @@
 import { expect, test } from '@playwright/test'
 
-test.describe('Frontend', () => {
-  test('can load homepage', async ({ page }) => {
-    await page.goto('http://localhost:3000')
+const baseURL = 'http://localhost:3000'
+
+test.describe('Fumadocs-first frontend', () => {
+  test('loads the light-first homepage', async ({ page }) => {
+    await page.goto(baseURL)
+
     await expect(page).toHaveTitle(/Payload Kits/)
     await expect(
       page.getByRole('heading', {
         level: 1,
-        name: 'Install production-ready Payload blocks with one command.',
+        name: 'Fumadocs-first docs for installable Payload kits.',
       }),
     ).toBeVisible()
+    await expect(
+      page.locator('code', { hasText: 'npx payload-kit add hero-basic' }).first(),
+    ).toBeVisible()
+
+    const background = await page
+      .locator('main')
+      .evaluate((element) => getComputedStyle(element).backgroundColor)
+    expect(background).toBe('rgb(255, 255, 255)')
   })
 
-  test('exposes crawlable SEO metadata and semantic public pages', async ({ page }) => {
+  test('exposes docs, catalog, and no horizontal overflow', async ({ page }) => {
     const routes = [
       {
-        canonical: 'http://localhost:3000',
-        h1: 'Install production-ready Payload blocks with one command.',
+        h1: 'Fumadocs-first docs for installable Payload kits.',
         path: '/',
         title: /Payload Kits/,
       },
       {
-        canonical: 'http://localhost:3000/components',
-        h1: 'Browse the real kits that ship in the current alpha.',
+        h1: 'Start Here',
+        path: '/docs',
+        title: /Start Here/,
+      },
+      {
+        h1: 'Architecture',
+        path: '/docs/architecture',
+        title: /Architecture/,
+      },
+      {
+        h1: 'Installable kits documented before they grow.',
         path: '/components',
-        title: /Payload Kits Components Gallery/,
-      },
-      {
-        canonical: 'http://localhost:3000/resources',
-        h1: 'Payload-native guides for teams evaluating installable kits.',
-        path: '/resources',
-        title: /Payload Kits Resources/,
-      },
-      {
-        canonical: 'http://localhost:3000/resources/payload-cms-blocks',
-        h1: 'Payload CMS blocks that survive real client repos',
-        path: '/resources/payload-cms-blocks',
-        title: /Payload CMS blocks/,
+        title: /Kit Catalog/,
       },
     ]
 
     for (const route of routes) {
-      await page.goto(`http://localhost:3000${route.path}`)
-
+      await page.goto(`${baseURL}${route.path}`)
       await expect(page).toHaveTitle(route.title)
       await expect(page.getByRole('heading', { level: 1, name: route.h1 })).toBeVisible()
-      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', route.canonical)
-      await expect(page.locator('meta[property="og:title"]')).not.toHaveAttribute(
-        'content',
-        /Payload Website Template/,
-      )
-      await expect(page.locator('img:not([alt])')).toHaveCount(0)
 
       const hasHorizontalOverflow = await page.evaluate(
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       )
       expect(hasHorizontalOverflow).toBe(false)
     }
-
-    await page.goto('http://localhost:3000/search?q=payload')
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/)
   })
 
-  test('exposes selected waitlist intent state', async ({ page }) => {
-    await page.goto('http://localhost:3000')
+  test('exposes the docs-first homepage sections', async ({ page }) => {
+    await page.goto(baseURL)
 
-    await expect(page.getByRole('button', { name: /Launch updates/ })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
-    await page.getByRole('button', { name: /Design partner/ }).click()
-    await expect(page.getByRole('button', { name: /Design partner/ })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
+    await expect(page.getByRole('heading', { level: 2, name: 'What changed in v2' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 2, name: 'The catalog' })).toBeVisible()
+    await expect(page.getByText('Built in public, documented first.')).toBeVisible()
+    await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
   })
 
-  test('can submit the homepage waitlist form', async ({ page }) => {
-    let requestBody:
-      | {
-          email?: string
-          honey?: string
-        }
-      | undefined
+  test('exposes a working command copy control', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(baseURL)
 
-    await page.route('**/api/waitlist', async (route) => {
-      requestBody = JSON.parse(route.request().postData() || '{}') as typeof requestBody
+    await page.getByRole('button', { name: 'Copy' }).click()
 
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ ok: true }),
-      })
-    })
-
-    await page.goto('http://localhost:3000')
-    await page.getByLabel('Email address').fill('hello@payloadkits.dev')
-    await page.getByRole('button', { name: 'Join the waitlist', exact: true }).click()
-
-    await expect(
-      page.getByText("You're on the list. We'll email you when early access opens."),
-    ).toBeVisible()
-    expect(requestBody).toMatchObject({
-      currentPath: '/',
-      email: 'hello@payloadkits.dev',
-      honey: '',
-      intent: 'waitlist',
-      source: 'homepage-final-cta',
-    })
+    await expect(page.getByRole('button', { name: 'Copied' })).toBeVisible()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-kit add hero-basic')
   })
 })

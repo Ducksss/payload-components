@@ -5,6 +5,7 @@ node_modules
 .env*
 !.env.example
 .next
+.source
 next-env.d.ts
 tsconfig.tsbuildinfo
 .vercel

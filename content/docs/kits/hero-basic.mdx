@@ -1,0 +1,31 @@
+---
+title: Hero Basic
+description: A headline-led Payload block for proving the registry and wrapper workflow.
+---
+
+`hero-basic` is the golden alpha kit.
+
+```bash
+npx payload-kit add hero-basic
+```
+
+## What it installs
+
+- `src/blocks/HeroBasic/config.ts`
+- `src/blocks/HeroBasic/Component.tsx`
+- render-block registration for `heroBasic`
+- Pages layout registration for `HeroBasic`
+
+## Content model
+
+The block supports:
+
+- eyebrow text
+- required title
+- required description
+- one or two CTA links
+- up to four proof items
+
+## Acceptance criteria
+
+The kit is valid when it installs into a supported target project, registers once in `RenderBlocks`, registers once in the Pages layout field, runs post-install scripts, and treats a second install as idempotent.

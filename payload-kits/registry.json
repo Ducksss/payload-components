@@ -20,12 +20,12 @@
       },
       "files": [
         {
-          "path": "src/blocks/HeroBasic/config.ts",
+          "path": "payload-kits/source/blocks/HeroBasic/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/HeroBasic/config.ts"
         },
         {
-          "path": "src/blocks/HeroBasic/Component.tsx",
+          "path": "payload-kits/source/blocks/HeroBasic/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/HeroBasic/Component.tsx"
         }
@@ -48,12 +48,12 @@
       },
       "files": [
         {
-          "path": "src/blocks/FeatureGridBasic/config.ts",
+          "path": "payload-kits/source/blocks/FeatureGridBasic/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureGridBasic/config.ts"
         },
         {
-          "path": "src/blocks/FeatureGridBasic/Component.tsx",
+          "path": "payload-kits/source/blocks/FeatureGridBasic/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureGridBasic/Component.tsx"
         }
