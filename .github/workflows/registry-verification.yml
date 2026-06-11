@@ -18,7 +18,7 @@ env:
   NEXT_TELEMETRY_DISABLED: '1'
 
 jobs:
-  release-gate:
+  pr-gate:
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
