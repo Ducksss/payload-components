@@ -5,6 +5,7 @@ export function GET() {
     '# Payload Kits',
     '',
     siteDescription,
+    'Docs runtime: Fumadocs-powered Next.js site.',
     '',
     '## Primary links',
     `- [Home](${siteUrl}/)`,

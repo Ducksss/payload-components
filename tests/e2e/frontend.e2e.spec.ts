@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 const baseURL = 'http://localhost:3000'
 
-test.describe('Fumadocs-first frontend', () => {
+test.describe('Docs-native frontend', () => {
   test('loads the light-first homepage', async ({ page }) => {
     await page.goto(baseURL)
 
@@ -10,7 +10,7 @@ test.describe('Fumadocs-first frontend', () => {
     await expect(
       page.getByRole('heading', {
         level: 1,
-        name: 'Fumadocs-first docs for installable Payload kits.',
+        name: 'Install Payload blocks without rebuilding the wiring.',
       }),
     ).toBeVisible()
     await expect(
@@ -26,7 +26,7 @@ test.describe('Fumadocs-first frontend', () => {
   test('exposes docs, catalog, and no horizontal overflow', async ({ page }) => {
     const routes = [
       {
-        h1: 'Fumadocs-first docs for installable Payload kits.',
+        h1: 'Install Payload blocks without rebuilding the wiring.',
         path: '/',
         title: /Payload Kits/,
       },
@@ -41,7 +41,7 @@ test.describe('Fumadocs-first frontend', () => {
         title: /Architecture/,
       },
       {
-        h1: 'Installable kits documented before they grow.',
+        h1: 'Kit catalog',
         path: '/components',
         title: /Kit Catalog/,
       },
@@ -59,12 +59,12 @@ test.describe('Fumadocs-first frontend', () => {
     }
   })
 
-  test('exposes the docs-first homepage sections', async ({ page }) => {
+  test('exposes the product documentation homepage sections', async ({ page }) => {
     await page.goto(baseURL)
 
-    await expect(page.getByRole('heading', { level: 2, name: 'What changed in v2' })).toBeVisible()
-    await expect(page.getByRole('heading', { level: 2, name: 'The catalog' })).toBeVisible()
-    await expect(page.getByText('Built in public, documented first.')).toBeVisible()
+    await expect(page.getByRole('heading', { level: 2, name: 'How it works' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 2, name: 'Current kits' })).toBeVisible()
+    await expect(page.getByText('Built for Payload projects')).toBeVisible()
     await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
   })
 
