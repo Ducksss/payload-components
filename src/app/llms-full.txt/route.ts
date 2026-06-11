@@ -1,14 +1,8 @@
-import { source } from '@/lib/source'
+import { getLLMText, source } from '@/lib/source'
 import { githubRepoUrl, kitEntries, siteDescription, siteUrl } from '@/lib/site'
 
 export async function GET() {
-  const docs = await Promise.all(
-    source.getPages().map(async (page) => {
-      const text = await page.data.getText('processed')
-
-      return [`# ${page.data.title}`, page.data.description ?? '', '', text].join('\n')
-    }),
-  )
+  const docs = await Promise.all(source.getPages().map(getLLMText))
   const body = [
     '# Payload Kits',
     '',

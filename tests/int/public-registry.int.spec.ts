@@ -61,7 +61,7 @@ describe('public shadcn registry publication', () => {
     expect(packageJson.scripts?.['registry:check']).toBe(
       'cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-kit/check-public-registry.ts',
     )
-    expect(packageJson.scripts?.prebuild).toBe('pnpm registry:build')
+    expect(packageJson.scripts?.prebuild).toBe('pnpm source:build && pnpm registry:build')
   })
 
   it('defines directory-ready registry item metadata without embedded file content', async () => {

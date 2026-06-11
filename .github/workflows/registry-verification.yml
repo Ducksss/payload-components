@@ -4,7 +4,8 @@ on:
   pull_request:
   push:
     branches:
-      - main
+      - dev
+      - prod
   schedule:
     - cron: '18 19 * * *'
   workflow_dispatch:

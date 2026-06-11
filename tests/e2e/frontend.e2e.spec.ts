@@ -68,6 +68,18 @@ test.describe('Docs-native frontend', () => {
     await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
   })
 
+  test('exposes the Fumadocs docs shell navigation', async ({ page }) => {
+    await page.goto(`${baseURL}/docs`)
+
+    const sidebar = page.locator('#nd-sidebar')
+
+    await expect(sidebar.getByRole('link', { name: 'Architecture' })).toBeVisible()
+    await expect(sidebar.getByRole('link', { name: 'Installation' })).toBeVisible()
+    await expect(sidebar.getByRole('link', { name: 'Registry Contract' })).toBeVisible()
+    await expect(sidebar.getByRole('button', { name: 'Kits' })).toBeVisible()
+    await expect(sidebar.getByRole('button', { name: /Search/ })).toBeVisible()
+  })
+
   test('exposes a working command copy control', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
@@ -78,5 +90,13 @@ test.describe('Docs-native frontend', () => {
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe('npx payload-kit add hero-basic')
+  })
+
+  test('opens the Fumadocs search dialog from the docs shell', async ({ page }) => {
+    await page.goto(`${baseURL}/docs`)
+
+    await page.getByRole('button', { name: /Search/ }).first().click()
+
+    await expect(page.getByRole('dialog')).toBeVisible()
   })
 })
