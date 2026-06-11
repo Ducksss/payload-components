@@ -1,29 +1,33 @@
-build
-dist / media
-node_modules
-.DS_Store
+# Dependencies
+node_modules/
+
+# Environment
 .env*
 !.env.example
-.next
-.source
+
+# Build output
+.next/
+.source/
+.vercel/
+build/
+dist/
+output/
 next-env.d.ts
 tsconfig.tsbuildinfo
-.vercel
-.payload-kit
-.playwright-cli
-output
 
-# Payload default media upload directory
+# Generated registry and local Payload output
+.payload-kit/
 public/media/
 public/r/
-
 public/robots.txt
 public/sitemap*.xml
 
+# Test output
+test-results/
+playwright-report/
+blob-report/
+.playwright-cli/
+playwright/.cache/
 
-# Playwright
-node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
+# OS/editor noise
+.DS_Store

@@ -6,10 +6,6 @@ updates:
       interval: weekly
     open-pull-requests-limit: 5
     groups:
-      payload:
-        patterns:
-          - '@payloadcms/*'
-          - payload
       next-react:
         patterns:
           - next
@@ -19,7 +15,6 @@ updates:
         patterns:
           - '@playwright/*'
           - vitest
-          - '@testing-library/*'
 
   - package-ecosystem: github-actions
     directory: /

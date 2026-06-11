@@ -15,7 +15,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* The Payload admin and frontend share one dev server and database-backed boot path. */
+  /* Keep one Fumadocs app server for deterministic route and copy-button checks. */
   workers: 1,
   timeout: 90000,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */

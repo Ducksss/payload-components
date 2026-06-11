@@ -15,36 +15,12 @@ on:
         type: string
 
 env:
-  CRON_SECRET: ci-cron-secret
-  DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/payload_components
-  NEXT_PUBLIC_SERVER_URL: http://localhost:3000
   NEXT_TELEMETRY_DISABLED: '1'
-  PAYLOAD_SECRET: ci-payload-secret
-  POSTGRES_URL: postgresql://postgres:postgres@127.0.0.1:5432/payload_components
-  PREVIEW_SECRET: ci-preview-secret
-  RESEND_API_KEY: re_ci_placeholder
-  VERCEL_PROJECT_PRODUCTION_URL: localhost:3000
-  WAITLIST_EMAIL_FROM: Payload Kits <onboarding@resend.dev>
-  WAITLIST_EMAIL_TO: ci@example.com
 
 jobs:
-  pr-gate:
+  release-gate:
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_DB: payload_components
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
@@ -61,31 +37,24 @@ jobs:
 
       - run: pnpm exec playwright install --with-deps chromium
 
-      - name: PR verification
+      - name: Release verification
         shell: bash
         run: |
           set -o pipefail
-          {
-            pnpm lint
-            pnpm exec tsc --noEmit
-            pnpm registry:check
-            pnpm run test:int
-            pnpm run test:e2e
-            pnpm build
-          } 2>&1 | tee payload-kit-pr.log
+          pnpm test:release 2>&1 | tee payload-kit-release.log
 
       - name: Upload failure artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: pr-gate-artifacts
+          name: release-gate-artifacts
           path: |
-            payload-kit-pr.log
+            payload-kit-release.log
             playwright-report
             test-results
           if-no-files-found: ignore
 
-  nightly-release:
+  fresh-payload-smoke:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -103,6 +72,14 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+    env:
+      CRON_SECRET: ci-cron-secret
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/payload_components
+      NEXT_PUBLIC_SERVER_URL: http://localhost:3000
+      PAYLOAD_SECRET: ci-payload-secret
+      POSTGRES_URL: postgresql://postgres:postgres@127.0.0.1:5432/payload_components
+      PREVIEW_SECRET: ci-preview-secret
+      REGISTRY_URL: ${{ github.event.inputs.registry_url || '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -119,27 +96,23 @@ jobs:
 
       - run: pnpm exec playwright install --with-deps chromium
 
-      - name: Nightly release verification
+      - name: Fresh Payload target smoke
         shell: bash
         run: |
           set -o pipefail
-          pnpm test:release 2>&1 | tee payload-kit-release.log
-
-      - name: Deployed registry smoke
-        if: github.event_name == 'workflow_dispatch' && inputs.registry_url != ''
-        shell: bash
-        run: |
-          set -o pipefail
-          pnpm test:fresh -- --registry-url '${{ inputs.registry_url }}' --keep-temp 2>&1 | tee payload-kit-deployed-registry.log
+          if [ -n "$REGISTRY_URL" ]; then
+            pnpm test:fresh -- --registry-url "$REGISTRY_URL" --keep-temp 2>&1 | tee payload-kit-fresh.log
+          else
+            pnpm test:fresh -- --keep-temp 2>&1 | tee payload-kit-fresh.log
+          fi
 
       - name: Upload failure artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: release-artifacts
+          name: fresh-payload-artifacts
           path: |
-            payload-kit-release.log
-            payload-kit-deployed-registry.log
+            payload-kit-fresh.log
             playwright-report
             test-results
             /tmp/payload-kit-fresh-smoke-*

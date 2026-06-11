@@ -58,11 +58,7 @@ Direct shadcn installs can deliver files, but the wrapper CLI owns Payload-speci
 ## Validation
 
 ```bash
-pnpm lint
-pnpm exec tsc --noEmit
-pnpm run test:int
-pnpm run test:e2e
-pnpm build
+pnpm test:release
 ```
 
 `pnpm run test:install` runs the fast installer fixture suite against a generated minimal Payload target. `pnpm test:fresh` remains available for slower smoke coverage against a fresh external Payload app.
@@ -77,6 +73,7 @@ That means:
 - Payload-specific source files stay in `payload-kits/source`.
 - Install behavior is validated against target fixtures and fresh Payload projects.
 - New kits should add docs, manifest metadata, registry source, and installer tests together.
+- Generated outputs such as `.next`, `.source`, `public/r`, Playwright reports, and TypeScript build info stay out of git.
 
 ## License
 

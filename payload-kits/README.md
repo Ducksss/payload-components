@@ -66,7 +66,8 @@ Use both verification tiers:
 - `pnpm test:registry`: checks that the public registry can be reproduced from source.
 - `pnpm test:install`: runs the fast wrapper fixture suite against generated minimal Payload targets.
 - `pnpm test:fresh`: runs the slower fresh Payload website smoke test for nightly and pre-release confidence.
-- `pnpm test:release`: runs lint, TypeScript, registry checks, integration tests, Playwright E2E, build, and the fresh smoke.
+- `pnpm test:release`: runs lint, source generation, TypeScript, registry checks, integration tests, Playwright E2E, and production build.
+- `pnpm test:fresh`: runs the slower external Payload website smoke for pre-release or nightly confidence.
 
 The fast fixture suite remains the normal PR gate because it is deterministic and proves the wrapper contract without making this repository itself a Payload app:
 

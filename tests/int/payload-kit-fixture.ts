@@ -88,7 +88,6 @@ const copyProjectFixture = async () => {
               "node -e \"require('fs').writeFileSync('src/payload-types.ts','export type HeroBasicBlock = any; export type FeatureGridBasicBlock = any; export type Page = { layout: any[] }\\\\n')\"",
           },
           dependencies: {
-            '@radix-ui/react-slot': '^1.0.2',
             'class-variance-authority': '^0.7.0',
             clsx: '^2.1.1',
             'lucide-react': '^0.563.0',
