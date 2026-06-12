@@ -47,6 +47,18 @@ const twinPartDelays = {
   proofItems: TWIN_START_MS + 4 * TWIN_STAGGER_MS,
 }
 
+/* Emerald wiring traces drawing from the command side across the divider into
+ * the installed surface as outcomes land — the literal "wired, not pasted."
+ * Decorative (aria-hidden); paths are normalized to pathLength 120 so the
+ * shared .wire-draw dash math lands regardless of the rendered aspect. */
+const WIRE_START_MS = OUTCOMES_START_MS
+const WIRE_STAGGER_MS = 150
+const wirePaths = [
+  'M98 32 C 112 32 124 38 138 38',
+  'M98 50 C 114 50 124 50 138 50',
+  'M98 68 C 112 68 124 62 138 62',
+]
+
 type MotionStyle = CSSProperties & {
   '--line-delay'?: string
   '--line-duration'?: string
@@ -90,7 +102,31 @@ export function HeroProductFrame() {
             component. */}
       </div>
 
-      <div className="grid grid-cols-1 gap-0 lg:grid-cols-[1.08fr_0.92fr]">
+      <div className="relative grid grid-cols-1 gap-0 lg:grid-cols-[1.08fr_0.92fr]">
+        {/* Wiring traces: command side → installed surface, drawn as the
+            outcomes land. Only meaningful in the side-by-side layout. */}
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full lg:block"
+          viewBox="0 0 200 100"
+          preserveAspectRatio="none"
+          fill="none"
+        >
+          {wirePaths.map((d, index) => (
+            <path
+              key={d}
+              d={d}
+              className="wire-draw"
+              style={spawnStyle(WIRE_START_MS + index * WIRE_STAGGER_MS)}
+              pathLength={120}
+              stroke="var(--brand)"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+        </svg>
+
         {/* Command line panel */}
         <div className="min-w-0 border-b border-background/10 p-5 lg:border-b-0 lg:border-r lg:p-7">
           <div className="flex flex-col gap-5">

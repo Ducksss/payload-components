@@ -68,9 +68,45 @@ export const landingSections = {
   community: { heading: 'Open source, end to end.', id: 'community' },
   faq: { heading: 'Questions, answered straight.', id: 'faq' },
   kits: { heading: 'The catalog, rendered live.', id: 'kits' },
+  tax: { heading: 'The paste was never the problem.', id: 'tax' },
   wiring: { heading: 'Copying files was never the hard part.', id: 'wiring' },
   workflow: { heading: 'From catalog to commit in three moves.', id: 'workflow' },
 } as const
+
+/* ------------------------------------------------------------------ */
+/* Stack band — what kits install into. No customer logos (alpha, open  */
+/* source); the honest "works with" row is the supported stack.         */
+/* ------------------------------------------------------------------ */
+
+export const stackBandLede = 'Installs into the stack you already run'
+
+export const stackItems = [
+  { detail: 'v3', label: 'Payload CMS' },
+  { detail: '15 / 16', label: 'Next.js' },
+  { detail: 'registry', label: 'shadcn' },
+  { detail: 'v4', label: 'Tailwind' },
+  { detail: 'strict', label: 'TypeScript' },
+] as const
+
+export type StackItem = (typeof stackItems)[number]
+
+/* ------------------------------------------------------------------ */
+/* The tax — the problem the catalog answers. Mirrors /about's          */
+/* unchecked grunt-work checklist; the wiring ledger below checks the    */
+/* same five items off.                                                  */
+/* ------------------------------------------------------------------ */
+
+export const taxEyebrow = 'The grunt-work tax'
+export const taxIntro =
+  'Every Payload project needs the same surfaces — a hero, a feature grid, post cards. Copying the files is the easy part. A pasted block is dead until four more edits land, and proving them — every block, every repo — is where the week actually goes.'
+export const taxChecklist = [
+  'register the block in src/collections/Pages/index.ts',
+  'map it in src/blocks/RenderBlocks.tsx',
+  'run payload generate:types',
+  'run payload generate:importmap',
+  'prove it still works — integration tests, e2e, click through the admin',
+] as const
+export const taxKicker = 'One command pays that whole list down — and lands it as a diff you can review.'
 
 /* Receipts strip — every line is verifiable in this repository. */
 export const receipts = [

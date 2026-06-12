@@ -16,13 +16,41 @@ export function Eyebrow({ children, className }: { children: ReactNode; classNam
   )
 }
 
+/* One word per heading set in the editorial serif italic. The accent is
+   rendered inline inside the same heading element, so the element's
+   accessible name still equals the full `heading` string (the e2e suite
+   asserts headings by their exact name). */
+export function HeadingAccent({ children }: { children: ReactNode }) {
+  return (
+    <span className="font-serif text-[1.06em] font-normal italic tracking-[-0.01em]">
+      {children}
+    </span>
+  )
+}
+
+function renderHeading(heading: string, accentWord?: string): ReactNode {
+  if (!accentWord) return heading
+  const index = heading.indexOf(accentWord)
+  if (index === -1) return heading
+
+  return (
+    <>
+      {heading.slice(0, index)}
+      <HeadingAccent>{accentWord}</HeadingAccent>
+      {heading.slice(index + accentWord.length)}
+    </>
+  )
+}
+
 export function SectionHeading({
+  accentWord,
   className,
   eyebrow,
   heading,
   id,
   intro,
 }: {
+  accentWord?: string
   className?: string
   eyebrow?: string
   heading: string
@@ -34,11 +62,13 @@ export function SectionHeading({
       {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
       <h2
         id={id}
-        className="mt-4 text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-4xl"
+        className="mt-4 text-balance text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-[2.6rem]"
       >
-        {heading}
+        {renderHeading(heading, accentWord)}
       </h2>
-      {intro ? <p className="mt-4 text-base leading-7 text-muted-foreground">{intro}</p> : null}
+      {intro ? (
+        <p className="mt-5 text-base leading-7 text-muted-foreground">{intro}</p>
+      ) : null}
     </div>
   )
 }

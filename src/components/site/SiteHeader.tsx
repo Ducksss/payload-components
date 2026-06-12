@@ -19,7 +19,7 @@ export function Wordmark({ withBadge = false }: { withBadge?: boolean }) {
     <span className="flex items-center gap-2.5">
       <span
         aria-hidden="true"
-        className="flex size-6 items-center justify-center rounded-md bg-primary font-mono text-[13px] font-semibold leading-none text-primary-foreground"
+        className="flex size-6 items-center justify-center rounded-md bg-brand font-mono text-[13px] font-semibold leading-none text-brand-foreground"
       >
         &gt;
       </span>
