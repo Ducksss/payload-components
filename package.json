@@ -23,7 +23,7 @@
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation eslint . --fix",
     "payload-kit": "node ./bin/payload-kit.mjs",
-    "prebuild": "pnpm registry:build",
+    "prebuild": "pnpm source:build && pnpm registry:build",
     "registry:build": "cross-env NODE_OPTIONS=--no-deprecation pnpm dlx shadcn@4.7.0 build payload-kits/registry.json --output public/r --cwd .",
     "registry:check": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-kit/check-public-registry.ts",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",

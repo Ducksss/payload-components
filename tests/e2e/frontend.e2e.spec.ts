@@ -113,6 +113,18 @@ test.describe('Light shadcn frontend', () => {
     await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
   })
 
+  test('exposes the Fumadocs docs shell navigation', async ({ page }) => {
+    await page.goto(`${baseURL}/docs`)
+
+    const sidebar = page.locator('#nd-sidebar')
+
+    await expect(sidebar.getByRole('link', { name: 'Architecture' })).toBeVisible()
+    await expect(sidebar.getByRole('link', { name: 'Installation' })).toBeVisible()
+    await expect(sidebar.getByRole('link', { name: 'Registry Contract' })).toBeVisible()
+    await expect(sidebar.getByRole('button', { name: 'Kits' })).toBeVisible()
+    await expect(sidebar.getByRole('button', { name: /Search/ })).toBeVisible()
+  })
+
   test('exposes a working command copy control', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
@@ -139,5 +151,13 @@ test.describe('Reduced motion', () => {
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     )
     expect(hasHorizontalOverflow).toBe(false)
+  })
+
+  test('opens the Fumadocs search dialog from the docs shell', async ({ page }) => {
+    await page.goto(`${baseURL}/docs`)
+
+    await page.getByRole('button', { name: /Search/ }).first().click()
+
+    await expect(page.getByRole('dialog')).toBeVisible()
   })
 })

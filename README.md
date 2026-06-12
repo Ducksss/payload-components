@@ -30,14 +30,17 @@ Core routes:
 - `/components`: current kit catalog
 - `/api/search`: Fumadocs search endpoint
 - `/llms.txt` and `/llms-full.txt`: AI-readable project summaries
+- `/llms.mdx/docs/.../content.md`: per-page markdown generated from compiled docs
+- `/docs/installation.md`: markdown shortcut rewritten to the matching per-page markdown route
+- `/og/docs/.../image.png`: per-page docs Open Graph image
 - `/r/registry.json`: generated public registry
 
 ## Registry Workflow
 
-Build the public registry:
+Build the production app. The prebuild step regenerates the Fumadocs source cache and public registry:
 
 ```bash
-pnpm registry:build
+pnpm build
 ```
 
 Check that generated output is reproducible:

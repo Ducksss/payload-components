@@ -1,6 +1,10 @@
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 export const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 export const githubIssuesUrl = `${githubRepoUrl}/issues`
+export const githubContentBranch = process.env.NEXT_PUBLIC_GITHUB_CONTENT_BRANCH ?? 'dev'
+export const docsRoute = '/docs'
+export const docsImageRoute = '/og/docs'
+export const docsContentRoute = '/llms.mdx/docs'
 export const primaryInstallCommand = 'npx payload-kit add hero-basic'
 
 export const siteDescription =

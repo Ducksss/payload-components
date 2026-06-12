@@ -37,6 +37,49 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(body).toContain('npx payload-kit add feature-grid-basic')
   })
 
+  test('/api/search returns docs results', async ({ request }) => {
+    const response = await request.get(`${baseURL}/api/search?query=hero`)
+
+    expect(response.ok()).toBe(true)
+    expect(response.headers()['content-type']).toContain('application/json')
+
+    const body = await response.text()
+
+    expect(body).toContain('/docs/kits/hero-basic')
+  })
+
+  test('docs expose per-page markdown and markdown negotiation', async ({ request }) => {
+    const direct = await request.get(`${baseURL}/llms.mdx/docs/installation/content.md`)
+
+    expect(direct.ok()).toBe(true)
+    expect(direct.headers()['content-type']).toContain('text/markdown')
+    await expect(direct.text()).resolves.toContain('# Installation (/docs/installation)')
+
+    const suffix = await request.get(`${baseURL}/docs/installation.md`)
+
+    expect(suffix.ok()).toBe(true)
+    expect(suffix.headers()['content-type']).toContain('text/markdown')
+    await expect(suffix.text()).resolves.toContain('Payload Kits currently targets Payload v3')
+
+    const negotiated = await request.get(`${baseURL}/docs/architecture`, {
+      headers: {
+        accept: 'text/markdown',
+      },
+    })
+
+    expect(negotiated.ok()).toBe(true)
+    expect(negotiated.headers()['content-type']).toContain('text/markdown')
+    await expect(negotiated.text()).resolves.toContain('# Architecture (/docs/architecture)')
+  })
+
+  test('docs pages expose generated open graph images', async ({ request }) => {
+    const response = await request.get(`${baseURL}/og/docs/installation/image.png`)
+
+    expect(response.ok()).toBe(true)
+    expect(response.headers()['content-type']).toContain('image/png')
+    expect((await response.body()).byteLength).toBeGreaterThan(1000)
+  })
+
   test('docs pages expose article metadata and searchable headings', async ({ page }) => {
     await page.goto(`${baseURL}/docs/installation`)
 
@@ -47,5 +90,7 @@ test.describe('AI-readable documentation surfaces', () => {
     )
     await expect(page.getByRole('heading', { level: 1, name: 'Installation' })).toBeVisible()
     await expect(page.getByRole('heading', { level: 2, name: 'What the CLI does' })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Copy Markdown/ })).toBeVisible()
+    await expect(page.getByRole('button', { exact: true, name: 'Open' })).toBeVisible()
   })
 })
