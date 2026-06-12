@@ -11,7 +11,7 @@ The v2 website is a Fumadocs app. It is not a Payload CMS app and does not requi
 - `payload-kits/registry.json`: shadcn-compatible public registry definition.
 - `payload-kits/source`: Payload-target kit source files used by registry generation.
 - `payload-kits/manifests`: wrapper metadata for install support, fragments, post-install tasks, and recovery.
-- `tools/payload-kit`: CLI implementation for `payload-kit add`.
+- `tools/payload-kit`: CLI implementation for `payload-kit add` and `payload-kit doctor`.
 - `bin/payload-kit.mjs`: executable entrypoint.
 
 ## Local Development
@@ -35,6 +35,8 @@ Core routes:
 - `/og/docs/.../image.png`: per-page docs Open Graph image
 - `/r/registry.json`: generated public registry
 
+The active public registry template is `https://payload-components.xyz/r/{name}.json`.
+
 ## Registry Workflow
 
 Build the production app. The prebuild step regenerates the Fumadocs source cache and public registry:
@@ -54,9 +56,12 @@ Install commands documented by the current alpha:
 ```bash
 npx payload-kit add hero-basic
 npx payload-kit add feature-grid-basic
+npx payload-kit doctor --json
 ```
 
 Direct shadcn installs can deliver files, but the wrapper CLI owns Payload-specific work: project-shape detection, layout fragments, render-block fragments, post-install scripts, and install state.
+
+`payload-kit doctor` exits `0` for healthy supported targets, `1` for recoverable install drift, and `2` for unsupported or fatal project detection states.
 
 ## Validation
 

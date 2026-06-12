@@ -84,7 +84,7 @@ describe('public shadcn registry publication', () => {
       expect(item.title).toBeTruthy()
       expect(item.description).toBeTruthy()
       expect(item.docs).toContain(`payload-kit add ${item.name}`)
-      expect(item.docs).toContain(`/r/${item.name}.json`)
+      expect(item.docs).toContain(`https://payload-components.xyz/r/${item.name}.json`)
       expect(item.registryDependencies).toEqual(expectedRegistryDependencies[item.name])
       expect(item.meta?.payloadKit).toMatchObject({
         installCommand: `payload-kit add ${item.name}`,

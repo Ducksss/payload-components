@@ -1,4 +1,13 @@
 {
   "title": "Payload Kits",
-  "pages": ["index", "architecture", "installation", "registry", "contributing", "kits"]
+  "pages": [
+    "index",
+    "architecture",
+    "installation",
+    "registry",
+    "walkthroughs",
+    "operations",
+    "contributing",
+    "kits"
+  ]
 }

@@ -102,9 +102,9 @@ jobs:
         run: |
           set -o pipefail
           if [ -n "$REGISTRY_URL" ]; then
-            pnpm test:fresh -- --registry-url "$REGISTRY_URL" --keep-temp 2>&1 | tee payload-kit-fresh.log
+            pnpm test:fresh --registry-url "$REGISTRY_URL" --keep-temp 2>&1 | tee payload-kit-fresh.log
           else
-            pnpm test:fresh -- --keep-temp 2>&1 | tee payload-kit-fresh.log
+            pnpm test:fresh --keep-temp 2>&1 | tee payload-kit-fresh.log
           fi
 
       - name: Upload failure artifacts

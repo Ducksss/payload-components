@@ -19,7 +19,7 @@ The POC passes only if all of the following are true:
 
 If any of those fail because of brittle repo patching or unreliable generation, we should stop and reconsider the product shape before building private registries, auth, or a larger kit catalog.
 
-Alpha reality in this workspace: `payload-kit add` is real, while `payload-kit init` and `payload-kit doctor` remain placeholders.
+Alpha reality in this workspace: `payload-kit add` is real, `payload-kit doctor` is the supported diagnostics command, and `payload-kit init` remains a placeholder.
 
 ## Public Registry Contract
 
@@ -41,8 +41,8 @@ Production builds run `registry:build` automatically through the package `prebui
 Direct public installs use the generated item URLs:
 
 ```bash
-pnpm dlx shadcn@latest add https://<your-domain>/r/hero-basic.json
-pnpm dlx shadcn@latest add https://<your-domain>/r/feature-grid-basic.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/hero-basic.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/feature-grid-basic.json
 ```
 
 For a complete install, use `payload-kit add`. The shadcn registry delivers files and shadcn UI dependencies; the wrapper adds the Payload-specific registration layer and post-install generation.
@@ -52,7 +52,7 @@ Namespace consumers can configure:
 ```json
 {
   "registries": {
-    "@payload-kits": "https://<your-domain>/r/{name}.json"
+    "@payload-kits": "https://payload-components.xyz/r/{name}.json"
   }
 }
 ```
@@ -81,16 +81,16 @@ The fast fixture suite remains the normal PR gate because it is deterministic an
 The fresh smoke lives at `../tools/payload-kit/smoke/fresh-payload-repo.ts` and accepts:
 
 ```bash
-pnpm test:fresh -- --kits hero-basic,feature-grid-basic
-pnpm test:fresh -- --registry-url https://<your-domain>/r/{name}.json
-pnpm test:fresh -- --keep-temp --timeout 1200000
+pnpm test:fresh --kits hero-basic,feature-grid-basic
+pnpm test:fresh --registry-url https://payload-components.xyz/r/{name}.json
+pnpm test:fresh --keep-temp --timeout 1200000
 ```
 
 Without `--registry-url`, the runner serves `../public/r` locally and direct-installs each item URL with shadcn. With `--registry-url`, it uses the deployed registry URL template, which is the pre-release path. Direct shadcn verification only proves file delivery and shadcn UI dependency delivery; Payload wiring is verified through `payload-kit add`.
 
-## Current Contract
+## Manifest v1 Contract
 
-Alpha manifests now define:
+Alpha manifests must define:
 
 - kit identity and version
 - supported Payload and Next.js majors
@@ -100,6 +100,8 @@ Alpha manifests now define:
 - `recovery.patchedFiles` for target-file patch tracking
 - post-install tasks
 - preview metadata and sample content
+
+The schema is intentionally strict. Unknown fields fail validation, and invalid manifests report the exact field path where validation failed.
 
 ## Alpha Kit Template
 
@@ -141,6 +143,8 @@ Normalized alpha-kit blocks should:
 ```bash
 pnpm payload-kit add hero-basic
 pnpm payload-kit add feature-grid-basic
+pnpm payload-kit doctor
+pnpm payload-kit doctor --json
 ```
 
-`payload-kit init` and `payload-kit doctor` remain placeholder commands in this alpha tranche.
+Doctor exit codes are stable: `0` healthy, `1` recoverable install drift, and `2` unsupported or fatal project detection state.

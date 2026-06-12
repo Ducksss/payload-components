@@ -1,0 +1,122 @@
+---
+title: Operations
+description: Release, support, security, rollback, and feedback triage runbooks for Payload Kits.
+---
+
+This runbook is for maintainers and agents working from the Fumadocs baseline.
+
+## Release checklist
+
+1. Install dependencies from the lockfile:
+
+   ```bash
+   pnpm install --frozen-lockfile
+   ```
+
+2. Run the release gate:
+
+   ```bash
+   pnpm test:release
+   ```
+
+3. Verify local registry reproducibility:
+
+   ```bash
+   pnpm registry:build
+   pnpm test:registry
+   ```
+
+4. Verify deployed public URLs after Vercel deploy:
+
+   ```bash
+   curl -fsSL https://payload-components.xyz/r/registry.json
+   curl -fsSL https://payload-components.xyz/r/hero-basic.json
+   curl -fsSL https://payload-components.xyz/r/feature-grid-basic.json
+   ```
+
+5. Run raw public delivery smoke when registry output changed:
+
+   ```bash
+   pnpm test:fresh --registry-url https://payload-components.xyz/r/{name}.json
+   ```
+
+Record validation evidence in the matching GitHub issue before closing it.
+
+## Support triage
+
+Classify reports into one category:
+
+- `bug`: supported target, expected behavior fails
+- `install blocker`: install cannot complete in a supported target
+- `repo-shape request`: target differs from the support matrix
+- `kit request`: new block or component request
+- `docs gap`: behavior exists but is unclear
+- `Pro signal`: private registry, entitlement, team, or paid need
+- `not a fit`: outside Payload v3 + Next.js kit delivery
+
+Install reports must include:
+
+- Payload and Next.js versions
+- package manager
+- install command
+- `payload-kit doctor --json` output
+- whether the project starts from the official website template
+- relevant snippets from `src/blocks/RenderBlocks.tsx` and `src/collections/Pages/index.ts`
+
+Routing examples:
+
+- Broken `generate:types` after files copied: `install blocker`, retry with `payload-kit doctor --json`, then open a bug with the failed stage.
+- Request for a pricing block: `kit request`, link to catalog prioritization and require source/manifest/docs/tests.
+- Missing `RenderBlocks.tsx` in a custom app: `repo-shape request`, evaluate support matrix before changing installer anchors.
+
+## Security intake
+
+Do not ask reporters to open public issues for suspected vulnerabilities. Use GitHub Security Advisories or the maintainer contact in the README.
+
+Security reports should include:
+
+- affected area: CLI install, registry generation, package execution, docs app, or support matrix
+- reproduction steps
+- expected impact
+- affected commit or release window
+
+Do not log registry tokens, future Pro credentials, or private customer project details in public issues.
+
+## Rollback and hotfix
+
+Prefer a forward fix when:
+
+- a manifest or docs typo is wrong but registry delivery still works
+- a kit renders incorrectly but installs safely
+- a support matrix message is incomplete
+
+Revert registry output or disable an item when:
+
+- public item JSON is malformed
+- item JSON omits source content
+- the root registry points at the wrong files
+- an install script can corrupt supported targets
+
+Rollback steps:
+
+```bash
+git revert <bad-commit>
+pnpm test:registry
+pnpm test:install
+pnpm build
+```
+
+After deploy, re-run public `curl` checks for every affected URL.
+
+## Weekly feedback loop
+
+Once per week:
+
+1. Review new GitHub issues, direct feedback, and waitlist/source notes.
+2. Categorize each item using the support triage categories.
+3. Promote accepted bugs and blockers to specific GitHub issues.
+4. Add kit requests to the catalog backlog only when the target block, fields, sample content, and test expectation are clear.
+5. Close not-a-fit reports with a short reason.
+6. Link roadmap changes back to the source feedback.
+
+Keep accepted issues agent-ready: include current state, desired behavior, exact files or commands, acceptance criteria, and verification commands.

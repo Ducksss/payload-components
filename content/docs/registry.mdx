@@ -18,6 +18,22 @@ pnpm registry:build
 
 The generated files are emitted to `public/r` and can be served statically.
 
+The active public registry is:
+
+```bash
+https://payload-components.xyz/r/{name}.json
+```
+
+Current URLs:
+
+```bash
+curl -fsSL https://payload-components.xyz/r/registry.json
+curl -fsSL https://payload-components.xyz/r/hero-basic.json
+curl -fsSL https://payload-components.xyz/r/feature-grid-basic.json
+```
+
+The root registry must list item metadata and file targets without embedding `files[].content`. Each item JSON must include installable file content. `pnpm test:registry` enforces that local generated artifacts are reproducible from source.
+
 ## Manifests
 
 Each wrapper manifest in `payload-kits/manifests` defines:
@@ -30,6 +46,21 @@ Each wrapper manifest in `payload-kits/manifests` defines:
 - recovery metadata for patched files
 - sample content for docs and testing
 
+## Manifest v1
+
+The v1 public authoring contract is intentionally small:
+
+- kit identity: `name`, `version`, `title`, `description`, and `registryItemName`
+- compatibility: `supportedTargets`, `supports.payloadMajors`, and `supports.nextMajors`
+- package requirements: `dependencies` and `peerDependencies`
+- file ownership: `files` paths that the generated registry installs into the target project
+- Payload wiring: `payloadFragments` for `RenderBlocks` and `Pages` layout registration
+- recovery: `recovery.patchedFiles` for host files that require manual review during repair
+- post install: `postInstall` scripts, currently `generate:types` and `generate:importmap`
+- docs/testing metadata: `preview.summary` and `sampleContent`
+
+Invalid manifests fail before install with an error that names the invalid field.
+
 ## Support matrix
 
 `payload-kits/support-matrix.json` defines the target project shapes the installer understands.
@@ -39,3 +70,5 @@ The current alpha support matrix is intentionally narrow. New project shapes sho
 ## Recovery state
 
 The CLI records install state in `.payload-kit/state.json` inside the target project. That state is not a substitute for disk verification; the installer still checks actual files and fragments before declaring a kit installed.
+
+`payload-kit doctor --json` is the CI-safe recovery view. It returns exit `1` for recoverable drift and includes a retry command for the affected kit.

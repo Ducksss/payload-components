@@ -30,6 +30,23 @@ For the second alpha kit:
 npx payload-kit add feature-grid-basic
 ```
 
+## Inspect an install
+
+Use `doctor` after installs, in CI, or when recovering from an interrupted run:
+
+```bash
+npx payload-kit doctor
+npx payload-kit doctor --json
+```
+
+Exit codes are stable:
+
+- `0`: supported project and no installed kit drift was found
+- `1`: recoverable issue such as a partial install, missing installed file, missing dependency, stale state, direct shadcn copy, or missing Payload registration
+- `2`: unsupported project shape or fatal project detection failure
+
+The JSON output includes `project`, `findings`, `severity`, `status`, `details`, `actions`, and `exitCode`.
+
 ## What the CLI does
 
 The wrapper CLI owns the Payload-specific work that direct registry installation cannot handle:
@@ -49,3 +66,9 @@ Running the same install twice should not duplicate imports, block registrations
 ## Direct registry installs
 
 Direct shadcn installs can deliver files, but they do not apply Payload-specific fragments or run the complete post-install workflow. Use `payload-kit add` for real target projects.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/hero-basic.json
+```
+
+Use direct shadcn installs only to verify public file delivery. The wrapper remains the supported install path for Payload layout registration, render mapping, generated types, import maps, and recovery state.

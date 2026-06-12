@@ -1,6 +1,7 @@
 import path from 'node:path'
 
 import { addCommand } from './commands/add'
+import { doctorCommand } from './commands/doctor'
 import { detectProject } from './project'
 import { loadState } from './state'
 
@@ -9,13 +10,13 @@ const usage = `payload-kit
 Usage:
   payload-kit add <kit-name> [--cwd <path>]
   payload-kit init [--cwd <path>]
-  payload-kit doctor [--cwd <path>]
+  payload-kit doctor [--cwd <path>] [--json]
   payload-kit --help
 
 Alpha commands:
   add     Install an alpha kit through the payload-kit wrapper and shadcn-compatible registry flow.
   init    Non-gating command shell reserved for a later alpha phase.
-  doctor  Non-gating command shell reserved for the next alpha tranche.
+  doctor  Inspect install state, files, dependencies, Payload registration, and recovery guidance.
 
 Current alpha kits:
   hero-basic
@@ -26,6 +27,7 @@ const parseArgs = (argv: string[]) => {
   const args = [...argv]
   let cwd = process.cwd()
   let help = false
+  let json = false
   const positional: string[] = []
 
   while (args.length > 0) {
@@ -51,17 +53,23 @@ const parseArgs = (argv: string[]) => {
       continue
     }
 
+    if (current === '--json') {
+      json = true
+      continue
+    }
+
     positional.push(current)
   }
 
   return {
     cwd,
     help,
+    json,
     positional,
   }
 }
 
-const placeholderCommand = async (commandName: 'doctor' | 'init', cwd: string) => {
+const placeholderCommand = async (commandName: 'init', cwd: string) => {
   try {
     const project = await detectProject(cwd)
     const state = await loadState(cwd)
@@ -79,7 +87,7 @@ const placeholderCommand = async (commandName: 'doctor' | 'init', cwd: string) =
 }
 
 const main = async () => {
-  const { cwd, help, positional } = parseArgs(process.argv.slice(2))
+  const { cwd, help, json, positional } = parseArgs(process.argv.slice(2))
 
   const [command, ...rest] = positional
 
@@ -104,7 +112,15 @@ const main = async () => {
     return
   }
 
-  if (command === 'init' || command === 'doctor') {
+  if (command === 'doctor') {
+    await doctorCommand({
+      cwd,
+      json,
+    })
+    return
+  }
+
+  if (command === 'init') {
     await placeholderCommand(command, cwd)
     return
   }

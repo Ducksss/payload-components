@@ -1,0 +1,87 @@
+---
+title: Walkthroughs
+description: Copy-pasteable checks for wrapper installs, doctor output, and raw registry delivery.
+---
+
+Use these walkthroughs when validating a release, reproducing support reports, or checking public registry delivery.
+
+## Wrapper install smoke
+
+Run this in a supported Payload v3 + Next.js target project:
+
+```bash
+npx payload-kit add hero-basic
+npx payload-kit doctor
+npx payload-kit doctor --json
+```
+
+Expected result:
+
+- `hero-basic` files exist under `src/blocks/HeroBasic`
+- `src/blocks/RenderBlocks.tsx` imports and maps `heroBasic`
+- `src/collections/Pages/index.ts` includes `HeroBasic` in the layout block list
+- `generate:types` and `generate:importmap` have run
+- `.payload-kit/state.json` records `hero-basic` as `installed`
+- `payload-kit doctor` exits `0`
+
+Repeat for `feature-grid-basic`:
+
+```bash
+npx payload-kit add feature-grid-basic
+npx payload-kit doctor --json
+```
+
+## Idempotency check
+
+Run the same install twice:
+
+```bash
+npx payload-kit add hero-basic
+npx payload-kit add hero-basic
+```
+
+Expected result:
+
+- the second command reports that the kit is already installed
+- imports and layout entries appear exactly once
+- `.payload-kit/state.json` remains accurate
+
+## Raw shadcn delivery
+
+Raw shadcn proves public file delivery only. It does not apply Payload fragments or run post-install scripts.
+
+```bash
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/hero-basic.json
+pnpm dlx shadcn@latest add https://payload-components.xyz/r/feature-grid-basic.json
+```
+
+Expected result:
+
+- the declared source files are copied to their `~/src/...` targets
+- public shadcn dependencies such as `badge` and `card` are installed when missing
+- Payload registration remains a wrapper responsibility
+
+## Maintainer verification
+
+Run from this repository:
+
+```bash
+pnpm registry:build
+pnpm test:registry
+pnpm test:install
+pnpm test:fresh --registry-url https://payload-components.xyz/r/{name}.json
+```
+
+`test:fresh` creates a disposable external Payload website target. Use `--keep-temp` only when you need to inspect a failure artifact.
+
+## Visual checkpoints
+
+The Fumadocs site exposes the current public surfaces:
+
+- `/`: product/docs homepage
+- `/components`: kit catalog
+- `/docs`: documentation index
+- `/docs/kits/hero-basic`: kit detail page
+- `/docs/kits/feature-grid-basic`: kit detail page
+
+The Playwright suite checks these routes during `pnpm test:release`; CI uploads Playwright artifacts on failure.

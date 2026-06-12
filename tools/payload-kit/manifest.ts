@@ -1,3 +1,4 @@
+import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 
 import Ajv2020 from 'ajv/dist/2020.js'
@@ -22,6 +23,16 @@ let validatorPromise: Promise<ValidateFunction<KitManifest>> | undefined
 
 export const getManifestPath = (kitName: string) =>
   path.join(repoRoot, 'payload-kits', 'manifests', `${kitName}.json`)
+
+export const listManifestNames = async () => {
+  const manifestDir = path.join(repoRoot, 'payload-kits', 'manifests')
+  const entries = await readdir(manifestDir, { withFileTypes: true })
+
+  return entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.json'))
+    .map((entry) => path.basename(entry.name, '.json'))
+    .sort()
+}
 
 const getExpectedPatchedFiles = (manifest: KitManifest) => {
   const patchedFiles = new Set<string>()

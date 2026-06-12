@@ -28,15 +28,32 @@ describe('Fumadocs site shell', () => {
   })
 
   it('keeps docs content in the Fumadocs source directory', async () => {
-    const [sourceConfig, docsIndex, architecture] = await Promise.all([
-      readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),
-      readFile(path.join(repoRoot, 'content', 'docs', 'index.mdx'), 'utf8'),
-      readFile(path.join(repoRoot, 'content', 'docs', 'architecture.mdx'), 'utf8'),
-    ])
+    const [sourceConfig, docsIndex, architecture, installation, registry, walkthroughs, operations, meta] =
+      await Promise.all([
+        readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),
+        readFile(path.join(repoRoot, 'content', 'docs', 'index.mdx'), 'utf8'),
+        readFile(path.join(repoRoot, 'content', 'docs', 'architecture.mdx'), 'utf8'),
+        readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+        readFile(path.join(repoRoot, 'content', 'docs', 'registry.mdx'), 'utf8'),
+        readFile(path.join(repoRoot, 'content', 'docs', 'walkthroughs.mdx'), 'utf8'),
+        readFile(path.join(repoRoot, 'content', 'docs', 'operations.mdx'), 'utf8'),
+        readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      ])
 
     expect(sourceConfig).toContain("dir: 'content/docs'")
     expect(docsIndex).toContain('The v2 app is intentionally not a Payload CMS site.')
+    expect(docsIndex).toContain('https://payload-components.xyz/r/{name}.json')
     expect(architecture).toContain('No Payload admin, collection config, global config')
+    expect(installation).toContain('npx payload-kit doctor --json')
+    expect(installation).toContain('Exit codes are stable')
+    expect(registry).toContain('Manifest v1')
+    expect(registry).toContain('https://payload-components.xyz/r/hero-basic.json')
+    expect(walkthroughs).toContain('Raw shadcn proves public file delivery only')
+    expect(operations).toContain('Release checklist')
+    expect(operations).toContain('Support triage')
+    expect(operations).toContain('Weekly feedback loop')
+    expect(meta).toContain('"walkthroughs"')
+    expect(meta).toContain('"operations"')
   })
 
   it('keeps the Fumadocs app router integration wired', async () => {
