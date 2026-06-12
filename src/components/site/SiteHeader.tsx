@@ -11,6 +11,7 @@ import { cn } from '@/utilities/ui'
 const navLinks = [
   { href: '/docs', label: 'Docs' },
   { href: '/components', label: 'Kits' },
+  { href: '/about', label: 'About' },
 ] as const
 
 export function Wordmark({ withBadge = false }: { withBadge?: boolean }) {

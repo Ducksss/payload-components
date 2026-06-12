@@ -79,6 +79,11 @@ test.describe('Light shadcn frontend', () => {
         path: '/components',
         title: /Kit Catalog/,
       },
+      {
+        h1: 'Why Payload Kits exists',
+        path: '/about',
+        title: /About/,
+      },
       ...kitEntries.map((kit) => ({
         h1: kit.title,
         path: kit.href,

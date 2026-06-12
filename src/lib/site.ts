@@ -409,6 +409,7 @@ export const footerColumns = [
   },
   {
     links: [
+      { href: '/about', label: 'About' },
       { external: true, href: githubRepoUrl, label: 'GitHub' },
       { external: true, href: githubIssuesUrl, label: 'Open an issue' },
       { href: '/docs/contributing', label: 'Contributing' },
