@@ -4,18 +4,28 @@ import Link from 'next/link'
 
 import { ArrowRight, Square } from 'lucide-react'
 
+import { JsonLd } from '@/components/seo/JsonLd'
 import { siteIcons } from '@/components/site/icons'
 import { MaintainerNote } from '@/components/site/MaintainerNote'
 import { Eyebrow, Section } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { githubIssuesUrl, receipts } from '@/lib/site'
+import { breadcrumbNode, graph } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/about' },
   title: 'About',
   description:
     'Payload Kits exists because freelance Payload work kept paying the same tax: rebuilding the same blocks, rewiring them by hand, and re-proving they work — project after project.',
 }
+
+const aboutStructuredData = graph(
+  breadcrumbNode([
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
+  ]),
+)
 
 /* The grunt-work loop, deliberately unchecked — the landing's wiring
    ledger shows the same items checked off by the installer. */
@@ -30,6 +40,7 @@ const pasteChecklist = [
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={aboutStructuredData} />
       <SiteHeader />
 
       <main className="flex-1">

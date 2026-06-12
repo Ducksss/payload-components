@@ -1,0 +1,50 @@
+---
+title: payload-kit add vs shadcn add
+description: Both install registry items; they differ in where they stop. shadcn add copies a component's files. payload-kit add also registers, renders, types, and import-maps the Payload block.
+---
+
+`payload-kit` is built on the shadcn registry. The two commands are not rivals — `payload-kit add` wraps the same registry delivery, then performs the Payload wiring `shadcn add` leaves to you.
+
+The difference is where each one stops.
+
+## The five artifacts
+
+A Payload layout block is live only when five artifacts exist. `shadcn add` produces the first; `payload-kit add` produces all five in one pass.
+
+| Artifact | `shadcn add` | `payload-kit add` | File |
+| --- | --- | --- | --- |
+| Block source | copied | copied | `src/blocks/HeroBasic/{config.ts, Component.tsx}` |
+| Collection schema | — | patched | `src/collections/Pages/index.ts` |
+| Render mapping | — | patched | `src/blocks/RenderBlocks.tsx` |
+| Generated types | — | regenerated | `src/payload-types.ts` |
+| Admin import map | — | regenerated | `admin importMap.js` |
+
+`shadcn add` lands 1 of 5 — the other four are your TODO list. `payload-kit add` lands 5 of 5, as one git diff you review like any PR.
+
+## What `shadcn add` does
+
+`shadcn add` copies a registry item's files into your project and resolves its dependencies. For a self-contained React or shadcn UI component, that is the whole job: the component renders as soon as you import it.
+
+## What `payload-kit add` adds
+
+A Payload layout block is not self-contained. It does not render until Payload knows about it:
+
+- it must be registered as a block in the Pages collection,
+- mapped to its component in `RenderBlocks`,
+- present in the generated `payload-types.ts`,
+- and listed in the admin import map.
+
+`payload-kit add` performs those four edits for you, verifies your project against the support matrix first, and records install state in `.payload-kit/state.json` so a second run converges instead of duplicating wiring.
+
+## When to use which
+
+- Use **`shadcn add`** for a plain React or shadcn UI component that renders on import.
+- Use **`payload-kit add`** when the component is a Payload layout block that has to be registered, rendered, typed, and import-mapped before it works.
+
+Both deliver plain source you own and can edit — no vendored framework, no lock-in.
+
+## Next
+
+- [What is a Payload block kit?](/docs/what-is-a-payload-kit)
+- [Installation](/docs/installation)
+- [Kit Catalog](/components)

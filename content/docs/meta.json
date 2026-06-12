@@ -3,6 +3,8 @@
   "pages": [
     "index",
     "---Guides---",
+    "what-is-a-payload-kit",
+    "shadcn-vs-payload-kit",
     "architecture",
     "installation",
     "registry",

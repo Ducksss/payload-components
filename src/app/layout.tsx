@@ -9,7 +9,9 @@ import { RootProvider } from 'fumadocs-ui/provider/next'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 
-import { siteDescription, siteUrl } from '@/lib/site'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { githubRepoUrl, siteDescription, siteUrl } from '@/lib/site'
+import { graph, organizationNode, websiteNode } from '@/lib/structured-data'
 
 import './globals.css'
 
@@ -31,8 +33,36 @@ export const metadata: Metadata = {
     template: '%s | Payload Kits',
   },
   description: siteDescription,
+  applicationName: 'Payload Kits',
+  authors: [{ name: 'Ducksss', url: githubRepoUrl }],
+  category: 'technology',
+  creator: 'Ducksss',
+  publisher: 'Payload Kits',
+  keywords: [
+    'Payload CMS',
+    'Payload blocks',
+    'Payload CMS components',
+    'Payload v3',
+    'Next.js',
+    'shadcn registry',
+    'block registry',
+    'payload-kit',
+    'CLI',
+    'TypeScript',
+  ],
+  formatDetection: { telephone: false },
+  icons: {
+    apple: '/favicon.svg',
+    icon: [
+      { type: 'image/svg+xml', url: '/favicon.svg' },
+      { sizes: '48x48', url: '/favicon.ico' },
+    ],
+    shortcut: '/favicon.ico',
+  },
+  manifest: '/manifest.webmanifest',
   openGraph: {
     description: siteDescription,
+    locale: 'en_US',
     siteName: 'Payload Kits',
     title: 'Payload Kits — Payload blocks, fully wired',
     type: 'website',
@@ -44,6 +74,10 @@ export const metadata: Metadata = {
     title: 'Payload Kits — Payload blocks, fully wired',
   },
 }
+
+/* Emitted once on every page: the Organization + WebSite identity that
+   page-level schema (SoftwareApplication, FAQ, TechArticle…) references by @id. */
+const siteStructuredData = graph(organizationNode(), websiteNode())
 
 export const viewport: Viewport = {
   themeColor: '#ffffff',
@@ -59,6 +93,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable}`}
     >
       <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
+        <JsonLd data={siteStructuredData} />
         <RootProvider
           search={{ enabled: true }}
           theme={{
