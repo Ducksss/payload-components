@@ -141,13 +141,32 @@ export const workflowSteps = [
 /* ------------------------------------------------------------------ */
 
 export const kitsIntro =
-  'Two kits install today; the posts suite is next in line. Everything here ships the full contract — source, manifest, docs, and installer coverage — or it does not ship at all.'
+  'Payload pages are built from layout blocks; posts are editorial surfaces. The catalog ships both families — and nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+
+/* The two kit families mirror Payload's content model — and the two real
+   install modes in the kit manifests (payload-kit-required block wiring
+   vs shadcn-native component copies). */
+export const kitFamilies = {
+  pages: {
+    countLabel: '2 installable',
+    description:
+      'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
+    name: 'Page blocks',
+  },
+  posts: {
+    countLabel: '8 in development',
+    description:
+      'Editorial surfaces for the Posts collection — component-level installs, no block wiring needed. In development.',
+    name: 'Post components',
+  },
+} as const
 
 export const kitEntries = [
   {
     command: 'npx payload-kit add hero-basic',
     description:
       'A headline-led marketing hero with CTA links, proof badges, Payload block config, and frontend rendering.',
+    family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'links', 'proofItems'],
     href: '/docs/kits/hero-basic',
     slug: 'hero-basic',
@@ -160,6 +179,7 @@ export const kitEntries = [
     command: 'npx payload-kit add feature-grid-basic',
     description:
       'A text-first feature grid with repeatable items, optional CTA wiring, and idempotent registration.',
+    family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'items', 'links'],
     href: '/docs/kits/feature-grid-basic',
     slug: 'feature-grid-basic',
@@ -177,50 +197,58 @@ export type KitEntry = (typeof kitEntries)[number]
 export const upcomingKits = [
   {
     description: 'A post card with image, categories, date, title, and excerpt.',
+    family: 'posts',
     slug: 'post-card',
-    target: 'Posts',
+    target: 'Archive card',
     title: 'Post Card',
   },
   {
     description: 'An archive grid for rendering arrays of post summaries.',
+    family: 'posts',
     slug: 'post-archive',
-    target: 'Posts',
+    target: 'Archive grid',
     title: 'Post Archive',
   },
   {
     description: 'A post hero with category, author, date, and summary.',
+    family: 'posts',
     slug: 'post-hero',
-    target: 'Posts',
+    target: 'Post header',
     title: 'Post Hero',
   },
   {
     description: 'A featured post surface with image, category, and date.',
+    family: 'posts',
     slug: 'featured-post',
-    target: 'Posts',
+    target: 'Index spotlight',
     title: 'Featured Post',
   },
   {
     description: 'A compact post list with dates, categories, and descriptions.',
+    family: 'posts',
     slug: 'post-list',
-    target: 'Posts',
+    target: 'Compact index',
     title: 'Post List',
   },
   {
     description: 'An author profile card for article pages and editorial bylines.',
+    family: 'posts',
     slug: 'author-card',
-    target: 'Posts',
+    target: 'Byline',
     title: 'Author Card',
   },
   {
     description: 'A newsletter callout for post pages and editorial surfaces.',
+    family: 'posts',
     slug: 'newsletter-callout',
     target: 'Engagement',
     title: 'Newsletter Callout',
   },
   {
     description: 'A related-posts section for compact recommendations.',
+    family: 'posts',
     slug: 'related-posts',
-    target: 'Posts',
+    target: 'Post footer',
     title: 'Related Posts',
   },
 ] as const

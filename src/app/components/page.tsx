@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { ArrowUpRight } from 'lucide-react'
 
 import { KitCard } from '@/components/site/KitCard'
-import { UpcomingKitCard } from '@/components/site/KitGrid'
+import { KitFamilyHeader, UpcomingKitCard } from '@/components/site/KitGrid'
 import { Eyebrow } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
@@ -12,6 +12,7 @@ import {
   catalogTitle,
   githubRepoUrl,
   kitEntries,
+  kitFamilies,
   upcomingKits,
 } from '@/lib/site'
 
@@ -47,7 +48,12 @@ export default function ComponentsPage() {
 
         <section>
           <div className="container py-12 lg:py-16">
-            <div className="grid gap-5 md:grid-cols-2">
+            <KitFamilyHeader
+              countLabel={kitFamilies.pages.countLabel}
+              description={kitFamilies.pages.description}
+              name={kitFamilies.pages.name}
+            />
+            <div className="mt-6 grid gap-5 md:grid-cols-2">
               {kitEntries.map((kit) => (
                 <KitCard key={kit.slug} kit={kit} />
               ))}
@@ -74,14 +80,12 @@ export default function ComponentsPage() {
 
         <section className="border-t border-border bg-muted/40">
           <div className="container py-12 lg:py-16">
-            <h2 className="text-2xl font-semibold tracking-[-0.045em] text-foreground">
-              In the pipeline
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-              The posts suite is in development. Each kit lands once its source, manifest, docs,
-              and installer coverage ship together.
-            </p>
-            <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <KitFamilyHeader
+              countLabel={kitFamilies.posts.countLabel}
+              description={kitFamilies.posts.description}
+              name={kitFamilies.posts.name}
+            />
+            <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {upcomingKits.map((kit) => (
                 <UpcomingKitCard key={kit.slug} kit={kit} />
               ))}

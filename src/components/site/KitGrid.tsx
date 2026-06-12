@@ -6,6 +6,7 @@ import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import {
   githubIssuesUrl,
   kitEntries,
+  kitFamilies,
   upcomingKits,
   type KitEntry,
   type UpcomingKit,
@@ -242,36 +243,80 @@ export function UpcomingKitCard({ kit }: { kit: UpcomingKit }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Grid                                                                */
+/* Family groups + grid                                                */
 /* ------------------------------------------------------------------ */
+
+export function KitFamilyHeader({
+  countLabel,
+  description,
+  name,
+}: {
+  countLabel: string
+  description: string
+  name: string
+}) {
+  return (
+    <div className="flex flex-col gap-2 border-b border-border pb-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+      <div className="flex items-baseline gap-3">
+        <h3 className="text-lg font-semibold tracking-tight text-foreground">{name}</h3>
+        <span className="rounded-full border border-border bg-background px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+          {countLabel}
+        </span>
+      </div>
+      <p className="max-w-xl text-sm leading-6 text-muted-foreground sm:text-right">
+        {description}
+      </p>
+    </div>
+  )
+}
 
 export function KitGrid() {
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {kitEntries.map((kit) => (
-        <InstallableKitCard key={kit.slug} kit={kit} />
-      ))}
+    <div className="flex flex-col gap-12">
+      {/* Page blocks — full payload-kit wiring. */}
+      <div>
+        <KitFamilyHeader
+          countLabel={kitFamilies.pages.countLabel}
+          description={kitFamilies.pages.description}
+          name={kitFamilies.pages.name}
+        />
+        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {kitEntries.map((kit) => (
+            <InstallableKitCard key={kit.slug} kit={kit} />
+          ))}
+        </div>
+      </div>
 
-      {upcomingKits.map((kit) => (
-        <UpcomingKitCard key={kit.slug} kit={kit} />
-      ))}
+      {/* Post components — component-level installs, in development. */}
+      <div>
+        <KitFamilyHeader
+          countLabel={kitFamilies.posts.countLabel}
+          description={kitFamilies.posts.description}
+          name={kitFamilies.posts.name}
+        />
+        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {upcomingKits.map((kit) => (
+            <UpcomingKitCard key={kit.slug} kit={kit} />
+          ))}
 
-      <a
-        href={githubIssuesUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="group flex min-h-48 flex-col items-start justify-center gap-3 rounded-2xl border border-dashed border-border p-6 transition-colors hover:border-foreground/25"
-      >
-        <span className="font-mono text-sm text-muted-foreground">your-kit-here</span>
-        <p className="text-sm leading-6 text-muted-foreground">
-          The catalog grows deliberately — source, manifest, docs, and installer coverage ship
-          together. Propose the next kit.
-        </p>
-        <span className="inline-flex items-center gap-1 text-sm font-medium text-foreground transition-colors group-hover:text-brand">
-          Open an issue
-          <ArrowUpRight className="size-3.5" aria-hidden="true" />
-        </span>
-      </a>
+          <a
+            href={githubIssuesUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="group flex min-h-48 flex-col items-start justify-center gap-3 rounded-2xl border border-dashed border-border p-6 transition-colors hover:border-foreground/25"
+          >
+            <span className="font-mono text-sm text-muted-foreground">your-kit-here</span>
+            <p className="text-sm leading-6 text-muted-foreground">
+              The catalog grows deliberately — source, manifest, docs, and installer coverage ship
+              together. Propose the next kit.
+            </p>
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-foreground transition-colors group-hover:text-brand">
+              Open an issue
+              <ArrowUpRight className="size-3.5" aria-hidden="true" />
+            </span>
+          </a>
+        </div>
+      </div>
     </div>
   )
 }
