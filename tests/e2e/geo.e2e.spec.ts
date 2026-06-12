@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const baseURL = 'http://localhost:3000'
+const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3000'}`
 const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 
 test.describe('AI-readable documentation surfaces', () => {

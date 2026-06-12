@@ -36,7 +36,11 @@ export default defineConfig({
   ],
   webServer: {
     command: 'pnpm dev',
+    env: {
+      NEXT_PUBLIC_SITE_URL: `http://localhost:${process.env.E2E_PORT ?? '3000'}`,
+      PORT: process.env.E2E_PORT ?? '3000',
+    },
     reuseExistingServer: true,
-    url: 'http://localhost:3000',
+    url: `http://localhost:${process.env.E2E_PORT ?? '3000'}`,
   },
 })

@@ -1,32 +1,66 @@
 import { expect, test } from '@playwright/test'
 
-const baseURL = 'http://localhost:3000'
+import {
+  catalogTitle,
+  heroHeadline,
+  kitEntries,
+  landingSections,
+  primaryInstallCommand,
+  terminalDemoLines,
+} from '../../src/lib/site'
 
-test.describe('Docs-native frontend', () => {
-  test('loads the light-first homepage', async ({ page }) => {
+const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3000'}`
+
+test.describe('Light shadcn frontend', () => {
+  test('renders the light token-driven homepage', async ({ page }) => {
     await page.goto(baseURL)
 
     await expect(page).toHaveTitle(/Payload Kits/)
-    await expect(
-      page.getByRole('heading', {
-        level: 1,
-        name: 'Install Payload blocks without rebuilding the wiring.',
-      }),
-    ).toBeVisible()
-    await expect(
-      page.locator('code', { hasText: 'npx payload-kit add hero-basic' }).first(),
-    ).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
+    await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
 
-    const background = await page
-      .locator('main')
-      .evaluate((element) => getComputedStyle(element).backgroundColor)
-    expect(background).toBe('rgb(255, 255, 255)')
+    // Forced single light theme: the dark class must never appear.
+    await expect(page.locator('html')).not.toHaveClass(/dark/)
+
+    // The body background must resolve from the --background token rather
+    // than any hardcoded color, so the assertion derives its expectation
+    // from the same token in-page.
+    const { actual, expected } = await page.evaluate(() => {
+      const probe = document.createElement('div')
+      probe.style.backgroundColor = 'var(--background)'
+      document.body.appendChild(probe)
+      const resolved = getComputedStyle(probe).backgroundColor
+      probe.remove()
+
+      return {
+        actual: getComputedStyle(document.body).backgroundColor,
+        expected: resolved,
+      }
+    })
+
+    expect(expected).not.toBe('rgba(0, 0, 0, 0)')
+    expect(actual).toBe(expected)
+
+    // "Light themed first": the resolved background must actually be light.
+    // A canvas normalizes any CSS color syntax (oklch included) to sRGB bytes.
+    const meanChannel = await page.evaluate(() => {
+      const canvas = document.createElement('canvas')
+      canvas.width = 1
+      canvas.height = 1
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return -1
+      ctx.fillStyle = getComputedStyle(document.body).backgroundColor
+      ctx.fillRect(0, 0, 1, 1)
+      const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data
+      return (r + g + b) / 3
+    })
+    expect(meanChannel).toBeGreaterThan(220)
   })
 
-  test('exposes docs, catalog, and no horizontal overflow', async ({ page }) => {
+  test('exposes docs, catalog, kit pages, and no horizontal overflow', async ({ page }) => {
     const routes = [
       {
-        h1: 'Install Payload blocks without rebuilding the wiring.',
+        h1: heroHeadline,
         path: '/',
         title: /Payload Kits/,
       },
@@ -41,10 +75,15 @@ test.describe('Docs-native frontend', () => {
         title: /Architecture/,
       },
       {
-        h1: 'Kit catalog',
+        h1: catalogTitle,
         path: '/components',
         title: /Kit Catalog/,
       },
+      ...kitEntries.map((kit) => ({
+        h1: kit.title,
+        path: kit.href,
+        title: new RegExp(kit.title),
+      })),
     ]
 
     for (const route of routes) {
@@ -59,12 +98,18 @@ test.describe('Docs-native frontend', () => {
     }
   })
 
-  test('exposes the product documentation homepage sections', async ({ page }) => {
+  test('exposes every landing section, the footer, and each kit', async ({ page }) => {
     await page.goto(baseURL)
 
-    await expect(page.getByRole('heading', { level: 2, name: 'How it works' })).toBeVisible()
-    await expect(page.getByRole('heading', { level: 2, name: 'Current kits' })).toBeVisible()
-    await expect(page.getByText('Built for Payload projects')).toBeVisible()
+    for (const section of Object.values(landingSections)) {
+      await expect(page.getByRole('heading', { level: 2, name: section.heading })).toBeVisible()
+    }
+
+    for (const kit of kitEntries) {
+      await expect(page.locator('code', { hasText: kit.command }).first()).toBeVisible()
+    }
+
+    await expect(page.getByRole('contentinfo')).toBeVisible()
     await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
   })
 
@@ -84,12 +129,28 @@ test.describe('Docs-native frontend', () => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
 
-    await page.getByRole('button', { name: 'Copy' }).click()
+    await page.getByRole('button', { name: 'Copy' }).first().click()
 
     await expect(page.getByRole('button', { name: 'Copied' })).toBeVisible()
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
-      .toBe('npx payload-kit add hero-basic')
+      .toBe(primaryInstallCommand)
+  })
+})
+
+test.describe('Reduced motion', () => {
+  test.use({ contextOptions: { reducedMotion: 'reduce' } })
+
+  test('terminal replay renders its final transcript without animation', async ({ page }) => {
+    await page.goto(baseURL)
+
+    const lastLine = terminalDemoLines[terminalDemoLines.length - 1]
+    await expect(page.getByText(lastLine.text).first()).toBeVisible()
+
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    )
+    expect(hasHorizontalOverflow).toBe(false)
   })
 
   test('opens the Fumadocs search dialog from the docs shell', async ({ page }) => {
