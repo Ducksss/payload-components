@@ -2,25 +2,50 @@ import type { CSSProperties } from 'react'
 
 import { CheckCircle2, FileCode2, FolderTree, Sparkles } from 'lucide-react'
 
-import {
-  frameHighlights,
-  frameInstalledFiles,
-  kitEntries,
-  terminalDemoLines,
-} from '@/lib/site'
+import { HeroBasicDemo } from '@/components/site/demos/HeroBasicDemo'
+import { DemoScaleFrame } from '@/components/site/demos/DemoScaleFrame'
+import { frameInstalledFiles, kitEntries, terminalDemoLines } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
-/* Terminal shows command → resolve/copy → final success; the wiring steps
-   in between become the ✓ outcome cards below it. All strings come from
-   terminalDemoLines so the docs, tests, and frame never drift apart. */
+/* The install replay: terminal types the command, progress lines and
+ * wiring outcomes land, then the skeleton "before" state yields to the
+ * real hero-basic demo twin materializing part by part — command in,
+ * working block out. All strings come from terminalDemoLines so the
+ * docs, tests, and frame never drift apart. Pure CSS choreography
+ * (custom-property delays); HeroInstallReplay remounts the subtree to
+ * replay it. */
 const commandLine = terminalDemoLines[0]
-const revealLines = [...terminalDemoLines.slice(1, 4), terminalDemoLines[9]]
+const progressLines = terminalDemoLines.slice(1, 4)
+const successLine = terminalDemoLines[terminalDemoLines.length - 1]
 const wiringOutcomes = terminalDemoLines.slice(4, 8)
 
 const TYPE_DURATION_MS = 540
 const REVEAL_DURATION_MS = 150
 const LINE_BASE_DELAY_MS = 760
 const LINE_GAP_MS = 70
+
+/* Progress lines reveal at 1370 / 1590 / 1810. */
+const progressDelay = (index: number) =>
+  LINE_BASE_DELAY_MS +
+  TYPE_DURATION_MS +
+  LINE_GAP_MS +
+  index * (REVEAL_DURATION_MS + LINE_GAP_MS)
+
+const OUTCOMES_START_MS = 1940
+const OUTCOME_STAGGER_MS = 120
+const FILES_DELAY_MS = 2150
+const SUCCESS_DELAY_MS = 2550
+const SKELETON_FADE_MS = 2720
+const TWIN_START_MS = 2780
+const TWIN_STAGGER_MS = 120
+
+const twinPartDelays = {
+  eyebrow: TWIN_START_MS,
+  title: TWIN_START_MS + TWIN_STAGGER_MS,
+  description: TWIN_START_MS + 2 * TWIN_STAGGER_MS,
+  links: TWIN_START_MS + 3 * TWIN_STAGGER_MS,
+  proofItems: TWIN_START_MS + 4 * TWIN_STAGGER_MS,
+}
 
 type MotionStyle = CSSProperties & {
   '--line-delay'?: string
@@ -39,14 +64,6 @@ const spawnStyle = (delay: number): MotionStyle => ({
   '--spawn-delay': `${delay}ms`,
 })
 
-const revealDelay = (index: number) =>
-  LINE_BASE_DELAY_MS + TYPE_DURATION_MS + LINE_GAP_MS + index * (REVEAL_DURATION_MS + LINE_GAP_MS)
-
-const typingCompleteAt = revealDelay(revealLines.length)
-const outcomesRevealStart = typingCompleteAt + 140
-const filesRevealStart = outcomesRevealStart + 120
-const surfaceRevealStart = filesRevealStart + 100
-
 export function HeroProductFrame() {
   const heroKit = kitEntries[0]
 
@@ -58,14 +75,19 @@ export function HeroProductFrame() {
       )}
     >
       <div className="flex items-center justify-between gap-4 border-b border-background/10 px-4 py-3.5 sm:px-5">
-        <div aria-hidden="true" className="flex items-center gap-2">
-          <span className="size-2.5 rounded-full bg-background/40" />
-          <span className="size-2.5 rounded-full bg-background/25" />
-          <span className="size-2.5 rounded-full bg-background/15" />
+        <div className="flex items-center gap-3">
+          <div aria-hidden="true" className="flex items-center gap-2">
+            <span className="size-2.5 rounded-full bg-background/40" />
+            <span className="size-2.5 rounded-full bg-background/25" />
+            <span className="size-2.5 rounded-full bg-background/15" />
+          </div>
+          <span className="rounded-full bg-background/12 px-3 py-1 text-xs font-medium text-background/80">
+            Install replay — real output
+          </span>
         </div>
-        <span className="rounded-full bg-background/12 px-3 py-1 text-xs font-medium text-background/80">
-          Product proof
-        </span>
+        {/* The right slot hosts the replay control, absolutely positioned
+            by HeroInstallReplay so the frame itself stays a server
+            component. */}
       </div>
 
       <div className="grid grid-cols-1 gap-0 lg:grid-cols-[1.08fr_0.92fr]">
@@ -117,17 +139,12 @@ export function HeroProductFrame() {
                       $ {commandLine.text}
                     </span>
                   </span>
-                  {revealLines.map((line, index) => (
+                  {progressLines.map((line, index) => (
                     <span key={line.text} className="terminal-row">
                       <span
-                        className={cn(
-                          'terminal-line terminal-reveal',
-                          line.kind === 'success'
-                            ? 'font-medium text-success'
-                            : 'text-background/65',
-                        )}
+                        className="terminal-line terminal-reveal text-background/65"
                         style={lineStyle(
-                          revealDelay(index),
+                          progressDelay(index),
                           REVEAL_DURATION_MS,
                           `${line.text.length + 1}ch`,
                         )}
@@ -136,6 +153,18 @@ export function HeroProductFrame() {
                       </span>
                     </span>
                   ))}
+                  <span className="terminal-row">
+                    <span
+                      className="terminal-line terminal-reveal font-medium text-success"
+                      style={lineStyle(
+                        SUCCESS_DELAY_MS,
+                        REVEAL_DURATION_MS,
+                        `${successLine.text.length + 1}ch`,
+                      )}
+                    >
+                      {successLine.text}
+                    </span>
+                  </span>
                 </code>
               </div>
             </div>
@@ -145,7 +174,7 @@ export function HeroProductFrame() {
                 <div
                   key={outcome.text}
                   className="spawn-in flex items-start gap-3 rounded-2xl border border-background/10 bg-background/6 px-4 py-3.5 text-sm text-background/76"
-                  style={spawnStyle(outcomesRevealStart + index * 120)}
+                  style={spawnStyle(OUTCOMES_START_MS + index * OUTCOME_STAGGER_MS)}
                 >
                   <CheckCircle2
                     className="mt-0.5 size-4 shrink-0 text-success"
@@ -158,12 +187,43 @@ export function HeroProductFrame() {
           </div>
         </div>
 
-        {/* Installed files + surface */}
-        <div className="grid grid-cols-1 gap-0 sm:grid-cols-2 lg:grid-cols-1">
-          <div
-            className="spawn-in border-b border-background/10 p-5 lg:p-7"
-            style={spawnStyle(filesRevealStart)}
-          >
+        {/* Installed surface: skeleton "before" yields to the real twin. */}
+        <div className="flex min-w-0 flex-col gap-5 p-5 lg:p-7">
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] text-background/55">
+              Installed surface
+            </p>
+            <div className="mt-4 rounded-[1.5rem] border border-background/10 bg-background text-foreground">
+              <div className="border-b border-border px-5 py-4">
+                <p className="text-sm font-medium">{heroKit.title}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{heroKit.target} · typed</p>
+              </div>
+              <div aria-hidden="true" className="relative">
+                {/* Layer 1: the "before" skeleton, visible from t=0,
+                    fading as the install completes. */}
+                <div
+                  className="skeleton-fade absolute inset-0 grid content-start gap-3 px-5 py-5"
+                  style={spawnStyle(SKELETON_FADE_MS)}
+                >
+                  <div className="h-3 w-20 rounded-full bg-foreground/15" />
+                  <div className="h-7 w-4/5 rounded-full bg-foreground/75" />
+                  <div className="h-7 w-3/5 rounded-full bg-foreground/20" />
+                  <div className="flex gap-3 pt-2">
+                    <div className="h-10 w-28 rounded-full bg-foreground" />
+                    <div className="h-10 w-28 rounded-full border border-border" />
+                  </div>
+                </div>
+                {/* Layer 2: the real hero-basic twin materializing. */}
+                <DemoScaleFrame className="h-64 [mask-image:linear-gradient(to_bottom,black_82%,transparent)]">
+                  <div className="px-4 py-4">
+                    <HeroBasicDemo partDelays={twinPartDelays} />
+                  </div>
+                </DemoScaleFrame>
+              </div>
+            </div>
+          </div>
+
+          <div className="spawn-in" style={spawnStyle(FILES_DELAY_MS)}>
             <p className="text-xs uppercase tracking-[0.22em] text-background/55">
               Installed files
             </p>
@@ -174,43 +234,6 @@ export function HeroProductFrame() {
                   <span className="truncate font-mono text-[13px]">{filePath}</span>
                 </div>
               ))}
-            </div>
-          </div>
-
-          <div className="spawn-in p-5 lg:p-7" style={spawnStyle(surfaceRevealStart)}>
-            <p className="text-xs uppercase tracking-[0.22em] text-background/55">
-              Installed surface
-            </p>
-            <div className="mt-4 grid gap-3">
-              {/* Skeleton preview mirroring the hero-basic field contract:
-                  eyebrow, title, description, CTA links. */}
-              <div className="rounded-[1.5rem] border border-background/10 bg-background text-foreground">
-                <div className="border-b border-border px-5 py-4">
-                  <p className="text-sm font-medium">{heroKit.title}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{heroKit.target} · typed</p>
-                </div>
-                <div aria-hidden="true" className="grid gap-3 px-5 py-5">
-                  <div className="h-3 w-20 rounded-full bg-foreground/15" />
-                  <div className="h-7 w-4/5 rounded-full bg-foreground/75" />
-                  <div className="h-7 w-3/5 rounded-full bg-foreground/20" />
-                  <div className="flex gap-3 pt-2">
-                    <div className="h-10 w-28 rounded-full bg-foreground" />
-                    <div className="h-10 w-28 rounded-full border border-border" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                {frameHighlights.map((item) => (
-                  <div
-                    key={item.name}
-                    className="rounded-[1.5rem] border border-background/10 bg-background/6 p-4"
-                  >
-                    <p className="text-sm font-medium text-background">{item.name}</p>
-                    <p className="mt-2 text-sm text-background/68">{item.copy}</p>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>

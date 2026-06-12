@@ -375,6 +375,35 @@
   }
 }
 
+/* Install-replay materialize: demo-twin parts "print" in over the
+   fading skeleton. `both` fill is load-bearing — the reduced-motion
+   guard zeroes durations, so the end state (skeleton hidden, twin
+   visible) is what renders. */
+@keyframes twin-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes skeleton-fade {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 @keyframes scroll-rise {
   from {
     opacity: 0;
@@ -639,6 +668,17 @@
     transform: translateY(22px) scale(0.985);
     filter: blur(8px);
     animation: proof-spawn 620ms cubic-bezier(0.18, 0.82, 0.2, 1) var(--spawn-delay, 0ms) both;
+  }
+
+  /* Demo-twin parts rising in during the install replay. */
+  .twin-rise {
+    opacity: 0;
+    animation: twin-rise 420ms cubic-bezier(0.18, 0.82, 0.2, 1) var(--spawn-delay, 0ms) both;
+  }
+
+  /* The "before" skeleton yielding to the materialized twin. */
+  .skeleton-fade {
+    animation: skeleton-fade 300ms ease-out var(--spawn-delay, 0ms) both;
   }
 
   /* Scroll-linked section reveal. Progressive: browsers without

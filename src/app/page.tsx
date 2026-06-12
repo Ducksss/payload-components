@@ -2,17 +2,21 @@ import Link from 'next/link'
 
 import { ArrowRight, ArrowUpRight, Bell, Github, Sparkles, Star } from 'lucide-react'
 
+import { CatalogIndex } from '@/components/site/CatalogIndex'
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { Faq } from '@/components/site/Faq'
+import { HeroInstallReplay } from '@/components/site/HeroInstallReplay'
 import { HeroProductFrame } from '@/components/site/HeroProductFrame'
 import { siteIcons } from '@/components/site/icons'
-import { KitGrid } from '@/components/site/KitGrid'
+import { KitSpecimen } from '@/components/site/KitSpecimen'
+import { MaintainerNote } from '@/components/site/MaintainerNote'
 import { Eyebrow, Section, SectionHeading } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
-import { SocialProof } from '@/components/site/SocialProof'
+import { WiringLedger } from '@/components/site/WiringLedger'
 import {
   communityIntro,
+  communityInvite,
   communityLinks,
   faqIntro,
   githubRepoUrl,
@@ -20,27 +24,27 @@ import {
   heroHeadlineAccent,
   heroHeadlinePrimary,
   heroPrimaryCta,
-  heroStats,
   heroSubheadline,
   heroTertiaryLinks,
   kitsIntro,
   landingSections,
   primaryInstallCommand,
   receipts,
-  voicesIntro,
+  wiringIntro,
+  wiringLedger,
   workflowIntro,
   workflowSteps,
 } from '@/lib/site'
 
 export default function HomePage() {
-  const [browseLink, installFlowLink] = heroTertiaryLinks
+  const [browseLink, wiringLink] = heroTertiaryLinks
 
   return (
     <>
       <SiteHeader />
 
       <main className="flex-1">
-        {/* Hero — anatomy ported from the deployed payload-components.xyz hero. */}
+        {/* Hero — claim, command, then the install replay as proof. */}
         <section className="hero-shell overflow-hidden border-b border-border/60">
           <div aria-hidden="true" className="hero-atmosphere" />
 
@@ -71,9 +75,21 @@ export default function HomePage() {
                 </p>
               </div>
 
+              {/* The command itself, above the fold — first Copy button on
+                  the page (the e2e copy assertion targets it). */}
+              <div
+                className="hero-reveal grid w-full max-w-md grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-full border border-border bg-background py-1.5 pl-5 pr-1.5 shadow-card backdrop-blur-sm"
+                style={{ animationDelay: '420ms' }}
+              >
+                <code className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90 sm:text-[13px]">
+                  {primaryInstallCommand}
+                </code>
+                <CommandCopyButton command={primaryInstallCommand} />
+              </div>
+
               <div
                 className="hero-reveal flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center"
-                style={{ animationDelay: '460ms' }}
+                style={{ animationDelay: '500ms' }}
               >
                 <Link
                   href={heroPrimaryCta.href}
@@ -99,7 +115,7 @@ export default function HomePage() {
 
               <div
                 className="hero-reveal flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground"
-                style={{ animationDelay: '540ms' }}
+                style={{ animationDelay: '580ms' }}
               >
                 <Link
                   href={browseLink.href}
@@ -112,38 +128,20 @@ export default function HomePage() {
                   /
                 </span>
                 <Link
-                  href={installFlowLink.href}
+                  href={wiringLink.href}
                   className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
                 >
-                  {installFlowLink.label}
+                  {wiringLink.label}
                   <ArrowRight className="size-3.5" aria-hidden="true" />
                 </Link>
               </div>
             </div>
 
             <div className="hero-proof-enter">
-              <HeroProductFrame />
+              <HeroInstallReplay>
+                <HeroProductFrame />
+              </HeroInstallReplay>
             </div>
-
-            <dl
-              className="hero-reveal mx-auto grid w-full max-w-4xl grid-cols-1 gap-px overflow-hidden rounded-[1.75rem] border border-border/70 bg-border/70 sm:grid-cols-3"
-              style={{ animationDelay: '720ms' }}
-            >
-              {heroStats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="flex flex-col gap-2 bg-background/90 p-5 backdrop-blur-sm sm:p-6"
-                >
-                  <dt className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                    {stat.label}
-                  </dt>
-                  <dd className="text-4xl font-medium tracking-[-0.06em] text-foreground sm:text-5xl">
-                    {stat.value}
-                  </dd>
-                  <dd className="text-sm leading-6 text-muted-foreground">{stat.detail}</dd>
-                </div>
-              ))}
-            </dl>
           </div>
         </section>
 
@@ -166,7 +164,25 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Components grid — the centerpiece. */}
+        {/* Wiring ledger — the differentiator, promoted from FAQ to artifact table. */}
+        <Section id={landingSections.wiring.id}>
+          <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+            <SectionHeading
+              eyebrow="The install boundary"
+              heading={landingSections.wiring.heading}
+              intro={wiringIntro}
+            />
+            <code className="hidden shrink-0 pb-1 font-mono text-[11px] text-muted-foreground lg:block">
+              source: {wiringLedger.source}
+            </code>
+          </div>
+
+          <div className="reveal-on-scroll mt-12">
+            <WiringLedger />
+          </div>
+        </Section>
+
+        {/* Catalog — specimen first, dense index second. */}
         <Section id={landingSections.kits.id} className="bg-muted/40">
           <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
             <SectionHeading
@@ -184,11 +200,15 @@ export default function HomePage() {
           </div>
 
           <div className="reveal-on-scroll mt-12">
-            <KitGrid />
+            <KitSpecimen />
+          </div>
+
+          <div className="reveal-on-scroll mt-12">
+            <CatalogIndex />
           </div>
         </Section>
 
-        {/* How it works — compact. */}
+        {/* How it works — a single horizontal rail, not another card grid. */}
         <Section id={landingSections.workflow.id}>
           <SectionHeading
             eyebrow="Workflow"
@@ -196,9 +216,13 @@ export default function HomePage() {
             intro={workflowIntro}
           />
 
-          <div className="reveal-on-scroll mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <ol className="reveal-on-scroll mt-12 grid grid-cols-1 gap-10 lg:grid-cols-3 lg:gap-8 lg:border-t lg:border-border">
             {workflowSteps.map((step, index) => (
-              <div key={step.title} className="flex flex-col gap-2">
+              <li key={step.title} className="relative flex flex-col gap-2 lg:pt-7">
+                <span
+                  aria-hidden="true"
+                  className="absolute left-0 top-0 hidden h-3 w-px bg-border lg:block"
+                />
                 <span className="font-mono text-sm font-semibold text-brand">
                   {String(index + 1).padStart(2, '0')}
                 </span>
@@ -209,22 +233,9 @@ export default function HomePage() {
                 <code className="mt-1 block w-fit max-w-full overflow-x-auto whitespace-nowrap rounded-md border border-border bg-muted/60 px-3 py-2 font-mono text-xs text-foreground/80">
                   {step.command}
                 </code>
-              </div>
+              </li>
             ))}
-          </div>
-        </Section>
-
-        {/* Social proof */}
-        <Section id={landingSections.voices.id}>
-          <SectionHeading
-            eyebrow="Social proof"
-            heading={landingSections.voices.heading}
-            intro={voicesIntro}
-          />
-
-          <div className="reveal-on-scroll mt-12">
-            <SocialProof />
-          </div>
+          </ol>
         </Section>
 
         {/* FAQ */}
@@ -242,56 +253,69 @@ export default function HomePage() {
           </div>
         </Section>
 
-        {/* Open source */}
+        {/* Open source close — asymmetric: the pitch beside the one real voice. */}
         <Section id={landingSections.community.id} className="relative overflow-hidden">
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-dots [mask-image:radial-gradient(38rem_20rem_at_50%_45%,black,transparent)]"
+            className="absolute inset-0 bg-dots [mask-image:radial-gradient(38rem_22rem_at_40%_45%,black,transparent)]"
           />
-          <div className="relative mx-auto flex max-w-2xl flex-col items-center text-center">
-            <Eyebrow>Open source</Eyebrow>
-            <h2 className="mt-4 text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-4xl">
-              {landingSections.community.heading}
-            </h2>
-            <p className="mt-4 text-base leading-7 text-muted-foreground">{communityIntro}</p>
+          <div className="relative grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
+            <div className="flex flex-col items-start">
+              <Eyebrow>Open source</Eyebrow>
+              <h2 className="mt-4 text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-4xl">
+                {landingSections.community.heading}
+              </h2>
+              <p className="mt-4 text-base leading-7 text-muted-foreground">{communityIntro}</p>
 
-            <div className="mt-7 grid w-full max-w-md grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-full border border-border bg-background py-1.5 pl-5 pr-1.5 shadow-card">
-              <code className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90 sm:text-[13px]">
-                {primaryInstallCommand}
-              </code>
-              <CommandCopyButton command={primaryInstallCommand} />
-            </div>
+              <div className="mt-7 grid w-full max-w-md grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-full border border-border bg-background py-1.5 pl-5 pr-1.5 shadow-card">
+                <code className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90 sm:text-[13px]">
+                  {primaryInstallCommand}
+                </code>
+                <CommandCopyButton command={primaryInstallCommand} />
+              </div>
 
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href={communityLinks[0].href}
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href={communityLinks[0].href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  <Github className="size-4" aria-hidden="true" />
+                  {communityLinks[0].label}
+                </Link>
+                <Link
+                  href={communityLinks[1].href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-background px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                >
+                  {communityLinks[1].label}
+                  <ArrowUpRight className="size-4" aria-hidden="true" />
+                </Link>
+              </div>
+
+              <a
+                href={communityInvite.href}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                className="mt-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
-                <Github className="size-4" aria-hidden="true" />
-                {communityLinks[0].label}
-              </Link>
-              <Link
-                href={communityLinks[1].href}
+                {communityInvite.label}
+                <ArrowUpRight className="size-3.5" aria-hidden="true" />
+              </a>
+              <a
+                href={`${githubRepoUrl}/releases`}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-background px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                className="mt-2.5 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
-                {communityLinks[1].label}
-                <ArrowUpRight className="size-4" aria-hidden="true" />
-              </Link>
+                <Bell className="size-3.5" aria-hidden="true" />
+                Watch releases to catch new kits as they land
+              </a>
             </div>
 
-            <a
-              href={`${githubRepoUrl}/releases`}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-5 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <Bell className="size-3.5" aria-hidden="true" />
-              Watch releases to catch new kits as they land
-            </a>
+            <MaintainerNote />
           </div>
         </Section>
       </main>

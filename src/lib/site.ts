@@ -18,36 +18,18 @@ export const heroEyebrow = 'Payload Kits public alpha'
 
 /* The H1 renders primary + accent as one accessible name; tests and the
    OG image consume the concatenated heroHeadline. */
-export const heroHeadlinePrimary = 'Install production-ready Payload blocks'
-export const heroHeadlineAccent = 'with one command.'
+export const heroHeadlinePrimary = 'Install Payload blocks'
+export const heroHeadlineAccent = 'wired, not pasted.'
 export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
 
 export const heroSubheadline =
-  'Payload Kits wires schema, render components, generated types, and import-map updates straight into your Payload v3 repo — so blocks belong, not just paste.'
+  'One command copies the block source, registers it in your Pages collection, maps the renderer, and regenerates types and the admin import map. The result is a reviewable git diff — not a checklist.'
 
 export const heroPrimaryCta = { href: '/docs', label: 'Get started' } as const
 
 export const heroTertiaryLinks = [
   { href: '/components', label: 'Browse the kits' },
-  { href: '#workflow', label: 'See the install flow in 30 seconds' },
-] as const
-
-export const heroStats = [
-  {
-    detail: 'command from the catalog to a committed, working block.',
-    label: 'Install',
-    value: '1',
-  },
-  {
-    detail: 'artifacts wired every run — schema, renderer, types, import map.',
-    label: 'Wiring',
-    value: '4',
-  },
-  {
-    detail: 'alpha kits, each shipping source, manifest, docs, and installer coverage.',
-    label: 'Catalog',
-    value: '2',
-  },
+  { href: '#wiring', label: 'See what add actually wires' },
 ] as const
 
 /**
@@ -78,18 +60,6 @@ export const frameInstalledFiles = [
   'admin importMap.js — regenerated',
 ] as const
 
-/* Product-proof frame: the two context cards beside the install surface. */
-export const frameHighlights = [
-  {
-    copy: 'hero-basic and feature-grid-basic ship today. Nothing lands in the catalog half-wired.',
-    name: '2 alpha kits',
-  },
-  {
-    copy: 'payload-kit owns collection edits, render mapping, type generation, and import maps.',
-    name: 'CLI boundary',
-  },
-] as const
-
 /* ------------------------------------------------------------------ */
 /* Landing sections                                                    */
 /* ------------------------------------------------------------------ */
@@ -97,8 +67,8 @@ export const frameHighlights = [
 export const landingSections = {
   community: { heading: 'Open source, end to end.', id: 'community' },
   faq: { heading: 'Questions, answered straight.', id: 'faq' },
-  kits: { heading: 'The kit catalog.', id: 'kits' },
-  voices: { heading: 'Proof over promises.', id: 'voices' },
+  kits: { heading: 'The catalog, rendered live.', id: 'kits' },
+  wiring: { heading: 'Copying files was never the hard part.', id: 'wiring' },
   workflow: { heading: 'From catalog to commit in three moves.', id: 'workflow' },
 } as const
 
@@ -137,11 +107,69 @@ export const workflowSteps = [
 ] as const
 
 /* ------------------------------------------------------------------ */
+/* Wiring ledger — the differentiator as a verifiable artifact table.  */
+/* Rows mirror the manifest contract: recovery.patchedFiles plus the   */
+/* generate:types / generate:importmap postInstall steps.              */
+/* ------------------------------------------------------------------ */
+
+export const wiringIntro =
+  'A plain shadcn add stops at your filesystem. A Payload block isn’t live until it’s registered, rendered, typed, and in the admin import map — payload-kit add owns exactly those four edits.'
+
+export const wiringLedger = {
+  columns: {
+    baseline: {
+      command: 'npx shadcn add hero',
+      summary: '1 of 5 artifacts. The rest is your TODO list.',
+    },
+    kit: {
+      command: 'npx payload-kit add hero-basic',
+      summary: '5 of 5 in one pass — reviewed as one git diff.',
+    },
+  },
+  /* baseline: null means the artifact is left for you to wire by hand. */
+  rows: [
+    {
+      artifact: 'Block source',
+      baseline: 'copied',
+      kit: 'copied',
+      path: 'src/blocks/HeroBasic/{config.ts, Component.tsx}',
+    },
+    {
+      artifact: 'Collection schema',
+      baseline: null,
+      kit: 'patched',
+      path: 'src/collections/Pages/index.ts',
+    },
+    {
+      artifact: 'Render mapping',
+      baseline: null,
+      kit: 'patched',
+      path: 'src/blocks/RenderBlocks.tsx',
+    },
+    {
+      artifact: 'Generated types',
+      baseline: null,
+      kit: 'regenerated',
+      path: 'src/payload-types.ts',
+    },
+    {
+      artifact: 'Admin import map',
+      baseline: null,
+      kit: 'regenerated',
+      path: 'admin importMap.js',
+    },
+  ],
+  source: 'payload-kits/manifests/hero-basic.json',
+} as const
+
+export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
+
+/* ------------------------------------------------------------------ */
 /* Kit catalog grid                                                    */
 /* ------------------------------------------------------------------ */
 
 export const kitsIntro =
-  'Payload pages are built from layout blocks; posts are editorial surfaces. The catalog ships both families — and nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the kit’s real component rendered with sample content. Two page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two kit families mirror Payload's content model — and the two real
    install modes in the kit manifests (payload-kit-required block wiring
@@ -256,41 +284,18 @@ export const upcomingKits = [
 export type UpcomingKit = (typeof upcomingKits)[number]
 
 /* ------------------------------------------------------------------ */
-/* Social proof                                                        */
+/* Maintainer note                                                     */
 /* ------------------------------------------------------------------ */
 
-export const voicesIntro =
-  'No fabricated quotes — this catalog is weeks old. What exists today: a maintainer who ships in the open, and CI receipts you can audit. Real installs get featured as they land.'
-
-export type Testimonial = {
-  body: string
-  href?: string
-  kind: 'invite' | 'note' | 'quote'
-  name: string
-  role?: string
-}
-
-export const testimonials: readonly Testimonial[] = [
-  {
-    body: 'I built payload-kit because installing a Payload block was never the copy-paste — it was the four edits after. The CLI exists so the second project, and the tenth, get that wiring for free. Read the installer source before you trust it; shipping it MIT is the point.',
-    href: 'https://github.com/Ducksss',
-    kind: 'note',
-    name: 'Ducksss',
-    role: 'Maintainer, Payload Kits',
-  },
-  {
-    body: 'Running Payload Kits in a real repo? Open an issue with what worked and what drifted — early installs shape the kit contract and get featured here.',
-    href: githubIssuesUrl,
-    kind: 'invite',
-    name: 'Your project here',
-  },
-  {
-    body: 'Shipping client sites on Payload? Tell us which blocks you rebuild every time — catalog priorities come from real installs, not roadmap theater.',
-    href: githubIssuesUrl,
-    kind: 'invite',
-    name: 'Your agency here',
-  },
-] as const
+/* The one real voice on the site — the signed maintainer note that
+   anchors the open-source close. No fabricated quotes: real installs
+   get featured here only when they exist. */
+export const maintainerNote = {
+  body: 'I built payload-kit because installing a Payload block was never the copy-paste — it was the four edits after. The CLI exists so the second project, and the tenth, get that wiring for free. Read the installer source before you trust it; shipping it MIT is the point.',
+  href: 'https://github.com/Ducksss',
+  name: 'Ducksss',
+  role: 'Maintainer, Payload Kits',
+} as const
 
 /* ------------------------------------------------------------------ */
 /* FAQ                                                                 */
@@ -322,7 +327,7 @@ export const faqEntries = [
   },
   {
     answer:
-      'A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-kit wraps the same registry delivery with exactly that wiring — that boundary is the product.',
+      'A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-kit wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.',
     question: 'Why not just run npx shadcn add?',
   },
   {
@@ -338,6 +343,12 @@ export const faqEntries = [
 
 export const communityIntro =
   'The registry, the CLI, the kits, and this site are one MIT-licensed repository. Read the installer before you trust it — that is the point.'
+
+/* The quiet replacement for placeholder testimonial slots. */
+export const communityInvite = {
+  href: githubIssuesUrl,
+  label: 'Running it in a real repo? Open an issue — early installs get featured.',
+} as const
 
 /* ------------------------------------------------------------------ */
 /* Catalog page                                                        */
