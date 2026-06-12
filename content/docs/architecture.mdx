@@ -66,6 +66,12 @@ The shadcn-compatible registry reads source files from `payload-kits/source` and
 
 That keeps Payload-specific kit source out of the Fumadocs app tree while preserving install targets like `~/src/blocks/HeroBasic/Component.tsx`.
 
+## Kit families and shared code
+
+A component family ships one installable kit per structural variant — `hero-basic`, `hero-video`, `hero-dramatic` — each its own registry item and manifest. Variant selection is the catalog and the install command, never an interactive prompt. Content-level variation (optional or extra editor fields) lives in the Payload block config, not a separate kit.
+
+Variants that share fields or markup reference a common source file under `payload-kits/source/blocks/shared`, installed once into the consumer repo — for example `~/src/blocks/shared/heroFields.ts` — and composed by each variant config as `fields: [...heroFields, /* variant-specific */]`. Editing the shared file updates every installed variant; re-running an install never overwrites an edited copy. Internal shared modules ship as registry files, not `registryDependencies` (which resolve only public shadcn components).
+
 ## Why this split matters
 
 <Callout type="idea">

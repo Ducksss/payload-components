@@ -16,6 +16,7 @@
     "nextMajors": [15, 16]
   },
   "files": [
+    "src/blocks/shared/heroFields.ts",
     "src/blocks/HeroBasic/config.ts",
     "src/blocks/HeroBasic/Component.tsx"
   ],

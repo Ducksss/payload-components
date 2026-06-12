@@ -95,6 +95,16 @@ If you add a `landingSections` key, render its `<h2>` in the same change. The co
 - New kits must include source files, manifest metadata, docs, and installer tests together.
 - Direct shadcn installs only deliver files and public shadcn dependencies. `payload-kit add` owns Payload-specific wiring, post-install scripts, and install state.
 
+## Variants and Shared Code
+
+This is the canonical model for every component family. `content/docs/architecture.mdx` carries the narrative version.
+
+- A structural variant is its own registry item and manifest — `hero-basic`, `hero-video`, `hero-dramatic`. Never an interactive variant prompt. Suffix every variant; do not ship a bare family name. Selection happens in the catalog, not the CLI.
+- Content-level variation (optional or extra editor fields) belongs in the Payload block config, not a new kit.
+- Share code across a family with a real source file every variant ships: add it under `payload-kits/source/blocks/shared`, list it in the variant's registry item `files[]` (with a `~/src/...` target) and the manifest `files[]`, and compose it in the config — e.g. `payload-kits/source/blocks/shared/heroFields.ts` → `~/src/blocks/shared/heroFields.ts`, used as `fields: [...heroFields, /* variant-specific */]`.
+- Do NOT use `registryDependencies` for internal shared modules. That path resolves only public shadcn UI components (it checks `components/ui/<name>.tsx` and runs `shadcn add <name>`); an internal name will 404.
+- When a kit's installed file set changes, sync the hand-maintained landing ledgers in `src/lib/site.ts` (`terminalDemoLines`, `frameInstalledFiles`, `wiringLedger`) and the kit's `content/docs/kits/<name>.mdx` page.
+
 ## Payload Target Safety
 
 Payload code in this repo is target code for consumer projects. When editing it:

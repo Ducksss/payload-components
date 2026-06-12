@@ -15,9 +15,12 @@ npx payload-kit add hero-basic
 
 ## What it installs
 
-Two source files land in your project:
+Three source files land in your project:
 
 <Files>
+  <Folder name="src/blocks/shared">
+    <File name="heroFields.ts" />
+  </Folder>
   <Folder name="src/blocks/HeroBasic" defaultOpen>
     <File name="config.ts" />
     <File name="Component.tsx" />
@@ -28,6 +31,12 @@ Two source files land in your project:
 
 - a render-block registration for `heroBasic`
 - a `Pages` layout registration for `HeroBasic`
+
+<Callout type="info">
+  `heroFields.ts` is the shared field core for the Hero family — every hero variant
+  composes it. Editing it updates each installed hero block at once, and re-running an
+  install never overwrites a copy you have changed.
+</Callout>
 
 ## Content model
 
