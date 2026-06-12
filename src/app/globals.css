@@ -223,71 +223,31 @@
   }
 }
 
-/* Landing hero keyframes (ported from payload-components.xyz). */
+/* Landing hero keyframes (ported from payload-components.xyz).
+   Transform + opacity only — no blur(): animating a filter forces a
+   per-frame raster of the (large) hero text/frame and pushes LCP, so the
+   "lift" is carried by translate alone. */
 @keyframes hero-reveal {
   from {
     opacity: 0;
-    transform: translateY(20px);
-    filter: blur(8px);
+    transform: translateY(16px);
   }
 
   to {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
   }
 }
 
 @keyframes hero-proof-enter {
   from {
     opacity: 0;
-    transform: translateY(34px) scale(0.985);
-    filter: blur(10px);
+    transform: translateY(28px) scale(0.99);
   }
 
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
-}
-
-@keyframes hero-breathe {
-  0%,
-  100% {
-    opacity: 0.74;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.92;
-    transform: scale(1.04);
-  }
-}
-
-@keyframes hero-drift {
-  0%,
-  100% {
-    opacity: 0.24;
-    transform: translate3d(-1.5%, 0, 0) scale(0.98);
-  }
-
-  50% {
-    opacity: 0.4;
-    transform: translate3d(1.5%, -1.5%, 0) scale(1.04);
-  }
-}
-
-@keyframes hero-shimmer {
-  0%,
-  100% {
-    opacity: 0.18;
-    transform: translateY(0);
-  }
-
-  50% {
-    opacity: 0.3;
-    transform: translateY(8px);
   }
 }
 
@@ -302,40 +262,6 @@
 
   100% {
     box-shadow: 0 0 0 0 transparent;
-  }
-}
-
-@keyframes cta-shine {
-  0%,
-  20% {
-    transform: translateX(-130%);
-  }
-
-  60%,
-  100% {
-    transform: translateX(130%);
-  }
-}
-
-@keyframes landing-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes landing-scan {
-  0% {
-    transform: translateX(-140%);
-  }
-
-  55%,
-  100% {
-    transform: translateX(140%);
   }
 }
 
@@ -365,13 +291,11 @@
   from {
     opacity: 0;
     transform: translateY(22px) scale(0.985);
-    filter: blur(8px);
   }
 
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
-    filter: blur(0);
   }
 }
 
@@ -383,13 +307,11 @@
   from {
     opacity: 0;
     transform: translateY(8px);
-    filter: blur(4px);
   }
 
   to {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
   }
 }
 
@@ -496,7 +418,9 @@
   }
 
   /* Soft emerald bloom — the only color in an otherwise white field. Kept
-     low-alpha and heavily blurred so it reads as light, not a gradient mesh. */
+     low-alpha and heavily blurred so it reads as light, not a gradient mesh.
+     Static: a perpetual scale/opacity loop kept a blurred layer
+     re-rasterizing forever for no real payoff. */
   .hero-shell::before {
     content: '';
     position: absolute;
@@ -505,9 +429,8 @@
     border-radius: 9999px;
     background: radial-gradient(circle, oklch(72% 0.14 165.6deg / 22%) 0%, transparent 72%);
     filter: blur(20px);
-    opacity: 0.9;
+    opacity: 0.82;
     transform-origin: center top;
-    animation: hero-breathe 14s ease-in-out infinite;
     pointer-events: none;
   }
 
@@ -540,13 +463,14 @@
 
   /* A second, wider emerald wash drifting lower — pools light behind the
      install-replay frame so the centerpiece sits in a soft glow. */
+  /* Static washes (drift/shimmer loops removed): one paint, no perpetual
+     compositing behind the centerpiece. */
   .hero-atmosphere::before {
     inset: 9rem 12% auto;
     height: 26rem;
     background: radial-gradient(circle, oklch(70% 0.13 165.6deg / 14%) 0%, transparent 70%);
     filter: blur(52px);
-    opacity: 0.6;
-    animation: hero-drift 20s ease-in-out infinite;
+    opacity: 0.5;
   }
 
   .hero-atmosphere::after {
@@ -554,19 +478,20 @@
     background:
       radial-gradient(circle at 50% 16%, oklch(100% 0 0deg / 78%) 0%, transparent 38%),
       linear-gradient(180deg, oklch(72% 0.1 165.6deg / 5%), transparent 42%);
-    opacity: 0.3;
-    animation: hero-shimmer 18s ease-in-out infinite;
+    opacity: 0.26;
   }
 
-  /* Staggered load reveal (blur lift); delay set inline per element. */
+  /* Staggered load reveal. Short, near-zero-delay, transform+opacity only:
+     the inline per-element delays stay tiny so above-the-fold content
+     (incl. the LCP headline) paints almost immediately. */
   .hero-reveal {
-    animation: hero-reveal 760ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: hero-reveal 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
 
   .hero-proof-enter {
     position: relative;
     z-index: 1;
-    animation: hero-proof-enter 950ms cubic-bezier(0.18, 0.82, 0.2, 1) 560ms both;
+    animation: hero-proof-enter 620ms cubic-bezier(0.18, 0.82, 0.2, 1) 120ms both;
   }
 
   .hero-eyebrow-dot {
@@ -590,31 +515,11 @@
     color: var(--foreground);
   }
 
-  /* Periodic sheen across the primary CTA. */
-  .cta-shine {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-shine::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      110deg,
-      transparent 28%,
-      oklch(100% 0 0deg / 18%) 50%,
-      transparent 72%
-    );
-    transform: translateX(-130%);
-    animation: cta-shine 4.8s ease-in-out 1.6s infinite;
-    pointer-events: none;
-  }
-
-  /* Product-proof window: gentle float + soft ground shadow + sheen. */
+  /* Product-proof window: soft ground shadow. The perpetual float loop was
+     removed — it kept the entire (large) frame subtree on an animating
+     compositor layer for the life of the page. */
   .product-frame {
     position: relative;
-    animation: landing-float 8s ease-in-out 1.5s infinite;
   }
 
   .product-frame::after {
@@ -627,28 +532,6 @@
     filter: blur(30px);
     opacity: 0.8;
     z-index: -1;
-  }
-
-  .scan-sheen {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .scan-sheen::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      110deg,
-      transparent 0%,
-      transparent 38%,
-      oklch(100% 0 0deg / 10%) 48%,
-      transparent 58%,
-      transparent 100%
-    );
-    transform: translateX(-140%);
-    animation: landing-scan 7.5s linear 2s infinite;
-    pointer-events: none;
   }
 
   /* Frame terminal: per-line typing/reveal driven by CSS vars set    */
@@ -681,7 +564,6 @@
   .spawn-in {
     opacity: 0;
     transform: translateY(22px) scale(0.985);
-    filter: blur(8px);
     animation: proof-spawn 620ms cubic-bezier(0.18, 0.82, 0.2, 1) var(--spawn-delay, 0ms) both;
   }
 

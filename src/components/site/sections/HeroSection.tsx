@@ -29,8 +29,8 @@ export function HeroSection() {
       <div className="container relative flex flex-col gap-12 py-12 sm:py-16 lg:gap-16 lg:py-24">
         <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center gap-6 text-center">
           <span
-            className="hero-reveal flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-4 py-1.5 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-muted-foreground backdrop-blur-sm"
-            style={{ animationDelay: '80ms' }}
+            className="hero-reveal flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-4 py-1.5 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-muted-foreground"
+            style={{ animationDelay: '0ms' }}
           >
             <span aria-hidden="true" className="hero-eyebrow-dot" />
             {heroEyebrow}
@@ -38,7 +38,7 @@ export function HeroSection() {
 
           <h1
             className="hero-reveal max-w-5xl text-balance text-[clamp(2.6rem,8.4vw,6rem)] font-medium leading-[0.94] tracking-[-0.085em] text-foreground"
-            style={{ animationDelay: '180ms' }}
+            style={{ animationDelay: '60ms' }}
           >
             {heroHeadlinePrimary}{' '}
             <span className="hero-headline-accent">{heroHeadlineAccent}</span>
@@ -46,7 +46,7 @@ export function HeroSection() {
 
           <p
             className="hero-reveal mx-auto max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg"
-            style={{ animationDelay: '340ms' }}
+            style={{ animationDelay: '110ms' }}
           >
             {heroSubheadline}
           </p>
@@ -54,8 +54,8 @@ export function HeroSection() {
           {/* The command itself, above the fold — first Copy button on the
               page (the e2e copy assertion targets it). */}
           <div
-            className="hero-reveal grid w-full max-w-md grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-full border border-border bg-background py-1.5 pl-5 pr-1.5 shadow-card backdrop-blur-sm"
-            style={{ animationDelay: '420ms' }}
+            className="hero-reveal grid w-full max-w-md grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-full border border-border bg-background py-1.5 pl-5 pr-1.5 shadow-card"
+            style={{ animationDelay: '150ms' }}
           >
             <code className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90 sm:text-[13px]">
               {primaryInstallCommand}
@@ -65,11 +65,11 @@ export function HeroSection() {
 
           <div
             className="hero-reveal flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center"
-            style={{ animationDelay: '500ms' }}
+            style={{ animationDelay: '190ms' }}
           >
             <Link
               href={heroPrimaryCta.href}
-              className="cta-shine inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground shadow-[0_18px_40px_-22px_rgba(15,23,42,0.55)] transition-[transform,box-shadow] duration-200 hover:-translate-y-px hover:shadow-[0_22px_50px_-22px_rgba(15,23,42,0.6)] sm:w-auto"
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground shadow-[0_18px_40px_-22px_rgba(15,23,42,0.55)] transition-[transform,box-shadow] duration-200 hover:-translate-y-px hover:shadow-[0_22px_50px_-22px_rgba(15,23,42,0.6)] sm:w-auto"
             >
               {heroPrimaryCta.label}
               <ArrowRight className="size-4" aria-hidden="true" />
@@ -78,7 +78,7 @@ export function HeroSection() {
               href={githubRepoUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-border/70 bg-background/80 px-5 text-sm font-medium text-foreground backdrop-blur-sm transition-[transform,background-color] duration-200 hover:-translate-y-px hover:bg-background sm:w-auto"
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-border/70 bg-background/80 px-5 text-sm font-medium text-foreground transition-[transform,background-color] duration-200 hover:-translate-y-px hover:bg-background sm:w-auto"
             >
               <Github className="size-4" aria-hidden="true" />
               Star on GitHub
@@ -91,7 +91,7 @@ export function HeroSection() {
 
           <div
             className="hero-reveal flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground"
-            style={{ animationDelay: '580ms' }}
+            style={{ animationDelay: '230ms' }}
           >
             <Link
               href={browseLink.href}
