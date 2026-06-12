@@ -1,220 +1,302 @@
 import Link from 'next/link'
 
-import { ArrowRight, ArrowUpRight, Check, Terminal } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Bell, Github, Sparkles, Star } from 'lucide-react'
 
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
+import { Faq } from '@/components/site/Faq'
+import { HeroProductFrame } from '@/components/site/HeroProductFrame'
+import { siteIcons } from '@/components/site/icons'
+import { KitGrid } from '@/components/site/KitGrid'
+import { Eyebrow, Section, SectionHeading } from '@/components/site/section'
+import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
+import { SocialProof } from '@/components/site/SocialProof'
 import {
+  communityIntro,
   communityLinks,
-  kitEntries,
+  faqIntro,
+  githubRepoUrl,
+  heroEyebrow,
+  heroHeadlineAccent,
+  heroHeadlinePrimary,
+  heroPrimaryCta,
+  heroStats,
+  heroSubheadline,
+  heroTertiaryLinks,
+  kitsIntro,
+  landingSections,
   primaryInstallCommand,
-  surfaceLinks,
-  targetPrinciples,
+  receipts,
+  voicesIntro,
+  workflowIntro,
   workflowSteps,
 } from '@/lib/site'
 
 export default function HomePage() {
+  const [browseLink, installFlowLink] = heroTertiaryLinks
+
   return (
-    <main className="min-h-screen bg-white text-zinc-950">
+    <>
       <SiteHeader />
 
-      <section className="border-b border-zinc-200">
-        <div className="container pt-14 pb-12 sm:pt-16 sm:pb-14 lg:pt-20 lg:pb-16">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,30rem)] lg:items-end">
-            <div className="max-w-5xl">
-              <h1 className="text-4xl font-semibold leading-[1.02] text-zinc-950 sm:text-6xl sm:leading-[0.98]">
-                Install Payload blocks without rebuilding the wiring.
-              </h1>
-              <p className="mt-6 max-w-2xl text-base leading-7 text-zinc-600 sm:text-lg">
-                Payload Kits is a docs-first registry and CLI for adding typed Payload CMS blocks to
-                supported Next.js projects.
-              </p>
+      <main className="flex-1">
+        {/* Hero — anatomy ported from the deployed payload-components.xyz hero. */}
+        <section className="hero-shell overflow-hidden border-b border-border/60">
+          <div aria-hidden="true" className="hero-atmosphere" />
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/docs"
-                  className="inline-flex h-10 w-fit items-center justify-center rounded-md bg-zinc-950 px-4 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
-                >
-                  Start with docs
-                  <ArrowRight className="ml-2 size-4" aria-hidden="true" />
-                </Link>
-                <Link
-                  href="/components"
-                  className="inline-flex h-10 w-fit items-center justify-center rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-950 transition-colors hover:border-emerald-700 hover:text-emerald-700"
-                >
-                  Browse kits
-                  <ArrowUpRight className="ml-2 size-4" aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-
-            <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm">
-              <div className="flex items-center justify-between gap-4 border-b border-zinc-200 bg-zinc-50 px-4 py-3">
-                <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-zinc-500">
-                  <Terminal className="size-4 text-emerald-700" aria-hidden="true" />
-                  install command
-                </div>
-                <CommandCopyButton command={primaryInstallCommand} />
-              </div>
-              <code className="block overflow-x-auto whitespace-nowrap px-4 py-4 font-mono text-sm text-zinc-950">
-                {primaryInstallCommand}
-              </code>
-            </div>
-          </div>
-
-          <div className="mt-10 grid overflow-hidden rounded-lg border border-zinc-200 bg-white md:grid-cols-3">
-            {surfaceLinks.map((item, index) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                className={[
-                  'group p-4 transition-colors hover:bg-zinc-50 sm:p-5',
-                  index > 0 ? 'border-t border-zinc-200 md:border-l md:border-t-0' : '',
-                ].join(' ')}
+          <div className="container relative flex flex-col gap-10 py-10 sm:py-14 lg:gap-14 lg:py-20">
+            <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center gap-5 text-center">
+              <span
+                className="hero-reveal flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-4 py-1 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-muted-foreground backdrop-blur-sm"
+                style={{ animationDelay: '80ms' }}
               >
-                <item.icon className="size-5 text-emerald-700" aria-hidden="true" />
-                <h2 className="mt-4 text-lg font-semibold text-zinc-950">{item.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-zinc-600">{item.description}</p>
-                <span className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-zinc-950 group-hover:text-emerald-700">
-                  Open
+                <span aria-hidden="true" className="hero-eyebrow-dot" />
+                {heroEyebrow}
+              </span>
+
+              <div className="flex flex-col gap-4">
+                <h1
+                  className="hero-reveal max-w-5xl text-balance text-[clamp(2.6rem,8.4vw,6rem)] font-medium leading-[0.94] tracking-[-0.085em] text-foreground"
+                  style={{ animationDelay: '180ms' }}
+                >
+                  {heroHeadlinePrimary}{' '}
+                  <span className="hero-headline-accent">{heroHeadlineAccent}</span>
+                </h1>
+
+                <p
+                  className="hero-reveal mx-auto max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg"
+                  style={{ animationDelay: '340ms' }}
+                >
+                  {heroSubheadline}
+                </p>
+              </div>
+
+              <div
+                className="hero-reveal flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center"
+                style={{ animationDelay: '460ms' }}
+              >
+                <Link
+                  href={heroPrimaryCta.href}
+                  className="cta-shine inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground shadow-[0_18px_40px_-22px_rgba(15,23,42,0.55)] transition-[transform,box-shadow] duration-200 hover:-translate-y-px hover:shadow-[0_22px_50px_-22px_rgba(15,23,42,0.6)] sm:w-auto"
+                >
+                  {heroPrimaryCta.label}
                   <ArrowRight className="size-4" aria-hidden="true" />
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-b border-zinc-200">
-        <div className="container grid gap-10 py-14 lg:grid-cols-[0.8fr_1.2fr] lg:py-16">
-          <div>
-            <h2 className="text-3xl font-semibold leading-tight sm:text-4xl">How it works</h2>
-            <p className="mt-4 max-w-xl text-sm leading-6 text-zinc-600 sm:text-base sm:leading-7">
-              The public registry delivers files. The wrapper CLI handles the Payload-specific
-              wiring that a direct shadcn install cannot know about.
-            </p>
-          </div>
-          <div className="divide-y divide-zinc-200 border-y border-zinc-200">
-            {workflowSteps.map((item, index) => (
-              <article key={item.title} className="grid gap-4 py-6 sm:grid-cols-[5rem_1fr]">
-                <div className="flex items-start gap-3">
-                  <span className="font-mono text-xs text-zinc-500">
-                    {String(index + 1).padStart(2, '0')}
+                </Link>
+                <a
+                  href={githubRepoUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-border/70 bg-background/80 px-5 text-sm font-medium text-foreground backdrop-blur-sm transition-[transform,background-color] duration-200 hover:-translate-y-px hover:bg-background sm:w-auto"
+                >
+                  <Github className="size-4" aria-hidden="true" />
+                  Star on GitHub
+                  <span className="inline-flex items-center gap-1 rounded-full border border-foreground/10 bg-foreground/8 px-2 py-0.5 text-[0.72rem] font-semibold text-foreground/80">
+                    <Star className="size-3 fill-current" aria-hidden="true" />
+                    Open source
                   </span>
-                  <item.icon className="size-5 text-emerald-700" aria-hidden="true" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-zinc-950">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-zinc-600">{item.description}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+                </a>
+              </div>
 
-      <section id="kits" className="border-b border-zinc-200 bg-zinc-50">
-        <div className="container py-14 lg:py-16">
-          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-            <div className="max-w-2xl">
-              <h2 className="text-3xl font-semibold leading-tight sm:text-4xl">Current kits</h2>
-              <p className="mt-4 text-sm leading-6 text-zinc-600 sm:text-base sm:leading-7">
-                The catalog is intentionally small while the install contract proves itself against
-                real Payload project shapes.
-              </p>
+              <div
+                className="hero-reveal flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground"
+                style={{ animationDelay: '540ms' }}
+              >
+                <Link
+                  href={browseLink.href}
+                  className="inline-flex items-center gap-1.5 font-medium text-foreground transition-opacity hover:opacity-75"
+                >
+                  <Sparkles className="size-3.5" aria-hidden="true" />
+                  {browseLink.label}
+                </Link>
+                <span aria-hidden="true" className="hidden text-border sm:inline">
+                  /
+                </span>
+                <Link
+                  href={installFlowLink.href}
+                  className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
+                >
+                  {installFlowLink.label}
+                  <ArrowRight className="size-3.5" aria-hidden="true" />
+                </Link>
+              </div>
             </div>
+
+            <div className="hero-proof-enter">
+              <HeroProductFrame />
+            </div>
+
+            <dl
+              className="hero-reveal mx-auto grid w-full max-w-4xl grid-cols-1 gap-px overflow-hidden rounded-[1.75rem] border border-border/70 bg-border/70 sm:grid-cols-3"
+              style={{ animationDelay: '720ms' }}
+            >
+              {heroStats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="flex flex-col gap-2 bg-background/90 p-5 backdrop-blur-sm sm:p-6"
+                >
+                  <dt className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                    {stat.label}
+                  </dt>
+                  <dd className="text-4xl font-medium tracking-[-0.06em] text-foreground sm:text-5xl">
+                    {stat.value}
+                  </dd>
+                  <dd className="text-sm leading-6 text-muted-foreground">{stat.detail}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
+
+        {/* Receipts — every line verifiable in the repository. */}
+        <section aria-label="Project receipts" className="border-b border-border bg-muted/30">
+          <div className="container flex flex-wrap items-center justify-center gap-x-8 gap-y-3 py-5">
+            {receipts.map((receipt) => {
+              const Icon = siteIcons[receipt.icon]
+
+              return (
+                <span
+                  key={receipt.label}
+                  className="flex items-center gap-2 text-xs font-medium text-muted-foreground"
+                >
+                  <Icon className="size-3.5 text-brand" aria-hidden="true" />
+                  {receipt.label}
+                </span>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Components grid — the centerpiece. */}
+        <Section id={landingSections.kits.id} className="bg-muted/40">
+          <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+            <SectionHeading
+              eyebrow="The catalog"
+              heading={landingSections.kits.heading}
+              intro={kitsIntro}
+            />
             <Link
               href="/components"
-              className="inline-flex h-10 w-fit items-center gap-2 rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-950 hover:border-emerald-700 hover:text-emerald-700"
+              className="inline-flex h-10 w-fit shrink-0 items-center gap-2 rounded-full border border-border bg-background px-5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
             >
-              See all kits
+              Browse the catalog
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
           </div>
 
-          <div className="mt-8 overflow-hidden rounded-lg border border-zinc-200 bg-white">
-            {kitEntries.map((kit) => (
-              <article
-                key={kit.slug}
-                className="grid gap-5 border-b border-zinc-200 p-5 last:border-b-0 lg:grid-cols-[0.7fr_1fr_auto] lg:items-center"
-              >
-                <div>
-                  <p className="font-mono text-sm text-zinc-950">{kit.slug}</p>
-                  <p className="mt-2 text-xs uppercase tracking-[0.14em] text-zinc-500">
-                    {kit.status} / {kit.target}
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-zinc-950">{kit.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-zinc-600">{kit.description}</p>
-                  <code className="mt-4 block overflow-x-auto whitespace-nowrap rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 font-mono text-xs text-zinc-700">
-                    {kit.command}
-                  </code>
-                </div>
-                <Link
-                  href={kit.href}
-                  className="inline-flex h-9 w-fit items-center gap-2 rounded-md border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-950 hover:border-emerald-700 hover:text-emerald-700"
-                >
-                  Docs
-                  <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
-              </article>
-            ))}
+          <div className="reveal-on-scroll mt-12">
+            <KitGrid />
           </div>
-        </div>
-      </section>
+        </Section>
 
-      <section className="border-b border-zinc-200">
-        <div className="container grid gap-10 py-14 lg:grid-cols-[0.9fr_1.1fr] lg:py-16">
-          <div>
-            <h2 className="text-3xl font-semibold leading-tight sm:text-4xl">
-              Built for Payload projects
-            </h2>
-            <p className="mt-4 max-w-xl text-sm leading-6 text-zinc-600 sm:text-base sm:leading-7">
-              The site stays focused on documentation and registry delivery. Payload runtime
-              assumptions are tested in generated target projects where they belong.
-            </p>
-          </div>
+        {/* How it works — compact. */}
+        <Section id={landingSections.workflow.id}>
+          <SectionHeading
+            eyebrow="Workflow"
+            heading={landingSections.workflow.heading}
+            intro={workflowIntro}
+          />
 
-          <div className="divide-y divide-zinc-200 border-y border-zinc-200">
-            {targetPrinciples.map((principle) => (
-              <div key={principle} className="flex gap-3 py-4">
-                <Check className="mt-0.5 size-4 shrink-0 text-emerald-700" aria-hidden="true" />
-                <p className="text-sm leading-6 text-zinc-700">{principle}</p>
+          <div className="reveal-on-scroll mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
+            {workflowSteps.map((step, index) => (
+              <div key={step.title} className="flex flex-col gap-2">
+                <span className="font-mono text-sm font-semibold text-brand">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className="text-base font-semibold tracking-tight text-foreground">
+                  {step.title}
+                </h3>
+                <p className="text-sm leading-6 text-muted-foreground">{step.description}</p>
+                <code className="mt-1 block w-fit max-w-full overflow-x-auto whitespace-nowrap rounded-md border border-border bg-muted/60 px-3 py-2 font-mono text-xs text-foreground/80">
+                  {step.command}
+                </code>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </Section>
 
-      <section id="community">
-        <div className="container py-14 lg:py-16">
-          <div className="flex flex-col justify-between gap-6 border-y border-zinc-200 py-8 lg:flex-row lg:items-center">
-            <div>
-              <h2 className="text-2xl font-semibold leading-tight text-zinc-950">Open source</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-600">
-                Source, issues, and install feedback stay public while the registry contract
-                matures.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {communityLinks.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex h-10 items-center gap-2 rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-950 hover:border-emerald-700 hover:text-emerald-700"
-                >
-                  <item.icon className="size-4" aria-hidden="true" />
-                  {item.label}
-                  <ArrowUpRight className="size-4" aria-hidden="true" />
-                </Link>
-              ))}
+        {/* Social proof */}
+        <Section id={landingSections.voices.id}>
+          <SectionHeading
+            eyebrow="Social proof"
+            heading={landingSections.voices.heading}
+            intro={voicesIntro}
+          />
+
+          <div className="reveal-on-scroll mt-12">
+            <SocialProof />
+          </div>
+        </Section>
+
+        {/* FAQ */}
+        <Section id={landingSections.faq.id} className="bg-muted/40">
+          <div className="mx-auto max-w-3xl">
+            <SectionHeading
+              eyebrow="FAQ"
+              heading={landingSections.faq.heading}
+              intro={faqIntro}
+            />
+
+            <div className="reveal-on-scroll mt-10">
+              <Faq />
             </div>
           </div>
-        </div>
-      </section>
-    </main>
+        </Section>
+
+        {/* Open source */}
+        <Section id={landingSections.community.id} className="relative overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-dots [mask-image:radial-gradient(38rem_20rem_at_50%_45%,black,transparent)]"
+          />
+          <div className="relative mx-auto flex max-w-2xl flex-col items-center text-center">
+            <Eyebrow>Open source</Eyebrow>
+            <h2 className="mt-4 text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-4xl">
+              {landingSections.community.heading}
+            </h2>
+            <p className="mt-4 text-base leading-7 text-muted-foreground">{communityIntro}</p>
+
+            <div className="mt-7 grid w-full max-w-md grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-full border border-border bg-background py-1.5 pl-5 pr-1.5 shadow-card">
+              <code className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90 sm:text-[13px]">
+                {primaryInstallCommand}
+              </code>
+              <CommandCopyButton command={primaryInstallCommand} />
+            </div>
+
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={communityLinks[0].href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                <Github className="size-4" aria-hidden="true" />
+                {communityLinks[0].label}
+              </Link>
+              <Link
+                href={communityLinks[1].href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-background px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              >
+                {communityLinks[1].label}
+                <ArrowUpRight className="size-4" aria-hidden="true" />
+              </Link>
+            </div>
+
+            <a
+              href={`${githubRepoUrl}/releases`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-5 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <Bell className="size-3.5" aria-hidden="true" />
+              Watch releases to catch new kits as they land
+            </a>
+          </div>
+        </Section>
+      </main>
+
+      <SiteFooter />
+    </>
   )
 }

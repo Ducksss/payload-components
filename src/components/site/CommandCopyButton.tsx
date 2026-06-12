@@ -10,7 +10,11 @@ export function CommandCopyButton({ command }: { command: string }) {
   return (
     <button
       type="button"
-      className="inline-flex h-8 shrink-0 items-center gap-2 rounded-md border border-zinc-300 bg-white px-3 text-xs font-medium text-zinc-950 transition-colors hover:border-emerald-700 hover:text-emerald-700"
+      className={
+        copied
+          ? 'inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-brand/40 bg-brand/10 px-2.5 font-mono text-xs font-medium text-brand transition-colors'
+          : 'inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 font-mono text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground'
+      }
       onClick={async () => {
         try {
           await navigator.clipboard.writeText(command)

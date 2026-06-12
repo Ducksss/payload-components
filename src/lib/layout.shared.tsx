@@ -18,8 +18,12 @@ export function baseOptions(): BaseLayoutProps {
       },
     ],
     nav: {
-      title: 'Payload Kits',
-      url: '/',
+      // The brand header is the shared SiteHeader rendered above the docs
+      // layout; the sidebar slot just labels the surface.
+      title: (
+        <span className="text-sm font-semibold tracking-tight text-foreground">Documentation</span>
+      ),
+      url: '/docs',
     },
   }
 }

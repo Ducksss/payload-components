@@ -53,7 +53,7 @@ export default async function Page({ params }: DocsPageProps) {
 
   return (
     <DocsPage toc={page.data.toc}>
-      <DocsTitle>{page.data.title}</DocsTitle>
+      <DocsTitle className="font-bold tracking-tight">{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
         <MDX components={getMDXComponents()} />

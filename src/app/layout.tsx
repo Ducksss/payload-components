@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 
 import { Analytics } from '@vercel/analytics/next'
@@ -14,35 +14,44 @@ import './globals.css'
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Payload Kits',
+    default: 'Payload Kits — Payload blocks, fully wired',
     template: '%s | Payload Kits',
   },
   description: siteDescription,
   openGraph: {
     description: siteDescription,
     siteName: 'Payload Kits',
-    title: 'Payload Kits',
+    title: 'Payload Kits — Payload blocks, fully wired',
     type: 'website',
     url: '/',
   },
   twitter: {
     card: 'summary_large_image',
     description: siteDescription,
-    title: 'Payload Kits',
+    title: 'Payload Kits — Payload blocks, fully wired',
   },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#ffffff',
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${GeistSans.variable} ${GeistMono.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}
-      >
+    <html
+      lang="en"
+      suppressHydrationWarning
+      /* Font variables live on <html>: the @theme font tokens reference them
+         and custom properties substitute var() at the declaring element. */
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+    >
+      <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
         <RootProvider
           search={{ enabled: true }}
           theme={{
             defaultTheme: 'light',
             enableSystem: false,
+            forcedTheme: 'light',
           }}
         >
           {children}
