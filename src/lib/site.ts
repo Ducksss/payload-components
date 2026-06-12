@@ -343,7 +343,7 @@ export const faqIntro =
 export const faqEntries = [
   {
     answer:
-      'Yes. The registry, the CLI, both kits, and this site are one MIT-licensed repository. There is no pricing, no license key, and no gated tier — if that changes someday, it will not change for the open registry.',
+      'Yes — and built to stay that way. The registry, the CLI, both kits, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Kits is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.',
     question: 'Is Payload Kits free?',
   },
   {
