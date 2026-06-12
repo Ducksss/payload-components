@@ -1,12 +1,21 @@
 ---
 title: Registry Contract
 description: How the public registry, manifests, and wrapper CLI work together.
+icon: Package
 ---
 
-Payload Kits uses two layers:
+Payload Kits delivers a kit in two layers — a shadcn registry that moves files, and a manifest that captures the Payload-specific wiring the registry can't express.
 
-- a shadcn-compatible public registry for file delivery
-- a wrapper manifest for Payload-specific install behavior
+<Cards>
+  <Card icon={<Package />} title="Public registry">
+    A shadcn-compatible JSON registry that delivers a kit's source files into the
+    target project.
+  </Card>
+  <Card icon={<ShieldCheck />} title="Wrapper manifest">
+    The Payload-specific contract: fragments, post-install scripts, peer deps, and
+    recovery metadata the CLI applies on top.
+  </Card>
+</Cards>
 
 ## Public registry
 
@@ -17,6 +26,11 @@ pnpm registry:build
 ```
 
 The generated files are emitted to `public/r` and can be served statically.
+
+<Callout type="warn">
+  `public/r` is **build output** — gitignored and reproducible. Never hand-edit it;
+  edit `payload-kits/registry.json` and rebuild.
+</Callout>
 
 ## Manifests
 
@@ -34,8 +48,16 @@ Each wrapper manifest in `payload-kits/manifests` defines:
 
 `payload-kits/support-matrix.json` defines the target project shapes the installer understands.
 
-The current alpha support matrix is intentionally narrow. New project shapes should be added only when the installer can verify them with tests.
+<Callout type="info">
+  The current alpha support matrix is intentionally narrow. New project shapes
+  should be added only when the installer can verify them with tests.
+</Callout>
 
 ## Recovery state
 
-The CLI records install state in `.payload-kit/state.json` inside the target project. That state is not a substitute for disk verification; the installer still checks actual files and fragments before declaring a kit installed.
+The CLI records install state in `.payload-kit/state.json` inside the target project.
+
+<Callout type="warn">
+  That state is **not** a substitute for disk verification — the installer still
+  checks actual files and fragments before declaring a kit installed.
+</Callout>

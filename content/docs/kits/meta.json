@@ -1,4 +1,5 @@
 {
   "title": "Kits",
+  "icon": "Blocks",
   "pages": ["hero-basic", "feature-grid-basic"]
 }

@@ -1,50 +1,85 @@
 ---
 title: Installation
 description: How to install a Payload Kit into a supported Payload v3 project.
+icon: Terminal
 ---
 
 Payload Kits currently targets Payload v3 projects using Next.js App Router and the supported website-style block layout shape.
 
 ## Requirements
 
-The target project must include:
+<Callout type="warn">
+  The installer verifies the target project shape **before** it mutates anything.
+  If a requirement is missing, it stops rather than leaving a half-wired repo.
+</Callout>
 
-- `payload` v3
-- `next` v15 or v16
-- `components.json`
-- `src/blocks/RenderBlocks.tsx`
-- `src/collections/Pages/index.ts`
-- scripts for `generate:types` and `generate:importmap`
+Your project must run these majors:
 
-The installer checks these requirements before mutating the target project.
+| Dependency | Version       |
+| ---------- | ------------- |
+| `payload`  | v3            |
+| `next`     | v15 or v16    |
+
+…and it must already contain the website-style block layout the installer patches into:
+
+<Files>
+  <File name="components.json" />
+  <Folder name="src/blocks" defaultOpen>
+    <File name="RenderBlocks.tsx" />
+  </Folder>
+  <Folder name="src/collections/Pages" defaultOpen>
+    <File name="index.ts" />
+  </Folder>
+</Files>
+
+Plus `package.json` scripts for `generate:types` and `generate:importmap`, which the CLI runs after wiring.
 
 ## Install a kit
 
-```bash
-npx payload-kit add hero-basic
-```
+Pick a kit and run its `add` command from the root of your Payload project:
 
-For the second alpha kit:
-
-```bash
-npx payload-kit add feature-grid-basic
-```
+<Tabs items={['hero-basic', 'feature-grid-basic']}>
+  <Tab value="hero-basic">
+    ```bash
+    npx payload-kit add hero-basic
+    ```
+  </Tab>
+  <Tab value="feature-grid-basic">
+    ```bash
+    npx payload-kit add feature-grid-basic
+    ```
+  </Tab>
+</Tabs>
 
 ## What the CLI does
 
 The wrapper CLI owns the Payload-specific work that direct registry installation cannot handle:
 
-- validates the target project shape
-- builds or resolves the registry item
-- installs source files through the shadcn registry flow
-- applies Payload layout and render fragments
-- installs missing kit dependencies
-- runs post-install scripts
-- writes `.payload-kit/state.json`
+<Steps>
+  <Step>
+    **Validate the target project shape** — refuse to touch a repo that isn't a supported Payload v3 + Next.js project.
+  </Step>
+  <Step>
+    **Build or resolve the registry item** and **install source files** through the shadcn registry flow.
+  </Step>
+  <Step>
+    **Apply Payload layout and render fragments** — register the block in `RenderBlocks` and the `Pages` layout field.
+  </Step>
+  <Step>
+    **Install missing kit dependencies** so the block compiles in your project.
+  </Step>
+  <Step>
+    **Run post-install scripts** (`generate:types`, `generate:importmap`) and **write `.payload-kit/state.json`**.
+  </Step>
+</Steps>
 
 ## Idempotency
 
-Running the same install twice should not duplicate imports, block registrations, or layout entries. The installer verifies files, fragments, dependencies, and recorded state before deciding whether work is needed.
+<Callout type="success">
+  Running the same install twice should not duplicate imports, block registrations,
+  or layout entries. The installer verifies files, fragments, dependencies, and
+  recorded state before deciding whether any work is needed.
+</Callout>
 
 ## Direct registry installs
 

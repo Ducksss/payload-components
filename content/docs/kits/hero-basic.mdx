@@ -1,9 +1,13 @@
 ---
 title: Hero Basic
 description: A headline-led Payload block for proving the registry and wrapper workflow.
+icon: LayoutPanelTop
 ---
 
-`hero-basic` is the golden alpha kit.
+<Callout type="info">
+  `hero-basic` is the **golden alpha kit** — the reference install the whole wrapper
+  workflow is validated against.
+</Callout>
 
 ```bash
 npx payload-kit add hero-basic
@@ -11,21 +15,44 @@ npx payload-kit add hero-basic
 
 ## What it installs
 
-- `src/blocks/HeroBasic/config.ts`
-- `src/blocks/HeroBasic/Component.tsx`
-- render-block registration for `heroBasic`
-- Pages layout registration for `HeroBasic`
+Two source files land in your project:
+
+<Files>
+  <Folder name="src/blocks/HeroBasic" defaultOpen>
+    <File name="config.ts" />
+    <File name="Component.tsx" />
+  </Folder>
+</Files>
+
+…and two fragments are wired automatically:
+
+- a render-block registration for `heroBasic`
+- a `Pages` layout registration for `HeroBasic`
 
 ## Content model
 
-The block supports:
-
-- eyebrow text
-- required title
-- required description
-- one or two CTA links
-- up to four proof items
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The hero headline.' },
+    description: {
+      type: 'textarea',
+      required: true,
+      description: 'Supporting copy beneath the headline.',
+    },
+    links: {
+      type: 'array',
+      required: true,
+      description: 'One or two CTA links (min 1, max 2).',
+    },
+    proofItems: { type: 'array', description: 'Up to four short proof labels.' },
+  }}
+/>
 
 ## Acceptance criteria
 
-The kit is valid when it installs into a supported target project, registers once in `RenderBlocks`, registers once in the Pages layout field, runs post-install scripts, and treats a second install as idempotent.
+<Callout type="success">
+  The kit is valid when it installs into a supported target project, registers once
+  in `RenderBlocks`, registers once in the `Pages` layout field, runs post-install
+  scripts, and treats a second install as idempotent.
+</Callout>

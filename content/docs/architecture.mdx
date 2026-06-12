@@ -1,9 +1,23 @@
 ---
 title: Architecture
 description: The repository is split between a Fumadocs site and Payload-targeted kit tooling.
+icon: Layers
 ---
 
-The project has two separate responsibilities:
+Payload Kits is two projects living in one repository — and they deliberately never share a Payload runtime.
+
+<Cards>
+  <Card icon={<Boxes />} title="Site runtime">
+    A Fumadocs + Next.js app: the landing, these docs, and the kit catalog. Boots
+    with no database, no `PAYLOAD_SECRET`, and no admin.
+  </Card>
+  <Card icon={<Workflow />} title="Kit runtime">
+    The Payload block code the CLI installs into _your_ repo. It only ever runs
+    there, against real Payload project shapes.
+  </Card>
+</Cards>
+
+The two responsibilities are:
 
 1. Run a documentation and catalog site.
 2. Build, validate, and distribute Payload kit installs.
@@ -12,7 +26,18 @@ Those responsibilities should not share a Payload runtime.
 
 ## Site runtime
 
-The site runtime is Fumadocs on Next.js:
+The site runtime is Fumadocs on Next.js. Everything it needs lives in the app tree:
+
+<Files>
+  <Folder name="src/app" defaultOpen>
+    <File name="api/search/route.ts" />
+  </Folder>
+  <Folder name="content/docs" defaultOpen>
+    <File name="*.mdx" />
+  </Folder>
+  <File name="source.config.ts" />
+  <File name="src/lib/source.ts" />
+</Files>
 
 - `src/app` contains the app router routes.
 - `content/docs` contains MDX documentation.
@@ -20,13 +45,14 @@ The site runtime is Fumadocs on Next.js:
 - `src/lib/source.ts` exposes the loaded docs source.
 - `src/app/api/search/route.ts` exposes Fumadocs search.
 
-No Payload admin, collection config, global config, database adapter, or Payload local API is required for the site to boot.
+<Callout type="success">
+  No Payload admin, collection config, global config, database adapter, or Payload
+  local API is required for the site to boot.
+</Callout>
 
 ## Kit runtime
 
-The kit runtime is external. A kit installs into a supported Payload v3 + Next.js project.
-
-Payload-specific files stay in the registry source and target project:
+The kit runtime is external. A kit installs into a supported Payload v3 + Next.js project, where the Payload-specific files actually live:
 
 - block configs
 - frontend block components
@@ -42,4 +68,8 @@ That keeps Payload-specific kit source out of the Fumadocs app tree while preser
 
 ## Why this split matters
 
-A docs site should build without a database, Payload secret, or admin import map. A Payload kit should still be tested against real Payload project shapes. Splitting the app runtime from the install target keeps both jobs honest.
+<Callout type="idea">
+  A docs site should build without a database, Payload secret, or admin import map.
+  A Payload kit should still be tested against real Payload project shapes. Splitting
+  the app runtime from the install target keeps both jobs honest.
+</Callout>

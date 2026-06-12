@@ -1,9 +1,13 @@
 ---
 title: Feature Grid Basic
 description: A text-first feature grid Payload block with repeatable fields and optional CTA wiring.
+icon: LayoutGrid
 ---
 
-`feature-grid-basic` proves the second-kit path and repeatable content fields.
+<Callout type="info">
+  `feature-grid-basic` proves the second-kit path and repeatable content fields —
+  installable before or after `hero-basic`.
+</Callout>
 
 ```bash
 npx payload-kit add feature-grid-basic
@@ -11,21 +15,46 @@ npx payload-kit add feature-grid-basic
 
 ## What it installs
 
-- `src/blocks/FeatureGridBasic/config.ts`
-- `src/blocks/FeatureGridBasic/Component.tsx`
-- render-block registration for `featureGridBasic`
-- Pages layout registration for `FeatureGridBasic`
+<Files>
+  <Folder name="src/blocks/FeatureGridBasic" defaultOpen>
+    <File name="config.ts" />
+    <File name="Component.tsx" />
+  </Folder>
+</Files>
+
+…and two fragments are wired automatically:
+
+- a render-block registration for `featureGridBasic`
+- a `Pages` layout registration for `FeatureGridBasic`
 
 ## Content model
 
-The block supports:
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'Three to six feature cards, each with a required title and description.',
+    },
+    links: { type: 'array', description: 'One optional CTA link.' },
+  }}
+/>
 
-- eyebrow text
-- required title
-- optional description
-- three to six feature items
-- one optional CTA link
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'Feature card heading.' },
+    description: { type: 'textarea', required: true, description: 'Feature card body copy.' },
+  }}
+/>
 
 ## Acceptance criteria
 
-The kit is valid when it can install before or after `hero-basic`, dedupe all fragments, and keep each feature item readable on mobile and desktop.
+<Callout type="success">
+  The kit is valid when it can install before or after `hero-basic`, dedupes all
+  fragments, and keeps each feature item readable on mobile and desktop.
+</Callout>
