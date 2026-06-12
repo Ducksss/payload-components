@@ -1,112 +1,168 @@
 import { expect, test } from '@playwright/test'
 
-test.describe('Frontend', () => {
-  test('can load homepage', async ({ page }) => {
-    await page.goto('http://localhost:3000')
+import {
+  catalogTitle,
+  heroHeadline,
+  kitEntries,
+  landingSections,
+  primaryInstallCommand,
+  terminalDemoLines,
+} from '../../src/lib/site'
+
+const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3000'}`
+
+test.describe('Light shadcn frontend', () => {
+  test('renders the light token-driven homepage', async ({ page }) => {
+    await page.goto(baseURL)
+
     await expect(page).toHaveTitle(/Payload Kits/)
-    await expect(
-      page.getByRole('heading', {
-        level: 1,
-        name: 'Install production-ready Payload blocks with one command.',
-      }),
-    ).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
+    await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
+
+    // Forced single light theme: the dark class must never appear.
+    await expect(page.locator('html')).not.toHaveClass(/dark/)
+
+    // The body background must resolve from the --background token rather
+    // than any hardcoded color, so the assertion derives its expectation
+    // from the same token in-page.
+    const { actual, expected } = await page.evaluate(() => {
+      const probe = document.createElement('div')
+      probe.style.backgroundColor = 'var(--background)'
+      document.body.appendChild(probe)
+      const resolved = getComputedStyle(probe).backgroundColor
+      probe.remove()
+
+      return {
+        actual: getComputedStyle(document.body).backgroundColor,
+        expected: resolved,
+      }
+    })
+
+    expect(expected).not.toBe('rgba(0, 0, 0, 0)')
+    expect(actual).toBe(expected)
+
+    // "Light themed first": the resolved background must actually be light.
+    // A canvas normalizes any CSS color syntax (oklch included) to sRGB bytes.
+    const meanChannel = await page.evaluate(() => {
+      const canvas = document.createElement('canvas')
+      canvas.width = 1
+      canvas.height = 1
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return -1
+      ctx.fillStyle = getComputedStyle(document.body).backgroundColor
+      ctx.fillRect(0, 0, 1, 1)
+      const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data
+      return (r + g + b) / 3
+    })
+    expect(meanChannel).toBeGreaterThan(220)
   })
 
-  test('exposes crawlable SEO metadata and semantic public pages', async ({ page }) => {
+  test('exposes docs, catalog, kit pages, and no horizontal overflow', async ({ page }) => {
     const routes = [
       {
-        canonical: 'http://localhost:3000',
-        h1: 'Install production-ready Payload blocks with one command.',
+        h1: heroHeadline,
         path: '/',
         title: /Payload Kits/,
       },
       {
-        canonical: 'http://localhost:3000/components',
-        h1: 'Browse the real kits that ship in the current alpha.',
+        h1: 'Start Here',
+        path: '/docs',
+        title: /Start Here/,
+      },
+      {
+        h1: 'Architecture',
+        path: '/docs/architecture',
+        title: /Architecture/,
+      },
+      {
+        h1: catalogTitle,
         path: '/components',
-        title: /Payload Kits Components Gallery/,
+        title: /Kit Catalog/,
       },
       {
-        canonical: 'http://localhost:3000/resources',
-        h1: 'Payload-native guides for teams evaluating installable kits.',
-        path: '/resources',
-        title: /Payload Kits Resources/,
+        h1: 'Why Payload Kits exists',
+        path: '/about',
+        title: /About/,
       },
-      {
-        canonical: 'http://localhost:3000/resources/payload-cms-blocks',
-        h1: 'Payload CMS blocks that survive real client repos',
-        path: '/resources/payload-cms-blocks',
-        title: /Payload CMS blocks/,
-      },
+      ...kitEntries.map((kit) => ({
+        h1: kit.title,
+        path: kit.href,
+        title: new RegExp(kit.title),
+      })),
     ]
 
     for (const route of routes) {
-      await page.goto(`http://localhost:3000${route.path}`)
-
+      await page.goto(`${baseURL}${route.path}`)
       await expect(page).toHaveTitle(route.title)
       await expect(page.getByRole('heading', { level: 1, name: route.h1 })).toBeVisible()
-      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', route.canonical)
-      await expect(page.locator('meta[property="og:title"]')).not.toHaveAttribute(
-        'content',
-        /Payload Website Template/,
-      )
-      await expect(page.locator('img:not([alt])')).toHaveCount(0)
 
       const hasHorizontalOverflow = await page.evaluate(
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       )
       expect(hasHorizontalOverflow).toBe(false)
     }
-
-    await page.goto('http://localhost:3000/search?q=payload')
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/)
   })
 
-  test('exposes selected waitlist intent state', async ({ page }) => {
-    await page.goto('http://localhost:3000')
+  test('exposes every landing section, the footer, and each kit', async ({ page }) => {
+    await page.goto(baseURL)
 
-    await expect(page.getByRole('button', { name: /Launch updates/ })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
-    await page.getByRole('button', { name: /Design partner/ }).click()
-    await expect(page.getByRole('button', { name: /Design partner/ })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
+    for (const section of Object.values(landingSections)) {
+      await expect(page.getByRole('heading', { level: 2, name: section.heading })).toBeVisible()
+    }
+
+    for (const kit of kitEntries) {
+      await expect(page.locator('code', { hasText: kit.command }).first()).toBeVisible()
+    }
+
+    await expect(page.getByRole('contentinfo')).toBeVisible()
+    await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
   })
 
-  test('can submit the homepage waitlist form', async ({ page }) => {
-    let requestBody:
-      | {
-          email?: string
-          honey?: string
-        }
-      | undefined
+  test('exposes the Fumadocs docs shell navigation', async ({ page }) => {
+    await page.goto(`${baseURL}/docs`)
 
-    await page.route('**/api/waitlist', async (route) => {
-      requestBody = JSON.parse(route.request().postData() || '{}') as typeof requestBody
+    const sidebar = page.locator('#nd-sidebar')
 
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ ok: true }),
-      })
-    })
+    await expect(sidebar.getByRole('link', { name: 'Architecture' })).toBeVisible()
+    await expect(sidebar.getByRole('link', { name: 'Installation' })).toBeVisible()
+    await expect(sidebar.getByRole('link', { name: 'Registry Contract' })).toBeVisible()
+    await expect(sidebar.getByRole('button', { name: 'Kits' })).toBeVisible()
+    await expect(sidebar.getByRole('button', { name: /Search/ })).toBeVisible()
+  })
 
-    await page.goto('http://localhost:3000')
-    await page.getByLabel('Email address').fill('hello@payloadkits.dev')
-    await page.getByRole('button', { name: 'Join the waitlist', exact: true }).click()
+  test('exposes a working command copy control', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(baseURL)
 
-    await expect(
-      page.getByText("You're on the list. We'll email you when early access opens."),
-    ).toBeVisible()
-    expect(requestBody).toMatchObject({
-      currentPath: '/',
-      email: 'hello@payloadkits.dev',
-      honey: '',
-      intent: 'waitlist',
-      source: 'homepage-final-cta',
-    })
+    await page.getByRole('button', { name: 'Copy' }).first().click()
+
+    await expect(page.getByRole('button', { name: 'Copied' })).toBeVisible()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(primaryInstallCommand)
+  })
+})
+
+test.describe('Reduced motion', () => {
+  test.use({ contextOptions: { reducedMotion: 'reduce' } })
+
+  test('terminal replay renders its final transcript without animation', async ({ page }) => {
+    await page.goto(baseURL)
+
+    const lastLine = terminalDemoLines[terminalDemoLines.length - 1]
+    await expect(page.getByText(lastLine.text).first()).toBeVisible()
+
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    )
+    expect(hasHorizontalOverflow).toBe(false)
+  })
+
+  test('opens the Fumadocs search dialog from the docs shell', async ({ page }) => {
+    await page.goto(`${baseURL}/docs`)
+
+    await page.getByRole('button', { name: /Search/ }).first().click()
+
+    await expect(page.getByRole('dialog')).toBeVisible()
   })
 })

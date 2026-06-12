@@ -23,7 +23,7 @@ Alpha reality in this workspace: `payload-kit add` is real, while `payload-kit i
 
 ## Public Registry Contract
 
-The source registry is `payload-kits/registry.json`. The publishable registry is generated into ignored build output under `public/r`:
+The source registry is `payload-kits/registry.json`. Its file entries read Payload-target source from `payload-kits/source` and still install into target projects under `~/src/blocks/...`. The publishable registry is generated into ignored build output under `public/r`:
 
 - `public/r/registry.json`: flat registry index for namespace and directory consumers
 - `public/r/hero-basic.json`: generated registry item with embedded file content
@@ -64,11 +64,12 @@ Then install with `pnpm dlx shadcn@latest add @payload-kits/hero-basic`.
 Use both verification tiers:
 
 - `pnpm test:registry`: checks that the public registry can be reproduced from source.
-- `pnpm test:install`: runs the fast wrapper fixture suite against temp-copy Payload website targets.
+- `pnpm test:install`: runs the fast wrapper fixture suite against generated minimal Payload targets.
 - `pnpm test:fresh`: runs the slower fresh Payload website smoke test for nightly and pre-release confidence.
-- `pnpm test:release`: runs lint, TypeScript, registry checks, integration tests, Playwright E2E, build, and the fresh smoke.
+- `pnpm test:release`: runs lint, source generation, TypeScript, registry checks, integration tests, Playwright E2E, and production build.
+- `pnpm test:fresh`: runs the slower external Payload website smoke for pre-release or nightly confidence.
 
-The fast fixture suite remains the normal PR gate because it is deterministic and proves the wrapper contract:
+The fast fixture suite remains the normal PR gate because it is deterministic and proves the wrapper contract without making this repository itself a Payload app:
 
 - both kits install into a supported target
 - install order works both ways
@@ -128,6 +129,7 @@ Normalized alpha-kit blocks should:
 ## Files
 
 - `registry.json`: shadcn-compatible local registry definition
+- `source/`: Payload-target kit source consumed by registry generation
 - `../public/r/`: ignored, generated public shadcn registry artifacts
 - `manifests/`: alpha kit manifests for the shipped and in-progress kits
 - `schema/poc-manifest.schema.json`: manifest validation schema

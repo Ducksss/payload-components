@@ -210,7 +210,9 @@ describe('payload-kit add command orchestration', () => {
     })
     mocks.installManifestDependencies.mockRejectedValueOnce(new Error('pnpm add failed'))
 
-    await expect(addCommand({ cwd: '/tmp/fixture', kitName: 'hero-basic' })).rejects.toThrow('pnpm add failed')
+    await expect(addCommand({ cwd: '/tmp/fixture', kitName: 'hero-basic' })).rejects.toThrow(
+      'pnpm add failed',
+    )
 
     expect(mocks.recordInstallAttempt).toHaveBeenCalledOnce()
     expect(mocks.recordInstallFailure).toHaveBeenCalledWith(
@@ -284,7 +286,10 @@ describe('payload-kit add command orchestration', () => {
         kits: {
           'hero-basic': {
             installedAt: null,
-            installedFiles: ['src/blocks/HeroBasic/Component.tsx', 'src/blocks/HeroBasic/config.ts'],
+            installedFiles: [
+              'src/blocks/HeroBasic/Component.tsx',
+              'src/blocks/HeroBasic/config.ts',
+            ],
             lastAttemptAt: '2026-04-16T00:00:00.000Z',
             lastError: {
               message: 'generate:types failed',

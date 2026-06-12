@@ -48,7 +48,11 @@ describe('payload-kit state', () => {
     tempDirs.push(tempDir)
 
     await mkdir(path.join(tempDir, '.payload-kit'), { recursive: true })
-    await writeFile(path.join(tempDir, '.payload-kit', 'state.json'), `${JSON.stringify(legacyState, null, 2)}\n`, 'utf8')
+    await writeFile(
+      path.join(tempDir, '.payload-kit', 'state.json'),
+      `${JSON.stringify(legacyState, null, 2)}\n`,
+      'utf8',
+    )
 
     const migratedState = await loadState(tempDir)
 

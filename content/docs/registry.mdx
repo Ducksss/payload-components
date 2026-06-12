@@ -1,0 +1,41 @@
+---
+title: Registry Contract
+description: How the public registry, manifests, and wrapper CLI work together.
+---
+
+Payload Kits uses two layers:
+
+- a shadcn-compatible public registry for file delivery
+- a wrapper manifest for Payload-specific install behavior
+
+## Public registry
+
+The public registry is generated from `payload-kits/registry.json`:
+
+```bash
+pnpm registry:build
+```
+
+The generated files are emitted to `public/r` and can be served statically.
+
+## Manifests
+
+Each wrapper manifest in `payload-kits/manifests` defines:
+
+- supported Payload and Next.js majors
+- files expected after install
+- peer dependency requirements
+- Payload fragments to apply
+- post-install scripts
+- recovery metadata for patched files
+- sample content for docs and testing
+
+## Support matrix
+
+`payload-kits/support-matrix.json` defines the target project shapes the installer understands.
+
+The current alpha support matrix is intentionally narrow. New project shapes should be added only when the installer can verify them with tests.
+
+## Recovery state
+
+The CLI records install state in `.payload-kit/state.json` inside the target project. That state is not a substitute for disk verification; the installer still checks actual files and fragments before declaring a kit installed.

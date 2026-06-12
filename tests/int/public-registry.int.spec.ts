@@ -61,18 +61,23 @@ describe('public shadcn registry publication', () => {
     expect(packageJson.scripts?.['registry:check']).toBe(
       'cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-kit/check-public-registry.ts',
     )
-    expect(packageJson.scripts?.prebuild).toBe('pnpm registry:build')
+    expect(packageJson.scripts?.prebuild).toBe('pnpm source:build && pnpm registry:build')
   })
 
   it('defines directory-ready registry item metadata without embedded file content', async () => {
-    const registry = await readJson<RegistryDefinition>(path.join(repoRoot, 'payload-kits', 'registry.json'))
+    const registry = await readJson<RegistryDefinition>(
+      path.join(repoRoot, 'payload-kits', 'registry.json'),
+    )
 
     expect(registry).toMatchObject({
       $schema: 'https://ui.shadcn.com/schema/registry.json',
       homepage: 'https://github.com/Ducksss/payload-components',
       name: 'payload-kits',
     })
-    expect(registry.items.map((item) => item.name).sort()).toEqual(['feature-grid-basic', 'hero-basic'])
+    expect(registry.items.map((item) => item.name).sort()).toEqual([
+      'feature-grid-basic',
+      'hero-basic',
+    ])
 
     for (const item of registry.items) {
       expect(item.type).toBe('registry:block')
@@ -92,8 +97,8 @@ describe('public shadcn registry publication', () => {
 
       for (const file of item.files ?? []) {
         expect(file.content).toBeUndefined()
-        expect(file.path).toMatch(/^src\/blocks\//)
-        expect(file.target).toBe(`~/${file.path}`)
+        expect(file.path).toMatch(/^payload-kits\/source\/blocks\//)
+        expect(file.target).toBe(file.path.replace(/^payload-kits\/source/, '~/src'))
         expect(file.type).toBe('registry:file')
       }
     }
@@ -101,7 +106,9 @@ describe('public shadcn registry publication', () => {
 
   it('generates a flat public registry that matches the source registry', async () => {
     const { buildRegistryForCheck } = await import('../../tools/payload-kit/check-public-registry')
-    const sourceRegistry = await readJson<RegistryDefinition>(path.join(repoRoot, 'payload-kits', 'registry.json'))
+    const sourceRegistry = await readJson<RegistryDefinition>(
+      path.join(repoRoot, 'payload-kits', 'registry.json'),
+    )
     const publicRegistryDir = await buildRegistryForCheck()
     const publicRegistryPath = path.join(publicRegistryDir, 'registry.json')
 
@@ -136,7 +143,9 @@ describe('public shadcn registry publication', () => {
           expect(sourceFile).toBeTruthy()
           expect(generatedFile.type).toBe(sourceFile?.type)
           expect(generatedFile.target).toBe(sourceFile?.target)
-          expect(generatedFile.content).toBe(await readFile(path.join(repoRoot, generatedFile.path), 'utf8'))
+          expect(generatedFile.content).toBe(
+            await readFile(path.join(repoRoot, generatedFile.path), 'utf8'),
+          )
         }
       }
     } finally {

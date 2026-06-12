@@ -1,0 +1,45 @@
+---
+title: Architecture
+description: The repository is split between a Fumadocs site and Payload-targeted kit tooling.
+---
+
+The project has two separate responsibilities:
+
+1. Run a documentation and catalog site.
+2. Build, validate, and distribute Payload kit installs.
+
+Those responsibilities should not share a Payload runtime.
+
+## Site runtime
+
+The site runtime is Fumadocs on Next.js:
+
+- `src/app` contains the app router routes.
+- `content/docs` contains MDX documentation.
+- `source.config.ts` defines the Fumadocs MDX collection.
+- `src/lib/source.ts` exposes the loaded docs source.
+- `src/app/api/search/route.ts` exposes Fumadocs search.
+
+No Payload admin, collection config, global config, database adapter, or Payload local API is required for the site to boot.
+
+## Kit runtime
+
+The kit runtime is external. A kit installs into a supported Payload v3 + Next.js project.
+
+Payload-specific files stay in the registry source and target project:
+
+- block configs
+- frontend block components
+- `RenderBlocks` registration fragments
+- `Pages` collection layout fragments
+- `generate:types` and `generate:importmap` post-install tasks
+
+## Registry source
+
+The shadcn-compatible registry reads source files from `payload-kits/source` and emits public JSON to `public/r`.
+
+That keeps Payload-specific kit source out of the Fumadocs app tree while preserving install targets like `~/src/blocks/HeroBasic/Component.tsx`.
+
+## Why this split matters
+
+A docs site should build without a database, Payload secret, or admin import map. A Payload kit should still be tested against real Payload project shapes. Splitting the app runtime from the install target keeps both jobs honest.

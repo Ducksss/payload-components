@@ -94,7 +94,9 @@ describe('payload-kit registry install', () => {
       stdin: expect.stringMatching(/^(n\n){20}$/),
     })
 
-    expect(JSON.parse(await readFile(itemFilePath, 'utf8'))).not.toHaveProperty('registryDependencies')
+    expect(JSON.parse(await readFile(itemFilePath, 'utf8'))).not.toHaveProperty(
+      'registryDependencies',
+    )
   })
 
   it('skips existing public registry dependencies for wrapper installs', async () => {
@@ -141,6 +143,8 @@ describe('payload-kit registry install', () => {
       cwd: '/repo',
       stdin: expect.stringMatching(/^(n\n){20}$/),
     })
-    expect(JSON.parse(await readFile(itemFilePath, 'utf8'))).not.toHaveProperty('registryDependencies')
+    expect(JSON.parse(await readFile(itemFilePath, 'utf8'))).not.toHaveProperty(
+      'registryDependencies',
+    )
   })
 })

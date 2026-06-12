@@ -27,10 +27,13 @@ const runAddCommand = async (fixtureDir: string, kitName: string) =>
     maxBuffer: 10_000_000,
   })
 
-const readFixtureFile = (fixtureDir: string, filePath: string) => readFile(path.join(fixtureDir, filePath), 'utf8')
+const readFixtureFile = (fixtureDir: string, filePath: string) =>
+  readFile(path.join(fixtureDir, filePath), 'utf8')
 
 const readInstallState = async (fixtureDir: string) =>
-  JSON.parse(await readFixtureFile(fixtureDir, path.join('.payload-kit', 'state.json'))) as InstallState
+  JSON.parse(
+    await readFixtureFile(fixtureDir, path.join('.payload-kit', 'state.json')),
+  ) as InstallState
 
 const countOccurrences = (source: string, text: string) =>
   source.match(new RegExp(escapeRegExp(text), 'g'))?.length ?? 0
@@ -95,12 +98,22 @@ const expectUniqueRegistrations = ({
       `import { ${renderBlocksFragment.importName} } from '${renderBlocksFragment.importPath}'`,
     ),
   ).toBe(1)
-  expect(countOccurrences(renderBlocksSource, `${renderBlocksFragment.blockSlug}: ${renderBlocksFragment.importName}`)).toBe(1)
+  expect(
+    countOccurrences(
+      renderBlocksSource,
+      `${renderBlocksFragment.blockSlug}: ${renderBlocksFragment.importName}`,
+    ),
+  ).toBe(1)
 
   expect(
-    countOccurrences(pagesSource, `import { ${pagesLayoutFragment.importName} } from '${pagesLayoutFragment.importPath}'`),
+    countOccurrences(
+      pagesSource,
+      `import { ${pagesLayoutFragment.importName} } from '${pagesLayoutFragment.importPath}'`,
+    ),
   ).toBe(1)
-  expect(getLayoutBlockEntries(pagesSource).filter((entry) => entry === pagesLayoutFragment.blockName)).toHaveLength(1)
+  expect(
+    getLayoutBlockEntries(pagesSource).filter((entry) => entry === pagesLayoutFragment.blockName),
+  ).toHaveLength(1)
 }
 
 const expectInstalledStateEntry = (state: InstallState, manifest: KitManifest) => {
@@ -140,95 +153,77 @@ describe('payload-kit add', () => {
     await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
   })
 
-  it(
-    'installs hero-basic into a supported repo and records state',
-    async () => {
-      const { fixtureDir, manifest } = await createInstallFixture('hero-basic')
-      tempDirs.push(fixtureDir)
+  it('installs hero-basic into a supported repo and records state', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('hero-basic')
+    tempDirs.push(fixtureDir)
 
-      await runAddCommand(fixtureDir, manifest.name)
+    await runAddCommand(fixtureDir, manifest.name)
 
-      const parsedState = await readInstallState(fixtureDir)
+    const parsedState = await readInstallState(fixtureDir)
 
-      expect(parsedState.version).toBe(2)
-      await expectInstalledKits(fixtureDir, [manifest])
-    },
-    180000,
-  )
+    expect(parsedState.version).toBe(2)
+    await expectInstalledKits(fixtureDir, [manifest])
+  }, 180000)
 
-  it(
-    'installs feature-grid-basic into a supported repo and records state',
-    async () => {
-      const { fixtureDir, manifest } = await createInstallFixture('feature-grid-basic')
-      tempDirs.push(fixtureDir)
+  it('installs feature-grid-basic into a supported repo and records state', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('feature-grid-basic')
+    tempDirs.push(fixtureDir)
 
-      await runAddCommand(fixtureDir, manifest.name)
+    await runAddCommand(fixtureDir, manifest.name)
 
-      const parsedState = await readInstallState(fixtureDir)
+    const parsedState = await readInstallState(fixtureDir)
 
-      expect(parsedState.version).toBe(2)
-      await expectInstalledKits(fixtureDir, [manifest])
-    },
-    180000,
-  )
+    expect(parsedState.version).toBe(2)
+    await expectInstalledKits(fixtureDir, [manifest])
+  }, 180000)
 
-  it(
-    'installs hero-basic followed by feature-grid-basic without duplicate registrations',
-    async () => {
-      const { fixtureDir, manifests } = await createInstallFixtureForKits(['hero-basic', 'feature-grid-basic'])
-      tempDirs.push(fixtureDir)
+  it('installs hero-basic followed by feature-grid-basic without duplicate registrations', async () => {
+    const { fixtureDir, manifests } = await createInstallFixtureForKits([
+      'hero-basic',
+      'feature-grid-basic',
+    ])
+    tempDirs.push(fixtureDir)
 
-      await runAddCommand(fixtureDir, 'hero-basic')
-      await runAddCommand(fixtureDir, 'feature-grid-basic')
+    await runAddCommand(fixtureDir, 'hero-basic')
+    await runAddCommand(fixtureDir, 'feature-grid-basic')
 
-      await expectInstalledKits(fixtureDir, manifests)
-    },
-    180000,
-  )
+    await expectInstalledKits(fixtureDir, manifests)
+  }, 180000)
 
-  it(
-    'installs feature-grid-basic followed by hero-basic without duplicate registrations',
-    async () => {
-      const { fixtureDir, manifests } = await createInstallFixtureForKits(['feature-grid-basic', 'hero-basic'])
-      tempDirs.push(fixtureDir)
+  it('installs feature-grid-basic followed by hero-basic without duplicate registrations', async () => {
+    const { fixtureDir, manifests } = await createInstallFixtureForKits([
+      'feature-grid-basic',
+      'hero-basic',
+    ])
+    tempDirs.push(fixtureDir)
 
-      await runAddCommand(fixtureDir, 'feature-grid-basic')
-      await runAddCommand(fixtureDir, 'hero-basic')
+    await runAddCommand(fixtureDir, 'feature-grid-basic')
+    await runAddCommand(fixtureDir, 'hero-basic')
 
-      await expectInstalledKits(fixtureDir, manifests)
-    },
-    180000,
-  )
+    await expectInstalledKits(fixtureDir, manifests)
+  }, 180000)
 
-  it(
-    'treats a second install as idempotent',
-    async () => {
-      const manifest = await loadManifest('hero-basic')
-      const { fixtureDir } = await createInstallFixture(manifest.name)
-      tempDirs.push(fixtureDir)
+  it('treats a second install as idempotent', async () => {
+    const manifest = await loadManifest('hero-basic')
+    const { fixtureDir } = await createInstallFixture(manifest.name)
+    tempDirs.push(fixtureDir)
 
-      await runAddCommand(fixtureDir, manifest.name)
+    await runAddCommand(fixtureDir, manifest.name)
 
-      const secondRun = await runAddCommand(fixtureDir, manifest.name)
+    const secondRun = await runAddCommand(fixtureDir, manifest.name)
 
-      expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
-    },
-    180000,
-  )
+    expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
+  }, 180000)
 
-  it(
-    'treats a second feature-grid-basic install as idempotent',
-    async () => {
-      const manifest = await loadManifest('feature-grid-basic')
-      const { fixtureDir } = await createInstallFixture(manifest.name)
-      tempDirs.push(fixtureDir)
+  it('treats a second feature-grid-basic install as idempotent', async () => {
+    const manifest = await loadManifest('feature-grid-basic')
+    const { fixtureDir } = await createInstallFixture(manifest.name)
+    tempDirs.push(fixtureDir)
 
-      await runAddCommand(fixtureDir, manifest.name)
+    await runAddCommand(fixtureDir, manifest.name)
 
-      const secondRun = await runAddCommand(fixtureDir, manifest.name)
+    const secondRun = await runAddCommand(fixtureDir, manifest.name)
 
-      expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
-    },
-    180000,
-  )
+    expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
+  }, 180000)
 })

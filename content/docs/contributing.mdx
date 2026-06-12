@@ -1,0 +1,33 @@
+---
+title: Contributing
+description: How contributors should propose and ship new Payload Kits.
+---
+
+Contributions should make the install contract clearer, not just add more UI.
+
+## New kit checklist
+
+A kit proposal should include:
+
+- a small, useful Payload block concept
+- a block config with editor-friendly fields
+- a frontend component that renders without extra app assumptions
+- a manifest with files, fragments, dependencies, and sample content
+- install tests for first install and repeated install
+- documentation explaining the target use case
+
+## Keep the catalog curated
+
+The alpha catalog should stay small enough to verify. A kit is ready when it installs cleanly, can be run twice, and has docs good enough for another developer to reason about the target project changes.
+
+## Report install drift
+
+If a supported Payload project shape changes, open an issue with:
+
+- Payload version
+- Next.js version
+- failing command
+- relevant `RenderBlocks` and `Pages` collection snippets
+- expected install result
+
+That gives the wrapper enough context to update the support matrix or reject the target shape clearly.

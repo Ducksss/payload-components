@@ -1,1 +1,0 @@
-export { generateMeta } from './seo'

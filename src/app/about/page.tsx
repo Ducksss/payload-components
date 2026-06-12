@@ -1,0 +1,204 @@
+import type { Metadata } from 'next'
+
+import Link from 'next/link'
+
+import { ArrowRight, Square } from 'lucide-react'
+
+import { siteIcons } from '@/components/site/icons'
+import { MaintainerNote } from '@/components/site/MaintainerNote'
+import { Eyebrow, Section } from '@/components/site/section'
+import { SiteFooter } from '@/components/site/SiteFooter'
+import { SiteHeader } from '@/components/site/SiteHeader'
+import { githubIssuesUrl, receipts } from '@/lib/site'
+
+export const metadata: Metadata = {
+  title: 'About',
+  description:
+    'Payload Kits exists because freelance Payload work kept paying the same tax: rebuilding the same blocks, rewiring them by hand, and re-proving they work — project after project.',
+}
+
+/* The grunt-work loop, deliberately unchecked — the landing's wiring
+   ledger shows the same items checked off by the installer. */
+const pasteChecklist = [
+  'register the block in src/collections/Pages/index.ts',
+  'map it in src/blocks/RenderBlocks.tsx',
+  'run payload generate:types',
+  'run payload generate:importmap',
+  'prove it still works — integration tests, e2e, click through the admin',
+] as const
+
+export default function AboutPage() {
+  return (
+    <>
+      <SiteHeader />
+
+      <main className="flex-1">
+        <section className="relative overflow-hidden border-b border-border">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-dots [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
+          />
+          <div className="container relative py-16 lg:py-20">
+            <Eyebrow>About</Eyebrow>
+            <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-5xl">
+              Why Payload Kits exists
+            </h1>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+              Payload Kits comes out of years of freelance Payload work — and the tax every one of
+              those projects paid: rebuilding the same blocks, rewiring them by hand, and
+              re-proving they worked.
+            </p>
+          </div>
+        </section>
+
+        <Section>
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,17rem)] lg:gap-16">
+            {/* Prose — left-anchored to the hero's edge, held to a readable measure. */}
+            <div className="flex max-w-[60ch] flex-col gap-7 text-base leading-7 text-muted-foreground">
+            <p>
+              Freelancing on Payload sites means a new repo every few weeks, and every one of them
+              needs roughly the same surfaces — a hero, a feature grid, post cards, an archive.
+              None of that is the work a client actually hires you for. It is the work that stands
+              between you and that work.
+            </p>
+
+            <p>
+              <span className="font-medium text-foreground">shadcn changed the expectation</span>{' '}
+              for plain UI: run one command and a real component lands in your repo, in your
+              style, yours to edit. Payload had no shelf like that. And Payload blocks are harder
+              than UI components, because copying the files is the easy part. A pasted block is
+              not live until your collection schema knows it, your renderer maps it, your types
+              include it, and the admin import map sees it.
+            </p>
+
+            <figure className="rounded-[1.25rem] border border-border bg-muted/40 p-5 sm:p-6">
+              <figcaption className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                After every paste, on every project
+              </figcaption>
+              <ul className="mt-4 flex flex-col gap-2.5">
+                {pasteChecklist.map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-start gap-3 font-mono text-[13px] leading-6 text-foreground/75"
+                  >
+                    <Square
+                      className="mt-1 size-3.5 shrink-0 text-muted-foreground/60"
+                      aria-hidden="true"
+                    />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </figure>
+
+            <p className="text-xl font-medium leading-8 tracking-[-0.01em] text-foreground">
+              The paste was never the problem. The edits after it were — and proving them, every
+              single time, was worse.
+            </p>
+
+            <p>
+              That last checkbox is where freelance weeks actually went. Wiring a block by hand
+              means verifying it by hand: integration tests, e2e runs, clicking through the admin
+              to make sure nothing half-works in a way the client finds first. Multiply that by
+              every block, every repo, every project, and the job stops being the content model,
+              the design, the launch — the things that really matter — and becomes grunt work.
+            </p>
+
+            <p>
+              <span className="font-medium text-foreground">
+                Payload Kits is the registry I kept wishing existed.
+              </span>{' '}
+              Blocks that install like shadcn components but finish the job:{' '}
+              <code className="rounded-md border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-[13px] text-foreground/80">
+                npx payload-kit add hero-basic
+              </code>{' '}
+              copies the source and does the four edits itself, landing as one reviewable git
+              diff. And the proving moved into the registry: installer tests and a nightly
+              fresh-repo smoke run gate every kit centrally, once — instead of being redone by
+              every freelancer on every install.
+            </p>
+
+            <p>
+              It is MIT-licensed end to end because an installer that edits your repo has to earn
+              trust the only honest way: by letting you read it. The catalog grows from real
+              installs, not roadmap theater — if you ship client sites on Payload,{' '}
+              <a
+                href={githubIssuesUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
+              >
+                tell me which blocks you rebuild every time
+              </a>
+              .
+            </p>
+            </div>
+
+            {/* Receipts rail — the proof behind the story, filling the
+                right column instead of leaving it empty. */}
+            <aside className="lg:sticky lg:top-24 lg:self-start">
+              <div className="rounded-[1.25rem] border border-border bg-muted/30 p-6">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  The receipts
+                </p>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  Not a pitch — every line is something you can check in the repository.
+                </p>
+                <ul className="mt-5 flex flex-col gap-3.5 border-t border-border pt-5">
+                  {receipts.map((receipt) => {
+                    const Icon = siteIcons[receipt.icon]
+
+                    return (
+                      <li
+                        key={receipt.label}
+                        className="flex items-start gap-2.5 text-sm leading-6 text-foreground/80"
+                      >
+                        <Icon className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden="true" />
+                        {receipt.label}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            </aside>
+          </div>
+        </Section>
+
+        <Section className="bg-muted/40">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
+            <div className="flex flex-col items-start">
+              <Eyebrow>From here</Eyebrow>
+              <h2 className="mt-4 text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-4xl">
+                Spend your week on the work that matters.
+              </h2>
+              <p className="mt-4 text-base leading-7 text-muted-foreground">
+                Two page blocks install today, eight post components are in development, and
+                every kit ships with its contract: source, manifest, docs, and installer
+                coverage.
+              </p>
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/components"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  Browse the catalog
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </Link>
+                <Link
+                  href="/docs"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-background px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                >
+                  Read the docs
+                </Link>
+              </div>
+            </div>
+
+            <MaintainerNote />
+          </div>
+        </Section>
+      </main>
+
+      <SiteFooter />
+    </>
+  )
+}

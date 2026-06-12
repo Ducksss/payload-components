@@ -25,11 +25,11 @@
       }
     ],
     "paths": {
-      "@payload-config": [
-        "./src/payload.config.ts"
-      ],
       "react": [
         "./node_modules/@types/react"
+      ],
+      "collections/*": [
+        "./.source/*"
       ],
       "@/*": [
         "./src/*"
@@ -40,13 +40,13 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "redirects.js",
     "next-env.d.ts",
-    "next.config.js",
-    "next-sitemap.config.cjs",
+    "next.config.mjs",
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "payload-kits/source",
+    "payload-kits/templates"
   ]
 }

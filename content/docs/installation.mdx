@@ -1,0 +1,51 @@
+---
+title: Installation
+description: How to install a Payload Kit into a supported Payload v3 project.
+---
+
+Payload Kits currently targets Payload v3 projects using Next.js App Router and the supported website-style block layout shape.
+
+## Requirements
+
+The target project must include:
+
+- `payload` v3
+- `next` v15 or v16
+- `components.json`
+- `src/blocks/RenderBlocks.tsx`
+- `src/collections/Pages/index.ts`
+- scripts for `generate:types` and `generate:importmap`
+
+The installer checks these requirements before mutating the target project.
+
+## Install a kit
+
+```bash
+npx payload-kit add hero-basic
+```
+
+For the second alpha kit:
+
+```bash
+npx payload-kit add feature-grid-basic
+```
+
+## What the CLI does
+
+The wrapper CLI owns the Payload-specific work that direct registry installation cannot handle:
+
+- validates the target project shape
+- builds or resolves the registry item
+- installs source files through the shadcn registry flow
+- applies Payload layout and render fragments
+- installs missing kit dependencies
+- runs post-install scripts
+- writes `.payload-kit/state.json`
+
+## Idempotency
+
+Running the same install twice should not duplicate imports, block registrations, or layout entries. The installer verifies files, fragments, dependencies, and recorded state before deciding whether work is needed.
+
+## Direct registry installs
+
+Direct shadcn installs can deliver files, but they do not apply Payload-specific fragments or run the complete post-install workflow. Use `payload-kit add` for real target projects.

@@ -4,20 +4,13 @@
 
 ## Verification
 
-- [ ] `pnpm lint`
-- [ ] `pnpm exec tsc --noEmit`
-- [ ] `pnpm registry:check`
-- [ ] `pnpm run test:int`
-- [ ] `pnpm run test:e2e`
-- [ ] `pnpm build`
+- [ ] `pnpm test:release`
 
-## Payload / Registry Checklist
+## Registry Checklist
 
-- [ ] Schema changes include regenerated Payload types.
-- [ ] Admin component changes include regenerated import maps.
 - [ ] Registry changes keep generated `public/r` output out of git.
-- [ ] Local API calls that pass `user` also set `overrideAccess: false`.
-- [ ] Nested Payload operations inside hooks pass `req`.
+- [ ] Kit changes update source, manifest, docs, and installer tests together.
+- [ ] Payload target code keeps Local API and hook examples transaction-safe.
 
 ## Notes
 

@@ -63,7 +63,10 @@ const baseRegistry: RegistryDefinition = {
   name: 'payload-kits',
 }
 
-const loadManifestWithMocks = async (manifest: unknown, registry: RegistryDefinition = baseRegistry) => {
+const loadManifestWithMocks = async (
+  manifest: unknown,
+  registry: RegistryDefinition = baseRegistry,
+) => {
   const schema = JSON.parse(await readFile(manifestSchemaPath, 'utf8')) as object
   const readJsonFile = vi.fn(async (filePath: string) => {
     if (filePath.endsWith(path.join('payload-kits', 'manifests', 'hero-basic.json'))) {

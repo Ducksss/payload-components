@@ -1,0 +1,34 @@
+---
+title: Start Here
+description: Payload Kits is now a Fumadocs-first documentation and registry project.
+---
+
+Payload Kits distributes installable Payload CMS blocks through a public registry and a small wrapper CLI.
+
+The v2 app is intentionally not a Payload CMS site. It is a Fumadocs app with MDX documentation, static registry assets, and package tooling for validating installs into external Payload projects.
+
+## What changed
+
+- The website no longer boots Payload admin routes, collections, globals, database adapters, or generated Payload app types.
+- Documentation lives in `content/docs` and is compiled by Fumadocs MDX.
+- Registry source lives outside the app runtime and builds to `public/r`.
+- Payload remains the target ecosystem, not the site runtime.
+
+## Current install
+
+```bash
+npx payload-kit add hero-basic
+```
+
+The CLI verifies project shape, installs the registry item, applies Payload layout fragments, runs post-install tasks, and records install state.
+
+## Current kits
+
+- `hero-basic`: headline, description, CTA links, and proof badges.
+- `feature-grid-basic`: repeatable feature cards and optional CTA wiring.
+
+## Where to go next
+
+- Read [Architecture](/docs/architecture) to understand the Fumadocs-first repo shape.
+- Read [Installation](/docs/installation) before running the CLI in a Payload project.
+- Browse the [Kit Catalog](/components) for the current alpha kits.
