@@ -29,7 +29,7 @@ export function GET() {
     `- [Docs](${siteUrl}/docs)`,
     `- [Kit catalog](${siteUrl}/components)`,
     `- [About](${siteUrl}/about)`,
-    `- [Public registry (JSON)](${siteUrl}/r/registry.json)`,
+    `- [Public registry](${siteUrl}/r/registry.json)`,
     `- [Full LLM context](${siteUrl}/llms-full.txt)`,
     `- [GitHub repository](${githubRepoUrl})`,
     '',
@@ -37,7 +37,9 @@ export function GET() {
     ...stackItems.map((item) => `- ${item.label} (${item.detail})`),
     '',
     '## Installable kits',
-    ...kitEntries.map((kit) => `- ${kit.title}: \`${kit.command}\` — ${kit.description}`),
+    /* Keep "<title>: <command>" intact (no backticks) — the GEO contract test
+       in tests/e2e/geo.e2e.spec.ts pins that exact substring. */
+    ...kitEntries.map((kit) => `- ${kit.title}: ${kit.command} — ${kit.description}`),
     '',
     '## FAQ',
     ...faqEntries.flatMap((entry) => [`### ${entry.question}`, entry.answer, '']),
