@@ -16,8 +16,10 @@ export const siteDescription =
 
 export const heroEyebrow = 'Payload Kits public alpha'
 
-/* The H1 renders primary + accent as one accessible name; tests and the
-   OG image consume the concatenated heroHeadline. */
+/* The H1 renders primary + accent as one accessible name; the e2e H1
+   assertion consumes the concatenated heroHeadline. The OG card renders the
+   two parts separately so it can set the accent in Instrument Serif italic
+   (see src/app/opengraph-image.tsx). */
 export const heroHeadlinePrimary = 'Install Payload blocks'
 export const heroHeadlineAccent = 'wired, not pasted.'
 export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
