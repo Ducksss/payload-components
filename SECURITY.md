@@ -4,11 +4,11 @@ Security issues in Payload Kits should be reported privately first.
 
 ## Supported Versions
 
-The `prod` branch is the supported production line. The `dev` branch is the
-staging line for validated changes before promotion to `prod`.
+The `main` branch is the supported production line. The `dev` branch is the
+staging line for validated changes before promotion to `main`.
 
 Until the project starts publishing versioned releases, security fixes should be
-branched from `prod`, validated through the release gate, merged back to `prod`,
+branched from `main`, validated through the release gate, merged back to `main`,
 and then carried forward to `dev`.
 
 ## Reporting a Vulnerability

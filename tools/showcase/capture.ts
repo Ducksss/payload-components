@@ -75,7 +75,8 @@ async function main() {
     const page = await context.newPage()
     const outPath = path.join(OUT_DIR, `${project.slug}.jpg`)
     try {
-      await page.goto(project.url, { timeout: GOTO_TIMEOUT_MS, waitUntil: 'networkidle' })
+      await page.goto(project.url, { timeout: GOTO_TIMEOUT_MS, waitUntil: 'domcontentloaded' })
+      await page.waitForLoadState('load', { timeout: 10_000 }).catch(() => undefined)
       await dismissConsent(page)
       await page.waitForTimeout(SETTLE_MS)
       await page.screenshot({

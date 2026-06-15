@@ -22,7 +22,7 @@ CLI, and Payload integration direction coherent.
 
 ## Local Setup
 
-Use Node.js `^18.20.2 || >=20.9.0` and pnpm `^9 || ^10`.
+Use Node.js `^20.19.0 || >=22.12.0` and pnpm `^9 || ^10`.
 
 ```sh
 pnpm install --frozen-lockfile --ignore-workspace
@@ -56,10 +56,10 @@ Local API.
 
 ## Branches
 
-- `prod` is the production release line.
+- `main` is the production release line.
 - `dev` is the staging line where stable feature branches are collected.
 - Feature branches, including `v2`, should target `dev` first.
-- Promote from `dev` to `prod` only after the release gate passes.
+- Promote from `dev` to `main` only after the release gate passes.
 
 ## Verification
 

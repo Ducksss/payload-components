@@ -1,6 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
 
-import type { ClientProject } from '@/lib/site'
+import { showcaseSetupTaxLabel, type ClientProject } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
 /* One client site, framed as a browser window: the polished result up top,
@@ -42,7 +42,7 @@ export function ProjectShowcaseCard({
         target="_blank"
         rel="noreferrer"
         aria-label={`Visit ${project.name} (opens in a new tab)`}
-        className="scan-sheen relative block aspect-[16/10] overflow-hidden border-b border-border bg-muted/40 [mask-image:linear-gradient(to_bottom,black_82%,transparent)]"
+        className="relative block aspect-[16/10] overflow-hidden border-b border-border bg-muted/40 [mask-image:linear-gradient(to_bottom,black_82%,transparent)]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- no next/image in this project (no images config); plain /public asset by convention */}
         <img
@@ -68,6 +68,7 @@ export function ProjectShowcaseCard({
             href={project.url}
             target="_blank"
             rel="noreferrer"
+            aria-label={`Visit ${project.name} (opens in a new tab)`}
             className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-foreground transition-colors hover:text-brand"
           >
             Visit
@@ -95,7 +96,7 @@ export function ProjectShowcaseCard({
 
         <div className="mt-5 border-t border-border pt-4">
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-            Setup tax paid by hand
+            {showcaseSetupTaxLabel}
           </p>
           <ul className="mt-3 flex flex-col gap-2">
             {project.setupTax.map((item) => (

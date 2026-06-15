@@ -165,6 +165,14 @@ test.describe('AI-readable documentation surfaces', () => {
     expect((await response.body()).byteLength).toBeGreaterThan(1000)
   })
 
+  test('root open graph image renders as a non-empty PNG', async ({ request }) => {
+    const response = await request.get(`${baseURL}/opengraph-image`)
+
+    expect(response.ok()).toBe(true)
+    expect(response.headers()['content-type']).toContain('image/png')
+    expect((await response.body()).byteLength).toBeGreaterThan(1000)
+  })
+
   test('docs pages expose article metadata and searchable headings', async ({ page }) => {
     await page.goto(`${baseURL}/docs/installation`)
 

@@ -1,10 +1,12 @@
 // @vitest-environment node
 
-import { readdir, readFile } from 'node:fs/promises'
+import { access, readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-import { describe, expect, it } from 'vitest'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const repoRoot = process.cwd()
 
@@ -17,10 +19,52 @@ type HeaderRule = {
   source: string
 }
 
+type MetaFile = {
+  pages?: Array<string | { pages?: string[]; title?: string }>
+  title?: string
+}
+
+const isSeparator = (entry: string) => entry.startsWith('---') && entry.endsWith('---')
+
+async function pathExists(filePath: string) {
+  try {
+    await access(filePath)
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function expectMetaEntriesResolve(directory: string) {
+  const meta = await readJson<MetaFile>(path.join(directory, 'meta.json'))
+
+  for (const entry of meta.pages ?? []) {
+    if (typeof entry !== 'string' || isSeparator(entry)) continue
+
+    const pagePath = path.join(directory, `${entry}.mdx`)
+    const childMetaPath = path.join(directory, entry, 'meta.json')
+
+    expect(
+      (await pathExists(pagePath)) || (await pathExists(childMetaPath)),
+      `${path.relative(repoRoot, directory)}/meta.json references missing page "${entry}"`,
+    ).toBe(true)
+
+    if (await pathExists(childMetaPath)) {
+      await expectMetaEntriesResolve(path.join(directory, entry))
+    }
+  }
+}
+
 describe('Fumadocs site shell', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.resetModules()
+  })
+
   it('uses Fumadocs as the site runtime instead of Payload CMS', async () => {
     const packageJson = await readJson<{
       dependencies?: Record<string, string>
+      engines?: Record<string, string>
       scripts?: Record<string, string>
     }>(path.join(repoRoot, 'package.json'))
 
@@ -30,6 +74,7 @@ describe('Fumadocs site shell', () => {
 
     expect(packageJson.dependencies?.payload).toBeUndefined()
     expect(packageJson.dependencies?.['@payloadcms/next']).toBeUndefined()
+    expect(packageJson.engines?.node).toBe('^20.19.0 || >=22.12.0')
     expect(packageJson.scripts?.payload).toBeUndefined()
     expect(packageJson.scripts?.['generate:types']).toBeUndefined()
     expect(packageJson.scripts?.['generate:importmap']).toBeUndefined()
@@ -81,8 +126,10 @@ describe('Fumadocs site shell', () => {
     ])
 
     expect(workflow).toContain('- dev')
-    expect(workflow).toContain('- prod')
-    expect(workflow).not.toContain('- main')
+    expect(workflow).toContain('- main')
+    expect(workflow).not.toContain('- prod')
+    expect(workflow).toContain('- 20.19.0')
+    expect(workflow).toContain('- 22')
     expect(sourceConfig).toContain('pageSchema')
     expect(sourceConfig).toContain('metaSchema')
     expect(nextConfig).toContain('createMDX')
@@ -168,5 +215,88 @@ describe('Fumadocs site shell', () => {
     await scan(appRoot)
 
     expect(found).toEqual([])
+  })
+
+  it('keeps docs navigation metadata pointed at real pages', async () => {
+    await expectMetaEntriesResolve(path.join(repoRoot, 'content', 'docs'))
+  })
+
+  it('publishes production-safe fallback URLs when no site URL env is set', async () => {
+    vi.stubEnv('NEXT_PUBLIC_SITE_URL', undefined)
+    vi.resetModules()
+    vi.doMock('../../src/lib/source', () => ({
+      getLLMText: vi.fn(() => '# Mock docs (/docs)'),
+      source: {
+        getPages: () => [{ url: '/docs' }],
+      },
+    }))
+
+    const [{ siteUrl }, robotsModule, sitemapModule, llmsModule, llmsFullModule] =
+      await Promise.all([
+        import('../../src/lib/site'),
+        import('../../src/app/robots'),
+        import('../../src/app/sitemap'),
+        import('../../src/app/llms.txt/route'),
+        import('../../src/app/llms-full.txt/route'),
+      ])
+
+    expect(siteUrl).toBe('https://payload-components.xyz')
+
+    const robots = robotsModule.default()
+    const sitemap = sitemapModule.default()
+    const llmsBody = await (await llmsModule.GET()).text()
+    const llmsFullBody = await (await llmsFullModule.GET()).text()
+
+    expect(robots.host).toBe(siteUrl)
+    expect(robots.sitemap).toBe(`${siteUrl}/sitemap.xml`)
+    expect(sitemap).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ url: `${siteUrl}/` }),
+        expect.objectContaining({ url: `${siteUrl}/docs` }),
+      ]),
+    )
+    expect(llmsBody).toContain(`- [Home](${siteUrl}/)`)
+    expect(llmsFullBody).toContain(`Home: ${siteUrl}/`)
+
+    const combinedOutput = [
+      robots.host,
+      robots.sitemap,
+      ...sitemap.map((entry) => entry.url),
+      llmsBody,
+      llmsFullBody,
+    ].join('\n')
+
+    expect(combinedOutput).not.toContain('localhost')
+  })
+
+  it('keeps showcase metadata, assets, and capture script in sync', async () => {
+    const [siteSource, captureSource] = await Promise.all([
+      readFile(path.join(repoRoot, 'src', 'lib', 'site.ts'), 'utf8'),
+      readFile(path.join(repoRoot, 'tools', 'showcase', 'capture.ts'), 'utf8'),
+    ])
+    const { clientProjects, showcaseSetupTaxLabel } = await import('../../src/lib/site')
+    const { ProjectShowcaseCard } = await import('../../src/components/site/ProjectShowcaseCard')
+
+    expect(siteSource).toContain('public/showcase/<slug>.jpg')
+    expect(captureSource).not.toMatch(/\bnetworkidle\b/)
+    expect(captureSource).toMatch(/waitUntil:\s*['"]domcontentloaded['"]/)
+    expect(showcaseSetupTaxLabel).toBe('Setup tax paid by hand')
+
+    for (const project of clientProjects) {
+      await expect(
+        pathExists(path.join(repoRoot, 'public', 'showcase', `${project.slug}.jpg`)),
+      ).resolves.toBe(true)
+
+      const markup = renderToStaticMarkup(createElement(ProjectShowcaseCard, { project }))
+      const accessibleName = `Visit ${project.name} (opens in a new tab)`
+      const expectedLabelAttribute = renderToStaticMarkup(
+        createElement('a', { 'aria-label': accessibleName }),
+      ).match(/aria-label="[^"]+"/)?.[0]
+      const expectedHrefAttribute = renderToStaticMarkup(createElement('a', { href: project.url }))
+        .match(/href="[^"]+"/)?.[0]
+
+      expect(markup.split(expectedHrefAttribute ?? '').length - 1).toBe(2)
+      expect(markup.split(expectedLabelAttribute ?? '').length - 1).toBe(2)
+    }
   })
 })
