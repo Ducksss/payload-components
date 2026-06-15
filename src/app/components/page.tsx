@@ -9,10 +9,12 @@ import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import {
   catalogDescription,
+  catalogStructuredData,
   catalogTitle,
   githubRepoUrl,
   kitEntries,
   kitFamilies,
+  toJsonLd,
   upcomingKits,
 } from '@/lib/site'
 
@@ -24,6 +26,10 @@ export const metadata: Metadata = {
 export default function ComponentsPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: toJsonLd(catalogStructuredData) }}
+      />
       <SiteHeader />
 
       <main className="flex-1">

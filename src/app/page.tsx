@@ -8,12 +8,17 @@ import { WiringSection } from '@/components/site/sections/WiringSection'
 import { WorkflowSection } from '@/components/site/sections/WorkflowSection'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
+import { homeStructuredData, toJsonLd } from '@/lib/site'
 
 /* Landing arc: claim → stack → the tax (problem) → how it works → the wiring
  * proof → the catalog live → questions → open-source close. */
 export default function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: toJsonLd(homeStructuredData) }}
+      />
       <SiteHeader />
 
       <main className="flex-1">

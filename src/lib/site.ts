@@ -1,4 +1,5 @@
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+export const siteName = 'Payload Kits'
 export const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 export const githubIssuesUrl = `${githubRepoUrl}/issues`
 export const githubContentBranch = process.env.NEXT_PUBLIC_GITHUB_CONTENT_BRANCH ?? 'dev'
@@ -454,3 +455,178 @@ export const footerColumns = [
     title: 'Project',
   },
 ] as const
+
+export function toJsonLd(value: unknown) {
+  return JSON.stringify(value).replace(/</g, '\\u003c')
+}
+
+const organizationStructuredData = {
+  '@id': `${siteUrl}/#organization`,
+  '@type': 'Organization',
+  name: siteName,
+  sameAs: [githubRepoUrl],
+  url: siteUrl,
+} as const
+
+export const siteStructuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    organizationStructuredData,
+    {
+      '@id': `${siteUrl}/#website`,
+      '@type': 'WebSite',
+      description: siteDescription,
+      inLanguage: 'en',
+      name: siteName,
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${siteUrl}/api/search?query={search_term_string}`,
+        },
+        'query-input': 'required name=search_term_string',
+      },
+      publisher: {
+        '@id': organizationStructuredData['@id'],
+      },
+      url: siteUrl,
+    },
+    {
+      '@id': `${siteUrl}/#software`,
+      '@type': 'SoftwareApplication',
+      applicationCategory: 'DeveloperApplication',
+      codeRepository: githubRepoUrl,
+      description: siteDescription,
+      isAccessibleForFree: true,
+      license: `${githubRepoUrl}/blob/${githubContentBranch}/LICENSE`,
+      name: 'payload-kit',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+      },
+      operatingSystem: 'Any',
+      programmingLanguage: 'TypeScript',
+      publisher: {
+        '@id': organizationStructuredData['@id'],
+      },
+      runtimePlatform: 'Node.js',
+      softwareHelp: `${siteUrl}/docs/installation`,
+      softwareRequirements: 'Payload CMS v3 with Next.js 15 or 16',
+      url: `${siteUrl}/docs/installation`,
+    },
+    {
+      '@id': `${siteUrl}/docs#documentation`,
+      '@type': 'CollectionPage',
+      about: {
+        '@id': `${siteUrl}/#software`,
+      },
+      description: 'Payload Kits installation, architecture, registry, and kit documentation.',
+      inLanguage: 'en',
+      isPartOf: {
+        '@id': `${siteUrl}/#website`,
+      },
+      name: `${siteName} documentation`,
+      url: `${siteUrl}/docs`,
+    },
+  ],
+} as const
+
+export const homeStructuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@id': `${siteUrl}/#webpage`,
+      '@type': 'WebPage',
+      about: {
+        '@id': `${siteUrl}/#software`,
+      },
+      description: heroSubheadline,
+      isPartOf: {
+        '@id': `${siteUrl}/#website`,
+      },
+      name: heroHeadline,
+      url: `${siteUrl}/`,
+    },
+    {
+      '@id': `${siteUrl}/#faq`,
+      '@type': 'FAQPage',
+      mainEntity: faqEntries.map((entry) => ({
+        '@type': 'Question',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: entry.answer,
+        },
+        name: entry.question,
+      })),
+      name: `${siteName} FAQ`,
+      url: `${siteUrl}/#faq`,
+    },
+  ],
+} as const
+
+export const catalogStructuredData = {
+  '@context': 'https://schema.org',
+  '@id': `${siteUrl}/components#webpage`,
+  '@type': 'CollectionPage',
+  description: catalogDescription,
+  isPartOf: {
+    '@id': `${siteUrl}/#website`,
+  },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: kitEntries.map((kit, index) => ({
+      '@type': 'ListItem',
+      item: {
+        '@type': 'SoftwareSourceCode',
+        codeRepository: githubRepoUrl,
+        description: kit.description,
+        name: kit.title,
+        programmingLanguage: 'TypeScript',
+        runtimePlatform: 'Payload CMS v3 with Next.js 15 or 16',
+        url: `${siteUrl}${kit.href}`,
+      },
+      position: index + 1,
+      url: `${siteUrl}${kit.href}`,
+    })),
+    name: 'Installable Payload block kits',
+    numberOfItems: kitEntries.length,
+  },
+  name: catalogTitle,
+  url: `${siteUrl}/components`,
+} as const
+
+export function docsPageStructuredData({
+  description,
+  imageUrl,
+  title,
+  url,
+}: {
+  description?: string
+  imageUrl: string
+  title: string
+  url: string
+}) {
+  const absoluteUrl = `${siteUrl}${url}`
+
+  return {
+    '@context': 'https://schema.org',
+    '@id': `${absoluteUrl}#article`,
+    '@type': 'TechArticle',
+    author: {
+      '@id': organizationStructuredData['@id'],
+    },
+    description,
+    headline: title,
+    image: `${siteUrl}${imageUrl}`,
+    inLanguage: 'en',
+    isPartOf: {
+      '@id': `${siteUrl}/docs#documentation`,
+    },
+    mainEntityOfPage: absoluteUrl,
+    publisher: {
+      '@id': organizationStructuredData['@id'],
+    },
+    url: absoluteUrl,
+  }
+}

@@ -12,7 +12,7 @@ import {
 import { createRelativeLink } from 'fumadocs-ui/mdx'
 
 import { getMDXComponents } from '@/components/mdx'
-import { githubContentBranch, githubRepoUrl } from '@/lib/site'
+import { docsPageStructuredData, githubContentBranch, githubRepoUrl, toJsonLd } from '@/lib/site'
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source'
 
 type DocsPageProps = {
@@ -62,22 +62,34 @@ export default async function Page({ params }: DocsPageProps) {
   const MDX = page.data.body
   const markdownUrl = getPageMarkdownUrl(page).url
   const githubUrl = `${githubRepoUrl}/blob/${githubContentBranch}/content/docs/${page.path}`
+  const pageStructuredData = docsPageStructuredData({
+    description: page.data.description,
+    imageUrl: getPageImage(page).url,
+    title: page.data.title,
+    url: page.url,
+  })
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle className="font-bold tracking-tight">{page.data.title}</DocsTitle>
-      <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
-      <div className="flex flex-row items-center gap-2 border-b pb-6">
-        <MarkdownCopyButton markdownUrl={markdownUrl} />
-        <ViewOptionsPopover markdownUrl={markdownUrl} githubUrl={githubUrl} />
-      </div>
-      <DocsBody>
-        <MDX
-          components={getMDXComponents({
-            a: createRelativeLink(source, page),
-          })}
-        />
-      </DocsBody>
-    </DocsPage>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: toJsonLd(pageStructuredData) }}
+      />
+      <DocsPage toc={page.data.toc} full={page.data.full}>
+        <DocsTitle className="font-bold tracking-tight">{page.data.title}</DocsTitle>
+        <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
+        <div className="flex flex-row items-center gap-2 border-b pb-6">
+          <MarkdownCopyButton markdownUrl={markdownUrl} />
+          <ViewOptionsPopover markdownUrl={markdownUrl} githubUrl={githubUrl} />
+        </div>
+        <DocsBody>
+          <MDX
+            components={getMDXComponents({
+              a: createRelativeLink(source, page),
+            })}
+          />
+        </DocsBody>
+      </DocsPage>
+    </>
   )
 }
