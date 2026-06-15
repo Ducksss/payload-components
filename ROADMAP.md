@@ -18,7 +18,8 @@ map, landing it all as one reviewable git diff. The differentiator versus a plai
   rebuilding the landing.
 - **The catalog is thin.** Two installable page blocks (`hero-basic`,
   `feature-grid-basic`); eight post components are declared "in development" but
-  not built.
+  not built. The full family + variant map and build waves live in **Catalog
+  roadmap** below.
 - **The installer's happy path is solid** — a nightly fresh-Payload smoke test
   plus integration and e2e suites — **but it has one launch-blocking flaw:**
   fragment wiring is string-anchor based and can fail silently (or wedge) on any
@@ -232,6 +233,78 @@ kit-request / roadmap item.
 - **Harden the installer** to AST-based wiring once install volume justifies it.
 - **Finish the remaining post components** (post-list, featured-post, related-posts,
   newsletter-callout) as demand pulls them.
+
+---
+
+## Catalog roadmap — the component vision
+
+`At a glance` and Phases 1/3 sequence *when* kits ship against the launch. This
+section is the other axis: *what* the catalog becomes and how each kit is shaped.
+The unit is **family × variant × install mode** — every kit belongs to a family,
+and a family is one shared field base plus N variants (the model proven by
+`hero-basic` + `payload-kits/source/blocks/shared/heroFields.ts`).
+
+### Two install modes
+
+- **Page blocks** — installed with full Payload wiring (Pages collection + render
+  map + `generate:types` + import map). This is the differentiator; **lead with
+  these.** Each page-block family shares a field base so its variants don't diverge.
+- **Post components** — file-only shadcn-native installs for the Posts collection,
+  no block wiring. Lower effort, lower differentiation; they add breadth.
+
+### The family map
+
+**Page blocks (full wiring)**
+
+| Family | Base → variants | Shared base |
+|---|---|---|
+| Hero | `hero-basic` ✓ · `hero-split` · `hero-media` · `hero-dramatic` | `heroFields` ✓ |
+| Feature | `feature-grid-basic` ✓ · `feature-split` · `feature-bento` · `feature-steps` | `featureFields` (extract next) |
+| CTA | `cta-basic` · `cta-banner` · `cta-split` | `ctaFields` |
+| Pricing | `pricing-basic` (tiers) · `pricing-comparison` · `pricing-single` | `pricingFields` |
+| Social proof | `testimonial-basic` · `testimonial-grid` · `logo-cloud` · `stats-band` | mixed |
+| FAQ | `faq-basic` (accordion) · `faq-grid` | `faqFields` |
+| Content / media (Payload starter parity) | `content-columns` · `media-block` · `banner` · `code-block` | — |
+| Team | `team-grid` · `team-member` | — |
+| Forms | `form-block` (form-builder) · `newsletter-inline` · `contact-split` | — |
+
+**Post components (file-only)**
+
+`post-card` · `post-archive` · `post-hero` · `featured-post` · `post-list` ·
+`author-card` · `related-posts` · `newsletter-callout` — the eight declared in
+`src/lib/site.ts` `upcomingKits`, plus natural additions `post-toc` and `share-bar`.
+
+**Shared primitives** (bases the variants compose — *not* installable kits)
+
+`heroFields` ✓ · `featureFields` · `ctaFields` · `pricingFields` · `faqFields` ·
+`mediaField` · a section-shell wrapper carrying `id` / `className` /
+`disableInnerContainer`.
+
+### Build waves
+
+Waves are the *component* sequence; they feed the GTM phases above (Wave 1 ≈
+Phase 1 · Track A). Page blocks before post components — the wiring is the moat.
+
+| Wave | Build | Maps to |
+|---|---|---|
+| **1 — Launch catalog** | `cta-basic`, `pricing-basic`, `faq-basic`, `testimonial-basic` (page) + `post-card`, `post-archive`, `post-hero`, `author-card` (posts) | Phase 1 · Track A |
+| **2 — Depth via variants** | `hero-split`, `hero-media`; `feature-split`, `feature-bento`; extract `featureFields` / `ctaFields`; `content-columns` + `media-block` | post-launch — the payoff of the shared-base model |
+| **3 — Breadth** | remaining posts (`post-list`, `featured-post`, `related-posts`, `newsletter-callout`), `team-grid`, `logo-cloud`, `stats-band`, `form-block` | Phase 3 · build on demand (vote-for-next-kit picks order) |
+| **4 — Chrome & advanced** | `header` / nav, `footer`, `pricing-comparison`, multi-target support | gated on volume (Phase 3) |
+
+### Sequencing rules
+
+- **Page blocks before post components** — they exercise the wiring, which is the
+  core pitch. Post components grow the count but not the differentiator.
+- **Within a family: base first, then extract, then variants.** Ship the `-basic`
+  base, extract its shared field base (the `heroFields` step), *then* add variants
+  that compose it. A second variant is cheap once the base exists; a one-variant
+  family isn't worth a shared base yet.
+- **Demand-pull past Wave 2.** Beyond the launch catalog and the variant-depth
+  proof, let kit-notify votes + "request a kit" issues order the rest — don't build
+  breadth on spec.
+- **Every kit is the five-part bundle** (see Execution notes) plus its shared base
+  and the landing-ledger sync in `src/lib/site.ts`.
 
 ---
 
