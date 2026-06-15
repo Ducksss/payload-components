@@ -1,5 +1,8 @@
+// @vitest-environment node
+
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 import { describe, expect, it } from 'vitest'
 
@@ -7,6 +10,12 @@ const repoRoot = process.cwd()
 
 const readJson = async <T>(filePath: string): Promise<T> =>
   JSON.parse(await readFile(filePath, 'utf8')) as T
+
+type HeaderRule = {
+  has?: Array<{ key: string; type: string; value?: string }>
+  headers: Array<{ key: string; value: string }>
+  source: string
+}
 
 describe('Fumadocs site shell', () => {
   it('uses Fumadocs as the site runtime instead of Payload CMS', async () => {
@@ -93,6 +102,39 @@ describe('Fumadocs site shell', () => {
     expect(docsImageRoute).toContain('ImageResponse')
     expect(proxy).toContain('isMarkdownPreferred')
     expect(proxy).toContain('rewritePath')
+  })
+
+  it('cache-busts deploy-sensitive app responses without touching hashed assets', async () => {
+    const { default: nextConfig } = (await import(
+      pathToFileURL(path.join(repoRoot, 'next.config.mjs')).href
+    )) as { default: { headers?: () => Promise<HeaderRule[]> } }
+
+    const cacheRules = (await nextConfig.headers?.())?.filter((rule) =>
+      rule.headers.some((header) => header.key === 'Cache-Control'),
+    )
+
+    expect(cacheRules).toEqual([
+      {
+        source: '/:path*',
+        has: [{ type: 'header', key: 'accept', value: '.*text/html.*' }],
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=0, stale-while-revalidate=30',
+          },
+        ],
+      },
+      {
+        source: '/:path*',
+        has: [{ type: 'header', key: 'rsc', value: '1' }],
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=0, stale-while-revalidate=30',
+          },
+        ],
+      },
+    ])
   })
 
   it('does not reintroduce Payload CMS runtime app surfaces', async () => {
