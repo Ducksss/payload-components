@@ -20,6 +20,11 @@
       },
       "files": [
         {
+          "path": "payload-kits/source/blocks/shared/heroFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/heroFields.ts"
+        },
+        {
           "path": "payload-kits/source/blocks/HeroBasic/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/HeroBasic/config.ts"

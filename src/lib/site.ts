@@ -43,7 +43,7 @@ export const terminalDemoLines = [
   { kind: 'command', text: 'npx payload-kit add hero-basic' },
   { kind: 'info', text: 'payload-kit: installing "hero-basic" into ./acme-site' },
   { kind: 'step', text: 'resolved hero-basic@0.1.0 · payload-website-starter' },
-  { kind: 'step', text: 'copied src/blocks/HeroBasic/{config.ts, Component.tsx}' },
+  { kind: 'step', text: 'copied src/blocks/{shared/heroFields.ts, HeroBasic/config.ts, HeroBasic/Component.tsx}' },
   { kind: 'step', text: 'registered block in src/collections/Pages/index.ts' },
   { kind: 'step', text: 'wired render mapping in src/blocks/RenderBlocks.tsx' },
   { kind: 'step', text: 'ran payload generate:types' },
@@ -56,6 +56,7 @@ export type TerminalLine = (typeof terminalDemoLines)[number]
 
 /* Product-proof frame: files the install lands or regenerates. */
 export const frameInstalledFiles = [
+  'src/blocks/shared/heroFields.ts',
   'src/blocks/HeroBasic/config.ts',
   'src/blocks/HeroBasic/Component.tsx',
   'src/payload-types.ts — regenerated',
@@ -170,7 +171,7 @@ export const wiringLedger = {
       artifact: 'Block source',
       baseline: 'copied',
       kit: 'copied',
-      path: 'src/blocks/HeroBasic/{config.ts, Component.tsx}',
+      path: 'src/blocks/{shared/heroFields.ts, HeroBasic/config.ts, HeroBasic/Component.tsx}',
     },
     {
       artifact: 'Collection schema',
