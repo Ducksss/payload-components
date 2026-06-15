@@ -42,6 +42,7 @@
     <li><a href="#development-workflows">Development Workflows</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#maintainer">Maintainer</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -233,6 +234,13 @@ manifest, docs, and installer coverage together when adding or changing a kit.
 
 Read [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, project boundaries, and
 pull request expectations.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Maintainer
+
+Payload Kits is maintained by [Ducksss](https://github.com/Ducksss).
+Security reports should use GitHub Security Advisories for this repository.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
