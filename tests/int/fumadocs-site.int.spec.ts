@@ -130,6 +130,8 @@ describe('Fumadocs site shell', () => {
     expect(workflow).not.toContain('- prod')
     expect(workflow).toContain('- 20.19.0')
     expect(workflow).toContain('- 22')
+    expect(workflow).toContain('release-gate:')
+    expect(workflow).toContain('needs: release-gate')
     expect(sourceConfig).toContain('pageSchema')
     expect(sourceConfig).toContain('metaSchema')
     expect(nextConfig).toContain('createMDX')
