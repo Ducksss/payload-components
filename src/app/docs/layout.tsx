@@ -16,7 +16,10 @@ export default function DocsRootLayout({ children }: { children: ReactNode }) {
         themeSwitch={{ enabled: false }}
         sidebar={{
           banner: (
-            <div className="rounded-lg border border-brand/25 bg-brand/10 px-3 py-2 font-mono text-[11px] font-medium text-brand">
+            <div
+              key="docs-alpha-banner"
+              className="rounded-lg border border-brand/25 bg-brand/10 px-3 py-2 font-mono text-[11px] font-medium text-brand"
+            >
               public alpha · kits v0.1.0
             </div>
           ),
