@@ -1,5 +1,5 @@
 import { getLLMText, source } from '@/lib/source'
-import { githubRepoUrl, kitEntries, siteDescription, siteUrl } from '@/lib/site'
+import { faqEntries, githubRepoUrl, kitEntries, siteDescription, siteUrl } from '@/lib/site'
 
 export async function GET() {
   const docs = await Promise.all(source.getPages().map(getLLMText))
@@ -17,6 +17,8 @@ export async function GET() {
     '## Kits',
     ...kitEntries.map((kit) => `- ${kit.title} (${kit.slug}): ${kit.command}`),
     '',
+    '## FAQ',
+    ...faqEntries.flatMap((entry) => [`### ${entry.question}`, entry.answer, '']),
     '## Documentation',
     ...docs,
     '',

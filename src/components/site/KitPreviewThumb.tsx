@@ -33,7 +33,7 @@ export function KitPreviewThumb({ slug }: { slug: string }) {
           <Demo />
         </div>
       </DemoScaleFrame>
-      <span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full border border-border bg-background/90 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground backdrop-blur-sm">
+      <span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
         <span aria-hidden="true" className="size-1.5 rounded-full bg-brand" />
         Live preview
       </span>

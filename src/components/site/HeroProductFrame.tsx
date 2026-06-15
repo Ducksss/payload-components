@@ -82,7 +82,7 @@ export function HeroProductFrame() {
   return (
     <div
       className={cn(
-        'product-frame scan-sheen relative mx-auto w-full max-w-6xl overflow-hidden rounded-[1.85rem] border border-foreground/10 bg-foreground text-background',
+        'product-frame relative mx-auto w-full max-w-6xl overflow-hidden rounded-[1.85rem] border border-foreground/10 bg-foreground text-background',
         'shadow-[0_40px_120px_-56px_rgba(15,23,42,0.5)]',
       )}
     >

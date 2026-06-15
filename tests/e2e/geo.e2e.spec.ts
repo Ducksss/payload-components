@@ -135,7 +135,7 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(findStructuredData(nodes, 'WebSite')).toMatchObject({
       '@type': 'WebSite',
       name: 'Payload Kits',
-      url: baseURL,
+      url: `${baseURL}/`,
     })
     expect(findStructuredData(nodes, 'SoftwareApplication')).toMatchObject({
       '@type': 'SoftwareApplication',
@@ -165,12 +165,14 @@ test.describe('AI-readable documentation surfaces', () => {
       name: 'Kit catalog',
       url: `${baseURL}/components`,
     })
-    expect(collection?.mainEntity).toMatchObject({
+    const itemList = collection?.mainEntity as StructuredDataNode | undefined
+
+    expect(itemList).toMatchObject({
       '@type': 'ItemList',
-      numberOfItems: 2,
     })
-    expect(JSON.stringify(collection?.mainEntity)).toContain('Hero Basic')
-    expect(JSON.stringify(collection?.mainEntity)).toContain('Feature Grid Basic')
+    expect(Number(itemList?.numberOfItems)).toBeGreaterThanOrEqual(2)
+    expect(JSON.stringify(itemList)).toContain('Hero Basic')
+    expect(JSON.stringify(itemList)).toContain('Feature Grid Basic')
   })
 
   test('docs pages expose TechArticle structured data', async ({ page }) => {

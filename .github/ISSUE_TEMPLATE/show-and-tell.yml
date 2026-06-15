@@ -1,0 +1,67 @@
+name: Show & tell / Using Payload Kits
+description: Share what you built, send feedback from a real install, or offer to help shape the registry.
+title: '[community] '
+labels:
+  - community
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for using Payload Kits! This is the place to show what you shipped, flag rough edges from a real install, or raise your hand to contribute. Payload Kits is MIT and community-first — the catalog grows from real installs and PRs, not a paid roadmap.
+
+  - type: dropdown
+    id: interest
+    attributes:
+      label: What's this about?
+      options:
+        - Show & tell — I shipped something with a kit
+        - Feedback from a real install
+        - I'd like to contribute (a kit, docs, or the CLI)
+        - Something else
+    validations:
+      required: true
+
+  - type: dropdown
+    id: role
+    attributes:
+      label: How do you use Payload?
+      options:
+        - Agency / studio
+        - Freelancer / consultant
+        - In-house team
+        - Hobby / side project
+        - Educator / content creator
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: link
+    attributes:
+      label: Link (site, repo, or screenshot)
+      placeholder: https://example.com
+
+  - type: textarea
+    id: story
+    attributes:
+      label: What did you build, or want to build, with Payload Kits?
+      description: The blocks, the project, or the install workflow you care about most.
+      placeholder: I used hero-basic and feature-grid-basic on a client marketing site and wired them in one pass...
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything rough, or anything you'd like to help with?
+      description: Install drift, repo-shape constraints, a kit you wish existed, or an offer to contribute.
+      placeholder: Starting from the official website template; would love a post-card kit and happy to help test installs.
+
+  - type: checkboxes
+    id: followup
+    attributes:
+      label: Contributing
+      options:
+        - label: I'm happy to share more in a quick async thread.
+        - label: I can test alpha installs in a real project.
+        - label: I'm interested in contributing a kit, docs, or CLI fixes.

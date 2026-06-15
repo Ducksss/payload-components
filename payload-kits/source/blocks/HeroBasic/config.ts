@@ -1,34 +1,14 @@
 import type { Block } from 'payload'
 
-import { linkGroup } from '@/fields/linkGroup'
+import { heroFields } from '@/blocks/shared/heroFields'
 
 export const HeroBasic: Block = {
   slug: 'heroBasic',
   interfaceName: 'HeroBasicBlock',
   fields: [
-    {
-      name: 'eyebrow',
-      type: 'text',
-    },
-    {
-      name: 'title',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'description',
-      type: 'textarea',
-      required: true,
-    },
-    linkGroup({
-      overrides: {
-        admin: {
-          initCollapsed: true,
-        },
-        maxRows: 2,
-        minRows: 1,
-      },
-    }),
+    // Shared hero core (eyebrow, title, description, CTA links). Variant-specific
+    // fields follow; edit the shared shape in @/blocks/shared/heroFields.
+    ...heroFields,
     {
       name: 'proofItems',
       type: 'array',

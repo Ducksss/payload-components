@@ -39,7 +39,7 @@ export function SiteHeader() {
   const pathname = usePathname()
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/95">
       <div className="container flex h-14 items-center justify-between gap-4">
         <Link href="/" aria-label="Payload Kits home">
           <Wordmark withBadge />

@@ -27,6 +27,18 @@ Copy this template when starting a new in-repo alpha kit. It is the internal sou
   - `disableInnerContainer?: boolean`
 - Update the manifest file list, Payload fragments, and `recovery.patchedFiles` so install metadata stays aligned with the real block source.
 
+## Variants and Shared Fields
+
+A structural variant is its own kit, not a CLI flag. Name variants by family with a suffix — `hero-basic`, `hero-video`, `hero-dramatic` — and never ship a bare family name. Choosing a variant happens in the catalog, not an install prompt.
+
+Share a family's common fields through a real source file every variant ships:
+
+- Put the shared fields in `payload-kits/source/blocks/shared/<family>Fields.ts`, exporting a `Field[]`.
+- List that file in each variant's registry item `files[]` (target `~/src/blocks/shared/<family>Fields.ts`) and the manifest `files[]`.
+- Compose it in the config: `fields: [...<family>Fields, /* variant-specific fields */]`.
+
+Do not wire internal shared modules through `registryDependencies` — that resolves only public shadcn UI components. Editing the shared file updates every installed variant at once, and re-running `payload-kit add` never overwrites a consumer's edited copy.
+
 ## Copy Checklist
 
 1. Rename `ExampleBasic` / `exampleBasic` / `example-basic` everywhere.
