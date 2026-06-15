@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 
 import { ArrowUpRight } from 'lucide-react'
 
+import { JsonLd } from '@/components/seo/JsonLd'
 import { KitCard } from '@/components/site/KitCard'
 import { KitFamilyHeader, UpcomingKitCard } from '@/components/site/KitGrid'
 import { Eyebrow } from '@/components/site/section'
@@ -15,15 +16,37 @@ import {
   kitFamilies,
   upcomingKits,
 } from '@/lib/site'
+import { breadcrumbNode, catalogCollectionPageNode, graph } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/components' },
   title: 'Kit Catalog',
   description: catalogDescription,
+  openGraph: {
+    description: catalogDescription,
+    title: catalogTitle,
+    type: 'website',
+    url: '/components',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    description: catalogDescription,
+    title: catalogTitle,
+  },
 }
+
+const catalogStructuredData = graph(
+  breadcrumbNode([
+    { name: 'Home', path: '/' },
+    { name: 'Kit catalog', path: '/components' },
+  ]),
+  catalogCollectionPageNode(),
+)
 
 export default function ComponentsPage() {
   return (
     <>
+      <JsonLd data={catalogStructuredData} />
       <SiteHeader />
 
       <main className="flex-1">

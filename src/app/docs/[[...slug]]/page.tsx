@@ -11,9 +11,16 @@ import {
 } from 'fumadocs-ui/layouts/docs/page'
 import { createRelativeLink } from 'fumadocs-ui/mdx'
 
+import { JsonLd } from '@/components/seo/JsonLd'
 import { getMDXComponents } from '@/components/mdx'
-import { githubContentBranch, githubRepoUrl } from '@/lib/site'
+import { docsRoute, githubContentBranch, githubRepoUrl, kitEntries } from '@/lib/site'
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source'
+import {
+  breadcrumbNode,
+  graph,
+  kitSoftwareApplicationNode,
+  techArticleNode,
+} from '@/lib/structured-data'
 
 type DocsPageProps = {
   params: Promise<{
@@ -34,6 +41,7 @@ export async function generateMetadata({ params }: DocsPageProps): Promise<Metad
   }
 
   return {
+    alternates: { canonical: page.url },
     title: page.data.title,
     description: page.data.description,
     openGraph: {
@@ -63,8 +71,35 @@ export default async function Page({ params }: DocsPageProps) {
   const markdownUrl = getPageMarkdownUrl(page).url
   const githubUrl = `${githubRepoUrl}/blob/${githubContentBranch}/content/docs/${page.path}`
 
+  /* Breadcrumb trail: Home › Documentation › this page. The docs index is its
+     own root, so it skips the redundant "Documentation" rung. */
+  const crumbs = [{ name: 'Home', path: '/' }]
+  if (page.url !== docsRoute) {
+    crumbs.push({ name: 'Documentation', path: docsRoute })
+  }
+  crumbs.push({ name: page.data.title, path: page.url })
+
+  /* Kit doc pages (/docs/kits/<slug>) also carry per-kit SoftwareApplication
+     detail, pulled from the registry entry so it stays in sync with the catalog. */
+  const kit =
+    slug?.length === 2 && slug[0] === 'kits'
+      ? kitEntries.find((entry) => entry.slug === slug[1])
+      : undefined
+
+  const structuredData = graph(
+    breadcrumbNode(crumbs),
+    techArticleNode({
+      description: page.data.description,
+      image: getPageImage(page).url,
+      title: page.data.title,
+      url: page.url,
+    }),
+    ...(kit ? [kitSoftwareApplicationNode(kit)] : []),
+  )
+
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
+      <JsonLd data={structuredData} />
       <DocsTitle className="font-bold tracking-tight">{page.data.title}</DocsTitle>
       <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
       <div className="flex flex-row items-center gap-2 border-b pb-6">

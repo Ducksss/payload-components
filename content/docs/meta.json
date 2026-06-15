@@ -1,4 +1,15 @@
 {
   "title": "Payload Kits",
-  "pages": ["index", "architecture", "installation", "registry", "contributing", "kits"]
+  "pages": [
+    "index",
+    "---Guides---",
+    "what-is-a-payload-kit",
+    "shadcn-vs-payload-kit",
+    "architecture",
+    "installation",
+    "registry",
+    "contributing",
+    "---Catalog---",
+    "kits"
+  ]
 }

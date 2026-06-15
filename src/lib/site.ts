@@ -1,4 +1,6 @@
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+export const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://payload-components.xyz'
+).replace(/\/+$/, '')
 export const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 export const githubIssuesUrl = `${githubRepoUrl}/issues`
 export const githubContentBranch = process.env.NEXT_PUBLIC_GITHUB_CONTENT_BRANCH ?? 'dev'
@@ -8,7 +10,7 @@ export const docsContentRoute = '/llms.mdx/docs'
 export const primaryInstallCommand = 'npx payload-kit add hero-basic'
 
 export const siteDescription =
-  'Payload Kits is an MIT-licensed registry and CLI that installs typed, documented Payload CMS block kits into Payload v3 + Next.js projects — block config, render mapping, generated types, and import map wired in one command.'
+  'Payload Kits is an MIT registry and CLI that installs typed Payload CMS block kits into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
 
 /* ------------------------------------------------------------------ */
 /* Hero                                                                */
@@ -16,8 +18,10 @@ export const siteDescription =
 
 export const heroEyebrow = 'Payload Kits public alpha'
 
-/* The H1 renders primary + accent as one accessible name; tests and the
-   OG image consume the concatenated heroHeadline. */
+/* The H1 renders primary + accent as one accessible name; the e2e H1
+   assertion consumes the concatenated heroHeadline. The OG card renders the
+   two parts separately so it can set the accent in Instrument Serif italic
+   (see src/app/opengraph-image.tsx). */
 export const heroHeadlinePrimary = 'Install Payload blocks'
 export const heroHeadlineAccent = 'wired, not pasted.'
 export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
@@ -41,7 +45,7 @@ export const terminalDemoLines = [
   { kind: 'command', text: 'npx payload-kit add hero-basic' },
   { kind: 'info', text: 'payload-kit: installing "hero-basic" into ./acme-site' },
   { kind: 'step', text: 'resolved hero-basic@0.1.0 · payload-website-starter' },
-  { kind: 'step', text: 'copied src/blocks/HeroBasic/{config.ts, Component.tsx}' },
+  { kind: 'step', text: 'copied src/blocks/{shared/heroFields.ts, HeroBasic/config.ts, HeroBasic/Component.tsx}' },
   { kind: 'step', text: 'registered block in src/collections/Pages/index.ts' },
   { kind: 'step', text: 'wired render mapping in src/blocks/RenderBlocks.tsx' },
   { kind: 'step', text: 'ran payload generate:types' },
@@ -54,6 +58,7 @@ export type TerminalLine = (typeof terminalDemoLines)[number]
 
 /* Product-proof frame: files the install lands or regenerates. */
 export const frameInstalledFiles = [
+  'src/blocks/shared/heroFields.ts',
   'src/blocks/HeroBasic/config.ts',
   'src/blocks/HeroBasic/Component.tsx',
   'src/payload-types.ts — regenerated',
@@ -111,7 +116,7 @@ export const taxKicker = 'One command pays that whole list down — and lands it
 /* Receipts strip — every line is verifiable in this repository. */
 export const receipts = [
   { icon: 'scale', label: 'MIT licensed, end to end' },
-  { icon: 'shield', label: '26 integration + 8 e2e tests gate every PR' },
+  { icon: 'shield', label: 'Integration and e2e suites gate every PR' },
   { icon: 'moon', label: 'Nightly fresh-repo install smoke test' },
   { icon: 'layers', label: 'Payload 3 · Next 15 / 16' },
   { icon: 'braces', label: 'Open registry JSON at /r/registry.json' },
@@ -168,7 +173,7 @@ export const wiringLedger = {
       artifact: 'Block source',
       baseline: 'copied',
       kit: 'copied',
-      path: 'src/blocks/HeroBasic/{config.ts, Component.tsx}',
+      path: 'src/blocks/{shared/heroFields.ts, HeroBasic/config.ts, HeroBasic/Component.tsx}',
     },
     {
       artifact: 'Collection schema',
@@ -334,6 +339,87 @@ export const maintainerNote = {
 } as const
 
 /* ------------------------------------------------------------------ */
+/* Client work — the origin story, as evidence. Real freelance Payload */
+/* sites the maintainer shipped BEFORE payload-kit existed. Each one    */
+/* shipped well AND paid the manual setup tax by hand — which is why    */
+/* the registry exists. These are NOT payload-kit installs (the CLI is  */
+/* alpha): they predate it. The setupTax lines carry the honest         */
+/* narrative; taxStats numbers are the maintainer's own recollection,   */
+/* deliberately rounded (approx: true → "~") — drafts to confirm, never */
+/* audited precision. Consistent with the no-customer-logos stance.     */
+/* ------------------------------------------------------------------ */
+
+export const clientShowcaseEyebrow = 'Where this came from'
+
+export const clientShowcaseHeading = 'The freelance work that paid the tax'
+
+export const clientShowcaseIntro =
+  'Real Payload sites I shipped for clients — before payload-kit existed. Each one launched well. Each one also paid the same manual setup tax by hand: bespoke blocks rebuilt from scratch, types regenerated by hand, every surface re-proven before launch. These are not payload-kit installs — they predate it. They are the reason it exists.'
+
+export const showcaseSetupTaxLabel = 'Setup tax paid by hand'
+
+export type ClientProject = {
+  /* URL-safe id; also the screenshot filename at public/showcase/<slug>.jpg. */
+  slug: string
+  /* Display name shown in the card heading. */
+  name: string
+  /* Live, public URL — rendered in the frame's address bar and the visit link. */
+  url: string
+  /* Host shown in the address bar (no scheme) — stored to avoid runtime URL parsing. */
+  displayUrl: string
+  /* One factual line: what the site is. */
+  summary: string
+  /* The manual setup tax this site paid, by hand, pre-payload-kit. Plain phrases. */
+  setupTax: readonly string[]
+  /* Optional scannable chips. approx: true renders a leading "~" so rounded
+     recollections never read as audited stats. Omit rather than invent. */
+  taxStats?: readonly { approx?: boolean; label: string; value: string }[]
+  /* Factual alt text describing the site — never a marketing claim. */
+  alt: string
+}
+
+export const clientProjects: readonly ClientProject[] = [
+  {
+    slug: 'symposium',
+    name: 'Acacia AI — Symposium',
+    url: 'https://symposium.acacia-ai.org/',
+    displayUrl: 'symposium.acacia-ai.org',
+    summary:
+      'A four-week open AI sprint for students, run by Acacia AI — programme site with how-it-works, build tracks, partners, a journal, and registration.',
+    setupTax: [
+      'Every surface — how-it-works, build, partners, journal — hand-built as a Payload block',
+      'Each block registered by hand in the Pages collection and RenderBlocks map',
+      'payload generate:types and the admin import map re-run after every block',
+      'Clicked through the admin and ran e2e before each deploy',
+    ],
+    taxStats: [
+      { approx: true, label: 'bespoke blocks', value: '6' },
+      { label: 'wired by hand', value: '100%' },
+    ],
+    alt: 'Screenshot of the Acacia AI Symposium homepage',
+  },
+  {
+    slug: 'genium',
+    name: 'Genium & Co',
+    url: 'https://www.genium.sg/',
+    displayUrl: 'www.genium.sg',
+    summary:
+      'A Singapore leadership-development consultancy — marketing site spanning services, ROI proof, a five-step process, programmes, team, and a consultation flow.',
+    setupTax: [
+      'A dozen marketing surfaces — services, ROI, process, programmes, team — hand-built as blocks',
+      'Collection schema and RenderBlocks.tsx edited for every new block',
+      'Types and admin import map regenerated by hand on every change',
+      'Re-proved each surface in the admin before launch',
+    ],
+    taxStats: [
+      { approx: true, label: 'bespoke blocks', value: '9' },
+      { label: 'types regen', value: 'every change' },
+    ],
+    alt: 'Screenshot of the Genium & Co homepage',
+  },
+] as const
+
+/* ------------------------------------------------------------------ */
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
@@ -343,7 +429,7 @@ export const faqIntro =
 export const faqEntries = [
   {
     answer:
-      'Yes. The registry, the CLI, both kits, and this site are one MIT-licensed repository. There is no pricing, no license key, and no gated tier — if that changes someday, it will not change for the open registry.',
+      'Yes — and built to stay that way. The registry, the CLI, both kits, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Kits is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.',
     question: 'Is Payload Kits free?',
   },
   {

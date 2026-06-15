@@ -10,8 +10,22 @@ import {
 } from '../../src/lib/site'
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3000'}`
+const googleTagId = 'G-EMGRZ0H9R9'
 
 test.describe('Light shadcn frontend', () => {
+  test('installs the Google tag once', async ({ page }) => {
+    await page.goto(baseURL)
+
+    await expect(
+      page.locator(`script[src="https://www.googletagmanager.com/gtag/js?id=${googleTagId}"]`),
+    ).toHaveCount(1)
+    await expect(page.locator('script#google-tag')).toHaveCount(1)
+    const inlineGoogleTag = await page
+      .locator('script#google-tag')
+      .evaluate((script) => script.textContent ?? '')
+    expect(inlineGoogleTag).toContain(`gtag('config', '${googleTagId}')`)
+  })
+
   test('renders the light token-driven homepage', async ({ page }) => {
     await page.goto(baseURL)
 

@@ -4,18 +4,42 @@ import Link from 'next/link'
 
 import { ArrowRight, Square } from 'lucide-react'
 
+import { JsonLd } from '@/components/seo/JsonLd'
 import { siteIcons } from '@/components/site/icons'
 import { MaintainerNote } from '@/components/site/MaintainerNote'
-import { Eyebrow, Section } from '@/components/site/section'
+import { HeadingAccent, Section, SectionHeading } from '@/components/site/section'
+import { ClientShowcase } from '@/components/site/sections/ClientShowcase'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { githubIssuesUrl, receipts } from '@/lib/site'
+import { breadcrumbNode, graph } from '@/lib/structured-data'
+
+const description =
+  'Why Payload Kits exists: stop rebuilding the same Payload blocks, rewiring them by hand, and re-proving every install across freelance projects.'
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/about' },
   title: 'About',
-  description:
-    'Payload Kits exists because freelance Payload work kept paying the same tax: rebuilding the same blocks, rewiring them by hand, and re-proving they work — project after project.',
+  description,
+  openGraph: {
+    description,
+    title: 'About Payload Kits',
+    type: 'website',
+    url: '/about',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    description,
+    title: 'About Payload Kits',
+  },
 }
+
+const aboutStructuredData = graph(
+  breadcrumbNode([
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
+  ]),
+)
 
 /* The grunt-work loop, deliberately unchecked — the landing's wiring
    ledger shows the same items checked off by the installer. */
@@ -30,24 +54,39 @@ const pasteChecklist = [
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={aboutStructuredData} />
       <SiteHeader />
 
       <main className="flex-1">
-        <section className="relative overflow-hidden border-b border-border">
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 bg-dots [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
-          />
-          <div className="container relative py-16 lg:py-20">
-            <Eyebrow>About</Eyebrow>
-            <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-5xl">
-              Why Payload Kits exists
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-              Payload Kits comes out of years of freelance Payload work — and the tax every one of
-              those projects paid: rebuilding the same blocks, rewiring them by hand, and
-              re-proving they worked.
-            </p>
+        <section className="hero-shell overflow-hidden border-b border-border/60">
+          <div aria-hidden="true" className="hero-atmosphere" />
+
+          <div className="container relative py-16 sm:py-20 lg:py-24">
+            <div className="flex max-w-3xl flex-col items-start">
+              <span
+                className="hero-reveal flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-4 py-1.5 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-muted-foreground backdrop-blur-sm"
+                style={{ animationDelay: '80ms' }}
+              >
+                <span aria-hidden="true" className="hero-eyebrow-dot" />
+                About
+              </span>
+
+              <h1
+                className="hero-reveal mt-6 text-balance text-[clamp(2.4rem,6vw,4.25rem)] font-medium leading-[0.98] tracking-[-0.05em] text-foreground"
+                style={{ animationDelay: '180ms' }}
+              >
+                Why Payload Kits <HeadingAccent>exists</HeadingAccent>
+              </h1>
+
+              <p
+                className="hero-reveal mt-5 max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg"
+                style={{ animationDelay: '340ms' }}
+              >
+                Payload Kits comes out of years of freelance Payload work — and the tax every one of
+                those projects paid: rebuilding the same blocks, rewiring them by hand, and
+                re-proving they worked.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -164,29 +203,28 @@ export default function AboutPage() {
           </div>
         </Section>
 
+        <ClientShowcase />
+
         <Section className="bg-muted/40">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
             <div className="flex flex-col items-start">
-              <Eyebrow>From here</Eyebrow>
-              <h2 className="mt-4 text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-4xl">
-                Spend your week on the work that matters.
-              </h2>
-              <p className="mt-4 text-base leading-7 text-muted-foreground">
-                Two page blocks install today, eight post components are in development, and
-                every kit ships with its contract: source, manifest, docs, and installer
-                coverage.
-              </p>
+              <SectionHeading
+                accentWord="matters"
+                eyebrow="From here"
+                heading="Spend your week on the work that matters."
+                intro="Two page blocks install today, eight post components are in development, and every kit ships with its contract: source, manifest, docs, and installer coverage."
+              />
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/components"
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground shadow-[0_18px_40px_-22px_rgba(15,23,42,0.55)] transition-[transform,box-shadow] duration-200 hover:-translate-y-px hover:shadow-[0_22px_50px_-22px_rgba(15,23,42,0.6)]"
                 >
                   Browse the catalog
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
                 <Link
                   href="/docs"
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-background px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border/70 bg-background/80 px-5 text-sm font-medium text-foreground backdrop-blur-sm transition-[transform,background-color] duration-200 hover:-translate-y-px hover:bg-background"
                 >
                   Read the docs
                 </Link>
