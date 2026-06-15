@@ -16,7 +16,7 @@ import {
   kitFamilies,
   upcomingKits,
 } from '@/lib/site'
-import { breadcrumbNode, catalogItemListNode, graph } from '@/lib/structured-data'
+import { breadcrumbNode, catalogCollectionPageNode, graph } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
   alternates: { canonical: '/components' },
@@ -40,7 +40,7 @@ const catalogStructuredData = graph(
     { name: 'Home', path: '/' },
     { name: 'Kit catalog', path: '/components' },
   ]),
-  catalogItemListNode(),
+  catalogCollectionPageNode(),
 )
 
 export default function ComponentsPage() {

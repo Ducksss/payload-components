@@ -12,7 +12,12 @@ import { GeistSans } from 'geist/font/sans'
 
 import { JsonLd } from '@/components/seo/JsonLd'
 import { githubRepoUrl, siteDescription, siteUrl } from '@/lib/site'
-import { graph, organizationNode, websiteNode } from '@/lib/structured-data'
+import {
+  documentationCollectionNode,
+  graph,
+  organizationNode,
+  websiteNode,
+} from '@/lib/structured-data'
 
 import './globals.css'
 
@@ -89,7 +94,7 @@ export const metadata: Metadata = {
 
 /* Emitted once on every page: the Organization + WebSite identity that
    page-level schema (SoftwareApplication, FAQ, TechArticle…) references by @id. */
-const siteStructuredData = graph(organizationNode(), websiteNode())
+const siteStructuredData = graph(organizationNode(), websiteNode(), documentationCollectionNode())
 const googleTagId = 'G-EMGRZ0H9R9'
 
 export const viewport: Viewport = {

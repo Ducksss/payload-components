@@ -1,5 +1,6 @@
 import {
   catalogDescription,
+  catalogTitle,
   faqEntries,
   githubRepoUrl,
   kitEntries,
@@ -14,6 +15,7 @@ import {
 export const organizationId = `${siteUrl}/#organization`
 export const websiteId = `${siteUrl}/#website`
 export const softwareId = `${siteUrl}/#software`
+export const documentationId = `${siteUrl}/docs#documentation`
 
 const logoUrl = `${siteUrl}/favicon.svg`
 
@@ -38,6 +40,14 @@ export function websiteNode(): Node {
     description: siteDescription,
     inLanguage: 'en',
     name: 'Payload Kits',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${siteUrl}/api/search?query={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
     publisher: { '@id': organizationId },
     url: `${siteUrl}/`,
   }
@@ -54,12 +64,29 @@ export function softwareApplicationNode(): Node {
     description: siteDescription,
     isAccessibleForFree: true,
     license: 'https://opensource.org/licenses/MIT',
-    name: 'Payload Kits',
+    name: 'payload-kit',
+    alternateName: 'Payload Kits',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     operatingSystem: 'Node.js (macOS, Linux, Windows)',
+    programmingLanguage: 'TypeScript',
     publisher: { '@id': organizationId },
+    runtimePlatform: 'Node.js',
+    softwareHelp: `${siteUrl}/docs/installation`,
     softwareRequirements: 'Payload CMS v3, Next.js 15 or 16',
     url: `${siteUrl}/`,
+  }
+}
+
+export function documentationCollectionNode(): Node {
+  return {
+    '@id': documentationId,
+    '@type': 'CollectionPage',
+    about: { '@id': softwareId },
+    description: 'Payload Kits installation, architecture, registry, and kit documentation.',
+    inLanguage: 'en',
+    isPartOf: { '@id': websiteId },
+    name: 'Payload Kits documentation',
+    url: `${siteUrl}/docs`,
   }
 }
 
@@ -67,11 +94,13 @@ export function faqNode(): Node {
   return {
     '@id': `${siteUrl}/#faq`,
     '@type': 'FAQPage',
+    name: 'Payload Kits FAQ',
     mainEntity: faqEntries.map((entry) => ({
       '@type': 'Question',
       acceptedAnswer: { '@type': 'Answer', text: entry.answer },
       name: entry.question,
     })),
+    url: `${siteUrl}/#faq`,
   }
 }
 
@@ -114,6 +143,18 @@ export function catalogItemListNode(): Node {
   }
 }
 
+export function catalogCollectionPageNode(): Node {
+  return {
+    '@id': `${siteUrl}/components#catalog`,
+    '@type': 'CollectionPage',
+    description: catalogDescription,
+    isPartOf: { '@id': websiteId },
+    mainEntity: catalogItemListNode(),
+    name: catalogTitle,
+    url: `${siteUrl}/components`,
+  }
+}
+
 /* Per-kit detail schema for an individual kit doc page. Reads the registry
    entry so version, target, and description never drift from the catalog. */
 export function kitSoftwareApplicationNode(kit: (typeof kitEntries)[number]): Node {
@@ -144,12 +185,14 @@ export function techArticleNode(opts: {
   url: string
 }): Node {
   return {
+    '@id': `${siteUrl}${opts.url}#article`,
     '@type': 'TechArticle',
     author: { '@id': organizationId },
     description: opts.description,
     headline: opts.title,
     inLanguage: 'en',
-    isPartOf: { '@id': websiteId },
+    isPartOf: { '@id': documentationId },
+    mainEntityOfPage: `${siteUrl}${opts.url}`,
     publisher: { '@id': organizationId },
     url: `${siteUrl}${opts.url}`,
     ...(opts.image ? { image: `${siteUrl}${opts.image}` } : {}),

@@ -50,6 +50,15 @@ The site runtime is Fumadocs on Next.js. Everything it needs lives in the app tr
   local API is required for the site to boot.
 </Callout>
 
+## AI-readable surfaces
+
+The site exposes the same docs in browser and machine-readable formats:
+
+- `/llms.txt` publishes the concise source map for AI crawlers.
+- `/llms-full.txt` publishes the compiled documentation body.
+- `/llms.mdx/docs/**/content.md` publishes each docs page as markdown.
+- JSON-LD marks the site, CLI, FAQ, kit catalog, and docs articles for structured extraction.
+
 ## Kit runtime
 
 The kit runtime is external. A kit installs into a supported Payload v3 + Next.js project, where the Payload-specific files actually live:
