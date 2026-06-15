@@ -14,11 +14,24 @@ import { SiteHeader } from '@/components/site/SiteHeader'
 import { githubIssuesUrl, receipts } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
+const description =
+  'Why Payload Kits exists: stop rebuilding the same Payload blocks, rewiring them by hand, and re-proving every install across freelance projects.'
+
 export const metadata: Metadata = {
   alternates: { canonical: '/about' },
   title: 'About',
-  description:
-    'Payload Kits exists because freelance Payload work kept paying the same tax: rebuilding the same blocks, rewiring them by hand, and re-proving they work — project after project.',
+  description,
+  openGraph: {
+    description,
+    title: 'About Payload Kits',
+    type: 'website',
+    url: '/about',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    description,
+    title: 'About Payload Kits',
+  },
 }
 
 const aboutStructuredData = graph(

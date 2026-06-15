@@ -29,6 +29,7 @@ Core routes:
 - `/docs`: Fumadocs documentation
 - `/components`: current kit catalog
 - `/api/search`: Fumadocs search endpoint
+- `/robots.txt` and `/sitemap.xml`: crawl directives and canonical page index
 - `/llms.txt` and `/llms-full.txt`: AI-readable project summaries
 - `/llms.mdx/docs/.../content.md`: per-page markdown generated from compiled docs
 - `/docs/installation.md`: markdown shortcut rewritten to the matching per-page markdown route

@@ -69,6 +69,17 @@ export const metadata: Metadata = {
     type: 'website',
     url: '/',
   },
+  robots: {
+    follow: true,
+    googleBot: {
+      follow: true,
+      index: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+    index: true,
+  },
   twitter: {
     card: 'summary_large_image',
     description: siteDescription,

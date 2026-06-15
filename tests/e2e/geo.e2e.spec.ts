@@ -4,6 +4,58 @@ const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3000'}`
 const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 
 test.describe('AI-readable documentation surfaces', () => {
+  test('publishes crawl metadata, canonical URL, and JSON-LD', async ({ page, request }) => {
+    const robots = await request.get(`${baseURL}/robots.txt`)
+
+    expect(robots.ok()).toBe(true)
+    expect(robots.headers()['content-type']).toContain('text/plain')
+
+    const robotsBody = await robots.text()
+
+    expect(robotsBody).toContain('Allow: /')
+    expect(robotsBody).toContain('Disallow: /api/')
+    expect(robotsBody).toContain(`Sitemap: ${baseURL}/sitemap.xml`)
+
+    const sitemap = await request.get(`${baseURL}/sitemap.xml`)
+
+    expect(sitemap.ok()).toBe(true)
+    expect(sitemap.headers()['content-type']).toContain('application/xml')
+
+    const sitemapBody = await sitemap.text()
+
+    expect(sitemapBody).toContain(`<loc>${baseURL}/</loc>`)
+    expect(sitemapBody).toContain(`<loc>${baseURL}/components</loc>`)
+    expect(sitemapBody).toContain(`<loc>${baseURL}/docs/installation</loc>`)
+
+    await page.goto(baseURL)
+
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', baseURL)
+
+    const jsonLdTexts = await page.locator('script[type="application/ld+json"]').allTextContents()
+    const schemaTypes = new Set<string>()
+
+    for (const text of jsonLdTexts) {
+      const jsonLd = JSON.parse(text) as {
+        '@graph'?: Array<{ '@type'?: string | string[] }>
+        '@type'?: string | string[]
+      }
+      const nodes = jsonLd['@graph'] ?? [jsonLd]
+
+      for (const node of nodes) {
+        const types = Array.isArray(node['@type']) ? node['@type'] : [node['@type']]
+
+        for (const type of types) {
+          if (type) schemaTypes.add(type)
+        }
+      }
+    }
+
+    expect(schemaTypes.has('WebSite')).toBe(true)
+    expect(schemaTypes.has('Organization')).toBe(true)
+    expect(schemaTypes.has('SoftwareApplication')).toBe(true)
+    expect(schemaTypes.has('FAQPage')).toBe(true)
+  })
+
   test('/llms.txt publishes a concise text/plain source map', async ({ request }) => {
     const response = await request.get(`${baseURL}/llms.txt`)
 
