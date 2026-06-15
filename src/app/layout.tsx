@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 
 import { Instrument_Serif } from 'next/font/google'
+import Script from 'next/script'
 
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -78,6 +79,7 @@ export const metadata: Metadata = {
 /* Emitted once on every page: the Organization + WebSite identity that
    page-level schema (SoftwareApplication, FAQ, TechArticle…) references by @id. */
 const siteStructuredData = graph(organizationNode(), websiteNode())
+const googleTagId = 'G-EMGRZ0H9R9'
 
 export const viewport: Viewport = {
   themeColor: '#ffffff',
@@ -92,6 +94,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
          and custom properties substitute var() at the declaring element. */
       className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable}`}
     >
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${googleTagId}`}
+        strategy="afterInteractive"
+      />
+      <Script id="google-tag" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', '${googleTagId}');
+        `}
+      </Script>
       <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
         <JsonLd data={siteStructuredData} />
         <RootProvider
