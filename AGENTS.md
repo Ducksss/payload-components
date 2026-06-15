@@ -132,7 +132,6 @@ pnpm build
 ## Branch & release flow
 
 - **`dev`** = integration branch; **`main`** = production (protected, gated by the `pr-gate` check). Work on a feature branch → open a PR into `dev` → promote `dev → main` via PR. Direct pushes to `main` are blocked.
-- Note the wrinkle: some docs/CI text still says `prod`, but the production branch is actually **`main`** (no `prod` branch exists).
 
 ## Deeper docs
 

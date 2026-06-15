@@ -20,7 +20,7 @@ map, landing it all as one reviewable git diff. The differentiator versus a plai
   `feature-grid-basic`); eight post components are declared "in development" but
   not built.
 - **The installer's happy path is solid** — a nightly fresh-Payload smoke test
-  plus 26 integration and 8 e2e tests — **but it has one launch-blocking flaw:**
+  plus integration and e2e suites — **but it has one launch-blocking flaw:**
   fragment wiring is string-anchor based and can fail silently (or wedge) on any
   reformatted `RenderBlocks.tsx` / `Pages/index.ts`, there is no rollback/recover
   path, and only one project shape is supported (`payload-website-starter`). For a
