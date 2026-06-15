@@ -22,6 +22,17 @@ export const metadata: Metadata = {
   alternates: { canonical: '/components' },
   title: 'Kit Catalog',
   description: catalogDescription,
+  openGraph: {
+    description: catalogDescription,
+    title: catalogTitle,
+    type: 'website',
+    url: '/components',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    description: catalogDescription,
+    title: catalogTitle,
+  },
 }
 
 const catalogStructuredData = graph(

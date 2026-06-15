@@ -1,4 +1,7 @@
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://payload-components.xyz').replace(
+  /\/$/,
+  '',
+)
 export const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 export const githubIssuesUrl = `${githubRepoUrl}/issues`
 export const githubContentBranch = process.env.NEXT_PUBLIC_GITHUB_CONTENT_BRANCH ?? 'dev'
@@ -8,7 +11,7 @@ export const docsContentRoute = '/llms.mdx/docs'
 export const primaryInstallCommand = 'npx payload-kit add hero-basic'
 
 export const siteDescription =
-  'Payload Kits is an MIT-licensed registry and CLI that installs typed, documented Payload CMS block kits into Payload v3 + Next.js projects — block config, render mapping, generated types, and import map wired in one command.'
+  'Payload Kits is an MIT registry and CLI that installs typed Payload CMS block kits into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
 
 /* ------------------------------------------------------------------ */
 /* Hero                                                                */
