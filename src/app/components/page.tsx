@@ -20,7 +20,7 @@ import { breadcrumbNode, catalogCollectionPageNode, graph } from '@/lib/structur
 
 export const metadata: Metadata = {
   alternates: { canonical: '/components' },
-  title: 'Kit Catalog',
+  title: 'Component Catalog',
   description: catalogDescription,
   openGraph: {
     description: catalogDescription,
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 const catalogStructuredData = graph(
   breadcrumbNode([
     { name: 'Home', path: '/' },
-    { name: 'Kit catalog', path: '/components' },
+    { name: 'Component catalog', path: '/components' },
   ]),
   catalogCollectionPageNode(),
 )
@@ -87,10 +87,10 @@ export default function ComponentsPage() {
                 rel="noreferrer"
                 className="group flex min-h-48 flex-col items-start justify-center gap-3 rounded-xl border border-dashed border-border bg-transparent p-6 transition-colors hover:border-foreground/25"
               >
-                <span className="font-mono text-sm text-muted-foreground">your-kit-here</span>
+                <span className="font-mono text-sm text-muted-foreground">your-component-here</span>
                 <p className="max-w-sm text-sm leading-6 text-muted-foreground">
                   The catalog grows deliberately — source, manifest, docs, and installer coverage
-                  ship together. Propose the next kit.
+                  ship together. Propose the next component.
                 </p>
                 <span className="inline-flex items-center gap-1 text-sm font-medium text-foreground transition-colors group-hover:text-brand">
                   Open an issue

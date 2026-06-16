@@ -6,7 +6,7 @@ import { cn } from '@/utilities/ui'
 
 import { DemoLink } from './DemoLink'
 
-/* DEMO TWIN of payload-kits/source/blocks/HeroBasic/Component.tsx
+/* DEMO TWIN of payload-components/source/blocks/HeroBasic/Component.tsx
  * (hero-basic@0.1.0). Class strings are copied verbatim from the kit
  * source, in source order. Deliberate substitutions — nothing else may
  * diverge:

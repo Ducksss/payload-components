@@ -4,8 +4,8 @@ import { wiringLedger, type WiringLedgerRow } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
 /* The differentiator as a ledger: five artifact rows, two commands.
- * Plain shadcn add covers one row; payload-kit add covers all five.
- * Emerald appears only on the payload-kit checks. Columns become
+ * Plain shadcn add covers one row; payload-components add covers all five.
+ * Emerald appears only on the payload-components checks. Columns become
  * stacked verdict lines under md (each verdict carries its own mono
  * command prefix there). */
 

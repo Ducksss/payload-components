@@ -24,7 +24,7 @@ const eslintConfig = [
     },
   },
   {
-    ignores: ['.next/', '.source/', 'payload-kits/source/', 'payload-kits/templates/'],
+    ignores: ['.next/', '.source/', 'payload-components/source/', 'payload-components/templates/'],
   },
 ]
 

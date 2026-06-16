@@ -15,7 +15,7 @@ import { githubIssuesUrl, receipts } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
 const description =
-  'Why Payload Kits exists: stop rebuilding the same Payload blocks, rewiring them by hand, and re-proving every install across freelance projects.'
+  'Why Payload Components exists: stop rebuilding the same Payload blocks, rewiring them by hand, and re-proving every install across freelance projects.'
 
 export const metadata: Metadata = {
   alternates: { canonical: '/about' },
@@ -23,14 +23,14 @@ export const metadata: Metadata = {
   description,
   openGraph: {
     description,
-    title: 'About Payload Kits',
+    title: 'About Payload Components',
     type: 'website',
     url: '/about',
   },
   twitter: {
     card: 'summary_large_image',
     description,
-    title: 'About Payload Kits',
+    title: 'About Payload Components',
   },
 }
 
@@ -75,14 +75,14 @@ export default function AboutPage() {
                 className="hero-reveal mt-6 text-balance text-[clamp(2.4rem,6vw,4.25rem)] font-medium leading-[0.98] tracking-[-0.05em] text-foreground"
                 style={{ animationDelay: '180ms' }}
               >
-                Why Payload Kits <HeadingAccent>exists</HeadingAccent>
+                Why Payload Components <HeadingAccent>exists</HeadingAccent>
               </h1>
 
               <p
                 className="hero-reveal mt-5 max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg"
                 style={{ animationDelay: '340ms' }}
               >
-                Payload Kits comes out of years of freelance Payload work — and the tax every one of
+                Payload Components comes out of years of freelance Payload work — and the tax every one of
                 those projects paid: rebuilding the same blocks, rewiring them by hand, and
                 re-proving they worked.
               </p>
@@ -145,15 +145,15 @@ export default function AboutPage() {
 
             <p>
               <span className="font-medium text-foreground">
-                Payload Kits is the registry I kept wishing existed.
+                Payload Components is the registry I kept wishing existed.
               </span>{' '}
               Blocks that install like shadcn components but finish the job:{' '}
               <code className="rounded-md border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-[13px] text-foreground/80">
-                npx payload-kit add hero-basic
+                npx payload-components add hero-basic
               </code>{' '}
               copies the source and does the four edits itself, landing as one reviewable git
               diff. And the proving moved into the registry: installer tests and a nightly
-              fresh-repo smoke run gate every kit centrally, once — instead of being redone by
+              fresh-repo smoke run gate every component centrally, once — instead of being redone by
               every freelancer on every install.
             </p>
 
@@ -212,7 +212,7 @@ export default function AboutPage() {
                 accentWord="matters"
                 eyebrow="From here"
                 heading="Spend your week on the work that matters."
-                intro="Two page blocks install today, eight post components are in development, and every kit ships with its contract: source, manifest, docs, and installer coverage."
+                intro="Two page blocks install today, eight post components are in development, and every component ships with its contract: source, manifest, docs, and installer coverage."
               />
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link

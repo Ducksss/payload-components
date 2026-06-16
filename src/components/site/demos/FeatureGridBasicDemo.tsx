@@ -10,7 +10,7 @@ import { cn } from '@/utilities/ui'
 
 import { DemoLink } from './DemoLink'
 
-/* DEMO TWIN of payload-kits/source/blocks/FeatureGridBasic/Component.tsx
+/* DEMO TWIN of payload-components/source/blocks/FeatureGridBasic/Component.tsx
  * (feature-grid-basic@0.1.0). Class strings are copied verbatim from the
  * kit source, in source order. Deliberate substitutions — nothing else
  * may diverge:

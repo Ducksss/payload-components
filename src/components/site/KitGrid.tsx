@@ -3,7 +3,7 @@ import type { UpcomingKit } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
 /* Catalog-page building blocks for the in-development posts suite.
- * (The landing page renders the installable kits live — see
+ * (The landing page renders the installable components live — see
  * CatalogIndex and the demos/ twins; these skeleton thumbs stay
  * deliberately lower-fi to separate "planned" from "real".) */
 

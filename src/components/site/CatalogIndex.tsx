@@ -13,9 +13,9 @@ import {
   type UpcomingKit,
 } from '@/lib/site'
 
-/* The landing catalog: two generous rows for the installable kits and a
+/* The landing catalog: two generous rows for the installable components and a
  * dense hairline table for the in-development posts suite — an index,
- * not another card wall. The kits themselves are rendered live in the
+ * not another card wall. The components themselves are rendered live in the
  * hero install replay and the specimen above this index. */
 
 function InstallableKitRow({ kit }: { kit: KitEntry }) {
@@ -59,7 +59,7 @@ function InstallableKitRow({ kit }: { kit: KitEntry }) {
           href={kit.href}
           className="inline-flex items-center gap-1 text-sm font-medium text-foreground transition-colors hover:text-brand"
         >
-          Read the kit contract
+          Read the component contract
           <ArrowRight className="size-3.5" aria-hidden="true" />
         </Link>
       </div>
@@ -84,7 +84,7 @@ function UpcomingKitRow({ kit }: { kit: UpcomingKit }) {
 export function CatalogIndex() {
   return (
     <div className="flex flex-col gap-12">
-      {/* Page blocks — installable today, full payload-kit wiring. */}
+      {/* Page blocks — installable today, full payload-components wiring. */}
       <div>
         <KitFamilyHeader
           countLabel={kitFamilies.pages.countLabel}
@@ -115,10 +115,10 @@ export function CatalogIndex() {
             rel="noreferrer"
             className="group grid grid-cols-1 gap-x-6 gap-y-1 px-5 py-3.5 transition-colors hover:bg-muted/40 sm:grid-cols-[minmax(0,10rem)_minmax(0,1fr)_auto] sm:items-baseline sm:px-6"
           >
-            <code className="font-mono text-[13px] text-muted-foreground">your-kit-here</code>
+            <code className="font-mono text-[13px] text-muted-foreground">your-component-here</code>
             <p className="text-sm leading-6 text-muted-foreground">
               The catalog grows deliberately — source, manifest, docs, and installer coverage ship
-              together. Propose the next kit.
+              together. Propose the next component.
             </p>
             <span className="inline-flex items-center gap-1 text-sm font-medium text-foreground transition-colors group-hover:text-brand">
               Open an issue

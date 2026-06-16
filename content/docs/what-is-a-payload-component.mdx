@@ -1,0 +1,48 @@
+---
+title: What is a Payload component?
+description: A Payload component is an installable Payload CMS block plus the collection, renderer, type, and import-map wiring that makes it live in a Payload v3 project.
+---
+
+A **Payload component** is an installable unit of a Payload CMS site: a layout block's source _plus_ the four edits that make that block actually render in a Payload v3 + Next.js project.
+
+Copying a block's files is the easy part. A pasted block is inert until it is registered, rendered, typed, and added to the admin import map. A Payload component packages the source and that wiring together, and `payload-components add` applies all of it as one reviewable git diff.
+
+## The four edits a block needs
+
+A Payload layout block is not live just because its files exist. Four more edits have to land:
+
+1. Register the block in `src/collections/Pages/index.ts`.
+2. Map it in `src/blocks/RenderBlocks.tsx`.
+3. Regenerate `src/payload-types.ts` (`payload generate:types`).
+4. Regenerate the admin import map (`payload generate:importmap`).
+
+A Payload component owns exactly those edits. See [payload-components add vs shadcn add](/docs/shadcn-vs-payload-components) for the artifact-by-artifact difference.
+
+## What ships in a component
+
+A component is more than source. It reaches the catalog only when four things ship together:
+
+- **Source** — the block config and its frontend component.
+- **Manifest** — registry metadata plus the files the install patches and regenerates.
+- **Docs** — a contract page listing fields, installed files, and supported targets.
+- **Installer coverage** — tests that prove the install and the idempotent re-install.
+
+Half-wired blocks never reach the catalog.
+
+## How a Payload component differs from…
+
+- **A code snippet** — a snippet is text to paste. A Payload component is an install that also wires the block into your collection, renderer, types, and import map.
+- **A bare shadcn component** — `shadcn add` copies files and stops. A Payload block needs four more edits to render; a Payload component wraps the same registry delivery with that wiring.
+- **A Payload plugin** — a plugin is a runtime dependency you import and keep. A Payload component is plain source copied into your repo — no vendored framework, no lock-in. You own and can edit the result.
+- **A starter template** — a template scaffolds a whole project once. A Payload component installs one block into a project you already run, and converges on a second install.
+
+## Install one
+
+```bash
+npx payload-components add hero-basic
+```
+
+The CLI checks your project against the support matrix (Payload v3 + Next.js 15/16, website-starter shape), copies the source, applies the two patches, runs the two regenerations, and records install state in `.payload-components/state.json`.
+
+- Read [Installation](/docs/installation) before running it.
+- Browse the [Component Catalog](/components) for the current components.

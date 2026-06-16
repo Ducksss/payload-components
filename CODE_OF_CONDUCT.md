@@ -1,7 +1,7 @@
 # Code of Conduct
 
-Payload Kits should be a useful, low-friction place for Payload CMS developers
-to compare implementation ideas, report issues, and improve installable kits.
+Payload Components should be a useful, low-friction place for Payload CMS developers
+to compare implementation ideas, report issues, and improve installable components.
 
 ## Standards
 

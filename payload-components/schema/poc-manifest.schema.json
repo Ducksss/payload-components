@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://payload-components.xyz/schema/poc-manifest.schema.json",
+  "title": "Payload Components Alpha Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "version",
+    "title",
+    "description",
+    "registryItemName",
+    "dependencies",
+    "peerDependencies",
+    "supportedTargets",
+    "supports",
+    "files",
+    "payloadFragments",
+    "postInstall",
+    "preview",
+    "sampleContent",
+    "recovery"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "registryItemName": {
+      "type": "string"
+    },
+    "dependencies": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "peerDependencies": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "supportedTargets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "supports": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["payloadMajors", "nextMajors"],
+      "properties": {
+        "payloadMajors": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1
+        },
+        "nextMajors": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "payloadFragments": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "importName", "importPath", "blockSlug"],
+            "properties": {
+              "kind": {
+                "const": "renderBlocks"
+              },
+              "importName": {
+                "type": "string",
+                "minLength": 1
+              },
+              "importPath": {
+                "type": "string",
+                "minLength": 1
+              },
+              "blockSlug": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "importName", "importPath", "blockName"],
+            "properties": {
+              "kind": {
+                "const": "pagesLayout"
+              },
+              "importName": {
+                "type": "string",
+                "minLength": 1
+              },
+              "importPath": {
+                "type": "string",
+                "minLength": 1
+              },
+              "blockName": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        ]
+      },
+      "minItems": 1
+    },
+    "postInstall": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary"],
+      "properties": {
+        "summary": {
+          "type": "string"
+        }
+      }
+    },
+    "recovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["patchedFiles"],
+      "properties": {
+        "patchedFiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "sampleContent": {
+      "type": "object"
+    }
+  }
+}

@@ -35,15 +35,15 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Payload Kits — Payload blocks, fully wired',
-    template: '%s | Payload Kits',
+    default: 'Payload Components — Payload blocks, fully wired',
+    template: '%s | Payload Components',
   },
   description: siteDescription,
-  applicationName: 'Payload Kits',
+  applicationName: 'Payload Components',
   authors: [{ name: 'Ducksss', url: githubRepoUrl }],
   category: 'technology',
   creator: 'Ducksss',
-  publisher: 'Payload Kits',
+  publisher: 'Payload Components',
   keywords: [
     'Payload CMS',
     'Payload blocks',
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     'Next.js',
     'shadcn registry',
     'block registry',
-    'payload-kit',
+    'payload-components',
     'CLI',
     'TypeScript',
   ],
@@ -69,8 +69,8 @@ export const metadata: Metadata = {
   openGraph: {
     description: siteDescription,
     locale: 'en_US',
-    siteName: 'Payload Kits',
-    title: 'Payload Kits — Payload blocks, fully wired',
+    siteName: 'Payload Components',
+    title: 'Payload Components — Payload blocks, fully wired',
     type: 'website',
     url: '/',
   },
@@ -88,7 +88,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     description: siteDescription,
-    title: 'Payload Kits — Payload blocks, fully wired',
+    title: 'Payload Components — Payload blocks, fully wired',
   },
 }
 

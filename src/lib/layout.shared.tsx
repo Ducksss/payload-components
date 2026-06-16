@@ -13,7 +13,7 @@ export function baseOptions(): BaseLayoutProps {
       },
       {
         active: 'url',
-        text: 'Kits',
+        text: 'Components',
         url: '/components',
       },
     ],
