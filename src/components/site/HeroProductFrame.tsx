@@ -133,7 +133,7 @@ export function HeroProductFrame() {
             <div className="flex flex-wrap items-center gap-3 text-sm text-background/70">
               <span className="inline-flex items-center gap-2 rounded-full border border-background/10 px-3 py-1">
                 <Sparkles className="size-4" aria-hidden="true" />
-                payload-kit install
+                payload-components install
               </span>
               <span className="inline-flex items-center gap-2 rounded-full border border-background/10 px-3 py-1">
                 <FolderTree className="size-4" aria-hidden="true" />

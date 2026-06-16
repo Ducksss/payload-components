@@ -46,7 +46,7 @@
   ],
   "exclude": [
     "node_modules",
-    "payload-kits/source",
-    "payload-kits/templates"
+    "payload-components/source",
+    "payload-components/templates"
   ]
 }

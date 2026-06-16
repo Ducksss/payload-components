@@ -96,14 +96,14 @@ test.describe('AI-readable documentation surfaces', () => {
 
     const body = await response.text()
 
-    expect(body).toContain('# Payload Kits')
+    expect(body).toContain('# Payload Components')
     expect(body).toContain('Fumadocs')
     expect(body).toContain(`- [Home](${baseURL}/)`)
     expect(body).toContain(`- [Docs](${baseURL}/docs)`)
-    expect(body).toContain(`- [Kit catalog](${baseURL}/components)`)
+    expect(body).toContain(`- [Component catalog](${baseURL}/components)`)
     expect(body).toContain(`- [Public registry](${baseURL}/r/registry.json)`)
     expect(body).toContain(`- [GitHub repository](${githubRepoUrl})`)
-    expect(body).toContain('Hero Basic: npx payload-kit add hero-basic')
+    expect(body).toContain('Hero Basic: npx payload-components add hero-basic')
   })
 
   test('/llms-full.txt includes compiled docs content', async ({ request }) => {
@@ -114,12 +114,12 @@ test.describe('AI-readable documentation surfaces', () => {
 
     const body = await response.text()
 
-    expect(body).toContain('# Payload Kits')
+    expect(body).toContain('# Payload Components')
     expect(body).toContain('# Start Here')
     expect(body).toContain('# Architecture')
     expect(body).toContain('AI-readable surfaces')
     expect(body).toContain('The v2 app is intentionally not a Payload CMS site.')
-    expect(body).toContain('npx payload-kit add feature-grid-basic')
+    expect(body).toContain('npx payload-components add feature-grid-basic')
   })
 
   test('/api/search returns docs results', async ({ request }) => {
@@ -144,7 +144,7 @@ test.describe('AI-readable documentation surfaces', () => {
 
     expect(suffix.ok()).toBe(true)
     expect(suffix.headers()['content-type']).toContain('text/markdown')
-    await expect(suffix.text()).resolves.toContain('Payload Kits currently targets Payload v3')
+    await expect(suffix.text()).resolves.toContain('Payload Components currently targets Payload v3')
 
     const negotiated = await request.get(`${baseURL}/docs/architecture`, {
       headers: {
@@ -194,13 +194,13 @@ test.describe('AI-readable documentation surfaces', () => {
 
     expect(findStructuredData(nodes, 'WebSite')).toMatchObject({
       '@type': 'WebSite',
-      name: 'Payload Kits',
+      name: 'Payload Components',
       url: `${baseURL}/`,
     })
     expect(findStructuredData(nodes, 'SoftwareApplication')).toMatchObject({
       '@type': 'SoftwareApplication',
       isAccessibleForFree: true,
-      name: 'payload-kit',
+      name: 'payload-components',
     })
     expect(findStructuredData(nodes, 'FAQPage')?.mainEntity).toEqual(
       expect.arrayContaining([
@@ -211,7 +211,7 @@ test.describe('AI-readable documentation surfaces', () => {
     )
   })
 
-  test('catalog page exposes kit collection structured data', async ({ page }) => {
+  test('catalog page exposes component collection structured data', async ({ page }) => {
     await page.goto(`${baseURL}/components`)
 
     const collection = findStructuredData(
@@ -222,7 +222,7 @@ test.describe('AI-readable documentation surfaces', () => {
 
     expect(collection).toMatchObject({
       '@type': 'CollectionPage',
-      name: 'Kit catalog',
+      name: 'Component catalog',
       url: `${baseURL}/components`,
     })
     const itemList = collection?.mainEntity as StructuredDataNode | undefined

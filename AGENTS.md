@@ -1,15 +1,15 @@
-# Payload Kits — Agent Guide
+# Payload Components — Agent Guide
 
 Read this first. It's the single source of truth for agents working in this repo. `CLAUDE.md` points here. Humans: see also `README.md` and `CONTRIBUTING.md` (this file links, it doesn't repeat setup).
 
 ## What this is
 
-Payload Kits is an **open-source, community-first** registry + CLI that installs Payload CMS block kits into consumer **Payload v3 + Next.js** projects — _wired, not pasted_. A plain `shadcn add` only copies files; `payload-kit add` also does the Payload wiring (registers the block in the collection, maps the renderer, regenerates types + the admin import map) and lands it as a reviewable git diff.
+Payload Components is an **open-source, community-first** registry + CLI that installs Payload CMS blocks into consumer **Payload v3 + Next.js** projects — _wired, not pasted_. A plain `shadcn add` only copies files; `payload-components add` also does the Payload wiring (registers the block in the collection, maps the renderer, regenerates types + the admin import map) and lands it as a reviewable git diff.
 
 This repository is **two things at once**:
 
-1. The **Fumadocs-powered Next.js site** — the marketing landing, docs, and kit catalog (this is what's deployed).
-2. The **`payload-kit` registry + CLI** — the tooling that distributes kits into _other_ people's repos.
+1. The **Fumadocs-powered Next.js site** — the marketing landing, docs, and component catalog (this is what's deployed).
+2. The **`payload-components` registry + CLI** — the tooling that distributes components into _other_ people's repos.
 
 It is **not** a Payload CMS runtime app: no admin, no database, no `PAYLOAD_SECRET` for the site.
 
@@ -19,13 +19,13 @@ The North Star is **open-source, MIT, community-first**. No pricing, no license 
 
 ## The mental model (internalize this one split)
 
-|            | Site runtime                  | Kit distribution                              |
+|            | Site runtime                  | Component distribution                              |
 | ---------- | ----------------------------- | --------------------------------------------- |
-| Lives in   | `src/`, `content/docs/`       | `payload-kits/`, `tools/payload-kit/`         |
+| Lives in   | `src/`, `content/docs/`       | `payload-components/`, `tools/payload-components/`         |
 | Runs       | here (Fumadocs / Next.js)     | in the _consumer's_ repo, after install       |
-| Payload?   | none (docs site only)         | the installed kit code **is** Payload target code |
+| Payload?   | none (docs site only)         | the installed component code **is** Payload target code |
 
-The Payload block code under `payload-kits/source/` is **target code** — shipped into consumer repos, never executed by this site. Don't import it into the site, and don't run the site against a database.
+The Payload block code under `payload-components/source/` is **target code** — shipped into consumer repos, never executed by this site. Don't import it into the site, and don't run the site against a database.
 
 ## Repo map
 
@@ -34,17 +34,17 @@ The Payload block code under `payload-kits/source/` is **target code** — shipp
 | `src/app/` | Routes: `/` (landing), `/docs/[[...slug]]` (Fumadocs), `/components` (catalog), `/about`, `/api/search`, `llms.txt` · `llms-full.txt` · `llms.mdx` (AI surfaces), `og/` + `opengraph-image` |
 | `src/components/site/` | Site UI: `SiteHeader`/`SiteFooter`, `HeroProductFrame` + `HeroInstallReplay` (the install replay), `WiringLedger`, `KitSpecimen`/`KitCard`/`KitGrid`, `Faq`, `CommandCopyButton`, `section.tsx` |
 | `src/components/site/sections/` | Landing sections (Hero, StackBand, Tax, Workflow, Wiring, Catalog, Faq, CommunityCta). `src/app/page.tsx` just orchestrates these |
-| `src/components/site/demos/` | **Demo twins** — live previews that mirror kit source class-for-class (see Core flows) |
-| `src/lib/site.ts` | **Single source of truth for all site copy/data** (hero text, FAQ, kit entries, landing-section headings, terminal demo lines). Tests import from here |
+| `src/components/site/demos/` | **Demo twins** — live previews that mirror component source class-for-class (see Core flows) |
+| `src/lib/site.ts` | **Single source of truth for all site copy/data** (hero text, FAQ, component entries, landing-section headings, terminal demo lines). Tests import from here |
 | `content/docs/` | Fumadocs MDX (index, architecture, installation, registry, contributing, `kits/*`); page tree via `meta.json` |
-| `payload-kits/` | `registry.json` (source shadcn registry), `source/` (kit target code), `manifests/*.json` (wiring contract), `schema/`, `support-matrix.json` |
-| `tools/payload-kit/` + `bin/payload-kit.mjs` | The CLI: `add` command, project detection, fragment patching, install state, registry build/check |
+| `payload-components/` | `registry.json` (source shadcn registry), `source/` (component target code), `manifests/*.json` (wiring contract), `schema/`, `support-matrix.json` |
+| `tools/payload-components/` + `bin/payload-components.mjs` | The CLI: `add` command, project detection, fragment patching, install state, registry build/check |
 | `tests/` | `e2e/` (Playwright) + `int/` (Vitest) — the contract (below) |
 | `public/r/` | Generated public registry — **gitignored build output**, never hand-edit |
 
 ## Core flows
 
-**`payload-kit add <kit>` pipeline** (`tools/payload-kit/commands/add.ts`) — five idempotent stages; install state is recorded in the consumer's `.payload-kit/state.json`:
+**`payload-components add <component>` pipeline** (`tools/payload-components/commands/add.ts`) — five idempotent stages; install state is recorded in the consumer's `.payload-components/state.json`:
 
 `registry-build` → `registry-add` → `dependency-install` → `fragment-apply` → `post-install` (`generate:types`, `generate:importmap`)
 
@@ -52,28 +52,28 @@ Fragment patching is **text-anchor based** — it finds anchors like `const bloc
 
 **Two install modes:**
 
-- _payload-kit-required_ page blocks (`hero-basic`, `feature-grid-basic`) — need the full wiring above.
+- _payload-components-required_ page blocks (`hero-basic`, `feature-grid-basic`) — need the full wiring above.
 - _shadcn-native_ post components (in development) — file-only `shadcn add`, no Payload wiring.
 
-**Registry generation:** `payload-kits/registry.json` → `public/r` via `shadcn build` (`pnpm registry:build`); `pnpm test:registry` checks the generated output is reproducible.
+**Registry generation:** `payload-components/registry.json` → `public/r` via `shadcn build` (`pnpm registry:build`); `pnpm test:registry` checks the generated output is reproducible.
 
-**Demo twins:** the landing renders _real_ kit components as live previews. Each twin in `src/components/site/demos/` must **mirror its kit source's `className` literals verbatim** (enforced by `tests/int/demo-twins.int.spec.ts`), stay `aria-hidden`, and contain no interactive elements or headings. Edit a kit's source → update its twin in the same change.
+**Demo twins:** the landing renders _real_ component components as live previews. Each twin in `src/components/site/demos/` must **mirror its component source's `className` literals verbatim** (enforced by `tests/int/demo-twins.int.spec.ts`), stay `aria-hidden`, and contain no interactive elements or headings. Edit a component's source → update its twin in the same change.
 
 ## Where to change things
 
 | Task | Touch |
 | --- | --- |
-| Add a kit | `payload-kits/source/` + `manifests/<kit>.json` + `registry.json` + `content/docs/kits/<kit>.mdx` + installer tests — **all together** (incomplete kits don't ship) |
+| Add a component | `payload-components/source/` + `manifests/<component>.json` + `registry.json` + `content/docs/kits/<component>.mdx` + installer tests — **all together** (incomplete components don't ship) |
 | Site copy / messaging | `src/lib/site.ts` |
 | Landing layout / visuals | `src/components/site/sections/` + `src/app/globals.css` |
 | Docs content | `content/docs/` |
-| CLI behavior | `tools/payload-kit/` |
+| CLI behavior | `tools/payload-components/` |
 
 ## The contract you must not break
 
 Any change must keep these green:
 
-- **`tests/e2e/frontend.e2e.spec.ts`** — H1 === `heroHeadline`; every `landingSections` heading renders as an `<h2>`; the first `<code>` is `primaryInstallCommand` and the first **Copy** button copies it; forced-light (no `.dark`, light background); **no horizontal overflow** on `/`, `/docs`, `/docs/architecture`, `/components`, `/about`, and kit pages; under reduced-motion the terminal replay still shows its final transcript line.
+- **`tests/e2e/frontend.e2e.spec.ts`** — H1 === `heroHeadline`; every `landingSections` heading renders as an `<h2>`; the first `<code>` is `primaryInstallCommand` and the first **Copy** button copies it; forced-light (no `.dark`, light background); **no horizontal overflow** on `/`, `/docs`, `/docs/architecture`, `/components`, `/about`, and component pages; under reduced-motion the terminal replay still shows its final transcript line.
 - **`tests/e2e/geo.e2e.spec.ts`** — `llms.txt` / `llms-full.txt` / `/api/search` / per-page markdown / OG images.
 - **`tests/int/`** — demo-twin class-mirror fidelity; registry reproducible; install idempotent and recoverable.
 
@@ -82,28 +82,28 @@ If you add a `landingSections` key, render its `<h2>` in the same change. The co
 ## Architecture Boundary
 
 - Keep the public site in `src/app`, `src/components`, `src/lib`, and `content/docs`.
-- Keep installable Payload target code in `payload-kits/source`.
-- Keep wrapper metadata in `payload-kits/manifests`, `payload-kits/schema`, and `payload-kits/support-matrix.json`.
-- Keep CLI behavior in `tools/payload-kit` and `bin/payload-kit.mjs`.
+- Keep installable Payload target code in `payload-components/source`.
+- Keep wrapper metadata in `payload-components/manifests`, `payload-components/schema`, and `payload-components/support-matrix.json`.
+- Keep CLI behavior in `tools/payload-components` and `bin/payload-components.mjs`.
 - Do not reintroduce Payload admin routes, collections, globals, database adapters, seed endpoints, waitlist APIs, preview routes, or `PAYLOAD_SECRET` requirements for the docs site.
 
 ## Registry Contract
 
-- `payload-kits/registry.json` is the source shadcn registry.
+- `payload-components/registry.json` is the source shadcn registry.
 - Generated registry output belongs in ignored `public/r`.
-- Registry file entries may read from `payload-kits/source`, but their `target` paths must install into consumer repos under `~/src/...`.
-- New kits must include source files, manifest metadata, docs, and installer tests together.
-- Direct shadcn installs only deliver files and public shadcn dependencies. `payload-kit add` owns Payload-specific wiring, post-install scripts, and install state.
+- Registry file entries may read from `payload-components/source`, but their `target` paths must install into consumer repos under `~/src/...`.
+- New components must include source files, manifest metadata, docs, and installer tests together.
+- Direct shadcn installs only deliver files and public shadcn dependencies. `payload-components add` owns Payload-specific wiring, post-install scripts, and install state.
 
 ## Variants and Shared Code
 
 This is the canonical model for every component family. `content/docs/architecture.mdx` carries the narrative version.
 
 - A structural variant is its own registry item and manifest — `hero-basic`, `hero-video`, `hero-dramatic`. Never an interactive variant prompt. Suffix every variant; do not ship a bare family name. Selection happens in the catalog, not the CLI.
-- Content-level variation (optional or extra editor fields) belongs in the Payload block config, not a new kit.
-- Share code across a family with a real source file every variant ships: add it under `payload-kits/source/blocks/shared`, list it in the variant's registry item `files[]` (with a `~/src/...` target) and the manifest `files[]`, and compose it in the config — e.g. `payload-kits/source/blocks/shared/heroFields.ts` → `~/src/blocks/shared/heroFields.ts`, used as `fields: [...heroFields, /* variant-specific */]`.
+- Content-level variation (optional or extra editor fields) belongs in the Payload block config, not a new component.
+- Share code across a family with a real source file every variant ships: add it under `payload-components/source/blocks/shared`, list it in the variant's registry item `files[]` (with a `~/src/...` target) and the manifest `files[]`, and compose it in the config — e.g. `payload-components/source/blocks/shared/heroFields.ts` → `~/src/blocks/shared/heroFields.ts`, used as `fields: [...heroFields, /* variant-specific */]`.
 - Do NOT use `registryDependencies` for internal shared modules. That path resolves only public shadcn UI components (it checks `components/ui/<name>.tsx` and runs `shadcn add <name>`); an internal name will 404.
-- When a kit's installed file set changes, sync the hand-maintained landing ledgers in `src/lib/site.ts` (`terminalDemoLines`, `frameInstalledFiles`, `wiringLedger`) and the kit's `content/docs/kits/<name>.mdx` page.
+- When a component's installed file set changes, sync the hand-maintained landing ledgers in `src/lib/site.ts` (`terminalDemoLines`, `frameInstalledFiles`, `wiringLedger`) and the component's `content/docs/kits/<name>.mdx` page.
 
 ## Payload Target Safety
 
@@ -147,5 +147,5 @@ pnpm build
 
 - `README.md` — quickstart and what-lives-where.
 - `CONTRIBUTING.md` — local setup, good first contributions, PR checklist.
-- `payload-kits/README.md` — the registry/manifest contract in depth.
+- `payload-components/README.md` — the registry/manifest contract in depth.
 - `content/docs/{architecture,installation,registry}.mdx` — the user-facing system docs.

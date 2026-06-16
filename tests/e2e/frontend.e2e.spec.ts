@@ -29,7 +29,7 @@ test.describe('Light shadcn frontend', () => {
   test('renders the light token-driven homepage', async ({ page }) => {
     await page.goto(baseURL)
 
-    await expect(page).toHaveTitle(/Payload Kits/)
+    await expect(page).toHaveTitle(/Payload Components/)
     await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
 
@@ -71,12 +71,12 @@ test.describe('Light shadcn frontend', () => {
     expect(meanChannel).toBeGreaterThan(220)
   })
 
-  test('exposes docs, catalog, kit pages, and no horizontal overflow', async ({ page }) => {
+  test('exposes docs, catalog, component pages, and no horizontal overflow', async ({ page }) => {
     const routes = [
       {
         h1: heroHeadline,
         path: '/',
-        title: /Payload Kits/,
+        title: /Payload Components/,
       },
       {
         h1: 'Start Here',
@@ -91,10 +91,10 @@ test.describe('Light shadcn frontend', () => {
       {
         h1: catalogTitle,
         path: '/components',
-        title: /Kit Catalog/,
+        title: /Component Catalog/,
       },
       {
-        h1: 'Why Payload Kits exists',
+        h1: 'Why Payload Components exists',
         path: '/about',
         title: /About/,
       },
@@ -117,7 +117,7 @@ test.describe('Light shadcn frontend', () => {
     }
   })
 
-  test('exposes every landing section, the footer, and each kit', async ({ page }) => {
+  test('exposes every landing section, the footer, and each component', async ({ page }) => {
     await page.goto(baseURL)
 
     for (const section of Object.values(landingSections)) {
@@ -140,7 +140,7 @@ test.describe('Light shadcn frontend', () => {
     await expect(sidebar.getByRole('link', { name: 'Architecture' })).toBeVisible()
     await expect(sidebar.getByRole('link', { name: 'Installation' })).toBeVisible()
     await expect(sidebar.getByRole('link', { name: 'Registry Contract' })).toBeVisible()
-    await expect(sidebar.getByRole('button', { name: 'Kits' })).toBeVisible()
+    await expect(sidebar.getByRole('button', { name: 'Components' })).toBeVisible()
     await expect(sidebar.getByRole('button', { name: /Search/ })).toBeVisible()
   })
 

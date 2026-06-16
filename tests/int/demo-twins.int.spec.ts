@@ -14,11 +14,11 @@ const repoRoot = process.cwd()
 
 const pairs = [
   {
-    kit: 'payload-kits/source/blocks/HeroBasic/Component.tsx',
+    kit: 'payload-components/source/blocks/HeroBasic/Component.tsx',
     twin: 'src/components/site/demos/HeroBasicDemo.tsx',
   },
   {
-    kit: 'payload-kits/source/blocks/FeatureGridBasic/Component.tsx',
+    kit: 'payload-components/source/blocks/FeatureGridBasic/Component.tsx',
     twin: 'src/components/site/demos/FeatureGridBasicDemo.tsx',
   },
 ] as const

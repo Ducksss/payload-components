@@ -14,11 +14,11 @@ import {
    The exhaustive dump (all docs) lives at /llms-full.txt. */
 export function GET() {
   const body = [
-    '# Payload Kits',
+    '# Payload Components',
     '',
     `> ${siteDescription}`,
     '',
-    'Payload Kits is an open-source (MIT) registry and CLI for Payload CMS v3 + Next.js.',
+    'Payload Components is an open-source (MIT) registry and CLI for Payload CMS v3 + Next.js.',
     `Running \`${primaryInstallCommand}\` copies a block's source, registers it in your`,
     'Pages collection, maps the renderer, and regenerates Payload types and the admin',
     'import map — landing as one reviewable git diff rather than a manual checklist.',
@@ -27,7 +27,7 @@ export function GET() {
     '## Primary links',
     `- [Home](${siteUrl}/)`,
     `- [Docs](${siteUrl}/docs)`,
-    `- [Kit catalog](${siteUrl}/components)`,
+    `- [Component catalog](${siteUrl}/components)`,
     `- [About](${siteUrl}/about)`,
     `- [Public registry](${siteUrl}/r/registry.json)`,
     `- [Full LLM context](${siteUrl}/llms-full.txt)`,
@@ -36,7 +36,7 @@ export function GET() {
     '## Supported stack',
     ...stackItems.map((item) => `- ${item.label} (${item.detail})`),
     '',
-    '## Installable kits',
+    '## Installable components',
     /* Keep "<title>: <command>" intact (no backticks) — the GEO contract test
        in tests/e2e/geo.e2e.spec.ts pins that exact substring. */
     ...kitEntries.map((kit) => `- ${kit.title}: ${kit.command} — ${kit.description}`),

@@ -1,10 +1,10 @@
 {
-  "title": "Payload Kits",
+  "title": "Payload Components",
   "pages": [
     "index",
     "---Guides---",
-    "what-is-a-payload-kit",
-    "shadcn-vs-payload-kit",
+    "what-is-a-payload-component",
+    "shadcn-vs-payload-components",
     "architecture",
     "installation",
     "registry",

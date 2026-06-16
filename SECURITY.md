@@ -1,6 +1,6 @@
 # Security Policy
 
-Security issues in Payload Kits should be reported privately first.
+Security issues in Payload Components should be reported privately first.
 
 ## Supported Versions
 

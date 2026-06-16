@@ -1,5 +1,5 @@
 name: Feature Request
-description: Suggest a kit, CLI workflow, registry improvement, or docs enhancement.
+description: Suggest a component, CLI workflow, registry improvement, or docs enhancement.
 title: '[feature] '
 labels:
   - enhancement
@@ -9,9 +9,9 @@ body:
     attributes:
       label: Area
       options:
-        - New kit
-        - Existing kit improvement
-        - payload-kit CLI
+        - New component
+        - Existing component improvement
+        - payload-components CLI
         - Registry format or delivery
         - Payload CMS integration
         - Documentation

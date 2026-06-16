@@ -5,7 +5,7 @@ import { ImageResponse } from 'next/og'
 
 import { heroHeadlineAccent, heroHeadlinePrimary, primaryInstallCommand } from '@/lib/site'
 
-export const alt = 'Payload Kits — Payload blocks, fully wired'
+export const alt = 'Payload Components — Payload blocks, fully wired'
 export const contentType = 'image/png'
 export const size = { height: 630, width: 1200 }
 
@@ -20,7 +20,7 @@ const INK_SOFT = '#18181b'
 const MUTED = '#71717a'
 const EMERALD = '#34d399'
 
-/* A compact replay of a real `payload-kit add` run (mirrors
+/* A compact replay of a real `payload-components add` run (mirrors
    terminalDemoLines in src/lib/site.ts) — the proof that the install does the
    wiring a plain paste leaves as a TODO list. Glyphs are restricted to ones
    Geist ships ($ + · —); next/og would otherwise try to network-fetch a font
@@ -99,7 +99,7 @@ export default function OpenGraphImage() {
             &gt;_
           </div>
           <div style={{ display: 'flex', fontSize: 29, fontWeight: 700, letterSpacing: -0.5 }}>
-            Payload Kits
+            Payload Components
           </div>
           <div
             style={{
@@ -227,7 +227,7 @@ export default function OpenGraphImage() {
             paddingTop: 20,
           }}
         >
-          <div style={{ display: 'flex' }}>A plain shadcn add stops at your filesystem. Kits don&apos;t.</div>
+          <div style={{ display: 'flex' }}>A plain shadcn add stops at your filesystem. Components don&apos;t.</div>
           <div style={{ display: 'flex', fontFamily: 'Geist Mono' }}>MIT · Payload v3 · Next 15/16</div>
         </div>
       </div>

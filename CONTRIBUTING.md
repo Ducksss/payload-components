@@ -1,18 +1,18 @@
-# Contributing to Payload Kits
+# Contributing to Payload Components
 
-Thanks for helping improve Payload Kits. This repository contains a
+Thanks for helping improve Payload Components. This repository contains a
 Fumadocs-powered Next.js site plus registry tooling for installing Payload CMS
-block kits into supported Payload v3 projects. The website itself is not a
+blocks into supported Payload v3 projects. The website itself is not a
 Payload CMS runtime app.
 
 ## Good First Contributions
 
 Useful contributions usually fit one of these tracks:
 
-- Improve or add installable kit source files under `payload-kits/source`.
-- Add or update kit manifests, docs, support metadata, and installer tests
+- Improve or add installable component source files under `payload-components/source`.
+- Add or update component manifests, docs, support metadata, and installer tests
   together.
-- Tighten `payload-kit` CLI behavior in `tools/payload-kit`.
+- Tighten `payload-components` CLI behavior in `tools/payload-components`.
 - Improve the Fumadocs site, catalog pages, search, LLM text surfaces, or
   registry checks.
 - Fix Payload target code, Next.js, TypeScript, accessibility, or test issues.
@@ -41,10 +41,10 @@ smoke tests.
 - Keep changes TypeScript-first and follow the existing project patterns.
 - Keep public site code in `src/app`, `src/components`, `src/lib`, and
   `content/docs`.
-- Keep installable Payload target code in `payload-kits/source`.
-- Keep wrapper metadata in `payload-kits/manifests`,
-  `payload-kits/schema`, and `payload-kits/support-matrix.json`.
-- Keep CLI behavior in `tools/payload-kit` and `bin/payload-kit.mjs`.
+- Keep installable Payload target code in `payload-components/source`.
+- Keep wrapper metadata in `payload-components/manifests`,
+  `payload-components/schema`, and `payload-components/support-matrix.json`.
+- Keep CLI behavior in `tools/payload-components` and `bin/payload-components.mjs`.
 - Do not reintroduce Payload runtime routes, database adapters, waitlist APIs,
   or `PAYLOAD_SECRET` requirements for the docs site.
 - Generated registry output belongs in ignored `public/r`.

@@ -48,7 +48,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          pnpm test:release 2>&1 | tee payload-kit-release.log
+          pnpm test:release 2>&1 | tee payload-components-release.log
 
       - name: Upload failure artifacts
         if: failure()
@@ -56,7 +56,7 @@ jobs:
         with:
           name: release-gate-artifacts
           path: |
-            payload-kit-release.log
+            payload-components-release.log
             playwright-report
             test-results
           if-no-files-found: ignore
@@ -115,9 +115,9 @@ jobs:
         run: |
           set -o pipefail
           if [ -n "$REGISTRY_URL" ]; then
-            pnpm test:fresh -- --registry-url "$REGISTRY_URL" --keep-temp 2>&1 | tee payload-kit-fresh.log
+            pnpm test:fresh -- --registry-url "$REGISTRY_URL" --keep-temp 2>&1 | tee payload-components-fresh.log
           else
-            pnpm test:fresh -- --keep-temp 2>&1 | tee payload-kit-fresh.log
+            pnpm test:fresh -- --keep-temp 2>&1 | tee payload-components-fresh.log
           fi
 
       - name: Upload failure artifacts
@@ -126,8 +126,8 @@ jobs:
         with:
           name: fresh-payload-artifacts
           path: |
-            payload-kit-fresh.log
+            payload-components-fresh.log
             playwright-report
             test-results
-            /tmp/payload-kit-fresh-smoke-*
+            /tmp/payload-components-fresh-smoke-*
           if-no-files-found: ignore

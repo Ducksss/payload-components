@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next'
 import { siteUrl } from '@/lib/site'
 
 /* Generative-engine crawlers, named explicitly. An `allow: '/'` default
-   already permits them, but listing them documents intent (Payload Kits
+   already permits them, but listing them documents intent (Payload Components
    *wants* to be cited in AI answers) and survives any future tightening of
    the wildcard rule. Update as new assistants publish their user agents. */
 const aiCrawlers = [

@@ -11,11 +11,11 @@ export function SiteFooter() {
       <div className="container py-14 lg:py-16">
         <div className="grid gap-12 lg:grid-cols-[1.1fr_2fr]">
           <div>
-            <Link href="/" aria-label="Payload Kits home" className="inline-block">
+            <Link href="/" aria-label="Payload Components home" className="inline-block">
               <Wordmark />
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-6 text-muted-foreground">
-              Typed Payload CMS block kits that install with their wiring — collection config,
+              Typed Payload CMS components that install with their wiring — collection config,
               render mapping, generated types, and import map in one command.
             </p>
             <code className="mt-6 inline-block rounded-md border border-border bg-background px-3 py-2 font-mono text-xs text-muted-foreground">

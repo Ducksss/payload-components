@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 }
 
-/* SoftwareApplication answers "what is Payload Kits" for AI engines; FAQPage
+/* SoftwareApplication answers "what is Payload Components" for AI engines; FAQPage
    mirrors the on-page FAQ (both read from faqEntries) for rich results. */
 const homeStructuredData = graph(softwareApplicationNode(), faqNode())
 

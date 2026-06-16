@@ -2,8 +2,8 @@
  * Sample content for the landing-page demo twins.
  *
  * Types hand-mirror the kit field contracts in
- * payload-kits/source/blocks/{HeroBasic,FeatureGridBasic}/config.ts —
- * if a kit config changes its fields, update the matching type here.
+ * payload-components/source/blocks/{HeroBasic,FeatureGridBasic}/config.ts —
+ * if a component config changes its fields, update the matching type here.
  *
  * Deliberately NOT in site.ts: the e2e specs and the OG image import
  * site.ts, and this fictional specimen copy ("Acme") must never leak
