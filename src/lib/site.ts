@@ -38,7 +38,7 @@ export const heroTertiaryLinks = [
 
 /**
  * Stylized replay of a real `payload-components add` run. Stage wording tracks
- * tools/payload-components/commands/add.ts and the kit manifest contract —
+ * tools/payload-components/commands/add.ts and the component manifest contract —
  * update it if the installer stages change.
  */
 export const terminalDemoLines = [
@@ -72,14 +72,14 @@ export const frameInstalledFiles = [
 export const landingSections = {
   community: { heading: 'Open source, end to end.', id: 'community' },
   faq: { heading: 'Questions, answered straight.', id: 'faq' },
-  kits: { heading: 'The catalog, rendered live.', id: 'kits' },
+  components: { heading: 'The catalog, rendered live.', id: 'components' },
   tax: { heading: 'The paste was never the problem.', id: 'tax' },
   wiring: { heading: 'Copying files was never the hard part.', id: 'wiring' },
   workflow: { heading: 'From catalog to commit in three moves.', id: 'workflow' },
 } as const
 
 /* ------------------------------------------------------------------ */
-/* Stack band — what kits install into. No customer logos (alpha, open  */
+/* Stack band — what components install into. No customer logos (alpha, open  */
 /* source); the honest "works with" row is the supported stack.         */
 /* ------------------------------------------------------------------ */
 
@@ -128,7 +128,7 @@ export const workflowIntro =
 
 export const workflowSteps = [
   {
-    command: '/docs/kits/hero-basic',
+    command: '/docs/components/hero-basic',
     description:
       'Every component documents its fields, the files it ships, the files it patches, and the targets it supports — before you run anything.',
     title: 'Read the contract',
@@ -162,7 +162,7 @@ export const wiringLedger = {
       command: 'npx shadcn add hero',
       summary: '1 of 5 artifacts. The rest is your TODO list.',
     },
-    kit: {
+    component: {
       command: 'npx payload-components add hero-basic',
       summary: '5 of 5 in one pass — reviewed as one git diff.',
     },
@@ -172,31 +172,31 @@ export const wiringLedger = {
     {
       artifact: 'Block source',
       baseline: 'copied',
-      kit: 'copied',
+      component: 'copied',
       path: 'src/blocks/{shared/heroFields.ts, HeroBasic/config.ts, HeroBasic/Component.tsx}',
     },
     {
       artifact: 'Collection schema',
       baseline: null,
-      kit: 'patched',
+      component: 'patched',
       path: 'src/collections/Pages/index.ts',
     },
     {
       artifact: 'Render mapping',
       baseline: null,
-      kit: 'patched',
+      component: 'patched',
       path: 'src/blocks/RenderBlocks.tsx',
     },
     {
       artifact: 'Generated types',
       baseline: null,
-      kit: 'regenerated',
+      component: 'regenerated',
       path: 'src/payload-types.ts',
     },
     {
       artifact: 'Admin import map',
       baseline: null,
-      kit: 'regenerated',
+      component: 'regenerated',
       path: 'admin importMap.js',
     },
   ],
@@ -209,13 +209,13 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* Component catalog grid                                                    */
 /* ------------------------------------------------------------------ */
 
-export const kitsIntro =
+export const componentsIntro =
   'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Two page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
-/* The two kit families mirror Payload's content model — and the two real
-   install modes in the kit manifests (payload-components-required block wiring
+/* The two component families mirror Payload's content model — and the two real
+   install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
-export const kitFamilies = {
+export const componentFamilies = {
   pages: {
     countLabel: '2 installable',
     description:
@@ -230,14 +230,14 @@ export const kitFamilies = {
   },
 } as const
 
-export const kitEntries = [
+export const componentEntries = [
   {
     command: 'npx payload-components add hero-basic',
     description:
       'A headline-led marketing hero with CTA links, proof badges, Payload block config, and frontend rendering.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'links', 'proofItems'],
-    href: '/docs/kits/hero-basic',
+    href: '/docs/components/hero-basic',
     slug: 'hero-basic',
     status: 'Alpha',
     target: 'Hero section',
@@ -250,7 +250,7 @@ export const kitEntries = [
       'A text-first feature grid with repeatable items, optional CTA wiring, and idempotent registration.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'items', 'links'],
-    href: '/docs/kits/feature-grid-basic',
+    href: '/docs/components/feature-grid-basic',
     slug: 'feature-grid-basic',
     status: 'Alpha',
     target: 'Feature section',
@@ -259,11 +259,11 @@ export const kitEntries = [
   },
 ] as const
 
-export type KitEntry = (typeof kitEntries)[number]
+export type ComponentEntry = (typeof componentEntries)[number]
 
-/* The in-development posts suite — real kits from the registry roadmap,
+/* The in-development posts suite — real components from the registry roadmap,
    shown as "Coming soon" until their installer coverage lands. */
-export const upcomingKits = [
+export const upcomingComponents = [
   {
     description: 'A post card with image, categories, date, title, and excerpt.',
     family: 'posts',
@@ -322,7 +322,7 @@ export const upcomingKits = [
   },
 ] as const
 
-export type UpcomingKit = (typeof upcomingKits)[number]
+export type UpcomingComponent = (typeof upcomingComponents)[number]
 
 /* ------------------------------------------------------------------ */
 /* Maintainer note                                                     */
@@ -536,7 +536,7 @@ export const footerColumns = [
     title: 'Product',
   },
   {
-    links: kitEntries.map((kit) => ({ href: kit.href, label: kit.title })),
+    links: componentEntries.map((component) => ({ href: component.href, label: component.title })),
     title: 'Components',
   },
   {

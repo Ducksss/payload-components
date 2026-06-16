@@ -67,21 +67,21 @@ measurable. All four mechanisms, ordered by signal value.
 > self-hosted route handler on this site.
 
 ### 0.1 Email waitlist / component-notify *(collect contacts)*
-- Capture through a hosted form provider — **Loops, ConvertKit, Buttondown, Tally,
+- Capture through a hosted form provider — **Loops, ConvertComponent, Buttondown, Tally,
   or Formspree** — embedded or posted to client-side. No Next route handler, no DB.
   Pick one that doubles as a broadcast channel so you can email "your component just
-  shipped" later (Loops/ConvertKit/Buttondown do this).
+  shipped" later (Loops/ConvertComponent/Buttondown do this).
 - **UI (must match the design system — light-first shadcn monochrome + emerald
   accent only):**
-  - A "Notify me" affordance on each `UpcomingKitCard`
-    (`src/components/site/KitGrid.tsx`) — this captures *which component* they want, so
+  - A "Notify me" affordance on each `UpcomingComponentCard`
+    (`src/components/site/ComponentGrid.tsx`) — this captures *which component* they want, so
     it's also a priority vote.
   - A general waitlist field in `src/components/site/sections/CommunityCta.tsx`.
 
 ### 0.2 Opt-in CLI telemetry *(prove real installs — highest-intent signal)*
 - On a successful `payload-components add`, if opted in, the **CLI** (`tools/payload-components`,
   not the docs site) posts an anonymized event
-  `{ component, kitVersion, targetId, nodeVersion, pkgManager, success }` directly to an
+  `{ component, componentVersion, targetId, nodeVersion, pkgManager, success }` directly to an
   external sink (PostHog server-side capture).
 - **Opt-in and on-brand:** first-run prompt — "Send anonymous install events to
   help improve Payload Components? (y/N)" — persisted in `.payload-components/config`. Honor
@@ -272,7 +272,7 @@ and a family is one shared field base plus N variants (the model proven by
 
 `post-card` · `post-archive` · `post-hero` · `featured-post` · `post-list` ·
 `author-card` · `related-posts` · `newsletter-callout` — the eight declared in
-`src/lib/site.ts` `upcomingKits`, plus natural additions `post-toc` and `share-bar`.
+`src/lib/site.ts` `upcomingComponents`, plus natural additions `post-toc` and `share-bar`.
 
 **Shared primitives** (bases the variants compose — *not* installable components)
 
@@ -335,7 +335,7 @@ targets to game.
 `payload-components/templates/alpha-component/`): source under
 `payload-components/source/blocks/<Name>/`, a `payload-components/manifests/<slug>.json` (with
 `sampleContent` for smoke), a `payload-components/registry.json` entry, a
-`content/docs/kits/<slug>.mdx`, installer test coverage in `tests/int/`, and
+`content/docs/components/<slug>.mdx`, installer test coverage in `tests/int/`, and
 registration in `src/lib/site.ts`.
 
 **Verification gate** before any release: `pnpm test:release` (lint, source:build,

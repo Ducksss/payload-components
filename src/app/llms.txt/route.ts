@@ -1,7 +1,7 @@
 import {
   faqEntries,
   githubRepoUrl,
-  kitEntries,
+  componentEntries,
   primaryInstallCommand,
   siteDescription,
   siteUrl,
@@ -39,7 +39,7 @@ export function GET() {
     '## Installable components',
     /* Keep "<title>: <command>" intact (no backticks) — the GEO contract test
        in tests/e2e/geo.e2e.spec.ts pins that exact substring. */
-    ...kitEntries.map((kit) => `- ${kit.title}: ${kit.command} — ${kit.description}`),
+    ...componentEntries.map((component) => `- ${component.title}: ${component.command} — ${component.description}`),
     '',
     '## FAQ',
     ...faqEntries.flatMap((entry) => [`### ${entry.question}`, entry.answer, '']),

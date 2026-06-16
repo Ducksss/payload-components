@@ -65,12 +65,12 @@ const placeholderCommand = async (commandName: 'doctor' | 'init', cwd: string) =
   try {
     const project = await detectProject(cwd)
     const state = await loadState(cwd)
-    const installedKits = Object.keys(state.kits)
+    const installedComponents = Object.keys(state.components)
 
     process.stdout.write(
       `${commandName}: detected ${project.target.id} in ${cwd}. ` +
         `This alpha tranche focuses on "payload-components add"; ${commandName} remains non-gating for now. ` +
-        `Installed components: ${installedKits.length ? installedKits.join(', ') : 'none'}.\n`,
+        `Installed components: ${installedComponents.length ? installedComponents.join(', ') : 'none'}.\n`,
     )
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error'
@@ -89,9 +89,9 @@ const main = async () => {
   }
 
   if (command === 'add') {
-    const [kitName] = rest
+    const [componentName] = rest
 
-    if (!kitName) {
+    if (!componentName) {
       throw new Error(
         'payload-components add requires a component name. Try "payload-components add hero-basic" or "payload-components add feature-grid-basic".',
       )
@@ -99,7 +99,7 @@ const main = async () => {
 
     await addCommand({
       cwd,
-      kitName,
+      componentName,
     })
     return
   }

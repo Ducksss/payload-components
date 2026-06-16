@@ -3,7 +3,7 @@
   "name": "example-basic",
   "version": "0.1.0",
   "title": "Example Basic",
-  "description": "Replace this example metadata with the real alpha kit summary.",
+  "description": "Replace this example metadata with the real alpha component summary.",
   "registryItemName": "example-basic",
   "supportedTargets": ["payload-website-starter"],
   "supports": {
@@ -39,8 +39,8 @@
   },
   "sampleContent": {
     "blockType": "exampleBasic",
-    "eyebrow": "Alpha Kit Template",
-    "title": "Replace this title with your kit's primary headline.",
+    "eyebrow": "Alpha Component Template",
+    "title": "Replace this title with your component's primary headline.",
     "description": "Use sample content that makes the block easy to validate in Payload admin and on the frontend.",
     "links": [
       {

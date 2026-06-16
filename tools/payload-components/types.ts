@@ -19,7 +19,7 @@ export type PayloadFragment =
       importPath: string
     }
 
-export type KitManifest = {
+export type ComponentManifest = {
   $schema?: string
   dependencies: DependencyMap
   description: string
@@ -63,7 +63,7 @@ export type InstallStateEntry = {
 }
 
 export type InstallState = {
-  kits: Record<
+  components: Record<
     string,
     InstallStateEntry
   >
@@ -71,7 +71,7 @@ export type InstallState = {
 }
 
 export type InstallStateV1 = {
-  kits: Record<
+  components: Record<
     string,
     {
       installedAt: string

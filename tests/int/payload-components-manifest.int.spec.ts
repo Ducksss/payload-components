@@ -4,12 +4,12 @@ import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { assertManifestSupport } from '../../tools/payload-components/project'
-import type { KitManifest, RegistryDefinition } from '../../tools/payload-components/types'
+import type { ComponentManifest, RegistryDefinition } from '../../tools/payload-components/types'
 
 const repoRoot = process.cwd()
 const manifestSchemaPath = path.join(repoRoot, 'payload-components', 'schema', 'poc-manifest.schema.json')
 
-const baseManifest: KitManifest = {
+const baseManifest: ComponentManifest = {
   $schema: '../schema/poc-manifest.schema.json',
   dependencies: {},
   description: 'Test manifest',

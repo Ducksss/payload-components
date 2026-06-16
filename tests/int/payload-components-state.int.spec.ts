@@ -14,7 +14,7 @@ import {
 import type { InstallStateV1 } from '../../tools/payload-components/types'
 
 const legacyState: InstallStateV1 = {
-  kits: {
+  components: {
     'hero-basic': {
       installedAt: '2026-04-16T00:00:00.000Z',
       manifestVersion: '0.1.0',
@@ -57,7 +57,7 @@ describe('payload-components state', () => {
     const migratedState = await loadState(tempDir)
 
     expect(migratedState.version).toBe(2)
-    expect(migratedState.kits['hero-basic']).toMatchObject({
+    expect(migratedState.components['hero-basic']).toMatchObject({
       installedFiles: ['src/blocks/HeroBasic/Component.tsx', 'src/blocks/HeroBasic/config.ts'],
       patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
       registryItemName: 'hero-basic',
@@ -90,7 +90,7 @@ describe('payload-components state', () => {
 
     const state = await loadState(tempDir)
 
-    expect(state.kits['hero-basic']).toMatchObject({
+    expect(state.components['hero-basic']).toMatchObject({
       lastError: {
         message: 'generate:types failed',
         stage: 'post-install',
@@ -131,7 +131,7 @@ describe('payload-components state', () => {
 
     const rawState = await readFile(path.join(tempDir, '.payload-components', 'state.json'), 'utf8')
     const state = JSON.parse(rawState) as {
-      kits: Record<
+      components: Record<
         string,
         {
           installedAt: string | null
@@ -141,8 +141,8 @@ describe('payload-components state', () => {
       >
     }
 
-    expect(state.kits['hero-basic'].status).toBe('installed')
-    expect(state.kits['hero-basic'].lastError).toBeNull()
-    expect(state.kits['hero-basic'].installedAt).toBeTruthy()
+    expect(state.components['hero-basic'].status).toBe('installed')
+    expect(state.components['hero-basic'].lastError).toBeNull()
+    expect(state.components['hero-basic'].installedAt).toBeTruthy()
   })
 })

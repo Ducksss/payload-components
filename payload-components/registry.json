@@ -11,10 +11,10 @@
       "registryDependencies": ["badge"],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add hero-basic\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/hero-basic.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add hero-basic` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
-        "payloadKit": {
+        "payloadComponent": {
           "installCommand": "payload-components add hero-basic",
           "postInstall": ["generate:types", "generate:importmap"],
-          "requiresPayloadKitWrapper": true,
+          "requiresPayloadComponentWrapper": true,
           "supportedTargets": ["payload-website-starter"]
         }
       },
@@ -44,10 +44,10 @@
       "registryDependencies": ["badge", "card"],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add feature-grid-basic\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/feature-grid-basic.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add feature-grid-basic` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
-        "payloadKit": {
+        "payloadComponent": {
           "installCommand": "payload-components add feature-grid-basic",
           "postInstall": ["generate:types", "generate:importmap"],
-          "requiresPayloadKitWrapper": true,
+          "requiresPayloadComponentWrapper": true,
           "supportedTargets": ["payload-website-starter"]
         }
       },

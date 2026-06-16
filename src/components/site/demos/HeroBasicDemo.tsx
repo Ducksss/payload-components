@@ -7,15 +7,15 @@ import { cn } from '@/utilities/ui'
 import { DemoLink } from './DemoLink'
 
 /* DEMO TWIN of payload-components/source/blocks/HeroBasic/Component.tsx
- * (hero-basic@0.1.0). Class strings are copied verbatim from the kit
+ * (hero-basic@0.1.0). Class strings are copied verbatim from the component
  * source, in source order. Deliberate substitutions — nothing else may
  * diverge:
  *   <section className="container"> → <div> root (frames own spacing; no landmark)
  *   <h2>                            → <div> (role-neutral; the landing owns its heading outline)
  *   CMSLink                         → <DemoLink> (@/components/Link exists only in consumer repos)
  *   HeroBasicBlockData              → HeroBasicDemoContent (@/payload-types exists only in consumer repos)
- * Badge is the same shadcn primitive the kit installs — imported real.
- * If the kit Component.tsx changes, update this file in the same PR. */
+ * Badge is the same shadcn primitive the component installs — imported real.
+ * If the component Component.tsx changes, update this file in the same PR. */
 
 type PartDelays = {
   description: number

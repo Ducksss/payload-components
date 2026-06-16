@@ -162,12 +162,12 @@
     0 0 0 1px oklch(0% 0 0deg / 4%), 0 2px 6px -1px oklch(0% 0 0deg / 7%),
     0 24px 48px -24px oklch(0% 0 0deg / 18%);
 
-  --animate-fade-rise: kit-fade-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  --animate-line-in: kit-line-in 0.3s ease-out both;
-  --animate-caret: kit-caret 1.1s steps(2, jump-none) infinite;
-  --animate-node-on: kit-node-on 0.4s ease-out both;
+  --animate-fade-rise: component-fade-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-line-in: component-line-in 0.3s ease-out both;
+  --animate-caret: component-caret 1.1s steps(2, jump-none) infinite;
+  --animate-node-on: component-node-on 0.4s ease-out both;
 
-  @keyframes kit-fade-rise {
+  @keyframes component-fade-rise {
     from {
       opacity: 0;
       transform: translateY(14px);
@@ -179,7 +179,7 @@
     }
   }
 
-  @keyframes kit-line-in {
+  @keyframes component-line-in {
     from {
       opacity: 0;
       transform: translateY(3px);
@@ -191,7 +191,7 @@
     }
   }
 
-  @keyframes kit-caret {
+  @keyframes component-caret {
     0%,
     100% {
       opacity: 1;
@@ -202,7 +202,7 @@
     }
   }
 
-  @keyframes kit-node-on {
+  @keyframes component-node-on {
     from {
       opacity: 0.25;
     }
@@ -213,7 +213,7 @@
   }
 }
 
-@keyframes kit-typing {
+@keyframes component-typing {
   from {
     width: 0;
   }
@@ -402,7 +402,7 @@
   .animate-typing {
     overflow: hidden;
     white-space: nowrap;
-    animation: kit-typing 1.6s steps(var(--typing-steps, 30), end) 0.4s both;
+    animation: component-typing 1.6s steps(var(--typing-steps, 30), end) 0.4s both;
   }
 
   /* ---------------------------------------------------------------- */

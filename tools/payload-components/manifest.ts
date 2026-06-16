@@ -6,7 +6,7 @@ import semver from 'semver'
 
 import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from './constants'
 import { validateDependencyMap } from './dependencies'
-import type { KitManifest } from './types'
+import type { ComponentManifest } from './types'
 
 import { readJsonFile, repoRoot } from './utils'
 
@@ -18,12 +18,12 @@ const ajv = new Ajv2020({
   allErrors: true,
   strict: false,
 })
-let validatorPromise: Promise<ValidateFunction<KitManifest>> | undefined
+let validatorPromise: Promise<ValidateFunction<ComponentManifest>> | undefined
 
-export const getManifestPath = (kitName: string) =>
-  path.join(repoRoot, 'payload-components', 'manifests', `${kitName}.json`)
+export const getManifestPath = (componentName: string) =>
+  path.join(repoRoot, 'payload-components', 'manifests', `${componentName}.json`)
 
-const getExpectedPatchedFiles = (manifest: KitManifest) => {
+const getExpectedPatchedFiles = (manifest: ComponentManifest) => {
   const patchedFiles = new Set<string>()
 
   for (const fragment of manifest.payloadFragments) {
@@ -42,7 +42,7 @@ const getExpectedPatchedFiles = (manifest: KitManifest) => {
 const getManifestValidator = async () => {
   if (!validatorPromise) {
     validatorPromise = readJsonFile<object>(manifestSchemaPath).then(
-      (schema) => ajv.compile(schema) as ValidateFunction<KitManifest>,
+      (schema) => ajv.compile(schema) as ValidateFunction<ComponentManifest>,
     )
   }
 
@@ -59,7 +59,7 @@ const formatValidationErrorPath = (error: ErrorObject) => {
   return error.instancePath.replace(/^\//, '').replaceAll('/', '.') || 'manifest'
 }
 
-const ensureRegistryItemExists = async (manifest: KitManifest) => {
+const ensureRegistryItemExists = async (manifest: ComponentManifest) => {
   const registry = await readJsonFile<RegistryDefinition>(registryDefinitionPath)
   const registryItem = registry.items.find((item) => item.name === manifest.registryItemName)
 
@@ -70,7 +70,7 @@ const ensureRegistryItemExists = async (manifest: KitManifest) => {
   }
 }
 
-const ensureRecoveryMatchesFragments = (manifest: KitManifest) => {
+const ensureRecoveryMatchesFragments = (manifest: ComponentManifest) => {
   const expectedPatchedFiles = getExpectedPatchedFiles(manifest)
 
   for (const filePath of expectedPatchedFiles) {
@@ -82,25 +82,25 @@ const ensureRecoveryMatchesFragments = (manifest: KitManifest) => {
   }
 }
 
-export const loadManifest = async (kitName: string): Promise<KitManifest> => {
-  const manifest = await readJsonFile<KitManifest>(getManifestPath(kitName))
+export const loadManifest = async (componentName: string): Promise<ComponentManifest> => {
+  const manifest = await readJsonFile<ComponentManifest>(getManifestPath(componentName))
   const validateManifest = await getManifestValidator()
 
   if (!validateManifest(manifest)) {
     const [firstError] = validateManifest.errors ?? []
 
     if (!firstError) {
-      throw new Error(`Manifest "${kitName}" is invalid.`)
+      throw new Error(`Manifest "${componentName}" is invalid.`)
     }
 
     const fieldPath = formatValidationErrorPath(firstError)
     const fieldSuffix = fieldPath === 'manifest' ? '' : ` at "${fieldPath}"`
 
-    throw new Error(`Manifest "${kitName}" is invalid${fieldSuffix}: ${firstError.message}.`)
+    throw new Error(`Manifest "${componentName}" is invalid${fieldSuffix}: ${firstError.message}.`)
   }
 
   if (!semver.valid(manifest.version)) {
-    throw new Error(`Manifest "${kitName}" must declare a valid semantic version. Received "${manifest.version}".`)
+    throw new Error(`Manifest "${componentName}" must declare a valid semantic version. Received "${manifest.version}".`)
   }
 
   validateDependencyMap({

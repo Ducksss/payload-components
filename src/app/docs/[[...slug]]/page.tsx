@@ -13,12 +13,12 @@ import { createRelativeLink } from 'fumadocs-ui/mdx'
 
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getMDXComponents } from '@/components/mdx'
-import { docsRoute, githubContentBranch, githubRepoUrl, kitEntries } from '@/lib/site'
+import { docsRoute, githubContentBranch, githubRepoUrl, componentEntries } from '@/lib/site'
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source'
 import {
   breadcrumbNode,
   graph,
-  kitSoftwareApplicationNode,
+  componentSoftwareApplicationNode,
   techArticleNode,
 } from '@/lib/structured-data'
 
@@ -40,15 +40,15 @@ export async function generateMetadata({ params }: DocsPageProps): Promise<Metad
     return {}
   }
 
-  /* Kit doc pages get a keyword-rich <title> for search ("… — Payload CMS
+  /* Component doc pages get a keyword-rich <title> for search ("… — Payload CMS
      block") while the on-page H1 stays the short catalog name. Page blocks
      read "block"; post components read "component". */
-  const kit =
-    slug?.length === 2 && slug[0] === 'kits'
-      ? kitEntries.find((entry) => entry.slug === slug[1])
+  const component =
+    slug?.length === 2 && slug[0] === 'components'
+      ? componentEntries.find((entry) => entry.slug === slug[1])
       : undefined
-  const title = kit
-    ? `${page.data.title} — Payload CMS ${kit.family === 'pages' ? 'block' : 'component'}`
+  const title = component
+    ? `${page.data.title} — Payload CMS ${component.family === 'pages' ? 'block' : 'component'}`
     : page.data.title
 
   return {
@@ -90,11 +90,11 @@ export default async function Page({ params }: DocsPageProps) {
   }
   crumbs.push({ name: page.data.title, path: page.url })
 
-  /* Kit doc pages (/docs/kits/<slug>) also carry per-kit SoftwareApplication
+  /* Component doc pages (/docs/components/<slug>) also carry per-component SoftwareApplication
      detail, pulled from the registry entry so it stays in sync with the catalog. */
-  const kit =
-    slug?.length === 2 && slug[0] === 'kits'
-      ? kitEntries.find((entry) => entry.slug === slug[1])
+  const component =
+    slug?.length === 2 && slug[0] === 'components'
+      ? componentEntries.find((entry) => entry.slug === slug[1])
       : undefined
 
   const structuredData = graph(
@@ -105,7 +105,7 @@ export default async function Page({ params }: DocsPageProps) {
       title: page.data.title,
       url: page.url,
     }),
-    ...(kit ? [kitSoftwareApplicationNode(kit)] : []),
+    ...(component ? [componentSoftwareApplicationNode(component)] : []),
   )
 
   return (

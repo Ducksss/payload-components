@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import type { DetectedProject, InstallState, KitManifest } from '../../tools/payload-components/types'
+import type { DetectedProject, InstallState, ComponentManifest } from '../../tools/payload-components/types'
 
-const baseManifest: KitManifest = {
+const baseManifest: ComponentManifest = {
   $schema: '../schema/poc-manifest.schema.json',
   dependencies: {},
   description: 'Test manifest',
@@ -61,7 +61,7 @@ const detectedProject: DetectedProject = {
 }
 
 const defaultState: InstallState = {
-  kits: {},
+  components: {},
   version: 2,
 }
 
@@ -76,7 +76,7 @@ describe('payload-components add command orchestration', () => {
     manifest = baseManifest,
   }: {
     loadStateValue?: InstallState
-    manifest?: KitManifest
+    manifest?: ComponentManifest
   } = {}) => {
     const loadManifest = vi.fn().mockResolvedValue(manifest)
     const detectProject = vi.fn().mockResolvedValue(detectedProject)
@@ -178,7 +178,7 @@ describe('payload-components add command orchestration', () => {
       new Error('Missing required peerDependencies package "payload".'),
     )
 
-    await expect(addCommand({ cwd: '/tmp/fixture', kitName: 'hero-basic' })).rejects.toThrow(
+    await expect(addCommand({ cwd: '/tmp/fixture', componentName: 'hero-basic' })).rejects.toThrow(
       'Missing required peerDependencies package',
     )
 
@@ -210,7 +210,7 @@ describe('payload-components add command orchestration', () => {
     })
     mocks.installManifestDependencies.mockRejectedValueOnce(new Error('pnpm add failed'))
 
-    await expect(addCommand({ cwd: '/tmp/fixture', kitName: 'hero-basic' })).rejects.toThrow(
+    await expect(addCommand({ cwd: '/tmp/fixture', componentName: 'hero-basic' })).rejects.toThrow(
       'pnpm add failed',
     )
 
@@ -239,7 +239,7 @@ describe('payload-components add command orchestration', () => {
     })
     mocks.applyPayloadFragments.mockRejectedValueOnce(new Error('Pages collection patch failed'))
 
-    await expect(addCommand({ cwd: '/tmp/fixture', kitName: 'hero-basic' })).rejects.toThrow(
+    await expect(addCommand({ cwd: '/tmp/fixture', componentName: 'hero-basic' })).rejects.toThrow(
       'Pages collection patch failed',
     )
 
@@ -267,7 +267,7 @@ describe('payload-components add command orchestration', () => {
     })
     mocks.runCommand.mockRejectedValueOnce(new Error('generate:types failed'))
 
-    await expect(addCommand({ cwd: '/tmp/fixture', kitName: 'hero-basic' })).rejects.toThrow(
+    await expect(addCommand({ cwd: '/tmp/fixture', componentName: 'hero-basic' })).rejects.toThrow(
       'generate:types failed',
     )
 
@@ -283,7 +283,7 @@ describe('payload-components add command orchestration', () => {
   it('retries cleanly from a partial state when files and fragments are already present', async () => {
     const { addCommand, mocks } = await setup({
       loadStateValue: {
-        kits: {
+        components: {
           'hero-basic': {
             installedAt: null,
             installedFiles: [
@@ -318,7 +318,7 @@ describe('payload-components add command orchestration', () => {
       missingFragments: [],
     })
 
-    await addCommand({ cwd: '/tmp/fixture', kitName: 'hero-basic' })
+    await addCommand({ cwd: '/tmp/fixture', componentName: 'hero-basic' })
 
     expect(mocks.buildRegistry).not.toHaveBeenCalled()
     expect(mocks.installRegistryItem).not.toHaveBeenCalled()

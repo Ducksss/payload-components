@@ -4,7 +4,7 @@ import { CheckCircle2, FileCode2, FolderTree, Sparkles } from 'lucide-react'
 
 import { HeroBasicDemo } from '@/components/site/demos/HeroBasicDemo'
 import { DemoScaleFrame } from '@/components/site/demos/DemoScaleFrame'
-import { frameInstalledFiles, kitEntries, terminalDemoLines } from '@/lib/site'
+import { frameInstalledFiles, componentEntries, terminalDemoLines } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
 /* The install replay: terminal types the command, progress lines and
@@ -77,7 +77,7 @@ const spawnStyle = (delay: number): MotionStyle => ({
 })
 
 export function HeroProductFrame() {
-  const heroKit = kitEntries[0]
+  const heroComponent = componentEntries[0]
 
   return (
     <div
@@ -148,7 +148,7 @@ export function HeroProductFrame() {
                     Command line
                   </p>
                   <p className="mt-2 text-xl font-semibold tracking-[-0.04em] text-background">
-                    Install {heroKit.slug} with its wiring
+                    Install {heroComponent.slug} with its wiring
                   </p>
                 </div>
                 <div
@@ -231,8 +231,8 @@ export function HeroProductFrame() {
             </p>
             <div className="mt-4 rounded-[1.5rem] border border-background/10 bg-background text-foreground">
               <div className="border-b border-border px-5 py-4">
-                <p className="text-sm font-medium">{heroKit.title}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{heroKit.target} · typed</p>
+                <p className="text-sm font-medium">{heroComponent.title}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{heroComponent.target} · typed</p>
               </div>
               <div aria-hidden="true" className="relative">
                 {/* Layer 1: the "before" skeleton, visible from t=0,

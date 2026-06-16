@@ -3,21 +3,21 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 
 import { CatalogIndex } from '@/components/site/CatalogIndex'
-import { KitSpecimen } from '@/components/site/KitSpecimen'
+import { ComponentSpecimen } from '@/components/site/ComponentSpecimen'
 import { Section, SectionHeading } from '@/components/site/section'
-import { kitsIntro, landingSections } from '@/lib/site'
+import { componentsIntro, landingSections } from '@/lib/site'
 
 /* The catalog — the real components rendered live (specimen first, dense
  * index second), no screenshots. */
 export function CatalogSection() {
   return (
-    <Section id={landingSections.kits.id} className="bg-muted/40">
+    <Section id={landingSections.components.id} className="bg-muted/40">
       <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
         <SectionHeading
           accentWord="live"
           eyebrow="The catalog"
-          heading={landingSections.kits.heading}
-          intro={kitsIntro}
+          heading={landingSections.components.heading}
+          intro={componentsIntro}
         />
         <Link
           href="/components"
@@ -29,7 +29,7 @@ export function CatalogSection() {
       </div>
 
       <div className="reveal-on-scroll mt-12">
-        <KitSpecimen />
+        <ComponentSpecimen />
       </div>
 
       <div className="reveal-on-scroll mt-12">

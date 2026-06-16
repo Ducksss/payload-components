@@ -7,27 +7,27 @@ import type {
   InstallStateEntry,
   InstallStateV1,
   InstallStage,
-  KitManifest,
+  ComponentManifest,
 } from './types'
 
 import { CURRENT_ALPHA_TARGET_ID, SHARED_PATCHED_FILES } from './constants'
 import { readJsonFile, repoRoot, writeJsonFile } from './utils'
 
 const defaultState: InstallState = {
-  kits: {},
+  components: {},
   version: 2,
 }
 
 const normalizeFileList = (files: string[]) => [...new Set(files)].sort()
 
-const getManifestPath = (kitName: string) =>
-  path.join(repoRoot, 'payload-components', 'manifests', `${kitName}.json`)
+const getManifestPath = (componentName: string) =>
+  path.join(repoRoot, 'payload-components', 'manifests', `${componentName}.json`)
 
 const getEntryBase = ({
   manifest,
   targetId,
 }: {
-  manifest: Pick<KitManifest, 'name' | 'registryItemName' | 'version'>
+  manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
   targetId: string
 }) => ({
   manifestVersion: manifest.version,
@@ -36,19 +36,19 @@ const getEntryBase = ({
 })
 
 const migrateLegacyEntry = async ({
-  kitName,
+  componentName,
   legacyEntry,
 }: {
-  kitName: string
-  legacyEntry: InstallStateV1['kits'][string]
+  componentName: string
+  legacyEntry: InstallStateV1['components'][string]
 }): Promise<InstallStateEntry> => {
-  let registryItemName = kitName
+  let registryItemName = componentName
 
   try {
-    const manifest = await readJsonFile<KitManifest>(getManifestPath(kitName))
+    const manifest = await readJsonFile<ComponentManifest>(getManifestPath(componentName))
     registryItemName = manifest.registryItemName
   } catch {
-    // Fall back to the legacy kit name when the manifest is unavailable.
+    // Fall back to the legacy component name when the manifest is unavailable.
   }
 
   const patchedFiles = normalizeFileList(
@@ -73,27 +73,27 @@ const migrateLegacyEntry = async ({
 
 const migrateLegacyState = async (state: InstallStateV1): Promise<InstallState> => {
   const migratedEntries = await Promise.all(
-    Object.entries(state.kits).map(async ([kitName, legacyEntry]) => {
+    Object.entries(state.components).map(async ([componentName, legacyEntry]) => {
       const migratedEntry = await migrateLegacyEntry({
-        kitName,
+        componentName,
         legacyEntry,
       })
 
-      return [kitName, migratedEntry] as const
+      return [componentName, migratedEntry] as const
     }),
   )
 
   return {
-    kits: Object.fromEntries(migratedEntries),
+    components: Object.fromEntries(migratedEntries),
     version: 2,
   }
 }
 
 const normalizeState = (state: InstallState): InstallState => ({
   version: 2,
-  kits: Object.fromEntries(
-    Object.entries(state.kits).map(([kitName, entry]) => [
-      kitName,
+  components: Object.fromEntries(
+    Object.entries(state.components).map(([componentName, entry]) => [
+      componentName,
       {
         ...entry,
         installedFiles: normalizeFileList(entry.installedFiles),
@@ -118,7 +118,7 @@ const upsertEntry = ({
   installedFiles: string[]
   lastAttemptAt: string
   lastError: InstallError | null
-  manifest: Pick<KitManifest, 'name' | 'registryItemName' | 'version'>
+  manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
   status: InstallStateEntry['status']
   targetId: string
@@ -172,15 +172,15 @@ export const recordInstallAttempt = async ({
 }: {
   cwd: string
   installedFiles: string[]
-  manifest: Pick<KitManifest, 'name' | 'registryItemName' | 'version'>
+  manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
   targetId: string
 }) => {
   const state = await loadState(cwd)
   const now = new Date().toISOString()
-  const currentEntry = state.kits[manifest.name]
+  const currentEntry = state.components[manifest.name]
 
-  state.kits[manifest.name] = upsertEntry({
+  state.components[manifest.name] = upsertEntry({
     installedAt: currentEntry?.installedAt ?? null,
     installedFiles,
     lastAttemptAt: now,
@@ -205,7 +205,7 @@ export const recordInstallFailure = async ({
 }: {
   cwd: string
   installedFiles: string[]
-  manifest: Pick<KitManifest, 'name' | 'registryItemName' | 'version'>
+  manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
   stage: InstallStage
   targetId: string
@@ -213,9 +213,9 @@ export const recordInstallFailure = async ({
 }) => {
   const state = await loadState(cwd)
   const now = new Date().toISOString()
-  const currentEntry = state.kits[manifest.name]
+  const currentEntry = state.components[manifest.name]
 
-  state.kits[manifest.name] = upsertEntry({
+  state.components[manifest.name] = upsertEntry({
     installedAt: currentEntry?.installedAt ?? null,
     installedFiles,
     lastAttemptAt: now,
@@ -243,14 +243,14 @@ export const recordInstalledState = async ({
   cwd: string
   installedAt?: string
   installedFiles: string[]
-  manifest: Pick<KitManifest, 'name' | 'registryItemName' | 'version'>
+  manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
   targetId: string
 }) => {
   const state = await loadState(cwd)
   const now = new Date().toISOString()
 
-  state.kits[manifest.name] = upsertEntry({
+  state.components[manifest.name] = upsertEntry({
     installedAt: installedAt ?? now,
     installedFiles,
     lastAttemptAt: now,
