@@ -1,4 +1,4 @@
-import type { UpcomingKit } from '@/lib/site'
+import type { UpcomingComponent } from '@/lib/site'
 
 import { cn } from '@/utilities/ui'
 
@@ -8,7 +8,7 @@ import { cn } from '@/utilities/ui'
  * deliberately lower-fi to separate "planned" from "real".) */
 
 /* ------------------------------------------------------------------ */
-/* Skeleton thumbnails — one abstract composition per kit shape.      */
+/* Skeleton thumbnails — one abstract composition per component shape.      */
 /* Pure shapes, aria-hidden; emerald appears at most once per thumb.  */
 /* ------------------------------------------------------------------ */
 
@@ -121,7 +121,7 @@ function ThumbShapes({ slug }: { slug: string }) {
   }
 }
 
-function KitThumb({ muted = false, slug }: { muted?: boolean; slug: string }) {
+function ComponentThumb({ muted = false, slug }: { muted?: boolean; slug: string }) {
   return (
     <div
       aria-hidden="true"
@@ -138,26 +138,26 @@ function KitThumb({ muted = false, slug }: { muted?: boolean; slug: string }) {
 /* Cards                                                               */
 /* ------------------------------------------------------------------ */
 
-export function UpcomingKitCard({ kit }: { kit: UpcomingKit }) {
+export function UpcomingComponentCard({ component }: { component: UpcomingComponent }) {
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl border border-dashed border-border bg-card/60">
-      <KitThumb muted slug={kit.slug} />
+      <ComponentThumb muted slug={component.slug} />
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div className="flex items-center justify-between gap-3">
-          <code className="font-mono text-[13px] text-muted-foreground">{kit.slug}</code>
+          <code className="font-mono text-[13px] text-muted-foreground">{component.slug}</code>
           <span className="rounded-full border border-border bg-background px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
             Coming soon
           </span>
         </div>
         <div>
           <h3 className="text-base font-semibold tracking-tight text-foreground/80">
-            {kit.title}
+            {component.title}
           </h3>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">{kit.description}</p>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">{component.description}</p>
         </div>
         <div className="mt-auto border-t border-border pt-3">
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-            {kit.target} · in development
+            {component.target} · in development
           </span>
         </div>
       </div>
@@ -169,7 +169,7 @@ export function UpcomingKitCard({ kit }: { kit: UpcomingKit }) {
 /* Family groups                                                       */
 /* ------------------------------------------------------------------ */
 
-export function KitFamilyHeader({
+export function ComponentFamilyHeader({
   countLabel,
   description,
   name,

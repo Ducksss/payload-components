@@ -4,7 +4,7 @@ import path from 'node:path'
 
 import { loadManifest } from '../../tools/payload-components/manifest'
 
-import type { KitManifest, PayloadFragment } from '../../tools/payload-components/types'
+import type { ComponentManifest, PayloadFragment } from '../../tools/payload-components/types'
 
 const layoutAnchor = "name: 'layout'"
 
@@ -227,12 +227,12 @@ const copyProjectFixture = async () => {
   return tempDir
 }
 
-export const removeInstalledKitFromFixture = async ({
+export const removeInstalledComponentFromFixture = async ({
   fixtureDir,
   manifest,
 }: {
   fixtureDir: string
-  manifest: Pick<KitManifest, 'files' | 'payloadFragments'>
+  manifest: Pick<ComponentManifest, 'files' | 'payloadFragments'>
 }) => {
   await Promise.all(
     manifest.files.map((filePath) =>
@@ -261,8 +261,8 @@ export const removeInstalledKitFromFixture = async ({
   ])
 }
 
-export const createInstallFixture = async (kitName: string) => {
-  const { fixtureDir, manifests } = await createInstallFixtureForKits([kitName])
+export const createInstallFixture = async (componentName: string) => {
+  const { fixtureDir, manifests } = await createInstallFixtureForComponents([componentName])
 
   return {
     fixtureDir,
@@ -270,14 +270,14 @@ export const createInstallFixture = async (kitName: string) => {
   }
 }
 
-export const createInstallFixtureForKits = async (kitNames: string[]) => {
+export const createInstallFixtureForComponents = async (componentNames: string[]) => {
   const fixtureDir = await copyProjectFixture()
   const manifests = await Promise.all(
-    [...new Set(kitNames)].map((kitName) => loadManifest(kitName)),
+    [...new Set(componentNames)].map((componentName) => loadManifest(componentName)),
   )
 
   for (const manifest of manifests) {
-    await removeInstalledKitFromFixture({
+    await removeInstalledComponentFromFixture({
       fixtureDir,
       manifest,
     })

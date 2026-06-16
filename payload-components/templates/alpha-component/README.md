@@ -1,6 +1,6 @@
-# Alpha Kit Template
+# Alpha Component Template
 
-Copy this template when starting a new in-repo alpha kit. It is the internal source of truth for naming, file layout, and the minimal block/component shape that future kits should follow.
+Copy this template when starting a new in-repo alpha component. It is the internal source of truth for naming, file layout, and the minimal block/component shape that future components should follow.
 
 ## Naming Map
 
@@ -18,7 +18,7 @@ Copy this template when starting a new in-repo alpha kit. It is the internal sou
 ## Authoring Rules
 
 - Keep block configs explicit: `slug`, `interfaceName`, `labels.singular`, and `labels.plural`.
-- Prefer shared field helpers like `linkGroup` before inventing kit-specific primitives.
+- Prefer shared field helpers like `linkGroup` before inventing component-specific primitives.
 - Keep the block component server-first.
 - Replace the temporary scaffold prop type in `Component.tsx` with the generated `@/payload-types` block type after wiring the block and running `generate:types`.
 - Preserve the optional wrapper props surface:
@@ -29,7 +29,7 @@ Copy this template when starting a new in-repo alpha kit. It is the internal sou
 
 ## Variants and Shared Fields
 
-A structural variant is its own kit, not a CLI flag. Name variants by family with a suffix — `hero-basic`, `hero-video`, `hero-dramatic` — and never ship a bare family name. Choosing a variant happens in the catalog, not an install prompt.
+A structural variant is its own component, not a CLI flag. Name variants by family with a suffix — `hero-basic`, `hero-video`, `hero-dramatic` — and never ship a bare family name. Choosing a variant happens in the catalog, not an install prompt.
 
 Share a family's common fields through a real source file every variant ships:
 
@@ -43,6 +43,6 @@ Do not wire internal shared modules through `registryDependencies` — that reso
 
 1. Rename `ExampleBasic` / `exampleBasic` / `example-basic` everywhere.
 2. Update the manifest metadata and sample content.
-3. Update the block fields to match the new kit.
+3. Update the block fields to match the new component.
 4. Replace the scaffold component prop type with the generated payload type import.
 5. Wire the block into the registry and install flow in the relevant PR.

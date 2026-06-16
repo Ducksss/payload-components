@@ -130,7 +130,7 @@ test.describe('AI-readable documentation surfaces', () => {
 
     const body = await response.text()
 
-    expect(body).toContain('/docs/kits/hero-basic')
+    expect(body).toContain('/docs/components/hero-basic')
   })
 
   test('docs expose per-page markdown and markdown negotiation', async ({ request }) => {

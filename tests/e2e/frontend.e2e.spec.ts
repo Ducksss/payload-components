@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 import {
   catalogTitle,
   heroHeadline,
-  kitEntries,
+  componentEntries,
   landingSections,
   primaryInstallCommand,
   terminalDemoLines,
@@ -98,10 +98,10 @@ test.describe('Light shadcn frontend', () => {
         path: '/about',
         title: /About/,
       },
-      ...kitEntries.map((kit) => ({
-        h1: kit.title,
-        path: kit.href,
-        title: new RegExp(kit.title),
+      ...componentEntries.map((component) => ({
+        h1: component.title,
+        path: component.href,
+        title: new RegExp(component.title),
       })),
     ]
 
@@ -124,8 +124,8 @@ test.describe('Light shadcn frontend', () => {
       await expect(page.getByRole('heading', { level: 2, name: section.heading })).toBeVisible()
     }
 
-    for (const kit of kitEntries) {
-      await expect(page.locator('code', { hasText: kit.command }).first()).toBeVisible()
+    for (const component of componentEntries) {
+      await expect(page.locator('code', { hasText: component.command }).first()).toBeVisible()
     }
 
     await expect(page.getByRole('contentinfo')).toBeVisible()

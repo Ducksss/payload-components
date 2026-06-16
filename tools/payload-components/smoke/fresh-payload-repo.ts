@@ -18,16 +18,16 @@ import { chromium } from '@playwright/test'
 
 import { loadManifest } from '../manifest'
 import { shadcnCliPackage } from '../utils'
-import type { KitManifest } from '../types'
+import type { ComponentManifest } from '../types'
 
-export const DEFAULT_SMOKE_KITS = ['hero-basic', 'feature-grid-basic'] as const
+export const DEFAULT_SMOKE_COMPONENTS = ['hero-basic', 'feature-grid-basic'] as const
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
 
-type MutableSmokeKits = Array<(typeof DEFAULT_SMOKE_KITS)[number] | string>
+type MutableSmokeComponents = Array<(typeof DEFAULT_SMOKE_COMPONENTS)[number] | string>
 
 export type SmokeOptions = {
   keepTemp: boolean
-  kits: MutableSmokeKits
+  components: MutableSmokeComponents
   registryUrl?: string
   timeoutMs: number
 }
@@ -86,7 +86,7 @@ const parseNextValue = (argv: string[], index: number, flag: string) => {
 export const parseSmokeArgs = (argv: string[]): SmokeOptions => {
   const options: SmokeOptions = {
     keepTemp: false,
-    kits: [...DEFAULT_SMOKE_KITS],
+    components: [...DEFAULT_SMOKE_COMPONENTS],
     registryUrl: undefined,
     timeoutMs: DEFAULT_TIMEOUT_MS,
   }
@@ -94,11 +94,11 @@ export const parseSmokeArgs = (argv: string[]): SmokeOptions => {
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index]
 
-    if (arg === '--kits') {
-      const rawKits = parseNextValue(argv, index, arg)
-      options.kits = rawKits
+    if (arg === '--components') {
+      const rawComponents = parseNextValue(argv, index, arg)
+      options.components = rawComponents
         .split(',')
-        .map((kit) => kit.trim())
+        .map((component) => component.trim())
         .filter(Boolean)
       index += 1
       continue
@@ -131,8 +131,8 @@ export const parseSmokeArgs = (argv: string[]): SmokeOptions => {
     throw new Error(`Unknown option "${arg}".`)
   }
 
-  if (options.kits.length === 0) {
-    throw new Error('--kits must include at least one kit name.')
+  if (options.components.length === 0) {
+    throw new Error('--components must include at least one component name.')
   }
 
   return options
@@ -184,7 +184,7 @@ export const resolveRegistryItemUrl = (registryUrl: string, itemName: string) =>
 
     if (lastSegment !== `${itemName}.json`) {
       throw new Error(
-        `Registry URL "${registryUrl}" points to a single JSON item. Use a URL template with "{name}" when installing multiple kits.`,
+        `Registry URL "${registryUrl}" points to a single JSON item. Use a URL template with "{name}" when installing multiple components.`,
       )
     }
 
@@ -451,7 +451,7 @@ const copyRepoFixture = async (targetPath: string) => {
   )
 }
 
-const removeManifestFiles = async (targetPath: string, manifests: KitManifest[]) => {
+const removeManifestFiles = async (targetPath: string, manifests: ComponentManifest[]) => {
   for (const manifest of manifests) {
     for (const file of manifest.files) {
       await rm(path.join(targetPath, file), {
@@ -462,18 +462,18 @@ const removeManifestFiles = async (targetPath: string, manifests: KitManifest[])
   }
 }
 
-const assertFilesDelivered = async (targetPath: string, manifests: KitManifest[]) => {
+const assertFilesDelivered = async (targetPath: string, manifests: ComponentManifest[]) => {
   for (const manifest of manifests) {
     for (const file of manifest.files) {
       if (!(await exists(path.join(targetPath, file)))) {
-        throw new Error(`Direct shadcn smoke did not deliver ${file} for kit "${manifest.name}".`)
+        throw new Error(`Direct shadcn smoke did not deliver ${file} for component "${manifest.name}".`)
       }
     }
   }
 }
 
-const assertRegistryDependenciesDelivered = async (targetPath: string, kitName: string) => {
-  const itemPath = path.join(repoRoot, 'public', 'r', `${kitName}.json`)
+const assertRegistryDependenciesDelivered = async (targetPath: string, componentName: string) => {
+  const itemPath = path.join(repoRoot, 'public', 'r', `${componentName}.json`)
   const item = JSON.parse(await readFile(itemPath, 'utf8')) as {
     registryDependencies?: string[]
   }
@@ -488,15 +488,15 @@ const assertRegistryDependenciesDelivered = async (targetPath: string, kitName: 
 }
 
 const runDirectShadcnUrlSmoke = async ({
-  kits,
+  components,
   manifests,
   registryUrl,
   stageLog,
   tempRoot,
   timeoutMs,
 }: {
-  kits: string[]
-  manifests: KitManifest[]
+  components: string[]
+  manifests: ComponentManifest[]
   registryUrl: string
   stageLog: string[]
   tempRoot: string
@@ -508,19 +508,19 @@ const runDirectShadcnUrlSmoke = async ({
   await copyRepoFixture(targetPath)
   await removeManifestFiles(targetPath, manifests)
 
-  for (const kit of kits) {
+  for (const component of components) {
     await runCommand({
       args: getDirectShadcnAddArgs({
         cwd: targetPath,
-        itemName: kit,
+        itemName: component,
         registryUrl,
       }),
       command: 'pnpm',
       cwd: repoRoot,
-      stage: `direct shadcn URL install: ${kit}`,
+      stage: `direct shadcn URL install: ${component}`,
       timeoutMs,
     })
-    await assertRegistryDependenciesDelivered(targetPath, kit)
+    await assertRegistryDependenciesDelivered(targetPath, component)
   }
 
   await assertFilesDelivered(targetPath, manifests)
@@ -528,7 +528,7 @@ const runDirectShadcnUrlSmoke = async ({
   return targetPath
 }
 
-const writeSeedScript = async (targetPath: string, manifests: KitManifest[]) => {
+const writeSeedScript = async (targetPath: string, manifests: ComponentManifest[]) => {
   const layout = manifests.map((manifest) => manifest.sampleContent)
   const scriptPath = path.join(targetPath, '.payload-components', 'smoke-seed.ts')
 
@@ -615,7 +615,7 @@ const assertRouteRendersWithPlaywright = async ({
   routeUrl,
   timeoutMs,
 }: {
-  manifests: KitManifest[]
+  manifests: ComponentManifest[]
   routeUrl: string
   timeoutMs: number
 }) => {
@@ -646,15 +646,15 @@ const assertRouteRendersWithPlaywright = async ({
 
 const runFreshPayloadRepoSmoke = async ({
   dbConnectionString,
-  kits,
+  components,
   manifests,
   stageLog,
   tempRoot,
   timeoutMs,
 }: {
   dbConnectionString?: string
-  kits: string[]
-  manifests: KitManifest[]
+  components: string[]
+  manifests: ComponentManifest[]
   stageLog: string[]
   tempRoot: string
   timeoutMs: number
@@ -685,12 +685,12 @@ const runFreshPayloadRepoSmoke = async ({
     timeoutMs,
   })
 
-  for (const kit of kits) {
+  for (const component of components) {
     await runCommand({
-      args: ['exec', 'payload-components', 'add', kit],
+      args: ['exec', 'payload-components', 'add', component],
       command: 'pnpm',
       cwd: targetPath,
-      stage: `payload-components add ${kit} in fresh project`,
+      stage: `payload-components add ${component} in fresh project`,
       timeoutMs,
     })
   }
@@ -786,8 +786,8 @@ export const runSmoke = async (options: SmokeOptions) => {
   let success = false
 
   try {
-    const kits = options.kits.map(String)
-    const manifests = await Promise.all(kits.map((kit) => loadManifest(kit)))
+    const components = options.components.map(String)
+    const manifests = await Promise.all(components.map((component) => loadManifest(component)))
 
     summary.stageLog.push('registry-build-and-check')
     await runCommand({
@@ -813,7 +813,7 @@ export const runSmoke = async (options: SmokeOptions) => {
     }
 
     summary.directTargetPath = await runDirectShadcnUrlSmoke({
-      kits,
+      components,
       manifests,
       registryUrl: summary.registryUrl,
       stageLog: summary.stageLog,
@@ -823,7 +823,7 @@ export const runSmoke = async (options: SmokeOptions) => {
 
     const freshResult = await runFreshPayloadRepoSmoke({
       dbConnectionString: process.env.POSTGRES_URL,
-      kits,
+      components,
       manifests,
       stageLog: summary.stageLog,
       tempRoot,

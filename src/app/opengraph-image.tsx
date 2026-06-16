@@ -3,7 +3,7 @@ import { join } from 'node:path'
 
 import { ImageResponse } from 'next/og'
 
-import { heroHeadlineAccent, heroHeadlinePrimary, primaryInstallCommand } from '@/lib/site'
+import { heroHeadlineAccent, heroHeadlinePrimary, primaryInstallCommand, siteUrl } from '@/lib/site'
 
 export const alt = 'Payload Components — Payload blocks, fully wired'
 export const contentType = 'image/png'
@@ -12,84 +12,67 @@ export const size = { height: 630, width: 1200 }
 /* Fonts are vendored under ./_fonts and read from disk — never fetched — so
    the build stays deterministic and the CI release gate never waits on a
    network font request. Geist matches the site body/headline, Geist Mono the
-   terminal, and Instrument Serif italic the on-site `--font-serif` accent. */
+   wordmark + command, and Instrument Serif italic the on-site `--font-serif`
+   accent. */
 const fontFile = (name: string) => readFileSync(join(process.cwd(), 'src/app/_fonts', name))
 
-const INK = '#09090b'
-const INK_SOFT = '#18181b'
-const MUTED = '#71717a'
-const EMERALD = '#34d399'
+/* Hex equivalents of the light-theme tokens in globals.css. Emerald is the one
+   accent (--brand, the light-background shade — NOT the bright terminal green)
+   and is used sparingly: just the command prompt here. */
+const INK = '#111113' // ~ --foreground
+const MUTED = '#71717a' // ~ --muted-foreground
+const FAINT = '#a1a1aa'
+const EMERALD = '#059669' // ~ --brand, legible on white
+const MARK = '#18181b'
 
-/* A compact replay of a real `payload-components add` run (mirrors
-   terminalDemoLines in src/lib/site.ts) — the proof that the install does the
-   wiring a plain paste leaves as a TODO list. Glyphs are restricted to ones
-   Geist ships ($ + · —); next/og would otherwise try to network-fetch a font
-   for a missing glyph (e.g. ✓), which breaks the deterministic build. */
-const terminalLines: { tone: 'cmd' | 'add' | 'ok'; text: string }[] = [
-  { tone: 'cmd', text: primaryInstallCommand },
-  { tone: 'add', text: 'registered block · mapped renderer' },
-  { tone: 'add', text: 'generated types · admin import map' },
-  { tone: 'ok', text: '5 files wired — one reviewable diff' },
-]
+const domain = siteUrl.replace(/^https?:\/\//, '')
 
-/* Static at build time on purpose: no dynamic APIs, no network. */
+/* Static at build time on purpose: no dynamic APIs, no network. A clean,
+   centered composition — wordmark, the brand headline, one quiet command. */
 export default function OpenGraphImage() {
   return new ImageResponse(
     (
       <div
         style={{
+          alignItems: 'center',
           backgroundColor: '#ffffff',
-          backgroundImage: 'radial-gradient(rgba(9, 9, 11, 0.06) 1.5px, transparent 1.5px)',
-          backgroundSize: '26px 26px',
           color: INK,
           display: 'flex',
           flexDirection: 'column',
-          fontFamily: 'Geist',
           height: '100%',
-          justifyContent: 'space-between',
-          padding: 60,
+          justifyContent: 'center',
+          padding: '60px 80px',
           position: 'relative',
+          textAlign: 'center',
           width: '100%',
         }}
       >
-        {/* Emerald bloom — the site's signal accent. A wide ambient wash from
-           the top-right, plus a brighter band behind the console so it reads
-           as if the install is emitting the glow. */}
+        {/* A single, very faint emerald wash behind the headline so the white
+           card has depth without clutter. Source-ordered first → never washes
+           out the ink text above it. */}
         <div
           style={{
-            background: 'radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 72%)',
+            background: 'radial-gradient(circle, rgba(5, 150, 105, 0.10) 0%, transparent 68%)',
             display: 'flex',
-            height: 1000,
+            height: 720,
+            left: 100,
             position: 'absolute',
-            right: -300,
-            top: -380,
-            width: 1120,
-          }}
-        />
-        <div
-          style={{
-            background:
-              'radial-gradient(circle, rgba(52, 211, 153, 0.32) 0%, rgba(52, 211, 153, 0.10) 40%, transparent 66%)',
-            display: 'flex',
-            height: 760,
-            left: 80,
-            position: 'absolute',
-            top: 250,
-            width: 1180,
+            top: 120,
+            width: 1000,
           }}
         />
 
-        {/* Header */}
-        <div style={{ alignItems: 'center', display: 'flex', gap: 16 }}>
+        {/* Wordmark */}
+        <div style={{ alignItems: 'center', display: 'flex', gap: 14 }}>
           <div
             style={{
               alignItems: 'center',
-              backgroundColor: INK_SOFT,
-              borderRadius: 10,
+              backgroundColor: MARK,
+              borderRadius: 11,
               color: '#fafafa',
               display: 'flex',
               fontFamily: 'Geist Mono',
-              fontSize: 26,
+              fontSize: 24,
               fontWeight: 700,
               height: 46,
               justifyContent: 'center',
@@ -98,137 +81,64 @@ export default function OpenGraphImage() {
           >
             &gt;_
           </div>
-          <div style={{ display: 'flex', fontSize: 29, fontWeight: 700, letterSpacing: -0.5 }}>
+          <div style={{ display: 'flex', fontSize: 29, fontWeight: 700, letterSpacing: -0.6 }}>
             Payload Components
           </div>
+        </div>
+
+        {/* Headline — monochrome ink, the serif accent carries the brand voice */}
+        <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'column', marginTop: 40 }}>
+          <div style={{ display: 'flex', fontSize: 76, fontWeight: 700, letterSpacing: -3.2, lineHeight: 1.04 }}>
+            {heroHeadlinePrimary}
+          </div>
           <div
             style={{
-              border: '1px solid rgba(9, 9, 11, 0.15)',
-              borderRadius: 999,
-              color: MUTED,
               display: 'flex',
-              fontSize: 15,
-              letterSpacing: 3,
-              padding: '6px 15px',
-              textTransform: 'uppercase',
+              fontFamily: 'Instrument Serif',
+              fontSize: 82,
+              fontStyle: 'italic',
+              fontWeight: 400,
+              letterSpacing: -1.4,
+              lineHeight: 1.1,
+              marginTop: 4,
+              paddingBottom: 6,
             }}
           >
-            Public alpha
+            {heroHeadlineAccent}
           </div>
         </div>
 
-        {/* Headline + console, vertically centered between header and footer */}
+        {/* One quiet command — the single emerald accent is the prompt */}
         <div
           style={{
-            display: 'flex',
-            flex: 1,
-            flexDirection: 'column',
-            justifyContent: 'center',
-            gap: 34,
-          }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div
-              style={{
-                display: 'flex',
-                fontSize: 92,
-                fontWeight: 700,
-                letterSpacing: -4.5,
-                lineHeight: 0.92,
-              }}
-            >
-              {heroHeadlinePrimary}
-            </div>
-            <div
-              style={{
-                color: INK,
-                display: 'flex',
-                fontFamily: 'Instrument Serif',
-                fontSize: 104,
-                fontStyle: 'italic',
-                fontWeight: 400,
-                letterSpacing: -2,
-                lineHeight: 0.98,
-                marginTop: 2,
-              }}
-            >
-              {heroHeadlineAccent}
-            </div>
-          </div>
-
-          {/* Console — the wiring proof, full width */}
-          <div
-            style={{
-              backgroundColor: INK_SOFT,
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: 18,
-              boxShadow: '0 36px 80px -36px rgba(9, 9, 11, 0.5)',
-              display: 'flex',
-              flexDirection: 'column',
-              padding: '22px 28px',
-            }}
-          >
-            <div style={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-              <div style={{ alignItems: 'center', display: 'flex', gap: 8 }}>
-                <div style={{ backgroundColor: '#3f3f46', borderRadius: 999, display: 'flex', height: 11, width: 11 }} />
-                <div style={{ backgroundColor: '#3f3f46', borderRadius: 999, display: 'flex', height: 11, width: 11 }} />
-                <div style={{ backgroundColor: '#3f3f46', borderRadius: 999, display: 'flex', height: 11, width: 11 }} />
-                <div style={{ color: '#71717a', display: 'flex', fontFamily: 'Geist Mono', fontSize: 14, marginLeft: 10 }}>
-                  acme-site — zsh
-                </div>
-              </div>
-              <div style={{ color: '#52525b', display: 'flex', fontFamily: 'Geist Mono', fontSize: 14 }}>
-                hero-basic@0.1.0
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', fontFamily: 'Geist Mono', fontSize: 19, gap: 36 }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {terminalLines.map((line) => (
-                  <div
-                    key={line.text}
-                    style={{ alignItems: 'baseline', display: 'flex', gap: 12 }}
-                  >
-                    <div
-                      style={{
-                        color: line.tone === 'ok' ? 'transparent' : EMERALD,
-                        display: 'flex',
-                        fontWeight: 500,
-                        width: 14,
-                      }}
-                    >
-                      {line.tone === 'cmd' ? '$' : line.tone === 'add' ? '+' : ''}
-                    </div>
-                    <div
-                      style={{
-                        color: line.tone === 'ok' ? EMERALD : line.tone === 'cmd' ? '#fafafa' : '#a1a1aa',
-                        display: 'flex',
-                        fontWeight: line.tone === 'cmd' || line.tone === 'ok' ? 500 : 400,
-                      }}
-                    >
-                      {line.text}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div
-          style={{
-            alignItems: 'center',
-            borderTop: '1px solid rgba(9, 9, 11, 0.08)',
+            alignItems: 'baseline',
             color: MUTED,
             display: 'flex',
-            fontSize: 18,
-            justifyContent: 'space-between',
-            paddingTop: 20,
+            fontFamily: 'Geist Mono',
+            fontSize: 23,
+            gap: 11,
+            marginTop: 38,
           }}
         >
-          <div style={{ display: 'flex' }}>A plain shadcn add stops at your filesystem. Components don&apos;t.</div>
-          <div style={{ display: 'flex', fontFamily: 'Geist Mono' }}>MIT · Payload v3 · Next 15/16</div>
+          <div style={{ color: EMERALD, display: 'flex', fontWeight: 500 }}>$</div>
+          <div style={{ display: 'flex' }}>{primaryInstallCommand}</div>
+        </div>
+
+        {/* Bottom anchor */}
+        <div
+          style={{
+            bottom: 48,
+            color: FAINT,
+            display: 'flex',
+            fontFamily: 'Geist Mono',
+            fontSize: 18,
+            justifyContent: 'center',
+            left: 0,
+            position: 'absolute',
+            right: 0,
+          }}
+        >
+          {domain}
         </div>
       </div>
     ),

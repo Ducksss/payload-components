@@ -1,7 +1,7 @@
 import { access, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
-import type { DetectedProject, KitManifest, PayloadFragment, SupportMatrix } from './types'
+import type { DetectedProject, ComponentManifest, PayloadFragment, SupportMatrix } from './types'
 
 import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from './constants'
 import { detectPackageManager, extractMajor, readJsonFile, repoRoot } from './utils'
@@ -109,7 +109,7 @@ const applyPagesLayoutFragment = (source: string, fragment: Extract<PayloadFragm
   return `${sourceWithImport.slice(0, absoluteMatchStart)}${replacement}${sourceWithImport.slice(absoluteMatchEnd)}`
 }
 
-export const getExpectedPatchedFiles = (manifest: Pick<KitManifest, 'payloadFragments'>) =>
+export const getExpectedPatchedFiles = (manifest: Pick<ComponentManifest, 'payloadFragments'>) =>
   normalizeFileList(
     manifest.payloadFragments.map((fragment) =>
       fragment.kind === 'renderBlocks' ? RENDER_BLOCKS_FILE : PAGES_LAYOUT_FILE,
@@ -179,7 +179,7 @@ export const detectProject = async (cwd: string): Promise<DetectedProject> => {
   )
 }
 
-export const assertManifestSupport = (project: DetectedProject, manifest: KitManifest) => {
+export const assertManifestSupport = (project: DetectedProject, manifest: ComponentManifest) => {
   if (!manifest.supportedTargets.includes(project.target.id)) {
     throw new Error(
       `Component "${manifest.name}" does not support the detected project target "${project.target.id}".`,
@@ -234,7 +234,7 @@ export const verifyInstalledManifestFiles = async ({
   manifest,
 }: {
   cwd: string
-  manifest: Pick<KitManifest, 'files'>
+  manifest: Pick<ComponentManifest, 'files'>
 }) => {
   const missingFiles: string[] = []
 
@@ -257,7 +257,7 @@ export const verifyInstalledPayloadFragments = async ({
   manifest,
 }: {
   cwd: string
-  manifest: Pick<KitManifest, 'payloadFragments'>
+  manifest: Pick<ComponentManifest, 'payloadFragments'>
 }) => {
   const missingFragments: string[] = []
 
@@ -297,7 +297,7 @@ export const verifyInstalledPayloadFragments = async ({
   }
 }
 
-export const isKitAlreadyPresent = async (cwd: string, manifest: KitManifest) => {
+export const isComponentAlreadyPresent = async (cwd: string, manifest: ComponentManifest) => {
   const fileCheck = await verifyInstalledManifestFiles({
     cwd,
     manifest,

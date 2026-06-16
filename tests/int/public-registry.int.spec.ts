@@ -19,10 +19,10 @@ type RegistryItem = {
   docs?: string
   files?: RegistryFile[]
   meta?: {
-    payloadKit?: {
+    payloadComponent?: {
       installCommand?: string
       postInstall?: string[]
-      requiresPayloadKitWrapper?: boolean
+      requiresPayloadComponentWrapper?: boolean
       supportedTargets?: string[]
     }
   }
@@ -86,10 +86,10 @@ describe('public shadcn registry publication', () => {
       expect(item.docs).toContain(`payload-components add ${item.name}`)
       expect(item.docs).toContain(`/r/${item.name}.json`)
       expect(item.registryDependencies).toEqual(expectedRegistryDependencies[item.name])
-      expect(item.meta?.payloadKit).toMatchObject({
+      expect(item.meta?.payloadComponent).toMatchObject({
         installCommand: `payload-components add ${item.name}`,
         postInstall: ['generate:types', 'generate:importmap'],
-        requiresPayloadKitWrapper: true,
+        requiresPayloadComponentWrapper: true,
         supportedTargets: ['payload-website-starter'],
       })
 

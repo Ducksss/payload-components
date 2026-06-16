@@ -7,21 +7,21 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import { loadManifest } from '../../tools/payload-components/manifest'
 
-import { createInstallFixture, createInstallFixtureForKits } from './payload-components-fixture'
+import { createInstallFixture, createInstallFixtureForComponents } from './payload-components-fixture'
 
-import type { InstallState, KitManifest, PayloadFragment } from '../../tools/payload-components/types'
+import type { InstallState, ComponentManifest, PayloadFragment } from '../../tools/payload-components/types'
 
 const execFileAsync = promisify(execFile)
 const repoRoot = process.cwd()
-const payloadKitBin = path.join(repoRoot, 'bin', 'payload-components.mjs')
+const payloadComponentBin = path.join(repoRoot, 'bin', 'payload-components.mjs')
 const layoutAnchor = "name: 'layout'"
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 const normalizeFileList = (files: string[]) => [...new Set(files)].sort()
 
-const runAddCommand = async (fixtureDir: string, kitName: string) =>
-  execFileAsync(process.execPath, [payloadKitBin, 'add', kitName, '--cwd', fixtureDir], {
+const runAddCommand = async (fixtureDir: string, componentName: string) =>
+  execFileAsync(process.execPath, [payloadComponentBin, 'add', componentName, '--cwd', fixtureDir], {
     cwd: repoRoot,
     env: process.env,
     maxBuffer: 10_000_000,
@@ -59,7 +59,7 @@ const getLayoutBlockEntries = (source: string) => {
 }
 
 const getPayloadFragment = <TKind extends PayloadFragment['kind']>(
-  manifest: KitManifest,
+  manifest: ComponentManifest,
   kind: TKind,
 ): Extract<PayloadFragment, { kind: TKind }> => {
   const fragment = manifest.payloadFragments.find((candidate) => candidate.kind === kind)
@@ -71,7 +71,7 @@ const getPayloadFragment = <TKind extends PayloadFragment['kind']>(
   return fragment as Extract<PayloadFragment, { kind: TKind }>
 }
 
-const expectManifestFilesInstalled = async (fixtureDir: string, manifest: KitManifest) => {
+const expectManifestFilesInstalled = async (fixtureDir: string, manifest: ComponentManifest) => {
   await Promise.all(
     manifest.files.map(async (filePath) => {
       const installedSource = await readFixtureFile(fixtureDir, filePath)
@@ -85,7 +85,7 @@ const expectUniqueRegistrations = ({
   pagesSource,
   renderBlocksSource,
 }: {
-  manifest: KitManifest
+  manifest: ComponentManifest
   pagesSource: string
   renderBlocksSource: string
 }) => {
@@ -116,18 +116,18 @@ const expectUniqueRegistrations = ({
   ).toHaveLength(1)
 }
 
-const expectInstalledStateEntry = (state: InstallState, manifest: KitManifest) => {
-  expect(state.kits[manifest.name]).toMatchObject({
+const expectInstalledStateEntry = (state: InstallState, manifest: ComponentManifest) => {
+  expect(state.components[manifest.name]).toMatchObject({
     installedFiles: normalizeFileList(manifest.files),
     manifestVersion: manifest.version,
     patchedFiles: normalizeFileList(manifest.recovery.patchedFiles),
     registryItemName: manifest.registryItemName,
     status: 'installed',
   })
-  expect(state.kits[manifest.name]?.installedAt).toBeTruthy()
+  expect(state.components[manifest.name]?.installedAt).toBeTruthy()
 }
 
-const expectInstalledKits = async (fixtureDir: string, manifests: KitManifest[]) => {
+const expectInstalledComponents = async (fixtureDir: string, manifests: ComponentManifest[]) => {
   await Promise.all(manifests.map((manifest) => expectManifestFilesInstalled(fixtureDir, manifest)))
 
   const [renderBlocksSource, pagesSource, state] = await Promise.all([
@@ -162,7 +162,7 @@ describe('payload-components add', () => {
     const parsedState = await readInstallState(fixtureDir)
 
     expect(parsedState.version).toBe(2)
-    await expectInstalledKits(fixtureDir, [manifest])
+    await expectInstalledComponents(fixtureDir, [manifest])
   }, 180000)
 
   it('installs feature-grid-basic into a supported repo and records state', async () => {
@@ -174,11 +174,11 @@ describe('payload-components add', () => {
     const parsedState = await readInstallState(fixtureDir)
 
     expect(parsedState.version).toBe(2)
-    await expectInstalledKits(fixtureDir, [manifest])
+    await expectInstalledComponents(fixtureDir, [manifest])
   }, 180000)
 
   it('installs hero-basic followed by feature-grid-basic without duplicate registrations', async () => {
-    const { fixtureDir, manifests } = await createInstallFixtureForKits([
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents([
       'hero-basic',
       'feature-grid-basic',
     ])
@@ -187,11 +187,11 @@ describe('payload-components add', () => {
     await runAddCommand(fixtureDir, 'hero-basic')
     await runAddCommand(fixtureDir, 'feature-grid-basic')
 
-    await expectInstalledKits(fixtureDir, manifests)
+    await expectInstalledComponents(fixtureDir, manifests)
   }, 180000)
 
   it('installs feature-grid-basic followed by hero-basic without duplicate registrations', async () => {
-    const { fixtureDir, manifests } = await createInstallFixtureForKits([
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents([
       'feature-grid-basic',
       'hero-basic',
     ])
@@ -200,7 +200,7 @@ describe('payload-components add', () => {
     await runAddCommand(fixtureDir, 'feature-grid-basic')
     await runAddCommand(fixtureDir, 'hero-basic')
 
-    await expectInstalledKits(fixtureDir, manifests)
+    await expectInstalledComponents(fixtureDir, manifests)
   }, 180000)
 
   it('treats a second install as idempotent', async () => {

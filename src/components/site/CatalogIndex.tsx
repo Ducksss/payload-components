@@ -3,14 +3,14 @@ import Link from 'next/link'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
 
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
-import { KitFamilyHeader } from '@/components/site/KitGrid'
+import { ComponentFamilyHeader } from '@/components/site/ComponentGrid'
 import {
   githubIssuesUrl,
-  kitEntries,
-  kitFamilies,
-  upcomingKits,
-  type KitEntry,
-  type UpcomingKit,
+  componentEntries,
+  componentFamilies,
+  upcomingComponents,
+  type ComponentEntry,
+  type UpcomingComponent,
 } from '@/lib/site'
 
 /* The landing catalog: two generous rows for the installable components and a
@@ -18,26 +18,26 @@ import {
  * not another card wall. The components themselves are rendered live in the
  * hero install replay and the specimen above this index. */
 
-function InstallableKitRow({ kit }: { kit: KitEntry }) {
+function InstallableComponentRow({ component }: { component: ComponentEntry }) {
   return (
     <article
-      id={kit.slug}
+      id={component.slug}
       className="grid grid-cols-1 gap-x-10 gap-y-4 px-5 py-6 sm:px-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-center"
     >
       <div className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-          <code className="font-mono text-[13px] font-medium text-brand">{kit.slug}</code>
+          <code className="font-mono text-[13px] font-medium text-brand">{component.slug}</code>
           <span className="rounded-full border border-brand/30 bg-brand/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-brand">
-            {kit.status}
+            {component.status}
           </span>
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-            {kit.target} · v{kit.version}
+            {component.target} · v{component.version}
           </span>
         </div>
-        <h3 className="text-lg font-semibold tracking-tight text-foreground">{kit.title}</h3>
-        <p className="max-w-xl text-sm leading-6 text-muted-foreground">{kit.description}</p>
+        <h3 className="text-lg font-semibold tracking-tight text-foreground">{component.title}</h3>
+        <p className="max-w-xl text-sm leading-6 text-muted-foreground">{component.description}</p>
         <div className="flex flex-wrap gap-1.5 pt-1">
-          {kit.fields.map((field) => (
+          {component.fields.map((field) => (
             <span
               key={field}
               className="rounded-full border border-border bg-muted/50 px-2 py-0.5 font-mono text-[10px] text-muted-foreground"
@@ -51,12 +51,12 @@ function InstallableKitRow({ kit }: { kit: KitEntry }) {
       <div className="flex flex-col gap-3 lg:items-end">
         <div className="grid w-full max-w-md grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-lg border border-border bg-muted/60 py-1 pl-3 pr-1">
           <code className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90">
-            {kit.command}
+            {component.command}
           </code>
-          <CommandCopyButton command={kit.command} />
+          <CommandCopyButton command={component.command} />
         </div>
         <Link
-          href={kit.href}
+          href={component.href}
           className="inline-flex items-center gap-1 text-sm font-medium text-foreground transition-colors hover:text-brand"
         >
           Read the component contract
@@ -67,15 +67,15 @@ function InstallableKitRow({ kit }: { kit: KitEntry }) {
   )
 }
 
-function UpcomingKitRow({ kit }: { kit: UpcomingKit }) {
+function UpcomingComponentRow({ component }: { component: UpcomingComponent }) {
   return (
     <div className="grid grid-cols-1 gap-x-6 gap-y-1 px-5 py-3.5 sm:grid-cols-[minmax(0,10rem)_minmax(0,1fr)_auto] sm:items-baseline sm:px-6">
-      <code className="font-mono text-[13px] text-muted-foreground">{kit.slug}</code>
+      <code className="font-mono text-[13px] text-muted-foreground">{component.slug}</code>
       <p className="text-sm leading-6 text-muted-foreground">
-        <span className="font-medium text-foreground/75">{kit.title}.</span> {kit.description}
+        <span className="font-medium text-foreground/75">{component.title}.</span> {component.description}
       </p>
       <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground sm:block">
-        {kit.target} · in development
+        {component.target} · in development
       </span>
     </div>
   )
@@ -86,28 +86,28 @@ export function CatalogIndex() {
     <div className="flex flex-col gap-12">
       {/* Page blocks — installable today, full payload-components wiring. */}
       <div>
-        <KitFamilyHeader
-          countLabel={kitFamilies.pages.countLabel}
-          description={kitFamilies.pages.description}
-          name={kitFamilies.pages.name}
+        <ComponentFamilyHeader
+          countLabel={componentFamilies.pages.countLabel}
+          description={componentFamilies.pages.description}
+          name={componentFamilies.pages.name}
         />
         <div className="mt-6 divide-y divide-border overflow-hidden rounded-[1.25rem] border border-border bg-background shadow-card">
-          {kitEntries.map((kit) => (
-            <InstallableKitRow key={kit.slug} kit={kit} />
+          {componentEntries.map((component) => (
+            <InstallableComponentRow key={component.slug} component={component} />
           ))}
         </div>
       </div>
 
       {/* Post components — the in-development suite as a dense index. */}
       <div>
-        <KitFamilyHeader
-          countLabel={kitFamilies.posts.countLabel}
-          description={kitFamilies.posts.description}
-          name={kitFamilies.posts.name}
+        <ComponentFamilyHeader
+          countLabel={componentFamilies.posts.countLabel}
+          description={componentFamilies.posts.description}
+          name={componentFamilies.posts.name}
         />
         <div className="mt-6 divide-y divide-border overflow-hidden rounded-[1.25rem] border border-dashed border-border bg-background/60">
-          {upcomingKits.map((kit) => (
-            <UpcomingKitRow key={kit.slug} kit={kit} />
+          {upcomingComponents.map((component) => (
+            <UpcomingComponentRow key={component.slug} component={component} />
           ))}
           <a
             href={githubIssuesUrl}

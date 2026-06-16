@@ -40,12 +40,12 @@ const formatStageError = (error: unknown) => (error instanceof Error ? error.mes
 
 export const addCommand = async ({
   cwd,
-  kitName,
+  componentName,
 }: {
   cwd: string
-  kitName: string
+  componentName: string
 }) => {
-  const manifest = await loadManifest(kitName)
+  const manifest = await loadManifest(componentName)
   const project = await detectProject(cwd)
 
   assertManifestSupport(project, manifest)
@@ -78,7 +78,7 @@ export const addCommand = async ({
     recoveryPatchedFiles: manifest.recovery.patchedFiles,
   })
   const existingState = await loadState(cwd)
-  const installedEntry = existingState.kits[manifest.name]
+  const installedEntry = existingState.components[manifest.name]
   const onDiskInstallValid =
     fileCheck.isValid && fragmentCheck.isValid && dependencyCheck.missing.length === 0
 

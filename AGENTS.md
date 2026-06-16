@@ -32,11 +32,11 @@ The Payload block code under `payload-components/source/` is **target code** —
 | Path | Purpose |
 | --- | --- |
 | `src/app/` | Routes: `/` (landing), `/docs/[[...slug]]` (Fumadocs), `/components` (catalog), `/about`, `/api/search`, `llms.txt` · `llms-full.txt` · `llms.mdx` (AI surfaces), `og/` + `opengraph-image` |
-| `src/components/site/` | Site UI: `SiteHeader`/`SiteFooter`, `HeroProductFrame` + `HeroInstallReplay` (the install replay), `WiringLedger`, `KitSpecimen`/`KitCard`/`KitGrid`, `Faq`, `CommandCopyButton`, `section.tsx` |
+| `src/components/site/` | Site UI: `SiteHeader`/`SiteFooter`, `HeroProductFrame` + `HeroInstallReplay` (the install replay), `WiringLedger`, `ComponentSpecimen`/`ComponentCard`/`ComponentGrid`, `Faq`, `CommandCopyButton`, `section.tsx` |
 | `src/components/site/sections/` | Landing sections (Hero, StackBand, Tax, Workflow, Wiring, Catalog, Faq, CommunityCta). `src/app/page.tsx` just orchestrates these |
 | `src/components/site/demos/` | **Demo twins** — live previews that mirror component source class-for-class (see Core flows) |
 | `src/lib/site.ts` | **Single source of truth for all site copy/data** (hero text, FAQ, component entries, landing-section headings, terminal demo lines). Tests import from here |
-| `content/docs/` | Fumadocs MDX (index, architecture, installation, registry, contributing, `kits/*`); page tree via `meta.json` |
+| `content/docs/` | Fumadocs MDX (index, architecture, installation, registry, contributing, `components/*`); page tree via `meta.json` |
 | `payload-components/` | `registry.json` (source shadcn registry), `source/` (component target code), `manifests/*.json` (wiring contract), `schema/`, `support-matrix.json` |
 | `tools/payload-components/` + `bin/payload-components.mjs` | The CLI: `add` command, project detection, fragment patching, install state, registry build/check |
 | `tests/` | `e2e/` (Playwright) + `int/` (Vitest) — the contract (below) |
@@ -63,7 +63,7 @@ Fragment patching is **text-anchor based** — it finds anchors like `const bloc
 
 | Task | Touch |
 | --- | --- |
-| Add a component | `payload-components/source/` + `manifests/<component>.json` + `registry.json` + `content/docs/kits/<component>.mdx` + installer tests — **all together** (incomplete components don't ship) |
+| Add a component | `payload-components/source/` + `manifests/<component>.json` + `registry.json` + `content/docs/components/<component>.mdx` + installer tests — **all together** (incomplete components don't ship) |
 | Site copy / messaging | `src/lib/site.ts` |
 | Landing layout / visuals | `src/components/site/sections/` + `src/app/globals.css` |
 | Docs content | `content/docs/` |
@@ -77,7 +77,7 @@ Any change must keep these green:
 - **`tests/e2e/geo.e2e.spec.ts`** — `llms.txt` / `llms-full.txt` / `/api/search` / per-page markdown / OG images.
 - **`tests/int/`** — demo-twin class-mirror fidelity; registry reproducible; install idempotent and recoverable.
 
-If you add a `landingSections` key, render its `<h2>` in the same change. The copy strings tests rely on (`heroHeadline`, `primaryInstallCommand`, `landingSections.*`, `kitEntries`, `terminalDemoLines`, `catalogTitle`) live in `src/lib/site.ts` — don't rename or retext them casually.
+If you add a `landingSections` key, render its `<h2>` in the same change. The copy strings tests rely on (`heroHeadline`, `primaryInstallCommand`, `landingSections.*`, `componentEntries`, `terminalDemoLines`, `catalogTitle`) live in `src/lib/site.ts` — don't rename or retext them casually.
 
 ## Architecture Boundary
 
@@ -103,7 +103,7 @@ This is the canonical model for every component family. `content/docs/architectu
 - Content-level variation (optional or extra editor fields) belongs in the Payload block config, not a new component.
 - Share code across a family with a real source file every variant ships: add it under `payload-components/source/blocks/shared`, list it in the variant's registry item `files[]` (with a `~/src/...` target) and the manifest `files[]`, and compose it in the config — e.g. `payload-components/source/blocks/shared/heroFields.ts` → `~/src/blocks/shared/heroFields.ts`, used as `fields: [...heroFields, /* variant-specific */]`.
 - Do NOT use `registryDependencies` for internal shared modules. That path resolves only public shadcn UI components (it checks `components/ui/<name>.tsx` and runs `shadcn add <name>`); an internal name will 404.
-- When a component's installed file set changes, sync the hand-maintained landing ledgers in `src/lib/site.ts` (`terminalDemoLines`, `frameInstalledFiles`, `wiringLedger`) and the component's `content/docs/kits/<name>.mdx` page.
+- When a component's installed file set changes, sync the hand-maintained landing ledgers in `src/lib/site.ts` (`terminalDemoLines`, `frameInstalledFiles`, `wiringLedger`) and the component's `content/docs/components/<name>.mdx` page.
 
 ## Payload Target Safety
 

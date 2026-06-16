@@ -3,8 +3,8 @@ import type { Metadata } from 'next'
 import { ArrowUpRight } from 'lucide-react'
 
 import { JsonLd } from '@/components/seo/JsonLd'
-import { KitCard } from '@/components/site/KitCard'
-import { KitFamilyHeader, UpcomingKitCard } from '@/components/site/KitGrid'
+import { ComponentCard } from '@/components/site/ComponentCard'
+import { ComponentFamilyHeader, UpcomingComponentCard } from '@/components/site/ComponentGrid'
 import { Eyebrow } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
@@ -12,9 +12,9 @@ import {
   catalogDescription,
   catalogTitle,
   githubRepoUrl,
-  kitEntries,
-  kitFamilies,
-  upcomingKits,
+  componentEntries,
+  componentFamilies,
+  upcomingComponents,
 } from '@/lib/site'
 import { breadcrumbNode, catalogCollectionPageNode, graph } from '@/lib/structured-data'
 
@@ -64,21 +64,21 @@ export default function ComponentsPage() {
               {catalogDescription}
             </p>
             <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-              {kitEntries.length} installable · {upcomingKits.length} in development · MIT
+              {componentEntries.length} installable · {upcomingComponents.length} in development · MIT
             </p>
           </div>
         </section>
 
         <section>
           <div className="container py-12 lg:py-16">
-            <KitFamilyHeader
-              countLabel={kitFamilies.pages.countLabel}
-              description={kitFamilies.pages.description}
-              name={kitFamilies.pages.name}
+            <ComponentFamilyHeader
+              countLabel={componentFamilies.pages.countLabel}
+              description={componentFamilies.pages.description}
+              name={componentFamilies.pages.name}
             />
             <div className="mt-6 grid gap-5 md:grid-cols-2">
-              {kitEntries.map((kit) => (
-                <KitCard key={kit.slug} kit={kit} />
+              {componentEntries.map((component) => (
+                <ComponentCard key={component.slug} component={component} />
               ))}
 
               <a
@@ -103,14 +103,14 @@ export default function ComponentsPage() {
 
         <section className="border-t border-border bg-muted/40">
           <div className="container py-12 lg:py-16">
-            <KitFamilyHeader
-              countLabel={kitFamilies.posts.countLabel}
-              description={kitFamilies.posts.description}
-              name={kitFamilies.posts.name}
+            <ComponentFamilyHeader
+              countLabel={componentFamilies.posts.countLabel}
+              description={componentFamilies.posts.description}
+              name={componentFamilies.posts.name}
             />
             <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {upcomingKits.map((kit) => (
-                <UpcomingKitCard key={kit.slug} kit={kit} />
+              {upcomingComponents.map((component) => (
+                <UpcomingComponentCard key={component.slug} component={component} />
               ))}
             </div>
           </div>

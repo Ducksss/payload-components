@@ -3,7 +3,7 @@ import type { Field } from 'payload'
 import { linkGroup } from '@/fields/linkGroup'
 
 /**
- * Shared field core for the Hero kit family.
+ * Shared field core for the Hero component family.
  *
  * Every hero variant (hero-basic, hero-video, hero-dramatic, …) spreads these
  * fields first and then appends its own variant-specific ones. Editing the
