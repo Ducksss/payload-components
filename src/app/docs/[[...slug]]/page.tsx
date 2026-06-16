@@ -40,20 +40,31 @@ export async function generateMetadata({ params }: DocsPageProps): Promise<Metad
     return {}
   }
 
+  /* Kit doc pages get a keyword-rich <title> for search ("… — Payload CMS
+     block") while the on-page H1 stays the short catalog name. Page blocks
+     read "block"; post components read "component". */
+  const kit =
+    slug?.length === 2 && slug[0] === 'kits'
+      ? kitEntries.find((entry) => entry.slug === slug[1])
+      : undefined
+  const title = kit
+    ? `${page.data.title} — Payload CMS ${kit.family === 'pages' ? 'block' : 'component'}`
+    : page.data.title
+
   return {
     alternates: { canonical: page.url },
-    title: page.data.title,
+    title,
     description: page.data.description,
     openGraph: {
       images: getPageImage(page).url,
-      title: page.data.title,
+      title,
       description: page.data.description,
       type: 'article',
       url: page.url,
     },
     twitter: {
       card: 'summary_large_image',
-      title: page.data.title,
+      title,
       description: page.data.description,
     },
   }

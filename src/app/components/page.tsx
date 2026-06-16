@@ -20,7 +20,7 @@ import { breadcrumbNode, catalogCollectionPageNode, graph } from '@/lib/structur
 
 export const metadata: Metadata = {
   alternates: { canonical: '/components' },
-  title: 'Component Catalog',
+  title: 'Payload CMS Block Catalog',
   description: catalogDescription,
   openGraph: {
     description: catalogDescription,

@@ -158,17 +158,20 @@ export function catalogCollectionPageNode(): Node {
 /* Per-kit detail schema for an individual kit doc page. Reads the registry
    entry so version, target, and description never drift from the catalog. */
 export function kitSoftwareApplicationNode(kit: (typeof kitEntries)[number]): Node {
+  const noun = kit.family === 'pages' ? 'block' : 'component'
+
   return {
     '@type': 'SoftwareApplication',
     applicationCategory: 'DeveloperApplication',
-    applicationSubCategory: 'Payload CMS component',
+    applicationSubCategory: `Payload CMS ${noun}`,
     author: { '@id': organizationId },
     codeRepository: githubRepoUrl,
     description: kit.description,
     isAccessibleForFree: true,
     isPartOf: { '@id': softwareId },
+    keywords: `Payload CMS ${noun}, Payload ${noun}, ${kit.title}, Payload CMS`,
     license: 'https://opensource.org/licenses/MIT',
-    name: `${kit.title} — Payload Component`,
+    name: `${kit.title} — Payload CMS ${noun}`,
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     operatingSystem: 'Node.js (macOS, Linux, Windows)',
     publisher: { '@id': organizationId },
