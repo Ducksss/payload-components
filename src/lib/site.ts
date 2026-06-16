@@ -434,6 +434,16 @@ export const faqEntries = [
   },
   {
     answer:
+      'In Payload, a block is a composable page-builder field — a reusable content section (hero, feature grid, CTA) editors stack to lay out a page. Payload Components ships pre-built blocks plus the wiring that makes them live, so a block is not just copied in: it is registered in your Pages collection, mapped in your renderer, typed, and added to the admin import map.',
+    question: 'What is a Payload CMS block?',
+  },
+  {
+    answer:
+      'Install one with the CLI — `npx payload-components add hero-basic`. It copies the block source into your project and wires it end to end: registers it in your Pages collection, maps it in RenderBlocks, and regenerates your Payload types and admin import map — landing as one reviewable git diff. The same command adds any block in the catalog.',
+    question: 'How do I add a hero block to Payload CMS?',
+  },
+  {
+    answer:
       'Three things: component source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each component manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.',
     question: 'What exactly does an install change in my repo?',
   },
@@ -478,7 +488,7 @@ export const communityInvite = {
 
 export const catalogTitle = 'Component catalog'
 export const catalogDescription =
-  'Installable Payload CMS components with docs, registry metadata, and CLI wiring. Each links to its full contract before you add it to a project.'
+  'Installable Payload CMS blocks and components, each with docs, registry metadata, and CLI wiring that registers, renders, types, and import-maps it for you. Read the contract before you add it.'
 
 /* ------------------------------------------------------------------ */
 /* Shared navigation surfaces                                          */

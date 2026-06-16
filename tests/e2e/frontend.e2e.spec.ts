@@ -91,7 +91,7 @@ test.describe('Light shadcn frontend', () => {
       {
         h1: catalogTitle,
         path: '/components',
-        title: /Component Catalog/,
+        title: /Payload CMS Block Catalog/,
       },
       {
         h1: 'Why Payload Components exists',

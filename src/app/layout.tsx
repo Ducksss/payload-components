@@ -35,7 +35,7 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Payload Components — Payload blocks, fully wired',
+    default: 'Payload Components — fully-wired blocks for Payload CMS',
     template: '%s | Payload Components',
   },
   description: siteDescription,
@@ -45,16 +45,16 @@ export const metadata: Metadata = {
   creator: 'Ducksss',
   publisher: 'Payload Components',
   keywords: [
-    'Payload CMS',
+    'Payload CMS blocks',
     'Payload blocks',
     'Payload CMS components',
+    'Payload block library',
+    'Payload hero block',
+    'Payload feature grid',
+    'copy-paste blocks for Payload CMS',
+    'shadcn registry',
     'Payload v3',
     'Next.js',
-    'shadcn registry',
-    'block registry',
-    'payload-components',
-    'CLI',
-    'TypeScript',
   ],
   formatDetection: { telephone: false },
   icons: {
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     description: siteDescription,
     locale: 'en_US',
     siteName: 'Payload Components',
-    title: 'Payload Components — Payload blocks, fully wired',
+    title: 'Payload Components — fully-wired blocks for Payload CMS',
     type: 'website',
     url: '/',
   },
@@ -88,7 +88,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     description: siteDescription,
-    title: 'Payload Components — Payload blocks, fully wired',
+    title: 'Payload Components — fully-wired blocks for Payload CMS',
   },
 }
 
