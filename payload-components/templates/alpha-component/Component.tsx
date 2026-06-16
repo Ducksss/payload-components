@@ -60,7 +60,7 @@ export const ExampleBasicBlock: React.FC<Props> = ({
           {links && links.length > 0 ? (
             <div className="flex flex-col gap-3 sm:flex-row">
               {links.map(({ link }, index) => (
-                <CMSLink key={index} appearance={link.appearance === 'outline' ? 'outline' : 'default'} {...link} />
+                <CMSLink key={index} {...link} appearance={link.appearance === 'outline' ? 'outline' : 'default'} />
               ))}
             </div>
           ) : null}
