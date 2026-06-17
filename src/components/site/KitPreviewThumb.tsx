@@ -1,23 +1,12 @@
-import type { ComponentType } from 'react'
-
 import { DemoScaleFrame } from '@/components/site/demos/DemoScaleFrame'
-import { FeatureGridBasicDemo } from '@/components/site/demos/FeatureGridBasicDemo'
-import { HeroBasicDemo } from '@/components/site/demos/HeroBasicDemo'
+import { demosBySlug } from '@/components/site/demos/registry'
 
 /* Live preview strip for the catalog cards: the same demo twins the
  * landing renders, dropped into a fixed-height window via DemoScaleFrame
- * so the kit shows at its real desktop type ramp. Both twins default
- * their own sample content and are already aria-hidden +
- * pointer-events-none (the frame reinforces both). Slugs without a twin
- * render nothing — KitCard falls back to a plain body. */
-const demosBySlug: Record<string, ComponentType> = {
-  'feature-grid-basic': FeatureGridBasicDemo,
-  'hero-basic': HeroBasicDemo,
-}
-
-export function hasKitDemo(slug: string) {
-  return slug in demosBySlug
-}
+ * so the kit shows at its real desktop type ramp. Twins default their own
+ * sample content and are already aria-hidden + pointer-events-none (the
+ * frame reinforces both). Slugs without a twin render nothing — KitCard
+ * falls back to a plain body. */
 
 export function KitPreviewThumb({ slug }: { slug: string }) {
   const Demo = demosBySlug[slug]

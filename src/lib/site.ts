@@ -210,14 +210,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const kitsIntro =
-  'No screenshots, no skeletons — the specimen below is the kit’s real component rendered with sample content. Two page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the kit’s real component rendered with sample content. Five page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two kit families mirror Payload's content model — and the two real
    install modes in the kit manifests (payload-kit-required block wiring
    vs shadcn-native component copies). */
 export const kitFamilies = {
   pages: {
-    countLabel: '2 installable',
+    countLabel: '5 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -255,6 +255,45 @@ export const kitEntries = [
     status: 'Alpha',
     target: 'Feature section',
     title: 'Feature Grid Basic',
+    version: '0.1.0',
+  },
+  {
+    command: 'npx payload-kit add feature-split',
+    description:
+      'A two-column feature section pairing a heading and CTA with a stacked feature list.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/kits/feature-split',
+    slug: 'feature-split',
+    status: 'Alpha',
+    target: 'Split section',
+    title: 'Feature Split',
+    version: '0.1.0',
+  },
+  {
+    command: 'npx payload-kit add feature-bento',
+    description:
+      'An asymmetric bento grid that leads with a featured cell and fills supporting cells.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/kits/feature-bento',
+    slug: 'feature-bento',
+    status: 'Alpha',
+    target: 'Bento grid',
+    title: 'Feature Bento',
+    version: '0.1.0',
+  },
+  {
+    command: 'npx payload-kit add feature-steps',
+    description:
+      'A numbered steps block for sequential, how-it-works feature flows.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/kits/feature-steps',
+    slug: 'feature-steps',
+    status: 'Alpha',
+    target: 'Steps section',
+    title: 'Feature Steps',
     version: '0.1.0',
   },
 ] as const

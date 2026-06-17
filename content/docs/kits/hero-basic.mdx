@@ -1,67 +1,58 @@
 ---
 title: Hero Basic
-description: A headline-led Payload block for proving the registry and wrapper workflow.
+description: A headline-led marketing hero — eyebrow, title, supporting copy, CTAs, and proof badges — installed as a wired Payload block.
 icon: LayoutPanelTop
 ---
 
-<Callout type="info">
-  `hero-basic` is the **golden alpha kit** — the reference install the whole wrapper
-  workflow is validated against.
-</Callout>
+<KitPreview slug="hero-basic" />
 
-```bash
-npx payload-kit add hero-basic
-```
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-kit add hero-basic
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/hero-basic.json
+    ```
+  </Tab>
+</Tabs>
 
 ## What it installs
 
-Three source files land in your project:
-
-<Files>
-  <Folder name="src/blocks/shared">
-    <File name="heroFields.ts" />
-  </Folder>
-  <Folder name="src/blocks/HeroBasic" defaultOpen>
-    <File name="config.ts" />
-    <File name="Component.tsx" />
-  </Folder>
-</Files>
-
-…and two fragments are wired automatically:
-
-- a render-block registration for `heroBasic`
-- a `Pages` layout registration for `HeroBasic`
-
-<Callout type="info">
-  `heroFields.ts` is the shared field core for the Hero family — every hero variant
-  composes it. Editing it updates each installed hero block at once, and re-running an
-  install never overwrites a copy you have changed.
-</Callout>
+<KitWiring slug="hero-basic" />
 
 ## Content model
 
+The first four fields come from the shared `heroFields` base; `proofItems` is specific to this
+variant.
+
 <TypeTable
   type={{
-    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    eyebrow: { type: 'text', description: 'Small label shown above the headline.' },
     title: { type: 'text', required: true, description: 'The hero headline.' },
     description: {
       type: 'textarea',
       required: true,
       description: 'Supporting copy beneath the headline.',
     },
-    links: {
+    links: { type: 'array', required: true, description: 'One or two CTA links (min 1, max 2).' },
+    proofItems: {
       type: 'array',
-      required: true,
-      description: 'One or two CTA links (min 1, max 2).',
+      description: 'Up to four short proof labels (e.g. “SOC 2”, “99.99% uptime”).',
     },
-    proofItems: { type: 'array', description: 'Up to four short proof labels.' },
   }}
 />
 
-## Acceptance criteria
+## Usage
 
-<Callout type="success">
-  The kit is valid when it installs into a supported target project, registers once
-  in `RenderBlocks`, registers once in the `Pages` layout field, runs post-install
-  scripts, and treats a second install as idempotent.
-</Callout>
+<KitUsage slug="hero-basic" />
+
+## Requirements
+
+<KitRequirements slug="hero-basic" />

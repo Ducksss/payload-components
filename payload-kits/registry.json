@@ -53,6 +53,11 @@
       },
       "files": [
         {
+          "path": "payload-kits/source/blocks/shared/featureFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/featureFields.ts"
+        },
+        {
           "path": "payload-kits/source/blocks/FeatureGridBasic/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureGridBasic/config.ts"
@@ -61,6 +66,105 @@
           "path": "payload-kits/source/blocks/FeatureGridBasic/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureGridBasic/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "feature-split",
+      "type": "registry:block",
+      "title": "Feature Split",
+      "description": "Two-column Payload feature block: heading and CTA beside a feature list.",
+      "registryDependencies": ["badge", "card"],
+      "docs": "Payload Kits installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-kit add feature-split\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/feature-split.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-kit add feature-split` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadKit": {
+          "installCommand": "payload-kit add feature-split",
+          "postInstall": ["generate:types", "generate:importmap"],
+          "requiresPayloadKitWrapper": true,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-kits/source/blocks/shared/featureFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/featureFields.ts"
+        },
+        {
+          "path": "payload-kits/source/blocks/FeatureSplit/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureSplit/config.ts"
+        },
+        {
+          "path": "payload-kits/source/blocks/FeatureSplit/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureSplit/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "feature-bento",
+      "type": "registry:block",
+      "title": "Feature Bento",
+      "description": "Asymmetric Payload bento grid with a featured lead cell and supporting cells.",
+      "registryDependencies": ["badge", "card"],
+      "docs": "Payload Kits installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-kit add feature-bento\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/feature-bento.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-kit add feature-bento` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadKit": {
+          "installCommand": "payload-kit add feature-bento",
+          "postInstall": ["generate:types", "generate:importmap"],
+          "requiresPayloadKitWrapper": true,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-kits/source/blocks/shared/featureFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/featureFields.ts"
+        },
+        {
+          "path": "payload-kits/source/blocks/FeatureBento/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureBento/config.ts"
+        },
+        {
+          "path": "payload-kits/source/blocks/FeatureBento/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureBento/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "feature-steps",
+      "type": "registry:block",
+      "title": "Feature Steps",
+      "description": "Numbered Payload steps block for sequential, how-it-works feature flows.",
+      "registryDependencies": ["badge", "card"],
+      "docs": "Payload Kits installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-kit add feature-steps\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/feature-steps.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-kit add feature-steps` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadKit": {
+          "installCommand": "payload-kit add feature-steps",
+          "postInstall": ["generate:types", "generate:importmap"],
+          "requiresPayloadKitWrapper": true,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-kits/source/blocks/shared/featureFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/featureFields.ts"
+        },
+        {
+          "path": "payload-kits/source/blocks/FeatureSteps/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureSteps/config.ts"
+        },
+        {
+          "path": "payload-kits/source/blocks/FeatureSteps/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureSteps/Component.tsx"
         }
       ]
     }

@@ -116,6 +116,9 @@ Priority order — **page blocks first**, because they showcase the wiring:
 |---|---|---|---|---|
 | ✓ | hero-basic | page block | shipped | |
 | ✓ | feature-grid-basic | page block | shipped | |
+| ✓ | feature-split | page block | shipped | two-column; shares featureFields |
+| ✓ | feature-bento | page block | shipped | asymmetric grid; shares featureFields |
+| ✓ | feature-steps | page block | shipped | numbered; shares featureFields |
 | 1 | **cta-basic** | page block | Universal; cleanest second wiring demo | independent |
 | 2 | **pricing-basic** | page block | High value on every marketing site | independent |
 | 3 | **faq-basic** | page block | Common, structured, easy win | independent |
@@ -259,7 +262,7 @@ and a family is one shared field base plus N variants (the model proven by
 | Family | Base → variants | Shared base |
 |---|---|---|
 | Hero | `hero-basic` ✓ · `hero-split` · `hero-media` · `hero-dramatic` | `heroFields` ✓ |
-| Feature | `feature-grid-basic` ✓ · `feature-split` · `feature-bento` · `feature-steps` | `featureFields` (extract next) |
+| Feature | `feature-grid-basic` ✓ · `feature-split` ✓ · `feature-bento` ✓ · `feature-steps` ✓ | `featureFields` ✓ |
 | CTA | `cta-basic` · `cta-banner` · `cta-split` | `ctaFields` |
 | Pricing | `pricing-basic` (tiers) · `pricing-comparison` · `pricing-single` | `pricingFields` |
 | Social proof | `testimonial-basic` · `testimonial-grid` · `logo-cloud` · `stats-band` | mixed |
@@ -276,7 +279,7 @@ and a family is one shared field base plus N variants (the model proven by
 
 **Shared primitives** (bases the variants compose — *not* installable kits)
 
-`heroFields` ✓ · `featureFields` · `ctaFields` · `pricingFields` · `faqFields` ·
+`heroFields` ✓ · `featureFields` ✓ · `ctaFields` · `pricingFields` · `faqFields` ·
 `mediaField` · a section-shell wrapper carrying `id` / `className` /
 `disableInnerContainer`.
 

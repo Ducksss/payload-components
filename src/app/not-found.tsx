@@ -8,7 +8,10 @@ import { Terminal } from '@/components/site/Terminal'
 const notFoundLines = [
   { kind: 'command', text: 'payload-kit add this-page' },
   { kind: 'info', text: 'payload-kit: Unknown kit "this-page".' },
-  { kind: 'info', text: 'Known kits: hero-basic, feature-grid-basic.' },
+  {
+    kind: 'info',
+    text: 'Known kits: hero-basic, feature-grid-basic, feature-split, feature-bento, feature-steps.',
+  },
 ] as const
 
 export default function NotFoundPage() {
