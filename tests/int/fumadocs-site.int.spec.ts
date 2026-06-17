@@ -19,6 +19,12 @@ type HeaderRule = {
   source: string
 }
 
+type RedirectRule = {
+  destination: string
+  permanent: boolean
+  source: string
+}
+
 type MetaFile = {
   pages?: Array<string | { pages?: string[]; title?: string }>
   title?: string
@@ -156,7 +162,7 @@ describe('Fumadocs site shell', () => {
   it('cache-busts deploy-sensitive app responses without touching hashed assets', async () => {
     const { default: nextConfig } = (await import(
       pathToFileURL(path.join(repoRoot, 'next.config.mjs')).href
-    )) as { default: { headers?: () => Promise<HeaderRule[]> } }
+    )) as { default: { headers?: () => Promise<HeaderRule[]>; redirects?: () => Promise<RedirectRule[]> } }
 
     const cacheRules = (await nextConfig.headers?.())?.filter((rule) =>
       rule.headers.some((header) => header.key === 'Cache-Control'),
@@ -184,6 +190,44 @@ describe('Fumadocs site shell', () => {
         ],
       },
     ])
+
+    await expect(nextConfig.redirects?.()).resolves.toEqual([
+      { source: '/docs/kits', destination: '/components', permanent: true },
+      { source: '/docs/kits/:slug', destination: '/docs/components/:slug', permanent: true },
+      {
+        source: '/docs/what-is-a-payload-kit',
+        destination: '/docs/what-is-a-payload-component',
+        permanent: true,
+      },
+      {
+        source: '/docs/shadcn-vs-payload-kit',
+        destination: '/docs/shadcn-vs-payload-components',
+        permanent: true,
+      },
+    ])
+  })
+
+  it('loads component docs data from the component registry tree', async () => {
+    const [{ getComponentManifest, getComponentRegistryDependencies }, { getComponentSources }] =
+      await Promise.all([
+        import('../../src/lib/component-manifest'),
+        import('../../src/lib/component-source'),
+      ])
+
+    await expect(getComponentManifest('hero-basic')).resolves.toMatchObject({
+      files: expect.arrayContaining(['src/blocks/HeroBasic/config.ts']),
+      name: 'hero-basic',
+    })
+    await expect(getComponentRegistryDependencies('hero-basic')).resolves.toContain('badge')
+
+    const sources = await getComponentSources('hero-basic')
+
+    expect(sources.map((source) => source.title)).toEqual([
+      'src/blocks/HeroBasic/config.ts',
+      'src/blocks/HeroBasic/Component.tsx',
+      'src/blocks/shared/heroFields.ts',
+    ])
+    expect(sources[0]?.code).toContain("slug: 'heroBasic'")
   })
 
   it('does not reintroduce Payload CMS runtime app surfaces', async () => {

@@ -7,7 +7,7 @@ import { FeatureSplitDemo } from './FeatureSplitDemo'
 import { FeatureStepsDemo } from './FeatureStepsDemo'
 import { HeroBasicDemo } from './HeroBasicDemo'
 
-/* Single source of truth mapping a kit slug to its live demo twin. Shared by
+/* Single source of truth mapping a component slug to its live demo twin. Shared by
  * the catalog preview thumbnails (ComponentPreviewThumb) and the docs-page live
  * render (ComponentDocPreview / the <ComponentPreview> MDX component) so the two surfaces
  * never drift. Every twin defaults its own sample content and is already

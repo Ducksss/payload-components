@@ -5,15 +5,15 @@ import { featureStepsDemoContent, type FeatureSectionDemoContent } from '@/lib/d
 import { DemoLink } from './DemoLink'
 
 /* DEMO TWIN of payload-components/source/blocks/FeatureSteps/Component.tsx
- * (feature-steps@0.1.0). Class strings are copied verbatim from the kit
+ * (feature-steps@0.1.0). Class strings are copied verbatim from the component
  * source, in source order. Deliberate substitutions — nothing else may diverge:
  *   <section className="container"> → <div> root (frames own spacing; no landmark)
  *   <h2>                            → <div> (role-neutral; the catalog owns its outline)
  *   CMSLink                         → <DemoLink> (@/components/Link exists only in consumer repos)
  *   FeatureStepsBlockData           → FeatureSectionDemoContent (@/payload-types is consumer-only)
  *   cn() inner wrapper              → plain mx-auto/max-w-5xl div (skipped by the class-mirror guard)
- * Step numbers come from the array index, exactly as the kit derives them.
- * If the kit Component.tsx changes, update this file in the same PR. */
+ * Step numbers come from the array index, exactly as the component derives them.
+ * If the component Component.tsx changes, update this file in the same PR. */
 
 export function FeatureStepsDemo({
   className,

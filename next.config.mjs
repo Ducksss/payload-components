@@ -25,6 +25,22 @@ const nextConfig = {
       },
     ]
   },
+  async redirects() {
+    return [
+      { source: '/docs/kits', destination: '/components', permanent: true },
+      { source: '/docs/kits/:slug', destination: '/docs/components/:slug', permanent: true },
+      {
+        source: '/docs/what-is-a-payload-kit',
+        destination: '/docs/what-is-a-payload-component',
+        permanent: true,
+      },
+      {
+        source: '/docs/shadcn-vs-payload-kit',
+        destination: '/docs/shadcn-vs-payload-components',
+        permanent: true,
+      },
+    ]
+  },
   reactStrictMode: true,
   turbopack: {
     root: process.cwd(),

@@ -22,7 +22,7 @@ export async function ComponentUsage({ slug }: { slug: string }) {
       </Step>
       <Step>
         <strong className="font-medium text-foreground">Fill the content.</strong> Complete the
-        fields from the <a href="#content-model">content model</a> above — the kit ships sample
+        fields from the <a href="#content-model">content model</a> above — the component ships sample
         content you can start from.
       </Step>
       <Step>

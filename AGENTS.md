@@ -107,29 +107,29 @@ This is the canonical model for every component family. `content/docs/architectu
 
 ## Component doc page format
 
-Every kit doc page (`content/docs/components/<slug>.mdx`) follows one fixed shape — a shadcn-style
-component page. Match it exactly when adding or editing a kit; do not invent per-kit layouts.
+Every component doc page (`content/docs/components/<slug>.mdx`) follows one fixed shape — a shadcn-style
+component page. Match it exactly when adding or editing a component; do not invent per-component layouts.
 
 - **Header is automatic.** `src/app/docs/[[...slug]]/page.tsx` detects `/docs/components/*` and renders
   `ComponentDocHeader` — title + description + at-a-glance chips (`v{version} · Page block · {Family}
   family · {target}`, from `componentEntries`) on the left; Copy Page + prev/next arrows (catalog order)
-  on the right. The kit **must** be in `componentEntries` (`src/lib/site.ts`). Do **not** add an `<h1>` or
+  on the right. The component **must** be in `componentEntries` (`src/lib/site.ts`). Do **not** add an `<h1>` or
   repeat the description in the MDX body — frontmatter drives both.
-- **Frontmatter:** `title` (must equal the kit's `componentEntries` title — the e2e kit-page loop asserts
-  `H1 === kit.title`), `description`, `icon` (any Lucide name).
+- **Frontmatter:** `title` (must equal the component's `componentEntries` title — the e2e component-page loop asserts
+  `H1 === component.title`), `description`, `icon` (any Lucide name).
 - **The rich sections are data-driven from the manifest/registry** (via `src/lib/component-manifest.ts`),
   so the MDX stays thin and the sections can't drift from what installs. Body order, nothing above
   the preview:
   1. `<ComponentPreview slug="<slug>" />` — **Preview** (demo twin from
      `src/components/site/demos/registry.ts`) + **Code** (every installed source file — `config.ts`,
      `Component.tsx`, shared `*Fields.ts` — read at build via `getComponentSources` in
-     `src/lib/component-source.ts`) tabs. A new kit **must** register a demo twin, or the preview is empty.
+     `src/lib/component-source.ts`) tabs. A new component **must** register a demo twin, or the preview is empty.
   2. `## Installation` — `<Tabs items={['Command', 'Manual']}>`: Command = `npx payload-components add
      <slug>`; Manual = the direct `pnpm dlx shadcn@latest add …/r/<slug>.json` URL.
   3. `## What it installs` — `<ComponentWiring slug="<slug>" />`: the copied files + a factual table of the
      edits the install makes (register the block, map the renderer, regenerate types + import map) +
      shared-base callout + idempotency note, all from the manifest. State facts — **not** a
-     shadcn-vs-kit comparison; that pitch belongs on the landing, not the reference. Do **not**
+     shadcn comparison; that pitch belongs on the landing, not the reference. Do **not**
      hand-write the file tree or fragment list.
   4. `## Content model` — `<TypeTable>` of the block fields (+ a second table for array-item fields).
      The one hand-authored section; note which fields come from the shared family base vs the variant.

@@ -230,8 +230,28 @@ export const componentFamilies = {
   },
 } as const
 
+export const componentCategories = {
+  hero: { family: 'pages', label: 'Hero' },
+  features: { family: 'pages', label: 'Features' },
+  embed: { family: 'pages', label: 'Embed' },
+  cta: { family: 'pages', label: 'Call to action' },
+  pricing: { family: 'pages', label: 'Pricing' },
+  faq: { family: 'pages', label: 'FAQ' },
+  testimonials: { family: 'pages', label: 'Testimonials' },
+  cards: { family: 'posts', label: 'Cards' },
+  archive: { family: 'posts', label: 'Archive' },
+  header: { family: 'posts', label: 'Post header' },
+  index: { family: 'posts', label: 'Index' },
+  author: { family: 'posts', label: 'Author' },
+  newsletter: { family: 'posts', label: 'Newsletter' },
+  related: { family: 'posts', label: 'Related' },
+} as const
+
+export type ComponentCategory = keyof typeof componentCategories
+
 export const componentEntries = [
   {
+    category: 'hero',
     command: 'npx payload-components add hero-basic',
     description:
       'A headline-led marketing hero with CTA links, proof badges, Payload block config, and frontend rendering.',
@@ -245,6 +265,7 @@ export const componentEntries = [
     version: '0.1.0',
   },
   {
+    category: 'features',
     command: 'npx payload-components add feature-grid-basic',
     description:
       'A text-first feature grid with repeatable items, optional CTA wiring, and idempotent registration.',
@@ -258,6 +279,7 @@ export const componentEntries = [
     version: '0.1.0',
   },
   {
+    category: 'features',
     command: 'npx payload-components add feature-split',
     description:
       'A two-column feature section pairing a heading and CTA with a stacked feature list.',
@@ -271,6 +293,7 @@ export const componentEntries = [
     version: '0.1.0',
   },
   {
+    category: 'features',
     command: 'npx payload-components add feature-bento',
     description:
       'An asymmetric bento grid that leads with a featured cell and fills supporting cells.',
@@ -284,6 +307,7 @@ export const componentEntries = [
     version: '0.1.0',
   },
   {
+    category: 'features',
     command: 'npx payload-components add feature-steps',
     description:
       'A numbered steps block for sequential, how-it-works feature flows.',
@@ -297,6 +321,7 @@ export const componentEntries = [
     version: '0.1.0',
   },
   {
+    category: 'embed',
     command: 'npx payload-components add embed-basic',
     description:
       'A responsive, accessible iframe block for YouTube, Vimeo, maps, forms, charts, and external widgets with a selectable aspect ratio.',
@@ -317,6 +342,7 @@ export type ComponentEntry = (typeof componentEntries)[number]
    shown as "Coming soon" until their installer coverage lands. */
 export const upcomingComponents = [
   {
+    category: 'cards',
     description: 'A post card with image, categories, date, title, and excerpt.',
     family: 'posts',
     slug: 'post-card',
@@ -324,6 +350,7 @@ export const upcomingComponents = [
     title: 'Post Card',
   },
   {
+    category: 'archive',
     description: 'An archive grid for rendering arrays of post summaries.',
     family: 'posts',
     slug: 'post-archive',
@@ -331,6 +358,7 @@ export const upcomingComponents = [
     title: 'Post Archive',
   },
   {
+    category: 'header',
     description: 'A post hero with category, author, date, and summary.',
     family: 'posts',
     slug: 'post-hero',
@@ -338,6 +366,7 @@ export const upcomingComponents = [
     title: 'Post Hero',
   },
   {
+    category: 'index',
     description: 'A featured post surface with image, category, and date.',
     family: 'posts',
     slug: 'featured-post',
@@ -345,6 +374,7 @@ export const upcomingComponents = [
     title: 'Featured Post',
   },
   {
+    category: 'index',
     description: 'A compact post list with dates, categories, and descriptions.',
     family: 'posts',
     slug: 'post-list',
@@ -352,6 +382,7 @@ export const upcomingComponents = [
     title: 'Post List',
   },
   {
+    category: 'author',
     description: 'An author profile card for article pages and editorial bylines.',
     family: 'posts',
     slug: 'author-card',
@@ -359,6 +390,7 @@ export const upcomingComponents = [
     title: 'Author Card',
   },
   {
+    category: 'newsletter',
     description: 'A newsletter callout for post pages and editorial surfaces.',
     family: 'posts',
     slug: 'newsletter-callout',
@@ -366,6 +398,7 @@ export const upcomingComponents = [
     title: 'Newsletter Callout',
   },
   {
+    category: 'related',
     description: 'A related-posts section for compact recommendations.',
     family: 'posts',
     slug: 'related-posts',

@@ -3,19 +3,25 @@ import Link from 'next/link'
 import { MarkdownCopyButton, ViewOptionsPopover } from 'fumadocs-ui/layouts/docs/page'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 
-/* shadcn-style header for kit doc pages (rendered by src/app/docs/[[...slug]]/page.tsx
+/* shadcn-style header for component doc pages (rendered by src/app/docs/[[...slug]]/page.tsx
  * for /docs/components/*): title + description on the left; Copy Page controls and
  * prev/next arrows (walking the catalog order) on the right. The <h1> stays the
- * page title — the e2e kit-page loop asserts H1 === kit.title. */
+ * page title — the e2e component-page loop asserts H1 === component.title. */
 
 type ComponentNav = { href: string; title: string }
 
-function NavArrow({ direction, kit }: { direction: 'next' | 'prev'; kit?: ComponentNav }) {
+function NavArrow({
+  component,
+  direction,
+}: {
+  component?: ComponentNav
+  direction: 'next' | 'prev'
+}) {
   const Icon = direction === 'prev' ? ArrowLeft : ArrowRight
   const base =
     'inline-flex size-8 items-center justify-center rounded-md border border-border bg-background'
 
-  if (!kit) {
+  if (!component) {
     return (
       <span aria-hidden="true" className={`${base} text-muted-foreground/40`}>
         <Icon className="size-4" />
@@ -25,9 +31,9 @@ function NavArrow({ direction, kit }: { direction: 'next' | 'prev'; kit?: Compon
 
   return (
     <Link
-      href={kit.href}
-      title={kit.title}
-      aria-label={`${direction === 'prev' ? 'Previous' : 'Next'} kit: ${kit.title}`}
+      href={component.href}
+      title={component.title}
+      aria-label={`${direction === 'prev' ? 'Previous' : 'Next'} component: ${component.title}`}
       className={`${base} text-foreground transition-colors hover:bg-secondary`}
     >
       <Icon className="size-4" aria-hidden="true" />
@@ -77,8 +83,8 @@ export function ComponentDocHeader({
         <MarkdownCopyButton markdownUrl={markdownUrl} />
         <ViewOptionsPopover markdownUrl={markdownUrl} githubUrl={githubUrl} />
         <div className="ml-1 flex items-center gap-1">
-          <NavArrow direction="prev" kit={prev} />
-          <NavArrow direction="next" kit={next} />
+          <NavArrow direction="prev" component={prev} />
+          <NavArrow direction="next" component={next} />
         </div>
       </div>
     </div>

@@ -2,16 +2,16 @@ import { embedBasicDemoContent, type EmbedBasicDemoContent } from '@/lib/demo-co
 import { cn } from '@/utilities/ui'
 
 /* DEMO TWIN of payload-components/source/blocks/EmbedBasic/Component.tsx
- * (embed-basic@0.1.0). Class strings are copied verbatim from the kit
+ * (embed-basic@0.1.0). Class strings are copied verbatim from the component
  * source, in source order. Deliberate substitutions — nothing else may
  * diverge:
  *   <section className="container"> → <div> root (frames own spacing; no landmark)
  *   <iframe>                        → <div> faux player (no third-party frame loads on the catalog)
  *   <figcaption>                    → <div> (role-neutral)
  *   EmbedBasicBlockData             → EmbedBasicDemoContent (@/payload-types is consumer-only)
- * The kit root's cn('container') and the cn() aspect wrapper are skipped
+ * The component root's cn('container') and the cn() aspect wrapper are skipped
  * by the twin class-mirror check by construction.
- * If the kit Component.tsx changes, update this file in the same PR. */
+ * If the component Component.tsx changes, update this file in the same PR. */
 
 const aspectClassByRatio: Record<EmbedBasicDemoContent['aspectRatio'], string> = {
   '16:9': 'aspect-video',

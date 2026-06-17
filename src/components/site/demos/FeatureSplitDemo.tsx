@@ -5,15 +5,15 @@ import { featureSplitDemoContent, type FeatureSectionDemoContent } from '@/lib/d
 import { DemoLink } from './DemoLink'
 
 /* DEMO TWIN of payload-components/source/blocks/FeatureSplit/Component.tsx
- * (feature-split@0.1.0). Class strings are copied verbatim from the kit
+ * (feature-split@0.1.0). Class strings are copied verbatim from the component
  * source, in source order. Deliberate substitutions — nothing else may diverge:
  *   <section className="container"> → <div> root (frames own spacing; no landmark)
  *   <h2>                            → <div> (role-neutral; the catalog owns its outline)
  *   CMSLink                         → <DemoLink> (@/components/Link exists only in consumer repos)
  *   FeatureSplitBlockData           → FeatureSectionDemoContent (@/payload-types is consumer-only)
  *   cn() inner-grid wrapper         → plain mx-auto/max-w-6xl div (skipped by the class-mirror guard)
- * Badge/Card are the same shadcn primitives the kit installs — imported real.
- * If the kit Component.tsx changes, update this file in the same PR. */
+ * Badge/Card are the same shadcn primitives the component installs — imported real.
+ * If the component Component.tsx changes, update this file in the same PR. */
 
 export function FeatureSplitDemo({
   className,

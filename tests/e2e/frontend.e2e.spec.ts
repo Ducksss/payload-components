@@ -117,6 +117,29 @@ test.describe('Light shadcn frontend', () => {
     }
   })
 
+  test('redirects old kit docs URLs to component docs', async ({ page }) => {
+    await page.goto(`${baseURL}/docs/kits/hero-basic`)
+    expect(page.url()).toBe(`${baseURL}/docs/components/hero-basic`)
+    await expect(page.getByRole('heading', { level: 1, name: 'Hero Basic' })).toBeVisible()
+
+    await page.goto(`${baseURL}/docs/what-is-a-payload-kit`)
+    expect(page.url()).toBe(`${baseURL}/docs/what-is-a-payload-component`)
+  })
+
+  test('filters the catalog from URL search params', async ({ page }) => {
+    await page.goto(`${baseURL}/components?q=bento`)
+
+    await expect(page.locator('#feature-bento')).toBeVisible()
+    await expect(page.locator('#hero-basic')).toBeHidden()
+    await expect(page.getByLabel('Search components')).toHaveValue('bento')
+
+    await page.goto(`${baseURL}/components?category=features`)
+
+    await expect(page.locator('#feature-grid-basic')).toBeVisible()
+    await expect(page.locator('#feature-steps')).toBeVisible()
+    await expect(page.locator('#hero-basic')).toBeHidden()
+  })
+
   test('exposes every landing section, the footer, and each component', async ({ page }) => {
     await page.goto(baseURL)
 

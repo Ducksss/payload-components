@@ -3,7 +3,7 @@ import { Callout } from 'fumadocs-ui/components/callout'
 import { getComponentManifest } from '@/lib/component-manifest'
 
 /* Backs <ComponentWiring slug="…" /> — the factual "what it installs & wires" reference,
- * driven entirely by the kit manifest so it can't drift from what installs. States
+ * driven entirely by the component manifest so it can't drift from what installs. States
  * which files land and which edits the install makes; the "wired, not pasted" pitch
  * lives on the landing page, not here. */
 export async function ComponentWiring({ slug }: { slug: string }) {
