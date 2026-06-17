@@ -43,6 +43,9 @@ const readJson = async <T>(filePath: string): Promise<T> =>
   JSON.parse(await readFile(filePath, 'utf8')) as T
 
 const expectedRegistryDependencies: Record<string, string[]> = {
+  'call-to-action-boxed': [],
+  'call-to-action-centered': [],
+  'call-to-action-signup': ['button'],
   'content-columns': ['badge'],
   'content-community': ['badge'],
   'content-feature-media': ['badge'],
@@ -106,6 +109,9 @@ describe('public shadcn registry publication', () => {
       name: 'payload-components',
     })
     expect(registry.items.map((item) => item.name).sort()).toEqual([
+      'call-to-action-boxed',
+      'call-to-action-centered',
+      'call-to-action-signup',
       'content-columns',
       'content-community',
       'content-feature-media',

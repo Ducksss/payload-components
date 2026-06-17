@@ -50,6 +50,9 @@ Current alpha components:
   integration-list
   integration-marquee
   integration-testimonial
+  call-to-action-centered
+  call-to-action-boxed
+  call-to-action-signup
 `
 
 const parseArgs = (argv: string[]) => {
