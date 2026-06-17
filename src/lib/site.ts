@@ -230,8 +230,33 @@ export const kitFamilies = {
   },
 } as const
 
+/* Section-type categories — the at-a-glance browse axis (à la tailark's
+   category rail). Each kit declares one `category`; the catalog sidebar lists
+   the categories present under each family, with live counts, and hides empty
+   ones. `family` ties a category to its section so slugs can repeat across
+   families if needed. Order here is the order shown in the sidebar.
+   Add a new entry when a kit introduces a new section type. */
+export const kitCategories = {
+  hero: { family: 'pages', label: 'Hero' },
+  features: { family: 'pages', label: 'Features' },
+  cta: { family: 'pages', label: 'Call to action' },
+  pricing: { family: 'pages', label: 'Pricing' },
+  faq: { family: 'pages', label: 'FAQ' },
+  testimonials: { family: 'pages', label: 'Testimonials' },
+  cards: { family: 'posts', label: 'Cards' },
+  archive: { family: 'posts', label: 'Archive' },
+  header: { family: 'posts', label: 'Post header' },
+  index: { family: 'posts', label: 'Index' },
+  author: { family: 'posts', label: 'Author' },
+  newsletter: { family: 'posts', label: 'Newsletter' },
+  related: { family: 'posts', label: 'Related' },
+} as const
+
+export type KitCategory = keyof typeof kitCategories
+
 export const kitEntries = [
   {
+    category: 'hero',
     command: 'npx payload-kit add hero-basic',
     description:
       'A headline-led marketing hero with CTA links, proof badges, Payload block config, and frontend rendering.',
@@ -245,6 +270,7 @@ export const kitEntries = [
     version: '0.1.0',
   },
   {
+    category: 'features',
     command: 'npx payload-kit add feature-grid-basic',
     description:
       'A text-first feature grid with repeatable items, optional CTA wiring, and idempotent registration.',
@@ -265,6 +291,7 @@ export type KitEntry = (typeof kitEntries)[number]
    shown as "Coming soon" until their installer coverage lands. */
 export const upcomingKits = [
   {
+    category: 'cards',
     description: 'A post card with image, categories, date, title, and excerpt.',
     family: 'posts',
     slug: 'post-card',
@@ -272,6 +299,7 @@ export const upcomingKits = [
     title: 'Post Card',
   },
   {
+    category: 'archive',
     description: 'An archive grid for rendering arrays of post summaries.',
     family: 'posts',
     slug: 'post-archive',
@@ -279,6 +307,7 @@ export const upcomingKits = [
     title: 'Post Archive',
   },
   {
+    category: 'header',
     description: 'A post hero with category, author, date, and summary.',
     family: 'posts',
     slug: 'post-hero',
@@ -286,6 +315,7 @@ export const upcomingKits = [
     title: 'Post Hero',
   },
   {
+    category: 'index',
     description: 'A featured post surface with image, category, and date.',
     family: 'posts',
     slug: 'featured-post',
@@ -293,6 +323,7 @@ export const upcomingKits = [
     title: 'Featured Post',
   },
   {
+    category: 'index',
     description: 'A compact post list with dates, categories, and descriptions.',
     family: 'posts',
     slug: 'post-list',
@@ -300,6 +331,7 @@ export const upcomingKits = [
     title: 'Post List',
   },
   {
+    category: 'author',
     description: 'An author profile card for article pages and editorial bylines.',
     family: 'posts',
     slug: 'author-card',
@@ -307,6 +339,7 @@ export const upcomingKits = [
     title: 'Author Card',
   },
   {
+    category: 'newsletter',
     description: 'A newsletter callout for post pages and editorial surfaces.',
     family: 'posts',
     slug: 'newsletter-callout',
@@ -314,6 +347,7 @@ export const upcomingKits = [
     title: 'Newsletter Callout',
   },
   {
+    category: 'related',
     description: 'A related-posts section for compact recommendations.',
     family: 'posts',
     slug: 'related-posts',

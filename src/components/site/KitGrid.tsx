@@ -172,20 +172,37 @@ export function UpcomingKitCard({ kit }: { kit: UpcomingKit }) {
 export function KitFamilyHeader({
   countLabel,
   description,
+  layout = 'row',
   name,
 }: {
   countLabel: string
   description: string
+  /* 'row' floats the description to the right (full-width landing index);
+     'stack' sits it under the title — tighter beside the catalog sidebar. */
+  layout?: 'row' | 'stack'
   name: string
 }) {
+  const header = (
+    <div className="flex items-baseline gap-3">
+      <h3 className="text-lg font-semibold tracking-tight text-foreground">{name}</h3>
+      <span className="rounded-full border border-border bg-background px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+        {countLabel}
+      </span>
+    </div>
+  )
+
+  if (layout === 'stack') {
+    return (
+      <div className="border-b border-border pb-4">
+        {header}
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">{description}</p>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-2 border-b border-border pb-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-      <div className="flex items-baseline gap-3">
-        <h3 className="text-lg font-semibold tracking-tight text-foreground">{name}</h3>
-        <span className="rounded-full border border-border bg-background px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
-          {countLabel}
-        </span>
-      </div>
+      {header}
       <p className="max-w-xl text-sm leading-6 text-muted-foreground sm:text-right">
         {description}
       </p>
