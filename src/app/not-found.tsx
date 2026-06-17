@@ -10,7 +10,7 @@ const notFoundLines = [
   { kind: 'info', text: 'payload-components: Unknown component "this-page".' },
   {
     kind: 'info',
-    text: 'Known components: hero-basic, feature-grid-basic, feature-split, feature-bento, feature-steps.',
+    text: 'Known components: hero-basic, feature-grid-basic, feature-split, feature-bento, feature-steps, embed-basic.',
   },
 ] as const
 

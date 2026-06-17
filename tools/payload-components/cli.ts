@@ -23,6 +23,7 @@ Current alpha components:
   feature-split
   feature-bento
   feature-steps
+  embed-basic
 `
 
 const parseArgs = (argv: string[]) => {

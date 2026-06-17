@@ -33,6 +33,10 @@ const pairs = [
     component: 'payload-components/source/blocks/FeatureSteps/Component.tsx',
     twin: 'src/components/site/demos/FeatureStepsDemo.tsx',
   },
+  {
+    component: 'payload-components/source/blocks/EmbedBasic/Component.tsx',
+    twin: 'src/components/site/demos/EmbedBasicDemo.tsx',
+  },
 ] as const
 
 const classLiterals = (source: string): string[] =>

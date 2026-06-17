@@ -37,6 +37,14 @@ export type FeatureSectionDemoContent = {
 
 export type FeatureGridBasicDemoContent = FeatureSectionDemoContent
 
+export type EmbedBasicDemoContent = {
+  allowFullscreen?: boolean
+  aspectRatio: '16:9' | '4:3' | '1:1' | '21:9'
+  caption?: string
+  title: string
+  url: string
+}
+
 export const heroBasicDemoContent: HeroBasicDemoContent = {
   description:
     'Acme gives product teams hosted dashboards, usage reports, and alerting on one platform — wired to your data in an afternoon.',
@@ -142,4 +150,12 @@ export const featureStepsDemoContent: FeatureSectionDemoContent = {
   ],
   links: [{ link: { appearance: 'default', label: 'Start onboarding' } }],
   title: 'Live in three steps.',
+}
+
+export const embedBasicDemoContent: EmbedBasicDemoContent = {
+  allowFullscreen: true,
+  aspectRatio: '16:9',
+  caption: 'Acme product tour — two minutes from sign-up to first dashboard.',
+  title: 'Acme product tour',
+  url: 'https://www.youtube.com/embed/aqz-KE-bpKQ',
 }

@@ -27,15 +27,19 @@ async function readJson<T>(relativePath: string): Promise<T | null> {
 }
 
 export function getComponentManifest(slug: string): Promise<ComponentManifest | null> {
-  return readJson<ComponentManifest>(path.join('payload-kits', 'manifests', `${slug}.json`))
+  return readJson<ComponentManifest>(path.join('payload-components', 'manifests', `${slug}.json`))
 }
 
 export async function getComponentRegistryDependencies(slug: string): Promise<string[]> {
-  const registry = await readJson<RegistryDefinition>(path.join('payload-kits', 'registry.json'))
+  const registry = await readJson<RegistryDefinition>(
+    path.join('payload-components', 'registry.json'),
+  )
   return registry?.items.find((item) => item.name === slug)?.registryDependencies ?? []
 }
 
 export async function getSupportTarget(id: string): Promise<SupportedTarget | null> {
-  const matrix = await readJson<SupportMatrix>(path.join('payload-kits', 'support-matrix.json'))
+  const matrix = await readJson<SupportMatrix>(
+    path.join('payload-components', 'support-matrix.json'),
+  )
   return matrix?.targets.find((target) => target.id === id) ?? null
 }

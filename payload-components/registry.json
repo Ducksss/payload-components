@@ -167,6 +167,34 @@
           "target": "~/src/blocks/FeatureSteps/Component.tsx"
         }
       ]
+    },
+    {
+      "name": "embed-basic",
+      "type": "registry:block",
+      "title": "Embed Basic",
+      "description": "Responsive, accessible iframe block for embedding video, maps, forms, charts, and external widgets.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add embed-basic\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/embed-basic.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add embed-basic` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add embed-basic",
+          "postInstall": ["generate:types", "generate:importmap"],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/EmbedBasic/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/EmbedBasic/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/EmbedBasic/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/EmbedBasic/Component.tsx"
+        }
+      ]
     }
   ]
 }

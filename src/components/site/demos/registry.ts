@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
 
+import { EmbedBasicDemo } from './EmbedBasicDemo'
 import { FeatureBentoDemo } from './FeatureBentoDemo'
 import { FeatureGridBasicDemo } from './FeatureGridBasicDemo'
 import { FeatureSplitDemo } from './FeatureSplitDemo'
@@ -12,6 +13,7 @@ import { HeroBasicDemo } from './HeroBasicDemo'
  * never drift. Every twin defaults its own sample content and is already
  * aria-hidden + presentational. Slugs without a twin render nothing. */
 export const demosBySlug: Record<string, ComponentType> = {
+  'embed-basic': EmbedBasicDemo,
   'feature-bento': FeatureBentoDemo,
   'feature-grid-basic': FeatureGridBasicDemo,
   'feature-split': FeatureSplitDemo,

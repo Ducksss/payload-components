@@ -1,0 +1,66 @@
+---
+title: Embed Basic
+description: A responsive, accessible iframe block for embedding video, maps, forms, charts, and external widgets — installed as a wired Payload block.
+icon: MonitorPlay
+---
+
+<ComponentPreview slug="embed-basic" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add embed-basic
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/embed-basic.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="embed-basic" />
+
+## Content model
+
+The block takes the embeddable URL verbatim — paste the provider's _embed_ URL (e.g.
+`https://www.youtube.com/embed/VIDEO_ID`, not the watch URL).
+
+<TypeTable
+  type={{
+    url: {
+      type: 'text',
+      required: true,
+      description: 'The full embeddable URL used verbatim as the iframe src.',
+    },
+    title: {
+      type: 'text',
+      required: true,
+      description: 'Accessible title announced to screen readers for the embedded frame.',
+    },
+    aspectRatio: {
+      type: 'select',
+      required: true,
+      description: 'Frame ratio: 16:9, 4:3, 1:1, or 21:9 (defaults to 16:9).',
+    },
+    caption: { type: 'text', description: 'Optional caption shown beneath the frame.' },
+    allowFullscreen: {
+      type: 'checkbox',
+      description: 'Allow the embedded content to enter fullscreen (defaults to true).',
+    },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="embed-basic" />
+
+## Requirements
+
+<ComponentRequirements slug="embed-basic" />
