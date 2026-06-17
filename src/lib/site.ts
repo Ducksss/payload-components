@@ -210,14 +210,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Eighteen page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Twenty-six page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '18 installable',
+    countLabel: '26 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -236,6 +236,7 @@ export const componentCategories = {
   embed: { family: 'pages', label: 'Embed' },
   logos: { family: 'pages', label: 'Logo cloud' },
   content: { family: 'pages', label: 'Content' },
+  integration: { family: 'pages', label: 'Integration' },
   cta: { family: 'pages', label: 'Call to action' },
   pricing: { family: 'pages', label: 'Pricing' },
   faq: { family: 'pages', label: 'FAQ' },
@@ -502,6 +503,118 @@ export const componentEntries = [
     status: 'Alpha',
     target: 'Content section',
     title: 'Content Community',
+    version: '0.1.0',
+  },
+  {
+    category: 'integration',
+    command: 'npx payload-components add integration-grid',
+    description:
+      'A responsive grid of integration cards — logo, name, description, and a learn-more link — installed as a wired Payload block.',
+    family: 'pages',
+    fields: ['heading', 'subtext', 'integrations'],
+    href: '/docs/components/integration-grid',
+    slug: 'integration-grid',
+    status: 'Alpha',
+    target: 'Integration section',
+    title: 'Integration Grid',
+    version: '0.1.0',
+  },
+  {
+    category: 'integration',
+    command: 'npx payload-components add integration-cluster',
+    description:
+      'A centered cluster of integration logos around a featured brand mark, with a heading and CTA.',
+    family: 'pages',
+    fields: ['heading', 'subtext', 'integrations', 'featuredLogo', 'links'],
+    href: '/docs/components/integration-cluster',
+    slug: 'integration-cluster',
+    status: 'Alpha',
+    target: 'Integration section',
+    title: 'Integration Cluster',
+    version: '0.1.0',
+  },
+  {
+    category: 'integration',
+    command: 'npx payload-components add integration-split',
+    description:
+      'A two-column section pairing a featured-mark logo cluster with a heading, subtext, and CTA.',
+    family: 'pages',
+    fields: ['heading', 'subtext', 'integrations', 'featuredLogo', 'links'],
+    href: '/docs/components/integration-split',
+    slug: 'integration-split',
+    status: 'Alpha',
+    target: 'Integration section',
+    title: 'Integration Split',
+    version: '0.1.0',
+  },
+  {
+    category: 'integration',
+    command: 'npx payload-components add integration-connect',
+    description:
+      'Integration logos wired to a central brand mark by connector lines, installed as a wired Payload block.',
+    family: 'pages',
+    fields: ['heading', 'subtext', 'integrations', 'featuredLogo'],
+    href: '/docs/components/integration-connect',
+    slug: 'integration-connect',
+    status: 'Alpha',
+    target: 'Integration section',
+    title: 'Integration Connect',
+    version: '0.1.0',
+  },
+  {
+    category: 'integration',
+    command: 'npx payload-components add integration-orbit',
+    description:
+      'Concentric rings of integration logos that orbit a featured brand mark on hover.',
+    family: 'pages',
+    fields: ['heading', 'subtext', 'integrations', 'featuredLogo'],
+    href: '/docs/components/integration-orbit',
+    slug: 'integration-orbit',
+    status: 'Alpha',
+    target: 'Integration section',
+    title: 'Integration Orbit',
+    version: '0.1.0',
+  },
+  {
+    category: 'integration',
+    command: 'npx payload-components add integration-list',
+    description:
+      'A vertical list of integration rows — logo, name, description, and an add action — installed as a wired Payload block.',
+    family: 'pages',
+    fields: ['heading', 'subtext', 'integrations'],
+    href: '/docs/components/integration-list',
+    slug: 'integration-list',
+    status: 'Alpha',
+    target: 'Integration section',
+    title: 'Integration List',
+    version: '0.1.0',
+  },
+  {
+    category: 'integration',
+    command: 'npx payload-components add integration-marquee',
+    description:
+      'Three auto-scrolling rows of integration logos around a featured brand mark, with progressive edge fades.',
+    family: 'pages',
+    fields: ['heading', 'subtext', 'integrations', 'featuredLogo'],
+    href: '/docs/components/integration-marquee',
+    slug: 'integration-marquee',
+    status: 'Alpha',
+    target: 'Integration section',
+    title: 'Integration Marquee',
+    version: '0.1.0',
+  },
+  {
+    category: 'integration',
+    command: 'npx payload-components add integration-testimonial',
+    description:
+      'A two-column section pairing a customer quote with a grid of integration logo cards.',
+    family: 'pages',
+    fields: ['heading', 'subtext', 'integrations', 'quote', 'author', 'role'],
+    href: '/docs/components/integration-testimonial',
+    slug: 'integration-testimonial',
+    status: 'Alpha',
+    target: 'Integration section',
+    title: 'Integration Testimonial',
     version: '0.1.0',
   },
 ] as const

@@ -19,6 +19,14 @@
     "content-feature-split",
     "content-showcase",
     "content-quote",
-    "content-community"
+    "content-community",
+    "integration-grid",
+    "integration-cluster",
+    "integration-split",
+    "integration-connect",
+    "integration-orbit",
+    "integration-list",
+    "integration-marquee",
+    "integration-testimonial"
   ]
 }

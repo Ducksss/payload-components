@@ -1,0 +1,68 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "integration-split",
+  "version": "0.1.0",
+  "title": "Integration Split",
+  "description": "A two-column section pairing a featured-mark logo cluster with a heading, subtext, and CTA, installed as a wired Payload block.",
+  "registryItemName": "integration-split",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/integrationFields.ts",
+    "src/blocks/IntegrationSplit/config.ts",
+    "src/blocks/IntegrationSplit/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "IntegrationSplitBlock",
+      "importPath": "@/blocks/IntegrationSplit/Component",
+      "blockSlug": "integrationSplit"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "IntegrationSplit",
+      "importPath": "../../blocks/IntegrationSplit/config",
+      "blockName": "IntegrationSplit"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Logo cluster beside a heading, subtext, and call-to-action."
+  },
+  "sampleContent": {
+    "blockType": "integrationSplit",
+    "heading": "One hub for every integration",
+    "subtext": "Connect the tools your team lives in and let us keep them in sync, automatically.",
+    "integrations": [
+      { "name": "Northwind" },
+      { "name": "Globex" },
+      { "name": "Initech" },
+      { "name": "Vandelay" },
+      { "name": "Soylent" },
+      { "name": "Umbra" }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "#",
+          "label": "Browse integrations",
+          "appearance": "default"
+        }
+      }
+    ]
+  }
+}

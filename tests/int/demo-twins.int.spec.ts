@@ -85,6 +85,38 @@ const pairs = [
     component: 'payload-components/source/blocks/ContentCommunity/Component.tsx',
     twin: 'src/components/site/demos/ContentCommunityDemo.tsx',
   },
+  {
+    component: 'payload-components/source/blocks/IntegrationGrid/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationGridDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationCluster/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationClusterDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationSplit/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationSplitDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationConnect/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationConnectDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationOrbit/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationOrbitDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationList/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationListDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationMarquee/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationMarqueeDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationTestimonial/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationTestimonialDemo.tsx',
+  },
 ] as const
 
 const classLiterals = (source: string): string[] =>

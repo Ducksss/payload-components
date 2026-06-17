@@ -1,0 +1,79 @@
+---
+title: Integration Connect
+description: Integration logos wired to a central brand mark by connector lines, installed as a wired Payload block.
+icon: Network
+---
+
+<ComponentPreview slug="integration-connect" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add integration-connect
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/integration-connect.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="integration-connect" />
+
+## Content model
+
+`heading`, `subtext`, and `integrations` come from the shared `integrationFields` base. This variant
+adds an optional `featuredLogo` the connector lines route to.
+
+<TypeTable
+  type={{
+    heading: {
+      type: 'text',
+      required: true,
+      description: 'Short heading shown under the diagram.',
+    },
+    subtext: {
+      type: 'textarea',
+      description: 'Optional supporting paragraph under the heading.',
+    },
+    integrations: {
+      type: 'array',
+      required: true,
+      description: 'Two to twelve integrations, each an uploaded logo with a name.',
+    },
+    featuredLogo: {
+      type: 'upload',
+      description: 'Optional center brand mark the connector lines route to.',
+    },
+  }}
+/>
+
+Each item in `integrations` carries:
+
+<TypeTable
+  type={{
+    logo: { type: 'upload', required: true, description: 'Logo image (Media upload).' },
+    name: { type: 'text', required: true, description: 'Accessible name / alt text for the logo.' },
+    description: { type: 'textarea', description: 'Optional blurb (unused by this variant).' },
+    href: { type: 'text', description: 'Optional link (unused by this variant).' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="integration-connect" />
+
+## Requirements
+
+<ComponentRequirements slug="integration-connect" />
+
+## In this family
+
+<ComponentFamily slug="integration-connect" />

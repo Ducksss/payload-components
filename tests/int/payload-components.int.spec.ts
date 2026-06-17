@@ -331,4 +331,41 @@ describe('payload-components add', () => {
 
     expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
   }, 180000)
+
+  it('installs integration-grid into a supported repo and records state', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('integration-grid')
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const parsedState = await readInstallState(fixtureDir)
+
+    expect(parsedState.version).toBe(2)
+    await expectInstalledComponents(fixtureDir, [manifest])
+  }, 180000)
+
+  it('installs integration-grid followed by hero-basic without duplicate registrations', async () => {
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents([
+      'integration-grid',
+      'hero-basic',
+    ])
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, 'integration-grid')
+    await runAddCommand(fixtureDir, 'hero-basic')
+
+    await expectInstalledComponents(fixtureDir, manifests)
+  }, 180000)
+
+  it('treats a second integration-grid install as idempotent', async () => {
+    const manifest = await loadManifest('integration-grid')
+    const { fixtureDir } = await createInstallFixture(manifest.name)
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const secondRun = await runAddCommand(fixtureDir, manifest.name)
+
+    expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
+  }, 180000)
 })

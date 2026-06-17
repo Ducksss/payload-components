@@ -13,6 +13,14 @@ import { FeatureGridBasicDemo } from './FeatureGridBasicDemo'
 import { FeatureSplitDemo } from './FeatureSplitDemo'
 import { FeatureStepsDemo } from './FeatureStepsDemo'
 import { HeroBasicDemo } from './HeroBasicDemo'
+import { IntegrationClusterDemo } from './IntegrationClusterDemo'
+import { IntegrationConnectDemo } from './IntegrationConnectDemo'
+import { IntegrationGridDemo } from './IntegrationGridDemo'
+import { IntegrationListDemo } from './IntegrationListDemo'
+import { IntegrationMarqueeDemo } from './IntegrationMarqueeDemo'
+import { IntegrationOrbitDemo } from './IntegrationOrbitDemo'
+import { IntegrationSplitDemo } from './IntegrationSplitDemo'
+import { IntegrationTestimonialDemo } from './IntegrationTestimonialDemo'
 import { LogoCloudGridDemo } from './LogoCloudGridDemo'
 import { LogoCloudHoverDemo } from './LogoCloudHoverDemo'
 import { LogoCloudInlineDemo } from './LogoCloudInlineDemo'
@@ -38,6 +46,14 @@ export const demosBySlug: Record<string, ComponentType> = {
   'feature-split': FeatureSplitDemo,
   'feature-steps': FeatureStepsDemo,
   'hero-basic': HeroBasicDemo,
+  'integration-cluster': IntegrationClusterDemo,
+  'integration-connect': IntegrationConnectDemo,
+  'integration-grid': IntegrationGridDemo,
+  'integration-list': IntegrationListDemo,
+  'integration-marquee': IntegrationMarqueeDemo,
+  'integration-orbit': IntegrationOrbitDemo,
+  'integration-split': IntegrationSplitDemo,
+  'integration-testimonial': IntegrationTestimonialDemo,
   'logo-cloud-grid': LogoCloudGridDemo,
   'logo-cloud-hover': LogoCloudHoverDemo,
   'logo-cloud-inline': LogoCloudInlineDemo,

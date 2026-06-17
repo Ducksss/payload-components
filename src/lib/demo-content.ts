@@ -332,3 +332,71 @@ export const contentCommunityDemoContent: ContentSectionDemoContent = {
   ],
   title: 'Built by the community, for the community.',
 }
+
+/* The whole Integration family (grid, cluster, split, connect, orbit, list,
+   marquee, testimonial) renders from one demo-content shape: the shared
+   heading + optional subtext, an optional generic per-item blurb for the
+   card/list variants, an optional CTA link, and an optional testimonial for
+   the testimonial variant. The logos themselves are presentational and
+   backend-free, so the twins pull invented monochrome marks from
+   `@/components/site/demos/DemoLogos` rather than carrying logo data here. */
+export type IntegrationDemoContent = {
+  heading: string
+  itemDescription?: string
+  links?: { link: DemoLinkData }[]
+  subtext?: string
+  testimonial?: { author: string; quote: string; role?: string }
+}
+
+export const integrationGridDemoContent: IntegrationDemoContent = {
+  heading: 'Connect Acme to the tools you already run.',
+  itemDescription:
+    'Two-way sync that keeps usage, billing, and events flowing without a line of glue code.',
+  subtext: 'Native integrations across analytics, billing, and messaging — wired in an afternoon.',
+}
+
+export const integrationClusterDemoContent: IntegrationDemoContent = {
+  heading: 'Plug Acme into your stack.',
+  links: [{ link: { appearance: 'outline', label: 'Browse integrations' } }],
+  subtext: 'A growing catalog of native connections, with your workspace at the center.',
+}
+
+export const integrationSplitDemoContent: IntegrationDemoContent = {
+  heading: 'One hub for every integration.',
+  links: [{ link: { appearance: 'default', label: 'Browse integrations' } }],
+  subtext:
+    'Connect the tools your team lives in and let Acme keep them in sync, automatically.',
+}
+
+export const integrationConnectDemoContent: IntegrationDemoContent = {
+  heading: 'Everything routes through Acme.',
+  subtext: 'Your data flows out to every connected tool and back again, in real time.',
+}
+
+export const integrationOrbitDemoContent: IntegrationDemoContent = {
+  heading: 'An ecosystem in orbit.',
+  subtext: 'Hover to see the integrations that revolve around your Acme workspace.',
+}
+
+export const integrationListDemoContent: IntegrationDemoContent = {
+  heading: 'Add an integration in one click.',
+  itemDescription: 'Connect once and keep usage, billing, and events in sync automatically.',
+  subtext: 'Browse the catalog and switch on the connections your team needs.',
+}
+
+export const integrationMarqueeDemoContent: IntegrationDemoContent = {
+  heading: 'Works with the tools you already use.',
+  subtext: 'A growing catalog of native integrations across your whole stack.',
+}
+
+export const integrationTestimonialDemoContent: IntegrationDemoContent = {
+  heading: 'Integrate with your favorite tools.',
+  itemDescription: 'Native two-way sync, no glue code required.',
+  subtext: 'Connect seamlessly with the platforms and services that power your workflow.',
+  testimonial: {
+    author: 'Jordan Lee',
+    quote:
+      'We had Acme talking to our warehouse, billing, and Slack in a single afternoon — the integrations just worked.',
+    role: 'Head of Platform, Northwind',
+  },
+}
