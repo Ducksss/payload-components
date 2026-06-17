@@ -1,0 +1,69 @@
+---
+title: Logo Cloud Grid
+description: A centered, wrapping wall of editable logo uploads under a heading, installed as a wired Payload block.
+icon: Grid3x3
+---
+
+<ComponentPreview slug="logo-cloud-grid" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add logo-cloud-grid
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/logo-cloud-grid.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="logo-cloud-grid" />
+
+## Content model
+
+Both fields come from the shared `logoCloudFields` base shared across the Logo Cloud family.
+
+<TypeTable
+  type={{
+    heading: {
+      type: 'text',
+      required: true,
+      description: 'Short heading shown above the logos.',
+    },
+    logos: {
+      type: 'array',
+      required: true,
+      description: 'Two to twelve logos, each an uploaded image with a name and optional link.',
+    },
+  }}
+/>
+
+Each item in `logos` carries:
+
+<TypeTable
+  type={{
+    logo: { type: 'upload', required: true, description: 'Logo image (Media upload).' },
+    name: { type: 'text', required: true, description: 'Accessible name / alt text for the logo.' },
+    href: { type: 'text', description: 'Optional link the logo points to.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="logo-cloud-grid" />
+
+## Requirements
+
+<ComponentRequirements slug="logo-cloud-grid" />
+
+## In this family
+
+<ComponentFamily slug="logo-cloud-grid" />
