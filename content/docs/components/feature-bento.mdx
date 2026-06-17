@@ -1,0 +1,68 @@
+---
+title: Feature Bento
+description: An asymmetric bento grid that leads with a featured cell and fills supporting cells.
+icon: LayoutDashboard
+---
+
+<ComponentPreview slug="feature-bento" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add feature-bento
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/feature-bento.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="feature-bento" />
+
+## Content model
+
+The first three fields come from the shared `featureFields` base; `items` and `links` are specific
+to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'Three to six cells; the first leads the grid as the featured cell.',
+    },
+    links: { type: 'array', description: 'One optional CTA link.' },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'Cell heading.' },
+    description: { type: 'textarea', required: true, description: 'Cell body copy.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="feature-bento" />
+
+## Requirements
+
+<ComponentRequirements slug="feature-bento" />
+
+## In this family
+
+<ComponentFamily slug="feature-bento" />

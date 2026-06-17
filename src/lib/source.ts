@@ -2,14 +2,14 @@ import { loader } from 'fumadocs-core/source'
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons'
 import { docs } from 'collections/server'
 
-import { regroupKitTree } from '@/lib/kit-page-tree'
+import { regroupComponentTree } from '@/lib/component-page-tree'
 import { docsContentRoute, docsImageRoute, docsRoute } from '@/lib/site'
 
 export const source = loader({
   baseUrl: docsRoute,
   // Inline transformer (not a typed object) so it stays decoupled from the loader's
-  // inferred storage generic — see the gotcha in kit-page-tree.tsx.
-  pageTree: { transformers: [{ root: regroupKitTree }] },
+  // inferred storage generic — see the gotcha in component-page-tree.tsx.
+  pageTree: { transformers: [{ root: regroupComponentTree }] },
   plugins: [lucideIconsPlugin()],
   source: docs.toFumadocsSource(),
 })

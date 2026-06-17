@@ -3,10 +3,10 @@ import {
   catalogTitle,
   faqEntries,
   githubRepoUrl,
-  kitEntries,
+  componentEntries,
   siteDescription,
   siteUrl,
-  upcomingKits,
+  upcomingComponents,
 } from '@/lib/site'
 
 /* Stable @id anchors. The Organization and WebSite nodes are emitted once,
@@ -27,7 +27,7 @@ export function organizationNode(): Node {
     '@type': 'Organization',
     description: siteDescription,
     logo: logoUrl,
-    name: 'Payload Kits',
+    name: 'Payload Components',
     sameAs: [githubRepoUrl],
     url: `${siteUrl}/`,
   }
@@ -39,7 +39,7 @@ export function websiteNode(): Node {
     '@type': 'WebSite',
     description: siteDescription,
     inLanguage: 'en',
-    name: 'Payload Kits',
+    name: 'Payload Components',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
@@ -53,7 +53,7 @@ export function websiteNode(): Node {
   }
 }
 
-/* Payload Kits is a free, open-source developer CLI + registry. */
+/* Payload Components is a free, open-source developer CLI + registry. */
 export function softwareApplicationNode(): Node {
   return {
     '@id': softwareId,
@@ -64,8 +64,8 @@ export function softwareApplicationNode(): Node {
     description: siteDescription,
     isAccessibleForFree: true,
     license: 'https://opensource.org/licenses/MIT',
-    name: 'payload-kit',
-    alternateName: 'Payload Kits',
+    name: 'payload-components',
+    alternateName: 'Payload Components',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     operatingSystem: 'Node.js (macOS, Linux, Windows)',
     programmingLanguage: 'TypeScript',
@@ -82,10 +82,10 @@ export function documentationCollectionNode(): Node {
     '@id': documentationId,
     '@type': 'CollectionPage',
     about: { '@id': softwareId },
-    description: 'Payload Kits installation, architecture, registry, and kit documentation.',
+    description: 'Payload Components installation, architecture, registry, and component documentation.',
     inLanguage: 'en',
     isPartOf: { '@id': websiteId },
-    name: 'Payload Kits documentation',
+    name: 'Payload Components documentation',
     url: `${siteUrl}/docs`,
   }
 }
@@ -94,7 +94,7 @@ export function faqNode(): Node {
   return {
     '@id': `${siteUrl}/#faq`,
     '@type': 'FAQPage',
-    name: 'Payload Kits FAQ',
+    name: 'Payload Components FAQ',
     mainEntity: faqEntries.map((entry) => ({
       '@type': 'Question',
       acceptedAnswer: { '@type': 'Answer', text: entry.answer },
@@ -116,29 +116,29 @@ export function breadcrumbNode(items: ReadonlyArray<{ name: string; path: string
   }
 }
 
-/* The kit catalog as an ItemList of SoftwareSourceCode entries. Installable
-   kits link to their docs contract; in-development kits point at the catalog. */
+/* The component catalog as an ItemList of SoftwareSourceCode entries. Installable
+   components link to their docs contract; in-development components point at the catalog. */
 export function catalogItemListNode(): Node {
-  const entries = [...kitEntries, ...upcomingKits]
+  const entries = [...componentEntries, ...upcomingComponents]
 
   return {
     '@type': 'ItemList',
     description: catalogDescription,
-    itemListElement: entries.map((kit, index) => ({
+    itemListElement: entries.map((component, index) => ({
       '@type': 'ListItem',
       item: {
         '@type': 'SoftwareSourceCode',
         codeRepository: githubRepoUrl,
-        description: kit.description,
+        description: component.description,
         isPartOf: { '@id': softwareId },
-        name: kit.title,
+        name: component.title,
         programmingLanguage: 'TypeScript',
         runtimePlatform: 'Payload CMS v3, Next.js',
-        url: 'href' in kit ? `${siteUrl}${kit.href}` : `${siteUrl}/components`,
+        url: 'href' in component ? `${siteUrl}${component.href}` : `${siteUrl}/components`,
       },
       position: index + 1,
     })),
-    name: 'Payload Kits catalog',
+    name: 'Payload Components catalog',
     numberOfItems: entries.length,
   }
 }
@@ -155,26 +155,29 @@ export function catalogCollectionPageNode(): Node {
   }
 }
 
-/* Per-kit detail schema for an individual kit doc page. Reads the registry
+/* Per-component detail schema for an individual component doc page. Reads the registry
    entry so version, target, and description never drift from the catalog. */
-export function kitSoftwareApplicationNode(kit: (typeof kitEntries)[number]): Node {
+export function componentSoftwareApplicationNode(component: (typeof componentEntries)[number]): Node {
+  const noun = component.family === 'pages' ? 'block' : 'component'
+
   return {
     '@type': 'SoftwareApplication',
     applicationCategory: 'DeveloperApplication',
-    applicationSubCategory: 'Payload CMS block kit',
+    applicationSubCategory: `Payload CMS ${noun}`,
     author: { '@id': organizationId },
     codeRepository: githubRepoUrl,
-    description: kit.description,
+    description: component.description,
     isAccessibleForFree: true,
     isPartOf: { '@id': softwareId },
+    keywords: `Payload CMS ${noun}, Payload ${noun}, ${component.title}, Payload CMS`,
     license: 'https://opensource.org/licenses/MIT',
-    name: `${kit.title} — Payload Kit`,
+    name: `${component.title} — Payload CMS ${noun}`,
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     operatingSystem: 'Node.js (macOS, Linux, Windows)',
     publisher: { '@id': organizationId },
     softwareRequirements: 'Payload CMS v3, Next.js 15 or 16',
-    softwareVersion: kit.version,
-    url: `${siteUrl}${kit.href}`,
+    softwareVersion: component.version,
+    url: `${siteUrl}${component.href}`,
   }
 }
 

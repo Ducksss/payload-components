@@ -7,16 +7,16 @@ export const githubContentBranch = process.env.NEXT_PUBLIC_GITHUB_CONTENT_BRANCH
 export const docsRoute = '/docs'
 export const docsImageRoute = '/og/docs'
 export const docsContentRoute = '/llms.mdx/docs'
-export const primaryInstallCommand = 'npx payload-kit add hero-basic'
+export const primaryInstallCommand = 'npx payload-components add hero-basic'
 
 export const siteDescription =
-  'Payload Kits is an MIT registry and CLI that installs typed Payload CMS block kits into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
+  'Payload Components is an MIT registry and CLI that installs typed Payload CMS blocks into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
 
 /* ------------------------------------------------------------------ */
 /* Hero                                                                */
 /* ------------------------------------------------------------------ */
 
-export const heroEyebrow = 'Payload Kits public alpha'
+export const heroEyebrow = 'Payload Components public alpha'
 
 /* The H1 renders primary + accent as one accessible name; the e2e H1
    assertion consumes the concatenated heroHeadline. The OG card renders the
@@ -32,26 +32,26 @@ export const heroSubheadline =
 export const heroPrimaryCta = { href: '/docs', label: 'Get started' } as const
 
 export const heroTertiaryLinks = [
-  { href: '/components', label: 'Browse the kits' },
+  { href: '/components', label: 'Browse the components' },
   { href: '#wiring', label: 'See what add actually wires' },
 ] as const
 
 /**
- * Stylized replay of a real `payload-kit add` run. Stage wording tracks
- * tools/payload-kit/commands/add.ts and the kit manifest contract —
+ * Stylized replay of a real `payload-components add` run. Stage wording tracks
+ * tools/payload-components/commands/add.ts and the component manifest contract —
  * update it if the installer stages change.
  */
 export const terminalDemoLines = [
-  { kind: 'command', text: 'npx payload-kit add hero-basic' },
-  { kind: 'info', text: 'payload-kit: installing "hero-basic" into ./acme-site' },
+  { kind: 'command', text: 'npx payload-components add hero-basic' },
+  { kind: 'info', text: 'payload-components: installing "hero-basic" into ./acme-site' },
   { kind: 'step', text: 'resolved hero-basic@0.1.0 · payload-website-starter' },
   { kind: 'step', text: 'copied src/blocks/{shared/heroFields.ts, HeroBasic/config.ts, HeroBasic/Component.tsx}' },
   { kind: 'step', text: 'registered block in src/collections/Pages/index.ts' },
   { kind: 'step', text: 'wired render mapping in src/blocks/RenderBlocks.tsx' },
   { kind: 'step', text: 'ran payload generate:types' },
   { kind: 'step', text: 'ran payload generate:importmap' },
-  { kind: 'step', text: 'recorded install state in .payload-kit/state.json' },
-  { kind: 'success', text: 'payload-kit: installed "hero-basic" successfully.' },
+  { kind: 'step', text: 'recorded install state in .payload-components/state.json' },
+  { kind: 'success', text: 'payload-components: installed "hero-basic" successfully.' },
 ] as const
 
 export type TerminalLine = (typeof terminalDemoLines)[number]
@@ -72,14 +72,14 @@ export const frameInstalledFiles = [
 export const landingSections = {
   community: { heading: 'Open source, end to end.', id: 'community' },
   faq: { heading: 'Questions, answered straight.', id: 'faq' },
-  kits: { heading: 'The catalog, rendered live.', id: 'kits' },
+  components: { heading: 'The catalog, rendered live.', id: 'components' },
   tax: { heading: 'The paste was never the problem.', id: 'tax' },
   wiring: { heading: 'Copying files was never the hard part.', id: 'wiring' },
   workflow: { heading: 'From catalog to commit in three moves.', id: 'workflow' },
 } as const
 
 /* ------------------------------------------------------------------ */
-/* Stack band — what kits install into. No customer logos (alpha, open  */
+/* Stack band — what components install into. No customer logos (alpha, open  */
 /* source); the honest "works with" row is the supported stack.         */
 /* ------------------------------------------------------------------ */
 
@@ -124,17 +124,17 @@ export const receipts = [
 
 
 export const workflowIntro =
-  'No scaffolds, no vendored framework, no lock-in. Kits arrive as plain source plus two scoped patches you can read in the diff.'
+  'No scaffolds, no vendored framework, no lock-in. Components arrive as plain source plus two scoped patches you can read in the diff.'
 
 export const workflowSteps = [
   {
-    command: '/docs/kits/hero-basic',
+    command: '/docs/components/hero-basic',
     description:
-      'Every kit documents its fields, the files it ships, the files it patches, and the targets it supports — before you run anything.',
+      'Every component documents its fields, the files it ships, the files it patches, and the targets it supports — before you run anything.',
     title: 'Read the contract',
   },
   {
-    command: 'npx payload-kit add hero-basic',
+    command: 'npx payload-components add hero-basic',
     description:
       'The CLI verifies your project shape against the support matrix, copies source, registers the block, and regenerates Payload output in one pass.',
     title: 'Run one command',
@@ -154,7 +154,7 @@ export const workflowSteps = [
 /* ------------------------------------------------------------------ */
 
 export const wiringIntro =
-  'A plain shadcn add stops at your filesystem. A Payload block isn’t live until it’s registered, rendered, typed, and in the admin import map — payload-kit add owns exactly those four edits.'
+  'A plain shadcn add stops at your filesystem. A Payload block isn’t live until it’s registered, rendered, typed, and in the admin import map — payload-components add owns exactly those four edits.'
 
 export const wiringLedger = {
   columns: {
@@ -162,8 +162,8 @@ export const wiringLedger = {
       command: 'npx shadcn add hero',
       summary: '1 of 5 artifacts. The rest is your TODO list.',
     },
-    kit: {
-      command: 'npx payload-kit add hero-basic',
+    component: {
+      command: 'npx payload-components add hero-basic',
       summary: '5 of 5 in one pass — reviewed as one git diff.',
     },
   },
@@ -172,50 +172,50 @@ export const wiringLedger = {
     {
       artifact: 'Block source',
       baseline: 'copied',
-      kit: 'copied',
+      component: 'copied',
       path: 'src/blocks/{shared/heroFields.ts, HeroBasic/config.ts, HeroBasic/Component.tsx}',
     },
     {
       artifact: 'Collection schema',
       baseline: null,
-      kit: 'patched',
+      component: 'patched',
       path: 'src/collections/Pages/index.ts',
     },
     {
       artifact: 'Render mapping',
       baseline: null,
-      kit: 'patched',
+      component: 'patched',
       path: 'src/blocks/RenderBlocks.tsx',
     },
     {
       artifact: 'Generated types',
       baseline: null,
-      kit: 'regenerated',
+      component: 'regenerated',
       path: 'src/payload-types.ts',
     },
     {
       artifact: 'Admin import map',
       baseline: null,
-      kit: 'regenerated',
+      component: 'regenerated',
       path: 'admin importMap.js',
     },
   ],
-  source: 'payload-kits/manifests/hero-basic.json',
+  source: 'payload-components/manifests/hero-basic.json',
 } as const
 
 export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 
 /* ------------------------------------------------------------------ */
-/* Kit catalog grid                                                    */
+/* Component catalog grid                                                    */
 /* ------------------------------------------------------------------ */
 
-export const kitsIntro =
-  'No screenshots, no skeletons — the specimen below is the kit’s real component rendered with sample content. Five page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+export const componentsIntro =
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Five page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
-/* The two kit families mirror Payload's content model — and the two real
-   install modes in the kit manifests (payload-kit-required block wiring
+/* The two component families mirror Payload's content model — and the two real
+   install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
-export const kitFamilies = {
+export const componentFamilies = {
   pages: {
     countLabel: '5 installable',
     description:
@@ -230,14 +230,14 @@ export const kitFamilies = {
   },
 } as const
 
-export const kitEntries = [
+export const componentEntries = [
   {
-    command: 'npx payload-kit add hero-basic',
+    command: 'npx payload-components add hero-basic',
     description:
       'A headline-led marketing hero with CTA links, proof badges, Payload block config, and frontend rendering.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'links', 'proofItems'],
-    href: '/docs/kits/hero-basic',
+    href: '/docs/components/hero-basic',
     slug: 'hero-basic',
     status: 'Alpha',
     target: 'Hero section',
@@ -245,12 +245,12 @@ export const kitEntries = [
     version: '0.1.0',
   },
   {
-    command: 'npx payload-kit add feature-grid-basic',
+    command: 'npx payload-components add feature-grid-basic',
     description:
       'A text-first feature grid with repeatable items, optional CTA wiring, and idempotent registration.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'items', 'links'],
-    href: '/docs/kits/feature-grid-basic',
+    href: '/docs/components/feature-grid-basic',
     slug: 'feature-grid-basic',
     status: 'Alpha',
     target: 'Feature section',
@@ -258,12 +258,12 @@ export const kitEntries = [
     version: '0.1.0',
   },
   {
-    command: 'npx payload-kit add feature-split',
+    command: 'npx payload-components add feature-split',
     description:
       'A two-column feature section pairing a heading and CTA with a stacked feature list.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'items', 'links'],
-    href: '/docs/kits/feature-split',
+    href: '/docs/components/feature-split',
     slug: 'feature-split',
     status: 'Alpha',
     target: 'Split section',
@@ -271,12 +271,12 @@ export const kitEntries = [
     version: '0.1.0',
   },
   {
-    command: 'npx payload-kit add feature-bento',
+    command: 'npx payload-components add feature-bento',
     description:
       'An asymmetric bento grid that leads with a featured cell and fills supporting cells.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'items', 'links'],
-    href: '/docs/kits/feature-bento',
+    href: '/docs/components/feature-bento',
     slug: 'feature-bento',
     status: 'Alpha',
     target: 'Bento grid',
@@ -284,12 +284,12 @@ export const kitEntries = [
     version: '0.1.0',
   },
   {
-    command: 'npx payload-kit add feature-steps',
+    command: 'npx payload-components add feature-steps',
     description:
       'A numbered steps block for sequential, how-it-works feature flows.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'items', 'links'],
-    href: '/docs/kits/feature-steps',
+    href: '/docs/components/feature-steps',
     slug: 'feature-steps',
     status: 'Alpha',
     target: 'Steps section',
@@ -298,11 +298,11 @@ export const kitEntries = [
   },
 ] as const
 
-export type KitEntry = (typeof kitEntries)[number]
+export type ComponentEntry = (typeof componentEntries)[number]
 
-/* The in-development posts suite — real kits from the registry roadmap,
+/* The in-development posts suite — real components from the registry roadmap,
    shown as "Coming soon" until their installer coverage lands. */
-export const upcomingKits = [
+export const upcomingComponents = [
   {
     description: 'A post card with image, categories, date, title, and excerpt.',
     family: 'posts',
@@ -361,7 +361,7 @@ export const upcomingKits = [
   },
 ] as const
 
-export type UpcomingKit = (typeof upcomingKits)[number]
+export type UpcomingComponent = (typeof upcomingComponents)[number]
 
 /* ------------------------------------------------------------------ */
 /* Maintainer note                                                     */
@@ -371,17 +371,17 @@ export type UpcomingKit = (typeof upcomingKits)[number]
    anchors the open-source close. No fabricated quotes: real installs
    get featured here only when they exist. */
 export const maintainerNote = {
-  body: 'I built payload-kit because installing a Payload block was never the copy-paste — it was the four edits after. The CLI exists so the second project, and the tenth, get that wiring for free. Read the installer source before you trust it; shipping it MIT is the point.',
+  body: 'I built payload-components because installing a Payload block was never the copy-paste — it was the four edits after. The CLI exists so the second project, and the tenth, get that wiring for free. Read the installer source before you trust it; shipping it MIT is the point.',
   href: 'https://github.com/Ducksss',
   name: 'Ducksss',
-  role: 'Maintainer, Payload Kits',
+  role: 'Maintainer, Payload Components',
 } as const
 
 /* ------------------------------------------------------------------ */
 /* Client work — the origin story, as evidence. Real freelance Payload */
-/* sites the maintainer shipped BEFORE payload-kit existed. Each one    */
+/* sites the maintainer shipped BEFORE payload-components existed. Each one    */
 /* shipped well AND paid the manual setup tax by hand — which is why    */
-/* the registry exists. These are NOT payload-kit installs (the CLI is  */
+/* the registry exists. These are NOT payload-components installs (the CLI is  */
 /* alpha): they predate it. The setupTax lines carry the honest         */
 /* narrative; taxStats numbers are the maintainer's own recollection,   */
 /* deliberately rounded (approx: true → "~") — drafts to confirm, never */
@@ -393,7 +393,7 @@ export const clientShowcaseEyebrow = 'Where this came from'
 export const clientShowcaseHeading = 'The freelance work that paid the tax'
 
 export const clientShowcaseIntro =
-  'Real Payload sites I shipped for clients — before payload-kit existed. Each one launched well. Each one also paid the same manual setup tax by hand: bespoke blocks rebuilt from scratch, types regenerated by hand, every surface re-proven before launch. These are not payload-kit installs — they predate it. They are the reason it exists.'
+  'Real Payload sites I shipped for clients — before payload-components existed. Each one launched well. Each one also paid the same manual setup tax by hand: bespoke blocks rebuilt from scratch, types regenerated by hand, every surface re-proven before launch. These are not payload-components installs — they predate it. They are the reason it exists.'
 
 export const showcaseSetupTaxLabel = 'Setup tax paid by hand'
 
@@ -408,7 +408,7 @@ export type ClientProject = {
   displayUrl: string
   /* One factual line: what the site is. */
   summary: string
-  /* The manual setup tax this site paid, by hand, pre-payload-kit. Plain phrases. */
+  /* The manual setup tax this site paid, by hand, pre-payload-components. Plain phrases. */
   setupTax: readonly string[]
   /* Optional scannable chips. approx: true renders a leading "~" so rounded
      recollections never read as audited stats. Omit rather than invent. */
@@ -468,17 +468,27 @@ export const faqIntro =
 export const faqEntries = [
   {
     answer:
-      'Yes — and built to stay that way. The registry, the CLI, both kits, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Kits is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.',
-    question: 'Is Payload Kits free?',
+      'Yes — and built to stay that way. The registry, the CLI, both components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.',
+    question: 'Is Payload Components free?',
   },
   {
     answer:
-      'Three things: kit source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each kit manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.',
+      'In Payload, a block is a composable page-builder field — a reusable content section (hero, feature grid, CTA) editors stack to lay out a page. Payload Components ships pre-built blocks plus the wiring that makes them live, so a block is not just copied in: it is registered in your Pages collection, mapped in your renderer, typed, and added to the admin import map.',
+    question: 'What is a Payload CMS block?',
+  },
+  {
+    answer:
+      'Install one with the CLI — `npx payload-components add hero-basic`. It copies the block source into your project and wires it end to end: registers it in your Pages collection, maps it in RenderBlocks, and regenerates your Payload types and admin import map — landing as one reviewable git diff. The same command adds any block in the catalog.',
+    question: 'How do I add a hero block to Payload CMS?',
+  },
+  {
+    answer:
+      'Three things: component source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each component manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.',
     question: 'What exactly does an install change in my repo?',
   },
   {
     answer:
-      'It converges. The CLI detects existing wiring and skips it — the real output is payload-kit: "hero-basic" is already installed. Install state is recorded in .payload-kit/state.json, so partial installs are visible and recoverable instead of silently broken.',
+      'It converges. The CLI detects existing wiring and skips it — the real output is payload-components: "hero-basic" is already installed. Install state is recorded in .payload-components/state.json, so partial installs are visible and recoverable instead of silently broken.',
     question: 'What happens if I run the same install twice?',
   },
   {
@@ -488,13 +498,13 @@ export const faqEntries = [
   },
   {
     answer:
-      'A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-kit wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.',
+      'A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-components wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.',
     question: 'Why not just run npx shadcn add?',
   },
   {
     answer:
-      'Deliberately. A kit lands only when its source, manifest metadata, docs page, and installer test coverage ship together — half-wired blocks never reach the catalog. Propose the next kit in a GitHub issue; the catalog grows from real installs.',
-    question: 'How do new kits get into the catalog?',
+      'Deliberately. A component lands only when its source, manifest metadata, docs page, and installer test coverage ship together — half-wired blocks never reach the catalog. Propose the next component in a GitHub issue; the catalog grows from real installs.',
+    question: 'How do new components get into the catalog?',
   },
 ] as const
 
@@ -503,7 +513,7 @@ export const faqEntries = [
 /* ------------------------------------------------------------------ */
 
 export const communityIntro =
-  'The registry, the CLI, the kits, and this site are one MIT-licensed repository. Read the installer before you trust it — that is the point.'
+  'The registry, the CLI, the components, and this site are one MIT-licensed repository. Read the installer before you trust it — that is the point.'
 
 /* The quiet replacement for placeholder testimonial slots. */
 export const communityInvite = {
@@ -515,9 +525,9 @@ export const communityInvite = {
 /* Catalog page                                                        */
 /* ------------------------------------------------------------------ */
 
-export const catalogTitle = 'Kit catalog'
+export const catalogTitle = 'Component catalog'
 export const catalogDescription =
-  'Installable Payload block kits with docs, registry metadata, and CLI wiring. Each kit links to its full contract before you add it to a project.'
+  'Installable Payload CMS blocks and components, each with docs, registry metadata, and CLI wiring that registers, renders, types, and import-maps it for you. Read the contract before you add it.'
 
 /* ------------------------------------------------------------------ */
 /* Shared navigation surfaces                                          */
@@ -525,17 +535,17 @@ export const catalogDescription =
 
 export const surfaceLinks = [
   {
-    description: 'Architecture, install behavior, support matrix, and kit contracts.',
+    description: 'Architecture, install behavior, support matrix, and component contracts.',
     href: '/docs',
     title: 'Documentation',
   },
   {
-    description: 'Current alpha kits with exact commands and contracts.',
+    description: 'Current alpha components with exact commands and contracts.',
     href: '/components',
-    title: 'Kit catalog',
+    title: 'Component catalog',
   },
   {
-    description: 'What payload-kit add wires, step by step.',
+    description: 'What payload-components add wires, step by step.',
     href: '/docs/installation',
     title: 'Install workflow',
   },
@@ -548,7 +558,7 @@ export const communityLinks = [
     label: 'GitHub repository',
   },
   {
-    description: 'Suggest a kit, report install drift, or help shape the registry contract.',
+    description: 'Suggest a component, report install drift, or help shape the registry contract.',
     href: githubIssuesUrl,
     label: 'Open an issue',
   },
@@ -557,7 +567,7 @@ export const communityLinks = [
 export const footerColumns = [
   {
     links: [
-      { href: '/components', label: 'Kit catalog' },
+      { href: '/components', label: 'Component catalog' },
       { href: '/docs', label: 'Documentation' },
       { href: '/docs/installation', label: 'Install workflow' },
       { href: '/docs/architecture', label: 'Architecture' },
@@ -565,8 +575,8 @@ export const footerColumns = [
     title: 'Product',
   },
   {
-    links: kitEntries.map((kit) => ({ href: kit.href, label: kit.title })),
-    title: 'Kits',
+    links: componentEntries.map((component) => ({ href: component.href, label: component.title })),
+    title: 'Components',
   },
   {
     links: [

@@ -1,0 +1,68 @@
+---
+title: Feature Split
+description: A two-column feature section pairing a heading and CTA with a stacked feature list.
+icon: Columns2
+---
+
+<ComponentPreview slug="feature-split" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add feature-split
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/feature-split.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="feature-split" />
+
+## Content model
+
+The first three fields come from the shared `featureFields` base; `items` and `links` are specific
+to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy beside the list.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'Two to six feature rows, each with a required title and description.',
+    },
+    links: { type: 'array', description: 'One or two optional CTA links.' },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'Feature row heading.' },
+    description: { type: 'textarea', required: true, description: 'Feature row body copy.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="feature-split" />
+
+## Requirements
+
+<ComponentRequirements slug="feature-split" />
+
+## In this family
+
+<ComponentFamily slug="feature-split" />

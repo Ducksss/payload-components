@@ -4,8 +4,8 @@ import { wiringLedger, type WiringLedgerRow } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
 /* The differentiator as a ledger: five artifact rows, two commands.
- * Plain shadcn add covers one row; payload-kit add covers all five.
- * Emerald appears only on the payload-kit checks. Columns become
+ * Plain shadcn add covers one row; payload-components add covers all five.
+ * Emerald appears only on the payload-components checks. Columns become
  * stacked verdict lines under md (each verdict carries its own mono
  * command prefix there). */
 
@@ -16,7 +16,7 @@ function Verdict({
 }: {
   command: string
   label: string | null
-  tone: 'baseline' | 'kit'
+  tone: 'baseline' | 'component'
 }) {
   return (
     <div className="flex items-center gap-x-3 gap-y-1 px-5 py-2.5 md:border-l md:border-border md:px-6 md:py-4">
@@ -32,13 +32,13 @@ function Verdict({
         <span
           className={cn(
             'flex items-center gap-2 text-sm',
-            tone === 'kit' ? 'font-medium text-foreground' : 'text-muted-foreground',
+            tone === 'component' ? 'font-medium text-foreground' : 'text-muted-foreground',
           )}
         >
           <Check
             className={cn(
               'size-4 shrink-0',
-              tone === 'kit' ? 'text-brand' : 'text-muted-foreground',
+              tone === 'component' ? 'text-brand' : 'text-muted-foreground',
             )}
             aria-hidden="true"
           />
@@ -58,14 +58,14 @@ function LedgerRow({ row }: { row: WiringLedgerRow }) {
       </div>
       <Verdict command={wiringLedger.columns.baseline.command} label={row.baseline} tone="baseline" />
       <div className="pb-2 md:bg-muted/30 md:pb-0">
-        <Verdict command={wiringLedger.columns.kit.command} label={row.kit} tone="kit" />
+        <Verdict command={wiringLedger.columns.component.command} label={row.component} tone="component" />
       </div>
     </div>
   )
 }
 
 export function WiringLedger() {
-  const { baseline, kit } = wiringLedger.columns
+  const { baseline, component } = wiringLedger.columns
 
   return (
     <div className="overflow-hidden rounded-[1.75rem] border border-border bg-background shadow-card">
@@ -84,7 +84,7 @@ export function WiringLedger() {
         <div className="border-l border-border bg-muted/30 px-6 py-4">
           <code className="block overflow-x-auto whitespace-nowrap font-mono text-[13px] font-medium text-foreground">
             <span className="select-none text-muted-foreground">$ </span>
-            {kit.command}
+            {component.command}
           </code>
         </div>
       </div>
@@ -100,7 +100,7 @@ export function WiringLedger() {
           {baseline.summary}
         </div>
         <div className="px-5 py-3.5 text-sm font-medium leading-6 text-foreground md:border-l md:border-border md:bg-muted/30 md:px-6 md:py-4">
-          {kit.summary}
+          {component.summary}
         </div>
       </div>
     </div>

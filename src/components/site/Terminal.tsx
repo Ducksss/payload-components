@@ -108,7 +108,7 @@ export function Terminal({
           <span className="size-2.5 rounded-full bg-white/15" />
         </div>
         <span className="font-mono text-[11px] text-terminal-muted">{title}</span>
-        <span className="font-mono text-[11px] text-terminal-muted/70">payload-kit 0.1.0</span>
+        <span className="font-mono text-[11px] text-terminal-muted/70">payload-components 0.1.0</span>
       </div>
 
       <div className="overflow-x-auto px-4 py-4 sm:px-5">

@@ -1,0 +1,58 @@
+---
+title: Hero Basic
+description: A headline-led marketing hero — eyebrow, title, supporting copy, CTAs, and proof badges — installed as a wired Payload block.
+icon: LayoutPanelTop
+---
+
+<ComponentPreview slug="hero-basic" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add hero-basic
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/hero-basic.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="hero-basic" />
+
+## Content model
+
+The first four fields come from the shared `heroFields` base; `proofItems` is specific to this
+variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the headline.' },
+    title: { type: 'text', required: true, description: 'The hero headline.' },
+    description: {
+      type: 'textarea',
+      required: true,
+      description: 'Supporting copy beneath the headline.',
+    },
+    links: { type: 'array', required: true, description: 'One or two CTA links (min 1, max 2).' },
+    proofItems: {
+      type: 'array',
+      description: 'Up to four short proof labels (e.g. “SOC 2”, “99.99% uptime”).',
+    },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="hero-basic" />
+
+## Requirements
+
+<ComponentRequirements slug="hero-basic" />

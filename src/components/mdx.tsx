@@ -18,11 +18,11 @@ import {
 } from 'lucide-react'
 import type { MDXComponents } from 'mdx/types'
 
-import { KitDocPreview } from '@/components/site/KitDocPreview'
-import { KitFamily } from '@/components/site/KitFamily'
-import { KitRequirements } from '@/components/site/KitRequirements'
-import { KitUsage } from '@/components/site/KitUsage'
-import { KitWiring } from '@/components/site/KitWiring'
+import { ComponentDocPreview } from '@/components/site/ComponentDocPreview'
+import { ComponentFamily } from '@/components/site/ComponentFamily'
+import { ComponentRequirements } from '@/components/site/ComponentRequirements'
+import { ComponentUsage } from '@/components/site/ComponentUsage'
+import { ComponentWiring } from '@/components/site/ComponentWiring'
 
 // Curated Lucide set so MDX can pass `icon={<Layers />}` to <Card> without a
 // per-file import. Keep this list tight — only icons the docs actually use.
@@ -53,13 +53,13 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Files,
     Folder,
     // Kit doc-page sections (data-driven from the manifest/registry) — see the
-    // "Kit doc page format" in AGENTS.md. <KitPreview>/<KitWiring>/<KitUsage>/
-    // <KitRequirements>/<KitFamily slug="…" />.
-    KitFamily,
-    KitPreview: KitDocPreview,
-    KitRequirements,
-    KitUsage,
-    KitWiring,
+    // "Component doc page format" in AGENTS.md. <ComponentPreview>/<ComponentWiring>/<ComponentUsage>/
+    // <ComponentRequirements>/<ComponentFamily slug="…" />.
+    ComponentFamily,
+    ComponentPreview: ComponentDocPreview,
+    ComponentRequirements,
+    ComponentUsage,
+    ComponentWiring,
     Step,
     Steps,
     Tab,

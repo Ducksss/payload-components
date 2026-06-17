@@ -6,11 +6,11 @@ import { SiteHeader } from '@/components/site/SiteHeader'
 import { Terminal } from '@/components/site/Terminal'
 
 const notFoundLines = [
-  { kind: 'command', text: 'payload-kit add this-page' },
-  { kind: 'info', text: 'payload-kit: Unknown kit "this-page".' },
+  { kind: 'command', text: 'payload-components add this-page' },
+  { kind: 'info', text: 'payload-components: Unknown component "this-page".' },
   {
     kind: 'info',
-    text: 'Known kits: hero-basic, feature-grid-basic, feature-split, feature-bento, feature-steps.',
+    text: 'Known components: hero-basic, feature-grid-basic, feature-split, feature-bento, feature-steps.',
   },
 ] as const
 
@@ -31,10 +31,10 @@ export default function NotFoundPage() {
             Page not found
           </h1>
           <p className="mt-4 text-base leading-7 text-muted-foreground">
-            This route is not in the registry. The kits, the docs, and the catalog are.
+            This route is not in the registry. The components, the docs, and the catalog are.
           </p>
 
-          <Terminal className="mt-8 text-left" lines={notFoundLines} title="payload-kits — 404" />
+          <Terminal className="mt-8 text-left" lines={notFoundLines} title="payload-components — 404" />
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Link

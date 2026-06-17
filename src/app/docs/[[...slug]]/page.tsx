@@ -13,14 +13,14 @@ import { createRelativeLink } from 'fumadocs-ui/mdx'
 
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getMDXComponents } from '@/components/mdx'
-import { KitDocHeader } from '@/components/site/KitDocHeader'
-import { familyOfSlug } from '@/lib/kit-page-tree'
-import { docsRoute, githubContentBranch, githubRepoUrl, kitEntries } from '@/lib/site'
+import { ComponentDocHeader } from '@/components/site/ComponentDocHeader'
+import { familyOfSlug } from '@/lib/component-page-tree'
+import { componentEntries, docsRoute, githubContentBranch, githubRepoUrl } from '@/lib/site'
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source'
 import {
   breadcrumbNode,
+  componentSoftwareApplicationNode,
   graph,
-  kitSoftwareApplicationNode,
   techArticleNode,
 } from '@/lib/structured-data'
 
@@ -42,20 +42,31 @@ export async function generateMetadata({ params }: DocsPageProps): Promise<Metad
     return {}
   }
 
+  /* Component doc pages get a keyword-rich <title> for search ("… — Payload CMS
+     block") while the on-page H1 stays the short catalog name. Page blocks read
+     "block"; post components read "component". */
+  const component =
+    slug?.length === 2 && slug[0] === 'components'
+      ? componentEntries.find((entry) => entry.slug === slug[1])
+      : undefined
+  const title = component
+    ? `${page.data.title} — Payload CMS ${component.family === 'pages' ? 'block' : 'component'}`
+    : page.data.title
+
   return {
     alternates: { canonical: page.url },
-    title: page.data.title,
+    title,
     description: page.data.description,
     openGraph: {
       images: getPageImage(page).url,
-      title: page.data.title,
+      title,
       description: page.data.description,
       type: 'article',
       url: page.url,
     },
     twitter: {
       card: 'summary_large_image',
-      title: page.data.title,
+      title,
       description: page.data.description,
     },
   }
@@ -81,26 +92,28 @@ export default async function Page({ params }: DocsPageProps) {
   }
   crumbs.push({ name: page.data.title, path: page.url })
 
-  /* Kit doc pages (/docs/kits/<slug>) also carry per-kit SoftwareApplication
-     detail, pulled from the registry entry so it stays in sync with the catalog. */
-  const kit =
-    slug?.length === 2 && slug[0] === 'kits'
-      ? kitEntries.find((entry) => entry.slug === slug[1])
+  /* Component doc pages (/docs/components/<slug>) carry per-component SoftwareApplication
+     detail (from the registry entry) plus a custom header with prev/next and at-a-glance chips. */
+  const component =
+    slug?.length === 2 && slug[0] === 'components'
+      ? componentEntries.find((entry) => entry.slug === slug[1])
       : undefined
 
-  /* Catalog-order prev/next for the kit-page header arrows. */
-  const kitIndex = kit ? kitEntries.findIndex((entry) => entry.slug === kit.slug) : -1
-  const prevKit = kitIndex > 0 ? kitEntries[kitIndex - 1] : undefined
-  const nextKit =
-    kitIndex >= 0 && kitIndex < kitEntries.length - 1 ? kitEntries[kitIndex + 1] : undefined
+  /* Catalog-order prev/next for the component-page header arrows. */
+  const index = component
+    ? componentEntries.findIndex((entry) => entry.slug === component.slug)
+    : -1
+  const prev = index > 0 ? componentEntries[index - 1] : undefined
+  const next =
+    index >= 0 && index < componentEntries.length - 1 ? componentEntries[index + 1] : undefined
 
-  /* At-a-glance chips under the kit title. */
-  const kitChips = kit
+  /* At-a-glance chips under the component title. */
+  const chips = component
     ? [
-        `v${kit.version}`,
-        kit.family === 'pages' ? 'Page block' : 'Post component',
-        `${familyOfSlug(kit.slug).label} family`,
-        kit.target,
+        `v${component.version}`,
+        component.family === 'pages' ? 'Page block' : 'Post component',
+        `${familyOfSlug(component.slug).label} family`,
+        component.target,
       ]
     : []
 
@@ -112,21 +125,21 @@ export default async function Page({ params }: DocsPageProps) {
       title: page.data.title,
       url: page.url,
     }),
-    ...(kit ? [kitSoftwareApplicationNode(kit)] : []),
+    ...(component ? [componentSoftwareApplicationNode(component)] : []),
   )
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <JsonLd data={structuredData} />
-      {kit ? (
-        <KitDocHeader
+      {component ? (
+        <ComponentDocHeader
           title={page.data.title}
           description={page.data.description}
-          chips={kitChips}
+          chips={chips}
           markdownUrl={markdownUrl}
           githubUrl={githubUrl}
-          prev={prevKit ? { href: prevKit.href, title: prevKit.title } : undefined}
-          next={nextKit ? { href: nextKit.href, title: nextKit.title } : undefined}
+          prev={prev ? { href: prev.href, title: prev.title } : undefined}
+          next={next ? { href: next.href, title: next.title } : undefined}
         />
       ) : (
         <>

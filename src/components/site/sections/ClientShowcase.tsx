@@ -9,7 +9,7 @@ import {
 import { cn } from '@/utilities/ui'
 
 /* The origin story as evidence: real freelance Payload sites the maintainer
- * shipped before payload-kit — each one paid the manual setup tax by hand.
+ * shipped before payload-components — each one paid the manual setup tax by hand.
  * Honest framing (eyebrow/heading/intro in lib/site): these predate the CLI;
  * they are not installs of it. */
 

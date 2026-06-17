@@ -1,0 +1,11 @@
+{
+  "title": "Components",
+  "icon": "Blocks",
+  "pages": [
+    "hero-basic",
+    "feature-grid-basic",
+    "feature-split",
+    "feature-bento",
+    "feature-steps"
+  ]
+}

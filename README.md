@@ -5,19 +5,19 @@
 [![Stars][stars-shield]][stars-url]
 
 <div align="center">
-  <h1>Payload Kits</h1>
+  <h1>Payload Components</h1>
   <p>
-    Open-source block kits for Payload CMS, installed into Payload v3 + Next.js
+    Open-source blocks for Payload CMS, installed into Payload v3 + Next.js
     projects with the wiring included.
   </p>
   <p>
     <a href="https://payload-components.xyz/docs"><strong>Explore the docs</strong></a>
     &middot;
-    <a href="https://payload-components.xyz/components">Browse kits</a>
+    <a href="https://payload-components.xyz/components">Browse components</a>
     &middot;
     <a href="https://github.com/Ducksss/payload-components/issues/new?template=bug_report.yml">Report a bug</a>
     &middot;
-    <a href="https://github.com/Ducksss/payload-components/issues/new?template=feature_request.yml">Request a kit</a>
+    <a href="https://github.com/Ducksss/payload-components/issues/new?template=feature_request.yml">Request a component</a>
   </p>
 </div>
 
@@ -51,10 +51,10 @@
 
 ## About The Project
 
-Payload Kits is an MIT-licensed catalog and CLI for installing Payload CMS
-block kits into supported Payload v3 + Next.js projects.
+Payload Components is an MIT-licensed catalog and CLI for installing Payload CMS
+blocks into supported Payload v3 + Next.js projects.
 
-A plain `shadcn add` copies files. `payload-kit add` also registers the block
+A plain `shadcn add` copies files. `payload-components add` also registers the block
 in the Payload collection, maps the renderer, regenerates types, regenerates
 the admin import map, and records install state so reruns converge.
 
@@ -62,7 +62,7 @@ This repository is both:
 
 - The Fumadocs-powered Next.js website for the landing page, docs, catalog,
   search, Open Graph images, and AI-readable text surfaces.
-- The `payload-kit` registry and CLI that distribute installable kits into
+- The `payload-components` registry and CLI that distribute installable components into
   consumer Payload projects.
 
 This repository is not a Payload CMS runtime app. The website does not need
@@ -90,14 +90,14 @@ Payload admin routes, collections, globals, a database adapter, or
 | Path                         | Purpose                                                                               |
 | ---------------------------- | ------------------------------------------------------------------------------------- |
 | `src/app`                    | Next.js app routes, homepage, catalog, docs, search, LLM text surfaces, and OG images |
-| `src/components/site`        | Site UI, landing sections, install replay, kit cards, and demo twins                  |
-| `src/lib/site.ts`            | Central copy/data source for landing copy, kit entries, FAQ, and demos                |
+| `src/components/site`        | Site UI, landing sections, install replay, component cards, and demo twins                  |
+| `src/lib/site.ts`            | Central copy/data source for landing copy, component entries, FAQ, and demos                |
 | `content/docs`               | Fumadocs MDX documentation                                                            |
-| `payload-kits/registry.json` | Source shadcn registry definition                                                     |
-| `payload-kits/source`        | Payload target source files shipped into consumer repos                               |
-| `payload-kits/manifests`     | Install metadata, fragments, post-install tasks, and recovery contract                |
-| `tools/payload-kit`          | CLI implementation for `payload-kit add`                                              |
-| `bin/payload-kit.mjs`        | CLI executable entrypoint                                                             |
+| `payload-components/registry.json` | Source shadcn registry definition                                                     |
+| `payload-components/source`        | Payload target source files shipped into consumer repos                               |
+| `payload-components/manifests`     | Install metadata, fragments, post-install tasks, and recovery contract                |
+| `tools/payload-components`          | CLI implementation for `payload-components add`                                              |
+| `bin/payload-components.mjs`        | CLI executable entrypoint                                                             |
 | `tests`                      | Playwright E2E and Vitest integration coverage                                        |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -144,29 +144,29 @@ Follow these steps to run the docs site and registry tooling locally.
 
 ## Usage
 
-Install a kit into a supported Payload v3 + Next.js project:
+Install a component into a supported Payload v3 + Next.js project:
 
 ```sh
-npx payload-kit add hero-basic
-npx payload-kit add feature-grid-basic
+npx payload-components add hero-basic
+npx payload-components add feature-grid-basic
 ```
 
 The installer runs five idempotent stages:
 
 1. Build the public registry output.
-2. Add kit files through the shadcn registry.
+2. Add component files through the shadcn registry.
 3. Install required dependencies.
 4. Apply Payload fragments for collection registration and renderer mapping.
 5. Run post-install scripts for generated types and the admin import map.
 
-Generated install state is written to `.payload-kit/state.json` inside the
+Generated install state is written to `.payload-components/state.json` inside the
 consumer project.
 
 Useful local routes:
 
 - `/` - product and docs homepage
 - `/docs` - Fumadocs documentation
-- `/components` - kit catalog
+- `/components` - component catalog
 - `/api/search` - Fumadocs search endpoint
 - `/llms.txt` and `/llms-full.txt` - AI-readable project summaries
 - `/r/registry.json` - generated public registry
@@ -212,7 +212,7 @@ Use `E2E_PORT=3100 pnpm run test:e2e` when port `3000` is busy.
 
 ## Roadmap
 
-The project stays community-first: more kits, stronger install recovery,
+The project stays community-first: more components, stronger install recovery,
 clearer docs, and better compatibility coverage for real Payload projects.
 
 See [ROADMAP.md](./ROADMAP.md) and the
@@ -224,7 +224,7 @@ work.
 ## Contributing
 
 Contributions are welcome. The useful shape is a complete change: source,
-manifest, docs, and installer coverage together when adding or changing a kit.
+manifest, docs, and installer coverage together when adding or changing a component.
 
 1. Fork the project.
 2. Create a feature branch from `dev`.
@@ -239,7 +239,7 @@ pull request expectations.
 
 ## Maintainer
 
-Payload Kits is maintained by [Ducksss](https://github.com/Ducksss).
+Payload Components is maintained by [Ducksss](https://github.com/Ducksss).
 Security reports should use GitHub Security Advisories for this repository.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -263,7 +263,7 @@ information.
 
 - [Best-README-Template][best-readme-template-url] for the README structure.
 - [Payload CMS][payload-url] for the target CMS ecosystem.
-- [shadcn][shadcn-url] for the registry model Payload Kits builds on.
+- [shadcn][shadcn-url] for the registry model Payload Components builds on.
 - [Fumadocs][fumadocs-url] for the documentation site foundation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

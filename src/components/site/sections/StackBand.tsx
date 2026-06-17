@@ -1,7 +1,7 @@
 import { stackBandLede, stackItems } from '@/lib/site'
 
 /* The honest "logo cloud": no customer logos (alpha, open source), just the
- * stack kits install into, set as quiet wordmarks. */
+ * stack components install into, set as quiet wordmarks. */
 export function StackBand() {
   return (
     <section aria-label="Supported stack" className="bg-muted/30">

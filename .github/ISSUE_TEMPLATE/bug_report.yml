@@ -18,7 +18,7 @@ body:
         - Frontend site
         - Component gallery
         - Registry files
-        - payload-kit CLI
+        - payload-components CLI
         - Documentation
         - CI or release checks
         - Other

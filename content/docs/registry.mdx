@@ -4,11 +4,11 @@ description: How the public registry, manifests, and wrapper CLI work together.
 icon: Package
 ---
 
-Payload Kits delivers a kit in two layers — a shadcn registry that moves files, and a manifest that captures the Payload-specific wiring the registry can't express.
+Payload Components delivers a component in two layers — a shadcn registry that moves files, and a manifest that captures the Payload-specific wiring the registry can't express.
 
 <Cards>
   <Card icon={<Package />} title="Public registry">
-    A shadcn-compatible JSON registry that delivers a kit's source files into the
+    A shadcn-compatible JSON registry that delivers a component's source files into the
     target project.
   </Card>
   <Card icon={<ShieldCheck />} title="Wrapper manifest">
@@ -19,7 +19,7 @@ Payload Kits delivers a kit in two layers — a shadcn registry that moves files
 
 ## Public registry
 
-The public registry is generated from `payload-kits/registry.json`:
+The public registry is generated from `payload-components/registry.json`:
 
 ```bash
 pnpm registry:build
@@ -29,12 +29,12 @@ The generated files are emitted to `public/r` and can be served statically.
 
 <Callout type="warn">
   `public/r` is **build output** — gitignored and reproducible. Never hand-edit it;
-  edit `payload-kits/registry.json` and rebuild.
+  edit `payload-components/registry.json` and rebuild.
 </Callout>
 
 ## Manifests
 
-Each wrapper manifest in `payload-kits/manifests` defines:
+Each wrapper manifest in `payload-components/manifests` defines:
 
 - supported Payload and Next.js majors
 - files expected after install
@@ -46,7 +46,7 @@ Each wrapper manifest in `payload-kits/manifests` defines:
 
 ## Support matrix
 
-`payload-kits/support-matrix.json` defines the target project shapes the installer understands.
+`payload-components/support-matrix.json` defines the target project shapes the installer understands.
 
 <Callout type="info">
   The current alpha support matrix is intentionally narrow. New project shapes
@@ -55,9 +55,9 @@ Each wrapper manifest in `payload-kits/manifests` defines:
 
 ## Recovery state
 
-The CLI records install state in `.payload-kit/state.json` inside the target project.
+The CLI records install state in `.payload-components/state.json` inside the target project.
 
 <Callout type="warn">
   That state is **not** a substitute for disk verification — the installer still
-  checks actual files and fragments before declaring a kit installed.
+  checks actual files and fragments before declaring a component installed.
 </Callout>

@@ -1,12 +1,12 @@
-# Payload Kits — MVP → Launch Roadmap
+# Payload Components — MVP → Launch Roadmap
 
-> Working roadmap for getting Payload Kits from "strong pitch, thin catalog" to a
+> Working roadmap for getting Payload Components from "strong pitch, thin catalog" to a
 > measurable public launch. The ordering matters more than the dates: **capture
 > first → credible catalog + an install you can trust → launch → build on demand.**
 
 ## Where we are
 
-Payload Kits is an MIT-licensed, shadcn-style registry + CLI that installs Payload
+Payload Components is an MIT-licensed, shadcn-style registry + CLI that installs Payload
 CMS blocks *fully wired* — it copies the source, registers the block in the Pages
 collection, maps it in `RenderBlocks`, and regenerates types + the admin import
 map, landing it all as one reviewable git diff. The differentiator versus a plain
@@ -48,9 +48,9 @@ the wiring; post components add breadth. Lead with the former.
 | Phase | Theme | Why it's here | Window |
 |---|---|---|---|
 | **0** | Instrument & capture | Make interest measurable *before* traffic arrives. Low-lift, unblocks everything. | Week 1 |
-| **1** | Credible catalog + an install you can trust | ~9 kits (mix) + stop the installer failing silently. The two things that make a launch land instead of backfire. | Weeks 1–3 (parallel) |
+| **1** | Credible catalog + an install you can trust | ~9 components (mix) + stop the installer failing silently. The two things that make a launch land instead of backfire. | Weeks 1–3 (parallel) |
 | **2** | Launch lean & loud | Ship the demo asset and hit the platforms where Payload devs actually are. | Week ~4 |
-| **3** | Build on demand | Let real install/vote signal pick the next kits; expand targets + harden the installer once volume justifies it. | Post-launch |
+| **3** | Build on demand | Let real install/vote signal pick the next components; expand targets + harden the installer once volume justifies it. | Post-launch |
 
 Dates are relative — compress or stretch to your velocity. The sequence is the point.
 
@@ -66,27 +66,27 @@ measurable. All four mechanisms, ordered by signal value.
 > So capture runs through *external* services and client-side posts, never a
 > self-hosted route handler on this site.
 
-### 0.1 Email waitlist / kit-notify *(collect contacts)*
-- Capture through a hosted form provider — **Loops, ConvertKit, Buttondown, Tally,
+### 0.1 Email waitlist / component-notify *(collect contacts)*
+- Capture through a hosted form provider — **Loops, ConvertComponent, Buttondown, Tally,
   or Formspree** — embedded or posted to client-side. No Next route handler, no DB.
-  Pick one that doubles as a broadcast channel so you can email "your kit just
-  shipped" later (Loops/ConvertKit/Buttondown do this).
+  Pick one that doubles as a broadcast channel so you can email "your component just
+  shipped" later (Loops/ConvertComponent/Buttondown do this).
 - **UI (must match the design system — light-first shadcn monochrome + emerald
   accent only):**
-  - A "Notify me" affordance on each `UpcomingKitCard`
-    (`src/components/site/KitGrid.tsx`) — this captures *which kit* they want, so
+  - A "Notify me" affordance on each `UpcomingComponentCard`
+    (`src/components/site/ComponentGrid.tsx`) — this captures *which component* they want, so
     it's also a priority vote.
   - A general waitlist field in `src/components/site/sections/CommunityCta.tsx`.
 
 ### 0.2 Opt-in CLI telemetry *(prove real installs — highest-intent signal)*
-- On a successful `payload-kit add`, if opted in, the **CLI** (`tools/payload-kit`,
+- On a successful `payload-components add`, if opted in, the **CLI** (`tools/payload-components`,
   not the docs site) posts an anonymized event
-  `{ kit, kitVersion, targetId, nodeVersion, pkgManager, success }` directly to an
+  `{ component, componentVersion, targetId, nodeVersion, pkgManager, success }` directly to an
   external sink (PostHog server-side capture).
 - **Opt-in and on-brand:** first-run prompt — "Send anonymous install events to
-  help improve Payload Kits? (y/N)" — persisted in `.payload-kit/config`. Honor
+  help improve Payload Components? (y/N)" — persisted in `.payload-components/config`. Honor
   `DO_NOT_TRACK` and CI env vars. Never send repo paths, emails, or content.
-- Wire into `tools/payload-kit/commands/add.ts`; add `tools/payload-kit/telemetry.ts`.
+- Wire into `tools/payload-components/commands/add.ts`; add `tools/payload-components/telemetry.ts`.
 
 ### 0.3 Product analytics *(see where attention drops)*
 - Add **PostHog** (external script — unifies the web funnel *and* the CLI telemetry
@@ -97,22 +97,22 @@ measurable. All four mechanisms, ordered by signal value.
 
 ### 0.4 GitHub signals *(no build, sharpen what exists)*
 - Add a star/count button + "Watch releases" to the site header / community CTA.
-- Add issue templates: "I installed a kit" (the featured-install funnel) and
-  "Request a kit" (demand signal). Keep "early installs get featured."
+- Add issue templates: "I installed a component" (the featured-install funnel) and
+  "Request a component" (demand signal). Keep "early installs get featured."
 
 ---
 
 ## Phase 1 — Credible catalog + an install you can trust (parallel tracks)
 
-### Track A — Catalog to ~9 kits (the "mix")
+### Track A — Catalog to ~9 components (the "mix")
 
-Build the five-part bundle for each kit (source + manifest + registry entry + docs
-+ installer test/sampleContent), scaffolding from `payload-kits/templates/alpha-kit/`,
+Build the five-part bundle for each component (source + manifest + registry entry + docs
++ installer test/sampleContent), scaffolding from `payload-components/templates/alpha-component/`,
 then register it in `src/lib/site.ts` and the catalog.
 
 Priority order — **page blocks first**, because they showcase the wiring:
 
-| # | Kit | Type | Why | Notes |
+| # | Component | Type | Why | Notes |
 |---|---|---|---|---|
 | ✓ | hero-basic | page block | shipped | |
 | ✓ | feature-grid-basic | page block | shipped | |
@@ -133,9 +133,9 @@ component — pairs naturally with the 0.1 email capture).
 ### Track B — Stop the installer failing silently (launch-blocker only)
 
 Scope is **"fail loud + previewable + recoverable,"** *not* a full rewrite. The
-fragile code lives in `tools/payload-kit/project.ts` (string-anchor inserts, a
+fragile code lives in `tools/payload-components/project.ts` (string-anchor inserts, a
 brittle closing-brace heuristic, string-match verification) and
-`tools/payload-kit/commands/add.ts`.
+`tools/payload-components/commands/add.ts`.
 
 1. **Never silent.** When an anchor or file shape is unexpected, abort with an
    actionable error ("couldn't find `const blockComponents = {` in
@@ -145,7 +145,7 @@ brittle closing-brace heuristic, string-match verification) and
 2. **`--dry-run` / preview.** Print the exact diff it *would* apply without
    writing. This doubles as a trust feature ("read it before you trust it") and a
    safety net for unusual repos.
-3. **Recoverable.** A `--force` / `payload-kit recover` path that reads `partial`
+3. **Recoverable.** A `--force` / `payload-components recover` path that reads `partial`
    state and completes or rolls back, instead of a wedged "already installed"
    dead-end.
 
@@ -158,12 +158,12 @@ non-smoke paths.
 ## Phase 2 — Launch lean & loud
 
 Capture is already live (Phase 0), so every visitor can convert to a star, a
-waitlist email, or a kit-notify vote. This phase is about driving qualified
+waitlist email, or a component-notify vote. This phase is about driving qualified
 traffic — and the order you hit platforms in matters as much as which ones.
 
 ### 2.1 The one asset that does the selling
 
-A **45–60s screen recording**: `payload-kit add cta-basic` → the block rendering in
+A **45–60s screen recording**: `payload-components add cta-basic` → the block rendering in
 a running app → `git diff --stat` showing the five wired artifacts. Narrate the
 four edits it did *for* you. This clip *is* the pitch.
 
@@ -192,8 +192,8 @@ most forgiving, fix what they surface, *then* go wide.
 
 | Platform | Why / audience | What to post | Etiquette & timing | Primary metric |
 |---|---|---|---|---|
-| **Payload Discord** (showcase channel) | Warmest, most qualified — actual Payload devs | "Built payload-kit — installs blocks fully wired. Feedback?" + GIF + repo link | Be a member first; reply fast; not a drive-by. Soft-launch here ~1 week early | install replies, bug reports |
-| **Show HN** | Huge reach; a skeptical crowd that *loves* "read the source, it's MIT" | Title: "Show HN: Payload Kits – install Payload CMS blocks wired, not pasted." First comment = the backstory + exactly what it wires | Tue–Thu, ~8–10am ET. Engage every comment. Never ask for upvotes | front page, comment sentiment, stars spike |
+| **Payload Discord** (showcase channel) | Warmest, most qualified — actual Payload devs | "Built payload-components — installs blocks fully wired. Feedback?" + GIF + repo link | Be a member first; reply fast; not a drive-by. Soft-launch here ~1 week early | install replies, bug reports |
+| **Show HN** | Huge reach; a skeptical crowd that *loves* "read the source, it's MIT" | Title: "Show HN: Payload Components – install Payload CMS blocks wired, not pasted." First comment = the backstory + exactly what it wires | Tue–Thu, ~8–10am ET. Engage every comment. Never ask for upvotes | front page, comment sentiment, stars spike |
 | **r/PayloadCMS** | Small but exactly your audience | Same as Discord, a touch more formal | Read the subreddit rules; genuine tone, not a pitch | upvotes, installs |
 | **r/nextjs** | Large adjacent audience (Payload runs on Next) | Frame around the Next + Payload workflow pain, *then* the tool | Bigger sub, stricter on self-promo — lead with the problem | reach, click-through |
 | **X / Twitter** | Amplification; the Payload team is active here | Thread: the problem → the four edits → the demo clip → the repo | Launch morning; tag @payloadcms / @jmikrut; reply to quote-tweets | RTs, Payload-team notice |
@@ -222,13 +222,13 @@ share.
 
 Reply to every comment in the first 24 hours. Treat criticism as free QA — log it
 as issues. Never argue; thank, then fix. Convert every "does it support X?" into a
-kit-request / roadmap item.
+component-request / roadmap item.
 
 ---
 
 ## Phase 3 — Build on demand (post-launch)
 
-- **Vote-for-next-kit.** Aggregate kit-notify subscriptions (0.1) + "request a kit"
+- **Vote-for-next-component.** Aggregate component-notify subscriptions (0.1) + "request a component"
   issues (0.4) and build what wins. This honors the stated philosophy — "the
   catalog grows from real installs, not roadmap theater" — so you never guess.
 - **Expand supported targets** beyond `payload-website-starter` once telemetry shows
@@ -241,11 +241,11 @@ kit-request / roadmap item.
 
 ## Catalog roadmap — the component vision
 
-`At a glance` and Phases 1/3 sequence *when* kits ship against the launch. This
-section is the other axis: *what* the catalog becomes and how each kit is shaped.
-The unit is **family × variant × install mode** — every kit belongs to a family,
+`At a glance` and Phases 1/3 sequence *when* components ship against the launch. This
+section is the other axis: *what* the catalog becomes and how each component is shaped.
+The unit is **family × variant × install mode** — every component belongs to a family,
 and a family is one shared field base plus N variants (the model proven by
-`hero-basic` + `payload-kits/source/blocks/shared/heroFields.ts`).
+`hero-basic` + `payload-components/source/blocks/shared/heroFields.ts`).
 
 ### Two install modes
 
@@ -275,9 +275,9 @@ and a family is one shared field base plus N variants (the model proven by
 
 `post-card` · `post-archive` · `post-hero` · `featured-post` · `post-list` ·
 `author-card` · `related-posts` · `newsletter-callout` — the eight declared in
-`src/lib/site.ts` `upcomingKits`, plus natural additions `post-toc` and `share-bar`.
+`src/lib/site.ts` `upcomingComponents`, plus natural additions `post-toc` and `share-bar`.
 
-**Shared primitives** (bases the variants compose — *not* installable kits)
+**Shared primitives** (bases the variants compose — *not* installable components)
 
 `heroFields` ✓ · `featureFields` ✓ · `ctaFields` · `pricingFields` · `faqFields` ·
 `mediaField` · a section-shell wrapper carrying `id` / `className` /
@@ -292,7 +292,7 @@ Phase 1 · Track A). Page blocks before post components — the wiring is the mo
 |---|---|---|
 | **1 — Launch catalog** | `cta-basic`, `pricing-basic`, `faq-basic`, `testimonial-basic` (page) + `post-card`, `post-archive`, `post-hero`, `author-card` (posts) | Phase 1 · Track A |
 | **2 — Depth via variants** | `hero-split`, `hero-media`; `feature-split`, `feature-bento`; extract `featureFields` / `ctaFields`; `content-columns` + `media-block` | post-launch — the payoff of the shared-base model |
-| **3 — Breadth** | remaining posts (`post-list`, `featured-post`, `related-posts`, `newsletter-callout`), `team-grid`, `logo-cloud`, `stats-band`, `form-block` | Phase 3 · build on demand (vote-for-next-kit picks order) |
+| **3 — Breadth** | remaining posts (`post-list`, `featured-post`, `related-posts`, `newsletter-callout`), `team-grid`, `logo-cloud`, `stats-band`, `form-block` | Phase 3 · build on demand (vote-for-next-component picks order) |
 | **4 — Chrome & advanced** | `header` / nav, `footer`, `pricing-comparison`, multi-target support | gated on volume (Phase 3) |
 
 ### Sequencing rules
@@ -304,9 +304,9 @@ Phase 1 · Track A). Page blocks before post components — the wiring is the mo
   that compose it. A second variant is cheap once the base exists; a one-variant
   family isn't worth a shared base yet.
 - **Demand-pull past Wave 2.** Beyond the launch catalog and the variant-depth
-  proof, let kit-notify votes + "request a kit" issues order the rest — don't build
+  proof, let component-notify votes + "request a component" issues order the rest — don't build
   breadth on spec.
-- **Every kit is the five-part bundle** (see Execution notes) plus its shared base
+- **Every component is the five-part bundle** (see Execution notes) plus its shared base
   and the landing-ledger sync in `src/lib/site.ts`.
 
 ---
@@ -320,25 +320,25 @@ targets to game.
 | Rung | Signal | Source | What it means | "It's working" anchor |
 |---|---|---|---|---|
 | **Attention** | Landing visits, GitHub stars | PostHog, GitHub | The pitch gets clicks | ~300+ stars in launch week |
-| **Intent** | Copy-install-command clicks, docs views, **waitlist + kit-notify signups** | PostHog, form provider | They're considering it | >50 waitlist, healthy command copies |
-| **Commitment** | **npm downloads of `payload-kit`, opt-in telemetry installs**, "I installed a kit" issues | npm, PostHog, GitHub | They actually ran it — *the rung that matters* | 20+ distinct real installs in month 1 |
-| **Pull** | Kit-request issues, kit-notify vote distribution, Discord questions | GitHub, PostHog | They want *more* — product-market pull | Specific, repeated requests for named kits |
+| **Intent** | Copy-install-command clicks, docs views, **waitlist + component-notify signups** | PostHog, form provider | They're considering it | >50 waitlist, healthy command copies |
+| **Commitment** | **npm downloads of `payload-components`, opt-in telemetry installs**, "I installed a component" issues | npm, PostHog, GitHub | They actually ran it — *the rung that matters* | 20+ distinct real installs in month 1 |
+| **Pull** | Component-request issues, component-notify vote distribution, Discord questions | GitHub, PostHog | They want *more* — product-market pull | Specific, repeated requests for named components |
 
 **Decision rule after launch:**
 - Attention but no Commitment → the pitch lands, the value doesn't. Investigate
   install friction (Track B) or whether the wiring is really the pain.
 - Commitment + Pull → you have something. Pour into Phase 3 and build the requested
-  kits fast.
+  components fast.
 
 ---
 
 ## Execution notes
 
-**Each new kit** ships as a five-part bundle (scaffold from
-`payload-kits/templates/alpha-kit/`): source under
-`payload-kits/source/blocks/<Name>/`, a `payload-kits/manifests/<slug>.json` (with
-`sampleContent` for smoke), a `payload-kits/registry.json` entry, a
-`content/docs/kits/<slug>.mdx`, installer test coverage in `tests/int/`, and
+**Each new component** ships as a five-part bundle (scaffold from
+`payload-components/templates/alpha-component/`): source under
+`payload-components/source/blocks/<Name>/`, a `payload-components/manifests/<slug>.json` (with
+`sampleContent` for smoke), a `payload-components/registry.json` entry, a
+`content/docs/components/<slug>.mdx`, installer test coverage in `tests/int/`, and
 registration in `src/lib/site.ts`.
 
 **Verification gate** before any release: `pnpm test:release` (lint, source:build,

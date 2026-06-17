@@ -7,8 +7,8 @@ import { FeatureStepsDemo } from './FeatureStepsDemo'
 import { HeroBasicDemo } from './HeroBasicDemo'
 
 /* Single source of truth mapping a kit slug to its live demo twin. Shared by
- * the catalog preview thumbnails (KitPreviewThumb) and the docs-page live
- * render (KitDocPreview / the <KitPreview> MDX component) so the two surfaces
+ * the catalog preview thumbnails (ComponentPreviewThumb) and the docs-page live
+ * render (ComponentDocPreview / the <ComponentPreview> MDX component) so the two surfaces
  * never drift. Every twin defaults its own sample content and is already
  * aria-hidden + presentational. Slugs without a twin render nothing. */
 export const demosBySlug: Record<string, ComponentType> = {
@@ -19,6 +19,6 @@ export const demosBySlug: Record<string, ComponentType> = {
   'hero-basic': HeroBasicDemo,
 }
 
-export function hasKitDemo(slug: string) {
+export function hasComponentDemo(slug: string) {
   return slug in demosBySlug
 }

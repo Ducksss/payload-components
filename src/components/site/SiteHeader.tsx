@@ -10,7 +10,7 @@ import { cn } from '@/utilities/ui'
 
 const navLinks = [
   { href: '/docs', label: 'Docs' },
-  { href: '/components', label: 'Kits' },
+  { href: '/components', label: 'Components' },
   { href: '/about', label: 'About' },
 ] as const
 
@@ -24,7 +24,7 @@ export function Wordmark({ withBadge = false }: { withBadge?: boolean }) {
         &gt;
       </span>
       <span className="text-[15px] font-semibold tracking-tight text-foreground">
-        Payload Kits
+        Payload Components
       </span>
       {withBadge ? (
         <span className="hidden rounded-full border border-border px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground sm:inline">
@@ -41,7 +41,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95">
       <div className="container flex h-14 items-center justify-between gap-4">
-        <Link href="/" aria-label="Payload Kits home">
+        <Link href="/" aria-label="Payload Components home">
           <Wordmark withBadge />
         </Link>
 

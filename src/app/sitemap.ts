@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next'
 import { siteUrl } from '@/lib/site'
 import { source } from '@/lib/source'
 
-/* Static marketing routes. The /docs index and every kit/guide page come
+/* Static marketing routes. The /docs index and every component/guide page come
    from the Fumadocs source below, so they are intentionally absent here. */
 const staticRoutes = [
   { changeFrequency: 'weekly', path: '/', priority: 1 },

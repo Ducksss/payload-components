@@ -1,17 +1,17 @@
 ---
 title: Architecture
-description: The repository is split between a Fumadocs site and Payload-targeted kit tooling.
+description: The repository is split between a Fumadocs site and Payload-targeted component tooling.
 icon: Layers
 ---
 
-Payload Kits is two projects living in one repository — and they deliberately never share a Payload runtime.
+Payload Components is two projects living in one repository — and they deliberately never share a Payload runtime.
 
 <Cards>
   <Card icon={<Boxes />} title="Site runtime">
-    A Fumadocs + Next.js app: the landing, these docs, and the kit catalog. Boots
+    A Fumadocs + Next.js app: the landing, these docs, and the component catalog. Boots
     with no database, no `PAYLOAD_SECRET`, and no admin.
   </Card>
-  <Card icon={<Workflow />} title="Kit runtime">
+  <Card icon={<Workflow />} title="Component runtime">
     The Payload block code the CLI installs into _your_ repo. It only ever runs
     there, against real Payload project shapes.
   </Card>
@@ -20,7 +20,7 @@ Payload Kits is two projects living in one repository — and they deliberately 
 The two responsibilities are:
 
 1. Run a documentation and catalog site.
-2. Build, validate, and distribute Payload kit installs.
+2. Build, validate, and distribute Payload component installs.
 
 Those responsibilities should not share a Payload runtime.
 
@@ -57,11 +57,11 @@ The site exposes the same docs in browser and machine-readable formats:
 - `/llms.txt` publishes the concise source map for AI crawlers.
 - `/llms-full.txt` publishes the compiled documentation body.
 - `/llms.mdx/docs/**/content.md` publishes each docs page as markdown.
-- JSON-LD marks the site, CLI, FAQ, kit catalog, and docs articles for structured extraction.
+- JSON-LD marks the site, CLI, FAQ, component catalog, and docs articles for structured extraction.
 
-## Kit runtime
+## Component runtime
 
-The kit runtime is external. A kit installs into a supported Payload v3 + Next.js project, where the Payload-specific files actually live:
+The component runtime is external. A component installs into a supported Payload v3 + Next.js project, where the Payload-specific files actually live:
 
 - block configs
 - frontend block components
@@ -71,20 +71,20 @@ The kit runtime is external. A kit installs into a supported Payload v3 + Next.j
 
 ## Registry source
 
-The shadcn-compatible registry reads source files from `payload-kits/source` and emits public JSON to `public/r`.
+The shadcn-compatible registry reads source files from `payload-components/source` and emits public JSON to `public/r`.
 
-That keeps Payload-specific kit source out of the Fumadocs app tree while preserving install targets like `~/src/blocks/HeroBasic/Component.tsx`.
+That keeps Payload-specific component source out of the Fumadocs app tree while preserving install targets like `~/src/blocks/HeroBasic/Component.tsx`.
 
-## Kit families and shared code
+## Component families and shared code
 
-A component family ships one installable kit per structural variant — `hero-basic`, `hero-video`, `hero-dramatic` — each its own registry item and manifest. Variant selection is the catalog and the install command, never an interactive prompt. Content-level variation (optional or extra editor fields) lives in the Payload block config, not a separate kit.
+A component family ships one installable component per structural variant — `hero-basic`, `hero-video`, `hero-dramatic` — each its own registry item and manifest. Variant selection is the catalog and the install command, never an interactive prompt. Content-level variation (optional or extra editor fields) lives in the Payload block config, not a separate component.
 
-Variants that share fields or markup reference a common source file under `payload-kits/source/blocks/shared`, installed once into the consumer repo — for example `~/src/blocks/shared/heroFields.ts` — and composed by each variant config as `fields: [...heroFields, /* variant-specific */]`. Editing the shared file updates every installed variant; re-running an install never overwrites an edited copy. Internal shared modules ship as registry files, not `registryDependencies` (which resolve only public shadcn components).
+Variants that share fields or markup reference a common source file under `payload-components/source/blocks/shared`, installed once into the consumer repo — for example `~/src/blocks/shared/heroFields.ts` — and composed by each variant config as `fields: [...heroFields, /* variant-specific */]`. Editing the shared file updates every installed variant; re-running an install never overwrites an edited copy. Internal shared modules ship as registry files, not `registryDependencies` (which resolve only public shadcn components).
 
 ## Why this split matters
 
 <Callout type="idea">
   A docs site should build without a database, Payload secret, or admin import map.
-  A Payload kit should still be tested against real Payload project shapes. Splitting
+  A Payload component should still be tested against real Payload project shapes. Splitting
   the app runtime from the install target keeps both jobs honest.
 </Callout>

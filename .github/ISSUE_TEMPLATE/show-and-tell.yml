@@ -1,4 +1,4 @@
-name: Show & tell / Using Payload Kits
+name: Show & tell / Using Payload Components
 description: Share what you built, send feedback from a real install, or offer to help shape the registry.
 title: '[community] '
 labels:
@@ -7,16 +7,16 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for using Payload Kits! This is the place to show what you shipped, flag rough edges from a real install, or raise your hand to contribute. Payload Kits is MIT and community-first — the catalog grows from real installs and PRs, not a paid roadmap.
+        Thanks for using Payload Components! This is the place to show what you shipped, flag rough edges from a real install, or raise your hand to contribute. Payload Components is MIT and community-first — the catalog grows from real installs and PRs, not a paid roadmap.
 
   - type: dropdown
     id: interest
     attributes:
       label: What's this about?
       options:
-        - Show & tell — I shipped something with a kit
+        - Show & tell — I shipped something with a component
         - Feedback from a real install
-        - I'd like to contribute (a kit, docs, or the CLI)
+        - I'd like to contribute (a component, docs, or the CLI)
         - Something else
     validations:
       required: true
@@ -44,7 +44,7 @@ body:
   - type: textarea
     id: story
     attributes:
-      label: What did you build, or want to build, with Payload Kits?
+      label: What did you build, or want to build, with Payload Components?
       description: The blocks, the project, or the install workflow you care about most.
       placeholder: I used hero-basic and feature-grid-basic on a client marketing site and wired them in one pass...
     validations:
@@ -54,8 +54,8 @@ body:
     id: notes
     attributes:
       label: Anything rough, or anything you'd like to help with?
-      description: Install drift, repo-shape constraints, a kit you wish existed, or an offer to contribute.
-      placeholder: Starting from the official website template; would love a post-card kit and happy to help test installs.
+      description: Install drift, repo-shape constraints, a component you wish existed, or an offer to contribute.
+      placeholder: Starting from the official website template; would love a post-card component and happy to help test installs.
 
   - type: checkboxes
     id: followup
@@ -64,4 +64,4 @@ body:
       options:
         - label: I'm happy to share more in a quick async thread.
         - label: I can test alpha installs in a real project.
-        - label: I'm interested in contributing a kit, docs, or CLI fixes.
+        - label: I'm interested in contributing a component, docs, or CLI fixes.

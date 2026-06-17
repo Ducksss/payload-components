@@ -1,10 +1,10 @@
 import { getLLMText, source } from '@/lib/source'
-import { faqEntries, githubRepoUrl, kitEntries, siteDescription, siteUrl } from '@/lib/site'
+import { faqEntries, githubRepoUrl, componentEntries, siteDescription, siteUrl } from '@/lib/site'
 
 export async function GET() {
   const docs = await Promise.all(source.getPages().map(getLLMText))
   const body = [
-    '# Payload Kits',
+    '# Payload Components',
     '',
     siteDescription,
     '',
@@ -14,8 +14,8 @@ export async function GET() {
     `Registry: ${siteUrl}/r/registry.json`,
     `GitHub: ${githubRepoUrl}`,
     '',
-    '## Kits',
-    ...kitEntries.map((kit) => `- ${kit.title} (${kit.slug}): ${kit.command}`),
+    '## Components',
+    ...componentEntries.map((component) => `- ${component.title} (${component.slug}): ${component.command}`),
     '',
     '## FAQ',
     ...faqEntries.flatMap((entry) => [`### ${entry.question}`, entry.answer, '']),

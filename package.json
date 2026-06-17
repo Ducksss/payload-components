@@ -1,7 +1,7 @@
 {
   "name": "payload-components",
   "version": "1.0.0",
-  "description": "Fumadocs-powered docs and registry tooling for installable Payload CMS kits.",
+  "description": "Fumadocs-powered docs and registry tooling for installable Payload CMS components.",
   "license": "MIT",
   "homepage": "https://payload-components.xyz",
   "repository": {
@@ -13,7 +13,7 @@
   },
   "type": "module",
   "bin": {
-    "payload-kit": "./bin/payload-kit.mjs"
+    "payload-components": "./bin/payload-components.mjs"
   },
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
@@ -22,18 +22,18 @@
     "ii": "cross-env NODE_OPTIONS=--no-deprecation pnpm --ignore-workspace install",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation eslint . --fix",
-    "payload-kit": "node ./bin/payload-kit.mjs",
+    "payload-components": "node ./bin/payload-components.mjs",
     "prebuild": "pnpm source:build && pnpm registry:build",
-    "registry:build": "cross-env NODE_OPTIONS=--no-deprecation pnpm dlx shadcn@4.7.0 build payload-kits/registry.json --output public/r --cwd .",
-    "registry:check": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-kit/check-public-registry.ts",
+    "registry:build": "cross-env NODE_OPTIONS=--no-deprecation pnpm dlx shadcn@4.7.0 build payload-components/registry.json --output public/r --cwd .",
+    "registry:check": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/check-public-registry.ts",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",
     "showcase:capture": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/showcase/capture.ts",
     "source:build": "cross-env NODE_OPTIONS=--no-deprecation fumadocs-mdx",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
-    "test:fresh": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-kit/smoke/fresh-payload-repo.ts",
-    "test:install": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int/payload-kit.int.spec.ts tests/int/payload-kit-registry.int.spec.ts tests/int/payload-kit-add-command.int.spec.ts",
+    "test:fresh": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/smoke/fresh-payload-repo.ts",
+    "test:install": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int/payload-components.int.spec.ts tests/int/payload-components-registry.int.spec.ts tests/int/payload-components-add-command.int.spec.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
     "test:registry": "pnpm registry:check",
     "test:release": "pnpm lint && pnpm source:build && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm run test:e2e && pnpm build"

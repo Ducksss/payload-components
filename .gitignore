@@ -16,7 +16,7 @@ next-env.d.ts
 tsconfig.tsbuildinfo
 
 # Generated registry and local Payload output
-.payload-kit/
+.payload-components/
 public/media/
 public/r/
 public/robots.txt

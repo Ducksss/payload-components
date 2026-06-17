@@ -1,0 +1,68 @@
+---
+title: Feature Steps
+description: A numbered steps block for sequential, how-it-works feature flows.
+icon: ListOrdered
+---
+
+<ComponentPreview slug="feature-steps" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add feature-steps
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/feature-steps.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="feature-steps" />
+
+## Content model
+
+The first three fields come from the shared `featureFields` base; `items` and `links` are specific
+to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'Two to six steps, numbered automatically in array order.',
+    },
+    links: { type: 'array', description: 'One optional CTA link.' },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'Step heading.' },
+    description: { type: 'textarea', required: true, description: 'Step body copy.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="feature-steps" />
+
+## Requirements
+
+<ComponentRequirements slug="feature-steps" />
+
+## In this family
+
+<ComponentFamily slug="feature-steps" />

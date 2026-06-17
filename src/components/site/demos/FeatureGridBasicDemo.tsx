@@ -10,20 +10,20 @@ import { cn } from '@/utilities/ui'
 
 import { DemoLink } from './DemoLink'
 
-/* DEMO TWIN of payload-kits/source/blocks/FeatureGridBasic/Component.tsx
+/* DEMO TWIN of payload-components/source/blocks/FeatureGridBasic/Component.tsx
  * (feature-grid-basic@0.1.0). Class strings are copied verbatim from the
- * kit source, in source order. Deliberate substitutions — nothing else
+ * component source, in source order. Deliberate substitutions — nothing else
  * may diverge:
  *   <section className="container"> → <div> root (frames own spacing; no landmark)
  *   <h2>                            → <div> (role-neutral; the landing owns its heading outline)
  *   CMSLink                         → <DemoLink> (@/components/Link exists only in consumer repos)
  *   FeatureGridBasicBlockData       → FeatureGridBasicDemoContent (@/payload-types exists only in consumer repos)
  *   overflow-hidden                 → overflow-visible in annotate mode (gutter labels project past the shell)
- * Badge/Card are the same shadcn primitives the kit installs — imported real.
- * If the kit Component.tsx changes, update this file in the same PR. */
+ * Badge/Card are the same shadcn primitives the component installs — imported real.
+ * If the component Component.tsx changes, update this file in the same PR. */
 
 /* Technical-drawing leader line: mono field label + hairline + emerald
- * dot, projected into the gutter reserved by KitSpecimen (xl:pl-44).
+ * dot, projected into the gutter reserved by ComponentSpecimen (xl:pl-44).
  * Hidden below xl; the specimen figcaption carries the labels instead. */
 function FieldAnnotation({ children, label }: { children: ReactNode; label: string }) {
   return (
@@ -44,7 +44,7 @@ export function FeatureGridBasicDemo({
   content = featureGridBasicDemoContent,
 }: {
   /* Annotate mode wraps each field in a leader-line label naming the
-     block-config field that renders it — used by KitSpecimen. */
+     block-config field that renders it — used by ComponentSpecimen. */
   annotate?: boolean
   className?: string
   content?: FeatureGridBasicDemoContent

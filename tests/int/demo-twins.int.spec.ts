@@ -5,32 +5,32 @@ import { describe, expect, it } from 'vitest'
 
 const repoRoot = process.cwd()
 
-/* The landing demo twins copy kit markup verbatim (see the header
+/* The landing demo twins copy component markup verbatim (see the header
  * comment in each twin). This guard catches silent drift: every
- * Tailwind class inside every plain className="..." literal in the kit
- * source must still appear in its twin. The kit root's cn('container')
+ * Tailwind class inside every plain className="..." literal in the component
+ * source must still appear in its twin. The component root's cn('container')
  * and inner-container conditionals are deliberate substitutions and use
  * cn(), so the literal regex skips them by construction. */
 
 const pairs = [
   {
-    kit: 'payload-kits/source/blocks/HeroBasic/Component.tsx',
+    component: 'payload-components/source/blocks/HeroBasic/Component.tsx',
     twin: 'src/components/site/demos/HeroBasicDemo.tsx',
   },
   {
-    kit: 'payload-kits/source/blocks/FeatureGridBasic/Component.tsx',
+    component: 'payload-components/source/blocks/FeatureGridBasic/Component.tsx',
     twin: 'src/components/site/demos/FeatureGridBasicDemo.tsx',
   },
   {
-    kit: 'payload-kits/source/blocks/FeatureSplit/Component.tsx',
+    component: 'payload-components/source/blocks/FeatureSplit/Component.tsx',
     twin: 'src/components/site/demos/FeatureSplitDemo.tsx',
   },
   {
-    kit: 'payload-kits/source/blocks/FeatureBento/Component.tsx',
+    component: 'payload-components/source/blocks/FeatureBento/Component.tsx',
     twin: 'src/components/site/demos/FeatureBentoDemo.tsx',
   },
   {
-    kit: 'payload-kits/source/blocks/FeatureSteps/Component.tsx',
+    component: 'payload-components/source/blocks/FeatureSteps/Component.tsx',
     twin: 'src/components/site/demos/FeatureStepsDemo.tsx',
   },
 ] as const
@@ -39,13 +39,13 @@ const classLiterals = (source: string): string[] =>
   [...source.matchAll(/className="([^"]+)"/g)].map((match) => match[1])
 
 describe('Landing demo twins', () => {
-  it.each(pairs)('mirrors every kit class string in %s', async ({ kit, twin }) => {
-    const [kitSource, twinSource] = await Promise.all([
-      readFile(path.join(repoRoot, kit), 'utf8'),
+  it.each(pairs)('mirrors every component class string in %s', async ({ component, twin }) => {
+    const [componentSource, twinSource] = await Promise.all([
+      readFile(path.join(repoRoot, component), 'utf8'),
       readFile(path.join(repoRoot, twin), 'utf8'),
     ])
 
-    const literals = classLiterals(kitSource)
+    const literals = classLiterals(componentSource)
     expect(literals.length).toBeGreaterThan(0)
 
     const missing = literals.flatMap((literal) =>
@@ -55,7 +55,7 @@ describe('Landing demo twins', () => {
         .map((token) => `${token} (from "${literal}")`),
     )
 
-    expect(missing, `Twin ${twin} drifted from ${kit}`).toEqual([])
+    expect(missing, `Twin ${twin} drifted from ${component}`).toEqual([])
   })
 
   it('keeps the twins presentational: aria-hidden roots, no focusable elements', async () => {

@@ -4,7 +4,7 @@ import { featureSplitDemoContent, type FeatureSectionDemoContent } from '@/lib/d
 
 import { DemoLink } from './DemoLink'
 
-/* DEMO TWIN of payload-kits/source/blocks/FeatureSplit/Component.tsx
+/* DEMO TWIN of payload-components/source/blocks/FeatureSplit/Component.tsx
  * (feature-split@0.1.0). Class strings are copied verbatim from the kit
  * source, in source order. Deliberate substitutions — nothing else may diverge:
  *   <section className="container"> → <div> root (frames own spacing; no landmark)

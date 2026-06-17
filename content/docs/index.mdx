@@ -1,13 +1,13 @@
 ---
 title: Start Here
-description: Payload Kits is a Fumadocs-first documentation and registry project for installable Payload CMS blocks.
+description: Payload Components is a Fumadocs-first documentation and registry project for installable Payload CMS blocks.
 icon: Rocket
 ---
 
-Payload Kits is an open-source, community-first registry and CLI that installs Payload CMS block kits into your **Payload v3 + Next.js** project — **wired, not pasted**.
+Payload Components is an open-source, community-first registry and CLI that installs Payload CMS blocks into your **Payload v3 + Next.js** project — **wired, not pasted**.
 
-<Callout type="info" title="What makes a kit more than a copy-paste block">
-  A plain `shadcn add` only copies files. `payload-kit add` also does the Payload
+<Callout type="info" title="What makes a component more than a copy-paste block">
+  A plain `shadcn add` only copies files. `payload-components add` also does the Payload
   wiring — it registers the block in your collection, maps the renderer, and
   regenerates types plus the admin import map — then lands the whole thing as a
   reviewable git diff.
@@ -15,10 +15,10 @@ Payload Kits is an open-source, community-first registry and CLI that installs P
 
 The v2 app is intentionally not a Payload CMS site. It is a Fumadocs app with MDX documentation, static registry assets, and package tooling for validating installs into external Payload projects.
 
-## Install your first kit
+## Install your first component
 
 ```bash
-npx payload-kit add hero-basic
+npx payload-components add hero-basic
 ```
 
 The CLI verifies project shape, installs the registry item, applies Payload layout fragments, runs post-install tasks, and records install state.
@@ -33,7 +33,7 @@ The CLI verifies project shape, installs the registry item, applies Payload layo
 
 <Cards>
   <Card icon={<Layers />} title="Architecture" href="/docs/architecture">
-    Why the Fumadocs site and the Payload kit tooling stay on separate runtimes.
+    Why the Fumadocs site and the Payload component tooling stay on separate runtimes.
   </Card>
   <Card icon={<Terminal />} title="Installation" href="/docs/installation">
     Requirements, the `add` command, and exactly what the CLI does to a project.
@@ -42,28 +42,28 @@ The CLI verifies project shape, installs the registry item, applies Payload layo
     How the public registry, manifests, and wrapper CLI fit together.
   </Card>
   <Card icon={<GitPullRequest />} title="Contributing" href="/docs/contributing">
-    The new-kit checklist and how the catalog stays small and verifiable.
+    The new-component checklist and how the catalog stays small and verifiable.
   </Card>
 </Cards>
 
-## The current kits
+## The current components
 
 <Cards>
-  <Card icon={<LayoutPanelTop />} title="Hero Basic" href="/docs/kits/hero-basic">
-    Headline, description, one or two CTA links, and up to four proof badges. The golden alpha kit.
+  <Card icon={<LayoutPanelTop />} title="Hero Basic" href="/docs/components/hero-basic">
+    Headline, description, one or two CTA links, and up to four proof badges. The golden alpha component.
   </Card>
-  <Card icon={<LayoutGrid />} title="Feature Grid Basic" href="/docs/kits/feature-grid-basic">
+  <Card icon={<LayoutGrid />} title="Feature Grid Basic" href="/docs/components/feature-grid-basic">
     A text-first grid of repeatable feature cards with optional CTA wiring.
   </Card>
-  <Card icon={<Layers />} title="Feature Split" href="/docs/kits/feature-split">
+  <Card icon={<Layers />} title="Feature Split" href="/docs/components/feature-split">
     A two-column feature section: heading and CTA beside a stacked feature list.
   </Card>
-  <Card icon={<Boxes />} title="Feature Bento" href="/docs/kits/feature-bento">
+  <Card icon={<Boxes />} title="Feature Bento" href="/docs/components/feature-bento">
     An asymmetric bento grid that leads with a featured cell.
   </Card>
-  <Card icon={<Workflow />} title="Feature Steps" href="/docs/kits/feature-steps">
+  <Card icon={<Workflow />} title="Feature Steps" href="/docs/components/feature-steps">
     A numbered steps block for sequential, how-it-works flows.
   </Card>
 </Cards>
 
-Prefer to see them first? Browse every kit rendered live in the [Kit Catalog](/components).
+Prefer to see them first? Browse every component rendered live in the [Component Catalog](/components).

@@ -4,8 +4,8 @@ import { showcaseSetupTaxLabel, type ClientProject } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
 /* One client site, framed as a browser window: the polished result up top,
- * the manual setup tax it paid by hand below. Shares KitCard's shell and the
- * KitPreviewThumb framed-media idiom; the chrome borrows HeroProductFrame's
+ * the manual setup tax it paid by hand below. Shares ComponentCard's shell and the
+ * ComponentPreviewThumb framed-media idiom; the chrome borrows HeroProductFrame's
  * traffic lights. Pure presentation — no client hooks. */
 export function ProjectShowcaseCard({
   className,

@@ -75,7 +75,7 @@ export function CommunityCta() {
             className="mt-2.5 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <Bell className="size-3.5" aria-hidden="true" />
-            Watch releases to catch new kits as they land
+            Watch releases to catch new components as they land
           </a>
         </div>
 
