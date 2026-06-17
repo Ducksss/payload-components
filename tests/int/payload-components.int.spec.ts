@@ -237,6 +237,26 @@ describe('payload-components add', () => {
     await expectInstalledComponents(fixtureDir, [manifest])
   }, 180000)
 
+  it.each([
+    'content-columns',
+    'content-image-lead',
+    'content-feature-media',
+    'content-feature-split',
+    'content-showcase',
+    'content-quote',
+    'content-community',
+  ])('installs %s into a supported repo and records state', async (componentName) => {
+    const { fixtureDir, manifest } = await createInstallFixture(componentName)
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const parsedState = await readInstallState(fixtureDir)
+
+    expect(parsedState.version).toBe(2)
+    await expectInstalledComponents(fixtureDir, [manifest])
+  }, 180000)
+
   it('installs hero-basic followed by feature-grid-basic without duplicate registrations', async () => {
     const { fixtureDir, manifests } = await createInstallFixtureForComponents([
       'hero-basic',

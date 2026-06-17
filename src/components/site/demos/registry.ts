@@ -1,5 +1,12 @@
 import type { ComponentType } from 'react'
 
+import { ContentColumnsDemo } from './ContentColumnsDemo'
+import { ContentCommunityDemo } from './ContentCommunityDemo'
+import { ContentFeatureMediaDemo } from './ContentFeatureMediaDemo'
+import { ContentFeatureSplitDemo } from './ContentFeatureSplitDemo'
+import { ContentImageLeadDemo } from './ContentImageLeadDemo'
+import { ContentQuoteDemo } from './ContentQuoteDemo'
+import { ContentShowcaseDemo } from './ContentShowcaseDemo'
 import { EmbedBasicDemo } from './EmbedBasicDemo'
 import { FeatureBentoDemo } from './FeatureBentoDemo'
 import { FeatureGridBasicDemo } from './FeatureGridBasicDemo'
@@ -18,6 +25,13 @@ import { LogoCloudMarqueeDemo } from './LogoCloudMarqueeDemo'
  * never drift. Every twin defaults its own sample content and is already
  * aria-hidden + presentational. Slugs without a twin render nothing. */
 export const demosBySlug: Record<string, ComponentType> = {
+  'content-columns': ContentColumnsDemo,
+  'content-community': ContentCommunityDemo,
+  'content-feature-media': ContentFeatureMediaDemo,
+  'content-feature-split': ContentFeatureSplitDemo,
+  'content-image-lead': ContentImageLeadDemo,
+  'content-quote': ContentQuoteDemo,
+  'content-showcase': ContentShowcaseDemo,
   'embed-basic': EmbedBasicDemo,
   'feature-bento': FeatureBentoDemo,
   'feature-grid-basic': FeatureGridBasicDemo,

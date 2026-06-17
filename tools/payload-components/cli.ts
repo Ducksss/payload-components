@@ -23,6 +23,13 @@ Current alpha components:
   feature-bento
   feature-steps
   embed-basic
+  content-columns
+  content-image-lead
+  content-feature-media
+  content-feature-split
+  content-showcase
+  content-quote
+  content-community
 `
 
 const parseArgs = (argv: string[]) => {

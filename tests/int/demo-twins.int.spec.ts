@@ -57,6 +57,34 @@ const pairs = [
     component: 'payload-components/source/blocks/LogoCloudInlineWrap/Component.tsx',
     twin: 'src/components/site/demos/LogoCloudInlineWrapDemo.tsx',
   },
+  {
+    component: 'payload-components/source/blocks/ContentColumns/Component.tsx',
+    twin: 'src/components/site/demos/ContentColumnsDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentImageLead/Component.tsx',
+    twin: 'src/components/site/demos/ContentImageLeadDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentFeatureMedia/Component.tsx',
+    twin: 'src/components/site/demos/ContentFeatureMediaDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentFeatureSplit/Component.tsx',
+    twin: 'src/components/site/demos/ContentFeatureSplitDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentShowcase/Component.tsx',
+    twin: 'src/components/site/demos/ContentShowcaseDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentQuote/Component.tsx',
+    twin: 'src/components/site/demos/ContentQuoteDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentCommunity/Component.tsx',
+    twin: 'src/components/site/demos/ContentCommunityDemo.tsx',
+  },
 ] as const
 
 const classLiterals = (source: string): string[] =>

@@ -190,3 +190,145 @@ export const logoCloudInlineDemoContent: LogoCloudDemoContent = {
 export const logoCloudInlineWrapDemoContent: LogoCloudDemoContent = {
   heading: 'Trusted by teams at:',
 }
+
+export type ContentIconKey = 'zap' | 'cpu' | 'lock' | 'sparkles' | 'gauge' | 'shield'
+
+export type ContentFeatureDemo = {
+  description: string
+  icon?: ContentIconKey
+  title: string
+}
+
+/* The whole Content family (columns, image-lead, feature-media, feature-split,
+   showcase, quote, community) renders from one demo-content shape: the shared
+   eyebrow/title/paragraphs plus the optional media, features, CTA, quote, or
+   avatars a given variant uses. Media uploads are backend-free on the
+   landing/docs previews, so the twins render presentational placeholders. */
+export type ContentSectionDemoContent = {
+  avatars?: { name: string }[]
+  citation?: string
+  eyebrow?: string
+  features?: ContentFeatureDemo[]
+  links?: { link: DemoLinkData }[]
+  paragraphs: { text: string }[]
+  quote?: string
+  title: string
+}
+
+export const contentColumnsDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Why teams switch',
+  paragraphs: [
+    {
+      text: 'Acme is more than just the dashboard. It supports an entire ecosystem — from the products you ship to the APIs and platforms helping your team move faster.',
+    },
+    {
+      text: 'Pair the headline on the left with the detail on the right: a layout that reads top-to-bottom on mobile and side-by-side on desktop.',
+    },
+  ],
+  links: [{ link: { appearance: 'default', label: 'Learn more' } }],
+  title: 'The Acme ecosystem brings together your products and platforms.',
+}
+
+export const contentImageLeadDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Built in the open',
+  paragraphs: [
+    {
+      text: 'Acme is more than just the dashboard. It supports an entire ecosystem — from the products you ship to the APIs and platforms helping your team move faster.',
+    },
+  ],
+  links: [{ link: { appearance: 'default', label: 'Learn more' } }],
+  title: 'The Acme ecosystem brings together your products and platforms.',
+}
+
+export const contentFeatureMediaDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Under the hood',
+  features: [
+    {
+      description: 'Server-rendered sections keep pages quick for developers and editors alike.',
+      icon: 'zap',
+      title: 'Fast',
+    },
+    {
+      description: 'A real content model behind every section, not a wall of hardcoded markup.',
+      icon: 'cpu',
+      title: 'Powerful',
+    },
+  ],
+  paragraphs: [
+    {
+      text: 'Acme is more than just the dashboard. It supports an entire ecosystem helping your team move faster.',
+    },
+  ],
+  title: 'The Acme ecosystem brings together your models.',
+}
+
+export const contentFeatureSplitDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Built to scale',
+  features: [
+    {
+      description: 'Access control and versioning are part of the platform, not bolted on.',
+      icon: 'lock',
+      title: 'Secure',
+    },
+    {
+      description: 'Polished, accessible markup that matches the rest of your site.',
+      icon: 'sparkles',
+      title: 'Refined',
+    },
+  ],
+  paragraphs: [
+    {
+      text: 'Acme is more than just the dashboard. It supports an entire ecosystem helping your team move faster.',
+    },
+  ],
+  title: 'The Acme ecosystem brings together your models.',
+}
+
+export const contentShowcaseDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'The platform',
+  features: [
+    { description: 'Server-rendered sections keep pages quick.', icon: 'zap', title: 'Fast' },
+    { description: 'A real content model behind every section.', icon: 'cpu', title: 'Powerful' },
+    { description: 'Access control and versioning built in.', icon: 'lock', title: 'Secure' },
+    { description: 'Polished, accessible markup throughout.', icon: 'sparkles', title: 'Refined' },
+  ],
+  paragraphs: [
+    {
+      text: 'Acme is more than just the dashboard. It supports an entire ecosystem helping your team move faster.',
+    },
+  ],
+  title: 'The Acme ecosystem brings together your products and platforms.',
+}
+
+export const contentQuoteDemoContent: ContentSectionDemoContent = {
+  citation: 'Jordan Rivera, CTO',
+  eyebrow: 'In their words',
+  paragraphs: [
+    {
+      text: 'Acme is more than just the dashboard. It supports an entire ecosystem helping your team move faster.',
+    },
+  ],
+  quote:
+    'Using Acme has been like unlocking a design superpower — the perfect fusion of simplicity and versatility.',
+  title: 'The Acme ecosystem brings together your models.',
+}
+
+export const contentCommunityDemoContent: ContentSectionDemoContent = {
+  avatars: [
+    { name: 'Ada Lovelace' },
+    { name: 'Alan Turing' },
+    { name: 'Grace Hopper' },
+    { name: 'Linus Torvalds' },
+    { name: 'Margaret Hamilton' },
+    { name: 'Dennis Ritchie' },
+    { name: 'Katherine Johnson' },
+    { name: 'Tim Berners-Lee' },
+  ],
+  eyebrow: 'Open source',
+  paragraphs: [
+    {
+      text: 'Acme grows from real installs and pull requests. Every block ships with its full contract: source, manifest, docs, and installer coverage.',
+    },
+  ],
+  title: 'Built by the community, for the community.',
+}
