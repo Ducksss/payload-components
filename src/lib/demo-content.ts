@@ -47,16 +47,16 @@ export type EmbedBasicDemoContent = {
 
 export const heroBasicDemoContent: HeroBasicDemoContent = {
   description:
-    'Acme gives product teams hosted dashboards, usage reports, and alerting on one platform — wired to your data in an afternoon.',
+    'Acme gives product teams hosted dashboards, usage reports, and alerting on one platform — wired to your warehouse in an afternoon, no data team required.',
   eyebrow: 'Acme Cloud · New',
   links: [
     { link: { appearance: 'default', label: 'Start free trial' } },
-    { link: { appearance: 'outline', label: 'Talk to sales' } },
+    { link: { appearance: 'outline', label: 'Book a demo' } },
   ],
   proofItems: [
     { label: 'SOC 2 Type II' },
     { label: '99.99% uptime' },
-    { label: 'No credit card required' },
+    { label: 'Trusted by 4,000+ teams' },
   ],
   title: 'Ship customer dashboards in days, not quarters.',
 }
