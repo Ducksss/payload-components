@@ -14,16 +14,27 @@ const navLinks = [
   { href: '/about', label: 'About' },
 ] as const
 
-export function Wordmark({ withBadge = false }: { withBadge?: boolean }) {
+export function Wordmark({
+  mobileIconOnly = false,
+  withBadge = false,
+}: {
+  mobileIconOnly?: boolean
+  withBadge?: boolean
+}) {
   return (
     <span className="flex items-center gap-2.5">
       <span
         aria-hidden="true"
-        className="flex size-6 items-center justify-center rounded-md bg-brand font-mono text-[13px] font-semibold leading-none text-brand-foreground"
+        className="flex size-6 shrink-0 items-center justify-center rounded-md bg-brand font-mono text-[13px] font-semibold leading-none text-brand-foreground"
       >
         &gt;
       </span>
-      <span className="text-[15px] font-semibold tracking-tight text-foreground">
+      <span
+        className={cn(
+          'text-[15px] font-semibold tracking-tight text-foreground',
+          mobileIconOnly && 'hidden sm:inline',
+        )}
+      >
         Payload Components
       </span>
       {withBadge ? (
@@ -40,9 +51,9 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95">
-      <div className="container flex h-14 items-center justify-between gap-4">
+      <div className="flex h-14 items-center justify-between gap-4 pl-4 pr-5 md:pr-8">
         <Link href="/" aria-label="Payload Components home">
-          <Wordmark withBadge />
+          <Wordmark mobileIconOnly withBadge />
         </Link>
 
         <nav className="flex items-center gap-1 sm:gap-1.5">

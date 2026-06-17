@@ -71,6 +71,69 @@ test.describe('Light shadcn frontend', () => {
     expect(meanChannel).toBeGreaterThan(220)
   })
 
+  test('aligns the brand mark relative to the documentation rail', async ({ page }) => {
+    const viewports = [
+      { alignTo: 'header-padding', height: 844, name: 'mobile', width: 390 },
+      { alignTo: 'documentation-title', height: 1024, name: 'tablet', width: 768 },
+      { alignTo: 'documentation-title', height: 720, name: 'desktop', width: 1280 },
+    ] as const
+
+    for (const viewport of viewports) {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height })
+      await page.goto(`${baseURL}/docs`)
+
+      const geometry = await page.evaluate(() => {
+        const brandMark = document.querySelector(
+          'body > header a[aria-label="Payload Components home"] span[aria-hidden="true"]',
+        )
+        const headerInner = document.querySelector('body > header > div')
+        const documentationTitle = [...document.querySelectorAll('#nd-sidebar span')].find(
+          (element) => element.textContent?.trim() === 'Documentation',
+        )
+        const brandMarkRect = brandMark?.getBoundingClientRect()
+        const headerInnerRect = headerInner?.getBoundingClientRect()
+        const documentationTitleRect = documentationTitle?.getBoundingClientRect()
+        const headerStyle = headerInner ? getComputedStyle(headerInner) : null
+        const headerPaddingStart = headerStyle ? Number.parseFloat(headerStyle.paddingInlineStart) : null
+        const hasHorizontalOverflow =
+          document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
+
+        return {
+          brandMark: brandMarkRect
+            ? { width: brandMarkRect.width, x: brandMarkRect.x }
+            : null,
+          documentationTitle:
+            documentationTitleRect && documentationTitleRect.width > 0
+              ? { width: documentationTitleRect.width, x: documentationTitleRect.x }
+              : null,
+          hasHorizontalOverflow,
+          headerPaddingStart,
+          headerStart: headerInnerRect?.x ?? null,
+        }
+      })
+
+      expect(geometry.brandMark, viewport.name).not.toBeNull()
+      expect(geometry.brandMark!.width, viewport.name).toBe(24)
+      expect(geometry.hasHorizontalOverflow, viewport.name).toBe(false)
+
+      if (viewport.alignTo === 'documentation-title') {
+        expect(geometry.documentationTitle, viewport.name).not.toBeNull()
+        expect(
+          Math.abs(geometry.brandMark!.x - geometry.documentationTitle!.x),
+          viewport.name,
+        ).toBeLessThanOrEqual(1)
+      } else {
+        expect(geometry.documentationTitle, viewport.name).toBeNull()
+        expect(geometry.headerPaddingStart, viewport.name).not.toBeNull()
+        expect(geometry.headerStart, viewport.name).not.toBeNull()
+        expect(
+          Math.abs(geometry.brandMark!.x - (geometry.headerStart! + geometry.headerPaddingStart!)),
+          viewport.name,
+        ).toBeLessThanOrEqual(1)
+      }
+    }
+  })
+
   test('exposes docs, catalog, component pages, and no horizontal overflow', async ({ page }) => {
     const routes = [
       {
