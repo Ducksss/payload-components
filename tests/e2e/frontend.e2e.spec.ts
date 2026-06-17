@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, type Page, test } from '@playwright/test'
 
 import {
   catalogTitle,
@@ -11,6 +11,13 @@ import {
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3000'}`
 const googleTagId = 'G-EMGRZ0H9R9'
+const copiedAlertText = 'Copied to clipboard.'
+
+async function expectCopiedAlert(page: Page) {
+  await expect(page.getByRole('alert').filter({ hasText: copiedAlertText })).toBeVisible({
+    timeout: 15000,
+  })
+}
 
 test.describe('Light shadcn frontend', () => {
   test('installs the Google tag once', async ({ page }) => {
@@ -255,6 +262,7 @@ test.describe('Light shadcn frontend', () => {
     await page.getByRole('button', { name: 'Copy' }).first().click()
 
     await expect(page.getByRole('button', { name: 'Copied' })).toBeVisible()
+    await expectCopiedAlert(page)
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(primaryInstallCommand)
@@ -268,9 +276,31 @@ test.describe('Light shadcn frontend', () => {
     await page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copy' }).click()
 
     await expect(page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copied' })).toBeVisible()
+    await expectCopiedAlert(page)
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(catalogComponent.command)
+  })
+
+  test('shows an alert after copying a docs code block', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs`)
+
+    await page.getByRole('button', { name: 'Copy Text' }).first().click()
+
+    await expectCopiedAlert(page)
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(primaryInstallCommand)
+  })
+
+  test('shows an alert after copying page markdown', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs/installation`)
+
+    await page.getByRole('button', { name: /Copy Markdown/ }).click()
+
+    await expectCopiedAlert(page)
   })
 })
 
