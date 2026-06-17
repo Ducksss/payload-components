@@ -26,7 +26,7 @@ export function LogoCloudInlineWrapDemo({
           <p className="text-muted-foreground">{heading}</p>
 
           <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-            {demoLogos.slice(0, 4).map((logo) => (
+            {demoLogos.slice(0, 6).map((logo) => (
               <div className="flex items-center" key={logo.name}>
                 <DemoLogoMark Icon={logo.Icon} name={logo.name} />
               </div>
