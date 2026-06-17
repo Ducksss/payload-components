@@ -140,7 +140,9 @@ test.describe('Light shadcn frontend', () => {
     await expect(sidebar.getByRole('link', { name: 'Architecture' })).toBeVisible()
     await expect(sidebar.getByRole('link', { name: 'Installation' })).toBeVisible()
     await expect(sidebar.getByRole('link', { name: 'Registry Contract' })).toBeVisible()
-    await expect(sidebar.getByRole('button', { name: 'Components' })).toBeVisible()
+    // Components are grouped install-mode → family in the sidebar (see src/lib/component-page-tree).
+    await expect(sidebar.getByRole('button', { name: 'Page blocks' })).toBeVisible()
+    await expect(sidebar.getByRole('button', { name: 'Feature' })).toBeVisible()
     await expect(sidebar.getByRole('button', { name: /Search/ })).toBeVisible()
   })
 

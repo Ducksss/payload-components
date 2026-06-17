@@ -1,0 +1,78 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "feature-split",
+  "version": "0.1.0",
+  "title": "Feature Split",
+  "description": "A two-column Payload block pairing section copy and a CTA with a vertical feature list.",
+  "registryItemName": "feature-split",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/featureFields.ts",
+    "src/blocks/FeatureSplit/config.ts",
+    "src/blocks/FeatureSplit/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FeatureSplitBlock",
+      "importPath": "@/blocks/FeatureSplit/Component",
+      "blockSlug": "featureSplit"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FeatureSplit",
+      "importPath": "../../blocks/FeatureSplit/config",
+      "blockName": "FeatureSplit"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Two-column feature section: heading and CTA beside a stacked feature list."
+  },
+  "sampleContent": {
+    "blockType": "featureSplit",
+    "eyebrow": "Built for teams",
+    "title": "Everything your team needs to ship with confidence.",
+    "description": "Pair the story on the left with the proof on the right — a layout that reads top-to-bottom on mobile and side-by-side on desktop.",
+    "items": [
+      {
+        "title": "Roles and permissions",
+        "description": "Scope access by workspace so the right people edit the right surfaces."
+      },
+      {
+        "title": "Audit trail",
+        "description": "Every publish is versioned and reversible, with a record of who changed what."
+      },
+      {
+        "title": "Single sign-on",
+        "description": "Bring your own identity provider and onboard the whole team in minutes."
+      }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/admin",
+          "label": "See how it works",
+          "appearance": "default"
+        }
+      }
+    ]
+  }
+}

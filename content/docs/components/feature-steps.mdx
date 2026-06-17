@@ -1,31 +1,31 @@
 ---
-title: Feature Grid Basic
-description: A text-first grid of repeatable feature cards with optional CTA wiring — the base of the Feature family.
-icon: LayoutGrid
+title: Feature Steps
+description: A numbered steps block for sequential, how-it-works feature flows.
+icon: ListOrdered
 ---
 
-<ComponentPreview slug="feature-grid-basic" />
+<ComponentPreview slug="feature-steps" />
 
 ## Installation
 
 <Tabs items={['Command', 'Manual']}>
   <Tab value="Command">
     ```bash
-    npx payload-components add feature-grid-basic
+    npx payload-components add feature-steps
     ```
   </Tab>
   <Tab value="Manual">
     Copy the files straight from the registry, then wire the Payload fragments by hand:
 
     ```bash
-    pnpm dlx shadcn@latest add https://payload-components.xyz/r/feature-grid-basic.json
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/feature-steps.json
     ```
   </Tab>
 </Tabs>
 
 ## What it installs
 
-<ComponentWiring slug="feature-grid-basic" />
+<ComponentWiring slug="feature-steps" />
 
 ## Content model
 
@@ -40,7 +40,7 @@ to this variant.
     items: {
       type: 'array',
       required: true,
-      description: 'Three to six feature cards, each with a required title and description.',
+      description: 'Two to six steps, numbered automatically in array order.',
     },
     links: { type: 'array', description: 'One optional CTA link.' },
   }}
@@ -50,19 +50,19 @@ Each item in `items` carries:
 
 <TypeTable
   type={{
-    title: { type: 'text', required: true, description: 'Feature card heading.' },
-    description: { type: 'textarea', required: true, description: 'Feature card body copy.' },
+    title: { type: 'text', required: true, description: 'Step heading.' },
+    description: { type: 'textarea', required: true, description: 'Step body copy.' },
   }}
 />
 
 ## Usage
 
-<ComponentUsage slug="feature-grid-basic" />
+<ComponentUsage slug="feature-steps" />
 
 ## Requirements
 
-<ComponentRequirements slug="feature-grid-basic" />
+<ComponentRequirements slug="feature-steps" />
 
 ## In this family
 
-<ComponentFamily slug="feature-grid-basic" />
+<ComponentFamily slug="feature-steps" />

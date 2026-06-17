@@ -20,7 +20,13 @@ import { loadManifest } from '../manifest'
 import { shadcnCliPackage } from '../utils'
 import type { ComponentManifest } from '../types'
 
-export const DEFAULT_SMOKE_COMPONENTS = ['hero-basic', 'feature-grid-basic'] as const
+export const DEFAULT_SMOKE_COMPONENTS = [
+  'hero-basic',
+  'feature-grid-basic',
+  'feature-split',
+  'feature-bento',
+  'feature-steps',
+] as const
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
 
 type MutableSmokeComponents = Array<(typeof DEFAULT_SMOKE_COMPONENTS)[number] | string>

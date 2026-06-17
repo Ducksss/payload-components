@@ -1,0 +1,84 @@
+---
+title: Example Basic
+description: One editor-facing line describing the block — shown in the page header, under the title.
+icon: LayoutGrid
+---
+
+{/*
+  Copy this to content/docs/components/<slug>.mdx and replace example-basic / ExampleBasic.
+  See payload-components/templates/alpha-component/README.md and AGENTS.md → "Component doc page format".
+
+  • The header (title + description + at-a-glance chips + prev/next + Copy Page) renders
+    automatically for /docs/components/* via ComponentDocHeader. Do NOT add an <h1> or repeat the description.
+  • `title` MUST equal the kit's title in componentEntries (src/lib/site.ts) — the e2e kit-page loop
+    asserts H1 === kit.title. `icon` is any Lucide name.
+  • <ComponentWiring>, <ComponentUsage>, <ComponentRequirements>, <ComponentFamily> are DATA-DRIVEN from the manifest /
+    registry — the MDX stays thin and they can't drift. The only hand-authored section is the
+    Content model TypeTable (field descriptions need a human).
+  • <ComponentPreview> only renders if the slug is registered in src/components/site/demos/registry.ts.
+  • Keep the install command + Content-model prose in MDX (the /llms* + per-page-markdown surfaces
+    serialize this file and geo.e2e pins the install command).
+*/}
+
+<ComponentPreview slug="example-basic" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add example-basic
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/example-basic.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="example-basic" />
+
+## Content model
+
+Note which fields come from the shared family base vs this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'Repeated items — describe the shape and min/max here.',
+    },
+    links: { type: 'array', description: 'Optional CTA link(s).' },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'Item heading.' },
+    description: { type: 'textarea', required: true, description: 'Item body copy.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="example-basic" />
+
+## Requirements
+
+<ComponentRequirements slug="example-basic" />
+
+{/* Include this section only when the family has 2+ variants (it renders nothing for a lone one). */}
+## In this family
+
+<ComponentFamily slug="example-basic" />

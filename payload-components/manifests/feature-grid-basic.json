@@ -16,6 +16,7 @@
     "nextMajors": [15, 16]
   },
   "files": [
+    "src/blocks/shared/featureFields.ts",
     "src/blocks/FeatureGridBasic/config.ts",
     "src/blocks/FeatureGridBasic/Component.tsx"
   ],

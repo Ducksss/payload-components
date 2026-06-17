@@ -1,0 +1,78 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "feature-steps",
+  "version": "0.1.0",
+  "title": "Feature Steps",
+  "description": "A numbered Payload steps block for sequential, how-it-works feature flows.",
+  "registryItemName": "feature-steps",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/featureFields.ts",
+    "src/blocks/FeatureSteps/config.ts",
+    "src/blocks/FeatureSteps/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FeatureStepsBlock",
+      "importPath": "@/blocks/FeatureSteps/Component",
+      "blockSlug": "featureSteps"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FeatureSteps",
+      "importPath": "../../blocks/FeatureSteps/config",
+      "blockName": "FeatureSteps"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Numbered steps for a sequential how-it-works flow."
+  },
+  "sampleContent": {
+    "blockType": "featureSteps",
+    "eyebrow": "Onboarding",
+    "title": "Live in three steps.",
+    "description": "Number the path from install to launch so prospects can see the whole journey at a glance.",
+    "items": [
+      {
+        "title": "Connect your data",
+        "description": "Point the SDK at your warehouse or stream events directly — no migration required."
+      },
+      {
+        "title": "Compose a view",
+        "description": "Drag charts onto a canvas and bind them to the metrics that matter."
+      },
+      {
+        "title": "Ship to customers",
+        "description": "Embed the finished workspace with one snippet and roll it out to every account."
+      }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/admin",
+          "label": "Start onboarding",
+          "appearance": "default"
+        }
+      }
+    ]
+  }
+}

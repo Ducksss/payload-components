@@ -21,6 +21,18 @@ const pairs = [
     component: 'payload-components/source/blocks/FeatureGridBasic/Component.tsx',
     twin: 'src/components/site/demos/FeatureGridBasicDemo.tsx',
   },
+  {
+    component: 'payload-components/source/blocks/FeatureSplit/Component.tsx',
+    twin: 'src/components/site/demos/FeatureSplitDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/FeatureBento/Component.tsx',
+    twin: 'src/components/site/demos/FeatureBentoDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/FeatureSteps/Component.tsx',
+    twin: 'src/components/site/demos/FeatureStepsDemo.tsx',
+  },
 ] as const
 
 const classLiterals = (source: string): string[] =>

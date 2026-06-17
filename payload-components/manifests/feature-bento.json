@@ -1,0 +1,82 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "feature-bento",
+  "version": "0.1.0",
+  "title": "Feature Bento",
+  "description": "An asymmetric Payload bento grid that leads with a featured cell and fills supporting cells.",
+  "registryItemName": "feature-bento",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/featureFields.ts",
+    "src/blocks/FeatureBento/config.ts",
+    "src/blocks/FeatureBento/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FeatureBentoBlock",
+      "importPath": "@/blocks/FeatureBento/Component",
+      "blockSlug": "featureBento"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FeatureBento",
+      "importPath": "../../blocks/FeatureBento/config",
+      "blockName": "FeatureBento"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Asymmetric bento grid with a featured lead cell and supporting cells."
+  },
+  "sampleContent": {
+    "blockType": "featureBento",
+    "eyebrow": "Platform",
+    "title": "One platform, every surface.",
+    "description": "Lead with the headline capability, then let the supporting cells fill in around it.",
+    "items": [
+      {
+        "title": "Hosted dashboards",
+        "description": "Composable charts on live data, embedded in your product with one snippet — the workspace your customers open every day."
+      },
+      {
+        "title": "Scheduled reports",
+        "description": "Weekly digests rendered to PDF and delivered to every customer workspace."
+      },
+      {
+        "title": "Usage alerts",
+        "description": "Threshold alerts that page the right owner before customers notice."
+      },
+      {
+        "title": "Audit log",
+        "description": "Every change is versioned, attributed, and reversible."
+      }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/admin",
+          "label": "Explore the platform",
+          "appearance": "outline"
+        }
+      }
+    ]
+  }
+}

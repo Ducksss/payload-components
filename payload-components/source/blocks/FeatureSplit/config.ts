@@ -3,9 +3,9 @@ import type { Block } from 'payload'
 import { featureFields } from '@/blocks/shared/featureFields'
 import { linkGroup } from '@/fields/linkGroup'
 
-export const FeatureGridBasic: Block = {
-  slug: 'featureGridBasic',
-  interfaceName: 'FeatureGridBasicBlock',
+export const FeatureSplit: Block = {
+  slug: 'featureSplit',
+  interfaceName: 'FeatureSplitBlock',
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/featureFields.
@@ -14,7 +14,7 @@ export const FeatureGridBasic: Block = {
       name: 'items',
       type: 'array',
       required: true,
-      minRows: 3,
+      minRows: 2,
       maxRows: 6,
       admin: {
         initCollapsed: true,
@@ -37,12 +37,12 @@ export const FeatureGridBasic: Block = {
         admin: {
           initCollapsed: true,
         },
-        maxRows: 1,
+        maxRows: 2,
       },
     }),
   ],
   labels: {
-    plural: 'Feature Grid Basic Blocks',
-    singular: 'Feature Grid Basic',
+    plural: 'Feature Split Blocks',
+    singular: 'Feature Split',
   },
 }

@@ -18,6 +18,12 @@ import {
 } from 'lucide-react'
 import type { MDXComponents } from 'mdx/types'
 
+import { ComponentDocPreview } from '@/components/site/ComponentDocPreview'
+import { ComponentFamily } from '@/components/site/ComponentFamily'
+import { ComponentRequirements } from '@/components/site/ComponentRequirements'
+import { ComponentUsage } from '@/components/site/ComponentUsage'
+import { ComponentWiring } from '@/components/site/ComponentWiring'
+
 // Curated Lucide set so MDX can pass `icon={<Layers />}` to <Card> without a
 // per-file import. Keep this list tight — only icons the docs actually use.
 const icons = {
@@ -46,6 +52,14 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     File,
     Files,
     Folder,
+    // Kit doc-page sections (data-driven from the manifest/registry) — see the
+    // "Component doc page format" in AGENTS.md. <ComponentPreview>/<ComponentWiring>/<ComponentUsage>/
+    // <ComponentRequirements>/<ComponentFamily slug="…" />.
+    ComponentFamily,
+    ComponentPreview: ComponentDocPreview,
+    ComponentRequirements,
+    ComponentUsage,
+    ComponentWiring,
     Step,
     Steps,
     Tab,

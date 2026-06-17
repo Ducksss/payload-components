@@ -3,9 +3,9 @@ import type { Block } from 'payload'
 import { featureFields } from '@/blocks/shared/featureFields'
 import { linkGroup } from '@/fields/linkGroup'
 
-export const FeatureGridBasic: Block = {
-  slug: 'featureGridBasic',
-  interfaceName: 'FeatureGridBasicBlock',
+export const FeatureBento: Block = {
+  slug: 'featureBento',
+  interfaceName: 'FeatureBentoBlock',
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/featureFields.
@@ -18,6 +18,7 @@ export const FeatureGridBasic: Block = {
       maxRows: 6,
       admin: {
         initCollapsed: true,
+        description: 'The first item leads the grid as the featured cell.',
       },
       fields: [
         {
@@ -42,7 +43,7 @@ export const FeatureGridBasic: Block = {
     }),
   ],
   labels: {
-    plural: 'Feature Grid Basic Blocks',
-    singular: 'Feature Grid Basic',
+    plural: 'Feature Bento Blocks',
+    singular: 'Feature Bento',
   },
 }

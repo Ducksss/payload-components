@@ -20,6 +20,9 @@ Alpha commands:
 Current alpha components:
   hero-basic
   feature-grid-basic
+  feature-split
+  feature-bento
+  feature-steps
 `
 
 const parseArgs = (argv: string[]) => {

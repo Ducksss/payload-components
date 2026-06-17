@@ -1,31 +1,31 @@
 ---
-title: Feature Grid Basic
-description: A text-first grid of repeatable feature cards with optional CTA wiring — the base of the Feature family.
-icon: LayoutGrid
+title: Feature Bento
+description: An asymmetric bento grid that leads with a featured cell and fills supporting cells.
+icon: LayoutDashboard
 ---
 
-<ComponentPreview slug="feature-grid-basic" />
+<ComponentPreview slug="feature-bento" />
 
 ## Installation
 
 <Tabs items={['Command', 'Manual']}>
   <Tab value="Command">
     ```bash
-    npx payload-components add feature-grid-basic
+    npx payload-components add feature-bento
     ```
   </Tab>
   <Tab value="Manual">
     Copy the files straight from the registry, then wire the Payload fragments by hand:
 
     ```bash
-    pnpm dlx shadcn@latest add https://payload-components.xyz/r/feature-grid-basic.json
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/feature-bento.json
     ```
   </Tab>
 </Tabs>
 
 ## What it installs
 
-<ComponentWiring slug="feature-grid-basic" />
+<ComponentWiring slug="feature-bento" />
 
 ## Content model
 
@@ -40,7 +40,7 @@ to this variant.
     items: {
       type: 'array',
       required: true,
-      description: 'Three to six feature cards, each with a required title and description.',
+      description: 'Three to six cells; the first leads the grid as the featured cell.',
     },
     links: { type: 'array', description: 'One optional CTA link.' },
   }}
@@ -50,19 +50,19 @@ Each item in `items` carries:
 
 <TypeTable
   type={{
-    title: { type: 'text', required: true, description: 'Feature card heading.' },
-    description: { type: 'textarea', required: true, description: 'Feature card body copy.' },
+    title: { type: 'text', required: true, description: 'Cell heading.' },
+    description: { type: 'textarea', required: true, description: 'Cell body copy.' },
   }}
 />
 
 ## Usage
 
-<ComponentUsage slug="feature-grid-basic" />
+<ComponentUsage slug="feature-bento" />
 
 ## Requirements
 
-<ComponentRequirements slug="feature-grid-basic" />
+<ComponentRequirements slug="feature-bento" />
 
 ## In this family
 
-<ComponentFamily slug="feature-grid-basic" />
+<ComponentFamily slug="feature-bento" />

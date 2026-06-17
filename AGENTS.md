@@ -63,7 +63,7 @@ Fragment patching is **text-anchor based** — it finds anchors like `const bloc
 
 | Task | Touch |
 | --- | --- |
-| Add a component | `payload-components/source/` + `manifests/<component>.json` + `registry.json` + `content/docs/components/<component>.mdx` + installer tests — **all together** (incomplete components don't ship) |
+| Add a component | `payload-components/source/` + `manifests/<component>.json` + `registry.json` + `content/docs/components/<component>.mdx` + installer tests — **all together** (incomplete components don't ship). Scaffold + step-by-step workflow: `payload-components/templates/alpha-component/` (copy its files; its README is the canonical add-a-component workflow) |
 | Site copy / messaging | `src/lib/site.ts` |
 | Landing layout / visuals | `src/components/site/sections/` + `src/app/globals.css` |
 | Docs content | `content/docs/` |
@@ -104,6 +104,44 @@ This is the canonical model for every component family. `content/docs/architectu
 - Share code across a family with a real source file every variant ships: add it under `payload-components/source/blocks/shared`, list it in the variant's registry item `files[]` (with a `~/src/...` target) and the manifest `files[]`, and compose it in the config — e.g. `payload-components/source/blocks/shared/heroFields.ts` → `~/src/blocks/shared/heroFields.ts`, used as `fields: [...heroFields, /* variant-specific */]`.
 - Do NOT use `registryDependencies` for internal shared modules. That path resolves only public shadcn UI components (it checks `components/ui/<name>.tsx` and runs `shadcn add <name>`); an internal name will 404.
 - When a component's installed file set changes, sync the hand-maintained landing ledgers in `src/lib/site.ts` (`terminalDemoLines`, `frameInstalledFiles`, `wiringLedger`) and the component's `content/docs/components/<name>.mdx` page.
+
+## Component doc page format
+
+Every kit doc page (`content/docs/components/<slug>.mdx`) follows one fixed shape — a shadcn-style
+component page. Match it exactly when adding or editing a kit; do not invent per-kit layouts.
+
+- **Header is automatic.** `src/app/docs/[[...slug]]/page.tsx` detects `/docs/components/*` and renders
+  `ComponentDocHeader` — title + description + at-a-glance chips (`v{version} · Page block · {Family}
+  family · {target}`, from `componentEntries`) on the left; Copy Page + prev/next arrows (catalog order)
+  on the right. The kit **must** be in `componentEntries` (`src/lib/site.ts`). Do **not** add an `<h1>` or
+  repeat the description in the MDX body — frontmatter drives both.
+- **Frontmatter:** `title` (must equal the kit's `componentEntries` title — the e2e kit-page loop asserts
+  `H1 === kit.title`), `description`, `icon` (any Lucide name).
+- **The rich sections are data-driven from the manifest/registry** (via `src/lib/component-manifest.ts`),
+  so the MDX stays thin and the sections can't drift from what installs. Body order, nothing above
+  the preview:
+  1. `<ComponentPreview slug="<slug>" />` — **Preview** (demo twin from
+     `src/components/site/demos/registry.ts`) + **Code** (every installed source file — `config.ts`,
+     `Component.tsx`, shared `*Fields.ts` — read at build via `getComponentSources` in
+     `src/lib/component-source.ts`) tabs. A new kit **must** register a demo twin, or the preview is empty.
+  2. `## Installation` — `<Tabs items={['Command', 'Manual']}>`: Command = `npx payload-components add
+     <slug>`; Manual = the direct `pnpm dlx shadcn@latest add …/r/<slug>.json` URL.
+  3. `## What it installs` — `<ComponentWiring slug="<slug>" />`: the copied files + a factual table of the
+     edits the install makes (register the block, map the renderer, regenerate types + import map) +
+     shared-base callout + idempotency note, all from the manifest. State facts — **not** a
+     shadcn-vs-kit comparison; that pitch belongs on the landing, not the reference. Do **not**
+     hand-write the file tree or fragment list.
+  4. `## Content model` — `<TypeTable>` of the block fields (+ a second table for array-item fields).
+     The one hand-authored section; note which fields come from the shared family base vs the variant.
+  5. `## Usage` — `<ComponentUsage slug="<slug>" />`: the admin steps (add the block to a Page → fill → publish).
+  6. `## Requirements` — `<ComponentRequirements slug="<slug>" />`: target, Payload/Next majors, shadcn deps.
+  7. `## In this family` — `<ComponentFamily slug="<slug>" />`: sibling variants. Include this section
+     **only when the family has 2+ variants** (it renders nothing for a lone variant — omit the
+     heading too, e.g. `hero-basic` has none yet).
+- **Keep the install command and Content-model prose in MDX**, never in page chrome — the `/llms*`
+  and per-page markdown surfaces serialize MDX, and `tests/e2e/geo.e2e.spec.ts` pins exact
+  install-command substrings. Data-driven sections must scroll/stack inside their cards (no page
+  overflow; the ledger stacks under `md`).
 
 ## Payload Target Safety
 

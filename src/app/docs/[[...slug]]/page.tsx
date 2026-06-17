@@ -13,12 +13,14 @@ import { createRelativeLink } from 'fumadocs-ui/mdx'
 
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getMDXComponents } from '@/components/mdx'
-import { docsRoute, githubContentBranch, githubRepoUrl, componentEntries } from '@/lib/site'
+import { ComponentDocHeader } from '@/components/site/ComponentDocHeader'
+import { familyOfSlug } from '@/lib/component-page-tree'
+import { componentEntries, docsRoute, githubContentBranch, githubRepoUrl } from '@/lib/site'
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source'
 import {
   breadcrumbNode,
-  graph,
   componentSoftwareApplicationNode,
+  graph,
   techArticleNode,
 } from '@/lib/structured-data'
 
@@ -41,8 +43,8 @@ export async function generateMetadata({ params }: DocsPageProps): Promise<Metad
   }
 
   /* Component doc pages get a keyword-rich <title> for search ("… — Payload CMS
-     block") while the on-page H1 stays the short catalog name. Page blocks
-     read "block"; post components read "component". */
+     block") while the on-page H1 stays the short catalog name. Page blocks read
+     "block"; post components read "component". */
   const component =
     slug?.length === 2 && slug[0] === 'components'
       ? componentEntries.find((entry) => entry.slug === slug[1])
@@ -90,12 +92,30 @@ export default async function Page({ params }: DocsPageProps) {
   }
   crumbs.push({ name: page.data.title, path: page.url })
 
-  /* Component doc pages (/docs/components/<slug>) also carry per-component SoftwareApplication
-     detail, pulled from the registry entry so it stays in sync with the catalog. */
+  /* Component doc pages (/docs/components/<slug>) carry per-component SoftwareApplication
+     detail (from the registry entry) plus a custom header with prev/next and at-a-glance chips. */
   const component =
     slug?.length === 2 && slug[0] === 'components'
       ? componentEntries.find((entry) => entry.slug === slug[1])
       : undefined
+
+  /* Catalog-order prev/next for the component-page header arrows. */
+  const index = component
+    ? componentEntries.findIndex((entry) => entry.slug === component.slug)
+    : -1
+  const prev = index > 0 ? componentEntries[index - 1] : undefined
+  const next =
+    index >= 0 && index < componentEntries.length - 1 ? componentEntries[index + 1] : undefined
+
+  /* At-a-glance chips under the component title. */
+  const chips = component
+    ? [
+        `v${component.version}`,
+        component.family === 'pages' ? 'Page block' : 'Post component',
+        `${familyOfSlug(component.slug).label} family`,
+        component.target,
+      ]
+    : []
 
   const structuredData = graph(
     breadcrumbNode(crumbs),
@@ -111,12 +131,26 @@ export default async function Page({ params }: DocsPageProps) {
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <JsonLd data={structuredData} />
-      <DocsTitle className="font-bold tracking-tight">{page.data.title}</DocsTitle>
-      <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
-      <div className="flex flex-row items-center gap-2 border-b pb-6">
-        <MarkdownCopyButton markdownUrl={markdownUrl} />
-        <ViewOptionsPopover markdownUrl={markdownUrl} githubUrl={githubUrl} />
-      </div>
+      {component ? (
+        <ComponentDocHeader
+          title={page.data.title}
+          description={page.data.description}
+          chips={chips}
+          markdownUrl={markdownUrl}
+          githubUrl={githubUrl}
+          prev={prev ? { href: prev.href, title: prev.title } : undefined}
+          next={next ? { href: next.href, title: next.title } : undefined}
+        />
+      ) : (
+        <>
+          <DocsTitle className="font-bold tracking-tight">{page.data.title}</DocsTitle>
+          <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
+          <div className="flex flex-row items-center gap-2 border-b pb-6">
+            <MarkdownCopyButton markdownUrl={markdownUrl} />
+            <ViewOptionsPopover markdownUrl={markdownUrl} githubUrl={githubUrl} />
+          </div>
+        </>
+      )}
       <DocsBody>
         <MDX
           components={getMDXComponents({
