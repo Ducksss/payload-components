@@ -1,8 +1,7 @@
 import path from 'node:path'
 
 import { addCommand } from './commands/add'
-import { detectProject } from './project'
-import { loadState } from './state'
+import { doctorCommand } from './commands/doctor'
 
 const usage = `payload-components
 
@@ -15,7 +14,7 @@ Usage:
 Alpha commands:
   add     Install an alpha component through the payload-components wrapper and shadcn-compatible registry flow.
   init    Non-gating command shell reserved for a later alpha phase.
-  doctor  Non-gating command shell reserved for the next alpha tranche.
+  doctor  Diagnose project readiness and recorded component installs without changing files.
 
 Current alpha components:
   hero-basic
@@ -65,21 +64,10 @@ const parseArgs = (argv: string[]) => {
   }
 }
 
-const placeholderCommand = async (commandName: 'doctor' | 'init', cwd: string) => {
-  try {
-    const project = await detectProject(cwd)
-    const state = await loadState(cwd)
-    const installedComponents = Object.keys(state.components)
-
-    process.stdout.write(
-      `${commandName}: detected ${project.target.id} in ${cwd}. ` +
-        `This alpha tranche focuses on "payload-components add"; ${commandName} remains non-gating for now. ` +
-        `Installed components: ${installedComponents.length ? installedComponents.join(', ') : 'none'}.\n`,
-    )
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error'
-    process.stdout.write(`${commandName}: placeholder command. Project detection failed: ${message}\n`)
-  }
+const placeholderCommand = async (commandName: 'init', cwd: string) => {
+  process.stdout.write(
+    `${commandName}: placeholder command in ${cwd}. This alpha tranche focuses on "payload-components add".\n`,
+  )
 }
 
 const main = async () => {
@@ -108,7 +96,17 @@ const main = async () => {
     return
   }
 
-  if (command === 'init' || command === 'doctor') {
+  if (command === 'doctor') {
+    const ok = await doctorCommand({ cwd })
+
+    if (!ok) {
+      process.exitCode = 1
+    }
+
+    return
+  }
+
+  if (command === 'init') {
     await placeholderCommand(command, cwd)
     return
   }

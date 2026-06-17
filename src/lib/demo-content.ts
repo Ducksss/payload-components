@@ -45,18 +45,28 @@ export type EmbedBasicDemoContent = {
   url: string
 }
 
+/* The whole Logo Cloud family (grid, hover, marquee, inline, inline-wrap)
+   renders from one demo-content shape: the shared heading, and for the hover
+   variant an optional CTA link. The logos themselves are presentational and
+   backend-free, so the twins pull invented monochrome marks from
+   `@/components/site/demos/DemoLogos` rather than carrying logo data here. */
+export type LogoCloudDemoContent = {
+  heading: string
+  links?: { link: DemoLinkData }[]
+}
+
 export const heroBasicDemoContent: HeroBasicDemoContent = {
   description:
-    'Acme gives product teams hosted dashboards, usage reports, and alerting on one platform — wired to your warehouse in an afternoon, no data team required.',
+    'Acme gives product teams hosted dashboards, usage reports, and alerting on one platform — wired to your data in an afternoon.',
   eyebrow: 'Acme Cloud · New',
   links: [
     { link: { appearance: 'default', label: 'Start free trial' } },
-    { link: { appearance: 'outline', label: 'Book a demo' } },
+    { link: { appearance: 'outline', label: 'Talk to sales' } },
   ],
   proofItems: [
     { label: 'SOC 2 Type II' },
     { label: '99.99% uptime' },
-    { label: 'Trusted by 4,000+ teams' },
+    { label: 'No credit card required' },
   ],
   title: 'Ship customer dashboards in days, not quarters.',
 }
@@ -158,4 +168,25 @@ export const embedBasicDemoContent: EmbedBasicDemoContent = {
   caption: 'Acme product tour — two minutes from sign-up to first dashboard.',
   title: 'Acme product tour',
   url: 'https://www.youtube.com/embed/aqz-KE-bpKQ',
+}
+
+export const logoCloudGridDemoContent: LogoCloudDemoContent = {
+  heading: 'Trusted by teams shipping on Payload.',
+}
+
+export const logoCloudHoverDemoContent: LogoCloudDemoContent = {
+  heading: 'Powering the best product teams.',
+  links: [{ link: { appearance: 'default', label: 'Meet our customers' } }],
+}
+
+export const logoCloudMarqueeDemoContent: LogoCloudDemoContent = {
+  heading: 'Powering the best teams',
+}
+
+export const logoCloudInlineDemoContent: LogoCloudDemoContent = {
+  heading: 'Trusted by teams at:',
+}
+
+export const logoCloudInlineWrapDemoContent: LogoCloudDemoContent = {
+  heading: 'Trusted by teams at:',
 }

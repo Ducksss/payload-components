@@ -55,7 +55,7 @@ export default function AboutPage() {
   return (
     <>
       <JsonLd data={aboutStructuredData} />
-      <SiteHeader />
+      <SiteHeader activePath="/about" />
 
       <main className="flex-1">
         <section className="hero-shell overflow-hidden border-b border-border/60">
@@ -212,7 +212,7 @@ export default function AboutPage() {
                 accentWord="matters"
                 eyebrow="From here"
                 heading="Spend your week on the work that matters."
-                intro="Six page blocks install today, eight post components are in development, and every component ships with its contract: source, manifest, docs, and installer coverage."
+                intro="Eleven page blocks install today, eight post components are in development, and every component ships with its contract: source, manifest, docs, and installer coverage."
               />
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link

@@ -19,7 +19,7 @@ The POC passes only if all of the following are true:
 
 If any of those fail because of brittle repo patching or unreliable generation, we should stop and reconsider the product shape before building private registries, auth, or a larger component catalog.
 
-Alpha reality in this workspace: `payload-components add` is real, while `payload-components init` and `payload-components doctor` remain placeholders.
+Alpha reality in this workspace: `payload-components add` installs components, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` remains a placeholder.
 
 ## Public Registry Contract
 
@@ -140,6 +140,7 @@ Normalized alpha-component blocks should:
 ```bash
 pnpm payload-components add hero-basic
 pnpm payload-components add feature-grid-basic
+pnpm payload-components doctor
 ```
 
-`payload-components init` and `payload-components doctor` remain placeholder commands in this alpha tranche.
+`payload-components doctor` checks the supported project shape, required post-install scripts, and recorded install state. It exits non-zero when a recorded component is partial or drifted from disk.

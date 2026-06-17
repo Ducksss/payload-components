@@ -76,6 +76,19 @@ The wrapper CLI owns the Payload-specific work that direct registry installation
   </Step>
 </Steps>
 
+## Doctor
+
+Run a read-only health check before or after installing components:
+
+```bash
+npx payload-components doctor
+```
+
+`doctor` validates the supported project shape, required post-install scripts,
+and recorded component installs in `.payload-components/state.json`. It exits
+non-zero when files, Payload fragments, dependency declarations, or install state
+need attention.
+
 ## Idempotency
 
 <Callout type="success">

@@ -71,6 +71,69 @@ test.describe('Light shadcn frontend', () => {
     expect(meanChannel).toBeGreaterThan(220)
   })
 
+  test('aligns the brand mark relative to the documentation rail', async ({ page }) => {
+    const viewports = [
+      { alignTo: 'header-padding', height: 844, name: 'mobile', width: 390 },
+      { alignTo: 'documentation-title', height: 1024, name: 'tablet', width: 768 },
+      { alignTo: 'documentation-title', height: 720, name: 'desktop', width: 1280 },
+    ] as const
+
+    for (const viewport of viewports) {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height })
+      await page.goto(`${baseURL}/docs`)
+
+      const geometry = await page.evaluate(() => {
+        const brandMark = document.querySelector(
+          'body > header a[aria-label="Payload Components home"] span[aria-hidden="true"]',
+        )
+        const headerInner = document.querySelector('body > header > div')
+        const documentationTitle = [...document.querySelectorAll('#nd-sidebar span')].find(
+          (element) => element.textContent?.trim() === 'Documentation',
+        )
+        const brandMarkRect = brandMark?.getBoundingClientRect()
+        const headerInnerRect = headerInner?.getBoundingClientRect()
+        const documentationTitleRect = documentationTitle?.getBoundingClientRect()
+        const headerStyle = headerInner ? getComputedStyle(headerInner) : null
+        const headerPaddingStart = headerStyle ? Number.parseFloat(headerStyle.paddingInlineStart) : null
+        const hasHorizontalOverflow =
+          document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
+
+        return {
+          brandMark: brandMarkRect
+            ? { width: brandMarkRect.width, x: brandMarkRect.x }
+            : null,
+          documentationTitle:
+            documentationTitleRect && documentationTitleRect.width > 0
+              ? { width: documentationTitleRect.width, x: documentationTitleRect.x }
+              : null,
+          hasHorizontalOverflow,
+          headerPaddingStart,
+          headerStart: headerInnerRect?.x ?? null,
+        }
+      })
+
+      expect(geometry.brandMark, viewport.name).not.toBeNull()
+      expect(geometry.brandMark!.width, viewport.name).toBe(24)
+      expect(geometry.hasHorizontalOverflow, viewport.name).toBe(false)
+
+      if (viewport.alignTo === 'documentation-title') {
+        expect(geometry.documentationTitle, viewport.name).not.toBeNull()
+        expect(
+          Math.abs(geometry.brandMark!.x - geometry.documentationTitle!.x),
+          viewport.name,
+        ).toBeLessThanOrEqual(1)
+      } else {
+        expect(geometry.documentationTitle, viewport.name).toBeNull()
+        expect(geometry.headerPaddingStart, viewport.name).not.toBeNull()
+        expect(geometry.headerStart, viewport.name).not.toBeNull()
+        expect(
+          Math.abs(geometry.brandMark!.x - (geometry.headerStart! + geometry.headerPaddingStart!)),
+          viewport.name,
+        ).toBeLessThanOrEqual(1)
+      }
+    }
+  })
+
   test('exposes docs, catalog, component pages, and no horizontal overflow', async ({ page }) => {
     const routes = [
       {
@@ -144,6 +207,22 @@ test.describe('Light shadcn frontend', () => {
     expect(hasHorizontalOverflow).toBe(false)
   })
 
+  test('marks only the current top-level navigation item active', async ({ page }) => {
+    await page.goto(baseURL)
+    await expect(page.getByRole('navigation').locator('a.bg-secondary')).toHaveCount(0)
+
+    for (const route of [
+      { label: 'Docs', path: '/docs' },
+      { label: 'Components', path: '/components' },
+      { label: 'About', path: '/about' },
+    ]) {
+      await page.goto(`${baseURL}${route.path}`)
+      await expect(page.getByRole('navigation').getByRole('link', { name: route.label })).toHaveClass(
+        /bg-secondary/,
+      )
+    }
+  })
+
   test('redirects old kit docs URLs to component docs', async ({ page }) => {
     await page.goto(`${baseURL}/docs/kits/hero-basic`)
     expect(page.url()).toBe(`${baseURL}/docs/components/hero-basic`)
@@ -207,10 +286,44 @@ test.describe('Light shadcn frontend', () => {
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(primaryInstallCommand)
   })
+
+  test('copies a catalog row command', async ({ page, context }) => {
+    const catalogComponent = componentEntries[1]
+
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(baseURL)
+    await page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copy' }).click()
+
+    await expect(page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copied' })).toBeVisible()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(catalogComponent.command)
+  })
 })
 
 test.describe('Reduced motion', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } })
+
+  test('landing page keeps its desktop and mobile visual contract', async ({ page }) => {
+    await page.goto(baseURL)
+    await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
+    await page.evaluate(() => document.fonts.ready)
+
+    await expect(page).toHaveScreenshot('landing-home-desktop.png', {
+      animations: 'disabled',
+      fullPage: true,
+    })
+
+    await page.setViewportSize({ height: 900, width: 390 })
+    await page.goto(baseURL)
+    await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
+    await page.evaluate(() => document.fonts.ready)
+
+    await expect(page).toHaveScreenshot('landing-home-mobile.png', {
+      animations: 'disabled',
+      fullPage: true,
+    })
+  })
 
   test('terminal replay renders its final transcript without animation', async ({ page }) => {
     await page.goto(baseURL)
