@@ -210,14 +210,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Six page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Eleven page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '6 installable',
+    countLabel: '11 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -234,6 +234,7 @@ export const componentCategories = {
   hero: { family: 'pages', label: 'Hero' },
   features: { family: 'pages', label: 'Features' },
   embed: { family: 'pages', label: 'Embed' },
+  logos: { family: 'pages', label: 'Logo cloud' },
   cta: { family: 'pages', label: 'Call to action' },
   pricing: { family: 'pages', label: 'Pricing' },
   faq: { family: 'pages', label: 'FAQ' },
@@ -332,6 +333,76 @@ export const componentEntries = [
     status: 'Alpha',
     target: 'Embed / media',
     title: 'Embed Basic',
+    version: '0.1.0',
+  },
+  {
+    category: 'logos',
+    command: 'npx payload-components add logo-cloud-grid',
+    description:
+      'A centered, wrapping wall of editable logo uploads under a heading, installed as a wired Payload block.',
+    family: 'pages',
+    fields: ['heading', 'logos'],
+    href: '/docs/components/logo-cloud-grid',
+    slug: 'logo-cloud-grid',
+    status: 'Alpha',
+    target: 'Logo cloud',
+    title: 'Logo Cloud Grid',
+    version: '0.1.0',
+  },
+  {
+    category: 'logos',
+    command: 'npx payload-components add logo-cloud-hover',
+    description:
+      'A logo wall that dims and blurs on hover to reveal a single call-to-action.',
+    family: 'pages',
+    fields: ['heading', 'logos', 'links'],
+    href: '/docs/components/logo-cloud-hover',
+    slug: 'logo-cloud-hover',
+    status: 'Alpha',
+    target: 'Logo cloud',
+    title: 'Logo Cloud Hover',
+    version: '0.1.0',
+  },
+  {
+    category: 'logos',
+    command: 'npx payload-components add logo-cloud-marquee',
+    description:
+      'An auto-scrolling marquee of editable logos with progressive-blur edge fades.',
+    family: 'pages',
+    fields: ['heading', 'logos'],
+    href: '/docs/components/logo-cloud-marquee',
+    slug: 'logo-cloud-marquee',
+    status: 'Alpha',
+    target: 'Logo cloud',
+    title: 'Logo Cloud Marquee',
+    version: '0.1.0',
+  },
+  {
+    category: 'logos',
+    command: 'npx payload-components add logo-cloud-inline',
+    description:
+      'A compact label-over-logos strip for editable trust logos.',
+    family: 'pages',
+    fields: ['heading', 'logos'],
+    href: '/docs/components/logo-cloud-inline',
+    slug: 'logo-cloud-inline',
+    status: 'Alpha',
+    target: 'Logo cloud',
+    title: 'Logo Cloud Inline',
+    version: '0.1.0',
+  },
+  {
+    category: 'logos',
+    command: 'npx payload-components add logo-cloud-inline-wrap',
+    description:
+      'A single wrapping row that keeps the label inline with editable trust logos.',
+    family: 'pages',
+    fields: ['heading', 'logos'],
+    href: '/docs/components/logo-cloud-inline-wrap',
+    slug: 'logo-cloud-inline-wrap',
+    status: 'Alpha',
+    target: 'Logo cloud',
+    title: 'Logo Cloud Inline Wrap',
     version: '0.1.0',
   },
 ] as const

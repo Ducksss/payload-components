@@ -6,6 +6,11 @@ import { FeatureGridBasicDemo } from './FeatureGridBasicDemo'
 import { FeatureSplitDemo } from './FeatureSplitDemo'
 import { FeatureStepsDemo } from './FeatureStepsDemo'
 import { HeroBasicDemo } from './HeroBasicDemo'
+import { LogoCloudGridDemo } from './LogoCloudGridDemo'
+import { LogoCloudHoverDemo } from './LogoCloudHoverDemo'
+import { LogoCloudInlineDemo } from './LogoCloudInlineDemo'
+import { LogoCloudInlineWrapDemo } from './LogoCloudInlineWrapDemo'
+import { LogoCloudMarqueeDemo } from './LogoCloudMarqueeDemo'
 
 /* Single source of truth mapping a component slug to its live demo twin. Shared by
  * the catalog preview thumbnails (ComponentPreviewThumb) and the docs-page live
@@ -19,6 +24,11 @@ export const demosBySlug: Record<string, ComponentType> = {
   'feature-split': FeatureSplitDemo,
   'feature-steps': FeatureStepsDemo,
   'hero-basic': HeroBasicDemo,
+  'logo-cloud-grid': LogoCloudGridDemo,
+  'logo-cloud-hover': LogoCloudHoverDemo,
+  'logo-cloud-inline': LogoCloudInlineDemo,
+  'logo-cloud-inline-wrap': LogoCloudInlineWrapDemo,
+  'logo-cloud-marquee': LogoCloudMarqueeDemo,
 }
 
 export function hasComponentDemo(slug: string) {

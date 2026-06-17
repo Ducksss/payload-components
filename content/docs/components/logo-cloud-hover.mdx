@@ -1,0 +1,74 @@
+---
+title: Logo Cloud Hover
+description: A logo wall that dims and blurs on hover to reveal a single call-to-action, installed as a wired Payload block.
+icon: MousePointerClick
+---
+
+<ComponentPreview slug="logo-cloud-hover" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add logo-cloud-hover
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/logo-cloud-hover.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="logo-cloud-hover" />
+
+## Content model
+
+`heading` and `logos` come from the shared `logoCloudFields` base; `links` is specific to this
+variant — a single CTA revealed when the logo wall is hovered.
+
+<TypeTable
+  type={{
+    heading: {
+      type: 'text',
+      required: true,
+      description: 'Short heading shown above the logos.',
+    },
+    logos: {
+      type: 'array',
+      required: true,
+      description: 'Two to twelve logos, each an uploaded image with a name and optional link.',
+    },
+    links: {
+      type: 'array',
+      description: 'A single optional CTA link revealed on hover.',
+    },
+  }}
+/>
+
+Each item in `logos` carries:
+
+<TypeTable
+  type={{
+    logo: { type: 'upload', required: true, description: 'Logo image (Media upload).' },
+    name: { type: 'text', required: true, description: 'Accessible name / alt text for the logo.' },
+    href: { type: 'text', description: 'Optional link the logo points to.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="logo-cloud-hover" />
+
+## Requirements
+
+<ComponentRequirements slug="logo-cloud-hover" />
+
+## In this family
+
+<ComponentFamily slug="logo-cloud-hover" />

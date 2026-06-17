@@ -195,6 +195,209 @@
           "target": "~/src/blocks/EmbedBasic/Component.tsx"
         }
       ]
+    },
+    {
+      "name": "logo-cloud-grid",
+      "type": "registry:block",
+      "title": "Logo Cloud Grid",
+      "description": "Centered, wrapping wall of editable logo uploads under a heading.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add logo-cloud-grid\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/logo-cloud-grid.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add logo-cloud-grid` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add logo-cloud-grid",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/logoCloudFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/logoCloudFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/LogoCloudGrid/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudGrid/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/LogoCloudGrid/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudGrid/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "logo-cloud-hover",
+      "type": "registry:block",
+      "title": "Logo Cloud Hover",
+      "description": "Logo wall that dims and blurs on hover to reveal a CTA link.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add logo-cloud-hover\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/logo-cloud-hover.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add logo-cloud-hover` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add logo-cloud-hover",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/logoCloudFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/logoCloudFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/LogoCloudHover/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudHover/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/LogoCloudHover/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudHover/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "logo-cloud-marquee",
+      "type": "registry:block",
+      "title": "Logo Cloud Marquee",
+      "description": "Auto-scrolling marquee of editable logos with progressive-blur edge fades.",
+      "registryDependencies": [],
+      "dependencies": [
+        "motion"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add logo-cloud-marquee\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/logo-cloud-marquee.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add logo-cloud-marquee` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add logo-cloud-marquee",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/logoCloudFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/logoCloudFields.ts"
+        },
+        {
+          "path": "payload-components/source/components/ui/infinite-slider.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/ui/infinite-slider.tsx"
+        },
+        {
+          "path": "payload-components/source/components/ui/progressive-blur.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/ui/progressive-blur.tsx"
+        },
+        {
+          "path": "payload-components/source/blocks/LogoCloudMarquee/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudMarquee/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/LogoCloudMarquee/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudMarquee/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "logo-cloud-inline",
+      "type": "registry:block",
+      "title": "Logo Cloud Inline",
+      "description": "Compact label-over-logos strip of editable trust logos.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add logo-cloud-inline\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/logo-cloud-inline.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add logo-cloud-inline` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add logo-cloud-inline",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/logoCloudFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/logoCloudFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/LogoCloudInline/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudInline/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/LogoCloudInline/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudInline/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "logo-cloud-inline-wrap",
+      "type": "registry:block",
+      "title": "Logo Cloud Inline Wrap",
+      "description": "Single wrapping row keeping the label inline with editable logos.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add logo-cloud-inline-wrap\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/logo-cloud-inline-wrap.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add logo-cloud-inline-wrap` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add logo-cloud-inline-wrap",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/logoCloudFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/logoCloudFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/LogoCloudInlineWrap/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudInlineWrap/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/LogoCloudInlineWrap/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudInlineWrap/Component.tsx"
+        }
+      ]
     }
   ]
 }

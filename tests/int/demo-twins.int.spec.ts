@@ -37,6 +37,26 @@ const pairs = [
     component: 'payload-components/source/blocks/EmbedBasic/Component.tsx',
     twin: 'src/components/site/demos/EmbedBasicDemo.tsx',
   },
+  {
+    component: 'payload-components/source/blocks/LogoCloudGrid/Component.tsx',
+    twin: 'src/components/site/demos/LogoCloudGridDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/LogoCloudHover/Component.tsx',
+    twin: 'src/components/site/demos/LogoCloudHoverDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/LogoCloudMarquee/Component.tsx',
+    twin: 'src/components/site/demos/LogoCloudMarqueeDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/LogoCloudInline/Component.tsx',
+    twin: 'src/components/site/demos/LogoCloudInlineDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/LogoCloudInlineWrap/Component.tsx',
+    twin: 'src/components/site/demos/LogoCloudInlineWrapDemo.tsx',
+  },
 ] as const
 
 const classLiterals = (source: string): string[] =>

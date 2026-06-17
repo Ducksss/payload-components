@@ -350,11 +350,29 @@
   }
 }
 
+/* Logo Cloud Marquee twin: the track renders its logos twice, so a -50%
+   shift loops seamlessly. Reduced motion is handled by the global guard. */
+@keyframes logo-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @layer utilities {
   .container {
     width: 100%;
     margin-inline: auto;
     padding-inline: 1.25rem;
+  }
+
+  /* Logo Cloud Marquee twin: scrolls the duplicated logo track. The global
+     reduced-motion guard below neutralizes it. */
+  .logo-cloud-marquee-track {
+    animation: logo-marquee 32s linear infinite;
   }
 
   @media (width >= 40rem) {

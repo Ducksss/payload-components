@@ -49,6 +49,11 @@ const expectedRegistryDependencies: Record<string, string[]> = {
   'feature-split': ['badge', 'card'],
   'feature-steps': ['badge', 'card'],
   'hero-basic': ['badge'],
+  'logo-cloud-grid': [],
+  'logo-cloud-hover': [],
+  'logo-cloud-inline': [],
+  'logo-cloud-inline-wrap': [],
+  'logo-cloud-marquee': [],
 }
 
 describe('public shadcn registry publication', () => {
@@ -85,6 +90,11 @@ describe('public shadcn registry publication', () => {
       'feature-split',
       'feature-steps',
       'hero-basic',
+      'logo-cloud-grid',
+      'logo-cloud-hover',
+      'logo-cloud-inline',
+      'logo-cloud-inline-wrap',
+      'logo-cloud-marquee',
     ])
 
     for (const item of registry.items) {
@@ -105,7 +115,9 @@ describe('public shadcn registry publication', () => {
 
       for (const file of item.files ?? []) {
         expect(file.content).toBeUndefined()
-        expect(file.path).toMatch(/^payload-components\/source\/blocks\//)
+        // Block source lives under source/blocks/; a variant may also ship shared UI
+        // primitives under source/components/ (e.g. the marquee's InfiniteSlider).
+        expect(file.path).toMatch(/^payload-components\/source\/(blocks|components)\//)
         expect(file.target).toBe(file.path.replace(/^payload-components\/source/, '~/src'))
         expect(file.type).toBe('registry:file')
       }

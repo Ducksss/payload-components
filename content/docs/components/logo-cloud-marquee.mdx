@@ -1,0 +1,72 @@
+---
+title: Logo Cloud Marquee
+description: An auto-scrolling marquee of editable logos with progressive-blur edge fades, installed as a wired Payload block.
+icon: GalleryHorizontalEnd
+---
+
+<ComponentPreview slug="logo-cloud-marquee" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add logo-cloud-marquee
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/logo-cloud-marquee.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="logo-cloud-marquee" />
+
+This variant also installs the shared `InfiniteSlider` and `ProgressiveBlur` client components and
+adds the `motion` package — the marquee animation runs on the client.
+
+## Content model
+
+Both fields come from the shared `logoCloudFields` base shared across the Logo Cloud family.
+
+<TypeTable
+  type={{
+    heading: {
+      type: 'text',
+      required: true,
+      description: 'Short label shown beside the scrolling logos.',
+    },
+    logos: {
+      type: 'array',
+      required: true,
+      description: 'Two to twelve logos, each an uploaded image with a name and optional link.',
+    },
+  }}
+/>
+
+Each item in `logos` carries:
+
+<TypeTable
+  type={{
+    logo: { type: 'upload', required: true, description: 'Logo image (Media upload).' },
+    name: { type: 'text', required: true, description: 'Accessible name / alt text for the logo.' },
+    href: { type: 'text', description: 'Optional link the logo points to.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="logo-cloud-marquee" />
+
+## Requirements
+
+<ComponentRequirements slug="logo-cloud-marquee" />
+
+## In this family
+
+<ComponentFamily slug="logo-cloud-marquee" />

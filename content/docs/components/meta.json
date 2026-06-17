@@ -7,6 +7,11 @@
     "feature-split",
     "feature-bento",
     "feature-steps",
-    "embed-basic"
+    "embed-basic",
+    "logo-cloud-grid",
+    "logo-cloud-hover",
+    "logo-cloud-marquee",
+    "logo-cloud-inline",
+    "logo-cloud-inline-wrap"
   ]
 }
