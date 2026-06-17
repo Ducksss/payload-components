@@ -161,18 +161,58 @@ npx payload-components add feature-split
 npx payload-components add feature-bento
 npx payload-components add feature-steps
 npx payload-components add embed-basic
+npx payload-components add content-columns
+npx payload-components add content-image-lead
+npx payload-components add content-feature-media
+npx payload-components add content-feature-split
+npx payload-components add content-showcase
+npx payload-components add content-quote
+npx payload-components add content-community
+npx payload-components add logo-cloud-grid
+npx payload-components add logo-cloud-hover
+npx payload-components add logo-cloud-marquee
+npx payload-components add logo-cloud-inline
+npx payload-components add logo-cloud-inline-wrap
+npx payload-components add integration-grid
+npx payload-components add integration-cluster
+npx payload-components add integration-split
+npx payload-components add integration-connect
+npx payload-components add integration-orbit
+npx payload-components add integration-list
+npx payload-components add integration-marquee
+npx payload-components add integration-testimonial
 ```
 
 Current installable page blocks:
 
-| Component            | Target                  |
-| -------------------- | ----------------------- |
-| `hero-basic`         | Headline-led hero       |
-| `feature-grid-basic` | Repeatable feature grid |
-| `feature-split`      | Two-column feature list |
-| `feature-bento`      | Asymmetric bento grid   |
-| `feature-steps`      | Numbered process steps  |
-| `embed-basic`        | Responsive iframe embed |
+| Component                 | Target                    |
+| ------------------------- | ------------------------- |
+| `hero-basic`              | Headline-led hero         |
+| `feature-grid-basic`      | Repeatable feature grid   |
+| `feature-split`           | Two-column feature list   |
+| `feature-bento`           | Asymmetric bento grid     |
+| `feature-steps`           | Numbered process steps    |
+| `embed-basic`             | Responsive iframe embed   |
+| `content-columns`         | Editorial content columns |
+| `content-image-lead`      | Image-led content section |
+| `content-feature-media`   | Media feature section     |
+| `content-feature-split`   | Split content feature     |
+| `content-showcase`        | Showcase content section  |
+| `content-quote`           | Editorial quote section   |
+| `content-community`       | Community content section |
+| `logo-cloud-grid`         | Logo wall grid            |
+| `logo-cloud-hover`        | Logo wall with hover CTA  |
+| `logo-cloud-marquee`      | Scrolling logo marquee    |
+| `logo-cloud-inline`       | Inline trust-logo strip   |
+| `logo-cloud-inline-wrap`  | Wrapping inline logo row  |
+| `integration-grid`        | Integration card grid     |
+| `integration-cluster`     | Clustered integration CTA |
+| `integration-split`       | Split integration section |
+| `integration-connect`     | Connected integration map |
+| `integration-orbit`       | Orbiting integration set  |
+| `integration-list`        | Integration list rows     |
+| `integration-marquee`     | Integration logo marquee  |
+| `integration-testimonial` | Integration testimonial   |
 
 Check a target project without changing files:
 

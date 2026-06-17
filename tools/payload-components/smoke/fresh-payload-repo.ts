@@ -29,6 +29,19 @@ export const DEFAULT_SMOKE_COMPONENTS = [
   'embed-basic',
   'content-columns',
   'content-feature-media',
+  'logo-cloud-grid',
+  'logo-cloud-hover',
+  'logo-cloud-marquee',
+  'logo-cloud-inline',
+  'logo-cloud-inline-wrap',
+  'integration-grid',
+  'integration-cluster',
+  'integration-split',
+  'integration-connect',
+  'integration-orbit',
+  'integration-list',
+  'integration-marquee',
+  'integration-testimonial',
 ] as const
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
 
@@ -638,13 +651,13 @@ const assertRouteRendersWithPlaywright = async ({
     })
 
     for (const manifest of manifests) {
-      const title = manifest.sampleContent.title
+      const sampleLabel = manifest.sampleContent.title ?? manifest.sampleContent.heading
 
-      if (typeof title !== 'string') {
-        throw new Error(`Manifest "${manifest.name}" sampleContent.title must be a string for smoke assertions.`)
+      if (typeof sampleLabel !== 'string') {
+        throw new Error(`Manifest "${manifest.name}" sampleContent must include a visible title or heading for smoke assertions.`)
       }
 
-      await page.getByText(title, { exact: false }).first().waitFor({
+      await page.getByText(sampleLabel, { exact: false }).first().waitFor({
         timeout: Math.min(timeoutMs, 60_000),
       })
     }

@@ -31,14 +31,14 @@ export function LogoCloudHoverDemo({
 
           <div className="group relative">
             {links && links.length > 0 ? (
-              <div className="absolute inset-0 z-10 flex scale-95 items-center justify-center opacity-0 transition duration-500 group-hover:scale-100 group-hover:opacity-100">
+              <div className="pointer-events-none absolute inset-0 z-10 flex scale-95 items-center justify-center opacity-0 transition duration-500 group-hover:pointer-events-auto group-hover:scale-100 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:scale-100 group-focus-within:opacity-100">
                 {links.map(({ link }, index) => (
                   <DemoLink appearance={link.appearance} key={index} label={link.label} />
                 ))}
               </div>
             ) : null}
 
-            <div className="grid grid-cols-3 gap-x-12 gap-y-8 transition-all duration-500 group-hover:opacity-40 group-hover:blur-sm sm:gap-x-16 sm:gap-y-12 md:grid-cols-4">
+            <div className="grid grid-cols-3 gap-x-12 gap-y-8 transition-all duration-500 group-hover:opacity-40 group-hover:blur-sm group-focus-within:opacity-40 group-focus-within:blur-sm sm:gap-x-16 sm:gap-y-12 md:grid-cols-4">
               {demoLogos.slice(0, 8).map((logo) => (
                 <div className="flex items-center justify-center" key={logo.name}>
                   <DemoLogoMark Icon={logo.Icon} name={logo.name} />

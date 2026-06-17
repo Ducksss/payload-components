@@ -34,14 +34,18 @@ export const LogoCloudMarqueeBlock: React.FC<Props> = ({
 
           <div className="relative w-full py-6 md:w-[calc(100%-11rem)]">
             <InfiniteSlider gap={112} speed={40} speedOnHover={20}>
-              {logos?.map((item, index) => (
-                <div
-                  className="flex items-center justify-center"
-                  key={item.id ?? `${item.name}-${index}`}
-                >
-                  <Media resource={item.logo} imgClassName="h-7 w-auto object-contain" />
-                </div>
-              ))}
+              {logos?.map((item, index) => {
+                const logo = <Media resource={item.logo} imgClassName="h-7 w-auto object-contain" />
+
+                return (
+                  <div
+                    className="flex items-center justify-center"
+                    key={item.id ?? `${item.name}-${index}`}
+                  >
+                    {item.href ? <a href={item.href}>{logo}</a> : logo}
+                  </div>
+                )
+              })}
             </InfiniteSlider>
 
             <div

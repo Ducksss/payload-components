@@ -4,13 +4,13 @@ This directory holds the in-repo registry, manifests, support matrix, and intern
 
 ## Goal
 
-Prove that real shadcn-compatible registry items can be wrapped by `payload-components add`, then wired into Payload and regenerated successfully. In this tranche, the shipped alpha components are `hero-basic` and `feature-grid-basic`.
+Prove that real shadcn-compatible registry items can be wrapped by `payload-components add`, then wired into Payload and regenerated successfully. The shipped alpha set now covers hero, feature, embed, content, logo-cloud, and integration page blocks.
 
 ## Viability Gate
 
 The POC passes only if all of the following are true:
 
-- `payload-components add hero-basic` and `payload-components add feature-grid-basic` install through a real shadcn-compatible registry flow.
+- Every installable page block installs through a real shadcn-compatible registry flow.
 - The install adds the block source files to the target project.
 - The install wires the block into `src/blocks/RenderBlocks.tsx`.
 - The install wires the block into `src/collections/Pages/index.ts`.
@@ -26,8 +26,7 @@ Alpha reality in this workspace: `payload-components add` installs components, `
 The source registry is `payload-components/registry.json`. Its file entries read Payload-target source from `payload-components/source` and still install into target projects under `~/src/blocks/...`. The publishable registry is generated into ignored build output under `public/r`:
 
 - `public/r/registry.json`: flat registry index for namespace and directory consumers
-- `public/r/hero-basic.json`: generated registry item with embedded file content
-- `public/r/feature-grid-basic.json`: generated registry item with embedded file content
+- `public/r/<component>.json`: generated registry item with embedded file content
 
 Build and validate it with:
 
@@ -43,6 +42,9 @@ Direct public installs use the generated item URLs:
 ```bash
 pnpm dlx shadcn@latest add https://<your-domain>/r/hero-basic.json
 pnpm dlx shadcn@latest add https://<your-domain>/r/feature-grid-basic.json
+pnpm dlx shadcn@latest add https://<your-domain>/r/content-columns.json
+pnpm dlx shadcn@latest add https://<your-domain>/r/logo-cloud-grid.json
+pnpm dlx shadcn@latest add https://<your-domain>/r/integration-grid.json
 ```
 
 For a complete install, use `payload-components add`. The shadcn registry delivers files and shadcn UI dependencies; the wrapper adds the Payload-specific registration layer and post-install generation.
@@ -57,7 +59,7 @@ Namespace consumers can configure:
 }
 ```
 
-Then install with `pnpm dlx shadcn@latest add @payload-components/hero-basic`.
+Then install with `pnpm dlx shadcn@latest add @payload-components/hero-basic` or any other registry item.
 
 ## Verification Suite
 
@@ -70,7 +72,7 @@ Use both verification tiers:
 
 The fast fixture suite remains the normal PR gate because it is deterministic and proves the wrapper contract without making this repository itself a Payload app:
 
-- both components install into a supported target
+- every shipped component installs into a supported target
 - install order works both ways
 - repeated installs are idempotent
 - `RenderBlocks.tsx` and `Pages/index.ts` are wired exactly once
@@ -80,7 +82,7 @@ The fast fixture suite remains the normal PR gate because it is deterministic an
 The fresh smoke lives at `../tools/payload-components/smoke/fresh-payload-repo.ts` and accepts:
 
 ```bash
-pnpm test:fresh -- --components hero-basic,feature-grid-basic
+pnpm test:fresh -- --components hero-basic,feature-grid-basic,content-columns,logo-cloud-grid,integration-grid
 pnpm test:fresh -- --registry-url https://<your-domain>/r/{name}.json
 pnpm test:fresh -- --keep-temp --timeout 1200000
 ```
@@ -140,6 +142,9 @@ Normalized alpha-component blocks should:
 ```bash
 pnpm payload-components add hero-basic
 pnpm payload-components add feature-grid-basic
+pnpm payload-components add content-columns
+pnpm payload-components add logo-cloud-grid
+pnpm payload-components add integration-grid
 pnpm payload-components doctor
 ```
 

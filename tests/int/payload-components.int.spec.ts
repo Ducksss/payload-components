@@ -15,6 +15,23 @@ const execFileAsync = promisify(execFile)
 const repoRoot = process.cwd()
 const payloadComponentBin = path.join(repoRoot, 'bin', 'payload-components.mjs')
 const layoutAnchor = "name: 'layout'"
+const logoCloudComponents = [
+  'logo-cloud-grid',
+  'logo-cloud-hover',
+  'logo-cloud-marquee',
+  'logo-cloud-inline',
+  'logo-cloud-inline-wrap',
+] as const
+const integrationComponents = [
+  'integration-grid',
+  'integration-cluster',
+  'integration-split',
+  'integration-connect',
+  'integration-orbit',
+  'integration-list',
+  'integration-marquee',
+  'integration-testimonial',
+] as const
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
@@ -117,10 +134,15 @@ const expectUniqueRegistrations = ({
 }
 
 const expectInstalledStateEntry = (state: InstallState, manifest: ComponentManifest) => {
+  const expectedPatchedFiles = normalizeFileList([
+    ...manifest.recovery.patchedFiles,
+    ...(Object.keys(manifest.dependencies).length > 0 ? ['package.json', 'pnpm-lock.yaml'] : []),
+  ])
+
   expect(state.components[manifest.name]).toMatchObject({
     installedFiles: normalizeFileList(manifest.files),
     manifestVersion: manifest.version,
-    patchedFiles: normalizeFileList(manifest.recovery.patchedFiles),
+    patchedFiles: expectedPatchedFiles,
     registryItemName: manifest.registryItemName,
     status: 'installed',
   })
@@ -225,8 +247,8 @@ describe('payload-components add', () => {
     await expectInstalledComponents(fixtureDir, [manifest])
   }, 180000)
 
-  it('installs logo-cloud-grid into a supported repo and records state', async () => {
-    const { fixtureDir, manifest } = await createInstallFixture('logo-cloud-grid')
+  it.each(logoCloudComponents)('installs %s into a supported repo and records state', async (componentName) => {
+    const { fixtureDir, manifest } = await createInstallFixture(componentName)
     tempDirs.push(fixtureDir)
 
     await runAddCommand(fixtureDir, manifest.name)
@@ -320,8 +342,8 @@ describe('payload-components add', () => {
     expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
   }, 180000)
 
-  it('treats a second logo-cloud-grid install as idempotent', async () => {
-    const manifest = await loadManifest('logo-cloud-grid')
+  it.each(logoCloudComponents)('treats a second %s install as idempotent', async (componentName) => {
+    const manifest = await loadManifest(componentName)
     const { fixtureDir } = await createInstallFixture(manifest.name)
     tempDirs.push(fixtureDir)
 
@@ -332,8 +354,8 @@ describe('payload-components add', () => {
     expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
   }, 180000)
 
-  it('installs integration-grid into a supported repo and records state', async () => {
-    const { fixtureDir, manifest } = await createInstallFixture('integration-grid')
+  it.each(integrationComponents)('installs %s into a supported repo and records state', async (componentName) => {
+    const { fixtureDir, manifest } = await createInstallFixture(componentName)
     tempDirs.push(fixtureDir)
 
     await runAddCommand(fixtureDir, manifest.name)
@@ -357,8 +379,8 @@ describe('payload-components add', () => {
     await expectInstalledComponents(fixtureDir, manifests)
   }, 180000)
 
-  it('treats a second integration-grid install as idempotent', async () => {
-    const manifest = await loadManifest('integration-grid')
+  it.each(integrationComponents)('treats a second %s install as idempotent', async (componentName) => {
+    const manifest = await loadManifest(componentName)
     const { fixtureDir } = await createInstallFixture(manifest.name)
     tempDirs.push(fixtureDir)
 

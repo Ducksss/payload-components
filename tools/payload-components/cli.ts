@@ -30,6 +30,19 @@ Current alpha components:
   content-showcase
   content-quote
   content-community
+  logo-cloud-grid
+  logo-cloud-hover
+  logo-cloud-marquee
+  logo-cloud-inline
+  logo-cloud-inline-wrap
+  integration-grid
+  integration-cluster
+  integration-split
+  integration-connect
+  integration-orbit
+  integration-list
+  integration-marquee
+  integration-testimonial
 `
 
 const parseArgs = (argv: string[]) => {
@@ -92,7 +105,7 @@ const main = async () => {
 
     if (!componentName) {
       throw new Error(
-        'payload-components add requires a component name. Try "payload-components add hero-basic" or "payload-components add feature-grid-basic".',
+        'payload-components add requires a component name. Try "payload-components add hero-basic" or "payload-components add logo-cloud-grid".',
       )
     }
 
