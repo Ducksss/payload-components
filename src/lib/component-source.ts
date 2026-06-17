@@ -27,7 +27,7 @@ export async function getComponentSources(slug: string): Promise<ComponentSource
   let registry: Registry
   try {
     registry = JSON.parse(
-      await readFile(path.join(repoRoot, 'payload-kits', 'registry.json'), 'utf8'),
+      await readFile(path.join(repoRoot, 'payload-components', 'registry.json'), 'utf8'),
     ) as Registry
   } catch {
     return []

@@ -213,6 +213,18 @@ describe('payload-components add', () => {
     await expectInstalledComponents(fixtureDir, [manifest])
   }, 180000)
 
+  it('installs embed-basic into a supported repo and records state', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('embed-basic')
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const parsedState = await readInstallState(fixtureDir)
+
+    expect(parsedState.version).toBe(2)
+    await expectInstalledComponents(fixtureDir, [manifest])
+  }, 180000)
+
   it('installs hero-basic followed by feature-grid-basic without duplicate registrations', async () => {
     const { fixtureDir, manifests } = await createInstallFixtureForComponents([
       'hero-basic',

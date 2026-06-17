@@ -1,0 +1,48 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "embed-basic",
+  "version": "0.1.0",
+  "title": "Embed Basic",
+  "description": "A responsive, accessible iframe block for embedding YouTube, Vimeo, maps, forms, charts, and other external widgets.",
+  "registryItemName": "embed-basic",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": ["src/blocks/EmbedBasic/config.ts", "src/blocks/EmbedBasic/Component.tsx"],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "EmbedBasicBlock",
+      "importPath": "@/blocks/EmbedBasic/Component",
+      "blockSlug": "embedBasic"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "EmbedBasic",
+      "importPath": "../../blocks/EmbedBasic/config",
+      "blockName": "EmbedBasic"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Responsive iframe embed for video, maps, and external widgets with a selectable aspect ratio."
+  },
+  "sampleContent": {
+    "blockType": "embedBasic",
+    "url": "https://www.youtube.com/embed/aqz-KE-bpKQ",
+    "title": "Embedded video player",
+    "aspectRatio": "16:9",
+    "caption": "Paste any embeddable URL — YouTube, Vimeo, Google Maps, a form, or a chart.",
+    "allowFullscreen": true
+  }
+}

@@ -210,14 +210,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Five page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Six page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '5 installable',
+    countLabel: '6 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -294,6 +294,19 @@ export const componentEntries = [
     status: 'Alpha',
     target: 'Steps section',
     title: 'Feature Steps',
+    version: '0.1.0',
+  },
+  {
+    command: 'npx payload-components add embed-basic',
+    description:
+      'A responsive, accessible iframe block for YouTube, Vimeo, maps, forms, charts, and external widgets with a selectable aspect ratio.',
+    family: 'pages',
+    fields: ['url', 'title', 'aspectRatio', 'caption', 'allowFullscreen'],
+    href: '/docs/components/embed-basic',
+    slug: 'embed-basic',
+    status: 'Alpha',
+    target: 'Embed / media',
+    title: 'Embed Basic',
     version: '0.1.0',
   },
 ] as const

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import type { PageTreeTransformer } from 'fumadocs-core/source'
-import { Blocks, FileText, LayoutGrid, LayoutPanelTop } from 'lucide-react'
+import { Blocks, FileText, LayoutGrid, LayoutPanelTop, MonitorPlay } from 'lucide-react'
 
 import { componentEntries } from '@/lib/site'
 
@@ -45,6 +45,7 @@ const MODES: { icon: ReactNode; key: InstallMode; label: string }[] = [
 const FAMILIES: { icon: ReactNode; key: string; label: string }[] = [
   { icon: <LayoutPanelTop />, key: 'hero', label: 'Hero' },
   { icon: <LayoutGrid />, key: 'feature', label: 'Feature' },
+  { icon: <MonitorPlay />, key: 'embed', label: 'Embed' },
 ]
 
 const slugOf = (url: string) => url.split('/').filter(Boolean).pop() ?? ''
