@@ -33,7 +33,7 @@
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
     "test:fresh": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/smoke/fresh-payload-repo.ts",
-    "test:install": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int/payload-components.int.spec.ts tests/int/payload-components-registry.int.spec.ts tests/int/payload-components-add-command.int.spec.ts",
+    "test:install": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int/payload-components.int.spec.ts tests/int/payload-components-registry.int.spec.ts tests/int/payload-components-add-command.int.spec.ts tests/int/payload-components-doctor-command.int.spec.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
     "test:registry": "pnpm registry:check",
     "test:release": "pnpm lint && pnpm source:build && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm run test:e2e && pnpm build"

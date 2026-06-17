@@ -151,6 +151,15 @@ npx payload-components add hero-basic
 npx payload-components add feature-grid-basic
 ```
 
+Check a target project without changing files:
+
+```sh
+npx payload-components doctor
+```
+
+`doctor` validates the supported project shape, required post-install scripts,
+and any recorded `.payload-components/state.json` installs.
+
 The installer runs five idempotent stages:
 
 1. Build the public registry output.
