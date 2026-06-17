@@ -37,14 +37,17 @@ export const CallToActionSignupBlock: React.FC<Props> = ({
             <p className="text-base leading-7 text-muted-foreground sm:text-lg">{description}</p>
           ) : null}
 
-          <form action={action || '#'} className="mt-2 w-full max-w-sm">
+          <form action={action || '#'} className="mt-2 w-full max-w-sm" method="post">
             <div className="relative grid grid-cols-[1fr_auto] items-center rounded-xl border border-border/70 bg-background/80 pr-2">
               <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-5 text-muted-foreground" />
 
               <input
+                aria-label={emailPlaceholder || 'Email address'}
+                autoComplete="email"
                 className="h-12 w-full bg-transparent pl-11 text-sm focus:outline-none"
                 name="email"
                 placeholder={emailPlaceholder || 'Your email address'}
+                required
                 type="email"
               />
 
