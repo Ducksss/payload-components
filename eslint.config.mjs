@@ -1,7 +1,17 @@
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals'
 import nextTypescript from 'eslint-config-next/typescript'
+import { globalIgnores } from 'eslint/config'
 
 const eslintConfig = [
+  globalIgnores([
+    '**/.claude/**',
+    '**/.codex/**',
+    '**/.gemini/**',
+    '**/.next/**',
+    '**/.source/**',
+    'payload-components/source/**',
+    'payload-components/templates/**',
+  ]),
   ...nextCoreWebVitals,
   ...nextTypescript,
   {
@@ -22,9 +32,6 @@ const eslintConfig = [
         },
       ],
     },
-  },
-  {
-    ignores: ['.next/', '.source/', 'payload-components/source/', 'payload-components/templates/'],
   },
 ]
 

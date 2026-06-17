@@ -55,7 +55,7 @@ export default function AboutPage() {
   return (
     <>
       <JsonLd data={aboutStructuredData} />
-      <SiteHeader />
+      <SiteHeader activePath="/about" />
 
       <main className="flex-1">
         <section className="hero-shell overflow-hidden border-b border-border/60">

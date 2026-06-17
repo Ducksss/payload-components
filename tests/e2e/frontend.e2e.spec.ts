@@ -180,6 +180,22 @@ test.describe('Light shadcn frontend', () => {
     }
   })
 
+  test('marks only the current top-level navigation item active', async ({ page }) => {
+    await page.goto(baseURL)
+    await expect(page.getByRole('navigation').locator('a.bg-secondary')).toHaveCount(0)
+
+    for (const route of [
+      { label: 'Docs', path: '/docs' },
+      { label: 'Components', path: '/components' },
+      { label: 'About', path: '/about' },
+    ]) {
+      await page.goto(`${baseURL}${route.path}`)
+      await expect(page.getByRole('navigation').getByRole('link', { name: route.label })).toHaveClass(
+        /bg-secondary/,
+      )
+    }
+  })
+
   test('redirects old kit docs URLs to component docs', async ({ page }) => {
     await page.goto(`${baseURL}/docs/kits/hero-basic`)
     expect(page.url()).toBe(`${baseURL}/docs/components/hero-basic`)
@@ -243,10 +259,44 @@ test.describe('Light shadcn frontend', () => {
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(primaryInstallCommand)
   })
+
+  test('copies a catalog row command', async ({ page, context }) => {
+    const catalogComponent = componentEntries[1]
+
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(baseURL)
+    await page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copy' }).click()
+
+    await expect(page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copied' })).toBeVisible()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(catalogComponent.command)
+  })
 })
 
 test.describe('Reduced motion', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } })
+
+  test('landing page keeps its desktop and mobile visual contract', async ({ page }) => {
+    await page.goto(baseURL)
+    await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
+    await page.evaluate(() => document.fonts.ready)
+
+    await expect(page).toHaveScreenshot('landing-home-desktop.png', {
+      animations: 'disabled',
+      fullPage: true,
+    })
+
+    await page.setViewportSize({ height: 900, width: 390 })
+    await page.goto(baseURL)
+    await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
+    await page.evaluate(() => document.fonts.ready)
+
+    await expect(page).toHaveScreenshot('landing-home-mobile.png', {
+      animations: 'disabled',
+      fullPage: true,
+    })
+  })
 
   test('terminal replay renders its final transcript without animation', async ({ page }) => {
     await page.goto(baseURL)

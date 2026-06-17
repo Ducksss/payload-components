@@ -1,8 +1,4 @@
 @import 'tailwindcss';
-@import 'fumadocs-ui/css/lib/default-colors.css';
-@import 'fumadocs-ui/css/preset.css';
-
-@source '../../node_modules/fumadocs-ui/dist/**/*.js';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -403,6 +399,18 @@
     overflow: hidden;
     white-space: nowrap;
     animation: component-typing 1.6s steps(var(--typing-steps, 30), end) 0.4s both;
+  }
+
+  .copy-button .copy-icon-done {
+    display: none;
+  }
+
+  .copy-button[data-copied='true'] .copy-icon-idle {
+    display: none;
+  }
+
+  .copy-button[data-copied='true'] .copy-icon-done {
+    display: block;
   }
 
   /* ---------------------------------------------------------------- */
