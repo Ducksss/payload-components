@@ -43,6 +43,13 @@ const readJson = async <T>(filePath: string): Promise<T> =>
   JSON.parse(await readFile(filePath, 'utf8')) as T
 
 const expectedRegistryDependencies: Record<string, string[]> = {
+  'content-columns': ['badge'],
+  'content-community': ['badge'],
+  'content-feature-media': ['badge'],
+  'content-feature-split': ['badge'],
+  'content-image-lead': ['badge'],
+  'content-quote': ['badge'],
+  'content-showcase': ['badge'],
   'embed-basic': [],
   'feature-bento': ['badge', 'card'],
   'feature-grid-basic': ['badge', 'card'],
@@ -84,6 +91,13 @@ describe('public shadcn registry publication', () => {
       name: 'payload-components',
     })
     expect(registry.items.map((item) => item.name).sort()).toEqual([
+      'content-columns',
+      'content-community',
+      'content-feature-media',
+      'content-feature-split',
+      'content-image-lead',
+      'content-quote',
+      'content-showcase',
       'embed-basic',
       'feature-bento',
       'feature-grid-basic',

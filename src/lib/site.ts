@@ -210,14 +210,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Eleven page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Eighteen page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '11 installable',
+    countLabel: '18 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -235,6 +235,7 @@ export const componentCategories = {
   features: { family: 'pages', label: 'Features' },
   embed: { family: 'pages', label: 'Embed' },
   logos: { family: 'pages', label: 'Logo cloud' },
+  content: { family: 'pages', label: 'Content' },
   cta: { family: 'pages', label: 'Call to action' },
   pricing: { family: 'pages', label: 'Pricing' },
   faq: { family: 'pages', label: 'FAQ' },
@@ -403,6 +404,104 @@ export const componentEntries = [
     status: 'Alpha',
     target: 'Logo cloud',
     title: 'Logo Cloud Inline Wrap',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-columns',
+    description:
+      'A two-column content section pairing a heading with body paragraphs and a CTA, installed as a wired Payload block.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'paragraphs', 'links'],
+    href: '/docs/components/content-columns',
+    slug: 'content-columns',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content Columns',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-image-lead',
+    description:
+      'A content section led by a full-width image above a two-column heading, body, and CTA.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'paragraphs', 'image', 'links'],
+    href: '/docs/components/content-image-lead',
+    slug: 'content-image-lead',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content Image Lead',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-feature-media',
+    description:
+      'A content section pairing body copy and two icon features beside a framed media panel.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'paragraphs', 'features', 'image'],
+    href: '/docs/components/content-feature-media',
+    slug: 'content-feature-media',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content Feature Media',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-feature-split',
+    description:
+      'A content section pairing a side media panel with body copy and two icon features.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'paragraphs', 'features', 'image'],
+    href: '/docs/components/content-feature-split',
+    slug: 'content-feature-split',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content Feature Split',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-showcase',
+    description:
+      'A centered content section with an intro, a full-width image, and a four-up grid of icon features.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'paragraphs', 'image', 'features'],
+    href: '/docs/components/content-showcase',
+    slug: 'content-showcase',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content Showcase',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-quote',
+    description:
+      'A content section pairing a media panel with body copy and a cited pull quote.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'paragraphs', 'image', 'quote', 'citation', 'logo'],
+    href: '/docs/components/content-quote',
+    slug: 'content-quote',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content Quote',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-community',
+    description:
+      'A centered content section with a heading, body copy, and a wall of community avatars.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'paragraphs', 'avatars'],
+    href: '/docs/components/content-community',
+    slug: 'content-community',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content Community',
     version: '0.1.0',
   },
 ] as const

@@ -1,0 +1,65 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "content-image-lead",
+  "version": "0.1.0",
+  "title": "Content Image Lead",
+  "description": "A content section led by a full-width image above a two-column heading, body, and CTA, installed as a wired Payload block.",
+  "registryItemName": "content-image-lead",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/contentFields.ts",
+    "src/blocks/ContentImageLead/config.ts",
+    "src/blocks/ContentImageLead/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContentImageLeadBlock",
+      "importPath": "@/blocks/ContentImageLead/Component",
+      "blockSlug": "contentImageLead"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContentImageLead",
+      "importPath": "../../blocks/ContentImageLead/config",
+      "blockName": "ContentImageLead"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "A lead image above a two-column heading, body, and CTA."
+  },
+  "sampleContent": {
+    "blockType": "contentImageLead",
+    "eyebrow": "Built in the open",
+    "title": "The ecosystem brings together your models, products and platforms.",
+    "paragraphs": [
+      {
+        "text": "Payload is more than just the CMS. It supports an entire ecosystem — from the products you ship to the APIs and platforms helping your team move faster."
+      }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/admin",
+          "label": "Learn more",
+          "appearance": "default"
+        }
+      }
+    ]
+  }
+}

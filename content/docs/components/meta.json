@@ -12,6 +12,13 @@
     "logo-cloud-hover",
     "logo-cloud-marquee",
     "logo-cloud-inline",
-    "logo-cloud-inline-wrap"
+    "logo-cloud-inline-wrap",
+    "content-columns",
+    "content-image-lead",
+    "content-feature-media",
+    "content-feature-split",
+    "content-showcase",
+    "content-quote",
+    "content-community"
   ]
 }

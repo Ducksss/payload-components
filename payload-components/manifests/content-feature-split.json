@@ -1,0 +1,67 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "content-feature-split",
+  "version": "0.1.0",
+  "title": "Content Feature Split",
+  "description": "A content section pairing a side media panel with body copy and two icon features, installed as a wired Payload block.",
+  "registryItemName": "content-feature-split",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/contentFields.ts",
+    "src/blocks/shared/contentIcons.ts",
+    "src/blocks/ContentFeatureSplit/config.ts",
+    "src/blocks/ContentFeatureSplit/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContentFeatureSplitBlock",
+      "importPath": "@/blocks/ContentFeatureSplit/Component",
+      "blockSlug": "contentFeatureSplit"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContentFeatureSplit",
+      "importPath": "../../blocks/ContentFeatureSplit/config",
+      "blockName": "ContentFeatureSplit"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "A side media panel beside body copy and two icon features."
+  },
+  "sampleContent": {
+    "blockType": "contentFeatureSplit",
+    "eyebrow": "Built to scale",
+    "title": "The ecosystem brings together your models.",
+    "paragraphs": [
+      {
+        "text": "Payload is more than just the CMS. It supports an entire ecosystem — from the products you ship to the platforms helping your team move faster."
+      }
+    ],
+    "features": [
+      {
+        "icon": "lock",
+        "title": "Secure",
+        "description": "Access control and versioning are part of the platform, not bolted on."
+      },
+      {
+        "icon": "sparkles",
+        "title": "Refined",
+        "description": "Polished, accessible markup that matches the rest of your site."
+      }
+    ]
+  }
+}

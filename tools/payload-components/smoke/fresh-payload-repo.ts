@@ -27,6 +27,8 @@ export const DEFAULT_SMOKE_COMPONENTS = [
   'feature-bento',
   'feature-steps',
   'embed-basic',
+  'content-columns',
+  'content-feature-media',
 ] as const
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
 
