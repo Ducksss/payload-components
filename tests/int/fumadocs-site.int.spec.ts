@@ -70,13 +70,14 @@ describe('Fumadocs site shell', () => {
   it('uses Fumadocs as the site runtime instead of Payload CMS', async () => {
     const packageJson = await readJson<{
       dependencies?: Record<string, string>
+      devDependencies?: Record<string, string>
       engines?: Record<string, string>
       scripts?: Record<string, string>
     }>(path.join(repoRoot, 'package.json'))
 
-    expect(packageJson.dependencies?.['fumadocs-ui']).toBeTruthy()
-    expect(packageJson.dependencies?.['fumadocs-mdx']).toBeTruthy()
-    expect(packageJson.dependencies?.['fumadocs-core']).toBeTruthy()
+    expect(packageJson.devDependencies?.['fumadocs-ui']).toBeTruthy()
+    expect(packageJson.devDependencies?.['fumadocs-mdx']).toBeTruthy()
+    expect(packageJson.devDependencies?.['fumadocs-core']).toBeTruthy()
 
     expect(packageJson.dependencies?.payload).toBeUndefined()
     expect(packageJson.dependencies?.['@payloadcms/next']).toBeUndefined()

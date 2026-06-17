@@ -7,6 +7,7 @@ import { assertManifestSupport } from '../../tools/payload-components/project'
 import type { ComponentManifest, RegistryDefinition } from '../../tools/payload-components/types'
 
 const repoRoot = process.cwd()
+const packageJsonPath = path.join(repoRoot, 'package.json')
 const manifestSchemaPath = path.join(repoRoot, 'payload-components', 'schema', 'poc-manifest.schema.json')
 
 const baseManifest: ComponentManifest = {
@@ -203,5 +204,19 @@ describe('payload-components manifest validation', () => {
         baseManifest,
       ),
     ).toThrow('does not support Next.js major version 14')
+  })
+})
+
+describe('payload-components npm package metadata', () => {
+  it('keeps the published package focused on CLI runtime requirements', async () => {
+    const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as {
+      bin?: Record<string, string>
+      dependencies?: Record<string, string>
+    }
+
+    expect(packageJson.bin).toEqual({
+      'payload-components': 'bin/payload-components.mjs',
+    })
+    expect(Object.keys(packageJson.dependencies ?? {}).sort()).toEqual(['ajv', 'semver', 'tsx'])
   })
 })
