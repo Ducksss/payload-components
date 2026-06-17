@@ -225,6 +225,18 @@ describe('payload-components add', () => {
     await expectInstalledComponents(fixtureDir, [manifest])
   }, 180000)
 
+  it('installs logo-cloud-grid into a supported repo and records state', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('logo-cloud-grid')
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const parsedState = await readInstallState(fixtureDir)
+
+    expect(parsedState.version).toBe(2)
+    await expectInstalledComponents(fixtureDir, [manifest])
+  }, 180000)
+
   it('installs hero-basic followed by feature-grid-basic without duplicate registrations', async () => {
     const { fixtureDir, manifests } = await createInstallFixtureForComponents([
       'hero-basic',
@@ -251,6 +263,19 @@ describe('payload-components add', () => {
     await expectInstalledComponents(fixtureDir, manifests)
   }, 180000)
 
+  it('installs logo-cloud-grid followed by hero-basic without duplicate registrations', async () => {
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents([
+      'logo-cloud-grid',
+      'hero-basic',
+    ])
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, 'logo-cloud-grid')
+    await runAddCommand(fixtureDir, 'hero-basic')
+
+    await expectInstalledComponents(fixtureDir, manifests)
+  }, 180000)
+
   it('treats a second install as idempotent', async () => {
     const manifest = await loadManifest('hero-basic')
     const { fixtureDir } = await createInstallFixture(manifest.name)
@@ -265,6 +290,18 @@ describe('payload-components add', () => {
 
   it('treats a second feature-grid-basic install as idempotent', async () => {
     const manifest = await loadManifest('feature-grid-basic')
+    const { fixtureDir } = await createInstallFixture(manifest.name)
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const secondRun = await runAddCommand(fixtureDir, manifest.name)
+
+    expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
+  }, 180000)
+
+  it('treats a second logo-cloud-grid install as idempotent', async () => {
+    const manifest = await loadManifest('logo-cloud-grid')
     const { fixtureDir } = await createInstallFixture(manifest.name)
     tempDirs.push(fixtureDir)
 
