@@ -210,14 +210,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Twenty-six page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Thirty-three page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '26 installable',
+    countLabel: '33 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -503,6 +503,104 @@ export const componentEntries = [
     status: 'Alpha',
     target: 'Content section',
     title: 'Content Community',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-split-rows',
+    description:
+      'A content section with an intro and alternating media-and-text rows.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'paragraphs', 'rows'],
+    href: '/docs/components/content-split-rows',
+    slug: 'content-split-rows',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content Split Rows',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-rows',
+    description:
+      'A content section with an intro and a uniform stack of media-and-text rows.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'paragraphs', 'rows'],
+    href: '/docs/components/content-rows',
+    slug: 'content-rows',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content Rows',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-image-frame',
+    description:
+      'A centered content section with an intro and a layered, framed screenshot.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'paragraphs', 'image', 'backgroundImage'],
+    href: '/docs/components/content-image-frame',
+    slug: 'content-image-frame',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content Image Frame',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-stats',
+    description:
+      'A content section with an intro, a grid of icon features, and a stats list.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'paragraphs', 'features', 'stats'],
+    href: '/docs/components/content-stats',
+    slug: 'content-stats',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content Stats',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-list',
+    description:
+      'A serif-headed content section pairing a heading with a labeled-term list.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'items'],
+    href: '/docs/components/content-list',
+    slug: 'content-list',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content List',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-list-columns',
+    description:
+      'A serif-headed content section with a two-column labeled-term list.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'items'],
+    href: '/docs/components/content-list-columns',
+    slug: 'content-list-columns',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content List Columns',
+    version: '0.1.0',
+  },
+  {
+    category: 'content',
+    command: 'npx payload-components add content-list-icons',
+    description:
+      'A serif-headed content section with an intro and a multi-column icon list.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items'],
+    href: '/docs/components/content-list-icons',
+    slug: 'content-list-icons',
+    status: 'Alpha',
+    target: 'Content section',
+    title: 'Content List Icons',
     version: '0.1.0',
   },
   {

@@ -27,6 +27,13 @@
     "integration-orbit",
     "integration-list",
     "integration-marquee",
-    "integration-testimonial"
+    "integration-testimonial",
+    "content-split-rows",
+    "content-rows",
+    "content-image-frame",
+    "content-stats",
+    "content-list",
+    "content-list-columns",
+    "content-list-icons"
   ]
 }

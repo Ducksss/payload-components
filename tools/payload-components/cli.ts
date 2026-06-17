@@ -30,6 +30,13 @@ Current alpha components:
   content-showcase
   content-quote
   content-community
+  content-split-rows
+  content-rows
+  content-image-frame
+  content-stats
+  content-list
+  content-list-columns
+  content-list-icons
   logo-cloud-grid
   logo-cloud-hover
   logo-cloud-marquee

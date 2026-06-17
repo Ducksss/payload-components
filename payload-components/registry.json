@@ -1049,6 +1049,281 @@
           "target": "~/src/blocks/IntegrationTestimonial/Component.tsx"
         }
       ]
+    },
+    {
+      "name": "content-split-rows",
+      "type": "registry:block",
+      "title": "Content Split Rows",
+      "description": "Payload content block: an intro above alternating media-and-text rows.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add content-split-rows\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/content-split-rows.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add content-split-rows` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add content-split-rows",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/contentFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/contentFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentSplitRows/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentSplitRows/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentSplitRows/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentSplitRows/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "content-rows",
+      "type": "registry:block",
+      "title": "Content Rows",
+      "description": "Payload content block: an intro above a uniform stack of media-and-text rows.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add content-rows\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/content-rows.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add content-rows` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add content-rows",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/contentFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/contentFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentRows/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentRows/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentRows/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentRows/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "content-image-frame",
+      "type": "registry:block",
+      "title": "Content Image Frame",
+      "description": "Payload content block: a centered intro above a layered, framed screenshot.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add content-image-frame\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/content-image-frame.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add content-image-frame` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add content-image-frame",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/contentFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/contentFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentImageFrame/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentImageFrame/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentImageFrame/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentImageFrame/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "content-stats",
+      "type": "registry:block",
+      "title": "Content Stats",
+      "description": "Payload content block: an intro, a grid of icon features, and a stats list.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add content-stats\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/content-stats.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add content-stats` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add content-stats",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/contentFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/contentFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/contentIcons.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/contentIcons.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentStats/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentStats/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentStats/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentStats/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "content-list",
+      "type": "registry:block",
+      "title": "Content List",
+      "description": "Payload content block: a serif heading beside a labeled-term list.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add content-list\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/content-list.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add content-list` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add content-list",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/ContentList/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentList/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentList/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentList/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "content-list-columns",
+      "type": "registry:block",
+      "title": "Content List Columns",
+      "description": "Payload content block: a serif heading above a two-column labeled-term list.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add content-list-columns\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/content-list-columns.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add content-list-columns` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add content-list-columns",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/ContentListColumns/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentListColumns/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentListColumns/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentListColumns/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "content-list-icons",
+      "type": "registry:block",
+      "title": "Content List Icons",
+      "description": "Payload content block: a serif heading and intro above a multi-column icon list.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add content-list-icons\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/content-list-icons.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add content-list-icons` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add content-list-icons",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/contentIcons.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/contentIcons.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentListIcons/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentListIcons/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentListIcons/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentListIcons/Component.tsx"
+        }
+      ]
     }
   ]
 }

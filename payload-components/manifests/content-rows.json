@@ -1,0 +1,64 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "content-rows",
+  "version": "0.1.0",
+  "title": "Content Rows",
+  "description": "A content section with an intro and a uniform stack of media-and-text rows, installed as a wired Payload block.",
+  "registryItemName": "content-rows",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/contentFields.ts",
+    "src/blocks/ContentRows/config.ts",
+    "src/blocks/ContentRows/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContentRowsBlock",
+      "importPath": "@/blocks/ContentRows/Component",
+      "blockSlug": "contentRows"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContentRows",
+      "importPath": "../../blocks/ContentRows/config",
+      "blockName": "ContentRows"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Intro copy above a uniform stack of media beside a heading and description."
+  },
+  "sampleContent": {
+    "blockType": "contentRows",
+    "eyebrow": "Smart editor",
+    "title": "Ask Acme to edit anything.",
+    "paragraphs": [
+      {
+        "text": "Efficient content creation is our mission. Edit text, generate snippets, format documents, and integrate with your existing workflow."
+      }
+    ],
+    "rows": [
+      {
+        "title": "Marketing campaigns",
+        "description": "We put together your schedule automatically and work the highest-priority items first."
+      },
+      {
+        "title": "AI meeting scheduler",
+        "description": "Ask the chat to create or update your events, or have it prepare today's agenda."
+      }
+    ]
+  }
+}

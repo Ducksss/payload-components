@@ -86,6 +86,34 @@ const pairs = [
     twin: 'src/components/site/demos/ContentCommunityDemo.tsx',
   },
   {
+    component: 'payload-components/source/blocks/ContentSplitRows/Component.tsx',
+    twin: 'src/components/site/demos/ContentSplitRowsDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentRows/Component.tsx',
+    twin: 'src/components/site/demos/ContentRowsDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentImageFrame/Component.tsx',
+    twin: 'src/components/site/demos/ContentImageFrameDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentStats/Component.tsx',
+    twin: 'src/components/site/demos/ContentStatsDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentList/Component.tsx',
+    twin: 'src/components/site/demos/ContentListDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentListColumns/Component.tsx',
+    twin: 'src/components/site/demos/ContentListColumnsDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentListIcons/Component.tsx',
+    twin: 'src/components/site/demos/ContentListIconsDemo.tsx',
+  },
+  {
     component: 'payload-components/source/blocks/IntegrationGrid/Component.tsx',
     twin: 'src/components/site/demos/IntegrationGridDemo.tsx',
   },

@@ -4,9 +4,16 @@ import { ContentColumnsDemo } from './ContentColumnsDemo'
 import { ContentCommunityDemo } from './ContentCommunityDemo'
 import { ContentFeatureMediaDemo } from './ContentFeatureMediaDemo'
 import { ContentFeatureSplitDemo } from './ContentFeatureSplitDemo'
+import { ContentImageFrameDemo } from './ContentImageFrameDemo'
 import { ContentImageLeadDemo } from './ContentImageLeadDemo'
+import { ContentListDemo } from './ContentListDemo'
+import { ContentListColumnsDemo } from './ContentListColumnsDemo'
+import { ContentListIconsDemo } from './ContentListIconsDemo'
 import { ContentQuoteDemo } from './ContentQuoteDemo'
+import { ContentRowsDemo } from './ContentRowsDemo'
 import { ContentShowcaseDemo } from './ContentShowcaseDemo'
+import { ContentSplitRowsDemo } from './ContentSplitRowsDemo'
+import { ContentStatsDemo } from './ContentStatsDemo'
 import { EmbedBasicDemo } from './EmbedBasicDemo'
 import { FeatureBentoDemo } from './FeatureBentoDemo'
 import { FeatureGridBasicDemo } from './FeatureGridBasicDemo'
@@ -37,9 +44,16 @@ export const demosBySlug: Record<string, ComponentType> = {
   'content-community': ContentCommunityDemo,
   'content-feature-media': ContentFeatureMediaDemo,
   'content-feature-split': ContentFeatureSplitDemo,
+  'content-image-frame': ContentImageFrameDemo,
   'content-image-lead': ContentImageLeadDemo,
+  'content-list': ContentListDemo,
+  'content-list-columns': ContentListColumnsDemo,
+  'content-list-icons': ContentListIconsDemo,
   'content-quote': ContentQuoteDemo,
+  'content-rows': ContentRowsDemo,
   'content-showcase': ContentShowcaseDemo,
+  'content-split-rows': ContentSplitRowsDemo,
+  'content-stats': ContentStatsDemo,
   'embed-basic': EmbedBasicDemo,
   'feature-bento': FeatureBentoDemo,
   'feature-grid-basic': FeatureGridBasicDemo,
