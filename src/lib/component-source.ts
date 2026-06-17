@@ -2,20 +2,22 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 /**
- * Reads every source file a kit installs, as text, for the docs preview's "Code"
+ * Reads every source file a component installs, as text, for the docs preview's "Code"
  * tab — the Payload block `config.ts` (the schema), the frontend `Component.tsx`,
  * and any shared `*Fields.ts`. Resolved through `payload-components/registry.json` (the
- * source of truth for each kit's files) so it never drifts from what installs.
+ * source of truth for each component's files) so it never drifts from what installs.
  *
  * Reads the target code as a string to *display* it — it never imports or executes
  * it, so the "don't run Payload target code in the site" boundary holds. Runs
- * server-side at build (kit pages are statically generated).
+ * server-side at build (component pages are statically generated).
  */
 type RegistryFile = { path: string; target: string }
 type RegistryItem = { files?: RegistryFile[]; name: string }
 type Registry = { items: RegistryItem[] }
 
 export type ComponentSourceFile = { code: string; lang: string; title: string }
+
+const registryRoot = 'payload-components'
 
 /* Block schema first, then the renderer, then shared field bases. */
 const fileRank = (target: string) =>
@@ -27,7 +29,7 @@ export async function getComponentSources(slug: string): Promise<ComponentSource
   let registry: Registry
   try {
     registry = JSON.parse(
-      await readFile(path.join(repoRoot, 'payload-kits', 'registry.json'), 'utf8'),
+      await readFile(path.join(repoRoot, registryRoot, 'registry.json'), 'utf8'),
     ) as Registry
   } catch {
     return []
@@ -40,7 +42,12 @@ export async function getComponentSources(slug: string): Promise<ComponentSource
       .sort((a, b) => fileRank(a.target) - fileRank(b.target))
       .map(async (file): Promise<ComponentSourceFile | null> => {
         try {
-          const code = (await readFile(path.join(repoRoot, file.path), 'utf8')).trimEnd()
+          if (!file.path.startsWith(`${registryRoot}/source/`)) return null
+
+          const sourcePath = file.path.slice(`${registryRoot}/`.length)
+          const code = (
+            await readFile(path.join(repoRoot, registryRoot, sourcePath), 'utf8')
+          ).trimEnd()
           const title = file.target.replace(/^~\//, '')
           return { code, lang: title.endsWith('.tsx') ? 'tsx' : 'ts', title }
         } catch {

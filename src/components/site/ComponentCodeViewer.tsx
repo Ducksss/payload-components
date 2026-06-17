@@ -7,7 +7,7 @@ import { FileCode } from 'lucide-react'
 
 import { cn } from '@/utilities/ui'
 
-/* Dark, editor-style code viewer for the kit docs "Code" tab: a file-tree
+/* Dark, editor-style code viewer for the component docs "Code" tab: a file-tree
  * sidebar (left) + the active file's source (right), styled with the site's
  * existing dark terminal-surface tokens (--terminal*, matching Terminal.tsx).
  * Client component for the file switcher; every file's code is rendered up front

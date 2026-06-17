@@ -1,7 +1,7 @@
 import type { Field } from 'payload'
 
 /**
- * Shared field core for the Feature kit family.
+ * Shared field core for the Feature component family.
  *
  * Every feature variant (feature-grid-basic, feature-split, feature-bento,
  * feature-steps, …) spreads these section-heading fields first and then

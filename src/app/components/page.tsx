@@ -1,19 +1,19 @@
 import type { Metadata } from 'next'
 
-import { ArrowUpRight } from 'lucide-react'
+import { Suspense } from 'react'
 
 import { JsonLd } from '@/components/seo/JsonLd'
-import { ComponentCard } from '@/components/site/ComponentCard'
-import { ComponentFamilyHeader, UpcomingComponentCard } from '@/components/site/ComponentGrid'
+import { ComponentCatalogBrowser } from '@/components/site/ComponentCatalogBrowser'
 import { Eyebrow } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import {
   catalogDescription,
   catalogTitle,
-  githubRepoUrl,
+  componentCategories,
   componentEntries,
   componentFamilies,
+  githubRepoUrl,
   upcomingComponents,
 } from '@/lib/site'
 import { breadcrumbNode, catalogCollectionPageNode, graph } from '@/lib/structured-data'
@@ -69,52 +69,15 @@ export default function ComponentsPage() {
           </div>
         </section>
 
-        <section>
-          <div className="container py-12 lg:py-16">
-            <ComponentFamilyHeader
-              countLabel={componentFamilies.pages.countLabel}
-              description={componentFamilies.pages.description}
-              name={componentFamilies.pages.name}
-            />
-            <div className="mt-6 grid gap-5 md:grid-cols-2">
-              {componentEntries.map((component) => (
-                <ComponentCard key={component.slug} component={component} />
-              ))}
-
-              <a
-                href={`${githubRepoUrl}/issues`}
-                target="_blank"
-                rel="noreferrer"
-                className="group flex min-h-48 flex-col items-start justify-center gap-3 rounded-xl border border-dashed border-border bg-transparent p-6 transition-colors hover:border-foreground/25"
-              >
-                <span className="font-mono text-sm text-muted-foreground">your-component-here</span>
-                <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-                  The catalog grows deliberately — source, manifest, docs, and installer coverage
-                  ship together. Propose the next component.
-                </p>
-                <span className="inline-flex items-center gap-1 text-sm font-medium text-foreground transition-colors group-hover:text-brand">
-                  Open an issue
-                  <ArrowUpRight className="size-3.5" aria-hidden="true" />
-                </span>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-t border-border bg-muted/40">
-          <div className="container py-12 lg:py-16">
-            <ComponentFamilyHeader
-              countLabel={componentFamilies.posts.countLabel}
-              description={componentFamilies.posts.description}
-              name={componentFamilies.posts.name}
-            />
-            <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {upcomingComponents.map((component) => (
-                <UpcomingComponentCard key={component.slug} component={component} />
-              ))}
-            </div>
-          </div>
-        </section>
+        <Suspense fallback={<div className="container py-12 lg:py-16" />}>
+          <ComponentCatalogBrowser
+            categories={componentCategories}
+            families={componentFamilies}
+            githubRepoUrl={githubRepoUrl}
+            pages={[...componentEntries]}
+            posts={[...upcomingComponents]}
+          />
+        </Suspense>
       </main>
 
       <SiteFooter />

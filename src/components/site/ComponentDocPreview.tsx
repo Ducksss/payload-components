@@ -5,9 +5,9 @@ import { demosBySlug } from '@/components/site/demos/registry'
 import { getComponentSources } from '@/lib/component-source'
 
 /* Backs the <ComponentPreview slug="…" /> MDX component: a shadcn-style component
- * preview with Preview / Code tabs. Preview renders the kit's live demo twin
+ * preview with Preview / Code tabs. Preview renders the component's live demo twin
  * (shared demosBySlug registry, so it never drifts from the catalog); Code shows
- * every file the kit installs — the Payload block config.ts (schema), the
+ * every file the component installs — the Payload block config.ts (schema), the
  * frontend Component.tsx, and any shared *Fields.ts — in a dark, editor-style
  * viewer (ComponentCodeViewer), read from source at build. */
 export async function ComponentDocPreview({ slug }: { slug: string }) {

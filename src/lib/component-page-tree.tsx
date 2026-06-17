@@ -6,20 +6,20 @@ import { Blocks, FileText, LayoutGrid, LayoutPanelTop } from 'lucide-react'
 import { componentEntries } from '@/lib/site'
 
 /**
- * Sidebar grouping for the kit docs.
+ * Sidebar grouping for the component docs.
  *
- * The kit doc pages live flat in `content/docs/components/` (URLs stay `/docs/components/<slug>`),
+ * The component doc pages live flat in `content/docs/components/` (URLs stay `/docs/components/<slug>`),
  * but the sidebar reads better grouped by install-mode → family → variant:
  *
  *   Page blocks
  *     Hero      → Hero Basic
  *     Feature   → Feature Grid Basic · Split · Bento · Steps
- *   Post components   (only once post kits have docs pages)
+ *   Post components   (only once post components have docs pages)
  *
  * This is a pure page-tree transform applied at render time — it never touches the
  * filesystem, meta.json, URLs, or `componentEntries`, so search/sitemap/structured-data and
  * every `/docs/components/<slug>` link are unaffected. Registered via
- * `loader({ pageTree: { transformers: [groupKitsTransformer] } })` in `src/lib/source.ts`.
+ * `loader({ pageTree: { transformers: [regroupComponentTree] } })` in `src/lib/source.ts`.
  */
 
 // Derive the page-tree node types from the transformer signature itself, so we don't
@@ -39,9 +39,9 @@ const MODES: { icon: ReactNode; key: InstallMode; label: string }[] = [
   { icon: <FileText />, key: 'posts', label: 'Post components' },
 ]
 
-/* Family taxonomy, in display order. A kit belongs to a family when its slug equals
+/* Family taxonomy, in display order. A component belongs to a family when its slug equals
    the family key or starts with `<key>-` (hero-basic → Hero; feature-split → Feature).
-   Unknown prefixes fall back to a humanized label so new kits still group sensibly. */
+   Unknown prefixes fall back to a humanized label so new components still group sensibly. */
 const FAMILIES: { icon: ReactNode; key: string; label: string }[] = [
   { icon: <LayoutPanelTop />, key: 'hero', label: 'Hero' },
   { icon: <LayoutGrid />, key: 'feature', label: 'Feature' },
@@ -50,9 +50,9 @@ const FAMILIES: { icon: ReactNode; key: string; label: string }[] = [
 const slugOf = (url: string) => url.split('/').filter(Boolean).pop() ?? ''
 
 const modeOfSlug = (slug: string): InstallMode => {
-  // Widened to string: every current kitEntry is a page block (so the literal type is
-  // just 'pages'), but this stays correct once post-component kits (family 'posts') ship.
-  const family: string | undefined = componentEntries.find((kit) => kit.slug === slug)?.family
+  // Widened to string: every current component entry is a page block (so the literal type is
+  // just 'pages'), but this stays correct once post components (family 'posts') ship.
+  const family: string | undefined = componentEntries.find((component) => component.slug === slug)?.family
   return family === 'posts' ? 'posts' : 'pages'
 }
 
@@ -69,14 +69,14 @@ const familyRank = (key: string) => {
   return index === -1 ? Number.POSITIVE_INFINITY : index
 }
 
-/* The kits folder is the only top-level folder whose pages live under /docs/components/. */
-const isKitsFolder = (node: TreeNode): node is Folder =>
+/* The components folder is the only top-level folder whose pages live under /docs/components/. */
+const isComponentsFolder = (node: TreeNode): node is Folder =>
   node.type === 'folder' &&
   node.children.some((child) => child.type === 'page' && child.url.startsWith('/docs/components/'))
 
-/* Bucket the flat kit pages into mode → family folders, preserving each page node
+/* Bucket the flat component pages into mode → family folders, preserving each page node
    verbatim (so its already-resolved icon and URL carry over). Empty modes are skipped. */
-const buildKitGroups = (items: Item[]): Folder[] =>
+const buildComponentGroups = (items: Item[]): Folder[] =>
   MODES.flatMap((mode): Folder[] => {
     const modeItems = items.filter((item) => modeOfSlug(slugOf(item.url)) === mode.key)
     if (modeItems.length === 0) return []
@@ -120,12 +120,12 @@ const buildKitGroups = (items: Item[]): Folder[] =>
 /* The `root` page-tree transformer hook, kept as a plain Root → Root function so it stays
    decoupled from the loader's storage generic (see source.ts registration). */
 export function regroupComponentTree(root: Root): Root {
-  const index = root.children.findIndex(isKitsFolder)
+  const index = root.children.findIndex(isComponentsFolder)
   if (index === -1) return root
 
-  const kitsFolder = root.children[index] as Folder
-  const items = kitsFolder.children.filter((child): child is Item => child.type === 'page')
-  const groups = buildKitGroups(items)
+  const componentsFolder = root.children[index] as Folder
+  const items = componentsFolder.children.filter((child): child is Item => child.type === 'page')
+  const groups = buildComponentGroups(items)
   if (groups.length === 0) return root
 
   const children = [...root.children]
