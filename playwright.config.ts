@@ -40,7 +40,7 @@ export default defineConfig({
       NEXT_PUBLIC_SITE_URL: `http://localhost:${process.env.E2E_PORT ?? '3000'}`,
       PORT: process.env.E2E_PORT ?? '3000',
     },
-    reuseExistingServer: true,
+    reuseExistingServer: process.env.PLAYWRIGHT_REUSE_SERVER === '1',
     url: `http://localhost:${process.env.E2E_PORT ?? '3000'}`,
   },
 })
