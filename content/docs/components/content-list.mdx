@@ -1,0 +1,66 @@
+---
+title: Content List
+description: A serif-headed content section pairing a heading with a labeled-term list.
+icon: Columns2
+---
+
+<ComponentPreview slug="content-list" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add content-list
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/content-list.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="content-list" />
+
+## Content model
+
+This serif "list" variant uses its own fields (not the shared `contentFields` base): a heading beside
+a list of labeled-term paragraphs.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The serif section heading.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'The labeled-term list (min 2, max 6).',
+    },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    term: { type: 'text', required: true, description: 'The lead-in term (rendered emphasized).' },
+    description: { type: 'textarea', required: true, description: 'The term’s description.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="content-list" />
+
+## Requirements
+
+<ComponentRequirements slug="content-list" />
+
+## In this family
+
+<ComponentFamily slug="content-list" />

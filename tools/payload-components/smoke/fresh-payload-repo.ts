@@ -29,6 +29,8 @@ export const DEFAULT_SMOKE_COMPONENTS = [
   'embed-basic',
   'content-columns',
   'content-feature-media',
+  'content-stats',
+  'content-list',
   'logo-cloud-grid',
   'logo-cloud-hover',
   'logo-cloud-marquee',

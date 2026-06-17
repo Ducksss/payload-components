@@ -1,0 +1,56 @@
+import React from 'react'
+
+import type { ContentListColumnsBlock as ContentListColumnsBlockData } from '@/payload-types'
+
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/utilities/ui'
+
+type Props = ContentListColumnsBlockData & {
+  id?: string
+  className?: string
+  disableInnerContainer?: boolean
+}
+
+export const ContentListColumnsBlock: React.FC<Props> = ({
+  className,
+  disableInnerContainer,
+  eyebrow,
+  id,
+  items,
+  title,
+}) => {
+  return (
+    <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
+      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+        <div
+          className={cn('flex flex-col gap-12', {
+            'mx-auto max-w-3xl': !disableInnerContainer,
+          })}
+        >
+          <div className="flex flex-col gap-4">
+            {eyebrow ? (
+              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]">
+                {eyebrow}
+              </Badge>
+            ) : null}
+
+            <h2 className="font-serif text-4xl font-medium text-balance">{title}</h2>
+          </div>
+
+          {items && items.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-12">
+              {items.map((item, index) => (
+                <p
+                  className="border-t border-border/70 pt-6 text-muted-foreground"
+                  key={item.id ?? `${item.term}-${index}`}
+                >
+                  <span className="font-medium text-foreground">{item.term}</span> {item.description}
+                </p>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </section>
+  )
+}

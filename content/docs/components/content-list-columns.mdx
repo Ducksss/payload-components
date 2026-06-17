@@ -1,0 +1,66 @@
+---
+title: Content List Columns
+description: A serif-headed content section with a two-column labeled-term list.
+icon: Grid3x3
+---
+
+<ComponentPreview slug="content-list-columns" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add content-list-columns
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/content-list-columns.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="content-list-columns" />
+
+## Content model
+
+This serif "list" variant uses its own fields (not the shared `contentFields` base): a heading above a
+two-column list of labeled-term paragraphs with top borders.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The serif section heading.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'The labeled-term list (min 2, max 6), shown in two columns.',
+    },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    term: { type: 'text', required: true, description: 'The lead-in term (rendered emphasized).' },
+    description: { type: 'textarea', required: true, description: 'The term’s description.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="content-list-columns" />
+
+## Requirements
+
+<ComponentRequirements slug="content-list-columns" />
+
+## In this family
+
+<ComponentFamily slug="content-list-columns" />

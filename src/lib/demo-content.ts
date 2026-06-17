@@ -212,6 +212,18 @@ export type ContentSectionDemoContent = {
   links?: { link: DemoLinkData }[]
   paragraphs: { text: string }[]
   quote?: string
+  rows?: { description: string; title: string }[]
+  stats?: { label: string; value: string }[]
+  title: string
+}
+
+/* The serif "list" content variants (content-list, content-list-columns,
+   content-list-icons) render from a labeled-term list rather than paragraphs,
+   so they carry their own demo-content shape. */
+export type ContentListDemoContent = {
+  description?: string
+  eyebrow?: string
+  items: { description: string; icon?: ContentIconKey; term: string }[]
   title: string
 }
 
@@ -331,6 +343,150 @@ export const contentCommunityDemoContent: ContentSectionDemoContent = {
     },
   ],
   title: 'Built by the community, for the community.',
+}
+
+export const contentSplitRowsDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Smart editor',
+  paragraphs: [
+    {
+      text: 'Efficient content creation is our mission. Edit text, generate snippets, format documents, and integrate with your existing workflow.',
+    },
+  ],
+  rows: [
+    {
+      description:
+        'We put together your schedule automatically and work the highest-priority items first.',
+      title: 'Marketing campaigns',
+    },
+    {
+      description:
+        'Ask the chat to create or update your events, or have it prepare today’s agenda.',
+      title: 'AI meeting scheduler',
+    },
+  ],
+  title: 'Ask Acme to edit anything.',
+}
+
+export const contentRowsDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Smart editor',
+  paragraphs: [
+    {
+      text: 'Efficient content creation is our mission. Edit text, generate snippets, format documents, and integrate with your existing workflow.',
+    },
+  ],
+  rows: [
+    {
+      description:
+        'We put together your schedule automatically and work the highest-priority items first.',
+      title: 'Marketing campaigns',
+    },
+    {
+      description:
+        'Ask the chat to create or update your events, or have it prepare today’s agenda.',
+      title: 'AI meeting scheduler',
+    },
+  ],
+  title: 'Ask Acme to edit anything.',
+}
+
+export const contentImageFrameDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Built in the open',
+  paragraphs: [
+    {
+      text: 'Our assistant helps you create better content faster — generate ideas, improve your writing, and design layouts with simple prompts.',
+    },
+  ],
+  title: 'Create content with AI assistance.',
+}
+
+export const contentStatsDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'The platform',
+  features: [
+    {
+      description: 'Spark creativity with AI-powered content suggestions and inspiration.',
+      icon: 'sparkles',
+      title: 'Generate ideas',
+    },
+    {
+      description: 'Enhance your text with smart editing suggestions and style refinements.',
+      icon: 'zap',
+      title: 'Improve writing',
+    },
+    {
+      description: 'Create visually appealing layouts that capture your audience’s attention.',
+      icon: 'gauge',
+      title: 'Design layouts',
+    },
+  ],
+  paragraphs: [
+    {
+      text: 'Our assistant helps you create better content faster with simple prompts.',
+    },
+  ],
+  stats: [
+    { label: 'Integrations', value: '90+' },
+    { label: 'Productivity boost', value: '56%' },
+    { label: 'Customer support', value: '24/7' },
+    { label: 'Active users', value: '10k+' },
+  ],
+  title: 'Create content with AI assistance.',
+}
+
+export const contentListDemoContent: ContentListDemoContent = {
+  eyebrow: 'What you get',
+  items: [
+    {
+      description: 'Spark creativity with AI-powered content suggestions and inspiration.',
+      term: 'Generate ideas',
+    },
+    {
+      description: 'Enhance your text with smart editing suggestions and style refinements.',
+      term: 'Improve writing',
+    },
+    {
+      description: 'Create visually appealing layouts that capture your audience’s attention.',
+      term: 'Design layouts',
+    },
+  ],
+  title: 'Create content with AI assistance.',
+}
+
+export const contentListColumnsDemoContent: ContentListDemoContent = {
+  eyebrow: 'What you get',
+  items: [
+    {
+      description: 'Spark creativity with AI-powered content suggestions and inspiration.',
+      term: 'Generate ideas',
+    },
+    {
+      description: 'Enhance your text with smart editing suggestions and style refinements.',
+      term: 'Improve writing',
+    },
+  ],
+  title: 'Create content with AI assistance.',
+}
+
+export const contentListIconsDemoContent: ContentListDemoContent = {
+  description: 'Our assistant helps you create better content faster with simple prompts.',
+  eyebrow: 'What you get',
+  items: [
+    {
+      description: 'Spark creativity with AI-powered content suggestions and inspiration.',
+      icon: 'sparkles',
+      term: 'Generate ideas',
+    },
+    {
+      description: 'Enhance your text with smart editing suggestions and style refinements.',
+      icon: 'zap',
+      term: 'Improve writing',
+    },
+    {
+      description: 'Create visually appealing layouts that capture your audience’s attention.',
+      icon: 'gauge',
+      term: 'Design layouts',
+    },
+  ],
+  title: 'Create content with AI assistance.',
 }
 
 /* The whole Integration family (grid, cluster, split, connect, orbit, list,
