@@ -14,9 +14,7 @@ export default function DocsRootLayout({ children }: { children: ReactNode }) {
     <RootProvider
       search={{ enabled: true }}
       theme={{
-        defaultTheme: 'light',
-        enableSystem: false,
-        forcedTheme: 'light',
+        enabled: false,
       }}
     >
       <SiteHeader activePath="/docs" />

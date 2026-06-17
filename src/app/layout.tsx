@@ -105,6 +105,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       /* Font variables live on <html>: the @theme font tokens reference them
          and custom properties substitute var() at the declaring element. */
