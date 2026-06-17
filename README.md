@@ -168,6 +168,13 @@ npx payload-components add content-feature-split
 npx payload-components add content-showcase
 npx payload-components add content-quote
 npx payload-components add content-community
+npx payload-components add content-split-rows
+npx payload-components add content-rows
+npx payload-components add content-image-frame
+npx payload-components add content-stats
+npx payload-components add content-list
+npx payload-components add content-list-columns
+npx payload-components add content-list-icons
 npx payload-components add logo-cloud-grid
 npx payload-components add logo-cloud-hover
 npx payload-components add logo-cloud-marquee
@@ -200,6 +207,13 @@ Current installable page blocks:
 | `content-showcase`        | Showcase content section  |
 | `content-quote`           | Editorial quote section   |
 | `content-community`       | Community content section |
+| `content-split-rows`      | Split content row stack   |
+| `content-rows`            | Alternating content rows  |
+| `content-image-frame`     | Framed image content      |
+| `content-stats`           | Content stats panel       |
+| `content-list`            | Structured content list   |
+| `content-list-columns`    | Columned content list     |
+| `content-list-icons`      | Icon-led content list     |
 | `logo-cloud-grid`         | Logo wall grid            |
 | `logo-cloud-hover`        | Logo wall with hover CTA  |
 | `logo-cloud-marquee`      | Scrolling logo marquee    |
