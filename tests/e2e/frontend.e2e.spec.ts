@@ -180,6 +180,33 @@ test.describe('Light shadcn frontend', () => {
     }
   })
 
+  test('drives the responsive component preview frame', async ({ page }) => {
+    await page.goto(`${baseURL}/docs/components/hero-basic`)
+
+    const frame = page.locator('iframe[title="Hero Basic preview"]')
+    await expect(frame).toBeVisible()
+
+    // Viewport presets are a toggle group; Mobile constrains the frame width.
+    const mobile = page.getByRole('button', { name: 'Mobile' })
+    await expect(mobile).toHaveAttribute('aria-pressed', 'false')
+    await mobile.click()
+    await expect(mobile).toHaveAttribute('aria-pressed', 'true')
+    await expect.poll(async () => (await frame.boundingBox())?.width ?? 0).toBeLessThanOrEqual(400)
+  })
+
+  test('serves the standalone preview route without site chrome or overflow', async ({ page }) => {
+    await page.goto(`${baseURL}/components/preview/hero-basic`)
+
+    await expect(page.locator('main')).toBeVisible()
+    // The bare iframe target inherits only the root layout — no header/footer.
+    await expect(page.getByRole('contentinfo')).toHaveCount(0)
+
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    )
+    expect(hasHorizontalOverflow).toBe(false)
+  })
+
   test('marks only the current top-level navigation item active', async ({ page }) => {
     await page.goto(baseURL)
     await expect(page.getByRole('navigation').locator('a.bg-secondary')).toHaveCount(0)

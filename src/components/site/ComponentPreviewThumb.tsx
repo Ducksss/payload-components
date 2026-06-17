@@ -14,10 +14,12 @@ export function ComponentPreviewThumb({ slug }: { slug: string }) {
   if (!Demo) return null
 
   return (
-    <div className="relative border-b border-border bg-muted/40">
+    <div className="relative overflow-hidden border-b border-border bg-muted/40">
       {/* Height + bottom fade live on the frame (dev's DemoScaleFrame
-          idiom); the pill sits outside it so the mask never touches it. */}
-      <DemoScaleFrame className="h-44 [mask-image:linear-gradient(to_bottom,black_70%,transparent)]">
+          idiom); the pill sits outside it so the mask never touches it.
+          A faint group-hover lift echoes the card's hover:-translate-y-0.5
+          without animating anything at rest (reduced-motion safe). */}
+      <DemoScaleFrame className="h-44 transition-transform duration-500 ease-out [mask-image:linear-gradient(to_bottom,black_70%,transparent)] group-hover:scale-[1.015] motion-reduce:transform-none motion-reduce:transition-none">
         <div className="px-4 py-4">
           <Demo />
         </div>
