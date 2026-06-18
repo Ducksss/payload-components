@@ -55,7 +55,13 @@ export const LogoCloudHoverBlock: React.FC<Props> = ({
                       className="flex items-center justify-center"
                       key={item.id ?? `${item.name}-${index}`}
                     >
-                      {item.href ? <a href={item.href}>{logo}</a> : logo}
+                      {item.href ? (
+                        <a aria-label={item.name} href={item.href}>
+                          {logo}
+                        </a>
+                      ) : (
+                        logo
+                      )}
                     </div>
                   )
                 })}

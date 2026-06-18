@@ -48,6 +48,9 @@ smoke tests.
 - Do not reintroduce Payload runtime routes, database adapters, waitlist APIs,
   or `PAYLOAD_SECRET` requirements for the docs site.
 - Generated registry output belongs in ignored `public/r`.
+- New or edited components must meet the accessibility checklist in
+  `payload-components/templates/alpha-component/README.md` (label association,
+  `autocomplete` tokens, reduced-motion, and accessible link/image names).
 
 When editing Payload target code, use real Payload types, keep block configs
 explicit, preserve optional wrapper props, pass `req` to nested Payload

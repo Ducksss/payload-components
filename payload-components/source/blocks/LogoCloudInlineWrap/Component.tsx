@@ -37,7 +37,13 @@ export const LogoCloudInlineWrapBlock: React.FC<Props> = ({
 
                 return (
                   <div className="flex items-center" key={item.id ?? `${item.name}-${index}`}>
-                    {item.href ? <a href={item.href}>{logo}</a> : logo}
+                    {item.href ? (
+                      <a aria-label={item.name} href={item.href}>
+                        {logo}
+                      </a>
+                    ) : (
+                      logo
+                    )}
                   </div>
                 )
               })}
