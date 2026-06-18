@@ -337,14 +337,14 @@ describe('Fumadocs site shell', () => {
         import('../../src/app/llms-full.txt/route'),
       ])
 
-    expect(siteUrl).toBe('https://payload-components.xyz')
+    expect(siteUrl).toBe('https://www.payload-components.xyz')
 
     const robots = robotsModule.default()
     const sitemap = sitemapModule.default()
     const llmsBody = await (await llmsModule.GET()).text()
     const llmsFullBody = await (await llmsFullModule.GET()).text()
 
-    expect(robots.host).toBe(siteUrl)
+    expect(robots.host).toBeUndefined()
     expect(robots.sitemap).toBe(`${siteUrl}/sitemap.xml`)
     expect(sitemap).toEqual(
       expect.arrayContaining([
@@ -356,7 +356,6 @@ describe('Fumadocs site shell', () => {
     expect(llmsFullBody).toContain(`Home: ${siteUrl}/`)
 
     const combinedOutput = [
-      robots.host,
       robots.sitemap,
       ...sitemap.map((entry) => entry.url),
       llmsBody,
