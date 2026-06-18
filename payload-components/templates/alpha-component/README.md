@@ -52,7 +52,7 @@ Every component ships into real sites, so bake these in — they are part of the
 
 ## Variants and Shared Fields
 
-A structural variant is its own component, not a CLI flag. Name variants by family with a suffix — `hero-basic`, `hero-video`, `hero-dramatic` — and never ship a bare family name. Choosing a variant happens in the catalog, not an install prompt.
+A structural variant is its own component, not a CLI flag. Name variants by family with a suffix — `logo-cloud-grid`, `logo-cloud-marquee`, `logo-cloud-inline` — and never ship a bare family name. Choosing a variant happens in the catalog, not an install prompt.
 
 Share a family's common fields through a real source file every variant ships:
 
