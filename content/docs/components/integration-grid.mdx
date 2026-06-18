@@ -1,0 +1,75 @@
+---
+title: Integration Grid
+description: A responsive grid of integration cards — logo, name, description, and a learn-more link — installed as a wired Payload block.
+icon: LayoutGrid
+---
+
+<ComponentPreview slug="integration-grid" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add integration-grid
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-grid.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="integration-grid" />
+
+## Content model
+
+`heading`, `subtext`, and `integrations` come from the shared `integrationFields` base. The grid
+renders each item's per-item `description` and, when set, a learn-more link from `href`.
+
+<TypeTable
+  type={{
+    heading: {
+      type: 'text',
+      required: true,
+      description: 'Short heading shown above the integration cards.',
+    },
+    subtext: {
+      type: 'textarea',
+      description: 'Optional supporting paragraph under the heading.',
+    },
+    integrations: {
+      type: 'array',
+      required: true,
+      description: 'Two to twelve integrations, each an uploaded logo with a name, optional description, and optional link.',
+    },
+  }}
+/>
+
+Each item in `integrations` carries:
+
+<TypeTable
+  type={{
+    logo: { type: 'upload', required: true, description: 'Logo image (Media upload).' },
+    name: { type: 'text', required: true, description: 'Accessible name / alt text for the logo.' },
+    description: { type: 'textarea', description: 'Short blurb shown on the card.' },
+    href: { type: 'text', description: 'Optional learn-more link the card points to.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="integration-grid" />
+
+## Requirements
+
+<ComponentRequirements slug="integration-grid" />
+
+## In this family
+
+<ComponentFamily slug="integration-grid" />

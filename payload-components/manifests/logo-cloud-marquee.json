@@ -1,0 +1,64 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "logo-cloud-marquee",
+  "version": "0.1.0",
+  "title": "Logo Cloud Marquee",
+  "description": "An auto-scrolling marquee of editable logos with edge fades, installed as a wired Payload block.",
+  "registryItemName": "logo-cloud-marquee",
+  "dependencies": {
+    "motion": "^12.0.0"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/logoCloudFields.ts",
+    "src/components/ui/infinite-slider.tsx",
+    "src/components/ui/progressive-blur.tsx",
+    "src/blocks/LogoCloudMarquee/config.ts",
+    "src/blocks/LogoCloudMarquee/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "LogoCloudMarqueeBlock",
+      "importPath": "@/blocks/LogoCloudMarquee/Component",
+      "blockSlug": "logoCloudMarquee"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "LogoCloudMarquee",
+      "importPath": "../../blocks/LogoCloudMarquee/config",
+      "blockName": "LogoCloudMarquee"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Infinite-scrolling logo marquee with progressive-blur edge fades."
+  },
+  "sampleContent": {
+    "blockType": "logoCloudMarquee",
+    "heading": "Powering the best teams",
+    "logos": [
+      { "name": "Northwind" },
+      { "name": "Initech" },
+      { "name": "Umbra" },
+      { "name": "Globex" },
+      { "name": "Soylent" },
+      { "name": "Hooli" },
+      { "name": "Vandelay" },
+      { "name": "Pied Piper" },
+      { "name": "Massive Dynamic" },
+      { "name": "Stark" }
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "content-columns",
+  "version": "0.1.0",
+  "title": "Content Columns",
+  "description": "A two-column content section pairing a heading with body copy and a CTA, installed as a wired Payload block.",
+  "registryItemName": "content-columns",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/contentFields.ts",
+    "src/blocks/ContentColumns/config.ts",
+    "src/blocks/ContentColumns/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContentColumnsBlock",
+      "importPath": "@/blocks/ContentColumns/Component",
+      "blockSlug": "contentColumns"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContentColumns",
+      "importPath": "../../blocks/ContentColumns/config",
+      "blockName": "ContentColumns"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Heading on the left, body paragraphs and a CTA on the right."
+  },
+  "sampleContent": {
+    "blockType": "contentColumns",
+    "eyebrow": "Why teams switch",
+    "title": "The ecosystem brings together your models, products and platforms.",
+    "paragraphs": [
+      {
+        "text": "Payload is more than just the CMS. It supports an entire ecosystem — from the products you ship to the APIs and platforms helping your team move faster."
+      },
+      {
+        "text": "Pair the headline on the left with the detail on the right: a layout that reads top-to-bottom on mobile and side-by-side on desktop."
+      }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/admin",
+          "label": "Learn more",
+          "appearance": "default"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,75 @@
+---
+title: Integration List
+description: A vertical list of integration rows — logo, name, description, and an add action — installed as a wired Payload block.
+icon: List
+---
+
+<ComponentPreview slug="integration-list" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add integration-list
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-list.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="integration-list" />
+
+## Content model
+
+`heading`, `subtext`, and `integrations` come from the shared `integrationFields` base. Each row
+renders the per-item `description` and, when set, links its add action to `href`.
+
+<TypeTable
+  type={{
+    heading: {
+      type: 'text',
+      required: true,
+      description: 'Short heading shown above the list.',
+    },
+    subtext: {
+      type: 'textarea',
+      description: 'Optional supporting paragraph under the heading.',
+    },
+    integrations: {
+      type: 'array',
+      required: true,
+      description: 'Two to twelve integration rows, each an uploaded logo with a name, optional description, and optional link.',
+    },
+  }}
+/>
+
+Each item in `integrations` carries:
+
+<TypeTable
+  type={{
+    logo: { type: 'upload', required: true, description: 'Logo image (Media upload).' },
+    name: { type: 'text', required: true, description: 'Accessible name / alt text for the logo.' },
+    description: { type: 'textarea', description: 'Short blurb shown on the row.' },
+    href: { type: 'text', description: 'Optional link the add action points to.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="integration-list" />
+
+## Requirements
+
+<ComponentRequirements slug="integration-list" />
+
+## In this family
+
+<ComponentFamily slug="integration-list" />

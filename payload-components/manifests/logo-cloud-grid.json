@@ -1,0 +1,56 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "logo-cloud-grid",
+  "version": "0.1.0",
+  "title": "Logo Cloud Grid",
+  "description": "A centered, wrapping wall of editable logos with a section heading, installed as a wired Payload block.",
+  "registryItemName": "logo-cloud-grid",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/logoCloudFields.ts",
+    "src/blocks/LogoCloudGrid/config.ts",
+    "src/blocks/LogoCloudGrid/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "LogoCloudGridBlock",
+      "importPath": "@/blocks/LogoCloudGrid/Component",
+      "blockSlug": "logoCloudGrid"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "LogoCloudGrid",
+      "importPath": "../../blocks/LogoCloudGrid/config",
+      "blockName": "LogoCloudGrid"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Centered grid of editable logo uploads under a short heading."
+  },
+  "sampleContent": {
+    "blockType": "logoCloudGrid",
+    "heading": "Trusted by teams shipping on Payload.",
+    "logos": [
+      { "name": "Northwind" },
+      { "name": "Initech" },
+      { "name": "Umbra" },
+      { "name": "Globex" },
+      { "name": "Soylent" },
+      { "name": "Hooli" }
+    ]
+  }
+}

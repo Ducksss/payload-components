@@ -15,6 +15,23 @@ const execFileAsync = promisify(execFile)
 const repoRoot = process.cwd()
 const payloadComponentBin = path.join(repoRoot, 'bin', 'payload-components.mjs')
 const layoutAnchor = "name: 'layout'"
+const logoCloudComponents = [
+  'logo-cloud-grid',
+  'logo-cloud-hover',
+  'logo-cloud-marquee',
+  'logo-cloud-inline',
+  'logo-cloud-inline-wrap',
+] as const
+const integrationComponents = [
+  'integration-grid',
+  'integration-cluster',
+  'integration-split',
+  'integration-connect',
+  'integration-orbit',
+  'integration-list',
+  'integration-marquee',
+  'integration-testimonial',
+] as const
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
@@ -117,10 +134,15 @@ const expectUniqueRegistrations = ({
 }
 
 const expectInstalledStateEntry = (state: InstallState, manifest: ComponentManifest) => {
+  const expectedPatchedFiles = normalizeFileList([
+    ...manifest.recovery.patchedFiles,
+    ...(Object.keys(manifest.dependencies).length > 0 ? ['package.json', 'pnpm-lock.yaml'] : []),
+  ])
+
   expect(state.components[manifest.name]).toMatchObject({
     installedFiles: normalizeFileList(manifest.files),
     manifestVersion: manifest.version,
-    patchedFiles: normalizeFileList(manifest.recovery.patchedFiles),
+    patchedFiles: expectedPatchedFiles,
     registryItemName: manifest.registryItemName,
     status: 'installed',
   })
@@ -225,6 +247,45 @@ describe('payload-components add', () => {
     await expectInstalledComponents(fixtureDir, [manifest])
   }, 180000)
 
+  it.each(logoCloudComponents)('installs %s into a supported repo and records state', async (componentName) => {
+    const { fixtureDir, manifest } = await createInstallFixture(componentName)
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const parsedState = await readInstallState(fixtureDir)
+
+    expect(parsedState.version).toBe(2)
+    await expectInstalledComponents(fixtureDir, [manifest])
+  }, 180000)
+
+  it.each([
+    'content-columns',
+    'content-image-lead',
+    'content-feature-media',
+    'content-feature-split',
+    'content-showcase',
+    'content-quote',
+    'content-community',
+    'content-split-rows',
+    'content-rows',
+    'content-image-frame',
+    'content-stats',
+    'content-list',
+    'content-list-columns',
+    'content-list-icons',
+  ])('installs %s into a supported repo and records state', async (componentName) => {
+    const { fixtureDir, manifest } = await createInstallFixture(componentName)
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const parsedState = await readInstallState(fixtureDir)
+
+    expect(parsedState.version).toBe(2)
+    await expectInstalledComponents(fixtureDir, [manifest])
+  }, 180000)
+
   it('installs hero-basic followed by feature-grid-basic without duplicate registrations', async () => {
     const { fixtureDir, manifests } = await createInstallFixtureForComponents([
       'hero-basic',
@@ -251,6 +312,19 @@ describe('payload-components add', () => {
     await expectInstalledComponents(fixtureDir, manifests)
   }, 180000)
 
+  it('installs logo-cloud-grid followed by hero-basic without duplicate registrations', async () => {
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents([
+      'logo-cloud-grid',
+      'hero-basic',
+    ])
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, 'logo-cloud-grid')
+    await runAddCommand(fixtureDir, 'hero-basic')
+
+    await expectInstalledComponents(fixtureDir, manifests)
+  }, 180000)
+
   it('treats a second install as idempotent', async () => {
     const manifest = await loadManifest('hero-basic')
     const { fixtureDir } = await createInstallFixture(manifest.name)
@@ -265,6 +339,55 @@ describe('payload-components add', () => {
 
   it('treats a second feature-grid-basic install as idempotent', async () => {
     const manifest = await loadManifest('feature-grid-basic')
+    const { fixtureDir } = await createInstallFixture(manifest.name)
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const secondRun = await runAddCommand(fixtureDir, manifest.name)
+
+    expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
+  }, 180000)
+
+  it.each(logoCloudComponents)('treats a second %s install as idempotent', async (componentName) => {
+    const manifest = await loadManifest(componentName)
+    const { fixtureDir } = await createInstallFixture(manifest.name)
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const secondRun = await runAddCommand(fixtureDir, manifest.name)
+
+    expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
+  }, 180000)
+
+  it.each(integrationComponents)('installs %s into a supported repo and records state', async (componentName) => {
+    const { fixtureDir, manifest } = await createInstallFixture(componentName)
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const parsedState = await readInstallState(fixtureDir)
+
+    expect(parsedState.version).toBe(2)
+    await expectInstalledComponents(fixtureDir, [manifest])
+  }, 180000)
+
+  it('installs integration-grid followed by hero-basic without duplicate registrations', async () => {
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents([
+      'integration-grid',
+      'hero-basic',
+    ])
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, 'integration-grid')
+    await runAddCommand(fixtureDir, 'hero-basic')
+
+    await expectInstalledComponents(fixtureDir, manifests)
+  }, 180000)
+
+  it.each(integrationComponents)('treats a second %s install as idempotent', async (componentName) => {
+    const manifest = await loadManifest(componentName)
     const { fixtureDir } = await createInstallFixture(manifest.name)
     tempDirs.push(fixtureDir)
 

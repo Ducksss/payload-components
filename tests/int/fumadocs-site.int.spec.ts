@@ -104,8 +104,13 @@ describe('Fumadocs site shell', () => {
       workflow,
       sourceConfig,
       nextConfig,
+      docsCss,
+      docsLayout,
       rootLayout,
       globals,
+      siteHeader,
+      commandCopyButton,
+      commandCopyController,
       sourceFile,
       docsPage,
       searchRoute,
@@ -117,8 +122,13 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, '.github', 'workflows', 'registry-verification.yml'), 'utf8'),
       readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),
       readFile(path.join(repoRoot, 'next.config.mjs'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'docs', 'docs.css'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'docs', 'layout.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', 'layout.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', 'globals.css'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'components', 'site', 'SiteHeader.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'components', 'site', 'CommandCopyButton.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'components', 'site', 'CommandCopyController.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'lib', 'source.ts'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', 'docs', '[[...slug]]', 'page.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', 'api', 'search', 'route.ts'), 'utf8'),
@@ -141,9 +151,23 @@ describe('Fumadocs site shell', () => {
     expect(sourceConfig).toContain('pageSchema')
     expect(sourceConfig).toContain('metaSchema')
     expect(nextConfig).toContain('createMDX')
-    expect(rootLayout).toContain('RootProvider')
-    expect(rootLayout).toContain("defaultTheme: 'light'")
-    expect(globals).toContain("@import 'fumadocs-ui/css/preset.css'")
+    expect(rootLayout).not.toContain('RootProvider')
+    expect(rootLayout).toContain('CommandCopyController')
+    expect(docsLayout).toContain('RootProvider')
+    expect(docsLayout).toContain('enabled: false')
+    expect(docsLayout).toContain('themeSwitch={{ enabled: false }}')
+    expect(docsLayout).not.toContain('defaultTheme')
+    expect(docsLayout).not.toContain('forcedTheme')
+    expect(docsLayout).toContain('activePath="/docs"')
+    expect(docsCss).toContain("@import 'tailwindcss'")
+    expect(docsCss).toContain("@import 'fumadocs-ui/css/preset.css'")
+    expect(globals).not.toContain("@import 'fumadocs-ui/css/preset.css'")
+    expect(siteHeader).not.toContain("'use client'")
+    expect(siteHeader).not.toContain('usePathname')
+    expect(siteHeader).toContain('activePath')
+    expect(commandCopyButton).not.toContain("'use client'")
+    expect(commandCopyButton).toContain('data-copy-command')
+    expect(commandCopyController).toContain("'use client'")
     expect(sourceFile).toContain('lucideIconsPlugin')
     expect(sourceFile).toContain("baseUrl: docsRoute")
     expect(sourceFile).toContain('getPageMarkdownUrl')
@@ -186,6 +210,33 @@ describe('Fumadocs site shell', () => {
           {
             key: 'Cache-Control',
             value: 'public, max-age=0, stale-while-revalidate=30',
+          },
+        ],
+      },
+      {
+        source: '/favicon.svg',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      {
+        source: '/favicon.ico',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      {
+        source: '/manifest.webmanifest',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, stale-while-revalidate=86400',
           },
         ],
       },
@@ -286,14 +337,14 @@ describe('Fumadocs site shell', () => {
         import('../../src/app/llms-full.txt/route'),
       ])
 
-    expect(siteUrl).toBe('https://payload-components.xyz')
+    expect(siteUrl).toBe('https://www.payload-components.xyz')
 
     const robots = robotsModule.default()
     const sitemap = sitemapModule.default()
     const llmsBody = await (await llmsModule.GET()).text()
     const llmsFullBody = await (await llmsFullModule.GET()).text()
 
-    expect(robots.host).toBe(siteUrl)
+    expect(robots.host).toBeUndefined()
     expect(robots.sitemap).toBe(`${siteUrl}/sitemap.xml`)
     expect(sitemap).toEqual(
       expect.arrayContaining([
@@ -305,7 +356,6 @@ describe('Fumadocs site shell', () => {
     expect(llmsFullBody).toContain(`Home: ${siteUrl}/`)
 
     const combinedOutput = [
-      robots.host,
       robots.sitemap,
       ...sitemap.map((entry) => entry.url),
       llmsBody,
@@ -313,6 +363,17 @@ describe('Fumadocs site shell', () => {
     ].join('\n')
 
     expect(combinedOutput).not.toContain('localhost')
+  })
+
+  it('normalizes stale apex site URL env values to the canonical www host', async () => {
+    for (const envValue of ['https://payload-components.xyz', 'https://payload-components.xyz/']) {
+      vi.stubEnv('NEXT_PUBLIC_SITE_URL', envValue)
+      vi.resetModules()
+
+      const { siteUrl } = await import('../../src/lib/site')
+
+      expect(siteUrl).toBe('https://www.payload-components.xyz')
+    }
   })
 
   it('keeps showcase metadata, assets, and capture script in sync', async () => {

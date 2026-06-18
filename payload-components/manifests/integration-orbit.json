@@ -1,0 +1,58 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "integration-orbit",
+  "version": "0.1.0",
+  "title": "Integration Orbit",
+  "description": "Concentric rings of integration logos that orbit a featured brand mark on hover, installed as a wired Payload block.",
+  "registryItemName": "integration-orbit",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/integrationFields.ts",
+    "src/blocks/IntegrationOrbit/config.ts",
+    "src/blocks/IntegrationOrbit/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "IntegrationOrbitBlock",
+      "importPath": "@/blocks/IntegrationOrbit/Component",
+      "blockSlug": "integrationOrbit"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "IntegrationOrbit",
+      "importPath": "../../blocks/IntegrationOrbit/config",
+      "blockName": "IntegrationOrbit"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Two concentric rings of logos that spin around a central mark on hover."
+  },
+  "sampleContent": {
+    "blockType": "integrationOrbit",
+    "heading": "An ecosystem in orbit",
+    "subtext": "Hover to see the integrations that revolve around your workspace.",
+    "integrations": [
+      { "name": "Northwind" },
+      { "name": "Globex" },
+      { "name": "Initech" },
+      { "name": "Vandelay" },
+      { "name": "Soylent" },
+      { "name": "Umbra" },
+      { "name": "Hooli" }
+    ]
+  }
+}

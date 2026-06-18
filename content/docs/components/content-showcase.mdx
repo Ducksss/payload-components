@@ -1,0 +1,75 @@
+---
+title: Content Showcase
+description: A centered content section with an intro, a full-width image, and a four-up grid of icon features.
+icon: LayoutGrid
+---
+
+<ComponentPreview slug="content-showcase" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add content-showcase
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-showcase.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="content-showcase" />
+
+## Content model
+
+The `eyebrow`, `title`, and `paragraphs` fields come from the shared Content family base
+(`src/blocks/shared/contentFields.ts`); the `image` upload and `features` grid are specific to this
+variant. Feature icons are chosen from the shared allowlist in `src/blocks/shared/contentIcons.ts`.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the centered title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    paragraphs: {
+      type: 'array',
+      description: 'Centered intro copy — one or more short paragraphs (min 1, max 4).',
+    },
+    image: { type: 'upload', description: 'Full-width Media upload shown below the intro.' },
+    features: {
+      type: 'array',
+      description: 'Two to four icon features rendered in a four-up grid.',
+    },
+  }}
+/>
+
+Each item in `features` carries:
+
+<TypeTable
+  type={{
+    icon: {
+      type: 'select',
+      description: 'Lucide icon name (zap · cpu · lock · sparkles · gauge · shield).',
+    },
+    title: { type: 'text', required: true, description: 'Feature heading.' },
+    description: { type: 'textarea', required: true, description: 'Feature body copy.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="content-showcase" />
+
+## Requirements
+
+<ComponentRequirements slug="content-showcase" />
+
+## In this family
+
+<ComponentFamily slug="content-showcase" />

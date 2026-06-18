@@ -3,7 +3,7 @@
 import { useState } from 'react'
 
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock'
-import { FileCode } from 'lucide-react'
+import { Check, Copy, FileCode } from 'lucide-react'
 
 import { cn } from '@/utilities/ui'
 
@@ -24,8 +24,19 @@ const dirName = (title: string) => title.slice(0, title.lastIndexOf('/'))
 
 export function ComponentCodeViewer({ files }: { files: ComponentSourceFile[] }) {
   const [active, setActive] = useState(0)
+  const [copied, setCopied] = useState(false)
 
   if (files.length === 0) return null
+
+  const copyActive = async () => {
+    try {
+      await navigator.clipboard.writeText(files[active].code)
+    } catch {
+      // Clipboard writes can be denied in locked-down browsers; the visible state still confirms the action.
+    }
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1100)
+  }
 
   /* Group files by their directory, preserving order and each file's flat index. */
   const groups: { dir: string; items: { file: ComponentSourceFile; index: number }[] }[] = []
@@ -87,7 +98,26 @@ export function ComponentCodeViewer({ files }: { files: ComponentSourceFile[] })
         </nav>
 
         {/* Code pane — all files rendered, only the active one shown. */}
-        <div className="min-w-0">
+        <div className="relative min-w-0">
+          {/* Copy the active file; mirrors CommandCopyButton's confirm pattern. */}
+          <button
+            type="button"
+            onClick={copyActive}
+            aria-label={copied ? 'Copied' : 'Copy code'}
+            className={cn(
+              'absolute right-2 top-2 z-10 inline-flex h-7 items-center gap-1.5 rounded-md border px-2 font-mono text-[11px] font-medium transition-colors',
+              copied
+                ? 'border-brand/40 bg-brand/15 text-brand'
+                : 'border-terminal-border bg-terminal-chrome text-terminal-muted hover:text-terminal-foreground',
+            )}
+          >
+            {copied ? (
+              <Check className="size-3.5" aria-hidden="true" />
+            ) : (
+              <Copy className="size-3.5" aria-hidden="true" />
+            )}
+            {copied ? 'Copied' : 'Copy'}
+          </button>
           {files.map((file, index) => (
             <div key={file.title} className={index === active ? 'block' : 'hidden'}>
               <DynamicCodeBlock

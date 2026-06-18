@@ -1,0 +1,62 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "content-list",
+  "version": "0.1.0",
+  "title": "Content List",
+  "description": "A serif-headed content section pairing a heading with a labeled-term list, installed as a wired Payload block.",
+  "registryItemName": "content-list",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/ContentList/config.ts",
+    "src/blocks/ContentList/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContentListBlock",
+      "importPath": "@/blocks/ContentList/Component",
+      "blockSlug": "contentList"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContentList",
+      "importPath": "../../blocks/ContentList/config",
+      "blockName": "ContentList"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Serif heading beside a list of labeled-term paragraphs."
+  },
+  "sampleContent": {
+    "blockType": "contentList",
+    "eyebrow": "What you get",
+    "title": "Create content with AI assistance.",
+    "items": [
+      {
+        "term": "Generate ideas",
+        "description": "Spark creativity with AI-powered content suggestions and inspiration."
+      },
+      {
+        "term": "Improve writing",
+        "description": "Enhance your text with smart editing suggestions and style refinements."
+      },
+      {
+        "term": "Design layouts",
+        "description": "Create visually appealing layouts that capture your audience's attention."
+      }
+    ]
+  }
+}
