@@ -1,5 +1,32 @@
 import type { Field } from 'payload'
 
+export const getSafeTeamHref = (href: null | string | undefined) => {
+  const value = href?.trim()
+
+  if (!value) {
+    return undefined
+  }
+
+  if (value.startsWith('/') && !value.startsWith('//')) {
+    return value
+  }
+
+  try {
+    const url = new URL(value)
+    return ['http:', 'https:', 'mailto:', 'tel:'].includes(url.protocol) ? value : undefined
+  } catch {
+    return undefined
+  }
+}
+
+const validateTeamHref = (value: unknown) => {
+  if (typeof value !== 'string' || value.trim() === '') {
+    return true
+  }
+
+  return getSafeTeamHref(value) ? true : 'Use a relative, http(s), mailto, or tel URL.'
+}
+
 /**
  * Shared field core for the Team component family.
  *
@@ -50,5 +77,6 @@ export const teamMemberFields: Field[] = [
   {
     name: 'href',
     type: 'text',
+    validate: validateTeamHref,
   },
 ]

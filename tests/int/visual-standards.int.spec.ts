@@ -8,17 +8,16 @@ const repoRoot = process.cwd()
 /* Visual standards guard.
  *
  * The blocks are the product, and the site ships a single design language:
- * light shadcn monochrome + one emerald accent, with a small set of named
- * radius and letter-spacing tokens. Today every block already honours it — this
- * test keeps it that way by reading the component source and failing on drift:
+ * light shadcn monochrome + one emerald accent. Today every block already
+ * honours it — this test keeps it that way by reading the component source and
+ * failing on drift:
  *
  *   - colours outside the token set: a raw Tailwind palette colour
  *     (bg-blue-500, text-white, border-zinc-700) or a hardcoded literal
  *     (text-[#0a0a0a], bg-[oklch(60%_.1_20)], ring-[rgb(0_0_0)]);
- *   - arbitrary radius / letter-spacing / spacing / font-size values
- *     (rounded-[2rem], tracking-[-0.06em], p-[13px], text-[15px]) — these have
- *     named tokens (rounded-frame, tracking-display, …) defined in globals.css
- *     or belong on the standard scale.
+ *   - site-only structure tokens in installable source. Demos can use site CSS,
+ *     but copied Payload blocks must work in consumer projects without this
+ *     repo's globals.css.
  *
  * Allowed escapes (never flagged): the keywords transparent / current /
  * inherit; and arbitrary values that reference a CSS var or a non-colour
@@ -66,11 +65,8 @@ const colorPrefix = [
   'shadow',
 ]
 const colorUtility = new RegExp(`^(?:${colorPrefix.join('|')})-(.+)$`)
+const siteOnlyStructureUtility = /^(?:rounded-(?:frame|panel|card|inset)|tracking-(?:display|title|snug|heading|micro|eyebrow))$/
 
-/* A bracketed arbitrary value that is a length/number (drift) versus a
- * var()/keyword escape (allowed): a leading digit, decimal, negative number, or
- * calc( marks a hardcoded literal; [inherit] and [var(--x)] do not. */
-const arbitraryLiteral = /^\[-?(?:\.?\d|calc\()/
 /* A hardcoded colour anywhere inside an arbitrary value. var(…) is intentionally
  * absent, so bg-[var(--x)] and the connect-dots gradient pass. */
 const colorLiteral = /#|(?:rgba?|hsla?|oklch|oklab|lab|lch|hwb|color)\(/i
@@ -130,26 +126,8 @@ const violationFor = (raw: string, scope: 'all' | 'color'): string | null => {
   // distributable product.
   if (scope === 'color') return null
 
-  if (/^rounded(?:-[a-z]+)*-\[.+\]$/.test(token) && arbitraryLiteral.test(token.slice(token.indexOf('[')))) {
-    return 'arbitrary radius — use rounded-frame/panel/card/inset/lg/full/…'
-  }
-
-  if (/^tracking-\[.+\]$/.test(token) && arbitraryLiteral.test(token.slice(token.indexOf('[')))) {
-    return 'arbitrary letter-spacing — use tracking-eyebrow/display/title/heading/…'
-  }
-
-  // Spacing scale only (padding / margin / gap / space) — not layout geometry
-  // like w-/h-/inset-/aspect-/grid-cols-, which stays arbitrary by design.
-  if (
-    /^(?:p[xytrbles]?|m[xytrbles]?|gap(?:-[xy])?|space-[xy])-\[.+\]$/.test(token) &&
-    arbitraryLiteral.test(token.slice(token.indexOf('[')))
-  ) {
-    return 'arbitrary spacing — use the spacing scale'
-  }
-
-  const fontSize = /^text-(\[.+\])$/.exec(token)
-  if (fontSize && arbitraryLiteral.test(fontSize[1]) && !colorLiteral.test(fontSize[1])) {
-    return 'arbitrary font-size — use text-xs/sm/base/lg/…'
+  if (siteOnlyStructureUtility.test(token)) {
+    return 'site-only utility — installable source must use portable Tailwind classes'
   }
 
   return null

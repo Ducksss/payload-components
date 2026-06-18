@@ -212,7 +212,7 @@ export default function AboutPage() {
                 accentWord="matters"
                 eyebrow="From here"
                 heading="Spend your week on the work that matters."
-                intro="Thirty-six page blocks install today, eight post components are in development, and every component ships with its contract: source, manifest, docs, and installer coverage."
+                intro="Thirty-eight page blocks install today, eight post components are in development, and every component ships with its contract: source, manifest, docs, and installer coverage."
               />
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link

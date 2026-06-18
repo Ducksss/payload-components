@@ -49,17 +49,17 @@
       {
         "label": "Leadership",
         "members": [
-          { "name": "Ada Lovelace", "role": "Co-Founder & CEO" },
-          { "name": "Alan Turing", "role": "Co-Founder & CTO" },
-          { "name": "Grace Hopper", "role": "Chief Operating Officer" }
+          { "avatar": "", "name": "Ada Lovelace", "role": "Co-Founder & CEO" },
+          { "avatar": "", "name": "Alan Turing", "role": "Co-Founder & CTO" },
+          { "avatar": "", "name": "Grace Hopper", "role": "Chief Operating Officer" }
         ]
       },
       {
         "label": "Engineering",
         "members": [
-          { "name": "Linus Torvalds", "role": "Principal Engineer" },
-          { "name": "Margaret Hamilton", "role": "Staff Engineer" },
-          { "name": "Dennis Ritchie", "role": "Backend Lead" }
+          { "avatar": "", "name": "Linus Torvalds", "role": "Principal Engineer" },
+          { "avatar": "", "name": "Margaret Hamilton", "role": "Staff Engineer" },
+          { "avatar": "", "name": "Dennis Ritchie", "role": "Backend Lead" }
         ]
       }
     ]

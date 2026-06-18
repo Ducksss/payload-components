@@ -58,13 +58,15 @@ test.describe('Component visual snapshots', () => {
       // until that platform's baselines are minted) but never when explicitly
       // updating, or --update-snapshots could never create them. "Updating" is
       // an overwrite mode (all/changed); the default 'missing'/'none' compare
-      // modes must skip rather than write-and-fail on a first-seen platform.
+      // modes skip only for local runs. CI must fail if its baseline is absent.
       const mode = testInfo.config.updateSnapshots
       const updating = mode !== 'none' && mode !== 'missing'
+      const missingBaseline = !existsSync(baseline) && !updating
       test.skip(
-        !existsSync(baseline) && !updating,
+        missingBaseline && !process.env.CI,
         `No ${process.platform} baseline for ${slug} — run: E2E_PORT=3100 pnpm test:e2e components-visual --update-snapshots`,
       )
+      expect(missingBaseline).toBe(false)
 
       await page.goto(`${baseURL}/components/preview/${slug}`)
       await expect(page.locator('main')).toBeVisible()

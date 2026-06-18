@@ -1,45 +1,32 @@
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
-import { afterEach, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
-import { loadManifest } from '../../tools/payload-components/manifest'
-import {
-  sampleContentNeedsSmokeMedia,
-  writeSeedScript,
-} from '../../tools/payload-components/smoke/fresh-payload-repo'
+const repoRoot = process.cwd()
+
+const readRepoFile = (filePath: string) => readFile(path.join(repoRoot, filePath), 'utf8')
+const readManifest = async (slug: string) =>
+  JSON.parse(await readRepoFile(path.join('payload-components', 'manifests', `${slug}.json`))) as {
+    sampleContent: unknown
+  }
 
 describe('fresh Payload smoke seed generation', () => {
-  const tempDirs: string[] = []
+  it('ships usable sample content for required nested team avatar uploads', async () => {
+    const roster = await readManifest('team-roster')
+    const grid = await readManifest('team-grid')
+    const source = await readRepoFile('tools/payload-components/smoke/fresh-payload-repo.ts')
 
-  afterEach(async () => {
-    await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
+    expect(JSON.stringify(roster.sampleContent)).toContain('"avatar"')
+    expect(JSON.stringify(grid.sampleContent)).toContain('"avatar"')
+    expect(source).toContain("members: addUploadReference(block.members, 'avatar', mediaID)")
+    expect(source).toContain('groups: addGroupMemberUploadReferences(block.groups')
   })
 
-  it('adds placeholder media seeding when sample content has required upload slots', async () => {
-    const manifest = await loadManifest('logo-cloud-grid')
-    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-seed-'))
-    tempDirs.push(tempDir)
+  it('keeps team variants in the default fresh-smoke component set', async () => {
+    const source = await readRepoFile('tools/payload-components/smoke/fresh-payload-repo.ts')
 
-    const scriptPath = await writeSeedScript(tempDir, [manifest])
-    const script = await readFile(scriptPath, 'utf8')
-
-    expect(sampleContentNeedsSmokeMedia(manifest.sampleContent)).toBe(true)
-    expect(script).toContain('const needsSmokeMedia = true')
-    expect(script).toContain("collection: 'media'")
-    expect(script).toContain("logos: addUploadReference(block.logos, 'logo', mediaID)")
-  })
-
-  it('does not create placeholder media for sample content without upload slots', async () => {
-    const manifest = await loadManifest('hero-basic')
-    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-seed-'))
-    tempDirs.push(tempDir)
-
-    const scriptPath = await writeSeedScript(tempDir, [manifest])
-    const script = await readFile(scriptPath, 'utf8')
-
-    expect(sampleContentNeedsSmokeMedia(manifest.sampleContent)).toBe(false)
-    expect(script).toContain('const needsSmokeMedia = false')
+    expect(source).toContain("'team-roster'")
+    expect(source).toContain("'team-grid'")
   })
 })

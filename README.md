@@ -188,6 +188,11 @@ npx payload-components add integration-orbit
 npx payload-components add integration-list
 npx payload-components add integration-marquee
 npx payload-components add integration-testimonial
+npx payload-components add call-to-action-centered
+npx payload-components add call-to-action-boxed
+npx payload-components add call-to-action-signup
+npx payload-components add team-roster
+npx payload-components add team-grid
 ```
 
 Current installable page blocks:
@@ -227,6 +232,11 @@ Current installable page blocks:
 | `integration-list`        | Integration list rows     |
 | `integration-marquee`     | Integration logo marquee  |
 | `integration-testimonial` | Integration testimonial   |
+| `call-to-action-centered` | Centered CTA section      |
+| `call-to-action-boxed`    | Boxed CTA section         |
+| `call-to-action-signup`   | Email signup CTA          |
+| `team-roster`             | Department team roster    |
+| `team-grid`               | Team photo card grid      |
 
 Check a target project without changing files:
 

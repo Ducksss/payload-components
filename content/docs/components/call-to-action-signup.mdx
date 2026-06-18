@@ -41,7 +41,7 @@ this variant.
     description: { type: 'textarea', description: 'Optional supporting copy under the heading.' },
     emailPlaceholder: { type: 'text', description: 'Placeholder shown in the email input (defaults to "Your email address").' },
     submitLabel: { type: 'text', description: 'Submit button label (defaults to "Get Started").' },
-    action: { type: 'text', description: 'The endpoint the form posts to — your newsletter or signup handler.' },
+    action: { type: 'text', required: true, description: 'Relative, http, or https endpoint the form posts to.' },
   }}
 />
 

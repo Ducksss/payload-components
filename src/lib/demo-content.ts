@@ -601,7 +601,7 @@ export const callToActionSignupDemoContent: CtaDemoContent = {
    member grid (team-grid) a given variant uses. Member avatars are backend-free
    on the landing/docs previews, so the twins render presentational placeholders
    rather than real images — only names and roles carry into the preview. */
-export type TeamMemberDemo = { name: string; role: string }
+export type TeamMemberDemo = { href?: string; name: string; role: string }
 
 export type TeamSectionDemoContent = {
   description?: string

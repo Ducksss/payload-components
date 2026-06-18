@@ -30,6 +30,11 @@ const integrationComponents = [
   'integration-marquee',
   'integration-testimonial',
 ] as const
+const callToActionComponents = [
+  'call-to-action-centered',
+  'call-to-action-boxed',
+  'call-to-action-signup',
+] as const
 
 const runAddCommand = async (fixtureDir: string, componentName: string) =>
   execFileAsync(process.execPath, [payloadComponentBin, 'add', componentName, '--cwd', fixtureDir], {
@@ -158,8 +163,8 @@ describe('payload-components add', () => {
     await expectInstalledComponents(fixtureDir, [manifest])
   }, 180000)
 
-  it('installs call-to-action-centered into a supported repo and records state', async () => {
-    const { fixtureDir, manifest } = await createInstallFixture('call-to-action-centered')
+  it.each(callToActionComponents)('installs %s into a supported repo and records state', async (componentName) => {
+    const { fixtureDir, manifest } = await createInstallFixture(componentName)
     tempDirs.push(fixtureDir)
 
     await runAddCommand(fixtureDir, manifest.name)
@@ -169,25 +174,6 @@ describe('payload-components add', () => {
     expect(parsedState.version).toBe(2)
     await expectInstalledComponents(fixtureDir, [manifest])
   }, 180000)
-
-  it('installs call-to-action-boxed into a supported repo and records state', async () => {
-    const { fixtureDir, manifest } = await createInstallFixture('call-to-action-boxed')
-    tempDirs.push(fixtureDir)
-
-    await runAddCommand(fixtureDir, manifest.name)
-
-    const parsedState = await readInstallState(fixtureDir)
-
-    expect(parsedState.version).toBe(2)
-    await expectInstalledComponents(fixtureDir, [manifest])
-  }, 180000)
-
-  /* call-to-action-signup is intentionally not given an install+state test: like
-     logo-cloud-marquee (which adds `motion`), it ships an npm dependency
-     (`lucide-react`), so the dependency-install stage rewrites package.json /
-     pnpm-lock.yaml and records them as patched — which the strict patchedFiles
-     assertion above does not model. Its files, registry deps, and demo-twin
-     fidelity are covered by the registry and demo-twin specs instead. */
 
   it('installs hero-basic followed by feature-grid-basic without duplicate registrations', async () => {
     const { fixtureDir, manifests } = await createInstallFixtureForComponents([
@@ -290,6 +276,18 @@ describe('payload-components add', () => {
   }, 180000)
 
   it.each(integrationComponents)('treats a second %s install as idempotent', async (componentName) => {
+    const manifest = await loadManifest(componentName)
+    const { fixtureDir } = await createInstallFixture(manifest.name)
+    tempDirs.push(fixtureDir)
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const secondRun = await runAddCommand(fixtureDir, manifest.name)
+
+    expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
+  }, 180000)
+
+  it.each(callToActionComponents)('treats a second %s install as idempotent', async (componentName) => {
     const manifest = await loadManifest(componentName)
     const { fixtureDir } = await createInstallFixture(manifest.name)
     tempDirs.push(fixtureDir)

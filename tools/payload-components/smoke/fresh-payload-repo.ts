@@ -38,6 +38,8 @@ export const DEFAULT_SMOKE_COMPONENTS = [
   'call-to-action-centered',
   'call-to-action-boxed',
   'call-to-action-signup',
+  'team-roster',
+  'team-grid',
 ] as const
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
 
@@ -89,8 +91,10 @@ type StaticRegistryServer = {
 
 type SmokeSampleBlock = ComponentManifest['sampleContent'] & {
   avatars?: Array<Record<string, unknown>>
+  groups?: Array<Record<string, unknown> & { members?: Array<Record<string, unknown>> }>
   integrations?: Array<Record<string, unknown>>
   logos?: Array<Record<string, unknown>>
+  members?: Array<Record<string, unknown>>
 }
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -570,6 +574,10 @@ export const sampleContentNeedsSmokeMedia = (sampleContent: ComponentManifest['s
     block.logos?.some((item) => isMissingUploadReference(item, 'logo')) ||
     block.integrations?.some((item) => isMissingUploadReference(item, 'logo')) ||
     block.avatars?.some((item) => isMissingUploadReference(item, 'avatar')) ||
+    block.members?.some((item) => isMissingUploadReference(item, 'avatar')) ||
+    block.groups?.some((group) =>
+      group.members?.some((item) => isMissingUploadReference(item, 'avatar')),
+    ) ||
     false
   )
 }
@@ -601,8 +609,10 @@ const { default: config } = await import('../src/payload.config')
 type SmokeSampleItem = Record<string, unknown>
 type SmokeSampleBlock = SmokeSampleItem & {
   avatars?: SmokeSampleItem[]
+  groups?: Array<SmokeSampleItem & { members?: SmokeSampleItem[] }>
   integrations?: SmokeSampleItem[]
   logos?: SmokeSampleItem[]
+  members?: SmokeSampleItem[]
 }
 
 const rawLayout = ${JSON.stringify(layout, null, 2)} satisfies SmokeSampleBlock[]
@@ -614,11 +624,22 @@ const addUploadReference = (items: SmokeSampleItem[] | undefined, fieldName: str
     [fieldName]: item[fieldName] ?? mediaID,
   }))
 
+const addGroupMemberUploadReferences = (
+  groups: SmokeSampleBlock['groups'] | undefined,
+  mediaID: unknown,
+) =>
+  groups?.map((group) => ({
+    ...group,
+    members: addUploadReference(group.members, 'avatar', mediaID),
+  }))
+
 const addSmokeUploadReferences = (block: SmokeSampleBlock, mediaID: unknown): SmokeSampleBlock => ({
   ...block,
   ...(block.avatars ? { avatars: addUploadReference(block.avatars, 'avatar', mediaID) } : {}),
+  ...(block.groups ? { groups: addGroupMemberUploadReferences(block.groups, mediaID) } : {}),
   ...(block.integrations ? { integrations: addUploadReference(block.integrations, 'logo', mediaID) } : {}),
   ...(block.logos ? { logos: addUploadReference(block.logos, 'logo', mediaID) } : {}),
+  ...(block.members ? { members: addUploadReference(block.members, 'avatar', mediaID) } : {}),
 })
 
 const createSmokeMedia = async () => {

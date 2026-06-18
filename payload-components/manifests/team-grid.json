@@ -47,12 +47,12 @@
     "title": "Our dream team.",
     "description": "A small, senior team shipping the platform that product teams open every day.",
     "members": [
-      { "name": "Henry Lee", "role": "UX Engineer" },
-      { "name": "Isabella Garcia", "role": "Sales Manager" },
-      { "name": "Liam Brown", "role": "Founder & CEO" },
-      { "name": "Olivia Miller", "role": "Visual Designer" },
-      { "name": "Ava Williams", "role": "Interaction Designer" },
-      { "name": "Elijah Jones", "role": "Co-Founder & CTO" }
+      { "avatar": "", "name": "Henry Lee", "role": "UX Engineer" },
+      { "avatar": "", "name": "Isabella Garcia", "role": "Sales Manager" },
+      { "avatar": "", "name": "Liam Brown", "role": "Founder & CEO" },
+      { "avatar": "", "name": "Olivia Miller", "role": "Visual Designer" },
+      { "avatar": "", "name": "Ava Williams", "role": "Interaction Designer" },
+      { "avatar": "", "name": "Elijah Jones", "role": "Co-Founder & CTO" }
     ]
   }
 }

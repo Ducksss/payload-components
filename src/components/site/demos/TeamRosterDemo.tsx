@@ -23,19 +23,19 @@ export function TeamRosterDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto flex max-w-5xl flex-col gap-12">
           <div className="flex flex-col gap-4">
             {eyebrow ? (
               <Badge
                 variant="outline"
-                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]"
               >
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <div className="text-4xl font-medium tracking-display text-balance">{title}</div>
+            <div className="text-4xl font-medium tracking-[-0.06em] text-balance">{title}</div>
           </div>
 
           {groups && groups.length > 0 ? (
@@ -45,15 +45,30 @@ export function TeamRosterDemo({
                   <div className="text-lg font-medium">{group.label}</div>
 
                   <div className="grid grid-cols-2 gap-6 border-t border-border/70 pt-6 md:grid-cols-4">
-                    {group.members.map((member, memberIndex) => (
-                      <div className="flex flex-col gap-2" key={memberIndex}>
-                        <div className="size-20 overflow-hidden rounded-full border border-border/70 bg-card p-0.5">
-                          <div className="h-full w-full bg-muted" />
+                    {group.members.map((member, memberIndex) => {
+                      const content = (
+                        <>
+                          <div className="size-20 overflow-hidden rounded-full border border-border/70 bg-card p-0.5">
+                            <div className="h-full w-full bg-muted" />
+                          </div>
+                          <span className="text-sm">{member.name}</span>
+                          <span className="text-xs text-muted-foreground">{member.role}</span>
+                        </>
+                      )
+
+                      return member.href ? (
+                        <div
+                          className="flex flex-col gap-2 rounded-sm outline-none hover:underline focus-visible:ring-2 focus-visible:ring-brand/40"
+                          key={memberIndex}
+                        >
+                          {content}
                         </div>
-                        <span className="text-sm">{member.name}</span>
-                        <span className="text-xs text-muted-foreground">{member.role}</span>
-                      </div>
-                    ))}
+                      ) : (
+                        <div className="flex flex-col gap-2" key={memberIndex}>
+                          {content}
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               ))}
