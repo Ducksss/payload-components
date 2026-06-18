@@ -1,5 +1,5 @@
 export const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://payload-components.xyz'
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://www.payload-components.xyz'
 ).replace(/\/+$/, '')
 export const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 export const githubIssuesUrl = `${githubRepoUrl}/issues`
