@@ -25,7 +25,7 @@ export const ContentFeatureMediaBlock: React.FC<Props> = ({
 }) => {
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div
           className={cn('grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16', {
             'mx-auto max-w-5xl': !disableInnerContainer,
@@ -33,12 +33,12 @@ export const ContentFeatureMediaBlock: React.FC<Props> = ({
         >
           <div className="flex flex-col gap-6">
             {eyebrow ? (
-              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]">
+              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow">
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <h2 className="text-4xl font-medium tracking-[-0.06em] text-balance">{title}</h2>
+            <h2 className="text-4xl font-medium tracking-display text-balance">{title}</h2>
 
             {paragraphs && paragraphs.length > 0
               ? paragraphs.map((paragraph, index) => (
@@ -60,7 +60,7 @@ export const ContentFeatureMediaBlock: React.FC<Props> = ({
                     <div className="flex flex-col gap-2" key={feature.id ?? `${feature.title}-${index}`}>
                       <div className="flex items-center gap-2">
                         {Icon ? <Icon className="size-4" /> : null}
-                        <h3 className="text-sm font-medium tracking-[-0.01em]">{feature.title}</h3>
+                        <h3 className="text-sm font-medium tracking-micro">{feature.title}</h3>
                       </div>
                       <p className="text-sm leading-6 text-muted-foreground">{feature.description}</p>
                     </div>
@@ -71,8 +71,8 @@ export const ContentFeatureMediaBlock: React.FC<Props> = ({
           </div>
 
           {image ? (
-            <div className="overflow-hidden rounded-[1.5rem] border border-dotted border-border/70 p-2">
-              <Media resource={image} imgClassName="h-full w-full rounded-[1rem] object-cover" />
+            <div className="overflow-hidden rounded-panel border border-dotted border-border/70 p-2">
+              <Media resource={image} imgClassName="h-full w-full rounded-inset object-cover" />
             </div>
           ) : null}
         </div>

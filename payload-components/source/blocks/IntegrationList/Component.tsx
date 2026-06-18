@@ -22,14 +22,14 @@ export const IntegrationListBlock: React.FC<Props> = ({
 }) => {
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-12 sm:px-8 lg:px-12 lg:py-16">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-12 sm:px-8 lg:px-12 lg:py-16">
         <div
           className={cn('flex flex-col gap-10', {
             'mx-auto max-w-2xl': !disableInnerContainer,
           })}
         >
           <div className="flex flex-col gap-4 text-center">
-            <h2 className="text-balance text-2xl font-semibold tracking-[-0.02em] text-foreground sm:text-3xl">
+            <h2 className="text-balance text-2xl font-semibold tracking-heading text-foreground sm:text-3xl">
               {heading}
             </h2>
             {subtext ? (

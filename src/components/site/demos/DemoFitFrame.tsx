@@ -10,10 +10,13 @@ import { cn } from '@/utilities/ui'
  * card should size to its own demo.
  *
  * `zoom` (unlike `transform: scale`) scales an element's used size, so the inner
- * layer reserves its scaled height in the flow. Laying it out at 200% width and
- * zooming to 0.5 reproduces the same "real desktop type ramp at card width" the
- * scale frame gives — but with a true, variable height per twin. Inner stays
- * presentational; the wrapper reinforces aria-hidden + pointer-events-none. */
+ * layer reserves its scaled height in the flow. Spec-compliant `zoom` resolves a
+ * child's percentage widths against the containing block divided by the zoom
+ * factor, so `w-full` already lays the twin out at 2x card width (the "real
+ * desktop type ramp at card width" the scale frame gives) before zooming to 0.5
+ * — a true, variable height per twin. (An explicit `w-[200%]` here double-counts
+ * that and overflows.) Inner stays presentational; the wrapper reinforces
+ * aria-hidden + pointer-events-none. */
 export function DemoFitFrame({
   children,
   className,
@@ -26,7 +29,7 @@ export function DemoFitFrame({
       aria-hidden="true"
       className={cn('pointer-events-none relative select-none overflow-hidden', className)}
     >
-      <div className="w-[200%] [zoom:0.5]">{children}</div>
+      <div className="w-full [zoom:0.5]">{children}</div>
     </div>
   )
 }

@@ -23,7 +23,7 @@ export const TeamGridBlock: React.FC<Props> = ({
 }) => {
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div
           className={cn('flex flex-col gap-12', {
             'mx-auto max-w-5xl': !disableInnerContainer,
@@ -32,12 +32,12 @@ export const TeamGridBlock: React.FC<Props> = ({
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="flex flex-col gap-4">
               {eyebrow ? (
-                <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]">
+                <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow">
                   {eyebrow}
                 </Badge>
               ) : null}
 
-              <h2 className="text-3xl font-medium tracking-[-0.04em] text-balance sm:text-4xl">{title}</h2>
+              <h2 className="text-3xl font-medium tracking-title text-balance sm:text-4xl">{title}</h2>
             </div>
 
             {description ? (

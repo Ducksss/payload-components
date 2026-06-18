@@ -32,7 +32,7 @@ export function EmbedBasicDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <figure className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35">
+      <figure className="overflow-hidden rounded-frame border border-border/70 bg-card/35">
         <div className={cn('relative w-full bg-muted', aspectClass)}>
           <div className="absolute inset-0 h-full w-full border-0">
             {/* Faux player surface — stands in for the real iframe, which
