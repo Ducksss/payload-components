@@ -37,6 +37,114 @@ const pairs = [
     component: 'payload-components/source/blocks/EmbedBasic/Component.tsx',
     twin: 'src/components/site/demos/EmbedBasicDemo.tsx',
   },
+  {
+    component: 'payload-components/source/blocks/LogoCloudGrid/Component.tsx',
+    twin: 'src/components/site/demos/LogoCloudGridDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/LogoCloudHover/Component.tsx',
+    twin: 'src/components/site/demos/LogoCloudHoverDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/LogoCloudMarquee/Component.tsx',
+    twin: 'src/components/site/demos/LogoCloudMarqueeDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/LogoCloudInline/Component.tsx',
+    twin: 'src/components/site/demos/LogoCloudInlineDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/LogoCloudInlineWrap/Component.tsx',
+    twin: 'src/components/site/demos/LogoCloudInlineWrapDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentColumns/Component.tsx',
+    twin: 'src/components/site/demos/ContentColumnsDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentImageLead/Component.tsx',
+    twin: 'src/components/site/demos/ContentImageLeadDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentFeatureMedia/Component.tsx',
+    twin: 'src/components/site/demos/ContentFeatureMediaDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentFeatureSplit/Component.tsx',
+    twin: 'src/components/site/demos/ContentFeatureSplitDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentShowcase/Component.tsx',
+    twin: 'src/components/site/demos/ContentShowcaseDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentQuote/Component.tsx',
+    twin: 'src/components/site/demos/ContentQuoteDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentCommunity/Component.tsx',
+    twin: 'src/components/site/demos/ContentCommunityDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentSplitRows/Component.tsx',
+    twin: 'src/components/site/demos/ContentSplitRowsDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentRows/Component.tsx',
+    twin: 'src/components/site/demos/ContentRowsDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentImageFrame/Component.tsx',
+    twin: 'src/components/site/demos/ContentImageFrameDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentStats/Component.tsx',
+    twin: 'src/components/site/demos/ContentStatsDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentList/Component.tsx',
+    twin: 'src/components/site/demos/ContentListDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentListColumns/Component.tsx',
+    twin: 'src/components/site/demos/ContentListColumnsDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/ContentListIcons/Component.tsx',
+    twin: 'src/components/site/demos/ContentListIconsDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationGrid/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationGridDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationCluster/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationClusterDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationSplit/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationSplitDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationConnect/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationConnectDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationOrbit/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationOrbitDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationList/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationListDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationMarquee/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationMarqueeDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/IntegrationTestimonial/Component.tsx',
+    twin: 'src/components/site/demos/IntegrationTestimonialDemo.tsx',
+  },
 ] as const
 
 const classLiterals = (source: string): string[] =>

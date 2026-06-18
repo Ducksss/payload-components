@@ -1,0 +1,61 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "integration-marquee",
+  "version": "0.1.0",
+  "title": "Integration Marquee",
+  "description": "Three auto-scrolling rows of integration logos around a featured brand mark, installed as a wired Payload block.",
+  "registryItemName": "integration-marquee",
+  "dependencies": {
+    "motion": "^12.0.0"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/integrationFields.ts",
+    "src/components/ui/infinite-slider.tsx",
+    "src/blocks/IntegrationMarquee/config.ts",
+    "src/blocks/IntegrationMarquee/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "IntegrationMarqueeBlock",
+      "importPath": "@/blocks/IntegrationMarquee/Component",
+      "blockSlug": "integrationMarquee"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "IntegrationMarquee",
+      "importPath": "../../blocks/IntegrationMarquee/config",
+      "blockName": "IntegrationMarquee"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Three scrolling rows of integration logos with a featured mark at the center."
+  },
+  "sampleContent": {
+    "blockType": "integrationMarquee",
+    "heading": "Works with the tools you already use",
+    "subtext": "A growing catalog of native integrations across your whole stack.",
+    "integrations": [
+      { "name": "Northwind" },
+      { "name": "Globex" },
+      { "name": "Initech" },
+      { "name": "Vandelay" },
+      { "name": "Soylent" },
+      { "name": "Umbra" },
+      { "name": "Hooli" }
+    ]
+  }
+}

@@ -1,0 +1,72 @@
+---
+title: Content List Icons
+description: A serif-headed content section with an intro and a multi-column icon list.
+icon: LayoutGrid
+---
+
+<ComponentPreview slug="content-list-icons" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add content-list-icons
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-list-icons.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="content-list-icons" />
+
+## Content model
+
+This serif "list" variant uses its own fields (not the shared `contentFields` base): a heading and
+intro above a multi-column icon list. Item icons are chosen from the shared allowlist in
+`src/blocks/shared/contentIcons.ts`.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The serif section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy under the heading.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'The icon list (min 2, max 6), shown in a multi-column grid.',
+    },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    icon: {
+      type: 'select',
+      description: 'Lucide icon name (zap · cpu · lock · sparkles · gauge · shield).',
+    },
+    term: { type: 'text', required: true, description: 'The lead-in term (rendered emphasized).' },
+    description: { type: 'textarea', required: true, description: 'The term’s description.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="content-list-icons" />
+
+## Requirements
+
+<ComponentRequirements slug="content-list-icons" />
+
+## In this family
+
+<ComponentFamily slug="content-list-icons" />

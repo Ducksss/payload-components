@@ -45,6 +45,16 @@ export type EmbedBasicDemoContent = {
   url: string
 }
 
+/* The whole Logo Cloud family (grid, hover, marquee, inline, inline-wrap)
+   renders from one demo-content shape: the shared heading, and for the hover
+   variant an optional CTA link. The logos themselves are presentational and
+   backend-free, so the twins pull invented monochrome marks from
+   `@/components/site/demos/DemoLogos` rather than carrying logo data here. */
+export type LogoCloudDemoContent = {
+  heading: string
+  links?: { link: DemoLinkData }[]
+}
+
 export const heroBasicDemoContent: HeroBasicDemoContent = {
   description:
     'Acme gives product teams hosted dashboards, usage reports, and alerting on one platform — wired to your data in an afternoon.',
@@ -158,4 +168,391 @@ export const embedBasicDemoContent: EmbedBasicDemoContent = {
   caption: 'Acme product tour — two minutes from sign-up to first dashboard.',
   title: 'Acme product tour',
   url: 'https://www.youtube.com/embed/aqz-KE-bpKQ',
+}
+
+export const logoCloudGridDemoContent: LogoCloudDemoContent = {
+  heading: 'Trusted by teams shipping on Payload.',
+}
+
+export const logoCloudHoverDemoContent: LogoCloudDemoContent = {
+  heading: 'Powering the best product teams.',
+  links: [{ link: { appearance: 'default', label: 'Meet our customers' } }],
+}
+
+export const logoCloudMarqueeDemoContent: LogoCloudDemoContent = {
+  heading: 'Powering the best teams',
+}
+
+export const logoCloudInlineDemoContent: LogoCloudDemoContent = {
+  heading: 'Trusted by teams at:',
+}
+
+export const logoCloudInlineWrapDemoContent: LogoCloudDemoContent = {
+  heading: 'Trusted by teams at:',
+}
+
+export type ContentIconKey = 'zap' | 'cpu' | 'lock' | 'sparkles' | 'gauge' | 'shield'
+
+export type ContentFeatureDemo = {
+  description: string
+  icon?: ContentIconKey
+  title: string
+}
+
+/* The whole Content family (columns, image-lead, feature-media, feature-split,
+   showcase, quote, community) renders from one demo-content shape: the shared
+   eyebrow/title/paragraphs plus the optional media, features, CTA, quote, or
+   avatars a given variant uses. Media uploads are backend-free on the
+   landing/docs previews, so the twins render presentational placeholders. */
+export type ContentSectionDemoContent = {
+  avatars?: { name: string }[]
+  citation?: string
+  eyebrow?: string
+  features?: ContentFeatureDemo[]
+  links?: { link: DemoLinkData }[]
+  paragraphs: { text: string }[]
+  quote?: string
+  rows?: { description: string; title: string }[]
+  stats?: { label: string; value: string }[]
+  title: string
+}
+
+/* The serif "list" content variants (content-list, content-list-columns,
+   content-list-icons) render from a labeled-term list rather than paragraphs,
+   so they carry their own demo-content shape. */
+export type ContentListDemoContent = {
+  description?: string
+  eyebrow?: string
+  items: { description: string; icon?: ContentIconKey; term: string }[]
+  title: string
+}
+
+export const contentColumnsDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Why teams switch',
+  paragraphs: [
+    {
+      text: 'Acme is more than just the dashboard. It supports an entire ecosystem — from the products you ship to the APIs and platforms helping your team move faster.',
+    },
+    {
+      text: 'Pair the headline on the left with the detail on the right: a layout that reads top-to-bottom on mobile and side-by-side on desktop.',
+    },
+  ],
+  links: [{ link: { appearance: 'default', label: 'Learn more' } }],
+  title: 'The Acme ecosystem brings together your products and platforms.',
+}
+
+export const contentImageLeadDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Built in the open',
+  paragraphs: [
+    {
+      text: 'Acme is more than just the dashboard. It supports an entire ecosystem — from the products you ship to the APIs and platforms helping your team move faster.',
+    },
+  ],
+  links: [{ link: { appearance: 'default', label: 'Learn more' } }],
+  title: 'The Acme ecosystem brings together your products and platforms.',
+}
+
+export const contentFeatureMediaDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Under the hood',
+  features: [
+    {
+      description: 'Server-rendered sections keep pages quick for developers and editors alike.',
+      icon: 'zap',
+      title: 'Fast',
+    },
+    {
+      description: 'A real content model behind every section, not a wall of hardcoded markup.',
+      icon: 'cpu',
+      title: 'Powerful',
+    },
+  ],
+  paragraphs: [
+    {
+      text: 'Acme is more than just the dashboard. It supports an entire ecosystem helping your team move faster.',
+    },
+  ],
+  title: 'The Acme ecosystem brings together your models.',
+}
+
+export const contentFeatureSplitDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Built to scale',
+  features: [
+    {
+      description: 'Access control and versioning are part of the platform, not bolted on.',
+      icon: 'lock',
+      title: 'Secure',
+    },
+    {
+      description: 'Polished, accessible markup that matches the rest of your site.',
+      icon: 'sparkles',
+      title: 'Refined',
+    },
+  ],
+  paragraphs: [
+    {
+      text: 'Acme is more than just the dashboard. It supports an entire ecosystem helping your team move faster.',
+    },
+  ],
+  title: 'The Acme ecosystem brings together your models.',
+}
+
+export const contentShowcaseDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'The platform',
+  features: [
+    { description: 'Server-rendered sections keep pages quick.', icon: 'zap', title: 'Fast' },
+    { description: 'A real content model behind every section.', icon: 'cpu', title: 'Powerful' },
+    { description: 'Access control and versioning built in.', icon: 'lock', title: 'Secure' },
+    { description: 'Polished, accessible markup throughout.', icon: 'sparkles', title: 'Refined' },
+  ],
+  paragraphs: [
+    {
+      text: 'Acme is more than just the dashboard. It supports an entire ecosystem helping your team move faster.',
+    },
+  ],
+  title: 'The Acme ecosystem brings together your products and platforms.',
+}
+
+export const contentQuoteDemoContent: ContentSectionDemoContent = {
+  citation: 'Jordan Rivera, CTO',
+  eyebrow: 'In their words',
+  paragraphs: [
+    {
+      text: 'Acme is more than just the dashboard. It supports an entire ecosystem helping your team move faster.',
+    },
+  ],
+  quote:
+    'Using Acme has been like unlocking a design superpower — the perfect fusion of simplicity and versatility.',
+  title: 'The Acme ecosystem brings together your models.',
+}
+
+export const contentCommunityDemoContent: ContentSectionDemoContent = {
+  avatars: [
+    { name: 'Ada Lovelace' },
+    { name: 'Alan Turing' },
+    { name: 'Grace Hopper' },
+    { name: 'Linus Torvalds' },
+    { name: 'Margaret Hamilton' },
+    { name: 'Dennis Ritchie' },
+    { name: 'Katherine Johnson' },
+    { name: 'Tim Berners-Lee' },
+  ],
+  eyebrow: 'Open source',
+  paragraphs: [
+    {
+      text: 'Acme grows from real installs and pull requests. Every block ships with its full contract: source, manifest, docs, and installer coverage.',
+    },
+  ],
+  title: 'Built by the community, for the community.',
+}
+
+export const contentSplitRowsDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Smart editor',
+  paragraphs: [
+    {
+      text: 'Efficient content creation is our mission. Edit text, generate snippets, format documents, and integrate with your existing workflow.',
+    },
+  ],
+  rows: [
+    {
+      description:
+        'We put together your schedule automatically and work the highest-priority items first.',
+      title: 'Marketing campaigns',
+    },
+    {
+      description:
+        'Ask the chat to create or update your events, or have it prepare today’s agenda.',
+      title: 'AI meeting scheduler',
+    },
+  ],
+  title: 'Ask Acme to edit anything.',
+}
+
+export const contentRowsDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Smart editor',
+  paragraphs: [
+    {
+      text: 'Efficient content creation is our mission. Edit text, generate snippets, format documents, and integrate with your existing workflow.',
+    },
+  ],
+  rows: [
+    {
+      description:
+        'We put together your schedule automatically and work the highest-priority items first.',
+      title: 'Marketing campaigns',
+    },
+    {
+      description:
+        'Ask the chat to create or update your events, or have it prepare today’s agenda.',
+      title: 'AI meeting scheduler',
+    },
+  ],
+  title: 'Ask Acme to edit anything.',
+}
+
+export const contentImageFrameDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'Built in the open',
+  paragraphs: [
+    {
+      text: 'Our assistant helps you create better content faster — generate ideas, improve your writing, and design layouts with simple prompts.',
+    },
+  ],
+  title: 'Create content with AI assistance.',
+}
+
+export const contentStatsDemoContent: ContentSectionDemoContent = {
+  eyebrow: 'The platform',
+  features: [
+    {
+      description: 'Spark creativity with AI-powered content suggestions and inspiration.',
+      icon: 'sparkles',
+      title: 'Generate ideas',
+    },
+    {
+      description: 'Enhance your text with smart editing suggestions and style refinements.',
+      icon: 'zap',
+      title: 'Improve writing',
+    },
+    {
+      description: 'Create visually appealing layouts that capture your audience’s attention.',
+      icon: 'gauge',
+      title: 'Design layouts',
+    },
+  ],
+  paragraphs: [
+    {
+      text: 'Our assistant helps you create better content faster with simple prompts.',
+    },
+  ],
+  stats: [
+    { label: 'Integrations', value: '90+' },
+    { label: 'Productivity boost', value: '56%' },
+    { label: 'Customer support', value: '24/7' },
+    { label: 'Active users', value: '10k+' },
+  ],
+  title: 'Create content with AI assistance.',
+}
+
+export const contentListDemoContent: ContentListDemoContent = {
+  eyebrow: 'What you get',
+  items: [
+    {
+      description: 'Spark creativity with AI-powered content suggestions and inspiration.',
+      term: 'Generate ideas',
+    },
+    {
+      description: 'Enhance your text with smart editing suggestions and style refinements.',
+      term: 'Improve writing',
+    },
+    {
+      description: 'Create visually appealing layouts that capture your audience’s attention.',
+      term: 'Design layouts',
+    },
+  ],
+  title: 'Create content with AI assistance.',
+}
+
+export const contentListColumnsDemoContent: ContentListDemoContent = {
+  eyebrow: 'What you get',
+  items: [
+    {
+      description: 'Spark creativity with AI-powered content suggestions and inspiration.',
+      term: 'Generate ideas',
+    },
+    {
+      description: 'Enhance your text with smart editing suggestions and style refinements.',
+      term: 'Improve writing',
+    },
+  ],
+  title: 'Create content with AI assistance.',
+}
+
+export const contentListIconsDemoContent: ContentListDemoContent = {
+  description: 'Our assistant helps you create better content faster with simple prompts.',
+  eyebrow: 'What you get',
+  items: [
+    {
+      description: 'Spark creativity with AI-powered content suggestions and inspiration.',
+      icon: 'sparkles',
+      term: 'Generate ideas',
+    },
+    {
+      description: 'Enhance your text with smart editing suggestions and style refinements.',
+      icon: 'zap',
+      term: 'Improve writing',
+    },
+    {
+      description: 'Create visually appealing layouts that capture your audience’s attention.',
+      icon: 'gauge',
+      term: 'Design layouts',
+    },
+  ],
+  title: 'Create content with AI assistance.',
+}
+
+/* The whole Integration family (grid, cluster, split, connect, orbit, list,
+   marquee, testimonial) renders from one demo-content shape: the shared
+   heading + optional subtext, an optional generic per-item blurb for the
+   card/list variants, an optional CTA link, and an optional testimonial for
+   the testimonial variant. The logos themselves are presentational and
+   backend-free, so the twins pull invented monochrome marks from
+   `@/components/site/demos/DemoLogos` rather than carrying logo data here. */
+export type IntegrationDemoContent = {
+  heading: string
+  itemDescription?: string
+  links?: { link: DemoLinkData }[]
+  subtext?: string
+  testimonial?: { author: string; quote: string; role?: string }
+}
+
+export const integrationGridDemoContent: IntegrationDemoContent = {
+  heading: 'Connect Acme to the tools you already run.',
+  itemDescription:
+    'Two-way sync that keeps usage, billing, and events flowing without a line of glue code.',
+  subtext: 'Native integrations across analytics, billing, and messaging — wired in an afternoon.',
+}
+
+export const integrationClusterDemoContent: IntegrationDemoContent = {
+  heading: 'Plug Acme into your stack.',
+  links: [{ link: { appearance: 'outline', label: 'Browse integrations' } }],
+  subtext: 'A growing catalog of native connections, with your workspace at the center.',
+}
+
+export const integrationSplitDemoContent: IntegrationDemoContent = {
+  heading: 'One hub for every integration.',
+  links: [{ link: { appearance: 'default', label: 'Browse integrations' } }],
+  subtext:
+    'Connect the tools your team lives in and let Acme keep them in sync, automatically.',
+}
+
+export const integrationConnectDemoContent: IntegrationDemoContent = {
+  heading: 'Everything routes through Acme.',
+  subtext: 'Your data flows out to every connected tool and back again, in real time.',
+}
+
+export const integrationOrbitDemoContent: IntegrationDemoContent = {
+  heading: 'An ecosystem in orbit.',
+  subtext: 'Hover to see the integrations that revolve around your Acme workspace.',
+}
+
+export const integrationListDemoContent: IntegrationDemoContent = {
+  heading: 'Add an integration in one click.',
+  itemDescription: 'Connect once and keep usage, billing, and events in sync automatically.',
+  subtext: 'Browse the catalog and switch on the connections your team needs.',
+}
+
+export const integrationMarqueeDemoContent: IntegrationDemoContent = {
+  heading: 'Works with the tools you already use.',
+  subtext: 'A growing catalog of native integrations across your whole stack.',
+}
+
+export const integrationTestimonialDemoContent: IntegrationDemoContent = {
+  heading: 'Integrate with your favorite tools.',
+  itemDescription: 'Native two-way sync, no glue code required.',
+  subtext: 'Connect seamlessly with the platforms and services that power your workflow.',
+  testimonial: {
+    author: 'Jordan Lee',
+    quote:
+      'We had Acme talking to our warehouse, billing, and Slack in a single afternoon — the integrations just worked.',
+    role: 'Head of Platform, Northwind',
+  },
 }

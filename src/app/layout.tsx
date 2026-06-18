@@ -6,11 +6,11 @@ import Script from 'next/script'
 
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import { RootProvider } from 'fumadocs-ui/provider/next'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 
 import { JsonLd } from '@/components/seo/JsonLd'
+import { CommandCopyController } from '@/components/site/CommandCopyController'
 import { githubRepoUrl, siteDescription, siteUrl } from '@/lib/site'
 import {
   documentationCollectionNode,
@@ -27,7 +27,7 @@ import './globals.css'
 const instrumentSerif = Instrument_Serif({
   subsets: ['latin'],
   weight: '400',
-  style: ['normal', 'italic'],
+  style: 'italic',
   variable: '--font-instrument-serif',
   display: 'swap',
 })
@@ -105,6 +105,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       /* Font variables live on <html>: the @theme font tokens reference them
          and custom properties substitute var() at the declaring element. */
@@ -125,16 +126,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </Script>
       <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
         <JsonLd data={siteStructuredData} />
-        <RootProvider
-          search={{ enabled: true }}
-          theme={{
-            defaultTheme: 'light',
-            enableSystem: false,
-            forcedTheme: 'light',
-          }}
-        >
-          {children}
-        </RootProvider>
+        {children}
+        <CommandCopyController />
         <Analytics />
         <SpeedInsights />
       </body>

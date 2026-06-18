@@ -1,0 +1,69 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "logo-cloud-hover",
+  "version": "0.1.0",
+  "title": "Logo Cloud Hover",
+  "description": "A logo wall that dims and blurs on hover to reveal a single call-to-action, installed as a wired Payload block.",
+  "registryItemName": "logo-cloud-hover",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/logoCloudFields.ts",
+    "src/blocks/LogoCloudHover/config.ts",
+    "src/blocks/LogoCloudHover/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "LogoCloudHoverBlock",
+      "importPath": "@/blocks/LogoCloudHover/Component",
+      "blockSlug": "logoCloudHover"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "LogoCloudHover",
+      "importPath": "../../blocks/LogoCloudHover/config",
+      "blockName": "LogoCloudHover"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Logo grid that dims on hover to surface a CTA link."
+  },
+  "sampleContent": {
+    "blockType": "logoCloudHover",
+    "heading": "Powering the best product teams.",
+    "logos": [
+      { "name": "Northwind" },
+      { "name": "Initech" },
+      { "name": "Umbra" },
+      { "name": "Globex" },
+      { "name": "Soylent" },
+      { "name": "Hooli" },
+      { "name": "Vandelay" },
+      { "name": "Pied Piper" }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/customers",
+          "label": "Meet our customers",
+          "appearance": "default"
+        }
+      }
+    ]
+  }
+}

@@ -1,8 +1,4 @@
 @import 'tailwindcss';
-@import 'fumadocs-ui/css/lib/default-colors.css';
-@import 'fumadocs-ui/css/preset.css';
-
-@source '../../node_modules/fumadocs-ui/dist/**/*.js';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -354,11 +350,97 @@
   }
 }
 
+/* Logo Cloud Marquee twin: the track renders its logos twice, so a -50%
+   shift loops seamlessly. Reduced motion is handled by the global guard. */
+@keyframes logo-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Reverse direction for the middle row of the Integration Marquee twin. */
+@keyframes logo-marquee-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Integration Orbit: concentric rings of logos rotate while their logos
+   counter-rotate to stay upright. Paused by default; runs only on hover. */
+@keyframes integration-orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes integration-orbit-spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
 @layer utilities {
   .container {
     width: 100%;
     margin-inline: auto;
     padding-inline: 1.25rem;
+  }
+
+  /* Logo Cloud Marquee twin: scrolls the duplicated logo track. The global
+     reduced-motion guard below neutralizes it. */
+  .logo-cloud-marquee-track {
+    animation: logo-marquee 32s linear infinite;
+  }
+
+  /* Integration Marquee: three duplicated logo rows, the middle one reversed.
+     Shared by the installable block and its demo twin. The global
+     reduced-motion guard below neutralizes them. */
+  .integration-marquee-track {
+    animation: logo-marquee 36s linear infinite;
+  }
+
+  .integration-marquee-track-reverse {
+    animation: logo-marquee-reverse 36s linear infinite;
+  }
+
+  /* Integration Orbit: rings spin only while the group is hovered, so nothing
+     animates on load. Logos counter-rotate to stay upright. Shared by the
+     installable block and its demo twin; the reduced-motion guard clamps it. */
+  .integration-orbit-ring {
+    animation: integration-orbit-spin 28s linear infinite;
+    animation-play-state: paused;
+  }
+
+  .integration-orbit-ring-reverse {
+    animation: integration-orbit-spin-reverse 36s linear infinite;
+    animation-play-state: paused;
+  }
+
+  .group:hover .integration-orbit-ring,
+  .group:hover .integration-orbit-ring-reverse {
+    animation-play-state: running;
+  }
+
+  .integration-orbit-logo {
+    animation: integration-orbit-spin-reverse 28s linear infinite;
+    animation-play-state: paused;
+  }
+
+  .integration-orbit-ring-reverse .integration-orbit-logo {
+    animation: integration-orbit-spin 36s linear infinite;
+    animation-play-state: paused;
+  }
+
+  .group:hover .integration-orbit-logo {
+    animation-play-state: running;
   }
 
   @media (width >= 40rem) {
@@ -403,6 +485,18 @@
     overflow: hidden;
     white-space: nowrap;
     animation: component-typing 1.6s steps(var(--typing-steps, 30), end) 0.4s both;
+  }
+
+  .copy-button .copy-icon-done {
+    display: none;
+  }
+
+  .copy-button[data-copied='true'] .copy-icon-idle {
+    display: none;
+  }
+
+  .copy-button[data-copied='true'] .copy-icon-done {
+    display: block;
   }
 
   /* ---------------------------------------------------------------- */

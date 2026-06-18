@@ -1,0 +1,72 @@
+---
+title: Content Split Rows
+description: A content section with an intro and alternating media-and-text rows.
+icon: GalleryHorizontalEnd
+---
+
+<ComponentPreview slug="content-split-rows" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add content-split-rows
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-split-rows.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="content-split-rows" />
+
+## Content model
+
+The `eyebrow`, `title`, and `paragraphs` fields come from the shared Content family base
+(`src/blocks/shared/contentFields.ts`); the `rows` list is specific to this variant. Rows alternate
+the media side and are separated by dividers.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    paragraphs: {
+      type: 'array',
+      description: 'Intro copy — one or more short paragraphs (min 1, max 4).',
+    },
+    rows: {
+      type: 'array',
+      required: true,
+      description: 'Two to four media-and-text rows.',
+    },
+  }}
+/>
+
+Each item in `rows` carries:
+
+<TypeTable
+  type={{
+    image: { type: 'upload', description: 'Row media (Media upload).' },
+    title: { type: 'text', required: true, description: 'Row heading.' },
+    description: { type: 'textarea', required: true, description: 'Row body copy.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="content-split-rows" />
+
+## Requirements
+
+<ComponentRequirements slug="content-split-rows" />
+
+## In this family
+
+<ComponentFamily slug="content-split-rows" />
