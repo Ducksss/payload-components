@@ -1070,6 +1070,17 @@ export const communityLinks = [
   },
 ] as const
 
+/* Footer "Components" column: one link per category that actually ships components,
+   in catalog display order, deep-linking to the filtered catalog. Mirrors
+   CatalogFamilyTeaser's `/components?category=${key}` pattern — keeps the footer compact
+   instead of dumping all 38 entries into one column. */
+const footerComponentCategoryLinks = (Object.keys(componentCategories) as ComponentCategory[])
+  .filter((key) => componentEntries.some((entry) => entry.category === key))
+  .map((key) => ({
+    href: `/components?category=${key}`,
+    label: componentCategories[key].label,
+  }))
+
 export const footerColumns = [
   {
     links: [
@@ -1081,7 +1092,10 @@ export const footerColumns = [
     title: 'Product',
   },
   {
-    links: componentEntries.map((component) => ({ href: component.href, label: component.title })),
+    links: [
+      ...footerComponentCategoryLinks,
+      { accent: true, href: '/components', label: `All ${componentEntries.length} components` },
+    ],
     title: 'Components',
   },
   {
