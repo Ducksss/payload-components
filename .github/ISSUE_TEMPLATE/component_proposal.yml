@@ -1,0 +1,131 @@
+name: Component Proposal
+description: Propose a new component for the Payload Components registry.
+title: "[Component]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a new component! This form captures what a maintainer
+        needs to scope your idea into a buildable component issue. Please fill in as
+        much as you can — partial proposals are welcome, but the more detail you give,
+        the faster this can move from idea to accepted component.
+
+  - type: input
+    id: proposed-slug
+    attributes:
+      label: Proposed slug
+      description: The kebab-case identifier this component would register under (e.g. `pricing-table`, `faq-accordion`).
+      placeholder: my-new-component
+    validations:
+      required: true
+
+  - type: dropdown
+    id: family
+    attributes:
+      label: Component family
+      description: Which existing family does this belong to? Pick "New family" if none fit.
+      options:
+        - Layout
+        - Content / Marketing
+        - Forms
+        - Navigation
+        - Media
+        - Data display
+        - Commerce
+        - New family (describe below)
+    validations:
+      required: true
+
+  - type: input
+    id: family-other
+    attributes:
+      label: New family name (if applicable)
+      description: Only fill this in if you selected "New family" above.
+      placeholder: e.g. Pricing
+    validations:
+      required: false
+
+  - type: textarea
+    id: user-workflow
+    attributes:
+      label: Target user workflow
+      description: Describe the editor/end-user workflow this component supports. Who reaches for it, and when?
+      placeholder: A marketer building a landing page wants to drop in a comparison table without writing custom code...
+    validations:
+      required: true
+
+  - type: textarea
+    id: content-fields
+    attributes:
+      label: Intended content fields
+      description: List the fields an editor would fill in (name, type, and whether required). This becomes the basis for the content model / manifest.
+      placeholder: |
+        - title (text, required)
+        - items (array of {label, value, highlighted}, required)
+        - ctaLink (link, optional)
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: render-behavior
+    attributes:
+      label: Render behavior
+      description: How should this look and behave across breakpoints/states (responsive behavior, empty states, loading states, animations, etc.)?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-mode
+    attributes:
+      label: Install mode
+      description: How should consumers add this component to their project?
+      multiple: true
+      options:
+        - CLI install (registry pull)
+        - Copy-paste source
+        - npm/package dependency
+        - Not sure — open to maintainer guidance
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples / inspiration
+      description: Links, screenshots, or descriptions of similar components elsewhere (other registries, design systems, sites). Optional but helpful.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: accessibility
+    attributes:
+      label: Accessibility considerations
+      description: Check any that apply to this component.
+      options:
+        - label: Requires keyboard navigation support (e.g. interactive lists, carousels, menus)
+        - label: Requires ARIA roles/labels beyond native HTML semantics
+        - label: Contains motion/animation that should respect `prefers-reduced-motion`
+        - label: I'm not sure — open to maintainer guidance
+
+  - type: checkboxes
+    id: contribution-commitment
+    attributes:
+      label: Contribution acknowledgment
+      description: A component is only accepted into the registry once it ships as a complete set. Please confirm you understand what "done" means here.
+      options:
+        - label: I understand this proposal must result in source code, a manifest, a registry entry, a docs page, a demo twin, and installer tests shipped together before acceptance.
+          required: true
+        - label: I'm willing to contribute the implementation myself.
+        - label: I'm willing to contribute docs/tests but would like help with implementation.
+        - label: I'm proposing this for someone else to build (idea only).
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Anything else maintainers should know.
+    validations:
+      required: false
