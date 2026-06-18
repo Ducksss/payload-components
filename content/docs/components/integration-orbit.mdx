@@ -1,0 +1,80 @@
+---
+title: Integration Orbit
+description: Concentric rings of integration logos that orbit a featured brand mark on hover.
+icon: Orbit
+---
+
+<ComponentPreview slug="integration-orbit" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add integration-orbit
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-orbit.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="integration-orbit" />
+
+## Content model
+
+`heading`, `subtext`, and `integrations` come from the shared `integrationFields` base. This variant
+adds an optional `featuredLogo` at the center of the rings. The rings spin only on hover and respect
+`prefers-reduced-motion`.
+
+<TypeTable
+  type={{
+    heading: {
+      type: 'text',
+      required: true,
+      description: 'Short heading shown under the rings.',
+    },
+    subtext: {
+      type: 'textarea',
+      description: 'Optional supporting paragraph under the heading.',
+    },
+    integrations: {
+      type: 'array',
+      required: true,
+      description: 'Two to twelve integrations, split across two concentric rings.',
+    },
+    featuredLogo: {
+      type: 'upload',
+      description: 'Optional center brand mark the rings orbit around.',
+    },
+  }}
+/>
+
+Each item in `integrations` carries:
+
+<TypeTable
+  type={{
+    logo: { type: 'upload', required: true, description: 'Logo image (Media upload).' },
+    name: { type: 'text', required: true, description: 'Accessible name / alt text for the logo.' },
+    description: { type: 'textarea', description: 'Optional blurb (unused by this variant).' },
+    href: { type: 'text', description: 'Optional link (unused by this variant).' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="integration-orbit" />
+
+## Requirements
+
+<ComponentRequirements slug="integration-orbit" />
+
+## In this family
+
+<ComponentFamily slug="integration-orbit" />

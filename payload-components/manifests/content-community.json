@@ -1,0 +1,62 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "content-community",
+  "version": "0.1.0",
+  "title": "Content Community",
+  "description": "A centered content section with a heading, body copy, and a wall of community avatars, installed as a wired Payload block.",
+  "registryItemName": "content-community",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/contentFields.ts",
+    "src/blocks/ContentCommunity/config.ts",
+    "src/blocks/ContentCommunity/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContentCommunityBlock",
+      "importPath": "@/blocks/ContentCommunity/Component",
+      "blockSlug": "contentCommunity"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContentCommunity",
+      "importPath": "../../blocks/ContentCommunity/config",
+      "blockName": "ContentCommunity"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Centered heading and body above a wall of community avatars."
+  },
+  "sampleContent": {
+    "blockType": "contentCommunity",
+    "eyebrow": "Open source",
+    "title": "Built by the community, for the community.",
+    "paragraphs": [
+      {
+        "text": "Payload Components grows from real installs and pull requests. Every block ships with its full contract: source, manifest, docs, and installer coverage."
+      }
+    ],
+    "avatars": [
+      { "name": "Ada Lovelace" },
+      { "name": "Alan Turing" },
+      { "name": "Grace Hopper" },
+      { "name": "Linus Torvalds" },
+      { "name": "Margaret Hamilton" },
+      { "name": "Dennis Ritchie" }
+    ]
+  }
+}

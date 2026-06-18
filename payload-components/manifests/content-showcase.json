@@ -1,0 +1,77 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "content-showcase",
+  "version": "0.1.0",
+  "title": "Content Showcase",
+  "description": "A centered content section with an intro, a full-width image, and a four-up grid of icon features, installed as a wired Payload block.",
+  "registryItemName": "content-showcase",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/contentFields.ts",
+    "src/blocks/shared/contentIcons.ts",
+    "src/blocks/ContentShowcase/config.ts",
+    "src/blocks/ContentShowcase/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContentShowcaseBlock",
+      "importPath": "@/blocks/ContentShowcase/Component",
+      "blockSlug": "contentShowcase"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContentShowcase",
+      "importPath": "../../blocks/ContentShowcase/config",
+      "blockName": "ContentShowcase"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Centered intro, a full-width image, and a four-up feature grid."
+  },
+  "sampleContent": {
+    "blockType": "contentShowcase",
+    "eyebrow": "The platform",
+    "title": "The ecosystem brings together your models, products and platforms.",
+    "paragraphs": [
+      {
+        "text": "Payload is more than just the CMS. It supports an entire ecosystem — from the products you ship to the platforms helping your team move faster."
+      }
+    ],
+    "features": [
+      {
+        "icon": "zap",
+        "title": "Fast",
+        "description": "Server-rendered blocks keep pages quick."
+      },
+      {
+        "icon": "cpu",
+        "title": "Powerful",
+        "description": "A real content model behind every section."
+      },
+      {
+        "icon": "lock",
+        "title": "Secure",
+        "description": "Access control and versioning built in."
+      },
+      {
+        "icon": "sparkles",
+        "title": "Refined",
+        "description": "Polished, accessible markup throughout."
+      }
+    ]
+  }
+}

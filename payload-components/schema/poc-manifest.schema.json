@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://payload-components.xyz/schema/poc-manifest.schema.json",
+  "$id": "https://www.payload-components.xyz/schema/poc-manifest.schema.json",
   "title": "Payload Components Alpha Manifest",
   "type": "object",
   "additionalProperties": false,

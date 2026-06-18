@@ -1,0 +1,60 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "integration-testimonial",
+  "version": "0.1.0",
+  "title": "Integration Testimonial",
+  "description": "A two-column section pairing a customer quote with a grid of integration logo cards, installed as a wired Payload block.",
+  "registryItemName": "integration-testimonial",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/integrationFields.ts",
+    "src/blocks/IntegrationTestimonial/config.ts",
+    "src/blocks/IntegrationTestimonial/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "IntegrationTestimonialBlock",
+      "importPath": "@/blocks/IntegrationTestimonial/Component",
+      "blockSlug": "integrationTestimonial"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "IntegrationTestimonial",
+      "importPath": "../../blocks/IntegrationTestimonial/config",
+      "blockName": "IntegrationTestimonial"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "A customer quote beside a grid of integration logo cards."
+  },
+  "sampleContent": {
+    "blockType": "integrationTestimonial",
+    "heading": "Integrate with your favorite tools",
+    "subtext": "Connect seamlessly with the platforms and services that power your workflow.",
+    "quote": "We had everything talking to our warehouse, billing, and Slack in a single afternoon — the integrations just worked.",
+    "author": "Jordan Lee",
+    "role": "Head of Platform, Northwind",
+    "integrations": [
+      { "name": "Northwind", "description": "Native two-way sync, no glue code required." },
+      { "name": "Globex", "description": "Pipe billing events straight into your workspace." },
+      { "name": "Initech", "description": "Stream product analytics with no glue code." },
+      { "name": "Vandelay", "description": "Route alerts to the channels your team lives in." },
+      { "name": "Soylent", "description": "Sync customer records both ways, automatically." },
+      { "name": "Umbra", "description": "Trigger workflows from any connected service." }
+    ]
+  }
+}
