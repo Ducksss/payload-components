@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Fumadocs-powered docs and registry tooling for installable Payload CMS components.",
   "license": "MIT",
-  "homepage": "https://payload-components.xyz",
+  "homepage": "https://www.payload-components.xyz",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Ducksss/payload-components.git"
