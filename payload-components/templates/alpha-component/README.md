@@ -28,6 +28,28 @@ Copy this template when starting a new in-repo alpha component. It is the intern
   - `disableInnerContainer?: boolean`
 - Update the manifest file list, Payload fragments, and `recovery.patchedFiles` so install metadata stays aligned with the real block source.
 
+## Accessibility
+
+Every component ships into real sites, so bake these in — they are part of the bar, not a follow-up:
+
+- **Images** render through `Media`, which resolves `alt` from the upload. When an image is a link's only
+  child (e.g. a logo wall), put the human label on the link itself — `aria-label={item.name}` — instead of
+  relying on the editor to fill `alt`. Keep an editable name/`alt` field on each image item.
+- **Motion**: any auto-playing or looping animation (marquees, carousels) must honor
+  `prefers-reduced-motion` via `useReducedMotion()` from `motion/react` (skip/freeze the motion when it's
+  set). Never strip visible focus — keep `:focus-visible` styling on interactive elements.
+- **Headings & landmarks**: blocks start at `<h2>` (the page owns the `<h1>`); don't skip levels. Wrap the
+  block in a `<section>` and use real landmarks/`<figure>`/`<blockquote>` where they fit.
+- **Forms / inputs** (required when the family is a form component):
+  - A real `<label htmlFor>` paired with each control's `id`. Placeholders are **not** labels.
+  - Email fields: `type="email"` + `inputMode="email"` + `autoComplete="email"`. Set the correct
+    [`autocomplete` token](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete) on
+    every field (`name`, `organization`, `tel`, …) so password managers and mobile autofill work.
+  - Mark `required` fields, and surface validation with `aria-invalid` plus an error message linked by
+    `aria-describedby` (the shadcn `Input` already styles the `aria-invalid` state).
+  - Buttons inside a form that don't submit need `type="button"`; the submit control is `type="submit"`.
+  - An optional spam honeypot stays `aria-hidden` + `tabIndex={-1}` + `autoComplete="off"`.
+
 ## Variants and Shared Fields
 
 A structural variant is its own component, not a CLI flag. Name variants by family with a suffix — `hero-basic`, `hero-video`, `hero-dramatic` — and never ship a bare family name. Choosing a variant happens in the catalog, not an install prompt.

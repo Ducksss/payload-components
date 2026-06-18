@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react'
 
-import { animate, motion, useMotionValue } from 'motion/react'
+import { animate, motion, useMotionValue, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 
 import { cn } from '@/utilities/ui'
@@ -58,8 +58,13 @@ export function InfiniteSlider({
   const translation = useMotionValue(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [key, setKey] = useState(0)
+  const shouldReduceMotion = useReducedMotion()
 
   useEffect(() => {
+    // Respect the user's reduced-motion preference: skip the infinite scroll
+    // and leave the row static (WCAG 2.2.2 Pause/Stop/Hide, 2.3.3).
+    if (shouldReduceMotion) return
+
     const contentSize = width + gap
     const from = reverse ? -contentSize / 2 : 0
     const to = reverse ? 0 : -contentSize / 2
@@ -85,20 +90,21 @@ export function InfiniteSlider({
         })
 
     return controls?.stop
-  }, [key, translation, currentSpeed, width, gap, isTransitioning, reverse])
+  }, [key, translation, currentSpeed, width, gap, isTransitioning, reverse, shouldReduceMotion])
 
-  const hoverProps = speedOnHover
-    ? {
-        onHoverEnd: () => {
-          setIsTransitioning(true)
-          setCurrentSpeed(speed)
-        },
-        onHoverStart: () => {
-          setIsTransitioning(true)
-          setCurrentSpeed(speedOnHover)
-        },
-      }
-    : {}
+  const hoverProps =
+    speedOnHover && !shouldReduceMotion
+      ? {
+          onHoverEnd: () => {
+            setIsTransitioning(true)
+            setCurrentSpeed(speed)
+          },
+          onHoverStart: () => {
+            setIsTransitioning(true)
+            setCurrentSpeed(speedOnHover)
+          },
+        }
+      : {}
 
   return (
     <div className={cn('overflow-hidden', className)}>
