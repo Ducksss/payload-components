@@ -1,0 +1,79 @@
+---
+title: Integration Testimonial
+description: A two-column section pairing a customer quote with a grid of integration logo cards.
+icon: Quote
+---
+
+<ComponentPreview slug="integration-testimonial" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add integration-testimonial
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-testimonial.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="integration-testimonial" />
+
+## Content model
+
+`heading`, `subtext`, and `integrations` come from the shared `integrationFields` base. This variant
+adds a customer `quote` with `author`, optional `role`, and optional `authorAvatar`.
+
+<TypeTable
+  type={{
+    heading: {
+      type: 'text',
+      required: true,
+      description: 'Short heading shown beside the logo grid.',
+    },
+    subtext: {
+      type: 'textarea',
+      description: 'Optional supporting paragraph under the heading.',
+    },
+    integrations: {
+      type: 'array',
+      required: true,
+      description: 'Two to twelve integrations rendered as logo cards with a name and optional description.',
+    },
+    quote: { type: 'textarea', required: true, description: 'Customer quote shown beside the grid.' },
+    author: { type: 'text', required: true, description: 'Name of the person quoted.' },
+    role: { type: 'text', description: 'Optional role / company for the author.' },
+    authorAvatar: { type: 'upload', description: 'Optional avatar image for the author.' },
+  }}
+/>
+
+Each item in `integrations` carries:
+
+<TypeTable
+  type={{
+    logo: { type: 'upload', required: true, description: 'Logo image (Media upload).' },
+    name: { type: 'text', required: true, description: 'Accessible name / alt text for the logo.' },
+    description: { type: 'textarea', description: 'Short blurb shown on the card.' },
+    href: { type: 'text', description: 'Optional link (unused by this variant).' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="integration-testimonial" />
+
+## Requirements
+
+<ComponentRequirements slug="integration-testimonial" />
+
+## In this family
+
+<ComponentFamily slug="integration-testimonial" />

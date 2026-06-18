@@ -43,12 +43,39 @@ const readJson = async <T>(filePath: string): Promise<T> =>
   JSON.parse(await readFile(filePath, 'utf8')) as T
 
 const expectedRegistryDependencies: Record<string, string[]> = {
+  'content-columns': ['badge'],
+  'content-community': ['badge'],
+  'content-feature-media': ['badge'],
+  'content-feature-split': ['badge'],
+  'content-image-frame': ['badge'],
+  'content-image-lead': ['badge'],
+  'content-list': ['badge'],
+  'content-list-columns': ['badge'],
+  'content-list-icons': ['badge'],
+  'content-quote': ['badge'],
+  'content-rows': ['badge'],
+  'content-showcase': ['badge'],
+  'content-split-rows': ['badge'],
+  'content-stats': ['badge'],
   'embed-basic': [],
   'feature-bento': ['badge', 'card'],
   'feature-grid-basic': ['badge', 'card'],
   'feature-split': ['badge', 'card'],
   'feature-steps': ['badge', 'card'],
   'hero-basic': ['badge'],
+  'integration-cluster': [],
+  'integration-connect': [],
+  'integration-grid': [],
+  'integration-list': [],
+  'integration-marquee': [],
+  'integration-orbit': [],
+  'integration-split': [],
+  'integration-testimonial': [],
+  'logo-cloud-grid': [],
+  'logo-cloud-hover': [],
+  'logo-cloud-inline': [],
+  'logo-cloud-inline-wrap': [],
+  'logo-cloud-marquee': [],
 }
 
 describe('public shadcn registry publication', () => {
@@ -79,12 +106,39 @@ describe('public shadcn registry publication', () => {
       name: 'payload-components',
     })
     expect(registry.items.map((item) => item.name).sort()).toEqual([
+      'content-columns',
+      'content-community',
+      'content-feature-media',
+      'content-feature-split',
+      'content-image-frame',
+      'content-image-lead',
+      'content-list',
+      'content-list-columns',
+      'content-list-icons',
+      'content-quote',
+      'content-rows',
+      'content-showcase',
+      'content-split-rows',
+      'content-stats',
       'embed-basic',
       'feature-bento',
       'feature-grid-basic',
       'feature-split',
       'feature-steps',
       'hero-basic',
+      'integration-cluster',
+      'integration-connect',
+      'integration-grid',
+      'integration-list',
+      'integration-marquee',
+      'integration-orbit',
+      'integration-split',
+      'integration-testimonial',
+      'logo-cloud-grid',
+      'logo-cloud-hover',
+      'logo-cloud-inline',
+      'logo-cloud-inline-wrap',
+      'logo-cloud-marquee',
     ])
 
     for (const item of registry.items) {
@@ -105,7 +159,9 @@ describe('public shadcn registry publication', () => {
 
       for (const file of item.files ?? []) {
         expect(file.content).toBeUndefined()
-        expect(file.path).toMatch(/^payload-components\/source\/blocks\//)
+        // Block source lives under source/blocks/; a variant may also ship shared UI
+        // primitives under source/components/ (e.g. the marquee's InfiniteSlider).
+        expect(file.path).toMatch(/^payload-components\/source\/(blocks|components)\//)
         expect(file.target).toBe(file.path.replace(/^payload-components\/source/, '~/src'))
         expect(file.type).toBe('registry:file')
       }

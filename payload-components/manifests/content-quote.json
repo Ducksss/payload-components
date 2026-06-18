@@ -1,0 +1,56 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "content-quote",
+  "version": "0.1.0",
+  "title": "Content Quote",
+  "description": "A content section pairing a media panel with body copy and a pull quote, installed as a wired Payload block.",
+  "registryItemName": "content-quote",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/contentFields.ts",
+    "src/blocks/ContentQuote/config.ts",
+    "src/blocks/ContentQuote/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContentQuoteBlock",
+      "importPath": "@/blocks/ContentQuote/Component",
+      "blockSlug": "contentQuote"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContentQuote",
+      "importPath": "../../blocks/ContentQuote/config",
+      "blockName": "ContentQuote"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "A media panel beside body copy and a cited pull quote."
+  },
+  "sampleContent": {
+    "blockType": "contentQuote",
+    "eyebrow": "In their words",
+    "title": "The ecosystem brings together your models.",
+    "paragraphs": [
+      {
+        "text": "Payload is more than just the CMS. It supports an entire ecosystem — from the products you ship to the platforms helping your team move faster."
+      }
+    ],
+    "quote": "Using Payload Components has been like unlocking a design superpower — the perfect fusion of simplicity and versatility.",
+    "citation": "John Doe, CEO"
+  }
+}

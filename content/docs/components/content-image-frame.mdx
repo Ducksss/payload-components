@@ -1,0 +1,59 @@
+---
+title: Content Image Frame
+description: A centered content section with an intro and a layered, framed screenshot.
+icon: Image
+---
+
+<ComponentPreview slug="content-image-frame" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add content-image-frame
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-image-frame.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="content-image-frame" />
+
+## Content model
+
+The `eyebrow`, `title`, and `paragraphs` fields come from the shared Content family base
+(`src/blocks/shared/contentFields.ts`); the `image` and optional `backgroundImage` uploads are
+specific to this variant. The image is framed inside a rounded backdrop.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the centered title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    paragraphs: {
+      type: 'array',
+      description: 'Centered intro copy — one or more short paragraphs (min 1, max 4).',
+    },
+    image: { type: 'upload', description: 'Foreground screenshot (Media upload) shown in the frame.' },
+    backgroundImage: { type: 'upload', description: 'Optional backdrop image (Media upload) behind the frame.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="content-image-frame" />
+
+## Requirements
+
+<ComponentRequirements slug="content-image-frame" />
+
+## In this family
+
+<ComponentFamily slug="content-image-frame" />

@@ -1,0 +1,67 @@
+---
+title: Content Image Lead
+description: A content section led by a full-width image above a two-column heading, body, and CTA.
+icon: Image
+---
+
+<ComponentPreview slug="content-image-lead" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add content-image-lead
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-image-lead.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="content-image-lead" />
+
+## Content model
+
+The `eyebrow`, `title`, and `paragraphs` fields come from the shared Content family base
+(`src/blocks/shared/contentFields.ts`); the `image` upload and CTA `links` are specific to this
+variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    paragraphs: {
+      type: 'array',
+      description: 'Body copy — one or more short paragraphs (min 1, max 4).',
+    },
+    image: { type: 'upload', description: 'Lead image (Media upload) shown full-width above the columns.' },
+    links: { type: 'array', description: 'Optional CTA link (max 1).' },
+  }}
+/>
+
+Each item in `paragraphs` carries:
+
+<TypeTable
+  type={{
+    text: { type: 'textarea', required: true, description: 'A single paragraph of body copy.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="content-image-lead" />
+
+## Requirements
+
+<ComponentRequirements slug="content-image-lead" />
+
+## In this family
+
+<ComponentFamily slug="content-image-lead" />

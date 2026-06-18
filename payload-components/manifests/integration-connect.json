@@ -1,0 +1,57 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "integration-connect",
+  "version": "0.1.0",
+  "title": "Integration Connect",
+  "description": "A featured brand mark with integration logos wired to it by connector lines, installed as a wired Payload block.",
+  "registryItemName": "integration-connect",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/integrationFields.ts",
+    "src/blocks/IntegrationConnect/config.ts",
+    "src/blocks/IntegrationConnect/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "IntegrationConnectBlock",
+      "importPath": "@/blocks/IntegrationConnect/Component",
+      "blockSlug": "integrationConnect"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "IntegrationConnect",
+      "importPath": "../../blocks/IntegrationConnect/config",
+      "blockName": "IntegrationConnect"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Integration logos connected to a central brand mark by gradient lines."
+  },
+  "sampleContent": {
+    "blockType": "integrationConnect",
+    "heading": "Everything routes through one hub",
+    "subtext": "Your data flows out to every connected tool and back again, in real time.",
+    "integrations": [
+      { "name": "Northwind" },
+      { "name": "Globex" },
+      { "name": "Initech" },
+      { "name": "Vandelay" },
+      { "name": "Soylent" },
+      { "name": "Umbra" }
+    ]
+  }
+}

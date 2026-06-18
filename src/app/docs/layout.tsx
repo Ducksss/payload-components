@@ -1,15 +1,23 @@
 import type { ReactNode } from 'react'
 
 import { DocsLayout } from 'fumadocs-ui/layouts/docs'
+import { RootProvider } from 'fumadocs-ui/provider/next'
 
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { baseOptions } from '@/lib/layout.shared'
 import { source } from '@/lib/source'
 
+import './docs.css'
+
 export default function DocsRootLayout({ children }: { children: ReactNode }) {
   return (
-    <>
-      <SiteHeader />
+    <RootProvider
+      search={{ enabled: true }}
+      theme={{
+        enabled: false,
+      }}
+    >
+      <SiteHeader activePath="/docs" />
       <DocsLayout
         {...baseOptions()}
         tree={source.getPageTree()}
@@ -28,6 +36,6 @@ export default function DocsRootLayout({ children }: { children: ReactNode }) {
       >
         {children}
       </DocsLayout>
-    </>
+    </RootProvider>
   )
 }

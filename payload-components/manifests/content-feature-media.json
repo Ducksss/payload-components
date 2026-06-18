@@ -1,0 +1,67 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "content-feature-media",
+  "version": "0.1.0",
+  "title": "Content Feature Media",
+  "description": "A content section pairing body copy and two icon features beside a framed media panel, installed as a wired Payload block.",
+  "registryItemName": "content-feature-media",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/contentFields.ts",
+    "src/blocks/shared/contentIcons.ts",
+    "src/blocks/ContentFeatureMedia/config.ts",
+    "src/blocks/ContentFeatureMedia/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContentFeatureMediaBlock",
+      "importPath": "@/blocks/ContentFeatureMedia/Component",
+      "blockSlug": "contentFeatureMedia"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContentFeatureMedia",
+      "importPath": "../../blocks/ContentFeatureMedia/config",
+      "blockName": "ContentFeatureMedia"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Body copy and two icon features beside a framed media panel."
+  },
+  "sampleContent": {
+    "blockType": "contentFeatureMedia",
+    "eyebrow": "Under the hood",
+    "title": "The ecosystem brings together your models.",
+    "paragraphs": [
+      {
+        "text": "Payload is more than just the CMS. It supports an entire ecosystem — from the products you ship to the platforms helping your team move faster."
+      }
+    ],
+    "features": [
+      {
+        "icon": "zap",
+        "title": "Fast",
+        "description": "Server-rendered blocks keep pages quick for developers and editors alike."
+      },
+      {
+        "icon": "cpu",
+        "title": "Powerful",
+        "description": "A real content model behind every section, not a wall of hardcoded markup."
+      }
+    ]
+  }
+}

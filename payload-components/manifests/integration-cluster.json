@@ -1,0 +1,68 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "integration-cluster",
+  "version": "0.1.0",
+  "title": "Integration Cluster",
+  "description": "A centered cluster of integration logos around a featured brand mark, with a heading and CTA, installed as a wired Payload block.",
+  "registryItemName": "integration-cluster",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/integrationFields.ts",
+    "src/blocks/IntegrationCluster/config.ts",
+    "src/blocks/IntegrationCluster/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "IntegrationClusterBlock",
+      "importPath": "@/blocks/IntegrationCluster/Component",
+      "blockSlug": "integrationCluster"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "IntegrationCluster",
+      "importPath": "../../blocks/IntegrationCluster/config",
+      "blockName": "IntegrationCluster"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Centered logo cluster around a featured mark, with a heading and call-to-action."
+  },
+  "sampleContent": {
+    "blockType": "integrationCluster",
+    "heading": "Plug into your stack",
+    "subtext": "A growing catalog of native connections, with your workspace at the center.",
+    "integrations": [
+      { "name": "Northwind" },
+      { "name": "Globex" },
+      { "name": "Initech" },
+      { "name": "Vandelay" },
+      { "name": "Soylent" },
+      { "name": "Umbra" }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "#",
+          "label": "Browse integrations",
+          "appearance": "outline"
+        }
+      }
+    ]
+  }
+}

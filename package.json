@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Fumadocs-powered docs and registry tooling for installable Payload CMS components.",
   "license": "MIT",
-  "homepage": "https://payload-components.xyz",
+  "homepage": "https://www.payload-components.xyz",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Ducksss/payload-components.git"
@@ -33,7 +33,7 @@
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
     "test:fresh": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/smoke/fresh-payload-repo.ts",
-    "test:install": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int/payload-components.int.spec.ts tests/int/payload-components-registry.int.spec.ts tests/int/payload-components-add-command.int.spec.ts",
+    "test:install": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int/payload-components.int.spec.ts tests/int/payload-components-registry.int.spec.ts tests/int/payload-components-add-command.int.spec.ts tests/int/payload-components-doctor-command.int.spec.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
     "test:registry": "pnpm registry:check",
     "test:release": "pnpm lint && pnpm source:build && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm run test:e2e && pnpm build"
@@ -75,6 +75,7 @@
     "tailwindcss": "^4.1.18",
     "tsx": "4.22.4",
     "typescript": "5.7.3",
+    "vite": "7.3.5",
     "vite-tsconfig-paths": "6.0.5",
     "vitest": "4.1.8"
   },
@@ -93,7 +94,12 @@
       "esbuild": "0.28.1",
       "fast-uri": "3.1.2",
       "postcss": "8.5.14",
-      "uuid": "11.1.1"
+      "uuid": "11.1.1",
+      "brace-expansion@>=5.0.0 <5.0.6": "5.0.6",
+      "ws@>=8.0.0 <8.21.0": "8.21.0",
+      "vite@>=7.0.0 <=7.3.4": "7.3.5",
+      "js-yaml@<=4.1.1": "4.2.0",
+      "@babel/core@<=7.29.0": "7.29.7"
     }
   }
 }

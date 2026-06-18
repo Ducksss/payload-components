@@ -1,0 +1,65 @@
+---
+title: Content Columns
+description: A two-column content section pairing a heading with body paragraphs and a CTA.
+icon: Columns2
+---
+
+<ComponentPreview slug="content-columns" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add content-columns
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-columns.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="content-columns" />
+
+## Content model
+
+The `eyebrow`, `title`, and `paragraphs` fields come from the shared Content family base
+(`src/blocks/shared/contentFields.ts`); the CTA `links` are specific to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    paragraphs: {
+      type: 'array',
+      description: 'Body copy — one or more short paragraphs (min 1, max 4).',
+    },
+    links: { type: 'array', description: 'Optional CTA link (max 1).' },
+  }}
+/>
+
+Each item in `paragraphs` carries:
+
+<TypeTable
+  type={{
+    text: { type: 'textarea', required: true, description: 'A single paragraph of body copy.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="content-columns" />
+
+## Requirements
+
+<ComponentRequirements slug="content-columns" />
+
+## In this family
+
+<ComponentFamily slug="content-columns" />
