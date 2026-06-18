@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 import { ArrowUpRight } from 'lucide-react'
 
-import { Wordmark } from '@/components/site/SiteHeader'
+import { Wordmark } from '@/components/site/Wordmark'
 import { footerColumns, primaryInstallCommand } from '@/lib/site'
 
 export function SiteFooter() {

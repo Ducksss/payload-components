@@ -1,10 +1,8 @@
-'use client'
-
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 
 import { Github } from 'lucide-react'
 
+import { Wordmark } from '@/components/site/Wordmark'
 import { githubRepoUrl } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
@@ -14,40 +12,21 @@ const navLinks = [
   { href: '/about', label: 'About' },
 ] as const
 
-export function Wordmark({ withBadge = false }: { withBadge?: boolean }) {
-  return (
-    <span className="flex items-center gap-2.5">
-      <span
-        aria-hidden="true"
-        className="flex size-6 items-center justify-center rounded-md bg-brand font-mono text-[13px] font-semibold leading-none text-brand-foreground"
-      >
-        &gt;
-      </span>
-      <span className="text-[15px] font-semibold tracking-tight text-foreground">
-        Payload Components
-      </span>
-      {withBadge ? (
-        <span className="hidden rounded-full border border-border px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground sm:inline">
-          alpha
-        </span>
-      ) : null}
-    </span>
-  )
-}
-
-export function SiteHeader() {
-  const pathname = usePathname()
-
+export function SiteHeader({
+  activePath,
+}: {
+  activePath?: (typeof navLinks)[number]['href']
+}) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95">
-      <div className="container flex h-14 items-center justify-between gap-4">
+      <div className="flex h-14 items-center justify-between gap-4 pl-4 pr-5 md:pr-8">
         <Link href="/" aria-label="Payload Components home">
-          <Wordmark withBadge />
+          <Wordmark mobileIconOnly withBadge />
         </Link>
 
         <nav className="flex items-center gap-1 sm:gap-1.5">
           {navLinks.map((item) => {
-            const active = pathname === item.href || pathname.startsWith(`${item.href}/`)
+            const active = activePath === item.href
 
             return (
               <Link

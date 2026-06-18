@@ -1,0 +1,75 @@
+---
+title: Content Stats
+description: A content section with an intro, a grid of icon features, and a stats list.
+icon: LayoutDashboard
+---
+
+<ComponentPreview slug="content-stats" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add content-stats
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-stats.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="content-stats" />
+
+## Content model
+
+The `eyebrow`, `title`, and `paragraphs` fields come from the shared Content family base
+(`src/blocks/shared/contentFields.ts`); the `features` grid and `stats` list are specific to this
+variant. Feature icons are chosen from the shared allowlist in `src/blocks/shared/contentIcons.ts`.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    paragraphs: {
+      type: 'array',
+      description: 'Intro copy — one or more short paragraphs (min 1, max 4).',
+    },
+    features: {
+      type: 'array',
+      description: 'Two to six icon features rendered in a responsive grid.',
+    },
+    stats: {
+      type: 'array',
+      description: 'A list of headline stats (value + label), max 8.',
+    },
+  }}
+/>
+
+Each item in `features` carries `icon` (a Lucide name: zap · cpu · lock · sparkles · gauge · shield),
+`title`, and `description`. Each item in `stats` carries:
+
+<TypeTable
+  type={{
+    value: { type: 'text', required: true, description: 'The headline figure, e.g. “90+”.' },
+    label: { type: 'text', required: true, description: 'What the figure measures.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="content-stats" />
+
+## Requirements
+
+<ComponentRequirements slug="content-stats" />
+
+## In this family
+
+<ComponentFamily slug="content-stats" />

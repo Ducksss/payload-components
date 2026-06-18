@@ -7,6 +7,13 @@ const deployFreshHeaders = [
   },
 ]
 
+const publicAssetHeaders = [
+  {
+    key: 'Cache-Control',
+    value: 'public, max-age=3600, stale-while-revalidate=86400',
+  },
+]
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   devIndicators: false,
@@ -22,6 +29,18 @@ const nextConfig = {
         source: '/:path*',
         has: [{ type: 'header', key: 'rsc', value: '1' }],
         headers: deployFreshHeaders,
+      },
+      {
+        source: '/favicon.svg',
+        headers: publicAssetHeaders,
+      },
+      {
+        source: '/favicon.ico',
+        headers: publicAssetHeaders,
+      },
+      {
+        source: '/manifest.webmanifest',
+        headers: publicAssetHeaders,
       },
     ]
   },

@@ -47,7 +47,7 @@ export default function ComponentsPage() {
   return (
     <>
       <JsonLd data={catalogStructuredData} />
-      <SiteHeader />
+      <SiteHeader activePath="/components" />
 
       <main className="flex-1">
         <section className="relative overflow-hidden border-b border-border">

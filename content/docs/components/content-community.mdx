@@ -1,0 +1,71 @@
+---
+title: Content Community
+description: A centered content section with a heading, body copy, and a wall of community avatars.
+icon: Users
+---
+
+<ComponentPreview slug="content-community" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add content-community
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-community.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="content-community" />
+
+## Content model
+
+The `eyebrow`, `title`, and `paragraphs` fields come from the shared Content family base
+(`src/blocks/shared/contentFields.ts`); the `avatars` list is specific to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the centered title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    paragraphs: {
+      type: 'array',
+      description: 'Centered body copy — one or more short paragraphs (min 1, max 4).',
+    },
+    avatars: {
+      type: 'array',
+      required: true,
+      description: 'The wall of community members (min 3, max 24).',
+    },
+  }}
+/>
+
+Each item in `avatars` carries:
+
+<TypeTable
+  type={{
+    avatar: { type: 'upload', required: true, description: 'Avatar image (Media upload).' },
+    name: { type: 'text', required: true, description: 'Member name (used as the link title).' },
+    href: { type: 'text', description: 'Optional link to the member’s profile.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="content-community" />
+
+## Requirements
+
+<ComponentRequirements slug="content-community" />
+
+## In this family
+
+<ComponentFamily slug="content-community" />

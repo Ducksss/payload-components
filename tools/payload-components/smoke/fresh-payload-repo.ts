@@ -1,14 +1,5 @@
 import { spawn, type ChildProcess } from 'node:child_process'
-import {
-  access,
-  cp,
-  mkdir,
-  mkdtemp,
-  readFile,
-  rm,
-  symlink,
-  writeFile,
-} from 'node:fs/promises'
+import { access, cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises'
 import { createServer, type Server, type ServerResponse } from 'node:http'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
@@ -27,6 +18,23 @@ export const DEFAULT_SMOKE_COMPONENTS = [
   'feature-bento',
   'feature-steps',
   'embed-basic',
+  'content-columns',
+  'content-feature-media',
+  'content-stats',
+  'content-list',
+  'logo-cloud-grid',
+  'logo-cloud-hover',
+  'logo-cloud-marquee',
+  'logo-cloud-inline',
+  'logo-cloud-inline-wrap',
+  'integration-grid',
+  'integration-cluster',
+  'integration-split',
+  'integration-connect',
+  'integration-orbit',
+  'integration-list',
+  'integration-marquee',
+  'integration-testimonial',
 ] as const
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
 
@@ -76,6 +84,12 @@ type StaticRegistryServer = {
   urlTemplate: string
 }
 
+type SmokeSampleBlock = ComponentManifest['sampleContent'] & {
+  avatars?: Array<Record<string, unknown>>
+  integrations?: Array<Record<string, unknown>>
+  logos?: Array<Record<string, unknown>>
+}
+
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(dirname, '..', '..', '..')
 const rootPackagePath = path.join(repoRoot, 'package.json')
@@ -122,7 +136,9 @@ export const parseSmokeArgs = (argv: string[]): SmokeOptions => {
       const timeoutMs = Number(rawTimeout)
 
       if (!Number.isInteger(timeoutMs) || timeoutMs <= 0) {
-        throw new Error(`--timeout must be a positive integer in milliseconds. Received "${rawTimeout}".`)
+        throw new Error(
+          `--timeout must be a positive integer in milliseconds. Received "${rawTimeout}".`,
+        )
       }
 
       options.timeoutMs = timeoutMs
@@ -201,7 +217,11 @@ export const resolveRegistryItemUrl = (registryUrl: string, itemName: string) =>
   return `${registryUrl.replace(/\/$/, '')}/${itemName}.json`
 }
 
-export const getDirectShadcnAddArgs = ({ cwd, itemName, registryUrl }: DirectShadcnAddArgsInput) => [
+export const getDirectShadcnAddArgs = ({
+  cwd,
+  itemName,
+  registryUrl,
+}: DirectShadcnAddArgsInput) => [
   'dlx',
   shadcnCliPackage,
   'add',
@@ -234,15 +254,7 @@ const exists = async (filePath: string) => {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const runCommand = async ({
-  args,
-  command,
-  cwd,
-  env,
-  stage,
-  stdin,
-  timeoutMs,
-}: CommandInput) =>
+const runCommand = async ({ args, command, cwd, env, stage, stdin, timeoutMs }: CommandInput) =>
   new Promise<void>((resolve, reject) => {
     console.log(`\n[payload-components smoke] ${stage}`)
     console.log(`[payload-components smoke] $ ${command} ${args.join(' ')}`)
@@ -290,7 +302,11 @@ const runCommand = async ({
         return
       }
 
-      finish(new Error(`Stage "${stage}" failed with ${signal ? `signal ${signal}` : `exit code ${code}`}.`))
+      finish(
+        new Error(
+          `Stage "${stage}" failed with ${signal ? `signal ${signal}` : `exit code ${code}`}.`,
+        ),
+      )
     })
   })
 
@@ -381,7 +397,9 @@ const sendStaticFile = async (serverRoot: string, requestUrl: string, response: 
   try {
     const content = await readFile(filePath)
     response.writeHead(200, {
-      'content-type': filePath.endsWith('.json') ? 'application/json; charset=utf-8' : 'application/octet-stream',
+      'content-type': filePath.endsWith('.json')
+        ? 'application/json; charset=utf-8'
+        : 'application/octet-stream',
     })
     response.end(content)
   } catch {
@@ -429,18 +447,20 @@ const copyRepoFixture = async (targetPath: string) => {
         return true
       }
 
-      return !relative.split(path.sep).some((segment) =>
-        [
-          '.git',
-          '.next',
-          '.payload-components',
-          '.playwright-cli',
-          'coverage',
-          'node_modules',
-          'playwright-report',
-          'test-results',
-        ].includes(segment),
-      )
+      return !relative
+        .split(path.sep)
+        .some((segment) =>
+          [
+            '.git',
+            '.next',
+            '.payload-components',
+            '.playwright-cli',
+            'coverage',
+            'node_modules',
+            'playwright-report',
+            'test-results',
+          ].includes(segment),
+        )
     },
     recursive: true,
   })
@@ -473,7 +493,9 @@ const assertFilesDelivered = async (targetPath: string, manifests: ComponentMani
   for (const manifest of manifests) {
     for (const file of manifest.files) {
       if (!(await exists(path.join(targetPath, file)))) {
-        throw new Error(`Direct shadcn smoke did not deliver ${file} for component "${manifest.name}".`)
+        throw new Error(
+          `Direct shadcn smoke did not deliver ${file} for component "${manifest.name}".`,
+        )
       }
     }
   }
@@ -535,8 +557,25 @@ const runDirectShadcnUrlSmoke = async ({
   return targetPath
 }
 
-const writeSeedScript = async (targetPath: string, manifests: ComponentManifest[]) => {
+const isMissingUploadReference = (item: Record<string, unknown>, fieldName: string) =>
+  typeof item[fieldName] === 'undefined' || item[fieldName] === null || item[fieldName] === ''
+
+export const sampleContentNeedsSmokeMedia = (sampleContent: ComponentManifest['sampleContent']) => {
+  const block = sampleContent as SmokeSampleBlock
+
+  return (
+    block.logos?.some((item) => isMissingUploadReference(item, 'logo')) ||
+    block.integrations?.some((item) => isMissingUploadReference(item, 'logo')) ||
+    block.avatars?.some((item) => isMissingUploadReference(item, 'avatar')) ||
+    false
+  )
+}
+
+export const writeSeedScript = async (targetPath: string, manifests: ComponentManifest[]) => {
   const layout = manifests.map((manifest) => manifest.sampleContent)
+  const needsSmokeMedia = manifests.some((manifest) =>
+    sampleContentNeedsSmokeMedia(manifest.sampleContent),
+  )
   const scriptPath = path.join(targetPath, '.payload-components', 'smoke-seed.ts')
 
   await mkdir(path.dirname(scriptPath), {
@@ -545,7 +584,10 @@ const writeSeedScript = async (targetPath: string, manifests: ComponentManifest[
 
   await writeFile(
     scriptPath,
-    `import { config as loadEnv } from 'dotenv'
+    `import { mkdir, writeFile } from 'node:fs/promises'
+import path from 'node:path'
+
+import { config as loadEnv } from 'dotenv'
 
 import { getPayload } from 'payload'
 
@@ -553,10 +595,54 @@ loadEnv({ path: '.env' })
 
 const { default: config } = await import('../src/payload.config')
 
-const layout = ${JSON.stringify(layout, null, 2)}
+type SmokeSampleItem = Record<string, unknown>
+type SmokeSampleBlock = SmokeSampleItem & {
+  avatars?: SmokeSampleItem[]
+  integrations?: SmokeSampleItem[]
+  logos?: SmokeSampleItem[]
+}
+
+const rawLayout = ${JSON.stringify(layout, null, 2)} satisfies SmokeSampleBlock[]
+const needsSmokeMedia = ${JSON.stringify(needsSmokeMedia)}
+
+const addUploadReference = (items: SmokeSampleItem[] | undefined, fieldName: string, mediaID: unknown) =>
+  items?.map((item) => ({
+    ...item,
+    [fieldName]: item[fieldName] ?? mediaID,
+  }))
+
+const addSmokeUploadReferences = (block: SmokeSampleBlock, mediaID: unknown): SmokeSampleBlock => ({
+  ...block,
+  ...(block.avatars ? { avatars: addUploadReference(block.avatars, 'avatar', mediaID) } : {}),
+  ...(block.integrations ? { integrations: addUploadReference(block.integrations, 'logo', mediaID) } : {}),
+  ...(block.logos ? { logos: addUploadReference(block.logos, 'logo', mediaID) } : {}),
+})
+
+const createSmokeMedia = async () => {
+  const mediaPath = path.join(process.cwd(), '.payload-components', 'smoke-placeholder.svg')
+
+  await mkdir(path.dirname(mediaPath), { recursive: true })
+  await writeFile(
+    mediaPath,
+    '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect width="96" height="96" rx="24" fill="#f4f4f5"/><path d="M27 52h42v8H27zM27 36h42v8H27z" fill="#18181b"/></svg>',
+  )
+
+  return payload.create({
+    collection: 'media',
+    data: {
+      alt: 'Payload Components smoke placeholder',
+    },
+    filePath: mediaPath,
+    overrideAccess: true,
+  })
+}
 
 const payload = await getPayload({ config })
 const slug = 'payload-components-smoke'
+const smokeMedia = needsSmokeMedia ? await createSmokeMedia() : undefined
+const layout = smokeMedia
+  ? rawLayout.map((block) => addSmokeUploadReferences(block, smokeMedia.id))
+  : rawLayout
 
 await payload.delete({
   collection: 'pages',
@@ -636,15 +722,20 @@ const assertRouteRendersWithPlaywright = async ({
     })
 
     for (const manifest of manifests) {
-      const title = manifest.sampleContent.title
+      const sampleLabel = manifest.sampleContent.title ?? manifest.sampleContent.heading
 
-      if (typeof title !== 'string') {
-        throw new Error(`Manifest "${manifest.name}" sampleContent.title must be a string for smoke assertions.`)
+      if (typeof sampleLabel !== 'string') {
+        throw new Error(
+          `Manifest "${manifest.name}" sampleContent must include a visible title or heading for smoke assertions.`,
+        )
       }
 
-      await page.getByText(title, { exact: false }).first().waitFor({
-        timeout: Math.min(timeoutMs, 60_000),
-      })
+      await page
+        .getByText(sampleLabel, { exact: false })
+        .first()
+        .waitFor({
+          timeout: Math.min(timeoutMs, 60_000),
+        })
     }
   } finally {
     await browser.close()
@@ -777,7 +868,10 @@ const smokeEnvForTarget = (serverUrl: string): Partial<NodeJS.ProcessEnv> => ({
 })
 
 const writeSummary = async (summary: SmokeSummary) => {
-  await writeFile(path.join(summary.tempRoot, 'smoke-summary.json'), JSON.stringify(summary, null, 2))
+  await writeFile(
+    path.join(summary.tempRoot, 'smoke-summary.json'),
+    JSON.stringify(summary, null, 2),
+  )
   console.log('\n[payload-components smoke] summary')
   console.log(JSON.stringify(summary, null, 2))
 }
@@ -862,7 +956,8 @@ export const runSmoke = async (options: SmokeOptions) => {
   }
 }
 
-const isMain = () => process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+const isMain = () =>
+  process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 
 if (isMain()) {
   runSmoke(parseSmokeArgs(process.argv.slice(2))).catch(() => {

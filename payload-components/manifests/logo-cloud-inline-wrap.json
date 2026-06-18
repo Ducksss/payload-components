@@ -1,0 +1,54 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "logo-cloud-inline-wrap",
+  "version": "0.1.0",
+  "title": "Logo Cloud Inline Wrap",
+  "description": "A single wrapping row that keeps the label inline with editable trust logos, installed as a wired Payload block.",
+  "registryItemName": "logo-cloud-inline-wrap",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/logoCloudFields.ts",
+    "src/blocks/LogoCloudInlineWrap/config.ts",
+    "src/blocks/LogoCloudInlineWrap/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "LogoCloudInlineWrapBlock",
+      "importPath": "@/blocks/LogoCloudInlineWrap/Component",
+      "blockSlug": "logoCloudInlineWrap"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "LogoCloudInlineWrap",
+      "importPath": "../../blocks/LogoCloudInlineWrap/config",
+      "blockName": "LogoCloudInlineWrap"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Label and editable logos sharing one wrapping inline row."
+  },
+  "sampleContent": {
+    "blockType": "logoCloudInlineWrap",
+    "heading": "Trusted by teams at:",
+    "logos": [
+      { "name": "Northwind" },
+      { "name": "Initech" },
+      { "name": "Umbra" },
+      { "name": "Globex" }
+    ]
+  }
+}

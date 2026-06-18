@@ -1,0 +1,54 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "content-image-frame",
+  "version": "0.1.0",
+  "title": "Content Image Frame",
+  "description": "A centered content section with an intro and a layered, framed screenshot, installed as a wired Payload block.",
+  "registryItemName": "content-image-frame",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/contentFields.ts",
+    "src/blocks/ContentImageFrame/config.ts",
+    "src/blocks/ContentImageFrame/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContentImageFrameBlock",
+      "importPath": "@/blocks/ContentImageFrame/Component",
+      "blockSlug": "contentImageFrame"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContentImageFrame",
+      "importPath": "../../blocks/ContentImageFrame/config",
+      "blockName": "ContentImageFrame"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Centered intro above a screenshot framed inside a rounded backdrop."
+  },
+  "sampleContent": {
+    "blockType": "contentImageFrame",
+    "eyebrow": "Built in the open",
+    "title": "Create content with AI assistance.",
+    "paragraphs": [
+      {
+        "text": "Our assistant helps you create better content faster — generate ideas, improve your writing, and design layouts with simple prompts."
+      }
+    ]
+  }
+}
