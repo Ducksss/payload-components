@@ -149,9 +149,9 @@ test.describe('Light shadcn frontend', () => {
         title: /Payload Components/,
       },
       {
-        h1: 'Start Here',
+        h1: 'Introduction',
         path: '/docs',
-        title: /Start Here/,
+        title: /Introduction/,
       },
       {
         h1: 'Architecture',
