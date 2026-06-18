@@ -157,6 +157,14 @@ const pairs = [
     component: 'payload-components/source/blocks/IntegrationTestimonial/Component.tsx',
     twin: 'src/components/site/demos/IntegrationTestimonialDemo.tsx',
   },
+  {
+    component: 'payload-components/source/blocks/TeamRoster/Component.tsx',
+    twin: 'src/components/site/demos/TeamRosterDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/TeamGrid/Component.tsx',
+    twin: 'src/components/site/demos/TeamGridDemo.tsx',
+  },
 ] as const
 
 const classLiterals = (source: string): string[] =>

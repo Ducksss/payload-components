@@ -274,6 +274,8 @@ describe('payload-components add', () => {
     'content-list',
     'content-list-columns',
     'content-list-icons',
+    'team-roster',
+    'team-grid',
   ])('installs %s into a supported repo and records state', async (componentName) => {
     const { fixtureDir, manifest } = await createInstallFixture(componentName)
     tempDirs.push(fixtureDir)
