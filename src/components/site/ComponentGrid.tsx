@@ -4,7 +4,7 @@ import { cn } from '@/utilities/ui'
 
 /* Catalog-page building blocks for the in-development posts suite.
  * (The landing page renders the installable components live — see
- * CatalogIndex and the demos/ twins; these skeleton thumbs stay
+ * CatalogFamilyTeaser and the demos/ twins; these skeleton thumbs stay
  * deliberately lower-fi to separate "planned" from "real".) */
 
 /* ------------------------------------------------------------------ */
