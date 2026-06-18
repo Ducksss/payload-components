@@ -76,9 +76,9 @@ export function ComponentPreviewFrame({ slug, title }: { slug: string; title: st
       {/* Browser-chrome toolbar */}
       <div className="flex items-center gap-3 border-b border-border bg-muted/60 px-3 py-2">
         <div className="flex shrink-0 items-center gap-1.5" aria-hidden="true">
-          <span className="size-2.5 rounded-full bg-border" />
-          <span className="size-2.5 rounded-full bg-border" />
-          <span className="size-2.5 rounded-full bg-border" />
+          <span className="size-2.5 rounded-full bg-[#ff5f57]" />
+          <span className="size-2.5 rounded-full bg-[#febc2e]" />
+          <span className="size-2.5 rounded-full bg-[#28c840]" />
         </div>
 
         <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
