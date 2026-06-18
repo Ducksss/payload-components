@@ -16,9 +16,9 @@
     leaves a reviewable git diff.
   </p>
   <p>
-    <a href="https://payload-components.xyz/docs"><strong>Explore the docs</strong></a>
+    <a href="https://www.payload-components.xyz/docs"><strong>Explore the docs</strong></a>
     &middot;
-    <a href="https://payload-components.xyz/components">View demo</a>
+    <a href="https://www.payload-components.xyz/components">View demo</a>
     &middot;
     <a href="https://github.com/Ducksss/payload-components/issues/new?template=bug_report.yml">Report a bug</a>
     &middot;
@@ -316,7 +316,7 @@ information.
 ## Contact
 
 - Maintainer: [Ducksss](https://github.com/Ducksss)
-- Website: [payload-components.xyz](https://payload-components.xyz)
+- Website: [payload-components.xyz](https://www.payload-components.xyz)
 - Issues: [github.com/Ducksss/payload-components/issues][issues-url]
 - Security: use GitHub Security Advisories for this repository
 - Project Link: [github.com/Ducksss/payload-components][repo-url]
