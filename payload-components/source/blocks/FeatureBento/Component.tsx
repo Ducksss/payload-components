@@ -25,7 +25,7 @@ export const FeatureBentoBlock: React.FC<Props> = ({
 }) => {
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div
           className={cn('flex flex-col gap-8', {
             'mx-auto max-w-6xl': !disableInnerContainer,
@@ -33,12 +33,12 @@ export const FeatureBentoBlock: React.FC<Props> = ({
         >
           <div className="flex max-w-3xl flex-col gap-4">
             {eyebrow ? (
-              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]">
+              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow">
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <h2 className="text-4xl font-medium tracking-[-0.06em] text-balance sm:text-5xl">{title}</h2>
+            <h2 className="text-4xl font-medium tracking-display text-balance sm:text-5xl">{title}</h2>
 
             {description ? (
               <p className="text-base leading-7 text-muted-foreground sm:text-lg">{description}</p>
@@ -55,7 +55,7 @@ export const FeatureBentoBlock: React.FC<Props> = ({
                   })}
                 >
                   <CardHeader className="gap-3 p-5">
-                    <CardTitle className="text-xl tracking-[-0.04em]">{item.title}</CardTitle>
+                    <CardTitle className="text-xl tracking-title">{item.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="p-5 pt-0">
                     <CardDescription className="text-sm leading-7 text-muted-foreground">

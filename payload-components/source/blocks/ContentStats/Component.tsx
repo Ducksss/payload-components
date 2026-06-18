@@ -26,7 +26,7 @@ export const ContentStatsBlock: React.FC<Props> = ({
 }) => {
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div
           className={cn('flex flex-col gap-10', {
             'mx-auto max-w-3xl': !disableInnerContainer,
@@ -34,12 +34,12 @@ export const ContentStatsBlock: React.FC<Props> = ({
         >
           <div className="flex flex-col gap-4">
             {eyebrow ? (
-              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]">
+              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow">
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <h2 className="text-4xl font-medium tracking-[-0.06em] text-balance">{title}</h2>
+            <h2 className="text-4xl font-medium tracking-display text-balance">{title}</h2>
 
             {paragraphs && paragraphs.length > 0
               ? paragraphs.map((paragraph, index) => (
@@ -58,7 +58,7 @@ export const ContentStatsBlock: React.FC<Props> = ({
                 return (
                   <div className="flex flex-col gap-2" key={feature.id ?? `${feature.title}-${index}`}>
                     {Icon ? <Icon className="size-6" /> : null}
-                    <h3 className="text-lg font-medium tracking-[-0.02em]">{feature.title}</h3>
+                    <h3 className="text-lg font-medium tracking-heading">{feature.title}</h3>
                     <p className="text-sm leading-6 text-muted-foreground">{feature.description}</p>
                   </div>
                 )

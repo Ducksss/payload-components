@@ -1,12 +1,14 @@
-import { DemoScaleFrame } from '@/components/site/demos/DemoScaleFrame'
+import { DemoFitFrame } from '@/components/site/demos/DemoFitFrame'
 import { demosBySlug } from '@/components/site/demos/registry'
 
-/* Live preview strip for the catalog cards: the same demo twins the
- * landing renders, dropped into a fixed-height window via DemoScaleFrame
- * so the component shows at its real desktop type ramp. Twins default their own
- * sample content and are already aria-hidden + pointer-events-none (the frame
- * reinforces both). Slugs without a twin render nothing — ComponentCard falls
- * back to a plain body. */
+/* Live preview strip for the catalog masonry cards: the same demo twins the
+ * landing renders, dropped into DemoFitFrame so each shows at its *natural*
+ * height (the wall's variable-size rhythm comes from here). A generous max
+ * height + a whisper-thin bottom fade tames the few tall twins (hero, the
+ * 3x2 feature grid) without making the short ones look clipped. Twins default
+ * their own sample content and are already aria-hidden + pointer-events-none.
+ * Slugs without a twin render nothing — ComponentCard falls back to a plain
+ * body. */
 
 export function ComponentPreviewThumb({ slug }: { slug: string }) {
   const Demo = demosBySlug[slug]
@@ -15,16 +17,14 @@ export function ComponentPreviewThumb({ slug }: { slug: string }) {
 
   return (
     <div className="relative overflow-hidden border-b border-border bg-muted/40">
-      {/* Height + bottom fade live on the frame (dev's DemoScaleFrame
-          idiom); the pill sits outside it so the mask never touches it.
-          A faint group-hover lift echoes the card's hover:-translate-y-0.5
-          without animating anything at rest (reduced-motion safe). */}
-      <DemoScaleFrame className="h-44 transition-transform duration-500 ease-out [mask-image:linear-gradient(to_bottom,black_70%,transparent)] group-hover:scale-[1.015] motion-reduce:transform-none motion-reduce:transition-none">
+      {/* zoom-based frame self-sizes to the twin; the hover lift rides on the
+          frame's transform and is reduced-motion safe. */}
+      <DemoFitFrame className="max-h-[26rem] transition-transform duration-500 ease-out [mask-image:linear-gradient(to_bottom,black_93%,transparent)] group-hover:scale-[1.01] motion-reduce:transform-none motion-reduce:transition-none">
         <div className="px-4 py-4">
           <Demo />
         </div>
-      </DemoScaleFrame>
-      <span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+      </DemoFitFrame>
+      <span className="absolute left-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-border bg-background/90 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground backdrop-blur">
         <span aria-hidden="true" className="size-1.5 rounded-full bg-brand" />
         Live preview
       </span>

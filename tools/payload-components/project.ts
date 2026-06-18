@@ -174,6 +174,16 @@ export const detectProject = async (cwd: string): Promise<DetectedProject> => {
     }
   }
 
+  const componentsJsonPresent = await readFile(path.join(cwd, 'components.json'), 'utf8')
+    .then(() => true)
+    .catch(() => false)
+
+  if (!componentsJsonPresent) {
+    throw new Error(
+      `No components.json found in ${cwd}. This project isn't initialized for shadcn-style installs yet. Run "payload-components init" first, then re-run this command.`,
+    )
+  }
+
   throw new Error(
     `Unsupported project shape in ${cwd}. The alpha install flow currently supports Payload website-style repos with components.json, ${RENDER_BLOCKS_FILE}, and ${PAGES_LAYOUT_FILE}.`,
   )

@@ -5,8 +5,8 @@ import { linkGroup } from '@/fields/linkGroup'
 /**
  * Shared field core for the Hero component family.
  *
- * Every hero variant (hero-basic, hero-video, hero-dramatic, …) spreads these
- * fields first and then appends its own variant-specific ones. Editing the
+ * Every hero variant spreads these fields first and then appends its own
+ * variant-specific ones. Editing the
  * shared headline/eyebrow/description/CTA shape here updates every installed
  * hero block at once, so the family never drifts field-by-field across a repo.
  *

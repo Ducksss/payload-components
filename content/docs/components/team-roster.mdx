@@ -1,0 +1,81 @@
+---
+title: Team Roster
+description: A team section that groups members into titled departments, each a grid of avatars with name and role.
+icon: Users
+---
+
+<ComponentPreview slug="team-roster" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add team-roster
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/team-roster.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="team-roster" />
+
+## Content model
+
+The `eyebrow` and `title` fields come from the shared Team family base
+(`src/blocks/shared/teamFields.ts`); the `groups` list is specific to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    groups: {
+      type: 'array',
+      required: true,
+      description: 'Department sections, each with its own label and members (min 1, max 6).',
+    },
+  }}
+/>
+
+Each item in `groups` carries:
+
+<TypeTable
+  type={{
+    label: { type: 'text', required: true, description: 'Department / group heading (e.g. “Leadership”).' },
+    members: {
+      type: 'array',
+      required: true,
+      description: 'The members in this group (min 1, max 12).',
+    },
+  }}
+/>
+
+Each item in `members` carries:
+
+<TypeTable
+  type={{
+    avatar: { type: 'upload', required: true, description: 'Member photo (Media upload).' },
+    name: { type: 'text', required: true, description: 'Member name.' },
+    role: { type: 'text', required: true, description: 'Job title or role.' },
+    href: { type: 'text', description: 'Optional link to the member’s profile.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="team-roster" />
+
+## Requirements
+
+<ComponentRequirements slug="team-roster" />
+
+## In this family
+
+<ComponentFamily slug="team-roster" />

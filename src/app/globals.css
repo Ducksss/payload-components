@@ -140,6 +140,14 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Named container radii — replace the rounded-[…] arbitraries that recur
+     across the blocks (the outer frame is on every block). Values match the
+     originals exactly, so adopting them is a pure refactor. */
+  --radius-inset: 1rem;
+  --radius-card: 1.25rem;
+  --radius-panel: 1.5rem;
+  --radius-frame: 2rem;
 }
 
 @theme {
@@ -152,6 +160,18 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --font-serif: var(--font-instrument-serif), ui-serif, Georgia, 'Times New Roman', serif;
+
+  /* Letter-spacing scale — names for the tracking-[…] arbitraries used across
+     the blocks; values match the originals exactly (a pure refactor). Additive
+     only: these never override Tailwind's own tracking-tight / tracking-wide
+     (the site relies on tracking-tight). The -0.01 / -0.03 / -0.04 set are
+     near-duplicates flagged for later consolidation. */
+  --tracking-display: -0.06em;
+  --tracking-title: -0.04em;
+  --tracking-snug: -0.03em;
+  --tracking-heading: -0.02em;
+  --tracking-micro: -0.01em;
+  --tracking-eyebrow: 0.18em;
 
   --shadow-card: 0 1px 2px 0 oklch(0% 0 0deg / 5%);
   --shadow-frame:

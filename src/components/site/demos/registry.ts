@@ -1,5 +1,8 @@
 import type { ComponentType } from 'react'
 
+import { CallToActionBoxedDemo } from './CallToActionBoxedDemo'
+import { CallToActionCenteredDemo } from './CallToActionCenteredDemo'
+import { CallToActionSignupDemo } from './CallToActionSignupDemo'
 import { ContentColumnsDemo } from './ContentColumnsDemo'
 import { ContentCommunityDemo } from './ContentCommunityDemo'
 import { ContentFeatureMediaDemo } from './ContentFeatureMediaDemo'
@@ -33,6 +36,8 @@ import { LogoCloudHoverDemo } from './LogoCloudHoverDemo'
 import { LogoCloudInlineDemo } from './LogoCloudInlineDemo'
 import { LogoCloudInlineWrapDemo } from './LogoCloudInlineWrapDemo'
 import { LogoCloudMarqueeDemo } from './LogoCloudMarqueeDemo'
+import { TeamGridDemo } from './TeamGridDemo'
+import { TeamRosterDemo } from './TeamRosterDemo'
 
 /* Single source of truth mapping a component slug to its live demo twin. Shared by
  * the catalog preview thumbnails (ComponentPreviewThumb) and the docs-page live
@@ -40,6 +45,9 @@ import { LogoCloudMarqueeDemo } from './LogoCloudMarqueeDemo'
  * never drift. Every twin defaults its own sample content and is already
  * aria-hidden + presentational. Slugs without a twin render nothing. */
 export const demosBySlug: Record<string, ComponentType> = {
+  'call-to-action-boxed': CallToActionBoxedDemo,
+  'call-to-action-centered': CallToActionCenteredDemo,
+  'call-to-action-signup': CallToActionSignupDemo,
   'content-columns': ContentColumnsDemo,
   'content-community': ContentCommunityDemo,
   'content-feature-media': ContentFeatureMediaDemo,
@@ -73,6 +81,8 @@ export const demosBySlug: Record<string, ComponentType> = {
   'logo-cloud-inline': LogoCloudInlineDemo,
   'logo-cloud-inline-wrap': LogoCloudInlineWrapDemo,
   'logo-cloud-marquee': LogoCloudMarqueeDemo,
+  'team-roster': TeamRosterDemo,
+  'team-grid': TeamGridDemo,
 }
 
 export function hasComponentDemo(slug: string) {

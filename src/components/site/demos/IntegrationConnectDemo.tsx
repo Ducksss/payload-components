@@ -26,7 +26,7 @@ export function IntegrationConnectDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-14 sm:px-8 lg:px-12 lg:py-20">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-14 sm:px-8 lg:px-12 lg:py-20">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-12">
           <div className="relative flex w-full max-w-md items-center justify-between">
             <div className="pointer-events-none absolute inset-x-12 inset-y-0 bg-[radial-gradient(var(--connect-dots)_1px,transparent_1px)] [--connect-dots:rgba(120,120,130,0.35)] [background-size:16px_16px] opacity-60 [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_55%,transparent_100%)]" />
@@ -61,7 +61,7 @@ export function IntegrationConnectDemo({
           </div>
 
           <div className="flex max-w-lg flex-col items-center gap-5 text-center">
-            <div className="text-balance text-2xl font-semibold tracking-[-0.02em] text-foreground sm:text-3xl">
+            <div className="text-balance text-2xl font-semibold tracking-heading text-foreground sm:text-3xl">
               {heading}
             </div>
             {subtext ? (

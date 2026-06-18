@@ -153,12 +153,33 @@ describe('payload-components doctor', () => {
       `${JSON.stringify({ dependencies: { next: '^16.0.0', payload: '^3.0.0' } }, null, 2)}\n`,
       'utf8',
     )
+    // shadcn is initialized (components.json present) but the repo lacks the
+    // RenderBlocks/Pages shape, so detection should report an unsupported shape
+    // rather than hinting at init.
+    await writeFile(path.join(fixtureDir, 'components.json'), '{}\n', 'utf8')
 
     const result = await runDoctorCommand(fixtureDir)
 
     expect(result.code).toBe(1)
     expect(result.stdout).toContain('[error] project:')
     expect(result.stdout).toContain('Unsupported project shape')
+  })
+
+  it('hints at init when components.json is missing', async () => {
+    const fixtureDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-doctor-'))
+    tempDirs.push(fixtureDir)
+    await writeFile(
+      path.join(fixtureDir, 'package.json'),
+      `${JSON.stringify({ dependencies: { next: '^16.0.0', payload: '^3.0.0' } }, null, 2)}\n`,
+      'utf8',
+    )
+
+    const result = await runDoctorCommand(fixtureDir)
+
+    expect(result.code).toBe(1)
+    expect(result.stdout).toContain('[error] project:')
+    expect(result.stdout).toContain('No components.json found')
+    expect(result.stdout).toContain('payload-components init')
   })
 
   it('fails unsupported install state versions', async () => {

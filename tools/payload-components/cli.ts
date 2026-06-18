@@ -2,6 +2,7 @@ import path from 'node:path'
 
 import { addCommand } from './commands/add'
 import { doctorCommand } from './commands/doctor'
+import { initCommand } from './commands/init'
 
 const usage = `payload-components
 
@@ -13,7 +14,7 @@ Usage:
 
 Alpha commands:
   add     Install an alpha component through the payload-components wrapper and shadcn-compatible registry flow.
-  init    Non-gating command shell reserved for a later alpha phase.
+  init    Initialize shadcn in the project (creates components.json) so components can be installed.
   doctor  Diagnose project readiness and recorded component installs without changing files.
 
 Current alpha components:
@@ -50,6 +51,9 @@ Current alpha components:
   integration-list
   integration-marquee
   integration-testimonial
+  call-to-action-centered
+  call-to-action-boxed
+  call-to-action-signup
 `
 
 const parseArgs = (argv: string[]) => {
@@ -91,12 +95,6 @@ const parseArgs = (argv: string[]) => {
   }
 }
 
-const placeholderCommand = async (commandName: 'init', cwd: string) => {
-  process.stdout.write(
-    `${commandName}: placeholder command in ${cwd}. This alpha tranche focuses on "payload-components add".\n`,
-  )
-}
-
 const main = async () => {
   const { cwd, help, positional } = parseArgs(process.argv.slice(2))
 
@@ -134,7 +132,7 @@ const main = async () => {
   }
 
   if (command === 'init') {
-    await placeholderCommand(command, cwd)
+    await initCommand({ cwd })
     return
   }
 
