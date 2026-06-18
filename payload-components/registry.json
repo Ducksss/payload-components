@@ -1324,6 +1324,121 @@
           "target": "~/src/blocks/ContentListIcons/Component.tsx"
         }
       ]
+    },
+    {
+      "name": "call-to-action-centered",
+      "type": "registry:block",
+      "title": "Call To Action Centered",
+      "description": "Centered Payload call-to-action block: heading, copy, and one or two CTA links.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add call-to-action-centered\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/call-to-action-centered.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add call-to-action-centered` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add call-to-action-centered",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/callToActionFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/callToActionFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CallToActionCentered/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/CallToActionCentered/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CallToActionCentered/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/CallToActionCentered/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "call-to-action-boxed",
+      "type": "registry:block",
+      "title": "Call To Action Boxed",
+      "description": "Boxed Payload call-to-action block: heading, copy, and CTA links inside a nested panel.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add call-to-action-boxed\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/call-to-action-boxed.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add call-to-action-boxed` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add call-to-action-boxed",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/callToActionFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/callToActionFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CallToActionBoxed/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/CallToActionBoxed/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CallToActionBoxed/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/CallToActionBoxed/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "call-to-action-signup",
+      "type": "registry:block",
+      "title": "Call To Action Signup",
+      "description": "Email-capture Payload call-to-action block: heading, copy, and a form that posts to your endpoint.",
+      "registryDependencies": ["button"],
+      "dependencies": ["lucide-react"],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add call-to-action-signup\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/call-to-action-signup.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add call-to-action-signup` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add call-to-action-signup",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/callToActionFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/callToActionFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CallToActionSignup/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/CallToActionSignup/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CallToActionSignup/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/CallToActionSignup/Component.tsx"
+        }
+      ]
     }
   ]
 }

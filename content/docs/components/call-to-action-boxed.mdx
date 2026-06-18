@@ -1,0 +1,54 @@
+---
+title: Call To Action Boxed
+description: A boxed call-to-action block — heading, copy, and CTA links inside a nested panel.
+icon: SquareStack
+---
+
+<ComponentPreview slug="call-to-action-boxed" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add call-to-action-boxed
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/call-to-action-boxed.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="call-to-action-boxed" />
+
+## Content model
+
+`title` and `description` come from the shared `callToActionFields` base; `links` is specific to this
+variant. Same fields as `call-to-action-centered` — this variant nests the content in a bordered panel
+for higher emphasis.
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'The call-to-action heading.' },
+    description: { type: 'textarea', description: 'Optional supporting copy under the heading.' },
+    links: { type: 'array', description: 'One or two CTA links (primary + optional secondary).' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="call-to-action-boxed" />
+
+## Requirements
+
+<ComponentRequirements slug="call-to-action-boxed" />
+
+## In this family
+
+<ComponentFamily slug="call-to-action-boxed" />

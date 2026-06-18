@@ -210,14 +210,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Thirty-three page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Thirty-six page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '33 installable',
+    countLabel: '36 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -713,6 +713,48 @@ export const componentEntries = [
     status: 'Alpha',
     target: 'Integration section',
     title: 'Integration Testimonial',
+    version: '0.1.0',
+  },
+  {
+    category: 'cta',
+    command: 'npx payload-components add call-to-action-centered',
+    description:
+      'A centered call-to-action block: heading, supporting copy, and one or two CTA links.',
+    family: 'pages',
+    fields: ['title', 'description', 'links'],
+    href: '/docs/components/call-to-action-centered',
+    slug: 'call-to-action-centered',
+    status: 'Alpha',
+    target: 'Call to action',
+    title: 'Call To Action Centered',
+    version: '0.1.0',
+  },
+  {
+    category: 'cta',
+    command: 'npx payload-components add call-to-action-boxed',
+    description:
+      'A boxed call-to-action block: heading, copy, and CTA links inside a nested panel.',
+    family: 'pages',
+    fields: ['title', 'description', 'links'],
+    href: '/docs/components/call-to-action-boxed',
+    slug: 'call-to-action-boxed',
+    status: 'Alpha',
+    target: 'Boxed CTA',
+    title: 'Call To Action Boxed',
+    version: '0.1.0',
+  },
+  {
+    category: 'cta',
+    command: 'npx payload-components add call-to-action-signup',
+    description:
+      'An email-capture call-to-action block: heading, copy, and a form that posts to your endpoint.',
+    family: 'pages',
+    fields: ['title', 'description', 'emailPlaceholder', 'submitLabel', 'action'],
+    href: '/docs/components/call-to-action-signup',
+    slug: 'call-to-action-signup',
+    status: 'Alpha',
+    target: 'Email capture',
+    title: 'Call To Action Signup',
     version: '0.1.0',
   },
 ] as const

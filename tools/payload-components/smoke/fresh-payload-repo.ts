@@ -35,6 +35,9 @@ export const DEFAULT_SMOKE_COMPONENTS = [
   'integration-list',
   'integration-marquee',
   'integration-testimonial',
+  'call-to-action-centered',
+  'call-to-action-boxed',
+  'call-to-action-signup',
 ] as const
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
 
