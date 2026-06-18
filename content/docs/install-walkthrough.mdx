@@ -1,0 +1,130 @@
+---
+title: Install Walkthrough
+description: A visual and command-level path for choosing, installing, and checking a Payload Component.
+icon: Terminal
+---
+
+Use this walkthrough when you want to prove the public catalog and installer path before adding more blocks. The current registry in this branch includes **38 public items**. `payload-components add` is the supported install path because it moves files and applies the Payload wiring that a raw shadcn registry install cannot express.
+
+<Callout type="info" title="What this walkthrough proves">
+  The public site helps you choose a component, the docs show the exact command, the wrapper CLI
+  wires it into a supported Payload v3 + Next.js project, and `doctor` checks the result without
+  changing files.
+</Callout>
+
+## Visual checkpoints
+
+Open these public surfaces in order. They are stable enough to use in support threads or release notes without checking in screenshot files.
+
+<Cards>
+  <Card icon={<LayoutGrid />} title="Catalog" href="/components">
+    Browse the full component catalog, preview the available blocks, and pick the component slug to
+    install.
+  </Card>
+  <Card icon={<Terminal />} title="Docs" href="/docs/installation">
+    Confirm the target-project requirements before running the install command.
+  </Card>
+  <Card icon={<LayoutPanelTop />} title="Component page" href="/docs/components/hero-basic">
+    Copy the exact wrapper command and inspect the files, fragments, dependencies, and sample usage.
+  </Card>
+</Cards>
+
+| Surface                       | What to verify                                                                                                                                    |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/components`                 | The catalog renders the current public components with previews and links into each component detail page.                                        |
+| `/docs/installation`          | The requirements match your target app: Payload v3, Next.js App Router, `components.json`, `RenderBlocks`, `Pages`, and the post-install scripts. |
+| `/docs/components/hero-basic` | The page shows the wrapper command first, then the raw registry command under Manual for file delivery only.                                      |
+
+## Wrapper install path
+
+Run the wrapper command from the root of a supported Payload v3 + Next.js App Router project, not from this documentation repository.
+
+```bash
+npx payload-components add hero-basic
+```
+
+The same pattern works for any public component slug:
+
+```bash
+npx payload-components add feature-grid-basic
+npx payload-components add logo-cloud-grid
+npx payload-components add integration-grid
+```
+
+The wrapper CLI performs the full install sequence:
+
+<Steps>
+  <Step>
+    Checks that the target repo has the supported Payload website shape before mutating files.
+  </Step>
+  <Step>Delivers the component source through the shadcn-compatible registry flow.</Step>
+  <Step>
+    Applies the Payload fragments that register the block in `RenderBlocks` and the `Pages` layout
+    field.
+  </Step>
+  <Step>
+    Installs missing component dependencies, then runs `generate:types` and `generate:importmap`.
+  </Step>
+  <Step>
+    Records the install in `.payload-components/state.json` so later checks can compare state with
+    disk.
+  </Step>
+</Steps>
+
+Review the resulting diff before committing it:
+
+```bash
+git diff -- src/blocks src/collections/Pages src/blocks/RenderBlocks.tsx .payload-components/state.json package.json
+```
+
+## Doctor output
+
+`doctor` is read-only. Run it before installing when you want to confirm the project shape, or after installing when you want to check files, fragments, dependencies, and recorded state.
+
+```bash
+npx payload-components doctor
+```
+
+A supported project with one installed component should look like this:
+
+```txt
+[ok] project: payload-website-starter (Payload 3, Next 16, pnpm)
+[ok] scripts: generate:importmap
+[ok] scripts: generate:types
+[ok] state: 1 recorded component
+[ok] hero-basic: peer dependencies
+[ok] hero-basic: dependencies
+[ok] hero-basic: files
+[ok] hero-basic: Payload fragments
+```
+
+If the install stopped partway through, `doctor` reports the failed stage and tells you which component to retry:
+
+```txt
+[error] hero-basic: install is partial (post-install: generate:types failed)
+[warn] Run "payload-components add hero-basic" to retry the install.
+```
+
+## Raw shadcn file delivery
+
+Raw shadcn installs are useful for proving that a public registry URL serves files without authentication:
+
+```bash
+pnpm dlx shadcn@4.7.0 add https://www.payload-components.xyz/r/hero-basic.json --cwd .
+```
+
+That command copies registry files and shadcn dependencies. It does **not** update Payload collection config, does **not** patch `RenderBlocks`, does **not** run `generate:types` or `generate:importmap`, and does **not** write `.payload-components/state.json`.
+
+Use raw shadcn only when you want file-delivery proof or you are intentionally doing the Payload wiring by hand. Use `payload-components add` for a real install.
+
+## Quick support script
+
+When someone reports a failed install, ask for these three checks first:
+
+```bash
+npx payload-components doctor
+git diff -- src/blocks src/collections/Pages src/blocks/RenderBlocks.tsx .payload-components/state.json
+pnpm dlx shadcn@4.7.0 add https://www.payload-components.xyz/r/hero-basic.json --cwd /tmp/payload-components-raw-check
+```
+
+The first command checks the target repo. The second shows what the wrapper changed. The third proves whether the public registry URL is reachable as file delivery, separate from Payload wiring.
