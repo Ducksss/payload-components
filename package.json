@@ -1,7 +1,21 @@
 {
   "name": "payload-components",
   "version": "1.0.1-alpha.0",
-  "description": "Fumadocs-powered docs and registry tooling for installable Payload CMS components.",
+  "description": "MIT registry and CLI for installing wired Payload CMS blocks into Payload v3 + Next.js projects.",
+  "keywords": [
+    "payload",
+    "payload-cms",
+    "payloadcms",
+    "nextjs",
+    "react",
+    "shadcn",
+    "tailwindcss",
+    "typescript",
+    "cms",
+    "component-library",
+    "open-source",
+    "open-source-projects"
+  ],
   "license": "MIT",
   "homepage": "https://www.payload-components.xyz",
   "repository": {

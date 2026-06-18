@@ -18,6 +18,9 @@ on:
 env:
   NEXT_TELEMETRY_DISABLED: '1'
 
+permissions:
+  contents: read
+
 jobs:
   release-gate:
     if: github.event_name == 'pull_request' || github.event_name == 'push'
