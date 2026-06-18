@@ -24,9 +24,9 @@ export function ContentQuoteDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
-          <div className="overflow-hidden rounded-[1.5rem] border border-border/70">
+          <div className="overflow-hidden rounded-panel border border-border/70">
             <div className="aspect-[4/3] w-full bg-muted" />
           </div>
 
@@ -34,13 +34,13 @@ export function ContentQuoteDemo({
             {eyebrow ? (
               <Badge
                 variant="outline"
-                className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
               >
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <div className="text-4xl font-medium tracking-[-0.06em] text-balance">{title}</div>
+            <div className="text-4xl font-medium tracking-display text-balance">{title}</div>
 
             {paragraphs.map((paragraph, index) => (
               <p className="text-base leading-7 text-muted-foreground" key={index}>

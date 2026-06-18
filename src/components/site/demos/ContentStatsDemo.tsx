@@ -26,19 +26,19 @@ export function ContentStatsDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto flex max-w-3xl flex-col gap-10">
           <div className="flex flex-col gap-4">
             {eyebrow ? (
               <Badge
                 variant="outline"
-                className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
               >
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <div className="text-4xl font-medium tracking-[-0.06em] text-balance">{title}</div>
+            <div className="text-4xl font-medium tracking-display text-balance">{title}</div>
 
             {paragraphs.map((paragraph, index) => (
               <p className="text-lg leading-7 text-muted-foreground" key={index}>
@@ -52,7 +52,7 @@ export function ContentStatsDemo({
               {features.map((feature, index) => (
                 <div className="flex flex-col gap-2" key={index}>
                   <ContentDemoIcon name={feature.icon} className="size-6" />
-                  <div className="text-lg font-medium tracking-[-0.02em]">{feature.title}</div>
+                  <div className="text-lg font-medium tracking-heading">{feature.title}</div>
                   <p className="text-sm leading-6 text-muted-foreground">{feature.description}</p>
                 </div>
               ))}

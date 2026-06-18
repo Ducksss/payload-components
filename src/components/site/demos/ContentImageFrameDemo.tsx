@@ -24,19 +24,19 @@ export function ContentImageFrameDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto flex max-w-5xl flex-col gap-12">
           <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
             {eyebrow ? (
               <Badge
                 variant="outline"
-                className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
               >
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <div className="text-4xl font-medium tracking-[-0.06em] text-balance sm:text-5xl">
+            <div className="text-4xl font-medium tracking-display text-balance sm:text-5xl">
               {title}
             </div>
 
@@ -47,8 +47,8 @@ export function ContentImageFrameDemo({
             ))}
           </div>
 
-          <div className="relative overflow-hidden rounded-[1.5rem] bg-muted">
-            <div className="relative m-4 overflow-hidden rounded-[1rem] border border-border/70 bg-background shadow-xl sm:m-8 md:m-12">
+          <div className="relative overflow-hidden rounded-panel bg-muted">
+            <div className="relative m-4 overflow-hidden rounded-inset border border-border/70 bg-background shadow-xl sm:m-8 md:m-12">
               <div className="aspect-[16/9] w-full bg-muted" />
             </div>
           </div>

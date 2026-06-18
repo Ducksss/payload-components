@@ -28,7 +28,7 @@ export function LogoCloudMarqueeDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 md:flex-row md:gap-0">
           <div className="md:max-w-44 md:border-r md:border-border/70 md:pr-6">
             <p className="text-center text-sm text-muted-foreground md:text-end">{heading}</p>

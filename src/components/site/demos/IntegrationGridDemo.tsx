@@ -23,10 +23,10 @@ export function IntegrationGridDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto flex max-w-5xl flex-col gap-12">
           <div className="flex flex-col gap-4 text-center">
-            <div className="text-balance text-2xl font-semibold tracking-[-0.02em] text-foreground sm:text-3xl">
+            <div className="text-balance text-2xl font-semibold tracking-heading text-foreground sm:text-3xl">
               {heading}
             </div>
             {subtext ? (

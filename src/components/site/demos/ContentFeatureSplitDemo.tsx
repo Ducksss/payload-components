@@ -27,9 +27,9 @@ export function ContentFeatureSplitDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
-          <div className="order-last overflow-hidden rounded-[1.5rem] border border-border/70 lg:order-first">
+          <div className="order-last overflow-hidden rounded-panel border border-border/70 lg:order-first">
             <div className="aspect-[4/3] w-full bg-muted" />
           </div>
 
@@ -37,13 +37,13 @@ export function ContentFeatureSplitDemo({
             {eyebrow ? (
               <Badge
                 variant="outline"
-                className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
               >
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <div className="text-4xl font-medium tracking-[-0.06em] text-balance">{title}</div>
+            <div className="text-4xl font-medium tracking-display text-balance">{title}</div>
 
             {paragraphs.map((paragraph, index) => (
               <p className="text-base leading-7 text-muted-foreground" key={index}>
@@ -57,7 +57,7 @@ export function ContentFeatureSplitDemo({
                   <div className="flex flex-col gap-2" key={index}>
                     <div className="flex items-center gap-2">
                       <ContentDemoIcon name={feature.icon} className="size-4" />
-                      <div className="text-sm font-medium tracking-[-0.01em]">{feature.title}</div>
+                      <div className="text-sm font-medium tracking-micro">{feature.title}</div>
                     </div>
                     <p className="text-sm leading-6 text-muted-foreground">{feature.description}</p>
                   </div>

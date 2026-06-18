@@ -29,7 +29,7 @@ export const IntegrationSplitBlock: React.FC<Props> = ({
 
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-12 sm:px-8 lg:px-12 lg:py-16">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-12 sm:px-8 lg:px-12 lg:py-16">
         <div
           className={cn('grid items-center gap-10 sm:grid-cols-2', {
             'mx-auto max-w-5xl': !disableInnerContainer,
@@ -62,7 +62,7 @@ export const IntegrationSplitBlock: React.FC<Props> = ({
           </div>
 
           <div className="flex flex-col gap-5 text-center sm:text-left">
-            <h2 className="text-balance text-2xl font-semibold tracking-[-0.02em] text-foreground sm:text-3xl">
+            <h2 className="text-balance text-2xl font-semibold tracking-heading text-foreground sm:text-3xl">
               {heading}
             </h2>
             {subtext ? (
