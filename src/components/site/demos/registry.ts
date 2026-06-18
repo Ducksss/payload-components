@@ -36,6 +36,7 @@ import { LogoCloudHoverDemo } from './LogoCloudHoverDemo'
 import { LogoCloudInlineDemo } from './LogoCloudInlineDemo'
 import { LogoCloudInlineWrapDemo } from './LogoCloudInlineWrapDemo'
 import { LogoCloudMarqueeDemo } from './LogoCloudMarqueeDemo'
+import { PricingBasicDemo } from './PricingBasicDemo'
 import { TeamGridDemo } from './TeamGridDemo'
 import { TeamRosterDemo } from './TeamRosterDemo'
 
@@ -81,6 +82,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'logo-cloud-inline': LogoCloudInlineDemo,
   'logo-cloud-inline-wrap': LogoCloudInlineWrapDemo,
   'logo-cloud-marquee': LogoCloudMarqueeDemo,
+  'pricing-basic': PricingBasicDemo,
   'team-roster': TeamRosterDemo,
   'team-grid': TeamGridDemo,
 }

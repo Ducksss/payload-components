@@ -66,6 +66,21 @@ export type CtaDemoContent = {
   submitLabel?: string
 }
 
+export type PricingBasicDemoContent = {
+  description?: string
+  eyebrow?: string
+  plans: {
+    billingNote?: string
+    description?: string
+    features: { text: string }[]
+    highlighted?: boolean
+    links?: { link: DemoLinkData }[]
+    name: string
+    price: string
+  }[]
+  title: string
+}
+
 export const heroBasicDemoContent: HeroBasicDemoContent = {
   description:
     'Acme gives product teams hosted dashboards, usage reports, and alerting on one platform — wired to your data in an afternoon.',
@@ -594,6 +609,53 @@ export const callToActionSignupDemoContent: CtaDemoContent = {
   emailPlaceholder: 'Your email address',
   submitLabel: 'Subscribe',
   title: 'Stay in the loop.',
+}
+
+export const pricingBasicDemoContent: PricingBasicDemoContent = {
+  description:
+    'Start with the plan that fits today. Add seats, workspaces, or support when the team needs them.',
+  eyebrow: 'Pricing',
+  plans: [
+    {
+      billingNote: 'per workspace, per month',
+      description: 'For small teams validating their first customer-facing dashboards.',
+      features: [
+        { text: 'Three workspaces and unlimited draft pages' },
+        { text: 'Basic analytics exports' },
+        { text: 'Community support' },
+      ],
+      links: [{ link: { appearance: 'outline', label: 'Start with Starter' } }],
+      name: 'Starter',
+      price: '$29',
+    },
+    {
+      billingNote: 'per workspace, per month with annual billing available',
+      description: 'For teams launching pricing, onboarding, and reporting pages every week.',
+      features: [
+        { text: 'Unlimited published pages and component installs' },
+        { text: 'Priority support for launch-week changes' },
+        { text: 'Long feature bullets wrap cleanly without stretching the plan card' },
+      ],
+      highlighted: true,
+      links: [{ link: { appearance: 'default', label: 'Choose Growth' } }],
+      name: 'Growth Operations Advanced Team Plan',
+      price: '$149.99',
+    },
+    {
+      billingNote: 'volume terms and procurement support',
+      description:
+        'For organizations that need advanced controls, dedicated onboarding, and custom review flows.',
+      features: [
+        { text: 'Dedicated launch support' },
+        { text: 'Security and procurement review materials' },
+        { text: 'Custom implementation planning' },
+      ],
+      links: [{ link: { appearance: 'outline', label: 'Talk to sales' } }],
+      name: 'Enterprise',
+      price: 'Custom annual contract',
+    },
+  ],
+  title: 'Simple plans for growing teams.',
 }
 
 /* The Team family (roster, grid) renders from one demo-content shape: the shared

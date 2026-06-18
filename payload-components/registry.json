@@ -1441,6 +1441,39 @@
       ]
     },
     {
+      "name": "pricing-basic",
+      "type": "registry:block",
+      "title": "Pricing Basic",
+      "description": "Static Payload pricing block: plan cards, feature bullets, one highlighted tier, and optional CTA links.",
+      "registryDependencies": ["badge", "card"],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-basic\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-basic.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-basic` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add pricing-basic",
+          "postInstall": ["generate:types", "generate:importmap"],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/pricingFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/pricingFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingBasic/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingBasic/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingBasic/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingBasic/Component.tsx"
+        }
+      ]
+    },
+    {
       "name": "team-roster",
       "type": "registry:block",
       "title": "Team Roster",

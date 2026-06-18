@@ -212,14 +212,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Thirty-six page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. 39 page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '38 installable',
+    countLabel: '39 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -764,6 +764,20 @@ export const componentEntries = [
     status: 'Alpha',
     target: 'Email capture',
     title: 'Call To Action Signup',
+    version: '0.1.0',
+  },
+  {
+    category: 'pricing',
+    command: 'npx payload-components add pricing-basic',
+    description:
+      'A static pricing section with plan cards, feature bullets, one highlighted tier, and optional CTA links.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'plans'],
+    href: '/docs/components/pricing-basic',
+    slug: 'pricing-basic',
+    status: 'Alpha',
+    target: 'Pricing section',
+    title: 'Pricing Basic',
     version: '0.1.0',
   },
   {

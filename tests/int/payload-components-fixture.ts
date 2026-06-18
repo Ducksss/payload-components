@@ -85,7 +85,7 @@ const copyProjectFixture = async () => {
             'generate:importmap':
               "node -e \"require('fs').mkdirSync('src/app/(payload)/admin',{recursive:true}); require('fs').writeFileSync('src/app/(payload)/admin/importMap.js','export const importMap = {}\\\\n')\"",
             'generate:types':
-              "node -e \"require('fs').writeFileSync('src/payload-types.ts','export type HeroBasicBlock = any; export type FeatureGridBasicBlock = any; export type FeatureSplitBlock = any; export type FeatureBentoBlock = any; export type FeatureStepsBlock = any; export type Page = { layout: any[] }\\\\n')\"",
+              "node -e \"require('fs').writeFileSync('src/payload-types.ts','export type HeroBasicBlock = any; export type FeatureGridBasicBlock = any; export type FeatureSplitBlock = any; export type FeatureBentoBlock = any; export type FeatureStepsBlock = any; export type PricingBasicBlock = any; export type Page = { layout: any[] }\\\\n')\"",
           },
           dependencies: {
             'class-variance-authority': '^0.7.0',

@@ -1,0 +1,80 @@
+---
+title: Pricing Basic
+description: A static pricing section with plan cards, feature bullets, one highlighted tier, and optional CTA links.
+icon: BadgeDollarSign
+---
+
+<ComponentPreview slug="pricing-basic" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add pricing-basic
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-basic.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="pricing-basic" />
+
+## Content model
+
+`pricingFields` carries the section header and the repeatable plan cards. This block is presentation
+only. It does not add checkout, subscriptions, entitlements, customer portals, or billing logic.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The pricing section heading.' },
+    description: { type: 'textarea', description: 'Optional supporting copy under the heading.' },
+    plans: {
+      type: 'array',
+      required: true,
+      description: 'Two to four plan cards. One plan can be highlighted as the recommended tier.',
+    },
+  }}
+/>
+
+Each item in `plans` carries:
+
+<TypeTable
+  type={{
+    name: { type: 'text', required: true, description: 'Plan name.' },
+    description: { type: 'textarea', description: 'Short plan summary.' },
+    price: { type: 'text', required: true, description: 'Price label, such as "$29" or "Custom".' },
+    billingNote: { type: 'text', description: 'Small note beside the price, such as "per month".' },
+    highlighted: { type: 'checkbox', description: 'Emphasizes the card as the recommended tier.' },
+    features: {
+      type: 'array',
+      required: true,
+      description: 'Two to eight feature bullets. Long bullets wrap inside the card.',
+    },
+    links: { type: 'array', description: 'One optional CTA link for the plan.' },
+  }}
+/>
+
+Each item in `features` carries:
+
+<TypeTable
+  type={{
+    text: { type: 'text', required: true, description: 'Feature bullet text.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="pricing-basic" />
+
+## Requirements
+
+<ComponentRequirements slug="pricing-basic" />

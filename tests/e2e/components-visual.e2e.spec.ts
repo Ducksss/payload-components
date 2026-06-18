@@ -30,7 +30,7 @@ import { expect, test } from '@playwright/test'
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3000'}`
 
 /* Slugs are the demo registry's object keys, read as text so this spec never
- * imports the 33 demo React modules. These are exactly the slugs the preview
+ * imports every demo React module. These are exactly the slugs the preview
  * route is statically generated for (registry.ts → generateStaticParams). */
 const registrySource = readFileSync(
   new URL('../../src/components/site/demos/registry.ts', import.meta.url),

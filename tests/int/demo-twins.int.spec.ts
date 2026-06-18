@@ -30,6 +30,10 @@ const pairs = [
     twin: 'src/components/site/demos/CallToActionSignupDemo.tsx',
   },
   {
+    component: 'payload-components/source/blocks/PricingBasic/Component.tsx',
+    twin: 'src/components/site/demos/PricingBasicDemo.tsx',
+  },
+  {
     component: 'payload-components/source/blocks/FeatureGridBasic/Component.tsx',
     twin: 'src/components/site/demos/FeatureGridBasicDemo.tsx',
   },

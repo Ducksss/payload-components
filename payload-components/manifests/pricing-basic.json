@@ -1,0 +1,121 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "pricing-basic",
+  "version": "0.1.0",
+  "title": "Pricing Basic",
+  "description": "A static pricing Payload block: section header, two to four plan cards, feature bullets, one highlighted tier, and optional per-plan CTA links.",
+  "registryItemName": "pricing-basic",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/pricingFields.ts",
+    "src/blocks/PricingBasic/config.ts",
+    "src/blocks/PricingBasic/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "PricingBasicBlock",
+      "importPath": "@/blocks/PricingBasic/Component",
+      "blockSlug": "pricingBasic"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "PricingBasic",
+      "importPath": "../../blocks/PricingBasic/config",
+      "blockName": "PricingBasic"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Static pricing section with plan cards, feature bullets, one highlighted tier, and optional CTA links."
+  },
+  "sampleContent": {
+    "blockType": "pricingBasic",
+    "eyebrow": "Pricing",
+    "title": "Simple plans for growing teams.",
+    "description": "Start with the plan that fits today. Add seats, workspaces, or support when the team needs them.",
+    "plans": [
+      {
+        "name": "Starter",
+        "description": "For small teams validating their first customer-facing dashboards.",
+        "price": "$29",
+        "billingNote": "per workspace, per month",
+        "highlighted": false,
+        "features": [
+          { "text": "Three workspaces and unlimited draft pages" },
+          { "text": "Basic analytics exports" },
+          { "text": "Community support" }
+        ],
+        "links": [
+          {
+            "link": {
+              "type": "custom",
+              "newTab": false,
+              "url": "/signup",
+              "label": "Start with Starter",
+              "appearance": "outline"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Growth Operations Advanced Team Plan",
+        "description": "For teams launching pricing, onboarding, and reporting pages every week.",
+        "price": "$149.99",
+        "billingNote": "per workspace, per month with annual billing available",
+        "highlighted": true,
+        "features": [
+          { "text": "Unlimited published pages and component installs" },
+          { "text": "Priority support for launch-week changes" },
+          { "text": "Long feature bullets wrap cleanly without stretching the plan card" }
+        ],
+        "links": [
+          {
+            "link": {
+              "type": "custom",
+              "newTab": false,
+              "url": "/contact",
+              "label": "Choose Growth",
+              "appearance": "default"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Enterprise",
+        "description": "For organizations that need advanced controls, dedicated onboarding, and custom review flows.",
+        "price": "Custom annual contract",
+        "billingNote": "volume terms and procurement support",
+        "highlighted": false,
+        "features": [
+          { "text": "Dedicated launch support" },
+          { "text": "Security and procurement review materials" },
+          { "text": "Custom implementation planning" }
+        ],
+        "links": [
+          {
+            "link": {
+              "type": "custom",
+              "newTab": false,
+              "url": "/contact",
+              "label": "Talk to sales",
+              "appearance": "outline"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
