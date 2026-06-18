@@ -1,0 +1,64 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "content-split-rows",
+  "version": "0.1.0",
+  "title": "Content Split Rows",
+  "description": "A content section with an intro and alternating media-and-text rows, installed as a wired Payload block.",
+  "registryItemName": "content-split-rows",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/contentFields.ts",
+    "src/blocks/ContentSplitRows/config.ts",
+    "src/blocks/ContentSplitRows/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContentSplitRowsBlock",
+      "importPath": "@/blocks/ContentSplitRows/Component",
+      "blockSlug": "contentSplitRows"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContentSplitRows",
+      "importPath": "../../blocks/ContentSplitRows/config",
+      "blockName": "ContentSplitRows"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Intro copy above alternating rows of media beside a heading and description."
+  },
+  "sampleContent": {
+    "blockType": "contentSplitRows",
+    "eyebrow": "Smart editor",
+    "title": "Ask Acme to edit anything.",
+    "paragraphs": [
+      {
+        "text": "Efficient content creation is our mission. Edit text, generate snippets, format documents, and integrate with your existing workflow."
+      }
+    ],
+    "rows": [
+      {
+        "title": "Marketing campaigns",
+        "description": "We put together your schedule automatically and work the highest-priority items first."
+      },
+      {
+        "title": "AI meeting scheduler",
+        "description": "Ask the chat to create or update your events, or have it prepare today's agenda."
+      }
+    ]
+  }
+}

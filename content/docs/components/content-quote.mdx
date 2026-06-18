@@ -1,0 +1,69 @@
+---
+title: Content Quote
+description: A content section pairing a media panel with body copy and a cited pull quote.
+icon: Quote
+---
+
+<ComponentPreview slug="content-quote" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add content-quote
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/content-quote.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="content-quote" />
+
+## Content model
+
+The `eyebrow`, `title`, and `paragraphs` fields come from the shared Content family base
+(`src/blocks/shared/contentFields.ts`); the `image` upload, `quote`, `citation`, and `logo` are
+specific to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    paragraphs: {
+      type: 'array',
+      description: 'Body copy — one or more short paragraphs (min 1, max 4).',
+    },
+    image: { type: 'upload', description: 'Media upload shown in the panel beside the copy.' },
+    quote: { type: 'textarea', required: true, description: 'The pull-quote text.' },
+    citation: { type: 'text', required: true, description: 'Who said it (name, role).' },
+    logo: { type: 'upload', description: 'Optional small logo Media upload shown under the citation.' },
+  }}
+/>
+
+Each item in `paragraphs` carries:
+
+<TypeTable
+  type={{
+    text: { type: 'textarea', required: true, description: 'A single paragraph of body copy.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="content-quote" />
+
+## Requirements
+
+<ComponentRequirements slug="content-quote" />
+
+## In this family
+
+<ComponentFamily slug="content-quote" />

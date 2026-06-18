@@ -1,0 +1,75 @@
+---
+title: Content Feature Split
+description: A content section pairing a side media panel with body copy and two icon features.
+icon: StretchHorizontal
+---
+
+<ComponentPreview slug="content-feature-split" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add content-feature-split
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/content-feature-split.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="content-feature-split" />
+
+## Content model
+
+The `eyebrow`, `title`, and `paragraphs` fields come from the shared Content family base
+(`src/blocks/shared/contentFields.ts`); the `features` list and `image` upload are specific to this
+variant. Feature icons are chosen from the shared allowlist in `src/blocks/shared/contentIcons.ts`.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    paragraphs: {
+      type: 'array',
+      description: 'Body copy — one or more short paragraphs (min 1, max 4).',
+    },
+    features: {
+      type: 'array',
+      description: 'Exactly two icon features rendered in a two-column grid.',
+    },
+    image: { type: 'upload', description: 'Media upload shown in the side panel beside the copy.' },
+  }}
+/>
+
+Each item in `features` carries:
+
+<TypeTable
+  type={{
+    icon: {
+      type: 'select',
+      description: 'Lucide icon name (zap · cpu · lock · sparkles · gauge · shield).',
+    },
+    title: { type: 'text', required: true, description: 'Feature heading.' },
+    description: { type: 'textarea', required: true, description: 'Feature body copy.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="content-feature-split" />
+
+## Requirements
+
+<ComponentRequirements slug="content-feature-split" />
+
+## In this family
+
+<ComponentFamily slug="content-feature-split" />
