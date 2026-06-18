@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import type { PageTreeTransformer } from 'fumadocs-core/source'
-import { Blocks, FileText, Images, LayoutGrid, LayoutPanelTop, Megaphone, MonitorPlay, Plug } from 'lucide-react'
+import { Blocks, FileText, Images, LayoutGrid, LayoutPanelTop, Megaphone, MonitorPlay, Pilcrow, Plug, Users } from 'lucide-react'
 
 import { componentEntries } from '@/lib/site'
 
@@ -39,16 +39,23 @@ const MODES: { icon: ReactNode; key: InstallMode; label: string }[] = [
   { icon: <FileText />, key: 'posts', label: 'Post components' },
 ]
 
-/* Family taxonomy, in display order. A component belongs to a family when its slug equals
-   the family key or starts with `<key>-` (hero-basic → Hero; feature-split → Feature).
-   Unknown prefixes fall back to a humanized label so new components still group sensibly. */
+/* Family taxonomy, in display order — ranked by importance and catalog depth so the sidebar
+   leads with the universal landing-page sections most pages reach for (Hero, Feature, Content,
+   Call to action), then the deeper / flashier families (Integration, Logo cloud, Team), trailing
+   with the single-variant utility (Embed). A component
+   belongs to a family when its slug equals the family key or starts with `<key>-`
+   (hero-basic → Hero; content-quote → Content). The keys are distinct prefixes, so the order
+   only drives ranking + icon, never which family a slug matches. Unknown prefixes fall back to
+   a humanized label so new components still group sensibly. */
 const FAMILIES: { icon: ReactNode; key: string; label: string }[] = [
   { icon: <LayoutPanelTop />, key: 'hero', label: 'Hero' },
   { icon: <LayoutGrid />, key: 'feature', label: 'Feature' },
-  { icon: <MonitorPlay />, key: 'embed', label: 'Embed' },
-  { icon: <Images />, key: 'logo-cloud', label: 'Logo cloud' },
-  { icon: <Plug />, key: 'integration', label: 'Integration' },
+  { icon: <Pilcrow />, key: 'content', label: 'Content' },
   { icon: <Megaphone />, key: 'call-to-action', label: 'Call to action' },
+  { icon: <Plug />, key: 'integration', label: 'Integration' },
+  { icon: <Images />, key: 'logo-cloud', label: 'Logo cloud' },
+  { icon: <Users />, key: 'team', label: 'Team' },
+  { icon: <MonitorPlay />, key: 'embed', label: 'Embed' },
 ]
 
 const slugOf = (url: string) => url.split('/').filter(Boolean).pop() ?? ''
