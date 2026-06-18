@@ -58,7 +58,7 @@ export function FeatureGridBasicDemo({
     <div aria-hidden="true" className={className}>
       <div
         className={cn(
-          'rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14',
+          'rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14',
           annotate ? 'overflow-visible' : 'overflow-hidden',
         )}
       >
@@ -69,7 +69,7 @@ export function FeatureGridBasicDemo({
                   'eyebrow',
                   <Badge
                     variant="outline"
-                    className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]"
+                    className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
                   >
                     {eyebrow}
                   </Badge>,
@@ -78,7 +78,7 @@ export function FeatureGridBasicDemo({
 
             {field(
               'title',
-              <div className="text-4xl font-medium tracking-[-0.06em] text-balance sm:text-5xl">
+              <div className="text-4xl font-medium tracking-display text-balance sm:text-5xl">
                 {title}
               </div>,
             )}
@@ -103,7 +103,7 @@ export function FeatureGridBasicDemo({
                       className="border-border/70 bg-background/85 shadow-none"
                     >
                       <CardHeader className="gap-3 p-5">
-                        <CardTitle className="text-xl tracking-[-0.04em]">{item.title}</CardTitle>
+                        <CardTitle className="text-xl tracking-title">{item.title}</CardTitle>
                       </CardHeader>
                       <CardContent className="p-5 pt-0">
                         <CardDescription className="text-sm leading-7 text-muted-foreground">

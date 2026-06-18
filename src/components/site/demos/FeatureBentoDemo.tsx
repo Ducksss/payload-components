@@ -27,19 +27,19 @@ export function FeatureBentoDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto flex max-w-6xl flex-col gap-8">
           <div className="flex max-w-3xl flex-col gap-4">
             {eyebrow ? (
               <Badge
                 variant="outline"
-                className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
               >
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <div className="text-4xl font-medium tracking-[-0.06em] text-balance sm:text-5xl">
+            <div className="text-4xl font-medium tracking-display text-balance sm:text-5xl">
               {title}
             </div>
 
@@ -58,7 +58,7 @@ export function FeatureBentoDemo({
                   })}
                 >
                   <CardHeader className="gap-3 p-5">
-                    <CardTitle className="text-xl tracking-[-0.04em]">{item.title}</CardTitle>
+                    <CardTitle className="text-xl tracking-title">{item.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="p-5 pt-0">
                     <CardDescription className="text-sm leading-7 text-muted-foreground">

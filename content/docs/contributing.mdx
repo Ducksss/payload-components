@@ -37,9 +37,38 @@ A component proposal should arrive complete — incomplete components don't ship
   </Step>
 </Steps>
 
+## Visual standards
+
+Every block speaks one visual language — light shadcn monochrome with a single emerald accent — defined as tokens in `src/app/globals.css`. Two checks keep new components on it, and both run in the release gate:
+
+<Steps>
+  <Step>
+    **Colours come from tokens, never the raw palette.** Reach for `bg-card`,
+    `text-muted-foreground`, `border-border/70`, `text-primary`, `text-brand` —
+    not `bg-blue-500`, `text-white`, or a hardcoded `text-[#0a0a0a]` /
+    `bg-[oklch(…)]`. The keywords `transparent` / `current` / `inherit` and
+    `var(--…)`-based values are fine.
+  </Step>
+  <Step>
+    **Radius and letter-spacing use the named tokens**, not arbitrary values:
+    `rounded-frame` / `rounded-panel` / `rounded-card` / `rounded-inset` (plus
+    `rounded-lg` / `rounded-full`), and `tracking-eyebrow` / `tracking-display` /
+    `tracking-heading` — not `rounded-[2rem]` or `tracking-[-0.06em]`. Spacing and
+    font size stay on the default scale.
+  </Step>
+</Steps>
+
+`tests/int/visual-standards.int.spec.ts` enforces this statically across `payload-components/source` (and holds the landing twins to the colour palette), while `tests/e2e/components-visual.e2e.spec.ts` snapshots every component to catch anything pixels can see. Need a new radius or tracking value? Add a token to `globals.css` instead of reaching for an arbitrary value — the guard then allows it everywhere.
+
+<Callout type="info">
+  Pure layout geometry — `aspect-[4/3]`, `grid-cols-[auto_1fr_auto]`,
+  `w-[calc(…)]` — is per-component and stays arbitrary by design; only colour,
+  radius, letter-spacing, spacing, and font-size are token-governed.
+</Callout>
+
 ## Keep the catalog curated
 
-The alpha catalog should stay small enough to verify.
+The catalog grows by curation, not volume — every component must stay verifiable no matter how many ship.
 
 <Callout type="success">
   A component is ready when it installs cleanly, can be run twice, and has docs good

@@ -1,0 +1,70 @@
+---
+title: Team Grid
+description: A team section with a heading, intro, and a responsive grid of member photo cards that reveal role on hover.
+icon: Users
+---
+
+<ComponentPreview slug="team-grid" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add team-grid
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/team-grid.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="team-grid" />
+
+## Content model
+
+The `eyebrow` and `title` fields come from the shared Team family base
+(`src/blocks/shared/teamFields.ts`); the `description` intro and the `members` grid are
+specific to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro paragraph shown beside the heading.' },
+    members: {
+      type: 'array',
+      required: true,
+      description: 'The team members shown as photo cards (min 1, max 12).',
+    },
+  }}
+/>
+
+Each item in `members` carries:
+
+<TypeTable
+  type={{
+    avatar: { type: 'upload', required: true, description: 'Member photo (Media upload).' },
+    name: { type: 'text', required: true, description: 'Member name.' },
+    role: { type: 'text', required: true, description: 'Job title or role (revealed on hover).' },
+    href: { type: 'text', description: 'Optional link to the member’s profile (revealed on hover).' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="team-grid" />
+
+## Requirements
+
+<ComponentRequirements slug="team-grid" />
+
+## In this family
+
+<ComponentFamily slug="team-grid" />

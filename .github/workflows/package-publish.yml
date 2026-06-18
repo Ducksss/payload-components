@@ -1,0 +1,86 @@
+name: Package Publish
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+env:
+  NEXT_TELEMETRY_DISABLED: '1'
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.24.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm test:pack
+
+      - id: package
+        name: Resolve package metadata
+        shell: bash
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          tag=latest
+          if [[ "$version" == *-* ]]; then
+            tag=next
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to npm
+        shell: bash
+        run: |
+          if npm view "payload-components@${{ steps.package.outputs.version }}" version >/dev/null 2>&1; then
+            echo "payload-components@${{ steps.package.outputs.version }} already exists on npm"
+            exit 0
+          fi
+          npm publish --provenance --tag "${{ steps.package.outputs.tag }}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://npm.pkg.github.com
+          scope: '@ducksss'
+
+      - name: Prepare GitHub Packages mirror
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs')
+          const packagePath = 'package.json'
+          const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'))
+          pkg.name = '@ducksss/payload-components'
+          pkg.publishConfig = { registry: 'https://npm.pkg.github.com' }
+          fs.writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`)
+          NODE
+
+      - name: Publish GitHub Packages mirror
+        shell: bash
+        run: |
+          if npm view "@ducksss/payload-components@${{ steps.package.outputs.version }}" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+            echo "@ducksss/payload-components@${{ steps.package.outputs.version }} already exists on GitHub Packages"
+            exit 0
+          fi
+          npm publish --tag "${{ steps.package.outputs.tag }}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

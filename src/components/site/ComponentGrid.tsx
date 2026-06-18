@@ -4,7 +4,7 @@ import { cn } from '@/utilities/ui'
 
 /* Catalog-page building blocks for the in-development posts suite.
  * (The landing page renders the installable components live — see
- * CatalogIndex and the demos/ twins; these skeleton thumbs stay
+ * CatalogFamilyTeaser and the demos/ twins; these skeleton thumbs stay
  * deliberately lower-fi to separate "planned" from "real".) */
 
 /* ------------------------------------------------------------------ */
@@ -125,7 +125,7 @@ function ComponentThumb({ muted = false, slug }: { muted?: boolean; slug: string
   return (
     <div
       aria-hidden="true"
-      className="flex h-36 items-center justify-center border-b border-border bg-muted/40 px-6"
+      className="flex h-28 items-center justify-center border-b border-border bg-muted/40 px-4"
     >
       <div className={cn('w-full max-w-[16rem]', muted && 'opacity-55')}>
         <ThumbShapes slug={slug} />
@@ -140,26 +140,23 @@ function ComponentThumb({ muted = false, slug }: { muted?: boolean; slug: string
 
 export function UpcomingComponentCard({ component }: { component: UpcomingComponent }) {
   return (
-    <article className="flex flex-col overflow-hidden rounded-2xl border border-dashed border-border bg-card/60">
+    <article className="flex flex-col overflow-hidden rounded-xl border border-dashed border-border bg-card/50">
       <ComponentThumb muted slug={component.slug} />
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        <div className="flex items-center justify-between gap-3">
-          <code className="font-mono text-[13px] text-muted-foreground">{component.slug}</code>
-          <span className="rounded-full border border-border bg-background px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
-            Coming soon
-          </span>
-        </div>
-        <div>
-          <h3 className="text-base font-semibold tracking-tight text-foreground/80">
+      <div className="flex flex-1 flex-col gap-1.5 p-4">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="truncate text-[13px] font-semibold tracking-tight text-foreground/80">
             {component.title}
           </h3>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">{component.description}</p>
-        </div>
-        <div className="mt-auto border-t border-border pt-3">
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-            {component.target} · in development
+          <span className="shrink-0 rounded-full border border-border bg-background px-1.5 py-0.5 font-mono text-[9px] font-medium uppercase tracking-eyebrow text-muted-foreground">
+            Soon
           </span>
         </div>
+        <p className="line-clamp-2 text-xs leading-5 text-muted-foreground">
+          {component.description}
+        </p>
+        <span className="mt-auto truncate pt-1 font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground/80">
+          {component.target}
+        </span>
       </div>
     </article>
   )
@@ -185,7 +182,7 @@ export function ComponentFamilyHeader({
   const header = (
     <div className="flex items-baseline gap-3">
       <h3 className="text-lg font-semibold tracking-tight text-foreground">{name}</h3>
-      <span className="rounded-full border border-border bg-background px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+      <span className="rounded-full border border-border bg-background px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-eyebrow text-muted-foreground">
         {countLabel}
       </span>
     </div>

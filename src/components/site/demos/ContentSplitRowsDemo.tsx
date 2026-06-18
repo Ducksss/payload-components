@@ -24,19 +24,19 @@ export function ContentSplitRowsDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto flex max-w-5xl flex-col gap-12">
           <div className="flex flex-col gap-4">
             {eyebrow ? (
               <Badge
                 variant="outline"
-                className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
               >
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <div className="text-4xl font-medium tracking-[-0.06em] text-balance">{title}</div>
+            <div className="text-4xl font-medium tracking-display text-balance">{title}</div>
 
             {paragraphs.map((paragraph, index) => (
               <p className="text-base leading-7 text-muted-foreground" key={index}>
@@ -53,12 +53,12 @@ export function ContentSplitRowsDemo({
                   key={index}
                 >
                   <div className={index % 2 === 1 ? 'sm:order-last' : undefined}>
-                    <div className="overflow-hidden rounded-[1.25rem] border border-border/70">
+                    <div className="overflow-hidden rounded-card border border-border/70">
                       <div className="aspect-[4/3] w-full bg-muted" />
                     </div>
                   </div>
                   <div className="flex flex-col gap-3">
-                    <div className="text-xl font-medium tracking-[-0.02em]">{row.title}</div>
+                    <div className="text-xl font-medium tracking-heading">{row.title}</div>
                     <p className="text-base leading-7 text-muted-foreground">{row.description}</p>
                   </div>
                 </div>

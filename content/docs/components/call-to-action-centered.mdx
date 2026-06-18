@@ -1,0 +1,53 @@
+---
+title: Call To Action Centered
+description: A centered call-to-action block — heading, supporting copy, and one or two CTA links.
+icon: Megaphone
+---
+
+<ComponentPreview slug="call-to-action-centered" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add call-to-action-centered
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/call-to-action-centered.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="call-to-action-centered" />
+
+## Content model
+
+`title` and `description` come from the shared `callToActionFields` base; `links` is specific to this
+variant.
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'The call-to-action heading.' },
+    description: { type: 'textarea', description: 'Optional supporting copy under the heading.' },
+    links: { type: 'array', description: 'One or two CTA links (primary + optional secondary).' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="call-to-action-centered" />
+
+## Requirements
+
+<ComponentRequirements slug="call-to-action-centered" />
+
+## In this family
+
+<ComponentFamily slug="call-to-action-centered" />

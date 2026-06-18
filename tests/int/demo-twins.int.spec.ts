@@ -18,6 +18,18 @@ const pairs = [
     twin: 'src/components/site/demos/HeroBasicDemo.tsx',
   },
   {
+    component: 'payload-components/source/blocks/CallToActionCentered/Component.tsx',
+    twin: 'src/components/site/demos/CallToActionCenteredDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/CallToActionBoxed/Component.tsx',
+    twin: 'src/components/site/demos/CallToActionBoxedDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/CallToActionSignup/Component.tsx',
+    twin: 'src/components/site/demos/CallToActionSignupDemo.tsx',
+  },
+  {
     component: 'payload-components/source/blocks/FeatureGridBasic/Component.tsx',
     twin: 'src/components/site/demos/FeatureGridBasicDemo.tsx',
   },
@@ -144,6 +156,14 @@ const pairs = [
   {
     component: 'payload-components/source/blocks/IntegrationTestimonial/Component.tsx',
     twin: 'src/components/site/demos/IntegrationTestimonialDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/TeamRoster/Component.tsx',
+    twin: 'src/components/site/demos/TeamRosterDemo.tsx',
+  },
+  {
+    component: 'payload-components/source/blocks/TeamGrid/Component.tsx',
+    twin: 'src/components/site/demos/TeamGridDemo.tsx',
   },
 ] as const
 

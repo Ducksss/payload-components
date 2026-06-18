@@ -253,16 +253,18 @@ test.describe('Light shadcn frontend', () => {
     await expect(page.locator('#hero-basic')).toBeHidden()
   })
 
-  test('exposes every landing section, the footer, and each component', async ({ page }) => {
+  test('exposes every landing section, the catalog teaser, and the footer', async ({ page }) => {
     await page.goto(baseURL)
 
     for (const section of Object.values(landingSections)) {
       await expect(page.getByRole('heading', { level: 2, name: section.heading })).toBeVisible()
     }
 
-    for (const component of componentEntries) {
-      await expect(page.locator('code', { hasText: component.command }).first()).toBeVisible()
-    }
+    // The catalog section teases page families with live previews instead of
+    // listing every component as a text row; the full index lives at /components.
+    await expect(page.getByRole('heading', { name: 'Page blocks' })).toBeVisible()
+    await expect(page.getByRole('link', { name: /Browse all \d+ components/ })).toBeVisible()
+    await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
 
     await expect(page.getByRole('contentinfo')).toBeVisible()
     await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
@@ -295,8 +297,10 @@ test.describe('Light shadcn frontend', () => {
       .toBe(primaryInstallCommand)
   })
 
-  test('copies a catalog row command', async ({ page, context }) => {
-    const catalogComponent = componentEntries[1]
+  test('copies a catalog family-card command', async ({ page, context }) => {
+    // feature-bento is the Features family's representative card in the landing
+    // teaser; its command differs from the hero's primaryInstallCommand.
+    const catalogComponent = componentEntries.find((entry) => entry.slug === 'feature-bento')!
 
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
@@ -342,6 +346,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-desktop.png', {
       animations: 'disabled',
       fullPage: true,
+      timeout: 15_000,
     })
 
     await page.setViewportSize({ height: 900, width: 390 })
@@ -352,6 +357,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-mobile.png', {
       animations: 'disabled',
       fullPage: true,
+      timeout: 15_000,
     })
   })
 

@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 import { ArrowRight } from 'lucide-react'
 
-import { CatalogIndex } from '@/components/site/CatalogIndex'
+import { CatalogFamilyTeaser } from '@/components/site/CatalogFamilyTeaser'
 import { ComponentSpecimen } from '@/components/site/ComponentSpecimen'
 import { Section, SectionHeading } from '@/components/site/section'
 import { componentsIntro, landingSections } from '@/lib/site'
@@ -33,7 +33,7 @@ export function CatalogSection() {
       </div>
 
       <div className="reveal-on-scroll mt-12">
-        <CatalogIndex />
+        <CatalogFamilyTeaser />
       </div>
     </Section>
   )

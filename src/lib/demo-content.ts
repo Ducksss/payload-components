@@ -55,6 +55,17 @@ export type LogoCloudDemoContent = {
   links?: { link: DemoLinkData }[]
 }
 
+/* The whole Call To Action family (centered, boxed, signup) renders from one
+   demo-content shape: the shared title+description, optional CTA links for the
+   centered/boxed variants, and the email-form labels for the signup variant. */
+export type CtaDemoContent = {
+  title: string
+  description?: string
+  emailPlaceholder?: string
+  links?: { link: DemoLinkData }[]
+  submitLabel?: string
+}
+
 export const heroBasicDemoContent: HeroBasicDemoContent = {
   description:
     'Acme gives product teams hosted dashboards, usage reports, and alerting on one platform — wired to your data in an afternoon.',
@@ -555,4 +566,87 @@ export const integrationTestimonialDemoContent: IntegrationDemoContent = {
       'We had Acme talking to our warehouse, billing, and Slack in a single afternoon — the integrations just worked.',
     role: 'Head of Platform, Northwind',
   },
+}
+
+export const callToActionCenteredDemoContent: CtaDemoContent = {
+  description:
+    'Ship customer-facing dashboards in an afternoon — no infrastructure to manage and nothing to wire by hand.',
+  links: [
+    { link: { appearance: 'default', label: 'Get started' } },
+    { link: { appearance: 'outline', label: 'Book a demo' } },
+  ],
+  title: 'Start building with Acme today.',
+}
+
+export const callToActionBoxedDemoContent: CtaDemoContent = {
+  description:
+    'A framed, high-emphasis call to action for the end of a landing page — the box draws the eye to the next step.',
+  links: [
+    { link: { appearance: 'default', label: 'Create an account' } },
+    { link: { appearance: 'outline', label: 'Talk to sales' } },
+  ],
+  title: 'Bring your team to Acme.',
+}
+
+export const callToActionSignupDemoContent: CtaDemoContent = {
+  description:
+    'Join the Acme newsletter for product updates, changelog highlights, and the occasional deep dive.',
+  emailPlaceholder: 'Your email address',
+  submitLabel: 'Subscribe',
+  title: 'Stay in the loop.',
+}
+
+/* The Team family (roster, grid) renders from one demo-content shape: the shared
+   eyebrow/title plus the grouped department roster (team-roster) or the flat
+   member grid (team-grid) a given variant uses. Member avatars are backend-free
+   on the landing/docs previews, so the twins render presentational placeholders
+   rather than real images — only names and roles carry into the preview. */
+export type TeamMemberDemo = { name: string; role: string }
+
+export type TeamSectionDemoContent = {
+  description?: string
+  eyebrow?: string
+  groups?: { label: string; members: TeamMemberDemo[] }[]
+  members?: TeamMemberDemo[]
+  title: string
+}
+
+export const teamRosterDemoContent: TeamSectionDemoContent = {
+  eyebrow: 'Our team',
+  groups: [
+    {
+      label: 'Leadership',
+      members: [
+        { name: 'Ada Lovelace', role: 'Co-Founder & CEO' },
+        { name: 'Alan Turing', role: 'Co-Founder & CTO' },
+        { name: 'Grace Hopper', role: 'Chief Operating Officer' },
+        { name: 'Katherine Johnson', role: 'VP of Product' },
+      ],
+    },
+    {
+      label: 'Engineering',
+      members: [
+        { name: 'Linus Torvalds', role: 'Principal Engineer' },
+        { name: 'Margaret Hamilton', role: 'Staff Engineer' },
+        { name: 'Dennis Ritchie', role: 'Backend Lead' },
+        { name: 'Barbara Liskov', role: 'Platform Engineer' },
+      ],
+    },
+  ],
+  title: 'The people building Acme.',
+}
+
+export const teamGridDemoContent: TeamSectionDemoContent = {
+  description:
+    'A small, senior team shipping the platform that product teams open every day.',
+  eyebrow: 'Team',
+  members: [
+    { name: 'Henry Lee', role: 'UX Engineer' },
+    { name: 'Isabella Garcia', role: 'Sales Manager' },
+    { name: 'Liam Brown', role: 'Founder & CEO' },
+    { name: 'Olivia Miller', role: 'Visual Designer' },
+    { name: 'Ava Williams', role: 'Interaction Designer' },
+    { name: 'Elijah Jones', role: 'Co-Founder & CTO' },
+  ],
+  title: 'Our dream team.',
 }

@@ -20,7 +20,7 @@ export const LogoCloudInlineBlock: React.FC<Props> = ({
 }) => {
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div
           className={cn('flex flex-col gap-5', {
             'mx-auto max-w-5xl': !disableInnerContainer,
@@ -37,7 +37,13 @@ export const LogoCloudInlineBlock: React.FC<Props> = ({
 
                 return (
                   <div className="flex items-center" key={item.id ?? `${item.name}-${index}`}>
-                    {item.href ? <a href={item.href}>{logo}</a> : logo}
+                    {item.href ? (
+                      <a aria-label={item.name} href={item.href}>
+                        {logo}
+                      </a>
+                    ) : (
+                      logo
+                    )}
                   </div>
                 )
               })}

@@ -1,5 +1,5 @@
 import { spawn, type ChildProcess } from 'node:child_process'
-import { access, cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises'
+import { access, cp, mkdir, mkdtemp, readdir, readFile, rm, symlink, writeFile } from 'node:fs/promises'
 import { createServer, type Server, type ServerResponse } from 'node:http'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
@@ -35,6 +35,9 @@ export const DEFAULT_SMOKE_COMPONENTS = [
   'integration-list',
   'integration-marquee',
   'integration-testimonial',
+  'call-to-action-centered',
+  'call-to-action-boxed',
+  'call-to-action-signup',
 ] as const
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
 
@@ -742,6 +745,25 @@ const assertRouteRendersWithPlaywright = async ({
   }
 }
 
+const packLocalPackage = async (tempRoot: string, timeoutMs: number) => {
+  await runCommand({
+    args: ['pack', '--pack-destination', tempRoot],
+    command: 'pnpm',
+    cwd: repoRoot,
+    stage: 'pack local payload-components tarball',
+    timeoutMs,
+  })
+
+  const entries = await readdir(tempRoot)
+  const tarball = entries.find((entry) => entry.endsWith('.tgz'))
+
+  if (!tarball) {
+    throw new Error('pnpm pack did not produce a .tgz tarball.')
+  }
+
+  return path.join(tempRoot, tarball)
+}
+
 const runFreshPayloadRepoSmoke = async ({
   dbConnectionString,
   components,
@@ -775,11 +797,13 @@ const runFreshPayloadRepoSmoke = async ({
     timeoutMs,
   })
 
+  const tarballPath = await packLocalPackage(tempRoot, timeoutMs)
+
   await runCommand({
-    args: ['add', repoRoot],
+    args: ['add', tarballPath],
     command: 'pnpm',
     cwd: targetPath,
-    stage: 'install local payload-components package into fresh project',
+    stage: 'install packed payload-components tarball into fresh project',
     timeoutMs,
   })
 
