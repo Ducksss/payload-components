@@ -212,7 +212,7 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Thirty-six page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Thirty-eight page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring

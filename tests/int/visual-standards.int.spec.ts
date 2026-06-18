@@ -47,6 +47,24 @@ const scanTargets = [
   { dir: 'src/components/site/demos', match: /Demo\.tsx$/, scope: 'color' },
 ] as const
 
+const codeRabbitTokenGuards = [
+  {
+    file: 'src/components/site/ComponentPreviewFrame.tsx',
+    forbidden: ['bg-[#ff5f57]', 'bg-[#febc2e]', 'bg-[#28c840]'],
+    required: ['bg-preview-close', 'bg-preview-minimize', 'bg-preview-zoom'],
+  },
+  {
+    file: 'src/components/site/ComponentGrid.tsx',
+    forbidden: ['tracking-[0.12em]', 'tracking-[0.14em]'],
+    required: ['tracking-eyebrow'],
+  },
+  {
+    file: 'payload-components/source/blocks/CallToActionSignup/Component.tsx',
+    forbidden: ['rounded-xl'],
+    required: ['rounded-frame'],
+  },
+] as const
+
 /* Tailwind's built-in palette names plus white/black. Using any of these in a
  * colour utility is drift away from the semantic token set. None of our tokens
  * collide with these names, so a token can never be mistaken for a palette. */
@@ -205,5 +223,26 @@ describe('Component visual standards', () => {
     // Guard against the scan silently covering nothing.
     expect(inspected).toBeGreaterThan(0)
     expect(violations, `Visual drift:\n${violations.join('\n')}`).toEqual([])
+  })
+
+  it('keeps PR #96 review fixes on named visual tokens', async () => {
+    const css = await readFile(globalsPath, 'utf8')
+    const violations: string[] = []
+
+    for (const token of ['preview-close', 'preview-minimize', 'preview-zoom']) {
+      if (!css.includes(`--color-${token}:`)) violations.push(`missing --color-${token}`)
+    }
+
+    for (const { file, forbidden, required } of codeRabbitTokenGuards) {
+      const source = await readFile(path.join(repoRoot, file), 'utf8')
+      for (const token of forbidden) {
+        if (source.includes(token)) violations.push(`${file}: still contains ${token}`)
+      }
+      for (const token of required) {
+        if (!source.includes(token)) violations.push(`${file}: missing ${token}`)
+      }
+    }
+
+    expect(violations, `PR #96 token drift:\n${violations.join('\n')}`).toEqual([])
   })
 })

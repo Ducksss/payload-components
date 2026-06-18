@@ -321,6 +321,18 @@ describe('Fumadocs site shell', () => {
     await expectMetaEntriesResolve(path.join(repoRoot, 'content', 'docs'))
   })
 
+  it('keeps catalog page-block count copy aligned with installable components', async () => {
+    const { componentEntries, componentFamilies, componentsIntro } = await import('../../src/lib/site')
+    const pageCount = componentEntries.filter((component) => component.family === 'pages').length
+    const aboutPage = await readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8')
+
+    expect(pageCount).toBe(38)
+    expect(componentFamilies.pages.countLabel).toBe(`${pageCount} installable`)
+    expect(componentsIntro).toContain('Thirty-eight page blocks install today')
+    expect(aboutPage).toContain('Thirty-eight page blocks install today')
+    expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Thirty-six page blocks')
+  })
+
   it('publishes production-safe fallback URLs when no site URL env is set', async () => {
     vi.stubEnv('NEXT_PUBLIC_SITE_URL', undefined)
     vi.resetModules()
