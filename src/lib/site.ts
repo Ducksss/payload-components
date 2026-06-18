@@ -232,15 +232,21 @@ export const componentFamilies = {
   },
 } as const
 
+/* Display order on the /components catalog (it reads Object.keys order). Page families are
+   ranked by importance + catalog depth to mirror the docs sidebar (see
+   src/lib/component-page-tree.tsx FAMILIES): the universal landing-page sections first
+   (Hero, Feature, Content, Call to action), then the deeper / flashier families
+   (Integration, Logo cloud, Team), then the single-variant utility (Embed). pricing / faq /
+   testimonials ship no components yet, so they stay hidden (the catalog filters out count 0). */
 export const componentCategories = {
   hero: { family: 'pages', label: 'Hero' },
   features: { family: 'pages', label: 'Features' },
-  embed: { family: 'pages', label: 'Embed' },
-  logos: { family: 'pages', label: 'Logo cloud' },
   content: { family: 'pages', label: 'Content' },
-  integration: { family: 'pages', label: 'Integration' },
   cta: { family: 'pages', label: 'Call to action' },
+  integration: { family: 'pages', label: 'Integration' },
+  logos: { family: 'pages', label: 'Logo cloud' },
   team: { family: 'pages', label: 'Team' },
+  embed: { family: 'pages', label: 'Embed' },
   pricing: { family: 'pages', label: 'Pricing' },
   faq: { family: 'pages', label: 'FAQ' },
   testimonials: { family: 'pages', label: 'Testimonials' },
