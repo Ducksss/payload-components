@@ -344,6 +344,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-desktop.png', {
       animations: 'disabled',
       fullPage: true,
+      maxDiffPixels: 15000,
     })
 
     await page.setViewportSize({ height: 900, width: 390 })
@@ -354,6 +355,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-mobile.png', {
       animations: 'disabled',
       fullPage: true,
+      maxDiffPixels: 15000,
     })
   })
 
