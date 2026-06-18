@@ -29,9 +29,9 @@ jobs:
           - 20.19.0
           - 22
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 10.24.0
 
@@ -95,9 +95,9 @@ jobs:
       PREVIEW_SECRET: ci-preview-secret
       REGISTRY_URL: ${{ github.event.inputs.registry_url || '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 10.24.0
 
