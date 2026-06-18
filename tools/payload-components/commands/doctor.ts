@@ -26,6 +26,9 @@ const log = (status: 'ok' | 'warn' | 'error', message: string) => {
 
 const formatList = (values: string[]) => values.join(', ')
 
+const formatRecordedFiles = (values: string[]) =>
+  values.length > 0 ? formatList(values) : 'none recorded'
+
 const loadKnownManifests = async () => {
   const files = await readdir(manifestsDir)
   const names = files
@@ -42,9 +45,7 @@ const readPackageJson = async (cwd: string) =>
 const checkPostInstallScripts = async (cwd: string, manifests: ComponentManifest[]) => {
   const packageJson = await readPackageJson(cwd)
   const scripts = packageJson.scripts ?? {}
-  const requiredScripts = [
-    ...new Set(manifests.flatMap((manifest) => manifest.postInstall)),
-  ].sort()
+  const requiredScripts = [...new Set(manifests.flatMap((manifest) => manifest.postInstall))].sort()
   let isHealthy = true
 
   for (const script of requiredScripts) {
@@ -82,6 +83,11 @@ const checkRecordedComponent = async ({
       : ''
 
     log('error', `${componentName}: install is partial${errorSuffix}`)
+    log(
+      'warn',
+      `${componentName}: owned component files ${formatRecordedFiles(entry.installedFiles)}`,
+    )
+    log('warn', `${componentName}: patched host files ${formatRecordedFiles(entry.patchedFiles)}`)
   }
 
   if (entry.manifestVersion !== manifest.version) {
@@ -115,7 +121,10 @@ const checkRecordedComponent = async ({
     log('ok', `${componentName}: peer dependencies`)
   } catch (error) {
     isHealthy = false
-    log('error', `${componentName}: ${error instanceof Error ? error.message : 'peer dependency check failed'}`)
+    log(
+      'error',
+      `${componentName}: ${error instanceof Error ? error.message : 'peer dependency check failed'}`,
+    )
   }
 
   try {
@@ -134,7 +143,10 @@ const checkRecordedComponent = async ({
     }
   } catch (error) {
     isHealthy = false
-    log('error', `${componentName}: ${error instanceof Error ? error.message : 'dependency check failed'}`)
+    log(
+      'error',
+      `${componentName}: ${error instanceof Error ? error.message : 'dependency check failed'}`,
+    )
   }
 
   const fileCheck = await verifyInstalledManifestFiles({ cwd, manifest })
@@ -152,7 +164,10 @@ const checkRecordedComponent = async ({
     log('ok', `${componentName}: Payload fragments`)
   } else {
     isHealthy = false
-    log('error', `${componentName}: missing Payload fragments ${formatList(fragmentCheck.missingFragments)}`)
+    log(
+      'error',
+      `${componentName}: missing Payload fragments ${formatList(fragmentCheck.missingFragments)}`,
+    )
   }
 
   if (!isHealthy) {
@@ -178,7 +193,10 @@ export const doctorCommand = async ({ cwd }: { cwd: string }) => {
         assertManifestSupport(project, manifest)
       } catch (error) {
         isHealthy = false
-        log('error', `${manifest.name}: ${error instanceof Error ? error.message : 'unsupported manifest'}`)
+        log(
+          'error',
+          `${manifest.name}: ${error instanceof Error ? error.message : 'unsupported manifest'}`,
+        )
       }
     }
 

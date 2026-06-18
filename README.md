@@ -248,6 +248,28 @@ The installer runs five idempotent stages:
 Generated install state is written to `.payload-components/state.json` inside
 the consumer project.
 
+### Recovering an interrupted install
+
+If an install fails, `payload-components add` records the component as `partial`
+and prints the failed stage, the last error, and the safest retry command. Fix
+the reported cause, then rerun the same command from the project root:
+
+```sh
+npx payload-components add hero-basic
+npx payload-components doctor
+```
+
+Review the git diff before editing anything manually. Treat the files listed in
+`installedFiles` as owned component files that can usually be re-created by a
+retry, and the files listed in `patchedFiles` as host project files that may
+contain your own work. For the current alpha target those patched host files are
+normally `src/blocks/RenderBlocks.tsx`, `src/collections/Pages/index.ts`,
+`package.json`, and the package manager lockfile.
+
+Prefer forward fixes over deletion. Use `payload-components doctor` to see the
+failed stage, missing files, missing Payload fragments, and retry guidance before
+changing files by hand.
+
 Useful local routes while working on this repo:
 
 - `/` - product and docs homepage
