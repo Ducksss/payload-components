@@ -595,3 +595,58 @@ export const callToActionSignupDemoContent: CtaDemoContent = {
   submitLabel: 'Subscribe',
   title: 'Stay in the loop.',
 }
+
+/* The Team family (roster, grid) renders from one demo-content shape: the shared
+   eyebrow/title plus the grouped department roster (team-roster) or the flat
+   member grid (team-grid) a given variant uses. Member avatars are backend-free
+   on the landing/docs previews, so the twins render presentational placeholders
+   rather than real images — only names and roles carry into the preview. */
+export type TeamMemberDemo = { name: string; role: string }
+
+export type TeamSectionDemoContent = {
+  description?: string
+  eyebrow?: string
+  groups?: { label: string; members: TeamMemberDemo[] }[]
+  members?: TeamMemberDemo[]
+  title: string
+}
+
+export const teamRosterDemoContent: TeamSectionDemoContent = {
+  eyebrow: 'Our team',
+  groups: [
+    {
+      label: 'Leadership',
+      members: [
+        { name: 'Ada Lovelace', role: 'Co-Founder & CEO' },
+        { name: 'Alan Turing', role: 'Co-Founder & CTO' },
+        { name: 'Grace Hopper', role: 'Chief Operating Officer' },
+        { name: 'Katherine Johnson', role: 'VP of Product' },
+      ],
+    },
+    {
+      label: 'Engineering',
+      members: [
+        { name: 'Linus Torvalds', role: 'Principal Engineer' },
+        { name: 'Margaret Hamilton', role: 'Staff Engineer' },
+        { name: 'Dennis Ritchie', role: 'Backend Lead' },
+        { name: 'Barbara Liskov', role: 'Platform Engineer' },
+      ],
+    },
+  ],
+  title: 'The people building Acme.',
+}
+
+export const teamGridDemoContent: TeamSectionDemoContent = {
+  description:
+    'A small, senior team shipping the platform that product teams open every day.',
+  eyebrow: 'Team',
+  members: [
+    { name: 'Henry Lee', role: 'UX Engineer' },
+    { name: 'Isabella Garcia', role: 'Sales Manager' },
+    { name: 'Liam Brown', role: 'Founder & CEO' },
+    { name: 'Olivia Miller', role: 'Visual Designer' },
+    { name: 'Ava Williams', role: 'Interaction Designer' },
+    { name: 'Elijah Jones', role: 'Co-Founder & CTO' },
+  ],
+  title: 'Our dream team.',
+}

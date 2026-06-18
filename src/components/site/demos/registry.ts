@@ -36,6 +36,8 @@ import { LogoCloudHoverDemo } from './LogoCloudHoverDemo'
 import { LogoCloudInlineDemo } from './LogoCloudInlineDemo'
 import { LogoCloudInlineWrapDemo } from './LogoCloudInlineWrapDemo'
 import { LogoCloudMarqueeDemo } from './LogoCloudMarqueeDemo'
+import { TeamGridDemo } from './TeamGridDemo'
+import { TeamRosterDemo } from './TeamRosterDemo'
 
 /* Single source of truth mapping a component slug to its live demo twin. Shared by
  * the catalog preview thumbnails (ComponentPreviewThumb) and the docs-page live
@@ -79,6 +81,8 @@ export const demosBySlug: Record<string, ComponentType> = {
   'logo-cloud-inline': LogoCloudInlineDemo,
   'logo-cloud-inline-wrap': LogoCloudInlineWrapDemo,
   'logo-cloud-marquee': LogoCloudMarqueeDemo,
+  'team-roster': TeamRosterDemo,
+  'team-grid': TeamGridDemo,
 }
 
 export function hasComponentDemo(slug: string) {

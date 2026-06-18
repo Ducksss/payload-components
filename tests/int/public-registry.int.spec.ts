@@ -79,6 +79,8 @@ const expectedRegistryDependencies: Record<string, string[]> = {
   'logo-cloud-inline': [],
   'logo-cloud-inline-wrap': [],
   'logo-cloud-marquee': [],
+  'team-grid': ['badge'],
+  'team-roster': ['badge'],
 }
 
 describe('public shadcn registry publication', () => {
@@ -145,6 +147,8 @@ describe('public shadcn registry publication', () => {
       'logo-cloud-inline',
       'logo-cloud-inline-wrap',
       'logo-cloud-marquee',
+      'team-grid',
+      'team-roster',
     ])
 
     for (const item of registry.items) {

@@ -37,6 +37,8 @@
     "content-list-icons",
     "call-to-action-centered",
     "call-to-action-boxed",
-    "call-to-action-signup"
+    "call-to-action-signup",
+    "team-roster",
+    "team-grid"
   ]
 }

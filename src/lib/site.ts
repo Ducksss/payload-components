@@ -217,7 +217,7 @@ export const componentsIntro =
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '36 installable',
+    countLabel: '38 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -238,6 +238,7 @@ export const componentCategories = {
   content: { family: 'pages', label: 'Content' },
   integration: { family: 'pages', label: 'Integration' },
   cta: { family: 'pages', label: 'Call to action' },
+  team: { family: 'pages', label: 'Team' },
   pricing: { family: 'pages', label: 'Pricing' },
   faq: { family: 'pages', label: 'FAQ' },
   testimonials: { family: 'pages', label: 'Testimonials' },
@@ -755,6 +756,34 @@ export const componentEntries = [
     status: 'Alpha',
     target: 'Email capture',
     title: 'Call To Action Signup',
+    version: '0.1.0',
+  },
+  {
+    category: 'team',
+    command: 'npx payload-components add team-roster',
+    description:
+      'A team section that groups members into titled departments, each a grid of avatars with name and role.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'groups'],
+    href: '/docs/components/team-roster',
+    slug: 'team-roster',
+    status: 'Alpha',
+    target: 'Team section',
+    title: 'Team Roster',
+    version: '0.1.0',
+  },
+  {
+    category: 'team',
+    command: 'npx payload-components add team-grid',
+    description:
+      'A team section with a heading, intro, and a responsive grid of member photo cards that reveal role on hover.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'members'],
+    href: '/docs/components/team-grid',
+    slug: 'team-grid',
+    status: 'Alpha',
+    target: 'Team section',
+    title: 'Team Grid',
     version: '0.1.0',
   },
 ] as const

@@ -1439,6 +1439,72 @@
           "target": "~/src/blocks/CallToActionSignup/Component.tsx"
         }
       ]
+    },
+    {
+      "name": "team-roster",
+      "type": "registry:block",
+      "title": "Team Roster",
+      "description": "Payload team block: department-grouped sections, each a grid of member avatars with name and role.",
+      "registryDependencies": ["badge"],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add team-roster\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/team-roster.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add team-roster` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add team-roster",
+          "postInstall": ["generate:types", "generate:importmap"],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/teamFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/teamFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TeamRoster/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TeamRoster/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TeamRoster/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TeamRoster/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "team-grid",
+      "type": "registry:block",
+      "title": "Team Grid",
+      "description": "Payload team block: a heading and intro above a responsive grid of member photo cards that reveal role on hover.",
+      "registryDependencies": ["badge"],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add team-grid\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/team-grid.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add team-grid` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add team-grid",
+          "postInstall": ["generate:types", "generate:importmap"],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/teamFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/teamFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TeamGrid/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TeamGrid/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TeamGrid/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TeamGrid/Component.tsx"
+        }
+      ]
     }
   ]
 }
