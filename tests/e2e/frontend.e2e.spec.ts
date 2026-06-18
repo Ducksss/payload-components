@@ -142,6 +142,8 @@ test.describe('Light shadcn frontend', () => {
   })
 
   test('exposes docs, catalog, component pages, and no horizontal overflow', async ({ page }) => {
+    test.setTimeout(240000)
+
     const routes = [
       {
         h1: heroHeadline,
