@@ -56,8 +56,11 @@ test.describe('Component visual snapshots', () => {
       )
       // Skip a missing-baseline case on a normal run (keeps the gate green
       // until that platform's baselines are minted) but never when explicitly
-      // updating, or --update-snapshots could never create them.
-      const updating = testInfo.config.updateSnapshots !== 'none'
+      // updating, or --update-snapshots could never create them. "Updating" is
+      // an overwrite mode (all/changed); the default 'missing'/'none' compare
+      // modes must skip rather than write-and-fail on a first-seen platform.
+      const mode = testInfo.config.updateSnapshots
+      const updating = mode !== 'none' && mode !== 'missing'
       test.skip(
         !existsSync(baseline) && !updating,
         `No ${process.platform} baseline for ${slug} — run: E2E_PORT=3100 pnpm test:e2e components-visual --update-snapshots`,
