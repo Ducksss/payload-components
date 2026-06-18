@@ -205,3 +205,25 @@ describe('payload-components manifest validation', () => {
     ).toThrow('does not support Next.js major version 14')
   })
 })
+
+describe('payload-components package metadata', () => {
+  const readPackageJson = async () =>
+    JSON.parse(await readFile(path.join(repoRoot, 'package.json'), 'utf8')) as {
+      bin?: Record<string, string>
+      dependencies?: Record<string, string>
+      files?: string[]
+    }
+
+  // Guards against re-bloating the published CLI: the bin must point at the
+  // compiled bundle and runtime deps must stay exactly ajv + semver, so a future
+  // change can't silently drag the Next.js site deps into `npx payload-components`.
+  it('publishes the compiled bin and only ajv + semver as runtime deps', async () => {
+    const packageJson = await readPackageJson()
+
+    expect(packageJson.bin).toEqual({
+      'payload-components': './dist/cli.js',
+    })
+    expect(Object.keys(packageJson.dependencies ?? {}).sort()).toEqual(['ajv', 'semver'])
+    expect(packageJson.files).toContain('dist/')
+  })
+})
