@@ -45,14 +45,14 @@ export function HeroBasicDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto flex max-w-4xl flex-col gap-8">
           <div className="flex flex-col gap-4">
             {eyebrow ? (
               <Badge
                 variant="outline"
                 className={cn(
-                  'w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]',
+                  'w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow',
                   partDelays && 'twin-rise',
                 )}
                 style={rise(partDelays?.eyebrow)}
@@ -64,7 +64,7 @@ export function HeroBasicDemo({
             <div className="flex max-w-3xl flex-col gap-4">
               <div
                 className={cn(
-                  'text-4xl font-medium tracking-[-0.06em] text-balance sm:text-5xl',
+                  'text-4xl font-medium tracking-display text-balance sm:text-5xl',
                   partDelays && 'twin-rise',
                 )}
                 style={rise(partDelays?.title)}

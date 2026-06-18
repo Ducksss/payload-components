@@ -22,7 +22,7 @@ export const TeamRosterBlock: React.FC<Props> = ({
 }) => {
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div
           className={cn('flex flex-col gap-12', {
             'mx-auto max-w-5xl': !disableInnerContainer,
@@ -30,12 +30,12 @@ export const TeamRosterBlock: React.FC<Props> = ({
         >
           <div className="flex flex-col gap-4">
             {eyebrow ? (
-              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]">
+              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow">
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <h2 className="text-4xl font-medium tracking-[-0.06em] text-balance">{title}</h2>
+            <h2 className="text-4xl font-medium tracking-display text-balance">{title}</h2>
           </div>
 
           {groups && groups.length > 0 ? (

@@ -20,13 +20,13 @@ export const LogoCloudGridBlock: React.FC<Props> = ({
 }) => {
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div
           className={cn('flex flex-col gap-12', {
             'mx-auto max-w-5xl': !disableInnerContainer,
           })}
         >
-          <h2 className="text-center text-lg font-medium tracking-[-0.02em] text-foreground">
+          <h2 className="text-center text-lg font-medium tracking-heading text-foreground">
             {heading}
           </h2>
 

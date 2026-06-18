@@ -29,7 +29,7 @@ export const EmbedBasicBlock: React.FC<Props> = ({
 
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
-      <figure className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35">
+      <figure className="overflow-hidden rounded-frame border border-border/70 bg-card/35">
         <div className={cn('relative w-full bg-muted', aspectClass)}>
           <iframe
             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

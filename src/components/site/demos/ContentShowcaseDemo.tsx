@@ -27,19 +27,19 @@ export function ContentShowcaseDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto flex max-w-5xl flex-col gap-12">
           <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
             {eyebrow ? (
               <Badge
                 variant="outline"
-                className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
               >
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <div className="text-4xl font-medium tracking-[-0.06em] text-balance sm:text-5xl">
+            <div className="text-4xl font-medium tracking-display text-balance sm:text-5xl">
               {title}
             </div>
 
@@ -50,7 +50,7 @@ export function ContentShowcaseDemo({
             ))}
           </div>
 
-          <div className="overflow-hidden rounded-[1.5rem] border border-border/70">
+          <div className="overflow-hidden rounded-panel border border-border/70">
             <div className="aspect-[16/7] w-full bg-muted" />
           </div>
 
@@ -60,7 +60,7 @@ export function ContentShowcaseDemo({
                 <div className="flex flex-col gap-2" key={index}>
                   <div className="flex items-center gap-2">
                     <ContentDemoIcon name={feature.icon} className="size-4" />
-                    <div className="text-sm font-medium tracking-[-0.01em]">{feature.title}</div>
+                    <div className="text-sm font-medium tracking-micro">{feature.title}</div>
                   </div>
                   <p className="text-sm leading-6 text-muted-foreground">{feature.description}</p>
                 </div>
