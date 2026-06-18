@@ -66,8 +66,16 @@ Local API.
 
 ## Verification
 
-Run the focused checks that match your change, then run the broader suite before
-opening a pull request when practical:
+### Focused checks by change type
+
+| Change type | Minimum check |
+| --- | --- |
+| Docs/content-only changes | `pnpm lint` |
+| Site UI changes | `pnpm lint && pnpm source:build` |
+| Registry / component metadata changes | `pnpm lint && pnpm source:build && pnpm test:registry` |
+| CLI/tooling changes | `pnpm lint && pnpm test:install && pnpm source:build` |
+
+Run the full set when practical before opening a pull request:
 
 ```sh
 pnpm lint
