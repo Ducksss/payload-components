@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { ArrowUpRight, Search, X } from 'lucide-react'
 
 import { ComponentCard } from '@/components/site/ComponentCard'
-import { ComponentFamilyHeader, UpcomingComponentCard } from '@/components/site/ComponentGrid'
+import { UpcomingComponentCard } from '@/components/site/ComponentGrid'
 import type { ComponentEntry, UpcomingComponent } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
@@ -120,24 +120,12 @@ export function ComponentCatalogBrowser({
 
   return (
     <section>
-      <div className="container grid gap-8 py-12 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-10 lg:py-16">
-        <aside className="lg:sticky lg:top-24 lg:self-start">
-          <label className="relative block">
-            <span className="sr-only">Search components</span>
-            <Search
-              aria-hidden="true"
-              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-            />
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => updateParams({ q: event.target.value })}
-              placeholder="Search components"
-              className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand/50 focus:ring-2 focus:ring-brand/15"
-            />
-          </label>
-
-          <nav aria-label="Filter components" className="mt-6 flex flex-col gap-1">
+      <div className="container grid gap-x-8 py-8 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-x-12 lg:py-10">
+        {/* Desktop rail: categories only, scrolls within itself so 100+ rows
+            never run past the viewport. Hidden below lg — mobile filters live
+            in the toolbar chip strip instead of stacking above the wall. */}
+        <aside className="hidden lg:sticky lg:top-[4.5rem] lg:block lg:max-h-[calc(100vh-5.5rem)] lg:self-start lg:overflow-y-auto lg:pr-1">
+          <nav aria-label="Filter components" className="flex flex-col gap-1">
             <FilterButton
               active={type === 'all' && !category}
               count={queriedPages.length + queriedPosts.length}
@@ -174,6 +162,58 @@ export function ComponentCatalogBrowser({
         </aside>
 
         <div className="min-w-0">
+          {/* Sticky toolbar: the single search input (its sr-only label is the
+              e2e anchor), the live result count, and — below lg — a horizontal
+              chip strip mirroring the rail tree. */}
+          <div className="sticky top-14 z-30 mb-6 flex flex-col gap-3 border-b border-border bg-background/85 py-3 backdrop-blur lg:mb-8">
+            <div className="flex items-center gap-3">
+              <label className="relative block flex-1">
+                <span className="sr-only">Search components</span>
+                <Search
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(event) => updateParams({ q: event.target.value })}
+                  placeholder="Search components"
+                  className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand/50 focus:ring-2 focus:ring-brand/15"
+                />
+              </label>
+              <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                {visibleCount} {visibleCount === 1 ? 'result' : 'results'}
+              </p>
+            </div>
+
+            <div className="-mb-1 flex gap-2 overflow-x-auto pb-1 lg:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <FilterChip
+                active={type === 'all' && !category}
+                count={queriedPages.length + queriedPosts.length}
+                label="All"
+                onClick={() => updateParams({ type: '', category: '' })}
+              />
+              {familyGroups.flatMap((group) => [
+                <FilterChip
+                  key={group.key}
+                  active={!category && type === group.key}
+                  count={group.total}
+                  label={group.meta.name}
+                  onClick={() => updateParams({ type: group.key, category: '' })}
+                />,
+                ...group.items.map((slug) => (
+                  <FilterChip
+                    key={slug}
+                    active={category === slug}
+                    count={group.counts.get(slug) ?? 0}
+                    label={categories[slug].label}
+                    onClick={() => updateParams({ type: group.key, category: slug })}
+                  />
+                )),
+              ])}
+            </div>
+          </div>
+
           {visibleCount === 0 ? (
             <div className="flex flex-col items-start gap-3 rounded-xl border border-dashed border-border bg-muted/30 p-8">
               <p className="text-sm text-muted-foreground">No components match your filters.</p>
@@ -187,16 +227,13 @@ export function ComponentCatalogBrowser({
               </button>
             </div>
           ) : (
-            <div className="flex flex-col gap-12 lg:gap-16">
+            <div className="flex flex-col gap-10 lg:gap-12">
               {showPages && pagesCards.length > 0 ? (
                 <div>
-                  <ComponentFamilyHeader
-                    countLabel={`${pagesCards.length} installable`}
-                    description={families.pages.description}
-                    layout="stack"
-                    name={families.pages.name}
-                  />
-                  <div className="mt-6 grid gap-5 md:grid-cols-2">
+                  {!category ? (
+                    <SectionDivider count={pagesCards.length} name={families.pages.name} />
+                  ) : null}
+                  <div className="columns-1 gap-4 sm:columns-2 xl:columns-3">
                     {pagesCards.map((component) => (
                       <ComponentCard key={component.slug} component={component} />
                     ))}
@@ -206,16 +243,16 @@ export function ComponentCatalogBrowser({
                         href={`${githubRepoUrl}/issues`}
                         target="_blank"
                         rel="noreferrer"
-                        className="group flex min-h-48 flex-col items-start justify-center gap-3 rounded-xl border border-dashed border-border bg-transparent p-6 transition-colors hover:border-foreground/25"
+                        className="group mb-4 flex break-inside-avoid flex-col items-start gap-2 rounded-xl border border-dashed border-border bg-transparent p-4 transition-colors hover:border-foreground/25"
                       >
-                        <span className="font-mono text-sm text-muted-foreground">
+                        <span className="font-mono text-xs text-muted-foreground">
                           your-component-here
                         </span>
-                        <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-                          The catalog grows deliberately: source, manifest, docs, and installer
-                          coverage ship together. Propose the next component.
+                        <p className="text-xs leading-5 text-muted-foreground">
+                          The catalog grows deliberately — source, manifest, docs, and installer
+                          coverage ship together. Propose the next one.
                         </p>
-                        <span className="inline-flex items-center gap-1 text-sm font-medium text-foreground transition-colors group-hover:text-brand">
+                        <span className="inline-flex items-center gap-1 text-[13px] font-medium text-foreground transition-colors group-hover:text-brand">
                           Open an issue
                           <ArrowUpRight className="size-3.5" aria-hidden="true" />
                         </span>
@@ -227,13 +264,14 @@ export function ComponentCatalogBrowser({
 
               {showPosts && postsCards.length > 0 ? (
                 <div>
-                  <ComponentFamilyHeader
-                    countLabel={`${postsCards.length} in development`}
-                    description={families.posts.description}
-                    layout="stack"
-                    name={families.posts.name}
-                  />
-                  <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {!category ? (
+                    <SectionDivider
+                      count={postsCards.length}
+                      label="in development"
+                      name={families.posts.name}
+                    />
+                  ) : null}
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {postsCards.map((component) => (
                       <UpcomingComponentCard key={component.slug} component={component} />
                     ))}
@@ -245,6 +283,25 @@ export function ComponentCatalogBrowser({
         </div>
       </div>
     </section>
+  )
+}
+
+/* Lightweight section header: a mono label + count over a hairline rule. It
+   replaces the old bordered ComponentFamilyHeader block here (that component is
+   left intact for the landing CatalogIndex). Hidden when a single category is
+   active — the filter already names the scope. */
+function SectionDivider({ count, label, name }: { count: number; label?: string; name: string }) {
+  return (
+    <div className="mb-4 flex items-center gap-3">
+      <h2 className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-foreground">
+        {name}
+      </h2>
+      <span className="shrink-0 font-mono text-[10px] tabular-nums text-muted-foreground">
+        {count}
+        {label ? ` ${label}` : ''}
+      </span>
+      <span aria-hidden="true" className="h-px flex-1 bg-border" />
+    </div>
   )
 }
 
@@ -282,6 +339,43 @@ function FilterButton({
         className={cn(
           'shrink-0 rounded-full px-1.5 py-0.5 font-mono text-[10px] tabular-nums',
           active ? 'bg-brand/15 text-brand' : 'bg-muted text-muted-foreground',
+        )}
+      >
+        {count}
+      </span>
+    </button>
+  )
+}
+
+/* Pill variant of FilterButton for the mobile horizontal scroller. */
+function FilterChip({
+  active,
+  count,
+  label,
+  onClick,
+}: {
+  active: boolean
+  count: number
+  label: string
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      aria-current={active ? 'true' : undefined}
+      onClick={onClick}
+      className={cn(
+        'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-[13px] transition-colors',
+        active
+          ? 'border-brand/30 bg-brand/10 text-brand'
+          : 'border-border text-muted-foreground hover:bg-muted hover:text-foreground',
+      )}
+    >
+      {label}
+      <span
+        className={cn(
+          'font-mono text-[10px] tabular-nums',
+          active ? 'text-brand/80' : 'text-muted-foreground/70',
         )}
       >
         {count}
