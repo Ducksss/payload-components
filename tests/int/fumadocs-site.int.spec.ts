@@ -70,16 +70,19 @@ describe('Fumadocs site shell', () => {
   it('uses Fumadocs as the site runtime instead of Payload CMS', async () => {
     const packageJson = await readJson<{
       dependencies?: Record<string, string>
+      devDependencies?: Record<string, string>
       engines?: Record<string, string>
       scripts?: Record<string, string>
     }>(path.join(repoRoot, 'package.json'))
 
-    expect(packageJson.dependencies?.['fumadocs-ui']).toBeTruthy()
-    expect(packageJson.dependencies?.['fumadocs-mdx']).toBeTruthy()
-    expect(packageJson.dependencies?.['fumadocs-core']).toBeTruthy()
+    expect(packageJson.devDependencies?.['fumadocs-ui']).toBeTruthy()
+    expect(packageJson.devDependencies?.['fumadocs-mdx']).toBeTruthy()
+    expect(packageJson.devDependencies?.['fumadocs-core']).toBeTruthy()
 
     expect(packageJson.dependencies?.payload).toBeUndefined()
     expect(packageJson.dependencies?.['@payloadcms/next']).toBeUndefined()
+    expect(packageJson.devDependencies?.payload).toBeUndefined()
+    expect(packageJson.devDependencies?.['@payloadcms/next']).toBeUndefined()
     expect(packageJson.engines?.node).toBe('^20.19.0 || >=22.12.0')
     expect(packageJson.scripts?.payload).toBeUndefined()
     expect(packageJson.scripts?.['generate:types']).toBeUndefined()

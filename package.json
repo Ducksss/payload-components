@@ -53,9 +53,6 @@
   },
   "dependencies": {
     "ajv": "^8.18.0",
-    "fumadocs-core": "16.9.3",
-    "fumadocs-mdx": "15.0.10",
-    "fumadocs-ui": "16.9.3",
     "semver": "^7.7.4"
   },
   "devDependencies": {
@@ -76,6 +73,9 @@
     "dotenv": "16.4.7",
     "eslint": "^9.16.0",
     "eslint-config-next": "16.2.3",
+    "fumadocs-core": "16.9.3",
+    "fumadocs-mdx": "15.0.10",
+    "fumadocs-ui": "16.9.3",
     "geist": "^1.3.0",
     "jsdom": "28.0.0",
     "lucide-react": "0.563.0",
