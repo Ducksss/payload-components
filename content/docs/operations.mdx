@@ -1,0 +1,119 @@
+---
+title: Operations Runbook
+description: Release, support, security, rollback, and feedback routing for the public registry.
+icon: ShieldCheck
+---
+
+Use this runbook when changing the public registry, answering install reports, or turning community feedback into project work. Keep the workflow lightweight: enough evidence to reproduce the issue, enough validation to protect installs, and no paid-support or CRM process.
+
+## Public registry release checklist
+
+Start every release from a clean branch and keep the registry source, manifests, docs, and tests together.
+
+<Steps>
+  <Step>
+    **Build the docs and registry output.**
+
+    ```bash
+    pnpm source:build
+    pnpm registry:build
+    pnpm registry:check
+    ```
+
+  </Step>
+  <Step>
+    **Run the install-sensitive checks before asking for review.**
+
+    ```bash
+    pnpm exec tsc --noEmit
+    pnpm test:install
+    ```
+
+    Use `pnpm test:release` for release candidates or changes that touch registry generation, installer behavior, docs routes, search, or the public site build.
+
+  </Step>
+  <Step>
+    **Verify the hosted registry after deploy.**
+
+    ```bash
+    curl -fsS https://www.payload-components.xyz/r/registry.json | jq '.items | length'
+    curl -fsS https://www.payload-components.xyz/r/hero-basic.json | jq '{ name, files: (.files | length) }'
+    ```
+
+    The registry index should load without auth, and item files should include embedded source content.
+
+  </Step>
+  <Step>
+    **Prove the deploy with evidence.**
+
+    Record the PR URL, merge commit, passing release-gate run, deployed registry URL, and any install proof that matters for the change. If a follow-up is needed, open it before closing the release thread.
+
+  </Step>
+</Steps>
+
+For slower confidence against the live registry, run the fresh Payload smoke with the deployed URL template:
+
+```bash
+pnpm test:fresh -- --registry-url 'https://www.payload-components.xyz/r/{name}.json'
+```
+
+<Callout type="warn">
+  `public/r` is generated output. Do not fix a public registry issue by editing generated files
+  directly. Change `payload-components/registry.json`, source files, or manifests, then rebuild and
+  verify.
+</Callout>
+
+## Install support triage
+
+Sort every support report into one lane first. Then ask only for the missing evidence needed to reproduce or route it.
+
+| Lane                      | Signals                                                                                                                       | First action                                                                                                                                                                       |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Install failure           | `payload-components add` exits non-zero, a component is marked partial, or `doctor` reports drift                             | Ask for the exact command, full CLI output, Payload and Next.js versions, `npx payload-components doctor` output, and a redacted `.payload-components/state.json` snippet          |
+| Registry delivery problem | `shadcn add` cannot fetch `https://www.payload-components.xyz/r/{name}.json`, JSON is malformed, or files are missing content | Check the deployed URL with `curl -fsSI`, run `pnpm registry:check`, and compare the generated item to `payload-components/registry.json`                                          |
+| Unsupported repo shape    | Required files or scripts are missing, or the repo uses a different block layout                                              | Compare the project to [Installation](/docs/installation). If the shape is common, open compatibility work with a fixture. If it is out of scope, answer with the supported matrix |
+| Docs gap                  | The install works, but the user could not tell what to run or why it changed files                                            | Open a docs issue or docs PR with the confusing page, expected wording, and a short repro                                                                                          |
+
+When an install stops midway, separate two file classes before suggesting cleanup:
+
+- **Owned component files:** files the registry installed under component-owned paths, usually `src/blocks/<ComponentName>/...`.
+- **Patched host files:** existing app files the wrapper edited, such as `src/blocks/RenderBlocks.tsx`, `src/collections/Pages/index.ts`, dependency declarations, generated Payload types, and the admin import map.
+
+Review patched host files manually before changing them. A safe retry should fix the root cause, run the same `npx payload-components add <component>` command again, and finish without duplicating imports, block registrations, or layout entries.
+
+## Security intake
+
+Use the repository security policy for suspected vulnerabilities. Do not route security reports through public bug issues.
+
+1. Ask the reporter to use GitHub Security Advisories for this repository. If that is unavailable, follow the private contact path in `SECURITY.md`.
+2. Confirm the affected area: target Payload code, CLI install behavior, registry generation, docs/search routes, deployment configuration, or dependency execution.
+3. Reproduce privately from `main`, branch the fix from `main`, run the release gate, merge back to `main`, then carry the fix forward to `dev` while the project still uses `dev` as a staging line.
+4. Publish public details only after the patch is available.
+
+## Rollback or forward-fix
+
+Pick the response that gives users the least risky next install.
+
+| Situation                                                                        | Response                                                                                                                                  |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| A just-merged PR broke one generated item and no follow-up work depends on it    | Revert that PR, run `pnpm test:release`, deploy, and verify the item URL again                                                            |
+| The hosted registry has stale or missing generated output, but source is correct | Rebuild, redeploy, and verify `registry.json` plus one affected item URL                                                                  |
+| A component installs files but misses Payload wiring or dependencies             | Forward-fix the manifest, fragments, dependencies, and install tests so existing users can rerun safely                                   |
+| A support report exposes an unsupported repo shape                               | Do not patch blindly. Add support only with support-matrix changes, fixtures, and docs; otherwise answer with the current supported shape |
+| A security issue is plausible                                                    | Follow the private security path first, even if the code change is small                                                                  |
+
+When a public registry item is already live, prefer a forward-fix if users can safely rerun the install and converge. Prefer a revert when the release is isolated, recently merged, and the previous deployed state is known good.
+
+## Community feedback routing
+
+Route real reports into GitHub issues or PRs during a weekly or release-cycle pass. Close stale speculation when there is no reproduction, no use case, or no contributor ready to carry it.
+
+| Feedback                                                                                      | Route                       | Next action                                                                                                                                                |
+| --------------------------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "I ran `npx payload-components add hero-basic` and it failed while editing `Pages/index.ts`." | Bug report, install blocker | Reproduce in a fixture, preserve the CLI output, and fix the installer or docs path that caused the partial state                                          |
+| "The official website template moved `RenderBlocks.tsx`; can this support that layout?"       | Compatibility request       | Collect Payload and Next.js versions plus the relevant file tree, then add support-matrix coverage only if tests can verify it                             |
+| "I need a pricing table or blog card kit for a client site."                                  | Kit request                 | Convert the use case into a small component proposal with target fields, render behavior, manifest needs, and install tests                                |
+| "The docs made me think direct `shadcn add` would wire Payload automatically."                | Docs gap                    | Update [Installation](/docs/installation), [Registry Contract](/docs/registry), or the component page so direct registry installs are described accurately |
+| "I shipped a site with `feature-grid-basic` and can share feedback."                          | Community/show-and-tell     | Ask what worked, what drifted, and whether the user can test alpha installs in a real project                                                              |
+
+Every routed issue should name one owner path: bug fix, compatibility evaluation, docs fix, component proposal, or community showcase. If the next action is unclear, ask for the smallest missing reproduction detail instead of creating a broad roadmap item.
