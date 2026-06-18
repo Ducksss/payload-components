@@ -1,6 +1,8 @@
-export const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://www.payload-components.xyz'
-).replace(/\/+$/, '')
+const productionSiteUrl = 'https://www.payload-components.xyz'
+const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionSiteUrl).replace(/\/+$/, '')
+
+export const siteUrl =
+  configuredSiteUrl === 'https://payload-components.xyz' ? productionSiteUrl : configuredSiteUrl
 export const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 export const githubIssuesUrl = `${githubRepoUrl}/issues`
 export const githubContentBranch = process.env.NEXT_PUBLIC_GITHUB_CONTENT_BRANCH ?? 'dev'

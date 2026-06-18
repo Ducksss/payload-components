@@ -365,6 +365,17 @@ describe('Fumadocs site shell', () => {
     expect(combinedOutput).not.toContain('localhost')
   })
 
+  it('normalizes stale apex site URL env values to the canonical www host', async () => {
+    for (const envValue of ['https://payload-components.xyz', 'https://payload-components.xyz/']) {
+      vi.stubEnv('NEXT_PUBLIC_SITE_URL', envValue)
+      vi.resetModules()
+
+      const { siteUrl } = await import('../../src/lib/site')
+
+      expect(siteUrl).toBe('https://www.payload-components.xyz')
+    }
+  })
+
   it('keeps showcase metadata, assets, and capture script in sync', async () => {
     const [siteSource, captureSource] = await Promise.all([
       readFile(path.join(repoRoot, 'src', 'lib', 'site.ts'), 'utf8'),
