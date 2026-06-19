@@ -883,3 +883,132 @@ export const faqGroupedDemoContent: FaqGroupedDemoContent = {
   ],
   title: 'How can we help?',
 }
+
+/* The whole Comparator family (table, grid, stack) renders from one set of demo
+   shapes: an optional heading plus plans and either a shared feature matrix
+   (table/grid, values index-aligned to plans) or per-plan checklists (stack).
+   A cell with `included` shows a check, a `label`/`value` shows text, and an
+   empty cell shows a dash. */
+export type ComparatorPlanDemo = {
+  badge?: string
+  highlighted?: boolean
+  links?: { link: DemoLinkData }[]
+  name: string
+  period?: string
+  price?: string
+}
+
+export type ComparatorCellDemo = {
+  included?: boolean
+  label?: string
+}
+
+export type ComparatorTableDemoContent = {
+  description?: string
+  features: { feature: string; groupLabel?: string; values: ComparatorCellDemo[] }[]
+  plans: ComparatorPlanDemo[]
+  title?: string
+}
+
+export type ComparatorGridDemoContent = {
+  description?: string
+  features: { feature: string; values: ComparatorCellDemo[] }[]
+  plans: ComparatorPlanDemo[]
+  title?: string
+}
+
+export type ComparatorStackPlanDemo = ComparatorPlanDemo & {
+  description?: string
+  features: { included?: boolean; label: string; value?: string }[]
+}
+
+export type ComparatorStackDemoContent = {
+  description?: string
+  plans: ComparatorStackPlanDemo[]
+  title?: string
+}
+
+export const comparatorTableDemoContent: ComparatorTableDemoContent = {
+  description:
+    'A full feature matrix so teams can see exactly what each tier unlocks before they commit.',
+  features: [
+    { feature: 'Projects', groupLabel: 'Usage', values: [{ label: '3' }, { label: 'Unlimited' }, { label: 'Unlimited' }] },
+    { feature: 'API calls', values: [{ label: '10K / mo' }, { label: '1M / mo' }, { label: 'Custom' }] },
+    { feature: 'Team members', values: [{ label: '1' }, { label: '10' }, { label: 'Unlimited' }] },
+    { feature: 'Analytics dashboard', groupLabel: 'Capabilities', values: [{ included: true }, { included: true }, { included: true }] },
+    { feature: 'Custom webhooks', values: [{}, { included: true }, { included: true }] },
+    { feature: 'SSO / SAML', values: [{}, {}, { included: true }] },
+    { feature: 'Priority support', values: [{}, { included: true }, { included: true }] },
+  ],
+  plans: [
+    { links: [{ link: { appearance: 'outline', label: 'Get started' } }], name: 'Free' },
+    { badge: 'Most popular', highlighted: true, links: [{ link: { appearance: 'default', label: 'Start free trial' } }], name: 'Pro' },
+    { links: [{ link: { appearance: 'outline', label: 'Talk to sales' } }], name: 'Scale' },
+  ],
+  title: 'Compare every plan',
+}
+
+export const comparatorGridDemoContent: ComparatorGridDemoContent = {
+  description: 'Compare plans side by side and pick the tier that fits your team today.',
+  features: [
+    { feature: 'Integrations', values: [{ label: '5' }, { label: 'Unlimited' }, { label: 'Unlimited' }] },
+    { feature: 'API calls', values: [{ label: '10K / mo' }, { label: '100K / mo' }, { label: '1M / mo' }] },
+    { feature: 'Team members', values: [{ label: '1' }, { label: '5' }, { label: 'Unlimited' }] },
+    { feature: 'Analytics', values: [{ included: true }, { included: true }, { included: true }] },
+    { feature: 'Custom webhooks', values: [{}, { included: true }, { included: true }] },
+    { feature: 'SSO / SAML', values: [{}, {}, { included: true }] },
+  ],
+  plans: [
+    { links: [{ link: { appearance: 'outline', label: 'Get started' } }], name: 'Starter', period: '/mo', price: '$0' },
+    { badge: 'Most popular', highlighted: true, links: [{ link: { appearance: 'default', label: 'Start free trial' } }], name: 'Pro', period: '/mo', price: '$29' },
+    { links: [{ link: { appearance: 'outline', label: 'Start free trial' } }], name: 'Team', period: '/mo', price: '$79' },
+  ],
+  title: 'Pricing that scales with you',
+}
+
+export const comparatorStackDemoContent: ComparatorStackDemoContent = {
+  description: "Start free and scale as you grow — every plan lists exactly what's included.",
+  plans: [
+    {
+      description: 'For individuals and small projects.',
+      features: [
+        { label: 'Integrations', value: '3' },
+        { label: 'API calls', value: '1,000 / mo' },
+        { included: false, label: 'Analytics' },
+        { included: false, label: 'Custom webhooks' },
+      ],
+      links: [{ link: { appearance: 'outline', label: 'Get started' } }],
+      name: 'Starter',
+      period: '/mo',
+      price: '$0',
+    },
+    {
+      badge: 'Most popular',
+      description: 'For growing teams.',
+      features: [
+        { label: 'Integrations', value: 'Unlimited' },
+        { label: 'API calls', value: '100K / mo' },
+        { included: true, label: 'Analytics' },
+        { included: true, label: 'Custom webhooks' },
+      ],
+      highlighted: true,
+      links: [{ link: { appearance: 'default', label: 'Start free trial' } }],
+      name: 'Pro',
+      period: '/mo',
+      price: '$29',
+    },
+    {
+      description: 'For large organizations.',
+      features: [
+        { label: 'Integrations', value: 'Unlimited' },
+        { label: 'API calls', value: 'Unlimited' },
+        { included: true, label: 'Analytics' },
+        { included: true, label: 'SSO / SAML' },
+      ],
+      links: [{ link: { appearance: 'outline', label: 'Contact sales' } }],
+      name: 'Enterprise',
+      price: 'Custom',
+    },
+  ],
+  title: 'Choose your plan',
+}

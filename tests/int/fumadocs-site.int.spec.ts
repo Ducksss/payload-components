@@ -330,12 +330,12 @@ describe('Fumadocs site shell', () => {
     const pageCount = componentEntries.filter((component) => component.family === 'pages').length
     const aboutPage = await readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8')
 
-    expect(pageCount).toBe(44)
+    expect(pageCount).toBe(47)
     expect(componentFamilies.pages.countLabel).toBe(`${pageCount} installable`)
     expect(componentFamilies.posts.countLabel).toBe(`${upcomingComponents.length} in development`)
-    expect(componentsIntro).toContain('Forty-four page blocks install today')
-    expect(aboutPage).toContain('Forty-four page blocks install today')
-    expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Thirty-eight page blocks')
+    expect(componentsIntro).toContain('Forty-seven page blocks install today')
+    expect(aboutPage).toContain('Forty-seven page blocks install today')
+    expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Forty-four page blocks')
   })
 
   it('publishes production-safe fallback URLs when no site URL env is set', async () => {
