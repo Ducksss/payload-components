@@ -4,7 +4,7 @@ import path from 'node:path'
 
 import type { PackageManager } from './types'
 
-import { getShadcnCommand, readJsonFile, repoRoot, runCommand, writeJsonFile } from './utils'
+import { getShadcnCommand, isPathInside, readJsonFile, repoRoot, runCommand, writeJsonFile } from './utils'
 
 const registryDefinitionPath = path.join(repoRoot, 'payload-components', 'registry.json')
 const skipExistingFilePrompts = Array.from({ length: 20 }, () => 'n').join('\n') + '\n'
@@ -21,16 +21,22 @@ type ComponentsJson = {
   }
 }
 
-const resolveAliasPath = (targetDir: string, aliasPath: string) => {
+export const resolveAliasPath = (targetDir: string, aliasPath: string) => {
+  let resolvedPath: string
+
   if (aliasPath.startsWith('@/')) {
-    return path.join(targetDir, 'src', aliasPath.slice(2))
+    resolvedPath = path.join(targetDir, 'src', aliasPath.slice(2))
+  } else if (aliasPath.startsWith('~/')) {
+    resolvedPath = path.join(targetDir, aliasPath.slice(2))
+  } else {
+    resolvedPath = path.resolve(targetDir, aliasPath)
   }
 
-  if (aliasPath.startsWith('~/')) {
-    return path.join(targetDir, aliasPath.slice(2))
+  if (!isPathInside(targetDir, resolvedPath)) {
+    throw new Error(`components.json alias "${aliasPath}" resolves outside the target project.`)
   }
 
-  return path.resolve(targetDir, aliasPath)
+  return resolvedPath
 }
 
 const getShadcnUiDir = async (targetDir: string) => {

@@ -47,7 +47,7 @@ const scanTargets = [
   { dir: 'src/components/site/demos', match: /Demo\.tsx$/, scope: 'color' },
 ] as const
 
-const codeRabbitTokenGuards = [
+const siteTokenGuards = [
   {
     file: 'src/components/site/ComponentPreviewFrame.tsx',
     forbidden: ['bg-[#ff5f57]', 'bg-[#febc2e]', 'bg-[#28c840]'],
@@ -225,7 +225,7 @@ describe('Component visual standards', () => {
     expect(violations, `Visual drift:\n${violations.join('\n')}`).toEqual([])
   })
 
-  it('keeps PR #96 review fixes on named visual tokens', async () => {
+  it('keeps site-only visual details on named tokens', async () => {
     const css = await readFile(globalsPath, 'utf8')
     const violations: string[] = []
 
@@ -233,7 +233,7 @@ describe('Component visual standards', () => {
       if (!css.includes(`--color-${token}:`)) violations.push(`missing --color-${token}`)
     }
 
-    for (const { file, forbidden, required } of codeRabbitTokenGuards) {
+    for (const { file, forbidden, required } of siteTokenGuards) {
       const source = await readFile(path.join(repoRoot, file), 'utf8')
       for (const token of forbidden) {
         if (source.includes(token)) violations.push(`${file}: still contains ${token}`)
@@ -243,6 +243,12 @@ describe('Component visual standards', () => {
       }
     }
 
-    expect(violations, `PR #96 token drift:\n${violations.join('\n')}`).toEqual([])
+    expect(violations, `Site token drift:\n${violations.join('\n')}`).toEqual([])
+  })
+
+  it('keeps the brand guide from copying CSS token values by hand', async () => {
+    const source = await readFile(path.join(repoRoot, 'src/app/brand-guide/page.tsx'), 'utf8')
+
+    expect(source).not.toMatch(/value:\s*['"`](?:oklch\(|-?\d+(?:\.\d+)?(?:rem|em)|0(?:deg)?)/)
   })
 })

@@ -175,7 +175,7 @@ pnpm build
 **Gotchas:**
 
 - Fresh worktree/clone: run `pnpm install` then **`pnpm source:build`** before `dev`/`tsc` (Fumadocs compiles `content/docs` → `.source/`; otherwise types fail on missing `.source/`).
-- e2e uses `E2E_PORT` (default `3000`). Port `3000` is often contended by other local servers — run e2e with **`E2E_PORT=3100`**.
+- e2e uses `E2E_PORT` (default `3100`) to avoid common local `3000` contention.
 - The site is **forced light** (`forcedTheme: 'light'`); there is no dark mode. The terminal/maintainer cards are intentionally dark surfaces via `--terminal-*` / `bg-foreground` tokens, not `dark:` variants.
 - Fonts (Geist Sans/Mono + Instrument Serif accent) load via `next/font` with their CSS variables on `<html>`. Keep them on `<html>` or the Tailwind v4 `@theme` font tokens silently break.
 

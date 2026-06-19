@@ -33,8 +33,7 @@ Open `http://localhost:3000`.
 
 The docs site does not require Postgres, Payload admin routes, collections,
 globals, a database adapter, or `PAYLOAD_SECRET`. Copy `.env.example` to `.env`
-only when you need to override `NEXT_PUBLIC_SITE_URL` or run Payload target
-smoke tests.
+only when you need to override site metadata URLs or the GitHub content branch.
 
 ## Development Rules
 

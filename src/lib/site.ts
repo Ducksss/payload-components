@@ -336,7 +336,7 @@ export const componentEntries = [
     category: 'embed',
     command: 'npx payload-components add embed-basic',
     description:
-      'A responsive, accessible iframe block for YouTube, Vimeo, maps, forms, charts, and external widgets with a selectable aspect ratio.',
+      'A responsive, sandboxed iframe block for approved HTTPS embeds with a selectable aspect ratio.',
     family: 'pages',
     fields: ['url', 'title', 'aspectRatio', 'caption', 'allowFullscreen'],
     href: '/docs/components/embed-basic',
@@ -756,7 +756,7 @@ export const componentEntries = [
     category: 'cta',
     command: 'npx payload-components add call-to-action-signup',
     description:
-      'An email-capture call-to-action block: heading, copy, and a form that posts to your endpoint.',
+      'An email-capture call-to-action block: heading, copy, and a form that posts to a same-origin endpoint.',
     family: 'pages',
     fields: ['title', 'description', 'emailPlaceholder', 'submitLabel', 'action'],
     href: '/docs/components/call-to-action-signup',
@@ -1070,6 +1070,17 @@ export const communityLinks = [
   },
 ] as const
 
+/* Footer "Components" column: one link per category that actually ships components,
+   in catalog display order, deep-linking to the filtered catalog. Mirrors
+   CatalogFamilyTeaser's `/components?category=${key}` pattern — keeps the footer compact
+   instead of dumping all 38 entries into one column. */
+const footerComponentCategoryLinks = (Object.keys(componentCategories) as ComponentCategory[])
+  .filter((key) => componentEntries.some((entry) => entry.category === key))
+  .map((key) => ({
+    href: `/components?category=${key}`,
+    label: componentCategories[key].label,
+  }))
+
 export const footerColumns = [
   {
     links: [
@@ -1081,12 +1092,16 @@ export const footerColumns = [
     title: 'Product',
   },
   {
-    links: componentEntries.map((component) => ({ href: component.href, label: component.title })),
+    links: [
+      ...footerComponentCategoryLinks,
+      { accent: true, href: '/components', label: `All ${componentEntries.length} components` },
+    ],
     title: 'Components',
   },
   {
     links: [
       { href: '/about', label: 'About' },
+      { href: '/brand-guide', label: 'Brand Guide' },
       { external: true, href: githubRepoUrl, label: 'GitHub' },
       { external: true, href: githubIssuesUrl, label: 'Open an issue' },
       { href: '/docs/contributing', label: 'Contributing' },
