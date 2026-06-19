@@ -57,9 +57,7 @@ describe('payload-components state', () => {
     const migratedState = await loadState(tempDir)
 
     expect(migratedState.version).toBe(2)
-    expect(migratedState.components['hero-basic']).toMatchObject({
-      installedFiles: ['src/blocks/HeroBasic/Component.tsx', 'src/blocks/HeroBasic/config.ts'],
-      patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
+    expect(migratedState.components['hero-basic']).toMatchObject({      patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
       registryItemName: 'hero-basic',
       status: 'installed',
       targetId: 'payload-website-starter',
@@ -71,17 +69,13 @@ describe('payload-components state', () => {
     tempDirs.push(tempDir)
 
     await recordInstallAttempt({
-      cwd: tempDir,
-      installedFiles: ['src/blocks/HeroBasic/Component.tsx', 'src/blocks/HeroBasic/config.ts'],
-      manifest: manifestRef,
+      cwd: tempDir,      manifest: manifestRef,
       patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
       targetId: 'payload-website-starter',
     })
 
     await recordInstallFailure({
-      cwd: tempDir,
-      installedFiles: ['src/blocks/HeroBasic/Component.tsx', 'src/blocks/HeroBasic/config.ts'],
-      manifest: manifestRef,
+      cwd: tempDir,      manifest: manifestRef,
       message: 'generate:types failed',
       patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
       stage: 'post-install',
@@ -104,17 +98,13 @@ describe('payload-components state', () => {
     tempDirs.push(tempDir)
 
     await recordInstallAttempt({
-      cwd: tempDir,
-      installedFiles: ['src/blocks/HeroBasic/Component.tsx', 'src/blocks/HeroBasic/config.ts'],
-      manifest: manifestRef,
+      cwd: tempDir,      manifest: manifestRef,
       patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
       targetId: 'payload-website-starter',
     })
 
     await recordInstallFailure({
-      cwd: tempDir,
-      installedFiles: ['src/blocks/HeroBasic/Component.tsx', 'src/blocks/HeroBasic/config.ts'],
-      manifest: manifestRef,
+      cwd: tempDir,      manifest: manifestRef,
       message: 'fragment apply failed',
       patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
       stage: 'fragment-apply',
@@ -122,9 +112,7 @@ describe('payload-components state', () => {
     })
 
     await recordInstalledState({
-      cwd: tempDir,
-      installedFiles: ['src/blocks/HeroBasic/Component.tsx', 'src/blocks/HeroBasic/config.ts'],
-      manifest: manifestRef,
+      cwd: tempDir,      manifest: manifestRef,
       patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
       targetId: 'payload-website-starter',
     })

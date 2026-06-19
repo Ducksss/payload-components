@@ -253,10 +253,6 @@ describe('payload-components add command orchestration', () => {
         components: {
           'hero-basic': {
             installedAt: null,
-            installedFiles: [
-              'src/blocks/HeroBasic/Component.tsx',
-              'src/blocks/HeroBasic/config.ts',
-            ],
             lastAttemptAt: '2026-04-16T00:00:00.000Z',
             lastError: {
               message: 'generate:types failed',

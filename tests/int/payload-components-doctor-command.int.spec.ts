@@ -51,7 +51,6 @@ const getStateEntry = (
   overrides: Partial<InstallState['components'][string]> = {},
 ): InstallState['components'][string] => ({
   installedAt: '2026-04-16T00:00:00.000Z',
-  installedFiles: manifest.files,
   lastAttemptAt: '2026-04-16T00:00:00.000Z',
   lastError: null,
   manifestVersion: manifest.version,
