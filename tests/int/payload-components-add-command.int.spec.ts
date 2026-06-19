@@ -109,6 +109,7 @@ describe('payload-components add command orchestration', () => {
     })
     const printHeader = vi.fn()
     const runCommand = vi.fn().mockResolvedValue(undefined)
+    const seedCommand = vi.fn().mockResolvedValue(undefined)
 
     vi.doMock('../../tools/payload-components/manifest', () => ({
       loadManifest,
@@ -147,6 +148,9 @@ describe('payload-components add command orchestration', () => {
         runCommand,
       }
     })
+    vi.doMock('../../tools/payload-components/commands/seed', () => ({
+      seedCommand,
+    }))
 
     const addCommandModule = await import('../../tools/payload-components/commands/add')
 
@@ -165,6 +169,7 @@ describe('payload-components add command orchestration', () => {
         recordInstallFailure,
         recordInstalledState,
         runCommand,
+        seedCommand,
         verifyInstalledManifestFiles,
         verifyInstalledPayloadFragments,
       },
@@ -326,5 +331,35 @@ describe('payload-components add command orchestration', () => {
     expect(mocks.applyPayloadFragments).not.toHaveBeenCalled()
     expect(mocks.runCommand).toHaveBeenCalledOnce()
     expect(mocks.recordInstalledState).toHaveBeenCalledOnce()
+  })
+
+  it('writes the demo seed script after a successful install when --demo is set', async () => {
+    const { addCommand, mocks } = await setup()
+
+    mocks.checkDependencyRequirements
+      .mockResolvedValueOnce({ installed: { payload: '3.82.1' }, missing: [] })
+      .mockResolvedValueOnce({ installed: {}, missing: [] })
+
+    await addCommand({ componentName: 'hero-basic', cwd: '/tmp/fixture', demo: true })
+
+    expect(mocks.recordInstalledState).toHaveBeenCalledOnce()
+    expect(mocks.seedCommand).toHaveBeenCalledOnce()
+    expect(mocks.seedCommand).toHaveBeenCalledWith({
+      componentName: 'hero-basic',
+      cwd: '/tmp/fixture',
+    })
+  })
+
+  it('does not write the demo seed script by default', async () => {
+    const { addCommand, mocks } = await setup()
+
+    mocks.checkDependencyRequirements
+      .mockResolvedValueOnce({ installed: { payload: '3.82.1' }, missing: [] })
+      .mockResolvedValueOnce({ installed: {}, missing: [] })
+
+    await addCommand({ componentName: 'hero-basic', cwd: '/tmp/fixture' })
+
+    expect(mocks.recordInstalledState).toHaveBeenCalledOnce()
+    expect(mocks.seedCommand).not.toHaveBeenCalled()
   })
 })

@@ -13,6 +13,7 @@ export const HeroBasic: Block = {
       name: 'proofItems',
       type: 'array',
       admin: {
+        description: 'Add 2-4 short trust badges (e.g. SOC 2 Type II).',
         initCollapsed: true,
       },
       fields: [
@@ -20,6 +21,9 @@ export const HeroBasic: Block = {
           name: 'label',
           type: 'text',
           required: true,
+          admin: {
+            placeholder: 'SOC 2 Type II',
+          },
         },
       ],
       maxRows: 4,

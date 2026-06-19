@@ -3,19 +3,25 @@ import path from 'node:path'
 import { addCommand } from './commands/add'
 import { doctorCommand } from './commands/doctor'
 import { initCommand } from './commands/init'
+import { seedCommand } from './commands/seed'
 
 const usage = `payload-components
 
 Usage:
-  payload-components add <component-name> [--cwd <path>]
+  payload-components add <component-name> [--cwd <path>] [--demo]
+  payload-components seed <component-name> [--cwd <path>]
   payload-components init [--cwd <path>]
   payload-components doctor [--cwd <path>]
   payload-components --help
 
 Alpha commands:
   add     Install an alpha component through the payload-components wrapper and shadcn-compatible registry flow.
+  seed    Write a labeled demo seed script (one example Page) you can run and delete.
   init    Initialize shadcn in the project (creates components.json) so components can be installed.
   doctor  Diagnose project readiness and recorded component installs without changing files.
+
+Flags:
+  --demo  After "add", also write the demo seed script for the component.
 
 Current alpha components:
   hero-basic
@@ -61,6 +67,7 @@ Current alpha components:
 const parseArgs = (argv: string[]) => {
   const args = [...argv]
   let cwd = process.cwd()
+  let demo = false
   let help = false
   const positional: string[] = []
 
@@ -82,6 +89,11 @@ const parseArgs = (argv: string[]) => {
       continue
     }
 
+    if (current === '--demo') {
+      demo = true
+      continue
+    }
+
     if (current === '--help' || current === '-h') {
       help = true
       continue
@@ -92,13 +104,14 @@ const parseArgs = (argv: string[]) => {
 
   return {
     cwd,
+    demo,
     help,
     positional,
   }
 }
 
 const main = async () => {
-  const { cwd, help, positional } = parseArgs(process.argv.slice(2))
+  const { cwd, demo, help, positional } = parseArgs(process.argv.slice(2))
 
   const [command, ...rest] = positional
 
@@ -117,6 +130,23 @@ const main = async () => {
     }
 
     await addCommand({
+      cwd,
+      componentName,
+      demo,
+    })
+    return
+  }
+
+  if (command === 'seed') {
+    const [componentName] = rest
+
+    if (!componentName) {
+      throw new Error(
+        'payload-components seed requires a component name. Try "payload-components seed hero-basic".',
+      )
+    }
+
+    await seedCommand({
       cwd,
       componentName,
     })

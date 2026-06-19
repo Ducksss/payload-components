@@ -18,9 +18,15 @@ export const callToActionFields: Field[] = [
     name: 'title',
     type: 'text',
     required: true,
+    admin: {
+      placeholder: 'Action-oriented headline (e.g. Start building today)',
+    },
   },
   {
     name: 'description',
     type: 'textarea',
+    admin: {
+      placeholder: 'A short nudge toward the primary action',
+    },
   },
 ]

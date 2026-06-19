@@ -8,7 +8,7 @@ import { loadManifest } from '../../tools/payload-components/manifest'
 import {
   sampleContentNeedsSmokeMedia,
   writeSeedScript,
-} from '../../tools/payload-components/smoke/fresh-payload-repo'
+} from '../../tools/payload-components/seed/seed-script'
 
 describe('fresh Payload smoke seed generation', () => {
   const tempDirs: string[] = []

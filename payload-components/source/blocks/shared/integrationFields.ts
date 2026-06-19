@@ -25,10 +25,16 @@ export const integrationFields: Field[] = [
     name: 'heading',
     type: 'text',
     required: true,
+    admin: {
+      placeholder: 'Heading shown above the integrations',
+    },
   },
   {
     name: 'subtext',
     type: 'textarea',
+    admin: {
+      placeholder: 'Optional sentence below the heading',
+    },
   },
   {
     name: 'integrations',
@@ -37,6 +43,7 @@ export const integrationFields: Field[] = [
     minRows: 2,
     maxRows: 12,
     admin: {
+      description: 'Add the integrations — upload a logo and an accessible name for each.',
       initCollapsed: true,
     },
     fields: [
@@ -50,14 +57,23 @@ export const integrationFields: Field[] = [
         name: 'name',
         type: 'text',
         required: true,
+        admin: {
+          placeholder: 'Accessible integration name',
+        },
       },
       {
         name: 'description',
         type: 'textarea',
+        admin: {
+          placeholder: 'Optional one-line description',
+        },
       },
       {
         name: 'href',
         type: 'text',
+        admin: {
+          placeholder: 'Optional link, e.g. https://tool.com',
+        },
       },
     ],
   },

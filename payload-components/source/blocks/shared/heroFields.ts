@@ -17,16 +17,25 @@ export const heroFields: Field[] = [
   {
     name: 'eyebrow',
     type: 'text',
+    admin: {
+      placeholder: 'Optional kicker shown above the headline',
+    },
   },
   {
     name: 'title',
     type: 'text',
     required: true,
+    admin: {
+      placeholder: 'Headline — the main outcome you deliver',
+    },
   },
   {
     name: 'description',
     type: 'textarea',
     required: true,
+    admin: {
+      placeholder: 'A sentence or two expanding on the headline',
+    },
   },
   linkGroup({
     overrides: {

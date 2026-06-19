@@ -22,11 +22,17 @@ export const teamFields: Field[] = [
   {
     name: 'eyebrow',
     type: 'text',
+    admin: {
+      placeholder: 'Optional kicker shown above the title',
+    },
   },
   {
     name: 'title',
     type: 'text',
     required: true,
+    admin: {
+      placeholder: 'Section heading',
+    },
   },
 ]
 
@@ -41,14 +47,23 @@ export const teamMemberFields: Field[] = [
     name: 'name',
     type: 'text',
     required: true,
+    admin: {
+      placeholder: 'Full name',
+    },
   },
   {
     name: 'role',
     type: 'text',
     required: true,
+    admin: {
+      placeholder: 'Job title or role',
+    },
   },
   {
     name: 'href',
     type: 'text',
+    admin: {
+      placeholder: 'Optional profile link',
+    },
   },
 ]
