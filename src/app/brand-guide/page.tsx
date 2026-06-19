@@ -180,7 +180,7 @@ export default function BrandGuidePage() {
                 <code className="rounded-md border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-[13px] text-foreground/80">
                   &gt;
                 </code>{' '}
-                prompt mark, the wordmark, and the alpha status badge.
+                prompt mark, the wordmark, and the MIT badge.
               </p>
             </div>
 
@@ -391,7 +391,7 @@ export default function BrandGuidePage() {
               <p>
                 Write like the docs — direct, specific, and technical without being cold. Show the
                 receipts: link to the source, the manifest, the test, the diff. When something is
-                alpha or in development, say so plainly rather than dressing it up.
+                in development, say so plainly rather than dressing it up.
               </p>
               <p className="text-xl font-medium leading-8 tracking-[-0.01em] text-foreground">
                 The product earns trust by letting you read it — the brand should too.

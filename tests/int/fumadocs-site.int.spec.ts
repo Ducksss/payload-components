@@ -325,15 +325,17 @@ describe('Fumadocs site shell', () => {
   })
 
   it('keeps catalog page-block count copy aligned with installable components', async () => {
-    const { componentEntries, componentFamilies, componentsIntro } = await import('../../src/lib/site')
+    const { componentEntries, componentFamilies, componentsIntro, upcomingComponents } =
+      await import('../../src/lib/site')
     const pageCount = componentEntries.filter((component) => component.family === 'pages').length
     const aboutPage = await readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8')
 
-    expect(pageCount).toBe(38)
+    expect(pageCount).toBe(44)
     expect(componentFamilies.pages.countLabel).toBe(`${pageCount} installable`)
-    expect(componentsIntro).toContain('Thirty-eight page blocks install today')
-    expect(aboutPage).toContain('Thirty-eight page blocks install today')
-    expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Thirty-six page blocks')
+    expect(componentFamilies.posts.countLabel).toBe(`${upcomingComponents.length} in development`)
+    expect(componentsIntro).toContain('Forty-four page blocks install today')
+    expect(aboutPage).toContain('Forty-four page blocks install today')
+    expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Thirty-eight page blocks')
   })
 
   it('publishes production-safe fallback URLs when no site URL env is set', async () => {

@@ -37,7 +37,7 @@ export const ExampleBasicBlock: React.FC<Props> = ({
 }) => {
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-3xl border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div
           className={cn('flex flex-col gap-6', {
             'mx-auto max-w-4xl': !disableInnerContainer,
@@ -45,12 +45,12 @@ export const ExampleBasicBlock: React.FC<Props> = ({
         >
           <div className="flex flex-col gap-4">
             {eyebrow ? (
-              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-[0.18em]">
+              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-widest">
                 {eyebrow}
               </Badge>
             ) : null}
 
-            {title ? <h2 className="text-4xl font-medium tracking-[-0.06em] text-balance sm:text-5xl">{title}</h2> : null}
+            {title ? <h2 className="text-4xl font-medium tracking-tighter text-balance sm:text-5xl">{title}</h2> : null}
 
             {description ? (
               <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">{description}</p>

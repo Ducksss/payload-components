@@ -4,13 +4,14 @@ import { ArrowRight } from 'lucide-react'
 
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { Terminal } from '@/components/site/Terminal'
+import { componentEntries } from '@/lib/site'
 
 const notFoundLines = [
   { kind: 'command', text: 'payload-components add this-page' },
   { kind: 'info', text: 'payload-components: Unknown component "this-page".' },
   {
     kind: 'info',
-    text: 'Known components: hero-basic, feature-grid-basic, feature-split, feature-bento, feature-steps, embed-basic, logo-cloud-grid, logo-cloud-hover, logo-cloud-marquee, logo-cloud-inline, logo-cloud-inline-wrap, content-columns, content-image-lead, content-feature-media, content-feature-split, content-showcase, content-quote, content-community, integration-grid, integration-cluster, integration-split, integration-connect, integration-orbit, integration-list, integration-marquee, integration-testimonial, content-split-rows, content-rows, content-image-frame, content-stats, content-list, content-list-columns, content-list-icons, call-to-action-centered, call-to-action-boxed, call-to-action-signup, team-roster, team-grid.',
+    text: `Known components: ${componentEntries.map((component) => component.slug).join(', ')}.`,
   },
 ] as const
 

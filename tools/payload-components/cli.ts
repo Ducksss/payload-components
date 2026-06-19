@@ -12,12 +12,12 @@ Usage:
   payload-components doctor [--cwd <path>]
   payload-components --help
 
-Alpha commands:
-  add     Install an alpha component through the payload-components wrapper and shadcn-compatible registry flow.
+Commands:
+  add     Install a component through the payload-components wrapper and shadcn-compatible registry flow.
   init    Initialize shadcn in the project (creates components.json) so components can be installed.
   doctor  Diagnose project readiness and recorded component installs without changing files.
 
-Current alpha components:
+Current components:
   hero-basic
   feature-grid-basic
   feature-split
@@ -56,6 +56,12 @@ Current alpha components:
   call-to-action-signup
   team-roster
   team-grid
+  faq-accordion
+  faq-split
+  faq-card
+  faq-icons
+  faq-grouped
+  faq-grid
 `
 
 const parseArgs = (argv: string[]) => {

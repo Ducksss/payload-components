@@ -48,7 +48,7 @@ The Payload block code under `payload-components/source/` is **target code** —
 
 `registry-build` → `registry-add` → `dependency-install` → `fragment-apply` → `post-install` (`generate:types`, `generate:importmap`)
 
-Fragment patching is **text-anchor based** — it finds anchors like `const blockComponents = {` and `name: 'layout'` in the consumer repo and inserts imports/registrations with dedup checks. Fragile by design for alpha; keep the anchors and dedup logic intact.
+Fragment patching is **text-anchor based** — it finds anchors like `const blockComponents = {` and `name: 'layout'` in the consumer repo and inserts imports/registrations with dedup checks. Fragile by design for now; keep the anchors and dedup logic intact.
 
 **Two install modes:**
 
@@ -63,7 +63,7 @@ Fragment patching is **text-anchor based** — it finds anchors like `const bloc
 
 | Task | Touch |
 | --- | --- |
-| Add a component | `payload-components/source/` + `manifests/<component>.json` + `registry.json` + `content/docs/components/<component>.mdx` + installer tests — **all together** (incomplete components don't ship). Scaffold + step-by-step workflow: `payload-components/templates/alpha-component/` (copy its files; its README is the canonical add-a-component workflow) |
+| Add a component | `payload-components/source/` + `manifests/<component>.json` + `registry.json` + `content/docs/components/<component>.mdx` + installer tests — **all together** (incomplete components don't ship). Scaffold + step-by-step workflow: `payload-components/templates/component-template/` (copy its files; its README is the canonical add-a-component workflow) |
 | Site copy / messaging | `src/lib/site.ts` |
 | Landing layout / visuals | `src/components/site/sections/` + `src/app/globals.css` |
 | Docs content | `content/docs/` |
@@ -75,7 +75,7 @@ Any change must keep these green:
 
 - **`tests/e2e/frontend.e2e.spec.ts`** — H1 === `heroHeadline`; every `landingSections` heading renders as an `<h2>`; the first `<code>` is `primaryInstallCommand` and the first **Copy** button copies it; forced-light (no `.dark`, light background); **no horizontal overflow** on `/`, `/docs`, `/docs/architecture`, `/components`, `/about`, and component pages; under reduced-motion the terminal replay still shows its final transcript line.
 - **`tests/e2e/geo.e2e.spec.ts`** — `llms.txt` / `llms-full.txt` / `/api/search` / per-page markdown / OG images.
-- **`tests/e2e/components-visual.e2e.spec.ts`** — each component's demo twin matches its committed per-platform visual baseline (rendered chrome-free at `/components/preview/<slug>`). Refactors should stay visually inert; only regenerate baselines for intended visual changes with `pnpm test:e2e components-visual --update-snapshots` (a case skips when its current-platform baseline is missing, so mint the linux ones on the gate).
+- **`tests/e2e/components-visual.e2e.spec.ts`** — each component's demo twin matches its committed per-platform visual baseline (rendered chrome-free at `/components/preview/<slug>`). Refactors should stay visually inert; only regenerate baselines for intended visual changes with `pnpm test:e2e components-visual --update-snapshots`, or mint them in the CI renderer with the `visual-baselines` workflow (CI is linux — the linux `*-chromium-linux.png` baselines must be minted there or the suite skips on the gate, so run the workflow once and merge the PR it opens). A case skips when its current-platform baseline is missing; once the platform has any baseline, a coverage guard fails the gate if a component is missing one.
 - **`tests/int/`** — demo-twin class-mirror fidelity; **component visual standards** (`visual-standards.int.spec.ts`: token-only colours, named radius/letter-spacing tokens, no arbitrary colour/radius/tracking/spacing/font values — add a token in `globals.css` rather than an arbitrary value); registry reproducible; install idempotent and recoverable.
 
 If you add a `landingSections` key, render its `<h2>` in the same change. The copy strings tests rely on (`heroHeadline`, `primaryInstallCommand`, `landingSections.*`, `componentEntries`, `terminalDemoLines`, `catalogTitle`) live in `src/lib/site.ts` — don't rename or retext them casually.
@@ -95,6 +95,38 @@ If you add a `landingSections` key, render its `<h2>` in the same change. The co
 - Registry file entries may read from `payload-components/source`, but their `target` paths must install into consumer repos under `~/src/...`.
 - New components must include source files, manifest metadata, docs, and installer tests together.
 - Direct shadcn installs only deliver files and public shadcn dependencies. `payload-components add` owns Payload-specific wiring, post-install scripts, and install state.
+
+## shadcn registry directory submission
+
+The registry is published under the `@payload-components` namespace and is shaped for listing in the
+[official shadcn registry directory](https://ui.shadcn.com/docs/directory) (so people can discover it
+and run `shadcn add @payload-components/<item>`). `pnpm registry:validate` schema-checks every item
+against the vendored shadcn schemas (`tools/payload-components/schemas/`) and runs inside the release gate.
+
+**Submit only after** the changes are merged and deployed, so the live URL resolves and passes the
+shadcn team's `validate:registries` check:
+
+```bash
+curl -fsSL https://www.payload-components.xyz/r/registry.json    # 200
+curl -fsSL https://www.payload-components.xyz/r/hero-basic.json   # 200, embeds file content
+```
+
+**Steps:** fork [`shadcn-ui/ui`](https://github.com/shadcn-ui/ui), append the entry below to
+`apps/v4/registry/directory.json` (the file is a JSON array; insert alphabetically by `name`; keep the
+literal `{name}` placeholder in `url`), open the PR, and let their CI run `pnpm validate:registries`.
+
+```json
+{
+  "name": "@payload-components",
+  "homepage": "https://www.payload-components.xyz",
+  "url": "https://www.payload-components.xyz/r/{name}.json",
+  "description": "MIT registry of typed Payload CMS blocks for Payload v3 + Next.js. Each block installs as reviewable source; the companion CLI also wires collection config, RenderBlocks, types, and the admin import map."
+}
+```
+
+Confirm at submission time: whether `logo` is required (existing entries carry an SVG string) and any
+length cap on `description`. Our `registry:validate` covers item-schema validity regardless of whether
+their script re-fetches each item URL.
 
 ## Variants and Shared Code
 

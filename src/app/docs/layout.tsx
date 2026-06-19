@@ -31,10 +31,10 @@ export default function DocsRootLayout({ children }: { children: ReactNode }) {
         sidebar={{
           banner: (
             <div
-              key="docs-alpha-banner"
+              key="docs-version-banner"
               className="rounded-lg border border-brand/25 bg-brand/10 px-3 py-2 font-mono text-[11px] font-medium text-brand"
             >
-              public alpha · components v0.1.0
+              MIT registry · components v0.1.0
             </div>
           ),
           defaultOpenLevel: 1,

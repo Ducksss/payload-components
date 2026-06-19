@@ -178,7 +178,7 @@ export const detectProject = async (cwd: string): Promise<DetectedProject> => {
   }
 
   throw new Error(
-    `Unsupported project shape in ${cwd}. The alpha install flow currently supports Payload website-style repos with components.json, ${RENDER_BLOCKS_FILE}, and ${PAGES_LAYOUT_FILE}.`,
+    `Unsupported project shape in ${cwd}. The install flow currently supports Payload website-style repos with components.json, ${RENDER_BLOCKS_FILE}, and ${PAGES_LAYOUT_FILE}.`,
   )
 }
 

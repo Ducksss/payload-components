@@ -31,6 +31,8 @@ const representativeInstallComponents = [
   'logo-cloud-marquee',
   'call-to-action-signup',
   'team-grid',
+  'faq-accordion',
+  'faq-grid',
 ] as const
 
 const idempotencyComponents = ['hero-basic', 'logo-cloud-marquee'] as const

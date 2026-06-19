@@ -1,0 +1,81 @@
+---
+title: Anatomy of an install — how payload-components add wires a block
+description: Come look under the hood with me — the pipeline, the patching trick, and the diff you get to read.
+author: Ducksss
+date: 2026-06-19
+---
+
+In my [hello post](/blog/hello) I said the goal was to install blocks *wired, not pasted*. That's
+a nice phrase, but I'd rather show you what it actually means than ask you to take my word for it.
+So come look under the hood with me. If you're going to run an installer against your repo, you
+deserve to know exactly what it touches — and honestly, this part is the bit I'm most proud of.
+
+## The pipeline
+
+When you run `add`, five stages happen in order:
+
+<Steps>
+  <Step>
+    **`registry-build`** — figure out what you asked for and build its registry entry: the source
+    files, plus the little fragments that describe how to wire it in.
+  </Step>
+  <Step>
+    **`registry-add`** — drop those source files into your repo through the shadcn registry flow.
+  </Step>
+  <Step>
+    **`dependency-install`** — pull in any packages the block needs so it actually compiles.
+  </Step>
+  <Step>
+    **`fragment-apply`** — patch your Pages collection and your render map so the block is
+    registered and painted.
+  </Step>
+  <Step>
+    **`post-install`** — regenerate types and the import map, then record what happened.
+  </Step>
+</Steps>
+
+## The trick I like: patching by text, not by AST
+
+`fragment-apply` is my favourite stage, because of *how* it edits your files. It would be easy to
+parse your code into a syntax tree and rewrite it — but that tends to reformat everything around
+the change and leave you with a noisy diff. So instead it works against **text anchors**: stable
+little strings it expects to find in a Payload v3 + Next.js project.
+
+It looks for things like `const blockComponents = {` in your render map and `name: 'layout'` in
+your Pages config, then slips the import and the registration in right where they belong. Every
+insertion runs through a dedup check, so if you re-run `add` on a block you already have, nothing
+happens twice. The payoff is a small, legible diff — you can read precisely what changed instead
+of squinting at a reformatted file.
+
+## Why it bothers to run both generators
+
+<Callout type="warn">
+  A block can be copied, registered, and rendered and *still* not be live. `generate:types`
+  refreshes `src/payload-types.ts` so your fields are typed end to end, and `generate:importmap`
+  updates the admin `importMap.js` so the editor can actually render the block in the admin UI.
+  Skip either one and you get a half-wired block — it compiles but breaks in admin, or renders
+  but is untyped. That gap is exactly the thing I kept tripping over by hand, so the CLI owns it.
+</Callout>
+
+## What you're left with
+
+When it finishes, you haven't taken on a framework or a runtime dependency you have to keep
+importing. You've got copied source plus two scoped patches — one to your collection, one to your
+render map — sitting in your git diff. No vendored framework, no lock-in. Don't like a line?
+Change it. It's your code now.
+
+## Read it before you trust it
+
+That's the whole philosophy, really: all of this is MIT and lives in one repo, so you can read
+the installer before you ever run it. I built it so the second project, and the tenth, get this
+wiring for free — but I never want it to feel like magic you can't inspect.
+
+Give it a spin on a throwaway branch and watch the diff:
+
+```bash
+npx payload-components add hero-basic
+```
+
+And if something feels off, tell me — that feedback is how the catalog gets better.
+
+— Ducksss

@@ -1,0 +1,67 @@
+---
+title: Faq Grid
+description: A static two-column grid of question/answer cards — no accordion.
+icon: LayoutGrid
+---
+
+<ComponentPreview slug="faq-grid" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add faq-grid
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-grid.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="faq-grid" />
+
+## Content model
+
+The first three fields come from the shared `faqFields` base; `items` is specific to this
+variant. Unlike the accordion variants, every answer is shown at once — no interactive state.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'One or more question/answer pairs rendered as a two-column card grid.',
+    },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    question: { type: 'text', required: true, description: 'The card heading.' },
+    answer: { type: 'textarea', required: true, description: 'The card body copy.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="faq-grid" />
+
+## Requirements
+
+<ComponentRequirements slug="faq-grid" />
+
+## In this family
+
+<ComponentFamily slug="faq-grid" />

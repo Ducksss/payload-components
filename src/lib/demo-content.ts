@@ -650,3 +650,236 @@ export const teamGridDemoContent: TeamSectionDemoContent = {
   ],
   title: 'Our dream team.',
 }
+
+export type FaqIconKey = 'clock' | 'credit-card' | 'truck' | 'globe' | 'package' | 'help-circle'
+
+export type FaqItemDemo = { answer: string; question: string }
+
+/* The plain FAQ variants (faq-accordion, faq-split, faq-card, faq-grid) render
+   from one demo-content shape: the shared heading, question/answer items, and
+   an optional CTA link (the grid variant passes none). */
+export type FaqDemoContent = {
+  description?: string
+  eyebrow?: string
+  items: FaqItemDemo[]
+  links: { link: DemoLinkData }[]
+  title: string
+}
+
+/* faq-icons tags each question with an icon from the faqIcons allowlist. */
+export type FaqIconsDemoContent = {
+  description?: string
+  eyebrow?: string
+  items: (FaqItemDemo & { icon?: FaqIconKey })[]
+  title: string
+}
+
+/* faq-grouped buckets questions under titled, icon-tagged categories. */
+export type FaqGroupedDemoContent = {
+  description?: string
+  eyebrow?: string
+  groups: { icon?: FaqIconKey; items: FaqItemDemo[]; title: string }[]
+  title: string
+}
+
+export const faqAccordionDemoContent: FaqDemoContent = {
+  description: 'Short answers to what teams ask before rolling Acme out company-wide.',
+  eyebrow: 'Support',
+  items: [
+    {
+      answer:
+        'Most teams connect their first data source and ship a dashboard in an afternoon — there is no infrastructure to provision.',
+      question: 'How long does setup take?',
+    },
+    {
+      answer:
+        'Postgres, BigQuery, Snowflake, and any warehouse that speaks SQL, plus a REST ingestion endpoint for everything else.',
+      question: 'Which data sources are supported?',
+    },
+    {
+      answer:
+        'Yes — every dashboard ships with a signed embed snippet and row-level access controls.',
+      question: 'Can I embed dashboards in my own app?',
+    },
+    {
+      answer:
+        'Start on the free tier with no credit card; upgrade once you outgrow the included usage.',
+      question: 'Is there a free trial?',
+    },
+  ],
+  links: [{ link: { appearance: 'outline', label: 'Contact support' } }],
+  title: 'Frequently asked questions',
+}
+
+export const faqSplitDemoContent: FaqDemoContent = {
+  description: 'Billing, security, and onboarding — answered before you have to ask.',
+  eyebrow: 'FAQs',
+  items: [
+    {
+      answer:
+        'Upgrade or downgrade at any time; changes take effect immediately and we prorate the difference.',
+      question: 'Can I change my plan later?',
+    },
+    {
+      answer: 'All major credit cards, PayPal, and invoicing for annual enterprise plans.',
+      question: 'What payment methods do you accept?',
+    },
+    {
+      answer:
+        'We are SOC 2 Type II certified, encrypt data in transit and at rest, and never train on your data.',
+      question: 'How do you handle security?',
+    },
+    {
+      answer:
+        'Every workspace gets SSO, audit logs, and role-based access so the right people see the right surfaces.',
+      question: 'Do you support single sign-on?',
+    },
+  ],
+  links: [{ link: { appearance: 'outline', label: 'Talk to sales' } }],
+  title: 'Questions, answered',
+}
+
+export const faqCardDemoContent: FaqDemoContent = {
+  description: 'The essentials on trials, billing, and support before you commit.',
+  eyebrow: 'Support',
+  items: [
+    {
+      answer:
+        'Start with a 14-day free trial with full access to every feature. No credit card required.',
+      question: 'How does the free trial work?',
+    },
+    {
+      answer: 'No setup fees and no hidden costs — you only ever pay for your subscription plan.',
+      question: 'Is there a setup fee?',
+    },
+    {
+      answer:
+        'We offer a 30-day money-back guarantee. Contact us within 30 days for a full refund.',
+      question: 'Do you offer refunds?',
+    },
+    {
+      answer:
+        'Cancel anytime from your account settings; access continues until the billing period ends.',
+      question: 'How do I cancel my subscription?',
+    },
+  ],
+  links: [{ link: { appearance: 'outline', label: 'Contact support' } }],
+  title: 'Frequently asked questions',
+}
+
+export const faqGridDemoContent: FaqDemoContent = {
+  description: 'Everything you need to know about the Acme platform, at a glance.',
+  eyebrow: 'Help center',
+  items: [
+    {
+      answer:
+        'Click Sign up and follow the prompts. You can register with email or connect your Google account.',
+      question: 'How do I create an account?',
+    },
+    {
+      answer: 'Yes — a 14-day free trial with full access to all features, no credit card required.',
+      question: 'Is there a free trial?',
+    },
+    {
+      answer: 'All major credit cards, PayPal, and bank transfers for annual plans.',
+      question: 'What payment methods do you accept?',
+    },
+    {
+      answer: 'We offer a 30-day money-back guarantee — contact support within 30 days for a refund.',
+      question: 'Can I get a refund?',
+    },
+    {
+      answer: 'Upgrade, downgrade, or cancel at any time from your billing settings.',
+      question: 'Can I change my plan?',
+    },
+    {
+      answer:
+        'Our team is available by email and live chat, with priority support on paid plans.',
+      question: 'How do I reach support?',
+    },
+  ],
+  links: [],
+  title: 'Common questions',
+}
+
+export const faqIconsDemoContent: FaqIconsDemoContent = {
+  description: 'Quick answers, grouped by the part of Acme you are asking about.',
+  eyebrow: 'Support',
+  items: [
+    {
+      answer:
+        'Our team is available Monday to Friday, 9:00 AM to 8:00 PM EST, and weekends from 10:00 AM to 6:00 PM EST.',
+      icon: 'clock',
+      question: 'What are your support hours?',
+    },
+    {
+      answer:
+        'Subscriptions are charged to your default payment method on the same day each cycle; manage everything from the billing dashboard.',
+      icon: 'credit-card',
+      question: 'How does billing work?',
+    },
+    {
+      answer:
+        'Yes — guided onboarding and white-glove migration are available for teams that need to move fast.',
+      icon: 'truck',
+      question: 'Can I expedite onboarding?',
+    },
+    {
+      answer:
+        'We offer multilingual support in English, Spanish, French, German, and Japanese during regional business hours.',
+      icon: 'globe',
+      question: 'Do you offer localized support?',
+    },
+  ],
+  title: 'Frequently asked questions',
+}
+
+export const faqGroupedDemoContent: FaqGroupedDemoContent = {
+  description: 'Browse answers by topic, or reach out if you still need a hand.',
+  eyebrow: 'Help center',
+  groups: [
+    {
+      icon: 'package',
+      items: [
+        {
+          answer: 'Click Sign up, then connect your first data source — most teams ship in an afternoon.',
+          question: 'How do I get started?',
+        },
+        {
+          answer: 'Yes, a 14-day free trial with full access to every feature and no credit card.',
+          question: 'Is there a free trial?',
+        },
+      ],
+      title: 'Getting started',
+    },
+    {
+      icon: 'credit-card',
+      items: [
+        {
+          answer: 'All major credit cards, PayPal, and bank transfers for annual plans.',
+          question: 'What payment methods do you accept?',
+        },
+        {
+          answer: 'We offer a 30-day money-back guarantee — contact support within 30 days.',
+          question: 'Can I get a refund?',
+        },
+      ],
+      title: 'Billing',
+    },
+    {
+      icon: 'help-circle',
+      items: [
+        {
+          answer: 'Email and live chat are available to every plan, with priority routing on paid tiers.',
+          question: 'How do I reach support?',
+        },
+        {
+          answer: 'We are SOC 2 Type II certified and encrypt your data in transit and at rest.',
+          question: 'How is my data protected?',
+        },
+      ],
+      title: 'Support',
+    },
+  ],
+  title: 'How can we help?',
+}
