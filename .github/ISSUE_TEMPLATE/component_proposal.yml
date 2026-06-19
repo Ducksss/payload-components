@@ -16,7 +16,7 @@ body:
     id: proposed-slug
     attributes:
       label: Proposed slug
-      description: The kebab-case identifier this component would register under (e.g. `hero-centered`, `pricing-table`).
+      description: The kebab-case identifier this component would register under (e.g. `hero-centered`, `feature-grid-basic`).
       placeholder: my-new-component
     validations:
       required: true
@@ -41,16 +41,10 @@ body:
       options:
         - Hero
         - Features
-        - Logo cloud
         - Content
+        - Logo cloud
         - Integration
-        - Pricing
-        - FAQ
-        - CTA
-        - Testimonials
-        - Stats
-        - Team
-        - Contact
+        - Embed
         - New family (describe below)
     validations:
       required: true
@@ -60,7 +54,7 @@ body:
     attributes:
       label: New family name (if applicable)
       description: Only fill this in if you selected "New family" above.
-      placeholder: e.g. Timeline
+      placeholder: e.g. Pricing
     validations:
       required: false
 
@@ -101,9 +95,8 @@ body:
       description: How should consumers add this component to their project?
       multiple: true
       options:
-        - CLI install (registry pull)
-        - Copy-paste source
-        - npm/package dependency
+        - CLI install (payload-components add)
+        - Direct shadcn registry pull
         - Not sure — open to maintainer guidance
     validations:
       required: true
