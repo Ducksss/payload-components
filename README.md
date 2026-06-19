@@ -311,8 +311,9 @@ Payload Components stays open-source and community-first: more components,
 stronger install recovery, clearer docs, and better compatibility coverage for
 real Payload projects.
 
-Use the [open issues](https://github.com/Ducksss/payload-components/issues) for
-active work and component requests.
+See [ROADMAP.md](./ROADMAP.md) for the current direction and use the
+[open issues](https://github.com/Ducksss/payload-components/issues) for active
+work and component requests.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
