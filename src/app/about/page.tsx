@@ -104,8 +104,14 @@ export default function AboutPage() {
             <p>
               <span className="font-medium text-foreground">shadcn changed the expectation</span>{' '}
               for plain UI: run one command and a real component lands in your repo, in your
-              style, yours to edit. Payload had no shelf like that. And Payload blocks are harder
-              than UI components, because copying the files is the easy part. A pasted block is
+              style, yours to edit. Payload had no shelf like that. And building{' '}
+              <Link
+                href="/payload-custom-components"
+                className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
+              >
+                Payload custom components
+              </Link>{' '}
+              is harder than UI components, because copying the files is the easy part. A pasted block is
               not live until your collection schema knows it, your renderer maps it, your types
               include it, and the admin import map sees it.
             </p>

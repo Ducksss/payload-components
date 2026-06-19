@@ -179,6 +179,11 @@ test.describe('Light shadcn frontend', () => {
         title: /Payload CMS Block Catalog/,
       },
       {
+        h1: 'Payload custom components, wired not pasted.',
+        path: '/payload-custom-components',
+        title: /Payload Custom Components/,
+      },
+      {
         h1: 'Why Payload Components exists',
         path: '/about',
         title: /About/,
