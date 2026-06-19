@@ -1,0 +1,77 @@
+---
+title: Pricing Cards
+description: A three-up pricing table of editable plan cards with one plan highlighted in emerald — the base of the Pricing family.
+icon: CircleDollarSign
+---
+
+<ComponentPreview slug="pricing-cards" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add pricing-cards
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-cards.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="pricing-cards" />
+
+## Content model
+
+The first three fields come from the shared `pricingFields` base; `plans` is built from the
+shared `planFields` and is specific to this variant. Mark one plan `featured` to highlight it
+in emerald.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    plans: {
+      type: 'array',
+      required: true,
+      description: 'Two to four plan cards, each with a price, feature list, and CTA.',
+    },
+  }}
+/>
+
+Each item in `plans` carries:
+
+<TypeTable
+  type={{
+    name: { type: 'text', required: true, description: 'Plan name, e.g. "Pro".' },
+    price: { type: 'text', required: true, description: 'Headline price, e.g. "$19".' },
+    period: { type: 'text', description: 'Billing period, e.g. "/ mo".' },
+    description: { type: 'text', description: 'Short plan blurb.' },
+    featured: { type: 'checkbox', description: 'Highlights the plan with the emerald accent.' },
+    features: { type: 'array', required: true, description: 'Included features, each a single line of text.' },
+    links: { type: 'array', description: 'One CTA link for the plan.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="pricing-cards" />
+
+## Requirements
+
+<ComponentRequirements slug="pricing-cards" />
+
+## In this family
+
+<ComponentFamily slug="pricing-cards" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.

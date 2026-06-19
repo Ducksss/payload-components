@@ -56,6 +56,11 @@ Current alpha components:
   call-to-action-signup
   team-roster
   team-grid
+  pricing-cards
+  pricing-cards-muted
+  pricing-cards-cta
+  pricing-split
+  pricing-enterprise
 `
 
 const parseArgs = (argv: string[]) => {

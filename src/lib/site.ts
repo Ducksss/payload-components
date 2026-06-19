@@ -213,14 +213,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Thirty-eight page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Forty-three page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '38 installable',
+    countLabel: '43 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -237,8 +237,8 @@ export const componentFamilies = {
    ranked by importance + catalog depth to mirror the docs sidebar (see
    src/lib/component-page-tree.tsx FAMILIES): the universal landing-page sections first
    (Hero, Feature, Content, Call to action), then the deeper / flashier families
-   (Integration, Logo cloud, Team), then the single-variant utility (Embed). pricing / faq /
-   testimonials ship no components yet, so they stay hidden (the catalog filters out count 0). */
+   (Integration, Logo cloud, Team), then the single-variant utility (Embed) and Pricing.
+   faq / testimonials ship no components yet, so they stay hidden (the catalog filters out count 0). */
 export const componentCategories = {
   hero: { family: 'pages', label: 'Hero' },
   features: { family: 'pages', label: 'Features' },
@@ -793,6 +793,76 @@ export const componentEntries = [
     status: 'Alpha',
     target: 'Team section',
     title: 'Team Grid',
+    version: '0.1.0',
+  },
+  {
+    category: 'pricing',
+    command: 'npx payload-components add pricing-cards',
+    description:
+      'A three-up pricing table of editable plan cards — price, period, feature list, and CTA — with one plan highlighted in emerald.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'plans'],
+    href: '/docs/components/pricing-cards',
+    slug: 'pricing-cards',
+    status: 'Alpha',
+    target: 'Pricing section',
+    title: 'Pricing Cards',
+    version: '0.1.0',
+  },
+  {
+    category: 'pricing',
+    command: 'npx payload-components add pricing-cards-muted',
+    description:
+      'The three-up pricing table on soft muted card surfaces, with one plan highlighted in emerald.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'plans'],
+    href: '/docs/components/pricing-cards-muted',
+    slug: 'pricing-cards-muted',
+    status: 'Alpha',
+    target: 'Pricing section',
+    title: 'Pricing Cards Muted',
+    version: '0.1.0',
+  },
+  {
+    category: 'pricing',
+    command: 'npx payload-components add pricing-cards-cta',
+    description:
+      'The three-up pricing table with the call-to-action button placed inside each plan header.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'plans'],
+    href: '/docs/components/pricing-cards-cta',
+    slug: 'pricing-cards-cta',
+    status: 'Alpha',
+    target: 'Pricing section',
+    title: 'Pricing Cards CTA',
+    version: '0.1.0',
+  },
+  {
+    category: 'pricing',
+    command: 'npx payload-components add pricing-split',
+    description:
+      'A two-plan split pricing layout — a compact entry plan beside an expanded featured plan with its full feature list.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'plans'],
+    href: '/docs/components/pricing-split',
+    slug: 'pricing-split',
+    status: 'Alpha',
+    target: 'Pricing section',
+    title: 'Pricing Split',
+    version: '0.1.0',
+  },
+  {
+    category: 'pricing',
+    command: 'npx payload-components add pricing-enterprise',
+    description:
+      'A single wide enterprise pricing panel: price and CTA beside an included-features list and an editable wall of trust logos.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'plans', 'logos'],
+    href: '/docs/components/pricing-enterprise',
+    slug: 'pricing-enterprise',
+    status: 'Alpha',
+    target: 'Pricing section',
+    title: 'Pricing Enterprise',
     version: '0.1.0',
   },
 ] as const
