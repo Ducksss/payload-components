@@ -35,43 +35,40 @@ const brandStructuredData = graph(
   ]),
 )
 
-/* Swatch values are copied verbatim from src/app/globals.css — that file is the
-   single source of truth. This page documents the tokens, it does not redefine
-   them: each swatch paints with the live utility class (bg-*) and labels it with
-   the OKLCH string from :root. `dark` marks tiles that need light text. */
+/* globals.css is the source of truth. This page documents token names and paints
+   with live utilities; it does not copy primitive CSS values into TypeScript. */
 type Swatch = {
   className: string
   name: string
-  value: string
   token: string
   dark?: boolean
 }
 
 const baseSwatches: readonly Swatch[] = [
-  { className: 'bg-background', name: 'Background', token: '--background', value: 'oklch(100% 0 0deg)' },
-  { className: 'bg-foreground', name: 'Foreground', token: '--foreground', value: 'oklch(14.1% 0.005 285.8deg)', dark: true },
-  { className: 'bg-primary', name: 'Primary', token: '--primary', value: 'oklch(21% 0.006 285.9deg)', dark: true },
-  { className: 'bg-secondary', name: 'Secondary', token: '--secondary', value: 'oklch(96.7% 0.001 286.4deg)' },
-  { className: 'bg-muted', name: 'Muted', token: '--muted', value: 'oklch(96.7% 0.001 286.4deg)' },
-  { className: 'bg-border', name: 'Border', token: '--border', value: 'oklch(92% 0.004 286.3deg)' },
+  { className: 'bg-background', name: 'Background', token: '--background' },
+  { className: 'bg-foreground', name: 'Foreground', token: '--foreground', dark: true },
+  { className: 'bg-primary', name: 'Primary', token: '--primary', dark: true },
+  { className: 'bg-secondary', name: 'Secondary', token: '--secondary' },
+  { className: 'bg-muted', name: 'Muted', token: '--muted' },
+  { className: 'bg-border', name: 'Border', token: '--border' },
 ]
 
 const brandSwatches: readonly Swatch[] = [
-  { className: 'bg-brand', name: 'Brand', token: '--brand', value: 'oklch(50.8% 0.118 165.6deg)', dark: true },
-  { className: 'bg-brand-600', name: 'Brand 600', token: '--brand-600', value: 'oklch(44% 0.112 165.6deg)', dark: true },
-  { className: 'bg-brand-200', name: 'Brand 200', token: '--brand-200', value: 'oklch(89% 0.072 165.6deg)' },
-  { className: 'bg-brand-100', name: 'Brand 100', token: '--brand-100', value: 'oklch(94.6% 0.044 165.6deg)' },
-  { className: 'bg-brand-50', name: 'Brand 50', token: '--brand-50', value: 'oklch(97.6% 0.018 165.6deg)' },
+  { className: 'bg-brand', name: 'Brand', token: '--brand', dark: true },
+  { className: 'bg-brand-600', name: 'Brand 600', token: '--brand-600', dark: true },
+  { className: 'bg-brand-200', name: 'Brand 200', token: '--brand-200' },
+  { className: 'bg-brand-100', name: 'Brand 100', token: '--brand-100' },
+  { className: 'bg-brand-50', name: 'Brand 50', token: '--brand-50' },
 ]
 
 const statusSwatches: readonly Swatch[] = [
-  { className: 'bg-destructive', name: 'Destructive', token: '--destructive', value: 'oklch(57.7% 0.245 27.3deg)', dark: true },
-  { className: 'bg-success', name: 'Success', token: '--success', value: 'oklch(79.2% 0.157 162.5deg)' },
+  { className: 'bg-destructive', name: 'Destructive', token: '--destructive', dark: true },
+  { className: 'bg-success', name: 'Success', token: '--success' },
 ]
 
 const terminalSwatches: readonly Swatch[] = [
-  { className: 'bg-terminal', name: 'Terminal', token: '--terminal', value: 'oklch(16.5% 0.008 285.8deg)', dark: true },
-  { className: 'bg-terminal-chrome', name: 'Terminal chrome', token: '--terminal-chrome', value: 'oklch(21% 0.008 285.8deg)', dark: true },
+  { className: 'bg-terminal', name: 'Terminal', token: '--terminal', dark: true },
+  { className: 'bg-terminal-chrome', name: 'Terminal chrome', token: '--terminal-chrome', dark: true },
 ]
 
 function SwatchGrid({ swatches }: { swatches: readonly Swatch[] }) {
@@ -96,7 +93,7 @@ function SwatchGrid({ swatches }: { swatches: readonly Swatch[] }) {
           <div className="border-t border-border px-3 py-2.5">
             <p className="font-mono text-[11px] text-foreground/80">{swatch.token}</p>
             <p className="mt-0.5 font-mono text-[10px] leading-4 text-muted-foreground">
-              {swatch.value}
+              {swatch.className}
             </p>
           </div>
         </div>
@@ -106,20 +103,20 @@ function SwatchGrid({ swatches }: { swatches: readonly Swatch[] }) {
 }
 
 const trackingScale = [
-  { name: 'Display', token: '--tracking-display', value: '-0.06em', sample: 'Wired, not pasted' },
-  { name: 'Title', token: '--tracking-title', value: '-0.04em', sample: 'Install Payload blocks' },
-  { name: 'Snug', token: '--tracking-snug', value: '-0.03em', sample: 'One reviewable git diff' },
-  { name: 'Heading', token: '--tracking-heading', value: '-0.02em', sample: 'From catalog to commit' },
-  { name: 'Micro', token: '--tracking-micro', value: '-0.01em', sample: 'Read the contract first' },
-  { name: 'Eyebrow', token: '--tracking-eyebrow', value: '0.18em', sample: 'THE GRUNT-WORK TAX' },
+  { className: 'tracking-display', name: 'Display', token: '--tracking-display', sample: 'Wired, not pasted' },
+  { className: 'tracking-title', name: 'Title', token: '--tracking-title', sample: 'Install Payload blocks' },
+  { className: 'tracking-snug', name: 'Snug', token: '--tracking-snug', sample: 'One reviewable git diff' },
+  { className: 'tracking-heading', name: 'Heading', token: '--tracking-heading', sample: 'From catalog to commit' },
+  { className: 'tracking-micro', name: 'Micro', token: '--tracking-micro', sample: 'Read the contract first' },
+  { className: 'tracking-eyebrow', name: 'Eyebrow', token: '--tracking-eyebrow', sample: 'THE GRUNT-WORK TAX' },
 ] as const
 
 const radiusScale = [
-  { name: 'Base', token: '--radius', value: '0.625rem' },
-  { name: 'Inset', token: '--radius-inset', value: '1rem' },
-  { name: 'Card', token: '--radius-card', value: '1.25rem' },
-  { name: 'Panel', token: '--radius-panel', value: '1.5rem' },
-  { name: 'Frame', token: '--radius-frame', value: '2rem' },
+  { className: 'rounded-lg', name: 'Base', token: '--radius' },
+  { className: 'rounded-inset', name: 'Inset', token: '--radius-inset' },
+  { className: 'rounded-card', name: 'Card', token: '--radius-card' },
+  { className: 'rounded-panel', name: 'Panel', token: '--radius-panel' },
+  { className: 'rounded-frame', name: 'Frame', token: '--radius-frame' },
 ] as const
 
 const shadowScale = [
@@ -304,7 +301,7 @@ export default function BrandGuidePage() {
             accentWord="scales"
             eyebrow="Tokens"
             heading="Tracking, radius, and shadow scales"
-            intro="Named tokens replace one-off arbitraries across the blocks. The values here match globals.css exactly."
+            intro="Named utilities replace one-off arbitraries across the blocks. The samples here are rendered by the live tokens in globals.css."
           />
 
           <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
@@ -320,13 +317,12 @@ export default function BrandGuidePage() {
                     className="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
                   >
                     <span
-                      className="text-lg font-medium text-foreground"
-                      style={{ letterSpacing: item.value }}
+                      className={cn('text-lg font-medium text-foreground', item.className)}
                     >
                       {item.sample}
                     </span>
                     <span className="shrink-0 font-mono text-[11px] text-muted-foreground">
-                      {item.token} · {item.value}
+                      {item.token} · {item.className}
                     </span>
                   </li>
                 ))}
@@ -344,11 +340,10 @@ export default function BrandGuidePage() {
                     <li key={item.token} className="flex items-center gap-3">
                       <span
                         aria-hidden="true"
-                        className="size-9 shrink-0 border border-border bg-brand-100"
-                        style={{ borderRadius: item.value }}
+                        className={cn('size-9 shrink-0 border border-border bg-brand-100', item.className)}
                       />
                       <span className="font-mono text-[11px] text-muted-foreground">
-                        {item.token} · {item.value}
+                        {item.token} · {item.className}
                       </span>
                     </li>
                   ))}

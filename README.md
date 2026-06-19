@@ -190,6 +190,11 @@ npx payload-components add integration-orbit
 npx payload-components add integration-list
 npx payload-components add integration-marquee
 npx payload-components add integration-testimonial
+npx payload-components add call-to-action-centered
+npx payload-components add call-to-action-boxed
+npx payload-components add call-to-action-signup
+npx payload-components add team-roster
+npx payload-components add team-grid
 ```
 
 Current installable page blocks:
@@ -229,6 +234,11 @@ Current installable page blocks:
 | `integration-list`        | Integration list rows     |
 | `integration-marquee`     | Integration logo marquee  |
 | `integration-testimonial` | Integration testimonial   |
+| `call-to-action-centered` | Centered CTA section      |
+| `call-to-action-boxed`    | Boxed CTA panel           |
+| `call-to-action-signup`   | Email capture CTA         |
+| `team-roster`             | Grouped team roster       |
+| `team-grid`               | Team photo grid           |
 
 Check a target project without changing files:
 
@@ -301,9 +311,8 @@ Payload Components stays open-source and community-first: more components,
 stronger install recovery, clearer docs, and better compatibility coverage for
 real Payload projects.
 
-See [ROADMAP.md](./ROADMAP.md) and the
-[open issues](https://github.com/Ducksss/payload-components/issues) for active
-work.
+Use the [open issues](https://github.com/Ducksss/payload-components/issues) for
+active work and component requests.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
