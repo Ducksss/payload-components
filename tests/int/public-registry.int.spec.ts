@@ -95,7 +95,7 @@ describe('public shadcn registry publication', () => {
 
     expect(registry).toMatchObject({
       $schema: 'https://ui.shadcn.com/schema/registry.json',
-      homepage: 'https://github.com/Ducksss/payload-components',
+      homepage: 'https://www.payload-components.xyz',
       name: 'payload-components',
     })
     await expect(manifestNames()).resolves.toEqual(registry.items.map((item) => item.name).sort())
