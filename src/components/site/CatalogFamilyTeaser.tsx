@@ -42,19 +42,22 @@ type PageFamily = {
 
 /* Page families with at least one installable component, in catalog order. */
 function pageFamilies(): PageFamily[] {
-  return Object.entries(componentCategories)
-    .filter(([, category]) => category.family === 'pages')
-    .map(([key, category]) => {
-      const entries = componentEntries.filter((entry) => entry.category === key)
-      const picked = familyRepresentatives[key]
-      const representative =
-        (picked && demosBySlug[picked] && entries.find((entry) => entry.slug === picked)) ||
-        entries.find((entry) => demosBySlug[entry.slug])
-      return representative
-        ? { count: entries.length, key, label: category.label, representative }
-        : null
-    })
-    .filter((family): family is PageFamily => family !== null)
+  const families: PageFamily[] = []
+
+  for (const [key, category] of Object.entries(componentCategories)) {
+    if (category.family !== 'pages') continue
+
+    const entries = componentEntries.filter((entry) => entry.category === key)
+    const picked = familyRepresentatives[key]
+    const representative =
+      entries.find((entry) => entry.slug === picked && demosBySlug[entry.slug]) ??
+      entries.find((entry) => demosBySlug[entry.slug])
+
+    if (!representative) continue
+    families.push({ count: entries.length, key, label: category.label, representative })
+  }
+
+  return families
 }
 
 function FamilyCard({ family }: { family: PageFamily }) {

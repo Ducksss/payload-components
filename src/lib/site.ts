@@ -76,7 +76,7 @@ export const landingSections = {
   faq: { heading: 'Questions, answered straight.', id: 'faq' },
   components: { heading: 'The catalog, rendered live.', id: 'components' },
   tax: { heading: 'The paste was never the problem.', id: 'tax' },
-  wiring: { heading: 'Copying files was never the hard part.', id: 'wiring' },
+  wiring: { heading: 'One command owns the wiring.', id: 'wiring' },
   workflow: { heading: 'From catalog to commit in three moves.', id: 'workflow' },
 } as const
 

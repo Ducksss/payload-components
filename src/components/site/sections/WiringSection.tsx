@@ -1,4 +1,5 @@
 import { siteIcons } from '@/components/site/icons'
+import { WiringCoverage } from '@/components/site/illustrations'
 import { Section, SectionHeading } from '@/components/site/section'
 import { WiringLedger } from '@/components/site/WiringLedger'
 import { landingSections, receipts, wiringIntro, wiringLedger } from '@/lib/site'
@@ -10,7 +11,7 @@ export function WiringSection() {
     <Section id={landingSections.wiring.id}>
       <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
         <SectionHeading
-          accentWord="hard"
+          accentWord="wiring"
           eyebrow="The install boundary"
           heading={landingSections.wiring.heading}
           intro={wiringIntro}
@@ -21,6 +22,10 @@ export function WiringSection() {
       </div>
 
       <div className="reveal-on-scroll mt-12">
+        <WiringCoverage />
+      </div>
+
+      <div className="reveal-on-scroll mt-6">
         <WiringLedger />
       </div>
 
