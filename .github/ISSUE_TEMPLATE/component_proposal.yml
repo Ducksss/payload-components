@@ -16,8 +16,20 @@ body:
     id: proposed-slug
     attributes:
       label: Proposed slug
-      description: The kebab-case identifier this component would register under (e.g. `pricing-table`, `faq-accordion`).
+      description: The kebab-case identifier this component would register under (e.g. `hero-centered`, `pricing-table`).
       placeholder: my-new-component
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component-type
+    attributes:
+      label: Component type
+      description: Is this a wired page block or a post component?
+      options:
+        - Page block
+        - Post component
+        - Not sure — open to maintainer guidance
     validations:
       required: true
 
@@ -27,13 +39,18 @@ body:
       label: Component family
       description: Which existing family does this belong to? Pick "New family" if none fit.
       options:
-        - Layout
-        - Content / Marketing
-        - Forms
-        - Navigation
-        - Media
-        - Data display
-        - Commerce
+        - Hero
+        - Features
+        - Logo cloud
+        - Content
+        - Integration
+        - Pricing
+        - FAQ
+        - CTA
+        - Testimonials
+        - Stats
+        - Team
+        - Contact
         - New family (describe below)
     validations:
       required: true
@@ -43,7 +60,7 @@ body:
     attributes:
       label: New family name (if applicable)
       description: Only fill this in if you selected "New family" above.
-      placeholder: e.g. Pricing
+      placeholder: e.g. Timeline
     validations:
       required: false
 
