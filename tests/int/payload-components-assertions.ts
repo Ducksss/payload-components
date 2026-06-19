@@ -107,7 +107,6 @@ const expectInstalledStateEntry = (state: InstallState, manifest: ComponentManif
   ])
 
   expect(state.components[manifest.name]).toMatchObject({
-    installedFiles: normalizeFileList(manifest.files),
     manifestVersion: manifest.version,
     patchedFiles: expectedPatchedFiles,
     registryItemName: manifest.registryItemName,

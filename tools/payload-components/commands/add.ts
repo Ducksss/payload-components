@@ -34,8 +34,6 @@ const postInstallEnv = {
   PREVIEW_SECRET: process.env.PREVIEW_SECRET ?? 'payload-components-poc-preview-secret',
 }
 
-const normalizeFileList = (files: string[]) => [...new Set(files)].sort()
-
 const formatStageError = (error: unknown) => (error instanceof Error ? error.message : 'Unknown error')
 
 export const addCommand = async ({
@@ -71,7 +69,6 @@ export const addCommand = async ({
     cwd,
     manifest,
   })
-  const installedFiles = normalizeFileList([...manifest.files])
   const patchedFiles = getRuntimePatchedFiles({
     dependencies: manifest.dependencies,
     packageManager: project.packageManager,
@@ -96,7 +93,6 @@ export const addCommand = async ({
   if (!installedEntry && onDiskInstallValid) {
     await recordInstalledState({
       cwd,
-      installedFiles,
       manifest,
       patchedFiles,
       targetId: project.target.id,
@@ -110,7 +106,6 @@ export const addCommand = async ({
 
   await recordInstallAttempt({
     cwd,
-    installedFiles,
     manifest,
     patchedFiles,
     targetId: project.target.id,
@@ -122,7 +117,6 @@ export const addCommand = async ({
     } catch (error) {
       await recordInstallFailure({
         cwd,
-        installedFiles,
         manifest,
         patchedFiles,
         stage,
@@ -187,7 +181,6 @@ export const addCommand = async ({
   await recordInstalledState({
     cwd,
     installedAt: installedEntry?.installedAt ?? undefined,
-    installedFiles,
     manifest,
     patchedFiles,
     targetId: project.target.id,
