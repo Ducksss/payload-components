@@ -2,7 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "faq-grid",
   "version": "0.1.0",
-  "title": "Faq Grid",
+  "title": "FAQ Grid",
   "description": "A static two-column grid of question/answer cards, installed as a wired Payload block.",
   "registryItemName": "faq-grid",
   "dependencies": {},

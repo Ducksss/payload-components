@@ -2,7 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "faq-accordion",
   "version": "0.1.0",
-  "title": "Faq Accordion",
+  "title": "FAQ Accordion",
   "description": "A centered FAQ accordion with an optional CTA, installed as a wired Payload block.",
   "registryItemName": "faq-accordion",
   "dependencies": {},

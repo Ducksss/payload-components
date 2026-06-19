@@ -21,7 +21,7 @@ export const FaqSplit: Block = {
     }),
   ],
   labels: {
-    plural: 'Faq Split Blocks',
-    singular: 'Faq Split',
+    plural: 'FAQ Split Blocks',
+    singular: 'FAQ Split',
   },
 }

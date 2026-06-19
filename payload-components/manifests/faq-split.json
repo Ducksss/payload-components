@@ -2,7 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "faq-split",
   "version": "0.1.0",
-  "title": "Faq Split",
+  "title": "FAQ Split",
   "description": "A two-column FAQ pairing a sticky heading with an accordion, installed as a wired Payload block.",
   "registryItemName": "faq-split",
   "dependencies": {},

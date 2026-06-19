@@ -2,7 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "faq-card",
   "version": "0.1.0",
-  "title": "Faq Card",
+  "title": "FAQ Card",
   "description": "A centered FAQ accordion wrapped in a card with an optional CTA, installed as a wired Payload block.",
   "registryItemName": "faq-card",
   "dependencies": {},

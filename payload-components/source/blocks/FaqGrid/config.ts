@@ -12,7 +12,7 @@ export const FaqGrid: Block = {
     faqItemsField,
   ],
   labels: {
-    plural: 'Faq Grid Blocks',
-    singular: 'Faq Grid',
+    plural: 'FAQ Grid Blocks',
+    singular: 'FAQ Grid',
   },
 }

@@ -1519,7 +1519,7 @@
     {
       "name": "faq-accordion",
       "type": "registry:block",
-      "title": "Faq Accordion",
+      "title": "FAQ Accordion",
       "description": "Payload FAQ block: a centered accordion of question/answer items with an optional CTA.",
       "registryDependencies": [
         "accordion",
@@ -1560,7 +1560,7 @@
     {
       "name": "faq-split",
       "type": "registry:block",
-      "title": "Faq Split",
+      "title": "FAQ Split",
       "description": "Payload FAQ block: a two-column layout pairing a sticky heading and CTA with an accordion.",
       "registryDependencies": [
         "accordion",
@@ -1601,7 +1601,7 @@
     {
       "name": "faq-card",
       "type": "registry:block",
-      "title": "Faq Card",
+      "title": "FAQ Card",
       "description": "Payload FAQ block: a centered accordion wrapped in a card with an optional CTA.",
       "registryDependencies": [
         "accordion",
@@ -1643,7 +1643,7 @@
     {
       "name": "faq-icons",
       "type": "registry:block",
-      "title": "Faq Icons",
+      "title": "FAQ Icons",
       "description": "Payload FAQ block: an accordion with a per-question icon from a fixed allowlist.",
       "registryDependencies": [
         "accordion",
@@ -1689,7 +1689,7 @@
     {
       "name": "faq-grouped",
       "type": "registry:block",
-      "title": "Faq Grouped",
+      "title": "FAQ Grouped",
       "description": "Payload FAQ block: titled, icon-tagged category groups of accordions.",
       "registryDependencies": [
         "accordion",
@@ -1735,7 +1735,7 @@
     {
       "name": "faq-grid",
       "type": "registry:block",
-      "title": "Faq Grid",
+      "title": "FAQ Grid",
       "description": "Payload FAQ block: a static two-column grid of question/answer cards.",
       "registryDependencies": [
         "badge",

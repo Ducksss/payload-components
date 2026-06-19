@@ -21,7 +21,7 @@ export const FaqAccordion: Block = {
     }),
   ],
   labels: {
-    plural: 'Faq Accordion Blocks',
-    singular: 'Faq Accordion',
+    plural: 'FAQ Accordion Blocks',
+    singular: 'FAQ Accordion',
   },
 }

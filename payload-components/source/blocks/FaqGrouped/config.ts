@@ -48,7 +48,7 @@ export const FaqGrouped: Block = {
     },
   ],
   labels: {
-    plural: 'Faq Grouped Blocks',
-    singular: 'Faq Grouped',
+    plural: 'FAQ Grouped Blocks',
+    singular: 'FAQ Grouped',
   },
 }

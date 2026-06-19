@@ -21,7 +21,7 @@ export const FaqCard: Block = {
     }),
   ],
   labels: {
-    plural: 'Faq Card Blocks',
-    singular: 'Faq Card',
+    plural: 'FAQ Card Blocks',
+    singular: 'FAQ Card',
   },
 }

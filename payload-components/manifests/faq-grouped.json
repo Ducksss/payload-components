@@ -2,7 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "faq-grouped",
   "version": "0.1.0",
-  "title": "Faq Grouped",
+  "title": "FAQ Grouped",
   "description": "An FAQ split into titled, icon-tagged category groups of accordions, installed as a wired Payload block.",
   "registryItemName": "faq-grouped",
   "dependencies": {},

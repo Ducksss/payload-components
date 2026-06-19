@@ -23,6 +23,8 @@ CLI, and Payload integration direction coherent.
 ## Local Setup
 
 Use Node.js `^20.19.0 || >=22.12.0` and pnpm `^9 || ^10`.
+TypeScript stays on 5.x until `vite-tsconfig-paths` stops pulling `tsconfck`
+with a `typescript@^5.0.0` peer range.
 
 ```sh
 pnpm install --frozen-lockfile --ignore-workspace

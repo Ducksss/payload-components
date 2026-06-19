@@ -35,7 +35,7 @@ export const FaqIcons: Block = {
     },
   ],
   labels: {
-    plural: 'Faq Icons Blocks',
-    singular: 'Faq Icons',
+    plural: 'FAQ Icons Blocks',
+    singular: 'FAQ Icons',
   },
 }

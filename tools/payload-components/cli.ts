@@ -56,6 +56,12 @@ Current components:
   call-to-action-signup
   team-roster
   team-grid
+  faq-accordion
+  faq-split
+  faq-card
+  faq-icons
+  faq-grouped
+  faq-grid
 `
 
 const parseArgs = (argv: string[]) => {

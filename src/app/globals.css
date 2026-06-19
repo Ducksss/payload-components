@@ -724,11 +724,13 @@
   }
 
   html {
+    overflow-x: clip;
     scroll-behavior: smooth;
   }
 
   body {
     @apply bg-background text-foreground;
+    overflow-x: clip;
   }
 
   ::selection {
