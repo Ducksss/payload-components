@@ -54,6 +54,8 @@ Current alpha components:
   call-to-action-centered
   call-to-action-boxed
   call-to-action-signup
+  team-roster
+  team-grid
 `
 
 const parseArgs = (argv: string[]) => {

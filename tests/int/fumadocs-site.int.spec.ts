@@ -147,10 +147,13 @@ describe('Fumadocs site shell', () => {
     expect(workflow).toContain('- dev')
     expect(workflow).toContain('- main')
     expect(workflow).not.toContain('- prod')
-    expect(workflow).toContain('- 20.19.0')
-    expect(workflow).toContain('- 22')
+    expect(workflow).toContain('node-version: 22')
+    expect(workflow).toContain('node-version: 20.19.0')
     expect(workflow).toContain('release-gate:')
-    expect(workflow).toContain('needs: release-gate')
+    expect(workflow).toContain('node-20-compat:')
+    expect(workflow).toContain('needs:')
+    expect(workflow).toContain('- release-gate')
+    expect(workflow).toContain('- node-20-compat')
     expect(sourceConfig).toContain('pageSchema')
     expect(sourceConfig).toContain('metaSchema')
     expect(nextConfig).toContain('createMDX')
@@ -319,6 +322,18 @@ describe('Fumadocs site shell', () => {
 
   it('keeps docs navigation metadata pointed at real pages', async () => {
     await expectMetaEntriesResolve(path.join(repoRoot, 'content', 'docs'))
+  })
+
+  it('keeps catalog page-block count copy aligned with installable components', async () => {
+    const { componentEntries, componentFamilies, componentsIntro } = await import('../../src/lib/site')
+    const pageCount = componentEntries.filter((component) => component.family === 'pages').length
+    const aboutPage = await readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8')
+
+    expect(pageCount).toBe(38)
+    expect(componentFamilies.pages.countLabel).toBe(`${pageCount} installable`)
+    expect(componentsIntro).toContain('Thirty-eight page blocks install today')
+    expect(aboutPage).toContain('Thirty-eight page blocks install today')
+    expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Thirty-six page blocks')
   })
 
   it('publishes production-safe fallback URLs when no site URL env is set', async () => {

@@ -212,7 +212,7 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Thirty-six page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Thirty-eight page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
@@ -232,15 +232,21 @@ export const componentFamilies = {
   },
 } as const
 
+/* Display order on the /components catalog (it reads Object.keys order). Page families are
+   ranked by importance + catalog depth to mirror the docs sidebar (see
+   src/lib/component-page-tree.tsx FAMILIES): the universal landing-page sections first
+   (Hero, Feature, Content, Call to action), then the deeper / flashier families
+   (Integration, Logo cloud, Team), then the single-variant utility (Embed). pricing / faq /
+   testimonials ship no components yet, so they stay hidden (the catalog filters out count 0). */
 export const componentCategories = {
   hero: { family: 'pages', label: 'Hero' },
   features: { family: 'pages', label: 'Features' },
-  embed: { family: 'pages', label: 'Embed' },
-  logos: { family: 'pages', label: 'Logo cloud' },
   content: { family: 'pages', label: 'Content' },
-  integration: { family: 'pages', label: 'Integration' },
   cta: { family: 'pages', label: 'Call to action' },
+  integration: { family: 'pages', label: 'Integration' },
+  logos: { family: 'pages', label: 'Logo cloud' },
   team: { family: 'pages', label: 'Team' },
+  embed: { family: 'pages', label: 'Embed' },
   pricing: { family: 'pages', label: 'Pricing' },
   faq: { family: 'pages', label: 'FAQ' },
   testimonials: { family: 'pages', label: 'Testimonials' },
@@ -330,7 +336,7 @@ export const componentEntries = [
     category: 'embed',
     command: 'npx payload-components add embed-basic',
     description:
-      'A responsive, accessible iframe block for YouTube, Vimeo, maps, forms, charts, and external widgets with a selectable aspect ratio.',
+      'A responsive, sandboxed iframe block for approved HTTPS embeds with a selectable aspect ratio.',
     family: 'pages',
     fields: ['url', 'title', 'aspectRatio', 'caption', 'allowFullscreen'],
     href: '/docs/components/embed-basic',
@@ -750,7 +756,7 @@ export const componentEntries = [
     category: 'cta',
     command: 'npx payload-components add call-to-action-signup',
     description:
-      'An email-capture call-to-action block: heading, copy, and a form that posts to your endpoint.',
+      'An email-capture call-to-action block: heading, copy, and a form that posts to a same-origin endpoint.',
     family: 'pages',
     fields: ['title', 'description', 'emailPlaceholder', 'submitLabel', 'action'],
     href: '/docs/components/call-to-action-signup',
@@ -1064,6 +1070,17 @@ export const communityLinks = [
   },
 ] as const
 
+/* Footer "Components" column: one link per category that actually ships components,
+   in catalog display order, deep-linking to the filtered catalog. Mirrors
+   CatalogFamilyTeaser's `/components?category=${key}` pattern — keeps the footer compact
+   instead of dumping all 38 entries into one column. */
+const footerComponentCategoryLinks = (Object.keys(componentCategories) as ComponentCategory[])
+  .filter((key) => componentEntries.some((entry) => entry.category === key))
+  .map((key) => ({
+    href: `/components?category=${key}`,
+    label: componentCategories[key].label,
+  }))
+
 export const footerColumns = [
   {
     links: [
@@ -1075,12 +1092,16 @@ export const footerColumns = [
     title: 'Product',
   },
   {
-    links: componentEntries.map((component) => ({ href: component.href, label: component.title })),
+    links: [
+      ...footerComponentCategoryLinks,
+      { accent: true, href: '/components', label: `All ${componentEntries.length} components` },
+    ],
     title: 'Components',
   },
   {
     links: [
       { href: '/about', label: 'About' },
+      { href: '/brand-guide', label: 'Brand Guide' },
       { external: true, href: githubRepoUrl, label: 'GitHub' },
       { external: true, href: githubIssuesUrl, label: 'Open an issue' },
       { href: '/docs/contributing', label: 'Contributing' },

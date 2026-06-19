@@ -31,3 +31,4 @@ playwright/.cache/
 
 # OS/editor noise
 .DS_Store
+.claude/worktrees/

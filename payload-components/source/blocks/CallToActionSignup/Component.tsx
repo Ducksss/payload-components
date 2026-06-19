@@ -4,6 +4,7 @@ import type { CallToActionSignupBlock as CallToActionSignupBlockData } from '@/p
 
 import { Mail, SendHorizonal } from 'lucide-react'
 
+import { getSafeFormAction } from '@/blocks/shared/safeUrls'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/utilities/ui'
 
@@ -23,6 +24,8 @@ export const CallToActionSignupBlock: React.FC<Props> = ({
   submitLabel,
   title,
 }) => {
+  const formAction = getSafeFormAction(action) ?? '#'
+
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
       <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
@@ -37,8 +40,8 @@ export const CallToActionSignupBlock: React.FC<Props> = ({
             <p className="text-base leading-7 text-muted-foreground sm:text-lg">{description}</p>
           ) : null}
 
-          <form action={action || '#'} className="mt-2 w-full max-w-sm" method="post">
-            <div className="relative grid grid-cols-[1fr_auto] items-center rounded-xl border border-border/70 bg-background/80 pr-2">
+          <form action={formAction} className="mt-2 w-full max-w-sm" method="post">
+            <div className="relative grid grid-cols-[1fr_auto] items-center rounded-frame border border-border/70 bg-background/80 pr-2">
               <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-5 text-muted-foreground" />
 
               <input

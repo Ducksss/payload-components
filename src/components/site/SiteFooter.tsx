@@ -1,26 +1,44 @@
 import Link from 'next/link'
 
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Github } from 'lucide-react'
 
 import { Wordmark } from '@/components/site/Wordmark'
-import { footerColumns, primaryInstallCommand } from '@/lib/site'
+import { footerColumns, githubRepoUrl, primaryInstallCommand } from '@/lib/site'
 
 export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-muted/40">
+      {/* Quiet emerald hairline tying the footer to the brand accent. */}
+      <div
+        aria-hidden="true"
+        className="h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent"
+      />
       <div className="container py-14 lg:py-16">
-        <div className="grid gap-12 lg:grid-cols-[1.1fr_2fr]">
+        <div className="grid gap-12 lg:grid-cols-[1.2fr_2.4fr]">
           <div>
             <Link href="/" aria-label="Payload Components home" className="inline-block">
-              <Wordmark />
+              <Wordmark withBadge />
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-6 text-muted-foreground">
               Typed Payload CMS components that install with their wiring — collection config,
               render mapping, generated types, and import map in one command.
             </p>
-            <code className="mt-6 inline-block rounded-md border border-border bg-background px-3 py-2 font-mono text-xs text-muted-foreground">
-              {primaryInstallCommand}
-            </code>
+            <div className="mt-6 flex w-fit items-center gap-2.5 rounded-md border border-border bg-background px-3 py-2 font-mono text-xs">
+              <span aria-hidden="true" className="font-semibold text-brand">
+                &gt;
+              </span>
+              <code className="text-muted-foreground">{primaryInstallCommand}</code>
+            </div>
+            <Link
+              href={githubRepoUrl}
+              rel="noreferrer"
+              target="_blank"
+              className="mt-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <Github className="size-4" aria-hidden="true" />
+              GitHub
+              <ArrowUpRight className="size-3 text-muted-foreground/70" aria-hidden="true" />
+            </Link>
           </div>
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
@@ -32,18 +50,29 @@ export function SiteFooter() {
                 <ul className="mt-4 space-y-2.5">
                   {column.links.map((link) => {
                     const external = 'external' in link && link.external
+                    const accent = 'accent' in link && link.accent
 
                     return (
                       <li key={link.label}>
                         <Link
                           href={link.href}
                           {...(external ? { rel: 'noreferrer', target: '_blank' } : {})}
-                          className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                          className={
+                            accent
+                              ? 'group inline-flex items-center gap-1 text-sm font-medium text-brand transition-colors hover:text-brand/80'
+                              : 'inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground'
+                          }
                         >
                           {link.label}
                           {external ? (
                             <ArrowUpRight
                               className="size-3 text-muted-foreground/70"
+                              aria-hidden="true"
+                            />
+                          ) : null}
+                          {accent ? (
+                            <ArrowUpRight
+                              className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                               aria-hidden="true"
                             />
                           ) : null}

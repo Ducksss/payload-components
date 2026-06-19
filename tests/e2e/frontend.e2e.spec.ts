@@ -9,9 +9,24 @@ import {
   terminalDemoLines,
 } from '../../src/lib/site'
 
-const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3000'}`
+const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 const googleTagId = 'G-EMGRZ0H9R9'
 const copiedAlertText = 'Copied to clipboard.'
+
+async function stubGtagEvents(page: Page) {
+  await page.waitForFunction(() => typeof window.gtag === 'function')
+  await page.evaluate(() => {
+    const targetWindow = window as Window & { __gtagEvents?: unknown[][] }
+    targetWindow.__gtagEvents = []
+    window.gtag = (...args: Parameters<NonNullable<Window['gtag']>>) => {
+      targetWindow.__gtagEvents?.push(args)
+    }
+  })
+}
+
+async function getGtagEvents(page: Page) {
+  return page.evaluate(() => (window as Window & { __gtagEvents?: unknown[][] }).__gtagEvents ?? [])
+}
 
 async function expectCopiedAlert(page: Page) {
   await expect(page.getByRole('alert').filter({ hasText: copiedAlertText })).toBeVisible({
@@ -149,9 +164,9 @@ test.describe('Light shadcn frontend', () => {
         title: /Payload Components/,
       },
       {
-        h1: 'Start Here',
+        h1: 'Introduction',
         path: '/docs',
-        title: /Start Here/,
+        title: /Introduction/,
       },
       {
         h1: 'Architecture',
@@ -167,6 +182,11 @@ test.describe('Light shadcn frontend', () => {
         h1: 'Why Payload Components exists',
         path: '/about',
         title: /About/,
+      },
+      {
+        h1: 'The Payload Components brand',
+        path: '/brand-guide',
+        title: /Brand Guide/,
       },
       ...componentEntries.map((component) => ({
         h1: component.title,
@@ -253,19 +273,22 @@ test.describe('Light shadcn frontend', () => {
     await expect(page.locator('#hero-basic')).toBeHidden()
   })
 
-  test('exposes every landing section, the footer, and each component', async ({ page }) => {
+  test('exposes every landing section, the catalog teaser, and the footer', async ({ page }) => {
     await page.goto(baseURL)
 
     for (const section of Object.values(landingSections)) {
       await expect(page.getByRole('heading', { level: 2, name: section.heading })).toBeVisible()
     }
 
-    for (const component of componentEntries) {
-      await expect(page.locator('code', { hasText: component.command }).first()).toBeVisible()
-    }
+    // The catalog section teases page families with live previews instead of
+    // listing every component as a text row; the full index lives at /components.
+    await expect(page.getByRole('heading', { name: 'Page blocks' })).toBeVisible()
+    await expect(page.getByRole('link', { name: /Browse all \d+ components/ })).toBeVisible()
+    await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
 
     await expect(page.getByRole('contentinfo')).toBeVisible()
     await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
+    await expect(page.getByRole('contentinfo').getByRole('link', { name: 'Brand Guide' })).toBeVisible()
   })
 
   test('exposes the Fumadocs docs shell navigation', async ({ page }) => {
@@ -285,6 +308,7 @@ test.describe('Light shadcn frontend', () => {
   test('exposes a working command copy control', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
+    await stubGtagEvents(page)
 
     await page.getByRole('button', { name: 'Copy' }).first().click()
 
@@ -293,10 +317,21 @@ test.describe('Light shadcn frontend', () => {
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(primaryInstallCommand)
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: primaryInstallCommand,
+        component: 'hero-basic',
+        source_path: '/',
+      },
+    ])
   })
 
-  test('copies a catalog row command', async ({ page, context }) => {
-    const catalogComponent = componentEntries[1]
+  test('copies a catalog family-card command', async ({ page, context }) => {
+    // feature-bento is the Features family's representative card in the landing
+    // teaser; its command differs from the hero's primaryInstallCommand.
+    const catalogComponent = componentEntries.find((entry) => entry.slug === 'feature-bento')!
 
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
@@ -307,6 +342,40 @@ test.describe('Light shadcn frontend', () => {
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(catalogComponent.command)
+  })
+
+  test('tracks primary GitHub link clicks', async ({ page }) => {
+    await page.goto(baseURL)
+    await stubGtagEvents(page)
+    await page.evaluate(() => {
+      document.addEventListener(
+        'click',
+        (event) => {
+          const target = event.target
+          if (!(target instanceof Element)) return
+
+          if (target.closest('a[href="https://github.com/Ducksss/payload-components"]')) {
+            event.preventDefault()
+          }
+        },
+        { capture: true },
+      )
+    })
+
+    await page
+      .locator('a[href="https://github.com/Ducksss/payload-components"]')
+      .first()
+      .click()
+
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'primary_link_click',
+      {
+        destination: 'github',
+        href: 'https://github.com/Ducksss/payload-components',
+        source_path: '/',
+      },
+    ])
   })
 
   test('shows an alert after copying a docs code block', async ({ page, context }) => {
@@ -342,6 +411,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-desktop.png', {
       animations: 'disabled',
       fullPage: true,
+      timeout: 15_000,
     })
 
     await page.setViewportSize({ height: 900, width: 390 })
@@ -352,6 +422,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-mobile.png', {
       animations: 'disabled',
       fullPage: true,
+      timeout: 15_000,
     })
   })
 

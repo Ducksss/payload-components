@@ -33,8 +33,7 @@ Open `http://localhost:3000`.
 
 The docs site does not require Postgres, Payload admin routes, collections,
 globals, a database adapter, or `PAYLOAD_SECRET`. Copy `.env.example` to `.env`
-only when you need to override `NEXT_PUBLIC_SITE_URL` or run Payload target
-smoke tests.
+only when you need to override site metadata URLs or the GitHub content branch.
 
 ## Development Rules
 
@@ -61,8 +60,10 @@ Local API.
 
 - `main` is the production release line.
 - `dev` is the staging line where stable feature branches are collected.
-- Feature branches, including `v2`, should target `dev` first.
-- Promote from `dev` to `main` only after the release gate passes.
+- Fork the repository before contributing.
+- Create feature branches from `dev`.
+- Open pull requests into `dev`.
+- Maintainers promote from `dev` to `main` only after the release gate passes.
 
 ## Verification
 

@@ -7,9 +7,9 @@ icon: Terminal
 Use this walkthrough when you want to prove the public catalog and installer path before adding more blocks. The current registry in this branch includes **38 public items**. `payload-components add` is the supported install path because it moves files and applies the Payload wiring that a raw shadcn registry install cannot express.
 
 <Callout type="info" title="What this walkthrough proves">
-  The public site helps you choose a component, the docs show the exact command, the wrapper CLI
-  wires it into a supported Payload v3 + Next.js project, and `doctor` checks the result without
-  changing files.
+  The public site helps you choose a component, the docs show the exact command,
+  the wrapper CLI wires it into a supported Payload v3 + Next.js project, and
+  `doctor` checks the result without changing files.
 </Callout>
 
 ## Visual checkpoints
@@ -18,14 +18,19 @@ Open these public surfaces in order. They are stable enough to use in support th
 
 <Cards>
   <Card icon={<LayoutGrid />} title="Catalog" href="/components">
-    Browse the full component catalog, preview the available blocks, and pick the component slug to
-    install.
+    Browse the full component catalog, preview the available blocks, and pick
+    the component slug to install.
   </Card>
   <Card icon={<Terminal />} title="Docs" href="/docs/installation">
     Confirm the target-project requirements before running the install command.
   </Card>
-  <Card icon={<LayoutPanelTop />} title="Component page" href="/docs/components/hero-basic">
-    Copy the exact wrapper command and inspect the files, fragments, dependencies, and sample usage.
+  <Card
+    icon={<LayoutPanelTop />}
+    title="Component page"
+    href="/docs/components/hero-basic"
+  >
+    Copy the exact wrapper command and inspect the files, fragments,
+    dependencies, and sample usage.
   </Card>
 </Cards>
 
@@ -55,19 +60,23 @@ The wrapper CLI performs the full install sequence:
 
 <Steps>
   <Step>
-    Checks that the target repo has the supported Payload website shape before mutating files.
-  </Step>
-  <Step>Delivers the component source through the shadcn-compatible registry flow.</Step>
-  <Step>
-    Applies the Payload fragments that register the block in `RenderBlocks` and the `Pages` layout
-    field.
+    Checks that the target repo has the supported Payload website shape before
+    mutating files.
   </Step>
   <Step>
-    Installs missing component dependencies, then runs `generate:types` and `generate:importmap`.
+    Delivers the component source through the shadcn-compatible registry flow.
   </Step>
   <Step>
-    Records the install in `.payload-components/state.json` so later checks can compare state with
-    disk.
+    Applies the Payload fragments that register the block in `RenderBlocks` and
+    the `Pages` layout field.
+  </Step>
+  <Step>
+    Installs missing component dependencies, then runs `generate:types` and
+    `generate:importmap`.
+  </Step>
+  <Step>
+    Records the install in `.payload-components/state.json` so later checks can
+    compare state with disk.
   </Step>
 </Steps>
 
