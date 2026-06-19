@@ -1,0 +1,80 @@
+---
+title: Comparator Stack
+description: A stacked plan-card comparison — one card per plan with its own price, CTA, and per-plan feature checklist.
+icon: StretchHorizontal
+---
+
+<ComponentPreview slug="comparator-stack" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add comparator-stack
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/comparator-stack.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="comparator-stack" />
+
+## Content model
+
+`title` and `description` come from the shared Comparator family base
+(`src/blocks/shared/comparatorFields.ts`); the `plans` stack is specific to this variant. Unlike the
+table and grid variants, each plan carries its **own** `features` checklist rather than sharing one
+matrix — good for mobile-first, plan-centric pages.
+
+<TypeTable
+  type={{
+    title: { type: 'text', description: 'Optional section heading shown above the stack.' },
+    description: { type: 'textarea', description: 'Optional supporting copy under the heading.' },
+    plans: { type: 'array', required: true, description: 'The plan cards, top to bottom (min 2, max 4).' },
+  }}
+/>
+
+Each item in `plans` carries:
+
+<TypeTable
+  type={{
+    name: { type: 'text', required: true, description: 'Plan name shown as the card heading.' },
+    description: { type: 'text', description: 'Optional one-line summary under the plan name.' },
+    price: { type: 'text', description: 'Headline price, e.g. "$29".' },
+    period: { type: 'text', description: 'Billing period shown next to the price, e.g. "/mo".' },
+    badge: { type: 'text', description: 'Optional pill beside the name, e.g. "Most popular".' },
+    highlighted: { type: 'checkbox', description: 'Adds an accent ring to mark the recommended plan.' },
+    links: { type: 'array', description: 'Optional single CTA shown in the plan card.' },
+    features: { type: 'array', description: "This plan's feature checklist." },
+  }}
+/>
+
+Each item in a plan's `features` carries:
+
+<TypeTable
+  type={{
+    label: { type: 'text', required: true, description: 'The feature label.' },
+    included: { type: 'checkbox', description: 'Shows a checkmark when ticked.' },
+    value: { type: 'text', description: 'Text value for the feature. Leave "included" unticked and this empty for an excluded feature (renders a dash).' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="comparator-stack" />
+
+## Requirements
+
+<ComponentRequirements slug="comparator-stack" />
+
+## In this family
+
+<ComponentFamily slug="comparator-stack" />

@@ -31,6 +31,7 @@ const familyRepresentatives: Record<string, string> = {
   logos: 'logo-cloud-marquee',
   team: 'team-grid',
   embed: 'embed-basic',
+  comparator: 'comparator-grid',
 }
 
 type PageFamily = {

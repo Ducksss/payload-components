@@ -1,0 +1,107 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "comparator-table",
+  "version": "0.1.0",
+  "title": "Comparator Table",
+  "description": "A tiered feature-comparison table Payload block: plan columns with CTAs and grouped feature rows whose cells are checkmarks or text values.",
+  "registryItemName": "comparator-table",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/comparatorFields.ts",
+    "src/blocks/ComparatorTable/config.ts",
+    "src/blocks/ComparatorTable/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ComparatorTableBlock",
+      "importPath": "@/blocks/ComparatorTable/Component",
+      "blockSlug": "comparatorTable"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ComparatorTable",
+      "importPath": "../../blocks/ComparatorTable/config",
+      "blockName": "ComparatorTable"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Full feature matrix: plan columns over grouped feature rows, with check/text cells and a highlighted column."
+  },
+  "sampleContent": {
+    "blockType": "comparatorTable",
+    "title": "Compare every plan",
+    "description": "A full feature matrix so teams can see exactly what each tier unlocks before they commit.",
+    "plans": [
+      {
+        "name": "Free",
+        "links": [
+          {
+            "link": {
+              "type": "custom",
+              "newTab": false,
+              "url": "/signup",
+              "label": "Get started",
+              "appearance": "outline"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Pro",
+        "badge": "Most popular",
+        "highlighted": true,
+        "links": [
+          {
+            "link": {
+              "type": "custom",
+              "newTab": false,
+              "url": "/signup?plan=pro",
+              "label": "Start free trial",
+              "appearance": "default"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Scale",
+        "links": [
+          {
+            "link": {
+              "type": "custom",
+              "newTab": false,
+              "url": "/contact",
+              "label": "Talk to sales",
+              "appearance": "outline"
+            }
+          }
+        ]
+      }
+    ],
+    "features": [
+      { "groupLabel": "Usage", "feature": "Projects", "values": [{ "label": "3" }, { "label": "Unlimited" }, { "label": "Unlimited" }] },
+      { "feature": "API calls", "values": [{ "label": "10K / mo" }, { "label": "1M / mo" }, { "label": "Custom" }] },
+      { "feature": "Team members", "values": [{ "label": "1" }, { "label": "10" }, { "label": "Unlimited" }] },
+      { "groupLabel": "Capabilities", "feature": "Analytics dashboard", "values": [{ "included": true }, { "included": true }, { "included": true }] },
+      { "feature": "Custom webhooks", "values": [{}, { "included": true }, { "included": true }] },
+      { "feature": "SSO / SAML", "values": [{}, {}, { "included": true }] },
+      { "feature": "Priority support", "values": [{}, { "included": true }, { "included": true }] }
+    ]
+  }
+}

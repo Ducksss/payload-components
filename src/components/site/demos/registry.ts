@@ -3,6 +3,9 @@ import type { ComponentType } from 'react'
 import { CallToActionBoxedDemo } from './CallToActionBoxedDemo'
 import { CallToActionCenteredDemo } from './CallToActionCenteredDemo'
 import { CallToActionSignupDemo } from './CallToActionSignupDemo'
+import { ComparatorGridDemo } from './ComparatorGridDemo'
+import { ComparatorStackDemo } from './ComparatorStackDemo'
+import { ComparatorTableDemo } from './ComparatorTableDemo'
 import { ContentColumnsDemo } from './ContentColumnsDemo'
 import { ContentCommunityDemo } from './ContentCommunityDemo'
 import { ContentFeatureMediaDemo } from './ContentFeatureMediaDemo'
@@ -54,6 +57,9 @@ export const demosBySlug: Record<string, ComponentType> = {
   'call-to-action-boxed': CallToActionBoxedDemo,
   'call-to-action-centered': CallToActionCenteredDemo,
   'call-to-action-signup': CallToActionSignupDemo,
+  'comparator-grid': ComparatorGridDemo,
+  'comparator-stack': ComparatorStackDemo,
+  'comparator-table': ComparatorTableDemo,
   'content-columns': ContentColumnsDemo,
   'content-community': ContentCommunityDemo,
   'content-feature-media': ContentFeatureMediaDemo,

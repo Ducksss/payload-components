@@ -1,0 +1,112 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "comparator-grid",
+  "version": "0.1.0",
+  "title": "Comparator Grid",
+  "description": "A plan-column comparison Payload block: pricing columns in a bordered card over a feature matrix, with a highlighted column and per-plan CTAs.",
+  "registryItemName": "comparator-grid",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/comparatorFields.ts",
+    "src/blocks/ComparatorGrid/config.ts",
+    "src/blocks/ComparatorGrid/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ComparatorGridBlock",
+      "importPath": "@/blocks/ComparatorGrid/Component",
+      "blockSlug": "comparatorGrid"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ComparatorGrid",
+      "importPath": "../../blocks/ComparatorGrid/config",
+      "blockName": "ComparatorGrid"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Pricing columns in one card: name + price per column, a feature matrix, and a CTA row, with a highlighted plan."
+  },
+  "sampleContent": {
+    "blockType": "comparatorGrid",
+    "title": "Pricing that scales with you",
+    "description": "Compare plans side by side and pick the tier that fits your team today.",
+    "plans": [
+      {
+        "name": "Starter",
+        "price": "$0",
+        "period": "/mo",
+        "links": [
+          {
+            "link": {
+              "type": "custom",
+              "newTab": false,
+              "url": "/signup",
+              "label": "Get started",
+              "appearance": "outline"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Pro",
+        "price": "$29",
+        "period": "/mo",
+        "badge": "Most popular",
+        "highlighted": true,
+        "links": [
+          {
+            "link": {
+              "type": "custom",
+              "newTab": false,
+              "url": "/signup?plan=pro",
+              "label": "Start free trial",
+              "appearance": "default"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Team",
+        "price": "$79",
+        "period": "/mo",
+        "links": [
+          {
+            "link": {
+              "type": "custom",
+              "newTab": false,
+              "url": "/signup?plan=team",
+              "label": "Start free trial",
+              "appearance": "outline"
+            }
+          }
+        ]
+      }
+    ],
+    "features": [
+      { "feature": "Integrations", "values": [{ "label": "5" }, { "label": "Unlimited" }, { "label": "Unlimited" }] },
+      { "feature": "API calls", "values": [{ "label": "10K / mo" }, { "label": "100K / mo" }, { "label": "1M / mo" }] },
+      { "feature": "Team members", "values": [{ "label": "1" }, { "label": "5" }, { "label": "Unlimited" }] },
+      { "feature": "Analytics", "values": [{ "included": true }, { "included": true }, { "included": true }] },
+      { "feature": "Custom webhooks", "values": [{}, { "included": true }, { "included": true }] },
+      { "feature": "SSO / SAML", "values": [{}, {}, { "included": true }] }
+    ]
+  }
+}
