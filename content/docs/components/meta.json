@@ -39,6 +39,11 @@
     "call-to-action-boxed",
     "call-to-action-signup",
     "team-roster",
-    "team-grid"
+    "team-grid",
+    "pricing-cards",
+    "pricing-cards-muted",
+    "pricing-cards-cta",
+    "pricing-split",
+    "pricing-enterprise"
   ]
 }

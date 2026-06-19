@@ -38,6 +38,8 @@ export const DEFAULT_SMOKE_COMPONENTS = [
   'call-to-action-centered',
   'call-to-action-boxed',
   'call-to-action-signup',
+  'pricing-cards',
+  'pricing-enterprise',
 ] as const
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
 
