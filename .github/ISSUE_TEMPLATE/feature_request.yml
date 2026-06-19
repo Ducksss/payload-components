@@ -1,5 +1,5 @@
 name: Feature Request
-description: Suggest a component, CLI workflow, registry improvement, or docs enhancement.
+description: Suggest a CLI workflow, registry improvement, or docs enhancement. For new components, use the Component Proposal form instead.
 title: '[feature] '
 labels:
   - enhancement
@@ -9,7 +9,6 @@ body:
     attributes:
       label: Area
       options:
-        - New component
         - Existing component improvement
         - payload-components CLI
         - Registry format or delivery
