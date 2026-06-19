@@ -13,6 +13,21 @@ const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3000'}`
 const googleTagId = 'G-EMGRZ0H9R9'
 const copiedAlertText = 'Copied to clipboard.'
 
+async function stubGtagEvents(page: Page) {
+  await page.waitForFunction(() => typeof window.gtag === 'function')
+  await page.evaluate(() => {
+    const targetWindow = window as Window & { __gtagEvents?: unknown[][] }
+    targetWindow.__gtagEvents = []
+    window.gtag = (...args: Parameters<NonNullable<Window['gtag']>>) => {
+      targetWindow.__gtagEvents?.push(args)
+    }
+  })
+}
+
+async function getGtagEvents(page: Page) {
+  return page.evaluate(() => (window as Window & { __gtagEvents?: unknown[][] }).__gtagEvents ?? [])
+}
+
 async function expectCopiedAlert(page: Page) {
   await expect(page.getByRole('alert').filter({ hasText: copiedAlertText })).toBeVisible({
     timeout: 15000,
@@ -287,6 +302,7 @@ test.describe('Light shadcn frontend', () => {
   test('exposes a working command copy control', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
+    await stubGtagEvents(page)
 
     await page.getByRole('button', { name: 'Copy' }).first().click()
 
@@ -295,6 +311,15 @@ test.describe('Light shadcn frontend', () => {
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(primaryInstallCommand)
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: primaryInstallCommand,
+        component: 'hero-basic',
+        source_path: '/',
+      },
+    ])
   })
 
   test('copies a catalog family-card command', async ({ page, context }) => {
@@ -311,6 +336,40 @@ test.describe('Light shadcn frontend', () => {
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(catalogComponent.command)
+  })
+
+  test('tracks primary GitHub link clicks', async ({ page }) => {
+    await page.goto(baseURL)
+    await stubGtagEvents(page)
+    await page.evaluate(() => {
+      document.addEventListener(
+        'click',
+        (event) => {
+          const target = event.target
+          if (!(target instanceof Element)) return
+
+          if (target.closest('a[href="https://github.com/Ducksss/payload-components"]')) {
+            event.preventDefault()
+          }
+        },
+        { capture: true },
+      )
+    })
+
+    await page
+      .locator('a[href="https://github.com/Ducksss/payload-components"]')
+      .first()
+      .click()
+
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'primary_link_click',
+      {
+        destination: 'github',
+        href: 'https://github.com/Ducksss/payload-components',
+        source_path: '/',
+      },
+    ])
   })
 
   test('shows an alert after copying a docs code block', async ({ page, context }) => {
