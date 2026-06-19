@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 
 import { expect, test } from '@playwright/test'
 
@@ -21,11 +21,15 @@ import { expect, test } from '@playwright/test'
  * Cross-platform rendering differs (darwin vs linux/CI), so baselines are
  * committed per platform and a small maxDiffPixelRatio absorbs sub-pixel noise.
  * A platform's baseline must be generated in that platform's own renderer — the
- * amd64 CI image won't match an arm64 dev box — so each case SKIPS when its
- * current-platform baseline is absent rather than failing the gate. Mint the
- * missing ones (e.g. on the linux gate) and commit the resulting
- * *-<platform>.png files with:
- *   E2E_PORT=3100 pnpm test:e2e components-visual --update-snapshots */
+ * linux CI image won't match a darwin dev box — so each case SKIPS when its
+ * current-platform baseline is absent rather than failing the gate. Mint a
+ * platform's baselines in the renderer the gate uses with the `visual-baselines`
+ * workflow (or locally with `E2E_PORT=3100 pnpm test:e2e components-visual
+ * --update-snapshots`) and commit the resulting *-<platform>.png files.
+ *
+ * That skip keeps a not-yet-minted platform green, but on its own it also hides
+ * a component shipped without its baseline. The coverage guard below closes the
+ * gap: once a platform has any baseline, a missing one fails loudly. */
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 
@@ -46,6 +50,35 @@ test.describe('Component visual snapshots', () => {
   test('the demo registry exposes the component slugs', () => {
     // Guards against the registry-parse regex silently yielding nothing.
     expect(slugs.length).toBeGreaterThanOrEqual(30)
+  })
+
+  test('every component keeps a current-platform baseline once the platform is minted', () => {
+    const { config, project } = test.info()
+    const mode = config.updateSnapshots
+    const updating = mode !== 'none' && mode !== 'missing'
+    // Nothing to enforce while baselines are being (re)generated.
+    test.skip(updating, 'updating snapshots')
+
+    const suffix = `-${project.name}-${process.platform}.png`
+    const minted = existsSync(snapshotDir)
+      ? readdirSync(snapshotDir).filter((file) => file.endsWith(suffix))
+      : []
+    // A platform with zero baselines hasn't been minted yet (e.g. a fresh CI
+    // image before the visual-baselines workflow runs) — stay green there.
+    test.skip(
+      minted.length === 0,
+      `No ${process.platform} baselines yet — run the visual-baselines workflow`,
+    )
+
+    // Once the platform is minted, a missing baseline is a real gap (a component
+    // added without its baseline) and must fail rather than silently skip.
+    const missing = slugs.filter(
+      (slug) => !existsSync(new URL(`component-${slug}${suffix}`, snapshotDir)),
+    )
+    expect(
+      missing,
+      `Missing ${process.platform} baselines (run the visual-baselines workflow): ${missing.join(', ')}`,
+    ).toEqual([])
   })
 
   for (const slug of slugs) {

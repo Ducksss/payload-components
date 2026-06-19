@@ -2,48 +2,15 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type { DetectedProject, InstallState, ComponentManifest } from '../../tools/payload-components/types'
 
-const baseManifest: ComponentManifest = {
-  $schema: '../schema/poc-manifest.schema.json',
-  dependencies: {},
-  description: 'Test manifest',
-  files: ['src/blocks/HeroBasic/config.ts', 'src/blocks/HeroBasic/Component.tsx'],
-  name: 'hero-basic',
-  payloadFragments: [
-    {
-      blockSlug: 'heroBasic',
-      importName: 'HeroBasicBlock',
-      importPath: '@/blocks/HeroBasic/Component',
-      kind: 'renderBlocks',
-    },
-    {
-      blockName: 'HeroBasic',
-      importName: 'HeroBasic',
-      importPath: '../../blocks/HeroBasic/config',
-      kind: 'pagesLayout',
-    },
-  ],
-  peerDependencies: {
-    payload: '^3.0.0',
-  },
+import { makeTestManifest } from './manifest-factory'
+
+/* A single postInstall script + payload-only peer is load-bearing here: the
+ * specs below assert runCommand fires exactly once with `generate:types`. */
+const baseManifest = makeTestManifest({
+  peerDependencies: { payload: '^3.0.0' },
   postInstall: ['generate:types'],
-  preview: {
-    summary: 'Preview',
-  },
-  recovery: {
-    patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
-  },
-  registryItemName: 'hero-basic',
-  sampleContent: {
-    blockType: 'heroBasic',
-  },
-  supportedTargets: ['payload-website-starter'],
-  supports: {
-    nextMajors: [15, 16],
-    payloadMajors: [3],
-  },
-  title: 'Hero Basic',
-  version: '0.1.0',
-}
+  preview: { summary: 'Preview' },
+})
 
 const detectedProject: DetectedProject = {
   cwd: '/tmp/fixture',
