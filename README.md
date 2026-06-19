@@ -5,6 +5,7 @@
 [![Stars][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
+[![npm][npm-shield]][npm-url]
 
 <div align="center">
   <h1>Payload Components</h1>
@@ -44,6 +45,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#package-releases">Package Releases</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -277,6 +279,22 @@ pnpm test:release
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Package Releases
+
+Public installs use the npm package:
+
+```sh
+npx payload-components add hero-basic
+```
+
+GitHub releases publish `payload-components` to npm and mirror
+`@ducksss/payload-components` to GitHub Packages. Add an `NPM_TOKEN`
+repository secret with npm publish access before publishing a release.
+Prerelease versions publish under the `next` dist tag; stable versions publish
+under `latest`.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Roadmap
 
 Payload Components stays open-source and community-first: more components,
@@ -343,6 +361,8 @@ information.
 [license-shield]: https://img.shields.io/github/license/Ducksss/payload-components.svg?style=for-the-badge
 [license-url]: https://github.com/Ducksss/payload-components/blob/main/LICENSE
 [next-url]: https://nextjs.org
+[npm-shield]: https://img.shields.io/npm/v/payload-components.svg?style=for-the-badge
+[npm-url]: https://www.npmjs.com/package/payload-components
 [payload-url]: https://payloadcms.com
 [playwright-url]: https://playwright.dev
 [react-url]: https://react.dev

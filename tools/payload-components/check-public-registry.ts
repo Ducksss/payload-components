@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { repoRoot, runCommand, shadcnCliPackage } from './utils'
+import { isPathInside, repoRoot, runCommand, shadcnCliPackage } from './utils'
 
 type RegistryFile = {
   content?: string
@@ -33,6 +33,7 @@ type RegistryDefinition = {
 }
 
 const registryDefinitionPath = path.join(repoRoot, 'payload-components', 'registry.json')
+const registrySourceRoot = path.join(repoRoot, 'payload-components', 'source')
 
 const readJson = async <T>(filePath: string): Promise<T> =>
   JSON.parse(await readFile(filePath, 'utf8')) as T
@@ -51,6 +52,20 @@ const assertNoEmbeddedSourceContent = (registry: RegistryDefinition) => {
       }
     }
   }
+}
+
+export const resolveRegistrySourcePath = (registryFilePath: string) => {
+  if (path.isAbsolute(registryFilePath)) {
+    throw new Error(`Registry file path "${registryFilePath}" must be relative.`)
+  }
+
+  const sourcePath = path.resolve(repoRoot, registryFilePath)
+
+  if (!isPathInside(registrySourceRoot, sourcePath)) {
+    throw new Error(`Registry file path "${registryFilePath}" resolves outside payload-components/source.`)
+  }
+
+  return sourcePath
 }
 
 export const buildRegistryForCheck = async () => {
@@ -116,7 +131,7 @@ export const assertGeneratedRegistryMatchesSource = async (publicRegistryDir: st
         throw new Error(`Generated file "${generatedFile.path}" in "${sourceItem.name}" is missing content.`)
       }
 
-      const sourceContent = await readFile(path.join(repoRoot, generatedFile.path), 'utf8')
+      const sourceContent = await readFile(resolveRegistrySourcePath(generatedFile.path), 'utf8')
 
       if (generatedFile.content !== sourceContent) {
         throw new Error(`Generated content for "${generatedFile.path}" in "${sourceItem.name}" is out of date.`)

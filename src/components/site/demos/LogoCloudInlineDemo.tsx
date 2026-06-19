@@ -21,7 +21,7 @@ export function LogoCloudInlineDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto flex max-w-5xl flex-col gap-5">
           <p className="font-medium text-muted-foreground">{heading}</p>
 

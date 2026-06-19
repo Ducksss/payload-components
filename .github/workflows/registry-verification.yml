@@ -18,6 +18,9 @@ on:
 env:
   NEXT_TELEMETRY_DISABLED: '1'
 
+permissions:
+  contents: read
+
 jobs:
   release-gate:
     if: github.event_name == 'pull_request' || github.event_name == 'push'
@@ -29,13 +32,13 @@ jobs:
           - 20.19.0
           - 22
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 10.24.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
@@ -95,13 +98,13 @@ jobs:
       PREVIEW_SECRET: ci-preview-secret
       REGISTRY_URL: ${{ github.event.inputs.registry_url || '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 10.24.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm

@@ -75,7 +75,8 @@ Any change must keep these green:
 
 - **`tests/e2e/frontend.e2e.spec.ts`** — H1 === `heroHeadline`; every `landingSections` heading renders as an `<h2>`; the first `<code>` is `primaryInstallCommand` and the first **Copy** button copies it; forced-light (no `.dark`, light background); **no horizontal overflow** on `/`, `/docs`, `/docs/architecture`, `/components`, `/about`, and component pages; under reduced-motion the terminal replay still shows its final transcript line.
 - **`tests/e2e/geo.e2e.spec.ts`** — `llms.txt` / `llms-full.txt` / `/api/search` / per-page markdown / OG images.
-- **`tests/int/`** — demo-twin class-mirror fidelity; registry reproducible; install idempotent and recoverable.
+- **`tests/e2e/components-visual.e2e.spec.ts`** — each component's demo twin matches its committed per-platform visual baseline (rendered chrome-free at `/components/preview/<slug>`). Refactors should stay visually inert; only regenerate baselines for intended visual changes with `pnpm test:e2e components-visual --update-snapshots` (a case skips when its current-platform baseline is missing, so mint the linux ones on the gate).
+- **`tests/int/`** — demo-twin class-mirror fidelity; **component visual standards** (`visual-standards.int.spec.ts`: token-only colours, named radius/letter-spacing tokens, no arbitrary colour/radius/tracking/spacing/font values — add a token in `globals.css` rather than an arbitrary value); registry reproducible; install idempotent and recoverable.
 
 If you add a `landingSections` key, render its `<h2>` in the same change. The copy strings tests rely on (`heroHeadline`, `primaryInstallCommand`, `landingSections.*`, `componentEntries`, `terminalDemoLines`, `catalogTitle`) live in `src/lib/site.ts` — don't rename or retext them casually.
 
@@ -153,6 +154,7 @@ Payload code in this repo is target code for consumer projects. When editing it:
 - If adding Local API examples that pass `user`, set `overrideAccess: false`.
 - If adding hooks with nested Payload operations, pass `req` to nested operations.
 - Use context flags for hook-driven updates that could otherwise trigger loops.
+- When inspecting or transforming Payload fields, use Payload's exported field type guards instead of unsafe casts.
 
 ## Validation
 

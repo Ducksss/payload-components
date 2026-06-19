@@ -1,0 +1,69 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "call-to-action-centered",
+  "version": "0.1.0",
+  "title": "Call To Action Centered",
+  "description": "A centered call-to-action Payload block: heading, supporting copy, and one or two CTA links.",
+  "registryItemName": "call-to-action-centered",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/callToActionFields.ts",
+    "src/blocks/CallToActionCentered/config.ts",
+    "src/blocks/CallToActionCentered/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "CallToActionCenteredBlock",
+      "importPath": "@/blocks/CallToActionCentered/Component",
+      "blockSlug": "callToActionCentered"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "CallToActionCentered",
+      "importPath": "../../blocks/CallToActionCentered/config",
+      "blockName": "CallToActionCentered"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Centered call-to-action: heading, supporting copy, and CTA buttons."
+  },
+  "sampleContent": {
+    "blockType": "callToActionCentered",
+    "title": "Start building with Acme today.",
+    "description": "Ship customer-facing dashboards in an afternoon — no infrastructure to manage and nothing to wire by hand.",
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/signup",
+          "label": "Get started",
+          "appearance": "default"
+        }
+      },
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/demo",
+          "label": "Book a demo",
+          "appearance": "outline"
+        }
+      }
+    ]
+  }
+}

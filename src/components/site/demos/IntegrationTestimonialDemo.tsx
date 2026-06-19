@@ -25,11 +25,11 @@ export function IntegrationTestimonialDemo({
 
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/35 px-6 py-12 sm:px-8 lg:px-12 lg:py-16">
+      <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-12 sm:px-8 lg:px-12 lg:py-16">
         <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2">
           <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-5">
-              <div className="text-balance text-2xl font-semibold tracking-[-0.02em] text-foreground sm:text-3xl">
+              <div className="text-balance text-2xl font-semibold tracking-heading text-foreground sm:text-3xl">
                 {heading}
               </div>
               {subtext ? (

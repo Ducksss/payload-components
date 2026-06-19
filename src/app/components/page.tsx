@@ -53,18 +53,20 @@ export default function ComponentsPage() {
         <section className="relative overflow-hidden border-b border-border">
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-dots [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
+            className="absolute inset-0 bg-dots [mask-image:linear-gradient(to_bottom,black,transparent_92%)]"
           />
-          <div className="container relative py-16 lg:py-20">
-            <Eyebrow>Registry</Eyebrow>
-            <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-5xl">
-              {catalogTitle}
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-              {catalogDescription}
-            </p>
-            <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-              {componentEntries.length} installable · {upcomingComponents.length} in development · MIT
+          <div className="container relative flex flex-col gap-4 py-8 sm:flex-row sm:items-end sm:justify-between sm:py-10">
+            <div className="max-w-2xl">
+              <Eyebrow>Registry</Eyebrow>
+              <h1 className="mt-3 text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl">
+                {catalogTitle}
+              </h1>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
+                {catalogDescription}
+              </p>
+            </div>
+            <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground sm:pb-1">
+              MIT licensed
             </p>
           </div>
         </section>

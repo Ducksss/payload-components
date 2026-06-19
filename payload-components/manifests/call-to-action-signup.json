@@ -1,0 +1,55 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "call-to-action-signup",
+  "version": "0.1.0",
+  "title": "Call To Action Signup",
+  "description": "An email-capture call-to-action Payload block: heading, copy, and a form that posts to a same-origin endpoint.",
+  "registryItemName": "call-to-action-signup",
+  "dependencies": {
+    "lucide-react": "^0.563.0"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/callToActionFields.ts",
+    "src/blocks/shared/safeUrls.ts",
+    "src/blocks/CallToActionSignup/config.ts",
+    "src/blocks/CallToActionSignup/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "CallToActionSignupBlock",
+      "importPath": "@/blocks/CallToActionSignup/Component",
+      "blockSlug": "callToActionSignup"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "CallToActionSignup",
+      "importPath": "../../blocks/CallToActionSignup/config",
+      "blockName": "CallToActionSignup"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Email-capture call-to-action: heading, copy, and an inline signup form."
+  },
+  "sampleContent": {
+    "blockType": "callToActionSignup",
+    "title": "Stay in the loop.",
+    "description": "Join the Acme newsletter for product updates, changelog highlights, and the occasional deep dive.",
+    "emailPlaceholder": "Your email address",
+    "submitLabel": "Subscribe",
+    "action": "/api/newsletter"
+  }
+}

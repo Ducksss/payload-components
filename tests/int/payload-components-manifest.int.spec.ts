@@ -86,6 +86,11 @@ const loadManifestWithMocks = async (
 
   vi.doMock('../../tools/payload-components/utils', () => ({
     getLockfileName: vi.fn(() => 'pnpm-lock.yaml'),
+    isPathInside: (parentPath: string, childPath: string) => {
+      const relative = path.relative(path.resolve(parentPath), path.resolve(childPath))
+
+      return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))
+    },
     readJsonFile,
     repoRoot: '/virtual/repo',
     runCommand: vi.fn(),
@@ -143,6 +148,16 @@ describe('payload-components manifest validation', () => {
     const { loadManifest } = await loadManifestWithMocks(manifest)
 
     await expect(loadManifest('hero-basic')).rejects.toThrow('dependencies.bad-package')
+  })
+
+  it('fails when post-install scripts are not supported', async () => {
+    const manifest = {
+      ...baseManifest,
+      postInstall: ['generate:types', 'evil:script'],
+    }
+    const { loadManifest } = await loadManifestWithMocks(manifest)
+
+    await expect(loadManifest('hero-basic')).rejects.toThrow('postInstall.1')
   })
 
   it('fails when the manifest references an unknown registry item', async () => {
@@ -203,5 +218,27 @@ describe('payload-components manifest validation', () => {
         baseManifest,
       ),
     ).toThrow('does not support Next.js major version 14')
+  })
+})
+
+describe('payload-components package metadata', () => {
+  const readPackageJson = async () =>
+    JSON.parse(await readFile(path.join(repoRoot, 'package.json'), 'utf8')) as {
+      bin?: Record<string, string>
+      dependencies?: Record<string, string>
+      files?: string[]
+    }
+
+  // Guards against re-bloating the published CLI: the bin must point at the
+  // compiled bundle and runtime deps must stay exactly ajv + semver, so a future
+  // change can't silently drag the Next.js site deps into `npx payload-components`.
+  it('publishes the compiled bin and only ajv + semver as runtime deps', async () => {
+    const packageJson = await readPackageJson()
+
+    expect(packageJson.bin).toEqual({
+      'payload-components': './dist/cli.js',
+    })
+    expect(Object.keys(packageJson.dependencies ?? {}).sort()).toEqual(['ajv', 'semver'])
+    expect(packageJson.files).toContain('dist/')
   })
 })

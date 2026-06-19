@@ -1,0 +1,58 @@
+---
+title: Call To Action Signup
+description: An email-capture call-to-action block — heading, copy, and a form that posts to a same-origin endpoint.
+icon: MailPlus
+---
+
+<ComponentPreview slug="call-to-action-signup" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add call-to-action-signup
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/call-to-action-signup.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="call-to-action-signup" />
+
+This variant also installs the shadcn `button` component and adds `lucide-react` for the form's mail and
+send icons. The form is server-rendered — set `action` to a same-origin handler such as `/api/newsletter`.
+
+## Content model
+
+`title` and `description` come from the shared `callToActionFields` base; the form fields are specific to
+this variant.
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'The call-to-action heading.' },
+    description: { type: 'textarea', description: 'Optional supporting copy under the heading.' },
+    emailPlaceholder: { type: 'text', description: 'Placeholder shown in the email input (defaults to "Your email address").' },
+    submitLabel: { type: 'text', description: 'Submit button label (defaults to "Get Started").' },
+    action: { type: 'text', description: 'Same-origin path where the form posts, such as /api/newsletter.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="call-to-action-signup" />
+
+## Requirements
+
+<ComponentRequirements slug="call-to-action-signup" />
+
+## In this family
+
+<ComponentFamily slug="call-to-action-signup" />

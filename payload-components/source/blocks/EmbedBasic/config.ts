@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { validateEmbedUrl } from '@/blocks/shared/safeUrls'
+
 export const EmbedBasic: Block = {
   slug: 'embedBasic',
   interfaceName: 'EmbedBasicBlock',
@@ -8,9 +10,10 @@ export const EmbedBasic: Block = {
       name: 'url',
       type: 'text',
       required: true,
+      validate: validateEmbedUrl,
       admin: {
         description:
-          'The full embeddable URL used verbatim as the iframe src (e.g. https://www.youtube.com/embed/VIDEO_ID).',
+          'Approved HTTPS embed URL (e.g. https://www.youtube.com/embed/VIDEO_ID).',
       },
     },
     {

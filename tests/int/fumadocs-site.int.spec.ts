@@ -70,16 +70,19 @@ describe('Fumadocs site shell', () => {
   it('uses Fumadocs as the site runtime instead of Payload CMS', async () => {
     const packageJson = await readJson<{
       dependencies?: Record<string, string>
+      devDependencies?: Record<string, string>
       engines?: Record<string, string>
       scripts?: Record<string, string>
     }>(path.join(repoRoot, 'package.json'))
 
-    expect(packageJson.dependencies?.['fumadocs-ui']).toBeTruthy()
-    expect(packageJson.dependencies?.['fumadocs-mdx']).toBeTruthy()
-    expect(packageJson.dependencies?.['fumadocs-core']).toBeTruthy()
+    expect(packageJson.devDependencies?.['fumadocs-ui']).toBeTruthy()
+    expect(packageJson.devDependencies?.['fumadocs-mdx']).toBeTruthy()
+    expect(packageJson.devDependencies?.['fumadocs-core']).toBeTruthy()
 
     expect(packageJson.dependencies?.payload).toBeUndefined()
     expect(packageJson.dependencies?.['@payloadcms/next']).toBeUndefined()
+    expect(packageJson.devDependencies?.payload).toBeUndefined()
+    expect(packageJson.devDependencies?.['@payloadcms/next']).toBeUndefined()
     expect(packageJson.engines?.node).toBe('^20.19.0 || >=22.12.0')
     expect(packageJson.scripts?.payload).toBeUndefined()
     expect(packageJson.scripts?.['generate:types']).toBeUndefined()
@@ -316,6 +319,18 @@ describe('Fumadocs site shell', () => {
 
   it('keeps docs navigation metadata pointed at real pages', async () => {
     await expectMetaEntriesResolve(path.join(repoRoot, 'content', 'docs'))
+  })
+
+  it('keeps catalog page-block count copy aligned with installable components', async () => {
+    const { componentEntries, componentFamilies, componentsIntro } = await import('../../src/lib/site')
+    const pageCount = componentEntries.filter((component) => component.family === 'pages').length
+    const aboutPage = await readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8')
+
+    expect(pageCount).toBe(38)
+    expect(componentFamilies.pages.countLabel).toBe(`${pageCount} installable`)
+    expect(componentsIntro).toContain('Thirty-eight page blocks install today')
+    expect(aboutPage).toContain('Thirty-eight page blocks install today')
+    expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Thirty-six page blocks')
   })
 
   it('publishes production-safe fallback URLs when no site URL env is set', async () => {

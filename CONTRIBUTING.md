@@ -48,6 +48,9 @@ smoke tests.
 - Do not reintroduce Payload runtime routes, database adapters, waitlist APIs,
   or `PAYLOAD_SECRET` requirements for the docs site.
 - Generated registry output belongs in ignored `public/r`.
+- New or edited components must meet the accessibility checklist in
+  `payload-components/templates/alpha-component/README.md` (label association,
+  `autocomplete` tokens, reduced-motion, and accessible link/image names).
 
 When editing Payload target code, use real Payload types, keep block configs
 explicit, preserve optional wrapper props, pass `req` to nested Payload
@@ -58,8 +61,10 @@ Local API.
 
 - `main` is the production release line.
 - `dev` is the staging line where stable feature branches are collected.
-- Feature branches, including `v2`, should target `dev` first.
-- Promote from `dev` to `main` only after the release gate passes.
+- Fork the repository before contributing.
+- Create feature branches from `dev`.
+- Open pull requests into `dev`.
+- Maintainers promote from `dev` to `main` only after the release gate passes.
 
 ## Verification
 

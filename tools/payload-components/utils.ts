@@ -1,12 +1,43 @@
 import { spawn } from 'node:child_process'
+import { existsSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import type { PackageManager } from './types'
 
-export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
+// Resolve the directory that holds the bundled data assets (registry.json,
+// manifests, schema, support matrix, block source). This must work in two
+// layouts: running from source under tsx (this file lives at
+// tools/payload-components/utils.ts → repo root is two up) and running from the
+// published, bundled CLI (dist/cli.js → assets ship at the package root one up).
+const resolveRepoRoot = () => {
+  const startDir = path.dirname(fileURLToPath(import.meta.url))
+  const { root } = path.parse(startDir)
+  let currentDir = startDir
+
+  while (true) {
+    if (existsSync(path.join(currentDir, 'payload-components', 'registry.json'))) {
+      return currentDir
+    }
+
+    if (currentDir === root) {
+      // Fall back to the historical two-up source layout.
+      return path.resolve(startDir, '..', '..')
+    }
+
+    currentDir = path.dirname(currentDir)
+  }
+}
+
+export const repoRoot = resolveRepoRoot()
 export const shadcnCliPackage = 'shadcn@4.7.0'
+
+export const isPathInside = (parentPath: string, childPath: string) => {
+  const relative = path.relative(path.resolve(parentPath), path.resolve(childPath))
+
+  return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))
+}
 
 export const readJsonFile = async <T>(filePath: string): Promise<T> => {
   const raw = await readFile(filePath, 'utf8')

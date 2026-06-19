@@ -77,9 +77,9 @@ That keeps Payload-specific component source out of the Fumadocs app tree while 
 
 ## Component families and shared code
 
-A component family ships one installable component per structural variant — `hero-basic`, `hero-video`, `hero-dramatic` — each its own registry item and manifest. Variant selection is the catalog and the install command, never an interactive prompt. Content-level variation (optional or extra editor fields) lives in the Payload block config, not a separate component.
+A component family ships one installable component per structural variant — `logo-cloud-grid`, `logo-cloud-marquee`, `logo-cloud-inline` — each its own registry item and manifest. Variant selection is the catalog and the install command, never an interactive prompt. Content-level variation (optional or extra editor fields) lives in the Payload block config, not a separate component.
 
-Variants that share fields or markup reference a common source file under `payload-components/source/blocks/shared`, installed once into the consumer repo — for example `~/src/blocks/shared/heroFields.ts` — and composed by each variant config as `fields: [...heroFields, /* variant-specific */]`. Editing the shared file updates every installed variant; re-running an install never overwrites an edited copy. Internal shared modules ship as registry files, not `registryDependencies` (which resolve only public shadcn components).
+Variants that share fields or markup reference a common source file under `payload-components/source/blocks/shared`, installed once into the consumer repo — for example `~/src/blocks/shared/logoCloudFields.ts` — and composed by each variant config as `fields: [...logoCloudFields, /* variant-specific */]`. Editing the shared file updates every installed variant; re-running an install never overwrites an edited copy. Internal shared modules ship as registry files, not `registryDependencies` (which resolve only public shadcn components).
 
 ## Why this split matters
 

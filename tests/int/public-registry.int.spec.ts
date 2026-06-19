@@ -42,7 +42,15 @@ type RegistryDefinition = {
 const readJson = async <T>(filePath: string): Promise<T> =>
   JSON.parse(await readFile(filePath, 'utf8')) as T
 
+const expectPortableRelativePath = (filePath: string) => {
+  expect(filePath).not.toMatch(/^([a-zA-Z]:)?[\\/]/)
+  expect(filePath).not.toMatch(/(^|\/)\.\.(\/|$)/)
+}
+
 const expectedRegistryDependencies: Record<string, string[]> = {
+  'call-to-action-boxed': [],
+  'call-to-action-centered': [],
+  'call-to-action-signup': ['button'],
   'content-columns': ['badge'],
   'content-community': ['badge'],
   'content-feature-media': ['badge'],
@@ -76,6 +84,8 @@ const expectedRegistryDependencies: Record<string, string[]> = {
   'logo-cloud-inline': [],
   'logo-cloud-inline-wrap': [],
   'logo-cloud-marquee': [],
+  'team-grid': ['badge'],
+  'team-roster': ['badge'],
 }
 
 describe('public shadcn registry publication', () => {
@@ -106,6 +116,9 @@ describe('public shadcn registry publication', () => {
       name: 'payload-components',
     })
     expect(registry.items.map((item) => item.name).sort()).toEqual([
+      'call-to-action-boxed',
+      'call-to-action-centered',
+      'call-to-action-signup',
       'content-columns',
       'content-community',
       'content-feature-media',
@@ -139,6 +152,8 @@ describe('public shadcn registry publication', () => {
       'logo-cloud-inline',
       'logo-cloud-inline-wrap',
       'logo-cloud-marquee',
+      'team-grid',
+      'team-roster',
     ])
 
     for (const item of registry.items) {
@@ -159,10 +174,14 @@ describe('public shadcn registry publication', () => {
 
       for (const file of item.files ?? []) {
         expect(file.content).toBeUndefined()
+        expect(file.target).toBeTruthy()
+        const target = file.target ?? ''
+        expectPortableRelativePath(file.path)
+        expectPortableRelativePath(target)
         // Block source lives under source/blocks/; a variant may also ship shared UI
         // primitives under source/components/ (e.g. the marquee's InfiniteSlider).
         expect(file.path).toMatch(/^payload-components\/source\/(blocks|components)\//)
-        expect(file.target).toBe(file.path.replace(/^payload-components\/source/, '~/src'))
+        expect(target).toBe(file.path.replace(/^payload-components\/source/, '~/src'))
         expect(file.type).toBe('registry:file')
       }
     }

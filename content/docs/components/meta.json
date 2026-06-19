@@ -34,6 +34,11 @@
     "content-stats",
     "content-list",
     "content-list-columns",
-    "content-list-icons"
+    "content-list-icons",
+    "call-to-action-centered",
+    "call-to-action-boxed",
+    "call-to-action-signup",
+    "team-roster",
+    "team-grid"
   ]
 }
