@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { CheckCircle2 } from 'lucide-react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { trackInstallCommandCopy, trackPrimaryLinkClick } from '@/lib/analytics'
 
 const copiedTimers = new WeakMap<HTMLButtonElement, number>()
 const alertDurationMs = 2200
@@ -67,15 +68,27 @@ export function CommandCopyController() {
 
       button.dataset.copied = 'true'
       button.querySelector('[data-copy-label]')?.replaceChildren('Copied')
+      trackInstallCommandCopy(command)
 
       window.clearTimeout(copiedTimers.get(button))
       copiedTimers.set(button, window.setTimeout(() => reset(button), 1100))
     }
 
+    const onLinkClick = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) return
+
+      const link = event.target.closest<HTMLAnchorElement>('a[href]')
+      if (!link) return
+
+      trackPrimaryLinkClick(link)
+    }
+
     document.addEventListener('click', onClick)
+    document.addEventListener('click', onLinkClick)
 
     return () => {
       document.removeEventListener('click', onClick)
+      document.removeEventListener('click', onLinkClick)
       if (clipboard && patchedWriteText && clipboard.writeText === patchedWriteText) {
         clipboard.writeText = originalWriteText
       }
