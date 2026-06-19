@@ -1,0 +1,68 @@
+---
+title: Faq Card
+description: A centered FAQ accordion wrapped in a card, with an optional CTA below.
+icon: MessageSquareText
+---
+
+<ComponentPreview slug="faq-card" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add faq-card
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-card.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="faq-card" />
+
+## Content model
+
+The first three fields come from the shared `faqFields` base; `items` and `links` are specific
+to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'One or more question/answer pairs rendered as accordion rows inside the card.',
+    },
+    links: { type: 'array', description: 'One optional CTA link below the card.' },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    question: { type: 'text', required: true, description: 'The accordion trigger text.' },
+    answer: { type: 'textarea', required: true, description: 'The answer revealed when expanded.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="faq-card" />
+
+## Requirements
+
+<ComponentRequirements slug="faq-card" />
+
+## In this family
+
+<ComponentFamily slug="faq-card" />

@@ -1,0 +1,75 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "faq-card",
+  "version": "0.1.0",
+  "title": "Faq Card",
+  "description": "A centered FAQ accordion wrapped in a card with an optional CTA, installed as a wired Payload block.",
+  "registryItemName": "faq-card",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/faqFields.ts",
+    "src/blocks/FaqCard/config.ts",
+    "src/blocks/FaqCard/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FaqCardBlock",
+      "importPath": "@/blocks/FaqCard/Component",
+      "blockSlug": "faqCard"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FaqCard",
+      "importPath": "../../blocks/FaqCard/config",
+      "blockName": "FaqCard"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Centered FAQ accordion inside a bordered card with an optional CTA."
+  },
+  "sampleContent": {
+    "blockType": "faqCard",
+    "eyebrow": "Support",
+    "title": "Frequently asked questions",
+    "description": "The essentials on trials, billing, and support before you commit.",
+    "items": [
+      {
+        "question": "How does the free trial work?",
+        "answer": "Start with a 14-day free trial with full access to every feature. No credit card required."
+      },
+      {
+        "question": "Is there a setup fee?",
+        "answer": "No setup fees and no hidden costs — you only ever pay for your subscription plan."
+      },
+      {
+        "question": "Do you offer refunds?",
+        "answer": "We offer a 30-day money-back guarantee. Contact us within 30 days for a full refund."
+      }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/contact",
+          "label": "Contact support",
+          "appearance": "outline"
+        }
+      }
+    ]
+  }
+}

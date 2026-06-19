@@ -213,14 +213,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Thirty-eight page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Forty-four page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '38 installable',
+    countLabel: '44 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -793,6 +793,90 @@ export const componentEntries = [
     status: 'Alpha',
     target: 'Team section',
     title: 'Team Grid',
+    version: '0.1.0',
+  },
+  {
+    category: 'faq',
+    command: 'npx payload-components add faq-accordion',
+    description:
+      'A centered FAQ accordion of question/answer items with an optional CTA — the base of the FAQ family.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/faq-accordion',
+    slug: 'faq-accordion',
+    status: 'Alpha',
+    target: 'FAQ section',
+    title: 'Faq Accordion',
+    version: '0.1.0',
+  },
+  {
+    category: 'faq',
+    command: 'npx payload-components add faq-split',
+    description:
+      'A two-column FAQ pairing a sticky heading and CTA with an accordion of question/answer items.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/faq-split',
+    slug: 'faq-split',
+    status: 'Alpha',
+    target: 'FAQ section',
+    title: 'Faq Split',
+    version: '0.1.0',
+  },
+  {
+    category: 'faq',
+    command: 'npx payload-components add faq-card',
+    description:
+      'A centered FAQ accordion wrapped in a card with an optional CTA below.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/faq-card',
+    slug: 'faq-card',
+    status: 'Alpha',
+    target: 'FAQ section',
+    title: 'Faq Card',
+    version: '0.1.0',
+  },
+  {
+    category: 'faq',
+    command: 'npx payload-components add faq-icons',
+    description:
+      'An FAQ accordion with a per-question icon picked from a fixed allowlist.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items'],
+    href: '/docs/components/faq-icons',
+    slug: 'faq-icons',
+    status: 'Alpha',
+    target: 'FAQ section',
+    title: 'Faq Icons',
+    version: '0.1.0',
+  },
+  {
+    category: 'faq',
+    command: 'npx payload-components add faq-grouped',
+    description:
+      'An FAQ split into titled, icon-tagged category groups of accordions.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'groups'],
+    href: '/docs/components/faq-grouped',
+    slug: 'faq-grouped',
+    status: 'Alpha',
+    target: 'FAQ section',
+    title: 'Faq Grouped',
+    version: '0.1.0',
+  },
+  {
+    category: 'faq',
+    command: 'npx payload-components add faq-grid',
+    description:
+      'A static two-column grid of question/answer cards — every answer visible, no accordion.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items'],
+    href: '/docs/components/faq-grid',
+    slug: 'faq-grid',
+    status: 'Alpha',
+    target: 'FAQ section',
+    title: 'Faq Grid',
     version: '0.1.0',
   },
 ] as const

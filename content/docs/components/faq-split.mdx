@@ -1,0 +1,68 @@
+---
+title: Faq Split
+description: A two-column FAQ pairing a sticky heading and CTA with an accordion list.
+icon: Columns2
+---
+
+<ComponentPreview slug="faq-split" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add faq-split
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-split.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="faq-split" />
+
+## Content model
+
+The first three fields come from the shared `faqFields` base; `items` and `links` are specific
+to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The heading in the left column.' },
+    description: { type: 'textarea', description: 'Optional intro copy below the heading.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'One or more question/answer pairs rendered as accordion rows.',
+    },
+    links: { type: 'array', description: 'One optional CTA link beneath the heading.' },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    question: { type: 'text', required: true, description: 'The accordion trigger text.' },
+    answer: { type: 'textarea', required: true, description: 'The answer revealed when expanded.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="faq-split" />
+
+## Requirements
+
+<ComponentRequirements slug="faq-split" />
+
+## In this family
+
+<ComponentFamily slug="faq-split" />
