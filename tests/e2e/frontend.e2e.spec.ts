@@ -9,7 +9,7 @@ import {
   terminalDemoLines,
 } from '../../src/lib/site'
 
-const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3000'}`
+const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 const googleTagId = 'G-EMGRZ0H9R9'
 const copiedAlertText = 'Copied to clipboard.'
 
@@ -183,6 +183,11 @@ test.describe('Light shadcn frontend', () => {
         path: '/about',
         title: /About/,
       },
+      {
+        h1: 'The Payload Components brand',
+        path: '/brand-guide',
+        title: /Brand Guide/,
+      },
       ...componentEntries.map((component) => ({
         h1: component.title,
         path: component.href,
@@ -283,6 +288,7 @@ test.describe('Light shadcn frontend', () => {
 
     await expect(page.getByRole('contentinfo')).toBeVisible()
     await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
+    await expect(page.getByRole('contentinfo').getByRole('link', { name: 'Brand Guide' })).toBeVisible()
   })
 
   test('exposes the Fumadocs docs shell navigation', async ({ page }) => {
