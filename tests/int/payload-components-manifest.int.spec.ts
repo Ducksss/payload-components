@@ -4,54 +4,14 @@ import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { assertManifestSupport } from '../../tools/payload-components/project'
-import type { ComponentManifest, RegistryDefinition } from '../../tools/payload-components/types'
+import type { RegistryDefinition } from '../../tools/payload-components/types'
+
+import { makeTestManifest } from './manifest-factory'
 
 const repoRoot = process.cwd()
 const manifestSchemaPath = path.join(repoRoot, 'payload-components', 'schema', 'poc-manifest.schema.json')
 
-const baseManifest: ComponentManifest = {
-  $schema: '../schema/poc-manifest.schema.json',
-  dependencies: {},
-  description: 'Test manifest',
-  files: ['src/blocks/HeroBasic/config.ts', 'src/blocks/HeroBasic/Component.tsx'],
-  name: 'hero-basic',
-  payloadFragments: [
-    {
-      blockSlug: 'heroBasic',
-      importName: 'HeroBasicBlock',
-      importPath: '@/blocks/HeroBasic/Component',
-      kind: 'renderBlocks',
-    },
-    {
-      blockName: 'HeroBasic',
-      importName: 'HeroBasic',
-      importPath: '../../blocks/HeroBasic/config',
-      kind: 'pagesLayout',
-    },
-  ],
-  peerDependencies: {
-    next: '^15.0.0 || ^16.0.0',
-    payload: '^3.0.0',
-  },
-  postInstall: ['generate:types', 'generate:importmap'],
-  preview: {
-    summary: 'Preview summary',
-  },
-  recovery: {
-    patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
-  },
-  registryItemName: 'hero-basic',
-  sampleContent: {
-    blockType: 'heroBasic',
-  },
-  supportedTargets: ['payload-website-starter'],
-  supports: {
-    nextMajors: [15, 16],
-    payloadMajors: [3],
-  },
-  title: 'Hero Basic',
-  version: '0.1.0',
-}
+const baseManifest = makeTestManifest()
 
 const baseRegistry: RegistryDefinition = {
   homepage: 'https://example.com',
