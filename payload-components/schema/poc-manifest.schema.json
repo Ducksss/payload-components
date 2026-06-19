@@ -26,7 +26,8 @@
       "type": "string"
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
     },
     "version": {
       "type": "string"
@@ -38,7 +39,8 @@
       "type": "string"
     },
     "registryItemName": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
     },
     "dependencies": {
       "type": "object",
@@ -144,6 +146,7 @@
     "postInstall": {
       "type": "array",
       "items": {
+        "enum": ["generate:types", "generate:importmap"],
         "type": "string"
       },
       "minItems": 1

@@ -336,7 +336,7 @@ export const componentEntries = [
     category: 'embed',
     command: 'npx payload-components add embed-basic',
     description:
-      'A responsive, accessible iframe block for YouTube, Vimeo, maps, forms, charts, and external widgets with a selectable aspect ratio.',
+      'A responsive, sandboxed iframe block for approved HTTPS embeds with a selectable aspect ratio.',
     family: 'pages',
     fields: ['url', 'title', 'aspectRatio', 'caption', 'allowFullscreen'],
     href: '/docs/components/embed-basic',
@@ -756,7 +756,7 @@ export const componentEntries = [
     category: 'cta',
     command: 'npx payload-components add call-to-action-signup',
     description:
-      'An email-capture call-to-action block: heading, copy, and a form that posts to your endpoint.',
+      'An email-capture call-to-action block: heading, copy, and a form that posts to a same-origin endpoint.',
     family: 'pages',
     fields: ['title', 'description', 'emailPlaceholder', 'submitLabel', 'action'],
     href: '/docs/components/call-to-action-signup',

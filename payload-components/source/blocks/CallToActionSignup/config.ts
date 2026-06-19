@@ -1,6 +1,7 @@
 import type { Block } from 'payload'
 
 import { callToActionFields } from '@/blocks/shared/callToActionFields'
+import { validateSameOriginFormAction } from '@/blocks/shared/safeUrls'
 
 export const CallToActionSignup: Block = {
   slug: 'callToActionSignup',
@@ -20,8 +21,9 @@ export const CallToActionSignup: Block = {
     {
       name: 'action',
       type: 'text',
+      validate: validateSameOriginFormAction,
       admin: {
-        description: 'Where the email form posts (your newsletter or signup endpoint).',
+        description: 'Same-origin path where the email form posts, such as /api/newsletter.',
       },
     },
   ],

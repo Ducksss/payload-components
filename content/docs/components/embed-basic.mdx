@@ -1,6 +1,6 @@
 ---
 title: Embed Basic
-description: A responsive, accessible iframe block for embedding video, maps, forms, charts, and external widgets — installed as a wired Payload block.
+description: A responsive, accessible sandboxed iframe block for approved HTTPS embeds — installed as a wired Payload block.
 icon: MonitorPlay
 ---
 
@@ -29,15 +29,16 @@ icon: MonitorPlay
 
 ## Content model
 
-The block takes the embeddable URL verbatim — paste the provider's _embed_ URL (e.g.
-`https://www.youtube.com/embed/VIDEO_ID`, not the watch URL).
+The block accepts approved HTTPS provider embed URLs — paste the provider's _embed_ URL (e.g.
+`https://www.youtube.com/embed/VIDEO_ID`, not the watch URL). The iframe renders with a sandbox
+and a narrowed permissions policy.
 
 <TypeTable
   type={{
     url: {
       type: 'text',
       required: true,
-      description: 'The full embeddable URL used verbatim as the iframe src.',
+      description: 'Approved HTTPS provider embed URL used as the iframe src.',
     },
     title: {
       type: 'text',

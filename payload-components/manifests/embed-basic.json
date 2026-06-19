@@ -3,7 +3,7 @@
   "name": "embed-basic",
   "version": "0.1.0",
   "title": "Embed Basic",
-  "description": "A responsive, accessible iframe block for embedding YouTube, Vimeo, maps, forms, charts, and other external widgets.",
+  "description": "A responsive, accessible sandboxed iframe block for approved HTTPS embeds.",
   "registryItemName": "embed-basic",
   "dependencies": {},
   "peerDependencies": {
@@ -15,7 +15,11 @@
     "payloadMajors": [3],
     "nextMajors": [15, 16]
   },
-  "files": ["src/blocks/EmbedBasic/config.ts", "src/blocks/EmbedBasic/Component.tsx"],
+  "files": [
+    "src/blocks/EmbedBasic/config.ts",
+    "src/blocks/EmbedBasic/Component.tsx",
+    "src/blocks/shared/safeUrls.ts"
+  ],
   "payloadFragments": [
     {
       "kind": "renderBlocks",
@@ -42,7 +46,7 @@
     "url": "https://www.youtube.com/embed/aqz-KE-bpKQ",
     "title": "Embedded video player",
     "aspectRatio": "16:9",
-    "caption": "Paste any embeddable URL — YouTube, Vimeo, Google Maps, a form, or a chart.",
+    "caption": "Paste an approved HTTPS embed URL — YouTube, Vimeo, Google Maps, a form, or a chart.",
     "allowFullscreen": true
   }
 }
