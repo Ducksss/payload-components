@@ -1,0 +1,69 @@
+---
+title: Faq Icons
+description: An FAQ accordion with a per-question icon picked from a fixed allowlist.
+icon: MessagesSquare
+---
+
+<ComponentPreview slug="faq-icons" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add faq-icons
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-icons.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="faq-icons" />
+
+## Content model
+
+The first three fields come from the shared `faqFields` base; `items` is specific to this
+variant. Each item's `icon` is a `select` over the `faqIcons` allowlist — Payload stores the
+name and the frontend looks up the matching lucide mark at render.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'One or more icon + question/answer rows rendered as an accordion.',
+    },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    icon: { type: 'select', description: 'Icon name from the shared faqIcons allowlist.' },
+    question: { type: 'text', required: true, description: 'The accordion trigger text.' },
+    answer: { type: 'textarea', required: true, description: 'The answer revealed when expanded.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="faq-icons" />
+
+## Requirements
+
+<ComponentRequirements slug="faq-icons" />
+
+## In this family
+
+<ComponentFamily slug="faq-icons" />

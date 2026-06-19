@@ -18,6 +18,12 @@ import { ContentShowcaseDemo } from './ContentShowcaseDemo'
 import { ContentSplitRowsDemo } from './ContentSplitRowsDemo'
 import { ContentStatsDemo } from './ContentStatsDemo'
 import { EmbedBasicDemo } from './EmbedBasicDemo'
+import { FaqAccordionDemo } from './FaqAccordionDemo'
+import { FaqCardDemo } from './FaqCardDemo'
+import { FaqGridDemo } from './FaqGridDemo'
+import { FaqGroupedDemo } from './FaqGroupedDemo'
+import { FaqIconsDemo } from './FaqIconsDemo'
+import { FaqSplitDemo } from './FaqSplitDemo'
 import { FeatureBentoDemo } from './FeatureBentoDemo'
 import { FeatureGridBasicDemo } from './FeatureGridBasicDemo'
 import { FeatureSplitDemo } from './FeatureSplitDemo'
@@ -63,6 +69,12 @@ export const demosBySlug: Record<string, ComponentType> = {
   'content-split-rows': ContentSplitRowsDemo,
   'content-stats': ContentStatsDemo,
   'embed-basic': EmbedBasicDemo,
+  'faq-accordion': FaqAccordionDemo,
+  'faq-card': FaqCardDemo,
+  'faq-grid': FaqGridDemo,
+  'faq-grouped': FaqGroupedDemo,
+  'faq-icons': FaqIconsDemo,
+  'faq-split': FaqSplitDemo,
   'feature-bento': FeatureBentoDemo,
   'feature-grid-basic': FeatureGridBasicDemo,
   'feature-split': FeatureSplitDemo,

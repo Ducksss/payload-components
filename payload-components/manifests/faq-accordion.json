@@ -1,0 +1,75 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "faq-accordion",
+  "version": "0.1.0",
+  "title": "Faq Accordion",
+  "description": "A centered FAQ accordion with an optional CTA, installed as a wired Payload block.",
+  "registryItemName": "faq-accordion",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/faqFields.ts",
+    "src/blocks/FaqAccordion/config.ts",
+    "src/blocks/FaqAccordion/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FaqAccordionBlock",
+      "importPath": "@/blocks/FaqAccordion/Component",
+      "blockSlug": "faqAccordion"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FaqAccordion",
+      "importPath": "../../blocks/FaqAccordion/config",
+      "blockName": "FaqAccordion"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Centered single-column FAQ accordion with an optional support CTA."
+  },
+  "sampleContent": {
+    "blockType": "faqAccordion",
+    "eyebrow": "Support",
+    "title": "Frequently asked questions",
+    "description": "Short answers to what teams ask before rolling the product out company-wide.",
+    "items": [
+      {
+        "question": "How long does setup take?",
+        "answer": "Most teams connect their first data source and ship a dashboard in an afternoon — there is no infrastructure to provision."
+      },
+      {
+        "question": "Which data sources are supported?",
+        "answer": "Postgres, BigQuery, Snowflake, and any warehouse that speaks SQL, plus a REST ingestion endpoint for everything else."
+      },
+      {
+        "question": "Is there a free trial?",
+        "answer": "Start on the free tier with no credit card; upgrade once you outgrow the included usage."
+      }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/contact",
+          "label": "Contact support",
+          "appearance": "outline"
+        }
+      }
+    ]
+  }
+}

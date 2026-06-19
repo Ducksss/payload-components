@@ -1,6 +1,6 @@
 {
   "name": "payload-components",
-  "version": "1.0.1-alpha.0",
+  "version": "1.0.1",
   "description": "MIT registry and CLI for installing wired Payload CMS blocks into Payload v3 + Next.js projects.",
   "keywords": [
     "payload",
@@ -96,10 +96,11 @@
     "tailwindcss": "^4.1.18",
     "tsup": "^8.5.0",
     "tsx": "4.22.4",
-    "typescript": "5.7.3",
+    "typescript": "5.9.3",
     "vite": "7.3.5",
     "vite-tsconfig-paths": "6.0.5",
-    "vitest": "4.1.8"
+    "vitest": "4.1.8",
+    "zod": "4.4.3"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0",

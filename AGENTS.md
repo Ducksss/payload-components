@@ -48,7 +48,7 @@ The Payload block code under `payload-components/source/` is **target code** —
 
 `registry-build` → `registry-add` → `dependency-install` → `fragment-apply` → `post-install` (`generate:types`, `generate:importmap`)
 
-Fragment patching is **text-anchor based** — it finds anchors like `const blockComponents = {` and `name: 'layout'` in the consumer repo and inserts imports/registrations with dedup checks. Fragile by design for alpha; keep the anchors and dedup logic intact.
+Fragment patching is **text-anchor based** — it finds anchors like `const blockComponents = {` and `name: 'layout'` in the consumer repo and inserts imports/registrations with dedup checks. Fragile by design for now; keep the anchors and dedup logic intact.
 
 **Two install modes:**
 
@@ -63,7 +63,7 @@ Fragment patching is **text-anchor based** — it finds anchors like `const bloc
 
 | Task | Touch |
 | --- | --- |
-| Add a component | `payload-components/source/` + `manifests/<component>.json` + `registry.json` + `content/docs/components/<component>.mdx` + installer tests — **all together** (incomplete components don't ship). Scaffold + step-by-step workflow: `payload-components/templates/alpha-component/` (copy its files; its README is the canonical add-a-component workflow) |
+| Add a component | `payload-components/source/` + `manifests/<component>.json` + `registry.json` + `content/docs/components/<component>.mdx` + installer tests — **all together** (incomplete components don't ship). Scaffold + step-by-step workflow: `payload-components/templates/component-template/` (copy its files; its README is the canonical add-a-component workflow) |
 | Site copy / messaging | `src/lib/site.ts` |
 | Landing layout / visuals | `src/components/site/sections/` + `src/app/globals.css` |
 | Docs content | `content/docs/` |

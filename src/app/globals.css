@@ -539,7 +539,7 @@
   }
 
   /* Soft emerald bloom — the only color in an otherwise white field. Kept
-     low-alpha and heavily blurred so it reads as light, not a gradient mesh.
+     low-opacity and heavily blurred so it reads as light, not a gradient mesh.
      Static: a perpetual scale/opacity loop kept a blurred layer
      re-rasterizing forever for no real payoff. */
   .hero-shell::before {

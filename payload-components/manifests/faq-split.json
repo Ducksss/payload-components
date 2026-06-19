@@ -1,0 +1,75 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "faq-split",
+  "version": "0.1.0",
+  "title": "Faq Split",
+  "description": "A two-column FAQ pairing a sticky heading with an accordion, installed as a wired Payload block.",
+  "registryItemName": "faq-split",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/faqFields.ts",
+    "src/blocks/FaqSplit/config.ts",
+    "src/blocks/FaqSplit/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FaqSplitBlock",
+      "importPath": "@/blocks/FaqSplit/Component",
+      "blockSlug": "faqSplit"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FaqSplit",
+      "importPath": "../../blocks/FaqSplit/config",
+      "blockName": "FaqSplit"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Two-column FAQ with a heading and optional CTA beside the accordion."
+  },
+  "sampleContent": {
+    "blockType": "faqSplit",
+    "eyebrow": "FAQs",
+    "title": "Questions, answered",
+    "description": "Billing, security, and onboarding — answered before you have to ask.",
+    "items": [
+      {
+        "question": "Can I change my plan later?",
+        "answer": "Upgrade or downgrade at any time; changes take effect immediately and we prorate the difference."
+      },
+      {
+        "question": "What payment methods do you accept?",
+        "answer": "All major credit cards, PayPal, and invoicing for annual enterprise plans."
+      },
+      {
+        "question": "How do you handle security?",
+        "answer": "We are SOC 2 Type II certified, encrypt data in transit and at rest, and never train on your data."
+      }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/contact",
+          "label": "Talk to sales",
+          "appearance": "outline"
+        }
+      }
+    ]
+  }
+}

@@ -9,6 +9,7 @@ import { cn } from '@/utilities/ui'
 const navLinks = [
   { href: '/docs', label: 'Docs' },
   { href: '/components', label: 'Components' },
+  { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
 ] as const
 
