@@ -39,6 +39,9 @@ export const EmbedBasic: Block = {
     {
       name: 'caption',
       type: 'text',
+      admin: {
+        placeholder: 'Optional caption shown below the embed',
+      },
     },
     {
       name: 'allowFullscreen',

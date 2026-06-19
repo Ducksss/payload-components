@@ -22,11 +22,17 @@ export const contentFields: Field[] = [
   {
     name: 'eyebrow',
     type: 'text',
+    admin: {
+      placeholder: 'Optional kicker shown above the title',
+    },
   },
   {
     name: 'title',
     type: 'text',
     required: true,
+    admin: {
+      placeholder: 'Section heading',
+    },
   },
   {
     name: 'paragraphs',
@@ -34,6 +40,7 @@ export const contentFields: Field[] = [
     minRows: 1,
     maxRows: 4,
     admin: {
+      description: 'One to four short paragraphs of body copy.',
       initCollapsed: true,
     },
     fields: [
@@ -41,6 +48,9 @@ export const contentFields: Field[] = [
         name: 'text',
         type: 'textarea',
         required: true,
+        admin: {
+          placeholder: 'A short paragraph of body copy',
+        },
       },
     ],
   },

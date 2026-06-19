@@ -22,6 +22,9 @@ export const logoCloudFields: Field[] = [
     name: 'heading',
     type: 'text',
     required: true,
+    admin: {
+      placeholder: 'Heading shown above the logo wall',
+    },
   },
   {
     name: 'logos',
@@ -30,6 +33,7 @@ export const logoCloudFields: Field[] = [
     minRows: 2,
     maxRows: 12,
     admin: {
+      description: 'Add the brand logos — upload an image and an accessible name for each.',
       initCollapsed: true,
     },
     fields: [
@@ -43,10 +47,16 @@ export const logoCloudFields: Field[] = [
         name: 'name',
         type: 'text',
         required: true,
+        admin: {
+          placeholder: 'Accessible brand name (used as alt text)',
+        },
       },
       {
         name: 'href',
         type: 'text',
+        admin: {
+          placeholder: 'Optional link, e.g. https://brand.com',
+        },
       },
     ],
   },

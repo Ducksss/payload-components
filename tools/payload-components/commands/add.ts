@@ -23,6 +23,8 @@ import {
 } from '../state'
 import { getRunScriptCommand, printHeader, runCommand } from '../utils'
 
+import { seedCommand } from './seed'
+
 import type { InstallStage } from '../types'
 
 const postInstallEnv = {
@@ -38,7 +40,7 @@ const normalizeFileList = (files: string[]) => [...new Set(files)].sort()
 
 const formatStageError = (error: unknown) => (error instanceof Error ? error.message : 'Unknown error')
 
-export const addCommand = async ({
+const installComponent = async ({
   cwd,
   componentName,
 }: {
@@ -194,4 +196,21 @@ export const addCommand = async ({
   })
 
   printHeader(`payload-components: installed "${manifest.name}" successfully.`)
+}
+
+export const addCommand = async ({
+  cwd,
+  componentName,
+  demo = false,
+}: {
+  cwd: string
+  componentName: string
+  demo?: boolean
+}) => {
+  await installComponent({ cwd, componentName })
+
+  // Opt-in, strictly last: a seed-script write must never affect install state.
+  if (demo) {
+    await seedCommand({ cwd, componentName })
+  }
 }

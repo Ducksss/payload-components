@@ -17,14 +17,23 @@ export const featureFields: Field[] = [
   {
     name: 'eyebrow',
     type: 'text',
+    admin: {
+      placeholder: 'Optional kicker shown above the section title',
+    },
   },
   {
     name: 'title',
     type: 'text',
     required: true,
+    admin: {
+      placeholder: 'Section heading for the feature group',
+    },
   },
   {
     name: 'description',
     type: 'textarea',
+    admin: {
+      placeholder: 'A sentence framing the features below',
+    },
   },
 ]
