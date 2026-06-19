@@ -8,20 +8,40 @@ import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from './constants'
 import { validateDependencyMap } from './dependencies'
 import type { ComponentManifest } from './types'
 
-import { readJsonFile, repoRoot } from './utils'
+import { isPathInside, readJsonFile, repoRoot } from './utils'
 
 import type { RegistryDefinition } from './types'
 
 const manifestSchemaPath = path.join(repoRoot, 'payload-components', 'schema', 'poc-manifest.schema.json')
+const manifestDir = path.join(repoRoot, 'payload-components', 'manifests')
 const registryDefinitionPath = path.join(repoRoot, 'payload-components', 'registry.json')
+const componentNamePattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const ajv = new Ajv2020({
   allErrors: true,
   strict: false,
 })
 let validatorPromise: Promise<ValidateFunction<ComponentManifest>> | undefined
 
-export const getManifestPath = (componentName: string) =>
-  path.join(repoRoot, 'payload-components', 'manifests', `${componentName}.json`)
+const unknownComponentError = (componentName: string) =>
+  new Error(`Unknown component "${componentName}". Run "payload-components --help" to see available components.`)
+
+const assertSafeComponentName = (componentName: string) => {
+  if (!componentNamePattern.test(componentName)) {
+    throw unknownComponentError(componentName)
+  }
+}
+
+export const getManifestPath = (componentName: string) => {
+  assertSafeComponentName(componentName)
+
+  const manifestPath = path.resolve(manifestDir, `${componentName}.json`)
+
+  if (!isPathInside(manifestDir, manifestPath)) {
+    throw unknownComponentError(componentName)
+  }
+
+  return manifestPath
+}
 
 const getExpectedPatchedFiles = (manifest: ComponentManifest) => {
   const patchedFiles = new Set<string>()
@@ -70,6 +90,16 @@ const ensureRegistryItemExists = async (manifest: ComponentManifest) => {
   }
 }
 
+const ensureKnownComponentName = async (componentName: string) => {
+  assertSafeComponentName(componentName)
+
+  const registry = await readJsonFile<RegistryDefinition>(registryDefinitionPath)
+
+  if (!registry.items.some((item) => item.name === componentName)) {
+    throw unknownComponentError(componentName)
+  }
+}
+
 const ensureRecoveryMatchesFragments = (manifest: ComponentManifest) => {
   const expectedPatchedFiles = getExpectedPatchedFiles(manifest)
 
@@ -83,6 +113,8 @@ const ensureRecoveryMatchesFragments = (manifest: ComponentManifest) => {
 }
 
 export const loadManifest = async (componentName: string): Promise<ComponentManifest> => {
+  await ensureKnownComponentName(componentName)
+
   const manifest = await readJsonFile<ComponentManifest>(getManifestPath(componentName))
   const validateManifest = await getManifestValidator()
 
@@ -101,6 +133,10 @@ export const loadManifest = async (componentName: string): Promise<ComponentMani
 
   if (!semver.valid(manifest.version)) {
     throw new Error(`Manifest "${componentName}" must declare a valid semantic version. Received "${manifest.version}".`)
+  }
+
+  if (manifest.name !== componentName) {
+    throw new Error(`Manifest "${componentName}" declares mismatched component name "${manifest.name}".`)
   }
 
   validateDependencyMap({

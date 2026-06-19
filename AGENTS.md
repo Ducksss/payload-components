@@ -154,6 +154,7 @@ Payload code in this repo is target code for consumer projects. When editing it:
 - If adding Local API examples that pass `user`, set `overrideAccess: false`.
 - If adding hooks with nested Payload operations, pass `req` to nested operations.
 - Use context flags for hook-driven updates that could otherwise trigger loops.
+- When inspecting or transforming Payload fields, use Payload's exported field type guards instead of unsafe casts.
 
 ## Validation
 

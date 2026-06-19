@@ -50,11 +50,12 @@ function pageFamilies(): PageFamily[] {
     const entries = componentEntries.filter((entry) => entry.category === key)
     const picked = familyRepresentatives[key]
     const representative =
-      entries.find((entry) => entry.slug === picked && demosBySlug[entry.slug]) ??
+      (picked && demosBySlug[picked] && entries.find((entry) => entry.slug === picked)) ||
       entries.find((entry) => demosBySlug[entry.slug])
 
-    if (!representative) continue
-    families.push({ count: entries.length, key, label: category.label, representative })
+    if (representative) {
+      families.push({ count: entries.length, key, label: category.label, representative })
+    }
   }
 
   return families

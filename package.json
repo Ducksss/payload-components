@@ -84,7 +84,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
-    "dotenv": "16.4.7",
+    "dotenv": "17.4.2",
     "eslint": "^9.16.0",
     "eslint-config-next": "16.2.3",
     "fumadocs-core": "16.9.3",
