@@ -1,6 +1,6 @@
 ---
 title: Call To Action Signup
-description: An email-capture call-to-action block — heading, copy, and a form that posts to your endpoint.
+description: An email-capture call-to-action block — heading, copy, and a form that posts to a same-origin endpoint.
 icon: MailPlus
 ---
 
@@ -28,7 +28,7 @@ icon: MailPlus
 <ComponentWiring slug="call-to-action-signup" />
 
 This variant also installs the shadcn `button` component and adds `lucide-react` for the form's mail and
-send icons. The form is server-rendered — set `action` to your own newsletter or signup endpoint.
+send icons. The form is server-rendered — set `action` to a same-origin handler such as `/api/newsletter`.
 
 ## Content model
 
@@ -41,7 +41,7 @@ this variant.
     description: { type: 'textarea', description: 'Optional supporting copy under the heading.' },
     emailPlaceholder: { type: 'text', description: 'Placeholder shown in the email input (defaults to "Your email address").' },
     submitLabel: { type: 'text', description: 'Submit button label (defaults to "Get Started").' },
-    action: { type: 'text', description: 'The endpoint the form posts to — your newsletter or signup handler.' },
+    action: { type: 'text', description: 'Same-origin path where the form posts, such as /api/newsletter.' },
   }}
 />
 
