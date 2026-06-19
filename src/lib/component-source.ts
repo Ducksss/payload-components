@@ -18,10 +18,32 @@ type Registry = { items: RegistryItem[] }
 export type ComponentSourceFile = { code: string; lang: string; title: string }
 
 const registryRoot = 'payload-components'
+const registrySourcePrefix = `${registryRoot}/source/`
 
 /* Block schema first, then the renderer, then shared field bases. */
 const fileRank = (target: string) =>
   target.endsWith('config.ts') ? 0 : target.endsWith('Component.tsx') ? 1 : 2
+
+const isPathInside = (parentPath: string, childPath: string) => {
+  const relative = path.relative(path.resolve(parentPath), path.resolve(childPath))
+
+  return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))
+}
+
+const resolveRegistrySourcePath = (repoRoot: string, filePath: string) => {
+  if (path.isAbsolute(filePath) || !filePath.startsWith(registrySourcePrefix)) {
+    return null
+  }
+
+  const sourceRoot = path.join(repoRoot, registryRoot, 'source')
+  const sourcePath = path.resolve(repoRoot, filePath)
+
+  if (!isPathInside(sourceRoot, sourcePath)) {
+    return null
+  }
+
+  return sourcePath
+}
 
 export async function getComponentSources(slug: string): Promise<ComponentSourceFile[]> {
   const repoRoot = process.cwd()
@@ -42,12 +64,11 @@ export async function getComponentSources(slug: string): Promise<ComponentSource
       .sort((a, b) => fileRank(a.target) - fileRank(b.target))
       .map(async (file): Promise<ComponentSourceFile | null> => {
         try {
-          if (!file.path.startsWith(`${registryRoot}/source/`)) return null
+          const sourcePath = resolveRegistrySourcePath(repoRoot, file.path)
 
-          const sourcePath = file.path.slice(`${registryRoot}/`.length)
-          const code = (
-            await readFile(path.join(repoRoot, registryRoot, sourcePath), 'utf8')
-          ).trimEnd()
+          if (!sourcePath) return null
+
+          const code = (await readFile(sourcePath, 'utf8')).trimEnd()
           const title = file.target.replace(/^~\//, '')
           return { code, lang: title.endsWith('.tsx') ? 'tsx' : 'ts', title }
         } catch {

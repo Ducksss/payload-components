@@ -86,6 +86,11 @@ const loadManifestWithMocks = async (
 
   vi.doMock('../../tools/payload-components/utils', () => ({
     getLockfileName: vi.fn(() => 'pnpm-lock.yaml'),
+    isPathInside: (parentPath: string, childPath: string) => {
+      const relative = path.relative(path.resolve(parentPath), path.resolve(childPath))
+
+      return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))
+    },
     readJsonFile,
     repoRoot: '/virtual/repo',
     runCommand: vi.fn(),
@@ -143,6 +148,16 @@ describe('payload-components manifest validation', () => {
     const { loadManifest } = await loadManifestWithMocks(manifest)
 
     await expect(loadManifest('hero-basic')).rejects.toThrow('dependencies.bad-package')
+  })
+
+  it('fails when post-install scripts are not supported', async () => {
+    const manifest = {
+      ...baseManifest,
+      postInstall: ['generate:types', 'evil:script'],
+    }
+    const { loadManifest } = await loadManifestWithMocks(manifest)
+
+    await expect(loadManifest('hero-basic')).rejects.toThrow('postInstall.1')
   })
 
   it('fails when the manifest references an unknown registry item', async () => {

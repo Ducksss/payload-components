@@ -115,7 +115,7 @@ test.describe('AI-readable documentation surfaces', () => {
     const body = await response.text()
 
     expect(body).toContain('# Payload Components')
-    expect(body).toContain('# Start Here')
+    expect(body).toContain('# Introduction')
     expect(body).toContain('# Architecture')
     expect(body).toContain('AI-readable surfaces')
     expect(body).toContain('The v2 app is intentionally not a Payload CMS site.')
