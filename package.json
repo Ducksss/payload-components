@@ -42,7 +42,7 @@
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "build:cli": "cross-env NODE_OPTIONS=--no-deprecation tsup",
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "dev": "cross-env NODE_OPTIONS='--no-deprecation --max-old-space-size=8192' next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation eslint . --fix",
