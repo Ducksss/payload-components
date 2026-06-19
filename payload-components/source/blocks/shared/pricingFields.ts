@@ -1,6 +1,6 @@
-import type { Field } from 'payload'
+import type { Field } from "payload";
 
-import { linkGroup } from '@/fields/linkGroup'
+import { linkGroup } from "@/fields/linkGroup";
 
 /**
  * Shared field core for the Pricing component family.
@@ -11,21 +11,21 @@ import { linkGroup } from '@/fields/linkGroup'
  */
 export const pricingFields: Field[] = [
   {
-    name: 'eyebrow',
-    type: 'text',
+    name: "eyebrow",
+    type: "text",
   },
   {
-    name: 'title',
-    type: 'text',
+    name: "title",
+    type: "text",
     required: true,
   },
   {
-    name: 'description',
-    type: 'textarea',
+    name: "description",
+    type: "textarea",
   },
   {
-    name: 'plans',
-    type: 'array',
+    name: "plans",
+    type: "array",
     required: true,
     minRows: 2,
     maxRows: 4,
@@ -34,34 +34,34 @@ export const pricingFields: Field[] = [
     },
     fields: [
       {
-        name: 'name',
-        type: 'text',
+        name: "name",
+        type: "text",
         required: true,
       },
       {
-        name: 'description',
-        type: 'textarea',
+        name: "description",
+        type: "textarea",
       },
       {
-        name: 'price',
-        type: 'text',
+        name: "price",
+        type: "text",
         required: true,
       },
       {
-        name: 'billingNote',
-        type: 'text',
+        name: "billingNote",
+        type: "text",
       },
       {
-        name: 'highlighted',
-        type: 'checkbox',
+        name: "highlighted",
+        type: "checkbox",
         defaultValue: false,
         admin: {
-          description: 'Visually emphasize this plan as the recommended tier.',
+          description: "Visually emphasize this plan as the recommended tier.",
         },
       },
       {
-        name: 'features',
-        type: 'array',
+        name: "features",
+        type: "array",
         required: true,
         minRows: 2,
         maxRows: 8,
@@ -70,8 +70,8 @@ export const pricingFields: Field[] = [
         },
         fields: [
           {
-            name: 'text',
-            type: 'text',
+            name: "text",
+            type: "text",
             required: true,
           },
         ],
@@ -86,4 +86,4 @@ export const pricingFields: Field[] = [
       }),
     ],
   },
-]
+];

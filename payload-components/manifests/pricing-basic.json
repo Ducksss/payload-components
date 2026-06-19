@@ -35,7 +35,10 @@
     }
   ],
   "recovery": {
-    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
   },
   "postInstall": ["generate:types", "generate:importmap"],
   "preview": {
@@ -79,7 +82,9 @@
         "features": [
           { "text": "Unlimited published pages and component installs" },
           { "text": "Priority support for launch-week changes" },
-          { "text": "Long feature bullets wrap cleanly without stretching the plan card" }
+          {
+            "text": "Long feature bullets wrap cleanly without stretching the plan card"
+          }
         ],
         "links": [
           {

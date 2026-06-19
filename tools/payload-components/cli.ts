@@ -1,8 +1,8 @@
-import path from 'node:path'
+import path from "node:path";
 
-import { addCommand } from './commands/add'
-import { doctorCommand } from './commands/doctor'
-import { initCommand } from './commands/init'
+import { addCommand } from "./commands/add";
+import { doctorCommand } from "./commands/doctor";
+import { initCommand } from "./commands/init";
 
 const usage = `payload-components
 
@@ -57,93 +57,93 @@ Current alpha components:
   pricing-basic
   team-roster
   team-grid
-`
+`;
 
 const parseArgs = (argv: string[]) => {
-  const args = [...argv]
-  let cwd = process.cwd()
-  let help = false
-  const positional: string[] = []
+  const args = [...argv];
+  let cwd = process.cwd();
+  let help = false;
+  const positional: string[] = [];
 
   while (args.length > 0) {
-    const current = args.shift()
+    const current = args.shift();
 
     if (!current) {
-      continue
+      continue;
     }
 
-    if (current === '--cwd') {
-      const value = args.shift()
+    if (current === "--cwd") {
+      const value = args.shift();
 
       if (!value) {
-        throw new Error('Missing value for --cwd.')
+        throw new Error("Missing value for --cwd.");
       }
 
-      cwd = path.resolve(value)
-      continue
+      cwd = path.resolve(value);
+      continue;
     }
 
-    if (current === '--help' || current === '-h') {
-      help = true
-      continue
+    if (current === "--help" || current === "-h") {
+      help = true;
+      continue;
     }
 
-    positional.push(current)
+    positional.push(current);
   }
 
   return {
     cwd,
     help,
     positional,
-  }
-}
+  };
+};
 
 const main = async () => {
-  const { cwd, help, positional } = parseArgs(process.argv.slice(2))
+  const { cwd, help, positional } = parseArgs(process.argv.slice(2));
 
-  const [command, ...rest] = positional
+  const [command, ...rest] = positional;
 
   if (!command || help) {
-    process.stdout.write(`${usage}\n`)
-    return
+    process.stdout.write(`${usage}\n`);
+    return;
   }
 
-  if (command === 'add') {
-    const [componentName] = rest
+  if (command === "add") {
+    const [componentName] = rest;
 
     if (!componentName) {
       throw new Error(
         'payload-components add requires a component name. Try "payload-components add hero-basic" or "payload-components add logo-cloud-grid".',
-      )
+      );
     }
 
     await addCommand({
       cwd,
       componentName,
-    })
-    return
+    });
+    return;
   }
 
-  if (command === 'doctor') {
-    const ok = await doctorCommand({ cwd })
+  if (command === "doctor") {
+    const ok = await doctorCommand({ cwd });
 
     if (!ok) {
-      process.exitCode = 1
+      process.exitCode = 1;
     }
 
-    return
+    return;
   }
 
-  if (command === 'init') {
-    await initCommand({ cwd })
-    return
+  if (command === "init") {
+    await initCommand({ cwd });
+    return;
   }
 
-  throw new Error(`Unknown command "${command}".\n\n${usage}`)
-}
+  throw new Error(`Unknown command "${command}".\n\n${usage}`);
+};
 
 main().catch((error) => {
-  const message = error instanceof Error ? error.message : 'Unknown error'
-  process.stderr.write(`payload-components: ${message}\n`)
-  process.exitCode = 1
-})
+  const message = error instanceof Error ? error.message : "Unknown error";
+  process.stderr.write(`payload-components: ${message}\n`);
+  process.exitCode = 1;
+});

@@ -1,17 +1,23 @@
-import React from 'react'
+import React from "react";
 
-import type { PricingBasicBlock as PricingBasicBlockData } from '@/payload-types'
+import type { PricingBasicBlock as PricingBasicBlockData } from "@/payload-types";
 
-import { CMSLink } from '@/components/Link'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { cn } from '@/utilities/ui'
+import { CMSLink } from "@/components/Link";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { cn } from "@/utilities/ui";
 
 type Props = PricingBasicBlockData & {
-  id?: string
-  className?: string
-  disableInnerContainer?: boolean
-}
+  id?: string;
+  className?: string;
+  disableInnerContainer?: boolean;
+};
 
 export const PricingBasicBlock: React.FC<Props> = ({
   className,
@@ -23,11 +29,14 @@ export const PricingBasicBlock: React.FC<Props> = ({
   title,
 }) => {
   return (
-    <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
+    <section
+      className={cn("container", className)}
+      id={id ? `block-${id}` : undefined}
+    >
       <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div
-          className={cn('flex flex-col gap-8', {
-            'mx-auto max-w-6xl': !disableInnerContainer,
+          className={cn("flex flex-col gap-8", {
+            "mx-auto max-w-6xl": !disableInnerContainer,
           })}
         >
           <div className="flex max-w-3xl flex-col gap-4">
@@ -45,22 +54,25 @@ export const PricingBasicBlock: React.FC<Props> = ({
             </h2>
 
             {description ? (
-              <p className="text-base leading-7 text-muted-foreground sm:text-lg">{description}</p>
+              <p className="text-base leading-7 text-muted-foreground sm:text-lg">
+                {description}
+              </p>
             ) : null}
           </div>
 
           {plans && plans.length > 0 ? (
             <div className="grid min-w-0 gap-4 lg:grid-cols-3">
               {plans.map((plan, index) => {
-                const link = plan.links?.[0]?.link
+                const link = plan.links?.[0]?.link;
 
                 return (
                   <Card
                     key={plan.id ?? `${plan.name}-${index}`}
                     className={cn(
-                      'flex min-w-0 flex-col border-border/70 bg-background/85 shadow-none',
+                      "flex min-w-0 flex-col border-border/70 bg-background/85 shadow-none",
                       {
-                        'border-primary/50 bg-primary/5 shadow-sm': plan.highlighted,
+                        "border-primary/50 bg-primary/5 shadow-sm":
+                          plan.highlighted,
                       },
                     )}
                   >
@@ -100,13 +112,17 @@ export const PricingBasicBlock: React.FC<Props> = ({
                           {plan.features.map((feature, featureIndex) => (
                             <li
                               className="flex min-w-0 items-start gap-3 text-sm leading-6 text-muted-foreground"
-                              key={feature.id ?? `${feature.text}-${featureIndex}`}
+                              key={
+                                feature.id ?? `${feature.text}-${featureIndex}`
+                              }
                             >
                               <span
                                 aria-hidden="true"
                                 className="mt-2 size-1.5 shrink-0 rounded-full bg-primary"
                               />
-                              <span className="min-w-0 break-words">{feature.text}</span>
+                              <span className="min-w-0 break-words">
+                                {feature.text}
+                              </span>
                             </li>
                           ))}
                         </ul>
@@ -115,19 +131,23 @@ export const PricingBasicBlock: React.FC<Props> = ({
                       {link ? (
                         <div className="mt-auto pt-6">
                           <CMSLink
-                            appearance={link.appearance === 'outline' ? 'outline' : 'default'}
+                            appearance={
+                              link.appearance === "outline"
+                                ? "outline"
+                                : "default"
+                            }
                             {...link}
                           />
                         </div>
                       ) : null}
                     </CardContent>
                   </Card>
-                )
+                );
               })}
             </div>
           ) : null}
         </div>
       </div>
     </section>
-  )
-}
+  );
+};

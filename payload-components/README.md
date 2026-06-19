@@ -4,7 +4,7 @@ This directory holds the in-repo registry, manifests, support matrix, and intern
 
 ## Goal
 
-Prove that real shadcn-compatible registry items can be wrapped by `payload-components add`, then wired into Payload and regenerated successfully. The shipped alpha set now covers hero, feature, embed, content, logo-cloud, and integration page blocks.
+Prove that real shadcn-compatible registry items can be wrapped by `payload-components add`, then wired into Payload and regenerated successfully. The shipped alpha set now covers hero, feature, embed, content, logo-cloud, integration, call-to-action, and team page blocks.
 
 ## Viability Gate
 
@@ -19,7 +19,7 @@ The POC passes only if all of the following are true:
 
 If any of those fail because of brittle repo patching or unreliable generation, we should stop and reconsider the product shape before building private registries, auth, or a larger component catalog.
 
-Alpha reality in this workspace: `payload-components add` installs components, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` remains a placeholder.
+Alpha reality in this workspace: `payload-components add` installs components, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` wraps `shadcn init` for targets missing `components.json`.
 
 ## Public Registry Contract
 
@@ -72,8 +72,9 @@ Use both verification tiers:
 
 The fast fixture suite remains the normal PR gate because it is deterministic and proves the wrapper contract without making this repository itself a Payload app:
 
-- every shipped component installs into a supported target
-- install order works both ways
+- every manifest maps to registry source, docs, and recovery targets
+- representative components install into a supported target
+- multi-component install order avoids duplicate wiring
 - repeated installs are idempotent
 - `RenderBlocks.tsx` and `Pages/index.ts` are wired exactly once
 - `.payload-components/state.json` records success and partial failure stages correctly

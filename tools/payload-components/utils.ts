@@ -33,6 +33,12 @@ const resolveRepoRoot = () => {
 export const repoRoot = resolveRepoRoot()
 export const shadcnCliPackage = 'shadcn@4.7.0'
 
+export const isPathInside = (parentPath: string, childPath: string) => {
+  const relative = path.relative(path.resolve(parentPath), path.resolve(childPath))
+
+  return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))
+}
+
 export const readJsonFile = async <T>(filePath: string): Promise<T> => {
   const raw = await readFile(filePath, 'utf8')
 

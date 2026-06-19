@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs'
-import { readFile, rm } from 'node:fs/promises'
+import { readdir, readFile, rm } from 'node:fs/promises'
 import path from 'node:path'
 
 import { describe, expect, it } from 'vitest'
@@ -42,46 +42,33 @@ type RegistryDefinition = {
 const readJson = async <T>(filePath: string): Promise<T> =>
   JSON.parse(await readFile(filePath, 'utf8')) as T
 
-const expectedRegistryDependencies: Record<string, string[]> = {
-  'call-to-action-boxed': [],
-  'call-to-action-centered': [],
-  'call-to-action-signup': ['button'],
-  'content-columns': ['badge'],
-  'content-community': ['badge'],
-  'content-feature-media': ['badge'],
-  'content-feature-split': ['badge'],
-  'content-image-frame': ['badge'],
-  'content-image-lead': ['badge'],
-  'content-list': ['badge'],
-  'content-list-columns': ['badge'],
-  'content-list-icons': ['badge'],
-  'content-quote': ['badge'],
-  'content-rows': ['badge'],
-  'content-showcase': ['badge'],
-  'content-split-rows': ['badge'],
-  'content-stats': ['badge'],
-  'embed-basic': [],
-  'feature-bento': ['badge', 'card'],
-  'feature-grid-basic': ['badge', 'card'],
-  'feature-split': ['badge', 'card'],
-  'feature-steps': ['badge', 'card'],
-  'hero-basic': ['badge'],
-  'integration-cluster': [],
-  'integration-connect': [],
-  'integration-grid': [],
-  'integration-list': [],
-  'integration-marquee': [],
-  'integration-orbit': [],
-  'integration-split': [],
-  'integration-testimonial': [],
-  'logo-cloud-grid': [],
-  'logo-cloud-hover': [],
-  'logo-cloud-inline': [],
-  'logo-cloud-inline-wrap': [],
-  'logo-cloud-marquee': [],
-  'pricing-basic': ['badge', 'card'],
-  'team-grid': ['badge'],
-  'team-roster': ['badge'],
+const manifestNames = async () =>
+  (await readdir(path.join(repoRoot, 'payload-components', 'manifests')))
+    .filter((entry) => entry.endsWith('.json'))
+    .map((entry) => entry.replace(/\.json$/, ''))
+    .sort()
+
+const expectPortableRelativePath = (filePath: string) => {
+  expect(filePath).not.toMatch(/^([a-zA-Z]:)?[\\/]/)
+  expect(filePath).not.toMatch(/(^|\/)\.\.(\/|$)/)
+}
+
+const publicShadcnDependencies = new Set(['badge', 'button', 'card'])
+
+const registryDependenciesFromImports = async (item: RegistryItem) => {
+  const dependencies = new Set<string>()
+
+  for (const file of item.files ?? []) {
+    const source = await readFile(path.join(repoRoot, file.path), 'utf8')
+
+    for (const match of source.matchAll(/@\/components\/ui\/([a-z0-9-]+)/g)) {
+      if (publicShadcnDependencies.has(match[1])) {
+        dependencies.add(match[1])
+      }
+    }
+  }
+
+  return [...dependencies].sort()
 }
 
 describe('public shadcn registry publication', () => {
@@ -111,47 +98,7 @@ describe('public shadcn registry publication', () => {
       homepage: 'https://github.com/Ducksss/payload-components',
       name: 'payload-components',
     })
-    expect(registry.items.map((item) => item.name).sort()).toEqual([
-      'call-to-action-boxed',
-      'call-to-action-centered',
-      'call-to-action-signup',
-      'content-columns',
-      'content-community',
-      'content-feature-media',
-      'content-feature-split',
-      'content-image-frame',
-      'content-image-lead',
-      'content-list',
-      'content-list-columns',
-      'content-list-icons',
-      'content-quote',
-      'content-rows',
-      'content-showcase',
-      'content-split-rows',
-      'content-stats',
-      'embed-basic',
-      'feature-bento',
-      'feature-grid-basic',
-      'feature-split',
-      'feature-steps',
-      'hero-basic',
-      'integration-cluster',
-      'integration-connect',
-      'integration-grid',
-      'integration-list',
-      'integration-marquee',
-      'integration-orbit',
-      'integration-split',
-      'integration-testimonial',
-      'logo-cloud-grid',
-      'logo-cloud-hover',
-      'logo-cloud-inline',
-      'logo-cloud-inline-wrap',
-      'logo-cloud-marquee',
-      'pricing-basic',
-      'team-grid',
-      'team-roster',
-    ])
+    await expect(manifestNames()).resolves.toEqual(registry.items.map((item) => item.name).sort())
 
     for (const item of registry.items) {
       expect(item.type).toBe('registry:block')
@@ -159,7 +106,9 @@ describe('public shadcn registry publication', () => {
       expect(item.description).toBeTruthy()
       expect(item.docs).toContain(`payload-components add ${item.name}`)
       expect(item.docs).toContain(`/r/${item.name}.json`)
-      expect(item.registryDependencies).toEqual(expectedRegistryDependencies[item.name])
+      await expect(registryDependenciesFromImports(item)).resolves.toEqual(
+        [...(item.registryDependencies ?? [])].sort(),
+      )
       expect(item.meta?.payloadComponent).toMatchObject({
         installCommand: `payload-components add ${item.name}`,
         postInstall: ['generate:types', 'generate:importmap'],
@@ -171,10 +120,14 @@ describe('public shadcn registry publication', () => {
 
       for (const file of item.files ?? []) {
         expect(file.content).toBeUndefined()
+        expect(file.target).toBeTruthy()
+        const target = file.target ?? ''
+        expectPortableRelativePath(file.path)
+        expectPortableRelativePath(target)
         // Block source lives under source/blocks/; a variant may also ship shared UI
         // primitives under source/components/ (e.g. the marquee's InfiniteSlider).
         expect(file.path).toMatch(/^payload-components\/source\/(blocks|components)\//)
-        expect(file.target).toBe(file.path.replace(/^payload-components\/source/, '~/src'))
+        expect(target).toBe(file.path.replace(/^payload-components\/source/, '~/src'))
         expect(file.type).toBe('registry:file')
       }
     }

@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3000'}`
+const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 
 type StructuredDataNode = Record<string, unknown>
@@ -115,7 +115,7 @@ test.describe('AI-readable documentation surfaces', () => {
     const body = await response.text()
 
     expect(body).toContain('# Payload Components')
-    expect(body).toContain('# Start Here')
+    expect(body).toContain('# Introduction')
     expect(body).toContain('# Architecture')
     expect(body).toContain('AI-readable surfaces')
     expect(body).toContain('The v2 app is intentionally not a Payload CMS site.')

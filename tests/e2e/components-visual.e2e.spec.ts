@@ -27,10 +27,10 @@ import { expect, test } from '@playwright/test'
  * *-<platform>.png files with:
  *   E2E_PORT=3100 pnpm test:e2e components-visual --update-snapshots */
 
-const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3000'}`
+const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 
 /* Slugs are the demo registry's object keys, read as text so this spec never
- * imports every demo React module. These are exactly the slugs the preview
+ * imports the demo React modules. These are exactly the slugs the preview
  * route is statically generated for (registry.ts → generateStaticParams). */
 const registrySource = readFileSync(
   new URL('../../src/components/site/demos/registry.ts', import.meta.url),

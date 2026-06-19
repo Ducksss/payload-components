@@ -1,9 +1,18 @@
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { pricingBasicDemoContent, type PricingBasicDemoContent } from '@/lib/demo-content'
-import { cn } from '@/utilities/ui'
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  pricingBasicDemoContent,
+  type PricingBasicDemoContent,
+} from "@/lib/demo-content";
+import { cn } from "@/utilities/ui";
 
-import { DemoLink } from './DemoLink'
+import { DemoLink } from "./DemoLink";
 
 /* DEMO TWIN of payload-components/source/blocks/PricingBasic/Component.tsx
  * (pricing-basic@0.1.0). Class strings are copied verbatim from the component
@@ -20,10 +29,10 @@ export function PricingBasicDemo({
   className,
   content = pricingBasicDemoContent,
 }: {
-  className?: string
-  content?: PricingBasicDemoContent
+  className?: string;
+  content?: PricingBasicDemoContent;
 }) {
-  const { description, eyebrow, plans, title } = content
+  const { description, eyebrow, plans, title } = content;
 
   return (
     <div aria-hidden="true" className={className}>
@@ -44,22 +53,25 @@ export function PricingBasicDemo({
             </div>
 
             {description ? (
-              <p className="text-base leading-7 text-muted-foreground sm:text-lg">{description}</p>
+              <p className="text-base leading-7 text-muted-foreground sm:text-lg">
+                {description}
+              </p>
             ) : null}
           </div>
 
           {plans.length > 0 ? (
             <div className="grid min-w-0 gap-4 lg:grid-cols-3">
               {plans.map((plan, index) => {
-                const link = plan.links?.[0]?.link
+                const link = plan.links?.[0]?.link;
 
                 return (
                   <Card
                     key={`${plan.name}-${index}`}
                     className={cn(
-                      'flex min-w-0 flex-col border-border/70 bg-background/85 shadow-none',
+                      "flex min-w-0 flex-col border-border/70 bg-background/85 shadow-none",
                       {
-                        'border-primary/50 bg-primary/5 shadow-sm': plan.highlighted,
+                        "border-primary/50 bg-primary/5 shadow-sm":
+                          plan.highlighted,
                       },
                     )}
                   >
@@ -105,7 +117,9 @@ export function PricingBasicDemo({
                                 aria-hidden="true"
                                 className="mt-2 size-1.5 shrink-0 rounded-full bg-primary"
                               />
-                              <span className="min-w-0 break-words">{feature.text}</span>
+                              <span className="min-w-0 break-words">
+                                {feature.text}
+                              </span>
                             </li>
                           ))}
                         </ul>
@@ -113,17 +127,20 @@ export function PricingBasicDemo({
 
                       {link ? (
                         <div className="mt-auto pt-6">
-                          <DemoLink appearance={link.appearance} label={link.label} />
+                          <DemoLink
+                            appearance={link.appearance}
+                            label={link.label}
+                          />
                         </div>
                       ) : null}
                     </CardContent>
                   </Card>
-                )
+                );
               })}
             </div>
           ) : null}
         </div>
       </div>
     </div>
-  )
+  );
 }

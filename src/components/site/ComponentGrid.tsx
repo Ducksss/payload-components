@@ -4,7 +4,7 @@ import { cn } from '@/utilities/ui'
 
 /* Catalog-page building blocks for the in-development posts suite.
  * (The landing page renders the installable components live — see
- * CatalogIndex and the demos/ twins; these skeleton thumbs stay
+ * CatalogFamilyTeaser and the demos/ twins; these skeleton thumbs stay
  * deliberately lower-fi to separate "planned" from "real".) */
 
 /* ------------------------------------------------------------------ */
@@ -147,14 +147,14 @@ export function UpcomingComponentCard({ component }: { component: UpcomingCompon
           <h3 className="truncate text-[13px] font-semibold tracking-tight text-foreground/80">
             {component.title}
           </h3>
-          <span className="shrink-0 rounded-full border border-border bg-background px-1.5 py-0.5 font-mono text-[9px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+          <span className="shrink-0 rounded-full border border-border bg-background px-1.5 py-0.5 font-mono text-[9px] font-medium uppercase tracking-eyebrow text-muted-foreground">
             Soon
           </span>
         </div>
         <p className="line-clamp-2 text-xs leading-5 text-muted-foreground">
           {component.description}
         </p>
-        <span className="mt-auto truncate pt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80">
+        <span className="mt-auto truncate pt-1 font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground/80">
           {component.target}
         </span>
       </div>
@@ -182,7 +182,7 @@ export function ComponentFamilyHeader({
   const header = (
     <div className="flex items-baseline gap-3">
       <h3 className="text-lg font-semibold tracking-tight text-foreground">{name}</h3>
-      <span className="rounded-full border border-border bg-background px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+      <span className="rounded-full border border-border bg-background px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-eyebrow text-muted-foreground">
         {countLabel}
       </span>
     </div>

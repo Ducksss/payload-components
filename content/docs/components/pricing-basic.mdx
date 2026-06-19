@@ -20,6 +20,7 @@ icon: BadgeDollarSign
     ```bash
     pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-basic.json
     ```
+
   </Tab>
 </Tabs>
 
@@ -34,13 +35,24 @@ only. It does not add checkout, subscriptions, entitlements, customer portals, o
 
 <TypeTable
   type={{
-    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
-    title: { type: 'text', required: true, description: 'The pricing section heading.' },
-    description: { type: 'textarea', description: 'Optional supporting copy under the heading.' },
-    plans: {
-      type: 'array',
+    eyebrow: {
+      type: "text",
+      description: "Small label shown above the title.",
+    },
+    title: {
+      type: "text",
       required: true,
-      description: 'Two to four plan cards. One plan can be highlighted as the recommended tier.',
+      description: "The pricing section heading.",
+    },
+    description: {
+      type: "textarea",
+      description: "Optional supporting copy under the heading.",
+    },
+    plans: {
+      type: "array",
+      required: true,
+      description:
+        "Two to four plan cards. One plan can be highlighted as the recommended tier.",
     },
   }}
 />
@@ -49,17 +61,31 @@ Each item in `plans` carries:
 
 <TypeTable
   type={{
-    name: { type: 'text', required: true, description: 'Plan name.' },
-    description: { type: 'textarea', description: 'Short plan summary.' },
-    price: { type: 'text', required: true, description: 'Price label, such as "$29" or "Custom".' },
-    billingNote: { type: 'text', description: 'Small note beside the price, such as "per month".' },
-    highlighted: { type: 'checkbox', description: 'Emphasizes the card as the recommended tier.' },
-    features: {
-      type: 'array',
+    name: { type: "text", required: true, description: "Plan name." },
+    description: { type: "textarea", description: "Short plan summary." },
+    price: {
+      type: "text",
       required: true,
-      description: 'Two to eight feature bullets. Long bullets wrap inside the card.',
+      description: 'Price label, such as "$29" or "Custom".',
     },
-    links: { type: 'array', description: 'One optional CTA link for the plan.' },
+    billingNote: {
+      type: "text",
+      description: 'Small note beside the price, such as "per month".',
+    },
+    highlighted: {
+      type: "checkbox",
+      description: "Emphasizes the card as the recommended tier.",
+    },
+    features: {
+      type: "array",
+      required: true,
+      description:
+        "Two to eight feature bullets. Long bullets wrap inside the card.",
+    },
+    links: {
+      type: "array",
+      description: "One optional CTA link for the plan.",
+    },
   }}
 />
 
@@ -67,7 +93,7 @@ Each item in `features` carries:
 
 <TypeTable
   type={{
-    text: { type: 'text', required: true, description: 'Feature bullet text.' },
+    text: { type: "text", required: true, description: "Feature bullet text." },
   }}
 />
 

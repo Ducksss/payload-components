@@ -288,7 +288,7 @@ export function ComponentCatalogBrowser({
 
 /* Lightweight section header: a mono label + count over a hairline rule. It
    replaces the old bordered ComponentFamilyHeader block here (that component is
-   left intact for the landing CatalogIndex). Hidden when a single category is
+   left intact for the landing CatalogFamilyTeaser). Hidden when a single category is
    active — the filter already names the scope. */
 function SectionDivider({ count, label, name }: { count: number; label?: string; name: string }) {
   return (

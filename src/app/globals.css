@@ -58,6 +58,10 @@
   --terminal-muted: oklch(64.5% 0.012 285.8deg);
   --terminal-border: oklch(100% 0 0deg / 10%);
 
+  --preview-close: #ff5f57;
+  --preview-minimize: #febc2e;
+  --preview-zoom: #28c840;
+
   --radius: 0.625rem;
 
   /* The shared SiteHeader sits above the Fumadocs layout; this is the
@@ -132,6 +136,9 @@
   --color-terminal-foreground: var(--terminal-foreground);
   --color-terminal-muted: var(--terminal-muted);
   --color-terminal-border: var(--terminal-border);
+  --color-preview-close: var(--preview-close);
+  --color-preview-minimize: var(--preview-minimize);
+  --color-preview-zoom: var(--preview-zoom);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);

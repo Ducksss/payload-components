@@ -18,26 +18,23 @@ on:
 env:
   NEXT_TELEMETRY_DISABLED: '1'
 
+permissions:
+  contents: read
+
 jobs:
   release-gate:
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version:
-          - 20.19.0
-          - 22
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 10.24.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 22
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
@@ -61,10 +58,38 @@ jobs:
             test-results
           if-no-files-found: ignore
 
+  node-20-compat:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.24.0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20.19.0
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Node 20 compatibility
+        shell: bash
+        run: |
+          pnpm source:build
+          pnpm exec tsc --noEmit
+          pnpm test:registry
+          pnpm run test:install
+          pnpm build:cli
+
   pr-gate:
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     runs-on: ubuntu-latest
-    needs: release-gate
+    needs:
+      - release-gate
+      - node-20-compat
     steps:
       - run: echo "release gate passed"
 
@@ -95,13 +120,13 @@ jobs:
       PREVIEW_SECRET: ci-preview-secret
       REGISTRY_URL: ${{ github.event.inputs.registry_url || '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 10.24.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm

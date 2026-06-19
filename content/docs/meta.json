@@ -1,16 +1,18 @@
 {
   "title": "Payload Components",
   "pages": [
+    "---Get Started---",
     "index",
-    "---Guides---",
     "what-is-a-payload-component",
     "shadcn-vs-payload-components",
-    "architecture",
     "installation",
+    "---Components---",
+    "components",
+    "---Reference---",
+    "architecture",
     "registry",
+    "---Contributing---",
     "operations",
-    "contributing",
-    "---Catalog---",
-    "components"
+    "contributing"
   ]
 }
