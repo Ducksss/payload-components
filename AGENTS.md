@@ -98,9 +98,9 @@ If you add a `landingSections` key, render its `<h2>` in the same change. The co
 
 ## shadcn registry directory submission
 
-The registry is published under the `@payload-components` namespace and is shaped for listing in the
+The registry is published under the `@1payloadcomponents` namespace and is shaped for listing in the
 [official shadcn registry directory](https://ui.shadcn.com/docs/directory) (so people can discover it
-and run `shadcn add @payload-components/<item>`). `pnpm registry:validate` schema-checks every item
+and run `shadcn add @1payloadcomponents/<item>`). `pnpm registry:validate` schema-checks every item
 against the vendored shadcn schemas (`tools/payload-components/schemas/`) and runs inside the release gate.
 
 **Submit only after** the changes are merged and deployed, so the live URL resolves and passes the
@@ -117,7 +117,7 @@ literal `{name}` placeholder in `url`), open the PR, and let their CI run `pnpm 
 
 ```json
 {
-  "name": "@payload-components",
+  "name": "@1payloadcomponents",
   "homepage": "https://www.payload-components.xyz",
   "url": "https://www.payload-components.xyz/r/{name}.json",
   "description": "MIT registry of typed Payload CMS blocks for Payload v3 + Next.js. Each block installs as reviewable source; the companion CLI also wires collection config, RenderBlocks, types, and the admin import map."

@@ -54,12 +54,12 @@ Namespace consumers can configure:
 ```json
 {
   "registries": {
-    "@payload-components": "https://www.payload-components.xyz/r/{name}.json"
+    "@1payloadcomponents": "https://www.payload-components.xyz/r/{name}.json"
   }
 }
 ```
 
-Then install with `pnpm dlx shadcn@latest add @payload-components/hero-basic` or any other registry item.
+Then install with `pnpm dlx shadcn@latest add @1payloadcomponents/hero-basic` or any other registry item.
 
 ## Verification Suite
 
