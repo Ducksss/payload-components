@@ -1,0 +1,69 @@
+---
+title: Hello — and why I built Payload Components
+description: A quick hello, the itch that started this, and what you'll find on this blog.
+author: Ducksss
+date: 2026-06-18
+---
+
+Hi, and welcome. If you're reading this, you've found the very first post on the Payload
+Components blog — so let me say hello properly.
+
+I'm Ducksss, and I'm building Payload Components in the open. This blog is where I'll write down
+the things that don't fit in the docs: what shipped, what I'm still figuring out, and the
+reasoning behind decisions. Less changelog, more "here's what I was thinking." I'd rather you
+understand *why* a thing works the way it does than just trust that it does.
+
+## The itch that started this
+
+Here's the honest origin story. Every Payload project I touched needed the same handful of
+surfaces — a hero, a feature grid, some cards. Copying the block files was never the hard part.
+The hard part was everything *after* the paste.
+
+Because a block isn't really alive until four more edits land:
+
+- register it in your Pages collection
+- map it in your render switch so it actually paints
+- regenerate your types
+- regenerate the admin import map
+
+None of those are difficult. They're just easy to forget — and when you miss one, the block
+doesn't error, it just silently never shows up. You copy, you move on, and twenty minutes later
+you're wondering why nothing renders. Doing that little dance across one project is fine. Doing
+it across the second project, and the tenth, is what slowly wore me down.
+
+## So I made the second install free
+
+That frustration is the whole reason `payload-components add` exists. It copies the block source
+*and* does those four edits for me, then leaves the result as a plain git diff I can read before
+I trust it.
+
+```bash
+npx payload-components add hero-basic
+```
+
+One command, and the wiring I used to do by hand just shows up as a reviewable change. That's
+it. That's the thing I wished I'd had.
+
+## Why it's open, and MIT
+
+I want you to read the installer before you run it — genuinely, that's the point, not a
+disclaimer. The registry, the CLI, the components, and this site are all one MIT repository. No
+pricing, no license keys, no gated tier. It grows from real installs and pull requests, from
+people like you using it and telling me where it falls short.
+
+<Callout type="info">
+  Payload Components is in **public alpha** — about 38 page blocks install today, with more on
+  the way. Things will be rough in places. If you run Payload v3 on Next.js, try it on a
+  throwaway branch, read the diff, and tell me what breaks.
+</Callout>
+
+## Stay a while
+
+If you want the details, the [docs](/docs) are the place to start, and you can browse what's
+available in the [components catalog](/components). My [next post](/blog/anatomy-of-an-install)
+opens up the installer and shows exactly how the wiring happens, if you're the kind of person
+who likes to see under the hood (I am).
+
+Otherwise — thanks for stopping by. Come build with me, open an issue, or just say hi.
+
+— Ducksss
