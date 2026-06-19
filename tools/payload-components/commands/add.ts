@@ -102,7 +102,7 @@ export const addCommand = async ({
       targetId: project.target.id,
     })
 
-    printHeader(`payload-components: "${manifest.name}" is already present. Recorded alpha install state.`)
+    printHeader(`payload-components: "${manifest.name}" is already present. Recorded install state.`)
     return
   }
 

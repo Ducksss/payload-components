@@ -46,7 +46,7 @@
   },
   "sampleContent": {
     "blockType": "featureGridBasic",
-    "eyebrow": "Payload Components alpha",
+    "eyebrow": "Payload Components",
     "title": "Add a feature grid that looks native to the repo on the first install.",
     "description": "This component is designed to prove that multi-item content blocks install cleanly, register exactly once, and stay easy to reuse across client projects.",
     "items": [
@@ -56,7 +56,7 @@
       },
       {
         "title": "Text-first structure",
-        "description": "Keeps the alpha block focused on clear editorial fields instead of extra primitives, icons, or interactive admin behavior."
+        "description": "Keeps the block focused on clear editorial fields instead of extra primitives, icons, or interactive admin behavior."
       },
       {
         "title": "Multi-component proof",

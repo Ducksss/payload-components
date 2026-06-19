@@ -43,7 +43,7 @@ describe('payload-components state', () => {
     await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
   })
 
-  it('migrates v1 state into the alpha v2 shape', async () => {
+  it('migrates v1 state into the v2 shape', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-state-'))
     tempDirs.push(tempDir)
 

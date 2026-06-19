@@ -48,7 +48,7 @@ only when you need to override site metadata URLs or the GitHub content branch.
   or `PAYLOAD_SECRET` requirements for the docs site.
 - Generated registry output belongs in ignored `public/r`.
 - New or edited components must meet the accessibility checklist in
-  `payload-components/templates/alpha-component/README.md` (label association,
+  `payload-components/templates/component-template/README.md` (label association,
   `autocomplete` tokens, reduced-motion, and accessible link/image names).
 
 When editing Payload target code, use real Payload types, keep block configs

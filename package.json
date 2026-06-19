@@ -1,6 +1,6 @@
 {
   "name": "payload-components",
-  "version": "1.0.1-alpha.0",
+  "version": "1.0.1",
   "description": "MIT registry and CLI for installing wired Payload CMS blocks into Payload v3 + Next.js projects.",
   "keywords": [
     "payload",
