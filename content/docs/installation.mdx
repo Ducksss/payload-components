@@ -114,4 +114,34 @@ need attention.
 
 ## Direct registry installs
 
-Direct shadcn installs can deliver files, but they do not apply Payload-specific fragments or run the complete post-install workflow. Use `payload-components add` for real target projects.
+Every block is also published to a public, shadcn-compatible registry, so you can pull a block's files with the plain `shadcn` CLI — useful for inspecting a block or dropping one into a non-Payload project.
+
+Register the namespace once in your project's `components.json`:
+
+```json
+{
+  "registries": {
+    "@payload-components": "https://www.payload-components.xyz/r/{name}.json"
+  }
+}
+```
+
+Then add any block by name:
+
+```bash
+pnpm dlx shadcn@latest add @payload-components/hero-basic
+```
+
+Or install a single item straight from its URL, without configuring the namespace:
+
+```bash
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-basic.json
+```
+
+<Callout type="warn">
+  A direct `shadcn add` only copies the block's source files and its shadcn UI
+  dependencies. It does **not** register the block in `RenderBlocks`, wire the
+  `Pages` layout field, install Payload dependencies, or run `generate:types` and
+  `generate:importmap`. For a real Payload project, use `payload-components add` —
+  it does all of that and records install state.
+</Callout>

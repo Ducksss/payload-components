@@ -1,6 +1,6 @@
 import { stackBandLede, stackItems } from '@/lib/site'
 
-/* The honest "logo cloud": no customer logos (alpha, open source), just the
+/* The honest "logo cloud": no customer logos, just the
  * stack components install into, set as quiet wordmarks. */
 export function StackBand() {
   return (

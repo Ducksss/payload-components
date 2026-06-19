@@ -1,6 +1,6 @@
-# Alpha Component Template
+# Component Template
 
-Copy this template when starting a new in-repo alpha component. It is the internal source of truth for naming, file layout, and the minimal block/component shape that future components should follow.
+Copy this template when starting a new in-repo component. It is the internal source of truth for naming, file layout, and the minimal block/component shape that future components should follow.
 
 ## Naming Map
 

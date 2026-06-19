@@ -1,10 +1,10 @@
 # Payload Components Workspace
 
-This directory holds the in-repo registry, manifests, support matrix, and internal authoring scaffolds for the current `payload-components` alpha.
+This directory holds the in-repo registry, manifests, support matrix, and internal authoring scaffolds for `payload-components`.
 
 ## Goal
 
-Prove that real shadcn-compatible registry items can be wrapped by `payload-components add`, then wired into Payload and regenerated successfully. The shipped alpha set now covers hero, feature, embed, content, logo-cloud, and integration page blocks.
+Prove that real shadcn-compatible registry items can be wrapped by `payload-components add`, then wired into Payload and regenerated successfully. The shipped set now covers hero, feature, embed, content, logo-cloud, integration, call-to-action, and team page blocks.
 
 ## Viability Gate
 
@@ -19,7 +19,7 @@ The POC passes only if all of the following are true:
 
 If any of those fail because of brittle repo patching or unreliable generation, we should stop and reconsider the product shape before building private registries, auth, or a larger component catalog.
 
-Alpha reality in this workspace: `payload-components add` installs components, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` remains a placeholder.
+Workspace reality: `payload-components add` installs components, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` wraps `shadcn init` for targets missing `components.json`.
 
 ## Public Registry Contract
 
@@ -40,11 +40,11 @@ Production builds run `registry:build` automatically through the package `prebui
 Direct public installs use the generated item URLs:
 
 ```bash
-pnpm dlx shadcn@latest add https://<your-domain>/r/hero-basic.json
-pnpm dlx shadcn@latest add https://<your-domain>/r/feature-grid-basic.json
-pnpm dlx shadcn@latest add https://<your-domain>/r/content-columns.json
-pnpm dlx shadcn@latest add https://<your-domain>/r/logo-cloud-grid.json
-pnpm dlx shadcn@latest add https://<your-domain>/r/integration-grid.json
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-basic.json
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-grid-basic.json
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-columns.json
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/logo-cloud-grid.json
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-grid.json
 ```
 
 For a complete install, use `payload-components add`. The shadcn registry delivers files and shadcn UI dependencies; the wrapper adds the Payload-specific registration layer and post-install generation.
@@ -54,7 +54,7 @@ Namespace consumers can configure:
 ```json
 {
   "registries": {
-    "@payload-components": "https://<your-domain>/r/{name}.json"
+    "@payload-components": "https://www.payload-components.xyz/r/{name}.json"
   }
 }
 ```
@@ -72,8 +72,9 @@ Use both verification tiers:
 
 The fast fixture suite remains the normal PR gate because it is deterministic and proves the wrapper contract without making this repository itself a Payload app:
 
-- every shipped component installs into a supported target
-- install order works both ways
+- every manifest maps to registry source, docs, and recovery targets
+- representative components install into a supported target
+- multi-component install order avoids duplicate wiring
 - repeated installs are idempotent
 - `RenderBlocks.tsx` and `Pages/index.ts` are wired exactly once
 - `.payload-components/state.json` records success and partial failure stages correctly
@@ -83,7 +84,7 @@ The fresh smoke lives at `../tools/payload-components/smoke/fresh-payload-repo.t
 
 ```bash
 pnpm test:fresh -- --components hero-basic,feature-grid-basic,content-columns,logo-cloud-grid,integration-grid
-pnpm test:fresh -- --registry-url https://<your-domain>/r/{name}.json
+pnpm test:fresh -- --registry-url https://www.payload-components.xyz/r/{name}.json
 pnpm test:fresh -- --keep-temp --timeout 1200000
 ```
 
@@ -91,7 +92,7 @@ Without `--registry-url`, the runner serves `../public/r` locally and direct-ins
 
 ## Current Contract
 
-Alpha manifests now define:
+Manifests now define:
 
 - component identity and version
 - supported Payload and Next.js majors
@@ -102,9 +103,9 @@ Alpha manifests now define:
 - post-install tasks
 - preview metadata and sample content
 
-## Alpha Component Template
+## Component Template
 
-The reusable starter for future alpha components lives in `templates/alpha-component/`.
+The reusable starter for future components lives in `templates/component-template/`.
 
 Use it to keep these conventions consistent:
 
@@ -120,7 +121,7 @@ The template includes:
 - `Component.tsx`
 - an internal authoring note
 
-Normalized alpha-component blocks should:
+Normalized component blocks should:
 
 - declare explicit `labels.singular` and `labels.plural`
 - stay server-first unless interactivity is required
@@ -132,10 +133,10 @@ Normalized alpha-component blocks should:
 - `registry.json`: shadcn-compatible local registry definition
 - `source/`: Payload-target component source consumed by registry generation
 - `../public/r/`: ignored, generated public shadcn registry artifacts
-- `manifests/`: alpha component manifests for the shipped and in-progress components
+- `manifests/`: component manifests for the shipped and in-progress components
 - `schema/poc-manifest.schema.json`: manifest validation schema
 - `support-matrix.json`: supported repo-shape contract for the POC
-- `templates/alpha-component/`: internal scaffolds for future alpha-component authoring
+- `templates/component-template/`: internal scaffolds for future component authoring
 
 ## Manual Smoke Test
 

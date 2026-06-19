@@ -23,6 +23,8 @@ CLI, and Payload integration direction coherent.
 ## Local Setup
 
 Use Node.js `^20.19.0 || >=22.12.0` and pnpm `^9 || ^10`.
+TypeScript stays on 5.x until `vite-tsconfig-paths` stops pulling `tsconfck`
+with a `typescript@^5.0.0` peer range.
 
 ```sh
 pnpm install --frozen-lockfile --ignore-workspace
@@ -33,8 +35,7 @@ Open `http://localhost:3000`.
 
 The docs site does not require Postgres, Payload admin routes, collections,
 globals, a database adapter, or `PAYLOAD_SECRET`. Copy `.env.example` to `.env`
-only when you need to override `NEXT_PUBLIC_SITE_URL` or run Payload target
-smoke tests.
+only when you need to override site metadata URLs or the GitHub content branch.
 
 ## Development Rules
 
@@ -49,7 +50,7 @@ smoke tests.
   or `PAYLOAD_SECRET` requirements for the docs site.
 - Generated registry output belongs in ignored `public/r`.
 - New or edited components must meet the accessibility checklist in
-  `payload-components/templates/alpha-component/README.md` (label association,
+  `payload-components/templates/component-template/README.md` (label association,
   `autocomplete` tokens, reduced-motion, and accessible link/image names).
 
 When editing Payload target code, use real Payload types, keep block configs

@@ -9,6 +9,7 @@ export const githubContentBranch = process.env.NEXT_PUBLIC_GITHUB_CONTENT_BRANCH
 export const docsRoute = '/docs'
 export const docsImageRoute = '/og/docs'
 export const docsContentRoute = '/llms.mdx/docs'
+export const blogRoute = '/blog'
 export const primaryInstallCommand = 'npx payload-components add hero-basic'
 
 export const siteDescription =
@@ -18,7 +19,7 @@ export const siteDescription =
 /* Hero                                                                */
 /* ------------------------------------------------------------------ */
 
-export const heroEyebrow = 'Payload Components public alpha'
+export const heroEyebrow = 'Open-source Payload block registry'
 
 /* The H1 renders primary + accent as one accessible name; the e2e H1
    assertion consumes the concatenated heroHeadline. The OG card renders the
@@ -81,8 +82,8 @@ export const landingSections = {
 } as const
 
 /* ------------------------------------------------------------------ */
-/* Stack band — what components install into. No customer logos (alpha, open  */
-/* source); the honest "works with" row is the supported stack.         */
+/* Stack band — what components install into. No customer logos; the    */
+/* honest "works with" row is the supported stack.                      */
 /* ------------------------------------------------------------------ */
 
 export const stackBandLede = 'Installs into the stack you already run'
@@ -212,14 +213,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Thirty-eight page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Forty-four page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '38 installable',
+    countLabel: '44 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -271,7 +272,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'description', 'links', 'proofItems'],
     href: '/docs/components/hero-basic',
     slug: 'hero-basic',
-    status: 'Alpha',
     target: 'Hero section',
     title: 'Hero Basic',
     version: '0.1.0',
@@ -285,7 +285,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'description', 'items', 'links'],
     href: '/docs/components/feature-grid-basic',
     slug: 'feature-grid-basic',
-    status: 'Alpha',
     target: 'Feature section',
     title: 'Feature Grid Basic',
     version: '0.1.0',
@@ -299,7 +298,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'description', 'items', 'links'],
     href: '/docs/components/feature-split',
     slug: 'feature-split',
-    status: 'Alpha',
     target: 'Split section',
     title: 'Feature Split',
     version: '0.1.0',
@@ -313,7 +311,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'description', 'items', 'links'],
     href: '/docs/components/feature-bento',
     slug: 'feature-bento',
-    status: 'Alpha',
     target: 'Bento grid',
     title: 'Feature Bento',
     version: '0.1.0',
@@ -327,7 +324,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'description', 'items', 'links'],
     href: '/docs/components/feature-steps',
     slug: 'feature-steps',
-    status: 'Alpha',
     target: 'Steps section',
     title: 'Feature Steps',
     version: '0.1.0',
@@ -341,7 +337,6 @@ export const componentEntries = [
     fields: ['url', 'title', 'aspectRatio', 'caption', 'allowFullscreen'],
     href: '/docs/components/embed-basic',
     slug: 'embed-basic',
-    status: 'Alpha',
     target: 'Embed / media',
     title: 'Embed Basic',
     version: '0.1.0',
@@ -355,7 +350,6 @@ export const componentEntries = [
     fields: ['heading', 'logos'],
     href: '/docs/components/logo-cloud-grid',
     slug: 'logo-cloud-grid',
-    status: 'Alpha',
     target: 'Logo cloud',
     title: 'Logo Cloud Grid',
     version: '0.1.0',
@@ -369,7 +363,6 @@ export const componentEntries = [
     fields: ['heading', 'logos', 'links'],
     href: '/docs/components/logo-cloud-hover',
     slug: 'logo-cloud-hover',
-    status: 'Alpha',
     target: 'Logo cloud',
     title: 'Logo Cloud Hover',
     version: '0.1.0',
@@ -383,7 +376,6 @@ export const componentEntries = [
     fields: ['heading', 'logos'],
     href: '/docs/components/logo-cloud-marquee',
     slug: 'logo-cloud-marquee',
-    status: 'Alpha',
     target: 'Logo cloud',
     title: 'Logo Cloud Marquee',
     version: '0.1.0',
@@ -397,7 +389,6 @@ export const componentEntries = [
     fields: ['heading', 'logos'],
     href: '/docs/components/logo-cloud-inline',
     slug: 'logo-cloud-inline',
-    status: 'Alpha',
     target: 'Logo cloud',
     title: 'Logo Cloud Inline',
     version: '0.1.0',
@@ -411,7 +402,6 @@ export const componentEntries = [
     fields: ['heading', 'logos'],
     href: '/docs/components/logo-cloud-inline-wrap',
     slug: 'logo-cloud-inline-wrap',
-    status: 'Alpha',
     target: 'Logo cloud',
     title: 'Logo Cloud Inline Wrap',
     version: '0.1.0',
@@ -425,7 +415,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'paragraphs', 'links'],
     href: '/docs/components/content-columns',
     slug: 'content-columns',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content Columns',
     version: '0.1.0',
@@ -439,7 +428,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'paragraphs', 'image', 'links'],
     href: '/docs/components/content-image-lead',
     slug: 'content-image-lead',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content Image Lead',
     version: '0.1.0',
@@ -453,7 +441,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'paragraphs', 'features', 'image'],
     href: '/docs/components/content-feature-media',
     slug: 'content-feature-media',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content Feature Media',
     version: '0.1.0',
@@ -467,7 +454,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'paragraphs', 'features', 'image'],
     href: '/docs/components/content-feature-split',
     slug: 'content-feature-split',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content Feature Split',
     version: '0.1.0',
@@ -481,7 +467,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'paragraphs', 'image', 'features'],
     href: '/docs/components/content-showcase',
     slug: 'content-showcase',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content Showcase',
     version: '0.1.0',
@@ -495,7 +480,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'paragraphs', 'image', 'quote', 'citation', 'logo'],
     href: '/docs/components/content-quote',
     slug: 'content-quote',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content Quote',
     version: '0.1.0',
@@ -509,7 +493,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'paragraphs', 'avatars'],
     href: '/docs/components/content-community',
     slug: 'content-community',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content Community',
     version: '0.1.0',
@@ -523,7 +506,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'paragraphs', 'rows'],
     href: '/docs/components/content-split-rows',
     slug: 'content-split-rows',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content Split Rows',
     version: '0.1.0',
@@ -537,7 +519,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'paragraphs', 'rows'],
     href: '/docs/components/content-rows',
     slug: 'content-rows',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content Rows',
     version: '0.1.0',
@@ -551,7 +532,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'paragraphs', 'image', 'backgroundImage'],
     href: '/docs/components/content-image-frame',
     slug: 'content-image-frame',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content Image Frame',
     version: '0.1.0',
@@ -565,7 +545,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'paragraphs', 'features', 'stats'],
     href: '/docs/components/content-stats',
     slug: 'content-stats',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content Stats',
     version: '0.1.0',
@@ -579,7 +558,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'items'],
     href: '/docs/components/content-list',
     slug: 'content-list',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content List',
     version: '0.1.0',
@@ -593,7 +571,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'items'],
     href: '/docs/components/content-list-columns',
     slug: 'content-list-columns',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content List Columns',
     version: '0.1.0',
@@ -607,7 +584,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'description', 'items'],
     href: '/docs/components/content-list-icons',
     slug: 'content-list-icons',
-    status: 'Alpha',
     target: 'Content section',
     title: 'Content List Icons',
     version: '0.1.0',
@@ -621,7 +597,6 @@ export const componentEntries = [
     fields: ['heading', 'subtext', 'integrations'],
     href: '/docs/components/integration-grid',
     slug: 'integration-grid',
-    status: 'Alpha',
     target: 'Integration section',
     title: 'Integration Grid',
     version: '0.1.0',
@@ -635,7 +610,6 @@ export const componentEntries = [
     fields: ['heading', 'subtext', 'integrations', 'featuredLogo', 'links'],
     href: '/docs/components/integration-cluster',
     slug: 'integration-cluster',
-    status: 'Alpha',
     target: 'Integration section',
     title: 'Integration Cluster',
     version: '0.1.0',
@@ -649,7 +623,6 @@ export const componentEntries = [
     fields: ['heading', 'subtext', 'integrations', 'featuredLogo', 'links'],
     href: '/docs/components/integration-split',
     slug: 'integration-split',
-    status: 'Alpha',
     target: 'Integration section',
     title: 'Integration Split',
     version: '0.1.0',
@@ -663,7 +636,6 @@ export const componentEntries = [
     fields: ['heading', 'subtext', 'integrations', 'featuredLogo'],
     href: '/docs/components/integration-connect',
     slug: 'integration-connect',
-    status: 'Alpha',
     target: 'Integration section',
     title: 'Integration Connect',
     version: '0.1.0',
@@ -677,7 +649,6 @@ export const componentEntries = [
     fields: ['heading', 'subtext', 'integrations', 'featuredLogo'],
     href: '/docs/components/integration-orbit',
     slug: 'integration-orbit',
-    status: 'Alpha',
     target: 'Integration section',
     title: 'Integration Orbit',
     version: '0.1.0',
@@ -691,7 +662,6 @@ export const componentEntries = [
     fields: ['heading', 'subtext', 'integrations'],
     href: '/docs/components/integration-list',
     slug: 'integration-list',
-    status: 'Alpha',
     target: 'Integration section',
     title: 'Integration List',
     version: '0.1.0',
@@ -705,7 +675,6 @@ export const componentEntries = [
     fields: ['heading', 'subtext', 'integrations', 'featuredLogo'],
     href: '/docs/components/integration-marquee',
     slug: 'integration-marquee',
-    status: 'Alpha',
     target: 'Integration section',
     title: 'Integration Marquee',
     version: '0.1.0',
@@ -719,7 +688,6 @@ export const componentEntries = [
     fields: ['heading', 'subtext', 'integrations', 'quote', 'author', 'role'],
     href: '/docs/components/integration-testimonial',
     slug: 'integration-testimonial',
-    status: 'Alpha',
     target: 'Integration section',
     title: 'Integration Testimonial',
     version: '0.1.0',
@@ -733,7 +701,6 @@ export const componentEntries = [
     fields: ['title', 'description', 'links'],
     href: '/docs/components/call-to-action-centered',
     slug: 'call-to-action-centered',
-    status: 'Alpha',
     target: 'Call to action',
     title: 'Call To Action Centered',
     version: '0.1.0',
@@ -747,7 +714,6 @@ export const componentEntries = [
     fields: ['title', 'description', 'links'],
     href: '/docs/components/call-to-action-boxed',
     slug: 'call-to-action-boxed',
-    status: 'Alpha',
     target: 'Boxed CTA',
     title: 'Call To Action Boxed',
     version: '0.1.0',
@@ -761,7 +727,6 @@ export const componentEntries = [
     fields: ['title', 'description', 'emailPlaceholder', 'submitLabel', 'action'],
     href: '/docs/components/call-to-action-signup',
     slug: 'call-to-action-signup',
-    status: 'Alpha',
     target: 'Email capture',
     title: 'Call To Action Signup',
     version: '0.1.0',
@@ -775,7 +740,6 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'groups'],
     href: '/docs/components/team-roster',
     slug: 'team-roster',
-    status: 'Alpha',
     target: 'Team section',
     title: 'Team Roster',
     version: '0.1.0',
@@ -789,9 +753,86 @@ export const componentEntries = [
     fields: ['eyebrow', 'title', 'description', 'members'],
     href: '/docs/components/team-grid',
     slug: 'team-grid',
-    status: 'Alpha',
     target: 'Team section',
     title: 'Team Grid',
+    version: '0.1.0',
+  },
+  {
+    category: 'faq',
+    command: 'npx payload-components add faq-accordion',
+    description:
+      'A centered FAQ accordion of question/answer items with an optional CTA — the base of the FAQ family.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/faq-accordion',
+    slug: 'faq-accordion',
+    target: 'FAQ section',
+    title: 'Faq Accordion',
+    version: '0.1.0',
+  },
+  {
+    category: 'faq',
+    command: 'npx payload-components add faq-split',
+    description:
+      'A two-column FAQ pairing a sticky heading and CTA with an accordion of question/answer items.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/faq-split',
+    slug: 'faq-split',
+    target: 'FAQ section',
+    title: 'Faq Split',
+    version: '0.1.0',
+  },
+  {
+    category: 'faq',
+    command: 'npx payload-components add faq-card',
+    description:
+      'A centered FAQ accordion wrapped in a card with an optional CTA below.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/faq-card',
+    slug: 'faq-card',
+    target: 'FAQ section',
+    title: 'Faq Card',
+    version: '0.1.0',
+  },
+  {
+    category: 'faq',
+    command: 'npx payload-components add faq-icons',
+    description:
+      'An FAQ accordion with a per-question icon picked from a fixed allowlist.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items'],
+    href: '/docs/components/faq-icons',
+    slug: 'faq-icons',
+    target: 'FAQ section',
+    title: 'Faq Icons',
+    version: '0.1.0',
+  },
+  {
+    category: 'faq',
+    command: 'npx payload-components add faq-grouped',
+    description:
+      'An FAQ split into titled, icon-tagged category groups of accordions.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'groups'],
+    href: '/docs/components/faq-grouped',
+    slug: 'faq-grouped',
+    target: 'FAQ section',
+    title: 'Faq Grouped',
+    version: '0.1.0',
+  },
+  {
+    category: 'faq',
+    command: 'npx payload-components add faq-grid',
+    description:
+      'A static two-column grid of question/answer cards — every answer visible, no accordion.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items'],
+    href: '/docs/components/faq-grid',
+    slug: 'faq-grid',
+    target: 'FAQ section',
+    title: 'Faq Grid',
     version: '0.1.0',
   },
 ] as const
@@ -887,8 +928,8 @@ export const maintainerNote = {
 /* Client work — the origin story, as evidence. Real freelance Payload */
 /* sites the maintainer shipped BEFORE payload-components existed. Each one    */
 /* shipped well AND paid the manual setup tax by hand — which is why    */
-/* the registry exists. These are NOT payload-components installs (the CLI is  */
-/* alpha): they predate it. The setupTax lines carry the honest         */
+/* the registry exists. These are NOT payload-components installs: they */
+/* predate it. The setupTax lines carry the honest                     */
 /* narrative; taxStats numbers are the maintainer's own recollection,   */
 /* deliberately rounded (approx: true → "~") — drafts to confirm, never */
 /* audited precision. Consistent with the no-customer-logos stance.     */
@@ -1046,7 +1087,7 @@ export const surfaceLinks = [
     title: 'Documentation',
   },
   {
-    description: 'Current alpha components with exact commands and contracts.',
+    description: 'Current components with exact commands and contracts.',
     href: '/components',
     title: 'Component catalog',
   },

@@ -109,13 +109,6 @@ const applyPagesLayoutFragment = (source: string, fragment: Extract<PayloadFragm
   return `${sourceWithImport.slice(0, absoluteMatchStart)}${replacement}${sourceWithImport.slice(absoluteMatchEnd)}`
 }
 
-export const getExpectedPatchedFiles = (manifest: Pick<ComponentManifest, 'payloadFragments'>) =>
-  normalizeFileList(
-    manifest.payloadFragments.map((fragment) =>
-      fragment.kind === 'renderBlocks' ? RENDER_BLOCKS_FILE : PAGES_LAYOUT_FILE,
-    ),
-  )
-
 export const detectProject = async (cwd: string): Promise<DetectedProject> => {
   const supportMatrix = await readJsonFile<SupportMatrix>(supportMatrixPath)
   const packageJson = await readJsonFile<{
@@ -185,7 +178,7 @@ export const detectProject = async (cwd: string): Promise<DetectedProject> => {
   }
 
   throw new Error(
-    `Unsupported project shape in ${cwd}. The alpha install flow currently supports Payload website-style repos with components.json, ${RENDER_BLOCKS_FILE}, and ${PAGES_LAYOUT_FILE}.`,
+    `Unsupported project shape in ${cwd}. The install flow currently supports Payload website-style repos with components.json, ${RENDER_BLOCKS_FILE}, and ${PAGES_LAYOUT_FILE}.`,
   )
 }
 
@@ -305,22 +298,4 @@ export const verifyInstalledPayloadFragments = async ({
     isValid: missingFragments.length === 0,
     missingFragments,
   }
-}
-
-export const isComponentAlreadyPresent = async (cwd: string, manifest: ComponentManifest) => {
-  const fileCheck = await verifyInstalledManifestFiles({
-    cwd,
-    manifest,
-  })
-
-  if (!fileCheck.isValid) {
-    return false
-  }
-
-  const fragmentCheck = await verifyInstalledPayloadFragments({
-    cwd,
-    manifest,
-  })
-
-  return fragmentCheck.isValid
 }

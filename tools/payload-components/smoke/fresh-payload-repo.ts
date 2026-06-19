@@ -590,11 +590,7 @@ export const writeSeedScript = async (targetPath: string, manifests: ComponentMa
     `import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
-import { config as loadEnv } from 'dotenv'
-
 import { getPayload } from 'payload'
-
-loadEnv({ path: '.env' })
 
 const { default: config } = await import('../src/payload.config')
 

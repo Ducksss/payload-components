@@ -1,0 +1,81 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "faq-grouped",
+  "version": "0.1.0",
+  "title": "FAQ Grouped",
+  "description": "An FAQ split into titled, icon-tagged category groups of accordions, installed as a wired Payload block.",
+  "registryItemName": "faq-grouped",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/faqFields.ts",
+    "src/blocks/shared/faqIcons.ts",
+    "src/blocks/FaqGrouped/config.ts",
+    "src/blocks/FaqGrouped/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FaqGroupedBlock",
+      "importPath": "@/blocks/FaqGrouped/Component",
+      "blockSlug": "faqGrouped"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FaqGrouped",
+      "importPath": "../../blocks/FaqGrouped/config",
+      "blockName": "FaqGrouped"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "FAQ grouped into titled, icon-tagged categories of accordions."
+  },
+  "sampleContent": {
+    "blockType": "faqGrouped",
+    "eyebrow": "Help center",
+    "title": "How can we help?",
+    "description": "Browse answers by topic, or reach out if you still need a hand.",
+    "groups": [
+      {
+        "icon": "package",
+        "title": "Getting started",
+        "items": [
+          {
+            "question": "How do I get started?",
+            "answer": "Click Sign up, then connect your first data source — most teams ship in an afternoon."
+          },
+          {
+            "question": "Is there a free trial?",
+            "answer": "Yes, a 14-day free trial with full access to every feature and no credit card."
+          }
+        ]
+      },
+      {
+        "icon": "credit-card",
+        "title": "Billing",
+        "items": [
+          {
+            "question": "What payment methods do you accept?",
+            "answer": "All major credit cards, PayPal, and bank transfers for annual plans."
+          },
+          {
+            "question": "Can I get a refund?",
+            "answer": "We offer a 30-day money-back guarantee — contact support within 30 days."
+          }
+        ]
+      }
+    ]
+  }
+}

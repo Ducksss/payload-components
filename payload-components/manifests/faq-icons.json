@@ -1,0 +1,68 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "faq-icons",
+  "version": "0.1.0",
+  "title": "FAQ Icons",
+  "description": "An FAQ accordion with a per-question icon from a fixed allowlist, installed as a wired Payload block.",
+  "registryItemName": "faq-icons",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/faqFields.ts",
+    "src/blocks/shared/faqIcons.ts",
+    "src/blocks/FaqIcons/config.ts",
+    "src/blocks/FaqIcons/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FaqIconsBlock",
+      "importPath": "@/blocks/FaqIcons/Component",
+      "blockSlug": "faqIcons"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FaqIcons",
+      "importPath": "../../blocks/FaqIcons/config",
+      "blockName": "FaqIcons"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "FAQ accordion with a lucide icon beside each question."
+  },
+  "sampleContent": {
+    "blockType": "faqIcons",
+    "eyebrow": "Support",
+    "title": "Frequently asked questions",
+    "description": "Quick answers, grouped by the part of the product you are asking about.",
+    "items": [
+      {
+        "icon": "clock",
+        "question": "What are your support hours?",
+        "answer": "Our team is available Monday to Friday, 9:00 AM to 8:00 PM EST, and weekends from 10:00 AM to 6:00 PM EST."
+      },
+      {
+        "icon": "credit-card",
+        "question": "How does billing work?",
+        "answer": "Subscriptions are charged to your default payment method on the same day each cycle; manage everything from the billing dashboard."
+      },
+      {
+        "icon": "globe",
+        "question": "Do you offer localized support?",
+        "answer": "We offer multilingual support in English, Spanish, French, German, and Japanese during regional business hours."
+      }
+    ]
+  }
+}

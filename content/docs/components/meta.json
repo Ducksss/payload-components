@@ -39,6 +39,12 @@
     "call-to-action-boxed",
     "call-to-action-signup",
     "team-roster",
-    "team-grid"
+    "team-grid",
+    "faq-accordion",
+    "faq-split",
+    "faq-card",
+    "faq-icons",
+    "faq-grouped",
+    "faq-grid"
   ]
 }

@@ -1,0 +1,73 @@
+---
+title: Faq Grouped
+description: An FAQ split into titled, icon-tagged category groups of accordions.
+icon: Boxes
+---
+
+<ComponentPreview slug="faq-grouped" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add faq-grouped
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-grouped.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="faq-grouped" />
+
+## Content model
+
+The first three fields come from the shared `faqFields` base; `groups` is specific to this
+variant. Each group's `icon` is a `select` over the `faqIcons` allowlist — Payload stores the
+name and the frontend looks up the matching lucide mark at render.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    groups: {
+      type: 'array',
+      required: true,
+      description: 'One or more titled, icon-tagged category groups.',
+    },
+  }}
+/>
+
+Each group in `groups` carries:
+
+<TypeTable
+  type={{
+    icon: { type: 'select', description: 'Icon name from the shared faqIcons allowlist.' },
+    title: { type: 'text', required: true, description: 'The category heading.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'The question/answer rows for this category, rendered as an accordion.',
+    },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="faq-grouped" />
+
+## Requirements
+
+<ComponentRequirements slug="faq-grouped" />
+
+## In this family
+
+<ComponentFamily slug="faq-grouped" />

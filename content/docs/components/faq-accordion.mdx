@@ -1,0 +1,68 @@
+---
+title: Faq Accordion
+description: A centered FAQ accordion with question/answer items and an optional CTA — the base of the FAQ family.
+icon: MessagesSquare
+---
+
+<ComponentPreview slug="faq-accordion" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add faq-accordion
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-accordion.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="faq-accordion" />
+
+## Content model
+
+The first three fields come from the shared `faqFields` base; `items` and `links` are specific
+to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'One or more question/answer pairs rendered as accordion rows.',
+    },
+    links: { type: 'array', description: 'One optional CTA link below the accordion.' },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    question: { type: 'text', required: true, description: 'The accordion trigger text.' },
+    answer: { type: 'textarea', required: true, description: 'The answer revealed when expanded.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="faq-accordion" />
+
+## Requirements
+
+<ComponentRequirements slug="faq-accordion" />
+
+## In this family
+
+<ComponentFamily slug="faq-accordion" />

@@ -9,9 +9,9 @@ type Component = (typeof componentEntries)[number]
 
 /* Masonry cell for the catalog wall. The live preview is the whole pitch, so
  * the chrome is deliberately thin: one footer row with the human name, the
- * install slug, and a copy control. Version/status (uniformly Alpha · 0.1.0),
- * the field list, and the long description live on the contract page — keeping
- * them off the card is what lets ~100 of these scan as a gallery.
+ * install slug, and a copy control. Version, fields, and the long description
+ * live on the contract page — keeping them off the card is what lets ~100 of
+ * these scan as a gallery.
  *
  * The card self-sizes (no fixed height) and the title carries a stretched link
  * so the entire surface navigates to the contract; the copy button opts back

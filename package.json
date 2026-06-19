@@ -1,6 +1,6 @@
 {
   "name": "payload-components",
-  "version": "1.0.1-alpha.0",
+  "version": "1.0.1",
   "description": "MIT registry and CLI for installing wired Payload CMS blocks into Payload v3 + Next.js projects.",
   "keywords": [
     "payload",
@@ -44,7 +44,6 @@
     "build:cli": "cross-env NODE_OPTIONS=--no-deprecation tsup",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
-    "ii": "cross-env NODE_OPTIONS=--no-deprecation pnpm --ignore-workspace install",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation eslint . --fix",
     "payload-components": "node ./bin/payload-components.mjs",
@@ -52,7 +51,7 @@
     "prepack": "pnpm build:cli",
     "registry:build": "cross-env NODE_OPTIONS=--no-deprecation pnpm dlx shadcn@4.7.0 build payload-components/registry.json --output public/r --cwd .",
     "registry:check": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/check-public-registry.ts",
-    "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",
+    "registry:validate": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/validate-registry.ts",
     "showcase:capture": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/showcase/capture.ts",
     "source:build": "cross-env NODE_OPTIONS=--no-deprecation fumadocs-mdx",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
@@ -62,7 +61,7 @@
     "test:install": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int/payload-components.int.spec.ts tests/int/payload-components-registry.int.spec.ts tests/int/payload-components-add-command.int.spec.ts tests/int/payload-components-doctor-command.int.spec.ts",
     "test:pack": "cross-env NODE_OPTIONS=--no-deprecation RUN_PACK_TEST=1 vitest run --config ./vitest.config.mts tests/int/payload-components-pack.int.spec.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
-    "test:registry": "pnpm registry:check",
+    "test:registry": "pnpm registry:check && pnpm registry:validate",
     "test:release": "pnpm lint && pnpm source:build && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm run test:e2e && pnpm build"
   },
   "dependencies": {
@@ -70,7 +69,6 @@
     "semver": "^7.7.4"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.2.0",
     "@playwright/test": "1.58.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/mdx": "^2.0.13",
@@ -80,32 +78,29 @@
     "@types/semver": "^7.7.1",
     "@vercel/analytics": "2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "@vitejs/plugin-react": "4.5.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
-    "dotenv": "17.4.2",
     "eslint": "^9.16.0",
     "eslint-config-next": "16.2.3",
     "fumadocs-core": "16.9.3",
     "fumadocs-mdx": "15.0.10",
     "fumadocs-ui": "16.9.3",
     "geist": "^1.3.0",
-    "jsdom": "28.0.0",
     "lucide-react": "0.563.0",
     "next": "16.2.6",
     "postcss": "^8.5.14",
-    "prettier": "^3.4.2",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
     "tsup": "^8.5.0",
     "tsx": "4.22.4",
-    "typescript": "5.7.3",
+    "typescript": "5.9.3",
     "vite": "7.3.5",
     "vite-tsconfig-paths": "6.0.5",
-    "vitest": "4.1.8"
+    "vitest": "4.1.8",
+    "zod": "4.4.3"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0",
@@ -117,12 +112,9 @@
       "unrs-resolver"
     ],
     "overrides": {
-      "dompurify": "3.4.5",
-      "drizzle-orm": "0.45.2",
       "esbuild": "0.28.1",
       "fast-uri": "3.1.2",
       "postcss": "8.5.14",
-      "uuid": "11.1.1",
       "brace-expansion@>=5.0.0 <5.0.6": "5.0.6",
       "ws@>=8.0.0 <8.21.0": "8.21.0",
       "vite@>=7.0.0 <=7.3.4": "7.3.5",

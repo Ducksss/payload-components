@@ -1,0 +1,68 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "faq-grid",
+  "version": "0.1.0",
+  "title": "FAQ Grid",
+  "description": "A static two-column grid of question/answer cards, installed as a wired Payload block.",
+  "registryItemName": "faq-grid",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/faqFields.ts",
+    "src/blocks/FaqGrid/config.ts",
+    "src/blocks/FaqGrid/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FaqGridBlock",
+      "importPath": "@/blocks/FaqGrid/Component",
+      "blockSlug": "faqGrid"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FaqGrid",
+      "importPath": "../../blocks/FaqGrid/config",
+      "blockName": "FaqGrid"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Static two-column grid of question/answer cards."
+  },
+  "sampleContent": {
+    "blockType": "faqGrid",
+    "eyebrow": "Help center",
+    "title": "Common questions",
+    "description": "Everything you need to know about the platform, at a glance.",
+    "items": [
+      {
+        "question": "How do I create an account?",
+        "answer": "Click Sign up and follow the prompts. You can register with email or connect your Google account."
+      },
+      {
+        "question": "Is there a free trial?",
+        "answer": "Yes — a 14-day free trial with full access to all features, no credit card required."
+      },
+      {
+        "question": "What payment methods do you accept?",
+        "answer": "All major credit cards, PayPal, and bank transfers for annual plans."
+      },
+      {
+        "question": "Can I get a refund?",
+        "answer": "We offer a 30-day money-back guarantee — contact support within 30 days for a refund."
+      }
+    ]
+  }
+}
