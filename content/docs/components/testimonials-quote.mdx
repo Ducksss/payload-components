@@ -1,0 +1,54 @@
+---
+title: Testimonials Quote
+description: A single featured customer testimonial — a quote with a left accent bar, author, optional role, and avatar.
+icon: Quote
+---
+
+<ComponentPreview slug="testimonials-quote" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add testimonials-quote
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/testimonials-quote.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="testimonials-quote" />
+
+## Content model
+
+`quote`, `author`, `role`, and `avatar` come from the shared Testimonials family
+base (`src/blocks/shared/testimonialFields.ts`), used here as a single featured testimonial.
+
+<TypeTable
+  type={{
+    quote: { type: 'textarea', required: true, description: 'The testimonial text.' },
+    author: { type: 'text', required: true, description: 'Name of the person quoted.' },
+    role: { type: 'text', description: 'Optional role / company shown after the name.' },
+    avatar: { type: 'upload', description: 'Optional avatar image (Media upload).' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="testimonials-quote" />
+
+## Requirements
+
+<ComponentRequirements slug="testimonials-quote" />
+
+## In this family
+
+<ComponentFamily slug="testimonials-quote" />

@@ -1871,6 +1871,242 @@
           "target": "~/src/blocks/ComparatorStack/Component.tsx"
         }
       ]
+    },
+    {
+      "name": "testimonials-quote",
+      "type": "registry:block",
+      "title": "Testimonials Quote",
+      "description": "Payload testimonials block: a single featured quote with a left accent bar, author, optional role, and avatar.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-quote\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-quote.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-quote` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add testimonials-quote",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/testimonialFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/testimonialFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsQuote/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsQuote/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsQuote/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsQuote/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-spotlight",
+      "type": "registry:block",
+      "title": "Testimonials Spotlight",
+      "description": "Payload testimonials block: a single centered testimonial with a quote-mark, large avatar, author, and role.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-spotlight\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-spotlight.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-spotlight` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add testimonials-spotlight",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/testimonialFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/testimonialFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsSpotlight/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsSpotlight/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsSpotlight/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsSpotlight/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-grid",
+      "type": "registry:block",
+      "title": "Testimonials Grid",
+      "description": "Payload testimonials block: a heading above a responsive grid of quote cards, each with author, optional role, and avatar.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-grid\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-grid.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-grid` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add testimonials-grid",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/testimonialFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/testimonialFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsGrid/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsGrid/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsGrid/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsGrid/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-rating",
+      "type": "registry:block",
+      "title": "Testimonials Rating",
+      "description": "Payload testimonials block: a responsive grid of review cards, each with a star rating, quote, author, optional role, and avatar.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-rating\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-rating.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-rating` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add testimonials-rating",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/testimonialFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/testimonialFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsRating/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsRating/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsRating/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsRating/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-bento",
+      "type": "registry:block",
+      "title": "Testimonials Bento",
+      "description": "Payload testimonials block: an asymmetric bento with one featured quote in a large cell and supporting quotes around it.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-bento\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-bento.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-bento` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add testimonials-bento",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/testimonialFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/testimonialFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsBento/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsBento/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsBento/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsBento/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-wall",
+      "type": "registry:block",
+      "title": "Testimonials Wall",
+      "description": "Payload testimonials block: a heading above a multi-column masonry wall of compact testimonial cards.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-wall\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-wall.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-wall` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add testimonials-wall",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/testimonialFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/testimonialFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsWall/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsWall/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsWall/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsWall/Component.tsx"
+        }
+      ]
     }
   ]
 }

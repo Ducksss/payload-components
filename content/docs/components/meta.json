@@ -48,6 +48,12 @@
     "faq-grid",
     "comparator-table",
     "comparator-grid",
-    "comparator-stack"
+    "comparator-stack",
+    "testimonials-quote",
+    "testimonials-spotlight",
+    "testimonials-grid",
+    "testimonials-rating",
+    "testimonials-bento",
+    "testimonials-wall"
   ]
 }

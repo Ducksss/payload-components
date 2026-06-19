@@ -1,0 +1,81 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "testimonials-wall",
+  "version": "0.1.0",
+  "title": "Testimonials Wall",
+  "description": "A dense wall-of-love: a heading above a multi-column masonry of compact testimonial cards, each with author, optional role, and avatar.",
+  "registryItemName": "testimonials-wall",
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "files": [
+    "src/blocks/shared/testimonialFields.ts",
+    "src/blocks/TestimonialsWall/config.ts",
+    "src/blocks/TestimonialsWall/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "TestimonialsWallBlock",
+      "importPath": "@/blocks/TestimonialsWall/Component",
+      "blockSlug": "testimonialsWall"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "TestimonialsWall",
+      "importPath": "../../blocks/TestimonialsWall/config",
+      "blockName": "TestimonialsWall"
+    }
+  ],
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Heading above a multi-column masonry of compact testimonial cards (a wall of love)."
+  },
+  "sampleContent": {
+    "blockType": "testimonialsWall",
+    "title": "Loved by the community.",
+    "description": "Hundreds of teams ship on Acme every day. Here is what a few of them told us.",
+    "testimonials": [
+      {
+        "quote": "Acme is really extraordinary and very practical, no need to break your head. A real gold mine.",
+        "author": "Jonathan Yombo",
+        "role": "Software Engineer"
+      },
+      {
+        "quote": "With no experience in web design I redesigned my entire site in a few minutes thanks to Acme.",
+        "author": "Yves Kalume",
+        "role": "GDE — Android"
+      },
+      {
+        "quote": "I absolutely love Acme! The blocks are beautifully designed and easy to use.",
+        "author": "Oketa Fred",
+        "role": "Fullstack Developer"
+      },
+      {
+        "quote": "Using Acme has been like unlocking a secret design superpower — stunning and user-friendly.",
+        "author": "Zeki",
+        "role": "Founder, ChatExtend"
+      },
+      {
+        "quote": "Acme has transformed the way I develop web applications. The flexibility is unmatched.",
+        "author": "Joseph Kitheka",
+        "role": "Fullstack Developer"
+      },
+      {
+        "quote": "Acme is elegant, clean, and responsive — very helpful to start fast with a project.",
+        "author": "Khatab Wedaa",
+        "role": "Creator, MerakiUI"
+      }
+    ]
+  },
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  }
+}

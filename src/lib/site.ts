@@ -213,14 +213,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Forty-seven page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Fifty-three page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '47 installable',
+    countLabel: '53 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -873,6 +873,84 @@ export const componentEntries = [
     slug: 'comparator-stack',
     target: 'Plan cards',
     title: 'Comparator Stack',
+    version: '0.1.0',
+  },
+  {
+    category: 'testimonials',
+    command: 'npx payload-components add testimonials-quote',
+    description:
+      'A single featured testimonial: a quote with a left accent bar, author, optional role, and avatar.',
+    family: 'pages',
+    fields: ['quote', 'author', 'role', 'avatar'],
+    href: '/docs/components/testimonials-quote',
+    slug: 'testimonials-quote',
+    target: 'Testimonials section',
+    title: 'Testimonials Quote',
+    version: '0.1.0',
+  },
+  {
+    category: 'testimonials',
+    command: 'npx payload-components add testimonials-spotlight',
+    description:
+      'A single centered testimonial with a quote-mark, large avatar, author, and role — a hero-style social-proof moment.',
+    family: 'pages',
+    fields: ['quote', 'author', 'role', 'avatar'],
+    href: '/docs/components/testimonials-spotlight',
+    slug: 'testimonials-spotlight',
+    target: 'Testimonials section',
+    title: 'Testimonials Spotlight',
+    version: '0.1.0',
+  },
+  {
+    category: 'testimonials',
+    command: 'npx payload-components add testimonials-grid',
+    description:
+      'A testimonials section: a heading above a responsive grid of quote cards, each with author, optional role, and avatar.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'testimonials'],
+    href: '/docs/components/testimonials-grid',
+    slug: 'testimonials-grid',
+    target: 'Testimonials section',
+    title: 'Testimonials Grid',
+    version: '0.1.0',
+  },
+  {
+    category: 'testimonials',
+    command: 'npx payload-components add testimonials-rating',
+    description:
+      'A testimonials section: a responsive grid of review cards, each with a star rating, quote, author, optional role, and avatar.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'testimonials'],
+    href: '/docs/components/testimonials-rating',
+    slug: 'testimonials-rating',
+    target: 'Testimonials section',
+    title: 'Testimonials Rating',
+    version: '0.1.0',
+  },
+  {
+    category: 'testimonials',
+    command: 'npx payload-components add testimonials-bento',
+    description:
+      'A testimonials bento: an asymmetric grid with one featured quote in a large cell and supporting quotes around it.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'testimonials'],
+    href: '/docs/components/testimonials-bento',
+    slug: 'testimonials-bento',
+    target: 'Testimonials section',
+    title: 'Testimonials Bento',
+    version: '0.1.0',
+  },
+  {
+    category: 'testimonials',
+    command: 'npx payload-components add testimonials-wall',
+    description:
+      'A dense wall-of-love: a multi-column masonry of compact testimonial cards, each with author, optional role, and avatar.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'testimonials'],
+    href: '/docs/components/testimonials-wall',
+    slug: 'testimonials-wall',
+    target: 'Testimonials section',
+    title: 'Testimonials Wall',
     version: '0.1.0',
   },
 ] as const

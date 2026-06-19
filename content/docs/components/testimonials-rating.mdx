@@ -1,0 +1,71 @@
+---
+title: Testimonials Rating
+description: A testimonials section — a responsive grid of review cards, each with a star rating, quote, author, optional role, and avatar.
+icon: Star
+---
+
+<ComponentPreview slug="testimonials-rating" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add testimonials-rating
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/testimonials-rating.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="testimonials-rating" />
+
+## Content model
+
+The `eyebrow`, `title`, and `description` heading fields come from the shared
+Testimonials family base (`src/blocks/shared/testimonialFields.ts`); the `testimonials`
+review grid is specific to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro paragraph shown under the heading.' },
+    testimonials: {
+      type: 'array',
+      required: true,
+      description: 'The review cards (min 1, max 12).',
+    },
+  }}
+/>
+
+Each item in `testimonials` carries a star rating plus the shared one-quote shape:
+
+<TypeTable
+  type={{
+    rating: { type: 'number', required: true, description: 'Star rating from 1 to 5 (defaults to 5).' },
+    quote: { type: 'textarea', required: true, description: 'The testimonial text.' },
+    author: { type: 'text', required: true, description: 'Name of the person quoted.' },
+    role: { type: 'text', description: 'Optional role / company shown under the name.' },
+    avatar: { type: 'upload', description: 'Optional avatar image (Media upload).' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="testimonials-rating" />
+
+## Requirements
+
+<ComponentRequirements slug="testimonials-rating" />
+
+## In this family
+
+<ComponentFamily slug="testimonials-rating" />
