@@ -96,6 +96,38 @@ If you add a `landingSections` key, render its `<h2>` in the same change. The co
 - New components must include source files, manifest metadata, docs, and installer tests together.
 - Direct shadcn installs only deliver files and public shadcn dependencies. `payload-components add` owns Payload-specific wiring, post-install scripts, and install state.
 
+## shadcn registry directory submission
+
+The registry is published under the `@payload-components` namespace and is shaped for listing in the
+[official shadcn registry directory](https://ui.shadcn.com/docs/directory) (so people can discover it
+and run `shadcn add @payload-components/<item>`). `pnpm registry:validate` schema-checks every item
+against the vendored shadcn schemas (`tools/payload-components/schemas/`) and runs inside the release gate.
+
+**Submit only after** the changes are merged and deployed, so the live URL resolves and passes the
+shadcn team's `validate:registries` check:
+
+```bash
+curl -fsSL https://www.payload-components.xyz/r/registry.json    # 200
+curl -fsSL https://www.payload-components.xyz/r/hero-basic.json   # 200, embeds file content
+```
+
+**Steps:** fork [`shadcn-ui/ui`](https://github.com/shadcn-ui/ui), append the entry below to
+`apps/v4/registry/directory.json` (the file is a JSON array; insert alphabetically by `name`; keep the
+literal `{name}` placeholder in `url`), open the PR, and let their CI run `pnpm validate:registries`.
+
+```json
+{
+  "name": "@payload-components",
+  "homepage": "https://www.payload-components.xyz",
+  "url": "https://www.payload-components.xyz/r/{name}.json",
+  "description": "MIT registry of typed Payload CMS blocks for Payload v3 + Next.js. Each block installs as reviewable source; the companion CLI also wires collection config, RenderBlocks, types, and the admin import map."
+}
+```
+
+Confirm at submission time: whether `logo` is required (existing entries carry an SVG string) and any
+length cap on `description`. Our `registry:validate` covers item-schema validity regardless of whether
+their script re-fetches each item URL.
+
 ## Variants and Shared Code
 
 This is the canonical model for every component family. `content/docs/architecture.mdx` carries the narrative version.

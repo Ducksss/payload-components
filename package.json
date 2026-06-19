@@ -51,6 +51,7 @@
     "prepack": "pnpm build:cli",
     "registry:build": "cross-env NODE_OPTIONS=--no-deprecation pnpm dlx shadcn@4.7.0 build payload-components/registry.json --output public/r --cwd .",
     "registry:check": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/check-public-registry.ts",
+    "registry:validate": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/validate-registry.ts",
     "showcase:capture": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/showcase/capture.ts",
     "source:build": "cross-env NODE_OPTIONS=--no-deprecation fumadocs-mdx",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
@@ -60,7 +61,7 @@
     "test:install": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int/payload-components.int.spec.ts tests/int/payload-components-registry.int.spec.ts tests/int/payload-components-add-command.int.spec.ts tests/int/payload-components-doctor-command.int.spec.ts",
     "test:pack": "cross-env NODE_OPTIONS=--no-deprecation RUN_PACK_TEST=1 vitest run --config ./vitest.config.mts tests/int/payload-components-pack.int.spec.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
-    "test:registry": "pnpm registry:check",
+    "test:registry": "pnpm registry:check && pnpm registry:validate",
     "test:release": "pnpm lint && pnpm source:build && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm run test:e2e && pnpm build"
   },
   "dependencies": {

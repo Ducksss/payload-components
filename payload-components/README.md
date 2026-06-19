@@ -40,11 +40,11 @@ Production builds run `registry:build` automatically through the package `prebui
 Direct public installs use the generated item URLs:
 
 ```bash
-pnpm dlx shadcn@latest add https://<your-domain>/r/hero-basic.json
-pnpm dlx shadcn@latest add https://<your-domain>/r/feature-grid-basic.json
-pnpm dlx shadcn@latest add https://<your-domain>/r/content-columns.json
-pnpm dlx shadcn@latest add https://<your-domain>/r/logo-cloud-grid.json
-pnpm dlx shadcn@latest add https://<your-domain>/r/integration-grid.json
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-basic.json
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-grid-basic.json
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-columns.json
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/logo-cloud-grid.json
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-grid.json
 ```
 
 For a complete install, use `payload-components add`. The shadcn registry delivers files and shadcn UI dependencies; the wrapper adds the Payload-specific registration layer and post-install generation.
@@ -54,7 +54,7 @@ Namespace consumers can configure:
 ```json
 {
   "registries": {
-    "@payload-components": "https://<your-domain>/r/{name}.json"
+    "@payload-components": "https://www.payload-components.xyz/r/{name}.json"
   }
 }
 ```
@@ -84,7 +84,7 @@ The fresh smoke lives at `../tools/payload-components/smoke/fresh-payload-repo.t
 
 ```bash
 pnpm test:fresh -- --components hero-basic,feature-grid-basic,content-columns,logo-cloud-grid,integration-grid
-pnpm test:fresh -- --registry-url https://<your-domain>/r/{name}.json
+pnpm test:fresh -- --registry-url https://www.payload-components.xyz/r/{name}.json
 pnpm test:fresh -- --keep-temp --timeout 1200000
 ```
 

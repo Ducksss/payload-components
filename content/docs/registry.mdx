@@ -32,6 +32,29 @@ The generated files are emitted to `public/r` and can be served statically.
   edit `payload-components/registry.json` and rebuild.
 </Callout>
 
+## Namespace installs
+
+Because the generated registry is shadcn-compatible, consumers can install blocks with the plain `shadcn` CLI by registering the namespace in their `components.json`:
+
+```json
+{
+  "registries": {
+    "@payload-components": "https://www.payload-components.xyz/r/{name}.json"
+  }
+}
+```
+
+```bash
+pnpm dlx shadcn@latest add @payload-components/hero-basic
+```
+
+<Callout type="info">
+  A namespaced `shadcn add` delivers files and shadcn UI dependencies only — the
+  Payload wiring lives in the [manifests](#manifests) and is applied by
+  `payload-components add`. See [Installation](/docs/installation#direct-registry-installs)
+  for the full comparison.
+</Callout>
+
 ## Manifests
 
 Each wrapper manifest in `payload-components/manifests` defines:
