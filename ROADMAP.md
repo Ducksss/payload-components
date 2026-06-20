@@ -4,6 +4,10 @@ Payload Components stays MIT, open-source, and community-first. The roadmap is
 about improving the install contract, expanding useful blocks, and making real
 contribution paths obvious.
 
+For how the project gets discovered, cited, and adopted, see
+[DISTRIBUTION.md](./DISTRIBUTION.md) — the distribution roadmap. It stays
+consistent with the boundaries below.
+
 ## Current State
 
 - The registry ships 38 installable page blocks.
@@ -43,3 +47,6 @@ contribution paths obvious.
 - No pricing tiers, license keys, waitlist funnel, or gated component access.
 - No Payload admin/runtime app inside this docs site.
 - No broad repo-shape support without a reproducible fixture.
+
+Non-gating donations (GitHub Sponsors / Open Collective) are allowed to fund
+maintenance — they never gate components, so they are not a "pricing tier."

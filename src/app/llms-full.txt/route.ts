@@ -8,6 +8,8 @@ export async function GET() {
     '',
     siteDescription,
     '',
+    'The first centralized, copy-paste block registry for Payload CMS — the shadcn registry model applied to Payload blocks, installed incrementally into an existing Payload v3 + Next.js repo.',
+    '',
     `Home: ${siteUrl}/`,
     `Docs: ${siteUrl}/docs`,
     `Catalog: ${siteUrl}/components`,

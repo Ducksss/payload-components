@@ -272,6 +272,9 @@ contribution paths obvious.
 Read [ROADMAP.md][roadmap-url] for the current direction, or use
 [open issues][issues-url] for active work and component requests.
 
+For how the project gets discovered and adopted — channels, the launch plan, and
+metrics — see [DISTRIBUTION.md](./DISTRIBUTION.md).
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Contributing
@@ -308,7 +311,10 @@ information.
 
 - Maintainer: [Ducksss](https://github.com/Ducksss)
 - Website: [payload-components.xyz][site-url]
+- Discussions: [github.com/Ducksss/payload-components/discussions](https://github.com/Ducksss/payload-components/discussions)
 - Issues: [github.com/Ducksss/payload-components/issues][issues-url]
+- Showcase: [payload-components.xyz/showcase](https://www.payload-components.xyz/showcase)
+- Blog: [payload-components.xyz/blog](https://www.payload-components.xyz/blog)
 - Security: [GitHub Security Advisories][security-advisories-url]
 - Project Link: [github.com/Ducksss/payload-components][repo-url]
 

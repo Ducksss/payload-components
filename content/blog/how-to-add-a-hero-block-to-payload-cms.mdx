@@ -1,0 +1,93 @@
+---
+title: How to add a hero block to Payload CMS
+description: The honest version — a hero block isn't live when its files land. Here's the manual wiring it needs, and the one command that does all of it for you.
+author: Ducksss
+date: 2026-06-20
+---
+
+"Add a hero block" sounds like a five-minute job: drop a component in, point a
+page at it, done. In Payload it isn't — not because Payload is hard, but because a
+*block* is more than a component. It's a page-builder field that has to be
+registered, rendered, typed, and known to the admin before an editor can place it.
+Skip any of those and you get a block that compiles but doesn't show up, or shows
+up but isn't typed. I rebuilt this dance on enough client sites to want it gone.
+
+So here's both versions: the manual one, so you know exactly what's involved, and
+the one-command one.
+
+## What a hero block actually needs
+
+Copy a `HeroBasic` component into `src/blocks/` and nothing happens yet. To make it
+a real, editable block you still have to:
+
+<Steps>
+  <Step>
+    **Register it** in your Pages collection (`src/collections/Pages/index.ts`) so
+    the layout builder offers it as a choice.
+  </Step>
+  <Step>
+    **Map it** in your render switch (`src/blocks/RenderBlocks.tsx`) so the
+    frontend knows how to paint it.
+  </Step>
+  <Step>
+    **Regenerate types** (`payload generate:types`) so `src/payload-types.ts`
+    includes the block's fields end to end.
+  </Step>
+  <Step>
+    **Regenerate the import map** (`payload generate:importmap`) so the admin UI
+    can render the block's edit surface.
+  </Step>
+</Steps>
+
+None of that is hard. It's just easy to get *subtly* wrong — a missed import map
+entry, a type that's stale until the next dev restart — and you re-do it for every
+block, on every repo.
+
+## The one-command version
+
+This is the part the registry exists for. From the root of a Payload v3 + Next.js
+project:
+
+```bash
+npx payload-components add hero-basic
+```
+
+That copies the hero source in **and** does the four edits above — registers it,
+maps it, regenerates types, regenerates the import map — then records what it did
+so a second run converges instead of duplicating wiring.
+
+<Callout type="info">
+  Everything lands as one ordinary git diff: the block source plus two scoped
+  patches (your Pages collection and `RenderBlocks.tsx`) plus the regenerated
+  output. Read it like any PR before you commit — that's the whole point of
+  shipping it MIT.
+</Callout>
+
+## Make it yours
+
+`hero-basic` is a headline-led marketing hero: an eyebrow, title, description, CTA
+links, and proof badges, all editable from the Payload admin. It's plain source in
+your repo now — change a class, swap the layout, delete a field. No vendored
+framework, no lock-in.
+
+If you'd rather a different shape — split, bento, steps — they install the same
+way. Browse the live previews and pick one:
+
+- [The component catalog](/components) — every block rendered with real content.
+- [hero-basic docs](/docs/components/hero-basic) — fields, files it ships, files it
+  patches, and supported targets.
+
+## Try it on a throwaway branch
+
+The safest way to trust an installer that edits your repo is to watch it:
+
+```bash
+git checkout -b try-payload-components
+npx payload-components add hero-basic
+git diff --stat
+```
+
+If a block you rebuild on every project isn't in the catalog yet, tell me — the
+catalog grows from real installs.
+
+— Ducksss
