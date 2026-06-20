@@ -330,7 +330,7 @@ function FilterButton({
         size === 'sm' ? 'py-1.5 text-[13px]' : 'py-2 text-sm',
         weight === 'medium' ? 'font-medium' : '',
         active
-          ? 'border-brand/30 bg-brand/10 text-brand'
+          ? 'border-brand/30 bg-brand/10 text-brand-600'
           : 'border-transparent text-muted-foreground hover:bg-muted hover:text-foreground',
       )}
     >
@@ -338,7 +338,7 @@ function FilterButton({
       <span
         className={cn(
           'shrink-0 rounded-full px-1.5 py-0.5 font-mono text-[10px] tabular-nums',
-          active ? 'bg-brand/15 text-brand' : 'bg-muted text-muted-foreground',
+          active ? 'bg-brand/15 text-brand-600' : 'bg-muted text-muted-foreground',
         )}
       >
         {count}
@@ -367,7 +367,7 @@ function FilterChip({
       className={cn(
         'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-[13px] transition-colors',
         active
-          ? 'border-brand/30 bg-brand/10 text-brand'
+          ? 'border-brand/30 bg-brand/10 text-brand-600'
           : 'border-border text-muted-foreground hover:bg-muted hover:text-foreground',
       )}
     >
@@ -375,7 +375,7 @@ function FilterChip({
       <span
         className={cn(
           'font-mono text-[10px] tabular-nums',
-          active ? 'text-brand/80' : 'text-muted-foreground/70',
+          active ? 'text-brand-600' : 'text-muted-foreground',
         )}
       >
         {count}

@@ -2,9 +2,11 @@ name: Registry Verification
 
 on:
   pull_request:
+  # Production safety net only. PRs into dev already run this gate, so re-running
+  # the full suite on every dev push just re-tests an already-verified change.
+  # main is the deployed branch, so keep gating its (squash-merged) commits.
   push:
     branches:
-      - dev
       - main
   schedule:
     - cron: '18 19 * * *'
@@ -84,10 +86,37 @@ jobs:
           pnpm run test:install
           pnpm build:cli
 
+  quick-checks:
+    # Fast-fail lint + type-check so common errors surface in ~2 min instead of
+    # waiting on the full release gate (which first installs a browser for e2e).
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.24.0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint and type-check
+        shell: bash
+        run: |
+          pnpm lint
+          pnpm source:build
+          pnpm exec tsc --noEmit
+
   pr-gate:
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     runs-on: ubuntu-latest
     needs:
+      - quick-checks
       - release-gate
       - node-20-compat
     steps:
