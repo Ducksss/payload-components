@@ -73,7 +73,12 @@ const applyRenderBlocksFragment = (source: string, fragment: Extract<PayloadFrag
     throw new Error('Unable to find the blockComponents object in RenderBlocks.tsx.')
   }
 
-  const objectEndIndex = lines.findIndex((line, index) => index > objectStartIndex && line === '}')
+  // Match the dedup matchers' reformatting tolerance: a reformatted closing
+  // brace (indented, or with a trailing `;`/`,`) must still be found, so the
+  // insert path can't throw while verify reports the entry present.
+  const objectEndIndex = lines.findIndex(
+    (line, index) => index > objectStartIndex && /^\s*}[;,]?\s*$/.test(line),
+  )
 
   if (objectEndIndex === -1) {
     throw new Error('Unable to find the end of the blockComponents object in RenderBlocks.tsx.')

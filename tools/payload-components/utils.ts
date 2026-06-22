@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -42,12 +42,29 @@ export const isPathInside = (parentPath: string, childPath: string) => {
 export const readJsonFile = async <T>(filePath: string): Promise<T> => {
   const raw = await readFile(filePath, 'utf8')
 
-  return JSON.parse(raw) as T
+  try {
+    return JSON.parse(raw) as T
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error)
+    throw new Error(`Invalid JSON in ${filePath}: ${reason}`)
+  }
 }
 
 export const writeJsonFile = async (filePath: string, value: unknown) => {
   await mkdir(path.dirname(filePath), { recursive: true })
-  await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8')
+
+  // Write to a temp sibling then rename so an interrupted write (disk full,
+  // SIGINT) can never leave a half-written file behind — rename is atomic on
+  // the same filesystem, and the temp lives in the target dir to guarantee it.
+  const tempPath = `${filePath}.${process.pid}.tmp`
+
+  try {
+    await writeFile(tempPath, `${JSON.stringify(value, null, 2)}\n`, 'utf8')
+    await rename(tempPath, filePath)
+  } catch (error) {
+    await rm(tempPath, { force: true })
+    throw error
+  }
 }
 
 export const ensureDir = async (dirPath: string) => {
@@ -177,6 +194,9 @@ export const runCommand = async ({
     })
 
     if (stdin) {
+      // Without an 'error' listener, an EPIPE (child closes stdin early) is an
+      // unhandled stream error that crashes the whole CLI.
+      child.stdin?.on('error', reject)
       child.stdin?.end(stdin)
     }
 

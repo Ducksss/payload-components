@@ -223,4 +223,66 @@ describe('payload-components fragment patching', () => {
     const verification = await verifyInstalledPayloadFragments({ cwd: fixtureDir, manifest })
     expect(verification.isValid, JSON.stringify(verification.missingFragments)).toBe(true)
   })
+
+  it('inserts into an empty blockComponents object whose closing brace was reformatted', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('hero-basic')
+    tempDirs.push(fixtureDir)
+
+    const renderBlocks = manifest.payloadFragments.find((fragment) => fragment.kind === 'renderBlocks')
+    const pagesLayout = manifest.payloadFragments.find((fragment) => fragment.kind === 'pagesLayout')
+
+    if (renderBlocks?.kind !== 'renderBlocks' || pagesLayout?.kind !== 'pagesLayout') {
+      throw new Error('hero-basic must declare both a renderBlocks and a pagesLayout fragment')
+    }
+
+    /* An empty blockComponents object whose closing brace was reflowed to `};`
+       (trailing semicolon, not a bare `}`). The strict `line === '}'` end-finder
+       can't see this and the insert path throws; the loosened matcher must still
+       locate the object end and insert the registration. */
+    const renderBlocksPath = path.join(fixtureDir, RENDER_BLOCKS_FILE)
+    await writeFile(
+      renderBlocksPath,
+      [
+        "import React from 'react'",
+        '',
+        'const blockComponents = {',
+        '};',
+        '',
+        'export const RenderBlocks = ({ blocks }: { blocks?: unknown[] }) => blocks',
+        '',
+      ].join('\n'),
+      'utf8',
+    )
+
+    const pagesPath = path.join(fixtureDir, PAGES_LAYOUT_FILE)
+    await writeFile(
+      pagesPath,
+      [
+        "import type { CollectionConfig } from 'payload'",
+        '',
+        'export const Pages: CollectionConfig = {',
+        "  slug: 'pages',",
+        '  fields: [',
+        '    {',
+        "      name: 'layout',",
+        "      type: 'blocks',",
+        '      blocks: [],',
+        '    },',
+        '  ],',
+        '}',
+        '',
+      ].join('\n'),
+      'utf8',
+    )
+
+    await applyPayloadFragments(fixtureDir, manifest.payloadFragments)
+
+    const patchedRenderBlocks = await readFile(renderBlocksPath, 'utf8')
+    const blockKeyMatches =
+      patchedRenderBlocks.match(new RegExp(`\\b${renderBlocks.blockSlug}\\s*:`, 'g')) ?? []
+    expect(blockKeyMatches, 'block was not inserted into the reformatted object').toHaveLength(1)
+
+    const verification = await verifyInstalledPayloadFragments({ cwd: fixtureDir, manifest })
+    expect(verification.isValid, JSON.stringify(verification.missingFragments)).toBe(true)
+  })
 })

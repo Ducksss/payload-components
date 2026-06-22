@@ -34,7 +34,21 @@ const postInstallEnv = {
   PREVIEW_SECRET: process.env.PREVIEW_SECRET ?? 'payload-components-poc-preview-secret',
 }
 
-const formatStageError = (error: unknown) => (error instanceof Error ? error.message : 'Unknown error')
+const formatStageError = (error: unknown) => {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  if (typeof error === 'string' && error.length > 0) {
+    return error
+  }
+
+  if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string') {
+    return error.message
+  }
+
+  return String(error)
+}
 
 export const addCommand = async ({
   cwd,
@@ -141,7 +155,9 @@ export const addCommand = async ({
         }),
       )
     } finally {
-      await rm(registryOutputDir, { force: true, recursive: true })
+      // Best-effort cleanup of the temp registry build dir (lives in os.tmpdir).
+      // A cleanup failure must never mask the install's own error or success.
+      await rm(registryOutputDir, { force: true, recursive: true }).catch(() => {})
     }
   }
 

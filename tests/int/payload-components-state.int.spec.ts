@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
@@ -132,5 +132,30 @@ describe('payload-components state', () => {
     expect(state.components['hero-basic'].status).toBe('installed')
     expect(state.components['hero-basic'].lastError).toBeNull()
     expect(state.components['hero-basic'].installedAt).toBeTruthy()
+  })
+
+  it('surfaces a path-qualified error when state.json is corrupt', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-state-'))
+    tempDirs.push(tempDir)
+
+    await mkdir(path.join(tempDir, '.payload-components'), { recursive: true })
+    await writeFile(path.join(tempDir, '.payload-components', 'state.json'), '{ "version": 2, oops', 'utf8')
+
+    await expect(loadState(tempDir)).rejects.toThrow(/Invalid JSON in .*state\.json/)
+  })
+
+  it('writes state atomically, leaving no temp files behind', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-state-'))
+    tempDirs.push(tempDir)
+
+    await recordInstalledState({
+      cwd: tempDir,
+      manifest: manifestRef,
+      patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
+      targetId: 'payload-website-starter',
+    })
+
+    const entries = await readdir(path.join(tempDir, '.payload-components'))
+    expect(entries).toEqual(['state.json'])
   })
 })
