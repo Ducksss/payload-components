@@ -20,7 +20,7 @@ function Verdict({
 }) {
   return (
     <div className="flex items-center gap-x-3 gap-y-1 px-5 py-2.5 md:border-l md:border-border md:px-6 md:py-4">
-      <code className="w-28 shrink-0 truncate font-mono text-[11px] text-muted-foreground/80 md:hidden">
+      <code className="w-28 shrink-0 truncate font-mono text-[11px] text-muted-foreground md:hidden">
         {command.replace('npx ', '').split(' add')[0]} add
       </code>
       {label === null ? (
@@ -76,7 +76,7 @@ export function WiringLedger() {
           Artifact
         </div>
         <div className="border-l border-border px-6 py-4">
-          <code className="block overflow-x-auto whitespace-nowrap font-mono text-[13px] text-foreground/80">
+          <code tabIndex={0} className="block overflow-x-auto whitespace-nowrap font-mono text-[13px] text-foreground/80">
             <span className="select-none text-muted-foreground">$ </span>
             {baseline.command}
           </code>

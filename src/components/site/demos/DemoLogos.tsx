@@ -25,7 +25,7 @@ export const demoLogos: DemoLogo[] = [
 
 export function DemoLogoMark({ Icon, className, name }: DemoLogo & { className?: string }) {
   return (
-    <span className={cn('inline-flex items-center gap-1.5 text-foreground/55', className)}>
+    <span className={cn('inline-flex items-center gap-1.5 text-foreground/70', className)}>
       <Icon aria-hidden="true" className="size-5 shrink-0" strokeWidth={1.75} />
       <span className="whitespace-nowrap text-base font-semibold tracking-tight">{name}</span>
     </span>

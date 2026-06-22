@@ -144,14 +144,17 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'src', 'proxy.ts'), 'utf8'),
     ])
 
-    expect(workflow).toContain('- dev')
+    // The push gate is main-only: PRs into dev already run the full gate, so the
+    // deployed branch is the only one worth re-gating on its squash-merge commit.
     expect(workflow).toContain('- main')
     expect(workflow).not.toContain('- prod')
     expect(workflow).toContain('node-version: 22')
     expect(workflow).toContain('node-version: 20.19.0')
+    expect(workflow).toContain('quick-checks:')
     expect(workflow).toContain('release-gate:')
     expect(workflow).toContain('node-20-compat:')
     expect(workflow).toContain('needs:')
+    expect(workflow).toContain('- quick-checks')
     expect(workflow).toContain('- release-gate')
     expect(workflow).toContain('- node-20-compat')
     expect(sourceConfig).toContain('pageSchema')
