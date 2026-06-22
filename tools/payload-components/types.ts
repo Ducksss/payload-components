@@ -52,7 +52,6 @@ export type InstallError = {
 
 export type InstallStateEntry = {
   installedAt: string | null
-  installedFiles: string[]
   lastAttemptAt: string
   lastError: InstallError | null
   manifestVersion: string

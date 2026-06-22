@@ -1772,6 +1772,105 @@
           "target": "~/src/blocks/FaqGrid/Component.tsx"
         }
       ]
+    },
+    {
+      "name": "comparator-table",
+      "type": "registry:block",
+      "title": "Comparator Table",
+      "description": "Tiered feature-comparison table Payload block: plan columns with CTAs over grouped feature rows.",
+      "registryDependencies": ["badge"],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-table\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-table.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-table` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add comparator-table",
+          "postInstall": ["generate:types", "generate:importmap"],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/comparatorFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/comparatorFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ComparatorTable/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ComparatorTable/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ComparatorTable/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ComparatorTable/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "comparator-grid",
+      "type": "registry:block",
+      "title": "Comparator Grid",
+      "description": "Plan-column comparison Payload block: pricing columns in a bordered card over a feature matrix.",
+      "registryDependencies": ["badge", "card"],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-grid\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-grid.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-grid` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add comparator-grid",
+          "postInstall": ["generate:types", "generate:importmap"],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/comparatorFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/comparatorFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ComparatorGrid/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ComparatorGrid/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ComparatorGrid/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ComparatorGrid/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "comparator-stack",
+      "type": "registry:block",
+      "title": "Comparator Stack",
+      "description": "Stacked plan-card comparison Payload block: one card per plan with its own price, CTA, and feature checklist.",
+      "registryDependencies": ["badge", "card"],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-stack\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-stack.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-stack` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add comparator-stack",
+          "postInstall": ["generate:types", "generate:importmap"],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": ["payload-website-starter"]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/comparatorFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/comparatorFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ComparatorStack/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ComparatorStack/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ComparatorStack/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ComparatorStack/Component.tsx"
+        }
+      ]
     }
   ]
 }

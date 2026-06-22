@@ -45,6 +45,9 @@
     "faq-card",
     "faq-icons",
     "faq-grouped",
-    "faq-grid"
+    "faq-grid",
+    "comparator-table",
+    "comparator-grid",
+    "comparator-stack"
   ]
 }

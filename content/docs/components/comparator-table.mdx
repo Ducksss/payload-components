@@ -1,0 +1,77 @@
+---
+title: Comparator Table
+description: A tiered feature-comparison table — plan columns with CTAs over grouped feature rows whose cells are checkmarks or text values.
+icon: Grid3x3
+---
+
+<ComponentPreview slug="comparator-table" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add comparator-table
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-table.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="comparator-table" />
+
+## Content model
+
+`title` and `description` come from the shared Comparator family base
+(`src/blocks/shared/comparatorFields.ts`); the `plans` columns and the `features` matrix are
+specific to this variant. Each feature row holds one `values` cell per plan, in the same order as
+`plans` — keep the two aligned.
+
+<TypeTable
+  type={{
+    title: { type: 'text', description: 'Optional section heading shown above the table.' },
+    description: { type: 'textarea', description: 'Optional supporting copy under the heading.' },
+    plans: { type: 'array', required: true, description: 'The plan columns, left to right (min 2, max 4).' },
+    features: { type: 'array', required: true, description: 'The comparison rows; each row has one cell per plan.' },
+  }}
+/>
+
+Each item in `plans` carries:
+
+<TypeTable
+  type={{
+    name: { type: 'text', required: true, description: 'Plan name shown in the column header.' },
+    badge: { type: 'text', description: 'Optional pill above the name, e.g. "Most popular".' },
+    highlighted: { type: 'checkbox', description: 'Tints this column to mark the recommended plan.' },
+    links: { type: 'array', description: 'Optional single CTA shown under the plan name.' },
+  }}
+/>
+
+Each item in `features` carries:
+
+<TypeTable
+  type={{
+    groupLabel: { type: 'text', description: 'Optional section heading rendered as a divider row above this feature.' },
+    feature: { type: 'text', required: true, description: 'The row label.' },
+    values: { type: 'array', description: 'One cell per plan, in the same order as Plans. Tick "included" for a checkmark, set a label for a text value, or leave both empty for a dash.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="comparator-table" />
+
+## Requirements
+
+<ComponentRequirements slug="comparator-table" />
+
+## In this family
+
+<ComponentFamily slug="comparator-table" />
