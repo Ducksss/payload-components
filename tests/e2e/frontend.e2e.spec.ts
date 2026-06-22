@@ -5,6 +5,7 @@ import {
   heroHeadline,
   componentEntries,
   landingSections,
+  payloadCustomComponentsTitle,
   primaryInstallCommand,
   terminalDemoLines,
 } from '../../src/lib/site'
@@ -207,6 +208,28 @@ test.describe('Light shadcn frontend', () => {
     }
   })
 
+  test('exposes the Payload custom components page without overflow', async ({ page }) => {
+    await page.goto(`${baseURL}/payload-custom-components`)
+
+    await expect(page).toHaveTitle(new RegExp(payloadCustomComponentsTitle))
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Payload custom components, without the wiring tax.',
+      }),
+    ).toBeVisible()
+    await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
+    await expect(page.getByText('Register the config')).toBeVisible()
+    await expect(page.getByText('Map the renderer')).toBeVisible()
+    await expect(page.getByText('Refresh types and import map')).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Read the contract' })).toHaveCount(4)
+
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    )
+    expect(hasHorizontalOverflow).toBe(false)
+  })
+
   test('drives the responsive component preview frame', async ({ page }) => {
     await page.goto(`${baseURL}/docs/components/hero-basic`)
 
@@ -288,6 +311,9 @@ test.describe('Light shadcn frontend', () => {
 
     await expect(page.getByRole('contentinfo')).toBeVisible()
     await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
+    await expect(
+      page.getByRole('contentinfo').getByRole('link', { name: 'Payload custom components' }),
+    ).toBeVisible()
     await expect(page.getByRole('contentinfo').getByRole('link', { name: 'Brand Guide' })).toBeVisible()
   })
 

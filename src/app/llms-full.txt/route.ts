@@ -1,5 +1,13 @@
 import { getLLMText, source } from '@/lib/source'
-import { faqEntries, githubRepoUrl, componentEntries, siteDescription, siteUrl } from '@/lib/site'
+import {
+  faqEntries,
+  githubRepoUrl,
+  componentEntries,
+  payloadCustomComponentsRoute,
+  payloadCustomComponentsTitle,
+  siteDescription,
+  siteUrl,
+} from '@/lib/site'
 
 export async function GET() {
   const docs = await Promise.all(source.getPages().map(getLLMText))
@@ -11,6 +19,7 @@ export async function GET() {
     `Home: ${siteUrl}/`,
     `Docs: ${siteUrl}/docs`,
     `Catalog: ${siteUrl}/components`,
+    `${payloadCustomComponentsTitle}: ${siteUrl}${payloadCustomComponentsRoute}`,
     `Registry: ${siteUrl}/r/registry.json`,
     `GitHub: ${githubRepoUrl}`,
     '',

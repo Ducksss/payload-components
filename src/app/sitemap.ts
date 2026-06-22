@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 
-import { siteUrl } from '@/lib/site'
+import { payloadCustomComponentsRoute, siteUrl } from '@/lib/site'
 import { source } from '@/lib/source'
 
 /* Static marketing routes. The /docs index and every component/guide page come
@@ -8,6 +8,7 @@ import { source } from '@/lib/source'
 const staticRoutes = [
   { changeFrequency: 'weekly', path: '/', priority: 1 },
   { changeFrequency: 'weekly', path: '/components', priority: 0.9 },
+  { changeFrequency: 'weekly', path: payloadCustomComponentsRoute, priority: 0.85 },
   { changeFrequency: 'monthly', path: '/about', priority: 0.5 },
   { changeFrequency: 'monthly', path: '/brand-guide', priority: 0.5 },
 ] as const satisfies ReadonlyArray<{

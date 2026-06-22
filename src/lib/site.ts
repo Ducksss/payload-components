@@ -10,10 +10,14 @@ export const docsRoute = '/docs'
 export const docsImageRoute = '/og/docs'
 export const docsContentRoute = '/llms.mdx/docs'
 export const blogRoute = '/blog'
+export const payloadCustomComponentsRoute = '/payload-custom-components'
 export const primaryInstallCommand = 'npx payload-components add hero-basic'
 
 export const siteDescription =
   'Payload Components is an MIT registry and CLI that installs typed Payload CMS blocks into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
+export const payloadCustomComponentsTitle = 'Payload Custom Components for Payload CMS'
+export const payloadCustomComponentsDescription =
+  'Install custom Payload CMS blocks with the source, collection config, render map, generated types, and admin import map wired in one reviewable command.'
 
 /* ------------------------------------------------------------------ */
 /* Hero                                                                */
@@ -1132,6 +1136,11 @@ export const surfaceLinks = [
     title: 'Component catalog',
   },
   {
+    description: 'A focused guide for custom Payload CMS blocks that need registry-backed wiring.',
+    href: payloadCustomComponentsRoute,
+    title: 'Payload custom components',
+  },
+  {
     description: 'What payload-components add wires, step by step.',
     href: '/docs/installation',
     title: 'Install workflow',
@@ -1166,6 +1175,7 @@ export const footerColumns = [
   {
     links: [
       { href: '/components', label: 'Component catalog' },
+      { href: payloadCustomComponentsRoute, label: 'Payload custom components' },
       { href: '/docs', label: 'Documentation' },
       { href: '/docs/installation', label: 'Install workflow' },
       { href: '/docs/architecture', label: 'Architecture' },

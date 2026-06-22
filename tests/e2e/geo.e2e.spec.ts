@@ -57,6 +57,7 @@ test.describe('AI-readable documentation surfaces', () => {
 
     expect(sitemapBody).toContain(`<loc>${baseURL}/</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/components</loc>`)
+    expect(sitemapBody).toContain(`<loc>${baseURL}/payload-custom-components</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/docs/installation</loc>`)
 
     await page.goto(baseURL)
@@ -101,6 +102,9 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(body).toContain(`- [Home](${baseURL}/)`)
     expect(body).toContain(`- [Docs](${baseURL}/docs)`)
     expect(body).toContain(`- [Component catalog](${baseURL}/components)`)
+    expect(body).toContain(
+      `- [Payload Custom Components for Payload CMS](${baseURL}/payload-custom-components)`,
+    )
     expect(body).toContain(`- [Public registry](${baseURL}/r/registry.json)`)
     expect(body).toContain(`- [GitHub repository](${githubRepoUrl})`)
     expect(body).toContain('Hero Basic: npx payload-components add hero-basic')
@@ -233,6 +237,34 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(Number(itemList?.numberOfItems)).toBeGreaterThanOrEqual(2)
     expect(JSON.stringify(itemList)).toContain('Hero Basic')
     expect(JSON.stringify(itemList)).toContain('Feature Grid Basic')
+  })
+
+  test('payload custom components page exposes crawl metadata and JSON-LD', async ({ page }) => {
+    await page.goto(`${baseURL}/payload-custom-components`)
+
+    await expect(page).toHaveTitle(/Payload Custom Components for Payload CMS/)
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      `${baseURL}/payload-custom-components`,
+    )
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Payload custom components, without the wiring tax.',
+      }),
+    ).toBeVisible()
+    await expect(page.locator('code', { hasText: 'npx payload-components add hero-basic' }).first()).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Read the contract' }).first()).toBeVisible()
+
+    expect(
+      findStructuredData(await getStructuredData(page), 'WebPage', (node) => {
+        return node.url === `${baseURL}/payload-custom-components`
+      }),
+    ).toMatchObject({
+      '@type': 'WebPage',
+      name: 'Payload Custom Components for Payload CMS',
+      url: `${baseURL}/payload-custom-components`,
+    })
   })
 
   test('docs pages expose TechArticle structured data', async ({ page }) => {
