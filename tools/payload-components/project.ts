@@ -15,21 +15,37 @@ const getAbsolutePath = (cwd: string, filePath: string) => path.join(cwd, filePa
 
 const normalizeFileList = (files: string[]) => [...new Set(files)].sort()
 
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+/* Structural matchers shared by the apply (dedup) and verify paths, so "did I
+   already insert this?" and "is it present?" can never disagree. They tolerate
+   quote style, a trailing semicolon, indentation, and spacing: if a consumer's
+   anchor region was reformatted (Prettier, a hand-edit), apply must not append
+   a duplicate while verify reports it present — or vice-versa. */
+const hasNamedImport = (source: string, importName: string, importPath: string) =>
+  new RegExp(
+    `import\\s*\\{[^}]*\\b${escapeRegExp(importName)}\\b[^}]*\\}\\s*from\\s*['"]${escapeRegExp(importPath)}['"]`,
+  ).test(source)
+
+const hasBlockComponentEntry = (source: string, blockSlug: string, importName: string) =>
+  new RegExp(`\\b${escapeRegExp(blockSlug)}\\s*:\\s*${escapeRegExp(importName)}\\b`).test(source)
+
 const insertLineBeforeAnchor = ({
   anchor,
+  isPresent,
   line,
   source,
 }: {
   anchor: string
+  isPresent?: (source: string) => boolean
   line: string
   source: string
 }) => {
-  const lines = source.split('\n')
-
-  if (lines.includes(line)) {
+  if (isPresent ? isPresent(source) : source.split('\n').includes(line)) {
     return source
   }
 
+  const lines = source.split('\n')
   const anchorIndex = lines.findIndex((currentLine) => currentLine.includes(anchor))
 
   if (anchorIndex === -1) {
@@ -46,6 +62,7 @@ const applyRenderBlocksFragment = (source: string, fragment: Extract<PayloadFrag
   const propertyLine = `  ${fragment.blockSlug}: ${fragment.importName},`
   const lines = insertLineBeforeAnchor({
     anchor: renderBlocksAnchor,
+    isPresent: (current) => hasNamedImport(current, fragment.importName, fragment.importPath),
     line: importLine,
     source,
   }).split('\n')
@@ -64,7 +81,7 @@ const applyRenderBlocksFragment = (source: string, fragment: Extract<PayloadFrag
 
   const objectLines = lines.slice(objectStartIndex, objectEndIndex + 1)
 
-  if (objectLines.includes(propertyLine)) {
+  if (hasBlockComponentEntry(objectLines.join('\n'), fragment.blockSlug, fragment.importName)) {
     return lines.join('\n')
   }
 
@@ -77,6 +94,7 @@ const applyPagesLayoutFragment = (source: string, fragment: Extract<PayloadFragm
   const importLine = `import { ${fragment.importName} } from '${fragment.importPath}'`
   const sourceWithImport = insertLineBeforeAnchor({
     anchor: pagesAnchor,
+    isPresent: (current) => hasNamedImport(current, fragment.importName, fragment.importPath),
     line: importLine,
     source,
   })
@@ -268,11 +286,11 @@ export const verifyInstalledPayloadFragments = async ({
     if (fragment.kind === 'renderBlocks') {
       const renderBlocksSource = await readFile(getAbsolutePath(cwd, RENDER_BLOCKS_FILE), 'utf8')
 
-      if (!renderBlocksSource.includes(`import { ${fragment.importName} } from '${fragment.importPath}'`)) {
+      if (!hasNamedImport(renderBlocksSource, fragment.importName, fragment.importPath)) {
         missingFragments.push(`renderBlocks.import:${fragment.importName}`)
       }
 
-      if (!renderBlocksSource.includes(`${fragment.blockSlug}: ${fragment.importName}`)) {
+      if (!hasBlockComponentEntry(renderBlocksSource, fragment.blockSlug, fragment.importName)) {
         missingFragments.push(`renderBlocks.block:${fragment.blockSlug}`)
       }
     }
@@ -280,7 +298,7 @@ export const verifyInstalledPayloadFragments = async ({
     if (fragment.kind === 'pagesLayout') {
       const pagesSource = await readFile(getAbsolutePath(cwd, PAGES_LAYOUT_FILE), 'utf8')
 
-      if (!pagesSource.includes(`import { ${fragment.importName} } from '${fragment.importPath}'`)) {
+      if (!hasNamedImport(pagesSource, fragment.importName, fragment.importPath)) {
         missingFragments.push(`pagesLayout.import:${fragment.importName}`)
       }
 

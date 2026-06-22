@@ -54,13 +54,9 @@ const migrateLegacyEntry = async ({
   const patchedFiles = normalizeFileList(
     legacyEntry.touchedFiles.filter((filePath) => SHARED_PATCHED_FILES.includes(filePath as never)),
   )
-  const installedFiles = normalizeFileList(
-    legacyEntry.touchedFiles.filter((filePath) => !SHARED_PATCHED_FILES.includes(filePath as never)),
-  )
 
   return {
     installedAt: legacyEntry.status === 'installed' ? legacyEntry.installedAt : null,
-    installedFiles,
     lastAttemptAt: legacyEntry.installedAt,
     lastError: null,
     manifestVersion: legacyEntry.manifestVersion,
@@ -96,7 +92,6 @@ const normalizeState = (state: InstallState): InstallState => ({
       componentName,
       {
         ...entry,
-        installedFiles: normalizeFileList(entry.installedFiles),
         lastError: entry.lastError ?? null,
         patchedFiles: normalizeFileList(entry.patchedFiles),
       },
@@ -106,7 +101,6 @@ const normalizeState = (state: InstallState): InstallState => ({
 
 const upsertEntry = ({
   installedAt,
-  installedFiles,
   lastAttemptAt,
   lastError,
   manifest,
@@ -115,7 +109,6 @@ const upsertEntry = ({
   targetId,
 }: {
   installedAt: string | null
-  installedFiles: string[]
   lastAttemptAt: string
   lastError: InstallError | null
   manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
@@ -128,7 +121,6 @@ const upsertEntry = ({
     targetId,
   }),
   installedAt,
-  installedFiles: normalizeFileList(installedFiles),
   lastAttemptAt,
   lastError,
   patchedFiles: normalizeFileList(patchedFiles),
@@ -165,13 +157,11 @@ export const saveState = async (cwd: string, state: InstallState) => {
 
 export const recordInstallAttempt = async ({
   cwd,
-  installedFiles,
   manifest,
   patchedFiles,
   targetId,
 }: {
   cwd: string
-  installedFiles: string[]
   manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
   targetId: string
@@ -182,7 +172,6 @@ export const recordInstallAttempt = async ({
 
   state.components[manifest.name] = upsertEntry({
     installedAt: currentEntry?.installedAt ?? null,
-    installedFiles,
     lastAttemptAt: now,
     lastError: null,
     manifest,
@@ -196,7 +185,6 @@ export const recordInstallAttempt = async ({
 
 export const recordInstallFailure = async ({
   cwd,
-  installedFiles,
   manifest,
   patchedFiles,
   stage,
@@ -204,7 +192,6 @@ export const recordInstallFailure = async ({
   message,
 }: {
   cwd: string
-  installedFiles: string[]
   manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
   stage: InstallStage
@@ -217,7 +204,6 @@ export const recordInstallFailure = async ({
 
   state.components[manifest.name] = upsertEntry({
     installedAt: currentEntry?.installedAt ?? null,
-    installedFiles,
     lastAttemptAt: now,
     lastError: {
       message,
@@ -235,14 +221,12 @@ export const recordInstallFailure = async ({
 export const recordInstalledState = async ({
   cwd,
   installedAt,
-  installedFiles,
   manifest,
   patchedFiles,
   targetId,
 }: {
   cwd: string
   installedAt?: string
-  installedFiles: string[]
   manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
   targetId: string
@@ -252,7 +236,6 @@ export const recordInstalledState = async ({
 
   state.components[manifest.name] = upsertEntry({
     installedAt: installedAt ?? now,
-    installedFiles,
     lastAttemptAt: now,
     lastError: null,
     manifest,

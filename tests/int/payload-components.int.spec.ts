@@ -1,4 +1,4 @@
-import { readdir, readFile, rm } from 'node:fs/promises'
+import { readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -7,6 +7,10 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from '../../tools/payload-components/constants'
 import { loadManifest } from '../../tools/payload-components/manifest'
+import {
+  applyPayloadFragments,
+  verifyInstalledPayloadFragments,
+} from '../../tools/payload-components/project'
 
 import { expectInstalledComponents, readInstallState } from './payload-components-assertions'
 import { createInstallFixture, createInstallFixtureForComponents } from './payload-components-fixture'
@@ -33,6 +37,7 @@ const representativeInstallComponents = [
   'team-grid',
   'faq-accordion',
   'faq-grid',
+  'comparator-grid',
 ] as const
 
 const idempotencyComponents = ['hero-basic', 'logo-cloud-marquee'] as const
@@ -135,4 +140,87 @@ describe('payload-components add', () => {
 
     expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
   }, 180000)
+})
+
+describe('payload-components fragment patching', () => {
+  const tempDirs: string[] = []
+
+  afterEach(async () => {
+    await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
+  })
+
+  it('dedupes a block already registered in a reformatted anchor region', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('hero-basic')
+    tempDirs.push(fixtureDir)
+
+    const renderBlocks = manifest.payloadFragments.find((fragment) => fragment.kind === 'renderBlocks')
+    const pagesLayout = manifest.payloadFragments.find((fragment) => fragment.kind === 'pagesLayout')
+
+    if (renderBlocks?.kind !== 'renderBlocks' || pagesLayout?.kind !== 'pagesLayout') {
+      throw new Error('hero-basic must declare both a renderBlocks and a pagesLayout fragment')
+    }
+
+    /* The same registration the installer would add, but reformatted the way a
+       Prettier reflow or hand-edit leaves it: double quotes + semicolons, odd
+       indentation, no trailing comma. Exact-line dedup misses this and appends a
+       duplicate key; the shared structural matchers must treat it as present. */
+    const renderBlocksPath = path.join(fixtureDir, RENDER_BLOCKS_FILE)
+    await writeFile(
+      renderBlocksPath,
+      [
+        `import { ${renderBlocks.importName} } from "${renderBlocks.importPath}";`,
+        "import React, { Fragment } from 'react'",
+        '',
+        'const blockComponents = {',
+        `    ${renderBlocks.blockSlug}:${renderBlocks.importName}`,
+        '}',
+        '',
+        'export const RenderBlocks = ({ blocks }: { blocks?: unknown[] }) => blocks',
+        '',
+      ].join('\n'),
+      'utf8',
+    )
+
+    const pagesPath = path.join(fixtureDir, PAGES_LAYOUT_FILE)
+    await writeFile(
+      pagesPath,
+      [
+        `import { ${pagesLayout.importName} } from "${pagesLayout.importPath}";`,
+        "import type { CollectionConfig } from 'payload'",
+        '',
+        'export const Pages: CollectionConfig = {',
+        "  slug: 'pages',",
+        '  fields: [',
+        '    {',
+        "      name: 'layout',",
+        "      type: 'blocks',",
+        `      blocks: [ ${pagesLayout.blockName} ],`,
+        '    },',
+        '  ],',
+        '}',
+        '',
+      ].join('\n'),
+      'utf8',
+    )
+
+    await applyPayloadFragments(fixtureDir, manifest.payloadFragments)
+
+    const patchedRenderBlocks = await readFile(renderBlocksPath, 'utf8')
+    const patchedPages = await readFile(pagesPath, 'utf8')
+
+    const blockKeyMatches =
+      patchedRenderBlocks.match(new RegExp(`\\b${renderBlocks.blockSlug}\\s*:`, 'g')) ?? []
+    expect(blockKeyMatches, 'renderBlocks gained a duplicate block registration').toHaveLength(1)
+
+    const renderImportMatches =
+      patchedRenderBlocks.match(new RegExp(`import\\s*\\{[^}]*\\b${renderBlocks.importName}\\b`, 'g')) ?? []
+    expect(renderImportMatches, 'renderBlocks gained a duplicate import').toHaveLength(1)
+
+    const pagesImportMatches =
+      patchedPages.match(new RegExp(`import\\s*\\{[^}]*\\b${pagesLayout.importName}\\b`, 'g')) ?? []
+    expect(pagesImportMatches, 'pages gained a duplicate import').toHaveLength(1)
+
+    const verification = await verifyInstalledPayloadFragments({ cwd: fixtureDir, manifest })
+    expect(verification.isValid, JSON.stringify(verification.missingFragments)).toBe(true)
+  })
 })

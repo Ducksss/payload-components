@@ -1,0 +1,78 @@
+---
+title: Comparator Grid
+description: A plan-column comparison card — pricing columns in one bordered card over a feature matrix, with a highlighted column and per-plan CTAs.
+icon: Columns2
+---
+
+<ComponentPreview slug="comparator-grid" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add comparator-grid
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-grid.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="comparator-grid" />
+
+## Content model
+
+`title` and `description` come from the shared Comparator family base
+(`src/blocks/shared/comparatorFields.ts`); the priced `plans` columns and the `features` matrix are
+specific to this variant. Each feature row holds one `values` cell per plan, in the same order as
+`plans` — keep the two aligned.
+
+<TypeTable
+  type={{
+    title: { type: 'text', description: 'Optional section heading shown above the card.' },
+    description: { type: 'textarea', description: 'Optional supporting copy under the heading.' },
+    plans: { type: 'array', required: true, description: 'The plan columns, left to right (min 2, max 4).' },
+    features: { type: 'array', required: true, description: 'The comparison rows; each row has one cell per plan.' },
+  }}
+/>
+
+Each item in `plans` carries:
+
+<TypeTable
+  type={{
+    name: { type: 'text', required: true, description: 'Plan name shown in the column header.' },
+    price: { type: 'text', description: 'Headline price, e.g. "$29".' },
+    period: { type: 'text', description: 'Billing period shown next to the price, e.g. "/mo".' },
+    badge: { type: 'text', description: 'Optional pill above the name, e.g. "Most popular".' },
+    highlighted: { type: 'checkbox', description: 'Tints this column to mark the recommended plan.' },
+    links: { type: 'array', description: 'Optional single CTA shown in the column footer.' },
+  }}
+/>
+
+Each item in `features` carries:
+
+<TypeTable
+  type={{
+    feature: { type: 'text', required: true, description: 'The row label.' },
+    values: { type: 'array', description: 'One cell per plan, in the same order as Plans. Tick "included" for a checkmark, set a label for a text value, or leave both empty for a dash.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="comparator-grid" />
+
+## Requirements
+
+<ComponentRequirements slug="comparator-grid" />
+
+## In this family
+
+<ComponentFamily slug="comparator-grid" />

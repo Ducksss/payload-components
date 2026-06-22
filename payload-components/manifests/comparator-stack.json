@@ -1,0 +1,124 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "comparator-stack",
+  "version": "0.1.0",
+  "title": "Comparator Stack",
+  "description": "A stacked plan-card comparison Payload block: one card per plan with its own price, CTA, and per-plan feature checklist.",
+  "registryItemName": "comparator-stack",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/comparatorFields.ts",
+    "src/blocks/ComparatorStack/config.ts",
+    "src/blocks/ComparatorStack/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ComparatorStackBlock",
+      "importPath": "@/blocks/ComparatorStack/Component",
+      "blockSlug": "comparatorStack"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ComparatorStack",
+      "importPath": "../../blocks/ComparatorStack/config",
+      "blockName": "ComparatorStack"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "One card per plan, each with its price, CTA, and feature checklist; the recommended plan gets an accent ring."
+  },
+  "sampleContent": {
+    "blockType": "comparatorStack",
+    "title": "Choose your plan",
+    "description": "Start free and scale as you grow — every plan lists exactly what's included.",
+    "plans": [
+      {
+        "name": "Starter",
+        "description": "For individuals and small projects.",
+        "price": "$0",
+        "period": "/mo",
+        "links": [
+          {
+            "link": {
+              "type": "custom",
+              "newTab": false,
+              "url": "/signup",
+              "label": "Get started",
+              "appearance": "outline"
+            }
+          }
+        ],
+        "features": [
+          { "label": "Integrations", "value": "3" },
+          { "label": "API calls", "value": "1,000 / mo" },
+          { "label": "Analytics", "included": false },
+          { "label": "Custom webhooks", "included": false }
+        ]
+      },
+      {
+        "name": "Pro",
+        "description": "For growing teams.",
+        "price": "$29",
+        "period": "/mo",
+        "badge": "Most popular",
+        "highlighted": true,
+        "links": [
+          {
+            "link": {
+              "type": "custom",
+              "newTab": false,
+              "url": "/signup?plan=pro",
+              "label": "Start free trial",
+              "appearance": "default"
+            }
+          }
+        ],
+        "features": [
+          { "label": "Integrations", "value": "Unlimited" },
+          { "label": "API calls", "value": "100K / mo" },
+          { "label": "Analytics", "included": true },
+          { "label": "Custom webhooks", "included": true }
+        ]
+      },
+      {
+        "name": "Enterprise",
+        "description": "For large organizations.",
+        "price": "Custom",
+        "links": [
+          {
+            "link": {
+              "type": "custom",
+              "newTab": false,
+              "url": "/contact",
+              "label": "Contact sales",
+              "appearance": "outline"
+            }
+          }
+        ],
+        "features": [
+          { "label": "Integrations", "value": "Unlimited" },
+          { "label": "API calls", "value": "Unlimited" },
+          { "label": "Analytics", "included": true },
+          { "label": "SSO / SAML", "included": true }
+        ]
+      }
+    ]
+  }
+}

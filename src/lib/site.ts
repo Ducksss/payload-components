@@ -213,14 +213,14 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Forty-four page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Forty-seven page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
    vs shadcn-native component copies). */
 export const componentFamilies = {
   pages: {
-    countLabel: '44 installable',
+    countLabel: '47 installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
@@ -248,6 +248,7 @@ export const componentCategories = {
   logos: { family: 'pages', label: 'Logo cloud' },
   team: { family: 'pages', label: 'Team' },
   embed: { family: 'pages', label: 'Embed' },
+  comparator: { family: 'pages', label: 'Comparator' },
   pricing: { family: 'pages', label: 'Pricing' },
   faq: { family: 'pages', label: 'FAQ' },
   testimonials: { family: 'pages', label: 'Testimonials' },
@@ -833,6 +834,45 @@ export const componentEntries = [
     slug: 'faq-grid',
     target: 'FAQ section',
     title: 'Faq Grid',
+    version: '0.1.0',
+  },
+  {
+    category: 'comparator',
+    command: 'npx payload-components add comparator-table',
+    description:
+      'A tiered feature-comparison table: plan columns with CTAs over grouped feature rows of checkmarks or text values.',
+    family: 'pages',
+    fields: ['title', 'description', 'plans', 'features'],
+    href: '/docs/components/comparator-table',
+    slug: 'comparator-table',
+    target: 'Comparison table',
+    title: 'Comparator Table',
+    version: '0.1.0',
+  },
+  {
+    category: 'comparator',
+    command: 'npx payload-components add comparator-grid',
+    description:
+      'A plan-column comparison card: pricing columns over a feature matrix, with a highlighted column and per-plan CTAs.',
+    family: 'pages',
+    fields: ['title', 'description', 'plans', 'features'],
+    href: '/docs/components/comparator-grid',
+    slug: 'comparator-grid',
+    target: 'Pricing grid',
+    title: 'Comparator Grid',
+    version: '0.1.0',
+  },
+  {
+    category: 'comparator',
+    command: 'npx payload-components add comparator-stack',
+    description:
+      'A stacked plan-card comparison: one card per plan with its own price, CTA, and feature checklist.',
+    family: 'pages',
+    fields: ['title', 'description', 'plans'],
+    href: '/docs/components/comparator-stack',
+    slug: 'comparator-stack',
+    target: 'Plan cards',
+    title: 'Comparator Stack',
     version: '0.1.0',
   },
 ] as const
