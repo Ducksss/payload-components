@@ -1,0 +1,72 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "testimonials-bento",
+  "version": "0.1.0",
+  "title": "Testimonials Bento",
+  "description": "A testimonials bento: an asymmetric grid with one featured quote in a large cell and supporting quotes around it, each with optional logo and avatar.",
+  "registryItemName": "testimonials-bento",
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "files": [
+    "src/blocks/shared/testimonialFields.ts",
+    "src/blocks/TestimonialsBento/config.ts",
+    "src/blocks/TestimonialsBento/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "TestimonialsBentoBlock",
+      "importPath": "@/blocks/TestimonialsBento/Component",
+      "blockSlug": "testimonialsBento"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "TestimonialsBento",
+      "importPath": "../../blocks/TestimonialsBento/config",
+      "blockName": "TestimonialsBento"
+    }
+  ],
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Asymmetric bento with one featured quote in a large cell and supporting quotes around it."
+  },
+  "sampleContent": {
+    "blockType": "testimonialsBento",
+    "eyebrow": "Wall of proof",
+    "title": "Built by makers, loved by thousands of developers.",
+    "testimonials": [
+      {
+        "quote": "Acme has transformed the way our company develops web applications. The extensive collection of blocks and templates has significantly accelerated our workflow, and the freedom to customize every surface lets us create experiences that feel genuinely our own.",
+        "author": "Shantanu Rao",
+        "role": "Staff Engineer",
+        "featured": true
+      },
+      {
+        "quote": "Acme is really extraordinary and very practical. A real gold mine.",
+        "author": "Jonathan Yombo",
+        "role": "Software Engineer"
+      },
+      {
+        "quote": "Great work on Acme. One of the best platforms I have seen so far.",
+        "author": "Yucel Faruksahan",
+        "role": "Creator, Tailkits"
+      },
+      {
+        "quote": "I love Acme. The blocks are well-structured, simple to use, and beautifully designed.",
+        "author": "Rodrigo Aguilar",
+        "role": "Creator, TailwindAwesome"
+      }
+    ]
+  },
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  }
+}

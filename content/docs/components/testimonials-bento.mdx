@@ -1,0 +1,72 @@
+---
+title: Testimonials Bento
+description: A testimonials bento — an asymmetric grid with one featured quote in a large cell and supporting quotes around it, each with optional logo and avatar.
+icon: LayoutDashboard
+---
+
+<ComponentPreview slug="testimonials-bento" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add testimonials-bento
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/testimonials-bento.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="testimonials-bento" />
+
+## Content model
+
+The `eyebrow`, `title`, and `description` heading fields come from the shared
+Testimonials family base (`src/blocks/shared/testimonialFields.ts`); the `testimonials`
+bento is specific to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro paragraph shown under the heading.' },
+    testimonials: {
+      type: 'array',
+      required: true,
+      description: 'The bento cells (min 1, max 8). Mark one as featured for the large cell.',
+    },
+  }}
+/>
+
+Each item in `testimonials` carries the shared one-quote shape plus bento extras:
+
+<TypeTable
+  type={{
+    quote: { type: 'textarea', required: true, description: 'The testimonial text.' },
+    author: { type: 'text', required: true, description: 'Name of the person quoted.' },
+    role: { type: 'text', description: 'Optional role / company shown under the name.' },
+    avatar: { type: 'upload', description: 'Optional avatar image (Media upload).' },
+    logo: { type: 'upload', description: 'Optional company logo shown above the quote (Media upload).' },
+    featured: { type: 'checkbox', description: 'Give this testimonial the large bento cell.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="testimonials-bento" />
+
+## Requirements
+
+<ComponentRequirements slug="testimonials-bento" />
+
+## In this family
+
+<ComponentFamily slug="testimonials-bento" />

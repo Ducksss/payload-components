@@ -30,6 +30,7 @@ const familyRepresentatives: Record<string, string> = {
   integration: 'integration-orbit',
   logos: 'logo-cloud-marquee',
   team: 'team-grid',
+  testimonials: 'testimonials-grid',
   embed: 'embed-basic',
   comparator: 'comparator-grid',
 }
