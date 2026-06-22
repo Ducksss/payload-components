@@ -100,11 +100,11 @@ export const ComparatorGridBlock: React.FC<Props> = ({
                           })}
                         >
                           {cell?.included ? (
-                            <Check className="size-4 text-primary" />
+                            <Check aria-label="Included" className="size-4 text-primary" role="img" />
                           ) : cell?.label ? (
                             <span>{cell.label}</span>
                           ) : (
-                            <Minus className="size-4 text-muted-foreground" />
+                            <Minus aria-label="Not included" className="size-4 text-muted-foreground" role="img" />
                           )}
                         </div>
                       )
