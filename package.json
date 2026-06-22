@@ -80,7 +80,7 @@
     "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.1.0",
     "eslint": "^9.16.0",
     "eslint-config-next": "16.2.3",
     "fumadocs-core": "16.9.3",
