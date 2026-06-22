@@ -158,6 +158,14 @@ Run the CLI from the root of a supported Payload v3 + Next.js project:
 npx payload-components add hero-basic
 ```
 
+A real run — the block source is copied, registered in the Pages collection,
+wired into `RenderBlocks`, and the Payload types and admin import map are
+regenerated, all landing as one reviewable git diff:
+
+<p align="center">
+  <img src="public/payload-components-add.gif" alt="Terminal recording of npx payload-components add hero-basic: it checks the registry, creates the HeroBasic block source files, runs generate:types and generate:importmap, reports the install succeeded, then git status shows the wired files — RenderBlocks.tsx, Pages/index.ts, payload-types.ts, and importMap.js." width="900" />
+</p>
+
 Good first installs:
 
 | Component            | Use it for                         |

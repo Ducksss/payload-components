@@ -122,6 +122,9 @@ people who found the project *without* you telling them.
 - [x] `/showcase` and `/blog` added to the sitemap (posts are crawled via the `/blog` index).
 - [x] Seed SEO post: "How to add a hero block to Payload CMS" (`content/blog/`).
 - [x] README links to Discussions, Showcase, Blog, and this roadmap.
+- [x] README demo GIF (`public/payload-components-add.gif`) — a **real**
+      `npx payload-components add hero-basic` recorded with `vhs` against a
+      scaffolded `create-payload-app -t website --db sqlite` project.
 
 ### Needs your action (external — see notes inline)
 - [ ] Create / confirm the **founder X handle**; then wire it into the footer +
@@ -133,19 +136,25 @@ people who found the project *without* you telling them.
       platform** — do it in a dedicated PR with `--update-snapshots`.
 - [ ] Submit the **awesome-payload** PR, the **Payload Directory**, and **Payload
       Market** listings.
-- [ ] Record the README demo GIF — `vhs`/`asciinema` are not installed in CI and a
-      real recording needs a target Payload project. Suggested `vhs` tape:
+- [ ] Refresh the demo GIF when the install output changes — re-record with `vhs`
+      against a `create-payload-app -t website --db sqlite` project, then replace
+      `public/payload-components-add.gif`:
 
       ```tape
-      # demo.tape — render with: vhs demo.tape  (https://github.com/charmbracelet/vhs)
-      Output payload-components-add.gif
-      Set FontSize 18
-      Set Width 1100
-      Set Height 600
-      Set Theme "Dracula"
-      Type "npx payload-components add hero-basic"  Sleep 600ms  Enter
-      Sleep 6s
+      # render with: vhs demo.tape  (https://github.com/charmbracelet/vhs)
+      Output "payload-components-add.gif"
+      Set Shell "bash"
+      Set FontSize 16
+      Set Width 1200
+      Set Height 720
+      Hide
+      Type "cd /path/to/scaffolded-project && clear" Enter
+      Sleep 600ms
+      Show
+      Type "npx payload-components add hero-basic" Sleep 800ms Enter
+      Sleep 26s
+      Type "git status --short" Sleep 500ms Enter
+      Sleep 3.5s
       ```
 
-      Run it against a real Payload v3 + Next.js starter so the output is genuine,
-      then commit the GIF to `public/` and embed it near the top of the README.
+      Then speed/optimize: `ffmpeg -i raw.gif -vf "setpts=PTS/2.2,fps=18,scale=1000:-1:flags=lanczos,palettegen" pal.png` + a `paletteuse` pass (≈1 MB, ~15s).
