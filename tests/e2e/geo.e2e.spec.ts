@@ -48,13 +48,18 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(robotsBody).toContain('Disallow: /api/')
     expect(robotsBody).toContain(`Sitemap: ${baseURL}/sitemap.xml`)
 
-    const sitemap = await request.get(`${baseURL}/sitemap.xml`)
+    const sitemap = await request.get(`${baseURL}/sitemap.xml`, {
+      headers: { 'User-Agent': 'Googlebot/2.1 (+http://www.google.com/bot.html)' },
+    })
 
     expect(sitemap.ok()).toBe(true)
     expect(sitemap.headers()['content-type']).toContain('application/xml')
 
     const sitemapBody = await sitemap.text()
 
+    expect(sitemapBody).toMatch(
+      /^<\?xml version="1.0" encoding="UTF-8"\?>\n<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9">/,
+    )
     expect(sitemapBody).toContain(`<loc>${baseURL}/</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/components</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/docs/installation</loc>`)
