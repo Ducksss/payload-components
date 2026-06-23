@@ -150,3 +150,24 @@ pnpm payload-components doctor
 ```
 
 `payload-components doctor` checks the supported project shape, required post-install scripts, and recorded install state. It exits non-zero when a recorded component is partial or drifted from disk.
+
+## Partial install recovery
+
+When a stage fails, the entry stays `partial` in `.payload-components/state.json` with
+`lastError.stage` and `lastError.message`. The `add` output names the component, the failed
+stage, the safest retry command, the owned component files, and the patched host files.
+
+Use this sequence to debug recovery:
+
+```bash
+pnpm payload-components doctor
+pnpm payload-components add hero-basic
+pnpm payload-components doctor
+```
+
+Owned component files are the files the wrapper installs, such as
+`src/blocks/HeroBasic/config.ts` and `src/blocks/HeroBasic/Component.tsx`. Patched host files
+are target-project files the wrapper edits, such as `src/blocks/RenderBlocks.tsx`,
+`src/collections/Pages/index.ts`, `package.json`, and the active lockfile. Do not delete patched
+host files to recover. Review the git diff, fix the reported root cause, and rerun the same `add`
+command so the idempotent file, dependency, fragment, and post-install checks can finish.

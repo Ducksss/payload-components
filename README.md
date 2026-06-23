@@ -229,6 +229,28 @@ The installer runs five idempotent stages:
 Install state is written to `.payload-components/state.json` inside the
 consumer project, so partial installs are visible and retries can converge.
 
+### Recovering an interrupted install
+
+If a stage fails, the component is recorded as `partial` and `payload-components add`
+prints the failed stage, the last error, and the safest retry command. Fix the
+reported cause, then rerun the same command from the project root:
+
+```sh
+npx payload-components add hero-basic
+npx payload-components doctor
+```
+
+Review the git diff before editing anything by hand. The CLI distinguishes two
+kinds of files: _owned component files_ (listed from the manifest, such as the
+files under `src/blocks/HeroBasic/`) are safe to re-create by retrying, while
+_patched host files_ are project files the installer edited and may hold your own
+work — normally `src/blocks/RenderBlocks.tsx`, `src/collections/Pages/index.ts`,
+`package.json`, and the package manager lockfile.
+
+Prefer forward fixes over deletion. Do not delete patched host files to recover.
+Use `payload-components doctor` to see the failed stage, missing files, missing
+Payload fragments, and the owned/patched file breakdown before and after retrying.
+
 Useful checks while changing this repo:
 
 ```sh
