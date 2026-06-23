@@ -230,6 +230,28 @@ test.describe('Light shadcn frontend', () => {
     expect(hasHorizontalOverflow).toBe(false)
   })
 
+  test('tracks Payload custom components install-copy source', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/payload-custom-components`)
+    await stubGtagEvents(page)
+
+    await page.getByRole('button', { name: 'Copy' }).first().click()
+
+    await expectCopiedAlert(page)
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(primaryInstallCommand)
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: primaryInstallCommand,
+        component: 'hero-basic',
+        source_path: '/payload-custom-components',
+      },
+    ])
+  })
+
   test('drives the responsive component preview frame', async ({ page }) => {
     await page.goto(`${baseURL}/docs/components/hero-basic`)
 
