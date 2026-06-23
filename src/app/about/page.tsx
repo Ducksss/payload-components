@@ -11,7 +11,7 @@ import { HeadingAccent, Section, SectionHeading } from '@/components/site/sectio
 import { ClientShowcase } from '@/components/site/sections/ClientShowcase'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
-import { githubIssuesUrl, receipts } from '@/lib/site'
+import { githubIssuesUrl, installablePageCount, receipts, upcomingPostCount } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
 const description =
@@ -212,7 +212,7 @@ export default function AboutPage() {
                 accentWord="matters"
                 eyebrow="From here"
                 heading="Spend your week on the work that matters."
-                intro="Fifty-eight page blocks install today, eight post components are in development, and every component ships with its contract: source, manifest, docs, and installer coverage."
+                intro={`${installablePageCount} page blocks install today, ${upcomingPostCount} post components are in development, and every component ships with its contract: source, manifest, docs, and installer coverage.`}
               />
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link
