@@ -54,6 +54,7 @@ export const ComparatorTableBlock: React.FC<Props> = ({
                     {plans.map((plan, planIndex) => (
                       <th
                         key={plan.id ?? planIndex}
+                        scope="col"
                         className={cn('min-w-40 p-4 align-bottom', {
                           'bg-primary/5': plan.highlighted,
                         })}
@@ -117,7 +118,7 @@ export const ComparatorTableBlock: React.FC<Props> = ({
                               })}
                             >
                               {cell?.included ? (
-                                <Check className="size-4 text-primary" />
+                                <Check aria-label="Included" className="size-4 text-primary" role="img" />
                               ) : cell?.label ? (
                                 <span>{cell.label}</span>
                               ) : (

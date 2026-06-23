@@ -1,0 +1,67 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "testimonials-grid",
+  "version": "0.1.0",
+  "title": "Testimonials Grid",
+  "description": "A testimonials section: a heading above a responsive grid of quote cards, each with author, optional role, and avatar.",
+  "registryItemName": "testimonials-grid",
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "files": [
+    "src/blocks/shared/testimonialFields.ts",
+    "src/blocks/TestimonialsGrid/config.ts",
+    "src/blocks/TestimonialsGrid/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "TestimonialsGridBlock",
+      "importPath": "@/blocks/TestimonialsGrid/Component",
+      "blockSlug": "testimonialsGrid"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "TestimonialsGrid",
+      "importPath": "../../blocks/TestimonialsGrid/config",
+      "blockName": "TestimonialsGrid"
+    }
+  ],
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Heading above a responsive grid of quote cards, each with author, optional role and avatar."
+  },
+  "sampleContent": {
+    "blockType": "testimonialsGrid",
+    "eyebrow": "Loved by teams",
+    "title": "What our customers say.",
+    "description": "Read why product teams choose Acme for the reporting work that used to take a sprint.",
+    "testimonials": [
+      {
+        "quote": "Using Acme has been like unlocking a secret design superpower. The flexibility to customize every surface is incredible.",
+        "author": "Henry Lee",
+        "role": "UX Engineer"
+      },
+      {
+        "quote": "Acme transformed the way we ship customer dashboards. What used to take a sprint now takes an afternoon.",
+        "author": "Isabella Garcia",
+        "role": "Product Lead"
+      },
+      {
+        "quote": "The component library accelerated our entire workflow. Acme is a genuine game-changer for our team.",
+        "author": "Liam Brown",
+        "role": "Founder & CEO"
+      }
+    ]
+  },
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  }
+}

@@ -1,3 +1,4 @@
+import { Logomark } from '@/components/site/Logomark'
 import { cn } from '@/utilities/ui'
 
 export function Wordmark({
@@ -9,12 +10,7 @@ export function Wordmark({
 }) {
   return (
     <span className="flex items-center gap-2.5">
-      <span
-        aria-hidden="true"
-        className="flex size-6 shrink-0 items-center justify-center rounded-md bg-brand font-mono text-[13px] font-semibold leading-none text-brand-foreground"
-      >
-        &gt;
-      </span>
+      <Logomark />
       <span
         className={cn(
           'text-[15px] font-semibold tracking-tight text-foreground',

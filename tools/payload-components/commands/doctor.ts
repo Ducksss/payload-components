@@ -26,6 +26,9 @@ const log = (status: 'ok' | 'warn' | 'error', message: string) => {
 
 const formatList = (values: string[]) => values.join(', ')
 
+const formatRecordedFiles = (values: string[]) =>
+  values.length > 0 ? formatList(values) : 'none recorded'
+
 const loadKnownManifests = async () => {
   const files = await readdir(manifestsDir)
   const names = files
@@ -82,6 +85,8 @@ const checkRecordedComponent = async ({
       : ''
 
     log('error', `${componentName}: install is partial${errorSuffix}`)
+    log('warn', `${componentName}: owned component files ${formatRecordedFiles(manifest.files)}`)
+    log('warn', `${componentName}: patched host files ${formatRecordedFiles(entry.patchedFiles)}`)
   }
 
   if (entry.manifestVersion !== manifest.version) {

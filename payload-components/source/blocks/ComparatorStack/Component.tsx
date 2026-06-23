@@ -99,11 +99,11 @@ export const ComparatorStackBlock: React.FC<Props> = ({
                             <span className="text-muted-foreground">{feature.label}</span>
 
                             {feature.included ? (
-                              <Check className="size-4 text-primary" />
+                              <Check aria-label="Included" className="size-4 text-primary" role="img" />
                             ) : feature.value ? (
                               <span className="font-medium text-foreground">{feature.value}</span>
                             ) : (
-                              <Minus className="size-4 text-muted-foreground" />
+                              <Minus aria-label="Not included" className="size-4 text-muted-foreground" role="img" />
                             )}
                           </div>
                         ))}

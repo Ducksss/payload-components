@@ -1779,7 +1779,7 @@
       "title": "Comparator Table",
       "description": "Tiered feature-comparison table Payload block: plan columns with CTAs over grouped feature rows.",
       "registryDependencies": ["badge"],
-      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-table\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/comparator-table.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-table` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-table\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-table.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-table` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
           "installCommand": "payload-components add comparator-table",
@@ -1812,7 +1812,7 @@
       "title": "Comparator Grid",
       "description": "Plan-column comparison Payload block: pricing columns in a bordered card over a feature matrix.",
       "registryDependencies": ["badge", "card"],
-      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-grid\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/comparator-grid.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-grid` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-grid\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-grid.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-grid` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
           "installCommand": "payload-components add comparator-grid",
@@ -1845,7 +1845,7 @@
       "title": "Comparator Stack",
       "description": "Stacked plan-card comparison Payload block: one card per plan with its own price, CTA, and feature checklist.",
       "registryDependencies": ["badge", "card"],
-      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-stack\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/comparator-stack.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-stack` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-stack\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-stack.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-stack` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
           "installCommand": "payload-components add comparator-stack",
@@ -1869,6 +1869,445 @@
           "path": "payload-components/source/blocks/ComparatorStack/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ComparatorStack/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-quote",
+      "type": "registry:block",
+      "title": "Testimonials Quote",
+      "description": "Payload testimonials block: a single featured quote with a left accent bar, author, optional role, and avatar.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-quote\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-quote.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-quote` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add testimonials-quote",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/testimonialFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/testimonialFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsQuote/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsQuote/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsQuote/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsQuote/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-spotlight",
+      "type": "registry:block",
+      "title": "Testimonials Spotlight",
+      "description": "Payload testimonials block: a single centered testimonial with a quote-mark, large avatar, author, and role.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-spotlight\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-spotlight.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-spotlight` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add testimonials-spotlight",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/testimonialFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/testimonialFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsSpotlight/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsSpotlight/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsSpotlight/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsSpotlight/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-grid",
+      "type": "registry:block",
+      "title": "Testimonials Grid",
+      "description": "Payload testimonials block: a heading above a responsive grid of quote cards, each with author, optional role, and avatar.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-grid\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-grid.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-grid` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add testimonials-grid",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/testimonialFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/testimonialFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsGrid/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsGrid/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsGrid/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsGrid/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-rating",
+      "type": "registry:block",
+      "title": "Testimonials Rating",
+      "description": "Payload testimonials block: a responsive grid of review cards, each with a star rating, quote, author, optional role, and avatar.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-rating\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-rating.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-rating` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add testimonials-rating",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/testimonialFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/testimonialFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsRating/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsRating/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsRating/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsRating/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-bento",
+      "type": "registry:block",
+      "title": "Testimonials Bento",
+      "description": "Payload testimonials block: an asymmetric bento with one featured quote in a large cell and supporting quotes around it.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-bento\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-bento.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-bento` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add testimonials-bento",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/testimonialFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/testimonialFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsBento/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsBento/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsBento/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsBento/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-wall",
+      "type": "registry:block",
+      "title": "Testimonials Wall",
+      "description": "Payload testimonials block: a heading above a multi-column masonry wall of compact testimonial cards.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-wall\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-wall.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-wall` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add testimonials-wall",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/testimonialFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/testimonialFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsWall/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsWall/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsWall/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsWall/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pricing-cards",
+      "type": "registry:block",
+      "title": "Pricing Cards",
+      "description": "Three-up pricing table of editable plan cards with a highlighted plan.",
+      "registryDependencies": [
+        "badge",
+        "card"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-cards\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-cards.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-cards` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add pricing-cards",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/pricingFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/pricingFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCards/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCards/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCards/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCards/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pricing-cards-muted",
+      "type": "registry:block",
+      "title": "Pricing Cards Muted",
+      "description": "Three-up pricing table on muted card surfaces with a highlighted plan.",
+      "registryDependencies": [
+        "badge",
+        "card"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-cards-muted\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-cards-muted.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-cards-muted` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add pricing-cards-muted",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/pricingFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/pricingFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCardsMuted/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCardsMuted/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCardsMuted/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCardsMuted/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pricing-cards-cta",
+      "type": "registry:block",
+      "title": "Pricing Cards CTA",
+      "description": "Three-up pricing table with the CTA inside each plan header.",
+      "registryDependencies": [
+        "badge",
+        "card"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-cards-cta\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-cards-cta.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-cards-cta` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add pricing-cards-cta",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/pricingFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/pricingFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCardsCta/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCardsCta/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCardsCta/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCardsCta/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pricing-split",
+      "type": "registry:block",
+      "title": "Pricing Split",
+      "description": "Two-plan split pricing: a compact entry plan beside an expanded featured plan.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-split\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-split.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-split` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add pricing-split",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/pricingFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/pricingFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingSplit/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingSplit/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingSplit/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingSplit/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pricing-enterprise",
+      "type": "registry:block",
+      "title": "Pricing Enterprise",
+      "description": "Single wide enterprise pricing panel with an editable trust-logo wall.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-enterprise\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-enterprise.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-enterprise` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add pricing-enterprise",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/pricingFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/pricingFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingEnterprise/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingEnterprise/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingEnterprise/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingEnterprise/Component.tsx"
         }
       ]
     }

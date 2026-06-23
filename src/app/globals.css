@@ -26,7 +26,9 @@
   --secondary: oklch(96.7% 0.001 286.4deg);
   --secondary-foreground: oklch(21% 0.006 285.9deg);
   --muted: oklch(96.7% 0.001 286.4deg);
-  --muted-foreground: oklch(50% 0.014 285.9deg);
+  /* 46% (was 50%) so muted body text clears WCAG AA 4.5:1 on white/near-white
+     surfaces — at 50% it measured 4.41:1. Still clearly "muted", just AA-safe. */
+  --muted-foreground: oklch(46% 0.014 285.9deg);
   --accent: oklch(96.7% 0.001 286.4deg);
   --accent-foreground: oklch(21% 0.006 285.9deg);
 

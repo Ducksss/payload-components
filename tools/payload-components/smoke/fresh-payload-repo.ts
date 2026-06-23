@@ -41,6 +41,8 @@ export const DEFAULT_SMOKE_COMPONENTS = [
   'comparator-table',
   'comparator-grid',
   'comparator-stack',
+  'pricing-cards',
+  'pricing-enterprise',
 ] as const
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
 

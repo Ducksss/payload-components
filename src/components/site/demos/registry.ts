@@ -45,8 +45,19 @@ import { LogoCloudHoverDemo } from './LogoCloudHoverDemo'
 import { LogoCloudInlineDemo } from './LogoCloudInlineDemo'
 import { LogoCloudInlineWrapDemo } from './LogoCloudInlineWrapDemo'
 import { LogoCloudMarqueeDemo } from './LogoCloudMarqueeDemo'
+import { PricingCardsDemo } from './PricingCardsDemo'
+import { PricingCardsCtaDemo } from './PricingCardsCtaDemo'
+import { PricingCardsMutedDemo } from './PricingCardsMutedDemo'
+import { PricingEnterpriseDemo } from './PricingEnterpriseDemo'
+import { PricingSplitDemo } from './PricingSplitDemo'
 import { TeamGridDemo } from './TeamGridDemo'
 import { TeamRosterDemo } from './TeamRosterDemo'
+import { TestimonialsBentoDemo } from './TestimonialsBentoDemo'
+import { TestimonialsGridDemo } from './TestimonialsGridDemo'
+import { TestimonialsQuoteDemo } from './TestimonialsQuoteDemo'
+import { TestimonialsRatingDemo } from './TestimonialsRatingDemo'
+import { TestimonialsSpotlightDemo } from './TestimonialsSpotlightDemo'
+import { TestimonialsWallDemo } from './TestimonialsWallDemo'
 
 /* Single source of truth mapping a component slug to its live demo twin. Shared by
  * the catalog preview thumbnails (ComponentPreviewThumb) and the docs-page live
@@ -99,8 +110,19 @@ export const demosBySlug: Record<string, ComponentType> = {
   'logo-cloud-inline': LogoCloudInlineDemo,
   'logo-cloud-inline-wrap': LogoCloudInlineWrapDemo,
   'logo-cloud-marquee': LogoCloudMarqueeDemo,
+  'pricing-cards': PricingCardsDemo,
+  'pricing-cards-cta': PricingCardsCtaDemo,
+  'pricing-cards-muted': PricingCardsMutedDemo,
+  'pricing-enterprise': PricingEnterpriseDemo,
+  'pricing-split': PricingSplitDemo,
   'team-roster': TeamRosterDemo,
   'team-grid': TeamGridDemo,
+  'testimonials-quote': TestimonialsQuoteDemo,
+  'testimonials-spotlight': TestimonialsSpotlightDemo,
+  'testimonials-grid': TestimonialsGridDemo,
+  'testimonials-rating': TestimonialsRatingDemo,
+  'testimonials-bento': TestimonialsBentoDemo,
+  'testimonials-wall': TestimonialsWallDemo,
 }
 
 export function hasComponentDemo(slug: string) {
