@@ -354,8 +354,8 @@ describe('Fumadocs site shell', () => {
     expect(pageCount).toBe(58)
     expect(componentFamilies.pages.countLabel).toBe(`${pageCount} installable`)
     expect(componentFamilies.posts.countLabel).toBe(`${upcomingComponents.length} in development`)
-    expect(componentsIntro).toContain('Fifty-eight page blocks install today')
-    expect(aboutPage).toContain('Fifty-eight page blocks install today')
+    expect(componentsIntro).toContain(`${pageCount} page blocks install today`)
+    expect(aboutPage).toContain('${installablePageCount} page blocks install today')
     expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Fifty-three page blocks')
   })
 
