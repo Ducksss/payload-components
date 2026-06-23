@@ -6,11 +6,14 @@ contribution paths obvious.
 
 ## Current State
 
-- The registry ships 38 installable page blocks.
+- The registry ships 58 installable page blocks across 12 families, with 8 post
+  components in development.
 - `payload-components add` copies files, wires Payload, regenerates types, and
   records install state.
 - `payload-components doctor` checks supported project shape and install drift.
 - Fresh Payload smoke testing remains the slower confidence path for releases.
+- Anonymous analytics for install-copy and primary-link intent are collected;
+  no PII is captured.
 
 ## Priorities
 
