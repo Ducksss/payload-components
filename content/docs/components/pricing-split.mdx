@@ -1,0 +1,78 @@
+---
+title: Pricing Split
+description: A two-plan split layout — a compact entry plan beside an expanded featured plan with its full feature list.
+icon: Columns2
+---
+
+<ComponentPreview slug="pricing-split" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add pricing-split
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-split.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="pricing-split" />
+
+## Content model
+
+The first three fields come from the shared `pricingFields` base; `plans` is built from the
+shared `planFields`. This variant expects exactly two plans: the first renders as the compact
+entry column on the left, the second as the expanded panel on the right (mark it `featured`
+for the emerald "Popular" badge).
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    plans: {
+      type: 'array',
+      required: true,
+      description: 'Exactly two plans: [0] entry plan, [1] expanded featured plan.',
+    },
+  }}
+/>
+
+Each item in `plans` carries:
+
+<TypeTable
+  type={{
+    name: { type: 'text', required: true, description: 'Plan name, e.g. "Pro".' },
+    price: { type: 'text', required: true, description: 'Headline price, e.g. "$19".' },
+    period: { type: 'text', description: 'Billing period, e.g. "/ mo".' },
+    description: { type: 'text', description: 'Short plan blurb.' },
+    featured: { type: 'checkbox', description: 'Shows the emerald "Popular" badge on the right plan.' },
+    features: { type: 'array', required: true, description: 'Included features, each a single line of text.' },
+    links: { type: 'array', description: 'One CTA link for the plan.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="pricing-split" />
+
+## Requirements
+
+<ComponentRequirements slug="pricing-split" />
+
+## In this family
+
+<ComponentFamily slug="pricing-split" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.

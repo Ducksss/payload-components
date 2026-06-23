@@ -1189,3 +1189,135 @@ export const testimonialsWallDemoContent: TestimonialDemoContent = {
   ],
   title: 'Loved by the community.',
 }
+
+/* The whole Pricing family (cards, cards-muted, cards-cta, split, enterprise)
+   renders from one demo-content shape: the shared eyebrow/title/description
+   heading plus a list of plans. Each plan carries its price, optional period,
+   blurb, a `featured` flag (the emerald highlight), a feature list, and one CTA.
+   The enterprise variant renders a single plan; its trust logos are
+   presentational and pulled from `@/components/site/demos/DemoLogos`. */
+export type PricingPlanDemo = {
+  description?: string
+  featured?: boolean
+  features: string[]
+  link: DemoLinkData
+  name: string
+  period?: string
+  price: string
+}
+
+export type PricingDemoContent = {
+  description?: string
+  eyebrow?: string
+  plans: PricingPlanDemo[]
+  title: string
+}
+
+const pricingPlansDemo: PricingPlanDemo[] = [
+  {
+    description: 'Per editor',
+    features: ['Basic analytics dashboard', '5GB cloud storage', 'Email and chat support'],
+    link: { appearance: 'outline', label: 'Get started' },
+    name: 'Free',
+    period: '/ mo',
+    price: '$0',
+  },
+  {
+    description: 'Per editor',
+    featured: true,
+    features: [
+      'Everything in Free',
+      'Unlimited cloud storage',
+      'Priority support',
+      'Custom reports',
+      'Advanced security',
+    ],
+    link: { appearance: 'default', label: 'Get started' },
+    name: 'Pro',
+    period: '/ mo',
+    price: '$19',
+  },
+  {
+    description: 'Per editor',
+    features: ['Everything in Pro', 'Dedicated success manager', 'SSO and audit logs'],
+    link: { appearance: 'outline', label: 'Get started' },
+    name: 'Startup',
+    period: '/ mo',
+    price: '$29',
+  },
+]
+
+const pricingHeadingDemo = {
+  description:
+    'Start free and upgrade as you grow — every plan ships with the core platform and support.',
+  eyebrow: 'Pricing',
+  title: 'Pricing that scales with your team.',
+}
+
+export const pricingCardsDemoContent: PricingDemoContent = {
+  ...pricingHeadingDemo,
+  plans: pricingPlansDemo,
+}
+
+export const pricingCardsMutedDemoContent: PricingDemoContent = {
+  ...pricingHeadingDemo,
+  plans: pricingPlansDemo,
+}
+
+export const pricingCardsCtaDemoContent: PricingDemoContent = {
+  ...pricingHeadingDemo,
+  plans: pricingPlansDemo,
+}
+
+export const pricingSplitDemoContent: PricingDemoContent = {
+  description: 'Start on the entry plan and unlock the full platform when you are ready.',
+  eyebrow: 'Pricing',
+  plans: [
+    {
+      description: 'Per editor',
+      features: ['Basic analytics dashboard', '5GB cloud storage', 'Email and chat support'],
+      link: { appearance: 'outline', label: 'Get started' },
+      name: 'Free',
+      period: '/ mo',
+      price: '$0',
+    },
+    {
+      description: 'Everything in Free, plus the tools growing teams need.',
+      featured: true,
+      features: [
+        'Unlimited cloud storage',
+        'Priority support',
+        'Access to community forum',
+        'Custom reports',
+        'Advanced security',
+        'Single sign-on',
+      ],
+      link: { appearance: 'default', label: 'Get started' },
+      name: 'Pro',
+      period: '/ mo',
+      price: '$19',
+    },
+  ],
+  title: 'Pricing that scales with your team.',
+}
+
+export const pricingEnterpriseDemoContent: PricingDemoContent = {
+  description: 'One plan for teams of any size, with every feature included.',
+  eyebrow: 'Enterprise',
+  plans: [
+    {
+      description: 'For your company of any size',
+      features: [
+        'Security and compliance',
+        'Unlimited storage',
+        'Payments and search engine',
+        'Access to all components',
+      ],
+      link: { appearance: 'default', label: 'Get started' },
+      name: 'Suite Enterprise',
+      period: '/ mo',
+      price: '$234',
+    },
+  ],
+  title: 'Start managing your company smarter today.',
+}

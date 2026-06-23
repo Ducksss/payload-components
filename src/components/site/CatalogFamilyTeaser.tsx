@@ -33,6 +33,7 @@ const familyRepresentatives: Record<string, string> = {
   testimonials: 'testimonials-grid',
   embed: 'embed-basic',
   comparator: 'comparator-grid',
+  pricing: 'pricing-cards',
 }
 
 type PageFamily = {
