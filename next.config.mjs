@@ -14,6 +14,13 @@ const publicAssetHeaders = [
   },
 ]
 
+const crawlMetadataHeaders = [
+  {
+    key: 'Cache-Control',
+    value: 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
+  },
+]
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   devIndicators: false,
@@ -29,6 +36,14 @@ const nextConfig = {
         source: '/:path*',
         has: [{ type: 'header', key: 'rsc', value: '1' }],
         headers: deployFreshHeaders,
+      },
+      {
+        source: '/robots.txt',
+        headers: crawlMetadataHeaders,
+      },
+      {
+        source: '/sitemap.xml',
+        headers: crawlMetadataHeaders,
       },
       {
         source: '/favicon.svg',
