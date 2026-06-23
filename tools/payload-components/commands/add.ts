@@ -23,7 +23,7 @@ import {
 } from '../state'
 import { getRunScriptCommand, printHeader, runCommand } from '../utils'
 
-import type { InstallStage } from '../types'
+import type { InstallError, InstallStage } from '../types'
 
 const postInstallEnv = {
   ...process.env,
@@ -35,6 +35,57 @@ const postInstallEnv = {
 }
 
 const formatStageError = (error: unknown) => (error instanceof Error ? error.message : 'Unknown error')
+
+const formatFileSummary = (files: string[]) => {
+  if (files.length === 0) {
+    return 'none recorded'
+  }
+
+  const visibleFiles = files.slice(0, 4)
+  const suffix =
+    files.length > visibleFiles.length ? ` and ${files.length - visibleFiles.length} more` : ''
+
+  return `${visibleFiles.join(', ')}${suffix}`
+}
+
+const formatRetryGuidance = ({
+  componentName,
+  cwd,
+  message,
+  ownedFiles,
+  patchedFiles,
+  stage,
+}: {
+  componentName: string
+  cwd: string
+  message: string
+  ownedFiles: string[]
+  patchedFiles: string[]
+  stage: InstallStage
+}) =>
+  [
+    `payload-components: "${componentName}" failed during ${stage}.`,
+    `Last error: ${message}`,
+    'Partial state was saved to .payload-components/state.json.',
+    `Safest retry: fix the error, then run "payload-components add ${componentName}" from ${cwd}.`,
+    `Owned component files: ${formatFileSummary(ownedFiles)}.`,
+    `Patched host files: ${formatFileSummary(patchedFiles)}.`,
+    'Run "payload-components doctor" to check the install before and after retrying.',
+  ].join('\n')
+
+const formatPartialRetryNotice = ({
+  componentName,
+  lastError,
+}: {
+  componentName: string
+  lastError: InstallError | null
+}) => {
+  const lastFailure = lastError
+    ? ` Last failed stage: ${lastError.stage}. Last error: ${lastError.message}.`
+    : ''
+
+  return `payload-components: retrying partial install for "${componentName}".${lastFailure}`
+}
 
 export const addCommand = async ({
   cwd,
@@ -104,6 +155,15 @@ export const addCommand = async ({
 
   printHeader(`payload-components: installing "${manifest.name}" into ${cwd}`)
 
+  if (installedEntry?.status === 'partial') {
+    printHeader(
+      formatPartialRetryNotice({
+        componentName: manifest.name,
+        lastError: installedEntry.lastError,
+      }),
+    )
+  }
+
   await recordInstallAttempt({
     cwd,
     manifest,
@@ -115,14 +175,27 @@ export const addCommand = async ({
     try {
       return await action()
     } catch (error) {
+      const message = formatStageError(error)
+
       await recordInstallFailure({
         cwd,
         manifest,
         patchedFiles,
         stage,
         targetId: project.target.id,
-        message: formatStageError(error),
+        message,
       })
+
+      printHeader(
+        formatRetryGuidance({
+          componentName: manifest.name,
+          cwd,
+          message,
+          ownedFiles: manifest.files,
+          patchedFiles,
+          stage,
+        }),
+      )
 
       throw error
     }

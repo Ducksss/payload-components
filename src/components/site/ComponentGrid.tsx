@@ -154,7 +154,7 @@ export function UpcomingComponentCard({ component }: { component: UpcomingCompon
         <p className="line-clamp-2 text-xs leading-5 text-muted-foreground">
           {component.description}
         </p>
-        <span className="mt-auto truncate pt-1 font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground/80">
+        <span className="mt-auto truncate pt-1 font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground">
           {component.target}
         </span>
       </div>

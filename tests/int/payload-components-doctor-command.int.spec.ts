@@ -142,6 +142,10 @@ describe('payload-components doctor', () => {
     expect(result.code).toBe(1)
     expect(result.stdout).toContain('[error] hero-basic: install is partial')
     expect(result.stdout).toContain('post-install: generate:types failed')
+    expect(result.stdout).toContain('[warn] hero-basic: owned component files')
+    expect(result.stdout).toContain('src/blocks/HeroBasic/config.ts')
+    expect(result.stdout).toContain('[warn] hero-basic: patched host files')
+    expect(result.stdout).toContain('src/blocks/RenderBlocks.tsx')
   }, 180000)
 
   it('fails unsupported project shapes', async () => {

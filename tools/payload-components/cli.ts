@@ -62,6 +62,12 @@ Current components:
   faq-icons
   faq-grouped
   faq-grid
+  testimonials-quote
+  testimonials-spotlight
+  testimonials-grid
+  testimonials-rating
+  testimonials-bento
+  testimonials-wall
 `
 
 const parseArgs = (argv: string[]) => {

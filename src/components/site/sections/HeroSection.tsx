@@ -57,7 +57,7 @@ export function HeroSection() {
             className="hero-reveal grid w-full max-w-md grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-full border border-border bg-background py-1.5 pl-5 pr-1.5 shadow-card"
             style={{ animationDelay: '150ms' }}
           >
-            <code className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90 sm:text-[13px]">
+            <code tabIndex={0} className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90 sm:text-[13px]">
               {primaryInstallCommand}
             </code>
             <CommandCopyButton command={primaryInstallCommand} />

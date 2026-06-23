@@ -1,0 +1,50 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "testimonials-spotlight",
+  "version": "0.1.0",
+  "title": "Testimonials Spotlight",
+  "description": "A single centered testimonial with a quote-mark, large avatar, author, and role — a hero-style social-proof moment.",
+  "registryItemName": "testimonials-spotlight",
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "files": [
+    "src/blocks/shared/testimonialFields.ts",
+    "src/blocks/TestimonialsSpotlight/config.ts",
+    "src/blocks/TestimonialsSpotlight/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "TestimonialsSpotlightBlock",
+      "importPath": "@/blocks/TestimonialsSpotlight/Component",
+      "blockSlug": "testimonialsSpotlight"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "TestimonialsSpotlight",
+      "importPath": "../../blocks/TestimonialsSpotlight/config",
+      "blockName": "TestimonialsSpotlight"
+    }
+  ],
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Centered single testimonial with a quote-mark, large avatar, author and role."
+  },
+  "sampleContent": {
+    "blockType": "testimonialsSpotlight",
+    "quote": "We replaced three internal tools with Acme in a single quarter. The team ships faster, and our customers finally get the dashboards they kept asking for.",
+    "author": "Marcus Webb",
+    "role": "Founder & CEO, Lattice"
+  },
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  }
+}

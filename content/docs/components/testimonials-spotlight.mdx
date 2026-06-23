@@ -1,0 +1,54 @@
+---
+title: Testimonials Spotlight
+description: A single centered testimonial with a quote-mark, large avatar, author, and role — a hero-style social-proof moment.
+icon: MessageSquare
+---
+
+<ComponentPreview slug="testimonials-spotlight" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add testimonials-spotlight
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/testimonials-spotlight.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="testimonials-spotlight" />
+
+## Content model
+
+`quote`, `author`, `role`, and `avatar` come from the shared Testimonials family
+base (`src/blocks/shared/testimonialFields.ts`), used here as a single centered testimonial.
+
+<TypeTable
+  type={{
+    quote: { type: 'textarea', required: true, description: 'The testimonial text.' },
+    author: { type: 'text', required: true, description: 'Name of the person quoted.' },
+    role: { type: 'text', description: 'Optional role / company shown under the name.' },
+    avatar: { type: 'upload', description: 'Optional avatar image (Media upload).' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="testimonials-spotlight" />
+
+## Requirements
+
+<ComponentRequirements slug="testimonials-spotlight" />
+
+## In this family
+
+<ComponentFamily slug="testimonials-spotlight" />

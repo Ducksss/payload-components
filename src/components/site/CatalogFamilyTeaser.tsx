@@ -30,6 +30,7 @@ const familyRepresentatives: Record<string, string> = {
   integration: 'integration-orbit',
   logos: 'logo-cloud-marquee',
   team: 'team-grid',
+  testimonials: 'testimonials-grid',
   embed: 'embed-basic',
   comparator: 'comparator-grid',
 }
@@ -96,7 +97,7 @@ function FamilyCard({ family }: { family: PageFamily }) {
         </div>
 
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-lg border border-border bg-muted/60 py-1 pl-3 pr-1">
-          <code className="overflow-x-auto whitespace-nowrap font-mono text-[11px] text-foreground/90">
+          <code tabIndex={0} className="overflow-x-auto whitespace-nowrap font-mono text-[11px] text-foreground/90">
             {family.representative.command}
           </code>
           <CommandCopyButton command={family.representative.command} />

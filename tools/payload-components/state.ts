@@ -13,10 +13,13 @@ import type {
 import { CURRENT_ALPHA_TARGET_ID, SHARED_PATCHED_FILES } from './constants'
 import { readJsonFile, repoRoot, writeJsonFile } from './utils'
 
-const defaultState: InstallState = {
+// Return a fresh object every time: callers (recordInstall*) mutate the loaded
+// state in place, so handing out a shared singleton would leak entries across
+// loads within a single process.
+const createDefaultState = (): InstallState => ({
   components: {},
   version: 2,
-}
+})
 
 const normalizeFileList = (files: string[]) => [...new Set(files)].sort()
 
@@ -135,10 +138,24 @@ export const loadState = async (cwd: string): Promise<InstallState> => {
   try {
     await access(statePath)
   } catch {
-    return defaultState
+    return createDefaultState()
   }
 
-  const rawState: InstallState | InstallStateV1 = await readJsonFile<InstallState | InstallStateV1>(statePath)
+  let rawState: InstallState | InstallStateV1
+
+  try {
+    rawState = await readJsonFile<InstallState | InstallStateV1>(statePath)
+  } catch (error) {
+    // A corrupt / half-written state file shouldn't wedge the CLI. Fall back to a
+    // clean slate — the per-stage dedup and verify logic keep a re-run idempotent.
+    process.stderr.write(
+      `payload-components: ignoring unreadable install state at ${statePath} (${
+        error instanceof Error ? error.message : String(error)
+      }); starting from a clean state.\n`,
+    )
+
+    return createDefaultState()
+  }
 
   if (rawState.version === 1) {
     return await migrateLegacyState(rawState)

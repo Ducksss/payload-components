@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -45,9 +45,24 @@ export const readJsonFile = async <T>(filePath: string): Promise<T> => {
   return JSON.parse(raw) as T
 }
 
+let tempFileCounter = 0
+
 export const writeJsonFile = async (filePath: string, value: unknown) => {
   await mkdir(path.dirname(filePath), { recursive: true })
-  await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8')
+
+  // Write to a sibling temp file then atomically rename into place, so a crash
+  // mid-write can't leave a truncated / unparseable JSON file behind. The
+  // pid + counter suffix keeps concurrent writes from colliding on the temp name.
+  tempFileCounter += 1
+  const tempPath = `${filePath}.${process.pid}.${tempFileCounter}.tmp`
+
+  try {
+    await writeFile(tempPath, `${JSON.stringify(value, null, 2)}\n`, 'utf8')
+    await rename(tempPath, filePath)
+  } catch (error) {
+    await rm(tempPath, { force: true })
+    throw error
+  }
 }
 
 export const ensureDir = async (dirPath: string) => {
