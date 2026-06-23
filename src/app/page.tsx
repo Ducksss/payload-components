@@ -6,6 +6,7 @@ import { CatalogSection } from '@/components/site/sections/CatalogSection'
 import { CommunityCta } from '@/components/site/sections/CommunityCta'
 import { FaqSection } from '@/components/site/sections/FaqSection'
 import { HeroSection } from '@/components/site/sections/HeroSection'
+import { InstallProofSection } from '@/components/site/sections/InstallProofSection'
 import { StackBand } from '@/components/site/sections/StackBand'
 import { WiringSection } from '@/components/site/sections/WiringSection'
 import { WorkflowSection } from '@/components/site/sections/WorkflowSection'
@@ -33,6 +34,7 @@ export default function HomePage() {
       <main className="flex-1">
         <HeroSection />
         <StackBand />
+        <InstallProofSection />
         <WiringSection />
         <WorkflowSection />
         <CatalogSection />

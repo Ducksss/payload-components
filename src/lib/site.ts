@@ -76,6 +76,7 @@ export const landingSections = {
   community: { heading: 'Open source, end to end.', id: 'community' },
   faq: { heading: 'Questions, answered straight.', id: 'faq' },
   components: { heading: 'The catalog, rendered live.', id: 'components' },
+  proof: { heading: 'The proof is the diff.', id: 'proof' },
   wiring: { heading: "A block isn't live until it's wired.", id: 'wiring' },
   workflow: { heading: 'From catalog to commit in three moves.', id: 'workflow' },
 } as const
@@ -127,6 +128,47 @@ export const workflowSteps = [
     title: 'Commit a working block',
   },
 ] as const
+
+/* ------------------------------------------------------------------ */
+/* Install proof — honest proof before install intent.                 */
+/* ------------------------------------------------------------------ */
+
+export const installProofIntro =
+  'Customer logos and testimonials stay off the page until there is a named source. For now, the proof is the install trace, the files it changes, and the live component result you can inspect before copying the command.'
+
+export const installProofNoAdoption = {
+  body: 'No fake quotes, no implied customer count, no borrowed logos. Real customer proof can replace this box only when there is a real install to name.',
+  title: 'No borrowed trust',
+} as const
+
+export const installProofItems = [
+  {
+    body:
+      'The replay follows the installer stages: resolve the component, copy source, patch Payload files, regenerate Payload output, and record install state.',
+    href: '#wiring',
+    icon: 'terminal',
+    linkLabel: 'See the wiring ledger',
+    title: 'The command shows its work',
+  },
+  {
+    body:
+      'The installed files list names the block source plus the generated Payload outputs that land in the project as a normal reviewable diff.',
+    href: '/docs/installation',
+    icon: 'diff',
+    linkLabel: 'Read the install workflow',
+    title: 'The repo diff is visible',
+  },
+  {
+    body:
+      'The catalog renders the same component twins the docs use, so the installed result is inspectable before a developer runs the CLI.',
+    href: '/components',
+    icon: 'result',
+    linkLabel: 'Browse the live catalog',
+    title: 'The result is rendered live',
+  },
+] as const
+
+export type InstallProofItem = (typeof installProofItems)[number]
 
 /* ------------------------------------------------------------------ */
 /* Wiring ledger — the differentiator as a verifiable artifact table.  */

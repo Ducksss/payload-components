@@ -282,6 +282,12 @@ test.describe('Light shadcn frontend', () => {
 
     // The catalog section teases page families with live previews instead of
     // listing every component as a text row; the full index lives at /components.
+    await expect(page.getByText('No fake quotes, no implied customer count')).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Read the install workflow' })).toHaveAttribute(
+      'href',
+      '/docs/installation',
+    )
+    await expect(page.getByText('Resulting diff includes')).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Page blocks' })).toBeVisible()
     await expect(page.getByRole('link', { name: /Browse all \d+ components/ })).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
