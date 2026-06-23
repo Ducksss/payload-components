@@ -261,6 +261,32 @@ test.describe('Light shadcn frontend', () => {
     )
   })
 
+  test('tracks Payload forms install-copy source', async ({ page, context }) => {
+    const signupBlock = componentEntries.find((component) => component.slug === 'call-to-action-signup')
+
+    expect(signupBlock).toBeDefined()
+
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/forms`)
+    await stubGtagEvents(page)
+
+    await page.getByRole('button', { name: 'Copy' }).first().click()
+
+    await expectCopiedAlert(page)
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(signupBlock!.command)
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: signupBlock!.command,
+        component: 'call-to-action-signup',
+        source_path: '/forms',
+      },
+    ])
+  })
+
   test('drives the responsive component preview frame', async ({ page }) => {
     await page.goto(`${baseURL}/docs/components/hero-basic`)
 
