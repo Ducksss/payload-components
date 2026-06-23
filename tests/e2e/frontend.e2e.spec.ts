@@ -179,6 +179,11 @@ test.describe('Light shadcn frontend', () => {
         title: /Payload CMS Block Catalog/,
       },
       {
+        h1: 'Payload forms start with one honest install.',
+        path: '/forms',
+        title: /Payload Forms Install Guide/,
+      },
+      {
         h1: 'Why Payload Components exists',
         path: '/about',
         title: /About/,
@@ -205,6 +210,31 @@ test.describe('Light shadcn frontend', () => {
       )
       expect(hasHorizontalOverflow).toBe(false)
     }
+  })
+
+  test('routes Payload forms intent to the honest install path', async ({ page }) => {
+    const signupBlock = componentEntries.find((component) => component.slug === 'call-to-action-signup')
+
+    expect(signupBlock).toBeDefined()
+
+    await page.goto(`${baseURL}/forms`)
+
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Payload forms start with one honest install.',
+      }),
+    ).toBeVisible()
+    await expect(page.getByText('does not ship a full form builder')).toBeVisible()
+    await expect(page.locator('code', { hasText: signupBlock!.command }).first()).toBeVisible()
+    await expect(page.getByRole('link', { name: /Open the signup block/ })).toHaveAttribute(
+      'href',
+      signupBlock!.href,
+    )
+    await expect(page.getByRole('link', { name: 'Read install docs' })).toHaveAttribute(
+      'href',
+      '/docs/installation',
+    )
   })
 
   test('drives the responsive component preview frame', async ({ page }) => {
