@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import type { PageTreeTransformer } from 'fumadocs-core/source'
-import { Blocks, Columns2, FileText, Images, LayoutGrid, LayoutPanelTop, Megaphone, MessagesSquare, MonitorPlay, Pilcrow, Plug, Users } from 'lucide-react'
+import { Blocks, Columns2, FileText, Images, LayoutGrid, LayoutPanelTop, Megaphone, MessageSquareQuote, MessagesSquare, MonitorPlay, Pilcrow, Plug, Users } from 'lucide-react'
 
 import { componentEntries } from '@/lib/site'
 
@@ -39,10 +39,11 @@ const MODES: { icon: ReactNode; key: InstallMode; label: string }[] = [
   { icon: <FileText />, key: 'posts', label: 'Post components' },
 ]
 
-/* Family taxonomy, in display order — ranked by importance and catalog depth so the sidebar
-   leads with the universal landing-page sections most pages reach for (Hero, Feature, Content,
-   Call to action), then the deeper / flashier families (Integration, Logo cloud, Team), trailing
-   with the single-variant utility (Embed). A component
+/* Family taxonomy, in display order — ranked "landing-page essentials first" to match the
+   catalog (src/lib/site.ts componentCategories + componentEntries): lead with the universal
+   sections every site builds first (Hero, Feature, Comparator/pricing, Call to action), then
+   social-proof / ecosystem (Integration, Logo cloud, Testimonials), then support (FAQ), then the
+   deep editorial Content set, trailing with the niche utilities (Team, Embed). A component
    belongs to a family when its slug equals the family key or starts with `<key>-`
    (hero-basic → Hero; content-quote → Content). The keys are distinct prefixes, so the order
    only drives ranking + icon, never which family a slug matches. Unknown prefixes fall back to
@@ -50,14 +51,15 @@ const MODES: { icon: ReactNode; key: InstallMode; label: string }[] = [
 const FAMILIES: { icon: ReactNode; key: string; label: string }[] = [
   { icon: <LayoutPanelTop />, key: 'hero', label: 'Hero' },
   { icon: <LayoutGrid />, key: 'feature', label: 'Feature' },
-  { icon: <Pilcrow />, key: 'content', label: 'Content' },
+  { icon: <Columns2 />, key: 'comparator', label: 'Comparator' },
   { icon: <Megaphone />, key: 'call-to-action', label: 'Call to action' },
   { icon: <Plug />, key: 'integration', label: 'Integration' },
   { icon: <Images />, key: 'logo-cloud', label: 'Logo cloud' },
+  { icon: <MessageSquareQuote />, key: 'testimonials', label: 'Testimonials' },
+  { icon: <MessagesSquare />, key: 'faq', label: 'FAQ' },
+  { icon: <Pilcrow />, key: 'content', label: 'Content' },
   { icon: <Users />, key: 'team', label: 'Team' },
   { icon: <MonitorPlay />, key: 'embed', label: 'Embed' },
-  { icon: <MessagesSquare />, key: 'faq', label: 'FAQ' },
-  { icon: <Columns2 />, key: 'comparator', label: 'Comparator' },
 ]
 
 const slugOf = (url: string) => url.split('/').filter(Boolean).pop() ?? ''

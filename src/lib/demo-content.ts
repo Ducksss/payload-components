@@ -1012,3 +1012,180 @@ export const comparatorStackDemoContent: ComparatorStackDemoContent = {
   ],
   title: 'Choose your plan',
 }
+
+/* The whole Testimonials family (quote, spotlight, grid, rating, bento, wall)
+   renders from one demo-content shape: the shared eyebrow/title/description
+   heading plus either a single featured `testimonial` or an `items` array of
+   quotes. Avatars and per-card logos are Media uploads, backend-free on the
+   landing/docs previews, so the twins render presentational placeholders (a
+   monogram or a bg-muted block) rather than carrying real image data. */
+export type TestimonialDemoItem = {
+  author: string
+  featured?: boolean
+  quote: string
+  rating?: number
+  role?: string
+}
+
+export type TestimonialDemoContent = {
+  description?: string
+  eyebrow?: string
+  items?: TestimonialDemoItem[]
+  testimonial?: TestimonialDemoItem
+  title?: string
+}
+
+export const testimonialsQuoteDemoContent: TestimonialDemoContent = {
+  testimonial: {
+    author: 'Théa Marchetti',
+    quote:
+      'Acme has been like unlocking a design superpower — the perfect fusion of simplicity and versatility. We shipped our customer dashboards weeks ahead of schedule.',
+    role: 'VP Engineering, Northwind',
+  },
+}
+
+export const testimonialsSpotlightDemoContent: TestimonialDemoContent = {
+  testimonial: {
+    author: 'Marcus Webb',
+    quote:
+      'We replaced three internal tools with Acme in a single quarter. The team ships faster, and our customers finally get the dashboards they kept asking for.',
+    role: 'Founder & CEO, Lattice',
+  },
+}
+
+export const testimonialsGridDemoContent: TestimonialDemoContent = {
+  description:
+    'Read why product teams choose Acme for the reporting work that used to take a sprint.',
+  eyebrow: 'Loved by teams',
+  items: [
+    {
+      author: 'Henry Lee',
+      quote:
+        'Using Acme has been like unlocking a secret design superpower. The flexibility to customize every surface is incredible.',
+      role: 'UX Engineer',
+    },
+    {
+      author: 'Isabella Garcia',
+      quote:
+        'Acme transformed the way we ship customer dashboards. What used to take a sprint now takes an afternoon.',
+      role: 'Product Lead',
+    },
+    {
+      author: 'Liam Brown',
+      quote:
+        'The component library accelerated our entire workflow. Acme is a genuine game-changer for our team.',
+      role: 'Founder & CEO',
+    },
+  ],
+  title: 'What our customers say.',
+}
+
+export const testimonialsRatingDemoContent: TestimonialDemoContent = {
+  items: [
+    {
+      author: 'Olivia Miller',
+      quote:
+        'Acme is really extraordinary and practical — no need to break your head. A real gold mine for product teams.',
+      rating: 5,
+      role: 'Visual Designer',
+    },
+    {
+      author: 'Ava Williams',
+      quote:
+        'Acme transformed the way I develop web applications. The flexibility to customize every aspect is amazing.',
+      rating: 4,
+      role: 'Frontend Dev',
+    },
+    {
+      author: 'Elijah Jones',
+      quote:
+        'The extensive collection of blocks has significantly accelerated my workflow. Highly recommended.',
+      rating: 5,
+      role: 'Co-Founder & CTO',
+    },
+  ],
+  title: 'Rated by the people who ship on it.',
+}
+
+export const testimonialsBentoDemoContent: TestimonialDemoContent = {
+  eyebrow: 'Wall of proof',
+  items: [
+    {
+      author: 'Shantanu Rao',
+      featured: true,
+      quote:
+        'Acme has transformed the way our company develops web applications. The extensive collection of blocks and templates has significantly accelerated our workflow, and the freedom to customize every surface lets us create experiences that feel genuinely our own. Acme is a game-changer for modern product teams.',
+      role: 'Staff Engineer',
+    },
+    {
+      author: 'Jonathan Yombo',
+      quote: 'Acme is really extraordinary and very practical. A real gold mine.',
+      role: 'Software Engineer',
+    },
+    {
+      author: 'Yucel Faruksahan',
+      quote: 'Great work on Acme. One of the best platforms I have seen so far.',
+      role: 'Creator, Tailkits',
+    },
+    {
+      author: 'Rodrigo Aguilar',
+      quote: 'I love Acme. The blocks are well-structured, simple to use, and beautifully designed.',
+      role: 'Creator, TailwindAwesome',
+    },
+  ],
+  title: 'Built by makers, loved by thousands of developers.',
+}
+
+export const testimonialsWallDemoContent: TestimonialDemoContent = {
+  description:
+    'Hundreds of teams ship on Acme every day. Here is what a few of them told us.',
+  items: [
+    {
+      author: 'Jonathan Yombo',
+      quote:
+        'Acme is really extraordinary and very practical, no need to break your head. A real gold mine.',
+      role: 'Software Engineer',
+    },
+    {
+      author: 'Yves Kalume',
+      quote: 'With no experience in web design I redesigned my entire site in a few minutes thanks to Acme.',
+      role: 'GDE — Android',
+    },
+    {
+      author: 'Oketa Fred',
+      quote: 'I absolutely love Acme! The blocks are beautifully designed and easy to use.',
+      role: 'Fullstack Developer',
+    },
+    {
+      author: 'Zeki',
+      quote: 'Using Acme has been like unlocking a secret design superpower — stunning and user-friendly.',
+      role: 'Founder, ChatExtend',
+    },
+    {
+      author: 'Joseph Kitheka',
+      quote: 'Acme has transformed the way I develop web applications. The flexibility is unmatched.',
+      role: 'Fullstack Developer',
+    },
+    {
+      author: 'Khatab Wedaa',
+      quote: 'Acme is elegant, clean, and responsive — very helpful to start fast with a project.',
+      role: 'Creator, MerakiUI',
+    },
+    {
+      author: 'Rodrigo Aguilar',
+      quote: 'I love Acme. The blocks are well-structured, simple to use, and beautifully designed.',
+      role: 'Creator, TailwindAwesome',
+    },
+    {
+      author: 'Yucel Faruksahan',
+      quote: 'Great work on Acme. One of the best platforms I have seen so far.',
+      role: 'Creator, Tailkits',
+    },
+    {
+      author: 'Shekinah Tshiokufila',
+      quote: 'Acme is redefining the standard of web design — an easy, efficient way to ship beauty.',
+      role: 'Senior Software Engineer',
+    },
+  ],
+  title: 'Loved by the community.',
+}

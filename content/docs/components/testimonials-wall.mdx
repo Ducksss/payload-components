@@ -1,0 +1,70 @@
+---
+title: Testimonials Wall
+description: A dense wall-of-love — a heading above a multi-column masonry of compact testimonial cards, each with author, optional role, and avatar.
+icon: Heart
+---
+
+<ComponentPreview slug="testimonials-wall" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add testimonials-wall
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://payload-components.xyz/r/testimonials-wall.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="testimonials-wall" />
+
+## Content model
+
+The `eyebrow`, `title`, and `description` heading fields come from the shared
+Testimonials family base (`src/blocks/shared/testimonialFields.ts`); the `testimonials`
+wall is specific to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Optional small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro paragraph shown under the heading.' },
+    testimonials: {
+      type: 'array',
+      required: true,
+      description: 'The testimonials in the wall (min 1, max 24).',
+    },
+  }}
+/>
+
+Each item in `testimonials` carries the shared one-quote shape:
+
+<TypeTable
+  type={{
+    quote: { type: 'textarea', required: true, description: 'The testimonial text.' },
+    author: { type: 'text', required: true, description: 'Name of the person quoted.' },
+    role: { type: 'text', description: 'Optional role / company shown under the name.' },
+    avatar: { type: 'upload', description: 'Optional avatar image (Media upload).' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="testimonials-wall" />
+
+## Requirements
+
+<ComponentRequirements slug="testimonials-wall" />
+
+## In this family
+
+<ComponentFamily slug="testimonials-wall" />

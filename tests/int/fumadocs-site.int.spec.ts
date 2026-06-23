@@ -144,14 +144,17 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'src', 'proxy.ts'), 'utf8'),
     ])
 
-    expect(workflow).toContain('- dev')
+    // The push gate is main-only: PRs into dev already run the full gate, so the
+    // deployed branch is the only one worth re-gating on its squash-merge commit.
     expect(workflow).toContain('- main')
     expect(workflow).not.toContain('- prod')
     expect(workflow).toContain('node-version: 22')
     expect(workflow).toContain('node-version: 20.19.0')
+    expect(workflow).toContain('quick-checks:')
     expect(workflow).toContain('release-gate:')
     expect(workflow).toContain('node-20-compat:')
     expect(workflow).toContain('needs:')
+    expect(workflow).toContain('- quick-checks')
     expect(workflow).toContain('- release-gate')
     expect(workflow).toContain('- node-20-compat')
     expect(sourceConfig).toContain('pageSchema')
@@ -330,12 +333,12 @@ describe('Fumadocs site shell', () => {
     const pageCount = componentEntries.filter((component) => component.family === 'pages').length
     const aboutPage = await readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8')
 
-    expect(pageCount).toBe(47)
+    expect(pageCount).toBe(53)
     expect(componentFamilies.pages.countLabel).toBe(`${pageCount} installable`)
     expect(componentFamilies.posts.countLabel).toBe(`${upcomingComponents.length} in development`)
-    expect(componentsIntro).toContain('Forty-seven page blocks install today')
-    expect(aboutPage).toContain('Forty-seven page blocks install today')
-    expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Forty-four page blocks')
+    expect(componentsIntro).toContain('Fifty-three page blocks install today')
+    expect(aboutPage).toContain('Fifty-three page blocks install today')
+    expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Forty-seven page blocks')
   })
 
   it('publishes production-safe fallback URLs when no site URL env is set', async () => {

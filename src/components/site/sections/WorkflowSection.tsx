@@ -24,7 +24,7 @@ export function WorkflowSection() {
             </span>
             <h3 className="text-base font-semibold tracking-tight text-foreground">{step.title}</h3>
             <p className="text-sm leading-6 text-muted-foreground">{step.description}</p>
-            <code className="mt-1 block w-fit max-w-full overflow-x-auto whitespace-nowrap rounded-md border border-border bg-background px-3 py-2 font-mono text-xs text-foreground/80">
+            <code tabIndex={0} className="mt-1 block w-fit max-w-full overflow-x-auto whitespace-nowrap rounded-md border border-border bg-background px-3 py-2 font-mono text-xs text-foreground/80">
               {step.command}
             </code>
           </li>

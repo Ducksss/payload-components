@@ -1,0 +1,68 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "testimonials-rating",
+  "version": "0.1.0",
+  "title": "Testimonials Rating",
+  "description": "A testimonials section: a responsive grid of review cards, each with a star rating, quote, author, optional role, and avatar.",
+  "registryItemName": "testimonials-rating",
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "files": [
+    "src/blocks/shared/testimonialFields.ts",
+    "src/blocks/TestimonialsRating/config.ts",
+    "src/blocks/TestimonialsRating/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "TestimonialsRatingBlock",
+      "importPath": "@/blocks/TestimonialsRating/Component",
+      "blockSlug": "testimonialsRating"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "TestimonialsRating",
+      "importPath": "../../blocks/TestimonialsRating/config",
+      "blockName": "TestimonialsRating"
+    }
+  ],
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Responsive grid of review cards, each with a star rating, quote, author, optional role and avatar."
+  },
+  "sampleContent": {
+    "blockType": "testimonialsRating",
+    "title": "Rated by the people who ship on it.",
+    "testimonials": [
+      {
+        "rating": 5,
+        "quote": "Acme is really extraordinary and practical — no need to break your head. A real gold mine for product teams.",
+        "author": "Olivia Miller",
+        "role": "Visual Designer"
+      },
+      {
+        "rating": 4,
+        "quote": "Acme transformed the way I develop web applications. The flexibility to customize every aspect is amazing.",
+        "author": "Ava Williams",
+        "role": "Frontend Dev"
+      },
+      {
+        "rating": 5,
+        "quote": "The extensive collection of blocks has significantly accelerated my workflow. Highly recommended.",
+        "author": "Elijah Jones",
+        "role": "Co-Founder & CTO"
+      }
+    ]
+  },
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  }
+}
