@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { ArrowUpRight, Bell, Github } from 'lucide-react'
+import { ArrowUpRight, Github } from 'lucide-react'
 
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { MaintainerNote } from '@/components/site/MaintainerNote'
@@ -9,7 +9,6 @@ import {
   communityIntro,
   communityInvite,
   communityLinks,
-  githubRepoUrl,
   landingSections,
   primaryInstallCommand,
 } from '@/lib/site'
@@ -67,15 +66,6 @@ export function CommunityCta() {
           >
             {communityInvite.label}
             <ArrowUpRight className="size-3.5" aria-hidden="true" />
-          </a>
-          <a
-            href={`${githubRepoUrl}/releases`}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-2.5 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <Bell className="size-3.5" aria-hidden="true" />
-            Watch releases to catch new components as they land
           </a>
         </div>
 
