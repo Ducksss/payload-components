@@ -47,6 +47,22 @@ export const PricingEnterprise: Block = {
         {
           name: 'href',
           type: 'text',
+          // Logos link out to arbitrary customer sites, so this can't reuse the
+          // embed/form allowlists in shared/safeUrls — but still reject anything
+          // that isn't an absolute http(s) URL (e.g. a `javascript:` payload).
+          validate: (value: unknown) => {
+            if (value === null || value === undefined || value === '') return true
+
+            try {
+              const { protocol } = new URL(String(value))
+
+              return protocol === 'https:' || protocol === 'http:'
+                ? true
+                : 'Use an absolute http(s) URL.'
+            } catch {
+              return 'Use an absolute http(s) URL.'
+            }
+          },
         },
       ],
     },

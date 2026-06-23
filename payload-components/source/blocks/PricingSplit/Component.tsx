@@ -22,8 +22,10 @@ export const PricingSplitBlock: React.FC<Props> = ({
   plans,
   title,
 }) => {
-  const entry = plans?.[0]
-  const highlight = plans?.[1]
+  // The featured plan takes the expanded right panel; the other becomes the
+  // entry plan on the left. Falls back to source order when none is marked.
+  const highlight = plans?.find((plan) => plan.featured) ?? plans?.[1]
+  const entry = plans?.find((plan) => plan !== highlight) ?? plans?.[0]
 
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
@@ -81,7 +83,7 @@ export const PricingSplitBlock: React.FC<Props> = ({
                           key={item.id ?? `${item.feature}-${featureIndex}`}
                           className="flex items-center gap-2"
                         >
-                          <Check className="size-3" />
+                          <Check aria-hidden="true" className="size-3" />
                           {item.feature}
                         </li>
                       ))}
@@ -130,7 +132,7 @@ export const PricingSplitBlock: React.FC<Props> = ({
                             key={item.id ?? `${item.feature}-${featureIndex}`}
                             className="flex items-center gap-2"
                           >
-                            <Check className="size-3" />
+                            <Check aria-hidden="true" className="size-3" />
                             {item.feature}
                           </li>
                         ))}
