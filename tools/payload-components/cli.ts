@@ -68,6 +68,11 @@ Current components:
   testimonials-rating
   testimonials-bento
   testimonials-wall
+  pricing-cards
+  pricing-cards-muted
+  pricing-cards-cta
+  pricing-split
+  pricing-enterprise
 `
 
 const parseArgs = (argv: string[]) => {

@@ -2107,6 +2107,209 @@
           "target": "~/src/blocks/TestimonialsWall/Component.tsx"
         }
       ]
+    },
+    {
+      "name": "pricing-cards",
+      "type": "registry:block",
+      "title": "Pricing Cards",
+      "description": "Three-up pricing table of editable plan cards with a highlighted plan.",
+      "registryDependencies": [
+        "badge",
+        "card"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-cards\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-cards.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-cards` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add pricing-cards",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/pricingFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/pricingFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCards/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCards/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCards/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCards/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pricing-cards-muted",
+      "type": "registry:block",
+      "title": "Pricing Cards Muted",
+      "description": "Three-up pricing table on muted card surfaces with a highlighted plan.",
+      "registryDependencies": [
+        "badge",
+        "card"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-cards-muted\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-cards-muted.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-cards-muted` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add pricing-cards-muted",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/pricingFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/pricingFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCardsMuted/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCardsMuted/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCardsMuted/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCardsMuted/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pricing-cards-cta",
+      "type": "registry:block",
+      "title": "Pricing Cards CTA",
+      "description": "Three-up pricing table with the CTA inside each plan header.",
+      "registryDependencies": [
+        "badge",
+        "card"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-cards-cta\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-cards-cta.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-cards-cta` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add pricing-cards-cta",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/pricingFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/pricingFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCardsCta/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCardsCta/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCardsCta/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCardsCta/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pricing-split",
+      "type": "registry:block",
+      "title": "Pricing Split",
+      "description": "Two-plan split pricing: a compact entry plan beside an expanded featured plan.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-split\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-split.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-split` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add pricing-split",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/pricingFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/pricingFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingSplit/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingSplit/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingSplit/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingSplit/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pricing-enterprise",
+      "type": "registry:block",
+      "title": "Pricing Enterprise",
+      "description": "Single wide enterprise pricing panel with an editable trust-logo wall.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-enterprise\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-enterprise.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-enterprise` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add pricing-enterprise",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/pricingFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/pricingFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingEnterprise/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingEnterprise/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingEnterprise/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingEnterprise/Component.tsx"
+        }
+      ]
     }
   ]
 }

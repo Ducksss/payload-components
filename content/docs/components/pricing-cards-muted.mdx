@@ -1,0 +1,77 @@
+---
+title: Pricing Cards Muted
+description: The three-up pricing table on soft muted card surfaces, with one plan highlighted in emerald.
+icon: Wallet
+---
+
+<ComponentPreview slug="pricing-cards-muted" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add pricing-cards-muted
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-cards-muted.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="pricing-cards-muted" />
+
+## Content model
+
+The first three fields come from the shared `pricingFields` base; `plans` is built from the
+shared `planFields` and is specific to this variant. This variant renders the same plan model
+as `pricing-cards` on muted card surfaces — mark one plan `featured` to highlight it.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    plans: {
+      type: 'array',
+      required: true,
+      description: 'Two to four plan cards, each with a price, feature list, and CTA.',
+    },
+  }}
+/>
+
+Each item in `plans` carries:
+
+<TypeTable
+  type={{
+    name: { type: 'text', required: true, description: 'Plan name, e.g. "Pro".' },
+    price: { type: 'text', required: true, description: 'Headline price, e.g. "$19".' },
+    period: { type: 'text', description: 'Billing period, e.g. "/ mo".' },
+    description: { type: 'text', description: 'Short plan blurb.' },
+    featured: { type: 'checkbox', description: 'Highlights the plan with the emerald accent.' },
+    features: { type: 'array', required: true, description: 'Included features, each a single line of text.' },
+    links: { type: 'array', description: 'One CTA link for the plan.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="pricing-cards-muted" />
+
+## Requirements
+
+<ComponentRequirements slug="pricing-cards-muted" />
+
+## In this family
+
+<ComponentFamily slug="pricing-cards-muted" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.

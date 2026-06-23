@@ -54,6 +54,11 @@
     "testimonials-grid",
     "testimonials-rating",
     "testimonials-bento",
-    "testimonials-wall"
+    "testimonials-wall",
+    "pricing-cards",
+    "pricing-cards-muted",
+    "pricing-cards-cta",
+    "pricing-split",
+    "pricing-enterprise"
   ]
 }
