@@ -188,6 +188,19 @@ describe('payload-components add command orchestration', () => {
         stage: 'dependency-install',
       }),
     )
+    expect(mocks.printHeader).toHaveBeenCalledWith(
+      expect.stringContaining('payload-components: "hero-basic" failed during dependency-install.'),
+    )
+    expect(mocks.printHeader).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'Safest retry: fix the error, then run "payload-components add hero-basic"',
+      ),
+    )
+    expect(mocks.printHeader).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'Patched host files: src/blocks/RenderBlocks.tsx, src/collections/Pages/index.ts.',
+      ),
+    )
   })
 
   it('records fragment-apply failures after files are already present', async () => {
@@ -283,6 +296,12 @@ describe('payload-components add command orchestration', () => {
 
     await addCommand({ cwd: '/tmp/fixture', componentName: 'hero-basic' })
 
+    expect(mocks.printHeader).toHaveBeenCalledWith(
+      expect.stringContaining('payload-components: retrying partial install for "hero-basic".'),
+    )
+    expect(mocks.printHeader).toHaveBeenCalledWith(
+      expect.stringContaining('Last failed stage: post-install. Last error: generate:types failed.'),
+    )
     expect(mocks.buildRegistry).not.toHaveBeenCalled()
     expect(mocks.installRegistryItem).not.toHaveBeenCalled()
     expect(mocks.installManifestDependencies).not.toHaveBeenCalled()
