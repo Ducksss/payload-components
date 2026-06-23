@@ -19,7 +19,7 @@ The POC passes only if all of the following are true:
 
 If any of those fail because of brittle repo patching or unreliable generation, we should stop and reconsider the product shape before building private registries, auth, or a larger component catalog.
 
-Workspace reality: `payload-components add` installs components, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` wraps `shadcn init` for targets missing `components.json`.
+Workspace reality: `payload-components add` installs components, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` delegates to `shadcn init` to create the `components.json` baseline for targets missing it. `payload-components add` expects that baseline and does not run init automatically as a side effect.
 
 ## Public Registry Contract
 
