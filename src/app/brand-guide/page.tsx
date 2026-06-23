@@ -169,7 +169,7 @@ export default function BrandGuidePage() {
             accentWord="wordmark"
             eyebrow="Identity"
             heading="The mark and wordmark"
-            intro="The logo is a monospace prompt glyph in an emerald square, set beside the wordmark in Geist. It reads as a terminal — the place the CLI lives."
+            intro="The logo is a prompt chevron and block cursor in an emerald square, set beside the wordmark in Geist. It reads as a terminal — the place the CLI lives."
           />
 
           <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
@@ -180,7 +180,7 @@ export default function BrandGuidePage() {
                 <code className="rounded-md border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-[13px] text-foreground/80">
                   &gt;
                 </code>{' '}
-                prompt mark, the wordmark, and the MIT badge.
+                prompt with its block cursor, the wordmark, and the MIT badge.
               </p>
             </div>
 

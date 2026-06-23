@@ -23,7 +23,13 @@ const INK = '#111113' // ~ --foreground
 const MUTED = '#71717a' // ~ --muted-foreground
 const FAINT = '#a1a1aa'
 const EMERALD = '#059669' // ~ --brand, legible on white
-const MARK = '#18181b'
+
+/* The brand mark — the same prompt + block-cursor geometry as the header
+   Logomark and public/favicon.svg, embedded as an SVG data URI so Satori
+   rasterizes it deterministically (no runtime <svg> quirks). Emerald square,
+   white glyph, per the brand rule. */
+const MARK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="${EMERALD}"/><polyline points="7,7.5 11.5,12 7,16.5" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="7.5" width="3.6" height="9" rx="1" fill="#ffffff"/></svg>`
+const MARK_DATA_URI = `data:image/svg+xml;base64,${Buffer.from(MARK_SVG).toString('base64')}`
 
 const domain = siteUrl.replace(/^https?:\/\//, '')
 
@@ -64,23 +70,7 @@ export default function OpenGraphImage() {
 
         {/* Wordmark */}
         <div style={{ alignItems: 'center', display: 'flex', gap: 14 }}>
-          <div
-            style={{
-              alignItems: 'center',
-              backgroundColor: MARK,
-              borderRadius: 11,
-              color: '#fafafa',
-              display: 'flex',
-              fontFamily: 'Geist Mono',
-              fontSize: 24,
-              fontWeight: 700,
-              height: 46,
-              justifyContent: 'center',
-              width: 46,
-            }}
-          >
-            &gt;_
-          </div>
+          <img alt="" height={46} src={MARK_DATA_URI} width={46} />
           <div style={{ display: 'flex', fontSize: 29, fontWeight: 700, letterSpacing: -0.6 }}>
             Payload Components
           </div>
