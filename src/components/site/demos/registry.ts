@@ -45,6 +45,11 @@ import { LogoCloudHoverDemo } from './LogoCloudHoverDemo'
 import { LogoCloudInlineDemo } from './LogoCloudInlineDemo'
 import { LogoCloudInlineWrapDemo } from './LogoCloudInlineWrapDemo'
 import { LogoCloudMarqueeDemo } from './LogoCloudMarqueeDemo'
+import { PricingCardsDemo } from './PricingCardsDemo'
+import { PricingCardsCtaDemo } from './PricingCardsCtaDemo'
+import { PricingCardsMutedDemo } from './PricingCardsMutedDemo'
+import { PricingEnterpriseDemo } from './PricingEnterpriseDemo'
+import { PricingSplitDemo } from './PricingSplitDemo'
 import { TeamGridDemo } from './TeamGridDemo'
 import { TeamRosterDemo } from './TeamRosterDemo'
 import { TestimonialsBentoDemo } from './TestimonialsBentoDemo'
@@ -105,6 +110,11 @@ export const demosBySlug: Record<string, ComponentType> = {
   'logo-cloud-inline': LogoCloudInlineDemo,
   'logo-cloud-inline-wrap': LogoCloudInlineWrapDemo,
   'logo-cloud-marquee': LogoCloudMarqueeDemo,
+  'pricing-cards': PricingCardsDemo,
+  'pricing-cards-cta': PricingCardsCtaDemo,
+  'pricing-cards-muted': PricingCardsMutedDemo,
+  'pricing-enterprise': PricingEnterpriseDemo,
+  'pricing-split': PricingSplitDemo,
   'team-roster': TeamRosterDemo,
   'team-grid': TeamGridDemo,
   'testimonials-quote': TestimonialsQuoteDemo,

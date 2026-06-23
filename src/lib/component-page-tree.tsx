@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import type { PageTreeTransformer } from 'fumadocs-core/source'
-import { Blocks, Columns2, FileText, Images, LayoutGrid, LayoutPanelTop, Megaphone, MessageSquareQuote, MessagesSquare, MonitorPlay, Pilcrow, Plug, Users } from 'lucide-react'
+import { Blocks, CircleDollarSign, Columns2, FileText, Images, LayoutGrid, LayoutPanelTop, Megaphone, MessageSquareQuote, MessagesSquare, MonitorPlay, Pilcrow, Plug, Users } from 'lucide-react'
 
 import { componentEntries } from '@/lib/site'
 
@@ -52,6 +52,7 @@ const FAMILIES: { icon: ReactNode; key: string; label: string }[] = [
   { icon: <LayoutPanelTop />, key: 'hero', label: 'Hero' },
   { icon: <LayoutGrid />, key: 'feature', label: 'Feature' },
   { icon: <Columns2 />, key: 'comparator', label: 'Comparator' },
+  { icon: <CircleDollarSign />, key: 'pricing', label: 'Pricing' },
   { icon: <Megaphone />, key: 'call-to-action', label: 'Call to action' },
   { icon: <Plug />, key: 'integration', label: 'Integration' },
   { icon: <Images />, key: 'logo-cloud', label: 'Logo cloud' },

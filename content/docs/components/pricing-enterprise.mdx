@@ -1,0 +1,92 @@
+---
+title: Pricing Enterprise
+description: A single wide enterprise panel — price and CTA beside an included-features list and an editable wall of trust logos.
+icon: Building2
+---
+
+<ComponentPreview slug="pricing-enterprise" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add pricing-enterprise
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-enterprise.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="pricing-enterprise" />
+
+## Content model
+
+The first three fields come from the shared `pricingFields` base; `plans` is built from the
+shared `planFields` and renders a single enterprise plan. `logos` is specific to this variant —
+an editable wall of uploaded trust logos, like the Logo Cloud family, so editors insert their
+own brand marks.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    plans: {
+      type: 'array',
+      required: true,
+      description: 'A single enterprise plan rendered as one wide panel.',
+    },
+    logos: {
+      type: 'array',
+      description: 'Up to eight trust logos, each an uploaded image with a name and optional link.',
+    },
+  }}
+/>
+
+Each item in `plans` carries:
+
+<TypeTable
+  type={{
+    name: { type: 'text', required: true, description: 'Plan name, e.g. "Suite Enterprise".' },
+    price: { type: 'text', required: true, description: 'Headline price, e.g. "$234".' },
+    period: { type: 'text', description: 'Billing period, e.g. "/ mo".' },
+    description: { type: 'text', description: 'Short plan blurb.' },
+    featured: { type: 'checkbox', description: 'Unused on this single-plan variant.' },
+    features: { type: 'array', required: true, description: 'Included features, each a single line of text.' },
+    links: { type: 'array', description: 'One CTA link for the plan.' },
+  }}
+/>
+
+Each item in `logos` carries:
+
+<TypeTable
+  type={{
+    logo: { type: 'upload', required: true, description: 'Logo image (Media upload).' },
+    name: { type: 'text', required: true, description: 'Accessible name / alt text for the logo.' },
+    href: { type: 'text', description: 'Optional link the logo points to.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="pricing-enterprise" />
+
+## Requirements
+
+<ComponentRequirements slug="pricing-enterprise" />
+
+## In this family
+
+<ComponentFamily slug="pricing-enterprise" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.

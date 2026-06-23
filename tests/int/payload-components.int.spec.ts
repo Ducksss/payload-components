@@ -39,6 +39,7 @@ const representativeInstallComponents = [
   'faq-grid',
   'comparator-grid',
   'testimonials-grid',
+  'pricing-cards',
 ] as const
 
 const idempotencyComponents = ['hero-basic', 'logo-cloud-marquee'] as const
