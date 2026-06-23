@@ -102,7 +102,7 @@ export const PricingCardsCtaBlock: React.FC<Props> = ({
                             key={item.id ?? `${item.feature}-${featureIndex}`}
                             className="flex items-center gap-2"
                           >
-                            <Check className="size-3" />
+                            <Check aria-hidden="true" className="size-3" />
                             {item.feature}
                           </li>
                         ))}

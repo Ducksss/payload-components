@@ -23,8 +23,8 @@ export function PricingSplitDemo({
   content?: PricingDemoContent
 }) {
   const { description, eyebrow, plans, title } = content
-  const entry = plans[0]
-  const highlight = plans[1]
+  const highlight = plans.find((plan) => plan.featured) ?? plans[1]
+  const entry = plans.find((plan) => plan !== highlight) ?? plans[0]
 
   return (
     <div aria-hidden="true" className={className}>
