@@ -11,10 +11,22 @@ import { WiringSection } from '@/components/site/sections/WiringSection'
 import { WorkflowSection } from '@/components/site/sections/WorkflowSection'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
+import { homeMetadataDescription, homeMetadataTitle } from '@/lib/site'
 import { faqNode, graph, softwareApplicationNode } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
   alternates: { canonical: '/' },
+  description: homeMetadataDescription,
+  openGraph: {
+    description: homeMetadataDescription,
+    title: homeMetadataTitle,
+    url: '/',
+  },
+  title: homeMetadataTitle,
+  twitter: {
+    description: homeMetadataDescription,
+    title: homeMetadataTitle,
+  },
 }
 
 /* SoftwareApplication answers "what is Payload Components" for AI engines; FAQPage
