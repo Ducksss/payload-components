@@ -183,7 +183,7 @@ test.describe('Light shadcn frontend', () => {
       {
         h1: heroHeadline,
         path: '/',
-        title: /Payload Components/,
+        title: homeMetadataTitle,
       },
       {
         h1: 'Introduction',
