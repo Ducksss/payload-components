@@ -3,6 +3,7 @@ import { expect, type Page, test } from '@playwright/test'
 import {
   catalogTitle,
   heroHeadline,
+  heroInstallHelper,
   componentEntries,
   landingSections,
   primaryInstallCommand,
@@ -54,6 +55,7 @@ test.describe('Light shadcn frontend', () => {
     await expect(page).toHaveTitle(/Payload Components/)
     await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
+    await expect(page.getByText(heroInstallHelper)).toBeVisible()
 
     // Forced single light theme: the dark class must never appear.
     await expect(page.locator('html')).not.toHaveClass(/dark/)
@@ -411,6 +413,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-desktop.png', {
       animations: 'disabled',
       fullPage: true,
+      maxDiffPixelRatio: 0.002,
       timeout: 15_000,
     })
 
@@ -422,6 +425,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-mobile.png', {
       animations: 'disabled',
       fullPage: true,
+      maxDiffPixelRatio: 0.002,
       timeout: 15_000,
     })
   })

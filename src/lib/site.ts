@@ -32,6 +32,9 @@ export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
 export const heroSubheadline =
   'One command installs the block, wires it into Payload, and lands a reviewable git diff.'
 
+export const heroInstallHelper =
+  'Installs a reusable Payload block plus the collection, renderer, types, and admin import-map wiring it needs.'
+
 export const heroPrimaryCta = { href: '/docs', label: 'Get started' } as const
 
 export const heroTertiaryLinks = [
