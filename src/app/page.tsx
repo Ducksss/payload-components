@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import { JsonLd } from '@/components/seo/JsonLd'
+import { ParallaxController } from '@/components/site/ParallaxController'
 import { CatalogSection } from '@/components/site/sections/CatalogSection'
 import { CommunityCta } from '@/components/site/sections/CommunityCta'
 import { FaqSection } from '@/components/site/sections/FaqSection'
@@ -26,6 +27,7 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={homeStructuredData} />
+      <ParallaxController />
       <SiteHeader />
 
       <main className="flex-1">
