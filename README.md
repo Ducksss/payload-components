@@ -158,6 +158,14 @@ Run the CLI from the root of a supported Payload v3 + Next.js project:
 npx payload-components add hero-basic
 ```
 
+A real run — the block source is copied, registered in the Pages collection,
+wired into `RenderBlocks`, and the Payload types and admin import map are
+regenerated, all landing as one reviewable git diff:
+
+<p align="center">
+  <img src="public/payload-components-add.gif" alt="Terminal recording of npx payload-components add hero-basic: it checks the registry, creates the HeroBasic block source files, runs generate:types and generate:importmap, reports the install succeeded, then git status shows the wired files — RenderBlocks.tsx, Pages/index.ts, payload-types.ts, and importMap.js." width="900" />
+</p>
+
 Good first installs:
 
 | Component            | Use it for                         |
@@ -294,6 +302,9 @@ contribution paths obvious.
 Read [ROADMAP.md][roadmap-url] for the current direction, or use
 [open issues][issues-url] for active work and component requests.
 
+For how the project gets discovered and adopted — channels, the launch plan, and
+metrics — see [DISTRIBUTION.md](./DISTRIBUTION.md).
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Contributing
@@ -330,7 +341,10 @@ information.
 
 - Maintainer: [Ducksss](https://github.com/Ducksss)
 - Website: [payload-components.xyz][site-url]
+- Discussions: [github.com/Ducksss/payload-components/discussions](https://github.com/Ducksss/payload-components/discussions)
 - Issues: [github.com/Ducksss/payload-components/issues][issues-url]
+- Showcase: [payload-components.xyz/showcase](https://www.payload-components.xyz/showcase)
+- Blog: [payload-components.xyz/blog](https://www.payload-components.xyz/blog)
 - Security: [GitHub Security Advisories][security-advisories-url]
 - Project Link: [github.com/Ducksss/payload-components][repo-url]
 

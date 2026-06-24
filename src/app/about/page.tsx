@@ -229,6 +229,13 @@ export default function AboutPage() {
                   Read the docs
                 </Link>
               </div>
+              <Link
+                href="/showcase"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                See what the community is building
+                <ArrowRight className="size-3.5" aria-hidden="true" />
+              </Link>
             </div>
 
             <MaintainerNote />

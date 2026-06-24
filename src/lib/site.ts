@@ -5,6 +5,10 @@ export const siteUrl =
   configuredSiteUrl === 'https://payload-components.xyz' ? productionSiteUrl : configuredSiteUrl
 export const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 export const githubIssuesUrl = `${githubRepoUrl}/issues`
+export const githubDiscussionsUrl = `${githubRepoUrl}/discussions`
+/* Deep-links the show-and-tell issue form — the front door for /showcase
+   submissions (see .github/ISSUE_TEMPLATE/show-and-tell.yml). */
+export const showAndTellUrl = `${githubIssuesUrl}/new?template=show-and-tell.yml`
 export const githubContentBranch = process.env.NEXT_PUBLIC_GITHUB_CONTENT_BRANCH ?? 'dev'
 export const docsRoute = '/docs'
 export const docsImageRoute = '/og/docs'
@@ -1188,6 +1192,44 @@ export const clientProjects: readonly ClientProject[] = [
     alt: 'Screenshot of the Genium & Co homepage',
   },
 ] as const
+
+/* ------------------------------------------------------------------ */
+/* Community showcase — real sites built WITH payload-components.       */
+/* Distinct from clientProjects above (origin-story freelance work that */
+/* predates the CLI). Submissions arrive through the show-and-tell issue */
+/* template and an entry is added here once verified. Starts empty — the */
+/* /showcase page renders an honest empty state until the first lands,   */
+/* making the "early installs get featured" invite concrete.            */
+/* ------------------------------------------------------------------ */
+
+export const communityShowcaseEyebrow = 'Show & tell'
+
+export const communityShowcaseHeading = 'Built with Payload Components'
+
+export const communityShowcaseIntro =
+  'Real sites shipped with blocks installed from this registry. Running it in your own repo? Open a show-and-tell issue — early installs get featured here.'
+
+export const communityShowcaseEmptyState =
+  'No community builds featured yet. Be the first: open a show-and-tell issue with your site and the blocks you installed, and it lands here.'
+
+export type CommunityShowcaseProject = {
+  /* URL-safe id; also the screenshot filename at public/showcase/<slug>.jpg. */
+  slug: string
+  /* Display name shown in the card heading. */
+  name: string
+  /* Live, public URL — the card links out to it. */
+  url: string
+  /* Host shown in the address bar (no scheme). */
+  displayUrl: string
+  /* One factual line: what the site is. */
+  summary: string
+  /* The payload-components blocks this site installed (e.g. hero-basic). */
+  blocksUsed: readonly string[]
+  /* Factual alt text describing the site — never a marketing claim. */
+  alt: string
+}
+
+export const communityShowcase: readonly CommunityShowcaseProject[] = []
 
 /* ------------------------------------------------------------------ */
 /* FAQ                                                                 */
