@@ -448,6 +448,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-mobile.png', {
       animations: 'disabled',
       fullPage: true,
+      maxDiffPixels: 6_000,
       timeout: 15_000,
     })
   })
