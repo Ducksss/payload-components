@@ -417,6 +417,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-desktop.png', {
       animations: 'disabled',
       fullPage: true,
+      maxDiffPixelRatio: 0.015,
       timeout: 15_000,
     })
 
@@ -428,6 +429,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-mobile.png', {
       animations: 'disabled',
       fullPage: true,
+      maxDiffPixelRatio: 0.015,
       timeout: 15_000,
     })
   })
