@@ -1243,6 +1243,118 @@ export const catalogDescription =
   'Installable Payload CMS blocks and components, each with docs, registry metadata, and CLI wiring that registers, renders, types, and import-maps it for you. Read the contract before you add it.'
 
 /* ------------------------------------------------------------------ */
+/* Payload custom components guide                                     */
+/* ------------------------------------------------------------------ */
+
+export const customComponentsRoute = '/payload-custom-components'
+export const customComponentsTitle = 'Payload custom components guide'
+export const customComponentsDescription =
+  'A developer guide to making Payload custom components installable: block source, collection wiring, render maps, generated types, and admin import maps.'
+
+export const customComponentsHero = {
+  eyebrow: 'Developer guide',
+  heading: 'Make a Payload custom component installable.',
+  intro:
+    'A custom Payload component is not finished when the React file compiles. It needs a block config, a collection slot, a render-map entry, generated types, and an admin import-map update that all move together.',
+} as const
+
+export const customComponentWiringArtifacts = [
+  {
+    artifact: 'Block source',
+    check: 'Keep the fields, config, component, and shared helpers together under src/blocks.',
+    path: 'src/blocks/HeroBasic/{config.ts, Component.tsx}',
+  },
+  {
+    artifact: 'Collection slot',
+    check: 'Register the block in the Pages layout field so editors can choose it.',
+    path: 'src/collections/Pages/index.ts',
+  },
+  {
+    artifact: 'Render map',
+    check: 'Map the block slug to a frontend renderer so saved content reaches React.',
+    path: 'src/blocks/RenderBlocks.tsx',
+  },
+  {
+    artifact: 'Manifest fragments',
+    check: 'Declare the imports and patch targets the CLI should apply in another project.',
+    path: 'payload-components/manifests/<slug>.json',
+  },
+  {
+    artifact: 'Generated outputs',
+    check: 'Regenerate Payload types and the admin import map after the block is registered.',
+    path: 'src/payload-types.ts, admin importMap.js',
+  },
+] as const
+
+export const customComponentBuildSteps = [
+  {
+    title: 'Start with the editor contract',
+    body:
+      'Name the fields editors actually fill in, then keep shared field groups beside the block so the config and component cannot drift.',
+  },
+  {
+    title: 'Make the saved shape renderable',
+    body:
+      'Use a stable block slug and add the renderer import that turns a saved layout item into the right React component.',
+  },
+  {
+    title: 'Write the install contract',
+    body:
+      'List copied files, collection and render-map fragments, recovery files, post-install generators, and sample content in the manifest.',
+  },
+  {
+    title: 'Prove the install in a fresh repo',
+    body:
+      'Run the installer against a supported Payload starter, inspect the diff, then rerun it to confirm the second install converges.',
+  },
+] as const
+
+export const customComponentManifestSnippet = `{
+  "name": "hero-basic",
+  "files": [
+    "src/blocks/shared/heroFields.ts",
+    "src/blocks/HeroBasic/config.ts",
+    "src/blocks/HeroBasic/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "HeroBasicBlock",
+      "importPath": "@/blocks/HeroBasic/Component",
+      "blockSlug": "heroBasic"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "HeroBasic",
+      "importPath": "../../blocks/HeroBasic/config",
+      "blockName": "HeroBasic"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
+  },
+  "postInstall": ["generate:types", "generate:importmap"]
+}`
+
+export const customComponentFitChecks = [
+  {
+    label: 'Keep it local',
+    text: 'If one project needs the block once, write it directly in that project and skip the registry work.',
+  },
+  {
+    label: 'Make it installable',
+    text: 'If the same block should move across client sites, turn the wiring into a manifest so the next repo gets a repeatable diff.',
+  },
+  {
+    label: 'Request it upstream',
+    text: 'If the shape belongs in the shared catalog but you do not want to author it, open an issue with the fields and target collection.',
+  },
+] as const
+
+/* ------------------------------------------------------------------ */
 /* Shared navigation surfaces                                          */
 /* ------------------------------------------------------------------ */
 
@@ -1261,6 +1373,11 @@ export const surfaceLinks = [
     description: 'What payload-components add wires, step by step.',
     href: '/docs/installation',
     title: 'Install workflow',
+  },
+  {
+    description: 'How to turn a custom Payload block into an installable registry contract.',
+    href: customComponentsRoute,
+    title: customComponentsTitle,
   },
 ] as const
 
