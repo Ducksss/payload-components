@@ -25,7 +25,7 @@ export function PreviewSurface({
   return (
     <figure
       className={cn(
-        'overflow-hidden rounded-[1.5rem] border border-border bg-background shadow-card',
+        'hover-lift overflow-hidden rounded-[1.5rem] border border-border bg-background shadow-card',
         className,
       )}
     >
