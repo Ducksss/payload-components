@@ -15,7 +15,9 @@ export function Faq() {
               aria-hidden="true"
             />
           </summary>
-          <p className="px-6 pb-5 text-sm leading-7 text-muted-foreground">{entry.answer}</p>
+          <p className="max-w-3xl px-6 pb-5 text-sm leading-7 text-muted-foreground">
+            {entry.answer}
+          </p>
         </details>
       ))}
     </div>
