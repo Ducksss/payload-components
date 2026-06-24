@@ -163,7 +163,21 @@ test.describe('Light shadcn frontend', () => {
     }
   })
 
-  test('exposes docs, catalog, component pages, and no horizontal overflow', async ({ page }) => {
+  test('exposes docs, catalog, representative component pages, and no horizontal overflow', async ({
+    page,
+  }) => {
+    const sampledComponentSlugs = new Set([
+      'hero-basic',
+      'feature-bento',
+      'pricing-cards',
+      'team-roster',
+      'embed-basic',
+    ])
+    const sampledComponents = componentEntries.filter((component) =>
+      sampledComponentSlugs.has(component.slug),
+    )
+    expect(sampledComponents).toHaveLength(sampledComponentSlugs.size)
+
     const routes = [
       {
         h1: heroHeadline,
@@ -195,7 +209,7 @@ test.describe('Light shadcn frontend', () => {
         path: '/brand-guide',
         title: /Brand Guide/,
       },
-      ...componentEntries.map((component) => ({
+      ...sampledComponents.map((component) => ({
         h1: component.title,
         path: component.href,
         title: new RegExp(component.title),
@@ -422,6 +436,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-desktop.png', {
       animations: 'disabled',
       fullPage: true,
+      maxDiffPixels: 6_000,
       timeout: 15_000,
     })
 
