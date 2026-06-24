@@ -703,6 +703,22 @@
     animation: wire-draw 560ms cubic-bezier(0.65, 0, 0.35, 1) var(--spawn-delay, 0ms) both;
   }
 
+  /* Wiring strokes that draw as the diagram scrolls into view — the
+     "resolve" moment in the wiring node map. Progressive: without
+     animation-timeline (and under reduced motion, forced below) the stroke
+     renders fully drawn. */
+  .wire-draw-scroll {
+    stroke-dasharray: var(--wire-len, 120);
+    stroke-dashoffset: 0;
+
+    @supports (animation-timeline: view()) {
+      stroke-dashoffset: var(--wire-len, 120);
+      animation: wire-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 16% cover 32%;
+    }
+  }
+
   /* The "before" skeleton yielding to the materialized twin. */
   .skeleton-fade {
     animation: skeleton-fade 300ms ease-out var(--spawn-delay, 0ms) both;
@@ -717,6 +733,20 @@
       animation-timeline: view();
       animation-range: entry 0% entry 42%;
     }
+  }
+
+  /* Tactile hover lift for card/preview surfaces. Transform + shadow only;
+     the reduced-motion guard zeroes the transition (the lift still applies on
+     hover, just without the ease). */
+  .hover-lift {
+    transition:
+      transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 220ms ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-frame);
   }
 }
 
@@ -758,6 +788,11 @@
      reveal elements render in their natural (visible) state. */
   .reveal-on-scroll {
     animation: none !important;
+  }
+
+  .wire-draw-scroll {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
   }
 
   html {

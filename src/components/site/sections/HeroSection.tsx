@@ -24,7 +24,7 @@ export function HeroSection() {
 
   return (
     <section className="hero-shell overflow-hidden border-b border-border/60">
-      <div aria-hidden="true" className="hero-atmosphere" />
+      <div aria-hidden="true" data-parallax="0.1" className="hero-atmosphere" />
 
       <div className="container relative flex flex-col gap-12 py-12 sm:py-16 lg:gap-16 lg:py-24">
         <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center gap-6 text-center">

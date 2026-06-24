@@ -9,7 +9,7 @@ import { maintainerNote } from '@/lib/site'
  * stories replace placeholder slots only when they exist. */
 export function MaintainerNote() {
   return (
-    <figure className="flex flex-col justify-between gap-6 rounded-2xl bg-foreground p-7 text-background shadow-frame">
+    <figure className="hover-lift flex flex-col justify-between gap-6 rounded-2xl bg-foreground p-7 text-background shadow-frame">
       <blockquote className="text-[15px] leading-7 text-background/85">
         {maintainerNote.body}
       </blockquote>
