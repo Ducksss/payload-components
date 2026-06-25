@@ -19,11 +19,15 @@ export const metadata: Metadata = {
   description: homeMetadataDescription,
   openGraph: {
     description: homeMetadataDescription,
+    locale: 'en_US',
+    siteName: 'Payload Components',
     title: homeMetadataTitle,
+    type: 'website',
     url: '/',
   },
   title: homeMetadataTitle,
   twitter: {
+    card: 'summary_large_image',
     description: homeMetadataDescription,
     title: homeMetadataTitle,
   },

@@ -15,7 +15,7 @@ export const primaryInstallCommand = 'npx payload-components add hero-basic'
 export const siteDescription =
   'Payload Components is an MIT registry and CLI that installs typed Payload CMS blocks into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
 
-export const homeMetadataTitle = 'Payload CMS components, wired in one command'
+export const homeMetadataTitle = 'Payload Components — fully-wired blocks for Payload CMS'
 export const homeMetadataDescription =
   'Payload Components gives you reusable Payload blocks with one-command install, wiring config, render maps, types, and import maps for Payload CMS and Next.js.'
 
