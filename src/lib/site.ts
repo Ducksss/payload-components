@@ -30,7 +30,7 @@ export const heroHeadlineAccent = 'wired, not pasted.'
 export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
 
 export const heroSubheadline =
-  'One command copies the block source, registers it in your Pages collection, maps the renderer, and regenerates types and the admin import map. The result is a reviewable git diff — not a checklist.'
+  'One command installs the block, wires it into Payload, and lands a reviewable git diff.'
 
 export const heroPrimaryCta = { href: '/docs', label: 'Get started' } as const
 
@@ -48,7 +48,7 @@ export const terminalDemoLines = [
   { kind: 'command', text: 'npx payload-components add hero-basic' },
   { kind: 'info', text: 'payload-components: installing "hero-basic" into ./acme-site' },
   { kind: 'step', text: 'resolved hero-basic@0.1.0 · payload-website-starter' },
-  { kind: 'step', text: 'copied src/blocks/{shared/heroFields.ts, HeroBasic/config.ts, HeroBasic/Component.tsx}' },
+  { kind: 'step', text: 'copied 3 block source files into src/blocks/' },
   { kind: 'step', text: 'registered block in src/collections/Pages/index.ts' },
   { kind: 'step', text: 'wired render mapping in src/blocks/RenderBlocks.tsx' },
   { kind: 'step', text: 'ran payload generate:types' },
@@ -76,8 +76,7 @@ export const landingSections = {
   community: { heading: 'Open source, end to end.', id: 'community' },
   faq: { heading: 'Questions, answered straight.', id: 'faq' },
   components: { heading: 'The catalog, rendered live.', id: 'components' },
-  tax: { heading: 'The paste was never the problem.', id: 'tax' },
-  wiring: { heading: 'Copying files was never the hard part.', id: 'wiring' },
+  wiring: { heading: "A block isn't live until it's wired.", id: 'wiring' },
   workflow: { heading: 'From catalog to commit in three moves.', id: 'workflow' },
 } as const
 
@@ -98,24 +97,6 @@ export const stackItems = [
 
 export type StackItem = (typeof stackItems)[number]
 
-/* ------------------------------------------------------------------ */
-/* The tax — the problem the catalog answers. Mirrors /about's          */
-/* unchecked grunt-work checklist; the wiring ledger below checks the    */
-/* same five items off.                                                  */
-/* ------------------------------------------------------------------ */
-
-export const taxEyebrow = 'The grunt-work tax'
-export const taxIntro =
-  'Every Payload project needs the same surfaces — a hero, a feature grid, post cards. Copying the files is the easy part. A pasted block is dead until four more edits land, and proving them — every block, every repo — is where the week actually goes.'
-export const taxChecklist = [
-  'register the block in src/collections/Pages/index.ts',
-  'map it in src/blocks/RenderBlocks.tsx',
-  'run payload generate:types',
-  'run payload generate:importmap',
-  'prove it still works — integration tests, e2e, click through the admin',
-] as const
-export const taxKicker = 'One command pays that whole list down — and lands it as a diff you can review.'
-
 /* Receipts strip — every line is verifiable in this repository. */
 export const receipts = [
   { icon: 'scale', label: 'MIT licensed, end to end' },
@@ -127,25 +108,22 @@ export const receipts = [
 
 
 export const workflowIntro =
-  'No scaffolds, no vendored framework, no lock-in. Components arrive as plain source plus two scoped patches you can read in the diff.'
+  'No scaffolds, no lock-in — plain source plus two scoped patches you can read.'
 
 export const workflowSteps = [
   {
     command: '/docs/components/hero-basic',
-    description:
-      'Every component documents its fields, the files it ships, the files it patches, and the targets it supports — before you run anything.',
+    description: 'Fields, files, and patches — before you run anything.',
     title: 'Read the contract',
   },
   {
     command: 'npx payload-components add hero-basic',
-    description:
-      'The CLI verifies your project shape against the support matrix, copies source, registers the block, and regenerates Payload output in one pass.',
+    description: 'The CLI checks your project, then wires it in one pass.',
     title: 'Run one command',
   },
   {
     command: 'git diff --stat',
-    description:
-      'Everything the install did is an ordinary repo diff: block source, two scoped patches, regenerated types. Review it like any PR.',
+    description: 'Source, two patches, regenerated types — reviewed like any PR.',
     title: 'Commit a working block',
   },
 ] as const
@@ -157,7 +135,11 @@ export const workflowSteps = [
 /* ------------------------------------------------------------------ */
 
 export const wiringIntro =
-  'A plain shadcn add stops at your filesystem. A Payload block isn’t live until it’s registered, rendered, typed, and in the admin import map — payload-components add owns exactly those four edits.'
+  'Copying the files is the easy part — the four edits after are where every block, every repo, loses the day.'
+
+/* Caption under the boundary node map: which of the five a plain paste covers. */
+export const wiringMapCaption =
+  'A plain paste lands the block source. payload-components wires the other four.'
 
 export const wiringLedger = {
   columns: {
@@ -213,7 +195,7 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* ------------------------------------------------------------------ */
 
 export const componentsIntro =
-  'No screenshots, no skeletons — the specimen below is the real component rendered with sample content. Fifty-eight page blocks install today; eight post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.'
+  'No screenshots — the specimen below is the real component, rendered from source. Fifty-eight page blocks install today.'
 
 /* The two component families mirror Payload's content model — and the two real
    install modes in the component manifests (payload-components-required block wiring
@@ -1329,6 +1311,7 @@ export const footerColumns = [
       { href: '/brand-guide', label: 'Brand Guide' },
       { external: true, href: githubRepoUrl, label: 'GitHub' },
       { external: true, href: githubIssuesUrl, label: 'Open an issue' },
+      { external: true, href: `${githubRepoUrl}/releases`, label: 'Releases' },
       { href: '/docs/contributing', label: 'Contributing' },
       { external: true, href: '/r/registry.json', label: 'Registry JSON' },
     ],

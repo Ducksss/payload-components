@@ -1,16 +1,19 @@
 import { siteIcons } from '@/components/site/icons'
 import { Section, SectionHeading } from '@/components/site/section'
 import { WiringLedger } from '@/components/site/WiringLedger'
-import { landingSections, receipts, wiringIntro, wiringLedger } from '@/lib/site'
+import { WiringNodeMap } from '@/components/site/graphics/WiringNodeMap'
+import { landingSections, receipts, wiringIntro, wiringLedger, wiringMapCaption } from '@/lib/site'
 
-/* The differentiator as a verifiable artifact table, backed by the receipts
- * strip — every claim is checkable in the repository. */
+/* The install boundary — the page's single "copying isn't the hard part"
+ * beat. The node map shows the shape (one file a paste covers, four
+ * payload-components wires); the ledger is the artifact-by-artifact receipt
+ * against a plain shadcn add. */
 export function WiringSection() {
   return (
     <Section id={landingSections.wiring.id}>
       <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
         <SectionHeading
-          accentWord="hard"
+          accentWord="wired"
           eyebrow="The install boundary"
           heading={landingSections.wiring.heading}
           intro={wiringIntro}
@@ -20,11 +23,17 @@ export function WiringSection() {
         </code>
       </div>
 
+      {/* The shape of an install: one file a paste covers, four wired by us. */}
       <div className="reveal-on-scroll mt-12">
+        <WiringNodeMap state="boundary" caption={wiringMapCaption} />
+      </div>
+
+      {/* The receipts: the same five artifacts, row by row, vs a plain shadcn add. */}
+      <div className="reveal-on-scroll mt-6">
         <WiringLedger />
       </div>
 
-      {/* Receipts — the ledger's claims, each checkable in the repo. */}
+      {/* Receipts strip — each claim checkable in the repo. */}
       <div className="reveal-on-scroll mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-border pt-8">
         {receipts.map((receipt) => {
           const Icon = siteIcons[receipt.icon]
