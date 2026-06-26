@@ -8,6 +8,7 @@ import {
   componentEntries,
   landingSections,
   primaryInstallCommand,
+  supportEmail,
   terminalDemoLines,
 } from '../../src/lib/site'
 
@@ -76,6 +77,9 @@ test.describe('Light shadcn frontend', () => {
     )
     await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
+    const supportLink = page.getByRole('link', { name: supportEmail })
+    await expect(supportLink).toBeVisible()
+    await expect(supportLink).toHaveAttribute('href', `mailto:${supportEmail}`)
 
     // Forced single light theme: the dark class must never appear.
     await expect(page.locator('html')).not.toHaveClass(/dark/)

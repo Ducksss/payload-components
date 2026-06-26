@@ -1,9 +1,9 @@
 import Link from 'next/link'
 
-import { ArrowUpRight, Github } from 'lucide-react'
+import { ArrowUpRight, Github, Mail } from 'lucide-react'
 
 import { Wordmark } from '@/components/site/Wordmark'
-import { footerColumns, githubRepoUrl, primaryInstallCommand } from '@/lib/site'
+import { footerColumns, githubRepoUrl, primaryInstallCommand, supportEmail } from '@/lib/site'
 
 export function SiteFooter() {
   return (
@@ -29,16 +29,25 @@ export function SiteFooter() {
               </span>
               <code className="text-muted-foreground">{primaryInstallCommand}</code>
             </div>
-            <Link
-              href={githubRepoUrl}
-              rel="noreferrer"
-              target="_blank"
-              className="mt-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <Github className="size-4" aria-hidden="true" />
-              GitHub
-              <ArrowUpRight className="size-3 text-muted-foreground/70" aria-hidden="true" />
-            </Link>
+            <div className="mt-6 flex max-w-sm flex-col items-start gap-3">
+              <Link
+                href={githubRepoUrl}
+                rel="noreferrer"
+                target="_blank"
+                className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <Github className="size-4" aria-hidden="true" />
+                GitHub
+                <ArrowUpRight className="size-3 text-muted-foreground/70" aria-hidden="true" />
+              </Link>
+              <Link
+                href={`mailto:${supportEmail}`}
+                className="inline-flex max-w-full items-start gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <Mail className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                <span className="break-all text-left">{supportEmail}</span>
+              </Link>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
