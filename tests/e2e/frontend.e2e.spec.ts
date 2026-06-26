@@ -4,6 +4,8 @@ import {
   catalogTitle,
   heroHeadline,
   heroTertiaryLinks,
+  homeMetadataDescription,
+  homeMetadataTitle,
   componentEntries,
   landingSections,
   primaryInstallCommand,
@@ -52,7 +54,27 @@ test.describe('Light shadcn frontend', () => {
   test('renders the light token-driven homepage', async ({ page }) => {
     await page.goto(baseURL)
 
-    await expect(page).toHaveTitle(/Payload Components/)
+    await expect(page).toHaveTitle(homeMetadataTitle)
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+      'content',
+      homeMetadataDescription,
+    )
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+      'content',
+      homeMetadataTitle,
+    )
+    await expect(page.locator('meta[property="og:description"]')).toHaveAttribute(
+      'content',
+      homeMetadataDescription,
+    )
+    await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute(
+      'content',
+      homeMetadataTitle,
+    )
+    await expect(page.locator('meta[name="twitter:description"]')).toHaveAttribute(
+      'content',
+      homeMetadataDescription,
+    )
     await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
     await expect(
@@ -182,7 +204,7 @@ test.describe('Light shadcn frontend', () => {
       {
         h1: heroHeadline,
         path: '/',
-        title: /Payload Components/,
+        title: homeMetadataTitle,
       },
       {
         h1: 'Introduction',
