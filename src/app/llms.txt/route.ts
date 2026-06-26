@@ -1,4 +1,7 @@
 import {
+  adminComponentsDescription,
+  adminComponentsRoute,
+  adminComponentsTitle,
   faqEntries,
   githubRepoUrl,
   componentEntries,
@@ -28,6 +31,7 @@ export function GET() {
     `- [Home](${siteUrl}/)`,
     `- [Docs](${siteUrl}/docs)`,
     `- [Component catalog](${siteUrl}/components)`,
+    `- [${adminComponentsTitle}](${siteUrl}${adminComponentsRoute})`,
     `- [About](${siteUrl}/about)`,
     `- [Public registry](${siteUrl}/r/registry.json)`,
     `- [Full LLM context](${siteUrl}/llms-full.txt)`,
@@ -35,6 +39,10 @@ export function GET() {
     '',
     '## Supported stack',
     ...stackItems.map((item) => `- ${item.label} (${item.detail})`),
+    '',
+    `## ${adminComponentsTitle}`,
+    adminComponentsDescription,
+    'Payload admin components need more than React source: collection slots, custom views or fields, render maps, generated types, and the admin import map have to move together.',
     '',
     '## Installable components',
     /* Keep "<title>: <command>" intact (no backticks) — the GEO contract test

@@ -62,6 +62,7 @@ test.describe('AI-readable documentation surfaces', () => {
     )
     expect(sitemapBody).toContain(`<loc>${baseURL}/</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/components</loc>`)
+    expect(sitemapBody).toContain(`<loc>${baseURL}/admin-components</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/docs/installation</loc>`)
 
     await page.goto(baseURL)
@@ -106,6 +107,7 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(body).toContain(`- [Home](${baseURL}/)`)
     expect(body).toContain(`- [Docs](${baseURL}/docs)`)
     expect(body).toContain(`- [Component catalog](${baseURL}/components)`)
+    expect(body).toContain(`- [Payload admin components guide](${baseURL}/admin-components)`)
     expect(body).toContain(`- [Public registry](${baseURL}/r/registry.json)`)
     expect(body).toContain(`- [GitHub repository](${githubRepoUrl})`)
     expect(body).toContain('Hero Basic: npx payload-components add hero-basic')
@@ -248,6 +250,17 @@ test.describe('AI-readable documentation surfaces', () => {
       headline: 'Installation',
       mainEntityOfPage: `${baseURL}/docs/installation`,
       url: `${baseURL}/docs/installation`,
+    })
+  })
+
+  test('Payload admin components guide exposes TechArticle structured data', async ({ page }) => {
+    await page.goto(`${baseURL}/admin-components`)
+
+    expect(findStructuredData(await getStructuredData(page), 'TechArticle')).toMatchObject({
+      '@type': 'TechArticle',
+      headline: 'Payload admin components guide',
+      mainEntityOfPage: `${baseURL}/admin-components`,
+      url: `${baseURL}/admin-components`,
     })
   })
 })
