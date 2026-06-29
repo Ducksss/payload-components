@@ -22,8 +22,7 @@ declare global {
   }
 }
 
-const managedPostHogApiKey =
-  process.env.NEXT_PUBLIC_POSTHOG_KEY ?? 'phc_CLDNz3kZi2k8gfBvN79mK6pGkNTS93Xg4epxZg4XxG9v'
+const managedPostHogApiKey = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? ''
 const managedPostHogHost =
   process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'
 const installCommandPattern = /\bpayload-components\s+add\s+([a-z0-9-]+)\b/i
@@ -38,6 +37,12 @@ function getSessionDistinctId() {
   return sessionDistinctId
 }
 
+function isAnalyticsHost() {
+  const { hostname } = window.location
+
+  return siteHostnames.has(hostname) || hostname === 'localhost' || hostname === '127.0.0.1'
+}
+
 function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
   const host = managedPostHogHost.replace(/\/$/, '')
   const event = {
@@ -47,7 +52,14 @@ function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
 
   window.__posthogEvents?.push(event)
 
-  if (window.__disablePostHogNetwork || !managedPostHogApiKey || !host) return
+  if (
+    window.__disablePostHogNetwork ||
+    !managedPostHogApiKey ||
+    !host ||
+    !isAnalyticsHost()
+  ) {
+    return
+  }
 
   const body = JSON.stringify({
     api_key: managedPostHogApiKey,
