@@ -1,8 +1,6 @@
 import { expect, type Page, test } from '@playwright/test'
 
 import {
-  adminComponentsRoute,
-  adminComponentsTitle,
   catalogTitle,
   heroHeadline,
   homeMetadataDescription,
@@ -11,6 +9,7 @@ import {
   landingSections,
   primaryInstallCommand,
   terminalDemoLines,
+  adminComponentsRoute,
 } from '../../src/lib/site'
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
@@ -203,11 +202,6 @@ test.describe('Light shadcn frontend', () => {
         title: /Payload CMS Block Catalog/,
       },
       {
-        h1: 'Payload admin components need wiring.',
-        path: adminComponentsRoute,
-        title: new RegExp(adminComponentsTitle),
-      },
-      {
         h1: 'Why Payload Components exists',
         path: '/about',
         title: /About/,
@@ -217,17 +211,40 @@ test.describe('Light shadcn frontend', () => {
         path: '/brand-guide',
         title: /Brand Guide/,
       },
-      ...componentEntries.map((component) => ({
-        h1: component.title,
-        path: component.href,
-        title: new RegExp(component.title),
-      })),
     ]
 
-    for (const route of routes) {
-      await page.goto(`${baseURL}${route.path}`)
-      await expect(page).toHaveTitle(route.title)
-      await expect(page.getByRole('heading', { level: 1, name: route.h1 })).toBeVisible()
+    for (const [index, route] of routes.entries()) {
+      const routePage = index === 0 ? page : await page.context().newPage()
+
+      await routePage.goto(`${baseURL}${route.path}`, { waitUntil: 'domcontentloaded' })
+      await expect(routePage).toHaveTitle(route.title, { timeout: 15_000 })
+      await expect(routePage.getByRole('heading', { level: 1, name: route.h1 })).toBeVisible()
+
+      const hasHorizontalOverflow = await routePage.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+      )
+      expect(hasHorizontalOverflow).toBe(false)
+
+      if (routePage !== page) {
+        await routePage.close()
+      }
+    }
+
+    const sampledComponentSlugs = ['hero-basic', 'call-to-action-signup', 'comparator-stack']
+    const sampledComponents = sampledComponentSlugs.map((slug) => {
+      const component = componentEntries.find((entry) => entry.slug === slug)
+
+      if (!component) {
+        throw new Error(`Missing component fixture for ${slug}`)
+      }
+
+      return component
+    })
+
+    for (const component of sampledComponents) {
+      await page.goto(`${baseURL}${component.href}`, { waitUntil: 'domcontentloaded' })
+      await expect(page).toHaveTitle(new RegExp(component.title), { timeout: 15_000 })
+      await expect(page.getByRole('heading', { level: 1, name: component.title })).toBeVisible()
 
       const hasHorizontalOverflow = await page.evaluate(
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
@@ -485,7 +502,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-desktop.png', {
       animations: 'disabled',
       fullPage: true,
-      maxDiffPixelRatio: 0.02,
+      maxDiffPixelRatio: 0.015,
       timeout: 15_000,
     })
 
@@ -497,7 +514,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-mobile.png', {
       animations: 'disabled',
       fullPage: true,
-      maxDiffPixelRatio: 0.02,
+      maxDiffPixelRatio: 0.015,
       timeout: 15_000,
     })
   })

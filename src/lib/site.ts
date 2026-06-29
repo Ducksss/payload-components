@@ -1247,15 +1247,6 @@ export const catalogDescription =
   'Installable Payload CMS blocks and components, each with docs, registry metadata, and CLI wiring that registers, renders, types, and import-maps it for you. Read the contract before you add it.'
 
 /* ------------------------------------------------------------------ */
-/* Payload admin components guide                                      */
-/* ------------------------------------------------------------------ */
-
-export const adminComponentsRoute = '/admin-components'
-export const adminComponentsTitle = 'Payload admin components guide'
-export const adminComponentsDescription =
-  'A developer guide to Payload admin components: collection slots, custom views or fields, render maps, generated types, and admin import-map wiring.'
-
-/* ------------------------------------------------------------------ */
 /* Shared navigation surfaces                                          */
 /* ------------------------------------------------------------------ */
 
@@ -1301,14 +1292,23 @@ const footerComponentCategoryLinks = (Object.keys(componentCategories) as Compon
     label: componentCategories[key].label,
   }))
 
+/* ------------------------------------------------------------------ */
+/* Payload admin components guide                                      */
+/* ------------------------------------------------------------------ */
+
+export const adminComponentsRoute = '/admin-components'
+export const adminComponentsTitle = 'Payload admin components guide'
+export const adminComponentsDescription =
+  'A developer guide to Payload admin components: collection slots, custom views or fields, render maps, generated types, and admin import-map wiring.'
+
 export const footerColumns = [
   {
     links: [
       { href: '/components', label: 'Component catalog' },
-      { href: adminComponentsRoute, label: 'Admin components guide' },
       { href: '/docs', label: 'Documentation' },
       { href: '/docs/installation', label: 'Install workflow' },
       { href: '/docs/architecture', label: 'Architecture' },
+      { href: adminComponentsRoute, label: 'Admin components guide' },
     ],
     title: 'Product',
   },
