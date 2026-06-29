@@ -77,7 +77,9 @@ test.describe('Light shadcn frontend', () => {
     )
     await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
-    const supportLink = page.getByRole('link', { name: supportEmail })
+    const supportLink = page.getByRole('link', {
+      name: new RegExp(`Install and component support.*${supportEmail}`),
+    })
     await expect(supportLink).toBeVisible()
     await expect(supportLink).toHaveAttribute('href', `mailto:${supportEmail}`)
 

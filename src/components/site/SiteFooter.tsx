@@ -45,7 +45,12 @@ export function SiteFooter() {
                 className="inline-flex max-w-full items-start gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 <Mail className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                <span className="break-all text-left">{supportEmail}</span>
+                <span className="min-w-0 text-left">
+                  <span className="block font-medium text-foreground">
+                    Install and component support
+                  </span>
+                  <span className="block break-all">{supportEmail}</span>
+                </span>
               </Link>
             </div>
           </div>
