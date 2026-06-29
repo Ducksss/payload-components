@@ -1074,7 +1074,7 @@ export const installablePageCount = componentEntries.filter(
 export const upcomingPostCount = upcomingComponents.length
 
 export const componentsIntro =
-  `No screenshots, no skeletons — the specimen below is the real component rendered with sample content. ${installablePageCount} page blocks install today; ${upcomingPostCount} post components are in development. Nothing ships without its full contract: source, manifest, docs, and installer coverage.`
+  `No screenshots — the specimen below is the real component, rendered from source. ${installablePageCount} page blocks install today.`
 
 export const componentFamilies = {
   pages: {
