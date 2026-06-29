@@ -10,6 +10,7 @@ import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 
 import { JsonLd } from '@/components/seo/JsonLd'
+import { AnalyticsPageview } from '@/components/site/AnalyticsPageview'
 import { CommandCopyController } from '@/components/site/CommandCopyController'
 import { githubRepoUrl, siteDescription, siteUrl } from '@/lib/site'
 import {
@@ -126,6 +127,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </Script>
       <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
         <JsonLd data={siteStructuredData} />
+        <AnalyticsPageview />
         {children}
         <CommandCopyController />
         <Analytics />
