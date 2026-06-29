@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import { siteIcons } from '@/components/site/icons'
 import { Section, SectionHeading } from '@/components/site/section'
 import { WiringLedger } from '@/components/site/WiringLedger'
@@ -49,6 +51,17 @@ export function WiringSection() {
           )
         })}
       </div>
+
+      <p className="reveal-on-scroll mt-8 text-sm text-muted-foreground">
+        New to this?{' '}
+        <Link
+          href="/payload-custom-components"
+          className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
+        >
+          See how Payload custom components install, wired
+        </Link>
+        .
+      </p>
     </Section>
   )
 }

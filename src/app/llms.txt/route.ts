@@ -28,6 +28,7 @@ export function GET() {
     `- [Home](${siteUrl}/)`,
     `- [Docs](${siteUrl}/docs)`,
     `- [Component catalog](${siteUrl}/components)`,
+    `- [Payload custom components](${siteUrl}/payload-custom-components)`,
     `- [About](${siteUrl}/about)`,
     `- [Public registry](${siteUrl}/r/registry.json)`,
     `- [Full LLM context](${siteUrl}/llms-full.txt)`,
