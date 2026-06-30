@@ -1,0 +1,74 @@
+name: Component Proposal
+description: Propose a new component for the Payload Components registry.
+title: '[component] '
+labels:
+  - component
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a component. Please fill out the details below so the community can discuss the design and scope before implementation.
+
+  - type: input
+    id: name
+    attributes:
+      label: Component name / slug
+      description: A short, kebab-case identifier (e.g. hero-basic, faq-accordion).
+      placeholder: my-component-name
+    validations:
+      required: true
+
+  - type: dropdown
+    id: family
+    attributes:
+      label: Component family
+      description: Which category does this component belong to?
+      options:
+        - Page block
+        - Post component
+        - Layout / section wrapper
+        - UI element (button, card, badge)
+        - Data display (table, list, grid)
+        - Interactive (accordion, tabs, carousel)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: purpose
+    attributes:
+      label: Purpose / use case
+      description: What problem does this component solve? Who would use it and in what context?
+      placeholder: Marketing sites need a sticky newsletter signup bar that appears after scrolling past the hero.
+    validations:
+      required: true
+
+  - type: textarea
+    id: contentModel
+    attributes:
+      label: Content model / fields needed
+      description: Describe the Payload fields this block would need (text, rich text, uploads, relationships, etc.).
+      placeholder: 'Fields: heading (text), description (richText), backgroundImage (upload), cta (group with label + link).'
+    validations:
+      required: true
+
+  - type: textarea
+    id: designReference
+    attributes:
+      label: Design reference / examples
+      description: Link to wireframes, screenshots, existing sites, or design system patterns that illustrate the component.
+      placeholder: 'Inspired by the shadcn block pattern at https://ui.shadcn.com/blocks — a centered hero with a background gradient.'
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution commitment
+      description: Let us know if you plan to help ship this component.
+      options:
+        - label: I will provide tests for this component.
+        - label: I will provide documentation for this component.
+        - label: I can help review the implementation.
+        - label: I am requesting this for the community to pick up.
