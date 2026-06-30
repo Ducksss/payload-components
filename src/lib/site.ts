@@ -39,7 +39,7 @@ export const heroSubheadline =
 export const heroPrimaryCta = { href: '/docs', label: 'Get started' } as const
 
 export const heroTertiaryLinks = [
-  { href: '/components', label: 'Browse the components' },
+  { href: '/components', label: 'Install-ready components' },
   { href: '#wiring', label: 'See what add actually wires' },
 ] as const
 
@@ -1268,9 +1268,9 @@ export const surfaceLinks = [
     title: 'Documentation',
   },
   {
-    description: 'Current components with exact commands and contracts.',
+    description: 'Install-ready components with exact commands and contracts.',
     href: '/components',
-    title: 'Component catalog',
+    title: 'Install-ready catalog',
   },
   {
     description: 'What payload-components add wires, step by step.',
@@ -1306,7 +1306,7 @@ const footerComponentCategoryLinks = (Object.keys(componentCategories) as Compon
 export const footerColumns = [
   {
     links: [
-      { href: '/components', label: 'Component catalog' },
+      { href: '/components', label: 'Install-ready catalog' },
       { href: '/docs', label: 'Documentation' },
       { href: '/docs/installation', label: 'Install workflow' },
       { href: '/docs/architecture', label: 'Architecture' },
@@ -1316,7 +1316,11 @@ export const footerColumns = [
   {
     links: [
       ...footerComponentCategoryLinks,
-      { accent: true, href: '/components', label: `All ${componentEntries.length} components` },
+      {
+        accent: true,
+        href: '/components',
+        label: `All ${componentEntries.length} install-ready components`,
+      },
     ],
     title: 'Components',
   },
