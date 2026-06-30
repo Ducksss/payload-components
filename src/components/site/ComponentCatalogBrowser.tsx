@@ -35,6 +35,17 @@ function countByCategory(items: { category: string }[]) {
   return counts
 }
 
+function componentRequestUrl(repoUrl: string, component: UpcomingComponent) {
+  const params = new URLSearchParams({
+    area: 'New component',
+    proposal: `Ship ${component.title} (${component.slug}) as a Payload Components post component.`,
+    template: 'feature_request.yml',
+    title: `[feature] ${component.slug}`,
+  })
+
+  return `${repoUrl}/issues/new?${params.toString()}`
+}
+
 export function ComponentCatalogBrowser({
   categories,
   families,
@@ -273,7 +284,11 @@ export function ComponentCatalogBrowser({
                   ) : null}
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {postsCards.map((component) => (
-                      <UpcomingComponentCard key={component.slug} component={component} />
+                      <UpcomingComponentCard
+                        key={component.slug}
+                        component={component}
+                        requestHref={componentRequestUrl(githubRepoUrl, component)}
+                      />
                     ))}
                   </div>
                 </div>
