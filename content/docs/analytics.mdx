@@ -1,0 +1,96 @@
+---
+title: Analytics & Privacy
+description: What anonymous events the site collects, what data is gathered, and how to opt out.
+icon: Search
+---
+
+<Callout type="info">
+  The site collects anonymous, privacy-preserving analytics. No personal
+  information is ever captured, stored, or shared.
+</Callout>
+
+## What is tracked
+
+Two events are sent on user interaction, both purely behavioral and tied only
+to the page the user is on:
+
+<Table>
+  <thead>
+    <tr>
+      <th>Event</th>
+      <th>When it fires</th>
+      <th>Properties sent</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>copy_install_command</code></td>
+      <td>
+        A user clicks the copy button next to an install command
+        (<code>npx payload-components add &lt;component&gt;</code>)
+      </td>
+      <td>
+        <code>command</code> — the full install command copied<br />
+        <code>component</code> — the component slug extracted from the command<br />
+        <code>source_path</code> — the current page path + hash
+      </td>
+    </tr>
+    <tr>
+      <td><code>primary_link_click</code></td>
+      <td>
+        A user clicks a primary navigation link pointing to docs,
+        the component catalog, or the GitHub repository
+      </td>
+      <td>
+        <code>destination</code> — one of <code>docs</code>,
+        <code>components</code>, or <code>github</code><br />
+        <code>href</code> — the resolved destination URL<br />
+        <code>source_path</code> — the current page path + hash
+      </td>
+    </tr>
+  </tbody>
+</Table>
+
+## What is NOT collected
+
+- No IP addresses are stored.
+- No user identifiers (cookies, localStorage, fingerprinting).
+- No query parameters, form inputs, or keystroke data.
+- No referrer headers or navigation history beyond the single click.
+- No GitHub authentication data, tokens, or repository information.
+
+## Analytics provider
+
+Events are sent through [Vercel Analytics](https://vercel.com/analytics),
+Vercel's first-party, privacy-focused analytics service. No third-party
+tracking scripts, cookies, or external data processors are used.
+
+The site also fires a parallel `gtag` `event` call when the browser `window.gtag`
+is available — this is a no-op on the public site and exists only for local
+development debugging.
+
+## How to opt out
+
+The analytics library fails silently — if the Vercel Analytics script does
+not load, or if the user blocks it via a browser extension (uBlock Origin,
+Privacy Badger, etc.), no events are sent. There is no fallback beacon,
+no fingerprinting, and no retry logic.
+
+To opt out, use any standard browser privacy extension that blocks analytics
+scripts, or disable JavaScript for `payload-components.xyz`.
+
+## Privacy boundaries
+
+- Events are never associated with a user session, device, or identity.
+- The `source_path` property contains only the URL path and hash of the page
+  where the interaction occurred. It does not include search queries, form
+  data, or authentication state.
+- Component slugs in `copy_install_command` are public catalog identifiers —
+  they reveal nothing about a user's project, codebase, or environment.
+- No analytics code runs inside the `payload-components` CLI. The analytics
+  surface is limited to the public documentation website only.
+
+## Source
+
+The full analytics implementation is open source:
+[`src/lib/analytics.ts`](https://github.com/Ducksss/payload-components/blob/main/src/lib/analytics.ts).
