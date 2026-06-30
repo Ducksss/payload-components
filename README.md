@@ -253,17 +253,17 @@ Payload fragments, and the owned/patched file breakdown before and after retryin
 
 Useful checks while changing this repo:
 
-```sh
-pnpm lint
-pnpm source:build
-pnpm exec tsc --noEmit
-pnpm test:registry
-pnpm run test:int
-E2E_PORT=3100 pnpm run test:e2e
-pnpm build
-```
+| Check                                                              | When to run                                                           |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| `pnpm lint`                                                        | Before any PR — catches formatting and basic code issues              |
+| `pnpm source:build`                                                | After changing registry/component source — rebuilds source files      |
+| `pnpm exec tsc --noEmit`                                           | After any TypeScript change — validates types without emitting output |
+| `pnpm test:registry`                                               | After registry changes — ensures registry JSON is valid               |
+| `pnpm run test:int`                                                | After integration changes — runs Vitest integration suite             |
+| `E2E_PORT=3100 pnpm run test:e2e`                                  | After site changes — runs Playwright e2e tests                        |
+| `pnpm build`                                                       | Final check before PR — builds the Next.js site and validates output  |
 
-Run the full local release gate before broad changes:
+Run the full local release gate before broad or maintainer-facing changes:
 
 ```sh
 pnpm test:release
