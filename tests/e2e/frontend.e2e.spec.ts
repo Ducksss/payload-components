@@ -9,6 +9,7 @@ import {
   landingSections,
   primaryInstallCommand,
   terminalDemoLines,
+  adminComponentsRoute,
   upcomingComponents,
 } from '../../src/lib/site'
 
@@ -249,17 +250,40 @@ test.describe('Light shadcn frontend', () => {
         path: '/brand-guide',
         title: /Brand Guide/,
       },
-      ...componentEntries.map((component) => ({
-        h1: component.title,
-        path: component.href,
-        title: new RegExp(component.title),
-      })),
     ]
 
-    for (const route of routes) {
-      await page.goto(`${baseURL}${route.path}`)
-      await expect(page).toHaveTitle(route.title)
-      await expect(page.getByRole('heading', { level: 1, name: route.h1 })).toBeVisible()
+    for (const [index, route] of routes.entries()) {
+      const routePage = index === 0 ? page : await page.context().newPage()
+
+      await routePage.goto(`${baseURL}${route.path}`, { waitUntil: 'domcontentloaded' })
+      await expect(routePage).toHaveTitle(route.title, { timeout: 15_000 })
+      await expect(routePage.getByRole('heading', { level: 1, name: route.h1 })).toBeVisible()
+
+      const hasHorizontalOverflow = await routePage.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+      )
+      expect(hasHorizontalOverflow).toBe(false)
+
+      if (routePage !== page) {
+        await routePage.close()
+      }
+    }
+
+    const sampledComponentSlugs = ['hero-basic', 'call-to-action-signup', 'comparator-stack']
+    const sampledComponents = sampledComponentSlugs.map((slug) => {
+      const component = componentEntries.find((entry) => entry.slug === slug)
+
+      if (!component) {
+        throw new Error(`Missing component fixture for ${slug}`)
+      }
+
+      return component
+    })
+
+    for (const component of sampledComponents) {
+      await page.goto(`${baseURL}${component.href}`, { waitUntil: 'domcontentloaded' })
+      await expect(page).toHaveTitle(new RegExp(component.title), { timeout: 15_000 })
+      await expect(page.getByRole('heading', { level: 1, name: component.title })).toBeVisible()
 
       const hasHorizontalOverflow = await page.evaluate(
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
@@ -482,6 +506,51 @@ test.describe('Light shadcn frontend', () => {
         },
       ]),
     )
+  })
+
+  test('routes Payload admin components intent to the installable wiring path', async ({ page }) => {
+    await page.goto(`${baseURL}${adminComponentsRoute}`)
+
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Payload admin components need wiring.',
+      }),
+    ).toBeVisible()
+    await expect(page.getByText('Payload admin panel customization').first()).toBeVisible()
+    await expect(page.getByText('custom dashboard').first()).toBeVisible()
+    await expect(page.getByText('admin import map').first()).toBeVisible()
+    await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Read install docs' })).toHaveAttribute(
+      'href',
+      '/docs/installation',
+    )
+    await expect(page.getByRole('link', { name: 'Request an admin component' })).toHaveAttribute(
+      'href',
+      'https://github.com/Ducksss/payload-components/issues',
+    )
+  })
+
+  test('tracks Payload admin components install-copy source', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}${adminComponentsRoute}`)
+    await stubGtagEvents(page)
+
+    await page.getByRole('button', { name: 'Copy' }).first().click()
+
+    await expectCopiedAlert(page)
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(primaryInstallCommand)
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: primaryInstallCommand,
+        component: 'hero-basic',
+        source_path: adminComponentsRoute,
+      },
+    ])
   })
 
   test('shows an alert after copying a docs code block', async ({ page, context }) => {

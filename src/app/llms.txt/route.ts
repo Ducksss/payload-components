@@ -31,6 +31,7 @@ export function GET() {
     `- [About](${siteUrl}/about)`,
     `- [Public registry](${siteUrl}/r/registry.json)`,
     `- [Full LLM context](${siteUrl}/llms-full.txt)`,
+    `- [Payload admin components guide](${siteUrl}/admin-components)`,
     `- [GitHub repository](${githubRepoUrl})`,
     '',
     '## Supported stack',
@@ -40,6 +41,10 @@ export function GET() {
     /* Keep "<title>: <command>" intact (no backticks) — the GEO contract test
        in tests/e2e/geo.e2e.spec.ts pins that exact substring. */
     ...componentEntries.map((component) => `- ${component.title}: ${component.command} — ${component.description}`),
+    '',
+    '## Payload admin components guide',
+    'A developer guide to Payload admin components: collection slots, custom views or fields, render maps, generated types, and admin import-map wiring.',
+    'Payload admin components need more than React source: collection slots, custom views or fields, render maps, generated types, and the admin import map have to move together.',
     '',
     '## FAQ',
     ...faqEntries.flatMap((entry) => [`### ${entry.question}`, entry.answer, '']),
