@@ -29,6 +29,7 @@ export function GET() {
     `- [Docs](${siteUrl}/docs)`,
     `- [Component catalog](${siteUrl}/components)`,
     `- [About](${siteUrl}/about)`,
+    `- [Forms install guide](${siteUrl}/forms)`,
     `- [Public registry](${siteUrl}/r/registry.json)`,
     `- [Full LLM context](${siteUrl}/llms-full.txt)`,
     `- [GitHub repository](${githubRepoUrl})`,

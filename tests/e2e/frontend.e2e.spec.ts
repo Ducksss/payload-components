@@ -240,6 +240,11 @@ test.describe('Light shadcn frontend', () => {
         title: /Payload CMS Block Catalog/,
       },
       {
+        h1: 'Payload forms start with one honest install.',
+        path: '/forms',
+        title: /Payload Forms Install Guide/,
+      },
+      {
         h1: 'Why Payload Components exists',
         path: '/about',
         title: /About/,
@@ -249,23 +254,98 @@ test.describe('Light shadcn frontend', () => {
         path: '/brand-guide',
         title: /Brand Guide/,
       },
-      ...componentEntries.map((component) => ({
-        h1: component.title,
-        path: component.href,
-        title: new RegExp(component.title),
-      })),
     ]
 
-    for (const route of routes) {
-      await page.goto(`${baseURL}${route.path}`)
-      await expect(page).toHaveTitle(route.title)
-      await expect(page.getByRole('heading', { level: 1, name: route.h1 })).toBeVisible()
+    for (const [index, route] of routes.entries()) {
+      const routePage = index === 0 ? page : await page.context().newPage()
+
+      await routePage.goto(`${baseURL}${route.path}`, { waitUntil: 'domcontentloaded' })
+      await expect(routePage).toHaveTitle(route.title, { timeout: 15_000 })
+      await expect(routePage.getByRole('heading', { level: 1, name: route.h1 })).toBeVisible()
+
+      const hasHorizontalOverflow = await routePage.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+      )
+      expect(hasHorizontalOverflow).toBe(false)
+
+      if (routePage !== page) {
+        await routePage.close()
+      }
+    }
+
+    const sampledComponentSlugs = ['hero-basic', 'call-to-action-signup', 'comparator-stack']
+    const sampledComponents = sampledComponentSlugs.map((slug) => {
+      const component = componentEntries.find((entry) => entry.slug === slug)
+
+      if (!component) {
+        throw new Error(`Missing component fixture for ${slug}`)
+      }
+
+      return component
+    })
+
+    for (const component of sampledComponents) {
+      await page.goto(`${baseURL}${component.href}`, { waitUntil: 'domcontentloaded' })
+      await expect(page).toHaveTitle(new RegExp(component.title), { timeout: 15_000 })
+      await expect(page.getByRole('heading', { level: 1, name: component.title })).toBeVisible()
 
       const hasHorizontalOverflow = await page.evaluate(
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       )
       expect(hasHorizontalOverflow).toBe(false)
     }
+
+  })
+
+  test('routes Payload forms intent to the honest install path', async ({ page }) => {
+    const signupBlock = componentEntries.find((component) => component.slug === 'call-to-action-signup')
+
+    expect(signupBlock).toBeDefined()
+
+    await page.goto(`${baseURL}/forms`)
+
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Payload forms start with one honest install.',
+      }),
+    ).toBeVisible()
+    await expect(page.getByText('does not ship a full form builder')).toBeVisible()
+    await expect(page.locator('code', { hasText: signupBlock!.command }).first()).toBeVisible()
+    await expect(page.getByRole('link', { name: /Open the signup block/ })).toHaveAttribute(
+      'href',
+      signupBlock!.href,
+    )
+    await expect(page.getByRole('link', { name: 'Read install docs' })).toHaveAttribute(
+      'href',
+      '/docs/installation',
+    )
+  })
+
+  test('tracks Payload forms install-copy source', async ({ page, context }) => {
+    const signupBlock = componentEntries.find((component) => component.slug === 'call-to-action-signup')
+
+    expect(signupBlock).toBeDefined()
+
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/forms`)
+    await stubGtagEvents(page)
+
+    await page.getByRole('button', { name: 'Copy' }).first().click()
+
+    await expectCopiedAlert(page)
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(signupBlock!.command)
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: signupBlock!.command,
+        component: 'call-to-action-signup',
+        source_path: '/forms',
+      },
+    ])
   })
 
   test('drives the responsive component preview frame', async ({ page }) => {

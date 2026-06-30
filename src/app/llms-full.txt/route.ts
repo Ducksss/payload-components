@@ -12,6 +12,7 @@ export async function GET() {
     `Docs: ${siteUrl}/docs`,
     `Catalog: ${siteUrl}/components`,
     `Registry: ${siteUrl}/r/registry.json`,
+    `Forms: ${siteUrl}/forms`,
     `GitHub: ${githubRepoUrl}`,
     '',
     '## Components',

@@ -63,6 +63,7 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(sitemapBody).toContain(`<loc>${baseURL}/</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/components</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/docs/installation</loc>`)
+    expect(sitemapBody).toContain(`<loc>${baseURL}/forms</loc>`)
 
     await page.goto(baseURL)
 
@@ -107,6 +108,7 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(body).toContain(`- [Docs](${baseURL}/docs)`)
     expect(body).toContain(`- [Component catalog](${baseURL}/components)`)
     expect(body).toContain(`- [Public registry](${baseURL}/r/registry.json)`)
+    expect(body).toContain(`- [Forms install guide](${baseURL}/forms)`)
     expect(body).toContain(`- [GitHub repository](${githubRepoUrl})`)
     expect(body).toContain('Hero Basic: npx payload-components add hero-basic')
   })
