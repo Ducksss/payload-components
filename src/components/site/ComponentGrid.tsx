@@ -1,6 +1,21 @@
+import { ArrowUpRight } from 'lucide-react'
+
+import { githubRepoUrl } from '@/lib/site'
 import type { UpcomingComponent } from '@/lib/site'
 
 import { cn } from '@/utilities/ui'
+
+function upcomingIssueUrl(component: UpcomingComponent) {
+  const params = new URLSearchParams({
+    template: 'feature_request.yml',
+    labels: 'enhancement',
+    title: `[feature] ${component.title}`,
+    area: 'New component',
+    problem: `I'd like a ${component.title} component for the ${component.target} use case.`,
+    proposal: `The ${component.slug} component should…`,
+  })
+  return `${githubRepoUrl}/issues/new?${params.toString()}`
+}
 
 /* Catalog-page building blocks for the in-development posts suite.
  * (The landing page renders the installable components live — see
@@ -140,7 +155,12 @@ function ComponentThumb({ muted = false, slug }: { muted?: boolean; slug: string
 
 export function UpcomingComponentCard({ component }: { component: UpcomingComponent }) {
   return (
-    <article className="flex flex-col overflow-hidden rounded-xl border border-dashed border-border bg-card/50">
+    <a
+      href={upcomingIssueUrl(component)}
+      target="_blank"
+      rel="noreferrer"
+      className="group flex flex-col overflow-hidden rounded-xl border border-dashed border-border bg-card/50 transition-colors hover:border-foreground/25"
+    >
       <ComponentThumb muted slug={component.slug} />
       <div className="flex flex-1 flex-col gap-1.5 p-4">
         <div className="flex items-center justify-between gap-2">
@@ -154,11 +174,12 @@ export function UpcomingComponentCard({ component }: { component: UpcomingCompon
         <p className="line-clamp-2 text-xs leading-5 text-muted-foreground">
           {component.description}
         </p>
-        <span className="mt-auto truncate pt-1 font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground">
-          {component.target}
+        <span className="mt-auto flex items-center gap-1 truncate pt-1 font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground transition-colors group-hover:text-foreground">
+          Request this component
+          <ArrowUpRight className="size-3" aria-hidden="true" />
         </span>
       </div>
-    </article>
+    </a>
   )
 }
 
