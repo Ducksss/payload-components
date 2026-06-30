@@ -3,6 +3,7 @@ import { expect, type Page, test } from '@playwright/test'
 import {
   catalogTitle,
   heroHeadline,
+  heroInstallHelper,
   homeMetadataDescription,
   homeMetadataTitle,
   componentEntries,
@@ -115,6 +116,7 @@ test.describe('Light shadcn frontend', () => {
     )
     await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
+    await expect(page.getByText(heroInstallHelper)).toBeVisible()
 
     // Forced single light theme: the dark class must never appear.
     await expect(page.locator('html')).not.toHaveClass(/dark/)

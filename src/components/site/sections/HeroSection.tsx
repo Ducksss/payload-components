@@ -10,6 +10,7 @@ import {
   heroEyebrow,
   heroHeadlineAccent,
   heroHeadlinePrimary,
+  heroInstallHelper,
   heroPrimaryCta,
   heroSubheadline,
   heroTertiaryLinks,
@@ -62,6 +63,12 @@ export function HeroSection() {
             </code>
             <CommandCopyButton command={primaryInstallCommand} />
           </div>
+          <p
+            className="hero-reveal -mt-2 max-w-lg text-pretty text-sm leading-6 text-muted-foreground"
+            style={{ animationDelay: '170ms' }}
+          >
+            {heroInstallHelper}
+          </p>
 
           <div
             className="hero-reveal flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center"
