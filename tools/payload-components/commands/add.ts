@@ -260,4 +260,18 @@ export const addCommand = async ({
   })
 
   printHeader(`payload-components: installed "${manifest.name}" successfully.`)
+
+  const layoutFragment = manifest.payloadFragments.find((fragment) => fragment.kind === 'pagesLayout')
+  const blockName =
+    layoutFragment && 'blockName' in layoutFragment ? layoutFragment.blockName : manifest.name
+
+  printHeader(
+    [
+      `payload-components: next — use "${manifest.name}" in your Payload admin`,
+      `  1. Start your project and open /admin, then edit (or create) a Page.`,
+      `  2. Add the "${blockName}" block to its layout, fill the fields, and publish.`,
+      ``,
+      `  Walkthrough: https://www.payload-components.xyz/docs/first-block`,
+    ].join('\n'),
+  )
 }
