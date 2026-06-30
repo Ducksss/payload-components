@@ -22,6 +22,7 @@ declare global {
   }
 }
 
+const tinManagedPostHogApiKey = 'phc_CLDNz3kZi2k8gfBvN79mK6pGkNTS93Xg4epxZg4XxG9v'
 const managedPostHogApiKey = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? ''
 const managedPostHogHost =
   process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'
@@ -40,11 +41,25 @@ function getSessionDistinctId() {
 function isAnalyticsHost() {
   const { hostname } = window.location
 
-  return siteHostnames.has(hostname) || hostname === 'localhost' || hostname === '127.0.0.1'
+  return (
+    siteHostnames.has(hostname) ||
+    (Boolean(managedPostHogApiKey) && (hostname === 'localhost' || hostname === '127.0.0.1'))
+  )
+}
+
+function getManagedPostHogApiKey() {
+  if (managedPostHogApiKey) return managedPostHogApiKey
+
+  if (siteHostnames.has(window.location.hostname)) {
+    return tinManagedPostHogApiKey
+  }
+
+  return ''
 }
 
 function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
   const host = managedPostHogHost.replace(/\/$/, '')
+  const apiKey = getManagedPostHogApiKey()
   const event = {
     event: eventName,
     properties,
@@ -54,7 +69,7 @@ function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
 
   if (
     window.__disablePostHogNetwork ||
-    !managedPostHogApiKey ||
+    !apiKey ||
     !host ||
     !isAnalyticsHost()
   ) {
@@ -62,7 +77,7 @@ function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
   }
 
   const body = JSON.stringify({
-    api_key: managedPostHogApiKey,
+    api_key: apiKey,
     distinct_id: getSessionDistinctId(),
     event: eventName,
     properties: {
