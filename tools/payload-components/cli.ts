@@ -62,6 +62,9 @@ Current components:
   faq-icons
   faq-grouped
   faq-grid
+  comparator-table
+  comparator-grid
+  comparator-stack
   testimonials-quote
   testimonials-spotlight
   testimonials-grid
