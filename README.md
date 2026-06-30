@@ -302,6 +302,8 @@ Contributions are welcome. The useful shape is a complete change: source,
 manifest, docs, demo twin, and installer coverage together when adding or
 changing a component.
 
+[![Good First Issues][good-first-issues-shield]][good-first-issues-url]
+
 Community docs:
 
 - [CONTRIBUTING.md][contributing-url] - setup, branches, tests, and PR shape.
@@ -352,6 +354,8 @@ information.
 [contributing-url]: ./CONTRIBUTING.md
 [contributors-shield]: https://img.shields.io/github/contributors/Ducksss/payload-components.svg?style=for-the-badge
 [contributors-url]: https://github.com/Ducksss/payload-components/graphs/contributors
+[good-first-issues-shield]: https://img.shields.io/github/issues/Ducksss/payload-components/good%20first%20issue.svg?style=for-the-badge
+[good-first-issues-url]: https://github.com/Ducksss/payload-components/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
 [forks-shield]: https://img.shields.io/github/forks/Ducksss/payload-components.svg?style=for-the-badge
 [forks-url]: https://github.com/Ducksss/payload-components/network/members
 [fumadocs-url]: https://fumadocs.dev
