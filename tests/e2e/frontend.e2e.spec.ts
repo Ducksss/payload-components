@@ -10,11 +10,17 @@ import {
   primaryInstallCommand,
   supportEmail,
   terminalDemoLines,
+  upcomingComponents,
 } from '../../src/lib/site'
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 const googleTagId = 'G-EMGRZ0H9R9'
 const copiedAlertText = 'Copied to clipboard.'
+
+type PostHogTestEvent = {
+  event: string
+  properties: Record<string, unknown>
+}
 
 async function stubGtagEvents(page: Page) {
   await page.waitForFunction(() => typeof window.gtag === 'function')
@@ -31,6 +37,10 @@ async function getGtagEvents(page: Page) {
   return page.evaluate(() => (window as Window & { __gtagEvents?: unknown[][] }).__gtagEvents ?? [])
 }
 
+async function getPostHogEvents(page: Page) {
+  return page.evaluate(() => (window as Window & { __posthogEvents?: PostHogTestEvent[] }).__posthogEvents ?? [])
+}
+
 async function expectCopiedAlert(page: Page) {
   await expect(page.getByRole('alert').filter({ hasText: copiedAlertText })).toBeVisible({
     timeout: 15000,
@@ -38,6 +48,18 @@ async function expectCopiedAlert(page: Page) {
 }
 
 test.describe('Light shadcn frontend', () => {
+  test.beforeEach(async ({ context }) => {
+    await context.addInitScript(() => {
+      const targetWindow = window as Window & {
+        __disablePostHogNetwork?: boolean
+        __posthogEvents?: PostHogTestEvent[]
+      }
+
+      targetWindow.__disablePostHogNetwork = true
+      targetWindow.__posthogEvents = []
+    })
+  })
+
   test('installs the Google tag once', async ({ page }) => {
     await page.goto(baseURL)
 
@@ -49,6 +71,23 @@ test.describe('Light shadcn frontend', () => {
       .locator('script#google-tag')
       .evaluate((script) => script.textContent ?? '')
     expect(inlineGoogleTag).toContain(`gtag('config', '${googleTagId}')`)
+  })
+
+  test('tracks homepage visits in readable analytics', async ({ page }) => {
+    await page.goto(baseURL)
+
+    await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
+    await expect.poll(() => getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'page_view',
+          properties: {
+            page_path: '/',
+            source_path: '/',
+          },
+        },
+      ]),
+    )
   })
 
   test('renders the light token-driven homepage', async ({ page }) => {
@@ -301,6 +340,27 @@ test.describe('Light shadcn frontend', () => {
     await expect(page.locator('#hero-basic')).toBeHidden()
   })
 
+  test('links upcoming components to prefilled request issues', async ({ page }) => {
+    const component = upcomingComponents.find((entry) => entry.slug === 'post-card')!
+
+    await page.goto(`${baseURL}/components?type=posts`)
+
+    const requestLink = page.getByRole('link', { name: 'Request' }).first()
+    await expect(requestLink).toBeVisible()
+    await expect(requestLink).toHaveAttribute(
+      'href',
+      new RegExp(
+        `/issues/new\\?${[
+          'area=New\\+component',
+          'proposal=Ship\\+Post\\+Card\\+%28post-card%29\\+as\\+a\\+Payload\\+Components\\+post\\+component\\.',
+          'template=feature_request\\.yml',
+          'title=%5Bfeature%5D\\+post-card',
+        ].join('.*')}`,
+      ),
+    )
+    await expect(page.getByText(component.title).first()).toBeVisible()
+  })
+
   test('exposes every landing section, the catalog teaser, and the footer', async ({ page }) => {
     await page.goto(baseURL)
 
@@ -354,6 +414,18 @@ test.describe('Light shadcn frontend', () => {
         source_path: '/',
       },
     ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: primaryInstallCommand,
+            component: 'hero-basic',
+            source_path: '/',
+          },
+        },
+      ]),
+    )
   })
 
   test('copies a catalog family-card command', async ({ page, context }) => {
@@ -404,6 +476,18 @@ test.describe('Light shadcn frontend', () => {
         source_path: '/',
       },
     ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'primary_link_click',
+          properties: {
+            destination: 'github',
+            href: 'https://github.com/Ducksss/payload-components',
+            source_path: '/',
+          },
+        },
+      ]),
+    )
   })
 
   test('shows an alert after copying a docs code block', async ({ page, context }) => {
@@ -439,7 +523,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-desktop.png', {
       animations: 'disabled',
       fullPage: true,
-      maxDiffPixelRatio: 0.02,
+      maxDiffPixelRatio: 0.015,
       timeout: 15_000,
     })
 
@@ -451,7 +535,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-mobile.png', {
       animations: 'disabled',
       fullPage: true,
-      maxDiffPixelRatio: 0.02,
+      maxDiffPixelRatio: 0.015,
       timeout: 15_000,
     })
   })

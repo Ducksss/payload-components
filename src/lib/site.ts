@@ -199,26 +199,9 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
 /* Component catalog grid                                                    */
 /* ------------------------------------------------------------------ */
 
-export const componentsIntro =
-  'No screenshots — the specimen below is the real component, rendered from source. Fifty-eight page blocks install today.'
-
-/* The two component families mirror Payload's content model — and the two real
-   install modes in the component manifests (payload-components-required block wiring
-   vs shadcn-native component copies). */
-export const componentFamilies = {
-  pages: {
-    countLabel: '58 installable',
-    description:
-      'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
-    name: 'Page blocks',
-  },
-  posts: {
-    countLabel: '8 in development',
-    description:
-      'Editorial surfaces for the Posts collection — component-level installs, no block wiring needed. In development.',
-    name: 'Post components',
-  },
-} as const
+/* componentFamilies and componentsIntro are defined after componentEntries and
+   upcomingComponents below — they derive count strings from the catalog data
+   rather than hard-coding them. */
 
 /* Display order on the /components catalog (it reads Object.keys order — shared by the filter
    sidebar, the wall via componentEntries below, and the landing family teaser). Page families
@@ -1080,6 +1063,34 @@ export const upcomingComponents = [
 ] as const
 
 export type UpcomingComponent = (typeof upcomingComponents)[number]
+
+/* ------------------------------------------------------------------ */
+/* Derived catalog counts — computed from the arrays above so they     */
+/* never drift from what the catalog actually ships.                    */
+/* ------------------------------------------------------------------ */
+
+export const installablePageCount = componentEntries.filter(
+  (e) => e.family === 'pages',
+).length
+export const upcomingPostCount = upcomingComponents.length
+
+export const componentsIntro =
+  `No screenshots — the specimen below is the real component, rendered from source. ${installablePageCount} page blocks install today.`
+
+export const componentFamilies = {
+  pages: {
+    countLabel: `${installablePageCount} installable`,
+    description:
+      'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
+    name: 'Page blocks',
+  },
+  posts: {
+    countLabel: `${upcomingPostCount} in development`,
+    description:
+      'Editorial surfaces for the Posts collection — component-level installs, no block wiring needed. In development.',
+    name: 'Post components',
+  },
+} as const
 
 /* ------------------------------------------------------------------ */
 /* Maintainer note                                                     */
