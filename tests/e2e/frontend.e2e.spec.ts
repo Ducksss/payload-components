@@ -79,7 +79,7 @@ test.describe('Light shadcn frontend', () => {
     await expect.poll(() => getPostHogEvents(page)).toEqual(
       expect.arrayContaining([
         {
-          event: 'page_view',
+          event: '$pageview',
           properties: {
             page_path: '/',
             source_path: '/',

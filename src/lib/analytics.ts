@@ -27,11 +27,28 @@ const managedPostHogHost =
   process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'
 const installCommandPattern = /\bpayload-components\s+add\s+([a-z0-9-]+)\b/i
 const siteHostnames = new Set(['payload-components.xyz', 'www.payload-components.xyz'])
+const distinctIdStorageKey = 'pc_distinct_id'
 let sessionDistinctId: string | null = null
 
 function getSessionDistinctId() {
-  if (!sessionDistinctId) {
-    sessionDistinctId = `pc_${globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)}`
+  if (sessionDistinctId) return sessionDistinctId
+
+  try {
+    const stored = window.localStorage.getItem(distinctIdStorageKey)
+    if (stored) {
+      sessionDistinctId = stored
+      return sessionDistinctId
+    }
+  } catch {
+    // localStorage unavailable (private mode / disabled) — fall back to an in-memory id.
+  }
+
+  sessionDistinctId = `pc_${globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)}`
+
+  try {
+    window.localStorage.setItem(distinctIdStorageKey, sessionDistinctId)
+  } catch {
+    // Persisting is best-effort; the in-memory id still works for this session.
   }
 
   return sessionDistinctId
@@ -121,7 +138,11 @@ function getSourcePath() {
 }
 
 export function trackPageView() {
-  trackEvent('page_view', {
+  /* GA4 (gtag config) and Vercel (<Analytics />) already auto-track page views;
+     the SDK-less PostHog integration does not, so send only there — using the
+     native $pageview event so PostHog's web-analytics and paths views populate.
+     Routing this through trackEvent would double-count GA4 (auto + manual). */
+  trackPostHogEvent('$pageview', {
     page_path: window.location.pathname,
     source_path: getSourcePath(),
   })
