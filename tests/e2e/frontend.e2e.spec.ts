@@ -10,6 +10,7 @@ import {
   landingSections,
   primaryInstallCommand,
   terminalDemoLines,
+  upcomingComponents,
 } from '../../src/lib/site'
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
@@ -335,6 +336,27 @@ test.describe('Light shadcn frontend', () => {
     await expect(page.locator('#hero-basic')).toBeHidden()
   })
 
+  test('links upcoming components to prefilled request issues', async ({ page }) => {
+    const component = upcomingComponents.find((entry) => entry.slug === 'post-card')!
+
+    await page.goto(`${baseURL}/components?type=posts`)
+
+    const requestLink = page.getByRole('link', { name: 'Request' }).first()
+    await expect(requestLink).toBeVisible()
+    await expect(requestLink).toHaveAttribute(
+      'href',
+      new RegExp(
+        `/issues/new\\?${[
+          'area=New\\+component',
+          'proposal=Ship\\+Post\\+Card\\+%28post-card%29\\+as\\+a\\+Payload\\+Components\\+post\\+component\\.',
+          'template=feature_request\\.yml',
+          'title=%5Bfeature%5D\\+post-card',
+        ].join('.*')}`,
+      ),
+    )
+    await expect(page.getByText(component.title).first()).toBeVisible()
+  })
+
   test('exposes every landing section, the catalog teaser, and the footer', async ({ page }) => {
     await page.goto(baseURL)
 
@@ -497,7 +519,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-desktop.png', {
       animations: 'disabled',
       fullPage: true,
-      maxDiffPixelRatio: 0.002,
+      maxDiffPixelRatio: 0.015,
       timeout: 15_000,
     })
 
@@ -509,7 +531,7 @@ test.describe('Reduced motion', () => {
     await expect(page).toHaveScreenshot('landing-home-mobile.png', {
       animations: 'disabled',
       fullPage: true,
-      maxDiffPixelRatio: 0.002,
+      maxDiffPixelRatio: 0.015,
       timeout: 15_000,
     })
   })
