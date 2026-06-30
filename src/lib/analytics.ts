@@ -3,6 +3,10 @@
 import { track as trackVercelEvent } from '@vercel/analytics'
 
 type AnalyticsProperties = Record<string, string | number | boolean>
+type PostHogTestEvent = {
+  event: string
+  properties: AnalyticsProperties
+}
 
 type Gtag = (
   command: 'event',
@@ -12,12 +16,100 @@ type Gtag = (
 
 declare global {
   interface Window {
+    __disablePostHogNetwork?: boolean
+    __posthogEvents?: PostHogTestEvent[]
     gtag?: Gtag
   }
 }
 
+const tinManagedPostHogApiKey = 'phc_CLDNz3kZi2k8gfBvN79mK6pGkNTS93Xg4epxZg4XxG9v'
+const managedPostHogApiKey = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? ''
+const managedPostHogHost =
+  process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'
 const installCommandPattern = /\bpayload-components\s+add\s+([a-z0-9-]+)\b/i
 const siteHostnames = new Set(['payload-components.xyz', 'www.payload-components.xyz'])
+let sessionDistinctId: string | null = null
+
+function getSessionDistinctId() {
+  if (!sessionDistinctId) {
+    sessionDistinctId = `pc_${globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)}`
+  }
+
+  return sessionDistinctId
+}
+
+function isAnalyticsHost() {
+  const { hostname } = window.location
+
+  return (
+    siteHostnames.has(hostname) ||
+    (Boolean(managedPostHogApiKey) && (hostname === 'localhost' || hostname === '127.0.0.1'))
+  )
+}
+
+function getManagedPostHogApiKey() {
+  if (managedPostHogApiKey) return managedPostHogApiKey
+
+  if (siteHostnames.has(window.location.hostname)) {
+    return tinManagedPostHogApiKey
+  }
+
+  return ''
+}
+
+function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
+  const host = managedPostHogHost.replace(/\/$/, '')
+  const apiKey = getManagedPostHogApiKey()
+  const event = {
+    event: eventName,
+    properties,
+  }
+
+  window.__posthogEvents?.push(event)
+
+  if (
+    window.__disablePostHogNetwork ||
+    !apiKey ||
+    !host ||
+    !isAnalyticsHost()
+  ) {
+    return
+  }
+
+  const body = JSON.stringify({
+    api_key: apiKey,
+    distinct_id: getSessionDistinctId(),
+    event: eventName,
+    properties: {
+      ...properties,
+      $current_url: `${window.location.origin}${getSourcePath()}`,
+      $pathname: window.location.pathname,
+      $lib: 'payload-components-lite',
+    },
+  })
+  const endpoint = `${host}/capture/`
+
+  try {
+    const payload = new Blob([body], { type: 'application/json' })
+
+    if (navigator.sendBeacon?.(endpoint, payload)) return
+  } catch {
+    // Analytics must never block the user action.
+  }
+
+  try {
+    void fetch(endpoint, {
+      body,
+      credentials: 'omit',
+      headers: { 'content-type': 'application/json' },
+      keepalive: true,
+      method: 'POST',
+      mode: 'cors',
+    })
+  } catch {
+    // Analytics must never block the user action.
+  }
+}
 
 function trackEvent(eventName: string, properties: AnalyticsProperties) {
   try {
@@ -31,10 +123,23 @@ function trackEvent(eventName: string, properties: AnalyticsProperties) {
   } catch {
     // Analytics must never block the user action.
   }
+
+  try {
+    trackPostHogEvent(eventName, properties)
+  } catch {
+    // Analytics must never block the user action.
+  }
 }
 
 function getSourcePath() {
   return `${window.location.pathname}${window.location.hash}`
+}
+
+export function trackPageView() {
+  trackEvent('page_view', {
+    page_path: window.location.pathname,
+    source_path: getSourcePath(),
+  })
 }
 
 export function getComponentSlugFromCommand(command: string) {
