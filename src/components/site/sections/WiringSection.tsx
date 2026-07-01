@@ -1,7 +1,7 @@
 import { siteIcons } from '@/components/site/icons'
 import { Section, SectionHeading } from '@/components/site/section'
 import { WiringLedger } from '@/components/site/WiringLedger'
-import { WiringNodeMap } from '@/components/site/graphics/WiringNodeMap'
+import { WiringFlow } from '@/components/site/graphics/WiringFlow'
 import { landingSections, receipts, wiringIntro, wiringLedger, wiringMapCaption } from '@/lib/site'
 
 /* The install boundary — the page's single "copying isn't the hard part"
@@ -25,7 +25,7 @@ export function WiringSection() {
 
       {/* The shape of an install: one file a paste covers, four wired by us. */}
       <div className="reveal-on-scroll mt-12">
-        <WiringNodeMap state="boundary" caption={wiringMapCaption} />
+        <WiringFlow caption={wiringMapCaption} />
       </div>
 
       {/* The receipts: the same five artifacts, row by row, vs a plain shadcn add. */}
