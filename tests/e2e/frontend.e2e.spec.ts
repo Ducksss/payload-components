@@ -2,6 +2,8 @@ import { expect, type Page, test } from '@playwright/test'
 
 import {
   catalogTitle,
+  customComponentsRoute,
+  customComponentsTitle,
   heroHeadline,
   homeMetadataDescription,
   homeMetadataTitle,
@@ -266,6 +268,37 @@ test.describe('Light shadcn frontend', () => {
       )
       expect(hasHorizontalOverflow).toBe(false)
     }
+  })
+
+  test('renders the Payload custom components guide as distinct developer guidance', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}${customComponentsRoute}`)
+
+    await expect(page).toHaveTitle(new RegExp(customComponentsTitle))
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Make a Payload custom component installable.',
+      }),
+    ).toBeVisible()
+    await expect(page.getByRole('heading', { level: 2, name: 'A custom block has five moving parts.' })).toBeVisible()
+    await expect(page.getByText('payload-components/manifests/<slug>.json')).toBeVisible()
+    await expect(page.getByText('"payloadFragments"')).toBeVisible()
+
+    const command = page.locator('code', { hasText: primaryInstallCommand }).first()
+    await expect(command).toBeVisible()
+    await page.getByRole('button', { name: 'Copy' }).first().click()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(primaryInstallCommand)
+
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    )
+    expect(hasHorizontalOverflow).toBe(false)
   })
 
   test('drives the responsive component preview frame', async ({ page }) => {
