@@ -5,7 +5,7 @@ export const siteUrl =
   configuredSiteUrl === 'https://payload-components.xyz' ? productionSiteUrl : configuredSiteUrl
 export const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 export const githubIssuesUrl = `${githubRepoUrl}/issues`
-export const supportEmail = 'payload-components@support.tin.computer'
+export const supportEmail = 'payload-components@mail.tin.computer'
 export const githubContentBranch = process.env.NEXT_PUBLIC_GITHUB_CONTENT_BRANCH ?? 'dev'
 export const docsRoute = '/docs'
 export const docsImageRoute = '/og/docs'
