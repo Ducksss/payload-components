@@ -75,7 +75,7 @@ function FamilyCard({ family }: { family: PageFamily }) {
     >
       <Link
         href={categoryHref}
-        aria-label={`Browse ${family.label} components`}
+        aria-label={`View install-ready ${family.label} components`}
         className="relative block border-b border-border bg-muted/40"
       >
         <DemoFitFrame className="h-52 [mask-image:linear-gradient(to_bottom,black_82%,transparent)] transition-transform duration-500 ease-out group-hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none">
@@ -108,7 +108,7 @@ function FamilyCard({ family }: { family: PageFamily }) {
           href={categoryHref}
           className="mt-auto inline-flex items-center gap-1 pt-1 text-sm font-medium text-foreground transition-colors hover:text-brand"
         >
-          Browse {family.label.toLowerCase()}
+          Install-ready {family.label.toLowerCase()}
           <ArrowRight className="size-3.5" aria-hidden="true" />
         </Link>
       </div>
@@ -140,7 +140,7 @@ export function CatalogFamilyTeaser() {
           href="/components"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground transition-colors hover:text-brand"
         >
-          Browse all {installableCount} components
+          All {installableCount} install-ready components
           <ArrowRight className="size-4" aria-hidden="true" />
         </Link>
         <Link

@@ -23,7 +23,7 @@ export function CatalogSection() {
           href="/components"
           className="inline-flex h-10 w-fit shrink-0 items-center gap-2 rounded-full border border-border bg-background px-5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
         >
-          Browse the catalog
+          Install-ready catalog
           <ArrowRight className="size-4" aria-hidden="true" />
         </Link>
       </div>

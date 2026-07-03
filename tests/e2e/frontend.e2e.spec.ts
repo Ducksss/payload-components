@@ -5,6 +5,7 @@ import {
   customComponentsRoute,
   customComponentsTitle,
   heroHeadline,
+  heroTertiaryLinks,
   homeMetadataDescription,
   homeMetadataTitle,
   componentEntries,
@@ -119,6 +120,12 @@ test.describe('Light shadcn frontend', () => {
     )
     await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
+    await expect(
+      page.locator('section.hero-shell').getByRole('link', {
+        exact: true,
+        name: heroTertiaryLinks[0].label,
+      }),
+    ).toHaveAttribute('href', heroTertiaryLinks[0].href)
     const supportLink = page.getByRole('link', {
       name: new RegExp(`Install and component support.*${supportEmail}`),
     })
@@ -303,7 +310,6 @@ test.describe('Light shadcn frontend', () => {
       )
       expect(hasHorizontalOverflow).toBe(false)
     }
-
   })
 
   test('routes Payload forms intent to the honest install path', async ({ page }) => {
@@ -421,7 +427,7 @@ test.describe('Light shadcn frontend', () => {
 
     for (const route of [
       { label: 'Docs', path: '/docs' },
-      { label: 'Components', path: '/components' },
+      { label: 'Install', path: '/components' },
       { label: 'About', path: '/about' },
     ]) {
       await page.goto(`${baseURL}${route.path}`)
@@ -491,7 +497,11 @@ test.describe('Light shadcn frontend', () => {
     )
     await expect(page.getByText('Resulting diff includes')).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Page blocks' })).toBeVisible()
-    await expect(page.getByRole('link', { name: /Browse all \d+ components/ })).toBeVisible()
+    await expect(
+      page.locator('#components').getByRole('link', {
+        name: /All \d+ install-ready components/,
+      }),
+    ).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
 
     await expect(page.getByRole('contentinfo')).toBeVisible()
