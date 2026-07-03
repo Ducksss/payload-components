@@ -1420,6 +1420,15 @@ const footerComponentCategoryLinks = (Object.keys(componentCategories) as Compon
     label: componentCategories[key].label,
   }))
 
+/* ------------------------------------------------------------------ */
+/* Payload admin components guide                                      */
+/* ------------------------------------------------------------------ */
+
+export const adminComponentsRoute = '/admin-components'
+export const adminComponentsTitle = 'Payload admin components guide'
+export const adminComponentsDescription =
+  'A developer guide to Payload admin components: collection slots, custom views or fields, render maps, generated types, and admin import-map wiring.'
+
 export const footerColumns = [
   {
     links: [
@@ -1429,6 +1438,7 @@ export const footerColumns = [
       { href: '/docs/installation', label: 'Install workflow' },
       { href: customComponentsRoute, label: 'Custom components guide' },
       { href: '/docs/architecture', label: 'Architecture' },
+      { href: adminComponentsRoute, label: 'Admin components guide' },
     ],
     title: 'Product',
   },
