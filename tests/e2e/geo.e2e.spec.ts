@@ -62,6 +62,7 @@ test.describe('AI-readable documentation surfaces', () => {
     )
     expect(sitemapBody).toContain(`<loc>${baseURL}/</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/components</loc>`)
+    expect(sitemapBody).toContain(`<loc>${baseURL}/payload-custom-components</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/docs/installation</loc>`)
 
     await page.goto(baseURL)
@@ -106,6 +107,8 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(body).toContain(`- [Home](${baseURL}/)`)
     expect(body).toContain(`- [Docs](${baseURL}/docs)`)
     expect(body).toContain(`- [Component catalog](${baseURL}/components)`)
+    expect(body).toContain(`- [Payload custom components guide](${baseURL}/payload-custom-components)`)
+    expect(body).toContain('A Payload custom component is installable when its source')
     expect(body).toContain(`- [Public registry](${baseURL}/r/registry.json)`)
     expect(body).toContain(`- [GitHub repository](${githubRepoUrl})`)
     expect(body).toContain('Hero Basic: npx payload-components add hero-basic')
@@ -122,6 +125,7 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(body).toContain('# Payload Components')
     expect(body).toContain('# Introduction')
     expect(body).toContain('# Architecture')
+    expect(body).toContain('## Payload custom components guide')
     expect(body).toContain('AI-readable surfaces')
     expect(body).toContain('The v2 app is intentionally not a Payload CMS site.')
     expect(body).toContain('npx payload-components add feature-grid-basic')
@@ -248,6 +252,17 @@ test.describe('AI-readable documentation surfaces', () => {
       headline: 'Installation',
       mainEntityOfPage: `${baseURL}/docs/installation`,
       url: `${baseURL}/docs/installation`,
+    })
+  })
+
+  test('Payload custom components guide exposes TechArticle structured data', async ({ page }) => {
+    await page.goto(`${baseURL}/payload-custom-components`)
+
+    expect(findStructuredData(await getStructuredData(page), 'TechArticle')).toMatchObject({
+      '@type': 'TechArticle',
+      headline: 'Payload custom components guide',
+      mainEntityOfPage: `${baseURL}/payload-custom-components`,
+      url: `${baseURL}/payload-custom-components`,
     })
   })
 })
