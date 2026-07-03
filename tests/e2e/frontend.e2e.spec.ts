@@ -229,21 +229,7 @@ test.describe('Light shadcn frontend', () => {
     }
   })
 
-  test('exposes docs, catalog, representative component pages, and no horizontal overflow', async ({
-    page,
-  }) => {
-    const sampledComponentSlugs = new Set([
-      'hero-basic',
-      'feature-bento',
-      'pricing-cards',
-      'team-roster',
-      'embed-basic',
-    ])
-    const sampledComponents = componentEntries.filter((component) =>
-      sampledComponentSlugs.has(component.slug),
-    )
-    expect(sampledComponents).toHaveLength(sampledComponentSlugs.size)
-
+  test('exposes docs, catalog, component pages, and no horizontal overflow', async ({ page }) => {
     const routes = [
       {
         h1: heroHeadline,
@@ -280,11 +266,6 @@ test.describe('Light shadcn frontend', () => {
         path: '/brand-guide',
         title: /Brand Guide/,
       },
-      ...sampledComponents.map((component) => ({
-        h1: component.title,
-        path: component.href,
-        title: new RegExp(component.title),
-      })),
     ]
 
     for (const [index, route] of routes.entries()) {
@@ -304,6 +285,27 @@ test.describe('Light shadcn frontend', () => {
       }
     }
 
+    const sampledComponentSlugs = ['hero-basic', 'call-to-action-signup', 'comparator-stack']
+    const sampledComponents = sampledComponentSlugs.map((slug) => {
+      const component = componentEntries.find((entry) => entry.slug === slug)
+
+      if (!component) {
+        throw new Error(`Missing component fixture for ${slug}`)
+      }
+
+      return component
+    })
+
+    for (const component of sampledComponents) {
+      await page.goto(`${baseURL}${component.href}`, { waitUntil: 'domcontentloaded' })
+      await expect(page).toHaveTitle(new RegExp(component.title), { timeout: 15_000 })
+      await expect(page.getByRole('heading', { level: 1, name: component.title })).toBeVisible()
+
+      const hasHorizontalOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+      )
+      expect(hasHorizontalOverflow).toBe(false)
+    }
   })
 
   test('routes Payload forms intent to the honest install path', async ({ page }) => {
