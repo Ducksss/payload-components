@@ -33,6 +33,7 @@ export function GET() {
     `- [Component catalog](${siteUrl}/components)`,
     `- [${customComponentsTitle}](${siteUrl}${customComponentsRoute})`,
     `- [About](${siteUrl}/about)`,
+    `- [Forms install guide](${siteUrl}/forms)`,
     `- [Public registry](${siteUrl}/r/registry.json)`,
     `- [Full LLM context](${siteUrl}/llms-full.txt)`,
     `- [GitHub repository](${githubRepoUrl})`,
