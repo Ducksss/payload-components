@@ -64,6 +64,7 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(sitemapBody).toContain(`<loc>${baseURL}/components</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/payload-custom-components</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/docs/installation</loc>`)
+    expect(sitemapBody).toContain(`<loc>${baseURL}/forms</loc>`)
 
     await page.goto(baseURL)
 
@@ -110,6 +111,7 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(body).toContain(`- [Payload custom components guide](${baseURL}/payload-custom-components)`)
     expect(body).toContain('A Payload custom component is installable when its source')
     expect(body).toContain(`- [Public registry](${baseURL}/r/registry.json)`)
+    expect(body).toContain(`- [Forms install guide](${baseURL}/forms)`)
     expect(body).toContain(`- [GitHub repository](${githubRepoUrl})`)
     expect(body).toContain('Hero Basic: npx payload-components add hero-basic')
   })
