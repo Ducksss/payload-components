@@ -367,6 +367,47 @@
   }
 }
 
+/* Emerald "current" — a stream of soft dots flowing command → artifact. The
+   dash period (2.5 + 8.5 = 11, in pathLength-100 units) is the loop distance,
+   so one cycle is seamless. */
+@keyframes wiring-dash-flow {
+  to {
+    stroke-dashoffset: -11;
+  }
+}
+
+/* One-time entry reveal for the interactive canvas: nodes lift in, edges draw
+   from the command outward, ports pop at the join. */
+@keyframes wiring-node-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes wiring-edge-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes wiring-port-in {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @keyframes scroll-rise {
   from {
     opacity: 0;
@@ -747,6 +788,107 @@
   .hover-lift:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-frame);
+  }
+
+  /* Interactive wiring canvas (React Flow) — decorative, only mounts on
+     motion-enabled desktop. Custom nodes/edges carry all styling, so the base
+     React Flow chrome is neutralised to the card surface. */
+  .wiring-canvas .react-flow {
+    background: transparent;
+  }
+
+  .wiring-canvas .react-flow__handle {
+    width: 1px;
+    height: 1px;
+    min-width: 0;
+    min-height: 0;
+    border: 0;
+    background: transparent;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .wiring-canvas .react-flow__attribution {
+    display: none;
+  }
+
+  .wiring-canvas .react-flow__node {
+    cursor: grab;
+  }
+
+  .wiring-canvas .react-flow__node.dragging {
+    cursor: grabbing;
+  }
+
+  /* Tactile depth — CSS 3D only (no WebGL). Transform is applied only on
+     hover/active (a resting transform on node content breaks React Flow's node
+     measurement); --rx/--ry track the pointer (set per-node on mousemove). */
+  .wiring-3d {
+    transition: transform 160ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .wiring-3d:hover,
+  .wiring-3d.is-active {
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))
+      translateZ(14px);
+  }
+
+  /* Staggered entry reveal (plays once on scroll-in via .is-revealed). */
+  .wiring-canvas .wiring-reveal {
+    opacity: 0;
+  }
+
+  .wiring-canvas.is-revealed .wiring-reveal {
+    animation: wiring-node-in 560ms cubic-bezier(0.2, 0.74, 0.24, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+
+  .wiring-edge-base {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+
+  .wiring-canvas.is-revealed .wiring-edge-base {
+    animation: wiring-edge-draw 620ms cubic-bezier(0.65, 0, 0.35, 1) both;
+    animation-delay: calc(140ms + var(--i, 0) * 70ms);
+  }
+
+  .wiring-port {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .wiring-canvas.is-revealed .wiring-port {
+    animation: wiring-port-in 360ms ease both;
+    animation-delay: calc(560ms + var(--i, 0) * 70ms);
+  }
+
+  /* Soft emerald glow on the spotlighted edge (static, thin path — not a
+     large animated raster, so it stays inside the LCP guardrail). */
+  .wiring-edge-glow {
+    filter: drop-shadow(0 0 5px color-mix(in oklch, var(--brand) 55%, transparent));
+  }
+
+  /* Emerald "current": a stream of dots. Hidden until the draw finishes, then
+     fades in; paused unless the canvas is onscreen (.is-flowing) so nothing
+     perpetually composites offscreen. The global reduced-motion guard stops it
+     too, and it only ever mounts on motion-enabled desktop. */
+  .wiring-flow-dash {
+    stroke-dasharray: 2.5 8.5;
+    stroke-dashoffset: 0;
+    opacity: 0;
+    animation: wiring-dash-flow 0.85s linear infinite;
+    animation-play-state: paused;
+  }
+
+  .wiring-canvas.is-revealed .wiring-flow-dash {
+    opacity: 0.9;
+    transition: opacity 400ms ease calc(700ms + var(--i, 0) * 70ms);
+  }
+
+  .wiring-canvas.is-revealed.is-flowing .wiring-flow-dash {
+    animation-play-state: running;
   }
 }
 
