@@ -11,7 +11,13 @@ import { HeadingAccent, Section, SectionHeading } from '@/components/site/sectio
 import { ClientShowcase } from '@/components/site/sections/ClientShowcase'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
-import { githubIssuesUrl, receipts } from '@/lib/site'
+import {
+  githubIssuesUrl,
+  installablePageCount,
+  receipts,
+  upcomingPostCount,
+  wiringLedger,
+} from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
 const description =
@@ -49,6 +55,32 @@ const pasteChecklist = [
   'run payload generate:types',
   'run payload generate:importmap',
   'prove it still works — integration tests, e2e, click through the admin',
+] as const
+
+/* The install pipeline, in the order `payload-components add` runs it —
+   mirrors terminalDemoLines in lib/site; the section closes by noting all
+   five land as one reviewable diff. */
+const pipelineStages = [
+  {
+    detail: 'The block config, component, and shared fields land in src/blocks/.',
+    title: 'Copy the source',
+  },
+  {
+    detail: 'Added to your Pages collection in src/collections/Pages/index.ts.',
+    title: 'Register the block',
+  },
+  {
+    detail: 'Wired into src/blocks/RenderBlocks.tsx so the page renders it.',
+    title: 'Map the renderer',
+  },
+  {
+    detail: 'payload generate:types updates src/payload-types.ts.',
+    title: 'Regenerate types',
+  },
+  {
+    detail: 'payload generate:importmap updates the admin import map.',
+    title: 'Regenerate the import map',
+  },
 ] as const
 
 export default function AboutPage() {
@@ -94,6 +126,17 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,17rem)] lg:gap-16">
             {/* Prose — left-anchored to the hero's edge, held to a readable measure. */}
             <div className="flex max-w-[60ch] flex-col gap-7 text-base leading-7 text-muted-foreground">
+            <p>
+              <span className="font-medium text-foreground">
+                Payload Components is an open-source registry and CLI that installs typed Payload
+                CMS blocks into Payload v3 + Next.js projects — wired, not pasted.
+              </span>{' '}
+              One command copies a block’s source and does the wiring a hand-paste leaves you to
+              finish: it registers the block in your Pages collection, maps the renderer, and
+              regenerates your types and the admin import map. The rest of this page is why it
+              exists.
+            </p>
+
             <p>
               Freelancing on Payload sites means a new repo every few weeks, and every one of them
               needs roughly the same surfaces — a hero, a feature grid, post cards, an archive.
@@ -158,9 +201,11 @@ export default function AboutPage() {
             </p>
 
             <p>
-              It is MIT-licensed end to end because an installer that edits your repo has to earn
-              trust the only honest way: by letting you read it. The catalog grows from real
-              installs, not roadmap theater — if you ship client sites on Payload,{' '}
+              It is MIT-licensed end to end — the registry, the CLI, every component, and this site
+              are one repository. No pricing, no license keys, no gated tier. An installer that
+              edits your repo earns trust the only honest way: by letting you read it. The catalog
+              grows from real installs and pull requests, not roadmap theater — if you ship client
+              sites on Payload,{' '}
               <a
                 href={githubIssuesUrl}
                 target="_blank"
@@ -203,6 +248,67 @@ export default function AboutPage() {
           </div>
         </Section>
 
+        <Section className="bg-muted/40">
+          <SectionHeading
+            accentWord="Finished"
+            eyebrow="The extension"
+            heading="Built on shadcn. Finished for Payload."
+            intro="Payload Components is built on the shadcn registry — not a rival to it. payload-components add wraps the same registry delivery, then does the Payload wiring shadcn add leaves to you. A layout block is live only once five artifacts exist; a plain copy lands the first and hands you the other four."
+          />
+
+          {/* The framing as numbers — reusing the landing ledger's columns so the
+              commands and tallies never drift from what the installer actually does. */}
+          <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="flex min-w-0 flex-col gap-3 rounded-[1.25rem] border border-border bg-background p-6">
+              <code className="block max-w-full overflow-x-auto whitespace-nowrap rounded-md border border-border bg-muted/50 px-3 py-2 font-mono text-xs text-foreground/80">
+                {wiringLedger.columns.baseline.command}
+              </code>
+              <p className="font-mono text-4xl font-semibold tracking-tight text-muted-foreground">
+                1 <span className="text-muted-foreground/40">/ 5</span>
+              </p>
+              <p className="text-sm leading-6 text-muted-foreground">
+                {wiringLedger.columns.baseline.summary}
+              </p>
+            </div>
+
+            <div className="flex min-w-0 flex-col gap-3 rounded-[1.25rem] border border-border bg-background p-6">
+              <code className="block max-w-full overflow-x-auto whitespace-nowrap rounded-md border border-border bg-muted/50 px-3 py-2 font-mono text-xs text-foreground/80">
+                {wiringLedger.columns.component.command}
+              </code>
+              <p className="font-mono text-4xl font-semibold tracking-tight text-brand">
+                5 <span className="text-brand/40">/ 5</span>
+              </p>
+              <p className="text-sm leading-6 text-muted-foreground">
+                {wiringLedger.columns.component.summary}
+              </p>
+            </div>
+          </div>
+
+          {/* The five artifacts as a pipeline — one numbered pass, mirroring
+              terminalDemoLines without re-rendering the landing's full ledger. */}
+          <ol className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6 lg:border-t lg:border-border">
+            {pipelineStages.map((stage, index) => (
+              <li key={stage.title} className="relative flex min-w-0 flex-col gap-2 lg:pt-7">
+                <span
+                  aria-hidden="true"
+                  className="absolute left-0 top-0 hidden h-3 w-px bg-brand lg:block"
+                />
+                <span className="font-mono text-sm font-semibold text-brand">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className="text-base font-semibold tracking-tight text-foreground">
+                  {stage.title}
+                </h3>
+                <p className="text-sm leading-6 text-muted-foreground">{stage.detail}</p>
+              </li>
+            ))}
+          </ol>
+
+          <p className="mt-8 max-w-2xl text-base leading-7 text-foreground">
+            All five land in one pass — as one git diff you review like any PR.
+          </p>
+        </Section>
+
         <ClientShowcase />
 
         <Section className="bg-muted/40">
@@ -212,7 +318,7 @@ export default function AboutPage() {
                 accentWord="matters"
                 eyebrow="From here"
                 heading="Spend your week on the work that matters."
-                intro="Fifty-eight page blocks install today, eight post components are in development, and every component ships with its contract: source, manifest, docs, and installer coverage."
+                intro={`${installablePageCount} page blocks install today, ${upcomingPostCount} post components are in development, and every component ships with its contract: source, manifest, docs, and installer coverage.`}
               />
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link

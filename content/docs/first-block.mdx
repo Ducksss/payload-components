@@ -1,0 +1,61 @@
+---
+title: Use your first block
+description: From the add command to a live page — the editor side of the flow, start to finish.
+icon: MousePointerClick
+---
+
+You've run `payload-components add` (see [Installation](/docs/installation) for the CLI side). The wiring is already done — here's the editor journey, from the Payload admin to a live page, using **Feature Grid Basic** as the example. Every component follows the same path.
+
+<Callout type="info" title="Why the block is already there">
+  `add` didn't just copy files. It registered the block in your `Pages` layout
+  field and mapped it in `RenderBlocks`, then regenerated types and the admin
+  import map. So the block shows up in the admin block picker with no extra
+  wiring — that's the whole point of the wrapper CLI.
+</Callout>
+
+<Steps>
+
+<Step>
+**Open a page in the admin.** Start your project (`pnpm dev`) and go to `/admin`.
+Open an existing **Page** or create a new one — blocks live on the page's `layout` field.
+</Step>
+
+<Step>
+**Add the block — it's already in the picker.** In the layout field, click **Add Block**.
+Feature Grid Basic is listed alongside the starter blocks, because `add` registered it for you.
+
+![Payload admin block picker showing Feature Grid Basic among the available blocks](/docs/admin/feature-grid-picker.png)
+</Step>
+
+<Step>
+**Fill the content.** Select the block and complete its fields — eyebrow, title, description,
+and a few items. They come straight from the [content model](/docs/components/feature-grid-basic#content-model);
+required fields are marked.
+
+![Feature Grid Basic block fields filled in inside the Payload admin](/docs/admin/feature-grid-fields.png)
+</Step>
+
+<Step>
+**Publish.** Save and publish the page. There's nothing else to wire — the block is
+fully typed and registered.
+</Step>
+
+<Step>
+**See it live.** The page renders the block through `RenderBlocks` on the frontend.
+Here's the component you just configured:
+
+<ComponentPreview slug="feature-grid-basic" />
+</Step>
+
+</Steps>
+
+## Where to next
+
+<Cards>
+  <Card icon={<Blocks />} title="Browse all components" href="/docs/components">
+    The full catalog — every block installs and wires up the same way.
+  </Card>
+  <Card icon={<LayoutGrid />} title="Feature Grid Basic" href="/docs/components/feature-grid-basic">
+    The content model and family variants for the block used here.
+  </Card>
+</Cards>

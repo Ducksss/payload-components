@@ -138,7 +138,13 @@ function ComponentThumb({ muted = false, slug }: { muted?: boolean; slug: string
 /* Cards                                                               */
 /* ------------------------------------------------------------------ */
 
-export function UpcomingComponentCard({ component }: { component: UpcomingComponent }) {
+export function UpcomingComponentCard({
+  component,
+  requestHref,
+}: {
+  component: UpcomingComponent
+  requestHref?: string
+}) {
   return (
     <article className="flex flex-col overflow-hidden rounded-xl border border-dashed border-border bg-card/50">
       <ComponentThumb muted slug={component.slug} />
@@ -154,9 +160,21 @@ export function UpcomingComponentCard({ component }: { component: UpcomingCompon
         <p className="line-clamp-2 text-xs leading-5 text-muted-foreground">
           {component.description}
         </p>
-        <span className="mt-auto truncate pt-1 font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground">
-          {component.target}
-        </span>
+        <div className="mt-auto flex items-center justify-between gap-3 pt-1">
+          <span className="truncate font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground">
+            {component.target}
+          </span>
+          {requestHref ? (
+            <a
+              href={requestHref}
+              target="_blank"
+              rel="noreferrer"
+              className="shrink-0 text-xs font-medium text-foreground transition-colors hover:text-brand"
+            >
+              Request
+            </a>
+          ) : null}
+        </div>
       </div>
     </article>
   )
