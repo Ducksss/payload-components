@@ -1425,6 +1425,7 @@ export const footerColumns = [
   {
     links: [
       { href: '/components', label: 'Component catalog' },
+      { href: '/forms', label: 'Forms install guide' },
       { href: '/docs', label: 'Documentation' },
       { href: '/docs/installation', label: 'Install workflow' },
       { href: customComponentsRoute, label: 'Custom components guide' },

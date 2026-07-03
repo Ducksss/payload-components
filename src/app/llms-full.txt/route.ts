@@ -22,6 +22,7 @@ export async function GET() {
     `Catalog: ${siteUrl}/components`,
     `${customComponentsTitle}: ${siteUrl}${customComponentsRoute}`,
     `Registry: ${siteUrl}/r/registry.json`,
+    `Forms: ${siteUrl}/forms`,
     `GitHub: ${githubRepoUrl}`,
     '',
     `## ${customComponentsTitle}`,
