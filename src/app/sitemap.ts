@@ -12,6 +12,7 @@ const staticRoutes = [
   { changeFrequency: 'monthly', path: '/about', priority: 0.5 },
   { changeFrequency: 'weekly', path: '/forms', priority: 0.75 },
   { changeFrequency: 'monthly', path: '/brand-guide', priority: 0.5 },
+  { changeFrequency: 'weekly', path: '/admin-components', priority: 0.75 },
 ] as const satisfies ReadonlyArray<{
   changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']
   path: string
