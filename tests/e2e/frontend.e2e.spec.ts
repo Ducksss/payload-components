@@ -5,6 +5,7 @@ import {
   customComponentsRoute,
   customComponentsTitle,
   heroHeadline,
+  heroInstallHelper,
   heroTertiaryLinks,
   homeMetadataDescription,
   homeMetadataTitle,
@@ -120,6 +121,7 @@ test.describe('Light shadcn frontend', () => {
     )
     await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
+    await expect(page.getByText(heroInstallHelper)).toBeVisible()
     await expect(
       page.locator('section.hero-shell').getByRole('link', {
         exact: true,
