@@ -6,6 +6,7 @@ import {
   customComponentsTitle,
   heroHeadline,
   heroInstallHelper,
+  heroTertiaryLinks,
   homeMetadataDescription,
   homeMetadataTitle,
   componentEntries,
@@ -120,6 +121,12 @@ test.describe('Light shadcn frontend', () => {
     await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
     await expect(page.getByText(heroInstallHelper)).toBeVisible()
+    await expect(
+      page.locator('section.hero-shell').getByRole('link', {
+        exact: true,
+        name: heroTertiaryLinks[0].label,
+      }),
+    ).toHaveAttribute('href', heroTertiaryLinks[0].href)
 
     // Forced single light theme: the dark class must never appear.
     await expect(page.locator('html')).not.toHaveClass(/dark/)
@@ -222,7 +229,21 @@ test.describe('Light shadcn frontend', () => {
     }
   })
 
-  test('exposes docs, catalog, component pages, and no horizontal overflow', async ({ page }) => {
+  test('exposes docs, catalog, representative component pages, and no horizontal overflow', async ({
+    page,
+  }) => {
+    const sampledComponentSlugs = new Set([
+      'hero-basic',
+      'feature-bento',
+      'pricing-cards',
+      'team-roster',
+      'embed-basic',
+    ])
+    const sampledComponents = componentEntries.filter((component) =>
+      sampledComponentSlugs.has(component.slug),
+    )
+    expect(sampledComponents).toHaveLength(sampledComponentSlugs.size)
+
     const routes = [
       {
         h1: heroHeadline,
@@ -259,6 +280,11 @@ test.describe('Light shadcn frontend', () => {
         path: '/brand-guide',
         title: /Brand Guide/,
       },
+      ...sampledComponents.map((component) => ({
+        h1: component.title,
+        path: component.href,
+        title: new RegExp(component.title),
+      })),
     ]
 
     for (const [index, route] of routes.entries()) {
@@ -276,28 +302,6 @@ test.describe('Light shadcn frontend', () => {
       if (routePage !== page) {
         await routePage.close()
       }
-    }
-
-    const sampledComponentSlugs = ['hero-basic', 'call-to-action-signup', 'comparator-stack']
-    const sampledComponents = sampledComponentSlugs.map((slug) => {
-      const component = componentEntries.find((entry) => entry.slug === slug)
-
-      if (!component) {
-        throw new Error(`Missing component fixture for ${slug}`)
-      }
-
-      return component
-    })
-
-    for (const component of sampledComponents) {
-      await page.goto(`${baseURL}${component.href}`, { waitUntil: 'domcontentloaded' })
-      await expect(page).toHaveTitle(new RegExp(component.title), { timeout: 15_000 })
-      await expect(page.getByRole('heading', { level: 1, name: component.title })).toBeVisible()
-
-      const hasHorizontalOverflow = await page.evaluate(
-        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-      )
-      expect(hasHorizontalOverflow).toBe(false)
     }
 
   })
@@ -417,7 +421,7 @@ test.describe('Light shadcn frontend', () => {
 
     for (const route of [
       { label: 'Docs', path: '/docs' },
-      { label: 'Components', path: '/components' },
+      { label: 'Install', path: '/components' },
       { label: 'About', path: '/about' },
     ]) {
       await page.goto(`${baseURL}${route.path}`)
@@ -487,7 +491,11 @@ test.describe('Light shadcn frontend', () => {
     )
     await expect(page.getByText('Resulting diff includes')).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Page blocks' })).toBeVisible()
-    await expect(page.getByRole('link', { name: /Browse all \d+ components/ })).toBeVisible()
+    await expect(
+      page.locator('#components').getByRole('link', {
+        name: /All \d+ install-ready components/,
+      }),
+    ).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
 
     await expect(page.getByRole('contentinfo')).toBeVisible()
