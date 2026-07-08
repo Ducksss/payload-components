@@ -218,6 +218,13 @@ test.describe('Light shadcn frontend', () => {
   })
 
   test('exposes docs, catalog, component pages, and no horizontal overflow', async ({ page }) => {
+    // Each /docs/components/<slug> page embeds a live-preview iframe that compiles a
+    // second route (/components/preview/<slug>). Walking every route while also
+    // compiling every preview overwhelms the dev server mid-walk (ERR_CONNECTION_RESET).
+    // This smoke check only asserts each page's title/h1/overflow, so block the preview
+    // subframe: full route coverage stays and the on-demand compile load roughly halves.
+    await page.route('**/components/preview/**', (route) => route.abort())
+
     const routes = [
       {
         h1: heroHeadline,
@@ -257,7 +264,7 @@ test.describe('Light shadcn frontend', () => {
     ]
 
     for (const route of routes) {
-      await page.goto(`${baseURL}${route.path}`)
+      await page.goto(`${baseURL}${route.path}`, { waitUntil: 'domcontentloaded' })
       await expect(page).toHaveTitle(route.title)
       await expect(page.getByRole('heading', { level: 1, name: route.h1 })).toBeVisible()
 
