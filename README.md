@@ -341,6 +341,7 @@ information.
 - [Best-README-Template][best-readme-template-url] for the README structure.
 - [Payload CMS][payload-url] for the target CMS ecosystem.
 - [shadcn][shadcn-url] for the registry model Payload Components builds on.
+- [tailark/blocks][tailark-url] (MIT) for marketing block layouts adapted into several component families.
 - [Fumadocs][fumadocs-url] for the documentation site foundation.
 - Everyone opening issues, testing installs, and contributing blocks in public.
 
@@ -373,6 +374,7 @@ information.
 [site-url]: https://www.payload-components.xyz
 [stars-shield]: https://img.shields.io/github/stars/Ducksss/payload-components.svg?style=for-the-badge
 [stars-url]: https://github.com/Ducksss/payload-components/stargazers
+[tailark-url]: https://github.com/tailark/blocks
 [tailwind-url]: https://tailwindcss.com
 [typescript-url]: https://www.typescriptlang.org
 [vitest-url]: https://vitest.dev
