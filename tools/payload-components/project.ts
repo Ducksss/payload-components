@@ -360,7 +360,7 @@ const findPagesLayoutBlocks = (source: string): DelimiterRange | undefined => {
         blocksMatch.index >= layoutObject.end ||
         (!isDirectlyWithin(maskedSource, layoutObject.start + 1, blocksMatch.index) &&
           !/\btype\s*:\s*['"]blocks['"][\s\S]*$/.test(
-            maskedSource.slice(layoutObject.start, blocksMatch.index),
+            source.slice(layoutObject.start, blocksMatch.index),
           ))
       ) {
         continue
