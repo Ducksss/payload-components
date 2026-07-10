@@ -64,8 +64,7 @@ export function ComponentCatalogBrowser({
   const query = searchParams.get('q') ?? ''
   const [localQuery, setLocalQuery] = useState(query)
   useEffect(() => {
-    const timer = window.setTimeout(() => setLocalQuery(query), 0)
-    return () => window.clearTimeout(timer)
+    setLocalQuery(query)
   }, [query])
   useEffect(() => {
     const timer = window.setTimeout(() => {
