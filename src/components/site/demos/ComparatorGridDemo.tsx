@@ -1,6 +1,7 @@
 import { Check, Minus } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { comparatorGridDemoContent, type ComparatorGridDemoContent } from '@/lib/demo-content'
 
 import { DemoLink } from './DemoLink'
@@ -43,7 +44,7 @@ export function ComparatorGridDemo({
             </div>
           ) : null}
 
-          <div className="overflow-x-auto border-border/70 bg-background/60 p-0 shadow-none">
+          <Card className="overflow-x-auto border-border/70 bg-background/60 p-0 shadow-none">
             <div className="min-w-[36rem]">
               <div
                 className="grid items-end border-b border-border/70"
@@ -120,7 +121,7 @@ export function ComparatorGridDemo({
                 ))}
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     </div>

@@ -65,7 +65,7 @@ export function ComponentPreviewFrame({ slug, title }: { slug: string; title: st
     const observer = new ResizeObserver(syncHeight)
     observer.observe(doc.querySelector('main') ?? doc.documentElement)
     contentObserverRef.current = observer
-  }, [syncHeight, preset])
+  }, [syncHeight])
 
   useEffect(() => () => contentObserverRef.current?.disconnect(), [])
 

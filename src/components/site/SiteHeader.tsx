@@ -31,6 +31,8 @@ export function SiteHeader({
     document.addEventListener('keydown', onKey); document.addEventListener('pointerdown', onPointer)
     return () => { document.removeEventListener('keydown', onKey); document.removeEventListener('pointerdown', onPointer) }
   }, [open])
+  // Route changes close the disclosure; this state update is intentionally tied to navigation.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setOpen(false) }, [pathname])
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95">

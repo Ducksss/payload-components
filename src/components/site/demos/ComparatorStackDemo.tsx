@@ -1,6 +1,7 @@
 import { Check, Minus } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { comparatorStackDemoContent, type ComparatorStackDemoContent } from '@/lib/demo-content'
 
 import { DemoLink } from './DemoLink'
@@ -43,7 +44,7 @@ export function ComparatorStackDemo({
 
           <div className="flex flex-col gap-4">
             {plans.map((plan, planIndex) => (
-              <div
+              <Card
                 key={planIndex}
                 className={`border-border/70 bg-background/60 p-6 shadow-none ${plan.highlighted ? 'ring-1 ring-primary' : ''}`}
               >
@@ -101,7 +102,7 @@ export function ComparatorStackDemo({
                     </div>
                   ) : null}
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         </div>

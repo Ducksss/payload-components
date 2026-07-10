@@ -289,6 +289,33 @@ test.describe('Light shadcn frontend', () => {
     await expect.poll(async () => (await frame.boundingBox())?.width ?? 0).toBeLessThanOrEqual(400)
   })
 
+  test('mobile header stays bounded and supports keyboard disclosure', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 })
+    await page.goto(baseURL)
+    const trigger = page.getByRole('button', { name: 'Open navigation' })
+    await expect(trigger).toBeVisible()
+    await trigger.click()
+    await expect(page.getByRole('menu')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Close navigation' })).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(page.getByRole('menu')).toHaveCount(0)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
+  })
+
+  test('preview frame grows and shrinks across presets without analytics', async ({ page }) => {
+    await page.setViewportSize({ width: 420, height: 900 })
+    await page.goto(`${baseURL}/docs/components/hero-basic`)
+    const frame = page.locator('iframe[title="Hero Basic preview"]')
+    const initial = (await frame.boundingBox())?.height ?? 0
+    await page.getByRole('button', { name: 'Mobile' }).click()
+    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(initial)
+    await page.getByRole('button', { name: 'Desktop' }).click()
+    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeLessThanOrEqual(initial + 200)
+
+    await page.goto(`${baseURL}/components/preview/hero-basic`)
+    await expect(page.locator('script[src*="googletagmanager"], script[src*="vercel"], script[src*="posthog"]')).toHaveCount(0)
+  })
+
   test('serves the standalone preview route without site chrome or overflow', async ({ page }) => {
     await page.goto(`${baseURL}/components/preview/hero-basic`)
 
