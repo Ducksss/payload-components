@@ -181,8 +181,10 @@ describe('Fumadocs site shell', () => {
     expect(docsCss).toContain("@import 'tailwindcss'")
     expect(docsCss).toContain("@import 'fumadocs-ui/css/preset.css'")
     expect(globals).not.toContain("@import 'fumadocs-ui/css/preset.css'")
-    expect(siteHeader).not.toContain("'use client'")
-    expect(siteHeader).not.toContain('usePathname')
+    expect(siteHeader).toContain("'use client'")
+    expect(siteHeader).toContain('usePathname')
+    expect(siteHeader).toContain('aria-expanded')
+    expect(siteHeader).toContain('role="menu"')
     expect(siteHeader).toContain('activePath')
     expect(commandCopyButton).not.toContain("'use client'")
     expect(commandCopyButton).toContain('data-copy-command')
@@ -430,11 +432,17 @@ describe('Fumadocs site shell', () => {
   it('publishes production-safe fallback URLs when no site URL env is set', async () => {
     vi.stubEnv('NEXT_PUBLIC_SITE_URL', undefined)
     vi.resetModules()
-    vi.doMock('../../src/lib/source', () => ({
+    const sourceMock = () => ({
       getLLMText: vi.fn(() => '# Mock docs (/docs)'),
       source: {
         getPages: () => [{ url: '/docs' }],
       },
+    })
+    vi.doMock('@/lib/source', sourceMock)
+    vi.doMock(path.join(repoRoot, 'src/lib/source.ts'), sourceMock)
+    vi.doMock('collections/server', () => ({
+      docs: { toFumadocsSource: () => ({}) },
+      blog: [],
     }))
 
     const [{ siteUrl }, robotsModule, sitemapModule, llmsModule, llmsFullModule] =

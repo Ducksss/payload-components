@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ArrowUpRight, Search, X } from 'lucide-react'
 
@@ -57,15 +57,30 @@ export function ComponentCatalogBrowser({
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
+  const readUrlFilters = useCallback(() => {
+    const params = new URLSearchParams(window.location.search)
+    const rawType = params.get('type')
+    const type: FamilyKey | 'all' = rawType === 'pages' || rawType === 'posts' ? rawType : 'all'
+    const rawCategory = params.get('category') ?? ''
+    return { type, category: rawCategory in categories ? rawCategory : '', query: params.get('q') ?? '' }
+  }, [categories])
   const rawType = searchParams.get('type')
-  const type: FamilyKey | 'all' = rawType === 'pages' || rawType === 'posts' ? rawType : 'all'
+  const typeFromUrl: FamilyKey | 'all' = rawType === 'pages' || rawType === 'posts' ? rawType : 'all'
   const rawCategory = searchParams.get('category') ?? ''
-  const category = rawCategory in categories ? rawCategory : ''
+  const categoryFromUrl = rawCategory in categories ? rawCategory : ''
   const query = searchParams.get('q') ?? ''
   const [localQuery, setLocalQuery] = useState(query)
+  const [localType, setLocalType] = useState<FamilyKey | 'all'>(typeFromUrl)
+  const [localCategory, setLocalCategory] = useState(categoryFromUrl)
+  const type = localType
+  const category = localCategory
+  // URL search params are external state; mirror them after router/popstate updates.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalQuery(query)
-  }, [query])
+    setLocalType(typeFromUrl)
+    setLocalCategory(categoryFromUrl)
+  }, [query, typeFromUrl, categoryFromUrl])
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const params = new URLSearchParams(window.location.search)
@@ -77,10 +92,15 @@ export function ComponentCatalogBrowser({
     return () => window.clearTimeout(timer)
   }, [localQuery, pathname])
   useEffect(() => {
-    const onPopState = () => setLocalQuery(new URLSearchParams(window.location.search).get('q') ?? '')
+    const onPopState = () => {
+      const next = readUrlFilters()
+      setLocalQuery(next.query)
+      setLocalType(next.type)
+      setLocalCategory(next.category)
+    }
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
-  }, [])
+  }, [readUrlFilters])
   const activeFamily: FamilyKey | 'all' = category ? categories[category].family : type
 
   const queriedPages = useMemo(
@@ -110,7 +130,7 @@ export function ComponentCatalogBrowser({
   )
 
   function updateParams(updates: Record<string, string>) {
-    const params = new URLSearchParams(searchParams.toString())
+    const params = new URLSearchParams(window.location.search)
     for (const [key, value] of Object.entries(updates)) {
       if (!value || value === 'all') params.delete(key)
       else params.set(key, value)

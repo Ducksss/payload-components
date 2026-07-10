@@ -41,7 +41,9 @@ export function ComponentPreviewFrame({ slug, title }: { slug: string; title: st
     const doc = frameRef.current?.contentDocument
     if (!doc) return
     const main = doc.querySelector('main')
-    const next = main?.getBoundingClientRect().height ?? doc.documentElement.scrollHeight
+    const next = main
+      ? Math.max(main.scrollHeight, main.getBoundingClientRect().height)
+      : doc.documentElement.scrollHeight
     setHeight(Math.max(120, Math.ceil(next)))
   }, [])
 
