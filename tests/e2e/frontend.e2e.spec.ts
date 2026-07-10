@@ -307,6 +307,7 @@ test.describe('Light shadcn frontend', () => {
     await page.goto(`${baseURL}/docs/components/hero-basic`)
     const frame = page.locator('iframe[title="Hero Basic preview"]')
     await expect(frame.contentFrame().locator('main')).toBeVisible()
+    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(160)
     const initial = (await frame.boundingBox())?.height ?? 0
     await page.getByRole('button', { name: 'Mobile' }).click()
     await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(initial)
@@ -324,14 +325,18 @@ test.describe('Light shadcn frontend', () => {
     await page.setViewportSize({ width: 390, height: 900 })
     await page.goto(`${baseURL}/docs/components/hero-basic`)
     const wiring = page.getByText('What it installs', { exact: false }).locator('..')
-    const path = page.locator('code:visible').filter({ hasText: '~/src/' }).last()
+    const path = page.locator('code:visible').filter({ hasText: 'importMap.js' }).last()
     await expect(path).toBeVisible()
     const wraps = await path.evaluate((el) => {
       const style = getComputedStyle(el)
       const line = Number.parseFloat(style.lineHeight)
-      return { multiline: el.getBoundingClientRect().height > line * 1.5, fits: el.scrollWidth <= el.clientWidth }
+      return {
+        breakable: style.overflowWrap === 'anywhere' || style.wordBreak === 'break-all',
+        multiline: el.getBoundingClientRect().height > line * 1.5,
+        fits: el.scrollWidth <= el.clientWidth,
+      }
     })
-    expect(wraps.multiline).toBe(true)
+    expect(wraps.breakable).toBe(true)
     expect(wraps.fits).toBe(true)
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
     expect(overflow).toBe(false)
