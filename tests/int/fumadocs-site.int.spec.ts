@@ -90,6 +90,16 @@ describe('Fumadocs site shell', () => {
     expect(packageJson.scripts?.prebuild).toContain('pnpm source:build')
   })
 
+  it('keeps evergreen about and blog copy free of numeric catalog counts', async () => {
+    const [aboutPage, helloPost] = await Promise.all([
+      readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'blog', 'hello.mdx'), 'utf8'),
+    ])
+
+    expect(aboutPage).not.toMatch(/\b\d+\s+page blocks?\b/i)
+    expect(helloPost).not.toMatch(/\b\d+\s+page blocks?\b/i)
+  })
+
   it('keeps docs content in the Fumadocs source directory', async () => {
     const [sourceConfig, docsIndex, architecture] = await Promise.all([
       readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),

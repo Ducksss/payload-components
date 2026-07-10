@@ -13,9 +13,7 @@ import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import {
   githubIssuesUrl,
-  installablePageCount,
   receipts,
-  upcomingPostCount,
   wiringLedger,
   pipelineStages,
 } from '@/lib/site'
@@ -296,7 +294,7 @@ export default function AboutPage() {
                 accentWord="matters"
                 eyebrow="From here"
                 heading="Spend your week on the work that matters."
-                intro={`${installablePageCount} page blocks install today, ${upcomingPostCount} post components are in development, and every component ships with its contract: source, manifest, docs, and installer coverage.`}
+                intro="The catalog grows in public, and every component ships with its contract: source, manifest, docs, and installer coverage."
               />
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link
