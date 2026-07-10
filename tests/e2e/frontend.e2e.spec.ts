@@ -306,6 +306,7 @@ test.describe('Light shadcn frontend', () => {
     await page.setViewportSize({ width: 420, height: 900 })
     await page.goto(`${baseURL}/docs/components/hero-basic`)
     const frame = page.locator('iframe[title="Hero Basic preview"]')
+    await expect(frame.contentFrame().locator('main')).toBeVisible()
     const initial = (await frame.boundingBox())?.height ?? 0
     await page.getByRole('button', { name: 'Mobile' }).click()
     await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(initial)
