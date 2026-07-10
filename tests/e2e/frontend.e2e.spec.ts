@@ -303,7 +303,7 @@ test.describe('Light shadcn frontend', () => {
   })
 
   test('preview frame grows and shrinks across presets without analytics', async ({ page }) => {
-    await page.setViewportSize({ width: 420, height: 900 })
+    await page.setViewportSize({ width: 1200, height: 900 })
     await page.goto(`${baseURL}/docs/components/hero-basic`)
     const frame = page.locator('iframe[title="Hero Basic preview"]')
     await expect(frame.contentFrame().locator('main')).toBeVisible()
@@ -324,7 +324,7 @@ test.describe('Light shadcn frontend', () => {
     await page.setViewportSize({ width: 390, height: 900 })
     await page.goto(`${baseURL}/docs/components/hero-basic`)
     const wiring = page.getByText('What it installs', { exact: false }).locator('..')
-    const path = page.locator('code').filter({ hasText: 'src/' }).first()
+    const path = page.locator('code:visible').filter({ hasText: '~/src/' }).last()
     await expect(path).toBeVisible()
     const wraps = await path.evaluate((el) => {
       const style = getComputedStyle(el)
