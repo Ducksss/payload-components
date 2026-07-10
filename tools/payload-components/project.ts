@@ -311,7 +311,7 @@ const findEnclosingObject = ({
 const findPagesLayoutBlocks = (source: string): DelimiterRange | undefined => {
   const pagesObject = findTopLevelObject(
     source,
-    /\bexport\s+const\s+Pages\s*:\s*CollectionConfig\s*=\s*\{/g,
+    /\bexport\s+const\s+Pages\s*:\s*CollectionConfig(?:\s*<[^>]+>)?\s*=\s*\{/g,
   )
 
   if (!pagesObject) {
@@ -378,6 +378,16 @@ const findPagesLayoutBlocks = (source: string): DelimiterRange | undefined => {
         return { end, start }
       }
     }
+  }
+
+  // Payload's current website starter nests the field metadata between the
+  // `name` and `blocks` properties; use the field's explicit type as a
+  // bounded fallback when delimiter ancestry is obscured by that nesting.
+  const layoutField = /name\s*:\s*['"]layout['"][\s\S]{0,1200}?type\s*:\s*['"]blocks['"][\s\S]{0,400}?blocks\s*:\s*\[/m.exec(source)
+  if (layoutField && layoutField.index !== undefined) {
+    const start = maskedSource.indexOf('[', layoutField.index)
+    const end = findMatchingDelimiter({ close: ']', maskedSource, open: '[', start })
+    if (start !== -1 && end !== -1 && start > pagesObject.start) return { start, end }
   }
 
   return undefined
