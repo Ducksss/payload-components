@@ -12,6 +12,7 @@ export const PricingCardsCta: Block = {
     {
       name: 'plans',
       type: 'array',
+      dbName: 'pricing_cta_plans',
       required: true,
       minRows: 2,
       maxRows: 4,

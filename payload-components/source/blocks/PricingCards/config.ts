@@ -12,6 +12,7 @@ export const PricingCards: Block = {
     {
       name: 'plans',
       type: 'array',
+      dbName: 'pricing_cards_plans',
       required: true,
       minRows: 2,
       maxRows: 4,

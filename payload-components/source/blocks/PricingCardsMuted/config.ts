@@ -12,6 +12,7 @@ export const PricingCardsMuted: Block = {
     {
       name: 'plans',
       type: 'array',
+      dbName: 'pricing_muted_plans',
       required: true,
       minRows: 2,
       maxRows: 4,

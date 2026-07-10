@@ -12,6 +12,7 @@ export const PricingSplit: Block = {
     {
       name: 'plans',
       type: 'array',
+      dbName: 'pricing_split_plans',
       required: true,
       // Exactly two plans: the entry plan on the left, the featured plan
       // (mark one `featured`) expanded across the right panel.

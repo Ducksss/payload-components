@@ -12,6 +12,7 @@ export const PricingEnterprise: Block = {
     {
       name: 'plans',
       type: 'array',
+      dbName: 'pricing_enterprise_plans',
       required: true,
       // A single enterprise plan rendered as one wide panel.
       minRows: 1,
