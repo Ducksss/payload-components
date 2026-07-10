@@ -390,6 +390,13 @@ describe('Fumadocs site shell', () => {
     expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Fifty-three page blocks')
   })
 
+  it('does not export stale numeric catalog counts from public site data', async () => {
+    const site = await import('../../src/lib/site')
+
+    expect('installablePageCount' in site).toBe(false)
+    expect('upcomingPostCount' in site).toBe(false)
+  })
+
   it('keeps product-surface consistency contracts explicit', async () => {
     const [firstBlock, installation, aboutPage, siteSource, docsLayout] = await Promise.all([
       readFile(path.join(repoRoot, 'content/docs/first-block.mdx'), 'utf8'),

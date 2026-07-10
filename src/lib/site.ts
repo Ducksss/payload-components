@@ -1072,16 +1072,6 @@ export const upcomingComponents = [
 
 export type UpcomingComponent = (typeof upcomingComponents)[number]
 
-/* ------------------------------------------------------------------ */
-/* Derived catalog counts — computed from the arrays above so they     */
-/* never drift from what the catalog actually ships.                    */
-/* ------------------------------------------------------------------ */
-
-export const installablePageCount = componentEntries.filter(
-  (e) => e.family === 'pages',
-).length
-export const upcomingPostCount = upcomingComponents.length
-
 export const componentsIntro = 'No screenshots — each specimen is the real component, rendered from source.'
 
 export const componentFamilies = {
