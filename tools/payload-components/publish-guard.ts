@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { readJsonFile, repoRoot, runCommand } from './utils'
+import { repoRoot, runCommand } from './utils'
 
 export const assertPublishAllowed = ({
   packageVersion,
@@ -31,9 +31,45 @@ const parseTagArg = (argv: string[]) => {
   return argv[1]
 }
 
+export const getCandidatePackageVersion = async ({
+  cwd = repoRoot,
+  releaseTag,
+}: {
+  cwd?: string
+  releaseTag: string
+}) => {
+  const { stdout } = await runCommand({
+    args: ['show', `refs/tags/${releaseTag}:package.json`],
+    captureOutput: true,
+    command: 'git',
+    cwd,
+    timeoutMs: 15_000,
+  })
+  let packageJson: unknown
+
+  try {
+    packageJson = JSON.parse(stdout)
+  } catch (error) {
+    throw new Error(`Release tag "${releaseTag}" contains an invalid package.json.`, {
+      cause: error,
+    })
+  }
+
+  const version =
+    typeof packageJson === 'object' && packageJson !== null && 'version' in packageJson
+      ? packageJson.version
+      : undefined
+
+  if (typeof version !== 'string' || !version.trim()) {
+    throw new Error(`Release tag "${releaseTag}" package.json must declare a version.`)
+  }
+
+  return version
+}
+
 const getReleaseCommit = async (releaseTag: string) => {
   const { stdout } = await runCommand({
-    args: ['rev-parse', '--verify', `${releaseTag}^{commit}`],
+    args: ['rev-parse', '--verify', `refs/tags/${releaseTag}^{commit}`],
     captureOutput: true,
     command: 'git',
     cwd: repoRoot,
@@ -63,12 +99,12 @@ const isCommitReachableFromMain = async (releaseCommit: string) => {
 }
 
 export const verifyPublishGuard = async (releaseTag: string) => {
-  const packageJson = await readJsonFile<{ version: string }>(path.join(repoRoot, 'package.json'))
-  const expectedTag = `v${packageJson.version}`
+  const candidateVersion = await getCandidatePackageVersion({ releaseTag })
+  const expectedTag = `v${candidateVersion}`
 
   if (releaseTag !== expectedTag) {
     assertPublishAllowed({
-      packageVersion: packageJson.version,
+      packageVersion: candidateVersion,
       releaseCommitOnMain: true,
       releaseTag,
     })
@@ -78,13 +114,13 @@ export const verifyPublishGuard = async (releaseTag: string) => {
   const releaseCommitOnMain = await isCommitReachableFromMain(releaseCommit)
 
   assertPublishAllowed({
-    packageVersion: packageJson.version,
+    packageVersion: candidateVersion,
     releaseCommitOnMain,
     releaseTag,
   })
 
   process.stdout.write(
-    `Publish guard passed for ${releaseTag} (${releaseCommit}) on refs/remotes/origin/main.\n`,
+    `Publish guard passed for ${releaseTag} (${releaseCommit}, package ${candidateVersion}) on refs/remotes/origin/main.\n`,
   )
 }
 

@@ -1,5 +1,6 @@
 import { execFile } from 'node:child_process'
-import { readdir, readFile } from 'node:fs/promises'
+import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import os from 'node:os'
 import path from 'node:path'
 import { promisify } from 'node:util'
 
@@ -189,7 +190,63 @@ describe('package publish guard', () => {
     ).toThrow(/main/)
   })
 
-  it('publishes only a guarded release after bounded full release and pack gates', async () => {
+  it('reads the package version from the candidate tag instead of the trusted worktree', async () => {
+    const guardModule = (await import('../../tools/payload-components/publish-guard').catch(
+      () => ({}),
+    )) as {
+      getCandidatePackageVersion?: (input: {
+        cwd: string
+        releaseTag: string
+      }) => Promise<string>
+    }
+
+    expect(guardModule.getCandidatePackageVersion).toBeTypeOf('function')
+    if (!guardModule.getCandidatePackageVersion) return
+
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-publish-guard-'))
+    const runGit = (args: string[]) =>
+      execFileAsync('git', args, {
+        cwd: tempDir,
+        timeout: 10_000,
+      })
+
+    try {
+      await runGit(['init', '--initial-branch=main'])
+      await runGit(['config', 'user.email', 'test@example.com'])
+      await runGit(['config', 'user.name', 'Publish Guard Test'])
+      await writeFile(
+        path.join(tempDir, 'package.json'),
+        `${JSON.stringify({ version: '9.9.9' }, null, 2)}\n`,
+      )
+      await runGit(['add', 'package.json'])
+      await runGit(['commit', '-m', 'trusted main'])
+      await runGit(['checkout', '-b', 'candidate'])
+      await writeFile(
+        path.join(tempDir, 'package.json'),
+        `${JSON.stringify({ version: '1.2.3' }, null, 2)}\n`,
+      )
+      await runGit(['add', 'package.json'])
+      await runGit(['commit', '-m', 'candidate release'])
+      await runGit(['tag', 'v1.2.3'])
+      await runGit(['checkout', 'main'])
+
+      const trustedPackage = JSON.parse(
+        await readFile(path.join(tempDir, 'package.json'), 'utf8'),
+      ) as { version: string }
+
+      expect(trustedPackage.version).toBe('9.9.9')
+      await expect(
+        guardModule.getCandidatePackageVersion({
+          cwd: tempDir,
+          releaseTag: 'v1.2.3',
+        }),
+      ).resolves.toBe('1.2.3')
+    } finally {
+      await rm(tempDir, { force: true, recursive: true })
+    }
+  })
+
+  it('validates from trusted main before candidate checkout, install, and publish gates', async () => {
     const workflow = await readFile(
       path.join(repoRoot, '.github', 'workflows', 'package-publish.yml'),
       'utf8',
@@ -201,15 +258,27 @@ describe('package publish guard', () => {
     expect(workflow).toContain('environment: npm-production')
     expect(workflow).toMatch(/publish:\n[\s\S]*?timeout-minutes: \d+/)
     expect(workflow).toContain('fetch-depth: 0')
-    expect(workflow).toContain('ref: ${{ github.event.release.tag_name }}')
+    expect(workflow).toContain('ref: main')
+    expect(workflow).not.toContain('ref: ${{ github.event.release.tag_name }}')
     expect(workflow).toContain('refs/remotes/origin/main')
     expect(workflow).toContain('tools/payload-components/publish-guard.ts')
+    expect(workflow).toContain('pnpm install --frozen-lockfile --ignore-scripts')
 
+    const fetchCandidateIndex = workflow.indexOf('Fetch candidate release tag')
+    const trustedInstallIndex = workflow.indexOf('Install trusted guard dependencies')
+    const guardIndex = workflow.indexOf('Verify candidate from trusted main')
+    const checkoutCandidateIndex = workflow.indexOf('Checkout validated release candidate')
+    const installCandidateIndex = workflow.indexOf('Install validated release dependencies')
     const releaseGateIndex = workflow.indexOf('pnpm test:release')
     const packGateIndex = workflow.indexOf('pnpm test:pack')
     const publishIndex = workflow.indexOf('npm publish --provenance')
 
-    expect(releaseGateIndex).toBeGreaterThan(-1)
+    expect(fetchCandidateIndex).toBeGreaterThan(-1)
+    expect(trustedInstallIndex).toBeGreaterThan(fetchCandidateIndex)
+    expect(guardIndex).toBeGreaterThan(trustedInstallIndex)
+    expect(checkoutCandidateIndex).toBeGreaterThan(guardIndex)
+    expect(installCandidateIndex).toBeGreaterThan(checkoutCandidateIndex)
+    expect(releaseGateIndex).toBeGreaterThan(installCandidateIndex)
     expect(packGateIndex).toBeGreaterThan(releaseGateIndex)
     expect(publishIndex).toBeGreaterThan(packGateIndex)
   })

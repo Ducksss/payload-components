@@ -25,10 +25,15 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-          ref: ${{ github.event.release.tag_name }}
+          ref: main
 
-      - name: Fetch protected main branch
-        run: git fetch --no-tags origin main:refs/remotes/origin/main
+      - name: Fetch candidate release tag
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          git fetch --force --no-tags origin \
+            main:refs/remotes/origin/main \
+            "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"
 
       - uses: pnpm/action-setup@v6
         with:
@@ -40,12 +45,21 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
-      - run: pnpm install --frozen-lockfile
+      - name: Install trusted guard dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: Verify release tag and ancestry
+      - name: Verify candidate from trusted main
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: pnpm exec tsx tools/payload-components/publish-guard.ts --tag "$RELEASE_TAG"
+
+      - name: Checkout validated release candidate
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: git checkout --detach "refs/tags/$RELEASE_TAG"
+
+      - name: Install validated release dependencies
+        run: pnpm install --frozen-lockfile
 
       - run: pnpm exec playwright install --with-deps chromium
 
