@@ -7,7 +7,10 @@ import { afterEach, describe, expect, it } from 'vitest'
 import type { PayloadFragment } from '../../tools/payload-components/types'
 
 import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from '../../tools/payload-components/constants'
-import { applyPayloadFragments } from '../../tools/payload-components/project'
+import {
+  applyPayloadFragments,
+  verifyInstalledPayloadFragments,
+} from '../../tools/payload-components/project'
 
 /* Fragment patching is text-anchor based and deliberately fragile: it expects
  * the canonical Payload-website-starter file shapes (detectProject's
@@ -175,5 +178,99 @@ describe('applyPayloadFragments — pagesLayout', () => {
 
     await expect(applyPayloadFragments(dir, [pagesLayoutFragment])).rejects.toThrow(/layout/i)
     expect(await readPagesLayout(dir)).toEqual(pagesLayout)
+  })
+})
+
+describe('verifyInstalledPayloadFragments', () => {
+  it('ignores imports and registrations inside comments and strings', async () => {
+    const dir = await makeProject({
+      pagesLayout: [
+        `// import { ${pagesLayoutFragment.importName} } from '${pagesLayoutFragment.importPath}'`,
+        `const importExample = "import { ${pagesLayoutFragment.importName} } from '${pagesLayoutFragment.importPath}'"`,
+        "import type { CollectionConfig } from 'payload'",
+        '',
+        'export const Pages: CollectionConfig = {',
+        '  fields: [',
+        '    {',
+        "      name: 'layout',",
+        "      type: 'blocks',",
+        '      blocks: [',
+        `        // ${pagesLayoutFragment.blockName},`,
+        '      ],',
+        '    },',
+        '  ],',
+        '}',
+        '',
+      ].join('\n'),
+      renderBlocks: [
+        `// import { ${renderBlocksFragment.importName} } from '${renderBlocksFragment.importPath}'`,
+        `const importExample = \`import { ${renderBlocksFragment.importName} } from '${renderBlocksFragment.importPath}'\``,
+        '',
+        'const blockComponents = {',
+        `  // ${renderBlocksFragment.blockSlug}: ${renderBlocksFragment.importName},`,
+        '}',
+        '',
+      ].join('\n'),
+    })
+
+    const result = await verifyInstalledPayloadFragments({
+      cwd: dir,
+      manifest: {
+        payloadFragments: [renderBlocksFragment, pagesLayoutFragment],
+      },
+    })
+
+    expect(result.missingFragments).toEqual([
+      'renderBlocks.import:HeroBasicBlock',
+      'renderBlocks.block:heroBasic',
+      'pagesLayout.import:HeroBasic',
+      'pagesLayout.block:HeroBasic',
+    ])
+  })
+
+  it('requires registrations in the anchored objects and direct layout blocks array', async () => {
+    const dir = await makeProject({
+      pagesLayout: [
+        "const pageLabel = '🚀'",
+        `import { ${pagesLayoutFragment.importName} } from '${pagesLayoutFragment.importPath}'`,
+        "import type { CollectionConfig } from 'payload'",
+        '',
+        'export const Pages: CollectionConfig = {',
+        '  fields: [',
+        '    {',
+        "      name: 'layout',",
+        '      admin: {',
+        `        blocks: [${pagesLayoutFragment.blockName}],`,
+        '      },',
+        "      type: 'blocks',",
+        '      blocks: [],',
+        '    },',
+        '  ],',
+        '}',
+        '',
+      ].join('\n'),
+      renderBlocks: [
+        "const rendererLabel = '🚀'",
+        `import { ${renderBlocksFragment.importName} } from '${renderBlocksFragment.importPath}'`,
+        '',
+        'const blockComponents = {',
+        '}',
+        '',
+        `const previewComponents = { ${renderBlocksFragment.blockSlug}: ${renderBlocksFragment.importName} }`,
+        '',
+      ].join('\n'),
+    })
+
+    const result = await verifyInstalledPayloadFragments({
+      cwd: dir,
+      manifest: {
+        payloadFragments: [renderBlocksFragment, pagesLayoutFragment],
+      },
+    })
+
+    expect(result.missingFragments).toEqual([
+      'renderBlocks.block:heroBasic',
+      'pagesLayout.block:HeroBasic',
+    ])
   })
 })

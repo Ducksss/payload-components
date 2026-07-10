@@ -1,15 +1,20 @@
 import { access, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
-import type { DetectedProject, ComponentManifest, PayloadFragment, SupportMatrix } from './types'
+import type {
+  DetectedProject,
+  ComponentManifest,
+  PayloadFragment,
+  ResolvedRegistryDependency,
+  SupportMatrix,
+} from './types'
 
 import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from './constants'
-import { detectPackageManager, extractMajor, readJsonFile, repoRoot } from './utils'
+import { detectPackageManagerDetails, extractMajor, readJsonFile, repoRoot } from './utils'
 
 const supportMatrixPath = path.join(repoRoot, 'payload-components', 'support-matrix.json')
 const renderBlocksAnchor = 'const blockComponents = {'
 const pagesAnchor = 'export const Pages: CollectionConfig'
-const layoutAnchor = "name: 'layout'"
 
 const getAbsolutePath = (cwd: string, filePath: string) => path.join(cwd, filePath)
 
@@ -17,18 +22,389 @@ const normalizeFileList = (files: string[]) => [...new Set(files)].sort()
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-/* Structural matchers shared by the apply (dedup) and verify paths, so "did I
-   already insert this?" and "is it present?" can never disagree. They tolerate
-   quote style, a trailing semicolon, indentation, and spacing: if a consumer's
-   anchor region was reformatted (Prettier, a hand-edit), apply must not append
-   a duplicate while verify reports it present — or vice-versa. */
-const hasNamedImport = (source: string, importName: string, importPath: string) =>
-  new RegExp(
-    `import\\s*\\{[^}]*\\b${escapeRegExp(importName)}\\b[^}]*\\}\\s*from\\s*['"]${escapeRegExp(importPath)}['"]`,
-  ).test(source)
+type DelimiterRange = {
+  end: number
+  start: number
+}
 
-const hasBlockComponentEntry = (source: string, blockSlug: string, importName: string) =>
-  new RegExp(`\\b${escapeRegExp(blockSlug)}\\s*:\\s*${escapeRegExp(importName)}\\b`).test(source)
+/* Mask comments and literal contents without changing offsets. Delimiters and
+   newlines stay in place so the structural scanner can balance real objects and
+   arrays while extracting an import's original quoted module path. */
+const maskIgnoredSource = (source: string) => {
+  const masked = source.split('')
+  let mode: 'blockComment' | 'code' | 'doubleQuote' | 'lineComment' | 'singleQuote' | 'template' = 'code'
+
+  const blank = (index: number) => {
+    if (masked[index] !== '\n' && masked[index] !== '\r') {
+      masked[index] = ' '
+    }
+  }
+
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index]
+    const nextCharacter = source[index + 1]
+
+    if (mode === 'lineComment') {
+      if (character === '\n' || character === '\r') {
+        mode = 'code'
+      } else {
+        blank(index)
+      }
+      continue
+    }
+
+    if (mode === 'blockComment') {
+      if (character === '*' && nextCharacter === '/') {
+        blank(index)
+        blank(index + 1)
+        index += 1
+        mode = 'code'
+      } else {
+        blank(index)
+      }
+      continue
+    }
+
+    if (mode !== 'code') {
+      const closingDelimiter =
+        mode === 'singleQuote' ? "'" : mode === 'doubleQuote' ? '"' : '`'
+
+      if (character === '\\') {
+        blank(index)
+        if (index + 1 < source.length) {
+          blank(index + 1)
+          index += 1
+        }
+        continue
+      }
+
+      if (character === closingDelimiter) {
+        mode = 'code'
+      } else {
+        blank(index)
+      }
+      continue
+    }
+
+    if (character === '/' && nextCharacter === '/') {
+      blank(index)
+      blank(index + 1)
+      index += 1
+      mode = 'lineComment'
+      continue
+    }
+
+    if (character === '/' && nextCharacter === '*') {
+      blank(index)
+      blank(index + 1)
+      index += 1
+      mode = 'blockComment'
+      continue
+    }
+
+    if (character === "'") {
+      mode = 'singleQuote'
+      continue
+    }
+
+    if (character === '"') {
+      mode = 'doubleQuote'
+      continue
+    }
+
+    if (character === '`') {
+      mode = 'template'
+    }
+  }
+
+  return masked.join('')
+}
+
+const findMatchingDelimiter = ({
+  close,
+  maskedSource,
+  open,
+  start,
+}: {
+  close: string
+  maskedSource: string
+  open: string
+  start: number
+}) => {
+  let depth = 0
+
+  for (let index = start; index < maskedSource.length; index += 1) {
+    if (maskedSource[index] === open) {
+      depth += 1
+    }
+
+    if (maskedSource[index] === close) {
+      depth -= 1
+
+      if (depth === 0) {
+        return index
+      }
+    }
+  }
+
+  return -1
+}
+
+const isDirectlyWithin = (maskedSource: string, rangeStart: number, index: number) => {
+  const depth = {
+    braces: 0,
+    brackets: 0,
+    parentheses: 0,
+  }
+
+  for (let cursor = rangeStart; cursor < index; cursor += 1) {
+    if (maskedSource[cursor] === '{') depth.braces += 1
+    if (maskedSource[cursor] === '}') depth.braces -= 1
+    if (maskedSource[cursor] === '[') depth.brackets += 1
+    if (maskedSource[cursor] === ']') depth.brackets -= 1
+    if (maskedSource[cursor] === '(') depth.parentheses += 1
+    if (maskedSource[cursor] === ')') depth.parentheses -= 1
+  }
+
+  return depth.braces === 0 && depth.brackets === 0 && depth.parentheses === 0
+}
+
+const findTopLevelObject = (source: string, pattern: RegExp): DelimiterRange | undefined => {
+  const maskedSource = maskIgnoredSource(source)
+
+  for (const match of maskedSource.matchAll(pattern)) {
+    if (typeof match.index !== 'number' || !isDirectlyWithin(maskedSource, 0, match.index)) {
+      continue
+    }
+
+    const start = maskedSource.indexOf('{', match.index)
+    const end = findMatchingDelimiter({
+      close: '}',
+      maskedSource,
+      open: '{',
+      start,
+    })
+
+    if (start !== -1 && end !== -1) {
+      return { end, start }
+    }
+  }
+
+  return undefined
+}
+
+const findRenderBlocksObject = (source: string) =>
+  findTopLevelObject(source, /\bconst\s+blockComponents\s*=\s*\{/g)
+
+const findTopLevelAnchor = (source: string, anchor: string) => {
+  const maskedSource = maskIgnoredSource(source)
+  let index = maskedSource.indexOf(anchor)
+
+  while (index !== -1) {
+    if (isDirectlyWithin(maskedSource, 0, index)) {
+      return index
+    }
+
+    index = maskedSource.indexOf(anchor, index + anchor.length)
+  }
+
+  return -1
+}
+
+const hasNamedImport = (source: string, importName: string, importPath: string) => {
+  const maskedSource = maskIgnoredSource(source)
+  const importPattern = /\bimport\s*\{([^}]*)\}\s*from\s*(['"])/g
+
+  for (const match of maskedSource.matchAll(importPattern)) {
+    if (typeof match.index !== 'number' || !isDirectlyWithin(maskedSource, 0, match.index)) {
+      continue
+    }
+
+    if (!new RegExp(`\\b${escapeRegExp(importName)}\\b`).test(match[1])) {
+      continue
+    }
+
+    const quote = match[2]
+    const quoteStart = match.index + match[0].lastIndexOf(quote)
+    const quoteEnd = maskedSource.indexOf(quote, quoteStart + 1)
+
+    if (quoteEnd !== -1 && source.slice(quoteStart + 1, quoteEnd) === importPath) {
+      return true
+    }
+  }
+
+  return false
+}
+
+const hasDirectObjectEntry = ({
+  importName,
+  key,
+  range,
+  source,
+}: {
+  importName: string
+  key: string
+  range: DelimiterRange
+  source: string
+}) => {
+  const maskedSource = maskIgnoredSource(source)
+  const entryPattern = new RegExp(
+    `\\b${escapeRegExp(key)}\\s*:\\s*${escapeRegExp(importName)}\\b`,
+    'g',
+  )
+
+  for (const match of maskedSource.matchAll(entryPattern)) {
+    if (
+      typeof match.index === 'number' &&
+      match.index > range.start &&
+      match.index < range.end &&
+      isDirectlyWithin(maskedSource, range.start + 1, match.index)
+    ) {
+      return true
+    }
+  }
+
+  return false
+}
+
+const findEnclosingObject = ({
+  container,
+  index,
+  maskedSource,
+}: {
+  container: DelimiterRange
+  index: number
+  maskedSource: string
+}): DelimiterRange | undefined => {
+  const objectStack: number[] = []
+
+  for (let cursor = container.start; cursor < index; cursor += 1) {
+    if (maskedSource[cursor] === '{') {
+      objectStack.push(cursor)
+    }
+
+    if (maskedSource[cursor] === '}') {
+      objectStack.pop()
+    }
+  }
+
+  const start = objectStack.at(-1)
+
+  if (start === undefined) {
+    return undefined
+  }
+
+  const end = findMatchingDelimiter({
+    close: '}',
+    maskedSource,
+    open: '{',
+    start,
+  })
+
+  if (end === -1 || end > container.end) {
+    return undefined
+  }
+
+  return { end, start }
+}
+
+const findPagesLayoutBlocks = (source: string): DelimiterRange | undefined => {
+  const pagesObject = findTopLevelObject(
+    source,
+    /\bexport\s+const\s+Pages\s*:\s*CollectionConfig\s*=\s*\{/g,
+  )
+
+  if (!pagesObject) {
+    return undefined
+  }
+
+  const maskedSource = maskIgnoredSource(source)
+  const namePattern = /\bname\s*:\s*(['"])/g
+
+  for (const match of maskedSource.matchAll(namePattern)) {
+    if (
+      typeof match.index !== 'number' ||
+      match.index <= pagesObject.start ||
+      match.index >= pagesObject.end
+    ) {
+      continue
+    }
+
+    const quote = match[1]
+    const quoteStart = match.index + match[0].lastIndexOf(quote)
+    const quoteEnd = maskedSource.indexOf(quote, quoteStart + 1)
+
+    if (quoteEnd === -1 || source.slice(quoteStart + 1, quoteEnd) !== 'layout') {
+      continue
+    }
+
+    const layoutObject = findEnclosingObject({
+      container: pagesObject,
+      index: match.index,
+      maskedSource,
+    })
+
+    if (
+      !layoutObject ||
+      !isDirectlyWithin(maskedSource, layoutObject.start + 1, match.index)
+    ) {
+      continue
+    }
+
+    const blocksPattern = /\bblocks\s*:\s*\[/g
+
+    for (const blocksMatch of maskedSource.matchAll(blocksPattern)) {
+      if (
+        typeof blocksMatch.index !== 'number' ||
+        blocksMatch.index <= layoutObject.start ||
+        blocksMatch.index >= layoutObject.end ||
+        !isDirectlyWithin(maskedSource, layoutObject.start + 1, blocksMatch.index)
+      ) {
+        continue
+      }
+
+      const start = maskedSource.indexOf('[', blocksMatch.index)
+      const end = findMatchingDelimiter({
+        close: ']',
+        maskedSource,
+        open: '[',
+        start,
+      })
+
+      if (start !== -1 && end !== -1 && end < layoutObject.end) {
+        return { end, start }
+      }
+    }
+  }
+
+  return undefined
+}
+
+const hasDirectArrayIdentifier = ({
+  identifier,
+  range,
+  source,
+}: {
+  identifier: string
+  range: DelimiterRange
+  source: string
+}) => {
+  const maskedSource = maskIgnoredSource(source)
+  const identifierPattern = new RegExp(`\\b${escapeRegExp(identifier)}\\b`, 'g')
+
+  for (const match of maskedSource.matchAll(identifierPattern)) {
+    if (
+      typeof match.index === 'number' &&
+      match.index > range.start &&
+      match.index < range.end &&
+      isDirectlyWithin(maskedSource, range.start + 1, match.index)
+    ) {
+      return true
+    }
+  }
+
+  return false
+}
 
 const insertLineBeforeAnchor = ({
   anchor,
@@ -45,49 +421,46 @@ const insertLineBeforeAnchor = ({
     return source
   }
 
-  const lines = source.split('\n')
-  const anchorIndex = lines.findIndex((currentLine) => currentLine.includes(anchor))
+  const anchorIndex = findTopLevelAnchor(source, anchor)
 
   if (anchorIndex === -1) {
     throw new Error(`Unable to find insertion anchor "${anchor}".`)
   }
 
-  lines.splice(anchorIndex, 0, line)
+  const lineStart = source.lastIndexOf('\n', anchorIndex - 1) + 1
 
-  return lines.join('\n')
+  return `${source.slice(0, lineStart)}${line}\n${source.slice(lineStart)}`
 }
 
 const applyRenderBlocksFragment = (source: string, fragment: Extract<PayloadFragment, { kind: 'renderBlocks' }>) => {
   const importLine = `import { ${fragment.importName} } from '${fragment.importPath}'`
   const propertyLine = `  ${fragment.blockSlug}: ${fragment.importName},`
-  const lines = insertLineBeforeAnchor({
+  const sourceWithImport = insertLineBeforeAnchor({
     anchor: renderBlocksAnchor,
     isPresent: (current) => hasNamedImport(current, fragment.importName, fragment.importPath),
     line: importLine,
     source,
-  }).split('\n')
+  })
+  const objectRange = findRenderBlocksObject(sourceWithImport)
 
-  const objectStartIndex = lines.findIndex((line) => line.includes(renderBlocksAnchor))
-
-  if (objectStartIndex === -1) {
+  if (!objectRange) {
     throw new Error('Unable to find the blockComponents object in RenderBlocks.tsx.')
   }
 
-  const objectEndIndex = lines.findIndex((line, index) => index > objectStartIndex && line === '}')
-
-  if (objectEndIndex === -1) {
-    throw new Error('Unable to find the end of the blockComponents object in RenderBlocks.tsx.')
+  if (
+    hasDirectObjectEntry({
+      importName: fragment.importName,
+      key: fragment.blockSlug,
+      range: objectRange,
+      source: sourceWithImport,
+    })
+  ) {
+    return sourceWithImport
   }
 
-  const objectLines = lines.slice(objectStartIndex, objectEndIndex + 1)
+  const closingLineStart = sourceWithImport.lastIndexOf('\n', objectRange.end - 1) + 1
 
-  if (hasBlockComponentEntry(objectLines.join('\n'), fragment.blockSlug, fragment.importName)) {
-    return lines.join('\n')
-  }
-
-  lines.splice(objectEndIndex, 0, propertyLine)
-
-  return lines.join('\n')
+  return `${sourceWithImport.slice(0, closingLineStart)}${propertyLine}\n${sourceWithImport.slice(closingLineStart)}`
 }
 
 const applyPagesLayoutFragment = (source: string, fragment: Extract<PayloadFragment, { kind: 'pagesLayout' }>) => {
@@ -98,33 +471,30 @@ const applyPagesLayoutFragment = (source: string, fragment: Extract<PayloadFragm
     line: importLine,
     source,
   })
-  const layoutIndex = sourceWithImport.indexOf(layoutAnchor)
+  const blocksRange = findPagesLayoutBlocks(sourceWithImport)
 
-  if (layoutIndex === -1) {
-    throw new Error('Unable to find the layout tab in Pages collection config.')
-  }
-
-  const layoutSlice = sourceWithImport.slice(layoutIndex)
-  const blocksMatch = layoutSlice.match(/blocks:\s*\[([\s\S]*?)\],/)
-
-  if (!blocksMatch || typeof blocksMatch.index !== 'number') {
+  if (!blocksRange) {
     throw new Error('Unable to find the layout block list in Pages collection config.')
   }
 
-  const absoluteMatchStart = layoutIndex + blocksMatch.index
-  const absoluteMatchEnd = absoluteMatchStart + blocksMatch[0].length
-  const currentEntries = blocksMatch[1]
-    .split(',')
-    .map((entry) => entry.trim())
-    .filter(Boolean)
-
-  if (currentEntries.includes(fragment.blockName)) {
+  if (
+    hasDirectArrayIdentifier({
+      identifier: fragment.blockName,
+      range: blocksRange,
+      source: sourceWithImport,
+    })
+  ) {
     return sourceWithImport
   }
 
-  const replacement = `blocks: [${[...currentEntries, fragment.blockName].join(', ')}],`
+  const currentEntries = sourceWithImport
+    .slice(blocksRange.start + 1, blocksRange.end)
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+  const replacement = [...currentEntries, fragment.blockName].join(', ')
 
-  return `${sourceWithImport.slice(0, absoluteMatchStart)}${replacement}${sourceWithImport.slice(absoluteMatchEnd)}`
+  return `${sourceWithImport.slice(0, blocksRange.start + 1)}${replacement}${sourceWithImport.slice(blocksRange.end)}`
 }
 
 export const detectProject = async (cwd: string): Promise<DetectedProject> => {
@@ -139,7 +509,7 @@ export const detectProject = async (cwd: string): Promise<DetectedProject> => {
   }
   const payloadMajor = extractMajor(dependencies.payload, 'payload')
   const nextMajor = extractMajor(dependencies.next, 'next')
-  const packageManager = await detectPackageManager(cwd)
+  const { lockfilePath, packageManager } = await detectPackageManagerDetails(cwd)
 
   for (const target of supportMatrix.targets) {
     if (!target.allowedPayloadMajors.includes(payloadMajor)) {
@@ -178,6 +548,7 @@ export const detectProject = async (cwd: string): Promise<DetectedProject> => {
 
     return {
       cwd,
+      lockfilePath,
       nextMajor,
       packageManager,
       payloadMajor,
@@ -255,9 +626,12 @@ export const verifyInstalledManifestFiles = async ({
   manifest,
 }: {
   cwd: string
-  manifest: Pick<ComponentManifest, 'files'>
+  manifest: Pick<ComponentManifest, 'files'> & {
+    registryDependencies?: ResolvedRegistryDependency[]
+  }
 }) => {
   const missingFiles: string[] = []
+  const missingRegistryDependencies: ResolvedRegistryDependency[] = []
 
   for (const filePath of manifest.files) {
     try {
@@ -267,9 +641,18 @@ export const verifyInstalledManifestFiles = async ({
     }
   }
 
+  for (const dependency of manifest.registryDependencies ?? []) {
+    try {
+      await access(getAbsolutePath(cwd, dependency.targetFile))
+    } catch {
+      missingRegistryDependencies.push(dependency)
+    }
+  }
+
   return {
-    isValid: missingFiles.length === 0,
+    isValid: missingFiles.length === 0 && missingRegistryDependencies.length === 0,
     missingFiles,
+    missingRegistryDependencies,
   }
 }
 
@@ -290,7 +673,17 @@ export const verifyInstalledPayloadFragments = async ({
         missingFragments.push(`renderBlocks.import:${fragment.importName}`)
       }
 
-      if (!hasBlockComponentEntry(renderBlocksSource, fragment.blockSlug, fragment.importName)) {
+      const blockComponents = findRenderBlocksObject(renderBlocksSource)
+
+      if (
+        !blockComponents ||
+        !hasDirectObjectEntry({
+          importName: fragment.importName,
+          key: fragment.blockSlug,
+          range: blockComponents,
+          source: renderBlocksSource,
+        })
+      ) {
         missingFragments.push(`renderBlocks.block:${fragment.blockSlug}`)
       }
     }
@@ -302,11 +695,16 @@ export const verifyInstalledPayloadFragments = async ({
         missingFragments.push(`pagesLayout.import:${fragment.importName}`)
       }
 
-      const layoutIndex = pagesSource.indexOf(layoutAnchor)
-      const layoutSlice = layoutIndex === -1 ? '' : pagesSource.slice(layoutIndex)
-      const blocksMatch = layoutSlice.match(/blocks:\s*\[([\s\S]*?)\],/)
+      const blocksRange = findPagesLayoutBlocks(pagesSource)
 
-      if (!blocksMatch?.[1]?.split(',').map((entry) => entry.trim()).includes(fragment.blockName)) {
+      if (
+        !blocksRange ||
+        !hasDirectArrayIdentifier({
+          identifier: fragment.blockName,
+          range: blocksRange,
+          source: pagesSource,
+        })
+      ) {
         missingFragments.push(`pagesLayout.block:${fragment.blockName}`)
       }
     }

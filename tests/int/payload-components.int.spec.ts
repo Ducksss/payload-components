@@ -175,6 +175,21 @@ describe('payload-components add', () => {
 
     expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
   }, 180000)
+
+  it('records the discovered Bun lockfile name in recovery state', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('logo-cloud-marquee', {
+      preseedSource: true,
+    })
+    tempDirs.push(fixtureDir)
+    await rm(path.join(fixtureDir, 'pnpm-lock.yaml'))
+    await writeFile(path.join(fixtureDir, 'bun.lock'), 'bun modern lockfile\n', 'utf8')
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const state = await readInstallState(fixtureDir)
+    expect(state.components[manifest.name]?.patchedFiles).toContain('bun.lock')
+    expect(state.components[manifest.name]?.patchedFiles).not.toContain('bun.lockb')
+  }, 180000)
 })
 
 describe('payload-components fragment patching', () => {

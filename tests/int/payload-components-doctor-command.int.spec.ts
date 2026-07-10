@@ -13,6 +13,16 @@ const repoRoot = process.cwd()
 const payloadComponentBin = path.join(repoRoot, 'bin', 'payload-components.mjs')
 const integrationCommandTimeoutMs = 30_000
 
+const runAddCommand = async (fixtureDir: string, componentName: string) =>
+  runCommand({
+    args: [payloadComponentBin, 'add', componentName, '--cwd', fixtureDir],
+    captureOutput: true,
+    command: process.execPath,
+    cwd: repoRoot,
+    env: process.env,
+    timeoutMs: integrationCommandTimeoutMs,
+  })
+
 const runDoctorCommand = async (fixtureDir: string) => {
   try {
     const result = await runCommand({
@@ -117,6 +127,33 @@ describe('payload-components doctor', () => {
     expect(result.stdout).toContain('[error] hero-basic: missing Payload fragments')
     expect(result.stdout).toContain('renderBlocks.block:heroBasic')
     expect(result.stdout).toContain('Run "payload-components add hero-basic" to retry the install.')
+  }, 180000)
+
+  it('fails when a recorded component is missing a registry dependency target', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('faq-accordion', {
+      preseedSource: true,
+    })
+    tempDirs.push(fixtureDir)
+    await runAddCommand(fixtureDir, manifest.name)
+    await rm(path.join(fixtureDir, 'src', 'components', 'ui', 'accordion.tsx'))
+
+    const result = await runDoctorCommand(fixtureDir)
+
+    expect(result.code).toBe(1)
+    expect(result.stdout).toContain(
+      '[error] faq-accordion: missing registry dependencies accordion (src/components/ui/accordion.tsx)',
+    )
+    expect(result.stdout).not.toContain('[error] faq-accordion: missing files')
+
+    await writeFile(
+      path.join(fixtureDir, 'src', 'components', 'ui', 'accordion.tsx'),
+      'export const Accordion = () => null\n',
+      'utf8',
+    )
+    const repairedResult = await runDoctorCommand(fixtureDir)
+
+    expect(repairedResult.code).toBe(0)
+    expect(repairedResult.stdout).toContain('[ok] faq-accordion: registry dependencies')
   }, 180000)
 
   it('reports partial install state with the failed stage and message', async () => {

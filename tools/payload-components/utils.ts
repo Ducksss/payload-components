@@ -159,10 +159,14 @@ export const extractMajor = (version: string | undefined, dependencyName: string
   return Number(match[1])
 }
 
-export const detectPackageManager = async (cwd: string): Promise<PackageManager> => {
+export const detectPackageManagerDetails = async (cwd: string): Promise<{
+  lockfilePath: string
+  packageManager: PackageManager
+}> => {
   const lockfiles: Array<[PackageManager, string]> = [
     ['pnpm', getLockfileName('pnpm')],
-    ['bun', getLockfileName('bun')],
+    ['bun', 'bun.lock'],
+    ['bun', 'bun.lockb'],
     ['yarn', getLockfileName('yarn')],
     ['npm', getLockfileName('npm')],
   ]
@@ -170,14 +174,23 @@ export const detectPackageManager = async (cwd: string): Promise<PackageManager>
   for (const [manager, lockfile] of lockfiles) {
     try {
       await readFile(path.join(cwd, lockfile), 'utf8')
-      return manager
+      return {
+        lockfilePath: lockfile,
+        packageManager: manager,
+      }
     } catch {
       // Continue checking the remaining lockfiles.
     }
   }
 
-  return 'npm'
+  return {
+    lockfilePath: getLockfileName('npm'),
+    packageManager: 'npm',
+  }
 }
+
+export const detectPackageManager = async (cwd: string): Promise<PackageManager> =>
+  (await detectPackageManagerDetails(cwd)).packageManager
 
 export const getLockfileName = (packageManager: PackageManager) => {
   if (packageManager === 'pnpm') {
@@ -185,7 +198,7 @@ export const getLockfileName = (packageManager: PackageManager) => {
   }
 
   if (packageManager === 'bun') {
-    return 'bun.lockb'
+    return 'bun.lock'
   }
 
   if (packageManager === 'yarn') {
