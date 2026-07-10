@@ -11,7 +11,7 @@ import { DemoLink } from './DemoLink'
  * source, in source order. Deliberate substitutions:
  *   <section className={cn('container', …)}> → <div> root (frames own spacing; no landmark)
  *   <h2>                                     → <div> (role-neutral; the catalog owns its outline)
- *   <Card>                                   → plain <div> (the Card chrome is presentational)
+ *   <Card>                                   → shared Card chrome
  *   CMSLink                                  → <DemoLink> (@/components/Link exists only in consumer repos)
  *   ComparatorGridBlockData                  → ComparatorGridDemoContent (@/payload-types is consumer-only)
  *   cn() inner/cell wrappers                 → plain divs/template classes (skipped by the class-mirror guard)

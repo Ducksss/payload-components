@@ -309,11 +309,24 @@ test.describe('Light shadcn frontend', () => {
     const initial = (await frame.boundingBox())?.height ?? 0
     await page.getByRole('button', { name: 'Mobile' }).click()
     await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(initial)
+    const mobileHeight = (await frame.boundingBox())?.height ?? initial
     await page.getByRole('button', { name: 'Desktop' }).click()
-    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeLessThanOrEqual(initial + 200)
+    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeLessThan(mobileHeight - 2)
+    await page.getByRole('button', { name: 'Mobile' }).click()
+    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(mobileHeight - 2)
 
     await page.goto(`${baseURL}/components/preview/hero-basic`)
     await expect(page.locator('script[src*="googletagmanager"], script[src*="vercel"], script[src*="posthog"]')).toHaveCount(0)
+  })
+
+  test('component wiring paths and actions wrap at 390px', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 })
+    await page.goto(`${baseURL}/docs/components/hero-basic`)
+    const wiring = page.getByText('What it installs', { exact: false }).locator('..')
+    await expect(page.locator('code').filter({ hasText: 'src/' }).first()).toBeVisible()
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
+    expect(overflow).toBe(false)
+    await expect(wiring).toBeVisible()
   })
 
   test('serves the standalone preview route without site chrome or overflow', async ({ page }) => {
