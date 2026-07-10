@@ -371,17 +371,43 @@ describe('Fumadocs site shell', () => {
   })
 
   it('keeps catalog page-block count copy aligned with installable components', async () => {
-    const { componentEntries, componentFamilies, componentsIntro, upcomingComponents } =
-      await import('../../src/lib/site')
-    const pageCount = componentEntries.filter((component) => component.family === 'pages').length
+    const { componentFamilies, componentsIntro } = await import('../../src/lib/site')
     const aboutPage = await readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8')
 
-    expect(pageCount).toBe(58)
-    expect(componentFamilies.pages.countLabel).toBe(`${pageCount} installable`)
-    expect(componentFamilies.posts.countLabel).toBe(`${upcomingComponents.length} in development`)
-    expect(componentsIntro).toContain(`${pageCount} page blocks install today`)
-    expect(aboutPage).toContain('${installablePageCount} page blocks install today')
+    expect(componentFamilies.pages.countLabel).toBe('Installable')
+    expect(componentFamilies.posts.countLabel).toBe('In development')
+    expect(componentsIntro).toContain('No screenshots')
     expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Fifty-three page blocks')
+  })
+
+  it('keeps product-surface consistency contracts explicit', async () => {
+    const [firstBlock, installation, aboutPage, siteSource, docsLayout] = await Promise.all([
+      readFile(path.join(repoRoot, 'content/docs/first-block.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content/docs/installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/about/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/lib/site.ts'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/docs/layout.tsx'), 'utf8'),
+    ])
+    expect(firstBlock).toContain('href="/components"')
+    expect(firstBlock).not.toContain('href="/docs/components"')
+
+    const stages = ['registry-build', 'registry-add', 'dependency-install', 'fragment-apply', 'post-install']
+    const stagePositions = stages.map((stage) => installation.indexOf(stage))
+    expect(stagePositions.every((position) => position >= 0)).toBe(true)
+    expect(stagePositions).toEqual([...stagePositions].sort((a, b) => a - b))
+    expect(installation).toContain('direct `shadcn add` only copies the block\'s source files')
+    expect(installation).not.toContain('sample content')
+
+    expect(aboutPage).toContain('pipelineStages.map')
+    expect(aboutPage).not.toMatch(/const pipelineStages\s*=/)
+    expect(siteSource).toContain('export const pipelineStages')
+
+    const { cliVersion, terminalDemoLines } = await import('../../src/lib/site')
+    const packageJson = await readJson<{ version: string }>(path.join(repoRoot, 'package.json'))
+    expect(cliVersion).toBe(packageJson.version)
+    expect(terminalDemoLines.some((line) => line.text.includes(`@${cliVersion}`))).toBe(true)
+    expect(docsLayout).toContain('{cliVersion}')
+    expect(docsLayout).not.toMatch(/components v\d+\.\d+\.\d+/)
   })
 
   it('publishes production-safe fallback URLs when no site URL env is set', async () => {
