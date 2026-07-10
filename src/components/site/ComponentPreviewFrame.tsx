@@ -71,6 +71,17 @@ export function ComponentPreviewFrame({ slug, title }: { slug: string; title: st
 
   useEffect(() => () => contentObserverRef.current?.disconnect(), [])
 
+  useEffect(() => {
+    const frame = frameRef.current
+    if (!frame) return
+    const raf = requestAnimationFrame(syncHeight)
+    const timer = window.setTimeout(syncHeight, 50)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.clearTimeout(timer)
+    }
+  }, [preset, syncHeight])
+
   /* No window border/background of our own: the fumadocs Tabs panel already
      frames this (see ComponentDocPreview), so the toolbar is the window's top
      bar and the stage its canvas — avoiding a frame-inside-a-frame-inside-a-frame. */
