@@ -1,3 +1,5 @@
+import packageJson from '../../package.json' with { type: 'json' }
+
 const productionSiteUrl = 'https://www.payload-components.xyz'
 const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionSiteUrl).replace(/\/+$/, '')
 
@@ -1331,4 +1333,3 @@ export const footerColumns = [
     title: 'Project',
   },
 ] as const
-import packageJson from '../../package.json'
