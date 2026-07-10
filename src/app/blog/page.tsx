@@ -2,10 +2,14 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { blogSource } from '@/lib/blog-source'
+import { siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Blog',
   description: 'Updates, deep dives, and release notes from the Payload Components team.',
+  alternates: { canonical: `${siteUrl}/blog` },
+  openGraph: { title: 'Blog', description: 'Updates, deep dives, and release notes from the Payload Components team.', url: `${siteUrl}/blog`, type: 'website' },
+  twitter: { card: 'summary_large_image', title: 'Blog', description: 'Updates, deep dives, and release notes from the Payload Components team.' },
 }
 
 export default function BlogIndex() {

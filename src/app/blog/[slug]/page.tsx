@@ -7,6 +7,7 @@ import { ArrowLeft } from 'lucide-react'
 
 import { getMDXComponents } from '@/components/mdx'
 import { blogSource } from '@/lib/blog-source'
+import { siteUrl } from '@/lib/site'
 
 interface BlogPostProps {
   params: Promise<{ slug: string }>
@@ -24,13 +25,15 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
   return {
     title: page.data.title,
     description: page.data.description,
-    alternates: { canonical: page.url },
+    alternates: { canonical: `${siteUrl}${page.url}` },
     openGraph: {
       type: 'article',
       title: page.data.title,
       description: page.data.description,
-      url: page.url,
+      url: `${siteUrl}${page.url}`,
+      publishedTime: new Date(page.data.date).toISOString(),
     },
+    twitter: { card: 'summary_large_image', title: page.data.title, description: page.data.description },
   }
 }
 

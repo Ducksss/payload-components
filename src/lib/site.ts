@@ -116,7 +116,7 @@ export const workflowIntro =
 
 export const workflowSteps = [
   {
-    command: '/docs/components/hero-basic',
+    command: '/components',
     description: 'Fields, files, and patches — before you run anything.',
     title: 'Read the contract',
   },
@@ -1073,18 +1073,17 @@ export const installablePageCount = componentEntries.filter(
 ).length
 export const upcomingPostCount = upcomingComponents.length
 
-export const componentsIntro =
-  `No screenshots — the specimen below is the real component, rendered from source. ${installablePageCount} page blocks install today.`
+export const componentsIntro = 'No screenshots — each specimen is the real component, rendered from source.'
 
 export const componentFamilies = {
   pages: {
-    countLabel: `${installablePageCount} installable`,
+    countLabel: 'Installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
   },
   posts: {
-    countLabel: `${upcomingPostCount} in development`,
+    countLabel: 'In development',
     description:
       'Editorial surfaces for the Posts collection — component-level installs, no block wiring needed. In development.',
     name: 'Post components',

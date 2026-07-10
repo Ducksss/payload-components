@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { ArrowUpRight, Search, X } from 'lucide-react'
 
@@ -62,21 +62,38 @@ export function ComponentCatalogBrowser({
   const rawCategory = searchParams.get('category') ?? ''
   const category = rawCategory in categories ? rawCategory : ''
   const query = searchParams.get('q') ?? ''
+  const [localQuery, setLocalQuery] = useState(query)
+  useEffect(() => setLocalQuery(query), [query])
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search)
+      if (localQuery) params.set('q', localQuery)
+      else params.delete('q')
+      const next = params.toString() ? `${pathname}?${params}` : pathname
+      if (next !== `${window.location.pathname}${window.location.search}`) window.history.replaceState(null, '', next)
+    }, 250)
+    return () => window.clearTimeout(timer)
+  }, [localQuery, pathname])
+  useEffect(() => {
+    const onPopState = () => setLocalQuery(new URLSearchParams(window.location.search).get('q') ?? '')
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
   const activeFamily: FamilyKey | 'all' = category ? categories[category].family : type
 
   const queriedPages = useMemo(
     () =>
-      pages.filter((component) =>
-        matches(query, component.title, component.slug, component.description, component.target),
+        pages.filter((component) =>
+        matches(localQuery, component.title, component.slug, component.description, component.target),
       ),
-    [pages, query],
+    [pages, localQuery],
   )
   const queriedPosts = useMemo(
     () =>
       posts.filter((component) =>
-        matches(query, component.title, component.slug, component.description, component.target),
+        matches(localQuery, component.title, component.slug, component.description, component.target),
       ),
-    [posts, query],
+    [posts, localQuery],
   )
 
   const pagesCounts = useMemo(() => countByCategory(queriedPages), [queriedPages])
@@ -187,7 +204,7 @@ export function ComponentCatalogBrowser({
                 <input
                   type="search"
                   value={query}
-                  onChange={(event) => updateParams({ q: event.target.value })}
+                  onChange={(event) => setLocalQuery(event.target.value)}
                   placeholder="Search components"
                   className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand/50 focus:ring-2 focus:ring-brand/15"
                 />
@@ -249,7 +266,7 @@ export function ComponentCatalogBrowser({
                       <ComponentCard key={component.slug} component={component} />
                     ))}
 
-                    {query === '' && !category ? (
+                    {localQuery === '' && !category ? (
                       <a
                         href={`${githubRepoUrl}/issues`}
                         target="_blank"
