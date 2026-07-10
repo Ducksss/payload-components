@@ -158,6 +158,36 @@ Run the CLI from the root of a supported Payload v3 + Next.js project:
 npx payload-components add hero-basic
 ```
 
+To also write a prefilled demo script after the install succeeds, opt in with
+`--demo`, then run the generated TypeScript through your project's Payload CLI:
+
+```sh
+npx payload-components add hero-basic --demo
+pnpm exec payload run payload-components/seed-hero-basic.ts
+```
+
+For a component that is already installed, the standalone command writes the
+same script:
+
+```sh
+npx payload-components seed hero-basic
+pnpm exec payload run payload-components/seed-hero-basic.ts
+```
+
+`seed` refuses to write anything when the install state is recorded as partial,
+or unless every manifest file and Payload wiring fragment is present. The
+generated script requires Pages drafts before querying
+or changing content, then creates a component-specific **draft** Page at
+`/payload-components-demo-hero-basic`; it never publishes the demo. On rerun it
+updates only a Page with the exact generated slug, title, and first-block marker.
+A same-slug Page that fails that ownership contract stops the script without a
+mutation. Exact marker-owned placeholder media is reused; duplicate owned media
+is removed only after the Page write succeeds, and unrelated media is never
+selected. The CLI atomically replaces only its version-marked generated script
+and refuses unowned files or pre-existing symlinks. The operator-run script
+deliberately uses `overrideAccess: true`, so review it in git and run it only
+against the intended database.
+
 Good first installs:
 
 | Component            | Use it for                         |
@@ -228,6 +258,13 @@ The installer runs five idempotent stages:
 
 Install state is written to `.payload-components/state.json` inside the
 consumer project, so partial installs are visible and retries can converge.
+
+Demo scripts are separate and opt-in. `add <component> --demo` writes one only
+after those install stages and installed-state recording succeed;
+`seed <component>` rejects recorded partial installs and verifies the installed
+files and Payload fragments again.
+Neither command opens a database. The CLI prints the package-manager-specific
+`payload run` command that performs the database work in your project.
 
 ### Recovering an interrupted install
 

@@ -1,5 +1,5 @@
 import { spawn, type ChildProcess } from 'node:child_process'
-import { access, cp, mkdir, mkdtemp, readdir, readFile, rm, symlink, writeFile } from 'node:fs/promises'
+import { access, cp, mkdtemp, readdir, readFile, rm, symlink, writeFile } from 'node:fs/promises'
 import { createServer, type Server, type ServerResponse } from 'node:http'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url'
 import { chromium } from '@playwright/test'
 
 import { loadManifest } from '../manifest'
+import { writeSeedScript } from '../seed/seed-script'
 import { shadcnCliPackage } from '../utils'
 import type { ComponentManifest } from '../types'
 
@@ -92,12 +93,6 @@ type StaticRegistryServer = {
   urlTemplate: string
 }
 
-type SmokeSampleBlock = ComponentManifest['sampleContent'] & {
-  avatars?: Array<Record<string, unknown>>
-  integrations?: Array<Record<string, unknown>>
-  logos?: Array<Record<string, unknown>>
-}
-
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(dirname, '..', '..', '..')
 const rootPackagePath = path.join(repoRoot, 'package.json')
@@ -122,6 +117,10 @@ export const parseSmokeArgs = (argv: string[]): SmokeOptions => {
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index]
+
+    if (arg === '--') {
+      continue
+    }
 
     if (arg === '--components') {
       const rawComponents = parseNextValue(argv, index, arg)
@@ -565,123 +564,6 @@ const runDirectShadcnUrlSmoke = async ({
   return targetPath
 }
 
-const isMissingUploadReference = (item: Record<string, unknown>, fieldName: string) =>
-  typeof item[fieldName] === 'undefined' || item[fieldName] === null || item[fieldName] === ''
-
-export const sampleContentNeedsSmokeMedia = (sampleContent: ComponentManifest['sampleContent']) => {
-  const block = sampleContent as SmokeSampleBlock
-
-  return (
-    block.logos?.some((item) => isMissingUploadReference(item, 'logo')) ||
-    block.integrations?.some((item) => isMissingUploadReference(item, 'logo')) ||
-    block.avatars?.some((item) => isMissingUploadReference(item, 'avatar')) ||
-    false
-  )
-}
-
-export const writeSeedScript = async (targetPath: string, manifests: ComponentManifest[]) => {
-  const layout = manifests.map((manifest) => manifest.sampleContent)
-  const needsSmokeMedia = manifests.some((manifest) =>
-    sampleContentNeedsSmokeMedia(manifest.sampleContent),
-  )
-  const scriptPath = path.join(targetPath, '.payload-components', 'smoke-seed.ts')
-
-  await mkdir(path.dirname(scriptPath), {
-    recursive: true,
-  })
-
-  await writeFile(
-    scriptPath,
-    `import { mkdir, writeFile } from 'node:fs/promises'
-import path from 'node:path'
-
-import { getPayload } from 'payload'
-
-const { default: config } = await import('../src/payload.config')
-
-type SmokeSampleItem = Record<string, unknown>
-type SmokeSampleBlock = SmokeSampleItem & {
-  avatars?: SmokeSampleItem[]
-  integrations?: SmokeSampleItem[]
-  logos?: SmokeSampleItem[]
-}
-
-const rawLayout = ${JSON.stringify(layout, null, 2)} satisfies SmokeSampleBlock[]
-const needsSmokeMedia = ${JSON.stringify(needsSmokeMedia)}
-
-const addUploadReference = (items: SmokeSampleItem[] | undefined, fieldName: string, mediaID: unknown) =>
-  items?.map((item) => ({
-    ...item,
-    [fieldName]: item[fieldName] ?? mediaID,
-  }))
-
-const addSmokeUploadReferences = (block: SmokeSampleBlock, mediaID: unknown): SmokeSampleBlock => ({
-  ...block,
-  ...(block.avatars ? { avatars: addUploadReference(block.avatars, 'avatar', mediaID) } : {}),
-  ...(block.integrations ? { integrations: addUploadReference(block.integrations, 'logo', mediaID) } : {}),
-  ...(block.logos ? { logos: addUploadReference(block.logos, 'logo', mediaID) } : {}),
-})
-
-const createSmokeMedia = async () => {
-  const mediaPath = path.join(process.cwd(), '.payload-components', 'smoke-placeholder.svg')
-
-  await mkdir(path.dirname(mediaPath), { recursive: true })
-  await writeFile(
-    mediaPath,
-    '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect width="96" height="96" rx="24" fill="#f4f4f5"/><path d="M27 52h42v8H27zM27 36h42v8H27z" fill="#18181b"/></svg>',
-  )
-
-  return payload.create({
-    collection: 'media',
-    data: {
-      alt: 'Payload Components smoke placeholder',
-    },
-    filePath: mediaPath,
-    overrideAccess: true,
-  })
-}
-
-const payload = await getPayload({ config })
-const slug = 'payload-components-smoke'
-const smokeMedia = needsSmokeMedia ? await createSmokeMedia() : undefined
-const layout = smokeMedia
-  ? rawLayout.map((block) => addSmokeUploadReferences(block, smokeMedia.id))
-  : rawLayout
-
-await payload.delete({
-  collection: 'pages',
-  context: {
-    disableRevalidate: true,
-  },
-  overrideAccess: true,
-  where: {
-    slug: {
-      equals: slug,
-    },
-  },
-}).catch(() => undefined)
-
-await payload.create({
-  collection: 'pages',
-  context: {
-    disableRevalidate: true,
-  },
-  data: {
-    title: 'Payload Component Smoke',
-    slug,
-    layout,
-    _status: 'published',
-  },
-  overrideAccess: true,
-})
-
-console.log('Seeded /payload-components-smoke')
-`,
-  )
-
-  return scriptPath
-}
-
 const waitForRoute = async (routeUrl: string, timeoutMs: number) => {
   const deadline = Date.now() + timeoutMs
   let lastError: unknown
@@ -785,10 +667,12 @@ const runFreshPayloadRepoSmoke = async ({
   const payloadVersion = await getLocalPayloadVersion()
   const projectName = 'payload-components-smoke-target'
   const targetPath = path.join(tempRoot, projectName)
+  const normalizedDbConnectionString = normalizeSmokeDatabaseConnectionString(dbConnectionString)
+  const databaseUrl = normalizedDbConnectionString ?? `file:./${projectName}.db`
 
   await runCommand({
     args: getCreatePayloadAppArgs({
-      dbConnectionString,
+      dbConnectionString: normalizedDbConnectionString,
       payloadVersion,
       projectName,
     }),
@@ -845,7 +729,10 @@ const runFreshPayloadRepoSmoke = async ({
     args: ['exec', 'tsx', '.payload-components/smoke-seed.ts'],
     command: 'pnpm',
     cwd: targetPath,
-    env: smokeEnvForTarget('http://127.0.0.1:3000'),
+    env: smokeEnvForTarget({
+      databaseUrl,
+      serverUrl: 'http://127.0.0.1:3000',
+    }),
     stage: 'seed fresh project sample content',
     timeoutMs,
   })
@@ -864,7 +751,7 @@ const runFreshPayloadRepoSmoke = async ({
     args: ['dev', '--hostname', '127.0.0.1', '--port', String(port)],
     command: 'pnpm',
     cwd: targetPath,
-    env: smokeEnvForTarget(`http://127.0.0.1:${port}`),
+    env: smokeEnvForTarget({ databaseUrl, serverUrl: `http://127.0.0.1:${port}` }),
     stage: 'start fresh project dev server',
   })
 
@@ -885,8 +772,18 @@ const runFreshPayloadRepoSmoke = async ({
   }
 }
 
-const smokeEnvForTarget = (serverUrl: string): Partial<NodeJS.ProcessEnv> => ({
+export const normalizeSmokeDatabaseConnectionString = (value?: string) =>
+  value?.trim() || undefined
+
+export const smokeEnvForTarget = ({
+  databaseUrl,
+  serverUrl,
+}: {
+  databaseUrl: string
+  serverUrl: string
+}): Partial<NodeJS.ProcessEnv> => ({
   CRON_SECRET: process.env.CRON_SECRET ?? 'payload-components-smoke-cron-secret',
+  DATABASE_URL: databaseUrl,
   NEXT_PUBLIC_SERVER_URL: serverUrl,
   PAYLOAD_SECRET: process.env.PAYLOAD_SECRET ?? 'payload-components-smoke-secret',
   PREVIEW_SECRET: process.env.PREVIEW_SECRET ?? 'payload-components-smoke-preview-secret',

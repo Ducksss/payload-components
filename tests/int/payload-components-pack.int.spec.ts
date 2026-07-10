@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process'
-import { mkdtemp, readdir, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { promisify } from 'node:util'
@@ -79,18 +79,31 @@ const listFilesRecursive = async (dir: string): Promise<string[]> => {
     const installedPackageDir = path.join(toolDir, 'node_modules', 'payload-components')
     const cliEntry = path.join(installedPackageDir, 'dist', 'cli.js')
     const filesBefore = await listFilesRecursive(installedPackageDir)
+    const installedPackageJson = JSON.parse(
+      await readFile(path.join(installedPackageDir, 'package.json'), 'utf8'),
+    ) as { dependencies?: Record<string, string> }
+    const bundledCli = await readFile(cliEntry, 'utf8')
+
+    expect(Object.keys(installedPackageJson.dependencies ?? {}).sort()).toEqual(['ajv', 'semver'])
+    expect(bundledCli).not.toContain('@playwright/test')
+    expect(bundledCli).not.toContain('playwright')
 
     const { fixtureDir, manifest } = await createInstallFixture('hero-basic')
     tempDirs.push(fixtureDir)
 
     // Run the *installed* bin under plain Node (no tsx) against the fixture.
-    await execFileAsync(process.execPath, [cliEntry, 'add', manifest.name, '--cwd', fixtureDir], {
+    await execFileAsync(process.execPath, [cliEntry, 'add', manifest.name, '--cwd', fixtureDir, '--demo'], {
       cwd: toolDir,
       env: process.env,
       maxBuffer: 10_000_000,
     })
 
     await expectInstalledComponents(fixtureDir, [manifest])
+    const demoScript = await readFile(
+      path.join(fixtureDir, 'payload-components', `seed-${manifest.name}.ts`),
+      'utf8',
+    )
+    expect(demoScript).toContain("_status: 'draft'")
 
     // The install must not write into the package dir (it may be read-only under
     // a global npx cache); all writes go to an OS tmpdir and the target project.

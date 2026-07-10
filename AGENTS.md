@@ -38,7 +38,7 @@ The Payload block code under `payload-components/source/` is **target code** —
 | `src/lib/site.ts` | **Single source of truth for all site copy/data** (hero text, FAQ, component entries, landing-section headings, terminal demo lines). Tests import from here |
 | `content/docs/` | Fumadocs MDX (index, architecture, installation, registry, contributing, `components/*`); page tree via `meta.json` |
 | `payload-components/` | `registry.json` (source shadcn registry), `source/` (component target code), `manifests/*.json` (wiring contract), `schema/`, `support-matrix.json` |
-| `tools/payload-components/` + `bin/payload-components.mjs` | The CLI: `add` command, project detection, fragment patching, install state, registry build/check |
+| `tools/payload-components/` + `bin/payload-components.mjs` | The CLI: `add`, `seed`, `init`, and `doctor`; project detection, fragment patching, install state, registry build/check |
 | `tests/` | `e2e/` (Playwright) + `int/` (Vitest) — the contract (below) |
 | `public/r/` | Generated public registry — **gitignored build output**, never hand-edit |
 
@@ -47,6 +47,16 @@ The Payload block code under `payload-components/source/` is **target code** —
 **`payload-components add <component>` pipeline** (`tools/payload-components/commands/add.ts`) — five idempotent stages; install state is recorded in the consumer's `.payload-components/state.json`:
 
 `registry-build` → `registry-add` → `dependency-install` → `fragment-apply` → `post-install` (`generate:types`, `generate:importmap`)
+
+**Optional demo seeding:** `add <component> --demo` writes a generated seed only
+after installed state is recorded; `seed <component>` performs the same step for
+an existing install. The CLI never opens a database. It rejects recorded partial
+installs, verifies every manifest file and wiring fragment, derives the Payload
+config path, and atomically writes
+only a version-marked script under `payload-components/`. Generated scripts must
+require Pages drafts, prove Page ownership by exact slug/title/first-block marker,
+update owned Pages in place, and never delete unrelated media. Keep all Local API
+access in the explicit operator-run script, with failures surfaced.
 
 Fragment patching is **text-anchor based** — it finds anchors like `const blockComponents = {` and `name: 'layout'` in the consumer repo and inserts imports/registrations with dedup checks. Fragile by design for now; keep the anchors and dedup logic intact.
 

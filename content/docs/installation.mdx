@@ -69,6 +69,67 @@ Pick a component and run its `add` command from the root of your Payload project
   </Tab>
 </Tabs>
 
+## Optional draft demo
+
+Demo content is opt-in. Add `--demo` to a normal install to write a runnable
+TypeScript seed script strictly after the component install succeeds:
+
+```bash
+npx payload-components add hero-basic --demo
+pnpm exec payload run payload-components/seed-hero-basic.ts
+```
+
+If the component is already installed, write the same script without rerunning
+the installer:
+
+```bash
+npx payload-components seed hero-basic
+pnpm exec payload run payload-components/seed-hero-basic.ts
+```
+
+The first command only writes `payload-components/seed-hero-basic.ts`; it does
+not connect to your database. The CLI also prints the equivalent `payload run`
+command for npm, Yarn, Bun, or pnpm. Run that generated script yourself from the
+project root against the database you intend to modify.
+
+<Callout type="warn" title="The seed command fails closed">
+  `seed` rejects a recorded partial install and verifies every file in the
+  component manifest plus every Payload layout and renderer fragment before
+  writing the script. If the state or either on-disk set is incomplete, it exits
+  non-zero, reports why, and writes nothing. Fix the install with
+  `npx payload-components add hero-basic`, then retry.
+</Callout>
+
+The generated file begins with a versioned ownership marker. Regeneration uses
+an atomic sibling-file rename and refuses to overwrite an unmarked file, a
+symlink present during generation, a non-file, or any path outside the detected
+project. This keeps an existing consumer seed from being mistaken for CLI-owned
+output.
+
+For `hero-basic`, the generated document contract is deliberately specific:
+
+- Page slug: `payload-components-demo-hero-basic`
+- Page title: `Payload Components demo — Hero Basic`
+- first block marker: `payload-components:demo:hero-basic`
+- generated media marker: `payload-components:demo:hero-basic:media`
+
+The script requires the detected Pages collection to support drafts. It aborts
+before querying or mutating content otherwise. A successful run writes
+`_status: 'draft'`, so you must review and publish explicitly. On rerun it
+fetches the Page by slug and updates the existing document in place only when
+the exact title and first block marker also prove ownership. A same-slug Page
+without that complete contract causes a hard failure before any mutation.
+
+Components with required uploads get one ownership-marked placeholder Media
+document. A rerun reuses the first exact marker-owned Media document. It removes
+any duplicate owned documents only after the Page create or update succeeds;
+failed Page writes therefore preserve the prior media set. Placeholder files use
+a unique OS temporary directory that is removed in a `finally` block. Media
+without the exact marker is never queried or deleted. All mutations use the same
+revalidation-safe context as the project smoke path. The operator-run script
+uses `overrideAccess: true` intentionally, so inspect the generated file and
+your environment before executing it.
+
 ## What the CLI does
 
 The wrapper CLI owns the Payload-specific work that direct registry installation cannot handle:
@@ -90,6 +151,9 @@ The wrapper CLI owns the Payload-specific work that direct registry installation
     **Run post-install scripts** (`generate:types`, `generate:importmap`) and **write `.payload-components/state.json`**.
   </Step>
 </Steps>
+
+When `--demo` is present, writing the demo script is a final sixth action after
+the installed state above. A failed install never writes a demo script.
 
 ## Doctor
 
