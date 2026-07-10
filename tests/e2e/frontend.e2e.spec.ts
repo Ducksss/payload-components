@@ -389,6 +389,45 @@ test.describe('Light shadcn frontend', () => {
     await expect(page.locator('#hero-basic')).toBeHidden()
   })
 
+  test('filters catalog immediately, debounces shareable URL state, and syncs popstate', async ({ page }) => {
+    await page.goto(`${baseURL}/components`)
+    const search = page.getByLabel('Search components')
+    await expect(search).toHaveValue('')
+
+    const initialUrl = page.url()
+    const navigations: string[] = []
+    const requests: string[] = []
+    page.on('framenavigated', (frame) => {
+      if (frame === page.mainFrame()) navigations.push(frame.url())
+    })
+    page.on('request', (request) => {
+      if (request.isNavigationRequest() || request.resourceType() === 'document') {
+        requests.push(request.url())
+      }
+    })
+
+    await search.fill('feature-bento')
+
+    // Filtering is local state: cards update without waiting for a route change.
+    await expect(page.locator('#feature-bento')).toBeVisible()
+    expect(page.url()).toBe(initialUrl)
+
+    // The URL is intentionally debounced (250ms); no document/RSC navigation
+    // should be generated for each keypress or for the history-only update.
+    await expect.poll(() => page.url(), { timeout: 150 }).toBe(initialUrl)
+    await expect.poll(() => page.url(), { timeout: 5000 }).toContain('/components?q=feature-bento')
+    expect(navigations).toEqual([])
+    expect(requests).toEqual([])
+
+    // Browser history restores the input and local result set through popstate.
+    await page.evaluate(() => {
+      window.history.pushState(null, '', '/components?q=hero-basic')
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    })
+    await expect(search).toHaveValue('hero-basic')
+    await expect(page.locator('#hero-basic')).toBeVisible()
+  })
+
   test('links upcoming components to prefilled request issues', async ({ page }) => {
     const component = upcomingComponents.find((entry) => entry.slug === 'post-card')!
 
