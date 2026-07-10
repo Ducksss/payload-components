@@ -206,7 +206,7 @@ export function ComponentCatalogBrowser({
                 />
                 <input
                   type="search"
-                  value={query}
+                  value={localQuery}
                   onChange={(event) => setLocalQuery(event.target.value)}
                   placeholder="Search components"
                   className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand/50 focus:ring-2 focus:ring-brand/15"

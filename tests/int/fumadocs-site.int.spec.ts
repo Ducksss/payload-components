@@ -345,6 +345,31 @@ describe('Fumadocs site shell', () => {
     await expectMetaEntriesResolve(path.join(repoRoot, 'content', 'docs'))
   })
 
+  it('keeps blog routes wired to shared chrome and complete metadata', async () => {
+    const [layoutSource, indexSource, postSource, sitemapSource] = await Promise.all([
+      readFile(path.join(repoRoot, 'src/app/blog/layout.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/blog/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/blog/[slug]/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/sitemap.ts'), 'utf8'),
+    ])
+    expect(layoutSource).toContain('<SiteFooter />')
+    expect(indexSource).toContain("alternates: { canonical: `${siteUrl}/blog` }")
+    expect(indexSource).toContain("twitter: { card: 'summary_large_image'")
+    expect(postSource).toContain("type: 'article'")
+    expect(postSource).toContain('publishedTime:')
+    expect(postSource).toContain("twitter: { card: 'summary_large_image'")
+    expect(sitemapSource).toContain('blogSource.getPages()')
+  })
+
+  it('keeps catalog search local and docs copy factual', async () => {
+    const catalog = await readFile(path.join(repoRoot, 'src/components/site/ComponentCatalogBrowser.tsx'), 'utf8')
+    const registry = await readFile(path.join(repoRoot, 'content/docs/registry.mdx'), 'utf8')
+    expect(catalog).toContain('value={localQuery}')
+    expect(catalog).toContain('window.history.replaceState')
+    expect(catalog).toContain("window.addEventListener('popstate'")
+    expect(registry).not.toContain('sample content for docs and testing')
+  })
+
   it('keeps catalog page-block count copy aligned with installable components', async () => {
     const { componentEntries, componentFamilies, componentsIntro, upcomingComponents } =
       await import('../../src/lib/site')
