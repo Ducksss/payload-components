@@ -9,13 +9,19 @@ updates:
     groups:
       next-react:
         patterns:
+          - eslint-config-next
           - next
           - react
           - react-dom
       test-tooling:
         patterns:
           - '@playwright/*'
+          - vite
+          - vite-tsconfig-paths
           - vitest
+      documentation-tooling:
+        patterns:
+          - 'fumadocs-*'
 
   - package-ecosystem: github-actions
     directory: /

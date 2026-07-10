@@ -33,6 +33,7 @@ export default defineConfig({
     command: webServerCommand,
     env: {
       NEXT_PUBLIC_SITE_URL: `http://localhost:${e2ePort}`,
+      NODE_ENV: 'development',
       PORT: e2ePort,
     },
     reuseExistingServer: false,
