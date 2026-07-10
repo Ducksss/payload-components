@@ -323,7 +323,15 @@ test.describe('Light shadcn frontend', () => {
     await page.setViewportSize({ width: 390, height: 900 })
     await page.goto(`${baseURL}/docs/components/hero-basic`)
     const wiring = page.getByText('What it installs', { exact: false }).locator('..')
-    await expect(page.locator('code').filter({ hasText: 'src/' }).first()).toBeVisible()
+    const path = page.locator('code').filter({ hasText: 'src/' }).first()
+    await expect(path).toBeVisible()
+    const wraps = await path.evaluate((el) => {
+      const style = getComputedStyle(el)
+      const line = Number.parseFloat(style.lineHeight)
+      return { multiline: el.getBoundingClientRect().height > line * 1.5, fits: el.scrollWidth <= el.clientWidth }
+    })
+    expect(wraps.multiline).toBe(true)
+    expect(wraps.fits).toBe(true)
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
     expect(overflow).toBe(false)
     await expect(wiring).toBeVisible()
