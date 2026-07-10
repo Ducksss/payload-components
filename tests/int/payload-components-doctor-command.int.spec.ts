@@ -1,30 +1,28 @@
-import { execFile } from 'node:child_process'
 import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
-import { promisify } from 'node:util'
 
 import { afterEach, describe, expect, it } from 'vitest'
 
 import { createInstallFixture } from './payload-components-fixture'
 
 import type { ComponentManifest, InstallState } from '../../tools/payload-components/types'
+import { runCommand } from '../../tools/payload-components/utils'
 
-const execFileAsync = promisify(execFile)
 const repoRoot = process.cwd()
 const payloadComponentBin = path.join(repoRoot, 'bin', 'payload-components.mjs')
+const integrationCommandTimeoutMs = 30_000
 
 const runDoctorCommand = async (fixtureDir: string) => {
   try {
-    const result = await execFileAsync(
-      process.execPath,
-      [payloadComponentBin, 'doctor', '--cwd', fixtureDir],
-      {
-        cwd: repoRoot,
-        env: process.env,
-        maxBuffer: 10_000_000,
-      },
-    )
+    const result = await runCommand({
+      args: [payloadComponentBin, 'doctor', '--cwd', fixtureDir],
+      captureOutput: true,
+      command: process.execPath,
+      cwd: repoRoot,
+      env: process.env,
+      timeoutMs: integrationCommandTimeoutMs,
+    })
 
     return {
       code: 0,

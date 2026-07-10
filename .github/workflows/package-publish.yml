@@ -4,7 +4,6 @@ on:
   release:
     types:
       - published
-  workflow_dispatch:
 
 env:
   NEXT_TELEMETRY_DISABLED: '1'
@@ -16,12 +15,20 @@ permissions:
 
 jobs:
   publish:
+    environment: npm-production
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       # Action versions are kept in lockstep across all workflows (registry,
       # publish, visual-baselines) so the ref-exact Actions allowlist only has to
       # admit one major per action. Bump them together.
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Fetch protected main branch
+        run: git fetch --no-tags origin main:refs/remotes/origin/main
 
       - uses: pnpm/action-setup@v6
         with:
@@ -35,7 +42,18 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm test:pack
+      - name: Verify release tag and ancestry
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: pnpm exec tsx tools/payload-components/publish-guard.ts --tag "$RELEASE_TAG"
+
+      - run: pnpm exec playwright install --with-deps chromium
+
+      - name: Full release gate
+        run: pnpm test:release
+
+      - name: Packed artifact gate
+        run: pnpm test:pack
 
       - id: package
         name: Resolve package metadata

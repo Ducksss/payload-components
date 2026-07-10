@@ -1,7 +1,5 @@
 import { readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { execFile } from 'node:child_process'
-import { promisify } from 'node:util'
 
 import { afterEach, describe, expect, it } from 'vitest'
 
@@ -11,15 +9,16 @@ import {
   applyPayloadFragments,
   verifyInstalledPayloadFragments,
 } from '../../tools/payload-components/project'
+import { runCommand } from '../../tools/payload-components/utils'
 
 import { expectInstalledComponents, readInstallState } from './payload-components-assertions'
 import { createInstallFixture, createInstallFixtureForComponents } from './payload-components-fixture'
 
-const execFileAsync = promisify(execFile)
 const repoRoot = process.cwd()
 const payloadComponentBin = path.join(repoRoot, 'bin', 'payload-components.mjs')
 const manifestsDir = path.join(repoRoot, 'payload-components', 'manifests')
 const registryPath = path.join(repoRoot, 'payload-components', 'registry.json')
+const integrationCommandTimeoutMs = 60_000
 
 type RegistryDefinition = {
   items: Array<{
@@ -54,10 +53,13 @@ const manifestNames = async () =>
     .sort()
 
 const runAddCommand = async (fixtureDir: string, componentName: string) =>
-  execFileAsync(process.execPath, [payloadComponentBin, 'add', componentName, '--cwd', fixtureDir], {
+  runCommand({
+    args: [payloadComponentBin, 'add', componentName, '--cwd', fixtureDir],
+    captureOutput: true,
+    command: process.execPath,
     cwd: repoRoot,
     env: process.env,
-    maxBuffer: 10_000_000,
+    timeoutMs: integrationCommandTimeoutMs,
   })
 
 describe('payload-components manifests', () => {
@@ -107,8 +109,35 @@ describe('payload-components add', () => {
     await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
   })
 
+  it('uses preseeded source and declared local dependencies in the default integration fixture', async () => {
+    const componentNames = ['logo-cloud-marquee', 'faq-accordion', 'call-to-action-signup']
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents(componentNames, {
+      preseedSource: true,
+    })
+    tempDirs.push(fixtureDir)
+
+    for (const manifest of manifests) {
+      for (const file of manifest.files) {
+        await expect(readFile(path.join(fixtureDir, file), 'utf8')).resolves.toBeTruthy()
+      }
+    }
+
+    const fixturePackage = await readJson<{
+      dependencies?: Record<string, string>
+    }>(path.join(fixtureDir, 'package.json'))
+    expect(fixturePackage.dependencies?.motion).toBe('^12.0.0')
+    await expect(
+      readFile(path.join(fixtureDir, 'src', 'components', 'ui', 'accordion.tsx'), 'utf8'),
+    ).resolves.toBeTruthy()
+    await expect(
+      readFile(path.join(fixtureDir, 'src', 'components', 'ui', 'button.tsx'), 'utf8'),
+    ).resolves.toBeTruthy()
+  })
+
   it.each(representativeInstallComponents)('installs %s into a supported repo and records state', async (componentName) => {
-    const { fixtureDir, manifest } = await createInstallFixture(componentName)
+    const { fixtureDir, manifest } = await createInstallFixture(componentName, {
+      preseedSource: true,
+    })
     tempDirs.push(fixtureDir)
 
     await runAddCommand(fixtureDir, manifest.name)
@@ -121,7 +150,9 @@ describe('payload-components add', () => {
 
   it('installs multiple components without duplicate registrations', async () => {
     const componentNames = ['hero-basic', 'feature-grid-basic', 'logo-cloud-marquee']
-    const { fixtureDir, manifests } = await createInstallFixtureForComponents(componentNames)
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents(componentNames, {
+      preseedSource: true,
+    })
     tempDirs.push(fixtureDir)
 
     for (const componentName of componentNames) {
@@ -133,7 +164,9 @@ describe('payload-components add', () => {
 
   it.each(idempotencyComponents)('treats a second %s install as idempotent', async (componentName) => {
     const manifest = await loadManifest(componentName)
-    const { fixtureDir } = await createInstallFixture(manifest.name)
+    const { fixtureDir } = await createInstallFixture(manifest.name, {
+      preseedSource: true,
+    })
     tempDirs.push(fixtureDir)
 
     await runAddCommand(fixtureDir, manifest.name)
