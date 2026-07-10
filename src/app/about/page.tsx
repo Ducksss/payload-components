@@ -17,6 +17,7 @@ import {
   receipts,
   upcomingPostCount,
   wiringLedger,
+  pipelineStages,
 } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
@@ -60,29 +61,6 @@ const pasteChecklist = [
 /* The install pipeline, in the order `payload-components add` runs it —
    mirrors terminalDemoLines in lib/site; the section closes by noting all
    five land as one reviewable diff. */
-const pipelineStages = [
-  {
-    detail: 'The block config, component, and shared fields land in src/blocks/.',
-    title: 'Copy the source',
-  },
-  {
-    detail: 'Added to your Pages collection in src/collections/Pages/index.ts.',
-    title: 'Register the block',
-  },
-  {
-    detail: 'Wired into src/blocks/RenderBlocks.tsx so the page renders it.',
-    title: 'Map the renderer',
-  },
-  {
-    detail: 'payload generate:types updates src/payload-types.ts.',
-    title: 'Regenerate types',
-  },
-  {
-    detail: 'payload generate:importmap updates the admin import map.',
-    title: 'Regenerate the import map',
-  },
-] as const
-
 export default function AboutPage() {
   return (
     <>

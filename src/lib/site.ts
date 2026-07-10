@@ -11,6 +11,15 @@ export const docsImageRoute = '/og/docs'
 export const docsContentRoute = '/llms.mdx/docs'
 export const blogRoute = '/blog'
 export const primaryInstallCommand = 'npx payload-components add hero-basic'
+export const cliVersion = packageJson.version
+
+export const pipelineStages = [
+  { detail: 'The block config, component, and shared fields land in src/blocks/.', title: 'Copy the source' },
+  { detail: 'Added to your Pages collection in src/collections/Pages/index.ts.', title: 'Register the block' },
+  { detail: 'Wired into src/blocks/RenderBlocks.tsx so the page renders it.', title: 'Map the renderer' },
+  { detail: 'payload generate:types updates src/payload-types.ts.', title: 'Regenerate types' },
+  { detail: 'payload generate:importmap updates the admin import map.', title: 'Regenerate the import map' },
+] as const
 
 export const siteDescription =
   'Payload Components is an MIT registry and CLI that installs typed Payload CMS blocks into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
@@ -51,7 +60,7 @@ export const heroTertiaryLinks = [
 export const terminalDemoLines = [
   { kind: 'command', text: 'npx payload-components add hero-basic' },
   { kind: 'info', text: 'payload-components: installing "hero-basic" into ./acme-site' },
-  { kind: 'step', text: 'resolved hero-basic@0.1.0 · payload-website-starter' },
+  { kind: 'step', text: `resolved hero-basic@${cliVersion} · payload-website-starter` },
   { kind: 'step', text: 'copied 3 block source files into src/blocks/' },
   { kind: 'step', text: 'registered block in src/collections/Pages/index.ts' },
   { kind: 'step', text: 'wired render mapping in src/blocks/RenderBlocks.tsx' },
@@ -1332,3 +1341,4 @@ export const footerColumns = [
     title: 'Project',
   },
 ] as const
+import packageJson from '../../package.json'
