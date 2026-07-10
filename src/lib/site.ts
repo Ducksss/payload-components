@@ -23,7 +23,7 @@ export const homeMetadataDescription =
 /* Hero                                                                */
 /* ------------------------------------------------------------------ */
 
-export const heroEyebrow = 'Open-source Payload block registry'
+export const heroEyebrow = 'Open-source registry + CLI for Payload CMS'
 
 /* The H1 renders primary + accent as one accessible name; the e2e H1
    assertion consumes the concatenated heroHeadline. The OG card renders the
@@ -33,15 +33,15 @@ export const heroHeadlinePrimary = 'Install Payload blocks'
 export const heroHeadlineAccent = 'wired, not pasted.'
 export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
 
+/* Names the three surfaces the install stage below the headline acts out:
+   admin, frontend, repo. */
 export const heroSubheadline =
-  'One command installs the block, wires it into Payload, and lands a reviewable git diff.'
+  'One command wires the block into your admin, your frontend, and one reviewable git diff.'
 
 export const heroPrimaryCta = { href: '/docs', label: 'Get started' } as const
 
-export const heroTertiaryLinks = [
-  { href: '/components', label: 'Browse the components' },
-  { href: '#wiring', label: 'See what add actually wires' },
-] as const
+/* heroTertiaryLinks and heroReceiptsLine derive copy from the catalog data,
+   so they live with the derived catalog counts below componentEntries. */
 
 /**
  * Stylized replay of a real `payload-components add` run. Stage wording tracks
@@ -63,14 +63,35 @@ export const terminalDemoLines = [
 
 export type TerminalLine = (typeof terminalDemoLines)[number]
 
-/* Product-proof frame: files the install lands or regenerates. */
-export const frameInstalledFiles = [
-  'src/blocks/shared/heroFields.ts',
-  'src/blocks/HeroBasic/config.ts',
-  'src/blocks/HeroBasic/Component.tsx',
-  'src/payload-types.ts — regenerated',
-  'admin importMap.js — regenerated',
-] as const
+/* Hero install stage — the three surfaces one `add` run lands on. Steps and
+   captions are visible text; the panel bodies are aria-hidden mockups. The
+   command-rail ticker replays terminalDemoLines entries by index so the
+   hero, the docs, and the reduced-motion e2e transcript assertion never
+   drift apart. */
+export const heroStage = {
+  panels: {
+    admin: {
+      caption: 'Block registered',
+      footer: 'src/collections/Pages/index.ts — patched',
+      step: '01',
+      surface: 'Admin',
+    },
+    diff: {
+      caption: 'One reviewable diff',
+      footer: '.payload-components/state.json — recorded',
+      step: '03',
+      surface: 'Repo',
+    },
+    page: {
+      caption: 'Rendered live',
+      footer: 'src/blocks/RenderBlocks.tsx — mapped',
+      step: '02',
+      surface: 'Frontend',
+    },
+  },
+  /* Rail ticker: installing → copied → registered → generate:types. */
+  tickerLineIndices: [1, 3, 4, 6],
+} as const
 
 /* ------------------------------------------------------------------ */
 /* Landing sections                                                    */
@@ -1072,6 +1093,20 @@ export const installablePageCount = componentEntries.filter(
   (e) => e.family === 'pages',
 ).length
 export const upcomingPostCount = upcomingComponents.length
+export const pageFamilyCount = Object.values(componentCategories).filter(
+  (category) => category.family === 'pages',
+).length
+
+/* Hero copy that embeds catalog counts (defined here so the numbers can
+   never drift from the entries above). The stat line owns the counts; the
+   browse label stays count-free so it can't collide with the catalog
+   section's strict-mode e2e locator (/Browse all \d+ components/). */
+export const heroTertiaryLinks = [
+  { href: '/components', label: 'Browse the catalog' },
+  { href: '#wiring', label: 'See the wiring receipts' },
+] as const
+
+export const heroReceiptsLine = `${installablePageCount} blocks · ${pageFamilyCount} families · MIT licensed`
 
 export const componentsIntro =
   `No screenshots — the specimen below is the real component, rendered from source. ${installablePageCount} page blocks install today.`

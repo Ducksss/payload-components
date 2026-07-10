@@ -5,8 +5,8 @@ import { cn } from '@/utilities/ui'
 
 /* One client site, framed as a browser window: the polished result up top,
  * the manual setup tax it paid by hand below. Shares ComponentCard's shell and the
- * ComponentPreviewThumb framed-media idiom; the chrome borrows HeroProductFrame's
- * traffic lights. Pure presentation — no client hooks. */
+ * ComponentPreviewThumb framed-media idiom; the chrome borrows the hero
+ * stage panels' traffic lights. Pure presentation — no client hooks. */
 export function ProjectShowcaseCard({
   className,
   project,

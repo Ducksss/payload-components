@@ -349,16 +349,6 @@
   }
 }
 
-@keyframes terminal-type {
-  from {
-    width: 0;
-  }
-
-  to {
-    width: var(--line-width);
-  }
-}
-
 @keyframes terminal-reveal {
   from {
     opacity: 0;
@@ -407,6 +397,41 @@
   to {
     opacity: 0;
     visibility: hidden;
+  }
+}
+
+/* Command-rail status ticker: one line swaps in, holds, and yields to the
+   next. Intermediate lines END at opacity 0 on purpose — the reduced-motion
+   guard zeroes durations, so only the resting success line (rail-tick-final,
+   which ends visible) survives in the static frame. */
+@keyframes rail-tick {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  14%,
+  78% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* Admin panel: the freshly-registered block row pops into the layout list. */
+@keyframes admin-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -861,27 +886,8 @@
       0 14px 36px -12px oklch(58% 0.14 165.6deg / 0.6);
   }
 
-  /* Product-proof window: soft ground shadow. The perpetual float loop was
-     removed — it kept the entire (large) frame subtree on an animating
-     compositor layer for the life of the page. */
-  .product-frame {
-    position: relative;
-  }
-
-  .product-frame::after {
-    content: '';
-    position: absolute;
-    inset: auto 10% -2.5rem;
-    height: 4rem;
-    border-radius: 9999px;
-    background: radial-gradient(circle, oklch(14% 0.005 285.8deg / 18%) 0%, transparent 70%);
-    filter: blur(30px);
-    opacity: 0.8;
-    z-index: -1;
-  }
-
-  /* Frame terminal: per-line typing/reveal driven by CSS vars set    */
-  /* inline (--line-width, --line-duration, --line-delay).            */
+  /* Frame terminal: per-line reveal driven by CSS vars set inline   */
+  /* (--line-width, --line-duration, --line-delay).                   */
   .terminal-row {
     display: block;
     min-height: 1.75rem;
@@ -894,11 +900,6 @@
     overflow: hidden;
     white-space: nowrap;
     vertical-align: bottom;
-  }
-
-  .terminal-typed {
-    width: 0;
-    animation: terminal-type var(--line-duration) steps(40, end) var(--line-delay) both;
   }
 
   .terminal-reveal {
@@ -945,6 +946,31 @@
   /* The "before" skeleton yielding to the materialized twin. */
   .skeleton-fade {
     animation: skeleton-fade 300ms ease-out var(--spawn-delay, 0ms) both;
+  }
+
+  /* Command-rail ticker lines (--tick-delay inline). Intermediates end
+     hidden; the final line rests visible via terminal-reveal. */
+  .rail-tick {
+    opacity: 0;
+    animation: rail-tick 520ms ease-out var(--tick-delay, 0ms) both;
+  }
+
+  .rail-tick-final {
+    opacity: 0;
+    animation: terminal-reveal 220ms ease-out var(--tick-delay, 0ms) both;
+  }
+
+  /* The registered block row popping into the admin panel's layout list. */
+  .admin-pop {
+    opacity: 0;
+    animation: admin-pop 420ms cubic-bezier(0.18, 0.82, 0.2, 1) var(--spawn-delay, 0ms) both;
+  }
+
+  /* Wire endpoint dots on the hero fan-out (SVG circles, so the pop is a
+     plain fade — scale would need transform-box plumbing for no payoff). */
+  .hero-port {
+    opacity: 0;
+    animation: terminal-reveal 240ms ease-out var(--spawn-delay, 0ms) both;
   }
 
   /* Scroll-linked section reveal. Progressive: browsers without
