@@ -136,7 +136,7 @@ export function ComponentPreviewFrame({ slug, title }: { slug: string; title: st
             ref={frameRef}
             src={src}
             title={`${title} preview`}
-            loading="lazy"
+            loading="eager"
             onLoad={handleLoad}
             className="block w-full bg-background"
             style={{ height }}
