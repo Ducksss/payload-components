@@ -26,7 +26,7 @@ const PRESETS: { icon: typeof Monitor; label: string; value: Preset; width: numb
 
 export function ComponentPreviewFrame({ slug, title }: { slug: string; title: string }) {
   const [preset, setPreset] = useState<Preset>('desktop')
-  const [height, setHeight] = useState(420)
+  const [height, setHeight] = useState(160)
   const [width, setWidth] = useState<number | null>(null)
 
   const frameRef = useRef<HTMLIFrameElement>(null)
@@ -40,8 +40,9 @@ export function ComponentPreviewFrame({ slug, title }: { slug: string; title: st
   const syncHeight = useCallback(() => {
     const doc = frameRef.current?.contentDocument
     if (!doc) return
-    const next = doc.documentElement.scrollHeight
-    if (next > 0) setHeight(next)
+    const main = doc.querySelector('main')
+    const next = main?.getBoundingClientRect().height ?? doc.documentElement.scrollHeight
+    setHeight(Math.max(120, Math.ceil(next)))
   }, [])
 
   /* Track the rendered iframe width for the toolbar label (desktop has no fixed
@@ -62,9 +63,9 @@ export function ComponentPreviewFrame({ slug, title }: { slug: string; title: st
     const doc = frameRef.current?.contentDocument
     if (!doc || typeof ResizeObserver === 'undefined') return
     const observer = new ResizeObserver(syncHeight)
-    observer.observe(doc.documentElement)
+    observer.observe(doc.querySelector('main') ?? doc.documentElement)
     contentObserverRef.current = observer
-  }, [syncHeight])
+  }, [syncHeight, preset])
 
   useEffect(() => () => contentObserverRef.current?.disconnect(), [])
 

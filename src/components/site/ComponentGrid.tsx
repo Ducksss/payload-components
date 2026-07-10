@@ -171,7 +171,7 @@ export function UpcomingComponentCard({
               rel="noreferrer"
               className="shrink-0 text-xs font-medium text-foreground transition-colors hover:text-brand"
             >
-              Request
+              Request {component.title}
             </a>
           ) : null}
         </div>

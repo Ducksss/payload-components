@@ -39,7 +39,7 @@ export async function ComponentWiring({ slug }: { slug: string }) {
             <li key={file} className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
               <code className="min-w-0 break-all font-mono text-[13px] text-foreground/90">{file}</code>
               {file === sharedFile ? (
-                <span className="shrink-0 rounded-full border border-border bg-background px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                <span className="shrink-0 rounded-full border border-border bg-background px-2 py-0.5 font-mono text-[10px] uppercase tracking-micro text-muted-foreground">
                   shared
                 </span>
               ) : null}

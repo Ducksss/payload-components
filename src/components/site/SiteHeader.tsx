@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
 
 import { Github } from 'lucide-react'
 
@@ -21,15 +22,16 @@ export function SiteHeader({
   activePath?: (typeof navLinks)[number]['href']
 }) {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
   const triggerRef = useRef<HTMLButtonElement>(null)
   useEffect(() => {
     if (!open) return
     const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') { setOpen(false); triggerRef.current?.focus() } }
-    const onPointer = (event: PointerEvent) => { if (!(event.target as HTMLElement).closest('[data-mobile-menu]')) setOpen(false) }
+    const onPointer = (event: PointerEvent) => { if (!(event.target instanceof Element) || !event.target.closest('[data-mobile-menu]')) setOpen(false) }
     document.addEventListener('keydown', onKey); document.addEventListener('pointerdown', onPointer)
     return () => { document.removeEventListener('keydown', onKey); document.removeEventListener('pointerdown', onPointer) }
   }, [open])
-  useEffect(() => { setOpen(false) }, [activePath])
+  useEffect(() => { setOpen(false) }, [pathname])
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95">
       <div className="flex h-14 items-center justify-between gap-4 pl-4 pr-5 md:pr-8">
@@ -75,7 +77,7 @@ export function SiteHeader({
           </Link>
         </nav>
         <div className="relative sm:hidden" data-mobile-menu>
-          <button ref={triggerRef} type="button" aria-expanded={open} aria-controls="mobile-navigation" aria-label="Open navigation" onClick={() => setOpen((value) => !value)} className="inline-flex size-9 items-center justify-center rounded-md border border-border text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">☰</button>
+          <button ref={triggerRef} type="button" aria-expanded={open} aria-controls="mobile-navigation" aria-label={open ? 'Close navigation' : 'Open navigation'} onClick={() => setOpen((value) => !value)} className="inline-flex size-9 items-center justify-center rounded-md border border-border text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">☰</button>
           {open ? <div id="mobile-navigation" role="menu" className="absolute right-0 top-11 z-50 flex w-48 flex-col gap-1 rounded-lg border border-border bg-background p-2 shadow-lg">
             {[...navLinks, { href: githubRepoUrl, label: 'GitHub' }].map((item) => <Link key={item.label} role="menuitem" href={item.href} target={item.label === 'GitHub' ? '_blank' : undefined} onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-secondary">{item.label}</Link>)}
             <Link role="menuitem" href="/docs" onClick={() => setOpen(false)} className="rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground">Get started</Link>
