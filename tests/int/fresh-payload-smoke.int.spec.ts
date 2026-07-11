@@ -103,6 +103,17 @@ describe('fresh Payload smoke seed generation', () => {
     await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
   })
 
+  it('terminates the one-shot seed process after Payload opens database handles', async () => {
+    const manifest = await loadManifest('hero-basic')
+    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-seed-'))
+    tempDirs.push(tempDir)
+
+    const scriptPath = await writeSeedScript(tempDir, [manifest])
+    const script = await readFile(scriptPath, 'utf8')
+
+    expect(script).toContain("console.log('Seeded /payload-components-smoke')\nprocess.exit(0)")
+  })
+
   it('adds placeholder media seeding when sample content has required upload slots', async () => {
     const manifest = await loadManifest('logo-cloud-grid')
     const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-seed-'))

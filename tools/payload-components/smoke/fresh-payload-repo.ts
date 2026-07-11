@@ -708,7 +708,10 @@ await payload.create({
   overrideAccess: true,
 })
 
+// Payload keeps its database adapter alive after initialization. This script is a
+// one-shot fixture command, so terminate explicitly once every write has completed.
 console.log('Seeded /payload-components-smoke')
+process.exit(0)
 `,
   )
 
