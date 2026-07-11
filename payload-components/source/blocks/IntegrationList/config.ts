@@ -4,6 +4,7 @@ import { integrationFields } from '@/blocks/shared/integrationFields'
 
 export const IntegrationList: Block = {
   slug: 'integrationList',
+  dbName: 'pc_int_lis',
   interfaceName: 'IntegrationListBlock',
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

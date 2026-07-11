@@ -5,6 +5,7 @@ import { iconField } from '@/blocks/shared/faqIcons'
 
 export const FaqGrouped: Block = {
   slug: 'faqGrouped',
+  dbName: 'pc_faq_gro',
   interfaceName: 'FaqGroupedBlock',
   fields: [
     // Shared FAQ core (eyebrow, title, description). This variant buckets

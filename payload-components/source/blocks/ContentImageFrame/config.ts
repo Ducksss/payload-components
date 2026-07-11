@@ -4,6 +4,7 @@ import { contentFields } from '@/blocks/shared/contentFields'
 
 export const ContentImageFrame: Block = {
   slug: 'contentImageFrame',
+  dbName: 'pc_con_ima_fra',
   interfaceName: 'ContentImageFrameBlock',
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

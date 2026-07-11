@@ -5,6 +5,7 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const FeatureGridBasic: Block = {
   slug: 'featureGridBasic',
+  dbName: 'pc_fea_gri_bas',
   interfaceName: 'FeatureGridBasicBlock',
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields

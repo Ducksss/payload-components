@@ -4,6 +4,7 @@ import { integrationFields } from '@/blocks/shared/integrationFields'
 
 export const IntegrationGrid: Block = {
   slug: 'integrationGrid',
+  dbName: 'pc_int_gri',
   interfaceName: 'IntegrationGridBlock',
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

@@ -5,6 +5,7 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const IntegrationCluster: Block = {
   slug: 'integrationCluster',
+  dbName: 'pc_int_clu',
   interfaceName: 'IntegrationClusterBlock',
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

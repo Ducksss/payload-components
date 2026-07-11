@@ -4,6 +4,7 @@ import { planFields, pricingFields } from '@/blocks/shared/pricingFields'
 
 export const PricingSplit: Block = {
   slug: 'pricingSplit',
+  dbName: 'pc_pri_spl',
   interfaceName: 'PricingSplitBlock',
   fields: [
     // Shared pricing heading (eyebrow, title, description). Variant-specific
@@ -12,7 +13,6 @@ export const PricingSplit: Block = {
     {
       name: 'plans',
       type: 'array',
-      dbName: 'pricing_split_plans',
       required: true,
       // Exactly two plans: the entry plan on the left, the featured plan
       // (mark one `featured`) expanded across the right panel.

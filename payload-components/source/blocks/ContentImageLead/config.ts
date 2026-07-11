@@ -5,6 +5,7 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const ContentImageLead: Block = {
   slug: 'contentImageLead',
+  dbName: 'pc_con_ima_lea',
   interfaceName: 'ContentImageLeadBlock',
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

@@ -4,6 +4,7 @@ import { validateEmbedUrl } from '@/blocks/shared/safeUrls'
 
 export const EmbedBasic: Block = {
   slug: 'embedBasic',
+  dbName: 'pc_emb_bas',
   interfaceName: 'EmbedBasicBlock',
   fields: [
     {

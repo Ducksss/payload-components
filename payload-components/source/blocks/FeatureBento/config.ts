@@ -5,6 +5,7 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const FeatureBento: Block = {
   slug: 'featureBento',
+  dbName: 'pc_fea_ben',
   interfaceName: 'FeatureBentoBlock',
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields

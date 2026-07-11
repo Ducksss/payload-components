@@ -4,6 +4,7 @@ import { planFields, pricingFields } from '@/blocks/shared/pricingFields'
 
 export const PricingEnterprise: Block = {
   slug: 'pricingEnterprise',
+  dbName: 'pc_pri_ent',
   interfaceName: 'PricingEnterpriseBlock',
   fields: [
     // Shared pricing heading (eyebrow, title, description). Variant-specific
@@ -12,7 +13,6 @@ export const PricingEnterprise: Block = {
     {
       name: 'plans',
       type: 'array',
-      dbName: 'pricing_enterprise_plans',
       required: true,
       // A single enterprise plan rendered as one wide panel.
       minRows: 1,

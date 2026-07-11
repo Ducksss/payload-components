@@ -4,6 +4,7 @@ import { testimonialFields, testimonialItemFields } from '@/blocks/shared/testim
 
 export const TestimonialsRating: Block = {
   slug: 'testimonialsRating',
+  dbName: 'pc_tes_rat',
   interfaceName: 'TestimonialsRatingBlock',
   fields: [
     // Shared testimonials heading (eyebrow, title, description). Edit the shared

@@ -100,6 +100,34 @@ describe('payload-components manifests', () => {
       }
     }
   })
+
+  it('gives every SQL-backed block a short unique database name', async () => {
+    const names = await manifestNames()
+    const databaseNames = new Set<string>()
+
+    for (const name of names) {
+      const manifest = await loadManifest(name)
+      const configPath = manifest.files.find((file) => file.endsWith('/config.ts'))
+      expect(configPath, `${name} missing block config`).toBeTruthy()
+      if (!configPath) continue
+
+      const config = await readFile(
+        path.join(repoRoot, 'payload-components', 'source', configPath.replace(/^src\//, '')),
+        'utf8',
+      )
+      const databaseName = config.match(
+        /export const \w+: Block = \{\s*\n\s*slug: '[^']+',\s*\n\s*dbName: '([^']+)'/,
+      )?.[1]
+
+      expect(databaseName, `${name} missing top-level dbName`).toBeTruthy()
+      if (!databaseName) continue
+      expect(databaseName.length, `${name} dbName is too long`).toBeLessThanOrEqual(18)
+      expect(databaseNames.has(databaseName), `${name} reuses dbName ${databaseName}`).toBe(false)
+      databaseNames.add(databaseName)
+    }
+
+    expect(databaseNames).toHaveLength(names.length)
+  })
 })
 
 describe('payload-components add', () => {

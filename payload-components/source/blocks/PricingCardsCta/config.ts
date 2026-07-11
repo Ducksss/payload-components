@@ -4,6 +4,7 @@ import { planFields, pricingFields } from '@/blocks/shared/pricingFields'
 
 export const PricingCardsCta: Block = {
   slug: 'pricingCardsCta',
+  dbName: 'pc_pri_car_cta',
   interfaceName: 'PricingCardsCtaBlock',
   fields: [
     // Shared pricing heading (eyebrow, title, description). Variant-specific
@@ -12,7 +13,6 @@ export const PricingCardsCta: Block = {
     {
       name: 'plans',
       type: 'array',
-      dbName: 'pricing_cta_plans',
       required: true,
       minRows: 2,
       maxRows: 4,
