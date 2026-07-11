@@ -809,6 +809,7 @@ const runFreshPayloadRepoSmoke = async ({
   const payloadVersion = await getLocalPayloadVersion()
   const projectName = 'payload-components-smoke-target'
   const targetPath = path.join(tempRoot, projectName)
+  const tarballPath = await packLocalPackage(tempRoot, timeoutMs)
 
   await runCommand({
     args: getCreatePayloadAppArgs({
@@ -821,8 +822,6 @@ const runFreshPayloadRepoSmoke = async ({
     stage: 'create fresh Payload website project',
     timeoutMs,
   })
-
-  const tarballPath = await packLocalPackage(tempRoot, timeoutMs)
 
   await runCommand({
     args: ['add', tarballPath],
