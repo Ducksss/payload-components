@@ -132,6 +132,14 @@ describe('release gate configuration', () => {
     expect(workflow).toMatch(/matrix:\n\s+shard-index: \[0, 1, 2, 3\]/)
     expect(workflow).toContain('--shard-index "${{ matrix.shard-index }}"')
     expect(workflow).toContain('fresh-payload-artifacts-${{ matrix.shard-index }}')
+    expect(workflow).toContain('SMOKE_REGISTRY_URL:')
+    expect(workflow).not.toMatch(/^\s+REGISTRY_URL:/m)
+    expect(getWorkflowJob(workflow, 'release-gate')).toContain(
+      'npm install --global bun@1.3.14',
+    )
+    expect(getWorkflowJob(workflow, 'node-20-compat')).toContain(
+      'npm install --global bun@1.3.14',
+    )
 
     for (const jobName of jobNames) {
       expect(getWorkflowJob(workflow, jobName), `${jobName} must have a timeout`).toMatch(
@@ -263,6 +271,7 @@ describe('package publish guard', () => {
     expect(workflow).toContain('refs/remotes/origin/main')
     expect(workflow).toContain('tools/payload-components/publish-guard.ts')
     expect(workflow).toContain('pnpm install --frozen-lockfile --ignore-scripts')
+    expect(workflow).toContain('npm install --global bun@1.3.14')
 
     const fetchCandidateIndex = workflow.indexOf('Fetch candidate release tag')
     const trustedInstallIndex = workflow.indexOf('Install trusted guard dependencies')

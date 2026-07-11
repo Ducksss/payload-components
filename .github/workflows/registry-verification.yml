@@ -171,7 +171,7 @@ jobs:
       PAYLOAD_SECRET: ci-payload-secret
       POSTGRES_URL: postgresql://postgres:postgres@127.0.0.1:5432/payload_components
       PREVIEW_SECRET: ci-preview-secret
-      REGISTRY_URL: ${{ github.event.inputs.registry_url || '' }}
+      SMOKE_REGISTRY_URL: ${{ github.event.inputs.registry_url || '' }}
     steps:
       - uses: actions/checkout@v7
 
@@ -192,8 +192,8 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          if [ -n "$REGISTRY_URL" ]; then
-            pnpm test:fresh -- --registry-url "$REGISTRY_URL" --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
+          if [ -n "$SMOKE_REGISTRY_URL" ]; then
+            pnpm test:fresh -- --registry-url "$SMOKE_REGISTRY_URL" --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
           else
             pnpm test:fresh -- --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
           fi
