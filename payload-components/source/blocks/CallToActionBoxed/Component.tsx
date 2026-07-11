@@ -5,6 +5,8 @@ import type { CallToActionBoxedBlock as CallToActionBoxedBlockData } from '@/pay
 import { CMSLink } from '@/components/Link'
 import { cn } from '@/utilities/ui'
 
+// Layout adapted from tailark/blocks (MIT) — re-implemented as a Payload block.
+
 type Props = CallToActionBoxedBlockData & {
   id?: string
   className?: string
