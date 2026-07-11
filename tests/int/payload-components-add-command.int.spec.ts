@@ -377,6 +377,46 @@ describe('payload-components add command orchestration', () => {
     expect(mocks.recordInstalledState).toHaveBeenCalledOnce()
   })
 
+  it('repairs only missing registry dependencies and re-verifies before recording success', async () => {
+    const { addCommand, mocks } = await setup()
+
+    mocks.checkDependencyRequirements
+      .mockResolvedValueOnce({ installed: { payload: '3.82.1' }, missing: [] })
+      .mockResolvedValueOnce({ installed: {}, missing: [] })
+    mocks.verifyInstalledManifestFiles
+      .mockResolvedValueOnce({
+        isValid: false,
+        missingFiles: [],
+        missingRegistryDependencies: [
+          {
+            name: 'accordion',
+            targetFile: 'src/components/ui/accordion.tsx',
+          },
+        ],
+      })
+      .mockResolvedValueOnce({
+        isValid: true,
+        missingFiles: [],
+        missingRegistryDependencies: [],
+      })
+    mocks.verifyInstalledPayloadFragments.mockResolvedValue({
+      isValid: true,
+      missingFragments: [],
+    })
+
+    await addCommand({ cwd: '/tmp/fixture', componentName: 'faq-accordion' })
+
+    expect(mocks.buildRegistry).not.toHaveBeenCalled()
+    expect(mocks.installRegistryItem).not.toHaveBeenCalled()
+    expect(mocks.installRegistryDependencies).toHaveBeenCalledWith({
+      dependencies: ['accordion'],
+      packageManager: 'pnpm',
+      targetDir: '/tmp/fixture',
+    })
+    expect(mocks.verifyInstalledManifestFiles).toHaveBeenCalledTimes(2)
+    expect(mocks.recordInstalledState).toHaveBeenCalledOnce()
+  })
+
   it('retries cleanly from a partial state when files and fragments are already present', async () => {
     const { addCommand, mocks } = await setup({
       loadStateValue: {
