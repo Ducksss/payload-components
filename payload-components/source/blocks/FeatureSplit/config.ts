@@ -5,6 +5,7 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const FeatureSplit: Block = {
   slug: 'featureSplit',
+  dbName: 'pc_fea_spl',
   interfaceName: 'FeatureSplitBlock',
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields

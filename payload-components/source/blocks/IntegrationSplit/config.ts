@@ -5,6 +5,7 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const IntegrationSplit: Block = {
   slug: 'integrationSplit',
+  dbName: 'pc_int_spl',
   interfaceName: 'IntegrationSplitBlock',
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

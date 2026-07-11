@@ -4,6 +4,7 @@ import { integrationFeaturedMark, integrationFields } from '@/blocks/shared/inte
 
 export const IntegrationOrbit: Block = {
   slug: 'integrationOrbit',
+  dbName: 'pc_int_orb',
   interfaceName: 'IntegrationOrbitBlock',
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

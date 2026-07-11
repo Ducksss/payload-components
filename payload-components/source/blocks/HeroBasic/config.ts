@@ -4,6 +4,7 @@ import { heroFields } from '@/blocks/shared/heroFields'
 
 export const HeroBasic: Block = {
   slug: 'heroBasic',
+  dbName: 'pc_her_bas',
   interfaceName: 'HeroBasicBlock',
   fields: [
     // Shared hero core (eyebrow, title, description, CTA links). Variant-specific

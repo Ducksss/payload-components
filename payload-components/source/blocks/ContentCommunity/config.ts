@@ -4,6 +4,7 @@ import { contentFields } from '@/blocks/shared/contentFields'
 
 export const ContentCommunity: Block = {
   slug: 'contentCommunity',
+  dbName: 'pc_con_com',
   interfaceName: 'ContentCommunityBlock',
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

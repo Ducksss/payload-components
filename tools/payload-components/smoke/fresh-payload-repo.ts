@@ -8,50 +8,21 @@ import { fileURLToPath } from 'node:url'
 import { chromium } from '@playwright/test'
 
 import { loadManifest } from '../manifest'
-import { shadcnCliPackage } from '../utils'
+import {
+  runCommand as runBoundedCommand,
+  shadcnCliPackage,
+  terminateProcessTree,
+} from '../utils'
 import type { ComponentManifest } from '../types'
 
-export const DEFAULT_SMOKE_COMPONENTS = [
-  'hero-basic',
-  'feature-grid-basic',
-  'feature-split',
-  'feature-bento',
-  'feature-steps',
-  'embed-basic',
-  'content-columns',
-  'content-feature-media',
-  'content-stats',
-  'content-list',
-  'logo-cloud-grid',
-  'logo-cloud-hover',
-  'logo-cloud-marquee',
-  'logo-cloud-inline',
-  'logo-cloud-inline-wrap',
-  'integration-grid',
-  'integration-cluster',
-  'integration-split',
-  'integration-connect',
-  'integration-orbit',
-  'integration-list',
-  'integration-marquee',
-  'integration-testimonial',
-  'call-to-action-centered',
-  'call-to-action-boxed',
-  'call-to-action-signup',
-  'comparator-table',
-  'comparator-grid',
-  'comparator-stack',
-  'pricing-cards',
-  'pricing-enterprise',
-] as const
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
-
-type MutableSmokeComponents = Array<(typeof DEFAULT_SMOKE_COMPONENTS)[number] | string>
+export const SMOKE_SHARD_COUNT = 4
 
 export type SmokeOptions = {
   keepTemp: boolean
-  components: MutableSmokeComponents
+  components?: string[]
   registryUrl?: string
+  shardIndex?: number
   timeoutMs: number
 }
 
@@ -92,15 +63,44 @@ type StaticRegistryServer = {
   urlTemplate: string
 }
 
-type SmokeSampleBlock = ComponentManifest['sampleContent'] & {
-  avatars?: Array<Record<string, unknown>>
-  integrations?: Array<Record<string, unknown>>
-  logos?: Array<Record<string, unknown>>
-}
-
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(dirname, '..', '..', '..')
 const rootPackagePath = path.join(repoRoot, 'package.json')
+const manifestDir = path.join(repoRoot, 'payload-components', 'manifests')
+const registryDefinitionPath = path.join(repoRoot, 'payload-components', 'registry.json')
+
+export const getInstallableComponentSlugs = async () => {
+  const registry = JSON.parse(await readFile(registryDefinitionPath, 'utf8')) as {
+    items: Array<{ name: string }>
+  }
+  const registrySlugs = registry.items.map((item) => item.name).sort()
+  const manifestSlugs = (await readdir(manifestDir))
+    .filter((entry) => entry.endsWith('.json'))
+    .map((entry) => entry.replace(/\.json$/, ''))
+    .sort()
+
+  if (new Set(registrySlugs).size !== registrySlugs.length) {
+    throw new Error('payload-components/registry.json contains duplicate item names.')
+  }
+
+  if (registrySlugs.length !== manifestSlugs.length || registrySlugs.some((slug, index) => slug !== manifestSlugs[index])) {
+    throw new Error(
+      'Fresh smoke requires payload-components/registry.json and payload-components/manifests to contain the same installable slugs.',
+    )
+  }
+
+  return registrySlugs
+}
+
+export const getSmokeShard = (slugs: string[], shardIndex: number) => {
+  if (!Number.isInteger(shardIndex) || shardIndex < 0 || shardIndex >= SMOKE_SHARD_COUNT) {
+    throw new Error(
+      `Smoke shard index must be an integer from 0 to ${SMOKE_SHARD_COUNT - 1}. Received "${shardIndex}".`,
+    )
+  }
+
+  return [...slugs].sort().filter((_, index) => index % SMOKE_SHARD_COUNT === shardIndex)
+}
 
 const parseNextValue = (argv: string[], index: number, flag: string) => {
   const value = argv[index + 1]
@@ -115,13 +115,17 @@ const parseNextValue = (argv: string[], index: number, flag: string) => {
 export const parseSmokeArgs = (argv: string[]): SmokeOptions => {
   const options: SmokeOptions = {
     keepTemp: false,
-    components: [...DEFAULT_SMOKE_COMPONENTS],
     registryUrl: undefined,
+    shardIndex: undefined,
     timeoutMs: DEFAULT_TIMEOUT_MS,
   }
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index]
+
+    if (arg === '--') {
+      continue
+    }
 
     if (arg === '--components') {
       const rawComponents = parseNextValue(argv, index, arg)
@@ -129,6 +133,21 @@ export const parseSmokeArgs = (argv: string[]): SmokeOptions => {
         .split(',')
         .map((component) => component.trim())
         .filter(Boolean)
+      index += 1
+      continue
+    }
+
+    if (arg === '--shard-index') {
+      const rawShardIndex = parseNextValue(argv, index, arg)
+      const shardIndex = Number(rawShardIndex)
+
+      if (!Number.isInteger(shardIndex) || shardIndex < 0 || shardIndex >= SMOKE_SHARD_COUNT) {
+        throw new Error(
+          `--shard-index must be an integer from 0 to ${SMOKE_SHARD_COUNT - 1}. Received "${rawShardIndex}".`,
+        )
+      }
+
+      options.shardIndex = shardIndex
       index += 1
       continue
     }
@@ -162,11 +181,25 @@ export const parseSmokeArgs = (argv: string[]): SmokeOptions => {
     throw new Error(`Unknown option "${arg}".`)
   }
 
-  if (options.components.length === 0) {
+  if (options.components?.length === 0) {
     throw new Error('--components must include at least one component name.')
   }
 
+  if (options.components && typeof options.shardIndex === 'number') {
+    throw new Error('--components and --shard-index cannot be used together.')
+  }
+
   return options
+}
+
+export const resolveSmokeComponents = async (options: SmokeOptions) => {
+  if (options.components) {
+    return [...new Set(options.components)].sort()
+  }
+
+  const slugs = await getInstallableComponentSlugs()
+
+  return typeof options.shardIndex === 'number' ? getSmokeShard(slugs, options.shardIndex) : slugs
 }
 
 export const getCreatePayloadAppArgs = ({
@@ -262,77 +295,25 @@ const exists = async (filePath: string) => {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const runCommand = async ({ args, command, cwd, env, stage, stdin, timeoutMs }: CommandInput) =>
-  new Promise<void>((resolve, reject) => {
-    console.log(`\n[payload-components smoke] ${stage}`)
-    console.log(`[payload-components smoke] $ ${command} ${args.join(' ')}`)
-    console.log(`[payload-components smoke] cwd=${cwd}`)
+const runCommand = async ({ args, command, cwd, env, stage, stdin, timeoutMs }: CommandInput) => {
+  console.log(`\n[payload-components smoke] ${stage}`)
+  console.log(`[payload-components smoke] $ ${command} ${args.join(' ')}`)
+  console.log(`[payload-components smoke] cwd=${cwd}`)
 
-    const child = spawn(command, args, {
-      cwd,
-      env: {
-        ...process.env,
-        ...env,
-      },
-      stdio: stdin ? ['pipe', 'inherit', 'inherit'] : 'inherit',
-    })
-    let settled = false
-
-    const finish = (error?: Error) => {
-      if (settled) {
-        return
-      }
-
-      settled = true
-      clearTimeout(timer)
-
-      if (error) {
-        reject(error)
-      } else {
-        resolve()
-      }
-    }
-
-    const timer = setTimeout(() => {
-      child.kill('SIGTERM')
-      finish(new Error(`Stage "${stage}" timed out after ${timeoutMs}ms.`))
-    }, timeoutMs)
-
-    if (stdin && child.stdin) {
-      child.stdin.write(stdin)
-      child.stdin.end()
-    }
-
-    child.on('error', (error) => finish(error))
-    child.on('close', (code, signal) => {
-      if (code === 0) {
-        finish()
-        return
-      }
-
-      finish(
-        new Error(
-          `Stage "${stage}" failed with ${signal ? `signal ${signal}` : `exit code ${code}`}.`,
-        ),
-      )
-    })
+  await runBoundedCommand({
+    args,
+    command,
+    cwd,
+    env: {
+      ...process.env,
+      ...env,
+    },
+    stdin,
+    timeoutMs,
   })
-
-const killProcess = async (child: ChildProcess) => {
-  if (child.exitCode !== null || child.signalCode !== null) {
-    return
-  }
-
-  child.kill('SIGTERM')
-  await Promise.race([
-    new Promise<void>((resolve) => child.once('close', () => resolve())),
-    sleep(5000).then(() => {
-      if (child.exitCode === null && child.signalCode === null) {
-        child.kill('SIGKILL')
-      }
-    }),
-  ])
 }
+
+const killProcess = (child: ChildProcess) => terminateProcessTree(child)
 
 const startProcess = ({
   args,
@@ -347,6 +328,7 @@ const startProcess = ({
 
   return spawn(command, args, {
     cwd,
+    detached: process.platform !== 'win32',
     env: {
       ...process.env,
       ...env,
@@ -379,6 +361,14 @@ const getFreePort = async () =>
       })
     })
   })
+
+export const getFreshServerArgs = (port: number) => [
+  'start',
+  '--hostname',
+  '127.0.0.1',
+  '--port',
+  String(port),
+]
 
 const closeServer = (server: Server) =>
   new Promise<void>((resolve, reject) => {
@@ -565,22 +555,47 @@ const runDirectShadcnUrlSmoke = async ({
   return targetPath
 }
 
+const uploadFieldByArrayName: Record<string, string> = {
+  avatars: 'avatar',
+  integrations: 'logo',
+  logos: 'logo',
+  members: 'avatar',
+}
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+
 const isMissingUploadReference = (item: Record<string, unknown>, fieldName: string) =>
   typeof item[fieldName] === 'undefined' || item[fieldName] === null || item[fieldName] === ''
 
-export const sampleContentNeedsSmokeMedia = (sampleContent: ComponentManifest['sampleContent']) => {
-  const block = sampleContent as SmokeSampleBlock
+const valueNeedsSmokeMedia = (value: unknown, arrayName?: string): boolean => {
+  if (Array.isArray(value)) {
+    const uploadField = arrayName ? uploadFieldByArrayName[arrayName] : undefined
 
-  return (
-    block.logos?.some((item) => isMissingUploadReference(item, 'logo')) ||
-    block.integrations?.some((item) => isMissingUploadReference(item, 'logo')) ||
-    block.avatars?.some((item) => isMissingUploadReference(item, 'avatar')) ||
-    false
+    return value.some(
+      (item) =>
+        (uploadField && isRecord(item) && isMissingUploadReference(item, uploadField)) ||
+        valueNeedsSmokeMedia(item),
+    )
+  }
+
+  if (!isRecord(value)) {
+    return false
+  }
+
+  return Object.entries(value).some(([key, nestedValue]) =>
+    valueNeedsSmokeMedia(nestedValue, key),
   )
 }
 
+export const sampleContentNeedsSmokeMedia = (sampleContent: ComponentManifest['sampleContent']) =>
+  valueNeedsSmokeMedia(sampleContent)
+
 export const writeSeedScript = async (targetPath: string, manifests: ComponentManifest[]) => {
-  const layout = manifests.map((manifest) => manifest.sampleContent)
+  const layout = manifests.map((manifest) => ({
+    ...manifest.sampleContent,
+    id: `smoke-${manifest.name}`,
+  }))
   const needsSmokeMedia = manifests.some((manifest) =>
     sampleContentNeedsSmokeMedia(manifest.sampleContent),
   )
@@ -600,27 +615,45 @@ import { getPayload } from 'payload'
 const { default: config } = await import('../src/payload.config')
 
 type SmokeSampleItem = Record<string, unknown>
-type SmokeSampleBlock = SmokeSampleItem & {
-  avatars?: SmokeSampleItem[]
-  integrations?: SmokeSampleItem[]
-  logos?: SmokeSampleItem[]
-}
 
-const rawLayout = ${JSON.stringify(layout, null, 2)} satisfies SmokeSampleBlock[]
+const rawLayout = ${JSON.stringify(layout, null, 2)} satisfies SmokeSampleItem[]
 const needsSmokeMedia = ${JSON.stringify(needsSmokeMedia)}
 
-const addUploadReference = (items: SmokeSampleItem[] | undefined, fieldName: string, mediaID: unknown) =>
-  items?.map((item) => ({
-    ...item,
-    [fieldName]: item[fieldName] ?? mediaID,
-  }))
+const uploadFieldByArrayName: Record<string, string> = {
+  avatars: 'avatar',
+  integrations: 'logo',
+  logos: 'logo',
+  members: 'avatar',
+}
 
-const addSmokeUploadReferences = (block: SmokeSampleBlock, mediaID: unknown): SmokeSampleBlock => ({
-  ...block,
-  ...(block.avatars ? { avatars: addUploadReference(block.avatars, 'avatar', mediaID) } : {}),
-  ...(block.integrations ? { integrations: addUploadReference(block.integrations, 'logo', mediaID) } : {}),
-  ...(block.logos ? { logos: addUploadReference(block.logos, 'logo', mediaID) } : {}),
-})
+const isSmokeSampleItem = (value: unknown): value is SmokeSampleItem =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+
+const addSmokeUploadReferences = (value: unknown, mediaID: unknown, arrayName?: string): unknown => {
+  if (Array.isArray(value)) {
+    const uploadField = arrayName ? uploadFieldByArrayName[arrayName] : undefined
+
+    return value.map((item) => {
+      const hydratedItem = addSmokeUploadReferences(item, mediaID)
+
+      if (!uploadField || !isSmokeSampleItem(hydratedItem)) return hydratedItem
+
+      return {
+        ...hydratedItem,
+        [uploadField]: hydratedItem[uploadField] ?? mediaID,
+      }
+    })
+  }
+
+  if (!isSmokeSampleItem(value)) return value
+
+  return Object.fromEntries(
+    Object.entries(value).map(([key, nestedValue]) => [
+      key,
+      addSmokeUploadReferences(nestedValue, mediaID, key),
+    ]),
+  )
+}
 
 const createSmokeMedia = async () => {
   const mediaPath = path.join(process.cwd(), '.payload-components', 'smoke-placeholder.svg')
@@ -675,7 +708,10 @@ await payload.create({
   overrideAccess: true,
 })
 
+// Payload keeps its database adapter alive after initialization. This script is a
+// one-shot fixture command, so terminate explicitly once every write has completed.
 console.log('Seeded /payload-components-smoke')
+process.exit(0)
 `,
   )
 
@@ -726,17 +762,8 @@ const assertRouteRendersWithPlaywright = async ({
     })
 
     for (const manifest of manifests) {
-      const sampleLabel = manifest.sampleContent.title ?? manifest.sampleContent.heading
-
-      if (typeof sampleLabel !== 'string') {
-        throw new Error(
-          `Manifest "${manifest.name}" sampleContent must include a visible title or heading for smoke assertions.`,
-        )
-      }
-
       await page
-        .getByText(sampleLabel, { exact: false })
-        .first()
+        .locator(`#block-smoke-${manifest.name}`)
         .waitFor({
           timeout: Math.min(timeoutMs, 60_000),
         })
@@ -770,6 +797,7 @@ const runFreshPayloadRepoSmoke = async ({
   components,
   manifests,
   stageLog,
+  tarballPath,
   tempRoot,
   timeoutMs,
 }: {
@@ -777,6 +805,7 @@ const runFreshPayloadRepoSmoke = async ({
   components: string[]
   manifests: ComponentManifest[]
   stageLog: string[]
+  tarballPath: string
   tempRoot: string
   timeoutMs: number
 }) => {
@@ -797,8 +826,6 @@ const runFreshPayloadRepoSmoke = async ({
     stage: 'create fresh Payload website project',
     timeoutMs,
   })
-
-  const tarballPath = await packLocalPackage(tempRoot, timeoutMs)
 
   await runCommand({
     args: ['add', tarballPath],
@@ -860,12 +887,12 @@ const runFreshPayloadRepoSmoke = async ({
 
   const port = await getFreePort()
   const routeUrl = `http://127.0.0.1:${port}/payload-components-smoke`
-  const devServer = startProcess({
-    args: ['dev', '--hostname', '127.0.0.1', '--port', String(port)],
+  const productionServer = startProcess({
+    args: getFreshServerArgs(port),
     command: 'pnpm',
     cwd: targetPath,
     env: smokeEnvForTarget(`http://127.0.0.1:${port}`),
-    stage: 'start fresh project dev server',
+    stage: 'start fresh project production server',
   })
 
   try {
@@ -876,7 +903,7 @@ const runFreshPayloadRepoSmoke = async ({
       timeoutMs,
     })
   } finally {
-    await killProcess(devServer)
+    await killProcess(productionServer)
   }
 
   return {
@@ -912,7 +939,7 @@ export const runSmoke = async (options: SmokeOptions) => {
   let success = false
 
   try {
-    const components = options.components.map(String)
+    const components = await resolveSmokeComponents(options)
     const manifests = await Promise.all(components.map((component) => loadManifest(component)))
 
     summary.stageLog.push('registry-build-and-check')
@@ -930,6 +957,7 @@ export const runSmoke = async (options: SmokeOptions) => {
       stage: 'check public registry artifacts',
       timeoutMs: options.timeoutMs,
     })
+    const tarballPath = await packLocalPackage(tempRoot, options.timeoutMs)
 
     if (!options.registryUrl) {
       registryServer = await startStaticRegistryServer()
@@ -952,6 +980,7 @@ export const runSmoke = async (options: SmokeOptions) => {
       components,
       manifests,
       stageLog: summary.stageLog,
+      tarballPath,
       tempRoot,
       timeoutMs: options.timeoutMs,
     })

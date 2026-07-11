@@ -5,6 +5,7 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const ContentColumns: Block = {
   slug: 'contentColumns',
+  dbName: 'pc_con_col',
   interfaceName: 'ContentColumnsBlock',
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

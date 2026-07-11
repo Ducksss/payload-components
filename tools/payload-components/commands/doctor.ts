@@ -2,6 +2,7 @@ import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { checkDependencyRequirements } from '../dependencies'
+import { resolveInstallPlan } from '../install-plan'
 import { loadManifest } from '../manifest'
 import {
   assertManifestSupport,
@@ -77,6 +78,7 @@ const checkRecordedComponent = async ({
   entry: InstallStateEntry
 }) => {
   let isHealthy = true
+  const plan = await resolveInstallPlan({ cwd, manifest })
 
   if (entry.status === 'partial') {
     isHealthy = false
@@ -114,7 +116,7 @@ const checkRecordedComponent = async ({
     await checkDependencyRequirements({
       allowMissing: false,
       cwd,
-      dependencies: manifest.peerDependencies,
+      dependencies: plan.peerDependencies,
       label: 'peerDependencies',
     })
     log('ok', `${componentName}: peer dependencies`)
@@ -127,7 +129,7 @@ const checkRecordedComponent = async ({
     const dependencyCheck = await checkDependencyRequirements({
       allowMissing: true,
       cwd,
-      dependencies: manifest.dependencies,
+      dependencies: plan.dependencies,
       label: 'dependencies',
     })
 
@@ -142,16 +144,28 @@ const checkRecordedComponent = async ({
     log('error', `${componentName}: ${error instanceof Error ? error.message : 'dependency check failed'}`)
   }
 
-  const fileCheck = await verifyInstalledManifestFiles({ cwd, manifest })
+  const fileCheck = await verifyInstalledManifestFiles({ cwd, manifest: plan })
 
-  if (fileCheck.isValid) {
+  if (fileCheck.missingFiles.length === 0) {
     log('ok', `${componentName}: files`)
   } else {
     isHealthy = false
     log('error', `${componentName}: missing files ${formatList(fileCheck.missingFiles)}`)
   }
 
-  const fragmentCheck = await verifyInstalledPayloadFragments({ cwd, manifest })
+  if (fileCheck.missingRegistryDependencies.length > 0) {
+    isHealthy = false
+    log(
+      'error',
+      `${componentName}: missing registry dependencies ${fileCheck.missingRegistryDependencies
+        .map(({ name, targetFile }) => `${name} (${targetFile})`)
+        .join(', ')}`,
+    )
+  } else {
+    log('ok', `${componentName}: registry dependencies`)
+  }
+
+  const fragmentCheck = await verifyInstalledPayloadFragments({ cwd, manifest: plan })
 
   if (fragmentCheck.isValid) {
     log('ok', `${componentName}: Payload fragments`)
