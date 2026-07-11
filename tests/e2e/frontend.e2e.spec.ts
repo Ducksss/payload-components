@@ -434,6 +434,14 @@ test.describe('Light shadcn frontend', () => {
     })
     await expect(search).toHaveValue('hero-basic')
     await expect(page.locator('#hero-basic')).toBeVisible()
+
+    // A family selection made inside the debounce window must carry the
+    // in-progress local query instead of restoring stale router state.
+    await search.fill('hero')
+    await page.getByRole('button', { name: /Page blocks/ }).first().click()
+    await expect(search).toHaveValue('hero')
+    await expect.poll(() => new URL(page.url()).searchParams.get('q')).toBe('hero')
+    await expect.poll(() => new URL(page.url()).searchParams.get('type')).toBe('pages')
   })
 
   test('links upcoming components to prefilled request issues', async ({ page }) => {

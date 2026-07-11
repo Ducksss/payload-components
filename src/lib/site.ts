@@ -1,4 +1,5 @@
 import packageJson from '../../package.json' with { type: 'json' }
+import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
 
 const productionSiteUrl = 'https://www.payload-components.xyz'
 const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionSiteUrl).replace(/\/+$/, '')
@@ -62,7 +63,7 @@ export const heroTertiaryLinks = [
 export const terminalDemoLines = [
   { kind: 'command', text: 'npx payload-components add hero-basic' },
   { kind: 'info', text: 'payload-components: installing "hero-basic" into ./acme-site' },
-  { kind: 'step', text: `resolved hero-basic@${cliVersion} · payload-website-starter` },
+  { kind: 'step', text: `resolved hero-basic@${heroBasicManifest.version} · payload-website-starter` },
   { kind: 'step', text: 'copied 3 block source files into src/blocks/' },
   { kind: 'step', text: 'registered block in src/collections/Pages/index.ts' },
   { kind: 'step', text: 'wired render mapping in src/blocks/RenderBlocks.tsx' },
@@ -256,7 +257,7 @@ export const componentEntries = [
     slug: 'hero-basic',
     target: 'Hero section',
     title: 'Hero Basic',
-    version: '0.1.0',
+    version: heroBasicManifest.version,
   },
   {
     category: 'features',

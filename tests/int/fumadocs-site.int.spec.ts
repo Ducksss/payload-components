@@ -423,8 +423,12 @@ describe('Fumadocs site shell', () => {
 
     const { cliVersion, terminalDemoLines } = await import('../../src/lib/site')
     const packageJson = await readJson<{ version: string }>(path.join(repoRoot, 'package.json'))
+    const heroManifest = await readJson<{ version: string }>(
+      path.join(repoRoot, 'payload-components', 'manifests', 'hero-basic.json'),
+    )
     expect(cliVersion).toBe(packageJson.version)
-    expect(terminalDemoLines.some((line) => line.text.includes(`@${cliVersion}`))).toBe(true)
+    expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${heroManifest.version}`))).toBe(true)
+    expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${cliVersion}`))).toBe(false)
     expect(docsLayout).toContain('{cliVersion}')
     expect(docsLayout).not.toMatch(/components v\d+\.\d+\.\d+/)
   })

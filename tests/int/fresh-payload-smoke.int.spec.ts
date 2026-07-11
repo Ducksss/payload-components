@@ -73,11 +73,15 @@ describe('fresh Payload smoke component selection', () => {
     const installableSlugs = await smokeHarness.getInstallableComponentSlugs()
     const defaultOptions = smokeHarness.parseSmokeArgs([])
     const shardOptions = smokeHarness.parseSmokeArgs(['--shard-index', '2'])
+    const pnpmForwardedOptions = smokeHarness.parseSmokeArgs(['--', '--shard-index', '2'])
 
     await expect(smokeHarness.resolveSmokeComponents(defaultOptions)).resolves.toEqual(
       installableSlugs,
     )
     await expect(smokeHarness.resolveSmokeComponents(shardOptions)).resolves.toEqual(
+      smokeHarness.getSmokeShard(installableSlugs, 2),
+    )
+    await expect(smokeHarness.resolveSmokeComponents(pnpmForwardedOptions)).resolves.toEqual(
       smokeHarness.getSmokeShard(installableSlugs, 2),
     )
     expect(() => smokeHarness.parseSmokeArgs(['--shard-index', '4'])).toThrow(/0 to 3/)

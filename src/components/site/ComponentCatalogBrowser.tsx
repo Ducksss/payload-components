@@ -1,6 +1,6 @@
 'use client'
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ArrowUpRight, Search, X } from 'lucide-react'
@@ -53,7 +53,6 @@ export function ComponentCatalogBrowser({
   pages,
   posts,
 }: ComponentCatalogBrowserProps) {
-  const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
@@ -131,12 +130,16 @@ export function ComponentCatalogBrowser({
 
   function updateParams(updates: Record<string, string>) {
     const params = new URLSearchParams(window.location.search)
-    for (const [key, value] of Object.entries(updates)) {
+    for (const [key, value] of Object.entries({ q: localQuery, ...updates })) {
       if (!value || value === 'all') params.delete(key)
       else params.set(key, value)
     }
     const queryString = params.toString()
-    router.replace(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false })
+    window.history.replaceState(null, '', queryString ? `${pathname}?${queryString}` : pathname)
+    const next = readUrlFilters()
+    setLocalQuery(next.query)
+    setLocalType(next.type)
+    setLocalCategory(next.category)
   }
 
   const showPages = activeFamily === 'all' || activeFamily === 'pages'
