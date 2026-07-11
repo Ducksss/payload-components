@@ -794,6 +794,7 @@ const runFreshPayloadRepoSmoke = async ({
   components,
   manifests,
   stageLog,
+  tarballPath,
   tempRoot,
   timeoutMs,
 }: {
@@ -801,6 +802,7 @@ const runFreshPayloadRepoSmoke = async ({
   components: string[]
   manifests: ComponentManifest[]
   stageLog: string[]
+  tarballPath: string
   tempRoot: string
   timeoutMs: number
 }) => {
@@ -809,7 +811,6 @@ const runFreshPayloadRepoSmoke = async ({
   const payloadVersion = await getLocalPayloadVersion()
   const projectName = 'payload-components-smoke-target'
   const targetPath = path.join(tempRoot, projectName)
-  const tarballPath = await packLocalPackage(tempRoot, timeoutMs)
 
   await runCommand({
     args: getCreatePayloadAppArgs({
@@ -953,6 +954,7 @@ export const runSmoke = async (options: SmokeOptions) => {
       stage: 'check public registry artifacts',
       timeoutMs: options.timeoutMs,
     })
+    const tarballPath = await packLocalPackage(tempRoot, options.timeoutMs)
 
     if (!options.registryUrl) {
       registryServer = await startStaticRegistryServer()
@@ -975,6 +977,7 @@ export const runSmoke = async (options: SmokeOptions) => {
       components,
       manifests,
       stageLog: summary.stageLog,
+      tarballPath,
       tempRoot,
       timeoutMs: options.timeoutMs,
     })
