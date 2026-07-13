@@ -78,7 +78,18 @@ const checkRecordedComponent = async ({
   entry: InstallStateEntry
 }) => {
   let isHealthy = true
-  const plan = await resolveInstallPlan({ cwd, manifest })
+  let plan: Awaited<ReturnType<typeof resolveInstallPlan>>
+
+  try {
+    plan = await resolveInstallPlan({ cwd, manifest })
+  } catch (error) {
+    log(
+      'error',
+      `${componentName}: ${error instanceof Error ? error.message : 'failed to resolve install plan'}`,
+    )
+    log('warn', `Run "payload-components add ${componentName}" to retry the install.`)
+    return false
+  }
 
   if (entry.status === 'partial') {
     isHealthy = false

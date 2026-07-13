@@ -55,6 +55,21 @@ pnpm dlx shadcn@latest add @payload-components/hero-basic
   for the full comparison.
 </Callout>
 
+## Installed source and migrations
+
+`payload-components add` does not overwrite installed component source. A published registry
+change therefore affects new installs only; an existing app changes only when its maintainer
+deliberately ports the source diff. This preserves local edits and keeps repeat installs
+idempotent.
+
+<Callout type="warn">
+  If an adopted source diff adds or changes a persisted identifier such as `dbName`, the
+  consumer project must own the migration. Generate and review it in that app's normal Payload
+  migration flow, explicitly preserve existing data with the required rename or backfill, and
+  test it against a backup or staging database. The registry cannot safely generate a universal
+  migration without the consumer's collection slug, adapter, schema, and migration history.
+</Callout>
+
 ## Manifests
 
 Each wrapper manifest in `payload-components/manifests` defines:

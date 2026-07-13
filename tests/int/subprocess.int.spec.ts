@@ -45,7 +45,11 @@ describe('CLI subprocess cleanup', () => {
   afterEach(async () => {
     for (const pid of spawnedPids) {
       if (isProcessAlive(pid)) {
-        process.kill(pid, 'SIGKILL')
+        try {
+          process.kill(pid, 'SIGKILL')
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== 'ESRCH') throw error
+        }
       }
     }
     spawnedPids.clear()
