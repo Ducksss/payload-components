@@ -77,17 +77,13 @@ The wrapper CLI owns the Payload-specific work that direct registry installation
   <Step>
     **Validate the target project shape** — refuse to touch a repo that isn't a supported Payload v3 + Next.js project.
   </Step>
+  <Step>**`registry-build`** builds the checked-in manifest, then **`registry-add`** adds the registry item and installs its source files.</Step>
   <Step>
-    **Build or resolve the registry item** and **install source files** through the shadcn registry flow.
+    **`dependency-install`** installs missing component dependencies so the block compiles in your project.
   </Step>
+  <Step>**`fragment-apply`** registers the block in `RenderBlocks` and the `Pages` layout field.</Step>
   <Step>
-    **Apply Payload layout and render fragments** — register the block in `RenderBlocks` and the `Pages` layout field.
-  </Step>
-  <Step>
-    **Install missing component dependencies** so the block compiles in your project.
-  </Step>
-  <Step>
-    **Run post-install scripts** (`generate:types`, `generate:importmap`) and **write `.payload-components/state.json`**.
+    **`post-install`** runs (`generate:types`, `generate:importmap`) and **writes `.payload-components/state.json`**.
   </Step>
 </Steps>
 

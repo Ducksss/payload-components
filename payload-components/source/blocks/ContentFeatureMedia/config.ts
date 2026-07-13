@@ -5,6 +5,9 @@ import { iconField } from '@/blocks/shared/contentIcons'
 
 export const ContentFeatureMedia: Block = {
   slug: 'contentFeatureMedia',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_con_fea_med',
   interfaceName: 'ContentFeatureMediaBlock',
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

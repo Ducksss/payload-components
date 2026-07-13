@@ -5,6 +5,9 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const IntegrationCluster: Block = {
   slug: 'integrationCluster',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_int_clu',
   interfaceName: 'IntegrationClusterBlock',
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

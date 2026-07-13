@@ -27,6 +27,7 @@ jobs:
   release-gate:
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
 
@@ -38,6 +39,9 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+
+      - name: Install Bun for lockfile integration coverage
+        run: npm install --global bun@1.3.14
 
       - run: pnpm install --frozen-lockfile
 
@@ -63,6 +67,7 @@ jobs:
   node-20-compat:
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
 
@@ -74,6 +79,9 @@ jobs:
         with:
           node-version: 20.19.0
           cache: pnpm
+
+      - name: Install Bun for lockfile integration coverage
+        run: npm install --global bun@1.3.14
 
       - run: pnpm install --frozen-lockfile
 
@@ -91,6 +99,7 @@ jobs:
     # waiting on the full release gate (which first installs a browser for e2e).
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
 
@@ -113,19 +122,34 @@ jobs:
           pnpm exec tsc --noEmit
 
   pr-gate:
-    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    if: ${{ always() && (github.event_name == 'pull_request' || github.event_name == 'push') }}
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs:
       - quick-checks
       - release-gate
       - node-20-compat
+      - fresh-payload-smoke
     steps:
-      - run: echo "release gate passed"
+      - name: Require every release and smoke gate
+        shell: bash
+        run: |
+          if [[ "${{ needs.quick-checks.result }}" != "success" || \
+                "${{ needs.release-gate.result }}" != "success" || \
+                "${{ needs.node-20-compat.result }}" != "success" || \
+                "${{ needs.fresh-payload-smoke.result }}" != "success" ]]; then
+            echo "One or more required release gates failed or were skipped."
+            exit 1
+          fi
+          echo "All release gates and fresh-consumer shards passed."
 
   fresh-payload-smoke:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard-index: [0, 1, 2, 3]
     services:
       postgres:
         image: postgres:16
@@ -147,7 +171,7 @@ jobs:
       PAYLOAD_SECRET: ci-payload-secret
       POSTGRES_URL: postgresql://postgres:postgres@127.0.0.1:5432/payload_components
       PREVIEW_SECRET: ci-preview-secret
-      REGISTRY_URL: ${{ github.event.inputs.registry_url || '' }}
+      SMOKE_REGISTRY_URL: ${{ github.event.inputs.registry_url || '' }}
     steps:
       - uses: actions/checkout@v7
 
@@ -168,17 +192,17 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          if [ -n "$REGISTRY_URL" ]; then
-            pnpm test:fresh -- --registry-url "$REGISTRY_URL" --keep-temp 2>&1 | tee payload-components-fresh.log
+          if [ -n "$SMOKE_REGISTRY_URL" ]; then
+            pnpm test:fresh -- --registry-url "$SMOKE_REGISTRY_URL" --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
           else
-            pnpm test:fresh -- --keep-temp 2>&1 | tee payload-components-fresh.log
+            pnpm test:fresh -- --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
           fi
 
       - name: Upload failure artifacts
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: fresh-payload-artifacts
+          name: fresh-payload-artifacts-${{ matrix.shard-index }}
           path: |
             payload-components-fresh.log
             playwright-report

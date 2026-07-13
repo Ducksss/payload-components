@@ -133,6 +133,7 @@ describe('payload-components manifest validation', () => {
   it('fails support checks for unsupported targets and version majors', () => {
     const baseProject = {
       cwd: '/tmp/fixture',
+      lockfilePath: 'pnpm-lock.yaml',
       nextMajor: 16,
       packageManager: 'pnpm' as const,
       payloadMajor: 3,

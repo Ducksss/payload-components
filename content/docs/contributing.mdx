@@ -37,6 +37,21 @@ A component proposal should arrive complete — incomplete components don't ship
   </Step>
 </Steps>
 
+## Attribution
+
+If a component's layout is adapted from an external open-source design — for example [tailark/blocks](https://github.com/tailark/blocks) (MIT) — credit it in **two** places so provenance survives both in the repo and in what ships to consumers:
+
+<Steps>
+  <Step>
+    **A source comment** at the top of the component: `// Layout adapted from tailark/blocks (MIT) — re-implemented as a Payload block.` This ships with the file through the registry.
+  </Step>
+  <Step>
+    **A docs footer** at the end of the component's page: `Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.`
+  </Step>
+</Steps>
+
+Then record the upstream item and the pinned upstream commit in `payload-components/PROVENANCE.md` so future drift checks are a mechanical diff. Attribute only genuine layout adaptations — an independent take on a generic pattern (a plain hero, a card grid) is your own work and needs no credit.
+
 ## Visual standards
 
 Every block speaks one visual language — light shadcn monochrome with a single emerald accent — defined as tokens in `src/app/globals.css`. Two checks keep new components on it, and both run in the release gate:
