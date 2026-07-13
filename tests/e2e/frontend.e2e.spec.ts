@@ -122,9 +122,11 @@ test.describe('Light shadcn frontend', () => {
     const headline = page.getByRole('heading', { level: 1, name: heroHeadline })
     const heroStack = page.locator('.hero-shell > .container')
     const proof = page.locator('.product-frame')
+    const replay = page.getByRole('button', { name: 'Replay the install animation' })
 
     await expect(headline).toBeVisible()
     await expect(proof).toBeVisible()
+    await expect(replay).toBeVisible()
 
     const headlineSize = await headline.evaluate((element) =>
       Number.parseFloat(getComputedStyle(element).fontSize),
@@ -136,11 +138,20 @@ test.describe('Light shadcn frontend', () => {
         paddingTop: Number.parseFloat(styles.paddingTop),
       }
     })
-    const proofWidth = await proof.evaluate((element) => element.getBoundingClientRect().width)
+    const proofBounds = await proof.evaluate((element) => {
+      const { left, right, width } = element.getBoundingClientRect()
+      return { left, right, width }
+    })
+    const replayBounds = await replay.evaluate((element) => {
+      const { left, right } = element.getBoundingClientRect()
+      return { left, right }
+    })
 
     expect(headlineSize).toBeLessThanOrEqual(88.1)
     expect(stackMetrics).toEqual({ gap: 48, paddingTop: 64 })
-    expect(proofWidth).toBeLessThanOrEqual(1024.1)
+    expect(proofBounds.width).toBeLessThanOrEqual(1024.1)
+    expect(replayBounds.left).toBeGreaterThanOrEqual(proofBounds.left)
+    expect(replayBounds.right).toBeLessThanOrEqual(proofBounds.right)
   })
 
   test('renders the light token-driven homepage', async ({ page }) => {
