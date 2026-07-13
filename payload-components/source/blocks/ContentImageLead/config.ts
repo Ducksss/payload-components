@@ -5,6 +5,9 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const ContentImageLead: Block = {
   slug: 'contentImageLead',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_con_ima_lea',
   interfaceName: 'ContentImageLeadBlock',
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

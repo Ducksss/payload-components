@@ -4,6 +4,9 @@ import { contentFields } from '@/blocks/shared/contentFields'
 
 export const ContentCommunity: Block = {
   slug: 'contentCommunity',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_con_com',
   interfaceName: 'ContentCommunityBlock',
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

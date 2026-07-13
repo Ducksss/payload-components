@@ -9,7 +9,6 @@ const eslintConfig = [
     '**/.gemini/**',
     '**/.next/**',
     '**/.source/**',
-    'payload-components/source/**',
     'payload-components/templates/**',
   ]),
   ...nextCoreWebVitals,

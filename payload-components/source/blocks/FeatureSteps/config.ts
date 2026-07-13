@@ -5,6 +5,9 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const FeatureSteps: Block = {
   slug: 'featureSteps',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_fea_ste',
   interfaceName: 'FeatureStepsBlock',
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields

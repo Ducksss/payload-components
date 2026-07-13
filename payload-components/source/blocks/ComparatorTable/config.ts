@@ -5,6 +5,9 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const ComparatorTable: Block = {
   slug: 'comparatorTable',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_com_tab',
   interfaceName: 'ComparatorTableBlock',
   fields: [
     // Shared comparator header (title, description). Variant-specific fields

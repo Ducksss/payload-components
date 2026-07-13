@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { isPathInside, repoRoot, runCommand, shadcnCliPackage } from './utils'
+import { isPathInside, repoRoot, runCommand } from './utils'
 
 type RegistryFile = {
   content?: string
@@ -72,7 +72,7 @@ export const buildRegistryForCheck = async () => {
   const outputDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-registry-check-'))
 
   await runCommand({
-    args: ['dlx', shadcnCliPackage, 'build', 'payload-components/registry.json', '--output', outputDir, '--cwd', '.'],
+    args: ['exec', 'shadcn', 'build', 'payload-components/registry.json', '--output', outputDir, '--cwd', '.'],
     command: 'pnpm',
     cwd: repoRoot,
   })

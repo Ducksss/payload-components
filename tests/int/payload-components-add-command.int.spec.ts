@@ -14,6 +14,7 @@ const baseManifest = makeTestManifest({
 
 const detectedProject: DetectedProject = {
   cwd: '/tmp/fixture',
+  lockfilePath: 'pnpm-lock.yaml',
   nextMajor: 16,
   packageManager: 'pnpm',
   payloadMajor: 3,
@@ -45,6 +46,18 @@ describe('payload-components add command orchestration', () => {
     loadStateValue?: InstallState
     manifest?: ComponentManifest
   } = {}) => {
+    const resolveInstallPlan = vi.fn().mockResolvedValue({
+      dependencies: manifest.dependencies,
+      files: manifest.files,
+      name: manifest.name,
+      payloadFragments: manifest.payloadFragments,
+      peerDependencies: manifest.peerDependencies,
+      postInstall: manifest.postInstall,
+      recovery: manifest.recovery,
+      registryDependencies: [],
+      registryItemName: manifest.registryItemName,
+      version: manifest.version,
+    })
     const loadManifest = vi.fn().mockResolvedValue(manifest)
     const detectProject = vi.fn().mockResolvedValue(detectedProject)
     const assertManifestSupport = vi.fn()
@@ -65,6 +78,7 @@ describe('payload-components add command orchestration', () => {
       .fn()
       .mockReturnValue(['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'])
     const buildRegistry = vi.fn().mockResolvedValue('/tmp/payload-components-registry')
+    const installRegistryDependencies = vi.fn().mockResolvedValue(undefined)
     const installRegistryItem = vi.fn().mockResolvedValue(undefined)
     const loadState = vi.fn().mockResolvedValue(loadStateValue)
     const recordInstallAttempt = vi.fn().mockResolvedValue(undefined)
@@ -80,6 +94,9 @@ describe('payload-components add command orchestration', () => {
     vi.doMock('../../tools/payload-components/manifest', () => ({
       loadManifest,
     }))
+    vi.doMock('../../tools/payload-components/install-plan', () => ({
+      resolveInstallPlan,
+    }))
     vi.doMock('../../tools/payload-components/project', () => ({
       applyPayloadFragments,
       assertManifestSupport,
@@ -94,6 +111,7 @@ describe('payload-components add command orchestration', () => {
     }))
     vi.doMock('../../tools/payload-components/registry', () => ({
       buildRegistry,
+      installRegistryDependencies,
       installRegistryItem,
     }))
     vi.doMock('../../tools/payload-components/state', () => ({
@@ -125,6 +143,7 @@ describe('payload-components add command orchestration', () => {
         checkDependencyRequirements,
         getRunScriptCommand,
         installManifestDependencies,
+        installRegistryDependencies,
         installRegistryItem,
         loadState,
         printHeader,
@@ -258,6 +277,46 @@ describe('payload-components add command orchestration', () => {
       }),
     )
     expect(mocks.recordInstalledState).not.toHaveBeenCalled()
+  })
+
+  it('repairs only missing registry dependencies and re-verifies before recording success', async () => {
+    const { addCommand, mocks } = await setup()
+
+    mocks.checkDependencyRequirements
+      .mockResolvedValueOnce({ installed: { payload: '3.82.1' }, missing: [] })
+      .mockResolvedValueOnce({ installed: {}, missing: [] })
+    mocks.verifyInstalledManifestFiles
+      .mockResolvedValueOnce({
+        isValid: false,
+        missingFiles: [],
+        missingRegistryDependencies: [
+          {
+            name: 'accordion',
+            targetFile: 'src/components/ui/accordion.tsx',
+          },
+        ],
+      })
+      .mockResolvedValueOnce({
+        isValid: true,
+        missingFiles: [],
+        missingRegistryDependencies: [],
+      })
+    mocks.verifyInstalledPayloadFragments.mockResolvedValue({
+      isValid: true,
+      missingFragments: [],
+    })
+
+    await addCommand({ cwd: '/tmp/fixture', componentName: 'faq-accordion' })
+
+    expect(mocks.buildRegistry).not.toHaveBeenCalled()
+    expect(mocks.installRegistryItem).not.toHaveBeenCalled()
+    expect(mocks.installRegistryDependencies).toHaveBeenCalledWith({
+      dependencies: ['accordion'],
+      packageManager: 'pnpm',
+      targetDir: '/tmp/fixture',
+    })
+    expect(mocks.verifyInstalledManifestFiles).toHaveBeenCalledTimes(2)
+    expect(mocks.recordInstalledState).toHaveBeenCalledOnce()
   })
 
   it('retries cleanly from a partial state when files and fragments are already present', async () => {

@@ -39,7 +39,7 @@ export const resolveAliasPath = (targetDir: string, aliasPath: string) => {
   return resolvedPath
 }
 
-const getShadcnUiDir = async (targetDir: string) => {
+export const getShadcnUiDir = async (targetDir: string) => {
   const componentsJson = await readJsonFile<ComponentsJson>(path.join(targetDir, 'components.json'))
   const uiAlias =
     componentsJson.aliases?.ui ??
@@ -95,7 +95,7 @@ const stripRegistryDependenciesForWrapperInstall = async (itemFilePath: string) 
   return registryDependencies
 }
 
-const installMissingRegistryDependencies = async ({
+export const installRegistryDependencies = async ({
   dependencies,
   packageManager,
   targetDir,
@@ -147,7 +147,7 @@ export const installRegistryItem = async ({
   const shadcn = getShadcnCommand(packageManager)
   const registryDependencies = await stripRegistryDependenciesForWrapperInstall(itemFilePath)
 
-  await installMissingRegistryDependencies({
+  await installRegistryDependencies({
     dependencies: registryDependencies,
     packageManager,
     targetDir,

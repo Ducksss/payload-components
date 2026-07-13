@@ -15,6 +15,8 @@ import {
 } from '@/components/ui/card'
 import { cn } from '@/utilities/ui'
 
+// Layout adapted from tailark/blocks (MIT) — re-implemented as a Payload block.
+
 type Props = PricingCardsMutedBlockData & {
   id?: string
   className?: string
