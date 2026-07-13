@@ -591,6 +591,38 @@ const valueNeedsSmokeMedia = (value: unknown, arrayName?: string): boolean => {
 export const sampleContentNeedsSmokeMedia = (sampleContent: ComponentManifest['sampleContent']) =>
   valueNeedsSmokeMedia(sampleContent)
 
+export const addSmokeUploadReferences = (
+  value: unknown,
+  mediaID: unknown,
+  arrayName?: string,
+): unknown => {
+  if (Array.isArray(value)) {
+    const uploadField = arrayName ? uploadFieldByArrayName[arrayName] : undefined
+
+    return value.map((item) => {
+      const hydratedItem = addSmokeUploadReferences(item, mediaID)
+
+      if (!uploadField || !isRecord(hydratedItem)) return hydratedItem
+
+      return {
+        ...hydratedItem,
+        [uploadField]: isMissingUploadReference(hydratedItem, uploadField)
+          ? mediaID
+          : hydratedItem[uploadField],
+      }
+    })
+  }
+
+  if (!isRecord(value)) return value
+
+  return Object.fromEntries(
+    Object.entries(value).map(([key, nestedValue]) => [
+      key,
+      addSmokeUploadReferences(nestedValue, mediaID, key),
+    ]),
+  )
+}
+
 export const writeSeedScript = async (targetPath: string, manifests: ComponentManifest[]) => {
   const layout = manifests.map((manifest) => ({
     ...manifest.sampleContent,
@@ -629,31 +661,11 @@ const uploadFieldByArrayName: Record<string, string> = {
 const isSmokeSampleItem = (value: unknown): value is SmokeSampleItem =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
-const addSmokeUploadReferences = (value: unknown, mediaID: unknown, arrayName?: string): unknown => {
-  if (Array.isArray(value)) {
-    const uploadField = arrayName ? uploadFieldByArrayName[arrayName] : undefined
+const isRecord = isSmokeSampleItem
+const isMissingUploadReference = (item: SmokeSampleItem, fieldName: string) =>
+  typeof item[fieldName] === 'undefined' || item[fieldName] === null || item[fieldName] === ''
 
-    return value.map((item) => {
-      const hydratedItem = addSmokeUploadReferences(item, mediaID)
-
-      if (!uploadField || !isSmokeSampleItem(hydratedItem)) return hydratedItem
-
-      return {
-        ...hydratedItem,
-        [uploadField]: hydratedItem[uploadField] ?? mediaID,
-      }
-    })
-  }
-
-  if (!isSmokeSampleItem(value)) return value
-
-  return Object.fromEntries(
-    Object.entries(value).map(([key, nestedValue]) => [
-      key,
-      addSmokeUploadReferences(nestedValue, mediaID, key),
-    ]),
-  )
-}
+const addSmokeUploadReferences = ${addSmokeUploadReferences.toString()}
 
 const createSmokeMedia = async () => {
   const mediaPath = path.join(process.cwd(), '.payload-components', 'smoke-placeholder.svg')

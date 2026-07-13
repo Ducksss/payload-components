@@ -366,13 +366,35 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'src/app/blog/[slug]/page.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src/app/sitemap.ts'), 'utf8'),
     ])
+    const { blogDescription, blogTitle } = await import('../../src/lib/site')
+
     expect(layoutSource).toContain('<SiteFooter />')
+    expect(indexSource).toContain('blogDescription')
+    expect(indexSource).toContain('blogTitle')
+    expect(indexSource).toContain('title: blogTitle')
+    expect(indexSource).toContain('description: blogDescription')
+    expect(indexSource).toContain('{blogTitle}')
+    expect(indexSource).toContain('{blogDescription}')
+    expect(indexSource).not.toContain(blogDescription)
+    expect(blogTitle).toBe('Blog')
     expect(indexSource).toContain("alternates: { canonical: `${siteUrl}/blog` }")
     expect(indexSource).toContain("twitter: { card: 'summary_large_image'")
     expect(postSource).toContain("type: 'article'")
     expect(postSource).toContain('publishedTime:')
     expect(postSource).toContain("twitter: { card: 'summary_large_image'")
     expect(sitemapSource).toContain('blogSource.getPages()')
+  })
+
+  it('keeps the family navigator as the final section on component docs', async () => {
+    const componentDocsDir = path.join(repoRoot, 'content', 'docs', 'components')
+    const componentDocs = (await readdir(componentDocsDir)).filter((entry) => entry.endsWith('.mdx'))
+
+    for (const entry of componentDocs) {
+      const source = await readFile(path.join(componentDocsDir, entry), 'utf8')
+      if (!source.includes('<ComponentFamily')) continue
+
+      expect(source.trim(), entry).toMatch(/<ComponentFamily slug="[^"]+" \/>$/)
+    }
   })
 
   it('keeps catalog search local and docs copy factual', async () => {

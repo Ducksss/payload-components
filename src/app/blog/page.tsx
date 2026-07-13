@@ -2,14 +2,19 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { blogSource } from '@/lib/blog-source'
-import { siteUrl } from '@/lib/site'
+import { blogDescription, blogTitle, siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
-  title: 'Blog',
-  description: 'Updates, deep dives, and release notes from the Payload Components team.',
+  title: blogTitle,
+  description: blogDescription,
   alternates: { canonical: `${siteUrl}/blog` },
-  openGraph: { title: 'Blog', description: 'Updates, deep dives, and release notes from the Payload Components team.', url: `${siteUrl}/blog`, type: 'website' },
-  twitter: { card: 'summary_large_image', title: 'Blog', description: 'Updates, deep dives, and release notes from the Payload Components team.' },
+  openGraph: {
+    title: blogTitle,
+    description: blogDescription,
+    url: `${siteUrl}/blog`,
+    type: 'website',
+  },
+  twitter: { card: 'summary_large_image', title: blogTitle, description: blogDescription },
 }
 
 export default function BlogIndex() {
@@ -20,10 +25,10 @@ export default function BlogIndex() {
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-12 md:px-8 md:py-16">
       <header className="mb-10">
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">Blog</h1>
-        <p className="mt-2 text-muted-foreground">
-          Updates, deep dives, and release notes from the Payload Components team.
-        </p>
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+          {blogTitle}
+        </h1>
+        <p className="mt-2 text-muted-foreground">{blogDescription}</p>
       </header>
 
       {posts.length === 0 ? (

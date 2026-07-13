@@ -13,6 +13,9 @@ export const docsRoute = '/docs'
 export const docsImageRoute = '/og/docs'
 export const docsContentRoute = '/llms.mdx/docs'
 export const blogRoute = '/blog'
+export const blogTitle = 'Blog'
+export const blogDescription =
+  'Updates, deep dives, and release notes from the Payload Components team.'
 export const primaryInstallCommand = 'npx payload-components add hero-basic'
 export const cliVersion = packageJson.version
 
