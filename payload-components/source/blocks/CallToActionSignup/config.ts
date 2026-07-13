@@ -5,6 +5,8 @@ import { validateSameOriginFormAction } from '@/blocks/shared/safeUrls'
 
 export const CallToActionSignup: Block = {
   slug: 'callToActionSignup',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_cal_to_act_sig',
   interfaceName: 'CallToActionSignupBlock',
   fields: [

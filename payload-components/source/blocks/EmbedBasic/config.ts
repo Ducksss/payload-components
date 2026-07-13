@@ -4,6 +4,8 @@ import { validateEmbedUrl } from '@/blocks/shared/safeUrls'
 
 export const EmbedBasic: Block = {
   slug: 'embedBasic',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_emb_bas',
   interfaceName: 'EmbedBasicBlock',
   fields: [

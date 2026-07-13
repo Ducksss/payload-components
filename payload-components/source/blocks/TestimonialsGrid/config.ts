@@ -4,6 +4,8 @@ import { testimonialFields, testimonialItemFields } from '@/blocks/shared/testim
 
 export const TestimonialsGrid: Block = {
   slug: 'testimonialsGrid',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_tes_gri',
   interfaceName: 'TestimonialsGridBlock',
   fields: [

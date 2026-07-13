@@ -123,4 +123,20 @@ describe('CLI subprocess cleanup', () => {
 
     expect(result).toEqual({ stderr: 'err', stdout: 'out' })
   })
+
+  it('tolerates EPIPE when a command closes stdin before consuming it', async () => {
+    const result = await runCommand({
+      args: [
+        '--eval',
+        "process.stdin.destroy(); setTimeout(() => process.exit(0), 25)",
+      ],
+      captureOutput: true,
+      command: process.execPath,
+      cwd: process.cwd(),
+      stdin: 'x'.repeat(8 * 1024 * 1024),
+      timeoutMs: 2_000,
+    })
+
+    expect(result).toEqual({ stderr: '', stdout: '' })
+  })
 })

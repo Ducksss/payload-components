@@ -430,7 +430,9 @@ describe('Fumadocs site shell', () => {
     )
     expect(cliVersion).toBe(packageJson.version)
     expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${heroManifest.version}`))).toBe(true)
-    expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${cliVersion}`))).toBe(false)
+    if (heroManifest.version !== cliVersion) {
+      expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${cliVersion}`))).toBe(false)
+    }
     expect(docsLayout).toContain('{cliVersion}')
     expect(docsLayout).not.toMatch(/components v\d+\.\d+\.\d+/)
   })
