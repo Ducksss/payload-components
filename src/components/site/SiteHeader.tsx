@@ -80,7 +80,7 @@ export function SiteHeader({
         </nav>
         <div className="relative sm:hidden" data-mobile-menu>
           <button ref={triggerRef} type="button" aria-expanded={open} aria-controls="mobile-navigation" aria-label={open ? 'Close navigation' : 'Open navigation'} onClick={() => setOpen((value) => !value)} className="inline-flex size-9 items-center justify-center rounded-md border border-border text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">☰</button>
-          {open ? <div id="mobile-navigation" className="absolute right-0 top-11 z-50 flex w-48 flex-col gap-1 rounded-lg border border-border bg-background p-2 shadow-lg">
+          <div id="mobile-navigation" hidden={!open} className="absolute right-0 top-11 z-50 flex w-48 flex-col gap-1 rounded-lg border border-border bg-background p-2 shadow-lg">
             {[...navLinks, { href: githubRepoUrl, label: 'GitHub' }].map((item) => (
               <Link
                 key={item.label}
@@ -99,7 +99,7 @@ export function SiteHeader({
               </Link>
             ))}
             <Link href="/docs" onClick={() => setOpen(false)} className="rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground">Get started</Link>
-          </div> : null}
+          </div>
         </div>
       </div>
     </header>
