@@ -26,8 +26,8 @@ export function HeroSection() {
     <section className="hero-shell overflow-hidden border-b border-border/60">
       <div aria-hidden="true" data-parallax="0.1" className="hero-atmosphere" />
 
-      <div className="container relative flex flex-col gap-12 py-12 sm:py-16 lg:gap-16 lg:py-24">
-        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center gap-6 text-center">
+      <div className="container relative flex flex-col gap-10 py-10 sm:py-14 lg:gap-12 lg:py-16">
+        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center gap-5 text-center">
           <span
             className="hero-reveal flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-4 py-1.5 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-muted-foreground"
             style={{ animationDelay: '0ms' }}
@@ -37,7 +37,7 @@ export function HeroSection() {
           </span>
 
           <h1
-            className="hero-reveal max-w-5xl text-balance text-[clamp(2.6rem,8.4vw,6rem)] font-medium leading-[0.94] tracking-[-0.085em] text-foreground"
+            className="hero-reveal max-w-5xl text-balance text-[clamp(2.6rem,8.4vw,5.5rem)] font-medium leading-[0.94] tracking-[-0.075em] text-foreground"
             style={{ animationDelay: '60ms' }}
           >
             {heroHeadlinePrimary}{' '}

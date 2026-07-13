@@ -115,6 +115,34 @@ test.describe('Light shadcn frontend', () => {
     ).toHaveCount(0)
   })
 
+  test('keeps the desktop hero composition compact', async ({ page }) => {
+    await page.setViewportSize({ height: 900, width: 1440 })
+    await page.goto(baseURL)
+
+    const headline = page.getByRole('heading', { level: 1, name: heroHeadline })
+    const heroStack = page.locator('.hero-shell > .container')
+    const proof = page.locator('.product-frame')
+
+    await expect(headline).toBeVisible()
+    await expect(proof).toBeVisible()
+
+    const headlineSize = await headline.evaluate((element) =>
+      Number.parseFloat(getComputedStyle(element).fontSize),
+    )
+    const stackMetrics = await heroStack.evaluate((element) => {
+      const styles = getComputedStyle(element)
+      return {
+        gap: Number.parseFloat(styles.rowGap),
+        paddingTop: Number.parseFloat(styles.paddingTop),
+      }
+    })
+    const proofWidth = await proof.evaluate((element) => element.getBoundingClientRect().width)
+
+    expect(headlineSize).toBeLessThanOrEqual(88.1)
+    expect(stackMetrics).toEqual({ gap: 48, paddingTop: 64 })
+    expect(proofWidth).toBeLessThanOrEqual(1024.1)
+  })
+
   test('renders the light token-driven homepage', async ({ page }) => {
     await page.goto(baseURL)
 
