@@ -1,7 +1,5 @@
 import { readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { execFile } from 'node:child_process'
-import { promisify } from 'node:util'
 
 import { afterEach, describe, expect, it } from 'vitest'
 
@@ -11,15 +9,16 @@ import {
   applyPayloadFragments,
   verifyInstalledPayloadFragments,
 } from '../../tools/payload-components/project'
+import { runCommand } from '../../tools/payload-components/utils'
 
 import { expectInstalledComponents, readInstallState } from './payload-components-assertions'
 import { createInstallFixture, createInstallFixtureForComponents } from './payload-components-fixture'
 
-const execFileAsync = promisify(execFile)
 const repoRoot = process.cwd()
 const payloadComponentBin = path.join(repoRoot, 'bin', 'payload-components.mjs')
 const manifestsDir = path.join(repoRoot, 'payload-components', 'manifests')
 const registryPath = path.join(repoRoot, 'payload-components', 'registry.json')
+const integrationCommandTimeoutMs = 60_000
 
 type RegistryDefinition = {
   items: Array<{
@@ -54,10 +53,13 @@ const manifestNames = async () =>
     .sort()
 
 const runAddCommand = async (fixtureDir: string, componentName: string) =>
-  execFileAsync(process.execPath, [payloadComponentBin, 'add', componentName, '--cwd', fixtureDir], {
+  runCommand({
+    args: [payloadComponentBin, 'add', componentName, '--cwd', fixtureDir],
+    captureOutput: true,
+    command: process.execPath,
     cwd: repoRoot,
     env: process.env,
-    maxBuffer: 10_000_000,
+    timeoutMs: integrationCommandTimeoutMs,
   })
 
 describe('payload-components manifests', () => {
@@ -98,6 +100,54 @@ describe('payload-components manifests', () => {
       }
     }
   })
+
+  it('gives every SQL-backed block a short unique database name', async () => {
+    const names = await manifestNames()
+    const databaseNames = new Set<string>()
+
+    for (const name of names) {
+      const manifest = await loadManifest(name)
+      const configPath = manifest.files.find((file) => file.endsWith('/config.ts'))
+      expect(configPath, `${name} missing block config`).toBeTruthy()
+      if (!configPath) continue
+
+      const config = await readFile(
+        path.join(repoRoot, 'payload-components', 'source', configPath.replace(/^src\//, '')),
+        'utf8',
+      )
+      const databaseName = config.match(
+        /export const \w+: Block = \{\s*\n\s*slug: '[^']+',\s*\n\s*dbName: '([^']+)'/,
+      )?.[1]
+
+      expect(databaseName, `${name} missing top-level dbName`).toBeTruthy()
+      if (!databaseName) continue
+      expect(databaseName.length, `${name} dbName is too long`).toBeLessThanOrEqual(18)
+      expect(databaseNames.has(databaseName), `${name} reuses dbName ${databaseName}`).toBe(false)
+      databaseNames.add(databaseName)
+    }
+
+    expect(databaseNames).toHaveLength(names.length)
+  })
+
+  it('documents the copied-source database migration boundary', async () => {
+    const [workspaceReadme, registryDocs] = await Promise.all([
+      readFile(path.join(repoRoot, 'payload-components', 'README.md'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'registry.mdx'), 'utf8'),
+    ])
+
+    for (const [label, source] of [
+      ['workspace README', workspaceReadme],
+      ['registry docs', registryDocs],
+    ] as const) {
+      expect(source, `${label} must state the source ownership boundary`).toContain(
+        'does not overwrite installed component source',
+      )
+      expect(source, `${label} must cover database-name updates`).toContain('`dbName`')
+      expect(source, `${label} must assign migration ownership`).toContain(
+        'consumer project must own the migration',
+      )
+    }
+  })
 })
 
 describe('payload-components add', () => {
@@ -107,8 +157,35 @@ describe('payload-components add', () => {
     await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
   })
 
+  it('uses preseeded source and declared local dependencies in the default integration fixture', async () => {
+    const componentNames = ['logo-cloud-marquee', 'faq-accordion', 'call-to-action-signup']
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents(componentNames, {
+      preseedSource: true,
+    })
+    tempDirs.push(fixtureDir)
+
+    for (const manifest of manifests) {
+      for (const file of manifest.files) {
+        await expect(readFile(path.join(fixtureDir, file), 'utf8')).resolves.toBeTruthy()
+      }
+    }
+
+    const fixturePackage = await readJson<{
+      dependencies?: Record<string, string>
+    }>(path.join(fixtureDir, 'package.json'))
+    expect(fixturePackage.dependencies?.motion).toBe('^12.0.0')
+    await expect(
+      readFile(path.join(fixtureDir, 'src', 'components', 'ui', 'accordion.tsx'), 'utf8'),
+    ).resolves.toBeTruthy()
+    await expect(
+      readFile(path.join(fixtureDir, 'src', 'components', 'ui', 'button.tsx'), 'utf8'),
+    ).resolves.toBeTruthy()
+  })
+
   it.each(representativeInstallComponents)('installs %s into a supported repo and records state', async (componentName) => {
-    const { fixtureDir, manifest } = await createInstallFixture(componentName)
+    const { fixtureDir, manifest } = await createInstallFixture(componentName, {
+      preseedSource: true,
+    })
     tempDirs.push(fixtureDir)
 
     await runAddCommand(fixtureDir, manifest.name)
@@ -121,7 +198,9 @@ describe('payload-components add', () => {
 
   it('installs multiple components without duplicate registrations', async () => {
     const componentNames = ['hero-basic', 'feature-grid-basic', 'logo-cloud-marquee']
-    const { fixtureDir, manifests } = await createInstallFixtureForComponents(componentNames)
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents(componentNames, {
+      preseedSource: true,
+    })
     tempDirs.push(fixtureDir)
 
     for (const componentName of componentNames) {
@@ -133,7 +212,9 @@ describe('payload-components add', () => {
 
   it.each(idempotencyComponents)('treats a second %s install as idempotent', async (componentName) => {
     const manifest = await loadManifest(componentName)
-    const { fixtureDir } = await createInstallFixture(manifest.name)
+    const { fixtureDir } = await createInstallFixture(manifest.name, {
+      preseedSource: true,
+    })
     tempDirs.push(fixtureDir)
 
     await runAddCommand(fixtureDir, manifest.name)
@@ -141,6 +222,21 @@ describe('payload-components add', () => {
     const secondRun = await runAddCommand(fixtureDir, manifest.name)
 
     expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
+  }, 180000)
+
+  it('records the discovered Bun lockfile name in recovery state', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('logo-cloud-marquee', {
+      preseedSource: true,
+    })
+    tempDirs.push(fixtureDir)
+    await rm(path.join(fixtureDir, 'pnpm-lock.yaml'))
+    await writeFile(path.join(fixtureDir, 'bun.lock'), 'bun modern lockfile\n', 'utf8')
+
+    await runAddCommand(fixtureDir, manifest.name)
+
+    const state = await readInstallState(fixtureDir)
+    expect(state.components[manifest.name]?.patchedFiles).toContain('bun.lock')
+    expect(state.components[manifest.name]?.patchedFiles).not.toContain('bun.lockb')
   }, 180000)
 })
 

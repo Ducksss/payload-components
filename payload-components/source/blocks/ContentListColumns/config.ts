@@ -2,6 +2,7 @@ import type { Block } from 'payload'
 
 export const ContentListColumns: Block = {
   slug: 'contentListColumns',
+  dbName: 'pc_con_lis_col',
   interfaceName: 'ContentListColumnsBlock',
   fields: [
     {

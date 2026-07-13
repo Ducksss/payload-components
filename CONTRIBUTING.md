@@ -88,8 +88,8 @@ For release-sensitive work, run:
 pnpm test:release
 ```
 
-`pnpm test:fresh` is available for slower smoke coverage against a fresh
-external Payload app.
+CI requires `pnpm test:fresh` across four fresh-consumer shards; run an individual
+shard locally with `pnpm test:fresh -- --shard-index 0`.
 
 ## Pull Requests
 

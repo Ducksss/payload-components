@@ -4,6 +4,7 @@ import { iconField } from '@/blocks/shared/contentIcons'
 
 export const ContentListIcons: Block = {
   slug: 'contentListIcons',
+  dbName: 'pc_con_lis_ico',
   interfaceName: 'ContentListIconsBlock',
   fields: [
     {

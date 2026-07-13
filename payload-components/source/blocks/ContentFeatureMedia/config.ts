@@ -5,6 +5,7 @@ import { iconField } from '@/blocks/shared/contentIcons'
 
 export const ContentFeatureMedia: Block = {
   slug: 'contentFeatureMedia',
+  dbName: 'pc_con_fea_med',
   interfaceName: 'ContentFeatureMediaBlock',
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

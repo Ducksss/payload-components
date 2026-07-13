@@ -61,16 +61,29 @@ Namespace consumers can configure:
 
 Then install with `pnpm dlx shadcn@latest add @payload-components/hero-basic` or any other registry item.
 
+## Installed Source and Database Migrations
+
+`payload-components add` does not overwrite installed component source. Registry changes affect
+new installs only unless a maintainer explicitly ports a source diff into an existing Payload app.
+That ownership boundary keeps repeat installs idempotent and preserves consumer customizations.
+
+When an adopted source change adds or changes a persisted database identifier such as `dbName`,
+the consumer project must own the migration. The registry cannot safely infer the app's collection
+slug, database adapter, existing table names, or migration history. Generate and review the
+migration inside the consumer app, preserve existing rows with an explicit rename/backfill, and
+test it against a backup or staging database before deployment. Existing installs that do not port
+the source change keep their installed config and require no registry-driven migration.
+
 ## Verification Suite
 
 Use both verification tiers:
 
 - `pnpm test:registry`: checks that the public registry can be reproduced from source.
 - `pnpm test:install`: runs the fast wrapper fixture suite against generated minimal Payload targets.
-- `pnpm test:fresh`: runs the slower fresh Payload website smoke test for nightly and pre-release confidence.
-- `pnpm test:release`: runs lint, source generation, TypeScript, registry checks, integration tests, Playwright E2E, and production build.
+- `pnpm test:fresh`: runs the slower fresh Payload website smoke against every registry/manifest slug; CI splits it into four required shards.
+- `pnpm test:release`: runs lint, source generation, TypeScript, registry checks, integration tests, a production build, and Playwright against `next start`.
 
-The fast fixture suite remains the normal PR gate because it is deterministic and proves the wrapper contract without making this repository itself a Payload app:
+The deterministic fixture suite stays network-free and proves the wrapper contract without making this repository itself a Payload app. The PR gate also requires all four real fresh-consumer shards:
 
 - every manifest maps to registry source, docs, and recovery targets
 - representative components install into a supported target
@@ -83,12 +96,13 @@ The fast fixture suite remains the normal PR gate because it is deterministic an
 The fresh smoke lives at `../tools/payload-components/smoke/fresh-payload-repo.ts` and accepts:
 
 ```bash
+pnpm test:fresh -- --shard-index 0
 pnpm test:fresh -- --components hero-basic,feature-grid-basic,content-columns,logo-cloud-grid,integration-grid
 pnpm test:fresh -- --registry-url https://www.payload-components.xyz/r/{name}.json
 pnpm test:fresh -- --keep-temp --timeout 1200000
 ```
 
-Without `--registry-url`, the runner serves `../public/r` locally and direct-installs each item URL with shadcn. With `--registry-url`, it uses the deployed registry URL template, which is the pre-release path. Direct shadcn verification only proves file delivery and shadcn UI dependency delivery; Payload wiring is verified through `payload-components add`.
+With no component override, the runner derives the complete sorted slug list from matching registry items and manifests. `--shard-index` accepts `0` through `3` and selects sorted indexes modulo four. Without `--registry-url`, the runner serves `../public/r` locally and direct-installs each item URL with shadcn. With `--registry-url`, it uses the deployed registry URL template, which is the pre-release path. Direct shadcn verification only proves file delivery and shadcn UI dependency delivery; Payload wiring is verified through `payload-components add`.
 
 ## Current Contract
 

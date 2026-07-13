@@ -5,6 +5,7 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const CallToActionBoxed: Block = {
   slug: 'callToActionBoxed',
+  dbName: 'pc_cal_to_act_box',
   interfaceName: 'CallToActionBoxedBlock',
   fields: [
     // Shared call-to-action core (title, description). Variant-specific fields

@@ -4,6 +4,7 @@ import { planFields, pricingFields } from '@/blocks/shared/pricingFields'
 
 export const PricingEnterprise: Block = {
   slug: 'pricingEnterprise',
+  dbName: 'pc_pri_ent',
   interfaceName: 'PricingEnterpriseBlock',
   fields: [
     // Shared pricing heading (eyebrow, title, description). Variant-specific

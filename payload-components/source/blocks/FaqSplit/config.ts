@@ -5,6 +5,7 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const FaqSplit: Block = {
   slug: 'faqSplit',
+  dbName: 'pc_faq_spl',
   interfaceName: 'FaqSplitBlock',
   fields: [
     // Shared FAQ core (eyebrow, title, description). Variant-specific fields

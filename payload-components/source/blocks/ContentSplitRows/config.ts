@@ -4,6 +4,7 @@ import { contentFields } from '@/blocks/shared/contentFields'
 
 export const ContentSplitRows: Block = {
   slug: 'contentSplitRows',
+  dbName: 'pc_con_spl_row',
   interfaceName: 'ContentSplitRowsBlock',
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

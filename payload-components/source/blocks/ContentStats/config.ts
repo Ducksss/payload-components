@@ -5,6 +5,7 @@ import { iconField } from '@/blocks/shared/contentIcons'
 
 export const ContentStats: Block = {
   slug: 'contentStats',
+  dbName: 'pc_con_sta',
   interfaceName: 'ContentStatsBlock',
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

@@ -4,6 +4,7 @@ import { logoCloudFields } from '@/blocks/shared/logoCloudFields'
 
 export const LogoCloudGrid: Block = {
   slug: 'logoCloudGrid',
+  dbName: 'pc_log_clo_gri',
   interfaceName: 'LogoCloudGridBlock',
   fields: [
     // Shared logo-cloud core (heading + logos). Edit the shared shape in

@@ -8,6 +8,8 @@ import { Media } from '@/components/Media'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/utilities/ui'
 
+// Layout adapted from tailark/blocks (MIT) — re-implemented as a Payload block.
+
 type Props = PricingEnterpriseBlockData & {
   id?: string
   className?: string

@@ -4,6 +4,7 @@ import { logoCloudFields } from '@/blocks/shared/logoCloudFields'
 
 export const LogoCloudInlineWrap: Block = {
   slug: 'logoCloudInlineWrap',
+  dbName: 'pc_log_clo_inl_wra',
   interfaceName: 'LogoCloudInlineWrapBlock',
   fields: [
     // Shared logo-cloud core (heading + logos). Edit the shared shape in

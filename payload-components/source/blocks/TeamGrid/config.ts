@@ -4,6 +4,7 @@ import { teamFields, teamMemberFields } from '@/blocks/shared/teamFields'
 
 export const TeamGrid: Block = {
   slug: 'teamGrid',
+  dbName: 'pc_tea_gri',
   interfaceName: 'TeamGridBlock',
   fields: [
     // Shared team core (eyebrow, title). Variant-specific fields follow; edit the
