@@ -4,6 +4,8 @@ import { testimonialFields, testimonialItemFields } from '@/blocks/shared/testim
 
 export const TestimonialsWall: Block = {
   slug: 'testimonialsWall',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_tes_wal',
   interfaceName: 'TestimonialsWallBlock',
   fields: [

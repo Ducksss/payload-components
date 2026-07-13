@@ -5,6 +5,8 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const ComparatorGrid: Block = {
   slug: 'comparatorGrid',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_com_gri',
   interfaceName: 'ComparatorGridBlock',
   fields: [

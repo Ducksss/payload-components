@@ -4,6 +4,8 @@ import { planFields, pricingFields } from '@/blocks/shared/pricingFields'
 
 export const PricingCardsMuted: Block = {
   slug: 'pricingCardsMuted',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_pri_car_mut',
   interfaceName: 'PricingCardsMutedBlock',
   fields: [

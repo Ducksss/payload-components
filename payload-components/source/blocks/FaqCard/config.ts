@@ -5,6 +5,8 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const FaqCard: Block = {
   slug: 'faqCard',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_faq_car',
   interfaceName: 'FaqCardBlock',
   fields: [

@@ -116,10 +116,13 @@ describe('payload-components manifests', () => {
         'utf8',
       )
       const databaseName = config.match(
-        /export const \w+: Block = \{\s*\n\s*slug: '[^']+',\s*\n\s*dbName: '([^']+)'/,
+        /export const \w+: Block = \{\s*\n\s*slug: '[^']+',\s*\n\s*\/\/ Existing apps must migrate stored data before adopting this identifier:\s*\n\s*\/\/ https:\/\/www\.payload-components\.xyz\/docs\/registry#installed-source-and-migrations\s*\n\s*dbName: '([^']+)'/,
       )?.[1]
 
-      expect(databaseName, `${name} missing top-level dbName`).toBeTruthy()
+      expect(
+        databaseName,
+        `${name} must put the migration warning immediately before its top-level dbName`,
+      ).toBeTruthy()
       if (!databaseName) continue
       expect(databaseName.length, `${name} dbName is too long`).toBeLessThanOrEqual(18)
       expect(databaseNames.has(databaseName), `${name} reuses dbName ${databaseName}`).toBe(false)
@@ -130,9 +133,13 @@ describe('payload-components manifests', () => {
   })
 
   it('documents the copied-source database migration boundary', async () => {
-    const [workspaceReadme, registryDocs] = await Promise.all([
+    const [workspaceReadme, registryDocs, componentTemplate] = await Promise.all([
       readFile(path.join(repoRoot, 'payload-components', 'README.md'), 'utf8'),
       readFile(path.join(repoRoot, 'content', 'docs', 'registry.mdx'), 'utf8'),
+      readFile(
+        path.join(repoRoot, 'payload-components', 'templates', 'component-template', 'README.md'),
+        'utf8',
+      ),
     ])
 
     for (const [label, source] of [
@@ -146,6 +153,14 @@ describe('payload-components manifests', () => {
       expect(source, `${label} must assign migration ownership`).toContain(
         'consumer project must own the migration',
       )
+    }
+
+    expect(workspaceReadme).toContain('### Deterministic fixture checks')
+    expect(workspaceReadme).toContain('### Fresh-consumer smoke validation')
+    expect(workspaceReadme).toContain('### Release gate')
+    expect(registryDocs).toContain('## Installed source and migrations')
+    for (const shardIndex of [0, 1, 2, 3]) {
+      expect(componentTemplate).toContain(`pnpm test:fresh -- --shard-index ${shardIndex}`)
     }
   })
 })

@@ -71,7 +71,7 @@ describe('release gate configuration', () => {
       scripts?: Record<string, string>
     }
     const releaseScript = packageJson.scripts?.['test:release'] ?? ''
-    const buildIndex = releaseScript.indexOf('pnpm build')
+    const buildIndex = releaseScript.indexOf('pnpm build:e2e')
     const e2eIndex = releaseScript.indexOf('pnpm run test:e2e')
 
     expect(buildIndex).toBeGreaterThan(-1)
@@ -109,6 +109,29 @@ describe('release gate configuration', () => {
 
     expect(buildModule.getE2ESiteUrl).toBeTypeOf('function')
     expect(buildModule.getE2ESiteUrl?.('4321')).toBe('http://localhost:4321')
+
+    const probe = [
+      "import config from './playwright.config.ts'",
+      "import { getE2ESiteUrl } from './tools/payload-components/build-e2e.ts'",
+      "const webServer = Array.isArray(config.webServer) ? config.webServer[0] : config.webServer",
+      "process.stdout.write(JSON.stringify({ port: webServer?.env?.PORT, siteUrl: getE2ESiteUrl() }))",
+    ].join(';')
+    const probeEnv = { ...process.env }
+    delete probeEnv.E2E_PORT
+    const { stdout } = await execFileAsync(
+      process.execPath,
+      ['--import', 'tsx/esm', '--input-type=module', '--eval', probe],
+      {
+        cwd: repoRoot,
+        env: probeEnv,
+        timeout: 10_000,
+      },
+    )
+    const defaults = JSON.parse(stdout) as { port?: string; siteUrl?: string }
+
+    expect(defaults.port).toBeTruthy()
+    expect(defaults.siteUrl).toBeTruthy()
+    expect(new URL(defaults.siteUrl ?? '').port).toBe(defaults.port)
     expect(packageJson.scripts?.['build:e2e']).toContain(
       'tools/payload-components/build-e2e.ts',
     )

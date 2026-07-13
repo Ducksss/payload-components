@@ -4,6 +4,8 @@ import { contentFields } from '@/blocks/shared/contentFields'
 
 export const ContentImageFrame: Block = {
   slug: 'contentImageFrame',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_con_ima_fra',
   interfaceName: 'ContentImageFrameBlock',
   fields: [

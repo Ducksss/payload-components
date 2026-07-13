@@ -355,8 +355,13 @@ export const runCommand = async ({
       )
     }, timeoutMs)
 
-    if (stdin) {
-      child.stdin?.end(stdin)
+    if (stdin && child.stdin) {
+      child.stdin.on('error', (error: NodeJS.ErrnoException) => {
+        if (error.code !== 'EPIPE') {
+          finish(error)
+        }
+      })
+      child.stdin.end(stdin)
     }
 
     child.stdout?.setEncoding('utf8')

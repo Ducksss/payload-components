@@ -126,3 +126,15 @@ doc page, and installer tests, together. Work in this order:
    tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm build:e2e && cross-env
    PLAYWRIGHT_SERVER_MODE=production pnpm run test:e2e`
    (run e2e with a free `E2E_PORT`, e.g. `E2E_PORT=3142`).
+
+   Then run all four required clean-room consumer shards:
+
+   ```bash
+   pnpm test:fresh -- --shard-index 0
+   pnpm test:fresh -- --shard-index 1
+   pnpm test:fresh -- --shard-index 2
+   pnpm test:fresh -- --shard-index 3
+   ```
+
+   See the workspace [Verification Suite](../../README.md#verification-suite) for what the
+   deterministic release gate and fresh-consumer validation each prove.

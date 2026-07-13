@@ -4,6 +4,8 @@ import { integrationFields } from '@/blocks/shared/integrationFields'
 
 export const IntegrationGrid: Block = {
   slug: 'integrationGrid',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_int_gri',
   interfaceName: 'IntegrationGridBlock',
   fields: [

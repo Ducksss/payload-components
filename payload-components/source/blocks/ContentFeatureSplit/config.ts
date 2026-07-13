@@ -5,6 +5,8 @@ import { iconField } from '@/blocks/shared/contentIcons'
 
 export const ContentFeatureSplit: Block = {
   slug: 'contentFeatureSplit',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_con_fea_spl',
   interfaceName: 'ContentFeatureSplitBlock',
   fields: [

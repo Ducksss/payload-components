@@ -4,6 +4,8 @@ import { contentFields } from '@/blocks/shared/contentFields'
 
 export const ContentSplitRows: Block = {
   slug: 'contentSplitRows',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_con_spl_row',
   interfaceName: 'ContentSplitRowsBlock',
   fields: [
