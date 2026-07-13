@@ -125,7 +125,8 @@ With no component override, the runner derives the complete sorted slug list fro
 `pnpm test:release` runs lint, source generation, TypeScript, registry checks, integration tests, a
 production build, and Playwright against `next start`. It is the deterministic site and registry
 release gate; it does not run or replace the four fresh-consumer shards. The required PR `pr-gate`
-passes only when `test:release`, compatibility checks, and every fresh shard succeed.
+passes only when `quick-checks`, `test:release`, compatibility checks, and every fresh shard
+succeed.
 
 ## Current Contract
 

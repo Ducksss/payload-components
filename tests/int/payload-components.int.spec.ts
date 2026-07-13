@@ -162,6 +162,7 @@ describe('payload-components manifests', () => {
     expect(workspaceReadme).toContain('### Deterministic fixture checks')
     expect(workspaceReadme).toContain('### Fresh-consumer smoke validation')
     expect(workspaceReadme).toContain('### Release gate')
+    expect(workspaceReadme).toContain('`quick-checks`')
     expect(registryDocs).toContain('## Installed source and migrations')
     for (const shardIndex of [0, 1, 2, 3]) {
       expect(componentTemplate).toContain(`pnpm test:fresh -- --shard-index ${shardIndex}`)
