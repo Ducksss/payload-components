@@ -62,7 +62,7 @@ export function ArtifactNodeCard({
         {row.artifact}
       </p>
       {kind === 'todo' ? (
-        <span className="shrink-0 rounded-full border border-dashed border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+        <span className="shrink-0 rounded-full border border-dashed border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground">
           to&nbsp;do
         </span>
       ) : (
@@ -89,7 +89,7 @@ export function CommandNodeCard({
   return (
     <div
       className={cn(
-        'flex flex-col gap-3 rounded-[1.25rem] border border-border bg-muted/40 p-4',
+        'flex flex-col gap-3 rounded-card border border-border bg-muted/40 p-4',
         className,
       )}
     >
@@ -105,7 +105,7 @@ export function CommandNodeCard({
         >
           &gt;_
         </span>
-        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+        <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
           {label}
         </p>
       </div>

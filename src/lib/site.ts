@@ -1,3 +1,6 @@
+import packageJson from '../../package.json' with { type: 'json' }
+import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
+
 const productionSiteUrl = 'https://www.payload-components.xyz'
 const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionSiteUrl).replace(/\/+$/, '')
 
@@ -10,7 +13,19 @@ export const docsRoute = '/docs'
 export const docsImageRoute = '/og/docs'
 export const docsContentRoute = '/llms.mdx/docs'
 export const blogRoute = '/blog'
+export const blogTitle = 'Blog'
+export const blogDescription =
+  'Updates, deep dives, and release notes from the Payload Components team.'
 export const primaryInstallCommand = 'npx payload-components add hero-basic'
+export const cliVersion = packageJson.version
+
+export const pipelineStages = [
+  { detail: 'The block config, component, and shared fields land in src/blocks/.', title: 'Copy the source' },
+  { detail: 'Added to your Pages collection in src/collections/Pages/index.ts.', title: 'Register the block' },
+  { detail: 'Wired into src/blocks/RenderBlocks.tsx so the page renders it.', title: 'Map the renderer' },
+  { detail: 'payload generate:types updates src/payload-types.ts.', title: 'Regenerate types' },
+  { detail: 'payload generate:importmap updates the admin import map.', title: 'Regenerate the import map' },
+] as const
 
 export const siteDescription =
   'Payload Components is an MIT registry and CLI that installs typed Payload CMS blocks into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
@@ -51,7 +66,7 @@ export const heroTertiaryLinks = [
 export const terminalDemoLines = [
   { kind: 'command', text: 'npx payload-components add hero-basic' },
   { kind: 'info', text: 'payload-components: installing "hero-basic" into ./acme-site' },
-  { kind: 'step', text: 'resolved hero-basic@0.1.0 · payload-website-starter' },
+  { kind: 'step', text: `resolved hero-basic@${heroBasicManifest.version} · payload-website-starter` },
   { kind: 'step', text: 'copied 3 block source files into src/blocks/' },
   { kind: 'step', text: 'registered block in src/collections/Pages/index.ts' },
   { kind: 'step', text: 'wired render mapping in src/blocks/RenderBlocks.tsx' },
@@ -116,7 +131,7 @@ export const workflowIntro =
 
 export const workflowSteps = [
   {
-    command: '/docs/components/hero-basic',
+    command: '/components',
     description: 'Fields, files, and patches — before you run anything.',
     title: 'Read the contract',
   },
@@ -245,7 +260,7 @@ export const componentEntries = [
     slug: 'hero-basic',
     target: 'Hero section',
     title: 'Hero Basic',
-    version: '0.1.0',
+    version: heroBasicManifest.version,
   },
   {
     category: 'features',
@@ -1063,28 +1078,17 @@ export const upcomingComponents = [
 
 export type UpcomingComponent = (typeof upcomingComponents)[number]
 
-/* ------------------------------------------------------------------ */
-/* Derived catalog counts — computed from the arrays above so they     */
-/* never drift from what the catalog actually ships.                    */
-/* ------------------------------------------------------------------ */
-
-export const installablePageCount = componentEntries.filter(
-  (e) => e.family === 'pages',
-).length
-export const upcomingPostCount = upcomingComponents.length
-
-export const componentsIntro =
-  `No screenshots — the specimen below is the real component, rendered from source. ${installablePageCount} page blocks install today.`
+export const componentsIntro = 'No screenshots — each specimen is the real component, rendered from source.'
 
 export const componentFamilies = {
   pages: {
-    countLabel: `${installablePageCount} installable`,
+    countLabel: 'Installable',
     description:
       'Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map.',
     name: 'Page blocks',
   },
   posts: {
-    countLabel: `${upcomingPostCount} in development`,
+    countLabel: 'In development',
     description:
       'Editorial surfaces for the Posts collection — component-level installs, no block wiring needed. In development.',
     name: 'Post components',

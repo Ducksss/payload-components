@@ -6,7 +6,7 @@ import semver from 'semver'
 import type { DependencyMap, PackageManager } from './types'
 
 import { PACKAGE_JSON_FILE } from './constants'
-import { getLockfileName, runCommand } from './utils'
+import { runCommand } from './utils'
 
 type PackageJson = {
   dependencies?: Record<string, string>
@@ -178,18 +178,18 @@ export const installManifestDependencies = async ({
 
 export const getRuntimePatchedFiles = ({
   dependencies,
+  lockfilePath,
   recoveryPatchedFiles,
-  packageManager,
 }: {
   dependencies: DependencyMap
+  lockfilePath: string
   recoveryPatchedFiles: string[]
-  packageManager: PackageManager
 }) => {
   const patchedFiles = new Set(recoveryPatchedFiles)
 
   if (Object.keys(dependencies).length > 0) {
     patchedFiles.add(PACKAGE_JSON_FILE)
-    patchedFiles.add(getLockfileName(packageManager))
+    patchedFiles.add(lockfilePath)
   }
 
   return [...patchedFiles].sort()

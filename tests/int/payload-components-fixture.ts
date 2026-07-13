@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp as fsMkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp as fsMkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
@@ -7,6 +7,11 @@ import { loadManifest } from '../../tools/payload-components/manifest'
 import type { ComponentManifest, PayloadFragment } from '../../tools/payload-components/types'
 
 const layoutAnchor = "name: 'layout'"
+const repoRoot = process.cwd()
+
+type InstallFixtureOptions = {
+  preseedSource?: boolean
+}
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
@@ -91,6 +96,7 @@ const copyProjectFixture = async () => {
             'class-variance-authority': '^0.7.0',
             clsx: '^2.1.1',
             'lucide-react': '^0.563.0',
+            motion: '^12.0.0',
             next: '^16.0.0',
             payload: '^3.0.0',
             react: '^19.0.0',
@@ -141,6 +147,19 @@ const copyProjectFixture = async () => {
     writeFile(path.join(tempDir, 'src', 'app', 'globals.css'), '@import "tailwindcss";\n', 'utf8'),
     writeFile(path.join(tempDir, 'src', 'payload.config.ts'), 'export default {}\n', 'utf8'),
     writeFile(
+      path.join(tempDir, 'src', 'components', 'ui', 'accordion.tsx'),
+      [
+        "import * as React from 'react'",
+        '',
+        "export const Accordion = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />",
+        "export const AccordionContent = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />",
+        "export const AccordionItem = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />",
+        "export const AccordionTrigger = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => <button {...props} />",
+        '',
+      ].join('\n'),
+      'utf8',
+    ),
+    writeFile(
       path.join(tempDir, 'src', 'components', 'ui', 'badge.tsx'),
       [
         "import * as React from 'react'",
@@ -148,6 +167,16 @@ const copyProjectFixture = async () => {
         'export function Badge(props: React.HTMLAttributes<HTMLDivElement>) {',
         '  return <div data-slot="badge" {...props} />',
         '}',
+        '',
+      ].join('\n'),
+      'utf8',
+    ),
+    writeFile(
+      path.join(tempDir, 'src', 'components', 'ui', 'button.tsx'),
+      [
+        "import * as React from 'react'",
+        '',
+        "export const Button = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => <button {...props} />",
         '',
       ].join('\n'),
       'utf8',
@@ -261,8 +290,11 @@ export const removeInstalledComponentFromFixture = async ({
   ])
 }
 
-export const createInstallFixture = async (componentName: string) => {
-  const { fixtureDir, manifests } = await createInstallFixtureForComponents([componentName])
+export const createInstallFixture = async (
+  componentName: string,
+  options: InstallFixtureOptions = {},
+) => {
+  const { fixtureDir, manifests } = await createInstallFixtureForComponents([componentName], options)
 
   return {
     fixtureDir,
@@ -270,7 +302,10 @@ export const createInstallFixture = async (componentName: string) => {
   }
 }
 
-export const createInstallFixtureForComponents = async (componentNames: string[]) => {
+export const createInstallFixtureForComponents = async (
+  componentNames: string[],
+  options: InstallFixtureOptions = {},
+) => {
   const fixtureDir = await copyProjectFixture()
   const manifests = await Promise.all(
     [...new Set(componentNames)].map((componentName) => loadManifest(componentName)),
@@ -281,6 +316,23 @@ export const createInstallFixtureForComponents = async (componentNames: string[]
       fixtureDir,
       manifest,
     })
+  }
+
+  if (options.preseedSource) {
+    for (const manifest of manifests) {
+      for (const targetFile of manifest.files) {
+        const sourceFile = path.join(
+          repoRoot,
+          'payload-components',
+          'source',
+          targetFile.replace(/^src\//, ''),
+        )
+        const fixtureFile = path.join(fixtureDir, targetFile)
+
+        await mkdir(path.dirname(fixtureFile), { recursive: true })
+        await cp(sourceFile, fixtureFile)
+      }
+    }
   }
 
   return {

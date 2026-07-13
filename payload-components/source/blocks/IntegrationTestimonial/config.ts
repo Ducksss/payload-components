@@ -4,6 +4,9 @@ import { integrationFields } from '@/blocks/shared/integrationFields'
 
 export const IntegrationTestimonial: Block = {
   slug: 'integrationTestimonial',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_int_tes',
   interfaceName: 'IntegrationTestimonialBlock',
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

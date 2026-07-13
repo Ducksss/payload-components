@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process'
+import { spawn, type ChildProcess } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -32,6 +32,86 @@ const resolveRepoRoot = () => {
 
 export const repoRoot = resolveRepoRoot()
 export const shadcnCliPackage = 'shadcn@4.7.0'
+export const DEFAULT_COMMAND_TIMEOUT_MS = 2 * 60 * 1000
+
+export type CommandResult = {
+  stderr: string
+  stdout: string
+}
+
+const PROCESS_TERMINATION_GRACE_MS = 2_000
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+const signalProcessTree = (child: ChildProcess, signal: NodeJS.Signals) => {
+  if (!child.pid) {
+    return
+  }
+
+  if (process.platform === 'win32') {
+    child.kill(signal)
+    return
+  }
+
+  try {
+    process.kill(-child.pid, signal)
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code
+
+    if (code !== 'ESRCH') {
+      throw error
+    }
+  }
+}
+
+const isProcessTreeAlive = (child: ChildProcess) => {
+  if (!child.pid) {
+    return false
+  }
+
+  if (process.platform === 'win32') {
+    return child.exitCode === null && child.signalCode === null
+  }
+
+  try {
+    process.kill(-child.pid, 0)
+    return true
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ESRCH') {
+      return false
+    }
+
+    throw error
+  }
+}
+
+export const terminateProcessTree = async (
+  child: ChildProcess,
+  graceMs = PROCESS_TERMINATION_GRACE_MS,
+) => {
+  signalProcessTree(child, 'SIGTERM')
+  const deadline = Date.now() + graceMs
+
+  while (Date.now() < deadline && isProcessTreeAlive(child)) {
+    await sleep(25)
+  }
+
+  if (isProcessTreeAlive(child)) {
+    signalProcessTree(child, 'SIGKILL')
+  }
+
+  await Promise.race([
+    child.exitCode !== null || child.signalCode !== null
+      ? Promise.resolve()
+      : new Promise<void>((resolve) => child.once('close', () => resolve())),
+    sleep(graceMs),
+  ])
+}
+
+const abortError = (command: string, args: string[]) => {
+  const error = new Error(`Command aborted: ${command} ${args.join(' ')}`)
+  error.name = 'AbortError'
+  return error
+}
 
 export const isPathInside = (parentPath: string, childPath: string) => {
   const relative = path.relative(path.resolve(parentPath), path.resolve(childPath))
@@ -79,10 +159,14 @@ export const extractMajor = (version: string | undefined, dependencyName: string
   return Number(match[1])
 }
 
-export const detectPackageManager = async (cwd: string): Promise<PackageManager> => {
+export const detectPackageManagerDetails = async (cwd: string): Promise<{
+  lockfilePath: string
+  packageManager: PackageManager
+}> => {
   const lockfiles: Array<[PackageManager, string]> = [
     ['pnpm', getLockfileName('pnpm')],
-    ['bun', getLockfileName('bun')],
+    ['bun', 'bun.lock'],
+    ['bun', 'bun.lockb'],
     ['yarn', getLockfileName('yarn')],
     ['npm', getLockfileName('npm')],
   ]
@@ -90,14 +174,23 @@ export const detectPackageManager = async (cwd: string): Promise<PackageManager>
   for (const [manager, lockfile] of lockfiles) {
     try {
       await readFile(path.join(cwd, lockfile), 'utf8')
-      return manager
+      return {
+        lockfilePath: lockfile,
+        packageManager: manager,
+      }
     } catch {
       // Continue checking the remaining lockfiles.
     }
   }
 
-  return 'npm'
+  return {
+    lockfilePath: getLockfileName('npm'),
+    packageManager: 'npm',
+  }
 }
+
+export const detectPackageManager = async (cwd: string): Promise<PackageManager> =>
+  (await detectPackageManagerDetails(cwd)).packageManager
 
 export const getLockfileName = (packageManager: PackageManager) => {
   if (packageManager === 'pnpm') {
@@ -105,7 +198,7 @@ export const getLockfileName = (packageManager: PackageManager) => {
   }
 
   if (packageManager === 'bun') {
-    return 'bun.lockb'
+    return 'bun.lock'
   }
 
   if (packageManager === 'yarn') {
@@ -173,36 +266,131 @@ export const getRunScriptCommand = (packageManager: PackageManager, script: stri
 
 export const runCommand = async ({
   args,
+  captureOutput = false,
   command,
   cwd,
   env,
+  signal,
   stdin,
+  timeoutMs = DEFAULT_COMMAND_TIMEOUT_MS,
 }: {
   args: string[]
+  captureOutput?: boolean
   command: string
   cwd: string
   env?: NodeJS.ProcessEnv
+  signal?: AbortSignal
   stdin?: string
+  timeoutMs?: number
 }) => {
-  await new Promise<void>((resolve, reject) => {
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
+    throw new Error(`Command timeout must be a positive number. Received "${timeoutMs}".`)
+  }
+
+  if (signal?.aborted) {
+    throw abortError(command, args)
+  }
+
+  return new Promise<CommandResult>((resolve, reject) => {
     const child = spawn(command, args, {
       cwd,
+      detached: process.platform !== 'win32',
       env: env ?? process.env,
-      stdio: [stdin ? 'pipe' : 'inherit', 'inherit', 'inherit'],
+      stdio: captureOutput
+        ? [stdin ? 'pipe' : 'ignore', 'pipe', 'pipe']
+        : [stdin ? 'pipe' : 'inherit', 'inherit', 'inherit'],
     })
+    let stderr = ''
+    let settled = false
+    let stdout = ''
+    let terminating = false
 
-    if (stdin) {
-      child.stdin?.end(stdin)
+    const cleanup = () => {
+      clearTimeout(timeout)
+      signal?.removeEventListener('abort', onAbort)
     }
 
-    child.on('error', reject)
-    child.on('close', (code) => {
-      if (code === 0) {
-        resolve()
+    const finish = (error?: Error) => {
+      if (settled) {
         return
       }
 
-      reject(new Error(`Command failed: ${command} ${args.join(' ')}`))
+      settled = true
+      cleanup()
+
+      if (error) {
+        Object.assign(error, { stderr, stdout })
+        reject(error)
+      } else {
+        resolve({ stderr, stdout })
+      }
+    }
+
+    const terminate = async (error: Error) => {
+      if (settled || terminating) {
+        return
+      }
+
+      terminating = true
+
+      try {
+        await terminateProcessTree(child)
+        finish(error)
+      } catch (terminationError) {
+        finish(
+          new Error(`${error.message} Process cleanup failed: ${String(terminationError)}`, {
+            cause: terminationError,
+          }),
+        )
+      }
+    }
+
+    const onAbort = () => {
+      void terminate(abortError(command, args))
+    }
+
+    const timeout = setTimeout(() => {
+      void terminate(
+        new Error(`Command timed out after ${timeoutMs}ms: ${command} ${args.join(' ')}`),
+      )
+    }, timeoutMs)
+
+    if (stdin && child.stdin) {
+      child.stdin.on('error', (error: NodeJS.ErrnoException) => {
+        if (error.code !== 'EPIPE') {
+          finish(error)
+        }
+      })
+      child.stdin.end(stdin)
+    }
+
+    child.stdout?.setEncoding('utf8')
+    child.stdout?.on('data', (chunk: string) => {
+      stdout += chunk
+    })
+    child.stderr?.setEncoding('utf8')
+    child.stderr?.on('data', (chunk: string) => {
+      stderr += chunk
+    })
+
+    signal?.addEventListener('abort', onAbort, { once: true })
+    if (signal?.aborted) {
+      onAbort()
+    }
+    child.on('error', (error) => finish(error))
+    child.on('close', (code) => {
+      if (terminating) {
+        return
+      }
+
+      if (code === 0) {
+        finish()
+        return
+      }
+
+      const error = new Error(`Command failed: ${command} ${args.join(' ')}`)
+      Object.assign(error, { code, stderr, stdout })
+      finish(error)
     })
   })
 }
