@@ -65,6 +65,17 @@ const siteTokenGuards = [
   },
 ] as const
 
+const shineCtaColorTokens = [
+  'brand-shine-shadow',
+  'brand-shine-glow',
+  'brand-shine-glint',
+  'brand-shine-glint-hot',
+  'brand-shine-spark-core',
+  'brand-shine-spark-mid',
+  'brand-shine-spark-edge',
+  'brand-shine-highlight',
+] as const
+
 /* Tailwind's built-in palette names plus white/black. Using any of these in a
  * colour utility is drift away from the semantic token set. None of our tokens
  * collide with these names, so a token can never be mistaken for a palette. */
@@ -282,6 +293,25 @@ describe('Component visual standards', () => {
     }
 
     expect(violations, `Site token drift:\n${violations.join('\n')}`).toEqual([])
+  })
+
+  it('keeps the hero shine CTA on reusable color tokens', async () => {
+    const css = await readFile(globalsPath, 'utf8')
+    const start = css.indexOf('/* Shiny install CTA — reserved')
+    const end = css.indexOf('/* Product-proof window', start)
+
+    expect(start).toBeGreaterThanOrEqual(0)
+    expect(end).toBeGreaterThan(start)
+
+    const shineCtaCss = css.slice(start, end)
+
+    for (const token of shineCtaColorTokens) {
+      expect(css, `missing --${token}`).toContain(`--${token}:`)
+      expect(shineCtaCss, `unused --${token}`).toContain(`var(--${token})`)
+    }
+
+    expect(shineCtaCss).toContain('var(--background)')
+    expect(shineCtaCss).not.toMatch(/oklch\(\s*(?:\d|\.\d)/i)
   })
 
   it('keeps the brand guide from copying CSS token values by hand', async () => {
