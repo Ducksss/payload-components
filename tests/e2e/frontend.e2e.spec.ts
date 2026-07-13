@@ -293,9 +293,11 @@ test.describe('Light shadcn frontend', () => {
     await page.setViewportSize({ width: 320, height: 800 })
     await page.goto(`${baseURL}/docs`)
     const trigger = page.getByRole('button', { name: 'Open navigation' })
-    await expect(trigger).toBeVisible()
-    await trigger.click()
     const navigation = page.locator('#mobile-navigation')
+    await expect(trigger).toBeVisible()
+    await expect(navigation).toBeAttached()
+    await expect(navigation).toBeHidden()
+    await trigger.click()
     await expect(navigation).toBeVisible()
     const docsLink = navigation.getByRole('link', { name: 'Docs' })
     await expect(docsLink).toBeVisible()
@@ -309,7 +311,9 @@ test.describe('Light shadcn frontend', () => {
     await expect(githubLink).toHaveAttribute('rel', 'noreferrer')
     await expect(page.getByRole('button', { name: 'Close navigation' })).toBeVisible()
     await page.keyboard.press('Escape')
-    await expect(navigation).toHaveCount(0)
+    await expect(navigation).toBeAttached()
+    await expect(navigation).toBeHidden()
+    await expect(trigger).toBeFocused()
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
   })
 
@@ -334,9 +338,11 @@ test.describe('Light shadcn frontend', () => {
 
   test('component wiring paths and actions wrap at 390px', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 })
-    await page.goto(`${baseURL}/docs/components/hero-basic`)
+    await page.goto(`${baseURL}/docs/components/logo-cloud-inline-wrap`)
     const wiring = page.getByText('What it installs', { exact: false }).locator('..')
-    const path = page.locator('code:visible').filter({ hasText: 'importMap.js' }).last()
+    const path = page
+      .locator('code:visible')
+      .filter({ hasText: 'src/blocks/LogoCloudInlineWrap/Component.tsx' })
     await expect(path).toBeVisible()
     const wraps = await path.evaluate((el) => {
       const style = getComputedStyle(el)
@@ -348,6 +354,7 @@ test.describe('Light shadcn frontend', () => {
       }
     })
     expect(wraps.breakable).toBe(true)
+    expect(wraps.multiline).toBe(true)
     expect(wraps.fits).toBe(true)
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
     expect(overflow).toBe(false)

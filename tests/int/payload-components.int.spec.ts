@@ -129,7 +129,7 @@ describe('payload-components manifests', () => {
       databaseNames.add(databaseName)
     }
 
-    expect(databaseNames).toHaveLength(names.length)
+    expect(databaseNames.size).toBe(names.length)
   })
 
   it('documents the copied-source database migration boundary', async () => {
@@ -150,8 +150,12 @@ describe('payload-components manifests', () => {
         'does not overwrite installed component source',
       )
       expect(source, `${label} must cover database-name updates`).toContain('`dbName`')
+      expect(source, `${label} must scope database-name migrations`).toContain('SQL-backed')
       expect(source, `${label} must assign migration ownership`).toContain(
         'consumer project must own the migration',
+      )
+      expect(source, `${label} must require a data-preserving migration review`).toContain(
+        'rename rather than drop and recreate',
       )
     }
 

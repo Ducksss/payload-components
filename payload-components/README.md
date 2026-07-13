@@ -68,11 +68,14 @@ new installs only unless a maintainer explicitly ports a source diff into an exi
 That ownership boundary keeps repeat installs idempotent and preserves consumer customizations.
 
 When an adopted source change adds or changes a persisted database identifier such as `dbName`,
-the consumer project must own the migration. The registry cannot safely infer the app's collection
-slug, database adapter, existing table names, or migration history. Generate and review the
-migration inside the consumer app, preserve existing rows with an explicit rename/backfill, and
-test it against a backup or staging database before deployment. Existing installs that do not port
-the source change keep their installed config and require no registry-driven migration.
+the SQL-backed consumer project must own the migration. The registry cannot safely infer the app's
+collection slug, block-field path, database adapter, schema, existing table names, or migration
+history. After porting the source diff, run `pnpm payload migrate:create <migration-name>` in the
+consumer app. Review the generated DDL to ensure it will rename rather than drop and recreate the
+existing tables, indexes, or enums; replace destructive DDL with an explicit rename or backfill.
+Test the migration against a backup or staging database, then run it before deploying the updated
+config. Existing installs that do not port the source change keep their installed config and require
+no registry-driven migration.
 
 ## Verification Suite
 
