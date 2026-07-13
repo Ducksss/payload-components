@@ -55,7 +55,6 @@ export const heroPrimaryCta = { href: '/docs', label: 'Get started' } as const
 
 export const heroTertiaryLinks = [
   { href: '/components', label: 'Browse the components' },
-  { href: '#wiring', label: 'See what add actually wires' },
 ] as const
 
 /**

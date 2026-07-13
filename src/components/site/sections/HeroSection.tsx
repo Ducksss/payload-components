@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { ArrowRight, Github, Sparkles, Star } from 'lucide-react'
+import { ArrowRight, Github, Sparkles } from 'lucide-react'
 
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { HeroInstallReplay } from '@/components/site/HeroInstallReplay'
@@ -20,7 +20,7 @@ import {
  * command above the fold, then the install replay as proof. Stays a server
  * component; the client bits (copy button, replay control) mount inside it. */
 export function HeroSection() {
-  const [browseLink, wiringLink] = heroTertiaryLinks
+  const [browseLink] = heroTertiaryLinks
 
   return (
     <section className="hero-shell overflow-hidden border-b border-border/60">
@@ -87,15 +87,11 @@ export function HeroSection() {
               <span aria-hidden="true" className="cta-twinkle" />
               <Github className="size-4" aria-hidden="true" />
               Star on GitHub
-              <span className="inline-flex items-center gap-1 rounded-full border border-foreground/10 bg-foreground/8 px-2 py-0.5 text-[0.72rem] font-semibold text-foreground/80">
-                <Star className="cta-badge-star size-3 fill-current" aria-hidden="true" />
-                Open source
-              </span>
             </a>
           </div>
 
           <div
-            className="hero-reveal flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground"
+            className="hero-reveal flex items-center justify-center text-sm text-muted-foreground"
             style={{ animationDelay: '230ms' }}
           >
             <Link
@@ -104,16 +100,6 @@ export function HeroSection() {
             >
               <Sparkles className="size-3.5" aria-hidden="true" />
               {browseLink.label}
-            </Link>
-            <span aria-hidden="true" className="hidden text-border sm:inline">
-              /
-            </span>
-            <Link
-              href={wiringLink.href}
-              className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
-            >
-              {wiringLink.label}
-              <ArrowRight className="size-3.5" aria-hidden="true" />
             </Link>
           </div>
         </div>

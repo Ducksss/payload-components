@@ -2,7 +2,10 @@ import { expect, type Page, test } from '@playwright/test'
 
 import {
   catalogTitle,
+  githubRepoUrl,
   heroHeadline,
+  heroPrimaryCta,
+  heroTertiaryLinks,
   homeMetadataDescription,
   homeMetadataTitle,
   componentEntries,
@@ -91,6 +94,25 @@ test.describe('Light shadcn frontend', () => {
         },
       ]),
     )
+  })
+
+  test('keeps the landing hero action hierarchy focused', async ({ page }) => {
+    await page.goto(baseURL)
+
+    const hero = page.locator('.hero-shell')
+    await expect(
+      hero.getByRole('link', { name: heroPrimaryCta.label, exact: true }),
+    ).toBeVisible()
+    await expect(hero.locator(`a[href="${githubRepoUrl}"]`)).toHaveAccessibleName(
+      'Star on GitHub',
+    )
+    await expect(
+      hero.getByRole('link', { name: heroTertiaryLinks[0].label, exact: true }),
+    ).toBeVisible()
+    await expect(hero.getByText('Open source', { exact: true })).toHaveCount(0)
+    await expect(
+      hero.getByRole('link', { name: 'See what add actually wires', exact: true }),
+    ).toHaveCount(0)
   })
 
   test('renders the light token-driven homepage', async ({ page }) => {
