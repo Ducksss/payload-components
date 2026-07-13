@@ -128,6 +128,26 @@ describe('payload-components manifests', () => {
 
     expect(databaseNames).toHaveLength(names.length)
   })
+
+  it('documents the copied-source database migration boundary', async () => {
+    const [workspaceReadme, registryDocs] = await Promise.all([
+      readFile(path.join(repoRoot, 'payload-components', 'README.md'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'registry.mdx'), 'utf8'),
+    ])
+
+    for (const [label, source] of [
+      ['workspace README', workspaceReadme],
+      ['registry docs', registryDocs],
+    ] as const) {
+      expect(source, `${label} must state the source ownership boundary`).toContain(
+        'does not overwrite installed component source',
+      )
+      expect(source, `${label} must cover database-name updates`).toContain('`dbName`')
+      expect(source, `${label} must assign migration ownership`).toContain(
+        'consumer project must own the migration',
+      )
+    }
+  })
 })
 
 describe('payload-components add', () => {

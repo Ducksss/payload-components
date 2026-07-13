@@ -61,6 +61,19 @@ Namespace consumers can configure:
 
 Then install with `pnpm dlx shadcn@latest add @payload-components/hero-basic` or any other registry item.
 
+## Installed Source and Database Migrations
+
+`payload-components add` does not overwrite installed component source. Registry changes affect
+new installs only unless a maintainer explicitly ports a source diff into an existing Payload app.
+That ownership boundary keeps repeat installs idempotent and preserves consumer customizations.
+
+When an adopted source change adds or changes a persisted database identifier such as `dbName`,
+the consumer project must own the migration. The registry cannot safely infer the app's collection
+slug, database adapter, existing table names, or migration history. Generate and review the
+migration inside the consumer app, preserve existing rows with an explicit rename/backfill, and
+test it against a backup or staging database before deployment. Existing installs that do not port
+the source change keep their installed config and require no registry-driven migration.
+
 ## Verification Suite
 
 Use both verification tiers:
