@@ -169,4 +169,34 @@ describe('fresh Payload smoke seed generation', () => {
     expect(script).toContain("members: 'avatar'")
     expect(script).toContain('addSmokeUploadReferences(nestedValue, mediaID, key)')
   })
+
+  it('hydrates every missing upload representation without replacing existing references', () => {
+    const { addSmokeUploadReferences } = smokeHarness as typeof smokeHarness & {
+      addSmokeUploadReferences?: (value: unknown, mediaID: unknown) => unknown
+    }
+
+    expect(addSmokeUploadReferences).toBeTypeOf('function')
+    if (!addSmokeUploadReferences) return
+
+    expect(
+      addSmokeUploadReferences(
+        {
+          members: [
+            { avatar: undefined, name: 'Undefined' },
+            { avatar: null, name: 'Null' },
+            { avatar: '', name: 'Empty' },
+            { avatar: 'existing-media', name: 'Existing' },
+          ],
+        },
+        'smoke-media',
+      ),
+    ).toEqual({
+      members: [
+        { avatar: 'smoke-media', name: 'Undefined' },
+        { avatar: 'smoke-media', name: 'Null' },
+        { avatar: 'smoke-media', name: 'Empty' },
+        { avatar: 'existing-media', name: 'Existing' },
+      ],
+    })
+  })
 })

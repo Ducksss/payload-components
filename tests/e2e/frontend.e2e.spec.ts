@@ -291,13 +291,19 @@ test.describe('Light shadcn frontend', () => {
 
   test('mobile header stays bounded and supports keyboard disclosure', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 })
-    await page.goto(baseURL)
+    await page.goto(`${baseURL}/docs`)
     const trigger = page.getByRole('button', { name: 'Open navigation' })
     await expect(trigger).toBeVisible()
     await trigger.click()
     const navigation = page.locator('#mobile-navigation')
     await expect(navigation).toBeVisible()
-    await expect(navigation.getByRole('link', { name: 'Docs' })).toBeVisible()
+    const docsLink = navigation.getByRole('link', { name: 'Docs' })
+    await expect(docsLink).toBeVisible()
+    await expect(docsLink).toHaveClass(/bg-secondary/)
+    await expect(docsLink).toHaveClass(/text-foreground/)
+    await expect(navigation.getByRole('link', { name: 'Components' })).toHaveClass(
+      /text-muted-foreground/,
+    )
     const githubLink = navigation.getByRole('link', { name: 'GitHub' })
     await expect(githubLink).toHaveAttribute('target', '_blank')
     await expect(githubLink).toHaveAttribute('rel', 'noreferrer')
@@ -425,7 +431,8 @@ test.describe('Light shadcn frontend', () => {
 
     // The URL is intentionally debounced (250ms); no document/RSC navigation
     // should be generated for each keypress or for the history-only update.
-    await expect.poll(() => page.url(), { timeout: 150 }).toBe(initialUrl)
+    await page.waitForTimeout(150)
+    expect(page.url()).toBe(initialUrl)
     await expect.poll(() => page.url(), { timeout: 5000 }).toContain('/components?q=feature-bento')
     // replaceState updates the frame URL without a document request; the
     // initial frame event and history-only URL events are expected.
