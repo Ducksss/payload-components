@@ -5,6 +5,7 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const FeatureSteps: Block = {
   slug: 'featureSteps',
+  dbName: 'pc_fea_ste',
   interfaceName: 'FeatureStepsBlock',
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields

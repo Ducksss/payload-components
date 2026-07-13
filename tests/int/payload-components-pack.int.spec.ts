@@ -1,16 +1,15 @@
-import { execFile } from 'node:child_process'
 import { mkdtemp, readdir, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
-import { promisify } from 'node:util'
 
 import { afterAll, describe, expect, it } from 'vitest'
 
 import { expectInstalledComponents } from './payload-components-assertions'
 import { createInstallFixture } from './payload-components-fixture'
+import { runCommand } from '../../tools/payload-components/utils'
 
-const execFileAsync = promisify(execFile)
 const repoRoot = process.cwd()
+const packCommandTimeoutMs = 5 * 60 * 1000
 
 // This test is heavy (it packs the tarball, installs it, and reaches the network
 // for shadcn). It only runs when explicitly requested via `pnpm test:pack` so the
@@ -50,10 +49,13 @@ const listFilesRecursive = async (dir: string): Promise<string[]> => {
     tempDirs.push(packDir, toolDir)
 
     // `pnpm pack` runs the prepack hook (pnpm build:cli) and emits the tarball.
-    await execFileAsync('pnpm', ['pack', '--pack-destination', packDir], {
+    await runCommand({
+      args: ['pack', '--pack-destination', packDir],
+      captureOutput: true,
+      command: 'pnpm',
       cwd: repoRoot,
       env: process.env,
-      maxBuffer: 10_000_000,
+      timeoutMs: packCommandTimeoutMs,
     })
 
     const packEntries = await readdir(packDir)
@@ -70,10 +72,13 @@ const listFilesRecursive = async (dir: string): Promise<string[]> => {
       `${JSON.stringify({ name: 'payload-components-pack-harness', private: true }, null, 2)}\n`,
       'utf8',
     )
-    await execFileAsync('npm', ['install', tarballPath, '--no-audit', '--no-fund'], {
+    await runCommand({
+      args: ['install', tarballPath, '--no-audit', '--no-fund'],
+      captureOutput: true,
+      command: 'npm',
       cwd: toolDir,
       env: process.env,
-      maxBuffer: 10_000_000,
+      timeoutMs: packCommandTimeoutMs,
     })
 
     const installedPackageDir = path.join(toolDir, 'node_modules', 'payload-components')
@@ -84,10 +89,13 @@ const listFilesRecursive = async (dir: string): Promise<string[]> => {
     tempDirs.push(fixtureDir)
 
     // Run the *installed* bin under plain Node (no tsx) against the fixture.
-    await execFileAsync(process.execPath, [cliEntry, 'add', manifest.name, '--cwd', fixtureDir], {
+    await runCommand({
+      args: [cliEntry, 'add', manifest.name, '--cwd', fixtureDir],
+      captureOutput: true,
+      command: process.execPath,
       cwd: toolDir,
       env: process.env,
-      maxBuffer: 10_000_000,
+      timeoutMs: packCommandTimeoutMs,
     })
 
     await expectInstalledComponents(fixtureDir, [manifest])

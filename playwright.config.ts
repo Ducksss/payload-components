@@ -1,6 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
 const e2ePort = process.env.E2E_PORT ?? '3100'
+const webServerCommand =
+  process.env.PLAYWRIGHT_SERVER_MODE === 'production' ? 'pnpm start' : 'pnpm dev'
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -28,7 +30,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm dev',
+    command: webServerCommand,
     env: {
       NEXT_PUBLIC_SITE_URL: `http://localhost:${e2ePort}`,
       PORT: e2ePort,

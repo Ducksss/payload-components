@@ -41,6 +41,7 @@
   ],
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
+    "build:e2e": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/build-e2e.ts",
     "build:cli": "cross-env NODE_OPTIONS=--no-deprecation tsup",
     "dev": "cross-env NODE_OPTIONS='--no-deprecation --max-old-space-size=12288' next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
@@ -49,7 +50,7 @@
     "payload-components": "node ./bin/payload-components.mjs",
     "prebuild": "pnpm source:build && pnpm registry:build",
     "prepack": "pnpm build:cli",
-    "registry:build": "cross-env NODE_OPTIONS=--no-deprecation pnpm dlx shadcn@4.7.0 build payload-components/registry.json --output public/r --cwd .",
+    "registry:build": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec shadcn build payload-components/registry.json --output public/r --cwd .",
     "registry:check": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/check-public-registry.ts",
     "registry:validate": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/validate-registry.ts",
     "showcase:capture": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/showcase/capture.ts",
@@ -62,7 +63,7 @@
     "test:pack": "cross-env NODE_OPTIONS=--no-deprecation RUN_PACK_TEST=1 vitest run --config ./vitest.config.mts tests/int/payload-components-pack.int.spec.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
     "test:registry": "pnpm registry:check && pnpm registry:validate",
-    "test:release": "pnpm lint && pnpm source:build && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm run test:e2e && pnpm build"
+    "test:release": "pnpm lint && pnpm source:build && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm build:e2e && cross-env PLAYWRIGHT_SERVER_MODE=production pnpm run test:e2e"
   },
   "dependencies": {
     "ajv": "^8.18.0",
@@ -94,6 +95,7 @@
     "postcss": "^8.5.14",
     "react": "19.2.7",
     "react-dom": "19.2.7",
+    "shadcn": "4.7.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
     "tsup": "^8.5.0",

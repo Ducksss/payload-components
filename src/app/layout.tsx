@@ -2,15 +2,11 @@ import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 
 import { Instrument_Serif } from 'next/font/google'
-import Script from 'next/script'
-
-import { Analytics } from '@vercel/analytics/next'
-import { SpeedInsights } from '@vercel/speed-insights/next'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 
 import { JsonLd } from '@/components/seo/JsonLd'
-import { AnalyticsPageview } from '@/components/site/AnalyticsPageview'
+import { AnalyticsShell } from '@/components/site/AnalyticsShell'
 import { CommandCopyController } from '@/components/site/CommandCopyController'
 import { githubRepoUrl, siteDescription, siteUrl } from '@/lib/site'
 import {
@@ -96,7 +92,6 @@ export const metadata: Metadata = {
 /* Emitted once on every page: the Organization + WebSite identity that
    page-level schema (SoftwareApplication, FAQ, TechArticle…) references by @id. */
 const siteStructuredData = graph(organizationNode(), websiteNode(), documentationCollectionNode())
-const googleTagId = 'G-EMGRZ0H9R9'
 
 export const viewport: Viewport = {
   themeColor: '#ffffff',
@@ -112,26 +107,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
          and custom properties substitute var() at the declaring element. */
       className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable}`}
     >
-      <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${googleTagId}`}
-        strategy="afterInteractive"
-      />
-      <Script id="google-tag" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', '${googleTagId}');
-        `}
-      </Script>
       <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
         <JsonLd data={siteStructuredData} />
-        <AnalyticsPageview />
+        <AnalyticsShell />
         {children}
         <CommandCopyController />
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   )

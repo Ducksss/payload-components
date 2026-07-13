@@ -5,6 +5,7 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const ComparatorTable: Block = {
   slug: 'comparatorTable',
+  dbName: 'pc_com_tab',
   interfaceName: 'ComparatorTableBlock',
   fields: [
     // Shared comparator header (title, description). Variant-specific fields

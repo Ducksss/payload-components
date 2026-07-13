@@ -4,6 +4,7 @@ import { planFields, pricingFields } from '@/blocks/shared/pricingFields'
 
 export const PricingSplit: Block = {
   slug: 'pricingSplit',
+  dbName: 'pc_pri_spl',
   interfaceName: 'PricingSplitBlock',
   fields: [
     // Shared pricing heading (eyebrow, title, description). Variant-specific

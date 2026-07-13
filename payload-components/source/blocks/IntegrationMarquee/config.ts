@@ -4,6 +4,7 @@ import { integrationFeaturedMark, integrationFields } from '@/blocks/shared/inte
 
 export const IntegrationMarquee: Block = {
   slug: 'integrationMarquee',
+  dbName: 'pc_int_mar',
   interfaceName: 'IntegrationMarqueeBlock',
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

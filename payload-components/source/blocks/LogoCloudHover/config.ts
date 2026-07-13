@@ -5,6 +5,7 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const LogoCloudHover: Block = {
   slug: 'logoCloudHover',
+  dbName: 'pc_log_clo_hov',
   interfaceName: 'LogoCloudHoverBlock',
   fields: [
     // Shared logo-cloud core (heading + logos). Edit the shared shape in

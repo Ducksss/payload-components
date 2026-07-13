@@ -4,6 +4,7 @@ import { teamFields, teamMemberFields } from '@/blocks/shared/teamFields'
 
 export const TeamRoster: Block = {
   slug: 'teamRoster',
+  dbName: 'pc_tea_ros',
   interfaceName: 'TeamRosterBlock',
   fields: [
     // Shared team core (eyebrow, title). Variant-specific fields follow; edit the
