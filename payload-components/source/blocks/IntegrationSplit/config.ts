@@ -5,6 +5,9 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const IntegrationSplit: Block = {
   slug: 'integrationSplit',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_int_spl',
   interfaceName: 'IntegrationSplitBlock',
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

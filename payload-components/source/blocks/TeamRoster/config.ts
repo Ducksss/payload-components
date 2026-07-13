@@ -4,6 +4,9 @@ import { teamFields, teamMemberFields } from '@/blocks/shared/teamFields'
 
 export const TeamRoster: Block = {
   slug: 'teamRoster',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_tea_ros',
   interfaceName: 'TeamRosterBlock',
   fields: [
     // Shared team core (eyebrow, title). Variant-specific fields follow; edit the

@@ -8,6 +8,8 @@ import { CMSLink } from '@/components/Link'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/utilities/ui'
 
+// Layout adapted from tailark/blocks (MIT) — re-implemented as a Payload block.
+
 type Props = ComparatorTableBlockData & {
   id?: string
   className?: string

@@ -90,6 +90,16 @@ describe('Fumadocs site shell', () => {
     expect(packageJson.scripts?.prebuild).toContain('pnpm source:build')
   })
 
+  it('keeps evergreen about and blog copy free of numeric catalog counts', async () => {
+    const [aboutPage, helloPost] = await Promise.all([
+      readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'blog', 'hello.mdx'), 'utf8'),
+    ])
+
+    expect(aboutPage).not.toMatch(/\b\d+\s+page blocks?\b/i)
+    expect(helloPost).not.toMatch(/\b\d+\s+page blocks?\b/i)
+  })
+
   it('keeps docs content in the Fumadocs source directory', async () => {
     const [sourceConfig, docsIndex, architecture] = await Promise.all([
       readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),
@@ -171,8 +181,12 @@ describe('Fumadocs site shell', () => {
     expect(docsCss).toContain("@import 'tailwindcss'")
     expect(docsCss).toContain("@import 'fumadocs-ui/css/preset.css'")
     expect(globals).not.toContain("@import 'fumadocs-ui/css/preset.css'")
-    expect(siteHeader).not.toContain("'use client'")
-    expect(siteHeader).not.toContain('usePathname')
+    expect(siteHeader).toContain("'use client'")
+    expect(siteHeader).toContain('usePathname')
+    expect(siteHeader).toContain('aria-expanded')
+    expect(siteHeader).not.toContain('role="menu"')
+    expect(siteHeader).not.toContain('role="menuitem"')
+    expect(siteHeader).toContain("rel={item.label === 'GitHub' ? 'noreferrer' : undefined}")
     expect(siteHeader).toContain('activePath')
     expect(commandCopyButton).not.toContain("'use client'")
     expect(commandCopyButton).toContain('data-copy-command')
@@ -345,28 +359,98 @@ describe('Fumadocs site shell', () => {
     await expectMetaEntriesResolve(path.join(repoRoot, 'content', 'docs'))
   })
 
+  it('keeps blog routes wired to shared chrome and complete metadata', async () => {
+    const [layoutSource, indexSource, postSource, sitemapSource] = await Promise.all([
+      readFile(path.join(repoRoot, 'src/app/blog/layout.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/blog/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/blog/[slug]/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/sitemap.ts'), 'utf8'),
+    ])
+    expect(layoutSource).toContain('<SiteFooter />')
+    expect(indexSource).toContain("alternates: { canonical: `${siteUrl}/blog` }")
+    expect(indexSource).toContain("twitter: { card: 'summary_large_image'")
+    expect(postSource).toContain("type: 'article'")
+    expect(postSource).toContain('publishedTime:')
+    expect(postSource).toContain("twitter: { card: 'summary_large_image'")
+    expect(sitemapSource).toContain('blogSource.getPages()')
+  })
+
+  it('keeps catalog search local and docs copy factual', async () => {
+    const catalog = await readFile(path.join(repoRoot, 'src/components/site/ComponentCatalogBrowser.tsx'), 'utf8')
+    const registry = await readFile(path.join(repoRoot, 'content/docs/registry.mdx'), 'utf8')
+    expect(catalog).toContain('value={localQuery}')
+    expect(catalog).toContain('window.history.replaceState')
+    expect(catalog).toContain("window.addEventListener('popstate'")
+    expect(registry).not.toContain('sample content for docs and testing')
+  })
+
   it('keeps catalog page-block count copy aligned with installable components', async () => {
-    const { componentEntries, componentFamilies, componentsIntro, upcomingComponents } =
-      await import('../../src/lib/site')
-    const pageCount = componentEntries.filter((component) => component.family === 'pages').length
+    const { componentFamilies, componentsIntro } = await import('../../src/lib/site')
     const aboutPage = await readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8')
 
-    expect(pageCount).toBe(58)
-    expect(componentFamilies.pages.countLabel).toBe(`${pageCount} installable`)
-    expect(componentFamilies.posts.countLabel).toBe(`${upcomingComponents.length} in development`)
-    expect(componentsIntro).toContain(`${pageCount} page blocks install today`)
-    expect(aboutPage).toContain('${installablePageCount} page blocks install today')
+    expect(componentFamilies.pages.countLabel).toBe('Installable')
+    expect(componentFamilies.posts.countLabel).toBe('In development')
+    expect(componentsIntro).toContain('No screenshots')
     expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Fifty-three page blocks')
+  })
+
+  it('does not export stale numeric catalog counts from public site data', async () => {
+    const site = await import('../../src/lib/site')
+
+    expect('installablePageCount' in site).toBe(false)
+    expect('upcomingPostCount' in site).toBe(false)
+  })
+
+  it('keeps product-surface consistency contracts explicit', async () => {
+    const [firstBlock, installation, aboutPage, siteSource, docsLayout] = await Promise.all([
+      readFile(path.join(repoRoot, 'content/docs/first-block.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content/docs/installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/about/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/lib/site.ts'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/docs/layout.tsx'), 'utf8'),
+    ])
+    expect(firstBlock).toContain('href="/components"')
+    expect(firstBlock).not.toContain('href="/docs/components"')
+
+    const stages = ['registry-build', 'registry-add', 'dependency-install', 'fragment-apply', 'post-install']
+    const stagePositions = stages.map((stage) => installation.indexOf(stage))
+    expect(stagePositions.every((position) => position >= 0)).toBe(true)
+    expect(stagePositions).toEqual([...stagePositions].sort((a, b) => a - b))
+    expect(installation).toContain('direct `shadcn add` only copies the block\'s source files')
+    expect(installation).not.toContain('sample content')
+
+    expect(aboutPage).toContain('pipelineStages.map')
+    expect(aboutPage).not.toMatch(/const pipelineStages\s*=/)
+    expect(siteSource).toContain('export const pipelineStages')
+
+    const { cliVersion, terminalDemoLines } = await import('../../src/lib/site')
+    const packageJson = await readJson<{ version: string }>(path.join(repoRoot, 'package.json'))
+    const heroManifest = await readJson<{ version: string }>(
+      path.join(repoRoot, 'payload-components', 'manifests', 'hero-basic.json'),
+    )
+    expect(cliVersion).toBe(packageJson.version)
+    expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${heroManifest.version}`))).toBe(true)
+    if (heroManifest.version !== cliVersion) {
+      expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${cliVersion}`))).toBe(false)
+    }
+    expect(docsLayout).toContain('{cliVersion}')
+    expect(docsLayout).not.toMatch(/components v\d+\.\d+\.\d+/)
   })
 
   it('publishes production-safe fallback URLs when no site URL env is set', async () => {
     vi.stubEnv('NEXT_PUBLIC_SITE_URL', undefined)
     vi.resetModules()
-    vi.doMock('../../src/lib/source', () => ({
+    const sourceMock = () => ({
       getLLMText: vi.fn(() => '# Mock docs (/docs)'),
       source: {
         getPages: () => [{ url: '/docs' }],
       },
+    })
+    vi.doMock('@/lib/source', sourceMock)
+    vi.doMock(path.join(repoRoot, 'src/lib/source.ts'), sourceMock)
+    vi.doMock('collections/server', () => ({
+      docs: { toFumadocsSource: () => ({}) },
+      blog: [],
     }))
 
     const [{ siteUrl }, robotsModule, sitemapModule, llmsModule, llmsFullModule] =
