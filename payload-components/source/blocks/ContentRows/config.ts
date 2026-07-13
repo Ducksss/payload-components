@@ -4,6 +4,9 @@ import { contentFields } from '@/blocks/shared/contentFields'
 
 export const ContentRows: Block = {
   slug: 'contentRows',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_con_row',
   interfaceName: 'ContentRowsBlock',
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

@@ -78,12 +78,17 @@ export function HeroSection() {
               href={githubRepoUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-border/70 bg-background/80 px-5 text-sm font-medium text-foreground transition-[transform,background-color] duration-200 hover:-translate-y-px hover:bg-background sm:w-auto"
+              className="shine-cta inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-border/70 bg-background/80 px-5 text-sm font-medium text-foreground transition-[transform,background-color] duration-200 hover:-translate-y-px hover:bg-background sm:w-auto"
             >
+              {/* Decorative star twinkles — must stay the first three children
+                  (the .cta-twinkle styles position them via nth-child). */}
+              <span aria-hidden="true" className="cta-twinkle" />
+              <span aria-hidden="true" className="cta-twinkle" />
+              <span aria-hidden="true" className="cta-twinkle" />
               <Github className="size-4" aria-hidden="true" />
               Star on GitHub
               <span className="inline-flex items-center gap-1 rounded-full border border-foreground/10 bg-foreground/8 px-2 py-0.5 text-[0.72rem] font-semibold text-foreground/80">
-                <Star className="size-3 fill-current" aria-hidden="true" />
+                <Star className="cta-badge-star size-3 fill-current" aria-hidden="true" />
                 Open source
               </span>
             </a>

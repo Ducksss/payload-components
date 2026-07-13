@@ -5,6 +5,9 @@ import { iconField } from '@/blocks/shared/faqIcons'
 
 export const FaqIcons: Block = {
   slug: 'faqIcons',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_faq_ico',
   interfaceName: 'FaqIconsBlock',
   fields: [
     // Shared FAQ core (eyebrow, title, description). The item shape adds a

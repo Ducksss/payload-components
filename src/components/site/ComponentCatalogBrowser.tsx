@@ -1,7 +1,7 @@
 'use client'
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useMemo } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ArrowUpRight, Search, X } from 'lucide-react'
 
@@ -53,30 +53,68 @@ export function ComponentCatalogBrowser({
   pages,
   posts,
 }: ComponentCatalogBrowserProps) {
-  const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
+  const readUrlFilters = useCallback(() => {
+    const params = new URLSearchParams(window.location.search)
+    const rawType = params.get('type')
+    const type: FamilyKey | 'all' = rawType === 'pages' || rawType === 'posts' ? rawType : 'all'
+    const rawCategory = params.get('category') ?? ''
+    return { type, category: rawCategory in categories ? rawCategory : '', query: params.get('q') ?? '' }
+  }, [categories])
   const rawType = searchParams.get('type')
-  const type: FamilyKey | 'all' = rawType === 'pages' || rawType === 'posts' ? rawType : 'all'
+  const typeFromUrl: FamilyKey | 'all' = rawType === 'pages' || rawType === 'posts' ? rawType : 'all'
   const rawCategory = searchParams.get('category') ?? ''
-  const category = rawCategory in categories ? rawCategory : ''
+  const categoryFromUrl = rawCategory in categories ? rawCategory : ''
   const query = searchParams.get('q') ?? ''
+  const [localQuery, setLocalQuery] = useState(query)
+  const [localType, setLocalType] = useState<FamilyKey | 'all'>(typeFromUrl)
+  const [localCategory, setLocalCategory] = useState(categoryFromUrl)
+  const type = localType
+  const category = localCategory
+  // URL search params are external state; mirror them after router/popstate updates.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLocalQuery(query)
+    setLocalType(typeFromUrl)
+    setLocalCategory(categoryFromUrl)
+  }, [query, typeFromUrl, categoryFromUrl])
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search)
+      if (localQuery) params.set('q', localQuery)
+      else params.delete('q')
+      const next = params.toString() ? `${pathname}?${params}` : pathname
+      if (next !== `${window.location.pathname}${window.location.search}`) window.history.replaceState(null, '', next)
+    }, 250)
+    return () => window.clearTimeout(timer)
+  }, [localQuery, pathname])
+  useEffect(() => {
+    const onPopState = () => {
+      const next = readUrlFilters()
+      setLocalQuery(next.query)
+      setLocalType(next.type)
+      setLocalCategory(next.category)
+    }
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [readUrlFilters])
   const activeFamily: FamilyKey | 'all' = category ? categories[category].family : type
 
   const queriedPages = useMemo(
     () =>
-      pages.filter((component) =>
-        matches(query, component.title, component.slug, component.description, component.target),
+        pages.filter((component) =>
+        matches(localQuery, component.title, component.slug, component.description, component.target),
       ),
-    [pages, query],
+    [pages, localQuery],
   )
   const queriedPosts = useMemo(
     () =>
       posts.filter((component) =>
-        matches(query, component.title, component.slug, component.description, component.target),
+        matches(localQuery, component.title, component.slug, component.description, component.target),
       ),
-    [posts, query],
+    [posts, localQuery],
   )
 
   const pagesCounts = useMemo(() => countByCategory(queriedPages), [queriedPages])
@@ -91,13 +129,17 @@ export function ComponentCatalogBrowser({
   )
 
   function updateParams(updates: Record<string, string>) {
-    const params = new URLSearchParams(searchParams.toString())
-    for (const [key, value] of Object.entries(updates)) {
+    const params = new URLSearchParams(window.location.search)
+    for (const [key, value] of Object.entries({ q: localQuery, ...updates })) {
       if (!value || value === 'all') params.delete(key)
       else params.set(key, value)
     }
     const queryString = params.toString()
-    router.replace(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false })
+    window.history.replaceState(null, '', queryString ? `${pathname}?${queryString}` : pathname)
+    const next = readUrlFilters()
+    setLocalQuery(next.query)
+    setLocalType(next.type)
+    setLocalCategory(next.category)
   }
 
   const showPages = activeFamily === 'all' || activeFamily === 'pages'
@@ -186,8 +228,8 @@ export function ComponentCatalogBrowser({
                 />
                 <input
                   type="search"
-                  value={query}
-                  onChange={(event) => updateParams({ q: event.target.value })}
+                  value={localQuery}
+                  onChange={(event) => setLocalQuery(event.target.value)}
                   placeholder="Search components"
                   className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand/50 focus:ring-2 focus:ring-brand/15"
                 />
@@ -249,7 +291,7 @@ export function ComponentCatalogBrowser({
                       <ComponentCard key={component.slug} component={component} />
                     ))}
 
-                    {query === '' && !category ? (
+                    {localQuery === '' && !category ? (
                       <a
                         href={`${githubRepoUrl}/issues`}
                         target="_blank"

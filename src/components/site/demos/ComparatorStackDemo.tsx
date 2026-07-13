@@ -1,6 +1,7 @@
 import { Check, Minus } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { comparatorStackDemoContent, type ComparatorStackDemoContent } from '@/lib/demo-content'
 
 import { DemoLink } from './DemoLink'
@@ -10,7 +11,7 @@ import { DemoLink } from './DemoLink'
  * source, in source order. Deliberate substitutions:
  *   <section className={cn('container', …)}> → <div> root (frames own spacing; no landmark)
  *   <h2> / <h3>                              → <div> (role-neutral; the catalog owns its outline)
- *   <Card>                                   → plain <div> (the Card chrome is presentational)
+ *   <Card>                                   → shared Card chrome
  *   CMSLink                                  → <DemoLink> (@/components/Link exists only in consumer repos)
  *   ComparatorStackBlockData                 → ComparatorStackDemoContent (@/payload-types is consumer-only)
  *   cn() card/ring wrapper                   → plain div/template classes (skipped by the class-mirror guard)
@@ -43,7 +44,7 @@ export function ComparatorStackDemo({
 
           <div className="flex flex-col gap-4">
             {plans.map((plan, planIndex) => (
-              <div
+              <Card
                 key={planIndex}
                 className={`border-border/70 bg-background/60 p-6 shadow-none ${plan.highlighted ? 'ring-1 ring-primary' : ''}`}
               >
@@ -101,7 +102,7 @@ export function ComparatorStackDemo({
                     </div>
                   ) : null}
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         </div>

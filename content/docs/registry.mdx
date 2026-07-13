@@ -55,6 +55,24 @@ pnpm dlx shadcn@latest add @payload-components/hero-basic
   for the full comparison.
 </Callout>
 
+## Installed source and migrations
+
+`payload-components add` does not overwrite installed component source. A published registry
+change therefore affects new installs only; an existing app changes only when its maintainer
+deliberately ports the source diff. This preserves local edits and keeps repeat installs
+idempotent.
+
+<Callout type="warn">
+  If an adopted source diff adds or changes a persisted identifier such as `dbName`, the
+  SQL-backed consumer project must own the migration. After porting the source diff, run
+  `pnpm payload migrate:create <migration-name>` in that app. Review the generated DDL to ensure
+  it will rename rather than drop and recreate the existing tables, indexes, or enums; replace
+  destructive DDL with an explicit rename or backfill. Test against a backup or staging database,
+  then run the migration before deploying the updated config. The registry cannot safely generate
+  a universal migration without the consumer's collection slug, block-field path, adapter, schema,
+  existing identifiers, and migration history.
+</Callout>
+
 ## Manifests
 
 Each wrapper manifest in `payload-components/manifests` defines:
@@ -65,7 +83,6 @@ Each wrapper manifest in `payload-components/manifests` defines:
 - Payload fragments to apply
 - post-install scripts
 - recovery metadata for patched files
-- sample content for docs and testing
 
 ## Support matrix
 

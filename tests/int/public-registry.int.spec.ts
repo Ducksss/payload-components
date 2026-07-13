@@ -78,9 +78,9 @@ describe('public shadcn registry publication', () => {
       scripts?: Record<string, string>
     }>(path.join(repoRoot, 'package.json'))
 
-    expect(packageJson.devDependencies?.shadcn).toBeUndefined()
+    expect(packageJson.devDependencies?.shadcn).toBe('4.7.0')
     expect(packageJson.scripts?.['registry:build']).toBe(
-      'cross-env NODE_OPTIONS=--no-deprecation pnpm dlx shadcn@4.7.0 build payload-components/registry.json --output public/r --cwd .',
+      'cross-env NODE_OPTIONS=--no-deprecation pnpm exec shadcn build payload-components/registry.json --output public/r --cwd .',
     )
     expect(packageJson.scripts?.['registry:check']).toBe(
       'cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/check-public-registry.ts',
