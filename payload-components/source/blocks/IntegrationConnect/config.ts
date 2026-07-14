@@ -4,6 +4,9 @@ import { integrationFeaturedMark, integrationFields } from '@/blocks/shared/inte
 
 export const IntegrationConnect: Block = {
   slug: 'integrationConnect',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_int_con',
   interfaceName: 'IntegrationConnectBlock',
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

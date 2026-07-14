@@ -6,7 +6,7 @@ import { ArrowUpRight, Github } from 'lucide-react'
 
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { baseOptions } from '@/lib/layout.shared'
-import { githubRepoUrl } from '@/lib/site'
+import { githubRepoUrl, cliVersion } from '@/lib/site'
 import { source } from '@/lib/source'
 
 import './docs.css'
@@ -34,7 +34,7 @@ export default function DocsRootLayout({ children }: { children: ReactNode }) {
               key="docs-version-banner"
               className="rounded-lg border border-brand/25 bg-brand/10 px-3 py-2 font-mono text-[11px] font-medium text-brand"
             >
-              MIT registry · components v0.1.0
+              MIT registry · components v{cliVersion}
             </div>
           ),
           defaultOpenLevel: 1,

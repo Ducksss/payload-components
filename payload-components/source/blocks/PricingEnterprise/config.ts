@@ -4,6 +4,9 @@ import { planFields, pricingFields } from '@/blocks/shared/pricingFields'
 
 export const PricingEnterprise: Block = {
   slug: 'pricingEnterprise',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_pri_ent',
   interfaceName: 'PricingEnterpriseBlock',
   fields: [
     // Shared pricing heading (eyebrow, title, description). Variant-specific
