@@ -46,6 +46,10 @@ async function expectCopiedAlert(page: Page) {
   })
 }
 
+async function waitForCopyController(page: Page) {
+  await expect(page.locator('html')).toHaveAttribute('data-copy-controller-ready', 'true')
+}
+
 test.describe('Light shadcn frontend', () => {
   test.beforeEach(async ({ context }) => {
     await context.addInitScript(() => {
@@ -519,6 +523,7 @@ test.describe('Light shadcn frontend', () => {
   test('exposes a working command copy control', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
+    await waitForCopyController(page)
     await stubGtagEvents(page)
 
     await page.getByRole('button', { name: 'Copy' }).first().click()
@@ -558,6 +563,7 @@ test.describe('Light shadcn frontend', () => {
 
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
+    await waitForCopyController(page)
     await page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copy' }).click()
 
     await expect(page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copied' })).toBeVisible()
@@ -616,6 +622,7 @@ test.describe('Light shadcn frontend', () => {
   test('shows an alert after copying a docs code block', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(`${baseURL}/docs`)
+    await waitForCopyController(page)
 
     await page.getByRole('button', { name: 'Copy Text' }).first().click()
 
@@ -628,6 +635,7 @@ test.describe('Light shadcn frontend', () => {
   test('shows an alert after copying page markdown', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(`${baseURL}/docs/installation`)
+    await waitForCopyController(page)
 
     await page.getByRole('button', { name: /Copy Markdown/ }).click()
 

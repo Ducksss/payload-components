@@ -85,10 +85,12 @@ export function CommandCopyController() {
 
     document.addEventListener('click', onClick)
     document.addEventListener('click', onLinkClick)
+    document.documentElement.dataset.copyControllerReady = 'true'
 
     return () => {
       document.removeEventListener('click', onClick)
       document.removeEventListener('click', onLinkClick)
+      delete document.documentElement.dataset.copyControllerReady
       if (clipboard && patchedWriteText && clipboard.writeText === patchedWriteText) {
         clipboard.writeText = originalWriteText
       }
