@@ -6,7 +6,29 @@ import { describe, expect, it } from 'vitest'
 const repoRoot = process.cwd()
 const read = (relative: string) => readFile(path.join(repoRoot, relative), 'utf8')
 
+const upstreamItems = {
+  'contact-routing-form': 'contact-2',
+  'feature-accordion': 'features-12',
+  'feature-cards-media': 'features-10',
+  'feature-icon-grid': 'features-1',
+  'hero-product-tilt': 'hero-section-9',
+  'hero-video': 'hero-section-5',
+  'stats-proof': 'stats-4',
+} as const
+
 describe('curated Tailark ports', () => {
+  it('records the exact upstream item and audit date for every curated port', async () => {
+    const provenance = await read('payload-components/PROVENANCE.md')
+
+    expect(provenance).toContain('| Last audited | 2026-07-15 |')
+
+    for (const [component, upstreamItem] of Object.entries(upstreamItems)) {
+      expect(provenance).toContain(`| \`${component}\` | \`${upstreamItem}\` |`)
+    }
+
+    expect(provenance).not.toContain('all `feature-*`')
+  })
+
   it('ships hero-video as a reduced-motion-safe Payload block', async () => {
     const [config, component, player, manifest, docs] = await Promise.all([
       read('payload-components/source/blocks/HeroVideo/config.ts'),

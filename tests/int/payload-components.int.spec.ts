@@ -28,9 +28,15 @@ type RegistryDefinition = {
 }
 
 const representativeInstallComponents = [
+  'contact-routing-form',
   'embed-basic',
+  'feature-accordion',
+  'feature-cards-media',
   'hero-basic',
+  'feature-icon-grid',
   'feature-grid-basic',
+  'hero-product-tilt',
+  'hero-video',
   'logo-cloud-marquee',
   'call-to-action-signup',
   'team-grid',
@@ -39,6 +45,17 @@ const representativeInstallComponents = [
   'comparator-grid',
   'testimonials-grid',
   'pricing-cards',
+  'stats-proof',
+] as const
+
+const curatedTailarkPortComponents = [
+  'hero-video',
+  'hero-product-tilt',
+  'feature-accordion',
+  'feature-cards-media',
+  'feature-icon-grid',
+  'stats-proof',
+  'contact-routing-form',
 ] as const
 
 const idempotencyComponents = ['hero-basic', 'logo-cloud-marquee'] as const
@@ -228,6 +245,25 @@ describe('payload-components add', () => {
     }
 
     await expectInstalledComponents(fixtureDir, manifests)
+  }, 180000)
+
+  it('installs every curated Tailark port together without duplicate wiring or shared files', async () => {
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents(
+      curatedTailarkPortComponents,
+      { preseedSource: true },
+    )
+    tempDirs.push(fixtureDir)
+
+    for (const componentName of curatedTailarkPortComponents) {
+      await runAddCommand(fixtureDir, componentName)
+    }
+
+    await expectInstalledComponents(fixtureDir, manifests)
+
+    const sharedFiles = await readdir(path.join(fixtureDir, 'src', 'blocks', 'shared'))
+    expect(sharedFiles.filter((file) => file === 'heroFields.ts')).toHaveLength(1)
+    expect(sharedFiles.filter((file) => file === 'featureFields.ts')).toHaveLength(1)
+    expect(sharedFiles.filter((file) => file === 'featureIcons.ts')).toHaveLength(1)
   }, 180000)
 
   it.each(idempotencyComponents)('treats a second %s install as idempotent', async (componentName) => {
