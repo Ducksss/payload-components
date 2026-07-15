@@ -225,6 +225,29 @@ test.describe('Light shadcn frontend', () => {
     expect(meanChannel).toBeGreaterThan(220)
   })
 
+  test('links setup FAQ answers to their canonical guides', async ({ page }) => {
+    await page.goto(baseURL)
+
+    await page
+      .getByRole('group')
+      .filter({ hasText: 'What exactly does an install change in my repo?' })
+      .getByText('What exactly does an install change in my repo?')
+      .click()
+    await expect(page.getByRole('link', { name: 'Read the installation guide' })).toHaveAttribute(
+      'href',
+      '/docs/installation',
+    )
+
+    await page
+      .getByRole('group')
+      .filter({ hasText: 'Why not just run npx shadcn add?' })
+      .getByText('Why not just run npx shadcn add?')
+      .click()
+    await expect(
+      page.getByRole('link', { name: 'Read the full shadcn comparison' }),
+    ).toHaveAttribute('href', '/docs/shadcn-vs-payload-components')
+  })
+
   test('aligns the brand mark relative to the documentation rail', async ({ page }) => {
     const viewports = [
       { alignTo: 'header-padding', height: 844, name: 'mobile', width: 390 },
