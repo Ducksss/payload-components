@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
+  <title id="title">CMS-managed input must be validated at the edge</title>
+  <desc id="description">TRUST BOUNDARY diagram for the Payload Components editorial library.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#f4f4f5"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#18181b" flood-opacity="0.08"/></filter>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+    <style>
+      .kicker{font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2.4px;fill:#059669}
+      .headline{font:650 34px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
+      .card{fill:#fff;stroke:#d4d4d8;stroke-width:1.5;filter:url(#shadow)}
+      .terminal{fill:#18181b;stroke:#3f3f46;stroke-width:1.5;filter:url(#shadow)}
+      .dot{fill:#059669}
+      .node-title{font:650 18px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
+      .node-body{font:450 14px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#52525b}
+      .terminal-title{font:650 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#f4f4f5}
+      .terminal-body{font:450 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#d4d4d8}
+      .arrow{fill:none;stroke:#059669;stroke-width:2.5;stroke-linecap:round;opacity:.85}
+      .edge-label{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#047857;paint-order:stroke;stroke:#fafafa;stroke-width:5px}
+    </style>
+  </defs>
+  <rect width="1200" height="675" fill="url(#background)"/>
+  <circle cx="1110" cy="70" r="62" fill="#059669" opacity=".06"/>
+  <circle cx="1110" cy="70" r="31" fill="#059669" opacity=".08"/>
+  <text class="kicker" x="60" y="55">TRUST BOUNDARY</text>
+  <text class="headline" x="60" y="104">CMS-managed input must be validated at the edge</text>
+  <g><g><path class="arrow" d="M 240 227.83333333333331 C 322 227.83333333333331, 322 397.49999999999994, 404 397.49999999999994" marker-end="url(#arrowhead)" /></g>
+<g><path class="arrow" d="M 600 295.66666666666663 C 600 295.66666666666663, 600 329.66666666666663, 600 329.66666666666663" marker-end="url(#arrowhead)" /></g>
+<g><path class="arrow" d="M 960 227.83333333333331 C 878 227.83333333333331, 878 397.49999999999994, 796 397.49999999999994" marker-end="url(#arrowhead)" /></g>
+<g><path class="arrow" d="M 404 397.49999999999994 C 322 397.49999999999994, 322 567.1666666666666, 240 567.1666666666666" marker-end="url(#arrowhead)" /></g>
+<g><path class="arrow" d="M 600 465.33333333333326 C 600 465.33333333333326, 600 499.3333333333333, 600 499.3333333333333" marker-end="url(#arrowhead)" /></g>
+<g><path class="arrow" d="M 796 397.49999999999994 C 878 397.49999999999994, 878 567.1666666666666, 960 567.1666666666666" marker-end="url(#arrowhead)" /></g></g>
+  <g>
+        <g>
+          <rect class="card" x="240" y="160" width="720" height="135.66666666666666" rx="18" />
+          <circle class="dot" cx="266" cy="189" r="6" />
+          <text class="node-title" x="284" y="195">Editor-controlled values</text>
+          <text class="node-body" x="266" y="230">URLs · form actions · embed identifiers</text>
+        </g>
+
+        <g>
+          <rect class="card" x="60" y="329.66666666666663" width="344" height="135.66666666666666" rx="18" />
+          <circle class="dot" cx="86" cy="358.66666666666663" r="6" />
+          <text class="node-title" x="104" y="364.66666666666663">Link policy</text>
+          <text class="node-body" x="86" y="399.66666666666663">Allow known protocols and destinations</text>
+        </g>
+
+        <g>
+          <rect class="card" x="428" y="329.66666666666663" width="344" height="135.66666666666666" rx="18" />
+          <circle class="dot" cx="454" cy="358.66666666666663" r="6" />
+          <text class="node-title" x="472" y="364.66666666666663">Server validation</text>
+          <text class="node-body" x="454" y="399.66666666666663">Schema · CSRF · rate limit · access</text>
+        </g>
+
+        <g>
+          <rect class="card" x="796" y="329.66666666666663" width="344" height="135.66666666666666" rx="18" />
+          <circle class="dot" cx="822" cy="358.66666666666663" r="6" />
+          <text class="node-title" x="840" y="364.66666666666663">Embed allowlist</text>
+          <text class="node-body" x="822" y="399.66666666666663">Provider + identifier, not raw HTML</text>
+        </g>
+
+        <g>
+          <rect class="card" x="240" y="499.3333333333333" width="720" height="135.66666666666666" rx="18" />
+          <circle class="dot" cx="266" cy="528.3333333333333" r="6" />
+          <text class="node-title" x="284" y="534.3333333333333">Safe rendered boundary</text>
+          <text class="node-body" x="266" y="569.3333333333333">Escaped output with explicit capabilities</text>
+        </g></g>
+</svg>

@@ -202,6 +202,36 @@ export function techArticleNode(opts: {
   }
 }
 
+export function blogPostingNode(opts: {
+  author: string
+  datePublished: Date | string
+  description?: string
+  image: string
+  tags: readonly string[]
+  title: string
+  url: string
+}): Node {
+  return {
+    '@id': `${siteUrl}${opts.url}#article`,
+    '@type': 'BlogPosting',
+    author: {
+      '@type': 'Person',
+      name: opts.author,
+      url: githubRepoUrl,
+    },
+    datePublished: new Date(opts.datePublished).toISOString(),
+    description: opts.description,
+    headline: opts.title,
+    image: `${siteUrl}${opts.image}`,
+    inLanguage: 'en',
+    isPartOf: { '@id': websiteId },
+    keywords: opts.tags.join(', '),
+    mainEntityOfPage: `${siteUrl}${opts.url}`,
+    publisher: { '@id': organizationId },
+    url: `${siteUrl}${opts.url}`,
+  }
+}
+
 /* Wrap one or more nodes into a single @graph document. */
 export function graph(...nodes: Node[]): Node {
   return { '@context': 'https://schema.org', '@graph': nodes }

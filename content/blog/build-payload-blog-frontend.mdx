@@ -1,0 +1,199 @@
+---
+title: Build an Editorial Blog Frontend with Payload Post Components
+description: Design a typed Payload post model and compose index, article, related-content, metadata, search, and syndication surfaces in Next.js.
+author: Ducksss
+date: 2026-07-14
+series: production-guides
+publicationOrder: 22
+cover:
+  src: /blog/build-payload-blog-frontend/cover.webp
+  alt: Editorial documents flowing into article, index, discovery, and syndication interfaces
+tags:
+  - Payload CMS
+  - Next.js
+  - Editorial
+---
+
+A blog frontend is more than an article template. One Post document feeds the index card, article
+route, related content, canonical metadata, social image, sitemap, RSS item, and often search. If each
+surface invents its own interpretation, titles drift, draft content leaks, images break, and a schema
+change becomes a repository-wide hunt.
+
+I start with an editorial contract, then build every projection from it. Payload owns structured
+content and publishing state. Next.js owns routing, rendering, metadata, and caching. Post components
+own reusable presentation without becoming a second source of truth.
+
+<BlogFigure
+  src="/blog/build-payload-blog-frontend/figure-01-editorial-architecture.svg"
+  alt="An editorial architecture map where one Payload Post model feeds the blog index, article route, discovery, RSS, and social metadata"
+  caption="Treat every public surface as a projection of one post contract. That keeps canonical URLs, dates, descriptions, and images consistent."
+/>
+
+## Model the Post before the page
+
+A practical Post collection includes:
+
+- title and unique slug;
+- concise description or dek;
+- publication date and optional updated date;
+- author relationship or controlled byline;
+- hero image with alt text;
+- rich article content;
+- tags or categories with a defined purpose;
+- SEO overrides only where editorially necessary;
+- drafts, versions, access, and preview configuration.
+
+Decide which fields are required to publish, not merely required to save a draft. A draft may begin
+without a hero image. A public post should not emit an empty social card. Payload hooks or workflow
+can validate the publish transition according to the application.
+
+Use a stable slug and establish redirect behavior before editors can rename it casually. A published
+URL is an external contract referenced by feeds, search engines, and other sites.
+
+<BlogFigure
+  src="/blog/build-payload-blog-frontend/figure-02-post-component-montage.webp"
+  alt="A real catalog montage of editorial post components for article lists, metadata, rich content, related stories, and calls to action"
+  caption="Post components are projections of the same editorial record; their visual variety should never create conflicting title, date, or destination logic."
+/>
+
+## Separate rich content from page blocks
+
+An article body and a marketing page have different editing rhythms. Rich text is appropriate for
+headings, paragraphs, lists, code, quotations, and inline media. Blocks are appropriate for
+structured interruptions whose fields and rendering deserve an explicit contract.
+
+Avoid making every paragraph a block; it slows writing and fragments semantics. Avoid accepting raw
+HTML for every special case; it weakens validation and rendering safety. Define a restrained set of
+article-specific blocks only when the content cannot be represented clearly through the rich-text
+editor.
+
+If block data appears inside rich content, generate types and render discriminators through an
+explicit map just as you would for a Page layout. The [Payload block primer](/blog/what-is-a-payload-cms-block)
+explains that lifecycle.
+
+## Fetch only publishable content
+
+The public route should query by slug, published status, locale, and access context. Preview mode can
+use draft content through a separate authenticated path. Do not fetch with elevated access simply
+because server code can.
+
+When a Payload Local API operation passes a user, set `overrideAccess: false` so the supplied user
+actually participates in access control. Pass the request object to nested Payload operations inside
+hooks. Those details prevent server convenience from bypassing the policy the collection declares.
+
+Choose relationship depth deliberately. Author and media fields may return IDs or populated
+documents. Type-narrow those values. A type assertion does not populate a relationship.
+
+## Build the index as a projection
+
+The index needs title, description, slug, date, hero thumbnail, tags, and perhaps author. Query and
+select only those fields when the application benefits from reduced data. Sort by the publication
+contract, not database creation time.
+
+Cards should use semantic article markup and one clear heading link. Avoid nested links around tags
+or actions. Reserve image dimensions, provide useful alt text or an empty alt when the adjacent title
+duplicates the information, and test long titles.
+
+At a small corpus size, one complete index can be simpler than client filtering. At larger scale,
+use server pagination with stable canonical URLs. Do not ship every full rich-text document to the
+browser just to derive a card excerpt.
+
+## Render the article with stable chrome
+
+The article page should expose one `h1`, description, byline, publication date, tags, cover, body,
+and related content. Put navigation and editorial metadata outside the rich-text renderer so an
+editor cannot accidentally create a second page title.
+
+Generate an inline table of contents from body headings when the article is long enough. IDs must be
+deterministic, unique, and shared between heading output and navigation links. Preserve logical
+heading order; visual typography should not dictate semantic level.
+
+Figures need a reusable component with required alt text and visible caption. Code blocks need
+horizontal containment on narrow screens. Tables should scroll within their own region rather than
+forcing page overflow.
+
+## Derive metadata from the same record
+
+Set the canonical URL from the stable slug and configured site origin. Use title and description from
+the Post unless explicit SEO fields override them. Attach a post-specific social image with fixed
+dimensions. Next.js documents current
+[metadata file conventions](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/opengraph-image)
+and route metadata behavior.
+
+Emit `BlogPosting` JSON-LD with headline, description, author, publication date, tags, canonical URL,
+and image. Follow Next.js's current [JSON-LD guidance](https://nextjs.org/docs/app/guides/json-ld),
+including safe serialization that prevents raw `<` from creating script markup.
+
+Structured data is another projection, not a place to invent missing claims. Its date and author
+should match visible article chrome.
+
+## Add RSS and sitemap deliberately
+
+An RSS route can be a small server handler without another dependency. Escape XML values, use
+canonical URLs as GUIDs, include publication dates, descriptions, and image enclosures, and return an
+appropriate XML content type. Decide whether the feed includes full content or summaries; summaries
+keep the route simpler and avoid rich-content serialization surprises.
+
+The sitemap should include every public post URL and publication or modification date according to
+the site's convention. Drafts must not appear. Tests can compare the number and slugs in blog data,
+RSS, and sitemap so one surface does not silently drift.
+
+For this repository's editorial implementation, the [blog index](/blog/hello) and RSS link are
+discoverable from the site and AI text surface while the full documentation corpus remains separate.
+
+## Define related posts without randomness
+
+Related content should be deterministic. Use shared series or tags, exclude the current post, and
+apply stable date or editorial ordering. Random results make caching and tests noisy and can surface
+old irrelevant content.
+
+Limit the section to a useful number, usually three. Cards should carry enough context to explain the
+relationship without repeating an entire index. If the taxonomy has no credible matches, omit the
+section rather than filling it with arbitrary posts.
+
+For a Payload-backed site, compute relationships at request or build time from selected metadata, or
+materialize them explicitly when editorial control matters. Avoid a client-only fetch that delays the
+last meaningful navigation on every article.
+
+## Make previews and cache invalidation honest
+
+Editors need to preview drafts without making them public. Use authenticated draft mode and a clear
+visual indicator. The public cache should only contain publishable results.
+
+When a post publishes or its slug changes, revalidate the article, index, related pages, sitemap, RSS,
+and any tag archives affected. A hook that triggers nested Payload operations must pass `req`, and a
+hook-driven update that could reenter itself needs a context flag to prevent loops.
+
+Document the invalidation graph. “The article updated but the homepage card did not” is usually a
+projection or cache dependency that was never made explicit.
+
+## Test the whole editorial system
+
+Create fixtures for draft, published, long title, missing optional image, multiple tags, populated and
+unpopulated author relationships, rich figures, tables, and code. Browser tests should walk every
+public post and assert canonical metadata, one `h1`, cover response, figure captions, JSON-LD, related
+content, and no horizontal overflow.
+
+Validate RSS as XML and assert unique canonical GUIDs in deterministic order. Request every social
+image and check its dimensions. Include representative index and article routes in accessibility and
+visual coverage.
+
+The [visual regression guide](/blog/visual-regression-component-registry) explains how stable capture
+routes and coverage guards keep a growing presentation surface honest.
+
+## Start from owned source
+
+The registry's post-component collection is still an explicit, source-owned surface: install only
+items shown as available in the current [catalog](/components), and wire them to your Post contract
+rather than copying fictional commands from an article. For page sections around the blog, you can
+start with a real call to action:
+
+```bash
+npx payload-components add call-to-action-centered
+```
+
+Then adapt the installed fields and component to the editorial architecture above. If you contribute
+a post component, ship source, manifest where Payload wiring is required, registry entry, docs,
+preview, and tests together through the [contributing guide](/docs/contributing). A polished card is
+useful; a coherent editorial projection across routes, metadata, feeds, and access is what makes it
+production-ready.

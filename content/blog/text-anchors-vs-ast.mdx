@@ -1,0 +1,148 @@
+---
+title: Why We Patch Source with Text Anchors Instead of Rewriting the AST
+description: Learn the trade-offs behind narrow text-anchor patches, explicit starter support, dedup checks, and readable installation diffs.
+author: Ducksss
+date: 2026-07-14
+series: installer-internals
+publicationOrder: 12
+cover:
+  src: /blog/text-anchors-vs-ast/cover.webp
+  alt: A narrow emerald source edit placed precisely between unchanged graphite code structures
+tags:
+  - Installer internals
+  - Code generation
+  - TypeScript
+---
+
+Editing someone else's TypeScript is the riskiest part of a source installer. An abstract syntax tree
+sounds like the principled tool: parse the file, find a node, mutate it, print the tree. For Payload
+Components, I chose narrower text anchors instead. The decision is not that text is universally
+better. It is that our supported edits are small, the host shape is explicit, and diff quality is a
+core product constraint.
+
+A text-anchor patch can add one import or one object entry without reprinting the surrounding file.
+When its assumptions fail, it stops. That gives up broad compatibility in exchange for legible
+changes and failure modes a contributor can reproduce.
+
+<BlogFigure
+  src="/blog/text-anchors-vs-ast/figure-01-scoped-diff.svg"
+  alt="A before-and-after source diagram where a renderer entry is inserted at one verified text anchor without changing surrounding code"
+  caption="The patch is intentionally smaller than the parser problem: verify one stable anchor, deduplicate one insertion, and preserve everything else byte for byte."
+/>
+
+## The actual edits are constrained
+
+Installing a page block into the supported starter requires a known set of changes:
+
+- import the block config into the Pages collection;
+- add the config to the `layout` Blocks field;
+- import the React component into RenderBlocks;
+- add a `blockType` key to `blockComponents`.
+
+These are insertions around stable, documented anchors. The CLI does not rename variables, reorganize
+imports, infer business logic, or refactor arbitrary expressions. A full compiler transformation is
+more power than the operation needs.
+
+The [manifest article](/blog/manifest-wiring-contract) shows how each insertion is declared alongside
+owned files and generators.
+
+## AST printing can create a larger diff than the change
+
+Parsing is usually precise; printing is where ownership becomes complicated. A code generator must
+decide quote style, semicolons, line wrapping, import grouping, comments, trailing commas, and syntax
+it may not preserve exactly. Even when a printer is correct, it can reformat an entire file around a
+two-line edit.
+
+That noise makes review harder. The consumer needs to distinguish installer intent from formatting
+churn. A narrow patch preserves every unrelated byte, so the diff shows the new import and
+registration rather than a tool's opinion about the file.
+
+An AST approach can minimize printing with source ranges or specialized mutation libraries, but then
+the implementation becomes a hybrid source editor with its own comment and whitespace edge cases.
+That investment is justified when transformations are complex or host shapes are broad. It is not
+automatically safer for four insertions.
+
+## Anchors make support boundaries explicit
+
+Text patches work only when the expected source exists. The renderer anchor
+`const blockComponents = {` and collection anchor `name: 'layout'` intentionally describe the
+supported starter. If a repository uses a switch statement, generated renderer, renamed field, or
+factory function, the installer should not pretend it understands the structure.
+
+Project detection runs before mutation. Fragment application verifies each anchor and checks for
+ambiguity. A missing anchor produces an actionable failure with the affected stage. The consumer can
+integrate manually, adapt the repository, or contribute a tested supported shape.
+
+That is a better open-source contract than “works on any Payload app” followed by speculative edits.
+The [installation docs](/docs/installation) describe the expected architecture so the boundary is
+visible before someone runs the command.
+
+## Deduplication is designed with the insertion
+
+Every fragment has a corresponding already-applied check. For an import, the check looks for the
+specific module and binding. For an array or map entry, it looks for the exact registration. On a
+rerun, existing work is skipped.
+
+Dedup checks cannot be a loose search for `HeroBasic`; that name might appear in a comment or a
+different scope. The evidence should be as specific as the insertion. Integration tests apply the
+install twice and assert the second pass does not duplicate text.
+
+If files are formatted after the first install, checks still need to recognize the supported
+formatting variants or compare semantic enough text. This is where a narrowly scoped tokenizer can
+be useful without adopting whole-file AST printing. The right tool can vary per fragment.
+
+## Preflight reduces partial source mutation
+
+Before applying fragments, the installer resolves target files and validates the expected anchors.
+A robust patch sequence should discover obvious incompatibility before writing the first host file.
+Once execution begins, each completed stage is recorded so an unexpected later failure remains
+diagnosable.
+
+Atomic replacement of an individual file prevents a process interruption from leaving half an
+insertion. It does not make a multi-file installation globally atomic. That is why install state and
+idempotent recovery exist. The [idempotency guide](/blog/idempotent-code-installer) covers the larger
+state machine.
+
+Git is an important safety layer too. The normal workflow is a clean branch and a reviewable diff.
+The CLI should never use git as permission to be careless, but source control gives the consumer a
+familiar way to inspect or discard the complete operation.
+
+## When an AST would be the better choice
+
+I would revisit the decision if the installer needed to:
+
+- support many equivalent renderer syntaxes;
+- modify nested expressions whose location cannot be anchored reliably;
+- preserve imports while resolving aliases and namespace bindings semantically;
+- migrate existing schemas rather than insert new members;
+- analyze scope to avoid identifier collisions;
+- provide automated updates across substantially changed files.
+
+At that point, a TypeScript-aware transformation with careful source preservation may reduce risk.
+The cost should be paid because the supported behavior requires it, not because an AST sounds more
+sophisticated.
+
+Conversely, a regex is not enough for every text task. The current patcher uses explicit anchors,
+dedup evidence, validation, and integration fixtures. “Text-based” should not mean “global replace
+the first brace.” The design is conservative source editing.
+
+## Diff quality is part of correctness
+
+An installer can produce compiling code and still fail its human contract. If it rewrites unrelated
+imports, removes comments, changes formatting across hundreds of lines, or hides the new map key in
+churn, the result is harder to trust and maintain.
+
+This project treats the git diff as an output. Tests assert the expected host fragments. Docs state
+what the install edits. A consumer should be able to read the result without understanding the
+installer implementation.
+
+Try a representative install on a clean branch:
+
+```bash
+npx payload-components add hero-basic
+```
+
+Inspect the Pages and RenderBlocks diffs. Then rerun the command and confirm they remain unchanged.
+If a common supported starter version has moved an anchor, bring a minimal fixture and the narrow
+diff you expect. Updating detection, fragment metadata, tests, and the [architecture docs](/docs/architecture)
+together is the durable way to expand support.

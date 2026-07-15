@@ -1,0 +1,144 @@
+---
+title: Building a Reproducible shadcn-Compatible Registry
+description: Make source registry builds deterministic, schema-valid, path-safe, and verifiable from a clean checkout before public distribution.
+author: Ducksss
+date: 2026-07-14
+series: open-source
+publicationOrder: 30
+cover:
+  src: /blog/reproducible-shadcn-registry/cover.webp
+  alt: Two identical technical build pipelines producing matching packages and one shared emerald checksum
+tags:
+  - shadcn
+  - Reproducible builds
+  - Registry
+---
+
+A public registry is executable distribution input. People use its JSON to write files and install
+dependencies in their repositories. “It worked on the maintainer's laptop” is not enough. The same
+source and lockfile should produce the same resolved items from a clean checkout, and every item
+should pass schema and path validation before deployment.
+
+Payload Components treats `payload-components/registry.json` and component source as canonical.
+`public/r` is generated output. Reproducibility proves those inputs fully describe what the site will
+serve.
+
+<BlogFigure
+  src="/blog/reproducible-shadcn-registry/figure-01-deterministic-build.svg"
+  alt="Two clean checkouts passing through identical shadcn build pipelines and converging on matching schema-valid public registry output"
+  caption="A deterministic registry lets maintainers compare generated output, validate exact public items, and know a deployment did not invent a different package."
+/>
+
+## Keep one source of truth
+
+Edit the source registry and files under `payload-components/source`. Never patch generated public
+JSON by hand. The next build would erase the change, and the repository would no longer explain its
+deployed output.
+
+Each file entry has two paths: the repository source and consumer target. Source paths may be
+reorganized internally. Targets are part of the public installation contract and require matching
+updates to imports, manifests, docs, and tests.
+
+The [shadcn registry article](/blog/shadcn-registry-for-payload-cms) describes item fields and direct
+delivery. The current upstream
+[registry item specification](https://ui.shadcn.com/docs/registry/registry-item-json) remains the
+primary schema reference.
+
+## Pin the build environment
+
+Use the package lockfile, a supported Node version, and the repository's package-manager command.
+Unpinned generators can change ordering, defaults, formatting, or schema interpretation without a
+source diff.
+
+The build script invokes `shadcn build` against the explicit source registry and output directory.
+Avoid timestamps, absolute machine paths, random IDs, and network-fetched content in generated items.
+Resolved file content should come from the checkout.
+
+If upstream tooling changes intended output, update the dependency and generated expectations in one
+reviewed change. Reproducibility is version-relative, not a claim that output never evolves.
+
+## Validate schema locally
+
+This repository vendors the relevant shadcn schemas and validates every source item in the release
+gate. Local validation is faster and more deterministic than discovering a malformed item after
+deployment or relying only on a directory's remote checker.
+
+Schema validation catches missing names, invalid item types, malformed dependency fields, and file
+entries that do not match the format. Project-specific checks add requirements the public schema does
+not know, such as allowed target roots and agreement with Payload manifests.
+
+Vendored schemas need deliberate updates when the upstream specification changes. Record the source
+and version so validation has provenance rather than becoming a mysterious frozen copy.
+
+## Enforce target-path safety
+
+Registry installation writes to another repository. Validate normalized targets and reject absolute
+paths, traversal segments, unexpected roots, or names that change URL resolution. Component names
+and public item URLs also need constrained construction.
+
+Source paths should remain inside the intended registry source directory. Symlinks and path
+normalization deserve attention in tooling that reads file content. The safe default is a narrow
+allowlist of repository and consumer roots.
+
+These checks are not merely quality rules. They are part of the security boundary for a distribution
+format that performs filesystem writes.
+
+## Compare output from a clean build
+
+`pnpm test:registry` builds or checks public output and validates items. A strong reproducibility test
+removes prior generated state, rebuilds from source, and compares the resulting directory or
+normalized file contents with expectations.
+
+Sort only where the format treats order as irrelevant. Do not normalize away meaningful differences
+until every build appears equal. Byte-for-byte comparison is easiest to reason about when the
+generator is deterministic.
+
+Also verify the public index and individual item documents agree. Every listed component should have
+a resolvable item, and every item should embed all declared source content.
+
+## Test installation, not only JSON
+
+A schema-valid registry can still ship an import whose sibling file is missing. Install representative
+items into temporary fixtures and inspect their target files. Typecheck target source through the
+source build. For Payload-required items, run the companion installer tests so manifest fragments and
+registry files agree.
+
+Shared family modules need isolation tests: install one variant without siblings and confirm every
+relative import resolves. The [complete contribution guide](/blog/contribute-payload-component)
+lists the surfaces a new component must update together.
+
+Re-run installation to check idempotency. Reproducible delivery and idempotent integration are
+separate properties; a dependable release needs both.
+
+## Verify the live deployment
+
+After changes merge and deploy, request the public index and representative item URLs. Confirm a
+successful response, JSON content type, embedded source, and the same target paths validated locally.
+Only then submit or update the registry in an external directory.
+
+External directory requirements can change. At submission time, verify current logo, description,
+URL, and ordering rules in the upstream repository rather than relying on an old example. Their
+validation complements local item-schema checks; it does not replace them.
+
+The [registry documentation](/docs/registry) keeps the project's live URL and direct install contract
+discoverable.
+
+## Make failures useful to contributors
+
+A registry check should name the item, field or path, expected rule, and source file. Avoid dumping a
+large schema error without the component context. When output differs, show the generated file and a
+focused diff.
+
+That feedback turns a release gate into a development tool. A contributor can fix one target or
+missing shared file without understanding the entire build system.
+
+Try a direct item through the supported workflow:
+
+```bash
+npx payload-components add hero-basic
+```
+
+Then run the registry checks and inspect the generated item locally. If two clean environments
+produce different JSON, capture tool versions and the smallest differing file and open an issue
+through the [contributing guide](/docs/contributing). Deterministic evidence is exactly what lets an
+open registry fix the real source instead of normalizing away a symptom.

@@ -1,56 +1,41 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 
-import { blogSource } from '@/lib/blog-source'
+import { BlogCard } from '@/components/blog/BlogCard'
+import { sortBlogPages } from '@/lib/blog'
 import { siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Blog',
-  description: 'Updates, deep dives, and release notes from the Payload Components team.',
+  description: 'Practical Payload CMS guides, installer internals, component design, and open-source field notes from Payload Components.',
   alternates: { canonical: `${siteUrl}/blog` },
-  openGraph: { title: 'Blog', description: 'Updates, deep dives, and release notes from the Payload Components team.', url: `${siteUrl}/blog`, type: 'website' },
-  twitter: { card: 'summary_large_image', title: 'Blog', description: 'Updates, deep dives, and release notes from the Payload Components team.' },
+  openGraph: { title: 'Blog', description: 'Practical Payload CMS guides, installer internals, component design, and open-source field notes from Payload Components.', url: `${siteUrl}/blog`, type: 'website' },
+  twitter: { card: 'summary_large_image', title: 'Blog', description: 'Practical Payload CMS guides, installer internals, component design, and open-source field notes from Payload Components.' },
 }
 
 export default function BlogIndex() {
-  const posts = [...blogSource.getPages()].sort(
-    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
-  )
+  const posts = sortBlogPages()
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-12 md:px-8 md:py-16">
-      <header className="mb-10">
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">Blog</h1>
-        <p className="mt-2 text-muted-foreground">
-          Updates, deep dives, and release notes from the Payload Components team.
+    <main className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16">
+      <header className="mb-12 max-w-3xl">
+        <p className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand-600">
+          Field notes from the registry
+        </p>
+        <h1 className="mt-3 text-4xl font-semibold tracking-display text-foreground sm:text-5xl">
+          Build Payload sites with the wiring visible.
+        </h1>
+        <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+          Practical guides, installer internals, component decisions, and the lessons behind an
+          MIT registry built in public.
         </p>
       </header>
 
       {posts.length === 0 ? (
         <p className="text-muted-foreground">No posts yet — check back soon.</p>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
-            <Link
-              key={post.url}
-              href={post.url}
-              className="group flex flex-col rounded-lg border border-border bg-card p-6 transition-colors hover:border-brand/40 hover:bg-brand/5"
-            >
-              <h2 className="text-lg font-semibold tracking-tight text-foreground group-hover:text-brand">
-                {post.data.title}
-              </h2>
-              {post.data.description ? (
-                <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
-                  {post.data.description}
-                </p>
-              ) : null}
-              <time
-                dateTime={new Date(post.data.date).toISOString()}
-                className="mt-4 text-xs font-medium text-muted-foreground"
-              >
-                {new Date(post.data.date).toDateString()}
-              </time>
-            </Link>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post, index) => (
+            <BlogCard key={post.url} page={post} priority={index < 3} />
           ))}
         </div>
       )}

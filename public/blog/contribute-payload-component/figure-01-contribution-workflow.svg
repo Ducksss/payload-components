@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
+  <title id="title">A component is complete only when every surface agrees</title>
+  <desc id="description">END-TO-END CONTRIBUTION diagram for the Payload Components editorial library.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#f4f4f5"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#18181b" flood-opacity="0.08"/></filter>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+    <style>
+      .kicker{font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2.4px;fill:#059669}
+      .headline{font:650 34px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
+      .card{fill:#fff;stroke:#d4d4d8;stroke-width:1.5;filter:url(#shadow)}
+      .terminal{fill:#18181b;stroke:#3f3f46;stroke-width:1.5;filter:url(#shadow)}
+      .dot{fill:#059669}
+      .node-title{font:650 18px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
+      .node-body{font:450 14px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#52525b}
+      .terminal-title{font:650 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#f4f4f5}
+      .terminal-body{font:450 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#d4d4d8}
+      .arrow{fill:none;stroke:#059669;stroke-width:2.5;stroke-linecap:round;opacity:.85}
+      .edge-label{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#047857;paint-order:stroke;stroke:#fafafa;stroke-width:5px}
+    </style>
+  </defs>
+  <rect width="1200" height="675" fill="url(#background)"/>
+  <circle cx="1110" cy="70" r="62" fill="#059669" opacity=".06"/>
+  <circle cx="1110" cy="70" r="31" fill="#059669" opacity=".08"/>
+  <text class="kicker" x="60" y="55">END-TO-END CONTRIBUTION</text>
+  <text class="headline" x="60" y="104">A component is complete only when every surface agrees</text>
+  <g><g><path class="arrow" d="M 228.33333333333337 397.5 C 235.33333333333334 397.5, 235.33333333333334 397.5, 242.33333333333331 397.5" marker-end="url(#arrowhead)" /></g>
+<g><path class="arrow" d="M 410.6666666666667 397.5 C 417.6666666666667 397.5, 417.6666666666667 397.5, 424.6666666666667 397.5" marker-end="url(#arrowhead)" /></g>
+<g><path class="arrow" d="M 593 397.5 C 600 397.5, 600 397.5, 607 397.5" marker-end="url(#arrowhead)" /></g>
+<g><path class="arrow" d="M 775.3333333333333 397.5 C 782.3333333333333 397.5, 782.3333333333333 397.5, 789.3333333333334 397.5" marker-end="url(#arrowhead)" /></g>
+<g><path class="arrow" d="M 957.6666666666666 397.5 C 964.6666666666667 397.5, 964.6666666666667 397.5, 971.6666666666669 397.5" marker-end="url(#arrowhead)" /></g></g>
+  <g>
+        <g>
+          <rect class="card" x="60" y="319.5" width="168.33333333333334" height="156" rx="18" />
+          <circle class="dot" cx="86" cy="348.5" r="6" />
+          <text class="node-title" x="104" y="354.5">Source</text>
+          <text class="node-body" x="86" y="389.5">Config + Component</text>
+        </g>
+
+        <g>
+          <rect class="card" x="242.33333333333334" y="319.5" width="168.33333333333334" height="156" rx="18" />
+          <circle class="dot" cx="268.33333333333337" cy="348.5" r="6" />
+          <text class="node-title" x="286.33333333333337" y="354.5">Manifest</text>
+          <text class="node-body" x="268.33333333333337" y="389.5">Wiring contract</text>
+        </g>
+
+        <g>
+          <rect class="card" x="424.6666666666667" y="319.5" width="168.33333333333334" height="156" rx="18" />
+          <circle class="dot" cx="450.6666666666667" cy="348.5" r="6" />
+          <text class="node-title" x="468.6666666666667" y="354.5">Registry</text>
+          <text class="node-body" x="450.6666666666667" y="389.5">Public file delivery</text>
+        </g>
+
+        <g>
+          <rect class="card" x="607" y="319.5" width="168.33333333333334" height="156" rx="18" />
+          <circle class="dot" cx="633" cy="348.5" r="6" />
+          <text class="node-title" x="651" y="354.5">Docs</text>
+          <text class="node-body" x="633" y="389.5">Install + content model</text>
+        </g>
+
+        <g>
+          <rect class="card" x="789.3333333333334" y="319.5" width="168.33333333333334" height="156" rx="18" />
+          <circle class="dot" cx="815.3333333333334" cy="348.5" r="6" />
+          <text class="node-title" x="833.3333333333334" y="354.5">Demo twin</text>
+          <text class="node-body" x="815.3333333333334" y="389.5">Live preview</text>
+        </g>
+
+        <g>
+          <rect class="card" x="971.6666666666667" y="319.5" width="168.33333333333334" height="156" rx="18" />
+          <circle class="dot" cx="997.6666666666667" cy="348.5" r="6" />
+          <text class="node-title" x="1015.6666666666667" y="354.5">Tests</text>
+          <text class="node-body" x="997.6666666666667" y="389.5">Install + visual + contracts</text>
+        </g></g>
+</svg>

@@ -3,6 +3,7 @@ import type { MetadataRoute } from 'next'
 import { siteUrl } from '@/lib/site'
 import { source } from '@/lib/source'
 import { blogSource } from '@/lib/blog-source'
+import { sortBlogPages } from '@/lib/blog'
 
 /* Static marketing routes. The /docs index and every component/guide page come
    from the Fumadocs source below, so they are intentionally absent here. */
@@ -35,6 +36,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${siteUrl}${page.url}`,
   }))
 
-  const blog: MetadataRoute.Sitemap = blogSource.getPages().map((page) => ({ changeFrequency: 'monthly', lastModified: new Date(page.data.date), priority: 0.6, url: `${siteUrl}${page.url}` }))
+  const blog: MetadataRoute.Sitemap = sortBlogPages(blogSource.getPages()).map((page) => ({
+    changeFrequency: 'monthly',
+    lastModified: new Date(page.data.date),
+    priority: 0.6,
+    url: `${siteUrl}${page.url}`,
+  }))
   return [...marketing, ...docs, { changeFrequency: 'weekly', lastModified, priority: 0.7, url: `${siteUrl}/blog` }, ...blog]
 }

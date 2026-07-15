@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
+  <title id="title">A block only becomes useful when the wiring lands too</title>
+  <desc id="description">THE ORIGIN STORY diagram for the Payload Components editorial library.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#f4f4f5"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#18181b" flood-opacity="0.08"/></filter>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+    <style>
+      .kicker{font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2.4px;fill:#059669}
+      .headline{font:650 34px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
+      .card{fill:#fff;stroke:#d4d4d8;stroke-width:1.5;filter:url(#shadow)}
+      .terminal{fill:#18181b;stroke:#3f3f46;stroke-width:1.5;filter:url(#shadow)}
+      .dot{fill:#059669}
+      .node-title{font:650 18px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
+      .node-body{font:450 14px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#52525b}
+      .terminal-title{font:650 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#f4f4f5}
+      .terminal-body{font:450 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#d4d4d8}
+      .arrow{fill:none;stroke:#059669;stroke-width:2.5;stroke-linecap:round;opacity:.85}
+      .edge-label{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#047857;paint-order:stroke;stroke:#fafafa;stroke-width:5px}
+    </style>
+  </defs>
+  <rect width="1200" height="675" fill="url(#background)"/>
+  <circle cx="1110" cy="70" r="62" fill="#059669" opacity=".06"/>
+  <circle cx="1110" cy="70" r="31" fill="#059669" opacity=".08"/>
+  <text class="kicker" x="60" y="55">THE ORIGIN STORY</text>
+  <text class="headline" x="60" y="104">A block only becomes useful when the wiring lands too</text>
+  <g><g><path class="arrow" d="M 312 397.5 C 324 397.5, 324 397.5, 336 397.5" marker-end="url(#arrowhead)" /></g>
+<g><path class="arrow" d="M 588 397.5 C 600 397.5, 600 397.5, 612 397.5" marker-end="url(#arrowhead)" /></g>
+<g><path class="arrow" d="M 864 397.5 C 876 397.5, 876 397.5, 888 397.5" marker-end="url(#arrowhead)" /></g></g>
+  <g>
+        <g>
+          <rect class="card" x="60" y="319.5" width="252" height="156" rx="18" />
+          <circle class="dot" cx="86" cy="348.5" r="6" />
+          <text class="node-title" x="104" y="354.5">Copy source</text>
+          <text class="node-body" x="86" y="389.5">Config + React component</text>
+        </g>
+
+        <g>
+          <rect class="card" x="336" y="319.5" width="252" height="156" rx="18" />
+          <circle class="dot" cx="362" cy="348.5" r="6" />
+          <text class="node-title" x="380" y="354.5">Register block</text>
+          <text class="node-body" x="362" y="389.5">Pages.layout.blocks</text>
+        </g>
+
+        <g>
+          <rect class="card" x="612" y="319.5" width="252" height="156" rx="18" />
+          <circle class="dot" cx="638" cy="348.5" r="6" />
+          <text class="node-title" x="656" y="354.5">Map renderer</text>
+          <text class="node-body" x="638" y="389.5">blockType → component</text>
+        </g>
+
+        <g>
+          <rect class="card" x="888" y="319.5" width="252" height="156" rx="18" />
+          <circle class="dot" cx="914" cy="348.5" r="6" />
+          <text class="node-title" x="932" y="354.5">Regenerate</text>
+          <text class="node-body" x="914" y="389.5">Types + admin import map</text>
+        </g></g>
+</svg>

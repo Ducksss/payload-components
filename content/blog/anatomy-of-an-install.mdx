@@ -3,6 +3,15 @@ title: Anatomy of an install — how payload-components add wires a block
 description: Come look under the hood with me — the pipeline, the patching trick, and the diff you get to read.
 author: Ducksss
 date: 2026-06-19
+series: project-notes
+publicationOrder: 2
+cover:
+  src: /blog/anatomy-of-an-install/cover.webp
+  alt: Five connected technical modules forming a precise source installation and wiring pipeline
+tags:
+  - Installer internals
+  - Payload CMS
+  - Open source
 ---
 
 In my [hello post](/blog/hello) I said the goal was to install blocks *wired, not pasted*. That's
@@ -33,6 +42,12 @@ When you run `add`, five stages happen in order:
     **`post-install`** — regenerate types and the import map, then record what happened.
   </Step>
 </Steps>
+
+<BlogFigure
+  src="/blog/anatomy-of-an-install/figure-01-five-stage-pipeline.svg"
+  alt="The payload-components add pipeline from registry build through file delivery, dependencies, source patches, and generators"
+  caption="Each stage has one job, and the state file records the boundary so an interrupted install has an honest recovery path."
+/>
 
 ## The trick I like: patching by text, not by AST
 

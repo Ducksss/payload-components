@@ -1,0 +1,160 @@
+---
+title: The Manifest as an Executable Wiring Contract
+description: See how files, dependencies, source fragments, generators, and install state turn a registry item into a recoverable Payload integration.
+author: Ducksss
+date: 2026-07-14
+series: installer-internals
+publicationOrder: 11
+cover:
+  src: /blog/manifest-wiring-contract/cover.webp
+  alt: Layered file, dependency, patch, and generator contracts converging into one installation record
+tags:
+  - Installer internals
+  - Manifests
+  - Payload CMS
+---
+
+A registry item says what source to deliver. A Payload Components manifest says what must be true
+after that source arrives. I call it an executable wiring contract because the CLI validates and
+performs its declarations rather than treating them as descriptive metadata.
+
+The contract has five layers: owned files, public dependencies, host-file fragments, post-install
+tasks, and recorded state. Each layer answers a different recovery question. Together they let the
+installer determine what happened, what remains, and whether a rerun is safe.
+
+<BlogFigure
+  src="/blog/manifest-wiring-contract/figure-01-manifest-layers.svg"
+  alt="A layered manifest diagram where files, dependencies, source fragments, and post-install tasks feed a recorded installation state"
+  caption="The manifest makes installation expectations explicit enough to validate before running, execute in stages, and diagnose after failure."
+/>
+
+## Files declare ownership
+
+The manifest lists every source path the component owns in the consumer repository. That list must
+agree with the shadcn registry item's targets. If a component imports a shared family module, the
+shared file appears in both contracts too.
+
+Ownership does not mean the installer may overwrite arbitrary edits. It means the component knows
+which files it delivered and can check whether they are present during diagnosis. Updates and
+conflicts still need a transparent policy. Host files such as a Pages collection are not owned;
+they are patched through fragments because the consumer owns the rest of their content.
+
+This distinction lets `doctor` report “owned component file missing” separately from “Payload
+registration missing.” Those conditions have different fixes.
+
+The [shadcn registry guide](/blog/shadcn-registry-for-payload-cms) covers the matching delivery
+contract and target-path rules.
+
+## Dependencies declare external requirements
+
+A component may require packages that do not ship as local source. The manifest records them so the
+dependency-install stage can use the consumer's package manager. Versions and package names need to
+align with the shipped imports, registry metadata, documentation, and tests.
+
+Dependencies are not a place to hide core project architecture. Payload and Next.js are target
+requirements, not packages a block should casually add to an unknown application. The manifest's
+support metadata describes compatible major versions; project detection verifies them before source
+mutation begins.
+
+Internal shared modules are files, not dependencies. Public shadcn UI primitives are registry
+dependencies in the source registry. Keeping these categories separate makes both ownership and
+failure messages understandable.
+
+## Fragments describe scoped host edits
+
+Fragments are the Payload-specific heart of the manifest. A fragment identifies a host file role,
+an anchor, an insertion, and deduplication evidence. One fragment can import a block config, another
+can register it in `layout.blocks`, and others can import and map the React renderer.
+
+The CLI does not treat arbitrary text replacement as safe. It resolves the project layout, reads the
+candidate file, verifies the anchor, checks whether the intended code already exists, and only then
+applies a narrow insertion. If assumptions do not hold, the stage fails before guessing.
+
+A fragment is declarative enough to inspect in JSON but specific enough to execute. It also becomes
+diagnostic evidence: `doctor` can check whether the same import and registration are still present
+later.
+
+The [text-anchor article](/blog/text-anchors-vs-ast) explains why this project accepts a constrained
+starter shape instead of rewriting unknown TypeScript syntax trees.
+
+## Post-install tasks rederive project-wide artifacts
+
+Generated Payload types and the admin import map describe the whole consumer application. They
+cannot be delivered as component-owned files. The manifest therefore declares the scripts that must
+run after source and fragments are complete.
+
+Ordering matters. Type generation must see the newly registered block. Import-map generation must
+see final component paths. Running either earlier can succeed while producing output that omits the
+new integration.
+
+The CLI invokes commands configured for the detected project rather than assuming generated output
+paths. A failed post-install task leaves the component in a partial state with the completed stage
+recorded. After the underlying project command is fixed, a rerun can continue.
+
+## State records execution, not truth by decree
+
+`.payload-components/state.json` records the installed component, manifest version, current stage,
+owned paths, applied fragments, and outcome. It is not allowed to overrule the filesystem. If state
+says a file exists and a developer deleted it, `doctor` should report the mismatch.
+
+This makes state an index of expected truth rather than truth itself. The installer can compare
+record and repository, explain discrepancies, and choose a safe next action. A blind “installed:
+true” flag would be much less useful.
+
+State also enables honest partial installs. A dependency failure after file delivery is neither a
+clean rollback nor a successful component. Recording the stage prevents the next run from pretending
+it knows nothing. The [idempotent installer guide](/blog/idempotent-code-installer) follows the
+convergence model in detail.
+
+## Schema validation moves errors before mutation
+
+Every manifest is checked against a schema. Required names, versions, target metadata, file entries,
+fragments, and post-install definitions fail validation before the CLI changes a consumer
+repository. Cross-contract tests then confirm manifest files agree with registry targets and actual
+source.
+
+Schema validity is necessary but not sufficient. A fragment can be well-shaped JSON and still name
+the wrong renderer key. Integration fixtures exercise installation against a supported starter,
+inspect resulting source, rerun the operation, and simulate failures. That behavioral test is what
+turns metadata into a contract.
+
+When adding a field to the manifest schema, I ask whether it changes execution or validation. If it
+does neither, it may belong in documentation instead. Executable metadata should stay small enough
+that contributors can reason from a manifest to a diff.
+
+## Version the contract when behavior changes
+
+A component version should change when its delivered files, required dependencies, or wiring
+expectations change. The state record can then distinguish an installed older contract from the
+current manifest. An update strategy must still respect local edits; source ownership is not a
+license to replace modified files silently.
+
+The current project focuses on deterministic adds and diagnostics. Any future update workflow must
+build on the same facts: prior manifest version, recorded files and fragments, current repository
+content, and a reviewable proposed diff. The manifest provides the information without pretending
+the merge decision is trivial.
+
+## Read a manifest like an install preview
+
+Before running a component, you should be able to answer:
+
+- Which files will appear, and where?
+- Which packages or public registry items are required?
+- Which host files will receive imports or registrations?
+- Which exact discriminators will be inserted?
+- Which generators will run?
+- What state will be recorded if a stage fails?
+
+The component documentation renders much of this information from the manifest so prose and
+installation behavior cannot drift. See [Hero Basic](/docs/components/hero-basic) for the resulting
+files and wiring table.
+
+Then run the command on a branch and compare the promised contract with the actual diff:
+
+```bash
+npx payload-components add hero-basic
+```
+
+If they differ, that is a useful issue: include the manifest section, sanitized output, and observed
+diff. Better still, add a fixture assertion with the correction. The manifest system improves when
+real installations sharpen its executable promises.

@@ -28,6 +28,8 @@ export function GET() {
     `- [Home](${siteUrl}/)`,
     `- [Docs](${siteUrl}/docs)`,
     `- [Component catalog](${siteUrl}/components)`,
+    `- [Blog](${siteUrl}/blog)`,
+    `- [Blog RSS](${siteUrl}/blog/rss.xml)`,
     `- [About](${siteUrl}/about)`,
     `- [Public registry](${siteUrl}/r/registry.json)`,
     `- [Full LLM context](${siteUrl}/llms-full.txt)`,

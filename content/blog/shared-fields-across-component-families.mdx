@@ -1,0 +1,193 @@
+---
+title: Sharing Payload Fields Across a Component Family
+description: Reuse a stable editorial vocabulary across structural variants with real shipped source, explicit registry files, and honest generated types.
+author: Ducksss
+date: 2026-07-14
+series: component-design
+publicationOrder: 16
+cover:
+  src: /blog/shared-fields-across-component-families/cover.webp
+  alt: One central field definition branching into several distinct component configuration modules
+tags:
+  - Payload CMS
+  - Component families
+  - Content modeling
+---
+
+Structural variants often share the same opening vocabulary: eyebrow, heading, description, and
+links. Copying those field definitions into every Payload config seems harmless until one label,
+validation rule, or relationship target changes in only four of five places.
+
+The durable pattern is a real shared source file that every consuming registry item ships. Each
+variant spreads the common fields and adds only its structural requirements. The editor sees
+consistent content language, while generated types still describe distinct block shapes.
+
+<BlogFigure
+  src="/blog/shared-fields-across-component-families/figure-01-shared-fields.svg"
+  alt="A shared heroFields source module branching into basic, video, and dramatic hero block configurations with variant-specific additions"
+  caption="Shared fields capture stable editorial meaning; each variant remains a separate config, generated union member, renderer, and registry item."
+/>
+
+## Share meaning, not coincidence
+
+Two fields are worth sharing when they represent the same editorial concept and should evolve
+together. Headings with identical name, label, validation, localization, and admin description are
+a good candidate. Two unrelated text fields both called `title` may not be.
+
+Premature sharing produces a generic helper full of options. If every consumer overrides the field
+name, required state, admin copy, and validation, the abstraction is hiding differences rather than
+capturing a contract.
+
+Start with a family whose variants deliberately promise the same intro content. The
+[variant-design guide](/blog/component-variants-without-prop-explosion) explains why structure stays
+separate even when vocabulary is shared.
+
+## Export a typed field array
+
+Payload exports field types and type guards. Define shared fields with real Payload types rather
+than an untyped object array:
+
+```ts
+import type { Field } from 'payload'
+
+export const heroFields: Field[] = [
+  {
+    name: 'eyebrow',
+    type: 'text',
+    label: 'Eyebrow',
+  },
+  {
+    name: 'heading',
+    type: 'text',
+    label: 'Heading',
+    required: true,
+  },
+  {
+    name: 'description',
+    type: 'textarea',
+    label: 'Description',
+  },
+]
+```
+
+Then compose the config explicitly:
+
+```ts
+export const HeroVideo: Block = {
+  slug: 'heroVideo',
+  interfaceName: 'HeroVideoBlock',
+  labels: { singular: 'Video hero', plural: 'Video heroes' },
+  fields: [
+    ...heroFields,
+    {
+      name: 'video',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+    },
+  ],
+}
+```
+
+The spread keeps the final config readable. A reviewer can see the shared base and the exact
+variant-specific contract without tracing a builder API.
+
+Keep the export close to the family and name it after the shared concept. A global `commonFields.ts`
+eventually becomes a dependency hub that unrelated components are afraid to change. Family-local
+sharing gives the right blast radius: wide enough to prevent drift, narrow enough that a contributor
+can review every consumer in one pass.
+
+## Ship the shared module with every variant
+
+Source distribution changes the usual monorepo assumption. In this repository, a consumer may
+install one variant without its siblings. The `hero-video` registry item therefore must include
+`shared/heroFields.ts` in its `files` list with a target under the consumer's source tree.
+
+The matching manifest must list the shared target as an owned file. Its component config import must
+resolve from the installed locations. Tests install the variant in isolation, so an accidental
+dependency on another family item fails before release.
+
+Do not use `registryDependencies` for the internal module. shadcn resolves that field as another
+public registry component. An internal filename such as `hero-fields` will be requested from a
+registry and fail. The [registry guide](/blog/shadcn-registry-for-payload-cms) explains the ownership
+categories.
+
+## Keep generated interfaces distinct
+
+Spreading fields in the Payload config does not create TypeScript inheritance in the generated file,
+and it does not need to. Payload produces a concrete interface or union member for each block. The
+shared heading and description appear in each generated shape, while video or media fields appear
+only where declared.
+
+That concrete output is useful. A renderer for `HeroBasicBlock` cannot accidentally assume video
+exists. A renderer for `HeroVideoBlock` receives the required media relationship. The source field
+module reduces config drift without weakening the discriminated union.
+
+Run Payload's generator after adding or changing the shared fields. The official
+[type generation documentation](https://payloadcms.com/docs/typescript/generating-types) remains the
+source for generator setup. Inspect every affected union member in the diff; a shared change has a
+deliberately broad generated impact.
+
+## Evolve shared fields carefully
+
+Changing a shared field changes every new document authored through every consuming variant. It may
+also change validation or generated types for existing documents. Review the family as one migration
+surface.
+
+Renaming `description` to `copy` is not a local refactor. Existing stored data still uses the old
+name unless migrated. Making an optional heading required can invalidate old drafts. Changing a
+relationship target can alter access and population behavior.
+
+When only one variant needs different semantics, remove that field from the shared base for that
+variant or declare a variant-specific field. Do not add conditionals to a supposedly shared array
+until the caller API becomes harder to understand than a few repeated lines.
+
+## Avoid mutating the shared array
+
+Treat exported field arrays as immutable configuration input. Do not import `heroFields` and push a
+variant field into it; module evaluation order can make one config change another. Compose with
+spreads and new arrays.
+
+If a helper transforms fields, use Payload's exported field type guards when inspecting field kinds.
+Avoid unsafe casts based only on the presence of a property. Payload fields form a union, and tabs,
+rows, arrays, groups, and blocks carry different nested structures.
+
+Simple shared modules are preferable to deep field factories. The goal is one stable vocabulary, not
+a custom schema language layered over Payload.
+
+## Keep docs and previews aligned
+
+Every component doc page has a hand-authored content-model table. Mark which fields come from the
+shared family base and which belong to the variant. That helps users understand why sibling configs
+look similar and where they may customize safely.
+
+Demo twins use static representative content, so update them when a shared field rename changes the
+source component. Visual class-mirror tests protect styling, while TypeScript and source tests protect
+the data contract. The [component architecture docs](/docs/architecture) describe how shared source
+travels with variants.
+
+When an installed file set changes, also update the landing installation ledgers and component docs.
+Hand-maintained file lists are easy to forget; release tests should compare registry, manifest, and
+source wherever possible.
+
+## Test isolation and family consistency
+
+For each variant, test a clean install with no sibling present. Verify the shared file lands once,
+imports resolve, the block registers, and a rerun is idempotent. Then install a second sibling and
+confirm the shared file does not duplicate or conflict.
+
+At the family level, check that common fields retain the same names, labels, validation, and order.
+Test that variant-specific requirements remain distinct. Generate types after installing multiple
+members and typecheck their renderers.
+
+You can study an existing family's docs in the [component catalog](/components) and install one
+representative structure:
+
+```bash
+npx payload-components add feature-bento
+```
+
+If a family repeats a field contract today, a good contribution includes the shared module, updated
+registry and manifest file lists, all consuming imports, content-model documentation, and isolated
+installer tests. That complete change turns copy-and-paste similarity into a durable, reviewable
+source contract.

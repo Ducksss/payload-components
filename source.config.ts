@@ -22,7 +22,21 @@ export const blog = defineCollections({
   dir: 'content/blog',
   schema: pageSchema.extend({
     author: z.string(),
+    cover: z.object({
+      alt: z.string().min(20),
+      src: z.string().regex(/^\/blog\/[a-z0-9-]+\/cover\.webp$/),
+    }),
     date: z.string().date().or(z.date()),
+    publicationOrder: z.number().int().min(1).max(32),
+    series: z.enum([
+      'project-notes',
+      'foundations',
+      'installer-internals',
+      'component-design',
+      'production-guides',
+      'open-source',
+    ]),
+    tags: z.array(z.string()).min(2).max(4),
   }),
 })
 

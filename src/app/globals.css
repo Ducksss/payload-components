@@ -64,6 +64,11 @@
   --preview-minimize: #febc2e;
   --preview-zoom: #28c840;
 
+  /* GitHub Light's stock orange syntax token is only 3.48:1 on white at
+     Fumadocs' 13px code size. This darker equivalent preserves the token
+     category while clearing WCAG AA. */
+  --syntax-variable: #953800;
+
   --radius: 0.625rem;
 
   /* The shared SiteHeader sits above the Fumadocs layout; this is the
@@ -1095,6 +1100,10 @@
 
   .prose :is(h1, h2, h3, h4) {
     letter-spacing: -0.02em;
+  }
+
+  .shiki span[style*='--shiki-light:#E36209'] {
+    --shiki-light: var(--syntax-variable) !important;
   }
 }
 

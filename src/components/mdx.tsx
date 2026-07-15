@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import type { MDXComponents } from 'mdx/types'
 
+import { BlogFigure } from '@/components/blog/BlogFigure'
 import { ComponentDocPreview } from '@/components/site/ComponentDocPreview'
 import { ComponentFamily } from '@/components/site/ComponentFamily'
 import { ComponentRequirements } from '@/components/site/ComponentRequirements'
@@ -49,6 +50,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     ...icons,
     Accordion,
     Accordions,
+    BlogFigure,
     File,
     Files,
     Folder,

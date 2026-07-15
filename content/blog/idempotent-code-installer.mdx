@@ -1,0 +1,170 @@
+---
+title: Designing an Idempotent Code Installer
+description: Build install stages that converge across first runs, repeated runs, partial failures, manual edits, and explicit recovery.
+author: Ducksss
+date: 2026-07-14
+series: installer-internals
+publicationOrder: 13
+cover:
+  src: /blog/idempotent-code-installer/cover.webp
+  alt: Multiple installation paths converging on one stable emerald repository state
+tags:
+  - Installer internals
+  - Idempotency
+  - Developer tools
+---
+
+An idempotent installer makes the same request safe to repeat. For source installation, that means
+more than “the second command exits zero.” Files should not duplicate, imports should not multiply,
+array entries should remain singular, dependencies should stay stable, generators should be safe to
+rerun, and recorded state should converge on one truthful result.
+
+This matters most when something fails. Networks, package managers, generators, and consumer code
+can all interrupt an install after partial progress. A retry should use evidence from the repository
+and state record, not ask the user to remember which steps completed.
+
+<BlogFigure
+  src="/blog/idempotent-code-installer/figure-01-convergence-state.svg"
+  alt="A state machine showing new installs, partial failures, retries, complete installs, and reruns converging on one repository state"
+  caption="Idempotency is a convergence property: every safe retry moves toward the same complete state without duplicating completed work."
+/>
+
+## Define the desired state first
+
+For a component, the desired state includes:
+
+- every owned source file exists at the declared target;
+- required packages and public registry dependencies are present;
+- every collection and renderer fragment appears exactly once;
+- generated Payload artifacts reflect the final config;
+- install state records the component version and completed stages.
+
+Each stage needs a check that can distinguish complete, incomplete, conflicting, and not started.
+“Run this command again” is not a design until those observations are defined.
+
+The [manifest contract](/blog/manifest-wiring-contract) provides the declarative inputs. The
+installer turns them into stage-specific checks and mutations.
+
+## Make stages independently repeatable
+
+The `add` pipeline separates registry build, source delivery, dependency installation, fragment
+application, and post-install generation. A stage should either discover its result already exists
+or move the repository toward that result.
+
+File delivery can compare the requested registry item and target paths. Dependency installation can
+read the package manifest and lockfile behavior. Fragment application has explicit dedup checks.
+Generators are expected to derive output from the same final config each time.
+
+This separation makes failure messages precise. “Failed during dependency-install” tells the user
+that source delivery completed but host patches did not begin. It also gives the retry a safe resume
+point.
+
+Do not mark a stage complete before its mutation and verification succeed. A state file that advances
+early can cause the next run to skip missing work.
+
+## Treat partial installation as a first-class state
+
+Rollback is attractive but often dishonest for source installers. Once a package manager changes a
+lockfile or a generator rewrites project-wide output, reconstructing the exact prior repository can
+be riskier than preserving the partial diff for review. Git can discard the branch if the user wants
+a full rollback.
+
+The installer records a partial outcome with the last completed stage and failure context. It prints
+the safest retry: fix the underlying command, then run the same `add` request. `doctor` can compare
+state with current files before that retry.
+
+A partial state should never be reported as installed. It should also not strand the user. The next
+run recognizes the component, explains that it is retrying a partial installation, rechecks prior
+work, and continues.
+
+## Deduplicate host edits semantically enough
+
+Source fragments are the easiest place to violate idempotency. Before inserting an import, confirm
+the specific binding and module do not already exist. Before adding a block to an array, confirm the
+registration is absent. Before adding a renderer key, confirm that key is not already mapped.
+
+The check should tolerate the supported formatter output but reject ambiguous conflicts. If
+`heroBasic` already maps to a different component, silently skipping is wrong and inserting a second
+key is worse. Stop and tell the user what conflicts.
+
+The [text-anchor design article](/blog/text-anchors-vs-ast) explains why these checks stay close to
+small, explicit insertions.
+
+## Respect manual edits to owned source
+
+Idempotency is not permission to restore component files to a canonical copy on every run. Once
+source lands, the consumer may edit it. A repeated add should report that the component is already
+installed rather than overwrite local work.
+
+An update workflow requires a different contract: identify the installed version, detect local
+changes, compute a proposed merge, and ask the user to review it. Conflating add and update makes a
+simple rerun destructive.
+
+Likewise, a missing owned file can be an accidental deletion or a deliberate local removal.
+`doctor` should report the discrepancy and recommend a clear action. Automatic recreation may be
+appropriate only through an explicit repair or reinstall operation with documented consequences.
+
+## Make dependencies stable
+
+Package managers are generally idempotent for an already-declared dependency, but an installer still
+needs to avoid version churn. Use manifest declarations consistently, detect the consumer's package
+manager, and do not rewrite unrelated dependency ranges.
+
+If installation fails because a peer dependency conflicts, record the stage and surface the package
+manager's error. Do not force flags that weaken the consumer's dependency contract. The user can
+resolve the version intentionally and retry.
+
+Lockfile changes belong in the reviewable diff. A no-op rerun should leave the package manifest and
+lockfile unchanged.
+
+## Verify generators converge
+
+Payload type and import-map generation should be deterministic for a stable config and toolchain.
+Running them twice should not create alternating formatting or ordering. If generated output churns,
+the installation cannot be cleanly idempotent even when source fragments are perfect.
+
+Pin dependencies through the lockfile, run generation from the same project root and environment,
+and add a clean-tree check where generated artifacts are committed. The article on
+[Payload's generated contracts](/blog/payload-types-and-import-map) covers the operational choices.
+
+If a generator fails, preserve its output and error for diagnosis. State should show that fragment
+application completed while post-install did not.
+
+## Test transitions, not only happy paths
+
+An idempotency suite needs more than “run twice.” Useful cases include:
+
+1. Fresh install reaches complete state.
+2. Complete install reruns without source duplication or diff.
+3. Failure during dependencies records partial state.
+4. Retry after the failure completes remaining stages.
+5. Missing fragment is diagnosed after recorded success.
+6. Conflicting fragment refuses to overwrite consumer code.
+7. Missing owned file produces a specific integrity report.
+8. Generator failure remains recoverable.
+
+Fixtures should inspect file content and state, not only stdout. A successful exit can still leave
+duplicate imports. A helpful message can still describe the wrong stage.
+
+## Give recovery a read-only command
+
+`payload-components doctor` checks project readiness and recorded installs without modifying the
+repository. Read-only diagnosis matters because a user investigating an uncertain state should not
+trigger more changes merely by asking what is wrong.
+
+The command classifies healthy, warning, and error conditions, then prints exact retry guidance.
+The [doctor guide](/blog/payload-components-doctor) shows representative reports and what evidence
+each check uses.
+
+Try the convergence behavior on a disposable branch:
+
+```bash
+npx payload-components add hero-basic
+npx payload-components add hero-basic
+npx payload-components doctor
+```
+
+The second add should report the existing installation, and doctor should report a healthy record.
+If a rerun changes a file, capture the before-and-after diff and open an issue against the
+[installation contract](/docs/installation). Repeated real-world installs are the best way to expose
+an assumption that unit fixtures have not yet learned.

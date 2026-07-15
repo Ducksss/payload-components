@@ -3,6 +3,15 @@ title: Hello — and why I built Payload Components
 description: A quick hello, the itch that started this, and what you'll find on this blog.
 author: Ducksss
 date: 2026-06-18
+series: project-notes
+publicationOrder: 1
+cover:
+  src: /blog/hello/cover.webp
+  alt: An open technical blueprint connected to a finished component system by an emerald wiring path
+tags:
+  - Project notes
+  - Open source
+  - Payload CMS
 ---
 
 Hi, and welcome. If you're reading this, you've found the very first post on the Payload
@@ -25,6 +34,12 @@ Because a block isn't really alive until four more edits land:
 - map it in your render switch so it actually paints
 - regenerate your types
 - regenerate the admin import map
+
+<BlogFigure
+  src="/blog/hello/figure-01-origin-story.svg"
+  alt="A four-step diagram connecting copied block source to registration, renderer mapping, and generated Payload artifacts"
+  caption="The small wiring steps after a copy are exactly where a reusable block becomes part of a working Payload application."
+/>
 
 None of those are difficult. They're just easy to forget — and when you miss one, the block
 doesn't error, it just silently never shows up. You copy, you move on, and twenty minutes later
