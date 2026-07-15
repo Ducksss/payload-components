@@ -5,7 +5,7 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { ComponentFamilyHeader } from '@/components/site/ComponentGrid'
 import { DemoFitFrame } from '@/components/site/demos/DemoFitFrame'
-import { demosBySlug } from '@/components/site/demos/registry'
+import { landingDemosBySlug } from '@/components/site/demos/landing-registry'
 import {
   componentCategories,
   componentEntries,
@@ -19,7 +19,7 @@ import {
  * install command. The previews are the same twins the catalog wall and the docs
  * pages render (demosBySlug), so the three surfaces never drift. */
 
-/* Visually strongest representative per family — each has a twin in demosBySlug.
+/* Visually strongest representative per family — each has a landing twin.
  * Families fall back to their first installable entry with a twin if the pick is
  * ever removed. */
 const familyRepresentatives: Record<string, string> = {
@@ -53,8 +53,8 @@ function pageFamilies(): PageFamily[] {
     const entries = componentEntries.filter((entry) => entry.category === key)
     const picked = familyRepresentatives[key]
     const representative =
-      (picked && demosBySlug[picked] && entries.find((entry) => entry.slug === picked)) ||
-      entries.find((entry) => demosBySlug[entry.slug])
+      (picked && landingDemosBySlug[picked] && entries.find((entry) => entry.slug === picked)) ||
+      entries.find((entry) => landingDemosBySlug[entry.slug])
 
     if (representative) {
       families.push({ count: entries.length, key, label: category.label, representative })
@@ -65,7 +65,7 @@ function pageFamilies(): PageFamily[] {
 }
 
 function FamilyCard({ family }: { family: PageFamily }) {
-  const Demo = demosBySlug[family.representative.slug]
+  const Demo = landingDemosBySlug[family.representative.slug]
   const categoryHref = `/components?category=${family.key}`
 
   return (
