@@ -87,7 +87,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       kind: 'command',
       label: 'Landing page install sequence',
       command:
-        'npx payload-components add hero-basic && npx payload-components add logo-cloud-grid && npx payload-components add feature-bento && npx payload-components add faq-accordion && npx payload-components add call-to-action-centered',
+        'for b in hero-basic logo-cloud-grid feature-bento faq-accordion call-to-action-centered; do npx payload-components add "$b"; done',
       registryItems: [
         'hero-basic',
         'logo-cloud-grid',
@@ -349,14 +349,10 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       kind: 'sequence',
       label: 'Doctor report labels',
       items: [
-        'project',
-        'scripts',
-        'state',
-        'peer dependencies',
-        'dependencies',
-        'files',
-        'registry dependencies',
-        'Payload fragments',
+        'project + scripts',
+        'state + peer deps',
+        'package deps + files',
+        'registry deps + fragments',
       ],
     },
     figures: [
@@ -412,7 +408,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       kind: 'command',
       label: 'Feature family registry consumers',
       command:
-        'npx payload-components add feature-grid-basic && npx payload-components add feature-split && npx payload-components add feature-bento && npx payload-components add feature-steps',
+        'for b in feature-grid-basic feature-split feature-bento feature-steps; do npx payload-components add "$b"; done',
       registryItems: ['feature-grid-basic', 'feature-split', 'feature-bento', 'feature-steps'],
     },
     figures: [
@@ -555,14 +551,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     secondary: {
       kind: 'sequence',
       label: 'Post projections',
-      items: [
-        'Post',
-        '/blog',
-        '/blog/what-is-a-payload-cms-block',
-        'RSS',
-        'OG',
-        'search',
-      ],
+      items: ['Post', '/blog + article', 'RSS + OG', 'search'],
     },
     figures: [
       {
@@ -745,7 +734,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     secondary: {
       kind: 'sequence',
       label: 'Contribution surfaces',
-      items: ['source', 'manifest', 'registry', 'docs', 'demo', 'tests'],
+      items: ['source + manifest', 'registry', 'docs + demo', 'tests'],
     },
     figures: [
       {
@@ -795,7 +784,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     secondary: {
       kind: 'sequence',
       label: 'Provenance chain',
-      items: ['upstream', 'revision', 'license', 'adaptation', 'notice', 'distribution'],
+      items: ['source rev', 'license', 'changes + notice', 'publish'],
     },
     figures: [
       {
@@ -814,8 +803,8 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       kind: 'source',
       label: 'Install support triage',
       path: 'content/docs/operations.mdx',
-      anchor: '## Install support triage',
-      take: 14,
+      anchor: 'Sort every support report into one lane first.',
+      take: 1,
     },
     secondary: {
       kind: 'sequence',

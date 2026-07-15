@@ -157,28 +157,40 @@ const loadCoverFonts = async (): Promise<CoverFontData> => ({
   ).toString('base64'),
 })
 
-const waitForDocumentAssets = async (page: Page) => {
+export const waitForDocumentAssets = async (page: Page) => {
   await page.evaluate(async () => {
     await document.fonts.ready
 
     await Promise.all(
-      [...document.images].map(
-        (image) =>
-          new Promise<void>((resolve, reject) => {
-            if (image.complete) {
-              if (image.naturalWidth > 0) resolve()
-              else reject(new Error(`Image failed to load: ${image.currentSrc || image.src}`))
-              return
-            }
+      [...document.images]
+        .filter((image) => {
+          if (image.loading !== 'lazy') return true
 
-            image.addEventListener('load', () => resolve(), { once: true })
-            image.addEventListener(
-              'error',
-              () => reject(new Error(`Image failed to load: ${image.currentSrc || image.src}`)),
-              { once: true },
-            )
-          }),
-      ),
+          const bounds = image.getBoundingClientRect()
+          return (
+            bounds.bottom >= 0 &&
+            bounds.right >= 0 &&
+            bounds.top <= window.innerHeight &&
+            bounds.left <= window.innerWidth
+          )
+        })
+        .map(
+          (image) =>
+            new Promise<void>((resolve, reject) => {
+              if (image.complete) {
+                if (image.naturalWidth > 0) resolve()
+                else reject(new Error(`Image failed to load: ${image.currentSrc || image.src}`))
+                return
+              }
+
+              image.addEventListener('load', () => resolve(), { once: true })
+              image.addEventListener(
+                'error',
+                () => reject(new Error(`Image failed to load: ${image.currentSrc || image.src}`)),
+                { once: true },
+              )
+            }),
+        ),
     )
   })
 }

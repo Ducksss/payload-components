@@ -68,7 +68,11 @@ const sequenceEvidence = (artifact: Extract<CoverArtifact, { kind: 'sequence' }>
 const commandEvidence = (artifact: Extract<CoverArtifact, { kind: 'command' }>) => {
   const registryItems = artifact.registryItems ?? []
   const registryLabel = registryItems.length
-    ? `<div class="registry-reference">REGISTRY ITEM / ${registryItems.map(escapeHtml).join(' + ')}</div>`
+    ? `<div class="registry-reference">${
+        registryItems.length === 1
+          ? `REGISTRY ITEM / ${escapeHtml(registryItems[0])}`
+          : `REGISTRY ITEMS / ${registryItems.length} FROM registry.json`
+      }</div>`
     : ''
 
   return `<div class="command-sheet">

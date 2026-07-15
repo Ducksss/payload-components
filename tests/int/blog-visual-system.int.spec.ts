@@ -1,9 +1,10 @@
 import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 
+import { chromium } from '@playwright/test'
 import { describe, expect, it } from 'vitest'
 
-import { parseCoverRenderArgs } from '../../tools/blog/render-covers'
+import { parseCoverRenderArgs, waitForDocumentAssets } from '../../tools/blog/render-covers'
 import { blogVisualCatalog } from '../../tools/blog/visual-system/catalog'
 import { resolveArtifact, validateBlogVisualCatalog } from '../../tools/blog/visual-system/artifacts'
 import { renderCoverHtml } from '../../tools/blog/visual-system/cover-template'
@@ -367,6 +368,90 @@ describe('Community Field Journal visual catalog', () => {
     }
   })
 
+  it('keeps command evidence fully inside its artifact card', async () => {
+    const browser = await chromium.launch({ headless: true })
+
+    try {
+      const page = await browser.newPage({ viewport: { height: 630, width: 1200 } })
+
+      for (const slug of [
+        'build-first-payload-v3-landing-page',
+        'shared-fields-across-component-families',
+      ]) {
+        const { html } = await renderCatalogCover(slug)
+        await page.setContent(html)
+        await page.evaluate(async () => await document.fonts.ready)
+
+        const bounds = await page
+          .locator('[data-artifact-kind="command"] .command-sheet')
+          .evaluate((element) => ({
+            clientHeight: element.clientHeight,
+            clientWidth: element.clientWidth,
+            scrollHeight: element.scrollHeight,
+            scrollWidth: element.scrollWidth,
+          }))
+
+        expect(bounds.scrollHeight, `${slug}: command height`).toBeLessThanOrEqual(
+          bounds.clientHeight,
+        )
+        expect(bounds.scrollWidth, `${slug}: command width`).toBeLessThanOrEqual(
+          bounds.clientWidth,
+        )
+      }
+    } finally {
+      await browser.close()
+    }
+  })
+
+  it('keeps corroborating sequences concise enough to scan', () => {
+    for (const entry of blogVisualCatalog) {
+      for (const artifact of [entry.primary, entry.secondary]) {
+        if (artifact.kind === 'sequence') {
+          expect(artifact.items.length, `${entry.slug}: ${artifact.label}`).toBeLessThanOrEqual(5)
+        }
+      }
+    }
+
+    const doctor = blogVisualCatalog.find((entry) => entry.slug === 'payload-components-doctor')
+    const provenance = blogVisualCatalog.find((entry) => entry.slug === 'open-source-provenance')
+    expect(doctor?.secondary).toMatchObject({
+      items: [
+        'project + scripts',
+        'state + peer deps',
+        'package deps + files',
+        'registry deps + fragments',
+      ],
+      kind: 'sequence',
+    })
+    expect(provenance?.secondary).toMatchObject({
+      items: ['source rev', 'license', 'changes + notice', 'publish'],
+      kind: 'sequence',
+    })
+  })
+
+  it('keeps the community roadmap source excerpt fully inside its artifact card', async () => {
+    const { html } = await renderCatalogCover('community-driven-roadmap')
+    const browser = await chromium.launch({ headless: true })
+
+    try {
+      const page = await browser.newPage({ viewport: { height: 630, width: 1200 } })
+      await page.setContent(html)
+      await page.evaluate(async () => await document.fonts.ready)
+
+      const bounds = await page.locator('.artifact--primary .code-sheet').evaluate((element) => ({
+        clientHeight: element.clientHeight,
+        clientWidth: element.clientWidth,
+        scrollHeight: element.scrollHeight,
+        scrollWidth: element.scrollWidth,
+      }))
+
+      expect(bounds.scrollHeight).toBeLessThanOrEqual(bounds.clientHeight)
+      expect(bounds.scrollWidth).toBeLessThanOrEqual(bounds.clientWidth)
+    } finally {
+      await browser.close()
+    }
+  })
+
   it('selects deterministic cover batches and a local capture origin', () => {
     const all = parseCoverRenderArgs([], {})
     expect(all.entries.map((entry) => entry.slug)).toEqual(
@@ -403,5 +488,45 @@ describe('Community Field Journal visual catalog', () => {
     expect(() =>
       parseCoverRenderArgs([], { BLOG_CAPTURE_BASE_URL: 'https://example.com' }),
     ).toThrow(/localhost/i)
+  })
+
+  it('does not wait for offscreen lazy images before capturing a route', async () => {
+    const browser = await chromium.launch({ headless: true })
+
+    try {
+      const page = await browser.newPage({ viewport: { height: 600, width: 960 } })
+      await page.setContent(`
+        <main style="height: 10000px">Route content in the capture viewport.</main>
+        <img
+          alt="Offscreen lazy cover"
+          height="630"
+          loading="lazy"
+          src="http://127.0.0.1:65534/never-loads.webp"
+          width="1200"
+        />
+      `)
+
+      const imageState = await page.locator('img').evaluate((image) => ({
+        complete: (image as HTMLImageElement).complete,
+        top: image.getBoundingClientRect().top,
+        viewportHeight: window.innerHeight,
+      }))
+      expect(imageState.complete).toBe(false)
+      expect(imageState.top).toBeGreaterThan(imageState.viewportHeight)
+
+      await expect(
+        Promise.race([
+          waitForDocumentAssets(page),
+          new Promise((_, reject) => {
+            setTimeout(
+              () => reject(new Error('Offscreen lazy image blocked route capture.')),
+              500,
+            )
+          }),
+        ]),
+      ).resolves.toBeUndefined()
+    } finally {
+      await browser.close()
+    }
   })
 })
