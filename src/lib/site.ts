@@ -49,7 +49,7 @@ export const heroHeadlineAccent = 'wired, not pasted.'
 export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
 
 export const heroSubheadline =
-  'One command installs the block, wires it into Payload, and lands a reviewable git diff.'
+  'One command installs and wires the block for Payload CMS developers, landing a reviewable git diff.'
 
 export const heroPrimaryCta = { href: '/docs', label: 'Get started' } as const
 
