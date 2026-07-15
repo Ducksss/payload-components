@@ -92,6 +92,46 @@
       ]
     },
     {
+      "name": "hero-product-tilt",
+      "type": "registry:block",
+      "title": "Hero Product Tilt",
+      "description": "Centered product hero with a static perspective frame and editor-managed media.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add hero-product-tilt\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-product-tilt.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add hero-product-tilt` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add hero-product-tilt",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/heroFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/heroFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroProductTilt/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroProductTilt/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroProductTilt/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroProductTilt/Component.tsx"
+        }
+      ]
+    },
+    {
       "name": "feature-grid-basic",
       "type": "registry:block",
       "title": "Feature Grid Basic",

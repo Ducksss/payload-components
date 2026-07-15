@@ -1,5 +1,6 @@
 import packageJson from '../../package.json' with { type: 'json' }
 import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
+import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
 import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
 
 const productionSiteUrl = 'https://www.payload-components.xyz'
@@ -274,6 +275,27 @@ export const componentEntries = [
     target: 'Video hero',
     title: 'Hero Video',
     version: heroVideoManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-product-tilt',
+    description:
+      'A centered product hero with a static perspective frame, CTA links, proof labels, and editor-managed media.',
+    family: 'pages',
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'links',
+      'productImage',
+      'imageCaption',
+      'proofItems',
+    ],
+    href: '/docs/components/hero-product-tilt',
+    slug: 'hero-product-tilt',
+    target: 'Product hero',
+    title: 'Hero Product Tilt',
+    version: heroProductTiltManifest.version,
   },
   {
     category: 'features',

@@ -32,6 +32,7 @@ import { FeatureGridBasicDemo } from './FeatureGridBasicDemo'
 import { FeatureSplitDemo } from './FeatureSplitDemo'
 import { FeatureStepsDemo } from './FeatureStepsDemo'
 import { HeroBasicDemo } from './HeroBasicDemo'
+import { HeroProductTiltDemo } from './HeroProductTiltDemo'
 import { HeroVideoDemo } from './HeroVideoDemo'
 import { IntegrationClusterDemo } from './IntegrationClusterDemo'
 import { IntegrationConnectDemo } from './IntegrationConnectDemo'
@@ -98,6 +99,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'feature-split': FeatureSplitDemo,
   'feature-steps': FeatureStepsDemo,
   'hero-basic': HeroBasicDemo,
+  'hero-product-tilt': HeroProductTiltDemo,
   'hero-video': HeroVideoDemo,
   'integration-cluster': IntegrationClusterDemo,
   'integration-connect': IntegrationConnectDemo,

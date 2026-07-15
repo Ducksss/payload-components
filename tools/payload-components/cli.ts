@@ -20,6 +20,7 @@ Commands:
 Current components:
   hero-basic
   hero-video
+  hero-product-tilt
   feature-grid-basic
   feature-split
   feature-bento

@@ -40,4 +40,29 @@ describe('curated Tailark ports', () => {
 
     expect(heroBasicDocs).toContain('<ComponentFamily slug="hero-basic" />')
   })
+
+  it('ships hero-product-tilt as a static perspective Payload block', async () => {
+    const [config, component, manifest, docs] = await Promise.all([
+      read('payload-components/source/blocks/HeroProductTilt/config.ts'),
+      read('payload-components/source/blocks/HeroProductTilt/Component.tsx'),
+      read('payload-components/manifests/hero-product-tilt.json'),
+      read('content/docs/components/hero-product-tilt.mdx'),
+    ])
+
+    expect(config).toContain("slug: 'heroProductTilt'")
+    expect(config).toContain("dbName: 'pc_hero_prod_tilt'")
+    expect(config).toContain('...heroFields')
+    expect(component).toContain('Layout adapted from tailark/blocks (MIT)')
+    expect(component).toContain('<figure')
+    expect(component).toContain('<figcaption')
+    expect(component).toContain('perspective')
+    expect(component).toContain('rotate-x')
+    expect(JSON.parse(manifest).files).toEqual([
+      'src/blocks/shared/heroFields.ts',
+      'src/blocks/HeroProductTilt/config.ts',
+      'src/blocks/HeroProductTilt/Component.tsx',
+    ])
+    expect(docs).toContain('npx payload-components add hero-product-tilt')
+    expect(docs).toContain('tailark/blocks')
+  })
 })
