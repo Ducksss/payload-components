@@ -1,5 +1,6 @@
 import packageJson from '../../package.json' with { type: 'json' }
 import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
+import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
 
 const productionSiteUrl = 'https://www.payload-components.xyz'
 const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionSiteUrl).replace(/\/+$/, '')
@@ -260,6 +261,19 @@ export const componentEntries = [
     target: 'Hero section',
     title: 'Hero Basic',
     version: heroBasicManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-video',
+    description:
+      'A full-bleed video hero with editor-managed media, CTA links, proof labels, and a reduced-motion poster fallback.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'links', 'video', 'poster', 'proofItems'],
+    href: '/docs/components/hero-video',
+    slug: 'hero-video',
+    target: 'Video hero',
+    title: 'Hero Video',
+    version: heroVideoManifest.version,
   },
   {
     category: 'features',

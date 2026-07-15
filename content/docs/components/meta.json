@@ -3,6 +3,7 @@
   "icon": "Blocks",
   "pages": [
     "hero-basic",
+    "hero-video",
     "feature-grid-basic",
     "feature-split",
     "feature-bento",

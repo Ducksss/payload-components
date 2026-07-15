@@ -19,6 +19,7 @@ Commands:
 
 Current components:
   hero-basic
+  hero-video
   feature-grid-basic
   feature-split
   feature-bento

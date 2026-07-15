@@ -24,6 +24,8 @@ export type HeroBasicDemoContent = {
   title: string
 }
 
+export type HeroVideoDemoContent = HeroBasicDemoContent
+
 /* The whole Feature family (grid-basic, split, bento, steps) renders from one
    demo-content shape: the shared featureFields header plus title+description
    items and optional CTA links. */
@@ -80,6 +82,22 @@ export const heroBasicDemoContent: HeroBasicDemoContent = {
     { label: 'No credit card required' },
   ],
   title: 'Ship customer dashboards in days, not quarters.',
+}
+
+export const heroVideoDemoContent: HeroVideoDemoContent = {
+  description:
+    'Turn live product data into dashboards, reports, and alerts your customers can act on immediately.',
+  eyebrow: 'Acme Cloud · Live',
+  links: [
+    { link: { appearance: 'default', label: 'Start free trial' } },
+    { link: { appearance: 'outline', label: 'Watch the demo' } },
+  ],
+  proofItems: [
+    { label: 'Live in one afternoon' },
+    { label: 'SOC 2 Type II' },
+    { label: 'No credit card' },
+  ],
+  title: 'See every customer signal as it happens.',
 }
 
 export const featureGridBasicDemoContent: FeatureGridBasicDemoContent = {

@@ -44,6 +44,54 @@
       ]
     },
     {
+      "name": "hero-video",
+      "type": "registry:block",
+      "title": "Hero Video",
+      "description": "Full-bleed video hero with editor-managed media and a reduced-motion poster fallback.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add hero-video\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-video.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add hero-video` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add hero-video",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/heroFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/heroFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroVideo/Video.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroVideo/Video.tsx"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroVideo/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroVideo/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroVideo/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroVideo/Component.tsx"
+        }
+      ]
+    },
+    {
       "name": "feature-grid-basic",
       "type": "registry:block",
       "title": "Feature Grid Basic",

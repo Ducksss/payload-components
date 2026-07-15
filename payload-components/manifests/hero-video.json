@@ -1,0 +1,78 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "hero-video",
+  "version": "0.1.0",
+  "title": "Hero Video",
+  "description": "A full-bleed video hero with editor-managed media, CTA links, proof labels, and a reduced-motion poster fallback.",
+  "registryItemName": "hero-video",
+  "dependencies": {
+    "motion": "^12.0.0"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/heroFields.ts",
+    "src/blocks/HeroVideo/Video.tsx",
+    "src/blocks/HeroVideo/config.ts",
+    "src/blocks/HeroVideo/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "HeroVideoBlock",
+      "importPath": "@/blocks/HeroVideo/Component",
+      "blockSlug": "heroVideo"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "HeroVideo",
+      "importPath": "../../blocks/HeroVideo/config",
+      "blockName": "HeroVideo"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Full-bleed video hero with a reduced-motion poster fallback."
+  },
+  "sampleContent": {
+    "blockType": "heroVideo",
+    "eyebrow": "Acme Cloud · Live",
+    "title": "See every customer signal as it happens.",
+    "description": "Turn live product data into dashboards, reports, and alerts your customers can act on immediately.",
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/start",
+          "label": "Start free trial",
+          "appearance": "default"
+        }
+      },
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/demo",
+          "label": "Watch the demo",
+          "appearance": "outline"
+        }
+      }
+    ],
+    "proofItems": [
+      { "label": "Live in one afternoon" },
+      { "label": "SOC 2 Type II" },
+      { "label": "No credit card" }
+    ]
+  }
+}
