@@ -4,7 +4,7 @@ import {
   catalogTitle,
   githubRepoUrl,
   heroHeadline,
-  heroPrimaryCta,
+  heroGuideLink,
   heroTertiaryLinks,
   homeMetadataDescription,
   homeMetadataTitle,
@@ -100,19 +100,25 @@ test.describe('Light shadcn frontend', () => {
     await page.goto(baseURL)
 
     const hero = page.locator('.hero-shell')
+    await expect(hero.locator('[data-cta-level="primary"]')).toHaveCount(1)
     await expect(
-      hero.getByRole('link', { name: heroPrimaryCta.label, exact: true }),
+      hero.getByRole('button', { name: 'Copy install command', exact: true }),
     ).toBeVisible()
+    await expect(hero.getByRole('link', { name: heroGuideLink.label, exact: true })).toBeVisible()
     await expect(hero.locator(`a[href="${githubRepoUrl}"]`)).toHaveAccessibleName(
       'Star on GitHub',
     )
     await expect(
       hero.getByRole('link', { name: heroTertiaryLinks[0].label, exact: true }),
     ).toBeVisible()
-    await expect(hero.getByText('Open source', { exact: true })).toHaveCount(0)
+    await expect(hero.locator('[data-cta-level="tertiary"]')).toHaveCount(3)
+    await expect(hero.getByRole('link', { name: 'Get started', exact: true })).toHaveCount(0)
+
+    const community = page.locator(`#${landingSections.community.id}`)
+    await expect(community.locator('[data-cta-level="primary"]')).toHaveCount(1)
     await expect(
-      hero.getByRole('link', { name: 'See what add actually wires', exact: true }),
-    ).toHaveCount(0)
+      community.getByRole('button', { name: 'Copy install command', exact: true }),
+    ).toBeVisible()
   })
 
   test('keeps the desktop hero composition compact', async ({ page }) => {

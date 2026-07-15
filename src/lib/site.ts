@@ -51,7 +51,7 @@ export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
 export const heroSubheadline =
   'One command installs and wires the block for Payload CMS developers, landing a reviewable git diff.'
 
-export const heroPrimaryCta = { href: '/docs', label: 'Get started' } as const
+export const heroGuideLink = { href: '/docs/installation', label: 'Read the install guide' } as const
 
 export const heroTertiaryLinks = [
   { href: '/components', label: 'Browse the components' },
