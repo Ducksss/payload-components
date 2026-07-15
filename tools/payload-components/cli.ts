@@ -59,6 +59,7 @@ Current components:
   call-to-action-centered
   call-to-action-boxed
   call-to-action-signup
+  contact-routing-form
   team-roster
   team-grid
   faq-accordion

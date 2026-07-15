@@ -1,4 +1,5 @@
 import packageJson from '../../package.json' with { type: 'json' }
+import contactRoutingFormManifest from '../../payload-components/manifests/contact-routing-form.json' with { type: 'json' }
 import featureAccordionManifest from '../../payload-components/manifests/feature-accordion.json' with { type: 'json' }
 import featureCardsMediaManifest from '../../payload-components/manifests/feature-cards-media.json' with { type: 'json' }
 import featureIconGridManifest from '../../payload-components/manifests/feature-icon-grid.json' with { type: 'json' }
@@ -235,6 +236,7 @@ export const componentCategories = {
   comparator: { family: 'pages', label: 'Comparator' },
   pricing: { family: 'pages', label: 'Pricing' },
   cta: { family: 'pages', label: 'Call to action' },
+  contact: { family: 'pages', label: 'Contact' },
   integration: { family: 'pages', label: 'Integration' },
   logos: { family: 'pages', label: 'Logo cloud' },
   testimonials: { family: 'pages', label: 'Testimonials' },
@@ -535,6 +537,29 @@ export const componentEntries = [
     target: 'Email capture',
     title: 'Call To Action Signup',
     version: '0.1.0',
+  },
+  {
+    category: 'contact',
+    command: 'npx payload-components add contact-routing-form',
+    description:
+      'A contact section with validated channels and a fixed accessible form that posts to a same-origin endpoint.',
+    family: 'pages',
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'channels',
+      'formTitle',
+      'formDescription',
+      'formLabels',
+      'submitLabel',
+      'action',
+    ],
+    href: '/docs/components/contact-routing-form',
+    slug: 'contact-routing-form',
+    target: 'Contact section',
+    title: 'Contact Routing Form',
+    version: contactRoutingFormManifest.version,
   },
   {
     category: 'integration',

@@ -186,4 +186,41 @@ describe('curated Tailark ports', () => {
     expect(docs).toContain('tailark/blocks')
     expect(docs).not.toContain('## In this family')
   })
+
+  it('ships contact-routing-form with safe channels and form fallbacks', async () => {
+    const [config, component, manifest, docs, site, pageTree] = await Promise.all([
+      read('payload-components/source/blocks/ContactRoutingForm/config.ts'),
+      read('payload-components/source/blocks/ContactRoutingForm/Component.tsx'),
+      read('payload-components/manifests/contact-routing-form.json'),
+      read('content/docs/components/contact-routing-form.mdx'),
+      read('src/lib/site.ts'),
+      read('src/lib/component-page-tree.tsx'),
+    ])
+
+    expect(config).toContain("slug: 'contactRoutingForm'")
+    expect(config).toContain("dbName: 'pc_contact_route'")
+    expect(config).toContain('validateSameOriginFormAction')
+    expect(config).toContain('validateContactValue')
+    expect(component).toContain('const formAction = getSafeFormAction(action)')
+    expect(component).toContain('getSafeContactHref')
+    expect(component).toContain('method="post"')
+    expect(component).toContain('name="website"')
+    expect(component).toContain('tabIndex={-1}')
+    expect(component).toContain('React.useId()')
+    expect(component).toContain('<label')
+    expect(component).toContain('disabled={!formAction}')
+    expect(component).toContain('Configure a valid same-origin form action before publishing.')
+    expect(component).toContain('Layout adapted from tailark/blocks (MIT)')
+    expect(site).toContain("contact: { family: 'pages', label: 'Contact' }")
+    expect(pageTree).toContain("key: 'contact', label: 'Contact'")
+    expect(JSON.parse(manifest).files).toEqual([
+      'src/blocks/shared/safeUrls.ts',
+      'src/blocks/shared/contactUrls.ts',
+      'src/blocks/ContactRoutingForm/config.ts',
+      'src/blocks/ContactRoutingForm/Component.tsx',
+    ])
+    expect(docs).toContain('npx payload-components add contact-routing-form')
+    expect(docs).toContain('tailark/blocks')
+    expect(docs).not.toContain('## In this family')
+  })
 })

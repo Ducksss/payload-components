@@ -1686,6 +1686,54 @@
       ]
     },
     {
+      "name": "contact-routing-form",
+      "type": "registry:block",
+      "title": "Contact Routing Form",
+      "description": "Validated contact channels beside an accessible same-origin inquiry form.",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "input",
+        "textarea"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add contact-routing-form\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/contact-routing-form.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add contact-routing-form` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add contact-routing-form",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/safeUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/safeUrls.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/contactUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/contactUrls.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContactRoutingForm/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContactRoutingForm/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContactRoutingForm/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContactRoutingForm/Component.tsx"
+        }
+      ]
+    },
+    {
       "name": "team-roster",
       "type": "registry:block",
       "title": "Team Roster",

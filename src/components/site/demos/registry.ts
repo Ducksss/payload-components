@@ -6,6 +6,7 @@ import { CallToActionSignupDemo } from './CallToActionSignupDemo'
 import { ComparatorGridDemo } from './ComparatorGridDemo'
 import { ComparatorStackDemo } from './ComparatorStackDemo'
 import { ComparatorTableDemo } from './ComparatorTableDemo'
+import { ContactRoutingFormDemo } from './ContactRoutingFormDemo'
 import { ContentColumnsDemo } from './ContentColumnsDemo'
 import { ContentCommunityDemo } from './ContentCommunityDemo'
 import { ContentFeatureMediaDemo } from './ContentFeatureMediaDemo'
@@ -77,6 +78,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'comparator-grid': ComparatorGridDemo,
   'comparator-stack': ComparatorStackDemo,
   'comparator-table': ComparatorTableDemo,
+  'contact-routing-form': ContactRoutingFormDemo,
   'content-columns': ContentColumnsDemo,
   'content-community': ContentCommunityDemo,
   'content-feature-media': ContentFeatureMediaDemo,

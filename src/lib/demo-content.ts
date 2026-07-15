@@ -95,6 +95,18 @@ export type StatsProofDemoContent = {
   title: string
 }
 
+export type ContactRoutingFormDemoContent = {
+  channels: { description?: string; label: string; value: string }[]
+  description?: string
+  eyebrow?: string
+  formConfigured: boolean
+  formDescription?: string
+  formLabels: string[]
+  formTitle: string
+  submitLabel: string
+  title: string
+}
+
 /* The whole Logo Cloud family (grid, hover, marquee, inline, inline-wrap)
    renders from one demo-content shape: the shared heading, and for the hover
    variant an optional CTA link. The logos themselves are presentational and
@@ -368,6 +380,29 @@ export const statsProofDemoContent: StatsProofDemoContent = {
     'Acme let us replace a quarter of bespoke reporting work with one product surface our customers actually prefer.',
   role: 'VP Product, Northwind',
   title: 'A platform customers adopt and teams can prove.',
+}
+
+export const contactRoutingFormDemoContent: ContactRoutingFormDemoContent = {
+  channels: [
+    {
+      description: 'For implementation questions and existing workspaces.',
+      label: 'Product and support',
+      value: 'hello@example.com',
+    },
+    {
+      description: 'Weekdays, 9:00–17:00 Pacific.',
+      label: 'Talk to sales',
+      value: '+1 (555) 010-1000',
+    },
+  ],
+  description: 'Choose the channel that fits or send the context the team needs to respond.',
+  eyebrow: 'Contact Acme',
+  formConfigured: true,
+  formDescription: 'Share the product, timeline, and customer experience you want to launch.',
+  formLabels: ['Name', 'Email', 'Organization', 'Phone', 'Message'],
+  formTitle: 'Tell us what you are building',
+  submitLabel: 'Send inquiry',
+  title: 'Route every question to the right team.',
 }
 
 export const logoCloudGridDemoContent: LogoCloudDemoContent = {
