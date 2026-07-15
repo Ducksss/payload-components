@@ -19,8 +19,8 @@ the command that handles all four wiring steps for you.
 | --- | --- | --- |
 | The block is missing from the Pages editor | The block is not registered in the Pages collection `layout` field | Add the block config to the `blocks` array for that field. |
 | The editor saves the block, but the page renders nothing | `RenderBlocks.tsx` has no mapping for the block slug | Import the frontend component and add it to the render map. |
-| TypeScript reports stale or missing block fields | `src/payload-types.ts` was generated before the block was registered | Run `pnpm payload generate:types`. |
-| The admin UI cannot load the block, or reports an import-map error | The generated admin import map is stale | Run `pnpm payload generate:importmap`. Do not edit the generated map by hand. |
+| TypeScript reports stale or missing block fields | `src/payload-types.ts` was generated before the block was registered | Run <RunnableCommand command="pnpm payload generate:types" label="Copy the generate types command" />. |
+| The admin UI cannot load the block, or reports an import-map error | The generated admin import map is stale | Run <RunnableCommand command="pnpm payload generate:importmap" label="Copy the generate import map command" />. Do not edit the generated map by hand. |
 
 Payload's own docs cover the underlying [block configuration](https://payloadcms.com/docs/fields/blocks)
 and [custom component paths](https://payloadcms.com/docs/custom-components/overview). Payload Components
@@ -28,7 +28,7 @@ automates the project-specific edits for its supported Payload v3 and Next.js we
 the result in your git diff so you can review it.
 
 <Callout type="info">
-  Already installed with Payload Components? Run `npx payload-components doctor` before editing.
+  Already installed with Payload Components? Run <RunnableCommand command="npx payload-components doctor" label="Copy the doctor command" /> before editing.
   It checks the supported project shape, required scripts, registered fragments, dependencies, and
   recorded install state without changing your files.
 </Callout>
@@ -95,9 +95,7 @@ wiring for free, but I never want it to feel like magic you can't inspect.
 
 Give it a spin on a throwaway branch and watch the diff:
 
-```bash
-npx payload-components add hero-basic
-```
+<RunnableCommand command="npx payload-components add hero-basic" label="Copy the hero-basic install command" />
 
 Then run the [read-only doctor check](/docs/installation#doctor) and inspect the diff before you
 commit. If something feels off, tell me. That feedback is how the catalog gets better.

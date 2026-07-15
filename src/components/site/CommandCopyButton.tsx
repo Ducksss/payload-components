@@ -6,10 +6,12 @@ export function CommandCopyButton({
   command,
   emphasis = 'default',
   label = 'Copy',
+  ariaLabel,
 }: {
   command: string
   emphasis?: 'default' | 'primary'
   label?: string
+  ariaLabel?: string
 }) {
   const primary = emphasis === 'primary'
 
@@ -19,6 +21,7 @@ export function CommandCopyButton({
       data-copy-command={command}
       data-copy-default-label={label}
       data-cta-level={primary ? 'primary' : 'secondary'}
+      aria-label={ariaLabel}
       className={cn(
         'copy-button inline-flex shrink-0 items-center justify-center gap-1.5 border font-medium transition-[transform,background-color,border-color,box-shadow,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         primary

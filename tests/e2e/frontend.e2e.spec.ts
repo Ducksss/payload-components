@@ -764,6 +764,28 @@ test.describe('Light shadcn frontend', () => {
       .toBe(primaryInstallCommand)
   })
 
+  test('copies each troubleshooting command exactly', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/blog/anatomy-of-an-install`)
+    await waitForCopyController(page)
+
+    const commands = [
+      ['Copy the generate types command', 'pnpm payload generate:types'],
+      ['Copy the generate import map command', 'pnpm payload generate:importmap'],
+      ['Copy the doctor command', 'npx payload-components doctor'],
+      ['Copy the hero-basic install command', 'npx payload-components add hero-basic'],
+    ] as const
+
+    for (const [label, command] of commands) {
+      const button = page.getByRole('button', { name: label })
+      await expect(button).toBeVisible()
+      await button.focus()
+      await expect(button).toBeFocused()
+      await page.keyboard.press('Enter')
+      await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(command)
+    }
+  })
+
   test('shows an alert after copying page markdown', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(`${baseURL}/docs/installation`)

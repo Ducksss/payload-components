@@ -127,6 +127,11 @@ describe('Fumadocs site shell', () => {
     expect(troubleshootingPost).toContain('[installation guide](/docs/installation)')
     expect(troubleshootingPost).toContain('The block is missing from the Pages editor')
     expect(troubleshootingPost).toContain('The editor saves the block, but the page renders nothing')
+    expect(troubleshootingPost.match(/<RunnableCommand\b/g)).toHaveLength(4)
+    expect(troubleshootingPost).toContain('command="pnpm payload generate:types"')
+    expect(troubleshootingPost).toContain('command="pnpm payload generate:importmap"')
+    expect(troubleshootingPost).toContain('command="npx payload-components doctor"')
+    expect(troubleshootingPost).toContain('command="npx payload-components add hero-basic"')
     expect(installationGuide).toContain(
       '[four-step Payload block troubleshooting checklist](/blog/anatomy-of-an-install)',
     )
