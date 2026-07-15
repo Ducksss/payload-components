@@ -99,4 +99,32 @@ describe('curated Tailark ports', () => {
     expect(docs).toContain('npx payload-components add feature-accordion')
     expect(docs).toContain('tailark/blocks')
   })
+
+  it('ships feature-cards-media as independent visual feature stories', async () => {
+    const [config, component, manifest, docs] = await Promise.all([
+      read('payload-components/source/blocks/FeatureCardsMedia/config.ts'),
+      read('payload-components/source/blocks/FeatureCardsMedia/Component.tsx'),
+      read('payload-components/manifests/feature-cards-media.json'),
+      read('content/docs/components/feature-cards-media.mdx'),
+    ])
+
+    expect(config).toContain("slug: 'featureCardsMedia'")
+    expect(config).toContain("dbName: 'pc_feat_card_med'")
+    expect(config).toContain('...featureFields')
+    expect(config).toContain('createFeatureIconField()')
+    expect(config).toContain('minRows: 2')
+    expect(config).toContain('maxRows: 4')
+    expect(component).toContain('md:grid-cols-2')
+    expect(component).toContain('aspect-video')
+    expect(component).toContain('<Media')
+    expect(component).toContain('Layout adapted from tailark/blocks (MIT)')
+    expect(JSON.parse(manifest).files).toEqual([
+      'src/blocks/shared/featureFields.ts',
+      'src/blocks/shared/featureIcons.ts',
+      'src/blocks/FeatureCardsMedia/config.ts',
+      'src/blocks/FeatureCardsMedia/Component.tsx',
+    ])
+    expect(docs).toContain('npx payload-components add feature-cards-media')
+    expect(docs).toContain('tailark/blocks')
+  })
 })

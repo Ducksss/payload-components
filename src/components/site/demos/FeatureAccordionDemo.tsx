@@ -25,7 +25,7 @@ import { DemoLink } from './DemoLink'
  * imgClassName values are not mirrored (they live on imgClassName, not className).
  * If the component Component.tsx changes, update this file in the same PR. */
 
-const demoIcons: Record<FeatureDemoIconName, LucideIcon> = {
+export const featureDemoIcons: Record<FeatureDemoIconName, LucideIcon> = {
   chart: ChartBarIncreasing,
   database: Database,
   fingerprint: Fingerprint,
@@ -43,7 +43,7 @@ export function FeatureAccordionDemo({
 }) {
   const { description, eyebrow, items, links, title } = content
   const activeItem = items[0]
-  const ActiveIcon = activeItem?.icon ? demoIcons[activeItem.icon] : undefined
+  const ActiveIcon = activeItem?.icon ? featureDemoIcons[activeItem.icon] : undefined
 
   return (
     <div aria-hidden="true" className={className}>

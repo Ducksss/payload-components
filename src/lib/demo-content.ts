@@ -60,6 +60,14 @@ export type FeatureAccordionDemoContent = Omit<FeatureSectionDemoContent, 'items
   }[]
 }
 
+export type FeatureCardsMediaDemoContent = Omit<FeatureSectionDemoContent, 'items'> & {
+  items: {
+    description: string
+    icon?: FeatureDemoIconName
+    title: string
+  }[]
+}
+
 export type EmbedBasicDemoContent = {
   allowFullscreen?: boolean
   aspectRatio: '16:9' | '4:3' | '1:1' | '21:9'
@@ -184,6 +192,27 @@ export const featureAccordionDemoContent: FeatureAccordionDemoContent = {
   ],
   links: [{ link: { appearance: 'default', label: 'Explore the platform' } }],
   title: 'Explore every signal from one workspace.',
+}
+
+export const featureCardsMediaDemoContent: FeatureCardsMediaDemoContent = {
+  description: 'Pair each core capability with the product surface that makes it tangible.',
+  eyebrow: 'Customer experience',
+  items: [
+    {
+      description:
+        "Compose every workspace from governed metrics while matching your product's visual language.",
+      icon: 'chart',
+      title: 'Dashboards customers recognize',
+    },
+    {
+      description:
+        'Route threshold changes to the right owner with the account and metric context intact.',
+      icon: 'zap',
+      title: 'Alerts teams can trust',
+    },
+  ],
+  links: [{ link: { appearance: 'outline', label: 'See every workflow' } }],
+  title: 'Give every workflow the visual context it deserves.',
 }
 
 export const featureSplitDemoContent: FeatureSectionDemoContent = {

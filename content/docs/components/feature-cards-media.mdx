@@ -1,0 +1,74 @@
+---
+title: Feature Cards Media
+description: A two-column feature layout with independent media, optional icons, and CTA links.
+icon: GalleryHorizontalEnd
+---
+
+<ComponentPreview slug="feature-cards-media" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add feature-cards-media
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-cards-media.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="feature-cards-media" />
+
+## Content model
+
+The first three fields come from the shared `featureFields` base. `items` and `links` define this
+media-card variant; icon choices come from the shared Feature icon map.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'Two to four visual feature cards.',
+    },
+    links: { type: 'array', description: 'Up to two optional CTA links.' },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'Feature card heading.' },
+    description: { type: 'textarea', required: true, description: 'Feature card body copy.' },
+    icon: { type: 'select', description: 'Optional icon beside the card title.' },
+    image: { type: 'upload', required: true, description: 'Media displayed at a fixed 16:9 ratio.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="feature-cards-media" />
+
+## Requirements
+
+<ComponentRequirements slug="feature-cards-media" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.
+
+## In this family
+
+<ComponentFamily slug="feature-cards-media" />

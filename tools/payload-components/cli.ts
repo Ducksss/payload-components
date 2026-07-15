@@ -26,6 +26,7 @@ Current components:
   feature-bento
   feature-steps
   feature-accordion
+  feature-cards-media
   embed-basic
   content-columns
   content-image-lead

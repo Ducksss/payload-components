@@ -345,6 +345,55 @@
       ]
     },
     {
+      "name": "feature-cards-media",
+      "type": "registry:block",
+      "title": "Feature Cards Media",
+      "description": "Two-column feature cards with independent media and optional icons.",
+      "registryDependencies": [
+        "badge",
+        "card"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add feature-cards-media\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-cards-media.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add feature-cards-media` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add feature-cards-media",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/featureFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/featureFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/featureIcons.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/featureIcons.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FeatureCardsMedia/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureCardsMedia/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FeatureCardsMedia/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureCardsMedia/Component.tsx"
+        }
+      ]
+    },
+    {
       "name": "embed-basic",
       "type": "registry:block",
       "title": "Embed Basic",

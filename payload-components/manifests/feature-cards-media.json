@@ -1,0 +1,76 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "feature-cards-media",
+  "version": "0.1.0",
+  "title": "Feature Cards Media",
+  "description": "A two-column feature layout with independent media, optional icons, and CTA links.",
+  "registryItemName": "feature-cards-media",
+  "dependencies": {
+    "lucide-react": "^0.563.0"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/featureFields.ts",
+    "src/blocks/shared/featureIcons.ts",
+    "src/blocks/FeatureCardsMedia/config.ts",
+    "src/blocks/FeatureCardsMedia/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FeatureCardsMediaBlock",
+      "importPath": "@/blocks/FeatureCardsMedia/Component",
+      "blockSlug": "featureCardsMedia"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FeatureCardsMedia",
+      "importPath": "../../blocks/FeatureCardsMedia/config",
+      "blockName": "FeatureCardsMedia"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Two-column feature cards with an editor-managed image per story."
+  },
+  "sampleContent": {
+    "blockType": "featureCardsMedia",
+    "eyebrow": "Customer experience",
+    "title": "Give every workflow the visual context it deserves.",
+    "description": "Pair each core capability with the product surface that makes it tangible.",
+    "items": [
+      {
+        "title": "Dashboards customers recognize",
+        "description": "Compose every workspace from governed metrics while matching your product's visual language.",
+        "icon": "chart"
+      },
+      {
+        "title": "Alerts teams can trust",
+        "description": "Route threshold changes to the right owner with the account and metric context intact.",
+        "icon": "zap"
+      }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/platform",
+          "label": "See every workflow",
+          "appearance": "outline"
+        }
+      }
+    ]
+  }
+}
