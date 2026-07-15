@@ -27,6 +27,7 @@ Current components:
   feature-steps
   feature-accordion
   feature-cards-media
+  feature-icon-grid
   embed-basic
   content-columns
   content-image-lead

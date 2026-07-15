@@ -31,6 +31,7 @@ import { FeatureAccordionDemo } from './FeatureAccordionDemo'
 import { FeatureBentoDemo } from './FeatureBentoDemo'
 import { FeatureCardsMediaDemo } from './FeatureCardsMediaDemo'
 import { FeatureGridBasicDemo } from './FeatureGridBasicDemo'
+import { FeatureIconGridDemo } from './FeatureIconGridDemo'
 import { FeatureSplitDemo } from './FeatureSplitDemo'
 import { FeatureStepsDemo } from './FeatureStepsDemo'
 import { HeroBasicDemo } from './HeroBasicDemo'
@@ -100,6 +101,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'feature-bento': FeatureBentoDemo,
   'feature-cards-media': FeatureCardsMediaDemo,
   'feature-grid-basic': FeatureGridBasicDemo,
+  'feature-icon-grid': FeatureIconGridDemo,
   'feature-split': FeatureSplitDemo,
   'feature-steps': FeatureStepsDemo,
   'hero-basic': HeroBasicDemo,

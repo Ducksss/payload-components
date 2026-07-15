@@ -1,0 +1,72 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "feature-icon-grid",
+  "version": "0.1.0",
+  "title": "Feature Icon Grid",
+  "description": "A dense feature grid with editor-selected icons and a tokenized radial grid decorator.",
+  "registryItemName": "feature-icon-grid",
+  "dependencies": {
+    "lucide-react": "^0.563.0"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/featureFields.ts",
+    "src/blocks/shared/featureIcons.ts",
+    "src/blocks/FeatureIconGrid/config.ts",
+    "src/blocks/FeatureIconGrid/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FeatureIconGridBlock",
+      "importPath": "@/blocks/FeatureIconGrid/Component",
+      "blockSlug": "featureIconGrid"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FeatureIconGrid",
+      "importPath": "../../blocks/FeatureIconGrid/config",
+      "blockName": "FeatureIconGrid"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Three-column icon feature grid with a tokenized radial decorator."
+  },
+  "sampleContent": {
+    "blockType": "featureIconGrid",
+    "eyebrow": "Infrastructure",
+    "title": "Every foundation your customer experience needs.",
+    "description": "One governed platform covers the data, access, and delivery layers behind every embedded surface.",
+    "items": [
+      { "title": "Live metrics", "description": "Query current product and warehouse data without another copy.", "icon": "chart" },
+      { "title": "Governed storage", "description": "Keep metric definitions consistent across every customer workspace.", "icon": "database" },
+      { "title": "Identity context", "description": "Carry account and user identity into every embedded view.", "icon": "fingerprint" },
+      { "title": "Role mapping", "description": "Translate your application's roles into precise analytics access.", "icon": "id-card" },
+      { "title": "Tenant isolation", "description": "Scope every query and asset to the workspace viewing it.", "icon": "shield" },
+      { "title": "Instant delivery", "description": "Ship updates across dashboards, reports, and alerts together.", "icon": "zap" }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/platform",
+          "label": "Explore the infrastructure",
+          "appearance": "outline"
+        }
+      }
+    ]
+  }
+}

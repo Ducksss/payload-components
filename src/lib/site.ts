@@ -1,6 +1,7 @@
 import packageJson from '../../package.json' with { type: 'json' }
 import featureAccordionManifest from '../../payload-components/manifests/feature-accordion.json' with { type: 'json' }
 import featureCardsMediaManifest from '../../payload-components/manifests/feature-cards-media.json' with { type: 'json' }
+import featureIconGridManifest from '../../payload-components/manifests/feature-icon-grid.json' with { type: 'json' }
 import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
 import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
 import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
@@ -376,6 +377,19 @@ export const componentEntries = [
     target: 'Media feature cards',
     title: 'Feature Cards Media',
     version: featureCardsMediaManifest.version,
+  },
+  {
+    category: 'features',
+    command: 'npx payload-components add feature-icon-grid',
+    description:
+      'A dense feature grid with editor-selected icons and a tokenized radial grid decorator.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/feature-icon-grid',
+    slug: 'feature-icon-grid',
+    target: 'Icon feature grid',
+    title: 'Feature Icon Grid',
+    version: featureIconGridManifest.version,
   },
   {
     category: 'comparator',

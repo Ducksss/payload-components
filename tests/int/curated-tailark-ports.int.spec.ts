@@ -127,4 +127,33 @@ describe('curated Tailark ports', () => {
     expect(docs).toContain('npx payload-components add feature-cards-media')
     expect(docs).toContain('tailark/blocks')
   })
+
+  it('ships feature-icon-grid with a tokenized masked-grid decorator', async () => {
+    const [config, component, manifest, docs] = await Promise.all([
+      read('payload-components/source/blocks/FeatureIconGrid/config.ts'),
+      read('payload-components/source/blocks/FeatureIconGrid/Component.tsx'),
+      read('payload-components/manifests/feature-icon-grid.json'),
+      read('content/docs/components/feature-icon-grid.mdx'),
+    ])
+
+    expect(config).toContain("slug: 'featureIconGrid'")
+    expect(config).toContain("dbName: 'pc_feat_icon_grid'")
+    expect(config).toContain('createFeatureIconField(true)')
+    expect(config).toContain('minRows: 3')
+    expect(config).toContain('maxRows: 6')
+    expect(component).toContain('aria-hidden="true"')
+    expect(component).toContain('mask-image:radial-gradient')
+    expect(component).toContain('var(--border)')
+    expect(component).toContain('md:grid-cols-2')
+    expect(component).toContain('xl:grid-cols-3')
+    expect(component).toContain('Layout adapted from tailark/blocks (MIT)')
+    expect(JSON.parse(manifest).files).toEqual([
+      'src/blocks/shared/featureFields.ts',
+      'src/blocks/shared/featureIcons.ts',
+      'src/blocks/FeatureIconGrid/config.ts',
+      'src/blocks/FeatureIconGrid/Component.tsx',
+    ])
+    expect(docs).toContain('npx payload-components add feature-icon-grid')
+    expect(docs).toContain('tailark/blocks')
+  })
 })

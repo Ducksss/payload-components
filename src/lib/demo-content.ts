@@ -68,6 +68,14 @@ export type FeatureCardsMediaDemoContent = Omit<FeatureSectionDemoContent, 'item
   }[]
 }
 
+export type FeatureIconGridDemoContent = Omit<FeatureSectionDemoContent, 'items'> & {
+  items: {
+    description: string
+    icon: FeatureDemoIconName
+    title: string
+  }[]
+}
+
 export type EmbedBasicDemoContent = {
   allowFullscreen?: boolean
   aspectRatio: '16:9' | '4:3' | '1:1' | '21:9'
@@ -213,6 +221,46 @@ export const featureCardsMediaDemoContent: FeatureCardsMediaDemoContent = {
   ],
   links: [{ link: { appearance: 'outline', label: 'See every workflow' } }],
   title: 'Give every workflow the visual context it deserves.',
+}
+
+export const featureIconGridDemoContent: FeatureIconGridDemoContent = {
+  description:
+    'One governed platform covers the data, access, and delivery layers behind every embedded surface.',
+  eyebrow: 'Infrastructure',
+  items: [
+    {
+      description: 'Query current product and warehouse data without another copy.',
+      icon: 'chart',
+      title: 'Live metrics',
+    },
+    {
+      description: 'Keep metric definitions consistent across every customer workspace.',
+      icon: 'database',
+      title: 'Governed storage',
+    },
+    {
+      description: 'Carry account and user identity into every embedded view.',
+      icon: 'fingerprint',
+      title: 'Identity context',
+    },
+    {
+      description: "Translate your application's roles into precise analytics access.",
+      icon: 'id-card',
+      title: 'Role mapping',
+    },
+    {
+      description: 'Scope every query and asset to the workspace viewing it.',
+      icon: 'shield',
+      title: 'Tenant isolation',
+    },
+    {
+      description: 'Ship updates across dashboards, reports, and alerts together.',
+      icon: 'zap',
+      title: 'Instant delivery',
+    },
+  ],
+  links: [{ link: { appearance: 'outline', label: 'Explore the infrastructure' } }],
+  title: 'Every foundation your customer experience needs.',
 }
 
 export const featureSplitDemoContent: FeatureSectionDemoContent = {
