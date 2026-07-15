@@ -53,12 +53,14 @@
       {
         "title": "Dashboards customers recognize",
         "description": "Compose every workspace from governed metrics while matching your product's visual language.",
-        "icon": "chart"
+        "icon": "chart",
+        "image": null
       },
       {
         "title": "Alerts teams can trust",
         "description": "Route threshold changes to the right owner with the account and metric context intact.",
-        "icon": "zap"
+        "icon": "zap",
+        "image": null
       }
     ],
     "links": [

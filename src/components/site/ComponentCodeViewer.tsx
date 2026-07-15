@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock'
 import { Check, Copy, FileCode } from 'lucide-react'
 
+import { groupComponentSourceFiles } from '@/lib/component-source-groups'
 import { cn } from '@/utilities/ui'
 
 /* Dark, editor-style code viewer for the component docs "Code" tab: a file-tree
@@ -20,7 +21,6 @@ const CODE_THEME = 'github-dark-default'
 type ComponentSourceFile = { code: string; lang: string; title: string }
 
 const fileName = (title: string) => title.slice(title.lastIndexOf('/') + 1)
-const dirName = (title: string) => title.slice(0, title.lastIndexOf('/'))
 
 export function ComponentCodeViewer({ files }: { files: ComponentSourceFile[] }) {
   const [active, setActive] = useState(0)
@@ -38,14 +38,8 @@ export function ComponentCodeViewer({ files }: { files: ComponentSourceFile[] })
     window.setTimeout(() => setCopied(false), 1100)
   }
 
-  /* Group files by their directory, preserving order and each file's flat index. */
-  const groups: { dir: string; items: { file: ComponentSourceFile; index: number }[] }[] = []
-  files.forEach((file, index) => {
-    const dir = dirName(file.title)
-    const last = groups.at(-1)
-    if (last && last.dir === dir) last.items.push({ file, index })
-    else groups.push({ dir, items: [{ file, index }] })
-  })
+  /* Group files by directory even when source ranking interleaves shared files. */
+  const groups = groupComponentSourceFiles(files)
 
   return (
     <div className="not-prose my-6 overflow-hidden rounded-xl border border-terminal-border bg-terminal text-terminal-foreground shadow-card">

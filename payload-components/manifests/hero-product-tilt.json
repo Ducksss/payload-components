@@ -46,6 +46,7 @@
     "eyebrow": "Acme Analytics",
     "title": "Your product data, ready for every customer.",
     "description": "Launch polished dashboards and reports without rebuilding analytics infrastructure for every account.",
+    "productImage": null,
     "imageCaption": "A single workspace for dashboards, reports, and alerts.",
     "links": [
       {

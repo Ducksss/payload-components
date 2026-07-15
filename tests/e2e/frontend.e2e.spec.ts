@@ -16,6 +16,7 @@ import {
 } from '../../src/lib/site'
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
+const isProductionE2E = process.env.PLAYWRIGHT_SERVER_MODE === 'production'
 const googleTagId = 'G-EMGRZ0H9R9'
 const copiedAlertText = 'Copied to clipboard.'
 
@@ -293,8 +294,16 @@ test.describe('Light shadcn frontend', () => {
     // second route (/components/preview/<slug>). Walking every route while also
     // compiling every preview overwhelms the dev server mid-walk (ERR_CONNECTION_RESET).
     // This smoke check only asserts each page's title/h1/overflow, so block the preview
-    // subframe: full route coverage stays and the on-demand compile load roughly halves.
+    // subframe. Production mode checks every prebuilt page; development mode checks one
+    // representative per category so Next's on-demand compiler does not restart mid-run.
     await page.route('**/components/preview/**', (route) => route.abort())
+
+    const checkedComponents = isProductionE2E
+      ? componentEntries
+      : componentEntries.filter(
+          (component, index, entries) =>
+            entries.findIndex((entry) => entry.category === component.category) === index,
+        )
 
     const routes = [
       {
@@ -327,7 +336,7 @@ test.describe('Light shadcn frontend', () => {
         path: '/brand-guide',
         title: /Brand Guide/,
       },
-      ...componentEntries.map((component) => ({
+      ...checkedComponents.map((component) => ({
         h1: component.title,
         path: component.href,
         title: new RegExp(component.title),
