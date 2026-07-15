@@ -8,5 +8,5 @@ import { AnalyticsPageview } from './AnalyticsPageview'
 export function AnalyticsShell() {
   const pathname = usePathname()
   if (pathname.startsWith('/components/preview/')) return null
-  return <><Script src="https://www.googletagmanager.com/gtag/js?id=G-EMGRZ0H9R9" strategy="afterInteractive" /><Script id="google-tag" strategy="afterInteractive">{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-EMGRZ0H9R9');`}</Script><AnalyticsPageview /><Analytics /><SpeedInsights /></>
+  return <><Script src="https://www.googletagmanager.com/gtag/js?id=G-EMGRZ0H9R9" strategy="lazyOnload" /><Script id="google-tag" strategy="afterInteractive">{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-EMGRZ0H9R9');`}</Script><AnalyticsPageview /><Analytics /><SpeedInsights /></>
 }

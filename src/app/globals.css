@@ -259,6 +259,13 @@
   }
 }
 
+/* Keep the install hero on the initial rendering path while allowing the
+   browser to defer layout and paint for homepage sections below the fold. */
+.homepage-sections > section:not(:first-child) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 48rem;
+}
+
 /* Landing hero keyframes (ported from payload-components.xyz).
    Transform + opacity only — no blur(): animating a filter forces a
    per-frame raster of the (large) hero text/frame and pushes LCP, so the

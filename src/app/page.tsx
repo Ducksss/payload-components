@@ -46,7 +46,7 @@ export default function HomePage() {
       <ParallaxController />
       <SiteHeader />
 
-      <main className="flex-1">
+      <main className="homepage-sections flex-1">
         <HeroSection />
         <StackBand />
         <WiringSection />
