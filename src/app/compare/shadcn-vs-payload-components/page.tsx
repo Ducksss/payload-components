@@ -171,8 +171,20 @@ export default function ShadcnComparisonPage() {
             intro="This comparison is scoped to installing a Payload Components layout block through its raw shadcn registry item. shadcn can distribute any files an item declares. The Payload Components wrapper adds project-aware patches and post-install generation on top."
           />
 
-          <div className="mt-12 overflow-x-auto rounded-[1.5rem] border border-border bg-background shadow-card">
-            <table className="w-full min-w-[46rem] border-collapse text-left">
+          <div className="mt-12 overflow-hidden rounded-[1.5rem] border border-border bg-background shadow-card">
+            <p
+              id="verified-install-items"
+              className="border-b border-border bg-muted/20 px-5 py-3 text-sm leading-6 text-muted-foreground sm:px-6"
+            >
+              Verified install items: the raw shadcn command completes 1 of 5; Payload Components
+              completes all 5: block source, collection registration, renderer mapping, generated
+              types, and the admin import map.
+            </p>
+            <div className="overflow-x-auto">
+            <table
+              aria-describedby="verified-install-items"
+              className="w-full min-w-[46rem] border-collapse text-left"
+            >
               <caption className="sr-only">
                 Files and Payload wiring completed by raw shadcn add and payload-components add
               </caption>
@@ -217,6 +229,7 @@ export default function ShadcnComparisonPage() {
                 </tr>
               </tfoot>
             </table>
+            </div>
           </div>
 
           <p className="mt-5 max-w-3xl text-sm leading-6 text-muted-foreground">

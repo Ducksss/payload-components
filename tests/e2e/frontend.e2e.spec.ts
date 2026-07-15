@@ -107,6 +107,11 @@ test.describe('Light shadcn frontend', () => {
       }),
     ).toBeVisible()
     await expect(page.getByRole('table')).toContainText('Collection schema')
+    await expect(
+      page.getByText(
+        'Verified install items: the raw shadcn command completes 1 of 5; Payload Components completes all 5: block source, collection registration, renderer mapping, generated types, and the admin import map.',
+      ),
+    ).toBeVisible()
     await expect(page.getByRole('table')).toContainText('1 / 5')
     await expect(page.getByRole('table')).toContainText('5 / 5')
 
