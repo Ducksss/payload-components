@@ -25,6 +25,7 @@ Current components:
   feature-split
   feature-bento
   feature-steps
+  feature-accordion
   embed-basic
   content-columns
   content-image-lead

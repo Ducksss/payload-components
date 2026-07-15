@@ -27,6 +27,7 @@ import { FaqGridDemo } from './FaqGridDemo'
 import { FaqGroupedDemo } from './FaqGroupedDemo'
 import { FaqIconsDemo } from './FaqIconsDemo'
 import { FaqSplitDemo } from './FaqSplitDemo'
+import { FeatureAccordionDemo } from './FeatureAccordionDemo'
 import { FeatureBentoDemo } from './FeatureBentoDemo'
 import { FeatureGridBasicDemo } from './FeatureGridBasicDemo'
 import { FeatureSplitDemo } from './FeatureSplitDemo'
@@ -94,6 +95,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'faq-grouped': FaqGroupedDemo,
   'faq-icons': FaqIconsDemo,
   'faq-split': FaqSplitDemo,
+  'feature-accordion': FeatureAccordionDemo,
   'feature-bento': FeatureBentoDemo,
   'feature-grid-basic': FeatureGridBasicDemo,
   'feature-split': FeatureSplitDemo,

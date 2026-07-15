@@ -43,6 +43,23 @@ export type FeatureSectionDemoContent = {
 
 export type FeatureGridBasicDemoContent = FeatureSectionDemoContent
 
+export type FeatureDemoIconName =
+  | 'chart'
+  | 'database'
+  | 'fingerprint'
+  | 'id-card'
+  | 'shield'
+  | 'zap'
+
+export type FeatureAccordionDemoContent = Omit<FeatureSectionDemoContent, 'items'> & {
+  items: {
+    description: string
+    hasImage: boolean
+    icon?: FeatureDemoIconName
+    title: string
+  }[]
+}
+
 export type EmbedBasicDemoContent = {
   allowFullscreen?: boolean
   aspectRatio: '16:9' | '4:3' | '1:1' | '21:9'
@@ -140,6 +157,33 @@ export const featureGridBasicDemoContent: FeatureGridBasicDemoContent = {
   ],
   links: [{ link: { appearance: 'outline', label: 'Explore the platform' } }],
   title: 'Everything a data team ships weekly.',
+}
+
+export const featureAccordionDemoContent: FeatureAccordionDemoContent = {
+  description: 'Move from a product question to the supporting data without losing context.',
+  eyebrow: 'Platform',
+  items: [
+    {
+      description: 'Give every customer a current view of the metrics that matter to their workspace.',
+      hasImage: true,
+      icon: 'chart',
+      title: 'Live dashboards',
+    },
+    {
+      description: 'Query governed warehouse data without copying it into another analytics silo.',
+      hasImage: false,
+      icon: 'database',
+      title: 'Warehouse sync',
+    },
+    {
+      description: 'Keep every embedded surface isolated to the customer and role viewing it.',
+      hasImage: false,
+      icon: 'shield',
+      title: 'Scoped access',
+    },
+  ],
+  links: [{ link: { appearance: 'default', label: 'Explore the platform' } }],
+  title: 'Explore every signal from one workspace.',
 }
 
 export const featureSplitDemoContent: FeatureSectionDemoContent = {

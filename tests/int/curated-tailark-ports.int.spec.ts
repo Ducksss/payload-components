@@ -65,4 +65,38 @@ describe('curated Tailark ports', () => {
     expect(docs).toContain('npx payload-components add hero-product-tilt')
     expect(docs).toContain('tailark/blocks')
   })
+
+  it('ships feature-accordion with shared icons and synchronized media', async () => {
+    const [icons, config, component, manifest, docs] = await Promise.all([
+      read('payload-components/source/blocks/shared/featureIcons.ts'),
+      read('payload-components/source/blocks/FeatureAccordion/config.ts'),
+      read('payload-components/source/blocks/FeatureAccordion/Component.tsx'),
+      read('payload-components/manifests/feature-accordion.json'),
+      read('content/docs/components/feature-accordion.mdx'),
+    ])
+
+    for (const icon of ['chart', 'database', 'fingerprint', 'id-card', 'shield', 'zap']) {
+      expect(icons).toContain(`'${icon}'`)
+    }
+    expect(icons).toContain('createFeatureIconField(required = false)')
+    expect(config).toContain("slug: 'featureAccordion'")
+    expect(config).toContain("dbName: 'pc_feat_accordion'")
+    expect(config).toContain('...featureFields')
+    expect(config).toContain('createFeatureIconField()')
+    expect(config).toContain('minRows: 2')
+    expect(config).toContain('maxRows: 6')
+    expect(component).toContain("'use client'")
+    expect(component).toContain("@/components/ui/accordion")
+    expect(component).toContain('value={activeValue}')
+    expect(component).toContain('onValueChange={setActiveValue}')
+    expect(component).toContain('Layout adapted from tailark/blocks (MIT)')
+    expect(JSON.parse(manifest).files).toEqual([
+      'src/blocks/shared/featureFields.ts',
+      'src/blocks/shared/featureIcons.ts',
+      'src/blocks/FeatureAccordion/config.ts',
+      'src/blocks/FeatureAccordion/Component.tsx',
+    ])
+    expect(docs).toContain('npx payload-components add feature-accordion')
+    expect(docs).toContain('tailark/blocks')
+  })
 })

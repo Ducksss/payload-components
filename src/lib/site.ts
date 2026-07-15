@@ -1,4 +1,5 @@
 import packageJson from '../../package.json' with { type: 'json' }
+import featureAccordionManifest from '../../payload-components/manifests/feature-accordion.json' with { type: 'json' }
 import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
 import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
 import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
@@ -348,6 +349,19 @@ export const componentEntries = [
     target: 'Feature section',
     title: 'Feature Grid Basic',
     version: '0.1.0',
+  },
+  {
+    category: 'features',
+    command: 'npx payload-components add feature-accordion',
+    description:
+      'A synchronized feature accordion with editor-selected icons, optional media, and CTA links.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/feature-accordion',
+    slug: 'feature-accordion',
+    target: 'Feature accordion',
+    title: 'Feature Accordion',
+    version: featureAccordionManifest.version,
   },
   {
     category: 'comparator',
