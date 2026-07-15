@@ -5,13 +5,47 @@ import { describe, expect, it } from 'vitest'
 
 import { blogVisualCatalog } from '../../tools/blog/visual-system/catalog'
 import { resolveArtifact, validateBlogVisualCatalog } from '../../tools/blog/visual-system/artifacts'
+import type { Artifact, ResolvedArtifact } from '../../tools/blog/visual-system/types'
 
 const repoRoot = path.resolve(import.meta.dirname, '../..')
 const blogRoot = path.join(repoRoot, 'content', 'blog')
 const registryPath = path.join(repoRoot, 'payload-components', 'registry.json')
 
-const forbiddenEvidence =
-  /\b(?:avatars?|likes?|reactions?|stars?)\b|merged by|issue\s*#|\b(?:mock|fictional|invented) contributors?\b|\b(?:contributor|maintainer|author)\s*(?:name)?\s*[:=]\s*(?!Ducksss\b)[A-Z][\p{L}'-]+(?:\s+[A-Z][\p{L}'-]+)*/iu
+const fabricatedPresentationMarkers = [
+  {
+    category: 'invented contributor identity',
+    pattern:
+      /\b(?:mock|fictional|invented) contributors?\b|\b(?:contributor|maintainer|author)\s*(?:name)?\s*[:=]\s*(?!Ducksss\b)["']?[A-Z][\p{L}'-]+(?:\s+[A-Z][\p{L}'-]+)+["']?/iu,
+  },
+  {
+    category: 'avatar presentation',
+    pattern: /\bavatar(?:url|_url|-url|src|source)?\s*[:=]\s*["'][^"']+["']/iu,
+  },
+  { category: 'invented issue number', pattern: /\b(?:issue|pull request)\s*#\d+\b/iu },
+  {
+    category: 'fabricated activity count',
+    pattern: /\b\d[\d,]*\+?\s+(?:stars?|likes?|reactions?|forks?|commits?|contributors?)\b/iu,
+  },
+  {
+    category: 'invented testimonial attribution',
+    pattern: /\btestimonial\s+(?:by|from)\s+["']?[A-Z]|\b(?:customer|user)\s+testimonial\s*[:=]/iu,
+  },
+  {
+    category: 'fabricated terminal outcome',
+    pattern:
+      /\b(?:fake|mock|invented|simulated)\s+(?:terminal|command|install)\s+(?:outcome|output|result|success)\b|\b(?:terminal|command|install)\s+(?:outcome|result)\s*[:=]\s*(?:success|passed|complete)\b/iu,
+  },
+  {
+    category: 'fabricated GitHub UI',
+    pattern:
+      /\bgithub\s+(?:activity|avatar|issue|merge|profile|pull request|reaction|stars?)\s+(?:badge|button|card|panel|timeline|ui)\b|\bmerged by\b/iu,
+  },
+  {
+    category: 'fabricated project behavior',
+    pattern:
+      /\b(?:fake|mock|invented|simulated)\s+(?:project\s+)?(?:behavior|behaviour|outcome|result)\b|\bproject\s+(?:behavior|behaviour|outcome|result)\s*[:=]/iu,
+  },
+] as const
 
 function scalar(frontmatter: string, name: string) {
   return frontmatter.match(new RegExp(`^${name}:\\s*(.+)$`, 'm'))?.[1]?.trim().replace(/^['"]|['"]$/g, '')
@@ -48,9 +82,52 @@ function isKnownLocalRoute(route: string) {
   )
 }
 
+function expectResolvedArtifactBinding(artifact: Artifact, resolved: ResolvedArtifact, context: string) {
+  expect(resolved.kind, context).toBe(artifact.kind)
+  expect(resolved.label, context).toBe(artifact.label)
+
+  switch (artifact.kind) {
+    case 'source':
+    case 'diff':
+      expect(resolved.provenance, context).toContain(artifact.path)
+      expect(resolved.evidence, context).toContain(artifact.anchor)
+      break
+    case 'registry-item':
+      expect(resolved.provenance, context).toContain(artifact.name)
+      expect(resolved.evidence, context).toContain(artifact.name)
+      break
+    case 'route':
+      expect(resolved.provenance, context).toContain(artifact.route)
+      expect(resolved.evidence, context).toContain(artifact.route)
+      break
+    case 'command':
+      expect(resolved.evidence, context).toContain(artifact.command)
+      for (const item of artifact.registryItems ?? []) {
+        expect(resolved.evidence, `${context}: registry item ${item}`).toContain(item)
+      }
+      expect(resolved.provenance, context).toContain(
+        artifact.registryItems?.length ? 'payload-components/registry.json' : 'tools/blog/visual-system/catalog.ts',
+      )
+      break
+    case 'sequence':
+      for (const item of artifact.items) {
+        expect(resolved.evidence, `${context}: sequence item ${item}`).toContain(item)
+      }
+      expect(resolved.provenance, context).toContain('tools/blog/visual-system/catalog.ts')
+      break
+  }
+}
+
+function expectNoFabricatedPresentation(value: string, context: string) {
+  for (const marker of fabricatedPresentationMarkers) {
+    expect(value, `${context}: ${marker.category}`).not.toMatch(marker.pattern)
+  }
+}
+
 describe('Community Field Journal visual catalog', () => {
   it('covers every post and figure exactly once with the approved teaching modes', async () => {
     const mdxEntries = await getMdxVisualContract()
+    const mdxEntriesBySlug = new Map(mdxEntries.map((entry) => [entry.slug, entry]))
     const slugs = blogVisualCatalog.map((entry) => entry.slug)
     const orders = blogVisualCatalog.map((entry) => entry.order)
 
@@ -75,6 +152,10 @@ describe('Community Field Journal visual catalog', () => {
       expect(entry.prompt.trim(), entry.slug).not.toBe('')
       expect(entry.primary.kind, entry.slug).not.toBe(entry.secondary.kind)
       expect(entry.figures.length, entry.slug).toBeGreaterThanOrEqual(1)
+      expect(
+        entry.figures.map((figure) => figure.path),
+        `${entry.slug}: figure paths`,
+      ).toEqual(mdxEntriesBySlug.get(entry.slug)?.figures)
     }
 
     const figures = blogVisualCatalog.flatMap((entry) => entry.figures)
@@ -101,6 +182,7 @@ describe('Community Field Journal visual catalog', () => {
     for (const entry of blogVisualCatalog) {
       for (const artifact of [entry.primary, entry.secondary]) {
         if (artifact.kind === 'source' || artifact.kind === 'diff') {
+          expect(artifact.anchor.trim(), `${entry.slug}: ${artifact.path} anchor`).not.toBe('')
           const source = await readFile(path.join(repoRoot, artifact.path), 'utf8')
           expect(source, `${entry.slug}: ${artifact.path}`).toContain(artifact.anchor)
         }
@@ -120,9 +202,10 @@ describe('Community Field Journal visual catalog', () => {
         }
 
         const resolved = await resolveArtifact(artifact)
-        expect(resolved.evidence.trim(), entry.slug).not.toBe('')
-        expect(resolved.provenance.trim(), entry.slug).not.toBe('')
-        expect(resolved.evidence, entry.slug).not.toMatch(forbiddenEvidence)
+        const context = `${entry.slug}: ${artifact.kind} ${artifact.label}`
+        expectResolvedArtifactBinding(artifact, resolved, context)
+        expectNoFabricatedPresentation(resolved.evidence, `${context} evidence`)
+        expectNoFabricatedPresentation(resolved.provenance, `${context} provenance`)
       }
     }
   })
