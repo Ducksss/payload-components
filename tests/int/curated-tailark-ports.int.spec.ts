@@ -156,4 +156,34 @@ describe('curated Tailark ports', () => {
     expect(docs).toContain('npx payload-components add feature-icon-grid')
     expect(docs).toContain('tailark/blocks')
   })
+
+  it('ships stats-proof as a semantic first-class Stats family block', async () => {
+    const [config, component, manifest, docs, site, pageTree] = await Promise.all([
+      read('payload-components/source/blocks/StatsProof/config.ts'),
+      read('payload-components/source/blocks/StatsProof/Component.tsx'),
+      read('payload-components/manifests/stats-proof.json'),
+      read('content/docs/components/stats-proof.mdx'),
+      read('src/lib/site.ts'),
+      read('src/lib/component-page-tree.tsx'),
+    ])
+
+    expect(config).toContain("slug: 'statsProof'")
+    expect(config).toContain("dbName: 'pc_stats_proof'")
+    expect(config).toContain('minRows: 2')
+    expect(config).toContain('maxRows: 4')
+    expect(component).toContain('<figure')
+    expect(component).toContain('<blockquote')
+    expect(component).toContain('<cite')
+    expect(component).toContain('<Media')
+    expect(component).toContain('Layout adapted from tailark/blocks (MIT)')
+    expect(site).toContain("stats: { family: 'pages', label: 'Stats' }")
+    expect(pageTree).toContain("key: 'stats', label: 'Stats'")
+    expect(JSON.parse(manifest).files).toEqual([
+      'src/blocks/StatsProof/config.ts',
+      'src/blocks/StatsProof/Component.tsx',
+    ])
+    expect(docs).toContain('npx payload-components add stats-proof')
+    expect(docs).toContain('tailark/blocks')
+    expect(docs).not.toContain('## In this family')
+  })
 })

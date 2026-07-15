@@ -84,6 +84,17 @@ export type EmbedBasicDemoContent = {
   url: string
 }
 
+export type StatsProofDemoContent = {
+  author: string
+  body?: string
+  description: string
+  eyebrow?: string
+  metrics: { label: string; value: string }[]
+  quote: string
+  role?: string
+  title: string
+}
+
 /* The whole Logo Cloud family (grid, hover, marquee, inline, inline-wrap)
    renders from one demo-content shape: the shared heading, and for the hover
    variant an optional CTA link. The logos themselves are presentational and
@@ -339,6 +350,24 @@ export const embedBasicDemoContent: EmbedBasicDemoContent = {
   caption: 'Acme product tour — two minutes from sign-up to first dashboard.',
   title: 'Acme product tour',
   url: 'https://www.youtube.com/embed/aqz-KE-bpKQ',
+}
+
+export const statsProofDemoContent: StatsProofDemoContent = {
+  author: 'Maya Chen',
+  body: 'Teams launch faster, customers answer questions without support tickets, and every workspace stays governed.',
+  description:
+    'Acme turns analytics delivery into a repeatable product capability instead of a queue of custom requests.',
+  eyebrow: 'Measured impact',
+  metrics: [
+    { label: 'faster analytics launches', value: '56%' },
+    { label: 'customer workspaces served', value: '+1,200' },
+    { label: 'governed monthly queries', value: '22M' },
+    { label: 'platform availability', value: '99.99%' },
+  ],
+  quote:
+    'Acme let us replace a quarter of bespoke reporting work with one product surface our customers actually prefer.',
+  role: 'VP Product, Northwind',
+  title: 'A platform customers adopt and teams can prove.',
 }
 
 export const logoCloudGridDemoContent: LogoCloudDemoContent = {

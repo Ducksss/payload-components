@@ -5,6 +5,7 @@ import featureIconGridManifest from '../../payload-components/manifests/feature-
 import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
 import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
 import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
+import statsProofManifest from '../../payload-components/manifests/stats-proof.json' with { type: 'json' }
 
 const productionSiteUrl = 'https://www.payload-components.xyz'
 const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionSiteUrl).replace(/\/+$/, '')
@@ -237,6 +238,7 @@ export const componentCategories = {
   integration: { family: 'pages', label: 'Integration' },
   logos: { family: 'pages', label: 'Logo cloud' },
   testimonials: { family: 'pages', label: 'Testimonials' },
+  stats: { family: 'pages', label: 'Stats' },
   faq: { family: 'pages', label: 'FAQ' },
   content: { family: 'pages', label: 'Content' },
   team: { family: 'pages', label: 'Team' },
@@ -780,6 +782,19 @@ export const componentEntries = [
     target: 'Testimonials section',
     title: 'Testimonials Quote',
     version: '0.1.0',
+  },
+  {
+    category: 'stats',
+    command: 'npx payload-components add stats-proof',
+    description:
+      'A proof section pairing narrative, prominent string metrics, and a semantic customer quote.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'body', 'metrics', 'quote', 'author', 'role', 'logo'],
+    href: '/docs/components/stats-proof',
+    slug: 'stats-proof',
+    target: 'Stats section',
+    title: 'Stats Proof',
+    version: statsProofManifest.version,
   },
   {
     category: 'faq',

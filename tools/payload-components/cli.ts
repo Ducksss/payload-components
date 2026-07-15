@@ -73,6 +73,7 @@ Current components:
   testimonials-rating
   testimonials-bento
   testimonials-wall
+  stats-proof
   pricing-cards
   pricing-cards-muted
   pricing-cards-cta

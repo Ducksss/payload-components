@@ -55,6 +55,7 @@ import { PricingCardsCtaDemo } from './PricingCardsCtaDemo'
 import { PricingCardsMutedDemo } from './PricingCardsMutedDemo'
 import { PricingEnterpriseDemo } from './PricingEnterpriseDemo'
 import { PricingSplitDemo } from './PricingSplitDemo'
+import { StatsProofDemo } from './StatsProofDemo'
 import { TeamGridDemo } from './TeamGridDemo'
 import { TeamRosterDemo } from './TeamRosterDemo'
 import { TestimonialsBentoDemo } from './TestimonialsBentoDemo'
@@ -125,6 +126,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'pricing-cards-muted': PricingCardsMutedDemo,
   'pricing-enterprise': PricingEnterpriseDemo,
   'pricing-split': PricingSplitDemo,
+  'stats-proof': StatsProofDemo,
   'team-roster': TeamRosterDemo,
   'team-grid': TeamGridDemo,
   'testimonials-quote': TestimonialsQuoteDemo,
