@@ -87,7 +87,17 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-muted-foreground">MIT licensed · © 2026 Ducksss</p>
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+            <span>MIT licensed · © 2026 Ducksss</span>
+            <span aria-hidden="true">·</span>
+            <a
+              href="https://tin.computer"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
+            >
+              <span aria-hidden="true" className="inline-block size-[0.85em] bg-[#66DC9D]" />
+              Growth by Tin
+            </a>
+          </p>
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
             Payload v3 · Next.js App Router · open registry
           </p>

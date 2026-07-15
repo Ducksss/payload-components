@@ -9,6 +9,7 @@ import { blogSource } from '@/lib/blog-source'
 const staticRoutes = [
   { changeFrequency: 'weekly', path: '/', priority: 1 },
   { changeFrequency: 'weekly', path: '/components', priority: 0.9 },
+  { changeFrequency: 'monthly', path: '/compare/shadcn-vs-payload-components', priority: 0.8 },
   { changeFrequency: 'monthly', path: '/about', priority: 0.5 },
   { changeFrequency: 'monthly', path: '/brand-guide', priority: 0.5 },
 ] as const satisfies ReadonlyArray<{

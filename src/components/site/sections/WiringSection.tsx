@@ -1,3 +1,7 @@
+import Link from 'next/link'
+
+import { ArrowRight } from 'lucide-react'
+
 import { siteIcons } from '@/components/site/icons'
 import { Section, SectionHeading } from '@/components/site/section'
 import { WiringLedger } from '@/components/site/WiringLedger'
@@ -32,6 +36,14 @@ export function WiringSection() {
       <div className="reveal-on-scroll mt-6">
         <WiringLedger />
       </div>
+
+      <Link
+        href="/compare/shadcn-vs-payload-components"
+        className="reveal-on-scroll mt-6 inline-flex items-center gap-2 text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
+      >
+        Compare the two install paths
+        <ArrowRight className="size-4" aria-hidden="true" />
+      </Link>
 
       {/* Receipts strip — each claim checkable in the repo. */}
       <div className="reveal-on-scroll mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-border pt-8">

@@ -62,6 +62,9 @@ test.describe('AI-readable documentation surfaces', () => {
     )
     expect(sitemapBody).toContain(`<loc>${baseURL}/</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/components</loc>`)
+    expect(sitemapBody).toContain(
+      `<loc>${baseURL}/compare/shadcn-vs-payload-components</loc>`,
+    )
     expect(sitemapBody).toContain(`<loc>${baseURL}/docs/installation</loc>`)
 
     await page.goto(baseURL)
@@ -106,6 +109,9 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(body).toContain(`- [Home](${baseURL}/)`)
     expect(body).toContain(`- [Docs](${baseURL}/docs)`)
     expect(body).toContain(`- [Component catalog](${baseURL}/components)`)
+    expect(body).toContain(
+      `- [shadcn vs Payload Components](${baseURL}/compare/shadcn-vs-payload-components)`,
+    )
     expect(body).toContain(`- [Public registry](${baseURL}/r/registry.json)`)
     expect(body).toContain(`- [GitHub repository](${githubRepoUrl})`)
     expect(body).toContain('Hero Basic: npx payload-components add hero-basic')
@@ -125,6 +131,9 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(body).toContain('AI-readable surfaces')
     expect(body).toContain('The v2 app is intentionally not a Payload CMS site.')
     expect(body).toContain('npx payload-components add feature-grid-basic')
+    expect(body).toContain(
+      `Comparison: ${baseURL}/compare/shadcn-vs-payload-components`,
+    )
   })
 
   test('/api/search returns docs results', async ({ request }) => {
@@ -238,6 +247,16 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(Number(itemList?.numberOfItems)).toBeGreaterThanOrEqual(2)
     expect(JSON.stringify(itemList)).toContain('Hero Basic')
     expect(JSON.stringify(itemList)).toContain('Feature Grid Basic')
+  })
+
+  test('comparison page exposes a canonical URL and breadcrumb data', async ({ page }) => {
+    await page.goto(`${baseURL}/compare/shadcn-vs-payload-components`)
+
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      `${baseURL}/compare/shadcn-vs-payload-components`,
+    )
+    expect(findStructuredData(await getStructuredData(page), 'BreadcrumbList')).toBeDefined()
   })
 
   test('docs pages expose TechArticle structured data', async ({ page }) => {

@@ -96,6 +96,48 @@ test.describe('Light shadcn frontend', () => {
     )
   })
 
+  test('compares raw registry delivery with Payload-aware wiring', async ({ page }) => {
+    await page.goto(`${baseURL}/compare/shadcn-vs-payload-components`)
+
+    await expect(page).toHaveTitle(/shadcn add vs payload-components add/)
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Same registry delivery. Four Payload edits finished.',
+      }),
+    ).toBeVisible()
+    await expect(page.getByRole('table')).toContainText('Collection schema')
+    await expect(page.getByRole('table')).toContainText('1 / 5')
+    await expect(page.getByRole('table')).toContainText('5 / 5')
+
+    await waitForCopyController(page)
+    await page
+      .getByRole('button', { name: `${primaryInstallCommand} Copy`, exact: true })
+      .first()
+      .click()
+    await expectCopiedAlert(page)
+    await expect.poll(() => getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: primaryInstallCommand,
+            component: 'hero-basic',
+            source_path: '/compare/shadcn-vs-payload-components',
+          },
+        },
+      ]),
+    )
+  })
+
+  test('links the homepage wiring proof to the full comparison', async ({ page }) => {
+    await page.goto(`${baseURL}/`)
+
+    await expect(
+      page.getByRole('link', { name: 'Compare the two install paths', exact: true }),
+    ).toHaveAttribute('href', '/compare/shadcn-vs-payload-components')
+  })
+
   test('keeps the landing hero action hierarchy focused', async ({ page }) => {
     await page.goto(baseURL)
 
