@@ -8,9 +8,9 @@ import { HeroProductFrame } from '@/components/site/HeroProductFrame'
 import {
   githubRepoUrl,
   heroEyebrow,
+  heroGuideLink,
   heroHeadlineAccent,
   heroHeadlinePrimary,
-  heroPrimaryCta,
   heroSubheadline,
   heroTertiaryLinks,
   primaryInstallCommand,
@@ -54,49 +54,48 @@ export function HeroSection() {
           {/* The command itself, above the fold — first Copy button on the
               page (the e2e copy assertion targets it). */}
           <div
-            className="hero-reveal grid w-full max-w-md grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-full border border-border bg-background py-1.5 pl-5 pr-1.5 shadow-card"
+            className="hero-reveal grid w-full max-w-xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border border-border bg-background py-1 pl-5 pr-1 shadow-card"
             style={{ animationDelay: '150ms' }}
           >
-            <code tabIndex={0} className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90 sm:text-[13px]">
+            <code
+              tabIndex={0}
+              className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90 sm:text-[13px]"
+            >
               {primaryInstallCommand}
             </code>
-            <CommandCopyButton command={primaryInstallCommand} />
+            <CommandCopyButton
+              command={primaryInstallCommand}
+              emphasis="primary"
+              label="Copy install command"
+            />
           </div>
 
           <div
-            className="hero-reveal flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center"
+            className="hero-reveal flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-muted-foreground"
             style={{ animationDelay: '190ms' }}
           >
             <Link
-              href={heroPrimaryCta.href}
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground shadow-[0_18px_40px_-22px_rgba(15,23,42,0.55)] transition-[transform,box-shadow] duration-200 hover:-translate-y-px hover:shadow-[0_22px_50px_-22px_rgba(15,23,42,0.6)] sm:w-auto"
+              href={heroGuideLink.href}
+              data-cta-level="tertiary"
+              className="inline-flex items-center gap-1.5 font-medium text-foreground transition-opacity hover:opacity-75"
             >
-              {heroPrimaryCta.label}
-              <ArrowRight className="size-4" aria-hidden="true" />
+              {heroGuideLink.label}
+              <ArrowRight className="size-3.5" aria-hidden="true" />
             </Link>
             <a
               href={githubRepoUrl}
               target="_blank"
               rel="noreferrer"
-              className="shine-cta inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-border/70 bg-background/80 px-5 text-sm font-medium text-foreground transition-[transform,background-color] duration-200 hover:-translate-y-px hover:bg-background sm:w-auto"
+              data-cta-level="tertiary"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
             >
-              {/* Decorative star twinkles — must stay the first three children
-                  (the .cta-twinkle styles position them via nth-child). */}
-              <span aria-hidden="true" className="cta-twinkle" />
-              <span aria-hidden="true" className="cta-twinkle" />
-              <span aria-hidden="true" className="cta-twinkle" />
-              <Github className="size-4" aria-hidden="true" />
+              <Github className="size-3.5" aria-hidden="true" />
               Star on GitHub
             </a>
-          </div>
-
-          <div
-            className="hero-reveal flex items-center justify-center text-sm text-muted-foreground"
-            style={{ animationDelay: '230ms' }}
-          >
             <Link
               href={browseLink.href}
-              className="inline-flex items-center gap-1.5 font-medium text-foreground transition-opacity hover:opacity-75"
+              data-cta-level="tertiary"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
             >
               <Sparkles className="size-3.5" aria-hidden="true" />
               {browseLink.label}

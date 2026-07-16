@@ -100,6 +100,23 @@ describe('Fumadocs site shell', () => {
     expect(helloPost).not.toMatch(/\b\d+\s+page blocks?\b/i)
   })
 
+  it('keeps the install CTA community-owned and reduced-motion safe', async () => {
+    const [footer, copyButton, { heroSubheadline }] = await Promise.all([
+      readFile(path.join(repoRoot, 'src', 'components', 'site', 'SiteFooter.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'components', 'site', 'CommandCopyButton.tsx'), 'utf8'),
+      import('../../src/lib/site'),
+    ])
+
+    expect(`${footer}\n${copyButton}`).not.toContain('tin.computer')
+    expect(`${footer}\n${copyButton}`).not.toContain('Growth by Tin')
+    expect(`${footer}\n${copyButton}`).not.toContain('bg-[#66DC9D]')
+    expect(copyButton).toContain('data-[copied=true]:text-brand-foreground')
+    expect(copyButton).toContain('motion-reduce:transform-none')
+    expect(heroSubheadline).toBe(
+      'For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.',
+    )
+  })
+
   it('keeps docs content in the Fumadocs source directory', async () => {
     const [sourceConfig, docsIndex, architecture] = await Promise.all([
       readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),
