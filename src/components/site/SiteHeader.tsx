@@ -3,8 +3,7 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
-import { Github } from 'lucide-react'
-
+import { GitHubMark } from '@/components/site/GitHubMark'
 import { Wordmark } from '@/components/site/Wordmark'
 import { githubRepoUrl } from '@/lib/site'
 import { cn } from '@/utilities/ui'
@@ -68,7 +67,7 @@ export function SiteHeader({
             aria-label="GitHub repository"
             className="flex size-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:ml-1"
           >
-            <Github className="size-4" aria-hidden="true" />
+            <GitHubMark className="size-4" aria-hidden="true" />
           </a>
 
         </nav>

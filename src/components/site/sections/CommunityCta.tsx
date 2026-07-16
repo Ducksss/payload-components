@@ -1,8 +1,9 @@
 import Link from 'next/link'
 
-import { ArrowUpRight, Github } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
+import { GitHubMark } from '@/components/site/GitHubMark'
 import { MaintainerNote } from '@/components/site/MaintainerNote'
 import { Eyebrow, HeadingAccent, Section } from '@/components/site/section'
 import {
@@ -53,7 +54,7 @@ export function CommunityCta() {
               data-cta-level="secondary"
               className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-border bg-background px-4 font-medium text-foreground transition-colors hover:bg-secondary"
             >
-              <Github className="size-4" aria-hidden="true" />
+              <GitHubMark className="size-4" aria-hidden="true" />
               {communityLinks[0].label}
             </Link>
             <Link

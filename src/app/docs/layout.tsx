@@ -2,8 +2,9 @@ import type { ReactNode } from 'react'
 
 import { DocsLayout } from 'fumadocs-ui/layouts/docs'
 import { RootProvider } from 'fumadocs-ui/provider/next'
-import { ArrowUpRight, Github } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 
+import { GitHubMark } from '@/components/site/GitHubMark'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { baseOptions } from '@/lib/layout.shared'
 import { githubRepoUrl, cliVersion } from '@/lib/site'
@@ -46,7 +47,7 @@ export default function DocsRootLayout({ children }: { children: ReactNode }) {
               rel="noreferrer"
               className="group flex items-center gap-2.5 rounded-lg border border-border bg-secondary/40 px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand/40 hover:bg-brand/5"
             >
-              <Github
+              <GitHubMark
                 className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-brand"
                 aria-hidden="true"
               />
