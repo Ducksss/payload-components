@@ -25,7 +25,9 @@ export function CommandCopyController() {
 
     const reset = (button: HTMLButtonElement) => {
       delete button.dataset.copied
-      button.querySelector('[data-copy-label]')?.replaceChildren('Copy')
+      button
+        .querySelector('[data-copy-label]')
+        ?.replaceChildren(button.dataset.copyDefaultLabel ?? 'Copy')
     }
 
     const clipboard = navigator.clipboard

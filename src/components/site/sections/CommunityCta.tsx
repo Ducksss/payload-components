@@ -31,19 +31,27 @@ export function CommunityCta() {
           </h2>
           <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">{communityIntro}</p>
 
-          <div className="mt-7 grid w-full max-w-md grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-full border border-border bg-background py-1.5 pl-5 pr-1.5 shadow-card">
-            <code tabIndex={0} className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90 sm:text-[13px]">
+          <div className="mt-7 grid w-full max-w-xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border border-border bg-background py-1 pl-5 pr-1 shadow-card">
+            <code
+              tabIndex={0}
+              className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90 sm:text-[13px]"
+            >
               {primaryInstallCommand}
             </code>
-            <CommandCopyButton command={primaryInstallCommand} />
+            <CommandCopyButton
+              command={primaryInstallCommand}
+              emphasis="primary"
+              label="Copy install command"
+            />
           </div>
 
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm">
             <Link
               href={communityLinks[0].href}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              data-cta-level="secondary"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-border bg-background px-4 font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <Github className="size-4" aria-hidden="true" />
               {communityLinks[0].label}
@@ -52,10 +60,11 @@ export function CommunityCta() {
               href={communityLinks[1].href}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-background px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              data-cta-level="tertiary"
+              className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
             >
               {communityLinks[1].label}
-              <ArrowUpRight className="size-4" aria-hidden="true" />
+              <ArrowUpRight className="size-3.5" aria-hidden="true" />
             </Link>
           </div>
 
