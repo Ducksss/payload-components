@@ -593,13 +593,16 @@ test.describe('Light shadcn frontend', () => {
     await waitForCopyController(page)
     await stubGtagEvents(page)
 
-    await page.getByRole('button', { name: 'Copy' }).first().click()
+    const copyButton = page.locator('.hero-shell button[data-copy-command]')
 
-    await expect(page.getByRole('button', { name: 'Copied' })).toBeVisible()
+    await expect(copyButton).toHaveAccessibleName('Copy install command')
+    await copyButton.click()
+    await expect(copyButton).toHaveAccessibleName('Copied')
     await expectCopiedAlert(page)
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(primaryInstallCommand)
+    await expect(copyButton).toHaveAccessibleName('Copy install command', { timeout: 2_000 })
     expect(await getGtagEvents(page)).toContainEqual([
       'event',
       'copy_install_command',
