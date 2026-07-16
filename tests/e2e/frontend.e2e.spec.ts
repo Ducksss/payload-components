@@ -53,6 +53,17 @@ async function waitForCopyController(page: Page) {
   await expect(page.locator('html')).toHaveAttribute('data-copy-controller-ready', 'true')
 }
 
+async function loadCatalogFamilyTeaser(page: Page) {
+  const deferredTeaser = page.locator('[aria-label="Loading component family previews"]')
+
+  await expect(deferredTeaser).toBeAttached()
+  await deferredTeaser.evaluate((element) => element.scrollIntoView({ block: 'center' }))
+
+  await expect(page.getByRole('heading', { name: 'Page blocks' })).toBeVisible({
+    timeout: 15_000,
+  })
+}
+
 test.describe('Light shadcn frontend', () => {
   test.beforeEach(async ({ context }) => {
     await context.addInitScript(() => {
@@ -564,7 +575,7 @@ test.describe('Light shadcn frontend', () => {
 
     // The catalog section teases page families with live previews instead of
     // listing every component as a text row; the full index lives at /components.
-    await expect(page.getByRole('heading', { name: 'Page blocks' })).toBeVisible()
+    await loadCatalogFamilyTeaser(page)
     await expect(page.getByRole('link', { name: /Browse all \d+ components/ })).toBeVisible()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
 
@@ -634,6 +645,7 @@ test.describe('Light shadcn frontend', () => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
     await waitForCopyController(page)
+    await loadCatalogFamilyTeaser(page)
     await page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copy' }).click()
 
     await expect(page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copied' })).toBeVisible()
