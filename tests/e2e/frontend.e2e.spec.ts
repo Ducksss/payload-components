@@ -626,6 +626,45 @@ test.describe('Light shadcn frontend', () => {
     )
   })
 
+  test('attributes the canonical comparison guide install action to the guide', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs/shadcn-vs-payload-components`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    const copyButton = page.getByRole('button', { name: 'Copy install command', exact: true })
+    await expect(copyButton).toBeVisible()
+    await copyButton.click()
+
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(primaryInstallCommand)
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: primaryInstallCommand,
+        component: 'hero-basic',
+        source_path: '/docs/shadcn-vs-payload-components',
+      },
+    ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: primaryInstallCommand,
+            component: 'hero-basic',
+            source_path: '/docs/shadcn-vs-payload-components',
+          },
+        },
+      ]),
+    )
+  })
+
   test('copies a catalog family-card command', async ({ page, context }) => {
     // feature-bento is the Features family's representative card in the landing
     // teaser; its command differs from the hero's primaryInstallCommand.

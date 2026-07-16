@@ -129,6 +129,32 @@ describe('Fumadocs site shell', () => {
     expect(architecture).toContain('No Payload admin, collection config, global config')
   })
 
+  it('keeps the canonical shadcn guide scoped, actionable, and free of a duplicate route', async () => {
+    const [guide, docsMeta, sitemap] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'shadcn-vs-payload-components.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+    ])
+
+    expect(guide).toContain("current [`hero-basic` registry item]")
+    expect(guide).toContain('| Block source | copied | copied |')
+    expect(guide).toContain('| Collection schema | — | patched |')
+    expect(guide).toContain('| Render mapping | — | patched |')
+    expect(guide).toContain('| Generated types | — | regenerated |')
+    expect(guide).toContain('| Admin import map | — | regenerated |')
+    expect(guide).toContain('diff --git a/src/collections/Pages/index.ts')
+    expect(guide).toContain('diff --git a/src/blocks/RenderBlocks.tsx')
+    expect(guide).toContain('command="npx payload-components add hero-basic"')
+    expect(guide).toContain('label="Copy install command"')
+    expect(docsMeta).toContain('"shadcn-vs-payload-components"')
+    expect(sitemap).toContain('source.getPages()')
+    await expect(
+      pathExists(
+        path.join(repoRoot, 'src', 'app', 'compare', 'shadcn-vs-payload-components', 'page.tsx'),
+      ),
+    ).resolves.toBe(false)
+  })
+
   it('keeps the Fumadocs app router integration wired', async () => {
     const [
       workflow,
