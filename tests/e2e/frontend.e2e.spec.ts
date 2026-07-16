@@ -2,7 +2,10 @@ import { expect, type Page, test } from '@playwright/test'
 
 import {
   catalogTitle,
+  githubRepoUrl,
   heroHeadline,
+  heroPrimaryCta,
+  heroTertiaryLinks,
   homeMetadataDescription,
   homeMetadataTitle,
   componentEntries,
@@ -46,6 +49,10 @@ async function expectCopiedAlert(page: Page) {
   })
 }
 
+async function waitForCopyController(page: Page) {
+  await expect(page.locator('html')).toHaveAttribute('data-copy-controller-ready', 'true')
+}
+
 test.describe('Light shadcn frontend', () => {
   test.beforeEach(async ({ context }) => {
     await context.addInitScript(() => {
@@ -87,6 +94,64 @@ test.describe('Light shadcn frontend', () => {
         },
       ]),
     )
+  })
+
+  test('keeps the landing hero action hierarchy focused', async ({ page }) => {
+    await page.goto(baseURL)
+
+    const hero = page.locator('.hero-shell')
+    await expect(
+      hero.getByRole('link', { name: heroPrimaryCta.label, exact: true }),
+    ).toBeVisible()
+    await expect(hero.locator(`a[href="${githubRepoUrl}"]`)).toHaveAccessibleName(
+      'Star on GitHub',
+    )
+    await expect(
+      hero.getByRole('link', { name: heroTertiaryLinks[0].label, exact: true }),
+    ).toBeVisible()
+    await expect(hero.getByText('Open source', { exact: true })).toHaveCount(0)
+    await expect(
+      hero.getByRole('link', { name: 'See what add actually wires', exact: true }),
+    ).toHaveCount(0)
+  })
+
+  test('keeps the desktop hero composition compact', async ({ page }) => {
+    await page.setViewportSize({ height: 900, width: 1440 })
+    await page.goto(baseURL)
+
+    const headline = page.getByRole('heading', { level: 1, name: heroHeadline })
+    const heroStack = page.locator('.hero-shell > .container')
+    const proof = page.locator('.product-frame')
+    const replay = page.getByRole('button', { name: 'Replay the install animation' })
+
+    await expect(headline).toBeVisible()
+    await expect(proof).toBeVisible()
+    await expect(replay).toBeVisible()
+
+    const headlineSize = await headline.evaluate((element) =>
+      Number.parseFloat(getComputedStyle(element).fontSize),
+    )
+    const stackMetrics = await heroStack.evaluate((element) => {
+      const styles = getComputedStyle(element)
+      return {
+        gap: Number.parseFloat(styles.rowGap),
+        paddingTop: Number.parseFloat(styles.paddingTop),
+      }
+    })
+    const proofBounds = await proof.evaluate((element) => {
+      const { left, right, width } = element.getBoundingClientRect()
+      return { left, right, width }
+    })
+    const replayBounds = await replay.evaluate((element) => {
+      const { left, right } = element.getBoundingClientRect()
+      return { left, right }
+    })
+
+    expect(headlineSize).toBeLessThanOrEqual(88.1)
+    expect(stackMetrics).toEqual({ gap: 48, paddingTop: 64 })
+    expect(proofBounds.width).toBeLessThanOrEqual(1024.1)
+    expect(replayBounds.left).toBeGreaterThanOrEqual(proofBounds.left)
+    expect(replayBounds.right).toBeLessThanOrEqual(proofBounds.right)
   })
 
   test('renders the light token-driven homepage', async ({ page }) => {
@@ -289,6 +354,78 @@ test.describe('Light shadcn frontend', () => {
     await expect.poll(async () => (await frame.boundingBox())?.width ?? 0).toBeLessThanOrEqual(400)
   })
 
+  test('mobile header stays bounded and supports keyboard disclosure', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 })
+    await page.goto(`${baseURL}/docs`)
+    const trigger = page.getByRole('button', { name: 'Open navigation' })
+    const navigation = page.locator('#mobile-navigation')
+    await expect(trigger).toBeVisible()
+    await expect(navigation).toBeAttached()
+    await expect(navigation).toBeHidden()
+    await trigger.click()
+    await expect(navigation).toBeVisible()
+    const docsLink = navigation.getByRole('link', { name: 'Docs' })
+    await expect(docsLink).toBeVisible()
+    await expect(docsLink).toHaveClass(/bg-secondary/)
+    await expect(docsLink).toHaveClass(/text-foreground/)
+    await expect(navigation.getByRole('link', { name: 'Components' })).toHaveClass(
+      /text-muted-foreground/,
+    )
+    const githubLink = navigation.getByRole('link', { name: 'GitHub' })
+    await expect(githubLink).toHaveAttribute('target', '_blank')
+    await expect(githubLink).toHaveAttribute('rel', 'noreferrer')
+    await expect(page.getByRole('button', { name: 'Close navigation' })).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(navigation).toBeAttached()
+    await expect(navigation).toBeHidden()
+    await expect(trigger).toBeFocused()
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
+  })
+
+  test('preview frame grows and shrinks across presets without analytics', async ({ page }) => {
+    await page.setViewportSize({ width: 1200, height: 900 })
+    await page.goto(`${baseURL}/docs/components/hero-basic`)
+    const frame = page.locator('iframe[title="Hero Basic preview"]')
+    await expect(frame.contentFrame().locator('main')).toBeVisible()
+    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(160)
+    const initial = (await frame.boundingBox())?.height ?? 0
+    await page.getByRole('button', { name: 'Mobile' }).click()
+    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(initial)
+    const mobileHeight = (await frame.boundingBox())?.height ?? initial
+    await page.getByRole('button', { name: 'Desktop' }).click()
+    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeLessThan(mobileHeight - 2)
+    await page.getByRole('button', { name: 'Mobile' }).click()
+    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(mobileHeight - 2)
+
+    await page.goto(`${baseURL}/components/preview/hero-basic`)
+    await expect(page.locator('script[src*="googletagmanager"], script[src*="vercel"], script[src*="posthog"]')).toHaveCount(0)
+  })
+
+  test('component wiring paths and actions wrap at 390px', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 })
+    await page.goto(`${baseURL}/docs/components/logo-cloud-inline-wrap`)
+    const wiring = page.getByText('What it installs', { exact: false }).locator('..')
+    const path = page
+      .locator('code:visible')
+      .filter({ hasText: 'src/blocks/LogoCloudInlineWrap/Component.tsx' })
+    await expect(path).toBeVisible()
+    const wraps = await path.evaluate((el) => {
+      const style = getComputedStyle(el)
+      const line = Number.parseFloat(style.lineHeight)
+      return {
+        breakable: style.overflowWrap === 'anywhere' || style.wordBreak === 'break-all',
+        multiline: el.getBoundingClientRect().height > line * 1.5,
+        fits: el.scrollWidth <= el.clientWidth,
+      }
+    })
+    expect(wraps.breakable).toBe(true)
+    expect(wraps.multiline).toBe(true)
+    expect(wraps.fits).toBe(true)
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
+    expect(overflow).toBe(false)
+    await expect(wiring).toBeVisible()
+  })
+
   test('serves the standalone preview route without site chrome or overflow', async ({ page }) => {
     await page.goto(`${baseURL}/components/preview/hero-basic`)
 
@@ -339,6 +476,56 @@ test.describe('Light shadcn frontend', () => {
     await expect(page.locator('#feature-grid-basic')).toBeVisible()
     await expect(page.locator('#feature-steps')).toBeVisible()
     await expect(page.locator('#hero-basic')).toBeHidden()
+  })
+
+  test('filters catalog immediately, debounces shareable URL state, and syncs popstate', async ({ page }) => {
+    await page.goto(`${baseURL}/components`)
+    const search = page.getByLabel('Search components')
+    await expect(search).toHaveValue('')
+
+    const initialUrl = page.url()
+    const navigations: string[] = []
+    const requests: string[] = []
+    page.on('framenavigated', (frame) => {
+      if (frame === page.mainFrame()) navigations.push(frame.url())
+    })
+    page.on('request', (request) => {
+      if (request.isNavigationRequest() || request.resourceType() === 'document') {
+        requests.push(request.url())
+      }
+    })
+
+    await search.fill('feature-bento')
+
+    // Filtering is local state: cards update without waiting for a route change.
+    await expect(page.locator('#feature-bento')).toBeVisible()
+    expect(page.url()).toBe(initialUrl)
+
+    // The URL is intentionally debounced (250ms); no document/RSC navigation
+    // should be generated for each keypress or for the history-only update.
+    await page.waitForTimeout(150)
+    expect(page.url()).toBe(initialUrl)
+    await expect.poll(() => page.url(), { timeout: 5000 }).toContain('/components?q=feature-bento')
+    // replaceState updates the frame URL without a document request; the
+    // initial frame event and history-only URL events are expected.
+    expect(navigations.length).toBeGreaterThan(0)
+    expect(requests).toEqual([])
+
+    // Browser history restores the input and local result set through popstate.
+    await page.evaluate(() => {
+      window.history.pushState(null, '', '/components?q=hero-basic')
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    })
+    await expect(search).toHaveValue('hero-basic')
+    await expect(page.locator('#hero-basic')).toBeVisible()
+
+    // A family selection made inside the debounce window must carry the
+    // in-progress local query instead of restoring stale router state.
+    await search.fill('hero')
+    await page.getByRole('button', { name: /Page blocks/ }).first().click()
+    await expect(search).toHaveValue('hero')
+    await expect.poll(() => new URL(page.url()).searchParams.get('q')).toBe('hero')
+    await expect.poll(() => new URL(page.url()).searchParams.get('type')).toBe('pages')
   })
 
   test('links upcoming components to prefilled request issues', async ({ page }) => {
@@ -397,6 +584,7 @@ test.describe('Light shadcn frontend', () => {
   test('exposes a working command copy control', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
+    await waitForCopyController(page)
     await stubGtagEvents(page)
 
     await page.getByRole('button', { name: 'Copy' }).first().click()
@@ -436,6 +624,7 @@ test.describe('Light shadcn frontend', () => {
 
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
+    await waitForCopyController(page)
     await page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copy' }).click()
 
     await expect(page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copied' })).toBeVisible()
@@ -494,6 +683,7 @@ test.describe('Light shadcn frontend', () => {
   test('shows an alert after copying a docs code block', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(`${baseURL}/docs`)
+    await waitForCopyController(page)
 
     await page.getByRole('button', { name: 'Copy Text' }).first().click()
 
@@ -506,6 +696,7 @@ test.describe('Light shadcn frontend', () => {
   test('shows an alert after copying page markdown', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(`${baseURL}/docs/installation`)
+    await waitForCopyController(page)
 
     await page.getByRole('button', { name: /Copy Markdown/ }).click()
 

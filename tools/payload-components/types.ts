@@ -101,6 +101,7 @@ export type SupportedTarget = {
 
 export type DetectedProject = {
   cwd: string
+  lockfilePath: string
   nextMajor: number
   packageManager: PackageManager
   payloadMajor: number
@@ -126,4 +127,24 @@ export type RegistryDefinition = {
     type?: string
   }>
   name: string
+}
+
+export type ResolvedRegistryDependency = {
+  name: string
+  targetFile: string
+}
+
+export type ResolvedInstallPlan = Pick<
+  ComponentManifest,
+  | 'dependencies'
+  | 'files'
+  | 'name'
+  | 'payloadFragments'
+  | 'peerDependencies'
+  | 'postInstall'
+  | 'recovery'
+  | 'registryItemName'
+  | 'version'
+> & {
+  registryDependencies: ResolvedRegistryDependency[]
 }

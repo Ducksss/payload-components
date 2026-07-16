@@ -4,6 +4,9 @@ import { teamFields, teamMemberFields } from '@/blocks/shared/teamFields'
 
 export const TeamGrid: Block = {
   slug: 'teamGrid',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_tea_gri',
   interfaceName: 'TeamGridBlock',
   fields: [
     // Shared team core (eyebrow, title). Variant-specific fields follow; edit the

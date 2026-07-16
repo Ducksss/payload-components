@@ -6,6 +6,7 @@ import {
   getRuntimePatchedFiles,
   installManifestDependencies,
 } from '../dependencies'
+import { resolveInstallPlan } from '../install-plan'
 import { loadManifest } from '../manifest'
 import {
   applyPayloadFragments,
@@ -14,7 +15,7 @@ import {
   verifyInstalledManifestFiles,
   verifyInstalledPayloadFragments,
 } from '../project'
-import { buildRegistry, installRegistryItem } from '../registry'
+import { buildRegistry, installRegistryDependencies, installRegistryItem } from '../registry'
 import {
   loadState,
   recordInstalledState,
@@ -98,37 +99,39 @@ const installComponent = async ({
 }) => {
   const manifest = await loadManifest(componentName)
   const project = await detectProject(cwd)
+  const plan = await resolveInstallPlan({ cwd, manifest })
 
   assertManifestSupport(project, manifest)
 
   await checkDependencyRequirements({
     allowMissing: false,
     cwd,
-    dependencies: manifest.peerDependencies,
+    dependencies: plan.peerDependencies,
     label: 'peerDependencies',
   })
 
   const dependencyCheck = await checkDependencyRequirements({
     allowMissing: true,
     cwd,
-    dependencies: manifest.dependencies,
+    dependencies: plan.dependencies,
     label: 'dependencies',
   })
   const fileCheck = await verifyInstalledManifestFiles({
     cwd,
-    manifest,
+    manifest: plan,
   })
   const fragmentCheck = await verifyInstalledPayloadFragments({
     cwd,
-    manifest,
+    manifest: plan,
   })
   const patchedFiles = getRuntimePatchedFiles({
-    dependencies: manifest.dependencies,
-    packageManager: project.packageManager,
-    recoveryPatchedFiles: manifest.recovery.patchedFiles,
+    dependencies: plan.dependencies,
+    lockfilePath: project.lockfilePath,
+    recoveryPatchedFiles: plan.recovery.patchedFiles,
   })
   const existingState = await loadState(cwd)
   const installedEntry = existingState.components[manifest.name]
+  const missingRegistryDependencies = fileCheck.missingRegistryDependencies ?? []
   const onDiskInstallValid =
     fileCheck.isValid && fragmentCheck.isValid && dependencyCheck.missing.length === 0
 
@@ -193,7 +196,7 @@ const installComponent = async ({
           componentName: manifest.name,
           cwd,
           message,
-          ownedFiles: manifest.files,
+          ownedFiles: plan.files,
           patchedFiles,
           stage,
         }),
@@ -203,7 +206,7 @@ const installComponent = async ({
     }
   }
 
-  if (!fileCheck.isValid) {
+  if (fileCheck.missingFiles.length > 0) {
     const registryOutputDir = await executeStage('registry-build', () => buildRegistry(project.packageManager))
     const registryItemPath = path.join(registryOutputDir, `${manifest.registryItemName}.json`)
 
@@ -220,9 +223,34 @@ const installComponent = async ({
     }
   }
 
+  if (fileCheck.missingFiles.length === 0 && missingRegistryDependencies.length > 0) {
+    await executeStage('registry-add', () =>
+      installRegistryDependencies({
+        dependencies: missingRegistryDependencies.map(({ name }) => name),
+        packageManager: project.packageManager,
+        targetDir: cwd,
+      }),
+    )
+  }
+
+  if (!fileCheck.isValid) {
+    await executeStage('registry-add', async () => {
+      const repairedFileCheck = await verifyInstalledManifestFiles({ cwd, manifest: plan })
+
+      if (!repairedFileCheck.isValid) {
+        const missing = [
+          ...repairedFileCheck.missingFiles,
+          ...repairedFileCheck.missingRegistryDependencies.map(({ targetFile }) => targetFile),
+        ]
+
+        throw new Error(`Registry install did not create expected files: ${missing.join(', ')}`)
+      }
+    })
+  }
+
   if (dependencyCheck.missing.length > 0) {
     const missingDependencies = Object.fromEntries(
-      dependencyCheck.missing.map((dependencyName) => [dependencyName, manifest.dependencies[dependencyName]]),
+      dependencyCheck.missing.map((dependencyName) => [dependencyName, plan.dependencies[dependencyName]]),
     )
 
     await executeStage('dependency-install', () =>
@@ -235,10 +263,10 @@ const installComponent = async ({
   }
 
   if (!fragmentCheck.isValid) {
-    await executeStage('fragment-apply', () => applyPayloadFragments(cwd, manifest.payloadFragments))
+    await executeStage('fragment-apply', () => applyPayloadFragments(cwd, plan.payloadFragments))
   }
 
-  for (const script of manifest.postInstall) {
+  for (const script of plan.postInstall) {
     const command = getRunScriptCommand(project.packageManager, script)
 
     printHeader(`payload-components: running ${script}`)
@@ -263,7 +291,7 @@ const installComponent = async ({
 
   printHeader(`payload-components: installed "${manifest.name}" successfully.`)
 
-  const layoutFragment = manifest.payloadFragments.find((fragment) => fragment.kind === 'pagesLayout')
+  const layoutFragment = plan.payloadFragments.find((fragment) => fragment.kind === 'pagesLayout')
   const blockName =
     layoutFragment && 'blockName' in layoutFragment ? layoutFragment.blockName : manifest.name
 

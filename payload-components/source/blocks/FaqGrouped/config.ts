@@ -5,6 +5,9 @@ import { iconField } from '@/blocks/shared/faqIcons'
 
 export const FaqGrouped: Block = {
   slug: 'faqGrouped',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_faq_gro',
   interfaceName: 'FaqGroupedBlock',
   fields: [
     // Shared FAQ core (eyebrow, title, description). This variant buckets

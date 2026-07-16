@@ -4,6 +4,9 @@ import { testimonialFields, testimonialItemFields } from '@/blocks/shared/testim
 
 export const TestimonialsRating: Block = {
   slug: 'testimonialsRating',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_tes_rat',
   interfaceName: 'TestimonialsRatingBlock',
   fields: [
     // Shared testimonials heading (eyebrow, title, description). Edit the shared

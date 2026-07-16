@@ -2,6 +2,9 @@ import type { Block } from 'payload'
 
 export const ContentListColumns: Block = {
   slug: 'contentListColumns',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
+  dbName: 'pc_con_lis_col',
   interfaceName: 'ContentListColumnsBlock',
   fields: [
     {

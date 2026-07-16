@@ -1,6 +1,7 @@
 import { Check, Minus } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { comparatorGridDemoContent, type ComparatorGridDemoContent } from '@/lib/demo-content'
 
 import { DemoLink } from './DemoLink'
@@ -10,7 +11,7 @@ import { DemoLink } from './DemoLink'
  * source, in source order. Deliberate substitutions:
  *   <section className={cn('container', …)}> → <div> root (frames own spacing; no landmark)
  *   <h2>                                     → <div> (role-neutral; the catalog owns its outline)
- *   <Card>                                   → plain <div> (the Card chrome is presentational)
+ *   <Card>                                   → shared Card chrome
  *   CMSLink                                  → <DemoLink> (@/components/Link exists only in consumer repos)
  *   ComparatorGridBlockData                  → ComparatorGridDemoContent (@/payload-types is consumer-only)
  *   cn() inner/cell wrappers                 → plain divs/template classes (skipped by the class-mirror guard)
@@ -43,7 +44,7 @@ export function ComparatorGridDemo({
             </div>
           ) : null}
 
-          <div className="overflow-x-auto border-border/70 bg-background/60 p-0 shadow-none">
+          <Card className="overflow-x-auto border-border/70 bg-background/60 p-0 shadow-none">
             <div className="min-w-[36rem]">
               <div
                 className="grid items-end border-b border-border/70"
@@ -120,7 +121,7 @@ export function ComparatorGridDemo({
                 ))}
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     </div>

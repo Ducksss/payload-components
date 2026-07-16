@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { ArrowRight, Github, Sparkles, Star } from 'lucide-react'
+import { ArrowRight, Github, Sparkles } from 'lucide-react'
 
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { HeroInstallReplay } from '@/components/site/HeroInstallReplay'
@@ -20,14 +20,14 @@ import {
  * command above the fold, then the install replay as proof. Stays a server
  * component; the client bits (copy button, replay control) mount inside it. */
 export function HeroSection() {
-  const [browseLink, wiringLink] = heroTertiaryLinks
+  const [browseLink] = heroTertiaryLinks
 
   return (
     <section className="hero-shell overflow-hidden border-b border-border/60">
       <div aria-hidden="true" data-parallax="0.1" className="hero-atmosphere" />
 
-      <div className="container relative flex flex-col gap-12 py-12 sm:py-16 lg:gap-16 lg:py-24">
-        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center gap-6 text-center">
+      <div className="container relative flex flex-col gap-10 py-10 sm:py-14 lg:gap-12 lg:py-16">
+        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center gap-5 text-center">
           <span
             className="hero-reveal flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-4 py-1.5 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-muted-foreground"
             style={{ animationDelay: '0ms' }}
@@ -37,7 +37,7 @@ export function HeroSection() {
           </span>
 
           <h1
-            className="hero-reveal max-w-5xl text-balance text-[clamp(2.6rem,8.4vw,6rem)] font-medium leading-[0.94] tracking-[-0.085em] text-foreground"
+            className="hero-reveal max-w-5xl text-balance text-[clamp(2.6rem,8.4vw,5.5rem)] font-medium leading-[0.94] tracking-[-0.075em] text-foreground"
             style={{ animationDelay: '60ms' }}
           >
             {heroHeadlinePrimary}{' '}
@@ -87,15 +87,11 @@ export function HeroSection() {
               <span aria-hidden="true" className="cta-twinkle" />
               <Github className="size-4" aria-hidden="true" />
               Star on GitHub
-              <span className="inline-flex items-center gap-1 rounded-full border border-foreground/10 bg-foreground/8 px-2 py-0.5 text-[0.72rem] font-semibold text-foreground/80">
-                <Star className="cta-badge-star size-3 fill-current" aria-hidden="true" />
-                Open source
-              </span>
             </a>
           </div>
 
           <div
-            className="hero-reveal flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground"
+            className="hero-reveal flex items-center justify-center text-sm text-muted-foreground"
             style={{ animationDelay: '230ms' }}
           >
             <Link
@@ -104,16 +100,6 @@ export function HeroSection() {
             >
               <Sparkles className="size-3.5" aria-hidden="true" />
               {browseLink.label}
-            </Link>
-            <span aria-hidden="true" className="hidden text-border sm:inline">
-              /
-            </span>
-            <Link
-              href={wiringLink.href}
-              className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
-            >
-              {wiringLink.label}
-              <ArrowRight className="size-3.5" aria-hidden="true" />
             </Link>
           </div>
         </div>

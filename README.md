@@ -290,17 +290,17 @@ Payload fragments, and the owned/patched file breakdown before and after retryin
 
 Useful checks while changing this repo:
 
-```sh
-pnpm lint
-pnpm source:build
-pnpm exec tsc --noEmit
-pnpm test:registry
-pnpm run test:int
-E2E_PORT=3100 pnpm run test:e2e
-pnpm build
-```
+| Check | When to run |
+| --- | --- |
+| `pnpm lint` | After code changes to catch lint errors. |
+| `pnpm source:build` | After docs/frontmatter changes, or before type-checking a fresh checkout; compiles Fumadocs content. |
+| `pnpm exec tsc --noEmit` | After TypeScript changes, to type-check without writing build output. |
+| `pnpm test:registry` | After registry changes; checks schema validity and generated-output reproducibility. |
+| `pnpm run test:int` | After installer, manifest, docs, or source changes; covers those contracts. |
+| `E2E_PORT=3100 pnpm run test:e2e` | After changes to site or browser behavior. |
+| `pnpm build` | Before shipping, to validate the production build. |
 
-Run the full local release gate before broad changes:
+Run the full local release gate before shipping:
 
 ```sh
 pnpm test:release
