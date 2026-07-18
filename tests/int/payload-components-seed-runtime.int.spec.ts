@@ -22,6 +22,7 @@ type StubCall = {
   id?: number | string
   method: 'create' | 'delete' | 'find' | 'update'
   overrideAccess?: boolean
+  overrideLock?: boolean
 }
 
 type StubDocument = Record<string, unknown> & { id: number | string }
@@ -33,12 +34,26 @@ type StubState = {
   pages: StubDocument[]
 }
 
+type OwnershipState = {
+  component: string
+  manifestVersion: string
+  mediaId: number | string | null
+  pageId: number | string | null
+  token: string
+  version: 1
+}
+
 const execFileAsync = promisify(execFile)
 const repoRoot = process.cwd()
 const tsxCli = path.join(repoRoot, 'node_modules', 'tsx', 'dist', 'cli.mjs')
 const runtimeTarget: SeedTarget = {
   configFileRelPath: path.join('src', 'payload.config.ts'),
   marker: 'payload-components:demo:logo-cloud-grid',
+  ownershipStateRelPath: path.join(
+    '.payload-components',
+    'demo-state',
+    'logo-cloud-grid.json',
+  ),
   pageStatus: 'draft',
   scriptRelPath: path.join('payload-components', 'seed-logo-cloud-grid.ts'),
   slug: 'payload-components-demo-logo-cloud-grid',
@@ -164,13 +179,19 @@ const createRuntimeFixture = async ({
   const target = {
     ...runtimeTarget,
     marker: `payload-components:demo:${manifest.name}`,
+    ownershipStateRelPath: path.join(
+      '.payload-components',
+      'demo-state',
+      `${manifest.name}.json`,
+    ),
     scriptRelPath: path.join('payload-components', `seed-${manifest.name}.ts`),
     slug: `payload-components-demo-${manifest.name}`,
     title: `Payload Components demo — ${manifest.title}`,
   }
   const scriptPath = await writeSeedScript(fixtureDir, [manifest], target)
+  const ownershipStatePath = path.join(fixtureDir, target.ownershipStateRelPath)
 
-  return { fixtureDir, scriptPath, statePath, target }
+  return { fixtureDir, ownershipStatePath, scriptPath, statePath, target }
 }
 
 const runScript = (
@@ -186,6 +207,9 @@ const runScript = (
 
 const readState = async (statePath: string) =>
   JSON.parse(await readFile(statePath, 'utf8')) as StubState
+
+const readOwnershipState = async (statePath: string) =>
+  JSON.parse(await readFile(statePath, 'utf8')) as OwnershipState
 
 describe('generated demo seed runtime', () => {
   const tempDirs: string[] = []
@@ -226,6 +250,10 @@ describe('generated demo seed runtime', () => {
           draft: true,
           overrideAccess: true,
         }),
+        expect.objectContaining({
+          method: 'update',
+          overrideLock: false,
+        }),
       ]),
     )
     expect(state.calls.some((call) => call.collection === 'pages' && call.method === 'delete')).toBe(
@@ -238,21 +266,18 @@ describe('generated demo seed runtime', () => {
       title: fixture.target.title,
     })
     expect((state.pages[0].layout as Array<Record<string, unknown>>)[0]).toMatchObject({
-      id: fixture.target.marker,
+      id: `${fixture.target.marker}:${(await readOwnershipState(fixture.ownershipStatePath)).token}`,
+    })
+    expect(await readOwnershipState(fixture.ownershipStatePath)).toMatchObject({
+      pageId: state.pages[0].id,
     })
   })
 
-  it('refuses a same-slug Page unless title and the first block marker both match', async () => {
+  it('refuses a forged same-slug Page even when its public marker fields look owned', async () => {
     const state = emptyState()
     state.pages.push({
       id: 40,
-      layout: [
-        { blockType: 'featureGridBasic', id: 'consumer-authored-block' },
-        {
-          blockType: 'logoCloudGrid',
-          id: 'payload-components:demo:logo-cloud-grid',
-        },
-      ],
+      layout: [{ blockType: 'logoCloudGrid', id: 'payload-components:demo:logo-cloud-grid' }],
       slug: runtimeTarget.slug,
       title: runtimeTarget.title,
     })
@@ -260,7 +285,7 @@ describe('generated demo seed runtime', () => {
     tempDirs.push(fixture.fixtureDir)
 
     await expect(runScript(fixture.scriptPath, fixture.statePath)).rejects.toMatchObject({
-      stderr: expect.stringContaining('does not match the exact generated demo ownership contract'),
+      stderr: expect.stringContaining('has no matching local ownership record'),
     })
 
     const result = await readState(fixture.statePath)
@@ -270,40 +295,30 @@ describe('generated demo seed runtime', () => {
     )
   })
 
-  it('reuses owned media and deletes duplicates only after the Page write succeeds', async () => {
+  it('refuses marker-like media collisions without deleting or reusing them', async () => {
     const state = emptyState()
-    const alt =
-      'Payload Components generated demo media [payload-components:demo:logo-cloud-grid:media]'
-    state.media.push({ alt, id: 10 }, { alt, id: 11 })
     const fixture = await createRuntimeFixture({ state })
     tempDirs.push(fixture.fixtureDir)
+    const ownershipState = await readOwnershipState(fixture.ownershipStatePath)
+    const alt = `Payload Components generated demo media [payload-components:demo:logo-cloud-grid:media:${ownershipState.token}]`
+    state.media.push({ alt, id: 10 }, { alt, id: 11 })
+    await writeFile(fixture.statePath, `${JSON.stringify(state, null, 2)}\n`, 'utf8')
 
-    await runScript(fixture.scriptPath, fixture.statePath)
+    await expect(runScript(fixture.scriptPath, fixture.statePath)).rejects.toMatchObject({
+      stderr: expect.stringContaining('has no matching local ownership record'),
+    })
 
     const result = await readState(fixture.statePath)
-    expect(result.media).toEqual([{ alt, id: 10 }])
+    expect(result.media).toEqual(state.media)
     expect(result.calls.some((call) => call.collection === 'media' && call.method === 'create')).toBe(
       false,
     )
-    const pageWriteIndex = result.calls.findIndex(
-      (call) => call.collection === 'pages' && call.method === 'create',
-    )
-    const duplicateDeleteIndex = result.calls.findIndex(
-      (call) => call.collection === 'media' && call.method === 'delete' && call.id === 11,
-    )
-    expect(pageWriteIndex).toBeGreaterThan(-1)
-    expect(duplicateDeleteIndex).toBeGreaterThan(pageWriteIndex)
-    expect((result.pages[0].layout as Array<{ logos: Array<{ logo: unknown }> }>)[0].logos[0].logo).toBe(
-      10,
-    )
+    expect(result.calls.some((call) => call.method === 'delete')).toBe(false)
+    expect(result.pages).toEqual([])
   })
 
-  it('preserves owned media when the Page write fails', async () => {
-    const state = emptyState()
-    const alt =
-      'Payload Components generated demo media [payload-components:demo:logo-cloud-grid:media]'
-    state.media.push({ alt, id: 20 }, { alt, id: 21 })
-    const fixture = await createRuntimeFixture({ state })
+  it('persists a newly created media ID before a failed Page write and reuses it on retry', async () => {
+    const fixture = await createRuntimeFixture()
     tempDirs.push(fixture.fixtureDir)
 
     await expect(
@@ -311,8 +326,28 @@ describe('generated demo seed runtime', () => {
     ).rejects.toMatchObject({ stderr: expect.stringContaining('injected page write failure') })
 
     const result = await readState(fixture.statePath)
-    expect(result.media).toEqual(state.media)
+    const ownershipAfterFailure = await readOwnershipState(fixture.ownershipStatePath)
+    expect(result.media).toHaveLength(1)
+    expect(ownershipAfterFailure).toMatchObject({
+      mediaId: result.media[0].id,
+      pageId: null,
+    })
     expect(result.calls.some((call) => call.method === 'delete')).toBe(false)
+
+    await runScript(fixture.scriptPath, fixture.statePath)
+
+    const afterRetry = await readState(fixture.statePath)
+    expect(
+      afterRetry.calls.filter(
+        (call) => call.collection === 'media' && call.method === 'create',
+      ),
+    ).toHaveLength(1)
+    expect(afterRetry.media).toHaveLength(1)
+    expect(afterRetry.pages).toHaveLength(1)
+    expect(await readOwnershipState(fixture.ownershipStatePath)).toMatchObject({
+      mediaId: afterRetry.media[0].id,
+      pageId: afterRetry.pages[0].id,
+    })
   })
 
   it('creates placeholder uploads in an OS temp directory and removes it afterward', async () => {
@@ -344,5 +379,37 @@ describe('generated demo seed runtime', () => {
     )[0].logos[0]
 
     expect(firstLogo.logo).toBe(result.media[0].id)
+  })
+
+  it('refuses a missing private ownership state before querying or mutating Payload', async () => {
+    const fixture = await createRuntimeFixture({ manifestName: 'hero-basic' })
+    tempDirs.push(fixture.fixtureDir)
+    await rm(fixture.ownershipStatePath)
+
+    await expect(runScript(fixture.scriptPath, fixture.statePath)).rejects.toMatchObject({
+      stderr: expect.stringContaining('private ownership state'),
+    })
+
+    expect(await readState(fixture.statePath)).toEqual(emptyState())
+  })
+
+  it('refuses an owned ID when the database marker no longer matches its private token', async () => {
+    const fixture = await createRuntimeFixture({ manifestName: 'hero-basic' })
+    tempDirs.push(fixture.fixtureDir)
+    await runScript(fixture.scriptPath, fixture.statePath)
+
+    const state = await readState(fixture.statePath)
+    ;(state.pages[0].layout as Array<Record<string, unknown>>)[0].id =
+      'payload-components:demo:hero-basic:forged'
+    await writeFile(fixture.statePath, `${JSON.stringify(state, null, 2)}\n`, 'utf8')
+
+    await expect(runScript(fixture.scriptPath, fixture.statePath)).rejects.toMatchObject({
+      stderr: expect.stringContaining('does not match its private ownership record'),
+    })
+
+    const result = await readState(fixture.statePath)
+    expect(result.calls.filter((call) => ['create', 'delete', 'update'].includes(call.method))).toHaveLength(
+      1,
+    )
   })
 })

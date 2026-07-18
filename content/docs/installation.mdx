@@ -93,10 +93,10 @@ command for npm, Yarn, Bun, or pnpm. Run that generated script yourself from the
 project root against the database you intend to modify.
 
 <Callout type="warn" title="The seed command fails closed">
-  `seed` rejects a recorded partial install and verifies every file in the
-  component manifest plus every Payload layout and renderer fragment before
-  writing the script. If the state or either on-disk set is incomplete, it exits
-  non-zero, reports why, and writes nothing. Fix the install with
+  `seed` requires a current installed-state record, compatible dependencies,
+  every manifest and registry-dependency file, and every Payload layout and
+  renderer fragment before writing the script. If any check is incomplete or
+  stale, it exits non-zero, reports why, and writes nothing. Fix the install with
   `npx payload-components add hero-basic`, then retry.
 </Callout>
 
@@ -104,31 +104,37 @@ The generated file begins with a versioned ownership marker. Regeneration uses
 an atomic sibling-file rename and refuses to overwrite an unmarked file, a
 symlink present during generation, a non-file, or any path outside the detected
 project. This keeps an existing consumer seed from being mistaken for CLI-owned
-output.
+output. The CLI also creates a mode-`0600` private ownership record at
+`.payload-components/demo-state/hero-basic.json`. Keep that file with the
+project: deleting or changing it intentionally makes the generated script refuse
+to touch existing demo content.
 
 For `hero-basic`, the generated document contract is deliberately specific:
 
 - Page slug: `payload-components-demo-hero-basic`
 - Page title: `Payload Components demo — Hero Basic`
-- first block marker: `payload-components:demo:hero-basic`
-- generated media marker: `payload-components:demo:hero-basic:media`
+- first block marker prefix: `payload-components:demo:hero-basic`
+- generated media marker prefix: `payload-components:demo:hero-basic:media`
+- private ownership: a random token plus the exact Page and Media IDs
 
 The script requires the detected Pages collection to support drafts. It aborts
 before querying or mutating content otherwise. A successful run writes
-`_status: 'draft'`, so you must review and publish explicitly. On rerun it
-fetches the Page by slug and updates the existing document in place only when
-the exact title and first block marker also prove ownership. A same-slug Page
-without that complete contract causes a hard failure before any mutation.
+`_status: 'draft'`, so you must review and publish explicitly. On first run, an
+existing same-slug Page is always a collision—matching public title or marker
+text is not enough. After creation, the script saves the returned Page ID. A
+rerun updates only that exact ID after verifying the expected slug, title,
+block type, and tokenized marker; the update also uses `overrideLock: false`.
+Missing or mismatched local state causes a hard failure before unsafe mutation.
 
 Components with required uploads get one ownership-marked placeholder Media
-document. A rerun reuses the first exact marker-owned Media document. It removes
-any duplicate owned documents only after the Page create or update succeeds;
-failed Page writes therefore preserve the prior media set. Placeholder files use
-a unique OS temporary directory that is removed in a `finally` block. Media
-without the exact marker is never queried or deleted. All mutations use the same
-revalidation-safe context as the project smoke path. The operator-run script
-uses `overrideAccess: true` intentionally, so inspect the generated file and
-your environment before executing it.
+document, immediately saves its returned ID, and reuses only that exact ID on a
+rerun. If the Page write fails, the saved Media ID makes a retry idempotent.
+Marker-like or duplicate Media without the matching private record causes a
+refusal; the generated script never deletes Media. Placeholder files use a
+unique OS temporary directory that is removed in a `finally` block. All
+mutations use the same revalidation-safe context as the project smoke path. The
+operator-run script uses `overrideAccess: true` intentionally, so inspect the
+generated file and your environment before executing it.
 
 ## What the CLI does
 

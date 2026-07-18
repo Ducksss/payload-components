@@ -174,19 +174,20 @@ npx payload-components seed hero-basic
 pnpm exec payload run payload-components/seed-hero-basic.ts
 ```
 
-`seed` refuses to write anything when the install state is recorded as partial,
-or unless every manifest file and Payload wiring fragment is present. The
-generated script requires Pages drafts before querying
-or changing content, then creates a component-specific **draft** Page at
-`/payload-components-demo-hero-basic`; it never publishes the demo. On rerun it
-updates only a Page with the exact generated slug, title, and first-block marker.
-A same-slug Page that fails that ownership contract stops the script without a
-mutation. Exact marker-owned placeholder media is reused; duplicate owned media
-is removed only after the Page write succeeds, and unrelated media is never
-selected. The CLI atomically replaces only its version-marked generated script
-and refuses unowned files or pre-existing symlinks. The operator-run script
-deliberately uses `overrideAccess: true`, so review it in git and run it only
-against the intended database.
+`seed` requires a healthy installed-state record, compatible dependencies, every
+manifest and registry-dependency file, and all Payload wiring fragments. It
+writes the reviewable script plus a private ownership record under
+`.payload-components/demo-state/`. The generated script requires Pages drafts
+before querying or changing content, then creates a component-specific **draft**
+Page at `/payload-components-demo-hero-basic`; it never publishes the demo. A
+rerun updates only the exact Page ID recorded locally after verifying its
+tokenized block marker. Placeholder media is reused only by its recorded ID and
+is never deduplicated or deleted automatically. Any collision or missing,
+mismatched, or unreadable ownership record stops before unsafe mutation. The CLI
+atomically replaces only its version-marked generated script and refuses unowned
+files or pre-existing symlinks. The operator-run script deliberately uses
+`overrideAccess: true`, with `overrideLock: false` for updates, so review it in
+git and run it only against the intended database.
 
 Good first installs:
 
@@ -262,7 +263,9 @@ consumer project, so partial installs are visible and retries can converge.
 Demo scripts are separate and opt-in. `add <component> --demo` writes one only
 after those install stages and installed-state recording succeed;
 `seed <component>` rejects recorded partial installs and verifies the installed
-files and Payload fragments again.
+state, dependencies, manifest and registry-dependency files, and Payload
+fragments again. Its separate private demo-state file records the IDs the
+operator-run script may update.
 Neither command opens a database. The CLI prints the package-manager-specific
 `payload run` command that performs the database work in your project.
 

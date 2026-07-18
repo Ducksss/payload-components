@@ -1,5 +1,7 @@
 import path from 'node:path'
 
+import { checkDependencyRequirements } from '../dependencies'
+import { resolveInstallPlan } from '../install-plan'
 import { loadManifest } from '../manifest'
 import {
   assertManifestSupport,
@@ -38,6 +40,11 @@ const createDemoSeedTarget = ({
 }): SeedTarget => ({
   configFileRelPath: getPayloadConfigFile(project),
   marker: `payload-components:demo:${manifest.name}`,
+  ownershipStateRelPath: path.join(
+    '.payload-components',
+    'demo-state',
+    `${manifest.name}.json`,
+  ),
   pageStatus: 'draft',
   scriptRelPath: path.join('payload-components', `seed-${manifest.name}.ts`),
   slug: `payload-components-demo-${manifest.name}`,
@@ -64,10 +71,12 @@ const formatInstallPreconditionError = ({
   manifest,
   missingFiles,
   missingFragments,
+  missingRegistryDependencies,
 }: {
   manifest: ComponentManifest
   missingFiles: string[]
   missingFragments: string[]
+  missingRegistryDependencies: Array<{ name: string; targetFile: string }>
 }) => {
   const details = [
     ...(missingFiles.length > 0
@@ -75,6 +84,13 @@ const formatInstallPreconditionError = ({
       : []),
     ...(missingFragments.length > 0
       ? [`Missing Payload fragments: ${missingFragments.join(', ')}`]
+      : []),
+    ...(missingRegistryDependencies.length > 0
+      ? [
+          `Missing registry dependencies: ${missingRegistryDependencies
+            .map(({ name, targetFile }) => `${name} (${targetFile})`)
+            .join(', ')}`,
+        ]
       : []),
   ]
 
@@ -96,13 +112,18 @@ export const seedCommand = async ({
   const project = await detectProject(cwd)
 
   assertManifestSupport(project, manifest)
-
-  const [fileCheck, fragmentCheck, state] = await Promise.all([
-    verifyInstalledManifestFiles({ cwd, manifest }),
-    verifyInstalledPayloadFragments({ cwd, manifest }),
-    loadState(cwd),
-  ])
+  const plan = await resolveInstallPlan({ cwd, manifest })
+  const state = await loadState(cwd)
   const installEntry = state.components[manifest.name]
+
+  if (!installEntry) {
+    throw new Error(
+      [
+        `"${manifest.name}" has no matching installed-state record; no demo seed script was written.`,
+        `Run "payload-components add ${manifest.name}" successfully, then retry the seed command.`,
+      ].join('\n'),
+    )
+  }
 
   if (installEntry?.status === 'partial') {
     const failureDetail = installEntry.lastError
@@ -118,12 +139,61 @@ export const seedCommand = async ({
     )
   }
 
+  const stateMismatches = [
+    ...(installEntry.manifestVersion !== manifest.version
+      ? [
+          `state has manifest ${installEntry.manifestVersion}, current manifest is ${manifest.version}.`,
+        ]
+      : []),
+    ...(installEntry.registryItemName !== manifest.registryItemName
+      ? [
+          `state has registry item ${installEntry.registryItemName}, manifest expects ${manifest.registryItemName}.`,
+        ]
+      : []),
+    ...(installEntry.targetId !== project.target.id
+      ? [
+          `state target ${installEntry.targetId}, detected target is ${project.target.id}.`,
+        ]
+      : []),
+  ]
+
+  if (stateMismatches.length > 0) {
+    throw new Error(
+      [
+        `"${manifest.name}" has stale or mismatched install state; no demo seed script was written.`,
+        ...stateMismatches,
+        `Run "payload-components add ${manifest.name}" successfully, then retry the seed command.`,
+      ].join('\n'),
+    )
+  }
+
+  await Promise.all([
+    checkDependencyRequirements({
+      allowMissing: false,
+      cwd,
+      dependencies: plan.peerDependencies,
+      label: 'peerDependencies',
+    }),
+    checkDependencyRequirements({
+      allowMissing: false,
+      cwd,
+      dependencies: plan.dependencies,
+      label: 'dependencies',
+    }),
+  ])
+
+  const [fileCheck, fragmentCheck] = await Promise.all([
+    verifyInstalledManifestFiles({ cwd, manifest: plan }),
+    verifyInstalledPayloadFragments({ cwd, manifest: plan }),
+  ])
+
   if (!fileCheck.isValid || !fragmentCheck.isValid) {
     throw new Error(
       formatInstallPreconditionError({
         manifest,
         missingFiles: fileCheck.missingFiles,
         missingFragments: fragmentCheck.missingFragments,
+        missingRegistryDependencies: fileCheck.missingRegistryDependencies,
       }),
     )
   }
@@ -140,7 +210,7 @@ export const seedCommand = async ({
       `  ${getPayloadRunCommand(project.packageManager, target.scriptRelPath)}`,
       '',
       `It requires Pages drafts and creates or updates the draft Page /${target.slug}.`,
-      'Reruns update only the exact generated marker/title and reuse owned placeholder media.',
+      'Reruns require the private local ownership record and reuse only its exact Page and Media IDs.',
     ].join('\n'),
   )
 }

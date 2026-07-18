@@ -52,11 +52,12 @@ The Payload block code under `payload-components/source/` is **target code** —
 after installed state is recorded; `seed <component>` performs the same step for
 an existing install. The CLI never opens a database. It rejects recorded partial
 installs, verifies every manifest file and wiring fragment, derives the Payload
-config path, and atomically writes
-only a version-marked script under `payload-components/`. Generated scripts must
-require Pages drafts, prove Page ownership by exact slug/title/first-block marker,
-update owned Pages in place, and never delete unrelated media. Keep all Local API
-access in the explicit operator-run script, with failures surfaced.
+config path, and atomically writes only a version-marked script under
+`payload-components/` plus a private high-entropy ownership record under
+`.payload-components/demo-state/`. Generated scripts must require Pages drafts,
+match the private record's exact Page and Media IDs plus tokenized markers,
+update owned Pages with `overrideLock: false`, and never delete media. Keep all
+Local API access in the explicit operator-run script, with failures surfaced.
 
 Fragment patching is **text-anchor based** — it finds anchors like `const blockComponents = {` and `name: 'layout'` in the consumer repo and inserts imports/registrations with dedup checks. Fragile by design for now; keep the anchors and dedup logic intact.
 

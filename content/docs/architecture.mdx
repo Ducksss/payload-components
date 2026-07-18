@@ -79,16 +79,21 @@ can be inspected and retried safely.
 
 Optional demo seeding stays outside that pipeline's trust boundary. The
 `seed <component>` command, and the final `--demo` step after a successful add,
-only validate the installed files and fragments and atomically write
-`payload-components/seed-<component>.ts`. The CLI does not import Payload, open a
-database, or make a network request during seed generation.
+validate the recorded install, dependencies, registry dependencies, installed
+files, and fragments. They atomically write
+`payload-components/seed-<component>.ts` and initialize a private high-entropy
+ownership record under `.payload-components/demo-state/`. The CLI does not
+import Payload, open a database, or make a network request during seed
+generation.
 
 The operator reviews that generated source and explicitly runs it with the
 consumer project's Payload CLI. Only then does the script use the Local API. It
-requires Pages drafts, creates or updates a draft with an exact ownership
-marker, and limits placeholder-media reuse and cleanup to the same exact marker.
-This keeps elevated `overrideAccess` calls visible in operator-run target code
-instead of hiding them inside the distribution CLI.
+requires Pages drafts and refuses database-visible markers as ownership proof.
+It creates a draft only when the slug is free, then records the new Page and
+Media IDs locally. Reruns require those exact IDs and the private tokenized
+markers; updates set `overrideLock: false`, and generated code never deletes
+media. This keeps elevated `overrideAccess` calls visible in operator-run target
+code instead of hiding them inside the distribution CLI.
 
 ## Registry source
 

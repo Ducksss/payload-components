@@ -22,19 +22,20 @@ export const SEED_SCRIPT_OWNERSHIP_HEADER = '// payload-components:generated-see
 export type SeedTarget = {
   configFileRelPath: string
   marker: string
+  ownershipStateRelPath: string
   pageStatus: 'draft' | 'published'
   scriptRelPath: string
   slug: string
   title: string
 }
 
-export const SMOKE_SEED_TARGET: SeedTarget = {
-  configFileRelPath: path.join('src', 'payload.config.ts'),
-  marker: 'payload-components:smoke',
-  pageStatus: 'published',
-  scriptRelPath: path.join('.payload-components', 'smoke-seed.ts'),
-  slug: 'payload-components-smoke',
-  title: 'Payload Component Smoke',
+type SeedOwnershipState = {
+  component: string
+  manifestVersion: string
+  mediaId: number | string | null
+  pageId: number | string | null
+  token: string
+  version: 1
 }
 
 const uploadFieldByArrayName: Record<string, string> = {
@@ -99,11 +100,23 @@ const getBlockType = (manifest: ComponentManifest) => {
   return blockType
 }
 
+const getOwnershipStateImportPath = (target: SeedTarget) => {
+  const relativePath = path.relative(
+    path.dirname(target.scriptRelPath),
+    target.ownershipStateRelPath,
+  )
+  const normalized = relativePath.split(path.sep).join('/')
+
+  return normalized.startsWith('.') ? normalized : `./${normalized}`
+}
+
 export const buildSeedScript = ({
   manifests,
+  ownershipState,
   target,
 }: {
   manifests: ComponentManifest[]
+  ownershipState: SeedOwnershipState
   target: SeedTarget
 }): string => {
   if (manifests.length === 0) {
@@ -112,15 +125,17 @@ export const buildSeedScript = ({
 
   const firstManifest = manifests[0]
   const firstBlockType = getBlockType(firstManifest)
+  const demoMarker = `${target.marker}:${ownershipState.token}`
   const rawLayout = manifests.map((manifest, index) => ({
     ...manifest.sampleContent,
-    id: index === 0 ? target.marker : `${target.marker}:${manifest.name}`,
+    id: index === 0 ? demoMarker : `${demoMarker}:${manifest.name}`,
   }))
   const needsDemoMedia = manifests.some((manifest) =>
     sampleContentNeedsDemoMedia(manifest.sampleContent),
   )
   const configImportPath = getConfigImportPath(target)
-  const demoMediaMarker = `${target.marker}:media`
+  const ownershipStateImportPath = getOwnershipStateImportPath(target)
+  const demoMediaMarkerPrefix = `${target.marker}:media`
   const requirePagesDrafts = target.pageStatus === 'draft'
   const pageStatusField =
     target.pageStatus === 'draft' ? "    _status: 'draft' as const," : "    _status: 'published',"
@@ -131,9 +146,11 @@ export const buildSeedScript = ({
       : "'Seeded /' + demoSlug"
 
   return `${SEED_SCRIPT_OWNERSHIP_HEADER}
-import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { randomUUID } from 'node:crypto'
+import { lstat, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 import { getPayload } from 'payload'
 
@@ -141,13 +158,31 @@ const { default: config } = await import(${quoteTsString(configImportPath)})
 
 type DemoDocument = Record<string, unknown> & { id: number | string }
 type DemoSampleValue = Record<string, unknown>
+type DemoOwnershipState = {
+  component: string
+  manifestVersion: string
+  mediaId: number | string | null
+  pageId: number | string | null
+  token: string
+  version: 1
+}
 
 const demoSlug = ${quoteTsString(target.slug)}
-const demoMarker = ${quoteTsString(target.marker)}
-const demoMediaMarker = ${quoteTsString(demoMediaMarker)}
-const demoMediaAlt = 'Payload Components generated demo media [' + demoMediaMarker + ']'
+const demoMarkerPrefix = ${quoteTsString(target.marker)}
+const demoMediaMarkerPrefix = ${quoteTsString(demoMediaMarkerPrefix)}
+const ownershipToken = ${quoteTsString(ownershipState.token)}
+const demoMarker = demoMarkerPrefix + ':' + ownershipToken
+const demoMediaAlt =
+  'Payload Components generated demo media [' +
+  demoMediaMarkerPrefix +
+  ':' +
+  ownershipToken +
+  ']'
 const demoTitle = ${quoteTsString(target.title)}
 const demoBlockType = ${quoteTsString(firstBlockType)}
+const expectedComponent = ${quoteTsString(firstManifest.name)}
+const expectedManifestVersion = ${quoteTsString(firstManifest.version)}
+const ownershipStatePath = new URL(${quoteTsString(ownershipStateImportPath)}, import.meta.url)
 const rawLayout = ${JSON.stringify(rawLayout, null, 2)} satisfies DemoSampleValue[]
 const needsDemoMedia = ${JSON.stringify(needsDemoMedia)}
 const requirePagesDrafts = ${JSON.stringify(requirePagesDrafts)}
@@ -161,6 +196,85 @@ const uploadFieldByArrayName: Record<string, string> = {
 
 const isRecord = (value: unknown): value is DemoSampleValue =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
+
+const isDocumentID = (value: unknown): value is number | string =>
+  typeof value === 'number' || typeof value === 'string'
+
+const assertPrivateOwnershipStateFile = async () => {
+  const stateFilePath = fileURLToPath(ownershipStatePath)
+  let stats
+
+  try {
+    stats = await lstat(stateFilePath)
+  } catch (error) {
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+      throw new Error(
+        'The generated demo seed private ownership state is missing; no content was changed. ' +
+          'Run "payload-components seed ' +
+          expectedComponent +
+          '" to regenerate it.',
+      )
+    }
+
+    throw error
+  }
+
+  if (stats.isSymbolicLink() || !stats.isFile()) {
+    throw new Error(
+      'The generated demo seed private ownership state is not a regular file; no content was changed.',
+    )
+  }
+}
+
+const loadOwnershipState = async (): Promise<DemoOwnershipState> => {
+  await assertPrivateOwnershipStateFile()
+  let parsed: unknown
+
+  try {
+    parsed = JSON.parse(await readFile(ownershipStatePath, 'utf8'))
+  } catch {
+    throw new Error(
+      'The generated demo seed private ownership state is unreadable; no content was changed.',
+    )
+  }
+
+  if (
+    !isRecord(parsed) ||
+    parsed.version !== 1 ||
+    parsed.component !== expectedComponent ||
+    parsed.manifestVersion !== expectedManifestVersion ||
+    parsed.token !== ownershipToken ||
+    (parsed.pageId !== null && !isDocumentID(parsed.pageId)) ||
+    (parsed.mediaId !== null && !isDocumentID(parsed.mediaId))
+  ) {
+    throw new Error(
+      'The generated demo seed private ownership state does not match this generated script; no content was changed.',
+    )
+  }
+
+  return parsed as DemoOwnershipState
+}
+
+const saveOwnershipState = async (state: DemoOwnershipState) => {
+  await assertPrivateOwnershipStateFile()
+  const stateFilePath = fileURLToPath(ownershipStatePath)
+  const tempPath = path.join(
+    path.dirname(stateFilePath),
+    '.' + path.basename(stateFilePath) + '.' + process.pid + '.' + randomUUID() + '.tmp',
+  )
+
+  try {
+    await writeFile(tempPath, JSON.stringify(state, null, 2) + '\\n', {
+      encoding: 'utf8',
+      flag: 'wx',
+      mode: 0o600,
+    })
+    await rename(tempPath, stateFilePath)
+  } catch (error) {
+    await rm(tempPath, { force: true })
+    throw error
+  }
+}
 
 const isMissingUploadReference = (item: DemoSampleValue, fieldName: string) =>
   typeof item[fieldName] === 'undefined' || item[fieldName] === null || item[fieldName] === ''
@@ -213,6 +327,7 @@ const isOwnedDemoPage = (page: DemoDocument) => {
   )
 }
 
+let ownershipState = await loadOwnershipState()
 const payload = await getPayload({ config })
 const pagesCollection = payload.config.collections.find(
   (collection) => collection.slug === 'pages',
@@ -243,23 +358,28 @@ const existingPages = await payload.find({
   },
 })
 const existingPageDocuments = existingPages.docs as unknown as DemoDocument[]
-const conflictingPage = existingPageDocuments.find((page) => !isOwnedDemoPage(page))
+const existingPageID = ownershipState.pageId
 
-if (conflictingPage) {
+if (existingPageID === null && existingPageDocuments.length > 0) {
   throw new Error(
     'Refusing to change /' +
       demoSlug +
-      ': the existing Page does not match the exact generated demo ownership contract.',
+      ': the existing Page has no matching local ownership record.',
   )
 }
 
-if (existingPageDocuments.length > 1) {
+if (
+  existingPageID !== null &&
+  (existingPageDocuments.length !== 1 ||
+    existingPageDocuments[0].id !== existingPageID ||
+    !isOwnedDemoPage(existingPageDocuments[0]))
+) {
   throw new Error(
-    'Refusing to change /' + demoSlug + ': multiple Pages use the generated demo slug.',
+    'Refusing to change /' +
+      demoSlug +
+      ': the existing Page does not match its private ownership record.',
   )
 }
-
-const existingPage = existingPageDocuments[0]
 
 const prepareDemoMedia = async () => {
   const existingMediaResult = await payload.find({
@@ -274,10 +394,26 @@ const prepareDemoMedia = async () => {
     },
   })
   const existingMediaDocuments = existingMediaResult.docs as unknown as DemoDocument[]
-  const [primaryMedia, ...duplicateMediaDocuments] = existingMediaDocuments
+  const existingMediaID = ownershipState.mediaId
 
-  if (primaryMedia) {
-    return { document: primaryMedia, duplicateMediaDocuments }
+  if (existingMediaID === null && existingMediaDocuments.length > 0) {
+    throw new Error(
+      'Refusing to reuse generated-marker Media: it has no matching local ownership record.',
+    )
+  }
+
+  if (
+    existingMediaID !== null &&
+    (existingMediaDocuments.length !== 1 ||
+      existingMediaDocuments[0].id !== existingMediaID)
+  ) {
+    throw new Error(
+      'Refusing to reuse generated-marker Media: it does not match its private ownership record.',
+    )
+  }
+
+  if (existingMediaID !== null) {
+    return existingMediaDocuments[0]
   }
 
   const mediaTempDirectory = await mkdtemp(
@@ -301,7 +437,13 @@ const prepareDemoMedia = async () => {
       overrideAccess: true,
     })
 
-    return { document, duplicateMediaDocuments: [] as DemoDocument[] }
+    ownershipState = {
+      ...ownershipState,
+      mediaId: document.id,
+    }
+    await saveOwnershipState(ownershipState)
+
+    return document
   } finally {
     await rm(mediaTempDirectory, { force: true, recursive: true })
   }
@@ -309,7 +451,7 @@ const prepareDemoMedia = async () => {
 
 const preparedMedia = needsDemoMedia ? await prepareDemoMedia() : undefined
 const layout = preparedMedia
-  ? rawLayout.map((block) => addDemoUploadReferences(block, preparedMedia.document.id))
+  ? rawLayout.map((block) => addDemoUploadReferences(block, preparedMedia.id))
   : rawLayout
 const pageData = {
   title: demoTitle,
@@ -318,32 +460,30 @@ const pageData = {
 ${pageStatusField}
 }
 
-if (existingPage) {
+if (existingPageID !== null) {
   await payload.update({
     collection: 'pages',
     context: mutationContext,
     data: pageData,
     draft: ${draftOption},
-    id: existingPage.id,
+    id: ownershipState.pageId,
     overrideAccess: true,
+    overrideLock: false,
   })
 } else {
-  await payload.create({
+  const createdPage = await payload.create({
     collection: 'pages',
     context: mutationContext,
     data: pageData,
     draft: ${draftOption},
     overrideAccess: true,
   })
-}
 
-for (const duplicateMedia of preparedMedia?.duplicateMediaDocuments ?? []) {
-  await payload.delete({
-    collection: 'media',
-    context: mutationContext,
-    id: duplicateMedia.id,
-    overrideAccess: true,
-  })
+  ownershipState = {
+    ...ownershipState,
+    pageId: createdPage.id,
+  }
+  await saveOwnershipState(ownershipState)
 }
 
 console.log(${completionMessage})
@@ -353,7 +493,11 @@ console.log(${completionMessage})
 const isMissingPathError = (error: unknown): error is NodeJS.ErrnoException =>
   error instanceof Error && 'code' in error && error.code === 'ENOENT'
 
-const ensureSafeDirectory = async (targetRoot: string, directoryPath: string) => {
+const ensureSafeDirectory = async (
+  targetRoot: string,
+  directoryPath: string,
+  label: 'demo ownership state' | 'seed script',
+) => {
   const relativeDirectory = path.relative(targetRoot, directoryPath)
   let currentPath = targetRoot
 
@@ -373,11 +517,11 @@ const ensureSafeDirectory = async (targetRoot: string, directoryPath: string) =>
     }
 
     if (stats.isSymbolicLink()) {
-      throw new Error(`Refusing to use symbolic link in seed script path: ${currentPath}`)
+      throw new Error(`Refusing to use symbolic link in ${label} path: ${currentPath}`)
     }
 
     if (!stats.isDirectory()) {
-      throw new Error(`Seed script parent path is not a directory: ${currentPath}`)
+      throw new Error(`${label} parent path is not a directory: ${currentPath}`)
     }
   }
 }
@@ -437,14 +581,113 @@ const assertReplaceableSeedScript = async (scriptPath: string) => {
   }
 }
 
+const readOrCreateOwnershipState = async ({
+  manifest,
+  statePath,
+}: {
+  manifest: ComponentManifest
+  statePath: string
+}): Promise<SeedOwnershipState> => {
+  let fileHandle
+
+  try {
+    fileHandle = await open(
+      statePath,
+      fsConstants.O_RDONLY | fsConstants.O_NOFOLLOW | fsConstants.O_NONBLOCK,
+    )
+  } catch (error) {
+    if (isMissingPathError(error)) {
+      const state: SeedOwnershipState = {
+        component: manifest.name,
+        manifestVersion: manifest.version,
+        mediaId: null,
+        pageId: null,
+        token: randomUUID(),
+        version: 1,
+      }
+
+      await writeFile(statePath, `${JSON.stringify(state, null, 2)}\n`, {
+        encoding: 'utf8',
+        flag: 'wx',
+        mode: 0o600,
+      })
+
+      return state
+    }
+
+    if (
+      error instanceof Error &&
+      'code' in error &&
+      (error.code === 'ELOOP' || error.code === 'EMLINK')
+    ) {
+      throw new Error(`Refusing symbolic link at demo ownership state path: ${statePath}`)
+    }
+
+    if (error instanceof Error && 'code' in error && error.code === 'EISDIR') {
+      throw new Error(`Refusing non-file at demo ownership state path: ${statePath}`)
+    }
+
+    throw error
+  }
+
+  try {
+    const [openedStats, pathStats] = await Promise.all([fileHandle.stat(), lstat(statePath)])
+
+    if (
+      pathStats.isSymbolicLink() ||
+      !openedStats.isFile() ||
+      !pathStats.isFile() ||
+      openedStats.dev !== pathStats.dev ||
+      openedStats.ino !== pathStats.ino
+    ) {
+      throw new Error(`Refusing unsafe demo ownership state file: ${statePath}`)
+    }
+
+    let state: SeedOwnershipState
+
+    try {
+      state = JSON.parse(await fileHandle.readFile('utf8')) as SeedOwnershipState
+    } catch {
+      throw new Error(`Refusing unreadable demo ownership state file: ${statePath}`)
+    }
+
+    if (
+      state.version !== 1 ||
+      state.component !== manifest.name ||
+      state.manifestVersion !== manifest.version ||
+      typeof state.token !== 'string' ||
+      !/^[0-9a-f-]{36}$/.test(state.token) ||
+      (state.pageId !== null &&
+        typeof state.pageId !== 'number' &&
+        typeof state.pageId !== 'string') ||
+      (state.mediaId !== null &&
+        typeof state.mediaId !== 'number' &&
+        typeof state.mediaId !== 'string')
+    ) {
+      throw new Error(
+        `Refusing mismatched demo ownership state for "${manifest.name}" at ${statePath}. Remove the demo content and state explicitly before regenerating.`,
+      )
+    }
+
+    return state
+  } finally {
+    await fileHandle.close()
+  }
+}
+
 export const writeSeedScript = async (
   targetPath: string,
   manifests: ComponentManifest[],
-  target: SeedTarget = SMOKE_SEED_TARGET,
+  target: SeedTarget,
 ): Promise<string> => {
+  if (manifests.length === 0) {
+    throw new Error('At least one component manifest is required to write a seed script.')
+  }
+
   const targetRoot = await realpath(path.resolve(targetPath))
   const scriptPath = path.resolve(targetRoot, target.scriptRelPath)
   const configPath = path.resolve(targetRoot, target.configFileRelPath)
+  const ownershipStatePath = path.resolve(targetRoot, target.ownershipStateRelPath)
 
   if (scriptPath === targetRoot || !isPathInside(targetRoot, scriptPath)) {
     throw new Error(
@@ -456,14 +699,31 @@ export const writeSeedScript = async (
     throw new Error('Payload config path must stay inside the target project.')
   }
 
-  const source = buildSeedScript({ manifests, target })
+  if (
+    ownershipStatePath === targetRoot ||
+    !isPathInside(targetRoot, ownershipStatePath)
+  ) {
+    throw new Error('Demo ownership state path must stay inside the target project.')
+  }
+
+  if (ownershipStatePath === scriptPath) {
+    throw new Error('Demo ownership state path must be separate from the seed script path.')
+  }
+
   const scriptDirectory = path.dirname(scriptPath)
+  const ownershipStateDirectory = path.dirname(ownershipStatePath)
 
   // Guard against accidental escapes and symlinks already present in the
   // caller-owned checkout. This non-privileged developer CLI assumes that a
   // hostile same-user process is not concurrently replacing project paths.
-  await ensureSafeDirectory(targetRoot, scriptDirectory)
+  await ensureSafeDirectory(targetRoot, scriptDirectory, 'seed script')
   await assertReplaceableSeedScript(scriptPath)
+  await ensureSafeDirectory(targetRoot, ownershipStateDirectory, 'demo ownership state')
+  const ownershipState = await readOrCreateOwnershipState({
+    manifest: manifests[0],
+    statePath: ownershipStatePath,
+  })
+  const source = buildSeedScript({ manifests, ownershipState, target })
 
   const tempPath = path.join(
     scriptDirectory,

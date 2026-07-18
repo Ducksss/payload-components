@@ -23,8 +23,9 @@ Workspace reality: `payload-components add` installs components, `payload-compon
 
 ## Demo seed contract
 
-`payload-components seed <component>` rejects recorded partial installs and
-verifies all manifest-owned files and both Payload wiring fragments, then writes
+`payload-components seed <component>` requires a current installed-state record
+and verifies compatible dependencies, all manifest-owned and
+registry-dependency files, and both Payload wiring fragments. It then writes
 `payload-components/seed-<component>.ts`. `add <component> --demo` performs the
 same generation only after the normal install has recorded success. Generation
 does not open a database or add a runtime dependency.
@@ -33,13 +34,18 @@ The CLI derives the Payload config import from the detected target. It writes
 through an atomic rename, marks generated scripts with a versioned header, and
 refuses unowned files, pre-existing symlinks, non-files, and paths outside the
 consumer repo.
+It also creates a private high-entropy ownership record under
+`.payload-components/demo-state/`, separate from the database-visible demo
+fields.
 The operator explicitly runs the script with the project's Payload CLI.
 
 The generated script requires Pages drafts and never publishes implicitly. It
-owns a Page only when the slug, title, and first block marker all match. Reruns
-update that Page in place. Upload placeholders use exact ownership markers and a
-unique OS temporary directory; owned media is reused, and duplicates are deleted
-only after the Page write succeeds. All Local API failures propagate.
+creates a Page only when the slug is free, records the returned Page and Media
+IDs, and reruns only against those exact IDs after checking a private tokenized
+marker. Updates use `overrideLock: false`. Upload placeholders use a unique OS
+temporary directory; a failed Page write preserves the recorded Media ID for a
+safe retry. Generated scripts never delete Media, and all Local API failures
+propagate.
 
 ## Public Registry Contract
 
