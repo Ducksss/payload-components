@@ -114,7 +114,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       label: 'Explicit block config',
       path: 'payload-components/source/blocks/HeroBasic/config.ts',
       anchor: 'export const HeroBasic',
-      take: 30,
+      take: 11,
     },
     secondary: {
       kind: 'sequence',
@@ -139,7 +139,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       label: 'Renderer map insertion',
       path: 'tools/payload-components/project.ts',
       anchor: 'const propertyLine',
-      take: 14,
+      take: 11,
     },
     secondary: {
       kind: 'sequence',
@@ -189,7 +189,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       label: 'Doctor command',
       path: 'tools/payload-components/commands/doctor.ts',
       anchor: 'export const doctorCommand',
-      take: 18,
+      take: 11,
     },
     secondary: {
       kind: 'sequence',
@@ -260,7 +260,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       label: 'Payload fragments',
       path: 'payload-components/manifests/hero-basic.json',
       anchor: '"payloadFragments"',
-      take: 18,
+      take: 12,
     },
     secondary: {
       kind: 'sequence',
@@ -285,7 +285,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       label: 'Scoped text patcher',
       path: 'tools/payload-components/project.ts',
       anchor: 'applyRenderBlocksFragment',
-      take: 24,
+      take: 11,
     },
     secondary: {
       kind: 'diff',
@@ -317,8 +317,8 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       kind: 'source',
       label: 'Installed state recorder',
       path: 'tools/payload-components/state.ts',
-      anchor: 'recordInstalledState',
-      take: 22,
+      anchor: 'state.components[manifest.name] = upsertEntry',
+      take: 11,
     },
     secondary: {
       kind: 'sequence',
@@ -343,7 +343,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       label: 'Doctor command',
       path: 'tools/payload-components/commands/doctor.ts',
       anchor: 'export const doctorCommand',
-      take: 22,
+      take: 11,
     },
     secondary: {
       kind: 'sequence',
@@ -370,14 +370,24 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     prompt: 'Request the structure your editors actually need.',
     primary: {
       kind: 'route',
-      label: 'Feature catalog results',
+      label: 'Feature family catalog results',
       route: '/components?q=feature',
+      capture: {
+        columns: 2,
+        position: 'bottom',
+        selectors: [
+          '#feature-bento',
+          '#feature-split',
+          '#feature-steps',
+          '#feature-grid-basic',
+        ],
+      },
     },
     secondary: {
       kind: 'sequence',
       label: 'Explicit feature family',
       items: [
-        'overloaded prop matrix',
+        'prop explosion',
         'feature-bento',
         'feature-split',
         'feature-steps',
@@ -402,7 +412,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       label: 'Shared feature fields',
       path: 'payload-components/source/blocks/shared/featureFields.ts',
       anchor: 'export const featureFields',
-      take: 16,
+      take: 14,
     },
     secondary: {
       kind: 'command',
@@ -494,13 +504,15 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     thesis: 'Credibility needs context, not decoration.',
     prompt: 'Name the claim each proof element supports.',
     primary: {
-      kind: 'route',
-      label: 'Testimonials Grid preview',
-      route: '/components/preview/testimonials-grid',
+      kind: 'source',
+      label: 'Testimonials array contract',
+      path: 'payload-components/source/blocks/TestimonialsGrid/config.ts',
+      anchor: "name: 'testimonials'",
+      take: 10,
     },
     secondary: {
       kind: 'sequence',
-      label: 'Proof composition',
+      label: 'Registry structure choices',
       items: ['logo-cloud-grid', 'testimonials-grid', 'testimonials-rating', 'testimonials-quote'],
     },
     figures: [
@@ -518,8 +530,13 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     prompt: 'Share the smallest sequence that persuaded a real reader.',
     primary: {
       kind: 'route',
-      label: 'Real hero, logo-cloud, feature, and pricing preview montage',
+      label: 'Homepage component inventory',
       route: '/components',
+      capture: {
+        columns: 2,
+        position: 'bottom',
+        selectors: ['#hero-basic', '#logo-cloud-grid', '#feature-bento', '#pricing-cards'],
+      },
     },
     secondary: {
       kind: 'sequence',
@@ -574,8 +591,8 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       kind: 'source',
       label: 'FAQ accordion component',
       path: 'payload-components/source/blocks/FaqAccordion/Component.tsx',
-      anchor: 'export const FaqAccordionBlock',
-      take: 28,
+      anchor: '<Accordion type="single"',
+      take: 10,
     },
     secondary: {
       kind: 'sequence',
@@ -599,8 +616,8 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       kind: 'source',
       label: 'Safe embed URL policy',
       path: 'payload-components/source/blocks/shared/safeUrls.ts',
-      anchor: 'getSafeEmbedUrl',
-      take: 24,
+      anchor: "if (parsed.protocol !== 'https:'",
+      take: 11,
     },
     secondary: {
       kind: 'sequence',
@@ -625,7 +642,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       label: 'Reduced-motion branch',
       path: 'payload-components/source/components/ui/infinite-slider.tsx',
       anchor: 'useReducedMotion',
-      take: 18,
+      take: 14,
     },
     secondary: {
       kind: 'sequence',
@@ -650,7 +667,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       label: 'Hero render props',
       path: 'payload-components/source/blocks/HeroBasic/Component.tsx',
       anchor: 'type Props',
-      take: 14,
+      take: 12,
     },
     secondary: {
       kind: 'sequence',
@@ -671,16 +688,16 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     thesis: 'Two runtimes share one visual contract.',
     prompt: 'When source changes, update the twin in the same contribution.',
     primary: {
-      kind: 'route',
-      label: 'Hero Basic demo twin',
-      route: '/components/preview/hero-basic',
-    },
-    secondary: {
       kind: 'source',
       label: 'Class-name fidelity assertion',
       path: 'tests/int/demo-twins.int.spec.ts',
-      anchor: "it('mirrors every component class string'",
-      take: 22,
+      anchor: 'const missing = literals.flatMap',
+      take: 8,
+    },
+    secondary: {
+      kind: 'route',
+      label: 'Hero Basic demo twin',
+      route: '/components/preview/hero-basic',
     },
     figures: [
       {
@@ -704,7 +721,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       label: 'Component visual snapshots',
       path: 'tests/e2e/components-visual.e2e.spec.ts',
       anchor: 'Component visual snapshots',
-      take: 18,
+      take: 14,
     },
     secondary: {
       kind: 'sequence',
@@ -728,8 +745,8 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       kind: 'source',
       label: 'Add-a-component workflow',
       path: 'payload-components/templates/component-template/README.md',
-      anchor: '## Add-a-component workflow',
-      take: 18,
+      anchor: 'Every component ships as one bundle',
+      take: 5,
     },
     secondary: {
       kind: 'sequence',
@@ -754,7 +771,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       label: 'Registry reproducibility assertion',
       path: 'tools/payload-components/check-public-registry.ts',
       anchor: 'assertGeneratedRegistryMatchesSource',
-      take: 22,
+      take: 11,
     },
     secondary: {
       kind: 'sequence',

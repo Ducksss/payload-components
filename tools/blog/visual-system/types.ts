@@ -8,10 +8,16 @@ export type BlogVisualSeries =
 
 export type FigureMode = 'see' | 'trace' | 'inspect' | 'join'
 
+export type RouteCapture = {
+  columns: number
+  position: 'bottom' | 'center' | 'top'
+  selectors: readonly string[]
+}
+
 export type Artifact =
   | { kind: 'source'; label: string; path: string; anchor: string; take: number }
   | { kind: 'registry-item'; label: string; name: string }
-  | { kind: 'route'; label: string; route: string }
+  | { kind: 'route'; label: string; route: string; capture?: RouteCapture }
   | { kind: 'sequence'; label: string; items: readonly string[] }
   | { kind: 'command'; label: string; command: string; registryItems?: readonly string[] }
   | { kind: 'diff'; label: string; path: string; anchor: string; before: readonly string[]; after: readonly string[] }

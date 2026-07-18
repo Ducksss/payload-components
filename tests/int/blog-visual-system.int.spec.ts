@@ -2,6 +2,7 @@ import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 
 import { chromium } from '@playwright/test'
+import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 
 import { parseCoverRenderArgs, waitForDocumentAssets } from '../../tools/blog/render-covers'
@@ -336,6 +337,35 @@ describe('Community Field Journal visual catalog', () => {
     }
   })
 
+  it('uses structural source evidence instead of fictional testimonial claims', async () => {
+    const socialProof = blogVisualCatalog.find(
+      (entry) => entry.slug === 'social-proof-sections',
+    )
+
+    expect(socialProof?.primary).toMatchObject({
+      anchor: "name: 'testimonials'",
+      kind: 'source',
+      label: 'Testimonials array contract',
+      path: 'payload-components/source/blocks/TestimonialsGrid/config.ts',
+      take: 10,
+    })
+    expect(socialProof?.secondary).toMatchObject({
+      kind: 'sequence',
+      label: 'Registry structure choices',
+      items: [
+        'logo-cloud-grid',
+        'testimonials-grid',
+        'testimonials-rating',
+        'testimonials-quote',
+      ],
+    })
+
+    const { html } = await renderCatalogCover('social-proof-sections')
+    expect(html).not.toMatch(
+      /\b(?:Acme|What our customers say|Loved by teams|Henry Lee|Isabella Garcia|Liam Brown)\b/i,
+    )
+  })
+
   it('varies the twelve-column composition without weakening evidence hierarchy', async () => {
     const hello = await renderCatalogCover('hello')
     const anatomy = await renderCatalogCover('anatomy-of-an-install')
@@ -429,27 +459,386 @@ describe('Community Field Journal visual catalog', () => {
     })
   })
 
-  it('keeps the community roadmap source excerpt fully inside its artifact card', async () => {
-    const { html } = await renderCatalogCover('community-driven-roadmap')
+  it('keeps every sequence cell readable without fracturing words', async () => {
+    const browser = await chromium.launch({ headless: true })
+    const violations: string[] = []
+
+    try {
+      const page = await browser.newPage({ viewport: { height: 630, width: 1200 } })
+
+      for (const entry of blogVisualCatalog) {
+        const { artifacts, html } = await renderCatalogCover(entry.slug)
+        await page.setContent(html)
+        await page.evaluate(async () => await document.fonts.ready)
+
+        for (const role of ['primary', 'secondary'] as const) {
+          const artifact = artifacts[role]
+          if (artifact.kind !== 'sequence') continue
+
+          const region = page.locator(
+            `[data-cover-part="${role}"][data-artifact-kind="sequence"]`,
+          )
+          const matches = await region.count()
+
+          if (matches !== 1) {
+            violations.push(`${entry.slug}:${role} matched ${matches} sequence cards`)
+            continue
+          }
+
+          const layout = await region.evaluate((element) => {
+            const flow = element.querySelector<HTMLElement>('.sequence-flow')
+            const cells = [...element.querySelectorAll<HTMLElement>('.sequence-item')]
+
+            if (!flow) {
+              return {
+                cellOverflow: ['missing'],
+                clippedCells: ['missing'],
+                fontSize: 0,
+                fracturedAtoms: ['missing'],
+                renderedItems: [] as string[],
+                scroll: 'missing',
+              }
+            }
+
+            const flowRect = flow.getBoundingClientRect()
+            const tolerance = 0.5
+            const clippedCells: Array<number | 'missing'> = []
+            const cellOverflow: Array<number | 'missing'> = []
+            const fracturedAtoms: string[] = []
+            const fontSizes: number[] = []
+            const renderedItems: string[] = []
+
+            cells.forEach((cell, cellIndex) => {
+              const cellRect = cell.getBoundingClientRect()
+              const strong = cell.querySelector<HTMLElement>('strong')
+              const textNode = strong?.firstChild
+
+              if (
+                cellRect.left < flowRect.left - tolerance ||
+                cellRect.right > flowRect.right + tolerance ||
+                cellRect.top < flowRect.top - tolerance ||
+                cellRect.bottom > flowRect.bottom + tolerance
+              ) {
+                clippedCells.push(cellIndex + 1)
+              }
+              if (
+                cell.scrollWidth > cell.clientWidth ||
+                cell.scrollHeight > cell.clientHeight
+              ) {
+                cellOverflow.push(cellIndex + 1)
+              }
+              if (!strong || !textNode || textNode.nodeType !== Node.TEXT_NODE) {
+                fracturedAtoms.push(`${cellIndex + 1}:missing`)
+                return
+              }
+
+              renderedItems.push(strong.textContent ?? '')
+              fontSizes.push(Number.parseFloat(getComputedStyle(strong).fontSize))
+
+              for (const atom of (strong.textContent ?? '').matchAll(/[\p{L}\p{N}]+/gu)) {
+                const tops = new Set<number>()
+                let offset = atom.index
+
+                for (const character of atom[0]) {
+                  const range = document.createRange()
+                  const nextOffset = offset + character.length
+                  range.setStart(textNode, offset)
+                  range.setEnd(textNode, nextOffset)
+                  const rect = range.getBoundingClientRect()
+                  tops.add(Math.round(rect.top * 10) / 10)
+                  offset = nextOffset
+                }
+
+                if (tops.size > 1) {
+                  fracturedAtoms.push(`${cellIndex + 1}:${atom[0]}`)
+                }
+              }
+            })
+
+            return {
+              cellOverflow,
+              clippedCells,
+              fontSize: fontSizes.length > 0 ? Math.min(...fontSizes) : 0,
+              fracturedAtoms,
+              renderedItems,
+              scroll: `${flow.scrollWidth - flow.clientWidth}x${
+                flow.scrollHeight - flow.clientHeight
+              }`,
+            }
+          })
+          const context = `${entry.slug}:${role}`
+
+          if (layout.scroll !== '0x0') {
+            violations.push(`${context} flow scroll ${layout.scroll}`)
+          }
+          if (layout.clippedCells.length > 0) {
+            violations.push(
+              `${context} clipped cells ${layout.clippedCells.join(',')}`,
+            )
+          }
+          if (layout.cellOverflow.length > 0) {
+            violations.push(
+              `${context} overflowing cells ${layout.cellOverflow.join(',')}`,
+            )
+          }
+          if (layout.fontSize < 12) {
+            violations.push(`${context} font ${layout.fontSize}px`)
+          }
+          if (layout.fracturedAtoms.length > 0) {
+            violations.push(
+              `${context} fractured atoms ${layout.fracturedAtoms.join(',')}`,
+            )
+          }
+          if (JSON.stringify(layout.renderedItems) !== JSON.stringify(artifact.items)) {
+            violations.push(`${context} rendered text differs from sequence items`)
+          }
+        }
+      }
+    } finally {
+      await browser.close()
+    }
+
+    expect(violations).toEqual([])
+  })
+
+  it('targets article-specific catalog evidence instead of the generic route intro', () => {
+    const variants = blogVisualCatalog.find(
+      (entry) => entry.slug === 'component-variants-without-prop-explosion',
+    )
+    const homepage = blogVisualCatalog.find((entry) => entry.slug === 'build-saas-homepage')
+
+    expect(variants?.primary).toMatchObject({
+      capture: {
+        columns: 2,
+        position: 'bottom',
+        selectors: [
+          '#feature-bento',
+          '#feature-split',
+          '#feature-steps',
+          '#feature-grid-basic',
+        ],
+      },
+      kind: 'route',
+      label: 'Feature family catalog results',
+      route: '/components?q=feature',
+    })
+    expect(homepage?.primary).toMatchObject({
+      capture: {
+        columns: 2,
+        position: 'bottom',
+        selectors: ['#hero-basic', '#logo-cloud-grid', '#feature-bento', '#pricing-cards'],
+      },
+      kind: 'route',
+      label: 'Homepage component inventory',
+      route: '/components',
+    })
+  })
+
+  it('scrolls to and crops an explicitly selected route artifact', async () => {
+    const renderModule = await import('../../tools/blog/render-covers')
+    const captureRouteRegion = Reflect.get(renderModule, 'captureRouteRegion')
+
+    expect(captureRouteRegion).toBeTypeOf('function')
+    if (typeof captureRouteRegion !== 'function') return
+
+    const browser = await chromium.launch({ headless: true })
+
+    try {
+      const page = await browser.newPage({ viewport: { height: 600, width: 960 } })
+      await page.setContent(`
+        <div style="height: 900px; background: rgb(180, 20, 20)">Generic route intro</div>
+        <article
+          id="feature-bento"
+          style="height: 240px; width: 480px; background: rgb(5, 150, 105)"
+        >
+          Feature Bento catalog result
+        </article>
+        <article
+          id="pricing-cards"
+          style="height: 240px; width: 480px; background: rgb(5, 150, 105)"
+        >
+          Pricing Cards catalog result
+        </article>
+      `)
+
+      const png = (await captureRouteRegion(page, {
+        capture: {
+          columns: 2,
+          position: 'bottom',
+          selectors: ['#feature-bento', '#pricing-cards'],
+        },
+        evidence: 'Local route fixture',
+        kind: 'route',
+        label: 'Feature Bento catalog result',
+        provenance: '/components?q=feature',
+        route: '/components?q=feature',
+      })) as Buffer
+      const [{ height, width }, { channels }] = await Promise.all([
+        sharp(png).metadata(),
+        sharp(png).stats(),
+      ])
+
+      expect({ height, width }).toEqual({ height: 264, width: 960 })
+      expect(channels[1].mean).toBeGreaterThan(channels[0].mean * 4)
+      expect(channels[1].mean).toBeGreaterThan(channels[2].mean * 1.3)
+    } finally {
+      await browser.close()
+    }
+  })
+
+  it('rejects unreadable source cards before production screenshots', async () => {
+    const renderModule = await import('../../tools/blog/render-covers')
+    const assertSourceCardsFit = Reflect.get(renderModule, 'assertSourceCardsFit')
+
+    expect(assertSourceCardsFit).toBeTypeOf('function')
+    if (typeof assertSourceCardsFit !== 'function') return
+
     const browser = await chromium.launch({ headless: true })
 
     try {
       const page = await browser.newPage({ viewport: { height: 630, width: 1200 } })
-      await page.setContent(html)
-      await page.evaluate(async () => await document.fonts.ready)
+      await page.setContent(`
+        <section data-cover-part="primary" data-artifact-kind="source">
+          <div class="artifact-body" style="height: 20px; overflow: hidden">
+            <div class="code-sheet">
+              <span class="code-line"><code style="font-size: 8px">first</code></span>
+              <span class="code-line"><code style="font-size: 8px">second</code></span>
+            </div>
+          </div>
+        </section>
+      `)
 
-      const bounds = await page.locator('.artifact--primary .code-sheet').evaluate((element) => ({
-        clientHeight: element.clientHeight,
-        clientWidth: element.clientWidth,
-        scrollHeight: element.scrollHeight,
-        scrollWidth: element.scrollWidth,
-      }))
-
-      expect(bounds.scrollHeight).toBeLessThanOrEqual(bounds.clientHeight)
-      expect(bounds.scrollWidth).toBeLessThanOrEqual(bounds.clientWidth)
+      await expect(
+        assertSourceCardsFit(page, 'source-preflight-fixture', {
+          primary: {
+            anchor: 'first',
+            evidence: 'first\nsecond',
+            kind: 'source',
+            label: 'Unreadable source',
+            path: 'fixture.ts',
+            provenance: 'fixture.ts:1-2',
+            take: 2,
+          },
+          secondary: {
+            evidence: 'done',
+            items: ['done'],
+            kind: 'sequence',
+            label: 'Fixture sequence',
+            provenance: 'tools/blog/visual-system/catalog.ts',
+          },
+        }),
+      ).rejects.toThrow(/source-preflight-fixture:primary.*font 8px/s)
     } finally {
       await browser.close()
     }
+  })
+
+  it('keeps every source line readable and fully inside its artifact card', async () => {
+    const browser = await chromium.launch({ headless: true })
+    const violations: string[] = []
+
+    try {
+      const page = await browser.newPage({ viewport: { height: 630, width: 1200 } })
+
+      for (const entry of blogVisualCatalog) {
+        const { artifacts, html } = await renderCatalogCover(entry.slug)
+        await page.setContent(html)
+        await page.evaluate(async () => await document.fonts.ready)
+
+        for (const role of ['primary', 'secondary'] as const) {
+          const artifact = artifacts[role]
+          if (artifact.kind !== 'source') continue
+
+          const region = page.locator(
+            `[data-cover-part="${role}"][data-artifact-kind="source"]`,
+          )
+          const matches = await region.count()
+
+          if (matches !== 1) {
+            violations.push(`${entry.slug}:${role} matched ${matches} source cards`)
+            continue
+          }
+
+          const layout = await region.evaluate((element) => {
+            const body = element.querySelector<HTMLElement>('.artifact-body')
+            const sheet = element.querySelector<HTMLElement>('.code-sheet')
+            const lines = [...element.querySelectorAll<HTMLElement>('.code-line')]
+
+            if (!body || !sheet) {
+              return {
+                bodyScroll: 'missing',
+                clipped: ['missing'],
+                fontSize: 0,
+                renderedLines: [] as string[],
+                sheetScroll: 'missing',
+              }
+            }
+
+            const bodyRect = body.getBoundingClientRect()
+            const sheetRect = sheet.getBoundingClientRect()
+            const tolerance = 0.5
+            const clipped = lines.flatMap((line, index) => {
+              const rect = line.getBoundingClientRect()
+              const insideBody =
+                rect.left >= bodyRect.left - tolerance &&
+                rect.right <= bodyRect.right + tolerance &&
+                rect.top >= bodyRect.top - tolerance &&
+                rect.bottom <= bodyRect.bottom + tolerance
+              const insideSheet =
+                rect.left >= sheetRect.left - tolerance &&
+                rect.right <= sheetRect.right + tolerance &&
+                rect.top >= sheetRect.top - tolerance &&
+                rect.bottom <= sheetRect.bottom + tolerance
+
+              return insideBody && insideSheet ? [] : [index + 1]
+            })
+            const fontSizes = lines.map((line) => {
+              const code = line.querySelector('code')
+              return code ? Number.parseFloat(getComputedStyle(code).fontSize) : 0
+            })
+
+            return {
+              bodyScroll: `${body.scrollWidth - body.clientWidth}x${
+                body.scrollHeight - body.clientHeight
+              }`,
+              clipped,
+              fontSize: Math.min(...fontSizes),
+              renderedLines: lines.map(
+                (line) => line.querySelector('code')?.textContent ?? '',
+              ),
+              sheetScroll: `${sheet.scrollWidth - sheet.clientWidth}x${
+                sheet.scrollHeight - sheet.clientHeight
+              }`,
+            }
+          })
+          const expectedLines = artifact.evidence
+            .split(/\r?\n/)
+            .map((line) => line || ' ')
+
+          if (layout.bodyScroll !== '0x0') {
+            violations.push(`${entry.slug}:${role} body scroll ${layout.bodyScroll}`)
+          }
+          if (layout.sheetScroll !== '0x0') {
+            violations.push(`${entry.slug}:${role} sheet scroll ${layout.sheetScroll}`)
+          }
+          if (layout.clipped.length > 0) {
+            violations.push(
+              `${entry.slug}:${role} clipped lines ${layout.clipped.join(',')}`,
+            )
+          }
+          if (layout.fontSize < 12) {
+            violations.push(`${entry.slug}:${role} font ${layout.fontSize}px`)
+          }
+          if (JSON.stringify(layout.renderedLines) !== JSON.stringify(expectedLines)) {
+            violations.push(`${entry.slug}:${role} rendered text differs from evidence`)
+          }
+        }
+      }
+    } finally {
+      await browser.close()
+    }
+
+    expect(violations).toEqual([])
   })
 
   it('selects deterministic cover batches and a local capture origin', () => {

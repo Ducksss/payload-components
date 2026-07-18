@@ -33,7 +33,7 @@ const seriesLabel = (series: BlogVisualEntry['series']) =>
   series.replaceAll('-', ' ').toUpperCase()
 
 const evidenceDensity = (lineCount: number) => {
-  if (lineCount <= 8) return 'code-sheet--roomy'
+  if (lineCount <= 6) return 'code-sheet--roomy'
   if (lineCount <= 14) return 'code-sheet--regular'
   if (lineCount <= 20) return 'code-sheet--compact'
   return 'code-sheet--dense'
@@ -431,6 +431,8 @@ const coverCss = `
   .code-line code {
     color: var(--journal-graphite);
     font-family: 'Journal Mono', monospace;
+    font-size: inherit;
+    line-height: inherit;
     min-width: 0;
     overflow-wrap: anywhere;
     white-space: pre-wrap;
@@ -444,14 +446,10 @@ const coverCss = `
     user-select: none;
   }
 
-  .code-sheet--roomy .code-line { min-height: 25px; }
-  .code-sheet--roomy code { font-size: 16px; line-height: 1.36; }
-  .code-sheet--regular .code-line { min-height: 18px; }
-  .code-sheet--regular code { font-size: 12px; line-height: 1.32; }
-  .code-sheet--compact .code-line { min-height: 14px; }
-  .code-sheet--compact code { font-size: 10.5px; line-height: 1.23; }
-  .code-sheet--dense .code-line { min-height: 10px; }
-  .code-sheet--dense code { font-size: 8.5px; line-height: 1.12; }
+  .code-sheet--roomy .code-line { font-size: 16px; line-height: 1.36; min-height: 25px; }
+  .code-sheet--regular .code-line { font-size: 12px; line-height: 1.32; min-height: 18px; }
+  .code-sheet--compact .code-line { font-size: 10.5px; line-height: 1.23; min-height: 14px; }
+  .code-sheet--dense .code-line { font-size: 8.5px; line-height: 1.12; min-height: 10px; }
 
   .sequence-flow {
     align-items: stretch;
@@ -465,7 +463,7 @@ const coverCss = `
     background: var(--journal-white);
     border-bottom: 3px solid var(--journal-emerald);
     display: flex;
-    flex: 1 1 0;
+    flex: 1 1 min-content;
     flex-direction: column;
     justify-content: center;
     min-width: 0;
@@ -481,9 +479,11 @@ const coverCss = `
 
   .sequence-item strong {
     font-size: 12px;
+    hyphens: none;
     line-height: 1.1;
     margin-top: 7px;
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
+    word-break: normal;
   }
 
   .sequence-flow i {
@@ -494,7 +494,8 @@ const coverCss = `
     font-size: 14px;
     font-style: normal;
     justify-content: center;
-    width: 20px;
+    flex: 0 0 10px;
+    width: 10px;
   }
 
   .artifact[data-artifact-kind='command'] .artifact-body {

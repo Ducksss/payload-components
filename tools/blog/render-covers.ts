@@ -22,6 +22,8 @@ const defaultBaseUrl = 'http://127.0.0.1:3100'
 const coverWidth = 1200
 const coverHeight = 630
 const maxCoverBytes = 250 * 1024
+const routePreviewHeight = 264
+const routePreviewWidth = 960
 
 const knownSeries: ReadonlySet<string> = new Set(
   blogVisualCatalog.map((entry) => entry.series),
@@ -215,6 +217,73 @@ const keepRequestsLocal = async (page: Page, baseUrl: string) => {
   })
 }
 
+export const captureRouteRegion = async (
+  page: Page,
+  artifact: Extract<ResolvedArtifact, { kind: 'route' }>,
+) => {
+  if (!artifact.capture) {
+    return await page.screenshot({ animations: 'disabled', type: 'png' })
+  }
+
+  const { columns, position, selectors } = artifact.capture
+
+  if (
+    !Number.isInteger(columns) ||
+    columns < 1 ||
+    selectors.length < 1 ||
+    selectors.some((selector) => selector.trim() === '')
+  ) {
+    throw new Error(
+      `Route capture for ${artifact.route} requires nonempty selectors and at least one column.`,
+    )
+  }
+
+  const effectiveColumns = Math.min(columns, selectors.length)
+  const rows = Math.ceil(selectors.length / effectiveColumns)
+  const tiles: sharp.OverlayOptions[] = []
+
+  for (const [index, selector] of selectors.entries()) {
+    const region = page.locator(selector)
+    const matches = await region.count()
+
+    if (matches !== 1) {
+      throw new Error(
+        `Route capture selector "${selector}" matched ${matches} elements on ${artifact.route}; expected exactly one.`,
+      )
+    }
+
+    await region.scrollIntoViewIfNeeded()
+    await waitForDocumentAssets(page)
+
+    const column = index % effectiveColumns
+    const row = Math.floor(index / effectiveColumns)
+    const left = Math.floor((column * routePreviewWidth) / effectiveColumns)
+    const top = Math.floor((row * routePreviewHeight) / rows)
+    const width =
+      Math.floor(((column + 1) * routePreviewWidth) / effectiveColumns) - left
+    const height = Math.floor(((row + 1) * routePreviewHeight) / rows) - top
+    const screenshot = await region.screenshot({ animations: 'disabled', type: 'png' })
+    const input = await sharp(screenshot)
+      .resize({ fit: 'cover', height, position, width })
+      .png()
+      .toBuffer()
+
+    tiles.push({ input, left, top })
+  }
+
+  return await sharp({
+    create: {
+      background: '#ffffff',
+      channels: 4,
+      height: routePreviewHeight,
+      width: routePreviewWidth,
+    },
+  })
+    .composite(tiles)
+    .png()
+    .toBuffer()
+}
+
 const captureRoutePreview = async (
   browser: Browser,
   baseUrl: string,
@@ -232,7 +301,7 @@ const captureRoutePreview = async (
       waitUntil: 'networkidle',
     })
     await waitForDocumentAssets(page)
-    const png = await page.screenshot({ animations: 'disabled', type: 'png' })
+    const png = await captureRouteRegion(page, artifact)
     return `data:image/png;base64,${png.toString('base64')}`
   } finally {
     await page.close()
@@ -247,13 +316,110 @@ const addRoutePreview = async (
 ): Promise<CoverArtifact> => {
   if (artifact.kind !== 'route') return artifact
 
-  let previewDataUrl = routeCache.get(artifact.route)
+  const cacheKey = JSON.stringify({ capture: artifact.capture, route: artifact.route })
+  let previewDataUrl = routeCache.get(cacheKey)
   if (!previewDataUrl) {
     previewDataUrl = await captureRoutePreview(browser, baseUrl, artifact)
-    routeCache.set(artifact.route, previewDataUrl)
+    routeCache.set(cacheKey, previewDataUrl)
   }
 
   return { ...artifact, previewDataUrl }
+}
+
+export const assertSourceCardsFit = async (
+  page: Page,
+  slug: string,
+  artifacts: CoverArtifacts,
+) => {
+  const violations: string[] = []
+
+  for (const role of ['primary', 'secondary'] as const) {
+    const artifact = artifacts[role]
+    if (artifact.kind !== 'source') continue
+
+    const region = page.locator(
+      `[data-cover-part="${role}"][data-artifact-kind="source"]`,
+    )
+    const matches = await region.count()
+
+    if (matches !== 1) {
+      violations.push(`${slug}:${role} matched ${matches} source cards`)
+      continue
+    }
+
+    const layout = await region.evaluate((element) => {
+      const body = element.querySelector<HTMLElement>('.artifact-body')
+      const sheet = element.querySelector<HTMLElement>('.code-sheet')
+      const lines = [...element.querySelectorAll<HTMLElement>('.code-line')]
+
+      if (!body || !sheet) {
+        return {
+          bodyScroll: 'missing',
+          clipped: ['missing'] as Array<number | 'missing'>,
+          fontSize: 0,
+          renderedLines: [] as string[],
+          sheetScroll: 'missing',
+        }
+      }
+
+      const bodyRect = body.getBoundingClientRect()
+      const sheetRect = sheet.getBoundingClientRect()
+      const tolerance = 0.5
+      const clipped = lines.flatMap((line, index) => {
+        const rect = line.getBoundingClientRect()
+        const insideBody =
+          rect.left >= bodyRect.left - tolerance &&
+          rect.right <= bodyRect.right + tolerance &&
+          rect.top >= bodyRect.top - tolerance &&
+          rect.bottom <= bodyRect.bottom + tolerance
+        const insideSheet =
+          rect.left >= sheetRect.left - tolerance &&
+          rect.right <= sheetRect.right + tolerance &&
+          rect.top >= sheetRect.top - tolerance &&
+          rect.bottom <= sheetRect.bottom + tolerance
+
+        return insideBody && insideSheet ? [] : [index + 1]
+      })
+      const fontSizes = lines.map((line) => {
+        const code = line.querySelector('code')
+        return code ? Number.parseFloat(getComputedStyle(code).fontSize) : 0
+      })
+
+      return {
+        bodyScroll: `${body.scrollWidth - body.clientWidth}x${
+          body.scrollHeight - body.clientHeight
+        }`,
+        clipped,
+        fontSize: fontSizes.length > 0 ? Math.min(...fontSizes) : 0,
+        renderedLines: lines.map((line) => line.querySelector('code')?.textContent ?? ''),
+        sheetScroll: `${sheet.scrollWidth - sheet.clientWidth}x${
+          sheet.scrollHeight - sheet.clientHeight
+        }`,
+      }
+    })
+    const context = `${slug}:${role}`
+    const expectedLines = artifact.evidence.split(/\r?\n/).map((line) => line || ' ')
+
+    if (layout.bodyScroll !== '0x0') {
+      violations.push(`${context} body scroll ${layout.bodyScroll}`)
+    }
+    if (layout.sheetScroll !== '0x0') {
+      violations.push(`${context} sheet scroll ${layout.sheetScroll}`)
+    }
+    if (layout.clipped.length > 0) {
+      violations.push(`${context} clipped lines ${layout.clipped.join(',')}`)
+    }
+    if (layout.fontSize < 12) {
+      violations.push(`${context} font ${layout.fontSize}px`)
+    }
+    if (JSON.stringify(layout.renderedLines) !== JSON.stringify(expectedLines)) {
+      violations.push(`${context} rendered text differs from evidence`)
+    }
+  }
+
+  if (violations.length > 0) {
+    throw new Error(`Source-card preflight failed:\n${violations.join('\n')}`)
+  }
 }
 
 const renderCoverPng = async (
@@ -270,6 +436,7 @@ const renderCoverPng = async (
   try {
     await page.setContent(renderCoverHtml(entry, artifacts, fontData), { waitUntil: 'load' })
     await waitForDocumentAssets(page)
+    await assertSourceCardsFit(page, entry.slug, artifacts)
     return await page.screenshot({ animations: 'disabled', type: 'png' })
   } finally {
     await page.close()
