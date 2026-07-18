@@ -49,9 +49,9 @@ export const heroHeadlineAccent = 'wired, not pasted.'
 export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
 
 export const heroSubheadline =
-  'One command installs the block, wires it into Payload, and lands a reviewable git diff.'
+  'For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.'
 
-export const heroPrimaryCta = { href: '/docs', label: 'Get started' } as const
+export const heroGuideLink = { href: '/docs/installation', label: 'Read the install guide' } as const
 
 export const heroTertiaryLinks = [
   { href: '/components', label: 'Browse the components' },
