@@ -33,7 +33,9 @@ type SeedOwnershipState = {
   component: string
   manifestVersion: string
   mediaId: number | string | null
+  mediaOperationToken: string | null
   pageId: number | string | null
+  pageOperationToken: string | null
   token: string
   version: 1
 }
@@ -125,11 +127,8 @@ export const buildSeedScript = ({
 
   const firstManifest = manifests[0]
   const firstBlockType = getBlockType(firstManifest)
-  const demoMarker = `${target.marker}:${ownershipState.token}`
-  const rawLayout = manifests.map((manifest, index) => ({
-    ...manifest.sampleContent,
-    id: index === 0 ? demoMarker : `${demoMarker}:${manifest.name}`,
-  }))
+  const rawLayout = manifests.map((manifest) => manifest.sampleContent)
+  const rawLayoutBlockNames = manifests.map((manifest) => manifest.name)
   const needsDemoMedia = manifests.some((manifest) =>
     sampleContentNeedsDemoMedia(manifest.sampleContent),
   )
@@ -162,7 +161,9 @@ type DemoOwnershipState = {
   component: string
   manifestVersion: string
   mediaId: number | string | null
+  mediaOperationToken: string | null
   pageId: number | string | null
+  pageOperationToken: string | null
   token: string
   version: 1
 }
@@ -171,19 +172,13 @@ const demoSlug = ${quoteTsString(target.slug)}
 const demoMarkerPrefix = ${quoteTsString(target.marker)}
 const demoMediaMarkerPrefix = ${quoteTsString(demoMediaMarkerPrefix)}
 const ownershipToken = ${quoteTsString(ownershipState.token)}
-const demoMarker = demoMarkerPrefix + ':' + ownershipToken
-const demoMediaAlt =
-  'Payload Components generated demo media [' +
-  demoMediaMarkerPrefix +
-  ':' +
-  ownershipToken +
-  ']'
 const demoTitle = ${quoteTsString(target.title)}
 const demoBlockType = ${quoteTsString(firstBlockType)}
 const expectedComponent = ${quoteTsString(firstManifest.name)}
 const expectedManifestVersion = ${quoteTsString(firstManifest.version)}
 const ownershipStatePath = new URL(${quoteTsString(ownershipStateImportPath)}, import.meta.url)
 const rawLayout = ${JSON.stringify(rawLayout, null, 2)} satisfies DemoSampleValue[]
+const rawLayoutBlockNames = ${JSON.stringify(rawLayoutBlockNames)} as const
 const needsDemoMedia = ${JSON.stringify(needsDemoMedia)}
 const requirePagesDrafts = ${JSON.stringify(requirePagesDrafts)}
 const mutationContext = { disableRevalidate: true }
@@ -199,6 +194,10 @@ const isRecord = (value: unknown): value is DemoSampleValue =>
 
 const isDocumentID = (value: unknown): value is number | string =>
   typeof value === 'number' || typeof value === 'string'
+
+const isOperationToken = (value: unknown): value is string =>
+  typeof value === 'string' &&
+  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(value)
 
 const assertPrivateOwnershipStateFile = async () => {
   const stateFilePath = fileURLToPath(ownershipStatePath)
@@ -245,7 +244,13 @@ const loadOwnershipState = async (): Promise<DemoOwnershipState> => {
     parsed.manifestVersion !== expectedManifestVersion ||
     parsed.token !== ownershipToken ||
     (parsed.pageId !== null && !isDocumentID(parsed.pageId)) ||
-    (parsed.mediaId !== null && !isDocumentID(parsed.mediaId))
+    (parsed.mediaId !== null && !isDocumentID(parsed.mediaId)) ||
+    (parsed.pageOperationToken !== null &&
+      !isOperationToken(parsed.pageOperationToken)) ||
+    (parsed.mediaOperationToken !== null &&
+      !isOperationToken(parsed.mediaOperationToken)) ||
+    (parsed.pageId !== null && parsed.pageOperationToken === null) ||
+    (parsed.mediaId !== null && parsed.mediaOperationToken === null)
   ) {
     throw new Error(
       'The generated demo seed private ownership state does not match this generated script; no content was changed.',
@@ -322,12 +327,44 @@ const isOwnedDemoPage = (page: DemoDocument) => {
     page.slug === demoSlug &&
     page.title === demoTitle &&
     isRecord(firstBlock) &&
-    firstBlock.id === demoMarker &&
+    firstBlock.id ===
+      demoMarkerPrefix + ':' + ownershipToken + ':' + ownershipState.pageOperationToken &&
     firstBlock.blockType === demoBlockType
   )
 }
 
 let ownershipState = await loadOwnershipState()
+
+const journalPageOperation = async () => {
+  if (ownershipState.pageOperationToken !== null) {
+    return ownershipState.pageOperationToken
+  }
+
+  const operationToken = randomUUID()
+  ownershipState = {
+    ...ownershipState,
+    pageOperationToken: operationToken,
+  }
+  await saveOwnershipState(ownershipState)
+
+  return operationToken
+}
+
+const journalMediaOperation = async () => {
+  if (ownershipState.mediaOperationToken !== null) {
+    return ownershipState.mediaOperationToken
+  }
+
+  const operationToken = randomUUID()
+  ownershipState = {
+    ...ownershipState,
+    mediaOperationToken: operationToken,
+  }
+  await saveOwnershipState(ownershipState)
+
+  return operationToken
+}
+
 const payload = await getPayload({ config })
 const pagesCollection = payload.config.collections.find(
   (collection) => collection.slug === 'pages',
@@ -345,6 +382,7 @@ if (requirePagesDrafts && !pagesSupportDrafts) {
   )
 }
 
+const pageOperationToken = await journalPageOperation()
 const existingPages = await payload.find({
   collection: 'pages',
   depth: 0,
@@ -358,13 +396,28 @@ const existingPages = await payload.find({
   },
 })
 const existingPageDocuments = existingPages.docs as unknown as DemoDocument[]
-const existingPageID = ownershipState.pageId
+let existingPageID = ownershipState.pageId
 
-if (existingPageID === null && existingPageDocuments.length > 0) {
+if (existingPageID === null && existingPageDocuments.length === 1) {
+  if (!isOwnedDemoPage(existingPageDocuments[0])) {
+    throw new Error(
+      'Refusing to change /' +
+        demoSlug +
+        ': the existing Page has no matching local ownership record.',
+    )
+  }
+
+  existingPageID = existingPageDocuments[0].id
+  ownershipState = {
+    ...ownershipState,
+    pageId: existingPageID,
+  }
+  await saveOwnershipState(ownershipState)
+} else if (existingPageID === null && existingPageDocuments.length > 1) {
   throw new Error(
     'Refusing to change /' +
       demoSlug +
-      ': the existing Page has no matching local ownership record.',
+      ': the existing Pages do not match one private ownership record.',
   )
 }
 
@@ -382,6 +435,15 @@ if (
 }
 
 const prepareDemoMedia = async () => {
+  const mediaOperationToken = await journalMediaOperation()
+  const demoMediaAlt =
+    'Payload Components generated demo media [' +
+    demoMediaMarkerPrefix +
+    ':' +
+    ownershipToken +
+    ':' +
+    mediaOperationToken +
+    ']'
   const existingMediaResult = await payload.find({
     collection: 'media',
     depth: 0,
@@ -394,11 +456,18 @@ const prepareDemoMedia = async () => {
     },
   })
   const existingMediaDocuments = existingMediaResult.docs as unknown as DemoDocument[]
-  const existingMediaID = ownershipState.mediaId
+  let existingMediaID = ownershipState.mediaId
 
-  if (existingMediaID === null && existingMediaDocuments.length > 0) {
+  if (existingMediaID === null && existingMediaDocuments.length === 1) {
+    existingMediaID = existingMediaDocuments[0].id
+    ownershipState = {
+      ...ownershipState,
+      mediaId: existingMediaID,
+    }
+    await saveOwnershipState(ownershipState)
+  } else if (existingMediaID === null && existingMediaDocuments.length > 1) {
     throw new Error(
-      'Refusing to reuse generated-marker Media: it has no matching local ownership record.',
+      'Refusing to reuse generated-marker Media: it does not match its private ownership record.',
     )
   }
 
@@ -450,9 +519,14 @@ const prepareDemoMedia = async () => {
 }
 
 const preparedMedia = needsDemoMedia ? await prepareDemoMedia() : undefined
+const demoMarker = demoMarkerPrefix + ':' + ownershipToken + ':' + pageOperationToken
+const layoutWithMarkers = rawLayout.map((block, index) => ({
+  ...block,
+  id: index === 0 ? demoMarker : demoMarker + ':' + rawLayoutBlockNames[index],
+}))
 const layout = preparedMedia
-  ? rawLayout.map((block) => addDemoUploadReferences(block, preparedMedia.id))
-  : rawLayout
+  ? layoutWithMarkers.map((block) => addDemoUploadReferences(block, preparedMedia.id))
+  : layoutWithMarkers
 const pageData = {
   title: demoTitle,
   slug: demoSlug,
@@ -601,7 +675,9 @@ const readOrCreateOwnershipState = async ({
         component: manifest.name,
         manifestVersion: manifest.version,
         mediaId: null,
+        mediaOperationToken: null,
         pageId: null,
+        pageOperationToken: null,
         token: randomUUID(),
         version: 1,
       }
@@ -657,12 +733,24 @@ const readOrCreateOwnershipState = async ({
       state.manifestVersion !== manifest.version ||
       typeof state.token !== 'string' ||
       !/^[0-9a-f-]{36}$/.test(state.token) ||
+      (state.pageOperationToken !== null &&
+        (typeof state.pageOperationToken !== 'string' ||
+          !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(
+            state.pageOperationToken,
+          ))) ||
+      (state.mediaOperationToken !== null &&
+        (typeof state.mediaOperationToken !== 'string' ||
+          !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(
+            state.mediaOperationToken,
+          ))) ||
       (state.pageId !== null &&
         typeof state.pageId !== 'number' &&
         typeof state.pageId !== 'string') ||
       (state.mediaId !== null &&
         typeof state.mediaId !== 'number' &&
-        typeof state.mediaId !== 'string')
+        typeof state.mediaId !== 'string') ||
+      (state.pageId !== null && state.pageOperationToken === null) ||
+      (state.mediaId !== null && state.mediaOperationToken === null)
     ) {
       throw new Error(
         `Refusing mismatched demo ownership state for "${manifest.name}" at ${statePath}. Remove the demo content and state explicitly before regenerating.`,

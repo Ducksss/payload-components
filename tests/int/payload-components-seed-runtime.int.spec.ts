@@ -38,7 +38,9 @@ type OwnershipState = {
   component: string
   manifestVersion: string
   mediaId: number | string | null
+  mediaOperationToken: string | null
   pageId: number | string | null
+  pageOperationToken: string | null
   token: string
   version: 1
 }
@@ -87,6 +89,9 @@ export const getPayload = async ({ config }) => ({
     const state = await load()
     state.calls.push(clone({ method: 'create', ...options }))
     await save(state)
+    if (options.collection === 'media' && process.env.PAYLOAD_STUB_FAIL_MEDIA_WRITE === '1') {
+      throw new Error('injected media write failure')
+    }
     if (options.collection === 'pages' && process.env.PAYLOAD_STUB_FAIL_PAGE_WRITE === '1') {
       throw new Error('injected page write failure')
     }
@@ -266,7 +271,9 @@ describe('generated demo seed runtime', () => {
       title: fixture.target.title,
     })
     expect((state.pages[0].layout as Array<Record<string, unknown>>)[0]).toMatchObject({
-      id: `${fixture.target.marker}:${(await readOwnershipState(fixture.ownershipStatePath)).token}`,
+      id: `${fixture.target.marker}:${(await readOwnershipState(fixture.ownershipStatePath)).token}:${
+        (await readOwnershipState(fixture.ownershipStatePath)).pageOperationToken
+      }`,
     })
     expect(await readOwnershipState(fixture.ownershipStatePath)).toMatchObject({
       pageId: state.pages[0].id,
@@ -300,12 +307,21 @@ describe('generated demo seed runtime', () => {
     const fixture = await createRuntimeFixture({ state })
     tempDirs.push(fixture.fixtureDir)
     const ownershipState = await readOwnershipState(fixture.ownershipStatePath)
-    const alt = `Payload Components generated demo media [payload-components:demo:logo-cloud-grid:media:${ownershipState.token}]`
+    ownershipState.mediaOperationToken = '11111111-1111-4111-8111-111111111111'
+    await writeFile(
+      fixture.ownershipStatePath,
+      `${JSON.stringify(ownershipState, null, 2)}\n`,
+      'utf8',
+    )
+    const alt =
+      `Payload Components generated demo media [` +
+      `payload-components:demo:logo-cloud-grid:media:${ownershipState.token}:` +
+      `${ownershipState.mediaOperationToken}]`
     state.media.push({ alt, id: 10 }, { alt, id: 11 })
     await writeFile(fixture.statePath, `${JSON.stringify(state, null, 2)}\n`, 'utf8')
 
     await expect(runScript(fixture.scriptPath, fixture.statePath)).rejects.toMatchObject({
-      stderr: expect.stringContaining('has no matching local ownership record'),
+      stderr: expect.stringContaining('does not match its private ownership record'),
     })
 
     const result = await readState(fixture.statePath)
@@ -315,6 +331,61 @@ describe('generated demo seed runtime', () => {
     )
     expect(result.calls.some((call) => call.method === 'delete')).toBe(false)
     expect(result.pages).toEqual([])
+  })
+
+  it('journals a Media operation token before attempting the create', async () => {
+    const fixture = await createRuntimeFixture()
+    tempDirs.push(fixture.fixtureDir)
+
+    await expect(
+      runScript(fixture.scriptPath, fixture.statePath, {
+        PAYLOAD_STUB_FAIL_MEDIA_WRITE: '1',
+      }),
+    ).rejects.toMatchObject({ stderr: expect.stringContaining('injected media write failure') })
+
+    expect(await readOwnershipState(fixture.ownershipStatePath)).toMatchObject({
+      mediaId: null,
+      mediaOperationToken: expect.stringMatching(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+      ),
+      pageId: null,
+    })
+  })
+
+  it('adopts the exact Media created by an interrupted journaled operation', async () => {
+    const state = emptyState()
+    const fixture = await createRuntimeFixture({ state })
+    tempDirs.push(fixture.fixtureDir)
+    const ownershipState = await readOwnershipState(fixture.ownershipStatePath)
+    ownershipState.mediaOperationToken = '22222222-2222-4222-8222-222222222222'
+    await writeFile(
+      fixture.ownershipStatePath,
+      `${JSON.stringify(ownershipState, null, 2)}\n`,
+      'utf8',
+    )
+    state.media.push({
+      alt:
+        `Payload Components generated demo media [` +
+        `${fixture.target.marker}:media:${ownershipState.token}:` +
+        `${ownershipState.mediaOperationToken}]`,
+      id: 73,
+    })
+    state.nextID = 74
+    await writeFile(fixture.statePath, `${JSON.stringify(state, null, 2)}\n`, 'utf8')
+
+    await runScript(fixture.scriptPath, fixture.statePath)
+
+    const result = await readState(fixture.statePath)
+    expect(
+      result.calls.filter(
+        (call) => call.collection === 'media' && call.method === 'create',
+      ),
+    ).toHaveLength(0)
+    expect(result.media).toEqual(state.media)
+    expect(await readOwnershipState(fixture.ownershipStatePath)).toMatchObject({
+      mediaId: 73,
+      mediaOperationToken: ownershipState.mediaOperationToken,
+    })
   })
 
   it('persists a newly created media ID before a failed Page write and reuses it on retry', async () => {
@@ -331,6 +402,9 @@ describe('generated demo seed runtime', () => {
     expect(ownershipAfterFailure).toMatchObject({
       mediaId: result.media[0].id,
       pageId: null,
+      pageOperationToken: expect.stringMatching(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+      ),
     })
     expect(result.calls.some((call) => call.method === 'delete')).toBe(false)
 
@@ -347,6 +421,49 @@ describe('generated demo seed runtime', () => {
     expect(await readOwnershipState(fixture.ownershipStatePath)).toMatchObject({
       mediaId: afterRetry.media[0].id,
       pageId: afterRetry.pages[0].id,
+    })
+  })
+
+  it('adopts the exact Page created by an interrupted journaled operation', async () => {
+    const state = emptyState()
+    const fixture = await createRuntimeFixture({ manifestName: 'hero-basic', state })
+    tempDirs.push(fixture.fixtureDir)
+    const ownershipState = await readOwnershipState(fixture.ownershipStatePath)
+    ownershipState.pageOperationToken = '33333333-3333-4333-8333-333333333333'
+    await writeFile(
+      fixture.ownershipStatePath,
+      `${JSON.stringify(ownershipState, null, 2)}\n`,
+      'utf8',
+    )
+    state.pages.push({
+      _status: 'draft',
+      id: 91,
+      layout: [
+        {
+          blockType: 'heroBasic',
+          id:
+            `${fixture.target.marker}:${ownershipState.token}:` +
+            ownershipState.pageOperationToken,
+        },
+      ],
+      slug: fixture.target.slug,
+      title: fixture.target.title,
+    })
+    state.nextID = 92
+    await writeFile(fixture.statePath, `${JSON.stringify(state, null, 2)}\n`, 'utf8')
+
+    await runScript(fixture.scriptPath, fixture.statePath)
+
+    const result = await readState(fixture.statePath)
+    expect(
+      result.calls.filter(
+        (call) => call.collection === 'pages' && call.method === 'create',
+      ),
+    ).toHaveLength(0)
+    expect(result.pages).toHaveLength(1)
+    expect(await readOwnershipState(fixture.ownershipStatePath)).toMatchObject({
+      pageId: 91,
+      pageOperationToken: ownershipState.pageOperationToken,
     })
   })
 

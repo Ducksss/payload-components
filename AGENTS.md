@@ -56,8 +56,10 @@ config path, and atomically writes only a version-marked script under
 `payload-components/` plus a private high-entropy ownership record under
 `.payload-components/demo-state/`. Generated scripts must require Pages drafts,
 match the private record's exact Page and Media IDs plus tokenized markers,
-update owned Pages with `overrideLock: false`, and never delete media. Keep all
-Local API access in the explicit operator-run script, with failures surfaced.
+journal a unique operation token before each create, reconcile only its exact
+document after an interruption, update owned Pages with `overrideLock: false`,
+and never delete media. Keep all Local API access in the explicit operator-run
+script, with failures surfaced.
 
 Fragment patching is **text-anchor based** — it finds anchors like `const blockComponents = {` and `name: 'layout'` in the consumer repo and inserts imports/registrations with dedup checks. Fragile by design for now; keep the anchors and dedup logic intact.
 

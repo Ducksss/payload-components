@@ -42,10 +42,12 @@ The operator explicitly runs the script with the project's Payload CLI.
 The generated script requires Pages drafts and never publishes implicitly. It
 creates a Page only when the slug is free, records the returned Page and Media
 IDs, and reruns only against those exact IDs after checking a private tokenized
-marker. Updates use `overrideLock: false`. Upload placeholders use a unique OS
-temporary directory; a failed Page write preserves the recorded Media ID for a
-safe retry. Generated scripts never delete Media, and all Local API failures
-propagate.
+marker. Each create gets a write-ahead operation token in the private record, so
+an interrupted run can reconcile only the single database document carrying
+that exact token before persisting its ID. Updates use `overrideLock: false`.
+Upload placeholders use a unique OS temporary directory; a failed Media ID save
+or Page write remains safe to retry. Generated scripts never delete Media, and
+all Local API failures propagate.
 
 ## Public Registry Contract
 

@@ -214,7 +214,9 @@ describe('payload-components seed command', () => {
       component: string
       manifestVersion: string
       mediaId: null
+      mediaOperationToken: null
       pageId: null
+      pageOperationToken: null
       token: string
       version: number
     }
@@ -231,7 +233,10 @@ describe('payload-components seed command', () => {
     expect(script).toContain('draft: true')
     expect(script).toContain('const existingPages = await payload.find({')
     expect(script).toContain('const isOwnedDemoPage =')
-    expect(script).toContain('firstBlock.id === demoMarker')
+    expect(script).toContain(
+      "demoMarkerPrefix + ':' + ownershipToken + ':' + ownershipState.pageOperationToken",
+    )
+    expect(script).toContain('const pageOperationToken = await journalPageOperation()')
     expect(script).toContain('ownershipState.pageId')
     expect(script).toContain('ownershipState.mediaId')
     expect(script).toContain('Refusing to change')
@@ -248,7 +253,9 @@ describe('payload-components seed command', () => {
       component: manifest.name,
       manifestVersion: manifest.version,
       mediaId: null,
+      mediaOperationToken: null,
       pageId: null,
+      pageOperationToken: null,
       version: 1,
     })
     expect(ownershipState.token).toMatch(/^[0-9a-f-]{36}$/)
@@ -277,6 +284,7 @@ describe('payload-components seed command', () => {
     expect(script).toContain('alt: demoMediaAlt')
     expect(script).toContain('context: mutationContext')
     expect(script).toContain('overrideAccess: true')
+    expect(script).toContain('const mediaOperationToken = await journalMediaOperation()')
     expect(script).toContain('ownershipState.mediaId')
     expect(script).not.toContain('duplicateMedia')
     expect(script).not.toContain('payload.delete')

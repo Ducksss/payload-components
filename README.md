@@ -182,7 +182,10 @@ before querying or changing content, then creates a component-specific **draft**
 Page at `/payload-components-demo-hero-basic`; it never publishes the demo. A
 rerun updates only the exact Page ID recorded locally after verifying its
 tokenized block marker. Placeholder media is reused only by its recorded ID and
-is never deduplicated or deleted automatically. Any collision or missing,
+is never deduplicated or deleted automatically. Before each create, the script
+atomically journals a unique operation token; after an interruption it can
+adopt only the single Page or Media carrying that exact private token and record
+its returned ID before continuing. Any collision or missing,
 mismatched, or unreadable ownership record stops before unsafe mutation. The CLI
 atomically replaces only its version-marked generated script and refuses unowned
 files or pre-existing symlinks. The operator-run script deliberately uses

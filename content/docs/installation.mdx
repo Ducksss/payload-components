@@ -115,20 +115,27 @@ For `hero-basic`, the generated document contract is deliberately specific:
 - Page title: `Payload Components demo — Hero Basic`
 - first block marker prefix: `payload-components:demo:hero-basic`
 - generated media marker prefix: `payload-components:demo:hero-basic:media`
-- private ownership: a random token plus the exact Page and Media IDs
+- private ownership: a random token, per-create operation tokens, and the exact
+  Page and Media IDs
 
 The script requires the detected Pages collection to support drafts. It aborts
 before querying or mutating content otherwise. A successful run writes
 `_status: 'draft'`, so you must review and publish explicitly. On first run, an
-existing same-slug Page is always a collision—matching public title or marker
-text is not enough. After creation, the script saves the returned Page ID. A
-rerun updates only that exact ID after verifying the expected slug, title,
-block type, and tokenized marker; the update also uses `overrideLock: false`.
-Missing or mismatched local state causes a hard failure before unsafe mutation.
+existing same-slug Page is a collision unless it is the single exact result of
+an interrupted, locally journaled create—matching public title or a generic
+marker is not enough. Before creating, the script atomically records a unique
+operation token. After creation, it saves the returned Page ID. A rerun updates
+only that exact ID after verifying the expected slug, title, block type, and
+tokenized marker; the update also uses `overrideLock: false`. If the process
+stopped after the database commit but before the ID save, the next run adopts
+only the single document with the exact journaled token. Missing or mismatched
+local state causes a hard failure before unsafe mutation.
 
-Components with required uploads get one ownership-marked placeholder Media
-document, immediately saves its returned ID, and reuses only that exact ID on a
-rerun. If the Page write fails, the saved Media ID makes a retry idempotent.
+For components with required uploads, the script journals the Media create,
+creates one ownership-marked placeholder Media document, immediately saves its
+returned ID, and reuses only that exact ID on a rerun. If the Media ID save or
+Page write fails, the journaled operation or saved Media ID makes a retry
+idempotent.
 Marker-like or duplicate Media without the matching private record causes a
 refusal; the generated script never deletes Media. Placeholder files use a
 unique OS temporary directory that is removed in a `finally` block. All
