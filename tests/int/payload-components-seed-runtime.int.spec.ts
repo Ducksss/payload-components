@@ -208,6 +208,7 @@ const runScript = (
     cwd: path.dirname(path.dirname(scriptPath)),
     env: { ...process.env, ...extraEnv, PAYLOAD_STUB_STATE: statePath },
     maxBuffer: 10_000_000,
+    timeout: 20_000,
   })
 
 const readState = async (statePath: string) =>
