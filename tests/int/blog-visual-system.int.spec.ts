@@ -1,4 +1,13 @@
-import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises'
+import {
+  mkdir,
+  mkdtemp,
+  readFile,
+  readdir,
+  realpath,
+  rm,
+  symlink,
+  writeFile,
+} from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
@@ -6,6 +15,7 @@ import { chromium } from '@playwright/test'
 import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 
+import { captures, renderCaptureHtml } from '../../tools/blog/capture-figures'
 import { parseCoverRenderArgs, waitForDocumentAssets } from '../../tools/blog/render-covers'
 import { blogVisualCatalog } from '../../tools/blog/visual-system/catalog'
 import { resolveArtifact, validateBlogVisualCatalog } from '../../tools/blog/visual-system/artifacts'
@@ -15,6 +25,7 @@ import type { Artifact, ResolvedArtifact } from '../../tools/blog/visual-system/
 const repoRoot = path.resolve(import.meta.dirname, '../..')
 const blogRoot = path.join(repoRoot, 'content', 'blog')
 const registryPath = path.join(repoRoot, 'payload-components', 'registry.json')
+const captureToolPath = path.join(repoRoot, 'tools', 'blog', 'capture-figures.ts')
 
 const approvedPalette = new Set([
   '#18181b',
@@ -33,6 +44,1307 @@ const fontPaths = [
   'src/app/_fonts/GeistMono-Regular.ttf',
   'src/app/_fonts/InstrumentSerif-Italic.ttf',
 ] as const
+
+const makeDocsCodeFixtureLines = () =>
+  Array.from({ length: 14 }, (_, index) => {
+    const suffix = index === 7 ? ` ${'long-source-token-'.repeat(40)}` : ''
+    const text = `line ${index + 1}${suffix}`
+    return {
+      html: `<span style="color:#ffffff">${text}</span>`,
+      sourceLine: index + 1,
+      text,
+    }
+  })
+
+describe('Field Journal real UI capture contract', () => {
+  it('publishes an import-safe capture catalog and HTML renderer', async () => {
+    const source = await readFile(captureToolPath, 'utf8')
+
+    expect(source).toContain('export const captures')
+    expect(source).toMatch(/export (?:const|function) renderCaptureHtml/)
+    expect(source).toMatch(/if \(isMain\(\)\)/)
+  })
+
+  it('pins the exact eight committed outputs and truthful evidence matrix', () => {
+    expect(
+      captures.map((capture) => ({
+        layout: Reflect.get(capture, 'layout'),
+        mode: Reflect.get(capture, 'mode'),
+        outputPath: Reflect.get(capture, 'outputPath'),
+        panels: Reflect.get(capture, 'panels')?.map(
+          (panel: Record<string, unknown>) => ({
+            anchor: panel.anchor,
+            fixture: panel.fixtureNotice,
+            kind: panel.kind,
+            label: panel.label,
+            registryItem: panel.registryItem,
+            route: panel.route,
+            sourcePath: panel.sourcePath,
+          }),
+        ),
+        slug: Reflect.get(capture, 'slug'),
+      })),
+    ).toEqual([
+      {
+        layout: 'quad',
+        mode: 'see',
+        outputPath:
+          'public/blog/build-first-payload-v3-landing-page/figure-01-page-composition.webp',
+        panels: [
+          {
+            anchor: undefined,
+            fixture: 'REPOSITORY DEMO FIXTURE · STRUCTURE ONLY',
+            kind: 'preview',
+            label: 'Hero Basic · structure',
+            registryItem: 'hero-basic',
+            route: '/components/preview/hero-basic',
+            sourcePath: undefined,
+          },
+          {
+            anchor: undefined,
+            fixture: 'REPOSITORY DEMO FIXTURE · STRUCTURE ONLY',
+            kind: 'preview',
+            label: 'Feature Bento · structure',
+            registryItem: 'feature-bento',
+            route: '/components/preview/feature-bento',
+            sourcePath: undefined,
+          },
+          {
+            anchor: "name: 'testimonials'",
+            fixture: undefined,
+            kind: 'docs-code',
+            label: 'Testimonials Grid · config contract',
+            registryItem: 'testimonials-grid',
+            route: '/docs/components/testimonials-grid',
+            sourcePath: undefined,
+          },
+          {
+            anchor: undefined,
+            fixture: 'REPOSITORY DEMO FIXTURE · STRUCTURE ONLY',
+            kind: 'preview',
+            label: 'Call To Action Centered · structure',
+            registryItem: 'call-to-action-centered',
+            route: '/components/preview/call-to-action-centered',
+            sourcePath: undefined,
+          },
+        ],
+        slug: 'build-first-payload-v3-landing-page',
+      },
+      {
+        layout: 'quad',
+        mode: 'see',
+        outputPath:
+          'public/blog/choosing-payload-hero/figure-01-hero-preview.webp',
+        panels: [
+          {
+            anchor: undefined,
+            fixture: 'REPOSITORY DEMO FIXTURE · STRUCTURE ONLY',
+            kind: 'preview',
+            label: 'Hero Basic · desktop structure',
+            registryItem: 'hero-basic',
+            route: '/components/preview/hero-basic',
+            sourcePath: undefined,
+          },
+          {
+            anchor: undefined,
+            fixture: 'REPOSITORY DEMO FIXTURE · STRUCTURE ONLY',
+            kind: 'preview',
+            label: 'Hero Basic · mobile structure',
+            registryItem: 'hero-basic',
+            route: '/components/preview/hero-basic',
+            sourcePath: undefined,
+          },
+          {
+            anchor: undefined,
+            fixture: 'REPOSITORY DEMO FIXTURE · STRUCTURE ONLY',
+            kind: 'catalog-card',
+            label: 'Catalog · shipped hero-basic item',
+            registryItem: 'hero-basic',
+            route: '/components?q=hero-basic',
+            sourcePath: undefined,
+          },
+          {
+            anchor: 'export const HeroBasic',
+            fixture: undefined,
+            kind: 'docs-code',
+            label: 'Documentation · Payload config',
+            registryItem: 'hero-basic',
+            route: '/docs/components/hero-basic',
+            sourcePath: undefined,
+          },
+        ],
+        slug: 'choosing-payload-hero',
+      },
+      {
+        layout: 'quad',
+        mode: 'see',
+        outputPath:
+          'public/blog/editor-friendly-feature-sections/figure-01-feature-comparison.webp',
+        panels: [
+          ['feature-bento', 'Feature Bento · uneven emphasis'],
+          ['feature-split', 'Feature Split · paired reading'],
+          ['feature-steps', 'Feature Steps · ordered sequence'],
+          ['feature-grid-basic', 'Feature Grid Basic · peer cards'],
+        ].map(([registryItem, label]) => ({
+          anchor: undefined,
+          fixture: 'REPOSITORY DEMO FIXTURE · STRUCTURE ONLY',
+          kind: 'preview',
+          label,
+          registryItem,
+          route: `/components/preview/${registryItem}`,
+          sourcePath: undefined,
+        })),
+        slug: 'editor-friendly-feature-sections',
+      },
+      {
+        layout: 'quad',
+        mode: 'see',
+        outputPath:
+          'public/blog/modeling-pricing-pages/figure-01-pricing-montage.webp',
+        panels: [
+          ['pricing-cards', 'Pricing Cards · two-to-four plan contract', 'minRows: 2'],
+          [
+            'pricing-cards-muted',
+            'Pricing Cards Muted · two-to-four plan contract',
+            'minRows: 2',
+          ],
+          ['pricing-split', 'Pricing Split · exact two-plan contract', 'maxRows: 2'],
+          ['pricing-enterprise', 'Pricing Enterprise · logo field contract', "name: 'logos'"],
+        ].map(([registryItem, label, anchor]) => ({
+          anchor,
+          fixture: undefined,
+          kind: 'docs-code',
+          label,
+          registryItem,
+          route: `/docs/components/${registryItem}`,
+          sourcePath: undefined,
+        })),
+        slug: 'modeling-pricing-pages',
+      },
+      {
+        layout: 'quad',
+        mode: 'see',
+        outputPath:
+          'public/blog/social-proof-sections/figure-01-social-proof-montage.webp',
+        panels: [
+          ['logo-cloud-grid', 'Logo Cloud Grid · editable logo records', '...logoCloudFields'],
+          [
+            'testimonials-grid',
+            'Testimonials Grid · attributed quote array',
+            "name: 'testimonials'",
+          ],
+          ['testimonials-rating', 'Testimonials Rating · bounded rating field', "name: 'rating'"],
+          [
+            'testimonials-quote',
+            'Testimonials Quote · featured quote contract',
+            '...testimonialItemFields',
+          ],
+        ].map(([registryItem, label, anchor]) => ({
+          anchor,
+          fixture: undefined,
+          kind: 'docs-code',
+          label,
+          registryItem,
+          route: `/docs/components/${registryItem}`,
+          sourcePath: undefined,
+        })),
+        slug: 'social-proof-sections',
+      },
+      {
+        layout: 'quad',
+        mode: 'see',
+        outputPath:
+          'public/blog/build-saas-homepage/figure-02-component-montage.webp',
+        panels: [
+          ['hero-basic', 'Promise · Hero Basic content model'],
+          ['logo-cloud-grid', 'Proof slot · Logo Cloud Grid content model'],
+          ['feature-bento', 'Explanation · Feature Bento content model'],
+          ['pricing-cards', 'Commitment · Pricing Cards content model'],
+        ].map(([registryItem, label]) => ({
+          anchor: undefined,
+          fixture: undefined,
+          kind: 'docs-section',
+          label,
+          registryItem,
+          route: `/docs/components/${registryItem}`,
+          sourcePath: undefined,
+        })),
+        slug: 'build-saas-homepage',
+      },
+      {
+        layout: 'duo',
+        mode: 'see',
+        outputPath:
+          'public/blog/build-payload-blog-frontend/figure-02-post-component-montage.webp',
+        panels: [
+          {
+            anchor: undefined,
+            fixture: undefined,
+            kind: 'route-viewport',
+            label: 'Blog index · /blog',
+            registryItem: undefined,
+            route: '/blog',
+            sourcePath: undefined,
+          },
+          {
+            anchor: undefined,
+            fixture: undefined,
+            kind: 'route-viewport',
+            label: 'Article · Payload block primer',
+            registryItem: undefined,
+            route: '/blog/what-is-a-payload-cms-block',
+            sourcePath: undefined,
+          },
+        ],
+        slug: 'build-payload-blog-frontend',
+      },
+      {
+        layout: 'triptych',
+        mode: 'see',
+        outputPath: 'public/blog/demo-twins/figure-02-source-preview.webp',
+        panels: [
+          {
+            anchor: undefined,
+            fixture: 'REPOSITORY DEMO FIXTURE · STRUCTURE ONLY',
+            kind: 'preview',
+            label: 'Hero Basic · site-only demo twin',
+            registryItem: 'hero-basic',
+            route: '/components/preview/hero-basic',
+            sourcePath: undefined,
+          },
+          {
+            anchor: 'overflow-hidden',
+            fixture: undefined,
+            kind: 'docs-code',
+            label: 'Documentation · shipped Component.tsx',
+            registryItem: 'hero-basic',
+            route: '/docs/components/hero-basic',
+            sourcePath: undefined,
+          },
+          {
+            anchor: 'const missing = literals.flatMap',
+            fixture: undefined,
+            kind: 'source',
+            label: 'Integration test · class-token mirror',
+            registryItem: undefined,
+            route: undefined,
+            sourcePath: 'tests/int/demo-twins.int.spec.ts',
+          },
+        ],
+        slug: 'demo-twins',
+      },
+    ])
+  })
+
+  it('binds every route and source panel to local repository evidence', async () => {
+    const registry = JSON.parse(await readFile(registryPath, 'utf8')) as {
+      items: { name: string }[]
+    }
+    const registryItems = new Set(registry.items.map((item) => item.name))
+
+    for (const capture of captures) {
+      const panels = Reflect.get(capture, 'panels') as unknown as readonly Record<
+        string,
+        unknown
+      >[]
+
+      for (const panel of panels) {
+        const context = `${Reflect.get(capture, 'slug')}: ${String(panel.label)}`
+        if (typeof panel.route === 'string') {
+          expect(panel.route, context).toMatch(/^\/(?:blog|components|docs\/components)(?:[/?]|$)/)
+          expect(panel.route, context).not.toMatch(/^(?:https?:)?\/\//)
+        }
+        if (typeof panel.registryItem === 'string') {
+          expect(registryItems.has(panel.registryItem), context).toBe(true)
+        }
+        if (typeof panel.sourcePath === 'string') {
+          const source = await readFile(path.join(repoRoot, panel.sourcePath), 'utf8')
+          expect(source, context).toContain(panel.anchor)
+        }
+      }
+    }
+
+    for (const slug of [
+      'modeling-pricing-pages',
+      'social-proof-sections',
+      'build-saas-homepage',
+    ]) {
+      const capture = captures.find((candidate) => Reflect.get(candidate, 'slug') === slug)
+      expect(capture, slug).toBeDefined()
+      if (!capture) continue
+      expect(
+        Reflect.get(capture, 'panels').some(
+          (panel: Record<string, unknown>) =>
+            panel.kind === 'preview' || String(panel.route).includes('/preview/'),
+        ),
+        slug,
+      ).toBe(false)
+    }
+  })
+
+  it('marks only panels that contain repository demo pixels as structure-only fixtures', () => {
+    const fixtureNotice = 'REPOSITORY DEMO FIXTURE · STRUCTURE ONLY'
+    const panels = captures.flatMap(
+      (capture) =>
+        Reflect.get(capture, 'panels') as unknown as readonly Record<
+          string,
+          unknown
+        >[],
+    )
+    const fixturePanels = panels.filter((panel) => panel.fixtureNotice)
+
+    expect(fixturePanels).toHaveLength(11)
+    expect(new Set(fixturePanels.map((panel) => panel.fixtureNotice))).toEqual(
+      new Set([fixtureNotice]),
+    )
+    expect(
+      fixturePanels.every(
+        (panel) => panel.kind === 'preview' || panel.kind === 'catalog-card',
+      ),
+    ).toBe(true)
+    expect(
+      panels
+        .filter((panel) => panel.kind === 'preview' || panel.kind === 'catalog-card')
+        .every((panel) => panel.fixtureNotice === fixtureNotice),
+    ).toBe(true)
+  })
+
+  it('renders a 1600 by 900 SEE frame with labels, folio, provenance, and escaped copy', () => {
+    const capture = {
+      ...captures[0],
+      title: '<script>not allowed</script>',
+      panels: [
+        {
+          ...Reflect.get(captures[0], 'panels')[0],
+          label: 'Hero & <proof>',
+        },
+      ],
+    }
+    const html = Reflect.apply(renderCaptureHtml, undefined, [
+      capture,
+      [
+        {
+          dataUrl: 'data:image/png;base64,iVBORw0KGgo=',
+          height: 600,
+          width: 1000,
+        },
+      ],
+    ]) as string
+
+    expect(html).toContain('data-mode="see"')
+    expect(html).toContain('data-canvas-width="1600"')
+    expect(html).toContain('data-canvas-height="900"')
+    expect(html).toMatch(/\.masthead\s*\{[^}]*height:\s*96px/s)
+    expect(html).toContain('data-journal-part="folio"')
+    expect(html).toContain('data-journal-part="provenance"')
+    expect(html).toContain('data-callout="01"')
+    expect(html).toContain('REPOSITORY DEMO FIXTURE · STRUCTURE ONLY')
+    expect(html).toContain('Hero &amp; &lt;proof&gt;')
+    expect(html).toContain('&lt;script&gt;not allowed&lt;/script&gt;')
+    expect(html).not.toContain('<script>not allowed</script>')
+    expect(html).not.toMatch(/<iframe\b|https?:\/\/|browser-chrome/i)
+
+    const notice = html.indexOf('<aside data-fixture-notice')
+    const image = html.indexOf('<img')
+    const windowStart = html.lastIndexOf('<div class="artifact-window"', image)
+    const windowEnd = html.indexOf('</div>', image)
+    expect(notice).toBeGreaterThan(windowEnd)
+    expect(windowStart).toBeLessThan(image)
+  })
+
+  it('allows only the configured loopback origin plus non-network document URLs', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const isAllowedCaptureRequest = Reflect.get(
+      captureModule,
+      'isAllowedCaptureRequest',
+    )
+
+    expect(isAllowedCaptureRequest).toBeTypeOf('function')
+    if (typeof isAllowedCaptureRequest !== 'function') return
+
+    const base = 'http://127.0.0.1:3100'
+    for (const allowed of [
+      'http://127.0.0.1:3100/blog',
+      'data:image/png;base64,aA==',
+      'blob:http://127.0.0.1:3100/abc',
+      'about:blank',
+    ]) {
+      expect(isAllowedCaptureRequest(allowed, base), allowed).toBe(true)
+    }
+    for (const blocked of [
+      'http://localhost:3100/blog',
+      'http://192.168.1.10:3100/blog',
+      'https://example.com/track',
+      'https://vitals.vercel-insights.com/v1/vitals',
+    ]) {
+      expect(isAllowedCaptureRequest(blocked, base), blocked).toBe(false)
+    }
+  })
+
+  it('waits for a unique client-rendered capture target before counting it', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const waitForExactCaptureTarget = Reflect.get(
+      captureModule,
+      'waitForExactCaptureTarget',
+    )
+
+    expect(waitForExactCaptureTarget).toBeTypeOf('function')
+    if (typeof waitForExactCaptureTarget !== 'function') return
+
+    const browser = await chromium.launch({ headless: true })
+    try {
+      const page = await browser.newPage()
+      await page.setContent(`
+        <main id="catalog"></main>
+        <script>
+          window.setTimeout(() => {
+            const card = document.createElement('article')
+            card.id = 'hero-basic'
+            card.textContent = 'Hero Basic'
+            document.querySelector('#catalog').append(card)
+          }, 20)
+        </script>
+      `)
+
+      const target = await waitForExactCaptureTarget(
+        page,
+        '#hero-basic',
+        'client-rendered catalog card',
+      )
+      expect(await target.textContent()).toBe('Hero Basic')
+    } finally {
+      await browser.close()
+    }
+  })
+
+  it('selects the one visible Shiki block when force-mounted files share an anchor', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const findUniqueVisibleCodeBlock = Reflect.get(
+      captureModule,
+      'findUniqueVisibleCodeBlock',
+    )
+
+    expect(findUniqueVisibleCodeBlock).toBeTypeOf('function')
+    if (typeof findUniqueVisibleCodeBlock !== 'function') return
+
+    const browser = await chromium.launch({ headless: true })
+    try {
+      const page = await browser.newPage()
+      await page.setContent(`
+        <section id="code-panel">
+          <pre hidden><code>export const HeroBasic = hidden</code></pre>
+          <pre><code>export const HeroBasic = visible</code></pre>
+        </section>
+      `)
+      const block = await findUniqueVisibleCodeBlock(
+        page.locator('#code-panel'),
+        'export const HeroBasic',
+        'Hero config',
+      )
+      expect(await block.textContent()).toContain('visible')
+    } finally {
+      await browser.close()
+    }
+  })
+
+  it('clips code evidence inside the real code block instead of capturing page filler', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const clipCaptureAroundTarget = Reflect.get(
+      captureModule,
+      'clipCaptureAroundTarget',
+    )
+
+    expect(clipCaptureAroundTarget).toBeTypeOf('function')
+    if (typeof clipCaptureAroundTarget !== 'function') return
+
+    const browser = await chromium.launch({ headless: true })
+    try {
+      const page = await browser.newPage({ viewport: { height: 400, width: 600 } })
+      await page.setContent(`
+        <main style="background:#e4e4e7; min-height:1400px; padding-top:800px">
+          <div id="code" style="background:white; height:500px; margin:0 40px">
+            <div id="first-line" style="background:#18181b; height:80px"></div>
+            <code id="anchor" style="background:#18181b; color:white; display:block; height:100px; padding:40px">minRows: 2</code>
+            <div id="last-line" style="background:#18181b; height:80px"></div>
+          </div>
+          <h2 style="color:#059669">Installation outside the code pane</h2>
+        </main>
+      `)
+      const png = await clipCaptureAroundTarget(
+        page,
+        page.locator('#anchor'),
+        {
+          boundary: page.locator('#code'),
+          contentEnd: page.locator('#last-line'),
+          contentStart: page.locator('#first-line'),
+          height: 240,
+          horizontalPadding: 20,
+          verticalPadding: 50,
+        },
+      )
+      const metadata = await sharp(png).metadata()
+      expect(metadata.height).toBe(240)
+
+      const raw = await sharp(png).removeAlpha().raw().toBuffer({
+        resolveWithObject: true,
+      })
+      const bottomCenter =
+        ((raw.info.height - 2) * raw.info.width + Math.floor(raw.info.width / 2)) *
+        raw.info.channels
+      expect([...raw.data.subarray(bottomCenter, bottomCenter + 3)]).toEqual([
+        24, 24, 27,
+      ])
+    } finally {
+      await browser.close()
+    }
+  })
+
+  it('selects a contiguous docs-code line window with explicit long-line treatment', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const renderDocsCodeExcerptHtml = Reflect.get(
+      captureModule,
+      'renderDocsCodeExcerptHtml',
+    )
+    const selectDocsCodeLineWindow = Reflect.get(
+      captureModule,
+      'selectDocsCodeLineWindow',
+    )
+
+    expect(renderDocsCodeExcerptHtml).toBeTypeOf('function')
+    expect(selectDocsCodeLineWindow).toBeTypeOf('function')
+    if (
+      typeof renderDocsCodeExcerptHtml !== 'function' ||
+      typeof selectDocsCodeLineWindow !== 'function'
+    ) {
+      return
+    }
+
+    const codeLines = makeDocsCodeFixtureLines()
+    const selected = selectDocsCodeLineWindow(codeLines, 7)
+    expect(selected).toHaveLength(10)
+    expect(selected[0].sourceLine).toBe(4)
+    expect(selected.at(-1)?.sourceLine).toBe(13)
+    expect(
+      selectDocsCodeLineWindow(codeLines, 0).map(
+        (line: { sourceLine: number }) => line.sourceLine,
+      ),
+    ).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    expect(
+      selectDocsCodeLineWindow(codeLines, 13).map(
+        (line: { sourceLine: number }) => line.sourceLine,
+      ),
+    ).toEqual([5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+
+    const html = renderDocsCodeExcerptHtml(codeLines, 7, 'dGVzdA==')
+    expect(html.match(/data-code-row/g)).toHaveLength(10)
+    expect(html).toContain('data-source-line="4"')
+    expect(html).toContain('data-source-line="13"')
+    expect(html).toMatch(/height:\s*30px/)
+    expect(html).toMatch(/text-overflow:\s*ellipsis/)
+    expect(html).toMatch(/white-space:\s*pre/)
+  })
+
+  it('renders docs-code evidence as complete whole rows on an edge-safe dark canvas', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const renderDocsCodeExcerptHtml = Reflect.get(
+      captureModule,
+      'renderDocsCodeExcerptHtml',
+    )
+    const selectDocsCodeLineWindow = Reflect.get(
+      captureModule,
+      'selectDocsCodeLineWindow',
+    )
+    const validateDocsCodeCanvas = Reflect.get(
+      captureModule,
+      'validateDocsCodeCanvas',
+    )
+
+    expect(renderDocsCodeExcerptHtml).toBeTypeOf('function')
+    expect(selectDocsCodeLineWindow).toBeTypeOf('function')
+    expect(validateDocsCodeCanvas).toBeTypeOf('function')
+    if (
+      typeof renderDocsCodeExcerptHtml !== 'function' ||
+      typeof selectDocsCodeLineWindow !== 'function' ||
+      typeof validateDocsCodeCanvas !== 'function'
+    ) {
+      return
+    }
+
+    const codeLines = makeDocsCodeFixtureLines()
+    const selected = selectDocsCodeLineWindow(codeLines, 7)
+    expect(selected).toHaveLength(10)
+    expect(selected[0].sourceLine).toBe(4)
+    expect(selected.at(-1)?.sourceLine).toBe(13)
+
+    const html = renderDocsCodeExcerptHtml(codeLines, 7, 'dGVzdA==')
+    const browser = await chromium.launch({ headless: true })
+    try {
+      const page = await browser.newPage({
+        viewport: { height: 360, width: 1080 },
+      })
+      await page.setContent(html)
+
+      const geometry = await page.locator('[data-code-canvas]').evaluate((canvas) => {
+        const canvasRect = canvas.getBoundingClientRect()
+        const rows = [
+          ...canvas.querySelectorAll<HTMLElement>('[data-code-row]'),
+        ]
+        return {
+          bottomInset:
+            canvasRect.bottom - (rows.at(-1)?.getBoundingClientRect().bottom ?? 0),
+          canvas: {
+            height: canvasRect.height,
+            width: canvasRect.width,
+          },
+          firstSourceLine: rows[0]?.dataset.sourceLine,
+          lastSourceLine: rows.at(-1)?.dataset.sourceLine,
+          rowHeights: rows.map((row) => row.getBoundingClientRect().height),
+          topInset: (rows[0]?.getBoundingClientRect().top ?? 0) - canvasRect.top,
+        }
+      })
+      expect(geometry).toEqual({
+        bottomInset: 30,
+        canvas: { height: 360, width: 1080 },
+        firstSourceLine: '4',
+        lastSourceLine: '13',
+        rowHeights: Array(10).fill(30),
+        topInset: 30,
+      })
+
+      const longLine = page.locator('[data-source-line="8"] [data-code-source]')
+      expect(
+        await longLine.evaluate((line) => {
+          const style = getComputedStyle(line)
+          return {
+            clientWidth: line.clientWidth,
+            overflow: style.overflow,
+            scrollWidth: line.scrollWidth,
+            textOverflow: style.textOverflow,
+            whiteSpace: style.whiteSpace,
+          }
+        }),
+      ).toMatchObject({
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'pre',
+      })
+      expect(
+        await longLine.evaluate((line) => line.scrollWidth > line.clientWidth),
+      ).toBe(true)
+
+      const png = await page.screenshot({ animations: 'disabled', type: 'png' })
+      await expect(validateDocsCodeCanvas(png)).resolves.toBeUndefined()
+
+      const raw = await sharp(png).ensureAlpha().raw().toBuffer({
+        resolveWithObject: true,
+      })
+      const edgePixels: number[][] = []
+      const pushPixel = (x: number, y: number) => {
+        const offset = (y * raw.info.width + x) * raw.info.channels
+        edgePixels.push([
+          ...raw.data.subarray(offset, offset + raw.info.channels),
+        ])
+      }
+      for (let x = 0; x < raw.info.width; x += 1) {
+        pushPixel(x, 0)
+        pushPixel(x, raw.info.height - 1)
+      }
+      for (let y = 1; y < raw.info.height - 1; y += 1) {
+        pushPixel(0, y)
+        pushPixel(raw.info.width - 1, y)
+      }
+      expect(new Set(edgePixels.map((pixel) => pixel.join(',')))).toEqual(
+        new Set(['24,24,27,255']),
+      )
+
+      const whiteEdge = await sharp({
+        create: {
+          background: '#18181b',
+          channels: 4,
+          height: 360,
+          width: 1080,
+        },
+      })
+        .composite([
+          {
+            input: {
+              create: {
+                background: '#ffffff',
+                channels: 4,
+                height: 1,
+                width: 1080,
+              },
+            },
+            left: 0,
+            top: 0,
+          },
+        ])
+        .png()
+        .toBuffer()
+      await expect(validateDocsCodeCanvas(whiteEdge)).rejects.toThrow(
+        /white|edge|gutter/i,
+      )
+
+      const transparentEdge = await sharp({
+        create: {
+          background: { alpha: 0, b: 27, g: 24, r: 24 },
+          channels: 4,
+          height: 360,
+          width: 1080,
+        },
+      })
+        .png()
+        .toBuffer()
+      await expect(validateDocsCodeCanvas(transparentEdge)).rejects.toThrow(
+        /transparent|edge/i,
+      )
+    } finally {
+      await browser.close()
+    }
+  })
+
+  it('extracts visible Shiki lines and renders their whole-row window as one flow', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const captureVisibleDocsCodeEvidence = Reflect.get(
+      captureModule,
+      'captureVisibleDocsCodeEvidence',
+    )
+    const validateDocsCodeCanvas = Reflect.get(
+      captureModule,
+      'validateDocsCodeCanvas',
+    )
+
+    expect(captureVisibleDocsCodeEvidence).toBeTypeOf('function')
+    expect(validateDocsCodeCanvas).toBeTypeOf('function')
+    if (
+      typeof captureVisibleDocsCodeEvidence !== 'function' ||
+      typeof validateDocsCodeCanvas !== 'function'
+    ) {
+      return
+    }
+
+    const browser = await chromium.launch({ headless: true })
+    try {
+      const page = await browser.newPage()
+      const monoFontBase64 = (
+        await readFile(
+          path.join(
+            repoRoot,
+            'src/app/_fonts/GeistMono-Regular.ttf',
+          ),
+        )
+      ).toString('base64')
+      const rows = makeDocsCodeFixtureLines()
+        .map((line) => `<span class="line">${line.html}</span>`)
+        .join('')
+      await page.setContent(`
+        <main>
+          <pre id="visible-code"><code>${rows}</code></pre>
+        </main>
+      `)
+
+      const result = await captureVisibleDocsCodeEvidence(
+        browser,
+        page.locator('#visible-code'),
+        'line 8 long-source-token',
+        'synthetic visible Shiki integration',
+        monoFontBase64,
+      )
+      expect(result.anchorIndex).toBe(7)
+      expect(result.lines).toHaveLength(14)
+      expect(
+        result.selectedLines.map(
+          (line: { sourceLine: number }) => line.sourceLine,
+        ),
+      ).toEqual([4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+      await expect(
+        validateDocsCodeCanvas(result.png),
+      ).resolves.toBeUndefined()
+      await expect(sharp(result.png).metadata()).resolves.toMatchObject({
+        format: 'png',
+        height: 360,
+        width: 1080,
+      })
+
+      await page
+        .locator('#visible-code code')
+        .evaluate((code) => {
+          const duplicate = document.createElement('span')
+          duplicate.className = 'line'
+          duplicate.textContent = 'line 8 long-source-token duplicate'
+          code.append(duplicate)
+        })
+      await expect(
+        captureVisibleDocsCodeEvidence(
+          browser,
+          page.locator('#visible-code'),
+          'line 8 long-source-token',
+          'duplicate Shiki anchor integration',
+          monoFontBase64,
+        ),
+      ).rejects.toThrow(/matched 2 visible lines/i)
+    } finally {
+      await browser.close()
+    }
+  })
+
+  it('rejects escaped source and output paths before reading or writing', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const resolveCaptureOutputPath = Reflect.get(
+      captureModule,
+      'resolveCaptureOutputPath',
+    )
+    const resolveCaptureSourcePath = Reflect.get(
+      captureModule,
+      'resolveCaptureSourcePath',
+    )
+    const readCaptureSourceExcerpt = Reflect.get(
+      captureModule,
+      'readCaptureSourceExcerpt',
+    )
+    const writeValidatedCaptureBatch = Reflect.get(
+      captureModule,
+      'writeValidatedCaptureBatch',
+    )
+
+    expect(resolveCaptureOutputPath).toBeTypeOf('function')
+    expect(resolveCaptureSourcePath).toBeTypeOf('function')
+    expect(readCaptureSourceExcerpt).toBeTypeOf('function')
+    expect(writeValidatedCaptureBatch).toBeTypeOf('function')
+    if (
+      typeof resolveCaptureOutputPath !== 'function' ||
+      typeof resolveCaptureSourcePath !== 'function' ||
+      typeof readCaptureSourceExcerpt !== 'function' ||
+      typeof writeValidatedCaptureBatch !== 'function'
+    ) {
+      return
+    }
+
+    await expect(
+      resolveCaptureSourcePath('tests/int/demo-twins.int.spec.ts'),
+    ).resolves.toBe(
+      await realpath(path.join(repoRoot, 'tests/int/demo-twins.int.spec.ts')),
+    )
+
+    for (const escaped of ['../outside.ts', '/etc/passwd']) {
+      await expect(resolveCaptureSourcePath(escaped), escaped).rejects.toThrow(
+        /relative|outside|escape/i,
+      )
+    }
+
+    const sourcePanel = {
+      ...Reflect.get(captures[captures.length - 1], 'panels').at(-1),
+      sourcePath: '../outside.ts',
+    } as Parameters<typeof captureModule.readCaptureSourceExcerpt>[0]
+    await expect(readCaptureSourceExcerpt(sourcePanel)).rejects.toThrow(
+      /relative|outside|escape/i,
+    )
+
+    const validWebp = await sharp({
+      create: {
+        background: '#18181b',
+        channels: 4,
+        height: 900,
+        width: 1600,
+      },
+    })
+      .webp()
+      .toBuffer()
+    const writes: string[] = []
+    const outputRoot = await mkdtemp(
+      path.join(os.tmpdir(), 'blog-capture-lexical-'),
+    )
+    try {
+      await expect(
+        resolveCaptureOutputPath(
+          outputRoot,
+          'public/blog/example/figure.webp',
+        ),
+      ).resolves.toBe(
+        path.join(
+          await realpath(outputRoot),
+          'public/blog/example/figure.webp',
+        ),
+      )
+      for (const escaped of ['../outside.webp', '/tmp/outside.webp']) {
+        await expect(
+          resolveCaptureOutputPath(outputRoot, escaped),
+          escaped,
+        ).rejects.toThrow(/relative|outside|escape/i)
+      }
+
+      await expect(
+        writeValidatedCaptureBatch(
+          [
+            {
+              buffer: validWebp,
+              capture: {
+                ...captures[0],
+                outputPath: '../outside.webp',
+              },
+            },
+          ],
+          {
+            outputRoot,
+            writeOutput: async (outputPath: string) => {
+              writes.push(outputPath)
+            },
+          },
+        ),
+      ).rejects.toThrow(/relative|outside|escape/i)
+      expect(writes).toEqual([])
+    } finally {
+      await rm(outputRoot, { force: true, recursive: true })
+    }
+  })
+
+  it('preflights every canonical output destination before the first write', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const writeValidatedCaptureBatch = Reflect.get(
+      captureModule,
+      'writeValidatedCaptureBatch',
+    )
+
+    expect(writeValidatedCaptureBatch).toBeTypeOf('function')
+    if (typeof writeValidatedCaptureBatch !== 'function') return
+
+    const outputRoot = await mkdtemp(
+      path.join(os.tmpdir(), 'blog-capture-batch-'),
+    )
+    try {
+      const validWebp = await sharp({
+        create: {
+          background: '#18181b',
+          channels: 4,
+          height: 900,
+          width: 1600,
+        },
+      })
+        .webp()
+        .toBuffer()
+      const writes: string[] = []
+
+      await expect(
+        writeValidatedCaptureBatch(
+          [
+            {
+              buffer: validWebp,
+              capture: captures[0],
+            },
+            {
+              buffer: validWebp,
+              capture: {
+                ...captures[1],
+                outputPath: '../escaped-second.webp',
+              },
+            },
+          ],
+          {
+            outputRoot,
+            writeOutput: async (outputPath: string) => {
+              writes.push(outputPath)
+            },
+          },
+        ),
+      ).rejects.toThrow(/relative|outside|escape/i)
+      expect(writes).toEqual([])
+    } finally {
+      await rm(outputRoot, { force: true, recursive: true })
+    }
+  })
+
+  it('rejects source and output symlinks that escape canonical roots', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const readCaptureSourceExcerpt = Reflect.get(
+      captureModule,
+      'readCaptureSourceExcerpt',
+    )
+    const resolveCaptureOutputPath = Reflect.get(
+      captureModule,
+      'resolveCaptureOutputPath',
+    )
+    const resolveCaptureSourcePath = Reflect.get(
+      captureModule,
+      'resolveCaptureSourcePath',
+    )
+
+    expect(readCaptureSourceExcerpt).toBeTypeOf('function')
+    expect(resolveCaptureOutputPath).toBeTypeOf('function')
+    expect(resolveCaptureSourcePath).toBeTypeOf('function')
+    if (
+      typeof readCaptureSourceExcerpt !== 'function' ||
+      typeof resolveCaptureOutputPath !== 'function' ||
+      typeof resolveCaptureSourcePath !== 'function'
+    ) {
+      return
+    }
+
+    const fixtureRoot = await mkdtemp(
+      path.join(os.tmpdir(), 'blog-capture-paths-'),
+    )
+    const sourceRoot = path.join(fixtureRoot, 'source-root')
+    const outputRoot = path.join(fixtureRoot, 'output-root')
+    const outsideRoot = path.join(fixtureRoot, 'outside-root')
+    await Promise.all([
+      mkdir(sourceRoot, { recursive: true }),
+      mkdir(outputRoot, { recursive: true }),
+      mkdir(outsideRoot, { recursive: true }),
+    ])
+
+    try {
+      const insideSource = path.join(sourceRoot, 'inside.ts')
+      const outsideSource = path.join(outsideRoot, 'outside.ts')
+      const outsideOutput = path.join(outsideRoot, 'outside.webp')
+      await Promise.all([
+        writeFile(
+          insideSource,
+          'const missing = literals.flatMap((literal) => literal)\\n',
+        ),
+        writeFile(
+          outsideSource,
+          'const missing = literals.flatMap((literal) => literal)\\n',
+        ),
+        writeFile(outsideOutput, 'outside'),
+      ])
+      await Promise.all([
+        symlink(outsideSource, path.join(sourceRoot, 'escaped-source.ts')),
+        symlink(outsideOutput, path.join(outputRoot, 'escaped-target.webp')),
+        symlink(outsideRoot, path.join(outputRoot, 'escaped-parent')),
+      ])
+
+      const sourcePanel = {
+        ...Reflect.get(captures[captures.length - 1], 'panels').at(-1),
+        sourcePath: 'inside.ts',
+      } as Parameters<typeof captureModule.readCaptureSourceExcerpt>[0]
+      await expect(
+        readCaptureSourceExcerpt(sourcePanel, sourceRoot),
+      ).resolves.toMatchObject({
+        firstLine: 1,
+      })
+
+      const canonicalSourceRoot = await realpath(sourceRoot)
+      await expect(
+        resolveCaptureSourcePath('inside.ts', sourceRoot),
+      ).resolves.toBe(path.join(canonicalSourceRoot, 'inside.ts'))
+
+      await expect(
+        resolveCaptureSourcePath('escaped-source.ts', sourceRoot),
+      ).rejects.toThrow(/canonical|outside|escape|symlink/i)
+      await expect(
+        readCaptureSourceExcerpt(
+          {
+            ...sourcePanel,
+            sourcePath: 'escaped-source.ts',
+          },
+          sourceRoot,
+        ),
+      ).rejects.toThrow(/canonical|outside|escape|symlink/i)
+
+      await expect(
+        resolveCaptureOutputPath(outputRoot, 'escaped-target.webp'),
+      ).rejects.toThrow(/canonical|outside|escape|symlink/i)
+      await expect(
+        resolveCaptureOutputPath(
+          outputRoot,
+          'escaped-parent/deep/figure.webp',
+        ),
+      ).rejects.toThrow(/canonical|outside|escape|symlink/i)
+
+      const canonicalOutputRoot = await realpath(outputRoot)
+      await expect(
+        resolveCaptureOutputPath(
+          outputRoot,
+          'new/deep/figure.webp',
+        ),
+      ).resolves.toBe(
+        path.join(canonicalOutputRoot, 'new/deep/figure.webp'),
+      )
+    } finally {
+      await rm(fixtureRoot, { force: true, recursive: true })
+    }
+  })
+
+  it('fails capture when a visible image cannot decode', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const waitForTargetAssets = Reflect.get(captureModule, 'waitForTargetAssets')
+
+    expect(waitForTargetAssets).toBeTypeOf('function')
+    if (typeof waitForTargetAssets !== 'function') return
+
+    const browser = await chromium.launch({ headless: true })
+    try {
+      const page = await browser.newPage()
+      await page.setContent(`
+        <main id="capture-target">
+          <img
+            alt="Broken visible evidence"
+            height="40"
+            src="data:image/png;base64,not-a-valid-png"
+            width="40"
+          />
+        </main>
+      `)
+      await expect(
+        waitForTargetAssets(page, '#capture-target'),
+      ).rejects.toThrow(/broken visible evidence|decode|image/i)
+    } finally {
+      await browser.close()
+    }
+  })
+
+  it('embeds vendored Geist Mono in repository source evidence', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const renderSourceExcerptHtml = Reflect.get(
+      captureModule,
+      'renderSourceExcerptHtml',
+    )
+
+    expect(renderSourceExcerptHtml).toBeTypeOf('function')
+    if (typeof renderSourceExcerptHtml !== 'function') return
+
+    const sourcePanel = Reflect.get(
+      captures[captures.length - 1],
+      'panels',
+    ).at(-1) as Parameters<
+      typeof captureModule.renderSourceExcerptHtml
+    >[0]
+    const html = renderSourceExcerptHtml(
+      sourcePanel,
+      {
+        firstLine: 78,
+        lines: ['const missing = literals.flatMap((literal) => {'],
+      },
+      'dGVzdA==',
+    )
+    expect(html).toContain("@font-face")
+    expect(html).toContain("font-family: 'Capture Mono'")
+    expect(html).toContain('data:font/ttf;base64,dGVzdA==')
+    expect(html).not.toMatch(/SFMono|Menlo|Monaco/)
+  })
+
+  it('encodes deterministic 1600 by 900 WebP and preflights the batch before writes', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const encodeCaptureWebp = Reflect.get(captureModule, 'encodeCaptureWebp')
+    const webpEncodingOptions = Reflect.get(
+      captureModule,
+      'webpEncodingOptions',
+    )
+    const writeValidatedCaptureBatch = Reflect.get(
+      captureModule,
+      'writeValidatedCaptureBatch',
+    )
+
+    expect(encodeCaptureWebp).toBeTypeOf('function')
+    expect(webpEncodingOptions).toEqual({ effort: 6, quality: 86 })
+    expect(Object.isFrozen(webpEncodingOptions)).toBe(true)
+    expect(writeValidatedCaptureBatch).toBeTypeOf('function')
+    if (
+      typeof encodeCaptureWebp !== 'function' ||
+      typeof writeValidatedCaptureBatch !== 'function'
+    ) {
+      return
+    }
+
+    const png = await sharp({
+      create: {
+        background: '#f7f5ef',
+        channels: 4,
+        height: 900,
+        width: 1600,
+      },
+    })
+      .png()
+      .toBuffer()
+    const [first, second] = await Promise.all([
+      encodeCaptureWebp(png),
+      encodeCaptureWebp(png),
+    ])
+    const metadata = await sharp(first).metadata()
+
+    expect(first.equals(second)).toBe(true)
+    expect({
+      format: metadata.format,
+      height: metadata.height,
+      width: metadata.width,
+    }).toEqual({ format: 'webp', height: 900, width: 1600 })
+    expect(first.byteLength).toBeLessThanOrEqual(358_400)
+
+    const writes: string[] = []
+    await expect(
+      writeValidatedCaptureBatch(
+        [
+          { buffer: first, capture: captures[0] },
+          { buffer: Buffer.from('not an image'), capture: captures[1] },
+        ],
+        {
+          outputRoot: repoRoot,
+          writeOutput: async (outputPath: string) => {
+            writes.push(outputPath)
+          },
+        },
+      ),
+    ).rejects.toThrow(/capture batch.*before writing/i)
+    expect(writes).toEqual([])
+  })
+
+  it('keeps the eight figure descriptions exact and removes stale montage claims', async () => {
+    const expected = {
+      'build-first-payload-v3-landing-page': {
+        alt: 'A Field Journal montage of three repository demo fixtures—Hero Basic, Feature Bento, and Call To Action Centered—beside the real Testimonials Grid config shown in component documentation',
+        caption:
+          'The three previews are labeled structure-only fixtures, not one live page or product claim; the documentation panel shows the source-backed testimonial contract used in a real composition.',
+      },
+      'build-payload-blog-frontend': {
+        alt: 'The real blog index route beside the What Is a Payload CMS Block article route, captured from the local production site',
+        caption:
+          'The same committed editorial library appears as an image-led index and a full article page; these are actual site surfaces, not a catalog of unshipped post components.',
+      },
+      'build-saas-homepage': {
+        alt: 'Four source-backed component contract panels for Hero Basic, Logo Cloud Grid, Feature Bento, and Pricing Cards, labeled by their homepage jobs',
+        caption:
+          'This is a contract inventory for promise, proof slot, explanation, and commitment—not a fictional assembled product page or a complete eight-section template.',
+      },
+      'choosing-payload-hero': {
+        alt: 'Hero Basic’s repository demo fixture at desktop and mobile widths, its catalog card, and the source-backed config shown in the Hero Basic documentation',
+        caption:
+          'Fixture labels separate responsive layout evidence from real project claims; the catalog identifies the shipped item, and the Code tab exposes the Payload field contract behind it.',
+      },
+      'demo-twins': {
+        alt: 'A structure-only Hero Basic demo fixture beside the Hero Basic documentation Code tab and the real class-token mirror assertion from the demo-twin integration test',
+        caption:
+          'The preview is explicitly labeled as fixture content; the source and test panels show how the docs site mirrors shipped class tokens without importing the Payload runtime.',
+      },
+      'editor-friendly-feature-sections': {
+        alt: 'Four structure-only repository demo fixtures comparing Feature Bento, Feature Split, Feature Steps, and Feature Grid Basic at the same capture width',
+        caption:
+          'These labeled fixtures compare reading rhythm only: uneven emphasis, two-column split, ordered steps, and peer cards. Replace the fixture copy with uneven real content before choosing.',
+      },
+      'modeling-pricing-pages': {
+        alt: 'Source-backed documentation and config panels comparing Pricing Cards, Pricing Cards Muted, Pricing Split, and Pricing Enterprise without displaying fictional prices',
+        caption:
+          'The contracts reveal the structural differences: cards and muted cards allow two to four plans, split requires two, and enterprise adds a single-plan layout with optional logos.',
+      },
+      'social-proof-sections': {
+        alt: 'Source-backed documentation and config panels for Logo Cloud Grid, Testimonials Grid, Testimonials Rating, and Testimonials Quote without displaying fictional endorsements',
+        caption:
+          'The contracts separate editable logo records, a grid of attributed quotes, bounded one-to-five ratings, and a single featured quote; credibility still comes from verified content.',
+      },
+    } as const
+
+    for (const [slug, copy] of Object.entries(expected)) {
+      const capture = captures.find((candidate) => Reflect.get(candidate, 'slug') === slug)
+      expect(capture, slug).toBeDefined()
+      if (!capture) continue
+      const figurePath = `/${Reflect.get(capture, 'outputPath').replace(/^public\//, '')}`
+      const actual = await getInlineFigureCopy(slug, figurePath)
+      expect(actual.alt, `${slug}: alt`).toBe(copy.alt)
+      expect(actual.caption, `${slug}: caption`).toBe(copy.caption)
+      expect(`${actual.alt}\n${actual.caption}`, slug).not.toMatch(
+        /coherent page|five structures|spotlight|eight families|catalog montage/i,
+      )
+    }
+  })
+})
 
 const fabricatedPresentationMarkers = [
   {
