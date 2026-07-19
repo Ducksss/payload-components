@@ -336,7 +336,24 @@ const addRoutePreview = async (
   return { ...artifact, previewDataUrl }
 }
 
-export const assertSourceCardsFit = async (
+type LineRenderedArtifact = Extract<
+  CoverArtifact,
+  { kind: 'diff' | 'registry-item' | 'source' }
+>
+
+const isLineRenderedArtifact = (
+  artifact: CoverArtifact,
+): artifact is LineRenderedArtifact =>
+  artifact.kind === 'diff' ||
+  artifact.kind === 'registry-item' ||
+  artifact.kind === 'source'
+
+const expectedRenderedLines = (artifact: LineRenderedArtifact) =>
+  artifact.kind === 'diff'
+    ? [...artifact.before, ...artifact.after]
+    : artifact.evidence.split(/\r?\n/).map((line) => line || ' ')
+
+export const assertCodeArtifactCardsFit = async (
   page: Page,
   slug: string,
   artifacts: CoverArtifacts,
@@ -345,22 +362,25 @@ export const assertSourceCardsFit = async (
 
   for (const role of ['primary', 'secondary'] as const) {
     const artifact = artifacts[role]
-    if (artifact.kind !== 'source') continue
+    if (!isLineRenderedArtifact(artifact)) continue
 
     const region = page.locator(
-      `[data-cover-part="${role}"][data-artifact-kind="source"]`,
+      `[data-cover-part="${role}"][data-artifact-kind="${artifact.kind}"]`,
     )
     const matches = await region.count()
+    const context = `${slug}:${role} [${artifact.kind}]`
 
     if (matches !== 1) {
-      violations.push(`${slug}:${role} matched ${matches} source cards`)
+      violations.push(`${context} matched ${matches} code-artifact cards`)
       continue
     }
 
     const layout = await region.evaluate((element) => {
       const body = element.querySelector<HTMLElement>('.artifact-body')
-      const sheet = element.querySelector<HTMLElement>('.code-sheet')
-      const lines = [...element.querySelectorAll<HTMLElement>('.code-line')]
+      const sheet = element.querySelector<HTMLElement>('.code-sheet, .diff-sheet')
+      const lines = [
+        ...element.querySelectorAll<HTMLElement>('.code-line, .diff-line'),
+      ]
 
       if (!body || !sheet) {
         return {
@@ -407,8 +427,7 @@ export const assertSourceCardsFit = async (
         }`,
       }
     })
-    const context = `${slug}:${role}`
-    const expectedLines = artifact.evidence.split(/\r?\n/).map((line) => line || ' ')
+    const expectedLines = expectedRenderedLines(artifact)
 
     if (layout.bodyScroll !== '0x0') {
       violations.push(`${context} body scroll ${layout.bodyScroll}`)
@@ -428,7 +447,7 @@ export const assertSourceCardsFit = async (
   }
 
   if (violations.length > 0) {
-    throw new Error(`Source-card preflight failed:\n${violations.join('\n')}`)
+    throw new Error(`Code-artifact preflight failed:\n${violations.join('\n')}`)
   }
 }
 
@@ -446,7 +465,7 @@ const renderCoverPng = async (
   try {
     await page.setContent(renderCoverHtml(entry, artifacts, fontData), { waitUntil: 'load' })
     await waitForDocumentAssets(page)
-    await assertSourceCardsFit(page, entry.slug, artifacts)
+    await assertCodeArtifactCardsFit(page, entry.slug, artifacts)
     return await page.screenshot({ animations: 'disabled', type: 'png' })
   } finally {
     await page.close()

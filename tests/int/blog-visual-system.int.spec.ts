@@ -2071,10 +2071,13 @@ describe('Community Field Journal visual catalog', () => {
 
   it('rejects unreadable source cards before production screenshots', async () => {
     const renderModule = await import('../../tools/blog/render-covers')
-    const assertSourceCardsFit = Reflect.get(renderModule, 'assertSourceCardsFit')
+    const assertCodeArtifactCardsFit = Reflect.get(
+      renderModule,
+      'assertCodeArtifactCardsFit',
+    )
 
-    expect(assertSourceCardsFit).toBeTypeOf('function')
-    if (typeof assertSourceCardsFit !== 'function') return
+    expect(assertCodeArtifactCardsFit).toBeTypeOf('function')
+    if (typeof assertCodeArtifactCardsFit !== 'function') return
 
     const browser = await chromium.launch({ headless: true })
 
@@ -2092,7 +2095,7 @@ describe('Community Field Journal visual catalog', () => {
       `)
 
       await expect(
-        assertSourceCardsFit(page, 'source-preflight-fixture', {
+        assertCodeArtifactCardsFit(page, 'source-preflight-fixture', {
           primary: {
             anchor: 'first',
             evidence: 'first\nsecond',
@@ -2116,7 +2119,142 @@ describe('Community Field Journal visual catalog', () => {
     }
   })
 
-  it('keeps every source line readable and fully inside its artifact card', async () => {
+  it('rejects clipped diff cards before production screenshots', async () => {
+    const renderModule = await import('../../tools/blog/render-covers')
+    const assertCodeArtifactCardsFit = Reflect.get(
+      renderModule,
+      'assertCodeArtifactCardsFit',
+    )
+
+    expect(assertCodeArtifactCardsFit).toBeTypeOf('function')
+    if (typeof assertCodeArtifactCardsFit !== 'function') return
+
+    const browser = await chromium.launch({ headless: true })
+
+    try {
+      const page = await browser.newPage({ viewport: { height: 630, width: 1200 } })
+      await page.setContent(`
+        <section data-cover-part="secondary" data-artifact-kind="diff">
+          <div class="artifact-body" style="height: 20px; overflow: hidden">
+            <div class="code-sheet">
+              <span class="code-line"><code style="font-size: 8px">before</code></span>
+              <span class="code-line"><code style="font-size: 8px">after</code></span>
+            </div>
+          </div>
+        </section>
+      `)
+
+      await expect(
+        assertCodeArtifactCardsFit(page, 'diff-preflight-fixture', {
+          primary: {
+            evidence: 'done',
+            items: ['done'],
+            kind: 'sequence',
+            label: 'Fixture sequence',
+            provenance: 'tools/blog/visual-system/catalog.ts',
+          },
+          secondary: {
+            after: ['after'],
+            anchor: 'after',
+            before: ['before'],
+            evidence: 'before\nafter',
+            kind: 'diff',
+            label: 'Clipped diff',
+            path: 'fixture.ts',
+            provenance: 'fixture.ts',
+          },
+        }),
+      ).rejects.toThrow(/diff-preflight-fixture:secondary \[diff\].*font 8px/s)
+    } finally {
+      await browser.close()
+    }
+  })
+
+  it('fits the complete text-anchor Before and After mapping inside its diff card', async () => {
+    const { artifacts, html } = await renderCatalogCover('text-anchors-vs-ast')
+    const artifact = artifacts.secondary
+
+    expect(artifact.kind).toBe('diff')
+    if (artifact.kind !== 'diff') return
+
+    const browser = await chromium.launch({ headless: true })
+
+    try {
+      const page = await browser.newPage({ viewport: { height: 630, width: 1200 } })
+      await page.setContent(html)
+      await page.evaluate(async () => await document.fonts.ready)
+
+      const region = page.locator(
+        '[data-cover-part="secondary"][data-artifact-kind="diff"]',
+      )
+      expect(await region.count()).toBe(1)
+
+      const layout = await region.evaluate((element) => {
+        const body = element.querySelector<HTMLElement>('.artifact-body')
+        const sheet = element.querySelector<HTMLElement>('.code-sheet, .diff-sheet')
+        const lines = [
+          ...element.querySelectorAll<HTMLElement>('.code-line, .diff-line'),
+        ]
+
+        if (!body || !sheet) {
+          return {
+            bodyScroll: 'missing',
+            clipped: ['missing'] as Array<number | 'missing'>,
+            fontSize: 0,
+            renderedLines: [] as string[],
+            sheetScroll: 'missing',
+          }
+        }
+
+        const bodyRect = body.getBoundingClientRect()
+        const sheetRect = sheet.getBoundingClientRect()
+        const tolerance = 0.5
+        const clipped = lines.flatMap((line, index) => {
+          const rect = line.getBoundingClientRect()
+          const insideBody =
+            rect.left >= bodyRect.left - tolerance &&
+            rect.right <= bodyRect.right + tolerance &&
+            rect.top >= bodyRect.top - tolerance &&
+            rect.bottom <= bodyRect.bottom + tolerance
+          const insideSheet =
+            rect.left >= sheetRect.left - tolerance &&
+            rect.right <= sheetRect.right + tolerance &&
+            rect.top >= sheetRect.top - tolerance &&
+            rect.bottom <= sheetRect.bottom + tolerance
+
+          return insideBody && insideSheet ? [] : [index + 1]
+        })
+        const fontSizes = lines.map((line) => {
+          const code = line.querySelector('code')
+          return code ? Number.parseFloat(getComputedStyle(code).fontSize) : 0
+        })
+
+        return {
+          bodyScroll: `${body.scrollWidth - body.clientWidth}x${
+            body.scrollHeight - body.clientHeight
+          }`,
+          clipped,
+          fontSize: fontSizes.length > 0 ? Math.min(...fontSizes) : 0,
+          renderedLines: lines.map((line) => line.querySelector('code')?.textContent ?? ''),
+          sheetScroll: `${sheet.scrollWidth - sheet.clientWidth}x${
+            sheet.scrollHeight - sheet.clientHeight
+          }`,
+        }
+      })
+
+      expect(layout.bodyScroll).toBe('0x0')
+      expect(layout.sheetScroll).toBe('0x0')
+      expect(layout.clipped).toEqual([])
+      expect(layout.fontSize).toBeGreaterThanOrEqual(12)
+      expect(layout.renderedLines).toEqual([...artifact.before, ...artifact.after])
+      expect(await region.locator('.diff-panel--before').count()).toBe(1)
+      expect(await region.locator('.diff-panel--after').count()).toBe(1)
+    } finally {
+      await browser.close()
+    }
+  })
+
+  it('keeps every code-artifact line readable and fully inside its card', async () => {
     const browser = await chromium.launch({ headless: true })
     const violations: string[] = []
 
@@ -2130,22 +2268,31 @@ describe('Community Field Journal visual catalog', () => {
 
         for (const role of ['primary', 'secondary'] as const) {
           const artifact = artifacts[role]
-          if (artifact.kind !== 'source') continue
+          if (
+            artifact.kind !== 'source' &&
+            artifact.kind !== 'registry-item' &&
+            artifact.kind !== 'diff'
+          ) {
+            continue
+          }
 
           const region = page.locator(
-            `[data-cover-part="${role}"][data-artifact-kind="source"]`,
+            `[data-cover-part="${role}"][data-artifact-kind="${artifact.kind}"]`,
           )
           const matches = await region.count()
+          const context = `${entry.slug}:${role} [${artifact.kind}]`
 
           if (matches !== 1) {
-            violations.push(`${entry.slug}:${role} matched ${matches} source cards`)
+            violations.push(`${context} matched ${matches} code-artifact cards`)
             continue
           }
 
           const layout = await region.evaluate((element) => {
             const body = element.querySelector<HTMLElement>('.artifact-body')
-            const sheet = element.querySelector<HTMLElement>('.code-sheet')
-            const lines = [...element.querySelectorAll<HTMLElement>('.code-line')]
+            const sheet = element.querySelector<HTMLElement>('.code-sheet, .diff-sheet')
+            const lines = [
+              ...element.querySelectorAll<HTMLElement>('.code-line, .diff-line'),
+            ]
 
             if (!body || !sheet) {
               return {
@@ -2194,26 +2341,27 @@ describe('Community Field Journal visual catalog', () => {
               }`,
             }
           })
-          const expectedLines = artifact.evidence
-            .split(/\r?\n/)
-            .map((line) => line || ' ')
+          const expectedLines =
+            artifact.kind === 'diff'
+              ? [...artifact.before, ...artifact.after]
+              : artifact.evidence.split(/\r?\n/).map((line) => line || ' ')
 
           if (layout.bodyScroll !== '0x0') {
-            violations.push(`${entry.slug}:${role} body scroll ${layout.bodyScroll}`)
+            violations.push(`${context} body scroll ${layout.bodyScroll}`)
           }
           if (layout.sheetScroll !== '0x0') {
-            violations.push(`${entry.slug}:${role} sheet scroll ${layout.sheetScroll}`)
+            violations.push(`${context} sheet scroll ${layout.sheetScroll}`)
           }
           if (layout.clipped.length > 0) {
             violations.push(
-              `${entry.slug}:${role} clipped lines ${layout.clipped.join(',')}`,
+              `${context} clipped lines ${layout.clipped.join(',')}`,
             )
           }
           if (layout.fontSize < 12) {
-            violations.push(`${entry.slug}:${role} font ${layout.fontSize}px`)
+            violations.push(`${context} font ${layout.fontSize}px`)
           }
           if (JSON.stringify(layout.renderedLines) !== JSON.stringify(expectedLines)) {
-            violations.push(`${entry.slug}:${role} rendered text differs from evidence`)
+            violations.push(`${context} rendered text differs from evidence`)
           }
         }
       }

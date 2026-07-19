@@ -53,6 +53,35 @@ const codeEvidence = (evidence: string) => {
   return `<div class="code-sheet ${evidenceDensity(lines.length)}">${renderedLines}</div>`
 }
 
+const diffLines = (
+  lines: readonly string[],
+  side: 'after' | 'before',
+  counterpart: readonly string[],
+) =>
+  lines
+    .map((line) => {
+      const changed = !counterpart.includes(line)
+      const marker = changed ? (side === 'before' ? '−' : '+') : '·'
+
+      return `<span class="diff-line${changed ? ` diff-line--${side}` : ''}">
+        <i aria-hidden="true">${marker}</i>
+        <code>${escapeHtml(line || ' ')}</code>
+      </span>`
+    })
+    .join('')
+
+const diffEvidence = (artifact: Extract<CoverArtifact, { kind: 'diff' }>) =>
+  `<div class="diff-sheet">
+    <section class="diff-panel diff-panel--before">
+      <header><strong>Before</strong><span>${artifact.before.length} lines</span></header>
+      <div class="diff-lines">${diffLines(artifact.before, 'before', artifact.after)}</div>
+    </section>
+    <section class="diff-panel diff-panel--after">
+      <header><strong>After</strong><span>${artifact.after.length} lines</span></header>
+      <div class="diff-lines">${diffLines(artifact.after, 'after', artifact.before)}</div>
+    </section>
+  </div>`
+
 const sequenceEvidence = (artifact: Extract<CoverArtifact, { kind: 'sequence' }>) =>
   `<div class="sequence-flow">
     ${artifact.items
@@ -102,9 +131,10 @@ const artifactEvidence = (artifact: CoverArtifact) => {
       return commandEvidence(artifact)
     case 'route':
       return routeEvidence(artifact)
+    case 'diff':
+      return diffEvidence(artifact)
     case 'source':
     case 'registry-item':
-    case 'diff':
       return codeEvidence(artifact.evidence)
   }
 }
@@ -450,6 +480,99 @@ const coverCss = `
   .code-sheet--regular .code-line { font-size: 12px; line-height: 1.32; min-height: 18px; }
   .code-sheet--compact .code-line { font-size: 10.5px; line-height: 1.23; min-height: 14px; }
   .code-sheet--dense .code-line { font-size: 8.5px; line-height: 1.12; min-height: 10px; }
+
+  .artifact[data-artifact-kind='diff'] .artifact-body {
+    padding: 7px;
+  }
+
+  .diff-sheet {
+    display: grid;
+    gap: 4px;
+    grid-template-rows: auto auto;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .diff-panel {
+    background: var(--journal-white);
+    border-left: 3px solid var(--journal-zinc);
+    min-height: 0;
+    padding: 3px 7px 4px 0;
+  }
+
+  .diff-panel--after {
+    border-left-color: var(--journal-emerald);
+  }
+
+  .diff-panel > header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    min-height: 14px;
+    padding-left: 7px;
+  }
+
+  .diff-panel > header strong,
+  .diff-panel > header span {
+    font-family: 'Journal Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .diff-panel > header strong {
+    color: var(--journal-emerald-dark);
+  }
+
+  .diff-panel > header span {
+    color: var(--journal-ink-muted);
+  }
+
+  .diff-lines {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .diff-line {
+    align-items: baseline;
+    display: grid;
+    flex: 0 0 auto;
+    grid-template-columns: 18px minmax(0, 1fr);
+    min-height: 15px;
+  }
+
+  .diff-line i {
+    color: var(--journal-ink-muted);
+    font-family: 'Journal Mono', monospace;
+    font-size: 10px;
+    font-style: normal;
+    padding-left: 7px;
+  }
+
+  .diff-line code {
+    color: var(--journal-graphite);
+    font-family: 'Journal Mono', monospace;
+    font-size: 12px;
+    line-height: 1.18;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  .diff-line--before {
+    background: var(--journal-zinc-soft);
+  }
+
+  .diff-line--after {
+    background: color-mix(in srgb, var(--journal-emerald) 10%, var(--journal-white));
+  }
+
+  .diff-line--before i,
+  .diff-line--after i {
+    color: var(--journal-emerald-dark);
+    font-weight: 700;
+  }
 
   .sequence-flow {
     align-items: stretch;
