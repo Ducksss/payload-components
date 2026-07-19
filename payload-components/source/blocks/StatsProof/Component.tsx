@@ -52,11 +52,14 @@ export const StatsProofBlock: React.FC<Props> = ({
             {metrics && metrics.length > 0 ? (
               <dl className="grid grid-cols-2 gap-x-6 gap-y-8">
                 {metrics.map((metric, index) => (
-                  <div key={metric.id ?? `${metric.value}-${index}`} className="border-t border-border/70 pt-5">
+                  <div
+                    key={metric.id ?? `${metric.value}-${index}`}
+                    className="flex flex-col-reverse border-t border-border/70 pt-5"
+                  >
+                    <dt className="mt-2 text-sm leading-6 text-muted-foreground">{metric.label}</dt>
                     <dd className="text-4xl font-medium tracking-display text-foreground sm:text-5xl">
                       {metric.value}
                     </dd>
-                    <dt className="mt-2 text-sm leading-6 text-muted-foreground">{metric.label}</dt>
                   </div>
                 ))}
               </dl>

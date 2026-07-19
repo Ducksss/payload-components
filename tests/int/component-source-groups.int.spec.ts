@@ -24,4 +24,18 @@ describe('component source groups', () => {
       },
     ])
   })
+
+  it('coalesces files without a directory into the root group', () => {
+    const files = [{ title: 'config.ts' }, { title: 'Component.tsx' }]
+
+    expect(groupComponentSourceFiles(files)).toEqual([
+      {
+        dir: '.',
+        items: [
+          { file: files[0], index: 0 },
+          { file: files[1], index: 1 },
+        ],
+      },
+    ])
+  })
 })
