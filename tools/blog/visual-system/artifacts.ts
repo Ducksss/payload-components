@@ -356,8 +356,10 @@ const resolveDiff = async (
 
   return {
     ...artifact,
-    evidence: `Before:\n${artifact.before.join('\n')}\nAfter:\n${artifact.after.join('\n')}`,
-    provenance: `${artifact.path}#${sourceAnchor.trim()}`,
+    evidence: `Source anchor:\n${sourceAnchor}\n\nBefore:\n${artifact.before.join(
+      '\n',
+    )}\n\nAfter:\n${artifact.after.join('\n')}`,
+    provenance: artifact.path,
   }
 }
 

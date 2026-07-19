@@ -1332,6 +1332,26 @@ describe('Community Field Journal visual catalog', () => {
     expect(modeCounts).toEqual({ inspect: 7, join: 3, see: 8, trace: 17 })
   })
 
+  it('preserves source-anchor-backed diff evidence for diagram hydration', async () => {
+    const entry = blogVisualCatalog.find(
+      (candidate) => candidate.slug === 'text-anchors-vs-ast',
+    )
+    expect(entry).toBeDefined()
+    if (!entry) return
+
+    const artifact = entry.secondary
+    expect(artifact.kind).toBe('diff')
+    if (artifact.kind !== 'diff') return
+
+    const resolved = await resolveArtifact(artifact)
+
+    expect(resolved.provenance).toBe(artifact.path)
+    expect(resolved.evidence).toMatch(/^Source anchor:\n[^\n]+/)
+    expect(resolved.evidence).toContain(
+      `\n\nBefore:\n${artifact.before.join('\n')}\n\nAfter:\n${artifact.after.join('\n')}`,
+    )
+  })
+
   it('resolves every artifact from repository-backed evidence without fabricated social proof', async () => {
     await expect(validateBlogVisualCatalog()).resolves.toBeUndefined()
 
@@ -2136,9 +2156,13 @@ describe('Community Field Journal visual catalog', () => {
       await page.setContent(`
         <section data-cover-part="secondary" data-artifact-kind="diff">
           <div class="artifact-body" style="height: 20px; overflow: hidden">
-            <div class="code-sheet">
-              <span class="code-line"><code style="font-size: 8px">before</code></span>
-              <span class="code-line"><code style="font-size: 8px">after</code></span>
+            <div class="code-sheet" style="height: 48px; width: 200px">
+              <span class="code-line" style="display: block; height: 24px">
+                <code style="font-size: 12px; line-height: 24px">before</code>
+              </span>
+              <span class="code-line" style="display: block; height: 24px">
+                <code style="font-size: 12px; line-height: 24px">after</code>
+              </span>
             </div>
           </div>
         </section>
@@ -2164,7 +2188,9 @@ describe('Community Field Journal visual catalog', () => {
             provenance: 'fixture.ts',
           },
         }),
-      ).rejects.toThrow(/diff-preflight-fixture:secondary \[diff\].*font 8px/s)
+      ).rejects.toThrow(
+        /diff-preflight-fixture:secondary \[diff\] body scroll 0x28.*diff-preflight-fixture:secondary \[diff\] clipped lines 1,2/s,
+      )
     } finally {
       await browser.close()
     }
