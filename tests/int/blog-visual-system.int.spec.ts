@@ -173,6 +173,15 @@ async function renderCatalogCover(slug: string) {
   }
 }
 
+async function getCoverAlt(slug: string) {
+  const source = await readFile(path.join(blogRoot, `${slug}.mdx`), 'utf8')
+  const frontmatter = source.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? ''
+  return frontmatter
+    .match(/^\s*alt:\s*(.+)$/m)?.[1]
+    ?.trim()
+    .replace(/^['"]|['"]$/g, '')
+}
+
 function coverPartCount(html: string, part: string) {
   return html.match(new RegExp(`data-cover-part="${part}"`, 'g'))?.length ?? 0
 }
@@ -366,6 +375,134 @@ describe('Community Field Journal visual catalog', () => {
     )
   })
 
+  it('keeps explicitly fictional hero demo claims out of every published cover', async () => {
+    const landing = blogVisualCatalog.find(
+      (entry) => entry.slug === 'build-first-payload-v3-landing-page',
+    )
+    const choosingHero = blogVisualCatalog.find(
+      (entry) => entry.slug === 'choosing-payload-hero',
+    )
+    const demoTwins = blogVisualCatalog.find((entry) => entry.slug === 'demo-twins')
+
+    expect(landing?.primary).toMatchObject({
+      kind: 'registry-item',
+      label: 'Hero Basic registry files',
+      name: 'hero-basic',
+    })
+    expect(choosingHero?.primary).toMatchObject({
+      anchor: "name: 'description'",
+      kind: 'source',
+      label: 'Hero description and CTA constraints',
+      path: 'payload-components/source/blocks/shared/heroFields.ts',
+      take: 11,
+    })
+    expect(choosingHero?.secondary).toMatchObject({
+      items: ['message', 'media', 'action', 'editor limits'],
+      kind: 'sequence',
+      label: 'Article hero-selection checklist',
+    })
+    expect(demoTwins?.secondary).toMatchObject({
+      items: ['aria-hidden roots', 'no links', 'no buttons', 'no headings'],
+      kind: 'sequence',
+      label: 'Presentational twin guard',
+    })
+
+    expect(await getCoverAlt('build-first-payload-v3-landing-page')).toBe(
+      'Hero Basic registry files beside a fail-fast shell loop that installs the hero, logo cloud, feature, FAQ, and call-to-action blocks.',
+    )
+    expect(await getCoverAlt('choosing-payload-hero')).toBe(
+      "Hero description and CTA field constraints beside the article's message, media, action, and editor-workflow checklist.",
+    )
+    expect(await getCoverAlt('demo-twins')).toBe(
+      'Class-name fidelity assertion beside the aria-hidden, no-links, no-buttons, and no-headings guard for presentational demo twins.',
+    )
+
+    for (const entry of blogVisualCatalog) {
+      const { html } = await renderCatalogCover(entry.slug)
+      expect(html, entry.slug).not.toMatch(
+        /Acme Cloud|Ship customer dashboards in days, not quarters|Acme gives product teams/i,
+      )
+    }
+  })
+
+  it('names all seven contribution surfaces shown by the source excerpt', async () => {
+    const contribution = blogVisualCatalog.find(
+      (entry) => entry.slug === 'contribute-payload-component',
+    )
+
+    expect(contribution?.thesis).toBe('A component ships as one connected bundle.')
+    expect(contribution?.secondary).toMatchObject({
+      items: [
+        'source',
+        'manifest',
+        'registry',
+        'demo twin',
+        'catalog + ledgers',
+        'docs',
+        'tests',
+      ],
+      kind: 'sequence',
+      label: 'Seven contribution surfaces',
+    })
+    expect(await getCoverAlt('contribute-payload-component')).toBe(
+      'Add-a-component workflow beside seven required surfaces: source, manifest, registry, demo twin, catalog and ledgers, docs, and installer tests.',
+    )
+  })
+
+  it('frames the registry comparison check within the broader build pipeline', async () => {
+    const reproducibility = blogVisualCatalog.find(
+      (entry) => entry.slug === 'reproducible-shadcn-registry',
+    )
+
+    expect(reproducibility?.primary).toMatchObject({
+      anchor: 'assertEqual(publicRegistry, sourceRegistry',
+      kind: 'source',
+      label: 'Generated registry comparison check',
+      take: 3,
+    })
+    expect(reproducibility?.secondary).toMatchObject({
+      items: ['checkout', 'build', 'validate', 'compare'],
+      kind: 'sequence',
+      label: 'Broader registry pipeline',
+    })
+    expect(await getCoverAlt('reproducible-shadcn-registry')).toBe(
+      'Generated registry comparison check shown within the broader checkout, build, validation, and comparison pipeline.',
+    )
+  })
+
+  it('labels reduced motion as article guidance rather than shown component behavior', async () => {
+    const faq = blogVisualCatalog.find(
+      (entry) => entry.slug === 'accessible-faq-blocks',
+    )
+
+    expect(faq?.secondary).toMatchObject({
+      items: ['button', 'expanded state', 'content region', 'keyboard', 'reduced motion'],
+      kind: 'sequence',
+      label: 'Article accessibility checklist',
+    })
+    expect(await getCoverAlt('accessible-faq-blocks')).toBe(
+      "FAQ Accordion component source beside the article's accessibility checklist for buttons, expanded state, content regions, keyboard handling, and reduced motion.",
+    )
+  })
+
+  it('uses the same homepage-stage vocabulary in cover text and alt copy', async () => {
+    const homepage = blogVisualCatalog.find(
+      (entry) => entry.slug === 'build-saas-homepage',
+    )
+
+    expect(homepage?.secondary).toMatchObject({
+      items: ['Promise', 'proof', 'explanation', 'trust', 'action'],
+      kind: 'sequence',
+      label: 'Homepage blueprint',
+    })
+    expect(homepage?.prompt).toBe(
+      "Map the smallest sequence that makes the page's argument clear.",
+    )
+    expect(await getCoverAlt('build-saas-homepage')).toBe(
+      'Hero Basic, Logo Cloud Grid, Feature Bento, and Pricing Cards catalog results beside a homepage sequence from promise through proof, explanation, trust, and action.',
+    )
+  })
+
   it('varies the twelve-column composition without weakening evidence hierarchy', async () => {
     const hello = await renderCatalogCover('hello')
     const anatomy = await renderCatalogCover('anatomy-of-an-install')
@@ -433,11 +570,34 @@ describe('Community Field Journal visual catalog', () => {
     }
   })
 
+  it('makes every multi-component install loop fail fast', () => {
+    const landing = blogVisualCatalog.find(
+      (entry) => entry.slug === 'build-first-payload-v3-landing-page',
+    )
+    const sharedFields = blogVisualCatalog.find(
+      (entry) => entry.slug === 'shared-fields-across-component-families',
+    )
+
+    expect(landing?.secondary).toMatchObject({
+      command:
+        'for b in hero-basic logo-cloud-grid feature-bento faq-accordion call-to-action-centered; do npx payload-components add "$b" || exit 1; done',
+      kind: 'command',
+    })
+    expect(sharedFields?.secondary).toMatchObject({
+      command:
+        'for b in feature-grid-basic feature-split feature-bento feature-steps; do npx payload-components add "$b" || exit 1; done',
+      kind: 'command',
+    })
+  })
+
   it('keeps corroborating sequences concise enough to scan', () => {
     for (const entry of blogVisualCatalog) {
       for (const artifact of [entry.primary, entry.secondary]) {
         if (artifact.kind === 'sequence') {
-          expect(artifact.items.length, `${entry.slug}: ${artifact.label}`).toBeLessThanOrEqual(5)
+          const maximumItems = entry.slug === 'contribute-payload-component' ? 7 : 5
+          expect(artifact.items.length, `${entry.slug}: ${artifact.label}`).toBeLessThanOrEqual(
+            maximumItems,
+          )
         }
       }
     }
@@ -620,7 +780,7 @@ describe('Community Field Journal visual catalog', () => {
       },
       kind: 'route',
       label: 'Feature family catalog results',
-      route: '/components?q=feature',
+      route: '/components?category=features',
     })
     expect(homepage?.primary).toMatchObject({
       capture: {
@@ -634,7 +794,7 @@ describe('Community Field Journal visual catalog', () => {
     })
   })
 
-  it('scrolls to and crops an explicitly selected route artifact', async () => {
+  it('composes explicitly selected route artifacts in selector order', async () => {
     const renderModule = await import('../../tools/blog/render-covers')
     const captureRouteRegion = Reflect.get(renderModule, 'captureRouteRegion')
 
@@ -646,10 +806,10 @@ describe('Community Field Journal visual catalog', () => {
     try {
       const page = await browser.newPage({ viewport: { height: 600, width: 960 } })
       await page.setContent(`
-        <div style="height: 900px; background: rgb(180, 20, 20)">Generic route intro</div>
+        <div style="height: 900px; background: rgb(24, 24, 27)">Generic route intro</div>
         <article
           id="feature-bento"
-          style="height: 240px; width: 480px; background: rgb(5, 150, 105)"
+          style="height: 240px; width: 480px; background: rgb(220, 38, 38)"
         >
           Feature Bento catalog result
         </article>
@@ -659,13 +819,30 @@ describe('Community Field Journal visual catalog', () => {
         >
           Pricing Cards catalog result
         </article>
+        <article
+          id="hero-basic"
+          style="height: 240px; width: 480px; background: rgb(37, 99, 235)"
+        >
+          Hero Basic catalog result
+        </article>
+        <article
+          id="logo-cloud-grid"
+          style="height: 240px; width: 480px; background: rgb(234, 179, 8)"
+        >
+          Logo Cloud Grid catalog result
+        </article>
       `)
 
       const png = (await captureRouteRegion(page, {
         capture: {
           columns: 2,
           position: 'bottom',
-          selectors: ['#feature-bento', '#pricing-cards'],
+          selectors: [
+            '#feature-bento',
+            '#pricing-cards',
+            '#hero-basic',
+            '#logo-cloud-grid',
+          ],
         },
         evidence: 'Local route fixture',
         kind: 'route',
@@ -673,14 +850,97 @@ describe('Community Field Journal visual catalog', () => {
         provenance: '/components?q=feature',
         route: '/components?q=feature',
       })) as Buffer
-      const [{ height, width }, { channels }] = await Promise.all([
+      const [{ height, width }, pixels] = await Promise.all([
         sharp(png).metadata(),
-        sharp(png).stats(),
+        sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true }),
       ])
+      const pixelAt = (x: number, y: number) => {
+        const offset = (y * pixels.info.width + x) * pixels.info.channels
+        return [...pixels.data.subarray(offset, offset + 3)]
+      }
 
       expect({ height, width }).toEqual({ height: 264, width: 960 })
-      expect(channels[1].mean).toBeGreaterThan(channels[0].mean * 4)
-      expect(channels[1].mean).toBeGreaterThan(channels[2].mean * 1.3)
+      expect(pixelAt(240, 66)).toEqual([220, 38, 38])
+      expect(pixelAt(720, 66)).toEqual([5, 150, 105])
+      expect(pixelAt(240, 198)).toEqual([37, 99, 235])
+      expect(pixelAt(720, 198)).toEqual([234, 179, 8])
+    } finally {
+      await browser.close()
+    }
+  })
+
+  it('rejects duplicate route capture selectors', async () => {
+    const renderModule = await import('../../tools/blog/render-covers')
+    const captureRouteRegion = Reflect.get(renderModule, 'captureRouteRegion')
+
+    expect(captureRouteRegion).toBeTypeOf('function')
+    if (typeof captureRouteRegion !== 'function') return
+
+    const browser = await chromium.launch({ headless: true })
+
+    try {
+      const page = await browser.newPage({ viewport: { height: 600, width: 960 } })
+      await page.setContent('<article id="hero-basic">Hero Basic</article>')
+
+      await expect(
+        captureRouteRegion(page, {
+          capture: {
+            columns: 2,
+            position: 'bottom',
+            selectors: ['#hero-basic', '#hero-basic'],
+          },
+          evidence: 'Local route fixture',
+          kind: 'route',
+          label: 'Duplicate fixture',
+          provenance: '/components',
+          route: '/components',
+        }),
+      ).rejects.toThrow(/duplicate route capture selector.*#hero-basic/i)
+    } finally {
+      await browser.close()
+    }
+  })
+
+  it('rejects missing route targets and invalid route-capture columns', async () => {
+    const renderModule = await import('../../tools/blog/render-covers')
+    const captureRouteRegion = Reflect.get(renderModule, 'captureRouteRegion')
+
+    expect(captureRouteRegion).toBeTypeOf('function')
+    if (typeof captureRouteRegion !== 'function') return
+
+    const browser = await chromium.launch({ headless: true })
+
+    try {
+      const page = await browser.newPage({ viewport: { height: 600, width: 960 } })
+      await page.setContent('<article id="hero-basic">Hero Basic</article>')
+      const artifact = {
+        evidence: 'Local route fixture',
+        kind: 'route' as const,
+        label: 'Validation fixture',
+        provenance: '/components',
+        route: '/components',
+      }
+
+      await expect(
+        captureRouteRegion(page, {
+          ...artifact,
+          capture: {
+            columns: 1,
+            position: 'bottom',
+            selectors: ['#missing-card'],
+          },
+        }),
+      ).rejects.toThrow(/matched 0 elements.*expected exactly one/i)
+      await expect(
+        captureRouteRegion(page, {
+          ...artifact,
+          capture: {
+            columns: 0,
+            position: 'bottom',
+            selectors: ['#hero-basic'],
+          },
+        }),
+      ).rejects.toThrow(/at least one column/i)
     } finally {
       await browser.close()
     }

@@ -79,15 +79,15 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     thesis: 'Compose the argument before decorating the page.',
     prompt: 'Build the smallest useful page, then share the diff.',
     primary: {
-      kind: 'route',
-      label: 'Hero Basic preview',
-      route: '/components/preview/hero-basic',
+      kind: 'registry-item',
+      label: 'Hero Basic registry files',
+      name: 'hero-basic',
     },
     secondary: {
       kind: 'command',
       label: 'Landing page install sequence',
       command:
-        'for b in hero-basic logo-cloud-grid feature-bento faq-accordion call-to-action-centered; do npx payload-components add "$b"; done',
+        'for b in hero-basic logo-cloud-grid feature-bento faq-accordion call-to-action-centered; do npx payload-components add "$b" || exit 1; done',
       registryItems: [
         'hero-basic',
         'logo-cloud-grid',
@@ -371,7 +371,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     primary: {
       kind: 'route',
       label: 'Feature family catalog results',
-      route: '/components?q=feature',
+      route: '/components?category=features',
       capture: {
         columns: 2,
         position: 'bottom',
@@ -418,7 +418,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       kind: 'command',
       label: 'Feature family registry consumers',
       command:
-        'for b in feature-grid-basic feature-split feature-bento feature-steps; do npx payload-components add "$b"; done',
+        'for b in feature-grid-basic feature-split feature-bento feature-steps; do npx payload-components add "$b" || exit 1; done',
       registryItems: ['feature-grid-basic', 'feature-split', 'feature-bento', 'feature-steps'],
     },
     figures: [
@@ -435,14 +435,16 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     thesis: 'Choose the smallest hero that carries the decision.',
     prompt: 'What proof did your page truly need?',
     primary: {
-      kind: 'route',
-      label: 'Hero Basic preview',
-      route: '/components/preview/hero-basic',
+      kind: 'source',
+      label: 'Hero description and CTA constraints',
+      path: 'payload-components/source/blocks/shared/heroFields.ts',
+      anchor: "name: 'description'",
+      take: 11,
     },
     secondary: {
       kind: 'sequence',
-      label: 'Hero review contexts',
-      items: ['desktop', 'mobile', 'catalog', 'documentation'],
+      label: 'Article hero-selection checklist',
+      items: ['message', 'media', 'action', 'editor limits'],
     },
     figures: [
       {
@@ -527,7 +529,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     order: 21,
     series: 'production-guides',
     thesis: 'A homepage is an argument.',
-    prompt: 'Share the smallest sequence that persuaded a real reader.',
+    prompt: "Map the smallest sequence that makes the page's argument clear.",
     primary: {
       kind: 'route',
       label: 'Homepage component inventory',
@@ -541,7 +543,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     secondary: {
       kind: 'sequence',
       label: 'Homepage blueprint',
-      items: ['Promise', 'proof', 'explain', 'trust', 'action'],
+      items: ['Promise', 'proof', 'explanation', 'trust', 'action'],
     },
     figures: [
       {
@@ -596,7 +598,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     },
     secondary: {
       kind: 'sequence',
-      label: 'Disclosure anatomy',
+      label: 'Article accessibility checklist',
       items: ['button', 'expanded state', 'content region', 'keyboard', 'reduced motion'],
     },
     figures: [
@@ -695,9 +697,9 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       take: 8,
     },
     secondary: {
-      kind: 'route',
-      label: 'Hero Basic demo twin',
-      route: '/components/preview/hero-basic',
+      kind: 'sequence',
+      label: 'Presentational twin guard',
+      items: ['aria-hidden roots', 'no links', 'no buttons', 'no headings'],
     },
     figures: [
       {
@@ -739,7 +741,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     slug: 'contribute-payload-component',
     order: 29,
     series: 'open-source',
-    thesis: 'A component ships across six surfaces.',
+    thesis: 'A component ships as one connected bundle.',
     prompt: 'Leave the contribution easier than you found it.',
     primary: {
       kind: 'source',
@@ -750,8 +752,16 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     },
     secondary: {
       kind: 'sequence',
-      label: 'Contribution surfaces',
-      items: ['source + manifest', 'registry', 'docs + demo', 'tests'],
+      label: 'Seven contribution surfaces',
+      items: [
+        'source',
+        'manifest',
+        'registry',
+        'demo twin',
+        'catalog + ledgers',
+        'docs',
+        'tests',
+      ],
     },
     figures: [
       {
@@ -768,14 +778,14 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     prompt: 'Turn nondeterminism into a failing check.',
     primary: {
       kind: 'source',
-      label: 'Registry reproducibility assertion',
+      label: 'Generated registry comparison check',
       path: 'tools/payload-components/check-public-registry.ts',
-      anchor: 'assertGeneratedRegistryMatchesSource',
-      take: 11,
+      anchor: 'assertEqual(publicRegistry, sourceRegistry',
+      take: 3,
     },
     secondary: {
       kind: 'sequence',
-      label: 'Deterministic registry pipeline',
+      label: 'Broader registry pipeline',
       items: ['checkout', 'build', 'validate', 'compare'],
     },
     figures: [

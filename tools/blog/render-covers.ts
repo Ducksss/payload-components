@@ -238,6 +238,16 @@ export const captureRouteRegion = async (
     )
   }
 
+  const normalizedSelectors = selectors.map((selector) => selector.trim())
+  const duplicateSelector = normalizedSelectors.find(
+    (selector, index) => normalizedSelectors.indexOf(selector) !== index,
+  )
+  if (duplicateSelector) {
+    throw new Error(
+      `Duplicate route capture selector "${duplicateSelector}" on ${artifact.route}.`,
+    )
+  }
+
   const effectiveColumns = Math.min(columns, selectors.length)
   const rows = Math.ceil(selectors.length / effectiveColumns)
   const tiles: sharp.OverlayOptions[] = []
