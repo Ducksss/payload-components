@@ -25,8 +25,8 @@ consistent, and gives TypeScript one place to prove that stored data and compone
 
 <BlogFigure
   src="/blog/how-renderblocks-works/figure-01-renderer-dispatch.svg"
-  alt="A dispatch diagram where ordered Payload layout data branches by block type into three React components and reunites as a Next.js page"
-  caption="RenderBlocks does not invent layout data; it preserves the editor's sequence and dispatches each discriminated union member to one explicit component."
+  alt="Ordered Payload layout data dispatching to the real HeroBasicBlock, FeatureBentoBlock, and ContentQuoteBlock exports before rejoining as a page"
+  caption="RenderBlocks preserves the editor's sequence and maps each stored discriminator to one explicit exported block component."
 />
 
 ## Begin with the generated layout type
@@ -56,9 +56,9 @@ An explicit object is easy to search, patch, and review:
 
 ```tsx
 const blockComponents = {
-  heroBasic: HeroBasicComponent,
-  featureBento: FeatureBentoComponent,
-  contentQuote: ContentQuoteComponent,
+  heroBasic: HeroBasicBlock,
+  featureBento: FeatureBentoBlock,
+  contentQuote: ContentQuoteBlock,
 }
 ```
 

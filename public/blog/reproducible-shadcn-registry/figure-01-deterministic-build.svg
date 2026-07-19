@@ -1,66 +1,290 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
-  <title id="title">The same source must produce byte-for-byte registry output</title>
-  <desc id="description">REPRODUCIBLE OUTPUT diagram for the Payload Components editorial library.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="diagram-title diagram-description" class="diagram diagram--inspect" data-mode="inspect" data-series="open-source" data-issue="30">
+  <title id="diagram-title">One temporary build is compared with canonical source in three ways</title>
+  <desc id="diagram-description">The reproducibility helper creates one fresh shadcn build, then checks index JSON, item metadata, and exact embedded file content.</desc>
   <defs>
-    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#f4f4f5"/></linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#18181b" flood-opacity="0.08"/></filter>
-    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+    <pattern id="journal-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e4e4e7" stroke-width="1" />
+    </pattern>
+    <marker id="journal-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+    </marker>
     <style>
-      .kicker{font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2.4px;fill:#059669}
-      .headline{font:650 34px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .card{fill:#fff;stroke:#d4d4d8;stroke-width:1.5;filter:url(#shadow)}
-      .terminal{fill:#18181b;stroke:#3f3f46;stroke-width:1.5;filter:url(#shadow)}
-      .dot{fill:#059669}
-      .node-title{font:650 18px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .node-body{font:450 14px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#52525b}
-      .terminal-title{font:650 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#f4f4f5}
-      .terminal-body{font:450 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#d4d4d8}
-      .arrow{fill:none;stroke:#059669;stroke-width:2.5;stroke-linecap:round;opacity:.85}
-      .edge-label{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#047857;paint-order:stroke;stroke:#fafafa;stroke-width:5px}
+      .diagram {
+        background: #f7f5ef;
+        color: #18181b;
+      }
+      .paper {
+        fill: #f7f5ef;
+      }
+      .grid {
+        fill: url(#journal-grid-pattern);
+      }
+      .masthead,
+      .mode-label,
+      .folio-label,
+      .footer-label,
+      .node-index,
+      .edge-label,
+      .node-title--mono,
+      .node-body--mono,
+      .provenance-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .masthead {
+        fill: #18181b;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.7px;
+      }
+      .kicker {
+        fill: #047857;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+      }
+      .headline {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 28px;
+        font-weight: 720;
+        letter-spacing: -0.4px;
+      }
+      .mode-box {
+        fill: #ffffff;
+        stroke: #047857;
+        stroke-width: 2;
+      }
+      .mode-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.4px;
+      }
+      .folio-label {
+        fill: #52525b;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 1.2px;
+      }
+      .journal-rule {
+        stroke: #18181b;
+        stroke-width: 1;
+      }
+      .accent-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.5;
+      }
+      .edge-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.25;
+      }
+      .diagram--join .edge-path {
+        stroke-dasharray: 7 5;
+      }
+      .diagram--inspect .edge-path {
+        stroke-width: 1.75;
+      }
+      .edge-label-paper {
+        fill: #f7f5ef;
+        stroke: #e4e4e7;
+        stroke-width: 1;
+      }
+      .edge-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-card {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1.25;
+      }
+      .diagram--inspect .node-card {
+        stroke: #18181b;
+      }
+      .node--terminal .node-card {
+        fill: #18181b;
+        stroke: #18181b;
+      }
+      .node-rule {
+        stroke: #059669;
+        stroke-width: 5;
+      }
+      .node-index {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-title {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 720;
+      }
+      .node-body {
+        fill: #52525b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+      }
+      .node--terminal .node-title,
+      .node--terminal .node-body {
+        fill: #ffffff;
+      }
+      .node--terminal .node-index {
+        fill: #059669;
+      }
+      .footer-paper {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1;
+      }
+      .footer-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .provenance-line,
+      .evidence-line {
+        fill: #52525b;
+        font-size: 13px;
+      }
+      .evidence-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .prompt {
+        fill: #047857;
+        font-family: Georgia, serif;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 650;
+      }
+      .registration {
+        fill: none;
+        stroke: #047857;
+        stroke-width: 1.5;
+      }
     </style>
   </defs>
-  <rect width="1200" height="675" fill="url(#background)"/>
-  <circle cx="1110" cy="70" r="62" fill="#059669" opacity=".06"/>
-  <circle cx="1110" cy="70" r="31" fill="#059669" opacity=".08"/>
-  <text class="kicker" x="60" y="55">REPRODUCIBLE OUTPUT</text>
-  <text class="headline" x="60" y="104">The same source must produce byte-for-byte registry output</text>
-  <g><g><path class="arrow" d="M 324 295.66666666666663 C 324 295.66666666666663, 324 329.66666666666663, 324 329.66666666666663" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 876 295.66666666666663 C 876 295.66666666666663, 876 329.66666666666663, 876 329.66666666666663" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 588 397.49999999999994 C 414 397.49999999999994, 414 567.1666666666666, 240 567.1666666666666" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 612 397.49999999999994 C 786 397.49999999999994, 786 567.1666666666666, 960 567.1666666666666" marker-end="url(#arrowhead)" /></g></g>
-  <g>
-        <g>
-          <rect class="card" x="60" y="160" width="528" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="86" cy="189" r="6" />
-          <text class="node-title" x="104" y="195">Clean checkout A</text>
-          <text class="node-body" x="86" y="230">registry.json + source</text>
-        </g>
+  <rect class="paper" width="1200" height="675" />
+  <rect class="grid" data-journal-part="grid" x="28" y="24" width="1144" height="627" />
+  <path class="journal-rule" d="M 36 62 H 1164" />
+  <g data-journal-part="masthead">
+    <text class="masthead" x="48" y="49">OPEN SOURCE · ISSUE 30</text>
+  </g>
+  <g data-journal-part="mode">
+    <rect class="mode-box" x="876" y="27" width="96" height="27" rx="2" />
+    <text class="mode-label" x="924" y="46" text-anchor="middle">INSPECT</text>
+  </g>
+  <g data-journal-part="folio">
+    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE 30 / 32</text>
+  </g>
+  <text class="kicker" x="48" y="86">ACTUAL REGISTRY:CHECK</text>
+  <text class="headline" x="48" y="119">One temporary build is compared with canonical source in three</text>
+<text class="headline" x="48" y="150">ways</text>
+  <path class="accent-path" d="M 941 96 C 1004 83, 1054 105, 1138 81" />
+  <circle class="registration" cx="1139" cy="81" r="8" />
+  <g data-diagram-layer="edges">
+    <g class="edge">
+  <path class="edge-path" data-edge-from="inputs" data-edge-to="build" data-edge-axis="horizontal" d="M 591 228.16666666666669 C 597.5 228.16666666666669, 597.5 228.16666666666669, 604 228.16666666666669" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="612" y="160" width="528" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="638" cy="189" r="6" />
-          <text class="node-title" x="656" y="195">Clean checkout B</text>
-          <text class="node-body" x="638" y="230">registry.json + source</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="build" data-edge-to="index" data-edge-axis="vertical" d="M 879.5 284.33333333333337 C 879.5 287.83333333333337, 227.33333333333334 287.83333333333337, 227.33333333333334 291.33333333333337" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="60" y="329.66666666666663" width="528" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="86" cy="358.66666666666663" r="6" />
-          <text class="node-title" x="104" y="364.66666666666663">shadcn build</text>
-          <text class="node-body" x="86" y="399.66666666666663">Deterministic resolution</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="build" data-edge-to="metadata" data-edge-axis="vertical" d="M 879.5 284.33333333333337 C 879.5 287.83333333333337, 600 287.83333333333337, 600 291.33333333333337" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="612" y="329.66666666666663" width="528" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="638" cy="358.66666666666663" r="6" />
-          <text class="node-title" x="656" y="364.66666666666663">shadcn build</text>
-          <text class="node-body" x="638" y="399.66666666666663">Deterministic resolution</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="build" data-edge-to="content" data-edge-axis="vertical" d="M 879.5 284.33333333333337 C 879.5 287.83333333333337, 972.6666666666667 287.83333333333337, 972.6666666666667 291.33333333333337" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="240" y="499.3333333333333" width="720" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="266" cy="528.3333333333333" r="6" />
-          <text class="node-title" x="284" y="534.3333333333333">Identical public/r output</text>
-          <text class="node-body" x="266" y="569.3333333333333">Schema-valid JSON with embedded file content</text>
-        </g></g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="index" data-edge-to="pass" data-edge-axis="vertical" d="M 227.33333333333334 408.66666666666674 C 227.33333333333334 412.16666666666674, 320.5 412.16666666666674, 320.5 415.66666666666674" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="metadata" data-edge-to="pass" data-edge-axis="vertical" d="M 600 408.66666666666674 C 600 412.16666666666674, 320.5 412.16666666666674, 320.5 415.66666666666674" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="content" data-edge-to="pass" data-edge-axis="vertical" d="M 972.6666666666667 408.66666666666674 C 972.6666666666667 412.16666666666674, 320.5 412.16666666666674, 320.5 415.66666666666674" marker-end="url(#journal-arrow)" />
+
+</g>
+  </g>
+  <g data-diagram-layer="nodes">
+    <g class="node node--code" data-node-id="inputs" data-node-kind="code">
+  <rect class="node-card" x="52" y="174" width="537" height="108.33333333333334" rx="2" />
+  <path class="node-rule" d="M 52 179 H 589" />
+  <text class="node-index" x="68" y="200">01</text>
+  <text class="node-title node-title--mono" x="95" y="201">Canonical inputs</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="68" y="231">registry.json + component source</text>
+</g>
+<g class="node node--code" data-node-id="build" data-node-kind="code">
+  <rect class="node-card" x="611" y="174" width="537" height="108.33333333333334" rx="2" />
+  <path class="node-rule" d="M 611 179 H 1148" />
+  <text class="node-index" x="627" y="200">02</text>
+  <text class="node-title node-title--mono" x="654" y="201">One temporary build</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="627" y="231">mkdtemp + shadcn build</text>
+</g>
+<g class="node node--standard" data-node-id="index" data-node-kind="standard">
+  <rect class="node-card" x="52" y="298.33333333333337" width="350.6666666666667" height="108.33333333333334" rx="2" />
+  <path class="node-rule" d="M 52 303.33333333333337 H 402.6666666666667" />
+  <text class="node-index" x="68" y="324.33333333333337">03</text>
+  <text class="node-title" x="95" y="325.33333333333337">Index agreement</text>
+  <text class="node-body" data-role="body-line" x="68" y="355.33333333333337">Parsed registry.json equals source</text>
+</g>
+<g class="node node--standard" data-node-id="metadata" data-node-kind="standard">
+  <rect class="node-card" x="424.6666666666667" y="298.33333333333337" width="350.6666666666667" height="108.33333333333334" rx="2" />
+  <path class="node-rule" d="M 424.6666666666667 303.33333333333337 H 775.3333333333334" />
+  <text class="node-index" x="440.6666666666667" y="324.33333333333337">04</text>
+  <text class="node-title" x="467.6666666666667" y="325.33333333333337">Item agreement</text>
+  <text class="node-body" data-role="body-line" x="440.6666666666667" y="355.33333333333337">Generated metadata equals registry entry</text>
+</g>
+<g class="node node--standard" data-node-id="content" data-node-kind="standard">
+  <rect class="node-card" x="797.3333333333334" y="298.33333333333337" width="350.6666666666667" height="108.33333333333334" rx="2" />
+  <path class="node-rule" d="M 797.3333333333334 303.33333333333337 H 1148" />
+  <text class="node-index" x="813.3333333333334" y="324.33333333333337">05</text>
+  <text class="node-title" x="840.3333333333334" y="325.33333333333337">Content agreement</text>
+  <text class="node-body" data-role="body-line" x="813.3333333333334" y="355.33333333333337">Exact embedded content equals source text</text>
+</g>
+<g class="node node--code" data-node-id="pass" data-node-kind="code">
+  <rect class="node-card" x="52" y="422.66666666666674" width="537" height="108.33333333333334" rx="2" />
+  <path class="node-rule" d="M 52 427.66666666666674 H 589" />
+  <text class="node-index" x="68" y="448.66666666666674">06</text>
+  <text class="node-title node-title--mono" x="95" y="449.66666666666674">registry:check passes</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="68" y="479.66666666666674">Temporary output is removed</text>
+</g>
+<g class="node node--code" data-node-id="schema" data-node-kind="code">
+  <rect class="node-card" x="611" y="422.66666666666674" width="537" height="108.33333333333334" rx="2" />
+  <path class="node-rule" d="M 611 427.66666666666674 H 1148" />
+  <text class="node-index" x="627" y="448.66666666666674">07</text>
+  <text class="node-title node-title--mono" x="654" y="449.66666666666674">Separate schema gate</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="627" y="479.66666666666674">registry:validate runs beside this check</text>
+</g>
+  </g>
+  <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
+  <g data-journal-part="provenance" data-provenance="tools/payload-components/check-public-registry.ts">
+    <text class="footer-label" x="48" y="571">PROVENANCE</text>
+    <text class="provenance-line" x="48" y="590">tools/payload-components/check-public-registry.ts</text>
+  </g>
+  <g data-journal-part="evidence" data-evidence-excerpt="assertEqual(publicRegistry, sourceRegistry, &apos;generated registry.json is out of date with payload-components/registry.json.&apos;)
+
+  for (const sourceItem of sourceRegistry.items) {" data-evidence-truncated="true">
+  <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
+  <text class="evidence-line" x="48" y="626">assertEqual(publicRegistry, sourceRegistry, &apos;generated registry.json</text>
+<text class="evidence-line" x="48" y="641">is out of date with payload-components/registry.json.&apos;) · for (co …</text>
+</g>
+  <g data-journal-part="prompt" data-prompt="Turn nondeterminism into a failing check.">
+    <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
+    <text class="prompt" x="744" y="594">Turn nondeterminism into a failing check.</text>
+  </g>
 </svg>

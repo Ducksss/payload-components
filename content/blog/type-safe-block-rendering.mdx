@@ -65,15 +65,15 @@ and the compiler can show which frontend contracts need attention.
 The simplest component receives its generated block interface plus optional layout wrappers:
 
 ```tsx
-import type { HeroBasicBlock } from '@/payload-types'
+import type { HeroBasicBlock as HeroBasicBlockData } from '@/payload-types'
 
-type HeroBasicProps = HeroBasicBlock & {
+type HeroBasicProps = HeroBasicBlockData & {
   className?: string
   disableInnerContainer?: boolean
   id?: string
 }
 
-export function HeroBasicComponent(props: HeroBasicProps) {
+export function HeroBasicBlock(props: HeroBasicProps) {
   // ...
 }
 ```
@@ -106,9 +106,9 @@ keys become compile errors, and each component must accept the corresponding mem
 
 ```tsx
 const blockComponents = {
-  heroBasic: HeroBasicComponent,
-  featureBento: FeatureBentoComponent,
-  contentQuote: ContentQuoteComponent,
+  heroBasic: HeroBasicBlock,
+  featureBento: FeatureBentoBlock,
+  contentQuote: ContentQuoteBlock,
 } satisfies BlockRendererMap
 ```
 
@@ -131,9 +131,9 @@ A switch is verbose but fully transparent:
 ```tsx
 switch (block.blockType) {
   case 'heroBasic':
-    return <HeroBasicComponent key={block.id} {...block} />
+    return <HeroBasicBlock key={block.id} {...block} />
   case 'featureBento':
-    return <FeatureBentoComponent key={block.id} {...block} />
+    return <FeatureBentoBlock key={block.id} {...block} />
   default:
     return assertNever(block)
 }

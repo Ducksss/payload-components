@@ -75,7 +75,7 @@ Suppose the saved data contains `blockType: 'heroBasic'`. The renderer map needs
 
 ```tsx
 const blockComponents = {
-  heroBasic: HeroBasicComponent,
+  heroBasic: HeroBasicBlock,
 }
 ```
 
@@ -146,9 +146,9 @@ array used without a guard.
 Prefer generated props:
 
 ```tsx
-import type { HeroBasicBlock } from '@/payload-types'
+import type { HeroBasicBlock as HeroBasicBlockData } from '@/payload-types'
 
-export function HeroBasicComponent(props: HeroBasicBlock) {
+export function HeroBasicBlock(props: HeroBasicBlockData) {
   // render fields with deliberate empty states
 }
 ```
@@ -204,9 +204,10 @@ npx payload-components doctor
 ```
 
 The report checks project readiness and recorded component integrity without changing files. It can
-distinguish missing owned files, missing Payload fragments, and a partial recorded stage. Read the
-state under `.payload-components/state.json`, fix the underlying cause, then rerun the exact install
-command. The idempotent stages should skip completed work and converge.
+distinguish missing owned files and missing Payload fragments, while a failed component record keeps
+the last stage and message under `lastError`. Read `.payload-components/state.json`, fix the
+underlying cause, then rerun the exact install command. The installer rechecks the repository on
+disk and converges instead of trusting a stored resume cursor.
 
 Compare your result with the [installation docs](/docs/installation) and the component's page in the
 [catalog](/components). For a minimal reproduction, `hero-basic` is a useful baseline:

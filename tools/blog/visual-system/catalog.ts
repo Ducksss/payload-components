@@ -62,8 +62,12 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     },
     secondary: {
       kind: 'sequence',
-      label: 'Block lifecycle',
-      items: ['Editor', 'stored data', 'generated type', 'renderer', 'React'],
+      label: 'Runtime and compile-time block paths',
+      items: [
+        'config → editor → stored data',
+        'config → generated type → compile check',
+        'stored data → renderer → React',
+      ],
     },
     figures: [
       {
@@ -289,14 +293,13 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     },
     secondary: {
       kind: 'diff',
-      label: 'Renderer map insertion',
-      path: 'tools/blog/generate-figures.ts',
-      anchor: 'const blockComponents = {',
-      before: ['const blockComponents = {', '  ExistingBlock,', '}'],
+      label: 'Tested renderer map insertion',
+      path: 'tests/int/payload-components-fragment.int.spec.ts',
+      anchor: 'heroBasic: HeroBasicBlock,',
+      before: ['const blockComponents = {', '}'],
       after: [
         'const blockComponents = {',
-        '  ExistingBlock,',
-        '  HeroBasic,',
+        '  heroBasic: HeroBasicBlock,',
         '}',
       ],
     },
@@ -570,7 +573,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     secondary: {
       kind: 'sequence',
       label: 'Post projections',
-      items: ['Post', '/blog + article', 'RSS + OG', 'search'],
+      items: ['validated MDX entry', '/blog + article', 'related posts', 'RSS + OG + sitemap'],
     },
     figures: [
       {
@@ -599,7 +602,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     secondary: {
       kind: 'sequence',
       label: 'Article accessibility checklist',
-      items: ['button', 'expanded state', 'content region', 'keyboard', 'reduced motion'],
+      items: ['button', 'expanded state', 'answer panel', 'keyboard', 'reduced motion'],
     },
     figures: [
       {

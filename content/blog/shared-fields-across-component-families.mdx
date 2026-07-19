@@ -14,9 +14,10 @@ tags:
   - Content modeling
 ---
 
-Structural variants often share the same opening vocabulary: eyebrow, heading, description, and
-links. Copying those field definitions into every Payload config seems harmless until one label,
-validation rule, or relationship target changes in only four of five places.
+Structural variants often share the same opening vocabulary: eyebrow, title, and description, while
+their item arrays and links express the structure. Copying the shared definitions into every Payload
+config seems harmless until one label,
+validation rule, or relationship target changes in only three of four places.
 
 The durable pattern is a real shared source file that every consuming registry item ships. Each
 variant spreads the common fields and adds only its structural requirements. The editor sees
@@ -24,8 +25,8 @@ consistent content language, while generated types still describe distinct block
 
 <BlogFigure
   src="/blog/shared-fields-across-component-families/figure-01-shared-fields.svg"
-  alt="A shared heroFields source module branching into basic, video, and dramatic hero block configurations with variant-specific additions"
-  caption="Shared fields capture stable editorial meaning; each variant remains a separate config, generated union member, renderer, and registry item."
+  alt="The shared featureFields source module branching into four shipped configs: Feature Grid Basic, Feature Split, Feature Bento, and Feature Steps"
+  caption="The shared source keeps one editorial vocabulary across four Feature configs; each variant remains a separate generated union member, renderer, and registry item."
 />
 
 ## Share meaning, not coincidence
@@ -50,42 +51,58 @@ than an untyped object array:
 ```ts
 import type { Field } from 'payload'
 
-export const heroFields: Field[] = [
+export const featureFields: Field[] = [
   {
     name: 'eyebrow',
     type: 'text',
-    label: 'Eyebrow',
   },
   {
-    name: 'heading',
+    name: 'title',
     type: 'text',
-    label: 'Heading',
     required: true,
   },
   {
     name: 'description',
     type: 'textarea',
-    label: 'Description',
   },
 ]
 ```
 
-Then compose the config explicitly:
+Then compose the config explicitly. This excerpt uses the same imports and contract as the shipped
+Feature Split config:
 
 ```ts
-export const HeroVideo: Block = {
-  slug: 'heroVideo',
-  interfaceName: 'HeroVideoBlock',
-  labels: { singular: 'Video hero', plural: 'Video heroes' },
+import type { Block } from 'payload'
+
+import { featureFields } from '@/blocks/shared/featureFields'
+import { linkGroup } from '@/fields/linkGroup'
+
+export const FeatureSplit: Block = {
+  slug: 'featureSplit',
+  dbName: 'pc_fea_spl',
+  interfaceName: 'FeatureSplitBlock',
   fields: [
-    ...heroFields,
+    ...featureFields,
     {
-      name: 'video',
-      type: 'upload',
-      relationTo: 'media',
+      name: 'items',
+      type: 'array',
       required: true,
+      minRows: 2,
+      maxRows: 6,
+      admin: { initCollapsed: true },
+      fields: [
+        { name: 'title', type: 'text', required: true },
+        { name: 'description', type: 'textarea', required: true },
+      ],
     },
+    linkGroup({
+      overrides: {
+        admin: { initCollapsed: true },
+        maxRows: 2,
+      },
+    }),
   ],
+  labels: { singular: 'Feature Split', plural: 'Feature Split Blocks' },
 }
 ```
 
@@ -100,15 +117,16 @@ can review every consumer in one pass.
 ## Ship the shared module with every variant
 
 Source distribution changes the usual monorepo assumption. In this repository, a consumer may
-install one variant without its siblings. The `hero-video` registry item therefore must include
-`shared/heroFields.ts` in its `files` list with a target under the consumer's source tree.
+install one variant without its siblings. Each of `feature-grid-basic`, `feature-split`,
+`feature-bento`, and `feature-steps` therefore includes `shared/featureFields.ts` in its `files`
+list with a target under the consumer's source tree.
 
 The matching manifest must list the shared target as an owned file. Its component config import must
 resolve from the installed locations. Tests install the variant in isolation, so an accidental
 dependency on another family item fails before release.
 
 Do not use `registryDependencies` for the internal module. shadcn resolves that field as another
-public registry component. An internal filename such as `hero-fields` will be requested from a
+public registry component. An internal filename such as `feature-fields` will be requested from a
 registry and fail. The [registry guide](/blog/shadcn-registry-for-payload-cms) explains the ownership
 categories.
 
@@ -116,12 +134,13 @@ categories.
 
 Spreading fields in the Payload config does not create TypeScript inheritance in the generated file,
 and it does not need to. Payload produces a concrete interface or union member for each block. The
-shared heading and description appear in each generated shape, while video or media fields appear
-only where declared.
+shared title and description appear in each generated shape, while each block keeps its own literal
+discriminator.
 
-That concrete output is useful. A renderer for `HeroBasicBlock` cannot accidentally assume video
-exists. A renderer for `HeroVideoBlock` receives the required media relationship. The source field
-module reduces config drift without weakening the discriminated union.
+That concrete output is useful. `FeatureGridBasicBlock`, `FeatureSplitBlock`, `FeatureBentoBlock`,
+and `FeatureStepsBlock` remain four distinct union members even though their intro fields came from
+one source array. The source module reduces config drift without weakening the discriminator that
+drives rendering.
 
 Run Payload's generator after adding or changing the shared fields. The official
 [type generation documentation](https://payloadcms.com/docs/typescript/generating-types) remains the
@@ -135,7 +154,7 @@ also change validation or generated types for existing documents. Review the fam
 surface.
 
 Renaming `description` to `copy` is not a local refactor. Existing stored data still uses the old
-name unless migrated. Making an optional heading required can invalidate old drafts. Changing a
+name unless migrated. Making the optional description required can invalidate old drafts. Changing a
 relationship target can alter access and population behavior.
 
 When only one variant needs different semantics, remove that field from the shared base for that
@@ -144,7 +163,7 @@ until the caller API becomes harder to understand than a few repeated lines.
 
 ## Avoid mutating the shared array
 
-Treat exported field arrays as immutable configuration input. Do not import `heroFields` and push a
+Treat exported field arrays as immutable configuration input. Do not import `featureFields` and push a
 variant field into it; module evaluation order can make one config change another. Compose with
 spreads and new arrays.
 

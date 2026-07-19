@@ -1,66 +1,262 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
-  <title id="title">A complete SaaS homepage is a sequence of editorial jobs</title>
-  <desc id="description">PAGE BLUEPRINT diagram for the Payload Components editorial library.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="diagram-title diagram-description" class="diagram diagram--trace" data-mode="trace" data-series="production-guides" data-issue="21">
+  <title id="diagram-title">A complete homepage is a sequence of editorial jobs</title>
+  <desc id="diagram-description">Promise, proof, explanation, trust, and action give each installed block one clear role.</desc>
   <defs>
-    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#f4f4f5"/></linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#18181b" flood-opacity="0.08"/></filter>
-    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+    <pattern id="journal-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e4e4e7" stroke-width="1" />
+    </pattern>
+    <marker id="journal-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+    </marker>
     <style>
-      .kicker{font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2.4px;fill:#059669}
-      .headline{font:650 34px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .card{fill:#fff;stroke:#d4d4d8;stroke-width:1.5;filter:url(#shadow)}
-      .terminal{fill:#18181b;stroke:#3f3f46;stroke-width:1.5;filter:url(#shadow)}
-      .dot{fill:#059669}
-      .node-title{font:650 18px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .node-body{font:450 14px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#52525b}
-      .terminal-title{font:650 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#f4f4f5}
-      .terminal-body{font:450 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#d4d4d8}
-      .arrow{fill:none;stroke:#059669;stroke-width:2.5;stroke-linecap:round;opacity:.85}
-      .edge-label{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#047857;paint-order:stroke;stroke:#fafafa;stroke-width:5px}
+      .diagram {
+        background: #f7f5ef;
+        color: #18181b;
+      }
+      .paper {
+        fill: #f7f5ef;
+      }
+      .grid {
+        fill: url(#journal-grid-pattern);
+      }
+      .masthead,
+      .mode-label,
+      .folio-label,
+      .footer-label,
+      .node-index,
+      .edge-label,
+      .node-title--mono,
+      .node-body--mono,
+      .provenance-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .masthead {
+        fill: #18181b;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.7px;
+      }
+      .kicker {
+        fill: #047857;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+      }
+      .headline {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 28px;
+        font-weight: 720;
+        letter-spacing: -0.4px;
+      }
+      .mode-box {
+        fill: #ffffff;
+        stroke: #047857;
+        stroke-width: 2;
+      }
+      .mode-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.4px;
+      }
+      .folio-label {
+        fill: #52525b;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 1.2px;
+      }
+      .journal-rule {
+        stroke: #18181b;
+        stroke-width: 1;
+      }
+      .accent-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.5;
+      }
+      .edge-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.25;
+      }
+      .diagram--join .edge-path {
+        stroke-dasharray: 7 5;
+      }
+      .diagram--inspect .edge-path {
+        stroke-width: 1.75;
+      }
+      .edge-label-paper {
+        fill: #f7f5ef;
+        stroke: #e4e4e7;
+        stroke-width: 1;
+      }
+      .edge-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-card {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1.25;
+      }
+      .diagram--inspect .node-card {
+        stroke: #18181b;
+      }
+      .node--terminal .node-card {
+        fill: #18181b;
+        stroke: #18181b;
+      }
+      .node-rule {
+        stroke: #059669;
+        stroke-width: 5;
+      }
+      .node-index {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-title {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 720;
+      }
+      .node-body {
+        fill: #52525b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+      }
+      .node--terminal .node-title,
+      .node--terminal .node-body {
+        fill: #ffffff;
+      }
+      .node--terminal .node-index {
+        fill: #059669;
+      }
+      .footer-paper {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1;
+      }
+      .footer-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .provenance-line,
+      .evidence-line {
+        fill: #52525b;
+        font-size: 13px;
+      }
+      .evidence-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .prompt {
+        fill: #047857;
+        font-family: Georgia, serif;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 650;
+      }
+      .registration {
+        fill: none;
+        stroke: #047857;
+        stroke-width: 1.5;
+      }
     </style>
   </defs>
-  <rect width="1200" height="675" fill="url(#background)"/>
-  <circle cx="1110" cy="70" r="62" fill="#059669" opacity=".06"/>
-  <circle cx="1110" cy="70" r="31" fill="#059669" opacity=".08"/>
-  <text class="kicker" x="60" y="55">PAGE BLUEPRINT</text>
-  <text class="headline" x="60" y="104">A complete SaaS homepage is a sequence of editorial jobs</text>
-  <g><g><path class="arrow" d="M 264.8 397.5 C 271.80000000000007 397.5, 271.80000000000007 397.5, 278.80000000000007 397.5" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 483.6 397.5 C 490.6 397.5, 490.6 397.5, 497.6 397.5" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 702.4 397.5 C 709.4000000000001 397.5, 709.4000000000001 397.5, 716.4000000000001 397.5" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 921.2 397.5 C 928.2 397.5, 928.2 397.5, 935.2000000000002 397.5" marker-end="url(#arrowhead)" /></g></g>
-  <g>
-        <g>
-          <rect class="card" x="60" y="319.5" width="204.8" height="156" rx="18" />
-          <circle class="dot" cx="86" cy="348.5" r="6" />
-          <text class="node-title" x="104" y="354.5">1 · Promise</text>
-          <text class="node-body" x="86" y="389.5">Hero establishes value</text>
-        </g>
+  <rect class="paper" width="1200" height="675" />
+  <rect class="grid" data-journal-part="grid" x="28" y="24" width="1144" height="627" />
+  <path class="journal-rule" d="M 36 62 H 1164" />
+  <g data-journal-part="masthead">
+    <text class="masthead" x="48" y="49">PRODUCTION GUIDES · ISSUE 21</text>
+  </g>
+  <g data-journal-part="mode">
+    <rect class="mode-box" x="876" y="27" width="96" height="27" rx="2" />
+    <text class="mode-label" x="924" y="46" text-anchor="middle">TRACE</text>
+  </g>
+  <g data-journal-part="folio">
+    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE 21 / 32</text>
+  </g>
+  <text class="kicker" x="48" y="86">PAGE BLUEPRINT</text>
+  <text class="headline" x="48" y="119">A complete homepage is a sequence of editorial jobs</text>
+  <path class="accent-path" d="M 941 96 C 1004 83, 1054 105, 1138 81" />
+  <circle class="registration" cx="1139" cy="81" r="8" />
+  <g data-diagram-layer="edges">
+    <g class="edge">
+  <path class="edge-path" data-edge-from="promise" data-edge-to="proof" data-edge-axis="horizontal" d="M 263.6 337 C 265.1 337, 265.1 337, 266.6 337" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="278.8" y="319.5" width="204.8" height="156" rx="18" />
-          <circle class="dot" cx="304.8" cy="348.5" r="6" />
-          <text class="node-title" x="322.8" y="354.5">2 · Proof</text>
-          <text class="node-body" x="304.8" y="389.5">Logos and outcomes</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="proof" data-edge-to="explain" data-edge-axis="horizontal" d="M 485.20000000000005 337 C 486.70000000000005 337, 486.70000000000005 337, 488.2 337" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="497.6" y="319.5" width="204.8" height="156" rx="18" />
-          <circle class="dot" cx="523.6" cy="348.5" r="6" />
-          <text class="node-title" x="541.6" y="354.5">3 · Explain</text>
-          <text class="node-body" x="523.6" y="389.5">Features and workflow</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="explain" data-edge-to="trust" data-edge-axis="horizontal" d="M 706.8 337 C 708.3 337, 708.3 337, 709.8 337" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="716.4000000000001" y="319.5" width="204.8" height="156" rx="18" />
-          <circle class="dot" cx="742.4000000000001" cy="348.5" r="6" />
-          <text class="node-title" x="760.4000000000001" y="354.5">4 · Trust</text>
-          <text class="node-body" x="742.4000000000001" y="389.5">Testimonials + FAQ</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="trust" data-edge-to="action" data-edge-axis="horizontal" d="M 928.3999999999999 337 C 929.9 337, 929.9 337, 931.4000000000001 337" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="935.2" y="319.5" width="204.8" height="156" rx="18" />
-          <circle class="dot" cx="961.2" cy="348.5" r="6" />
-          <text class="node-title" x="979.2" y="354.5">5 · Action</text>
-          <text class="node-body" x="961.2" y="389.5">Focused final CTA</text>
-        </g></g>
+</g>
+  </g>
+  <g data-diagram-layer="nodes">
+    <g class="node node--standard" data-node-id="promise" data-node-kind="standard">
+  <rect class="node-card" x="52" y="279" width="209.6" height="116" rx="2" />
+  <path class="node-rule" d="M 52 284 H 261.6" />
+  <text class="node-index" x="68" y="305">01</text>
+  <text class="node-title" x="95" y="306">1 · Promise</text>
+  <text class="node-body" data-role="body-line" x="68" y="336">Hero names the useful</text>
+<text class="node-body" data-role="body-line" x="68" y="352">change</text>
+</g>
+<g class="node node--standard" data-node-id="proof" data-node-kind="standard">
+  <rect class="node-card" x="273.6" y="279" width="209.6" height="116" rx="2" />
+  <path class="node-rule" d="M 273.6 284 H 483.20000000000005" />
+  <text class="node-index" x="289.6" y="305">02</text>
+  <text class="node-title" x="316.6" y="306">2 · Proof</text>
+  <text class="node-body" data-role="body-line" x="289.6" y="336">Logos + evidence reduce</text>
+<text class="node-body" data-role="body-line" x="289.6" y="352">doubt</text>
+</g>
+<g class="node node--standard" data-node-id="explain" data-node-kind="standard">
+  <rect class="node-card" x="495.2" y="279" width="209.6" height="116" rx="2" />
+  <path class="node-rule" d="M 495.2 284 H 704.8" />
+  <text class="node-index" x="511.2" y="305">03</text>
+  <text class="node-title" x="538.2" y="306">3 · Explain</text>
+  <text class="node-body" data-role="body-line" x="511.2" y="336">Features show how it</text>
+<text class="node-body" data-role="body-line" x="511.2" y="352">works</text>
+</g>
+<g class="node node--standard" data-node-id="trust" data-node-kind="standard">
+  <rect class="node-card" x="716.8" y="279" width="209.6" height="116" rx="2" />
+  <path class="node-rule" d="M 716.8 284 H 926.4" />
+  <text class="node-index" x="732.8" y="305">04</text>
+  <text class="node-title" x="759.8" y="306">4 · Trust</text>
+  <text class="node-body" data-role="body-line" x="732.8" y="336">FAQ addresses remaining</text>
+<text class="node-body" data-role="body-line" x="732.8" y="352">risk</text>
+</g>
+<g class="node node--standard" data-node-id="action" data-node-kind="standard">
+  <rect class="node-card" x="938.4" y="279" width="209.6" height="116" rx="2" />
+  <path class="node-rule" d="M 938.4 284 H 1148" />
+  <text class="node-index" x="954.4" y="305">05</text>
+  <text class="node-title" x="981.4" y="306">5 · Action</text>
+  <text class="node-body" data-role="body-line" x="954.4" y="336">One focused next step</text>
+</g>
+  </g>
+  <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
+  <g data-journal-part="provenance" data-provenance="/components">
+    <text class="footer-label" x="48" y="571">PROVENANCE</text>
+    <text class="provenance-line" x="48" y="590">/components</text>
+  </g>
+
+  <g data-journal-part="prompt" data-prompt="Map the smallest sequence that makes the page&apos;s argument clear.">
+    <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
+    <text class="prompt" x="744" y="594">Map the smallest sequence that makes the</text>
+<text class="prompt" x="744" y="613">page&apos;s argument clear.</text>
+  </g>
 </svg>

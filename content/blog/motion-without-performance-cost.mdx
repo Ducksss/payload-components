@@ -7,7 +7,7 @@ series: production-guides
 publicationOrder: 25
 cover:
   src: /blog/motion-without-performance-cost/cover.webp
-  alt: Infinite Slider reduced-motion source branch beside the default-motion and reduced-motion paths that preserve the same content.
+  alt: Infinite Slider source beside the default x-axis movement from 0 to negative half the content size and the reduced-motion early return that leaves the row static.
 tags:
   - Performance
   - Accessibility
@@ -24,9 +24,14 @@ renders the final semantic result first and treats movement as a progressive vis
 
 <BlogFigure
   src="/blog/motion-without-performance-cost/figure-01-motion-timeline.svg"
-  alt="An animation timeline where meaningful content branches into a motion-enabled path and a reduced-motion path before reaching the same readable result"
-  caption="Both preference paths end with the same content, actions, and order. Motion changes the journey, never the availability of the destination."
+  alt="An Infinite Slider timeline where the default x-axis path moves from x 0 to -contentSize / 2 while the reduced-motion path leaves the duplicated row static at x 0"
+  caption="For the default direction, useReducedMotion returns before animation when reduction is requested; otherwise the row moves from x = 0 to x = -contentSize / 2."
 />
+
+The actual `InfiniteSlider` starts its motion value at `x = 0`. In the default direction it computes
+`contentSize` as the measured width plus the gap, then animates the row from `0` to
+`-contentSize / 2`; the reverse direction swaps those endpoints. On a reduced-motion render, the
+effect returns before calling `animate`, so the row stays static at `x = 0`.
 
 ## Give every animation a job
 

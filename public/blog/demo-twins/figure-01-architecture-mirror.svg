@@ -1,66 +1,271 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
-  <title id="title">A demo twin mirrors visual classes without importing target code</title>
-  <desc id="description">SOURCE / PREVIEW MIRROR diagram for the Payload Components editorial library.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="diagram-title diagram-description" class="diagram diagram--trace" data-mode="trace" data-series="open-source" data-issue="27">
+  <title id="diagram-title">Separate runtimes share a one-way visual token guard</title>
+  <desc id="diagram-description">Installable target code and site demo twins stay separate while the test requires every plain source class token to appear in its twin.</desc>
   <defs>
-    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#f4f4f5"/></linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#18181b" flood-opacity="0.08"/></filter>
-    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+    <pattern id="journal-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e4e4e7" stroke-width="1" />
+    </pattern>
+    <marker id="journal-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+    </marker>
     <style>
-      .kicker{font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2.4px;fill:#059669}
-      .headline{font:650 34px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .card{fill:#fff;stroke:#d4d4d8;stroke-width:1.5;filter:url(#shadow)}
-      .terminal{fill:#18181b;stroke:#3f3f46;stroke-width:1.5;filter:url(#shadow)}
-      .dot{fill:#059669}
-      .node-title{font:650 18px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .node-body{font:450 14px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#52525b}
-      .terminal-title{font:650 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#f4f4f5}
-      .terminal-body{font:450 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#d4d4d8}
-      .arrow{fill:none;stroke:#059669;stroke-width:2.5;stroke-linecap:round;opacity:.85}
-      .edge-label{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#047857;paint-order:stroke;stroke:#fafafa;stroke-width:5px}
+      .diagram {
+        background: #f7f5ef;
+        color: #18181b;
+      }
+      .paper {
+        fill: #f7f5ef;
+      }
+      .grid {
+        fill: url(#journal-grid-pattern);
+      }
+      .masthead,
+      .mode-label,
+      .folio-label,
+      .footer-label,
+      .node-index,
+      .edge-label,
+      .node-title--mono,
+      .node-body--mono,
+      .provenance-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .masthead {
+        fill: #18181b;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.7px;
+      }
+      .kicker {
+        fill: #047857;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+      }
+      .headline {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 28px;
+        font-weight: 720;
+        letter-spacing: -0.4px;
+      }
+      .mode-box {
+        fill: #ffffff;
+        stroke: #047857;
+        stroke-width: 2;
+      }
+      .mode-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.4px;
+      }
+      .folio-label {
+        fill: #52525b;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 1.2px;
+      }
+      .journal-rule {
+        stroke: #18181b;
+        stroke-width: 1;
+      }
+      .accent-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.5;
+      }
+      .edge-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.25;
+      }
+      .diagram--join .edge-path {
+        stroke-dasharray: 7 5;
+      }
+      .diagram--inspect .edge-path {
+        stroke-width: 1.75;
+      }
+      .edge-label-paper {
+        fill: #f7f5ef;
+        stroke: #e4e4e7;
+        stroke-width: 1;
+      }
+      .edge-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-card {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1.25;
+      }
+      .diagram--inspect .node-card {
+        stroke: #18181b;
+      }
+      .node--terminal .node-card {
+        fill: #18181b;
+        stroke: #18181b;
+      }
+      .node-rule {
+        stroke: #059669;
+        stroke-width: 5;
+      }
+      .node-index {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-title {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 720;
+      }
+      .node-body {
+        fill: #52525b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+      }
+      .node--terminal .node-title,
+      .node--terminal .node-body {
+        fill: #ffffff;
+      }
+      .node--terminal .node-index {
+        fill: #059669;
+      }
+      .footer-paper {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1;
+      }
+      .footer-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .provenance-line,
+      .evidence-line {
+        fill: #52525b;
+        font-size: 13px;
+      }
+      .evidence-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .prompt {
+        fill: #047857;
+        font-family: Georgia, serif;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 650;
+      }
+      .registration {
+        fill: none;
+        stroke: #047857;
+        stroke-width: 1.5;
+      }
     </style>
   </defs>
-  <rect width="1200" height="675" fill="url(#background)"/>
-  <circle cx="1110" cy="70" r="62" fill="#059669" opacity=".06"/>
-  <circle cx="1110" cy="70" r="31" fill="#059669" opacity=".08"/>
-  <text class="kicker" x="60" y="55">SOURCE / PREVIEW MIRROR</text>
-  <text class="headline" x="60" y="104">A demo twin mirrors visual classes without importing target code</text>
-  <g><g><path class="arrow" d="M 324 295.66666666666663 C 324 295.66666666666663, 324 329.66666666666663, 324 329.66666666666663" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 876 295.66666666666663 C 876 295.66666666666663, 876 329.66666666666663, 876 329.66666666666663" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 324 295.66666666666663 C 462 295.66666666666663, 462 499.3333333333333, 600 499.3333333333333" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 876 295.66666666666663 C 738 295.66666666666663, 738 499.3333333333333, 600 499.3333333333333" marker-end="url(#arrowhead)" /></g></g>
-  <g>
-        <g>
-          <rect class="card" x="60" y="160" width="528" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="86" cy="189" r="6" />
-          <text class="node-title" x="104" y="195">Installable source</text>
-          <text class="node-body" x="86" y="230">payload-components/source</text>
-        </g>
+  <rect class="paper" width="1200" height="675" />
+  <rect class="grid" data-journal-part="grid" x="28" y="24" width="1144" height="627" />
+  <path class="journal-rule" d="M 36 62 H 1164" />
+  <g data-journal-part="masthead">
+    <text class="masthead" x="48" y="49">OPEN SOURCE · ISSUE 27</text>
+  </g>
+  <g data-journal-part="mode">
+    <rect class="mode-box" x="876" y="27" width="96" height="27" rx="2" />
+    <text class="mode-label" x="924" y="46" text-anchor="middle">TRACE</text>
+  </g>
+  <g data-journal-part="folio">
+    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE 27 / 32</text>
+  </g>
+  <text class="kicker" x="48" y="86">SOURCE / PREVIEW MIRROR</text>
+  <text class="headline" x="48" y="119">Separate runtimes share a one-way visual token guard</text>
+  <path class="accent-path" d="M 941 96 C 1004 83, 1054 105, 1138 81" />
+  <circle class="registration" cx="1139" cy="81" r="8" />
+  <g data-diagram-layer="edges">
+    <g class="edge">
+  <path class="edge-path" data-edge-from="source" data-edge-to="consumer" data-edge-axis="vertical" d="M 320.5 251.9473684210526 C 320.5 255.4473684210526, 320.5 255.4473684210526, 320.5 258.9473684210526" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="612" y="160" width="528" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="638" cy="189" r="6" />
-          <text class="node-title" x="656" y="195">Site demo twin</text>
-          <text class="node-body" x="638" y="230">src/components/site/demos</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="twin" data-edge-to="preview" data-edge-axis="vertical" d="M 879.5 251.9473684210526 C 879.5 255.4473684210526, 879.5 255.4473684210526, 879.5 258.9473684210526" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="60" y="329.66666666666663" width="528" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="86" cy="358.66666666666663" r="6" />
-          <text class="node-title" x="104" y="364.66666666666663">Consumer runtime</text>
-          <text class="node-body" x="86" y="399.66666666666663">Payload data + real links</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="source" data-edge-to="test" data-edge-axis="vertical" d="M 320.5 251.9473684210526 C 320.5 318.6052631578947, 600 318.6052631578947, 600 385.2631578947368" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="612" y="329.66666666666663" width="528" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="638" cy="358.66666666666663" r="6" />
-          <text class="node-title" x="656" y="364.66666666666663">Preview runtime</text>
-          <text class="node-body" x="638" y="399.66666666666663">Static data · aria-hidden · no controls</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="twin" data-edge-to="test" data-edge-axis="vertical" d="M 879.5 251.9473684210526 C 879.5 318.6052631578947, 600 318.6052631578947, 600 385.2631578947368" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="240" y="499.3333333333333" width="720" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="266" cy="528.3333333333333" r="6" />
-          <text class="node-title" x="284" y="534.3333333333333">Class-mirror contract test</text>
-          <text class="node-body" x="266" y="569.3333333333333">Shared className literals stay visually aligned</text>
-        </g></g>
+</g>
+  </g>
+  <g data-diagram-layer="nodes">
+    <g class="node node--code" data-node-id="source" data-node-kind="code">
+  <rect class="node-card" x="52" y="143" width="537" height="106.94736842105263" rx="2" />
+  <path class="node-rule" d="M 52 148 H 589" />
+  <text class="node-index" x="68" y="169">01</text>
+  <text class="node-title node-title--mono" x="95" y="170">Installable source</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="68" y="200">payload-components/source</text>
+</g>
+<g class="node node--code" data-node-id="twin" data-node-kind="code">
+  <rect class="node-card" x="611" y="143" width="537" height="106.94736842105263" rx="2" />
+  <path class="node-rule" d="M 611 148 H 1148" />
+  <text class="node-index" x="627" y="169">02</text>
+  <text class="node-title node-title--mono" x="654" y="170">Site demo twin</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="627" y="200">src/components/site/demos</text>
+</g>
+<g class="node node--standard" data-node-id="consumer" data-node-kind="standard">
+  <rect class="node-card" x="52" y="265.9473684210526" width="537" height="110.31578947368422" rx="2" />
+  <path class="node-rule" d="M 52 270.9473684210526 H 589" />
+  <text class="node-index" x="68" y="291.9473684210526">03</text>
+  <text class="node-title" x="95" y="292.9473684210526">Consumer runtime</text>
+  <text class="node-body" data-role="body-line" x="68" y="322.9473684210526">Payload types + real CMSLink</text>
+</g>
+<g class="node node--standard" data-node-id="preview" data-node-kind="standard">
+  <rect class="node-card" x="611" y="265.9473684210526" width="537" height="110.31578947368422" rx="2" />
+  <path class="node-rule" d="M 611 270.9473684210526 H 1148" />
+  <text class="node-index" x="627" y="291.9473684210526">04</text>
+  <text class="node-title" x="654" y="292.9473684210526">Preview route</text>
+  <text class="node-body" data-role="body-line" x="627" y="322.9473684210526">static fixtures · aria-hidden</text>
+<text class="node-body" data-role="body-line" x="627" y="338.9473684210526">no a · button · h1–h6</text>
+</g>
+<g class="node node--code" data-node-id="test" data-node-kind="code">
+  <rect class="node-card" x="180" y="392.2631578947368" width="840" height="138.73684210526315" rx="2" />
+  <path class="node-rule" d="M 180 397.2631578947368 H 1020" />
+  <text class="node-index" x="196" y="418.2631578947368">05</text>
+  <text class="node-title node-title--mono" x="223" y="419.2631578947368">Class-token guard</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="196" y="449.2631578947368">Every source className token appears in its twin</text>
+<text class="node-body node-body--mono" data-role="body-line" x="196" y="465.2631578947368">one-way token presence, not runtime reuse</text>
+</g>
+  </g>
+  <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
+  <g data-journal-part="provenance" data-provenance="tests/int/demo-twins.int.spec.ts">
+    <text class="footer-label" x="48" y="571">PROVENANCE</text>
+    <text class="provenance-line" x="48" y="590">tests/int/demo-twins.int.spec.ts</text>
+  </g>
+  <g data-journal-part="evidence" data-evidence-excerpt="const missing = literals.flatMap((literal) =&gt;
+        literal
+          .split(/\s+/)
+          .filter((token) =&gt; token &amp;&amp; !twinSource.includes(token))
+          .map((token) =&gt; `${token} (from &quot;${literal}&quot;)`),
+      )
+
+      expect(missing, `Twin ${twin} drifted from ${component} (${slug})`).toEqual([])" data-evidence-truncated="true">
+  <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
+  <text class="evidence-line" x="48" y="626">const missing = literals.flatMap((literal) =&gt; · literal ·</text>
+<text class="evidence-line" x="48" y="641">.split(/\s+/) · .filter((token) =&gt; token &amp;&amp; …</text>
+</g>
+  <g data-journal-part="prompt" data-prompt="When source changes, update the twin in the same contribution.">
+    <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
+    <text class="prompt" x="744" y="594">When source changes, update the twin in</text>
+<text class="prompt" x="744" y="613">the same contribution.</text>
+  </g>
 </svg>

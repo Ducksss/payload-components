@@ -1,33 +1,39 @@
 ---
 title: Build an Editorial Blog Frontend with Payload Post Components
-description: Design a typed Payload post model and compose index, article, related-content, metadata, search, and syndication surfaces in Next.js.
+description: Design a typed editorial source and compose index, article, related-content, metadata, and syndication surfaces in Next.js.
 author: Ducksss
 date: 2026-07-14
 series: production-guides
 publicationOrder: 22
 cover:
   src: /blog/build-payload-blog-frontend/cover.webp
-  alt: Blog index and article preview beside the paths that project one Post into pages, RSS, Open Graph images, and search.
+  alt: Blog index and article preview beside the paths from a validated MDX entry to the full article index, related posts, RSS, Open Graph images, and sitemap.
 tags:
   - Payload CMS
   - Next.js
   - Editorial
 ---
 
-A blog frontend is more than an article template. One Post document feeds the index card, article
-route, related content, canonical metadata, social image, sitemap, RSS item, and often search. If each
-surface invents its own interpretation, titles drift, draft content leaks, images break, and a schema
-change becomes a repository-wide hunt.
+A blog frontend is more than an article template. One editorial record feeds the index card, article
+route, related content, canonical metadata, social image, sitemap, and RSS item. If each surface
+invents its own interpretation, titles drift, draft content leaks, images break, and a schema change
+becomes a repository-wide hunt.
 
-I start with an editorial contract, then build every projection from it. Payload owns structured
-content and publishing state. Next.js owns routing, rendering, metadata, and caching. Post components
-own reusable presentation without becoming a second source of truth.
+I start with an editorial contract, then build every projection from it. In a Payload-backed
+application, Payload owns structured content and publishing state. Next.js owns routing, rendering,
+metadata, and caching. Post components own reusable presentation without becoming a second source
+of truth.
 
 <BlogFigure
   src="/blog/build-payload-blog-frontend/figure-01-editorial-architecture.svg"
-  alt="An editorial architecture map where one Payload Post model feeds the blog index, article route, discovery, RSS, and social metadata"
-  caption="Treat every public surface as a projection of one post contract. That keeps canonical URLs, dates, descriptions, and images consistent."
+  alt="An editorial architecture map where one validated MDX entry feeds the full blog index, article route, related posts, RSS, Open Graph images, and sitemap"
+  caption="Build the index, article, related posts, RSS, Open Graph images, and sitemap from one validated source so canonical URLs, dates, descriptions, and images stay consistent."
 />
+
+This repository demonstrates that contract with an MDX-backed `blogSource`. The `/blog` route renders
+all article cards on one index, related posts are derived deterministically, and the same validated
+entry feeds RSS, Open Graph, and sitemap output. There is no blog pagination or blog search; the
+existing search endpoint belongs to the documentation surface.
 
 ## Model the Post before the page
 
@@ -94,7 +100,8 @@ Cards should use semantic article markup and one clear heading link. Avoid neste
 or actions. Reserve image dimensions, provide useful alt text or an empty alt when the adjacent title
 duplicates the information, and test long titles.
 
-At a small corpus size, one complete index can be simpler than client filtering. At larger scale,
+At this repository's corpus size, one complete index is simpler than client filtering, so `/blog`
+renders all cards without pagination. A substantially larger Payload-backed publication may instead
 use server pagination with stable canonical URLs. Do not ship every full rich-text document to the
 browser just to derive a card excerpt.
 

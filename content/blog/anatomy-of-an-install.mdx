@@ -21,15 +21,19 @@ deserve to know exactly what it touches — and honestly, this part is the bit I
 
 ## The pipeline
 
-When you run `add`, five stages happen in order:
+After manifest loading, project detection, install-plan resolution, and preflight, `add` has five
+named stage boundaries. File, dependency, and fragment stages are conditional on observed missing
+work. A fully valid installation, including work found on disk but not yet recorded, can return early
+before a staged attempt. Once a staged attempt proceeds, declared post-install scripts run before
+installed state is recorded.
 
 <Steps>
   <Step>
-    **`registry-build`** — figure out what you asked for and build its registry entry: the source
-    files, plus the little fragments that describe how to wire it in.
+    **`registry-build`** — build a temporary shadcn registry output when owned source is missing.
   </Step>
   <Step>
-    **`registry-add`** — drop those source files into your repo through the shadcn registry flow.
+    **`registry-add`** — install missing owned source or public registry dependencies, then verify
+    the declared files exist.
   </Step>
   <Step>
     **`dependency-install`** — pull in any packages the block needs so it actually compiles.
@@ -39,14 +43,18 @@ When you run `add`, five stages happen in order:
     registered and painted.
   </Step>
   <Step>
-    **`post-install`** — regenerate types and the import map, then record what happened.
+    **`post-install`** — run the declared type and import-map generators.
   </Step>
 </Steps>
 
+Before the first stage runs, state records a partial attempt. A failed stage stores its exact name
+and message; installed state is written only after every required stage and post-install script
+succeeds.
+
 <BlogFigure
   src="/blog/anatomy-of-an-install/figure-01-five-stage-pipeline.svg"
-  alt="The payload-components add pipeline from registry build through file delivery, dependencies, source patches, and generators"
-  caption="Each stage has one job, and the state file records the boundary so an interrupted install has an honest recovery path."
+  alt="Installer preflight followed by registry-build, registry-add, dependency-install, fragment-apply, and post-install before the final state outcome"
+  caption="A failure records the failed stage and message; installed state is written only after every required boundary succeeds."
 />
 
 ## The trick I like: patching by text, not by AST

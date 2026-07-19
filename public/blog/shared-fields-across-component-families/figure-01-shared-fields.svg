@@ -1,58 +1,274 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
-  <title id="title">One real source file feeds every structural variant</title>
-  <desc id="description">SHARED CONTENT MODEL diagram for the Payload Components editorial library.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="diagram-title diagram-description" class="diagram diagram--trace" data-mode="trace" data-series="component-design" data-issue="16">
+  <title id="diagram-title">One shipped featureFields module feeds four structural variants</title>
+  <desc id="diagram-description">Each Feature config spreads the shared eyebrow, title, and description fields before adding its own item and CTA constraints.</desc>
   <defs>
-    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#f4f4f5"/></linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#18181b" flood-opacity="0.08"/></filter>
-    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+    <pattern id="journal-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e4e4e7" stroke-width="1" />
+    </pattern>
+    <marker id="journal-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+    </marker>
     <style>
-      .kicker{font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2.4px;fill:#059669}
-      .headline{font:650 34px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .card{fill:#fff;stroke:#d4d4d8;stroke-width:1.5;filter:url(#shadow)}
-      .terminal{fill:#18181b;stroke:#3f3f46;stroke-width:1.5;filter:url(#shadow)}
-      .dot{fill:#059669}
-      .node-title{font:650 18px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .node-body{font:450 14px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#52525b}
-      .terminal-title{font:650 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#f4f4f5}
-      .terminal-body{font:450 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#d4d4d8}
-      .arrow{fill:none;stroke:#059669;stroke-width:2.5;stroke-linecap:round;opacity:.85}
-      .edge-label{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#047857;paint-order:stroke;stroke:#fafafa;stroke-width:5px}
+      .diagram {
+        background: #f7f5ef;
+        color: #18181b;
+      }
+      .paper {
+        fill: #f7f5ef;
+      }
+      .grid {
+        fill: url(#journal-grid-pattern);
+      }
+      .masthead,
+      .mode-label,
+      .folio-label,
+      .footer-label,
+      .node-index,
+      .edge-label,
+      .node-title--mono,
+      .node-body--mono,
+      .provenance-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .masthead {
+        fill: #18181b;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.7px;
+      }
+      .kicker {
+        fill: #047857;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+      }
+      .headline {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 28px;
+        font-weight: 720;
+        letter-spacing: -0.4px;
+      }
+      .mode-box {
+        fill: #ffffff;
+        stroke: #047857;
+        stroke-width: 2;
+      }
+      .mode-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.4px;
+      }
+      .folio-label {
+        fill: #52525b;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 1.2px;
+      }
+      .journal-rule {
+        stroke: #18181b;
+        stroke-width: 1;
+      }
+      .accent-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.5;
+      }
+      .edge-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.25;
+      }
+      .diagram--join .edge-path {
+        stroke-dasharray: 7 5;
+      }
+      .diagram--inspect .edge-path {
+        stroke-width: 1.75;
+      }
+      .edge-label-paper {
+        fill: #f7f5ef;
+        stroke: #e4e4e7;
+        stroke-width: 1;
+      }
+      .edge-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-card {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1.25;
+      }
+      .diagram--inspect .node-card {
+        stroke: #18181b;
+      }
+      .node--terminal .node-card {
+        fill: #18181b;
+        stroke: #18181b;
+      }
+      .node-rule {
+        stroke: #059669;
+        stroke-width: 5;
+      }
+      .node-index {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-title {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 720;
+      }
+      .node-body {
+        fill: #52525b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+      }
+      .node--terminal .node-title,
+      .node--terminal .node-body {
+        fill: #ffffff;
+      }
+      .node--terminal .node-index {
+        fill: #059669;
+      }
+      .footer-paper {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1;
+      }
+      .footer-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .provenance-line,
+      .evidence-line {
+        fill: #52525b;
+        font-size: 13px;
+      }
+      .evidence-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .prompt {
+        fill: #047857;
+        font-family: Georgia, serif;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 650;
+      }
+      .registration {
+        fill: none;
+        stroke: #047857;
+        stroke-width: 1.5;
+      }
     </style>
   </defs>
-  <rect width="1200" height="675" fill="url(#background)"/>
-  <circle cx="1110" cy="70" r="62" fill="#059669" opacity=".06"/>
-  <circle cx="1110" cy="70" r="31" fill="#059669" opacity=".08"/>
-  <text class="kicker" x="60" y="55">SHARED CONTENT MODEL</text>
-  <text class="headline" x="60" y="104">One real source file feeds every structural variant</text>
-  <g><g><path class="arrow" d="M 240 270.25 C 322 270.25, 322 524.75, 404 524.75" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 600 359.25 C 600 359.25, 600 446.75, 600 446.75" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 960 270.25 C 878 270.25, 878 524.75, 796 524.75" marker-end="url(#arrowhead)" /></g></g>
-  <g>
-        <g>
-          <rect class="card" x="240" y="181.25" width="720" height="178" rx="18" />
-          <circle class="dot" cx="266" cy="210.25" r="6" />
-          <text class="node-title" x="284" y="216.25">shared/heroFields.ts</text>
-          <text class="node-body" x="266" y="251.25">eyebrow · heading · copy · links</text>
-        </g>
+  <rect class="paper" width="1200" height="675" />
+  <rect class="grid" data-journal-part="grid" x="28" y="24" width="1144" height="627" />
+  <path class="journal-rule" d="M 36 62 H 1164" />
+  <g data-journal-part="masthead">
+    <text class="masthead" x="48" y="49">COMPONENT DESIGN · ISSUE 16</text>
+  </g>
+  <g data-journal-part="mode">
+    <rect class="mode-box" x="876" y="27" width="96" height="27" rx="2" />
+    <text class="mode-label" x="924" y="46" text-anchor="middle">TRACE</text>
+  </g>
+  <g data-journal-part="folio">
+    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE 16 / 32</text>
+  </g>
+  <text class="kicker" x="48" y="86">SHARED FEATURE CONTENT</text>
+  <text class="headline" x="48" y="119">One shipped featureFields module feeds four structural</text>
+<text class="headline" x="48" y="150">variants</text>
+  <path class="accent-path" d="M 941 96 C 1004 83, 1054 105, 1138 81" />
+  <circle class="registration" cx="1139" cy="81" r="8" />
+  <g data-diagram-layer="edges">
+    <g class="edge">
+  <path class="edge-path" data-edge-from="shared" data-edge-to="grid" data-edge-axis="vertical" d="M 600 361.5 C 600 368, 183 368, 183 374.5" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="60" y="446.75" width="344" height="156" rx="18" />
-          <circle class="dot" cx="86" cy="475.75" r="6" />
-          <text class="node-title" x="104" y="481.75">hero-basic config</text>
-          <text class="node-body" x="86" y="516.75">...heroFields + alignment</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="shared" data-edge-to="split" data-edge-axis="vertical" d="M 600 361.5 C 600 368, 461 368, 461 374.5" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="428" y="446.75" width="344" height="156" rx="18" />
-          <circle class="dot" cx="454" cy="475.75" r="6" />
-          <text class="node-title" x="472" y="481.75">hero-video config</text>
-          <text class="node-body" x="454" y="516.75">...heroFields + video</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="shared" data-edge-to="bento" data-edge-axis="vertical" d="M 600 361.5 C 600 368, 739 368, 739 374.5" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="796" y="446.75" width="344" height="156" rx="18" />
-          <circle class="dot" cx="822" cy="475.75" r="6" />
-          <text class="node-title" x="840" y="481.75">hero-dramatic config</text>
-          <text class="node-body" x="822" y="516.75">...heroFields + media treatment</text>
-        </g></g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="shared" data-edge-to="steps" data-edge-axis="vertical" d="M 600 361.5 C 600 368, 1017 368, 1017 374.5" marker-end="url(#journal-arrow)" />
+
+</g>
+  </g>
+  <g data-diagram-layer="nodes">
+    <g class="node node--code" data-node-id="shared" data-node-kind="code">
+  <rect class="node-card" x="180" y="207.5" width="840" height="152" rx="2" />
+  <path class="node-rule" d="M 180 212.5 H 1020" />
+  <text class="node-index" x="196" y="233.5">01</text>
+  <text class="node-title node-title--mono" x="223" y="234.5">shared/featureFields.ts</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="196" y="264.5">eyebrow · title · description</text>
+</g>
+<g class="node node--code" data-node-id="grid" data-node-kind="code">
+  <rect class="node-card" x="52" y="381.5" width="262" height="116" rx="2" />
+  <path class="node-rule" d="M 52 386.5 H 314" />
+  <text class="node-index" x="68" y="407.5">02</text>
+  <text class="node-title node-title--mono" x="95" y="408.5">feature-grid-basic</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="68" y="438.5">items 3–6 · links max 1</text>
+</g>
+<g class="node node--code" data-node-id="split" data-node-kind="code">
+  <rect class="node-card" x="330" y="381.5" width="262" height="116" rx="2" />
+  <path class="node-rule" d="M 330 386.5 H 592" />
+  <text class="node-index" x="346" y="407.5">03</text>
+  <text class="node-title node-title--mono" x="373" y="408.5">feature-split</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="346" y="438.5">items 2–6 · links max 2</text>
+</g>
+<g class="node node--code" data-node-id="bento" data-node-kind="code">
+  <rect class="node-card" x="608" y="381.5" width="262" height="116" rx="2" />
+  <path class="node-rule" d="M 608 386.5 H 870" />
+  <text class="node-index" x="624" y="407.5">04</text>
+  <text class="node-title node-title--mono" x="651" y="408.5">feature-bento</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="624" y="438.5">items 3–6 · first item leads</text>
+</g>
+<g class="node node--code" data-node-id="steps" data-node-kind="code">
+  <rect class="node-card" x="886" y="381.5" width="262" height="116" rx="2" />
+  <path class="node-rule" d="M 886 386.5 H 1148" />
+  <text class="node-index" x="902" y="407.5">05</text>
+  <text class="node-title node-title--mono" x="929" y="408.5">feature-steps</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="902" y="438.5">items 2–6 · array order numbers</text>
+</g>
+  </g>
+  <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
+  <g data-journal-part="provenance" data-provenance="payload-components/source/blocks/shared/featureFields.ts">
+    <text class="footer-label" x="48" y="571">PROVENANCE</text>
+    <text class="provenance-line" x="48" y="590">payload-components/source/blocks/shared/featureFields.ts</text>
+  </g>
+  <g data-journal-part="evidence" data-evidence-excerpt="export const featureFields: Field[] = [
+  {
+    name: &apos;eyebrow&apos;,
+    type: &apos;text&apos;,
+  },
+  {
+    name: &apos;title&apos;,
+    type: &apos;text&apos;,
+    required: true,
+  },
+  {
+    name: &apos;description&apos;," data-evidence-truncated="true">
+  <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
+  <text class="evidence-line" x="48" y="626">export const featureFields: Field[] = [ · { · name: &apos;eyebrow&apos;, ·</text>
+<text class="evidence-line" x="48" y="641">type: &apos;text&apos;, · }, · { · name: &apos;title&apos;, · type: &apos;text&apos;, · require …</text>
+</g>
+  <g data-journal-part="prompt" data-prompt="Change the shared rule once and test every consumer.">
+    <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
+    <text class="prompt" x="744" y="594">Change the shared rule once and test every</text>
+<text class="prompt" x="744" y="613">consumer.</text>
+  </g>
 </svg>

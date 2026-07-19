@@ -1,59 +1,272 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
-  <title id="title">Install, retry, and rerun all settle on one state</title>
-  <desc id="description">CONVERGENCE diagram for the Payload Components editorial library.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="diagram-title diagram-description" class="diagram diagram--trace" data-mode="trace" data-series="installer-internals" data-issue="13">
+  <title id="diagram-title">Retries re-observe the repository instead of resuming a stored cursor</title>
+  <desc id="diagram-description">Every staged attempt begins partial, failures record the last failed stage, and valid installed work returns before mutation.</desc>
   <defs>
-    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#f4f4f5"/></linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#18181b" flood-opacity="0.08"/></filter>
-    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+    <pattern id="journal-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e4e4e7" stroke-width="1" />
+    </pattern>
+    <marker id="journal-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+    </marker>
     <style>
-      .kicker{font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2.4px;fill:#059669}
-      .headline{font:650 34px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .card{fill:#fff;stroke:#d4d4d8;stroke-width:1.5;filter:url(#shadow)}
-      .terminal{fill:#18181b;stroke:#3f3f46;stroke-width:1.5;filter:url(#shadow)}
-      .dot{fill:#059669}
-      .node-title{font:650 18px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .node-body{font:450 14px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#52525b}
-      .terminal-title{font:650 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#f4f4f5}
-      .terminal-body{font:450 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#d4d4d8}
-      .arrow{fill:none;stroke:#059669;stroke-width:2.5;stroke-linecap:round;opacity:.85}
-      .edge-label{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#047857;paint-order:stroke;stroke:#fafafa;stroke-width:5px}
+      .diagram {
+        background: #f7f5ef;
+        color: #18181b;
+      }
+      .paper {
+        fill: #f7f5ef;
+      }
+      .grid {
+        fill: url(#journal-grid-pattern);
+      }
+      .masthead,
+      .mode-label,
+      .folio-label,
+      .footer-label,
+      .node-index,
+      .edge-label,
+      .node-title--mono,
+      .node-body--mono,
+      .provenance-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .masthead {
+        fill: #18181b;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.7px;
+      }
+      .kicker {
+        fill: #047857;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+      }
+      .headline {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 28px;
+        font-weight: 720;
+        letter-spacing: -0.4px;
+      }
+      .mode-box {
+        fill: #ffffff;
+        stroke: #047857;
+        stroke-width: 2;
+      }
+      .mode-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.4px;
+      }
+      .folio-label {
+        fill: #52525b;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 1.2px;
+      }
+      .journal-rule {
+        stroke: #18181b;
+        stroke-width: 1;
+      }
+      .accent-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.5;
+      }
+      .edge-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.25;
+      }
+      .diagram--join .edge-path {
+        stroke-dasharray: 7 5;
+      }
+      .diagram--inspect .edge-path {
+        stroke-width: 1.75;
+      }
+      .edge-label-paper {
+        fill: #f7f5ef;
+        stroke: #e4e4e7;
+        stroke-width: 1;
+      }
+      .edge-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-card {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1.25;
+      }
+      .diagram--inspect .node-card {
+        stroke: #18181b;
+      }
+      .node--terminal .node-card {
+        fill: #18181b;
+        stroke: #18181b;
+      }
+      .node-rule {
+        stroke: #059669;
+        stroke-width: 5;
+      }
+      .node-index {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-title {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 720;
+      }
+      .node-body {
+        fill: #52525b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+      }
+      .node--terminal .node-title,
+      .node--terminal .node-body {
+        fill: #ffffff;
+      }
+      .node--terminal .node-index {
+        fill: #059669;
+      }
+      .footer-paper {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1;
+      }
+      .footer-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .provenance-line,
+      .evidence-line {
+        fill: #52525b;
+        font-size: 13px;
+      }
+      .evidence-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .prompt {
+        fill: #047857;
+        font-family: Georgia, serif;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 650;
+      }
+      .registration {
+        fill: none;
+        stroke: #047857;
+        stroke-width: 1.5;
+      }
     </style>
   </defs>
-  <rect width="1200" height="675" fill="url(#background)"/>
-  <circle cx="1110" cy="70" r="62" fill="#059669" opacity=".06"/>
-  <circle cx="1110" cy="70" r="31" fill="#059669" opacity=".08"/>
-  <text class="kicker" x="60" y="55">CONVERGENCE</text>
-  <text class="headline" x="60" y="104">Install, retry, and rerun all settle on one state</text>
-  <g><g><path class="arrow" d="M 404 270.25 C 600 270.25, 600 270.25, 796 270.25" marker-end="url(#arrowhead)" /><text class="edge-label" x="600" y="262.25" text-anchor="middle">add</text></g>
-<g><path class="arrow" d="M 404 270.25 C 416 270.25, 416 270.25, 428 270.25" marker-end="url(#arrowhead)" /><text class="edge-label" x="416" y="262.25" text-anchor="middle">failure</text></g>
-<g><path class="arrow" d="M 772 270.25 C 784 270.25, 784 270.25, 796 270.25" marker-end="url(#arrowhead)" /><text class="edge-label" x="784" y="262.25" text-anchor="middle">retry</text></g>
-<g><path class="arrow" d="M 796 270.25 C 878 270.25, 878 524.75, 960 524.75" marker-end="url(#arrowhead)" /><text class="edge-label" x="878" y="389.5" text-anchor="middle">rerun</text></g></g>
-  <g>
-        <g>
-          <rect class="card" x="60" y="192.25" width="344" height="156" rx="18" />
-          <circle class="dot" cx="86" cy="221.25" r="6" />
-          <text class="node-title" x="104" y="227.25">Not installed</text>
-          <text class="node-body" x="86" y="262.25">No files or state entry</text>
-        </g>
+  <rect class="paper" width="1200" height="675" />
+  <rect class="grid" data-journal-part="grid" x="28" y="24" width="1144" height="627" />
+  <path class="journal-rule" d="M 36 62 H 1164" />
+  <g data-journal-part="masthead">
+    <text class="masthead" x="48" y="49">INSTALLER INTERNALS · ISSUE 13</text>
+  </g>
+  <g data-journal-part="mode">
+    <rect class="mode-box" x="876" y="27" width="96" height="27" rx="2" />
+    <text class="mode-label" x="924" y="46" text-anchor="middle">TRACE</text>
+  </g>
+  <g data-journal-part="folio">
+    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE 13 / 32</text>
+  </g>
+  <text class="kicker" x="48" y="86">CONVERGENCE BY RECHECKING</text>
+  <text class="headline" x="48" y="119">Retries re-observe the repository instead of resuming a stored</text>
+<text class="headline" x="48" y="150">cursor</text>
+  <path class="accent-path" d="M 941 96 C 1004 83, 1054 105, 1138 81" />
+  <circle class="registration" cx="1139" cy="81" r="8" />
+  <g data-diagram-layer="edges">
+    <g class="edge">
+  <path class="edge-path" data-edge-from="preflight" data-edge-to="attempt" data-edge-axis="vertical" d="M 600 287.43243243243245 C 600 290.93243243243245, 600 290.93243243243245, 600 294.43243243243245" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="428" y="192.25" width="344" height="156" rx="18" />
-          <circle class="dot" cx="454" cy="221.25" r="6" />
-          <text class="node-title" x="472" y="227.25">Partial install</text>
-          <text class="node-body" x="454" y="262.25">Failed stage is recorded</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="attempt" data-edge-to="failure" data-edge-axis="vertical" d="M 600 414.86486486486484 C 600 418.3648648648649, 227.33333333333334 418.3648648648649, 227.33333333333334 421.8648648648649" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="796" y="192.25" width="344" height="156" rx="18" />
-          <circle class="dot" cx="822" cy="221.25" r="6" />
-          <text class="node-title" x="840" y="227.25">Complete install</text>
-          <text class="node-body" x="822" y="262.25">Files + wiring + generators</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="attempt" data-edge-to="installed" data-edge-axis="vertical" d="M 600 414.86486486486484 C 600 418.3648648648649, 600 418.3648648648649, 600 421.8648648648649" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="240" y="435.75" width="720" height="178" rx="18" />
-          <circle class="dot" cx="266" cy="464.75" r="6" />
-          <text class="node-title" x="284" y="470.75">Converged rerun</text>
-          <text class="node-body" x="266" y="505.75">Dedup checks leave the repository unchanged</text>
-        </g></g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="installed" data-edge-to="unchanged" data-edge-axis="horizontal" d="M 777.3333333333334 479.93243243243245 C 783.8333333333334 479.93243243243245, 783.8333333333334 479.93243243243245, 790.3333333333334 479.93243243243245" marker-end="url(#journal-arrow)" />
+
+</g>
+  </g>
+  <g data-diagram-layer="nodes">
+    <g class="node node--standard" data-node-id="preflight" data-node-kind="standard">
+  <rect class="node-card" x="180" y="174" width="840" height="111.43243243243244" rx="2" />
+  <path class="node-rule" d="M 180 179 H 1020" />
+  <text class="node-index" x="196" y="200">01</text>
+  <text class="node-title" x="223" y="201">Preflight observations</text>
+  <text class="node-body" data-role="body-line" x="196" y="231">state + files + deps + fragments</text>
+</g>
+<g class="node node--code" data-node-id="attempt" data-node-kind="code">
+  <rect class="node-card" x="180" y="301.43243243243245" width="840" height="111.43243243243244" rx="2" />
+  <path class="node-rule" d="M 180 306.43243243243245 H 1020" />
+  <text class="node-index" x="196" y="327.43243243243245">02</text>
+  <text class="node-title node-title--mono" x="223" y="328.43243243243245">partial attempt</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="196" y="358.43243243243245">recorded before staged mutation</text>
+</g>
+<g class="node node--code" data-node-id="failure" data-node-kind="code">
+  <rect class="node-card" x="52" y="428.8648648648649" width="350.6666666666667" height="102.13513513513513" rx="2" />
+  <path class="node-rule" d="M 52 433.8648648648649 H 402.6666666666667" />
+  <text class="node-index" x="68" y="454.8648648648649">03</text>
+  <text class="node-title node-title--mono" x="95" y="455.8648648648649">partial failure</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="68" y="485.8648648648649">lastError: { stage, message }</text>
+<text class="node-body node-body--mono" data-role="body-line" x="68" y="501.8648648648649">next add rechecks preflight</text>
+</g>
+<g class="node node--code" data-node-id="installed" data-node-kind="code">
+  <rect class="node-card" x="424.6666666666667" y="428.8648648648649" width="350.6666666666667" height="102.13513513513513" rx="2" />
+  <path class="node-rule" d="M 424.6666666666667 433.8648648648649 H 775.3333333333334" />
+  <text class="node-index" x="440.6666666666667" y="454.8648648648649">04</text>
+  <text class="node-title node-title--mono" x="467.6666666666667" y="455.8648648648649">installed</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="440.6666666666667" y="485.8648648648649">all missing work + post-install passed</text>
+</g>
+<g class="node node--code" data-node-id="unchanged" data-node-kind="code">
+  <rect class="node-card" x="797.3333333333334" y="428.8648648648649" width="350.6666666666667" height="102.13513513513513" rx="2" />
+  <path class="node-rule" d="M 797.3333333333334 433.8648648648649 H 1148" />
+  <text class="node-index" x="813.3333333333334" y="454.8648648648649">05</text>
+  <text class="node-title node-title--mono" x="840.3333333333334" y="455.8648648648649">Unchanged early return</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="813.3333333333334" y="485.8648648648649">matching state + valid disk → no stages</text>
+<text class="node-body node-body--mono" data-role="body-line" x="813.3333333333334" y="501.8648648648649">replayed</text>
+</g>
+  </g>
+  <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
+  <g data-journal-part="provenance" data-provenance="tools/payload-components/state.ts">
+    <text class="footer-label" x="48" y="571">PROVENANCE</text>
+    <text class="provenance-line" x="48" y="590">tools/payload-components/state.ts</text>
+  </g>
+  <g data-journal-part="evidence" data-evidence-excerpt="state.components[manifest.name] = upsertEntry({
+    installedAt: currentEntry?.installedAt ?? null,
+    lastAttemptAt: now,
+    lastError: null,
+    manifest,
+    patchedFiles,
+    status: &apos;partial&apos;,
+    targetId,
+  })" data-evidence-truncated="true">
+  <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
+  <text class="evidence-line" x="48" y="626">state.components[manifest.name] = upsertEntry({ · installedAt:</text>
+<text class="evidence-line" x="48" y="641">currentEntry?.installedAt ?? null, · lastAttemptAt: now, · …</text>
+</g>
+  <g data-journal-part="prompt" data-prompt="Turn the failure into a fixture.">
+    <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
+    <text class="prompt" x="744" y="594">Turn the failure into a fixture.</text>
+  </g>
 </svg>

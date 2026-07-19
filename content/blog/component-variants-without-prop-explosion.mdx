@@ -15,8 +15,8 @@ tags:
 ---
 
 Component families usually begin with one clean section and one innocent prop. Then another layout
-needs reversed media, another needs video, another needs a different content hierarchy, and the
-component accumulates switches until no one knows which combinations are valid.
+needs a different media relationship, another needs a stacked list, another needs unequal emphasis,
+and the component accumulates switches until no one knows which combinations are valid.
 
 Payload makes that problem visible in two places. The React component gets a prop explosion, while
 the editor gets a field explosion. A single block asks people to choose layout, media mode, density,
@@ -27,15 +27,15 @@ registry item.
 
 <BlogFigure
   src="/blog/component-variants-without-prop-explosion/figure-01-family-vs-matrix.svg"
-  alt="A comparison between one overloaded component with a matrix of prop combinations and a family of three focused structural variants"
-  caption="A family makes valid structures explicit. An overloaded prop matrix makes every combination look supported, including the ones nobody designed or tested."
+  alt="A comparison between one overloaded prop matrix and the four focused variants feature-grid-basic, feature-split, feature-bento, and feature-steps"
+  caption="The four shipped Feature variants make valid structures explicit. An overloaded prop matrix makes every combination look supported, including the ones nobody designed or tested."
 />
 
 ## Identify a structural change
 
 A structural change alters the section's hierarchy, spatial relationship, medium, or interaction.
-Examples include a split hero versus a full-bleed video hero, a feature grid versus a sequential
-steps layout, or pricing cards versus an enterprise comparison.
+Examples include a feature grid versus a sequential steps layout, a split composition with its
+heading and CTA beside a stacked feature list, or pricing cards versus an enterprise comparison.
 
 A content change preserves the structure while varying what is present. An optional eyebrow, extra
 feature item, secondary link, or alternate image is usually content-level. These values belong in the
@@ -49,9 +49,9 @@ The [architecture documentation](/docs/architecture) describes this family model
 
 ## Suffix every registry variant
 
-A family member always carries a structural suffix: `feature-bento`, `feature-split`,
-`feature-steps`. Do not ship a bare `feature` item and later discover that it actually meant one
-arbitrary layout.
+A family member always carries a structural suffix: `feature-grid-basic`, `feature-split`,
+`feature-bento`, or `feature-steps`. Do not ship a bare `feature` item and later discover that it
+actually meant one arbitrary layout.
 
 Suffixes keep every contract aligned:
 
@@ -97,8 +97,8 @@ type Props = FeatureBentoBlock & {
 ```
 
 There is no union of unrelated presentation modes inside the component. TypeScript does not need to
-express rules such as “video is required only when variant is cinematic, unless compact is true.”
-The Payload config and generated interface describe one valid structure.
+express rules such as “the first item leads only in Bento unless the layout is compact.” The Payload
+config and generated interface describe one valid structure.
 
 Wrapper props remain optional because the page renderer may need section anchors, local classes, or
 full-bleed behavior. Preserve them across variants so the family composes consistently.
@@ -108,9 +108,9 @@ full-bleed behavior. Preserve them across variants so the family composes consis
 Separate variants do not require duplicated fields. A family can ship a real shared source module:
 
 ```ts
-export const featureIntroFields: Field[] = [
+export const featureFields: Field[] = [
   { name: 'eyebrow', type: 'text' },
-  { name: 'heading', type: 'text', required: true },
+  { name: 'title', type: 'text', required: true },
   { name: 'description', type: 'textarea' },
 ]
 ```

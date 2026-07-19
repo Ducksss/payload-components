@@ -1,66 +1,285 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
-  <title id="title">Semantics, state, and keyboard behavior are one contract</title>
-  <desc id="description">ACCESSIBLE DISCLOSURE diagram for the Payload Components editorial library.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="diagram-title diagram-description" class="diagram diagram--trace" data-mode="trace" data-series="production-guides" data-issue="23">
+  <title id="diagram-title">The block delegates disclosure behavior to the accordion primitive</title>
+  <desc id="diagram-description">FaqAccordionBlock composes the installed accordion primitive; keyboard, expanded state, focus, and panel semantics remain behaviors to verify.</desc>
   <defs>
-    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#f4f4f5"/></linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#18181b" flood-opacity="0.08"/></filter>
-    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+    <pattern id="journal-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e4e4e7" stroke-width="1" />
+    </pattern>
+    <marker id="journal-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+    </marker>
     <style>
-      .kicker{font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2.4px;fill:#059669}
-      .headline{font:650 34px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .card{fill:#fff;stroke:#d4d4d8;stroke-width:1.5;filter:url(#shadow)}
-      .terminal{fill:#18181b;stroke:#3f3f46;stroke-width:1.5;filter:url(#shadow)}
-      .dot{fill:#059669}
-      .node-title{font:650 18px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .node-body{font:450 14px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#52525b}
-      .terminal-title{font:650 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#f4f4f5}
-      .terminal-body{font:450 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#d4d4d8}
-      .arrow{fill:none;stroke:#059669;stroke-width:2.5;stroke-linecap:round;opacity:.85}
-      .edge-label{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#047857;paint-order:stroke;stroke:#fafafa;stroke-width:5px}
+      .diagram {
+        background: #f7f5ef;
+        color: #18181b;
+      }
+      .paper {
+        fill: #f7f5ef;
+      }
+      .grid {
+        fill: url(#journal-grid-pattern);
+      }
+      .masthead,
+      .mode-label,
+      .folio-label,
+      .footer-label,
+      .node-index,
+      .edge-label,
+      .node-title--mono,
+      .node-body--mono,
+      .provenance-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .masthead {
+        fill: #18181b;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.7px;
+      }
+      .kicker {
+        fill: #047857;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+      }
+      .headline {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 28px;
+        font-weight: 720;
+        letter-spacing: -0.4px;
+      }
+      .mode-box {
+        fill: #ffffff;
+        stroke: #047857;
+        stroke-width: 2;
+      }
+      .mode-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.4px;
+      }
+      .folio-label {
+        fill: #52525b;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 1.2px;
+      }
+      .journal-rule {
+        stroke: #18181b;
+        stroke-width: 1;
+      }
+      .accent-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.5;
+      }
+      .edge-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.25;
+      }
+      .diagram--join .edge-path {
+        stroke-dasharray: 7 5;
+      }
+      .diagram--inspect .edge-path {
+        stroke-width: 1.75;
+      }
+      .edge-label-paper {
+        fill: #f7f5ef;
+        stroke: #e4e4e7;
+        stroke-width: 1;
+      }
+      .edge-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-card {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1.25;
+      }
+      .diagram--inspect .node-card {
+        stroke: #18181b;
+      }
+      .node--terminal .node-card {
+        fill: #18181b;
+        stroke: #18181b;
+      }
+      .node-rule {
+        stroke: #059669;
+        stroke-width: 5;
+      }
+      .node-index {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-title {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 720;
+      }
+      .node-body {
+        fill: #52525b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+      }
+      .node--terminal .node-title,
+      .node--terminal .node-body {
+        fill: #ffffff;
+      }
+      .node--terminal .node-index {
+        fill: #059669;
+      }
+      .footer-paper {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1;
+      }
+      .footer-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .provenance-line,
+      .evidence-line {
+        fill: #52525b;
+        font-size: 13px;
+      }
+      .evidence-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .prompt {
+        fill: #047857;
+        font-family: Georgia, serif;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 650;
+      }
+      .registration {
+        fill: none;
+        stroke: #047857;
+        stroke-width: 1.5;
+      }
     </style>
   </defs>
-  <rect width="1200" height="675" fill="url(#background)"/>
-  <circle cx="1110" cy="70" r="62" fill="#059669" opacity=".06"/>
-  <circle cx="1110" cy="70" r="31" fill="#059669" opacity=".08"/>
-  <text class="kicker" x="60" y="55">ACCESSIBLE DISCLOSURE</text>
-  <text class="headline" x="60" y="104">Semantics, state, and keyboard behavior are one contract</text>
-  <g><g><path class="arrow" d="M 404 270.25 C 416 270.25, 416 270.25, 428 270.25" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 772 270.25 C 784 270.25, 784 270.25, 796 270.25" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 324 446.75 C 278 446.75, 278 348.25, 232 348.25" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 876 446.75 C 922 446.75, 922 348.25, 968 348.25" marker-end="url(#arrowhead)" /></g></g>
-  <g>
-        <g>
-          <rect class="card" x="60" y="192.25" width="344" height="156" rx="18" />
-          <circle class="dot" cx="86" cy="221.25" r="6" />
-          <text class="node-title" x="104" y="227.25">&lt;button&gt;</text>
-          <text class="node-body" x="86" y="262.25">Focusable question control</text>
-        </g>
+  <rect class="paper" width="1200" height="675" />
+  <rect class="grid" data-journal-part="grid" x="28" y="24" width="1144" height="627" />
+  <path class="journal-rule" d="M 36 62 H 1164" />
+  <g data-journal-part="masthead">
+    <text class="masthead" x="48" y="49">PRODUCTION GUIDES · ISSUE 23</text>
+  </g>
+  <g data-journal-part="mode">
+    <rect class="mode-box" x="876" y="27" width="96" height="27" rx="2" />
+    <text class="mode-label" x="924" y="46" text-anchor="middle">TRACE</text>
+  </g>
+  <g data-journal-part="folio">
+    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE 23 / 32</text>
+  </g>
+  <text class="kicker" x="48" y="86">ACCESSIBLE DISCLOSURE</text>
+  <text class="headline" x="48" y="119">The block delegates disclosure behavior to the accordion</text>
+<text class="headline" x="48" y="150">primitive</text>
+  <path class="accent-path" d="M 941 96 C 1004 83, 1054 105, 1138 81" />
+  <circle class="registration" cx="1139" cy="81" r="8" />
+  <g data-diagram-layer="edges">
+    <g class="edge">
+  <path class="edge-path" data-edge-from="block" data-edge-to="accordion" data-edge-axis="horizontal" d="M 404.6666666666667 224.3121212121212 C 411.16666666666663 224.3121212121212, 411.16666666666663 224.3121212121212, 417.66666666666663 224.3121212121212" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="428" y="192.25" width="344" height="156" rx="18" />
-          <circle class="dot" cx="454" cy="221.25" r="6" />
-          <text class="node-title" x="472" y="227.25">aria-expanded</text>
-          <text class="node-body" x="454" y="262.25">Announces open or closed</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="accordion" data-edge-to="item" data-edge-axis="horizontal" d="M 777.3333333333334 224.3121212121212 C 783.8333333333334 224.3121212121212, 783.8333333333334 224.3121212121212, 790.3333333333334 224.3121212121212" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="796" y="192.25" width="344" height="156" rx="18" />
-          <circle class="dot" cx="822" cy="221.25" r="6" />
-          <text class="node-title" x="840" y="227.25">Answer region</text>
-          <text class="node-body" x="822" y="262.25">Stable id and relationship</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="item" data-edge-to="trigger" data-edge-axis="vertical" d="M 972.6666666666667 276.6242424242424 C 972.6666666666667 280.1242424242424, 320.5 280.1242424242424, 320.5 283.6242424242424" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="60" y="446.75" width="528" height="156" rx="18" />
-          <circle class="dot" cx="86" cy="475.75" r="6" />
-          <text class="node-title" x="104" y="481.75">Keyboard</text>
-          <text class="node-body" x="86" y="516.75">Tab focuses · Enter/Space toggles</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="item" data-edge-to="panel" data-edge-axis="vertical" d="M 972.6666666666667 276.6242424242424 C 972.6666666666667 280.1242424242424, 879.5 280.1242424242424, 879.5 283.6242424242424" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="612" y="446.75" width="528" height="156" rx="18" />
-          <circle class="dot" cx="638" cy="475.75" r="6" />
-          <text class="node-title" x="656" y="481.75">Motion</text>
-          <text class="node-body" x="638" y="516.75">Never hides state or traps focus</text>
-        </g></g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="trigger" data-edge-to="verify" data-edge-axis="vertical" d="M 320.5 393.24848484848485 C 320.5 396.74848484848485, 600 396.74848484848485, 600 400.24848484848485" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="panel" data-edge-to="verify" data-edge-axis="vertical" d="M 879.5 393.24848484848485 C 879.5 396.74848484848485, 600 396.74848484848485, 600 400.24848484848485" marker-end="url(#journal-arrow)" />
+
+</g>
+  </g>
+  <g data-diagram-layer="nodes">
+    <g class="node node--code" data-node-id="block" data-node-kind="code">
+  <rect class="node-card" x="52" y="174" width="350.6666666666667" height="100.62424242424242" rx="2" />
+  <path class="node-rule" d="M 52 179 H 402.6666666666667" />
+  <text class="node-index" x="68" y="200">01</text>
+  <text class="node-title node-title--mono" x="95" y="201">FaqAccordionBlock</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="68" y="231">Maps editor items into one accordion</text>
+</g>
+<g class="node node--code" data-node-id="accordion" data-node-kind="code">
+  <rect class="node-card" x="424.6666666666667" y="174" width="350.6666666666667" height="100.62424242424242" rx="2" />
+  <path class="node-rule" d="M 424.6666666666667 179 H 775.3333333333334" />
+  <text class="node-index" x="440.6666666666667" y="200">02</text>
+  <text class="node-title node-title--mono" x="467.6666666666667" y="201">Accordion</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="440.6666666666667" y="231">type=&quot;single&quot; · collapsible</text>
+</g>
+<g class="node node--code" data-node-id="item" data-node-kind="code">
+  <rect class="node-card" x="797.3333333333334" y="174" width="350.6666666666667" height="100.62424242424242" rx="2" />
+  <path class="node-rule" d="M 797.3333333333334 179 H 1148" />
+  <text class="node-index" x="813.3333333333334" y="200">03</text>
+  <text class="node-title node-title--mono" x="840.3333333333334" y="201">AccordionItem</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="813.3333333333334" y="231">value = item.id ?? item-N</text>
+</g>
+<g class="node node--code" data-node-id="trigger" data-node-kind="code">
+  <rect class="node-card" x="52" y="290.6242424242424" width="537" height="100.62424242424242" rx="2" />
+  <path class="node-rule" d="M 52 295.6242424242424 H 589" />
+  <text class="node-index" x="68" y="316.6242424242424">04</text>
+  <text class="node-title node-title--mono" x="95" y="317.6242424242424">AccordionTrigger</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="68" y="347.6242424242424">Question control delegates state + keyboard</text>
+</g>
+<g class="node node--code" data-node-id="panel" data-node-kind="code">
+  <rect class="node-card" x="611" y="290.6242424242424" width="537" height="100.62424242424242" rx="2" />
+  <path class="node-rule" d="M 611 295.6242424242424 H 1148" />
+  <text class="node-index" x="627" y="316.6242424242424">05</text>
+  <text class="node-title node-title--mono" x="654" y="317.6242424242424">AccordionContent</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="627" y="347.6242424242424">Answer panel · Region only when useful</text>
+</g>
+<g class="node node--standard" data-node-id="verify" data-node-kind="standard">
+  <rect class="node-card" x="180" y="407.24848484848485" width="840" height="123.75151515151515" rx="2" />
+  <path class="node-rule" d="M 180 412.24848484848485 H 1020" />
+  <text class="node-index" x="196" y="433.24848484848485">06</text>
+  <text class="node-title" x="223" y="434.24848484848485">Consumer verification</text>
+  <text class="node-body" data-role="body-line" x="196" y="464.24848484848485">Keyboard · expanded state · focus · reduced motion</text>
+</g>
+  </g>
+  <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
+  <g data-journal-part="provenance" data-provenance="payload-components/source/blocks/FaqAccordion/Component.tsx">
+    <text class="footer-label" x="48" y="571">PROVENANCE</text>
+    <text class="provenance-line" x="48" y="590">payload-components/source/blocks/FaqAccordion/Component.tsx</text>
+  </g>
+  <g data-journal-part="evidence" data-evidence-excerpt="&lt;Accordion type=&quot;single&quot; collapsible className=&quot;w-full&quot;&gt;
+              {items.map((item, index) =&gt; (
+                &lt;AccordionItem
+                  key={item.id ?? `${item.question}-${index}`}
+                  value={item.id ?? `item-${index}`}
+                  className=&quot;border-border/70&quot;
+                &gt;
+                  &lt;AccordionTrigger className=&quot;text-left text-base tracking-title hover:no-underline&quot;&gt;" data-evidence-truncated="true">
+  <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
+  <text class="evidence-line" x="48" y="626">&lt;Accordion type=&quot;single&quot; collapsible className=&quot;w-full&quot;&gt; ·</text>
+<text class="evidence-line" x="48" y="641">{items.map((item, index) =&gt; ( · &lt;AccordionItem · key={item.id ?? …</text>
+</g>
+  <g data-journal-part="prompt" data-prompt="Test it with a keyboard before you call it accessible.">
+    <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
+    <text class="prompt" x="744" y="594">Test it with a keyboard before you call it</text>
+<text class="prompt" x="744" y="613">accessible.</text>
+  </g>
 </svg>

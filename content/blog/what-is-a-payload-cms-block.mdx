@@ -7,7 +7,7 @@ series: foundations
 publicationOrder: 3
 cover:
   src: /blog/what-is-a-payload-cms-block/cover.webp
-  alt: The heroBasic slug in the Hero Basic block config beside its lifecycle from editor data to React output.
+  alt: The heroBasic slug beside separate runtime data and compile-time type paths that meet at RenderBlocks.
 tags:
   - Payload CMS
   - Blocks
@@ -30,8 +30,8 @@ Payload v3 and Next.js repository.
 
 <BlogFigure
   src="/blog/what-is-a-payload-cms-block/figure-01-block-lifecycle.svg"
-  alt="A lifecycle diagram showing Payload editor input becoming stored block data, generated types, renderer dispatch, and React output"
-  caption="A block crosses five surfaces. Treating those surfaces as one contract is the difference between a field group and a dependable page-building primitive."
+  alt="A split lifecycle where stored Payload data moves at runtime through RenderBlocks while generated types provide a compile-time guard"
+  caption="Stored values do not flow through generated types at runtime; config drives both the runtime editor path and the compile-time source check."
 />
 
 ## The config defines the content contract
@@ -116,9 +116,9 @@ component by `blockType`, then renders that component with the narrowed data. Th
 
 ```tsx
 const blockComponents = {
-  heroBasic: HeroBasicComponent,
-  featureBento: FeatureBentoComponent,
-  contentQuote: ContentQuoteComponent,
+  heroBasic: HeroBasicBlock,
+  featureBento: FeatureBentoBlock,
+  contentQuote: ContentQuoteBlock,
 }
 
 export function RenderBlocks({ blocks }: { blocks: Page['layout'] }) {

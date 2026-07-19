@@ -1,4 +1,5 @@
-import { readFile, readdir } from 'node:fs/promises'
+import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises'
+import os from 'node:os'
 import path from 'node:path'
 
 import { chromium } from '@playwright/test'
@@ -182,9 +183,1107 @@ async function getCoverAlt(slug: string) {
     .replace(/^['"]|['"]$/g, '')
 }
 
+async function getInlineFigureCopy(slug: string, figurePath: string) {
+  const source = await readFile(path.join(blogRoot, `${slug}.mdx`), 'utf8')
+  const figure = [...source.matchAll(/<BlogFigure\s+([\s\S]*?)\/>/g)]
+    .map((match) => match[1])
+    .find((attributes) => attributes.includes(`src="${figurePath}"`))
+
+  expect(figure, `${slug}: ${figurePath}`).toBeDefined()
+
+  return {
+    alt: figure?.match(/\balt="([^"]+)"/)?.[1] ?? '',
+    caption: figure?.match(/\bcaption="([^"]+)"/)?.[1] ?? '',
+    source,
+  }
+}
+
 function coverPartCount(html: string, part: string) {
   return html.match(new RegExp(`data-cover-part="${part}"`, 'g'))?.length ?? 0
 }
+
+async function getDiagramVisuals() {
+  const diagrams = blogVisualCatalog.flatMap((entry) =>
+    entry.figures
+      .filter((figure) => figure.path.endsWith('.svg'))
+      .map((figure) => ({
+        entry,
+        figure,
+        outputPath: path.join(repoRoot, 'public', figure.path.replace(/^\//, '')),
+      })),
+  )
+
+  return Promise.all(
+    diagrams.map(async (diagram) => ({
+      ...diagram,
+      source: await readFile(diagram.outputPath, 'utf8'),
+    })),
+  )
+}
+
+describe('Field Journal deterministic diagram assets', () => {
+  it('covers the exact catalog SVG set with one accessible journal document each', async () => {
+    const diagrams = await getDiagramVisuals()
+
+    expect(diagrams).toHaveLength(27)
+    expect(new Set(diagrams.map(({ figure }) => figure.path)).size).toBe(27)
+
+    for (const { entry, figure, source } of diagrams) {
+      const context = `${entry.slug}: ${figure.path}`
+      const root = source.match(/^<svg\b[^>]*>/)?.[0] ?? ''
+
+      expect(root, `${context}: root`).toContain('viewBox="0 0 1200 675"')
+      expect(root, `${context}: mode`).toContain(`data-mode="${figure.mode}"`)
+      expect(root, `${context}: accessible name`).toMatch(
+        /\baria-labelledby="diagram-title diagram-description"/,
+      )
+      expect(source, `${context}: title`).toMatch(
+        /<title id="diagram-title">[^<]+<\/title>/,
+      )
+      expect(source, `${context}: description`).toMatch(
+        /<desc id="diagram-description">[^<]+<\/desc>/,
+      )
+
+      for (const part of [
+        'grid',
+        'masthead',
+        'mode',
+        'folio',
+        'provenance',
+        'prompt',
+      ]) {
+        expect(
+          source.match(new RegExp(`data-journal-part="${part}"`, 'g')) ?? [],
+          `${context}: ${part}`,
+        ).toHaveLength(1)
+      }
+
+      const seriesLabel = {
+        'component-design': 'COMPONENT DESIGN',
+        foundations: 'FOUNDATIONS',
+        'installer-internals': 'INSTALLER INTERNALS',
+        'open-source': 'OPEN SOURCE',
+        'production-guides': 'PRODUCTION GUIDES',
+        'project-notes': 'PROJECT NOTES',
+      }[entry.series]
+      expect(source, `${context}: catalog series`).toContain(
+        `data-series="${entry.series}"`,
+      )
+      expect(source, `${context}: catalog issue`).toContain(
+        `data-issue="${String(entry.order).padStart(2, '0')}"`,
+      )
+      expect(source, `${context}: masthead text`).toContain(
+        `${seriesLabel} · ISSUE ${String(entry.order).padStart(2, '0')}`,
+      )
+      expect(source, `${context}: mode marker`).toContain(
+        `>${figure.mode.toUpperCase()}</text>`,
+      )
+      expect(source, `${context}: exact catalog prompt`).toContain(
+        entry.prompt
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&apos;'),
+      )
+    }
+  })
+
+  it('keeps every diagram self-contained, legible, and inside the approved journal palette', async () => {
+    for (const { entry, source } of await getDiagramVisuals()) {
+      expect(source, `${entry.slug}: active content`).not.toMatch(
+        /<script\b|<foreignObject\b|<image\b|@import\b|@font-face\b/i,
+      )
+      expect(source, `${entry.slug}: external URL`).not.toMatch(
+        /(?:href|src)=["'](?:https?:)?\/\/|url\(["']?https?:\/\//i,
+      )
+      expect(source, `${entry.slug}: alternate color syntax`).not.toMatch(
+        /\b(?:rgb|hsl|lab|lch|hwb|color)a?\(/i,
+      )
+
+      for (const color of source.match(/#[\da-f]{3,8}\b/gi) ?? []) {
+        expect(
+          approvedPalette.has(
+            color.length === 4
+              ? `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`.toLowerCase()
+              : color.toLowerCase(),
+          ),
+          `${entry.slug}: ${color}`,
+        ).toBe(true)
+      }
+
+      const fontSizes = [
+        ...[...source.matchAll(/\bfont-size=["']([\d.]+)(?:px)?["']/gi)].map(
+          (match) => Number(match[1]),
+        ),
+        ...[...source.matchAll(/font-size\s*:\s*([\d.]+)px/gi)].map((match) =>
+          Number(match[1]),
+        ),
+        ...[...source.matchAll(/(?:^|[;{])\s*font\s*:[^;{}]*?\b([\d.]+)px/gi)].map(
+          (match) => Number(match[1]),
+        ),
+      ]
+      expect(fontSizes.length, `${entry.slug}: declared text sizes`).toBeGreaterThan(0)
+      expect(Math.min(...fontSizes), `${entry.slug}: minimum text size`).toBeGreaterThanOrEqual(
+        13,
+      )
+      expect(source, `${entry.slug}: text scaling`).not.toMatch(
+        /<text\b[^>]*\btransform=["'][^"']*\bscale\(\s*(?:0(?:\.\d+)?|\.\d+)/i,
+      )
+    }
+  })
+})
+
+describe('Field Journal diagram renderer', () => {
+  it('defines the exact catalog paths once with unique node identities', async () => {
+    const { diagramDefinitions } = await import(
+      '../../tools/blog/visual-system/diagram-data'
+    )
+    const catalogPaths = blogVisualCatalog
+      .flatMap((entry) => entry.figures)
+      .filter((figure) => figure.path.endsWith('.svg'))
+      .map((figure) => figure.path)
+
+    expect(diagramDefinitions.map((definition) => definition.path)).toEqual(catalogPaths)
+    expect(new Set(diagramDefinitions.map((definition) => definition.path)).size).toBe(27)
+
+    for (const definition of diagramDefinitions) {
+      const nodeIds = definition.rows.flat().map((node) => node.id)
+      expect(new Set(nodeIds).size, definition.path).toBe(nodeIds.length)
+    }
+  })
+
+  it('hydrates issue, series, mode, invitation, and evidence from repository-backed catalog artifacts', async () => {
+    const { diagramDefinitions, hydrateDiagramDefinitions } = await import(
+      '../../tools/blog/visual-system/diagram-data'
+    )
+    const hydrated = await hydrateDiagramDefinitions()
+
+    expect(hydrated).toHaveLength(27)
+
+    for (const diagram of hydrated) {
+      const entry = blogVisualCatalog.find((candidate) => candidate.slug === diagram.slug)
+      const figure = entry?.figures.find((candidate) => candidate.path === diagram.path)
+      const definition = diagramDefinitions.find(
+        (candidate) => candidate.path === diagram.path,
+      )
+
+      expect(entry, diagram.path).toBeDefined()
+      expect(definition, diagram.path).toBeDefined()
+      expect(diagram.order, diagram.path).toBe(entry?.order)
+      expect(diagram.series, diagram.path).toBe(entry?.series)
+      expect(diagram.mode, diagram.path).toBe(figure?.mode)
+      expect(diagram.prompt, diagram.path).toBe(entry?.prompt)
+      expect(diagram.provenance.trim(), diagram.path).not.toBe('')
+      expect(diagram.provenance, diagram.path).not.toContain('generate-figures.ts')
+
+      const evidenceRole = definition?.evidenceRole ?? 'primary'
+      const artifact = entry?.[evidenceRole]
+      expect(artifact, diagram.path).toBeDefined()
+
+      if (artifact) {
+        if ('path' in artifact) {
+          expect(artifact.path, diagram.path).not.toContain('generate-figures.ts')
+        }
+        const resolved = await resolveArtifact(artifact)
+        expect(diagram.provenance, diagram.path).toBe(resolved.provenance)
+        if (definition?.evidenceLines) {
+          expect(diagram.evidenceExcerpt, diagram.path).toBe(
+            resolved.evidence
+              .split(/\r?\n/)
+              .slice(0, definition.evidenceLines)
+              .join('\n'),
+          )
+        }
+      }
+    }
+  })
+
+  it('pins the diagram lessons to current installer, component, and community truth', async () => {
+    const { diagramDefinitions } = await import(
+      '../../tools/blog/visual-system/diagram-data'
+    )
+    const text = (suffix: string) => {
+      const definition = diagramDefinitions.find((candidate) =>
+        candidate.path.endsWith(suffix),
+      )
+      expect(definition, suffix).toBeDefined()
+      return JSON.stringify(definition)
+    }
+
+    expect(text('hello/figure-01-origin-story.svg')).toContain(
+      'src/blocks/shared/heroFields.ts',
+    )
+
+    const install = text('anatomy-of-an-install/figure-01-five-stage-pipeline.svg')
+    for (const stage of [
+      'registry-build',
+      'registry-add',
+      'dependency-install',
+      'fragment-apply',
+      'post-install',
+    ]) {
+      expect(install).toContain(stage)
+    }
+    expect(install).toContain('Plan + preflight')
+    expect(install).toContain('State records attempt, failure, or success')
+    expect(install).toContain('installed after all required stages')
+    expect(install).not.toContain('State outcome after every stage')
+
+    const lifecycleDefinition = diagramDefinitions.find((candidate) =>
+      candidate.path.endsWith(
+        'what-is-a-payload-cms-block/figure-01-block-lifecycle.svg',
+      ),
+    )
+    expect(JSON.stringify(lifecycleDefinition)).toContain('Compile-time guard')
+    expect(
+      lifecycleDefinition?.rows.map((row) => row.map((node) => node.id)),
+    ).toEqual([
+      ['config'],
+      ['editor', 'types'],
+      ['stored', 'renderer', 'component', 'react'],
+    ])
+    expect(lifecycleDefinition?.edges?.map(({ from, to }) => [from, to])).toEqual([
+      ['config', 'editor'],
+      ['config', 'types'],
+      ['editor', 'stored'],
+      ['types', 'renderer'],
+      ['stored', 'renderer'],
+      ['renderer', 'component'],
+      ['component', 'react'],
+    ])
+    expect(
+      text('production-ready-payload-block-config/figure-01-config-anatomy.svg'),
+    ).toContain('Reviewable block contract')
+
+    const renderers = text('how-renderblocks-works/figure-01-renderer-dispatch.svg')
+    for (const exportedRenderer of [
+      'HeroBasicBlock',
+      'FeatureBentoBlock',
+      'ContentQuoteBlock',
+    ]) {
+      expect(renderers).toContain(exportedRenderer)
+    }
+
+    const state = text('manifest-wiring-contract/figure-01-manifest-layers.svg')
+    for (const field of [
+      'manifestVersion',
+      'registryItemName',
+      'targetId',
+      'status',
+      'installedAt',
+      'lastAttemptAt',
+      'lastError',
+      'patchedFiles',
+    ]) {
+      expect(state).toContain(field)
+    }
+
+    expect(text('text-anchors-vs-ast/figure-01-scoped-diff.svg')).toContain(
+      'heroBasic: HeroBasicBlock',
+    )
+    const convergenceDefinition = diagramDefinitions.find((candidate) =>
+      candidate.path.endsWith(
+        'idempotent-code-installer/figure-01-convergence-state.svg',
+      ),
+    )
+    expect(
+      convergenceDefinition?.rows.map((row) => row.map((node) => node.id)),
+    ).toEqual([
+      ['preflight'],
+      ['attempt'],
+      ['failure', 'installed', 'unchanged'],
+    ])
+    expect(
+      convergenceDefinition?.edges?.map(({ from, to }) => [from, to]),
+    ).toEqual([
+      ['preflight', 'attempt'],
+      ['attempt', 'failure'],
+      ['attempt', 'installed'],
+      ['installed', 'unchanged'],
+    ])
+    expect(
+      convergenceDefinition?.rows
+        .flat()
+        .find((node) => node.id === 'failure')?.body,
+    ).toContain('next add rechecks preflight')
+    expect(text('payload-components-doctor/figure-01-doctor-report.svg')).not.toContain(
+      'Summary:',
+    )
+
+    const variants = text(
+      'component-variants-without-prop-explosion/figure-01-family-vs-matrix.svg',
+    )
+    for (const variant of [
+      'feature-grid-basic',
+      'feature-split',
+      'feature-bento',
+      'feature-steps',
+    ]) {
+      expect(variants).toContain(variant)
+    }
+    expect(variants).not.toMatch(/hero-(?:video|dramatic)/)
+    expect(variants).toContain('Heading + CTA beside list')
+    expect(variants).not.toContain('Alternating rows')
+
+    expect(
+      text('build-payload-blog-frontend/figure-01-editorial-architecture.svg'),
+    ).not.toMatch(/pagination|docs search/i)
+    expect(text('accessible-faq-blocks/figure-01-faq-anatomy.svg')).toContain(
+      'Region only when useful',
+    )
+    const faqDefinition = diagramDefinitions.find((candidate) =>
+      candidate.path.endsWith('accessible-faq-blocks/figure-01-faq-anatomy.svg'),
+    )
+    expect(faqDefinition?.rows.map((row) => row.map((node) => node.id))).toEqual([
+      ['block', 'accordion', 'item'],
+      ['trigger', 'panel'],
+      ['verify'],
+    ])
+
+    const trust = text('safe-links-forms-embeds/figure-01-trust-boundary.svg')
+    expect(trust).toContain('Shipped guard')
+    expect(trust).toContain('Application policy')
+
+    const motion = text('motion-without-performance-cost/figure-01-motion-timeline.svg')
+    expect(motion).toContain('x: 0 → -contentSize / 2')
+    expect(motion).toContain('effect returns; row stays static')
+
+    expect(text('demo-twins/figure-01-architecture-mirror.svg')).toContain(
+      'one-way token presence',
+    )
+    expect(
+      text('visual-regression-component-registry/figure-01-regression-pipeline.svg'),
+    ).toContain('Zero baselines: bootstrap skip')
+
+    const contribution = text(
+      'contribute-payload-component/figure-01-contribution-workflow.svg',
+    )
+    for (const surface of [
+      'Source',
+      'Manifest',
+      'Registry',
+      'Demo twin',
+      'Catalog + ledgers',
+      'Docs',
+      'Tests',
+    ]) {
+      expect(contribution).toContain(surface)
+    }
+
+    const reproducible = text(
+      'reproducible-shadcn-registry/figure-01-deterministic-build.svg',
+    )
+    expect(reproducible).toContain('One temporary build')
+    expect(reproducible).toContain('Exact embedded content')
+    expect(reproducible).not.toContain('Clean checkout B')
+
+    const feedback = text('community-driven-roadmap/figure-01-feedback-loop.svg')
+    expect(feedback).toContain('Public issue or private advisory')
+    expect(feedback).toContain('Available to future installs')
+    expect(feedback).not.toContain('reaches everyone')
+  })
+
+  it('keeps inline descriptions and adjacent state prose aligned with corrected diagrams', async () => {
+    const expectedCopy = {
+      'anatomy-of-an-install': {
+        alt: ['preflight', 'dependency-install', 'post-install'],
+        caption: ['failed stage', 'installed state'],
+      },
+      'build-payload-blog-frontend': {
+        alt: ['validated MDX', 'related posts', 'RSS'],
+        caption: ['one validated source'],
+      },
+      'community-driven-roadmap': {
+        alt: ['public issue or private advisory', 'future installs'],
+        caption: ['routed evidence', 'available release'],
+      },
+      'component-variants-without-prop-explosion': {
+        alt: ['feature-grid-basic', 'feature-split', 'feature-bento', 'feature-steps'],
+        caption: ['four shipped'],
+      },
+      'contribute-payload-component': {
+        alt: ['seven', 'catalog and ledgers'],
+        caption: ['seven surfaces'],
+      },
+      'copying-is-not-installing': {
+        alt: ['shared fields', 'registry dependencies', 'manifest dependencies'],
+        caption: ['Payload integration'],
+      },
+      'demo-twins': {
+        alt: ['one-way', 'class token'],
+        caption: ['token-presence guard'],
+      },
+      'hello': {
+        alt: ['heroFields', 'registration', 'generated'],
+        caption: ['shared field source', 'wiring'],
+      },
+      'idempotent-code-installer': {
+        alt: ['preflight', 'partial', 'early return'],
+        caption: ['rechecks', 'last failed stage'],
+      },
+      'manifest-wiring-contract': {
+        alt: ['CLI contract', 'install state'],
+        caption: ['records outcomes'],
+      },
+      'motion-without-performance-cost': {
+        alt: ['x-axis', 'static'],
+        caption: ['returns before animation'],
+      },
+      'payload-components-doctor': {
+        alt: ['exact healthy fixture', 'Payload fragments'],
+        caption: ['no invented summary'],
+      },
+      'reproducible-shadcn-registry': {
+        alt: ['one temporary', 'embedded content'],
+        caption: ['three comparisons'],
+      },
+      'safe-links-forms-embeds': {
+        alt: ['shipped', 'application-owned'],
+        caption: ['safeUrls.ts', 'local policy'],
+      },
+      'shared-fields-across-component-families': {
+        alt: ['featureFields', 'four'],
+        caption: ['four Feature configs'],
+      },
+      'text-anchors-vs-ast': {
+        alt: ['heroBasic: HeroBasicBlock', 'deduplicated'],
+        caption: ['named import', 'direct map entry'],
+      },
+      'visual-regression-component-registry': {
+        alt: ['zero-baseline', 'minted-platform'],
+        caption: ['bootstrap exception'],
+      },
+      'what-is-a-payload-cms-block': {
+        alt: ['runtime', 'compile-time'],
+        caption: ['do not flow through generated types at runtime'],
+      },
+    } as const
+
+    for (const [slug, expected] of Object.entries(expectedCopy)) {
+      const entry = blogVisualCatalog.find((candidate) => candidate.slug === slug)
+      const figure = entry?.figures.find((candidate) => candidate.path.endsWith('.svg'))
+      expect(figure, slug).toBeDefined()
+      if (!figure) continue
+
+      const copy = await getInlineFigureCopy(slug, figure.path)
+      for (const term of expected.alt) {
+        expect(copy.alt, `${slug}: alt -> ${term}`).toContain(term)
+      }
+      for (const term of expected.caption) {
+        expect(copy.caption, `${slug}: caption -> ${term}`).toContain(term)
+      }
+    }
+
+    for (const slug of [
+      'copying-is-not-installing',
+      'idempotent-code-installer',
+      'manifest-wiring-contract',
+      'payload-components-doctor',
+      'text-anchors-vs-ast',
+    ]) {
+      const source = await readFile(path.join(blogRoot, `${slug}.mdx`), 'utf8')
+      expect(source, slug).not.toMatch(
+        /\blast completed stage\b|\bcompleted stages\b|\bcurrent stage\b|\bresume point\b/i,
+      )
+    }
+
+    const idempotentSource = await readFile(
+      path.join(blogRoot, 'idempotent-code-installer.mdx'),
+      'utf8',
+    )
+    expect(idempotentSource).not.toContain(
+      'Conflicting fragment refuses to overwrite consumer code',
+    )
+    expect(idempotentSource).toContain(
+      'Exact fragment rerun does not duplicate the named import or direct map entry',
+    )
+    expect(idempotentSource).toContain(
+      'Missing anchor fails without a broad rewrite',
+    )
+
+    const anchorSource = await readFile(
+      path.join(blogRoot, 'text-anchors-vs-ast.mdx'),
+      'utf8',
+    )
+    const normalizedAnchorSource = anchorSource.replace(/\s+/g, ' ')
+    expect(anchorSource).not.toContain(
+      'Before applying fragments, the installer resolves target files and validates the expected anchors',
+    )
+    expect(anchorSource).not.toContain(
+      'discover obvious incompatibility before writing the first host file',
+    )
+    expect(normalizedAnchorSource).toContain(
+      'Fragment files are read and patched sequentially',
+    )
+    expect(normalizedAnchorSource).toContain(
+      'a later missing anchor can fail after an earlier host file changed',
+    )
+    expect(normalizedAnchorSource).toContain(
+      'recoverable, not globally prevalidated or atomic',
+    )
+
+    const anatomySource = await readFile(
+      path.join(blogRoot, 'anatomy-of-an-install.mdx'),
+      'utf8',
+    )
+    const normalizedAnatomySource = anatomySource.replace(/\s+/g, ' ')
+    expect(anatomySource).not.toContain(
+      'a stage whose result is already valid can be skipped',
+    )
+    expect(normalizedAnatomySource).toContain(
+      'File, dependency, and fragment stages are conditional on observed missing work',
+    )
+    expect(normalizedAnatomySource).toContain(
+      'can return early before a staged attempt',
+    )
+    expect(normalizedAnatomySource).toContain(
+      'declared post-install scripts run before installed state is recorded',
+    )
+
+    const trustSource = (
+      await readFile(path.join(blogRoot, 'safe-links-forms-embeds.mdx'), 'utf8')
+    ).replace(/\s+/g, ' ')
+    expect(trustSource).not.toContain(
+      'A form selects a known server workflow, not a free-form action',
+    )
+    expect(trustSource).not.toContain(
+      'An embed stores a provider and identifier',
+    )
+    expect(trustSource).not.toContain('a known form identifier')
+    expect(trustSource).not.toContain('Model embeds as provider plus identifier')
+    expect(trustSource).toContain(
+      'The CTA stores a constrained same-origin action path',
+    )
+    expect(trustSource).toContain(
+      'EmbedBasic stores an approved HTTPS URL',
+    )
+    expect(trustSource).toContain('neither accepts pasted HTML')
+
+    const reproducibilitySource = (
+      await readFile(
+        path.join(blogRoot, 'reproducible-shadcn-registry.mdx'),
+        'utf8',
+      )
+    ).replace(/\s+/g, ' ')
+    expect(reproducibilitySource).not.toContain(
+      '`pnpm test:registry` creates one temporary build',
+    )
+    expect(reproducibilitySource).toContain(
+      '`pnpm registry:check` creates one temporary build',
+    )
+    expect(reproducibilitySource).toContain(
+      '`pnpm test:registry` runs `registry:check` and `registry:validate`',
+    )
+
+    const contributionSource = await readFile(
+      path.join(blogRoot, 'contribute-payload-component.mdx'),
+      'utf8',
+    )
+    expect(contributionSource).not.toContain('`hero-video`')
+    expect(contributionSource).toContain('`feature-steps`')
+    expect(contributionSource).toContain('`pricing-cards`')
+
+    for (const slug of [
+      'how-renderblocks-works',
+      'type-safe-block-rendering',
+      'what-is-a-payload-cms-block',
+    ]) {
+      const source = await readFile(path.join(blogRoot, `${slug}.mdx`), 'utf8')
+      expect(source, slug).not.toMatch(
+        /\b(?:HeroBasic|FeatureBento|ContentQuote)Component\b/,
+      )
+    }
+  })
+
+  it('rejects duplicate nodes, unknown endpoints, duplicate edges, and traversal paths', async () => {
+    const { diagramDefinitions } = await import(
+      '../../tools/blog/visual-system/diagram-data'
+    )
+    const { validateDiagramDefinitions } = await import(
+      '../../tools/blog/visual-system/diagram-template'
+    )
+    const base = diagramDefinitions[0]
+
+    expect(() =>
+      validateDiagramDefinitions([
+        {
+          ...base,
+          rows: [[base.rows[0][0], { ...base.rows[0][0] }]],
+        },
+      ]),
+    ).toThrow(/duplicate node id/i)
+    expect(() =>
+      validateDiagramDefinitions([
+        {
+          ...base,
+          edges: [{ from: base.rows[0][0].id, to: 'missing-node' }],
+        },
+      ]),
+    ).toThrow(/unknown edge endpoint/i)
+    expect(() =>
+      validateDiagramDefinitions([
+        {
+          ...base,
+          edges: [
+            { from: base.rows[0][0].id, to: base.rows[0][1].id },
+            { from: base.rows[0][0].id, to: base.rows[0][1].id },
+          ],
+        },
+      ]),
+    ).toThrow(/duplicate edge/i)
+    expect(() =>
+      validateDiagramDefinitions([
+        {
+          ...base,
+          path: '/blog/hello/../escaped.svg',
+        },
+      ]),
+    ).toThrow(/canonical blog path|traversal/i)
+  })
+
+  it('escapes XML and renders deterministic, metadata-complete diagrams', async () => {
+    const { hydrateDiagramDefinitions } = await import(
+      '../../tools/blog/visual-system/diagram-data'
+    )
+    const { escapeXml, renderDiagramSvg } = await import(
+      '../../tools/blog/visual-system/diagram-template'
+    )
+    const diagrams = await hydrateDiagramDefinitions()
+    const first = diagrams[0]
+
+    expect(escapeXml(`<node id="x">& 'quoted'</node>`)).toBe(
+      '&lt;node id=&quot;x&quot;&gt;&amp; &apos;quoted&apos;&lt;/node&gt;',
+    )
+    expect(renderDiagramSvg(first)).toBe(renderDiagramSvg(first))
+
+    for (const diagram of diagrams) {
+      const svg = renderDiagramSvg(diagram)
+      const root = svg.match(/^<svg\b[^>]*>/)?.[0] ?? ''
+      const nodeIds = [...svg.matchAll(/data-node-id="([^"]+)"/g)].map(
+        (match) => match[1],
+      )
+      const flatNodes = diagram.rows.flat()
+      const effectiveEdges =
+        diagram.edges ??
+        flatNodes.slice(0, -1).map((node, index) => ({
+          from: node.id,
+          to: flatNodes[index + 1].id,
+        }))
+      const renderedEdges = [...svg.matchAll(
+        /data-edge-from="([^"]+)"\s+data-edge-to="([^"]+)"/g,
+      )].map((match) => ({ from: match[1], to: match[2] }))
+      const headlineBaselines = [
+        ...svg.matchAll(/<text class="headline"[^>]*\by="([\d.]+)"/g),
+      ].map((match) => Number(match[1]))
+      const cardTops = [
+        ...svg.matchAll(/<rect class="node-card"[^>]*\by="([\d.]+)"/g),
+      ].map((match) => Number(match[1]))
+      const modeBox = svg.match(
+        /<rect class="mode-box" x="([\d.]+)" y="[\d.]+" width="([\d.]+)"/,
+      )
+      const folio = svg.match(
+        /<text class="folio-label" x="([\d.]+)"[^>]*>([^<]+)<\/text>/,
+      )
+
+      expect(root, diagram.path).toContain('viewBox="0 0 1200 675"')
+      expect(root, diagram.path).toContain(`data-mode="${diagram.mode}"`)
+      expect(root, diagram.path).toContain(
+        'aria-labelledby="diagram-title diagram-description"',
+      )
+      expect(new Set(nodeIds).size, diagram.path).toBe(nodeIds.length)
+      expect(headlineBaselines.length, `${diagram.path}: headline lines`).toBeGreaterThan(0)
+      expect(cardTops.length, `${diagram.path}: node cards`).toBeGreaterThan(0)
+      expect(
+        Math.min(...cardTops),
+        `${diagram.path}: headline/card clearance`,
+      ).toBeGreaterThan(Math.max(...headlineBaselines) + 8)
+      expect(modeBox, `${diagram.path}: mode stamp`).toBeTruthy()
+      expect(folio, `${diagram.path}: folio`).toBeTruthy()
+      if (modeBox && folio) {
+        const modeRight = Number(modeBox[1]) + Number(modeBox[2])
+        const conservativeFolioLeft = Number(folio[1]) - [...folio[2]].length * 8
+        expect(
+          modeRight + 16,
+          `${diagram.path}: mode/folio clearance`,
+        ).toBeLessThanOrEqual(conservativeFolioLeft)
+      }
+      expect(renderedEdges, `${diagram.path}: effective edge order`).toEqual(
+        effectiveEdges.map(({ from, to }) => ({ from, to })),
+      )
+
+      for (const nodeMatch of svg.matchAll(
+        /<g class="node [^"]+" data-node-id="([^"]+)"[\s\S]*?<\/g>/g,
+      )) {
+        const nodeSource = nodeMatch[0]
+        const card = nodeSource.match(
+          /<rect class="node-card"[^>]*\by="([\d.]+)"[^>]*\bheight="([\d.]+)"/,
+        )
+        const textBaselines = [
+          ...nodeSource.matchAll(/<text\b[^>]*\by="([\d.]+)"/g),
+        ].map((match) => Number(match[1]))
+
+        expect(card, `${diagram.path}: ${nodeMatch[1]} card`).toBeTruthy()
+        expect(
+          textBaselines.length,
+          `${diagram.path}: ${nodeMatch[1]} text`,
+        ).toBeGreaterThan(0)
+        if (!card) continue
+
+        const safeTextBottom = Math.max(...textBaselines) + 5
+        const cardBottom = Number(card[1]) + Number(card[2])
+        expect(
+          safeTextBottom,
+          `${diagram.path}: ${nodeMatch[1]} text/card clearance`,
+        ).toBeLessThanOrEqual(cardBottom - 8)
+      }
+
+      for (const edge of svg.matchAll(
+        /data-edge-from="([^"]+)"\s+data-edge-to="([^"]+)"/g,
+      )) {
+        expect(nodeIds, `${diagram.path}: edge from`).toContain(edge[1])
+        expect(nodeIds, `${diagram.path}: edge to`).toContain(edge[2])
+      }
+
+      const decodedBodyLines = [...svg.matchAll(
+        /<text[^>]+data-role="body-line"[^>]*>([^<]*)<\/text>/g,
+      )].map((match) =>
+        match[1]
+          .replaceAll('&amp;', '&')
+          .replaceAll('&lt;', '<')
+          .replaceAll('&gt;', '>')
+          .replaceAll('&quot;', '"')
+          .replaceAll('&apos;', "'"),
+      )
+      expect(decodedBodyLines.length, diagram.path).toBeGreaterThan(0)
+      expect(
+        Math.max(...decodedBodyLines.map((line) => [...line].length)),
+        diagram.path,
+      ).toBeLessThanOrEqual(68)
+      expect(Buffer.byteLength(svg), diagram.path).toBeLessThanOrEqual(153_600)
+      expect(svg, `${diagram.path}: trailing whitespace`).not.toMatch(/[ \t]+$/m)
+    }
+  })
+
+  it('renders every edge label in full without silently dropping wrapped lines', async () => {
+    const { hydrateDiagramDefinitions } = await import(
+      '../../tools/blog/visual-system/diagram-data'
+    )
+    const { escapeXml, renderDiagramSvg, wrapDiagramText } = await import(
+      '../../tools/blog/visual-system/diagram-template'
+    )
+
+    const diagrams = await hydrateDiagramDefinitions()
+    const synthetic = {
+      ...diagrams[0],
+      evidenceExcerpt: undefined,
+      path: '/blog/hello/figure-99-edge-label-regression.svg',
+      rows: [
+        [{ id: 'source', title: 'Source', body: 'Observed repository state' }],
+        [{ id: 'target', title: 'Target', body: 'Converged repository state' }],
+      ],
+      edges: [
+        {
+          from: 'source',
+          label: 'attempt · failure · success',
+          to: 'target',
+        },
+      ],
+      title: 'Multiline edge-label regression',
+    } as const
+
+    for (const diagram of [...diagrams, synthetic]) {
+      const svg = renderDiagramSvg(diagram)
+
+      for (const edge of diagram.edges ?? []) {
+        if (!edge.label) continue
+
+        const encodedLabel = escapeXml(edge.label)
+        const group = svg.match(
+          new RegExp(
+            `<g class="edge" data-edge-label="${encodedLabel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">([\\s\\S]*?)<\\/g>`,
+          ),
+        )?.[1]
+        expect(group, `${diagram.path}: ${edge.label}`).toBeDefined()
+
+        const renderedLines = [
+          ...(group ?? '').matchAll(/<text class="edge-label"[^>]*>([^<]*)<\/text>/g),
+        ].map((match) => match[1])
+        expect(renderedLines, `${diagram.path}: ${edge.label}`).toEqual(
+          wrapDiagramText(edge.label, 25).map(escapeXml),
+        )
+      }
+    }
+  })
+
+  it('anchors cross-row edges vertically and keeps every label paper out of cards', async () => {
+    const { hydrateDiagramDefinitions } = await import(
+      '../../tools/blog/visual-system/diagram-data'
+    )
+    const { renderDiagramSvg } = await import(
+      '../../tools/blog/visual-system/diagram-template'
+    )
+    const intersects = (
+      left: { height: number; width: number; x: number; y: number },
+      right: { height: number; width: number; x: number; y: number },
+    ) =>
+      left.x < right.x + right.width &&
+      left.x + left.width > right.x &&
+      left.y < right.y + right.height &&
+      left.y + left.height > right.y
+
+    for (const diagram of await hydrateDiagramDefinitions()) {
+      const svg = renderDiagramSvg(diagram)
+      const positions = new Map(
+        [...svg.matchAll(
+          /<g class="node [^"]+" data-node-id="([^"]+)"[\s\S]*?<rect class="node-card" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g,
+        )].map((match) => [
+          match[1],
+          {
+            height: Number(match[5]),
+            width: Number(match[4]),
+            x: Number(match[2]),
+            y: Number(match[3]),
+          },
+        ]),
+      )
+      const rowByNode = new Map(
+        diagram.rows.flatMap((row, rowIndex) =>
+          row.map((node) => [node.id, rowIndex] as const),
+        ),
+      )
+
+      for (const match of svg.matchAll(
+        /<path class="edge-path" data-edge-from="([^"]+)" data-edge-to="([^"]+)" data-edge-axis="([^"]+)" d="M (-?[\d.]+) (-?[\d.]+) C (-?[\d.]+) (-?[\d.]+), (-?[\d.]+) (-?[\d.]+), (-?[\d.]+) (-?[\d.]+)"[^>]*\/>/g,
+      )) {
+        const [
+          ,
+          fromId,
+          toId,
+          axis,
+          startX,
+          startY,
+          control1X,
+          control1Y,
+          control2X,
+          control2Y,
+          endX,
+          endY,
+        ] = match
+        const from = positions.get(fromId)
+        const to = positions.get(toId)
+        expect(from, `${diagram.path}: ${fromId}`).toBeDefined()
+        expect(to, `${diagram.path}: ${toId}`).toBeDefined()
+        if (!from || !to) continue
+
+        const crossRow = rowByNode.get(fromId) !== rowByNode.get(toId)
+        expect(axis, `${diagram.path}: ${fromId} → ${toId}`).toBe(
+          crossRow ? 'vertical' : 'horizontal',
+        )
+
+        if (crossRow) {
+          expect(
+            Number(control1X),
+            `${diagram.path}: ${fromId} vertical start tangent`,
+          ).toBeCloseTo(Number(startX))
+          expect(
+            Number(control2X),
+            `${diagram.path}: ${toId} vertical end tangent`,
+          ).toBeCloseTo(Number(endX))
+          expect(Number(startX), `${diagram.path}: ${fromId} start center`).toBeCloseTo(
+            from.x + from.width / 2,
+          )
+          expect(Number(endX), `${diagram.path}: ${toId} end center`).toBeCloseTo(
+            to.x + to.width / 2,
+          )
+          if (to.y > from.y) {
+            expect(Number(startY), `${diagram.path}: ${fromId} bottom exit`).toBeCloseTo(
+              from.y + from.height + 2,
+            )
+            expect(Number(endY), `${diagram.path}: ${toId} top entry`).toBeCloseTo(
+              to.y - 7,
+            )
+          } else {
+            expect(Number(startY), `${diagram.path}: ${fromId} top exit`).toBeCloseTo(
+              from.y - 2,
+            )
+            expect(Number(endY), `${diagram.path}: ${toId} bottom entry`).toBeCloseTo(
+              to.y + to.height + 7,
+            )
+          }
+        } else {
+          expect(
+            Number(control1Y),
+            `${diagram.path}: ${fromId} horizontal start tangent`,
+          ).toBeCloseTo(Number(startY))
+          expect(
+            Number(control2Y),
+            `${diagram.path}: ${toId} horizontal end tangent`,
+          ).toBeCloseTo(Number(endY))
+          expect(Number(startY), `${diagram.path}: ${fromId} side exit`).toBeCloseTo(
+            from.y + from.height / 2,
+          )
+          expect(Number(endY), `${diagram.path}: ${toId} side entry`).toBeCloseTo(
+            to.y + to.height / 2,
+          )
+        }
+      }
+
+      const cards = [...positions.values()]
+      const labels = [...svg.matchAll(
+        /<rect class="edge-label-paper" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g,
+      )].map((match) => ({
+        height: Number(match[4]),
+        width: Number(match[3]),
+        x: Number(match[1]),
+        y: Number(match[2]),
+      }))
+
+      for (const [labelIndex, label] of labels.entries()) {
+        for (const card of cards) {
+          expect(
+            intersects(label, card),
+            `${diagram.path}: edge label ${labelIndex + 1} intersects a node card`,
+          ).toBe(false)
+        }
+        for (const other of labels.slice(labelIndex + 1)) {
+          expect(
+            intersects(label, other),
+            `${diagram.path}: edge labels overlap`,
+          ).toBe(false)
+        }
+      }
+
+      for (const match of svg.matchAll(
+        /<g class="edge" data-edge-label="[^"]+">[\s\S]*?<path class="edge-path"[^>]*data-edge-axis="([^"]+)" d="M (-?[\d.]+) (-?[\d.]+) C (-?[\d.]+) (-?[\d.]+), (-?[\d.]+) (-?[\d.]+), (-?[\d.]+) (-?[\d.]+)"[^>]*\/>[\s\S]*?<rect class="edge-label-paper" x="(-?[\d.]+)" y="(-?[\d.]+)" width="([\d.]+)" height="([\d.]+)"/g,
+      )) {
+        const [
+          ,
+          axis,
+          startX,
+          startY,
+          control1X,
+          control1Y,
+          control2X,
+          control2Y,
+          endX,
+          endY,
+          paperX,
+          paperY,
+          paperWidth,
+          paperHeight,
+        ] = match
+        const pathXs = [startX, control1X, control2X, endX].map(Number)
+        const pathYs = [startY, control1Y, control2Y, endY].map(Number)
+        const paper = {
+          bottom: Number(paperY) + Number(paperHeight),
+          left: Number(paperX),
+          right: Number(paperX) + Number(paperWidth),
+          top: Number(paperY),
+        }
+
+        if (axis === 'vertical') {
+          expect(
+            paper.left >= Math.max(...pathXs) + 8 ||
+              paper.right <= Math.min(...pathXs) - 8,
+            `${diagram.path}: vertical label clears its arrow spine`,
+          ).toBe(true)
+        } else {
+          expect(
+            paper.bottom <= Math.min(...pathYs) - 8 ||
+              paper.top >= Math.max(...pathYs) + 8,
+            `${diagram.path}: horizontal label clears its arrow path`,
+          ).toBe(true)
+        }
+      }
+    }
+  })
+
+  it('marks every visibly shortened evidence excerpt with an ellipsis', async () => {
+    const { hydrateDiagramDefinitions } = await import(
+      '../../tools/blog/visual-system/diagram-data'
+    )
+    const { renderDiagramSvg, wrapDiagramText } = await import(
+      '../../tools/blog/visual-system/diagram-template'
+    )
+
+    for (const diagram of await hydrateDiagramDefinitions()) {
+      if (!diagram.evidenceExcerpt) continue
+
+      const excerpt = diagram.evidenceExcerpt
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .join(' · ')
+      const wrapped = wrapDiagramText(excerpt, 68)
+      if (wrapped.length <= 2) continue
+
+      const svg = renderDiagramSvg(diagram)
+      expect(svg, diagram.path).toContain('data-evidence-truncated="true"')
+      const evidenceLines = [
+        ...svg.matchAll(/<text class="evidence-line"[^>]*>([^<]*)<\/text>/g),
+      ].map((match) => match[1])
+      expect(evidenceLines.at(-1), diagram.path).toMatch(/…$/)
+    }
+  })
+
+  it('renders every output before the first write and reports exact deterministic stdout', async () => {
+    const { diagramDefinitions } = await import(
+      '../../tools/blog/visual-system/diagram-data'
+    )
+    const { generateFigures } = await import('../../tools/blog/generate-figures')
+    const outputRoot = await mkdtemp(path.join(os.tmpdir(), 'field-journal-diagrams-'))
+
+    try {
+      const writes: string[] = []
+      const invalidDefinitions = [
+        ...diagramDefinitions.slice(0, -1),
+        {
+          ...diagramDefinitions.at(-1)!,
+          edges: [{ from: 'missing-from', to: 'missing-to' }],
+        },
+      ]
+
+      await expect(
+        generateFigures({
+          definitions: invalidDefinitions,
+          logger: () => undefined,
+          outputRoot,
+          writeOutput: async (outputPath) => {
+            writes.push(outputPath)
+          },
+        }),
+      ).rejects.toThrow(/unknown edge endpoint/i)
+      expect(writes).toEqual([])
+
+      const logs: string[] = []
+      const first = await generateFigures({
+        logger: (line) => logs.push(line),
+        outputRoot,
+      })
+      const second = await generateFigures({
+        logger: () => undefined,
+        outputRoot,
+      })
+
+      expect(first.map(({ path: figurePath, svg }) => [figurePath, svg])).toEqual(
+        second.map(({ path: figurePath, svg }) => [figurePath, svg]),
+      )
+      expect(logs).toHaveLength(28)
+      expect(logs.slice(0, -1)).toEqual(
+        first.map(
+          ({ bytes, path: figurePath }) =>
+            `Generated ${figurePath} (${bytes} bytes).`,
+        ),
+      )
+      expect(logs.at(-1)).toBe(
+        'Generated 27 deterministic Field Journal blog figures.',
+      )
+    } finally {
+      await rm(outputRoot, { force: true, recursive: true })
+    }
+  })
+})
 
 describe('Community Field Journal visual catalog', () => {
   it('covers every post and figure exactly once with the approved teaching modes', async () => {
@@ -470,19 +1569,43 @@ describe('Community Field Journal visual catalog', () => {
     )
   })
 
-  it('labels reduced motion as article guidance rather than shown component behavior', async () => {
+  it('labels answer-panel and reduced-motion checks as guidance around the accordion primitive', async () => {
     const faq = blogVisualCatalog.find(
       (entry) => entry.slug === 'accessible-faq-blocks',
     )
 
     expect(faq?.secondary).toMatchObject({
-      items: ['button', 'expanded state', 'content region', 'keyboard', 'reduced motion'],
+      items: ['button', 'expanded state', 'answer panel', 'keyboard', 'reduced motion'],
       kind: 'sequence',
       label: 'Article accessibility checklist',
     })
     expect(await getCoverAlt('accessible-faq-blocks')).toBe(
-      "FAQ Accordion component source beside the article's accessibility checklist for buttons, expanded state, content regions, keyboard handling, and reduced motion.",
+      "FAQ Accordion component source beside the article's accessibility checklist for buttons, expanded state, answer panels, keyboard handling, and reduced motion.",
     )
+  })
+
+  it('keeps diagram-backed catalog sequences aligned with repository truth', () => {
+    const expected = {
+      'build-payload-blog-frontend': [
+        'validated MDX entry',
+        '/blog + article',
+        'related posts',
+        'RSS + OG + sitemap',
+      ],
+      'what-is-a-payload-cms-block': [
+        'config → editor → stored data',
+        'config → generated type → compile check',
+        'stored data → renderer → React',
+      ],
+    } as const
+
+    for (const [slug, items] of Object.entries(expected)) {
+      const entry = blogVisualCatalog.find((candidate) => candidate.slug === slug)
+      expect(entry?.secondary, slug).toMatchObject({
+        items,
+        kind: 'sequence',
+      })
+    }
   })
 
   it('uses the same homepage-stage vocabulary in cover text and alt copy', async () => {

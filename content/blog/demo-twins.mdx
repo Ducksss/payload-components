@@ -20,13 +20,13 @@ Payload v3 application. Importing target code into the site would collapse that 
 documentation deploy depend on a CMS runtime it does not own.
 
 Demo twins let the catalog show real component design without crossing that line. A twin is a static,
-site-only preview that mirrors the installable component's visual class names while using fixture
+site-only preview that contains the installable component's visual class tokens while using fixture
 content and no Payload imports.
 
 <BlogFigure
   src="/blog/demo-twins/figure-01-architecture-mirror.svg"
-  alt="An architecture mirror showing installable Payload source and site-only demo twins feeding separate runtimes and one class-fidelity test"
-  caption="The source and twin share a visual contract, not a runtime dependency: consumer data stays in the installed component and fixtures stay in the docs site."
+  alt="A one-way class token contract connecting installable Payload source to a site-only demo twin while each remains in its own runtime"
+  caption="The token-presence guard keeps every source class token represented in the twin without requiring identical token sets or a runtime dependency."
 />
 
 ## Why not render the source directly?
@@ -48,22 +48,24 @@ consumer fixtures where Payload behavior belongs.
 The twin pays a small duplication cost to keep deployments independent and the component contract
 honest.
 
-## Mirror visual classes verbatim
+## Keep source class tokens present
 
-The key rule is that `className` literals in the demo match the source component. An integration test
-reads both files and enforces that fidelity. Change a token, spacing class, grid breakpoint, radius,
-or typography treatment in source, and the corresponding twin must change in the same pull request.
+The key rule is that every visual class token found in the source component is also present in the
+demo. An integration test reads both files and enforces that one-way containment. Change a spacing
+class, grid breakpoint, radius, or typography token in source, and the corresponding twin must carry
+it in the same pull request.
 
-The mirror does not require identical control flow. Target source can narrow Payload relationships,
-render real links, and handle wrapper props. The twin can use small static arrays. What should not
-drift is the visual structure users are evaluating in the catalog.
+The guard does not require identical control flow or identical token sets. Target source can narrow
+Payload relationships, render real links, and handle wrapper props. The twin can use small static
+arrays and demo-only layout classes. What should not drift is the source styling users are evaluating
+in the catalog.
 
 This rule makes the preview useful as design evidence. Without it, the site could advertise one
 component and install another.
 
 <BlogFigure
   src="/blog/demo-twins/figure-02-source-preview.webp"
-  alt="A real component preview paired with its source-facing visual structure to demonstrate class-for-class fidelity"
+  alt="A real component preview paired with its source-facing visual structure to show source class tokens represented in the twin"
   caption="The dedicated preview route removes site chrome so the twin can be captured at stable viewports and compared against its committed baseline."
 />
 
@@ -98,7 +100,8 @@ The preview route has no database and no live editor content. That keeps capture
 
 Three checks protect different facts:
 
-1. **Class mirror:** source and twin use the same visual class literals.
+1. **Class-token containment:** every source class token is present in the twin, which may also have
+   demo-only tokens.
 2. **Visual standards:** both rely on named color, radius, spacing, tracking, and font tokens.
 3. **Visual regression:** the rendered twin matches a committed platform baseline.
 

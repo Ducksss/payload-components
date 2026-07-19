@@ -24,8 +24,8 @@ Diagnosis should preserve the evidence a developer is trying to understand.
 
 <BlogFigure
   src="/blog/payload-components-doctor/figure-01-doctor-report.svg"
-  alt="A representative payload-components doctor terminal report showing project detection, owned files, Payload fragments, generators, and a healthy summary"
-  caption="The report is organized by evidence: project readiness first, then recorded installs, owned source, host wiring, and the safest next command."
+  alt="An exact healthy fixture from payload-components doctor with project and script checks, one recorded component, dependencies, files, registry dependencies, and Payload fragments"
+  caption="The figure transcribes the fixture's healthy [ok] lines with no invented summary."
 />
 
 ## Run it from the project root
@@ -66,6 +66,20 @@ For a completed component, doctor loads its manifest expectations and recorded s
 owned files are present and the declared Payload fragments still appear in host files. It can also
 check that generator scripts required by the installation contract are configured.
 
+The healthy fixture used by this article prints these exact lines:
+
+```text
+[ok] project: payload-website-starter (Payload 3, Next 16, pnpm)
+[ok] scripts: generate:importmap
+[ok] scripts: generate:types
+[ok] state: 1 recorded component
+[ok] hero-basic: peer dependencies
+[ok] hero-basic: dependencies
+[ok] hero-basic: files
+[ok] hero-basic: registry dependencies
+[ok] hero-basic: Payload fragments
+```
+
 A healthy report does not prove the component's visual design or application data. It proves the
 installer-level facts available from source and state. Browser and application tests remain the
 right tools for runtime behavior.
@@ -90,8 +104,9 @@ semantics.
 
 ## Partial installs preserve the failed stage
 
-When `add` fails after some work, state records a partial installation and the last completed stage.
-Doctor surfaces that status instead of calling the component healthy merely because files exist.
+When `add` fails after some work, state records a partial installation. Its `lastError` carries the
+last failed stage and message. Doctor surfaces that status instead of calling the component healthy
+merely because files exist.
 
 A representative partial report may say that the component stopped during dependency installation
 or post-install generation, then recommend rerunning the exact add command after fixing the error:
@@ -100,9 +115,9 @@ or post-install generation, then recommend rerunning the exact add command after
 npx payload-components add hero-basic
 ```
 
-The retry rechecks completed stages and continues toward the same desired state. The
-[idempotent installer article](/blog/idempotent-code-installer) explains why repeated requests are
-designed to converge rather than restart blindly.
+The retry rechecks the repository and continues toward the same desired state. The [idempotent
+installer article](/blog/idempotent-code-installer) explains why repeated requests are designed to
+converge rather than restart blindly.
 
 Do not delete the state file simply to silence a partial report. That removes useful recovery
 evidence while leaving files and patches in place. Either complete the install, deliberately revert
@@ -138,7 +153,7 @@ Pair it with the repository's typecheck, build, integration tests, and browser c
 A useful installer report includes:
 
 - the component name and recorded version;
-- the stage marked complete or partial;
+- the recorded status and any `lastError` stage and message;
 - whether owned files are present;
 - whether expected fragments are present;
 - the exact recommended retry;

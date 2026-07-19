@@ -25,8 +25,8 @@ serve.
 
 <BlogFigure
   src="/blog/reproducible-shadcn-registry/figure-01-deterministic-build.svg"
-  alt="Two clean checkouts passing through identical shadcn build pipelines and converging on matching schema-valid public registry output"
-  caption="A deterministic registry lets maintainers compare generated output, validate exact public items, and know a deployment did not invent a different package."
+  alt="A checker making one temporary shadcn registry build, then comparing registry metadata, item metadata, and exact embedded content before separate schema validation"
+  caption="The checker makes one temporary build and performs three comparisons: registry-index metadata, item metadata, and exact embedded content; schema validation remains separate."
 />
 
 ## Keep one source of truth
@@ -85,16 +85,18 @@ format that performs filesystem writes.
 
 ## Compare output from a clean build
 
-`pnpm test:registry` builds or checks public output and validates items. A strong reproducibility test
-removes prior generated state, rebuilds from source, and compares the resulting directory or
-normalized file contents with expectations.
+`pnpm registry:check` creates one temporary build from the canonical registry and component source. It
+parses that output and performs three comparisons: registry-index metadata, each item's metadata, and
+the exact embedded content of every declared source file.
 
-Sort only where the format treats order as irrelevant. Do not normalize away meaningful differences
-until every build appears equal. Byte-for-byte comparison is easiest to reason about when the
-generator is deterministic.
+Schema validation is a separate gate. `pnpm registry:validate` verifies source items against the
+vendored schemas and project path rules, while `registry:check` proves the generated index and items
+still resolve exactly from repository inputs. The aggregate `pnpm test:registry` runs `registry:check`
+and `registry:validate`. Keeping those jobs distinct makes a failure specific: malformed source and
+unexpected generated content do not collapse into one vague result.
 
-Also verify the public index and individual item documents agree. Every listed component should have
-a resolvable item, and every item should embed all declared source content.
+Sort only where the format treats order as irrelevant. Do not normalize away meaningful differences.
+Exact embedded-content comparison is easiest to reason about when the generator is deterministic.
 
 ## Test installation, not only JSON
 
@@ -138,7 +140,7 @@ Try a direct item through the supported workflow:
 npx payload-components add hero-basic
 ```
 
-Then run the registry checks and inspect the generated item locally. If two clean environments
-produce different JSON, capture tool versions and the smallest differing file and open an issue
-through the [contributing guide](/docs/contributing). Deterministic evidence is exactly what lets an
-open registry fix the real source instead of normalizing away a symptom.
+Then run the registry checks and inspect the temporary item locally. If its metadata or embedded
+content differs from the canonical inputs, capture tool versions and the smallest differing file and
+open an issue through the [contributing guide](/docs/contributing). Deterministic evidence is exactly
+what lets an open registry fix the real source instead of normalizing away a symptom.

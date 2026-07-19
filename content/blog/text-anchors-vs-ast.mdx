@@ -26,8 +26,8 @@ changes and failure modes a contributor can reproduce.
 
 <BlogFigure
   src="/blog/text-anchors-vs-ast/figure-01-scoped-diff.svg"
-  alt="A before-and-after source diagram where a renderer entry is inserted at one verified text anchor without changing surrounding code"
-  caption="The patch is intentionally smaller than the parser problem: verify one stable anchor, deduplicate one insertion, and preserve everything else byte for byte."
+  alt="A before-and-after source diagram where heroBasic: HeroBasicBlock is inserted once at a verified renderer-map anchor and deduplicated on rerun"
+  caption="The scoped diff adds the named import HeroBasicBlock and its direct map entry while preserving unrelated source."
 />
 
 ## The actual edits are constrained
@@ -69,9 +69,9 @@ Text patches work only when the expected source exists. The renderer anchor
 supported starter. If a repository uses a switch statement, generated renderer, renamed field, or
 factory function, the installer should not pretend it understands the structure.
 
-Project detection runs before mutation. Fragment application verifies each anchor and checks for
-ambiguity. A missing anchor produces an actionable failure with the affected stage. The consumer can
-integrate manually, adapt the repository, or contribute a tested supported shape.
+Project detection runs before mutation. Fragment application verifies the expected anchor and its
+deduplication evidence. A missing anchor produces an actionable failure in `fragment-apply`. The
+consumer can integrate manually, adapt the repository, or contribute a tested supported shape.
 
 That is a better open-source contract than “works on any Payload app” followed by speculative edits.
 The [installation docs](/docs/installation) describe the expected architecture so the boundary is
@@ -91,17 +91,16 @@ If files are formatted after the first install, checks still need to recognize t
 formatting variants or compare semantic enough text. This is where a narrowly scoped tokenizer can
 be useful without adopting whole-file AST printing. The right tool can vary per fragment.
 
-## Preflight reduces partial source mutation
+## Sequential patches stay recoverable
 
-Before applying fragments, the installer resolves target files and validates the expected anchors.
-A robust patch sequence should discover obvious incompatibility before writing the first host file.
-Once execution begins, each completed stage is recorded so an unexpected later failure remains
-diagnosable.
+Fragment files are read and patched sequentially. Each missing anchor fails that file without a
+broad rewrite, but a later missing anchor can fail after an earlier host file changed. Before
+execution begins, the CLI records a partial attempt. If a later operation fails, `lastError` records
+that failed stage and message so the partial install remains diagnosable.
 
-Atomic replacement of an individual file prevents a process interruption from leaving half an
-insertion. It does not make a multi-file installation globally atomic. That is why install state and
-idempotent recovery exist. The [idempotency guide](/blog/idempotent-code-installer) covers the larger
-state machine.
+Each supported insertion is intentionally narrow, so multi-file application is recoverable, not
+globally prevalidated or atomic. That is why install state and idempotent recovery exist. The
+[idempotency guide](/blog/idempotent-code-installer) covers the larger convergence model.
 
 Git is an important safety layer too. The normal workflow is a clean branch and a reviewable diff.
 The CLI should never use git as permission to be careless, but source control gives the consumer a

@@ -18,15 +18,20 @@ A CMS makes content editable; it does not make every stored value safe to execut
 dangerous protocols. Forms cross from untrusted browser input into server effects. Embed HTML can run
 third-party scripts in the site's origin. The component boundary needs a clear policy for each.
 
-I prefer structured capabilities over arbitrary strings. An editor chooses an internal page or an
-allowed external URL, not executable link markup. A form selects a known server workflow, not a
-free-form action. An embed stores a provider and identifier, not pasted HTML.
+I prefer constrained fields over executable markup. An editor chooses an internal page or an allowed
+external URL for a link. The CTA stores a constrained same-origin action path. EmbedBasic stores an
+approved HTTPS URL with its title and presentation fields; neither accepts pasted HTML.
 
 <BlogFigure
   src="/blog/safe-links-forms-embeds/figure-01-trust-boundary.svg"
-  alt="A trust-boundary diagram where editor-controlled URLs, form values, and embed identifiers pass through separate validation policies"
-  caption="Treat CMS values as untrusted at the rendering and server boundaries; grant only the navigation, submission, or media capability the field model promises."
+  alt="A trust-boundary diagram separating the shipped HTTPS embed-host and same-origin form-action guards from application-owned link policy, server handling, CSRF, rate limiting, CSP, and privacy controls"
+  caption="The shipped safeUrls.ts guard narrows embed and form-action URLs; link handling, server effects, CSRF, rate limiting, CSP, and privacy remain local policy."
 />
+
+The shipped `safeUrls.ts` makes two narrow guarantees: an embed URL must use HTTPS on an approved
+host, and a form action must normalize to a same-origin path. It does not define the application's
+general link policy or implement the submission handler, CSRF protection, rate limiting, CSP, or
+privacy decisions. Those controls are application-owned and need local policy and tests.
 
 ## Model links by destination type
 
@@ -100,8 +105,8 @@ the destination, not say “click here.”
 
 ## Treat forms as server operations
 
-The Payload block can model form presentation: heading, description, field selection, success copy,
-and a known form identifier. The server decides what happens on submission.
+The Payload block can model form presentation and a constrained same-origin `action` path. That path
+selects a local endpoint; it does not grant the request permission or define the server behavior.
 
 Validate every submitted value against a server schema. Apply access rules, authentication, CSRF
 protection, rate limiting, spam controls, and logging according to the consequence. Do not trust a
@@ -111,9 +116,9 @@ If the server calls Payload's Local API with a user, set `overrideAccess: false`
 the user does not automatically guarantee collection access is enforced. Inside Payload hooks, pass
 `req` to nested operations so the transaction and request context remain connected.
 
-Never accept a CMS-configured arbitrary action URL for a privileged form. Map a controlled form key
-to a known server handler. The editor can choose the capability; they cannot redefine its security
-boundary.
+Do not treat a same-origin action as authorization. Keep accepted paths limited to application routes
+you intend to expose, and make every handler enforce its own schema, access, and abuse controls. The
+editor can choose a local destination; they cannot redefine its security boundary.
 
 ## Keep secrets and provider keys on the server
 
@@ -128,23 +133,24 @@ perform.
 Error messages shown to readers should be useful without exposing stack traces, provider responses,
 or internal identifiers. Log diagnostic detail on the trusted side with appropriate redaction.
 
-## Model embeds as provider plus identifier
+## Model embeds as an approved URL, never raw HTML
 
 Pasted iframe or script HTML gives an editor the ability to introduce arbitrary origins, permissions,
-tracking, and executable content. Prefer a provider select and a validated media identifier or URL:
+tracking, and executable content. `EmbedBasic` instead stores an approved HTTPS embed URL, a required
+accessible title, an aspect ratio, an optional caption, and a fullscreen preference:
 
 ```ts
 {
-  name: 'provider',
-  type: 'select',
-  options: ['youtube', 'vimeo'],
+  name: 'url',
+  type: 'text',
   required: true,
+  validate: validateEmbedUrl,
 }
 ```
 
-The React component constructs the embed URL from the known provider, applies a constrained
-`allow` policy, sets a useful title, reserves aspect ratio, and lazy-loads when appropriate. If the
-provider is not allowed, render a safe fallback link instead of raw HTML.
+The React component calls `getSafeEmbedUrl`, applies a constrained `allow` policy, sets the stored
+title, reserves the selected aspect ratio, and lazy-loads the iframe. If the URL is not allowed, it
+renders an unavailable state instead of raw HTML.
 
 Content Security Policy should allow only required frame and script origins. The component model and
 CSP reinforce each other: one controls what source can request; the other limits what the browser can

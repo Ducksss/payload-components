@@ -20,13 +20,13 @@ most useful when capture is stable, baselines are platform-aware, and missing co
 behind a silent skip.
 
 This repository renders each demo twin on a chrome-free route, captures it through Playwright, and
-compares the result with committed baselines. Integration tests separately keep preview classes
-aligned with installable source.
+compares the result with committed baselines. Integration tests separately keep every installable
+source class token present in the preview.
 
 <BlogFigure
   src="/blog/visual-regression-component-registry/figure-01-regression-pipeline.svg"
-  alt="A visual regression pipeline from a chrome-free preview route through Playwright capture, pixel comparison, baseline decision, and coverage gate"
-  caption="A screenshot only becomes a dependable contract when its route, viewport, platform, review path, and coverage expectations are explicit."
+  alt="A zero-baseline platform intentionally skipping visual cases until its first image is minted, followed by a minted-platform coverage gate requiring every component slug"
+  caption="The bootstrap exception is narrow: a zero-baseline platform skips intentionally; once any platform baseline exists, all current slugs are required."
 />
 
 ## Capture one component, not the whole site
@@ -40,7 +40,7 @@ to the browser viewport, not the visual width created by transform scaling. An i
 page gives the demo an honest layout environment.
 
 The [demo-twin article](/blog/demo-twins) explains why the preview uses site-only fixtures while
-mirroring source classes.
+retaining source class tokens.
 
 ## Control sources of nondeterminism
 
@@ -71,13 +71,13 @@ difference comes from fonts, animation, assets, environment, or an intended desi
 
 ## Make missing baselines visible
 
-Visual suites often skip a case when no baseline exists. That is reasonable while bootstrapping a
-platform, but dangerous once the suite appears established. A new component could ship without any
-visual contract while CI stays green.
+On a zero-baseline platform, cases intentionally skip while the renderer is being bootstrapped. That
+exception ends as soon as its first baseline is minted. From then on, the platform is established,
+and a new component must not ship without a visual contract while CI stays green.
 
-A coverage guard solves that gap. Once a platform has baselines, every current component must have
-one. Missing coverage fails the gate with the slug. The contributor can then mint the intended image
-through the documented workflow.
+A coverage guard enforces that boundary. Once any baseline exists for a platform, every current
+component must have one. Missing coverage fails the gate with the slug. The contributor can then mint
+the intended image through the documented workflow.
 
 The count should derive from the component registry or site source of truth, not a second hand-written
 list that can drift.
@@ -109,7 +109,7 @@ generated prop relationships.
 The useful suite is layered:
 
 1. visual standards reject arbitrary design values in source;
-2. class-mirror tests prevent source/preview drift;
+2. class-token containment tests keep source tokens present in previews;
 3. component snapshots detect rendered change;
 4. page tests catch overflow and composition issues;
 5. interaction and accessibility tests verify behavior.

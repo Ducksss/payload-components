@@ -7,7 +7,7 @@ series: production-guides
 publicationOrder: 23
 cover:
   src: /blog/accessible-faq-blocks/cover.webp
-  alt: FAQ Accordion component source beside the article's accessibility checklist for buttons, expanded state, content regions, keyboard handling, and reduced motion.
+  alt: FAQ Accordion component source beside the article's accessibility checklist for buttons, expanded state, answer panels, keyboard handling, and reduced motion.
 tags:
   - Accessibility
   - Payload CMS
@@ -29,9 +29,14 @@ together.
 
 <BlogFigure
   src="/blog/accessible-faq-blocks/figure-01-faq-anatomy.svg"
-  alt="An accessible FAQ anatomy diagram connecting a real button, aria-expanded state, answer region, keyboard input, and motion behavior"
-  caption="The disclosure control, state announcement, and answer relationship must describe the same reality to pointer, keyboard, and assistive-technology users."
+  alt="An FAQ anatomy diagram showing the local block delegating disclosure to the accordion primitive, an answer panel becoming a region only when useful, and keyboard, expanded-state, and reduced-motion behaviors to verify"
+  caption="The local block delegates interaction to the accordion primitive; verify keyboard, state, and motion behavior in the installed app, and make an answer panel a named region only when useful."
 />
+
+The shipped FAQ Accordion block composes the local accordion primitive rather than reimplementing its
+keyboard handling, expanded state, or motion. Those are behaviors to verify in the installed
+application and in the primitive's tests. The block supplies content and styling; an answer panel
+only needs region semantics when that landmark would genuinely help navigation.
 
 ## Begin with questions worth answering
 

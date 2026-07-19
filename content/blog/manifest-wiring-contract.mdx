@@ -18,14 +18,15 @@ A registry item says what source to deliver. A Payload Components manifest says 
 after that source arrives. I call it an executable wiring contract because the CLI validates and
 performs its declarations rather than treating them as descriptive metadata.
 
-The contract has five layers: owned files, public dependencies, host-file fragments, post-install
-tasks, and recorded state. Each layer answers a different recovery question. Together they let the
-installer determine what happened, what remains, and whether a rerun is safe.
+The manifest contract has four executable layers: owned files, public dependencies, host-file
+fragments, and post-install tasks. The CLI records their outcome separately in install state. The
+declarations say what the repository should contain; the state record says which component,
+contract version, target, result, error, and patched host files belong to the latest attempt.
 
 <BlogFigure
   src="/blog/manifest-wiring-contract/figure-01-manifest-layers.svg"
-  alt="A layered manifest diagram where files, dependencies, source fragments, and post-install tasks feed a recorded installation state"
-  caption="The manifest makes installation expectations explicit enough to validate before running, execute in stages, and diagnose after failure."
+  alt="A CLI contract diagram separating manifest files, dependencies, source fragments, and post-install tasks from the install state that records their outcome"
+  caption="The manifest declares work; the separate state record records outcomes after an attempt, failure, or successful install."
 />
 
 ## Files declare ownership
@@ -88,23 +89,27 @@ see final component paths. Running either earlier can succeed while producing ou
 new integration.
 
 The CLI invokes commands configured for the detected project rather than assuming generated output
-paths. A failed post-install task leaves the component in a partial state with the completed stage
-recorded. After the underlying project command is fixed, a rerun can continue.
+paths. A failed post-install task leaves the component in a partial state with `lastError.stage` set
+to `post-install` and `lastError.message` set to the command error. After the underlying command is
+fixed, a rerun checks the repository again and performs whatever work is still required.
 
 ## State records execution, not truth by decree
 
-`.payload-components/state.json` records the installed component, manifest version, current stage,
-owned paths, applied fragments, and outcome. It is not allowed to overrule the filesystem. If state
-says a file exists and a developer deleted it, `doctor` should report the mismatch.
+Each component entry in `.payload-components/state.json` has exactly the installer fields
+`manifestVersion`, `registryItemName`, `targetId`, `status`, `installedAt`, `lastAttemptAt`,
+`lastError`, and `patchedFiles`. It records results rather than telling a retry where to begin. It is
+not allowed to overrule the filesystem. If the manifest expects an owned file and a developer
+deleted it, `doctor` reports the mismatch.
 
 This makes state an index of expected truth rather than truth itself. The installer can compare
 record and repository, explain discrepancies, and choose a safe next action. A blind “installed:
 true” flag would be much less useful.
 
 State also enables honest partial installs. A dependency failure after file delivery is neither a
-clean rollback nor a successful component. Recording the stage prevents the next run from pretending
-it knows nothing. The [idempotent installer guide](/blog/idempotent-code-installer) follows the
-convergence model in detail.
+clean rollback nor a successful component. A `partial` status plus the failed stage and message in
+`lastError` gives the next run useful context without claiming that state knows what remains on
+disk. The [idempotent installer guide](/blog/idempotent-code-installer) follows the convergence
+model in detail.
 
 ## Schema validation moves errors before mutation
 
@@ -130,9 +135,9 @@ current manifest. An update strategy must still respect local edits; source owne
 license to replace modified files silently.
 
 The current project focuses on deterministic adds and diagnostics. Any future update workflow must
-build on the same facts: prior manifest version, recorded files and fragments, current repository
-content, and a reviewable proposed diff. The manifest provides the information without pretending
-the merge decision is trivial.
+build on the same facts: the prior `manifestVersion`, the manifest's declared files and fragments,
+recorded `patchedFiles`, current repository content, and a reviewable proposed diff. The manifest
+provides the expectations without pretending the merge decision is trivial.
 
 ## Read a manifest like an install preview
 

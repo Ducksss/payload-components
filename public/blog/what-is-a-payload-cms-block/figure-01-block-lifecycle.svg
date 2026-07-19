@@ -1,66 +1,301 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
-  <title id="title">Editor data travels through a typed rendering pipeline</title>
-  <desc id="description">BLOCK LIFECYCLE diagram for the Payload Components editorial library.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="diagram-title diagram-description" class="diagram diagram--trace" data-mode="trace" data-series="foundations" data-issue="03">
+  <title id="diagram-title">Runtime data and compile-time types meet at RenderBlocks</title>
+  <desc id="diagram-description">Payload config drives the editor and generated types, while stored layout data moves at runtime through RenderBlocks into React.</desc>
   <defs>
-    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#f4f4f5"/></linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#18181b" flood-opacity="0.08"/></filter>
-    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+    <pattern id="journal-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e4e4e7" stroke-width="1" />
+    </pattern>
+    <marker id="journal-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+    </marker>
     <style>
-      .kicker{font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2.4px;fill:#059669}
-      .headline{font:650 34px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .card{fill:#fff;stroke:#d4d4d8;stroke-width:1.5;filter:url(#shadow)}
-      .terminal{fill:#18181b;stroke:#3f3f46;stroke-width:1.5;filter:url(#shadow)}
-      .dot{fill:#059669}
-      .node-title{font:650 18px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .node-body{font:450 14px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#52525b}
-      .terminal-title{font:650 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#f4f4f5}
-      .terminal-body{font:450 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#d4d4d8}
-      .arrow{fill:none;stroke:#059669;stroke-width:2.5;stroke-linecap:round;opacity:.85}
-      .edge-label{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#047857;paint-order:stroke;stroke:#fafafa;stroke-width:5px}
+      .diagram {
+        background: #f7f5ef;
+        color: #18181b;
+      }
+      .paper {
+        fill: #f7f5ef;
+      }
+      .grid {
+        fill: url(#journal-grid-pattern);
+      }
+      .masthead,
+      .mode-label,
+      .folio-label,
+      .footer-label,
+      .node-index,
+      .edge-label,
+      .node-title--mono,
+      .node-body--mono,
+      .provenance-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .masthead {
+        fill: #18181b;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.7px;
+      }
+      .kicker {
+        fill: #047857;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+      }
+      .headline {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 28px;
+        font-weight: 720;
+        letter-spacing: -0.4px;
+      }
+      .mode-box {
+        fill: #ffffff;
+        stroke: #047857;
+        stroke-width: 2;
+      }
+      .mode-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.4px;
+      }
+      .folio-label {
+        fill: #52525b;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 1.2px;
+      }
+      .journal-rule {
+        stroke: #18181b;
+        stroke-width: 1;
+      }
+      .accent-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.5;
+      }
+      .edge-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.25;
+      }
+      .diagram--join .edge-path {
+        stroke-dasharray: 7 5;
+      }
+      .diagram--inspect .edge-path {
+        stroke-width: 1.75;
+      }
+      .edge-label-paper {
+        fill: #f7f5ef;
+        stroke: #e4e4e7;
+        stroke-width: 1;
+      }
+      .edge-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-card {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1.25;
+      }
+      .diagram--inspect .node-card {
+        stroke: #18181b;
+      }
+      .node--terminal .node-card {
+        fill: #18181b;
+        stroke: #18181b;
+      }
+      .node-rule {
+        stroke: #059669;
+        stroke-width: 5;
+      }
+      .node-index {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-title {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 720;
+      }
+      .node-body {
+        fill: #52525b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+      }
+      .node--terminal .node-title,
+      .node--terminal .node-body {
+        fill: #ffffff;
+      }
+      .node--terminal .node-index {
+        fill: #059669;
+      }
+      .footer-paper {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1;
+      }
+      .footer-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .provenance-line,
+      .evidence-line {
+        fill: #52525b;
+        font-size: 13px;
+      }
+      .evidence-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .prompt {
+        fill: #047857;
+        font-family: Georgia, serif;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 650;
+      }
+      .registration {
+        fill: none;
+        stroke: #047857;
+        stroke-width: 1.5;
+      }
     </style>
   </defs>
-  <rect width="1200" height="675" fill="url(#background)"/>
-  <circle cx="1110" cy="70" r="62" fill="#059669" opacity=".06"/>
-  <circle cx="1110" cy="70" r="31" fill="#059669" opacity=".08"/>
-  <text class="kicker" x="60" y="55">BLOCK LIFECYCLE</text>
-  <text class="headline" x="60" y="104">Editor data travels through a typed rendering pipeline</text>
-  <g><g><path class="arrow" d="M 264.8 397.5 C 271.80000000000007 397.5, 271.80000000000007 397.5, 278.80000000000007 397.5" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 483.6 397.5 C 490.6 397.5, 490.6 397.5, 497.6 397.5" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 702.4 397.5 C 709.4000000000001 397.5, 709.4000000000001 397.5, 716.4000000000001 397.5" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 921.2 397.5 C 928.2 397.5, 928.2 397.5, 935.2000000000002 397.5" marker-end="url(#arrowhead)" /></g></g>
-  <g>
-        <g>
-          <rect class="card" x="60" y="319.5" width="204.8" height="156" rx="18" />
-          <circle class="dot" cx="86" cy="348.5" r="6" />
-          <text class="node-title" x="104" y="354.5">Payload editor</text>
-          <text class="node-body" x="86" y="389.5">Chooses a block and fills fields</text>
-        </g>
+  <rect class="paper" width="1200" height="675" />
+  <rect class="grid" data-journal-part="grid" x="28" y="24" width="1144" height="627" />
+  <path class="journal-rule" d="M 36 62 H 1164" />
+  <g data-journal-part="masthead">
+    <text class="masthead" x="48" y="49">FOUNDATIONS · ISSUE 03</text>
+  </g>
+  <g data-journal-part="mode">
+    <rect class="mode-box" x="876" y="27" width="96" height="27" rx="2" />
+    <text class="mode-label" x="924" y="46" text-anchor="middle">TRACE</text>
+  </g>
+  <g data-journal-part="folio">
+    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE 03 / 32</text>
+  </g>
+  <text class="kicker" x="48" y="86">BLOCK LIFECYCLE</text>
+  <text class="headline" x="48" y="119">Runtime data and compile-time types meet at RenderBlocks</text>
+  <path class="accent-path" d="M 941 96 C 1004 83, 1054 105, 1138 81" />
+  <circle class="registration" cx="1139" cy="81" r="8" />
+  <g data-diagram-layer="edges">
+    <g class="edge">
+  <path class="edge-path" data-edge-from="config" data-edge-to="editor" data-edge-axis="vertical" d="M 600 281.9230769230769 C 600 285.4230769230769, 320.5 285.4230769230769, 320.5 288.9230769230769" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="278.8" y="319.5" width="204.8" height="156" rx="18" />
-          <circle class="dot" cx="304.8" cy="348.5" r="6" />
-          <text class="node-title" x="322.8" y="354.5">Stored document</text>
-          <text class="node-body" x="304.8" y="389.5">layout[] with blockType</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="config" data-edge-to="types" data-edge-axis="vertical" d="M 600 281.9230769230769 C 600 285.4230769230769, 879.5 285.4230769230769, 879.5 288.9230769230769" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="497.6" y="319.5" width="204.8" height="156" rx="18" />
-          <circle class="dot" cx="523.6" cy="348.5" r="6" />
-          <text class="node-title" x="541.6" y="354.5">Generated type</text>
-          <text class="node-body" x="523.6" y="389.5">Discriminated TypeScript union</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="editor" data-edge-to="stored" data-edge-axis="vertical" d="M 320.5 407.46153846153845 C 320.5 410.96153846153845, 183 410.96153846153845, 183 414.46153846153845" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="716.4000000000001" y="319.5" width="204.8" height="156" rx="18" />
-          <circle class="dot" cx="742.4000000000001" cy="348.5" r="6" />
-          <text class="node-title" x="760.4000000000001" y="354.5">RenderBlocks</text>
-          <text class="node-body" x="742.4000000000001" y="389.5">Dispatches by blockType</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="types" data-edge-to="renderer" data-edge-axis="vertical" d="M 879.5 407.46153846153845 C 879.5 410.96153846153845, 461 410.96153846153845, 461 414.46153846153845" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="935.2" y="319.5" width="204.8" height="156" rx="18" />
-          <circle class="dot" cx="961.2" cy="348.5" r="6" />
-          <text class="node-title" x="979.2" y="354.5">React output</text>
-          <text class="node-body" x="961.2" y="389.5">Accessible page section</text>
-        </g></g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="stored" data-edge-to="renderer" data-edge-axis="horizontal" d="M 316 476.2307692307692 C 319.5 476.2307692307692, 319.5 476.2307692307692, 323 476.2307692307692" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="renderer" data-edge-to="component" data-edge-axis="horizontal" d="M 594 476.2307692307692 C 597.5 476.2307692307692, 597.5 476.2307692307692, 601 476.2307692307692" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="component" data-edge-to="react" data-edge-axis="horizontal" d="M 872 476.2307692307692 C 875.5 476.2307692307692, 875.5 476.2307692307692, 879 476.2307692307692" marker-end="url(#journal-arrow)" />
+
+</g>
+  </g>
+  <g data-diagram-layer="nodes">
+    <g class="node node--code" data-node-id="config" data-node-kind="code">
+  <rect class="node-card" x="180" y="143" width="840" height="136.9230769230769" rx="2" />
+  <path class="node-rule" d="M 180 148 H 1020" />
+  <text class="node-index" x="196" y="169">01</text>
+  <text class="node-title node-title--mono" x="223" y="170">Block config</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="196" y="200">slug: &apos;heroBasic&apos;</text>
+<text class="node-body node-body--mono" data-role="body-line" x="196" y="216">fields define editor data</text>
+</g>
+<g class="node node--standard" data-node-id="editor" data-node-kind="standard">
+  <rect class="node-card" x="52" y="295.9230769230769" width="537" height="109.53846153846153" rx="2" />
+  <path class="node-rule" d="M 52 300.9230769230769 H 589" />
+  <text class="node-index" x="68" y="321.9230769230769">02</text>
+  <text class="node-title" x="95" y="322.9230769230769">Payload editor</text>
+  <text class="node-body" data-role="body-line" x="68" y="352.9230769230769">Choose the block</text>
+<text class="node-body" data-role="body-line" x="68" y="368.9230769230769">fill fields · save</text>
+</g>
+<g class="node node--code" data-node-id="types" data-node-kind="code">
+  <rect class="node-card" x="611" y="295.9230769230769" width="537" height="109.53846153846153" rx="2" />
+  <path class="node-rule" d="M 611 300.9230769230769 H 1148" />
+  <text class="node-index" x="627" y="321.9230769230769">03</text>
+  <text class="node-title node-title--mono" x="654" y="322.9230769230769">Compile-time guard</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="627" y="352.9230769230769">Page[&apos;layout&apos;] union</text>
+<text class="node-body node-body--mono" data-role="body-line" x="627" y="368.9230769230769">checks source; no runtime transform</text>
+</g>
+<g class="node node--code" data-node-id="stored" data-node-kind="code">
+  <rect class="node-card" x="52" y="421.46153846153845" width="262" height="109.53846153846153" rx="2" />
+  <path class="node-rule" d="M 52 426.46153846153845 H 314" />
+  <text class="node-index" x="68" y="447.46153846153845">04</text>
+  <text class="node-title node-title--mono" x="95" y="448.46153846153845">Stored layout data</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="68" y="478.46153846153845">layout[] carries</text>
+<text class="node-body node-body--mono" data-role="body-line" x="68" y="494.46153846153845">blockType: &apos;heroBasic&apos;</text>
+</g>
+<g class="node node--code" data-node-id="renderer" data-node-kind="code">
+  <rect class="node-card" x="330" y="421.46153846153845" width="262" height="109.53846153846153" rx="2" />
+  <path class="node-rule" d="M 330 426.46153846153845 H 592" />
+  <text class="node-index" x="346" y="447.46153846153845">05</text>
+  <text class="node-title node-title--mono" x="373" y="448.46153846153845">RenderBlocks</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="346" y="478.46153846153845">Runtime lookup by blockType</text>
+</g>
+<g class="node node--code" data-node-id="component" data-node-kind="code">
+  <rect class="node-card" x="608" y="421.46153846153845" width="262" height="109.53846153846153" rx="2" />
+  <path class="node-rule" d="M 608 426.46153846153845 H 870" />
+  <text class="node-index" x="624" y="447.46153846153845">06</text>
+  <text class="node-title node-title--mono" x="651" y="448.46153846153845">HeroBasicBlock</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="624" y="478.46153846153845">Generated fields + wrapper</text>
+<text class="node-body node-body--mono" data-role="body-line" x="624" y="494.46153846153845">props</text>
+</g>
+<g class="node node--standard" data-node-id="react" data-node-kind="standard">
+  <rect class="node-card" x="886" y="421.46153846153845" width="262" height="109.53846153846153" rx="2" />
+  <path class="node-rule" d="M 886 426.46153846153845 H 1148" />
+  <text class="node-index" x="902" y="447.46153846153845">07</text>
+  <text class="node-title" x="929" y="448.46153846153845">React output</text>
+  <text class="node-body" data-role="body-line" x="902" y="478.46153846153845">The section joins the page</text>
+<text class="node-body" data-role="body-line" x="902" y="494.46153846153845">order</text>
+</g>
+  </g>
+  <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
+  <g data-journal-part="provenance" data-provenance="payload-components/source/blocks/HeroBasic/config.ts">
+    <text class="footer-label" x="48" y="571">PROVENANCE</text>
+    <text class="provenance-line" x="48" y="590">payload-components/source/blocks/HeroBasic/config.ts</text>
+  </g>
+  <g data-journal-part="evidence" data-evidence-excerpt="slug: &apos;heroBasic&apos;,
+  dbName: &apos;pc_her_bas&apos;,
+  interfaceName: &apos;HeroBasicBlock&apos;,
+  fields: [
+    // Shared hero core (eyebrow, title, description, CTA links). Variant-specific
+    // fields follow; edit the shared shape in @/blocks/shared/heroFields.
+    ...heroFields,
+    {" data-evidence-truncated="true">
+  <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
+  <text class="evidence-line" x="48" y="626">slug: &apos;heroBasic&apos;, · dbName: &apos;pc_her_bas&apos;, · interfaceName:</text>
+<text class="evidence-line" x="48" y="641">&apos;HeroBasicBlock&apos;, · fields: [ · // Shared hero core (eyebrow, tit …</text>
+</g>
+  <g data-journal-part="prompt" data-prompt="Start with one block and trace it end to end.">
+    <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
+    <text class="prompt" x="744" y="594">Start with one block and trace it end to</text>
+<text class="prompt" x="744" y="613">end.</text>
+  </g>
 </svg>

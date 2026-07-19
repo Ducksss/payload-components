@@ -1,68 +1,321 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title description">
-  <title id="title">CMS-managed input must be validated at the edge</title>
-  <desc id="description">TRUST BOUNDARY diagram for the Payload Components editorial library.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="diagram-title diagram-description" class="diagram diagram--trace" data-mode="trace" data-series="production-guides" data-issue="24">
+  <title id="diagram-title">The registry narrows URLs; the application owns consequential policy</title>
+  <desc id="diagram-description">Shipped embed and form-action guards are separated from application-owned link, submission, CSP, privacy, and access decisions.</desc>
   <defs>
-    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#f4f4f5"/></linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#18181b" flood-opacity="0.08"/></filter>
-    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker>
+    <pattern id="journal-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e4e4e7" stroke-width="1" />
+    </pattern>
+    <marker id="journal-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+    </marker>
     <style>
-      .kicker{font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2.4px;fill:#059669}
-      .headline{font:650 34px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .card{fill:#fff;stroke:#d4d4d8;stroke-width:1.5;filter:url(#shadow)}
-      .terminal{fill:#18181b;stroke:#3f3f46;stroke-width:1.5;filter:url(#shadow)}
-      .dot{fill:#059669}
-      .node-title{font:650 18px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#18181b}
-      .node-body{font:450 14px ui-sans-serif,system-ui,-apple-system,sans-serif;fill:#52525b}
-      .terminal-title{font:650 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#f4f4f5}
-      .terminal-body{font:450 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#d4d4d8}
-      .arrow{fill:none;stroke:#059669;stroke-width:2.5;stroke-linecap:round;opacity:.85}
-      .edge-label{font:650 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#047857;paint-order:stroke;stroke:#fafafa;stroke-width:5px}
+      .diagram {
+        background: #f7f5ef;
+        color: #18181b;
+      }
+      .paper {
+        fill: #f7f5ef;
+      }
+      .grid {
+        fill: url(#journal-grid-pattern);
+      }
+      .masthead,
+      .mode-label,
+      .folio-label,
+      .footer-label,
+      .node-index,
+      .edge-label,
+      .node-title--mono,
+      .node-body--mono,
+      .provenance-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .masthead {
+        fill: #18181b;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.7px;
+      }
+      .kicker {
+        fill: #047857;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+      }
+      .headline {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 28px;
+        font-weight: 720;
+        letter-spacing: -0.4px;
+      }
+      .mode-box {
+        fill: #ffffff;
+        stroke: #047857;
+        stroke-width: 2;
+      }
+      .mode-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.4px;
+      }
+      .folio-label {
+        fill: #52525b;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 1.2px;
+      }
+      .journal-rule {
+        stroke: #18181b;
+        stroke-width: 1;
+      }
+      .accent-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.5;
+      }
+      .edge-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.25;
+      }
+      .diagram--join .edge-path {
+        stroke-dasharray: 7 5;
+      }
+      .diagram--inspect .edge-path {
+        stroke-width: 1.75;
+      }
+      .edge-label-paper {
+        fill: #f7f5ef;
+        stroke: #e4e4e7;
+        stroke-width: 1;
+      }
+      .edge-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-card {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1.25;
+      }
+      .diagram--inspect .node-card {
+        stroke: #18181b;
+      }
+      .node--terminal .node-card {
+        fill: #18181b;
+        stroke: #18181b;
+      }
+      .node-rule {
+        stroke: #059669;
+        stroke-width: 5;
+      }
+      .node-index {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-title {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 720;
+      }
+      .node-body {
+        fill: #52525b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+      }
+      .node--terminal .node-title,
+      .node--terminal .node-body {
+        fill: #ffffff;
+      }
+      .node--terminal .node-index {
+        fill: #059669;
+      }
+      .footer-paper {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1;
+      }
+      .footer-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .provenance-line,
+      .evidence-line {
+        fill: #52525b;
+        font-size: 13px;
+      }
+      .evidence-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .prompt {
+        fill: #047857;
+        font-family: Georgia, serif;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 650;
+      }
+      .registration {
+        fill: none;
+        stroke: #047857;
+        stroke-width: 1.5;
+      }
     </style>
   </defs>
-  <rect width="1200" height="675" fill="url(#background)"/>
-  <circle cx="1110" cy="70" r="62" fill="#059669" opacity=".06"/>
-  <circle cx="1110" cy="70" r="31" fill="#059669" opacity=".08"/>
-  <text class="kicker" x="60" y="55">TRUST BOUNDARY</text>
-  <text class="headline" x="60" y="104">CMS-managed input must be validated at the edge</text>
-  <g><g><path class="arrow" d="M 240 227.83333333333331 C 322 227.83333333333331, 322 397.49999999999994, 404 397.49999999999994" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 600 295.66666666666663 C 600 295.66666666666663, 600 329.66666666666663, 600 329.66666666666663" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 960 227.83333333333331 C 878 227.83333333333331, 878 397.49999999999994, 796 397.49999999999994" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 404 397.49999999999994 C 322 397.49999999999994, 322 567.1666666666666, 240 567.1666666666666" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 600 465.33333333333326 C 600 465.33333333333326, 600 499.3333333333333, 600 499.3333333333333" marker-end="url(#arrowhead)" /></g>
-<g><path class="arrow" d="M 796 397.49999999999994 C 878 397.49999999999994, 878 567.1666666666666, 960 567.1666666666666" marker-end="url(#arrowhead)" /></g></g>
-  <g>
-        <g>
-          <rect class="card" x="240" y="160" width="720" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="266" cy="189" r="6" />
-          <text class="node-title" x="284" y="195">Editor-controlled values</text>
-          <text class="node-body" x="266" y="230">URLs · form actions · embed identifiers</text>
-        </g>
+  <rect class="paper" width="1200" height="675" />
+  <rect class="grid" data-journal-part="grid" x="28" y="24" width="1144" height="627" />
+  <path class="journal-rule" d="M 36 62 H 1164" />
+  <g data-journal-part="masthead">
+    <text class="masthead" x="48" y="49">PRODUCTION GUIDES · ISSUE 24</text>
+  </g>
+  <g data-journal-part="mode">
+    <rect class="mode-box" x="876" y="27" width="96" height="27" rx="2" />
+    <text class="mode-label" x="924" y="46" text-anchor="middle">TRACE</text>
+  </g>
+  <g data-journal-part="folio">
+    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE 24 / 32</text>
+  </g>
+  <text class="kicker" x="48" y="86">SHIPPED GUARDS / APPLICATION POLICY</text>
+  <text class="headline" x="48" y="119">The registry narrows URLs; the application owns consequential</text>
+<text class="headline" x="48" y="150">policy</text>
+  <path class="accent-path" d="M 941 96 C 1004 83, 1054 105, 1138 81" />
+  <circle class="registration" cx="1139" cy="81" r="8" />
+  <g data-diagram-layer="edges">
+    <g class="edge">
+  <path class="edge-path" data-edge-from="input" data-edge-to="embed" data-edge-axis="vertical" d="M 600 277.5 C 600 281, 156.8 281, 156.8 284.5" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="60" y="329.66666666666663" width="344" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="86" cy="358.66666666666663" r="6" />
-          <text class="node-title" x="104" y="364.66666666666663">Link policy</text>
-          <text class="node-body" x="86" y="399.66666666666663">Allow known protocols and destinations</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="input" data-edge-to="form-action" data-edge-axis="vertical" d="M 600 277.5 C 600 281, 378.40000000000003 281, 378.40000000000003 284.5" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="428" y="329.66666666666663" width="344" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="454" cy="358.66666666666663" r="6" />
-          <text class="node-title" x="472" y="364.66666666666663">Server validation</text>
-          <text class="node-body" x="454" y="399.66666666666663">Schema · CSRF · rate limit · access</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="input" data-edge-to="link-policy" data-edge-axis="vertical" d="M 600 277.5 C 600 281, 600 281, 600 284.5" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="796" y="329.66666666666663" width="344" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="822" cy="358.66666666666663" r="6" />
-          <text class="node-title" x="840" y="364.66666666666663">Embed allowlist</text>
-          <text class="node-body" x="822" y="399.66666666666663">Provider + identifier, not raw HTML</text>
-        </g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="input" data-edge-to="handler" data-edge-axis="vertical" d="M 600 277.5 C 600 281, 821.5999999999999 281, 821.5999999999999 284.5" marker-end="url(#journal-arrow)" />
 
-        <g>
-          <rect class="card" x="240" y="499.3333333333333" width="720" height="135.66666666666666" rx="18" />
-          <circle class="dot" cx="266" cy="528.3333333333333" r="6" />
-          <text class="node-title" x="284" y="534.3333333333333">Safe rendered boundary</text>
-          <text class="node-body" x="266" y="569.3333333333333">Escaped output with explicit capabilities</text>
-        </g></g>
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="input" data-edge-to="browser-policy" data-edge-axis="vertical" d="M 600 277.5 C 600 281, 1043.2 281, 1043.2 284.5" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="embed" data-edge-to="output" data-edge-axis="vertical" d="M 156.8 415.5 C 156.8 419, 600 419, 600 422.5" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="form-action" data-edge-to="output" data-edge-axis="vertical" d="M 378.40000000000003 415.5 C 378.40000000000003 419, 600 419, 600 422.5" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="link-policy" data-edge-to="output" data-edge-axis="vertical" d="M 600 415.5 C 600 419, 600 419, 600 422.5" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="handler" data-edge-to="output" data-edge-axis="vertical" d="M 821.5999999999999 415.5 C 821.5999999999999 419, 600 419, 600 422.5" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="browser-policy" data-edge-to="output" data-edge-axis="vertical" d="M 1043.2 415.5 C 1043.2 419, 600 419, 600 422.5" marker-end="url(#journal-arrow)" />
+
+</g>
+  </g>
+  <g data-diagram-layer="nodes">
+    <g class="node node--standard" data-node-id="input" data-node-kind="standard">
+  <rect class="node-card" x="180" y="174" width="840" height="101.5" rx="2" />
+  <path class="node-rule" d="M 180 179 H 1020" />
+  <text class="node-index" x="196" y="200">01</text>
+  <text class="node-title" x="223" y="201">Editor-managed values</text>
+  <text class="node-body" data-role="body-line" x="196" y="231">link destination · form action · embed URL</text>
+</g>
+<g class="node node--code" data-node-id="embed" data-node-kind="code">
+  <rect class="node-card" x="52" y="291.5" width="209.6" height="122" rx="2" />
+  <path class="node-rule" d="M 52 296.5 H 261.6" />
+  <text class="node-index" x="68" y="317.5">02</text>
+  <text class="node-title node-title--mono" x="95" y="318.5">Shipped guard ·</text>
+<text class="node-title node-title--mono" x="95" y="335.5">embed</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="68" y="365.5">HTTPS + approved host</text>
+<text class="node-body node-body--mono" data-role="body-line" x="68" y="381.5">safeUrls.ts</text>
+</g>
+<g class="node node--code" data-node-id="form-action" data-node-kind="code">
+  <rect class="node-card" x="273.6" y="291.5" width="209.6" height="122" rx="2" />
+  <path class="node-rule" d="M 273.6 296.5 H 483.20000000000005" />
+  <text class="node-index" x="289.6" y="317.5">03</text>
+  <text class="node-title node-title--mono" x="316.6" y="318.5">Shipped guard ·</text>
+<text class="node-title node-title--mono" x="316.6" y="335.5">action</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="289.6" y="365.5">Same-origin relative</text>
+<text class="node-body node-body--mono" data-role="body-line" x="289.6" y="381.5">path</text>
+<text class="node-body node-body--mono" data-role="body-line" x="289.6" y="397.5">safeUrls.ts</text>
+</g>
+<g class="node node--standard" data-node-id="link-policy" data-node-kind="standard">
+  <rect class="node-card" x="495.2" y="291.5" width="209.6" height="122" rx="2" />
+  <path class="node-rule" d="M 495.2 296.5 H 704.8" />
+  <text class="node-index" x="511.2" y="317.5">04</text>
+  <text class="node-title" x="538.2" y="318.5">Application policy ·</text>
+<text class="node-title" x="538.2" y="335.5">links</text>
+  <text class="node-body" data-role="body-line" x="511.2" y="365.5">Allowed protocols +</text>
+<text class="node-body" data-role="body-line" x="511.2" y="381.5">destinations</text>
+</g>
+<g class="node node--standard" data-node-id="handler" data-node-kind="standard">
+  <rect class="node-card" x="716.8" y="291.5" width="209.6" height="122" rx="2" />
+  <path class="node-rule" d="M 716.8 296.5 H 926.4" />
+  <text class="node-index" x="732.8" y="317.5">05</text>
+  <text class="node-title" x="759.8" y="318.5">Application policy ·</text>
+<text class="node-title" x="759.8" y="335.5">forms</text>
+  <text class="node-body" data-role="body-line" x="732.8" y="365.5">Schema · access · CSRF ·</text>
+<text class="node-body" data-role="body-line" x="732.8" y="381.5">rate limit</text>
+</g>
+<g class="node node--standard" data-node-id="browser-policy" data-node-kind="standard">
+  <rect class="node-card" x="938.4" y="291.5" width="209.6" height="122" rx="2" />
+  <path class="node-rule" d="M 938.4 296.5 H 1148" />
+  <text class="node-index" x="954.4" y="317.5">06</text>
+  <text class="node-title" x="981.4" y="318.5">Application policy ·</text>
+<text class="node-title" x="981.4" y="335.5">embeds</text>
+  <text class="node-body" data-role="body-line" x="954.4" y="365.5">CSP · privacy · consent</text>
+<text class="node-body" data-role="body-line" x="954.4" y="381.5">· providers</text>
+</g>
+<g class="node node--standard" data-node-id="output" data-node-kind="standard">
+  <rect class="node-card" x="180" y="429.5" width="840" height="101.5" rx="2" />
+  <path class="node-rule" d="M 180 434.5 H 1020" />
+  <text class="node-index" x="196" y="455.5">07</text>
+  <text class="node-title" x="223" y="456.5">Explicit capabilities</text>
+  <text class="node-body" data-role="body-line" x="196" y="486.5">navigation · submission · third-party media</text>
+</g>
+  </g>
+  <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
+  <g data-journal-part="provenance" data-provenance="payload-components/source/blocks/shared/safeUrls.ts">
+    <text class="footer-label" x="48" y="571">PROVENANCE</text>
+    <text class="provenance-line" x="48" y="590">payload-components/source/blocks/shared/safeUrls.ts</text>
+  </g>
+  <g data-journal-part="evidence" data-evidence-excerpt="if (parsed.protocol !== &apos;https:&apos; || parsed.username || parsed.password) {
+      return undefined
+    }
+
+    if (!isApprovedEmbedHost(parsed.hostname)) {
+      return undefined
+    }
+
+    return parsed.toString()
+  } catch {" data-evidence-truncated="true">
+  <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
+  <text class="evidence-line" x="48" y="626">if (parsed.protocol !== &apos;https:&apos; || parsed.username ||</text>
+<text class="evidence-line" x="48" y="641">parsed.password) { · return undefined · } · if …</text>
+</g>
+  <g data-journal-part="prompt" data-prompt="Contribute the narrowest safe policy you can explain.">
+    <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
+    <text class="prompt" x="744" y="594">Contribute the narrowest safe policy you</text>
+<text class="prompt" x="744" y="613">can explain.</text>
+  </g>
 </svg>

@@ -21,12 +21,12 @@ rerun, and recorded state should converge on one truthful result.
 
 This matters most when something fails. Networks, package managers, generators, and consumer code
 can all interrupt an install after partial progress. A retry should use evidence from the repository
-and state record, not ask the user to remember which steps completed.
+and state record, not ask the user to reconstruct the earlier attempt from memory.
 
 <BlogFigure
   src="/blog/idempotent-code-installer/figure-01-convergence-state.svg"
-  alt="A state machine showing new installs, partial failures, retries, complete installs, and reruns converging on one repository state"
-  caption="Idempotency is a convergence property: every safe retry moves toward the same complete state without duplicating completed work."
+  alt="A convergence path where preflight inspects disk, a partial failure records its error, a retry rechecks the repository, and a valid installed record takes an early return"
+  caption="Idempotency comes from rechecks against repository evidence; state preserves the last failed stage, while success is recorded only after every required operation succeeds."
 />
 
 ## Define the desired state first
@@ -37,7 +37,7 @@ For a component, the desired state includes:
 - required packages and public registry dependencies are present;
 - every collection and renderer fragment appears exactly once;
 - generated Payload artifacts reflect the final config;
-- install state records the component version and completed stages.
+- install state records the contract identity, result, timestamps, error, and patched host files.
 
 Each stage needs a check that can distinguish complete, incomplete, conflicting, and not started.
 “Run this command again” is not a design until those observations are defined.
@@ -56,11 +56,12 @@ read the package manifest and lockfile behavior. Fragment application has explic
 Generators are expected to derive output from the same final config each time.
 
 This separation makes failure messages precise. “Failed during dependency-install” tells the user
-that source delivery completed but host patches did not begin. It also gives the retry a safe resume
-point.
+which operation threw. It does not tell a later run to jump past earlier operations: the retry
+rechecks files, dependencies, and fragments from the repository before deciding what to run.
 
-Do not mark a stage complete before its mutation and verification succeed. A state file that advances
-early can cause the next run to skip missing work.
+The CLI records a `partial` attempt before mutation begins. If an operation throws, it writes the
+failed operation and message to `lastError`; it records `installed` only after every required
+operation and post-install script succeeds.
 
 ## Treat partial installation as a first-class state
 
@@ -69,9 +70,9 @@ lockfile or a generator rewrites project-wide output, reconstructing the exact p
 be riskier than preserving the partial diff for review. Git can discard the branch if the user wants
 a full rollback.
 
-The installer records a partial outcome with the last completed stage and failure context. It prints
-the safest retry: fix the underlying command, then run the same `add` request. `doctor` can compare
-state with current files before that retry.
+The installer records a partial outcome with the last failed stage and its message. It prints the
+safest retry: fix the underlying command, then run the same `add` request. `doctor` can compare state
+with current files before that retry.
 
 A partial state should never be reported as installed. It should also not strand the user. The next
 run recognizes the component, explains that it is retrying a partial installation, rechecks prior
@@ -83,9 +84,10 @@ Source fragments are the easiest place to violate idempotency. Before inserting 
 the specific binding and module do not already exist. Before adding a block to an array, confirm the
 registration is absent. Before adding a renderer key, confirm that key is not already mapped.
 
-The check should tolerate the supported formatter output but reject ambiguous conflicts. If
-`heroBasic` already maps to a different component, silently skipping is wrong and inserting a second
-key is worse. Stop and tell the user what conflicts.
+The current check looks for the exact supported named import and direct map entry. It does not treat
+a loose mention of `heroBasic` as proof that the expected renderer mapping exists, and it does not
+infer equivalence from a custom mapping. Reconcile a customized host shape deliberately and inspect
+the resulting diff.
 
 The [text-anchor design article](/blog/text-anchors-vs-ast) explains why these checks stay close to
 small, explicit insertions.
@@ -128,7 +130,7 @@ and add a clean-tree check where generated artifacts are committed. The article 
 [Payload's generated contracts](/blog/payload-types-and-import-map) covers the operational choices.
 
 If a generator fails, preserve its output and error for diagnosis. State should show that fragment
-application completed while post-install did not.
+application may already be present on disk while `lastError.stage` identifies `post-install`.
 
 ## Test transitions, not only happy paths
 
@@ -137,11 +139,12 @@ An idempotency suite needs more than “run twice.” Useful cases include:
 1. Fresh install reaches complete state.
 2. Complete install reruns without source duplication or diff.
 3. Failure during dependencies records partial state.
-4. Retry after the failure completes remaining stages.
+4. Retry after the failure reaches the intended repository result.
 5. Missing fragment is diagnosed after recorded success.
-6. Conflicting fragment refuses to overwrite consumer code.
-7. Missing owned file produces a specific integrity report.
-8. Generator failure remains recoverable.
+6. Exact fragment rerun does not duplicate the named import or direct map entry.
+7. Missing anchor fails without a broad rewrite.
+8. Missing owned file produces a specific integrity report.
+9. Generator failure remains recoverable.
 
 Fixtures should inspect file content and state, not only stdout. A successful exit can still leave
 duplicate imports. A helpful message can still describe the wrong stage.

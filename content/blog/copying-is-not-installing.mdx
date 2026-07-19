@@ -25,8 +25,8 @@ must exist. If any part is missing, “the files are there” does not mean “t
 
 <BlogFigure
   src="/blog/copying-is-not-installing/figure-01-copy-vs-install.svg"
-  alt="A side-by-side comparison of copied component files and a fully installed Payload component with registration, generation, and state"
-  caption="File ownership is the right distribution model, but Payload-specific registration and generation are still part of the install contract."
+  alt="Direct delivery of shared fields, config, component source, and registry dependencies beside a wired install with manifest dependencies, fragments, generators, and state"
+  caption="Both paths preserve source ownership; the companion CLI also completes the Payload integration and records its recovery state."
 />
 
 ## Copying answers the ownership question
@@ -50,13 +50,19 @@ An application feature has edges. A route needs registration, a plugin needs con
 Payload block needs collection and renderer wiring. Those edges belong to the host repository, so a
 generic file copier cannot know them from the component file alone.
 
-For the supported Payload website starter, `payload-components add` performs five idempotent stages:
+For the supported Payload website starter, preflight resolves the project, manifest, repository
+evidence, and install plan before mutation. `payload-components add` then performs five idempotent
+stages as needed:
 
-1. Resolve the registry item and its manifest.
-2. Deliver source through the registry flow.
-3. Install declared public dependencies.
-4. Apply scoped collection and renderer fragments.
-5. Run post-install generators and record state.
+1. `registry-build` creates a temporary public registry item when owned files are missing.
+2. `registry-add` delivers missing source and public registry dependencies.
+3. `dependency-install` adds missing manifest dependencies.
+4. `fragment-apply` applies scoped collection and renderer fragments.
+5. `post-install` runs the declared type and import-map generators.
+
+State is separate from those stages: the CLI records a partial attempt before execution, records a
+failed stage and message if an operation throws, and records `installed` after all required work
+succeeds.
 
 The earlier [installer anatomy](/blog/anatomy-of-an-install) follows those stages. The important
 point here is that none replaces file ownership. The command still leaves a normal diff. It simply
@@ -82,8 +88,8 @@ item; it does not invent a competing distribution format.
 
 An installer that edits source should make the smallest explainable change. In this repository,
 fragment patching uses text anchors such as `const blockComponents = {` and `name: 'layout'`. Before
-insertion, it checks whether the exact import or registration already exists. If the anchor is
-missing or ambiguous, the command fails with context rather than rewriting the file broadly.
+insertion, it checks whether the exact import or registration already exists. If the supported
+anchor is missing, the command fails with context rather than rewriting the file broadly.
 
 The result should be boring:
 
@@ -117,13 +123,15 @@ and their distinct failure symptoms.
 
 Suppose file delivery succeeds and dependency installation fails. Without state, a rerun must guess
 whether copied files are user-owned, whether patches landed, and which work is safe to repeat. With
-`.payload-components/state.json`, the command records the component version, completed stage,
-owned paths, fragment status, and install outcome.
+`.payload-components/state.json`, the command records the manifest version, registry item, target,
+status, attempt and install timestamps, last error, and patched host files. In the file these fields
+are `manifestVersion`, `registryItemName`, `targetId`, `status`, `installedAt`, `lastAttemptAt`,
+`lastError`, and `patchedFiles`.
 
 The state file does not replace inspection of the repository. It gives the installer a consistent
-recovery vocabulary. `payload-components doctor` can report a partial install and compare recorded
-expectations with the filesystem. After you fix the dependency error, rerunning `add` can skip
-completed work and continue toward the same final state.
+recovery vocabulary. `payload-components doctor` can report a partial install and compare declared
+expectations with the filesystem. After you fix the dependency error, rerunning `add` rechecks the
+repository, skips work whose result is already valid, and continues toward the same final state.
 
 Idempotency matters on successful installs too. A second run should not duplicate an import, array
 entry, map key, dependency, or state record. “Already installed” is a useful result, not an error.
