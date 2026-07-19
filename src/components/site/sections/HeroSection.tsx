@@ -1,8 +1,9 @@
 import Link from 'next/link'
 
-import { ArrowRight, Github, Sparkles } from 'lucide-react'
+import { ArrowRight, Sparkles } from 'lucide-react'
 
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
+import { GitHubMark } from '@/components/site/GitHubMark'
 import { HeroInstallReplay } from '@/components/site/HeroInstallReplay'
 import { HeroProductFrame } from '@/components/site/HeroProductFrame'
 import {
@@ -89,7 +90,7 @@ export function HeroSection() {
               data-cta-level="tertiary"
               className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
             >
-              <Github className="size-3.5" aria-hidden="true" />
+              <GitHubMark className="size-3.5" aria-hidden="true" />
               Star on GitHub
             </a>
             <Link

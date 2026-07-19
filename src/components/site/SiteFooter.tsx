@@ -1,7 +1,8 @@
 import Link from 'next/link'
 
-import { ArrowUpRight, Github } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 
+import { GitHubMark } from '@/components/site/GitHubMark'
 import { Wordmark } from '@/components/site/Wordmark'
 import { footerColumns, githubRepoUrl, primaryInstallCommand } from '@/lib/site'
 
@@ -35,7 +36,7 @@ export function SiteFooter() {
               target="_blank"
               className="mt-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
-              <Github className="size-4" aria-hidden="true" />
+              <GitHubMark className="size-4" aria-hidden="true" />
               GitHub
               <ArrowUpRight className="size-3 text-muted-foreground/70" aria-hidden="true" />
             </Link>

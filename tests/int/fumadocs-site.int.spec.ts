@@ -140,6 +140,23 @@ describe('Fumadocs site shell', () => {
     )
   })
 
+  it('keeps the GitHub mark independent from removed Lucide brand icons', async () => {
+    const githubLinkSources = await Promise.all(
+      [
+        'src/app/docs/layout.tsx',
+        'src/components/site/SiteFooter.tsx',
+        'src/components/site/SiteHeader.tsx',
+        'src/components/site/sections/CommunityCta.tsx',
+        'src/components/site/sections/HeroSection.tsx',
+      ].map((filePath) => readFile(path.join(repoRoot, filePath), 'utf8')),
+    )
+
+    for (const source of githubLinkSources) {
+      expect(source).toContain("import { GitHubMark } from '@/components/site/GitHubMark'")
+      expect(source).not.toMatch(/import\s+\{[^}]*\bGithub\b[^}]*\}\s+from\s+'lucide-react'/)
+    }
+  })
+
   it('keeps docs content in the Fumadocs source directory', async () => {
     const [sourceConfig, docsIndex, architecture] = await Promise.all([
       readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),
