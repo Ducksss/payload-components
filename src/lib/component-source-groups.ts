@@ -5,7 +5,11 @@ export type ComponentSourceGroup<T extends TitledSourceFile> = {
   items: Array<{ file: T; index: number }>
 }
 
-const dirName = (title: string) => title.slice(0, title.lastIndexOf('/'))
+const dirName = (title: string) => {
+  const separatorIndex = title.lastIndexOf('/')
+
+  return separatorIndex === -1 ? '.' : title.slice(0, separatorIndex)
+}
 
 export function groupComponentSourceFiles<T extends TitledSourceFile>(
   files: readonly T[],
