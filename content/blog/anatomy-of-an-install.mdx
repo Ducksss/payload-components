@@ -95,7 +95,11 @@ wiring for free, but I never want it to feel like magic you can't inspect.
 
 Give it a spin on a throwaway branch and watch the diff:
 
-<RunnableCommand command="npx payload-components add hero-basic" label="Copy the hero-basic install command" />
+<RunnableCommand
+  command="npx payload-components add hero-basic"
+  label="Copy the hero-basic install command"
+  trackInstall
+/>
 
 Then run the [read-only doctor check](/docs/installation#doctor) and inspect the diff before you
 commit. If something feels off, tell me. That feedback is how the catalog gets better.

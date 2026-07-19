@@ -132,6 +132,9 @@ describe('Fumadocs site shell', () => {
     expect(troubleshootingPost).toContain('command="pnpm payload generate:importmap"')
     expect(troubleshootingPost).toContain('command="npx payload-components doctor"')
     expect(troubleshootingPost).toContain('command="npx payload-components add hero-basic"')
+    expect(troubleshootingPost).toMatch(
+      /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
+    )
     expect(installationGuide).toContain(
       '[four-step Payload block troubleshooting checklist](/blog/anatomy-of-an-install)',
     )

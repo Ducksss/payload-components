@@ -70,7 +70,9 @@ export function CommandCopyController() {
 
       button.dataset.copied = 'true'
       button.querySelector('[data-copy-label]')?.replaceChildren('Copied')
-      trackInstallCommandCopy(command)
+      if (button.dataset.trackInstall === 'true') {
+        trackInstallCommandCopy(command)
+      }
 
       window.clearTimeout(copiedTimers.get(button))
       copiedTimers.set(button, window.setTimeout(() => reset(button), 1100))
