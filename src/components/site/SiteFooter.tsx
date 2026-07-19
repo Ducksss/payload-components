@@ -52,32 +52,43 @@ export function SiteFooter() {
                   {column.links.map((link) => {
                     const external = 'external' in link && link.external
                     const accent = 'accent' in link && link.accent
+                    const className = accent
+                      ? 'group inline-flex items-center gap-1 text-sm font-medium text-brand transition-colors hover:text-brand/80'
+                      : 'inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground'
+                    const content = (
+                      <>
+                        {link.label}
+                        {external ? (
+                          <ArrowUpRight
+                            className="size-3 text-muted-foreground/70"
+                            aria-hidden="true"
+                          />
+                        ) : null}
+                        {accent ? (
+                          <ArrowUpRight
+                            className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                            aria-hidden="true"
+                          />
+                        ) : null}
+                      </>
+                    )
 
                     return (
                       <li key={link.label}>
-                        <Link
-                          href={link.href}
-                          {...(external ? { rel: 'noreferrer', target: '_blank' } : {})}
-                          className={
-                            accent
-                              ? 'group inline-flex items-center gap-1 text-sm font-medium text-brand transition-colors hover:text-brand/80'
-                              : 'inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground'
-                          }
-                        >
-                          {link.label}
-                          {external ? (
-                            <ArrowUpRight
-                              className="size-3 text-muted-foreground/70"
-                              aria-hidden="true"
-                            />
-                          ) : null}
-                          {accent ? (
-                            <ArrowUpRight
-                              className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                              aria-hidden="true"
-                            />
-                          ) : null}
-                        </Link>
+                        {external ? (
+                          <a
+                            href={link.href}
+                            rel="noreferrer"
+                            target="_blank"
+                            className={className}
+                          >
+                            {content}
+                          </a>
+                        ) : (
+                          <Link href={link.href} className={className}>
+                            {content}
+                          </Link>
+                        )}
                       </li>
                     )
                   })}

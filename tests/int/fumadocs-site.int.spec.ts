@@ -4,9 +4,11 @@ import { access, readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-import { createElement } from 'react'
+import { Children, createElement, isValidElement, type ReactNode } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+
+import { SiteFooter } from '../../src/components/site/SiteFooter'
 
 const repoRoot = process.cwd()
 
@@ -58,6 +60,16 @@ async function expectMetaEntriesResolve(directory: string) {
     if (await pathExists(childMetaPath)) {
       await expectMetaEntriesResolve(path.join(directory, entry))
     }
+  }
+}
+
+function findElementTypeByHref(node: ReactNode, href: string): unknown {
+  for (const child of Children.toArray(node)) {
+    if (!isValidElement<{ children?: ReactNode; href?: string }>(child)) continue
+    if (child.props.href === href) return child.type
+
+    const nestedType = findElementTypeByHref(child.props.children, href)
+    if (nestedType) return nestedType
   }
 }
 
@@ -115,6 +127,10 @@ describe('Fumadocs site shell', () => {
     expect(heroSubheadline).toBe(
       'For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.',
     )
+  })
+
+  it('renders the external registry resource as a native anchor', () => {
+    expect(findElementTypeByHref(SiteFooter(), '/r/registry.json')).toBe('a')
   })
 
   it('connects the block troubleshooting article to the installation guide', async () => {
