@@ -117,6 +117,29 @@ describe('Fumadocs site shell', () => {
     )
   })
 
+  it('connects the block troubleshooting article to the installation guide', async () => {
+    const [troubleshootingPost, installationGuide] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'blog', 'anatomy-of-an-install.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+    ])
+
+    expect(troubleshootingPost).toContain('Payload CMS block not showing?')
+    expect(troubleshootingPost).toContain('[installation guide](/docs/installation)')
+    expect(troubleshootingPost).toContain('The block is missing from the Pages editor')
+    expect(troubleshootingPost).toContain('The editor saves the block, but the page renders nothing')
+    expect(troubleshootingPost.match(/<RunnableCommand\b/g)).toHaveLength(4)
+    expect(troubleshootingPost).toContain('command="pnpm payload generate:types"')
+    expect(troubleshootingPost).toContain('command="pnpm payload generate:importmap"')
+    expect(troubleshootingPost).toContain('command="npx payload-components doctor"')
+    expect(troubleshootingPost).toContain('command="npx payload-components add hero-basic"')
+    expect(troubleshootingPost).toMatch(
+      /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
+    )
+    expect(installationGuide).toContain(
+      '[four-step Payload block troubleshooting checklist](/blog/anatomy-of-an-install)',
+    )
+  })
+
   it('keeps docs content in the Fumadocs source directory', async () => {
     const [sourceConfig, docsIndex, architecture] = await Promise.all([
       readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),

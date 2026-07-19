@@ -773,6 +773,66 @@ test.describe('Light shadcn frontend', () => {
       .toBe(primaryInstallCommand)
   })
 
+  test('copies troubleshooting commands without mislabeling maintenance as installs', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto(`${baseURL}/blog/anatomy-of-an-install`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+      ),
+    ).toBe(false)
+
+    const maintenanceCommands = [
+      ['Copy the generate types command', 'pnpm payload generate:types'],
+      ['Copy the generate import map command', 'pnpm payload generate:importmap'],
+      ['Copy the doctor command', 'npx payload-components doctor'],
+    ] as const
+
+    for (const [label, command] of maintenanceCommands) {
+      const button = page.getByRole('button', { name: label })
+      await expect(button).toBeVisible()
+      await button.focus()
+      await expect(button).toBeFocused()
+      await page.keyboard.press('Enter')
+      await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(command)
+    }
+
+    expect(
+      (await getGtagEvents(page)).filter(
+        (event) => event[0] === 'event' && event[1] === 'copy_install_command',
+      ),
+    ).toHaveLength(0)
+    expect(
+      (await getPostHogEvents(page)).filter(({ event }) => event === 'copy_install_command'),
+    ).toHaveLength(0)
+
+    const installButton = page.getByRole('button', {
+      name: 'Copy the hero-basic install command',
+    })
+    await installButton.focus()
+    await expect(installButton).toBeFocused()
+    await page.keyboard.press('Enter')
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add hero-basic')
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: 'npx payload-components add hero-basic',
+        component: 'hero-basic',
+        source_path: '/blog/anatomy-of-an-install',
+      },
+    ])
+  })
+
   test('shows an alert after copying page markdown', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(`${baseURL}/docs/installation`)
