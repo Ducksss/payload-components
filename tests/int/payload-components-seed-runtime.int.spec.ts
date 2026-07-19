@@ -498,6 +498,40 @@ describe('generated demo seed runtime', () => {
     expect(firstLogo.logo).toBe(result.media[0].id)
   })
 
+  it('fills missing upload references declared at the block root', async () => {
+    const fixture = await createRuntimeFixture({ manifestName: 'hero-video' })
+    tempDirs.push(fixture.fixtureDir)
+
+    await runScript(fixture.scriptPath, fixture.statePath)
+
+    const result = await readState(fixture.statePath)
+    const hero = (
+      result.pages[0].layout as Array<{ poster: unknown; video: unknown }>
+    )[0]
+
+    expect(hero).toMatchObject({
+      poster: result.media[0].id,
+      video: result.media[0].id,
+    })
+  })
+
+  it('fills missing upload references inside arbitrary nested arrays', async () => {
+    const fixture = await createRuntimeFixture({ manifestName: 'feature-cards-media' })
+    tempDirs.push(fixture.fixtureDir)
+
+    await runScript(fixture.scriptPath, fixture.statePath)
+
+    const result = await readState(fixture.statePath)
+    const featureItems = (
+      result.pages[0].layout as Array<{ items: Array<{ image: unknown }> }>
+    )[0].items
+
+    expect(featureItems.map((item) => item.image)).toEqual([
+      result.media[0].id,
+      result.media[0].id,
+    ])
+  })
+
   it('refuses a missing private ownership state before querying or mutating Payload', async () => {
     const fixture = await createRuntimeFixture({ manifestName: 'hero-basic' })
     tempDirs.push(fixture.fixtureDir)
