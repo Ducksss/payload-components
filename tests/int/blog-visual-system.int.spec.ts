@@ -1297,12 +1297,12 @@ describe('Field Journal real UI capture contract', () => {
       'build-payload-blog-frontend': {
         alt: 'The real blog index route beside the What Is a Payload CMS Block article route, captured from the local production site',
         caption:
-          'The same committed editorial library appears as an image-led index and a full article page; these are actual site surfaces, not a catalog of unshipped post components.',
+          'The montage shows the same committed editorial library as an image-led index and a full article page; these are actual site surfaces, not a catalog of unshipped post components.',
       },
       'build-saas-homepage': {
         alt: 'Four source-backed component contract panels for Hero Basic, Logo Cloud Grid, Feature Bento, and Pricing Cards, labeled by their homepage jobs',
         caption:
-          'This is a contract inventory for promise, proof slot, explanation, and commitment—not a fictional assembled product page or a complete eight-section template.',
+          'This contract inventory maps promise, proof slot, explanation, and commitment without presenting a fictional assembled product page or a complete eight-section template.',
       },
       'choosing-payload-hero': {
         alt: 'Hero Basic’s repository demo fixture at desktop and mobile widths, its catalog card, and the source-backed config shown in the Hero Basic documentation',
@@ -1510,6 +1510,32 @@ async function getInlineFigureCopy(slug: string, figurePath: string) {
   }
 }
 
+function getInlineFigureCopies(source: string) {
+  return [...source.matchAll(/<BlogFigure\s+([\s\S]*?)\/>/g)].map((match) => {
+    const attributes = match[1]
+    return {
+      alt: attributes.match(/\balt="([^"]+)"/)?.[1] ?? '',
+      caption: attributes.match(/\bcaption="([^"]+)"/)?.[1] ?? '',
+      src: attributes.match(/\bsrc="([^"]+)"/)?.[1] ?? '',
+    }
+  })
+}
+
+const actionOrAttentionVerb = new RegExp(
+  String.raw`\b(?:add(?:s|ed|ing)?|allow(?:s|ed|ing)?|build(?:s|ing)?|compare(?:s|d|ing)?|compose(?:s|d|ing)?|complete(?:s|d|ing)?|contain(?:s|ed|ing)?|declare(?:s|d|ing)?|delegate(?:s|d|ing)?|drive(?:s|n|ing)?|expose(?:s|d|ing)?|follow(?:s|ed|ing)?|highlight(?:s|ed|ing)?|identify(?:s|ied|ing)?|inspect(?:s|ed|ing)?|keep(?:s|ing)?|label(?:s|ed|ing)?|make(?:s|ing)?|map(?:s|ped|ping)?|move(?:s|d|ing)?|narrow(?:s|ed|ing)?|perform(?:s|ed|ing)?|preserve(?:s|d|ing)?|record(?:s|ed|ing)?|reveal(?:s|ed|ing)?|return(?:s|ed|ing)?|separate(?:s|d|ing)?|serve(?:s|d|ing)?|ship(?:s|ped|ping)?|show(?:s|ed|ing)?|skip(?:s|ped|ping)?|trace(?:s|d|ing)?|transcribe(?:s|d|ing)?|turn(?:s|ed|ing)?|use(?:s|d|ing)?|verify(?:s|ied|ing)?)\b`,
+  'i',
+)
+
+const styleOnlyDescription = new RegExp(
+  String.raw`\b(?:green\s+(?:graphic|illustration)|paper\s+texture|decorative\s+illustration|pretty\s+(?:image|graphic)|visual\s+decoration)\b`,
+  'i',
+)
+
+const invitationVerb = /\b(?:bring|build|change|contribut(?:e|ion)|fix|improve|inspect|install|keep|leave|make|map|mint|name|open|paste|pressure-test|propos(?:e|al)|read|record|regenerate|report|request|share|show|start|test|try|turn|verify|what)\b/i
+
+const normaliseTeachingCopy = (value: string) =>
+  value.toLocaleLowerCase('en-US').replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
+
 function coverPartCount(html: string, part: string) {
   return html.match(new RegExp(`data-cover-part="${part}"`, 'g'))?.length ?? 0
 }
@@ -1532,6 +1558,45 @@ async function getDiagramVisuals() {
     })),
   )
 }
+
+describe('Field Journal accessible teaching pairs', () => {
+  it('gives every cover, figure, and invitation a distinct, evidence-backed teaching role', async () => {
+    for (const entry of blogVisualCatalog) {
+      const source = await readFile(path.join(blogRoot, `${entry.slug}.mdx`), 'utf8')
+      const coverAlt = await getCoverAlt(entry.slug)
+      const figures = getInlineFigureCopies(source)
+      const finalSection = source.split(/^## /m).at(-1) ?? ''
+
+      expect(coverAlt, `${entry.slug}: cover alt`).toBeTruthy()
+      expect(figures.length, `${entry.slug}: inline figures`).toBeGreaterThan(0)
+      expect(
+        normaliseTeachingCopy(String(coverAlt)),
+        `${entry.slug}: cover and first figure teach different relationships`,
+      ).not.toBe(normaliseTeachingCopy(figures[0].alt))
+
+      for (const figure of figures) {
+        const context = `${entry.slug}: ${figure.src}`
+        expect(figure.alt, `${context}: alt`).toBeTruthy()
+        expect(figure.caption, `${context}: caption`).toMatch(actionOrAttentionVerb)
+        expect(figure.alt, `${context}: style-only alt`).not.toMatch(styleOnlyDescription)
+        expect(figure.caption, `${context}: style-only caption`).not.toMatch(styleOnlyDescription)
+        expectNoFabricatedPresentation(figure.alt, `${context}: alt`)
+        expectNoFabricatedPresentation(figure.caption, `${context}: caption`)
+      }
+
+      expectNoFabricatedPresentation(entry.prompt, `${entry.slug}: catalog prompt`)
+      if (!source.includes(entry.prompt)) {
+        expect(entry.prompt, `${entry.slug}: actionable catalog prompt`).toMatch(
+          invitationVerb,
+        )
+        expect(finalSection, `${entry.slug}: compatible final invitation`).toMatch(
+          invitationVerb,
+        )
+        expectNoFabricatedPresentation(finalSection, `${entry.slug}: final invitation`)
+      }
+    }
+  })
+})
 
 describe('Field Journal deterministic diagram assets', () => {
   it('covers the exact catalog SVG set with one accessible journal document each', async () => {
