@@ -8,6 +8,7 @@ import {
   symlink,
   writeFile,
 } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
 import os from 'node:os'
 import path from 'node:path'
 
@@ -2646,6 +2647,15 @@ describe('Field Journal diagram renderer', () => {
       expect(first.map(({ path: figurePath, svg }) => [figurePath, svg])).toEqual(
         second.map(({ path: figurePath, svg }) => [figurePath, svg]),
       )
+      for (const { path: figurePath, svg } of first) {
+        expect(
+          await readFile(
+            path.join(repoRoot, 'public', figurePath.replace(/^\//, '')),
+            'utf8',
+          ),
+          `${figurePath}: committed bytes`,
+        ).toBe(svg)
+      }
       expect(logs).toHaveLength(28)
       expect(logs.slice(0, -1)).toEqual(
         first.map(
@@ -2658,6 +2668,104 @@ describe('Field Journal diagram renderer', () => {
       )
     } finally {
       await rm(outputRoot, { force: true, recursive: true })
+    }
+  })
+})
+
+describe('Field Journal reproduction tooling', () => {
+  it('publishes the one-command renderer and exact review inputs', async () => {
+    const packageJson = JSON.parse(
+      await readFile(path.join(repoRoot, 'package.json'), 'utf8'),
+    ) as { scripts?: Record<string, string> }
+    const contactSheets = await import('../../tools/blog/render-contact-sheets')
+    const renderVisuals = await import('../../tools/blog/render-visuals')
+
+    expect(packageJson.scripts).toMatchObject({
+      'blog:visuals': 'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/render-visuals.ts',
+      'blog:visuals:captures': 'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/capture-figures.ts',
+      'blog:visuals:covers': 'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/render-covers.ts',
+      'blog:visuals:figures': 'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/generate-figures.ts',
+      'blog:visuals:review': 'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/render-contact-sheets.ts',
+    })
+
+    const inputs = contactSheets.getContactSheetInputs()
+    expect(inputs.covers).toHaveLength(32)
+    expect(inputs.figures).toHaveLength(35)
+    expect(inputs.covers.map(({ label }) => label)).toEqual(
+      blogVisualCatalog.map(
+        (entry) => `${String(entry.order).padStart(2, '0')} · ${entry.slug}`,
+      ),
+    )
+    expect(inputs.figures.map(({ path: figurePath }) => figurePath)).toEqual(
+      blogVisualCatalog.flatMap((entry) => entry.figures.map(({ path: figurePath }) => figurePath)),
+    )
+    expect(
+      renderVisuals.selectDiagramDefinitions(
+        parseCoverRenderArgs(['--series', 'foundations'], {}).entries,
+      ).map(({ path: figurePath }) => figurePath),
+    ).toEqual(
+      blogVisualCatalog
+        .filter((entry) => entry.series === 'foundations')
+        .flatMap((entry) =>
+          entry.figures
+            .filter((figure) => figure.path.endsWith('.svg'))
+            .map((figure) => figure.path),
+        ),
+    )
+  })
+
+  it('renders labeled cover and figure contact sheets from the committed asset set', async () => {
+    const { renderContactSheets } = await import('../../tools/blog/render-contact-sheets')
+    const outputDirectory = await mkdtemp(path.join(os.tmpdir(), 'field-journal-review-'))
+
+    try {
+      const results = await renderContactSheets({
+        logger: () => undefined,
+        outputDirectory,
+      })
+
+      expect(results).toEqual([
+        expect.objectContaining({ count: 32, kind: 'covers', width: 1800 }),
+        expect.objectContaining({ count: 35, kind: 'figures', width: 1800 }),
+      ])
+      for (const result of results) {
+        const metadata = await sharp(result.outputPath).metadata()
+        expect(metadata.format, result.kind).toBe('webp')
+        expect(metadata.width, result.kind).toBe(1800)
+        expect(metadata.height, result.kind).toBe(result.height)
+      }
+    } finally {
+      await rm(outputDirectory, { force: true, recursive: true })
+    }
+  })
+
+  it('keeps a representative cover pixel-stable and validates the complete asset inventory', async () => {
+    const { validateBlogVisualAssets } = await import('../../tools/blog/render-visuals')
+    const { html } = await renderCatalogCover('hello')
+    const browser = await chromium.launch({ headless: true })
+
+    try {
+      const pixelHash = async () => {
+        const page = await browser.newPage({ viewport: { height: 630, width: 1200 } })
+        try {
+          await page.setContent(html)
+          await page.evaluate(async () => await document.fonts.ready)
+          const png = await page.screenshot({ animations: 'disabled', type: 'png' })
+          const pixels = await sharp(png).ensureAlpha().raw().toBuffer()
+          return createHash('sha256').update(pixels).digest('hex')
+        } finally {
+          await page.close()
+        }
+      }
+
+      expect(await pixelHash()).toBe(await pixelHash())
+      await expect(validateBlogVisualAssets()).resolves.toEqual({
+        covers: 32,
+        figures: 35,
+        total: 67,
+      })
+    } finally {
+      await browser.close()
     }
   })
 })
