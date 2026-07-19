@@ -24,6 +24,12 @@ export type HeroBasicDemoContent = {
   title: string
 }
 
+export type HeroVideoDemoContent = HeroBasicDemoContent
+
+export type HeroProductTiltDemoContent = HeroBasicDemoContent & {
+  imageCaption?: string
+}
+
 /* The whole Feature family (grid-basic, split, bento, steps) renders from one
    demo-content shape: the shared featureFields header plus title+description
    items and optional CTA links. */
@@ -37,12 +43,68 @@ export type FeatureSectionDemoContent = {
 
 export type FeatureGridBasicDemoContent = FeatureSectionDemoContent
 
+export type FeatureDemoIconName =
+  | 'chart'
+  | 'database'
+  | 'fingerprint'
+  | 'id-card'
+  | 'shield'
+  | 'zap'
+
+export type FeatureAccordionDemoContent = Omit<FeatureSectionDemoContent, 'items'> & {
+  items: {
+    description: string
+    hasImage: boolean
+    icon?: FeatureDemoIconName
+    title: string
+  }[]
+}
+
+export type FeatureCardsMediaDemoContent = Omit<FeatureSectionDemoContent, 'items'> & {
+  items: {
+    description: string
+    icon?: FeatureDemoIconName
+    title: string
+  }[]
+}
+
+export type FeatureIconGridDemoContent = Omit<FeatureSectionDemoContent, 'items'> & {
+  items: {
+    description: string
+    icon: FeatureDemoIconName
+    title: string
+  }[]
+}
+
 export type EmbedBasicDemoContent = {
   allowFullscreen?: boolean
   aspectRatio: '16:9' | '4:3' | '1:1' | '21:9'
   caption?: string
   title: string
   url: string
+}
+
+export type StatsProofDemoContent = {
+  author: string
+  body?: string
+  description: string
+  eyebrow?: string
+  metrics: { label: string; value: string }[]
+  quote: string
+  role?: string
+  title: string
+}
+
+export type ContactRoutingFormDemoContent = {
+  channels: { description?: string; label: string; value: string }[]
+  description?: string
+  eyebrow?: string
+  formConfigured: boolean
+  formDescription?: string
+  formLabels: string[]
+  formTitle: string
+  submitLabel: string
+  title: string
 }
 
 /* The whole Logo Cloud family (grid, hover, marquee, inline, inline-wrap)
@@ -82,6 +144,39 @@ export const heroBasicDemoContent: HeroBasicDemoContent = {
   title: 'Ship customer dashboards in days, not quarters.',
 }
 
+export const heroVideoDemoContent: HeroVideoDemoContent = {
+  description:
+    'Turn live product data into dashboards, reports, and alerts your customers can act on immediately.',
+  eyebrow: 'Acme Cloud · Live',
+  links: [
+    { link: { appearance: 'default', label: 'Start free trial' } },
+    { link: { appearance: 'outline', label: 'Watch the demo' } },
+  ],
+  proofItems: [
+    { label: 'Live in one afternoon' },
+    { label: 'SOC 2 Type II' },
+    { label: 'No credit card' },
+  ],
+  title: 'See every customer signal as it happens.',
+}
+
+export const heroProductTiltDemoContent: HeroProductTiltDemoContent = {
+  description:
+    'Launch polished dashboards and reports without rebuilding analytics infrastructure for every account.',
+  eyebrow: 'Acme Analytics',
+  imageCaption: 'A single workspace for dashboards, reports, and alerts.',
+  links: [
+    { link: { appearance: 'default', label: 'Start building' } },
+    { link: { appearance: 'outline', label: 'View the product' } },
+  ],
+  proofItems: [
+    { label: 'Deploy in days' },
+    { label: 'Fully white-label' },
+    { label: 'Built for scale' },
+  ],
+  title: 'Your product data, ready for every customer.',
+}
+
 export const featureGridBasicDemoContent: FeatureGridBasicDemoContent = {
   description: 'Three surfaces cover the reporting work that used to take a sprint.',
   eyebrow: 'Platform',
@@ -101,6 +196,94 @@ export const featureGridBasicDemoContent: FeatureGridBasicDemoContent = {
   ],
   links: [{ link: { appearance: 'outline', label: 'Explore the platform' } }],
   title: 'Everything a data team ships weekly.',
+}
+
+export const featureAccordionDemoContent: FeatureAccordionDemoContent = {
+  description: 'Move from a product question to the supporting data without losing context.',
+  eyebrow: 'Platform',
+  items: [
+    {
+      description: 'Give every customer a current view of the metrics that matter to their workspace.',
+      hasImage: true,
+      icon: 'chart',
+      title: 'Live dashboards',
+    },
+    {
+      description: 'Query governed warehouse data without copying it into another analytics silo.',
+      hasImage: false,
+      icon: 'database',
+      title: 'Warehouse sync',
+    },
+    {
+      description: 'Keep every embedded surface isolated to the customer and role viewing it.',
+      hasImage: false,
+      icon: 'shield',
+      title: 'Scoped access',
+    },
+  ],
+  links: [{ link: { appearance: 'default', label: 'Explore the platform' } }],
+  title: 'Explore every signal from one workspace.',
+}
+
+export const featureCardsMediaDemoContent: FeatureCardsMediaDemoContent = {
+  description: 'Pair each core capability with the product surface that makes it tangible.',
+  eyebrow: 'Customer experience',
+  items: [
+    {
+      description:
+        "Compose every workspace from governed metrics while matching your product's visual language.",
+      icon: 'chart',
+      title: 'Dashboards customers recognize',
+    },
+    {
+      description:
+        'Route threshold changes to the right owner with the account and metric context intact.',
+      icon: 'zap',
+      title: 'Alerts teams can trust',
+    },
+  ],
+  links: [{ link: { appearance: 'outline', label: 'See every workflow' } }],
+  title: 'Give every workflow the visual context it deserves.',
+}
+
+export const featureIconGridDemoContent: FeatureIconGridDemoContent = {
+  description:
+    'One governed platform covers the data, access, and delivery layers behind every embedded surface.',
+  eyebrow: 'Infrastructure',
+  items: [
+    {
+      description: 'Query current product and warehouse data without another copy.',
+      icon: 'chart',
+      title: 'Live metrics',
+    },
+    {
+      description: 'Keep metric definitions consistent across every customer workspace.',
+      icon: 'database',
+      title: 'Governed storage',
+    },
+    {
+      description: 'Carry account and user identity into every embedded view.',
+      icon: 'fingerprint',
+      title: 'Identity context',
+    },
+    {
+      description: "Translate your application's roles into precise analytics access.",
+      icon: 'id-card',
+      title: 'Role mapping',
+    },
+    {
+      description: 'Scope every query and asset to the workspace viewing it.',
+      icon: 'shield',
+      title: 'Tenant isolation',
+    },
+    {
+      description: 'Ship updates across dashboards, reports, and alerts together.',
+      icon: 'zap',
+      title: 'Instant delivery',
+    },
+  ],
+  links: [{ link: { appearance: 'outline', label: 'Explore the infrastructure' } }],
+  title: 'Every foundation your customer experience needs.',
 }
 
 export const featureSplitDemoContent: FeatureSectionDemoContent = {
@@ -179,6 +362,47 @@ export const embedBasicDemoContent: EmbedBasicDemoContent = {
   caption: 'Acme product tour — two minutes from sign-up to first dashboard.',
   title: 'Acme product tour',
   url: 'https://www.youtube.com/embed/aqz-KE-bpKQ',
+}
+
+export const statsProofDemoContent: StatsProofDemoContent = {
+  author: 'Maya Chen',
+  body: 'Teams launch faster, customers answer questions without support tickets, and every workspace stays governed.',
+  description:
+    'Acme turns analytics delivery into a repeatable product capability instead of a queue of custom requests.',
+  eyebrow: 'Measured impact',
+  metrics: [
+    { label: 'faster analytics launches', value: '56%' },
+    { label: 'customer workspaces served', value: '+1,200' },
+    { label: 'governed monthly queries', value: '22M' },
+    { label: 'platform availability', value: '99.99%' },
+  ],
+  quote:
+    'Acme let us replace a quarter of bespoke reporting work with one product surface our customers actually prefer.',
+  role: 'VP Product, Northwind',
+  title: 'A platform customers adopt and teams can prove.',
+}
+
+export const contactRoutingFormDemoContent: ContactRoutingFormDemoContent = {
+  channels: [
+    {
+      description: 'For implementation questions and existing workspaces.',
+      label: 'Product and support',
+      value: 'hello@example.com',
+    },
+    {
+      description: 'Weekdays, 9:00–17:00 Pacific.',
+      label: 'Talk to sales',
+      value: '+1 (555) 010-1000',
+    },
+  ],
+  description: 'Choose the channel that fits or send the context the team needs to respond.',
+  eyebrow: 'Contact Acme',
+  formConfigured: true,
+  formDescription: 'Share the product, timeline, and customer experience you want to launch.',
+  formLabels: ['Name', 'Email', 'Organization', 'Phone', 'Message'],
+  formTitle: 'Tell us what you are building',
+  submitLabel: 'Send inquiry',
+  title: 'Route every question to the right team.',
 }
 
 export const logoCloudGridDemoContent: LogoCloudDemoContent = {

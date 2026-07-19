@@ -1,10 +1,11 @@
+import type { ChildProcess } from 'node:child_process'
 import { readFile, rm } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { runCommand } from '../../tools/payload-components/utils'
+import { runCommand, terminateProcessTree } from '../../tools/payload-components/utils'
 
 const spawnedPids = new Set<number>()
 
@@ -43,6 +44,8 @@ const waitForProcessExit = async (pid: number, timeoutMs: number) => {
 
 describe('CLI subprocess cleanup', () => {
   afterEach(async () => {
+    vi.restoreAllMocks()
+
     for (const pid of spawnedPids) {
       if (isProcessAlive(pid)) {
         try {
@@ -53,6 +56,22 @@ describe('CLI subprocess cleanup', () => {
       }
     }
     spawnedPids.clear()
+  })
+
+  it('treats an EPERM process-group probe as completed cleanup', async () => {
+    const child = {
+      exitCode: null,
+      once: vi.fn(),
+      pid: 123,
+      signalCode: null,
+    } as unknown as ChildProcess
+    const processKill = vi.spyOn(process, 'kill')
+
+    processKill.mockReturnValueOnce(true).mockImplementationOnce(() => {
+      throw Object.assign(new Error('operation not permitted'), { code: 'EPERM' })
+    })
+
+    await expect(terminateProcessTree(child, 0)).resolves.toBeUndefined()
   })
 
   it('times out and terminates the command process tree', async () => {

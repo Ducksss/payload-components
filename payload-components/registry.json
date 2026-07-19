@@ -44,6 +44,94 @@
       ]
     },
     {
+      "name": "hero-video",
+      "type": "registry:block",
+      "title": "Hero Video",
+      "description": "Full-bleed video hero with editor-managed media and a reduced-motion poster fallback.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add hero-video\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-video.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add hero-video` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add hero-video",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/heroFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/heroFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroVideo/Video.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroVideo/Video.tsx"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroVideo/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroVideo/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroVideo/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroVideo/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "hero-product-tilt",
+      "type": "registry:block",
+      "title": "Hero Product Tilt",
+      "description": "Centered product hero with a static perspective frame and editor-managed media.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add hero-product-tilt\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-product-tilt.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add hero-product-tilt` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add hero-product-tilt",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/heroFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/heroFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroProductTilt/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroProductTilt/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroProductTilt/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroProductTilt/Component.tsx"
+        }
+      ]
+    },
+    {
       "name": "feature-grid-basic",
       "type": "registry:block",
       "title": "Feature Grid Basic",
@@ -204,6 +292,153 @@
           "path": "payload-components/source/blocks/FeatureSteps/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureSteps/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "feature-accordion",
+      "type": "registry:block",
+      "title": "Feature Accordion",
+      "description": "Synchronized feature accordion with editor-selected icons and optional media.",
+      "registryDependencies": [
+        "accordion",
+        "badge"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add feature-accordion\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-accordion.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add feature-accordion` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add feature-accordion",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/featureFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/featureFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/featureIcons.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/featureIcons.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FeatureAccordion/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureAccordion/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FeatureAccordion/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureAccordion/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "feature-cards-media",
+      "type": "registry:block",
+      "title": "Feature Cards Media",
+      "description": "Two-column feature cards with independent media and optional icons.",
+      "registryDependencies": [
+        "badge",
+        "card"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add feature-cards-media\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-cards-media.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add feature-cards-media` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add feature-cards-media",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/featureFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/featureFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/featureIcons.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/featureIcons.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FeatureCardsMedia/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureCardsMedia/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FeatureCardsMedia/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureCardsMedia/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "feature-icon-grid",
+      "type": "registry:block",
+      "title": "Feature Icon Grid",
+      "description": "Dense feature grid with editor-selected icons and a tokenized radial decorator.",
+      "registryDependencies": [
+        "badge",
+        "card"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add feature-icon-grid\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-icon-grid.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add feature-icon-grid` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add feature-icon-grid",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/featureFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/featureFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/featureIcons.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/featureIcons.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FeatureIconGrid/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureIconGrid/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FeatureIconGrid/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureIconGrid/Component.tsx"
         }
       ]
     },
@@ -1451,6 +1686,54 @@
       ]
     },
     {
+      "name": "contact-routing-form",
+      "type": "registry:block",
+      "title": "Contact Routing Form",
+      "description": "Validated contact channels beside an accessible same-origin inquiry form.",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "input",
+        "textarea"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add contact-routing-form\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/contact-routing-form.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add contact-routing-form` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add contact-routing-form",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/safeUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/safeUrls.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/contactUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/contactUrls.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContactRoutingForm/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContactRoutingForm/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContactRoutingForm/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContactRoutingForm/Component.tsx"
+        }
+      ]
+    },
+    {
       "name": "team-roster",
       "type": "registry:block",
       "title": "Team Roster",
@@ -2105,6 +2388,41 @@
           "path": "payload-components/source/blocks/TestimonialsWall/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/TestimonialsWall/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "stats-proof",
+      "type": "registry:block",
+      "title": "Stats Proof",
+      "description": "Narrative and prominent string metrics paired with semantic customer proof.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add stats-proof\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-proof.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add stats-proof` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add stats-proof",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/StatsProof/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/StatsProof/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/StatsProof/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/StatsProof/Component.tsx"
         }
       ]
     },

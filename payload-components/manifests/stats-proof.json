@@ -1,0 +1,56 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "stats-proof",
+  "version": "0.1.0",
+  "title": "Stats Proof",
+  "description": "A proof section pairing narrative, prominent string metrics, and a semantic customer quote.",
+  "registryItemName": "stats-proof",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": ["src/blocks/StatsProof/config.ts", "src/blocks/StatsProof/Component.tsx"],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "StatsProofBlock",
+      "importPath": "@/blocks/StatsProof/Component",
+      "blockSlug": "statsProof"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "StatsProof",
+      "importPath": "../../blocks/StatsProof/config",
+      "blockName": "StatsProof"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Narrative and prominent metrics paired with customer proof."
+  },
+  "sampleContent": {
+    "blockType": "statsProof",
+    "eyebrow": "Measured impact",
+    "title": "A platform customers adopt and teams can prove.",
+    "description": "Acme turns analytics delivery into a repeatable product capability instead of a queue of custom requests.",
+    "body": "Teams launch faster, customers find answers without support tickets, and every workspace stays governed by the same metric definitions.",
+    "metrics": [
+      { "value": "56%", "label": "faster analytics launches" },
+      { "value": "+1,200", "label": "customer workspaces served" },
+      { "value": "22M", "label": "governed queries each month" },
+      { "value": "99.99%", "label": "platform availability" }
+    ],
+    "quote": "Acme let us replace a quarter of bespoke reporting work with one product surface our customers actually prefer.",
+    "author": "Maya Chen",
+    "role": "VP Product, Northwind"
+  }
+}
