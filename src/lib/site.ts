@@ -1215,6 +1215,8 @@ export const faqEntries = [
   {
     answer:
       'Three things: component source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each component manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.',
+    href: '/docs/installation',
+    linkLabel: 'Read the installation guide',
     question: 'What exactly does an install change in my repo?',
   },
   {
@@ -1230,6 +1232,8 @@ export const faqEntries = [
   {
     answer:
       'A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-components wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.',
+    href: '/docs/shadcn-vs-payload-components',
+    linkLabel: 'Read the full shadcn comparison',
     question: 'Why not just run npx shadcn add?',
   },
   {
