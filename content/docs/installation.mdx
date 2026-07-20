@@ -1,10 +1,13 @@
 ---
 title: Installation
-description: How to install a Payload Component into a supported Payload v3 project.
+seoTitle: Payload Components CLI for Payload CMS v3
+description: Install typed Payload CMS blocks with the Payload Components CLI. It wires each block, regenerates Payload types, and updates the admin import map.
 icon: Terminal
 ---
 
-Payload Components currently targets Payload v3 projects using Next.js App Router and the supported website-style block layout shape.
+Use the Payload Components CLI to add a typed block to a supported Payload CMS v3 project using Next.js App Router. One command installs the block's source files and dependencies, then registers it in the `Pages` layout and `RenderBlocks` renderer.
+
+After the block is wired, the CLI runs `generate:types` and `generate:importmap`. This refreshes your Payload types and admin import map before the install is recorded in `.payload-components/state.json`.
 
 ## Requirements
 
