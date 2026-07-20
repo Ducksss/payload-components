@@ -94,6 +94,28 @@ describe('fresh Payload smoke component selection', () => {
       ]),
     ).toThrow(/cannot be used together/)
   })
+
+  it('passes the selected database URL to direct target commands', () => {
+    expect(
+      smokeHarness.smokeEnvForTarget({
+        databaseUrl: 'file:./payload-components-smoke-target.db',
+        serverUrl: 'http://127.0.0.1:3100',
+      }),
+    ).toMatchObject({
+      DATABASE_URL: 'file:./payload-components-smoke-target.db',
+      NEXT_PUBLIC_SERVER_URL: 'http://127.0.0.1:3100',
+    })
+  })
+
+  it('treats a blank database URL as absent and trims a configured URL', () => {
+    expect(smokeHarness.normalizeSmokeDatabaseConnectionString('')).toBeUndefined()
+    expect(smokeHarness.normalizeSmokeDatabaseConnectionString('   ')).toBeUndefined()
+    expect(
+      smokeHarness.normalizeSmokeDatabaseConnectionString(
+        '  postgres://localhost/payload_components  ',
+      ),
+    ).toBe('postgres://localhost/payload_components')
+  })
 })
 
 describe('fresh Payload smoke seed generation', () => {

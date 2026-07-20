@@ -158,6 +158,40 @@ Run the CLI from the root of a supported Payload v3 + Next.js project:
 npx payload-components add hero-basic
 ```
 
+To also write a prefilled demo script after the install succeeds, opt in with
+`--demo`, then run the generated TypeScript through your project's Payload CLI:
+
+```sh
+npx payload-components add hero-basic --demo
+pnpm exec payload run payload-components/seed-hero-basic.ts
+```
+
+For a component that is already installed, the standalone command writes the
+same script:
+
+```sh
+npx payload-components seed hero-basic
+pnpm exec payload run payload-components/seed-hero-basic.ts
+```
+
+`seed` requires a healthy installed-state record, compatible dependencies, every
+manifest and registry-dependency file, and all Payload wiring fragments. It
+writes the reviewable script plus a private ownership record under
+`.payload-components/demo-state/`. The generated script requires Pages drafts
+before querying or changing content, then creates a component-specific **draft**
+Page at `/payload-components-demo-hero-basic`; it never publishes the demo. A
+rerun updates only the exact Page ID recorded locally after verifying its
+tokenized block marker. Placeholder media is reused only by its recorded ID and
+is never deduplicated or deleted automatically. Before each create, the script
+atomically journals a unique operation token; after an interruption it can
+adopt only the single Page or Media carrying that exact private token and record
+its returned ID before continuing. Any collision or missing,
+mismatched, or unreadable ownership record stops before unsafe mutation. The CLI
+atomically replaces only its version-marked generated script and refuses unowned
+files or pre-existing symlinks. The operator-run script deliberately uses
+`overrideAccess: true`, with `overrideLock: false` for updates, so review it in
+git and run it only against the intended database.
+
 Good first installs:
 
 | Component            | Use it for                         |
@@ -228,6 +262,15 @@ The installer runs five idempotent stages:
 
 Install state is written to `.payload-components/state.json` inside the
 consumer project, so partial installs are visible and retries can converge.
+
+Demo scripts are separate and opt-in. `add <component> --demo` writes one only
+after those install stages and installed-state recording succeed;
+`seed <component>` rejects recorded partial installs and verifies the installed
+state, dependencies, manifest and registry-dependency files, and Payload
+fragments again. Its separate private demo-state file records the IDs the
+operator-run script may update.
+Neither command opens a database. The CLI prints the package-manager-specific
+`payload run` command that performs the database work in your project.
 
 ### Recovering an interrupted install
 
