@@ -26,6 +26,8 @@ import { getRunScriptCommand, printHeader, runCommand } from '../utils'
 
 import type { InstallError, InstallStage } from '../types'
 
+import { seedCommand } from './seed'
+
 const postInstallEnv = {
   ...process.env,
   CRON_SECRET: process.env.CRON_SECRET ?? 'payload-components-poc-cron-secret',
@@ -88,7 +90,7 @@ const formatPartialRetryNotice = ({
   return `payload-components: retrying partial install for "${componentName}".${lastFailure}`
 }
 
-export const addCommand = async ({
+const installComponent = async ({
   cwd,
   componentName,
 }: {
@@ -302,4 +304,20 @@ export const addCommand = async ({
       `  Walkthrough: https://www.payload-components.xyz/docs/first-block`,
     ].join('\n'),
   )
+}
+
+export const addCommand = async ({
+  cwd,
+  componentName,
+  demo = false,
+}: {
+  cwd: string
+  componentName: string
+  demo?: boolean
+}) => {
+  await installComponent({ cwd, componentName })
+
+  if (demo) {
+    await seedCommand({ cwd, componentName })
+  }
 }

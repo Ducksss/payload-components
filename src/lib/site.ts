@@ -1,5 +1,12 @@
 import packageJson from '../../package.json' with { type: 'json' }
+import contactRoutingFormManifest from '../../payload-components/manifests/contact-routing-form.json' with { type: 'json' }
+import featureAccordionManifest from '../../payload-components/manifests/feature-accordion.json' with { type: 'json' }
+import featureCardsMediaManifest from '../../payload-components/manifests/feature-cards-media.json' with { type: 'json' }
+import featureIconGridManifest from '../../payload-components/manifests/feature-icon-grid.json' with { type: 'json' }
 import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
+import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
+import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
+import statsProofManifest from '../../payload-components/manifests/stats-proof.json' with { type: 'json' }
 
 const productionSiteUrl = 'https://www.payload-components.xyz'
 const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionSiteUrl).replace(/\/+$/, '')
@@ -49,13 +56,12 @@ export const heroHeadlineAccent = 'wired, not pasted.'
 export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
 
 export const heroSubheadline =
-  'One command installs the block, wires it into Payload, and lands a reviewable git diff.'
+  'For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.'
 
-export const heroPrimaryCta = { href: '/docs', label: 'Get started' } as const
+export const heroGuideLink = { href: '/docs/installation', label: 'Read the install guide' } as const
 
 export const heroTertiaryLinks = [
   { href: '/components', label: 'Browse the components' },
-  { href: '#wiring', label: 'See what add actually wires' },
 ] as const
 
 /**
@@ -230,9 +236,11 @@ export const componentCategories = {
   comparator: { family: 'pages', label: 'Comparator' },
   pricing: { family: 'pages', label: 'Pricing' },
   cta: { family: 'pages', label: 'Call to action' },
+  contact: { family: 'pages', label: 'Contact' },
   integration: { family: 'pages', label: 'Integration' },
   logos: { family: 'pages', label: 'Logo cloud' },
   testimonials: { family: 'pages', label: 'Testimonials' },
+  stats: { family: 'pages', label: 'Stats' },
   faq: { family: 'pages', label: 'FAQ' },
   content: { family: 'pages', label: 'Content' },
   team: { family: 'pages', label: 'Team' },
@@ -261,6 +269,40 @@ export const componentEntries = [
     target: 'Hero section',
     title: 'Hero Basic',
     version: heroBasicManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-video',
+    description:
+      'A full-bleed video hero with editor-managed media, CTA links, proof labels, and a reduced-motion poster fallback.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'links', 'video', 'poster', 'proofItems'],
+    href: '/docs/components/hero-video',
+    slug: 'hero-video',
+    target: 'Video hero',
+    title: 'Hero Video',
+    version: heroVideoManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-product-tilt',
+    description:
+      'A centered product hero with a static perspective frame, CTA links, proof labels, and editor-managed media.',
+    family: 'pages',
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'links',
+      'productImage',
+      'imageCaption',
+      'proofItems',
+    ],
+    href: '/docs/components/hero-product-tilt',
+    slug: 'hero-product-tilt',
+    target: 'Product hero',
+    title: 'Hero Product Tilt',
+    version: heroProductTiltManifest.version,
   },
   {
     category: 'features',
@@ -313,6 +355,45 @@ export const componentEntries = [
     target: 'Feature section',
     title: 'Feature Grid Basic',
     version: '0.1.0',
+  },
+  {
+    category: 'features',
+    command: 'npx payload-components add feature-accordion',
+    description:
+      'A synchronized feature accordion with editor-selected icons, optional media, and CTA links.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/feature-accordion',
+    slug: 'feature-accordion',
+    target: 'Feature accordion',
+    title: 'Feature Accordion',
+    version: featureAccordionManifest.version,
+  },
+  {
+    category: 'features',
+    command: 'npx payload-components add feature-cards-media',
+    description:
+      'A two-column feature layout with independent media, optional icons, and CTA links.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/feature-cards-media',
+    slug: 'feature-cards-media',
+    target: 'Media feature cards',
+    title: 'Feature Cards Media',
+    version: featureCardsMediaManifest.version,
+  },
+  {
+    category: 'features',
+    command: 'npx payload-components add feature-icon-grid',
+    description:
+      'A dense feature grid with editor-selected icons and a tokenized radial grid decorator.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/feature-icon-grid',
+    slug: 'feature-icon-grid',
+    target: 'Icon feature grid',
+    title: 'Feature Icon Grid',
+    version: featureIconGridManifest.version,
   },
   {
     category: 'comparator',
@@ -456,6 +537,29 @@ export const componentEntries = [
     target: 'Email capture',
     title: 'Call To Action Signup',
     version: '0.1.0',
+  },
+  {
+    category: 'contact',
+    command: 'npx payload-components add contact-routing-form',
+    description:
+      'A contact section with validated channels and a fixed accessible form that posts to a same-origin endpoint.',
+    family: 'pages',
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'channels',
+      'formTitle',
+      'formDescription',
+      'formLabels',
+      'submitLabel',
+      'action',
+    ],
+    href: '/docs/components/contact-routing-form',
+    slug: 'contact-routing-form',
+    target: 'Contact section',
+    title: 'Contact Routing Form',
+    version: contactRoutingFormManifest.version,
   },
   {
     category: 'integration',
@@ -703,6 +807,19 @@ export const componentEntries = [
     target: 'Testimonials section',
     title: 'Testimonials Quote',
     version: '0.1.0',
+  },
+  {
+    category: 'stats',
+    command: 'npx payload-components add stats-proof',
+    description:
+      'A proof section pairing narrative, prominent string metrics, and a semantic customer quote.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'body', 'metrics', 'quote', 'author', 'role', 'logo'],
+    href: '/docs/components/stats-proof',
+    slug: 'stats-proof',
+    target: 'Stats section',
+    title: 'Stats Proof',
+    version: statsProofManifest.version,
   },
   {
     category: 'faq',
@@ -1216,6 +1333,8 @@ export const faqEntries = [
   {
     answer:
       'Three things: component source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each component manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.',
+    href: '/docs/installation',
+    linkLabel: 'Read the installation guide',
     question: 'What exactly does an install change in my repo?',
   },
   {
@@ -1231,6 +1350,8 @@ export const faqEntries = [
   {
     answer:
       'A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-components wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.',
+    href: '/docs/shadcn-vs-payload-components',
+    linkLabel: 'Read the full shadcn comparison',
     question: 'Why not just run npx shadcn add?',
   },
   {
@@ -1257,9 +1378,13 @@ export const communityInvite = {
 /* Catalog page                                                        */
 /* ------------------------------------------------------------------ */
 
-export const catalogTitle = 'Component catalog'
+export const catalogTitle = 'Typed Payload CMS blocks and components'
 export const catalogDescription =
-  'Installable Payload CMS blocks and components, each with docs, registry metadata, and CLI wiring that registers, renders, types, and import-maps it for you. Read the contract before you add it.'
+  'Browse typed blocks for Payload CMS: heroes, features, pricing, calls to action, integrations, testimonials, FAQs, content, teams, and embeds. One CLI command copies each component and wires its collection registration, renderer mapping, generated types, and admin import map.'
+export const catalogMetadataTitle = 'Typed Payload CMS Components & Blocks Catalog'
+export const catalogMetadataDescription =
+  'Browse typed Payload CMS blocks for heroes, features, pricing, integrations, FAQs, content, teams, and embeds, with one-command project wiring.'
+export const catalogInstallationLinkLabel = 'See how one-command installation works'
 
 /* ------------------------------------------------------------------ */
 /* Shared navigation surfaces                                          */

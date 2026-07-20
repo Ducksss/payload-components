@@ -303,7 +303,7 @@ export const createInstallFixture = async (
 }
 
 export const createInstallFixtureForComponents = async (
-  componentNames: string[],
+  componentNames: readonly string[],
   options: InstallFixtureOptions = {},
 ) => {
   const fixtureDir = await copyProjectFixture()

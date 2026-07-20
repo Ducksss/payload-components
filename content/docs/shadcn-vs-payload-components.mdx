@@ -4,9 +4,13 @@ description: Both install registry items; they differ in where they stop. shadcn
 icon: GitCompare
 ---
 
-`payload-components` is built on the shadcn registry. The two commands are not rivals — `payload-components add` wraps the same registry delivery, then performs the Payload wiring `shadcn add` leaves to you.
+import { CommandCopyButton } from '@/components/site/CommandCopyButton'
+
+`payload-components` is built on the shadcn registry. The two commands are not rivals. `payload-components add` wraps the same registry delivery, then performs the Payload wiring `shadcn add` leaves to you.
 
 The difference is where each one stops.
+
+This comparison uses the current [`hero-basic` registry item](/docs/components/hero-basic) as the verified example. A shadcn registry item can declare any files; this item's manifest declares the block source, while the Payload-specific patches and generators belong to the wrapper CLI.
 
 ## The five artifacts
 
@@ -20,11 +24,17 @@ A Payload layout block is live only when five artifacts exist. `shadcn add` prod
 | Generated types | — | regenerated | `src/payload-types.ts` |
 | Admin import map | — | regenerated | `admin importMap.js` |
 
-`shadcn add` lands 1 of 5 — the other four are your TODO list. `payload-components add` lands 5 of 5, as one git diff you review like any PR.
+For this verified install, `shadcn add` lands 1 of 5. The other four are manual follow-up work. `payload-components add` lands 5 of 5 as one git diff you review like any PR.
 
 ## What `shadcn add` does
 
 `shadcn add` copies a registry item's files into your project and resolves its dependencies. For a self-contained React or shadcn UI component, that is the whole job: the component renders as soon as you import it.
+
+For the same `hero-basic` registry item, the raw source-delivery command is:
+
+```bash
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-basic.json
+```
 
 ## What `payload-components add` adds
 
@@ -37,12 +47,48 @@ A Payload layout block is not self-contained. It does not render until Payload k
 
 `payload-components add` performs those four edits for you, verifies your project against the support matrix first, and records install state in `.payload-components/state.json` so a second run converges instead of duplicating wiring.
 
+## The illustrative diff
+
+The wrapper's two source patches are narrow and reviewable. For `hero-basic`, the relevant part of the resulting diff looks like this:
+
+```diff
+diff --git a/src/collections/Pages/index.ts b/src/collections/Pages/index.ts
+@@
++ import { HeroBasic } from '../../blocks/HeroBasic/config'
+  blocks: [
++   HeroBasic,
+  ]
+
+diff --git a/src/blocks/RenderBlocks.tsx b/src/blocks/RenderBlocks.tsx
+@@
++ import { HeroBasicBlock } from '@/blocks/HeroBasic/Component'
+  const blockComponents = {
++   heroBasic: HeroBasicBlock,
+  }
+```
+
+Payload's own generators then refresh `src/payload-types.ts` and the admin import map. The exact surrounding lines depend on the consumer project, so the snippet shows the inserted wiring rather than a byte-for-byte fixture diff.
+
 ## When to use which
 
 - Use **`shadcn add`** for a plain React or shadcn UI component that renders on import.
 - Use **`payload-components add`** when the component is a Payload layout block that has to be registered, rendered, typed, and import-mapped before it works.
 
-Both deliver plain source you own and can edit — no vendored framework, no lock-in.
+Both deliver plain source you own and can edit. There is no vendored framework or lock-in.
+
+## Install the verified example
+
+Use the wrapper command when you want the `hero-basic` source plus all four Payload wiring steps:
+
+```bash
+npx payload-components add hero-basic
+```
+
+<CommandCopyButton
+  command="npx payload-components add hero-basic"
+  emphasis="primary"
+  label="Copy install command"
+/>
 
 ## Next
 

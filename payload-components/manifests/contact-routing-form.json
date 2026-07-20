@@ -1,0 +1,76 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "contact-routing-form",
+  "version": "0.1.0",
+  "title": "Contact Routing Form",
+  "description": "A contact section with validated channels and a fixed accessible form that posts to a same-origin endpoint.",
+  "registryItemName": "contact-routing-form",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/safeUrls.ts",
+    "src/blocks/shared/contactUrls.ts",
+    "src/blocks/ContactRoutingForm/config.ts",
+    "src/blocks/ContactRoutingForm/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContactRoutingFormBlock",
+      "importPath": "@/blocks/ContactRoutingForm/Component",
+      "blockSlug": "contactRoutingForm"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContactRoutingForm",
+      "importPath": "../../blocks/ContactRoutingForm/config",
+      "blockName": "ContactRoutingForm"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Validated contact channels beside an accessible same-origin inquiry form."
+  },
+  "sampleContent": {
+    "blockType": "contactRoutingForm",
+    "eyebrow": "Contact Acme",
+    "title": "Route every question to the right team.",
+    "description": "Choose the channel that fits or send the team the context they need to respond.",
+    "channels": [
+      {
+        "label": "Product and support",
+        "type": "email",
+        "value": "hello@example.com",
+        "description": "For implementation questions and existing workspaces."
+      },
+      {
+        "label": "Talk to sales",
+        "type": "phone",
+        "value": "+1 (555) 010-1000",
+        "description": "Weekdays, 9:00–17:00 Pacific."
+      }
+    ],
+    "formTitle": "Tell us what you are building",
+    "formDescription": "Share the product, timeline, and customer experience you want to launch.",
+    "formLabels": {
+      "name": "Name",
+      "email": "Email",
+      "organization": "Organization",
+      "phone": "Phone",
+      "message": "Message"
+    },
+    "submitLabel": "Send inquiry",
+    "action": "/api/contact"
+  }
+}

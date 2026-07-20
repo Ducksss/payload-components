@@ -3,8 +3,7 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
-import { Github } from 'lucide-react'
-
+import { GitHubMark } from '@/components/site/GitHubMark'
 import { Wordmark } from '@/components/site/Wordmark'
 import { githubRepoUrl } from '@/lib/site'
 import { cn } from '@/utilities/ui'
@@ -68,15 +67,9 @@ export function SiteHeader({
             aria-label="GitHub repository"
             className="flex size-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:ml-1"
           >
-            <Github className="size-4" aria-hidden="true" />
+            <GitHubMark className="size-4" aria-hidden="true" />
           </a>
 
-          <Link
-            href="/docs"
-            className="ml-1 hidden h-8 items-center rounded-full bg-primary px-3.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:inline-flex"
-          >
-            Get started
-          </Link>
         </nav>
         <div className="relative sm:hidden" data-mobile-menu>
           <button ref={triggerRef} type="button" aria-expanded={open} aria-controls="mobile-navigation" aria-label={open ? 'Close navigation' : 'Open navigation'} onClick={() => setOpen((value) => !value)} className="inline-flex size-9 items-center justify-center rounded-md border border-border text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">☰</button>
@@ -98,7 +91,6 @@ export function SiteHeader({
                 {item.label}
               </Link>
             ))}
-            <Link href="/docs" onClick={() => setOpen(false)} className="rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground">Get started</Link>
           </div>
         </div>
       </div>
