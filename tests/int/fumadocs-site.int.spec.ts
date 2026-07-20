@@ -169,6 +169,9 @@ describe('Fumadocs site shell', () => {
     expect(guide).toContain('typescript.outputFile')
     expect(guide).toContain('blocks: [HeroBasic]')
     expect(guide).toContain('command="pnpm payload generate:types"')
+    expect(guide).toContain(
+      '"generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types"',
+    )
     expect(guide).toMatch(
       /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
     )

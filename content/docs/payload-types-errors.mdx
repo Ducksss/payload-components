@@ -66,7 +66,7 @@ If the command cannot locate the config, point the package script at it explicit
 ```json title="package.json"
 {
   "scripts": {
-    "generate:types": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types"
+    "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types"
   }
 }
 ```
