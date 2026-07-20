@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: DocsPageProps): Promise<Metad
       : undefined
   const title = component
     ? `${page.data.title} — Payload CMS ${component.family === 'pages' ? 'block' : 'component'}`
-    : page.data.title
+    : (page.data.seoTitle ?? page.data.title)
 
   return {
     alternates: { canonical: page.url },
