@@ -27,10 +27,15 @@ Flags:
 
 Current components:
   hero-basic
+  hero-video
+  hero-product-tilt
   feature-grid-basic
   feature-split
   feature-bento
   feature-steps
+  feature-accordion
+  feature-cards-media
+  feature-icon-grid
   embed-basic
   content-columns
   content-image-lead
@@ -62,6 +67,7 @@ Current components:
   call-to-action-centered
   call-to-action-boxed
   call-to-action-signup
+  contact-routing-form
   team-roster
   team-grid
   faq-accordion
@@ -76,6 +82,7 @@ Current components:
   testimonials-rating
   testimonials-bento
   testimonials-wall
+  stats-proof
   pricing-cards
   pricing-cards-muted
   pricing-cards-cta

@@ -136,6 +136,20 @@ describe('fresh Payload smoke seed generation', () => {
     expect(script).toContain("console.log('Seeded /payload-components-smoke')\nprocess.exit(0)")
   })
 
+  it('loads the generated project environment before importing Payload config', async () => {
+    const manifest = await loadManifest('hero-basic')
+    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-seed-'))
+    tempDirs.push(tempDir)
+
+    const scriptPath = await writeSeedScript(tempDir, [manifest])
+    const script = await readFile(scriptPath, 'utf8')
+
+    expect(script).toContain("import 'dotenv/config'")
+    expect(script.indexOf("import 'dotenv/config'")).toBeLessThan(
+      script.indexOf("await import('../src/payload.config')"),
+    )
+  })
+
   it('adds placeholder media seeding when sample content has required upload slots', async () => {
     const manifest = await loadManifest('logo-cloud-grid')
     const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-seed-'))
@@ -148,6 +162,18 @@ describe('fresh Payload smoke seed generation', () => {
     expect(script).toContain('const needsSmokeMedia = true')
     expect(script).toContain("collection: 'media'")
     expect(script).toContain("logos: 'logo'")
+  })
+
+  it('declares placeholder slots for every curated block with required uploads', async () => {
+    const manifests = await Promise.all(
+      ['hero-video', 'hero-product-tilt', 'feature-cards-media'].map((name) =>
+        loadManifest(name),
+      ),
+    )
+
+    expect(manifests.map((manifest) => sampleContentNeedsSmokeMedia(manifest.sampleContent))).toEqual(
+      [true, true, true],
+    )
   })
 
   it('does not create placeholder media for sample content without upload slots', async () => {
@@ -219,6 +245,26 @@ describe('fresh Payload smoke seed generation', () => {
         { avatar: 'smoke-media', name: 'Empty' },
         { avatar: 'existing-media', name: 'Existing' },
       ],
+    })
+  })
+
+  it('hydrates named upload fields at the block root and inside arbitrary arrays', () => {
+    const { addSmokeUploadReferences } = smokeHarness as typeof smokeHarness & {
+      addSmokeUploadReferences?: (value: unknown, mediaID: unknown) => unknown
+    }
+    const sample = {
+      items: [{ image: null, title: 'Media card' }],
+      poster: '',
+      productImage: undefined,
+      video: 'existing-video',
+    }
+
+    expect(sampleContentNeedsSmokeMedia(sample)).toBe(true)
+    expect(addSmokeUploadReferences?.(sample, 'smoke-media')).toEqual({
+      items: [{ image: 'smoke-media', title: 'Media card' }],
+      poster: 'smoke-media',
+      productImage: 'smoke-media',
+      video: 'existing-video',
     })
   })
 })

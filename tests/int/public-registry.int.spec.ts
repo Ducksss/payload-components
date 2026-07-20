@@ -53,7 +53,14 @@ const expectPortableRelativePath = (filePath: string) => {
   expect(filePath).not.toMatch(/(^|\/)\.\.(\/|$)/)
 }
 
-const publicShadcnDependencies = new Set(['accordion', 'badge', 'button', 'card'])
+const publicShadcnDependencies = new Set([
+  'accordion',
+  'badge',
+  'button',
+  'card',
+  'input',
+  'textarea',
+])
 
 const registryDependenciesFromImports = async (item: RegistryItem) => {
   const dependencies = new Set<string>()

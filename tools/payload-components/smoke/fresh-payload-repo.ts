@@ -562,6 +562,8 @@ const uploadFieldByArrayName: Record<string, string> = {
   members: 'avatar',
 }
 
+const uploadFieldNames = new Set(['avatar', 'image', 'logo', 'poster', 'productImage', 'video'])
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
@@ -583,8 +585,10 @@ const valueNeedsSmokeMedia = (value: unknown, arrayName?: string): boolean => {
     return false
   }
 
-  return Object.entries(value).some(([key, nestedValue]) =>
-    valueNeedsSmokeMedia(nestedValue, key),
+  return Object.entries(value).some(
+    ([key, nestedValue]) =>
+      (uploadFieldNames.has(key) && isMissingUploadReference(value, key)) ||
+      valueNeedsSmokeMedia(nestedValue, key),
   )
 }
 
@@ -618,7 +622,9 @@ export const addSmokeUploadReferences = (
   return Object.fromEntries(
     Object.entries(value).map(([key, nestedValue]) => [
       key,
-      addSmokeUploadReferences(nestedValue, mediaID, key),
+      uploadFieldNames.has(key) && isMissingUploadReference(value, key)
+        ? mediaID
+        : addSmokeUploadReferences(nestedValue, mediaID, key),
     ]),
   )
 }
@@ -642,6 +648,7 @@ export const writeSeedScript = async (targetPath: string, manifests: ComponentMa
     `import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
+import 'dotenv/config'
 import { getPayload } from 'payload'
 
 const { default: config } = await import('../src/payload.config')
@@ -657,6 +664,8 @@ const uploadFieldByArrayName: Record<string, string> = {
   logos: 'logo',
   members: 'avatar',
 }
+
+const uploadFieldNames = new Set(${JSON.stringify([...uploadFieldNames])})
 
 const isSmokeSampleItem = (value: unknown): value is SmokeSampleItem =>
   typeof value === 'object' && value !== null && !Array.isArray(value)

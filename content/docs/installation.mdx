@@ -1,10 +1,13 @@
 ---
 title: Installation
-description: How to install a Payload Component into a supported Payload v3 project.
+seoTitle: Payload Components CLI for Payload CMS v3
+description: Install typed Payload CMS blocks with the Payload Components CLI. It wires each block, regenerates Payload types, and updates the admin import map.
 icon: Terminal
 ---
 
-Payload Components currently targets Payload v3 projects using Next.js App Router and the supported website-style block layout shape.
+Use the Payload Components CLI to add a typed block to a supported Payload CMS v3 project using Next.js App Router. One command installs the block's source files and dependencies, then registers it in the `Pages` layout and `RenderBlocks` renderer.
+
+After the block is wired, the CLI runs `generate:types` and `generate:importmap`. This refreshes your Payload types and admin import map before the install is recorded in `.payload-components/state.json`.
 
 ## Requirements
 
@@ -176,6 +179,18 @@ npx payload-components doctor
 and recorded component installs in `.payload-components/state.json`. It exits
 non-zero when files, Payload fragments, dependency declarations, or install state
 need attention.
+
+<Callout type="info">
+  Already have a block file that is not appearing in the editor or on the page?
+  Use the [four-step Payload block troubleshooting checklist](/blog/anatomy-of-an-install)
+  to match the symptom to the missing registration, render map, type, or import-map step.
+</Callout>
+
+<Callout type="info">
+  TypeScript cannot resolve `@/payload-types`, or a new block interface is missing?
+  Use the [Payload 3 generated-types repair guide](/docs/payload-types-errors)
+  to check the output path, registration order, and generation command.
+</Callout>
 
 ## Idempotency
 

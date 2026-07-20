@@ -16,6 +16,7 @@ import {
 } from '../../src/lib/site'
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
+const isProductionE2E = process.env.PLAYWRIGHT_SERVER_MODE === 'production'
 const googleTagId = 'G-EMGRZ0H9R9'
 const copiedAlertText = 'Copied to clipboard.'
 
@@ -225,6 +226,29 @@ test.describe('Light shadcn frontend', () => {
     expect(meanChannel).toBeGreaterThan(220)
   })
 
+  test('links setup FAQ answers to their canonical guides', async ({ page }) => {
+    await page.goto(baseURL)
+
+    await page
+      .getByRole('group')
+      .filter({ hasText: 'What exactly does an install change in my repo?' })
+      .getByText('What exactly does an install change in my repo?')
+      .click()
+    await expect(page.getByRole('link', { name: 'Read the installation guide' })).toHaveAttribute(
+      'href',
+      '/docs/installation',
+    )
+
+    await page
+      .getByRole('group')
+      .filter({ hasText: 'Why not just run npx shadcn add?' })
+      .getByText('Why not just run npx shadcn add?')
+      .click()
+    await expect(
+      page.getByRole('link', { name: 'Read the full shadcn comparison' }),
+    ).toHaveAttribute('href', '/docs/shadcn-vs-payload-components')
+  })
+
   test('aligns the brand mark relative to the documentation rail', async ({ page }) => {
     const viewports = [
       { alignTo: 'header-padding', height: 844, name: 'mobile', width: 390 },
@@ -293,8 +317,16 @@ test.describe('Light shadcn frontend', () => {
     // second route (/components/preview/<slug>). Walking every route while also
     // compiling every preview overwhelms the dev server mid-walk (ERR_CONNECTION_RESET).
     // This smoke check only asserts each page's title/h1/overflow, so block the preview
-    // subframe: full route coverage stays and the on-demand compile load roughly halves.
+    // subframe. Production mode checks every prebuilt page; development mode checks one
+    // representative per category so Next's on-demand compiler does not restart mid-run.
     await page.route('**/components/preview/**', (route) => route.abort())
+
+    const checkedComponents = isProductionE2E
+      ? componentEntries
+      : componentEntries.filter(
+          (component, index, entries) =>
+            entries.findIndex((entry) => entry.category === component.category) === index,
+        )
 
     const routes = [
       {
@@ -327,7 +359,7 @@ test.describe('Light shadcn frontend', () => {
         path: '/brand-guide',
         title: /Brand Guide/,
       },
-      ...componentEntries.map((component) => ({
+      ...checkedComponents.map((component) => ({
         h1: component.title,
         path: component.href,
         title: new RegExp(component.title),
@@ -626,6 +658,45 @@ test.describe('Light shadcn frontend', () => {
     )
   })
 
+  test('attributes the canonical comparison guide install action to the guide', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs/shadcn-vs-payload-components`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    const copyButton = page.getByRole('button', { name: 'Copy install command', exact: true })
+    await expect(copyButton).toBeVisible()
+    await copyButton.click()
+
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(primaryInstallCommand)
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: primaryInstallCommand,
+        component: 'hero-basic',
+        source_path: '/docs/shadcn-vs-payload-components',
+      },
+    ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: primaryInstallCommand,
+            component: 'hero-basic',
+            source_path: '/docs/shadcn-vs-payload-components',
+          },
+        },
+      ]),
+    )
+  })
+
   test('copies a catalog family-card command', async ({ page, context }) => {
     // feature-bento is the Features family's representative card in the landing
     // teaser; its command differs from the hero's primaryInstallCommand.
@@ -700,6 +771,118 @@ test.describe('Light shadcn frontend', () => {
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(primaryInstallCommand)
+  })
+
+  test('copies troubleshooting commands without mislabeling maintenance as installs', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto(`${baseURL}/blog/anatomy-of-an-install`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+      ),
+    ).toBe(false)
+
+    const maintenanceCommands = [
+      ['Copy the generate types command', 'pnpm payload generate:types'],
+      ['Copy the generate import map command', 'pnpm payload generate:importmap'],
+      ['Copy the doctor command', 'npx payload-components doctor'],
+    ] as const
+
+    for (const [label, command] of maintenanceCommands) {
+      const button = page.getByRole('button', { name: label })
+      await expect(button).toBeVisible()
+      await button.focus()
+      await expect(button).toBeFocused()
+      await page.keyboard.press('Enter')
+      await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(command)
+    }
+
+    expect(
+      (await getGtagEvents(page)).filter(
+        (event) => event[0] === 'event' && event[1] === 'copy_install_command',
+      ),
+    ).toHaveLength(0)
+    expect(
+      (await getPostHogEvents(page)).filter(({ event }) => event === 'copy_install_command'),
+    ).toHaveLength(0)
+
+    const installButton = page.getByRole('button', {
+      name: 'Copy the hero-basic install command',
+    })
+    await installButton.focus()
+    await expect(installButton).toBeFocused()
+    await page.keyboard.press('Enter')
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add hero-basic')
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: 'npx payload-components add hero-basic',
+        component: 'hero-basic',
+        source_path: '/blog/anatomy-of-an-install',
+      },
+    ])
+  })
+
+  test('copies the types repair and install commands with distinct attribution', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs/payload-types-errors`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    const repairButton = page.getByRole('button', {
+      name: 'Copy the generate types command',
+    })
+    await repairButton.click()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('pnpm payload generate:types')
+
+    expect(
+      (await getPostHogEvents(page)).filter(({ event }) => event === 'copy_install_command'),
+    ).toHaveLength(0)
+
+    const installButton = page.getByRole('button', {
+      name: 'Copy the hero-basic install command',
+    })
+    await installButton.click()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add hero-basic')
+
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: 'npx payload-components add hero-basic',
+        component: 'hero-basic',
+        source_path: '/docs/payload-types-errors',
+      },
+    ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: 'npx payload-components add hero-basic',
+            component: 'hero-basic',
+            source_path: '/docs/payload-types-errors',
+          },
+        },
+      ]),
+    )
   })
 
   test('shows an alert after copying page markdown', async ({ page, context }) => {

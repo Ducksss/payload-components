@@ -6,6 +6,7 @@ import { CallToActionSignupDemo } from './CallToActionSignupDemo'
 import { ComparatorGridDemo } from './ComparatorGridDemo'
 import { ComparatorStackDemo } from './ComparatorStackDemo'
 import { ComparatorTableDemo } from './ComparatorTableDemo'
+import { ContactRoutingFormDemo } from './ContactRoutingFormDemo'
 import { ContentColumnsDemo } from './ContentColumnsDemo'
 import { ContentCommunityDemo } from './ContentCommunityDemo'
 import { ContentFeatureMediaDemo } from './ContentFeatureMediaDemo'
@@ -27,11 +28,16 @@ import { FaqGridDemo } from './FaqGridDemo'
 import { FaqGroupedDemo } from './FaqGroupedDemo'
 import { FaqIconsDemo } from './FaqIconsDemo'
 import { FaqSplitDemo } from './FaqSplitDemo'
+import { FeatureAccordionDemo } from './FeatureAccordionDemo'
 import { FeatureBentoDemo } from './FeatureBentoDemo'
+import { FeatureCardsMediaDemo } from './FeatureCardsMediaDemo'
 import { FeatureGridBasicDemo } from './FeatureGridBasicDemo'
+import { FeatureIconGridDemo } from './FeatureIconGridDemo'
 import { FeatureSplitDemo } from './FeatureSplitDemo'
 import { FeatureStepsDemo } from './FeatureStepsDemo'
 import { HeroBasicDemo } from './HeroBasicDemo'
+import { HeroProductTiltDemo } from './HeroProductTiltDemo'
+import { HeroVideoDemo } from './HeroVideoDemo'
 import { IntegrationClusterDemo } from './IntegrationClusterDemo'
 import { IntegrationConnectDemo } from './IntegrationConnectDemo'
 import { IntegrationGridDemo } from './IntegrationGridDemo'
@@ -50,6 +56,7 @@ import { PricingCardsCtaDemo } from './PricingCardsCtaDemo'
 import { PricingCardsMutedDemo } from './PricingCardsMutedDemo'
 import { PricingEnterpriseDemo } from './PricingEnterpriseDemo'
 import { PricingSplitDemo } from './PricingSplitDemo'
+import { StatsProofDemo } from './StatsProofDemo'
 import { TeamGridDemo } from './TeamGridDemo'
 import { TeamRosterDemo } from './TeamRosterDemo'
 import { TestimonialsBentoDemo } from './TestimonialsBentoDemo'
@@ -71,6 +78,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'comparator-grid': ComparatorGridDemo,
   'comparator-stack': ComparatorStackDemo,
   'comparator-table': ComparatorTableDemo,
+  'contact-routing-form': ContactRoutingFormDemo,
   'content-columns': ContentColumnsDemo,
   'content-community': ContentCommunityDemo,
   'content-feature-media': ContentFeatureMediaDemo,
@@ -92,11 +100,16 @@ export const demosBySlug: Record<string, ComponentType> = {
   'faq-grouped': FaqGroupedDemo,
   'faq-icons': FaqIconsDemo,
   'faq-split': FaqSplitDemo,
+  'feature-accordion': FeatureAccordionDemo,
   'feature-bento': FeatureBentoDemo,
+  'feature-cards-media': FeatureCardsMediaDemo,
   'feature-grid-basic': FeatureGridBasicDemo,
+  'feature-icon-grid': FeatureIconGridDemo,
   'feature-split': FeatureSplitDemo,
   'feature-steps': FeatureStepsDemo,
   'hero-basic': HeroBasicDemo,
+  'hero-product-tilt': HeroProductTiltDemo,
+  'hero-video': HeroVideoDemo,
   'integration-cluster': IntegrationClusterDemo,
   'integration-connect': IntegrationConnectDemo,
   'integration-grid': IntegrationGridDemo,
@@ -115,6 +128,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'pricing-cards-muted': PricingCardsMutedDemo,
   'pricing-enterprise': PricingEnterpriseDemo,
   'pricing-split': PricingSplitDemo,
+  'stats-proof': StatsProofDemo,
   'team-roster': TeamRosterDemo,
   'team-grid': TeamGridDemo,
   'testimonials-quote': TestimonialsQuoteDemo,

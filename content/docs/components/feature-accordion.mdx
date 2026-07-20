@@ -1,0 +1,74 @@
+---
+title: Feature Accordion
+description: A synchronized feature accordion with editor-selected icons, optional media, and CTA links.
+icon: ListCollapse
+---
+
+<ComponentPreview slug="feature-accordion" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add feature-accordion
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-accordion.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="feature-accordion" />
+
+## Content model
+
+The first three fields come from the shared `featureFields` base. `items` and `links` define this
+interactive variant; icon choices come from the shared Feature icon map.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    items: {
+      type: 'array',
+      required: true,
+      description: 'Two to six accordion rows synchronized with the media panel.',
+    },
+    links: { type: 'array', description: 'Up to two optional CTA links.' },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'Accordion row heading.' },
+    description: { type: 'textarea', required: true, description: 'Expanded supporting copy.' },
+    icon: { type: 'select', description: 'Optional icon used when the item has no image.' },
+    image: { type: 'upload', description: 'Optional media shown while the row is active.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="feature-accordion" />
+
+## Requirements
+
+<ComponentRequirements slug="feature-accordion" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.
+
+## In this family
+
+<ComponentFamily slug="feature-accordion" />

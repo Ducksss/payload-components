@@ -20,7 +20,7 @@ regressions.
 | License | MIT |
 | Verified against commit | `8eadeb3389ccccc4bfc4a10bca959c1b39e47b71` |
 | Commit date | 2026-05-14 |
-| Last audited | 2026-07-05 |
+| Last audited | 2026-07-15 |
 | Registry item URL | `https://raw.githubusercontent.com/tailark/blocks/<sha>/apps/www/public/r/<item>.json` (full source in `files[].content`) |
 
 At the audited commit, **nothing we derived from had been removed or renamed**
@@ -34,6 +34,13 @@ approximate (layout intent, not line-for-line).
 
 | Our component | Upstream item(s) | Note |
 | --- | --- | --- |
+| `hero-video` | `hero-section-5` | full-bleed video hero; adds a reduced-motion-safe poster fallback |
+| `hero-product-tilt` | `hero-section-9` | product screenshot hero with a static large-screen perspective treatment |
+| `feature-accordion` | `features-12` | keyboard-native accordion synchronized with editor-managed media |
+| `feature-cards-media` | `features-10` | paired feature stories with independent media panels |
+| `feature-icon-grid` | `features-1` | decorated icon grid retokenized onto semantic design-system colours |
+| `stats-proof` | `stats-4` | proof section combining semantic stats and a customer quote |
+| `contact-routing-form` | `contact-2` | contact-channel rail plus a safe same-origin POST form |
 | `testimonials-grid` | `testimonials-1` / `testimonials-2` | 3-column quote-card grid |
 | `testimonials-wall` | `testimonials-5` / `testimonials-6` | masonry wall-of-love (CSS `columns`, not upstream JS `chunkArray`) |
 | `testimonials-spotlight` | `testimonials-4` | single centered quote |
@@ -60,16 +67,23 @@ a generic pattern — **do not** credit these to tailark:
 | `faq-accordion` | `mist-faqs-1` | generic centered accordion; no distinctive shared mechanic |
 | `call-to-action-centered` | `call-to-action-1` | generic centered CTA (heading + two buttons) |
 
-Everything else in the catalog (`hero-basic`, all `feature-*`, `comparator-stack`,
-`team-grid`, all `integration-*`, all `logo-cloud-*`, all `content-*`, `embed-basic`)
-was verified as **ORIGINAL** — no upstream basis, no attribution required. `embed-basic`
-has no upstream namesake at all.
+Everything else in the catalog (`hero-basic`, `feature-bento`, `feature-grid-basic`,
+`feature-split`, `feature-steps`, `comparator-stack`, `team-grid`, all
+`integration-*`, all `logo-cloud-*`, all `content-*`, and `embed-basic`) was
+verified as **ORIGINAL** — no upstream basis, no attribution required.
+`embed-basic` has no upstream namesake at all.
 
 ## Intentional divergences (house style — not drift to "fix")
 
 - **Media uploads instead of shadcn `<Avatar>` / hardcoded logo SVGs** — avatars
   and logos are editor-managed content, not code.
 - **Fixed Tailwind breakpoints instead of `@container` queries.**
+- **Reduced-motion-safe video** — `hero-video` waits for the client preference
+  before enabling autoplay and otherwise keeps its poster visible.
+- **Static product perspective** — `hero-product-tilt` is flat on small screens
+  and uses CSS-only perspective at the large breakpoint.
+- **Conservative contact routing** — `contact-routing-form` validates channel
+  values and only submits to a same-origin path instead of owning a backend.
 - **CSS `columns` / grid instead of upstream JS `chunkArray`** for masonry walls.
 - **Semantic design tokens only** (light monochrome + emerald); no raw palette or
   arbitrary colour/radius values (enforced by `tests/int/visual-standards.int.spec.ts`).
