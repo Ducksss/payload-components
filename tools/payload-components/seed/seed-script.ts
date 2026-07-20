@@ -146,6 +146,7 @@ export const buildSeedScript = ({
   const firstBlockType = getBlockType(firstManifest)
   const rawLayout = manifests.map((manifest) => manifest.sampleContent)
   const rawLayoutBlockNames = manifests.map((manifest) => manifest.name)
+  const rawLayoutBlockTypes = manifests.map((manifest) => getBlockType(manifest))
   const needsDemoMedia = manifests.some((manifest) =>
     sampleContentNeedsDemoMedia(manifest.sampleContent),
   )
@@ -168,6 +169,7 @@ import type { Page } from ${quoteTsString(payloadTypesImportPath)}
 const { default: config } = await import(${quoteTsString(configImportPath)})
 
 type DemoDocument = Record<string, unknown> & { id: number | string }
+type DemoPageLayout = NonNullable<Page['layout']>
 type DemoSampleValue = Record<string, unknown>
 type DemoOwnershipState = {
   component: string
@@ -189,8 +191,9 @@ const demoBlockType = ${quoteTsString(firstBlockType)}
 const expectedComponent = ${quoteTsString(firstManifest.name)}
 const expectedManifestVersion = ${quoteTsString(firstManifest.version)}
 const ownershipStatePath = new URL(${quoteTsString(ownershipStateImportPath)}, import.meta.url)
-const rawLayout = ${JSON.stringify(rawLayout, null, 2)} satisfies NonNullable<Page['layout']>
+const rawLayout = ${JSON.stringify(rawLayout, null, 2)} satisfies DemoSampleValue[]
 const rawLayoutBlockNames = ${JSON.stringify(rawLayoutBlockNames)} as const
+const rawLayoutBlockTypes = ${JSON.stringify(rawLayoutBlockTypes)} as const
 const needsDemoMedia = ${JSON.stringify(needsDemoMedia)}
 const mutationContext = { disableRevalidate: true }
 const uploadFieldByArrayName: Record<string, string> = {
@@ -297,6 +300,28 @@ const saveOwnershipState = async (state: DemoOwnershipState) => {
 const isMissingUploadReference = (item: DemoSampleValue, fieldName: string) =>
   typeof item[fieldName] === 'undefined' || item[fieldName] === null || item[fieldName] === ''
 
+const valueNeedsDemoMedia = (value: unknown, parentKey?: string): boolean => {
+  if (Array.isArray(value)) {
+    const uploadField = parentKey ? uploadFieldByArrayName[parentKey] : undefined
+
+    return value.some(
+      (item) =>
+        (uploadField && isRecord(item) && isMissingUploadReference(item, uploadField)) ||
+        valueNeedsDemoMedia(item),
+    )
+  }
+
+  if (!isRecord(value)) {
+    return false
+  }
+
+  return Object.entries(value).some(
+    ([key, nestedValue]) =>
+      (uploadFieldNames.has(key) && isMissingUploadReference(value, key)) ||
+      valueNeedsDemoMedia(nestedValue, key),
+  )
+}
+
 const addDemoUploadReferences = <Value>(
   value: Value,
   mediaID: number | string,
@@ -333,6 +358,25 @@ const addDemoUploadReferences = <Value>(
         : addDemoUploadReferences(nestedValue, mediaID, key),
     ]),
   ) as Value
+}
+
+const assertDemoPageLayout = (value: unknown): asserts value is DemoPageLayout => {
+  if (!Array.isArray(value) || value.length !== rawLayoutBlockTypes.length) {
+    throw new Error('Generated demo layout does not match the installed manifest set.')
+  }
+
+  value.forEach((block, index) => {
+    if (
+      !isRecord(block) ||
+      block.blockType !== rawLayoutBlockTypes[index] ||
+      typeof block.id !== 'string' ||
+      valueNeedsDemoMedia(block)
+    ) {
+      throw new Error(
+        'Generated demo block "' + rawLayoutBlockNames[index] + '" is incomplete; no Page was changed.',
+      )
+    }
+  })
 }
 
 const isOwnedDemoPage = (page: DemoDocument) => {
@@ -539,13 +583,14 @@ const layoutWithMarkers = rawLayout.map((block, index) => ({
   ...block,
   id: index === 0 ? demoMarker : demoMarker + ':' + rawLayoutBlockNames[index],
 }))
-const layout = preparedMedia
+const layoutCandidate: unknown = preparedMedia
   ? layoutWithMarkers.map((block) => addDemoUploadReferences(block, preparedMedia.id))
   : layoutWithMarkers
+assertDemoPageLayout(layoutCandidate)
 const pageData = {
   title: demoTitle,
   slug: demoSlug,
-  layout,
+  layout: layoutCandidate,
   _status: 'draft' as const,
 }
 
