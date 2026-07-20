@@ -1,0 +1,84 @@
+---
+title: Fix Payload 3 payload-types errors
+description: Fix missing, stale, or unresolved Payload 3 generated types before they break a block install.
+icon: FileCode
+---
+
+If TypeScript cannot resolve `@/payload-types`, or a newly added block type is missing from that file, check the generated-types path, block registration, and generation command in that order.
+
+<Callout type="info">
+  This guide is only for generated TypeScript errors. If the block appears in the editor but not on the page, use the [four-step block troubleshooting checklist](/blog/anatomy-of-an-install).
+</Callout>
+
+## Match the error to the cause
+
+| What you see | What to check |
+| --- | --- |
+| `Cannot find module '@/payload-types'` | The generated file is missing, or your `@/*` alias does not point to `src/*`. |
+| `Module '@/payload-types' has no exported member ...` | The file exists, but it was generated before the block was registered. |
+| Payload cannot find `payload.config.ts` | Your `generate:types` script needs an explicit config path. |
+
+## 1. Keep the generated file where the imports expect it
+
+Payload writes `payload-types.ts` next to `payload.config.ts` by default. In the supported Payload Components project shape, that means both files live under `src/`, and installed blocks import their generated data types from `@/payload-types`.
+
+Check that these two paths agree:
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+If you set `typescript.outputFile` in `src/payload.config.ts`, either restore the supported `src/payload-types.ts` path or update the alias and imports together. Do not hand-edit the generated file; the next type generation will replace it.
+
+## 2. Register the block before generating types
+
+Payload generates interfaces from the active config. A block that is not present in the `Pages` layout cannot appear in the generated `Page` layout union.
+
+For a manual block, make sure its config is in the layout's `blocks` array first:
+
+```ts title="src/collections/Pages/index.ts"
+{
+  name: 'layout',
+  type: 'blocks',
+  blocks: [HeroBasic],
+}
+```
+
+`payload-components add` applies this registration for supported blocks before it regenerates types.
+
+## 3. Regenerate and verify
+
+Run the project script from the repository root:
+
+<RunnableCommand command="pnpm payload generate:types" label="Copy the generate types command" />
+
+Then open `src/payload-types.ts` and check for the interface named by the installed block. For `hero-basic`, the generated file should contain `HeroBasicBlock`, and the block component should import that type from `@/payload-types`.
+
+If the command cannot locate the config, point the package script at it explicitly:
+
+```json title="package.json"
+{
+  "scripts": {
+    "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types"
+  }
+}
+```
+
+## Install without repairing the wiring by hand
+
+The wrapper installer registers the block, regenerates `src/payload-types.ts`, refreshes the admin import map, and records the install as one flow:
+
+<RunnableCommand
+  command="npx payload-components add hero-basic"
+  label="Copy the hero-basic install command"
+  trackInstall
+/>
+
+Use the [installation guide](/docs/installation) to confirm the supported Payload v3 and Next.js project shape before running it.
