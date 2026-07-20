@@ -360,7 +360,7 @@ const addDemoUploadReferences = <Value>(
   ) as Value
 }
 
-const assertDemoPageLayout = (value: unknown): asserts value is DemoPageLayout => {
+const assertDemoPageLayout: (value: unknown) => asserts value is DemoPageLayout = (value) => {
   if (!Array.isArray(value) || value.length !== rawLayoutBlockTypes.length) {
     throw new Error('Generated demo layout does not match the installed manifest set.')
   }
