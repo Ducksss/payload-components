@@ -856,6 +856,58 @@ test.describe('Light shadcn frontend', () => {
     ])
   })
 
+  test('copies the types repair and install commands with distinct attribution', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs/payload-types-errors`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    const repairButton = page.getByRole('button', {
+      name: 'Copy the generate types command',
+    })
+    await repairButton.click()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('pnpm payload generate:types')
+
+    expect(
+      (await getPostHogEvents(page)).filter(({ event }) => event === 'copy_install_command'),
+    ).toHaveLength(0)
+
+    const installButton = page.getByRole('button', {
+      name: 'Copy the hero-basic install command',
+    })
+    await installButton.click()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add hero-basic')
+
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: 'npx payload-components add hero-basic',
+        component: 'hero-basic',
+        source_path: '/docs/payload-types-errors',
+      },
+    ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: 'npx payload-components add hero-basic',
+            component: 'hero-basic',
+            source_path: '/docs/payload-types-errors',
+          },
+        },
+      ]),
+    )
+  })
+
   test('shows an alert after copying page markdown', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(`${baseURL}/docs/installation`)

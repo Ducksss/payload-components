@@ -158,6 +158,33 @@ describe('Fumadocs site shell', () => {
     )
   })
 
+  it('keeps the Payload 3 types guide distinct, discoverable, and actionable', async () => {
+    const [guide, docsMeta, installationGuide, sitemap] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'payload-types-errors.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+    ])
+
+    expect(guide).toContain('Fix Payload 3 payload-types errors')
+    expect(guide).toContain("Cannot find module '@/payload-types'")
+    expect(guide).toContain('typescript.outputFile')
+    expect(guide).toContain('blocks: [HeroBasic]')
+    expect(guide).toContain('command="pnpm payload generate:types"')
+    expect(guide).toContain(
+      '"generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types"',
+    )
+    expect(guide).toMatch(
+      /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
+    )
+    expect(guide).toContain('[installation guide](/docs/installation)')
+    expect(docsMeta).toContain('"payload-types-errors"')
+    expect(installationGuide).toContain(
+      '[Payload 3 generated-types repair guide](/docs/payload-types-errors)',
+    )
+    expect(sitemap).toContain('source.getPages()')
+  })
+
   it('keeps the GitHub mark independent from removed Lucide brand icons', async () => {
     const githubLinkSources = await Promise.all(
       [
