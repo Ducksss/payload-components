@@ -1,0 +1,81 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "feature-accordion",
+  "version": "0.1.0",
+  "title": "Feature Accordion",
+  "description": "A synchronized feature accordion with editor-selected icons, optional media, and CTA links.",
+  "registryItemName": "feature-accordion",
+  "dependencies": {
+    "lucide-react": "^0.563.0"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/featureFields.ts",
+    "src/blocks/shared/featureIcons.ts",
+    "src/blocks/FeatureAccordion/config.ts",
+    "src/blocks/FeatureAccordion/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FeatureAccordionBlock",
+      "importPath": "@/blocks/FeatureAccordion/Component",
+      "blockSlug": "featureAccordion"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FeatureAccordion",
+      "importPath": "../../blocks/FeatureAccordion/config",
+      "blockName": "FeatureAccordion"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Feature accordion synchronized with an image or icon panel."
+  },
+  "sampleContent": {
+    "blockType": "featureAccordion",
+    "eyebrow": "Platform",
+    "title": "Explore every signal from one workspace.",
+    "description": "Move from a product question to the supporting data without losing context.",
+    "items": [
+      {
+        "title": "Live dashboards",
+        "description": "Give every customer a current view of the metrics that matter to their workspace.",
+        "icon": "chart"
+      },
+      {
+        "title": "Warehouse sync",
+        "description": "Query governed warehouse data without copying it into another analytics silo.",
+        "icon": "database"
+      },
+      {
+        "title": "Scoped access",
+        "description": "Keep every embedded surface isolated to the customer and role viewing it.",
+        "icon": "shield"
+      }
+    ],
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/platform",
+          "label": "Explore the platform",
+          "appearance": "default"
+        }
+      }
+    ]
+  }
+}

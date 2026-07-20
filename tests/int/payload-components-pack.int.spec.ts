@@ -1,4 +1,4 @@
-import { mkdtemp, readdir, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
@@ -84,13 +84,21 @@ const listFilesRecursive = async (dir: string): Promise<string[]> => {
     const installedPackageDir = path.join(toolDir, 'node_modules', 'payload-components')
     const cliEntry = path.join(installedPackageDir, 'dist', 'cli.js')
     const filesBefore = await listFilesRecursive(installedPackageDir)
+    const installedPackageJson = JSON.parse(
+      await readFile(path.join(installedPackageDir, 'package.json'), 'utf8'),
+    ) as { dependencies?: Record<string, string> }
+    const bundledCli = await readFile(cliEntry, 'utf8')
+
+    expect(Object.keys(installedPackageJson.dependencies ?? {}).sort()).toEqual(['ajv', 'semver'])
+    expect(bundledCli).not.toContain('@playwright/test')
+    expect(bundledCli).not.toContain('playwright')
 
     const { fixtureDir, manifest } = await createInstallFixture('hero-basic')
     tempDirs.push(fixtureDir)
 
     // Run the *installed* bin under plain Node (no tsx) against the fixture.
     await runCommand({
-      args: [cliEntry, 'add', manifest.name, '--cwd', fixtureDir],
+      args: [cliEntry, 'add', manifest.name, '--cwd', fixtureDir, '--demo'],
       captureOutput: true,
       command: process.execPath,
       cwd: toolDir,
@@ -99,6 +107,28 @@ const listFilesRecursive = async (dir: string): Promise<string[]> => {
     })
 
     await expectInstalledComponents(fixtureDir, [manifest])
+    const demoScript = await readFile(
+      path.join(fixtureDir, 'payload-components', `seed-${manifest.name}.ts`),
+      'utf8',
+    )
+    const demoState = JSON.parse(
+      await readFile(
+        path.join(
+          fixtureDir,
+          '.payload-components',
+          'demo-state',
+          `${manifest.name}.json`,
+        ),
+        'utf8',
+      ),
+    ) as { component: string; pageId: unknown; token: string }
+
+    expect(demoScript).toContain("_status: 'draft'")
+    expect(demoScript).toContain(`const ownershipToken = '${demoState.token}'`)
+    expect(demoState).toMatchObject({
+      component: manifest.name,
+      pageId: null,
+    })
 
     // The install must not write into the package dir (it may be read-only under
     // a global npx cache); all writes go to an OS tmpdir and the target project.

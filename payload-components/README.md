@@ -19,7 +19,35 @@ The POC passes only if all of the following are true:
 
 If any of those fail because of brittle repo patching or unreliable generation, we should stop and reconsider the product shape before building private registries, auth, or a larger component catalog.
 
-Workspace reality: `payload-components add` installs components, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` delegates to `shadcn init` to create the `components.json` baseline for targets missing it. `payload-components add` expects that baseline and does not run init automatically as a side effect.
+Workspace reality: `payload-components add` installs components, `payload-components seed` writes an opt-in demo script for a fully installed component, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` delegates to `shadcn init` to create the `components.json` baseline for targets missing it. `payload-components add` expects that baseline and does not run init automatically as a side effect.
+
+## Demo seed contract
+
+`payload-components seed <component>` requires a current installed-state record
+and verifies compatible dependencies, all manifest-owned and
+registry-dependency files, and both Payload wiring fragments. It then writes
+`payload-components/seed-<component>.ts`. `add <component> --demo` performs the
+same generation only after the normal install has recorded success. Generation
+does not open a database or add a runtime dependency.
+
+The CLI derives the Payload config import from the detected target. It writes
+through an atomic rename, marks generated scripts with a versioned header, and
+refuses unowned files, pre-existing symlinks, non-files, and paths outside the
+consumer repo.
+It also creates a private high-entropy ownership record under
+`.payload-components/demo-state/`, separate from the database-visible demo
+fields.
+The operator explicitly runs the script with the project's Payload CLI.
+
+The generated script requires Pages drafts and never publishes implicitly. It
+creates a Page only when the slug is free, records the returned Page and Media
+IDs, and reruns only against those exact IDs after checking a private tokenized
+marker. Each create gets a write-ahead operation token in the private record, so
+an interrupted run can reconcile only the single database document carrying
+that exact token before persisting its ID. Updates use `overrideLock: false`.
+Upload placeholders use a unique OS temporary directory; a failed Media ID save
+or Page write remains safe to retry. Generated scripts never delete Media, and
+all Local API failures propagate.
 
 ## Public Registry Contract
 

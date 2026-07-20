@@ -1,4 +1,6 @@
-import { ChevronDown } from 'lucide-react'
+import Link from 'next/link'
+
+import { ArrowUpRight, ChevronDown } from 'lucide-react'
 
 import { faqEntries } from '@/lib/site'
 
@@ -16,7 +18,19 @@ export function Faq() {
             />
           </summary>
           <p className="max-w-3xl px-6 pb-5 text-sm leading-7 text-muted-foreground">
-            {entry.answer}
+            <span className="block">{entry.answer}</span>
+            {'href' in entry ? (
+              <Link
+                href={entry.href}
+                className="group mt-2 inline-flex items-center gap-1 font-medium text-foreground transition-colors hover:text-brand"
+              >
+                {entry.linkLabel}
+                <ArrowUpRight
+                  aria-hidden="true"
+                  className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                />
+              </Link>
+            ) : null}
           </p>
         </details>
       ))}

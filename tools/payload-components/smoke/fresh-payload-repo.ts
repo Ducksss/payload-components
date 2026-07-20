@@ -562,6 +562,8 @@ const uploadFieldByArrayName: Record<string, string> = {
   members: 'avatar',
 }
 
+const uploadFieldNames = new Set(['avatar', 'image', 'logo', 'poster', 'productImage', 'video'])
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
@@ -583,8 +585,10 @@ const valueNeedsSmokeMedia = (value: unknown, arrayName?: string): boolean => {
     return false
   }
 
-  return Object.entries(value).some(([key, nestedValue]) =>
-    valueNeedsSmokeMedia(nestedValue, key),
+  return Object.entries(value).some(
+    ([key, nestedValue]) =>
+      (uploadFieldNames.has(key) && isMissingUploadReference(value, key)) ||
+      valueNeedsSmokeMedia(nestedValue, key),
   )
 }
 
@@ -618,7 +622,9 @@ export const addSmokeUploadReferences = (
   return Object.fromEntries(
     Object.entries(value).map(([key, nestedValue]) => [
       key,
-      addSmokeUploadReferences(nestedValue, mediaID, key),
+      uploadFieldNames.has(key) && isMissingUploadReference(value, key)
+        ? mediaID
+        : addSmokeUploadReferences(nestedValue, mediaID, key),
     ]),
   )
 }
@@ -642,6 +648,7 @@ export const writeSeedScript = async (targetPath: string, manifests: ComponentMa
     `import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
+import 'dotenv/config'
 import { getPayload } from 'payload'
 
 const { default: config } = await import('../src/payload.config')
@@ -657,6 +664,8 @@ const uploadFieldByArrayName: Record<string, string> = {
   logos: 'logo',
   members: 'avatar',
 }
+
+const uploadFieldNames = new Set(${JSON.stringify([...uploadFieldNames])})
 
 const isSmokeSampleItem = (value: unknown): value is SmokeSampleItem =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -826,10 +835,12 @@ const runFreshPayloadRepoSmoke = async ({
   const payloadVersion = await getLocalPayloadVersion()
   const projectName = 'payload-components-smoke-target'
   const targetPath = path.join(tempRoot, projectName)
+  const normalizedDbConnectionString = normalizeSmokeDatabaseConnectionString(dbConnectionString)
+  const databaseUrl = normalizedDbConnectionString ?? `file:./${projectName}.db`
 
   await runCommand({
     args: getCreatePayloadAppArgs({
-      dbConnectionString,
+      dbConnectionString: normalizedDbConnectionString,
       payloadVersion,
       projectName,
     }),
@@ -857,6 +868,20 @@ const runFreshPayloadRepoSmoke = async ({
     })
   }
 
+  const demoManifest = manifests[0]
+
+  if (!demoManifest) {
+    throw new Error('Fresh Payload smoke requires at least one installed component.')
+  }
+
+  await runCommand({
+    args: ['exec', 'payload-components', 'seed', demoManifest.name],
+    command: 'pnpm',
+    cwd: targetPath,
+    stage: `payload-components seed ${demoManifest.name} in fresh project`,
+    timeoutMs,
+  })
+
   await runCommand({
     args: ['generate:types'],
     command: 'pnpm',
@@ -879,12 +904,27 @@ const runFreshPayloadRepoSmoke = async ({
     timeoutMs,
   })
 
+  await runCommand({
+    args: ['exec', 'payload', 'run', `payload-components/seed-${demoManifest.name}.ts`],
+    command: 'pnpm',
+    cwd: targetPath,
+    env: smokeEnvForTarget({
+      databaseUrl,
+      serverUrl: 'http://127.0.0.1:3000',
+    }),
+    stage: `run generated demo seed for ${demoManifest.name}`,
+    timeoutMs,
+  })
+
   await writeSeedScript(targetPath, manifests)
   await runCommand({
     args: ['exec', 'tsx', '.payload-components/smoke-seed.ts'],
     command: 'pnpm',
     cwd: targetPath,
-    env: smokeEnvForTarget('http://127.0.0.1:3000'),
+    env: smokeEnvForTarget({
+      databaseUrl,
+      serverUrl: 'http://127.0.0.1:3000',
+    }),
     stage: 'seed fresh project sample content',
     timeoutMs,
   })
@@ -903,7 +943,10 @@ const runFreshPayloadRepoSmoke = async ({
     args: getFreshServerArgs(port),
     command: 'pnpm',
     cwd: targetPath,
-    env: smokeEnvForTarget(`http://127.0.0.1:${port}`),
+    env: smokeEnvForTarget({
+      databaseUrl,
+      serverUrl: `http://127.0.0.1:${port}`,
+    }),
     stage: 'start fresh project production server',
   })
 
@@ -924,8 +967,18 @@ const runFreshPayloadRepoSmoke = async ({
   }
 }
 
-const smokeEnvForTarget = (serverUrl: string): Partial<NodeJS.ProcessEnv> => ({
+export const normalizeSmokeDatabaseConnectionString = (value?: string) =>
+  value?.trim() || undefined
+
+export const smokeEnvForTarget = ({
+  databaseUrl,
+  serverUrl,
+}: {
+  databaseUrl: string
+  serverUrl: string
+}): Partial<NodeJS.ProcessEnv> => ({
   CRON_SECRET: process.env.CRON_SECRET ?? 'payload-components-smoke-cron-secret',
+  DATABASE_URL: databaseUrl,
   NEXT_PUBLIC_SERVER_URL: serverUrl,
   PAYLOAD_SECRET: process.env.PAYLOAD_SECRET ?? 'payload-components-smoke-secret',
   PREVIEW_SECRET: process.env.PREVIEW_SECRET ?? 'payload-components-smoke-preview-secret',

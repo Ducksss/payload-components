@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 import { Suspense } from 'react'
 
@@ -9,6 +10,9 @@ import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import {
   catalogDescription,
+  catalogInstallationLinkLabel,
+  catalogMetadataDescription,
+  catalogMetadataTitle,
   catalogTitle,
   componentCategories,
   componentEntries,
@@ -20,18 +24,18 @@ import { breadcrumbNode, catalogCollectionPageNode, graph } from '@/lib/structur
 
 export const metadata: Metadata = {
   alternates: { canonical: '/components' },
-  title: 'Payload CMS Block Catalog',
-  description: catalogDescription,
+  title: catalogMetadataTitle,
+  description: catalogMetadataDescription,
   openGraph: {
-    description: catalogDescription,
-    title: catalogTitle,
+    description: catalogMetadataDescription,
+    title: catalogMetadataTitle,
     type: 'website',
     url: '/components',
   },
   twitter: {
     card: 'summary_large_image',
-    description: catalogDescription,
-    title: catalogTitle,
+    description: catalogMetadataDescription,
+    title: catalogMetadataTitle,
   },
 }
 
@@ -64,6 +68,12 @@ export default function ComponentsPage() {
               <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
                 {catalogDescription}
               </p>
+              <Link
+                href="/docs/installation"
+                className="mt-3 inline-flex rounded-sm text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
+              >
+                {catalogInstallationLinkLabel}
+              </Link>
             </div>
             <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground sm:pb-1">
               MIT licensed

@@ -25,7 +25,9 @@ export function CommandCopyController() {
 
     const reset = (button: HTMLButtonElement) => {
       delete button.dataset.copied
-      button.querySelector('[data-copy-label]')?.replaceChildren('Copy')
+      button
+        .querySelector('[data-copy-label]')
+        ?.replaceChildren(button.dataset.copyDefaultLabel ?? 'Copy')
     }
 
     const clipboard = navigator.clipboard
@@ -68,7 +70,9 @@ export function CommandCopyController() {
 
       button.dataset.copied = 'true'
       button.querySelector('[data-copy-label]')?.replaceChildren('Copied')
-      trackInstallCommandCopy(command)
+      if (button.dataset.trackInstall === 'true') {
+        trackInstallCommandCopy(command)
+      }
 
       window.clearTimeout(copiedTimers.get(button))
       copiedTimers.set(button, window.setTimeout(() => reset(button), 1100))
@@ -85,10 +89,12 @@ export function CommandCopyController() {
 
     document.addEventListener('click', onClick)
     document.addEventListener('click', onLinkClick)
+    document.documentElement.dataset.copyControllerReady = 'true'
 
     return () => {
       document.removeEventListener('click', onClick)
       document.removeEventListener('click', onLinkClick)
+      delete document.documentElement.dataset.copyControllerReady
       if (clipboard && patchedWriteText && clipboard.writeText === patchedWriteText) {
         clipboard.writeText = originalWriteText
       }
