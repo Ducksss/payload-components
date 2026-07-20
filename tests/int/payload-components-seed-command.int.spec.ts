@@ -223,6 +223,8 @@ describe('payload-components seed command', () => {
 
     expect(stdout).toContain(`pnpm exec payload run payload-components/seed-${manifest.name}.ts`)
     expect(script).toContain("await import('../src/payload.config')")
+    expect(script).toContain("import type { Page } from '../src/payload-types'")
+    expect(script).toContain("satisfies NonNullable<Page['layout']>")
     expect(script).toContain(`const demoSlug = 'payload-components-demo-${manifest.name}'`)
     expect(script).toContain(`const demoMarkerPrefix = 'payload-components:demo:${manifest.name}'`)
     expect(script).toContain(`const demoTitle = 'Payload Components demo — ${manifest.title}'`)
@@ -241,7 +243,7 @@ describe('payload-components seed command', () => {
     expect(script).toContain('ownershipState.mediaId')
     expect(script).toContain('Refusing to change')
     expect(script).toContain('await payload.update({')
-    expect(script).toContain('id: ownershipState.pageId')
+    expect(script).toContain('id: existingPageID')
     expect(script).toContain('overrideLock: false')
     expect(script).not.toContain('await payload.delete({')
     expect(script).not.toContain('.catch(() => undefined)')
@@ -321,7 +323,6 @@ describe('payload-components seed command', () => {
         'demo-state',
         `${manifest.name}.json`,
       ),
-      pageStatus: 'draft' as const,
       scriptRelPath: path.join('payload-components', `seed-${manifest.name}.ts`),
       slug: `payload-components-demo-${manifest.name}`,
       title: `Payload Components demo — ${manifest.title}`,
@@ -360,7 +361,6 @@ describe('payload-components seed command', () => {
         'demo-state',
         `${manifest.name}.json`,
       ),
-      pageStatus: 'draft' as const,
       scriptRelPath: path.join('payload-components', `seed-${manifest.name}.ts`),
       slug: `payload-components-demo-${manifest.name}`,
       title: `Payload Components demo — ${manifest.title}`,
@@ -416,7 +416,6 @@ describe('payload-components seed command', () => {
         'demo-state',
         `${manifest.name}.json`,
       ),
-      pageStatus: 'draft' as const,
       scriptRelPath: path.join('payload-components', `seed-${manifest.name}.ts`),
       slug: `payload-components-demo-${manifest.name}`,
       title: `Payload Components demo — ${manifest.title}`,

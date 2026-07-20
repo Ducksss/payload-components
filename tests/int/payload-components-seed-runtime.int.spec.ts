@@ -56,7 +56,6 @@ const runtimeTarget: SeedTarget = {
     'demo-state',
     'logo-cloud-grid.json',
   ),
-  pageStatus: 'draft',
   scriptRelPath: path.join('payload-components', 'seed-logo-cloud-grid.ts'),
   slug: 'payload-components-demo-logo-cloud-grid',
   title: 'Payload Components demo — Logo Cloud Grid',

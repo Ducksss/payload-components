@@ -45,7 +45,6 @@ const createDemoSeedTarget = ({
     'demo-state',
     `${manifest.name}.json`,
   ),
-  pageStatus: 'draft',
   scriptRelPath: path.join('payload-components', `seed-${manifest.name}.ts`),
   slug: `payload-components-demo-${manifest.name}`,
   title: `Payload Components demo — ${manifest.title}`,

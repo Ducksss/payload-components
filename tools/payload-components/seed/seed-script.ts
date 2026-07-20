@@ -23,7 +23,6 @@ export type SeedTarget = {
   configFileRelPath: string
   marker: string
   ownershipStateRelPath: string
-  pageStatus: 'draft' | 'published'
   scriptRelPath: string
   slug: string
   title: string
@@ -92,6 +91,18 @@ const getConfigImportPath = (target: SeedTarget) => {
   return normalized.startsWith('.') ? normalized : `./${normalized}`
 }
 
+const getPayloadTypesImportPath = (target: SeedTarget) => {
+  const typesFileRelPath = path.join(
+    path.dirname(target.configFileRelPath),
+    'payload-types.ts',
+  )
+  const relativePath = path.relative(path.dirname(target.scriptRelPath), typesFileRelPath)
+  const withoutExtension = relativePath.replace(/\.(?:[cm]?[jt]s)$/, '')
+  const normalized = withoutExtension.split(path.sep).join('/')
+
+  return normalized.startsWith('.') ? normalized : `./${normalized}`
+}
+
 const getBlockType = (manifest: ComponentManifest) => {
   const blockType = manifest.sampleContent.blockType
 
@@ -133,16 +144,9 @@ export const buildSeedScript = ({
     sampleContentNeedsDemoMedia(manifest.sampleContent),
   )
   const configImportPath = getConfigImportPath(target)
+  const payloadTypesImportPath = getPayloadTypesImportPath(target)
   const ownershipStateImportPath = getOwnershipStateImportPath(target)
   const demoMediaMarkerPrefix = `${target.marker}:media`
-  const requirePagesDrafts = target.pageStatus === 'draft'
-  const pageStatusField =
-    target.pageStatus === 'draft' ? "    _status: 'draft' as const," : "    _status: 'published',"
-  const draftOption = target.pageStatus === 'draft' ? 'true' : 'false'
-  const completionMessage =
-    target.pageStatus === 'draft'
-      ? "'Seeded draft demo at /' + demoSlug"
-      : "'Seeded /' + demoSlug"
 
   return `${SEED_SCRIPT_OWNERSHIP_HEADER}
 import { randomUUID } from 'node:crypto'
@@ -152,6 +156,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { getPayload } from 'payload'
+
+import type { Page } from ${quoteTsString(payloadTypesImportPath)}
 
 const { default: config } = await import(${quoteTsString(configImportPath)})
 
@@ -177,10 +183,9 @@ const demoBlockType = ${quoteTsString(firstBlockType)}
 const expectedComponent = ${quoteTsString(firstManifest.name)}
 const expectedManifestVersion = ${quoteTsString(firstManifest.version)}
 const ownershipStatePath = new URL(${quoteTsString(ownershipStateImportPath)}, import.meta.url)
-const rawLayout = ${JSON.stringify(rawLayout, null, 2)} satisfies DemoSampleValue[]
+const rawLayout = ${JSON.stringify(rawLayout, null, 2)} satisfies NonNullable<Page['layout']>
 const rawLayoutBlockNames = ${JSON.stringify(rawLayoutBlockNames)} as const
 const needsDemoMedia = ${JSON.stringify(needsDemoMedia)}
-const requirePagesDrafts = ${JSON.stringify(requirePagesDrafts)}
 const mutationContext = { disableRevalidate: true }
 const uploadFieldByArrayName: Record<string, string> = {
   avatars: 'avatar',
@@ -284,11 +289,11 @@ const saveOwnershipState = async (state: DemoOwnershipState) => {
 const isMissingUploadReference = (item: DemoSampleValue, fieldName: string) =>
   typeof item[fieldName] === 'undefined' || item[fieldName] === null || item[fieldName] === ''
 
-const addDemoUploadReferences = (
-  value: unknown,
-  mediaID: unknown,
+const addDemoUploadReferences = <Value>(
+  value: Value,
+  mediaID: number | string,
   parentKey?: string,
-): unknown => {
+): Value => {
   if (Array.isArray(value)) {
     const uploadField = parentKey ? uploadFieldByArrayName[parentKey] : undefined
 
@@ -305,7 +310,7 @@ const addDemoUploadReferences = (
           ? mediaID
           : mappedItem[uploadField],
       }
-    })
+    }) as Value
   }
 
   if (!isRecord(value)) {
@@ -317,7 +322,7 @@ const addDemoUploadReferences = (
       key,
       addDemoUploadReferences(nestedValue, mediaID, key),
     ]),
-  )
+  ) as Value
 }
 
 const isOwnedDemoPage = (page: DemoDocument) => {
@@ -376,7 +381,7 @@ if (!pagesCollection) {
 
 const pagesSupportDrafts = Boolean(pagesCollection.versions?.drafts)
 
-if (requirePagesDrafts && !pagesSupportDrafts) {
+if (!pagesSupportDrafts) {
   throw new Error(
     'The generated demo seed requires drafts to be enabled on the Pages collection; no content was changed.',
   )
@@ -386,7 +391,7 @@ const pageOperationToken = await journalPageOperation()
 const existingPages = await payload.find({
   collection: 'pages',
   depth: 0,
-  draft: ${draftOption},
+  draft: true,
   overrideAccess: true,
   pagination: false,
   where: {
@@ -531,7 +536,7 @@ const pageData = {
   title: demoTitle,
   slug: demoSlug,
   layout,
-${pageStatusField}
+  _status: 'draft' as const,
 }
 
 if (existingPageID !== null) {
@@ -539,8 +544,8 @@ if (existingPageID !== null) {
     collection: 'pages',
     context: mutationContext,
     data: pageData,
-    draft: ${draftOption},
-    id: ownershipState.pageId,
+    draft: true,
+    id: existingPageID,
     overrideAccess: true,
     overrideLock: false,
   })
@@ -549,7 +554,7 @@ if (existingPageID !== null) {
     collection: 'pages',
     context: mutationContext,
     data: pageData,
-    draft: ${draftOption},
+    draft: true,
     overrideAccess: true,
   })
 
@@ -560,7 +565,7 @@ if (existingPageID !== null) {
   await saveOwnershipState(ownershipState)
 }
 
-console.log(${completionMessage})
+console.log('Seeded draft demo at /' + demoSlug)
 `
 }
 
