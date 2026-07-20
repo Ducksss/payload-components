@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { catalogTitle } from '../../src/lib/site'
+
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 
@@ -234,7 +236,7 @@ test.describe('AI-readable documentation surfaces', () => {
 
     expect(collection).toMatchObject({
       '@type': 'CollectionPage',
-      name: 'Component catalog',
+      name: catalogTitle,
       url: `${baseURL}/components`,
     })
     const itemList = collection?.mainEntity as StructuredDataNode | undefined

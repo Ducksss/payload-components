@@ -525,11 +525,27 @@ describe('Fumadocs site shell', () => {
 
   it('keeps catalog search local and docs copy factual', async () => {
     const catalog = await readFile(path.join(repoRoot, 'src/components/site/ComponentCatalogBrowser.tsx'), 'utf8')
+    const catalogPage = await readFile(path.join(repoRoot, 'src/app/components/page.tsx'), 'utf8')
     const registry = await readFile(path.join(repoRoot, 'content/docs/registry.mdx'), 'utf8')
+    const {
+      catalogDescription,
+      catalogInstallationLinkLabel,
+      catalogMetadataDescription,
+      catalogMetadataTitle,
+      catalogTitle,
+    } = await import('../../src/lib/site')
     expect(catalog).toContain('value={localQuery}')
     expect(catalog).toContain('window.history.replaceState')
     expect(catalog).toContain("window.addEventListener('popstate'")
     expect(registry).not.toContain('sample content for docs and testing')
+    expect(catalogTitle).toContain('Payload CMS')
+    expect(catalogDescription).toMatch(/heroes.*features.*pricing.*integrations.*FAQs.*content.*teams.*embeds/)
+    expect(catalogDescription).toContain('One CLI command')
+    expect(catalogMetadataTitle).toContain('Payload CMS Components')
+    expect(catalogMetadataDescription).toContain('one-command project wiring')
+    expect(catalogPage).toContain('href="/docs/installation"')
+    expect(catalogPage).toContain('{catalogInstallationLinkLabel}')
+    expect(catalogInstallationLinkLabel).toContain('one-command installation')
   })
 
   it('keeps catalog page-block count copy aligned with installable components', async () => {

@@ -1378,9 +1378,13 @@ export const communityInvite = {
 /* Catalog page                                                        */
 /* ------------------------------------------------------------------ */
 
-export const catalogTitle = 'Component catalog'
+export const catalogTitle = 'Typed Payload CMS blocks and components'
 export const catalogDescription =
-  'Installable Payload CMS blocks and components, each with docs, registry metadata, and CLI wiring that registers, renders, types, and import-maps it for you. Read the contract before you add it.'
+  'Browse typed blocks for Payload CMS: heroes, features, pricing, calls to action, integrations, testimonials, FAQs, content, teams, and embeds. One CLI command copies each component and wires its collection registration, renderer mapping, generated types, and admin import map.'
+export const catalogMetadataTitle = 'Typed Payload CMS Components & Blocks Catalog'
+export const catalogMetadataDescription =
+  'Browse typed Payload CMS blocks for heroes, features, pricing, integrations, FAQs, content, teams, and embeds, with one-command project wiring.'
+export const catalogInstallationLinkLabel = 'See how one-command installation works'
 
 /* ------------------------------------------------------------------ */
 /* Shared navigation surfaces                                          */
