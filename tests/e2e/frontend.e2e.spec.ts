@@ -1,6 +1,9 @@
 import { expect, type Page, test } from '@playwright/test'
 
 import {
+  catalogInstallationLinkLabel,
+  catalogMetadataDescription,
+  catalogMetadataTitle,
   catalogTitle,
   githubRepoUrl,
   heroHeadline,
@@ -347,7 +350,7 @@ test.describe('Light shadcn frontend', () => {
       {
         h1: catalogTitle,
         path: '/components',
-        title: /Payload CMS Block Catalog/,
+        title: new RegExp(catalogMetadataTitle),
       },
       {
         h1: 'Why Payload Components exists',
@@ -514,6 +517,26 @@ test.describe('Light shadcn frontend', () => {
     await expect(page.locator('#feature-grid-basic')).toBeVisible()
     await expect(page.locator('#feature-steps')).toBeVisible()
     await expect(page.locator('#hero-basic')).toBeHidden()
+  })
+
+  test('explains the catalog search promise without weakening component discovery', async ({
+    page,
+  }) => {
+    await page.goto(`${baseURL}/components`)
+
+    await expect(page.getByRole('heading', { level: 1, name: catalogTitle })).toBeVisible()
+    await expect(page).toHaveTitle(new RegExp(catalogMetadataTitle))
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+      'content',
+      catalogMetadataDescription,
+    )
+    await expect(
+      page.getByRole('link', { name: catalogInstallationLinkLabel, exact: true }),
+    ).toHaveAttribute('href', '/docs/installation')
+
+    for (const component of componentEntries) {
+      await expect(page.locator(`a[href="${component.href}"]`).first()).toBeAttached()
+    }
   })
 
   test('filters catalog immediately, debounces shareable URL state, and syncs popstate', async ({ page }) => {

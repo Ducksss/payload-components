@@ -112,15 +112,17 @@ describe('Fumadocs site shell', () => {
     expect(helloPost).not.toMatch(/\b\d+\s+page blocks?\b/i)
   })
 
-  it('keeps the install CTA community-owned and reduced-motion safe', async () => {
+  it('keeps the footer credit quiet and the install CTA reduced-motion safe', async () => {
     const [footer, copyButton, { heroSubheadline }] = await Promise.all([
       readFile(path.join(repoRoot, 'src', 'components', 'site', 'SiteFooter.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'components', 'site', 'CommandCopyButton.tsx'), 'utf8'),
       import('../../src/lib/site'),
     ])
 
-    expect(`${footer}\n${copyButton}`).not.toContain('tin.computer')
-    expect(`${footer}\n${copyButton}`).not.toContain('Growth by Tin')
+    expect(footer).toContain('href="https://tin.computer"')
+    expect(footer).toContain('Growth by Tin')
+    expect(footer).toContain('fill="#66DC9D"')
+    expect(footer).toContain('className="size-[1em] shrink-0"')
     expect(`${footer}\n${copyButton}`).not.toContain('bg-[#66DC9D]')
     expect(copyButton).toContain('data-[copied=true]:text-brand-foreground')
     expect(copyButton).toContain('motion-reduce:transform-none')
@@ -498,11 +500,27 @@ describe('Fumadocs site shell', () => {
 
   it('keeps catalog search local and docs copy factual', async () => {
     const catalog = await readFile(path.join(repoRoot, 'src/components/site/ComponentCatalogBrowser.tsx'), 'utf8')
+    const catalogPage = await readFile(path.join(repoRoot, 'src/app/components/page.tsx'), 'utf8')
     const registry = await readFile(path.join(repoRoot, 'content/docs/registry.mdx'), 'utf8')
+    const {
+      catalogDescription,
+      catalogInstallationLinkLabel,
+      catalogMetadataDescription,
+      catalogMetadataTitle,
+      catalogTitle,
+    } = await import('../../src/lib/site')
     expect(catalog).toContain('value={localQuery}')
     expect(catalog).toContain('window.history.replaceState')
     expect(catalog).toContain("window.addEventListener('popstate'")
     expect(registry).not.toContain('sample content for docs and testing')
+    expect(catalogTitle).toContain('Payload CMS')
+    expect(catalogDescription).toMatch(/heroes.*features.*pricing.*integrations.*FAQs.*content.*teams.*embeds/)
+    expect(catalogDescription).toContain('One CLI command')
+    expect(catalogMetadataTitle).toContain('Payload CMS Components')
+    expect(catalogMetadataDescription).toContain('one-command project wiring')
+    expect(catalogPage).toContain('href="/docs/installation"')
+    expect(catalogPage).toContain('{catalogInstallationLinkLabel}')
+    expect(catalogInstallationLinkLabel).toContain('one-command installation')
   })
 
   it('keeps catalog page-block count copy aligned with installable components', async () => {
