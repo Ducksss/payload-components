@@ -5,6 +5,7 @@ import { HeadingAccent, Section, SectionHeading } from '@/components/site/sectio
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { Wordmark } from '@/components/site/Wordmark'
+import { feedMetadataAlternates } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 import { cn } from '@/utilities/ui'
 
@@ -12,7 +13,7 @@ const description =
   'The Payload Components brand: a light-first shadcn monochrome palette with one emerald accent, the Geist and Instrument Serif type system, logo usage, and voice.'
 
 export const metadata: Metadata = {
-  alternates: { canonical: '/brand-guide' },
+  alternates: { canonical: '/brand-guide', ...feedMetadataAlternates },
   title: 'Brand Guide',
   description,
   openGraph: {

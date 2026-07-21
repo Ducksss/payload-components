@@ -1,4 +1,6 @@
 import {
+  blogDescription,
+  blogTitle,
   catalogDescription,
   catalogTitle,
   faqEntries,
@@ -16,6 +18,7 @@ export const organizationId = `${siteUrl}/#organization`
 export const websiteId = `${siteUrl}/#website`
 export const softwareId = `${siteUrl}/#software`
 export const documentationId = `${siteUrl}/docs#documentation`
+export const blogId = `${siteUrl}/blog#blog`
 
 const logoUrl = `${siteUrl}/favicon.svg`
 
@@ -87,6 +90,45 @@ export function documentationCollectionNode(): Node {
     isPartOf: { '@id': websiteId },
     name: 'Payload Components documentation',
     url: `${siteUrl}/docs`,
+  }
+}
+
+export function blogNode(): Node {
+  return {
+    '@id': blogId,
+    '@type': 'Blog',
+    description: blogDescription,
+    inLanguage: 'en',
+    isPartOf: { '@id': websiteId },
+    name: blogTitle,
+    publisher: { '@id': organizationId },
+    url: `${siteUrl}/blog`,
+  }
+}
+
+export function blogPostingNode(opts: {
+  author: string
+  date: Date | string
+  description?: string
+  title: string
+  url: string
+}): Node {
+  return {
+    '@id': `${siteUrl}${opts.url}#article`,
+    '@type': 'BlogPosting',
+    author: {
+      '@type': 'Person',
+      name: opts.author,
+      url: githubRepoUrl,
+    },
+    datePublished: new Date(opts.date).toISOString(),
+    description: opts.description,
+    headline: opts.title,
+    inLanguage: 'en',
+    isPartOf: { '@id': blogId },
+    mainEntityOfPage: `${siteUrl}${opts.url}`,
+    publisher: { '@id': organizationId },
+    url: `${siteUrl}${opts.url}`,
   }
 }
 

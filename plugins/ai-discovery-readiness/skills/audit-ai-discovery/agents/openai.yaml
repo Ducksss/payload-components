@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Discovery Audit"
+  short_description: "Audit AI/search discovery and trust surfaces"
+  default_prompt: "Use $audit-ai-discovery to audit this project's AI and search discovery surfaces."

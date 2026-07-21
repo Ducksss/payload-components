@@ -1,0 +1,191 @@
+---
+title: AI discovery and verification
+description: Evidence, ownership, freshness, and validation for search and AI-readable project surfaces.
+icon: ScanSearch
+---
+
+Payload Components treats AI discovery as a verification problem, not a promise that any model or
+search engine will rank, cite, or recommend the project. The repository publishes consistent facts
+in formats that browsers, crawlers, assistants, and maintainers can inspect. Every claim should lead
+back to source, tests, a public URL, or a named external check.
+
+<Callout type="info" title="What this work can and cannot prove">
+  The project controls accessibility, identity, structure, freshness, and evidence. A third-party
+  engine controls retrieval, ranking, synthesis, and citations. Do not convert an indexed page or a
+  passing audit into a fabricated visibility score, recommendation claim, or guaranteed outcome.
+</Callout>
+
+## The six objectives
+
+Use these objectives when reviewing a new page, release surface, component, or public claim.
+
+| Objective       | Question                                                                 | Evidence in this project                                                                                                  |
+| --------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| Discovery       | Can a crawler retrieve a stable, canonical representation without auth? | `robots.txt`, `sitemap.xml`, canonical metadata, markdown routes, `llms.txt`, `llms-full.txt`, and public registry JSON   |
+| Selection       | Can an engine determine what the project is and which page or artifact fits? | descriptive headings, product category, supported stack, component contracts, FAQ pairs, and plain-text source maps  |
+| Trust           | Can a reader follow claims to real identity and implementation evidence? | canonical host, JSON-LD, GitHub, source, manifests, support matrix, tests, install commands, and registry item URLs       |
+| Freshness       | Are update signals derived from real source dates?                      | blog frontmatter, RSS `pubDate`/`lastBuildDate`, and sitemap dates only where a source date exists                         |
+| Handoff         | Can a reader move from an answer to the right next action?               | direct docs, install commands, registry JSON, issue tracker, feed, and contribution links                                 |
+| Verification    | Are repository controls tested and external unknowns reported honestly? | deterministic integration/e2e contracts, deployed checks, no cloaking or invented endorsements, and labelled audit state |
+
+These objectives overlap. For example, JSON-LD can improve identity and understandability, but it
+does not establish that a component actually installs. The manifest, tests, registry JSON, and
+reviewable source establish that claim.
+
+## Published discovery surfaces
+
+| Surface                                  | Purpose                                                        | Source owner                                                                                         |
+| ---------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `/robots.txt`                            | Crawler access policy and sitemap pointer                      | `src/app/robots.ts`                                                                                  |
+| `/sitemap.xml`                           | Canonical inventory; dates appear only when source-backed      | `src/app/sitemap.ts`                                                                                 |
+| `/feed.xml`                              | Dated RSS updates from blog frontmatter                        | `src/app/feed.xml/route.ts`, `content/blog/*.mdx`                                                    |
+| `/llms.txt`                              | Concise project map, primary links, supported stack, FAQ       | `src/app/llms.txt/route.ts`, `src/lib/site.ts`                                                       |
+| `/llms-full.txt`                         | Compiled docs and blog content in one text response            | `src/app/llms-full.txt/route.ts`, Fumadocs collections                                               |
+| `/docs/<slug>.md` and content endpoints  | Page-level markdown representation                             | `src/proxy.ts`, `src/app/llms.mdx/docs/[[...slug]]/route.ts`                                         |
+| `/api/search`                            | Search index built from the same docs source                   | `src/app/api/search/route.ts`                                                                        |
+| JSON-LD                                  | Stable project, software, catalog, article, blog, and FAQ IDs  | `src/lib/structured-data.ts`, page routes                                                            |
+| canonical, Open Graph, and RSS metadata  | Browser/search identity and sharing declarations               | `src/app/layout.tsx`, route metadata                                                                 |
+| `/r/registry.json` and `/r/<name>.json`  | Public install contract and embedded source evidence           | `payload-components/registry.json`, generated `public/r` output                                      |
+| GitHub repository                        | Source, issues, releases, tests, license, and contribution log | repository metadata and workflows                                                                   |
+
+The HTML page remains the primary human representation. Machine-readable routes are alternate views
+of the same maintained sources. They must not contain claims or content that users cannot verify on
+the public project surfaces.
+
+## Evidence states and tags
+
+The reusable audit skill stored in `plugins/ai-discovery-readiness` records each control with four
+tags:
+
+- **Surface:** the route, file, profile, registry, or external system being inspected.
+- **Objective:** one or more of discovery, selection, trust, freshness, handoff, or verification.
+- **Evidence:** a file, response, test, screenshot, or maintainer observation that supports the result.
+- **Owner:** the code path or person responsible for keeping it correct.
+
+Use one of these states. Do not collapse unknowns into a passing result.
+
+| State            | Meaning                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------- |
+| `verified`       | Current evidence directly demonstrates the control.                                    |
+| `implemented`    | The repository contains the control, but its deployed behavior has not yet been checked. |
+| `unverified`     | The control may exist, but available evidence is insufficient or stale.                 |
+| `missing`        | The control is applicable and absent.                                                   |
+| `not-applicable` | The control does not fit this project; the audit records why.                           |
+
+Record observation time and environment for deployed checks. Search results, model answers, cached
+pages, and third-party profile state can change without a repository commit.
+
+## Freshness policy
+
+Freshness signals must come from maintained source data:
+
+- Blog item dates come from each post's frontmatter.
+- RSS `lastBuildDate` is the newest published post date, not request time or build time.
+- Blog sitemap entries use the corresponding post date.
+- The blog index can use the newest post date because its visible inventory changes with that post.
+- Evergreen marketing and docs pages omit `lastModified` until the project has authoritative per-page dates.
+
+Never set every sitemap entry to `new Date()` during a build. That makes unchanged content appear new,
+weakens the meaning of the field, and prevents maintainers from distinguishing a real update.
+
+## Crawler and delivery policy
+
+The project allows public content while excluding internal API paths in `robots.txt`. Robots rules are
+advisory crawl instructions, not authorization. Sensitive data must never depend on `Disallow` for
+protection.
+
+Sitewide delivery headers currently provide:
+
+- one-year HSTS with subdomains on the canonical HTTPS deployment;
+- MIME sniffing protection;
+- strict-origin cross-site referrer behavior;
+- same-origin framing, required so component preview pages can render inside this site's own frames;
+- a restricted permissions policy for camera, location, microphone, payment, and USB.
+
+The same-origin framing exception is intentional. Changing it to `DENY` would break the catalog's live
+preview contract. A Content Security Policy should be introduced only with route-aware verification of
+fonts, images, scripts, analytics, docs UI, and preview frames; an untested policy can make the site less
+accessible to users and crawlers.
+
+## Local verification
+
+Run the source compiler before type checks in a fresh worktree:
+
+```bash
+pnpm source:build
+pnpm exec vitest run --config ./vitest.config.mts tests/int/fumadocs-site.int.spec.ts
+pnpm exec playwright test tests/e2e/geo.e2e.spec.ts
+pnpm exec tsc --noEmit
+pnpm build
+```
+
+Before a release, use the repository's complete gate:
+
+```bash
+pnpm test:release
+```
+
+After deployment, inspect the public responses rather than assuming build output matches the edge:
+
+```bash
+curl -fsSI https://www.payload-components.xyz/
+curl -fsS https://www.payload-components.xyz/robots.txt
+curl -fsS https://www.payload-components.xyz/sitemap.xml
+curl -fsS https://www.payload-components.xyz/feed.xml
+curl -fsS https://www.payload-components.xyz/llms.txt
+curl -fsS https://www.payload-components.xyz/llms-full.txt
+curl -fsS https://www.payload-components.xyz/r/registry.json
+```
+
+Check status, content type, canonical host, cache behavior, representative body content, and the absence
+of development URLs. Validate at least one docs markdown route, one blog post, and one component registry
+item as well as the indexes.
+
+## External maintainer checklist
+
+Some signals live outside this repository and cannot be truthfully marked complete by a code change.
+After a relevant release, a maintainer should:
+
+1. Confirm the production deployment serves the new routes and headers.
+2. Inspect major search-console crawl and structured-data reports for the canonical host.
+3. Check that the GitHub repository description, homepage, topics, license, and latest release remain consistent with the site.
+4. Verify any directory or community profile from its real account session; record the URL and observation date.
+5. Search for the project by exact name and by its problem category, recording observations without interpreting them as guaranteed rankings.
+6. Sample AI assistants only as volatile observations. Save the prompt, provider/model, date, locale if known, answer, and cited URLs.
+7. File repository work only for evidence-backed gaps the project can control.
+
+Do not create or edit external accounts, profiles, listings, or posts as part of a repository audit unless
+a maintainer explicitly authorizes that communication.
+
+## When a discovery surface fails
+
+Use this order to avoid treating a symptom as the root cause:
+
+1. Reproduce the exact URL with status, content type, redirects, headers, and body captured.
+2. Compare the deployed response with its repository source and canonical host configuration.
+3. Check whether the failure is source generation, routing, deployment cache, crawler policy, or third-party lag.
+4. Fix repository-owned causes with a regression test on the smallest stable contract.
+5. Redeploy and verify the edge response.
+6. Record third-party recrawl or reindex requests as pending external observations, not completed fixes.
+
+If an AI answer is wrong, first locate the false or ambiguous public source. Improve the canonical page,
+plain-text surfaces, and evidence links together. Do not serve a special crawler-only version or publish
+repetitive pages designed only to manipulate retrieval.
+
+## Deliberate non-goals
+
+This project does not add an MCP server merely to claim AI compatibility. MCP is useful when a model needs
+authenticated tools or live actions; this site already exposes public, read-only documentation and registry
+data through ordinary web standards. Add an MCP surface only when a concrete product workflow requires it.
+
+The project also rejects:
+
+- crawler cloaking or user-agent-specific claims;
+- generated doorway pages and keyword stuffing;
+- fabricated recommendation, citation, authority, or visibility scores;
+- invented customer logos, testimonials, social profiles, or directory listings;
+- `lastModified` values based only on build time;
+- audits that mark unavailable external evidence as passing.
+
+The permanent standard is simple: publish accurate source, make it retrievable in useful formats, connect
+claims to evidence, keep dates honest, and report uncertainty explicitly.

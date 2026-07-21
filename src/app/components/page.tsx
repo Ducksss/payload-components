@@ -18,13 +18,14 @@ import {
   componentCategories,
   componentEntries,
   componentFamilies,
+  feedMetadataAlternates,
   githubRepoUrl,
   upcomingComponents,
 } from '@/lib/site'
 import { breadcrumbNode, catalogCollectionPageNode, graph } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
-  alternates: { canonical: '/components' },
+  alternates: { canonical: '/components', ...feedMetadataAlternates },
   title: catalogMetadataTitle,
   description: catalogMetadataDescription,
   openGraph: {

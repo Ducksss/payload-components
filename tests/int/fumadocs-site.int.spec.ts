@@ -76,6 +76,11 @@ function findElementTypeByHref(node: ReactNode, href: string): unknown {
 describe('Fumadocs site shell', () => {
   afterEach(() => {
     vi.unstubAllEnvs()
+    vi.doUnmock('@/lib/source')
+    vi.doUnmock(path.join(repoRoot, 'src/lib/source.ts'))
+    vi.doUnmock('@/lib/blog-source')
+    vi.doUnmock(path.join(repoRoot, 'src/lib/blog-source.ts'))
+    vi.doUnmock('collections/server')
     vi.resetModules()
   })
 
@@ -394,7 +399,8 @@ describe('Fumadocs site shell', () => {
       pathToFileURL(path.join(repoRoot, 'next.config.mjs')).href
     )) as { default: { headers?: () => Promise<HeaderRule[]>; redirects?: () => Promise<RedirectRule[]> } }
 
-    const cacheRules = (await nextConfig.headers?.())?.filter((rule) =>
+    const headerRules = await nextConfig.headers?.()
+    const cacheRules = headerRules?.filter((rule) =>
       rule.headers.some((header) => header.key === 'Cache-Control'),
     )
 
@@ -438,6 +444,15 @@ describe('Fumadocs site shell', () => {
         ],
       },
       {
+        source: '/feed.xml',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
+          },
+        ],
+      },
+      {
         source: '/favicon.svg',
         headers: [
           {
@@ -465,6 +480,24 @@ describe('Fumadocs site shell', () => {
         ],
       },
     ])
+
+    expect(
+      headerRules?.find((rule) =>
+        rule.headers.some((header) => header.key === 'Strict-Transport-Security'),
+      ),
+    ).toEqual({
+      source: '/:path*',
+      headers: [
+        { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+        {
+          key: 'Permissions-Policy',
+          value: 'camera=(), geolocation=(), microphone=(), payment=(), usb=()',
+        },
+      ],
+    })
 
     await expect(nextConfig.redirects?.()).resolves.toEqual([
       { source: '/docs/kits', destination: '/components', permanent: true },
@@ -561,12 +594,177 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).not.toContain(blogDescription)
     expect(blogTitle).toBe('Build notes and release stories')
     expect(indexSource).toContain('href="/components"')
-    expect(indexSource).toContain("alternates: { canonical: `${siteUrl}/blog` }")
+    expect(indexSource).toContain(
+      "alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates }",
+    )
     expect(indexSource).toContain("twitter: { card: 'summary_large_image'")
     expect(postSource).toContain("type: 'article'")
     expect(postSource).toContain('publishedTime:')
     expect(postSource).toContain("twitter: { card: 'summary_large_image'")
     expect(sitemapSource).toContain('blogSource.getPages()')
+  })
+
+  it('publishes truthful sitemap freshness and a canonical RSS feed', async () => {
+    const blogPages = [
+      {
+        data: {
+          author: 'Ducksss',
+          date: '2026-06-18',
+          description: 'A quick hello & source-backed introduction.',
+          title: 'Hello — and why I built Payload Components',
+        },
+        url: '/blog/hello',
+      },
+      {
+        data: {
+          author: 'Ducksss',
+          date: '2026-06-19',
+          description: 'The pipeline, patching, and reviewable diff.',
+          title: 'Anatomy of an install',
+        },
+        url: '/blog/anatomy-of-an-install',
+      },
+    ]
+    const sourceMock = () => ({
+      source: { getPages: () => [{ url: '/docs' }] },
+    })
+    const blogSourceMock = () => ({
+      blogSource: { getPages: () => blogPages },
+      getBlogPages: () => [...blogPages].reverse(),
+    })
+
+    vi.doMock('@/lib/source', sourceMock)
+    vi.doMock(path.join(repoRoot, 'src/lib/source.ts'), sourceMock)
+    vi.doMock('@/lib/blog-source', blogSourceMock)
+    vi.doMock(path.join(repoRoot, 'src/lib/blog-source.ts'), blogSourceMock)
+
+    const [{ default: sitemap }, feedModule] = await Promise.all([
+      import('../../src/app/sitemap'),
+      import('../../src/app/feed.xml/route'),
+    ])
+    const { siteUrl } = await import('../../src/lib/site')
+
+    const entries = sitemap()
+    const home = entries.find((entry) => entry.url === `${siteUrl}/`)
+    const docs = entries.find((entry) => entry.url === `${siteUrl}/docs`)
+    const blogPost = entries.find((entry) => entry.url === `${siteUrl}/blog/hello`)
+
+    expect(home?.lastModified).toBeUndefined()
+    expect(docs?.lastModified).toBeUndefined()
+    expect(blogPost?.lastModified).toEqual(new Date('2026-06-18'))
+
+    expect(feedModule.escapeXml(`<tag attr="value">Tom & Jerry's</tag>`)).toBe(
+      '&lt;tag attr=&quot;value&quot;&gt;Tom &amp; Jerry&apos;s&lt;/tag&gt;',
+    )
+
+    const response = feedModule.GET()
+    const body = await response.text()
+
+    expect(response.headers.get('content-type')).toContain('application/rss+xml')
+    expect(body).toContain('<rss version="2.0"')
+    expect(body).toContain('xmlns:dc="http://purl.org/dc/elements/1.1/"')
+    expect(body).toContain(`<link>${siteUrl}/blog</link>`)
+    expect(body).toContain(`<atom:link href="${siteUrl}/feed.xml" rel="self"`)
+    expect(body).toContain(`<guid isPermaLink="true">${siteUrl}/blog/hello</guid>`)
+    expect(body).toContain('<dc:creator>Ducksss</dc:creator>')
+    expect(body.indexOf('/blog/anatomy-of-an-install')).toBeLessThan(body.indexOf('/blog/hello'))
+    expect(body).toContain(`<lastBuildDate>${new Date('2026-06-19').toUTCString()}</lastBuildDate>`)
+  })
+
+  it('keeps AI-readable source maps aligned with blog and feed surfaces', async () => {
+    const [llmsModule, llmsFullSource] = await Promise.all([
+      import('../../src/app/llms.txt/route'),
+      readFile(path.join(repoRoot, 'src/app/llms-full.txt/route.ts'), 'utf8'),
+    ])
+    const { siteUrl } = await import('../../src/lib/site')
+
+    const llmsBody = await (await llmsModule.GET()).text()
+
+    expect(llmsBody).toContain(`- [Blog](${siteUrl}/blog)`)
+    expect(llmsBody).toContain(`- [Updates feed](${siteUrl}/feed.xml)`)
+    expect(llmsBody).toContain(`- [AI discovery guide](${siteUrl}/docs/ai-discovery)`)
+    expect(llmsFullSource).toContain("'## Blog'")
+    expect(llmsFullSource).toContain('getBlogLLMText')
+  })
+
+  it('builds canonical Blog and BlogPosting structured data', async () => {
+    const [{ blogNode, blogPostingNode }, { blogTitle, siteUrl }] = await Promise.all([
+      import('../../src/lib/structured-data'),
+      import('../../src/lib/site'),
+    ])
+
+    expect(blogNode()).toMatchObject({
+      '@id': `${siteUrl}/blog#blog`,
+      '@type': 'Blog',
+      name: blogTitle,
+      url: `${siteUrl}/blog`,
+    })
+
+    expect(
+      blogPostingNode({
+        author: 'Ducksss',
+        date: new Date('2026-06-18'),
+        description: 'A source-backed introduction.',
+        title: 'Hello',
+        url: '/blog/hello',
+      }),
+    ).toMatchObject({
+      '@id': `${siteUrl}/blog/hello#article`,
+      '@type': 'BlogPosting',
+      author: expect.objectContaining({ '@type': 'Person', name: 'Ducksss' }),
+      datePublished: '2026-06-18T00:00:00.000Z',
+      headline: 'Hello',
+      isPartOf: { '@id': `${siteUrl}/blog#blog` },
+      mainEntityOfPage: `${siteUrl}/blog/hello`,
+    })
+  })
+
+  it('stores the distilled audit skill in a validated repo plugin shape', async () => {
+    const pluginRoot = path.join(repoRoot, 'plugins', 'ai-discovery-readiness')
+    const skillRoot = path.join(pluginRoot, 'skills', 'audit-ai-discovery')
+    const marketplace = await readJson<{
+      interface: { displayName: string }
+      name: string
+      plugins: Array<{
+        category: string
+        name: string
+        policy: { authentication: string; installation: string }
+        source: { path: string; source: string }
+      }>
+    }>(path.join(repoRoot, '.agents', 'plugins', 'marketplace.json'))
+    const plugin = await readJson<{
+      name: string
+      skills?: string
+      version: string
+    }>(path.join(pluginRoot, '.codex-plugin', 'plugin.json'))
+    const skill = await readFile(path.join(skillRoot, 'SKILL.md'), 'utf8')
+    const catalog = await readFile(path.join(skillRoot, 'references', 'audit-catalog.md'), 'utf8')
+
+    expect(marketplace).toMatchObject({
+      interface: { displayName: 'Payload Components' },
+      name: 'payload-components',
+      plugins: [
+        expect.objectContaining({
+          category: 'Productivity',
+          name: 'ai-discovery-readiness',
+          policy: { authentication: 'ON_INSTALL', installation: 'AVAILABLE' },
+          source: { path: './plugins/ai-discovery-readiness', source: 'local' },
+        }),
+      ],
+    })
+    expect(plugin).toMatchObject({
+      name: 'ai-discovery-readiness',
+      skills: './skills/',
+      version: '0.1.0',
+    })
+    expect(skill).toContain('name: audit-ai-discovery')
+    expect(skill).toContain('references/audit-catalog.md')
+
+    for (const tag of ['Surface', 'Objective', 'Evidence', 'Owner']) {
+      expect(catalog).toContain(`${tag}:`)
+    }
+    expect(catalog).toContain('not-applicable')
+    expect(catalog).toContain('unverified')
   })
 
   it('keeps the family navigator as the final section on component docs', async () => {
