@@ -6,6 +6,7 @@ import { ExternalLink, Monitor, Smartphone, Tablet } from 'lucide-react'
 
 import type { TemplateShowcase, TemplateViewportPreset } from '@/lib/templates/types'
 
+import { trackTemplateEvent } from '@/lib/analytics'
 import { templatePreviewHref } from '@/lib/templates/registry'
 import { cn } from '@/utilities/ui'
 
@@ -15,7 +16,10 @@ import { cn } from '@/utilities/ui'
  * template's Tailwind breakpoints genuinely reflow — never CSS-scale a desktop
  * render to fake mobile. The frame keeps a fixed visible height and lets the
  * document inside scroll naturally. Only this one iframe exists per detail
- * page; the gallery mounts none. */
+ * page; the gallery mounts none.
+ *
+ * Interaction events (page switch, viewport switch, open full preview) are
+ * reported here with the approved anonymous properties only. */
 
 const PRESETS: {
   icon: typeof Monitor
@@ -45,9 +49,13 @@ export function TemplateDetailPreview({
   const src = templatePreviewHref(template.slug, activePage.path)
 
   return (
-    <div className="overflow-hidden rounded-frame border border-border">
+    <div className="overflow-hidden rounded-frame border border-border bg-card shadow-card">
       <div className="flex flex-wrap items-center gap-3 border-b border-border bg-muted/60 px-3 py-2">
-        <div role="group" aria-label={`${template.title} preview page`} className="flex flex-wrap items-center gap-0.5">
+        <div
+          role="group"
+          aria-label={`${template.title} preview page`}
+          className="flex flex-wrap items-center gap-0.5"
+        >
           {template.pages.map((page) => (
             <button
               key={page.path}
@@ -56,11 +64,17 @@ export function TemplateDetailPreview({
               onClick={() => {
                 setActivePath(page.path)
                 onPageChange?.(page.path)
+                trackTemplateEvent('template_preview_page_change', {
+                  page: page.path,
+                  revision: template.revision,
+                  source: 'detail',
+                  template: template.slug,
+                })
               }}
               className={cn(
-                'rounded-md px-2.5 py-1 text-sm transition-colors',
+                'rounded-md px-2.5 py-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 page.path === activePage.path
-                  ? 'bg-brand/15 text-brand'
+                  ? 'bg-brand/15 font-medium text-brand'
                   : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
               )}
             >
@@ -84,9 +98,16 @@ export function TemplateDetailPreview({
               onClick={() => {
                 setPreset(value)
                 onViewportChange?.(value)
+                trackTemplateEvent('template_preview_viewport_change', {
+                  page: activePage.path,
+                  revision: template.revision,
+                  source: 'detail',
+                  template: template.slug,
+                  viewport: value,
+                })
               }}
               className={cn(
-                'inline-flex size-7 items-center justify-center rounded transition-colors',
+                'inline-flex size-7 items-center justify-center rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 preset === value
                   ? 'bg-brand/15 text-brand'
                   : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
@@ -101,16 +122,29 @@ export function TemplateDetailPreview({
           href={src}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 font-mono text-[11px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          onClick={() =>
+            trackTemplateEvent('template_preview_open', {
+              page: activePage.path,
+              revision: template.revision,
+              source: 'detail',
+              template: template.slug,
+              viewport: preset,
+            })
+          }
+          className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 font-mono text-[11px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <ExternalLink className="size-3.5" aria-hidden="true" />
           <span className="hidden sm:inline">Open full preview</span>
+          <span className="sr-only sm:hidden">Open full preview</span>
         </a>
       </div>
 
-      <div className="flex justify-center bg-muted/30 p-4">
+      <div className="flex justify-center bg-dots bg-muted/30 p-3 sm:p-4">
         <div
-          className="w-full transition-[max-width] duration-300 ease-out"
+          className={cn(
+            'w-full transition-[max-width] duration-300 ease-out',
+            preset !== 'desktop' && 'rounded-lg border border-border shadow-card',
+          )}
           style={{ maxWidth: PRESETS.find((p) => p.value === preset)?.width ?? undefined }}
         >
           <iframe

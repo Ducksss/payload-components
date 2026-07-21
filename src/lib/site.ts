@@ -1387,6 +1387,51 @@ export const catalogMetadataDescription =
 export const catalogInstallationLinkLabel = 'See how one-command installation works'
 
 /* ------------------------------------------------------------------ */
+/* Templates showcase                                                  */
+/* ------------------------------------------------------------------ */
+
+export const templatesEyebrow = 'Templates'
+export const templatesTitle = 'Full-site concepts, composed from the block registry'
+export const templatesDescription =
+  'The catalog installs one block at a time. These showcases compose those same open-source blocks into complete, browsable site concepts — every page, every section, traceable back to a block you can install today.'
+export const templatesMetadataTitle = 'Templates — full-site Payload CMS concepts'
+export const templatesMetadataDescription =
+  'Browse full-site concepts composed from open-source Payload CMS blocks. Explore every page, inspect the block recipe, and help decide whether an installer should come next.'
+
+export const templateCategoryLabels = {
+  agency: 'Agency',
+  saas: 'SaaS',
+} as const
+
+/* Detail-page link back into the catalog: templates never gate anything — the
+   recipe is the point, and every chip resolves to an installable block. */
+export const templatesRecipeIntro =
+  'Every section on every page is one block from the open registry, in render order. Each chip links to the block’s contract — fields, wiring, and the exact install command.'
+
+/* Community close — templates grow the same way the catalog does: in the
+   open, from real needs, with no waitlist or capture in between. */
+export const templatesContribution = {
+  heading: 'Templates are decided in the open',
+  intro:
+    'These concepts exist to answer one question with the community: should full-site templates become installable? The recipes, the fictional brands, and the installer RFC all live in the public repository — no waitlist, no email capture.',
+  links: [
+    {
+      description: 'Read the showcase source — every recipe is plain data in the repository.',
+      external: true,
+      href: githubRepoUrl,
+      label: 'Browse the repository',
+    },
+    {
+      description:
+        'Tell us which template, page, or block recipe you would actually ship — or propose a new one.',
+      external: true,
+      href: githubIssuesUrl,
+      label: 'Open an issue',
+    },
+  ],
+} as const
+
+/* ------------------------------------------------------------------ */
 /* Shared navigation surfaces                                          */
 /* ------------------------------------------------------------------ */
 
