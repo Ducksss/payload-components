@@ -34,13 +34,15 @@ export function templatePreviewHref(slug: string, path = '') {
   return path === '' ? `/templates/${slug}/preview` : `/templates/${slug}/preview/${path}`
 }
 
-/* Deterministic poster locations written by tools/templates/capture.ts. */
+/* Deterministic poster locations written by tools/templates/capture.ts.
+ * JPEG like public/showcase/ — photographic page screenshots compress to a
+ * few hundred KB as JPEG and the repo has no webp encoder. */
 export function templatePosterSrc(slug: string) {
-  return `/templates/${slug}/posters/home-desktop.webp`
+  return `/templates/${slug}/posters/home-desktop.jpg`
 }
 
 export function templatePagePosterSrc(slug: string, path: string) {
-  return `/templates/${slug}/posters/page-${path === '' ? 'home' : path}.webp`
+  return `/templates/${slug}/posters/page-${path === '' ? 'home' : path}.jpg`
 }
 
 export function uniqueTemplateBlockSlugs(template: TemplateShowcase) {
