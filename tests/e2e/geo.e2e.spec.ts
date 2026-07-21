@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { catalogTitle } from '../../src/lib/site'
+import { blogTitle, catalogTitle } from '../../src/lib/site'
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
@@ -65,10 +65,23 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(sitemapBody).toContain(`<loc>${baseURL}/</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/components</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/docs/installation</loc>`)
+    expect(sitemapBody).toContain(`<loc>${baseURL}/docs/ai-discovery</loc>`)
 
     await page.goto(baseURL)
 
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', baseURL)
+    await expect(
+      page.locator('link[rel="alternate"][type="application/rss+xml"]'),
+    ).toHaveAttribute('href', `${baseURL}/feed.xml`)
+
+    for (const path of ['/docs/installation', '/blog/hello']) {
+      await page.goto(`${baseURL}${path}`)
+      await expect(
+        page.locator('link[rel="alternate"][type="application/rss+xml"]'),
+      ).toHaveAttribute('href', `${baseURL}/feed.xml`)
+    }
+
+    await page.goto(baseURL)
 
     const jsonLdTexts = await page.locator('script[type="application/ld+json"]').allTextContents()
     const schemaTypes = new Set<string>()
@@ -108,6 +121,9 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(body).toContain(`- [Home](${baseURL}/)`)
     expect(body).toContain(`- [Docs](${baseURL}/docs)`)
     expect(body).toContain(`- [Component catalog](${baseURL}/components)`)
+    expect(body).toContain(`- [Blog](${baseURL}/blog)`)
+    expect(body).toContain(`- [Updates feed](${baseURL}/feed.xml)`)
+    expect(body).toContain(`- [AI discovery guide](${baseURL}/docs/ai-discovery)`)
     expect(body).toContain(`- [Public registry](${baseURL}/r/registry.json)`)
     expect(body).toContain(`- [GitHub repository](${githubRepoUrl})`)
     expect(body).toContain('Hero Basic: npx payload-components add hero-basic')
@@ -125,6 +141,9 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(body).toContain('# Introduction')
     expect(body).toContain('# Architecture')
     expect(body).toContain('AI-readable surfaces')
+    expect(body).toContain('# AI discovery and verification')
+    expect(body).toContain('# Hello — and why I built Payload Components')
+    expect(body).toContain('The itch that started this')
     expect(body).toContain('The v2 app is intentionally not a Payload CMS site.')
     expect(body).toContain('npx payload-components add feature-grid-basic')
   })
@@ -164,6 +183,43 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(negotiated.ok()).toBe(true)
     expect(negotiated.headers()['content-type']).toContain('text/markdown')
     await expect(negotiated.text()).resolves.toContain('# Architecture (/docs/architecture)')
+
+    const discovery = await request.get(`${baseURL}/docs/ai-discovery.md`)
+
+    expect(discovery.ok()).toBe(true)
+    expect(discovery.headers()['content-type']).toContain('text/markdown')
+    await expect(discovery.text()).resolves.toContain(
+      '# AI discovery and verification (/docs/ai-discovery)',
+    )
+  })
+
+  test('publishes a dated RSS feed and sitewide trust headers', async ({ page, request }) => {
+    const [home, feed] = await Promise.all([
+      request.get(`${baseURL}/`),
+      request.get(`${baseURL}/feed.xml`),
+    ])
+
+    expect(home.headers()['strict-transport-security']).toBe(
+      'max-age=31536000; includeSubDomains',
+    )
+    expect(home.headers()['x-content-type-options']).toBe('nosniff')
+    expect(home.headers()['referrer-policy']).toBe('strict-origin-when-cross-origin')
+    expect(home.headers()['x-frame-options']).toBe('SAMEORIGIN')
+    expect(home.headers()['permissions-policy']).toBe(
+      'camera=(), geolocation=(), microphone=(), payment=(), usb=()',
+    )
+
+    expect(feed.ok()).toBe(true)
+    expect(feed.headers()['content-type']).toContain('application/rss+xml')
+    const body = await feed.text()
+
+    expect(body).toContain('<rss version="2.0"')
+    expect(body).toContain(`<atom:link href="${baseURL}/feed.xml" rel="self"`)
+    expect(body).toContain(`<lastBuildDate>${new Date('2026-06-19').toUTCString()}</lastBuildDate>`)
+    expect(body.indexOf('/blog/anatomy-of-an-install')).toBeLessThan(body.indexOf('/blog/hello'))
+
+    await page.goto(`${baseURL}/components/preview/hero-basic`)
+    await expect(page.locator('main')).toBeVisible()
   })
 
   test('docs pages expose generated open graph images', async ({ request }) => {
@@ -257,6 +313,25 @@ test.describe('AI-readable documentation surfaces', () => {
       headline: 'Installation',
       mainEntityOfPage: `${baseURL}/docs/installation`,
       url: `${baseURL}/docs/installation`,
+    })
+  })
+
+  test('blog pages expose Blog and BlogPosting structured data', async ({ page }) => {
+    await page.goto(`${baseURL}/blog`)
+
+    expect(findStructuredData(await getStructuredData(page), 'Blog')).toMatchObject({
+      '@type': 'Blog',
+      name: blogTitle,
+      url: `${baseURL}/blog`,
+    })
+
+    await page.goto(`${baseURL}/blog/hello`)
+
+    expect(findStructuredData(await getStructuredData(page), 'BlogPosting')).toMatchObject({
+      '@type': 'BlogPosting',
+      datePublished: '2026-06-18T00:00:00.000Z',
+      headline: 'Hello — and why I built Payload Components',
+      mainEntityOfPage: `${baseURL}/blog/hello`,
     })
   })
 })

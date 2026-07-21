@@ -11,11 +11,11 @@ import { WiringSection } from '@/components/site/sections/WiringSection'
 import { WorkflowSection } from '@/components/site/sections/WorkflowSection'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
-import { homeMetadataDescription, homeMetadataTitle } from '@/lib/site'
+import { feedMetadataAlternates, homeMetadataDescription, homeMetadataTitle } from '@/lib/site'
 import { faqNode, graph, softwareApplicationNode } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
-  alternates: { canonical: '/' },
+  alternates: { canonical: '/', ...feedMetadataAlternates },
   description: homeMetadataDescription,
   openGraph: {
     description: homeMetadataDescription,

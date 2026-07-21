@@ -15,7 +15,13 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { getMDXComponents } from '@/components/mdx'
 import { ComponentDocHeader } from '@/components/site/ComponentDocHeader'
 import { familyOfSlug } from '@/lib/component-page-tree'
-import { componentEntries, docsRoute, githubContentBranch, githubRepoUrl } from '@/lib/site'
+import {
+  componentEntries,
+  docsRoute,
+  feedMetadataAlternates,
+  githubContentBranch,
+  githubRepoUrl,
+} from '@/lib/site'
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source'
 import {
   breadcrumbNode,
@@ -54,7 +60,7 @@ export async function generateMetadata({ params }: DocsPageProps): Promise<Metad
     : (page.data.seoTitle ?? page.data.title)
 
   return {
-    alternates: { canonical: page.url },
+    alternates: { canonical: page.url, ...feedMetadataAlternates },
     title,
     description: page.data.description,
     openGraph: {

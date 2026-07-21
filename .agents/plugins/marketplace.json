@@ -1,0 +1,20 @@
+{
+  "name": "payload-components",
+  "interface": {
+    "displayName": "Payload Components"
+  },
+  "plugins": [
+    {
+      "name": "ai-discovery-readiness",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ai-discovery-readiness"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

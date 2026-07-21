@@ -1,13 +1,21 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-import { blogSource } from '@/lib/blog-source'
-import { blogDescription, blogTitle, componentEntries, siteUrl } from '@/lib/site'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { getBlogPages } from '@/lib/blog-source'
+import {
+  blogDescription,
+  blogTitle,
+  componentEntries,
+  feedMetadataAlternates,
+  siteUrl,
+} from '@/lib/site'
+import { blogNode, breadcrumbNode, graph } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
   title: blogTitle,
   description: blogDescription,
-  alternates: { canonical: `${siteUrl}/blog` },
+  alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates },
   openGraph: {
     title: blogTitle,
     description: blogDescription,
@@ -17,13 +25,20 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image', title: blogTitle, description: blogDescription },
 }
 
+const blogStructuredData = graph(
+  breadcrumbNode([
+    { name: 'Home', path: '/' },
+    { name: blogTitle, path: '/blog' },
+  ]),
+  blogNode(),
+)
+
 export default function BlogIndex() {
-  const posts = [...blogSource.getPages()].sort(
-    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
-  )
+  const posts = getBlogPages()
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-12 md:px-8 md:py-16">
+      <JsonLd data={blogStructuredData} />
       <header className="mb-10">
         <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
           {blogTitle}

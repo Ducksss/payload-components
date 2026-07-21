@@ -6,8 +6,10 @@ import { InlineTOC } from 'fumadocs-ui/components/inline-toc'
 import { ArrowLeft } from 'lucide-react'
 
 import { getMDXComponents } from '@/components/mdx'
+import { JsonLd } from '@/components/seo/JsonLd'
 import { blogSource } from '@/lib/blog-source'
-import { siteUrl } from '@/lib/site'
+import { feedMetadataAlternates, siteUrl } from '@/lib/site'
+import { blogPostingNode, breadcrumbNode, graph } from '@/lib/structured-data'
 
 interface BlogPostProps {
   params: Promise<{ slug: string }>
@@ -25,7 +27,7 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
   return {
     title: page.data.title,
     description: page.data.description,
-    alternates: { canonical: `${siteUrl}${page.url}` },
+    alternates: { canonical: `${siteUrl}${page.url}`, ...feedMetadataAlternates },
     openGraph: {
       type: 'article',
       title: page.data.title,
@@ -43,9 +45,24 @@ export default async function BlogPost({ params }: BlogPostProps) {
   if (!page) notFound()
 
   const MDX = page.data.body
+  const structuredData = graph(
+    breadcrumbNode([
+      { name: 'Home', path: '/' },
+      { name: 'Blog', path: '/blog' },
+      { name: page.data.title, path: page.url },
+    ]),
+    blogPostingNode({
+      author: page.data.author,
+      date: page.data.date,
+      description: page.data.description,
+      title: page.data.title,
+      url: page.url,
+    }),
+  )
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-12 md:px-8 md:py-16">
+      <JsonLd data={structuredData} />
       <Link
         href="/blog"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
