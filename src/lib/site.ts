@@ -1481,6 +1481,7 @@ export const footerColumns = [
   {
     links: [
       { href: '/components', label: 'Component catalog' },
+      { href: '/templates', label: 'Template concepts' },
       { href: '/docs', label: 'Documentation' },
       { href: '/docs/installation', label: 'Install workflow' },
       { href: '/docs/architecture', label: 'Architecture' },
