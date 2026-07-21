@@ -1317,7 +1317,7 @@ export const faqIntro =
 export const faqEntries = [
   {
     answer:
-      'Yes — and built to stay that way. The registry, the CLI, both components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.',
+      'Yes — and built to stay that way. The registry, the CLI, all 65 installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.',
     question: 'Is Payload Components free?',
   },
   {
