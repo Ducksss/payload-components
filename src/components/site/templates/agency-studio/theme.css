@@ -1,13 +1,213 @@
-/* Northline (agency-studio) scoped theme — FOUNDATION SKELETON.
+/* Northline (agency-studio) scoped theme — the editorial studio direction.
  *
- * Convention (frozen contract): every rule in this file must live beneath the
- * [data-template-theme='agency-studio'] root the shell renders. Override the
- * semantic variables the demo twins consume (--background, --foreground,
- * --card, --muted, --muted-foreground, --border, --primary, ...) and add
- * template-specific tokens as needed. Never touch :root, .dark, another
- * template's scope, or src/app/globals.css. The site stays forced-light. */
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='agency-studio'] root the shell renders. We override
+ * the semantic variables the demo twins consume and add template-scoped
+ * tokens; we never touch :root, .dark, another template's scope, or
+ * src/app/globals.css. The site stays forced-light — the ink bands below are
+ * intentional dark surfaces built from named template tokens, not a theme.
+ *
+ * Art direction: warm paper, ink foreground, one rust accent, italic serif
+ * display type (the root layout's Instrument Serif variable — italic is the
+ * only loaded style, so every --font-serif use sets font-style: italic),
+ * sharp print-like corners, hairline rules, full-bleed tonal bands, and
+ * generous negative space. Section chrome (the catalog's rounded card frames)
+ * is deliberately dissolved so pages read as one composed editorial site
+ * rather than a stack of specimens. */
 
 [data-template-theme='agency-studio'] {
+  /* Template palette tokens */
+  --nl-paper: oklch(96.2% 0.014 85deg);
+  --nl-paper-deep: oklch(92.6% 0.02 84deg);
+  --nl-ink: oklch(24% 0.016 60deg);
+  --nl-ink-band: oklch(22.5% 0.016 58deg);
+  --nl-rust: oklch(47% 0.132 38deg);
+
+  /* Semantic variables the twins consume */
+  --background: var(--nl-paper);
+  --foreground: var(--nl-ink);
+  --card: var(--nl-paper-deep);
+  --card-foreground: var(--nl-ink);
+  --popover: var(--nl-paper);
+  --popover-foreground: var(--nl-ink);
+  --primary: var(--nl-ink);
+  --primary-foreground: var(--nl-paper);
+  --secondary: oklch(90.5% 0.022 82deg);
+  --secondary-foreground: var(--nl-ink);
+  --muted: oklch(91.5% 0.02 83deg);
+  --muted-foreground: oklch(41% 0.024 55deg);
+  --accent: oklch(89.5% 0.032 68deg);
+  --accent-foreground: var(--nl-ink);
+  --brand: var(--nl-rust);
+  --brand-foreground: var(--nl-paper);
+  --border: oklch(84.5% 0.024 80deg);
+  --input: oklch(79% 0.026 78deg);
+  --ring: var(--nl-rust);
+
+  /* Print-sharp geometry: --radius feeds the sm–xl scale (their calc()
+   * values keep the var() reference through @theme inline); the named
+   * container radii are inlined literals, so those are zeroed by the
+   * class rule below. */
+  --radius: 0px;
+  --radius-2xl: 0px;
+
+  /* Larger, more confident display scale than the catalog default */
+  --text-4xl: 2.75rem;
+  --text-4xl--line-height: 1.12;
+  --text-5xl: 3.625rem;
+  --text-5xl--line-height: 1.06;
+  --text-6xl: 4.5rem;
+  --text-6xl--line-height: 1.03;
+
   background-color: var(--background);
   color: var(--foreground);
+}
+
+[data-template-theme='agency-studio'] ::selection {
+  background-color: color-mix(in oklab, var(--nl-rust) 30%, transparent);
+}
+
+/* The named container radii (--radius-inset/card/panel/frame) are @theme
+ * inline — their literal values are baked into the utilities — so the
+ * print-sharp geometry is enforced at element level instead. rounded-full
+ * (pills, avatar monograms) is deliberately left alone. */
+[data-template-theme='agency-studio'] :is(.rounded-frame, .rounded-panel, .rounded-card, .rounded-inset, .rounded-2xl, .rounded-xl, .rounded-lg) {
+  border-radius: 0;
+}
+
+/* ————— Editorial typography —————
+ * Display headlines (the twins' .tracking-display titles) switch to the
+ * Instrument Serif accent the root layout already loads. The loaded face is
+ * italic-only, so italic is declared to match it exactly. */
+[data-template-theme='agency-studio'] .tracking-display {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+/* Section-level .tracking-title headlines (testimonial wall, community) join
+ * the serif voice; the size guard keeps card titles, FAQ questions, and
+ * other small tracking-title elements in Geist. */
+[data-template-theme='agency-studio'] [data-template-canvas] .text-3xl.tracking-title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Eyebrows become rust monospace index labels — square, wide-tracked,
+ * closer to a printed folio mark than a pill badge. Scoped to the visual
+ * canvas so the shell's own mono strips keep their explicit colors. */
+[data-template-theme='agency-studio'] [data-template-canvas] .tracking-eyebrow {
+  border-color: color-mix(in oklab, var(--nl-rust) 45%, transparent);
+  border-radius: 0;
+  color: var(--nl-rust);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+}
+
+/* ————— Section canvas —————
+ * The shell renders full-bleed; each section supplies its own gutters via the
+ * twin's frame padding. The catalog frame chrome (border, wash, radius) is
+ * dissolved so sections sit directly on the page like plates in a printed
+ * portfolio, separated by hairline rules and tonal bands instead of cards. */
+[data-template-theme='agency-studio'] [data-template-section] > [aria-hidden='true'] {
+  margin-inline: auto;
+  max-width: 96rem;
+}
+
+[data-template-theme='agency-studio'] [data-template-section] > [aria-hidden='true'] > div:first-child {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+}
+
+/* Vertical rhythm belongs to the shell, not the twins. */
+[data-template-theme='agency-studio'] [data-template-section] {
+  padding-block: 1.75rem;
+}
+
+@media (min-width: 1024px) {
+  [data-template-theme='agency-studio'] [data-template-section] {
+    padding-block: 3rem;
+  }
+}
+
+/* Hairline rules between plates on the same paper surface. */
+[data-template-theme='agency-studio'] [data-template-section][data-tone='base'] + [data-template-section][data-tone='base'] {
+  border-top: 1px solid var(--border);
+}
+
+/* ————— Tonal bands —————
+ * muted: a deeper sheet of the same paper stock. Inner panels keep reading
+ * as paper plates against it. */
+[data-template-theme='agency-studio'] [data-template-section][data-tone='muted'] {
+  --card: oklch(89.5% 0.024 82deg);
+  --border: oklch(81.5% 0.026 80deg);
+
+  background-color: var(--nl-paper-deep);
+}
+
+/* contrast: a full-bleed ink band. Every semantic variable is remapped so
+ * the twins' paper-first markup (bg-background, text-foreground, border-
+ * border) resolves to a coherent dark editorial surface with AA contrast. */
+[data-template-theme='agency-studio'] [data-template-section][data-tone='contrast'] {
+  --background: oklch(27% 0.018 60deg);
+  --foreground: oklch(95.5% 0.015 85deg);
+  --card: oklch(27% 0.018 60deg);
+  --card-foreground: oklch(95.5% 0.015 85deg);
+  --primary: oklch(95.5% 0.015 85deg);
+  --primary-foreground: var(--nl-ink);
+  --secondary: oklch(32% 0.018 60deg);
+  --secondary-foreground: oklch(95.5% 0.015 85deg);
+  --muted: oklch(31% 0.018 60deg);
+  --muted-foreground: oklch(78% 0.02 78deg);
+  --accent: oklch(33% 0.02 60deg);
+  --accent-foreground: oklch(95.5% 0.015 85deg);
+  --border: oklch(39% 0.02 62deg);
+  --input: oklch(44% 0.02 62deg);
+
+  background-color: var(--nl-ink-band);
+  color: var(--foreground);
+  padding-block: 3rem;
+}
+
+@media (min-width: 1024px) {
+  [data-template-theme='agency-studio'] [data-template-section][data-tone='contrast'] {
+    padding-block: 4.5rem;
+  }
+}
+
+/* Rust eyebrows fail AA on ink, so contrast bands use a warm apricot mark. */
+[data-template-theme='agency-studio'] [data-tone='contrast'] .tracking-eyebrow {
+  border-color: color-mix(in oklab, oklch(80% 0.06 50deg) 45%, transparent);
+  color: oklch(80% 0.06 50deg);
+}
+
+/* ————— The cover (home hero-video poster) —————
+ * Full-bleed cinematic plate flush against the masthead. The twin builds its
+ * poster from --muted/--accent gradients under an ink overlay; deepening
+ * those tokens here turns the catalog's neutral wash into a warm dusk. The
+ * eyebrow keeps the twin's paper-on-dark treatment instead of rust. */
+[data-template-theme='agency-studio'] [data-template-section='cover'] {
+  --muted: oklch(35% 0.045 52deg);
+  --accent: oklch(46% 0.095 44deg);
+  --foreground: oklch(17.5% 0.02 55deg);
+  --primary: var(--nl-rust);
+  --primary-foreground: var(--nl-paper);
+
+  background-color: var(--nl-ink-band);
+  padding-block: 0;
+}
+
+[data-template-theme='agency-studio'] [data-template-section='cover'] > [aria-hidden='true'] {
+  max-width: none;
+}
+
+[data-template-theme='agency-studio'] [data-template-section='cover'] .tracking-eyebrow {
+  border-color: color-mix(in oklab, var(--nl-paper) 40%, transparent);
+  color: var(--nl-paper);
+  font-weight: 400;
 }
