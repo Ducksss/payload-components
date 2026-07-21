@@ -1,0 +1,13 @@
+/* Northline (agency-studio) scoped theme — FOUNDATION SKELETON.
+ *
+ * Convention (frozen contract): every rule in this file must live beneath the
+ * [data-template-theme='agency-studio'] root the shell renders. Override the
+ * semantic variables the demo twins consume (--background, --foreground,
+ * --card, --muted, --muted-foreground, --border, --primary, ...) and add
+ * template-specific tokens as needed. Never touch :root, .dark, another
+ * template's scope, or src/app/globals.css. The site stays forced-light. */
+
+[data-template-theme='agency-studio'] {
+  background-color: var(--background);
+  color: var(--foreground);
+}
