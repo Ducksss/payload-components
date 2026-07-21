@@ -6,7 +6,7 @@ import { pathToFileURL } from 'node:url'
 
 type E2eBatch = {
   args: string[]
-  name: 'frontend' | 'remaining' | 'requested' | 'visual'
+  name: 'frontend' | 'remaining' | 'requested' | 'templates-visual' | 'visual'
 }
 
 type E2eInvocation = {
@@ -27,6 +27,10 @@ const isolatedSpecs = [
   {
     name: 'visual' as const,
     path: 'tests/e2e/components-visual.e2e.spec.ts',
+  },
+  {
+    name: 'templates-visual' as const,
+    path: 'tests/e2e/templates-visual.e2e.spec.ts',
   },
 ]
 
