@@ -183,6 +183,63 @@ describe('Fumadocs site shell', () => {
     expect(sitemap).toContain('source.getPages()')
   })
 
+  it('keeps the Payload blocks guide implementation-led, discoverable, and product-true', async () => {
+    const [
+      guide,
+      docsMeta,
+      installationGuide,
+      sitemap,
+      heroConfig,
+      heroComponent,
+      heroManifest,
+    ] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'payload-blocks.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+      readFile(path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'config.ts'), 'utf8'),
+      readFile(path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'Component.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'payload-components', 'manifests', 'hero-basic.json'), 'utf8'),
+    ])
+
+    expect(guide).toContain(
+      'Payload CMS blocks in v3: create, register, type, and render a reusable layout block',
+    )
+    expect(guide).toContain("slug: 'heroBasic'")
+    expect(guide).toContain("interfaceName: 'HeroBasicBlock'")
+    expect(guide).toContain("singular: 'Hero Basic'")
+    expect(guide).toContain("import { HeroBasic } from '../../blocks/HeroBasic/config'")
+    expect(guide).toContain('blocks: [/* existing blocks */, HeroBasic]')
+    expect(guide).toContain("import { HeroBasicBlock } from '@/blocks/HeroBasic/Component'")
+    expect(guide).toContain('heroBasic: HeroBasicBlock')
+    expect(guide).toContain(
+      "import type { HeroBasicBlock as HeroBasicBlockData } from '@/payload-types'",
+    )
+    expect(guide).toContain('pnpm payload generate:types')
+    expect(guide).toContain('pnpm payload generate:importmap')
+    expect(guide).toContain('src/app/(payload)/admin/importMap.js')
+    expect(guide).toContain('<ComponentPreview slug="hero-basic" />')
+    expect(guide).toMatch(
+      /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
+    )
+    expect(guide).toContain('[What is a Payload component?](/docs/what-is-a-payload-component)')
+    expect(guide).toContain('[Use your first block](/docs/first-block)')
+    expect(heroConfig).toContain("slug: 'heroBasic'")
+    expect(heroConfig).toContain("interfaceName: 'HeroBasicBlock'")
+    expect(heroConfig).toContain("singular: 'Hero Basic'")
+    expect(heroComponent).toContain(
+      "import type { HeroBasicBlock as HeroBasicBlockData } from '@/payload-types'",
+    )
+    expect(heroManifest).toContain('"blockSlug": "heroBasic"')
+    expect(heroManifest).toContain('"blockName": "HeroBasic"')
+    expect(heroManifest).toContain('"postInstall": ["generate:types", "generate:importmap"]')
+    expect(docsMeta).toContain('"payload-blocks"')
+    expect(installationGuide).toContain(
+      '[`hero-basic` implementation from Block config through live rendering](/docs/payload-blocks)',
+    )
+    expect(sitemap).toContain('source.getPages()')
+  })
+
   it('keeps the GitHub mark independent from removed Lucide brand icons', async () => {
     const githubLinkSources = await Promise.all(
       [
