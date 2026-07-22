@@ -32,12 +32,14 @@ icon: Wind
 The first four fields come from the shared `heroFields` base. `marqueeItems`, `image`,
 `imageCaption`, and `proofItems` define this editorial variant. All animation is presentation:
 it runs from the `motion` package inside the installed component, honors `prefers-reduced-motion`
-(the final state renders without JavaScript or motion), and never adds editor-managed fields.
+(the final state renders without JavaScript or motion, and the marquee becomes a static wrapped
+row), and never adds editor-managed fields. The component splits the `title` string into balanced
+line masks itself and sets the closing word in the theme's serif accent — no extra fields.
 
 <TypeTable
   type={{
     eyebrow: { type: 'text', description: 'Small label shown above the headline.' },
-    title: { type: 'text', required: true, description: 'The hero headline, revealed line by line from a mask.' },
+    title: { type: 'text', required: true, description: 'The hero headline, split into balanced lines and revealed word by word from masks.' },
     description: {
       type: 'textarea',
       required: true,
@@ -46,11 +48,11 @@ it runs from the `motion` package inside the installed component, honors `prefer
     links: { type: 'array', required: true, description: 'One or two CTA links (min 1, max 2).' },
     marqueeItems: {
       type: 'array',
-      description: 'Up to eight short labels for the scroll-velocity marquee strip.',
+      description: 'Up to eight short labels for the marquee strip that leans into scroll velocity.',
     },
     image: {
       type: 'upload',
-      description: 'Optional cinematic image for the reveal plate; a toned plate renders without it.',
+      description: 'Optional cinematic image for the letterbox reveal plate; a token-toned film still renders without it.',
     },
     imageCaption: { type: 'text', description: 'Optional visible caption beneath the plate.' },
     proofItems: { type: 'array', description: 'Up to four short proof labels below the CTAs.' },

@@ -182,9 +182,7 @@
       "dependencies": [
         "motion"
       ],
-      "registryDependencies": [
-        "badge"
-      ],
+      "registryDependencies": [],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add hero-kinetic\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-kinetic.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add hero-kinetic` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
