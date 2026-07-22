@@ -8,7 +8,9 @@ import type {
   FeatureCardsMediaDemoContent,
   FeatureIconGridDemoContent,
   FeatureSectionDemoContent,
+  HeroAuroraDemoContent,
   HeroBasicDemoContent,
+  HeroKineticDemoContent,
   HeroProductTiltDemoContent,
   HeroVideoDemoContent,
   IntegrationDemoContent,
@@ -61,7 +63,9 @@ export type TemplateSectionContentMap = {
   'feature-icon-grid': FeatureIconGridDemoContent
   'feature-split': FeatureSectionDemoContent
   'feature-steps': FeatureSectionDemoContent
+  'hero-aurora': HeroAuroraDemoContent
   'hero-basic': HeroBasicDemoContent
+  'hero-kinetic': HeroKineticDemoContent
   'hero-product-tilt': HeroProductTiltDemoContent
   'hero-video': HeroVideoDemoContent
   'integration-cluster': IntegrationDemoContent

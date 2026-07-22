@@ -3,7 +3,9 @@ import contactRoutingFormManifest from '../../payload-components/manifests/conta
 import featureAccordionManifest from '../../payload-components/manifests/feature-accordion.json' with { type: 'json' }
 import featureCardsMediaManifest from '../../payload-components/manifests/feature-cards-media.json' with { type: 'json' }
 import featureIconGridManifest from '../../payload-components/manifests/feature-icon-grid.json' with { type: 'json' }
+import heroAuroraManifest from '../../payload-components/manifests/hero-aurora.json' with { type: 'json' }
 import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
+import heroKineticManifest from '../../payload-components/manifests/hero-kinetic.json' with { type: 'json' }
 import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
 import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
 import statsProofManifest from '../../payload-components/manifests/stats-proof.json' with { type: 'json' }
@@ -303,6 +305,50 @@ export const componentEntries = [
     target: 'Product hero',
     title: 'Hero Product Tilt',
     version: heroProductTiltManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-aurora',
+    description:
+      'A motion-first product hero with an animated aurora field, staggered headline reveal, pointer-parallax media panel, and a live metric ticker.',
+    family: 'pages',
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'links',
+      'metrics',
+      'productImage',
+      'imageCaption',
+      'proofItems',
+    ],
+    href: '/docs/components/hero-aurora',
+    slug: 'hero-aurora',
+    target: 'Motion hero',
+    title: 'Hero Aurora',
+    version: heroAuroraManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-kinetic',
+    description:
+      'A motion-first editorial hero with a line-masked type reveal, cinematic media plate, and a velocity-aware marquee strip.',
+    family: 'pages',
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'links',
+      'marqueeItems',
+      'image',
+      'imageCaption',
+      'proofItems',
+    ],
+    href: '/docs/components/hero-kinetic',
+    slug: 'hero-kinetic',
+    target: 'Editorial motion hero',
+    title: 'Hero Kinetic',
+    version: heroKineticManifest.version,
   },
   {
     category: 'features',
