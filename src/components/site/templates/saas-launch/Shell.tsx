@@ -3,6 +3,16 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
+import type { Transition } from 'motion/react'
+import {
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+} from 'motion/react'
+
 import type { TemplateShellProps } from '../shells'
 
 import { templatePreviewHref } from '@/lib/templates/registry'
@@ -17,7 +27,28 @@ import './theme.css'
  * carries aria-current='page'; the mobile menu is keyboard-operable (Escape
  * closes and returns focus to the trigger, outside pointerdown closes, no
  * focus trap — the SiteHeader house pattern); page rhythm between sections is
- * owned here + theme.css, never inside the visual canvas. */
+ * owned here + theme.css, never inside the visual canvas.
+ *
+ * Choreography (all transform/opacity, reduced-motion safe): the header slides
+ * in once on load and solidifies after scroll via an opacity-faded veil layer
+ * (its backdrop blur is constant, never animated); a 2px cobalt scroll-progress
+ * hairline scales along the top; the "Get started" CTA is gently magnetic on
+ * hover-capable pointers; footer columns reveal once in view. Elements tagged
+ * data-relay-reveal are forced to their final frame by a scoped
+ * prefers-reduced-motion net in theme.css, so captures and reduce users always
+ * see the finished chrome — even before hydration. */
+
+const EASE_OUT: Transition['ease'] = [0.16, 1, 0.3, 1]
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value))
+
+const footerReveal = (reduceMotion: boolean, delay: number) => ({
+  initial: { opacity: 0, y: 18 },
+  transition: reduceMotion ? { duration: 0 } : { delay, duration: 0.6, ease: EASE_OUT },
+  viewport: { margin: '0px 0px -10% 0px', once: true },
+  whileInView: { opacity: 1, y: 0 },
+})
 
 function RelayMark({ className }: { className?: string }) {
   return (
@@ -46,10 +77,72 @@ function RelayMark({ className }: { className?: string }) {
   )
 }
 
+/* The header CTA leans toward a fine pointer within ~12px — a springed
+ * translate only, gated off for touch and reduced motion so the link is a
+ * plain stationary button everywhere else. */
+function MagneticCta({ href }: { href: string }) {
+  const reduceMotion = useReducedMotion() ?? false
+  const [pointerFine, setPointerFine] = useState(false)
+
+  useEffect(() => {
+    const query = window.matchMedia('(hover: hover) and (pointer: fine)')
+    const update = () => setPointerFine(query.matches)
+    update()
+    query.addEventListener('change', update)
+    return () => query.removeEventListener('change', update)
+  }, [])
+  const magnetic = pointerFine && !reduceMotion
+
+  const pullX = useMotionValue(0)
+  const pullY = useMotionValue(0)
+  const x = useSpring(pullX, { damping: 18, mass: 0.35, stiffness: 240 })
+  const y = useSpring(pullY, { damping: 18, mass: 0.35, stiffness: 240 })
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!magnetic || event.pointerType === 'touch') return
+    const rect = event.currentTarget.getBoundingClientRect()
+    pullX.set(clamp(event.clientX - (rect.left + rect.width / 2), -34, 34) * 0.35)
+    pullY.set(clamp(event.clientY - (rect.top + rect.height / 2), -20, 20) * 0.4)
+  }
+  const handlePointerLeave = () => {
+    pullX.set(0)
+    pullY.set(0)
+  }
+
+  return (
+    <motion.div
+      className="hidden md:block"
+      onPointerLeave={handlePointerLeave}
+      onPointerMove={handlePointerMove}
+      style={magnetic ? { x, y } : undefined}
+    >
+      <Link
+        href={href}
+        className="inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+      >
+        Get started
+      </Link>
+    </motion.div>
+  )
+}
+
 export function SaasLaunchShell({ activePath, children, template }: TemplateShellProps) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const reduceMotion = useReducedMotion() ?? false
+
+  /* Scroll-aware chrome: the veil solidifies once the page moves, and the
+   * hairline tracks reading progress (springed unless motion is reduced). */
+  const [scrolled, setScrolled] = useState(false)
+  const { scrollY, scrollYProgress } = useScroll()
+  useMotionValueEvent(scrollY, 'change', (latest) => setScrolled(latest > 24))
+  const springProgress = useSpring(scrollYProgress, {
+    damping: 30,
+    mass: 0.4,
+    stiffness: 180,
+  })
+  const progress = reduceMotion ? scrollYProgress : springProgress
 
   useEffect(() => {
     if (!open) return
@@ -80,10 +173,32 @@ export function SaasLaunchShell({ activePath, children, template }: TemplateShel
       data-template-theme="saas-launch"
       className="relay-root flex min-h-screen flex-col bg-background text-foreground antialiased"
     >
-      <header className="relay-header sticky top-0 z-40 border-b border-border">
+      <motion.header
+        animate={{ opacity: 1, y: 0 }}
+        className="relay-header sticky top-0 z-40"
+        data-relay-reveal
+        initial={{ opacity: 0, y: -14 }}
+        transition={reduceMotion ? { duration: 0 } : { duration: 0.55, ease: EASE_OUT }}
+      >
+        {/* Solid state, faded in after the page starts moving. Opacity-only:
+            the blur beneath it lives on .relay-header and never animates. */}
+        <div
+          aria-hidden="true"
+          className={cn(
+            'absolute inset-0 transition-opacity duration-300',
+            scrolled ? 'opacity-100' : 'opacity-0',
+          )}
+          data-relay-header-veil
+        />
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 origin-left bg-brand"
+          data-relay-progress
+          style={{ scaleX: progress }}
+        />
         <nav
           aria-label="Relay site navigation"
-          className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6"
+          className="relative mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6"
         >
           <Link
             href={templatePreviewHref(template.slug)}
@@ -113,12 +228,7 @@ export function SaasLaunchShell({ activePath, children, template }: TemplateShel
           </div>
 
           <div className="flex items-center gap-3">
-            <Link
-              href={templatePreviewHref(template.slug, 'pricing')}
-              className="hidden h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 md:inline-flex"
-            >
-              Get started
-            </Link>
+            <MagneticCta href={templatePreviewHref(template.slug, 'pricing')} />
 
             <div className="relative md:hidden" data-relay-menu>
               <button
@@ -179,14 +289,18 @@ export function SaasLaunchShell({ activePath, children, template }: TemplateShel
             </div>
           </div>
         </nav>
-      </header>
+      </motion.header>
 
       <main className="relay-main flex-1">{children}</main>
 
       <footer className="relay-footer">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
           <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
-            <div className="flex max-w-sm flex-col gap-4">
+            <motion.div
+              className="flex max-w-sm flex-col gap-4"
+              data-relay-reveal
+              {...footerReveal(reduceMotion, 0)}
+            >
               <div className="flex items-center gap-2.5">
                 <RelayMark />
                 <span className="text-base font-semibold tracking-heading text-foreground">
@@ -197,9 +311,14 @@ export function SaasLaunchShell({ activePath, children, template }: TemplateShel
                 Product analytics for teams that ship — one governed number for every decision,
                 from the first dashboard to the board deck.
               </p>
-            </div>
+            </motion.div>
 
-            <nav aria-label="Relay product pages" className="flex flex-col gap-3">
+            <motion.nav
+              aria-label="Relay product pages"
+              className="flex flex-col gap-3"
+              data-relay-reveal
+              {...footerReveal(reduceMotion, 0.08)}
+            >
               <span className="text-xs font-medium uppercase tracking-eyebrow text-muted-foreground">
                 Product
               </span>
@@ -215,9 +334,14 @@ export function SaasLaunchShell({ activePath, children, template }: TemplateShel
                     {item.label}
                   </Link>
                 ))}
-            </nav>
+            </motion.nav>
 
-            <nav aria-label="Relay company pages" className="flex flex-col gap-3">
+            <motion.nav
+              aria-label="Relay company pages"
+              className="flex flex-col gap-3"
+              data-relay-reveal
+              {...footerReveal(reduceMotion, 0.16)}
+            >
               <span className="text-xs font-medium uppercase tracking-eyebrow text-muted-foreground">
                 Company
               </span>
@@ -233,13 +357,17 @@ export function SaasLaunchShell({ activePath, children, template }: TemplateShel
                     {item.label}
                   </Link>
                 ))}
-            </nav>
+            </motion.nav>
           </div>
 
-          <div className="mt-12 flex flex-col justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
+          <motion.div
+            className="mt-12 flex flex-col justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row"
+            data-relay-reveal
+            {...footerReveal(reduceMotion, 0.22)}
+          >
             <span>© 2026 Relay Systems — a fictional company for this concept preview.</span>
             <span>Composed from open-source Payload blocks.</span>
-          </div>
+          </motion.div>
         </div>
       </footer>
     </div>

@@ -81,12 +81,18 @@ export const saasLaunchTemplate: TemplateShowcase = {
   pages: [
     {
       description:
-        'Explains the product, shows proof and platform breadth, and drives the primary conversion.',
+        'Opens with the aurora launch hero — live metrics counting up over the product panel — then builds proof and platform breadth toward the primary conversion.',
       label: 'Home',
       path: '',
       sections: [
         {
-          componentSlug: 'hero-product-tilt',
+          /* The launch moment: word-cascade headline closing on a serif-italic
+           * "trust.", count-up metrics that the About page repeats verbatim
+           * (2.1B events / 48K definitions / 99.98% availability — one set of
+           * canonical numbers across the site), and the parallax dashboard
+           * panel. CTAs map to real routes: Start free → pricing, See the
+           * product → product. */
+          componentSlug: 'hero-aurora',
           content: {
             description:
               'Relay turns raw product events into governed metrics, live dashboards, and alerts your whole company can act on — connected to your warehouse in an afternoon.',
@@ -96,12 +102,17 @@ export const saasLaunchTemplate: TemplateShowcase = {
               { link: { appearance: 'default', label: 'Start free' } },
               { link: { appearance: 'outline', label: 'See the product' } },
             ],
+            metrics: [
+              { label: 'events every day', value: '2.1B' },
+              { label: 'metrics under governance', value: '48K' },
+              { label: 'trailing-year uptime', value: '99.98%' },
+            ],
             proofItems: [
               { label: 'SOC 2 Type II' },
-              { label: '99.98% uptime' },
+              { label: 'Warehouse-native' },
               { label: 'Free for 30 days' },
             ],
-            title: 'Answer every product question with numbers you trust.',
+            title: 'Answer every product question with numbers you can trust.',
           },
           id: 'hero',
         },
@@ -109,6 +120,7 @@ export const saasLaunchTemplate: TemplateShowcase = {
           componentSlug: 'logo-cloud-marquee',
           content: { heading: 'Trusted by product-led teams' },
           id: 'logos',
+          tone: 'muted',
         },
         {
           componentSlug: 'feature-bento',
@@ -142,7 +154,6 @@ export const saasLaunchTemplate: TemplateShowcase = {
             title: 'One metric layer, every surface.',
           },
           id: 'features',
-          tone: 'muted',
         },
         {
           componentSlug: 'stats-proof',
@@ -840,7 +851,7 @@ export const saasLaunchTemplate: TemplateShowcase = {
       title: 'Relay — Contact',
     },
   ],
-  revision: 2,
+  revision: 3,
   schemaVersion: 1,
   slug: 'saas-launch',
   status: 'concept',
