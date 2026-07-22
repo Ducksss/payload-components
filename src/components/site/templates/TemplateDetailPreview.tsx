@@ -74,7 +74,9 @@ export function TemplateDetailPreview({
               className={cn(
                 'rounded-md px-2.5 py-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 page.path === activePage.path
-                  ? 'bg-brand/15 font-medium text-brand'
+                  ? // brand-600 (not brand) — 14px text on the brand/15 tint over the
+                    // muted toolbar needs the darker step to clear WCAG AA 4.5:1.
+                    'bg-brand/15 font-medium text-brand-600'
                   : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
               )}
             >
@@ -109,7 +111,7 @@ export function TemplateDetailPreview({
               className={cn(
                 'inline-flex size-7 items-center justify-center rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 preset === value
-                  ? 'bg-brand/15 text-brand'
+                  ? 'bg-brand/15 text-brand-600'
                   : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
               )}
             >

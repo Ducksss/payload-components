@@ -79,7 +79,10 @@ test.describe('Templates gallery (/templates)', () => {
     await page.goto(`${baseURL}/templates`)
     await expect(page.locator('h1')).toHaveCount(1)
 
-    const text = await page.locator('body').innerText()
+    /* Scoped to main: the concept surface itself must never render an install
+       command. The shared SiteFooter's component install command is sitewide
+       chrome pinned by the frontend suite, not a template availability claim. */
+    const text = await page.locator('main').innerText()
     expect(text).not.toMatch(/payload-components\s+add/i)
     expect(text).not.toMatch(/\bwaitlist\b/i)
     expect(text).not.toMatch(/coming\s+soon/i)
@@ -121,7 +124,9 @@ test.describe('Template detail pages (/templates/<slug>)', () => {
       await expect(page.getByText(TEMPLATE_CONCEPT_STATUS_LABEL).first()).toBeVisible()
       await expect(page.getByText(TEMPLATE_CONCEPT_DISCLOSURE).first()).toBeVisible()
 
-      const text = await page.locator('body').innerText()
+      /* Scoped to main — see the gallery no-install test for why the shared
+         SiteFooter chrome is excluded. */
+      const text = await page.locator('main').innerText()
       expect(text).not.toMatch(/payload-components\s+add/i)
       expect(text).not.toMatch(/\bwaitlist\b/i)
       expect(text).not.toMatch(/coming\s+soon/i)
@@ -317,10 +322,17 @@ test.describe('Template full previews (/templates/<slug>/preview/<page>)', () =>
 
         await trigger.click()
         await expect(trigger).toHaveAttribute('aria-expanded', 'true')
-        await expect(page.locator(`a[href="${targetHref}"]`).first()).toBeVisible()
+
+        /* Assert inside the element the trigger controls — a bare .first()
+           href match can resolve to the hidden desktop nav link, which shares
+           the same href. */
+        const menuId = await trigger.getAttribute('aria-controls')
+        expect(menuId).toBeTruthy()
+        const menu = page.locator(`#${menuId}`)
+        await expect(menu.locator(`a[href="${targetHref}"]`).first()).toBeVisible()
 
         await page.keyboard.press('Escape')
-        await expect(page.locator(`a[href="${targetHref}"]`).first()).toBeHidden()
+        await expect(menu.locator(`a[href="${targetHref}"]`).first()).toBeHidden()
         await expect(trigger).toBeFocused()
       }
 

@@ -1413,7 +1413,7 @@ export const templatesRecipeIntro =
 export const templatesContribution = {
   heading: 'Templates are decided in the open',
   intro:
-    'These concepts exist to answer one question with the community: should full-site templates become installable? The recipes, the fictional brands, and the installer RFC all live in the public repository — no waitlist, no email capture.',
+    'These concepts exist to answer one question with the community: should full-site templates become installable? The recipes, the fictional brands, and the installer RFC all live in the public repository — nothing gated, no email capture.',
   links: [
     {
       description: 'Read the showcase source — every recipe is plain data in the repository.',
