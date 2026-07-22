@@ -1,0 +1,70 @@
+---
+title: Hero Aurora
+description: A motion-first product hero with an animated aurora field, staggered headline reveal, pointer-parallax media panel, and a live metric ticker.
+icon: Sparkles
+---
+
+<ComponentPreview slug="hero-aurora" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add hero-aurora
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-aurora.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="hero-aurora" />
+
+## Content model
+
+The first four fields come from the shared `heroFields` base. `metrics`, `productImage`,
+`imageCaption`, and `proofItems` define this motion-led variant. All animation is presentation:
+it runs from the `motion` package inside the installed component, honors `prefers-reduced-motion`
+(the final state renders without JavaScript or motion), and never adds editor-managed fields.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the headline.' },
+    title: { type: 'text', required: true, description: 'The hero headline, revealed word by word.' },
+    description: {
+      type: 'textarea',
+      required: true,
+      description: 'Supporting copy beneath the headline.',
+    },
+    links: { type: 'array', required: true, description: 'One or two CTA links (min 1, max 2).' },
+    metrics: {
+      type: 'array',
+      description: 'Up to three value + label pairs shown as an animated metric ticker.',
+    },
+    productImage: {
+      type: 'upload',
+      description: 'Optional product image for the parallax panel; a gradient panel renders without it.',
+    },
+    imageCaption: { type: 'text', description: 'Optional visible caption beneath the panel.' },
+    proofItems: { type: 'array', description: 'Up to four short proof labels below the CTAs.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="hero-aurora" />
+
+## Requirements
+
+<ComponentRequirements slug="hero-aurora" />
+
+## In this family
+
+<ComponentFamily slug="hero-aurora" />
