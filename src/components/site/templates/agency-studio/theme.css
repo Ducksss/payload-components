@@ -16,12 +16,14 @@
  * rather than a stack of specimens. */
 
 [data-template-theme='agency-studio'] {
-  /* Template palette tokens */
+  /* Template palette tokens. Apricot is the rust that survives ink — the
+   * warm accent used wherever rust itself would fail AA on dark surfaces. */
   --nl-paper: oklch(96.2% 0.014 85deg);
   --nl-paper-deep: oklch(92.6% 0.02 84deg);
   --nl-ink: oklch(24% 0.016 60deg);
   --nl-ink-band: oklch(22.5% 0.016 58deg);
   --nl-rust: oklch(47% 0.132 38deg);
+  --nl-apricot: oklch(80% 0.06 50deg);
 
   /* Semantic variables the twins consume */
   --background: var(--nl-paper);
@@ -180,25 +182,20 @@
   }
 }
 
-/* Rust eyebrows fail AA on ink, so contrast bands use a warm apricot mark. */
+/* Rust eyebrows fail AA on ink, so contrast bands use the apricot mark. */
 [data-template-theme='agency-studio'] [data-tone='contrast'] .tracking-eyebrow {
-  border-color: color-mix(in oklab, oklch(80% 0.06 50deg) 45%, transparent);
-  color: oklch(80% 0.06 50deg);
+  border-color: color-mix(in oklab, var(--nl-apricot) 45%, transparent);
+  color: var(--nl-apricot);
 }
 
-/* ————— The cover (home hero-video poster) —————
- * Full-bleed cinematic plate flush against the masthead. The twin builds its
- * poster from --muted/--accent gradients under an ink overlay; deepening
- * those tokens here turns the catalog's neutral wash into a warm dusk. The
- * eyebrow keeps the twin's paper-on-dark treatment instead of rust. */
+/* ————— The cover (home hero-kinetic title sequence) —————
+ * The kinetic hero runs as Northline's own title sequence, printed on the
+ * same paper as the masthead: the section sits flush beneath it (no band, no
+ * padding of its own — the twin's frame padding is the whole rhythm), the ink
+ * plate irises open like a film still tipped into the page, and the
+ * discipline marquee runs along the bottom edge as a full-bleed index strip.
+ * The twin's own frame chrome is already dissolved by the canvas rules. */
 [data-template-theme='agency-studio'] [data-template-section='cover'] {
-  --muted: oklch(35% 0.045 52deg);
-  --accent: oklch(46% 0.095 44deg);
-  --foreground: oklch(17.5% 0.02 55deg);
-  --primary: var(--nl-rust);
-  --primary-foreground: var(--nl-paper);
-
-  background-color: var(--nl-ink-band);
   padding-block: 0;
 }
 
@@ -206,8 +203,43 @@
   max-width: none;
 }
 
-[data-template-theme='agency-studio'] [data-template-section='cover'] .tracking-eyebrow {
-  border-color: color-mix(in oklab, var(--nl-paper) 40%, transparent);
-  color: var(--nl-paper);
+/* The serif override above puts the whole manifesto in Instrument Serif
+ * italic, which would swallow the component's own serif-italic closing word —
+ * so the closing word lands in rust instead, with its tracking normalized to
+ * the rest of the line (one voice, one accent). */
+[data-template-theme='agency-studio'] [data-template-section='cover'] .tracking-display .font-serif.tracking-title {
+  color: var(--nl-rust);
+  letter-spacing: -0.015em;
+}
+
+/* One rust mark per zone: the eyebrow keeps the house rust-mono folio
+ * treatment, so the proof items step back to ink (their mono numerals stay
+ * rust) and the marquee reads as an ink index with rust diamonds. */
+[data-template-theme='agency-studio'] [data-template-section='cover'] .text-xs.tracking-eyebrow {
+  color: var(--muted-foreground);
+}
+
+[data-template-theme='agency-studio'] [data-template-section='cover'] .text-lg.tracking-eyebrow {
+  color: color-mix(in oklab, var(--nl-ink) 82%, transparent);
   font-weight: 400;
+}
+
+/* The reduced-motion marquee fallback (a static wrapped index) follows the
+ * same quiet ink treatment as the moving strip. */
+[data-template-theme='agency-studio'] [data-template-section='cover'] li.text-sm.tracking-eyebrow {
+  color: var(--muted-foreground);
+}
+
+/* Full-bleed marquee: the twin's negative margins only escape its frame
+ * padding, not the centered max-width column — this margin re-derives the
+ * bleed from the viewport at every width. The frame's overflow-hidden clips
+ * the scrollbar-width excess, so the strip can never widen the page. */
+[data-template-theme='agency-studio'] [data-template-section='cover'] div.border-t {
+  margin-inline: calc(50% - 50vw);
+}
+
+/* Print-flat plate: the hairline border does the framing work; the catalog's
+ * drop shadow reads as screen chrome on paper. */
+[data-template-theme='agency-studio'] [data-template-section='cover'] .shadow-xl {
+  box-shadow: none;
 }
