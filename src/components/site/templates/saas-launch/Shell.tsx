@@ -173,11 +173,15 @@ export function SaasLaunchShell({ activePath, children, template }: TemplateShel
       data-template-theme="saas-launch"
       className="relay-root flex min-h-screen flex-col bg-background text-foreground antialiased"
     >
+      {/* Transform-only entrance: an opacity fade alpha-composites the cobalt
+          CTA toward white mid-animation, transiently dropping it below AA
+          (axe scans catch it). Sliding from behind the top edge reads the
+          same without ever washing out the button. */}
       <motion.header
-        animate={{ opacity: 1, y: 0 }}
+        animate={{ y: 0 }}
         className="relay-header sticky top-0 z-40"
         data-relay-reveal
-        initial={{ opacity: 0, y: -14 }}
+        initial={{ y: -14 }}
         transition={reduceMotion ? { duration: 0 } : { duration: 0.55, ease: EASE_OUT }}
       >
         {/* Solid state, faded in after the page starts moving. Opacity-only:
