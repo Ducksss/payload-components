@@ -33,7 +33,7 @@ export function TemplateSectionReveal({
 }) {
   const reduceMotion = useReducedMotion()
 
-  if (index === 0 || reduceMotion) {
+  if (index === 0) {
     return (
       <div data-template-section={id} data-tone={tone}>
         {children}
@@ -41,6 +41,10 @@ export function TemplateSectionReveal({
     )
   }
 
+  /* Server and reduce clients render the SAME tree (branching on
+     useReducedMotion() here caused a hydration mismatch — it is always false
+     during SSR). Reduced motion instead zeroes the transition, and the CSS
+     net in template-motion.css pins the final state before hydration. */
   return (
     <motion.div
       data-template-section={id}
@@ -49,7 +53,11 @@ export function TemplateSectionReveal({
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ margin: '0px 0px -12% 0px', once: true }}
-      transition={{ damping: 26, mass: 0.9, stiffness: 120, type: 'spring' }}
+      transition={
+        reduceMotion
+          ? { duration: 0 }
+          : { damping: 26, mass: 0.9, stiffness: 120, type: 'spring' }
+      }
     >
       {children}
     </motion.div>
