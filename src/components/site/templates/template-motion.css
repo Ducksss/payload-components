@@ -1,0 +1,10 @@
+/* Safety net for template scroll choreography: if the visitor prefers reduced
+ * motion, revealed sections are final-state even before (or without) React
+ * hydration — Playwright captures, posters, and reduce users must never see a
+ * hidden section. Scoped to the reveal attribute; owns no theme decisions. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
