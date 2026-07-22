@@ -189,6 +189,39 @@ function normalizeDestination(url: URL) {
   return null
 }
 
+/* Template showcase events — the approved anonymous vocabulary from the
+ * templates PRD. Properties never include page content, free text, or PII:
+ * only template slug/revision, page slug, source surface, and viewport preset. */
+export type TemplateAnalyticsEvent =
+  | 'template_contribution_click'
+  | 'template_detail_view'
+  | 'template_gallery_view'
+  | 'template_preview_open'
+  | 'template_preview_page_change'
+  | 'template_preview_scroll_milestone'
+  | 'template_preview_viewport_change'
+  | 'template_recipe_click'
+
+export type TemplateAnalyticsProperties = {
+  milestone?: 25 | 50 | 75 | 90
+  page?: string
+  revision?: number
+  source?: 'detail' | 'gallery' | 'preview'
+  template?: string
+  viewport?: 'desktop' | 'mobile' | 'tablet'
+}
+
+export function trackTemplateEvent(
+  eventName: TemplateAnalyticsEvent,
+  properties: TemplateAnalyticsProperties,
+) {
+  const clean = Object.fromEntries(
+    Object.entries(properties).filter(([, value]) => value !== undefined),
+  ) as AnalyticsProperties
+
+  trackEvent(eventName, clean)
+}
+
 export function trackPrimaryLinkClick(link: HTMLAnchorElement) {
   const href = link.getAttribute('href')
   if (!href) return
