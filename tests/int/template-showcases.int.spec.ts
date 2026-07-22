@@ -107,12 +107,32 @@ const forbiddenImports = [
  * [data-template-theme='<slug>'] scope. Conditional at-rule preludes (@media,
  * @supports, …) are transparent — their inner rules must still be scoped —
  * while @keyframes stop selectors (from/to/percentages) are exempt. */
+/* Split a selector list on top-level commas only — commas inside functional
+ * pseudo-classes like :is(.a, .b) belong to one selector, not two. */
+const splitSelectorList = (selector: string): string[] => {
+  const parts: string[] = []
+  let depth = 0
+  let current = ''
+  for (const char of selector) {
+    if (char === '(') depth += 1
+    else if (char === ')') depth = Math.max(0, depth - 1)
+    if (char === ',' && depth === 0) {
+      parts.push(current)
+      current = ''
+    } else {
+      current += char
+    }
+  }
+  parts.push(current)
+  return parts
+}
+
 const unscopedThemeSelectors = (css: string, slug: string): string[] => {
   const scopePrefixes = [`[data-template-theme='${slug}']`, `[data-template-theme="${slug}"]`]
   const isScoped = (selector: string) =>
-    selector
-      .split(',')
-      .every((part) => scopePrefixes.some((prefix) => part.trim().startsWith(prefix)))
+    splitSelectorList(selector).every((part) =>
+      scopePrefixes.some((prefix) => part.trim().startsWith(prefix)),
+    )
 
   const stripped = css.replace(/\/\*[\s\S]*?\*\//g, '')
   const violations: string[] = []

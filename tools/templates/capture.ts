@@ -83,6 +83,9 @@ async function main() {
       try {
         await tab.goto(url, { timeout: GOTO_TIMEOUT_MS, waitUntil: 'networkidle' })
         await tab.evaluate(() => document.fonts.ready)
+        /* The floating back-to-detail pill is preview chrome, not part of the
+           fictional site — keep it out of the marketing posters. */
+        await tab.addStyleTag({ content: '[data-template-preview-exit]{display:none !important}' })
         await tab.waitForTimeout(SETTLE_MS)
 
         const outputs = [`public${templatePagePosterSrc(template.slug, page.path)}`]

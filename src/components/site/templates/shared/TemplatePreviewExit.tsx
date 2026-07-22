@@ -9,7 +9,7 @@ import { templateDetailHref } from '@/lib/templates/registry'
  * focusable UI. */
 export function TemplatePreviewExit({ slug, title }: { slug: string; title: string }) {
   return (
-    <div className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2">
+    <div data-template-preview-exit className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2">
       <Link
         href={templateDetailHref(slug)}
         className="flex items-center gap-2 rounded-full border border-border bg-background/95 px-4 py-2 text-sm text-foreground shadow-lg backdrop-blur transition-colors hover:bg-secondary"
