@@ -37,7 +37,9 @@
   --secondary: oklch(94.8% 0.013 250deg);
   --secondary-foreground: oklch(32% 0.05 260deg);
   --muted: oklch(95.6% 0.009 247deg);
-  --muted-foreground: oklch(45% 0.032 257deg);
+  /* 42% (not 45%): muted text must clear AA 4.5:1 on the pure-white card
+     surfaces too (header scroll veil, panels), not just the cool-white page. */
+  --muted-foreground: oklch(42% 0.03 257deg);
   --accent: oklch(93.2% 0.024 255deg);
   --accent-foreground: oklch(36% 0.1 261deg);
 
