@@ -132,6 +132,90 @@
       ]
     },
     {
+      "name": "hero-aurora",
+      "type": "registry:block",
+      "title": "Hero Aurora",
+      "description": "Motion-first product hero with an animated aurora field, staggered reveal, parallax panel, and metric ticker.",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add hero-aurora\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-aurora.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add hero-aurora` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add hero-aurora",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/heroFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/heroFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroAurora/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroAurora/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroAurora/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroAurora/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "hero-kinetic",
+      "type": "registry:block",
+      "title": "Hero Kinetic",
+      "description": "Motion-first editorial hero with a line-masked type reveal, cinematic plate, and velocity marquee.",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add hero-kinetic\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-kinetic.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add hero-kinetic` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add hero-kinetic",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/heroFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/heroFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroKinetic/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroKinetic/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroKinetic/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroKinetic/Component.tsx"
+        }
+      ]
+    },
+    {
       "name": "feature-grid-basic",
       "type": "registry:block",
       "title": "Feature Grid Basic",
@@ -1646,8 +1730,12 @@
       "type": "registry:block",
       "title": "Call To Action Signup",
       "description": "Email-capture Payload call-to-action block: heading, copy, and a form that posts to a same-origin endpoint.",
-      "registryDependencies": ["button"],
-      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add call-to-action-signup\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/call-to-action-signup.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add call-to-action-signup` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
@@ -1738,14 +1826,21 @@
       "type": "registry:block",
       "title": "Team Roster",
       "description": "Payload team block: department-grouped sections, each a grid of member avatars with name and role.",
-      "registryDependencies": ["badge"],
+      "registryDependencies": [
+        "badge"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add team-roster\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/team-roster.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add team-roster` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
           "installCommand": "payload-components add team-roster",
-          "postInstall": ["generate:types", "generate:importmap"],
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
           "requiresPayloadComponentWrapper": true,
-          "supportedTargets": ["payload-website-starter"]
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
         }
       },
       "files": [
@@ -1771,14 +1866,21 @@
       "type": "registry:block",
       "title": "Team Grid",
       "description": "Payload team block: a heading and intro above a responsive grid of member photo cards that reveal role on hover.",
-      "registryDependencies": ["badge"],
+      "registryDependencies": [
+        "badge"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add team-grid\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/team-grid.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add team-grid` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
           "installCommand": "payload-components add team-grid",
-          "postInstall": ["generate:types", "generate:importmap"],
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
           "requiresPayloadComponentWrapper": true,
-          "supportedTargets": ["payload-website-starter"]
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
         }
       },
       "files": [
@@ -2061,14 +2163,21 @@
       "type": "registry:block",
       "title": "Comparator Table",
       "description": "Tiered feature-comparison table Payload block: plan columns with CTAs over grouped feature rows.",
-      "registryDependencies": ["badge"],
+      "registryDependencies": [
+        "badge"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-table\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-table.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-table` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
           "installCommand": "payload-components add comparator-table",
-          "postInstall": ["generate:types", "generate:importmap"],
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
           "requiresPayloadComponentWrapper": true,
-          "supportedTargets": ["payload-website-starter"]
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
         }
       },
       "files": [
@@ -2094,14 +2203,22 @@
       "type": "registry:block",
       "title": "Comparator Grid",
       "description": "Plan-column comparison Payload block: pricing columns in a bordered card over a feature matrix.",
-      "registryDependencies": ["badge", "card"],
+      "registryDependencies": [
+        "badge",
+        "card"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-grid\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-grid.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-grid` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
           "installCommand": "payload-components add comparator-grid",
-          "postInstall": ["generate:types", "generate:importmap"],
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
           "requiresPayloadComponentWrapper": true,
-          "supportedTargets": ["payload-website-starter"]
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
         }
       },
       "files": [
@@ -2127,14 +2244,22 @@
       "type": "registry:block",
       "title": "Comparator Stack",
       "description": "Stacked plan-card comparison Payload block: one card per plan with its own price, CTA, and feature checklist.",
-      "registryDependencies": ["badge", "card"],
+      "registryDependencies": [
+        "badge",
+        "card"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-stack\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-stack.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-stack` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
           "installCommand": "payload-components add comparator-stack",
-          "postInstall": ["generate:types", "generate:importmap"],
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
           "requiresPayloadComponentWrapper": true,
-          "supportedTargets": ["payload-website-starter"]
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
         }
       },
       "files": [

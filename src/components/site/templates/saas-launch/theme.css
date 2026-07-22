@@ -37,7 +37,9 @@
   --secondary: oklch(94.8% 0.013 250deg);
   --secondary-foreground: oklch(32% 0.05 260deg);
   --muted: oklch(95.6% 0.009 247deg);
-  --muted-foreground: oklch(45% 0.032 257deg);
+  /* 42% (not 45%): muted text must clear AA 4.5:1 on the pure-white card
+     surfaces too (header scroll veil, panels), not just the cool-white page. */
+  --muted-foreground: oklch(42% 0.03 257deg);
   --accent: oklch(93.2% 0.024 255deg);
   --accent-foreground: oklch(36% 0.1 261deg);
 
@@ -93,6 +95,27 @@
   padding-block: clamp(4.25rem, 9vw, 6.75rem);
 }
 
+/* The aurora hero paints its own atmosphere — drop the band's cobalt radial
+ * (double halo mud) and keep only a whisper of the tint so the arch, rays,
+ * and drifting glows own the light story edge to edge. */
+[data-template-theme='saas-launch'] [data-template-section='hero']:has([data-aurora-root]) {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--relay-halo) 38%, transparent),
+    transparent 58%
+  );
+}
+
+/* Electric cobalt for the aurora's luminous layers only: the component mixes
+ * everything from --brand/--brand-100/--brand-200, and Relay's page-level
+ * tints are deliberately quiet — step the chroma up inside the aurora subtree
+ * so the arch and curtain rays read vivid while headline contrast (painted in
+ * --foreground over the component's background veil) stays AA. */
+[data-template-theme='saas-launch'] [data-aurora-root] {
+  --brand-100: oklch(89% 0.09 255deg);
+  --brand-200: oklch(82% 0.13 256deg);
+}
+
 /* ---------------------------------------------------------------- */
 /* Tone bands. `tone` is set per section in the template definition.  */
 /* ---------------------------------------------------------------- */
@@ -107,6 +130,14 @@
   box-shadow:
     inset 0 1px 0 var(--border),
     inset 0 -1px 0 var(--border);
+}
+
+/* The logo marquee's edge fades are mixed from --card; on the muted trust
+ * strip they must dissolve into the band rather than print white columns.
+ * The marquee is this section's only card consumer, so the remap is
+ * contained to the strip. */
+[data-template-theme='saas-launch'] [data-template-section='logos'][data-tone='muted'] {
+  --card: var(--relay-band);
 }
 
 /* Contrast + footer: deep ink navy. The semantic variables are re-mapped so
@@ -143,12 +174,39 @@
 /* Shell chrome                                                      */
 /* ---------------------------------------------------------------- */
 
+/* The header floats translucent over the aurora, then solidifies: the base
+ * layer keeps a constant backdrop blur (never animated), and the veil below
+ * fades in via opacity once the page scrolls — bringing the near-opaque
+ * surface, the bottom hairline, and a soft drop shadow with it. */
 [data-template-theme='saas-launch'] .relay-header {
-  background-color: color-mix(in oklab, var(--card) 88%, transparent);
+  background-color: color-mix(in oklab, var(--card) 55%, transparent);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
+[data-template-theme='saas-launch'] [data-relay-header-veil] {
+  background-color: color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow:
+    inset 0 -1px 0 var(--border),
+    0 12px 32px -24px color-mix(in oklab, var(--foreground) 45%, transparent);
+}
+
 [data-template-theme='saas-launch'] .relay-footer {
   border-top: 1px solid oklch(100% 0 0deg / 10%);
+}
+
+/* Reduced-motion net for the shell's own choreography (header entrance,
+ * footer column reveals, veil fade): final frame, instantly, even before
+ * hydration — the same guarantee template-motion.css gives section reveals.
+ * The scroll-progress hairline is exempt on purpose: it tracks reading
+ * position 1:1 (state, not decoration) and sits at scaleX(0) on capture. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='saas-launch'] [data-relay-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-template-theme='saas-launch'] [data-relay-header-veil] {
+    transition-duration: 0.001s !important;
+  }
 }

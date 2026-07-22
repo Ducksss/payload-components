@@ -1,0 +1,72 @@
+---
+title: Hero Kinetic
+description: A motion-first editorial hero with a line-masked type reveal, cinematic media plate, and a velocity-aware marquee strip.
+icon: Wind
+---
+
+<ComponentPreview slug="hero-kinetic" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add hero-kinetic
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-kinetic.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="hero-kinetic" />
+
+## Content model
+
+The first four fields come from the shared `heroFields` base. `marqueeItems`, `image`,
+`imageCaption`, and `proofItems` define this editorial variant. All animation is presentation:
+it runs from the `motion` package inside the installed component, honors `prefers-reduced-motion`
+(the final state renders without JavaScript or motion, and the marquee becomes a static wrapped
+row), and never adds editor-managed fields. The component splits the `title` string into balanced
+line masks itself and sets the closing word in the theme's serif accent — no extra fields.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the headline.' },
+    title: { type: 'text', required: true, description: 'The hero headline, split into balanced lines and revealed word by word from masks.' },
+    description: {
+      type: 'textarea',
+      required: true,
+      description: 'Supporting copy beneath the headline.',
+    },
+    links: { type: 'array', required: true, description: 'One or two CTA links (min 1, max 2).' },
+    marqueeItems: {
+      type: 'array',
+      description: 'Up to eight short labels for the marquee strip that leans into scroll velocity.',
+    },
+    image: {
+      type: 'upload',
+      description: 'Optional cinematic image for the letterbox reveal plate; a token-toned film still renders without it.',
+    },
+    imageCaption: { type: 'text', description: 'Optional visible caption beneath the plate.' },
+    proofItems: { type: 'array', description: 'Up to four short proof labels below the CTAs.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="hero-kinetic" />
+
+## Requirements
+
+<ComponentRequirements slug="hero-kinetic" />
+
+## In this family
+
+<ComponentFamily slug="hero-kinetic" />
