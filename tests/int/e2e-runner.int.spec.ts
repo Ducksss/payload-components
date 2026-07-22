@@ -27,6 +27,8 @@ describe('e2e runner batches', () => {
         'tests/e2e/frontend.e2e.spec.ts',
         'tests/e2e/future-regression.e2e.spec.ts',
         'tests/e2e/geo.e2e.spec.ts',
+        'tests/e2e/templates-visual.e2e.spec.ts',
+        'tests/e2e/templates.e2e.spec.ts',
       ]),
     ).toEqual([
       {
@@ -38,10 +40,15 @@ describe('e2e runner batches', () => {
         name: 'visual',
       },
       {
+        args: ['tests/e2e/templates-visual.e2e.spec.ts'],
+        name: 'templates-visual',
+      },
+      {
         args: [
           'tests/e2e/a11y.e2e.spec.ts',
           'tests/e2e/future-regression.e2e.spec.ts',
           'tests/e2e/geo.e2e.spec.ts',
+          'tests/e2e/templates.e2e.spec.ts',
         ],
         name: 'remaining',
       },
@@ -54,6 +61,8 @@ describe('e2e runner batches', () => {
       'tests/e2e/components-visual.e2e.spec.ts',
       'tests/e2e/frontend.e2e.spec.ts',
       'tests/e2e/geo.e2e.spec.ts',
+      'tests/e2e/templates-visual.e2e.spec.ts',
+      'tests/e2e/templates.e2e.spec.ts',
     ])
   })
 

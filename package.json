@@ -55,6 +55,7 @@
     "registry:validate": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/validate-registry.ts",
     "showcase:capture": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/showcase/capture.ts",
     "source:build": "cross-env NODE_OPTIONS=--no-deprecation fumadocs-mdx",
+    "templates:capture": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/templates/capture.ts",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "tsx tools/run-e2e.ts",
