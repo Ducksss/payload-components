@@ -341,7 +341,7 @@ test.describe('Light shadcn frontend', () => {
       {
         h1: 'Introduction',
         path: '/docs',
-        title: /Introduction/,
+        title: /CLI setup and architecture/,
       },
       {
         h1: 'Architecture',
