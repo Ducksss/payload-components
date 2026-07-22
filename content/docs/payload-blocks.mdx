@@ -1,0 +1,185 @@
+---
+title: "Payload CMS blocks in v3: create, register, type, and render a reusable layout block"
+seoTitle: "Payload CMS blocks in v3: create, register, type, and render"
+description: Build a reusable Payload CMS v3 layout block from Block config through collection registration, generated types, rendering, admin, and a live page.
+icon: Blocks
+---
+
+A reusable Payload CMS block becomes live through one chain: define its `Block` config, register it in a collection, generate its type, map its slug to a frontend component, refresh the admin import map, then add the block to a page. Miss one handoff and the block is either absent from the editor, untyped, or invisible on the frontend.
+
+This guide follows the real [`hero-basic` block](/docs/components/hero-basic) through that complete Payload v3 path. You can apply the same shape to a block you write yourself or let Payload Components make the supported edits for you.
+
+<Callout type="info" title="This is the implementation path">
+  Read [What is a Payload component?](/docs/what-is-a-payload-component) for
+  the shorter mental model. If the block is already installed and you only need
+  the editor-to-page flow, go to [Use your first block](/docs/first-block).
+</Callout>
+
+## The three files that carry the block
+
+`hero-basic` installs three source files into a supported Payload v3 + Next.js project:
+
+| File | Job |
+| --- | --- |
+| `src/blocks/shared/heroFields.ts` | Defines the reusable eyebrow, title, description, and link fields shared by the hero family. |
+| `src/blocks/HeroBasic/config.ts` | Gives Payload the block slug, generated interface name, editor labels, and fields. |
+| `src/blocks/HeroBasic/Component.tsx` | Renders the generated block data on the frontend. |
+
+The collection and renderer remain app-owned files. The installer adds one import and one registration to each instead of replacing them.
+
+## 1. Define the Payload Block config
+
+The current `HeroBasic` config is an ordinary Payload `Block`. Its `slug` joins the stored page data to the renderer, while `interfaceName` controls the generated TypeScript export.
+
+```ts title="src/blocks/HeroBasic/config.ts"
+import type { Block } from 'payload'
+
+import { heroFields } from '@/blocks/shared/heroFields'
+
+export const HeroBasic: Block = {
+  slug: 'heroBasic',
+  dbName: 'pc_her_bas',
+  interfaceName: 'HeroBasicBlock',
+  fields: [
+    ...heroFields,
+    {
+      name: 'proofItems',
+      type: 'array',
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          required: true,
+        },
+      ],
+      maxRows: 4,
+    },
+  ],
+  labels: {
+    plural: 'Hero Basic Blocks',
+    singular: 'Hero Basic',
+  },
+}
+```
+
+Those properties each have a downstream effect:
+
+- `slug: 'heroBasic'` becomes the saved block's `blockType` and the key used by `RenderBlocks`.
+- `interfaceName: 'HeroBasicBlock'` becomes the type exported from `src/payload-types.ts`.
+- `labels.singular: 'Hero Basic'` is the name editors see in the block picker.
+- `fields` define both the admin controls and the shape passed to the frontend component.
+
+Choose stable identifiers before storing production content. The shipped config keeps a short `dbName`; changing an installed block's stored identifiers later requires a content migration.
+
+## 2. Register the block in the Pages layout
+
+Payload only offers blocks that are listed on a `blocks` field. In the supported website-starter shape, that field is `layout` in `src/collections/Pages/index.ts`.
+
+```ts title="src/collections/Pages/index.ts"
+import { HeroBasic } from '../../blocks/HeroBasic/config'
+
+// Inside the Pages collection fields:
+{
+  name: 'layout',
+  type: 'blocks',
+  blocks: [/* existing blocks */, HeroBasic],
+}
+```
+
+This registration is what makes **Hero Basic** available in the Pages editor. Copying `config.ts` into the repo without adding `HeroBasic` to this array leaves the block out of the picker.
+
+Payload Components finds the existing `layout` field and appends `HeroBasic` without duplicating the import or array entry on a rerun.
+
+## 3. Map the block slug to its renderer
+
+The saved page layout contains data with `blockType: 'heroBasic'`. The frontend render map needs the same key and the matching React component.
+
+```tsx title="src/blocks/RenderBlocks.tsx"
+import { HeroBasicBlock } from '@/blocks/HeroBasic/Component'
+
+const blockComponents = {
+  // Existing block mappings stay here.
+  heroBasic: HeroBasicBlock,
+}
+```
+
+The component itself consumes the type named by the config. This is the important seam between Payload's generated schema and your React props:
+
+```tsx title="src/blocks/HeroBasic/Component.tsx"
+import type { HeroBasicBlock as HeroBasicBlockData } from '@/payload-types'
+
+type Props = HeroBasicBlockData & {
+  id?: string
+  className?: string
+  disableInnerContainer?: boolean
+}
+
+export const HeroBasicBlock: React.FC<Props> = ({
+  description,
+  eyebrow,
+  links,
+  proofItems,
+  title,
+}) => {
+  // Render the editor-managed fields.
+}
+```
+
+Because the config slug and render-map key are both `heroBasic`, `RenderBlocks` can select `HeroBasicBlock` for that layout item. Because the props extend the generated `HeroBasicBlock` type, a field change in the config can surface as a TypeScript error in the renderer instead of a runtime surprise.
+
+## 4. Generate the Payload types
+
+Register the block before generating types. Payload reads the active collection config, then writes the block interface and the updated `Page['layout']` union to `src/payload-types.ts`.
+
+```bash
+pnpm payload generate:types
+```
+
+After it runs, verify that `src/payload-types.ts` exports `HeroBasicBlock`. Do not add that interface by hand. The generated file will be replaced the next time the config changes.
+
+If `@/payload-types` is missing or `HeroBasicBlock` does not appear, use the [Payload 3 generated-types repair guide](/docs/payload-types-errors) before debugging the React component.
+
+## 5. Refresh the admin import map
+
+The supported install also runs Payload's import-map generator:
+
+```bash
+pnpm payload generate:importmap
+```
+
+Payload regenerates the admin component lookup, normally at `src/app/(payload)/admin/importMap.js` in the supported website-starter shape. Do not edit that generated file by hand.
+
+`HeroBasic` uses Payload's built-in field controls, so the collection's `blocks` array is what puts it in the picker. The import-map command does not register the block. It remains a post-install step so the project's generated admin imports are current after the source and config changes.
+
+## 6. Add the block in the editor
+
+Start the app and open `/admin`. Create or edit a Page, find its `layout` field, and choose **Hero Basic** from **Add Block**. Fill the required title, description, and link fields, add any proof items, then publish.
+
+The saved layout item now carries `blockType: 'heroBasic'` plus the field values defined by the config. The [first-block walkthrough](/docs/first-block) shows the same editor flow with screenshots.
+
+## 7. Render the published layout
+
+The page route passes its layout data to the app's existing `RenderBlocks` component:
+
+```tsx
+<RenderBlocks blocks={page.layout} />
+```
+
+`RenderBlocks` reads `blockType`, selects `HeroBasicBlock`, and passes the rest of the layout item as typed props. The result is the same component editors configured in Payload:
+
+<ComponentPreview slug="hero-basic" />
+
+## Install the complete wiring
+
+On a supported Payload v3 + Next.js project, the wrapper command copies the three source files, registers `HeroBasic` in the Pages layout, maps `heroBasic` in `RenderBlocks`, runs both generators, and records the install in `.payload-components/state.json`.
+
+<RunnableCommand
+  command="npx payload-components add hero-basic"
+  label="Copy the hero-basic install command"
+  trackInstall
+/>
+
+Run it on a branch, inspect the resulting diff, then open `/admin` and publish a test Page. The [installation guide](/docs/installation) lists the supported project shape and the read-only `doctor` check.
