@@ -502,7 +502,8 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).toContain('{blogTitle}')
     expect(indexSource).toContain('{blogDescription}')
     expect(indexSource).not.toContain(blogDescription)
-    expect(blogTitle).toBe('Blog')
+    expect(blogTitle).toBe('Build notes and release stories')
+    expect(indexSource).toContain('href="/components"')
     expect(indexSource).toContain("alternates: { canonical: `${siteUrl}/blog` }")
     expect(indexSource).toContain("twitter: { card: 'summary_large_image'")
     expect(postSource).toContain("type: 'article'")
@@ -539,13 +540,37 @@ describe('Fumadocs site shell', () => {
     expect(catalog).toContain("window.addEventListener('popstate'")
     expect(registry).not.toContain('sample content for docs and testing')
     expect(catalogTitle).toContain('Payload CMS')
+    expect(catalogTitle).toContain('65')
     expect(catalogDescription).toMatch(/heroes.*features.*pricing.*integrations.*FAQs.*content.*teams.*embeds/)
+    expect(catalogDescription).toContain('Browse all 65')
     expect(catalogDescription).toContain('One CLI command')
     expect(catalogMetadataTitle).toContain('Payload CMS Components')
+    expect(catalogMetadataTitle).toContain('65')
     expect(catalogMetadataDescription).toContain('one-command project wiring')
+    expect(catalogMetadataDescription).toContain('all 65')
     expect(catalogPage).toContain('href="/docs/installation"')
     expect(catalogPage).toContain('{catalogInstallationLinkLabel}')
     expect(catalogInstallationLinkLabel).toContain('one-command installation')
+  })
+
+  it('gives nearby search surfaces distinct jobs and routes catalog intent to components', async () => {
+    const [aboutPage, blogPage, docsIndex, installationGuide, homepage] = await Promise.all([
+      readFile(path.join(repoRoot, 'src/app/about/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/blog/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content/docs/index.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content/docs/installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/lib/site.ts'), 'utf8'),
+    ])
+    const { blogTitle, catalogMetadataTitle, homeMetadataTitle } = await import('../../src/lib/site')
+
+    expect(homeMetadataTitle).toBe('Install wired Payload CMS blocks in one command')
+    expect(blogTitle).toBe('Build notes and release stories')
+    expect(catalogMetadataTitle).toBe('65 Payload CMS Components & Blocks | Catalog')
+    expect(docsIndex).toContain('seoTitle: CLI setup and architecture')
+
+    for (const source of [aboutPage, blogPage, docsIndex, installationGuide, homepage]) {
+      expect(source).toContain('/components')
+    }
   })
 
   it('keeps catalog page-block count copy aligned with installable components', async () => {
