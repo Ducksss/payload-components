@@ -20,9 +20,9 @@ export const docsRoute = '/docs'
 export const docsImageRoute = '/og/docs'
 export const docsContentRoute = '/llms.mdx/docs'
 export const blogRoute = '/blog'
-export const blogTitle = 'Blog'
+export const blogTitle = 'Build notes and release stories'
 export const blogDescription =
-  'Updates, deep dives, and release notes from the Payload Components team.'
+  'Installer changes, component release notes, and implementation lessons from maintaining the Payload Components registry.'
 export const primaryInstallCommand = 'npx payload-components add hero-basic'
 export const cliVersion = packageJson.version
 
@@ -37,9 +37,9 @@ export const pipelineStages = [
 export const siteDescription =
   'Payload Components is an MIT registry and CLI that installs typed Payload CMS blocks into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
 
-export const homeMetadataTitle = 'Payload Components — fully-wired blocks for Payload CMS'
+export const homeMetadataTitle = 'Install wired Payload CMS blocks in one command'
 export const homeMetadataDescription =
-  'Payload Components gives you reusable Payload blocks with one-command install, wiring config, render maps, types, and import maps for Payload CMS and Next.js.'
+  'Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects.'
 
 /* ------------------------------------------------------------------ */
 /* Hero                                                                */
@@ -1378,12 +1378,12 @@ export const communityInvite = {
 /* Catalog page                                                        */
 /* ------------------------------------------------------------------ */
 
-export const catalogTitle = 'Typed Payload CMS blocks and components'
+export const catalogTitle = `${componentEntries.length} typed Payload CMS blocks and components`
 export const catalogDescription =
-  'Browse typed blocks for Payload CMS: heroes, features, pricing, calls to action, integrations, testimonials, FAQs, content, teams, and embeds. One CLI command copies each component and wires its collection registration, renderer mapping, generated types, and admin import map.'
-export const catalogMetadataTitle = 'Typed Payload CMS Components & Blocks Catalog'
+  `Browse all ${componentEntries.length} typed blocks for Payload CMS: heroes, features, pricing, calls to action, integrations, testimonials, FAQs, content, teams, and embeds. One CLI command copies each component and wires its collection registration, renderer mapping, generated types, and admin import map.`
+export const catalogMetadataTitle = `${componentEntries.length} Payload CMS Components & Blocks | Catalog`
 export const catalogMetadataDescription =
-  'Browse typed Payload CMS blocks for heroes, features, pricing, integrations, FAQs, content, teams, and embeds, with one-command project wiring.'
+  `Browse all ${componentEntries.length} typed Payload CMS blocks for heroes, features, pricing, integrations, FAQs, content, teams, and embeds, with one-command project wiring.`
 export const catalogInstallationLinkLabel = 'See how one-command installation works'
 
 /* ------------------------------------------------------------------ */
