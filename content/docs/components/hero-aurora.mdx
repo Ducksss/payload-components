@@ -32,7 +32,10 @@ icon: Sparkles
 The first four fields come from the shared `heroFields` base. `metrics`, `productImage`,
 `imageCaption`, and `proofItems` define this motion-led variant. All animation is presentation:
 it runs from the `motion` package inside the installed component, honors `prefers-reduced-motion`
-(the final state renders without JavaScript or motion), and never adds editor-managed fields.
+(a scoped CSS net renders the finished frame even without JavaScript), gates the pointer parallax
+to hover-capable pointers, and never adds editor-managed fields. Every gradient in the aurora
+field derives from the theme tokens via `color-mix`, so the block re-tints itself under any
+theme scope.
 
 <TypeTable
   type={{
@@ -50,7 +53,8 @@ it runs from the `motion` package inside the installed component, honors `prefer
     },
     productImage: {
       type: 'upload',
-      description: 'Optional product image for the parallax panel; a gradient panel renders without it.',
+      description:
+        'Optional product image for the parallax panel; without it, a token-derived dashboard-glow scene renders instead.',
     },
     imageCaption: { type: 'text', description: 'Optional visible caption beneath the panel.' },
     proofItems: { type: 'array', description: 'Up to four short proof labels below the CTAs.' },
