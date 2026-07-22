@@ -17,7 +17,7 @@ export const agencyStudioTemplate: TemplateShowcase = {
   assets: [],
   category: 'agency',
   description:
-    'Northline is a fictional twenty-three-person brand and digital-product studio in Amsterdam and New York. The concept spans Home, Services, Work, About, and Contact — an editorial, warm, portfolio-led site composed entirely from blocks in the open registry, art-directed with paper surfaces, ink serif headlines, hairline rules, and a single rust accent.',
+    'Northline is a fictional twenty-three-person brand and digital-product studio in Amsterdam and New York. The concept spans Home, Services, Work, About, and Contact — an editorial, warm, portfolio-led site composed entirely from blocks in the open registry, opening on a kinetic title-sequence cover and art-directed with paper surfaces, ink serif headlines, hairline rules, and a single rust accent.',
   navigation: [
     { label: 'Home', path: '' },
     { label: 'Services', path: 'services' },
@@ -33,31 +33,34 @@ export const agencyStudioTemplate: TemplateShowcase = {
       path: '',
       sections: [
         {
-          componentSlug: 'hero-video',
+          componentSlug: 'hero-kinetic',
           content: {
             description:
               'Northline is a twenty-three-person studio in Amsterdam and New York. We design identities, digital products, and the editorial systems that keep them coherent long after launch.',
-            eyebrow: 'Northline — Brand & Digital Studio',
+            eyebrow: 'Two cities, one studio',
+            imageCaption: 'From the studio reel — dusk, one rust horizon.',
             links: [
               { link: { appearance: 'default', label: 'See the work' } },
               { link: { appearance: 'outline', label: 'Start a project' } },
+            ],
+            marqueeItems: [
+              { label: 'Brand strategy' },
+              { label: 'Identity systems' },
+              { label: 'Naming & voice' },
+              { label: 'Digital product' },
+              { label: 'Design systems' },
+              { label: 'Editorial' },
+              { label: 'Motion & film' },
+              { label: 'Brand guardianship' },
             ],
             proofItems: [
               { label: 'Independent since 2017' },
               { label: 'Amsterdam · New York' },
               { label: '31 brands shipped' },
             ],
-            title: 'We build brands that hold their nerve.',
+            title: 'Brands with a spine. Products with a pulse.',
           },
           id: 'cover',
-        },
-        {
-          componentSlug: 'logo-cloud-inline-wrap',
-          content: {
-            heading: 'Nine years of good company:',
-          },
-          id: 'clients',
-          tone: 'muted',
         },
         {
           componentSlug: 'content-showcase',
@@ -93,6 +96,14 @@ export const agencyStudioTemplate: TemplateShowcase = {
             title: 'One studio. Four disciplines. No handoffs.',
           },
           id: 'practice',
+        },
+        {
+          componentSlug: 'logo-cloud-inline-wrap',
+          content: {
+            heading: 'Nine years of good company:',
+          },
+          id: 'clients',
+          tone: 'muted',
         },
         {
           componentSlug: 'feature-split',
@@ -786,7 +797,7 @@ export const agencyStudioTemplate: TemplateShowcase = {
       title: 'Northline — Contact',
     },
   ],
-  revision: 2,
+  revision: 3,
   schemaVersion: 1,
   slug: 'agency-studio',
   status: 'concept',

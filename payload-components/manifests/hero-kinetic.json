@@ -1,0 +1,85 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "hero-kinetic",
+  "version": "0.1.0",
+  "title": "Hero Kinetic",
+  "description": "A motion-first editorial hero with a line-masked type reveal, cinematic media plate, and a velocity-aware marquee strip.",
+  "registryItemName": "hero-kinetic",
+  "dependencies": {
+    "motion": "^12.0.0"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/heroFields.ts",
+    "src/blocks/HeroKinetic/config.ts",
+    "src/blocks/HeroKinetic/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "HeroKineticBlock",
+      "importPath": "@/blocks/HeroKinetic/Component",
+      "blockSlug": "heroKinetic"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "HeroKinetic",
+      "importPath": "../../blocks/HeroKinetic/config",
+      "blockName": "HeroKinetic"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Motion-first editorial hero: masked type reveal, cinematic plate, velocity marquee."
+  },
+  "sampleContent": {
+    "blockType": "heroKinetic",
+    "eyebrow": "Acme Studio",
+    "title": "Work that moves. Brands that hold.",
+    "description": "Acme Studio is a fictional practice press — big type, moving pictures, and work that holds attention long after launch.",
+    "marqueeItems": [
+      { "label": "Identity" },
+      { "label": "Digital product" },
+      { "label": "Editorial" },
+      { "label": "Motion" },
+      { "label": "Film" }
+    ],
+    "image": null,
+    "imageCaption": "Selected work, in motion.",
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/work",
+          "label": "See the work",
+          "appearance": "default"
+        }
+      },
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/contact",
+          "label": "Start a project",
+          "appearance": "outline"
+        }
+      }
+    ],
+    "proofItems": [
+      { "label": "Independent since 2017" },
+      { "label": "31 brands shipped" }
+    ]
+  }
+}

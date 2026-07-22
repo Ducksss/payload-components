@@ -35,7 +35,9 @@ import { FeatureGridBasicDemo } from './FeatureGridBasicDemo'
 import { FeatureIconGridDemo } from './FeatureIconGridDemo'
 import { FeatureSplitDemo } from './FeatureSplitDemo'
 import { FeatureStepsDemo } from './FeatureStepsDemo'
+import { HeroAuroraDemo } from './HeroAuroraDemo'
 import { HeroBasicDemo } from './HeroBasicDemo'
+import { HeroKineticDemo } from './HeroKineticDemo'
 import { HeroProductTiltDemo } from './HeroProductTiltDemo'
 import { HeroVideoDemo } from './HeroVideoDemo'
 import { IntegrationClusterDemo } from './IntegrationClusterDemo'
@@ -107,7 +109,9 @@ export const demosBySlug: Record<string, ComponentType> = {
   'feature-icon-grid': FeatureIconGridDemo,
   'feature-split': FeatureSplitDemo,
   'feature-steps': FeatureStepsDemo,
+  'hero-aurora': HeroAuroraDemo,
   'hero-basic': HeroBasicDemo,
+  'hero-kinetic': HeroKineticDemo,
   'hero-product-tilt': HeroProductTiltDemo,
   'hero-video': HeroVideoDemo,
   'integration-cluster': IntegrationClusterDemo,

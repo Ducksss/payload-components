@@ -4,6 +4,7 @@ import type { TemplateShellProps } from '../shells'
 
 import { templatePreviewHref } from '@/lib/templates/registry'
 
+import { NorthlineColophon } from './NorthlineColophon'
 import { NorthlineHeader } from './NorthlineHeader'
 import './theme.css'
 
@@ -18,7 +19,12 @@ import './theme.css'
  * dissolves the catalog card frames, so pages read as tonal editorial bands —
  * paper, deeper paper, ink — separated by hairline rules. Section rhythm is
  * styled from theme.css via the [data-template-section] / [data-tone]
- * wrappers the renderer emits. */
+ * wrappers the renderer emits.
+ *
+ * Shell choreography (all reduced-motion gated, final-state safe): the
+ * masthead staggers in and tints its hairline on scroll (NorthlineHeader),
+ * the footer sign-off draws in like a colophon (NorthlineColophon), and
+ * footer index links carry an underline-draw hover. */
 
 const footerStudioLines = [
   'Herengracht 480, 1017 CB Amsterdam',
@@ -37,9 +43,7 @@ export function AgencyStudioShell({ activePath, children, template }: TemplateSh
 
       <footer className="bg-foreground text-background">
         <div className="mx-auto flex max-w-7xl flex-col gap-12 px-5 py-14 sm:px-8 lg:py-20">
-          <p className="max-w-3xl font-serif text-4xl italic leading-tight text-balance sm:text-5xl">
-            Say one true thing, clearly, everywhere it matters.
-          </p>
+          <NorthlineColophon signOff="Say one true thing, clearly, everywhere it matters." />
 
           <div className="grid gap-10 sm:grid-cols-3">
             <nav aria-label="Northline footer index" className="flex flex-col gap-3">
@@ -51,7 +55,7 @@ export function AgencyStudioShell({ activePath, children, template }: TemplateSh
                   key={item.path}
                   href={templatePreviewHref(template.slug, item.path)}
                   aria-current={activePath === item.path ? 'page' : undefined}
-                  className="w-fit text-sm text-background/80 underline-offset-4 transition-colors hover:text-background hover:underline"
+                  className="relative w-fit text-sm text-background/80 transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-background/70 after:transition-transform after:duration-300 after:ease-out after:content-[''] hover:text-background hover:after:scale-x-100 motion-reduce:after:transition-none"
                 >
                   {item.label}
                 </Link>
