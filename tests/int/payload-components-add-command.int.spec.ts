@@ -177,6 +177,55 @@ describe('payload-components add command orchestration', () => {
     expect(mocks.recordInstallFailure).not.toHaveBeenCalled()
   })
 
+  it('prints the complete install plan without running any mutation stage', async () => {
+    const { addCommand, mocks } = await setup()
+
+    mocks.checkDependencyRequirements
+      .mockResolvedValueOnce({ installed: { payload: '3.82.1' }, missing: [] })
+      .mockResolvedValueOnce({ installed: {}, missing: [] })
+    mocks.verifyInstalledManifestFiles.mockResolvedValueOnce({
+      isValid: false,
+      missingFiles: [
+        'src/blocks/HeroBasic/config.ts',
+        'src/blocks/HeroBasic/Component.tsx',
+      ],
+      missingRegistryDependencies: [],
+    })
+    mocks.verifyInstalledPayloadFragments.mockResolvedValueOnce({
+      isValid: false,
+      missingFragments: [
+        'renderBlocks.import:HeroBasicBlock',
+        'renderBlocks.block:heroBasic',
+        'pagesLayout.import:HeroBasic',
+        'pagesLayout.block:HeroBasic',
+      ],
+    })
+
+    await addCommand({ cwd: '/tmp/fixture', componentName: 'hero-basic', dryRun: true })
+
+    const output = mocks.printHeader.mock.calls.flat().join('\n')
+
+    expect(output).toContain('dry run for "hero-basic"')
+    expect(output).toContain('src/blocks/RenderBlocks.tsx (would patch)')
+    expect(output).toContain("add import { HeroBasicBlock } from '@/blocks/HeroBasic/Component'")
+    expect(output).toContain('add renderer mapping heroBasic: HeroBasicBlock')
+    expect(output).toContain('src/collections/Pages/index.ts (would patch)')
+    expect(output).toContain("add import { HeroBasic } from '../../blocks/HeroBasic/config'")
+    expect(output).toContain('add HeroBasic in the Pages layout blocks')
+    expect(output).toContain('pnpm generate:types (would run)')
+    expect(output).toContain('.payload-components/state.json (would update only after a successful real install)')
+    expect(mocks.buildRegistry).not.toHaveBeenCalled()
+    expect(mocks.installRegistryItem).not.toHaveBeenCalled()
+    expect(mocks.installRegistryDependencies).not.toHaveBeenCalled()
+    expect(mocks.installManifestDependencies).not.toHaveBeenCalled()
+    expect(mocks.applyPayloadFragments).not.toHaveBeenCalled()
+    expect(mocks.runCommand).not.toHaveBeenCalled()
+    expect(mocks.recordInstallAttempt).not.toHaveBeenCalled()
+    expect(mocks.recordInstallFailure).not.toHaveBeenCalled()
+    expect(mocks.recordInstalledState).not.toHaveBeenCalled()
+    expect(mocks.seedCommand).not.toHaveBeenCalled()
+  })
+
   it('records dependency-install failures after partial state creation', async () => {
     const manifest = {
       ...baseManifest,

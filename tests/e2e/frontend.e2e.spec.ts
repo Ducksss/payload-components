@@ -1,6 +1,7 @@
 import { expect, type Page, test } from '@playwright/test'
 
 import {
+  blogTitle,
   catalogInstallationLinkLabel,
   catalogMetadataDescription,
   catalogMetadataTitle,
@@ -340,7 +341,7 @@ test.describe('Light shadcn frontend', () => {
       {
         h1: 'Introduction',
         path: '/docs',
-        title: /Introduction/,
+        title: /CLI setup and architecture/,
       },
       {
         h1: 'Architecture',
@@ -536,6 +537,45 @@ test.describe('Light shadcn frontend', () => {
 
     for (const component of componentEntries) {
       await expect(page.locator(`a[href="${component.href}"]`).first()).toBeAttached()
+    }
+  })
+
+  test('gives nearby search pages distinct titles and catalog paths', async ({ page }) => {
+    const routes = [
+      {
+        link: /Browse the components/,
+        path: '/',
+        title: new RegExp(homeMetadataTitle),
+      },
+      {
+        link: /Browse all 67 installable components/,
+        path: '/blog',
+        title: new RegExp(blogTitle),
+      },
+      {
+        link: /Browse the catalog/,
+        path: '/about',
+        title: /About \| Payload Components/,
+      },
+      {
+        link: /Component Catalog/,
+        path: '/docs',
+        title: /CLI setup and architecture/,
+      },
+      {
+        link: /component catalog/,
+        path: '/docs/installation',
+        title: /Payload Components CLI for Payload CMS v3/,
+      },
+    ]
+
+    for (const route of routes) {
+      await page.goto(`${baseURL}${route.path}`)
+      await expect(page).toHaveTitle(route.title)
+      await expect(page.getByRole('link', { name: route.link }).first()).toHaveAttribute(
+        'href',
+        '/components',
+      )
     }
   })
 

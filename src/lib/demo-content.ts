@@ -30,6 +30,18 @@ export type HeroProductTiltDemoContent = HeroBasicDemoContent & {
   imageCaption?: string
 }
 
+/* Motion-first showpiece heroes. Both animate in their installed source (via
+   the `motion` package) and in their twins; content stays static data. */
+export type HeroAuroraDemoContent = HeroBasicDemoContent & {
+  imageCaption?: string
+  metrics: { label: string; value: string }[]
+}
+
+export type HeroKineticDemoContent = HeroBasicDemoContent & {
+  imageCaption?: string
+  marqueeItems: { label: string }[]
+}
+
 /* The whole Feature family (grid-basic, split, bento, steps) renders from one
    demo-content shape: the shared featureFields header plus title+description
    items and optional CTA links. */
@@ -175,6 +187,51 @@ export const heroProductTiltDemoContent: HeroProductTiltDemoContent = {
     { label: 'Built for scale' },
   ],
   title: 'Your product data, ready for every customer.',
+}
+
+export const heroAuroraDemoContent: HeroAuroraDemoContent = {
+  description:
+    'Acme turns raw usage events into live dashboards, reports, and alerts — an aurora of product signal, readable at a glance.',
+  eyebrow: 'Acme Cloud · Aurora',
+  imageCaption: 'Live metrics, streaming into one workspace.',
+  links: [
+    { link: { appearance: 'default', label: 'Start free trial' } },
+    { link: { appearance: 'outline', label: 'See it live' } },
+  ],
+  metrics: [
+    { label: 'events per day', value: '2.4B' },
+    { label: 'median query', value: '86ms' },
+    { label: 'uptime', value: '99.99%' },
+  ],
+  proofItems: [
+    { label: 'SOC 2 Type II' },
+    { label: 'Deploy in days' },
+    { label: 'No credit card' },
+  ],
+  title: 'Product analytics that feels alive.',
+}
+
+export const heroKineticDemoContent: HeroKineticDemoContent = {
+  description:
+    'Acme Studio is a fictional practice press — big type, moving pictures, and work that holds attention long after launch.',
+  eyebrow: 'Acme Studio',
+  imageCaption: 'Selected work, in motion.',
+  links: [
+    { link: { appearance: 'default', label: 'See the work' } },
+    { link: { appearance: 'outline', label: 'Start a project' } },
+  ],
+  marqueeItems: [
+    { label: 'Identity' },
+    { label: 'Digital product' },
+    { label: 'Editorial' },
+    { label: 'Motion' },
+    { label: 'Film' },
+  ],
+  proofItems: [
+    { label: 'Independent since 2017' },
+    { label: '31 brands shipped' },
+  ],
+  title: 'Work that moves. Brands that hold.',
 }
 
 export const featureGridBasicDemoContent: FeatureGridBasicDemoContent = {

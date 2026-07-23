@@ -183,6 +183,63 @@ describe('Fumadocs site shell', () => {
     expect(sitemap).toContain('source.getPages()')
   })
 
+  it('keeps the Payload blocks guide implementation-led, discoverable, and product-true', async () => {
+    const [
+      guide,
+      docsMeta,
+      installationGuide,
+      sitemap,
+      heroConfig,
+      heroComponent,
+      heroManifest,
+    ] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'payload-blocks.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+      readFile(path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'config.ts'), 'utf8'),
+      readFile(path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'Component.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'payload-components', 'manifests', 'hero-basic.json'), 'utf8'),
+    ])
+
+    expect(guide).toContain(
+      'Payload CMS blocks in v3: create, register, type, and render a reusable layout block',
+    )
+    expect(guide).toContain("slug: 'heroBasic'")
+    expect(guide).toContain("interfaceName: 'HeroBasicBlock'")
+    expect(guide).toContain("singular: 'Hero Basic'")
+    expect(guide).toContain("import { HeroBasic } from '../../blocks/HeroBasic/config'")
+    expect(guide).toContain('blocks: [/* existing blocks */, HeroBasic]')
+    expect(guide).toContain("import { HeroBasicBlock } from '@/blocks/HeroBasic/Component'")
+    expect(guide).toContain('heroBasic: HeroBasicBlock')
+    expect(guide).toContain(
+      "import type { HeroBasicBlock as HeroBasicBlockData } from '@/payload-types'",
+    )
+    expect(guide).toContain('pnpm payload generate:types')
+    expect(guide).toContain('pnpm payload generate:importmap')
+    expect(guide).toContain('src/app/(payload)/admin/importMap.js')
+    expect(guide).toContain('<ComponentPreview slug="hero-basic" />')
+    expect(guide).toMatch(
+      /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
+    )
+    expect(guide).toContain('[What is a Payload component?](/docs/what-is-a-payload-component)')
+    expect(guide).toContain('[Use your first block](/docs/first-block)')
+    expect(heroConfig).toContain("slug: 'heroBasic'")
+    expect(heroConfig).toContain("interfaceName: 'HeroBasicBlock'")
+    expect(heroConfig).toContain("singular: 'Hero Basic'")
+    expect(heroComponent).toContain(
+      "import type { HeroBasicBlock as HeroBasicBlockData } from '@/payload-types'",
+    )
+    expect(heroManifest).toContain('"blockSlug": "heroBasic"')
+    expect(heroManifest).toContain('"blockName": "HeroBasic"')
+    expect(heroManifest).toContain('"postInstall": ["generate:types", "generate:importmap"]')
+    expect(docsMeta).toContain('"payload-blocks"')
+    expect(installationGuide).toContain(
+      '[`hero-basic` implementation from Block config through live rendering](/docs/payload-blocks)',
+    )
+    expect(sitemap).toContain('source.getPages()')
+  })
+
   it('keeps the GitHub mark independent from removed Lucide brand icons', async () => {
     const githubLinkSources = await Promise.all(
       [
@@ -502,7 +559,8 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).toContain('{blogTitle}')
     expect(indexSource).toContain('{blogDescription}')
     expect(indexSource).not.toContain(blogDescription)
-    expect(blogTitle).toBe('Blog')
+    expect(blogTitle).toBe('Build notes and release stories')
+    expect(indexSource).toContain('href="/components"')
     expect(indexSource).toContain("alternates: { canonical: `${siteUrl}/blog` }")
     expect(indexSource).toContain("twitter: { card: 'summary_large_image'")
     expect(postSource).toContain("type: 'article'")
@@ -539,13 +597,37 @@ describe('Fumadocs site shell', () => {
     expect(catalog).toContain("window.addEventListener('popstate'")
     expect(registry).not.toContain('sample content for docs and testing')
     expect(catalogTitle).toContain('Payload CMS')
+    expect(catalogTitle).toContain('67')
     expect(catalogDescription).toMatch(/heroes.*features.*pricing.*integrations.*FAQs.*content.*teams.*embeds/)
+    expect(catalogDescription).toContain('Browse all 67')
     expect(catalogDescription).toContain('One CLI command')
     expect(catalogMetadataTitle).toContain('Payload CMS Components')
+    expect(catalogMetadataTitle).toContain('67')
     expect(catalogMetadataDescription).toContain('one-command project wiring')
+    expect(catalogMetadataDescription).toContain('all 67')
     expect(catalogPage).toContain('href="/docs/installation"')
     expect(catalogPage).toContain('{catalogInstallationLinkLabel}')
     expect(catalogInstallationLinkLabel).toContain('one-command installation')
+  })
+
+  it('gives nearby search surfaces distinct jobs and routes catalog intent to components', async () => {
+    const [aboutPage, blogPage, docsIndex, installationGuide, homepage] = await Promise.all([
+      readFile(path.join(repoRoot, 'src/app/about/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/blog/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content/docs/index.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content/docs/installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/lib/site.ts'), 'utf8'),
+    ])
+    const { blogTitle, catalogMetadataTitle, homeMetadataTitle } = await import('../../src/lib/site')
+
+    expect(homeMetadataTitle).toBe('Install wired Payload CMS blocks in one command')
+    expect(blogTitle).toBe('Build notes and release stories')
+    expect(catalogMetadataTitle).toBe('67 Payload CMS Components & Blocks | Catalog')
+    expect(docsIndex).toContain('seoTitle: CLI setup and architecture')
+
+    for (const source of [aboutPage, blogPage, docsIndex, installationGuide, homepage]) {
+      expect(source).toContain('/components')
+    }
   })
 
   it('keeps catalog page-block count copy aligned with installable components', async () => {

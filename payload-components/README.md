@@ -19,7 +19,7 @@ The POC passes only if all of the following are true:
 
 If any of those fail because of brittle repo patching or unreliable generation, we should stop and reconsider the product shape before building private registries, auth, or a larger component catalog.
 
-Workspace reality: `payload-components add` installs components, `payload-components seed` writes an opt-in demo script for a fully installed component, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` delegates to `shadcn init` to create the `components.json` baseline for targets missing it. `payload-components add` expects that baseline and does not run init automatically as a side effect.
+Workspace reality: `payload-components add` installs components, `payload-components add --dry-run` validates and prints the same file, wiring, dependency, command, and state plan without mutating the target, `payload-components seed` writes an opt-in demo script for a fully installed component, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` delegates to `shadcn init` to create the `components.json` baseline for targets missing it. `payload-components add` expects that baseline and does not run init automatically as a side effect.
 
 ## Demo seed contract
 
@@ -146,7 +146,14 @@ pnpm test:fresh -- --registry-url https://www.payload-components.xyz/r/{name}.js
 pnpm test:fresh -- --keep-temp --timeout 1200000
 ```
 
-With no component override, the runner derives the complete sorted slug list from matching registry items and manifests. `--shard-index` accepts `0` through `3` and selects sorted indexes modulo four. Without `--registry-url`, the runner serves `../public/r` locally and direct-installs each item URL with shadcn. With `--registry-url`, it uses the deployed registry URL template, which is the pre-release path. Direct shadcn verification only proves file delivery and shadcn UI dependency delivery; Payload wiring is verified through `payload-components add`.
+With no component override, the runner derives the complete sorted slug list from every `registry:block`
+item with a matching manifest and renderable `sampleContent.blockType`. Every registry item is classified as
+covered or intentionally excluded because it is not a page block, and focused tests fail if that contract
+drifts. `--shard-index` accepts `0` through `3` and selects sorted indexes modulo four. Without
+`--registry-url`, the runner serves `../public/r` locally and direct-installs each item URL with shadcn. With
+`--registry-url`, it uses the deployed registry URL template, which is the pre-release path. Direct shadcn
+verification only proves file delivery and shadcn UI dependency delivery; Payload wiring is verified through
+`payload-components add`.
 
 ### Release gate
 

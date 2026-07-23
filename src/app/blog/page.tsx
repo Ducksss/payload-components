@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { blogSource } from '@/lib/blog-source'
-import { blogDescription, blogTitle, siteUrl } from '@/lib/site'
+import { blogDescription, blogTitle, componentEntries, siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: blogTitle,
@@ -29,6 +29,12 @@ export default function BlogIndex() {
           {blogTitle}
         </h1>
         <p className="mt-2 text-muted-foreground">{blogDescription}</p>
+        <Link
+          href="/components"
+          className="mt-4 inline-flex text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
+        >
+          Browse all {componentEntries.length} installable components
+        </Link>
       </header>
 
       {posts.length === 0 ? (

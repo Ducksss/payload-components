@@ -1,0 +1,212 @@
+/* Relay (saas-launch) scoped theme.
+ *
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='saas-launch'] root the shell renders. It overrides the
+ * semantic variables the demo twins consume and never touches :root, .dark,
+ * another template's scope, or src/app/globals.css. The site stays
+ * forced-light; the intentionally dark surfaces below are named Relay tokens.
+ *
+ * Art direction: cool white and soft blue-gray surfaces, one vivid cobalt
+ * accent (--primary = --brand), measured radii (--radius 0.5rem), deep-ink
+ * navy for contrast bands and the footer. The twins arrive wrapped in the
+ * catalog's "specimen frame" (rounded-frame border bg-card/35); the rules at
+ * the bottom flatten that frame inside this theme so each section reads as a
+ * full-bleed band of one designed site rather than a stacked specimen. */
+
+[data-template-theme='saas-launch'] {
+  /* Cool-white base palette */
+  --background: oklch(98.6% 0.004 247deg);
+  --foreground: oklch(25% 0.033 259deg);
+
+  --card: oklch(100% 0 0deg);
+  --card-foreground: oklch(25% 0.033 259deg);
+  --popover: oklch(100% 0 0deg);
+  --popover-foreground: oklch(25% 0.033 259deg);
+
+  /* The one vivid accent: cobalt (AA on white for text-size usage) */
+  --primary: oklch(50.5% 0.213 262deg);
+  --primary-foreground: oklch(98.5% 0.005 247deg);
+  --brand: oklch(50.5% 0.213 262deg);
+  --brand-foreground: oklch(98.5% 0.005 247deg);
+  --brand-50: oklch(97.2% 0.012 254deg);
+  --brand-100: oklch(93.8% 0.03 254deg);
+  --brand-200: oklch(88.2% 0.06 255deg);
+  --brand-600: oklch(45.5% 0.205 263deg);
+
+  /* Soft blue-gray support surfaces */
+  --secondary: oklch(94.8% 0.013 250deg);
+  --secondary-foreground: oklch(32% 0.05 260deg);
+  --muted: oklch(95.6% 0.009 247deg);
+  /* 42% (not 45%): muted text must clear AA 4.5:1 on the pure-white card
+     surfaces too (header scroll veil, panels), not just the cool-white page. */
+  --muted-foreground: oklch(42% 0.03 257deg);
+  --accent: oklch(93.2% 0.024 255deg);
+  --accent-foreground: oklch(36% 0.1 261deg);
+
+  --border: oklch(90.8% 0.011 250deg);
+  --input: oklch(88.5% 0.014 250deg);
+  --ring: oklch(60% 0.16 262deg);
+
+  /* Measured radii — a touch tighter than the docs site */
+  --radius: 0.5rem;
+
+  /* Relay-only named surfaces */
+  --relay-ink: oklch(20.5% 0.034 262deg);
+  --relay-ink-raised: oklch(24.5% 0.04 262deg);
+  --relay-band: oklch(96.6% 0.008 247deg);
+  --relay-halo: oklch(93% 0.032 256deg);
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* ---------------------------------------------------------------- */
+/* Section rhythm: flatten the catalog specimen frame into full-bleed */
+/* site bands. The twin structure is stable and contract-tested:      */
+/* [data-template-section] > [aria-hidden] > frame div.               */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='saas-launch'] [data-template-section] > [aria-hidden='true'] > div {
+  border-color: transparent;
+  border-radius: 0;
+  background-color: transparent;
+  padding-block: clamp(3.5rem, 7vw, 5.5rem);
+}
+
+/* Heroes breathe more and sit on a cobalt-tinted halo. */
+[data-template-theme='saas-launch'] [data-template-section='hero'] {
+  background:
+    radial-gradient(
+      56rem 26rem at 50% -8rem,
+      color-mix(in oklab, var(--primary) 14%, transparent),
+      transparent 72%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--relay-halo) 55%, transparent),
+      transparent 70%
+    );
+}
+
+[data-template-theme='saas-launch']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(4.25rem, 9vw, 6.75rem);
+}
+
+/* The aurora hero paints its own atmosphere — drop the band's cobalt radial
+ * (double halo mud) and keep only a whisper of the tint so the arch, rays,
+ * and drifting glows own the light story edge to edge. */
+[data-template-theme='saas-launch'] [data-template-section='hero']:has([data-aurora-root]) {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--relay-halo) 38%, transparent),
+    transparent 58%
+  );
+}
+
+/* Electric cobalt for the aurora's luminous layers only: the component mixes
+ * everything from --brand/--brand-100/--brand-200, and Relay's page-level
+ * tints are deliberately quiet — step the chroma up inside the aurora subtree
+ * so the arch and curtain rays read vivid while headline contrast (painted in
+ * --foreground over the component's background veil) stays AA. */
+[data-template-theme='saas-launch'] [data-aurora-root] {
+  --brand-100: oklch(89% 0.09 255deg);
+  --brand-200: oklch(82% 0.13 256deg);
+}
+
+/* ---------------------------------------------------------------- */
+/* Tone bands. `tone` is set per section in the template definition.  */
+/* ---------------------------------------------------------------- */
+
+/* Muted: a soft blue-gray band with hairline edges. bg-muted placeholders
+ * inside the band step one notch deeper so they stay legible against it. */
+[data-template-theme='saas-launch'] [data-tone='muted'] {
+  --muted: oklch(92.6% 0.013 249deg);
+  --accent: oklch(91% 0.028 255deg);
+
+  background-color: var(--relay-band);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    inset 0 -1px 0 var(--border);
+}
+
+/* The logo marquee's edge fades are mixed from --card; on the muted trust
+ * strip they must dissolve into the band rather than print white columns.
+ * The marquee is this section's only card consumer, so the remap is
+ * contained to the strip. */
+[data-template-theme='saas-launch'] [data-template-section='logos'][data-tone='muted'] {
+  --card: var(--relay-band);
+}
+
+/* Contrast + footer: deep ink navy. The semantic variables are re-mapped so
+ * the twins' token classes (bg-card, text-muted-foreground, border-border,
+ * bg-primary buttons, ring-brand highlights, …) resolve to AA-safe dark-band
+ * values; the primary action inverts to a light button on ink. */
+[data-template-theme='saas-launch'] [data-tone='contrast'],
+[data-template-theme='saas-launch'] .relay-footer {
+  --background: oklch(24.5% 0.04 262deg);
+  --foreground: oklch(97.2% 0.006 247deg);
+  --card: oklch(27% 0.042 262deg);
+  --card-foreground: oklch(97.2% 0.006 247deg);
+  --popover: oklch(27% 0.042 262deg);
+  --popover-foreground: oklch(97.2% 0.006 247deg);
+  --primary: oklch(97.2% 0.006 247deg);
+  --primary-foreground: oklch(24% 0.038 262deg);
+  --brand: oklch(72% 0.13 258deg);
+  --brand-foreground: oklch(20% 0.034 262deg);
+  --secondary: oklch(31% 0.045 262deg);
+  --secondary-foreground: oklch(93% 0.012 250deg);
+  --muted: oklch(28.5% 0.04 262deg);
+  --muted-foreground: oklch(79% 0.02 252deg);
+  --accent: oklch(33% 0.055 262deg);
+  --accent-foreground: oklch(94% 0.02 254deg);
+  --border: oklch(100% 0 0deg / 16%);
+  --input: oklch(100% 0 0deg / 24%);
+  --ring: oklch(75% 0.1 255deg);
+
+  background-color: var(--relay-ink);
+  color: var(--foreground);
+}
+
+/* ---------------------------------------------------------------- */
+/* Shell chrome                                                      */
+/* ---------------------------------------------------------------- */
+
+/* The header floats translucent over the aurora, then solidifies: the base
+ * layer keeps a constant backdrop blur (never animated), and the veil below
+ * fades in via opacity once the page scrolls — bringing the near-opaque
+ * surface, the bottom hairline, and a soft drop shadow with it. */
+[data-template-theme='saas-launch'] .relay-header {
+  background-color: color-mix(in oklab, var(--card) 55%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+[data-template-theme='saas-launch'] [data-relay-header-veil] {
+  background-color: color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow:
+    inset 0 -1px 0 var(--border),
+    0 12px 32px -24px color-mix(in oklab, var(--foreground) 45%, transparent);
+}
+
+[data-template-theme='saas-launch'] .relay-footer {
+  border-top: 1px solid oklch(100% 0 0deg / 10%);
+}
+
+/* Reduced-motion net for the shell's own choreography (header entrance,
+ * footer column reveals, veil fade): final frame, instantly, even before
+ * hydration — the same guarantee template-motion.css gives section reveals.
+ * The scroll-progress hairline is exempt on purpose: it tracks reading
+ * position 1:1 (state, not decoration) and sits at scaleX(0) on capture. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='saas-launch'] [data-relay-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-template-theme='saas-launch'] [data-relay-header-veil] {
+    transition-duration: 0.001s !important;
+  }
+}
