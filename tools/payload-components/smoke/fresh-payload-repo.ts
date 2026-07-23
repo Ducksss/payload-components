@@ -69,11 +69,35 @@ const rootPackagePath = path.join(repoRoot, 'package.json')
 const manifestDir = path.join(repoRoot, 'payload-components', 'manifests')
 const registryDefinitionPath = path.join(repoRoot, 'payload-components', 'registry.json')
 
-export const getInstallableComponentSlugs = async () => {
-  const registry = JSON.parse(await readFile(registryDefinitionPath, 'utf8')) as {
-    items: Array<{ name: string }>
+export const DEFAULT_SMOKE_EXCLUSION_REASON =
+  'Fresh Payload smoke installs page blocks only; non-registry:block items are not Payload layout blocks.'
+
+export type DefaultSmokeSelection = {
+  components: string[]
+  exclusions: Array<{
+    name: string
+    reason: typeof DEFAULT_SMOKE_EXCLUSION_REASON
+    type?: string
+  }>
+}
+
+export const getRenderableSampleBlockType = (manifest: ComponentManifest) => {
+  const blockType = manifest.sampleContent.blockType
+
+  if (typeof blockType !== 'string' || blockType.trim().length === 0) {
+    throw new Error(
+      `Fresh smoke manifest "${manifest.name}" must provide sampleContent.blockType so its installed block can be rendered.`,
+    )
   }
-  const registrySlugs = registry.items.map((item) => item.name).sort()
+
+  return blockType
+}
+
+export const getDefaultSmokeSelection = async (): Promise<DefaultSmokeSelection> => {
+  const registry = JSON.parse(await readFile(registryDefinitionPath, 'utf8')) as {
+    items: Array<{ name: string; type?: string }>
+  }
+  const registrySlugs = registry.items.map((item) => item.name)
   const manifestSlugs = (await readdir(manifestDir))
     .filter((entry) => entry.endsWith('.json'))
     .map((entry) => entry.replace(/\.json$/, ''))
@@ -83,14 +107,42 @@ export const getInstallableComponentSlugs = async () => {
     throw new Error('payload-components/registry.json contains duplicate item names.')
   }
 
-  if (registrySlugs.length !== manifestSlugs.length || registrySlugs.some((slug, index) => slug !== manifestSlugs[index])) {
+  const components = registry.items
+    .filter((item) => item.type === 'registry:block')
+    .map((item) => item.name)
+    .sort()
+  const exclusions = registry.items
+    .filter((item) => item.type !== 'registry:block')
+    .map<DefaultSmokeSelection['exclusions'][number]>((item) => ({
+      name: item.name,
+      reason: DEFAULT_SMOKE_EXCLUSION_REASON,
+      type: item.type,
+    }))
+    .sort((left, right) => left.name.localeCompare(right.name))
+
+  if (
+    components.length !== manifestSlugs.length ||
+    components.some((slug, index) => slug !== manifestSlugs[index])
+  ) {
     throw new Error(
-      'Fresh smoke requires payload-components/registry.json and payload-components/manifests to contain the same installable slugs.',
+      'Fresh smoke requires every registry:block item, and only registry:block items, to have a matching manifest.',
     )
   }
 
-  return registrySlugs
+  const manifests = await Promise.all(components.map((component) => loadManifest(component)))
+
+  for (const manifest of manifests) {
+    getRenderableSampleBlockType(manifest)
+  }
+
+  return {
+    components,
+    exclusions,
+  }
 }
+
+export const getInstallableComponentSlugs = async () =>
+  (await getDefaultSmokeSelection()).components
 
 export const getSmokeShard = (slugs: string[], shardIndex: number) => {
   if (!Number.isInteger(shardIndex) || shardIndex < 0 || shardIndex >= SMOKE_SHARD_COUNT) {

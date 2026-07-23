@@ -112,8 +112,9 @@ doc page, and installer tests, together. Work in this order:
    `src/lib/demo-content.ts` and register the slug in `src/components/site/demos/registry.ts`.
 5. **Catalog & ledgers** — add the component to `componentEntries` (`src/lib/site.ts`); update the installable
    counts (`componentsIntro`, `componentFamilies.pages.countLabel`, `src/app/about/page.tsx`) and the component lists
-   in `src/app/not-found.tsx` and `tools/payload-components/cli.ts`. Fresh smoke discovers every slug from the
-   matching registry item + manifest automatically, so there is no hand-maintained smoke list. Sync
+   in `src/app/not-found.tsx` and `tools/payload-components/cli.ts`. Fresh smoke discovers every
+   `registry:block` with a matching manifest and renderable `sampleContent.blockType` automatically, so there
+   is no hand-maintained smoke list. Sync
    the hero ledgers (`terminalDemoLines`/`frameInstalledFiles`/`wiringLedger`) only if a hero component's
    file set changed.
 6. **Doc page** — copy `doc-page.mdx` to `content/docs/components/<slug>.mdx` (see "Doc page" above); add
