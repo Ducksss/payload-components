@@ -10,6 +10,12 @@ import {
   TEMPLATE_CONCEPT_DISCLOSURE,
   TEMPLATE_CONCEPT_STATUS_LABEL,
 } from '../../src/lib/templates/types'
+import {
+  catalogTemplatesLinkLabel,
+  templatesMetadataDescription,
+  templatesMetadataTitle,
+  templatesTitle,
+} from '../../src/lib/site'
 
 /* Full-site template showcases — /templates gallery, /templates/<slug> detail,
  * and the raw /templates/<slug>/preview/<page> routes (website-only "Concept
@@ -44,7 +50,11 @@ test.describe('Templates gallery (/templates)', () => {
   test('publishes indexable metadata and a canonical URL', async ({ page }) => {
     await page.goto(`${baseURL}/templates`)
 
-    await expect(page).toHaveTitle(/Templates/)
+    await expect(page).toHaveTitle(new RegExp(escapeRegExp(templatesMetadataTitle)))
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+      'content',
+      templatesMetadataDescription,
+    )
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       'href',
       `${baseURL}/templates`,
@@ -56,7 +66,7 @@ test.describe('Templates gallery (/templates)', () => {
   test('renders one H1, the disclosure, and a concept card per template', async ({ page }) => {
     await page.goto(`${baseURL}/templates`)
 
-    await expect(page.locator('h1')).toHaveCount(1)
+    await expect(page.getByRole('heading', { level: 1, name: templatesTitle })).toBeVisible()
     await expect(page.getByText(TEMPLATE_CONCEPT_DISCLOSURE).first()).toBeVisible()
 
     for (const template of templateShowcases) {
@@ -73,6 +83,24 @@ test.describe('Templates gallery (/templates)', () => {
 
     // The gallery never mounts live previews — posters only.
     await expect(page.locator('iframe')).toHaveCount(0)
+  })
+
+  test('links the concepts to supported starting points and from the catalog', async ({ page }) => {
+    await page.goto(`${baseURL}/templates`)
+
+    await expect(page.locator('main a[href="/components"]')).toBeVisible()
+    await expect(page.locator('main a[href="/docs/installation"]')).toBeVisible()
+    await expect(
+      page.locator(
+        'main a[href="https://github.com/payloadcms/payload/tree/main/templates/website"]',
+      ),
+    ).toBeVisible()
+
+    await page.goto(`${baseURL}/components`)
+    await expect(page.getByRole('link', { name: catalogTemplatesLinkLabel })).toHaveAttribute(
+      'href',
+      '/templates',
+    )
   })
 
   test('shows no install, waitlist, or price UI', async ({ page }) => {

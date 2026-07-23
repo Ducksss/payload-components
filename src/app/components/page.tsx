@@ -13,6 +13,7 @@ import {
   catalogInstallationLinkLabel,
   catalogMetadataDescription,
   catalogMetadataTitle,
+  catalogTemplatesLinkLabel,
   catalogTitle,
   componentCategories,
   componentEntries,
@@ -68,12 +69,20 @@ export default function ComponentsPage() {
               <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
                 {catalogDescription}
               </p>
-              <Link
-                href="/docs/installation"
-                className="mt-3 inline-flex rounded-sm text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
-              >
-                {catalogInstallationLinkLabel}
-              </Link>
+              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+                <Link
+                  href="/docs/installation"
+                  className="inline-flex rounded-sm text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
+                >
+                  {catalogInstallationLinkLabel}
+                </Link>
+                <Link
+                  href="/templates"
+                  className="inline-flex rounded-sm text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
+                >
+                  {catalogTemplatesLinkLabel}
+                </Link>
+              </div>
             </div>
             <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground sm:pb-1">
               MIT licensed
