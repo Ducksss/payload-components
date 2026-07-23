@@ -72,6 +72,17 @@ Choose an installable block from the full [component catalog](/components), then
   </Tab>
 </Tabs>
 
+Preview an install before making any changes:
+
+```bash
+npx payload-components add hero-basic --dry-run
+```
+
+The dry run performs the normal project and dependency validation, then lists
+the component files, `RenderBlocks.tsx` renderer mapping, `Pages/index.ts` block
+registration, dependencies, and generation commands. It does not write files,
+install packages, run commands, or update `.payload-components/state.json`.
+
 ## Optional draft demo
 
 Demo content is opt-in. Add `--demo` to a normal install to write a runnable

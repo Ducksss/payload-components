@@ -1,4 +1,4 @@
-import { readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { access, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { afterEach, describe, expect, it } from 'vitest'
@@ -78,6 +78,30 @@ const runAddCommand = async (fixtureDir: string, componentName: string) =>
     env: process.env,
     timeoutMs: integrationCommandTimeoutMs,
   })
+
+const snapshotFixtureFiles = async (fixtureDir: string) => {
+  const entries: Array<[string, string]> = []
+
+  const visit = async (directory: string) => {
+    const children = await readdir(directory, { withFileTypes: true })
+
+    for (const child of children) {
+      const absolutePath = path.join(directory, child.name)
+
+      if (child.isDirectory()) {
+        await visit(absolutePath)
+        continue
+      }
+
+      const relativePath = path.relative(fixtureDir, absolutePath).split(path.sep).join('/')
+      entries.push([relativePath, await readFile(absolutePath, 'utf8')])
+    }
+  }
+
+  await visit(fixtureDir)
+
+  return Object.fromEntries(entries.sort(([left], [right]) => left.localeCompare(right)))
+}
 
 describe('payload-components manifests', () => {
   it('keeps every manifest wired to registry source, docs, and recovery targets', async () => {
@@ -192,6 +216,32 @@ describe('payload-components add', () => {
 
   afterEach(async () => {
     await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
+  })
+
+  it('previews hero-basic in a supported repo without changing files or install state', async () => {
+    const { fixtureDir } = await createInstallFixture('hero-basic')
+    tempDirs.push(fixtureDir)
+    const before = await snapshotFixtureFiles(fixtureDir)
+
+    const result = await runCommand({
+      args: [payloadComponentBin, 'add', 'hero-basic', '--cwd', fixtureDir, '--dry-run'],
+      captureOutput: true,
+      command: process.execPath,
+      cwd: repoRoot,
+      env: process.env,
+      timeoutMs: integrationCommandTimeoutMs,
+    })
+
+    expect(result.stdout).toContain('dry run for "hero-basic"')
+    expect(result.stdout).toContain('No files will be changed')
+    expect(result.stdout).toContain('src/blocks/RenderBlocks.tsx (would patch)')
+    expect(result.stdout).toContain('renderer mapping heroBasic: HeroBasicBlock')
+    expect(result.stdout).toContain('src/collections/Pages/index.ts (would patch)')
+    expect(result.stdout).toContain('HeroBasic in the Pages layout blocks')
+    expect(result.stdout).toContain('pnpm generate:types (would run)')
+    expect(result.stdout).toContain('pnpm generate:importmap (would run)')
+    expect(await snapshotFixtureFiles(fixtureDir)).toEqual(before)
+    await expect(access(path.join(fixtureDir, '.payload-components', 'state.json'))).rejects.toThrow()
   })
 
   it('uses preseeded source and declared local dependencies in the default integration fixture', async () => {

@@ -1431,18 +1431,19 @@ export const catalogMetadataTitle = `${componentEntries.length} Payload CMS Comp
 export const catalogMetadataDescription =
   `Browse all ${componentEntries.length} typed Payload CMS blocks for heroes, features, pricing, integrations, FAQs, content, teams, and embeds, with one-command project wiring.`
 export const catalogInstallationLinkLabel = 'See how one-command installation works'
+export const catalogTemplatesLinkLabel = 'Explore Payload CMS template concepts'
 
 /* ------------------------------------------------------------------ */
 /* Templates showcase                                                  */
 /* ------------------------------------------------------------------ */
 
 export const templatesEyebrow = 'Templates'
-export const templatesTitle = 'Full-site concepts, composed from the block registry'
+export const templatesTitle = 'Payload CMS template concepts, built from installable blocks'
 export const templatesDescription =
-  'The catalog installs one block at a time. These showcases compose those same open-source blocks into complete, browsable site concepts — every page, every section, traceable back to a block you can install today.'
-export const templatesMetadataTitle = 'Templates — full-site Payload CMS concepts'
+  'Explore complete Payload CMS and Next.js site concepts for SaaS and agency projects. Open every page in a live preview, then trace each section back to a typed block you can install today.'
+export const templatesMetadataTitle = 'Payload CMS Templates for Next.js | Concepts & Recipes'
 export const templatesMetadataDescription =
-  'Browse full-site concepts composed from open-source Payload CMS blocks. Explore every page, inspect the block recipe, and help decide whether an installer should come next.'
+  'Explore Payload CMS template concepts for SaaS and agency sites, preview every page, and inspect the typed block recipe behind each Next.js layout.'
 
 export const templateCategoryLabels = {
   agency: 'Agency',

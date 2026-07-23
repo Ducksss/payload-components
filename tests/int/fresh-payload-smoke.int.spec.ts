@@ -1,4 +1,4 @@
-import { readdir, mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdir, readdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
@@ -12,7 +12,13 @@ const { sampleContentNeedsSmokeMedia, writeSeedScript } = smokeHarness
 const repoRoot = process.cwd()
 
 describe('fresh Payload smoke component selection', () => {
-  it('assigns every registry and manifest slug to exactly one of four deterministic shards', async () => {
+  const tempDirs: string[] = []
+
+  afterEach(async () => {
+    await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
+  })
+
+  it('assigns every renderable registry block to exactly one deterministic shard', async () => {
     const { getInstallableComponentSlugs, getSmokeShard, SMOKE_SHARD_COUNT } = smokeHarness as typeof smokeHarness & {
       getInstallableComponentSlugs?: () => Promise<string[]>
       getSmokeShard?: (slugs: string[], shardIndex: number) => string[]
@@ -26,20 +32,38 @@ describe('fresh Payload smoke component selection', () => {
 
     const registry = JSON.parse(
       await readFile(path.join(repoRoot, 'payload-components', 'registry.json'), 'utf8'),
-    ) as { items: Array<{ name: string }> }
+    ) as { items: Array<{ name: string; type?: string }> }
     const manifestSlugs = (await readdir(path.join(repoRoot, 'payload-components', 'manifests')))
       .filter((entry) => entry.endsWith('.json'))
       .map((entry) => entry.replace(/\.json$/, ''))
       .sort()
-    const registrySlugs = registry.items.map((item) => item.name).sort()
+    const registryBlockSlugs = registry.items
+      .filter((item) => item.type === 'registry:block')
+      .map((item) => item.name)
+      .sort()
     const installableSlugs = await getInstallableComponentSlugs()
+    const selection = await smokeHarness.getDefaultSmokeSelection()
     const shards = Array.from({ length: SMOKE_SHARD_COUNT }, (_, shardIndex) =>
       getSmokeShard(installableSlugs, shardIndex),
     )
     const assignments = shards.flat()
 
-    expect(installableSlugs).toEqual(registrySlugs)
+    expect(installableSlugs).toEqual(registryBlockSlugs)
     expect(installableSlugs).toEqual(manifestSlugs)
+    expect(selection.components).toEqual(installableSlugs)
+    expect(
+      [...selection.components, ...selection.exclusions.map((exclusion) => exclusion.name)].sort(),
+    ).toEqual(registry.items.map((item) => item.name).sort())
+    expect(selection.exclusions).toEqual(
+      registry.items
+        .filter((item) => item.type !== 'registry:block')
+        .map((item) => ({
+          name: item.name,
+          reason: smokeHarness.DEFAULT_SMOKE_EXCLUSION_REASON,
+          type: item.type,
+        }))
+        .sort((left, right) => left.name.localeCompare(right.name)),
+    )
     expect([...assignments].sort()).toEqual(installableSlugs)
     expect(new Set(assignments).size).toBe(installableSlugs.length)
 
@@ -51,7 +75,31 @@ describe('fresh Payload smoke component selection', () => {
 
     for (const slug of installableSlugs) {
       expect(assignments.filter((assignment) => assignment === slug), slug).toHaveLength(1)
+      const manifest = await loadManifest(slug)
+
+      expect(smokeHarness.getRenderableSampleBlockType(manifest), slug).toBe(
+        manifest.sampleContent.blockType,
+      )
     }
+  })
+
+  it('rejects default coverage for a block without renderable sample content', async () => {
+    const manifest = await loadManifest('hero-basic')
+
+    expect(() =>
+      smokeHarness.getRenderableSampleBlockType({
+        ...manifest,
+        sampleContent: {},
+      }),
+    ).toThrow(/sampleContent\.blockType/)
+    expect(() =>
+      smokeHarness.getRenderableSampleBlockType({
+        ...manifest,
+        sampleContent: {
+          blockType: '   ',
+        },
+      }),
+    ).toThrow(/sampleContent\.blockType/)
   })
 
   it('renders the production build from the fresh consumer fixture', () => {
@@ -115,6 +163,35 @@ describe('fresh Payload smoke component selection', () => {
         '  postgres://localhost/payload_components  ',
       ),
     ).toBe('postgres://localhost/payload_components')
+  })
+
+  it('adds a client boundary when the generated Payload button imports Radix Slot', async () => {
+    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-template-'))
+    const buttonPath = path.join(tempDir, 'src', 'components', 'ui', 'button.tsx')
+    tempDirs.push(tempDir)
+    await mkdir(path.dirname(buttonPath), { recursive: true })
+    await writeFile(
+      buttonPath,
+      "import { Slot } from '@radix-ui/react-slot'\n\nexport const Button = Slot\n",
+    )
+
+    await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(true)
+    await expect(readFile(buttonPath, 'utf8')).resolves.toBe(
+      "'use client'\n\nimport { Slot } from '@radix-ui/react-slot'\n\nexport const Button = Slot\n",
+    )
+    await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(false)
+  })
+
+  it('leaves generated buttons without Radix Slot unchanged', async () => {
+    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-template-'))
+    const buttonPath = path.join(tempDir, 'src', 'components', 'ui', 'button.tsx')
+    const source = "export const Button = (props: unknown) => <button {...props} />\n"
+    tempDirs.push(tempDir)
+    await mkdir(path.dirname(buttonPath), { recursive: true })
+    await writeFile(buttonPath, source)
+
+    await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(false)
+    await expect(readFile(buttonPath, 'utf8')).resolves.toBe(source)
   })
 })
 
