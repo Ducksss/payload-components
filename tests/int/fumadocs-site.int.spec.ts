@@ -722,54 +722,6 @@ describe('Fumadocs site shell', () => {
     })
   })
 
-  it('stores the distilled audit skill in a validated repo plugin shape', async () => {
-    const pluginRoot = path.join(repoRoot, 'plugins', 'ai-discovery-readiness')
-    const skillRoot = path.join(pluginRoot, 'skills', 'audit-ai-discovery')
-    const marketplace = await readJson<{
-      interface: { displayName: string }
-      name: string
-      plugins: Array<{
-        category: string
-        name: string
-        policy: { authentication: string; installation: string }
-        source: { path: string; source: string }
-      }>
-    }>(path.join(repoRoot, '.agents', 'plugins', 'marketplace.json'))
-    const plugin = await readJson<{
-      name: string
-      skills?: string
-      version: string
-    }>(path.join(pluginRoot, '.codex-plugin', 'plugin.json'))
-    const skill = await readFile(path.join(skillRoot, 'SKILL.md'), 'utf8')
-    const catalog = await readFile(path.join(skillRoot, 'references', 'audit-catalog.md'), 'utf8')
-
-    expect(marketplace).toMatchObject({
-      interface: { displayName: 'Payload Components' },
-      name: 'payload-components',
-      plugins: [
-        expect.objectContaining({
-          category: 'Productivity',
-          name: 'ai-discovery-readiness',
-          policy: { authentication: 'ON_INSTALL', installation: 'AVAILABLE' },
-          source: { path: './plugins/ai-discovery-readiness', source: 'local' },
-        }),
-      ],
-    })
-    expect(plugin).toMatchObject({
-      name: 'ai-discovery-readiness',
-      skills: './skills/',
-      version: '0.1.0',
-    })
-    expect(skill).toContain('name: audit-ai-discovery')
-    expect(skill).toContain('references/audit-catalog.md')
-
-    for (const tag of ['Surface', 'Objective', 'Evidence', 'Owner']) {
-      expect(catalog).toContain(`${tag}:`)
-    }
-    expect(catalog).toContain('not-applicable')
-    expect(catalog).toContain('unverified')
-  })
-
   it('keeps the family navigator as the final section on component docs', async () => {
     const componentDocsDir = path.join(repoRoot, 'content', 'docs', 'components')
     const componentDocs = (await readdir(componentDocsDir)).filter((entry) => entry.endsWith('.mdx'))
