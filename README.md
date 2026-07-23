@@ -158,6 +158,17 @@ Run the CLI from the root of a supported Payload v3 + Next.js project:
 npx payload-components add hero-basic
 ```
 
+Preview the same validation and install plan without changing files, installing
+dependencies, running generation commands, or updating install state:
+
+```sh
+npx payload-components add hero-basic --dry-run
+```
+
+The preview lists the component files, `RenderBlocks.tsx` renderer mapping,
+`Pages/index.ts` block registration, package dependencies, and post-install
+commands the real install would use.
+
 To also write a prefilled demo script after the install succeeds, opt in with
 `--demo`, then run the generated TypeScript through your project's Payload CLI:
 

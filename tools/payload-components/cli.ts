@@ -10,7 +10,7 @@ import { seedCommand } from './commands/seed'
 export const usage = `payload-components
 
 Usage:
-  payload-components add <component-name> [--cwd <path>] [--demo]
+  payload-components add <component-name> [--cwd <path>] [--demo] [--dry-run]
   payload-components seed <component-name> [--cwd <path>]
   payload-components init [--cwd <path>]
   payload-components doctor [--cwd <path>]
@@ -24,6 +24,7 @@ Commands:
 
 Flags:
   --demo  After a successful add, write the same demo seed script as the seed command.
+  --dry-run  Validate and preview an add without changing files or running commands.
 
 Current components:
   hero-basic
@@ -94,6 +95,7 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
   const args = [...argv]
   let cwd = defaultCwd
   let demo = false
+  let dryRun = false
   let help = false
   let hasCwd = false
   const positional: string[] = []
@@ -130,6 +132,15 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
       continue
     }
 
+    if (current === '--dry-run') {
+      if (dryRun) {
+        throw new Error('--dry-run may only be specified once.')
+      }
+
+      dryRun = true
+      continue
+    }
+
     if (current === '--help' || current === '-h') {
       help = true
       continue
@@ -145,6 +156,7 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
   return {
     cwd,
     demo,
+    dryRun,
     help,
     positional,
   }
@@ -175,7 +187,7 @@ export const runCli = async ({
   defaultCwd?: string
   write?: (value: string) => void
 } = {}) => {
-  const { cwd, demo, help, positional } = parseArgs(argv, defaultCwd)
+  const { cwd, demo, dryRun, help, positional } = parseArgs(argv, defaultCwd)
   const [command, ...rest] = positional
 
   if (!command || help) {
@@ -185,6 +197,14 @@ export const runCli = async ({
 
   if (demo && command !== 'add') {
     throw new Error('--demo can only be used with "payload-components add".')
+  }
+
+  if (dryRun && command !== 'add') {
+    throw new Error('--dry-run can only be used with "payload-components add".')
+  }
+
+  if (demo && dryRun) {
+    throw new Error('--demo and --dry-run cannot be used together.')
   }
 
   if (command === 'add') {
@@ -204,6 +224,7 @@ export const runCli = async ({
       cwd,
       componentName,
       demo,
+      dryRun,
     })
     return
   }

@@ -9,6 +9,7 @@ type CliModule = {
   ) => {
     cwd: string
     demo: boolean
+    dryRun: boolean
     help: boolean
     positional: string[]
   }
@@ -50,6 +51,7 @@ describe('payload-components CLI demo seed parsing and orchestration', () => {
     ).toEqual({
       cwd: path.join('/tmp/workspace', 'consumer'),
       demo: true,
+      dryRun: false,
       help: false,
       positional: ['add', 'hero-basic'],
     })
@@ -110,8 +112,34 @@ describe('payload-components CLI demo seed parsing and orchestration', () => {
       componentName: 'hero-basic',
       cwd: '/tmp/workspace',
       demo: true,
+      dryRun: false,
     })
     expect(commands.seedCommand).not.toHaveBeenCalled()
+  })
+
+  it('passes --dry-run only to add orchestration', async () => {
+    expect(cli.runCli).toBeTypeOf('function')
+
+    const commands = {
+      addCommand: vi.fn().mockResolvedValue(undefined),
+      doctorCommand: vi.fn().mockResolvedValue(true),
+      initCommand: vi.fn().mockResolvedValue(undefined),
+      seedCommand: vi.fn().mockResolvedValue(undefined),
+    }
+
+    await cli.runCli?.({
+      argv: ['add', 'hero-basic', '--dry-run'],
+      commands,
+      defaultCwd: '/tmp/workspace',
+      write: vi.fn(),
+    })
+
+    expect(commands.addCommand).toHaveBeenCalledWith({
+      componentName: 'hero-basic',
+      cwd: '/tmp/workspace',
+      demo: false,
+      dryRun: true,
+    })
   })
 
   it('rejects extra positional arguments before dispatch', async () => {
@@ -164,8 +192,29 @@ describe('payload-components CLI demo seed parsing and orchestration', () => {
     expect(() => cli.parseArgs?.(['add', 'hero-basic', '--demo', '--demo'])).toThrow(
       '--demo may only be specified once.',
     )
+    expect(() => cli.parseArgs?.(['add', 'hero-basic', '--dry-run', '--dry-run'])).toThrow(
+      '--dry-run may only be specified once.',
+    )
     expect(() =>
       cli.parseArgs?.(['seed', 'hero-basic', '--cwd', 'one', '--cwd', 'two']),
     ).toThrow('--cwd may only be specified once.')
+
+    await expect(
+      cli.runCli?.({
+        argv: ['doctor', '--dry-run'],
+        commands,
+        defaultCwd: '/tmp/workspace',
+        write: vi.fn(),
+      }),
+    ).rejects.toThrow('--dry-run can only be used with "payload-components add"')
+
+    await expect(
+      cli.runCli?.({
+        argv: ['add', 'hero-basic', '--demo', '--dry-run'],
+        commands,
+        defaultCwd: '/tmp/workspace',
+        write: vi.fn(),
+      }),
+    ).rejects.toThrow('--demo and --dry-run cannot be used together')
   })
 })

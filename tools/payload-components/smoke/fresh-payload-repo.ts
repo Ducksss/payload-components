@@ -293,6 +293,28 @@ const exists = async (filePath: string) => {
   }
 }
 
+export const applyFreshPayloadTemplateCompatibility = async (targetPath: string) => {
+  const buttonPath = path.join(targetPath, 'src', 'components', 'ui', 'button.tsx')
+
+  if (!(await exists(buttonPath))) return false
+
+  const source = await readFile(buttonPath, 'utf8')
+
+  if (!source.includes("from '@radix-ui/react-slot'") || /^\s*(['"])use client\1;?/m.test(source)) {
+    return false
+  }
+
+  // create-payload-app's website template currently leaves this shared button as a
+  // Server Component. Radix Slot 1.3 evaluates a React context at import time, which
+  // fails under the react-server condition before Next can collect page data.
+  await writeFile(buttonPath, `'use client'\n\n${source}`)
+  console.log(
+    '[payload-components smoke] added the missing client boundary to the generated Payload button',
+  )
+
+  return true
+}
+
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const runCommand = async ({ args, command, cwd, env, stage, stdin, timeoutMs }: CommandInput) => {
@@ -849,6 +871,8 @@ const runFreshPayloadRepoSmoke = async ({
     stage: 'create fresh Payload website project',
     timeoutMs,
   })
+
+  await applyFreshPayloadTemplateCompatibility(targetPath)
 
   await runCommand({
     args: ['add', tarballPath],
