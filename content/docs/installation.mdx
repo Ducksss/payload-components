@@ -42,7 +42,7 @@ Plus `package.json` scripts for `generate:types` and `generate:importmap`, which
 
 ## Install a component
 
-Pick a component and run its `add` command from the root of your Payload project. The component pages show the exact command for every block; examples:
+Choose an installable block from the full [component catalog](/components), then run the block's `add` command from the root of your Payload project. Every component page shows its exact command; examples:
 
 <Tabs items={['hero-basic', 'feature-grid-basic', 'logo-cloud-grid', 'content-columns', 'integration-grid']}>
   <Tab value="hero-basic">
@@ -190,6 +190,11 @@ need attention.
   TypeScript cannot resolve `@/payload-types`, or a new block interface is missing?
   Use the [Payload 3 generated-types repair guide](/docs/payload-types-errors)
   to check the output path, registration order, and generation command.
+</Callout>
+
+<Callout type="info">
+  Want to see how one real block moves from config to the editor and frontend?
+  Follow the [`hero-basic` implementation from Block config through live rendering](/docs/payload-blocks).
 </Callout>
 
 ## Idempotency

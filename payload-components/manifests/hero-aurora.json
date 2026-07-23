@@ -1,0 +1,84 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "hero-aurora",
+  "version": "0.1.0",
+  "title": "Hero Aurora",
+  "description": "A motion-first product hero with an animated aurora field, staggered headline reveal, pointer-parallax media panel, and a live metric ticker.",
+  "registryItemName": "hero-aurora",
+  "dependencies": {
+    "motion": "^12.0.0"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/heroFields.ts",
+    "src/blocks/HeroAurora/config.ts",
+    "src/blocks/HeroAurora/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "HeroAuroraBlock",
+      "importPath": "@/blocks/HeroAurora/Component",
+      "blockSlug": "heroAurora"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "HeroAurora",
+      "importPath": "../../blocks/HeroAurora/config",
+      "blockName": "HeroAurora"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Motion-first product hero: aurora gradient field, staggered reveal, parallax panel, metric ticker."
+  },
+  "sampleContent": {
+    "blockType": "heroAurora",
+    "eyebrow": "Acme Cloud · Aurora",
+    "title": "Product analytics that feels alive.",
+    "description": "Acme turns raw usage events into live dashboards, reports, and alerts — an aurora of product signal, readable at a glance.",
+    "metrics": [
+      { "value": "2.4B", "label": "events per day" },
+      { "value": "86ms", "label": "median query" },
+      { "value": "99.99%", "label": "uptime" }
+    ],
+    "productImage": null,
+    "imageCaption": "Live metrics, streaming into one workspace.",
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/start",
+          "label": "Start free trial",
+          "appearance": "default"
+        }
+      },
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/demo",
+          "label": "See it live",
+          "appearance": "outline"
+        }
+      }
+    ],
+    "proofItems": [
+      { "label": "SOC 2 Type II" },
+      { "label": "Deploy in days" },
+      { "label": "No credit card" }
+    ]
+  }
+}

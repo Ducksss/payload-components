@@ -3,7 +3,9 @@ import contactRoutingFormManifest from '../../payload-components/manifests/conta
 import featureAccordionManifest from '../../payload-components/manifests/feature-accordion.json' with { type: 'json' }
 import featureCardsMediaManifest from '../../payload-components/manifests/feature-cards-media.json' with { type: 'json' }
 import featureIconGridManifest from '../../payload-components/manifests/feature-icon-grid.json' with { type: 'json' }
+import heroAuroraManifest from '../../payload-components/manifests/hero-aurora.json' with { type: 'json' }
 import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
+import heroKineticManifest from '../../payload-components/manifests/hero-kinetic.json' with { type: 'json' }
 import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
 import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
 import statsProofManifest from '../../payload-components/manifests/stats-proof.json' with { type: 'json' }
@@ -20,9 +22,9 @@ export const docsRoute = '/docs'
 export const docsImageRoute = '/og/docs'
 export const docsContentRoute = '/llms.mdx/docs'
 export const blogRoute = '/blog'
-export const blogTitle = 'Blog'
+export const blogTitle = 'Build notes and release stories'
 export const blogDescription =
-  'Updates, deep dives, and release notes from the Payload Components team.'
+  'Installer changes, component release notes, and implementation lessons from maintaining the Payload Components registry.'
 export const primaryInstallCommand = 'npx payload-components add hero-basic'
 export const cliVersion = packageJson.version
 
@@ -37,9 +39,9 @@ export const pipelineStages = [
 export const siteDescription =
   'Payload Components is an MIT registry and CLI that installs typed Payload CMS blocks into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
 
-export const homeMetadataTitle = 'Payload Components — fully-wired blocks for Payload CMS'
+export const homeMetadataTitle = 'Install wired Payload CMS blocks in one command'
 export const homeMetadataDescription =
-  'Payload Components gives you reusable Payload blocks with one-command install, wiring config, render maps, types, and import maps for Payload CMS and Next.js.'
+  'Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects.'
 
 /* ------------------------------------------------------------------ */
 /* Hero                                                                */
@@ -303,6 +305,50 @@ export const componentEntries = [
     target: 'Product hero',
     title: 'Hero Product Tilt',
     version: heroProductTiltManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-aurora',
+    description:
+      'A motion-first product hero with an animated aurora field, staggered headline reveal, pointer-parallax media panel, and a live metric ticker.',
+    family: 'pages',
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'links',
+      'metrics',
+      'productImage',
+      'imageCaption',
+      'proofItems',
+    ],
+    href: '/docs/components/hero-aurora',
+    slug: 'hero-aurora',
+    target: 'Motion hero',
+    title: 'Hero Aurora',
+    version: heroAuroraManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-kinetic',
+    description:
+      'A motion-first editorial hero with a line-masked type reveal, cinematic media plate, and a velocity-aware marquee strip.',
+    family: 'pages',
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'links',
+      'marqueeItems',
+      'image',
+      'imageCaption',
+      'proofItems',
+    ],
+    href: '/docs/components/hero-kinetic',
+    slug: 'hero-kinetic',
+    target: 'Editorial motion hero',
+    title: 'Hero Kinetic',
+    version: heroKineticManifest.version,
   },
   {
     category: 'features',
@@ -1317,7 +1363,7 @@ export const faqIntro =
 export const faqEntries = [
   {
     answer:
-      'Yes — and built to stay that way. The registry, the CLI, both components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.',
+      `Yes — and built to stay that way. The registry, the CLI, all ${componentEntries.length} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.`,
     question: 'Is Payload Components free?',
   },
   {
@@ -1378,13 +1424,58 @@ export const communityInvite = {
 /* Catalog page                                                        */
 /* ------------------------------------------------------------------ */
 
-export const catalogTitle = 'Typed Payload CMS blocks and components'
+export const catalogTitle = `${componentEntries.length} typed Payload CMS blocks and components`
 export const catalogDescription =
-  'Browse typed blocks for Payload CMS: heroes, features, pricing, calls to action, integrations, testimonials, FAQs, content, teams, and embeds. One CLI command copies each component and wires its collection registration, renderer mapping, generated types, and admin import map.'
-export const catalogMetadataTitle = 'Typed Payload CMS Components & Blocks Catalog'
+  `Browse all ${componentEntries.length} typed blocks for Payload CMS: heroes, features, pricing, calls to action, integrations, testimonials, FAQs, content, teams, and embeds. One CLI command copies each component and wires its collection registration, renderer mapping, generated types, and admin import map.`
+export const catalogMetadataTitle = `${componentEntries.length} Payload CMS Components & Blocks | Catalog`
 export const catalogMetadataDescription =
-  'Browse typed Payload CMS blocks for heroes, features, pricing, integrations, FAQs, content, teams, and embeds, with one-command project wiring.'
+  `Browse all ${componentEntries.length} typed Payload CMS blocks for heroes, features, pricing, integrations, FAQs, content, teams, and embeds, with one-command project wiring.`
 export const catalogInstallationLinkLabel = 'See how one-command installation works'
+
+/* ------------------------------------------------------------------ */
+/* Templates showcase                                                  */
+/* ------------------------------------------------------------------ */
+
+export const templatesEyebrow = 'Templates'
+export const templatesTitle = 'Full-site concepts, composed from the block registry'
+export const templatesDescription =
+  'The catalog installs one block at a time. These showcases compose those same open-source blocks into complete, browsable site concepts — every page, every section, traceable back to a block you can install today.'
+export const templatesMetadataTitle = 'Templates — full-site Payload CMS concepts'
+export const templatesMetadataDescription =
+  'Browse full-site concepts composed from open-source Payload CMS blocks. Explore every page, inspect the block recipe, and help decide whether an installer should come next.'
+
+export const templateCategoryLabels = {
+  agency: 'Agency',
+  saas: 'SaaS',
+} as const
+
+/* Detail-page link back into the catalog: templates never gate anything — the
+   recipe is the point, and every chip resolves to an installable block. */
+export const templatesRecipeIntro =
+  'Every section on every page is one block from the open registry, in render order. Each chip links to the block’s contract — fields, wiring, and the exact install command.'
+
+/* Community close — templates grow the same way the catalog does: in the
+   open, from real needs, with no waitlist or capture in between. */
+export const templatesContribution = {
+  heading: 'Templates are decided in the open',
+  intro:
+    'These concepts exist to answer one question with the community: should full-site templates become installable? The recipes, the fictional brands, and the installer RFC all live in the public repository — nothing gated, no email capture.',
+  links: [
+    {
+      description: 'Read the showcase source — every recipe is plain data in the repository.',
+      external: true,
+      href: githubRepoUrl,
+      label: 'Browse the repository',
+    },
+    {
+      description:
+        'Tell us which template, page, or block recipe you would actually ship — or propose a new one.',
+      external: true,
+      href: githubIssuesUrl,
+      label: 'Open an issue',
+    },
+  ],
+} as const
 
 /* ------------------------------------------------------------------ */
 /* Shared navigation surfaces                                          */
@@ -1436,6 +1527,7 @@ export const footerColumns = [
   {
     links: [
       { href: '/components', label: 'Component catalog' },
+      { href: '/templates', label: 'Template concepts' },
       { href: '/docs', label: 'Documentation' },
       { href: '/docs/installation', label: 'Install workflow' },
       { href: '/docs/architecture', label: 'Architecture' },
