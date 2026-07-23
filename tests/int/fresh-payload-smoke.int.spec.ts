@@ -18,7 +18,7 @@ describe('fresh Payload smoke component selection', () => {
     await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
   })
 
-  it('assigns every registry and manifest slug to exactly one of four deterministic shards', async () => {
+  it('assigns every renderable registry block to exactly one deterministic shard', async () => {
     const { getInstallableComponentSlugs, getSmokeShard, SMOKE_SHARD_COUNT } = smokeHarness as typeof smokeHarness & {
       getInstallableComponentSlugs?: () => Promise<string[]>
       getSmokeShard?: (slugs: string[], shardIndex: number) => string[]
@@ -32,20 +32,38 @@ describe('fresh Payload smoke component selection', () => {
 
     const registry = JSON.parse(
       await readFile(path.join(repoRoot, 'payload-components', 'registry.json'), 'utf8'),
-    ) as { items: Array<{ name: string }> }
+    ) as { items: Array<{ name: string; type?: string }> }
     const manifestSlugs = (await readdir(path.join(repoRoot, 'payload-components', 'manifests')))
       .filter((entry) => entry.endsWith('.json'))
       .map((entry) => entry.replace(/\.json$/, ''))
       .sort()
-    const registrySlugs = registry.items.map((item) => item.name).sort()
+    const registryBlockSlugs = registry.items
+      .filter((item) => item.type === 'registry:block')
+      .map((item) => item.name)
+      .sort()
     const installableSlugs = await getInstallableComponentSlugs()
+    const selection = await smokeHarness.getDefaultSmokeSelection()
     const shards = Array.from({ length: SMOKE_SHARD_COUNT }, (_, shardIndex) =>
       getSmokeShard(installableSlugs, shardIndex),
     )
     const assignments = shards.flat()
 
-    expect(installableSlugs).toEqual(registrySlugs)
+    expect(installableSlugs).toEqual(registryBlockSlugs)
     expect(installableSlugs).toEqual(manifestSlugs)
+    expect(selection.components).toEqual(installableSlugs)
+    expect(
+      [...selection.components, ...selection.exclusions.map((exclusion) => exclusion.name)].sort(),
+    ).toEqual(registry.items.map((item) => item.name).sort())
+    expect(selection.exclusions).toEqual(
+      registry.items
+        .filter((item) => item.type !== 'registry:block')
+        .map((item) => ({
+          name: item.name,
+          reason: smokeHarness.DEFAULT_SMOKE_EXCLUSION_REASON,
+          type: item.type,
+        }))
+        .sort((left, right) => left.name.localeCompare(right.name)),
+    )
     expect([...assignments].sort()).toEqual(installableSlugs)
     expect(new Set(assignments).size).toBe(installableSlugs.length)
 
@@ -57,7 +75,31 @@ describe('fresh Payload smoke component selection', () => {
 
     for (const slug of installableSlugs) {
       expect(assignments.filter((assignment) => assignment === slug), slug).toHaveLength(1)
+      const manifest = await loadManifest(slug)
+
+      expect(smokeHarness.getRenderableSampleBlockType(manifest), slug).toBe(
+        manifest.sampleContent.blockType,
+      )
     }
+  })
+
+  it('rejects default coverage for a block without renderable sample content', async () => {
+    const manifest = await loadManifest('hero-basic')
+
+    expect(() =>
+      smokeHarness.getRenderableSampleBlockType({
+        ...manifest,
+        sampleContent: {},
+      }),
+    ).toThrow(/sampleContent\.blockType/)
+    expect(() =>
+      smokeHarness.getRenderableSampleBlockType({
+        ...manifest,
+        sampleContent: {
+          blockType: '   ',
+        },
+      }),
+    ).toThrow(/sampleContent\.blockType/)
   })
 
   it('renders the production build from the fresh consumer fixture', () => {
