@@ -1,4 +1,4 @@
-import { readdir, mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdir, readdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
@@ -12,6 +12,12 @@ const { sampleContentNeedsSmokeMedia, writeSeedScript } = smokeHarness
 const repoRoot = process.cwd()
 
 describe('fresh Payload smoke component selection', () => {
+  const tempDirs: string[] = []
+
+  afterEach(async () => {
+    await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
+  })
+
   it('assigns every registry and manifest slug to exactly one of four deterministic shards', async () => {
     const { getInstallableComponentSlugs, getSmokeShard, SMOKE_SHARD_COUNT } = smokeHarness as typeof smokeHarness & {
       getInstallableComponentSlugs?: () => Promise<string[]>
@@ -115,6 +121,35 @@ describe('fresh Payload smoke component selection', () => {
         '  postgres://localhost/payload_components  ',
       ),
     ).toBe('postgres://localhost/payload_components')
+  })
+
+  it('adds a client boundary when the generated Payload button imports Radix Slot', async () => {
+    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-template-'))
+    const buttonPath = path.join(tempDir, 'src', 'components', 'ui', 'button.tsx')
+    tempDirs.push(tempDir)
+    await mkdir(path.dirname(buttonPath), { recursive: true })
+    await writeFile(
+      buttonPath,
+      "import { Slot } from '@radix-ui/react-slot'\n\nexport const Button = Slot\n",
+    )
+
+    await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(true)
+    await expect(readFile(buttonPath, 'utf8')).resolves.toBe(
+      "'use client'\n\nimport { Slot } from '@radix-ui/react-slot'\n\nexport const Button = Slot\n",
+    )
+    await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(false)
+  })
+
+  it('leaves generated buttons without Radix Slot unchanged', async () => {
+    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-template-'))
+    const buttonPath = path.join(tempDir, 'src', 'components', 'ui', 'button.tsx')
+    const source = "export const Button = (props: unknown) => <button {...props} />\n"
+    tempDirs.push(tempDir)
+    await mkdir(path.dirname(buttonPath), { recursive: true })
+    await writeFile(buttonPath, source)
+
+    await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(false)
+    await expect(readFile(buttonPath, 'utf8')).resolves.toBe(source)
   })
 })
 
