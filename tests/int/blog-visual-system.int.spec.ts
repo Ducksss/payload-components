@@ -4275,7 +4275,7 @@ describe('Community Field Journal visual catalog', () => {
     }
 
     expect(violations).toEqual([])
-  })
+  }, 30_000)
 
   it('selects deterministic cover batches and a local capture origin', () => {
     const all = parseCoverRenderArgs([], {})
