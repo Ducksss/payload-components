@@ -957,6 +957,46 @@ test.describe('Light shadcn frontend', () => {
 
     await expectCopiedAlert(page)
   })
+
+  test('tracks the primary installation command with installation attribution', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs/installation`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    const installButton = page.getByRole('button', {
+      name: 'Copy the hero-basic install command',
+    })
+    await installButton.click()
+
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add hero-basic')
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: 'npx payload-components add hero-basic',
+        component: 'hero-basic',
+        source_path: '/docs/installation',
+      },
+    ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: 'npx payload-components add hero-basic',
+            component: 'hero-basic',
+            source_path: '/docs/installation',
+          },
+        },
+      ]),
+    )
+  })
 })
 
 test.describe('Reduced motion', () => {
