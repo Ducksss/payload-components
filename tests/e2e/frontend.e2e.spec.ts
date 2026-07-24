@@ -235,6 +235,15 @@ test.describe('Light shadcn frontend', () => {
 
     await page
       .getByRole('group')
+      .filter({ hasText: 'What is a Payload CMS block?' })
+      .getByText('What is a Payload CMS block?')
+      .click()
+    await expect(
+      page.getByRole('link', { name: 'Read the Payload blocks guide' }),
+    ).toHaveAttribute('href', '/docs/payload-blocks')
+
+    await page
+      .getByRole('group')
       .filter({ hasText: 'What exactly does an install change in my repo?' })
       .getByText('What exactly does an install change in my repo?')
       .click()

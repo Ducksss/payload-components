@@ -200,6 +200,7 @@ describe('Fumadocs site shell', () => {
       heroConfig,
       heroComponent,
       heroManifest,
+      rootReadme,
     ] = await Promise.all([
       readFile(path.join(repoRoot, 'content', 'docs', 'payload-blocks.mdx'), 'utf8'),
       readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
@@ -208,6 +209,7 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'config.ts'), 'utf8'),
       readFile(path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'Component.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'payload-components', 'manifests', 'hero-basic.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'README.md'), 'utf8'),
     ])
 
     expect(guide).toContain(
@@ -244,6 +246,12 @@ describe('Fumadocs site shell', () => {
     expect(docsMeta).toContain('"payload-blocks"')
     expect(installationGuide).toContain(
       '[`hero-basic` implementation from Block config through live rendering](/docs/payload-blocks)',
+    )
+    expect(rootReadme).toContain(
+      '[Payload blocks][payload-blocks-guide-url] are not live when their files land.',
+    )
+    expect(rootReadme).toContain(
+      '[payload-blocks-guide-url]: https://www.payload-components.xyz/docs/payload-blocks',
     )
     expect(sitemap).toContain('source.getPages()')
   })
