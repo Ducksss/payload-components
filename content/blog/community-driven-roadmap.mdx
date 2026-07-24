@@ -1,0 +1,162 @@
+---
+title: How Real Installs Should Shape an Open-Source Component Roadmap
+description: Turn install evidence, reproducible friction, public issues, and complete contributions into a community roadmap that reflects real Payload projects.
+author: Ducksss
+date: 2026-07-14
+series: open-source
+publicationOrder: 32
+cover:
+  src: /blog/community-driven-roadmap/cover.webp
+  alt: Install support triage rule beside the loop from real install evidence through issue and contribution to release.
+tags:
+  - Open source
+  - Community
+  - Roadmap
+---
+
+The easiest component roadmap to write is a list of attractive screenshots. The useful roadmap is
+harder: it reflects the sections people repeatedly need, the install assumptions real repositories
+break, the content states editors struggle with, and the contributions maintainers can support well.
+
+Payload Components is community-first. Adoption and contribution are the measure, not a catalog
+count or a funnel. That means the feedback loop begins after installation, when source meets a real
+starter, schema, design system, editor, and deployment.
+
+<BlogFigure
+  src="/blog/community-driven-roadmap/figure-01-feedback-loop.svg"
+  alt="A community feedback loop routing install evidence to a public issue or private advisory, then a contribution and an available release for future installs"
+  caption="The loop turns routed evidence into a reproducible report, tested contribution, and available release; future installs can adopt it without implying every existing project is updated."
+/>
+
+## Count problems, not applause
+
+A request such as “add more heroes” is a signal, not yet a specification. Ask which page job the
+current hero cannot perform, what content is required, how mobile order changes, and whether the
+difference is structural or cosmetic.
+
+A bug report such as “installer broke my project” becomes useful when it includes the supported
+starter version, sanitized host shape, failed stage, doctor output, and expected narrow diff. That
+evidence can become detection logic and a fixture.
+
+Positive feedback matters too. A component repeatedly installed without modification may indicate a
+stable contract. A component always rewritten in the same way may indicate a missing field, wrapper,
+or variant. The roadmap should learn from both outcomes.
+
+## Make installation observable
+
+The project does not need invasive analytics to learn. Ordinary reports can become a public issue,
+while security-sensitive evidence belongs in a private advisory. Discussions, pull requests,
+reproducible fixtures, and voluntary examples provide more context. If anonymous aggregate install
+data is ever considered, its collection and privacy contract should be transparent and optional.
+
+Today, `.payload-components/state.json` exists for local recovery, not remote tracking. Do not turn a
+project state file into telemetry by implication. Trust grows when tools do exactly what their docs
+say.
+
+The [doctor article](/blog/payload-components-doctor) shows how local diagnostics can produce a useful
+sanitized report without modifying or uploading the repository.
+
+## Prefer reproducible issues
+
+A strong issue contains:
+
+- the desired or failing outcome;
+- the relevant component and version;
+- Payload, Next.js, Node, and package-manager versions;
+- a minimal collection or renderer shape;
+- exact command and failed stage;
+- expected and actual behavior;
+- accessibility or responsive context when visual;
+- confirmation that secrets and private data were removed.
+
+Templates should help people provide this evidence without making issue creation hostile. Maintainers
+can ask focused follow-ups and convert common reproductions into fixtures.
+
+The [contributing guide](/docs/contributing) is the shared path for proposing and validating changes.
+
+## Rank by community value and maintenance cost
+
+Frequency is useful but not sufficient. A rare data-loss or unsafe-link issue outranks a common
+cosmetic request. An accessibility failure can block a section entirely for some users. An installer
+break affecting a supported starter can undermine every component.
+
+I consider:
+
+1. severity and safety;
+2. number and diversity of real projects affected;
+3. fit with the registry's Payload v3 + Next.js boundary;
+4. clarity of the content and structural contract;
+5. long-term test and maintenance burden;
+6. presence of a contributor or reproducible fixture.
+
+A roadmap item should be small enough to finish completely. “Support every Payload architecture” is
+not actionable. “Support this documented RenderBlocks shape with detection, anchored patches,
+idempotency tests, and docs” is.
+
+## Let families grow from recurring structure
+
+New variants should represent repeated hierarchy or interaction needs. Cosmetic changes belong in
+the consumer's source and tokens. Optional content belongs in fields. A new family member earns its
+name when the schema, React structure, preview, and tests tell a distinct story.
+
+The [variant design article](/blog/component-variants-without-prop-explosion) gives the decision model.
+It protects the roadmap from becoming an exhaustive list of prop combinations.
+
+Sometimes the right roadmap outcome is improved documentation or a shared field module, not another
+card. A recurring installation question may reveal that the contract is hidden rather than absent.
+
+## Require complete contributions
+
+A component proposal becomes shippable when source, manifest, registry entry, docs, demo twin,
+installer tests, and visual baseline land together. A CLI improvement includes failure recovery and
+diagnostic language. An accessibility fix includes a behavior test.
+
+This standard is not bureaucracy around contribution. It prevents the community from inheriting a
+beautiful partial feature whose missing surfaces become someone else's emergency. The
+[end-to-end component guide](/blog/contribute-payload-component) walks through the complete unit.
+
+Review should be kind and specific. Maintainers can help shape a proposal before a contributor builds
+all surfaces, but merged work should satisfy the same public contract as existing components.
+
+## Close the loop after release
+
+A merged change is a hypothesis. Announce what changed, link the issue and docs, and invite the
+original reporter to try the release. If the fix works only in the fixture, reopen the investigation
+with the new evidence.
+
+Update support matrices and docs when behavior changes. Keep changelog or release notes focused on
+what users need to verify. Preserve provenance for adapted work. Watch for related reports that
+suggest the abstraction is still too narrow.
+
+Publishing makes the change available to future installs; it does not reach every existing project
+automatically. The next install is part of the loop. A release becomes trusted through repeated real
+use, not through the confidence of its merge message.
+
+## Keep public priorities legible
+
+Use issues and project labels to distinguish confirmed bugs, component proposals, starter support,
+documentation, accessibility, and help wanted work. Explain why something is not planned when it falls
+outside the architecture boundary. Avoid promising dates the volunteer project cannot support.
+
+A community roadmap should leave room for contributors to champion a well-scoped need. Maintainers
+still protect coherence: a complete proposal can be declined if it duplicates a variant, introduces
+unsafe behavior, or moves the docs site toward a Payload runtime.
+
+Legible boundaries make contribution easier because people know where effort will compound.
+
+## Begin with one honest install
+
+Choose a component your project needs, install it on a branch, read the diff, and publish it with
+real content:
+
+```bash
+npx payload-components add hero-basic
+```
+
+Browse the [catalog](/components) and [architecture docs](/docs/architecture) before proposing a new
+surface. If the install succeeds, share the composition and awkward content states you tested. If it
+fails, run doctor and bring a sanitized reproduction. If you improve the source, contribute the docs
+and test that make your insight reusable.
+
+That is the roadmap loop I want: not a queue handed down to users, but a public record of real Payload
+projects teaching a shared registry what to become next.

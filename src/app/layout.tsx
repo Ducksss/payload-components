@@ -8,7 +8,7 @@ import { GeistSans } from 'geist/font/sans'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { AnalyticsShell } from '@/components/site/AnalyticsShell'
 import { CommandCopyController } from '@/components/site/CommandCopyController'
-import { githubRepoUrl, siteDescription, siteUrl } from '@/lib/site'
+import { feedMetadataAlternates, githubRepoUrl, siteDescription, siteUrl } from '@/lib/site'
 import {
   documentationCollectionNode,
   graph,
@@ -31,6 +31,7 @@ const instrumentSerif = Instrument_Serif({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  alternates: feedMetadataAlternates,
   title: {
     default: 'Payload Components — fully-wired blocks for Payload CMS',
     template: '%s | Payload Components',

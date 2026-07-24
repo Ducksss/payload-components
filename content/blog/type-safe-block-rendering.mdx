@@ -1,0 +1,235 @@
+---
+title: Type-Safe Block Rendering Patterns for Payload and Next.js
+description: Use Payload's discriminated unions, typed renderer maps, exhaustive checks, relationship narrowing, and wrapper contracts without spreading casts.
+author: Ducksss
+date: 2026-07-14
+series: production-guides
+publicationOrder: 26
+cover:
+  src: /blog/type-safe-block-rendering/cover.webp
+  alt: Hero Basic render-props type beside the path from a block union and blockType through the renderer map and wrapper props to output.
+tags:
+  - TypeScript
+  - Payload CMS
+  - Next.js
+---
+
+Payload already knows the shape of every block. When generated types reach the Next.js renderer
+intact, `blockType` can narrow each layout item to the fields its React component expects. The main
+engineering task is preserving that knowledge across a heterogeneous component map without filling
+the codebase with `any` and assertions.
+
+There is no single perfect pattern for every application. A closed renderer that owns every schema
+member can be exhaustive. A registry-aware renderer may intentionally support a subset during
+migration. Both can keep uncertainty localized and observable.
+
+The target is not a clever generic with zero visible repetition. The target is a change where adding
+one block produces useful compiler feedback in the config, component props, renderer inventory, and
+fixtures. If a type abstraction makes an error shorter but the mapping harder to review, it has moved
+complexity rather than removed it. Prefer the smallest pattern your team can explain while looking at
+the generated union and one component addition.
+
+That restraint matters for distributed source. Consumers will customize the renderer after install,
+often without the original author's context. Ordinary TypeScript utilities and explicit keys are a
+more durable public interface than a local type puzzle.
+
+<BlogFigure
+  src="/blog/type-safe-block-rendering/figure-01-type-safe-rendering.svg"
+  alt="A type-safe rendering pipeline from a Payload layout union through blockType narrowing and a renderer map to wrapper props and React output"
+  caption="The discriminator should narrow content before wrapper concerns are added, keeping every block component honest about the generated fields it receives."
+/>
+
+## Generate instead of duplicating
+
+Run Payload's configured type generator after schema changes. The official
+[type generation documentation](https://payloadcms.com/docs/typescript/generating-types) describes
+the source and output configuration. Import the resulting Page and block interfaces into frontend
+code.
+
+Do not write a second `HeroBlock` interface that resembles the config. It will diverge. Do not use a
+cast to make yesterday's generated file accept today's schema. Regenerate and inspect the diff.
+
+A Page layout often has a form like:
+
+```ts
+type Layout = NonNullable<Page['layout']>
+type LayoutBlock = Layout[number]
+type BlockType = LayoutBlock['blockType']
+```
+
+These aliases remain tied to the generated collection. If the schema adds a block, the union changes
+and the compiler can show which frontend contracts need attention.
+
+## Type each component with its generated member
+
+The simplest component receives its generated block interface plus optional layout wrappers:
+
+```tsx
+import type { HeroBasicBlock as HeroBasicBlockData } from '@/payload-types'
+
+type HeroBasicProps = HeroBasicBlockData & {
+  className?: string
+  disableInnerContainer?: boolean
+  id?: string
+}
+
+export function HeroBasicBlock(props: HeroBasicProps) {
+  // ...
+}
+```
+
+Do not omit wrapper props that the renderer or page composition relies on. Preserve them consistently
+across installed blocks. Keep runtime-only context separate when it is not stored content—for example,
+preview state, locale, or a link renderer can be an additional prop rather than a fake Payload field.
+
+When a component transforms data for a child, keep the transformation typed. Avoid spreading a broad
+block object into a DOM element, which can leak `blockType`, IDs, and nested objects as invalid
+attributes.
+
+## Extract union members by discriminator
+
+TypeScript's `Extract` utility connects a map key to its exact union member:
+
+```ts
+type BlockOf<Type extends BlockType> = Extract<
+  LayoutBlock,
+  { blockType: Type }
+>
+
+type BlockRendererMap = {
+  [Type in BlockType]: React.ComponentType<BlockOf<Type>>
+}
+```
+
+A complete application can define the map with `satisfies BlockRendererMap`. Missing or misspelled
+keys become compile errors, and each component must accept the corresponding member.
+
+```tsx
+const blockComponents = {
+  heroBasic: HeroBasicBlock,
+  featureBento: FeatureBentoBlock,
+  contentQuote: ContentQuoteBlock,
+} satisfies BlockRendererMap
+```
+
+This pattern works best when generated block discriminators are literal types and the renderer owns
+all members. If the union includes blocks rendered elsewhere, derive the subset or use a partial map
+with an explicit fallback.
+
+## Localize the heterogeneous lookup problem
+
+Even with a typed map, indexing it with a union value and then spreading a union object can exceed
+what TypeScript proves about the correlation. The compiler sees a union of components and a union of
+props, and the relationship can be lost at the dynamic lookup.
+
+Do not respond by making the whole map `Record<string, React.ComponentType<any>>`. Use a small helper,
+a switch that narrows each case, or one justified assertion inside the renderer boundary. The
+component files and callers should remain strictly typed.
+
+A switch is verbose but fully transparent:
+
+```tsx
+switch (block.blockType) {
+  case 'heroBasic':
+    return <HeroBasicBlock key={block.id} {...block} />
+  case 'featureBento':
+    return <FeatureBentoBlock key={block.id} {...block} />
+  default:
+    return assertNever(block)
+}
+```
+
+An object map produces cleaner installer patches and inventory. Choose the trade-off deliberately and
+test the boundary. The [RenderBlocks article](/blog/how-renderblocks-works) covers runtime dispatch.
+
+## Use exhaustive checks when the schema is closed
+
+An `assertNever` helper makes an unhandled union member visible during compilation:
+
+```ts
+function assertNever(value: never): never {
+  throw new Error(`Unhandled block: ${JSON.stringify(value)}`)
+}
+```
+
+Use this only where every member must render. Throwing on a public page may be too harsh for stale
+documents or staged deployments. The build-time exhaustive check and runtime fallback can be
+separate: enforce map completeness in source while logging and omitting an unknown persisted value
+in production.
+
+During schema rollouts, deploy ordering matters. A document created with a new block can reach an old
+frontend instance. Backward-compatible mapping or coordinated deployment may be necessary even when
+the latest code is exhaustive.
+
+## Narrow relationships at runtime
+
+Payload relationships and uploads may be returned as an ID or populated document depending on depth,
+access, and query selection. Generated types correctly expose the union. Do not assert that a media
+field is populated because the happy-path query usually sets depth.
+
+```ts
+function isMedia(value: string | Media | null | undefined): value is Media {
+  return typeof value === 'object' && value !== null
+}
+```
+
+Prefer a project type guard that checks stable fields, and handle the ID or missing case. If the
+component requires media, the server query can populate it, but access filtering and older data still
+deserve a safe state.
+
+When inspecting Payload field configurations in tooling, use Payload's exported field type guards
+instead of unsafe structural casts. Config field unions and document relationship unions are
+different domains; keep their guards separate.
+
+## Keep rich text and links typed at their serializers
+
+Rich-text data should enter one controlled renderer whose node types and custom blocks are known.
+Avoid casting it to a string or accepting arbitrary HTML. Custom block nodes can reuse the same
+discriminator principles with a dedicated map.
+
+Links should use a typed internal-reference or custom-URL union. Narrow the selected branch, validate
+URLs, and render through one link component. The [safe input guide](/blog/safe-links-forms-embeds)
+explains the runtime trust boundary that TypeScript alone cannot enforce.
+
+Types prove what application code expects; they do not prove stored or user-supplied data is safe.
+Payload validation, access control, server validation, and rendering policy remain necessary.
+
+## Preserve server component advantages
+
+Keep the main renderer a server component when it only maps data to sections. Individual interactive
+blocks can contain small client islands. A map file marked `use client` pulls its imports into the
+client graph and prevents server-only components from participating.
+
+Pass serializable values across the boundary. Functions, database clients, and request objects stay
+on the server. A form can receive an action identifier or server action according to the application's
+architecture without turning every content block into client state.
+
+This pattern reduces JavaScript and keeps data fetching, access, and caching near the server route.
+
+## Test the type contract and runtime behavior
+
+Typecheck after every config change. Add integration assertions that registry manifests, collection
+registration, generated discriminators, and renderer keys agree. Test installation twice so an
+automated map patch remains singular.
+
+At runtime, fixture every union member and assert it renders in order. Include an unknown discriminator
+case through a deliberately untyped boundary to verify logging or fallback behavior. Test relationship
+IDs and populated values, missing optional fields, long arrays, and wrapper props.
+
+Browser tests should cover semantics, focus, overflow, and reduced motion. Visual baselines protect
+representative presentation, not type safety.
+
+## Start with one inspectable mapping
+
+Install a small component and follow its type through the config, generated file, map, and React
+props:
+
+```bash
+npx payload-components add hero-basic
+```
+
+Use the [Hero Basic docs](/docs/components/hero-basic) to compare the content model and installed
+files, and read the [architecture guide](/docs/architecture) for the source/runtime boundary. If your
+renderer needs a common typed shape the current fragments do not support, contribute a minimal
+fixture and compile-time test. A type-safe pattern earns its place when it makes real component adds
+clearer without hiding runtime uncertainty behind a more elaborate generic.

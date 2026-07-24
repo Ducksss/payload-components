@@ -22,6 +22,11 @@ export const docsRoute = '/docs'
 export const docsImageRoute = '/og/docs'
 export const docsContentRoute = '/llms.mdx/docs'
 export const blogRoute = '/blog'
+export const feedRoute = '/feed.xml'
+export const aiDiscoveryRoute = '/docs/ai-discovery'
+export const feedMetadataAlternates = {
+  types: { 'application/rss+xml': feedRoute },
+} as const
 export const blogTitle = 'Build notes and release stories'
 export const blogDescription =
   'Installer changes, component release notes, and implementation lessons from maintaining the Payload Components registry.'
@@ -1532,6 +1537,7 @@ export const footerColumns = [
       { href: '/docs', label: 'Documentation' },
       { href: '/docs/installation', label: 'Install workflow' },
       { href: '/docs/architecture', label: 'Architecture' },
+      { href: aiDiscoveryRoute, label: 'AI discovery' },
     ],
     title: 'Product',
   },
@@ -1549,6 +1555,7 @@ export const footerColumns = [
       { external: true, href: githubRepoUrl, label: 'GitHub' },
       { external: true, href: githubIssuesUrl, label: 'Open an issue' },
       { external: true, href: `${githubRepoUrl}/releases`, label: 'Releases' },
+      { href: feedRoute, label: 'Updates feed' },
       { href: '/docs/contributing', label: 'Contributing' },
       { external: true, href: '/r/registry.json', label: 'Registry JSON' },
     ],

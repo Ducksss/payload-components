@@ -28,6 +28,7 @@ playwright-report/
 blob-report/
 .playwright-cli/
 playwright/.cache/
+.superpowers/
 
 # OS/editor noise
 .DS_Store

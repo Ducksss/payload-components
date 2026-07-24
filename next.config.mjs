@@ -21,11 +21,38 @@ const crawlMetadataHeaders = [
   },
 ]
 
+const securityHeaders = [
+  {
+    key: 'Strict-Transport-Security',
+    value: 'max-age=31536000; includeSubDomains',
+  },
+  {
+    key: 'X-Content-Type-Options',
+    value: 'nosniff',
+  },
+  {
+    key: 'Referrer-Policy',
+    value: 'strict-origin-when-cross-origin',
+  },
+  {
+    key: 'X-Frame-Options',
+    value: 'SAMEORIGIN',
+  },
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), geolocation=(), microphone=(), payment=(), usb=()',
+  },
+]
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   devIndicators: false,
   async headers() {
     return [
+      {
+        source: '/:path*',
+        headers: securityHeaders,
+      },
       // ponytail: serve stale documents/RSC quickly, then refresh them in the background.
       {
         source: '/:path*',
@@ -43,6 +70,10 @@ const nextConfig = {
       },
       {
         source: '/sitemap.xml',
+        headers: crawlMetadataHeaders,
+      },
+      {
+        source: '/feed.xml',
         headers: crawlMetadataHeaders,
       },
       {

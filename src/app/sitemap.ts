@@ -3,6 +3,7 @@ import type { MetadataRoute } from 'next'
 import { siteUrl } from '@/lib/site'
 import { source } from '@/lib/source'
 import { blogSource } from '@/lib/blog-source'
+import { sortBlogPages } from '@/lib/blog'
 import { templateDetailHref, templateShowcases } from '@/lib/templates/registry'
 
 /* Static marketing routes. The /docs index and every component/guide page come
@@ -20,32 +21,50 @@ const staticRoutes = [
 }>
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date()
-
   const marketing: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
     changeFrequency: route.changeFrequency,
-    lastModified,
     priority: route.priority,
     url: `${siteUrl}${route.path}`,
   }))
 
   const docs: MetadataRoute.Sitemap = source.getPages().map((page) => ({
     changeFrequency: 'weekly',
-    lastModified,
     // The docs landing carries more weight than an individual guide.
     priority: page.url === '/docs' ? 0.8 : 0.7,
     url: `${siteUrl}${page.url}`,
   }))
 
   /* Template detail pages are indexable; raw /templates/<slug>/preview routes
-     are deliberately absent (noindex iframe targets). */
+     are deliberately absent (noindex iframe targets). Freshness comes from a
+     real source date only, so these static-showcase entries omit lastModified. */
   const templates: MetadataRoute.Sitemap = templateShowcases.map((template) => ({
     changeFrequency: 'weekly',
-    lastModified,
     priority: 0.7,
     url: `${siteUrl}${templateDetailHref(template.slug)}`,
   }))
 
-  const blog: MetadataRoute.Sitemap = blogSource.getPages().map((page) => ({ changeFrequency: 'monthly', lastModified: new Date(page.data.date), priority: 0.6, url: `${siteUrl}${page.url}` }))
-  return [...marketing, ...templates, ...docs, { changeFrequency: 'weekly', lastModified, priority: 0.7, url: `${siteUrl}/blog` }, ...blog]
+  const blogPages = sortBlogPages(blogSource.getPages())
+  const blog: MetadataRoute.Sitemap = blogPages.map((page) => ({
+    changeFrequency: 'monthly',
+    lastModified: new Date(page.data.date),
+    priority: 0.6,
+    url: `${siteUrl}${page.url}`,
+  }))
+  const latestBlogDate = blogPages.reduce<Date | undefined>((latest, page) => {
+    const published = new Date(page.data.date)
+    return !latest || published > latest ? published : latest
+  }, undefined)
+
+  return [
+    ...marketing,
+    ...templates,
+    ...docs,
+    {
+      changeFrequency: 'weekly',
+      ...(latestBlogDate ? { lastModified: latestBlogDate } : {}),
+      priority: 0.7,
+      url: `${siteUrl}/blog`,
+    },
+    ...blog,
+  ]
 }

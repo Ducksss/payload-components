@@ -11,3 +11,23 @@ export const blogSource = loader({
   baseUrl: blogRoute,
   source: toFumadocsSource(blog, []),
 })
+
+type BlogPage = (typeof blogSource)['$inferPage']
+
+export function getBlogPages() {
+  return [...blogSource.getPages()].sort((a, b) => {
+    const dateDifference = new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+    return dateDifference || a.data.publicationOrder - b.data.publicationOrder
+  })
+}
+
+export async function getBlogLLMText(page: BlogPage) {
+  const processed = await page.data.getText('processed')
+
+  return `# ${page.data.title} (${page.url})
+
+Author: ${page.data.author}
+Published: ${new Date(page.data.date).toISOString()}
+
+${processed}`
+}

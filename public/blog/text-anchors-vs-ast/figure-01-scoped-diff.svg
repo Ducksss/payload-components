@@ -1,0 +1,258 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="diagram-title diagram-description" class="diagram diagram--inspect" data-mode="inspect" data-series="installer-internals" data-issue="12">
+  <title id="diagram-title">Locate the supported object, deduplicate, then insert one exact mapping</title>
+  <desc id="diagram-description">The renderer patch masks comments and strings, checks the named import and direct map entry, and preserves surrounding source.</desc>
+  <defs>
+    <pattern id="journal-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e4e4e7" stroke-width="1" />
+    </pattern>
+    <marker id="journal-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+    </marker>
+    <style>
+      .diagram {
+        background: #f7f5ef;
+        color: #18181b;
+      }
+      .paper {
+        fill: #f7f5ef;
+      }
+      .grid {
+        fill: url(#journal-grid-pattern);
+      }
+      .masthead,
+      .mode-label,
+      .folio-label,
+      .footer-label,
+      .node-index,
+      .edge-label,
+      .node-title--mono,
+      .node-body--mono,
+      .provenance-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .masthead {
+        fill: #18181b;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.7px;
+      }
+      .kicker {
+        fill: #047857;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+      }
+      .headline {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 28px;
+        font-weight: 720;
+        letter-spacing: -0.4px;
+      }
+      .mode-box {
+        fill: #ffffff;
+        stroke: #047857;
+        stroke-width: 2;
+      }
+      .mode-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.4px;
+      }
+      .folio-label {
+        fill: #52525b;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 1.2px;
+      }
+      .journal-rule {
+        stroke: #18181b;
+        stroke-width: 1;
+      }
+      .accent-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.5;
+      }
+      .edge-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.25;
+      }
+      .diagram--join .edge-path {
+        stroke-dasharray: 7 5;
+      }
+      .diagram--inspect .edge-path {
+        stroke-width: 1.75;
+      }
+      .edge-label-paper {
+        fill: #f7f5ef;
+        stroke: #e4e4e7;
+        stroke-width: 1;
+      }
+      .edge-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-card {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1.25;
+      }
+      .diagram--inspect .node-card {
+        stroke: #18181b;
+      }
+      .node--terminal .node-card {
+        fill: #18181b;
+        stroke: #18181b;
+      }
+      .node-rule {
+        stroke: #059669;
+        stroke-width: 5;
+      }
+      .node-index {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-title {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 720;
+      }
+      .node-body {
+        fill: #52525b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+      }
+      .node--terminal .node-title,
+      .node--terminal .node-body {
+        fill: #ffffff;
+      }
+      .node--terminal .node-index {
+        fill: #059669;
+      }
+      .footer-paper {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1;
+      }
+      .footer-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .provenance-line,
+      .evidence-line {
+        fill: #52525b;
+        font-size: 13px;
+      }
+      .evidence-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .prompt {
+        fill: #047857;
+        font-family: Georgia, serif;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 650;
+      }
+      .registration {
+        fill: none;
+        stroke: #047857;
+        stroke-width: 1.5;
+      }
+    </style>
+  </defs>
+  <rect class="paper" width="1200" height="675" />
+  <rect class="grid" data-journal-part="grid" x="28" y="24" width="1144" height="627" />
+  <path class="journal-rule" d="M 36 62 H 1164" />
+  <g data-journal-part="masthead">
+    <text class="masthead" x="48" y="49">INSTALLER INTERNALS · ISSUE 12</text>
+  </g>
+  <g data-journal-part="mode">
+    <rect class="mode-box" x="876" y="27" width="96" height="27" rx="2" />
+    <text class="mode-label" x="924" y="46" text-anchor="middle">INSPECT</text>
+  </g>
+  <g data-journal-part="folio">
+    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE 12 / 32</text>
+  </g>
+  <text class="kicker" x="48" y="86">TESTED SCOPED PATCH</text>
+  <text class="headline" x="48" y="119">Locate the supported object, deduplicate, then insert one</text>
+<text class="headline" x="48" y="150">exact mapping</text>
+  <path class="accent-path" d="M 941 96 C 1004 83, 1054 105, 1138 81" />
+  <circle class="registration" cx="1139" cy="81" r="8" />
+  <g data-diagram-layer="edges">
+    <g class="edge" data-edge-label="locate">
+  <path class="edge-path" data-edge-from="before" data-edge-to="patch" data-edge-axis="vertical" d="M 600 271.5549132947977 C 600 281.0549132947977, 600 281.0549132947977, 600 290.5549132947977" marker-end="url(#journal-arrow)" />
+  <rect class="edge-label-paper" x="612" y="272.5549132947977" width="88" height="22" rx="2" />
+  <g text-anchor="middle">
+    <text class="edge-label" x="656" y="287.5549132947977">locate</text>
+  </g>
+</g>
+<g class="edge" data-edge-label="insert once">
+  <path class="edge-path" data-edge-from="patch" data-edge-to="after" data-edge-axis="vertical" d="M 600 395.10982658959534 C 600 404.6098265895954, 600 404.6098265895954, 600 414.1098265895954" marker-end="url(#journal-arrow)" />
+  <rect class="edge-label-paper" x="612" y="396.1098265895954" width="105.8" height="22" rx="2" />
+  <g text-anchor="middle">
+    <text class="edge-label" x="664.9" y="411.1098265895954">insert once</text>
+  </g>
+</g>
+  </g>
+  <g data-diagram-layer="nodes">
+    <g class="node node--code" data-node-id="before" data-node-kind="code">
+  <rect class="node-card" x="180" y="174" width="840" height="95.55491329479769" rx="2" />
+  <path class="node-rule" d="M 180 179 H 1020" />
+  <text class="node-index" x="196" y="200">01</text>
+  <text class="node-title node-title--mono" x="223" y="201">Before</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="196" y="231">const blockComponents = {</text>
+<text class="node-body node-body--mono" data-role="body-line" x="196" y="247">}</text>
+</g>
+<g class="node node--code" data-node-id="patch" data-node-kind="code">
+  <rect class="node-card" x="180" y="297.5549132947977" width="840" height="95.55491329479769" rx="2" />
+  <path class="node-rule" d="M 180 302.5549132947977 H 1020" />
+  <text class="node-index" x="196" y="323.5549132947977">02</text>
+  <text class="node-title node-title--mono" x="223" y="324.5549132947977">Supported top-level object</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="196" y="354.5549132947977">ignore comments + strings</text>
+<text class="node-body node-body--mono" data-role="body-line" x="196" y="370.5549132947977">dedupe named import + direct key</text>
+</g>
+<g class="node node--code" data-node-id="after" data-node-kind="code">
+  <rect class="node-card" x="180" y="421.1098265895954" width="840" height="109.89017341040463" rx="2" />
+  <path class="node-rule" d="M 180 426.1098265895954 H 1020" />
+  <text class="node-index" x="196" y="447.1098265895954">03</text>
+  <text class="node-title node-title--mono" x="223" y="448.1098265895954">After</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="196" y="478.1098265895954">const blockComponents = {</text>
+<text class="node-body node-body--mono" data-role="body-line" x="196" y="494.1098265895954">heroBasic: HeroBasicBlock,</text>
+<text class="node-body node-body--mono" data-role="body-line" x="196" y="510.1098265895954">}</text>
+</g>
+  </g>
+  <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
+  <g data-journal-part="provenance" data-provenance="tests/int/payload-components-fragment.int.spec.ts">
+    <text class="footer-label" x="48" y="571">PROVENANCE</text>
+    <text class="provenance-line" x="48" y="590">tests/int/payload-components-fragment.int.spec.ts</text>
+  </g>
+  <g data-journal-part="evidence" data-evidence-excerpt="Source anchor:
+heroBasic: HeroBasicBlock,&apos;)
+
+Before:
+const blockComponents = {
+}
+
+After:">
+  <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
+  <text class="evidence-line" x="48" y="626">Source anchor: · heroBasic: HeroBasicBlock,&apos;) · Before: · const</text>
+<text class="evidence-line" x="48" y="641">blockComponents = { · } · After:</text>
+</g>
+  <g data-journal-part="prompt" data-prompt="Share the host shape that broke the anchor.">
+    <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
+    <text class="prompt" x="744" y="594">Share the host shape that broke the</text>
+<text class="prompt" x="744" y="613">anchor.</text>
+  </g>
+</svg>

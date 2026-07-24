@@ -58,6 +58,8 @@ describe('e2e runner batches', () => {
   it('discovers every e2e spec in the repository test directory', async () => {
     await expect(discoverE2eSpecs(process.cwd())).resolves.toEqual([
       'tests/e2e/a11y.e2e.spec.ts',
+      'tests/e2e/blog-visual.e2e.spec.ts',
+      'tests/e2e/blog.e2e.spec.ts',
       'tests/e2e/components-visual.e2e.spec.ts',
       'tests/e2e/frontend.e2e.spec.ts',
       'tests/e2e/geo.e2e.spec.ts',

@@ -1,0 +1,147 @@
+---
+title: Open Source Requires Provenance, Not Just a License File
+description: Record upstream authorship, licenses, adaptations, assets, and distribution obligations so reusable source keeps its history.
+author: Ducksss
+date: 2026-07-14
+series: open-source
+publicationOrder: 31
+cover:
+  src: /blog/open-source-provenance/cover.webp
+  alt: MIT license beside the provenance chain from upstream revision and license through adaptation, notice, and distribution.
+tags:
+  - Open source
+  - Provenance
+  - Community
+---
+
+A license answers whether and how source may be used. Provenance answers where the work came from,
+which version was used, what changed, and which notices must travel with the adaptation. A repository
+can contain an MIT file and still lose the history of copied components, icons, illustrations, fonts,
+or snippets.
+
+For a source registry, that history matters twice. Maintainers need it to honor upstream work and
+review future updates. Consumers receive copied files and need the notices or context required by the
+original license.
+
+<BlogFigure
+  src="/blog/open-source-provenance/figure-01-provenance-chain.svg"
+  alt="A provenance chain connecting upstream author and commit, license review, local adaptation, attribution, and downstream distribution"
+  caption="Permission is one link in the chain. Durable open-source reuse also records the exact source, transformation, notices, and downstream delivery."
+/>
+
+## Record the exact upstream source
+
+“Inspired by a component online” is not enough. Record the project name, canonical repository URL,
+author or organization, exact commit or release, source path, and retrieval date. If the work came
+from a published package, record its version and package location.
+
+Exact versions make later comparison possible. A repository homepage can change; a commit preserves
+the source you actually evaluated. Keep this record in a discoverable provenance or notice file near
+the adapted work and in the pull request rationale.
+
+Screenshots are not source. If a design was independently implemented from a visual reference, say
+that accurately and record the reference according to repository policy. Do not imply code lineage
+that did not occur, or hide lineage that did.
+
+## Read the applicable license
+
+Confirm the license covers the specific code or asset. Repositories can contain subdirectories,
+examples, fonts, or media under different terms. A homepage badge is not a substitute for the actual
+license text and notices in the source tree.
+
+Understand attribution, notice preservation, source distribution, trademark, patent, and copyleft
+obligations relevant to the work and distribution method. This article is an engineering workflow,
+not legal advice; ask qualified counsel when terms or use are unclear.
+
+If the license is absent or incompatible with the repository's MIT distribution, do not copy the
+work. Reimplementing from requirements may still involve other rights and should be considered
+carefully rather than treated as a loophole.
+
+## Describe the adaptation
+
+Record what changed: TypeScript conversion, Payload field model, responsive behavior, token mapping,
+accessibility fixes, removed dependencies, or new tests. This respects the upstream contribution and
+helps maintainers decide whether a future upstream patch still applies.
+
+A concise adaptation note can link to the local source and upstream commit. Avoid claiming upstream
+authors endorse the fork or local project. Keep project trademarks and logos out of generated cover
+art and promotional claims unless usage is permitted.
+
+The [complete component contribution guide](/blog/contribute-payload-component) makes provenance part
+of the same source, registry, docs, demo, and test review.
+
+## Carry required notices into distributed source
+
+Payload Components copies files into consumer repositories. If a license or notice must accompany the
+code, ensure the registry item or repository distribution delivers it in a durable way. A notice that
+exists only on the marketing site may not travel with `shadcn add`.
+
+Test the actual installed file set. Confirm headers, notice files, or attribution references survive
+registry generation and target paths. Keep the main repository's third-party notices updated as
+well.
+
+Do not add enormous boilerplate headers when the license does not require them; use a clear central
+notice when appropriate. The goal is accurate compliance and discoverability, not ritual noise.
+
+## Include visual and data assets
+
+Code is only part of a component. Icons, fonts, photographs, logos, sample portraits, and datasets
+have their own origins and permissions. Demo fixtures should avoid presenting invented people or
+organizations as real endorsements. Generated editorial cover art should contain no copied logos,
+watermarks, or misleading UI claims.
+
+For real brand logos, record permission and usage context. For fonts, preserve required license files
+and verify web distribution rights. For screenshots, remove private data and confirm the application
+may be shown.
+
+The [social-proof article](/blog/social-proof-sections) covers content permission and claim review at
+the CMS layer.
+
+## Make provenance reviewable in pull requests
+
+A contribution adapted from upstream should include:
+
+- canonical source and exact version;
+- applicable license and notice location;
+- summary of modifications;
+- assets and their separate sources;
+- how attribution reaches downstream installs;
+- tests proving required files are distributed.
+
+Reviewers can then evaluate lineage beside implementation. If provenance is discovered later, add it
+promptly and assess whether past distributions need correction. Do not erase history to make the
+repository look more original.
+
+Automated checks can require known notice files or reject unapproved asset types, but human review is
+still needed to match terms with actual use.
+
+## Preserve provenance through refactors
+
+Moving code, splitting a family, or rewriting a component can make original attribution look distant.
+Keep the provenance record linked until the repository has a deliberate reason to change it. A large
+refactor does not automatically remove license obligations or historical value.
+
+When taking a newer upstream version, record the new commit and update the adaptation summary. Review
+the upstream license again. Compare changes rather than replacing local accessibility or Payload
+contracts blindly.
+
+The [reproducible registry guide](/blog/reproducible-shadcn-registry) explains how source and notices
+become deterministic public items.
+
+## Build trust through transparent lineage
+
+This project is community-first and MIT. That makes transparent reuse more important, not less. Open
+source grows by building on prior work while keeping credit and terms intact. Good provenance also
+makes maintenance easier: contributors know where to report upstream bugs, compare improvements, and
+avoid repeating an adaptation.
+
+Install a component and inspect every delivered file, including any shared or notice source:
+
+```bash
+npx payload-components add hero-basic
+```
+
+If you find missing or unclear lineage, open a focused issue through the
+[contributing guide](/docs/contributing) with the suspected upstream source and evidence. Correcting
+provenance is substantive maintenance. The permanent record is part of what makes copied source safe
+to share, change, and pass on.

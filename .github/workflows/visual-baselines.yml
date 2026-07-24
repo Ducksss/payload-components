@@ -1,7 +1,8 @@
 name: Visual Baselines
 
-# Mints the per-platform Playwright visual baselines for the components-visual
-# suite. CI runs on linux, so the committed darwin baselines silently skip there
+# Mints per-platform Playwright visual baselines. The default targets the
+# component registry; pass `blog-visual` to mint the editorial index/article
+# suite. CI runs on linux, so committed darwin baselines silently skip there
 # (a baseline must be generated in the renderer it is compared against). Run this
 # workflow on a branch to generate the linux `*-chromium-linux.png` baselines in
 # the same environment the release gate uses, then merge the PR it opens so the
