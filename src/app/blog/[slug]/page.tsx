@@ -11,8 +11,8 @@ import { getMDXComponents } from '@/components/mdx'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { blogSeries } from '@/lib/blog'
 import { blogSource } from '@/lib/blog-source'
-import { siteUrl } from '@/lib/site'
-import { blogPostingNode, graph } from '@/lib/structured-data'
+import { feedMetadataAlternates, siteUrl } from '@/lib/site'
+import { blogPostingNode, breadcrumbNode, graph } from '@/lib/structured-data'
 
 interface BlogPostProps {
   params: Promise<{ slug: string }>
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
   return {
     title: page.data.title,
     description: page.data.description,
-    alternates: { canonical: `${siteUrl}${page.url}` },
+    alternates: { canonical: `${siteUrl}${page.url}`, ...feedMetadataAlternates },
     openGraph: {
       type: 'article',
       title: page.data.title,
@@ -54,6 +54,11 @@ export default async function BlogPost({ params }: BlogPostProps) {
   const MDX = page.data.body
   const series = blogSeries[page.data.series]
   const structuredData = graph(
+    breadcrumbNode([
+      { name: 'Home', path: '/' },
+      { name: 'Blog', path: '/blog' },
+      { name: page.data.title, path: page.url },
+    ]),
     blogPostingNode({
       author: page.data.author,
       datePublished: page.data.date,

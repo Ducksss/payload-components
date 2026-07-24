@@ -1,4 +1,6 @@
 import {
+  blogDescription,
+  blogTitle,
   catalogDescription,
   catalogTitle,
   faqEntries,
@@ -17,6 +19,7 @@ export const organizationId = `${siteUrl}/#organization`
 export const websiteId = `${siteUrl}/#website`
 export const softwareId = `${siteUrl}/#software`
 export const documentationId = `${siteUrl}/docs#documentation`
+export const blogId = `${siteUrl}/blog#blog`
 
 const logoUrl = `${siteUrl}/favicon.svg`
 
@@ -88,6 +91,55 @@ export function documentationCollectionNode(): Node {
     isPartOf: { '@id': websiteId },
     name: 'Payload Components documentation',
     url: `${siteUrl}/docs`,
+  }
+}
+
+export function blogNode(): Node {
+  return {
+    '@id': blogId,
+    '@type': 'Blog',
+    description: blogDescription,
+    inLanguage: 'en',
+    isPartOf: { '@id': websiteId },
+    name: blogTitle,
+    publisher: { '@id': organizationId },
+    url: `${siteUrl}/blog`,
+  }
+}
+
+type BlogPostingNodeOptions = {
+  author: string
+  description?: string
+  image?: string
+  tags?: readonly string[]
+  title: string
+  url: string
+} & (
+  | { date: Date | string; datePublished?: never }
+  | { date?: never; datePublished: Date | string }
+)
+
+export function blogPostingNode(opts: BlogPostingNodeOptions): Node {
+  const published = opts.datePublished ?? opts.date
+
+  return {
+    '@id': `${siteUrl}${opts.url}#article`,
+    '@type': 'BlogPosting',
+    author: {
+      '@type': 'Person',
+      name: opts.author,
+      url: maintainerNote.href,
+    },
+    datePublished: new Date(published).toISOString(),
+    description: opts.description,
+    headline: opts.title,
+    inLanguage: 'en',
+    isPartOf: { '@id': blogId },
+    ...(opts.image ? { image: `${siteUrl}${opts.image}` } : {}),
+    ...(opts.tags?.length ? { keywords: opts.tags.join(', ') } : {}),
+    mainEntityOfPage: `${siteUrl}${opts.url}`,
+    publisher: { '@id': organizationId },
+    url: `${siteUrl}${opts.url}`,
   }
 }
 
@@ -200,36 +252,6 @@ export function techArticleNode(opts: {
     publisher: { '@id': organizationId },
     url: `${siteUrl}${opts.url}`,
     ...(opts.image ? { image: `${siteUrl}${opts.image}` } : {}),
-  }
-}
-
-export function blogPostingNode(opts: {
-  author: string
-  datePublished: Date | string
-  description?: string
-  image: string
-  tags: readonly string[]
-  title: string
-  url: string
-}): Node {
-  return {
-    '@id': `${siteUrl}${opts.url}#article`,
-    '@type': 'BlogPosting',
-    author: {
-      '@type': 'Person',
-      name: opts.author,
-      url: maintainerNote.href,
-    },
-    datePublished: new Date(opts.datePublished).toISOString(),
-    description: opts.description,
-    headline: opts.title,
-    image: `${siteUrl}${opts.image}`,
-    inLanguage: 'en',
-    isPartOf: { '@id': websiteId },
-    keywords: opts.tags.join(', '),
-    mainEntityOfPage: `${siteUrl}${opts.url}`,
-    publisher: { '@id': organizationId },
-    url: `${siteUrl}${opts.url}`,
   }
 }
 

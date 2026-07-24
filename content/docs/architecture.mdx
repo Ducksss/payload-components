@@ -55,9 +55,13 @@ The site runtime is Fumadocs on Next.js. Everything it needs lives in the app tr
 The site exposes the same docs in browser and machine-readable formats:
 
 - `/llms.txt` publishes the concise source map for AI crawlers.
-- `/llms-full.txt` publishes the compiled documentation body.
+- `/llms-full.txt` publishes compiled documentation and blog bodies.
 - `/llms.mdx/docs/**/content.md` publishes each docs page as markdown.
-- JSON-LD marks the site, CLI, FAQ, component catalog, and docs articles for structured extraction.
+- `/feed.xml` publishes source-dated blog updates as RSS.
+- JSON-LD marks the site, CLI, FAQ, component catalog, blog, posts, and docs articles for structured extraction.
+
+[AI discovery and verification](/docs/ai-discovery) documents the evidence model,
+ownership, validation commands, and external maintainer checks for these surfaces.
 
 ## Component runtime
 

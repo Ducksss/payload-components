@@ -2,13 +2,21 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { BlogCard } from '@/components/blog/BlogCard'
+import { JsonLd } from '@/components/seo/JsonLd'
 import { sortBlogPages } from '@/lib/blog'
-import { blogDescription, blogTitle, componentEntries, siteUrl } from '@/lib/site'
+import {
+  blogDescription,
+  blogTitle,
+  componentEntries,
+  feedMetadataAlternates,
+  siteUrl,
+} from '@/lib/site'
+import { blogNode, breadcrumbNode, graph } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
   title: blogTitle,
   description: blogDescription,
-  alternates: { canonical: `${siteUrl}/blog` },
+  alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates },
   openGraph: {
     title: blogTitle,
     description: blogDescription,
@@ -18,11 +26,20 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image', title: blogTitle, description: blogDescription },
 }
 
+const blogStructuredData = graph(
+  breadcrumbNode([
+    { name: 'Home', path: '/' },
+    { name: blogTitle, path: '/blog' },
+  ]),
+  blogNode(),
+)
+
 export default function BlogIndex() {
   const posts = sortBlogPages()
 
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16">
+      <JsonLd data={blogStructuredData} />
       <header className="mb-12 max-w-3xl">
         <p className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand-600">
           Field notes from the registry
