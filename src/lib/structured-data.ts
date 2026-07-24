@@ -5,6 +5,7 @@ import {
   catalogTitle,
   faqEntries,
   githubRepoUrl,
+  maintainerNote,
   componentEntries,
   siteDescription,
   siteUrl,
@@ -106,26 +107,36 @@ export function blogNode(): Node {
   }
 }
 
-export function blogPostingNode(opts: {
+type BlogPostingNodeOptions = {
   author: string
-  date: Date | string
   description?: string
+  image?: string
+  tags?: readonly string[]
   title: string
   url: string
-}): Node {
+} & (
+  | { date: Date | string; datePublished?: never }
+  | { date?: never; datePublished: Date | string }
+)
+
+export function blogPostingNode(opts: BlogPostingNodeOptions): Node {
+  const published = opts.datePublished ?? opts.date
+
   return {
     '@id': `${siteUrl}${opts.url}#article`,
     '@type': 'BlogPosting',
     author: {
       '@type': 'Person',
       name: opts.author,
-      url: githubRepoUrl,
+      url: maintainerNote.href,
     },
-    datePublished: new Date(opts.date).toISOString(),
+    datePublished: new Date(published).toISOString(),
     description: opts.description,
     headline: opts.title,
     inLanguage: 'en',
     isPartOf: { '@id': blogId },
+    ...(opts.image ? { image: `${siteUrl}${opts.image}` } : {}),
+    ...(opts.tags?.length ? { keywords: opts.tags.join(', ') } : {}),
     mainEntityOfPage: `${siteUrl}${opts.url}`,
     publisher: { '@id': organizationId },
     url: `${siteUrl}${opts.url}`,

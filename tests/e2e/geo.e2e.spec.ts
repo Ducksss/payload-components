@@ -215,7 +215,11 @@ test.describe('AI-readable documentation surfaces', () => {
 
     expect(body).toContain('<rss version="2.0"')
     expect(body).toContain(`<atom:link href="${baseURL}/feed.xml" rel="self"`)
-    expect(body).toContain(`<lastBuildDate>${new Date('2026-06-19').toUTCString()}</lastBuildDate>`)
+    const lastBuildDate = body.match(/<lastBuildDate>([^<]+)<\/lastBuildDate>/)?.[1]
+    const newestItemDate = body.match(/<item>[\s\S]*?<pubDate>([^<]+)<\/pubDate>/)?.[1]
+
+    expect(lastBuildDate).toBeTruthy()
+    expect(lastBuildDate).toBe(newestItemDate)
     expect(body.indexOf('/blog/anatomy-of-an-install')).toBeLessThan(body.indexOf('/blog/hello'))
 
     await page.goto(`${baseURL}/components/preview/hero-basic`)

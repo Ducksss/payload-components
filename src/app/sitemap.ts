@@ -3,6 +3,7 @@ import type { MetadataRoute } from 'next'
 import { siteUrl } from '@/lib/site'
 import { source } from '@/lib/source'
 import { blogSource } from '@/lib/blog-source'
+import { sortBlogPages } from '@/lib/blog'
 import { templateDetailHref, templateShowcases } from '@/lib/templates/registry'
 
 /* Static marketing routes. The /docs index and every component/guide page come
@@ -42,7 +43,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${siteUrl}${templateDetailHref(template.slug)}`,
   }))
 
-  const blogPages = blogSource.getPages()
+  const blogPages = sortBlogPages(blogSource.getPages())
   const blog: MetadataRoute.Sitemap = blogPages.map((page) => ({
     changeFrequency: 'monthly',
     lastModified: new Date(page.data.date),

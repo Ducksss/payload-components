@@ -13,6 +13,13 @@ const routes = [
   { name: 'landing', path: '/' },
   { name: 'docs index', path: '/docs' },
   { name: 'component catalog', path: '/components' },
+  { name: 'blog index', path: '/blog' },
+  { name: 'project notes article', path: '/blog/hello' },
+  { name: 'foundations article', path: '/blog/what-is-a-payload-cms-block' },
+  { name: 'installer internals article', path: '/blog/copying-is-not-installing' },
+  { name: 'component design article', path: '/blog/component-variants-without-prop-explosion' },
+  { name: 'production guides article', path: '/blog/build-saas-homepage' },
+  { name: 'open source article', path: '/blog/demo-twins' },
 ]
 
 test.describe('Accessibility (axe-core, WCAG 2.1 A/AA)', () => {
