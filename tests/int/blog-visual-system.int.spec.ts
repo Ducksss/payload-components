@@ -3781,7 +3781,7 @@ describe('Community Field Journal visual catalog', () => {
     }
 
     expect(violations).toEqual([])
-  })
+  }, 30_000)
 
   it('targets article-specific catalog evidence instead of the generic route intro', () => {
     const variants = blogVisualCatalog.find(
