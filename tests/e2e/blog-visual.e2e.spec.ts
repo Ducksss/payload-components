@@ -33,7 +33,11 @@ test.describe('Blog visual snapshots', () => {
     const minted = existsSync(snapshotDir)
       ? readdirSync(snapshotDir).filter((file) => file.endsWith(suffix))
       : []
-    test.skip(minted.length === 0, `No ${process.platform} blog baselines have been minted yet`)
+    const requiresMintedBaselines = process.platform === 'linux' && Boolean(process.env.CI)
+    test.skip(
+      minted.length === 0 && !requiresMintedBaselines,
+      `No ${process.platform} blog baselines have been minted yet`,
+    )
 
     const missing = cases
       .map((entry) => `${entry.name}${suffix}`)

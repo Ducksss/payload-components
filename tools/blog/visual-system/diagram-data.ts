@@ -1407,20 +1407,35 @@ const catalogDiagramBindings = () =>
 
 export const hydrateDiagramDefinitions = async (
   definitions: readonly DiagramDefinition[] = diagramDefinitions,
+  {
+    requireCompleteCatalog = definitions.length === diagramDefinitions.length,
+  }: { requireCompleteCatalog?: boolean } = {},
 ): Promise<readonly HydratedDiagram[]> => {
   const bindings = catalogDiagramBindings()
   const expectedPaths = bindings.map(({ figure }) => figure.path)
   const definitionPaths = definitions.map((definition) => definition.path)
 
-  if (JSON.stringify(definitionPaths) !== JSON.stringify(expectedPaths)) {
+  if (
+    requireCompleteCatalog &&
+    JSON.stringify(definitionPaths) !== JSON.stringify(expectedPaths)
+  ) {
     throw new Error(
       'Diagram definitions must match the ordered SVG paths in the blog visual catalog exactly.',
     )
   }
 
+  const bindingsByPath = new Map(
+    bindings.map((binding) => [binding.figure.path, binding] as const),
+  )
+
   return await Promise.all(
-    definitions.map(async (definition, index) => {
-      const binding = bindings[index]
+    definitions.map(async (definition) => {
+      const binding = bindingsByPath.get(definition.path)
+      if (!binding) {
+        throw new Error(
+          `Diagram definition is not bound to an SVG figure in the blog visual catalog: ${definition.path}`,
+        )
+      }
       const evidenceRole = definition.evidenceRole ?? 'primary'
       const resolved = await resolveArtifact(binding.entry[evidenceRole])
       const evidenceExcerpt = definition.evidenceLines

@@ -3,6 +3,9 @@ import path from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
+import { maintainerNote } from '../../src/lib/site'
+import { blogPostingNode } from '../../src/lib/structured-data'
+
 const repoRoot = path.resolve(import.meta.dirname, '../..')
 
 async function read(relativePath: string) {
@@ -10,6 +13,23 @@ async function read(relativePath: string) {
 }
 
 describe('blog delivery platform', () => {
+  it('links BlogPosting authors to the canonical maintainer profile', () => {
+    const node = blogPostingNode({
+      author: maintainerNote.name,
+      datePublished: '2026-07-14',
+      image: '/blog/hello/cover.webp',
+      tags: ['community', 'Payload CMS'],
+      title: 'Hello',
+      url: '/blog/hello',
+    })
+
+    expect(node.author).toEqual({
+      '@type': 'Person',
+      name: maintainerNote.name,
+      url: maintainerNote.href,
+    })
+  })
+
   it('defines the editorial frontmatter and deterministic related-post interfaces', async () => {
     const [sourceConfig, blog] = await Promise.all([read('source.config.ts'), read('src/lib/blog.ts')])
 

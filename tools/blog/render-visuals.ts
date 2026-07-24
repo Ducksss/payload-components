@@ -139,10 +139,28 @@ export const renderVisuals = async (
 
   await validateBlogVisualCatalog()
   await renderCovers(coverOptions)
-  await generateFigures({ definitions: selectDiagramDefinitions(coverOptions.entries) })
-  await captureBlogFigures({ baseURL: coverOptions.baseUrl })
-  const validated = await validateBlogVisualAssets()
-  await renderContactSheets()
+  const selectedDiagrams = selectDiagramDefinitions(coverOptions.entries)
+  if (selectedDiagrams.length > 0) {
+    await generateFigures({
+      definitions: selectedDiagrams,
+      outputRoot: path.join(coverOptions.outputRoot, 'public'),
+      requireCompleteCatalog: coverOptions.entries.length === blogVisualCatalog.length,
+    })
+  }
+  await captureBlogFigures({
+    baseURL: coverOptions.baseUrl,
+    outputRoot: coverOptions.outputRoot,
+  })
+  const assetRoot = path.join(coverOptions.outputRoot, 'public')
+  const validated = await validateBlogVisualAssets({ assetRoot })
+  await renderContactSheets({
+    assetRoot,
+    outputDirectory: path.join(
+      coverOptions.outputRoot,
+      'output',
+      'blog-visual-review',
+    ),
+  })
   console.log(`Validated ${validated.total} Field Journal assets.`)
 
   return validated

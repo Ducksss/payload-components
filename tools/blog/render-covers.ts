@@ -36,6 +36,7 @@ type RenderEnvironment = Readonly<Record<string, string | undefined>>
 export type CoverRenderOptions = {
   baseUrl: string
   entries: readonly BlogVisualEntry[]
+  outputRoot: string
 }
 
 type PreparedCover = {
@@ -127,6 +128,7 @@ export const parseCoverRenderArgs = (
   return {
     baseUrl: localCaptureOrigin(environment.BLOG_CAPTURE_BASE_URL ?? defaultBaseUrl),
     entries,
+    outputRoot: path.resolve(environment.BLOG_VISUAL_OUTPUT_ROOT ?? repoRoot),
   }
 }
 
@@ -491,7 +493,7 @@ const encodeCover = async (slug: string, png: Buffer) => {
   return { data, height: info.height, size: info.size, width: info.width }
 }
 
-export const renderCovers = async ({ baseUrl, entries }: CoverRenderOptions) => {
+export const renderCovers = async ({ baseUrl, entries, outputRoot }: CoverRenderOptions) => {
   // Evidence and font bytes are deliberately resolved before Chromium starts.
   const [preparedCovers, fontData] = await Promise.all([
     prepareCovers(entries),
@@ -514,7 +516,7 @@ export const renderCovers = async ({ baseUrl, entries }: CoverRenderOptions) => 
       )
       const cover = await encodeCover(prepared.entry.slug, png)
       const relativeOutput = path.join('public', 'blog', prepared.entry.slug, 'cover.webp')
-      const outputPath = path.join(repoRoot, relativeOutput)
+      const outputPath = path.join(outputRoot, relativeOutput)
 
       await mkdir(path.dirname(outputPath), { recursive: true })
       await writeFile(outputPath, cover.data)

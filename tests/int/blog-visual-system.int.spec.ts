@@ -16,7 +16,11 @@ import { chromium } from '@playwright/test'
 import sharp from 'sharp'
 import { describe, expect, it } from 'vitest'
 
-import { captures, renderCaptureHtml } from '../../tools/blog/capture-figures'
+import {
+  captures,
+  renderCaptureHtml,
+  type CapturePanel,
+} from '../../tools/blog/capture-figures'
 import { parseCoverRenderArgs, waitForDocumentAssets } from '../../tools/blog/render-covers'
 import { blogVisualCatalog } from '../../tools/blog/visual-system/catalog'
 import { resolveArtifact, validateBlogVisualCatalog } from '../../tools/blog/visual-system/artifacts'
@@ -655,6 +659,10 @@ describe('Field Journal real UI capture contract', () => {
       captureModule,
       'selectDocsCodeLineWindow',
     )
+    const markOverflowingCodeRows = Reflect.get(
+      captureModule,
+      'markOverflowingCodeRows',
+    )
     const validateDocsCodeCanvas = Reflect.get(
       captureModule,
       'validateDocsCodeCanvas',
@@ -662,10 +670,12 @@ describe('Field Journal real UI capture contract', () => {
 
     expect(renderDocsCodeExcerptHtml).toBeTypeOf('function')
     expect(selectDocsCodeLineWindow).toBeTypeOf('function')
+    expect(markOverflowingCodeRows).toBeTypeOf('function')
     expect(validateDocsCodeCanvas).toBeTypeOf('function')
     if (
       typeof renderDocsCodeExcerptHtml !== 'function' ||
       typeof selectDocsCodeLineWindow !== 'function' ||
+      typeof markOverflowingCodeRows !== 'function' ||
       typeof validateDocsCodeCanvas !== 'function'
     ) {
       return
@@ -684,6 +694,8 @@ describe('Field Journal real UI capture contract', () => {
         viewport: { height: 360, width: 1080 },
       })
       await page.setContent(html)
+      await page.evaluate(async () => await document.fonts.ready)
+      await markOverflowingCodeRows(page)
 
       const geometry = await page.locator('[data-code-canvas]').evaluate((canvas) => {
         const canvasRect = canvas.getBoundingClientRect()
@@ -732,6 +744,54 @@ describe('Field Journal real UI capture contract', () => {
       expect(
         await longLine.evaluate((line) => line.scrollWidth > line.clientWidth),
       ).toBe(true)
+      const overflowMarker = longLine.locator('[data-overflow-marker]')
+      expect(await overflowMarker.count()).toBe(1)
+      expect(
+        await overflowMarker.evaluate((marker) => {
+          const markerRect = marker.getBoundingClientRect()
+          const sourceRect = marker.parentElement?.getBoundingClientRect()
+          const style = getComputedStyle(marker)
+          return {
+            backgroundImage: style.backgroundImage,
+            color: style.color,
+            fontWeight: style.fontWeight,
+            rightInset: sourceRect ? sourceRect.right - markerRect.right : null,
+            text: marker.textContent,
+            width: markerRect.width,
+          }
+        }),
+      ).toMatchObject({
+        color: 'rgb(5, 150, 105)',
+        fontWeight: '700',
+        text: '…',
+        width: expect.any(Number),
+      })
+      expect(
+        await overflowMarker.evaluate((marker) => marker.getBoundingClientRect().width),
+      ).toBeGreaterThan(0)
+      expect(
+        await overflowMarker.evaluate((marker) => {
+          const markerRect = marker.getBoundingClientRect()
+          const sourceRect = marker.parentElement?.getBoundingClientRect()
+          return sourceRect ? Math.abs(sourceRect.right - markerRect.right) : 99
+        }),
+      ).toBeLessThanOrEqual(1)
+      expect(
+        await overflowMarker.evaluate(
+          (marker) => getComputedStyle(marker).backgroundImage,
+        ),
+      ).not.toBe('none')
+      expect(await overflowMarker.getAttribute('data-overflow-reason')).toBe(
+        'horizontal-overflow',
+      )
+
+      const continuedSourceMarker = page.locator(
+        '[data-source-line="13"] [data-overflow-marker]',
+      )
+      expect(await continuedSourceMarker.count()).toBe(1)
+      expect(
+        await continuedSourceMarker.getAttribute('data-overflow-reason'),
+      ).toBe('continued-source')
 
       const png = await page.screenshot({ animations: 'disabled', type: 'png' })
       await expect(validateDocsCodeCanvas(png)).resolves.toBeUndefined()
@@ -1286,6 +1346,241 @@ describe('Field Journal real UI capture contract', () => {
       ),
     ).rejects.toThrow(/capture batch.*before writing/i)
     expect(writes).toEqual([])
+  })
+
+  it('pins the complete production fit and alignment policy with asymmetric pixels', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const precomposePanelImage = Reflect.get(
+      captureModule,
+      'precomposePanelImage',
+    )
+
+    expect(precomposePanelImage).toBeTypeOf('function')
+    if (typeof precomposePanelImage !== 'function') return
+
+    const wideSource = await sharp({
+      create: {
+        background: { alpha: 0, b: 0, g: 0, r: 0 },
+        channels: 4,
+        height: 20,
+        width: 80,
+      },
+    })
+      .composite([
+        {
+          input: {
+            create: {
+              background: '#059669',
+              channels: 4,
+              height: 10,
+              width: 80,
+            },
+          },
+          left: 0,
+          top: 0,
+        },
+        {
+          input: {
+            create: {
+              background: '#ffffff',
+              channels: 4,
+              height: 10,
+              width: 80,
+            },
+          },
+          left: 0,
+          top: 10,
+        },
+      ])
+      .png()
+      .toBuffer()
+    const tallSource = await sharp({
+      create: {
+        background: { alpha: 0, b: 0, g: 0, r: 0 },
+        channels: 4,
+        height: 80,
+        width: 20,
+      },
+    })
+      .composite([
+        {
+          input: {
+            create: {
+              background: '#059669',
+              channels: 4,
+              height: 20,
+              width: 20,
+            },
+          },
+          left: 0,
+          top: 0,
+        },
+        {
+          input: {
+            create: {
+              background: '#ffffff',
+              channels: 4,
+              height: 20,
+              width: 20,
+            },
+          },
+          left: 0,
+          top: 20,
+        },
+        {
+          input: {
+            create: {
+              background: '#18181b',
+              channels: 4,
+              height: 20,
+              width: 20,
+            },
+          },
+          left: 0,
+          top: 40,
+        },
+      ])
+      .png()
+      .toBuffer()
+    const target = { height: 100, width: 100 }
+    const panels = captures.reduce<CapturePanel[]>((all, capture) => {
+      all.push(...(capture.panels as readonly CapturePanel[]))
+      return all
+    }, [])
+    const docsCodePanel = panels.find((panel) => panel.kind === 'docs-code')
+    const mobilePanel = panels.find(
+      (panel) => panel.kind === 'preview' && panel.viewport === 'mobile',
+    )
+    const docsSectionPanel = panels.find(
+      (panel) => panel.kind === 'docs-section',
+    )
+    const sourcePanel = panels.find((panel) => panel.kind === 'source')
+    const coverPanel = panels.find((panel) => panel.kind === 'route-viewport')
+    expect(docsCodePanel).toBeDefined()
+    expect(mobilePanel).toBeDefined()
+    expect(docsSectionPanel).toBeDefined()
+    expect(sourcePanel).toBeDefined()
+    expect(coverPanel).toBeDefined()
+    if (
+      !docsCodePanel ||
+      !mobilePanel ||
+      !docsSectionPanel ||
+      !sourcePanel ||
+      !coverPanel
+    ) return
+
+    const pixelAt = async (image: Buffer, left: number, top: number) =>
+      [...await sharp(image)
+        .extract({ height: 1, left, top, width: 1 })
+        .ensureAlpha()
+        .raw()
+        .toBuffer()]
+    const transparent = [0, 0, 0, 0]
+    const emerald = [5, 150, 105, 255]
+    const white = [255, 255, 255, 255]
+
+    const containMatrix = [
+      {
+        checks: [
+          { at: [50, 0], pixel: transparent },
+          { at: [50, 42], pixel: emerald },
+          { at: [50, 58], pixel: white },
+        ],
+        label: 'docs-code · contain/centre',
+        panel: docsCodePanel,
+      },
+      ...([
+        ['mobile preview · contain/north', mobilePanel],
+        ['docs section · contain/north', docsSectionPanel],
+        ['repository source · contain/north', sourcePanel],
+      ] as const).map(([label, panel]) => ({
+        checks: [
+          { at: [50, 3], pixel: emerald },
+          { at: [50, 20], pixel: white },
+          { at: [50, 50], pixel: transparent },
+        ],
+        label,
+        panel,
+      })),
+    ] as const
+
+    for (const policy of containMatrix) {
+      const output = await precomposePanelImage(
+        policy.panel,
+        wideSource,
+        target,
+      )
+      await expect(sharp(output).metadata(), policy.label).resolves.toMatchObject({
+        format: 'png',
+        height: 100,
+        width: 100,
+      })
+      for (const check of policy.checks) {
+        expect(
+          await pixelAt(output, check.at[0], check.at[1]),
+          `${policy.label} pixel ${check.at.join(',')}`,
+        ).toEqual(check.pixel)
+      }
+    }
+
+    const cover = await precomposePanelImage(
+      coverPanel,
+      tallSource,
+      target,
+    )
+    await expect(sharp(cover).metadata()).resolves.toMatchObject({
+      format: 'png',
+      height: 100,
+      width: 100,
+    })
+    for (const [left, top] of [[3, 3], [50, 50], [96, 90]]) {
+      expect(
+        await pixelAt(cover, left, top),
+        `route viewport · cover/north pixel ${left},${top}`,
+      ).toEqual(emerald)
+    }
+  })
+
+  it('captures real catalog-card evidence at DPR 2 source density', async () => {
+    const captureModule = await import('../../tools/blog/capture-figures')
+    const getCaptureDeviceScaleFactor = Reflect.get(
+      captureModule,
+      'getCaptureDeviceScaleFactor',
+    )
+    const panels = captures.reduce<CapturePanel[]>((all, capture) => {
+      all.push(...(capture.panels as readonly CapturePanel[]))
+      return all
+    }, [])
+    const catalogPanel = panels.find((panel) => panel.kind === 'catalog-card')
+    const routePanel = panels.find((panel) => panel.kind === 'route-viewport')
+
+    expect(getCaptureDeviceScaleFactor).toBeTypeOf('function')
+    expect(catalogPanel).toBeDefined()
+    expect(routePanel).toBeDefined()
+    if (
+      typeof getCaptureDeviceScaleFactor !== 'function' ||
+      !catalogPanel ||
+      !routePanel
+    ) return
+
+    expect(getCaptureDeviceScaleFactor(catalogPanel)).toBe(2)
+    expect(getCaptureDeviceScaleFactor(routePanel)).toBe(1)
+
+    const browser = await chromium.launch({ headless: true })
+    try {
+      const page = await browser.newPage({
+        deviceScaleFactor: getCaptureDeviceScaleFactor(catalogPanel),
+        viewport: { height: 180, width: 320 },
+      })
+      const screenshot = await page.screenshot({ type: 'png' })
+      await expect(sharp(screenshot).metadata()).resolves.toMatchObject({
+        format: 'png',
+        height: 360,
+        width: 640,
+      })
+    } finally {
+      await browser.close()
+    }
   })
 
   it('keeps the eight figure descriptions exact and removes stale montage claims', async () => {
@@ -2673,6 +2968,105 @@ describe('Field Journal diagram renderer', () => {
 })
 
 describe('Field Journal reproduction tooling', () => {
+  it('requires Linux CI to execute blog comparisons instead of skipping an empty baseline set', async () => {
+    const visualSpec = await readFile(
+      path.join(repoRoot, 'tests/e2e/blog-visual.e2e.spec.ts'),
+      'utf8',
+    )
+
+    expect(visualSpec).toContain(
+      "const requiresMintedBaselines = process.platform === 'linux' && Boolean(process.env.CI)",
+    )
+    expect(visualSpec).toMatch(
+      /test\.skip\(\s*minted\.length === 0 && !requiresMintedBaselines/,
+    )
+  })
+
+  it('hydrates and renders a single selected SVG slug without requiring the full catalog', async () => {
+    const { buildFigureOutputs } = await import('../../tools/blog/generate-figures')
+    const { selectDiagramDefinitions } = await import('../../tools/blog/render-visuals')
+    const entries = parseCoverRenderArgs(['--slug', 'hello'], {}).entries
+    const definitions = selectDiagramDefinitions(entries)
+    const outputRoot = await mkdtemp(path.join(os.tmpdir(), 'field-journal-one-svg-'))
+
+    try {
+      const outputs = await buildFigureOutputs(definitions, outputRoot)
+
+      expect(outputs.map(({ path: figurePath }) => figurePath)).toEqual([
+        '/blog/hello/figure-01-origin-story.svg',
+      ])
+      expect(outputs[0]?.svg).toContain('data-issue="01"')
+      expect(outputs[0]?.svg).toContain(
+        'data-provenance="payload-components/source/blocks/HeroBasic/config.ts"',
+      )
+    } finally {
+      await rm(outputRoot, { force: true, recursive: true })
+    }
+  })
+
+  it('still requires exact ordered coverage when hydrating a full-size catalog batch', async () => {
+    const { diagramDefinitions, hydrateDiagramDefinitions } = await import(
+      '../../tools/blog/visual-system/diagram-data'
+    )
+    const reordered = [
+      diagramDefinitions[1]!,
+      diagramDefinitions[0]!,
+      ...diagramDefinitions.slice(2),
+    ]
+
+    await expect(hydrateDiagramDefinitions(reordered)).rejects.toThrow(
+      /must match the ordered SVG paths/i,
+    )
+  })
+
+  it('hydrates and renders every SVG in a selected series in catalog order', async () => {
+    const { buildFigureOutputs } = await import('../../tools/blog/generate-figures')
+    const { selectDiagramDefinitions } = await import('../../tools/blog/render-visuals')
+    const entries = parseCoverRenderArgs(['--series', 'foundations'], {}).entries
+    const definitions = selectDiagramDefinitions(entries)
+    const outputRoot = await mkdtemp(path.join(os.tmpdir(), 'field-journal-series-svg-'))
+
+    try {
+      const outputs = await buildFigureOutputs(definitions, outputRoot)
+
+      expect(outputs.map(({ path: figurePath }) => figurePath)).toEqual(
+        entries.flatMap((entry) =>
+          entry.figures
+            .filter((figure) => figure.path.endsWith('.svg'))
+            .map((figure) => figure.path),
+        ),
+      )
+      expect(outputs).toHaveLength(5)
+    } finally {
+      await rm(outputRoot, { force: true, recursive: true })
+    }
+  })
+
+  it('treats a valid selected slug with no SVG figure as a clean no-op', async () => {
+    const { generateFigures } = await import('../../tools/blog/generate-figures')
+    const { selectDiagramDefinitions } = await import('../../tools/blog/render-visuals')
+    const entries = parseCoverRenderArgs(
+      ['--slug', 'build-first-payload-v3-landing-page'],
+      {},
+    ).entries
+    const definitions = selectDiagramDefinitions(entries)
+    const logs: string[] = []
+    const writes: string[] = []
+
+    await expect(
+      generateFigures({
+        definitions,
+        logger: (line) => logs.push(line),
+        writeOutput: async (outputPath) => {
+          writes.push(outputPath)
+        },
+      }),
+    ).resolves.toEqual([])
+    expect(definitions).toEqual([])
+    expect(writes).toEqual([])
+    expect(logs).toEqual(['Generated 0 deterministic Field Journal blog figures.'])
+  })
+
   it('publishes the one-command renderer and exact review inputs', async () => {
     const packageJson = JSON.parse(
       await readFile(path.join(repoRoot, 'package.json'), 'utf8'),
@@ -2737,7 +3131,7 @@ describe('Field Journal reproduction tooling', () => {
     } finally {
       await rm(outputDirectory, { force: true, recursive: true })
     }
-  })
+  }, 15_000)
 
   it('keeps a representative cover pixel-stable and validates the complete asset inventory', async () => {
     const { validateBlogVisualAssets } = await import('../../tools/blog/render-visuals')

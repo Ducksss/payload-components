@@ -830,6 +830,11 @@ export function renderCaptureHtml(
         object-fit: contain;
       }
 
+      .artifact-window img[data-precomposed="true"] {
+        object-fit: fill;
+        object-position: center;
+      }
+
       [data-fixture-notice] {
         background: var(--journal-graphite);
         color: var(--journal-white);
@@ -1026,9 +1031,10 @@ const prepareRoutePage = async (
   baseURL: string,
   route: string,
   viewport: { height: number; width: number },
+  deviceScaleFactor = 1,
 ) => {
   const page = await browser.newPage({
-    deviceScaleFactor: 1,
+    deviceScaleFactor,
     reducedMotion: 'reduce',
     viewport,
   })
@@ -1105,7 +1111,7 @@ const captureCatalogCard = async (
   const page = await prepareRoutePage(browser, baseURL, panel.route, {
     height: 820,
     width: 1180,
-  })
+  }, getCaptureDeviceScaleFactor(panel))
 
   try {
     const target = await waitForExactCaptureTarget(page, panel.selector, panel.label)
@@ -1284,15 +1290,19 @@ export function renderDocsCodeExcerptHtml(
 ) {
   assertCaptureFontBase64(monoFontBase64, 'Docs-code capture font')
   const selected = selectDocsCodeLineWindow(lines, anchorIndex)
+  const continuesAfterExcerpt = selected.at(-1) !== lines.at(-1)
   const rows = selected
     .map(
-      (line) => `<span
+      (line, index) => `<span
         class="code-row"
         data-code-row
         data-source-line="${line.sourceLine}"
       >
         <i aria-hidden="true">${String(line.sourceLine).padStart(3, '0')}</i>
-        <span data-code-source>${line.html || '&nbsp;'}</span>
+        <span
+          data-code-source
+          data-excerpt-continues="${continuesAfterExcerpt && index === selected.length - 1}"
+        >${line.html || '&nbsp;'}</span>
       </span>`,
     )
     .join('')
@@ -1351,8 +1361,26 @@ export function renderDocsCodeExcerptHtml(
             display: block;
             min-width: 0;
             overflow: hidden;
+            position: relative;
             text-overflow: ellipsis;
             white-space: pre;
+          }
+
+          [data-code-source] [data-overflow-marker] {
+            background-image: linear-gradient(90deg, transparent, #18181b 38%);
+            color: #059669;
+            display: block;
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 700;
+            height: ${docsCodeCanvas.rowHeight}px;
+            padding-left: 20px;
+            pointer-events: none;
+            position: absolute;
+            right: 0;
+            text-align: right;
+            top: 0;
+            width: 44px;
           }
         </style>
       </head>
@@ -1360,6 +1388,30 @@ export function renderDocsCodeExcerptHtml(
         <main data-code-canvas>${rows}</main>
       </body>
     </html>`
+}
+
+export const markOverflowingCodeRows = async (page: Page) => {
+  await page.locator('[data-code-source]').evaluateAll((elements) => {
+    for (const element of elements) {
+      const source = element as HTMLElement
+      source.querySelector('[data-overflow-marker]')?.remove()
+      const overflowing = source.scrollWidth > source.clientWidth
+      const overflowReason = overflowing
+        ? 'horizontal-overflow'
+        : source.dataset.excerptContinues === 'true'
+          ? 'continued-source'
+          : null
+      source.dataset.overflowing = String(overflowing)
+      if (!overflowReason) continue
+
+      const marker = document.createElement('i')
+      marker.dataset.overflowMarker = 'true'
+      marker.dataset.overflowReason = overflowReason
+      marker.setAttribute('aria-hidden', 'true')
+      marker.textContent = '…'
+      source.append(marker)
+    }
+  })
 }
 
 export async function validateDocsCodeCanvas(png: Buffer) {
@@ -1420,6 +1472,7 @@ const renderDocsCodeExcerptPng = async (
       renderDocsCodeExcerptHtml(lines, anchorIndex, monoFontBase64),
     )
     await page.evaluate(async () => await document.fonts.ready)
+    await markOverflowingCodeRows(page)
     const geometry = await page
       .locator('[data-code-canvas]')
       .evaluate((element) => {
@@ -1743,6 +1796,49 @@ const getCaptureFonts = async (): Promise<CaptureFontData> => {
   }
 }
 
+type ArtifactWindowSize = {
+  height: number
+  width: number
+}
+
+const panelUsesContainFit = (panel: CapturePanel) =>
+  panel.kind === 'docs-code' ||
+  panel.kind === 'docs-section' ||
+  panel.kind === 'source' ||
+  (panel.kind === 'preview' && panel.viewport === 'mobile')
+
+export const getCaptureDeviceScaleFactor = (panel: CapturePanel) =>
+  panel.kind === 'catalog-card' ? 2 : 1
+
+export const precomposePanelImage = async (
+  panel: CapturePanel,
+  source: Buffer,
+  target: ArtifactWindowSize,
+) => {
+  if (
+    !Number.isInteger(target.width) ||
+    !Number.isInteger(target.height) ||
+    target.width < 1 ||
+    target.height < 1
+  ) {
+    throw new Error(
+      `Artifact window must have positive integer dimensions, received ${target.width}x${target.height}.`,
+    )
+  }
+
+  return sharp(source)
+    .resize({
+      background: { alpha: 0, b: 0, g: 0, r: 0 },
+      fit: panelUsesContainFit(panel) ? 'contain' : 'cover',
+      height: target.height,
+      kernel: sharp.kernel.lanczos3,
+      position: panel.kind === 'docs-code' ? 'centre' : 'north',
+      width: target.width,
+    })
+    .png()
+    .toBuffer()
+}
+
 const renderFinalPng = async (
   browser: Browser,
   capture: FigureCapture,
@@ -1757,6 +1853,57 @@ const renderFinalPng = async (
   try {
     await page.setContent(renderCaptureHtml(capture, panelImages, fonts))
     await page.evaluate(async () => await document.fonts.ready)
+    await waitForTargetAssets(page)
+
+    const artifactWindows = await page
+      .locator('.artifact-window')
+      .evaluateAll((elements) =>
+        elements.map((element) => {
+          const rect = element.getBoundingClientRect()
+          return { height: rect.height, width: rect.width }
+        }),
+      )
+    if (artifactWindows.length !== panelImages.length) {
+      throw new Error(
+        `${capture.slug} expected ${panelImages.length} artifact windows, received ${artifactWindows.length}.`,
+      )
+    }
+
+    for (const [index, image] of panelImages.entries()) {
+      const measuredTarget = artifactWindows[index]
+      const target = {
+        height: Math.round(measuredTarget.height),
+        width: Math.round(measuredTarget.width),
+      }
+      const source = Buffer.from(
+        image.dataUrl.replace(/^data:image\/png;base64,/, ''),
+        'base64',
+      )
+      const precomposed = await precomposePanelImage(
+        capture.panels[index],
+        source,
+        target,
+      )
+      await page
+        .locator('.artifact-window img')
+        .nth(index)
+        .evaluate(
+          async (element, value) => {
+            const image = element as HTMLImageElement
+            image.dataset.precomposed = 'true'
+            image.style.height = `${value.height}px`
+            image.style.width = `${value.width}px`
+            image.src = value.src
+            await image.decode()
+          },
+          {
+            height: target.height,
+            src: `data:image/png;base64,${precomposed.toString('base64')}`,
+            width: target.width,
+          },
+        )
+    }
+    await waitForTargetAssets(page)
     return await page.screenshot({ animations: 'disabled', type: 'png' })
   } finally {
     await page.close()

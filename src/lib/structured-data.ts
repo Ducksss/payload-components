@@ -3,6 +3,7 @@ import {
   catalogTitle,
   faqEntries,
   githubRepoUrl,
+  maintainerNote,
   componentEntries,
   siteDescription,
   siteUrl,
@@ -217,7 +218,7 @@ export function blogPostingNode(opts: {
     author: {
       '@type': 'Person',
       name: opts.author,
-      url: githubRepoUrl,
+      url: maintainerNote.href,
     },
     datePublished: new Date(opts.datePublished).toISOString(),
     description: opts.description,

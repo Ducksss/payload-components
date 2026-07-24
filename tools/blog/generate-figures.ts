@@ -25,6 +25,7 @@ type GenerateFigureOptions = {
   definitions?: readonly DiagramDefinition[]
   logger?: (line: string) => void
   outputRoot?: string
+  requireCompleteCatalog?: boolean
   writeOutput?: (outputPath: string, svg: string) => Promise<void>
 }
 
@@ -38,10 +39,15 @@ const defaultWriteOutput = async (outputPath: string, svg: string) => {
 export const buildFigureOutputs = async (
   definitions: readonly DiagramDefinition[] = diagramDefinitions,
   outputRoot = defaultOutputRoot,
+  requireCompleteCatalog = definitions.length === diagramDefinitions.length,
 ): Promise<readonly FigureOutput[]> => {
+  if (definitions.length === 0) return []
+
   validateDiagramDefinitions(definitions)
 
-  const hydrated = await hydrateDiagramDefinitions(definitions)
+  const hydrated = await hydrateDiagramDefinitions(definitions, {
+    requireCompleteCatalog,
+  })
   const rendered = hydrated.map((diagram) => ({
     diagram,
     svg: renderDiagramSvg(diagram),
@@ -61,12 +67,17 @@ export const generateFigures = async ({
   definitions = diagramDefinitions,
   logger = console.log,
   outputRoot = defaultOutputRoot,
+  requireCompleteCatalog = definitions.length === diagramDefinitions.length,
   writeOutput = defaultWriteOutput,
 }: GenerateFigureOptions = {}): Promise<readonly FigureOutput[]> => {
   // Build, hydrate, render, and validate the complete batch before the first
   // directory or file write. One invalid late definition therefore leaves the
   // existing published set untouched.
-  const outputs = await buildFigureOutputs(definitions, outputRoot)
+  const outputs = await buildFigureOutputs(
+    definitions,
+    outputRoot,
+    requireCompleteCatalog,
+  )
 
   for (const output of outputs) {
     await writeOutput(output.outputPath, output.svg)
