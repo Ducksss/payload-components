@@ -151,6 +151,9 @@ describe('Fumadocs site shell', () => {
     expect(troubleshootingPost).toMatch(
       /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
     )
+    expect(installationGuide).toMatch(
+      /command="npx payload-components add hero-basic"[\s\S]*label="Copy the hero-basic install command"[\s\S]*\btrackInstall\b/,
+    )
     expect(installationGuide).toContain(
       '[four-step Payload block troubleshooting checklist](/blog/anatomy-of-an-install)',
     )
