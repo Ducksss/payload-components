@@ -1,10 +1,11 @@
+import type { ChildProcess } from 'node:child_process'
 import { readFile, rm } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { runCommand } from '../../tools/payload-components/utils'
+import { runCommand, terminateProcessTree } from '../../tools/payload-components/utils'
 
 const spawnedPids = new Set<number>()
 
@@ -43,12 +44,34 @@ const waitForProcessExit = async (pid: number, timeoutMs: number) => {
 
 describe('CLI subprocess cleanup', () => {
   afterEach(async () => {
+    vi.restoreAllMocks()
+
     for (const pid of spawnedPids) {
       if (isProcessAlive(pid)) {
-        process.kill(pid, 'SIGKILL')
+        try {
+          process.kill(pid, 'SIGKILL')
+        } catch (error) {
+          if ((error as NodeJS.ErrnoException).code !== 'ESRCH') throw error
+        }
       }
     }
     spawnedPids.clear()
+  })
+
+  it('treats an EPERM process-group probe as completed cleanup', async () => {
+    const child = {
+      exitCode: null,
+      once: vi.fn(),
+      pid: 123,
+      signalCode: null,
+    } as unknown as ChildProcess
+    const processKill = vi.spyOn(process, 'kill')
+
+    processKill.mockReturnValueOnce(true).mockImplementationOnce(() => {
+      throw Object.assign(new Error('operation not permitted'), { code: 'EPERM' })
+    })
+
+    await expect(terminateProcessTree(child, 0)).resolves.toBeUndefined()
   })
 
   it('times out and terminates the command process tree', async () => {
@@ -118,5 +141,21 @@ describe('CLI subprocess cleanup', () => {
     })
 
     expect(result).toEqual({ stderr: 'err', stdout: 'out' })
+  })
+
+  it('tolerates EPIPE when a command closes stdin before consuming it', async () => {
+    const result = await runCommand({
+      args: [
+        '--eval',
+        "process.stdin.destroy(); setTimeout(() => process.exit(0), 25)",
+      ],
+      captureOutput: true,
+      command: process.execPath,
+      cwd: process.cwd(),
+      stdin: 'x'.repeat(8 * 1024 * 1024),
+      timeoutMs: 2_000,
+    })
+
+    expect(result).toEqual({ stderr: '', stdout: '' })
   })
 })

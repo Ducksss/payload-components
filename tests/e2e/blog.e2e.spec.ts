@@ -3,6 +3,8 @@ import path from 'node:path'
 
 import { expect, test } from '@playwright/test'
 
+import { blogTitle } from '../../src/lib/site'
+
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 const blogRoot = path.resolve(import.meta.dirname, '../../content/blog')
 
@@ -43,7 +45,7 @@ const posts: Post[] = readdirSync(blogRoot)
 test.describe('Blog editorial library', () => {
   test('the index publishes all posts in deterministic order', async ({ page }) => {
     await page.goto(`${baseURL}/blog`)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Build Payload sites with the wiring visible.')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(blogTitle)
 
     const cards = page.locator('[data-blog-card]')
     await expect(cards).toHaveCount(32)

@@ -7,6 +7,8 @@ import {
   siteUrl,
   stackItems,
 } from '@/lib/site'
+import { templateDetailHref, templateShowcases } from '@/lib/templates/registry'
+import { TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
 
 /* Concise, AI-readable site index following the llmstxt.org convention:
    H1 + one-line summary, then linked sections. The FAQ is included verbatim
@@ -30,6 +32,7 @@ export function GET() {
     `- [Component catalog](${siteUrl}/components)`,
     `- [Blog](${siteUrl}/blog)`,
     `- [Blog RSS](${siteUrl}/blog/rss.xml)`,
+    `- [Template concepts](${siteUrl}/templates)`,
     `- [About](${siteUrl}/about)`,
     `- [Public registry](${siteUrl}/r/registry.json)`,
     `- [Full LLM context](${siteUrl}/llms-full.txt)`,
@@ -42,6 +45,14 @@ export function GET() {
     /* Keep "<title>: <command>" intact (no backticks) — the GEO contract test
        in tests/e2e/geo.e2e.spec.ts pins that exact substring. */
     ...componentEntries.map((component) => `- ${component.title}: ${component.command} — ${component.description}`),
+    '',
+    '## Full-site template concepts',
+    'Browsable multi-page site concepts composed from the blocks above. Each is a',
+    `${TEMPLATE_CONCEPT_STATUS_LABEL.toLowerCase()} — not an installable template yet; no install command exists for them.`,
+    ...templateShowcases.map(
+      (template) =>
+        `- [${template.title}](${siteUrl}${templateDetailHref(template.slug)}) — ${template.summary}`,
+    ),
     '',
     '## FAQ',
     ...faqEntries.flatMap((entry) => [`### ${entry.question}`, entry.answer, '']),

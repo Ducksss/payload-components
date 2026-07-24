@@ -4,12 +4,14 @@ import { siteUrl } from '@/lib/site'
 import { source } from '@/lib/source'
 import { blogSource } from '@/lib/blog-source'
 import { sortBlogPages } from '@/lib/blog'
+import { templateDetailHref, templateShowcases } from '@/lib/templates/registry'
 
 /* Static marketing routes. The /docs index and every component/guide page come
    from the Fumadocs source below, so they are intentionally absent here. */
 const staticRoutes = [
   { changeFrequency: 'weekly', path: '/', priority: 1 },
   { changeFrequency: 'weekly', path: '/components', priority: 0.9 },
+  { changeFrequency: 'weekly', path: '/templates', priority: 0.8 },
   { changeFrequency: 'monthly', path: '/about', priority: 0.5 },
   { changeFrequency: 'monthly', path: '/brand-guide', priority: 0.5 },
 ] as const satisfies ReadonlyArray<{
@@ -36,11 +38,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${siteUrl}${page.url}`,
   }))
 
+  /* Template detail pages are indexable; raw /templates/<slug>/preview routes
+     are deliberately absent (noindex iframe targets). */
+  const templates: MetadataRoute.Sitemap = templateShowcases.map((template) => ({
+    changeFrequency: 'weekly',
+    lastModified,
+    priority: 0.7,
+    url: `${siteUrl}${templateDetailHref(template.slug)}`,
+  }))
+
   const blog: MetadataRoute.Sitemap = sortBlogPages(blogSource.getPages()).map((page) => ({
     changeFrequency: 'monthly',
     lastModified: new Date(page.data.date),
     priority: 0.6,
     url: `${siteUrl}${page.url}`,
   }))
-  return [...marketing, ...docs, { changeFrequency: 'weekly', lastModified, priority: 0.7, url: `${siteUrl}/blog` }, ...blog]
+
+  return [...marketing, ...templates, ...docs, { changeFrequency: 'weekly', lastModified, priority: 0.7, url: `${siteUrl}/blog` }, ...blog]
 }

@@ -1,0 +1,78 @@
+---
+title: Contact Routing Form
+description: A contact section with validated channels and a fixed accessible form that posts to a same-origin endpoint.
+icon: ContactRound
+---
+
+<ComponentPreview slug="contact-routing-form" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add contact-routing-form
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/contact-routing-form.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="contact-routing-form" />
+
+## Content model
+
+The block combines validated contact channels with a fixed semantic form payload. The form posts
+`name`, `email`, `organization`, `phone`, and `message` to the required same-origin `action` path.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The contact section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    channels: { type: 'array', required: true, description: 'One to four contact routes.' },
+    formTitle: { type: 'text', required: true, description: 'Heading above the inquiry form.' },
+    formDescription: { type: 'textarea', description: 'Optional form guidance.' },
+    formLabels: { type: 'group', description: 'Editor-controlled visible labels for every field.' },
+    submitLabel: { type: 'text', required: true, description: 'Submit button label.' },
+    action: {
+      type: 'text',
+      required: true,
+      description: 'Validated same-origin POST path, such as /api/contact.',
+    },
+  }}
+/>
+
+Each item in `channels` carries:
+
+<TypeTable
+  type={{
+    label: { type: 'text', required: true, description: 'Human-readable route name.' },
+    type: { type: 'select', required: true, description: 'Email, phone, or URL.' },
+    value: { type: 'text', required: true, description: 'Value validated for the selected type.' },
+    description: { type: 'text', description: 'Optional availability or routing guidance.' },
+  }}
+/>
+
+`formLabels` contains required labels for `name`, `email`, `organization`, `phone`, and `message`,
+each with a clear English default. Name, email, and message are required inputs; organization and
+phone are optional. The form also includes an off-screen `website` honeypot.
+
+## Usage
+
+<ComponentUsage slug="contact-routing-form" />
+
+## Requirements
+
+<ComponentRequirements slug="contact-routing-form" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.

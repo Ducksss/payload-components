@@ -57,7 +57,10 @@ const signalProcessTree = (child: ChildProcess, signal: NodeJS.Signals) => {
   } catch (error) {
     const code = (error as NodeJS.ErrnoException).code
 
-    if (code !== 'ESRCH') {
+    // A process group can outlive its leader briefly on macOS. If ownership
+    // changes while it drains, signalling the stale group can return EPERM;
+    // there is no further cleanup this process is allowed to perform.
+    if (code !== 'ESRCH' && code !== 'EPERM') {
       throw error
     }
   }
@@ -76,7 +79,9 @@ const isProcessTreeAlive = (child: ChildProcess) => {
     process.kill(-child.pid, 0)
     return true
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ESRCH') {
+    const code = (error as NodeJS.ErrnoException).code
+
+    if (code === 'ESRCH' || code === 'EPERM') {
       return false
     }
 
@@ -355,8 +360,13 @@ export const runCommand = async ({
       )
     }, timeoutMs)
 
-    if (stdin) {
-      child.stdin?.end(stdin)
+    if (stdin && child.stdin) {
+      child.stdin.on('error', (error: NodeJS.ErrnoException) => {
+        if (error.code !== 'EPIPE') {
+          finish(error)
+        }
+      })
+      child.stdin.end(stdin)
     }
 
     child.stdout?.setEncoding('utf8')

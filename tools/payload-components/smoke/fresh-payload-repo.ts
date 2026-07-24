@@ -69,11 +69,35 @@ const rootPackagePath = path.join(repoRoot, 'package.json')
 const manifestDir = path.join(repoRoot, 'payload-components', 'manifests')
 const registryDefinitionPath = path.join(repoRoot, 'payload-components', 'registry.json')
 
-export const getInstallableComponentSlugs = async () => {
-  const registry = JSON.parse(await readFile(registryDefinitionPath, 'utf8')) as {
-    items: Array<{ name: string }>
+export const DEFAULT_SMOKE_EXCLUSION_REASON =
+  'Fresh Payload smoke installs page blocks only; non-registry:block items are not Payload layout blocks.'
+
+export type DefaultSmokeSelection = {
+  components: string[]
+  exclusions: Array<{
+    name: string
+    reason: typeof DEFAULT_SMOKE_EXCLUSION_REASON
+    type?: string
+  }>
+}
+
+export const getRenderableSampleBlockType = (manifest: ComponentManifest) => {
+  const blockType = manifest.sampleContent.blockType
+
+  if (typeof blockType !== 'string' || blockType.trim().length === 0) {
+    throw new Error(
+      `Fresh smoke manifest "${manifest.name}" must provide sampleContent.blockType so its installed block can be rendered.`,
+    )
   }
-  const registrySlugs = registry.items.map((item) => item.name).sort()
+
+  return blockType
+}
+
+export const getDefaultSmokeSelection = async (): Promise<DefaultSmokeSelection> => {
+  const registry = JSON.parse(await readFile(registryDefinitionPath, 'utf8')) as {
+    items: Array<{ name: string; type?: string }>
+  }
+  const registrySlugs = registry.items.map((item) => item.name)
   const manifestSlugs = (await readdir(manifestDir))
     .filter((entry) => entry.endsWith('.json'))
     .map((entry) => entry.replace(/\.json$/, ''))
@@ -83,14 +107,42 @@ export const getInstallableComponentSlugs = async () => {
     throw new Error('payload-components/registry.json contains duplicate item names.')
   }
 
-  if (registrySlugs.length !== manifestSlugs.length || registrySlugs.some((slug, index) => slug !== manifestSlugs[index])) {
+  const components = registry.items
+    .filter((item) => item.type === 'registry:block')
+    .map((item) => item.name)
+    .sort()
+  const exclusions = registry.items
+    .filter((item) => item.type !== 'registry:block')
+    .map<DefaultSmokeSelection['exclusions'][number]>((item) => ({
+      name: item.name,
+      reason: DEFAULT_SMOKE_EXCLUSION_REASON,
+      type: item.type,
+    }))
+    .sort((left, right) => left.name.localeCompare(right.name))
+
+  if (
+    components.length !== manifestSlugs.length ||
+    components.some((slug, index) => slug !== manifestSlugs[index])
+  ) {
     throw new Error(
-      'Fresh smoke requires payload-components/registry.json and payload-components/manifests to contain the same installable slugs.',
+      'Fresh smoke requires every registry:block item, and only registry:block items, to have a matching manifest.',
     )
   }
 
-  return registrySlugs
+  const manifests = await Promise.all(components.map((component) => loadManifest(component)))
+
+  for (const manifest of manifests) {
+    getRenderableSampleBlockType(manifest)
+  }
+
+  return {
+    components,
+    exclusions,
+  }
 }
+
+export const getInstallableComponentSlugs = async () =>
+  (await getDefaultSmokeSelection()).components
 
 export const getSmokeShard = (slugs: string[], shardIndex: number) => {
   if (!Number.isInteger(shardIndex) || shardIndex < 0 || shardIndex >= SMOKE_SHARD_COUNT) {
@@ -291,6 +343,28 @@ const exists = async (filePath: string) => {
   } catch {
     return false
   }
+}
+
+export const applyFreshPayloadTemplateCompatibility = async (targetPath: string) => {
+  const buttonPath = path.join(targetPath, 'src', 'components', 'ui', 'button.tsx')
+
+  if (!(await exists(buttonPath))) return false
+
+  const source = await readFile(buttonPath, 'utf8')
+
+  if (!source.includes("from '@radix-ui/react-slot'") || /^\s*(['"])use client\1;?/m.test(source)) {
+    return false
+  }
+
+  // create-payload-app's website template currently leaves this shared button as a
+  // Server Component. Radix Slot 1.3 evaluates a React context at import time, which
+  // fails under the react-server condition before Next can collect page data.
+  await writeFile(buttonPath, `'use client'\n\n${source}`)
+  console.log(
+    '[payload-components smoke] added the missing client boundary to the generated Payload button',
+  )
+
+  return true
 }
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -562,6 +636,8 @@ const uploadFieldByArrayName: Record<string, string> = {
   members: 'avatar',
 }
 
+const uploadFieldNames = new Set(['avatar', 'image', 'logo', 'poster', 'productImage', 'video'])
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
@@ -583,13 +659,49 @@ const valueNeedsSmokeMedia = (value: unknown, arrayName?: string): boolean => {
     return false
   }
 
-  return Object.entries(value).some(([key, nestedValue]) =>
-    valueNeedsSmokeMedia(nestedValue, key),
+  return Object.entries(value).some(
+    ([key, nestedValue]) =>
+      (uploadFieldNames.has(key) && isMissingUploadReference(value, key)) ||
+      valueNeedsSmokeMedia(nestedValue, key),
   )
 }
 
 export const sampleContentNeedsSmokeMedia = (sampleContent: ComponentManifest['sampleContent']) =>
   valueNeedsSmokeMedia(sampleContent)
+
+export const addSmokeUploadReferences = (
+  value: unknown,
+  mediaID: unknown,
+  arrayName?: string,
+): unknown => {
+  if (Array.isArray(value)) {
+    const uploadField = arrayName ? uploadFieldByArrayName[arrayName] : undefined
+
+    return value.map((item) => {
+      const hydratedItem = addSmokeUploadReferences(item, mediaID)
+
+      if (!uploadField || !isRecord(hydratedItem)) return hydratedItem
+
+      return {
+        ...hydratedItem,
+        [uploadField]: isMissingUploadReference(hydratedItem, uploadField)
+          ? mediaID
+          : hydratedItem[uploadField],
+      }
+    })
+  }
+
+  if (!isRecord(value)) return value
+
+  return Object.fromEntries(
+    Object.entries(value).map(([key, nestedValue]) => [
+      key,
+      uploadFieldNames.has(key) && isMissingUploadReference(value, key)
+        ? mediaID
+        : addSmokeUploadReferences(nestedValue, mediaID, key),
+    ]),
+  )
+}
 
 export const writeSeedScript = async (targetPath: string, manifests: ComponentManifest[]) => {
   const layout = manifests.map((manifest) => ({
@@ -610,6 +722,7 @@ export const writeSeedScript = async (targetPath: string, manifests: ComponentMa
     `import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
+import 'dotenv/config'
 import { getPayload } from 'payload'
 
 const { default: config } = await import('../src/payload.config')
@@ -626,34 +739,16 @@ const uploadFieldByArrayName: Record<string, string> = {
   members: 'avatar',
 }
 
+const uploadFieldNames = new Set(${JSON.stringify([...uploadFieldNames])})
+
 const isSmokeSampleItem = (value: unknown): value is SmokeSampleItem =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
-const addSmokeUploadReferences = (value: unknown, mediaID: unknown, arrayName?: string): unknown => {
-  if (Array.isArray(value)) {
-    const uploadField = arrayName ? uploadFieldByArrayName[arrayName] : undefined
+const isRecord = isSmokeSampleItem
+const isMissingUploadReference = (item: SmokeSampleItem, fieldName: string) =>
+  typeof item[fieldName] === 'undefined' || item[fieldName] === null || item[fieldName] === ''
 
-    return value.map((item) => {
-      const hydratedItem = addSmokeUploadReferences(item, mediaID)
-
-      if (!uploadField || !isSmokeSampleItem(hydratedItem)) return hydratedItem
-
-      return {
-        ...hydratedItem,
-        [uploadField]: hydratedItem[uploadField] ?? mediaID,
-      }
-    })
-  }
-
-  if (!isSmokeSampleItem(value)) return value
-
-  return Object.fromEntries(
-    Object.entries(value).map(([key, nestedValue]) => [
-      key,
-      addSmokeUploadReferences(nestedValue, mediaID, key),
-    ]),
-  )
-}
+const addSmokeUploadReferences = ${addSmokeUploadReferences.toString()}
 
 const createSmokeMedia = async () => {
   const mediaPath = path.join(process.cwd(), '.payload-components', 'smoke-placeholder.svg')
@@ -814,10 +909,12 @@ const runFreshPayloadRepoSmoke = async ({
   const payloadVersion = await getLocalPayloadVersion()
   const projectName = 'payload-components-smoke-target'
   const targetPath = path.join(tempRoot, projectName)
+  const normalizedDbConnectionString = normalizeSmokeDatabaseConnectionString(dbConnectionString)
+  const databaseUrl = normalizedDbConnectionString ?? `file:./${projectName}.db`
 
   await runCommand({
     args: getCreatePayloadAppArgs({
-      dbConnectionString,
+      dbConnectionString: normalizedDbConnectionString,
       payloadVersion,
       projectName,
     }),
@@ -826,6 +923,8 @@ const runFreshPayloadRepoSmoke = async ({
     stage: 'create fresh Payload website project',
     timeoutMs,
   })
+
+  await applyFreshPayloadTemplateCompatibility(targetPath)
 
   await runCommand({
     args: ['add', tarballPath],
@@ -844,6 +943,20 @@ const runFreshPayloadRepoSmoke = async ({
       timeoutMs,
     })
   }
+
+  const demoManifest = manifests[0]
+
+  if (!demoManifest) {
+    throw new Error('Fresh Payload smoke requires at least one installed component.')
+  }
+
+  await runCommand({
+    args: ['exec', 'payload-components', 'seed', demoManifest.name],
+    command: 'pnpm',
+    cwd: targetPath,
+    stage: `payload-components seed ${demoManifest.name} in fresh project`,
+    timeoutMs,
+  })
 
   await runCommand({
     args: ['generate:types'],
@@ -867,12 +980,27 @@ const runFreshPayloadRepoSmoke = async ({
     timeoutMs,
   })
 
+  await runCommand({
+    args: ['exec', 'payload', 'run', `payload-components/seed-${demoManifest.name}.ts`],
+    command: 'pnpm',
+    cwd: targetPath,
+    env: smokeEnvForTarget({
+      databaseUrl,
+      serverUrl: 'http://127.0.0.1:3000',
+    }),
+    stage: `run generated demo seed for ${demoManifest.name}`,
+    timeoutMs,
+  })
+
   await writeSeedScript(targetPath, manifests)
   await runCommand({
     args: ['exec', 'tsx', '.payload-components/smoke-seed.ts'],
     command: 'pnpm',
     cwd: targetPath,
-    env: smokeEnvForTarget('http://127.0.0.1:3000'),
+    env: smokeEnvForTarget({
+      databaseUrl,
+      serverUrl: 'http://127.0.0.1:3000',
+    }),
     stage: 'seed fresh project sample content',
     timeoutMs,
   })
@@ -891,7 +1019,10 @@ const runFreshPayloadRepoSmoke = async ({
     args: getFreshServerArgs(port),
     command: 'pnpm',
     cwd: targetPath,
-    env: smokeEnvForTarget(`http://127.0.0.1:${port}`),
+    env: smokeEnvForTarget({
+      databaseUrl,
+      serverUrl: `http://127.0.0.1:${port}`,
+    }),
     stage: 'start fresh project production server',
   })
 
@@ -912,8 +1043,18 @@ const runFreshPayloadRepoSmoke = async ({
   }
 }
 
-const smokeEnvForTarget = (serverUrl: string): Partial<NodeJS.ProcessEnv> => ({
+export const normalizeSmokeDatabaseConnectionString = (value?: string) =>
+  value?.trim() || undefined
+
+export const smokeEnvForTarget = ({
+  databaseUrl,
+  serverUrl,
+}: {
+  databaseUrl: string
+  serverUrl: string
+}): Partial<NodeJS.ProcessEnv> => ({
   CRON_SECRET: process.env.CRON_SECRET ?? 'payload-components-smoke-cron-secret',
+  DATABASE_URL: databaseUrl,
   NEXT_PUBLIC_SERVER_URL: serverUrl,
   PAYLOAD_SECRET: process.env.PAYLOAD_SECRET ?? 'payload-components-smoke-secret',
   PREVIEW_SECRET: process.env.PREVIEW_SECRET ?? 'payload-components-smoke-preview-secret',

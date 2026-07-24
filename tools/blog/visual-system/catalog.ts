@@ -11,8 +11,8 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       kind: 'source',
       label: 'Hero block contract',
       path: 'payload-components/source/blocks/HeroBasic/config.ts',
-      anchor: 'export const HeroBasic',
-      take: 14,
+      anchor: "dbName: 'pc_her_bas'",
+      take: 12,
     },
     secondary: {
       kind: 'sequence',
@@ -118,7 +118,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       label: 'Explicit block config',
       path: 'payload-components/source/blocks/HeroBasic/config.ts',
       anchor: 'export const HeroBasic',
-      take: 11,
+      take: 10,
     },
     secondary: {
       kind: 'sequence',

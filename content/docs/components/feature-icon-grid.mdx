@@ -1,0 +1,69 @@
+---
+title: Feature Icon Grid
+description: A dense feature grid with editor-selected icons and a tokenized radial grid decorator.
+icon: LayoutGrid
+---
+
+<ComponentPreview slug="feature-icon-grid" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add feature-icon-grid
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-icon-grid.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="feature-icon-grid" />
+
+## Content model
+
+The first three fields come from the shared `featureFields` base. `items` and `links` define this
+icon-grid variant; required icon choices come from the shared Feature icon map.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title.' },
+    title: { type: 'text', required: true, description: 'The section heading.' },
+    description: { type: 'textarea', description: 'Optional intro copy.' },
+    items: { type: 'array', required: true, description: 'Three to six decorated feature cards.' },
+    links: { type: 'array', description: 'Up to two optional CTA links.' },
+  }}
+/>
+
+Each item in `items` carries:
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'Feature card heading.' },
+    description: { type: 'textarea', required: true, description: 'Feature card body copy.' },
+    icon: { type: 'select', required: true, description: 'Icon shown inside the masked grid.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="feature-icon-grid" />
+
+## Requirements
+
+<ComponentRequirements slug="feature-icon-grid" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.
+
+## In this family
+
+<ComponentFamily slug="feature-icon-grid" />

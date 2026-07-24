@@ -5,6 +5,8 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const ContentColumns: Block = {
   slug: 'contentColumns',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_con_col',
   interfaceName: 'ContentColumnsBlock',
   fields: [

@@ -1,15 +1,21 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 import { BlogCard } from '@/components/blog/BlogCard'
 import { sortBlogPages } from '@/lib/blog'
-import { siteUrl } from '@/lib/site'
+import { blogDescription, blogTitle, componentEntries, siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
-  title: 'Blog',
-  description: 'Practical Payload CMS guides, installer internals, component design, and open-source field notes from Payload Components.',
+  title: blogTitle,
+  description: blogDescription,
   alternates: { canonical: `${siteUrl}/blog` },
-  openGraph: { title: 'Blog', description: 'Practical Payload CMS guides, installer internals, component design, and open-source field notes from Payload Components.', url: `${siteUrl}/blog`, type: 'website' },
-  twitter: { card: 'summary_large_image', title: 'Blog', description: 'Practical Payload CMS guides, installer internals, component design, and open-source field notes from Payload Components.' },
+  openGraph: {
+    title: blogTitle,
+    description: blogDescription,
+    url: `${siteUrl}/blog`,
+    type: 'website',
+  },
+  twitter: { card: 'summary_large_image', title: blogTitle, description: blogDescription },
 }
 
 export default function BlogIndex() {
@@ -22,12 +28,17 @@ export default function BlogIndex() {
           Field notes from the registry
         </p>
         <h1 className="mt-3 text-4xl font-semibold tracking-display text-foreground sm:text-5xl">
-          Build Payload sites with the wiring visible.
+          {blogTitle}
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-          Practical guides, installer internals, component decisions, and the lessons behind an
-          MIT registry built in public.
+          {blogDescription}
         </p>
+        <Link
+          href="/components"
+          className="mt-4 inline-flex text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
+        >
+          Browse all {componentEntries.length} installable components
+        </Link>
       </header>
 
       {posts.length === 0 ? (

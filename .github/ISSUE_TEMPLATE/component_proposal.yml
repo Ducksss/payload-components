@@ -1,0 +1,117 @@
+name: Component Proposal
+description: Shape a complete public component proposal. Submitting does not reserve roadmap priority or guarantee inclusion.
+title: '[component] '
+labels:
+  - enhancement
+  - community
+body:
+  - type: input
+    id: slug
+    attributes:
+      label: Proposed slug
+      description: Use a short kebab-case name that could identify the registry item.
+      placeholder: testimonial-grid
+    validations:
+      required: true
+
+  - type: input
+    id: family
+    attributes:
+      label: Component family
+      description: Name the existing or proposed family this component belongs to.
+      placeholder: Testimonials
+    validations:
+      required: true
+
+  - type: textarea
+    id: workflow
+    attributes:
+      label: User workflow
+      description: What should a Payload editor or site developer be able to accomplish with this component?
+      placeholder: |
+        An editor selects the block, adds several customer quotes, chooses a layout variant, and publishes the page without custom code.
+    validations:
+      required: true
+
+  - type: textarea
+    id: content-fields
+    attributes:
+      label: Content fields
+      description: Describe the Payload fields, relationships, uploads, arrays, or shared family fields the component needs.
+      placeholder: |
+        heading: text, optional
+        testimonials: array of quote, name, role, company, and optional portrait upload
+        layout: select with grid and carousel options
+    validations:
+      required: true
+
+  - type: textarea
+    id: rendering
+    attributes:
+      label: Rendering behavior
+      description: Explain the frontend output, responsive behavior, variants, empty states, and any interactive behavior.
+      placeholder: Render a responsive three-column grid on desktop and a single-column list on small screens. Hide the heading when it is empty.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-mode
+    attributes:
+      label: Install mode
+      description: Choose the closest delivery shape. This helps scope the registry and installer work; it does not imply acceptance.
+      options:
+        - Payload layout block
+        - Payload admin component
+        - Standalone frontend component
+        - Shared registry dependency
+        - Not sure yet
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples or inspiration
+      description: Link to comparable open-source components, screenshots, or real workflows. Note any license constraints.
+      placeholder: |
+        https://example.com/reference
+        The interaction is useful, but the proposed component should use Payload Components tokens and patterns.
+
+  - type: textarea
+    id: accessibility
+    attributes:
+      label: Accessibility considerations
+      description: Call out semantics, keyboard and focus behavior, labels, reduced motion, image alternatives, contrast, or other relevant needs.
+      placeholder: Quotes should use semantic blockquotes, portraits need meaningful alt text, and any carousel controls must work by keyboard and expose clear labels.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: complete-bundle
+    attributes:
+      label: Complete component bundle
+      description: A component is reviewed as one complete, testable change. Please confirm you understand the expected scope.
+      options:
+        - label: The component source includes its Payload config and renderer.
+          required: true
+        - label: The component includes a complete manifest.
+          required: true
+        - label: The component is added to the public registry.
+          required: true
+        - label: The component includes its catalog documentation page.
+          required: true
+        - label: The component includes a matching demo twin and sample content.
+          required: true
+        - label: The component includes installer and fresh-project test coverage.
+          required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution willingness
+      description: Select any parts you would be interested in helping with. Leaving these unchecked is fine.
+      options:
+        - label: I can implement the complete component bundle.
+        - label: I can contribute source or Payload field design.
+        - label: I can contribute documentation, demo content, or accessibility review.
+        - label: I can add or run installer tests in a fresh Payload project.

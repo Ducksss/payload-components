@@ -1,4 +1,4 @@
-import { readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { access, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { afterEach, describe, expect, it } from 'vitest'
@@ -28,9 +28,15 @@ type RegistryDefinition = {
 }
 
 const representativeInstallComponents = [
+  'contact-routing-form',
   'embed-basic',
+  'feature-accordion',
+  'feature-cards-media',
   'hero-basic',
+  'feature-icon-grid',
   'feature-grid-basic',
+  'hero-product-tilt',
+  'hero-video',
   'logo-cloud-marquee',
   'call-to-action-signup',
   'team-grid',
@@ -39,6 +45,17 @@ const representativeInstallComponents = [
   'comparator-grid',
   'testimonials-grid',
   'pricing-cards',
+  'stats-proof',
+] as const
+
+const curatedTailarkPortComponents = [
+  'hero-video',
+  'hero-product-tilt',
+  'feature-accordion',
+  'feature-cards-media',
+  'feature-icon-grid',
+  'stats-proof',
+  'contact-routing-form',
 ] as const
 
 const idempotencyComponents = ['hero-basic', 'logo-cloud-marquee'] as const
@@ -61,6 +78,30 @@ const runAddCommand = async (fixtureDir: string, componentName: string) =>
     env: process.env,
     timeoutMs: integrationCommandTimeoutMs,
   })
+
+const snapshotFixtureFiles = async (fixtureDir: string) => {
+  const entries: Array<[string, string]> = []
+
+  const visit = async (directory: string) => {
+    const children = await readdir(directory, { withFileTypes: true })
+
+    for (const child of children) {
+      const absolutePath = path.join(directory, child.name)
+
+      if (child.isDirectory()) {
+        await visit(absolutePath)
+        continue
+      }
+
+      const relativePath = path.relative(fixtureDir, absolutePath).split(path.sep).join('/')
+      entries.push([relativePath, await readFile(absolutePath, 'utf8')])
+    }
+  }
+
+  await visit(fixtureDir)
+
+  return Object.fromEntries(entries.sort(([left], [right]) => left.localeCompare(right)))
+}
 
 describe('payload-components manifests', () => {
   it('keeps every manifest wired to registry source, docs, and recovery targets', async () => {
@@ -116,17 +157,57 @@ describe('payload-components manifests', () => {
         'utf8',
       )
       const databaseName = config.match(
-        /export const \w+: Block = \{\s*\n\s*slug: '[^']+',\s*\n\s*dbName: '([^']+)'/,
+        /export const \w+: Block = \{\s*\n\s*slug: '[^']+',\s*\n\s*\/\/ Existing apps must migrate stored data before adopting this identifier:\s*\n\s*\/\/ https:\/\/www\.payload-components\.xyz\/docs\/registry#installed-source-and-migrations\s*\n\s*dbName: '([^']+)'/,
       )?.[1]
 
-      expect(databaseName, `${name} missing top-level dbName`).toBeTruthy()
+      expect(
+        databaseName,
+        `${name} must put the migration warning immediately before its top-level dbName`,
+      ).toBeTruthy()
       if (!databaseName) continue
       expect(databaseName.length, `${name} dbName is too long`).toBeLessThanOrEqual(18)
       expect(databaseNames.has(databaseName), `${name} reuses dbName ${databaseName}`).toBe(false)
       databaseNames.add(databaseName)
     }
 
-    expect(databaseNames).toHaveLength(names.length)
+    expect(databaseNames.size).toBe(names.length)
+  })
+
+  it('documents the copied-source database migration boundary', async () => {
+    const [workspaceReadme, registryDocs, componentTemplate] = await Promise.all([
+      readFile(path.join(repoRoot, 'payload-components', 'README.md'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'registry.mdx'), 'utf8'),
+      readFile(
+        path.join(repoRoot, 'payload-components', 'templates', 'component-template', 'README.md'),
+        'utf8',
+      ),
+    ])
+
+    for (const [label, source] of [
+      ['workspace README', workspaceReadme],
+      ['registry docs', registryDocs],
+    ] as const) {
+      expect(source, `${label} must state the source ownership boundary`).toContain(
+        'does not overwrite installed component source',
+      )
+      expect(source, `${label} must cover database-name updates`).toContain('`dbName`')
+      expect(source, `${label} must scope database-name migrations`).toContain('SQL-backed')
+      expect(source, `${label} must assign migration ownership`).toContain(
+        'consumer project must own the migration',
+      )
+      expect(source, `${label} must require a data-preserving migration review`).toContain(
+        'rename rather than drop and recreate',
+      )
+    }
+
+    expect(workspaceReadme).toContain('### Deterministic fixture checks')
+    expect(workspaceReadme).toContain('### Fresh-consumer smoke validation')
+    expect(workspaceReadme).toContain('### Release gate')
+    expect(workspaceReadme).toContain('`quick-checks`')
+    expect(registryDocs).toContain('## Installed source and migrations')
+    for (const shardIndex of [0, 1, 2, 3]) {
+      expect(componentTemplate).toContain(`pnpm test:fresh -- --shard-index ${shardIndex}`)
+    }
   })
 })
 
@@ -135,6 +216,32 @@ describe('payload-components add', () => {
 
   afterEach(async () => {
     await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
+  })
+
+  it('previews hero-basic in a supported repo without changing files or install state', async () => {
+    const { fixtureDir } = await createInstallFixture('hero-basic')
+    tempDirs.push(fixtureDir)
+    const before = await snapshotFixtureFiles(fixtureDir)
+
+    const result = await runCommand({
+      args: [payloadComponentBin, 'add', 'hero-basic', '--cwd', fixtureDir, '--dry-run'],
+      captureOutput: true,
+      command: process.execPath,
+      cwd: repoRoot,
+      env: process.env,
+      timeoutMs: integrationCommandTimeoutMs,
+    })
+
+    expect(result.stdout).toContain('dry run for "hero-basic"')
+    expect(result.stdout).toContain('No files will be changed')
+    expect(result.stdout).toContain('src/blocks/RenderBlocks.tsx (would patch)')
+    expect(result.stdout).toContain('renderer mapping heroBasic: HeroBasicBlock')
+    expect(result.stdout).toContain('src/collections/Pages/index.ts (would patch)')
+    expect(result.stdout).toContain('HeroBasic in the Pages layout blocks')
+    expect(result.stdout).toContain('pnpm generate:types (would run)')
+    expect(result.stdout).toContain('pnpm generate:importmap (would run)')
+    expect(await snapshotFixtureFiles(fixtureDir)).toEqual(before)
+    await expect(access(path.join(fixtureDir, '.payload-components', 'state.json'))).rejects.toThrow()
   })
 
   it('uses preseeded source and declared local dependencies in the default integration fixture', async () => {
@@ -188,6 +295,25 @@ describe('payload-components add', () => {
     }
 
     await expectInstalledComponents(fixtureDir, manifests)
+  }, 180000)
+
+  it('installs every curated Tailark port together without duplicate wiring or shared files', async () => {
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents(
+      curatedTailarkPortComponents,
+      { preseedSource: true },
+    )
+    tempDirs.push(fixtureDir)
+
+    for (const componentName of curatedTailarkPortComponents) {
+      await runAddCommand(fixtureDir, componentName)
+    }
+
+    await expectInstalledComponents(fixtureDir, manifests)
+
+    const sharedFiles = await readdir(path.join(fixtureDir, 'src', 'blocks', 'shared'))
+    expect(sharedFiles.filter((file) => file === 'heroFields.ts')).toHaveLength(1)
+    expect(sharedFiles.filter((file) => file === 'featureFields.ts')).toHaveLength(1)
+    expect(sharedFiles.filter((file) => file === 'featureIcons.ts')).toHaveLength(1)
   }, 180000)
 
   it.each(idempotencyComponents)('treats a second %s install as idempotent', async (componentName) => {

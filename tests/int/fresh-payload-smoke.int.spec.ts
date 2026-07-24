@@ -1,4 +1,4 @@
-import { readdir, mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdir, readdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
@@ -12,7 +12,13 @@ const { sampleContentNeedsSmokeMedia, writeSeedScript } = smokeHarness
 const repoRoot = process.cwd()
 
 describe('fresh Payload smoke component selection', () => {
-  it('assigns every registry and manifest slug to exactly one of four deterministic shards', async () => {
+  const tempDirs: string[] = []
+
+  afterEach(async () => {
+    await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
+  })
+
+  it('assigns every renderable registry block to exactly one deterministic shard', async () => {
     const { getInstallableComponentSlugs, getSmokeShard, SMOKE_SHARD_COUNT } = smokeHarness as typeof smokeHarness & {
       getInstallableComponentSlugs?: () => Promise<string[]>
       getSmokeShard?: (slugs: string[], shardIndex: number) => string[]
@@ -26,20 +32,38 @@ describe('fresh Payload smoke component selection', () => {
 
     const registry = JSON.parse(
       await readFile(path.join(repoRoot, 'payload-components', 'registry.json'), 'utf8'),
-    ) as { items: Array<{ name: string }> }
+    ) as { items: Array<{ name: string; type?: string }> }
     const manifestSlugs = (await readdir(path.join(repoRoot, 'payload-components', 'manifests')))
       .filter((entry) => entry.endsWith('.json'))
       .map((entry) => entry.replace(/\.json$/, ''))
       .sort()
-    const registrySlugs = registry.items.map((item) => item.name).sort()
+    const registryBlockSlugs = registry.items
+      .filter((item) => item.type === 'registry:block')
+      .map((item) => item.name)
+      .sort()
     const installableSlugs = await getInstallableComponentSlugs()
+    const selection = await smokeHarness.getDefaultSmokeSelection()
     const shards = Array.from({ length: SMOKE_SHARD_COUNT }, (_, shardIndex) =>
       getSmokeShard(installableSlugs, shardIndex),
     )
     const assignments = shards.flat()
 
-    expect(installableSlugs).toEqual(registrySlugs)
+    expect(installableSlugs).toEqual(registryBlockSlugs)
     expect(installableSlugs).toEqual(manifestSlugs)
+    expect(selection.components).toEqual(installableSlugs)
+    expect(
+      [...selection.components, ...selection.exclusions.map((exclusion) => exclusion.name)].sort(),
+    ).toEqual(registry.items.map((item) => item.name).sort())
+    expect(selection.exclusions).toEqual(
+      registry.items
+        .filter((item) => item.type !== 'registry:block')
+        .map((item) => ({
+          name: item.name,
+          reason: smokeHarness.DEFAULT_SMOKE_EXCLUSION_REASON,
+          type: item.type,
+        }))
+        .sort((left, right) => left.name.localeCompare(right.name)),
+    )
     expect([...assignments].sort()).toEqual(installableSlugs)
     expect(new Set(assignments).size).toBe(installableSlugs.length)
 
@@ -51,7 +75,31 @@ describe('fresh Payload smoke component selection', () => {
 
     for (const slug of installableSlugs) {
       expect(assignments.filter((assignment) => assignment === slug), slug).toHaveLength(1)
+      const manifest = await loadManifest(slug)
+
+      expect(smokeHarness.getRenderableSampleBlockType(manifest), slug).toBe(
+        manifest.sampleContent.blockType,
+      )
     }
+  })
+
+  it('rejects default coverage for a block without renderable sample content', async () => {
+    const manifest = await loadManifest('hero-basic')
+
+    expect(() =>
+      smokeHarness.getRenderableSampleBlockType({
+        ...manifest,
+        sampleContent: {},
+      }),
+    ).toThrow(/sampleContent\.blockType/)
+    expect(() =>
+      smokeHarness.getRenderableSampleBlockType({
+        ...manifest,
+        sampleContent: {
+          blockType: '   ',
+        },
+      }),
+    ).toThrow(/sampleContent\.blockType/)
   })
 
   it('renders the production build from the fresh consumer fixture', () => {
@@ -94,6 +142,57 @@ describe('fresh Payload smoke component selection', () => {
       ]),
     ).toThrow(/cannot be used together/)
   })
+
+  it('passes the selected database URL to direct target commands', () => {
+    expect(
+      smokeHarness.smokeEnvForTarget({
+        databaseUrl: 'file:./payload-components-smoke-target.db',
+        serverUrl: 'http://127.0.0.1:3100',
+      }),
+    ).toMatchObject({
+      DATABASE_URL: 'file:./payload-components-smoke-target.db',
+      NEXT_PUBLIC_SERVER_URL: 'http://127.0.0.1:3100',
+    })
+  })
+
+  it('treats a blank database URL as absent and trims a configured URL', () => {
+    expect(smokeHarness.normalizeSmokeDatabaseConnectionString('')).toBeUndefined()
+    expect(smokeHarness.normalizeSmokeDatabaseConnectionString('   ')).toBeUndefined()
+    expect(
+      smokeHarness.normalizeSmokeDatabaseConnectionString(
+        '  postgres://localhost/payload_components  ',
+      ),
+    ).toBe('postgres://localhost/payload_components')
+  })
+
+  it('adds a client boundary when the generated Payload button imports Radix Slot', async () => {
+    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-template-'))
+    const buttonPath = path.join(tempDir, 'src', 'components', 'ui', 'button.tsx')
+    tempDirs.push(tempDir)
+    await mkdir(path.dirname(buttonPath), { recursive: true })
+    await writeFile(
+      buttonPath,
+      "import { Slot } from '@radix-ui/react-slot'\n\nexport const Button = Slot\n",
+    )
+
+    await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(true)
+    await expect(readFile(buttonPath, 'utf8')).resolves.toBe(
+      "'use client'\n\nimport { Slot } from '@radix-ui/react-slot'\n\nexport const Button = Slot\n",
+    )
+    await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(false)
+  })
+
+  it('leaves generated buttons without Radix Slot unchanged', async () => {
+    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-template-'))
+    const buttonPath = path.join(tempDir, 'src', 'components', 'ui', 'button.tsx')
+    const source = "export const Button = (props: unknown) => <button {...props} />\n"
+    tempDirs.push(tempDir)
+    await mkdir(path.dirname(buttonPath), { recursive: true })
+    await writeFile(buttonPath, source)
+
+    await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(false)
+    await expect(readFile(buttonPath, 'utf8')).resolves.toBe(source)
+  })
 })
 
 describe('fresh Payload smoke seed generation', () => {
@@ -114,6 +213,20 @@ describe('fresh Payload smoke seed generation', () => {
     expect(script).toContain("console.log('Seeded /payload-components-smoke')\nprocess.exit(0)")
   })
 
+  it('loads the generated project environment before importing Payload config', async () => {
+    const manifest = await loadManifest('hero-basic')
+    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-seed-'))
+    tempDirs.push(tempDir)
+
+    const scriptPath = await writeSeedScript(tempDir, [manifest])
+    const script = await readFile(scriptPath, 'utf8')
+
+    expect(script).toContain("import 'dotenv/config'")
+    expect(script.indexOf("import 'dotenv/config'")).toBeLessThan(
+      script.indexOf("await import('../src/payload.config')"),
+    )
+  })
+
   it('adds placeholder media seeding when sample content has required upload slots', async () => {
     const manifest = await loadManifest('logo-cloud-grid')
     const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-seed-'))
@@ -126,6 +239,18 @@ describe('fresh Payload smoke seed generation', () => {
     expect(script).toContain('const needsSmokeMedia = true')
     expect(script).toContain("collection: 'media'")
     expect(script).toContain("logos: 'logo'")
+  })
+
+  it('declares placeholder slots for every curated block with required uploads', async () => {
+    const manifests = await Promise.all(
+      ['hero-video', 'hero-product-tilt', 'feature-cards-media'].map((name) =>
+        loadManifest(name),
+      ),
+    )
+
+    expect(manifests.map((manifest) => sampleContentNeedsSmokeMedia(manifest.sampleContent))).toEqual(
+      [true, true, true],
+    )
   })
 
   it('does not create placeholder media for sample content without upload slots', async () => {
@@ -168,5 +293,55 @@ describe('fresh Payload smoke seed generation', () => {
     )
     expect(script).toContain("members: 'avatar'")
     expect(script).toContain('addSmokeUploadReferences(nestedValue, mediaID, key)')
+  })
+
+  it('hydrates every missing upload representation without replacing existing references', () => {
+    const { addSmokeUploadReferences } = smokeHarness as typeof smokeHarness & {
+      addSmokeUploadReferences?: (value: unknown, mediaID: unknown) => unknown
+    }
+
+    expect(addSmokeUploadReferences).toBeTypeOf('function')
+    if (!addSmokeUploadReferences) return
+
+    expect(
+      addSmokeUploadReferences(
+        {
+          members: [
+            { avatar: undefined, name: 'Undefined' },
+            { avatar: null, name: 'Null' },
+            { avatar: '', name: 'Empty' },
+            { avatar: 'existing-media', name: 'Existing' },
+          ],
+        },
+        'smoke-media',
+      ),
+    ).toEqual({
+      members: [
+        { avatar: 'smoke-media', name: 'Undefined' },
+        { avatar: 'smoke-media', name: 'Null' },
+        { avatar: 'smoke-media', name: 'Empty' },
+        { avatar: 'existing-media', name: 'Existing' },
+      ],
+    })
+  })
+
+  it('hydrates named upload fields at the block root and inside arbitrary arrays', () => {
+    const { addSmokeUploadReferences } = smokeHarness as typeof smokeHarness & {
+      addSmokeUploadReferences?: (value: unknown, mediaID: unknown) => unknown
+    }
+    const sample = {
+      items: [{ image: null, title: 'Media card' }],
+      poster: '',
+      productImage: undefined,
+      video: 'existing-video',
+    }
+
+    expect(sampleContentNeedsSmokeMedia(sample)).toBe(true)
+    expect(addSmokeUploadReferences?.(sample, 'smoke-media')).toEqual({
+      items: [{ image: 'smoke-media', title: 'Media card' }],
+      poster: 'smoke-media',
+      productImage: 'smoke-media',
+      video: 'existing-video',
+    })
   })
 })

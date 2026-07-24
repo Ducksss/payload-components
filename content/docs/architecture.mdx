@@ -69,6 +69,32 @@ The component runtime is external. A component installs into a supported Payload
 - `Pages` collection layout fragments
 - `generate:types` and `generate:importmap` post-install tasks
 
+## CLI and database boundary
+
+`payload-components add <component>` owns five idempotent install stages in the
+consumer project: registry build, registry add, dependency install, Payload
+fragment application, and post-install generation. It records installed or
+partial state under `.payload-components/state.json` so an interrupted install
+can be inspected and retried safely.
+
+Optional demo seeding stays outside that pipeline's trust boundary. The
+`seed <component>` command, and the final `--demo` step after a successful add,
+validate the recorded install, dependencies, registry dependencies, installed
+files, and fragments. They atomically write
+`payload-components/seed-<component>.ts` and initialize a private high-entropy
+ownership record under `.payload-components/demo-state/`. The CLI does not
+import Payload, open a database, or make a network request during seed
+generation.
+
+The operator reviews that generated source and explicitly runs it with the
+consumer project's Payload CLI. Only then does the script use the Local API. It
+requires Pages drafts and refuses database-visible markers as ownership proof.
+It creates a draft only when the slug is free, then records the new Page and
+Media IDs locally. Reruns require those exact IDs and the private tokenized
+markers; updates set `overrideLock: false`, and generated code never deletes
+media. This keeps elevated `overrideAccess` calls visible in operator-run target
+code instead of hiding them inside the distribution CLI.
+
 ## Registry source
 
 The shadcn-compatible registry reads source files from `payload-components/source` and emits public JSON to `public/r`.

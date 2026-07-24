@@ -4,6 +4,10 @@ import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import {
+  getSafeContactHref,
+  validateContactValue,
+} from '../../payload-components/source/blocks/shared/contactUrls'
+import {
   getSafeEmbedUrl,
   getSafeFormAction,
   validateEmbedUrl,
@@ -168,6 +172,25 @@ describe('payload-components security invariants', () => {
     )
     expect(validateSameOriginFormAction('javascript:alert(1)')).toContain('same-origin path')
     expect(validateSameOriginFormAction('//attacker.example/collect')).toContain('same-origin path')
+  })
+
+  it('validates and normalizes contact channel hrefs', () => {
+    expect(getSafeContactHref('email', 'hello@example.com')).toBe('mailto:hello@example.com')
+    expect(getSafeContactHref('phone', '+1 (555) 010-1000')).toBe('tel:+15550101000')
+    expect(getSafeContactHref('url', '/support')).toBe('/support')
+    expect(getSafeContactHref('url', 'https://example.com/contact')).toBe(
+      'https://example.com/contact',
+    )
+    expect(getSafeContactHref('url', 'javascript:alert(1)')).toBeUndefined()
+    expect(getSafeContactHref('email', 'not-an-email')).toBeUndefined()
+    expect(getSafeContactHref('phone', 'abc')).toBeUndefined()
+    expect(getSafeContactHref('email', 'hello@example.com\r\nBcc:attacker@example.com')).toBeUndefined()
+
+    expect(validateContactValue('hello@example.com', { siblingData: { type: 'email' } })).toBe(true)
+    expect(validateContactValue('not-an-email', { siblingData: { type: 'email' } })).toContain(
+      'valid email',
+    )
+    expect(validateContactValue('/support', { siblingData: { type: 'url' } })).toBe(true)
   })
 
   it('ships embed iframes with sandboxing and narrowed permissions', async () => {

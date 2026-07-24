@@ -81,6 +81,38 @@ Every block speaks one visual language — light shadcn monochrome with a single
   radius, letter-spacing, spacing, and font-size are token-governed.
 </Callout>
 
+## Anonymous analytics contract
+
+The general site analytics is limited to three anonymous signals. Their action
+payloads are fixed:
+
+| Signal | When it fires | Allowed action fields |
+| --- | --- | --- |
+| `$pageview` | A public route loads or changes | `page_path`, `source_path` |
+| `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path` |
+| `primary_link_click` | A visitor follows a repository, docs, or components link | `destination`, `href`, `source_path` |
+
+These values come from committed routes, links, and install commands, not visitor
+input. PostHog capture adds only `$current_url`, `$pathname`, and `$lib` to the
+action fields, plus the public `api_key` and a first-party pseudonymous
+`distinct_id` in the transport envelope. The request omits browser credentials.
+Leaving `NEXT_PUBLIC_POSTHOG_KEY` unset disables PostHog capture for that
+deployment.
+
+Never add user-entered content, secrets, account identity, install state, or
+cross-site profiling. A future event must name one user action, use a
+low-cardinality event name, and keep every property either enumerated or derived
+from a committed site route, link, or command. Do not send free text, query
+strings, raw referrers, timestamps, or arbitrary external URLs. Update this
+contract and focused analytics coverage in the same pull request whenever the
+event vocabulary or fields change.
+
+<Callout type="info">
+  Template showcase analytics has a separate typed `template_*` vocabulary in
+  `src/lib/analytics.ts`. It follows the same privacy and low-cardinality rules;
+  preview routes do not mount the general analytics stream.
+</Callout>
+
 ## Keep the catalog curated
 
 The catalog grows by curation, not volume — every component must stay verifiable no matter how many ship.

@@ -1,8 +1,15 @@
 import { expect, type Page, test } from '@playwright/test'
 
 import {
+  blogTitle,
+  catalogInstallationLinkLabel,
+  catalogMetadataDescription,
+  catalogMetadataTitle,
   catalogTitle,
+  githubRepoUrl,
   heroHeadline,
+  heroGuideLink,
+  heroTertiaryLinks,
   homeMetadataDescription,
   homeMetadataTitle,
   componentEntries,
@@ -13,6 +20,7 @@ import {
 } from '../../src/lib/site'
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
+const isProductionE2E = process.env.PLAYWRIGHT_SERVER_MODE === 'production'
 const googleTagId = 'G-EMGRZ0H9R9'
 const copiedAlertText = 'Copied to clipboard.'
 
@@ -44,6 +52,10 @@ async function expectCopiedAlert(page: Page) {
   await expect(page.getByRole('alert').filter({ hasText: copiedAlertText })).toBeVisible({
     timeout: 15000,
   })
+}
+
+async function waitForCopyController(page: Page) {
+  await expect(page.locator('html')).toHaveAttribute('data-copy-controller-ready', 'true')
 }
 
 test.describe('Light shadcn frontend', () => {
@@ -87,6 +99,70 @@ test.describe('Light shadcn frontend', () => {
         },
       ]),
     )
+  })
+
+  test('keeps the landing hero action hierarchy focused', async ({ page }) => {
+    await page.goto(baseURL)
+
+    const hero = page.locator('.hero-shell')
+    await expect(hero.locator('[data-cta-level="primary"]')).toHaveCount(1)
+    await expect(
+      hero.getByRole('button', { name: 'Copy install command', exact: true }),
+    ).toBeVisible()
+    await expect(hero.getByRole('link', { name: heroGuideLink.label, exact: true })).toBeVisible()
+    await expect(hero.locator(`a[href="${githubRepoUrl}"]`)).toHaveAccessibleName(
+      'Star on GitHub',
+    )
+    await expect(
+      hero.getByRole('link', { name: heroTertiaryLinks[0].label, exact: true }),
+    ).toBeVisible()
+    await expect(hero.locator('[data-cta-level="tertiary"]')).toHaveCount(3)
+    await expect(hero.getByRole('link', { name: 'Get started', exact: true })).toHaveCount(0)
+
+    const community = page.locator(`#${landingSections.community.id}`)
+    await expect(community.locator('[data-cta-level="primary"]')).toHaveCount(1)
+    await expect(
+      community.getByRole('button', { name: 'Copy install command', exact: true }),
+    ).toBeVisible()
+  })
+
+  test('keeps the desktop hero composition compact', async ({ page }) => {
+    await page.setViewportSize({ height: 900, width: 1440 })
+    await page.goto(baseURL)
+
+    const headline = page.getByRole('heading', { level: 1, name: heroHeadline })
+    const heroStack = page.locator('.hero-shell > .container')
+    const proof = page.locator('.product-frame')
+    const replay = page.getByRole('button', { name: 'Replay the install animation' })
+
+    await expect(headline).toBeVisible()
+    await expect(proof).toBeVisible()
+    await expect(replay).toBeVisible()
+
+    const headlineSize = await headline.evaluate((element) =>
+      Number.parseFloat(getComputedStyle(element).fontSize),
+    )
+    const stackMetrics = await heroStack.evaluate((element) => {
+      const styles = getComputedStyle(element)
+      return {
+        gap: Number.parseFloat(styles.rowGap),
+        paddingTop: Number.parseFloat(styles.paddingTop),
+      }
+    })
+    const proofBounds = await proof.evaluate((element) => {
+      const { left, right, width } = element.getBoundingClientRect()
+      return { left, right, width }
+    })
+    const replayBounds = await replay.evaluate((element) => {
+      const { left, right } = element.getBoundingClientRect()
+      return { left, right }
+    })
+
+    expect(headlineSize).toBeLessThanOrEqual(88.1)
+    expect(stackMetrics).toEqual({ gap: 48, paddingTop: 64 })
+    expect(proofBounds.width).toBeLessThanOrEqual(1024.1)
+    expect(replayBounds.left).toBeGreaterThanOrEqual(proofBounds.left)
+    expect(replayBounds.right).toBeLessThanOrEqual(proofBounds.right)
   })
 
   test('renders the light token-driven homepage', async ({ page }) => {
@@ -152,6 +228,29 @@ test.describe('Light shadcn frontend', () => {
       return (r + g + b) / 3
     })
     expect(meanChannel).toBeGreaterThan(220)
+  })
+
+  test('links setup FAQ answers to their canonical guides', async ({ page }) => {
+    await page.goto(baseURL)
+
+    await page
+      .getByRole('group')
+      .filter({ hasText: 'What exactly does an install change in my repo?' })
+      .getByText('What exactly does an install change in my repo?')
+      .click()
+    await expect(page.getByRole('link', { name: 'Read the installation guide' })).toHaveAttribute(
+      'href',
+      '/docs/installation',
+    )
+
+    await page
+      .getByRole('group')
+      .filter({ hasText: 'Why not just run npx shadcn add?' })
+      .getByText('Why not just run npx shadcn add?')
+      .click()
+    await expect(
+      page.getByRole('link', { name: 'Read the full shadcn comparison' }),
+    ).toHaveAttribute('href', '/docs/shadcn-vs-payload-components')
   })
 
   test('aligns the brand mark relative to the documentation rail', async ({ page }) => {
@@ -222,8 +321,16 @@ test.describe('Light shadcn frontend', () => {
     // second route (/components/preview/<slug>). Walking every route while also
     // compiling every preview overwhelms the dev server mid-walk (ERR_CONNECTION_RESET).
     // This smoke check only asserts each page's title/h1/overflow, so block the preview
-    // subframe: full route coverage stays and the on-demand compile load roughly halves.
+    // subframe. Production mode checks every prebuilt page; development mode checks one
+    // representative per category so Next's on-demand compiler does not restart mid-run.
     await page.route('**/components/preview/**', (route) => route.abort())
+
+    const checkedComponents = isProductionE2E
+      ? componentEntries
+      : componentEntries.filter(
+          (component, index, entries) =>
+            entries.findIndex((entry) => entry.category === component.category) === index,
+        )
 
     const routes = [
       {
@@ -234,7 +341,7 @@ test.describe('Light shadcn frontend', () => {
       {
         h1: 'Introduction',
         path: '/docs',
-        title: /Introduction/,
+        title: /CLI setup and architecture/,
       },
       {
         h1: 'Architecture',
@@ -244,7 +351,7 @@ test.describe('Light shadcn frontend', () => {
       {
         h1: catalogTitle,
         path: '/components',
-        title: /Payload CMS Block Catalog/,
+        title: new RegExp(catalogMetadataTitle),
       },
       {
         h1: 'Why Payload Components exists',
@@ -256,7 +363,7 @@ test.describe('Light shadcn frontend', () => {
         path: '/brand-guide',
         title: /Brand Guide/,
       },
-      ...componentEntries.map((component) => ({
+      ...checkedComponents.map((component) => ({
         h1: component.title,
         path: component.href,
         title: new RegExp(component.title),
@@ -291,14 +398,29 @@ test.describe('Light shadcn frontend', () => {
 
   test('mobile header stays bounded and supports keyboard disclosure', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 })
-    await page.goto(baseURL)
+    await page.goto(`${baseURL}/docs`)
     const trigger = page.getByRole('button', { name: 'Open navigation' })
+    const navigation = page.locator('#mobile-navigation')
     await expect(trigger).toBeVisible()
+    await expect(navigation).toBeAttached()
+    await expect(navigation).toBeHidden()
     await trigger.click()
-    await expect(page.getByRole('menu')).toBeVisible()
+    await expect(navigation).toBeVisible()
+    const docsLink = navigation.getByRole('link', { name: 'Docs' })
+    await expect(docsLink).toBeVisible()
+    await expect(docsLink).toHaveClass(/bg-secondary/)
+    await expect(docsLink).toHaveClass(/text-foreground/)
+    await expect(navigation.getByRole('link', { name: 'Components' })).toHaveClass(
+      /text-muted-foreground/,
+    )
+    const githubLink = navigation.getByRole('link', { name: 'GitHub' })
+    await expect(githubLink).toHaveAttribute('target', '_blank')
+    await expect(githubLink).toHaveAttribute('rel', 'noreferrer')
     await expect(page.getByRole('button', { name: 'Close navigation' })).toBeVisible()
     await page.keyboard.press('Escape')
-    await expect(page.getByRole('menu')).toHaveCount(0)
+    await expect(navigation).toBeAttached()
+    await expect(navigation).toBeHidden()
+    await expect(trigger).toBeFocused()
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
   })
 
@@ -323,9 +445,11 @@ test.describe('Light shadcn frontend', () => {
 
   test('component wiring paths and actions wrap at 390px', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 })
-    await page.goto(`${baseURL}/docs/components/hero-basic`)
+    await page.goto(`${baseURL}/docs/components/logo-cloud-inline-wrap`)
     const wiring = page.getByText('What it installs', { exact: false }).locator('..')
-    const path = page.locator('code:visible').filter({ hasText: 'importMap.js' }).last()
+    const path = page
+      .locator('code:visible')
+      .filter({ hasText: 'src/blocks/LogoCloudInlineWrap/Component.tsx' })
     await expect(path).toBeVisible()
     const wraps = await path.evaluate((el) => {
       const style = getComputedStyle(el)
@@ -337,6 +461,7 @@ test.describe('Light shadcn frontend', () => {
       }
     })
     expect(wraps.breakable).toBe(true)
+    expect(wraps.multiline).toBe(true)
     expect(wraps.fits).toBe(true)
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
     expect(overflow).toBe(false)
@@ -395,6 +520,65 @@ test.describe('Light shadcn frontend', () => {
     await expect(page.locator('#hero-basic')).toBeHidden()
   })
 
+  test('explains the catalog search promise without weakening component discovery', async ({
+    page,
+  }) => {
+    await page.goto(`${baseURL}/components`)
+
+    await expect(page.getByRole('heading', { level: 1, name: catalogTitle })).toBeVisible()
+    await expect(page).toHaveTitle(new RegExp(catalogMetadataTitle))
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+      'content',
+      catalogMetadataDescription,
+    )
+    await expect(
+      page.getByRole('link', { name: catalogInstallationLinkLabel, exact: true }),
+    ).toHaveAttribute('href', '/docs/installation')
+
+    for (const component of componentEntries) {
+      await expect(page.locator(`a[href="${component.href}"]`).first()).toBeAttached()
+    }
+  })
+
+  test('gives nearby search pages distinct titles and catalog paths', async ({ page }) => {
+    const routes = [
+      {
+        link: /Browse the components/,
+        path: '/',
+        title: new RegExp(homeMetadataTitle),
+      },
+      {
+        link: /Browse all 67 installable components/,
+        path: '/blog',
+        title: new RegExp(blogTitle),
+      },
+      {
+        link: /Browse the catalog/,
+        path: '/about',
+        title: /About \| Payload Components/,
+      },
+      {
+        link: /Component Catalog/,
+        path: '/docs',
+        title: /CLI setup and architecture/,
+      },
+      {
+        link: /component catalog/,
+        path: '/docs/installation',
+        title: /Payload Components CLI for Payload CMS v3/,
+      },
+    ]
+
+    for (const route of routes) {
+      await page.goto(`${baseURL}${route.path}`)
+      await expect(page).toHaveTitle(route.title)
+      await expect(page.getByRole('link', { name: route.link }).first()).toHaveAttribute(
+        'href',
+        '/components',
+      )
+    }
+  })
+
   test('filters catalog immediately, debounces shareable URL state, and syncs popstate', async ({ page }) => {
     await page.goto(`${baseURL}/components`)
     const search = page.getByLabel('Search components')
@@ -420,7 +604,8 @@ test.describe('Light shadcn frontend', () => {
 
     // The URL is intentionally debounced (250ms); no document/RSC navigation
     // should be generated for each keypress or for the history-only update.
-    await expect.poll(() => page.url(), { timeout: 150 }).toBe(initialUrl)
+    await page.waitForTimeout(150)
+    expect(page.url()).toBe(initialUrl)
     await expect.poll(() => page.url(), { timeout: 5000 }).toContain('/components?q=feature-bento')
     // replaceState updates the frame URL without a document request; the
     // initial frame event and history-only URL events are expected.
@@ -500,15 +685,19 @@ test.describe('Light shadcn frontend', () => {
   test('exposes a working command copy control', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
+    await waitForCopyController(page)
     await stubGtagEvents(page)
 
-    await page.getByRole('button', { name: 'Copy' }).first().click()
+    const copyButton = page.locator('.hero-shell button[data-copy-command]')
 
-    await expect(page.getByRole('button', { name: 'Copied' })).toBeVisible()
+    await expect(copyButton).toHaveAccessibleName('Copy install command')
+    await copyButton.click()
+    await expect(copyButton).toHaveAccessibleName('Copied')
     await expectCopiedAlert(page)
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(primaryInstallCommand)
+    await expect(copyButton).toHaveAccessibleName('Copy install command', { timeout: 2_000 })
     expect(await getGtagEvents(page)).toContainEqual([
       'event',
       'copy_install_command',
@@ -532,6 +721,45 @@ test.describe('Light shadcn frontend', () => {
     )
   })
 
+  test('attributes the canonical comparison guide install action to the guide', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs/shadcn-vs-payload-components`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    const copyButton = page.getByRole('button', { name: 'Copy install command', exact: true })
+    await expect(copyButton).toBeVisible()
+    await copyButton.click()
+
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(primaryInstallCommand)
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: primaryInstallCommand,
+        component: 'hero-basic',
+        source_path: '/docs/shadcn-vs-payload-components',
+      },
+    ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: primaryInstallCommand,
+            component: 'hero-basic',
+            source_path: '/docs/shadcn-vs-payload-components',
+          },
+        },
+      ]),
+    )
+  })
+
   test('copies a catalog family-card command', async ({ page, context }) => {
     // feature-bento is the Features family's representative card in the landing
     // teaser; its command differs from the hero's primaryInstallCommand.
@@ -539,6 +767,7 @@ test.describe('Light shadcn frontend', () => {
 
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
+    await waitForCopyController(page)
     await page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copy' }).click()
 
     await expect(page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copied' })).toBeVisible()
@@ -597,6 +826,7 @@ test.describe('Light shadcn frontend', () => {
   test('shows an alert after copying a docs code block', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(`${baseURL}/docs`)
+    await waitForCopyController(page)
 
     await page.getByRole('button', { name: 'Copy Text' }).first().click()
 
@@ -606,9 +836,122 @@ test.describe('Light shadcn frontend', () => {
       .toBe(primaryInstallCommand)
   })
 
+  test('copies troubleshooting commands without mislabeling maintenance as installs', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto(`${baseURL}/blog/anatomy-of-an-install`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+      ),
+    ).toBe(false)
+
+    const maintenanceCommands = [
+      ['Copy the generate types command', 'pnpm payload generate:types'],
+      ['Copy the generate import map command', 'pnpm payload generate:importmap'],
+      ['Copy the doctor command', 'npx payload-components doctor'],
+    ] as const
+
+    for (const [label, command] of maintenanceCommands) {
+      const button = page.getByRole('button', { name: label })
+      await expect(button).toBeVisible()
+      await button.focus()
+      await expect(button).toBeFocused()
+      await page.keyboard.press('Enter')
+      await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(command)
+    }
+
+    expect(
+      (await getGtagEvents(page)).filter(
+        (event) => event[0] === 'event' && event[1] === 'copy_install_command',
+      ),
+    ).toHaveLength(0)
+    expect(
+      (await getPostHogEvents(page)).filter(({ event }) => event === 'copy_install_command'),
+    ).toHaveLength(0)
+
+    const installButton = page.getByRole('button', {
+      name: 'Copy the hero-basic install command',
+    })
+    await installButton.focus()
+    await expect(installButton).toBeFocused()
+    await page.keyboard.press('Enter')
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add hero-basic')
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: 'npx payload-components add hero-basic',
+        component: 'hero-basic',
+        source_path: '/blog/anatomy-of-an-install',
+      },
+    ])
+  })
+
+  test('copies the types repair and install commands with distinct attribution', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs/payload-types-errors`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    const repairButton = page.getByRole('button', {
+      name: 'Copy the generate types command',
+    })
+    await repairButton.click()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('pnpm payload generate:types')
+
+    expect(
+      (await getPostHogEvents(page)).filter(({ event }) => event === 'copy_install_command'),
+    ).toHaveLength(0)
+
+    const installButton = page.getByRole('button', {
+      name: 'Copy the hero-basic install command',
+    })
+    await installButton.click()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add hero-basic')
+
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: 'npx payload-components add hero-basic',
+        component: 'hero-basic',
+        source_path: '/docs/payload-types-errors',
+      },
+    ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: 'npx payload-components add hero-basic',
+            component: 'hero-basic',
+            source_path: '/docs/payload-types-errors',
+          },
+        },
+      ]),
+    )
+  })
+
   test('shows an alert after copying page markdown', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(`${baseURL}/docs/installation`)
+    await waitForCopyController(page)
 
     await page.getByRole('button', { name: /Copy Markdown/ }).click()
 

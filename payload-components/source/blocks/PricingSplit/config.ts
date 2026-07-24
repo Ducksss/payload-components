@@ -4,6 +4,8 @@ import { planFields, pricingFields } from '@/blocks/shared/pricingFields'
 
 export const PricingSplit: Block = {
   slug: 'pricingSplit',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_pri_spl',
   interfaceName: 'PricingSplitBlock',
   fields: [

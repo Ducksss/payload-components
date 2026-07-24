@@ -6,6 +6,7 @@ import {
   getRuntimePatchedFiles,
   installManifestDependencies,
 } from '../dependencies'
+import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from '../constants'
 import { resolveInstallPlan } from '../install-plan'
 import { loadManifest } from '../manifest'
 import {
@@ -24,7 +25,15 @@ import {
 } from '../state'
 import { getRunScriptCommand, printHeader, runCommand } from '../utils'
 
-import type { InstallError, InstallStage } from '../types'
+import type {
+  DetectedProject,
+  InstallError,
+  InstallStage,
+  PayloadFragment,
+  ResolvedInstallPlan,
+} from '../types'
+
+import { seedCommand } from './seed'
 
 const postInstallEnv = {
   ...process.env,
@@ -88,12 +97,114 @@ const formatPartialRetryNotice = ({
   return `payload-components: retrying partial install for "${componentName}".${lastFailure}`
 }
 
-export const addCommand = async ({
+const formatDryRunFragment = ({
+  fragment,
+  missingFragments,
+}: {
+  fragment: PayloadFragment
+  missingFragments: string[]
+}) => {
+  if (fragment.kind === 'renderBlocks') {
+    const needsImport = missingFragments.includes(`renderBlocks.import:${fragment.importName}`)
+    const needsRegistration = missingFragments.includes(`renderBlocks.block:${fragment.blockSlug}`)
+
+    return [
+      `  ${RENDER_BLOCKS_FILE}${needsImport || needsRegistration ? ' (would patch)' : ' (already wired)'}`,
+      `    ${needsImport ? 'add' : 'keep'} import { ${fragment.importName} } from '${fragment.importPath}'`,
+      `    ${needsRegistration ? 'add' : 'keep'} renderer mapping ${fragment.blockSlug}: ${fragment.importName}`,
+    ]
+  }
+
+  const needsImport = missingFragments.includes(`pagesLayout.import:${fragment.importName}`)
+  const needsRegistration = missingFragments.includes(`pagesLayout.block:${fragment.blockName}`)
+
+  return [
+    `  ${PAGES_LAYOUT_FILE}${needsImport || needsRegistration ? ' (would patch)' : ' (already wired)'}`,
+    `    ${needsImport ? 'add' : 'keep'} import { ${fragment.importName} } from '${fragment.importPath}'`,
+    `    ${needsRegistration ? 'add' : 'keep'} ${fragment.blockName} in the Pages layout blocks`,
+  ]
+}
+
+const formatDryRunPlan = ({
+  cwd,
+  dependencyCheck,
+  fileCheck,
+  fragmentCheck,
+  plan,
+  project,
+}: {
+  cwd: string
+  dependencyCheck: { missing: string[] }
+  fileCheck: {
+    missingFiles: string[]
+    missingRegistryDependencies?: Array<{ name: string; targetFile: string }>
+  }
+  fragmentCheck: { missingFragments: string[] }
+  plan: ResolvedInstallPlan
+  project: DetectedProject
+}) => {
+  const missingFiles = new Set(fileCheck.missingFiles)
+  const missingRegistryDependencies = new Set(
+    (fileCheck.missingRegistryDependencies ?? []).map(({ targetFile }) => targetFile),
+  )
+  const lines = [
+    `payload-components: dry run for "${plan.name}" in ${cwd}`,
+    'No files will be changed, no dependencies will be installed, and no commands will run.',
+    '',
+    'Component files:',
+    ...plan.files.map((filePath) =>
+      `  ${filePath} (${missingFiles.has(filePath) ? 'would create' : 'already present'})`,
+    ),
+    ...plan.registryDependencies.map(({ name, targetFile }) =>
+      `  ${targetFile} (${missingRegistryDependencies.has(targetFile) ? `would install registry dependency ${name}` : `registry dependency ${name} already present`})`,
+    ),
+    '',
+    'Payload wiring:',
+    ...plan.payloadFragments.flatMap((fragment) =>
+      formatDryRunFragment({ fragment, missingFragments: fragmentCheck.missingFragments }),
+    ),
+    '',
+    'Package dependencies:',
+  ]
+
+  if (dependencyCheck.missing.length === 0) {
+    lines.push('  none')
+  } else {
+    for (const dependencyName of dependencyCheck.missing) {
+      lines.push(
+        `  ${dependencyName}@${plan.dependencies[dependencyName]} (would add to package.json and ${project.lockfilePath})`,
+      )
+    }
+  }
+
+  lines.push('', 'Post-install commands:')
+
+  if (plan.postInstall.length === 0) {
+    lines.push('  none')
+  } else {
+    for (const script of plan.postInstall) {
+      const command = getRunScriptCommand(project.packageManager, script)
+      lines.push(`  ${command.command} ${command.args.join(' ')} (would run)`)
+    }
+  }
+
+  lines.push(
+    '',
+    'Install state:',
+    `  .payload-components/state.json (would update only after a successful real install)`,
+  )
+
+  return lines.join('\n')
+}
+
+const installComponent = async ({
   cwd,
   componentName,
+  dryRun,
 }: {
   cwd: string
   componentName: string
+  dryRun: boolean
 }) => {
   const manifest = await loadManifest(componentName)
   const project = await detectProject(cwd)
@@ -132,6 +243,20 @@ export const addCommand = async ({
   const missingRegistryDependencies = fileCheck.missingRegistryDependencies ?? []
   const onDiskInstallValid =
     fileCheck.isValid && fragmentCheck.isValid && dependencyCheck.missing.length === 0
+
+  if (dryRun) {
+    printHeader(
+      formatDryRunPlan({
+        cwd,
+        dependencyCheck,
+        fileCheck,
+        fragmentCheck,
+        plan,
+        project,
+      }),
+    )
+    return
+  }
 
   if (
     installedEntry?.manifestVersion === manifest.version &&
@@ -302,4 +427,22 @@ export const addCommand = async ({
       `  Walkthrough: https://www.payload-components.xyz/docs/first-block`,
     ].join('\n'),
   )
+}
+
+export const addCommand = async ({
+  cwd,
+  componentName,
+  demo = false,
+  dryRun = false,
+}: {
+  cwd: string
+  componentName: string
+  demo?: boolean
+  dryRun?: boolean
+}) => {
+  await installComponent({ cwd, componentName, dryRun })
+
+  if (demo && !dryRun) {
+    await seedCommand({ cwd, componentName })
+  }
 }

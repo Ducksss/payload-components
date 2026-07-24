@@ -5,6 +5,8 @@ import { linkGroup } from '@/fields/linkGroup'
 
 export const LogoCloudHover: Block = {
   slug: 'logoCloudHover',
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_log_clo_hov',
   interfaceName: 'LogoCloudHoverBlock',
   fields: [

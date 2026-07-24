@@ -70,7 +70,7 @@ export function HeroProductFrame() {
   return (
     <div
       className={cn(
-        'product-frame relative mx-auto w-full max-w-6xl overflow-hidden rounded-[1.85rem] border border-foreground/10 bg-foreground text-background',
+        'product-frame relative mx-auto w-full max-w-5xl overflow-hidden rounded-[1.85rem] border border-foreground/10 bg-foreground text-background',
         'shadow-[0_40px_120px_-56px_rgba(15,23,42,0.5)]',
       )}
     >
@@ -92,7 +92,7 @@ export function HeroProductFrame() {
 
       <div className="relative grid grid-cols-1 gap-0 lg:grid-cols-[1.08fr_0.92fr]">
         {/* Command line panel */}
-        <div className="min-w-0 border-b border-background/10 p-5 lg:border-b-0 lg:border-r lg:p-7">
+        <div className="min-w-0 border-b border-background/10 p-5 lg:border-b-0 lg:border-r lg:p-6">
           <div className="flex flex-col gap-5">
             <div className="flex flex-wrap items-center gap-3 text-sm text-background/70">
               <span className="inline-flex items-center gap-2 rounded-full border border-background/10 px-3 py-1">
@@ -105,7 +105,7 @@ export function HeroProductFrame() {
               </span>
             </div>
 
-            <div className="rounded-[1.5rem] border border-background/10 bg-background/6 p-4 sm:p-5">
+            <div className="rounded-[1.5rem] border border-background/10 bg-background/6 p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-xs uppercase tracking-[0.22em] text-background/55">
@@ -188,7 +188,7 @@ export function HeroProductFrame() {
         </div>
 
         {/* Installed surface: skeleton "before" yields to the real twin. */}
-        <div className="flex min-w-0 flex-col gap-5 p-5 lg:p-7">
+        <div className="flex min-w-0 flex-col gap-5 p-5 lg:p-6">
           <div>
             <p className="text-xs uppercase tracking-[0.22em] text-background/55">
               The block, rendered
@@ -229,7 +229,7 @@ export function HeroProductFrame() {
             <p className="text-xs uppercase tracking-[0.22em] text-background/55">
               Files the install wrote
             </p>
-            <div className="mt-4 flex flex-col gap-3 rounded-[1.5rem] border border-background/10 bg-background/6 p-4 sm:p-5">
+            <div className="mt-4 flex flex-col gap-3 rounded-[1.5rem] border border-background/10 bg-background/6 p-4">
               {frameInstalledFiles.map((filePath) => (
                 <div key={filePath} className="flex items-center gap-3 text-sm text-background/78">
                   <FileCode2 className="size-4 shrink-0 text-background" aria-hidden="true" />

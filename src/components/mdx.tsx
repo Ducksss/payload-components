@@ -24,6 +24,7 @@ import { ComponentFamily } from '@/components/site/ComponentFamily'
 import { ComponentRequirements } from '@/components/site/ComponentRequirements'
 import { ComponentUsage } from '@/components/site/ComponentUsage'
 import { ComponentWiring } from '@/components/site/ComponentWiring'
+import { RunnableCommand } from '@/components/site/RunnableCommand'
 
 // Curated Lucide set so MDX can pass `icon={<Layers />}` to <Card> without a
 // per-file import. Keep this list tight — only icons the docs actually use.
@@ -62,6 +63,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     ComponentRequirements,
     ComponentUsage,
     ComponentWiring,
+    RunnableCommand,
     Step,
     Steps,
     Tab,

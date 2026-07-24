@@ -19,7 +19,35 @@ The POC passes only if all of the following are true:
 
 If any of those fail because of brittle repo patching or unreliable generation, we should stop and reconsider the product shape before building private registries, auth, or a larger component catalog.
 
-Workspace reality: `payload-components add` installs components, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` delegates to `shadcn init` to create the `components.json` baseline for targets missing it. `payload-components add` expects that baseline and does not run init automatically as a side effect.
+Workspace reality: `payload-components add` installs components, `payload-components add --dry-run` validates and prints the same file, wiring, dependency, command, and state plan without mutating the target, `payload-components seed` writes an opt-in demo script for a fully installed component, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` delegates to `shadcn init` to create the `components.json` baseline for targets missing it. `payload-components add` expects that baseline and does not run init automatically as a side effect.
+
+## Demo seed contract
+
+`payload-components seed <component>` requires a current installed-state record
+and verifies compatible dependencies, all manifest-owned and
+registry-dependency files, and both Payload wiring fragments. It then writes
+`payload-components/seed-<component>.ts`. `add <component> --demo` performs the
+same generation only after the normal install has recorded success. Generation
+does not open a database or add a runtime dependency.
+
+The CLI derives the Payload config import from the detected target. It writes
+through an atomic rename, marks generated scripts with a versioned header, and
+refuses unowned files, pre-existing symlinks, non-files, and paths outside the
+consumer repo.
+It also creates a private high-entropy ownership record under
+`.payload-components/demo-state/`, separate from the database-visible demo
+fields.
+The operator explicitly runs the script with the project's Payload CLI.
+
+The generated script requires Pages drafts and never publishes implicitly. It
+creates a Page only when the slug is free, records the returned Page and Media
+IDs, and reruns only against those exact IDs after checking a private tokenized
+marker. Each create gets a write-ahead operation token in the private record, so
+an interrupted run can reconcile only the single database document carrying
+that exact token before persisting its ID. Updates use `overrideLock: false`.
+Upload placeholders use a unique OS temporary directory; a failed Media ID save
+or Page write remains safe to retry. Generated scripts never delete Media, and
+all Local API failures propagate.
 
 ## Public Registry Contract
 
@@ -61,16 +89,34 @@ Namespace consumers can configure:
 
 Then install with `pnpm dlx shadcn@latest add @payload-components/hero-basic` or any other registry item.
 
+## Installed Source and Database Migrations
+
+`payload-components add` does not overwrite installed component source. Registry changes affect
+new installs only unless a maintainer explicitly ports a source diff into an existing Payload app.
+That ownership boundary keeps repeat installs idempotent and preserves consumer customizations.
+
+When an adopted source change adds or changes a persisted database identifier such as `dbName`,
+the SQL-backed consumer project must own the migration. The registry cannot safely infer the app's
+collection slug, block-field path, database adapter, schema, existing table names, or migration
+history. After porting the source diff, run `pnpm payload migrate:create <migration-name>` in the
+consumer app. Review the generated DDL to ensure it will rename rather than drop and recreate the
+existing tables, indexes, or enums; replace destructive DDL with an explicit rename or backfill.
+Test the migration against a backup or staging database, then run it before deploying the updated
+config. Existing installs that do not port the source change keep their installed config and require
+no registry-driven migration.
+
 ## Verification Suite
 
-Use both verification tiers:
+Use all three verification layers. They prove different properties and are not substitutes for
+one another.
+
+### Deterministic fixture checks
 
 - `pnpm test:registry`: checks that the public registry can be reproduced from source.
 - `pnpm test:install`: runs the fast wrapper fixture suite against generated minimal Payload targets.
-- `pnpm test:fresh`: runs the slower fresh Payload website smoke against every registry/manifest slug; CI splits it into four required shards.
-- `pnpm test:release`: runs lint, source generation, TypeScript, registry checks, integration tests, a production build, and Playwright against `next start`.
 
-The deterministic fixture suite stays network-free and proves the wrapper contract without making this repository itself a Payload app. The PR gate also requires all four real fresh-consumer shards:
+These checks stay network-free and prove the wrapper contract without making this repository itself
+a Payload app:
 
 - every manifest maps to registry source, docs, and recovery targets
 - representative components install into a supported target
@@ -80,16 +126,42 @@ The deterministic fixture suite stays network-free and proves the wrapper contra
 - `.payload-components/state.json` records success and partial failure stages correctly
 - the wrapper installs missing public `registryDependencies`, then strips them from its temporary shadcn item before installing the block files
 
-The fresh smoke lives at `../tools/payload-components/smoke/fresh-payload-repo.ts` and accepts:
+### Fresh-consumer smoke validation
+
+`pnpm test:fresh` creates real Payload website targets and installs every matching registry and
+manifest slug. CI splits the catalog into four required shards; run all four for local CI parity:
 
 ```bash
 pnpm test:fresh -- --shard-index 0
+pnpm test:fresh -- --shard-index 1
+pnpm test:fresh -- --shard-index 2
+pnpm test:fresh -- --shard-index 3
+```
+
+The runner lives at `../tools/payload-components/smoke/fresh-payload-repo.ts` and also accepts:
+
+```bash
 pnpm test:fresh -- --components hero-basic,feature-grid-basic,content-columns,logo-cloud-grid,integration-grid
 pnpm test:fresh -- --registry-url https://www.payload-components.xyz/r/{name}.json
 pnpm test:fresh -- --keep-temp --timeout 1200000
 ```
 
-With no component override, the runner derives the complete sorted slug list from matching registry items and manifests. `--shard-index` accepts `0` through `3` and selects sorted indexes modulo four. Without `--registry-url`, the runner serves `../public/r` locally and direct-installs each item URL with shadcn. With `--registry-url`, it uses the deployed registry URL template, which is the pre-release path. Direct shadcn verification only proves file delivery and shadcn UI dependency delivery; Payload wiring is verified through `payload-components add`.
+With no component override, the runner derives the complete sorted slug list from every `registry:block`
+item with a matching manifest and renderable `sampleContent.blockType`. Every registry item is classified as
+covered or intentionally excluded because it is not a page block, and focused tests fail if that contract
+drifts. `--shard-index` accepts `0` through `3` and selects sorted indexes modulo four. Without
+`--registry-url`, the runner serves `../public/r` locally and direct-installs each item URL with shadcn. With
+`--registry-url`, it uses the deployed registry URL template, which is the pre-release path. Direct shadcn
+verification only proves file delivery and shadcn UI dependency delivery; Payload wiring is verified through
+`payload-components add`.
+
+### Release gate
+
+`pnpm test:release` runs lint, source generation, TypeScript, registry checks, integration tests, a
+production build, and Playwright against `next start`. It is the deterministic site and registry
+release gate; it does not run or replace the four fresh-consumer shards. The required PR `pr-gate`
+passes only when `quick-checks`, `test:release`, compatibility checks, and every fresh shard
+succeed.
 
 ## Current Contract
 

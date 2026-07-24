@@ -42,7 +42,7 @@ export function HeroInstallReplay({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative mx-auto max-w-5xl">
       <div key={run}>{children}</div>
       <button
         type="button"

@@ -4,9 +4,11 @@ import { access, readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-import { createElement } from 'react'
+import { Children, createElement, isValidElement, type ReactNode } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+
+import { SiteFooter } from '../../src/components/site/SiteFooter'
 
 const repoRoot = process.cwd()
 
@@ -61,6 +63,16 @@ async function expectMetaEntriesResolve(directory: string) {
   }
 }
 
+function findElementTypeByHref(node: ReactNode, href: string): unknown {
+  for (const child of Children.toArray(node)) {
+    if (!isValidElement<{ children?: ReactNode; href?: string }>(child)) continue
+    if (child.props.href === href) return child.type
+
+    const nestedType = findElementTypeByHref(child.props.children, href)
+    if (nestedType) return nestedType
+  }
+}
+
 describe('Fumadocs site shell', () => {
   afterEach(() => {
     vi.unstubAllEnvs()
@@ -100,6 +112,151 @@ describe('Fumadocs site shell', () => {
     expect(helloPost).not.toMatch(/\b\d+\s+page blocks?\b/i)
   })
 
+  it('keeps the install CTA community-owned and reduced-motion safe', async () => {
+    const [footer, copyButton, { heroSubheadline }] = await Promise.all([
+      readFile(path.join(repoRoot, 'src', 'components', 'site', 'SiteFooter.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'components', 'site', 'CommandCopyButton.tsx'), 'utf8'),
+      import('../../src/lib/site'),
+    ])
+
+    expect(`${footer}\n${copyButton}`).not.toContain('tin.computer')
+    expect(`${footer}\n${copyButton}`).not.toContain('Growth by Tin')
+    expect(`${footer}\n${copyButton}`).not.toContain('bg-[#66DC9D]')
+    expect(copyButton).toContain('data-[copied=true]:text-brand-foreground')
+    expect(copyButton).toContain('motion-reduce:transform-none')
+    expect(heroSubheadline).toBe(
+      'For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.',
+    )
+  })
+
+  it('renders the external registry resource as a native anchor', () => {
+    expect(findElementTypeByHref(SiteFooter(), '/r/registry.json')).toBe('a')
+  })
+
+  it('connects the block troubleshooting article to the installation guide', async () => {
+    const [troubleshootingPost, installationGuide] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'blog', 'anatomy-of-an-install.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+    ])
+
+    expect(troubleshootingPost).toContain('Payload CMS block not showing?')
+    expect(troubleshootingPost).toContain('[installation guide](/docs/installation)')
+    expect(troubleshootingPost).toContain('The block is missing from the Pages editor')
+    expect(troubleshootingPost).toContain('The editor saves the block, but the page renders nothing')
+    expect(troubleshootingPost.match(/<RunnableCommand\b/g)).toHaveLength(4)
+    expect(troubleshootingPost).toContain('command="pnpm payload generate:types"')
+    expect(troubleshootingPost).toContain('command="pnpm payload generate:importmap"')
+    expect(troubleshootingPost).toContain('command="npx payload-components doctor"')
+    expect(troubleshootingPost).toContain('command="npx payload-components add hero-basic"')
+    expect(troubleshootingPost).toMatch(
+      /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
+    )
+    expect(installationGuide).toContain(
+      '[four-step Payload block troubleshooting checklist](/blog/anatomy-of-an-install)',
+    )
+  })
+
+  it('keeps the Payload 3 types guide distinct, discoverable, and actionable', async () => {
+    const [guide, docsMeta, installationGuide, sitemap] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'payload-types-errors.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+    ])
+
+    expect(guide).toContain('Fix Payload 3 payload-types errors')
+    expect(guide).toContain("Cannot find module '@/payload-types'")
+    expect(guide).toContain('typescript.outputFile')
+    expect(guide).toContain('blocks: [HeroBasic]')
+    expect(guide).toContain('command="pnpm payload generate:types"')
+    expect(guide).toContain(
+      '"generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types"',
+    )
+    expect(guide).toMatch(
+      /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
+    )
+    expect(guide).toContain('[installation guide](/docs/installation)')
+    expect(docsMeta).toContain('"payload-types-errors"')
+    expect(installationGuide).toContain(
+      '[Payload 3 generated-types repair guide](/docs/payload-types-errors)',
+    )
+    expect(sitemap).toContain('source.getPages()')
+  })
+
+  it('keeps the Payload blocks guide implementation-led, discoverable, and product-true', async () => {
+    const [
+      guide,
+      docsMeta,
+      installationGuide,
+      sitemap,
+      heroConfig,
+      heroComponent,
+      heroManifest,
+    ] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'payload-blocks.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+      readFile(path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'config.ts'), 'utf8'),
+      readFile(path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'Component.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'payload-components', 'manifests', 'hero-basic.json'), 'utf8'),
+    ])
+
+    expect(guide).toContain(
+      'Payload CMS blocks in v3: create, register, type, and render a reusable layout block',
+    )
+    expect(guide).toContain("slug: 'heroBasic'")
+    expect(guide).toContain("interfaceName: 'HeroBasicBlock'")
+    expect(guide).toContain("singular: 'Hero Basic'")
+    expect(guide).toContain("import { HeroBasic } from '../../blocks/HeroBasic/config'")
+    expect(guide).toContain('blocks: [/* existing blocks */, HeroBasic]')
+    expect(guide).toContain("import { HeroBasicBlock } from '@/blocks/HeroBasic/Component'")
+    expect(guide).toContain('heroBasic: HeroBasicBlock')
+    expect(guide).toContain(
+      "import type { HeroBasicBlock as HeroBasicBlockData } from '@/payload-types'",
+    )
+    expect(guide).toContain('pnpm payload generate:types')
+    expect(guide).toContain('pnpm payload generate:importmap')
+    expect(guide).toContain('src/app/(payload)/admin/importMap.js')
+    expect(guide).toContain('<ComponentPreview slug="hero-basic" />')
+    expect(guide).toMatch(
+      /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
+    )
+    expect(guide).toContain('[What is a Payload component?](/docs/what-is-a-payload-component)')
+    expect(guide).toContain('[Use your first block](/docs/first-block)')
+    expect(heroConfig).toContain("slug: 'heroBasic'")
+    expect(heroConfig).toContain("interfaceName: 'HeroBasicBlock'")
+    expect(heroConfig).toContain("singular: 'Hero Basic'")
+    expect(heroComponent).toContain(
+      "import type { HeroBasicBlock as HeroBasicBlockData } from '@/payload-types'",
+    )
+    expect(heroManifest).toContain('"blockSlug": "heroBasic"')
+    expect(heroManifest).toContain('"blockName": "HeroBasic"')
+    expect(heroManifest).toContain('"postInstall": ["generate:types", "generate:importmap"]')
+    expect(docsMeta).toContain('"payload-blocks"')
+    expect(installationGuide).toContain(
+      '[`hero-basic` implementation from Block config through live rendering](/docs/payload-blocks)',
+    )
+    expect(sitemap).toContain('source.getPages()')
+  })
+
+  it('keeps the GitHub mark independent from removed Lucide brand icons', async () => {
+    const githubLinkSources = await Promise.all(
+      [
+        'src/app/docs/layout.tsx',
+        'src/components/site/SiteFooter.tsx',
+        'src/components/site/SiteHeader.tsx',
+        'src/components/site/sections/CommunityCta.tsx',
+        'src/components/site/sections/HeroSection.tsx',
+      ].map((filePath) => readFile(path.join(repoRoot, filePath), 'utf8')),
+    )
+
+    for (const source of githubLinkSources) {
+      expect(source).toContain("import { GitHubMark } from '@/components/site/GitHubMark'")
+      expect(source).not.toMatch(/import\s+\{[^}]*\bGithub\b[^}]*\}\s+from\s+'lucide-react'/)
+    }
+  })
+
   it('keeps docs content in the Fumadocs source directory', async () => {
     const [sourceConfig, docsIndex, architecture] = await Promise.all([
       readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),
@@ -110,6 +267,32 @@ describe('Fumadocs site shell', () => {
     expect(sourceConfig).toContain("dir: 'content/docs'")
     expect(docsIndex).toContain('The v2 app is intentionally not a Payload CMS site.')
     expect(architecture).toContain('No Payload admin, collection config, global config')
+  })
+
+  it('keeps the canonical shadcn guide scoped, actionable, and free of a duplicate route', async () => {
+    const [guide, docsMeta, sitemap] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'shadcn-vs-payload-components.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+    ])
+
+    expect(guide).toContain("current [`hero-basic` registry item]")
+    expect(guide).toContain('| Block source | copied | copied |')
+    expect(guide).toContain('| Collection schema | — | patched |')
+    expect(guide).toContain('| Render mapping | — | patched |')
+    expect(guide).toContain('| Generated types | — | regenerated |')
+    expect(guide).toContain('| Admin import map | — | regenerated |')
+    expect(guide).toContain('diff --git a/src/collections/Pages/index.ts')
+    expect(guide).toContain('diff --git a/src/blocks/RenderBlocks.tsx')
+    expect(guide).toContain('command="npx payload-components add hero-basic"')
+    expect(guide).toContain('label="Copy install command"')
+    expect(docsMeta).toContain('"shadcn-vs-payload-components"')
+    expect(sitemap).toContain('source.getPages()')
+    await expect(
+      pathExists(
+        path.join(repoRoot, 'src', 'app', 'compare', 'shadcn-vs-payload-components', 'page.tsx'),
+      ),
+    ).resolves.toBe(false)
   })
 
   it('keeps the Fumadocs app router integration wired', async () => {
@@ -184,7 +367,9 @@ describe('Fumadocs site shell', () => {
     expect(siteHeader).toContain("'use client'")
     expect(siteHeader).toContain('usePathname')
     expect(siteHeader).toContain('aria-expanded')
-    expect(siteHeader).toContain('role="menu"')
+    expect(siteHeader).not.toContain('role="menu"')
+    expect(siteHeader).not.toContain('role="menuitem"')
+    expect(siteHeader).toContain("rel={item.label === 'GitHub' ? 'noreferrer' : undefined}")
     expect(siteHeader).toContain('activePath')
     expect(commandCopyButton).not.toContain("'use client'")
     expect(commandCopyButton).toContain('data-copy-command')
@@ -364,7 +549,18 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'src/app/blog/[slug]/page.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src/app/sitemap.ts'), 'utf8'),
     ])
+    const { blogDescription, blogTitle } = await import('../../src/lib/site')
+
     expect(layoutSource).toContain('<SiteFooter />')
+    expect(indexSource).toContain('blogDescription')
+    expect(indexSource).toContain('blogTitle')
+    expect(indexSource).toContain('title: blogTitle')
+    expect(indexSource).toContain('description: blogDescription')
+    expect(indexSource).toContain('{blogTitle}')
+    expect(indexSource).toContain('{blogDescription}')
+    expect(indexSource).not.toContain(blogDescription)
+    expect(blogTitle).toBe('Build notes and release stories')
+    expect(indexSource).toContain('href="/components"')
     expect(indexSource).toContain("alternates: { canonical: `${siteUrl}/blog` }")
     expect(indexSource).toContain("twitter: { card: 'summary_large_image'")
     expect(postSource).toContain("type: 'article'")
@@ -373,13 +569,65 @@ describe('Fumadocs site shell', () => {
     expect(sitemapSource).toContain('blogSource.getPages()')
   })
 
+  it('keeps the family navigator as the final section on component docs', async () => {
+    const componentDocsDir = path.join(repoRoot, 'content', 'docs', 'components')
+    const componentDocs = (await readdir(componentDocsDir)).filter((entry) => entry.endsWith('.mdx'))
+
+    for (const entry of componentDocs) {
+      const source = await readFile(path.join(componentDocsDir, entry), 'utf8')
+      if (!source.includes('<ComponentFamily')) continue
+
+      expect(source.trim(), entry).toMatch(/<ComponentFamily slug="[^"]+" \/>$/)
+    }
+  })
+
   it('keeps catalog search local and docs copy factual', async () => {
     const catalog = await readFile(path.join(repoRoot, 'src/components/site/ComponentCatalogBrowser.tsx'), 'utf8')
+    const catalogPage = await readFile(path.join(repoRoot, 'src/app/components/page.tsx'), 'utf8')
     const registry = await readFile(path.join(repoRoot, 'content/docs/registry.mdx'), 'utf8')
+    const {
+      catalogDescription,
+      catalogInstallationLinkLabel,
+      catalogMetadataDescription,
+      catalogMetadataTitle,
+      catalogTitle,
+    } = await import('../../src/lib/site')
     expect(catalog).toContain('value={localQuery}')
     expect(catalog).toContain('window.history.replaceState')
     expect(catalog).toContain("window.addEventListener('popstate'")
     expect(registry).not.toContain('sample content for docs and testing')
+    expect(catalogTitle).toContain('Payload CMS')
+    expect(catalogTitle).toContain('67')
+    expect(catalogDescription).toMatch(/heroes.*features.*pricing.*integrations.*FAQs.*content.*teams.*embeds/)
+    expect(catalogDescription).toContain('Browse all 67')
+    expect(catalogDescription).toContain('One CLI command')
+    expect(catalogMetadataTitle).toContain('Payload CMS Components')
+    expect(catalogMetadataTitle).toContain('67')
+    expect(catalogMetadataDescription).toContain('one-command project wiring')
+    expect(catalogMetadataDescription).toContain('all 67')
+    expect(catalogPage).toContain('href="/docs/installation"')
+    expect(catalogPage).toContain('{catalogInstallationLinkLabel}')
+    expect(catalogInstallationLinkLabel).toContain('one-command installation')
+  })
+
+  it('gives nearby search surfaces distinct jobs and routes catalog intent to components', async () => {
+    const [aboutPage, blogPage, docsIndex, installationGuide, homepage] = await Promise.all([
+      readFile(path.join(repoRoot, 'src/app/about/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/blog/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content/docs/index.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content/docs/installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/lib/site.ts'), 'utf8'),
+    ])
+    const { blogTitle, catalogMetadataTitle, homeMetadataTitle } = await import('../../src/lib/site')
+
+    expect(homeMetadataTitle).toBe('Install wired Payload CMS blocks in one command')
+    expect(blogTitle).toBe('Build notes and release stories')
+    expect(catalogMetadataTitle).toBe('67 Payload CMS Components & Blocks | Catalog')
+    expect(docsIndex).toContain('seoTitle: CLI setup and architecture')
+
+    for (const source of [aboutPage, blogPage, docsIndex, installationGuide, homepage]) {
+      expect(source).toContain('/components')
+    }
   })
 
   it('keeps catalog page-block count copy aligned with installable components', async () => {
@@ -428,7 +676,9 @@ describe('Fumadocs site shell', () => {
     )
     expect(cliVersion).toBe(packageJson.version)
     expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${heroManifest.version}`))).toBe(true)
-    expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${cliVersion}`))).toBe(false)
+    if (heroManifest.version !== cliVersion) {
+      expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${cliVersion}`))).toBe(false)
+    }
     expect(docsLayout).toContain('{cliVersion}')
     expect(docsLayout).not.toMatch(/components v\d+\.\d+\.\d+/)
   })

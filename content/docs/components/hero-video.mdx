@@ -1,0 +1,69 @@
+---
+title: Hero Video
+description: A full-bleed video hero with editor-managed media, CTA links, proof labels, and a reduced-motion poster fallback.
+icon: Video
+---
+
+<ComponentPreview slug="hero-video" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add hero-video
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-video.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="hero-video" />
+
+## Content model
+
+The first four fields come from the shared `heroFields` base. `video`, `poster`, and `proofItems`
+define this full-bleed media variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the headline.' },
+    title: { type: 'text', required: true, description: 'The hero headline.' },
+    description: {
+      type: 'textarea',
+      required: true,
+      description: 'Supporting copy beneath the headline.',
+    },
+    links: { type: 'array', required: true, description: 'One or two CTA links (min 1, max 2).' },
+    video: { type: 'upload', required: true, description: 'Background video uploaded to Media.' },
+    poster: {
+      type: 'upload',
+      required: true,
+      description: 'Stable image fallback shown before playback and for reduced motion.',
+    },
+    proofItems: { type: 'array', description: 'Up to four short proof labels below the CTAs.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="hero-video" />
+
+## Requirements
+
+<ComponentRequirements slug="hero-video" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.
+
+## In this family
+
+<ComponentFamily slug="hero-video" />

@@ -1,0 +1,77 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "hero-product-tilt",
+  "version": "0.1.0",
+  "title": "Hero Product Tilt",
+  "description": "A centered product hero with a static perspective frame, CTA links, proof labels, and editor-managed media.",
+  "registryItemName": "hero-product-tilt",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/heroFields.ts",
+    "src/blocks/HeroProductTilt/config.ts",
+    "src/blocks/HeroProductTilt/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "HeroProductTiltBlock",
+      "importPath": "@/blocks/HeroProductTilt/Component",
+      "blockSlug": "heroProductTilt"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "HeroProductTilt",
+      "importPath": "../../blocks/HeroProductTilt/config",
+      "blockName": "HeroProductTilt"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Centered product hero with a static perspective media frame."
+  },
+  "sampleContent": {
+    "blockType": "heroProductTilt",
+    "eyebrow": "Acme Analytics",
+    "title": "Your product data, ready for every customer.",
+    "description": "Launch polished dashboards and reports without rebuilding analytics infrastructure for every account.",
+    "productImage": null,
+    "imageCaption": "A single workspace for dashboards, reports, and alerts.",
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/start",
+          "label": "Start building",
+          "appearance": "default"
+        }
+      },
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/demo",
+          "label": "View the product",
+          "appearance": "outline"
+        }
+      }
+    ],
+    "proofItems": [
+      { "label": "Deploy in days" },
+      { "label": "Fully white-label" },
+      { "label": "Built for scale" }
+    ]
+  }
+}

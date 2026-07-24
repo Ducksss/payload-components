@@ -251,16 +251,16 @@
   </g>
   <g data-journal-part="evidence" data-evidence-excerpt="export const HeroBasic: Block = {
   slug: &apos;heroBasic&apos;,
+  // Existing apps must migrate stored data before adopting this identifier:
+  // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: &apos;pc_her_bas&apos;,
   interfaceName: &apos;HeroBasicBlock&apos;,
   fields: [
     // Shared hero core (eyebrow, title, description, CTA links). Variant-specific
-    // fields follow; edit the shared shape in @/blocks/shared/heroFields.
-    ...heroFields,
-    {" data-evidence-truncated="true">
+    // fields follow; edit the shared shape in @/blocks/shared/heroFields." data-evidence-truncated="true">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
-  <text class="evidence-line" x="48" y="626">export const HeroBasic: Block = { · slug: &apos;heroBasic&apos;, · dbName:</text>
-<text class="evidence-line" x="48" y="641">&apos;pc_her_bas&apos;, · interfaceName: &apos;HeroBasicBlock&apos;, · fields: [ · // …</text>
+  <text class="evidence-line" x="48" y="626">export const HeroBasic: Block = { · slug: &apos;heroBasic&apos;, · // Existing</text>
+<text class="evidence-line" x="48" y="641">apps must migrate stored data before adopting this identifier: · …</text>
 </g>
   <g data-journal-part="prompt" data-prompt="Make the next maintainer&apos;s assumptions visible.">
     <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>

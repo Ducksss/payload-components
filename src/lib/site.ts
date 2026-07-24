@@ -1,5 +1,14 @@
 import packageJson from '../../package.json' with { type: 'json' }
+import contactRoutingFormManifest from '../../payload-components/manifests/contact-routing-form.json' with { type: 'json' }
+import featureAccordionManifest from '../../payload-components/manifests/feature-accordion.json' with { type: 'json' }
+import featureCardsMediaManifest from '../../payload-components/manifests/feature-cards-media.json' with { type: 'json' }
+import featureIconGridManifest from '../../payload-components/manifests/feature-icon-grid.json' with { type: 'json' }
+import heroAuroraManifest from '../../payload-components/manifests/hero-aurora.json' with { type: 'json' }
 import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
+import heroKineticManifest from '../../payload-components/manifests/hero-kinetic.json' with { type: 'json' }
+import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
+import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
+import statsProofManifest from '../../payload-components/manifests/stats-proof.json' with { type: 'json' }
 
 const productionSiteUrl = 'https://www.payload-components.xyz'
 const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionSiteUrl).replace(/\/+$/, '')
@@ -13,6 +22,9 @@ export const docsRoute = '/docs'
 export const docsImageRoute = '/og/docs'
 export const docsContentRoute = '/llms.mdx/docs'
 export const blogRoute = '/blog'
+export const blogTitle = 'Build notes and release stories'
+export const blogDescription =
+  'Installer changes, component release notes, and implementation lessons from maintaining the Payload Components registry.'
 export const primaryInstallCommand = 'npx payload-components add hero-basic'
 export const cliVersion = packageJson.version
 
@@ -27,9 +39,9 @@ export const pipelineStages = [
 export const siteDescription =
   'Payload Components is an MIT registry and CLI that installs typed Payload CMS blocks into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
 
-export const homeMetadataTitle = 'Payload Components — fully-wired blocks for Payload CMS'
+export const homeMetadataTitle = 'Install wired Payload CMS blocks in one command'
 export const homeMetadataDescription =
-  'Payload Components gives you reusable Payload blocks with one-command install, wiring config, render maps, types, and import maps for Payload CMS and Next.js.'
+  'Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects.'
 
 /* ------------------------------------------------------------------ */
 /* Hero                                                                */
@@ -46,13 +58,12 @@ export const heroHeadlineAccent = 'wired, not pasted.'
 export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
 
 export const heroSubheadline =
-  'One command installs the block, wires it into Payload, and lands a reviewable git diff.'
+  'For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.'
 
-export const heroPrimaryCta = { href: '/docs', label: 'Get started' } as const
+export const heroGuideLink = { href: '/docs/installation', label: 'Read the install guide' } as const
 
 export const heroTertiaryLinks = [
   { href: '/components', label: 'Browse the components' },
-  { href: '#wiring', label: 'See what add actually wires' },
 ] as const
 
 /**
@@ -227,9 +238,11 @@ export const componentCategories = {
   comparator: { family: 'pages', label: 'Comparator' },
   pricing: { family: 'pages', label: 'Pricing' },
   cta: { family: 'pages', label: 'Call to action' },
+  contact: { family: 'pages', label: 'Contact' },
   integration: { family: 'pages', label: 'Integration' },
   logos: { family: 'pages', label: 'Logo cloud' },
   testimonials: { family: 'pages', label: 'Testimonials' },
+  stats: { family: 'pages', label: 'Stats' },
   faq: { family: 'pages', label: 'FAQ' },
   content: { family: 'pages', label: 'Content' },
   team: { family: 'pages', label: 'Team' },
@@ -258,6 +271,84 @@ export const componentEntries = [
     target: 'Hero section',
     title: 'Hero Basic',
     version: heroBasicManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-video',
+    description:
+      'A full-bleed video hero with editor-managed media, CTA links, proof labels, and a reduced-motion poster fallback.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'links', 'video', 'poster', 'proofItems'],
+    href: '/docs/components/hero-video',
+    slug: 'hero-video',
+    target: 'Video hero',
+    title: 'Hero Video',
+    version: heroVideoManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-product-tilt',
+    description:
+      'A centered product hero with a static perspective frame, CTA links, proof labels, and editor-managed media.',
+    family: 'pages',
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'links',
+      'productImage',
+      'imageCaption',
+      'proofItems',
+    ],
+    href: '/docs/components/hero-product-tilt',
+    slug: 'hero-product-tilt',
+    target: 'Product hero',
+    title: 'Hero Product Tilt',
+    version: heroProductTiltManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-aurora',
+    description:
+      'A motion-first product hero with an animated aurora field, staggered headline reveal, pointer-parallax media panel, and a live metric ticker.',
+    family: 'pages',
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'links',
+      'metrics',
+      'productImage',
+      'imageCaption',
+      'proofItems',
+    ],
+    href: '/docs/components/hero-aurora',
+    slug: 'hero-aurora',
+    target: 'Motion hero',
+    title: 'Hero Aurora',
+    version: heroAuroraManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-kinetic',
+    description:
+      'A motion-first editorial hero with a line-masked type reveal, cinematic media plate, and a velocity-aware marquee strip.',
+    family: 'pages',
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'links',
+      'marqueeItems',
+      'image',
+      'imageCaption',
+      'proofItems',
+    ],
+    href: '/docs/components/hero-kinetic',
+    slug: 'hero-kinetic',
+    target: 'Editorial motion hero',
+    title: 'Hero Kinetic',
+    version: heroKineticManifest.version,
   },
   {
     category: 'features',
@@ -310,6 +401,45 @@ export const componentEntries = [
     target: 'Feature section',
     title: 'Feature Grid Basic',
     version: '0.1.0',
+  },
+  {
+    category: 'features',
+    command: 'npx payload-components add feature-accordion',
+    description:
+      'A synchronized feature accordion with editor-selected icons, optional media, and CTA links.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/feature-accordion',
+    slug: 'feature-accordion',
+    target: 'Feature accordion',
+    title: 'Feature Accordion',
+    version: featureAccordionManifest.version,
+  },
+  {
+    category: 'features',
+    command: 'npx payload-components add feature-cards-media',
+    description:
+      'A two-column feature layout with independent media, optional icons, and CTA links.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/feature-cards-media',
+    slug: 'feature-cards-media',
+    target: 'Media feature cards',
+    title: 'Feature Cards Media',
+    version: featureCardsMediaManifest.version,
+  },
+  {
+    category: 'features',
+    command: 'npx payload-components add feature-icon-grid',
+    description:
+      'A dense feature grid with editor-selected icons and a tokenized radial grid decorator.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'items', 'links'],
+    href: '/docs/components/feature-icon-grid',
+    slug: 'feature-icon-grid',
+    target: 'Icon feature grid',
+    title: 'Feature Icon Grid',
+    version: featureIconGridManifest.version,
   },
   {
     category: 'comparator',
@@ -453,6 +583,29 @@ export const componentEntries = [
     target: 'Email capture',
     title: 'Call To Action Signup',
     version: '0.1.0',
+  },
+  {
+    category: 'contact',
+    command: 'npx payload-components add contact-routing-form',
+    description:
+      'A contact section with validated channels and a fixed accessible form that posts to a same-origin endpoint.',
+    family: 'pages',
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'channels',
+      'formTitle',
+      'formDescription',
+      'formLabels',
+      'submitLabel',
+      'action',
+    ],
+    href: '/docs/components/contact-routing-form',
+    slug: 'contact-routing-form',
+    target: 'Contact section',
+    title: 'Contact Routing Form',
+    version: contactRoutingFormManifest.version,
   },
   {
     category: 'integration',
@@ -700,6 +853,19 @@ export const componentEntries = [
     target: 'Testimonials section',
     title: 'Testimonials Quote',
     version: '0.1.0',
+  },
+  {
+    category: 'stats',
+    command: 'npx payload-components add stats-proof',
+    description:
+      'A proof section pairing narrative, prominent string metrics, and a semantic customer quote.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'body', 'metrics', 'quote', 'author', 'role', 'logo'],
+    href: '/docs/components/stats-proof',
+    slug: 'stats-proof',
+    target: 'Stats section',
+    title: 'Stats Proof',
+    version: statsProofManifest.version,
   },
   {
     category: 'faq',
@@ -1197,7 +1363,7 @@ export const faqIntro =
 export const faqEntries = [
   {
     answer:
-      'Yes — and built to stay that way. The registry, the CLI, both components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.',
+      `Yes — and built to stay that way. The registry, the CLI, all ${componentEntries.length} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.`,
     question: 'Is Payload Components free?',
   },
   {
@@ -1213,6 +1379,8 @@ export const faqEntries = [
   {
     answer:
       'Three things: component source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each component manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.',
+    href: '/docs/installation',
+    linkLabel: 'Read the installation guide',
     question: 'What exactly does an install change in my repo?',
   },
   {
@@ -1228,6 +1396,8 @@ export const faqEntries = [
   {
     answer:
       'A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-components wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.',
+    href: '/docs/shadcn-vs-payload-components',
+    linkLabel: 'Read the full shadcn comparison',
     question: 'Why not just run npx shadcn add?',
   },
   {
@@ -1254,9 +1424,59 @@ export const communityInvite = {
 /* Catalog page                                                        */
 /* ------------------------------------------------------------------ */
 
-export const catalogTitle = 'Component catalog'
+export const catalogTitle = `${componentEntries.length} typed Payload CMS blocks and components`
 export const catalogDescription =
-  'Installable Payload CMS blocks and components, each with docs, registry metadata, and CLI wiring that registers, renders, types, and import-maps it for you. Read the contract before you add it.'
+  `Browse all ${componentEntries.length} typed blocks for Payload CMS: heroes, features, pricing, calls to action, integrations, testimonials, FAQs, content, teams, and embeds. One CLI command copies each component and wires its collection registration, renderer mapping, generated types, and admin import map.`
+export const catalogMetadataTitle = `${componentEntries.length} Payload CMS Components & Blocks | Catalog`
+export const catalogMetadataDescription =
+  `Browse all ${componentEntries.length} typed Payload CMS blocks for heroes, features, pricing, integrations, FAQs, content, teams, and embeds, with one-command project wiring.`
+export const catalogInstallationLinkLabel = 'See how one-command installation works'
+export const catalogTemplatesLinkLabel = 'Explore Payload CMS template concepts'
+
+/* ------------------------------------------------------------------ */
+/* Templates showcase                                                  */
+/* ------------------------------------------------------------------ */
+
+export const templatesEyebrow = 'Templates'
+export const templatesTitle = 'Payload CMS template concepts, built from installable blocks'
+export const templatesDescription =
+  'Explore complete Payload CMS and Next.js site concepts for SaaS and agency projects. Open every page in a live preview, then trace each section back to a typed block you can install today.'
+export const templatesMetadataTitle = 'Payload CMS Templates for Next.js | Concepts & Recipes'
+export const templatesMetadataDescription =
+  'Explore Payload CMS template concepts for SaaS and agency sites, preview every page, and inspect the typed block recipe behind each Next.js layout.'
+
+export const templateCategoryLabels = {
+  agency: 'Agency',
+  saas: 'SaaS',
+} as const
+
+/* Detail-page link back into the catalog: templates never gate anything — the
+   recipe is the point, and every chip resolves to an installable block. */
+export const templatesRecipeIntro =
+  'Every section on every page is one block from the open registry, in render order. Each chip links to the block’s contract — fields, wiring, and the exact install command.'
+
+/* Community close — templates grow the same way the catalog does: in the
+   open, from real needs, with no waitlist or capture in between. */
+export const templatesContribution = {
+  heading: 'Templates are decided in the open',
+  intro:
+    'These concepts exist to answer one question with the community: should full-site templates become installable? The recipes, the fictional brands, and the installer RFC all live in the public repository — nothing gated, no email capture.',
+  links: [
+    {
+      description: 'Read the showcase source — every recipe is plain data in the repository.',
+      external: true,
+      href: githubRepoUrl,
+      label: 'Browse the repository',
+    },
+    {
+      description:
+        'Tell us which template, page, or block recipe you would actually ship — or propose a new one.',
+      external: true,
+      href: githubIssuesUrl,
+      label: 'Open an issue',
+    },
+  ],
+} as const
 
 /* ------------------------------------------------------------------ */
 /* Shared navigation surfaces                                          */
@@ -1308,6 +1528,7 @@ export const footerColumns = [
   {
     links: [
       { href: '/components', label: 'Component catalog' },
+      { href: '/templates', label: 'Template concepts' },
       { href: '/docs', label: 'Documentation' },
       { href: '/docs/installation', label: 'Install workflow' },
       { href: '/docs/architecture', label: 'Architecture' },

@@ -3,8 +3,7 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
-import { Github } from 'lucide-react'
-
+import { GitHubMark } from '@/components/site/GitHubMark'
 import { Wordmark } from '@/components/site/Wordmark'
 import { githubRepoUrl } from '@/lib/site'
 import { cn } from '@/utilities/ui'
@@ -12,6 +11,7 @@ import { cn } from '@/utilities/ui'
 const navLinks = [
   { href: '/docs', label: 'Docs' },
   { href: '/components', label: 'Components' },
+  { href: '/templates', label: 'Templates' },
   { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
 ] as const
@@ -68,22 +68,31 @@ export function SiteHeader({
             aria-label="GitHub repository"
             className="flex size-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:ml-1"
           >
-            <Github className="size-4" aria-hidden="true" />
+            <GitHubMark className="size-4" aria-hidden="true" />
           </a>
 
-          <Link
-            href="/docs"
-            className="ml-1 hidden h-8 items-center rounded-full bg-primary px-3.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:inline-flex"
-          >
-            Get started
-          </Link>
         </nav>
         <div className="relative sm:hidden" data-mobile-menu>
           <button ref={triggerRef} type="button" aria-expanded={open} aria-controls="mobile-navigation" aria-label={open ? 'Close navigation' : 'Open navigation'} onClick={() => setOpen((value) => !value)} className="inline-flex size-9 items-center justify-center rounded-md border border-border text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">☰</button>
-          {open ? <div id="mobile-navigation" role="menu" className="absolute right-0 top-11 z-50 flex w-48 flex-col gap-1 rounded-lg border border-border bg-background p-2 shadow-lg">
-            {[...navLinks, { href: githubRepoUrl, label: 'GitHub' }].map((item) => <Link key={item.label} role="menuitem" href={item.href} target={item.label === 'GitHub' ? '_blank' : undefined} onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-secondary">{item.label}</Link>)}
-            <Link role="menuitem" href="/docs" onClick={() => setOpen(false)} className="rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground">Get started</Link>
-          </div> : null}
+          <div id="mobile-navigation" hidden={!open} className="absolute right-0 top-11 z-50 flex w-48 flex-col gap-1 rounded-lg border border-border bg-background p-2 shadow-lg">
+            {[...navLinks, { href: githubRepoUrl, label: 'GitHub' }].map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                target={item.label === 'GitHub' ? '_blank' : undefined}
+                rel={item.label === 'GitHub' ? 'noreferrer' : undefined}
+                onClick={() => setOpen(false)}
+                className={cn(
+                  'rounded-md px-3 py-2 text-sm transition-colors',
+                  activePath === item.href
+                    ? 'bg-secondary text-foreground'
+                    : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </header>
