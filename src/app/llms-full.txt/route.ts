@@ -1,8 +1,20 @@
 import { getLLMText, source } from '@/lib/source'
-import { faqEntries, githubRepoUrl, componentEntries, siteDescription, siteUrl } from '@/lib/site'
+import { getBlogLLMText, getBlogPages } from '@/lib/blog-source'
+import {
+  blogRoute,
+  faqEntries,
+  feedRoute,
+  githubRepoUrl,
+  componentEntries,
+  siteDescription,
+  siteUrl,
+} from '@/lib/site'
 
 export async function GET() {
-  const docs = await Promise.all(source.getPages().map(getLLMText))
+  const [docs, blog] = await Promise.all([
+    Promise.all(source.getPages().map(getLLMText)),
+    Promise.all(getBlogPages().map(getBlogLLMText)),
+  ])
   const body = [
     '# Payload Components',
     '',
@@ -11,6 +23,8 @@ export async function GET() {
     `Home: ${siteUrl}/`,
     `Docs: ${siteUrl}/docs`,
     `Catalog: ${siteUrl}/components`,
+    `Blog: ${siteUrl}${blogRoute}`,
+    `Updates feed: ${siteUrl}${feedRoute}`,
     `Registry: ${siteUrl}/r/registry.json`,
     `GitHub: ${githubRepoUrl}`,
     '',
@@ -19,6 +33,9 @@ export async function GET() {
     '',
     '## FAQ',
     ...faqEntries.flatMap((entry) => [`### ${entry.question}`, entry.answer, '']),
+    '## Blog',
+    ...blog,
+    '',
     '## Documentation',
     ...docs,
     '',

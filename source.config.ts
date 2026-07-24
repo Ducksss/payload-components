@@ -22,6 +22,9 @@ export const docs = defineDocs({
 export const blog = defineCollections({
   type: 'doc',
   dir: 'content/blog',
+  postprocess: {
+    includeProcessedMarkdown: true,
+  },
   schema: pageSchema.extend({
     author: z.string(),
     date: z.string().date().or(z.date()),

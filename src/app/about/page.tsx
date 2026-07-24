@@ -12,6 +12,7 @@ import { ClientShowcase } from '@/components/site/sections/ClientShowcase'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import {
+  feedMetadataAlternates,
   githubIssuesUrl,
   receipts,
   wiringLedger,
@@ -23,7 +24,7 @@ const description =
   'Why Payload Components exists: stop rebuilding the same Payload blocks, rewiring them by hand, and re-proving every install across freelance projects.'
 
 export const metadata: Metadata = {
-  alternates: { canonical: '/about' },
+  alternates: { canonical: '/about', ...feedMetadataAlternates },
   title: 'About',
   description,
   openGraph: {
