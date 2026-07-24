@@ -1454,6 +1454,10 @@ export const templatesMetadataDescription =
 
 export const templateCategoryLabels = {
   agency: 'Agency',
+  commerce: 'Commerce',
+  event: 'Event',
+  fintech: 'Fintech',
+  portfolio: 'Portfolio',
   saas: 'SaaS',
 } as const
 

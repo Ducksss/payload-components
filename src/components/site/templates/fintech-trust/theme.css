@@ -1,0 +1,13 @@
+/* Ledgerline (fintech-trust) scoped theme — FOUNDATION SKELETON.
+ *
+ * Convention (frozen contract): every rule in this file must live beneath the
+ * [data-template-theme='fintech-trust'] root the shell renders. Override the
+ * semantic variables the demo twins consume and add template-specific tokens as
+ * needed. Never touch :root, .dark, another template's scope, or
+ * src/app/globals.css. The site stays forced-light; intentional dark surfaces
+ * use named template tokens. */
+
+[data-template-theme='fintech-trust'] {
+  background-color: var(--background);
+  color: var(--foreground);
+}
