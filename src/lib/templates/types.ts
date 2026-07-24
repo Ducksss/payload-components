@@ -32,7 +32,13 @@ import type {
  * being an install manifest. */
 
 export type TemplateStatus = 'concept'
-export type TemplateCategory = 'agency' | 'saas'
+export type TemplateCategory =
+  | 'agency'
+  | 'commerce'
+  | 'event'
+  | 'fintech'
+  | 'portfolio'
+  | 'saas'
 export type TemplateSectionTone = 'base' | 'contrast' | 'muted'
 export type TemplateViewportPreset = 'desktop' | 'mobile' | 'tablet'
 
