@@ -1447,13 +1447,17 @@ export const catalogTemplatesLinkLabel = 'Explore Payload CMS template concepts'
 export const templatesEyebrow = 'Templates'
 export const templatesTitle = 'Payload CMS template concepts, built from installable blocks'
 export const templatesDescription =
-  'Explore complete Payload CMS and Next.js site concepts for SaaS and agency projects. Open every page in a live preview, then trace each section back to a typed block you can install today.'
+  'Explore complete Payload CMS and Next.js site concepts for SaaS, agency, commerce, event, fintech, and portfolio projects. Open every page in a live preview, then trace each section back to a typed block you can install today.'
 export const templatesMetadataTitle = 'Payload CMS Templates for Next.js | Concepts & Recipes'
 export const templatesMetadataDescription =
-  'Explore Payload CMS template concepts for SaaS and agency sites, preview every page, and inspect the typed block recipe behind each Next.js layout.'
+  'Explore Payload CMS template concepts for SaaS, agency, commerce, event, fintech, and portfolio sites — preview every page and inspect the typed block recipe.'
 
 export const templateCategoryLabels = {
   agency: 'Agency',
+  commerce: 'Commerce',
+  event: 'Event',
+  fintech: 'Fintech',
+  portfolio: 'Portfolio',
   saas: 'SaaS',
 } as const
 
