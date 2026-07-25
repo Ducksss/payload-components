@@ -3,55 +3,91 @@ import Link from 'next/link'
 import type { TemplateShellProps } from '../shells'
 
 import { templatePreviewHref } from '@/lib/templates/registry'
-import { cn } from '@/utilities/ui'
 
+import { RenkoHeader } from './RenkoHeader'
+import { RenkoSignOff } from './RenkoSignOff'
 import './theme.css'
 
-/* Portfolio (portfolio-solo) template shell — FOUNDATION SKELETON.
+/* Ilse Renko (portfolio-solo) template shell — the restrained personal
+ * direction.
  *
- * Owned by the Portfolio art-direction track: replace with the real personal
- * header (responsive, keyboard-operable mobile menu), footer, and section
- * rhythm. Contract to preserve: render everything under data-template-theme=
- * 'portfolio-solo', use real internal navigation via templatePreviewHref, mark
- * the active page, and keep all interactive semantics here (never inside the
- * visual canvas). */
+ * Contract preserved from the frozen foundation: everything renders under
+ * data-template-theme='portfolio-solo', internal navigation goes through
+ * templatePreviewHref, the active page carries aria-current, and all
+ * interactive semantics live in the shell (never inside the visual canvas).
+ *
+ * The composition is one narrow column on a wide sheet: header, sections and
+ * footer all share the same 64rem measure and the same gutters, and the whole
+ * site is separated by hairline rules rather than cards or bands. Section
+ * rhythm, the ruled boundaries and the monospace gutter index are styled from
+ * theme.css via the [data-template-section] / [data-tone] wrappers the renderer
+ * emits.
+ *
+ * The chrome never inverts — the only dark surface on the whole site is the
+ * home page's record band. A personal site's footer belongs on the same paper
+ * as its pages, so this one carries a sign-off, a "currently" note, and the
+ * date the site was last touched, all in the maker's own voice. */
+
+const currentlyLines = [
+  'Finishing a design system for Kaskad’s freight console.',
+  'Rewriting the Lume Type licensing flow.',
+  'Taking new projects from October.',
+] as const
+
+const elsewhereLines = ['ilse@renko.studio', 'Notes, monthly-ish', 'Tallinn — EET (UTC+3)'] as const
+
 export function PortfolioSoloShell({ activePath, children, template }: TemplateShellProps) {
   return (
-    <div data-template-theme="portfolio-solo" className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-40 border-b border-border bg-background/95">
-        <nav
-          aria-label="Personal site navigation"
-          className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6"
-        >
-          <Link href={templatePreviewHref(template.slug)} className="text-sm font-semibold">
-            Studio
-          </Link>
-          <div className="flex items-center gap-1">
-            {template.navigation.map((item) => (
-              <Link
-                key={item.path}
-                href={templatePreviewHref(template.slug, item.path)}
-                aria-current={activePath === item.path ? 'page' : undefined}
-                className={cn(
-                  'rounded-md px-3 py-1.5 text-sm transition-colors',
-                  activePath === item.path
-                    ? 'bg-secondary text-foreground'
-                    : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </nav>
-      </header>
+    <div
+      data-template-theme="portfolio-solo"
+      className="flex min-h-screen flex-col bg-background text-foreground"
+    >
+      <RenkoHeader activePath={activePath} template={template} />
 
-      <main className="mx-auto flex max-w-5xl flex-col gap-16 px-4 py-16 sm:px-6">{children}</main>
+      <main className="flex-1">{children}</main>
 
       <footer className="border-t border-border">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-8 text-sm text-muted-foreground sm:px-6">
-          <span>A fictional personal-site concept</span>
-          <span>Composed from open-source Payload blocks</span>
+        <div className="mx-auto flex max-w-5xl flex-col gap-14 px-6 py-16 sm:px-8 lg:px-12 lg:py-20">
+          <RenkoSignOff signOff="Written, designed, and deployed by the same person." />
+
+          <div className="grid gap-10 border-t border-border pt-10 sm:grid-cols-3">
+            <nav aria-label="Ilse Renko footer navigation" className="flex flex-col gap-3">
+              <span className="font-mono text-xs lowercase text-muted-foreground">index</span>
+              {template.navigation.map((item) => (
+                <Link
+                  key={item.path}
+                  href={templatePreviewHref(template.slug, item.path)}
+                  aria-current={activePath === item.path ? 'page' : undefined}
+                  className="w-fit text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="flex flex-col gap-3">
+              <span className="font-mono text-xs lowercase text-muted-foreground">currently</span>
+              {currentlyLines.map((line) => (
+                <span key={line} className="text-sm leading-6 text-muted-foreground">
+                  {line}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <span className="font-mono text-xs lowercase text-muted-foreground">elsewhere</span>
+              {elsewhereLines.map((line) => (
+                <span key={line} className="text-sm leading-6 text-muted-foreground">
+                  {line}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 border-t border-border pt-6 font-mono text-xs text-muted-foreground sm:flex-row sm:items-baseline sm:justify-between">
+            <span>© 2026 Ilse Renko — a fictional maker, invented for this concept</span>
+            <span>Last touched 12 July 2026 · composed from open-source Payload blocks</span>
+          </div>
         </div>
       </footer>
     </div>

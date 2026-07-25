@@ -1,12 +1,480 @@
-/* Portfolio (portfolio-solo) scoped theme — FOUNDATION SKELETON.
+/* Ilse Renko (portfolio-solo) scoped theme — the restrained personal direction.
  *
- * Convention (frozen contract): every rule in this file must live beneath the
- * [data-template-theme='portfolio-solo'] root the shell renders. Override the
- * semantic variables the demo twins consume and add template-specific tokens as
- * needed. Never touch :root, .dark, another template's scope, or
- * src/app/globals.css. The site stays forced-light. */
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='portfolio-solo'] root the shell renders. We override
+ * the semantic variables the demo twins consume and add template-scoped
+ * tokens; we never touch :root, .dark, another template's scope, or
+ * src/app/globals.css. The site stays forced-light — the single ink band on
+ * the home page is an intentional dark surface built from named template
+ * tokens, not a theme.
+ *
+ * Art direction — the quietest concept in the gallery:
+ *   · cool off-white paper, near-black ink, ONE low-chroma slate accent that
+ *     appears perhaps five times per page and never fills a shape;
+ *   · hairline rules instead of card chrome — every specimen frame, panel
+ *     border, pill and shadow is dissolved, and sections are separated by a
+ *     single 1px rule;
+ *   · a single narrow column (64rem) with big empty margins, and a monospace
+ *     section index printed in the left gutter on wide screens;
+ *   · small precise type: the display scale is REDUCED against the catalog
+ *     default and tracking is loosened to suit it (Northline, the other
+ *     type-led concept, goes the other way — big serif italic on warm paper);
+ *   · Geist Sans throughout, Geist Mono for indices and labels, and exactly
+ *     one italic serif word on the whole site: the closing word of the home
+ *     headline. Personality comes from precision, not decoration.
+ */
 
 [data-template-theme='portfolio-solo'] {
+  /* Template palette. Every hue sits on 274deg so greys, ink and accent are
+   * one family — the accent is the same colour as the ink, further from
+   * black. Slate-soft is the accent that survives the ink band; slate-glow is
+   * the slightly-lifted version used only inside the hero's ink plate, where a
+   * 45% accent over 18.5% ink would be invisible. */
+  --ir-paper: oklch(97.6% 0.002 274deg);
+  --ir-paper-deep: oklch(95.1% 0.004 274deg);
+  --ir-ink: oklch(18.5% 0.009 274deg);
+  --ir-ink-band: oklch(16.5% 0.009 274deg);
+  --ir-slate: oklch(45% 0.07 274deg);
+  --ir-slate-soft: oklch(74% 0.05 274deg);
+  --ir-slate-glow: oklch(60% 0.062 274deg);
+
+  /* The measure. One column width for the whole site — the consistency IS the
+   * design — plus the gutter offset the section index is printed into. */
+  --ir-measure: 64rem;
+  --ir-section-pad: clamp(4rem, 7.5vw, 6.5rem);
+
+  /* Semantic variables the twins consume. Contrast is verified against every
+   * surface a token can land on: --muted-foreground clears AA 4.5:1 on paper
+   * (5.6:1), on --card (5.9:1), on the deeper muted band (5.2:1) and on the
+   * image plates (4.95:1). */
+  --background: var(--ir-paper);
+  --foreground: var(--ir-ink);
+  --card: oklch(99.2% 0.001 274deg);
+  --card-foreground: var(--ir-ink);
+  --popover: oklch(99.2% 0.001 274deg);
+  --popover-foreground: var(--ir-ink);
+  --primary: var(--ir-ink);
+  --primary-foreground: oklch(98.5% 0.001 274deg);
+  --secondary: oklch(94.4% 0.004 274deg);
+  --secondary-foreground: var(--ir-ink);
+  --muted: oklch(93.4% 0.005 274deg);
+  --muted-foreground: oklch(50% 0.012 274deg);
+  --accent: oklch(94% 0.008 274deg);
+  --accent-foreground: var(--ir-ink);
+  --brand: var(--ir-slate);
+  --brand-foreground: oklch(98.5% 0.001 274deg);
+  --brand-50: oklch(97.4% 0.006 274deg);
+  --brand-100: oklch(94.2% 0.014 274deg);
+  --brand-200: oklch(88% 0.028 274deg);
+  --brand-600: oklch(38% 0.066 274deg);
+  --border: oklch(89.5% 0.005 274deg);
+  --input: oklch(86% 0.006 274deg);
+  --ring: var(--ir-slate);
+
+  /* Engineered, not printed: a 2px radius reads considered where Northline's
+   * 0px reads letterpress. --radius feeds the sm–xl scale through calc(); the
+   * named container radii are @theme inline literals and are flattened at
+   * element level below. */
+  --radius: 2px;
+
+  /* Small precise type. The catalog default is 2.25 / 3 / 3.75 / 4.5 / 6rem;
+   * everything here steps down so headings read as set copy rather than
+   * announcements, and tracking loosens to match the smaller sizes. */
+  --text-4xl: 2rem;
+  --text-4xl--line-height: 1.18;
+  --text-5xl: 2.5rem;
+  --text-5xl--line-height: 1.12;
+  --text-6xl: 2.875rem;
+  --text-6xl--line-height: 1.08;
+  --text-7xl: 3.375rem;
+  --text-7xl--line-height: 1.04;
+  --text-8xl: 4.25rem;
+  --text-8xl--line-height: 1;
+
+  --tracking-display: -0.025em;
+  --tracking-title: -0.02em;
+  --tracking-heading: -0.015em;
+  --tracking-eyebrow: 0.1em;
+
   background-color: var(--background);
   color: var(--foreground);
+}
+
+[data-template-theme='portfolio-solo'] ::selection {
+  background-color: color-mix(in oklab, var(--ir-slate) 22%, transparent);
+}
+
+/* Flatten every named container radius to the 2px geometry. rounded-full
+ * (avatar wells, the hero's eyebrow dot) is deliberately left alone. */
+[data-template-theme='portfolio-solo'] :is(.rounded-frame, .rounded-panel, .rounded-card, .rounded-inset, .rounded-2xl, .rounded-xl, .rounded-lg) {
+  border-radius: var(--radius);
+}
+
+/* No shadows anywhere. Depth is a hairline's job here. */
+[data-template-theme='portfolio-solo'] :is(.shadow-xl, .shadow-card, .shadow-frame) {
+  box-shadow: none;
+}
+
+/* ————— Labels —————
+ * Every wide-tracked micro label on the site speaks monospace — the systematic
+ * voice that carries the section indices and the shell's own labels. */
+[data-template-theme='portfolio-solo'] [data-template-canvas] .tracking-eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 400;
+}
+
+/* Section eyebrows specifically arrive as outline Badge pills. They become
+ * borderless index labels with a short slate leading rule: quieter than a
+ * pill, and distinct from Northline's wide-tracked rust folio marks. The
+ * .rounded-full pairing keeps this off the hero's proof items and marquee,
+ * which are wide-tracked but are not labels. */
+[data-template-theme='portfolio-solo'] [data-template-canvas] .rounded-full.tracking-eyebrow {
+  border-color: transparent;
+  border-radius: 0;
+  color: var(--muted-foreground);
+  gap: 0.625rem;
+  padding: 0;
+}
+
+[data-template-theme='portfolio-solo'] [data-template-canvas] .rounded-full.tracking-eyebrow::before {
+  background-color: var(--ir-slate);
+  content: '';
+  display: inline-block;
+  flex: none;
+  height: 1px;
+  width: 1.25rem;
+}
+
+/* hero-basic's proof items arrive as filled secondary pills. They become flat
+ * hairline spec labels in monospace — a specification, not a badge. */
+[data-template-theme='portfolio-solo'] [data-template-canvas] .rounded-full.text-sm {
+  background-color: transparent;
+  border-color: var(--border);
+  border-radius: var(--radius);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  padding: 0.3125rem 0.625rem;
+}
+
+/* ————— Section canvas —————
+ * The catalog specimen frame (rounded border + card wash) is dissolved, and
+ * the frame takes over as the site's single centred column. Its horizontal
+ * padding stays as the gutter, so the whole site reads as one narrow measure
+ * on a wide sheet of paper. */
+[data-template-theme='portfolio-solo'] [data-template-section] > [aria-hidden='true'] > div {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  margin-inline: auto;
+  max-width: var(--ir-measure);
+  padding-block: var(--ir-section-pad);
+}
+
+/* Hairline rules between every consecutive section — the whole rhythm. */
+[data-template-theme='portfolio-solo'] [data-template-section] + [data-template-section] {
+  border-top: 1px solid var(--border);
+}
+
+/* ————— The section index —————
+ * A monospace numeral printed in the left gutter, once there is room for it
+ * outside the column. The cover is unnumbered (it is the cover), so counting
+ * starts at 01 on the first section below it. The alternative text is empty
+ * ("… / ''") so assistive technology never announces the decoration. */
+[data-template-theme='portfolio-solo'] [data-template-canvas] {
+  counter-reset: ir-section;
+}
+
+[data-template-theme='portfolio-solo'] [data-template-canvas] > [data-template-section] {
+  counter-increment: ir-section;
+  position: relative;
+}
+
+[data-template-theme='portfolio-solo'] [data-template-canvas] > [data-template-section]:first-of-type {
+  counter-increment: none;
+}
+
+@media (min-width: 1200px) {
+  [data-template-theme='portfolio-solo'] [data-template-canvas] > [data-template-section]::before {
+    color: color-mix(in oklab, var(--muted-foreground) 62%, transparent);
+    content: counter(ir-section, decimal-leading-zero) / '';
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    left: calc(50% - (var(--ir-measure) / 2) - 2.5rem);
+    letter-spacing: 0.12em;
+    position: absolute;
+    top: calc(var(--ir-section-pad) + 0.375rem);
+  }
+
+  [data-template-theme='portfolio-solo'] [data-template-canvas] > [data-template-section]:first-of-type::before {
+    content: none;
+  }
+}
+
+/* ————— Tonal bands —————
+ * muted: a slightly deeper sheet of the same stock. No borders gained, no
+ * chrome — only tone. */
+[data-template-theme='portfolio-solo'] [data-template-section][data-tone='muted'] {
+  --card: oklch(97.6% 0.002 274deg);
+  --muted: oklch(91.2% 0.006 274deg);
+  --border: oklch(87.5% 0.006 274deg);
+
+  background-color: var(--ir-paper-deep);
+}
+
+/* contrast: the one ink band on the whole site (the home page's record). Every
+ * semantic variable is remapped so the twins' paper-first markup resolves to a
+ * coherent dark surface with AA contrast, and the accent steps up to
+ * slate-soft, which clears 8:1 on ink. */
+[data-template-theme='portfolio-solo'] [data-template-section][data-tone='contrast'] {
+  --background: oklch(20.5% 0.01 274deg);
+  --foreground: oklch(96.8% 0.003 274deg);
+  --card: oklch(20.5% 0.01 274deg);
+  --card-foreground: oklch(96.8% 0.003 274deg);
+  --popover: oklch(20.5% 0.01 274deg);
+  --popover-foreground: oklch(96.8% 0.003 274deg);
+  --primary: oklch(96.8% 0.003 274deg);
+  --primary-foreground: var(--ir-ink-band);
+  --secondary: oklch(25% 0.012 274deg);
+  --secondary-foreground: oklch(96.8% 0.003 274deg);
+  --muted: oklch(23% 0.011 274deg);
+  --muted-foreground: oklch(76% 0.012 274deg);
+  --accent: oklch(26% 0.014 274deg);
+  --accent-foreground: oklch(96.8% 0.003 274deg);
+  --brand: var(--ir-slate-soft);
+  --brand-foreground: var(--ir-ink-band);
+  --border: oklch(34% 0.012 274deg);
+  --input: oklch(38% 0.014 274deg);
+  --ring: var(--ir-slate-soft);
+
+  background-color: var(--ir-ink-band);
+  color: var(--foreground);
+  padding-block: 1rem;
+}
+
+@media (min-width: 1024px) {
+  [data-template-theme='portfolio-solo'] [data-template-section][data-tone='contrast'] {
+    padding-block: 1.5rem;
+  }
+}
+
+[data-template-theme='portfolio-solo'] [data-tone='contrast'] .rounded-full.tracking-eyebrow::before {
+  background-color: var(--ir-slate-soft);
+}
+
+@media (min-width: 1200px) {
+  [data-template-theme='portfolio-solo'] [data-tone='contrast']::before {
+    color: color-mix(in oklab, var(--ir-slate-soft) 72%, transparent);
+  }
+}
+
+/* ————— Image plates —————
+ * The twins render backend-free bg-muted placeholders, and this concept ships
+ * no raster assets at all — so every image well is token-derived art rather
+ * than a hole where a photograph should be. Each plate is composed from four
+ * color-mix() layers over the theme's own tokens: a slate horizon line at 72%,
+ * the same device the kinetic hero's film still uses, so a reserved plate reads
+ * as a still waiting to be exposed; a soft directional sheen; a fine rule
+ * field; and an inset hairline.
+ *
+ * Scoped to the wide plates (.w-full without .h-full) so the community
+ * section's small round avatar wells keep a plain stock. */
+[data-template-theme='portfolio-solo'] [data-template-canvas] .w-full.bg-muted:not(.h-full) {
+  background-image:
+    linear-gradient(
+      to bottom,
+      transparent 0 72%,
+      color-mix(in oklab, var(--ir-slate) 34%, transparent) 72%,
+      transparent calc(72% + 1px)
+    ),
+    linear-gradient(
+      148deg,
+      color-mix(in oklab, var(--foreground) 8%, transparent),
+      transparent 42%,
+      color-mix(in oklab, var(--foreground) 6%, transparent)
+    ),
+    radial-gradient(
+      120% 90% at 50% 34%,
+      transparent 52%,
+      color-mix(in oklab, var(--foreground) 7%, transparent)
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 9px,
+      color-mix(in oklab, var(--foreground) 3%, transparent) 9px 10px
+    );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 11%, transparent);
+}
+
+/* content-image-frame mounts its plate on a second bg-muted mat. Two identical
+ * stocks read as a mistake, so the mat sits flat and a touch deeper — the print
+ * inside it is the thing being shown. */
+[data-template-theme='portfolio-solo'] [data-template-canvas] .rounded-panel.bg-muted {
+  background-color: var(--ir-paper-deep);
+  background-image: none;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+/* ————— The cover (home hero-kinetic) —————
+ * The kinetic hero is the one loud moment, and even it is kept quiet: the
+ * section sits flush (its own frame padding is the entire rhythm) and the
+ * discipline marquee lands exactly on the bottom edge, so the next section's
+ * hairline doubles as the strip's bottom rule — an index strip, ruled top and
+ * bottom, still inside the column. Northline bleeds the same strip to the
+ * viewport; staying inside the measure is the point here. */
+[data-template-theme='portfolio-solo'] [data-template-section='opening'] {
+  padding-block: 0;
+}
+
+[data-template-theme='portfolio-solo'] [data-template-section='opening'] > [aria-hidden='true'] > div {
+  padding-block: clamp(3.25rem, 6.5vw, 5.5rem) 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  [data-template-theme='portfolio-solo'] [data-template-section='opening'] > [aria-hidden='true'] > div {
+    padding-block: 5.5rem 4rem;
+  }
+}
+
+/* The plate is the only place the accent is allowed to glow. --brand is
+ * lifted inside the ink plate (and only there) so the component's
+ * color-mix(--brand …) bloom and horizon hairline register at all against
+ * near-black; on paper the accent stays the deep, grudging slate. */
+[data-template-theme='portfolio-solo'] [data-template-section='opening'] .bg-foreground {
+  --brand: var(--ir-slate-glow);
+}
+
+/* The closing word of the headline — the one italic serif word on the site.
+ * The rest of the manifesto stays Geist Sans, which is precisely the opposite
+ * of Northline's all-serif cover, and the word lands in slate. */
+[data-template-theme='portfolio-solo'] [data-template-section='opening'] .tracking-display .font-serif.tracking-title {
+  color: var(--ir-slate);
+  letter-spacing: -0.01em;
+}
+
+/* The marquee is an index, not a headline: smaller, lighter, wider-set than
+ * the component's text-lg/xl default. */
+[data-template-theme='portfolio-solo'] [data-template-section='opening'] span.text-lg.tracking-eyebrow {
+  color: color-mix(in oklab, var(--foreground) 72%, transparent);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+}
+
+[data-template-theme='portfolio-solo'] [data-template-section='opening'] li.text-sm.tracking-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+/* ————— Interior page headers (hero-basic) —————
+ * Spare by design: no CTAs in the data, and the same measure as everything
+ * else, with the header block sitting a little tighter to its page. */
+[data-template-theme='portfolio-solo'] [data-template-section='hero'] > [aria-hidden='true'] > div {
+  padding-block: clamp(3rem, 6vw, 5rem) clamp(2.5rem, 5vw, 4rem);
+}
+
+/* ————— Quote surfaces —————
+ * Both stats-proof and content-quote render a stand-in customer wordmark or
+ * logo block where the real block takes a Media upload. A one-person site does
+ * not badge other people's words with their employer's mark, so the quotes
+ * stand on their own type. */
+[data-template-theme='portfolio-solo'] [data-template-section='proof'] figure > div.mb-8,
+[data-template-theme='portfolio-solo'] [data-template-canvas] blockquote .h-6.w-20 {
+  display: none;
+}
+
+/* stats-proof's quote panel loses its card: a hairline on the left is enough
+ * to mark a quotation. */
+[data-template-theme='portfolio-solo'] [data-template-section='proof'] figure {
+  background-color: transparent;
+  border: 0;
+  border-inline-start: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0 0 0 1.75rem;
+}
+
+/* The record's two columns end at very different heights (four metrics against
+ * one quote). Centring the quote in the row splits the difference above and
+ * below it, so the ink band reads as a deliberate offset rather than a column
+ * that ran out. */
+@media (min-width: 1024px) {
+  [data-template-theme='portfolio-solo'] [data-tone='contrast'] figure {
+    align-self: center;
+  }
+}
+
+/* content-quote's rule sits in the accent — one of the five slate moments. */
+[data-template-theme='portfolio-solo'] [data-template-canvas] blockquote.border-l-2 {
+  border-color: var(--ir-slate);
+  border-inline-start-width: 1px;
+}
+
+/* ————— The testimonial wall —————
+ * Masonry cards become hairline-topped columns of quotes: no border, no wash,
+ * no radius. The wall reads as a set page rather than a stack of receipts. */
+[data-template-theme='portfolio-solo'] [data-template-section='proof'] figure.mb-4 {
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  border-top: 1px solid var(--border);
+  margin-bottom: 2.25rem;
+  padding: 1.25rem 0 0;
+}
+
+/* The wall's monogram avatar wells are chrome the quotes do not need. */
+[data-template-theme='portfolio-solo'] [data-template-section='proof'] figure.mb-4 figcaption > div:first-child {
+  display: none;
+}
+
+/* ————— Panels elsewhere —————
+ * contact-routing-form's channel cards and form panel, and the boxed CTA, all
+ * arrive as bordered boxes. They keep a single hairline and lose the wash and
+ * the radius, so the contact page reads as one ruled sheet. */
+[data-template-theme='portfolio-solo'] [data-template-section='contact'] .rounded-panel {
+  background-color: transparent;
+  border-color: var(--border);
+  border-radius: 0;
+  border-width: 0;
+  border-top-width: 1px;
+  padding-inline: 0;
+}
+
+[data-template-theme='portfolio-solo'] [data-template-section='cta'] .rounded-2xl {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  border-top: 1px solid var(--border);
+  padding-inline: 0;
+}
+
+/* The form's fields keep their hairline and lose the fill, matching the rules
+ * that structure the rest of the page. */
+[data-template-theme='portfolio-solo'] [data-template-section='contact'] .border-input {
+  background-color: transparent;
+  border-color: var(--input);
+  border-radius: var(--radius);
+}
+
+/* ————— Shell chrome —————
+ * The header and footer both stay on paper: this site never inverts its
+ * chrome. Only the one ink band does. */
+[data-template-theme='portfolio-solo'] [data-ir-nav-rule] {
+  background-color: var(--ir-slate);
+}
+
+[data-template-theme='portfolio-solo'] [data-ir-rise] {
+  will-change: transform;
+}
+
+/* Reduced-motion net for the shell's own choreography (the footer sign-off
+ * rise and its accent rule draw). Both are transform-only, and both must be
+ * in their final frame before hydration — Playwright captures and the poster
+ * tool run with reduced motion and have to see the finished page. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='portfolio-solo'] [data-ir-rise],
+  [data-template-theme='portfolio-solo'] [data-ir-draw] {
+    transform: none !important;
+  }
 }
