@@ -1,59 +1,35 @@
-import Link from 'next/link'
-
 import type { TemplateShellProps } from '../shells'
 
-import { templatePreviewHref } from '@/lib/templates/registry'
-import { cn } from '@/utilities/ui'
-
+import { FrameworksFooter } from './FrameworksFooter'
+import { FrameworksHeader } from './FrameworksHeader'
 import './theme.css'
 
-/* Frameworks ’26 (event-conference) template shell — FOUNDATION SKELETON.
+/* Frameworks ’26 (event-conference) template shell — the fictional conference's
+ * real chrome, and the gallery's one near-black concept.
  *
- * Owned by the Event art-direction track: replace with the real Frameworks
- * masthead (responsive, keyboard-operable mobile menu), footer, and section
- * rhythm. Contract to preserve: render everything under data-template-theme=
- * 'event-conference', use real internal navigation via templatePreviewHref,
- * mark the active page, and keep all interactive semantics here (never inside
- * the visual canvas). */
+ * Contract: everything renders beneath data-template-theme='event-conference';
+ * the masthead and footer navigate internally through templatePreviewHref; the
+ * active page carries aria-current='page'; the mobile disclosure is
+ * keyboard-operable (see FrameworksHeader); and every interactive element lives
+ * in this chrome, never inside the aria-hidden visual canvas.
+ *
+ * The darkness comes entirely from the scoped tokens in theme.css — the site
+ * itself stays forced-light and this template never touches :root or .dark.
+ * Section rhythm (full-bleed bands, the violet section rules, and the three
+ * tonal treatments) is styled from theme.css through the
+ * [data-template-section] / [data-tone] wrappers the renderer emits. */
+
 export function EventConferenceShell({ activePath, children, template }: TemplateShellProps) {
   return (
-    <div data-template-theme="event-conference" className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-40 border-b border-border bg-background/95">
-        <nav
-          aria-label="Frameworks ’26 site navigation"
-          className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6"
-        >
-          <Link href={templatePreviewHref(template.slug)} className="text-sm font-semibold">
-            Frameworks ’26
-          </Link>
-          <div className="flex items-center gap-1">
-            {template.navigation.map((item) => (
-              <Link
-                key={item.path}
-                href={templatePreviewHref(template.slug, item.path)}
-                aria-current={activePath === item.path ? 'page' : undefined}
-                className={cn(
-                  'rounded-md px-3 py-1.5 text-sm transition-colors',
-                  activePath === item.path
-                    ? 'bg-secondary text-foreground'
-                    : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </nav>
-      </header>
+    <div
+      className="fw-root flex min-h-screen flex-col antialiased"
+      data-template-theme="event-conference"
+    >
+      <FrameworksHeader activePath={activePath} template={template} />
 
-      <main className="mx-auto flex max-w-6xl flex-col gap-16 px-4 py-16 sm:px-6">{children}</main>
+      <main className="flex-1">{children}</main>
 
-      <footer className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-8 text-sm text-muted-foreground sm:px-6">
-          <span>Frameworks ’26 — a fictional event concept</span>
-          <span>Composed from open-source Payload blocks</span>
-        </div>
-      </footer>
+      <FrameworksFooter activePath={activePath} template={template} />
     </div>
   )
 }
