@@ -1374,6 +1374,8 @@ export const faqEntries = [
   {
     answer:
       'In Payload, a block is a composable page-builder field — a reusable content section (hero, feature grid, CTA) editors stack to lay out a page. Payload Components ships pre-built blocks plus the wiring that makes them live, so a block is not just copied in: it is registered in your Pages collection, mapped in your renderer, typed, and added to the admin import map.',
+    href: '/docs/payload-blocks',
+    linkLabel: 'Read the Payload blocks guide',
     question: 'What is a Payload CMS block?',
   },
   {

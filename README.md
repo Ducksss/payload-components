@@ -95,9 +95,10 @@ Payload admin routes, collections, globals, a database adapter, or
 
 ### Why It Exists
 
-Payload blocks are not live when their files land. They have to be registered,
-rendered, typed, and added to the admin import map. That wiring is repetitive,
-easy to drift, and usually rediscovered project by project.
+[Payload blocks][payload-blocks-guide-url] are not live when their files land.
+They have to be registered, rendered, typed, and added to the admin import map.
+That wiring is repetitive, easy to drift, and usually rediscovered project by
+project.
 
 Payload Components packages the block source and the wiring contract together.
 The goal is a catalog that grows from real installs and pull requests: MIT,
@@ -417,6 +418,7 @@ information.
 [next-url]: https://nextjs.org
 [npm-shield]: https://img.shields.io/npm/v/payload-components.svg?style=for-the-badge
 [npm-url]: https://www.npmjs.com/package/payload-components
+[payload-blocks-guide-url]: https://www.payload-components.xyz/docs/payload-blocks
 [payload-url]: https://payloadcms.com
 [playwright-url]: https://playwright.dev
 [react-url]: https://react.dev
