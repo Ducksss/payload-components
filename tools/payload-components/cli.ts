@@ -30,6 +30,8 @@ Current components:
   hero-basic
   hero-video
   hero-product-tilt
+  hero-aurora
+  hero-kinetic
   feature-grid-basic
   feature-split
   feature-bento
@@ -38,6 +40,11 @@ Current components:
   feature-cards-media
   feature-icon-grid
   embed-basic
+  logo-cloud-grid
+  logo-cloud-hover
+  logo-cloud-marquee
+  logo-cloud-inline
+  logo-cloud-inline-wrap
   content-columns
   content-image-lead
   content-feature-media
@@ -45,18 +52,6 @@ Current components:
   content-showcase
   content-quote
   content-community
-  content-split-rows
-  content-rows
-  content-image-frame
-  content-stats
-  content-list
-  content-list-columns
-  content-list-icons
-  logo-cloud-grid
-  logo-cloud-hover
-  logo-cloud-marquee
-  logo-cloud-inline
-  logo-cloud-inline-wrap
   integration-grid
   integration-cluster
   integration-split
@@ -65,6 +60,13 @@ Current components:
   integration-list
   integration-marquee
   integration-testimonial
+  content-split-rows
+  content-rows
+  content-image-frame
+  content-stats
+  content-list
+  content-list-columns
+  content-list-icons
   call-to-action-centered
   call-to-action-boxed
   call-to-action-signup
@@ -77,6 +79,9 @@ Current components:
   faq-icons
   faq-grouped
   faq-grid
+  comparator-table
+  comparator-grid
+  comparator-stack
   testimonials-quote
   testimonials-spotlight
   testimonials-grid

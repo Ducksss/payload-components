@@ -91,6 +91,24 @@ pnpm test:release
 CI requires `pnpm test:fresh` across four fresh-consumer shards; run an individual
 shard locally with `pnpm test:fresh -- --shard-index 0`.
 
+### Packed CLI smoke
+
+`pnpm test:pack` installs the built tarball and runs the CLI exactly as a
+published consumer would, checking the shipped-files whitelist, runtime
+dependencies, and plain Node execution. It is not part of the default
+`pnpm test:int` path because packing is slow, so it runs on the
+release-sensitive `package-publish` workflow rather than on every PR.
+
+Run it locally before any release-sensitive change, specifically when you touch:
+
+- packaging (`package.json` `files`/`bin`/`exports`, `tsup` config, published dependencies);
+- the CLI entrypoint (`bin/payload-components.mjs`, `tools/payload-components/cli.ts`);
+- anything that affects what ships in the npm tarball.
+
+```sh
+pnpm test:pack
+```
+
 ## Pull Requests
 
 Pull requests should include:
