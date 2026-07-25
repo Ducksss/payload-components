@@ -1,0 +1,269 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="diagram-title diagram-description" class="diagram diagram--join" data-mode="join" data-series="open-source" data-issue="32">
+  <title id="diagram-title">Real installs become routed evidence, reviewed work, and future releases</title>
+  <desc id="diagram-description">The loop preserves a private route for security reports and describes releases as available to install rather than automatically adopted.</desc>
+  <defs>
+    <pattern id="journal-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e4e4e7" stroke-width="1" />
+    </pattern>
+    <marker id="journal-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+    </marker>
+    <style>
+      .diagram {
+        background: #f7f5ef;
+        color: #18181b;
+      }
+      .paper {
+        fill: #f7f5ef;
+      }
+      .grid {
+        fill: url(#journal-grid-pattern);
+      }
+      .masthead,
+      .mode-label,
+      .folio-label,
+      .footer-label,
+      .node-index,
+      .edge-label,
+      .node-title--mono,
+      .node-body--mono,
+      .provenance-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .masthead {
+        fill: #18181b;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.7px;
+      }
+      .kicker {
+        fill: #047857;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+      }
+      .headline {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 28px;
+        font-weight: 720;
+        letter-spacing: -0.4px;
+      }
+      .mode-box {
+        fill: #ffffff;
+        stroke: #047857;
+        stroke-width: 2;
+      }
+      .mode-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.4px;
+      }
+      .folio-label {
+        fill: #52525b;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 1.2px;
+      }
+      .journal-rule {
+        stroke: #18181b;
+        stroke-width: 1;
+      }
+      .accent-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.5;
+      }
+      .edge-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.25;
+      }
+      .diagram--join .edge-path {
+        stroke-dasharray: 7 5;
+      }
+      .diagram--inspect .edge-path {
+        stroke-width: 1.75;
+      }
+      .edge-label-paper {
+        fill: #f7f5ef;
+        stroke: #e4e4e7;
+        stroke-width: 1;
+      }
+      .edge-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-card {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1.25;
+      }
+      .diagram--inspect .node-card {
+        stroke: #18181b;
+      }
+      .node--terminal .node-card {
+        fill: #18181b;
+        stroke: #18181b;
+      }
+      .node-rule {
+        stroke: #059669;
+        stroke-width: 5;
+      }
+      .node-index {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-title {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 720;
+      }
+      .node-body {
+        fill: #52525b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+      }
+      .node--terminal .node-title,
+      .node--terminal .node-body {
+        fill: #ffffff;
+      }
+      .node--terminal .node-index {
+        fill: #059669;
+      }
+      .footer-paper {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1;
+      }
+      .footer-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .provenance-line,
+      .evidence-line {
+        fill: #52525b;
+        font-size: 13px;
+      }
+      .evidence-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .prompt {
+        fill: #047857;
+        font-family: Georgia, serif;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 650;
+      }
+      .registration {
+        fill: none;
+        stroke: #047857;
+        stroke-width: 1.5;
+      }
+    </style>
+  </defs>
+  <rect class="paper" width="1200" height="675" />
+  <rect class="grid" data-journal-part="grid" x="28" y="24" width="1144" height="627" />
+  <path class="journal-rule" d="M 36 62 H 1164" />
+  <g data-journal-part="masthead">
+    <text class="masthead" x="48" y="49">OPEN SOURCE · ISSUE 32</text>
+  </g>
+  <g data-journal-part="mode">
+    <rect class="mode-box" x="876" y="27" width="96" height="27" rx="2" />
+    <text class="mode-label" x="924" y="46" text-anchor="middle">JOIN</text>
+  </g>
+  <g data-journal-part="folio">
+    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE 32 / 32</text>
+  </g>
+  <text class="kicker" x="48" y="86">EVIDENCE-DRIVEN ROADMAP</text>
+  <text class="headline" x="48" y="119">Real installs become routed evidence, reviewed work, and</text>
+<text class="headline" x="48" y="150">future releases</text>
+  <path class="accent-path" d="M 941 96 C 1004 83, 1054 105, 1138 81" />
+  <circle class="registration" cx="1139" cy="81" r="8" />
+  <g data-diagram-layer="edges">
+    <g class="edge">
+  <path class="edge-path" data-edge-from="install" data-edge-to="evidence" data-edge-axis="horizontal" d="M 404.6666666666667 283.5 C 411.16666666666663 283.5, 411.16666666666663 283.5, 417.66666666666663 283.5" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="evidence" data-edge-to="route" data-edge-axis="horizontal" d="M 777.3333333333334 283.5 C 783.8333333333334 283.5, 783.8333333333334 283.5, 790.3333333333334 283.5" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="route" data-edge-to="contribution" data-edge-axis="vertical" d="M 972.6666666666667 343.5 C 972.6666666666667 350, 879.5 350, 879.5 356.5" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="contribution" data-edge-to="release" data-edge-axis="horizontal" d="M 609 421.5 C 602.5 421.5, 602.5 421.5, 596 421.5" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="release" data-edge-to="install" data-edge-axis="vertical" d="M 320.5 361.5 C 320.5 355, 227.33333333333334 355, 227.33333333333334 348.5" marker-end="url(#journal-arrow)" />
+
+</g>
+  </g>
+  <g data-diagram-layer="nodes">
+    <g class="node node--standard" data-node-id="install" data-node-kind="standard">
+  <rect class="node-card" x="52" y="225.5" width="350.6666666666667" height="116" rx="2" />
+  <path class="node-rule" d="M 52 230.5 H 402.6666666666667" />
+  <text class="node-index" x="68" y="251.5">01</text>
+  <text class="node-title" x="95" y="252.5">Real install</text>
+  <text class="node-body" data-role="body-line" x="68" y="282.5">Source meets a supported project</text>
+</g>
+<g class="node node--standard" data-node-id="evidence" data-node-kind="standard">
+  <rect class="node-card" x="424.6666666666667" y="225.5" width="350.6666666666667" height="116" rx="2" />
+  <path class="node-rule" d="M 424.6666666666667 230.5 H 775.3333333333334" />
+  <text class="node-index" x="440.6666666666667" y="251.5">02</text>
+  <text class="node-title" x="467.6666666666667" y="252.5">Evidence</text>
+  <text class="node-body" data-role="body-line" x="440.6666666666667" y="282.5">exact command · versions · sanitized context</text>
+</g>
+<g class="node node--standard" data-node-id="route" data-node-kind="standard">
+  <rect class="node-card" x="797.3333333333334" y="225.5" width="350.6666666666667" height="116" rx="2" />
+  <path class="node-rule" d="M 797.3333333333334 230.5 H 1148" />
+  <text class="node-index" x="813.3333333333334" y="251.5">03</text>
+  <text class="node-title" x="840.3333333333334" y="252.5">Routed work</text>
+  <text class="node-body" data-role="body-line" x="813.3333333333334" y="282.5">Public issue or private advisory</text>
+<text class="node-body" data-role="body-line" x="813.3333333333334" y="298.5">scoped proposal when appropriate</text>
+</g>
+<g class="node node--standard" data-node-id="release" data-node-kind="standard">
+  <rect class="node-card" x="52" y="363.5" width="537" height="116" rx="2" />
+  <path class="node-rule" d="M 52 368.5 H 589" />
+  <text class="node-index" x="68" y="389.5">04</text>
+  <text class="node-title" x="95" y="390.5">Release</text>
+  <text class="node-body" data-role="body-line" x="68" y="420.5">Reviewed change is</text>
+<text class="node-body" data-role="body-line" x="68" y="436.5">Available to future installs</text>
+</g>
+<g class="node node--standard" data-node-id="contribution" data-node-kind="standard">
+  <rect class="node-card" x="611" y="363.5" width="537" height="116" rx="2" />
+  <path class="node-rule" d="M 611 368.5 H 1148" />
+  <text class="node-index" x="627" y="389.5">05</text>
+  <text class="node-title" x="654" y="390.5">Contribution</text>
+  <text class="node-body" data-role="body-line" x="627" y="420.5">code · docs · design · fixture · test</text>
+</g>
+  </g>
+  <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
+  <g data-journal-part="provenance" data-provenance="content/docs/operations.mdx">
+    <text class="footer-label" x="48" y="571">PROVENANCE</text>
+    <text class="provenance-line" x="48" y="590">content/docs/operations.mdx</text>
+  </g>
+  <g data-journal-part="evidence" data-evidence-excerpt="Sort every support report into one lane first. Then ask only for the missing evidence needed to reproduce or route it.">
+  <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
+  <text class="evidence-line" x="48" y="626">Sort every support report into one lane first. Then ask only for the</text>
+<text class="evidence-line" x="48" y="641">missing evidence needed to reproduce or route it.</text>
+</g>
+  <g data-journal-part="prompt" data-prompt="Bring a reproducible need, not a screenshot wishlist.">
+    <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
+    <text class="prompt" x="744" y="594">Bring a reproducible need, not a</text>
+<text class="prompt" x="744" y="613">screenshot wishlist.</text>
+  </g>
+</svg>

@@ -1,0 +1,183 @@
+---
+title: Anatomy of a Production-Ready Payload Block Config
+description: Design explicit Payload block contracts with stable slugs, readable types, editor labels, validation, and safe field models.
+author: Ducksss
+date: 2026-07-14
+series: foundations
+publicationOrder: 5
+cover:
+  src: /blog/production-ready-payload-block-config/cover.webp
+  alt: Hero Basic block config beside a map of its slug, interface name, labels, and fields.
+tags:
+  - Payload CMS
+  - TypeScript
+  - Content modeling
+---
+
+A block config can be valid and still be unpleasant to maintain. Payload only needs enough
+information to construct the field, but a production repository needs more: stable persisted
+identity, useful generated names, editor-facing language, validation, and a content model that does
+not encode one fragile screenshot.
+
+I use four explicit properties as the starting contract: `slug`, `interfaceName`, `labels`, and
+`fields`. The [Payload Blocks reference](https://payloadcms.com/docs/fields/blocks) is the authority
+for the API. This article explains the design pressure behind each choice and how I review a config
+before it enters the [component catalog](/components).
+
+<BlogFigure
+  src="/blog/production-ready-payload-block-config/figure-01-config-anatomy.svg"
+  alt="An annotated block configuration diagram showing slug, interface name, editor labels, and fields converging into one contract"
+  caption="The four properties serve different consumers, but together they keep stored data, generated types, editor language, and frontend expectations aligned."
+/>
+
+## Give persisted data a stable discriminator
+
+The slug becomes the block's stored `blockType`. Treat it as data, not display copy. Choose a clear,
+specific identifier such as `heroBasic` or `featureBento`, then assume documents will carry it for a
+long time.
+
+Renaming a slug is a data migration. Changing `heroBasic` to `hero` in source does not rewrite old
+documents; those documents still ask the renderer for the original discriminator. If a rename is
+necessary, plan the migration, update renderer compatibility deliberately, regenerate types, and
+test both existing and new content.
+
+This is one reason every structural variant has a suffix. A bare `hero` looks convenient until a
+second structure appears. `heroBasic` and `heroVideo` state their identities early and keep catalog,
+manifest, generated union, and renderer keys unambiguous.
+
+## Name the generated interface for humans
+
+Payload can generate TypeScript from the config. Without an explicit `interfaceName`, generated
+names may be less predictable across a large schema. I prefer a readable PascalCase name such as
+`HeroBasicBlock`:
+
+```ts
+export const HeroBasic: Block = {
+  slug: 'heroBasic',
+  interfaceName: 'HeroBasicBlock',
+  // ...
+}
+```
+
+The interface appears in frontend props, tests, migrations, and editor tooling. It should identify
+the content shape without colliding with the React component name. A consistent `*Block` suffix
+makes code search useful and distinguishes generated data from implementation.
+
+Do not hand-maintain a duplicate interface beside the config. Payload's
+[generated TypeScript interfaces](https://payloadcms.com/docs/typescript/generating-types) make the
+schema authoritative. A handwritten twin will eventually diverge, and a cast will hide the moment
+it does.
+
+## Write labels for the chooser
+
+Labels are the words editors see when they select and manage blocks. Code-oriented slugs are poor
+UI copy, especially once the catalog has several related variants. Provide both singular and plural
+labels:
+
+```ts
+labels: {
+  singular: 'Basic hero',
+  plural: 'Basic heroes',
+}
+```
+
+Keep the label descriptive rather than promotional. An editor needs to distinguish structure and
+purpose quickly. “Split feature section” is more useful than “Stunning showcase.” If variants are
+visually similar, use the same vocabulary as the docs and preview titles so a person can move from
+catalog to admin without translating names.
+
+Labels also deserve localization when the admin team works in multiple languages. That is a
+product requirement around the Payload config, not something the frontend renderer can repair.
+
+## Model content, not CSS controls
+
+Fields are the largest part of the config and the easiest place to lose the boundary. I ask one
+question for every field: is this value meaningful content, or am I asking an editor to compensate
+for an inflexible component?
+
+Good fields describe meaning: eyebrow, heading, description, links, image, testimonial quote,
+author, feature items. Weak fields expose implementation: arbitrary padding numbers, hex colors,
+pixel font sizes, grid-template strings. The latter turn the admin into a low-quality visual editor
+and make every saved document dependent on today's CSS.
+
+Use structural variants for materially different layouts. Use optional fields for content-level
+variation. A hero with or without an eyebrow is the same structure. A hero whose primary medium is
+full-bleed video is likely a different registry item. The guide on
+[variants without prop explosion](/blog/component-variants-without-prop-explosion) develops this
+decision further.
+
+## Make validation express real requirements
+
+Mark a field `required` when the component cannot communicate without it. A hero heading is often
+required. An eyebrow usually is not. Avoid making every field required just to keep demo cards full;
+editors will respond with filler, and the frontend will still be untested for real omissions.
+
+Use field validation for content invariants that Payload can enforce: sensible array minimums and
+maximums, allowed relationship targets, URL format policies, and conditional requirements. Then
+make the React component resilient to values that can still be absent because of migrations,
+drafts, access control, or older documents.
+
+For arrays, model the item as a small coherent object. A feature item might contain an icon key,
+title, description, and optional link. Give the array useful labels, constrain it only when the
+design has a genuine capacity, and test the minimum and maximum in the preview.
+
+## Share field definitions as shipped source
+
+Related variants often share a content vocabulary. Instead of copying the same heading and link
+fields into three configs, put them in a real source module and spread them into each variant:
+
+```ts
+export const HeroVideo: Block = {
+  slug: 'heroVideo',
+  interfaceName: 'HeroVideoBlock',
+  labels: { singular: 'Video hero', plural: 'Video heroes' },
+  fields: [
+    ...heroFields,
+    { name: 'video', type: 'upload', relationTo: 'media', required: true },
+  ],
+}
+```
+
+That shared module must ship with every variant that imports it. In this registry, it belongs under
+`payload-components/source/blocks/shared`, in each registry item's files, and in each manifest's
+owned files. Internal source modules are not shadcn `registryDependencies`; that mechanism resolves
+public registry components, not private relative imports. The dedicated
+[shared-fields guide](/blog/shared-fields-across-component-families) shows the complete pattern.
+
+## Keep admin-only choices out of the renderer
+
+Some field options exist to improve authoring: descriptions, admin conditions, row layout, groups,
+and custom components. Use them to clarify a complicated model, but do not let critical business
+rules exist only as visual hints. A hidden field can still be present in historical or API-written
+data. Server-side validation and access control remain the enforcement boundary.
+
+When a block references custom admin UI, component paths participate in Payload's import map. Follow
+the official [custom components guidance](https://payloadcms.com/docs/custom-components/overview),
+regenerate the map after path changes, and verify the admin build. A frontend typecheck cannot prove
+that an admin module resolves.
+
+## Review the whole contract
+
+Before I call a config ready, I check the following:
+
+- The slug is specific, stable, and matches the renderer key.
+- The interface name is explicit and readable.
+- Singular and plural labels help an editor choose correctly.
+- Fields describe content rather than arbitrary styling.
+- Required flags and validation match genuine component invariants.
+- Optional values have deliberate empty states in React.
+- Shared fields live in a source file every consuming variant ships.
+- Types and the admin import map regenerate successfully.
+- Docs explain the content model in the same language as the admin.
+
+You can inspect these decisions in the [Hero Basic documentation](/docs/components/hero-basic), then
+install the source on a branch and review it in context:
+
+```bash
+npx payload-components add hero-basic
+```
+
+If you find a config that makes an editor fight the design, bring the concrete content case to the
+repository. A good contribution can be a field rename, a validation improvement, a clearer label,
+or a fixture that proves an empty state. The community value is not the number of configs; it is how
+reliably each config communicates its contract.

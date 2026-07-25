@@ -1,0 +1,192 @@
+---
+title: How RenderBlocks Turns Payload Data into a Next.js Page
+description: Follow a Payload layout through discriminated-union narrowing, renderer-map dispatch, wrappers, fallbacks, and React output.
+author: Ducksss
+date: 2026-07-14
+series: foundations
+publicationOrder: 6
+cover:
+  src: /blog/how-renderblocks-works/cover.webp
+  alt: RenderBlocks map-insertion code beside the dispatch path from layout data through the renderer map and component to the page.
+tags:
+  - Payload CMS
+  - Next.js
+  - TypeScript
+---
+
+`RenderBlocks` is the small function at the center of a block-based frontend. Payload has already
+validated and stored the content. React components already know how to draw individual sections.
+The renderer joins those systems by translating each saved `blockType` into the corresponding
+component without losing order or type information.
+
+Because the function is short, teams sometimes treat it as incidental plumbing. I treat it as an
+architectural boundary. A clear renderer makes missing registration obvious, keeps wrapper behavior
+consistent, and gives TypeScript one place to prove that stored data and component props agree.
+
+<BlogFigure
+  src="/blog/how-renderblocks-works/figure-01-renderer-dispatch.svg"
+  alt="Ordered Payload layout data dispatching to the real HeroBasicBlock, FeatureBentoBlock, and ContentQuoteBlock exports before rejoining as a page"
+  caption="RenderBlocks preserves the editor's sequence and maps each stored discriminator to one explicit exported block component."
+/>
+
+## Begin with the generated layout type
+
+A Pages collection with a Blocks field produces an array whose entries form a discriminated union.
+Payload's [type generation documentation](https://payloadcms.com/docs/typescript/generating-types)
+explains how `payload-types.ts` is derived from the config. In simplified form, the result resembles:
+
+```ts
+type LayoutBlock =
+  | { blockType: 'heroBasic'; id?: string; heading: string; copy?: string }
+  | { blockType: 'featureBento'; id?: string; items: FeatureItem[] }
+  | { blockType: 'contentQuote'; id?: string; quote: string; attribution?: string }
+```
+
+The `blockType` is the discriminator. When code checks that value, TypeScript can narrow all the
+other fields. That makes the generated union the right input to the renderer. Avoid replacing it
+with a hand-written base shape or `any`; doing so discards the strongest connection between Payload
+schema and frontend implementation.
+
+The introduction to [Payload blocks](/blog/what-is-a-payload-cms-block) explains how the union begins
+in the block config and stored document.
+
+## Keep the component map boring
+
+An explicit object is easy to search, patch, and review:
+
+```tsx
+const blockComponents = {
+  heroBasic: HeroBasicBlock,
+  featureBento: FeatureBentoBlock,
+  contentQuote: ContentQuoteBlock,
+}
+```
+
+The keys must match persisted slugs exactly. A clever naming transform—converting kebab case,
+loading files by convention, or deriving exports dynamically—can save a few lines while making the
+failure mode much less visible. For a component registry, explicit imports and keys create a clean
+diff and a stable text anchor for installation.
+
+The map is also a useful inventory. If Payload lets editors save `pricingCards` but the object has no
+matching key, the omission is apparent in one place. That transparency is more valuable than
+eliminating repetitive imports.
+
+## Type the map at the boundary
+
+React components for different blocks accept different props, so perfectly typing a heterogeneous
+map requires care. One practical approach is to preserve the generated union, narrow on
+`blockType`, and keep the unavoidable association localized rather than casting every component.
+
+Another is to define a mapped type from discriminators to extracted union members:
+
+```ts
+type BlockByType<T extends LayoutBlock['blockType']> = Extract<
+  LayoutBlock,
+  { blockType: T }
+>
+
+type RendererMap = {
+  [Type in LayoutBlock['blockType']]: React.ComponentType<BlockByType<Type>>
+}
+```
+
+In a closed application where every union member must render, this can make missing keys a compile
+error. In a registry or staged migration, you may intentionally render a subset, so
+`Partial<RendererMap>` and a visible fallback are more honest. The right strictness depends on who
+owns the schema and renderer together.
+
+The important rule is that any assertion lives inside this boundary and is backed by a map whose
+keys and values are reviewed together. Do not push uncertainty into every block component.
+
+## Preserve the editor's order and React identity
+
+The renderer maps the array in its saved order. Never sort by block type or component name. The
+sequence is editorial data.
+
+Use a stable stored `id` as the React key when Payload provides one. An index is a reasonable last
+resort for immutable server output, but it can produce misleading identity if client-side editing,
+preview updates, or animation reorders blocks. Do not generate a random key during render; that
+forces React to remount every section on every pass.
+
+```tsx
+return blocks.map((block, index) => {
+  const Component = blockComponents[block.blockType]
+  if (!Component) return null
+
+  return <Component key={block.id ?? `${block.blockType}-${index}`} {...block} />
+})
+```
+
+## Make unknown blocks observable
+
+Returning `null` is safe for the user but quiet for the developer. An unknown discriminator can
+mean a missing renderer registration, an old document after a rename, a draft created against a
+newer schema, or stale generated code. In development, log enough context to act:
+
+```tsx
+if (!Component) {
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn(`No renderer registered for ${block.blockType}`)
+  }
+  return null
+}
+```
+
+On a production editorial site, you may also send the condition to observability without exposing
+internal details to readers. A visible generic placeholder is useful in preview, where editors need
+to know content is missing; it is usually inappropriate on a public route. Keep preview and public
+failure behavior deliberate.
+
+If a block is absent today, the [not-rendering checklist](/blog/payload-block-not-rendering) walks
+through stored data, collection registration, mapping, types, and cache in diagnostic order.
+
+## Standardize wrapper props
+
+Block components often accept `id`, `className`, and a container option. Those props support section
+anchors, page-level spacing, and occasional full-bleed media. Preserve them instead of hiding each
+component inside a renderer-specific wrapper that changes semantics.
+
+A useful division is:
+
+- The renderer controls iteration, lookup, keys, and common page context.
+- The block controls its semantic section, internal container, and visual treatment.
+- The page controls the layout array and any preview or localization context.
+
+If the renderer injects spacing, every block becomes dependent on that one caller. If every block
+invents external margins, adjacent combinations become hard to tune. In this project, shared tokens
+and wrapper conventions keep those responsibilities predictable while leaving installed source
+editable.
+
+## Respect server and client boundaries
+
+Most RenderBlocks functions can be server components. Payload data arrives on the server, the map
+is static, and many sections need no client JavaScript. A block that contains an accordion, carousel,
+or form can put the client boundary around the interactive part rather than forcing the entire
+renderer to use `use client`.
+
+This matters for composition. A server renderer can include a mix of server and client descendants,
+but importing server-only modules into a client renderer will fail. Keep data fetching above the
+map, pass serializable props into client islands, and avoid turning the dispatcher into a global
+state container.
+
+## Verify the contract end to end
+
+I test renderer behavior at three levels. TypeScript catches prop drift. An integration test asserts
+that every installed block registers a matching map key and that reruns do not duplicate it. Browser
+tests publish or fixture representative layout data and confirm sections appear in order without
+overflow.
+
+For a new component, render minimum, typical, and stress content: omitted optional fields, long text,
+maximum arrays, and awkward media ratios. The happy-path catalog example proves very little about
+the dispatch layer if every value is perfect.
+
+You can inspect the project's [architecture documentation](/docs/architecture) and the live
+[catalog previews](/components), then install a small block to see the exact renderer patch:
+
+```bash
+npx payload-components add hero-basic
+```
+
+Read the map entry and its import as one unit. If your application uses a different renderer shape,
+share a minimal fixture or propose a documented adapter. Supporting real, legible patterns is more
+useful to the community than making the installer guess across arbitrary source code.

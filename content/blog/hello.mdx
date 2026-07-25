@@ -3,6 +3,15 @@ title: Hello — and why I built Payload Components
 description: A quick hello, the itch that started this, and what you'll find on this blog.
 author: Ducksss
 date: 2026-06-18
+series: project-notes
+publicationOrder: 1
+cover:
+  src: /blog/hello/cover.webp
+  alt: Hero Basic block config and shared heroFields source beside the registration, renderer mapping, and generation steps that complete an install.
+tags:
+  - Project notes
+  - Open source
+  - Payload CMS
 ---
 
 Hi, and welcome. If you're reading this, you've found the very first post on the Payload
@@ -25,6 +34,12 @@ Because a block isn't really alive until four more edits land:
 - map it in your render switch so it actually paints
 - regenerate your types
 - regenerate the admin import map
+
+<BlogFigure
+  src="/blog/hello/figure-01-origin-story.svg"
+  alt="A joined path from src/blocks/shared/heroFields.ts and Hero Basic source through Pages registration, RenderBlocks mapping, and generated application contracts"
+  caption="The shared field source ships with the block; the wiring then makes that owned source part of a working Payload application."
+/>
 
 None of those are difficult. They're just easy to forget — and when you miss one, the block
 doesn't error, it just silently never shows up. You copy, you move on, and twenty minutes later

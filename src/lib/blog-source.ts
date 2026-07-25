@@ -15,9 +15,10 @@ export const blogSource = loader({
 type BlogPage = (typeof blogSource)['$inferPage']
 
 export function getBlogPages() {
-  return [...blogSource.getPages()].sort(
-    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
-  )
+  return [...blogSource.getPages()].sort((a, b) => {
+    const dateDifference = new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+    return dateDifference || a.data.publicationOrder - b.data.publicationOrder
+  })
 }
 
 export async function getBlogLLMText(page: BlogPage) {

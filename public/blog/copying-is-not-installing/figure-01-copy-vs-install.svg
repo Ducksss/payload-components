@@ -1,0 +1,246 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="diagram-title diagram-description" class="diagram diagram--trace" data-mode="trace" data-series="installer-internals" data-issue="09">
+  <title id="diagram-title">Direct registry delivery and a wired install stop at different boundaries</title>
+  <desc id="diagram-description">Both paths deliver reviewable source, while the companion installer also handles Payload integration and recorded recovery state.</desc>
+  <defs>
+    <pattern id="journal-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e4e4e7" stroke-width="1" />
+    </pattern>
+    <marker id="journal-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669" />
+    </marker>
+    <style>
+      .diagram {
+        background: #f7f5ef;
+        color: #18181b;
+      }
+      .paper {
+        fill: #f7f5ef;
+      }
+      .grid {
+        fill: url(#journal-grid-pattern);
+      }
+      .masthead,
+      .mode-label,
+      .folio-label,
+      .footer-label,
+      .node-index,
+      .edge-label,
+      .node-title--mono,
+      .node-body--mono,
+      .provenance-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .masthead {
+        fill: #18181b;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.7px;
+      }
+      .kicker {
+        fill: #047857;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+      }
+      .headline {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 28px;
+        font-weight: 720;
+        letter-spacing: -0.4px;
+      }
+      .mode-box {
+        fill: #ffffff;
+        stroke: #047857;
+        stroke-width: 2;
+      }
+      .mode-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 1.4px;
+      }
+      .folio-label {
+        fill: #52525b;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 1.2px;
+      }
+      .journal-rule {
+        stroke: #18181b;
+        stroke-width: 1;
+      }
+      .accent-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.5;
+      }
+      .edge-path {
+        fill: none;
+        stroke: #059669;
+        stroke-linecap: round;
+        stroke-width: 2.25;
+      }
+      .diagram--join .edge-path {
+        stroke-dasharray: 7 5;
+      }
+      .diagram--inspect .edge-path {
+        stroke-width: 1.75;
+      }
+      .edge-label-paper {
+        fill: #f7f5ef;
+        stroke: #e4e4e7;
+        stroke-width: 1;
+      }
+      .edge-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-card {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1.25;
+      }
+      .diagram--inspect .node-card {
+        stroke: #18181b;
+      }
+      .node--terminal .node-card {
+        fill: #18181b;
+        stroke: #18181b;
+      }
+      .node-rule {
+        stroke: #059669;
+        stroke-width: 5;
+      }
+      .node-index {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .node-title {
+        fill: #18181b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        font-weight: 720;
+      }
+      .node-body {
+        fill: #52525b;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+      }
+      .node--terminal .node-title,
+      .node--terminal .node-body {
+        fill: #ffffff;
+      }
+      .node--terminal .node-index {
+        fill: #059669;
+      }
+      .footer-paper {
+        fill: #ffffff;
+        stroke: #d4d4d8;
+        stroke-width: 1;
+      }
+      .footer-label {
+        fill: #047857;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .provenance-line,
+      .evidence-line {
+        fill: #52525b;
+        font-size: 13px;
+      }
+      .evidence-line {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .prompt {
+        fill: #047857;
+        font-family: Georgia, serif;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 650;
+      }
+      .registration {
+        fill: none;
+        stroke: #047857;
+        stroke-width: 1.5;
+      }
+    </style>
+  </defs>
+  <rect class="paper" width="1200" height="675" />
+  <rect class="grid" data-journal-part="grid" x="28" y="24" width="1144" height="627" />
+  <path class="journal-rule" d="M 36 62 H 1164" />
+  <g data-journal-part="masthead">
+    <text class="masthead" x="48" y="49">INSTALLER INTERNALS · ISSUE 09</text>
+  </g>
+  <g data-journal-part="mode">
+    <rect class="mode-box" x="876" y="27" width="96" height="27" rx="2" />
+    <text class="mode-label" x="924" y="46" text-anchor="middle">TRACE</text>
+  </g>
+  <g data-journal-part="folio">
+    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE 09 / 32</text>
+  </g>
+  <text class="kicker" x="48" y="86">FILES ARE THE START</text>
+  <text class="headline" x="48" y="119">Direct registry delivery and a wired install stop at different</text>
+<text class="headline" x="48" y="150">boundaries</text>
+  <path class="accent-path" d="M 941 96 C 1004 83, 1054 105, 1138 81" />
+  <circle class="registration" cx="1139" cy="81" r="8" />
+  <g data-diagram-layer="edges">
+    <g class="edge">
+  <path class="edge-path" data-edge-from="direct" data-edge-to="manual" data-edge-axis="vertical" d="M 320.5 343.5 C 320.5 350, 320.5 350, 320.5 356.5" marker-end="url(#journal-arrow)" />
+
+</g>
+<g class="edge">
+  <path class="edge-path" data-edge-from="wrapper" data-edge-to="wired" data-edge-axis="vertical" d="M 879.5 343.5 C 879.5 350, 879.5 350, 879.5 356.5" marker-end="url(#journal-arrow)" />
+
+</g>
+  </g>
+  <g data-diagram-layer="nodes">
+    <g class="node node--standard" data-node-id="direct" data-node-kind="standard">
+  <rect class="node-card" x="52" y="225.5" width="537" height="116" rx="2" />
+  <path class="node-rule" d="M 52 230.5 H 589" />
+  <text class="node-index" x="68" y="251.5">01</text>
+  <text class="node-title" x="95" y="252.5">Direct shadcn delivery</text>
+  <text class="node-body" data-role="body-line" x="68" y="282.5">shared fields · config · component</text>
+<text class="node-body" data-role="body-line" x="68" y="298.5">public registry dependencies</text>
+</g>
+<g class="node node--code" data-node-id="wrapper" data-node-kind="code">
+  <rect class="node-card" x="611" y="225.5" width="537" height="116" rx="2" />
+  <path class="node-rule" d="M 611 230.5 H 1148" />
+  <text class="node-index" x="627" y="251.5">02</text>
+  <text class="node-title node-title--mono" x="654" y="252.5">payload-components add</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="627" y="282.5">the same owned source</text>
+<text class="node-body node-body--mono" data-role="body-line" x="627" y="298.5">+ manifest-backed install plan</text>
+</g>
+<g class="node node--standard" data-node-id="manual" data-node-kind="standard">
+  <rect class="node-card" x="52" y="363.5" width="537" height="116" rx="2" />
+  <path class="node-rule" d="M 52 368.5 H 589" />
+  <text class="node-index" x="68" y="389.5">03</text>
+  <text class="node-title" x="95" y="390.5">Application completes</text>
+  <text class="node-body" data-role="body-line" x="68" y="420.5">register · map · run generators · verify</text>
+</g>
+<g class="node node--standard" data-node-id="wired" data-node-kind="standard">
+  <rect class="node-card" x="611" y="363.5" width="537" height="116" rx="2" />
+  <path class="node-rule" d="M 611 368.5 H 1148" />
+  <text class="node-index" x="627" y="389.5">04</text>
+  <text class="node-title" x="654" y="390.5">Installer-owned integration</text>
+  <text class="node-body" data-role="body-line" x="627" y="420.5">manifest deps · fragments · generators · state</text>
+</g>
+  </g>
+  <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
+  <g data-journal-part="provenance" data-provenance="payload-components/registry.json#hero-basic">
+    <text class="footer-label" x="48" y="571">PROVENANCE</text>
+    <text class="provenance-line" x="48" y="590">payload-components/registry.json#hero-basic</text>
+  </g>
+
+  <g data-journal-part="prompt" data-prompt="Inspect the diff before you call it installed.">
+    <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
+    <text class="prompt" x="744" y="594">Inspect the diff before you call it</text>
+<text class="prompt" x="744" y="613">installed.</text>
+  </g>
+</svg>

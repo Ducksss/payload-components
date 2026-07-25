@@ -1,0 +1,189 @@
+---
+title: Modeling Pricing Pages in Payload Without Hard-Coding the Design
+description: Separate plan data, comparison content, calls to action, and structural pricing variants so editors can maintain the page safely.
+author: Ducksss
+date: 2026-07-14
+series: component-design
+publicationOrder: 19
+cover:
+  src: /blog/modeling-pricing-pages/cover.webp
+  alt: Pricing Cards preview beside a field-and-preview comparison with Pricing Cards Muted, Pricing Split, and Pricing Enterprise.
+tags:
+  - Payload CMS
+  - Pricing pages
+  - Content modeling
+---
+
+Pricing pages look like grids, but their content is closer to a small product model. A plan has a
+name, price presentation, billing context, description, features, action, and sometimes a badge or
+comparison role. If those values are hard-coded in JSX, every copy change becomes a deployment. If
+every CSS decision becomes a CMS field, editors inherit a fragile layout tool.
+
+The useful middle is a content model that describes plans and evidence while structural variants
+own the presentation. Payload manages the values. React owns card geometry, responsive behavior,
+semantics, and safe link rendering.
+
+<BlogFigure
+  src="/blog/modeling-pricing-pages/figure-01-pricing-montage.webp"
+  alt="Source-backed documentation and config panels comparing Pricing Cards, Pricing Cards Muted, Pricing Split, and Pricing Enterprise without displaying fictional prices"
+  caption="The contracts reveal the structural differences: cards and muted cards allow two to four plans, split requires two, and enterprise adds a single-plan layout with optional logos."
+/>
+
+## Decide where plan data belongs
+
+If plan information appears only on one landing page and changes with that page, an array inside the
+pricing block may be sufficient. If the same plans power checkout, account entitlements, multiple
+pages, or localized product surfaces, use a dedicated collection or another authoritative domain
+system and reference it.
+
+Do not let a decorative page block become the source of truth for billing. A displayed `$29` string
+does not establish the amount charged by a payment provider. When commerce is involved, treat the
+provider or backend product model as authoritative and use Payload for editorial framing or a safe
+projection.
+
+This article focuses on editorial pricing sections. Application-specific billing logic remains
+outside the component registry.
+
+That boundary also protects preview environments. A designer should be able to render representative
+plans without creating live billing products, and an editor should be able to revise explanatory
+copy without changing entitlements. When the frontend needs live values, compose them on the server
+from a trusted product identifier and the billing system's response. Payload can still provide the
+heading, comparison language, feature explanations, and destination policy. The public section then
+shows one coherent projection while each system remains authoritative for the information it owns.
+
+Document that ownership beside the field model. Future maintainers should know which values may be
+edited freely and which are synchronized or derived.
+
+## Model display values honestly
+
+Pricing is not always one number. A plan may show a currency, amount, cadence, qualifier, original
+price, or “Contact us.” Storing everything in one `price` string gives editors flexibility but makes
+formatting and accessibility inconsistent. Modeling every monetary edge can overfit a marketing
+block to commerce logic.
+
+Choose a contract based on the site. A simple editorial model can use:
+
+```ts
+{
+  name: 'plans',
+  type: 'array',
+  fields: [
+    { name: 'name', type: 'text', required: true },
+    { name: 'description', type: 'textarea' },
+    { name: 'price', type: 'text', required: true },
+    { name: 'priceSuffix', type: 'text' },
+    { name: 'features', type: 'array', fields: featureFields },
+    { name: 'link', type: 'group', fields: linkFields },
+  ],
+}
+```
+
+Labels and descriptions should clarify that values are display copy, not billing configuration. If
+structured money is required, model currency and amount with validation and format them through a
+shared utility.
+
+## Keep comparison claims maintainable
+
+Feature lists need consistent granularity. One plan should not list “Everything you need” while
+another lists seven technical capabilities. Give every item a concise label and optional context.
+
+For a small number of cards, per-plan arrays are easy to edit. For a strict comparison table, model
+features as rows with a value per plan so the relationship remains aligned. These are different
+content structures and often deserve different blocks.
+
+Avoid storing arbitrary checkmark HTML. Use a controlled value such as included, excluded, limited,
+or a short text value. The renderer can provide the accessible phrase and visual icon. Screen readers
+need more than color or a bare check glyph to understand availability.
+
+The [component catalog](/components) shows current card, split, and enterprise-oriented structures.
+Choose from what is actually shipped rather than building one schema with a dozen layout toggles.
+
+## Make emphasis constrained
+
+Many pricing sections highlight one plan. A boolean `featured` field on every plan allows zero,
+one, or many featured cards. If the design assumes exactly one, validate that invariant or model the
+highlight at section level as a selected plan reference.
+
+The content meaning should be “recommended plan,” not “emerald border.” The component decides how
+recommendation appears through tokens, ordering, badges, and responsive layout.
+
+Be cautious with claims such as “most popular.” If the label is not based on evidence, it can erode
+trust. Give editors a neutral optional badge and establish review ownership for time-sensitive claims.
+
+## Treat actions and destinations as a trust boundary
+
+Pricing actions often lead to signup, checkout, contact, or documentation. Use a shared link model
+that distinguishes internal references from external URLs. Validate allowed protocols and render
+links as links. Do not allow arbitrary script URLs or raw HTML through a convenience text field.
+
+If an action creates a checkout session, the client should call a trusted server endpoint that maps
+an allowed plan identifier to backend product configuration. Never accept a CMS-provided amount as
+the amount to charge.
+
+The [safe links, forms, and embeds guide](/blog/safe-links-forms-embeds) covers validation and server
+boundaries in more detail.
+
+## Choose a structural variant deliberately
+
+The pricing family includes structures such as `pricing-cards`, `pricing-cards-muted`,
+`pricing-cards-cta`, `pricing-split`, and `pricing-enterprise`. Their differences are not merely
+color. They allocate hierarchy differently: equal plans, a quiet treatment, a prominent action,
+editorial split content, or enterprise context.
+
+Keep those as suffixed registry items with explicit schemas and previews. Shared field definitions
+can preserve plan vocabulary, but each variant should declare the requirements its React structure
+actually needs. The [variant design article](/blog/component-variants-without-prop-explosion) explains
+the boundary.
+
+Do not expose the item name as a runtime dropdown in one universal block. The catalog is the better
+selection interface because it shows the structure before installation.
+
+## Plan for localization and legal review
+
+Currency format, cadence, tax language, cancellation claims, and feature availability vary by market.
+Use Payload localization where the editorial team can support it, and keep locale-specific pricing
+logic explicit. A translated currency symbol is not necessarily a converted or valid local price.
+
+Give legal or product reviewers a predictable field model and versions workflow. Time-sensitive
+claims need ownership and review dates outside the component itself. The block should make copy easy
+to update without pretending it can govern business policy.
+
+Avoid baking temporary campaign language into source. Put the text in fields, constrain it through
+the design, and schedule publication through the Page collection's normal draft workflow.
+
+## Test awkward plan sets
+
+A three-card desktop screenshot is only one state. Test:
+
+- one plan and two plans;
+- four or five plans at desktop and mobile widths;
+- a long plan name and multi-line price suffix;
+- no recommended plan and a validated single recommendation;
+- unequal feature counts;
+- text values instead of checkmarks;
+- a missing optional action;
+- localized copy with longer words;
+- keyboard focus and zoomed text.
+
+Cards should grow without clipping, and DOM order should match reading and focus order. A horizontal
+comparison may need an accessible scroll container and visible affordance on narrow screens. Do not
+shrink text until a dense table technically fits.
+
+## Keep the frontend source adaptable
+
+Installed components preserve optional wrapper props and use design tokens. Adapt the plan model to
+your domain after installation. If plans live in a collection, replace the inline array with a
+relationship or server-composed projection. If checkout requires authentication, integrate it at the
+application boundary.
+
+Start with the structure closest to the page's editorial job:
+
+```bash
+npx payload-components add pricing-cards
+```
+
+Review the [pricing component docs](/docs/components/pricing-cards), enter actual plan content, and
+test the non-ideal states before publishing. If a repeated pricing structure is missing, propose it
+through the [contributing guide](/docs/contributing) with its content model, responsive behavior,
+accessibility rules, and distinction from existing variants. A useful registry family grows from
+real plan structures, not from collecting cosmetic permutations.

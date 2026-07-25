@@ -34,6 +34,8 @@ export function GET() {
     `- [Docs](${siteUrl}/docs)`,
     `- [AI discovery guide](${siteUrl}${aiDiscoveryRoute})`,
     `- [Component catalog](${siteUrl}/components)`,
+    `- [Blog](${siteUrl}/blog)`,
+    `- [Blog RSS](${siteUrl}/blog/rss.xml)`,
     `- [Template concepts](${siteUrl}/templates)`,
     `- [Blog](${siteUrl}${blogRoute})`,
     `- [Updates feed](${siteUrl}${feedRoute})`,
