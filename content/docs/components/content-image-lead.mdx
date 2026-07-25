@@ -1,6 +1,7 @@
 ---
 title: Content Image Lead
-description: A content section led by a full-width image above a two-column heading, body, and CTA.
+seoTitle: Image-led Content Block for Payload CMS
+description: Install a typed Payload CMS content block with a full-width lead image, two-column copy, and CTA. The CLI wires it into your Pages layout and renderer.
 icon: Image
 ---
 
@@ -10,9 +11,12 @@ icon: Image
 
 <Tabs items={['Command', 'Manual']}>
   <Tab value="Command">
-    ```bash
-    npx payload-components add content-image-lead
-    ```
+    <RunnableCommand
+      command="npx payload-components add content-image-lead"
+      label="Copy the content-image-lead install command"
+      trackInstall
+      emphasis="primary"
+    />
   </Tab>
   <Tab value="Manual">
     Copy the files straight from the registry, then wire the Payload fragments by hand:

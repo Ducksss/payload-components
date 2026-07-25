@@ -549,6 +549,48 @@ describe('Fumadocs site shell', () => {
     expect(sources[0]?.code).toContain("slug: 'heroBasic'")
   })
 
+  it('turns the top search component pages into distinct tracked install entries', async () => {
+    const pages = [
+      {
+        description:
+          'Install a typed Payload CMS content-list block with a serif heading and labeled terms. The CLI wires it into your Pages layout, renderer, types, and import map.',
+        seoTitle: 'Content List Block for Payload CMS',
+        slug: 'content-list',
+      },
+      {
+        description:
+          'Install a typed Payload CMS content block with a full-width lead image, two-column copy, and CTA. The CLI wires it into your Pages layout and renderer.',
+        seoTitle: 'Image-led Content Block for Payload CMS',
+        slug: 'content-image-lead',
+      },
+      {
+        description:
+          'Install a typed Payload CMS feature-media block with body copy, two icon features, and a framed image. The CLI wires it into your Pages layout and renderer.',
+        seoTitle: 'Feature Media Block for Payload CMS',
+        slug: 'content-feature-media',
+      },
+    ] as const
+
+    for (const page of pages) {
+      const source = await readFile(
+        path.join(repoRoot, 'content', 'docs', 'components', `${page.slug}.mdx`),
+        'utf8',
+      )
+
+      expect(source).toContain(`seoTitle: ${page.seoTitle}`)
+      expect(source).toContain(`description: ${page.description}`)
+      expect(source).toContain(`command="npx payload-components add ${page.slug}"`)
+      expect(source).toContain(`label="Copy the ${page.slug} install command"`)
+      expect(source).toContain('trackInstall')
+      expect(source).toContain('emphasis="primary"')
+      expect(source).toContain(
+        `pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/${page.slug}.json`,
+      )
+      expect(source).toContain(`<ComponentWiring slug="${page.slug}" />`)
+      expect(source.trim().endsWith(`<ComponentFamily slug="${page.slug}" />`)).toBe(true)
+    }
+  })
+
   it('does not reintroduce Payload CMS runtime app surfaces', async () => {
     const appRoot = path.join(repoRoot, 'src', 'app')
     const forbiddenNames = new Set([
