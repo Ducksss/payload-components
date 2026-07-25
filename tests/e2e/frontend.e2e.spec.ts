@@ -760,6 +760,84 @@ test.describe('Light shadcn frontend', () => {
     )
   })
 
+  test('turns the top search component pages into attributed install entries', async ({
+    page,
+    context,
+  }) => {
+    const entries = [
+      {
+        description:
+          'Install a typed Payload CMS content-list block with a serif heading and labeled terms. The CLI wires it into your Pages layout, renderer, types, and import map.',
+        seoTitle: 'Content List Block for Payload CMS',
+        slug: 'content-list',
+      },
+      {
+        description:
+          'Install a typed Payload CMS content block with a full-width lead image, two-column copy, and CTA. The CLI wires it into your Pages layout and renderer.',
+        seoTitle: 'Image-led Content Block for Payload CMS',
+        slug: 'content-image-lead',
+      },
+      {
+        description:
+          'Install a typed Payload CMS feature-media block with body copy, two icon features, and a framed image. The CLI wires it into your Pages layout and renderer.',
+        seoTitle: 'Feature Media Block for Payload CMS',
+        slug: 'content-feature-media',
+      },
+    ] as const
+
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+
+    for (const entry of entries) {
+      const command = `npx payload-components add ${entry.slug}`
+      const sourcePath = `/docs/components/${entry.slug}`
+
+      await page.goto(`${baseURL}${sourcePath}`)
+      await waitForCopyController(page)
+      await stubGtagEvents(page)
+
+      await expect(page).toHaveTitle(new RegExp(entry.seoTitle))
+      await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+        'content',
+        entry.description,
+      )
+
+      const installButton = page.getByRole('button', {
+        name: `Copy the ${entry.slug} install command`,
+      })
+      await expect(installButton).toBeVisible()
+      await expect(installButton).toHaveAttribute('data-cta-level', 'primary')
+      await installButton.click()
+
+      await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(command)
+      expect(await getGtagEvents(page)).toContainEqual([
+        'event',
+        'copy_install_command',
+        {
+          command,
+          component: entry.slug,
+          source_path: sourcePath,
+        },
+      ])
+      expect(await getPostHogEvents(page)).toEqual(
+        expect.arrayContaining([
+          {
+            event: 'copy_install_command',
+            properties: {
+              command,
+              component: entry.slug,
+              source_path: sourcePath,
+            },
+          },
+        ]),
+      )
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+        ),
+      ).toBe(false)
+    }
+  })
+
   test('copies a catalog family-card command', async ({ page, context }) => {
     // feature-bento is the Features family's representative card in the landing
     // teaser; its command differs from the hero's primaryInstallCommand.
