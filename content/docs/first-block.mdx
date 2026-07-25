@@ -1,10 +1,22 @@
 ---
-title: Use your first block
-description: From the add command to a live page — the editor side of the flow, start to finish.
+title: Use your first Payload CMS v3 block
+seoTitle: Build your first Payload CMS v3 block
+description: Install a typed Payload CMS v3 block, add it in the admin, publish the page, and verify the first-block workflow from editor to frontend.
 icon: MousePointerClick
 ---
 
-You've run `payload-components add` (see [Installation](/docs/installation) for the CLI side). The wiring is already done — here's the editor journey, from the Payload admin to a live page, using **Feature Grid Basic** as the example. Every component follows the same path.
+Install **Feature Grid Basic**, then follow its full editor journey from the Payload CMS v3 admin to a live page. Every block follows the same path.
+
+## Install the example block
+
+Run the supported installer from your Payload project root. It copies the typed block source and completes the Pages layout, renderer, generated types, and admin import-map wiring before you open the editor.
+
+<RunnableCommand
+  command="npx payload-components add feature-grid-basic"
+  label="Copy the feature-grid-basic install command"
+  trackInstall
+  emphasis="primary"
+/>
 
 <Callout type="info" title="Why the block is already there">
   `add` didn't just copy files. It registered the block in your `Pages` layout

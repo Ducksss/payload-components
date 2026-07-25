@@ -769,6 +769,54 @@ test.describe('Light shadcn frontend', () => {
     )
   })
 
+  test('turns the first-block workflow into an attributed install entry', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs/first-block`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Use your first Payload CMS v3 block',
+      }),
+    ).toBeVisible()
+
+    const copyButton = page.getByRole('button', {
+      name: 'Copy the feature-grid-basic install command',
+    })
+    await expect(copyButton).toBeVisible()
+    await copyButton.click()
+
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add feature-grid-basic')
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: 'npx payload-components add feature-grid-basic',
+        component: 'feature-grid-basic',
+        source_path: '/docs/first-block',
+      },
+    ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: 'npx payload-components add feature-grid-basic',
+            component: 'feature-grid-basic',
+            source_path: '/docs/first-block',
+          },
+        },
+      ]),
+    )
+  })
+
   test('copies a catalog family-card command', async ({ page, context }) => {
     // feature-bento is the Features family's representative card in the landing
     // teaser; its command differs from the hero's primaryInstallCommand.
