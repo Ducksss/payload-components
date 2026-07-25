@@ -331,6 +331,10 @@ test.describe('Light shadcn frontend', () => {
           (component, index, entries) =>
             entries.findIndex((entry) => entry.category === component.category) === index,
         )
+    const componentTitleOverrides = new Map([
+      ['content-feature-media', /Feature Media Block for Payload CMS/],
+      ['content-image-lead', /Image-led Content Block for Payload CMS/],
+    ])
 
     const routes = [
       {
@@ -366,7 +370,7 @@ test.describe('Light shadcn frontend', () => {
       ...checkedComponents.map((component) => ({
         h1: component.title,
         path: component.href,
-        title: new RegExp(component.title),
+        title: componentTitleOverrides.get(component.slug) ?? new RegExp(component.title),
       })),
     ]
 
