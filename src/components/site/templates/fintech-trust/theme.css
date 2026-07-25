@@ -1,13 +1,437 @@
-/* Ledgerline (fintech-trust) scoped theme — FOUNDATION SKELETON.
+/* Ledgerline (fintech-trust) scoped theme — the institutional money-movement
+ * direction.
  *
- * Convention (frozen contract): every rule in this file must live beneath the
- * [data-template-theme='fintech-trust'] root the shell renders. Override the
- * semantic variables the demo twins consume and add template-specific tokens as
- * needed. Never touch :root, .dark, another template's scope, or
- * src/app/globals.css. The site stays forced-light; intentional dark surfaces
- * use named template tokens. */
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='fintech-trust'] root the shell renders. It overrides the
+ * semantic variables the demo twins consume and adds named Ledgerline tokens; it
+ * never touches :root, .dark, another template's scope, or src/app/globals.css.
+ * The site stays forced-light — the ink surfaces below are deliberate dark
+ * surfaces built from named template tokens, not a theme.
+ *
+ * Art direction: three tonal registers instead of one page colour.
+ *
+ *   ink    — the default surface. Deep, cool, slightly blue slate; panels lift
+ *            from it by a few points of lightness plus a hairline.
+ *   slate  — the `muted` band: a raised shelf, one notch up, with the panel
+ *            tokens bumped in step so cards still read as raised.
+ *   paper  — the `contrast` band, INVERTED. A pale statement surface for the
+ *            figures and the written guarantees: the printed report tipped into
+ *            a dark platform site. This inversion (rather than Relay's
+ *            light-page/dark-band) is the concept's structural signature.
+ *
+ * Teal is signal, not decoration: it marks the primary action, the eyebrow index
+ * rules, live state, and the hero's closing word — and nothing else. Two
+ * registers keep it AA on both bases (a bright teal on ink, a deep teal on
+ * paper). Geometry is near-square, numerals are tabular everywhere, rules are
+ * hairlines, and the catalog's specimen card frames are dissolved so pages read
+ * as one dense composed site. */
 
 [data-template-theme='fintech-trust'] {
-  background-color: var(--background);
+  /* ————— Named Ledgerline surfaces ————— */
+  --ll-ink: oklch(18% 0.016 240deg);
+  --ll-ink-deep: oklch(15.5% 0.015 240deg); /* header chrome, inner-page hero */
+  --ll-ink-floor: oklch(13.5% 0.014 240deg); /* status rail + footer */
+  --ll-slate: oklch(24% 0.019 240deg); /* the raised `muted` shelf */
+  --ll-paper: oklch(95.5% 0.006 230deg); /* the inverted `contrast` statement */
+  --ll-teal: oklch(76% 0.098 195deg); /* signal on ink */
+  --ll-teal-deep: oklch(45% 0.086 200deg); /* signal on paper */
+  --ll-rule: oklch(100% 0 0deg / 15%); /* hairline on ink */
+  --ll-rule-ink: oklch(20% 0.02 240deg / 15%); /* hairline on paper */
+
+  /* ————— Semantic variables the twins consume (ink register) —————
+   * Panels are painted with bg-background/85, bg-background/60 and bg-card, so
+   * --background/--card sit a few points ABOVE the band colour: that difference
+   * is what makes a card read as raised on a dark surface. */
+  --background: oklch(23.5% 0.018 240deg);
+  --foreground: oklch(96% 0.004 230deg);
+  --card: oklch(25.5% 0.019 240deg);
+  --card-foreground: oklch(96% 0.004 230deg);
+  --popover: oklch(25.5% 0.019 240deg);
+  --popover-foreground: oklch(96% 0.004 230deg);
+
+  --primary: var(--ll-teal);
+  --primary-foreground: oklch(15% 0.018 240deg);
+  --secondary: oklch(29% 0.02 240deg);
+  --secondary-foreground: oklch(96% 0.004 230deg);
+  --muted: oklch(27.5% 0.02 240deg);
+  /* 77%: muted body text clears AA 4.5:1 on every ink surface here, including
+     the lightest (--accent at 31%) — measured 6.3:1 at the worst pairing. */
+  --muted-foreground: oklch(77% 0.013 235deg);
+  --accent: oklch(31% 0.022 235deg);
+  --accent-foreground: oklch(96% 0.004 230deg);
+
+  /* The aurora hero mixes its luminous layers from --brand/--brand-100/
+     --brand-200 and --primary; the tints below are the instrument-glow register
+     (cool, chroma held at or under 0.1 — see the [data-aurora-root] block). */
+  --brand: var(--ll-teal);
+  --brand-foreground: oklch(15% 0.018 240deg);
+  --brand-50: oklch(26% 0.026 200deg);
+  --brand-100: oklch(66% 0.078 200deg);
+  --brand-200: oklch(56% 0.072 210deg);
+  --brand-600: oklch(83% 0.1 192deg); /* the hero's serif-italic closing word */
+
+  --border: var(--ll-rule);
+  --input: oklch(100% 0 0deg / 22%);
+  --ring: var(--ll-teal);
+
+  /* Near-square institutional geometry. --radius feeds the sm–xl scale through
+     the calc() chain in globals.css; the named container radii are @theme inline
+     literals, so those are flattened at element level below. */
+  --radius: 0.25rem;
+
+  /* A denser display scale than the catalog default: smaller headlines, tighter
+     leading, and far less negative tracking than the house -0.06em — an
+     institutional voice reads level, not compressed. */
+  --text-4xl: 2.125rem;
+  --text-4xl--line-height: 1.14;
+  --text-5xl: 2.625rem;
+  --text-5xl--line-height: 1.08;
+  --text-6xl: 3.375rem;
+  --text-6xl--line-height: 1.04;
+  --tracking-display: -0.025em;
+  --tracking-title: -0.02em;
+  --tracking-eyebrow: 0.2em;
+
+  background-color: var(--ll-ink);
   color: var(--foreground);
+  /* Every figure on the site is a statement figure: monospaced digit widths so
+     columns of numerals align down a table and across a metric row. */
+  font-variant-numeric: tabular-nums;
+}
+
+[data-template-theme='fintech-trust'] ::selection {
+  background-color: color-mix(in oklab, var(--ll-teal) 32%, transparent);
+}
+
+/* ---------------------------------------------------------------- */
+/* Geometry: flatten the named container radii (baked @theme inline  */
+/* literals). rounded-full is left alone for genuine circles — dots, */
+/* progress rings, step markers — and squared per-case below.        */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='fintech-trust']
+  :is(.rounded-frame, .rounded-panel, .rounded-card, .rounded-inset, .rounded-2xl, .rounded-xl) {
+  border-radius: 0.25rem;
+}
+
+/* Badges and chips (Badge's base class carries rounded-full + border) become
+   near-square tiles; the same treatment squares the aurora's floating chips and
+   the avatar monogram tiles, so nothing on the page reads like a pill. */
+[data-template-theme='fintech-trust'] [data-template-canvas] .rounded-full.border {
+  border-radius: 0.1875rem;
+}
+
+/* The numbered step markers are chips, not buttons. */
+[data-template-theme='fintech-trust'] [data-template-canvas] .rounded-full.bg-primary {
+  border-radius: 0.1875rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Typography: mono micro-labels + the eyebrow index rule.           */
+/* ---------------------------------------------------------------- */
+
+/* Every micro-label — section eyebrows, metric captions, table group headers —
+   switches to the mono voice: this is the site's index type. */
+[data-template-theme='fintech-trust'] [data-template-canvas] .tracking-eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+/* Eyebrow badges lose the pill entirely and become teal index labels ruled off
+   on the leading edge. The ink scrim is deliberate: the home eyebrow sits over
+   the aurora's luminous arch, and a fixed dark backing is what guarantees the
+   teal label stays AA there rather than depending on the gradient behind it. */
+[data-template-theme='fintech-trust'] [data-template-canvas] .rounded-full.tracking-eyebrow {
+  background-color: color-mix(in oklab, var(--ll-ink) 82%, transparent);
+  border-color: transparent;
+  border-inline-start: 2px solid var(--ll-teal);
+  border-radius: 0;
+  color: var(--ll-teal);
+  padding-inline: 0.625rem 0.375rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Section rhythm: dissolve the catalog specimen frame into dense    */
+/* full-bleed bands. The twin structure is stable and contract-      */
+/* tested: [data-template-section] > [aria-hidden] > frame div.      */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='fintech-trust'] [data-template-section] > [aria-hidden='true'] {
+  margin-inline: auto;
+  /* Tighter than the twins would sprawl on a wide display — density is the
+     point, and a held measure keeps tables and grids readable. */
+  max-width: 88rem;
+}
+
+[data-template-theme='fintech-trust'] [data-template-section] > [aria-hidden='true'] > div {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding-block: clamp(3rem, 6vw, 4.5rem);
+}
+
+/* Adjacent sections on the same ink surface are separated by a hairline rule —
+   the tonal bands separate themselves. */
+[data-template-theme='fintech-trust']
+  [data-template-section][data-tone='base']
+  + [data-template-section][data-tone='base'] {
+  border-top: 1px solid var(--ll-rule);
+}
+
+/* ————— The hero band ————— */
+
+[data-template-theme='fintech-trust'] [data-template-section='hero'] > [aria-hidden='true'] > div {
+  padding-block: clamp(3.5rem, 7vw, 5.5rem);
+}
+
+/* The aurora hero paints its own atmosphere; the band only pools a whisper of
+   teal at the top edge so the arch and rays own the light story. */
+[data-template-theme='fintech-trust'] [data-template-section='hero']:has([data-aurora-root]) {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--ll-teal) 7%, transparent),
+    transparent 58%
+  );
+}
+
+/* Inner-page heroes get their own designed surface instead of a plain dark
+   rectangle: a deeper ink plate ruled into wide columns, like the header of a
+   ledger sheet. Transform-free and static — chrome, not motion. */
+[data-template-theme='fintech-trust'] [data-template-section='hero']:not(:has([data-aurora-root])) {
+  background-color: var(--ll-ink-deep);
+  background-image:
+    linear-gradient(180deg, color-mix(in oklab, var(--ll-teal) 9%, transparent), transparent 62%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 5.5rem,
+      var(--ll-rule) 5.5rem calc(5.5rem + 1px)
+    );
+  box-shadow: inset 0 -1px 0 var(--ll-rule);
+}
+
+/* Cool, restrained instrument glow. The component mixes the arch, curtain rays
+   and drifting glows from --brand/--brand-100/--brand-200; stepping the mids a
+   little cooler and dimmer inside the aurora subtree keeps the whole field
+   reading as an instrument backlight rather than a light show — the opposite
+   direction from the other aurora user. Headline contrast is unaffected: it is
+   painted in --foreground over the component's own --background scrim (measured
+   9:1 against the worst-case composite of arch + scrim). */
+[data-template-theme='fintech-trust'] [data-aurora-root] {
+  --brand-100: oklch(64% 0.072 202deg);
+  --brand-200: oklch(54% 0.066 212deg);
+}
+
+/* The panel's drop-glow and the hero's floor wash mix from --primary; keeping
+   them teal but quiet stops the composed hero from blooming. */
+[data-template-theme='fintech-trust'] [data-aurora-root] [data-aurora-scene] {
+  --brand: oklch(72% 0.09 197deg);
+}
+
+/* ---------------------------------------------------------------- */
+/* Tone bands. `tone` is set per section in the template definition. */
+/* ---------------------------------------------------------------- */
+
+/* slate — a raised shelf. The panel tokens step up with the band so cards keep
+   reading as raised rather than sinking into it. */
+[data-template-theme='fintech-trust'] [data-template-section][data-tone='muted'] {
+  --background: oklch(29% 0.02 240deg);
+  --card: oklch(31% 0.021 240deg);
+  --popover: oklch(31% 0.021 240deg);
+  --muted: oklch(31% 0.021 240deg);
+  --secondary: oklch(33% 0.022 240deg);
+  --accent: oklch(34.5% 0.024 235deg);
+  --border: oklch(100% 0 0deg / 18%);
+  --input: oklch(100% 0 0deg / 26%);
+
+  background-color: var(--ll-slate);
+  box-shadow:
+    inset 0 1px 0 var(--ll-rule),
+    inset 0 -1px 0 var(--ll-rule);
+}
+
+/* The marquee's edge fades are mixed from --card; on the customer strip they
+   must dissolve into the band instead of printing two lighter columns. */
+[data-template-theme='fintech-trust']
+  [data-template-section='customers'][data-tone='muted'] {
+  --card: var(--ll-slate);
+}
+
+/* paper — the inverted statement band. Every semantic variable is remapped so
+   the twins' ink-first markup (bg-background panels, text-muted-foreground,
+   border-border, bg-primary buttons) resolves to a coherent pale surface with
+   AA contrast, and teal drops to its deep register. */
+[data-template-theme='fintech-trust'] [data-template-section][data-tone='contrast'] {
+  --background: oklch(98.5% 0.003 230deg);
+  --foreground: oklch(21% 0.018 240deg);
+  --card: oklch(100% 0 0deg);
+  --card-foreground: oklch(21% 0.018 240deg);
+  --popover: oklch(100% 0 0deg);
+  --popover-foreground: oklch(21% 0.018 240deg);
+  --primary: var(--ll-teal-deep);
+  --primary-foreground: oklch(97.5% 0.004 230deg);
+  --secondary: oklch(91% 0.008 230deg);
+  --secondary-foreground: oklch(21% 0.018 240deg);
+  --muted: oklch(90% 0.008 230deg);
+  --muted-foreground: oklch(43% 0.018 238deg);
+  --accent: oklch(92.5% 0.009 230deg);
+  --accent-foreground: oklch(21% 0.018 240deg);
+  --brand: var(--ll-teal-deep);
+  --brand-foreground: oklch(97.5% 0.004 230deg);
+  --brand-600: var(--ll-teal-deep);
+  --border: var(--ll-rule-ink);
+  --input: oklch(20% 0.02 240deg / 24%);
+  --ring: var(--ll-teal-deep);
+
+  background-color: var(--ll-paper);
+  box-shadow:
+    inset 0 1px 0 var(--ll-rule-ink),
+    inset 0 -1px 0 var(--ll-rule-ink);
+  color: var(--foreground);
+}
+
+/* Index labels flip to the deep teal register on paper, with a pale scrim
+   replacing the ink one. */
+[data-template-theme='fintech-trust']
+  [data-tone='contrast']
+  .rounded-full.tracking-eyebrow {
+  background-color: color-mix(in oklab, var(--ll-paper) 82%, transparent);
+  border-inline-start-color: var(--ll-teal-deep);
+  color: var(--ll-teal-deep);
+}
+
+/* ---------------------------------------------------------------- */
+/* Dense structures: the tier matrix and the ledger plate.           */
+/* ---------------------------------------------------------------- */
+
+/* The comparator is the page's institutional centrepiece — tighten the rows,
+   rule the header, and mark the recommended column with a teal wash. The
+   highlighted plan is index 1 in the definition, so it occupies the third cell
+   of every row (the first is the feature label); the group-label rows span the
+   whole table and are unaffected. */
+[data-template-theme='fintech-trust'] [data-template-section='compare'] th,
+[data-template-theme='fintech-trust'] [data-template-section='compare'] td {
+  padding-block: 0.625rem;
+}
+
+[data-template-theme='fintech-trust'] [data-template-section='compare'] thead th {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+}
+
+[data-template-theme='fintech-trust'] [data-template-section='compare'] tr > :nth-child(3) {
+  background-color: color-mix(in oklab, var(--ll-teal) 10%, transparent);
+}
+
+/* Table group headers read as ledger section rules. */
+[data-template-theme='fintech-trust'] [data-template-section='compare'] td.tracking-eyebrow {
+  color: var(--ll-teal);
+  padding-top: 2rem;
+}
+
+/* The icon-grid decorator is a full-width plate above each control card. On a
+   dark surface its default bg-background icon tile sits at the same lightness
+   as the card and disappears, so the band is sunk to the deepest ink (an inset
+   instrument well) and the tile lifted to --secondary. The result reads as a
+   recessed panel with a raised plate rather than one flat rectangle. */
+[data-template-theme='fintech-trust'] [data-template-section='controls'] .h-32 {
+  background-color: color-mix(in oklab, var(--ll-ink-deep) 72%, transparent);
+}
+
+[data-template-theme='fintech-trust'] [data-template-section='controls'] .size-14 {
+  background-color: var(--secondary);
+}
+
+/* The capability cards' media slot is a composed placeholder of four plates.
+   A hairline on each turns the block from flat rectangles into a wireframe of
+   panels — closer to the product surface it stands in for. */
+[data-template-theme='fintech-trust'] [data-template-section='capabilities'] .rounded-inset {
+  box-shadow: inset 0 0 0 1px var(--ll-rule);
+}
+
+/* The quote section's media slot is an upload in production and a bg-muted
+   placeholder in the twins. Rather than a flat grey plate, it is composed from
+   the theme's own tokens into a ledger sheet: ruled rows, wide columns, and a
+   teal pool at the top edge. No raster asset, nothing to attribute — the
+   `w-full` guard keeps the small wordmark placeholder below it untouched. */
+[data-template-theme='fintech-trust'] [data-template-section='quote'] .w-full.bg-muted {
+  background-color: var(--ll-ink-deep);
+  background-image:
+    radial-gradient(
+      120% 70% at 12% 0%,
+      color-mix(in oklab, var(--ll-teal) 26%, transparent),
+      transparent 64%
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 1.375rem,
+      var(--ll-rule) 1.375rem calc(1.375rem + 1px)
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 3.25rem,
+      var(--ll-rule) 3.25rem calc(3.25rem + 1px)
+    );
+  box-shadow: inset 0 0 0 1px var(--ll-rule);
+}
+
+/* Its citation wordmark placeholder becomes a teal-ruled block instead of grey. */
+[data-template-theme='fintech-trust'] [data-template-section='quote'] .w-20.bg-muted {
+  background-color: color-mix(in oklab, var(--ll-teal) 26%, transparent);
+}
+
+/* ---------------------------------------------------------------- */
+/* Shell chrome                                                      */
+/* ---------------------------------------------------------------- */
+
+/* Opaque, unmoving chrome: no translucency and no backdrop blur anywhere. An
+   institutional header should look like it was bolted on, not floated over. */
+[data-template-theme='fintech-trust'] .ledgerline-rail {
+  background-color: var(--ll-ink-floor);
+  box-shadow: inset 0 -1px 0 var(--ll-rule);
+}
+
+[data-template-theme='fintech-trust'] .ledgerline-header {
+  background-color: var(--ll-ink-deep);
+  box-shadow: inset 0 -1px 0 var(--ll-rule);
+}
+
+[data-template-theme='fintech-trust'] .ledgerline-footer {
+  background-color: var(--ll-ink-floor);
+  border-top: 1px solid var(--ll-rule);
+}
+
+/* Live-rails indicator: a scale/opacity halo on the status dot. Transform and
+   opacity only, and switched off entirely under reduced motion. */
+@keyframes ledgerline-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+[data-template-theme='fintech-trust'] .ledgerline-pulse {
+  animation: ledgerline-pulse 2.8s ease-out infinite;
+}
+
+/* Reduced-motion net for the shell's own choreography (header entrance, mark
+   draw, footer reveals): final frame, instantly, even before hydration — the
+   same guarantee template-motion.css gives the section reveals, and what
+   Playwright captures and the poster tool record. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='fintech-trust'] [data-ledgerline-reveal] {
+    opacity: 1 !important;
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    transform: none !important;
+  }
+
+  [data-template-theme='fintech-trust'] .ledgerline-pulse {
+    animation: none !important;
+  }
 }
