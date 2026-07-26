@@ -117,16 +117,18 @@ describe('Fumadocs site shell', () => {
     expect(helloPost).not.toMatch(/\b\d+\s+page blocks?\b/i)
   })
 
-  it('keeps the install CTA community-owned and reduced-motion safe', async () => {
+  it('keeps the install CTA community-owned and the footer credit quiet', async () => {
     const [footer, copyButton, { heroSubheadline }] = await Promise.all([
       readFile(path.join(repoRoot, 'src', 'components', 'site', 'SiteFooter.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'components', 'site', 'CommandCopyButton.tsx'), 'utf8'),
       import('../../src/lib/site'),
     ])
 
-    expect(`${footer}\n${copyButton}`).not.toContain('tin.computer')
-    expect(`${footer}\n${copyButton}`).not.toContain('Growth by Tin')
-    expect(`${footer}\n${copyButton}`).not.toContain('bg-[#66DC9D]')
+    expect(footer).toContain('href="https://tin.computer"')
+    expect(footer).toContain('Growth by Tin')
+    expect(footer).toContain('fill="#66DC9D"')
+    expect(copyButton).not.toContain('tin.computer')
+    expect(copyButton).not.toContain('Growth by Tin')
     expect(copyButton).toContain('data-[copied=true]:text-brand-foreground')
     expect(copyButton).toContain('motion-reduce:transform-none')
     expect(heroSubheadline).toBe(
