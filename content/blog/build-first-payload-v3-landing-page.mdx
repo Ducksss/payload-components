@@ -65,7 +65,9 @@ generated artifacts produced by your configured scripts. The command records sta
 
 The [installation guide](/docs/installation) covers project detection, supported layouts, and the
 difference between the companion CLI and a direct shadcn registry install. The useful distinction is
-simple: shadcn delivers files; `payload-components add` also performs Payload-specific wiring.
+simple: shadcn delivers files; `payload-components add` also performs Payload-specific wiring. The
+[Payload blocks implementation guide](/docs/payload-blocks) traces that wiring for the same
+`hero-basic` block from config through collection registration and rendering.
 
 If the first diff is wrong for your repository, stop there. The source remains reviewable, and the
 installer should fail rather than guess when an expected anchor is ambiguous. A small, honest

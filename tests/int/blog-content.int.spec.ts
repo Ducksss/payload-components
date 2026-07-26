@@ -293,6 +293,23 @@ describe('blog editorial contract', () => {
     expect(new Set(committedAssets)).toEqual(referencedAssets)
   })
 
+  it('keeps the closest block articles linked once to the implementation guide', async () => {
+    const guidePath = '/docs/payload-blocks'
+    const articleSlugs = [
+      'what-is-a-payload-cms-block',
+      'build-first-payload-v3-landing-page',
+      'how-renderblocks-works',
+    ]
+
+    for (const slug of articleSlugs) {
+      const source = await readFile(path.join(blogRoot, `${slug}.mdx`), 'utf8')
+      const guideLinks = [...source.matchAll(/\]\(\/docs\/payload-blocks\)/g)]
+
+      expect(guideLinks, slug).toHaveLength(1)
+      expect(internalLinks(source), slug).toContain(guidePath)
+    }
+  })
+
   it('keeps every new post substantial, linked, and community-first', async () => {
     const registry = JSON.parse(
       await readFile(path.join(repoRoot, 'payload-components', 'registry.json'), 'utf8'),
