@@ -59,6 +59,22 @@ export function uniqueTemplateBlockSlugs(template: TemplateShowcase) {
   ]
 }
 
+/* The first rendered block is the honest starting point for trying a concept.
+ * Derive it from the recipe so the detail action cannot drift from what the
+ * preview actually composes. This installs one block, never the full template. */
+export function templateStarterBlockSlug(template: TemplateShowcase) {
+  const starterBlock = template.pages[0]?.sections[0]
+  if (!starterBlock) {
+    throw new Error(`Template "${template.slug}" has no starter block`)
+  }
+
+  return starterBlock.componentSlug
+}
+
+export function templateStarterInstallCommand(template: TemplateShowcase) {
+  return `npx payload-components add ${templateStarterBlockSlug(template)}`
+}
+
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const PAGE_PATH_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 

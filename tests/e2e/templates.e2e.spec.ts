@@ -5,6 +5,8 @@ import {
   templateDetailHref,
   templatePreviewHref,
   templateShowcases,
+  templateStarterBlockSlug,
+  templateStarterInstallCommand,
 } from '../../src/lib/templates/registry'
 import {
   TEMPLATE_CONCEPT_DISCLOSURE,
@@ -23,7 +25,7 @@ import {
  *
  * Everything is data-driven from src/lib/templates/registry so the suite can
  * never drift from the frozen showcase contract: indexable gallery/detail with
- * the concept status impossible to miss and zero commercial UI, noindexed
+ * the concept status impossible to miss and one honest block action, noindexed
  * chrome-free previews rendered by each template's own shell, real-width
  * viewport presets on the detail iframe, and the general analytics stream kept
  * off the preview routes (AnalyticsShell returns null there). House patterns
@@ -133,10 +135,19 @@ test.describe('Template detail pages (/templates/<slug>)', () => {
   for (const template of templateShowcases) {
     const detailHref = templateDetailHref(template.slug)
 
-    test(`${template.slug}: publishes metadata, one H1, status, and disclosure`, async ({
+    test(`${template.slug}: publishes metadata, status, disclosure, and one attributed block action`, async ({
+      context,
       page,
     }) => {
+      await context.grantPermissions(['clipboard-read', 'clipboard-write'])
       await page.goto(`${baseURL}${detailHref}`)
+      await page.evaluate(() => {
+        window.__disablePostHogNetwork = true
+        window.__posthogEvents = []
+      })
+      await expect
+        .poll(() => page.evaluate(() => document.documentElement.dataset.copyControllerReady))
+        .toBe('true')
 
       await expect(page).toHaveTitle(new RegExp(escapeRegExp(template.title)))
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
@@ -152,10 +163,37 @@ test.describe('Template detail pages (/templates/<slug>)', () => {
       await expect(page.getByText(TEMPLATE_CONCEPT_STATUS_LABEL).first()).toBeVisible()
       await expect(page.getByText(TEMPLATE_CONCEPT_DISCLOSURE).first()).toBeVisible()
 
-      /* Scoped to main — see the gallery no-install test for why the shared
-         SiteFooter chrome is excluded. */
+      const starterBlockSlug = templateStarterBlockSlug(template)
+      const starterInstallCommand = templateStarterInstallCommand(template)
+      const installButton = page.getByRole('button', {
+        name: `Copy the ${starterBlockSlug} install command`,
+      })
+      await expect(installButton).toHaveCount(1)
+      await expect(installButton).toHaveAttribute('data-cta-level', 'primary')
+      await expect(page.locator('main')).toContainText(
+        `This installs only ${starterBlockSlug}`,
+      )
+      await installButton.click()
+      await expect
+        .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+        .toBe(starterInstallCommand)
+      expect(await page.evaluate(() => window.__posthogEvents)).toEqual(
+        expect.arrayContaining([
+          {
+            event: 'copy_install_command',
+            properties: {
+              command: starterInstallCommand,
+              component: starterBlockSlug,
+              source_path: detailHref,
+            },
+          },
+        ]),
+      )
+
+      /* Scoped to main — the only command is one real block from the recipe;
+         the full concept remains explicitly non-installable. */
       const text = await page.locator('main').innerText()
-      expect(text).not.toMatch(/payload-components\s+add/i)
+      expect(text.match(/payload-components\s+add/gi)).toHaveLength(1)
       expect(text).not.toMatch(/\bwaitlist\b/i)
       expect(text).not.toMatch(/coming\s+soon/i)
       expect(text).not.toMatch(/\$\d/)
