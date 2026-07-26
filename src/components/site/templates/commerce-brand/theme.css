@@ -1,0 +1,499 @@
+/* Fieldnote (commerce-brand) scoped theme — the warm shop direction.
+ *
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='commerce-brand'] root the shell renders. It overrides
+ * the semantic variables the demo twins consume and adds named Fieldnote
+ * tokens; it never touches :root, .dark, another template's scope, or
+ * src/app/globals.css. The site stays forced-light — the espresso bands below
+ * are intentional dark surfaces built from named tokens, not a theme.
+ *
+ * Art direction: warm cream paper, deep espresso ink, one burnt-orange ember
+ * accent. Soft, generous geometry (--radius 1rem, pill actions) against
+ * Northline's print-sharp corners and Relay's tight tech radii. Relaxed
+ * display tracking instead of the catalog's tight -0.06em, so headlines read
+ * unhurried rather than technical. Eyebrows drop the catalog pill for an ember
+ * rule-and-label mark, actions become pills, and every backend-free image
+ * placeholder is repainted as a token-derived "product plate" — warm light
+ * from the top left, ember warmth bottom right, espresso shade — so the
+ * concept is product-forward without shipping a single raster asset.
+ *
+ * The twins arrive wrapped in the catalog's specimen frame (rounded-frame
+ * border bg-card/35); the rhythm rules below dissolve it so each section reads
+ * as a full-bleed band of one designed shop instead of a stacked specimen. */
+
+[data-template-theme='commerce-brand'] {
+  /* ————— Fieldnote palette ————— */
+  --fn-cream: oklch(96.6% 0.018 72deg);
+  --fn-cream-deep: oklch(93.2% 0.026 70deg);
+  /* Raised paper: every inner card/panel surface resolves to this (see the
+     bg-background/NN remap below), so cards lift on cream AND on the deeper
+     band without needing a per-section tone. */
+  --fn-linen: oklch(99.3% 0.007 78deg);
+  --fn-tan: oklch(88.5% 0.03 68deg);
+  /* The plate: a mid warm brown that every backend-free image placeholder is
+     painted on, so the imagery reads as photography with weight rather than a
+     pale wash on cream. Nothing in these recipes sets text over it. */
+  --fn-plate: oklch(63% 0.055 52deg);
+  --fn-espresso: oklch(25% 0.032 44deg);
+  --fn-espresso-band: oklch(21.5% 0.03 42deg);
+  --fn-espresso-raised: oklch(26.5% 0.032 44deg);
+  /* The one accent. 5.55:1 on cream, 5.01:1 on the deeper band — AA for the
+     small-caps eyebrows, the mono proof numerals, and the pill CTA label. */
+  --fn-ember: oklch(51% 0.15 44deg);
+  /* Ember cannot clear AA on espresso; this is the ember that survives ink. */
+  --fn-ember-soft: oklch(80% 0.105 62deg);
+  --fn-bench-ink: oklch(86% 0.02 74deg);
+
+  /* ————— Semantic variables the twins consume ————— */
+  --background: var(--fn-cream);
+  --foreground: var(--fn-espresso);
+  --card: var(--fn-linen);
+  --card-foreground: var(--fn-espresso);
+  --popover: var(--fn-linen);
+  --popover-foreground: var(--fn-espresso);
+
+  /* Actions are espresso, not ember: a deep roasted button reads more like a
+     well-made shop than an orange one, and it keeps ember as a single accent. */
+  --primary: var(--fn-espresso);
+  --primary-foreground: var(--fn-cream);
+  --secondary: oklch(91% 0.028 70deg);
+  --secondary-foreground: var(--fn-espresso);
+  --muted: var(--fn-plate);
+  /* 47%: warm brown-grey muted text stays AA on all three paper surfaces —
+     cream 6.2:1, deeper band 5.6:1, raised linen 6.8:1. */
+  --muted-foreground: oklch(47% 0.028 50deg);
+  --accent: oklch(92.5% 0.036 66deg);
+  --accent-foreground: var(--fn-espresso);
+
+  --brand: var(--fn-ember);
+  --brand-foreground: var(--fn-cream);
+  --brand-50: oklch(97.4% 0.016 62deg);
+  --brand-100: oklch(94% 0.036 60deg);
+  --brand-200: oklch(88% 0.07 56deg);
+  --brand-600: oklch(45% 0.145 42deg);
+
+  --border: oklch(85.5% 0.024 74deg);
+  --input: oklch(80% 0.028 72deg);
+  --ring: var(--fn-ember);
+
+  /* Soft, generous geometry: --radius feeds the sm–xl scale through the
+     @theme inline calc()s, so cards, fields, and chips all round together. */
+  --radius: 1rem;
+
+  /* Relaxed editorial type: the catalog's display tracking is tuned for tight
+     product headlines; a shop wants air between the letters. */
+  --tracking-display: -0.028em;
+  --tracking-title: -0.02em;
+  --tracking-heading: -0.012em;
+  --text-4xl--line-height: 1.16;
+  --text-5xl--line-height: 1.08;
+  --text-7xl--line-height: 1.02;
+  --text-8xl--line-height: 0.98;
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+[data-template-theme='commerce-brand'] ::selection {
+  background-color: color-mix(in oklab, var(--fn-ember) 22%, transparent);
+}
+
+/* ---------------------------------------------------------------- */
+/* Section rhythm: dissolve the catalog specimen frame into           */
+/* full-bleed shop bands. The twin structure is contract-tested:      */
+/* [data-template-section] > [aria-hidden] > frame div.               */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='commerce-brand'] [data-template-section] > [aria-hidden='true'] > div {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding-block: clamp(3.75rem, 8vw, 6.5rem);
+}
+
+/* ---------------------------------------------------------------- */
+/* Surfaces: raised paper for every inner card/panel                  */
+/* ---------------------------------------------------------------- */
+
+/* The twins paint inner cards with bg-background/85|70|60, which on a cream
+   page would dissolve into the page. Remapping them to raised linen gives the
+   shop a consistent two-step surface story (paper → raised paper) that holds
+   on every band, including the espresso one, where --fn-linen is redefined. */
+[data-template-theme='commerce-brand']
+  [data-template-canvas]
+  :is(.bg-background\/85, .bg-background\/70, .bg-background\/60) {
+  background-color: var(--fn-linen);
+}
+
+/* ---------------------------------------------------------------- */
+/* Token-derived product plates                                      */
+/* ---------------------------------------------------------------- */
+
+/* Every backend-free upload placeholder (bg-muted) becomes a lit still life:
+   a warm key light from the top left, an ember pool low right, espresso shade
+   falling away bottom left, and a roast gradient across the diagonal. No raster
+   assets, and the concept still reads product-forward. */
+[data-template-theme='commerce-brand'] [data-template-canvas] .bg-muted {
+  background-color: var(--fn-plate);
+  background-image:
+    radial-gradient(
+      92% 72% at 24% 6%,
+      color-mix(in oklab, var(--fn-linen) 86%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      72% 62% at 86% 94%,
+      color-mix(in oklab, var(--fn-ember) 46%, transparent),
+      transparent 68%
+    ),
+    radial-gradient(
+      84% 74% at 4% 106%,
+      color-mix(in oklab, var(--fn-espresso) 52%, transparent),
+      transparent 66%
+    ),
+    linear-gradient(
+      158deg,
+      transparent 34%,
+      color-mix(in oklab, var(--fn-espresso) 28%, transparent)
+    );
+}
+
+/* content-image-frame nests a plate inside a plate (a mat around the picture).
+   The outer one steps back to a flat paper mat so the pair reads as a framed
+   print rather than two identical washes. */
+[data-template-theme='commerce-brand'] [data-template-canvas] .rounded-panel.bg-muted {
+  background-color: var(--fn-cream-deep);
+  background-image: none;
+}
+
+/* The fake wordmark bar under the content-quote citation is a 24px sliver —
+   the plate gradient reads as noise at that size, so it stays a flat bar mixed
+   from --muted-foreground, which flips with the band it lands on. */
+[data-template-theme='commerce-brand'] [data-template-canvas] .h-6.bg-muted {
+  background-image: none;
+  background-color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+}
+
+/* The feature-cards illustration is a four-block still life mixed from
+   --accent/--primary/--muted alphas. Left alone on cream it reads as four pale
+   smudges; these fills turn it into a warm shelf study with one espresso
+   element (the bag) holding the composition together. */
+[data-template-theme='commerce-brand'] [data-template-canvas] .bg-accent\/30 {
+  background-color: color-mix(in oklab, var(--fn-tan) 45%, var(--fn-linen));
+}
+
+[data-template-theme='commerce-brand'] [data-template-canvas] .bg-primary\/15 {
+  background-color: color-mix(in oklab, var(--fn-espresso) 86%, var(--fn-ember));
+}
+
+[data-template-theme='commerce-brand'] [data-template-canvas] .bg-muted\/70 {
+  background-color: color-mix(in oklab, var(--fn-ember) 26%, var(--fn-tan));
+}
+
+/* ---------------------------------------------------------------- */
+/* Eyebrows: an ember rule-and-label, not a pill                      */
+/* ---------------------------------------------------------------- */
+
+/* Every twin eyebrow is a Badge with `rounded-full … uppercase
+   tracking-eyebrow`; hero-basic's proof chips share rounded-full but never
+   tracking-eyebrow, so this pair selects eyebrows only. */
+[data-template-theme='commerce-brand']
+  [data-template-canvas]
+  .rounded-full.tracking-eyebrow {
+  align-items: center;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--fn-ember);
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 600;
+  gap: 0.625rem;
+  letter-spacing: 0.2em;
+  padding: 0;
+}
+
+[data-template-theme='commerce-brand']
+  [data-template-canvas]
+  .rounded-full.tracking-eyebrow::before {
+  background-color: color-mix(in oklab, var(--fn-ember) 55%, transparent);
+  content: '';
+  flex: none;
+  height: 1px;
+  width: 1.5rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Actions: pills                                                    */
+/* ---------------------------------------------------------------- */
+
+/* DemoLink and the contact form's submit label are the only h-10 rounded-md
+   spans in the twins (the form fields with the same metrics are divs), so the
+   pill is contained to real actions. */
+[data-template-theme='commerce-brand'] [data-template-canvas] span.h-10.rounded-md {
+  border-radius: 999px;
+  padding-inline: 1.5rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Softer containers                                                 */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='commerce-brand'] [data-template-canvas] .rounded-2xl {
+  border-radius: 1.5rem;
+}
+
+[data-template-theme='commerce-brand'] [data-template-canvas] .rounded-xl {
+  border-radius: 1.25rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* The serif voice, used three times                                 */
+/* ---------------------------------------------------------------- */
+
+/* The root layout loads Instrument Serif italic-only, so every --font-serif
+   use declares italic. It appears exactly three times in this concept: the
+   hero's closing word (the component's own treatment), the large proof quote
+   below, and the footer sign-off in the shell. */
+[data-template-theme='commerce-brand'] [data-template-canvas] blockquote.text-xl {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+/* The stats-proof twin ships a static stockist wordmark; on the espresso band
+   it reads as the café's lockup rather than a heading. */
+[data-template-theme='commerce-brand'] [data-template-canvas] .h-9 .tracking-title {
+  color: var(--fn-ember-soft);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+}
+
+/* ---------------------------------------------------------------- */
+/* Tone bands — `tone` is declared per section in the definition      */
+/* ---------------------------------------------------------------- */
+
+/* muted: a deeper sheet of the same paper, edged with hairlines rather than a
+   border so the band never shifts layout. */
+[data-template-theme='commerce-brand'] [data-template-section][data-tone='muted'] {
+  --border: oklch(83% 0.028 74deg);
+
+  background-color: var(--fn-cream-deep);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    inset 0 -1px 0 var(--border);
+}
+
+/* The logo marquee mixes its edge fades from --card; on a band those fades
+   must dissolve into the paper instead of printing linen columns. The marquee
+   is the only --card consumer in that strip, so the remap stays contained. */
+[data-template-theme='commerce-brand']
+  [data-template-section='stockists'][data-tone='muted'] {
+  --card: var(--fn-cream-deep);
+}
+
+/* The wholesale strip is one line of logos — it wants the proportions of a
+   shelf rail, not a full section band. */
+[data-template-theme='commerce-brand']
+  [data-template-section='stockists']
+  > [aria-hidden='true']
+  > div {
+  padding-block: 1.5rem;
+}
+
+/* contrast: a full-bleed espresso band. Every semantic variable is remapped so
+   the twins' paper-first markup (bg-background/85 panels, text-muted-
+   foreground, border-border, bg-primary actions) resolves to an AA-safe dark
+   surface, and the primary action inverts to cream on ink. */
+[data-template-theme='commerce-brand'] [data-template-section][data-tone='contrast'] {
+  --fn-linen: var(--fn-espresso-raised);
+
+  --background: var(--fn-espresso-band);
+  --foreground: oklch(96.4% 0.016 74deg);
+  --card: var(--fn-espresso-raised);
+  --card-foreground: oklch(96.4% 0.016 74deg);
+  --primary: oklch(96.4% 0.016 74deg);
+  --primary-foreground: var(--fn-espresso);
+  --secondary: oklch(30% 0.032 44deg);
+  --secondary-foreground: oklch(96.4% 0.016 74deg);
+  --muted: oklch(31% 0.034 46deg);
+  --muted-foreground: oklch(80% 0.022 70deg);
+  --accent: oklch(33% 0.04 46deg);
+  --accent-foreground: oklch(96.4% 0.016 74deg);
+  --brand: var(--fn-ember-soft);
+  --brand-foreground: var(--fn-espresso);
+  --border: oklch(100% 0 0deg / 16%);
+  --input: oklch(100% 0 0deg / 26%);
+  --ring: var(--fn-ember-soft);
+
+  background-color: var(--fn-espresso-band);
+  color: var(--foreground);
+}
+
+/* Ember fails AA on ink, so the band's eyebrows switch to the soft ember. */
+[data-template-theme='commerce-brand'] [data-tone='contrast'] .rounded-full.tracking-eyebrow {
+  color: var(--fn-ember-soft);
+}
+
+[data-template-theme='commerce-brand']
+  [data-tone='contrast']
+  .rounded-full.tracking-eyebrow::before {
+  background-color: color-mix(in oklab, var(--fn-ember-soft) 60%, transparent);
+}
+
+/* Plates on the espresso band keep the same composition, printed dark: the key
+   light and the ember pool survive, the shade deepens into the band. */
+[data-template-theme='commerce-brand'] [data-tone='contrast'] .bg-muted {
+  background-color: oklch(34% 0.038 46deg);
+  background-image:
+    radial-gradient(
+      92% 72% at 24% 6%,
+      color-mix(in oklab, var(--fn-ember-soft) 26%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      72% 62% at 86% 94%,
+      color-mix(in oklab, var(--fn-ember) 42%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(
+      158deg,
+      transparent 30%,
+      color-mix(in oklab, var(--fn-espresso-band) 78%, transparent)
+    );
+}
+
+/* ---------------------------------------------------------------- */
+/* The shopfront (home hero-kinetic)                                 */
+/* ---------------------------------------------------------------- */
+
+/* A whisper of ember light from the top left, over a warm paper wash. Espresso
+   headline type keeps ~13:1 across the whole gradient, so the cascade never
+   loses contrast as it lands. */
+[data-template-theme='commerce-brand'] [data-template-section='shopfront'] {
+  background:
+    radial-gradient(
+      62rem 30rem at 18% -8rem,
+      color-mix(in oklab, var(--fn-ember) 11%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--fn-cream-deep) 78%, transparent),
+      transparent 62%
+    );
+}
+
+/* The plate + marquee want more air above and an exact bottom inset: the
+   marquee's own -mb-10 / lg:-mb-16 then lands the index strip flush with the
+   band's bottom edge, where it doubles as the rule into the next section. */
+[data-template-theme='commerce-brand']
+  [data-template-section='shopfront']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(3rem, 7vw, 5rem) 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  [data-template-theme='commerce-brand']
+    [data-template-section='shopfront']
+    > [aria-hidden='true']
+    > div {
+    padding-bottom: 4rem;
+  }
+}
+
+/* Full-bleed index strip: the twin's negative inline margins only escape the
+   frame padding, not the centred max-width column, so the bleed is re-derived
+   from the viewport at every width. The frame's own overflow-hidden clips the
+   scrollbar-width excess, so the strip can never widen the page. */
+[data-template-theme='commerce-brand'] [data-template-section='shopfront'] div.border-t {
+  margin-inline: calc(50% - 50vw);
+}
+
+/* The film-still plate sits on paper — the catalog's drop shadow reads as
+   screen chrome, so it softens to a warm bloom instead. */
+[data-template-theme='commerce-brand'] [data-template-section='shopfront'] .shadow-xl {
+  box-shadow: 0 32px 60px -40px color-mix(in oklab, var(--fn-espresso) 55%, transparent);
+}
+
+/* Interior heroes (hero-basic) get the same light, dialled back. */
+[data-template-theme='commerce-brand'] [data-template-section='hero'] {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--fn-cream-deep) 62%, transparent),
+    transparent 74%
+  );
+}
+
+[data-template-theme='commerce-brand']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(3.25rem, 7vw, 5.25rem);
+}
+
+/* ---------------------------------------------------------------- */
+/* Shell chrome                                                      */
+/* ---------------------------------------------------------------- */
+
+/* The notice strip above the sticky header: a shop's chalkboard, in ink. Ember
+   cannot clear ink, so the strip and the closing rail step --brand up to the
+   soft ember for their marks. */
+[data-template-theme='commerce-brand'] .fieldnote-bench {
+  --brand: var(--fn-ember-soft);
+
+  background-color: var(--fn-espresso-band);
+  color: var(--fn-bench-ink);
+}
+
+[data-template-theme='commerce-brand'] .fieldnote-header {
+  background-color: var(--fn-cream);
+}
+
+/* Opacity-only veil: it brings the hairline and a warm shelf shadow once the
+   page starts moving. The header surface itself is already opaque, so nothing
+   composites the espresso CTA toward the paper mid-transition. */
+[data-template-theme='commerce-brand'] [data-fieldnote-header-veil] {
+  box-shadow:
+    inset 0 -1px 0 color-mix(in oklab, var(--fn-ember) 38%, transparent),
+    0 14px 30px -26px color-mix(in oklab, var(--fn-espresso) 50%, transparent);
+}
+
+[data-template-theme='commerce-brand'] .fieldnote-mark {
+  background-color: var(--fn-linen);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--fn-ember) 42%, transparent);
+}
+
+[data-template-theme='commerce-brand'] .fieldnote-mark-bloom {
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--fn-ember) 26%, transparent);
+}
+
+[data-template-theme='commerce-brand'] .fieldnote-footer {
+  background-color: var(--fn-cream-deep);
+  border-top: 1px solid var(--border);
+}
+
+[data-template-theme='commerce-brand'] .fieldnote-rail {
+  --brand: var(--fn-ember-soft);
+
+  background-color: var(--fn-espresso-band);
+  color: var(--fn-bench-ink);
+}
+
+/* Reduced-motion net for the shell's own choreography (the notice strip and
+   header entrances, the mark bloom, the active-page dot): final frame,
+   instantly, even before hydration — the same guarantee template-motion.css
+   gives the section reveals, so captures and posters are always complete. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='commerce-brand'] [data-fieldnote-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-template-theme='commerce-brand'] [data-fieldnote-header-veil] {
+    transition-duration: 0.001s !important;
+  }
+}

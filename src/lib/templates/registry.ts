@@ -1,6 +1,10 @@
 import type { TemplatePage, TemplateShowcase } from './types'
 
 import { agencyStudioTemplate } from './agency-studio'
+import { commerceBrandTemplate } from './commerce-brand'
+import { eventConferenceTemplate } from './event-conference'
+import { fintechTrustTemplate } from './fintech-trust'
+import { portfolioSoloTemplate } from './portfolio-solo'
 import { saasLaunchTemplate } from './saas-launch'
 
 /* Canonical, curated order for /templates. Definitions stay pure data; React
@@ -8,6 +12,10 @@ import { saasLaunchTemplate } from './saas-launch'
 export const templateShowcases: readonly TemplateShowcase[] = [
   saasLaunchTemplate,
   agencyStudioTemplate,
+  commerceBrandTemplate,
+  eventConferenceTemplate,
+  fintechTrustTemplate,
+  portfolioSoloTemplate,
 ]
 
 export const templatesBySlug: Record<string, TemplateShowcase> = Object.fromEntries(

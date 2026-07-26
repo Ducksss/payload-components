@@ -1,0 +1,784 @@
+/* Frameworks ’26 (event-conference) scoped theme — the near-black concept.
+ *
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='event-conference'] root the shell renders. We override
+ * the semantic variables the demo twins consume and add template-scoped tokens;
+ * we never touch :root, .dark, another template's scope, or globals.css. The
+ * site stays forced-light — ALL of this template's darkness comes from the
+ * tokens below, which is why there is no `dark` class anywhere in the shell.
+ *
+ * Art direction — a conference poster that happens to be a website:
+ *   · near-black violet-cast surfaces, three tonal bands deep;
+ *   · one electric violet, used as a field for the wordmark chip and the
+ *     ticket button, and as a mark everywhere else;
+ *   · oversized display type at 600 weight on hard, zeroed corners;
+ *   · monospace, wide-tracked labels for every room, date, and time —
+ *     "tags are pills, labels are bars" is the rule: status tags keep their
+ *     rounded-full pill, section eyebrows become violet-barred track labels;
+ *   · imagery is entirely token-derived (duotone gradient plates with a
+ *     halftone dot screen), so this concept ships no raster assets at all.
+ *
+ * Contrast was checked numerically before these values were written: body and
+ * muted text clear WCAG AA 4.5:1 on all three bands AND on every composited
+ * bg-background/NN plate, and the aurora's luminous layers are tuned so the
+ * headline stays AA over the arch (see "The stage" below). */
+
+[data-template-theme='event-conference'] {
+  /* ————— Template palette ————— */
+  --fw-black: oklch(9.5% 0.016 288deg); /* the page: base band paint */
+  --fw-graphite: oklch(16.5% 0.024 289deg); /* muted band paint */
+  --fw-stage: oklch(16% 0.058 292deg); /* contrast band paint: the lit stage */
+  --fw-plate: oklch(20% 0.03 288deg); /* --background: raised plates */
+  --fw-ink: oklch(12% 0.02 288deg); /* type ON violet */
+  --fw-paper: oklch(96.5% 0.008 290deg);
+  --fw-volt: oklch(70% 0.205 292deg); /* the accent */
+  --fw-volt-bright: oklch(83% 0.15 295deg); /* the accent, as small text */
+
+  /* Duotone inks for the token-derived plate art. All violet/indigo family. */
+  --fw-ink-violet: oklch(70% 0.205 292deg);
+  --fw-ink-indigo: oklch(64% 0.19 268deg);
+  --fw-ink-orchid: oklch(74% 0.17 316deg);
+
+  /* ————— Semantic variables the twins consume ————— */
+  --background: var(--fw-plate);
+  --foreground: var(--fw-paper);
+  --card: oklch(22.5% 0.032 289deg);
+  --card-foreground: var(--fw-paper);
+  --popover: oklch(22.5% 0.032 289deg);
+  --popover-foreground: var(--fw-paper);
+  --primary: oklch(66.5% 0.225 292deg);
+  --primary-foreground: var(--fw-ink);
+  --secondary: oklch(24.5% 0.036 289deg);
+  --secondary-foreground: var(--fw-paper);
+  --muted: oklch(26.5% 0.034 289deg);
+  --muted-foreground: oklch(72% 0.024 290deg);
+  --accent: oklch(28% 0.045 291deg);
+  --accent-foreground: var(--fw-paper);
+  --brand: var(--fw-volt);
+  --brand-foreground: var(--fw-ink);
+  --border: oklch(42% 0.034 289deg);
+  --input: oklch(48% 0.04 290deg);
+  --ring: var(--fw-volt-bright);
+
+  /* The brand ramp is INVERTED against the light catalog: on near-black the
+     "tints" must be brighter than --brand, not paler. brand-100/200 are read
+     only by the aurora's arch and curtain rays; brand-600 paints the hero's
+     serif-italic closing word, so it has to hold AA as text. */
+  --brand-50: oklch(95% 0.045 293deg);
+  --brand-100: oklch(84% 0.13 293deg);
+  --brand-200: oklch(74% 0.185 293deg);
+  --brand-600: var(--fw-volt-bright);
+
+  /* Hard edges. --radius feeds the sm–xl scale through calc(); the named
+     container radii are @theme inline literals, so those are zeroed at
+     element level below. */
+  --radius: 0px;
+
+  /* Oversized display scale — the single biggest lever on this concept's
+     voice. Mobile stays at 2.75rem so long words cannot overflow 390px. */
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 1.1;
+  --text-4xl: 2.75rem;
+  --text-4xl--line-height: 1.05;
+  --text-5xl: 3.75rem;
+  --text-5xl--line-height: 1;
+  --text-6xl: 4.75rem;
+  --text-6xl--line-height: 0.96;
+
+  background-color: var(--fw-black);
+  color: var(--foreground);
+}
+
+[data-template-theme='event-conference'] ::selection {
+  background-color: color-mix(in oklab, var(--fw-volt) 42%, transparent);
+  color: var(--fw-paper);
+}
+
+/* rounded-full is deliberately spared: small status tags (hero proof items,
+   the "Popular" flag, the aurora's ticks) stay pills against the hard edges. */
+[data-template-theme='event-conference']
+  :is(
+    .rounded-frame,
+    .rounded-panel,
+    .rounded-card,
+    .rounded-inset,
+    .rounded-2xl,
+    .rounded-xl,
+    .rounded-lg,
+    .rounded-md,
+    .rounded-sm
+  ) {
+  border-radius: 0;
+}
+
+/* Portrait and monogram plates are square too — a lineup wall, not avatars. */
+[data-template-theme='event-conference']
+  [data-template-canvas]
+  :is(.size-20, .size-10, .size-9).rounded-full {
+  border-radius: 0;
+}
+
+/* ————————————————————————— Typography ————————————————————————— */
+
+/* Display headlines get real weight and tighter tracking than the catalog
+   default: this is poster type, not UI type. */
+[data-template-theme='event-conference'] [data-template-canvas] .tracking-display {
+  font-weight: 600;
+  letter-spacing: -0.032em;
+}
+
+[data-template-theme='event-conference'] [data-template-canvas] .tracking-title {
+  font-weight: 600;
+  letter-spacing: -0.026em;
+}
+
+/* Every eyebrow, room label, and comparator group header becomes a monospace
+   index mark — the running voice of a printed programme. */
+[data-template-theme='event-conference'] [data-template-canvas] .tracking-eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.19em;
+}
+
+/* Eyebrow BADGES specifically become violet-barred track labels (the Badge
+   primitive is the only .tracking-eyebrow element that is also rounded-full,
+   which is what separates a label from a metric caption). */
+[data-template-theme='event-conference'] [data-template-canvas] .rounded-full.tracking-eyebrow {
+  background-color: color-mix(in oklab, var(--fw-volt) 15%, transparent);
+  border: 0;
+  border-left: 3px solid var(--fw-volt);
+  border-radius: 0;
+  color: var(--fw-volt-bright);
+  padding: 0.375rem 0.75rem;
+}
+
+/* The serif-italic closing word of the aurora cascade: normalise its tracking
+   to the rest of the line so the cascade reads as one sentence. */
+[data-template-theme='event-conference']
+  [data-template-canvas]
+  .tracking-display
+  .font-serif.tracking-title {
+  letter-spacing: -0.018em;
+}
+
+/* Metric numerals are the loudest thing on an event page after the headline. */
+[data-template-theme='event-conference'] [data-template-canvas] .tabular-nums {
+  font-weight: 600;
+}
+
+/* ————————————————————————— Section canvas ————————————————————————— */
+
+/* The twins arrive wrapped in the catalog's specimen frame (rounded-frame
+   border bg-card/35). Dissolve it so every section reads as a full-bleed band
+   of one designed site; the frame keeps only its horizontal gutters. */
+[data-template-theme='event-conference'] [data-template-section] {
+  position: relative;
+}
+
+[data-template-theme='event-conference'] [data-template-section] > [aria-hidden='true'] {
+  margin-inline: auto;
+  max-width: 88rem;
+}
+
+[data-template-theme='event-conference'] [data-template-section] > [aria-hidden='true'] > div {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding-block: clamp(3.5rem, 6.5vw, 5.75rem);
+}
+
+/* A violet rule scored across the top of every section after the hero — the
+   printed register mark that keeps the stack reading as one sheet. */
+[data-template-theme='event-conference'] [data-template-section] + [data-template-section]::before {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--fw-volt) 62%, transparent),
+    color-mix(in oklab, var(--fw-volt) 12%, transparent) 38%,
+    transparent 72%
+  );
+  content: '';
+  height: 1px;
+  inset-inline: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+}
+
+/* ————————————————————————— Tonal bands ————————————————————————— */
+
+/* muted: a graphite sheet one step up from the page. */
+[data-template-theme='event-conference'] [data-template-section][data-tone='muted'] {
+  --background: oklch(23% 0.032 289deg);
+  --card: oklch(26% 0.034 289deg);
+  --muted: oklch(30% 0.036 289deg);
+  --secondary: oklch(28% 0.038 289deg);
+  --border: oklch(46% 0.04 289deg);
+
+  background-color: var(--fw-graphite);
+}
+
+/* The sponsor strip is one line of marks — it wants the rhythm of a trust
+   band, not a full section's worth of air. */
+[data-template-theme='event-conference']
+  [data-template-section='sponsors']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(2rem, 3vw, 2.75rem);
+}
+
+/* Sponsor lockups arrive at 70% of the foreground, tuned for ink on paper.
+   On near-black that reads apologetic — these are the people paying for the
+   room. */
+[data-template-theme='event-conference'] [data-template-section='sponsors'] .text-foreground\/70 {
+  color: color-mix(in oklab, var(--foreground) 90%, transparent);
+}
+
+/* contrast: the lit stage. Not darker than the page — hotter. The band is
+   washed violet from above and every semantic variable is remapped so the
+   twins' bg-card / text-muted-foreground / border-border markup resolves to a
+   coherent, AA-safe violet surface set. */
+[data-template-theme='event-conference'] [data-template-section][data-tone='contrast'] {
+  --background: oklch(23% 0.052 292deg);
+  --foreground: var(--fw-paper);
+  --card: oklch(26.5% 0.058 292deg);
+  --card-foreground: var(--fw-paper);
+  --popover: oklch(26.5% 0.058 292deg);
+  --popover-foreground: var(--fw-paper);
+  --primary: oklch(72% 0.2 292deg);
+  --primary-foreground: var(--fw-ink);
+  --secondary: oklch(29% 0.055 292deg);
+  --secondary-foreground: var(--fw-paper);
+  --muted: oklch(31% 0.06 292deg);
+  --muted-foreground: oklch(80% 0.035 292deg);
+  --accent: oklch(32% 0.065 292deg);
+  --accent-foreground: var(--fw-paper);
+  --border: oklch(52% 0.09 292deg);
+  --input: oklch(56% 0.1 292deg);
+
+  background-color: var(--fw-stage);
+  background-image:
+    radial-gradient(
+      124% 78% at 50% 0%,
+      color-mix(in oklab, var(--fw-volt) 20%, transparent),
+      transparent 64%
+    ),
+    radial-gradient(
+      72% 52% at 50% 104%,
+      color-mix(in oklab, var(--fw-ink-indigo) 16%, transparent),
+      transparent 70%
+    );
+  color: var(--foreground);
+}
+
+[data-template-theme='event-conference']
+  [data-template-section][data-tone='contrast']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(4rem, 7.5vw, 6.5rem);
+}
+
+/* ————————————————————————— The stage (heroes) ————————————————————————— */
+
+/* Every hero gets a violet wash rising from behind the top edge and more room
+   to breathe than a body section. */
+[data-template-theme='event-conference'] [data-template-section='hero'] {
+  background-image: radial-gradient(
+    96% 62% at 50% -12%,
+    color-mix(in oklab, var(--fw-volt) 17%, transparent),
+    transparent 62%
+  );
+}
+
+[data-template-theme='event-conference'] [data-template-section='hero'] > [aria-hidden='true'] {
+  max-width: none;
+}
+
+[data-template-theme='event-conference']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(4.25rem, 8vw, 6.75rem);
+}
+
+/* The aurora hero paints its own atmosphere edge to edge — drop the band wash
+   so the arch, curtain rays, and drifting glows own the whole light story. */
+[data-template-theme='event-conference'] [data-template-section='hero']:has([data-aurora-root]) {
+  background-image: none;
+}
+
+[data-template-theme='event-conference']
+  [data-template-section='hero']:has([data-aurora-root])
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(4.5rem, 9vw, 8rem);
+}
+
+/* Legibility veil. The component already pools --background behind the
+   headline, but its radial is tuned for light themes; on near-black the arch's
+   bright rim crosses the display line. This second, deeper pool of the page
+   black guarantees AA for both the white cascade and the violet serif closing
+   word, while leaving the arch's flanks and the whole lower field untouched —
+   so the drama is spent on the sweep, not on the text. */
+[data-template-theme='event-conference'] [data-aurora-field]::after {
+  background: radial-gradient(
+    76% 52% at 50% 21%,
+    color-mix(in oklab, var(--fw-black) 84%, transparent),
+    color-mix(in oklab, var(--fw-black) 36%, transparent) 56%,
+    transparent 78%
+  );
+  content: '';
+  inset: 0;
+  position: absolute;
+}
+
+/* The pointer-parallax panel reads as the schedule board: keep a violet
+   hairline and drop the catalog drop shadow, invisible on black anyway. */
+[data-template-theme='event-conference'] [data-aurora-root] .shadow-xl {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--fw-volt) 26%, transparent);
+}
+
+/* ————————————————————————— Token-derived plate art ————————————————————————— */
+
+/* Every bg-muted placeholder — speaker portraits, venue photography, the
+   mounted print on the Venue page — becomes a duotone plate: a raking ink
+   gradient, a highlight bloom, and a halftone dot screen. No raster assets,
+   no invented likenesses, and it retints itself with the band it sits in. */
+[data-template-theme='event-conference'] [data-template-canvas] .bg-muted {
+  background-image:
+    linear-gradient(
+      var(--fw-plate-tilt, 152deg),
+      color-mix(in oklab, var(--fw-plate-ink, var(--fw-ink-violet)) 48%, transparent),
+      color-mix(in oklab, var(--fw-plate-ink, var(--fw-ink-violet)) 7%, transparent) 56%,
+      transparent 78%
+    ),
+    radial-gradient(
+      94% 80% at 15% 5%,
+      color-mix(in oklab, var(--brand-100) 20%, transparent),
+      transparent 64%
+    ),
+    radial-gradient(color-mix(in oklab, var(--fw-black) 66%, transparent) 1px, transparent 1.6px);
+  background-size:
+    auto,
+    auto,
+    6px 6px;
+}
+
+/* Six plates, three inks, alternating rake — a lineup wall, not a repeat. */
+[data-template-theme='event-conference']
+  [data-template-section='featured-speakers']
+  .group:nth-child(3n + 2) {
+  --fw-plate-ink: var(--fw-ink-indigo);
+  --fw-plate-tilt: 206deg;
+}
+
+[data-template-theme='event-conference']
+  [data-template-section='featured-speakers']
+  .group:nth-child(3n) {
+  --fw-plate-ink: var(--fw-ink-orchid);
+  --fw-plate-tilt: 118deg;
+}
+
+/* Four columns of the roster, four rakes. */
+[data-template-theme='event-conference']
+  [data-template-section='lineup']
+  .grid
+  > div:nth-child(4n + 2) {
+  --fw-plate-ink: var(--fw-ink-indigo);
+  --fw-plate-tilt: 208deg;
+}
+
+[data-template-theme='event-conference']
+  [data-template-section='lineup']
+  .grid
+  > div:nth-child(4n + 3) {
+  --fw-plate-ink: var(--fw-ink-orchid);
+  --fw-plate-tilt: 122deg;
+}
+
+[data-template-theme='event-conference'] [data-template-section='lineup'] .grid > div:nth-child(4n) {
+  --fw-plate-tilt: 96deg;
+}
+
+/* One ink per single-plate section, so the pages do not all rake the same way. */
+[data-template-theme='event-conference'] [data-template-section='quote'] {
+  --fw-plate-ink: var(--fw-ink-indigo);
+  --fw-plate-tilt: 204deg;
+}
+
+[data-template-theme='event-conference'] [data-template-section='city'] {
+  --fw-plate-tilt: 168deg;
+}
+
+[data-template-theme='event-conference'] [data-template-section='space'] {
+  --fw-plate-ink: var(--fw-ink-orchid);
+  --fw-plate-tilt: 126deg;
+}
+
+/* content-image-frame nests two bg-muted surfaces: an outer mount board and
+   the "print" inside it. Giving both the same duotone recipe collapses them
+   into one flat slab, so the mount steps back to a dark board with only the
+   halftone screen and a whisper of violet — and the print pops off it. */
+[data-template-theme='event-conference']
+  [data-template-section='space']
+  .rounded-panel.bg-muted {
+  background-color: color-mix(in oklab, var(--fw-black) 58%, var(--muted));
+  background-image:
+    linear-gradient(146deg, color-mix(in oklab, var(--fw-volt) 15%, transparent), transparent 60%),
+    radial-gradient(color-mix(in oklab, var(--fw-black) 48%, transparent) 1px, transparent 1.6px);
+  background-size:
+    auto,
+    6px 6px;
+}
+
+[data-template-theme='event-conference'] [data-template-section='sessions'] .grid:nth-child(2) {
+  --fw-plate-ink: var(--fw-ink-indigo);
+  --fw-plate-tilt: 206deg;
+}
+
+[data-template-theme='event-conference'] [data-template-section='sessions'] .grid:nth-child(3) {
+  --fw-plate-ink: var(--fw-ink-orchid);
+  --fw-plate-tilt: 120deg;
+}
+
+/* ————————————————————————— Per-section refinements ————————————————————————— */
+
+/* team-grid reveals each speaker's role on hover only. On a lineup page — and
+   in every static capture and poster — the role IS the content, so it is
+   pinned visible here. The "Profile" affordance (.translate-y-8) stays hidden:
+   this concept has no per-speaker route to send anyone to.
+   NOTE: Tailwind v4 compiles translate-* to the `translate` property fed by
+   --tw-translate-y, not to `transform` — and the card clips overflow, so
+   un-shifting matters or the role is cropped away. Zeroing the custom property
+   is the only reliable lever: a plain `translate: none` here gets rewritten by
+   the CSS pipeline into a `transform`, which the `translate` property ignores. */
+[data-template-theme='event-conference']
+  [data-template-section='featured-speakers']
+  .translate-y-6 {
+  --tw-translate-y: 0px;
+
+  opacity: 1;
+}
+
+/* Six h-96 portrait plates stack to nearly 2,300px on a phone. Shorten them
+   into a poster grid instead. */
+[data-template-theme='event-conference'] [data-template-section='featured-speakers'] .h-96 {
+  height: 17rem;
+}
+
+/* The roster plates read as contact-sheet frames. */
+[data-template-theme='event-conference'] [data-template-section='lineup'] .size-20 {
+  border-color: color-mix(in oklab, var(--fw-volt) 34%, transparent);
+}
+
+/* The highlighted comparator column is a 5% primary wash in the twin, which
+   disappears on black — lift it into a visible violet band. */
+[data-template-theme='event-conference'] [data-template-canvas] .bg-primary\/5 {
+  background-color: color-mix(in oklab, var(--fw-volt) 13%, transparent);
+}
+
+/* Ticket tiers: the featured wave gets a real violet edge, not a hairline. */
+[data-template-theme='event-conference'] [data-template-canvas] .ring-brand {
+  box-shadow: inset 0 0 0 2px var(--fw-volt);
+}
+
+@media (min-width: 1024px) {
+  [data-template-theme='event-conference'] [data-template-section='featured-speakers'] .h-96 {
+    height: 22rem;
+  }
+}
+
+/* ————————————————————————— Shell chrome ————————————————————————— */
+
+[data-template-theme='event-conference'] .fw-header {
+  background-color: color-mix(in oklab, var(--fw-black) 64%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--fw-volt) 20%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+[data-template-theme='event-conference'] [data-fw-header-veil] {
+  background-color: color-mix(in oklab, var(--fw-black) 96%, transparent);
+  box-shadow:
+    inset 0 -1px 0 color-mix(in oklab, var(--fw-volt) 45%, transparent),
+    0 16px 36px -28px oklch(0% 0 0deg / 90%);
+}
+
+[data-template-theme='event-conference'] .fw-dateline {
+  border-bottom: 1px solid color-mix(in oklab, var(--fw-volt) 20%, transparent);
+}
+
+[data-template-theme='event-conference'] .fw-dateline-item {
+  align-items: center;
+  color: var(--muted-foreground);
+  display: inline-flex;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+[data-template-theme='event-conference'] .fw-dateline-item::before {
+  background-color: var(--fw-volt);
+  content: '';
+  height: 0.3125rem;
+  margin-right: 0.625rem;
+  rotate: 45deg;
+  width: 0.3125rem;
+}
+
+[data-template-theme='event-conference'] .fw-dateline-item-lead {
+  color: var(--fw-volt-bright);
+}
+
+[data-template-theme='event-conference'] .fw-wordmark {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4375rem;
+}
+
+[data-template-theme='event-conference'] .fw-wordmark-name {
+  color: var(--foreground);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.015em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+[data-template-theme='event-conference'] .fw-wordmark-year {
+  background-color: var(--fw-volt);
+  color: var(--fw-ink);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.25rem 0.375rem;
+}
+
+[data-template-theme='event-conference'] .fw-wordmark-year-plain {
+  color: var(--fw-volt-bright);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* The footer lockup, printed at poster size. */
+[data-template-theme='event-conference'] .fw-wordmark-hero .fw-wordmark-name {
+  font-size: clamp(2.25rem, 9.5vw, 6rem);
+  letter-spacing: -0.022em;
+}
+
+[data-template-theme='event-conference'] .fw-wordmark-hero .fw-wordmark-year {
+  font-size: clamp(1rem, 3.2vw, 1.875rem);
+  padding: 0.375rem 0.5rem;
+}
+
+[data-template-theme='event-conference'] .fw-lockup {
+  border-top: 2px solid var(--fw-volt);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+[data-template-theme='event-conference'] .fw-lockup-cell {
+  border-bottom: 1px solid color-mix(in oklab, var(--fw-volt) 22%, transparent);
+  padding: 0.875rem 1rem 1rem 0;
+}
+
+[data-template-theme='event-conference'] .fw-lockup-label {
+  color: var(--fw-volt-bright);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='event-conference'] .fw-lockup-value {
+  color: var(--foreground);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  margin-top: 0.5rem;
+}
+
+[data-template-theme='event-conference'] .fw-nav-link {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  padding-bottom: 0.4375rem;
+  position: relative;
+  text-transform: uppercase;
+  transition: color 0.2s ease-out;
+}
+
+[data-template-theme='event-conference'] .fw-nav-link:hover {
+  color: var(--foreground);
+}
+
+[data-template-theme='event-conference'] .fw-nav-link-active {
+  color: var(--fw-volt-bright);
+}
+
+[data-template-theme='event-conference'] .fw-nav-bar {
+  background-color: var(--fw-volt);
+  bottom: 0;
+  height: 2px;
+  inset-inline: 0;
+  position: absolute;
+  transform-origin: left;
+}
+
+[data-template-theme='event-conference'] .fw-cta {
+  align-items: center;
+  background-color: var(--fw-volt);
+  color: var(--fw-ink);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  height: 2.25rem;
+  letter-spacing: 0.13em;
+  padding-inline: 1rem;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease-out;
+  white-space: nowrap;
+}
+
+[data-template-theme='event-conference'] .fw-cta:hover {
+  background-color: var(--fw-volt-bright);
+}
+
+[data-template-theme='event-conference'] :is(.fw-cta, .fw-menu-trigger):focus-visible {
+  outline: 2px solid var(--fw-volt-bright);
+  outline-offset: 2px;
+}
+
+[data-template-theme='event-conference'] .fw-menu-trigger {
+  align-items: center;
+  border: 1px solid color-mix(in oklab, var(--fw-volt) 48%, transparent);
+  color: var(--foreground);
+  display: inline-flex;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  height: 2.25rem;
+  justify-content: center;
+  letter-spacing: 0.16em;
+  padding-inline: 0.875rem;
+  text-transform: uppercase;
+}
+
+[data-template-theme='event-conference'] .fw-menu-panel {
+  background-color: var(--fw-black);
+  border: 1px solid color-mix(in oklab, var(--fw-volt) 42%, transparent);
+  box-shadow: 0 18px 44px -20px oklch(0% 0 0deg / 85%);
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 0;
+  top: 3rem;
+  width: 14rem;
+  z-index: 50;
+}
+
+[data-template-theme='event-conference'] .fw-menu-panel[hidden] {
+  display: none;
+}
+
+[data-template-theme='event-conference'] .fw-menu-link {
+  border-bottom: 1px solid color-mix(in oklab, var(--fw-volt) 18%, transparent);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  padding: 0.875rem 1rem;
+  text-transform: uppercase;
+  transition: color 0.2s ease-out;
+}
+
+[data-template-theme='event-conference'] .fw-menu-link:hover {
+  color: var(--foreground);
+}
+
+[data-template-theme='event-conference'] .fw-menu-link-active {
+  color: var(--fw-volt-bright);
+}
+
+[data-template-theme='event-conference'] .fw-menu-cta {
+  display: inline-flex;
+  justify-content: center;
+  margin: 0.75rem;
+}
+
+[data-template-theme='event-conference'] .fw-footer {
+  background-color: oklch(12% 0.028 290deg);
+  border-top: 2px solid var(--fw-volt);
+  color: var(--foreground);
+}
+
+[data-template-theme='event-conference'] .fw-footer-heading {
+  color: var(--fw-volt-bright);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='event-conference'] .fw-footer-link {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  transition: color 0.2s ease-out;
+  width: fit-content;
+}
+
+[data-template-theme='event-conference'] .fw-footer-link:hover {
+  color: var(--foreground);
+}
+
+[data-template-theme='event-conference'] .fw-footer-link[aria-current='page'] {
+  color: var(--fw-volt-bright);
+}
+
+[data-template-theme='event-conference'] .fw-footer-line {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+[data-template-theme='event-conference'] .fw-footer-rule {
+  border-top: 1px solid color-mix(in oklab, var(--fw-volt) 22%, transparent);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  line-height: 1.7;
+  padding-top: 1.5rem;
+  text-transform: uppercase;
+}
+
+@media (min-width: 640px) {
+  [data-template-theme='event-conference'] .fw-lockup {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  [data-template-theme='event-conference'] .fw-lockup-cell {
+    padding-right: 1.5rem;
+  }
+}
+
+/* ————————————————————————— Reduced motion ————————————————————————— */
+
+/* Final frame, instantly, even before hydration — the same guarantee
+   template-motion.css gives section reveals. Playwright captures and the
+   poster tool both run reducedMotion=reduce, so this is what they record. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='event-conference'] [data-fw-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-template-theme='event-conference'] [data-fw-header-veil] {
+    transition-duration: 0.001s !important;
+  }
+}
