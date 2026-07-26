@@ -232,6 +232,12 @@ describe('Fumadocs site shell', () => {
     expect(guide).toMatch(
       /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
     )
+    expect(guide).toMatch(
+      /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b[\s\S]*emphasis="primary"/,
+    )
+    expect(guide).toContain('command="npx payload-components add hero-basic --dry-run"')
+    expect(guide).toContain('label="Copy the hero-basic dry-run command"')
+    expect(guide).toContain('It does not write')
     expect(guide).toContain('[What is a Payload component?](/docs/what-is-a-payload-component)')
     expect(guide).toContain('[Use your first block](/docs/first-block)')
     expect(heroConfig).toContain("slug: 'heroBasic'")

@@ -1088,6 +1088,65 @@ test.describe('Light shadcn frontend', () => {
       ]),
     )
   })
+
+  test('keeps the Payload blocks install primary while offering a non-installing dry run', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs/payload-blocks`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    const installButton = page.getByRole('button', {
+      name: 'Copy the hero-basic install command',
+    })
+    const dryRunButton = page.getByRole('button', {
+      name: 'Copy the hero-basic dry-run command',
+    })
+
+    await expect(installButton).toHaveAttribute('data-cta-level', 'primary')
+    await expect(dryRunButton).toHaveAttribute('data-cta-level', 'secondary')
+
+    await dryRunButton.click()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add hero-basic --dry-run')
+    expect(
+      (await getGtagEvents(page)).filter(
+        (event) => event[0] === 'event' && event[1] === 'copy_install_command',
+      ),
+    ).toHaveLength(0)
+    expect(
+      (await getPostHogEvents(page)).filter(({ event }) => event === 'copy_install_command'),
+    ).toHaveLength(0)
+
+    await installButton.click()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add hero-basic')
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: 'npx payload-components add hero-basic',
+        component: 'hero-basic',
+        source_path: '/docs/payload-blocks',
+      },
+    ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: 'npx payload-components add hero-basic',
+            component: 'hero-basic',
+            source_path: '/docs/payload-blocks',
+          },
+        },
+      ]),
+    )
+  })
 })
 
 test.describe('Reduced motion', () => {

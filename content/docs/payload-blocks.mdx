@@ -180,6 +180,19 @@ On a supported Payload v3 + Next.js project, the wrapper command copies the thre
   command="npx payload-components add hero-basic"
   label="Copy the hero-basic install command"
   trackInstall
+  emphasis="primary"
 />
 
-Run it on a branch, inspect the resulting diff, then open `/admin` and publish a test Page. The [installation guide](/docs/installation) lists the supported project shape and the read-only `doctor` check.
+**Want to inspect the plan first?** The dry run performs the same project and
+dependency validation, then reports the files, wiring changes, packages,
+generation commands, and install-state update it would make. It does not write
+files, install packages, run commands, or update install state.
+
+<RunnableCommand
+  command="npx payload-components add hero-basic --dry-run"
+  label="Copy the hero-basic dry-run command"
+/>
+
+Run the install on a branch, inspect the resulting diff, then open `/admin` and
+publish a test Page. The [installation guide](/docs/installation) lists the
+supported project shape and the read-only `doctor` check.
