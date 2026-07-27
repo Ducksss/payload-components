@@ -117,6 +117,84 @@
 }
 
 /* ---------------------------------------------------------------- */
+/* The Product hero panel (hero-product-tilt)                        */
+/* ---------------------------------------------------------------- */
+
+/* The Product page is the one inner page that leads with the artefact, so its
+ * tilted panel has to read as Relay rather than as an empty frame. The twin
+ * composes the panel from three token wells — bg-accent/25 for the main chart,
+ * a bg-muted list well, and bg-primary/15 for the small ring — and on Relay's
+ * cool-white card surfaces all three resolve to near-invisible slabs. They are
+ * painted here from the theme's own tokens into the same instruments the
+ * aurora's panel shows on Home: a gridded cobalt plot, a table well, and a
+ * ring. Static and backend-free, like every other placeholder on this site.
+ * Scoped to the hero band, where the tilt panel is the only consumer of these
+ * classes (hero-basic has none, and the aurora panel is built from
+ * bg-muted-foreground/NN). */
+
+/* The main plot: a ruled field with one rising cobalt trend line and the area
+ * beneath it filled. 160deg puts the gradient axis down-and-right, so the hard
+ * stop reads as a line climbing left to right with its area below. */
+[data-template-theme='saas-launch'] [data-template-section='hero'] .bg-accent\/25 {
+  background-color: color-mix(in oklab, var(--brand) 4%, var(--card));
+  background-image:
+    linear-gradient(
+      160deg,
+      transparent calc(50% - 1px),
+      color-mix(in oklab, var(--brand) 85%, transparent) calc(50% - 1px),
+      color-mix(in oklab, var(--brand) 85%, transparent) calc(50% + 1px),
+      transparent calc(50% + 1px)
+    ),
+    linear-gradient(160deg, transparent 50%, color-mix(in oklab, var(--brand) 15%, transparent) 50%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 2.75rem,
+      color-mix(in oklab, var(--foreground) 6%, transparent) 2.75rem calc(2.75rem + 1px)
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 1.5rem,
+      color-mix(in oklab, var(--foreground) 5%, transparent) 1.5rem calc(1.5rem + 1px)
+    );
+}
+
+/* The paired wells below it: a bar histogram and a completion ring — the two
+ * other instruments the aurora panel shows on Home. */
+[data-template-theme='saas-launch'] [data-template-section='hero'] .rounded-inset.bg-muted {
+  background-color: color-mix(in oklab, var(--brand) 3%, var(--card));
+  /* Two bar sets at different pitches and heights, so the histogram alternates
+     tall and short instead of printing one uniform comb. */
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--brand) 30%, transparent) 0 0.5rem,
+      transparent 0.5rem 2.375rem
+    ),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--brand) 22%, transparent) 0 0.5rem,
+      transparent 0.5rem 1.1875rem
+    );
+  background-position:
+    0 100%,
+    0 100%;
+  background-repeat: no-repeat;
+  background-size:
+    100% 74%,
+    100% 44%;
+}
+
+[data-template-theme='saas-launch'] [data-template-section='hero'] .bg-primary\/15 {
+  background-color: color-mix(in oklab, var(--brand) 5%, var(--card));
+  background-image: radial-gradient(
+    circle at 50% 52%,
+    transparent 0 21%,
+    color-mix(in oklab, var(--brand) 55%, transparent) 21% 32%,
+    transparent 32%
+  );
+}
+
+/* ---------------------------------------------------------------- */
 /* Tone bands. `tone` is set per section in the template definition.  */
 /* ---------------------------------------------------------------- */
 

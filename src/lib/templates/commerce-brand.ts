@@ -311,7 +311,14 @@ export const commerceBrandTemplate: TemplateShowcase = {
       path: 'collection',
       sections: [
         {
-          componentSlug: 'hero-basic',
+          /* The only inner page that opens on a plate. Collection is the page
+           * that sells the coffee, and hero-basic left it arguing in words for
+           * four sections before the first bag appeared — so the header
+           * becomes a roast-day still, lit the way the product plates are, with
+           * the shelf promise set over it. The other three inner pages stay on
+           * hero-basic: Our Story and Journal both put a plate in their second
+           * section already, and Contact should just open the door. */
+          componentSlug: 'hero-video',
           content: {
             description:
               'Two constants and two rotating lots. Every bag is roasted on Tuesday, ground for your brewer, and dated on the front.',
@@ -847,7 +854,7 @@ export const commerceBrandTemplate: TemplateShowcase = {
       title: 'Fieldnote — Contact',
     },
   ],
-  revision: 2,
+  revision: 3,
   schemaVersion: 1,
   slug: 'commerce-brand',
   status: 'concept',

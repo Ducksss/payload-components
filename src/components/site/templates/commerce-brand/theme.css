@@ -436,6 +436,77 @@
 }
 
 /* ---------------------------------------------------------------- */
+/* The Collection header (hero-video)                                */
+/* ---------------------------------------------------------------- */
+
+/* Collection is the page that sells the coffee, so its header is a roast-day
+ * still rather than a paragraph: hero-video's plate, run full-bleed as its own
+ * band. The twin composes that plate from bg-muted (this theme's product-plate
+ * recipe) under a foreground veil calibrated for a photograph — with no
+ * photograph the veil at 70% flattens the whole still to one brown, so it is
+ * pulled back below and the espresso band's action pairing is restored on top.
+ * Selected on the frame's own bg-foreground, which only hero-video carries;
+ * the other three inner heroes are hero-basic and keep the paper treatment. */
+[data-template-theme='commerce-brand']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > .bg-foreground {
+  /* The plate IS the band — the paper padding above would print a cream
+     margin around a full-bleed still. */
+  padding-block: 0;
+
+  /* The espresso band's action pairing: a cream pill for the primary, and the
+     ghost rule below for the secondary. */
+  --primary: var(--fn-cream);
+  --primary-foreground: var(--fn-espresso);
+}
+
+/* The veil becomes a raking scrim instead of a flat 70% wash: deep roast down
+   the type column (which is what holds the ember eyebrow at AA), thinning
+   across to the right so the plate's key light and ember pool survive. */
+[data-template-theme='commerce-brand']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > .bg-foreground
+  .bg-foreground\/70 {
+  background-color: transparent;
+  background-image: linear-gradient(
+    100deg,
+    color-mix(in oklab, var(--fn-espresso) 88%, transparent),
+    color-mix(in oklab, var(--fn-espresso) 66%, transparent) 46%,
+    color-mix(in oklab, var(--fn-espresso) 38%, transparent)
+  );
+}
+
+[data-template-theme='commerce-brand']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > .bg-foreground
+  span.h-10.rounded-md.bg-background {
+  background-color: transparent;
+  border-color: color-mix(in oklab, var(--fn-cream) 48%, transparent);
+  color: var(--fn-cream);
+}
+
+/* Ember cannot clear AA on a roasted plate — the eyebrow takes the soft ember
+   the espresso bands use. */
+[data-template-theme='commerce-brand']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > .bg-foreground
+  .rounded-full.tracking-eyebrow {
+  color: var(--fn-ember-soft);
+}
+
+[data-template-theme='commerce-brand']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > .bg-foreground
+  .rounded-full.tracking-eyebrow::before {
+  background-color: color-mix(in oklab, var(--fn-ember-soft) 60%, transparent);
+}
+
+/* ---------------------------------------------------------------- */
 /* Shell chrome                                                      */
 /* ---------------------------------------------------------------- */
 

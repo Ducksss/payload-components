@@ -268,11 +268,19 @@ export const saasLaunchTemplate: TemplateShowcase = {
       path: 'product',
       sections: [
         {
-          componentSlug: 'hero-basic',
+          /* The one inner page that leads with the artefact rather than a
+           * sentence: this page's whole job is to show what the workspace is,
+           * and the tilted panel puts the registry-and-dashboards split on
+           * screen before the first feature section argues for it. Static and
+           * centred — the Home aurora keeps the motion and the count-up
+           * ticker, so this reads as the second look, not a second launch. */
+          componentSlug: 'hero-product-tilt',
           content: {
             description:
               'Relay models events from your product and warehouse into governed metrics, then delivers them as dashboards, digests, and alerts — no nightly export jobs, no version-five spreadsheets.',
             eyebrow: 'Product',
+            imageCaption:
+              'The metric registry on the left, every dashboard it feeds on the right.',
             links: [
               { link: { appearance: 'default', label: 'Start free' } },
               { link: { appearance: 'outline', label: 'View pricing' } },
@@ -851,7 +859,7 @@ export const saasLaunchTemplate: TemplateShowcase = {
       title: 'Relay — Contact',
     },
   ],
-  revision: 3,
+  revision: 4,
   schemaVersion: 1,
   slug: 'saas-launch',
   status: 'concept',

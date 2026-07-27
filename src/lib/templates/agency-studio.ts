@@ -401,7 +401,13 @@ export const agencyStudioTemplate: TemplateShowcase = {
       path: 'work',
       sections: [
         {
-          componentSlug: 'hero-basic',
+          /* The one inner page that opens on an image. A portfolio page has to
+           * show before it explains, and Northline shoots film — so the Work
+           * header is a full-bleed ink plate with the title set over it, the
+           * same letterboxed still the home cover tips into the page, held for
+           * a whole band. The four other inner pages stay on hero-basic: they
+           * are argument pages, and this one is the reel. */
+          componentSlug: 'hero-video',
           content: {
             description:
               'We publish little, deliberately — client work should speak in its own market first. These five projects show the range: heritage retail, regional banking, coastal transit, healthcare, and independent publishing.',
@@ -797,7 +803,7 @@ export const agencyStudioTemplate: TemplateShowcase = {
       title: 'Northline — Contact',
     },
   ],
-  revision: 3,
+  revision: 4,
   schemaVersion: 1,
   slug: 'agency-studio',
   status: 'concept',

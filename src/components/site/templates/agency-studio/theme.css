@@ -243,3 +243,64 @@
 [data-template-theme='agency-studio'] [data-template-section='cover'] .shadow-xl {
   box-shadow: none;
 }
+
+/* ————— The Work reel (hero-video) —————
+ * The Work page is the only inner page whose header is an image: the twin
+ * composes a full-bleed plate (bg-muted base → from-muted/via-accent/to-muted
+ * rake → a foreground gradient at the foot → a flat foreground veil) and sets
+ * the title over it in paper. Untuned that stack averages to one flat warm
+ * brown, because the twin's veil is calibrated to sit on a photograph and this
+ * site ships none. The inks below turn it into the same dusk-with-one-rust-
+ * horizon still the home cover tips into the page, held for a whole band.
+ * Selected on the frame's own bg-foreground, which only hero-video carries —
+ * the other four inner heroes are hero-basic and keep this scope untouched. */
+[data-template-theme='agency-studio']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > .bg-foreground {
+  /* The still's two inks: a warmed ink for the field, rust for the rake. */
+  --muted: color-mix(in oklab, var(--nl-ink) 84%, var(--nl-rust));
+  --accent: var(--nl-rust);
+}
+
+/* The veil is a photograph-darkener with no photograph under it; at 70% it
+ * erases the rake entirely. A third of that leaves the dusk visible and still
+ * holds the paper headline above 12:1 (the apricot folio mark measures 7.6:1,
+ * the proof chips 13.5:1). */
+[data-template-theme='agency-studio']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > .bg-foreground
+  .bg-foreground\/70 {
+  background-color: color-mix(in oklab, var(--nl-ink) 32%, transparent);
+}
+
+/* One rust horizon, struck across the upper quarter — the cover plate's
+ * device, printed on the reel and kept clear of the type below it. */
+[data-template-theme='agency-studio']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > .bg-foreground
+  .absolute.inset-0.bg-muted {
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklab, var(--nl-rust) 85%, transparent) 14%,
+    color-mix(in oklab, var(--nl-rust) 85%, transparent) 86%,
+    transparent
+  );
+  background-position: 0 24%;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+}
+
+/* Rust fails AA on the reel's ink, so the folio mark switches to apricot —
+ * the same swap the contrast bands make. */
+[data-template-theme='agency-studio']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > .bg-foreground
+  .tracking-eyebrow {
+  border-color: color-mix(in oklab, var(--nl-apricot) 45%, transparent);
+  color: var(--nl-apricot);
+}
