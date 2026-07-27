@@ -1,4 +1,3 @@
-import { DemoFitFrame } from '@/components/site/demos/DemoFitFrame'
 import { demosBySlug } from '@/components/site/demos/registry'
 import { WallBand } from '@/components/site/graphics/WallBand'
 import { componentEntries } from '@/lib/site'
@@ -23,43 +22,55 @@ const titleBySlug = new Map<string, string>(
   componentEntries.map((entry) => [entry.slug, entry.title]),
 )
 
-/* Curated per row so each band mixes families — a row of six FAQs would read as
-   repetition rather than range. Six cards fill the widest supported viewport
-   with room to spare, which keeps the duplicated track (and the DOM) modest. */
+/* Curated from measured heights, not by eye. Every twin here renders between
+ * ~150px and ~212px inside the 215px frame at the wall's zoom, so each card is
+ * COMPLETE and nearly full: no block is guillotined mid-sentence, and none
+ * floats in a half-empty card. That constraint is what makes the wall read as
+ * range instead of repetition — a pricing table, an orbit diagram and a
+ * testimonial grid are unmistakably different shapes only when you can see all
+ * of each one.
+ *
+ * The blocks left out are excluded on geometry, not quality: logo clouds are
+ * far too short to fill a card, and faq-accordion / pricing-cards /
+ * feature-bento / team-grid are all tall enough to need cropping.
+ *
+ * Rows mix families deliberately — six FAQs in a row would be repetition again.
+ * `speed` is percent of the (doubled) track per second: ~1.0 is about 48px/s,
+ * slow enough to read as drift rather than a carousel in a hurry. */
 const BANDS: { reverse?: boolean; slugs: string[]; speed: number }[] = [
   {
     slugs: [
       'hero-basic',
-      'logo-cloud-inline',
-      'faq-accordion',
+      'integration-marquee',
       'content-stats',
-      'call-to-action-centered',
-      'testimonials-quote',
+      'testimonials-spotlight',
+      'feature-steps',
+      'pricing-enterprise',
     ],
-    speed: 3.1,
+    speed: 1.15,
   },
   {
     reverse: true,
     slugs: [
-      'pricing-cards',
-      'testimonials-rating',
+      'testimonials-bento',
+      'feature-grid-basic',
       'content-quote',
       'integration-orbit',
-      'feature-grid-basic',
-      'content-columns',
+      'faq-split',
+      'content-feature-split',
     ],
-    speed: 2.4,
+    speed: 0.88,
   },
   {
     slugs: [
-      'feature-bento',
-      'testimonials-spotlight',
-      'content-feature-split',
-      'integration-marquee',
-      'faq-grid',
-      'team-grid',
+      'feature-split',
+      'testimonials-grid',
+      'integration-connect',
+      'hero-video',
+      'integration-list',
+      'content-feature-media',
     ],
-    speed: 2.8,
+    speed: 1.02,
   },
 ]
 
@@ -69,20 +80,34 @@ function WallCard({ slug }: { slug: string }) {
 
   /* Narrow on phones on purpose: at 340px a 390px-wide viewport shows one card
      and two slivers, which reads as a cropped carousel rather than a wall.
-     ~215px keeps three cards in frame so the rows still say "many". */
+     ~230px keeps three cards in frame so the rows still say "many".
+     shadow-frame, not shadow-card: at this size a 1px hairline reads as a
+     wireframe, and the lift is what makes each block a physical thing on a
+     surface rather than an outline drawn on the page. */
   return (
-    <div className="w-[215px] shrink-0 overflow-hidden rounded-2xl border border-border bg-background shadow-card sm:w-[340px] lg:w-[380px]">
-      <div className="flex items-center gap-2 border-b border-border/70 px-3 py-2 sm:px-4 sm:py-2.5">
-        <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-brand" />
-        <span className="truncate font-mono text-[10px] text-muted-foreground sm:text-[11px]">
+    <div className="wall-card w-[230px] shrink-0 sm:w-[330px] lg:w-[380px]">
+      {/* Caption, not chrome. Wrapping each twin in a bordered card put a frame
+          around a block that already draws its own — the doubled edge is what
+          made the rows read as screenshots in widgets. The label sits outside
+          the block now, and stays smaller than the type inside it. */}
+      <p className="mb-2 flex items-center gap-1.5 pl-0.5">
+        <span aria-hidden="true" className="size-1 shrink-0 rounded-full bg-brand/70" />
+        <span className="truncate font-mono text-[9px] tracking-tight text-muted-foreground/70">
           {titleBySlug.get(slug) ?? slug}
         </span>
-      </div>
-      <DemoFitFrame className="h-[130px] sm:h-[170px] lg:h-[190px]">
-        <div className="p-3 sm:p-4">
+      </p>
+      {/* Zoomed far enough out that the WHOLE block fits, which is the entire
+          point of the wall: a pricing table has to look nothing like a
+          testimonial grid. Cropped to their top thirds (the earlier 0.5) every
+          twin showed the same eyebrow → headline → paragraph anatomy, and a
+          wall built to prove range read as repetition. `zoom` (not transform)
+          so percentage widths resolve against the scaled box and the block
+          lays out at real desktop proportions before shrinking. */}
+      <div className="wall-card-frame relative overflow-hidden rounded-[0.7rem] bg-background shadow-frame">
+        <div className="w-full [zoom:0.3]">
           <Demo />
         </div>
-      </DemoFitFrame>
+      </div>
     </div>
   )
 }
@@ -112,10 +137,6 @@ export function ComponentWall() {
       <div className="pointer-events-none absolute inset-y-0 left-0 w-[26%] overflow-hidden">
         <div className="wall-sweep absolute inset-y-0 w-full bg-gradient-to-r from-transparent via-brand/12 to-transparent" />
       </div>
-
-      {/* Edge fades so the wall dissolves into the page instead of being cropped. */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent sm:w-32" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent sm:w-32" />
     </div>
   )
 }

@@ -70,8 +70,8 @@ export function WallBand({
       onPointerLeave={() => setPaused(false)}
     >
       <motion.div className="flex w-max" style={{ x }}>
-        <div className="flex shrink-0 gap-5 pr-5">{children}</div>
-        <div className="flex shrink-0 gap-5 pr-5">{children}</div>
+        <div className="flex shrink-0 items-start gap-5 pr-5">{children}</div>
+        <div className="flex shrink-0 items-start gap-5 pr-5">{children}</div>
       </motion.div>
     </div>
   )
