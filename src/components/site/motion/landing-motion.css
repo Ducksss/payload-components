@@ -1,0 +1,21 @@
+/* Reduced-motion safety net for the landing-page scroll choreography.
+ *
+ * Every motion element here starts from a hidden/offset `initial` state, which
+ * is what the SSR HTML carries. Without this rule a reduce visitor — or the
+ * pre-hydration frame, which is exactly what Playwright's reduced-motion
+ * visual contract captures — could see empty sections.
+ *
+ * Pinning the FINISHED frame is the contract, and it must land before React
+ * hydrates, so it lives in CSS rather than in a `useReducedMotion()` branch
+ * (branching the tree on that hook is a hydration bug: it is always false
+ * during SSR).
+ *
+ * Only elements whose motion `initial` is a non-final state carry
+ * [data-landing-motion]; hover-only motion (which rests in its finished frame)
+ * deliberately does not. */
+@media (prefers-reduced-motion: reduce) {
+  [data-landing-motion] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
