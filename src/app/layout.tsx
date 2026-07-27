@@ -110,6 +110,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable}`}
     >
       <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
+        {/* Scroll-reveal elements ship their hidden `initial` state as inline
+            opacity:0 in the SSR HTML and are only released once motion
+            hydrates. If scripting never runs — JS disabled, or the bundle
+            simply fails to arrive — every revealed section would stay blank.
+            This pins them to their finished frame in exactly that case; it
+            costs nothing when scripting works, because the element is
+            inert. */}
+        <noscript>
+          <style>{`[data-landing-motion]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
         <JsonLd data={siteStructuredData} />
         <AnalyticsShell />
         {children}

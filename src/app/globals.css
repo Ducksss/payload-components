@@ -42,9 +42,6 @@
   --brand-200: oklch(89% 0.072 165.6deg);
   --brand-600: oklch(44% 0.112 165.6deg);
 
-  /* Hero CTA effect palette. These preserve the original shine/twinkle
-     channels exactly; relative colors apply each use site's opacity. */
-
   --destructive: oklch(57.7% 0.245 27.3deg);
   --destructive-foreground: oklch(98.5% 0 0deg);
 
@@ -284,6 +281,24 @@
   }
 }
 
+/* Ends fully transparent so the reduced-motion collapse (duration → 0,
+   iteration → 1, parked on the 100% frame) hides the sweep entirely. */
+@keyframes wall-sweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-30%);
+  }
+
+  14% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(370%);
+  }
+}
+
 @keyframes hero-dot-pulse {
   0% {
     box-shadow: 0 0 0 0 oklch(50.8% 0.118 165.6deg / 30%);
@@ -413,18 +428,6 @@
   to {
     opacity: 1;
     transform: scale(1);
-  }
-}
-
-@keyframes scroll-rise {
-  from {
-    opacity: 0;
-    transform: translateY(26px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -666,6 +669,37 @@
     animation: hero-proof-enter 620ms cubic-bezier(0.18, 0.82, 0.2, 1) 120ms both;
   }
 
+  /* Component-wall entrance. Deliberately CSS rather than motion: a motion
+     `initial` state ships as inline opacity:0 in the SSR HTML, so the hero's
+     centrepiece would be invisible until hydration (and forever without JS).
+     The drift on top of this IS motion — it needs to pause, which a keyframe
+     cannot do. Both are transform+opacity, and the global reduced-motion rule
+     collapses this one to its final frame. */
+  .wall-band {
+    animation: hero-proof-enter 700ms cubic-bezier(0.18, 0.82, 0.2, 1)
+      calc(160ms + var(--wall-delay, 0ms)) both;
+  }
+
+  .wall-sweep {
+    animation: wall-sweep 1500ms cubic-bezier(0.6, 0, 0.3, 1) 700ms 1 both;
+  }
+
+  /* The wall dissolves on all four edges rather than being clipped by a
+     rectangle. A real alpha mask (not stacked from-background gradient
+     overlays) because the hero atmosphere is an emerald wash, not flat white —
+     an opaque overlay leaves a visible seam against it, and the intersect of
+     two linear masks fades the tilted rows over whatever sits behind them. */
+  .component-wall {
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, black 11%, black 89%, transparent 100%),
+      linear-gradient(to bottom, black 0%, black 84%, transparent 100%);
+    mask-image:
+      linear-gradient(to right, transparent 0%, black 11%, black 89%, transparent 100%),
+      linear-gradient(to bottom, black 0%, black 84%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
   .hero-eyebrow-dot {
     display: inline-block;
     width: 0.42rem;
@@ -771,17 +805,6 @@
   /* The "before" skeleton yielding to the materialized twin. */
   .skeleton-fade {
     animation: skeleton-fade 300ms ease-out var(--spawn-delay, 0ms) both;
-  }
-
-  /* Scroll-linked section reveal. Progressive: browsers without
-     animation-timeline render the element normally; reduced-motion is
-     covered by the global guard below. */
-  .reveal-on-scroll {
-    @supports (animation-timeline: view()) {
-      animation: scroll-rise linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 42%;
-    }
   }
 
   /* Tactile hover lift for card/preview surfaces. Transform + shadow only;
@@ -936,12 +959,6 @@
     animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-  }
-
-  /* Scroll-driven timelines ignore duration overrides — detach them so
-     reveal elements render in their natural (visible) state. */
-  .reveal-on-scroll {
-    animation: none !important;
   }
 
   .wire-draw-scroll {
