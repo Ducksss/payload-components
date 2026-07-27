@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 import sharp from 'sharp'
 
-import { captureBlogFigures } from './capture-figures'
+import { captureBlogFigures, captures as figureCaptures } from './capture-figures'
 import { generateFigures } from './generate-figures'
 import { renderContactSheets } from './render-contact-sheets'
 import { parseCoverRenderArgs, renderCovers } from './render-covers'
@@ -150,7 +150,11 @@ export const renderVisuals = async (
   await captureBlogFigures({
     baseURL: coverOptions.baseUrl,
     outputRoot: coverOptions.outputRoot,
-    slugs: coverOptions.entries.map((entry) => entry.slug),
+    slugs: figureCaptures
+      .filter((capture) =>
+        coverOptions.entries.some((entry) => entry.slug === capture.slug),
+      )
+      .map((capture) => capture.slug),
   })
   const assetRoot = path.join(coverOptions.outputRoot, 'public')
   const validated = await validateBlogVisualAssets({ assetRoot })

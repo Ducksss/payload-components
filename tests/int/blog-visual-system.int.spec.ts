@@ -72,6 +72,7 @@ describe('Field Journal real UI capture contract', () => {
   })
 
   it('scopes reproduction captures to explicit blog slugs', () => {
+    expect(parseCaptureArgs([])).toEqual({})
     expect(parseCaptureArgs(['--slug', 'templates-are-here'])).toEqual({
       slugs: ['templates-are-here'],
     })
@@ -393,6 +394,18 @@ describe('Field Journal real UI capture contract', () => {
         slug: 'demo-twins',
       },
     ])
+  })
+
+  it('keeps raster capture issue numbers and series aligned with their articles', () => {
+    for (const capture of captures) {
+      const entry = blogVisualCatalog.find(
+        (candidate) => candidate.slug === capture.slug,
+      )
+
+      expect(entry, capture.slug).toBeDefined()
+      expect(capture.issue, capture.slug).toBe(entry?.order)
+      expect(capture.series, capture.slug).toBe(entry?.series)
+    }
   })
 
   it('binds every route and source panel to local repository evidence', async () => {

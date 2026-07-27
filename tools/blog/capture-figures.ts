@@ -33,7 +33,12 @@ export const webpEncodingOptions = Object.freeze({
   quality: 86,
 })
 
-type CaptureSeries = 'component-design' | 'foundations' | 'open-source' | 'production-guides'
+type CaptureSeries =
+  | 'component-design'
+  | 'foundations'
+  | 'open-source'
+  | 'production-guides'
+  | 'project-notes'
 type CaptureLayout = 'duo' | 'quad' | 'triptych'
 type CaptureViewport = 'desktop' | 'mobile'
 
@@ -528,7 +533,7 @@ export const captures = [
         route: '/templates/portfolio-solo/preview',
       },
     ],
-    series: 'open-source',
+    series: 'project-notes',
     slug: 'templates-are-here',
     title: 'Six concepts make the same registry feel different',
   },
@@ -2021,13 +2026,13 @@ export async function captureBlogFigures({
   writeOutput,
 }: CaptureBatchOptions = {}) {
   const normalizedBaseURL = normalizeBaseURL(baseURL)
-  const requestedSlugs = new Set(slugs)
+  const requestedSlugs = slugs === undefined ? undefined : new Set(slugs)
   const selectedCaptures =
-    requestedSlugs.size === 0
+    requestedSlugs === undefined
       ? captures
       : captures.filter((capture) => requestedSlugs.has(capture.slug))
 
-  if (selectedCaptures.length !== requestedSlugs.size) {
+  if (requestedSlugs && selectedCaptures.length !== requestedSlugs.size) {
     const knownSlugs = new Set<string>(captures.map((capture) => capture.slug))
     const unknown = [...requestedSlugs].filter((slug) => !knownSlugs.has(slug))
     throw new Error(`Unknown blog figure capture slug${unknown.length === 1 ? '' : 's'}: ${unknown.join(', ')}`)
@@ -2101,7 +2106,7 @@ export const parseCaptureArgs = (argv: readonly string[]) => {
     index += 1
   }
 
-  return { slugs }
+  return slugs.length > 0 ? { slugs } : {}
 }
 
 const isMain = () =>
