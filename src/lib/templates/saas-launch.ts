@@ -14,8 +14,7 @@ import type { TemplateShowcase } from './types'
  *   About    grounds the mission, the (fictional) team, and the numbers
  *   Contact  routes questions to named desks at the relay.example domain
  *
- * Everything here is fictional: companies (Northwind — the classic sample-data
- * company the stats-proof twin renders as its static wordmark), people, and
+ * Everything here is fictional: companies (Northwind, Ferrowatt), people, and
  * metrics are invented but plausible; the detail page discloses them as
  * illustrative. All copy stays editor-shaped (demo-content types) — layout
  * belongs to the twins and the Relay shell/theme. */
@@ -163,6 +162,7 @@ export const saasLaunchTemplate: TemplateShowcase = {
             description:
               'Aggregate results across Relay workspaces in their first two quarters.',
             eyebrow: 'Proof, not promises',
+            logoLabel: 'NORTHWIND',
             metrics: [
               { label: 'faster time to a trusted answer', value: '63%' },
               { label: 'events processed every day', value: '2.1B' },
@@ -393,6 +393,7 @@ export const saasLaunchTemplate: TemplateShowcase = {
           content: {
             citation: 'Amara Diallo, Head of Data, Ferrowatt',
             eyebrow: 'In their words',
+            logoLabel: 'FERROWATT',
             paragraphs: [
               {
                 text: 'Ferrowatt runs eleven product squads against one Relay workspace. Metric changes go through review like code, and nobody has opened a reconciliation spreadsheet since the rollout.',
@@ -859,7 +860,7 @@ export const saasLaunchTemplate: TemplateShowcase = {
       title: 'Relay — Contact',
     },
   ],
-  revision: 4,
+  revision: 5,
   schemaVersion: 1,
   slug: 'saas-launch',
   status: 'concept',

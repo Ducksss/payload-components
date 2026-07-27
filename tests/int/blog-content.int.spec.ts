@@ -39,6 +39,7 @@ const expectedSlugs = [
   'reproducible-shadcn-registry',
   'open-source-provenance',
   'community-driven-roadmap',
+  'templates-are-here',
 ] as const
 
 const newPostMinimumWords: Readonly<Record<string, number>> = {
@@ -72,6 +73,7 @@ const newPostMinimumWords: Readonly<Record<string, number>> = {
   'reproducible-shadcn-registry': 800,
   'open-source-provenance': 800,
   'community-driven-roadmap': 800,
+  'templates-are-here': 800,
 }
 
 const allowedSeries = new Set([
@@ -217,6 +219,14 @@ async function expectInternalLinkToResolve(link: string) {
     return
   }
 
+  if (pathname === '/templates') return
+  if (pathname.startsWith('/templates/')) {
+    const slug = pathname.slice('/templates/'.length)
+    expect(slug, link).toMatch(/^[a-z0-9-]+$/)
+    await expect(stat(path.join(repoRoot, 'src', 'lib', 'templates', `${slug}.ts`)), link).resolves.toBeTruthy()
+    return
+  }
+
   if (pathname === '/docs') return
   if (pathname.startsWith('/docs/')) {
     const relative = pathname.slice('/docs/'.length)
@@ -233,14 +243,14 @@ async function expectInternalLinkToResolve(link: string) {
 }
 
 describe('blog editorial contract', () => {
-  it('publishes the approved 32-post library in deterministic order', async () => {
+  it('publishes the approved 33-post library in deterministic order', async () => {
     const files = await getBlogFiles()
     const slugs = files.map((file) => file.slug)
     const metadata = files.map((file) => file.metadata)
 
     expect(new Set(slugs)).toEqual(new Set(expectedSlugs))
     expect(metadata.map((entry) => entry.publicationOrder).sort((a, b) => Number(a) - Number(b))).toEqual(
-      Array.from({ length: 32 }, (_, index) => index + 1),
+      Array.from({ length: 33 }, (_, index) => index + 1),
     )
 
     for (const entry of metadata) {
@@ -256,12 +266,19 @@ describe('blog editorial contract', () => {
 
     for (const file of files) {
       const order = Number(file.metadata.publicationOrder)
-      const expectedDate = order === 1 ? '2026-06-18' : order === 2 ? '2026-06-19' : '2026-07-14'
+      const expectedDate =
+        order === 1
+          ? '2026-06-18'
+          : order === 2
+            ? '2026-06-19'
+            : order === 33
+              ? '2026-07-27'
+              : '2026-07-14'
       expect(file.metadata.date, file.slug).toBe(expectedDate)
     }
   })
 
-  it('ships every cover and exactly 35 captioned inline visuals', async () => {
+  it('ships every cover and exactly 36 captioned inline visuals', async () => {
     const files = await getBlogFiles()
     const referencedAssets = new Set<string>()
     let figureCount = 0
@@ -286,7 +303,7 @@ describe('blog editorial contract', () => {
       }
     }
 
-    expect(figureCount).toBe(35)
+    expect(figureCount).toBe(36)
     const committedAssets = (await readdir(path.join(repoRoot, 'public', 'blog'), { recursive: true }))
       .filter((entry) => /\.(?:svg|webp)$/.test(entry))
       .map((entry) => entry.replaceAll(path.sep, '/'))

@@ -277,9 +277,9 @@
   })
 
   test(&apos;every component keeps a current-platform baseline once the platform is minted&apos;, () =&gt; {
-    const { config, project } = test.info()
-    const mode = config.updateSnapshots
-    const updating = mode !== &apos;none&apos; &amp;&amp; mode !== &apos;missing&apos;" data-evidence-truncated="true">
+    expectCompletePlatformBaselines(baselines, slugs.map(baselineStem))
+  })
+" data-evidence-truncated="true">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
   <text class="evidence-line" x="48" y="626">Component visual snapshots&apos;, () =&gt; { · test.use({ contextOptions: {</text>
 <text class="evidence-line" x="48" y="641">reducedMotion: &apos;reduce&apos; }, viewport: { height: 800, width: 1280 } …</text>

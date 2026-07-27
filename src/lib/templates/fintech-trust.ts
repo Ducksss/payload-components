@@ -16,8 +16,7 @@ import type { TemplateShowcase } from './types'
  *   Contact   three named desks at the reserved ledgerline.example domain
  *
  * Everything is fictional: Ledgerline is not a real company, and its customers
- * (Northwind — the classic sample-data company the stats-proof twin renders as
- * its static wordmark — Globex, Initech, Vandelay), people, figures, and
+ * (Northwind, Globex, Initech, Vandelay), people, figures, and
  * compliance posture are invented and illustrative. Compliance language stays
  * generic on purpose: industry program names only, never a named auditor,
  * certificate number, regulator, or bank partner.
@@ -260,6 +259,7 @@ export const fintechTrustTemplate: TemplateShowcase = {
             description:
               'Aggregate figures across Ledgerline programs for the twelve months ending March 2026.',
             eyebrow: 'Measured, not claimed',
+            logoLabel: 'NORTHWIND',
             metrics: [
               { label: 'annualized settled volume', value: '412B' },
               { label: 'entries reconciled without a human', value: '99.7%' },
@@ -482,6 +482,7 @@ export const fintechTrustTemplate: TemplateShowcase = {
           content: {
             citation: 'Sofia Brandt, Head of Payment Operations, Initech',
             eyebrow: 'In their words',
+            logoLabel: 'INITECH',
             paragraphs: [
               {
                 text: 'Initech settles to sixty-one thousand counterparties across four rails on a single Ledgerline workspace. Operations dropped from three reconciliation spreadsheets to one exception queue, and the month-end close moved from a project to a morning.',
@@ -969,7 +970,7 @@ export const fintechTrustTemplate: TemplateShowcase = {
       title: 'Ledgerline — Contact',
     },
   ],
-  revision: 2,
+  revision: 3,
   schemaVersion: 1,
   slug: 'fintech-trust',
   status: 'concept',

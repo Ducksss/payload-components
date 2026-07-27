@@ -18,6 +18,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   captures,
+  parseCaptureArgs,
   renderCaptureHtml,
   type CapturePanel,
 } from '../../tools/blog/capture-figures'
@@ -70,7 +71,16 @@ describe('Field Journal real UI capture contract', () => {
     expect(source).toMatch(/if \(isMain\(\)\)/)
   })
 
-  it('pins the exact eight committed outputs and truthful evidence matrix', () => {
+  it('scopes reproduction captures to explicit blog slugs', () => {
+    expect(parseCaptureArgs([])).toEqual({})
+    expect(parseCaptureArgs(['--slug', 'templates-are-here'])).toEqual({
+      slugs: ['templates-are-here'],
+    })
+    expect(() => parseCaptureArgs(['--slug'])).toThrow(/requires a value/)
+    expect(() => parseCaptureArgs(['--all'])).toThrow(/unknown capture argument/i)
+  })
+
+  it('pins the exact nine committed outputs and truthful evidence matrix', () => {
     expect(
       captures.map((capture) => ({
         layout: Reflect.get(capture, 'layout'),
@@ -304,6 +314,51 @@ describe('Field Journal real UI capture contract', () => {
         slug: 'build-payload-blog-frontend',
       },
       {
+        layout: 'quad',
+        mode: 'see',
+        outputPath:
+          'public/blog/templates-are-here/figure-01-template-gallery.webp',
+        panels: [
+          {
+            anchor: undefined,
+            fixture: undefined,
+            kind: 'route-viewport',
+            label: 'Templates · all six concepts',
+            registryItem: undefined,
+            route: '/templates',
+            sourcePath: undefined,
+          },
+          {
+            anchor: undefined,
+            fixture: undefined,
+            kind: 'route-viewport',
+            label: 'SaaS Launch · live home page',
+            registryItem: undefined,
+            route: '/templates/saas-launch/preview',
+            sourcePath: undefined,
+          },
+          {
+            anchor: undefined,
+            fixture: undefined,
+            kind: 'route-viewport',
+            label: 'Event Conference · live home page',
+            registryItem: undefined,
+            route: '/templates/event-conference/preview',
+            sourcePath: undefined,
+          },
+          {
+            anchor: undefined,
+            fixture: undefined,
+            kind: 'route-viewport',
+            label: 'Portfolio Solo · live home page',
+            registryItem: undefined,
+            route: '/templates/portfolio-solo/preview',
+            sourcePath: undefined,
+          },
+        ],
+        slug: 'templates-are-here',
+      },
+      {
         layout: 'triptych',
         mode: 'see',
         outputPath: 'public/blog/demo-twins/figure-02-source-preview.webp',
@@ -341,6 +396,18 @@ describe('Field Journal real UI capture contract', () => {
     ])
   })
 
+  it('keeps raster capture issue numbers and series aligned with their articles', () => {
+    for (const capture of captures) {
+      const entry = blogVisualCatalog.find(
+        (candidate) => candidate.slug === capture.slug,
+      )
+
+      expect(entry, capture.slug).toBeDefined()
+      expect(capture.issue, capture.slug).toBe(entry?.order)
+      expect(capture.series, capture.slug).toBe(entry?.series)
+    }
+  })
+
   it('binds every route and source panel to local repository evidence', async () => {
     const registry = JSON.parse(await readFile(registryPath, 'utf8')) as {
       items: { name: string }[]
@@ -356,7 +423,7 @@ describe('Field Journal real UI capture contract', () => {
       for (const panel of panels) {
         const context = `${Reflect.get(capture, 'slug')}: ${String(panel.label)}`
         if (typeof panel.route === 'string') {
-          expect(panel.route, context).toMatch(/^\/(?:blog|components|docs\/components)(?:[/?]|$)/)
+          expect(panel.route, context).toMatch(/^\/(?:blog|components|docs\/components|templates)(?:[/?]|$)/)
           expect(panel.route, context).not.toMatch(/^(?:https?:)?\/\//)
         }
         if (typeof panel.registryItem === 'string') {
@@ -1708,7 +1775,7 @@ async function getMdxVisualContract() {
 }
 
 function isKnownLocalRoute(route: string) {
-  return /^(?:\/blog(?:\/[a-z0-9-]+)?|\/components(?:\?[^#\s]+|\/preview\/[a-z0-9-]+)?|\/docs\/components\/[a-z0-9-]+)$/.test(
+  return /^(?:\/blog(?:\/[a-z0-9-]+)?|\/components(?:\?[^#\s]+|\/preview\/[a-z0-9-]+)?|\/docs\/components\/[a-z0-9-]+|\/templates)$/.test(
     route,
   )
 }
@@ -2973,12 +3040,19 @@ describe('Field Journal reproduction tooling', () => {
       path.join(repoRoot, 'tests/e2e/blog-visual.e2e.spec.ts'),
       'utf8',
     )
+    // The blog spec declares the requirement; the shared guard in
+    // tests/e2e/support/visual-baselines.ts is what acts on it, so pin both
+    // halves — either one alone would let linux CI skip an empty baseline set.
+    const baselineGuards = await readFile(
+      path.join(repoRoot, 'tests/e2e/support/visual-baselines.ts'),
+      'utf8',
+    )
 
     expect(visualSpec).toContain(
-      "const requiresMintedBaselines = process.platform === 'linux' && Boolean(process.env.CI)",
+      "requireMinted: process.platform === 'linux' && Boolean(process.env.CI)",
     )
-    expect(visualSpec).toMatch(
-      /test\.skip\(\s*minted\.length === 0 && !requiresMintedBaselines/,
+    expect(baselineGuards).toMatch(
+      /test\.skip\(\s*minted\.length === 0 && !baselines\.requireMinted/,
     )
   })
 
@@ -3083,8 +3157,8 @@ describe('Field Journal reproduction tooling', () => {
     })
 
     const inputs = contactSheets.getContactSheetInputs()
-    expect(inputs.covers).toHaveLength(32)
-    expect(inputs.figures).toHaveLength(35)
+    expect(inputs.covers).toHaveLength(33)
+    expect(inputs.figures).toHaveLength(36)
     expect(inputs.covers.map(({ label }) => label)).toEqual(
       blogVisualCatalog.map(
         (entry) => `${String(entry.order).padStart(2, '0')} · ${entry.slug}`,
@@ -3119,8 +3193,8 @@ describe('Field Journal reproduction tooling', () => {
       })
 
       expect(results).toEqual([
-        expect.objectContaining({ count: 32, kind: 'covers', width: 1800 }),
-        expect.objectContaining({ count: 35, kind: 'figures', width: 1800 }),
+        expect.objectContaining({ count: 33, kind: 'covers', width: 1800 }),
+        expect.objectContaining({ count: 36, kind: 'figures', width: 1800 }),
       ])
       for (const result of results) {
         const metadata = await sharp(result.outputPath).metadata()
@@ -3154,9 +3228,9 @@ describe('Field Journal reproduction tooling', () => {
 
       expect(await pixelHash()).toBe(await pixelHash())
       await expect(validateBlogVisualAssets()).resolves.toEqual({
-        covers: 32,
-        figures: 35,
-        total: 67,
+        covers: 33,
+        figures: 36,
+        total: 69,
       })
     } finally {
       await browser.close()
@@ -3171,11 +3245,11 @@ describe('Community Field Journal visual catalog', () => {
     const slugs = blogVisualCatalog.map((entry) => entry.slug)
     const orders = blogVisualCatalog.map((entry) => entry.order)
 
-    expect(blogVisualCatalog).toHaveLength(32)
-    expect(new Set(slugs).size).toBe(32)
-    expect(new Set(orders).size).toBe(32)
+    expect(blogVisualCatalog).toHaveLength(33)
+    expect(new Set(slugs).size).toBe(33)
+    expect(new Set(orders).size).toBe(33)
     expect([...orders].sort((left, right) => left - right)).toEqual(
-      Array.from({ length: 32 }, (_, index) => index + 1),
+      Array.from({ length: 33 }, (_, index) => index + 1),
     )
     expect(
       blogVisualCatalog
@@ -3206,9 +3280,9 @@ describe('Community Field Journal visual catalog', () => {
       return counts
     }, {})
 
-    expect(catalogFigurePaths).toHaveLength(35)
+    expect(catalogFigurePaths).toHaveLength(36)
     expect([...catalogFigurePaths].sort()).toEqual([...mdxFigurePaths].sort())
-    expect(modeCounts).toEqual({ inspect: 7, join: 3, see: 8, trace: 17 })
+    expect(modeCounts).toEqual({ inspect: 7, join: 3, see: 9, trace: 17 })
   })
 
   it('preserves source-anchor-backed diff evidence for diagram hydration', async () => {

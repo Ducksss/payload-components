@@ -61,6 +61,7 @@ describe('e2e runner batches', () => {
       'tests/e2e/blog-visual.e2e.spec.ts',
       'tests/e2e/blog.e2e.spec.ts',
       'tests/e2e/components-visual.e2e.spec.ts',
+      'tests/e2e/consent.e2e.spec.ts',
       'tests/e2e/frontend.e2e.spec.ts',
       'tests/e2e/geo.e2e.spec.ts',
       'tests/e2e/templates-visual.e2e.spec.ts',
