@@ -131,38 +131,55 @@ test.describe('Light shadcn frontend', () => {
     await page.goto(baseURL)
 
     const headline = page.getByRole('heading', { level: 1, name: heroHeadline })
-    const heroStack = page.locator('.hero-shell > .container')
-    const proof = page.locator('.product-frame')
-    const replay = page.getByRole('button', { name: 'Replay the install animation' })
+    const heroStack = page.locator('.hero-shell > .container').first()
+    const wall = page.locator('.component-wall')
 
     await expect(headline).toBeVisible()
-    await expect(proof).toBeVisible()
-    await expect(replay).toBeVisible()
+    await expect(wall).toBeAttached()
 
     const headlineSize = await headline.evaluate((element) =>
       Number.parseFloat(getComputedStyle(element).fontSize),
     )
-    const stackMetrics = await heroStack.evaluate((element) => {
-      const styles = getComputedStyle(element)
-      return {
-        gap: Number.parseFloat(styles.rowGap),
-        paddingTop: Number.parseFloat(styles.paddingTop),
-      }
-    })
-    const proofBounds = await proof.evaluate((element) => {
-      const { left, right, width } = element.getBoundingClientRect()
-      return { left, right, width }
-    })
-    const replayBounds = await replay.evaluate((element) => {
-      const { left, right } = element.getBoundingClientRect()
-      return { left, right }
-    })
+    const stackPaddingTop = await heroStack.evaluate((element) =>
+      Number.parseFloat(getComputedStyle(element).paddingTop),
+    )
 
     expect(headlineSize).toBeLessThanOrEqual(88.1)
-    expect(stackMetrics).toEqual({ gap: 48, paddingTop: 64 })
-    expect(proofBounds.width).toBeLessThanOrEqual(1024.1)
-    expect(replayBounds.left).toBeGreaterThanOrEqual(proofBounds.left)
-    expect(replayBounds.right).toBeLessThanOrEqual(proofBounds.right)
+    expect(stackPaddingTop).toBe(64)
+
+    /* The command has to survive above the fold — the wall is proof, not the
+       pitch, so it may never push the CTA row off a 900px-tall viewport. */
+    const ctaBottom = await page
+      .getByRole('button', { name: 'Copy install command' })
+      .first()
+      .evaluate((element) => element.getBoundingClientRect().bottom)
+    expect(ctaBottom).toBeLessThan(900)
+
+    /* The wall is full-bleed and tilted; it must still never scroll the page
+       sideways. */
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    )
+    expect(hasHorizontalOverflow).toBe(false)
+  })
+
+  test('the hero wall renders real catalog twins and states the catalog size', async ({ page }) => {
+    await page.goto(baseURL)
+
+    const wall = page.locator('.component-wall')
+    await expect(wall).toBeAttached()
+
+    /* Three bands, each duplicated once so the marquee can loop seamlessly. */
+    await expect(page.locator('.component-wall .wall-band')).toHaveCount(3)
+
+    /* The wall is decorative; the count beside it is the accessible statement,
+       and it is derived from the registry so it can never drift. */
+    await expect(
+      page.getByText(`${componentEntries.length} blocks`, { exact: false }).first(),
+    ).toBeVisible()
+
+    /* Decorative duplicates must not reach the accessibility tree. */
+    await expect(wall).toHaveAttribute('aria-hidden', 'true')
   })
 
   test('renders the light token-driven homepage', async ({ page }) => {
@@ -1282,6 +1299,16 @@ test.describe('Reduced motion', () => {
 
     const lastLine = terminalDemoLines[terminalDemoLines.length - 1]
     await expect(page.getByText(lastLine.text).first()).toBeVisible()
+
+    /* The replay moved out of the hero and into the workflow section, where
+       "run the command" is the actual subject. (Its Replay control stays
+       motion-reduce:hidden — a replay does nothing visible here, so the
+       control hides rather than lying.) */
+    const workflow = page.locator(`#${landingSections.workflow.id}`)
+    await expect(workflow.locator('.product-frame')).toBeVisible()
+    await expect(
+      workflow.getByRole('button', { name: 'Replay the install animation' }),
+    ).toBeHidden()
 
     const hasHorizontalOverflow = await page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,

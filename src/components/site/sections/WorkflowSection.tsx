@@ -1,10 +1,18 @@
 import { FeatureSplitDemo } from '@/components/site/demos/FeatureSplitDemo'
 import { PreviewSurface } from '@/components/site/graphics/PreviewSurface'
+import { HeroInstallReplay } from '@/components/site/HeroInstallReplay'
+import { HeroProductFrame } from '@/components/site/HeroProductFrame'
+import { Reveal, RevealItem, RevealStagger } from '@/components/site/motion/Reveal'
 import { Section, SectionHeading } from '@/components/site/section'
 import { landingSections, workflowIntro, workflowSteps } from '@/lib/site'
 
 /* How it works — a vertical numbered timeline beside the live result: three
- * moves on the left, a real block rendered from source on the right. */
+ * moves on the left, a real block rendered from source on the right, then the
+ * install replay underneath as the receipt.
+ *
+ * The replay used to headline the hero; it reads better here, where "run the
+ * command" is literally step one and the transcript answers it, than as the
+ * first thing a visitor meets. */
 export function WorkflowSection() {
   return (
     <Section id={landingSections.workflow.id} className="bg-muted/40">
@@ -16,9 +24,9 @@ export function WorkflowSection() {
       />
 
       <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,30rem)] lg:items-center lg:gap-16">
-        <ol className="reveal-on-scroll flex flex-col gap-7">
+        <RevealStagger as="ol" className="flex flex-col gap-7" stagger={0.09}>
           {workflowSteps.map((step, index) => (
-            <li key={step.title} className="flex gap-4">
+            <RevealItem as="li" key={step.title} className="flex gap-4">
               <div className="flex flex-col items-center">
                 <span className="grid size-8 shrink-0 place-items-center rounded-full border border-brand/30 bg-brand-50 font-mono text-sm font-semibold text-brand">
                   {String(index + 1).padStart(2, '0')}
@@ -42,19 +50,26 @@ export function WorkflowSection() {
                   {step.command}
                 </code>
               </div>
-            </li>
+            </RevealItem>
           ))}
-        </ol>
+        </RevealStagger>
 
-        <div className="reveal-on-scroll">
+        <Reveal delay={0.08}>
           <PreviewSurface
             badge="Rendered from source"
             caption="The committed result — real component source, wired into Payload and reviewed like any PR."
           >
             <FeatureSplitDemo />
           </PreviewSurface>
-        </div>
+        </Reveal>
       </div>
+
+      {/* The receipt for step one: the command's real transcript, replayable. */}
+      <Reveal className="mt-14">
+        <HeroInstallReplay>
+          <HeroProductFrame />
+        </HeroInstallReplay>
+      </Reveal>
     </Section>
   )
 }

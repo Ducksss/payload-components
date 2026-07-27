@@ -1,3 +1,4 @@
+import { RevealItem, RevealStagger } from '@/components/site/motion/Reveal'
 import { ProjectShowcaseCard } from '@/components/site/ProjectShowcaseCard'
 import { Section, SectionHeading } from '@/components/site/section'
 import {
@@ -31,16 +32,19 @@ export function ClientShowcase() {
         intro={clientShowcaseIntro}
       />
 
-      <div
+      <RevealStagger
         className={cn(
-          'reveal-on-scroll mt-12 grid grid-cols-1 gap-6 sm:gap-8',
+          'mt-12 grid grid-cols-1 gap-6 sm:gap-8',
           gridColsClass(clientProjects.length),
         )}
+        stagger={0.08}
       >
         {clientProjects.map((project) => (
-          <ProjectShowcaseCard key={project.slug} project={project} />
+          <RevealItem key={project.slug}>
+            <ProjectShowcaseCard project={project} />
+          </RevealItem>
         ))}
-      </div>
+      </RevealStagger>
     </Section>
   )
 }

@@ -1,3 +1,4 @@
+import { RevealItem, RevealStagger } from '@/components/site/motion/Reveal'
 import { stackBandLede, stackItems } from '@/lib/site'
 
 /* The honest "logo cloud": no customer logos, just the stack components
@@ -10,18 +11,22 @@ export function StackBand() {
         <p className="font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
           {stackBandLede}
         </p>
-        <ul className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+        <RevealStagger
+          as="ul"
+          className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3"
+          stagger={0.05}
+        >
           {stackItems.map((item) => (
-            <li key={item.label}>
+            <RevealItem as="li" key={item.label} y={10}>
               <span className="inline-flex items-baseline gap-2 rounded-full border border-border bg-background px-3.5 py-1.5 shadow-card">
                 <span className="text-sm font-semibold tracking-tight text-foreground/85">
                   {item.label}
                 </span>
                 <span className="font-mono text-[11px] text-brand">{item.detail}</span>
               </span>
-            </li>
+            </RevealItem>
           ))}
-        </ul>
+        </RevealStagger>
       </div>
     </section>
   )
