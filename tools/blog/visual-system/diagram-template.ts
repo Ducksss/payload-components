@@ -747,7 +747,7 @@ export const renderDiagramSvg = (diagram: HydratedDiagram): string => {
     <text class="mode-label" x="924" y="46" text-anchor="middle">${mode}</text>
   </g>
   <g data-journal-part="folio">
-    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE ${issue} / 32</text>
+    <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE ${issue} / ${Math.max(32, Number(issue))}</text>
   </g>
   <text class="kicker" x="48" y="86">${escapeXml(diagram.kicker)}</text>
   ${renderTextLines({

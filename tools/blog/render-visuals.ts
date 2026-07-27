@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 import sharp from 'sharp'
 
-import { captureBlogFigures } from './capture-figures'
+import { captureBlogFigures, captures as figureCaptures } from './capture-figures'
 import { generateFigures } from './generate-figures'
 import { renderContactSheets } from './render-contact-sheets'
 import { parseCoverRenderArgs, renderCovers } from './render-covers'
@@ -82,9 +82,9 @@ export const validateBlogVisualAssets = async ({
     .map((candidate) => path.relative(assetRoot, candidate))
     .sort()
 
-  if (covers.length !== 32 || figures.length !== 35 || expected.size !== 67) {
+  if (covers.length !== 33 || figures.length !== 36 || expected.size !== 69) {
     throw new Error(
-      `Catalog asset inventory is ${covers.length} covers, ${figures.length} figures, and ${expected.size} total; expected 32, 35, and 67.`,
+      `Catalog asset inventory is ${covers.length} covers, ${figures.length} figures, and ${expected.size} total; expected 33, 36, and 69.`,
     )
   }
   if (JSON.stringify(actual) !== JSON.stringify([...expected].sort())) {
@@ -150,6 +150,11 @@ export const renderVisuals = async (
   await captureBlogFigures({
     baseURL: coverOptions.baseUrl,
     outputRoot: coverOptions.outputRoot,
+    slugs: figureCaptures
+      .filter((capture) =>
+        coverOptions.entries.some((entry) => entry.slug === capture.slug),
+      )
+      .map((capture) => capture.slug),
   })
   const assetRoot = path.join(coverOptions.outputRoot, 'public')
   const validated = await validateBlogVisualAssets({ assetRoot })

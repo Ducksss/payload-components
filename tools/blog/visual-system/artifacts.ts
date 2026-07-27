@@ -243,6 +243,13 @@ const resolveRouteDeclaration = async (route: string): Promise<readonly string[]
     return ['src/app/blog/page.tsx']
   }
 
+  if (route === '/templates') {
+    return [
+      'src/app/templates/page.tsx',
+      'src/lib/templates/registry.ts',
+    ]
+  }
+
   const blogArticle = route.match(/^\/blog\/([a-z0-9-]+)$/)
 
   if (blogArticle) {
