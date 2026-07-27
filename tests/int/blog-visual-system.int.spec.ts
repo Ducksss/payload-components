@@ -2973,12 +2973,19 @@ describe('Field Journal reproduction tooling', () => {
       path.join(repoRoot, 'tests/e2e/blog-visual.e2e.spec.ts'),
       'utf8',
     )
+    // The blog spec declares the requirement; the shared guard in
+    // tests/e2e/support/visual-baselines.ts is what acts on it, so pin both
+    // halves — either one alone would let linux CI skip an empty baseline set.
+    const baselineGuards = await readFile(
+      path.join(repoRoot, 'tests/e2e/support/visual-baselines.ts'),
+      'utf8',
+    )
 
     expect(visualSpec).toContain(
-      "const requiresMintedBaselines = process.platform === 'linux' && Boolean(process.env.CI)",
+      "requireMinted: process.platform === 'linux' && Boolean(process.env.CI)",
     )
-    expect(visualSpec).toMatch(
-      /test\.skip\(\s*minted\.length === 0 && !requiresMintedBaselines/,
+    expect(baselineGuards).toMatch(
+      /test\.skip\(\s*minted\.length === 0 && !baselines\.requireMinted/,
     )
   })
 
