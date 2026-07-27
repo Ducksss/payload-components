@@ -1,63 +1,37 @@
-import Link from 'next/link'
-
 import type { TemplateShellProps } from '../shells'
 
-import { templatePreviewHref } from '@/lib/templates/registry'
-import { cn } from '@/utilities/ui'
-
+import { HalloranFooter } from './HalloranFooter'
+import { HalloranHeader } from './HalloranHeader'
 import './theme.css'
 
-/* Halloran & Sons (trade-service) template shell — FOUNDATION SKELETON.
+/* Halloran & Sons (trade-service) template shell — the fictional firm's real
+ * chrome, and deliberately the plainest in the gallery.
  *
- * Owned by the Halloran art-direction track: replace with the real chrome
- * (responsive header, keyboard-operable mobile menu, footer, section rhythm).
- * Contract to preserve: render everything under
- * data-template-theme='trade-service', navigate internally via
- * templatePreviewHref, mark the active page with aria-current, keep the named
- * export TradeServiceShell and the TemplateShellProps signature, and keep every
- * interactive semantic here — never inside the visual canvas. */
+ * Contract: everything renders beneath data-template-theme='trade-service'; the
+ * masthead and footer navigate internally through templatePreviewHref; the
+ * active page carries aria-current='page'; the mobile disclosure is
+ * keyboard-operable (see HalloranHeader); and every interactive element lives in
+ * this chrome, never inside the aria-hidden visual canvas.
+ *
+ * The one intentional dark surface — the steel facts strip, the tonal contrast
+ * bands, and the footer's call band — comes entirely from named tokens in
+ * theme.css. The site itself stays forced-light and this template never touches
+ * :root, .dark, or globals.css. Section rhythm (full-bleed bands, the hairline
+ * between sections, the paper/deep-paper/steel treatments) is styled from
+ * theme.css through the [data-template-section] / [data-tone] wrappers the
+ * renderer emits. */
+
 export function TradeServiceShell({ activePath, children, template }: TemplateShellProps) {
   return (
     <div
+      className="hs-root flex min-h-screen flex-col antialiased"
       data-template-theme="trade-service"
-      className="flex min-h-screen flex-col bg-background text-foreground"
     >
-      <header className="border-b border-border">
-        <nav
-          aria-label="Halloran & Sons site navigation"
-          className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6"
-        >
-          <Link href={templatePreviewHref(template.slug)} className="text-base font-semibold">
-            Halloran & Sons
-          </Link>
-          <div className="flex items-center gap-1">
-            {template.navigation.map((item) => (
-              <Link
-                key={item.path}
-                href={templatePreviewHref(template.slug, item.path)}
-                aria-current={activePath === item.path ? 'page' : undefined}
-                className={cn(
-                  'rounded-md px-3 py-1.5 text-sm transition-colors',
-                  activePath === item.path
-                    ? 'bg-secondary text-foreground'
-                    : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </nav>
-      </header>
+      <HalloranHeader activePath={activePath} template={template} />
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-8 text-sm text-muted-foreground sm:px-6">
-          <span>Halloran & Sons — a fictional concept</span>
-          <span>Composed from open-source Payload blocks</span>
-        </div>
-      </footer>
+      <HalloranFooter activePath={activePath} template={template} />
     </div>
   )
 }
