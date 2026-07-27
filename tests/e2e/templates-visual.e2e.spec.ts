@@ -47,6 +47,8 @@ const baselines: VisualBaselines = {
   label: 'template baselines',
   mintHint:
     'run the visual-baselines workflow, or locally: E2E_PORT=3100 pnpm test:e2e templates-visual --update-snapshots',
+  // Linux is the gate's renderer, so an unminted linux CI run is a real defect.
+  requireMinted: process.platform === 'linux' && Boolean(process.env.CI),
   snapshotDir: new URL('./templates-visual.e2e.spec.ts-snapshots/', import.meta.url),
 }
 
