@@ -1,7 +1,7 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "content-quote",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "title": "Content Quote",
   "description": "A content section pairing a media panel with body copy and a pull quote, installed as a wired Payload block.",
   "registryItemName": "content-quote",
@@ -51,6 +51,7 @@
       }
     ],
     "quote": "Using Payload Components has been like unlocking a design superpower — the perfect fusion of simplicity and versatility.",
-    "citation": "John Doe, CEO"
+    "citation": "John Doe, CEO",
+    "logoLabel": "NORTHWIND"
   }
 }

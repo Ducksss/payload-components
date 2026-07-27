@@ -3,6 +3,8 @@ import path from 'node:path'
 
 import { expect, test } from '@playwright/test'
 
+import { grantConsent } from './consent'
+
 import { blogTitle } from '../../src/lib/site'
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
@@ -42,6 +44,12 @@ const posts: Post[] = readdirSync(blogRoot)
     return dateDifference || a.order - b.order
   })
 
+/* Analytics consent granted for the whole file: these specs interact with the
+   page, and the undecided-state banner is fixed to the bottom of the viewport
+   where it could intercept clicks. The banner has its own spec, and the axe
+   suites deliberately run without consent so it is still held to the a11y bar. */
+test.beforeEach(async ({ context }) => grantConsent(context))
+
 test.describe('Blog editorial library', () => {
   test('the index publishes all posts in deterministic order', async ({ page }) => {
     await page.goto(`${baseURL}/blog`)
@@ -67,7 +75,7 @@ test.describe('Blog editorial library', () => {
     )
 
     const cards = page.locator('[data-blog-card]')
-    await expect(cards).toHaveCount(32)
+    await expect(cards).toHaveCount(33)
     await expect(cards.locator('h2')).toHaveText(posts.map((post) => post.title))
     await expect(cards.locator('img').nth(2)).not.toHaveAttribute('loading', 'lazy')
     await expect(cards.locator('img').nth(3)).toHaveAttribute('loading', 'lazy')
@@ -120,7 +128,7 @@ test.describe('Blog editorial library', () => {
 
   test('every committed blog image responds successfully', async ({ request }) => {
     const assets = posts.flatMap((post) => [post.cover, ...post.figures])
-    expect(new Set(assets).size).toBe(67)
+    expect(new Set(assets).size).toBe(69)
 
     for (const asset of assets) {
       const response = await request.get(`${baseURL}${asset}`)
@@ -129,7 +137,7 @@ test.describe('Blog editorial library', () => {
     }
   })
 
-  test('RSS contains 32 unique canonical entries in publication order', async ({ request }) => {
+  test('RSS contains 33 unique canonical entries in publication order', async ({ request }) => {
     const response = await request.get(`${baseURL}/blog/rss.xml`)
     expect(response.ok()).toBe(true)
     expect(response.headers()['content-type']).toContain('application/rss+xml')
@@ -140,9 +148,9 @@ test.describe('Blog editorial library', () => {
     const enclosures = [...body.matchAll(/<enclosure url="([^"]+)" length="(\d+)" type="image\/webp" \/>/g)]
 
     expect(guids).toEqual(posts.map((post) => `${baseURL}/blog/${post.slug}`))
-    expect(new Set(guids).size).toBe(32)
+    expect(new Set(guids).size).toBe(33)
     expect(dates).toEqual(posts.map((post) => new Date(post.date).toUTCString()))
-    expect(enclosures).toHaveLength(32)
+    expect(enclosures).toHaveLength(33)
   })
 
   test('every post-specific Open Graph endpoint returns a 1200 by 630 PNG', async ({ request }) => {

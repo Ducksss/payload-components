@@ -65,6 +65,17 @@ export const StatsProof: Block = {
       name: 'logo',
       type: 'upload',
       relationTo: 'media',
+      admin: {
+        description: 'Customer logo shown above the quote. Falls back to Logo label when empty.',
+      },
+    },
+    {
+      name: 'logoLabel',
+      type: 'text',
+      admin: {
+        description:
+          'Text wordmark used when no logo upload is set — for customers whose mark you do not have as an asset.',
+      },
     },
   ],
   labels: {

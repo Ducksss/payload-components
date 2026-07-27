@@ -33,7 +33,12 @@ export const webpEncodingOptions = Object.freeze({
   quality: 86,
 })
 
-type CaptureSeries = 'component-design' | 'foundations' | 'open-source' | 'production-guides'
+type CaptureSeries =
+  | 'component-design'
+  | 'foundations'
+  | 'open-source'
+  | 'production-guides'
+  | 'project-notes'
 type CaptureLayout = 'duo' | 'quad' | 'triptych'
 type CaptureViewport = 'desktop' | 'mobile'
 
@@ -128,6 +133,7 @@ export type CaptureBatchOptions = {
   baseURL?: string
   logger?: (message: string) => void
   outputRoot?: string
+  slugs?: readonly string[]
   writeOutput?: (outputPath: string, buffer: Buffer) => Promise<void>
 }
 
@@ -492,6 +498,44 @@ export const captures = [
     series: 'production-guides',
     slug: 'build-payload-blog-frontend',
     title: 'One post contract, two real surfaces',
+  },
+  {
+    deck: 'The real gallery, then three live concepts with distinct visual and content systems.',
+    figure: 1,
+    issue: 33,
+    layout: 'quad',
+    mode: 'see',
+    outputPath:
+      'public/blog/templates-are-here/figure-01-template-gallery.webp',
+    panels: [
+      {
+        kind: 'route-viewport',
+        label: 'Templates · all six concepts',
+        provenance: '/templates · local production route',
+        route: '/templates',
+      },
+      {
+        kind: 'route-viewport',
+        label: 'SaaS Launch · live home page',
+        provenance: '/templates/saas-launch/preview · local production route',
+        route: '/templates/saas-launch/preview',
+      },
+      {
+        kind: 'route-viewport',
+        label: 'Event Conference · live home page',
+        provenance: '/templates/event-conference/preview · local production route',
+        route: '/templates/event-conference/preview',
+      },
+      {
+        kind: 'route-viewport',
+        label: 'Portfolio Solo · live home page',
+        provenance: '/templates/portfolio-solo/preview · local production route',
+        route: '/templates/portfolio-solo/preview',
+      },
+    ],
+    series: 'project-notes',
+    slug: 'templates-are-here',
+    title: 'Six concepts make the same registry feel different',
   },
   {
     deck: 'A site-only fixture, shipped source, and the test that keeps their tokens aligned.',
@@ -924,7 +968,7 @@ export function renderCaptureHtml(
 
     <footer class="provenance" data-journal-part="provenance">
       <span>SOURCE / LOCAL PRODUCTION ROUTES + COMMITTED REPOSITORY FILES</span>
-      <strong data-journal-part="folio">ISSUE ${String(capture.issue).padStart(2, '0')} / 32 · FIGURE ${String(capture.figure).padStart(2, '0')} · ${escapeHtml(capture.outputPath.replace(/^public\//, '/'))}</strong>
+      <strong data-journal-part="folio">ISSUE ${String(capture.issue).padStart(2, '0')} / ${Math.max(32, capture.issue)} · FIGURE ${String(capture.figure).padStart(2, '0')} · ${escapeHtml(capture.outputPath.replace(/^public\//, '/'))}</strong>
     </footer>
   </body>
 </html>`
@@ -1978,15 +2022,28 @@ export async function captureBlogFigures({
   baseURL = process.env.BLOG_CAPTURE_BASE_URL ?? defaultBaseURL,
   logger = console.log,
   outputRoot = repoRoot,
+  slugs,
   writeOutput,
 }: CaptureBatchOptions = {}) {
   const normalizedBaseURL = normalizeBaseURL(baseURL)
+  const requestedSlugs = slugs === undefined ? undefined : new Set(slugs)
+  const selectedCaptures =
+    requestedSlugs === undefined
+      ? captures
+      : captures.filter((capture) => requestedSlugs.has(capture.slug))
+
+  if (requestedSlugs && selectedCaptures.length !== requestedSlugs.size) {
+    const knownSlugs = new Set<string>(captures.map((capture) => capture.slug))
+    const unknown = [...requestedSlugs].filter((slug) => !knownSlugs.has(slug))
+    throw new Error(`Unknown blog figure capture slug${unknown.length === 1 ? '' : 's'}: ${unknown.join(', ')}`)
+  }
+
   const browser = await chromium.launch({ headless: true })
   const encoded: EncodedCapture[] = []
 
   try {
     const fonts = await getCaptureFonts()
-    for (const capture of captures) {
+    for (const capture of selectedCaptures) {
       const panelImages: CapturedPanel[] = []
 
       for (const panel of capture.panels) {
@@ -2032,10 +2089,30 @@ export async function captureBlogFigures({
   return encoded
 }
 
+export const parseCaptureArgs = (argv: readonly string[]) => {
+  const slugs: string[] = []
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const argument = argv[index]
+    if (argument !== '--slug') {
+      throw new Error(`Unknown capture argument "${argument}".`)
+    }
+
+    const slug = argv[index + 1]
+    if (!slug || slug.startsWith('--')) {
+      throw new Error('--slug requires a value.')
+    }
+    slugs.push(slug)
+    index += 1
+  }
+
+  return slugs.length > 0 ? { slugs } : {}
+}
+
 const isMain = () =>
   Boolean(process.argv[1]) &&
   path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 
 if (isMain()) {
-  await captureBlogFigures()
+  await captureBlogFigures(parseCaptureArgs(process.argv.slice(2)))
 }

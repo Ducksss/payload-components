@@ -32,7 +32,7 @@ export const blog = defineCollections({
       src: z.string().regex(/^\/blog\/[a-z0-9-]+\/cover\.webp$/),
     }),
     date: z.string().date().or(z.date()),
-    publicationOrder: z.number().int().min(1).max(32),
+    publicationOrder: z.number().int().min(1),
     series: z.enum([
       'project-notes',
       'foundations',
