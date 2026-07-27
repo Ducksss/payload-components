@@ -1,0 +1,11 @@
+# CodeRabbit auto-reviews the default branch (main) only, unless other base
+# branches are listed here. Almost all work in this repo lands on `dev` and is
+# promoted to `main` afterwards, so without this every dev-targeted PR was
+# skipped with a "Review skipped — auto reviews are disabled on base/target
+# branches other than the default branch" notice that reads like a completed
+# review. Listing `dev` restores review coverage where the work actually happens.
+reviews:
+  auto_review:
+    enabled: true
+    base_branches:
+      - dev
