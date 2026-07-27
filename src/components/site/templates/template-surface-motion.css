@@ -1,0 +1,19 @@
+/* Reduced-motion safety net for the /templates MARKETING surfaces — the
+ * gallery cards and the detail-page section reveals. (The preview routes have
+ * their own net in template-motion.css; the two never overlap.)
+ *
+ * Every element here starts from a hidden/offset state, so without this rule a
+ * reduce visitor — or any pre-hydration / no-JS render, which is exactly what
+ * Playwright captures and the poster tool record — could see a blank gallery.
+ * Pinning the FINISHED frame is the contract.
+ *
+ * Only elements whose motion `initial` is a non-final state carry
+ * [data-template-motion]. Hover swaps (the recipe ordinal → arrow) deliberately
+ * do NOT: their resting variant already is the finished frame, and forcing
+ * opacity:1 there would stack both glyphs on top of each other. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-motion] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

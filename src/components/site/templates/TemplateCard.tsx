@@ -1,10 +1,10 @@
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { ArrowRight } from 'lucide-react'
 
 import type { TemplateShowcase } from '@/lib/templates/types'
 
+import { TemplateCardPoster } from '@/components/site/templates/TemplateCardPoster'
 import { TemplateTrackedLink } from '@/components/site/templates/TemplateTrackedLink'
 import { templateCategoryLabels } from '@/lib/site'
 import {
@@ -23,7 +23,11 @@ export const TEMPLATE_POSTER_HEIGHT = 800
 
 /* One editorial gallery card: poster-led, with the concept status impossible
  * to miss and exactly two actions — explore the indexable detail page, or open
- * the raw full preview. No install command, no price, no capture. */
+ * the raw full preview. No install command, no price, no capture.
+ *
+ * Stays a SERVER component (it reads the registry); the poster's springed
+ * hover lift is isolated in the TemplateCardPoster client island, and the
+ * entrance/filter choreography belongs to TemplateGalleryFilter. */
 export function TemplateCard({
   priority = false,
   template,
@@ -36,21 +40,16 @@ export function TemplateCard({
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-frame border border-border bg-card shadow-card transition-shadow duration-300 hover:shadow-frame">
-      <Link
+      <TemplateCardPoster
+        alt={`${template.title} template — home page concept poster`}
+        height={TEMPLATE_POSTER_HEIGHT}
         href={detailHref}
-        aria-label={`Explore the ${template.title} template`}
-        className="relative block overflow-hidden border-b border-border bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-      >
-        <Image
-          alt={`${template.title} template — home page concept poster`}
-          className="block h-auto w-full transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-          height={TEMPLATE_POSTER_HEIGHT}
-          priority={priority}
-          sizes="(min-width: 64rem) 44rem, 100vw"
-          src={templatePosterSrc(template.slug)}
-          width={TEMPLATE_POSTER_WIDTH}
-        />
-      </Link>
+        label={`Explore the ${template.title} template`}
+        priority={priority}
+        sizes="(min-width: 64rem) 44rem, 100vw"
+        src={templatePosterSrc(template.slug)}
+        width={TEMPLATE_POSTER_WIDTH}
+      />
 
       <div className="flex flex-1 flex-col gap-4 p-6 sm:p-7">
         <div className="flex flex-wrap items-center gap-2">
