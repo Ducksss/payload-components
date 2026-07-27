@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 
 import { Instrument_Serif } from 'next/font/google'
-import { GeistMono } from 'geist/font/mono'
-import { GeistSans } from 'geist/font/sans'
+import localFont from 'next/font/local'
 
 import { JsonLd } from '@/components/seo/JsonLd'
 import { AnalyticsShell } from '@/components/site/AnalyticsShell'
@@ -19,6 +18,36 @@ import {
 
 import './globals.css'
 
+/* The docs shell supplies its own system sans/mono stack, so preloading the
+   site's three brand fonts on every docs route wastes the requests and triggers
+   browser warnings. Keep the exact font variables available everywhere, but
+   let each file load only when a route actually uses it. */
+const geistSans = localFont({
+  src: '../../node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2',
+  variable: '--font-geist-sans',
+  weight: '100 900',
+  preload: false,
+})
+
+const geistMono = localFont({
+  src: '../../node_modules/geist/dist/fonts/geist-mono/GeistMono-Variable.woff2',
+  variable: '--font-geist-mono',
+  weight: '100 900',
+  adjustFontFallback: false,
+  fallback: [
+    'ui-monospace',
+    'SFMono-Regular',
+    'Roboto Mono',
+    'Menlo',
+    'Monaco',
+    'Liberation Mono',
+    'DejaVu Sans Mono',
+    'Courier New',
+    'monospace',
+  ],
+  preload: false,
+})
+
 /* Editorial serif for one italic accent word per major headline — paired
    with Geist for warmth. Loaded here so its CSS variable lands on <html>
    alongside Geist; the @theme --font-serif token references it. */
@@ -28,6 +57,7 @@ const instrumentSerif = Instrument_Serif({
   style: 'italic',
   variable: '--font-instrument-serif',
   display: 'swap',
+  preload: false,
 })
 
 export const metadata: Metadata = {
@@ -107,7 +137,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       suppressHydrationWarning
       /* Font variables live on <html>: the @theme font tokens reference them
          and custom properties substitute var() at the declaring element. */
-      className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
     >
       <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
         <JsonLd data={siteStructuredData} />

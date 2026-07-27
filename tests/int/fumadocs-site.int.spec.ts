@@ -377,6 +377,7 @@ describe('Fumadocs site shell', () => {
     expect(nextConfig).toContain('createMDX')
     expect(rootLayout).not.toContain('RootProvider')
     expect(rootLayout).toContain('CommandCopyController')
+    expect(rootLayout.match(/preload: false/g)).toHaveLength(3)
     expect(docsLayout).toContain('RootProvider')
     expect(docsLayout).toContain('enabled: false')
     expect(docsLayout).toContain('themeSwitch={{ enabled: false }}')
