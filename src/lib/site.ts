@@ -27,9 +27,9 @@ export const aiDiscoveryRoute = '/docs/ai-discovery'
 export const feedMetadataAlternates = {
   types: { 'application/rss+xml': feedRoute },
 } as const
-export const blogTitle = 'Build notes and release stories'
+export const blogTitle = 'Payload CMS block and installer guides'
 export const blogDescription =
-  'Installer changes, component release notes, and implementation lessons from maintaining the Payload Components registry.'
+  'Practical Payload CMS v3 guides for installing reusable blocks, wiring collections and renderers, generating types, and fixing blocks that do not render.'
 export const primaryInstallCommand = 'npx payload-components add hero-basic'
 export const cliVersion = packageJson.version
 
