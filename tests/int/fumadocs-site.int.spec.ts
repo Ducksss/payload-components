@@ -856,6 +856,23 @@ describe('Fumadocs site shell', () => {
     expect('upcomingPostCount' in site).toBe(false)
   })
 
+  it('makes the first-block guide a specific Payload CMS v3 install entry', async () => {
+    const firstBlock = await readFile(
+      path.join(repoRoot, 'content/docs/first-block.mdx'),
+      'utf8',
+    )
+
+    expect(firstBlock).toContain('title: Use your first Payload CMS v3 block')
+    expect(firstBlock).toContain('seoTitle: Build your first Payload CMS v3 block')
+    expect(firstBlock).toContain(
+      'description: Install a typed Payload CMS v3 block, add it in the admin, publish the page, and verify the first-block workflow from editor to frontend.',
+    )
+    expect(firstBlock).toContain('command="npx payload-components add feature-grid-basic"')
+    expect(firstBlock).toContain('label="Copy the feature-grid-basic install command"')
+    expect(firstBlock).toContain('trackInstall')
+    expect(firstBlock.indexOf('<RunnableCommand')).toBeLessThan(firstBlock.indexOf('<Steps>'))
+  })
+
   it('keeps product-surface consistency contracts explicit', async () => {
     const [firstBlock, installation, aboutPage, siteSource, docsLayout] = await Promise.all([
       readFile(path.join(repoRoot, 'content/docs/first-block.mdx'), 'utf8'),
