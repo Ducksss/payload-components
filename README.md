@@ -95,9 +95,10 @@ Payload admin routes, collections, globals, a database adapter, or
 
 ### Why It Exists
 
-Payload blocks are not live when their files land. They have to be registered,
-rendered, typed, and added to the admin import map. That wiring is repetitive,
-easy to drift, and usually rediscovered project by project.
+[Payload blocks][payload-blocks-guide-url] are not live when their files land.
+They have to be registered, rendered, typed, and added to the admin import map.
+That wiring is repetitive, easy to drift, and usually rediscovered project by
+project.
 
 Payload Components packages the block source and the wiring contract together.
 The goal is a catalog that grows from real installs and pull requests: MIT,
@@ -215,6 +216,85 @@ Good first installs:
 | `integration-grid`   | Integration cards                  |
 
 Browse the full, current set in the [component catalog][catalog-url].
+
+#### All components
+
+Every installable registry item, in catalog order. This table and the CLI's
+`Current components` help output are both verified against
+`payload-components/registry.json` by a focused test, so neither can silently
+drift from the registry.
+
+<!-- COMPONENT-INVENTORY:START -->
+| Component | Install command |
+| --- | --- |
+| `hero-basic` | `npx payload-components add hero-basic` |
+| `hero-video` | `npx payload-components add hero-video` |
+| `hero-product-tilt` | `npx payload-components add hero-product-tilt` |
+| `hero-aurora` | `npx payload-components add hero-aurora` |
+| `hero-kinetic` | `npx payload-components add hero-kinetic` |
+| `feature-grid-basic` | `npx payload-components add feature-grid-basic` |
+| `feature-split` | `npx payload-components add feature-split` |
+| `feature-bento` | `npx payload-components add feature-bento` |
+| `feature-steps` | `npx payload-components add feature-steps` |
+| `feature-accordion` | `npx payload-components add feature-accordion` |
+| `feature-cards-media` | `npx payload-components add feature-cards-media` |
+| `feature-icon-grid` | `npx payload-components add feature-icon-grid` |
+| `embed-basic` | `npx payload-components add embed-basic` |
+| `logo-cloud-grid` | `npx payload-components add logo-cloud-grid` |
+| `logo-cloud-hover` | `npx payload-components add logo-cloud-hover` |
+| `logo-cloud-marquee` | `npx payload-components add logo-cloud-marquee` |
+| `logo-cloud-inline` | `npx payload-components add logo-cloud-inline` |
+| `logo-cloud-inline-wrap` | `npx payload-components add logo-cloud-inline-wrap` |
+| `content-columns` | `npx payload-components add content-columns` |
+| `content-image-lead` | `npx payload-components add content-image-lead` |
+| `content-feature-media` | `npx payload-components add content-feature-media` |
+| `content-feature-split` | `npx payload-components add content-feature-split` |
+| `content-showcase` | `npx payload-components add content-showcase` |
+| `content-quote` | `npx payload-components add content-quote` |
+| `content-community` | `npx payload-components add content-community` |
+| `integration-grid` | `npx payload-components add integration-grid` |
+| `integration-cluster` | `npx payload-components add integration-cluster` |
+| `integration-split` | `npx payload-components add integration-split` |
+| `integration-connect` | `npx payload-components add integration-connect` |
+| `integration-orbit` | `npx payload-components add integration-orbit` |
+| `integration-list` | `npx payload-components add integration-list` |
+| `integration-marquee` | `npx payload-components add integration-marquee` |
+| `integration-testimonial` | `npx payload-components add integration-testimonial` |
+| `content-split-rows` | `npx payload-components add content-split-rows` |
+| `content-rows` | `npx payload-components add content-rows` |
+| `content-image-frame` | `npx payload-components add content-image-frame` |
+| `content-stats` | `npx payload-components add content-stats` |
+| `content-list` | `npx payload-components add content-list` |
+| `content-list-columns` | `npx payload-components add content-list-columns` |
+| `content-list-icons` | `npx payload-components add content-list-icons` |
+| `call-to-action-centered` | `npx payload-components add call-to-action-centered` |
+| `call-to-action-boxed` | `npx payload-components add call-to-action-boxed` |
+| `call-to-action-signup` | `npx payload-components add call-to-action-signup` |
+| `contact-routing-form` | `npx payload-components add contact-routing-form` |
+| `team-roster` | `npx payload-components add team-roster` |
+| `team-grid` | `npx payload-components add team-grid` |
+| `faq-accordion` | `npx payload-components add faq-accordion` |
+| `faq-split` | `npx payload-components add faq-split` |
+| `faq-card` | `npx payload-components add faq-card` |
+| `faq-icons` | `npx payload-components add faq-icons` |
+| `faq-grouped` | `npx payload-components add faq-grouped` |
+| `faq-grid` | `npx payload-components add faq-grid` |
+| `comparator-table` | `npx payload-components add comparator-table` |
+| `comparator-grid` | `npx payload-components add comparator-grid` |
+| `comparator-stack` | `npx payload-components add comparator-stack` |
+| `testimonials-quote` | `npx payload-components add testimonials-quote` |
+| `testimonials-spotlight` | `npx payload-components add testimonials-spotlight` |
+| `testimonials-grid` | `npx payload-components add testimonials-grid` |
+| `testimonials-rating` | `npx payload-components add testimonials-rating` |
+| `testimonials-bento` | `npx payload-components add testimonials-bento` |
+| `testimonials-wall` | `npx payload-components add testimonials-wall` |
+| `stats-proof` | `npx payload-components add stats-proof` |
+| `pricing-cards` | `npx payload-components add pricing-cards` |
+| `pricing-cards-muted` | `npx payload-components add pricing-cards-muted` |
+| `pricing-cards-cta` | `npx payload-components add pricing-cards-cta` |
+| `pricing-split` | `npx payload-components add pricing-split` |
+| `pricing-enterprise` | `npx payload-components add pricing-enterprise` |
+<!-- COMPONENT-INVENTORY:END -->
 
 Check a target project without changing files:
 
@@ -417,6 +497,7 @@ information.
 [next-url]: https://nextjs.org
 [npm-shield]: https://img.shields.io/npm/v/payload-components.svg?style=for-the-badge
 [npm-url]: https://www.npmjs.com/package/payload-components
+[payload-blocks-guide-url]: https://www.payload-components.xyz/docs/payload-blocks
 [payload-url]: https://payloadcms.com
 [playwright-url]: https://playwright.dev
 [react-url]: https://react.dev

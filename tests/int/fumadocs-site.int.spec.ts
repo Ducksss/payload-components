@@ -126,7 +126,7 @@ describe('Fumadocs site shell', () => {
 
     expect(`${footer}\n${copyButton}`).not.toContain('tin.computer')
     expect(`${footer}\n${copyButton}`).not.toContain('Growth by Tin')
-    expect(`${footer}\n${copyButton}`).not.toContain('bg-[#66DC9D]')
+    expect(`${footer}\n${copyButton}`).not.toContain('66DC9D')
     expect(copyButton).toContain('data-[copied=true]:text-brand-foreground')
     expect(copyButton).toContain('motion-reduce:transform-none')
     expect(heroSubheadline).toBe(
@@ -200,6 +200,7 @@ describe('Fumadocs site shell', () => {
       heroConfig,
       heroComponent,
       heroManifest,
+      rootReadme,
     ] = await Promise.all([
       readFile(path.join(repoRoot, 'content', 'docs', 'payload-blocks.mdx'), 'utf8'),
       readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
@@ -208,6 +209,7 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'config.ts'), 'utf8'),
       readFile(path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'Component.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'payload-components', 'manifests', 'hero-basic.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'README.md'), 'utf8'),
     ])
 
     expect(guide).toContain(
@@ -230,6 +232,12 @@ describe('Fumadocs site shell', () => {
     expect(guide).toMatch(
       /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
     )
+    expect(guide).toMatch(
+      /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b[\s\S]*emphasis="primary"/,
+    )
+    expect(guide).toContain('command="npx payload-components add hero-basic --dry-run"')
+    expect(guide).toContain('label="Copy the hero-basic dry-run command"')
+    expect(guide).toContain('It does not write')
     expect(guide).toContain('[What is a Payload component?](/docs/what-is-a-payload-component)')
     expect(guide).toContain('[Use your first block](/docs/first-block)')
     expect(heroConfig).toContain("slug: 'heroBasic'")
@@ -244,6 +252,12 @@ describe('Fumadocs site shell', () => {
     expect(docsMeta).toContain('"payload-blocks"')
     expect(installationGuide).toContain(
       '[`hero-basic` implementation from Block config through live rendering](/docs/payload-blocks)',
+    )
+    expect(rootReadme).toContain(
+      '[Payload blocks][payload-blocks-guide-url] are not live when their files land.',
+    )
+    expect(rootReadme).toContain(
+      '[payload-blocks-guide-url]: https://www.payload-components.xyz/docs/payload-blocks',
     )
     expect(sitemap).toContain('source.getPages()')
   })
@@ -541,6 +555,48 @@ describe('Fumadocs site shell', () => {
     expect(sources[0]?.code).toContain("slug: 'heroBasic'")
   })
 
+  it('turns the top search component pages into distinct tracked install entries', async () => {
+    const pages = [
+      {
+        description:
+          'Install a typed Payload CMS content-list block with a serif heading and labeled terms. The CLI wires it into your Pages layout, renderer, types, and import map.',
+        seoTitle: 'Content List Block for Payload CMS',
+        slug: 'content-list',
+      },
+      {
+        description:
+          'Install a typed Payload CMS content block with a full-width lead image, two-column copy, and CTA. The CLI wires it into your Pages layout and renderer.',
+        seoTitle: 'Image-led Content Block for Payload CMS',
+        slug: 'content-image-lead',
+      },
+      {
+        description:
+          'Install a typed Payload CMS feature-media block with body copy, two icon features, and a framed image. The CLI wires it into your Pages layout and renderer.',
+        seoTitle: 'Feature Media Block for Payload CMS',
+        slug: 'content-feature-media',
+      },
+    ] as const
+
+    for (const page of pages) {
+      const source = await readFile(
+        path.join(repoRoot, 'content', 'docs', 'components', `${page.slug}.mdx`),
+        'utf8',
+      )
+
+      expect(source).toContain(`seoTitle: ${page.seoTitle}`)
+      expect(source).toContain(`description: ${page.description}`)
+      expect(source).toContain(`command="npx payload-components add ${page.slug}"`)
+      expect(source).toContain(`label="Copy the ${page.slug} install command"`)
+      expect(source).toContain('trackInstall')
+      expect(source).toContain('emphasis="primary"')
+      expect(source).toContain(
+        `pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/${page.slug}.json`,
+      )
+      expect(source).toContain(`<ComponentWiring slug="${page.slug}" />`)
+      expect(source.trim().endsWith(`<ComponentFamily slug="${page.slug}" />`)).toBe(true)
+    }
+  })
+
   it('does not reintroduce Payload CMS runtime app surfaces', async () => {
     const appRoot = path.join(repoRoot, 'src', 'app')
     const forbiddenNames = new Set([
@@ -595,8 +651,13 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).toContain('{blogTitle}')
     expect(indexSource).toContain('{blogDescription}')
     expect(indexSource).not.toContain(blogDescription)
-    expect(blogTitle).toBe('Build notes and release stories')
+    expect(blogTitle).toBe('Payload CMS block and installer guides')
+    expect(blogDescription).toContain('Payload CMS v3 guides')
     expect(indexSource).toContain('href="/components"')
+    expect(indexSource).toContain("href: '/docs/installation'")
+    expect(indexSource).toContain("href: '/docs/payload-blocks'")
+    expect(indexSource).toContain("href: '/blog/anatomy-of-an-install'")
+    expect(indexSource).toContain('data-guide-gateway')
     expect(indexSource).toContain(
       "alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates }",
     )
@@ -774,7 +835,7 @@ describe('Fumadocs site shell', () => {
     const { blogTitle, catalogMetadataTitle, homeMetadataTitle } = await import('../../src/lib/site')
 
     expect(homeMetadataTitle).toBe('Install wired Payload CMS blocks in one command')
-    expect(blogTitle).toBe('Build notes and release stories')
+    expect(blogTitle).toBe('Payload CMS block and installer guides')
     expect(catalogMetadataTitle).toBe('67 Payload CMS Components & Blocks | Catalog')
     expect(docsIndex).toContain('seoTitle: CLI setup and architecture')
 
@@ -798,6 +859,23 @@ describe('Fumadocs site shell', () => {
 
     expect('installablePageCount' in site).toBe(false)
     expect('upcomingPostCount' in site).toBe(false)
+  })
+
+  it('makes the first-block guide a specific Payload CMS v3 install entry', async () => {
+    const firstBlock = await readFile(
+      path.join(repoRoot, 'content/docs/first-block.mdx'),
+      'utf8',
+    )
+
+    expect(firstBlock).toContain('title: Use your first Payload CMS v3 block')
+    expect(firstBlock).toContain('seoTitle: Build your first Payload CMS v3 block')
+    expect(firstBlock).toContain(
+      'description: Install a typed Payload CMS v3 block, add it in the admin, publish the page, and verify the first-block workflow from editor to frontend.',
+    )
+    expect(firstBlock).toContain('command="npx payload-components add feature-grid-basic"')
+    expect(firstBlock).toContain('label="Copy the feature-grid-basic install command"')
+    expect(firstBlock).toContain('trackInstall')
+    expect(firstBlock.indexOf('<RunnableCommand')).toBeLessThan(firstBlock.indexOf('<Steps>'))
   })
 
   it('keeps product-surface consistency contracts explicit', async () => {

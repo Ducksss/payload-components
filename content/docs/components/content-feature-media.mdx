@@ -1,6 +1,7 @@
 ---
 title: Content Feature Media
-description: A content section pairing body copy and two icon features beside a framed media panel.
+seoTitle: Feature Media Block for Payload CMS
+description: Install a typed Payload CMS feature-media block with body copy, two icon features, and a framed image. The CLI wires it into your Pages layout and renderer.
 icon: AlignStartHorizontal
 ---
 
@@ -10,9 +11,12 @@ icon: AlignStartHorizontal
 
 <Tabs items={['Command', 'Manual']}>
   <Tab value="Command">
-    ```bash
-    npx payload-components add content-feature-media
-    ```
+    <RunnableCommand
+      command="npx payload-components add content-feature-media"
+      label="Copy the content-feature-media install command"
+      trackInstall
+      emphasis="primary"
+    />
   </Tab>
   <Tab value="Manual">
     Copy the files straight from the registry, then wire the Payload fragments by hand:

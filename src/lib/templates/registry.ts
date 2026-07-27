@@ -1,6 +1,10 @@
 import type { TemplatePage, TemplateShowcase } from './types'
 
 import { agencyStudioTemplate } from './agency-studio'
+import { commerceBrandTemplate } from './commerce-brand'
+import { eventConferenceTemplate } from './event-conference'
+import { fintechTrustTemplate } from './fintech-trust'
+import { portfolioSoloTemplate } from './portfolio-solo'
 import { saasLaunchTemplate } from './saas-launch'
 
 /* Canonical, curated order for /templates. Definitions stay pure data; React
@@ -8,6 +12,10 @@ import { saasLaunchTemplate } from './saas-launch'
 export const templateShowcases: readonly TemplateShowcase[] = [
   saasLaunchTemplate,
   agencyStudioTemplate,
+  commerceBrandTemplate,
+  eventConferenceTemplate,
+  fintechTrustTemplate,
+  portfolioSoloTemplate,
 ]
 
 export const templatesBySlug: Record<string, TemplateShowcase> = Object.fromEntries(
@@ -49,6 +57,22 @@ export function uniqueTemplateBlockSlugs(template: TemplateShowcase) {
   return [
     ...new Set(template.pages.flatMap((page) => page.sections.map((s) => s.componentSlug))),
   ]
+}
+
+/* The first rendered block is the honest starting point for trying a concept.
+ * Derive it from the recipe so the detail action cannot drift from what the
+ * preview actually composes. This installs one block, never the full template. */
+export function templateStarterBlockSlug(template: TemplateShowcase) {
+  const starterBlock = template.pages[0]?.sections[0]
+  if (!starterBlock) {
+    throw new Error(`Template "${template.slug}" has no starter block`)
+  }
+
+  return starterBlock.componentSlug
+}
+
+export function templateStarterInstallCommand(template: TemplateShowcase) {
+  return `npx payload-components add ${templateStarterBlockSlug(template)}`
 }
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/

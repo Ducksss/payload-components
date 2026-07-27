@@ -46,6 +46,25 @@ test.describe('Blog editorial library', () => {
   test('the index publishes all posts in deterministic order', async ({ page }) => {
     await page.goto(`${baseURL}/blog`)
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(blogTitle)
+    await expect(page).toHaveTitle(new RegExp(blogTitle))
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+      'content',
+      /Practical Payload CMS v3 guides/,
+    )
+
+    const gateway = page.locator('[data-guide-gateway]')
+    await expect(gateway.getByRole('link', { name: /Install a wired Payload block/ })).toHaveAttribute(
+      'href',
+      '/docs/installation',
+    )
+    await expect(gateway.getByRole('link', { name: /Wire a reusable block/ })).toHaveAttribute(
+      'href',
+      '/docs/payload-blocks',
+    )
+    await expect(gateway.getByRole('link', { name: /Fix a block that will not render/ })).toHaveAttribute(
+      'href',
+      '/blog/anatomy-of-an-install',
+    )
 
     const cards = page.locator('[data-blog-card]')
     await expect(cards).toHaveCount(32)

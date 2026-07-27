@@ -235,6 +235,15 @@ test.describe('Light shadcn frontend', () => {
 
     await page
       .getByRole('group')
+      .filter({ hasText: 'What is a Payload CMS block?' })
+      .getByText('What is a Payload CMS block?')
+      .click()
+    await expect(
+      page.getByRole('link', { name: 'Read the Payload blocks guide' }),
+    ).toHaveAttribute('href', '/docs/payload-blocks')
+
+    await page
+      .getByRole('group')
       .filter({ hasText: 'What exactly does an install change in my repo?' })
       .getByText('What exactly does an install change in my repo?')
       .click()
@@ -331,6 +340,10 @@ test.describe('Light shadcn frontend', () => {
           (component, index, entries) =>
             entries.findIndex((entry) => entry.category === component.category) === index,
         )
+    const componentTitleOverrides = new Map([
+      ['content-feature-media', /Feature Media Block for Payload CMS/],
+      ['content-image-lead', /Image-led Content Block for Payload CMS/],
+    ])
 
     const routes = [
       {
@@ -366,7 +379,7 @@ test.describe('Light shadcn frontend', () => {
       ...checkedComponents.map((component) => ({
         h1: component.title,
         path: component.href,
-        title: new RegExp(component.title),
+        title: componentTitleOverrides.get(component.slug) ?? new RegExp(component.title),
       })),
     ]
 
@@ -760,6 +773,132 @@ test.describe('Light shadcn frontend', () => {
     )
   })
 
+  test('turns the first-block workflow into an attributed install entry', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs/first-block`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Use your first Payload CMS v3 block',
+      }),
+    ).toBeVisible()
+
+    const copyButton = page.getByRole('button', {
+      name: 'Copy the feature-grid-basic install command',
+    })
+    await expect(copyButton).toBeVisible()
+    await copyButton.click()
+
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add feature-grid-basic')
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: 'npx payload-components add feature-grid-basic',
+        component: 'feature-grid-basic',
+        source_path: '/docs/first-block',
+      },
+    ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: 'npx payload-components add feature-grid-basic',
+            component: 'feature-grid-basic',
+            source_path: '/docs/first-block',
+          },
+        },
+      ]),
+    )
+  })
+
+  test('turns the top search component pages into attributed install entries', async ({
+    page,
+    context,
+  }) => {
+    const entries = [
+      {
+        description:
+          'Install a typed Payload CMS content-list block with a serif heading and labeled terms. The CLI wires it into your Pages layout, renderer, types, and import map.',
+        seoTitle: 'Content List Block for Payload CMS',
+        slug: 'content-list',
+      },
+      {
+        description:
+          'Install a typed Payload CMS content block with a full-width lead image, two-column copy, and CTA. The CLI wires it into your Pages layout and renderer.',
+        seoTitle: 'Image-led Content Block for Payload CMS',
+        slug: 'content-image-lead',
+      },
+      {
+        description:
+          'Install a typed Payload CMS feature-media block with body copy, two icon features, and a framed image. The CLI wires it into your Pages layout and renderer.',
+        seoTitle: 'Feature Media Block for Payload CMS',
+        slug: 'content-feature-media',
+      },
+    ] as const
+
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+
+    for (const entry of entries) {
+      const command = `npx payload-components add ${entry.slug}`
+      const sourcePath = `/docs/components/${entry.slug}`
+
+      await page.goto(`${baseURL}${sourcePath}`)
+      await waitForCopyController(page)
+      await stubGtagEvents(page)
+
+      await expect(page).toHaveTitle(new RegExp(entry.seoTitle))
+      await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+        'content',
+        entry.description,
+      )
+
+      const installButton = page.getByRole('button', {
+        name: `Copy the ${entry.slug} install command`,
+      })
+      await expect(installButton).toBeVisible()
+      await expect(installButton).toHaveAttribute('data-cta-level', 'primary')
+      await installButton.click()
+
+      await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(command)
+      expect(await getGtagEvents(page)).toContainEqual([
+        'event',
+        'copy_install_command',
+        {
+          command,
+          component: entry.slug,
+          source_path: sourcePath,
+        },
+      ])
+      expect(await getPostHogEvents(page)).toEqual(
+        expect.arrayContaining([
+          {
+            event: 'copy_install_command',
+            properties: {
+              command,
+              component: entry.slug,
+              source_path: sourcePath,
+            },
+          },
+        ]),
+      )
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+        ),
+      ).toBe(false)
+    }
+  })
+
   test('copies a catalog family-card command', async ({ page, context }) => {
     // feature-bento is the Features family's representative card in the landing
     // teaser; its command differs from the hero's primaryInstallCommand.
@@ -822,6 +961,58 @@ test.describe('Light shadcn frontend', () => {
       ]),
     )
   })
+
+  for (const sourcePath of ['/docs/installation', '/docs/payload-blocks']) {
+    test(`keeps GitHub clicks attributable to ${sourcePath}`, async ({ page }) => {
+      await page.goto(`${baseURL}${sourcePath}`)
+      await waitForCopyController(page)
+      await stubGtagEvents(page)
+      await page.evaluate(() => {
+        window.history.replaceState({}, '', `${window.location.pathname}#github-proof`)
+        document.addEventListener(
+          'click',
+          (event) => {
+            const target = event.target
+            if (!(target instanceof Element)) return
+
+            if (target.closest('a[href="https://github.com/Ducksss/payload-components"]')) {
+              event.preventDefault()
+            }
+          },
+          { capture: true },
+        )
+      })
+
+      const githubLink = page.getByRole('link', { name: 'Star on GitHub', exact: true })
+      await expect(githubLink).toHaveAttribute(
+        'href',
+        'https://github.com/Ducksss/payload-components',
+      )
+      await githubLink.click()
+
+      expect(await getGtagEvents(page)).toContainEqual([
+        'event',
+        'primary_link_click',
+        {
+          destination: 'github',
+          href: 'https://github.com/Ducksss/payload-components',
+          source_path: sourcePath,
+        },
+      ])
+      expect(await getPostHogEvents(page)).toEqual(
+        expect.arrayContaining([
+          {
+            event: 'primary_link_click',
+            properties: {
+              destination: 'github',
+              href: 'https://github.com/Ducksss/payload-components',
+              source_path: sourcePath,
+            },
+          },
+        ]),
+      )
+    })
+  }
 
   test('shows an alert after copying a docs code block', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
@@ -992,6 +1183,65 @@ test.describe('Light shadcn frontend', () => {
             command: 'npx payload-components add hero-basic',
             component: 'hero-basic',
             source_path: '/docs/installation',
+          },
+        },
+      ]),
+    )
+  })
+
+  test('keeps the Payload blocks install primary while offering a non-installing dry run', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/docs/payload-blocks`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+
+    const installButton = page.getByRole('button', {
+      name: 'Copy the hero-basic install command',
+    })
+    const dryRunButton = page.getByRole('button', {
+      name: 'Copy the hero-basic dry-run command',
+    })
+
+    await expect(installButton).toHaveAttribute('data-cta-level', 'primary')
+    await expect(dryRunButton).toHaveAttribute('data-cta-level', 'secondary')
+
+    await dryRunButton.click()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add hero-basic --dry-run')
+    expect(
+      (await getGtagEvents(page)).filter(
+        (event) => event[0] === 'event' && event[1] === 'copy_install_command',
+      ),
+    ).toHaveLength(0)
+    expect(
+      (await getPostHogEvents(page)).filter(({ event }) => event === 'copy_install_command'),
+    ).toHaveLength(0)
+
+    await installButton.click()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe('npx payload-components add hero-basic')
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: 'npx payload-components add hero-basic',
+        component: 'hero-basic',
+        source_path: '/docs/payload-blocks',
+      },
+    ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: 'npx payload-components add hero-basic',
+            component: 'hero-basic',
+            source_path: '/docs/payload-blocks',
           },
         },
       ]),

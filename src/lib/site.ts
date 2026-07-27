@@ -27,9 +27,9 @@ export const aiDiscoveryRoute = '/docs/ai-discovery'
 export const feedMetadataAlternates = {
   types: { 'application/rss+xml': feedRoute },
 } as const
-export const blogTitle = 'Build notes and release stories'
+export const blogTitle = 'Payload CMS block and installer guides'
 export const blogDescription =
-  'Installer changes, component release notes, and implementation lessons from maintaining the Payload Components registry.'
+  'Practical Payload CMS v3 guides for installing reusable blocks, wiring collections and renderers, generating types, and fixing blocks that do not render.'
 export const primaryInstallCommand = 'npx payload-components add hero-basic'
 export const cliVersion = packageJson.version
 
@@ -1374,6 +1374,8 @@ export const faqEntries = [
   {
     answer:
       'In Payload, a block is a composable page-builder field — a reusable content section (hero, feature grid, CTA) editors stack to lay out a page. Payload Components ships pre-built blocks plus the wiring that makes them live, so a block is not just copied in: it is registered in your Pages collection, mapped in your renderer, typed, and added to the admin import map.',
+    href: '/docs/payload-blocks',
+    linkLabel: 'Read the Payload blocks guide',
     question: 'What is a Payload CMS block?',
   },
   {
@@ -1445,13 +1447,17 @@ export const catalogTemplatesLinkLabel = 'Explore Payload CMS template concepts'
 export const templatesEyebrow = 'Templates'
 export const templatesTitle = 'Payload CMS template concepts, built from installable blocks'
 export const templatesDescription =
-  'Explore complete Payload CMS and Next.js site concepts for SaaS and agency projects. Open every page in a live preview, then trace each section back to a typed block you can install today.'
+  'Explore complete Payload CMS and Next.js site concepts for SaaS, agency, commerce, event, fintech, and portfolio projects. Open every page in a live preview, then trace each section back to a typed block you can install today.'
 export const templatesMetadataTitle = 'Payload CMS Templates for Next.js | Concepts & Recipes'
 export const templatesMetadataDescription =
-  'Explore Payload CMS template concepts for SaaS and agency sites, preview every page, and inspect the typed block recipe behind each Next.js layout.'
+  'Explore Payload CMS template concepts for SaaS, agency, commerce, event, fintech, and portfolio sites — preview every page and inspect the typed block recipe.'
 
 export const templateCategoryLabels = {
   agency: 'Agency',
+  commerce: 'Commerce',
+  event: 'Event',
+  fintech: 'Fintech',
+  portfolio: 'Portfolio',
   saas: 'SaaS',
 } as const
 

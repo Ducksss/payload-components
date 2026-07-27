@@ -1,13 +1,16 @@
 import type { TemplateShowcase } from '@/lib/templates/types'
 
-import { TemplateTrackedLink } from '@/components/site/templates/TemplateTrackedLink'
+import { TemplateRecipeRow } from '@/components/site/templates/TemplateRecipeRow'
 import { componentEntries } from '@/lib/site'
 
 const componentEntryBySlug = new Map(componentEntries.map((entry) => [entry.slug, entry]))
 
 /* The ordered block recipe, grouped by page. Every row is a real registry
  * block in render order, linking to its /docs/components contract — the
- * recipe is the product; the template is just its composition. */
+ * recipe is the product; the template is just its composition.
+ *
+ * Server component: the row's ordinal → arrow micro-interaction lives in the
+ * TemplateRecipeRow client island so componentEntries stays on the server. */
 export function TemplateRecipe({ template }: { template: TemplateShowcase }) {
   return (
     <div className="grid gap-5 lg:grid-cols-2">
@@ -28,32 +31,19 @@ export function TemplateRecipe({ template }: { template: TemplateShowcase }) {
               const entry = componentEntryBySlug.get(section.componentSlug)
 
               return (
-                <li key={section.id}>
-                  <TemplateTrackedLink
-                    event="template_recipe_click"
-                    href={entry?.href ?? `/docs/components/${section.componentSlug}`}
-                    properties={{
-                      page: page.path,
-                      revision: template.revision,
-                      source: 'detail',
-                      template: template.slug,
-                    }}
-                    className="group flex items-baseline gap-3 rounded-md px-3 py-2 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="w-5 shrink-0 font-mono text-xs text-brand"
-                    >
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <span className="text-sm font-medium text-foreground">
-                      {entry?.title ?? section.componentSlug}
-                    </span>
-                    <span className="ml-auto truncate font-mono text-xs text-muted-foreground transition-colors group-hover:text-foreground">
-                      {section.componentSlug}
-                    </span>
-                  </TemplateTrackedLink>
-                </li>
+                <TemplateRecipeRow
+                  key={section.id}
+                  href={entry?.href ?? `/docs/components/${section.componentSlug}`}
+                  ordinal={String(index + 1).padStart(2, '0')}
+                  properties={{
+                    page: page.path,
+                    revision: template.revision,
+                    source: 'detail',
+                    template: template.slug,
+                  }}
+                  slug={section.componentSlug}
+                  title={entry?.title ?? section.componentSlug}
+                />
               )
             })}
           </ol>

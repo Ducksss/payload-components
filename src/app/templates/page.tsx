@@ -8,8 +8,10 @@ import { SiteHeader } from '@/components/site/SiteHeader'
 import { TemplateGalleryView } from '@/components/site/templates/TemplateAnalytics'
 import { TemplateCard } from '@/components/site/templates/TemplateCard'
 import { TemplateContribution } from '@/components/site/templates/TemplateContribution'
+import { TemplateGalleryFilter } from '@/components/site/templates/TemplateGalleryFilter'
 import {
   siteUrl,
+  templateCategoryLabels,
   templatesContribution,
   templatesDescription,
   templatesEyebrow,
@@ -25,9 +27,28 @@ import {
 import { breadcrumbNode, graph, websiteId } from '@/lib/structured-data'
 
 /* /templates gallery — indexable editorial index of the full-site concepts.
- * Contract: one H1, the concept disclosure up top, two poster-led cards
- * linking to detail + full preview, a community close, and hard absences: no
- * iframes, no filters, no install command, no price, no capture. */
+ * Contract: one H1, the concept disclosure up top, poster-led cards linking to
+ * detail + full preview, a community close, and hard absences: no iframes, no
+ * install command, no price, no capture. Category filtering (client, URL-synced,
+ * layout-animated) is on now that the gallery holds 6+ concepts; every card is
+ * still built here on the server and handed to the filter as a rendered
+ * element, so the whole set ships in the initial HTML and the showcase registry
+ * never reaches the client bundle. */
+
+/* Category chips in first-appearance (curated registry) order. */
+const galleryCategories = (() => {
+  const order: string[] = []
+  const counts = new Map<string, number>()
+  for (const template of templateShowcases) {
+    if (!counts.has(template.category)) order.push(template.category)
+    counts.set(template.category, (counts.get(template.category) ?? 0) + 1)
+  }
+  return order.map((value) => ({
+    count: counts.get(value) ?? 0,
+    label: templateCategoryLabels[value as keyof typeof templateCategoryLabels],
+    value,
+  }))
+})()
 
 export const metadata: Metadata = {
   alternates: { canonical: '/templates' },
@@ -99,11 +120,14 @@ export default function TemplatesPage() {
 
         <section aria-label="Template showcases">
           <div className="container py-12 lg:py-16">
-            <div className="grid gap-8 lg:grid-cols-2">
-              {templateShowcases.map((template, index) => (
-                <TemplateCard key={template.slug} priority={index === 0} template={template} />
-              ))}
-            </div>
+            <TemplateGalleryFilter
+              categories={galleryCategories}
+              items={templateShowcases.map((template, index) => ({
+                card: <TemplateCard priority={index === 0} template={template} />,
+                category: template.category,
+                slug: template.slug,
+              }))}
+            />
           </div>
         </section>
 
@@ -182,10 +206,10 @@ export default function TemplatesPage() {
                       Use a concept to plan the full site
                     </h3>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                      Open a SaaS or agency concept when you want to compare complete page systems
-                      before writing code. Every concept includes page-level previews, visual
-                      tokens, and an ordered block recipe, so you can reuse the composition without
-                      pretending the showcase is a packaged starter repository.
+                      Open any concept when you want to compare complete page systems before
+                      writing code. Every concept includes page-level previews, visual tokens, and
+                      an ordered block recipe, so you can reuse the composition without pretending
+                      the showcase is a packaged starter repository.
                     </p>
                   </div>
                 </article>

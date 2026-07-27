@@ -14,6 +14,8 @@ import {
   templatePosterSrc,
   templatePreviewHref,
   templateShowcases,
+  templateStarterBlockSlug,
+  templateStarterInstallCommand,
   templatesBySlug,
   uniqueTemplateBlockSlugs,
   validateTemplateShowcases,
@@ -33,9 +35,9 @@ import {
  *   3. the architecture boundary — template runtime code must stay pure site
  *      code (no Payload target code, manifests, or consumer-only modules);
  *   4. source-level copy rules — concept status/disclosure constants used on
- *      the gallery/detail surfaces, no install-command/waitlist/pricing copy
- *      anywhere on a template surface, and theme.css rules scoped beneath
- *      their [data-template-theme='<slug>'] root.
+ *      the gallery/detail surfaces, one recipe-derived block action without
+ *      waitlist/pricing copy, and theme.css rules scoped beneath their
+ *      [data-template-theme='<slug>'] root.
  *
  * Model: tests/int/demo-twins.int.spec.ts / visual-standards.int.spec.ts
  * (read source, extract, assert an empty violations array). */
@@ -226,6 +228,14 @@ describe('Template showcase contract', () => {
         expect(missing, `Unresolvable recipe blocks:\n${missing.join('\n')}`).toEqual([])
       })
 
+      it('derives its starter action from the first real block in the recipe', () => {
+        const expectedSlug = template.pages[0]?.sections[0]?.componentSlug
+        const entry = componentEntries.find(({ slug }) => slug === expectedSlug)
+
+        expect(templateStarterBlockSlug(template)).toBe(expectedSlug)
+        expect(templateStarterInstallCommand(template)).toBe(entry?.command)
+      })
+
       it('ships every declared asset under public/templates/<slug>/', () => {
         const missing = template.assets
           .map((asset) => asset.path)
@@ -311,9 +321,8 @@ describe('Template showcase contract', () => {
     }
   })
 
-  it('never puts install-command, waitlist, coming-soon, or download copy on a template surface', async () => {
+  it('keeps waitlist, coming-soon, and download claims off template surfaces', async () => {
     const forbiddenCopy = [
-      { pattern: /payload-components\s+add\b/i, reason: 'install command on a template surface (concepts are not installable yet)' },
       { pattern: /\bwaitlist\b/i, reason: 'waitlist copy (community-first — no funnels)' },
       { pattern: /coming[\s-]soon\b/i, reason: '"coming soon" copy (state the concept status instead)' },
       { pattern: /\bdownloads?\b/i, reason: 'download copy (concepts are browsable, not downloadable)' },

@@ -1,6 +1,7 @@
 ---
 title: Content List
-description: A serif-headed content section pairing a heading with a labeled-term list.
+seoTitle: Content List Block for Payload CMS
+description: Install a typed Payload CMS content-list block with a serif heading and labeled terms. The CLI wires it into your Pages layout, renderer, types, and import map.
 icon: Columns2
 ---
 
@@ -10,9 +11,12 @@ icon: Columns2
 
 <Tabs items={['Command', 'Manual']}>
   <Tab value="Command">
-    ```bash
-    npx payload-components add content-list
-    ```
+    <RunnableCommand
+      command="npx payload-components add content-list"
+      label="Copy the content-list install command"
+      trackInstall
+      emphasis="primary"
+    />
   </Tab>
   <Tab value="Manual">
     Copy the files straight from the registry, then wire the Payload fragments by hand:

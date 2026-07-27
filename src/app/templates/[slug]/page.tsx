@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 
 import { JsonLd } from '@/components/seo/JsonLd'
+import { RunnableCommand } from '@/components/site/RunnableCommand'
 import { Section, SectionHeading } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
@@ -14,6 +15,7 @@ import { TemplateContribution } from '@/components/site/templates/TemplateContri
 import { TemplateDetailPreview } from '@/components/site/templates/TemplateDetailPreview'
 import { TemplatePagesGrid } from '@/components/site/templates/TemplatePagesGrid'
 import { TemplateRecipe } from '@/components/site/templates/TemplateRecipe'
+import { TemplateReveal } from '@/components/site/templates/TemplateReveal'
 import { TemplateVisualSystem } from '@/components/site/templates/TemplateVisualSystem'
 import {
   siteUrl,
@@ -25,6 +27,8 @@ import {
   getTemplateShowcase,
   templateDetailHref,
   templateShowcases,
+  templateStarterBlockSlug,
+  templateStarterInstallCommand,
   uniqueTemplateBlockSlugs,
 } from '@/lib/templates/registry'
 import {
@@ -37,7 +41,15 @@ import { breadcrumbNode, graph } from '@/lib/structured-data'
  * concept. Contract: canonical, one H1, concept status + disclosure impossible
  * to miss, exactly one iframe (TemplateDetailPreview), pages-included posters,
  * the ordered block recipe linking every chip to /docs/components/<slug>, the
- * visual-system summary, public contribution links, 404 on unknown slugs. */
+ * visual-system summary, one recipe-derived block install action, public
+ * contribution links, 404 on unknown slugs.
+ *
+ * Motion here is deliberately quieter than the gallery: below-fold section
+ * CONTENT rises once via TemplateReveal (never the <Section> itself — a
+ * translated full-bleed band would slide its own background), the hero and the
+ * live preview never animate because they are the page's first frame, and the
+ * concept disclosure never animates at all — an honesty notice must not be
+ * gated behind a scroll position or a hydrated animation. */
 
 export function generateStaticParams() {
   return templateShowcases.map((template) => ({ slug: template.slug }))
@@ -76,6 +88,8 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
   if (!template) notFound()
 
   const blockCount = uniqueTemplateBlockSlugs(template).length
+  const starterBlockSlug = templateStarterBlockSlug(template)
+  const starterInstallCommand = templateStarterInstallCommand(template)
   const structuredData = graph(
     breadcrumbNode([
       { name: 'Home', path: '/' },
@@ -146,6 +160,27 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
                 {template.pages.length} pages · {blockCount} unique blocks
               </p>
             </div>
+
+            <div className="mt-2 max-w-3xl rounded-card border border-border bg-background/90 p-4 shadow-card sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-5">
+              <div className="max-w-lg">
+                <p className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand">
+                  Try one real block
+                </p>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                  This installs only <code className="font-mono text-foreground">{starterBlockSlug}</code>,
+                  the first block in the Home recipe. The full-site concept remains a
+                  browsable reference.
+                </p>
+              </div>
+              <div className="mt-4 shrink-0 sm:mt-0">
+                <RunnableCommand
+                  command={starterInstallCommand}
+                  emphasis="primary"
+                  label={`Copy the ${starterBlockSlug} install command`}
+                  trackInstall
+                />
+              </div>
+            </div>
           </div>
         </section>
 
@@ -156,35 +191,41 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
         </section>
 
         <Section containerClassName="py-12 sm:py-14 lg:py-16">
-          <SectionHeading
-            eyebrow="Pages"
-            heading="Every page in the concept"
-            accentWord="concept"
-            intro={`${template.title} spans ${template.pages.length} pages. Each poster opens that page in the raw full preview — the same route the live frame above renders.`}
-          />
-          <div className="mt-10">
+          <TemplateReveal>
+            <SectionHeading
+              eyebrow="Pages"
+              heading="Every page in the concept"
+              accentWord="concept"
+              intro={`${template.title} spans ${template.pages.length} pages. Each poster opens that page in the raw full preview — the same route the live frame above renders.`}
+            />
+          </TemplateReveal>
+          <TemplateReveal className="mt-10" delay={0.06}>
             <TemplatePagesGrid template={template} />
-          </div>
+          </TemplateReveal>
         </Section>
 
         <Section className="bg-muted/40" containerClassName="py-12 sm:py-14 lg:py-16">
-          <SectionHeading
-            eyebrow="Recipe"
-            heading="The block recipe, page by page"
-            accentWord="recipe"
-            intro={templatesRecipeIntro}
-          />
-          <div className="mt-10">
+          <TemplateReveal>
+            <SectionHeading
+              eyebrow="Recipe"
+              heading="The block recipe, page by page"
+              accentWord="recipe"
+              intro={templatesRecipeIntro}
+            />
+          </TemplateReveal>
+          <TemplateReveal className="mt-10" delay={0.06}>
             <TemplateRecipe template={template} />
-          </div>
+          </TemplateReveal>
         </Section>
 
         <Section containerClassName="py-12 sm:py-14 lg:py-16">
-          <SectionHeading
-            eyebrow="Visual system"
-            heading="One theme, carried across every block"
-            accentWord="theme"
-          />
+          <TemplateReveal>
+            <SectionHeading
+              eyebrow="Visual system"
+              heading="One theme, carried across every block"
+              accentWord="theme"
+            />
+          </TemplateReveal>
           <div className="mt-10">
             <TemplateVisualSystem template={template} />
           </div>
@@ -200,19 +241,21 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
             </p>
           </div>
 
-          <SectionHeading
-            accentWord="open"
-            eyebrow="Community"
-            heading={templatesContribution.heading}
-            intro={templatesContribution.intro}
-          />
-          <div className="mt-10">
+          <TemplateReveal>
+            <SectionHeading
+              accentWord="open"
+              eyebrow="Community"
+              heading={templatesContribution.heading}
+              intro={templatesContribution.intro}
+            />
+          </TemplateReveal>
+          <TemplateReveal className="mt-10" delay={0.06}>
             <TemplateContribution
               revision={template.revision}
               source="detail"
               template={template.slug}
             />
-          </div>
+          </TemplateReveal>
         </Section>
       </main>
 
