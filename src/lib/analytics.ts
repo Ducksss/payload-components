@@ -57,7 +57,22 @@ function getSessionDistinctId() {
 function isAnalyticsHost() {
   const { hostname } = window.location
 
-  return siteHostnames.has(hostname) || hostname === 'localhost' || hostname === '127.0.0.1'
+  // Production hosts only. Local dev and preview deploys must never write into
+  // the production dataset or leak unreleased route paths to a third party.
+  return siteHostnames.has(hostname)
+}
+
+/* An explicit browser privacy signal is a request not to be measured, so honour
+ * it before anything is sent or stored. Global Privacy Control is legally
+ * binding under the CCPA; Do Not Track is advisory but cheap to respect. */
+function privacySignalOptOut() {
+  const nav = navigator as Navigator & { globalPrivacyControl?: boolean }
+
+  return (
+    nav.globalPrivacyControl === true ||
+    navigator.doNotTrack === '1' ||
+    (window as Window & { doNotTrack?: string }).doNotTrack === '1'
+  )
 }
 
 function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
@@ -69,11 +84,14 @@ function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
 
   window.__posthogEvents?.push(event)
 
+  // Deliberately after the __posthogEvents push above: the test harness records
+  // intent, these gates decide whether anything leaves the browser.
   if (
     window.__disablePostHogNetwork ||
     !managedPostHogApiKey ||
     !host ||
-    !isAnalyticsHost()
+    !isAnalyticsHost() ||
+    privacySignalOptOut()
   ) {
     return
   }
@@ -114,6 +132,8 @@ function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
 }
 
 function trackEvent(eventName: string, properties: AnalyticsProperties) {
+  if (privacySignalOptOut()) return
+
   try {
     trackVercelEvent(eventName, properties)
   } catch {
@@ -230,7 +250,15 @@ export function trackPrimaryLinkClick(link: HTMLAnchorElement) {
   const href = link.getAttribute('href')
   if (!href) return
 
-  const url = new URL(href, window.location.href)
+  let url: URL
+
+  try {
+    url = new URL(href, window.location.href)
+  } catch {
+    // Hrefs like "//" or "http://" are unparseable; analytics must never block the user action.
+    return
+  }
+
   const normalized = normalizeDestination(url)
   if (!normalized) return
 
