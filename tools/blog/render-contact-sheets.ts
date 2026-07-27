@@ -2,7 +2,7 @@ import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import sharp from 'sharp'
+import sharp, { type OverlayOptions } from 'sharp'
 
 import { blogVisualCatalog } from './visual-system/catalog'
 
@@ -114,7 +114,7 @@ const createContactSheet = async (
   const rows = Math.ceil(inputs.length / columns)
   const rowHeight = thumbnailHeight + labelHeight
   const height = outerPadding * 2 + rows * rowHeight + Math.max(0, rows - 1) * gap
-  const composites: sharp.OverlayOptions[] = []
+  const composites: OverlayOptions[] = []
 
   for (const [index, input] of inputs.entries()) {
     const column = index % columns
