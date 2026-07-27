@@ -376,16 +376,12 @@
 }
 
 /* ————— Quote surfaces —————
- * Both stats-proof and content-quote render a stand-in customer wordmark or
- * logo block where the real block takes a Media upload. A one-person site does
- * not badge other people's words with their employer's mark, so the quotes
- * stand on their own type. */
-[data-template-theme='portfolio-solo'] [data-template-section='proof'] figure > div.mb-8,
-[data-template-theme='portfolio-solo'] [data-template-canvas] blockquote .h-6.w-20 {
-  display: none;
-}
-
-/* stats-proof's quote panel loses its card: a hairline on the left is enough
+ * The customer logo on stats-proof and content-quote is optional content, and
+ * this concept simply leaves it unset (see src/lib/templates/portfolio-solo.ts)
+ * rather than hiding it here — a one-person site does not badge other people's
+ * words with their employer's mark.
+ *
+ * stats-proof's quote panel loses its card: a hairline on the left is enough
  * to mark a quotation. */
 [data-template-theme='portfolio-solo'] [data-template-section='proof'] figure {
   background-color: transparent;

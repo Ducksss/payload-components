@@ -23,6 +23,7 @@ export const StatsProofBlock: React.FC<Props> = ({
   eyebrow,
   id,
   logo,
+  logoLabel,
   metrics,
   quote,
   role,
@@ -67,9 +68,13 @@ export const StatsProofBlock: React.FC<Props> = ({
           </div>
 
           <figure className="rounded-panel border border-border/70 bg-background/85 p-6 sm:p-8">
-            {logo ? (
+            {logo || logoLabel ? (
               <div className="mb-8 flex h-9 items-center">
-                <Media resource={logo} imgClassName="h-9 w-auto object-contain object-left" />
+                {logo ? (
+                  <Media resource={logo} imgClassName="h-9 w-auto object-contain object-left" />
+                ) : (
+                  <span className="font-medium tracking-title text-foreground">{logoLabel}</span>
+                )}
               </div>
             ) : null}
             <blockquote className="text-pretty text-xl leading-8 text-foreground sm:text-2xl">

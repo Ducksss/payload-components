@@ -1,7 +1,7 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "stats-proof",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "title": "Stats Proof",
   "description": "A proof section pairing narrative, prominent string metrics, and a semantic customer quote.",
   "registryItemName": "stats-proof",
@@ -51,6 +51,7 @@
     ],
     "quote": "Acme let us replace a quarter of bespoke reporting work with one product surface our customers actually prefer.",
     "author": "Maya Chen",
-    "role": "VP Product, Northwind"
+    "role": "VP Product, Northwind",
+    "logoLabel": "NORTHWIND"
   }
 }

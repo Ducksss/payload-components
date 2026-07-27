@@ -148,6 +148,9 @@ export const portfolioSoloTemplate: TemplateShowcase = {
           id: 'selected-work',
         },
         {
+          /* No logoLabel here or on either content-quote: a one-person site
+           * does not badge other people's words with their employer's mark, so
+           * every quote in this concept stands on its own type. */
           componentSlug: 'stats-proof',
           content: {
             author: 'Kaia Lund',
