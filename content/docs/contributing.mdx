@@ -107,18 +107,38 @@ and both GA4 and PostHog are third-party processors. Keep this paragraph accurat
 if that stack changes — `tests/int/analytics-contract.int.spec.ts` pins the
 PostHog event payloads only and cannot catch an undisclosed provider.
 
-Every event this repo emits is skipped for visitors whose browser sends Global
-Privacy Control or Do Not Track (`privacySignalOptOut` in `src/lib/analytics.ts`),
-and no `pc_distinct_id` is minted or stored for them. PostHog capture is further
-limited to the production hostnames, so local dev and preview deploys never send.
+## Consent
 
-<Callout type="warn">
-  This is not a full consent gate. The GA4 script tag still loads on first paint
-  for every visitor, so GA4's own automatic page-view collection and cookies are
-  unaffected by the opt-out above. Closing that gap means deferring the third-party
-  mounts until opt-in and adding a privacy page — a deliberate change that
-  re-baselines the landing visual snapshots and must clear the axe gate.
-</Callout>
+None of the above loads until the visitor opts in. `AnalyticsShell` renders
+nothing while consent is unset or denied, so on a first visit there is no GA4
+script, no Vercel bundle, no PostHog beacon, and no stored identifier. State
+lives in `src/lib/consent.ts` under the `pc_consent` localStorage key, the banner
+is `ConsentBanner`, and `/privacy` documents the stack and can withdraw consent.
+
+Three rules to preserve when touching any of this:
+
+<Steps>
+  <Step>
+    **A privacy signal is a decision, not a prompt.** Global Privacy Control or
+    Do Not Track resolves to `denied` and the banner never appears.
+  </Step>
+  <Step>
+    **Withdrawal reloads the page.** Unmounting `AnalyticsShell` does not unload
+    a third party that is already running — `gtag` stays initialised on `window`
+    and keeps collecting. `setConsent` reloads on `granted → denied`, and clears
+    `pc_distinct_id`, so opting out erases the identifier rather than freezing it.
+  </Step>
+  <Step>
+    **Tests grant consent explicitly.** `tests/e2e/consent.ts` seeds
+    `pc_consent=granted` for the specs that assert on analytics or capture visual
+    baselines, so the banner stays out of snapshots. The undecided state is
+    covered by `tests/e2e/consent.e2e.spec.ts`, and the axe suites deliberately
+    run *without* consent so the banner is held to the same a11y bar.
+  </Step>
+</Steps>
+
+PostHog capture is additionally limited to the production hostnames, so local dev
+and preview deploys never send even after opting in.
 
 Never add user-entered content, secrets, account identity, install state, or
 cross-site profiling. A future event must name one user action, use a

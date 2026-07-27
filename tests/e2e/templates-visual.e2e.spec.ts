@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { grantConsent } from './consent'
+
 import { templatePreviewHref, templateShowcases } from '../../src/lib/templates/registry'
 import {
   expectCompletePlatformBaselines,
@@ -51,6 +53,7 @@ const baselines: VisualBaselines = {
 const baselineStem = (name: string, viewport: string) => `template-${name}-${viewport}`
 
 test.describe('Template visual snapshots', () => {
+  test.beforeEach(async ({ context }) => grantConsent(context))
   test.use({ contextOptions: { reducedMotion: 'reduce' } })
 
   test('the template registry exposes the showcase pages', () => {

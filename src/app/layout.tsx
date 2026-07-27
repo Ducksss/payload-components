@@ -8,6 +8,7 @@ import { GeistSans } from 'geist/font/sans'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { AnalyticsShell } from '@/components/site/AnalyticsShell'
 import { CommandCopyController } from '@/components/site/CommandCopyController'
+import { ConsentBanner } from '@/components/site/ConsentBanner'
 import { feedMetadataAlternates, githubRepoUrl, siteDescription, siteUrl } from '@/lib/site'
 import {
   documentationCollectionNode,
@@ -113,6 +114,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <AnalyticsShell />
         {children}
         <CommandCopyController />
+        <ConsentBanner />
       </body>
     </html>
   )
