@@ -230,7 +230,15 @@ export function trackPrimaryLinkClick(link: HTMLAnchorElement) {
   const href = link.getAttribute('href')
   if (!href) return
 
-  const url = new URL(href, window.location.href)
+  let url: URL
+
+  try {
+    url = new URL(href, window.location.href)
+  } catch {
+    // Hrefs like "//" or "http://" are unparseable; analytics must never block the user action.
+    return
+  }
+
   const normalized = normalizeDestination(url)
   if (!normalized) return
 
