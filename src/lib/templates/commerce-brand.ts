@@ -857,7 +857,7 @@ export const commerceBrandTemplate: TemplateShowcase = {
       title: 'Fieldnote — Contact',
     },
   ],
-  revision: 3,
+  revision: 4,
   schemaVersion: 1,
   slug: 'commerce-brand',
   status: 'concept',

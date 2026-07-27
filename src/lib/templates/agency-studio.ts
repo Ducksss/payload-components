@@ -806,7 +806,7 @@ export const agencyStudioTemplate: TemplateShowcase = {
       title: 'Northline — Contact',
     },
   ],
-  revision: 4,
+  revision: 5,
   schemaVersion: 1,
   slug: 'agency-studio',
   status: 'concept',
