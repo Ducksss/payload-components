@@ -860,7 +860,7 @@ export const saasLaunchTemplate: TemplateShowcase = {
       title: 'Relay — Contact',
     },
   ],
-  revision: 4,
+  revision: 5,
   schemaVersion: 1,
   slug: 'saas-launch',
   status: 'concept',
