@@ -85,7 +85,7 @@ function WallCard({ slug }: { slug: string }) {
      wireframe, and the lift is what makes each block a physical thing on a
      surface rather than an outline drawn on the page. */
   return (
-    <div className="wall-card w-[230px] shrink-0 sm:w-[330px] lg:w-[380px]">
+    <div className="w-[230px] shrink-0 sm:w-[330px] lg:w-[380px]">
       {/* Caption, not chrome. Wrapping each twin in a bordered card put a frame
           around a block that already draws its own — the doubled edge is what
           made the rows read as screenshots in widgets. The label sits outside
@@ -103,7 +103,7 @@ function WallCard({ slug }: { slug: string }) {
           wall built to prove range read as repetition. `zoom` (not transform)
           so percentage widths resolve against the scaled box and the block
           lays out at real desktop proportions before shrinking. */}
-      <div className="wall-card-frame relative overflow-hidden rounded-[0.7rem] bg-background shadow-frame">
+      <div className="relative overflow-hidden rounded-[0.7rem] bg-background shadow-frame">
         <div className="w-full [zoom:0.3]">
           <Demo />
         </div>
@@ -140,5 +140,3 @@ export function ComponentWall() {
     </div>
   )
 }
-
-export const componentWallCount = componentEntries.length

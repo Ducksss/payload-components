@@ -65,25 +65,22 @@ export function RevealStagger({
   as = 'div',
   children,
   className,
-  delay = 0,
   stagger = 0.06,
 }: {
   as?: keyof typeof CONTAINER_TAGS
   children: ReactNode
   className?: string
-  delay?: number
   stagger?: number
 }) {
   const reduceMotion = useReducedMotion() ?? false
   const Tag = CONTAINER_TAGS[as]
 
+  /* The container animates nothing itself — it only orchestrates. Keeping it
+     free of an opacity/transform initial is what lets it wrap a <ul> or a grid
+     without the reveal fighting the layout. */
   const variants: Variants = {
     hidden: {},
-    shown: {
-      transition: reduceMotion
-        ? { delayChildren: 0, staggerChildren: 0 }
-        : { delayChildren: delay, staggerChildren: stagger },
-    },
+    shown: { transition: { staggerChildren: reduceMotion ? 0 : stagger } },
   }
 
   return (
@@ -99,6 +96,11 @@ export function RevealStagger({
   )
 }
 
+/* MUST be rendered inside a <RevealStagger>. It carries no trigger of its own —
+   it waits on the variant the parent propagates — so an orphaned RevealItem
+   never leaves its hidden state. (Giving it its own initial/whileInView would
+   make it animate independently and destroy the stagger, which is the whole
+   reason the pair exists.) */
 export function RevealItem({
   as = 'div',
   children,
