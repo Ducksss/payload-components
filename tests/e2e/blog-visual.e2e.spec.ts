@@ -1,9 +1,27 @@
-import { existsSync, readdirSync } from 'node:fs'
-
 import { expect, test } from '@playwright/test'
 
+import {
+  expectCompletePlatformBaselines,
+  skipWithoutPlatformBaseline,
+  type VisualBaselines,
+} from './support/visual-baselines'
+
+/* Blog index + article visual baselines, captured at one desktop and one mobile
+ * width under reduced motion. See ./support/visual-baselines.ts for why
+ * baselines are committed per platform and how the skip/coverage guards below
+ * behave. */
+
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
-const snapshotDir = new URL('./blog-visual.e2e.spec.ts-snapshots/', import.meta.url)
+
+const baselines: VisualBaselines = {
+  label: 'blog baselines',
+  mintHint:
+    'run the visual-baselines workflow, or locally: E2E_PORT=3100 pnpm test:e2e blog-visual --update-snapshots',
+  // Linux is the gate's renderer, so an unminted linux CI run is a real defect.
+  requireMinted: process.platform === 'linux' && Boolean(process.env.CI),
+  snapshotDir: new URL('./blog-visual.e2e.spec.ts-snapshots/', import.meta.url),
+}
+
 const cases = [
   { height: 900, name: 'blog-index-desktop', path: '/blog', width: 1440 },
   { height: 844, name: 'blog-index-mobile', path: '/blog', width: 390 },
@@ -25,38 +43,15 @@ test.describe('Blog visual snapshots', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } })
 
   test('the current platform has complete blog baselines once minted', () => {
-    const { config, project } = test.info()
-    const updating = config.updateSnapshots !== 'none' && config.updateSnapshots !== 'missing'
-    test.skip(updating, 'updating snapshots')
-
-    const suffix = `-${project.name}-${process.platform}.png`
-    const minted = existsSync(snapshotDir)
-      ? readdirSync(snapshotDir).filter((file) => file.endsWith(suffix))
-      : []
-    const requiresMintedBaselines = process.platform === 'linux' && Boolean(process.env.CI)
-    test.skip(
-      minted.length === 0 && !requiresMintedBaselines,
-      `No ${process.platform} blog baselines have been minted yet`,
+    expectCompletePlatformBaselines(
+      baselines,
+      cases.map((entry) => entry.name),
     )
-
-    const missing = cases
-      .map((entry) => `${entry.name}${suffix}`)
-      .filter((filename) => !existsSync(new URL(filename, snapshotDir)))
-    expect(missing, `Missing ${process.platform} blog baselines: ${missing.join(', ')}`).toEqual([])
   })
 
   for (const entry of cases) {
-    test(`${entry.name} matches its visual baseline`, async ({ page }, testInfo) => {
-      const baseline = new URL(
-        `${entry.name}-${testInfo.project.name}-${process.platform}.png`,
-        snapshotDir,
-      )
-      const updating =
-        testInfo.config.updateSnapshots !== 'none' && testInfo.config.updateSnapshots !== 'missing'
-      test.skip(
-        !existsSync(baseline) && !updating,
-        `No ${process.platform} baseline for ${entry.name}`,
-      )
+    test(`${entry.name} matches its visual baseline`, async ({ page }) => {
+      skipWithoutPlatformBaseline(baselines, entry.name)
 
       await page.setViewportSize({ height: entry.height, width: entry.width })
       await page.goto(`${baseURL}${entry.path}`)

@@ -91,6 +91,40 @@ pnpm test:release
 CI requires `pnpm test:fresh` across four fresh-consumer shards; run an individual
 shard locally with `pnpm test:fresh -- --shard-index 0`.
 
+### Visual baselines
+
+`components-visual`, `templates-visual`, `blog-visual`, and the `frontend`
+landing snapshot compare against committed PNGs. Rendering differs per platform,
+so each baseline is committed twice — `*-chromium-darwin.png` (a macOS dev box)
+and `*-chromium-linux.png` (the CI renderer) — and a platform's images can only
+be generated on that platform.
+
+**Any change that alters what a page renders must update both platforms in the
+same pull request.** Mint darwin locally, then mint linux with the
+`visual-baselines` workflow (`workflow_dispatch`; it opens a PR with the changed
+PNGs against your branch):
+
+```sh
+E2E_PORT=3100 pnpm test:e2e <spec> --update-snapshots
+```
+
+This matters because nothing in CI can catch a half-mint. The specs' coverage
+guard fails on a *missing* baseline, never a stale one, and `pr-gate` only ever
+renders linux — so a linux-only mint leaves the darwin image showing the old
+design, green on every PR, failing only for whoever next runs the gate on a Mac.
+
+Reviewer checklist: **a diff that touches `*-chromium-linux.png` without the
+matching `*-chromium-darwin.png` (or vice versa) is suspect** — either the other
+platform is now stale, or the change wasn't visual and the PNGs shouldn't be
+there at all. The paired-mint history is auditable with:
+
+```sh
+git log --format='COMMIT %h %s' --name-only -20 -- 'tests/e2e/*-snapshots/*'
+```
+
+Two follow-up commits (a local darwin mint, then the workflow's linux PR) are
+fine and normal; one platform alone, permanently, is the bug.
+
 ### Packed CLI smoke
 
 `pnpm test:pack` installs the built tarball and runs the CLI exactly as a
@@ -115,6 +149,8 @@ Pull requests should include:
 
 - A clear description of what changed and why.
 - Screenshots or short notes for visible UI changes.
+- Paired `*-chromium-darwin.png` and `*-chromium-linux.png` updates for any
+  change that alters rendering (see [Visual baselines](#visual-baselines)).
 - The tests/checks you ran.
 - Notes about registry output, target project wiring, or fresh Payload smoke
   coverage when relevant.
