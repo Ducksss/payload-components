@@ -1447,18 +1447,22 @@ export const catalogTemplatesLinkLabel = 'Explore Payload CMS template concepts'
 export const templatesEyebrow = 'Templates'
 export const templatesTitle = 'Payload CMS template concepts, built from installable blocks'
 export const templatesDescription =
-  'Explore complete Payload CMS and Next.js site concepts for SaaS, agency, commerce, event, fintech, and portfolio projects. Open every page in a live preview, then trace each section back to a typed block you can install today.'
+  'Explore complete Payload CMS and Next.js site concepts across ten verticals — SaaS, agency, commerce, healthcare, education, nonprofit and more. Open every page in a live preview, then trace each section back to a typed block you can install today.'
 export const templatesMetadataTitle = 'Payload CMS Templates for Next.js | Concepts & Recipes'
 export const templatesMetadataDescription =
-  'Explore Payload CMS template concepts for SaaS, agency, commerce, event, fintech, and portfolio sites — preview every page and inspect the typed block recipe.'
+  'Explore Payload CMS template concepts across ten verticals — SaaS, agency, commerce, healthcare, education and more — preview every page and inspect the typed block recipe.'
 
 export const templateCategoryLabels = {
   agency: 'Agency',
   commerce: 'Commerce',
+  education: 'Education',
   event: 'Event',
   fintech: 'Fintech',
+  healthcare: 'Healthcare',
+  nonprofit: 'Nonprofit',
   portfolio: 'Portfolio',
   saas: 'SaaS',
+  trade: 'Trade',
 } as const
 
 /* Detail-page link back into the catalog: templates never gate anything — the
