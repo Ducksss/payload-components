@@ -1563,6 +1563,7 @@ export const footerColumns = [
       { external: true, href: `${githubRepoUrl}/releases`, label: 'Releases' },
       { href: feedRoute, label: 'Updates feed' },
       { href: '/docs/contributing', label: 'Contributing' },
+      { href: '/privacy', label: 'Privacy' },
       { external: true, href: '/r/registry.json', label: 'Registry JSON' },
     ],
     title: 'Project',

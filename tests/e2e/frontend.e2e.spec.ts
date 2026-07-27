@@ -1,5 +1,7 @@
 import { expect, type Page, test } from '@playwright/test'
 
+import { grantConsent } from './consent'
+
 import {
   blogTitle,
   catalogInstallationLinkLabel,
@@ -57,6 +59,11 @@ async function expectCopiedAlert(page: Page) {
 async function waitForCopyController(page: Page) {
   await expect(page.locator('html')).toHaveAttribute('data-copy-controller-ready', 'true')
 }
+
+/* File-level: every describe here wants the post-opt-in site. The analytics
+   assertions need the scripts mounted, and the landing snapshots are baselined
+   without the consent banner over them. The banner has its own spec. */
+test.beforeEach(async ({ context }) => grantConsent(context))
 
 test.describe('Light shadcn frontend', () => {
   test.beforeEach(async ({ context }) => {

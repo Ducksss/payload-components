@@ -2,6 +2,8 @@ import { existsSync, readdirSync } from 'node:fs'
 
 import { expect, test } from '@playwright/test'
 
+import { grantConsent } from './consent'
+
 import { templatePreviewHref, templateShowcases } from '../../src/lib/templates/registry'
 
 /* Per-template-page visual baselines.
@@ -46,6 +48,7 @@ const viewports = [
 const snapshotDir = new URL('./templates-visual.e2e.spec.ts-snapshots/', import.meta.url)
 
 test.describe('Template visual snapshots', () => {
+  test.beforeEach(async ({ context }) => grantConsent(context))
   test.use({ contextOptions: { reducedMotion: 'reduce' } })
 
   test('the template registry exposes the showcase pages', () => {

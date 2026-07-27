@@ -2,6 +2,8 @@ import { existsSync, readdirSync } from 'node:fs'
 
 import { expect, test } from '@playwright/test'
 
+import { grantConsent } from './consent'
+
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 const snapshotDir = new URL('./blog-visual.e2e.spec.ts-snapshots/', import.meta.url)
 const cases = [
@@ -23,6 +25,7 @@ const cases = [
 
 test.describe('Blog visual snapshots', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } })
+  test.beforeEach(async ({ context }) => grantConsent(context))
 
   test('the current platform has complete blog baselines once minted', () => {
     const { config, project } = test.info()

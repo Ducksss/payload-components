@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, type Page, test } from '@playwright/test'
 
+import { grantConsent } from './consent'
+
 import {
   templateDetailHref,
   templatePreviewHref,
@@ -47,6 +49,12 @@ async function hasHorizontalOverflow(page: Page) {
 function switcherButton(page: Page, label: string) {
   return page.getByRole('button', { name: label, exact: true }).and(page.locator('[aria-pressed]'))
 }
+
+/* Analytics consent granted for the whole file: these specs interact with the
+   page, and the undecided-state banner is fixed to the bottom of the viewport
+   where it could intercept clicks. The banner has its own spec, and the axe
+   suites deliberately run without consent so it is still held to the a11y bar. */
+test.beforeEach(async ({ context }) => grantConsent(context))
 
 test.describe('Templates gallery (/templates)', () => {
   test('publishes indexable metadata and a canonical URL', async ({ page }) => {
