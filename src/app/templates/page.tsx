@@ -30,8 +30,10 @@ import { breadcrumbNode, graph, websiteId } from '@/lib/structured-data'
  * Contract: one H1, the concept disclosure up top, poster-led cards linking to
  * detail + full preview, a community close, and hard absences: no iframes, no
  * install command, no price, no capture. Category filtering (client, URL-synced,
- * progressive enhancement) is on now that the gallery holds 6+ concepts; every
- * card still ships server-rendered in the initial HTML. */
+ * layout-animated) is on now that the gallery holds 6+ concepts; every card is
+ * still built here on the server and handed to the filter as a rendered
+ * element, so the whole set ships in the initial HTML and the showcase registry
+ * never reaches the client bundle. */
 
 /* Category chips in first-appearance (curated registry) order. */
 const galleryCategories = (() => {
@@ -118,13 +120,14 @@ export default function TemplatesPage() {
 
         <section aria-label="Template showcases">
           <div className="container py-12 lg:py-16">
-            <TemplateGalleryFilter categories={galleryCategories}>
-              {templateShowcases.map((template, index) => (
-                <div key={template.slug} data-template-category={template.category}>
-                  <TemplateCard priority={index === 0} template={template} />
-                </div>
-              ))}
-            </TemplateGalleryFilter>
+            <TemplateGalleryFilter
+              categories={galleryCategories}
+              items={templateShowcases.map((template, index) => ({
+                card: <TemplateCard priority={index === 0} template={template} />,
+                category: template.category,
+                slug: template.slug,
+              }))}
+            />
           </div>
         </section>
 
