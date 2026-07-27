@@ -395,6 +395,8 @@ test.describe('Light shadcn frontend', () => {
       await expect(page).toHaveTitle(route.title)
       await expect(page.getByRole('heading', { level: 1, name: route.h1 })).toBeVisible()
 
+      // domcontentloaded can fire before webfonts settle final layout widths.
+      await page.evaluate(() => document.fonts.ready)
       const hasHorizontalOverflow = await page.evaluate(
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       )

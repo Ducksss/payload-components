@@ -46,7 +46,7 @@ approximate (layout intent, not line-for-line).
 | `testimonials-spotlight` | `testimonials-4` | single centered quote |
 | `testimonials-quote` | `testimonials-3` / `mist-testimonials-1` | single quote with left accent bar |
 | `testimonials-bento` | `testimonials-5` / `testimonials-6` | extended into an asymmetric bento; adds `featured` + `logo` |
-| `testimonials-rating` | — (extension of the grid) | our star-rating variant; no direct upstream item |
+| `testimonials-rating` | — (via `testimonials-grid` → `testimonials-1` / `testimonials-2`) | our star-rating variant; no direct upstream item, audit through the parent row |
 | `pricing-cards` | `pricing-1` / `pricing-3` | 3-column plan cards |
 | `pricing-cards-muted` | `pricing-2` | muted-surface plan cards |
 | `pricing-cards-cta` | `pricing-3` | CTA moved into the card header |

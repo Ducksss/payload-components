@@ -42,9 +42,6 @@
   --brand-200: oklch(89% 0.072 165.6deg);
   --brand-600: oklch(44% 0.112 165.6deg);
 
-  /* Hero CTA effect palette. These preserve the original shine/twinkle
-     channels exactly; relative colors apply each use site's opacity. */
-
   --destructive: oklch(57.7% 0.245 27.3deg);
   --destructive-foreground: oklch(98.5% 0 0deg);
 
