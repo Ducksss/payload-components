@@ -71,6 +71,49 @@ test.describe('Analytics consent gate', () => {
     await context.close()
   })
 
+  test('a privacy signal erases an identifier left by an earlier opt-in', async ({ browser }) => {
+    // Opting in first, then turning GPC on, is the case that leaves a stale
+    // pc_distinct_id behind: unused while denied, but enough to re-link the
+    // visitor to their old identity if they ever opt back in.
+    const context = await browser.newContext()
+    const page = await context.newPage()
+
+    await page.goto(baseURL)
+    await page.getByRole('button', { name: 'Accept' }).click()
+    await page.evaluate(() => window.localStorage.setItem('pc_distinct_id', 'pc_stale-id'))
+
+    await context.addInitScript(() => {
+      Object.defineProperty(navigator, 'globalPrivacyControl', { get: () => true })
+    })
+    await page.reload()
+
+    await expect(page.locator(thirdPartyScripts)).toHaveCount(0)
+    expect(await page.evaluate(() => window.localStorage.getItem('pc_distinct_id'))).toBeNull()
+
+    await context.close()
+  })
+
+  test('withdrawing in one tab tears analytics down in the other', async ({ browser }) => {
+    // Two tabs share localStorage, so the storage event is the only signal the
+    // second tab gets — and unmounting React there would leave gtag running.
+    const context = await browser.newContext()
+    const [first, second] = [await context.newPage(), await context.newPage()]
+
+    await first.goto(baseURL)
+    await first.getByRole('button', { name: 'Accept' }).click()
+    await second.goto(baseURL)
+    await expect(second.locator('script#google-tag')).toHaveCount(1)
+
+    await first.goto(`${baseURL}/privacy`)
+    await first.getByRole('button', { name: 'Turn analytics off' }).click()
+
+    // The second tab must reload itself and come back with nothing mounted.
+    await expect(second.locator('script#google-tag')).toHaveCount(0)
+    await expect(second.locator(thirdPartyScripts)).toHaveCount(0)
+
+    await context.close()
+  })
+
   test('the banner itself has no serious or critical a11y violations', async ({ page }) => {
     await page.goto(baseURL)
     await expect(page.locator(banner)).toBeVisible()

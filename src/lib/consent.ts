@@ -49,7 +49,20 @@ function readStoredConsent(): ConsentState | null {
  * as "no consent" for mounting purposes, and as "show the banner" for UI. */
 export function resolveConsent(): ConsentState | null {
   if (typeof window === 'undefined') return null
-  if (privacySignalOptOut()) return 'denied'
+
+  if (privacySignalOptOut()) {
+    /* The signal may arrive after an earlier opt-in, which would leave a
+     * pc_distinct_id behind: not sent while denied, but enough to re-link the
+     * visitor to their old identity if they ever opt back in. Treat the signal
+     * the same way as an explicit withdrawal and erase it. */
+    try {
+      window.localStorage.removeItem(distinctIdStorageKey)
+    } catch {
+      // Storage unavailable; analytics stays denied either way.
+    }
+
+    return 'denied'
+  }
 
   return readStoredConsent()
 }
@@ -83,7 +96,17 @@ export function subscribeToConsent(listener: () => void) {
 
   // A choice made in another tab should apply here too.
   const onStorage = (event: StorageEvent) => {
-    if (event.key === consentStorageKey) listener()
+    if (event.key !== consentStorageKey) return
+
+    /* Same reasoning as the reload in setConsent: this tab may already have GA4
+     * running, and notifying React only unmounts the component while gtag keeps
+     * collecting. A withdrawal elsewhere has to tear this tab down as well. */
+    if (event.oldValue === 'granted' && event.newValue === 'denied') {
+      window.location.reload()
+      return
+    }
+
+    listener()
   }
   window.addEventListener('storage', onStorage)
 
