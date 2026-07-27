@@ -21,7 +21,7 @@ import type { TemplateShowcase } from './types'
  * Wednesdays at eight, thirty-four farms across nine growing regions.
  *
  * Everything is fictional: the roastery, its coffees, the farms and growers,
- * the café that lends the stats-proof twin its static wordmark, and every
+ * the wholesale café quoted on the espresso band, and every
  * number. There are no prices anywhere — subscriptions are expressed as a
  * rhythm and a weight, which is also how a roaster actually talks. All copy
  * stays editor-shaped (demo-content types); layout belongs to the twins and to
@@ -161,15 +161,16 @@ export const commerceBrandTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
-          /* The one espresso band per page. The twin ships a static stockist
-           * wordmark (NORTHWIND); the theme restyles it as a café lockup in the
-           * soft ember, and the quote is attributed accordingly. */
+          /* The one espresso band per page. The stockist's wordmark comes from
+           * this concept's own fiction via logoLabel; the theme sets it in the
+           * soft ember at café-lockup tracking. */
           componentSlug: 'stats-proof',
           content: {
             author: 'Marguerite Oyelaran',
             body: 'Wholesale runs the same way: one roast day, one delivery, and no coffee sitting in a warehouse between us and you.',
             description: 'Ten years at the same bench, counted honestly.',
             eyebrow: 'On the record',
+            logoLabel: 'NORTHWIND COFFEE BAR',
             metrics: [
               { label: 'kilos per batch, never more', value: '12' },
               { label: 'farms we buy from, year on year', value: '34' },
@@ -513,6 +514,8 @@ export const commerceBrandTemplate: TemplateShowcase = {
           id: 'mission',
         },
         {
+          /* No logoLabel: a grower is a person and a farm, not a brand with a
+           * wordmark — the citation already names both. */
           componentSlug: 'content-quote',
           content: {
             citation: 'Yeimy Restrepo — Finca La Golondrina, Huila',
@@ -847,7 +850,7 @@ export const commerceBrandTemplate: TemplateShowcase = {
       title: 'Fieldnote — Contact',
     },
   ],
-  revision: 2,
+  revision: 3,
   schemaVersion: 1,
   slug: 'commerce-brand',
   status: 'concept',

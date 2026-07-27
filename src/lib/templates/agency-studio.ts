@@ -141,6 +141,7 @@ export const agencyStudioTemplate: TemplateShowcase = {
             description:
               'We measure the work by what it does after we leave: brands that stay coherent, products that ship, and teams that keep the system alive without us.',
             eyebrow: 'The record',
+            logoLabel: 'HOLLIS & CRANE',
             metrics: [
               { label: 'brands shipped since 2017', value: '31' },
               { label: 'of clients come back', value: '74%' },
@@ -580,6 +581,8 @@ export const agencyStudioTemplate: TemplateShowcase = {
           id: 'philosophy',
         },
         {
+          /* No logoLabel: these are Northline's own founders talking about
+           * Northline, so badging the quote with a client mark would misread. */
           componentSlug: 'content-quote',
           content: {
             citation: 'Mara Lindqvist, founding partner',
@@ -797,7 +800,7 @@ export const agencyStudioTemplate: TemplateShowcase = {
       title: 'Northline — Contact',
     },
   ],
-  revision: 3,
+  revision: 4,
   schemaVersion: 1,
   slug: 'agency-studio',
   status: 'concept',

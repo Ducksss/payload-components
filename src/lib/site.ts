@@ -4,6 +4,7 @@ import featureAccordionManifest from '../../payload-components/manifests/feature
 import featureCardsMediaManifest from '../../payload-components/manifests/feature-cards-media.json' with { type: 'json' }
 import featureIconGridManifest from '../../payload-components/manifests/feature-icon-grid.json' with { type: 'json' }
 import heroAuroraManifest from '../../payload-components/manifests/hero-aurora.json' with { type: 'json' }
+import contentQuoteManifest from '../../payload-components/manifests/content-quote.json' with { type: 'json' }
 import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
 import heroKineticManifest from '../../payload-components/manifests/hero-kinetic.json' with { type: 'json' }
 import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
@@ -865,7 +866,18 @@ export const componentEntries = [
     description:
       'A proof section pairing narrative, prominent string metrics, and a semantic customer quote.',
     family: 'pages',
-    fields: ['eyebrow', 'title', 'description', 'body', 'metrics', 'quote', 'author', 'role', 'logo'],
+    fields: [
+      'eyebrow',
+      'title',
+      'description',
+      'body',
+      'metrics',
+      'quote',
+      'author',
+      'role',
+      'logo',
+      'logoLabel',
+    ],
     href: '/docs/components/stats-proof',
     slug: 'stats-proof',
     target: 'Stats section',
@@ -1060,12 +1072,12 @@ export const componentEntries = [
     description:
       'A content section pairing a media panel with body copy and a cited pull quote.',
     family: 'pages',
-    fields: ['eyebrow', 'title', 'paragraphs', 'image', 'quote', 'citation', 'logo'],
+    fields: ['eyebrow', 'title', 'paragraphs', 'image', 'quote', 'citation', 'logo', 'logoLabel'],
     href: '/docs/components/content-quote',
     slug: 'content-quote',
     target: 'Content section',
     title: 'Content Quote',
-    version: '0.1.0',
+    version: contentQuoteManifest.version,
   },
   {
     category: 'content',

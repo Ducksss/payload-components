@@ -166,14 +166,6 @@
   background-image: none;
 }
 
-/* The fake wordmark bar under the content-quote citation is a 24px sliver —
-   the plate gradient reads as noise at that size, so it stays a flat bar mixed
-   from --muted-foreground, which flips with the band it lands on. */
-[data-template-theme='commerce-brand'] [data-template-canvas] .h-6.bg-muted {
-  background-image: none;
-  background-color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
-}
-
 /* The feature-cards illustration is a four-block still life mixed from
    --accent/--primary/--muted alphas. Left alone on cream it reads as four pale
    smudges; these fills turn it into a warm shelf study with one espresso
@@ -262,8 +254,8 @@
   letter-spacing: -0.015em;
 }
 
-/* The stats-proof twin ships a static stockist wordmark; on the espresso band
-   it reads as the café's lockup rather than a heading. */
+/* stats-proof's stockist wordmark (logoLabel, set in the concept); on the
+   espresso band it reads as the café's lockup rather than a heading. */
 [data-template-theme='commerce-brand'] [data-template-canvas] .h-9 .tracking-title {
   color: var(--fn-ember-soft);
   font-size: 0.875rem;
