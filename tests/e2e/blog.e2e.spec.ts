@@ -3,6 +3,8 @@ import path from 'node:path'
 
 import { expect, test } from '@playwright/test'
 
+import { grantConsent } from './consent'
+
 import { blogTitle } from '../../src/lib/site'
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
@@ -41,6 +43,12 @@ const posts: Post[] = readdirSync(blogRoot)
     const dateDifference = new Date(b.date).getTime() - new Date(a.date).getTime()
     return dateDifference || a.order - b.order
   })
+
+/* Analytics consent granted for the whole file: these specs interact with the
+   page, and the undecided-state banner is fixed to the bottom of the viewport
+   where it could intercept clicks. The banner has its own spec, and the axe
+   suites deliberately run without consent so it is still held to the a11y bar. */
+test.beforeEach(async ({ context }) => grantConsent(context))
 
 test.describe('Blog editorial library', () => {
   test('the index publishes all posts in deterministic order', async ({ page }) => {

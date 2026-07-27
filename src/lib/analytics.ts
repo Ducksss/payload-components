@@ -2,6 +2,8 @@
 
 import { track as trackVercelEvent } from '@vercel/analytics'
 
+import { distinctIdStorageKey, resolveConsent } from '@/lib/consent'
+
 type AnalyticsProperties = Record<string, string | number | boolean>
 type PostHogTestEvent = {
   event: string
@@ -27,7 +29,6 @@ const managedPostHogHost =
   process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'
 const installCommandPattern = /\bpayload-components\s+add\s+([a-z0-9-]+)\b/i
 const siteHostnames = new Set(['payload-components.xyz', 'www.payload-components.xyz'])
-const distinctIdStorageKey = 'pc_distinct_id'
 let sessionDistinctId: string | null = null
 
 function getSessionDistinctId() {
@@ -62,17 +63,13 @@ function isAnalyticsHost() {
   return siteHostnames.has(hostname)
 }
 
-/* An explicit browser privacy signal is a request not to be measured, so honour
- * it before anything is sent or stored. Global Privacy Control is legally
- * binding under the CCPA; Do Not Track is advisory but cheap to respect. */
-function privacySignalOptOut() {
-  const nav = navigator as Navigator & { globalPrivacyControl?: boolean }
-
-  return (
-    nav.globalPrivacyControl === true ||
-    navigator.doNotTrack === '1' ||
-    (window as Window & { doNotTrack?: string }).doNotTrack === '1'
-  )
+/* AnalyticsShell already withholds every third-party mount until consent, so in
+ * practice these helpers are unreachable without it. They are re-checked here
+ * anyway: trackEvent is exported and callable from any client component, and a
+ * future caller must not be able to route around the gate. resolveConsent()
+ * folds in GPC/DNT, so an explicit privacy signal denies without a prompt. */
+function analyticsAllowed() {
+  return resolveConsent() === 'granted'
 }
 
 function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
@@ -91,7 +88,7 @@ function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
     !managedPostHogApiKey ||
     !host ||
     !isAnalyticsHost() ||
-    privacySignalOptOut()
+    !analyticsAllowed()
   ) {
     return
   }
@@ -132,7 +129,7 @@ function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
 }
 
 function trackEvent(eventName: string, properties: AnalyticsProperties) {
-  if (privacySignalOptOut()) return
+  if (!analyticsAllowed()) return
 
   try {
     trackVercelEvent(eventName, properties)

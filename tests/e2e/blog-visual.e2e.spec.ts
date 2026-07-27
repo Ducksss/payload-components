@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 
+import { grantConsent } from './consent'
 import {
   expectCompletePlatformBaselines,
   skipWithoutPlatformBaseline,
@@ -41,6 +42,7 @@ const cases = [
 
 test.describe('Blog visual snapshots', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } })
+  test.beforeEach(async ({ context }) => grantConsent(context))
 
   test('the current platform has complete blog baselines once minted', () => {
     expectCompletePlatformBaselines(
