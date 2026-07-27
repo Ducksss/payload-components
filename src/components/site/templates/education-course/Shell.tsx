@@ -1,63 +1,37 @@
-import Link from 'next/link'
-
 import type { TemplateShellProps } from '../shells'
 
-import { templatePreviewHref } from '@/lib/templates/registry'
-import { cn } from '@/utilities/ui'
-
+import { NorthfieldColophon } from './NorthfieldColophon'
+import { NorthfieldHeader } from './NorthfieldHeader'
 import './theme.css'
 
-/* Northfield School (education-course) template shell — FOUNDATION SKELETON.
+/* Northfield School (education-course) template shell — the syllabus direction.
  *
- * Owned by the Northfield art-direction track: replace with the real chrome
- * (responsive header, keyboard-operable mobile menu, footer, section rhythm).
- * Contract to preserve: render everything under
- * data-template-theme='education-course', navigate internally via
- * templatePreviewHref, mark the active page with aria-current, keep the named
- * export EducationCourseShell and the TemplateShellProps signature, and keep every
- * interactive semantic here — never inside the visual canvas. */
+ * Contract preserved from the frozen foundation: everything renders under
+ * data-template-theme='education-course', internal navigation goes through
+ * templatePreviewHref, the active page carries aria-current, the named export
+ * stays EducationCourseShell with the TemplateShellProps signature, and every
+ * interactive semantic (real links, the keyboard-operable mobile disclosure)
+ * lives in the shell — never inside the visual canvas.
+ *
+ * The composition is a school prospectus, not a product page. theme.css dissolves
+ * the catalog's specimen frames and paints three registers with three jobs: plain
+ * chalk paper for prose, ruled worksheet paper for everything sequential (the
+ * module ladder, the lessons, the prerequisites, the cohort matrix), and one
+ * chalkboard band per page for the figures. Section rhythm is owned by theme.css
+ * through the [data-template-section] / [data-tone] wrappers the renderer emits;
+ * below-hero sections already scroll-reveal through the shared choreography. */
+
 export function EducationCourseShell({ activePath, children, template }: TemplateShellProps) {
   return (
     <div
+      className="flex min-h-screen flex-col text-foreground antialiased"
       data-template-theme="education-course"
-      className="flex min-h-screen flex-col bg-background text-foreground"
     >
-      <header className="border-b border-border">
-        <nav
-          aria-label="Northfield School site navigation"
-          className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6"
-        >
-          <Link href={templatePreviewHref(template.slug)} className="text-base font-semibold">
-            Northfield School
-          </Link>
-          <div className="flex items-center gap-1">
-            {template.navigation.map((item) => (
-              <Link
-                key={item.path}
-                href={templatePreviewHref(template.slug, item.path)}
-                aria-current={activePath === item.path ? 'page' : undefined}
-                className={cn(
-                  'rounded-md px-3 py-1.5 text-sm transition-colors',
-                  activePath === item.path
-                    ? 'bg-secondary text-foreground'
-                    : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </nav>
-      </header>
+      <NorthfieldHeader activePath={activePath} template={template} />
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-8 text-sm text-muted-foreground sm:px-6">
-          <span>Northfield School — a fictional concept</span>
-          <span>Composed from open-source Payload blocks</span>
-        </div>
-      </footer>
+      <NorthfieldColophon activePath={activePath} template={template} />
     </div>
   )
 }
