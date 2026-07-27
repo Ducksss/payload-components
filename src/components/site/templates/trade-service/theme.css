@@ -1,0 +1,1175 @@
+/* Halloran & Sons (trade-service) scoped theme — the plain one.
+ *
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='trade-service'] root the shell renders. It overrides the
+ * semantic variables the demo twins consume and adds named Halloran tokens; it
+ * never touches :root, .dark, another template's scope, or src/app/globals.css.
+ * The site stays forced-light — the steel facts strip, the tonal contrast bands,
+ * and the footer call band are intentional dark surfaces built from the tokens
+ * below, not a theme.
+ *
+ * Art direction: the least "designed-looking" concept in the gallery, on
+ * purpose. Its job is to be believed and phoned, so every decision is a
+ * signwriter's decision rather than a designer's:
+ *   · off-white paper, near-black steel ink, one safety orange;
+ *   · zero radius on absolutely everything, including avatars and chips —
+ *     hard corners read as workwear, and consistency is what makes plain look
+ *     deliberate instead of unfinished;
+ *   · heavy sans at 700/800 with only slightly tightened tracking, so headlines
+ *     read like painted signage, not like a product page;
+ *   · eyebrows drop the catalog pill for a SOLID ORANGE LABEL BAR, the way a
+ *     hazard sticker is printed;
+ *   · imagery is entirely token-derived — every backend-free placeholder is
+ *     repainted as corrugated steel under a worklamp, and the one framed plate
+ *     becomes hazard chevrons around a van panel. No raster assets at all.
+ *
+ * Contrast, measured on the rendered page rather than guessed at:
+ *   · safety orange (--hs-orange, L 72%) is a KNOWN AA FAILURE as type on paper.
+ *     It measures 2.38:1 — under even the 3:1 large-text floor — and white on it
+ *     is only 2.61:1. So it is used ONLY as a fill, a rule, a glow, or a field
+ *     with ink on top of it. It is never a text colour, at any size.
+ *   · ink on safety orange is 6.84:1, which is what makes the filled call block,
+ *     the label bars, the step numerals, and every primary action legible.
+ *   · --hs-rust (L 48%) is the orange that survives paper: 6.32:1 on the page,
+ *     5.74:1 on the deeper band. Everything the twins resolve to orange TYPE
+ *     (.text-brand, span.text-primary, .text-brand-600) is remapped to it.
+ *   · --hs-amber (L 82%) is the orange that survives steel: 8.38:1.
+ *   · ink headlines are 16.26:1 on the paper and 14.53:1 at the darkest point of
+ *     the hero's orange wash, so the word cascade never loses contrast. */
+
+[data-template-theme='trade-service'] {
+  /* ————— Halloran palette ————— */
+  --hs-paper: oklch(96.6% 0.004 85deg); /* the page */
+  --hs-paper-deep: oklch(93.4% 0.005 85deg); /* muted band */
+  --hs-paper-raised: oklch(99.2% 0.002 85deg); /* every card and inner panel */
+  --hs-ink: oklch(20.5% 0.014 250deg); /* foreground: near-black steel */
+  --hs-steel: oklch(26% 0.016 250deg); /* the dark band paint */
+  --hs-steel-raised: oklch(31.5% 0.017 250deg); /* cards on the dark band */
+  --hs-plate: oklch(57% 0.014 250deg); /* the placeholder plates: mid steel */
+  --hs-plate-deep: oklch(45% 0.015 250deg);
+
+  /* The one accent. Bright enough to be safety orange; used as a FIELD, never
+     as type. --hs-rust is the same hue dark enough to be read on paper,
+     --hs-amber the same hue light enough to be read on steel. */
+  --hs-orange: oklch(72% 0.172 52deg);
+  --hs-rust: oklch(48% 0.145 44deg);
+  --hs-amber: oklch(82% 0.145 62deg);
+
+  /* ————— Semantic variables the twins consume ————— */
+  --background: var(--hs-paper);
+  --foreground: var(--hs-ink);
+  --card: var(--hs-paper-raised);
+  --card-foreground: var(--hs-ink);
+  --popover: var(--hs-paper-raised);
+  --popover-foreground: var(--hs-ink);
+
+  /* Actions are safety orange with ink on them — a plant-hire button, not a
+     tech button. The ink-on-orange pairing is what keeps them AA at 14px. */
+  --primary: var(--hs-orange);
+  --primary-foreground: var(--hs-ink);
+  --secondary: oklch(91.5% 0.006 85deg);
+  --secondary-foreground: var(--hs-ink);
+  /* Pale steel, so the unfilled stars in the review cards read as empty and the
+     small bg-muted chips stay quiet. The big placeholder plates get their own
+     recipe further down and never use this value. */
+  --muted: oklch(90.5% 0.006 250deg);
+  /* 45%: cool grey body text, ~7:1 on paper and ~6:1 on the deeper band. */
+  --muted-foreground: oklch(45% 0.016 250deg);
+  --accent: oklch(92.5% 0.008 85deg);
+  --accent-foreground: var(--hs-ink);
+
+  --brand: var(--hs-orange);
+  --brand-foreground: var(--hs-ink);
+  /* The tints are read by the hero plate's worklamp glow and its raking sweep;
+     brand-600 is the AA-safe orange for anything that resolves to text. */
+  --brand-50: oklch(97.4% 0.014 62deg);
+  --brand-100: oklch(93% 0.05 58deg);
+  --brand-200: oklch(86% 0.1 54deg);
+  --brand-600: var(--hs-rust);
+
+  --border: oklch(84% 0.007 85deg);
+  --input: oklch(74% 0.01 85deg);
+  --ring: var(--hs-rust);
+
+  /* Nothing on this site is rounded. --radius feeds the sm–xl scale through the
+     @theme calc()s; the named container radii are @theme inline literals, so
+     those are zeroed at element level below. */
+  --radius: 0px;
+
+  /* Signage type. Heavier and less tightly tracked than the catalog default —
+     painted letters need air between them, and the display sizes are pulled down
+     so a plain sentence still fits its line on a laptop. */
+  --tracking-display: -0.028em;
+  --tracking-title: -0.02em;
+  --tracking-snug: -0.016em;
+  --tracking-heading: -0.012em;
+  --tracking-eyebrow: 0.14em;
+
+  --text-3xl: 1.75rem;
+  --text-3xl--line-height: 1.14;
+  --text-4xl: 2.125rem;
+  --text-4xl--line-height: 1.1;
+  --text-5xl: 2.625rem;
+  --text-5xl--line-height: 1.06;
+  --text-7xl: 3.5rem;
+  --text-7xl--line-height: 1;
+  --text-8xl: 4.25rem;
+  --text-8xl--line-height: 0.98;
+
+  background-color: var(--hs-paper);
+  color: var(--foreground);
+}
+
+[data-template-theme='trade-service'] ::selection {
+  background-color: color-mix(in oklab, var(--hs-orange) 34%, transparent);
+  color: var(--hs-ink);
+}
+
+/* ————————————————————————— Hard corners, everywhere ————————————————————————— */
+
+/* Including rounded-full: the review avatars become ID-card tiles and the step
+   numerals become stencilled squares. A plain site that is plain about
+   everything reads as deliberate; one stray pill reads as an oversight. */
+[data-template-theme='trade-service']
+  :is(
+    .rounded-frame,
+    .rounded-panel,
+    .rounded-card,
+    .rounded-inset,
+    .rounded-2xl,
+    .rounded-xl,
+    .rounded-lg,
+    .rounded-md,
+    .rounded-sm,
+    .rounded-full
+  ) {
+  border-radius: 0;
+}
+
+/* ————————————————————————— Typography ————————————————————————— */
+
+[data-template-theme='trade-service']
+  [data-template-canvas]
+  :is(.tracking-display, .tracking-title) {
+  font-weight: 700;
+}
+
+[data-template-theme='trade-service']
+  [data-template-canvas]
+  :is(.tracking-heading, .tracking-snug) {
+  font-weight: 650;
+}
+
+/* The kinetic hero's closing word. The catalog gives it Instrument Serif italic,
+   which is far too refined for a plumber — it is neutralised back to upright
+   heavy sans so the sentence stays in one voice, and gets the one graphic move
+   in the whole concept instead: a painted safety-orange rule under it, the way a
+   signwriter underscores the word that matters. text-decoration is used rather
+   than a border or an inset shadow because it is font-relative, skips the
+   descender of "today." on its own, and adds no box height that the word mask
+   above it could clip. */
+[data-template-theme='trade-service']
+  [data-template-canvas]
+  .tracking-display
+  .font-serif.tracking-title {
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-decoration-color: var(--hs-orange);
+  text-decoration-line: underline;
+  /* skip-ink OFF on purpose: left on, the rule breaks around the descender of
+     "today." and leaves a stray stub under the full stop, which reads as a
+     rendering accident. A signwriter's brush does not lift for a descender, so
+     neither does this. */
+  text-decoration-skip-ink: none;
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0.11em;
+}
+
+/* Metric numerals are the second loudest thing on the page after the headline. */
+[data-template-theme='trade-service'] [data-template-canvas] .tabular-nums {
+  font-weight: 700;
+}
+
+/* ————————————————————————— Eyebrows become label bars ————————————————————————— */
+
+/* Every twin eyebrow is a Badge carrying `rounded-full … uppercase
+   tracking-eyebrow`. hero-basic's proof chips share rounded-full but never
+   tracking-eyebrow, so this pair selects eyebrows only. Ink on safety orange —
+   the one place the bright orange is allowed near type, because it is the field
+   and not the letters. */
+[data-template-theme='trade-service'] [data-template-canvas] .rounded-full.tracking-eyebrow {
+  background-color: var(--hs-orange);
+  border: 0;
+  border-radius: 0;
+  color: var(--hs-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.375rem 0.625rem;
+}
+
+/* Big tap targets are part of the brief, not a nicety: this is a site people
+   use one-handed in a cold hallway. DemoLink and the contact form's submit are
+   the only h-10 rounded-md SPANS in the twins (the form's field wells share the
+   metrics but are divs), so this grows real actions and nothing else. */
+[data-template-theme='trade-service'] [data-template-canvas] span.h-10.rounded-md {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  height: 3rem;
+  padding-inline: 1.375rem;
+}
+
+/* hero-basic's proof chips: a plain outlined stamp, not a filled pill. */
+[data-template-theme='trade-service'] [data-template-canvas] .rounded-full.px-3.py-1.text-sm {
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--hs-ink) 42%, transparent);
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+/* ————————————————————————— Section rhythm ————————————————————————— */
+
+/* The twins arrive wrapped in the catalog's specimen frame (rounded-frame border
+   bg-card/35). Dissolve it so every section reads as a full-bleed band of one
+   site, and keep the vertical rhythm tighter than the gallery's editorial
+   concepts — a working firm's page does not saunter. */
+[data-template-theme='trade-service'] [data-template-section] {
+  position: relative;
+}
+
+[data-template-theme='trade-service'] [data-template-section] > [aria-hidden='true'] > div {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding-block: clamp(3rem, 6vw, 4.75rem);
+}
+
+/* One hairline between sections, drawn as an inset shadow so it can never shift
+   layout. The steel band supplies its own edge, so it opts out. */
+[data-template-theme='trade-service']
+  [data-template-section]
+  + [data-template-section]:not([data-tone='contrast']) {
+  box-shadow: inset 0 1px 0 var(--border);
+}
+
+/* ————————————————————————— Tonal bands ————————————————————————— */
+
+/* muted: a deeper sheet of the same paper. */
+[data-template-theme='trade-service'] [data-template-section][data-tone='muted'] {
+  --border: oklch(81% 0.008 85deg);
+
+  background-color: var(--hs-paper-deep);
+}
+
+/* contrast: a steel band. Every semantic variable is remapped so the twins'
+   paper-first markup (bg-background/NN panels, text-muted-foreground,
+   border-border) resolves to an AA-safe dark surface set, and --hs-paper-raised
+   is redefined so the inner-panel remap below follows the band down. */
+[data-template-theme='trade-service'] [data-template-section][data-tone='contrast'] {
+  --hs-paper-raised: var(--hs-steel-raised);
+
+  --background: var(--hs-steel);
+  --foreground: oklch(96.4% 0.004 85deg);
+  --card: var(--hs-steel-raised);
+  --card-foreground: oklch(96.4% 0.004 85deg);
+  --popover: var(--hs-steel-raised);
+  --popover-foreground: oklch(96.4% 0.004 85deg);
+  --secondary: oklch(34% 0.018 250deg);
+  --secondary-foreground: oklch(96.4% 0.004 85deg);
+  --muted: oklch(38% 0.016 250deg);
+  --muted-foreground: oklch(80% 0.012 250deg);
+  --accent: oklch(36% 0.02 250deg);
+  --accent-foreground: oklch(96.4% 0.004 85deg);
+  --border: oklch(100% 0 0deg / 20%);
+  --input: oklch(100% 0 0deg / 30%);
+
+  background-color: var(--hs-steel);
+  color: var(--foreground);
+}
+
+[data-template-theme='trade-service']
+  [data-template-section][data-tone='contrast']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(3.5rem, 7vw, 5.5rem);
+}
+
+/* ————————————————————————— Orange that has to be read ————————————————————————— */
+
+/* Safety orange measures 2.38:1 on paper, so nothing that resolves to TEXT is
+   allowed to use it: the kinetic hero's mono proof numerals (.text-brand) and
+   the contact page's first channel value (span.text-primary, a phone number at
+   16px) both step down to the rust. The <svg> uses of text-primary — the
+   spotlight quote mark, the stars' fill-primary — are graphics and keep the
+   bright field. */
+[data-template-theme='trade-service']
+  [data-template-canvas]
+  :is(.text-brand, .text-brand-600, span.text-primary) {
+  color: var(--hs-rust);
+}
+
+/* On steel, the rust goes muddy — the label bars keep the bright field (ink
+   still sits on it) and anything that resolves to orange TYPE steps up to the
+   amber. */
+[data-template-theme='trade-service']
+  [data-tone='contrast']
+  :is(.text-brand, .text-brand-600, span.text-primary) {
+  color: var(--hs-amber);
+}
+
+/* The contact page's lead channel is a phone number. Give it the weight it
+   deserves. */
+[data-template-theme='trade-service'] [data-template-canvas] span.text-primary {
+  font-weight: 700;
+}
+
+/* ————————————————————————— Surfaces ————————————————————————— */
+
+/* The twins paint inner cards with bg-background/85|70|60, which on off-white
+   paper would dissolve into the page. Remapping them to raised paper gives one
+   consistent two-step surface story that also holds on the steel band, where
+   --hs-paper-raised is redefined. */
+[data-template-theme='trade-service']
+  [data-template-canvas]
+  :is(.bg-background\/85, .bg-background\/70, .bg-background\/60) {
+  background-color: var(--hs-paper-raised);
+}
+
+/* Review avatars become ID-card tiles: a plain paper square with a hairline and
+   a heavy ink initial. No likeness, real or invented, is depicted anywhere. */
+[data-template-theme='trade-service'] [data-template-canvas] .rounded-full.bg-card {
+  background-color: var(--hs-paper-raised);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--hs-ink) 34%, transparent);
+}
+
+[data-template-theme='trade-service'] [data-template-canvas] .rounded-full.bg-card > span {
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+/* ————————————————————————— Token-derived plates ————————————————————————— */
+
+/* Every backend-free upload placeholder (bg-muted) becomes corrugated steel
+   under a worklamp: a cool highlight down from the top, fine vertical ribs, a
+   warm orange pool low right, and shade falling away across the diagonal. It
+   reads as a van panel or a workshop shutter rather than a missing photograph,
+   and it re-tints itself with the band it sits in. No raster assets. */
+[data-template-theme='trade-service'] [data-template-canvas] .bg-muted {
+  background-color: var(--hs-plate-tint, var(--hs-plate));
+  background-image:
+    linear-gradient(180deg, color-mix(in oklab, var(--hs-paper) 30%, transparent), transparent 46%),
+    radial-gradient(
+      74% 64% at var(--hs-lamp-x, 88%) 96%,
+      color-mix(in oklab, var(--hs-orange) 40%, transparent),
+      transparent 66%
+    ),
+    repeating-linear-gradient(
+      var(--hs-rib, 90deg),
+      color-mix(in oklab, var(--hs-ink) 13%, transparent) 0 1px,
+      transparent 1px var(--hs-rib-pitch, 13px)
+    ),
+    linear-gradient(
+      var(--hs-rake, 166deg),
+      transparent 38%,
+      color-mix(in oklab, var(--hs-ink) 46%, transparent)
+    );
+}
+
+/* One recipe, but no two plates on the site are the same object. Rib direction,
+   rib pitch, steel tint, worklamp position, and rake are all per-section
+   variables, so the second content row reads as a radiator's fins rather than a
+   second copy of the first row's sheet, and the letting agent's plate reads as a
+   wider panel again. */
+[data-template-theme='trade-service']
+  [data-template-section='detail']
+  .flex-col
+  > div:nth-child(2)
+  .bg-muted {
+  --hs-lamp-x: 18%;
+  --hs-plate-tint: oklch(53% 0.013 250deg);
+  --hs-rake: 196deg;
+  --hs-rib-pitch: 9px;
+  --hs-rib: 180deg;
+}
+
+[data-template-theme='trade-service'] [data-template-section='quote'] .bg-muted {
+  --hs-lamp-x: 74%;
+  --hs-plate-tint: oklch(60% 0.014 250deg);
+  --hs-rib-pitch: 18px;
+}
+
+[data-template-theme='trade-service'] [data-template-section='the-van'] .bg-muted {
+  --hs-lamp-x: 82%;
+  --hs-rib-pitch: 11px;
+}
+
+/* content-image-frame nests a plate inside a plate. The outer one becomes the
+   hazard chevrons off the back doors of a works van; the inner one keeps the
+   corrugated panel, so the pair reads as a van with its doors open. */
+[data-template-theme='trade-service'] [data-template-canvas] .rounded-panel.bg-muted {
+  background-color: var(--hs-steel);
+  background-image: repeating-linear-gradient(
+    132deg,
+    var(--hs-orange) 0 1.375rem,
+    var(--hs-steel) 1.375rem 2.75rem
+  );
+}
+
+/* Small bg-muted surfaces opt out of the plate: the feature-card icon disc is a
+   quiet stamped tile, and the content-quote citation bar is a 24px sliver where
+   any gradient reads as noise, so it stays a flat redacted wordmark. */
+[data-template-theme='trade-service'] [data-template-canvas] .size-10.bg-muted {
+  background-color: var(--muted);
+  background-image: none;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--hs-ink) 22%, transparent);
+}
+
+[data-template-theme='trade-service'] [data-template-canvas] .h-6.bg-muted {
+  background-color: color-mix(in oklab, var(--muted-foreground) 62%, transparent);
+  background-image: none;
+}
+
+/* The feature-cards illustration is a four-panel still life mixed from
+   --accent/--primary/--muted alphas over an opaque --background panel. Left
+   alone it reads as four pale smudges; painted as four flat colours it reads as
+   a swatch chart, which is worse. So the opaque panel is dropped to let the
+   corrugated plate behind it through, and the four cells become four different
+   worked-metal surfaces laid on it — a ribbed sheet, a deep recess, a hazard
+   chip, and a plain plate — with the plate showing in the 3px gaps between. Kit
+   on a bench, and the only orange is the chip. */
+[data-template-theme='trade-service'] [data-template-canvas] .grid-cols-3.bg-background {
+  background-color: transparent;
+}
+
+/* Four cards, four different metal studies — same grammar, no two alike, so the
+   row does not read as one illustration copied four times. */
+[data-template-theme='trade-service'] [data-template-section='jobs'] .grid > div:nth-child(2) {
+  --hs-tray-rib-cross: 90deg;
+  --hs-tray: oklch(73% 0.009 250deg);
+  --hs-tray-rib-pitch: 11px;
+  --hs-tray-rib: 180deg;
+}
+
+[data-template-theme='trade-service'] [data-template-section='jobs'] .grid > div:nth-child(3) {
+  --hs-tray: oklch(83% 0.006 250deg);
+  --hs-tray-rib-pitch: 5px;
+}
+
+[data-template-theme='trade-service'] [data-template-section='jobs'] .grid > div:nth-child(4) {
+  --hs-tray-rib-cross: 90deg;
+  --hs-tray: oklch(69% 0.011 250deg);
+  --hs-tray-rib-pitch: 14px;
+  --hs-tray-rib: 180deg;
+}
+
+[data-template-theme='trade-service'] [data-template-canvas] .rounded-inset.bg-accent\/30 {
+  background-color: var(--hs-tray, oklch(78% 0.008 250deg));
+  background-image: repeating-linear-gradient(
+    var(--hs-tray-rib, 90deg),
+    color-mix(in oklab, var(--hs-ink) 16%, transparent) 0 1px,
+    transparent 1px var(--hs-tray-rib-pitch, 7px)
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--hs-ink) 30%, transparent);
+}
+
+[data-template-theme='trade-service'] [data-template-canvas] .rounded-inset.bg-muted {
+  background-color: oklch(38% 0.014 250deg);
+  background-image: linear-gradient(
+    170deg,
+    color-mix(in oklab, var(--hs-paper) 16%, transparent),
+    transparent 52%
+  );
+}
+
+/* The one orange cell is a pressure gauge — the plumber's object, and quieter
+   than the flat orange block or the hazard chip that came before it, both of
+   which fought the headline for attention. */
+[data-template-theme='trade-service'] [data-template-canvas] .rounded-inset.bg-primary\/15 {
+  background-color: oklch(33% 0.014 250deg);
+  background-image:
+    radial-gradient(
+      circle at 50% 50%,
+      transparent 0 25%,
+      var(--hs-orange) 26% 33%,
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      color-mix(in oklab, var(--hs-paper) 26%, transparent) 0 11%,
+      transparent 12%
+    ),
+    linear-gradient(
+      168deg,
+      color-mix(in oklab, var(--hs-paper) 14%, transparent),
+      transparent 56%
+    );
+}
+
+[data-template-theme='trade-service'] [data-template-canvas] .rounded-inset.bg-muted\/70 {
+  background-color: oklch(62% 0.011 250deg);
+  /* Always across the grain of the panel above it, so the two sheets stay two
+     objects rather than one field. */
+  background-image: repeating-linear-gradient(
+    var(--hs-tray-rib-cross, 180deg),
+    color-mix(in oklab, var(--hs-ink) 14%, transparent) 0 1px,
+    transparent 1px var(--hs-tray-rib-pitch, 11px)
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--hs-ink) 26%, transparent);
+}
+
+/* ————————————————————————— The signboard (home hero) ————————————————————————— */
+
+/* A whisper of orange from the top left over a deeper paper wash. Ink type keeps
+   14.53:1 at the darkest point of the gradient (16.26:1 on bare paper), so the
+   word cascade never loses contrast as it lands. */
+[data-template-theme='trade-service'] [data-template-section='signage'] {
+  background:
+    radial-gradient(
+      54rem 26rem at 12% -6rem,
+      color-mix(in oklab, var(--hs-orange) 13%, transparent),
+      transparent 66%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--hs-paper-deep) 82%, transparent),
+      transparent 58%
+    );
+}
+
+/* The plate and the ticker want air above and an exact inset below: the
+   marquee's own -mb-10 / lg:-mb-16 then lands the strip flush with the band's
+   bottom edge, where it doubles as the rule into the next section. */
+[data-template-theme='trade-service']
+  [data-template-section='signage']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(2.5rem, 5.5vw, 4rem) 2.25rem;
+}
+
+@media (min-width: 1024px) {
+  [data-template-theme='trade-service']
+    [data-template-section='signage']
+    > [aria-hidden='true']
+    > div {
+    padding-bottom: 4rem;
+  }
+}
+
+/* Full-bleed ticker: the twin's negative inline margins only escape the frame
+   padding, not the centred max-width column, so the bleed is re-derived from the
+   viewport at every width. The frame's own overflow-hidden clips the
+   scrollbar-width excess, so the strip can never widen the page. */
+[data-template-theme='trade-service'] [data-template-section='signage'] div.border-t {
+  margin-inline: calc(50% - 50vw);
+}
+
+/* The letterbox plate sits on paper; the catalog's drop shadow reads as screen
+   chrome, so it becomes a hard steel edge instead. */
+[data-template-theme='trade-service'] [data-template-section='signage'] .shadow-xl {
+  /* An opaque frame, not the catalog's 70% hairline: the plate's own background
+     paints under a translucent border, so a see-through edge printed a dashed
+     orange seam around the whole still. */
+  border-color: oklch(36% 0.014 250deg);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--hs-ink) 55%, transparent);
+}
+
+/* The outer plate is covered by the door layer below, so it only ever shows as a
+   sub-pixel seam — keep it the same steel rather than the generic ribbed recipe. */
+[data-template-theme='trade-service'] [data-template-section='signage'] .bg-muted {
+  background-color: oklch(45% 0.014 250deg);
+  background-image: none;
+}
+
+/* The letterbox still is the one picture on the home page, so it has to be the
+   right picture. The twin fills its plate with a solid --foreground layer and
+   composes the "film still" on top of that; left as near-black ink the result is
+   a moody night sky with a moon in it — handsome, and completely wrong for a
+   firm whose caption says "the yard on Tannery Row". Repainting that layer as a
+   ROLLER DOOR — horizontal shutter slats in steel, lit from above — turns the
+   twin's own overlays into exactly the scene they are named for: the paper wash
+   becomes evening light down the door, the small disc becomes the lamp over it,
+   the --brand pool becomes a worklamp on the concrete, and the orange hairline
+   becomes the bottom edge of the shutter. Horizontal slats here, vertical ribs on
+   every other plate, so the door and the van panels stay different objects. */
+[data-template-theme='trade-service'] [data-template-section='signage'] .bg-foreground {
+  background-color: oklch(52% 0.014 250deg);
+  background-image:
+    repeating-linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--hs-ink) 34%, transparent) 0 1px,
+      transparent 1px 3px,
+      color-mix(in oklab, var(--hs-ink) 12%, transparent) 3px 19px,
+      color-mix(in oklab, var(--hs-ink) 40%, transparent) 19px 20px
+    ),
+    linear-gradient(
+      92deg,
+      color-mix(in oklab, var(--hs-ink) 30%, transparent),
+      transparent 22%,
+      transparent 78%,
+      color-mix(in oklab, var(--hs-ink) 34%, transparent)
+    );
+}
+
+/* The ticker labels arrive at 75% of the foreground, tuned for a dark theme. On
+   paper that reads apologetic for something meant to be read across a yard. */
+[data-template-theme='trade-service'] [data-template-section='signage'] .text-foreground\/75 {
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+/* Under reduced motion the twin swaps its moving track for a plain wrapped list
+   — and since posters and Playwright captures both run reduce, that list IS the
+   ticker as most people will see it. Given the same weight and an orange square
+   between items it reads as the line of jobs painted along the side of the van,
+   which is what the moving version is too. The hero's numbered proof strip is
+   the other li.tracking-eyebrow in this section and is deliberately included:
+   the same treatment turns it into a matching spec line. */
+[data-template-theme='trade-service'] [data-template-section='signage'] li.tracking-eyebrow {
+  align-items: center;
+  color: var(--foreground);
+  display: inline-flex;
+  font-weight: 700;
+}
+
+/* Separators belong to the ticker only (.text-sm): the numbered proof strip
+   (.text-xs) stacks one per line at 390px, where a trailing square reads as an
+   orphaned mark rather than a divider. */
+[data-template-theme='trade-service']
+  [data-template-section='signage']
+  li.text-sm.tracking-eyebrow:not(:last-child)::after {
+  background-color: var(--hs-orange);
+  content: '';
+  height: 0.3125rem;
+  margin-inline-start: 1rem;
+  width: 0.3125rem;
+}
+
+/* Interior page headers (hero-basic) take the same light, dialled right back —
+   one header treatment for the whole site, which is what a real trade site has. */
+[data-template-theme='trade-service'] [data-template-section='hero'] {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--hs-paper-deep) 74%, transparent),
+    transparent 76%
+  );
+}
+
+[data-template-theme='trade-service']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(2.5rem, 5vw, 3.75rem);
+}
+
+/* ————————————————————————— Per-section refinements ————————————————————————— */
+
+/* The client strip is one wrapped line of names — it wants the proportions of a
+   shelf rail, not a section's worth of air, and the marks need to read as a
+   plain list rather than a faded logo wall. */
+[data-template-theme='trade-service']
+  [data-template-section='on-the-books']
+  > [aria-hidden='true']
+  > div {
+  padding-block: 1.75rem;
+}
+
+[data-template-theme='trade-service'] [data-template-section='on-the-books'] .text-foreground\/70 {
+  color: color-mix(in oklab, var(--foreground) 92%, transparent);
+}
+
+/* feature-icon-grid draws a hairline grid behind each icon tile. Nudged up a
+   little so it reads as the squared paper an engineer actually sketches on. */
+[data-template-theme='trade-service'] [data-template-section='what-we-do'] .opacity-60 {
+  opacity: 0.85;
+}
+
+[data-template-theme='trade-service']
+  [data-template-section='what-we-do']
+  .rounded-panel.bg-background {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--hs-ink) 30%, transparent);
+}
+
+/* The steel band's static customer wordmark reads as the lettings firm's lockup
+   rather than a heading. */
+[data-template-theme='trade-service'] [data-template-canvas] .h-9 .tracking-title {
+  color: var(--hs-amber);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+/* The spotlight quote mark is the loudest graphic on the steel band. */
+[data-template-theme='trade-service'] [data-template-section='spotlight'] svg.text-primary {
+  color: var(--hs-orange);
+}
+
+/* Step numerals are stencilled squares (zeroed above) and want the weight of a
+   stamp. */
+[data-template-theme='trade-service'] [data-template-section='how-a-callout-works'] .bg-primary {
+  font-weight: 700;
+}
+
+/* The form's field wells are the one place a plain site should look sturdy. */
+[data-template-theme='trade-service'] [data-template-section='contact'] .border-input {
+  background-color: var(--hs-paper);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--hs-ink) 12%, transparent);
+}
+
+/* Four contact channels make the left column taller than the form, and a
+   stretched form panel leaves a tall empty white rectangle under the submit.
+   Both columns start at the top instead and each ends where its content does.
+   (.grid.gap-8 is the outer two-column grid only; the form's own inner grid is
+   gap-5.) */
+[data-template-theme='trade-service'] [data-template-section='contact'] .grid.gap-8 {
+  align-items: start;
+}
+
+/* ————————————————————————— Shell chrome ————————————————————————— */
+
+[data-template-theme='trade-service'] .hs-root {
+  background-color: var(--hs-paper);
+}
+
+[data-template-theme='trade-service'] .hs-facts {
+  background-color: var(--hs-steel);
+  color: oklch(84% 0.01 250deg);
+}
+
+[data-template-theme='trade-service'] .hs-fact {
+  align-items: center;
+  display: inline-flex;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.7;
+  text-transform: uppercase;
+}
+
+[data-template-theme='trade-service'] .hs-fact::before {
+  background-color: var(--hs-orange);
+  content: '';
+  height: 0.375rem;
+  margin-right: 0.5rem;
+  width: 0.375rem;
+}
+
+[data-template-theme='trade-service'] .hs-fact-lead {
+  color: var(--hs-amber);
+  font-weight: 700;
+}
+
+[data-template-theme='trade-service'] .hs-header-bar {
+  background-color: var(--hs-paper);
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+/* Opacity-only veil over an already-opaque surface: it brings a heavier rule and
+   a shelf shadow once the page starts moving. Nothing composites the filled
+   orange call block toward the paper, and nothing is blurred. */
+[data-template-theme='trade-service'] [data-hs-header-veil] {
+  box-shadow:
+    inset 0 -2px 0 var(--hs-orange),
+    0 10px 22px -20px color-mix(in oklab, var(--hs-ink) 60%, transparent);
+}
+
+[data-template-theme='trade-service'] .hs-wordmark {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.625rem;
+}
+
+/* The mark: the firm's initial on a solid safety-orange square, the way it would
+   be sprayed on a van door. Ink on orange, so the letter stays legible even
+   though it is decorative. */
+[data-template-theme='trade-service'] .hs-mark {
+  align-items: center;
+  background-color: var(--hs-orange);
+  color: var(--hs-ink);
+  display: inline-flex;
+  flex: none;
+  font-size: 1.125rem;
+  font-weight: 800;
+  height: 2rem;
+  justify-content: center;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  width: 2rem;
+}
+
+[data-template-theme='trade-service'] .hs-wordmark-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+[data-template-theme='trade-service'] .hs-wordmark-name {
+  color: var(--foreground);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+[data-template-theme='trade-service'] .hs-wordmark-trade {
+  color: var(--muted-foreground);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+[data-template-theme='trade-service'] .hs-wordmark-link:focus-visible {
+  outline: 2px solid var(--hs-rust);
+  outline-offset: 3px;
+}
+
+[data-template-theme='trade-service'] .hs-wordmark-footer .hs-mark {
+  font-size: 1.375rem;
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+[data-template-theme='trade-service'] .hs-wordmark-footer .hs-wordmark-name {
+  font-size: 1.125rem;
+}
+
+[data-template-theme='trade-service'] .hs-nav-link {
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  padding: 0.375rem 0.625rem 0.5rem;
+  position: relative;
+  text-transform: uppercase;
+  transition: color 0.15s ease-out;
+}
+
+[data-template-theme='trade-service'] .hs-nav-link:hover {
+  color: var(--foreground);
+}
+
+[data-template-theme='trade-service'] .hs-nav-link-active {
+  color: var(--foreground);
+}
+
+[data-template-theme='trade-service'] .hs-nav-bar {
+  background-color: var(--hs-orange);
+  bottom: 0;
+  height: 3px;
+  inset-inline: 0.625rem;
+  position: absolute;
+  transform-origin: left;
+}
+
+[data-template-theme='trade-service'] :is(.hs-nav-link, .hs-footer-link):focus-visible {
+  outline: 2px solid var(--hs-rust);
+  outline-offset: 2px;
+}
+
+/* The point of the whole concept: a solid orange block with the number in it, at
+   every width. Ink on safety orange clears AA at this size. */
+[data-template-theme='trade-service'] .hs-call {
+  align-items: baseline;
+  background-color: var(--hs-orange);
+  color: var(--hs-ink);
+  display: inline-flex;
+  gap: 0.4375rem;
+  padding: 0.625rem 0.75rem;
+  transition: background-color 0.15s ease-out;
+  white-space: nowrap;
+}
+
+[data-template-theme='trade-service'] .hs-call:hover {
+  background-color: oklch(66% 0.175 48deg);
+}
+
+[data-template-theme='trade-service'] .hs-call:focus-visible {
+  outline: 2px solid var(--hs-ink);
+  outline-offset: 2px;
+}
+
+[data-template-theme='trade-service'] .hs-call-word {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='trade-service'] .hs-call-number {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: -0.005em;
+}
+
+[data-template-theme='trade-service'] .hs-menu-trigger {
+  align-items: center;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--hs-ink) 45%, transparent);
+  color: var(--foreground);
+  display: inline-flex;
+  height: 2.625rem;
+  justify-content: center;
+  width: 2.625rem;
+}
+
+[data-template-theme='trade-service'] .hs-menu-trigger:focus-visible {
+  outline: 2px solid var(--hs-rust);
+  outline-offset: 2px;
+}
+
+[data-template-theme='trade-service'] .hs-menu-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 1.125rem;
+}
+
+[data-template-theme='trade-service'] .hs-menu-bars > span {
+  background-color: currentcolor;
+  height: 2px;
+  width: 100%;
+}
+
+[data-template-theme='trade-service'] .hs-menu-panel {
+  background-color: var(--hs-paper);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--hs-ink) 45%, transparent),
+    0 18px 34px -22px color-mix(in oklab, var(--hs-ink) 70%, transparent);
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 0;
+  top: 3.125rem;
+  width: 13rem;
+  z-index: 50;
+}
+
+[data-template-theme='trade-service'] .hs-menu-panel[hidden] {
+  display: none;
+}
+
+[data-template-theme='trade-service'] .hs-menu-link {
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  padding: 0.875rem 1rem;
+  text-transform: uppercase;
+}
+
+[data-template-theme='trade-service'] .hs-menu-link:focus-visible {
+  outline: 2px solid var(--hs-rust);
+  outline-offset: -2px;
+}
+
+[data-template-theme='trade-service'] .hs-menu-link-active {
+  box-shadow: inset 4px 0 0 var(--hs-orange);
+}
+
+[data-template-theme='trade-service'] .hs-menu-note {
+  color: var(--muted-foreground);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 0.75rem 1rem;
+  text-transform: uppercase;
+}
+
+/* ————————————————————————— Footer ————————————————————————— */
+
+[data-template-theme='trade-service'] .hs-footer {
+  background-color: var(--hs-paper-deep);
+  box-shadow: inset 0 1px 0 var(--border);
+}
+
+[data-template-theme='trade-service'] .hs-callband {
+  background-color: var(--hs-steel);
+  box-shadow: inset 0 4px 0 var(--hs-orange);
+  color: oklch(96.4% 0.004 85deg);
+}
+
+[data-template-theme='trade-service'] .hs-callband-eyebrow {
+  color: var(--hs-amber);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='trade-service'] .hs-callband-number {
+  color: oklch(96.4% 0.004 85deg);
+  font-size: clamp(2.25rem, 9vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  width: fit-content;
+}
+
+[data-template-theme='trade-service'] .hs-callband-number:focus-visible {
+  outline: 2px solid var(--hs-amber);
+  outline-offset: 4px;
+}
+
+[data-template-theme='trade-service'] .hs-callband-hours {
+  color: oklch(82% 0.012 250deg);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+[data-template-theme='trade-service'] .hs-callband-cta {
+  align-items: center;
+  box-shadow: inset 0 0 0 2px var(--hs-orange);
+  color: oklch(96.4% 0.004 85deg);
+  display: inline-flex;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  justify-content: center;
+  letter-spacing: 0.1em;
+  padding: 0.875rem 1.25rem;
+  text-transform: uppercase;
+  transition: background-color 0.15s ease-out;
+  width: fit-content;
+}
+
+[data-template-theme='trade-service'] .hs-callband-cta:hover {
+  background-color: color-mix(in oklab, var(--hs-orange) 20%, transparent);
+}
+
+[data-template-theme='trade-service'] .hs-callband-cta:focus-visible {
+  outline: 2px solid var(--hs-amber);
+  outline-offset: 3px;
+}
+
+[data-template-theme='trade-service'] .hs-footer-heading {
+  color: var(--foreground);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='trade-service'] .hs-footer-line {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+[data-template-theme='trade-service'] .hs-footer-address {
+  color: var(--foreground);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+[data-template-theme='trade-service'] .hs-footer-item {
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+
+[data-template-theme='trade-service'] .hs-footer-contact {
+  color: var(--foreground);
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  gap: 0.125rem;
+  width: fit-content;
+}
+
+[data-template-theme='trade-service'] a.hs-footer-contact:hover {
+  color: var(--hs-rust);
+}
+
+[data-template-theme='trade-service'] a.hs-footer-contact:focus-visible {
+  outline: 2px solid var(--hs-rust);
+  outline-offset: 2px;
+}
+
+[data-template-theme='trade-service'] .hs-footer-contact-note {
+  color: var(--muted-foreground);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='trade-service'] .hs-footer-link {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.15s ease-out;
+}
+
+[data-template-theme='trade-service'] .hs-footer-link:hover {
+  color: var(--foreground);
+}
+
+[data-template-theme='trade-service'] .hs-footer-link-active {
+  color: var(--hs-rust);
+}
+
+[data-template-theme='trade-service'] .hs-footer-rule {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1.65;
+}
+
+/* ————————————————————————— Narrow chrome ————————————————————————— */
+
+/* At 390px the masthead has to fit a wordmark, a phone number, and a menu
+   trigger in 342px of usable width. The trade line drops, the name tightens, and
+   the call block loses its "CALL" word — the number alone is unambiguous, and the
+   link keeps its full accessible name either way. The facts strip also sheds its
+   third item so it stays two lines rather than three. */
+@media (max-width: 639px) {
+  [data-template-theme='trade-service'] .hs-header-bar .hs-wordmark-trade {
+    display: none;
+  }
+
+  [data-template-theme='trade-service'] .hs-header-bar .hs-wordmark-name {
+    font-size: 0.875rem;
+  }
+
+  [data-template-theme='trade-service'] .hs-header-bar .hs-mark {
+    font-size: 1rem;
+    height: 1.75rem;
+    width: 1.75rem;
+  }
+
+  [data-template-theme='trade-service'] .hs-call-word {
+    display: none;
+  }
+
+  [data-template-theme='trade-service'] .hs-call {
+    padding: 0.6875rem 0.625rem;
+  }
+
+  [data-template-theme='trade-service'] .hs-call-number {
+    font-size: 0.875rem;
+  }
+
+  [data-template-theme='trade-service'] .hs-fact:nth-child(3) {
+    display: none;
+  }
+}
+
+/* ————————————————————————— Reduced motion ————————————————————————— */
+
+/* Final frame, instantly, even before hydration — the same guarantee
+   template-motion.css gives the section reveals. Playwright captures and the
+   poster tool both run reducedMotion=reduce, so this is what they record. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='trade-service'] [data-hs-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-template-theme='trade-service'] [data-hs-header-veil] {
+    transition-duration: 0.001s !important;
+  }
+}
