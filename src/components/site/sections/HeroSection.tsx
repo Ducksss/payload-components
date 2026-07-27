@@ -113,18 +113,15 @@ export function HeroSection() {
       </div>
 
       {/* Full-bleed: the wall runs past the container edges so the rows read as
-          a surface passing behind the page. */}
-      <div className="relative mt-10 overflow-hidden pb-12 sm:mt-12 lg:mt-14">
+          a surface passing behind the page. It owns its own edge mask, so no
+          overlay is stacked on top of it here. */}
+      <div className="relative mt-14 overflow-hidden sm:mt-16 lg:mt-20">
         <ComponentWall />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent"
-        />
       </div>
 
       {/* The wall is decorative; this line carries the same fact in text, and
           is the only place the catalog size is stated on the landing page. */}
-      <div className="container relative -mt-4 pb-12 text-center">
+      <div className="container relative pb-16 pt-2 text-center sm:pb-20">
         <p className="text-sm text-muted-foreground">
           <span className="font-medium text-foreground">{componentWallCount} blocks</span> in the
           registry — every one wired into Payload by a single command.

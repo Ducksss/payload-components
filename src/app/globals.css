@@ -687,6 +687,22 @@
     animation: wall-sweep 1500ms cubic-bezier(0.6, 0, 0.3, 1) 700ms 1 both;
   }
 
+  /* The wall dissolves on all four edges rather than being clipped by a
+     rectangle. A real alpha mask (not stacked from-background gradient
+     overlays) because the hero atmosphere is an emerald wash, not flat white —
+     an opaque overlay leaves a visible seam against it, and the intersect of
+     two linear masks fades the tilted rows over whatever sits behind them. */
+  .component-wall {
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, black 11%, black 89%, transparent 100%),
+      linear-gradient(to bottom, black 0%, black 84%, transparent 100%);
+    mask-image:
+      linear-gradient(to right, transparent 0%, black 11%, black 89%, transparent 100%),
+      linear-gradient(to bottom, black 0%, black 84%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
   .hero-eyebrow-dot {
     display: inline-block;
     width: 0.42rem;
