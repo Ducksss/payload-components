@@ -4,8 +4,9 @@ import { ArrowRight, Sparkles } from 'lucide-react'
 
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { GitHubMark } from '@/components/site/GitHubMark'
-import { ComponentWall, componentWallCount } from '@/components/site/graphics/ComponentWall'
+import { ComponentWall } from '@/components/site/graphics/ComponentWall'
 import {
+  componentEntries,
   githubRepoUrl,
   heroEyebrow,
   heroGuideLink,
@@ -123,7 +124,7 @@ export function HeroSection() {
           is the only place the catalog size is stated on the landing page. */}
       <div className="container relative pb-16 pt-2 text-center sm:pb-20">
         <p className="text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">{componentWallCount} blocks</span> in the
+          <span className="font-medium text-foreground">{componentEntries.length} blocks</span> in the
           registry — every one wired into Payload by a single command.
         </p>
       </div>
