@@ -137,6 +137,10 @@ function getSourcePath() {
   return `${window.location.pathname}${window.location.hash}`
 }
 
+function getStableSourcePath() {
+  return window.location.pathname
+}
+
 export function trackPageView() {
   /* GA4 (gtag config) and Vercel (<Analytics />) already auto-track page views;
      the SDK-less PostHog integration does not, so send only there — using the
@@ -233,6 +237,6 @@ export function trackPrimaryLinkClick(link: HTMLAnchorElement) {
   trackEvent('primary_link_click', {
     destination: normalized.destination,
     href: normalized.href,
-    source_path: getSourcePath(),
+    source_path: getStableSourcePath(),
   })
 }

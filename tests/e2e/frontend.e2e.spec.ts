@@ -914,6 +914,58 @@ test.describe('Light shadcn frontend', () => {
     )
   })
 
+  for (const sourcePath of ['/docs/installation', '/docs/payload-blocks']) {
+    test(`keeps GitHub clicks attributable to ${sourcePath}`, async ({ page }) => {
+      await page.goto(`${baseURL}${sourcePath}`)
+      await waitForCopyController(page)
+      await stubGtagEvents(page)
+      await page.evaluate(() => {
+        window.history.replaceState({}, '', `${window.location.pathname}#github-proof`)
+        document.addEventListener(
+          'click',
+          (event) => {
+            const target = event.target
+            if (!(target instanceof Element)) return
+
+            if (target.closest('a[href="https://github.com/Ducksss/payload-components"]')) {
+              event.preventDefault()
+            }
+          },
+          { capture: true },
+        )
+      })
+
+      const githubLink = page.getByRole('link', { name: 'Star on GitHub', exact: true })
+      await expect(githubLink).toHaveAttribute(
+        'href',
+        'https://github.com/Ducksss/payload-components',
+      )
+      await githubLink.click()
+
+      expect(await getGtagEvents(page)).toContainEqual([
+        'event',
+        'primary_link_click',
+        {
+          destination: 'github',
+          href: 'https://github.com/Ducksss/payload-components',
+          source_path: sourcePath,
+        },
+      ])
+      expect(await getPostHogEvents(page)).toEqual(
+        expect.arrayContaining([
+          {
+            event: 'primary_link_click',
+            properties: {
+              destination: 'github',
+              href: 'https://github.com/Ducksss/payload-components',
+              source_path: sourcePath,
+            },
+          },
+        ]),
+      )
+    })
+  }
+
   test('shows an alert after copying a docs code block', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(`${baseURL}/docs`)
