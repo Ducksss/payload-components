@@ -1,0 +1,689 @@
+/* Alder Practice (healthcare-clinic) scoped theme — the calm clinic direction.
+ *
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='healthcare-clinic'] root the shell renders. It overrides
+ * the semantic variables the demo twins consume and adds named Alder tokens; it
+ * never touches :root, .dark, another template's scope, or src/app/globals.css.
+ * The site stays forced-light — and unlike every sibling concept there is no
+ * inverted band anywhere here, by design.
+ *
+ * Art direction — the airiest and most readable concept in the gallery:
+ *   · warm-white daylight paper, deep alder ink, one alder-green accent and one
+ *     pale sky; the two tone bands are a *breath* of each, never a slab;
+ *   · accessibility IS the art direction. Body copy runs at 17px on a trimmed
+ *     measure with 1.8 line-height; every text pairing on the concept measures
+ *     AAA (the worst case anywhere is 8.73:1 against a 4.5:1 AA floor); every
+ *     action and form field is a 48px target; field borders clear the 3:1
+ *     non-text threshold; and the team grid's hover-only role labels — the one
+ *     genuinely inaccessible thing the twins do — are pinned visible;
+ *   · eyebrows drop the catalog's uppercase pill for a sentence-case label with
+ *     an alder dot — nothing on a clinic site should shout;
+ *   · every backend-free upload placeholder is repainted as an ARCH OF DAYLIGHT
+ *     — a crisp pale-sky window in a warm wall, with light spilling across it
+ *     and a soft pool on the floor. It is the concept's one motif (the shell
+ *     wordmark is the same arch), it is derived entirely from these tokens, and
+ *     it reads as a calm interior rather than as a missing photograph;
+ *   · the twins arrive wrapped in the catalog's specimen frame (rounded-frame
+ *     border bg-card/35); the rhythm rules below dissolve it so each page reads
+ *     as one quiet room instead of a stack of specimens. */
+
+[data-template-theme='healthcare-clinic'] {
+  /* ————— Alder palette —————
+   * One green hue (158deg) carries paper, ink and accent so the whole site is
+   * a single family; sky (232deg) is the only other hue and is used for light. */
+  --al-daylight: oklch(98.7% 0.006 116deg);
+  /* The 'muted' band: a breath of alder on the same stock. */
+  --al-paper-deep: oklch(96.3% 0.013 140deg);
+  /* The 'contrast' band: a breath of sky. This concept's strongest surface. */
+  --al-sky-band: oklch(96.8% 0.014 228deg);
+  /* Raised paper. Pure white, so every inner card lifts off the tinted paper
+     AND off both bands without needing a per-section tone. */
+  --al-linen: oklch(100% 0 0deg);
+
+  /* Body and headings. 15.81:1 on raised white, 15.21:1 on daylight paper. */
+  --al-ink: oklch(25% 0.028 158deg);
+  /* The accent, for eyebrows, icons and rules. 9.34:1 on paper. */
+  --al-green: oklch(38% 0.068 158deg);
+  /* Filled actions — 12.02:1 for the label, the strongest button pairing here. */
+  --al-green-deep: oklch(32% 0.062 158deg);
+  /* Muted body text, held at AAA on every surface it can land on rather than at
+     the AA floor. Measured from rendered sRGB, not from the tokens: 9.69:1 on
+     raised white, 9.32:1 on daylight paper, 8.88:1 on the sky band, 8.73:1 on
+     the alder band. The 8.73:1 worst case is still 1.9x the 4.5:1 AA floor. */
+  --al-quiet: oklch(38.5% 0.018 158deg);
+
+  --al-sky: oklch(74% 0.058 232deg);
+  --al-sky-pale: oklch(90.5% 0.036 232deg);
+  /* The warm wall the window is cut into, and where along it the window sits.
+     Sections override --al-plate-x so no two rooms are identical. */
+  --al-wall: oklch(97.8% 0.009 92deg);
+  --al-plate-x: 32%;
+
+  /* ————— Semantic variables the twins consume ————— */
+  --background: var(--al-daylight);
+  --foreground: var(--al-ink);
+  --card: var(--al-linen);
+  --card-foreground: var(--al-ink);
+  --popover: var(--al-linen);
+  --popover-foreground: var(--al-ink);
+
+  /* The one saturated element on the site is the booking action. */
+  --primary: var(--al-green-deep);
+  --primary-foreground: oklch(99% 0.004 116deg);
+  --secondary: oklch(94.5% 0.018 148deg);
+  --secondary-foreground: var(--al-ink);
+  --muted: var(--al-wall);
+  --muted-foreground: var(--al-quiet);
+  --accent: oklch(95.5% 0.016 148deg);
+  --accent-foreground: var(--al-ink);
+
+  --brand: var(--al-green);
+  --brand-foreground: oklch(99% 0.004 116deg);
+  --brand-50: oklch(97.8% 0.01 158deg);
+  --brand-100: oklch(94.8% 0.028 158deg);
+  --brand-200: oklch(89% 0.05 158deg);
+  --brand-600: oklch(33% 0.062 158deg);
+
+  --border: oklch(87.5% 0.014 150deg);
+  /* Form-field borders are UI component boundaries, so they clear WCAG 1.4.11
+     (3:1 against the adjacent surface) rather than sitting at the decorative
+     hairline weight the catalog uses. */
+  --input: oklch(64% 0.03 152deg);
+  --ring: var(--al-green);
+
+  /* Soft, unhurried geometry — friendlier than Relay's tech radii, calmer than
+     Fieldnote's 1rem pillow. --radius feeds the sm–xl scale via calc(). */
+  --radius: 0.875rem;
+
+  /* ————— Type: bigger, calmer, closer together in size —————
+   * Everything steps up about 6% so 'text-base' body copy is 17px and
+   * 'text-sm' answers are 15px, and the display sizes step DOWN relative to
+   * that so headings announce rather than shout. Line-heights open up. */
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.1875rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.625rem;
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 1.22;
+  --text-4xl: 2.375rem;
+  --text-4xl--line-height: 1.2;
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 1.12;
+
+  /* Plainspoken tracking: the catalog's -0.06em display is tuned for tight
+     product headlines. A clinic wants air between the letters, and the eyebrow
+     loses its small-caps spacing entirely (below — it stops being caps). */
+  --tracking-display: -0.02em;
+  --tracking-title: -0.015em;
+  --tracking-snug: -0.012em;
+  --tracking-heading: -0.01em;
+  --tracking-micro: -0.005em;
+  --tracking-eyebrow: 0;
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+[data-template-theme='healthcare-clinic'] ::selection {
+  background-color: color-mix(in oklab, var(--al-sky) 34%, transparent);
+}
+
+/* ---------------------------------------------------------------- */
+/* Readability: line-height and measure                              */
+/* ---------------------------------------------------------------- */
+
+/* The twins pin leading-6/7/8 in rem, which at 17px would read tighter than
+   the catalog intends. Restated as ratios so the bigger type keeps its air. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .leading-6 {
+  line-height: 1.75;
+}
+
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .leading-7 {
+  line-height: 1.8;
+}
+
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .leading-8 {
+  line-height: 1.55;
+}
+
+/* Comfortable measure. 42rem/48rem of 17px copy runs to 72–85 characters; these
+   trims bring every prose column back to roughly 62–70, which is where reading
+   speed peaks. Only prose containers use these two utilities in the recipes. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .max-w-2xl {
+  max-width: 38rem;
+}
+
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .max-w-3xl {
+  max-width: 44rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Section rhythm: dissolve the specimen frame, then breathe         */
+/* ---------------------------------------------------------------- */
+
+/* The twin structure is contract-tested:
+   [data-template-section] > [aria-hidden] > frame div. */
+[data-template-theme='healthcare-clinic']
+  [data-template-section]
+  > [aria-hidden='true']
+  > div {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding-block: clamp(4rem, 8.5vw, 7rem);
+}
+
+/* ---------------------------------------------------------------- */
+/* Surfaces: raised white for every inner card and panel             */
+/* ---------------------------------------------------------------- */
+
+/* The twins paint inner cards with bg-background/85|70|60, which on tinted
+   paper dissolves into the page. Remapping them to pure white gives the site a
+   consistent two-step surface story (daylight paper → raised white) that holds
+   on the base paper and on both bands. */
+[data-template-theme='healthcare-clinic']
+  [data-template-canvas]
+  :is(.bg-background\/85, .bg-background\/70, .bg-background\/60) {
+  background-color: var(--al-linen);
+}
+
+/* Depth is a hairline's job here; the catalog's drop shadow reads as screen
+   chrome on daylight paper. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] :is(.shadow-xl, .shadow-lg) {
+  box-shadow: 0 24px 48px -40px color-mix(in oklab, var(--al-ink) 42%, transparent);
+}
+
+/* ---------------------------------------------------------------- */
+/* The arched window — every backend-free image plate                */
+/* ---------------------------------------------------------------- */
+
+/* A tall arched window in a warm wall: a pale-sky pane divided by a mullion and
+   a transom, daylight spilling right across the plaster, warm shade gathering in
+   the far corner, and a soft pool on the floor. The pane is a hard-stopped
+   ellipse whose centre sits below the plate, so only its arched top is visible —
+   that silhouette, plus the two glazing bars, is what makes the plate read as a
+   quiet room rather than as a gradient or a missing photograph. Everything is
+   percentage-sized, so it stays a well-proportioned window in a 16/7 letterbox,
+   a 4/3 row and a tall portrait alike, and every colour is mixed from the tokens
+   above — no raster assets anywhere in this concept. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .bg-muted {
+  background-color: var(--al-wall);
+  background-image:
+    /* light from above, across the whole wall */
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--al-daylight) 80%, transparent),
+      transparent 50%
+    ),
+    /* transom */
+    linear-gradient(
+      180deg,
+      transparent 51%,
+      color-mix(in oklab, var(--al-daylight) 64%, transparent) 51%,
+      color-mix(in oklab, var(--al-daylight) 64%, transparent) 52.8%,
+      transparent 52.8%
+    ),
+    /* mullion */
+    linear-gradient(
+      90deg,
+      transparent calc(var(--al-plate-x) - 0.9%),
+      color-mix(in oklab, var(--al-daylight) 64%, transparent) calc(var(--al-plate-x) - 0.9%),
+      color-mix(in oklab, var(--al-daylight) 64%, transparent) calc(var(--al-plate-x) + 0.9%),
+      transparent calc(var(--al-plate-x) + 0.9%)
+    ),
+    /* the pane */
+    radial-gradient(
+      20% 68% at var(--al-plate-x) 90%,
+      color-mix(in oklab, var(--al-sky-pale) 72%, transparent) 97%,
+      transparent 100%
+    ),
+    /* daylight spilling right across the plaster */
+    linear-gradient(
+      100deg,
+      color-mix(in oklab, var(--al-sky-pale) 26%, transparent) 6%,
+      transparent 58%
+    ),
+    /* warm shade in the far corner */
+    radial-gradient(
+      80% 84% at 108% 106%,
+      color-mix(in oklab, var(--al-green) 15%, transparent),
+      transparent 62%
+    ),
+    /* the floor */
+    linear-gradient(180deg, transparent 84%, color-mix(in oklab, var(--al-green) 10%, transparent));
+}
+
+/* Where plates repeat — the three clinicians, the three appointment kinds — the
+   window slides along the wall so no two rooms are the same photograph. */
+[data-template-theme='healthcare-clinic']
+  [data-template-section='clinicians']
+  .group:nth-child(2),
+[data-template-theme='healthcare-clinic'] [data-template-section='pathways'] div.grid:nth-child(2) {
+  --al-plate-x: 41%;
+}
+
+[data-template-theme='healthcare-clinic']
+  [data-template-section='clinicians']
+  .group:nth-child(3),
+[data-template-theme='healthcare-clinic'] [data-template-section='pathways'] div.grid:nth-child(3) {
+  --al-plate-x: 25%;
+}
+
+/* Round wells (team-roster's staff avatars, content-community's team row) are
+   too small for an arch — the silhouette reads as a smudge at 3.5rem. They take
+   the same daylight instead, flat: sky at the top falling to warm wall at the
+   foot. Deliberately not a lit sphere; a glossy ball reads as an interface
+   element, and these stand in for people. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .rounded-full > .bg-muted {
+  background-color: var(--al-wall);
+  background-image: linear-gradient(
+    172deg,
+    color-mix(in oklab, var(--al-sky-pale) 58%, transparent),
+    color-mix(in oklab, var(--al-sky-pale) 12%, transparent) 62%,
+    color-mix(in oklab, var(--al-green) 7%, transparent)
+  );
+}
+
+/* content-image-frame nests a plate inside a plate (a mat around the picture).
+   The outer one steps back to a flat sky mat so the pair reads as a framed
+   view rather than two arches on top of each other. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .rounded-panel.bg-muted {
+  background-color: color-mix(in oklab, var(--al-sky-pale) 24%, var(--al-daylight));
+  background-image: none;
+}
+
+/* That mat is very wide, so its window sits closer to the middle of the room. */
+[data-template-theme='healthcare-clinic'] [data-template-section='building'] {
+  --al-plate-x: 43%;
+}
+
+/* content-quote ends its citation with a 24px wordmark sliver. A fake logo
+   under a clinician's name would be nonsense, so it becomes a short alder rule
+   — a signature stroke. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .h-6.bg-muted {
+  background-color: var(--al-green);
+  background-image: none;
+  height: 2px;
+  opacity: 1;
+  width: 3rem;
+}
+
+/* The quote's own left rule joins in. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] blockquote.border-l-2 {
+  border-color: var(--al-green);
+}
+
+/* ---------------------------------------------------------------- */
+/* Eyebrows: a sentence-case label with an alder dot                 */
+/* ---------------------------------------------------------------- */
+
+/* Every twin eyebrow is a Badge with `rounded-full … uppercase
+   tracking-eyebrow`. Uppercase small-caps is the one type treatment a clinic
+   should never use — it is harder to read and it shouts — so the pill is
+   dropped, the caps are undone, and a small alder dot carries the mark instead.
+   hero-basic's proof chips share rounded-full but never tracking-eyebrow, so
+   this pair selects eyebrows only. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .rounded-full.tracking-eyebrow {
+  align-items: center;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--al-green);
+  display: inline-flex;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  gap: 0.625rem;
+  letter-spacing: 0;
+  padding: 0;
+  text-transform: none;
+}
+
+[data-template-theme='healthcare-clinic']
+  [data-template-canvas]
+  .rounded-full.tracking-eyebrow::before {
+  background-color: var(--al-green);
+  border-radius: 999px;
+  content: '';
+  flex: none;
+  height: 0.5rem;
+  width: 0.5rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Actions and fields: 48px targets                                  */
+/* ---------------------------------------------------------------- */
+
+/* DemoLink and the form's submit label are the only h-10 rounded-md SPANS in
+   the twins (the fields with the same metrics are divs), so this reaches real
+   actions only. 3rem clears the 44px AAA target size comfortably. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] span.h-10.rounded-md {
+  border-radius: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  height: 3rem;
+  padding-inline: 1.75rem;
+}
+
+/* The outline action is a real second choice here, not a ghost: a full-weight
+   alder rule, so both buttons are legible at a glance. */
+[data-template-theme='healthcare-clinic']
+  [data-template-canvas]
+  span.h-10.rounded-md.border-border {
+  border-color: var(--al-green);
+  color: var(--al-green-deep);
+}
+
+/* The booking form's fields match the actions, because a field you cannot hit
+   is the same problem as a button you cannot hit. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] div.h-10.rounded-md {
+  border-radius: 0.75rem;
+  height: 3rem;
+}
+
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .h-28 {
+  border-radius: 0.75rem;
+  height: 8.5rem;
+}
+
+/* hero-basic's proof items arrive as filled secondary pills. They become calm
+   white facts with an alder hairline — a row of practical statements, generous
+   enough to read on a phone at arm's length. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .rounded-full.text-sm {
+  background-color: var(--al-linen);
+  border: 1px solid color-mix(in oklab, var(--al-green) 34%, var(--border));
+  color: var(--al-ink);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  padding: 0.5rem 1rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Icons                                                             */
+/* ---------------------------------------------------------------- */
+
+/* feature-icon-grid's decorator is a technical graph-paper field in the
+   catalog. Here the grid is dropped and the header becomes a wash of daylight
+   falling from above, with the icon well left as raised white. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] .h-32.overflow-hidden {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--al-sky-pale) 62%, transparent),
+    color-mix(in oklab, var(--al-wall) 70%, transparent)
+  );
+}
+
+[data-template-theme='healthcare-clinic']
+  [data-template-canvas]
+  .h-32.overflow-hidden
+  > .absolute.inset-0 {
+  display: none;
+}
+
+[data-template-theme='healthcare-clinic']
+  [data-template-canvas]
+  :is(.size-14.rounded-panel svg, svg.size-6) {
+  color: var(--al-green);
+}
+
+/* content-stats prints the opening hours as an arrow list; at 50% opacity the
+   markers are the least legible thing on the most practical section of the
+   site. They become full-strength alder. */
+[data-template-theme='healthcare-clinic'] [data-template-canvas] svg.size-4.opacity-50 {
+  color: var(--al-green);
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------- */
+/* The clinical team grid — pinned still, and pinned visible         */
+/* ---------------------------------------------------------------- */
+
+/* team-grid reveals each person's ROLE only on hover, and a role is the single
+   most useful fact about a clinician. It is pinned visible here. (Tailwind v4
+   drives translate through --tw-translate-*, so the transform has to be
+   released as well as the opacity.) */
+[data-template-theme='healthcare-clinic'] [data-template-section='clinicians'] .translate-y-6 {
+  --tw-translate-y: 0;
+
+  opacity: 1;
+  translate: none;
+}
+
+/* The decorative "Profile" affordance goes: it links nowhere, and a dead link
+   on a clinic page is worse than no link. The `_01` ordinal goes with it — a
+   portfolio index is the wrong register for the people you will be seen by. */
+[data-template-theme='healthcare-clinic'] [data-template-section='clinicians'] .translate-y-8,
+[data-template-theme='healthcare-clinic']
+  [data-template-section='clinicians']
+  .justify-between
+  > span.text-xs {
+  display: none;
+}
+
+/* Everything in the grid holds still: no letter-spacing wobble on the names, no
+   corner morph on the plates, no transitions at all. */
+[data-template-theme='healthcare-clinic'] [data-template-section='clinicians'] .group * {
+  letter-spacing: var(--tracking-heading);
+  transition: none;
+}
+
+/* Portrait plates step down from 24rem: an arch of daylight at that height
+   dominates the page, and three of them read as three empty frames. At 15–17rem
+   the row balances the names below it. */
+/* The portrait plates are the only ones the twins give no bordered wrapper, and
+   on paper this pale an undefined edge reads as a gap. A hairline ring fixes it. */
+[data-template-theme='healthcare-clinic'] [data-template-section='clinicians'] .h-96 {
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px var(--border);
+  height: 15rem;
+}
+
+@media (min-width: 64rem) {
+  [data-template-theme='healthcare-clinic'] [data-template-section='clinicians'] .h-96 {
+    height: 17rem;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Tone bands — `tone` is declared per section in the definition      */
+/* ---------------------------------------------------------------- */
+
+/* muted: a breath of alder on the same stock, edged with hairlines rather than
+   a border so the band never shifts layout. */
+[data-template-theme='healthcare-clinic'] [data-template-section][data-tone='muted'] {
+  --border: oklch(85.5% 0.016 150deg);
+
+  background-color: var(--al-paper-deep);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    inset 0 -1px 0 var(--border);
+}
+
+/* contrast: a breath of SKY. This is the concept's strongest surface, and it is
+   still lighter than most of the gallery's paper — the whole point is that
+   nothing here inverts. */
+[data-template-theme='healthcare-clinic'] [data-template-section][data-tone='contrast'] {
+  --border: oklch(86% 0.018 226deg);
+
+  background-color: var(--al-sky-band);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    inset 0 -1px 0 var(--border);
+}
+
+/* ---------------------------------------------------------------- */
+/* The heroes                                                        */
+/* ---------------------------------------------------------------- */
+
+/* hero-basic is the quietest hero in the registry, and on this concept that is
+   the feature: the largest, calmest type on the site says when we are open and
+   how to be seen, and nothing competes with it. What keeps it from reading
+   unfinished is light — a wide arch of daylight rising behind the headline,
+   built from the same two gradients as the image plates, plus a hairline at the
+   foot so the band reads as a masthead panel rather than a gap. */
+[data-template-theme='healthcare-clinic']
+  :is([data-template-section='welcome'], [data-template-section='hero']) {
+  background-image:
+    radial-gradient(
+      54rem 26rem at 50% -9rem,
+      color-mix(in oklab, var(--al-sky) 19%, transparent),
+      transparent 66%
+    ),
+    radial-gradient(
+      72rem 30rem at 88% -4rem,
+      color-mix(in oklab, var(--al-green) 8%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--al-paper-deep) 62%, transparent),
+      transparent 62%
+    );
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+/* hero-basic sets its copy in a left column, so on a wide screen the right side
+   of the band is open. It stays open. An arch or a graphic was tried there and
+   read as decoration filling a hole; air is the whole argument of this concept,
+   and a hero that is mostly light is the most reassuring thing on the site. What
+   makes it read as composed rather than unfinished is the directional wash above
+   and the hairline below, not something to look at.
+ *
+ * Heroes also get the most air of any section — the above-fold frame is the
+ * entire reassurance argument, so it is allowed to be mostly space. */
+[data-template-theme='healthcare-clinic']
+  :is([data-template-section='welcome'], [data-template-section='hero'])
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(4.5rem, 10vw, 8rem) clamp(4rem, 8.5vw, 6.5rem);
+}
+
+/* ---------------------------------------------------------------- */
+/* Shell chrome                                                      */
+/* ---------------------------------------------------------------- */
+
+/* The practical strip above the masthead: address, hours, telephone number, in
+   deep alder on a breath of green. The most-read line on the site is also the
+   highest-contrast one. */
+[data-template-theme='healthcare-clinic'] .alder-utility {
+  background-color: oklch(95% 0.02 148deg);
+  box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--al-green) 22%, transparent);
+  color: var(--al-ink);
+}
+
+[data-template-theme='healthcare-clinic'] .alder-header {
+  background-color: var(--al-daylight);
+}
+
+[data-template-theme='healthcare-clinic'] .alder-masthead {
+  background-color: var(--al-daylight);
+  border-bottom: 1px solid var(--border);
+}
+
+[data-template-theme='healthcare-clinic'] .alder-mark {
+  color: var(--al-green);
+}
+
+/* The active page carries a solid alder underline, not a tint — a state mark
+   that survives being printed, photocopied or viewed at 400% zoom. */
+[data-template-theme='healthcare-clinic'] .alder-nav-link {
+  position: relative;
+}
+
+[data-template-theme='healthcare-clinic'] .alder-nav-link[data-alder-active]::after {
+  background-color: var(--al-green);
+  border-radius: 999px;
+  bottom: 0.375rem;
+  content: '';
+  height: 2px;
+  left: 0.875rem;
+  position: absolute;
+  right: 0.875rem;
+}
+
+[data-template-theme='healthcare-clinic'] .alder-action {
+  background-color: var(--al-green-deep);
+  color: var(--primary-foreground);
+}
+
+[data-template-theme='healthcare-clinic'] .alder-trigger {
+  border: 1px solid var(--al-green);
+  color: var(--al-green-deep);
+}
+
+[data-template-theme='healthcare-clinic'] .alder-trigger-bar {
+  background-color: currentcolor;
+  border-radius: 999px;
+  display: block;
+  height: 2px;
+  width: 1.125rem;
+}
+
+/* The mobile sheet is a plain full-width panel flush under the masthead: 56px
+   rows, hairline separated, no floating card and no animation. */
+[data-template-theme='healthcare-clinic'] .alder-sheet {
+  background-color: var(--al-daylight);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 20px 40px -36px color-mix(in oklab, var(--al-ink) 55%, transparent);
+}
+
+[data-template-theme='healthcare-clinic'] .alder-sheet-link + .alder-sheet-link,
+[data-template-theme='healthcare-clinic'] .alder-sheet-note {
+  border-top: 1px solid var(--border);
+}
+
+[data-template-theme='healthcare-clinic'] .alder-sheet-link[data-alder-active] {
+  box-shadow: inset 3px 0 0 var(--al-green);
+}
+
+[data-template-theme='healthcare-clinic'] .alder-sheet-note {
+  background-color: oklch(97.2% 0.012 148deg);
+  color: var(--al-ink);
+}
+
+[data-template-theme='healthcare-clinic'] .alder-footer {
+  background-color: var(--al-paper-deep);
+  border-top: 1px solid var(--border);
+}
+
+[data-template-theme='healthcare-clinic'] .alder-footer-label {
+  color: var(--al-green);
+}
+
+[data-template-theme='healthcare-clinic'] .alder-footer-notice {
+  color: var(--al-ink);
+}
+
+[data-template-theme='healthcare-clinic'] .alder-rail {
+  background-color: oklch(94.4% 0.018 148deg);
+  border-top: 1px solid color-mix(in oklab, var(--al-green) 20%, transparent);
+  color: var(--al-ink);
+}
+
+/* One visible focus style for every interactive element in the shell, at a
+   weight that is obvious rather than tasteful. */
+[data-template-theme='healthcare-clinic'] .alder-focus:focus-visible {
+  outline: 3px solid var(--al-green);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------- */
+/* Reduced motion                                                    */
+/* ---------------------------------------------------------------- */
+
+/* This concept ships NO chrome motion at all — no entrances, no scroll
+   behaviour, no reveals of its own — so there is no hidden state that could be
+   captured mid-flight. The shared section choreography
+   (TemplateSectionReveal + template-motion.css) already pins its final frame
+   under reduce. What is left to net is the hover/focus colour transitions the
+   shell and the twins carry: a clinic should be still, so under reduce they
+   resolve instantly too, and any future chrome motion added beneath this scope
+   inherits the same guarantee. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='healthcare-clinic'] * {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+  }
+}

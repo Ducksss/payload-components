@@ -4,10 +4,14 @@ import type { TemplateShowcase } from '@/lib/templates/types'
 
 import { AgencyStudioShell } from './agency-studio/Shell'
 import { CommerceBrandShell } from './commerce-brand/Shell'
+import { EducationCourseShell } from './education-course/Shell'
 import { EventConferenceShell } from './event-conference/Shell'
 import { FintechTrustShell } from './fintech-trust/Shell'
+import { HealthcareClinicShell } from './healthcare-clinic/Shell'
+import { NonprofitCauseShell } from './nonprofit-cause/Shell'
 import { PortfolioSoloShell } from './portfolio-solo/Shell'
 import { SaasLaunchShell } from './saas-launch/Shell'
+import { TradeServiceShell } from './trade-service/Shell'
 
 /* Maps a template slug to its owned shell — the fictional site's real header,
  * internal navigation, footer, and scoped theme root. Shells receive the page's
@@ -22,8 +26,12 @@ export type TemplateShellProps = {
 export const templateShellsBySlug: Record<string, ComponentType<TemplateShellProps>> = {
   'agency-studio': AgencyStudioShell,
   'commerce-brand': CommerceBrandShell,
+  'education-course': EducationCourseShell,
   'event-conference': EventConferenceShell,
   'fintech-trust': FintechTrustShell,
+  'healthcare-clinic': HealthcareClinicShell,
+  'nonprofit-cause': NonprofitCauseShell,
   'portfolio-solo': PortfolioSoloShell,
   'saas-launch': SaasLaunchShell,
+  'trade-service': TradeServiceShell,
 }
