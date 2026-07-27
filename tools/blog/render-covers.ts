@@ -4,7 +4,7 @@ import path from 'node:path'
 
 import { chromium } from '@playwright/test'
 import type { Browser, Page } from '@playwright/test'
-import sharp from 'sharp'
+import sharp, { type OverlayOptions } from 'sharp'
 
 import { resolveArtifact } from './visual-system/artifacts'
 import { blogVisualCatalog, getBlogVisualEntry } from './visual-system/catalog'
@@ -252,7 +252,7 @@ export const captureRouteRegion = async (
 
   const effectiveColumns = Math.min(columns, selectors.length)
   const rows = Math.ceil(selectors.length / effectiveColumns)
-  const tiles: sharp.OverlayOptions[] = []
+  const tiles: OverlayOptions[] = []
 
   for (const [index, selector] of selectors.entries()) {
     const region = page.locator(selector)
