@@ -2,10 +2,14 @@ import type { TemplatePage, TemplateShowcase } from './types'
 
 import { agencyStudioTemplate } from './agency-studio'
 import { commerceBrandTemplate } from './commerce-brand'
+import { educationCourseTemplate } from './education-course'
 import { eventConferenceTemplate } from './event-conference'
 import { fintechTrustTemplate } from './fintech-trust'
+import { healthcareClinicTemplate } from './healthcare-clinic'
+import { nonprofitCauseTemplate } from './nonprofit-cause'
 import { portfolioSoloTemplate } from './portfolio-solo'
 import { saasLaunchTemplate } from './saas-launch'
+import { tradeServiceTemplate } from './trade-service'
 
 /* Canonical, curated order for /templates. Definitions stay pure data; React
  * lookups (demo twins, shells) live in src/components/site/templates/. */
@@ -16,6 +20,10 @@ export const templateShowcases: readonly TemplateShowcase[] = [
   eventConferenceTemplate,
   fintechTrustTemplate,
   portfolioSoloTemplate,
+  nonprofitCauseTemplate,
+  educationCourseTemplate,
+  healthcareClinicTemplate,
+  tradeServiceTemplate,
 ]
 
 export const templatesBySlug: Record<string, TemplateShowcase> = Object.fromEntries(
