@@ -125,6 +125,31 @@ git log --format='COMMIT %h %s' --name-only -20 -- 'tests/e2e/*-snapshots/*'
 Two follow-up commits (a local darwin mint, then the workflow's linux PR) are
 fine and normal; one platform alone, permanently, is the bug.
 
+### Template accessibility sweep
+
+`templates-a11y` runs axe (WCAG 2.1 A/AA) over the `/templates` gallery and over
+every concept's detail page and full preview at 1280 and 390. It is its own
+Playwright batch and is data-driven from `src/lib/templates/registry`, so
+registering a concept is all it takes to cover it. Two things about it are easy
+to get wrong when extending it:
+
+- **It runs under reduced motion, on purpose.** Straight after `goto`, in-view
+  sections are mid-fade and axe reads ~13%-opacity ink as a *serious* contrast
+  violation. `reducedMotion: 'reduce'` lets the CSS nets pin the final frame
+  before hydration, and the suite then asserts that every
+  `[data-template-section]` and every `data-*-reveal` element really is settled.
+  A new per-concept reveal attribute needs its own
+  `@media (prefers-reduced-motion: reduce)` net in that concept's `theme.css`,
+  or the sweep fails naming the element.
+- **A green axe run does not clear the gradient plates.** axe cannot resolve a
+  gradient or image background, so it reports text over one as `incomplete`,
+  never as a violation — 13-72 nodes per page here, including the hero plates.
+  The preview sweeps hand that list to `tests/e2e/support/painted-contrast.ts`,
+  which captures the page with and without ink, treats the differing pixels as
+  the glyphs, and scores the authored colour against the worst background
+  actually painted under them. Every run logs how many pairings it scored and
+  what it could not, so "green" is never mistaken for "everything was checked".
+
 ### Packed CLI smoke
 
 `pnpm test:pack` installs the built tarball and runs the CLI exactly as a
