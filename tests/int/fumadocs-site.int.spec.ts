@@ -126,7 +126,7 @@ describe('Fumadocs site shell', () => {
 
     expect(`${footer}\n${copyButton}`).not.toContain('tin.computer')
     expect(`${footer}\n${copyButton}`).not.toContain('Growth by Tin')
-    expect(`${footer}\n${copyButton}`).not.toContain('bg-[#66DC9D]')
+    expect(`${footer}\n${copyButton}`).not.toContain('66DC9D')
     expect(copyButton).toContain('data-[copied=true]:text-brand-foreground')
     expect(copyButton).toContain('motion-reduce:transform-none')
     expect(heroSubheadline).toBe(
@@ -651,8 +651,13 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).toContain('{blogTitle}')
     expect(indexSource).toContain('{blogDescription}')
     expect(indexSource).not.toContain(blogDescription)
-    expect(blogTitle).toBe('Build notes and release stories')
+    expect(blogTitle).toBe('Payload CMS block and installer guides')
+    expect(blogDescription).toContain('Payload CMS v3 guides')
     expect(indexSource).toContain('href="/components"')
+    expect(indexSource).toContain("href: '/docs/installation'")
+    expect(indexSource).toContain("href: '/docs/payload-blocks'")
+    expect(indexSource).toContain("href: '/blog/anatomy-of-an-install'")
+    expect(indexSource).toContain('data-guide-gateway')
     expect(indexSource).toContain(
       "alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates }",
     )
@@ -830,7 +835,7 @@ describe('Fumadocs site shell', () => {
     const { blogTitle, catalogMetadataTitle, homeMetadataTitle } = await import('../../src/lib/site')
 
     expect(homeMetadataTitle).toBe('Install wired Payload CMS blocks in one command')
-    expect(blogTitle).toBe('Build notes and release stories')
+    expect(blogTitle).toBe('Payload CMS block and installer guides')
     expect(catalogMetadataTitle).toBe('67 Payload CMS Components & Blocks | Catalog')
     expect(docsIndex).toContain('seoTitle: CLI setup and architecture')
 
