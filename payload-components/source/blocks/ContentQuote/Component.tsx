@@ -20,6 +20,7 @@ export const ContentQuoteBlock: React.FC<Props> = ({
   id,
   image,
   logo,
+  logoLabel,
   paragraphs,
   quote,
   title,
@@ -61,6 +62,8 @@ export const ContentQuoteBlock: React.FC<Props> = ({
                 <cite className="text-sm font-medium not-italic text-foreground">{citation}</cite>
                 {logo ? (
                   <Media resource={logo} imgClassName="h-6 w-auto object-contain opacity-70" />
+                ) : logoLabel ? (
+                  <span className="text-sm font-medium text-muted-foreground">{logoLabel}</span>
                 ) : null}
               </div>
             </blockquote>

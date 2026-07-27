@@ -6,7 +6,7 @@ import { statsProofDemoContent, type StatsProofDemoContent } from '@/lib/demo-co
  * source, in source order. Deliberate substitutions — nothing else may diverge:
  *   <section className={cn('container', …)}> → <div> root (no landmark)
  *   <h2>                                     → <div> (the catalog owns its outline)
- *   Media logo                               → static customer wordmark
+ *   Media logo                               → the block's own logoLabel branch
  *   StatsProofBlockData                      → StatsProofDemoContent
  *   cn() inner wrapper                       → fixed max-width div
  * imgClassName values are not mirrored (they live on imgClassName, not className).
@@ -19,7 +19,7 @@ export function StatsProofDemo({
   className?: string
   content?: StatsProofDemoContent
 }) {
-  const { author, body, description, eyebrow, metrics, quote, role, title } = content
+  const { author, body, description, eyebrow, logoLabel, metrics, quote, role, title } = content
 
   return (
     <div aria-hidden="true" className={className}>
@@ -58,9 +58,11 @@ export function StatsProofDemo({
           </div>
 
           <figure className="rounded-panel border border-border/70 bg-background/85 p-6 sm:p-8">
-            <div className="mb-8 flex h-9 items-center">
-              <div className="font-medium tracking-title text-foreground">NORTHWIND</div>
-            </div>
+            {logoLabel ? (
+              <div className="mb-8 flex h-9 items-center">
+                <span className="font-medium tracking-title text-foreground">{logoLabel}</span>
+              </div>
+            ) : null}
             <blockquote className="text-pretty text-xl leading-8 text-foreground sm:text-2xl">
               {quote}
             </blockquote>

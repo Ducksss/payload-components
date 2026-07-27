@@ -43,6 +43,10 @@ signed values, counts, or abbreviated totals without formatting logic.
     author: { type: 'text', required: true, description: 'Name of the person quoted.' },
     role: { type: 'text', description: 'Optional role and company.' },
     logo: { type: 'upload', description: 'Optional customer logo from Media.' },
+    logoLabel: {
+      type: 'text',
+      description: 'Text wordmark used when no logo upload is set. Both empty renders no logo.',
+    },
   }}
 />
 

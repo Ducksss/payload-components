@@ -96,11 +96,15 @@ export type EmbedBasicDemoContent = {
   url: string
 }
 
+/* `logoLabel` mirrors the block's text-wordmark fallback for the customer logo
+   upload: the twin has no Media to render, so the label is the only logo the
+   preview can show. Omit it for an unbadged quote. */
 export type StatsProofDemoContent = {
   author: string
   body?: string
   description: string
   eyebrow?: string
+  logoLabel?: string
   metrics: { label: string; value: string }[]
   quote: string
   role?: string
@@ -427,6 +431,7 @@ export const statsProofDemoContent: StatsProofDemoContent = {
   description:
     'Acme turns analytics delivery into a repeatable product capability instead of a queue of custom requests.',
   eyebrow: 'Measured impact',
+  logoLabel: 'NORTHWIND',
   metrics: [
     { label: 'faster analytics launches', value: '56%' },
     { label: 'customer workspaces served', value: '+1,200' },
@@ -495,13 +500,18 @@ export type ContentFeatureDemo = {
    showcase, quote, community) renders from one demo-content shape: the shared
    eyebrow/title/paragraphs plus the optional media, features, CTA, quote, or
    avatars a given variant uses. Media uploads are backend-free on the
-   landing/docs previews, so the twins render presentational placeholders. */
+   landing/docs previews, so the twins render presentational placeholders.
+
+   `logoLabel` (content-quote only) mirrors the block's text-wordmark fallback
+   for the logo upload under the citation — the twin has no Media to render, so
+   the label is the only logo the preview can show. Omit it for a bare quote. */
 export type ContentSectionDemoContent = {
   avatars?: { name: string }[]
   citation?: string
   eyebrow?: string
   features?: ContentFeatureDemo[]
   links?: { link: DemoLinkData }[]
+  logoLabel?: string
   paragraphs: { text: string }[]
   quote?: string
   rows?: { description: string; title: string }[]
@@ -607,6 +617,7 @@ export const contentShowcaseDemoContent: ContentSectionDemoContent = {
 export const contentQuoteDemoContent: ContentSectionDemoContent = {
   citation: 'Jordan Rivera, CTO',
   eyebrow: 'In their words',
+  logoLabel: 'NORTHWIND',
   paragraphs: [
     {
       text: 'Acme is more than just the dashboard. It supports an entire ecosystem helping your team move faster.',

@@ -31,6 +31,17 @@ export const ContentQuote: Block = {
       name: 'logo',
       type: 'upload',
       relationTo: 'media',
+      admin: {
+        description: 'Small logo shown under the citation. Falls back to Logo label when empty.',
+      },
+    },
+    {
+      name: 'logoLabel',
+      type: 'text',
+      admin: {
+        description:
+          'Text wordmark used when no logo upload is set. Leave both empty for an unbadged quote.',
+      },
     },
   ],
   labels: {

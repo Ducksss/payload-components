@@ -351,8 +351,7 @@
 /* The quote section's media slot is an upload in production and a bg-muted
    placeholder in the twins. Rather than a flat grey plate, it is composed from
    the theme's own tokens into a ledger sheet: ruled rows, wide columns, and a
-   teal pool at the top edge. No raster asset, nothing to attribute — the
-   `w-full` guard keeps the small wordmark placeholder below it untouched. */
+   teal pool at the top edge. No raster asset, nothing to attribute. */
 [data-template-theme='fintech-trust'] [data-template-section='quote'] .w-full.bg-muted {
   background-color: var(--ll-ink-deep);
   background-image:
@@ -372,11 +371,6 @@
       var(--ll-rule) 3.25rem calc(3.25rem + 1px)
     );
   box-shadow: inset 0 0 0 1px var(--ll-rule);
-}
-
-/* Its citation wordmark placeholder becomes a teal-ruled block instead of grey. */
-[data-template-theme='fintech-trust'] [data-template-section='quote'] .w-20.bg-muted {
-  background-color: color-mix(in oklab, var(--ll-teal) 26%, transparent);
 }
 
 /* ---------------------------------------------------------------- */
