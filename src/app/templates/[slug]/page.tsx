@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 
 import { JsonLd } from '@/components/seo/JsonLd'
+import { RunnableCommand } from '@/components/site/RunnableCommand'
 import { Section, SectionHeading } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
@@ -25,6 +26,8 @@ import {
   getTemplateShowcase,
   templateDetailHref,
   templateShowcases,
+  templateStarterBlockSlug,
+  templateStarterInstallCommand,
   uniqueTemplateBlockSlugs,
 } from '@/lib/templates/registry'
 import {
@@ -37,7 +40,8 @@ import { breadcrumbNode, graph } from '@/lib/structured-data'
  * concept. Contract: canonical, one H1, concept status + disclosure impossible
  * to miss, exactly one iframe (TemplateDetailPreview), pages-included posters,
  * the ordered block recipe linking every chip to /docs/components/<slug>, the
- * visual-system summary, public contribution links, 404 on unknown slugs. */
+ * visual-system summary, one recipe-derived block install action, public
+ * contribution links, 404 on unknown slugs. */
 
 export function generateStaticParams() {
   return templateShowcases.map((template) => ({ slug: template.slug }))
@@ -76,6 +80,8 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
   if (!template) notFound()
 
   const blockCount = uniqueTemplateBlockSlugs(template).length
+  const starterBlockSlug = templateStarterBlockSlug(template)
+  const starterInstallCommand = templateStarterInstallCommand(template)
   const structuredData = graph(
     breadcrumbNode([
       { name: 'Home', path: '/' },
@@ -145,6 +151,27 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
               <p className="font-mono text-xs text-muted-foreground sm:ml-2">
                 {template.pages.length} pages · {blockCount} unique blocks
               </p>
+            </div>
+
+            <div className="mt-2 max-w-3xl rounded-card border border-border bg-background/90 p-4 shadow-card sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-5">
+              <div className="max-w-lg">
+                <p className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand">
+                  Try one real block
+                </p>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                  This installs only <code className="font-mono text-foreground">{starterBlockSlug}</code>,
+                  the first block in the Home recipe. The full-site concept remains a
+                  browsable reference.
+                </p>
+              </div>
+              <div className="mt-4 shrink-0 sm:mt-0">
+                <RunnableCommand
+                  command={starterInstallCommand}
+                  emphasis="primary"
+                  label={`Copy the ${starterBlockSlug} install command`}
+                  trackInstall
+                />
+              </div>
             </div>
           </div>
         </section>
