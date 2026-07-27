@@ -122,6 +122,7 @@ const homeImpact: StatsProofDemoContent = {
   ],
   quote:
     'Rivermouth publish the counts that make them look bad as readily as the ones that don’t. On this catchment, that is the whole basis for trust.',
+  logoLabel: 'NORTHWIND CATCHMENT',
   role: 'Chair, Northwind Catchment Partnership',
   title: 'Nine years of counts, published whole.',
 }
