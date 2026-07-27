@@ -99,6 +99,27 @@ action fields, plus the public `api_key` and a first-party pseudonymous
 Leaving `NEXT_PUBLIC_POSTHOG_KEY` unset disables PostHog capture for that
 deployment.
 
+The three signals above describe the events *this repo emits*. They are not the
+whole picture of what runs in a visitor's browser: `AnalyticsShell` also mounts
+Google Analytics 4 (`googletagmanager.com/gtag/js`) and Vercel Analytics plus
+Speed Insights. GA4 auto-collects its own page views and sets its own cookies,
+and both GA4 and PostHog are third-party processors. Keep this paragraph accurate
+if that stack changes — `tests/int/analytics-contract.int.spec.ts` pins the
+PostHog event payloads only and cannot catch an undisclosed provider.
+
+Every event this repo emits is skipped for visitors whose browser sends Global
+Privacy Control or Do Not Track (`privacySignalOptOut` in `src/lib/analytics.ts`),
+and no `pc_distinct_id` is minted or stored for them. PostHog capture is further
+limited to the production hostnames, so local dev and preview deploys never send.
+
+<Callout type="warn">
+  This is not a full consent gate. The GA4 script tag still loads on first paint
+  for every visitor, so GA4's own automatic page-view collection and cookies are
+  unaffected by the opt-out above. Closing that gap means deferring the third-party
+  mounts until opt-in and adding a privacy page — a deliberate change that
+  re-baselines the landing visual snapshots and must clear the axe gate.
+</Callout>
+
 Never add user-entered content, secrets, account identity, install state, or
 cross-site profiling. A future event must name one user action, use a
 low-cardinality event name, and keep every property either enumerated or derived
