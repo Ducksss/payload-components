@@ -1,19 +1,907 @@
-/* Rivermouth Trust (nonprofit-cause) scoped theme — FOUNDATION SKELETON.
+/* Rivermouth Trust (nonprofit-cause) scoped theme — the river survey direction.
  *
- * Convention (frozen contract): every rule in this file must live beneath the
- * [data-template-theme='nonprofit-cause'] root the shell renders. Override the
- * semantic variables the demo twins consume (--background, --foreground,
- * --card, --muted, --muted-foreground, --border, --primary, --brand, --radius,
- * ...) and add template-specific tokens as needed. Never touch :root, .dark,
- * another template's scope, or src/app/globals.css. The site stays
- * forced-light; intentional dark bands come from named tokens defined here.
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='nonprofit-cause'] root the shell renders. It overrides
+ * the semantic variables the demo twins consume and adds named Rivermouth
+ * tokens; it never touches :root, .dark, another template's scope, or
+ * src/app/globals.css. The site stays forced-light — the silt bands below are
+ * intentional dark surfaces built from named tokens, not a theme.
  *
- * Twins are calibrated for a white page and for uploads this site never ships,
- * so expect to repaint their bg-muted placeholder plates and any
- * bg-background/NN inner panels from your own tokens — see the sibling
- * concepts' themes for the established idioms. */
+ * Art direction, and how it stays distinct from its siblings:
+ *
+ *   Palette   oat paper, silt ink, one river-green accent. The tinted "muted"
+ *             band is a *shallow* — greener than the paper, not merely a deeper
+ *             sheet of it — and the dark band is silt, a green-black, not
+ *             espresso or warm ink.
+ *   Plates    the signature. Every backend-free upload placeholder is painted
+ *             as a STRATIFIED LANDSCAPE STILL: mist, a dark treeline, a bright
+ *             waterline, then water deepening toward the viewer, with a faint
+ *             ripple field over the water. Two custom properties (--rv-horizon,
+ *             --rv-shore) move the treeline and the waterline, so individual
+ *             sections can be given their own composition — three reaches, three
+ *             different horizons — from one rule. No raster assets anywhere.
+ *   Mounts    plates sit in near-square hairline mounts with a soft drop, like
+ *             photographs mounted on a survey card. Chrome and cards keep a
+ *             small radius, so the geometry is neither Fieldnote's pills nor
+ *             Northline's print-sharp zero.
+ *   Voice     no serif at all. Geist throughout, and the IMPACT NUMERALS carry
+ *             the display weight instead: tabular figures, tightened tracking,
+ *             and a two-pixel river rule over every metric. The numbers are the
+ *             trust's credibility, so they are treated as the display type.
+ *   Eyebrows  a river-green label sitting on a two-pixel water-level rule
+ *             rather than a pill, a folio mark, or a leading dash.
+ *   Actions   the filled action is river green, not ink: on this one site in the
+ *             gallery the primary verb is "give", and green reads as give.
+ *
+ * The twins arrive wrapped in the catalog's specimen frame (rounded-frame
+ * border bg-card/35); the rhythm rules below dissolve it so each section reads
+ * as a full-bleed band of one charity's site, separated by a hairline carrying a
+ * small centred gauge tick. */
 
 [data-template-theme='nonprofit-cause'] {
+  /* ————— Rivermouth palette ————— */
+  --rv-paper: oklch(96.4% 0.009 106deg);
+  /* The shallow: the tinted band. Greener than the paper it sits between. */
+  --rv-paper-deep: oklch(93.4% 0.015 122deg);
+  /* Raised paper: every inner card/panel resolves to this (see the
+     bg-background/NN remap), so panels lift on paper, on the shallow, AND on
+     the silt band, where --rv-linen is redefined. */
+  --rv-linen: oklch(99.1% 0.005 106deg);
+  /* Mount board behind the framed plate; flips to raised silt on dark bands. */
+  --rv-mat: oklch(92% 0.022 138deg);
+
+  --rv-silt: oklch(24% 0.023 152deg);
+  --rv-silt-band: oklch(20.5% 0.022 152deg);
+  --rv-silt-raised: oklch(26% 0.024 152deg);
+
+  /* The one accent. 6.5:1 on paper, 7.1:1 on raised linen, 5.6:1 on the
+     shallow — AA for the eyebrow labels, the metric rules, and the paper
+     label on the filled action. */
+  --rv-river: oklch(45.5% 0.09 168deg);
+  --rv-river-deep: oklch(35% 0.075 172deg);
+  /* River green cannot clear AA on silt; this is the green that survives it
+     (5.6:1 on the band) and it doubles as the sunlit water in the plates. */
+  --rv-river-soft: oklch(78% 0.085 165deg);
+  --rv-shallow: oklch(80% 0.055 158deg);
+  --rv-mist: oklch(91.5% 0.028 152deg);
+  --rv-reed: oklch(93% 0.02 140deg);
+
+  /* ————— Semantic variables the twins consume ————— */
+  --background: var(--rv-paper);
+  --foreground: var(--rv-silt);
+  --card: var(--rv-linen);
+  --card-foreground: var(--rv-silt);
+  --popover: var(--rv-linen);
+  --popover-foreground: var(--rv-silt);
+
+  --primary: var(--rv-river);
+  --primary-foreground: var(--rv-paper);
+  --secondary: oklch(92.5% 0.022 136deg);
+  --secondary-foreground: var(--rv-silt);
+  /* Kept deliberately pale: the landscape plates paint their own background,
+     so every incidental bg-muted (icon wells, slivers, tints) stays safe. */
+  --muted: var(--rv-reed);
+  /* 46.5%: green-grey muted text stays AA on all three light surfaces —
+     paper 6.1:1, shallow 5.6:1, raised linen 6.6:1. */
+  --muted-foreground: oklch(46.5% 0.019 148deg);
+  --accent: oklch(91% 0.026 150deg);
+  --accent-foreground: var(--rv-silt);
+
+  --brand: var(--rv-river);
+  --brand-foreground: var(--rv-paper);
+  --brand-50: oklch(97% 0.012 148deg);
+  --brand-100: var(--rv-mist);
+  --brand-200: var(--rv-shallow);
+  --brand-600: var(--rv-river-deep);
+
+  --border: oklch(87.5% 0.014 124deg);
+  --input: oklch(81% 0.02 130deg);
+  --ring: var(--rv-river);
+
+  /* Crisper than the catalog default and far from both siblings' extremes. */
+  --radius: 0.375rem;
+
+  /* Steadier display type than the catalog's tight product tracking, without
+     going as loose as a shop. Headlines should read spoken, not designed. */
+  --tracking-display: -0.032em;
+  --tracking-title: -0.024em;
+  --tracking-heading: -0.015em;
+  --text-4xl--line-height: 1.14;
+  --text-5xl--line-height: 1.07;
+
   background-color: var(--background);
   color: var(--foreground);
+}
+
+[data-template-theme='nonprofit-cause'] ::selection {
+  background-color: color-mix(in oklab, var(--rv-river) 22%, transparent);
+}
+
+/* ---------------------------------------------------------------- */
+/* Section rhythm: dissolve the catalog specimen frame into           */
+/* full-bleed bands. The twin structure is contract-tested:           */
+/* [data-template-section] > [aria-hidden] > frame div.               */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='nonprofit-cause'] [data-template-section] > [aria-hidden='true'] > div {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding-block: clamp(3.5rem, 7.5vw, 6rem);
+}
+
+/* Two sections on the same paper are divided by a hairline carrying one small
+   centred gauge tick — the mark painted on a river staff gauge. It is the whole
+   divider vocabulary of this concept; tonal bands do the rest. */
+[data-template-theme='nonprofit-cause']
+  [data-template-section][data-tone='base']
+  + [data-template-section][data-tone='base'] {
+  border-top: 1px solid var(--border);
+}
+
+[data-template-theme='nonprofit-cause']
+  [data-template-section][data-tone='base']
+  + [data-template-section][data-tone='base']::before {
+  background-color: color-mix(in oklab, var(--rv-river) 80%, transparent);
+  content: '';
+  display: block;
+  height: 2px;
+  margin-block-start: -1px;
+  margin-inline: auto;
+  width: 2.5rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Surfaces: raised paper for every inner card/panel                  */
+/* ---------------------------------------------------------------- */
+
+/* The twins paint inner cards with bg-background/85|70|60, which would dissolve
+   into the paper — and vanish entirely on the shallow and silt bands. Remapping
+   them to raised linen gives one consistent two-step surface story (paper →
+   raised paper) that holds on every band. */
+[data-template-theme='nonprofit-cause']
+  [data-template-canvas]
+  :is(.bg-background\/85, .bg-background\/70, .bg-background\/60) {
+  background-color: var(--rv-linen);
+}
+
+/* ---------------------------------------------------------------- */
+/* The stratified landscape plates                                   */
+/* ---------------------------------------------------------------- */
+
+/* Composition parameters. --rv-horizon is where the far bank starts,
+   --rv-shore is the waterline; both are percentages of the plate's height, so
+   the same still composes correctly at 16/7, 4/3, and 16/9. Sections override
+   them to get their own view of the river. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] {
+  --rv-horizon: 27%;
+  --rv-shore: 39%;
+}
+
+/* Seven layers, front to back. The two hard-edged wedges are what turn a stack
+   of horizontal gradients into a photograph: they read as the near banks in
+   shade, converging upward, so the water between them narrows toward the
+   treeline like a river running away from the camera. Everything else is
+   atmosphere — a glitter path where the light lands, a reflection bloom under
+   the far bank, a ripple field over the water only, a tiled crown line that
+   gives the far bank a ragged edge instead of a ruled one, and the stratified
+   landscape underneath.
+   The wedges are deliberately asymmetric (the left bank is nearer and darker).
+   The first selector catches every aspect-ratio upload placeholder; the second
+   is the hero's full-bleed letterbox plate, which carries no w-full. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] .w-full.bg-muted:not(.h-full),
+[data-template-theme='nonprofit-cause']
+  [data-template-section='catchment']
+  .absolute.inset-0.bg-muted {
+  background-color: var(--rv-river-deep);
+  background-image:
+    linear-gradient(
+      to top right,
+      color-mix(in oklab, var(--rv-silt) 94%, var(--rv-river-deep)) 0,
+      color-mix(in oklab, var(--rv-silt) 94%, var(--rv-river-deep)) 20%,
+      transparent 23.5%
+    ),
+    linear-gradient(
+      to top left,
+      color-mix(in oklab, var(--rv-silt) 84%, var(--rv-river-deep)) 0,
+      color-mix(in oklab, var(--rv-silt) 84%, var(--rv-river-deep)) 17%,
+      transparent 21%
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 6px,
+      color-mix(in oklab, var(--rv-mist) 7%, transparent) 6px 7px
+    ),
+    radial-gradient(
+      15% 44% at 64% 100%,
+      color-mix(in oklab, var(--rv-mist) 10%, transparent),
+      transparent 76%
+    ),
+    radial-gradient(
+      46% 13% at 41% calc(var(--rv-shore) + 5%),
+      color-mix(in oklab, var(--rv-mist) 40%, transparent),
+      transparent 76%
+    ),
+    radial-gradient(
+      68% 46% at 86% 4%,
+      color-mix(in oklab, var(--rv-linen) 62%, transparent),
+      transparent 72%
+    ),
+    radial-gradient(
+      closest-side at 50% 100%,
+      color-mix(in oklab, var(--rv-river-deep) 62%, var(--rv-silt)) 94%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--rv-mist) 58%, var(--rv-linen)) 0%,
+      color-mix(in oklab, var(--rv-mist) 88%, transparent) calc(var(--rv-horizon) - 5%),
+      color-mix(in oklab, var(--rv-river) 40%, var(--rv-mist)) var(--rv-horizon),
+      color-mix(in oklab, var(--rv-river-deep) 76%, var(--rv-silt)) calc(var(--rv-horizon) + 5%),
+      color-mix(in oklab, var(--rv-silt) 60%, var(--rv-river-deep)) var(--rv-shore),
+      color-mix(in oklab, var(--rv-river) 62%, var(--rv-silt)) calc(var(--rv-shore) + 8%),
+      color-mix(in oklab, var(--rv-river-deep) 82%, var(--rv-silt)) 62%,
+      color-mix(in oklab, var(--rv-silt) 84%, var(--rv-river-deep)) 100%
+    );
+  background-position:
+    left bottom,
+    right bottom,
+    bottom,
+    bottom,
+    center top,
+    center top,
+    center calc(var(--rv-horizon) - 0.55rem),
+    center top;
+  background-repeat:
+    no-repeat,
+    no-repeat,
+    no-repeat,
+    no-repeat,
+    no-repeat,
+    no-repeat,
+    repeat-x,
+    no-repeat;
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 32%,
+    100% 46%,
+    100% 100%,
+    100% 100%,
+    2.75rem 1.35rem,
+    100% 100%;
+}
+
+/* Three reaches, three views. The projects rows are siblings in one flex
+   column, so each row gets its own horizon and waterline — the same river,
+   photographed from three different banks. */
+[data-template-theme='nonprofit-cause']
+  [data-template-section='projects']
+  .flex-col
+  > div:nth-child(2) {
+  --rv-horizon: 34%;
+  --rv-shore: 45%;
+}
+
+[data-template-theme='nonprofit-cause']
+  [data-template-section='projects']
+  .flex-col
+  > div:nth-child(3) {
+  --rv-horizon: 21%;
+  --rv-shore: 31%;
+}
+
+/* The estuary: a wide, low view of the tide reach on the home page. */
+[data-template-theme='nonprofit-cause'] [data-template-section='place'] {
+  --rv-horizon: 25%;
+  --rv-shore: 34%;
+}
+
+/* Portrait plates (team roster and the volunteer wall) are 56–80px circles — a
+   landscape reads as noise at that size, so they take a flat studio crop
+   instead: a pale sky, one shoulder line low in the frame, and a soft head mass
+   against it. Kept deliberately matte; a radial highlight turns a 20px circle
+   into a glass bead. The three custom properties let individual sitters be
+   moved and re-toned below, so a row of fourteen volunteers does not read as one
+   portrait stamped fourteen times. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] .h-full.w-full.bg-muted {
+  --rv-head-x: 50%;
+  --rv-head-y: 34%;
+  --rv-head-tone: 34%;
+
+  background-color: color-mix(in oklab, var(--rv-mist) 78%, var(--rv-linen));
+  background-image:
+    radial-gradient(
+      42% 34% at var(--rv-head-x) var(--rv-head-y),
+      color-mix(in oklab, var(--rv-river) var(--rv-head-tone), transparent),
+      transparent 72%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 62%,
+      color-mix(in oklab, var(--rv-river) 52%, transparent) 68%,
+      color-mix(in oklab, var(--rv-river-deep) 58%, transparent) 100%
+    );
+}
+
+/* Two alternate sitters, cycled across both walls. The properties are set on the
+   circle's own wrapper and inherit down to the plate. */
+[data-template-theme='nonprofit-cause'] [data-template-section='people'] .grid > div:nth-child(3n + 2),
+[data-template-theme='nonprofit-cause']
+  [data-template-section='community']
+  .flex-wrap
+  > div:nth-child(3n + 2) {
+  --rv-head-x: 43%;
+  --rv-head-y: 30%;
+  --rv-head-tone: 48%;
+}
+
+[data-template-theme='nonprofit-cause'] [data-template-section='people'] .grid > div:nth-child(3n),
+[data-template-theme='nonprofit-cause']
+  [data-template-section='community']
+  .flex-wrap
+  > div:nth-child(3n) {
+  --rv-head-x: 57%;
+  --rv-head-y: 37%;
+  --rv-head-tone: 24%;
+}
+
+/* content-image-frame mounts a plate inside a plate. The outer one steps back
+   to a flat mount board so the pair reads as a framed print rather than two
+   competing stills. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] .rounded-panel.bg-muted {
+  background-color: var(--rv-mat);
+  background-image: none;
+  border-radius: 0.125rem;
+}
+
+/* The fake wordmark sliver under the content-quote citation is 24px tall — the
+   landscape reads as dirt at that size, so it stays a flat bar mixed from
+   --muted-foreground, which flips with the band it lands on. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] .h-6.bg-muted {
+  background-color: color-mix(in oklab, var(--muted-foreground) 62%, transparent);
+  background-image: none;
+}
+
+/* The feature-cards illustration is a four-block still mixed from
+   --accent/--primary/--muted alphas. Left alone it reads as four pale swatches;
+   given a gradient each it becomes a contact sheet from one reach — a water
+   crop, a sky crop, a treeline crop, and a gravel bank with the grain showing.
+   The card's own white padding is the sheet. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] .bg-accent\/30 {
+  background-color: color-mix(in oklab, var(--rv-river) 40%, var(--rv-mist));
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--rv-mist) 78%, transparent),
+    color-mix(in oklab, var(--rv-river) 34%, transparent) 46%,
+    color-mix(in oklab, var(--rv-river-deep) 66%, transparent)
+  );
+}
+
+[data-template-theme='nonprofit-cause'] [data-template-canvas] .rounded-inset.bg-muted {
+  background-color: color-mix(in oklab, var(--rv-mist) 68%, var(--rv-linen));
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--rv-linen) 88%, transparent),
+    color-mix(in oklab, var(--rv-mist) 92%, transparent)
+  );
+}
+
+[data-template-theme='nonprofit-cause'] [data-template-canvas] .bg-primary\/15 {
+  background-color: color-mix(in oklab, var(--rv-river-deep) 86%, var(--rv-silt));
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--rv-river) 62%, transparent),
+    color-mix(in oklab, var(--rv-silt) 88%, transparent)
+  );
+}
+
+[data-template-theme='nonprofit-cause'] [data-template-canvas] .bg-muted\/70 {
+  background-color: color-mix(in oklab, var(--rv-paper-deep) 66%, var(--rv-shallow));
+  background-image:
+    repeating-linear-gradient(
+      56deg,
+      transparent 0 3px,
+      color-mix(in oklab, var(--rv-silt) 9%, transparent) 3px 4px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--rv-paper-deep) 88%, transparent),
+      color-mix(in oklab, var(--rv-shallow) 72%, transparent)
+    );
+}
+
+/* The icon well beside each of those cards' titles is a 40px bg-muted circle;
+   it keeps a pale reed tint and a river hairline rather than a landscape. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] .size-10.bg-muted {
+  background-color: var(--brand-50);
+  border-color: color-mix(in oklab, var(--rv-river) 34%, transparent);
+}
+
+/* ---------------------------------------------------------------- */
+/* Mounts: square hairline frames with a soft drop                    */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='nonprofit-cause']
+  [data-template-canvas]
+  :is(.overflow-hidden.rounded-panel.border, .overflow-hidden.rounded-card.border) {
+  border-color: color-mix(in oklab, var(--rv-silt) 24%, transparent);
+  border-radius: 0.125rem;
+  box-shadow: 0 18px 34px -30px color-mix(in oklab, var(--rv-silt) 60%, transparent);
+}
+
+/* The inner leaf of the framed plate keeps the same near-square geometry, and
+   the catalog's screen-chrome drop shadow softens to a river-water bloom. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] .rounded-inset.shadow-xl {
+  border-radius: 0.125rem;
+  box-shadow: 0 26px 48px -36px color-mix(in oklab, var(--rv-silt) 70%, transparent);
+}
+
+/* ---------------------------------------------------------------- */
+/* Eyebrows: a label on a water-level rule                            */
+/* ---------------------------------------------------------------- */
+
+/* Every twin eyebrow is a Badge with `rounded-full … uppercase
+   tracking-eyebrow`; the hero proof chips share rounded-full but never
+   tracking-eyebrow, so this selects eyebrows only. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] .rounded-full.tracking-eyebrow {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 2px solid color-mix(in oklab, var(--brand) 58%, transparent);
+  border-radius: 0;
+  color: var(--brand);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  padding: 0 0 0.4rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Numerals as the display type                                      */
+/* ---------------------------------------------------------------- */
+
+/* stats-proof metrics: a two-pixel river rule over every figure, and tabular
+   tightened numerals so a column of counts aligns like a survey sheet. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] dl.grid > div.border-t {
+  border-top-color: color-mix(in oklab, var(--brand) 72%, transparent);
+  border-top-width: 2px;
+}
+
+[data-template-theme='nonprofit-cause'] [data-template-canvas] dd.tracking-display {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.05em;
+  line-height: 1.02;
+}
+
+/* content-stats closes on an arrow list of figures; the value takes the deep
+   river ink (which flips to the soft river on silt bands) and tabular figures,
+   so the list reads as a gauge record rather than a bullet list. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] ul.border-t {
+  border-top-color: color-mix(in oklab, var(--brand) 46%, transparent);
+}
+
+[data-template-theme='nonprofit-cause'] [data-template-canvas] ul.border-t li span.font-medium {
+  color: var(--brand-600);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.015em;
+}
+
+/* The stats-proof twin ships a static partner wordmark; at label size and wide
+   tracking it reads as the partnership's lockup rather than a heading. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] .h-9 .tracking-title {
+  color: color-mix(in oklab, var(--brand) 94%, transparent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+}
+
+/* Pulled quotes hang off a river rule instead of a grey one. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] blockquote.border-l-2 {
+  border-left-color: color-mix(in oklab, var(--brand) 66%, transparent);
+}
+
+/* ---------------------------------------------------------------- */
+/* Actions                                                           */
+/* ---------------------------------------------------------------- */
+
+/* DemoLink and the contact form's submit label are the only h-10 rounded-md
+   spans in the twins (the form fields with the same metrics are divs), so this
+   is contained to real actions. */
+[data-template-theme='nonprofit-cause'] [data-template-canvas] span.h-10.rounded-md {
+  border-radius: 0.25rem;
+  padding-inline: 1.375rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Tone bands — `tone` is declared per section in the definition      */
+/* ---------------------------------------------------------------- */
+
+/* muted: the shallow. A greener sheet than the paper, edged with hairlines
+   rather than a border so the band never shifts layout. */
+[data-template-theme='nonprofit-cause'] [data-template-section][data-tone='muted'] {
+  --border: oklch(85% 0.018 124deg);
+  --rv-mat: oklch(90% 0.026 138deg);
+
+  background-color: var(--rv-paper-deep);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    inset 0 -1px 0 var(--border);
+}
+
+/* The partner marquee mixes its edge fades from --card; on a band those fades
+   must dissolve into the shallow instead of printing linen columns. The marquee
+   is the only --card consumer in that strip, so the remap stays contained. */
+[data-template-theme='nonprofit-cause']
+  [data-template-section='partners'][data-tone='muted'] {
+  --card: var(--rv-paper-deep);
+}
+
+/* The partner strip is one drifting line of marks — it wants the proportions of
+   a gauge rail beneath the letterbox, not a full section band. */
+[data-template-theme='nonprofit-cause']
+  [data-template-section='partners']
+  > [aria-hidden='true']
+  > div {
+  padding-block: 1rem;
+}
+
+/* The marquee's edge fades are calibrated to hide a logo entering the viewport;
+   at 5rem on a rail this narrow they eat the first mark outright. Narrowed to a
+   soft feather that reads as depth without swallowing a whole wordmark. */
+[data-template-theme='nonprofit-cause']
+  [data-template-section='partners']
+  :is(.bg-gradient-to-r, .bg-gradient-to-l).w-20 {
+  width: 2.25rem;
+}
+
+/* contrast: a full-bleed silt band. Every semantic variable is remapped so the
+   twins' paper-first markup (bg-background/NN panels, text-muted-foreground,
+   border-border, bg-primary actions) resolves to an AA-safe dark surface, and
+   the accent steps up to the river green that survives silt. */
+[data-template-theme='nonprofit-cause'] [data-template-section][data-tone='contrast'] {
+  --rv-linen: var(--rv-silt-raised);
+  /* The mount board has to sit clearly above the band or the framed print looks
+     like a hole cut in the page rather than a photograph on a wall. */
+  --rv-mat: oklch(31% 0.028 154deg);
+
+  --background: var(--rv-silt-band);
+  --foreground: oklch(95.5% 0.012 106deg);
+  --card: var(--rv-silt-raised);
+  --card-foreground: oklch(95.5% 0.012 106deg);
+  --popover: var(--rv-silt-raised);
+  --primary: var(--rv-river-soft);
+  --primary-foreground: var(--rv-silt);
+  --secondary: oklch(29% 0.026 154deg);
+  --secondary-foreground: oklch(95.5% 0.012 106deg);
+  --muted: oklch(30% 0.026 154deg);
+  --muted-foreground: oklch(79% 0.024 150deg);
+  --accent: oklch(32% 0.028 154deg);
+  --accent-foreground: oklch(95.5% 0.012 106deg);
+  --brand: var(--rv-river-soft);
+  --brand-50: oklch(30% 0.03 158deg);
+  --brand-600: var(--rv-river-soft);
+  --border: oklch(100% 0 0deg / 15%);
+  --input: oklch(100% 0 0deg / 26%);
+  --ring: var(--rv-river-soft);
+
+  background-color: var(--rv-silt-band);
+  color: var(--foreground);
+}
+
+/* On silt the plate is the same photograph taken at dusk: the same converging
+   banks and crown line, with the mist cooled to a cold sky and the light pulled
+   back to one lit stretch of water, so the still never flattens to a rectangle
+   of green-black. */
+[data-template-theme='nonprofit-cause'] [data-tone='contrast'] .w-full.bg-muted:not(.h-full) {
+  background-color: var(--rv-silt-band);
+  background-image:
+    linear-gradient(
+      to top right,
+      oklch(13% 0.016 152deg) 0,
+      oklch(13% 0.016 152deg) 21%,
+      transparent 24%
+    ),
+    linear-gradient(
+      to top left,
+      oklch(15.5% 0.018 152deg) 0,
+      oklch(15.5% 0.018 152deg) 15%,
+      transparent 18.5%
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 6px,
+      color-mix(in oklab, var(--rv-river-soft) 10%, transparent) 6px 7px
+    ),
+    radial-gradient(
+      14% 44% at 64% 100%,
+      color-mix(in oklab, var(--rv-river-soft) 13%, transparent),
+      transparent 76%
+    ),
+    radial-gradient(
+      44% 12% at 41% calc(var(--rv-shore) + 5%),
+      color-mix(in oklab, var(--rv-river-soft) 40%, transparent),
+      transparent 76%
+    ),
+    radial-gradient(
+      closest-side at 50% 100%,
+      oklch(14% 0.016 152deg) 94%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--rv-mist) 44%, var(--rv-silt)) 0%,
+      color-mix(in oklab, var(--rv-river-soft) 30%, var(--rv-silt)) calc(var(--rv-horizon) - 5%),
+      color-mix(in oklab, var(--rv-silt-band) 90%, transparent) calc(var(--rv-horizon) + 4%),
+      color-mix(in oklab, var(--rv-silt-band) 96%, transparent) var(--rv-shore),
+      color-mix(in oklab, var(--rv-river-soft) 52%, var(--rv-silt)) calc(var(--rv-shore) + 8%),
+      color-mix(in oklab, var(--rv-river-deep) 62%, var(--rv-silt)) 62%,
+      color-mix(in oklab, var(--rv-silt-band) 94%, transparent) 100%
+    );
+  background-position:
+    left bottom,
+    right bottom,
+    bottom,
+    center top,
+    center top,
+    center calc(var(--rv-horizon) - 0.55rem),
+    center top;
+  background-repeat:
+    no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat-x, no-repeat;
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% calc(100% - var(--rv-shore)),
+    100% 100%,
+    100% 100%,
+    2.75rem 1.35rem,
+    100% 100%;
+}
+
+/* On silt the volunteer wall is lit from the same dusk as the plates, or a row
+   of fourteen pale circles reads as beads scattered on the band. */
+[data-template-theme='nonprofit-cause'] [data-tone='contrast'] .h-full.w-full.bg-muted {
+  background-color: color-mix(in oklab, var(--rv-mist) 30%, var(--rv-silt));
+}
+
+/* Mount hairlines have to lighten on silt or the frames disappear. */
+[data-template-theme='nonprofit-cause']
+  [data-tone='contrast']
+  :is(.overflow-hidden.rounded-panel.border, .overflow-hidden.rounded-card.border) {
+  border-color: color-mix(in oklab, var(--rv-river-soft) 26%, transparent);
+  box-shadow: none;
+}
+
+[data-template-theme='nonprofit-cause'] [data-tone='contrast'] .rounded-inset.shadow-xl {
+  box-shadow: 0 30px 60px -40px oklch(0% 0 0deg / 55%);
+}
+
+/* ---------------------------------------------------------------- */
+/* The letterbox (home hero-video)                                   */
+/* ---------------------------------------------------------------- */
+
+/* The home page opens on the river rather than on a sentence: hero-video's
+   plate, run full-bleed as its own band. The twin composes that plate under a
+   veil calibrated for a photograph — with no photograph the veil at a flat 70%
+   erases the whole still, so it is replaced below by a vertical scrim that
+   leaves the mist luminous and lands the type on deep water. Selected on the
+   frame's own bg-foreground, which only hero-video carries. */
+[data-template-theme='nonprofit-cause']
+  [data-template-section='catchment']
+  > [aria-hidden='true']
+  > .bg-foreground {
+  /* The plate IS the band — paper padding would print a margin around it. */
+  padding-block: 0;
+
+  /* A high treeline and a long stretch of water: the type block sits in the
+     bottom half of the letterbox, so everything below the shore has to darken
+     steadily rather than crossing a bank edge behind the headline. */
+  --rv-horizon: 20%;
+  --rv-shore: 29%;
+
+  /* The twin rakes a bg-gradient-to-br from-muted via-accent/30 to-muted sheet
+     over the plate. Remapping those two variables turns it from a grey wash
+     into a diagonal haze coming off the water. */
+  --muted: transparent;
+  --accent: var(--rv-mist);
+
+  /* On the plate the filled action inverts to the river green that survives
+     silt, and the ghost rule below carries the secondary. */
+  --primary: var(--rv-river-soft);
+  --primary-foreground: var(--rv-silt);
+}
+
+/* The scrim replaces the twin's flat photograph veil with two layers, and the
+   important one is BOTTOM-ANCHORED in rem rather than percentages. The type
+   block is anchored to the foot of the letterbox and grows as the viewport
+   narrows — at 390 it is nearly the whole plate — so a percentage scrim leaves
+   the eyebrow stranded on bright mist at exactly the width where the block is
+   tallest. A fixed 34rem wedge rising from the bottom always covers the type,
+   whatever the plate's height, while the second layer keeps the sky luminous for
+   the top quarter.
+
+   Sampled against the actually painted pixels behind each glyph row — axe scores
+   a gradient background as "incomplete", so it cannot be trusted here — this
+   plus the mobile crop below lands every run past AA at 1280, 768 and 390: the
+   headline 7.0–8.6:1, the paragraph 11.5–12.8:1, the proof chips ~14:1, and the
+   11px eyebrow (the only run with no large-text allowance, and the one that
+   measured 3.4:1 before this scrim existed) 4.6–8.2:1. */
+[data-template-theme='nonprofit-cause']
+  [data-template-section='catchment']
+  .bg-foreground\/70 {
+  background-color: transparent;
+  background-image:
+    linear-gradient(
+      to top,
+      color-mix(in oklab, var(--rv-silt) 86%, transparent) 0%,
+      color-mix(in oklab, var(--rv-silt) 78%, transparent) 34%,
+      color-mix(in oklab, var(--rv-silt) 64%, transparent) 66%,
+      color-mix(in oklab, var(--rv-silt) 44%, transparent) 88%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 22%,
+      color-mix(in oklab, var(--rv-silt) 26%, transparent) 52%,
+      color-mix(in oklab, var(--rv-silt) 38%, transparent) 100%
+    );
+  background-position: bottom, top;
+  background-repeat: no-repeat, no-repeat;
+  /* max() so the wedge is a fixed 34rem while the plate is at its letterbox
+     proportions, and grows to cover 84% of it once the type block reflows tall
+     at narrow widths — the plate grows with the block, and a fixed wedge would
+     leave the eyebrow and the headline stranded on bright mist at 390. */
+  background-size: 100% max(34rem, 84%), 100% 100%;
+}
+
+/* At phone widths the type block reflows tall enough to fill the entire
+   letterbox: measured at 390 the eyebrow lands 6% down the plate, on the
+   brightest mist, with no sky above it at all. Adding a deep top inset turns the
+   letterbox into a portrait still for narrow viewports — river across the top
+   third, type in the lower two — which restores both the composition and the
+   contrast the desktop plate has by default. */
+@media (max-width: 767px) {
+  [data-template-theme='nonprofit-cause']
+    [data-template-section='catchment']
+    > [aria-hidden='true']
+    > .bg-foreground
+    > .relative {
+    padding-top: 11rem;
+  }
+
+  /* And the still crops right in: on a phone the letterbox becomes a deep-water
+     crop with the far bank and its reflection pushed into the top tenth, so the
+     type sits on water the whole way down. The eyebrow is 11px — the one run
+     with no large-text allowance — and it measured 3.3:1 while the reflection
+     bloom sat directly behind it. */
+  [data-template-theme='nonprofit-cause']
+    [data-template-section='catchment']
+    > [aria-hidden='true']
+    > .bg-foreground {
+    --rv-horizon: 6%;
+    --rv-shore: 11%;
+  }
+}
+
+/* Neither river green nor the soft river that survives silt clears AA against
+   lit water at 11px, so the letterbox eyebrow is mixed most of the way to paper
+   — a mist green rather than a river green — and its water-level rule with it. */
+[data-template-theme='nonprofit-cause']
+  [data-template-section='catchment']
+  .rounded-full.tracking-eyebrow {
+  border-bottom-color: color-mix(in oklab, var(--rv-river-soft) 58%, transparent);
+  color: color-mix(in oklab, var(--rv-river-soft) 32%, var(--rv-paper));
+}
+
+/* The secondary action becomes a paper ghost rule; two solid buttons on a
+   photograph read as a form, not an invitation. */
+[data-template-theme='nonprofit-cause']
+  [data-template-section='catchment']
+  span.h-10.rounded-md.bg-background {
+  background-color: transparent;
+  border-color: color-mix(in oklab, var(--rv-paper) 55%, transparent);
+  color: var(--rv-paper);
+}
+
+/* ---------------------------------------------------------------- */
+/* Inner-page headers (hero-basic)                                   */
+/* ---------------------------------------------------------------- */
+
+/* River light from the top left over a shallow wash — the letterbox's weather,
+   dialled right back so the inner pages open calmly. */
+[data-template-theme='nonprofit-cause'] [data-template-section='hero'] {
+  background-image:
+    radial-gradient(
+      58rem 26rem at 12% -7rem,
+      color-mix(in oklab, var(--rv-river) 10%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--rv-paper-deep) 70%, transparent),
+      transparent 72%
+    );
+}
+
+[data-template-theme='nonprofit-cause']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(3.25rem, 7vw, 5.5rem);
+}
+
+/* The inner heroes' proof chips become square field tags — the same near-square
+   geometry as the photographic mounts, so a fact reads as a label on a survey
+   card rather than a marketing pill. */
+[data-template-theme='nonprofit-cause']
+  [data-template-section='hero']
+  .rounded-full.text-sm {
+  background-color: transparent;
+  border: 1px solid color-mix(in oklab, var(--rv-river) 34%, transparent);
+  border-radius: 0.125rem;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+/* ---------------------------------------------------------------- */
+/* Shell chrome                                                      */
+/* ---------------------------------------------------------------- */
+
+/* The gauge band above the header: the reading strip on a river staff gauge.
+   Light and tinted rather than a dark notice bar, with river ticks. */
+[data-template-theme='nonprofit-cause'] .rivermouth-gauge {
+  background-color: var(--rv-paper-deep);
+  box-shadow: inset 0 -1px 0 var(--border);
+  color: var(--muted-foreground);
+}
+
+[data-template-theme='nonprofit-cause'] .rivermouth-header {
+  background-color: var(--rv-paper);
+}
+
+/* Opacity-only veil: it brings the river hairline and a shelf shadow once the
+   page starts moving. The header surface beneath is already opaque, so nothing
+   composites the filled action toward the paper mid-transition. */
+[data-template-theme='nonprofit-cause'] [data-rivermouth-veil] {
+  box-shadow:
+    inset 0 -1px 0 color-mix(in oklab, var(--rv-river) 42%, transparent),
+    0 14px 30px -26px color-mix(in oklab, var(--rv-silt) 45%, transparent);
+}
+
+/* The staff-gauge mark: a paper post with river tick marks and a water line. */
+[data-template-theme='nonprofit-cause'] .rivermouth-mark {
+  background-color: var(--rv-linen);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--rv-river) 40%, transparent);
+}
+
+[data-template-theme='nonprofit-cause'] .rivermouth-footer {
+  background-color: var(--rv-paper-deep);
+  border-top: 1px solid var(--border);
+}
+
+/* The closing rail is the one piece of silt in the chrome, so the wordmark and
+   the fiction disclosure sign off on the same surface as the impact bands. */
+[data-template-theme='nonprofit-cause'] .rivermouth-rail {
+  background-color: var(--rv-silt-band);
+  color: oklch(80% 0.024 150deg);
+}
+
+[data-template-theme='nonprofit-cause'] .rivermouth-rail-mark {
+  color: var(--rv-river-soft);
+}
+
+/* Reduced-motion net for the shell's own choreography (the gauge band, the
+   header settle, the mark's water line, the active-page rule): final frame,
+   instantly, even before hydration — the same guarantee template-motion.css
+   gives the section reveals, so Playwright captures and the poster tool always
+   record a complete frame. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='nonprofit-cause'] [data-rivermouth-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-template-theme='nonprofit-cause'] [data-rivermouth-veil] {
+    transition-duration: 0.001s !important;
+  }
 }
