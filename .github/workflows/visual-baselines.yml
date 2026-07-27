@@ -16,6 +16,17 @@ on:
         required: false
         default: 'components-visual'
         type: string
+      update:
+        # 'changed' (Playwright's own preset for a bare --update-snapshots) only
+        # rewrites baselines whose diff exceeded maxDiffPixelRatio, so an
+        # intended change that lands under the tolerance leaves a stale
+        # baseline behind. Use 'all' when a change is deliberately visual and
+        # the committed images must show it.
+        description: 'Which baselines to rewrite'
+        required: false
+        default: 'changed'
+        type: choice
+        options: ['changed', 'all']
 
 env:
   NEXT_TELEMETRY_DISABLED: '1'
@@ -46,7 +57,7 @@ jobs:
       - run: pnpm source:build
 
       - name: Update visual baselines
-        run: pnpm test:e2e ${{ inputs.spec }} --update-snapshots
+        run: pnpm test:e2e ${{ inputs.spec }} --update-snapshots=${{ inputs.update }}
 
       - name: Open PR with minted baselines
         env:
