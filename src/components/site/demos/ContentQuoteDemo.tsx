@@ -6,7 +6,8 @@ import { contentQuoteDemoContent, type ContentSectionDemoContent } from '@/lib/d
  * source, in source order. Deliberate substitutions — nothing else may diverge:
  *   <section className={cn('container', …)}> → <div> root (no landmark)
  *   <h2>                                     → <div> (the catalog owns its outline)
- *   <Media> upload                           → presentational placeholder (no DB on the landing)
+ *   <Media> image upload                     → presentational placeholder (no DB on the landing)
+ *   <Media> citation logo                    → the block's own logoLabel branch
  *   ContentQuoteBlockData                    → ContentSectionDemoContent (@/payload-types is consumer-only)
  *   cn() inner-grid wrapper                  → plain grid div (skipped by the class-mirror guard)
  * <blockquote>/<cite> are non-focusable, non-heading elements — kept real.
@@ -20,7 +21,7 @@ export function ContentQuoteDemo({
   className?: string
   content?: ContentSectionDemoContent
 }) {
-  const { citation, eyebrow, paragraphs, quote, title } = content
+  const { citation, eyebrow, logoLabel, paragraphs, quote, title } = content
 
   return (
     <div aria-hidden="true" className={className}>
@@ -52,7 +53,9 @@ export function ContentQuoteDemo({
               <p className="text-base leading-7 text-foreground">{quote}</p>
               <div className="mt-4 flex flex-col gap-3">
                 <cite className="text-sm font-medium not-italic text-foreground">{citation}</cite>
-                <div className="h-6 w-20 bg-muted opacity-70" />
+                {logoLabel ? (
+                  <span className="text-sm font-medium text-muted-foreground">{logoLabel}</span>
+                ) : null}
               </div>
             </blockquote>
           </div>

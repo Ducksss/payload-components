@@ -75,6 +75,7 @@ const homeProof: StatsProofDemoContent = {
   description:
     'Every session ships something real — a migration, a rendering budget, a design system that survived a reorg — and the speaker stays in the room afterwards to answer for it.',
   eyebrow: 'Seven editions',
+  logoLabel: 'NORTHWIND',
   metrics: [
     { label: 'Attendees across seven editions', value: '11,600' },
     { label: 'Sessions that published their source', value: '94%' },
@@ -270,6 +271,7 @@ const speakersLineup: TeamSectionDemoContent = {
   title: 'The rooms, and who is in them.',
 }
 
+/* No logoLabel — the section's whole argument is "No names. No logos." */
 const speakersQuote: ContentSectionDemoContent = {
   citation: 'Amara Diallo, programme chair',
   eyebrow: 'Blind review',
@@ -916,7 +918,7 @@ export const eventConferenceTemplate: TemplateShowcase = {
       title: 'Frameworks ’26 — Tickets',
     },
   ],
-  revision: 2,
+  revision: 3,
   schemaVersion: 1,
   slug: 'event-conference',
   status: 'concept',

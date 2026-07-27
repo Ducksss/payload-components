@@ -30,8 +30,8 @@ icon: Quote
 ## Content model
 
 The `eyebrow`, `title`, and `paragraphs` fields come from the shared Content family base
-(`src/blocks/shared/contentFields.ts`); the `image` upload, `quote`, `citation`, and `logo` are
-specific to this variant.
+(`src/blocks/shared/contentFields.ts`); the `image` upload, `quote`, `citation`, `logo`, and
+`logoLabel` are specific to this variant.
 
 <TypeTable
   type={{
@@ -45,6 +45,10 @@ specific to this variant.
     quote: { type: 'textarea', required: true, description: 'The pull-quote text.' },
     citation: { type: 'text', required: true, description: 'Who said it (name, role).' },
     logo: { type: 'upload', description: 'Optional small logo Media upload shown under the citation.' },
+    logoLabel: {
+      type: 'text',
+      description: 'Text wordmark used when no logo upload is set. Both empty renders no logo.',
+    },
   }}
 />
 
