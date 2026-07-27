@@ -1,19 +1,1434 @@
-/* Northfield School (education-course) scoped theme — FOUNDATION SKELETON.
+/* Northfield School (education-course) scoped theme — the syllabus direction.
  *
- * Convention (frozen contract): every rule in this file must live beneath the
- * [data-template-theme='education-course'] root the shell renders. Override the
- * semantic variables the demo twins consume (--background, --foreground,
- * --card, --muted, --muted-foreground, --border, --primary, --brand, --radius,
- * ...) and add template-specific tokens as needed. Never touch :root, .dark,
- * another template's scope, or src/app/globals.css. The site stays
- * forced-light; intentional dark bands come from named tokens defined here.
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='education-course'] root the shell renders. It overrides
+ * the semantic variables the demo twins consume and adds named Northfield
+ * tokens; it never touches :root, .dark, another template's scope, or
+ * src/app/globals.css. The site stays forced-light — the chalkboard band and the
+ * colophon below are deliberate dark surfaces built from named template tokens,
+ * not a theme.
  *
- * Twins are calibrated for a white page and for uploads this site never ships,
- * so expect to repaint their bg-muted placeholder plates and any
- * bg-background/NN inner panels from your own tokens — see the sibling
- * concepts' themes for the established idioms. */
+ * ART DIRECTION — ink on chalk, with one highlighter.
+ *
+ * Three tonal registers, each with a job rather than a mood:
+ *
+ *   chalk   — `base`. Pale, faintly cool paper. Prose, heroes, quotes, FAQs.
+ *   ruled   — `muted`. The same stock a shade deeper with a ruled worksheet
+ *             field printed on it. EVERY sequential, structured section sits
+ *             here: the module ladder, the prerequisites, the cohort matrix,
+ *             the archive wall. Tone itself carries the information architecture.
+ *   board   — `contrast`. A chalkboard: green-black, chalk-white text, the
+ *             highlighter written up in it. One band per page, for the figures.
+ *
+ * The accent is a HIGHLIGHTER, and a highlighter is a background, not a
+ * foreground. On chalk it only ever appears behind ink — under an eyebrow, under
+ * a module numeral, washed through a table column, filling a checkbox — so every
+ * pairing is ink on yellow at 12.4:1 rather than yellow on paper at 1.3:1. Where
+ * the accent has to be a mark in its own right (ticks, stars, table group
+ * labels) it steps down to --nf-ochre, which clears AA on chalk (5.5:1), on the
+ * sheet (5.9:1), and on the ruled band (5.0:1). On the board it inverts: there
+ * the highlighter IS the ink, at 11.5:1.
+ *
+ * Numerals are the visual system. Every figure on the site is tabular, every
+ * index and ordinal is monospaced with a slashed zero, and the module numbers are
+ * set large in the ladder's left gutter with a marker stroke under each. The one
+ * italic serif the root layout loads is reserved for quoted speech and the
+ * colophon motto — three appearances on the whole site, nothing else.
+ *
+ * INFORMATION ARCHITECTURE, restyled from the twins' default shapes:
+ *   · feature-steps    — a 3-up card grid becomes a single hairline-ruled column
+ *                        with a numeral gutter, a spine rule, and hanging-indent
+ *                        descriptions: a syllabus, not a feature grid.
+ *   · content-rows     — media rows become counter-numbered lesson entries, each
+ *                        with a portrait handout plate.
+ *   · content-columns  — paragraphs become a marked-up prerequisite checklist.
+ *   · comparator-table — a pricing matrix becomes a cohort timetable.
+ *   · pricing-cards    — the large figure slot is set in monospace because it
+ *                        carries scope ("Six modules"), never a price. */
 
 [data-template-theme='education-course'] {
-  background-color: var(--background);
+  /* ————— Named Northfield surfaces —————
+   * Everything sits on one cool hue (165–170deg) so paper, ink and board read as
+   * one family; the highlighter is the only thing that leaves it. */
+  --nf-chalk: oklch(96.4% 0.005 165deg);
+  --nf-chalk-deep: oklch(93.4% 0.007 165deg); /* the ruled `muted` worksheet */
+  --nf-sheet: oklch(98.8% 0.003 165deg); /* cards, panels, the pinned sheet */
+  --nf-ink: oklch(21% 0.014 170deg);
+  --nf-board: oklch(25% 0.02 168deg); /* the `contrast` chalkboard */
+  --nf-board-deep: oklch(20% 0.018 168deg); /* the colophon */
+  --nf-highlight: oklch(88% 0.165 98deg); /* the marker. ink on it = 12.4:1 */
+  --nf-ochre: oklch(50% 0.09 82deg); /* the marker's darker sibling */
+  --nf-rule: oklch(86.5% 0.008 168deg);
+  --nf-rule-soft: oklch(90.5% 0.007 168deg);
+  --nf-rule-board: oklch(100% 0 0deg / 16%);
+
+  /* ————— Semantic variables the twins consume (chalk register) ————— */
+  --background: var(--nf-chalk);
+  --foreground: var(--nf-ink);
+  --card: var(--nf-sheet);
+  --card-foreground: var(--nf-ink);
+  --popover: var(--nf-sheet);
+  --popover-foreground: var(--nf-ink);
+
+  /* Filled actions are INK, not accent. A school's primary button should read as
+     a printed rule, and ink on chalk cannot fail AA. */
+  --primary: var(--nf-ink);
+  --primary-foreground: oklch(97.5% 0.004 165deg);
+  --secondary: oklch(91.2% 0.008 165deg);
+  --secondary-foreground: var(--nf-ink);
+  --muted: oklch(92.2% 0.008 165deg);
+  /* 47%: clears AA on every light surface here — 6.2:1 on chalk, 6.6:1 on the
+     sheet, 5.3:1 on --secondary, which is the lowest pairing on the page. */
+  --muted-foreground: oklch(47% 0.012 170deg);
+  --accent: oklch(93% 0.009 165deg);
+  --accent-foreground: var(--nf-ink);
+
+  /* --brand is the highlighter: it fills the featured plan's ring and badge and
+     backs every marker stroke. --brand-600 is the ochre register, for anything
+     that has to be a mark or a word rather than a wash. */
+  --brand: var(--nf-highlight);
+  --brand-foreground: var(--nf-ink);
+  --brand-50: oklch(98.4% 0.028 100deg);
+  --brand-100: oklch(95.5% 0.075 99deg);
+  --brand-200: oklch(91.5% 0.125 98deg);
+  --brand-600: var(--nf-ochre);
+
+  --border: var(--nf-rule);
+  --input: oklch(80% 0.01 168deg);
+  --ring: var(--nf-ochre);
+
+  /* Print geometry. Near-square: a school that teaches letterpress-era spacing
+     should not round its corners. --radius feeds the sm–xl scale through the
+     calc() chain in globals.css; the named container radii are @theme inline
+     literals and are flattened at element level below. */
+  --radius: 0.1875rem;
+
+  /* A patient display scale. The catalog default tracks display type at -0.06em;
+     an adult choosing a course carefully should be read to at a level, generous
+     setting, so sizes step down a little and tracking loosens by two thirds. */
+  --text-3xl: 1.75rem;
+  --text-3xl--line-height: 1.22;
+  --text-4xl: 2.125rem;
+  --text-4xl--line-height: 1.2;
+  --text-5xl: 2.75rem;
+  --text-5xl--line-height: 1.12;
+  --text-6xl: 3.375rem;
+  --text-6xl--line-height: 1.06;
+  --tracking-display: -0.021em;
+  --tracking-title: -0.018em;
+  --tracking-snug: -0.015em;
+  --tracking-heading: -0.012em;
+  --tracking-micro: -0.006em;
+  --tracking-eyebrow: 0.16em;
+
+  background-color: var(--nf-chalk);
   color: var(--foreground);
+  /* Every figure on the site is a stated figure: week ranges, group sizes, term
+     counts. Tabular widths keep them aligned down a column and across a row. */
+  font-variant-numeric: tabular-nums;
+}
+
+/* Indices, ordinals and specification labels speak monospace, and their zeros
+   are slashed — a small, deliberate numeral decision on a site about type. */
+[data-template-theme='education-course'] :is(.font-mono, .nf-nav-index, .nf-imprint) {
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+[data-template-theme='education-course'] ::selection {
+  background-color: color-mix(in oklab, var(--nf-highlight) 62%, transparent);
+  color: var(--nf-ink);
+}
+
+/* ---------------------------------------------------------------- */
+/* Geometry: flatten the named container radii (baked @theme inline  */
+/* literals) and square every pill. Even the circles are squared —   */
+/* the whole site is cut, not rounded.                               */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='education-course']
+  :is(
+    .rounded-frame,
+    .rounded-panel,
+    .rounded-card,
+    .rounded-inset,
+    .rounded-2xl,
+    .rounded-xl,
+    .rounded-lg
+  ) {
+  border-radius: var(--radius);
+}
+
+[data-template-theme='education-course'] :is(.shadow-xl, .shadow-card, .shadow-frame) {
+  box-shadow: none;
+}
+
+/* Avatar and monogram wells become contact-sheet plates. */
+[data-template-theme='education-course'] [data-template-canvas] .rounded-full.border {
+  border-radius: 0;
+}
+
+/* ---------------------------------------------------------------- */
+/* Labels: the highlighter device                                    */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='education-course'] [data-template-canvas] .tracking-eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* Section eyebrows arrive as outline Badge pills. They lose the pill entirely
+   and gain a marker stroke through their lower third: the site's signature, and
+   the only place a student's own annotation shows up in the chrome. The stroke is
+   an inset box-shadow rather than a background so the computed background stays
+   the band's own solid colour and contrast resolves deterministically as ink on
+   chalk (15.9:1) — while visually the ink sits on yellow (12.4:1). Either way it
+   passes. */
+[data-template-theme='education-course'] [data-template-canvas] .rounded-full.tracking-eyebrow {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  box-shadow: inset 0 -0.45em 0 var(--nf-highlight);
+  color: var(--foreground);
+  font-size: 0.6875rem;
+  padding: 0 0.3125rem 0.0625rem;
+}
+
+/* hero-basic's proof items arrive as filled secondary pills. They become ruled
+   specification labels — a term sheet, not a badge row. */
+[data-template-theme='education-course'] [data-template-canvas] .rounded-full.text-sm {
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1px var(--nf-rule);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  padding: 0.3125rem 0.5625rem;
+  text-transform: uppercase;
+}
+
+/* Quoted speech — and only quoted speech — is set in the one italic serif the
+   root layout loads: the home page's spotlight, the graduate written up on the
+   board, the principal's line on the instructors page, and the colophon motto.
+   The testimonial wall and rating cards are deliberately excluded: their quotes
+   are set at 0.875rem, where an italic display serif stops being legible and
+   starts being decoration. */
+[data-template-theme='education-course'] [data-template-canvas] blockquote.text-2xl,
+[data-template-theme='education-course'] [data-template-section='proof'] figure > blockquote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  letter-spacing: 0;
+}
+
+/* The board quote gains a little size back: an italic serif sets smaller on the
+   eye than Geist at the same nominal size. */
+[data-template-theme='education-course'] [data-template-section='proof'] figure > blockquote {
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+[data-template-theme='education-course']
+  [data-template-section='teaching-philosophy']
+  blockquote
+  p {
+  font-family: var(--font-serif);
+  font-size: 1.3125rem;
+  font-style: italic;
+  line-height: 1.55;
+}
+
+/* Body copy gets a genuinely generous measure of leading. This is a school that
+   teaches reading; its own paragraphs should be easy to read. */
+[data-template-theme='education-course'] [data-template-canvas] p.leading-7 {
+  line-height: 1.8;
+}
+
+/* ---------------------------------------------------------------- */
+/* Section canvas and rhythm                                         */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='education-course'] [data-template-section] > [aria-hidden='true'] {
+  margin-inline: auto;
+  max-width: 84rem;
+}
+
+[data-template-theme='education-course'] [data-template-section] > [aria-hidden='true'] > div {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding-block: clamp(3.25rem, 6.5vw, 5rem);
+}
+
+/* Consecutive sections on the same chalk stock are separated by a single
+   hairline; the tonal bands separate themselves. */
+[data-template-theme='education-course']
+  [data-template-section][data-tone='base']
+  + [data-template-section][data-tone='base'] {
+  border-top: 1px solid var(--nf-rule);
+}
+
+/* The prospectus band opens a shade taller, with a whisper of the marker pooled
+   under the top edge — the only place the accent touches an open field. */
+[data-template-theme='education-course'] [data-template-section='prospectus'] {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--nf-highlight) 11%, transparent),
+    transparent 32%
+  );
+}
+
+[data-template-theme='education-course']
+  [data-template-section='prospectus']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(3.5rem, 7vw, 5.5rem);
+}
+
+/* Interior page headers get a designed plate instead of a plain rectangle: a
+   ruled sheet, like the head of an exercise book. Static — chrome, not motion. */
+[data-template-theme='education-course'] [data-template-section='hero'] {
+  background-color: var(--nf-sheet);
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0 1.75rem,
+    color-mix(in oklab, var(--nf-ink) 5%, transparent) 1.75rem calc(1.75rem + 1px)
+  );
+  box-shadow: inset 0 -1px 0 var(--nf-rule);
+}
+
+[data-template-theme='education-course'] [data-template-section='hero'] > [aria-hidden='true'] > div {
+  padding-block: clamp(3rem, 6vw, 4.5rem);
+}
+
+/* The employer strip is a set line, not a wall of badges: a school lists where
+   its graduates went in type. The lucide marks are dropped and the names are set
+   as a colophon run. */
+[data-template-theme='education-course']
+  [data-template-section='where-grads-work']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(1.75rem, 3vw, 2.25rem);
+}
+
+[data-template-theme='education-course'] [data-template-section='where-grads-work'] svg {
+  display: none;
+}
+
+[data-template-theme='education-course'] [data-template-section='where-grads-work'] span > span {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='education-course'] [data-template-section='where-grads-work'] p {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------- */
+/* Tonal bands                                                       */
+/* ---------------------------------------------------------------- */
+
+/* ruled — the worksheet. Every sequential section on the site sits on this
+   stock, so tone itself tells you "this is structured, and in order". */
+[data-template-theme='education-course'] [data-template-section][data-tone='muted'] {
+  --card: var(--nf-sheet);
+  --popover: var(--nf-sheet);
+  --muted: oklch(89.5% 0.009 165deg);
+  --secondary: oklch(89% 0.009 165deg);
+  --accent: oklch(90.5% 0.009 165deg);
+  --border: oklch(84.5% 0.009 168deg);
+
+  background-color: var(--nf-chalk-deep);
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0 1.75rem,
+    color-mix(in oklab, var(--nf-ink) 4.5%, transparent) 1.75rem calc(1.75rem + 1px)
+  );
+  box-shadow:
+    inset 0 1px 0 var(--nf-rule),
+    inset 0 -1px 0 var(--nf-rule);
+}
+
+/* board — the chalkboard. Every semantic variable is remapped so the twins'
+   chalk-first markup (bg-background/85 panels, text-muted-foreground,
+   border-border, bg-primary buttons) resolves to a coherent dark surface, and
+   the highlighter becomes the ink. */
+[data-template-theme='education-course'] [data-template-section][data-tone='contrast'] {
+  --background: oklch(29% 0.021 168deg);
+  --foreground: oklch(96.6% 0.004 168deg);
+  --card: oklch(29% 0.021 168deg);
+  --card-foreground: oklch(96.6% 0.004 168deg);
+  --popover: oklch(29% 0.021 168deg);
+  --popover-foreground: oklch(96.6% 0.004 168deg);
+  --primary: var(--nf-highlight);
+  --primary-foreground: var(--nf-board-deep);
+  --secondary: oklch(33% 0.022 168deg);
+  --secondary-foreground: oklch(96.6% 0.004 168deg);
+  --muted: oklch(31% 0.021 168deg);
+  /* 78%: 8:1 on the board itself and 5.6:1 on the lightest panel token above. */
+  --muted-foreground: oklch(78% 0.014 168deg);
+  --accent: oklch(35% 0.023 168deg);
+  --accent-foreground: oklch(96.6% 0.004 168deg);
+  --brand: var(--nf-highlight);
+  --brand-foreground: var(--nf-board-deep);
+  --brand-600: var(--nf-highlight);
+  --border: var(--nf-rule-board);
+  --input: oklch(100% 0 0deg / 24%);
+  --ring: var(--nf-highlight);
+
+  background-color: var(--nf-board);
+  background-image: none;
+  box-shadow:
+    inset 0 1px 0 var(--nf-rule-board),
+    inset 0 -1px 0 var(--nf-rule-board);
+  color: var(--foreground);
+}
+
+/* On the board the marker cannot sit behind chalk-white text, so it becomes the
+   text: yellow chalk on a green-black board at 11.5:1. */
+[data-template-theme='education-course'] [data-tone='contrast'] .rounded-full.tracking-eyebrow {
+  box-shadow: none;
+  color: var(--nf-highlight);
+  padding-inline: 0;
+}
+
+[data-template-theme='education-course'] [data-tone='contrast'] .rounded-full.text-sm {
+  box-shadow: inset 0 0 0 1px var(--nf-rule-board);
+}
+
+/* ---------------------------------------------------------------- */
+/* THE MODULE LADDER (feature-steps)                                 */
+/*                                                                   */
+/* The most important restyle in the concept: the twin's 3-up card    */
+/* grid becomes one ruled column — numerals in a left gutter,         */
+/* descriptions hanging under their titles, a spine rule down the     */
+/* gutter joining the rungs. It has to read as a syllabus at a glance.*/
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='education-course']
+  :is([data-template-section='module-ladder'], [data-template-section='modules'])
+  .grid.gap-4 {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+[data-template-theme='education-course']
+  :is([data-template-section='module-ladder'], [data-template-section='modules'])
+  [data-slot='card'] {
+  background-color: transparent;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
+  padding-block: 1.375rem;
+}
+
+[data-template-theme='education-course']
+  :is([data-template-section='module-ladder'], [data-template-section='modules'])
+  [data-slot='card']:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+[data-template-theme='education-course']
+  :is([data-template-section='module-ladder'], [data-template-section='modules'])
+  [data-slot='card-header'] {
+  display: grid;
+  gap: 0.375rem;
+  padding: 0;
+}
+
+/* The module numeral: the twin's small filled circle becomes a large monospace
+   figure with a marker stroke ruled under it. Nothing else on the site is set
+   this big in mono. */
+[data-template-theme='education-course']
+  :is([data-template-section='module-ladder'], [data-template-section='modules'])
+  .rounded-full.bg-primary {
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: inset 0 -0.2em 0 var(--nf-highlight);
+  color: var(--foreground);
+  display: block;
+  font-size: 2.375rem;
+  font-weight: 400;
+  height: auto;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  padding-inline: 0.06em 0.18em;
+  width: max-content;
+}
+
+[data-template-theme='education-course']
+  :is([data-template-section='module-ladder'], [data-template-section='modules'])
+  [data-slot='card-title'] {
+  font-size: 1.1875rem;
+  font-weight: 500;
+}
+
+[data-template-theme='education-course']
+  :is([data-template-section='module-ladder'], [data-template-section='modules'])
+  [data-slot='card-content'] {
+  padding: 0.375rem 0 0;
+}
+
+[data-template-theme='education-course']
+  :is([data-template-section='module-ladder'], [data-template-section='modules'])
+  [data-slot='card-description'] {
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  max-width: 46rem;
+}
+
+@media (min-width: 40rem) {
+  /* The spine: one hairline down the numeral gutter, joining six rungs into a
+     ladder. It stops where the rungs stop, so the column reads as a closed table
+     rather than a list that trails off. */
+  [data-template-theme='education-course']
+    :is([data-template-section='module-ladder'], [data-template-section='modules'])
+    .grid.gap-4::before {
+    background-color: var(--border);
+    bottom: 0;
+    content: '';
+    left: 4.25rem;
+    position: absolute;
+    top: 0;
+    width: 1px;
+  }
+
+  [data-template-theme='education-course']
+    :is([data-template-section='module-ladder'], [data-template-section='modules'])
+    [data-slot='card-header'] {
+    align-items: baseline;
+    column-gap: 2.25rem;
+    grid-template-columns: 4.25rem 1fr;
+  }
+
+  [data-template-theme='education-course']
+    :is([data-template-section='module-ladder'], [data-template-section='modules'])
+    [data-slot='card-content'] {
+    padding-left: 6.5rem;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* THE LESSONS (content-rows)                                        */
+/*                                                                   */
+/* Media rows become counter-numbered lesson entries with a portrait  */
+/* handout plate. The counter's `/ ''` alternative text is empty so   */
+/* assistive technology never announces the ordinal — the twin is     */
+/* aria-hidden already, and this keeps it silent.                     */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='education-course'] [data-template-section='lessons'] .flex.flex-col.gap-12 {
+  counter-reset: nf-lesson;
+  gap: 0;
+}
+
+[data-template-theme='education-course'] [data-template-section='lessons'] .grid.gap-6 {
+  border-top: 1px solid var(--border);
+  counter-increment: nf-lesson;
+  padding-block: 1.75rem;
+  position: relative;
+}
+
+[data-template-theme='education-course'] [data-template-section='lessons'] .grid.gap-6:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+[data-template-theme='education-course'] [data-template-section='lessons'] .grid.gap-6::before {
+  background-color: var(--nf-highlight);
+  color: var(--nf-ink);
+  content: counter(nf-lesson, decimal-leading-zero) / '';
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums slashed-zero;
+  left: 0;
+  letter-spacing: 0.14em;
+  padding: 0.25rem 0.4375rem;
+  position: absolute;
+  top: 1.75rem;
+  z-index: 1;
+}
+
+[data-template-theme='education-course']
+  [data-template-section='lessons']
+  .overflow-hidden.rounded-card {
+  border-color: var(--border);
+  border-radius: 0;
+}
+
+[data-template-theme='education-course'] [data-template-section='lessons'] .aspect-\[4\/3\] {
+  aspect-ratio: 5 / 6;
+}
+
+[data-template-theme='education-course'] [data-template-section='lessons'] .text-xl.font-medium {
+  font-size: 1.1875rem;
+}
+
+@media (min-width: 40rem) {
+  [data-template-theme='education-course'] [data-template-section='lessons'] .grid.gap-6 {
+    align-items: start;
+    column-gap: 2.5rem;
+    grid-template-columns: 8.5rem 1fr;
+    padding-left: 4rem;
+  }
+
+  [data-template-theme='education-course'] [data-template-section='lessons'] .grid.gap-6::before {
+    top: 1.875rem;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* THE PREREQUISITES (content-columns)                               */
+/*                                                                   */
+/* Paragraphs become a marked-up checklist: a ruled entry each, with  */
+/* a highlighter-filled box in the margin.                            */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='education-course'] [data-template-section='prerequisites'] p.leading-7 {
+  padding-left: 2.25rem;
+  position: relative;
+}
+
+[data-template-theme='education-course']
+  [data-template-section='prerequisites']
+  p.leading-7::before {
+  background-color: var(--nf-highlight);
+  box-shadow: inset 0 0 0 1px var(--nf-ink);
+  content: '';
+  height: 0.9375rem;
+  left: 0;
+  position: absolute;
+  top: 0.4375rem;
+  width: 0.9375rem;
+}
+
+[data-template-theme='education-course']
+  [data-template-section='prerequisites']
+  p.leading-7
+  + p.leading-7 {
+  border-top: 1px solid var(--border);
+  padding-top: 1.375rem;
+}
+
+[data-template-theme='education-course']
+  [data-template-section='prerequisites']
+  p.leading-7
+  + p.leading-7::before {
+  top: 1.8125rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* THE COHORT MATRIX (comparator-table)                              */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='education-course'] [data-template-section='compare-cohorts'] th,
+[data-template-theme='education-course'] [data-template-section='compare-cohorts'] td {
+  padding: 0.6875rem 0.875rem;
+}
+
+[data-template-theme='education-course'] [data-template-section='compare-cohorts'] th {
+  min-width: 8.5rem;
+}
+
+[data-template-theme='education-course'] [data-template-section='compare-cohorts'] thead th {
+  border-bottom: 1px solid var(--foreground);
+  padding-bottom: 1rem;
+}
+
+/* The row label is the strongest thing in the row — this is a timetable, and you
+   read down the left edge first. */
+[data-template-theme='education-course']
+  [data-template-section='compare-cohorts']
+  tbody
+  tr
+  > td:first-child {
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+/* Group headers become ochre index rules: Schedule, Pace, Feedback. */
+[data-template-theme='education-course']
+  [data-template-section='compare-cohorts']
+  td.tracking-eyebrow {
+  color: var(--nf-ochre);
+  font-size: 0.6875rem;
+  padding-top: 2rem;
+}
+
+/* The most-chosen cohort is index 1 in the definition, so it occupies the third
+   cell of every row (the first is the label). A washed column: marked, not
+   boxed. */
+[data-template-theme='education-course']
+  [data-template-section='compare-cohorts']
+  tr
+  > :nth-child(3) {
+  background-color: color-mix(in oklab, var(--nf-highlight) 26%, transparent);
+}
+
+[data-template-theme='education-course'] [data-template-section='compare-cohorts'] td svg {
+  color: var(--nf-ochre);
+}
+
+[data-template-theme='education-course']
+  [data-template-section='compare-cohorts']
+  .rounded-full.tracking-eyebrow {
+  box-shadow: inset 0 -0.45em 0 color-mix(in oklab, var(--nf-ink) 12%, transparent);
+}
+
+/* On a phone the matrix scrolls inside its own container (the page never does).
+   Tightening the cells and the label column buys back enough width that the
+   third cohort is visibly clipped rather than entirely absent — a clipped column
+   is the affordance that tells you to swipe. */
+@media (max-width: 39.999rem) {
+  [data-template-theme='education-course'] [data-template-section='compare-cohorts'] th,
+  [data-template-theme='education-course'] [data-template-section='compare-cohorts'] td {
+    padding: 0.5625rem 0.625rem;
+  }
+
+  [data-template-theme='education-course'] [data-template-section='compare-cohorts'] th {
+    min-width: 7.25rem;
+  }
+
+  [data-template-theme='education-course']
+    [data-template-section='compare-cohorts']
+    thead
+    th:first-child {
+    width: 31%;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* TUITION AS SCOPE (pricing-cards, pricing-cards-muted)             */
+/*                                                                   */
+/* There are no currency amounts anywhere in this concept, by design. */
+/* The large figure slot carries the unit of study instead — "One     */
+/* module", "Six modules", "Two terms" — so it is set in monospace,   */
+/* like every other specification on the site, and the featured plan  */
+/* gets the marker stroke under it.                                   */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='education-course']
+  :is([data-template-section='tuition'], [data-template-section='options'])
+  [data-slot='card'] {
+  background-color: var(--nf-sheet);
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+[data-template-theme='education-course']
+  :is([data-template-section='tuition'], [data-template-section='options'])
+  [data-slot='card'].ring-1 {
+  box-shadow: inset 0 0 0 2px var(--nf-highlight);
+}
+
+[data-template-theme='education-course']
+  :is([data-template-section='tuition'], [data-template-section='options'])
+  .text-2xl.font-semibold {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 1.3125rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+[data-template-theme='education-course']
+  :is([data-template-section='tuition'], [data-template-section='options'])
+  .ring-1
+  .text-2xl.font-semibold {
+  box-shadow: inset 0 -0.28em 0 var(--nf-highlight);
+  padding-inline: 0.08em 0.16em;
+}
+
+[data-template-theme='education-course']
+  :is([data-template-section='tuition'], [data-template-section='options'])
+  [data-slot='card-title'] {
+  font-size: 1.0625rem;
+}
+
+[data-template-theme='education-course']
+  :is([data-template-section='tuition'], [data-template-section='options'])
+  li
+  svg {
+  color: var(--nf-ochre);
+}
+
+[data-template-theme='education-course']
+  :is([data-template-section='tuition'], [data-template-section='options'])
+  .rounded-full.bg-brand {
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------- */
+/* THE PROSPECTUS (hero-product-tilt)                                */
+/*                                                                   */
+/* The tilted panel is the courseware artefact: a prospectus spread   */
+/* with a ruled contents column and a type specimen waterfall on the  */
+/* recto. Composed entirely from this theme's own tokens — no raster  */
+/* asset, nothing to attribute.                                       */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='education-course'] [data-template-section='prospectus'] .aspect-video {
+  background-color: var(--nf-sheet);
+  border-color: var(--nf-rule);
+  border-radius: 0;
+  box-shadow:
+    0 1px 0 0 var(--nf-rule),
+    0 18px 40px -28px color-mix(in oklab, var(--nf-ink) 45%, transparent);
+}
+
+/* The contents column: ruled worksheet stock carrying a printed table of
+   contents — an ordinal tick and a title rule per module, on a 1.5rem rhythm,
+   starting below the marked heading. The twin gives this column only three
+   placeholder bars, so the list itself is painted; the three bars are hidden and
+   the pattern takes over. */
+[data-template-theme='education-course'] [data-template-section='prospectus'] .border-r {
+  background-color: var(--nf-chalk-deep);
+  background-image:
+    repeating-linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--nf-ink) 34%, transparent) 0 5px,
+      transparent 5px 1.5rem
+    ),
+    repeating-linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--nf-ink) 17%, transparent) 0 5px,
+      transparent 5px 1.5rem
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 0.75rem,
+      color-mix(in oklab, var(--nf-ink) 6%, transparent) 0.75rem calc(0.75rem + 1px)
+    );
+  background-position:
+    0 2.5rem,
+    0.875rem 2.5rem,
+    0 0;
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size:
+    0.4375rem calc(100% - 3rem),
+    64% calc(100% - 3rem),
+    auto;
+  border-color: var(--nf-rule);
+}
+
+/* Its title bar is the one thing marked on the cover. */
+[data-template-theme='education-course'] [data-template-section='prospectus'] .h-5.w-20 {
+  background-color: var(--nf-highlight);
+  border-radius: 0;
+}
+
+/* The three placeholder rules give way to the painted contents list above. */
+[data-template-theme='education-course'] [data-template-section='prospectus'] .space-y-3 {
+  display: none;
+}
+
+[data-template-theme='education-course'] [data-template-section='prospectus'] .grid-cols-2 > div {
+  background-color: var(--nf-sheet);
+  border-color: var(--nf-rule);
+  border-radius: 0;
+}
+
+/* Recto, upper: a specimen waterfall — six lines of type at descending size, with
+   one line marked. Six positioned gradient bars, no repeats. Kept thin and
+   numerous on purpose: a few chunky blocks read as a loading skeleton, whereas
+   many thin ones read as set lines stepping down a size scale. */
+[data-template-theme='education-course']
+  [data-template-section='prospectus']
+  .grid-cols-2
+  > div:nth-child(1)
+  > div {
+  background-color: var(--nf-sheet);
+  background-image:
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 24%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 18%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 16%, transparent) 0 100%),
+    linear-gradient(90deg, var(--nf-highlight) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 12%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 10%, transparent) 0 100%);
+  background-position:
+    0 5%,
+    0 27%,
+    0 43%,
+    0 59%,
+    0 73%,
+    0 86%;
+  background-repeat: no-repeat;
+  background-size:
+    64% 15%,
+    84% 10%,
+    73% 9%,
+    50% 8%,
+    88% 6%,
+    69% 5%;
+  border-radius: 0;
+}
+
+/* Recto, lower left: a baseline grid. */
+[data-template-theme='education-course']
+  [data-template-section='prospectus']
+  .grid-cols-2
+  > div:nth-child(2)
+  > div {
+  background-color: var(--nf-chalk-deep);
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0 4px,
+    color-mix(in oklab, var(--nf-ink) 13%, transparent) 4px 5px
+  );
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1px var(--nf-rule);
+}
+
+/* Recto, lower right: a marked-up proof — three lines of type under a marker
+   wash, with one struck through. The strike is what makes it read as a corrected
+   proof rather than a yellow rectangle. */
+[data-template-theme='education-course']
+  [data-template-section='prospectus']
+  .grid-cols-2
+  > div:nth-child(3)
+  > div {
+  background-color: color-mix(in oklab, var(--nf-highlight) 58%, transparent);
+  background-image:
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 62%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 26%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 26%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 22%, transparent) 0 100%);
+  background-position:
+    10% 50%,
+    10% 22%,
+    10% 46%,
+    10% 74%;
+  background-repeat: no-repeat;
+  background-size:
+    78% 2px,
+    66% 13%,
+    72% 11%,
+    54% 10%;
+  border-radius: 0;
+}
+
+[data-template-theme='education-course'] [data-template-section='prospectus'] .mt-4.text-center {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------- */
+/* Image plates — token-derived, one composition per job             */
+/* ---------------------------------------------------------------- */
+
+/* The lesson handout: a ruled sheet with a titled head, a body of set lines, one
+   marked line, and a signature rule at the foot. Enough printed detail to read as
+   a handout rather than an empty box at 8.5rem wide. */
+[data-template-theme='education-course'] [data-template-section='lessons'] .w-full.bg-muted {
+  background-color: var(--nf-sheet);
+  background-image:
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 30%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 15%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 13%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 13%, transparent) 0 100%),
+    linear-gradient(90deg, var(--nf-highlight) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 13%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 22%, transparent) 0 100%),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 0.4375rem,
+      color-mix(in oklab, var(--nf-ink) 7%, transparent) 0.4375rem calc(0.4375rem + 1px)
+    );
+  background-position:
+    14% 9%,
+    14% 26%,
+    14% 38%,
+    14% 50%,
+    14% 62%,
+    14% 74%,
+    14% 90%;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
+    repeat;
+  background-size:
+    56% 5.5%,
+    72% 3%,
+    66% 3%,
+    72% 3%,
+    46% 3.5%,
+    58% 3%,
+    30% 2px,
+    auto;
+  box-shadow: inset 0 0 0 1px var(--nf-rule);
+}
+
+/* Home, "what you make": the coursework wall — a row of portrait sheets pinned
+   under a rail, one of them marked. Portrait sheets on a deeper wall read as
+   pinned work; a grid of wide cells reads as a spreadsheet, which is what this
+   was before. The sheets are one repeating stripe band, the marked one a single
+   positioned layer over it. */
+[data-template-theme='education-course'] [data-template-section='what-you-make'] .w-full.bg-muted {
+  background-color: var(--nf-chalk-deep);
+  /* Explicit stops rather than a repeating band: the marked sheet has to land
+     exactly on the rhythm, and a repeat plus a separately positioned marker
+     cannot be made to agree at every container width. */
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent 0 1%,
+      var(--nf-sheet) 1% 9%,
+      transparent 9% 12%,
+      var(--nf-sheet) 12% 20%,
+      transparent 20% 23%,
+      var(--nf-sheet) 23% 31%,
+      transparent 31% 34%,
+      var(--nf-sheet) 34% 42%,
+      transparent 42% 45%,
+      color-mix(in oklab, var(--nf-highlight) 80%, transparent) 45% 53%,
+      transparent 53% 56%,
+      var(--nf-sheet) 56% 64%,
+      transparent 64% 67%,
+      var(--nf-sheet) 67% 75%,
+      transparent 75% 78%,
+      var(--nf-sheet) 78% 86%,
+      transparent 86% 89%,
+      var(--nf-sheet) 89% 97%,
+      transparent 97% 100%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0 7%,
+      color-mix(in oklab, var(--nf-ink) 24%, transparent) 7% calc(7% + 1px),
+      transparent calc(7% + 1px)
+    );
+  background-position:
+    0 50%,
+    0 0;
+  background-repeat: no-repeat;
+  background-size:
+    100% 80%,
+    auto;
+  box-shadow: inset 0 0 0 1px var(--nf-rule);
+}
+
+/* Outcomes, "from the archive": four final sheets hung from a rail, at the
+   widths they were actually made. */
+[data-template-theme='education-course'] [data-template-section='student-work'] .w-full.bg-muted {
+  background-color: var(--nf-sheet);
+  background-image:
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 10%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-highlight) 68%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 13%, transparent) 0 100%),
+    linear-gradient(90deg, color-mix(in oklab, var(--nf-ink) 8%, transparent) 0 100%),
+    linear-gradient(
+      180deg,
+      transparent 0 17%,
+      var(--nf-rule) 17% calc(17% + 1px),
+      transparent calc(17% + 1px)
+    );
+  background-position:
+    8% 26%,
+    30% 22%,
+    52% 30%,
+    74% 24%,
+    0 0;
+  background-repeat: no-repeat;
+  background-size:
+    15% 58%,
+    16% 66%,
+    17% 50%,
+    14% 62%,
+    auto;
+  box-shadow: inset 0 0 0 1px var(--nf-rule);
+}
+
+/* The principal's portrait plate: a soft studio vignette over the same ruled
+   field, so it reads as a reserved photograph rather than a hole in the page. */
+[data-template-theme='education-course']
+  [data-template-section='teaching-philosophy']
+  .w-full.bg-muted {
+  background-color: var(--nf-chalk-deep);
+  background-image:
+    radial-gradient(
+      92% 78% at 50% 34%,
+      transparent 46%,
+      color-mix(in oklab, var(--nf-ink) 11%, transparent)
+    ),
+    linear-gradient(
+      168deg,
+      color-mix(in oklab, var(--nf-highlight) 26%, transparent),
+      transparent 38%
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 0.6875rem,
+      color-mix(in oklab, var(--nf-ink) 6%, transparent) 0.6875rem calc(0.6875rem + 1px)
+    );
+  box-shadow: inset 0 0 0 1px var(--nf-rule);
+}
+
+/* ---------------------------------------------------------------- */
+/* The faculty contact sheet (team-roster)                           */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='education-course'] [data-template-section='faculty'] .size-20 {
+  aspect-ratio: 4 / 5;
+  background-color: var(--nf-sheet);
+  border-color: var(--nf-rule);
+  border-radius: 0;
+  height: auto;
+  max-width: 9.5rem;
+  padding: 0.1875rem;
+  width: 100%;
+}
+
+[data-template-theme='education-course'] [data-template-section='faculty'] .size-20 > div {
+  background-color: var(--nf-chalk-deep);
+  background-image:
+    radial-gradient(
+      74% 62% at 50% 36%,
+      transparent 34%,
+      color-mix(in oklab, var(--nf-ink) 20%, transparent)
+    ),
+    linear-gradient(
+      158deg,
+      color-mix(in oklab, var(--nf-highlight) 14%, transparent),
+      transparent 44%
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 0.4375rem,
+      color-mix(in oklab, var(--nf-ink) 8%, transparent) 0.4375rem calc(0.4375rem + 1px)
+    );
+  border-radius: 0;
+}
+
+[data-template-theme='education-course'] [data-template-section='faculty'] .text-lg.font-medium {
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+[data-template-theme='education-course'] [data-template-section='faculty'] .text-sm {
+  font-weight: 500;
+}
+
+[data-template-theme='education-course'] [data-template-section='faculty'] .text-xs {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------- */
+/* Quote surfaces and figure registers                               */
+/* ---------------------------------------------------------------- */
+
+/* Both stats-proof and content-quote render a stand-in customer wordmark where
+   the real block takes a Media upload. A school does not badge a graduate's
+   words with a logo, and it certainly does not badge its own principal's. */
+[data-template-theme='education-course'] [data-template-section='proof'] figure > div.mb-8,
+[data-template-theme='education-course'] [data-template-canvas] blockquote .h-6.w-20 {
+  display: none;
+}
+
+/* On the board, the quote panel loses its card and becomes a ruled column of
+   chalk — written up beside the figures rather than pinned over them. */
+[data-template-theme='education-course'] [data-template-section='proof'] figure {
+  background-color: transparent;
+  border: 0;
+  border-inline-start: 1px solid var(--nf-rule-board);
+  border-radius: 0;
+  padding: 0 0 0 1.75rem;
+}
+
+@media (min-width: 64rem) {
+  [data-template-theme='education-course'] [data-template-section='proof'] figure {
+    align-self: center;
+  }
+}
+
+/* The figures themselves: the one place on the site where a numeral is allowed
+   to be the largest thing in the frame. */
+[data-template-theme='education-course'] [data-template-section='proof'] dd {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  letter-spacing: -0.035em;
+}
+
+[data-template-theme='education-course'] [data-template-section='proof'] dt {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+/* content-quote's rule sits in the marker — the annotation idiom again. */
+[data-template-theme='education-course'] [data-template-canvas] blockquote.border-l-2 {
+  border-color: var(--nf-highlight);
+  border-inline-start-width: 4px;
+  padding-inline-start: 1.125rem;
+}
+
+/* content-stats' arrow list becomes a register: ruled entries, figures in mono. */
+[data-template-theme='education-course'] [data-template-section='numbers'] li {
+  border-top: 1px solid var(--border);
+  padding-block: 0.6875rem;
+}
+
+[data-template-theme='education-course'] [data-template-section='numbers'] li svg {
+  color: var(--nf-ochre);
+  opacity: 1;
+}
+
+[data-template-theme='education-course'] [data-template-section='numbers'] li .font-medium {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  letter-spacing: -0.01em;
+}
+
+/* The testimonial wall and the rating cards become sheets pinned to the page:
+   hairlined rather than boxed. */
+[data-template-theme='education-course'] [data-template-canvas] figure.rounded-2xl {
+  background-color: var(--nf-sheet);
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+[data-template-theme='education-course'] [data-template-section='ratings'] .fill-primary {
+  fill: var(--nf-ochre);
+  stroke: var(--nf-ochre);
+}
+
+/* Monogram wells are set in the index voice. */
+[data-template-theme='education-course'] [data-template-canvas] figcaption .rounded-full span {
+  font-family: var(--font-mono);
+}
+
+/* ---------------------------------------------------------------- */
+/* FAQ and CTA panels                                               */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='education-course']
+  [data-template-canvas]
+  .tracking-title.hover\:no-underline {
+  font-weight: 500;
+}
+
+[data-template-theme='education-course'] [data-template-section='faq'] .text-lg.tracking-title {
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='education-course'] [data-template-section='faq'] svg {
+  color: var(--nf-ochre);
+}
+
+[data-template-theme='education-course'] [data-template-section='cta'] .rounded-2xl {
+  background-color: var(--nf-sheet);
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+[data-template-theme='education-course'] [data-template-section='cta'] .rounded-frame {
+  background-color: var(--nf-sheet);
+  border-color: var(--border);
+}
+
+/* ---------------------------------------------------------------- */
+/* Shell chrome                                                      */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='education-course'] .nf-header {
+  background-color: var(--nf-chalk);
+  box-shadow: inset 0 -1px 0 var(--nf-rule);
+}
+
+[data-template-theme='education-course'] .nf-masthead-sub {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* The desktop index is set plain; the ordinal shows in the mobile menu and the
+   colophon, where there is room for it. */
+[data-template-theme='education-course'] .nf-nav-item .nf-nav-index {
+  display: none;
+}
+
+[data-template-theme='education-course'] .nf-nav-index {
+  color: color-mix(in oklab, var(--muted-foreground) 78%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+}
+
+/* The active page is marked, not tabbed: a marker stroke under the label. State
+   is never carried by the stroke alone — the label also goes to ink and medium
+   weight, and the link carries aria-current. */
+[data-template-theme='education-course'] .nf-nav-mark {
+  background-color: var(--nf-highlight);
+  height: 0.4375rem;
+  z-index: -1;
+}
+
+[data-template-theme='education-course'] .nf-action {
+  background-color: var(--nf-ink);
+  border-radius: var(--radius);
+  color: var(--primary-foreground);
+  transition: background-color 0.2s ease;
+}
+
+[data-template-theme='education-course'] .nf-action:hover {
+  background-color: oklch(28% 0.02 170deg);
+}
+
+[data-template-theme='education-course'] .nf-trigger {
+  background-color: transparent;
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px var(--nf-rule);
+  font-family: var(--font-mono);
+}
+
+[data-template-theme='education-course'] .nf-menu {
+  background-color: var(--nf-sheet);
+  border-radius: var(--radius);
+  box-shadow:
+    inset 0 0 0 1px var(--nf-rule),
+    0 16px 32px -20px color-mix(in oklab, var(--nf-ink) 45%, transparent);
+}
+
+[data-template-theme='education-course'] .nf-menu-item + .nf-menu-item {
+  border-top: 1px solid var(--nf-rule-soft);
+}
+
+[data-template-theme='education-course'] .nf-menu-item[aria-current='page'] {
+  box-shadow: inset 3px 0 0 var(--nf-highlight);
+}
+
+[data-template-theme='education-course'] .nf-term-strip {
+  background-color: var(--nf-chalk-deep);
+  box-shadow: inset 0 -1px 0 var(--nf-rule);
+}
+
+[data-template-theme='education-course'] .nf-term-strip span {
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+/* Six modules, six ticks; the one in session is marked. Decorative and
+   aria-hidden — the term is stated in words beside it. */
+[data-template-theme='education-course'] .nf-tick {
+  display: inline-block;
+  height: 0.5rem;
+  width: 0.5rem;
+}
+
+[data-template-theme='education-course'] .nf-tick[data-state='done'] {
+  background-color: color-mix(in oklab, var(--nf-ink) 42%, transparent);
+}
+
+[data-template-theme='education-course'] .nf-tick[data-state='now'] {
+  background-color: var(--nf-highlight);
+  box-shadow: inset 0 0 0 1px var(--nf-ink);
+}
+
+[data-template-theme='education-course'] .nf-tick[data-state='ahead'] {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--nf-ink) 28%, transparent);
+}
+
+/* ————— The colophon —————
+ * The blackboard at the back of the room. Every token is remapped so the
+ * footer's chalk-first markup resolves on a dark surface, and the marker is the
+ * only warm thing in it. */
+[data-template-theme='education-course'] .nf-colophon {
+  --muted-foreground: oklch(78% 0.014 168deg);
+
+  background-color: var(--nf-board-deep);
+  color: oklch(96.6% 0.004 168deg);
+}
+
+[data-template-theme='education-course'] .nf-colophon-label {
+  color: color-mix(in oklab, oklch(96.6% 0.004 168deg) 84%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='education-course'] .nf-colophon .nf-nav-index {
+  color: color-mix(in oklab, var(--muted-foreground) 84%, transparent);
+}
+
+[data-template-theme='education-course'] .nf-colophon-link {
+  color: var(--muted-foreground);
+  transition: color 0.2s ease;
+}
+
+[data-template-theme='education-course'] .nf-colophon-link:hover,
+[data-template-theme='education-course'] .nf-colophon-link[aria-current='page'] {
+  color: oklch(96.6% 0.004 168deg);
+}
+
+/* The school's working motto — the last of the three italic serif moments, with
+   the marker under the word the school actually cares about. */
+[data-template-theme='education-course'] .nf-motto {
+  color: oklch(96.6% 0.004 168deg);
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+  font-style: italic;
+  letter-spacing: 0;
+  line-height: 1.18;
+  max-width: 40rem;
+  text-wrap: balance;
+}
+
+[data-template-theme='education-course'] .nf-motto-mark {
+  background-color: var(--nf-highlight);
+  box-decoration-break: clone;
+  color: var(--nf-ink);
+  padding-inline: 0.14em 0.18em;
+}
+
+[data-template-theme='education-course'] .nf-colophon-rule {
+  background-color: var(--nf-rule-board);
+  height: 1px;
+}
+
+[data-template-theme='education-course'] .nf-imprint {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+[data-template-theme='education-course'] .nf-mark-stroke {
+  fill: var(--nf-highlight);
+}
+
+/* Reduced-motion net for the shell's own choreography (the masthead entrance,
+   the mark stroke, the active-page marker, the colophon motto and rule). Final
+   frame, instantly, even before hydration — the same guarantee
+   template-motion.css gives the section reveals, and what Playwright captures
+   and the poster tool have to record. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='education-course'] [data-nf-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
