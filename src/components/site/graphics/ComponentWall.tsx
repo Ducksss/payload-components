@@ -78,14 +78,22 @@ function WallCard({ slug }: { slug: string }) {
   const Demo = demosBySlug[slug]
   if (!Demo) return null
 
-  /* Narrow on phones on purpose: at 340px a 390px-wide viewport shows one card
+  /* Widths are 231 / 330 / 384 rather than round numbers because each divides
+     exactly by the 0.3 zoom below (770 / 1100 / 1280), so every twin lays out at
+     an INTEGER width. At 230 and 380 the layout width came out fractional
+     (766.67 / 1266.67), and sub-pixel text layout at a fractional width made the
+     rendered card height flip by 1px between otherwise identical runs. On mobile
+     the wall sits above ~17,000px of page, so that 1px relayouts everything
+     below it and blows the visual-regression tolerance.
+
+     Narrow on phones on purpose: at 340px a 390px-wide viewport shows one card
      and two slivers, which reads as a cropped carousel rather than a wall.
      ~230px keeps three cards in frame so the rows still say "many".
      shadow-frame, not shadow-card: at this size a 1px hairline reads as a
      wireframe, and the lift is what makes each block a physical thing on a
      surface rather than an outline drawn on the page. */
   return (
-    <div className="w-[230px] shrink-0 sm:w-[330px] lg:w-[380px]">
+    <div className="w-[231px] shrink-0 sm:w-[330px] lg:w-[384px]">
       {/* Caption, not chrome. Wrapping each twin in a bordered card put a frame
           around a block that already draws its own — the doubled edge is what
           made the rows read as screenshots in widgets. The label sits outside
@@ -103,7 +111,13 @@ function WallCard({ slug }: { slug: string }) {
           wall built to prove range read as repetition. `zoom` (not transform)
           so percentage widths resolve against the scaled box and the block
           lays out at real desktop proportions before shrinking. */}
-      <div className="relative overflow-hidden rounded-[0.7rem] bg-background shadow-frame">
+      {/* Fixed height, not natural. Letting the box follow its content means the
+          page height depends on how each twin happens to wrap, and on mobile
+          that sits above ~17,000px of page. A constant box makes the page height
+          independent of the cards entirely — belt and braces alongside the
+          integer widths above. Content is centred so shorter blocks read as
+          deliberately framed rather than stranded at the top of dead space. */}
+      <div className="relative flex h-[152px] items-center overflow-hidden rounded-[0.7rem] bg-background shadow-frame sm:h-[186px] lg:h-[216px]">
         <div className="w-full [zoom:0.3]">
           <Demo />
         </div>
