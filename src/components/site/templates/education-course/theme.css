@@ -1,0 +1,19 @@
+/* Northfield School (education-course) scoped theme — FOUNDATION SKELETON.
+ *
+ * Convention (frozen contract): every rule in this file must live beneath the
+ * [data-template-theme='education-course'] root the shell renders. Override the
+ * semantic variables the demo twins consume (--background, --foreground,
+ * --card, --muted, --muted-foreground, --border, --primary, --brand, --radius,
+ * ...) and add template-specific tokens as needed. Never touch :root, .dark,
+ * another template's scope, or src/app/globals.css. The site stays
+ * forced-light; intentional dark bands come from named tokens defined here.
+ *
+ * Twins are calibrated for a white page and for uploads this site never ships,
+ * so expect to repaint their bg-muted placeholder plates and any
+ * bg-background/NN inner panels from your own tokens — see the sibling
+ * concepts' themes for the established idioms. */
+
+[data-template-theme='education-course'] {
+  background-color: var(--background);
+  color: var(--foreground);
+}
