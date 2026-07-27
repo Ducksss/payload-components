@@ -4,8 +4,7 @@ import { ArrowRight, Sparkles } from 'lucide-react'
 
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { GitHubMark } from '@/components/site/GitHubMark'
-import { HeroInstallReplay } from '@/components/site/HeroInstallReplay'
-import { HeroProductFrame } from '@/components/site/HeroProductFrame'
+import { ComponentWall, componentWallCount } from '@/components/site/graphics/ComponentWall'
 import {
   githubRepoUrl,
   heroEyebrow,
@@ -18,8 +17,16 @@ import {
 } from '@/lib/site'
 
 /* Hero — the claim set in Geist with one italic-serif clause, the install
- * command above the fold, then the install replay as proof. Stays a server
- * component; the client bits (copy button, replay control) mount inside it. */
+ * command above the fold, then the catalog itself as proof: three drifting
+ * rows of the real component twins.
+ *
+ * The wall replaced a single-component install replay here. A hero has one
+ * job, and for a registry that job is range — one block installing proves the
+ * CLI, sixty blocks alive proves the product. (The replay still runs, where
+ * running a command is the actual subject: the workflow section.)
+ *
+ * Stays a server component; only the copy button and the wall's drift are
+ * client-side. */
 export function HeroSection() {
   const [browseLink] = heroTertiaryLinks
 
@@ -27,7 +34,7 @@ export function HeroSection() {
     <section className="hero-shell overflow-hidden border-b border-border/60">
       <div aria-hidden="true" data-parallax="0.1" className="hero-atmosphere" />
 
-      <div className="container relative flex flex-col gap-10 py-10 sm:py-14 lg:gap-12 lg:py-16">
+      <div className="container relative pt-10 sm:pt-14 lg:pt-16">
         <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center gap-5 text-center">
           <span
             className="hero-reveal flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-4 py-1.5 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-muted-foreground"
@@ -103,12 +110,25 @@ export function HeroSection() {
             </Link>
           </div>
         </div>
+      </div>
 
-        <div className="hero-proof-enter">
-          <HeroInstallReplay>
-            <HeroProductFrame />
-          </HeroInstallReplay>
-        </div>
+      {/* Full-bleed: the wall runs past the container edges so the rows read as
+          a surface passing behind the page. */}
+      <div className="relative mt-10 overflow-hidden pb-12 sm:mt-12 lg:mt-14">
+        <ComponentWall />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent"
+        />
+      </div>
+
+      {/* The wall is decorative; this line carries the same fact in text, and
+          is the only place the catalog size is stated on the landing page. */}
+      <div className="container relative -mt-4 pb-12 text-center">
+        <p className="text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">{componentWallCount} blocks</span> in the
+          registry — every one wired into Payload by a single command.
+        </p>
       </div>
     </section>
   )

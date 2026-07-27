@@ -5,6 +5,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { GitHubMark } from '@/components/site/GitHubMark'
 import { MaintainerNote } from '@/components/site/MaintainerNote'
+import { Reveal } from '@/components/site/motion/Reveal'
 import { Eyebrow, HeadingAccent, Section } from '@/components/site/section'
 import {
   communityIntro,
@@ -80,7 +81,9 @@ export function CommunityCta() {
           </a>
         </div>
 
-        <MaintainerNote />
+        <Reveal delay={0.06}>
+          <MaintainerNote />
+        </Reveal>
       </div>
     </Section>
   )

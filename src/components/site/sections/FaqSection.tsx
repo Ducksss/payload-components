@@ -1,4 +1,5 @@
 import { Faq } from '@/components/site/Faq'
+import { Reveal } from '@/components/site/motion/Reveal'
 import { Section, SectionHeading } from '@/components/site/section'
 import { faqIntro, landingSections } from '@/lib/site'
 
@@ -12,9 +13,9 @@ export function FaqSection() {
         intro={faqIntro}
       />
 
-      <div className="reveal-on-scroll mt-10">
+      <Reveal className="mt-10">
         <Faq />
-      </div>
+      </Reveal>
 
       {/* Quiet dogfood note: this FAQ is itself one of the catalog blocks. */}
       <p className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1.5 font-mono text-[11px] text-muted-foreground">
