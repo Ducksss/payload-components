@@ -45,7 +45,17 @@ jobs:
 
       - run: pnpm source:build
 
+      # Baselines MUST be minted against the same server mode the release gate
+      # compares in. `pnpm test:e2e` alone starts `pnpm dev`, while the gate runs
+      # `PLAYWRIGHT_SERVER_MODE=production` (`pnpm start`) — and a dev render is
+      # not pixel-identical to a production one. Minting in dev produced Linux
+      # baselines that failed the gate by 1px of page height, which then cascades
+      # into a whole-page diff well past maxDiffPixelRatio.
+      - run: pnpm build:e2e
+
       - name: Update visual baselines
+        env:
+          PLAYWRIGHT_SERVER_MODE: production
         run: pnpm test:e2e ${{ inputs.spec }} --update-snapshots
 
       - name: Open PR with minted baselines
