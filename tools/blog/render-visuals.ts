@@ -82,9 +82,9 @@ export const validateBlogVisualAssets = async ({
     .map((candidate) => path.relative(assetRoot, candidate))
     .sort()
 
-  if (covers.length !== 32 || figures.length !== 35 || expected.size !== 67) {
+  if (covers.length !== 33 || figures.length !== 36 || expected.size !== 69) {
     throw new Error(
-      `Catalog asset inventory is ${covers.length} covers, ${figures.length} figures, and ${expected.size} total; expected 32, 35, and 67.`,
+      `Catalog asset inventory is ${covers.length} covers, ${figures.length} figures, and ${expected.size} total; expected 33, 36, and 69.`,
     )
   }
   if (JSON.stringify(actual) !== JSON.stringify([...expected].sort())) {
@@ -150,6 +150,7 @@ export const renderVisuals = async (
   await captureBlogFigures({
     baseURL: coverOptions.baseUrl,
     outputRoot: coverOptions.outputRoot,
+    slugs: coverOptions.entries.map((entry) => entry.slug),
   })
   const assetRoot = path.join(coverOptions.outputRoot, 'public')
   const validated = await validateBlogVisualAssets({ assetRoot })

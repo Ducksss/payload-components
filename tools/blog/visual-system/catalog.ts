@@ -848,6 +848,34 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       },
     ],
   },
+  {
+    slug: 'templates-are-here',
+    order: 33,
+    series: 'project-notes',
+    thesis: 'Complete concepts turn isolated blocks into inspectable site systems.',
+    prompt: 'Explore one concept, install one block, and share what a real project still needs.',
+    primary: {
+      kind: 'route',
+      label: 'Six-concept Templates gallery',
+      route: '/templates',
+      capture: {
+        columns: 3,
+        position: 'top',
+        selectors: ['main'],
+      },
+    },
+    secondary: {
+      kind: 'sequence',
+      label: 'Community learning loop',
+      items: ['explore', 'inspect recipe', 'install one block', 'share evidence'],
+    },
+    figures: [
+      {
+        path: '/blog/templates-are-here/figure-01-template-gallery.webp',
+        mode: 'see',
+      },
+    ],
+  },
 ]
 
 export const blogVisualCatalog = catalogEntries satisfies readonly BlogVisualEntry[]
