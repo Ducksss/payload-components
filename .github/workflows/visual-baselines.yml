@@ -58,6 +58,14 @@ jobs:
 
       - run: pnpm source:build
 
+      # Baselines MUST be minted against the same server mode the release gate
+      # compares in. `pnpm test:e2e` alone starts `pnpm dev`, while the gate runs
+      # `PLAYWRIGHT_SERVER_MODE=production` (`pnpm start`) — and a dev render is
+      # not pixel-identical to a production one. Minting in dev produced Linux
+      # baselines that failed the gate by 1px of page height, which then cascades
+      # into a whole-page diff well past maxDiffPixelRatio.
+      - run: pnpm build:e2e
+
       - name: Update visual baselines
         env:
           # Passed as an env var, not a ${{ }} splice, so the dispatch input stays
@@ -66,6 +74,11 @@ jobs:
           SPEC: ${{ inputs.spec }}
           # Quoted at the use site: unlike SPEC this is always a single token.
           UPDATE: ${{ inputs.update }}
+          # Baselines MUST be minted in the same server mode the release gate
+          # compares in. Bare `pnpm test:e2e` starts `pnpm dev`, while the gate
+          # runs PLAYWRIGHT_SERVER_MODE=production against `pnpm start`, and a dev
+          # render is not pixel-identical to a production one.
+          PLAYWRIGHT_SERVER_MODE: production
         run: pnpm test:e2e $SPEC --update-snapshots="$UPDATE"
 
       - name: Open PR with minted baselines

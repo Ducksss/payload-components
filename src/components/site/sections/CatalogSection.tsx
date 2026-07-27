@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react'
 
 import { CatalogFamilyTeaser } from '@/components/site/CatalogFamilyTeaser'
 import { ComponentSpecimen } from '@/components/site/ComponentSpecimen'
+import { Reveal } from '@/components/site/motion/Reveal'
 import { Section, SectionHeading } from '@/components/site/section'
 import { componentsIntro, landingSections } from '@/lib/site'
 
@@ -28,13 +29,13 @@ export function CatalogSection() {
         </Link>
       </div>
 
-      <div className="reveal-on-scroll mt-12">
+      <Reveal className="mt-12">
         <ComponentSpecimen />
-      </div>
+      </Reveal>
 
-      <div className="reveal-on-scroll mt-12">
+      <Reveal className="mt-12">
         <CatalogFamilyTeaser />
-      </div>
+      </Reveal>
     </Section>
   )
 }

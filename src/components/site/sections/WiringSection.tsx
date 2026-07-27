@@ -1,4 +1,5 @@
 import { siteIcons } from '@/components/site/icons'
+import { Reveal, RevealItem, RevealStagger } from '@/components/site/motion/Reveal'
 import { Section, SectionHeading } from '@/components/site/section'
 import { WiringLedger } from '@/components/site/WiringLedger'
 import { WiringFlow } from '@/components/site/graphics/WiringFlow'
@@ -24,31 +25,35 @@ export function WiringSection() {
       </div>
 
       {/* The shape of an install: one file a paste covers, four wired by us. */}
-      <div className="reveal-on-scroll mt-12">
+      <Reveal className="mt-12">
         <WiringFlow caption={wiringMapCaption} />
-      </div>
+      </Reveal>
 
       {/* The receipts: the same five artifacts, row by row, vs a plain shadcn add. */}
-      <div className="reveal-on-scroll mt-6">
+      <Reveal className="mt-6">
         <WiringLedger />
-      </div>
+      </Reveal>
 
       {/* Receipts strip — each claim checkable in the repo. */}
-      <div className="reveal-on-scroll mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-border pt-8">
+      <RevealStagger
+        className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-border pt-8"
+        stagger={0.05}
+      >
         {receipts.map((receipt) => {
           const Icon = siteIcons[receipt.icon]
 
           return (
-            <span
+            <RevealItem
               key={receipt.label}
               className="flex items-center gap-2 text-xs font-medium text-muted-foreground"
+              y={10}
             >
               <Icon className="size-3.5 text-brand" aria-hidden="true" />
               {receipt.label}
-            </span>
+            </RevealItem>
           )
         })}
-      </div>
+      </RevealStagger>
     </Section>
   )
 }
