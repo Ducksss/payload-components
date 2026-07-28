@@ -1,0 +1,33 @@
+/* Clearance for the fixed preview-exit affordance.
+ *
+ * TemplatePreviewExit is `position: fixed`, so it floats over the concept it
+ * describes. Mid-page that is harmless — scroll on and the content moves out
+ * from under it. At the very END of the document there is no scroll left, so
+ * whatever it covers there is covered permanently: on every concept it sat on
+ * the last line of the footer's fine print, which is the attribution line.
+ *
+ * So reserve a strip at the bottom of the last band for it to land on. Every
+ * concept's shell ends in exactly one <footer>, and the space is added INSIDE
+ * that element so the band's own background extends with it — put below the
+ * footer instead and the page background would show as a seam.
+ *
+ * A transparent bottom border, not padding and not a spacer child:
+ *   - padding cannot be added to whatever each footer already sets, only
+ *     replaced, which would quietly restyle ten hand-tuned footers;
+ *   - a ::after spacer becomes a flex/grid item in the footers that are laid out
+ *     that way, and would land in a column rather than at the end;
+ *   - a border is additive, layout-neutral, and `background-clip: border-box`
+ *     (the default, and nothing here overrides it) paints the footer's own
+ *     background across it.
+ *
+ * Scoped with :has() to the preview routes — the pill is the only thing those
+ * routes render outside the template canvas, so its presence IS the condition.
+ * The detail page mounts these same routes in an iframe and gets the clearance
+ * there too, which is what we want. The poster tool hides the pill but the
+ * element still exists, so posters keep the same footer metrics as the previews
+ * they stand in for. */
+body:has([data-template-preview-exit]) footer {
+  /* The pill sits 1rem off the bottom and is ~2.4rem tall; 4.5rem clears it
+     with room to spare, so it never abuts the last line of type either. */
+  border-bottom: 4.5rem solid transparent;
+}
