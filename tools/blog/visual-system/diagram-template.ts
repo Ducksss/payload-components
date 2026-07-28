@@ -43,6 +43,21 @@ export const escapeXml = (value: string) =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&apos;')
 
+const XML_ENTITIES: Record<string, string> = {
+  '&amp;': '&',
+  '&apos;': "'",
+  '&gt;': '>',
+  '&lt;': '<',
+  '&quot;': '"',
+}
+
+/* Exact inverse of escapeXml. This MUST decode in a single pass: a chain of
+   .replaceAll() calls that expands '&amp;' before the others double-unescapes,
+   so text that legitimately contains "&lt;" (escaped to "&amp;lt;") would come
+   back as "<" instead of "&lt;". */
+export const unescapeXml = (value: string) =>
+  value.replaceAll(/&(?:amp|apos|gt|lt|quot);/g, (entity) => XML_ENTITIES[entity] ?? entity)
+
 const canonicalDiagramPath = (figurePath: string) =>
   /^\/blog\/[a-z0-9-]+\/figure-\d{2}-[a-z0-9-]+\.svg$/.test(figurePath) &&
   path.posix.normalize(figurePath) === figurePath
@@ -884,14 +899,7 @@ export const validateRenderedDiagram = ({
 
   const bodyLines = [
     ...svg.matchAll(/<text[^>]+data-role="body-line"[^>]*>([^<]*)<\/text>/g),
-  ].map((match) =>
-    match[1]
-      .replaceAll('&amp;', '&')
-      .replaceAll('&lt;', '<')
-      .replaceAll('&gt;', '>')
-      .replaceAll('&quot;', '"')
-      .replaceAll('&apos;', "'"),
-  )
+  ].map((match) => unescapeXml(match[1]))
 
   if (
     bodyLines.length === 0 ||

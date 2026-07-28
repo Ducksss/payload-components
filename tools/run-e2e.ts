@@ -6,7 +6,7 @@ import { pathToFileURL } from 'node:url'
 
 type E2eBatch = {
   args: string[]
-  name: 'frontend' | 'remaining' | 'requested' | 'templates-visual' | 'visual'
+  name: 'frontend' | 'remaining' | 'requested' | 'templates-a11y' | 'templates-visual' | 'visual'
 }
 
 type E2eInvocation = {
@@ -31,6 +31,10 @@ const isolatedSpecs = [
   {
     name: 'templates-visual' as const,
     path: 'tests/e2e/templates-visual.e2e.spec.ts',
+  },
+  {
+    name: 'templates-a11y' as const,
+    path: 'tests/e2e/templates-a11y.e2e.spec.ts',
   },
 ]
 
@@ -62,9 +66,11 @@ export const buildE2eBatches = (args: string[], specFiles: string[]): E2eBatch[]
     return [{ args, name: 'requested' }]
   }
 
-  // The frontend and visual specs each walk 58 routes. Keeping them in
-  // separate Playwright processes also gives each one a fresh Next dev server,
-  // so Turbopack does not retain both compiled route sets in one heap.
+  // The frontend and visual specs each walk 58 routes, and the template a11y
+  // sweep runs ~40 axe passes plus a painted-pixel contrast pass per concept.
+  // Keeping them in separate Playwright processes also gives each one a fresh
+  // Next dev server, so Turbopack does not retain both compiled route sets in
+  // one heap.
   const uniqueSpecs = [...new Set(specFiles)].sort()
   const batches = isolatedSpecs
     .filter((isolated) => uniqueSpecs.includes(isolated.path))
