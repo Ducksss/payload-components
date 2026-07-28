@@ -189,6 +189,86 @@ test.describe('Light shadcn frontend', () => {
     await expect(wall).toHaveAttribute('aria-hidden', 'true')
   })
 
+  /* The wall's fit is curated from measured heights, and a curated fit is exactly
+     the kind that rots silently. It was first measured only at 1440px, where it
+     was correct, while 14 of 18 cards were being guillotined mid-sentence on a
+     phone. Any change to a twin's demo content can push a block past its frame
+     again, and none of that is visible in a desktop review — so the fit is
+     asserted, at the widths that broke. */
+  for (const wallViewport of [
+    { height: 844, label: 'phone', width: 390 },
+    { height: 1024, label: 'tablet', width: 768 },
+    { height: 900, label: 'desktop', width: 1440 },
+  ]) {
+    test(`keeps every wall card inside its frame on ${wallViewport.label}`, async ({ page }) => {
+      await page.setViewportSize({ height: wallViewport.height, width: wallViewport.width })
+      await page.goto(baseURL)
+      await expect(page.locator('.component-wall')).toBeAttached()
+
+      const measured = await page.evaluate(() => {
+        /* The wall is tilted and scaled as a whole, and a rotated box reports an
+           axis-aligned bounding box larger than itself — by an amount that grows
+           with width, so frame and content would inflate by different amounts and
+           every reading would be wrong. Neutralised for measurement only. */
+        const tilt = document.querySelector('.component-wall > div')
+        if (tilt instanceof HTMLElement) {
+          tilt.style.rotate = '0deg'
+          tilt.style.scale = '1'
+        }
+
+        return [...document.querySelectorAll('.wall-card-frame')].map((frame) => {
+          const content = frame.firstElementChild
+          const label = frame.parentElement?.querySelector('p')?.textContent?.trim() ?? '?'
+
+          /* Both rects are read in the same coordinate space, so the CSS zoom on
+             the content child is already reflected in its height. */
+          return {
+            label,
+            overrun: Math.round(
+              (content?.getBoundingClientRect().height ?? 0) - frame.getBoundingClientRect().height,
+            ),
+          }
+        })
+      })
+
+      expect(measured.length).toBeGreaterThan(0)
+
+      /* Three twins (content-quote, content-feature-media, content-feature-split)
+         render their own stacked variant below 1024px however wide the wall lays
+         them out — viewport media queries, not container queries — so a residual
+         overrun is expected, and the frame's bottom fade dissolves it rather than
+         cutting it. Measured worst case: 32px on a phone against a 28px fade,
+         44px on a tablet against a 44px one, and nothing at all on desktop.
+
+         The 60px ceiling is deliberately not snug to that 44px. Snug would fail
+         on any copy edit, and this exists to catch the class of regression where
+         a block loses a paragraph — 88px in the tablet band, 165px on a phone
+         before the per-breakpoint zoom — not to freeze the current pixel. */
+      const worst = measured.reduce((a, b) => (b.overrun > a.overrun ? b : a))
+      expect(
+        worst.overrun,
+        `"${worst.label}" overruns its frame by ${worst.overrun}px`,
+      ).toBeLessThanOrEqual(60)
+    })
+  }
+
+  test('keeps the wall frame fade that dissolves an overrun', async ({ page }) => {
+    await page.setViewportSize({ height: 844, width: 390 })
+    await page.goto(baseURL)
+
+    /* The other half of the overflow fix, and the half that already went missing
+       once: the fade was dropped while the cards were briefly natural-height and
+       not restored when they went back to fixed heights, turning every overrun
+       back into a hard cut. Without it, the ceiling above is all that stands
+       between a content tweak and a guillotined block. */
+    const fadeHeight = await page
+      .locator('.wall-card-frame')
+      .first()
+      .evaluate((frame) => getComputedStyle(frame, '::after').height)
+
+    expect(Number.parseFloat(fadeHeight)).toBeGreaterThan(8)
+  })
+
   test('renders the light token-driven homepage', async ({ page }) => {
     await page.goto(baseURL)
 

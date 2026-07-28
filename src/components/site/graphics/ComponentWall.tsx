@@ -34,13 +34,21 @@ const titleBySlug = new Map<string, string>(
  * team-grid are tall enough to need cropping.
  *
  * Caveat that the fit cannot cover: the twins are responsive on VIEWPORT media
- * queries, not container queries, so on a phone each one renders its own stacked
- * mobile variant — taller than the same block at 1280px, however wide we lay it
+ * queries, not container queries, so below 1024px each one renders its own
+ * stacked variant — taller than the same block at 1280px, however wide we lay it
  * out. Three of these (content-quote, content-feature-split,
- * content-feature-media) still overrun their frame on small screens; the
- * .wall-card-frame fade dissolves the overrun instead of guillotining it. Making
- * that exact would mean re-curating against two variants, or container queries
- * in 60+ twins.
+ * content-feature-media) still overrun their frame; the .wall-card-frame fade
+ * dissolves the overrun instead of guillotining it. Making that exact would mean
+ * re-curating against three variants, or container queries in 60+ twins.
+ *
+ * The overrun is worst on TABLET, not phone — the stacked variants are widest
+ * there. Measured against a 212px frame: 88/80/79px at 640-1023px, versus
+ * 32/26/25px at 390px. That is three times what the fade could dissolve, so
+ * those three cards were still visibly losing a sentence in that band after the
+ * phone case was fixed. Hence the 256px sm frame, taller than the 216px desktop
+ * one, with the fade widened over the same range. Both are scoped to the band
+ * deliberately: 390px and 1440px are pinned by visual baselines, and neither
+ * moves.
  *
  * Rows mix families deliberately — six FAQs in a row would be repetition again.
  * `speed` is percent of the (doubled) track per second: ~1.0 is about 48px/s,
@@ -132,7 +140,7 @@ function WallCard({ slug }: { slug: string }) {
           the wall sits above ~17,000px of page, so a 1px wobble relayouts
           everything under it. Content is centred so the shorter blocks read as
           deliberately framed rather than stranded in dead space. */}
-      <div className="wall-card-frame relative flex h-[180px] items-center overflow-hidden rounded-[0.7rem] bg-background shadow-frame sm:h-[212px] lg:h-[216px]">
+      <div className="wall-card-frame relative flex h-[180px] items-center overflow-hidden rounded-[0.7rem] bg-background shadow-frame sm:h-[256px] lg:h-[216px]">
         <div className="w-full [zoom:0.18046875] sm:[zoom:0.2578125] lg:[zoom:0.3]">
           <Demo />
         </div>
