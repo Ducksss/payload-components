@@ -413,6 +413,43 @@ test.describe('Template full previews (/templates/<slug>/preview/<page>)', () =>
     })
   }
 
+  test('the preview exit names its concept and keeps clear of the mobile content column', async ({
+    page,
+  }) => {
+    // Chrome shared by every concept's preview shell, so one concept covers it.
+    const template = templateShowcases[0]
+    const exit = page.locator('[data-template-preview-exit] a')
+
+    const mobile = { height: 844, width: 390 }
+    await page.setViewportSize(mobile)
+    await page.goto(`${baseURL}${templatePreviewHref(template.slug)}`)
+    await expect(page.locator('[data-template-canvas]')).toBeVisible()
+
+    await expect(exit).toHaveAttribute('href', templateDetailHref(template.slug))
+    /* The concept's name is dropped from the VISIBLE label at this width, never
+       from the accessible name — the link still says what it leaves. */
+    await expect(exit).toHaveAccessibleName(`${template.title} · ${TEMPLATE_CONCEPT_STATUS_LABEL}`)
+
+    /* Being fixed, it floats over the concept it describes. With one column to
+       work with it has to stay in the corner: centred and full-width it covered
+       a band of hero content at 390px. */
+    const mobileBox = (await exit.boundingBox())!
+    expect(mobileBox.x).toBeGreaterThan(mobile.width / 2)
+    expect(mobileBox.x + mobileBox.width).toBeLessThanOrEqual(mobile.width)
+
+    const desktop = { height: 900, width: 1280 }
+    await page.setViewportSize(desktop)
+    await page.goto(`${baseURL}${templatePreviewHref(template.slug)}`)
+    await expect(page.locator('[data-template-canvas]')).toBeVisible()
+
+    // From sm up there is room for the full pill, centred.
+    const desktopBox = (await exit.boundingBox())!
+    expect(desktopBox.width).toBeGreaterThan(mobileBox.width)
+    expect(
+      Math.abs(desktopBox.x + desktopBox.width / 2 - desktop.width / 2),
+    ).toBeLessThanOrEqual(2)
+  })
+
   test('unknown preview slugs and pages return 404', async ({ page }) => {
     const template = templateShowcases[0]
 
