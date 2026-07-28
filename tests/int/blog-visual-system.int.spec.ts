@@ -2586,7 +2586,7 @@ describe('Field Journal diagram renderer', () => {
     const { hydrateDiagramDefinitions } = await import(
       '../../tools/blog/visual-system/diagram-data'
     )
-    const { escapeXml, renderDiagramSvg } = await import(
+    const { escapeXml, renderDiagramSvg, unescapeXml } = await import(
       '../../tools/blog/visual-system/diagram-template'
     )
     const diagrams = await hydrateDiagramDefinitions()
@@ -2595,6 +2595,23 @@ describe('Field Journal diagram renderer', () => {
     expect(escapeXml(`<node id="x">& 'quoted'</node>`)).toBe(
       '&lt;node id=&quot;x&quot;&gt;&amp; &apos;quoted&apos;&lt;/node&gt;',
     )
+
+    /* unescapeXml must be the exact inverse of escapeXml, including for text
+       that already looks like an entity. Decoding '&amp;' before the other
+       entities (a .replaceAll chain) double-unescapes: "&lt;" escapes to
+       "&amp;lt;" and would decode back to "<" instead of "&lt;". */
+    for (const original of [
+      `<node id="x">& 'quoted'</node>`,
+      '&lt;not-a-tag&gt;',
+      '&amp;lt;',
+      'a & b < c > d "e" \'f\'',
+      '&&&',
+    ]) {
+      expect(unescapeXml(escapeXml(original)), original).toBe(original)
+    }
+
+    /* Unknown or partial entities are left untouched rather than mangled. */
+    expect(unescapeXml('&nbsp; &amp 5 &')).toBe('&nbsp; &amp 5 &')
     expect(renderDiagramSvg(first)).toBe(renderDiagramSvg(first))
 
     for (const diagram of diagrams) {
@@ -2687,14 +2704,7 @@ describe('Field Journal diagram renderer', () => {
 
       const decodedBodyLines = [...svg.matchAll(
         /<text[^>]+data-role="body-line"[^>]*>([^<]*)<\/text>/g,
-      )].map((match) =>
-        match[1]
-          .replaceAll('&amp;', '&')
-          .replaceAll('&lt;', '<')
-          .replaceAll('&gt;', '>')
-          .replaceAll('&quot;', '"')
-          .replaceAll('&apos;', "'"),
-      )
+      )].map((match) => unescapeXml(match[1]))
       expect(decodedBodyLines.length, diagram.path).toBeGreaterThan(0)
       expect(
         Math.max(...decodedBodyLines.map((line) => [...line].length)),

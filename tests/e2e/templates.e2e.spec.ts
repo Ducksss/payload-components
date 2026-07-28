@@ -1,4 +1,3 @@
-import AxeBuilder from '@axe-core/playwright'
 import { expect, type Page, test } from '@playwright/test'
 
 import { grantConsent } from './consent'
@@ -487,35 +486,8 @@ test.describe('Templates under reduced motion', () => {
   }
 })
 
-test.describe('Templates accessibility (axe-core, WCAG 2.1 A/AA)', () => {
-  const template = templateShowcases[0]
-  const routes = [
-    { name: 'templates gallery', path: '/templates' },
-    { name: `${template.slug} detail`, path: templateDetailHref(template.slug) },
-    { name: `${template.slug} full preview`, path: templatePreviewHref(template.slug) },
-  ]
-
-  for (const route of routes) {
-    test(`${route.name} has no serious or critical violations`, async ({ page }) => {
-      await page.goto(`${baseURL}${route.path}`)
-      await page.evaluate(() => document.fonts.ready)
-
-      const results = await new AxeBuilder({ page })
-        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-        .analyze()
-
-      const blocking = results.violations.filter(
-        (violation) => violation.impact === 'critical' || violation.impact === 'serious',
-      )
-
-      const report = blocking
-        .map(
-          (violation) =>
-            `${violation.id} (${violation.impact}): ${violation.help} — ${violation.nodes.length} node(s)\n  ${violation.helpUrl}`,
-        )
-        .join('\n')
-
-      expect(blocking, report).toEqual([])
-    })
-  }
-})
+/* The accessibility sweep lives in templates-a11y.e2e.spec.ts. It used to be a
+   describe block here, pinned to templateShowcases[0] — one concept out of ten,
+   each with its own scoped theme and hand-tuned contrast. It now covers every
+   concept's detail page and full preview at both widths, plus the painted-pixel
+   contrast pass axe cannot do, and runs as its own isolated Playwright batch. */

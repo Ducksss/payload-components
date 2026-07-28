@@ -700,6 +700,22 @@
     mask-composite: intersect;
   }
 
+  /* Safety valve. The wall's slug set is curated so every twin fits its frame,
+     but that fit is a property of the twins' CONTENT — and content changes
+     (dev's content-quote logoLabel already moved one). Without this, the next
+     such change silently guillotines a block mid-sentence again; with it, an
+     overrun dissolves instead. Invisible when nothing overflows, since the
+     gradient then falls over the card's own background. */
+  .wall-card-frame::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1.75rem;
+    pointer-events: none;
+    background: linear-gradient(to top, var(--background), transparent);
+  }
+
   .hero-eyebrow-dot {
     display: inline-block;
     width: 0.42rem;

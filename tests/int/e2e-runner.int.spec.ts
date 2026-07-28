@@ -19,7 +19,7 @@ describe('e2e runner batches', () => {
     })
   })
 
-  it('isolates the memory-heavy frontend and visual route walks', () => {
+  it('isolates the memory-heavy frontend, visual, and template a11y route walks', () => {
     expect(
       buildE2eBatches([], [
         'tests/e2e/a11y.e2e.spec.ts',
@@ -27,6 +27,7 @@ describe('e2e runner batches', () => {
         'tests/e2e/frontend.e2e.spec.ts',
         'tests/e2e/future-regression.e2e.spec.ts',
         'tests/e2e/geo.e2e.spec.ts',
+        'tests/e2e/templates-a11y.e2e.spec.ts',
         'tests/e2e/templates-visual.e2e.spec.ts',
         'tests/e2e/templates.e2e.spec.ts',
       ]),
@@ -42,6 +43,10 @@ describe('e2e runner batches', () => {
       {
         args: ['tests/e2e/templates-visual.e2e.spec.ts'],
         name: 'templates-visual',
+      },
+      {
+        args: ['tests/e2e/templates-a11y.e2e.spec.ts'],
+        name: 'templates-a11y',
       },
       {
         args: [
@@ -64,6 +69,7 @@ describe('e2e runner batches', () => {
       'tests/e2e/consent.e2e.spec.ts',
       'tests/e2e/frontend.e2e.spec.ts',
       'tests/e2e/geo.e2e.spec.ts',
+      'tests/e2e/templates-a11y.e2e.spec.ts',
       'tests/e2e/templates-visual.e2e.spec.ts',
       'tests/e2e/templates.e2e.spec.ts',
     ])
