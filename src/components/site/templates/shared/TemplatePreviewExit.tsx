@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
 import { templateDetailHref } from '@/lib/templates/registry'
 
+import './preview-exit-clearance.css'
+
 /* Small fixed affordance on raw full-preview routes: names the concept, keeps
  * the "Concept preview" status visible, and routes back to the indexable
  * detail page. Rendered outside the template's visual canvas so it stays real,

@@ -450,6 +450,92 @@ test.describe('Template full previews (/templates/<slug>/preview/<page>)', () =>
     ).toBeLessThanOrEqual(2)
   })
 
+  test('every concept reserves a strip so the exit pill never covers its footer', async ({
+    page,
+  }) => {
+    /* The pill is fixed, so at the END of the document there is no scroll left
+       to move content out from under it — anything it covers there is covered
+       for good. preview-exit-clearance.css reserves a strip inside each shell's
+       footer for it to land on; this proves the strip is actually big enough on
+       every concept, which the visual baselines cannot: they would only show
+       that the page height changed, and a reviewer re-minting them would accept
+       the regression. 390px is the tight case — one content column. */
+    const occluded: string[] = []
+
+    for (const template of templateShowcases) {
+      await page.setViewportSize({ height: 844, width: 390 })
+      await page.goto(`${baseURL}${templatePreviewHref(template.slug)}`)
+      await expect(page.locator('[data-template-canvas]')).toBeVisible()
+      // Font swap moves every line; measuring before it lands reads stale boxes.
+      await page.evaluate(() => document.fonts.ready)
+
+      /* `behavior: instant` because globals.css sets `scroll-behavior: smooth`
+         on html — a plain scrollTo animates, and the first measurement then
+         reads the page still at the top, reporting hero content as "covered". */
+      await page.evaluate(() =>
+        window.scrollTo({
+          behavior: 'instant',
+          left: 0,
+          top: document.documentElement.scrollHeight,
+        }),
+      )
+      await expect
+        .poll(() =>
+          page.evaluate(
+            () =>
+              Math.ceil(window.scrollY + window.innerHeight) >=
+              document.documentElement.scrollHeight,
+          ),
+        )
+        .toBe(true)
+
+      const covered = await page.evaluate(() => {
+        const pill = document.querySelector('[data-template-preview-exit] a')
+        if (!pill) return ['the exit pill is missing entirely']
+        const box = pill.getBoundingClientRect()
+        const hits: string[] = []
+
+        /* Text nodes, not elements: a <p> box can extend under the pill while
+           its rendered lines stop short, and the reverse. Range rects are what
+           the reader actually sees. */
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
+        let node: Node | null
+        while ((node = walker.nextNode())) {
+          const text = node.textContent?.trim()
+          const parent = node.parentElement
+          if (!text || !parent) continue
+          if (parent.closest('[data-template-preview-exit]') || parent.closest('.sr-only')) continue
+          const style = getComputedStyle(parent)
+          if (style.visibility === 'hidden' || style.display === 'none') continue
+
+          const range = document.createRange()
+          range.selectNodeContents(node)
+          for (const rect of Array.from(range.getClientRects())) {
+            if (rect.width < 1 || rect.height < 1) continue
+            if (
+              rect.right > box.left &&
+              rect.left < box.right &&
+              rect.bottom > box.top &&
+              rect.top < box.bottom
+            ) {
+              hits.push(text.slice(0, 50))
+              break
+            }
+          }
+        }
+
+        return hits
+      })
+
+      if (covered.length > 0) occluded.push(`${template.slug}: ${covered.join(' | ')}`)
+    }
+
+    expect(
+      occluded,
+      `the exit pill permanently covers footer content on ${occluded.length} concept(s) at 390px:\n  ${occluded.join('\n  ')}`,
+    ).toEqual([])
+  })
+
   test('unknown preview slugs and pages return 404', async ({ page }) => {
     const template = templateShowcases[0]
 
