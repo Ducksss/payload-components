@@ -1,0 +1,27 @@
+# Prettier does not read .gitignore, so generated and vendored trees are listed
+# here explicitly. Everything below is excluded for a reason, not by default.
+
+# Build output and generated artifacts.
+.next
+.source
+public/r
+test-results
+playwright-report
+coverage
+pnpm-lock.yaml
+
+# Shipped to consumers verbatim. `payload-components add` copies these files
+# straight into a user's project, so their formatting is part of the product
+# surface rather than an internal style choice — and the registry JSON that
+# embeds them is built from these exact bytes. Reformatting the tree is a
+# deliberate product decision, not a side effect of adopting a formatter.
+payload-components
+
+# Docs and MDX content. Fumadocs serialises MDX to the /llms.txt and geo
+# surfaces, and tests/e2e/geo.e2e.spec.ts pins exact substrings from them, so
+# reflowing prose here can fail the gate for purely cosmetic reasons.
+content
+*.mdx
+
+# Playwright's committed PNG baselines.
+**/*-snapshots
