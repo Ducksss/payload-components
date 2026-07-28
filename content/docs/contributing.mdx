@@ -109,11 +109,22 @@ PostHog event payloads only and cannot catch an undisclosed provider.
 
 ## Consent
 
-None of the above loads until the visitor opts in. `AnalyticsShell` renders
-nothing while consent is unset or denied, so on a first visit there is no GA4
-script, no Vercel bundle, no PostHog beacon, and no stored identifier. State
-lives in `src/lib/consent.ts` under the `pc_consent` localStorage key, the banner
-is `ConsentBanner`, and `/privacy` documents the stack and can withdraw consent.
+The gate is two-tier, split by what each provider writes to the visitor's device.
+
+| Provider | Loads | Why |
+| --- | --- | --- |
+| Vercel Analytics, Speed Insights | Always | Cookieless, stores no identifier — no consent requirement, and gating them would blind Core Web Vitals on most traffic for no privacy gain |
+| Google Analytics 4 | After opt-in | Sets its own `_ga` cookies and auto-collects page views |
+| PostHog | After opt-in | Persists a `pc_distinct_id` in localStorage |
+
+On a first visit there is no GA4 script, no PostHog beacon, and no stored
+identifier. State lives in `src/lib/consent.ts` under the `pc_consent`
+localStorage key, the banner is `ConsentBanner`, and `/privacy` documents the
+split and can withdraw consent.
+
+Keep the tiers straight when adding a provider: the question is not whether the
+data feels sensitive, it is whether the provider writes to the device. If it sets
+a cookie or stores an id, it goes behind the gate.
 
 Three rules to preserve when touching any of this:
 

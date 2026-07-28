@@ -129,13 +129,17 @@ function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
 }
 
 function trackEvent(eventName: string, properties: AnalyticsProperties) {
-  if (!analyticsAllowed()) return
-
+  /* Mirrors the two tiers in AnalyticsShell. Vercel is cookieless and mounted
+   * for everyone, so its events need no opt-in; the event names and fields are
+   * the enumerated vocabulary in content/docs/contributing.mdx, never free text.
+   * GA4 and PostHog below are consent-gated. */
   try {
     trackVercelEvent(eventName, properties)
   } catch {
     // Analytics must never block the user action.
   }
+
+  if (!analyticsAllowed()) return
 
   try {
     window.gtag?.('event', eventName, properties)
