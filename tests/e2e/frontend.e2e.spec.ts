@@ -1339,6 +1339,27 @@ test.describe('Light shadcn frontend', () => {
     await waitForCopyController(page)
     await stubGtagEvents(page)
 
+    await expect(page).toHaveTitle(
+      'Payload CMS blocks: create, register, type, and render | Payload Components',
+    )
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Payload CMS blocks: create, register, type, and render in v3',
+      }),
+    ).toBeVisible()
+    await expect(
+      page.getByText(
+        'Build Payload CMS blocks in v3 from Block config through collection registration, generated types, rendering, the admin import map, and a live page.',
+        { exact: true },
+      ),
+    ).toBeVisible()
+    await expect(
+      page.getByText('Payload CMS blocks in v3 become live through one chain:', {
+        exact: false,
+      }),
+    ).toBeVisible()
+
     const installButton = page.getByRole('button', {
       name: 'Copy the hero-basic install command',
     })
