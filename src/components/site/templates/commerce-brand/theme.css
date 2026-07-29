@@ -189,9 +189,7 @@
 /* Every twin eyebrow is a Badge with `rounded-full … uppercase
    tracking-eyebrow`; hero-basic's proof chips share rounded-full but never
    tracking-eyebrow, so this pair selects eyebrows only. */
-[data-template-theme='commerce-brand']
-  [data-template-canvas]
-  .rounded-full.tracking-eyebrow {
+[data-template-theme='commerce-brand'] [data-template-canvas] .rounded-full.tracking-eyebrow {
   align-items: center;
   background-color: transparent;
   border: 0;
@@ -281,8 +279,7 @@
 /* The logo marquee mixes its edge fades from --card; on a band those fades
    must dissolve into the paper instead of printing linen columns. The marquee
    is the only --card consumer in that strip, so the remap stays contained. */
-[data-template-theme='commerce-brand']
-  [data-template-section='stockists'][data-tone='muted'] {
+[data-template-theme='commerce-brand'] [data-template-section='stockists'][data-tone='muted'] {
   --card: var(--fn-cream-deep);
 }
 
@@ -420,10 +417,7 @@
   );
 }
 
-[data-template-theme='commerce-brand']
-  [data-template-section='hero']
-  > [aria-hidden='true']
-  > div {
+[data-template-theme='commerce-brand'] [data-template-section='hero'] > [aria-hidden='true'] > div {
   padding-block: clamp(3.25rem, 7vw, 5.25rem);
 }
 

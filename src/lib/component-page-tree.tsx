@@ -1,7 +1,24 @@
 import type { ReactNode } from 'react'
 
 import type { PageTreeTransformer } from 'fumadocs-core/source'
-import { Blocks, ChartNoAxesCombined, CircleDollarSign, Columns2, ContactRound, FileText, Images, LayoutGrid, LayoutPanelTop, Megaphone, MessageSquareQuote, MessagesSquare, MonitorPlay, Pilcrow, Plug, Users } from 'lucide-react'
+import {
+  Blocks,
+  ChartNoAxesCombined,
+  CircleDollarSign,
+  Columns2,
+  ContactRound,
+  FileText,
+  Images,
+  LayoutGrid,
+  LayoutPanelTop,
+  Megaphone,
+  MessageSquareQuote,
+  MessagesSquare,
+  MonitorPlay,
+  Pilcrow,
+  Plug,
+  Users,
+} from 'lucide-react'
 
 import { componentEntries } from '@/lib/site'
 
@@ -70,7 +87,9 @@ const slugOf = (url: string) => url.split('/').filter(Boolean).pop() ?? ''
 const modeOfSlug = (slug: string): InstallMode => {
   // Widened to string: every current component entry is a page block (so the literal type is
   // just 'pages'), but this stays correct once post components (family 'posts') ship.
-  const family: string | undefined = componentEntries.find((component) => component.slug === slug)?.family
+  const family: string | undefined = componentEntries.find(
+    (component) => component.slug === slug,
+  )?.family
   return family === 'posts' ? 'posts' : 'pages'
 }
 
@@ -112,16 +131,14 @@ const buildComponentGroups = (items: Item[]): Folder[] =>
 
     const familyFolders: Folder[] = [...byFamily.entries()]
       .sort(([a], [b]) => familyRank(a) - familyRank(b))
-      .map(
-        ([, family]): Folder => ({
-          children: family.items,
-          collapsible: true,
-          defaultOpen: true,
-          icon: family.icon,
-          name: family.label,
-          type: 'folder',
-        }),
-      )
+      .map(([, family]): Folder => ({
+        children: family.items,
+        collapsible: true,
+        defaultOpen: true,
+        icon: family.icon,
+        name: family.label,
+        type: 'folder',
+      }))
 
     return [
       {

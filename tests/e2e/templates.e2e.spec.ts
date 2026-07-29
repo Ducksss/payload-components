@@ -164,9 +164,7 @@ test.describe('Template detail pages (/templates/<slug>)', () => {
       await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0)
 
       await expect(page.locator('h1')).toHaveCount(1)
-      await expect(
-        page.getByRole('heading', { level: 1, name: template.title }),
-      ).toBeVisible()
+      await expect(page.getByRole('heading', { level: 1, name: template.title })).toBeVisible()
       await expect(page.getByText(TEMPLATE_CONCEPT_STATUS_LABEL).first()).toBeVisible()
       await expect(page.getByText(TEMPLATE_CONCEPT_DISCLOSURE).first()).toBeVisible()
 
@@ -177,9 +175,7 @@ test.describe('Template detail pages (/templates/<slug>)', () => {
       })
       await expect(installButton).toHaveCount(1)
       await expect(installButton).toHaveAttribute('data-cta-level', 'primary')
-      await expect(page.locator('main')).toContainText(
-        `This installs only ${starterBlockSlug}`,
-      )
+      await expect(page.locator('main')).toContainText(`This installs only ${starterBlockSlug}`)
       await installButton.click()
       await expect
         .poll(() => page.evaluate(() => navigator.clipboard.readText()))
@@ -314,9 +310,7 @@ test.describe('Template detail pages (/templates/<slug>)', () => {
 
 test.describe('Template full previews (/templates/<slug>/preview/<page>)', () => {
   for (const template of templateShowcases) {
-    test(`${template.slug}: every page serves its shell, recipe, and noindex`, async ({
-      page,
-    }) => {
+    test(`${template.slug}: every page serves its shell, recipe, and noindex`, async ({ page }) => {
       for (const templatePage of template.pages) {
         const href = templatePreviewHref(template.slug, templatePage.path)
         const response = await page.goto(`${baseURL}${href}`, { waitUntil: 'domcontentloaded' })
@@ -412,6 +406,127 @@ test.describe('Template full previews (/templates/<slug>/preview/<page>)', () =>
       expect(await hasHorizontalOverflow(page)).toBe(false)
     })
   }
+
+  test('the preview exit names its concept and keeps clear of the mobile content column', async ({
+    page,
+  }) => {
+    // Chrome shared by every concept's preview shell, so one concept covers it.
+    const template = templateShowcases[0]
+    const exit = page.locator('[data-template-preview-exit] a')
+
+    const mobile = { height: 844, width: 390 }
+    await page.setViewportSize(mobile)
+    await page.goto(`${baseURL}${templatePreviewHref(template.slug)}`)
+    await expect(page.locator('[data-template-canvas]')).toBeVisible()
+
+    await expect(exit).toHaveAttribute('href', templateDetailHref(template.slug))
+    /* The concept's name is dropped from the VISIBLE label at this width, never
+       from the accessible name — the link still says what it leaves. */
+    await expect(exit).toHaveAccessibleName(`${template.title} · ${TEMPLATE_CONCEPT_STATUS_LABEL}`)
+
+    /* Being fixed, it floats over the concept it describes. With one column to
+       work with it has to stay in the corner: centred and full-width it covered
+       a band of hero content at 390px. */
+    const mobileBox = (await exit.boundingBox())!
+    expect(mobileBox.x).toBeGreaterThan(mobile.width / 2)
+    expect(mobileBox.x + mobileBox.width).toBeLessThanOrEqual(mobile.width)
+
+    const desktop = { height: 900, width: 1280 }
+    await page.setViewportSize(desktop)
+    await page.goto(`${baseURL}${templatePreviewHref(template.slug)}`)
+    await expect(page.locator('[data-template-canvas]')).toBeVisible()
+
+    // From sm up there is room for the full pill, centred.
+    const desktopBox = (await exit.boundingBox())!
+    expect(desktopBox.width).toBeGreaterThan(mobileBox.width)
+    expect(Math.abs(desktopBox.x + desktopBox.width / 2 - desktop.width / 2)).toBeLessThanOrEqual(2)
+  })
+
+  test('every concept reserves a strip so the exit pill never covers its footer', async ({
+    page,
+  }) => {
+    /* The pill is fixed, so at the END of the document there is no scroll left
+       to move content out from under it — anything it covers there is covered
+       for good. preview-exit-clearance.css reserves a strip inside each shell's
+       footer for it to land on; this proves the strip is actually big enough on
+       every concept, which the visual baselines cannot: they would only show
+       that the page height changed, and a reviewer re-minting them would accept
+       the regression. 390px is the tight case — one content column. */
+    const occluded: string[] = []
+
+    for (const template of templateShowcases) {
+      await page.setViewportSize({ height: 844, width: 390 })
+      await page.goto(`${baseURL}${templatePreviewHref(template.slug)}`)
+      await expect(page.locator('[data-template-canvas]')).toBeVisible()
+      // Font swap moves every line; measuring before it lands reads stale boxes.
+      await page.evaluate(() => document.fonts.ready)
+
+      /* `behavior: instant` because globals.css sets `scroll-behavior: smooth`
+         on html — a plain scrollTo animates, and the first measurement then
+         reads the page still at the top, reporting hero content as "covered". */
+      await page.evaluate(() =>
+        window.scrollTo({
+          behavior: 'instant',
+          left: 0,
+          top: document.documentElement.scrollHeight,
+        }),
+      )
+      await expect
+        .poll(() =>
+          page.evaluate(
+            () =>
+              Math.ceil(window.scrollY + window.innerHeight) >=
+              document.documentElement.scrollHeight,
+          ),
+        )
+        .toBe(true)
+
+      const covered = await page.evaluate(() => {
+        const pill = document.querySelector('[data-template-preview-exit] a')
+        if (!pill) return ['the exit pill is missing entirely']
+        const box = pill.getBoundingClientRect()
+        const hits: string[] = []
+
+        /* Text nodes, not elements: a <p> box can extend under the pill while
+           its rendered lines stop short, and the reverse. Range rects are what
+           the reader actually sees. */
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
+        let node: Node | null
+        while ((node = walker.nextNode())) {
+          const text = node.textContent?.trim()
+          const parent = node.parentElement
+          if (!text || !parent) continue
+          if (parent.closest('[data-template-preview-exit]') || parent.closest('.sr-only')) continue
+          const style = getComputedStyle(parent)
+          if (style.visibility === 'hidden' || style.display === 'none') continue
+
+          const range = document.createRange()
+          range.selectNodeContents(node)
+          for (const rect of Array.from(range.getClientRects())) {
+            if (rect.width < 1 || rect.height < 1) continue
+            if (
+              rect.right > box.left &&
+              rect.left < box.right &&
+              rect.bottom > box.top &&
+              rect.top < box.bottom
+            ) {
+              hits.push(text.slice(0, 50))
+              break
+            }
+          }
+        }
+
+        return hits
+      })
+
+      if (covered.length > 0) occluded.push(`${template.slug}: ${covered.join(' | ')}`)
+    }
+
+    expect(
+      occluded,
+      `the exit pill permanently covers footer content on ${occluded.length} concept(s) at 390px:\n  ${occluded.join('\n  ')}`,
+    ).toEqual([])
+  })
 
   test('unknown preview slugs and pages return 404', async ({ page }) => {
     const template = templateShowcases[0]

@@ -7,7 +7,9 @@ import type { ComponentManifest } from '../../tools/payload-components/types'
  * This module is intentionally import-light (type-only) so specs that mock the
  * CLI via `vi.doMock` + dynamic import can pull in the factory without eagerly
  * loading the real `tools/payload-components` modules and defeating their mock. */
-export const makeTestManifest = (overrides: Partial<ComponentManifest> = {}): ComponentManifest => ({
+export const makeTestManifest = (
+  overrides: Partial<ComponentManifest> = {},
+): ComponentManifest => ({
   $schema: '../schema/poc-manifest.schema.json',
   dependencies: {},
   description: 'Test manifest',

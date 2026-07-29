@@ -1,7 +1,4 @@
-import {
-  integrationTestimonialDemoContent,
-  type IntegrationDemoContent,
-} from '@/lib/demo-content'
+import { integrationTestimonialDemoContent, type IntegrationDemoContent } from '@/lib/demo-content'
 
 import { demoLogos } from './DemoLogos'
 
@@ -49,7 +46,9 @@ export function IntegrationTestimonialDemo({
                     </span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium text-foreground">{testimonial.author}</span>
+                    <span className="text-sm font-medium text-foreground">
+                      {testimonial.author}
+                    </span>
                     {testimonial.role ? (
                       <span className="text-xs text-muted-foreground">{testimonial.role}</span>
                     ) : null}
@@ -66,7 +65,11 @@ export function IntegrationTestimonialDemo({
                 key={logo.name}
               >
                 <div className="flex size-10 items-center justify-center rounded-lg border border-border/70 bg-card">
-                  <logo.Icon aria-hidden="true" className="size-5 text-foreground/70" strokeWidth={1.75} />
+                  <logo.Icon
+                    aria-hidden="true"
+                    className="size-5 text-foreground/70"
+                    strokeWidth={1.75}
+                  />
                 </div>
                 <div className="text-sm font-medium text-foreground">{logo.name}</div>
                 {itemDescription ? (

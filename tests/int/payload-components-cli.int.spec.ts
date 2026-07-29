@@ -195,9 +195,9 @@ describe('payload-components CLI demo seed parsing and orchestration', () => {
     expect(() => cli.parseArgs?.(['add', 'hero-basic', '--dry-run', '--dry-run'])).toThrow(
       '--dry-run may only be specified once.',
     )
-    expect(() =>
-      cli.parseArgs?.(['seed', 'hero-basic', '--cwd', 'one', '--cwd', 'two']),
-    ).toThrow('--cwd may only be specified once.')
+    expect(() => cli.parseArgs?.(['seed', 'hero-basic', '--cwd', 'one', '--cwd', 'two'])).toThrow(
+      '--cwd may only be specified once.',
+    )
 
     await expect(
       cli.runCli?.({

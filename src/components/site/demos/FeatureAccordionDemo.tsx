@@ -51,7 +51,10 @@ export function FeatureAccordionDemo({
         <div className="mx-auto flex max-w-6xl flex-col gap-10">
           <div className="flex max-w-3xl flex-col gap-4">
             {eyebrow ? (
-              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow">
+              <Badge
+                variant="outline"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
+              >
                 {eyebrow}
               </Badge>
             ) : null}

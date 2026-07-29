@@ -141,7 +141,7 @@ export const educationCourseTemplate: TemplateShowcase = {
             ],
             links: [{ link: { appearance: 'default', label: 'Read the curriculum' } }],
             title: 'Six modules, and the order is the point.',
-            },
+          },
           id: 'module-ladder',
           tone: 'muted',
         },
@@ -183,8 +183,7 @@ export const educationCourseTemplate: TemplateShowcase = {
           componentSlug: 'stats-proof',
           content: {
             author: 'Rosalind Ekwueme',
-            body:
-              'We do not publish placement rates as a promise. A school can teach you to space a line; it cannot make anyone hire you.',
+            body: 'We do not publish placement rates as a promise. A school can teach you to space a line; it cannot make anyone hire you.',
             description:
               'Figures the school keeps because prospective students ask for them, written up at the end of each term.',
             eyebrow: 'The record',
@@ -703,8 +702,7 @@ export const educationCourseTemplate: TemplateShowcase = {
           componentSlug: 'stats-proof',
           content: {
             author: 'Ivo Sandström',
-            body:
-              'Nothing here is a placement rate. It is a record of what people told us after the fact, kept because the alternative is a brochure.',
+            body: 'Nothing here is a placement rate. It is a record of what people told us after the fact, kept because the alternative is a brochure.',
             description:
               'Figures from the alumni register, updated each term and published whether or not they improve.',
             eyebrow: 'Alumni register',
@@ -911,7 +909,11 @@ export const educationCourseTemplate: TemplateShowcase = {
               {
                 feature: 'Teaching sessions',
                 groupLabel: 'Schedule',
-                values: [{ label: 'Tue + Thu evenings' }, { label: 'Saturdays' }, { label: 'Recorded' }],
+                values: [
+                  { label: 'Tue + Thu evenings' },
+                  { label: 'Saturdays' },
+                  { label: 'Recorded' },
+                ],
               },
               {
                 feature: 'Session length',
@@ -919,12 +921,20 @@ export const educationCourseTemplate: TemplateShowcase = {
               },
               {
                 feature: 'Time to finish',
-                values: [{ label: '22 weeks' }, { label: '22 weeks' }, { label: 'Up to 12 months' }],
+                values: [
+                  { label: '22 weeks' },
+                  { label: '22 weeks' },
+                  { label: 'Up to 12 months' },
+                ],
               },
               {
                 feature: 'Modules per term',
                 groupLabel: 'Pace',
-                values: [{ label: '6, in order' }, { label: '6, in order' }, { label: '6, in order' }],
+                values: [
+                  { label: '6, in order' },
+                  { label: '6, in order' },
+                  { label: '6, in order' },
+                ],
               },
               {
                 feature: 'Deadlines',

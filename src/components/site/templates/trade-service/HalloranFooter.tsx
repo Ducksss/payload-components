@@ -104,8 +104,8 @@ export function HalloranFooter({
           <div className="flex max-w-sm flex-col gap-4">
             <HalloranWordmark size="footer" />
             <p className="hs-footer-line">
-              A family firm since 1991. Dad bought the first van; his sons run it now, and he
-              still does the Friday services. Four engineers, three vans, one number.
+              A family firm since 1991. Dad bought the first van; his sons run it now, and he still
+              does the Friday services. Four engineers, three vans, one number.
             </p>
             <span className="hs-footer-address">{HALLORAN_YARD}</span>
           </div>
@@ -157,10 +157,7 @@ export function HalloranFooter({
           {template.navigation.map((item) => (
             <Link
               aria-current={activePath === item.path ? 'page' : undefined}
-              className={cn(
-                'hs-footer-link',
-                activePath === item.path && 'hs-footer-link-active',
-              )}
+              className={cn('hs-footer-link', activePath === item.path && 'hs-footer-link-active')}
               href={templatePreviewHref(template.slug, item.path)}
               key={item.path}
             >
@@ -171,13 +168,11 @@ export function HalloranFooter({
 
         <div className="hs-footer-rule mt-6 flex flex-col gap-2 border-t border-border pt-6 sm:flex-row sm:justify-between">
           <span>
-            © 2026 Halloran &amp; Sons — a fictional firm built as a concept preview. Both
-            numbers sit inside the range reserved for fiction and reach nobody, and the
-            qualifications described on this site are illustrative, not a real accreditation.
+            © 2026 Halloran &amp; Sons — a fictional firm built as a concept preview. Both numbers
+            sit inside the range reserved for fiction and reach nobody, and the qualifications
+            described on this site are illustrative, not a real accreditation.
           </span>
-          <span className="shrink-0 sm:text-right">
-            Composed from open-source Payload blocks
-          </span>
+          <span className="shrink-0 sm:text-right">Composed from open-source Payload blocks</span>
         </div>
       </div>
     </footer>

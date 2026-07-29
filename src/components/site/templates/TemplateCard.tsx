@@ -56,10 +56,7 @@ export function TemplateCard({
           <span className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand">
             {templateCategoryLabels[template.category]}
           </span>
-          <span
-            aria-hidden="true"
-            className="hidden h-3 w-px bg-border sm:inline-block"
-          />
+          <span aria-hidden="true" className="hidden h-3 w-px bg-border sm:inline-block" />
           <span className="rounded-full border border-border bg-muted/50 px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
             {TEMPLATE_CONCEPT_STATUS_LABEL}
           </span>

@@ -2,12 +2,7 @@ import path from 'node:path'
 
 import { journalTheme } from './theme'
 
-import type {
-  DiagramDefinition,
-  DiagramEdge,
-  DiagramNode,
-  HydratedDiagram,
-} from './diagram-data'
+import type { DiagramDefinition, DiagramEdge, DiagramNode, HydratedDiagram } from './diagram-data'
 import type { BlogVisualSeries } from './types'
 
 const VIEWBOX = '0 0 1200 675'
@@ -74,9 +69,7 @@ export const effectiveDiagramEdges = (
   }))
 }
 
-export const validateDiagramDefinitions = (
-  definitions: readonly DiagramDefinition[],
-): void => {
+export const validateDiagramDefinitions = (definitions: readonly DiagramDefinition[]): void => {
   if (definitions.length === 0) {
     throw new Error('At least one diagram definition is required.')
   }
@@ -135,16 +128,12 @@ export const validateDiagramDefinitions = (
 
     for (const edge of effectiveDiagramEdges(definition)) {
       if (!nodeIds.has(edge.from) || !nodeIds.has(edge.to)) {
-        throw new Error(
-          `${definition.path} has unknown edge endpoint ${edge.from} → ${edge.to}.`,
-        )
+        throw new Error(`${definition.path} has unknown edge endpoint ${edge.from} → ${edge.to}.`)
       }
 
       const edgeKey = `${edge.from}\u0000${edge.to}`
       if (seenEdges.has(edgeKey)) {
-        throw new Error(
-          `${definition.path} has duplicate edge ${edge.from} → ${edge.to}.`,
-        )
+        throw new Error(`${definition.path} has duplicate edge ${edge.from} → ${edge.to}.`)
       }
       seenEdges.add(edgeKey)
     }
@@ -190,11 +179,12 @@ export const wrapDiagramText = (
       continue
     }
 
-    const words = paragraph.trim().split(/\s+/).flatMap((word) =>
-      [...word].length > maxCharacters
-        ? splitLongToken(word, maxCharacters)
-        : [word],
-    )
+    const words = paragraph
+      .trim()
+      .split(/\s+/)
+      .flatMap((word) =>
+        [...word].length > maxCharacters ? splitLongToken(word, maxCharacters) : [word],
+      )
     let current = ''
 
     for (const word of words) {
@@ -257,12 +247,7 @@ const nodeTextHeight = (node: DiagramNode, width: number) => {
 const rowHorizontalGeometry = (row: readonly DiagramNode[]) => {
   const terminalRow = row.length === 1 && row[0].kind === 'terminal'
   const gap = row.length >= 5 ? 12 : row.length === 4 ? 16 : 22
-  const maxWidth =
-    row.length === 1
-      ? terminalRow
-        ? 1040
-        : 840
-      : 1096
+  const maxWidth = row.length === 1 ? (terminalRow ? 1040 : 840) : 1096
   const width = (maxWidth - gap * Math.max(0, row.length - 1)) / row.length
   const xStart = (1200 - maxWidth) / 2
 
@@ -291,21 +276,14 @@ const layoutDiagramRows = ({
   const rowGap = Math.max(baseRowGap, tallestLabel > 0 ? tallestLabel + 6 : 0)
   const horizontal = rows.map(rowHorizontalGeometry)
   const requiredHeights = rows.map((row, rowIndex) =>
-    Math.max(
-      ...row.map((node) => nodeTextHeight(node, horizontal[rowIndex].width)),
-    ),
+    Math.max(...row.map((node) => nodeTextHeight(node, horizontal[rowIndex].width))),
   )
   const preferredHeights = rows.map((row, rowIndex) => {
-    const preferred = horizontal[rowIndex].terminalRow
-      ? 152
-      : row.length === 1
-        ? 152
-        : 116
+    const preferred = horizontal[rowIndex].terminalRow ? 152 : row.length === 1 ? 152 : 116
 
     return Math.max(preferred, requiredHeights[rowIndex])
   })
-  const heightBudget =
-    contentBottom - contentTop - rowGap * Math.max(0, rows.length - 1)
+  const heightBudget = contentBottom - contentTop - rowGap * Math.max(0, rows.length - 1)
   const requiredTotal = requiredHeights.reduce((sum, height) => sum + height, 0)
 
   if (requiredTotal > heightBudget) {
@@ -319,14 +297,12 @@ const layoutDiagramRows = ({
   )
   const desiredExtraTotal = desiredExtra.reduce((sum, height) => sum + height, 0)
   const extraBudget = heightBudget - requiredTotal
-  const extraScale =
-    desiredExtraTotal === 0 ? 0 : Math.min(1, extraBudget / desiredExtraTotal)
+  const extraScale = desiredExtraTotal === 0 ? 0 : Math.min(1, extraBudget / desiredExtraTotal)
   const heights = requiredHeights.map(
     (height, rowIndex) => height + desiredExtra[rowIndex] * extraScale,
   )
   const usedHeight =
-    heights.reduce((sum, height) => sum + height, 0) +
-    rowGap * Math.max(0, rows.length - 1)
+    heights.reduce((sum, height) => sum + height, 0) + rowGap * Math.max(0, rows.length - 1)
   let y = contentTop + Math.max(0, (contentBottom - contentTop - usedHeight) / 2)
 
   return horizontal.map((geometry, rowIndex) => {
@@ -342,11 +318,7 @@ const layoutDiagramRows = ({
   })
 }
 
-const renderNode = (
-  node: DiagramNode,
-  position: NodePosition,
-  ordinal: number,
-) => {
+const renderNode = (node: DiagramNode, position: NodePosition, ordinal: number) => {
   const code = node.kind === 'code' || node.kind === 'terminal'
   const titleLimit = Math.min(38, Math.max(13, Math.floor((position.width - 46) / 8)))
   const titleLines = wrapDiagramText(node.title, titleLimit)
@@ -363,12 +335,11 @@ const renderNode = (
   <rect class="node-card" x="${position.x}" y="${position.y}" width="${
     position.width
   }" height="${position.height}" rx="${node.kind === 'terminal' ? 4 : 2}" />
-  <path class="node-rule" d="M ${position.x} ${position.y + 5} H ${
-    position.x + position.width
-  }" />
-  <text class="node-index" x="${position.x + 16}" y="${position.y + 26}">${String(
-    ordinal,
-  ).padStart(2, '0')}</text>
+  <path class="node-rule" d="M ${position.x} ${position.y + 5} H ${position.x + position.width}" />
+  <text class="node-index" x="${position.x + 16}" y="${position.y + 26}">${String(ordinal).padStart(
+    2,
+    '0',
+  )}</text>
   ${renderTextLines({
     className: code ? 'node-title node-title--mono' : 'node-title',
     lineHeight: titleLineHeight,
@@ -398,8 +369,7 @@ const edgePoints = (from: NodePosition, to: NodePosition) => {
   }
   const deltaX = toCenter.x - fromCenter.x
   const deltaY = toCenter.y - fromCenter.y
-  const verticallySeparated =
-    to.y >= from.y + from.height || from.y >= to.y + to.height
+  const verticallySeparated = to.y >= from.y + from.height || from.y >= to.y + to.height
 
   if (verticallySeparated) {
     const direction = Math.sign(deltaY) || 1
@@ -430,10 +400,7 @@ const edgePoints = (from: NodePosition, to: NodePosition) => {
   }
 }
 
-const renderEdge = (
-  edge: DiagramEdge,
-  positions: ReadonlyMap<string, NodePosition>,
-) => {
+const renderEdge = (edge: DiagramEdge, positions: ReadonlyMap<string, NodePosition>) => {
   const from = positions.get(edge.from)
   const to = positions.get(edge.to)
 
@@ -452,23 +419,16 @@ const renderEdge = (
   const labelLineHeight = 15
   const labelWidth = Math.min(
     240,
-    Math.max(
-      88,
-      Math.max(0, ...labelLines.map((line) => [...line].length)) * 7.8 + 20,
-    ),
+    Math.max(88, Math.max(0, ...labelLines.map((line) => [...line].length)) * 7.8 + 20),
   )
   const labelHeight = (labelLines.length - 1) * labelLineHeight + 22
   const pathCenterX =
     axis === 'horizontal'
-      ? (from.x < to.x
-          ? from.x + from.width + to.x
-          : to.x + to.width + from.x) / 2
+      ? (from.x < to.x ? from.x + from.width + to.x : to.x + to.width + from.x) / 2
       : midX
   const labelCenterY =
     axis === 'vertical'
-      ? (from.y < to.y
-          ? from.y + from.height + to.y
-          : to.y + to.height + from.y) / 2
+      ? (from.y < to.y ? from.y + from.height + to.y : to.y + to.height + from.y) / 2
       : Math.min(from.y, to.y) - labelHeight / 2 - 8
   const rightOfVerticalPath = Math.max(start.x, end.x) + 12
   const leftOfVerticalPath = Math.min(start.x, end.x) - 12 - labelWidth
@@ -482,9 +442,7 @@ const renderEdge = (
   const labelTextX = labelPaperX + labelWidth / 2
   const firstLabelBaseline = labelPaperY + 15
 
-  return `<g class="edge"${
-    edge.label ? ` data-edge-label="${escapeXml(edge.label)}"` : ''
-  }>
+  return `<g class="edge"${edge.label ? ` data-edge-label="${escapeXml(edge.label)}"` : ''}>
   <path class="edge-path" data-edge-from="${escapeXml(
     edge.from,
   )}" data-edge-to="${escapeXml(edge.to)}" data-edge-axis="${axis}" d="${curve}" marker-end="url(#journal-arrow)" />
@@ -568,9 +526,7 @@ export const renderDiagramSvg = (diagram: HydratedDiagram): string => {
     })
   }
 
-  const edges = diagramEdges.map((edge) =>
-    renderEdge(edge, positions),
-  )
+  const edges = diagramEdges.map((edge) => renderEdge(edge, positions))
   const issue = String(diagram.order).padStart(2, '0')
   const mode = diagram.mode.toUpperCase()
   const seriesLabel = seriesLabels[diagram.series]
@@ -781,9 +737,7 @@ export const renderDiagramSvg = (diagram: HydratedDiagram): string => {
     ${nodes.join('\n')}
   </g>
   <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
-  <g data-journal-part="provenance" data-provenance="${escapeXml(
-    diagram.provenance,
-  )}">
+  <g data-journal-part="provenance" data-provenance="${escapeXml(diagram.provenance)}">
     <text class="footer-label" x="48" y="571">PROVENANCE</text>
     ${renderTextLines({
       className: 'provenance-line',
@@ -812,10 +766,7 @@ export const renderDiagramSvg = (diagram: HydratedDiagram): string => {
 
 const themeColors = new Set(Object.values(journalTheme).map((color) => color.toLowerCase()))
 
-export const validateRenderedDiagram = ({
-  diagram,
-  svg,
-}: RenderedDiagram): void => {
+export const validateRenderedDiagram = ({ diagram, svg }: RenderedDiagram): void => {
   const context = diagram.path
   const bytes = Buffer.byteLength(svg)
 
@@ -846,9 +797,7 @@ export const validateRenderedDiagram = ({
   if (/<script\b|<foreignObject\b|<image\b|@import\b|@font-face\b/i.test(svg)) {
     throw new Error(`${context} contains unsafe or external-capable SVG content.`)
   }
-  if (
-    /(?:href|src)=["'](?:https?:)?\/\/|url\(["']?https?:\/\//i.test(svg)
-  ) {
+  if (/(?:href|src)=["'](?:https?:)?\/\/|url\(["']?https?:\/\//i.test(svg)) {
     throw new Error(`${context} contains an external URL.`)
   }
   if (/\b(?:rgb|hsl|lab|lch|hwb|color)a?\(/i.test(svg)) {
@@ -867,21 +816,13 @@ export const validateRenderedDiagram = ({
   }
 
   const fontSizes = [
-    ...[...svg.matchAll(/\bfont-size=["']([\d.]+)(?:px)?["']/gi)].map(
-      (match) => Number(match[1]),
-    ),
-    ...[...svg.matchAll(/font-size\s*:\s*([\d.]+)px/gi)].map((match) =>
-      Number(match[1]),
-    ),
+    ...[...svg.matchAll(/\bfont-size=["']([\d.]+)(?:px)?["']/gi)].map((match) => Number(match[1])),
+    ...[...svg.matchAll(/font-size\s*:\s*([\d.]+)px/gi)].map((match) => Number(match[1])),
   ]
   if (fontSizes.length === 0 || Math.min(...fontSizes) < 13) {
     throw new Error(`${context} renders text smaller than 13px.`)
   }
-  if (
-    /<text\b[^>]*\btransform=["'][^"']*\bscale\(\s*(?:0(?:\.\d+)?|\.\d+)/i.test(
-      svg,
-    )
-  ) {
+  if (/<text\b[^>]*\btransform=["'][^"']*\bscale\(\s*(?:0(?:\.\d+)?|\.\d+)/i.test(svg)) {
     throw new Error(`${context} scales text below its declared size.`)
   }
 
@@ -889,29 +830,24 @@ export const validateRenderedDiagram = ({
     from,
     to,
   }))
-  const renderedEdges = [
-    ...svg.matchAll(/data-edge-from="([^"]+)"\s+data-edge-to="([^"]+)"/g),
-  ].map((match) => ({ from: match[1], to: match[2] }))
+  const renderedEdges = [...svg.matchAll(/data-edge-from="([^"]+)"\s+data-edge-to="([^"]+)"/g)].map(
+    (match) => ({ from: match[1], to: match[2] }),
+  )
 
   if (JSON.stringify(renderedEdges) !== JSON.stringify(expectedEdges)) {
     throw new Error(`${context} rendered edge metadata does not match its definition.`)
   }
 
-  const bodyLines = [
-    ...svg.matchAll(/<text[^>]+data-role="body-line"[^>]*>([^<]*)<\/text>/g),
-  ].map((match) => unescapeXml(match[1]))
+  const bodyLines = [...svg.matchAll(/<text[^>]+data-role="body-line"[^>]*>([^<]*)<\/text>/g)].map(
+    (match) => unescapeXml(match[1]),
+  )
 
-  if (
-    bodyLines.length === 0 ||
-    bodyLines.some((line) => [...line].length > MAX_BODY_LINE_LENGTH)
-  ) {
+  if (bodyLines.length === 0 || bodyLines.some((line) => [...line].length > MAX_BODY_LINE_LENGTH)) {
     throw new Error(`${context} has a body line longer than 68 characters.`)
   }
 }
 
-export const validateRenderedDiagrams = (
-  outputs: readonly RenderedDiagram[],
-): void => {
+export const validateRenderedDiagrams = (outputs: readonly RenderedDiagram[]): void => {
   for (const output of outputs) {
     validateRenderedDiagram(output)
   }

@@ -52,7 +52,9 @@ export function ComponentPreviewFrame({ slug, title }: { slug: string; title: st
   useEffect(() => {
     const el = wrapperRef.current
     if (!el || typeof ResizeObserver === 'undefined') return
-    const observer = new ResizeObserver(() => setWidth(Math.round(el.getBoundingClientRect().width)))
+    const observer = new ResizeObserver(() =>
+      setWidth(Math.round(el.getBoundingClientRect().width)),
+    )
     observer.observe(el)
     return () => observer.disconnect()
   }, [])

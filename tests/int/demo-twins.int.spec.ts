@@ -36,8 +36,9 @@ const demoPairs = async (): Promise<DemoPair[]> => {
     ]),
   )
 
-  const entries = [...registrySource.matchAll(/^\s+'([a-z0-9-]+)':\s*(\w+),/gm)]
-    .sort((left, right) => left[1].localeCompare(right[1]))
+  const entries = [...registrySource.matchAll(/^\s+'([a-z0-9-]+)':\s*(\w+),/gm)].sort(
+    (left, right) => left[1].localeCompare(right[1]),
+  )
 
   return Promise.all(
     entries.map(async (match) => {
@@ -50,7 +51,11 @@ const demoPairs = async (): Promise<DemoPair[]> => {
         throw new Error(`Unable to resolve demo twin pair for ${slug}.`)
       }
 
-      return { component: `payload-components/source/${component.replace(/^src\//, '')}`, slug, twin }
+      return {
+        component: `payload-components/source/${component.replace(/^src\//, '')}`,
+        slug,
+        twin,
+      }
     }),
   )
 }

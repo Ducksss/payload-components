@@ -31,10 +31,7 @@ import {
   templateStarterInstallCommand,
   uniqueTemplateBlockSlugs,
 } from '@/lib/templates/registry'
-import {
-  TEMPLATE_CONCEPT_DISCLOSURE,
-  TEMPLATE_CONCEPT_STATUS_LABEL,
-} from '@/lib/templates/types'
+import { TEMPLATE_CONCEPT_DISCLOSURE, TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
 /* /templates/[slug] detail — the indexable editorial page for one full-site
@@ -167,9 +164,9 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
                   Try one real block
                 </p>
                 <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  This installs only <code className="font-mono text-foreground">{starterBlockSlug}</code>,
-                  the first block in the Home recipe. The full-site concept remains a
-                  browsable reference.
+                  This installs only{' '}
+                  <code className="font-mono text-foreground">{starterBlockSlug}</code>, the first
+                  block in the Home recipe. The full-site concept remains a browsable reference.
                 </p>
               </div>
               <div className="mt-4 shrink-0 sm:mt-0">
@@ -236,9 +233,7 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
             <span className="w-fit shrink-0 rounded-full border border-brand/30 bg-brand/10 px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand">
               {TEMPLATE_CONCEPT_STATUS_LABEL}
             </span>
-            <p className="text-sm leading-6 text-muted-foreground">
-              {TEMPLATE_CONCEPT_DISCLOSURE}
-            </p>
+            <p className="text-sm leading-6 text-muted-foreground">{TEMPLATE_CONCEPT_DISCLOSURE}</p>
           </div>
 
           <TemplateReveal>

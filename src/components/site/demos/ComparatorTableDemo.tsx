@@ -34,11 +34,15 @@ export function ComparatorTableDemo({
           {title || description ? (
             <div className="flex max-w-2xl flex-col gap-4">
               {title ? (
-                <div className="text-4xl font-medium tracking-display text-balance sm:text-5xl">{title}</div>
+                <div className="text-4xl font-medium tracking-display text-balance sm:text-5xl">
+                  {title}
+                </div>
               ) : null}
 
               {description ? (
-                <p className="text-base leading-7 text-muted-foreground sm:text-lg">{description}</p>
+                <p className="text-base leading-7 text-muted-foreground sm:text-lg">
+                  {description}
+                </p>
               ) : null}
             </div>
           ) : null}
@@ -70,7 +74,11 @@ export function ComparatorTableDemo({
                         {plan.links && plan.links.length > 0 ? (
                           <div className="flex flex-col gap-2">
                             {plan.links.map(({ link }, linkIndex) => (
-                              <DemoLink key={linkIndex} appearance={link.appearance} label={link.label} />
+                              <DemoLink
+                                key={linkIndex}
+                                appearance={link.appearance}
+                                label={link.label}
+                              />
                             ))}
                           </div>
                         ) : null}

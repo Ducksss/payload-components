@@ -41,7 +41,8 @@ export function ContentListColumnsDemo({
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-12">
               {items.map((item, index) => (
                 <p className="border-t border-border/70 pt-6 text-muted-foreground" key={index}>
-                  <span className="font-medium text-foreground">{item.term}</span> {item.description}
+                  <span className="font-medium text-foreground">{item.term}</span>{' '}
+                  {item.description}
                 </p>
               ))}
             </div>

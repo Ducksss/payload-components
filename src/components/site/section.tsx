@@ -66,9 +66,7 @@ export function SectionHeading({
       >
         {renderHeading(heading, accentWord)}
       </h2>
-      {intro ? (
-        <p className="mt-5 text-base leading-7 text-muted-foreground">{intro}</p>
-      ) : null}
+      {intro ? <p className="mt-5 text-base leading-7 text-muted-foreground">{intro}</p> : null}
     </div>
   )
 }

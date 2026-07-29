@@ -69,7 +69,12 @@ const statusSwatches: readonly Swatch[] = [
 
 const terminalSwatches: readonly Swatch[] = [
   { className: 'bg-terminal', name: 'Terminal', token: '--terminal', dark: true },
-  { className: 'bg-terminal-chrome', name: 'Terminal chrome', token: '--terminal-chrome', dark: true },
+  {
+    className: 'bg-terminal-chrome',
+    name: 'Terminal chrome',
+    token: '--terminal-chrome',
+    dark: true,
+  },
 ]
 
 function SwatchGrid({ swatches }: { swatches: readonly Swatch[] }) {
@@ -104,12 +109,42 @@ function SwatchGrid({ swatches }: { swatches: readonly Swatch[] }) {
 }
 
 const trackingScale = [
-  { className: 'tracking-display', name: 'Display', token: '--tracking-display', sample: 'Wired, not pasted' },
-  { className: 'tracking-title', name: 'Title', token: '--tracking-title', sample: 'Install Payload blocks' },
-  { className: 'tracking-snug', name: 'Snug', token: '--tracking-snug', sample: 'One reviewable git diff' },
-  { className: 'tracking-heading', name: 'Heading', token: '--tracking-heading', sample: 'From catalog to commit' },
-  { className: 'tracking-micro', name: 'Micro', token: '--tracking-micro', sample: 'Read the contract first' },
-  { className: 'tracking-eyebrow', name: 'Eyebrow', token: '--tracking-eyebrow', sample: 'THE GRUNT-WORK TAX' },
+  {
+    className: 'tracking-display',
+    name: 'Display',
+    token: '--tracking-display',
+    sample: 'Wired, not pasted',
+  },
+  {
+    className: 'tracking-title',
+    name: 'Title',
+    token: '--tracking-title',
+    sample: 'Install Payload blocks',
+  },
+  {
+    className: 'tracking-snug',
+    name: 'Snug',
+    token: '--tracking-snug',
+    sample: 'One reviewable git diff',
+  },
+  {
+    className: 'tracking-heading',
+    name: 'Heading',
+    token: '--tracking-heading',
+    sample: 'From catalog to commit',
+  },
+  {
+    className: 'tracking-micro',
+    name: 'Micro',
+    token: '--tracking-micro',
+    sample: 'Read the contract first',
+  },
+  {
+    className: 'tracking-eyebrow',
+    name: 'Eyebrow',
+    token: '--tracking-eyebrow',
+    sample: 'THE GRUNT-WORK TAX',
+  },
 ] as const
 
 const radiusScale = [
@@ -156,9 +191,9 @@ export default function BrandGuidePage() {
                 className="hero-reveal mt-5 max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg"
                 style={{ animationDelay: '340ms' }}
               >
-                A light-first, shadcn-monochrome system with exactly one accent: emerald. Geist
-                does the work; an italic serif carries the single warm note. Everything here is a
-                living reference for the tokens that ship in the codebase.
+                A light-first, shadcn-monochrome system with exactly one accent: emerald. Geist does
+                the work; an italic serif carries the single warm note. Everything here is a living
+                reference for the tokens that ship in the codebase.
               </p>
             </div>
           </div>
@@ -191,16 +226,25 @@ export default function BrandGuidePage() {
               </p>
               <ul className="flex flex-col gap-3 text-sm leading-6 text-foreground/80">
                 <li className="flex items-start gap-2.5">
-                  <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
-                  Keep the mark emerald (<code className="font-mono text-[12px]">--brand</code>) on a
-                  light surface; never recolor or gradient it.
+                  <span
+                    aria-hidden="true"
+                    className="mt-2 size-1.5 shrink-0 rounded-full bg-brand"
+                  />
+                  Keep the mark emerald (<code className="font-mono text-[12px]">--brand</code>) on
+                  a light surface; never recolor or gradient it.
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
+                  <span
+                    aria-hidden="true"
+                    className="mt-2 size-1.5 shrink-0 rounded-full bg-brand"
+                  />
                   Emerald is the only accent — don&apos;t introduce a second brand color.
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" />
+                  <span
+                    aria-hidden="true"
+                    className="mt-2 size-1.5 shrink-0 rounded-full bg-brand"
+                  />
                   The wordmark stays in Geist at its semibold tracking-tight weight.
                 </li>
               </ul>
@@ -317,9 +361,7 @@ export default function BrandGuidePage() {
                     key={item.token}
                     className="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
                   >
-                    <span
-                      className={cn('text-lg font-medium text-foreground', item.className)}
-                    >
+                    <span className={cn('text-lg font-medium text-foreground', item.className)}>
                       {item.sample}
                     </span>
                     <span className="shrink-0 font-mono text-[11px] text-muted-foreground">
@@ -341,7 +383,10 @@ export default function BrandGuidePage() {
                     <li key={item.token} className="flex items-center gap-3">
                       <span
                         aria-hidden="true"
-                        className={cn('size-9 shrink-0 border border-border bg-brand-100', item.className)}
+                        className={cn(
+                          'size-9 shrink-0 border border-border bg-brand-100',
+                          item.className,
+                        )}
                       />
                       <span className="font-mono text-[11px] text-muted-foreground">
                         {item.token} · {item.className}
@@ -391,8 +436,8 @@ export default function BrandGuidePage() {
               </p>
               <p>
                 Write like the docs — direct, specific, and technical without being cold. Show the
-                receipts: link to the source, the manifest, the test, the diff. When something is
-                in development, say so plainly rather than dressing it up.
+                receipts: link to the source, the manifest, the test, the diff. When something is in
+                development, say so plainly rather than dressing it up.
               </p>
               <p className="text-xl font-medium leading-8 tracking-[-0.01em] text-foreground">
                 The product earns trust by letting you read it — the brand should too.

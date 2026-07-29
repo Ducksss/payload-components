@@ -56,14 +56,10 @@ export const selectDiagramDefinitions = (
 ): readonly DiagramDefinition[] => {
   const selectedPaths = new Set(
     entries.flatMap((entry) =>
-      entry.figures
-        .filter((figure) => figure.path.endsWith('.svg'))
-        .map((figure) => figure.path),
+      entry.figures.filter((figure) => figure.path.endsWith('.svg')).map((figure) => figure.path),
     ),
   )
-  const selected = diagramDefinitions.filter((definition) =>
-    selectedPaths.has(definition.path),
-  )
+  const selected = diagramDefinitions.filter((definition) => selectedPaths.has(definition.path))
 
   if (selected.length !== selectedPaths.size) {
     throw new Error('The selected catalog diagrams do not match their renderer definitions.')
@@ -151,20 +147,14 @@ export const renderVisuals = async (
     baseURL: coverOptions.baseUrl,
     outputRoot: coverOptions.outputRoot,
     slugs: figureCaptures
-      .filter((capture) =>
-        coverOptions.entries.some((entry) => entry.slug === capture.slug),
-      )
+      .filter((capture) => coverOptions.entries.some((entry) => entry.slug === capture.slug))
       .map((capture) => capture.slug),
   })
   const assetRoot = path.join(coverOptions.outputRoot, 'public')
   const validated = await validateBlogVisualAssets({ assetRoot })
   await renderContactSheets({
     assetRoot,
-    outputDirectory: path.join(
-      coverOptions.outputRoot,
-      'output',
-      'blog-visual-review',
-    ),
+    outputDirectory: path.join(coverOptions.outputRoot, 'output', 'blog-visual-review'),
   })
   console.log(`Validated ${validated.total} Field Journal assets.`)
 
@@ -172,8 +162,7 @@ export const renderVisuals = async (
 }
 
 const isMain = () =>
-  Boolean(process.argv[1]) &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+  Boolean(process.argv[1]) && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 
 if (isMain()) {
   await renderVisuals()

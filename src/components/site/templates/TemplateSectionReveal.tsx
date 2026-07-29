@@ -54,9 +54,7 @@ export function TemplateSectionReveal({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ margin: '0px 0px -12% 0px', once: true }}
       transition={
-        reduceMotion
-          ? { duration: 0 }
-          : { damping: 26, mass: 0.9, stiffness: 120, type: 'spring' }
+        reduceMotion ? { duration: 0 } : { damping: 26, mass: 0.9, stiffness: 120, type: 'spring' }
       }
     >
       {children}

@@ -56,9 +56,17 @@ function LedgerRow({ row }: { row: WiringLedgerRow }) {
         <span className="text-sm font-medium text-foreground">{row.artifact}</span>
         <code className="truncate font-mono text-[11px] text-muted-foreground">{row.path}</code>
       </div>
-      <Verdict command={wiringLedger.columns.baseline.command} label={row.baseline} tone="baseline" />
+      <Verdict
+        command={wiringLedger.columns.baseline.command}
+        label={row.baseline}
+        tone="baseline"
+      />
       <div className="pb-2 md:bg-muted/30 md:pb-0">
-        <Verdict command={wiringLedger.columns.component.command} label={row.component} tone="component" />
+        <Verdict
+          command={wiringLedger.columns.component.command}
+          label={row.component}
+          tone="component"
+        />
       </div>
     </div>
   )
@@ -76,7 +84,10 @@ export function WiringLedger() {
           Artifact
         </div>
         <div className="border-l border-border px-6 py-4">
-          <code tabIndex={0} className="block overflow-x-auto whitespace-nowrap font-mono text-[13px] text-foreground/80">
+          <code
+            tabIndex={0}
+            className="block overflow-x-auto whitespace-nowrap font-mono text-[13px] text-foreground/80"
+          >
             <span className="select-none text-muted-foreground">$ </span>
             {baseline.command}
           </code>

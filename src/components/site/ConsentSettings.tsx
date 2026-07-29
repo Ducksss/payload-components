@@ -30,12 +30,12 @@ export function ConsentSettings() {
     >
       <p className="text-sm text-muted-foreground" role="status">
         {signalled
-          ? 'Your browser sends a privacy signal (Global Privacy Control or Do Not Track), so analytics stays off and this cannot be overridden here.'
+          ? 'Your browser sends a privacy signal (Global Privacy Control or Do Not Track), so Google Analytics and PostHog stay off and this cannot be overridden here.'
           : consent === 'granted'
-            ? 'Analytics is currently on.'
+            ? 'Google Analytics and PostHog are currently on.'
             : consent === 'denied'
-              ? 'Analytics is currently off.'
-              : 'You have not chosen yet, so analytics is off.'}
+              ? 'Google Analytics and PostHog are currently off.'
+              : 'You have not chosen yet, so Google Analytics and PostHog are off.'}
       </p>
       {signalled ? null : (
         <div className="flex flex-wrap gap-2">

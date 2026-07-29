@@ -2,10 +2,7 @@ import type { LucideIcon } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  featureIconGridDemoContent,
-  type FeatureIconGridDemoContent,
-} from '@/lib/demo-content'
+import { featureIconGridDemoContent, type FeatureIconGridDemoContent } from '@/lib/demo-content'
 
 import { DemoLink } from './DemoLink'
 import { featureDemoIcons } from './FeatureAccordionDemo'
@@ -23,9 +20,7 @@ import { featureDemoIcons } from './FeatureAccordionDemo'
 
 function IconDecorator({ Icon }: { Icon: LucideIcon }) {
   return (
-    <div
-      className="relative flex h-32 items-center justify-center overflow-hidden border-b border-border/70"
-    >
+    <div className="relative flex h-32 items-center justify-center overflow-hidden border-b border-border/70">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:1rem_1rem] opacity-60 [mask-image:radial-gradient(circle_at_center,var(--foreground),transparent_70%)]" />
       <span className="relative flex size-14 items-center justify-center rounded-panel border border-border/70 bg-background shadow-sm">
         <Icon className="size-7 text-foreground" strokeWidth={1.5} />
@@ -49,7 +44,10 @@ export function FeatureIconGridDemo({
         <div className="mx-auto flex max-w-6xl flex-col gap-10">
           <div className="flex max-w-3xl flex-col gap-4">
             {eyebrow ? (
-              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow">
+              <Badge
+                variant="outline"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
+              >
                 {eyebrow}
               </Badge>
             ) : null}

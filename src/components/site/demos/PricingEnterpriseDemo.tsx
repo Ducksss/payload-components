@@ -35,12 +35,17 @@ export function PricingEnterpriseDemo({
         <div className="mx-auto flex max-w-5xl flex-col gap-10">
           <div className="mx-auto flex max-w-2xl flex-col gap-4 text-center">
             {eyebrow ? (
-              <Badge variant="outline" className="mx-auto w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow">
+              <Badge
+                variant="outline"
+                className="mx-auto w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
+              >
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <div className="text-4xl font-medium tracking-display text-balance sm:text-5xl">{title}</div>
+            <div className="text-4xl font-medium tracking-display text-balance sm:text-5xl">
+              {title}
+            </div>
 
             {description ? (
               <p className="text-base leading-7 text-muted-foreground sm:text-lg">{description}</p>

@@ -37,7 +37,11 @@ export function IntegrationConnectDemo({
                   className="relative flex size-12 items-center justify-center rounded-xl border border-border/70 bg-background"
                   key={logo.name}
                 >
-                  <logo.Icon aria-hidden="true" className="size-6 text-foreground/70" strokeWidth={1.75} />
+                  <logo.Icon
+                    aria-hidden="true"
+                    className="size-6 text-foreground/70"
+                    strokeWidth={1.75}
+                  />
                   <span className="pointer-events-none absolute left-full top-1/2 h-px w-10 bg-gradient-to-r from-border to-transparent" />
                 </div>
               ))}
@@ -53,7 +57,11 @@ export function IntegrationConnectDemo({
                   className="relative flex size-12 items-center justify-center rounded-xl border border-border/70 bg-background"
                   key={logo.name}
                 >
-                  <logo.Icon aria-hidden="true" className="size-6 text-foreground/70" strokeWidth={1.75} />
+                  <logo.Icon
+                    aria-hidden="true"
+                    className="size-6 text-foreground/70"
+                    strokeWidth={1.75}
+                  />
                   <span className="pointer-events-none absolute right-full top-1/2 h-px w-10 bg-gradient-to-l from-border to-transparent" />
                 </div>
               ))}

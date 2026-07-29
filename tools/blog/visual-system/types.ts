@@ -20,7 +20,14 @@ export type Artifact =
   | { kind: 'route'; label: string; route: string; capture?: RouteCapture }
   | { kind: 'sequence'; label: string; items: readonly string[] }
   | { kind: 'command'; label: string; command: string; registryItems?: readonly string[] }
-  | { kind: 'diff'; label: string; path: string; anchor: string; before: readonly string[]; after: readonly string[] }
+  | {
+      kind: 'diff'
+      label: string
+      path: string
+      anchor: string
+      before: readonly string[]
+      after: readonly string[]
+    }
 
 export type BlogFigureVisual = {
   path: string

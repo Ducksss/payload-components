@@ -9,14 +9,13 @@ const contributingPath = path.join(repoRoot, 'content', 'docs', 'contributing.md
 const envExamplePath = path.join(repoRoot, '.env.example')
 
 const eventFields = {
-  '$pageview': ['page_path', 'source_path'],
+  $pageview: ['page_path', 'source_path'],
   copy_install_command: ['command', 'component', 'source_path'],
   primary_link_click: ['destination', 'href', 'source_path'],
 } as const
 
 const documentedEventRows = {
-  '$pageview':
-    '| `$pageview` | A public route loads or changes | `page_path`, `source_path` |',
+  $pageview: '| `$pageview` | A public route loads or changes | `page_path`, `source_path` |',
   copy_install_command:
     '| `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path` |',
   primary_link_click:
@@ -26,9 +25,7 @@ const documentedEventRows = {
 const eventCallPattern = (eventName: string) => {
   const escapedName = eventName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-  return new RegExp(
-    `track(?:PostHog)?Event\\('${escapedName}', \\{([\\s\\S]*?)\\n  \\}\\)`,
-  )
+  return new RegExp(`track(?:PostHog)?Event\\('${escapedName}', \\{([\\s\\S]*?)\\n  \\}\\)`)
 }
 
 const getPropertyKeys = (source: string, eventName: string) => {
@@ -38,9 +35,7 @@ const getPropertyKeys = (source: string, eventName: string) => {
     throw new Error(`Could not find the ${eventName} analytics payload.`)
   }
 
-  return [...properties.matchAll(/^\s{4}([a-z_$][\w$]*)(?::|,)/gm)].map(
-    ([, property]) => property,
-  )
+  return [...properties.matchAll(/^\s{4}([a-z_$][\w$]*)(?::|,)/gm)].map(([, property]) => property)
 }
 
 describe('public anonymous analytics contract', () => {

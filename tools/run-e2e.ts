@@ -150,7 +150,8 @@ export const runE2e = async (
     specFiles?: string[]
   } = {},
 ) => {
-  const discoveredSpecs = args.length > 0 ? [] : (specFiles ?? (await discoverE2eSpecs(process.cwd())))
+  const discoveredSpecs =
+    args.length > 0 ? [] : (specFiles ?? (await discoverE2eSpecs(process.cwd())))
 
   if (args.length === 0 && discoveredSpecs.length === 0) {
     throw new Error('No Playwright specs were discovered under tests/e2e.')

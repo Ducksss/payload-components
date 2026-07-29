@@ -36,13 +36,16 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
       type: 'article',
       title: page.data.title,
       description: page.data.description,
-      images: [
-        { alt: page.data.cover.alt, height: 630, url: socialImage, width: 1200 },
-      ],
+      images: [{ alt: page.data.cover.alt, height: 630, url: socialImage, width: 1200 }],
       url: `${siteUrl}${page.url}`,
       publishedTime: new Date(page.data.date).toISOString(),
     },
-    twitter: { card: 'summary_large_image', title: page.data.title, description: page.data.description, images: [socialImage] },
+    twitter: {
+      card: 'summary_large_image',
+      title: page.data.title,
+      description: page.data.description,
+      images: [socialImage],
+    },
   }
 }
 

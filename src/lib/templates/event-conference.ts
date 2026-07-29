@@ -70,8 +70,7 @@ const homeSponsors: LogoCloudDemoContent = {
 
 const homeProof: StatsProofDemoContent = {
   author: 'Halvard Ness',
-  body:
-    'Nothing is pre-recorded and nothing is a product demo. The programme committee rejects any proposal that cannot name the trade-off it made.',
+  body: 'Nothing is pre-recorded and nothing is a product demo. The programme committee rejects any proposal that cannot name the trade-off it made.',
   description:
     'Every session ships something real — a migration, a rendering budget, a design system that survived a reorg — and the speaker stays in the room afterwards to answer for it.',
   eyebrow: 'Seven editions',
@@ -722,7 +721,11 @@ const ticketsCompare: ComparatorTableDemoContent = {
     {
       feature: 'Transfer to a colleague',
       groupLabel: 'Practical',
-      values: [{ label: 'Until 1 March' }, { label: 'Until 1 March' }, { label: 'Not transferable' }],
+      values: [
+        { label: 'Until 1 March' },
+        { label: 'Until 1 March' },
+        { label: 'Not transferable' },
+      ],
     },
     {
       feature: 'Invoice instead of card',
@@ -853,12 +856,27 @@ export const eventConferenceTemplate: TemplateShowcase = {
       path: '',
       sections: [
         { componentSlug: 'hero-aurora', content: homeHero, id: 'hero' },
-        { componentSlug: 'logo-cloud-inline-wrap', content: homeSponsors, id: 'sponsors', tone: 'muted' },
+        {
+          componentSlug: 'logo-cloud-inline-wrap',
+          content: homeSponsors,
+          id: 'sponsors',
+          tone: 'muted',
+        },
         { componentSlug: 'stats-proof', content: homeProof, id: 'proof', tone: 'contrast' },
         { componentSlug: 'feature-split', content: homeWhyAttend, id: 'why-attend' },
         { componentSlug: 'team-grid', content: homeFeaturedSpeakers, id: 'featured-speakers' },
-        { componentSlug: 'feature-steps', content: homeScheduleTeaser, id: 'schedule-teaser', tone: 'muted' },
-        { componentSlug: 'testimonials-quote', content: homeTestimonial, id: 'testimonial', tone: 'contrast' },
+        {
+          componentSlug: 'feature-steps',
+          content: homeScheduleTeaser,
+          id: 'schedule-teaser',
+          tone: 'muted',
+        },
+        {
+          componentSlug: 'testimonials-quote',
+          content: homeTestimonial,
+          id: 'testimonial',
+          tone: 'contrast',
+        },
         { componentSlug: 'pricing-cards', content: homeTickets, id: 'tickets' },
         { componentSlug: 'call-to-action-signup', content: homeCta, id: 'cta', tone: 'muted' },
       ],
@@ -872,7 +890,12 @@ export const eventConferenceTemplate: TemplateShowcase = {
         { componentSlug: 'hero-basic', content: speakersHero, id: 'hero' },
         { componentSlug: 'team-roster', content: speakersLineup, id: 'lineup' },
         { componentSlug: 'content-quote', content: speakersQuote, id: 'quote', tone: 'muted' },
-        { componentSlug: 'testimonials-wall', content: speakersPastEditions, id: 'past-editions', tone: 'contrast' },
+        {
+          componentSlug: 'testimonials-wall',
+          content: speakersPastEditions,
+          id: 'past-editions',
+          tone: 'contrast',
+        },
         { componentSlug: 'call-to-action-centered', content: speakersCta, id: 'cta' },
       ],
       title: 'Frameworks ’26 — Speakers',
@@ -886,7 +909,12 @@ export const eventConferenceTemplate: TemplateShowcase = {
         { componentSlug: 'feature-steps', content: scheduleTracks, id: 'tracks', tone: 'muted' },
         { componentSlug: 'content-rows', content: scheduleSessions, id: 'sessions' },
         { componentSlug: 'faq-grouped', content: scheduleFaq, id: 'faq', tone: 'muted' },
-        { componentSlug: 'call-to-action-boxed', content: scheduleCta, id: 'cta', tone: 'contrast' },
+        {
+          componentSlug: 'call-to-action-boxed',
+          content: scheduleCta,
+          id: 'cta',
+          tone: 'contrast',
+        },
       ],
       title: 'Frameworks ’26 — Schedule',
     },
@@ -911,9 +939,19 @@ export const eventConferenceTemplate: TemplateShowcase = {
       sections: [
         { componentSlug: 'hero-basic', content: ticketsHero, id: 'hero' },
         { componentSlug: 'pricing-cards', content: ticketsTiers, id: 'tiers' },
-        { componentSlug: 'comparator-table', content: ticketsCompare, id: 'compare', tone: 'muted' },
+        {
+          componentSlug: 'comparator-table',
+          content: ticketsCompare,
+          id: 'compare',
+          tone: 'muted',
+        },
         { componentSlug: 'faq-grouped', content: ticketsFaq, id: 'faq' },
-        { componentSlug: 'call-to-action-signup', content: ticketsCta, id: 'cta', tone: 'contrast' },
+        {
+          componentSlug: 'call-to-action-signup',
+          content: ticketsCta,
+          id: 'cta',
+          tone: 'contrast',
+        },
       ],
       title: 'Frameworks ’26 — Tickets',
     },

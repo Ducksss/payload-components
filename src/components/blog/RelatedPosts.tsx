@@ -12,7 +12,10 @@ export function RelatedPosts({ page }: { page: BlogPage }) {
           <p className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand-600">
             Keep reading
           </p>
-          <h2 id="related-posts-title" className="mt-2 text-2xl font-semibold tracking-title text-foreground">
+          <h2
+            id="related-posts-title"
+            className="mt-2 text-2xl font-semibold tracking-title text-foreground"
+          >
             Related reading
           </h2>
         </div>

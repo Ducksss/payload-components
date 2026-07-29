@@ -24,7 +24,10 @@ import {
 } from '../../tools/blog/capture-figures'
 import { parseCoverRenderArgs, waitForDocumentAssets } from '../../tools/blog/render-covers'
 import { blogVisualCatalog } from '../../tools/blog/visual-system/catalog'
-import { resolveArtifact, validateBlogVisualCatalog } from '../../tools/blog/visual-system/artifacts'
+import {
+  resolveArtifact,
+  validateBlogVisualCatalog,
+} from '../../tools/blog/visual-system/artifacts'
 import { renderCoverHtml } from '../../tools/blog/visual-system/cover-template'
 import type { Artifact, ResolvedArtifact } from '../../tools/blog/visual-system/types'
 
@@ -86,17 +89,15 @@ describe('Field Journal real UI capture contract', () => {
         layout: Reflect.get(capture, 'layout'),
         mode: Reflect.get(capture, 'mode'),
         outputPath: Reflect.get(capture, 'outputPath'),
-        panels: Reflect.get(capture, 'panels')?.map(
-          (panel: Record<string, unknown>) => ({
-            anchor: panel.anchor,
-            fixture: panel.fixtureNotice,
-            kind: panel.kind,
-            label: panel.label,
-            registryItem: panel.registryItem,
-            route: panel.route,
-            sourcePath: panel.sourcePath,
-          }),
-        ),
+        panels: Reflect.get(capture, 'panels')?.map((panel: Record<string, unknown>) => ({
+          anchor: panel.anchor,
+          fixture: panel.fixtureNotice,
+          kind: panel.kind,
+          label: panel.label,
+          registryItem: panel.registryItem,
+          route: panel.route,
+          sourcePath: panel.sourcePath,
+        })),
         slug: Reflect.get(capture, 'slug'),
       })),
     ).toEqual([
@@ -148,8 +149,7 @@ describe('Field Journal real UI capture contract', () => {
       {
         layout: 'quad',
         mode: 'see',
-        outputPath:
-          'public/blog/choosing-payload-hero/figure-01-hero-preview.webp',
+        outputPath: 'public/blog/choosing-payload-hero/figure-01-hero-preview.webp',
         panels: [
           {
             anchor: undefined,
@@ -214,15 +214,10 @@ describe('Field Journal real UI capture contract', () => {
       {
         layout: 'quad',
         mode: 'see',
-        outputPath:
-          'public/blog/modeling-pricing-pages/figure-01-pricing-montage.webp',
+        outputPath: 'public/blog/modeling-pricing-pages/figure-01-pricing-montage.webp',
         panels: [
           ['pricing-cards', 'Pricing Cards · two-to-four plan contract', 'minRows: 2'],
-          [
-            'pricing-cards-muted',
-            'Pricing Cards Muted · two-to-four plan contract',
-            'minRows: 2',
-          ],
+          ['pricing-cards-muted', 'Pricing Cards Muted · two-to-four plan contract', 'minRows: 2'],
           ['pricing-split', 'Pricing Split · exact two-plan contract', 'maxRows: 2'],
           ['pricing-enterprise', 'Pricing Enterprise · logo field contract', "name: 'logos'"],
         ].map(([registryItem, label, anchor]) => ({
@@ -239,8 +234,7 @@ describe('Field Journal real UI capture contract', () => {
       {
         layout: 'quad',
         mode: 'see',
-        outputPath:
-          'public/blog/social-proof-sections/figure-01-social-proof-montage.webp',
+        outputPath: 'public/blog/social-proof-sections/figure-01-social-proof-montage.webp',
         panels: [
           ['logo-cloud-grid', 'Logo Cloud Grid · editable logo records', '...logoCloudFields'],
           [
@@ -268,8 +262,7 @@ describe('Field Journal real UI capture contract', () => {
       {
         layout: 'quad',
         mode: 'see',
-        outputPath:
-          'public/blog/build-saas-homepage/figure-02-component-montage.webp',
+        outputPath: 'public/blog/build-saas-homepage/figure-02-component-montage.webp',
         panels: [
           ['hero-basic', 'Promise · Hero Basic content model'],
           ['logo-cloud-grid', 'Proof slot · Logo Cloud Grid content model'],
@@ -289,8 +282,7 @@ describe('Field Journal real UI capture contract', () => {
       {
         layout: 'duo',
         mode: 'see',
-        outputPath:
-          'public/blog/build-payload-blog-frontend/figure-02-post-component-montage.webp',
+        outputPath: 'public/blog/build-payload-blog-frontend/figure-02-post-component-montage.webp',
         panels: [
           {
             anchor: undefined,
@@ -316,8 +308,7 @@ describe('Field Journal real UI capture contract', () => {
       {
         layout: 'quad',
         mode: 'see',
-        outputPath:
-          'public/blog/templates-are-here/figure-01-template-gallery.webp',
+        outputPath: 'public/blog/templates-are-here/figure-01-template-gallery.webp',
         panels: [
           {
             anchor: undefined,
@@ -398,9 +389,7 @@ describe('Field Journal real UI capture contract', () => {
 
   it('keeps raster capture issue numbers and series aligned with their articles', () => {
     for (const capture of captures) {
-      const entry = blogVisualCatalog.find(
-        (candidate) => candidate.slug === capture.slug,
-      )
+      const entry = blogVisualCatalog.find((candidate) => candidate.slug === capture.slug)
 
       expect(entry, capture.slug).toBeDefined()
       expect(capture.issue, capture.slug).toBe(entry?.order)
@@ -415,15 +404,14 @@ describe('Field Journal real UI capture contract', () => {
     const registryItems = new Set(registry.items.map((item) => item.name))
 
     for (const capture of captures) {
-      const panels = Reflect.get(capture, 'panels') as unknown as readonly Record<
-        string,
-        unknown
-      >[]
+      const panels = Reflect.get(capture, 'panels') as unknown as readonly Record<string, unknown>[]
 
       for (const panel of panels) {
         const context = `${Reflect.get(capture, 'slug')}: ${String(panel.label)}`
         if (typeof panel.route === 'string') {
-          expect(panel.route, context).toMatch(/^\/(?:blog|components|docs\/components|templates)(?:[/?]|$)/)
+          expect(panel.route, context).toMatch(
+            /^\/(?:blog|components|docs\/components|templates)(?:[/?]|$)/,
+          )
           expect(panel.route, context).not.toMatch(/^(?:https?:)?\/\//)
         }
         if (typeof panel.registryItem === 'string') {
@@ -436,11 +424,7 @@ describe('Field Journal real UI capture contract', () => {
       }
     }
 
-    for (const slug of [
-      'modeling-pricing-pages',
-      'social-proof-sections',
-      'build-saas-homepage',
-    ]) {
+    for (const slug of ['modeling-pricing-pages', 'social-proof-sections', 'build-saas-homepage']) {
       const capture = captures.find((candidate) => Reflect.get(candidate, 'slug') === slug)
       expect(capture, slug).toBeDefined()
       if (!capture) continue
@@ -457,11 +441,7 @@ describe('Field Journal real UI capture contract', () => {
   it('marks only panels that contain repository demo pixels as structure-only fixtures', () => {
     const fixtureNotice = 'REPOSITORY DEMO FIXTURE · STRUCTURE ONLY'
     const panels = captures.flatMap(
-      (capture) =>
-        Reflect.get(capture, 'panels') as unknown as readonly Record<
-          string,
-          unknown
-        >[],
+      (capture) => Reflect.get(capture, 'panels') as unknown as readonly Record<string, unknown>[],
     )
     const fixturePanels = panels.filter((panel) => panel.fixtureNotice)
 
@@ -470,9 +450,7 @@ describe('Field Journal real UI capture contract', () => {
       new Set([fixtureNotice]),
     )
     expect(
-      fixturePanels.every(
-        (panel) => panel.kind === 'preview' || panel.kind === 'catalog-card',
-      ),
+      fixturePanels.every((panel) => panel.kind === 'preview' || panel.kind === 'catalog-card'),
     ).toBe(true)
     expect(
       panels
@@ -526,10 +504,7 @@ describe('Field Journal real UI capture contract', () => {
 
   it('allows only the configured loopback origin plus non-network document URLs', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
-    const isAllowedCaptureRequest = Reflect.get(
-      captureModule,
-      'isAllowedCaptureRequest',
-    )
+    const isAllowedCaptureRequest = Reflect.get(captureModule, 'isAllowedCaptureRequest')
 
     expect(isAllowedCaptureRequest).toBeTypeOf('function')
     if (typeof isAllowedCaptureRequest !== 'function') return
@@ -555,10 +530,7 @@ describe('Field Journal real UI capture contract', () => {
 
   it('waits for a unique client-rendered capture target before counting it', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
-    const waitForExactCaptureTarget = Reflect.get(
-      captureModule,
-      'waitForExactCaptureTarget',
-    )
+    const waitForExactCaptureTarget = Reflect.get(captureModule, 'waitForExactCaptureTarget')
 
     expect(waitForExactCaptureTarget).toBeTypeOf('function')
     if (typeof waitForExactCaptureTarget !== 'function') return
@@ -591,10 +563,7 @@ describe('Field Journal real UI capture contract', () => {
 
   it('selects the one visible Shiki block when force-mounted files share an anchor', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
-    const findUniqueVisibleCodeBlock = Reflect.get(
-      captureModule,
-      'findUniqueVisibleCodeBlock',
-    )
+    const findUniqueVisibleCodeBlock = Reflect.get(captureModule, 'findUniqueVisibleCodeBlock')
 
     expect(findUniqueVisibleCodeBlock).toBeTypeOf('function')
     if (typeof findUniqueVisibleCodeBlock !== 'function') return
@@ -621,10 +590,7 @@ describe('Field Journal real UI capture contract', () => {
 
   it('clips code evidence inside the real code block instead of capturing page filler', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
-    const clipCaptureAroundTarget = Reflect.get(
-      captureModule,
-      'clipCaptureAroundTarget',
-    )
+    const clipCaptureAroundTarget = Reflect.get(captureModule, 'clipCaptureAroundTarget')
 
     expect(clipCaptureAroundTarget).toBeTypeOf('function')
     if (typeof clipCaptureAroundTarget !== 'function') return
@@ -642,18 +608,14 @@ describe('Field Journal real UI capture contract', () => {
           <h2 style="color:#059669">Installation outside the code pane</h2>
         </main>
       `)
-      const png = await clipCaptureAroundTarget(
-        page,
-        page.locator('#anchor'),
-        {
-          boundary: page.locator('#code'),
-          contentEnd: page.locator('#last-line'),
-          contentStart: page.locator('#first-line'),
-          height: 240,
-          horizontalPadding: 20,
-          verticalPadding: 50,
-        },
-      )
+      const png = await clipCaptureAroundTarget(page, page.locator('#anchor'), {
+        boundary: page.locator('#code'),
+        contentEnd: page.locator('#last-line'),
+        contentStart: page.locator('#first-line'),
+        height: 240,
+        horizontalPadding: 20,
+        verticalPadding: 50,
+      })
       const metadata = await sharp(png).metadata()
       expect(metadata.height).toBe(240)
 
@@ -663,9 +625,7 @@ describe('Field Journal real UI capture contract', () => {
       const bottomCenter =
         ((raw.info.height - 2) * raw.info.width + Math.floor(raw.info.width / 2)) *
         raw.info.channels
-      expect([...raw.data.subarray(bottomCenter, bottomCenter + 3)]).toEqual([
-        24, 24, 27,
-      ])
+      expect([...raw.data.subarray(bottomCenter, bottomCenter + 3)]).toEqual([24, 24, 27])
     } finally {
       await browser.close()
     }
@@ -673,14 +633,8 @@ describe('Field Journal real UI capture contract', () => {
 
   it('selects a contiguous docs-code line window with explicit long-line treatment', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
-    const renderDocsCodeExcerptHtml = Reflect.get(
-      captureModule,
-      'renderDocsCodeExcerptHtml',
-    )
-    const selectDocsCodeLineWindow = Reflect.get(
-      captureModule,
-      'selectDocsCodeLineWindow',
-    )
+    const renderDocsCodeExcerptHtml = Reflect.get(captureModule, 'renderDocsCodeExcerptHtml')
+    const selectDocsCodeLineWindow = Reflect.get(captureModule, 'selectDocsCodeLineWindow')
 
     expect(renderDocsCodeExcerptHtml).toBeTypeOf('function')
     expect(selectDocsCodeLineWindow).toBeTypeOf('function')
@@ -697,9 +651,7 @@ describe('Field Journal real UI capture contract', () => {
     expect(selected[0].sourceLine).toBe(4)
     expect(selected.at(-1)?.sourceLine).toBe(13)
     expect(
-      selectDocsCodeLineWindow(codeLines, 0).map(
-        (line: { sourceLine: number }) => line.sourceLine,
-      ),
+      selectDocsCodeLineWindow(codeLines, 0).map((line: { sourceLine: number }) => line.sourceLine),
     ).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     expect(
       selectDocsCodeLineWindow(codeLines, 13).map(
@@ -718,22 +670,10 @@ describe('Field Journal real UI capture contract', () => {
 
   it('renders docs-code evidence as complete whole rows on an edge-safe dark canvas', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
-    const renderDocsCodeExcerptHtml = Reflect.get(
-      captureModule,
-      'renderDocsCodeExcerptHtml',
-    )
-    const selectDocsCodeLineWindow = Reflect.get(
-      captureModule,
-      'selectDocsCodeLineWindow',
-    )
-    const markOverflowingCodeRows = Reflect.get(
-      captureModule,
-      'markOverflowingCodeRows',
-    )
-    const validateDocsCodeCanvas = Reflect.get(
-      captureModule,
-      'validateDocsCodeCanvas',
-    )
+    const renderDocsCodeExcerptHtml = Reflect.get(captureModule, 'renderDocsCodeExcerptHtml')
+    const selectDocsCodeLineWindow = Reflect.get(captureModule, 'selectDocsCodeLineWindow')
+    const markOverflowingCodeRows = Reflect.get(captureModule, 'markOverflowingCodeRows')
+    const validateDocsCodeCanvas = Reflect.get(captureModule, 'validateDocsCodeCanvas')
 
     expect(renderDocsCodeExcerptHtml).toBeTypeOf('function')
     expect(selectDocsCodeLineWindow).toBeTypeOf('function')
@@ -766,12 +706,9 @@ describe('Field Journal real UI capture contract', () => {
 
       const geometry = await page.locator('[data-code-canvas]').evaluate((canvas) => {
         const canvasRect = canvas.getBoundingClientRect()
-        const rows = [
-          ...canvas.querySelectorAll<HTMLElement>('[data-code-row]'),
-        ]
+        const rows = [...canvas.querySelectorAll<HTMLElement>('[data-code-row]')]
         return {
-          bottomInset:
-            canvasRect.bottom - (rows.at(-1)?.getBoundingClientRect().bottom ?? 0),
+          bottomInset: canvasRect.bottom - (rows.at(-1)?.getBoundingClientRect().bottom ?? 0),
           canvas: {
             height: canvasRect.height,
             width: canvasRect.width,
@@ -808,9 +745,7 @@ describe('Field Journal real UI capture contract', () => {
         textOverflow: 'ellipsis',
         whiteSpace: 'pre',
       })
-      expect(
-        await longLine.evaluate((line) => line.scrollWidth > line.clientWidth),
-      ).toBe(true)
+      expect(await longLine.evaluate((line) => line.scrollWidth > line.clientWidth)).toBe(true)
       const overflowMarker = longLine.locator('[data-overflow-marker]')
       expect(await overflowMarker.count()).toBe(1)
       expect(
@@ -844,21 +779,15 @@ describe('Field Journal real UI capture contract', () => {
         }),
       ).toBeLessThanOrEqual(1)
       expect(
-        await overflowMarker.evaluate(
-          (marker) => getComputedStyle(marker).backgroundImage,
-        ),
+        await overflowMarker.evaluate((marker) => getComputedStyle(marker).backgroundImage),
       ).not.toBe('none')
-      expect(await overflowMarker.getAttribute('data-overflow-reason')).toBe(
-        'horizontal-overflow',
-      )
+      expect(await overflowMarker.getAttribute('data-overflow-reason')).toBe('horizontal-overflow')
 
-      const continuedSourceMarker = page.locator(
-        '[data-source-line="13"] [data-overflow-marker]',
-      )
+      const continuedSourceMarker = page.locator('[data-source-line="13"] [data-overflow-marker]')
       expect(await continuedSourceMarker.count()).toBe(1)
-      expect(
-        await continuedSourceMarker.getAttribute('data-overflow-reason'),
-      ).toBe('continued-source')
+      expect(await continuedSourceMarker.getAttribute('data-overflow-reason')).toBe(
+        'continued-source',
+      )
 
       const png = await page.screenshot({ animations: 'disabled', type: 'png' })
       await expect(validateDocsCodeCanvas(png)).resolves.toBeUndefined()
@@ -869,9 +798,7 @@ describe('Field Journal real UI capture contract', () => {
       const edgePixels: number[][] = []
       const pushPixel = (x: number, y: number) => {
         const offset = (y * raw.info.width + x) * raw.info.channels
-        edgePixels.push([
-          ...raw.data.subarray(offset, offset + raw.info.channels),
-        ])
+        edgePixels.push([...raw.data.subarray(offset, offset + raw.info.channels)])
       }
       for (let x = 0; x < raw.info.width; x += 1) {
         pushPixel(x, 0)
@@ -881,9 +808,7 @@ describe('Field Journal real UI capture contract', () => {
         pushPixel(0, y)
         pushPixel(raw.info.width - 1, y)
       }
-      expect(new Set(edgePixels.map((pixel) => pixel.join(',')))).toEqual(
-        new Set(['24,24,27,255']),
-      )
+      expect(new Set(edgePixels.map((pixel) => pixel.join(',')))).toEqual(new Set(['24,24,27,255']))
 
       const whiteEdge = await sharp({
         create: {
@@ -909,9 +834,7 @@ describe('Field Journal real UI capture contract', () => {
         ])
         .png()
         .toBuffer()
-      await expect(validateDocsCodeCanvas(whiteEdge)).rejects.toThrow(
-        /white|edge|gutter/i,
-      )
+      await expect(validateDocsCodeCanvas(whiteEdge)).rejects.toThrow(/white|edge|gutter/i)
 
       const transparentEdge = await sharp({
         create: {
@@ -923,9 +846,7 @@ describe('Field Journal real UI capture contract', () => {
       })
         .png()
         .toBuffer()
-      await expect(validateDocsCodeCanvas(transparentEdge)).rejects.toThrow(
-        /transparent|edge/i,
-      )
+      await expect(validateDocsCodeCanvas(transparentEdge)).rejects.toThrow(/transparent|edge/i)
     } finally {
       await browser.close()
     }
@@ -937,10 +858,7 @@ describe('Field Journal real UI capture contract', () => {
       captureModule,
       'captureVisibleDocsCodeEvidence',
     )
-    const validateDocsCodeCanvas = Reflect.get(
-      captureModule,
-      'validateDocsCodeCanvas',
-    )
+    const validateDocsCodeCanvas = Reflect.get(captureModule, 'validateDocsCodeCanvas')
 
     expect(captureVisibleDocsCodeEvidence).toBeTypeOf('function')
     expect(validateDocsCodeCanvas).toBeTypeOf('function')
@@ -955,12 +873,7 @@ describe('Field Journal real UI capture contract', () => {
     try {
       const page = await browser.newPage()
       const monoFontBase64 = (
-        await readFile(
-          path.join(
-            repoRoot,
-            'src/app/_fonts/GeistMono-Regular.ttf',
-          ),
-        )
+        await readFile(path.join(repoRoot, 'src/app/_fonts/GeistMono-Regular.ttf'))
       ).toString('base64')
       const rows = makeDocsCodeFixtureLines()
         .map((line) => `<span class="line">${line.html}</span>`)
@@ -980,28 +893,22 @@ describe('Field Journal real UI capture contract', () => {
       )
       expect(result.anchorIndex).toBe(7)
       expect(result.lines).toHaveLength(14)
-      expect(
-        result.selectedLines.map(
-          (line: { sourceLine: number }) => line.sourceLine,
-        ),
-      ).toEqual([4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
-      await expect(
-        validateDocsCodeCanvas(result.png),
-      ).resolves.toBeUndefined()
+      expect(result.selectedLines.map((line: { sourceLine: number }) => line.sourceLine)).toEqual([
+        4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+      ])
+      await expect(validateDocsCodeCanvas(result.png)).resolves.toBeUndefined()
       await expect(sharp(result.png).metadata()).resolves.toMatchObject({
         format: 'png',
         height: 360,
         width: 1080,
       })
 
-      await page
-        .locator('#visible-code code')
-        .evaluate((code) => {
-          const duplicate = document.createElement('span')
-          duplicate.className = 'line'
-          duplicate.textContent = 'line 8 long-source-token duplicate'
-          code.append(duplicate)
-        })
+      await page.locator('#visible-code code').evaluate((code) => {
+        const duplicate = document.createElement('span')
+        duplicate.className = 'line'
+        duplicate.textContent = 'line 8 long-source-token duplicate'
+        code.append(duplicate)
+      })
       await expect(
         captureVisibleDocsCodeEvidence(
           browser,
@@ -1018,22 +925,10 @@ describe('Field Journal real UI capture contract', () => {
 
   it('rejects escaped source and output paths before reading or writing', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
-    const resolveCaptureOutputPath = Reflect.get(
-      captureModule,
-      'resolveCaptureOutputPath',
-    )
-    const resolveCaptureSourcePath = Reflect.get(
-      captureModule,
-      'resolveCaptureSourcePath',
-    )
-    const readCaptureSourceExcerpt = Reflect.get(
-      captureModule,
-      'readCaptureSourceExcerpt',
-    )
-    const writeValidatedCaptureBatch = Reflect.get(
-      captureModule,
-      'writeValidatedCaptureBatch',
-    )
+    const resolveCaptureOutputPath = Reflect.get(captureModule, 'resolveCaptureOutputPath')
+    const resolveCaptureSourcePath = Reflect.get(captureModule, 'resolveCaptureSourcePath')
+    const readCaptureSourceExcerpt = Reflect.get(captureModule, 'readCaptureSourceExcerpt')
+    const writeValidatedCaptureBatch = Reflect.get(captureModule, 'writeValidatedCaptureBatch')
 
     expect(resolveCaptureOutputPath).toBeTypeOf('function')
     expect(resolveCaptureSourcePath).toBeTypeOf('function')
@@ -1048,9 +943,7 @@ describe('Field Journal real UI capture contract', () => {
       return
     }
 
-    await expect(
-      resolveCaptureSourcePath('tests/int/demo-twins.int.spec.ts'),
-    ).resolves.toBe(
+    await expect(resolveCaptureSourcePath('tests/int/demo-twins.int.spec.ts')).resolves.toBe(
       await realpath(path.join(repoRoot, 'tests/int/demo-twins.int.spec.ts')),
     )
 
@@ -1064,9 +957,7 @@ describe('Field Journal real UI capture contract', () => {
       ...Reflect.get(captures[captures.length - 1], 'panels').at(-1),
       sourcePath: '../outside.ts',
     } as Parameters<typeof captureModule.readCaptureSourceExcerpt>[0]
-    await expect(readCaptureSourceExcerpt(sourcePanel)).rejects.toThrow(
-      /relative|outside|escape/i,
-    )
+    await expect(readCaptureSourceExcerpt(sourcePanel)).rejects.toThrow(/relative|outside|escape/i)
 
     const validWebp = await sharp({
       create: {
@@ -1079,26 +970,15 @@ describe('Field Journal real UI capture contract', () => {
       .webp()
       .toBuffer()
     const writes: string[] = []
-    const outputRoot = await mkdtemp(
-      path.join(os.tmpdir(), 'blog-capture-lexical-'),
-    )
+    const outputRoot = await mkdtemp(path.join(os.tmpdir(), 'blog-capture-lexical-'))
     try {
       await expect(
-        resolveCaptureOutputPath(
-          outputRoot,
-          'public/blog/example/figure.webp',
-        ),
-      ).resolves.toBe(
-        path.join(
-          await realpath(outputRoot),
-          'public/blog/example/figure.webp',
-        ),
-      )
+        resolveCaptureOutputPath(outputRoot, 'public/blog/example/figure.webp'),
+      ).resolves.toBe(path.join(await realpath(outputRoot), 'public/blog/example/figure.webp'))
       for (const escaped of ['../outside.webp', '/tmp/outside.webp']) {
-        await expect(
-          resolveCaptureOutputPath(outputRoot, escaped),
-          escaped,
-        ).rejects.toThrow(/relative|outside|escape/i)
+        await expect(resolveCaptureOutputPath(outputRoot, escaped), escaped).rejects.toThrow(
+          /relative|outside|escape/i,
+        )
       }
 
       await expect(
@@ -1128,17 +1008,12 @@ describe('Field Journal real UI capture contract', () => {
 
   it('preflights every canonical output destination before the first write', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
-    const writeValidatedCaptureBatch = Reflect.get(
-      captureModule,
-      'writeValidatedCaptureBatch',
-    )
+    const writeValidatedCaptureBatch = Reflect.get(captureModule, 'writeValidatedCaptureBatch')
 
     expect(writeValidatedCaptureBatch).toBeTypeOf('function')
     if (typeof writeValidatedCaptureBatch !== 'function') return
 
-    const outputRoot = await mkdtemp(
-      path.join(os.tmpdir(), 'blog-capture-batch-'),
-    )
+    const outputRoot = await mkdtemp(path.join(os.tmpdir(), 'blog-capture-batch-'))
     try {
       const validWebp = await sharp({
         create: {
@@ -1183,18 +1058,9 @@ describe('Field Journal real UI capture contract', () => {
 
   it('rejects source and output symlinks that escape canonical roots', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
-    const readCaptureSourceExcerpt = Reflect.get(
-      captureModule,
-      'readCaptureSourceExcerpt',
-    )
-    const resolveCaptureOutputPath = Reflect.get(
-      captureModule,
-      'resolveCaptureOutputPath',
-    )
-    const resolveCaptureSourcePath = Reflect.get(
-      captureModule,
-      'resolveCaptureSourcePath',
-    )
+    const readCaptureSourceExcerpt = Reflect.get(captureModule, 'readCaptureSourceExcerpt')
+    const resolveCaptureOutputPath = Reflect.get(captureModule, 'resolveCaptureOutputPath')
+    const resolveCaptureSourcePath = Reflect.get(captureModule, 'resolveCaptureSourcePath')
 
     expect(readCaptureSourceExcerpt).toBeTypeOf('function')
     expect(resolveCaptureOutputPath).toBeTypeOf('function')
@@ -1207,9 +1073,7 @@ describe('Field Journal real UI capture contract', () => {
       return
     }
 
-    const fixtureRoot = await mkdtemp(
-      path.join(os.tmpdir(), 'blog-capture-paths-'),
-    )
+    const fixtureRoot = await mkdtemp(path.join(os.tmpdir(), 'blog-capture-paths-'))
     const sourceRoot = path.join(fixtureRoot, 'source-root')
     const outputRoot = path.join(fixtureRoot, 'output-root')
     const outsideRoot = path.join(fixtureRoot, 'outside-root')
@@ -1224,14 +1088,8 @@ describe('Field Journal real UI capture contract', () => {
       const outsideSource = path.join(outsideRoot, 'outside.ts')
       const outsideOutput = path.join(outsideRoot, 'outside.webp')
       await Promise.all([
-        writeFile(
-          insideSource,
-          'const missing = literals.flatMap((literal) => literal)\\n',
-        ),
-        writeFile(
-          outsideSource,
-          'const missing = literals.flatMap((literal) => literal)\\n',
-        ),
+        writeFile(insideSource, 'const missing = literals.flatMap((literal) => literal)\\n'),
+        writeFile(outsideSource, 'const missing = literals.flatMap((literal) => literal)\\n'),
         writeFile(outsideOutput, 'outside'),
       ])
       await Promise.all([
@@ -1244,20 +1102,18 @@ describe('Field Journal real UI capture contract', () => {
         ...Reflect.get(captures[captures.length - 1], 'panels').at(-1),
         sourcePath: 'inside.ts',
       } as Parameters<typeof captureModule.readCaptureSourceExcerpt>[0]
-      await expect(
-        readCaptureSourceExcerpt(sourcePanel, sourceRoot),
-      ).resolves.toMatchObject({
+      await expect(readCaptureSourceExcerpt(sourcePanel, sourceRoot)).resolves.toMatchObject({
         firstLine: 1,
       })
 
       const canonicalSourceRoot = await realpath(sourceRoot)
-      await expect(
-        resolveCaptureSourcePath('inside.ts', sourceRoot),
-      ).resolves.toBe(path.join(canonicalSourceRoot, 'inside.ts'))
+      await expect(resolveCaptureSourcePath('inside.ts', sourceRoot)).resolves.toBe(
+        path.join(canonicalSourceRoot, 'inside.ts'),
+      )
 
-      await expect(
-        resolveCaptureSourcePath('escaped-source.ts', sourceRoot),
-      ).rejects.toThrow(/canonical|outside|escape|symlink/i)
+      await expect(resolveCaptureSourcePath('escaped-source.ts', sourceRoot)).rejects.toThrow(
+        /canonical|outside|escape|symlink/i,
+      )
       await expect(
         readCaptureSourceExcerpt(
           {
@@ -1268,23 +1124,15 @@ describe('Field Journal real UI capture contract', () => {
         ),
       ).rejects.toThrow(/canonical|outside|escape|symlink/i)
 
+      await expect(resolveCaptureOutputPath(outputRoot, 'escaped-target.webp')).rejects.toThrow(
+        /canonical|outside|escape|symlink/i,
+      )
       await expect(
-        resolveCaptureOutputPath(outputRoot, 'escaped-target.webp'),
-      ).rejects.toThrow(/canonical|outside|escape|symlink/i)
-      await expect(
-        resolveCaptureOutputPath(
-          outputRoot,
-          'escaped-parent/deep/figure.webp',
-        ),
+        resolveCaptureOutputPath(outputRoot, 'escaped-parent/deep/figure.webp'),
       ).rejects.toThrow(/canonical|outside|escape|symlink/i)
 
       const canonicalOutputRoot = await realpath(outputRoot)
-      await expect(
-        resolveCaptureOutputPath(
-          outputRoot,
-          'new/deep/figure.webp',
-        ),
-      ).resolves.toBe(
+      await expect(resolveCaptureOutputPath(outputRoot, 'new/deep/figure.webp')).resolves.toBe(
         path.join(canonicalOutputRoot, 'new/deep/figure.webp'),
       )
     } finally {
@@ -1312,9 +1160,9 @@ describe('Field Journal real UI capture contract', () => {
           />
         </main>
       `)
-      await expect(
-        waitForTargetAssets(page, '#capture-target'),
-      ).rejects.toThrow(/broken visible evidence|decode|image/i)
+      await expect(waitForTargetAssets(page, '#capture-target')).rejects.toThrow(
+        /broken visible evidence|decode|image/i,
+      )
     } finally {
       await browser.close()
     }
@@ -1322,18 +1170,12 @@ describe('Field Journal real UI capture contract', () => {
 
   it('embeds vendored Geist Mono in repository source evidence', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
-    const renderSourceExcerptHtml = Reflect.get(
-      captureModule,
-      'renderSourceExcerptHtml',
-    )
+    const renderSourceExcerptHtml = Reflect.get(captureModule, 'renderSourceExcerptHtml')
 
     expect(renderSourceExcerptHtml).toBeTypeOf('function')
     if (typeof renderSourceExcerptHtml !== 'function') return
 
-    const sourcePanel = Reflect.get(
-      captures[captures.length - 1],
-      'panels',
-    ).at(-1) as Parameters<
+    const sourcePanel = Reflect.get(captures[captures.length - 1], 'panels').at(-1) as Parameters<
       typeof captureModule.renderSourceExcerptHtml
     >[0]
     const html = renderSourceExcerptHtml(
@@ -1344,7 +1186,7 @@ describe('Field Journal real UI capture contract', () => {
       },
       'dGVzdA==',
     )
-    expect(html).toContain("@font-face")
+    expect(html).toContain('@font-face')
     expect(html).toContain("font-family: 'Capture Mono'")
     expect(html).toContain('data:font/ttf;base64,dGVzdA==')
     expect(html).not.toMatch(/SFMono|Menlo|Monaco/)
@@ -1353,14 +1195,8 @@ describe('Field Journal real UI capture contract', () => {
   it('encodes deterministic 1600 by 900 WebP and preflights the batch before writes', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
     const encodeCaptureWebp = Reflect.get(captureModule, 'encodeCaptureWebp')
-    const webpEncodingOptions = Reflect.get(
-      captureModule,
-      'webpEncodingOptions',
-    )
-    const writeValidatedCaptureBatch = Reflect.get(
-      captureModule,
-      'writeValidatedCaptureBatch',
-    )
+    const webpEncodingOptions = Reflect.get(captureModule, 'webpEncodingOptions')
+    const writeValidatedCaptureBatch = Reflect.get(captureModule, 'writeValidatedCaptureBatch')
 
     expect(encodeCaptureWebp).toBeTypeOf('function')
     expect(webpEncodingOptions).toEqual({ effort: 6, quality: 86 })
@@ -1383,10 +1219,7 @@ describe('Field Journal real UI capture contract', () => {
     })
       .png()
       .toBuffer()
-    const [first, second] = await Promise.all([
-      encodeCaptureWebp(png),
-      encodeCaptureWebp(png),
-    ])
+    const [first, second] = await Promise.all([encodeCaptureWebp(png), encodeCaptureWebp(png)])
     const metadata = await sharp(first).metadata()
 
     expect(first.equals(second)).toBe(true)
@@ -1417,10 +1250,7 @@ describe('Field Journal real UI capture contract', () => {
 
   it('pins the complete production fit and alignment policy with asymmetric pixels', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
-    const precomposePanelImage = Reflect.get(
-      captureModule,
-      'precomposePanelImage',
-    )
+    const precomposePanelImage = Reflect.get(captureModule, 'precomposePanelImage')
 
     expect(precomposePanelImage).toBeTypeOf('function')
     if (typeof precomposePanelImage !== 'function') return
@@ -1518,9 +1348,7 @@ describe('Field Journal real UI capture contract', () => {
     const mobilePanel = panels.find(
       (panel) => panel.kind === 'preview' && panel.viewport === 'mobile',
     )
-    const docsSectionPanel = panels.find(
-      (panel) => panel.kind === 'docs-section',
-    )
+    const docsSectionPanel = panels.find((panel) => panel.kind === 'docs-section')
     const sourcePanel = panels.find((panel) => panel.kind === 'source')
     const coverPanel = panels.find((panel) => panel.kind === 'route-viewport')
     expect(docsCodePanel).toBeDefined()
@@ -1528,20 +1356,15 @@ describe('Field Journal real UI capture contract', () => {
     expect(docsSectionPanel).toBeDefined()
     expect(sourcePanel).toBeDefined()
     expect(coverPanel).toBeDefined()
-    if (
-      !docsCodePanel ||
-      !mobilePanel ||
-      !docsSectionPanel ||
-      !sourcePanel ||
-      !coverPanel
-    ) return
+    if (!docsCodePanel || !mobilePanel || !docsSectionPanel || !sourcePanel || !coverPanel) return
 
-    const pixelAt = async (image: Buffer, left: number, top: number) =>
-      [...await sharp(image)
+    const pixelAt = async (image: Buffer, left: number, top: number) => [
+      ...(await sharp(image)
         .extract({ height: 1, left, top, width: 1 })
         .ensureAlpha()
         .raw()
-        .toBuffer()]
+        .toBuffer()),
+    ]
     const transparent = [0, 0, 0, 0]
     const emerald = [5, 150, 105, 255]
     const white = [255, 255, 255, 255]
@@ -1556,11 +1379,13 @@ describe('Field Journal real UI capture contract', () => {
         label: 'docs-code · contain/centre',
         panel: docsCodePanel,
       },
-      ...([
-        ['mobile preview · contain/north', mobilePanel],
-        ['docs section · contain/north', docsSectionPanel],
-        ['repository source · contain/north', sourcePanel],
-      ] as const).map(([label, panel]) => ({
+      ...(
+        [
+          ['mobile preview · contain/north', mobilePanel],
+          ['docs section · contain/north', docsSectionPanel],
+          ['repository source · contain/north', sourcePanel],
+        ] as const
+      ).map(([label, panel]) => ({
         checks: [
           { at: [50, 3], pixel: emerald },
           { at: [50, 20], pixel: white },
@@ -1572,11 +1397,7 @@ describe('Field Journal real UI capture contract', () => {
     ] as const
 
     for (const policy of containMatrix) {
-      const output = await precomposePanelImage(
-        policy.panel,
-        wideSource,
-        target,
-      )
+      const output = await precomposePanelImage(policy.panel, wideSource, target)
       await expect(sharp(output).metadata(), policy.label).resolves.toMatchObject({
         format: 'png',
         height: 100,
@@ -1590,17 +1411,17 @@ describe('Field Journal real UI capture contract', () => {
       }
     }
 
-    const cover = await precomposePanelImage(
-      coverPanel,
-      tallSource,
-      target,
-    )
+    const cover = await precomposePanelImage(coverPanel, tallSource, target)
     await expect(sharp(cover).metadata()).resolves.toMatchObject({
       format: 'png',
       height: 100,
       width: 100,
     })
-    for (const [left, top] of [[3, 3], [50, 50], [96, 90]]) {
+    for (const [left, top] of [
+      [3, 3],
+      [50, 50],
+      [96, 90],
+    ]) {
       expect(
         await pixelAt(cover, left, top),
         `route viewport · cover/north pixel ${left},${top}`,
@@ -1610,10 +1431,7 @@ describe('Field Journal real UI capture contract', () => {
 
   it('captures real catalog-card evidence at DPR 2 source density', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
-    const getCaptureDeviceScaleFactor = Reflect.get(
-      captureModule,
-      'getCaptureDeviceScaleFactor',
-    )
+    const getCaptureDeviceScaleFactor = Reflect.get(captureModule, 'getCaptureDeviceScaleFactor')
     const panels = captures.reduce<CapturePanel[]>((all, capture) => {
       all.push(...(capture.panels as readonly CapturePanel[]))
       return all
@@ -1624,11 +1442,7 @@ describe('Field Journal real UI capture contract', () => {
     expect(getCaptureDeviceScaleFactor).toBeTypeOf('function')
     expect(catalogPanel).toBeDefined()
     expect(routePanel).toBeDefined()
-    if (
-      typeof getCaptureDeviceScaleFactor !== 'function' ||
-      !catalogPanel ||
-      !routePanel
-    ) return
+    if (typeof getCaptureDeviceScaleFactor !== 'function' || !catalogPanel || !routePanel) return
 
     expect(getCaptureDeviceScaleFactor(catalogPanel)).toBe(2)
     expect(getCaptureDeviceScaleFactor(routePanel)).toBe(1)
@@ -1746,7 +1560,10 @@ const fabricatedPresentationMarkers = [
 ] as const
 
 function scalar(frontmatter: string, name: string) {
-  return frontmatter.match(new RegExp(`^${name}:\\s*(.+)$`, 'm'))?.[1]?.trim().replace(/^['"]|['"]$/g, '')
+  return frontmatter
+    .match(new RegExp(`^${name}:\\s*(.+)$`, 'm'))?.[1]
+    ?.trim()
+    .replace(/^['"]|['"]$/g, '')
 }
 
 function figureSources(source: string) {
@@ -1780,7 +1597,11 @@ function isKnownLocalRoute(route: string) {
   )
 }
 
-function expectResolvedArtifactBinding(artifact: Artifact, resolved: ResolvedArtifact, context: string) {
+function expectResolvedArtifactBinding(
+  artifact: Artifact,
+  resolved: ResolvedArtifact,
+  context: string,
+) {
   expect(resolved.kind, context).toBe(artifact.kind)
   expect(resolved.label, context).toBe(artifact.label)
 
@@ -1804,7 +1625,9 @@ function expectResolvedArtifactBinding(artifact: Artifact, resolved: ResolvedArt
         expect(resolved.evidence, `${context}: registry item ${item}`).toContain(item)
       }
       expect(resolved.provenance, context).toContain(
-        artifact.registryItems?.length ? 'payload-components/registry.json' : 'tools/blog/visual-system/catalog.ts',
+        artifact.registryItems?.length
+          ? 'payload-components/registry.json'
+          : 'tools/blog/visual-system/catalog.ts',
       )
       break
     case 'sequence':
@@ -1894,10 +1717,14 @@ const styleOnlyDescription = new RegExp(
   'i',
 )
 
-const invitationVerb = /\b(?:bring|build|change|contribut(?:e|ion)|fix|improve|inspect|install|keep|leave|make|map|mint|name|open|paste|pressure-test|propos(?:e|al)|read|record|regenerate|report|request|share|show|start|test|try|turn|verify|what)\b/i
+const invitationVerb =
+  /\b(?:bring|build|change|contribut(?:e|ion)|fix|improve|inspect|install|keep|leave|make|map|mint|name|open|paste|pressure-test|propos(?:e|al)|read|record|regenerate|report|request|share|show|start|test|try|turn|verify|what)\b/i
 
 const normaliseTeachingCopy = (value: string) =>
-  value.toLocaleLowerCase('en-US').replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
+  value
+    .toLocaleLowerCase('en-US')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim()
 
 function coverPartCount(html: string, part: string) {
   return html.match(new RegExp(`data-cover-part="${part}"`, 'g'))?.length ?? 0
@@ -1949,12 +1776,8 @@ describe('Field Journal accessible teaching pairs', () => {
 
       expectNoFabricatedPresentation(entry.prompt, `${entry.slug}: catalog prompt`)
       if (!source.includes(entry.prompt)) {
-        expect(entry.prompt, `${entry.slug}: actionable catalog prompt`).toMatch(
-          invitationVerb,
-        )
-        expect(finalSection, `${entry.slug}: compatible final invitation`).toMatch(
-          invitationVerb,
-        )
+        expect(entry.prompt, `${entry.slug}: actionable catalog prompt`).toMatch(invitationVerb)
+        expect(finalSection, `${entry.slug}: compatible final invitation`).toMatch(invitationVerb)
         expectNoFabricatedPresentation(finalSection, `${entry.slug}: final invitation`)
       }
     }
@@ -1977,21 +1800,12 @@ describe('Field Journal deterministic diagram assets', () => {
       expect(root, `${context}: accessible name`).toMatch(
         /\baria-labelledby="diagram-title diagram-description"/,
       )
-      expect(source, `${context}: title`).toMatch(
-        /<title id="diagram-title">[^<]+<\/title>/,
-      )
+      expect(source, `${context}: title`).toMatch(/<title id="diagram-title">[^<]+<\/title>/)
       expect(source, `${context}: description`).toMatch(
         /<desc id="diagram-description">[^<]+<\/desc>/,
       )
 
-      for (const part of [
-        'grid',
-        'masthead',
-        'mode',
-        'folio',
-        'provenance',
-        'prompt',
-      ]) {
+      for (const part of ['grid', 'masthead', 'mode', 'folio', 'provenance', 'prompt']) {
         expect(
           source.match(new RegExp(`data-journal-part="${part}"`, 'g')) ?? [],
           `${context}: ${part}`,
@@ -2006,18 +1820,14 @@ describe('Field Journal deterministic diagram assets', () => {
         'production-guides': 'PRODUCTION GUIDES',
         'project-notes': 'PROJECT NOTES',
       }[entry.series]
-      expect(source, `${context}: catalog series`).toContain(
-        `data-series="${entry.series}"`,
-      )
+      expect(source, `${context}: catalog series`).toContain(`data-series="${entry.series}"`)
       expect(source, `${context}: catalog issue`).toContain(
         `data-issue="${String(entry.order).padStart(2, '0')}"`,
       )
       expect(source, `${context}: masthead text`).toContain(
         `${seriesLabel} · ISSUE ${String(entry.order).padStart(2, '0')}`,
       )
-      expect(source, `${context}: mode marker`).toContain(
-        `>${figure.mode.toUpperCase()}</text>`,
-      )
+      expect(source, `${context}: mode marker`).toContain(`>${figure.mode.toUpperCase()}</text>`)
       expect(source, `${context}: exact catalog prompt`).toContain(
         entry.prompt
           .replaceAll('&', '&amp;')
@@ -2053,20 +1863,16 @@ describe('Field Journal deterministic diagram assets', () => {
       }
 
       const fontSizes = [
-        ...[...source.matchAll(/\bfont-size=["']([\d.]+)(?:px)?["']/gi)].map(
-          (match) => Number(match[1]),
-        ),
-        ...[...source.matchAll(/font-size\s*:\s*([\d.]+)px/gi)].map((match) =>
+        ...[...source.matchAll(/\bfont-size=["']([\d.]+)(?:px)?["']/gi)].map((match) =>
           Number(match[1]),
         ),
-        ...[...source.matchAll(/(?:^|[;{])\s*font\s*:[^;{}]*?\b([\d.]+)px/gi)].map(
-          (match) => Number(match[1]),
+        ...[...source.matchAll(/font-size\s*:\s*([\d.]+)px/gi)].map((match) => Number(match[1])),
+        ...[...source.matchAll(/(?:^|[;{])\s*font\s*:[^;{}]*?\b([\d.]+)px/gi)].map((match) =>
+          Number(match[1]),
         ),
       ]
       expect(fontSizes.length, `${entry.slug}: declared text sizes`).toBeGreaterThan(0)
-      expect(Math.min(...fontSizes), `${entry.slug}: minimum text size`).toBeGreaterThanOrEqual(
-        13,
-      )
+      expect(Math.min(...fontSizes), `${entry.slug}: minimum text size`).toBeGreaterThanOrEqual(13)
       expect(source, `${entry.slug}: text scaling`).not.toMatch(
         /<text\b[^>]*\btransform=["'][^"']*\bscale\(\s*(?:0(?:\.\d+)?|\.\d+)/i,
       )
@@ -2076,9 +1882,7 @@ describe('Field Journal deterministic diagram assets', () => {
 
 describe('Field Journal diagram renderer', () => {
   it('defines the exact catalog paths once with unique node identities', async () => {
-    const { diagramDefinitions } = await import(
-      '../../tools/blog/visual-system/diagram-data'
-    )
+    const { diagramDefinitions } = await import('../../tools/blog/visual-system/diagram-data')
     const catalogPaths = blogVisualCatalog
       .flatMap((entry) => entry.figures)
       .filter((figure) => figure.path.endsWith('.svg'))
@@ -2094,9 +1898,8 @@ describe('Field Journal diagram renderer', () => {
   })
 
   it('hydrates issue, series, mode, invitation, and evidence from repository-backed catalog artifacts', async () => {
-    const { diagramDefinitions, hydrateDiagramDefinitions } = await import(
-      '../../tools/blog/visual-system/diagram-data'
-    )
+    const { diagramDefinitions, hydrateDiagramDefinitions } =
+      await import('../../tools/blog/visual-system/diagram-data')
     const hydrated = await hydrateDiagramDefinitions()
 
     expect(hydrated).toHaveLength(27)
@@ -2104,9 +1907,7 @@ describe('Field Journal diagram renderer', () => {
     for (const diagram of hydrated) {
       const entry = blogVisualCatalog.find((candidate) => candidate.slug === diagram.slug)
       const figure = entry?.figures.find((candidate) => candidate.path === diagram.path)
-      const definition = diagramDefinitions.find(
-        (candidate) => candidate.path === diagram.path,
-      )
+      const definition = diagramDefinitions.find((candidate) => candidate.path === diagram.path)
 
       expect(entry, diagram.path).toBeDefined()
       expect(definition, diagram.path).toBeDefined()
@@ -2129,10 +1930,7 @@ describe('Field Journal diagram renderer', () => {
         expect(diagram.provenance, diagram.path).toBe(resolved.provenance)
         if (definition?.evidenceLines) {
           expect(diagram.evidenceExcerpt, diagram.path).toBe(
-            resolved.evidence
-              .split(/\r?\n/)
-              .slice(0, definition.evidenceLines)
-              .join('\n'),
+            resolved.evidence.split(/\r?\n/).slice(0, definition.evidenceLines).join('\n'),
           )
         }
       }
@@ -2140,20 +1938,14 @@ describe('Field Journal diagram renderer', () => {
   })
 
   it('pins the diagram lessons to current installer, component, and community truth', async () => {
-    const { diagramDefinitions } = await import(
-      '../../tools/blog/visual-system/diagram-data'
-    )
+    const { diagramDefinitions } = await import('../../tools/blog/visual-system/diagram-data')
     const text = (suffix: string) => {
-      const definition = diagramDefinitions.find((candidate) =>
-        candidate.path.endsWith(suffix),
-      )
+      const definition = diagramDefinitions.find((candidate) => candidate.path.endsWith(suffix))
       expect(definition, suffix).toBeDefined()
       return JSON.stringify(definition)
     }
 
-    expect(text('hello/figure-01-origin-story.svg')).toContain(
-      'src/blocks/shared/heroFields.ts',
-    )
+    expect(text('hello/figure-01-origin-story.svg')).toContain('src/blocks/shared/heroFields.ts')
 
     const install = text('anatomy-of-an-install/figure-01-five-stage-pipeline.svg')
     for (const stage of [
@@ -2171,14 +1963,10 @@ describe('Field Journal diagram renderer', () => {
     expect(install).not.toContain('State outcome after every stage')
 
     const lifecycleDefinition = diagramDefinitions.find((candidate) =>
-      candidate.path.endsWith(
-        'what-is-a-payload-cms-block/figure-01-block-lifecycle.svg',
-      ),
+      candidate.path.endsWith('what-is-a-payload-cms-block/figure-01-block-lifecycle.svg'),
     )
     expect(JSON.stringify(lifecycleDefinition)).toContain('Compile-time guard')
-    expect(
-      lifecycleDefinition?.rows.map((row) => row.map((node) => node.id)),
-    ).toEqual([
+    expect(lifecycleDefinition?.rows.map((row) => row.map((node) => node.id))).toEqual([
       ['config'],
       ['editor', 'types'],
       ['stored', 'renderer', 'component', 'react'],
@@ -2192,16 +1980,12 @@ describe('Field Journal diagram renderer', () => {
       ['renderer', 'component'],
       ['component', 'react'],
     ])
-    expect(
-      text('production-ready-payload-block-config/figure-01-config-anatomy.svg'),
-    ).toContain('Reviewable block contract')
+    expect(text('production-ready-payload-block-config/figure-01-config-anatomy.svg')).toContain(
+      'Reviewable block contract',
+    )
 
     const renderers = text('how-renderblocks-works/figure-01-renderer-dispatch.svg')
-    for (const exportedRenderer of [
-      'HeroBasicBlock',
-      'FeatureBentoBlock',
-      'ContentQuoteBlock',
-    ]) {
+    for (const exportedRenderer of ['HeroBasicBlock', 'FeatureBentoBlock', 'ContentQuoteBlock']) {
       expect(renderers).toContain(exportedRenderer)
     }
 
@@ -2223,33 +2007,23 @@ describe('Field Journal diagram renderer', () => {
       'heroBasic: HeroBasicBlock',
     )
     const convergenceDefinition = diagramDefinitions.find((candidate) =>
-      candidate.path.endsWith(
-        'idempotent-code-installer/figure-01-convergence-state.svg',
-      ),
+      candidate.path.endsWith('idempotent-code-installer/figure-01-convergence-state.svg'),
     )
-    expect(
-      convergenceDefinition?.rows.map((row) => row.map((node) => node.id)),
-    ).toEqual([
+    expect(convergenceDefinition?.rows.map((row) => row.map((node) => node.id))).toEqual([
       ['preflight'],
       ['attempt'],
       ['failure', 'installed', 'unchanged'],
     ])
-    expect(
-      convergenceDefinition?.edges?.map(({ from, to }) => [from, to]),
-    ).toEqual([
+    expect(convergenceDefinition?.edges?.map(({ from, to }) => [from, to])).toEqual([
       ['preflight', 'attempt'],
       ['attempt', 'failure'],
       ['attempt', 'installed'],
       ['installed', 'unchanged'],
     ])
     expect(
-      convergenceDefinition?.rows
-        .flat()
-        .find((node) => node.id === 'failure')?.body,
+      convergenceDefinition?.rows.flat().find((node) => node.id === 'failure')?.body,
     ).toContain('next add rechecks preflight')
-    expect(text('payload-components-doctor/figure-01-doctor-report.svg')).not.toContain(
-      'Summary:',
-    )
+    expect(text('payload-components-doctor/figure-01-doctor-report.svg')).not.toContain('Summary:')
 
     const variants = text(
       'component-variants-without-prop-explosion/figure-01-family-vs-matrix.svg',
@@ -2266,9 +2040,9 @@ describe('Field Journal diagram renderer', () => {
     expect(variants).toContain('Heading + CTA beside list')
     expect(variants).not.toContain('Alternating rows')
 
-    expect(
-      text('build-payload-blog-frontend/figure-01-editorial-architecture.svg'),
-    ).not.toMatch(/pagination|docs search/i)
+    expect(text('build-payload-blog-frontend/figure-01-editorial-architecture.svg')).not.toMatch(
+      /pagination|docs search/i,
+    )
     expect(text('accessible-faq-blocks/figure-01-faq-anatomy.svg')).toContain(
       'Region only when useful',
     )
@@ -2289,16 +2063,12 @@ describe('Field Journal diagram renderer', () => {
     expect(motion).toContain('x: 0 → -contentSize / 2')
     expect(motion).toContain('effect returns; row stays static')
 
-    expect(text('demo-twins/figure-01-architecture-mirror.svg')).toContain(
-      'one-way token presence',
-    )
+    expect(text('demo-twins/figure-01-architecture-mirror.svg')).toContain('one-way token presence')
     expect(
       text('visual-regression-component-registry/figure-01-regression-pipeline.svg'),
     ).toContain('Zero baselines: bootstrap skip')
 
-    const contribution = text(
-      'contribute-payload-component/figure-01-contribution-workflow.svg',
-    )
+    const contribution = text('contribute-payload-component/figure-01-contribution-workflow.svg')
     for (const surface of [
       'Source',
       'Manifest',
@@ -2311,9 +2081,7 @@ describe('Field Journal diagram renderer', () => {
       expect(contribution).toContain(surface)
     }
 
-    const reproducible = text(
-      'reproducible-shadcn-registry/figure-01-deterministic-build.svg',
-    )
+    const reproducible = text('reproducible-shadcn-registry/figure-01-deterministic-build.svg')
     expect(reproducible).toContain('One temporary build')
     expect(reproducible).toContain('Exact embedded content')
     expect(reproducible).not.toContain('Clean checkout B')
@@ -2354,7 +2122,7 @@ describe('Field Journal diagram renderer', () => {
         alt: ['one-way', 'class token'],
         caption: ['token-presence guard'],
       },
-      'hello': {
+      hello: {
         alt: ['heroFields', 'registration', 'generated'],
         caption: ['shared field source', 'wiring'],
       },
@@ -2438,14 +2206,9 @@ describe('Field Journal diagram renderer', () => {
     expect(idempotentSource).toContain(
       'Exact fragment rerun does not duplicate the named import or direct map entry',
     )
-    expect(idempotentSource).toContain(
-      'Missing anchor fails without a broad rewrite',
-    )
+    expect(idempotentSource).toContain('Missing anchor fails without a broad rewrite')
 
-    const anchorSource = await readFile(
-      path.join(blogRoot, 'text-anchors-vs-ast.mdx'),
-      'utf8',
-    )
+    const anchorSource = await readFile(path.join(blogRoot, 'text-anchors-vs-ast.mdx'), 'utf8')
     const normalizedAnchorSource = anchorSource.replace(/\s+/g, ' ')
     expect(anchorSource).not.toContain(
       'Before applying fragments, the installer resolves target files and validates the expected anchors',
@@ -2453,30 +2216,19 @@ describe('Field Journal diagram renderer', () => {
     expect(anchorSource).not.toContain(
       'discover obvious incompatibility before writing the first host file',
     )
-    expect(normalizedAnchorSource).toContain(
-      'Fragment files are read and patched sequentially',
-    )
+    expect(normalizedAnchorSource).toContain('Fragment files are read and patched sequentially')
     expect(normalizedAnchorSource).toContain(
       'a later missing anchor can fail after an earlier host file changed',
     )
-    expect(normalizedAnchorSource).toContain(
-      'recoverable, not globally prevalidated or atomic',
-    )
+    expect(normalizedAnchorSource).toContain('recoverable, not globally prevalidated or atomic')
 
-    const anatomySource = await readFile(
-      path.join(blogRoot, 'anatomy-of-an-install.mdx'),
-      'utf8',
-    )
+    const anatomySource = await readFile(path.join(blogRoot, 'anatomy-of-an-install.mdx'), 'utf8')
     const normalizedAnatomySource = anatomySource.replace(/\s+/g, ' ')
-    expect(anatomySource).not.toContain(
-      'a stage whose result is already valid can be skipped',
-    )
+    expect(anatomySource).not.toContain('a stage whose result is already valid can be skipped')
     expect(normalizedAnatomySource).toContain(
       'File, dependency, and fragment stages are conditional on observed missing work',
     )
-    expect(normalizedAnatomySource).toContain(
-      'can return early before a staged attempt',
-    )
+    expect(normalizedAnatomySource).toContain('can return early before a staged attempt')
     expect(normalizedAnatomySource).toContain(
       'declared post-install scripts run before installed state is recorded',
     )
@@ -2487,31 +2239,18 @@ describe('Field Journal diagram renderer', () => {
     expect(trustSource).not.toContain(
       'A form selects a known server workflow, not a free-form action',
     )
-    expect(trustSource).not.toContain(
-      'An embed stores a provider and identifier',
-    )
+    expect(trustSource).not.toContain('An embed stores a provider and identifier')
     expect(trustSource).not.toContain('a known form identifier')
     expect(trustSource).not.toContain('Model embeds as provider plus identifier')
-    expect(trustSource).toContain(
-      'The CTA stores a constrained same-origin action path',
-    )
-    expect(trustSource).toContain(
-      'EmbedBasic stores an approved HTTPS URL',
-    )
+    expect(trustSource).toContain('The CTA stores a constrained same-origin action path')
+    expect(trustSource).toContain('EmbedBasic stores an approved HTTPS URL')
     expect(trustSource).toContain('neither accepts pasted HTML')
 
     const reproducibilitySource = (
-      await readFile(
-        path.join(blogRoot, 'reproducible-shadcn-registry.mdx'),
-        'utf8',
-      )
+      await readFile(path.join(blogRoot, 'reproducible-shadcn-registry.mdx'), 'utf8')
     ).replace(/\s+/g, ' ')
-    expect(reproducibilitySource).not.toContain(
-      '`pnpm test:registry` creates one temporary build',
-    )
-    expect(reproducibilitySource).toContain(
-      '`pnpm registry:check` creates one temporary build',
-    )
+    expect(reproducibilitySource).not.toContain('`pnpm test:registry` creates one temporary build')
+    expect(reproducibilitySource).toContain('`pnpm registry:check` creates one temporary build')
     expect(reproducibilitySource).toContain(
       '`pnpm test:registry` runs `registry:check` and `registry:validate`',
     )
@@ -2530,19 +2269,14 @@ describe('Field Journal diagram renderer', () => {
       'what-is-a-payload-cms-block',
     ]) {
       const source = await readFile(path.join(blogRoot, `${slug}.mdx`), 'utf8')
-      expect(source, slug).not.toMatch(
-        /\b(?:HeroBasic|FeatureBento|ContentQuote)Component\b/,
-      )
+      expect(source, slug).not.toMatch(/\b(?:HeroBasic|FeatureBento|ContentQuote)Component\b/)
     }
   })
 
   it('rejects duplicate nodes, unknown endpoints, duplicate edges, and traversal paths', async () => {
-    const { diagramDefinitions } = await import(
-      '../../tools/blog/visual-system/diagram-data'
-    )
-    const { validateDiagramDefinitions } = await import(
-      '../../tools/blog/visual-system/diagram-template'
-    )
+    const { diagramDefinitions } = await import('../../tools/blog/visual-system/diagram-data')
+    const { validateDiagramDefinitions } =
+      await import('../../tools/blog/visual-system/diagram-template')
     const base = diagramDefinitions[0]
 
     expect(() =>
@@ -2583,12 +2317,10 @@ describe('Field Journal diagram renderer', () => {
   })
 
   it('escapes XML and renders deterministic, metadata-complete diagrams', async () => {
-    const { hydrateDiagramDefinitions } = await import(
-      '../../tools/blog/visual-system/diagram-data'
-    )
-    const { escapeXml, renderDiagramSvg, unescapeXml } = await import(
-      '../../tools/blog/visual-system/diagram-template'
-    )
+    const { hydrateDiagramDefinitions } =
+      await import('../../tools/blog/visual-system/diagram-data')
+    const { escapeXml, renderDiagramSvg, unescapeXml } =
+      await import('../../tools/blog/visual-system/diagram-template')
     const diagrams = await hydrateDiagramDefinitions()
     const first = diagrams[0]
 
@@ -2617,9 +2349,7 @@ describe('Field Journal diagram renderer', () => {
     for (const diagram of diagrams) {
       const svg = renderDiagramSvg(diagram)
       const root = svg.match(/^<svg\b[^>]*>/)?.[0] ?? ''
-      const nodeIds = [...svg.matchAll(/data-node-id="([^"]+)"/g)].map(
-        (match) => match[1],
-      )
+      const nodeIds = [...svg.matchAll(/data-node-id="([^"]+)"/g)].map((match) => match[1])
       const flatNodes = diagram.rows.flat()
       const effectiveEdges =
         diagram.edges ??
@@ -2627,43 +2357,35 @@ describe('Field Journal diagram renderer', () => {
           from: node.id,
           to: flatNodes[index + 1].id,
         }))
-      const renderedEdges = [...svg.matchAll(
-        /data-edge-from="([^"]+)"\s+data-edge-to="([^"]+)"/g,
-      )].map((match) => ({ from: match[1], to: match[2] }))
-      const headlineBaselines = [
-        ...svg.matchAll(/<text class="headline"[^>]*\by="([\d.]+)"/g),
-      ].map((match) => Number(match[1]))
-      const cardTops = [
-        ...svg.matchAll(/<rect class="node-card"[^>]*\by="([\d.]+)"/g),
-      ].map((match) => Number(match[1]))
-      const modeBox = svg.match(
-        /<rect class="mode-box" x="([\d.]+)" y="[\d.]+" width="([\d.]+)"/,
+      const renderedEdges = [
+        ...svg.matchAll(/data-edge-from="([^"]+)"\s+data-edge-to="([^"]+)"/g),
+      ].map((match) => ({ from: match[1], to: match[2] }))
+      const headlineBaselines = [...svg.matchAll(/<text class="headline"[^>]*\by="([\d.]+)"/g)].map(
+        (match) => Number(match[1]),
       )
-      const folio = svg.match(
-        /<text class="folio-label" x="([\d.]+)"[^>]*>([^<]+)<\/text>/,
+      const cardTops = [...svg.matchAll(/<rect class="node-card"[^>]*\by="([\d.]+)"/g)].map(
+        (match) => Number(match[1]),
       )
+      const modeBox = svg.match(/<rect class="mode-box" x="([\d.]+)" y="[\d.]+" width="([\d.]+)"/)
+      const folio = svg.match(/<text class="folio-label" x="([\d.]+)"[^>]*>([^<]+)<\/text>/)
 
       expect(root, diagram.path).toContain('viewBox="0 0 1200 675"')
       expect(root, diagram.path).toContain(`data-mode="${diagram.mode}"`)
-      expect(root, diagram.path).toContain(
-        'aria-labelledby="diagram-title diagram-description"',
-      )
+      expect(root, diagram.path).toContain('aria-labelledby="diagram-title diagram-description"')
       expect(new Set(nodeIds).size, diagram.path).toBe(nodeIds.length)
       expect(headlineBaselines.length, `${diagram.path}: headline lines`).toBeGreaterThan(0)
       expect(cardTops.length, `${diagram.path}: node cards`).toBeGreaterThan(0)
-      expect(
-        Math.min(...cardTops),
-        `${diagram.path}: headline/card clearance`,
-      ).toBeGreaterThan(Math.max(...headlineBaselines) + 8)
+      expect(Math.min(...cardTops), `${diagram.path}: headline/card clearance`).toBeGreaterThan(
+        Math.max(...headlineBaselines) + 8,
+      )
       expect(modeBox, `${diagram.path}: mode stamp`).toBeTruthy()
       expect(folio, `${diagram.path}: folio`).toBeTruthy()
       if (modeBox && folio) {
         const modeRight = Number(modeBox[1]) + Number(modeBox[2])
         const conservativeFolioLeft = Number(folio[1]) - [...folio[2]].length * 8
-        expect(
-          modeRight + 16,
-          `${diagram.path}: mode/folio clearance`,
-        ).toBeLessThanOrEqual(conservativeFolioLeft)
+        expect(modeRight + 16, `${diagram.path}: mode/folio clearance`).toBeLessThanOrEqual(
+          conservativeFolioLeft,
+        )
       }
       expect(renderedEdges, `${diagram.path}: effective edge order`).toEqual(
         effectiveEdges.map(({ from, to }) => ({ from, to })),
@@ -2676,15 +2398,12 @@ describe('Field Journal diagram renderer', () => {
         const card = nodeSource.match(
           /<rect class="node-card"[^>]*\by="([\d.]+)"[^>]*\bheight="([\d.]+)"/,
         )
-        const textBaselines = [
-          ...nodeSource.matchAll(/<text\b[^>]*\by="([\d.]+)"/g),
-        ].map((match) => Number(match[1]))
+        const textBaselines = [...nodeSource.matchAll(/<text\b[^>]*\by="([\d.]+)"/g)].map((match) =>
+          Number(match[1]),
+        )
 
         expect(card, `${diagram.path}: ${nodeMatch[1]} card`).toBeTruthy()
-        expect(
-          textBaselines.length,
-          `${diagram.path}: ${nodeMatch[1]} text`,
-        ).toBeGreaterThan(0)
+        expect(textBaselines.length, `${diagram.path}: ${nodeMatch[1]} text`).toBeGreaterThan(0)
         if (!card) continue
 
         const safeTextBottom = Math.max(...textBaselines) + 5
@@ -2695,16 +2414,14 @@ describe('Field Journal diagram renderer', () => {
         ).toBeLessThanOrEqual(cardBottom - 8)
       }
 
-      for (const edge of svg.matchAll(
-        /data-edge-from="([^"]+)"\s+data-edge-to="([^"]+)"/g,
-      )) {
+      for (const edge of svg.matchAll(/data-edge-from="([^"]+)"\s+data-edge-to="([^"]+)"/g)) {
         expect(nodeIds, `${diagram.path}: edge from`).toContain(edge[1])
         expect(nodeIds, `${diagram.path}: edge to`).toContain(edge[2])
       }
 
-      const decodedBodyLines = [...svg.matchAll(
-        /<text[^>]+data-role="body-line"[^>]*>([^<]*)<\/text>/g,
-      )].map((match) => unescapeXml(match[1]))
+      const decodedBodyLines = [
+        ...svg.matchAll(/<text[^>]+data-role="body-line"[^>]*>([^<]*)<\/text>/g),
+      ].map((match) => unescapeXml(match[1]))
       expect(decodedBodyLines.length, diagram.path).toBeGreaterThan(0)
       expect(
         Math.max(...decodedBodyLines.map((line) => [...line].length)),
@@ -2716,12 +2433,10 @@ describe('Field Journal diagram renderer', () => {
   })
 
   it('renders every edge label in full without silently dropping wrapped lines', async () => {
-    const { hydrateDiagramDefinitions } = await import(
-      '../../tools/blog/visual-system/diagram-data'
-    )
-    const { escapeXml, renderDiagramSvg, wrapDiagramText } = await import(
-      '../../tools/blog/visual-system/diagram-template'
-    )
+    const { hydrateDiagramDefinitions } =
+      await import('../../tools/blog/visual-system/diagram-data')
+    const { escapeXml, renderDiagramSvg, wrapDiagramText } =
+      await import('../../tools/blog/visual-system/diagram-template')
 
     const diagrams = await hydrateDiagramDefinitions()
     const synthetic = {
@@ -2767,12 +2482,9 @@ describe('Field Journal diagram renderer', () => {
   })
 
   it('anchors cross-row edges vertically and keeps every label paper out of cards', async () => {
-    const { hydrateDiagramDefinitions } = await import(
-      '../../tools/blog/visual-system/diagram-data'
-    )
-    const { renderDiagramSvg } = await import(
-      '../../tools/blog/visual-system/diagram-template'
-    )
+    const { hydrateDiagramDefinitions } =
+      await import('../../tools/blog/visual-system/diagram-data')
+    const { renderDiagramSvg } = await import('../../tools/blog/visual-system/diagram-template')
     const intersects = (
       left: { height: number; width: number; x: number; y: number },
       right: { height: number; width: number; x: number; y: number },
@@ -2785,9 +2497,11 @@ describe('Field Journal diagram renderer', () => {
     for (const diagram of await hydrateDiagramDefinitions()) {
       const svg = renderDiagramSvg(diagram)
       const positions = new Map(
-        [...svg.matchAll(
-          /<g class="node [^"]+" data-node-id="([^"]+)"[\s\S]*?<rect class="node-card" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g,
-        )].map((match) => [
+        [
+          ...svg.matchAll(
+            /<g class="node [^"]+" data-node-id="([^"]+)"[\s\S]*?<rect class="node-card" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g,
+          ),
+        ].map((match) => [
           match[1],
           {
             height: Number(match[5]),
@@ -2798,9 +2512,7 @@ describe('Field Journal diagram renderer', () => {
         ]),
       )
       const rowByNode = new Map(
-        diagram.rows.flatMap((row, rowIndex) =>
-          row.map((node) => [node.id, rowIndex] as const),
-        ),
+        diagram.rows.flatMap((row, rowIndex) => row.map((node) => [node.id, rowIndex] as const)),
       )
 
       for (const match of svg.matchAll(
@@ -2836,10 +2548,9 @@ describe('Field Journal diagram renderer', () => {
             Number(control1X),
             `${diagram.path}: ${fromId} vertical start tangent`,
           ).toBeCloseTo(Number(startX))
-          expect(
-            Number(control2X),
-            `${diagram.path}: ${toId} vertical end tangent`,
-          ).toBeCloseTo(Number(endX))
+          expect(Number(control2X), `${diagram.path}: ${toId} vertical end tangent`).toBeCloseTo(
+            Number(endX),
+          )
           expect(Number(startX), `${diagram.path}: ${fromId} start center`).toBeCloseTo(
             from.x + from.width / 2,
           )
@@ -2850,13 +2561,9 @@ describe('Field Journal diagram renderer', () => {
             expect(Number(startY), `${diagram.path}: ${fromId} bottom exit`).toBeCloseTo(
               from.y + from.height + 2,
             )
-            expect(Number(endY), `${diagram.path}: ${toId} top entry`).toBeCloseTo(
-              to.y - 7,
-            )
+            expect(Number(endY), `${diagram.path}: ${toId} top entry`).toBeCloseTo(to.y - 7)
           } else {
-            expect(Number(startY), `${diagram.path}: ${fromId} top exit`).toBeCloseTo(
-              from.y - 2,
-            )
+            expect(Number(startY), `${diagram.path}: ${fromId} top exit`).toBeCloseTo(from.y - 2)
             expect(Number(endY), `${diagram.path}: ${toId} bottom entry`).toBeCloseTo(
               to.y + to.height + 7,
             )
@@ -2866,10 +2573,9 @@ describe('Field Journal diagram renderer', () => {
             Number(control1Y),
             `${diagram.path}: ${fromId} horizontal start tangent`,
           ).toBeCloseTo(Number(startY))
-          expect(
-            Number(control2Y),
-            `${diagram.path}: ${toId} horizontal end tangent`,
-          ).toBeCloseTo(Number(endY))
+          expect(Number(control2Y), `${diagram.path}: ${toId} horizontal end tangent`).toBeCloseTo(
+            Number(endY),
+          )
           expect(Number(startY), `${diagram.path}: ${fromId} side exit`).toBeCloseTo(
             from.y + from.height / 2,
           )
@@ -2880,9 +2586,11 @@ describe('Field Journal diagram renderer', () => {
       }
 
       const cards = [...positions.values()]
-      const labels = [...svg.matchAll(
-        /<rect class="edge-label-paper" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g,
-      )].map((match) => ({
+      const labels = [
+        ...svg.matchAll(
+          /<rect class="edge-label-paper" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g,
+        ),
+      ].map((match) => ({
         height: Number(match[4]),
         width: Number(match[3]),
         x: Number(match[1]),
@@ -2897,10 +2605,7 @@ describe('Field Journal diagram renderer', () => {
           ).toBe(false)
         }
         for (const other of labels.slice(labelIndex + 1)) {
-          expect(
-            intersects(label, other),
-            `${diagram.path}: edge labels overlap`,
-          ).toBe(false)
+          expect(intersects(label, other), `${diagram.path}: edge labels overlap`).toBe(false)
         }
       }
 
@@ -2934,14 +2639,12 @@ describe('Field Journal diagram renderer', () => {
 
         if (axis === 'vertical') {
           expect(
-            paper.left >= Math.max(...pathXs) + 8 ||
-              paper.right <= Math.min(...pathXs) - 8,
+            paper.left >= Math.max(...pathXs) + 8 || paper.right <= Math.min(...pathXs) - 8,
             `${diagram.path}: vertical label clears its arrow spine`,
           ).toBe(true)
         } else {
           expect(
-            paper.bottom <= Math.min(...pathYs) - 8 ||
-              paper.top >= Math.max(...pathYs) + 8,
+            paper.bottom <= Math.min(...pathYs) - 8 || paper.top >= Math.max(...pathYs) + 8,
             `${diagram.path}: horizontal label clears its arrow path`,
           ).toBe(true)
         }
@@ -2950,12 +2653,10 @@ describe('Field Journal diagram renderer', () => {
   })
 
   it('marks every visibly shortened evidence excerpt with an ellipsis', async () => {
-    const { hydrateDiagramDefinitions } = await import(
-      '../../tools/blog/visual-system/diagram-data'
-    )
-    const { renderDiagramSvg, wrapDiagramText } = await import(
-      '../../tools/blog/visual-system/diagram-template'
-    )
+    const { hydrateDiagramDefinitions } =
+      await import('../../tools/blog/visual-system/diagram-data')
+    const { renderDiagramSvg, wrapDiagramText } =
+      await import('../../tools/blog/visual-system/diagram-template')
 
     for (const diagram of await hydrateDiagramDefinitions()) {
       if (!diagram.evidenceExcerpt) continue
@@ -2978,9 +2679,7 @@ describe('Field Journal diagram renderer', () => {
   })
 
   it('renders every output before the first write and reports exact deterministic stdout', async () => {
-    const { diagramDefinitions } = await import(
-      '../../tools/blog/visual-system/diagram-data'
-    )
+    const { diagramDefinitions } = await import('../../tools/blog/visual-system/diagram-data')
     const { generateFigures } = await import('../../tools/blog/generate-figures')
     const outputRoot = await mkdtemp(path.join(os.tmpdir(), 'field-journal-diagrams-'))
 
@@ -3021,23 +2720,15 @@ describe('Field Journal diagram renderer', () => {
       )
       for (const { path: figurePath, svg } of first) {
         expect(
-          await readFile(
-            path.join(repoRoot, 'public', figurePath.replace(/^\//, '')),
-            'utf8',
-          ),
+          await readFile(path.join(repoRoot, 'public', figurePath.replace(/^\//, '')), 'utf8'),
           `${figurePath}: committed bytes`,
         ).toBe(svg)
       }
       expect(logs).toHaveLength(28)
       expect(logs.slice(0, -1)).toEqual(
-        first.map(
-          ({ bytes, path: figurePath }) =>
-            `Generated ${figurePath} (${bytes} bytes).`,
-        ),
+        first.map(({ bytes, path: figurePath }) => `Generated ${figurePath} (${bytes} bytes).`),
       )
-      expect(logs.at(-1)).toBe(
-        'Generated 27 deterministic Field Journal blog figures.',
-      )
+      expect(logs.at(-1)).toBe('Generated 27 deterministic Field Journal blog figures.')
     } finally {
       await rm(outputRoot, { force: true, recursive: true })
     }
@@ -3089,9 +2780,8 @@ describe('Field Journal reproduction tooling', () => {
   })
 
   it('still requires exact ordered coverage when hydrating a full-size catalog batch', async () => {
-    const { diagramDefinitions, hydrateDiagramDefinitions } = await import(
-      '../../tools/blog/visual-system/diagram-data'
-    )
+    const { diagramDefinitions, hydrateDiagramDefinitions } =
+      await import('../../tools/blog/visual-system/diagram-data')
     const reordered = [
       diagramDefinitions[1]!,
       diagramDefinitions[0]!,
@@ -3152,35 +2842,37 @@ describe('Field Journal reproduction tooling', () => {
   })
 
   it('publishes the one-command renderer and exact review inputs', async () => {
-    const packageJson = JSON.parse(
-      await readFile(path.join(repoRoot, 'package.json'), 'utf8'),
-    ) as { scripts?: Record<string, string> }
+    const packageJson = JSON.parse(await readFile(path.join(repoRoot, 'package.json'), 'utf8')) as {
+      scripts?: Record<string, string>
+    }
     const contactSheets = await import('../../tools/blog/render-contact-sheets')
     const renderVisuals = await import('../../tools/blog/render-visuals')
 
     expect(packageJson.scripts).toMatchObject({
       'blog:visuals': 'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/render-visuals.ts',
-      'blog:visuals:captures': 'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/capture-figures.ts',
-      'blog:visuals:covers': 'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/render-covers.ts',
-      'blog:visuals:figures': 'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/generate-figures.ts',
-      'blog:visuals:review': 'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/render-contact-sheets.ts',
+      'blog:visuals:captures':
+        'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/capture-figures.ts',
+      'blog:visuals:covers':
+        'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/render-covers.ts',
+      'blog:visuals:figures':
+        'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/generate-figures.ts',
+      'blog:visuals:review':
+        'cross-env NODE_OPTIONS=--no-deprecation tsx tools/blog/render-contact-sheets.ts',
     })
 
     const inputs = contactSheets.getContactSheetInputs()
     expect(inputs.covers).toHaveLength(33)
     expect(inputs.figures).toHaveLength(36)
     expect(inputs.covers.map(({ label }) => label)).toEqual(
-      blogVisualCatalog.map(
-        (entry) => `${String(entry.order).padStart(2, '0')} · ${entry.slug}`,
-      ),
+      blogVisualCatalog.map((entry) => `${String(entry.order).padStart(2, '0')} · ${entry.slug}`),
     )
     expect(inputs.figures.map(({ path: figurePath }) => figurePath)).toEqual(
       blogVisualCatalog.flatMap((entry) => entry.figures.map(({ path: figurePath }) => figurePath)),
     )
     expect(
-      renderVisuals.selectDiagramDefinitions(
-        parseCoverRenderArgs(['--series', 'foundations'], {}).entries,
-      ).map(({ path: figurePath }) => figurePath),
+      renderVisuals
+        .selectDiagramDefinitions(parseCoverRenderArgs(['--series', 'foundations'], {}).entries)
+        .map(({ path: figurePath }) => figurePath),
     ).toEqual(
       blogVisualCatalog
         .filter((entry) => entry.series === 'foundations')
@@ -3296,9 +2988,7 @@ describe('Community Field Journal visual catalog', () => {
   })
 
   it('preserves source-anchor-backed diff evidence for diagram hydration', async () => {
-    const entry = blogVisualCatalog.find(
-      (candidate) => candidate.slug === 'text-anchors-vs-ast',
-    )
+    const entry = blogVisualCatalog.find((candidate) => candidate.slug === 'text-anchors-vs-ast')
     expect(entry).toBeDefined()
     if (!entry) return
 
@@ -3337,7 +3027,9 @@ describe('Community Field Journal visual catalog', () => {
 
         if (artifact.kind === 'command') {
           for (const item of artifact.registryItems ?? []) {
-            expect(registryItems.has(item), `${entry.slug}: ${artifact.command} -> ${item}`).toBe(true)
+            expect(registryItems.has(item), `${entry.slug}: ${artifact.command} -> ${item}`).toBe(
+              true,
+            )
           }
         }
 
@@ -3416,7 +3108,9 @@ describe('Community Field Journal visual catalog', () => {
 
       expect(styles, `${slug}: alternate color syntax`).not.toMatch(/\b(?:rgb|hsl)a?\(/i)
       expect(html, `${slug}: external URL`).not.toMatch(/https?:\/\/|(?:src|href)="\/\//i)
-      expect(html, `${slug}: remote font`).not.toMatch(/@import|fonts\.(?:googleapis|gstatic)\.com/i)
+      expect(html, `${slug}: remote font`).not.toMatch(
+        /@import|fonts\.(?:googleapis|gstatic)\.com/i,
+      )
 
       for (const image of html.match(/<img\b[^>]*>/gi) ?? []) {
         expect(image, `${slug}: image alt`).toMatch(/\balt="[^"]+"/i)
@@ -3429,9 +3123,7 @@ describe('Community Field Journal visual catalog', () => {
   })
 
   it('uses structural source evidence instead of fictional testimonial claims', async () => {
-    const socialProof = blogVisualCatalog.find(
-      (entry) => entry.slug === 'social-proof-sections',
-    )
+    const socialProof = blogVisualCatalog.find((entry) => entry.slug === 'social-proof-sections')
 
     expect(socialProof?.primary).toMatchObject({
       anchor: "name: 'testimonials'",
@@ -3443,12 +3135,7 @@ describe('Community Field Journal visual catalog', () => {
     expect(socialProof?.secondary).toMatchObject({
       kind: 'sequence',
       label: 'Registry structure choices',
-      items: [
-        'logo-cloud-grid',
-        'testimonials-grid',
-        'testimonials-rating',
-        'testimonials-quote',
-      ],
+      items: ['logo-cloud-grid', 'testimonials-grid', 'testimonials-rating', 'testimonials-quote'],
     })
 
     const { html } = await renderCatalogCover('social-proof-sections')
@@ -3461,9 +3148,7 @@ describe('Community Field Journal visual catalog', () => {
     const landing = blogVisualCatalog.find(
       (entry) => entry.slug === 'build-first-payload-v3-landing-page',
     )
-    const choosingHero = blogVisualCatalog.find(
-      (entry) => entry.slug === 'choosing-payload-hero',
-    )
+    const choosingHero = blogVisualCatalog.find((entry) => entry.slug === 'choosing-payload-hero')
     const demoTwins = blogVisualCatalog.find((entry) => entry.slug === 'demo-twins')
 
     expect(landing?.primary).toMatchObject({
@@ -3514,15 +3199,7 @@ describe('Community Field Journal visual catalog', () => {
 
     expect(contribution?.thesis).toBe('A component ships as one connected bundle.')
     expect(contribution?.secondary).toMatchObject({
-      items: [
-        'source',
-        'manifest',
-        'registry',
-        'demo twin',
-        'catalog + ledgers',
-        'docs',
-        'tests',
-      ],
+      items: ['source', 'manifest', 'registry', 'demo twin', 'catalog + ledgers', 'docs', 'tests'],
       kind: 'sequence',
       label: 'Seven contribution surfaces',
     })
@@ -3553,9 +3230,7 @@ describe('Community Field Journal visual catalog', () => {
   })
 
   it('labels answer-panel and reduced-motion checks as guidance around the accordion primitive', async () => {
-    const faq = blogVisualCatalog.find(
-      (entry) => entry.slug === 'accessible-faq-blocks',
-    )
+    const faq = blogVisualCatalog.find((entry) => entry.slug === 'accessible-faq-blocks')
 
     expect(faq?.secondary).toMatchObject({
       items: ['button', 'expanded state', 'answer panel', 'keyboard', 'reduced motion'],
@@ -3592,18 +3267,14 @@ describe('Community Field Journal visual catalog', () => {
   })
 
   it('uses the same homepage-stage vocabulary in cover text and alt copy', async () => {
-    const homepage = blogVisualCatalog.find(
-      (entry) => entry.slug === 'build-saas-homepage',
-    )
+    const homepage = blogVisualCatalog.find((entry) => entry.slug === 'build-saas-homepage')
 
     expect(homepage?.secondary).toMatchObject({
       items: ['Promise', 'proof', 'explanation', 'trust', 'action'],
       kind: 'sequence',
       label: 'Homepage blueprint',
     })
-    expect(homepage?.prompt).toBe(
-      "Map the smallest sequence that makes the page's argument clear.",
-    )
+    expect(homepage?.prompt).toBe("Map the smallest sequence that makes the page's argument clear.")
     expect(await getCoverAlt('build-saas-homepage')).toBe(
       'Hero Basic, Logo Cloud Grid, Feature Bento, and Pricing Cards catalog results beside a homepage sequence from promise through proof, explanation, trust, and action.',
     )
@@ -3619,21 +3290,19 @@ describe('Community Field Journal visual catalog', () => {
 
     for (const { entry, html } of [hello, anatomy]) {
       const styles = html.match(/<style>([\s\S]*?)<\/style>/)?.[1] ?? ''
-      expect(styles, `${entry.slug}: canvas dimensions`).toMatch(/width:\s*1200px[\s\S]*height:\s*630px/)
+      expect(styles, `${entry.slug}: canvas dimensions`).toMatch(
+        /width:\s*1200px[\s\S]*height:\s*630px/,
+      )
       expect(styles, `${entry.slug}: outer margin`).toContain('inset: 48px')
       expect(styles, `${entry.slug}: editorial grid`).toMatch(
         /grid-template-columns:\s*repeat\(12,\s*minmax\(0,\s*1fr\)\)/,
       )
 
-      const primaryStack = Number(
-        styles.match(/\.artifact--primary\s*{[^}]*z-index:\s*(\d+)/)?.[1],
-      )
+      const primaryStack = Number(styles.match(/\.artifact--primary\s*{[^}]*z-index:\s*(\d+)/)?.[1])
       const secondaryStack = Number(
         styles.match(/\.artifact--secondary\s*{[^}]*z-index:\s*(\d+)/)?.[1],
       )
-      expect(primaryStack, `${entry.slug}: primary evidence stack`).toBeGreaterThan(
-        secondaryStack,
-      )
+      expect(primaryStack, `${entry.slug}: primary evidence stack`).toBeGreaterThan(secondaryStack)
 
       const overlap = Number(html.match(/data-overlap-percent="(\d+)"/)?.[1])
       expect(overlap, `${entry.slug}: unobscured secondary evidence`).toBe(0)
@@ -3667,9 +3336,7 @@ describe('Community Field Journal visual catalog', () => {
         expect(bounds.scrollHeight, `${slug}: command height`).toBeLessThanOrEqual(
           bounds.clientHeight,
         )
-        expect(bounds.scrollWidth, `${slug}: command width`).toBeLessThanOrEqual(
-          bounds.clientWidth,
-        )
+        expect(bounds.scrollWidth, `${slug}: command width`).toBeLessThanOrEqual(bounds.clientWidth)
       }
     } finally {
       await browser.close()
@@ -3741,9 +3408,7 @@ describe('Community Field Journal visual catalog', () => {
           const artifact = artifacts[role]
           if (artifact.kind !== 'sequence') continue
 
-          const region = page.locator(
-            `[data-cover-part="${role}"][data-artifact-kind="sequence"]`,
-          )
+          const region = page.locator(`[data-cover-part="${role}"][data-artifact-kind="sequence"]`)
           const matches = await region.count()
 
           if (matches !== 1) {
@@ -3787,10 +3452,7 @@ describe('Community Field Journal visual catalog', () => {
               ) {
                 clippedCells.push(cellIndex + 1)
               }
-              if (
-                cell.scrollWidth > cell.clientWidth ||
-                cell.scrollHeight > cell.clientHeight
-              ) {
+              if (cell.scrollWidth > cell.clientWidth || cell.scrollHeight > cell.clientHeight) {
                 cellOverflow.push(cellIndex + 1)
               }
               if (!strong || !textNode || textNode.nodeType !== Node.TEXT_NODE) {
@@ -3838,22 +3500,16 @@ describe('Community Field Journal visual catalog', () => {
             violations.push(`${context} flow scroll ${layout.scroll}`)
           }
           if (layout.clippedCells.length > 0) {
-            violations.push(
-              `${context} clipped cells ${layout.clippedCells.join(',')}`,
-            )
+            violations.push(`${context} clipped cells ${layout.clippedCells.join(',')}`)
           }
           if (layout.cellOverflow.length > 0) {
-            violations.push(
-              `${context} overflowing cells ${layout.cellOverflow.join(',')}`,
-            )
+            violations.push(`${context} overflowing cells ${layout.cellOverflow.join(',')}`)
           }
           if (layout.fontSize < 12) {
             violations.push(`${context} font ${layout.fontSize}px`)
           }
           if (layout.fracturedAtoms.length > 0) {
-            violations.push(
-              `${context} fractured atoms ${layout.fracturedAtoms.join(',')}`,
-            )
+            violations.push(`${context} fractured atoms ${layout.fracturedAtoms.join(',')}`)
           }
           if (JSON.stringify(layout.renderedItems) !== JSON.stringify(artifact.items)) {
             violations.push(`${context} rendered text differs from sequence items`)
@@ -3877,12 +3533,7 @@ describe('Community Field Journal visual catalog', () => {
       capture: {
         columns: 2,
         position: 'bottom',
-        selectors: [
-          '#feature-bento',
-          '#feature-split',
-          '#feature-steps',
-          '#feature-grid-basic',
-        ],
+        selectors: ['#feature-bento', '#feature-split', '#feature-steps', '#feature-grid-basic'],
       },
       kind: 'route',
       label: 'Feature family catalog results',
@@ -3943,12 +3594,7 @@ describe('Community Field Journal visual catalog', () => {
         capture: {
           columns: 2,
           position: 'bottom',
-          selectors: [
-            '#feature-bento',
-            '#pricing-cards',
-            '#hero-basic',
-            '#logo-cloud-grid',
-          ],
+          selectors: ['#feature-bento', '#pricing-cards', '#hero-basic', '#logo-cloud-grid'],
         },
         evidence: 'Local route fixture',
         kind: 'route',
@@ -4054,10 +3700,7 @@ describe('Community Field Journal visual catalog', () => {
 
   it('rejects unreadable source cards before production screenshots', async () => {
     const renderModule = await import('../../tools/blog/render-covers')
-    const assertCodeArtifactCardsFit = Reflect.get(
-      renderModule,
-      'assertCodeArtifactCardsFit',
-    )
+    const assertCodeArtifactCardsFit = Reflect.get(renderModule, 'assertCodeArtifactCardsFit')
 
     expect(assertCodeArtifactCardsFit).toBeTypeOf('function')
     if (typeof assertCodeArtifactCardsFit !== 'function') return
@@ -4104,10 +3747,7 @@ describe('Community Field Journal visual catalog', () => {
 
   it('rejects clipped diff cards before production screenshots', async () => {
     const renderModule = await import('../../tools/blog/render-covers')
-    const assertCodeArtifactCardsFit = Reflect.get(
-      renderModule,
-      'assertCodeArtifactCardsFit',
-    )
+    const assertCodeArtifactCardsFit = Reflect.get(renderModule, 'assertCodeArtifactCardsFit')
 
     expect(assertCodeArtifactCardsFit).toBeTypeOf('function')
     if (typeof assertCodeArtifactCardsFit !== 'function') return
@@ -4173,17 +3813,13 @@ describe('Community Field Journal visual catalog', () => {
       await page.setContent(html)
       await page.evaluate(async () => await document.fonts.ready)
 
-      const region = page.locator(
-        '[data-cover-part="secondary"][data-artifact-kind="diff"]',
-      )
+      const region = page.locator('[data-cover-part="secondary"][data-artifact-kind="diff"]')
       expect(await region.count()).toBe(1)
 
       const layout = await region.evaluate((element) => {
         const body = element.querySelector<HTMLElement>('.artifact-body')
         const sheet = element.querySelector<HTMLElement>('.code-sheet, .diff-sheet')
-        const lines = [
-          ...element.querySelectorAll<HTMLElement>('.code-line, .diff-line'),
-        ]
+        const lines = [...element.querySelectorAll<HTMLElement>('.code-line, .diff-line')]
 
         if (!body || !sheet) {
           return {
@@ -4279,9 +3915,7 @@ describe('Community Field Journal visual catalog', () => {
           const layout = await region.evaluate((element) => {
             const body = element.querySelector<HTMLElement>('.artifact-body')
             const sheet = element.querySelector<HTMLElement>('.code-sheet, .diff-sheet')
-            const lines = [
-              ...element.querySelectorAll<HTMLElement>('.code-line, .diff-line'),
-            ]
+            const lines = [...element.querySelectorAll<HTMLElement>('.code-line, .diff-line')]
 
             if (!body || !sheet) {
               return {
@@ -4322,9 +3956,7 @@ describe('Community Field Journal visual catalog', () => {
               }`,
               clipped,
               fontSize: Math.min(...fontSizes),
-              renderedLines: lines.map(
-                (line) => line.querySelector('code')?.textContent ?? '',
-              ),
+              renderedLines: lines.map((line) => line.querySelector('code')?.textContent ?? ''),
               sheetScroll: `${sheet.scrollWidth - sheet.clientWidth}x${
                 sheet.scrollHeight - sheet.clientHeight
               }`,
@@ -4342,9 +3974,7 @@ describe('Community Field Journal visual catalog', () => {
             violations.push(`${context} sheet scroll ${layout.sheetScroll}`)
           }
           if (layout.clipped.length > 0) {
-            violations.push(
-              `${context} clipped lines ${layout.clipped.join(',')}`,
-            )
+            violations.push(`${context} clipped lines ${layout.clipped.join(',')}`)
           }
           if (layout.fontSize < 12) {
             violations.push(`${context} font ${layout.fontSize}px`)
@@ -4427,10 +4057,7 @@ describe('Community Field Journal visual catalog', () => {
         Promise.race([
           waitForDocumentAssets(page),
           new Promise((_, reject) => {
-            setTimeout(
-              () => reject(new Error('Offscreen lazy image blocked route capture.')),
-              500,
-            )
+            setTimeout(() => reject(new Error('Offscreen lazy image blocked route capture.')), 500)
           }),
         ]),
       ).resolves.toBeUndefined()

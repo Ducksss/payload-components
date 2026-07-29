@@ -395,7 +395,10 @@
   --fw-plate-tilt: 122deg;
 }
 
-[data-template-theme='event-conference'] [data-template-section='lineup'] .grid > div:nth-child(4n) {
+[data-template-theme='event-conference']
+  [data-template-section='lineup']
+  .grid
+  > div:nth-child(4n) {
   --fw-plate-tilt: 96deg;
 }
 
@@ -418,9 +421,7 @@
    the "print" inside it. Giving both the same duotone recipe collapses them
    into one flat slab, so the mount steps back to a dark board with only the
    halftone screen and a whisper of violet — and the print pops off it. */
-[data-template-theme='event-conference']
-  [data-template-section='space']
-  .rounded-panel.bg-muted {
+[data-template-theme='event-conference'] [data-template-section='space'] .rounded-panel.bg-muted {
   background-color: color-mix(in oklab, var(--fw-black) 58%, var(--muted));
   background-image:
     linear-gradient(146deg, color-mix(in oklab, var(--fw-volt) 15%, transparent), transparent 60%),

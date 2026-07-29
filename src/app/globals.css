@@ -716,6 +716,20 @@
     background: linear-gradient(to top, var(--background), transparent);
   }
 
+  /* Tablet only. Between 640px and 1024px the twins switch to their own stacked
+     variants, and the tallest three (content-quote, content-feature-media,
+     content-feature-split) land ~44px past even the taller frame this band uses
+     — against ~25px on a phone. Measured, not guessed: 88/80/79px over a 212px
+     frame before that frame grew. The valve is widened to match so the residue
+     falls inside the gradient instead of at a hard edge, and only here: 1.75rem
+     is already more than enough on phone and desktop, and a fade this tall would
+     eat into the shorter cards that fit. */
+  @media (min-width: 40rem) and (max-width: 63.9375rem) {
+    .wall-card-frame::after {
+      height: 2.75rem;
+    }
+  }
+
   .hero-eyebrow-dot {
     display: inline-block;
     width: 0.42rem;
@@ -876,8 +890,7 @@
 
   .wiring-3d:hover,
   .wiring-3d.is-active {
-    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))
-      translateZ(14px);
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(14px);
   }
 
   /* Staggered entry reveal (plays once on scroll-in via .is-revealed). */

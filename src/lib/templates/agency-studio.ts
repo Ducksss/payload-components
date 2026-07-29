@@ -73,7 +73,8 @@ export const agencyStudioTemplate: TemplateShowcase = {
                 title: 'Identity',
               },
               {
-                description: 'Sites and products designed and shipped with the identity, not after it.',
+                description:
+                  'Sites and products designed and shipped with the identity, not after it.',
                 icon: 'cpu',
                 title: 'Digital product',
               },
@@ -83,7 +84,8 @@ export const agencyStudioTemplate: TemplateShowcase = {
                 title: 'Editorial',
               },
               {
-                description: 'Title sequences, product film, and the thirty seconds people remember.',
+                description:
+                  'Title sequences, product film, and the thirty seconds people remember.',
                 icon: 'gauge',
                 title: 'Motion & film',
               },
@@ -396,8 +398,7 @@ export const agencyStudioTemplate: TemplateShowcase = {
       title: 'Northline — Services',
     },
     {
-      description:
-        'A curated portfolio narrative: five invented case stories with client proof.',
+      description: 'A curated portfolio narrative: five invented case stories with client proof.',
       label: 'Work',
       path: 'work',
       sections: [
@@ -414,10 +415,7 @@ export const agencyStudioTemplate: TemplateShowcase = {
               'We publish little, deliberately — client work should speak in its own market first. These five projects show the range: heritage retail, regional banking, coastal transit, healthcare, and independent publishing.',
             links: [],
             eyebrow: 'Selected work',
-            proofItems: [
-              { label: '2017–2026' },
-              { label: 'Identity · Product · Editorial' },
-            ],
+            proofItems: [{ label: '2017–2026' }, { label: 'Identity · Product · Editorial' }],
             title: 'Thirty-one brands. Five stories worth your time.',
           },
           id: 'hero',
@@ -552,7 +550,8 @@ export const agencyStudioTemplate: TemplateShowcase = {
       title: 'Northline — Work',
     },
     {
-      description: 'Explains the philosophy, the founders, the record, the roster, and the open door.',
+      description:
+        'Explains the philosophy, the founders, the record, the roster, and the open door.',
       label: 'About',
       path: 'about',
       sections: [
@@ -623,8 +622,7 @@ export const agencyStudioTemplate: TemplateShowcase = {
                 title: 'Independence keeps us honest',
               },
               {
-                description:
-                  'Constraint sharpens judgement. Every project ships on a named date.',
+                description: 'Constraint sharpens judgement. Every project ships on a named date.',
                 icon: 'gauge',
                 title: 'Deadlines are design tools',
               },

@@ -36,7 +36,11 @@ export function IntegrationClusterDemo({
                 className="flex size-16 items-center justify-center rounded-2xl border border-border/70 bg-background"
                 key={logo.name}
               >
-                <logo.Icon aria-hidden="true" className="size-8 text-foreground/70" strokeWidth={1.75} />
+                <logo.Icon
+                  aria-hidden="true"
+                  className="size-8 text-foreground/70"
+                  strokeWidth={1.75}
+                />
               </div>
             ))}
 
@@ -49,7 +53,11 @@ export function IntegrationClusterDemo({
                 className="flex size-16 items-center justify-center rounded-2xl border border-border/70 bg-background"
                 key={logo.name}
               >
-                <logo.Icon aria-hidden="true" className="size-8 text-foreground/70" strokeWidth={1.75} />
+                <logo.Icon
+                  aria-hidden="true"
+                  className="size-8 text-foreground/70"
+                  strokeWidth={1.75}
+                />
               </div>
             ))}
           </div>

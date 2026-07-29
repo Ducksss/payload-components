@@ -1,10 +1,4 @@
-import {
-  lstat,
-  mkdir,
-  readFile,
-  realpath,
-  writeFile,
-} from 'node:fs/promises'
+import { lstat, mkdir, readFile, realpath, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -34,11 +28,7 @@ export const webpEncodingOptions = Object.freeze({
 })
 
 type CaptureSeries =
-  | 'component-design'
-  | 'foundations'
-  | 'open-source'
-  | 'production-guides'
-  | 'project-notes'
+  'component-design' | 'foundations' | 'open-source' | 'production-guides' | 'project-notes'
 type CaptureLayout = 'duo' | 'quad' | 'triptych'
 type CaptureViewport = 'desktop' | 'mobile'
 
@@ -137,11 +127,7 @@ export type CaptureBatchOptions = {
   writeOutput?: (outputPath: string, buffer: Buffer) => Promise<void>
 }
 
-const resolveLexicallyContainedPath = (
-  root: string,
-  candidate: string,
-  context: string,
-) => {
+const resolveLexicallyContainedPath = (root: string, candidate: string, context: string) => {
   if (path.isAbsolute(candidate)) {
     throw new Error(`${context} must be a relative path, received ${candidate}.`)
   }
@@ -170,10 +156,7 @@ const isCanonicallyContained = (root: string, candidate: string) => {
   )
 }
 
-const canonicalizePotentialPath = async (
-  absolutePath: string,
-  context: string,
-) => {
+const canonicalizePotentialPath = async (absolutePath: string, context: string) => {
   let cursor = path.resolve(absolutePath)
   const missingSegments: string[] = []
 
@@ -191,17 +174,10 @@ const canonicalizePotentialPath = async (
       }
       return path.join(canonicalAncestor, ...missingSegments)
     } catch (error) {
-      if (
-        error instanceof Error &&
-        'code' in error &&
-        error.code === 'ENOENT'
-      ) {
+      if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
         const parent = path.dirname(cursor)
         if (parent === cursor) {
-          throw new Error(
-            `${context} has no existing ancestor: ${absolutePath}.`,
-            { cause: error },
-          )
+          throw new Error(`${context} has no existing ancestor: ${absolutePath}.`, { cause: error })
         }
         missingSegments.unshift(path.basename(cursor))
         cursor = parent
@@ -212,10 +188,7 @@ const canonicalizePotentialPath = async (
   }
 }
 
-export const resolveCaptureSourcePath = async (
-  sourcePath: string,
-  sourceRoot = repoRoot,
-) => {
+export const resolveCaptureSourcePath = async (sourcePath: string, sourceRoot = repoRoot) => {
   const lexicalRoot = path.resolve(sourceRoot)
   const lexicalSource = resolveLexicallyContainedPath(
     lexicalRoot,
@@ -230,23 +203,17 @@ export const resolveCaptureSourcePath = async (
       realpath(lexicalSource),
     ])
   } catch (error) {
-    throw new Error(
-      `Capture source path could not be canonicalized: ${sourcePath}.`,
-      { cause: error },
-    )
+    throw new Error(`Capture source path could not be canonicalized: ${sourcePath}.`, {
+      cause: error,
+    })
   }
   if (!isCanonicallyContained(canonicalRoot, canonicalSource)) {
-    throw new Error(
-      `Capture source path escapes its canonical root: ${sourcePath}.`,
-    )
+    throw new Error(`Capture source path escapes its canonical root: ${sourcePath}.`)
   }
   return canonicalSource
 }
 
-export const resolveCaptureOutputPath = async (
-  outputRoot: string,
-  outputPath: string,
-) => {
+export const resolveCaptureOutputPath = async (outputRoot: string, outputPath: string) => {
   const lexicalRoot = path.resolve(outputRoot)
   const lexicalOutput = resolveLexicallyContainedPath(
     lexicalRoot,
@@ -258,9 +225,7 @@ export const resolveCaptureOutputPath = async (
     canonicalizePotentialPath(lexicalOutput, 'Capture output path'),
   ])
   if (!isCanonicallyContained(canonicalRoot, canonicalOutput)) {
-    throw new Error(
-      `Capture output path escapes its canonical root: ${outputPath}.`,
-    )
+    throw new Error(`Capture output path escapes its canonical root: ${outputPath}.`)
   }
   return canonicalOutput
 }
@@ -311,20 +276,12 @@ export const captures = [
     issue: 4,
     layout: 'quad',
     mode: 'see',
-    outputPath:
-      'public/blog/build-first-payload-v3-landing-page/figure-01-page-composition.webp',
+    outputPath: 'public/blog/build-first-payload-v3-landing-page/figure-01-page-composition.webp',
     panels: [
       preview('Hero Basic · structure', 'hero-basic'),
       preview('Feature Bento · structure', 'feature-bento'),
-      docsCode(
-        'Testimonials Grid · config contract',
-        'testimonials-grid',
-        "name: 'testimonials'",
-      ),
-      preview(
-        'Call To Action Centered · structure',
-        'call-to-action-centered',
-      ),
+      docsCode('Testimonials Grid · config contract', 'testimonials-grid', "name: 'testimonials'"),
+      preview('Call To Action Centered · structure', 'call-to-action-centered'),
     ],
     series: 'foundations',
     slug: 'build-first-payload-v3-landing-page',
@@ -349,11 +306,7 @@ export const captures = [
         route: '/components?q=hero-basic',
         selector: '#hero-basic',
       },
-      docsCode(
-        'Documentation · Payload config',
-        'hero-basic',
-        'export const HeroBasic',
-      ),
+      docsCode('Documentation · Payload config', 'hero-basic', 'export const HeroBasic'),
     ],
     series: 'component-design',
     slug: 'choosing-payload-hero',
@@ -365,8 +318,7 @@ export const captures = [
     issue: 18,
     layout: 'quad',
     mode: 'see',
-    outputPath:
-      'public/blog/editor-friendly-feature-sections/figure-01-feature-comparison.webp',
+    outputPath: 'public/blog/editor-friendly-feature-sections/figure-01-feature-comparison.webp',
     panels: [
       preview('Feature Bento · uneven emphasis', 'feature-bento'),
       preview('Feature Split · paired reading', 'feature-split'),
@@ -383,29 +335,16 @@ export const captures = [
     issue: 19,
     layout: 'quad',
     mode: 'see',
-    outputPath:
-      'public/blog/modeling-pricing-pages/figure-01-pricing-montage.webp',
+    outputPath: 'public/blog/modeling-pricing-pages/figure-01-pricing-montage.webp',
     panels: [
-      docsCode(
-        'Pricing Cards · two-to-four plan contract',
-        'pricing-cards',
-        'minRows: 2',
-      ),
+      docsCode('Pricing Cards · two-to-four plan contract', 'pricing-cards', 'minRows: 2'),
       docsCode(
         'Pricing Cards Muted · two-to-four plan contract',
         'pricing-cards-muted',
         'minRows: 2',
       ),
-      docsCode(
-        'Pricing Split · exact two-plan contract',
-        'pricing-split',
-        'maxRows: 2',
-      ),
-      docsCode(
-        'Pricing Enterprise · logo field contract',
-        'pricing-enterprise',
-        "name: 'logos'",
-      ),
+      docsCode('Pricing Split · exact two-plan contract', 'pricing-split', 'maxRows: 2'),
+      docsCode('Pricing Enterprise · logo field contract', 'pricing-enterprise', "name: 'logos'"),
     ],
     series: 'component-design',
     slug: 'modeling-pricing-pages',
@@ -417,14 +356,9 @@ export const captures = [
     issue: 20,
     layout: 'quad',
     mode: 'see',
-    outputPath:
-      'public/blog/social-proof-sections/figure-01-social-proof-montage.webp',
+    outputPath: 'public/blog/social-proof-sections/figure-01-social-proof-montage.webp',
     panels: [
-      docsCode(
-        'Logo Cloud Grid · editable logo records',
-        'logo-cloud-grid',
-        '...logoCloudFields',
-      ),
+      docsCode('Logo Cloud Grid · editable logo records', 'logo-cloud-grid', '...logoCloudFields'),
       docsCode(
         'Testimonials Grid · attributed quote array',
         'testimonials-grid',
@@ -451,22 +385,12 @@ export const captures = [
     issue: 21,
     layout: 'quad',
     mode: 'see',
-    outputPath:
-      'public/blog/build-saas-homepage/figure-02-component-montage.webp',
+    outputPath: 'public/blog/build-saas-homepage/figure-02-component-montage.webp',
     panels: [
       docsSection('Promise · Hero Basic content model', 'hero-basic'),
-      docsSection(
-        'Proof slot · Logo Cloud Grid content model',
-        'logo-cloud-grid',
-      ),
-      docsSection(
-        'Explanation · Feature Bento content model',
-        'feature-bento',
-      ),
-      docsSection(
-        'Commitment · Pricing Cards content model',
-        'pricing-cards',
-      ),
+      docsSection('Proof slot · Logo Cloud Grid content model', 'logo-cloud-grid'),
+      docsSection('Explanation · Feature Bento content model', 'feature-bento'),
+      docsSection('Commitment · Pricing Cards content model', 'pricing-cards'),
     ],
     series: 'production-guides',
     slug: 'build-saas-homepage',
@@ -478,8 +402,7 @@ export const captures = [
     issue: 22,
     layout: 'duo',
     mode: 'see',
-    outputPath:
-      'public/blog/build-payload-blog-frontend/figure-02-post-component-montage.webp',
+    outputPath: 'public/blog/build-payload-blog-frontend/figure-02-post-component-montage.webp',
     panels: [
       {
         kind: 'route-viewport',
@@ -490,8 +413,7 @@ export const captures = [
       {
         kind: 'route-viewport',
         label: 'Article · Payload block primer',
-        provenance:
-          '/blog/what-is-a-payload-cms-block · local production route',
+        provenance: '/blog/what-is-a-payload-cms-block · local production route',
         route: '/blog/what-is-a-payload-cms-block',
       },
     ],
@@ -505,8 +427,7 @@ export const captures = [
     issue: 33,
     layout: 'quad',
     mode: 'see',
-    outputPath:
-      'public/blog/templates-are-here/figure-01-template-gallery.webp',
+    outputPath: 'public/blog/templates-are-here/figure-01-template-gallery.webp',
     panels: [
       {
         kind: 'route-viewport',
@@ -575,27 +496,21 @@ const escapeHtml = (value: string) =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;')
 
-const seriesLabel = (series: CaptureSeries) =>
-  series.replaceAll('-', ' ').toUpperCase()
+const seriesLabel = (series: CaptureSeries) => series.replaceAll('-', ' ').toUpperCase()
 
 const dataUrlPattern = /^data:image\/png;base64,[A-Za-z0-9+/]+=*$/
 
-const panelMarkup = (
-  panel: CapturePanel,
-  image: CapturedPanel,
-  index: number,
-) => {
+const panelMarkup = (panel: CapturePanel, image: CapturedPanel, index: number) => {
   if (!dataUrlPattern.test(image.dataUrl)) {
     throw new Error(`${panel.label} must use an inline PNG data URL.`)
   }
 
   const callout = String(index + 1).padStart(2, '0')
-  const fixture = 'fixtureNotice' in panel
-    ? `<aside data-fixture-notice>${escapeHtml(panel.fixtureNotice)}</aside>`
-    : ''
-  const mobile = panel.kind === 'preview' && panel.viewport === 'mobile'
-    ? ' plate--mobile'
-    : ''
+  const fixture =
+    'fixtureNotice' in panel
+      ? `<aside data-fixture-notice>${escapeHtml(panel.fixtureNotice)}</aside>`
+      : ''
+  const mobile = panel.kind === 'preview' && panel.viewport === 'mobile' ? ' plate--mobile' : ''
 
   return `<section class="plate plate--${panel.kind}${mobile}" data-panel-kind="${panel.kind}">
     <header class="plate-label" data-callout="${callout}">
@@ -992,10 +907,7 @@ export function isAllowedCaptureRequest(requestURL: string, baseURL: string) {
 
 const normalizeBaseURL = (value: string) => {
   const url = new URL(value)
-  if (
-    url.protocol !== 'http:' ||
-    !['127.0.0.1', '::1', 'localhost'].includes(url.hostname)
-  ) {
+  if (url.protocol !== 'http:' || !['127.0.0.1', '::1', 'localhost'].includes(url.hostname)) {
     throw new Error(`Blog captures require a localhost HTTP origin, received ${value}.`)
   }
   url.pathname = '/'
@@ -1005,69 +917,56 @@ const normalizeBaseURL = (value: string) => {
 }
 
 export const waitForTargetAssets = async (page: Page, selector?: string) => {
-  await page.evaluate(
-    async (targetSelector) => {
-      await document.fonts.ready
-      const root = targetSelector
-        ? document.querySelector(targetSelector)
-        : document.documentElement
-      if (!root) throw new Error(`Capture target ${targetSelector} disappeared.`)
+  await page.evaluate(async (targetSelector) => {
+    await document.fonts.ready
+    const root = targetSelector ? document.querySelector(targetSelector) : document.documentElement
+    if (!root) throw new Error(`Capture target ${targetSelector} disappeared.`)
 
-      const images = [...root.querySelectorAll('img')].filter((image) => {
-        const rect = image.getBoundingClientRect()
-        const style = getComputedStyle(image)
-        return (
-          rect.width > 0 &&
-          rect.height > 0 &&
-          rect.bottom >= 0 &&
-          rect.right >= 0 &&
-          rect.top <= window.innerHeight &&
-          rect.left <= window.innerWidth &&
-          style.display !== 'none' &&
-          style.visibility !== 'hidden'
-        )
-      })
-      await Promise.all(
-        images.map(async (image) => {
-          const description =
-            image.alt.trim() ||
-            image.currentSrc ||
-            image.getAttribute('src') ||
-            'unnamed visible image'
-
-          if (!image.complete) {
-            await new Promise<void>((resolve, reject) => {
-              image.addEventListener('load', () => resolve(), { once: true })
-              image.addEventListener(
-                'error',
-                () =>
-                  reject(
-                    new Error(`Visible image failed to load: ${description}`),
-                  ),
-                { once: true },
-              )
-            })
-          }
-
-          if (image.naturalWidth === 0 || image.naturalHeight === 0) {
-            throw new Error(
-              `Visible image has no decoded pixels: ${description}`,
-            )
-          }
-
-          try {
-            await image.decode()
-          } catch (error) {
-            throw new Error(
-              `Visible image failed to decode: ${description}`,
-              { cause: error },
-            )
-          }
-        }),
+    const images = [...root.querySelectorAll('img')].filter((image) => {
+      const rect = image.getBoundingClientRect()
+      const style = getComputedStyle(image)
+      return (
+        rect.width > 0 &&
+        rect.height > 0 &&
+        rect.bottom >= 0 &&
+        rect.right >= 0 &&
+        rect.top <= window.innerHeight &&
+        rect.left <= window.innerWidth &&
+        style.display !== 'none' &&
+        style.visibility !== 'hidden'
       )
-    },
-    selector,
-  )
+    })
+    await Promise.all(
+      images.map(async (image) => {
+        const description =
+          image.alt.trim() ||
+          image.currentSrc ||
+          image.getAttribute('src') ||
+          'unnamed visible image'
+
+        if (!image.complete) {
+          await new Promise<void>((resolve, reject) => {
+            image.addEventListener('load', () => resolve(), { once: true })
+            image.addEventListener(
+              'error',
+              () => reject(new Error(`Visible image failed to load: ${description}`)),
+              { once: true },
+            )
+          })
+        }
+
+        if (image.naturalWidth === 0 || image.naturalHeight === 0) {
+          throw new Error(`Visible image has no decoded pixels: ${description}`)
+        }
+
+        try {
+          await image.decode()
+        } catch (error) {
+          throw new Error(`Visible image failed to decode: ${description}`, { cause: error })
+        }
+      }),
+    )
+  }, selector)
 }
 
 const prepareRoutePage = async (
@@ -1108,17 +1007,16 @@ const prepareRoutePage = async (
   return page
 }
 
-export const waitForExactCaptureTarget = async (
-  page: Page,
-  selector: string,
-  context: string,
-) => {
+export const waitForExactCaptureTarget = async (page: Page, selector: string, context: string) => {
   const locator = page.locator(selector)
   return waitForUniqueLocator(locator, `${context} selector ${selector}`)
 }
 
 const waitForUniqueLocator = async (locator: Locator, context: string) => {
-  await locator.first().waitFor({ state: 'attached', timeout: 15_000 }).catch(() => undefined)
+  await locator
+    .first()
+    .waitFor({ state: 'attached', timeout: 15_000 })
+    .catch(() => undefined)
   const count = await locator.count()
   if (count !== 1) {
     throw new Error(`${context} matched ${count} elements; expected exactly one.`)
@@ -1127,14 +1025,9 @@ const waitForUniqueLocator = async (locator: Locator, context: string) => {
   return locator
 }
 
-const capturePreview = async (
-  browser: Browser,
-  baseURL: string,
-  panel: PreviewPanel,
-) => {
-  const viewport = panel.viewport === 'mobile'
-    ? { height: 760, width: 390 }
-    : { height: 680, width: 1100 }
+const capturePreview = async (browser: Browser, baseURL: string, panel: PreviewPanel) => {
+  const viewport =
+    panel.viewport === 'mobile' ? { height: 760, width: 390 } : { height: 680, width: 1100 }
   const page = await prepareRoutePage(browser, baseURL, panel.route, viewport)
 
   try {
@@ -1147,15 +1040,17 @@ const capturePreview = async (
   }
 }
 
-const captureCatalogCard = async (
-  browser: Browser,
-  baseURL: string,
-  panel: CatalogCardPanel,
-) => {
-  const page = await prepareRoutePage(browser, baseURL, panel.route, {
-    height: 820,
-    width: 1180,
-  }, getCaptureDeviceScaleFactor(panel))
+const captureCatalogCard = async (browser: Browser, baseURL: string, panel: CatalogCardPanel) => {
+  const page = await prepareRoutePage(
+    browser,
+    baseURL,
+    panel.route,
+    {
+      height: 820,
+      width: 1180,
+    },
+    getCaptureDeviceScaleFactor(panel),
+  )
 
   try {
     const target = await waitForExactCaptureTarget(page, panel.selector, panel.label)
@@ -1210,20 +1105,14 @@ export const clipCaptureAroundTarget = async (
       throw new Error('Capture boundary screenshot has no measurable dimensions.')
     }
 
-    let contentTop = Math.max(
-      0,
-      (contentStartBox?.y ?? boundaryBox.y) - boundaryBox.y,
-    )
+    let contentTop = Math.max(0, (contentStartBox?.y ?? boundaryBox.y) - boundaryBox.y)
     let contentBottom = Math.min(
       boundaryBox.height,
       (contentEndBox
         ? contentEndBox.y + contentEndBox.height
         : boundaryBox.y + boundaryBox.height) - boundaryBox.y,
     )
-    const raw = await sharp(boundaryPng)
-      .ensureAlpha()
-      .raw()
-      .toBuffer({ resolveWithObject: true })
+    const raw = await sharp(boundaryPng).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
     const darkRows: number[] = []
     for (let row = 0; row < raw.info.height; row += 1) {
       let dark = 0
@@ -1247,33 +1136,21 @@ export const clipCaptureAroundTarget = async (
     }
     const contentHeight = Math.max(1, contentBottom - contentTop)
     const cssHeight = Math.min(height, contentHeight)
-    const cssWidth = Math.min(
-      boundaryBox.width,
-      Math.max(1, box.width + horizontalPadding * 2),
-    )
+    const cssWidth = Math.min(boundaryBox.width, Math.max(1, box.width + horizontalPadding * 2))
     const relativeTop = box.y - boundaryBox.y - verticalPadding
     const relativeLeft = box.x - boundaryBox.x - horizontalPadding
     const cssTop = Math.min(
       Math.max(contentTop, relativeTop),
       Math.max(contentTop, contentBottom - cssHeight),
     )
-    const cssLeft = Math.min(
-      Math.max(0, relativeLeft),
-      Math.max(0, boundaryBox.width - cssWidth),
-    )
+    const cssLeft = Math.min(Math.max(0, relativeLeft), Math.max(0, boundaryBox.width - cssWidth))
     const scaleX = metadata.width / boundaryBox.width
     const scaleY = metadata.height / boundaryBox.height
     const extract = {
-      height: Math.max(
-        1,
-        Math.min(metadata.height, Math.round(cssHeight * scaleY)),
-      ),
+      height: Math.max(1, Math.min(metadata.height, Math.round(cssHeight * scaleY))),
       left: Math.max(0, Math.round(cssLeft * scaleX)),
       top: Math.max(0, Math.round(cssTop * scaleY)),
-      width: Math.max(
-        1,
-        Math.min(metadata.width, Math.round(cssWidth * scaleX)),
-      ),
+      width: Math.max(1, Math.min(metadata.width, Math.round(cssWidth * scaleX))),
     }
     extract.width = Math.min(extract.width, metadata.width - extract.left)
     extract.height = Math.min(extract.height, metadata.height - extract.top)
@@ -1312,10 +1189,7 @@ export function selectDocsCodeLineWindow(
   }
 
   const rowCount = Math.min(maxRows, lines.length)
-  let start = Math.max(
-    0,
-    anchorIndex - Math.floor((rowCount - 1) / 2),
-  )
+  let start = Math.max(0, anchorIndex - Math.floor((rowCount - 1) / 2))
   const end = Math.min(lines.length, start + rowCount)
   start = Math.max(0, end - rowCount)
   return lines.slice(start, end)
@@ -1460,10 +1334,7 @@ export const markOverflowingCodeRows = async (page: Page) => {
 
 export async function validateDocsCodeCanvas(png: Buffer) {
   const metadata = await sharp(png).metadata()
-  if (
-    metadata.width !== docsCodeCanvas.width ||
-    metadata.height !== docsCodeCanvas.height
-  ) {
+  if (metadata.width !== docsCodeCanvas.width || metadata.height !== docsCodeCanvas.height) {
     throw new Error(
       `Docs-code canvas dimensions must be ${docsCodeCanvas.width}x${docsCodeCanvas.height}, received ${metadata.width ?? 'unknown'}x${metadata.height ?? 'unknown'}.`,
     )
@@ -1475,15 +1346,11 @@ export async function validateDocsCodeCanvas(png: Buffer) {
   const edgeOffsets: number[] = []
   for (let x = 0; x < raw.info.width; x += 1) {
     edgeOffsets.push(x * raw.info.channels)
-    edgeOffsets.push(
-      ((raw.info.height - 1) * raw.info.width + x) * raw.info.channels,
-    )
+    edgeOffsets.push(((raw.info.height - 1) * raw.info.width + x) * raw.info.channels)
   }
   for (let y = 1; y < raw.info.height - 1; y += 1) {
     edgeOffsets.push(y * raw.info.width * raw.info.channels)
-    edgeOffsets.push(
-      (y * raw.info.width + raw.info.width - 1) * raw.info.channels,
-    )
+    edgeOffsets.push((y * raw.info.width + raw.info.width - 1) * raw.info.channels)
   }
 
   for (const offset of edgeOffsets) {
@@ -1512,34 +1379,25 @@ const renderDocsCodeExcerptPng = async (
   })
 
   try {
-    await page.setContent(
-      renderDocsCodeExcerptHtml(lines, anchorIndex, monoFontBase64),
-    )
+    await page.setContent(renderDocsCodeExcerptHtml(lines, anchorIndex, monoFontBase64))
     await page.evaluate(async () => await document.fonts.ready)
     await markOverflowingCodeRows(page)
-    const geometry = await page
-      .locator('[data-code-canvas]')
-      .evaluate((element) => {
-        const canvasRect = element.getBoundingClientRect()
-        const rows = [
-          ...element.querySelectorAll<HTMLElement>('[data-code-row]'),
-        ]
-        return {
-          bottom:
-            rows.at(-1)?.getBoundingClientRect().bottom ?? canvasRect.top,
-          canvasBottom: canvasRect.bottom,
-          canvasTop: canvasRect.top,
-          count: rows.length,
-          heights: rows.map((row) => row.getBoundingClientRect().height),
-          top: rows[0]?.getBoundingClientRect().top ?? canvasRect.bottom,
-        }
-      })
+    const geometry = await page.locator('[data-code-canvas]').evaluate((element) => {
+      const canvasRect = element.getBoundingClientRect()
+      const rows = [...element.querySelectorAll<HTMLElement>('[data-code-row]')]
+      return {
+        bottom: rows.at(-1)?.getBoundingClientRect().bottom ?? canvasRect.top,
+        canvasBottom: canvasRect.bottom,
+        canvasTop: canvasRect.top,
+        count: rows.length,
+        heights: rows.map((row) => row.getBoundingClientRect().height),
+        top: rows[0]?.getBoundingClientRect().top ?? canvasRect.bottom,
+      }
+    })
     if (
       geometry.count < 1 ||
-      geometry.top !==
-        geometry.canvasTop + docsCodeCanvas.verticalPadding ||
-      geometry.bottom >
-        geometry.canvasBottom - docsCodeCanvas.verticalPadding ||
+      geometry.top !== geometry.canvasTop + docsCodeCanvas.verticalPadding ||
+      geometry.bottom > geometry.canvasBottom - docsCodeCanvas.verticalPadding ||
       geometry.heights.some((height) => height !== docsCodeCanvas.rowHeight)
     ) {
       throw new Error(
@@ -1573,9 +1431,7 @@ export const captureVisibleDocsCodeEvidence = async (
       text: element.textContent ?? '',
     })),
   )
-  const anchorMatches = lines.flatMap((line, index) =>
-    line.text.includes(anchor) ? [index] : [],
-  )
+  const anchorMatches = lines.flatMap((line, index) => (line.text.includes(anchor) ? [index] : []))
   if (anchorMatches.length !== 1) {
     throw new Error(
       `${context} anchor ${anchor} matched ${anchorMatches.length} visible lines; expected exactly one.`,
@@ -1584,12 +1440,7 @@ export const captureVisibleDocsCodeEvidence = async (
 
   const anchorIndex = anchorMatches[0]
   const selectedLines = selectDocsCodeLineWindow(lines, anchorIndex)
-  const png = await renderDocsCodeExcerptPng(
-    browser,
-    lines,
-    anchorIndex,
-    monoFontBase64,
-  )
+  const png = await renderDocsCodeExcerptPng(browser, lines, anchorIndex, monoFontBase64)
   return {
     anchorIndex,
     lines,
@@ -1634,11 +1485,7 @@ const captureDocsCode = async (
     }
     await fileButton.click()
 
-    const codeBlock = await findUniqueVisibleCodeBlock(
-      activePanel,
-      panel.anchor,
-      panel.label,
-    )
+    const codeBlock = await findUniqueVisibleCodeBlock(activePanel, panel.anchor, panel.label)
 
     await waitForTargetAssets(page)
     const evidence = await captureVisibleDocsCodeEvidence(
@@ -1654,11 +1501,7 @@ const captureDocsCode = async (
   }
 }
 
-export async function findUniqueVisibleCodeBlock(
-  root: Locator,
-  anchor: string,
-  context: string,
-) {
+export async function findUniqueVisibleCodeBlock(root: Locator, anchor: string, context: string) {
   const codeBlock = root.locator('pre:visible').filter({ hasText: anchor })
   const count = await codeBlock.count()
   if (count !== 1) {
@@ -1669,11 +1512,7 @@ export async function findUniqueVisibleCodeBlock(
   return codeBlock
 }
 
-const captureDocsSection = async (
-  browser: Browser,
-  baseURL: string,
-  panel: DocsSectionPanel,
-) => {
+const captureDocsSection = async (browser: Browser, baseURL: string, panel: DocsSectionPanel) => {
   const page = await prepareRoutePage(browser, baseURL, panel.route, {
     height: 820,
     width: 1280,
@@ -1681,10 +1520,7 @@ const captureDocsSection = async (
 
   try {
     const heading = page.locator('h2#content-model')
-    await waitForUniqueLocator(
-      heading,
-      `${panel.label} heading ${panel.heading}`,
-    )
+    await waitForUniqueLocator(heading, `${panel.label} heading ${panel.heading}`)
     await waitForTargetAssets(page)
     return await clipCaptureAroundTarget(page, heading, {
       height: 410,
@@ -1719,14 +1555,8 @@ const captureRouteViewport = async (
   }
 }
 
-export const readCaptureSourceExcerpt = async (
-  panel: SourcePanel,
-  sourceRoot = repoRoot,
-) => {
-  const absolutePath = await resolveCaptureSourcePath(
-    panel.sourcePath,
-    sourceRoot,
-  )
+export const readCaptureSourceExcerpt = async (panel: SourcePanel, sourceRoot = repoRoot) => {
+  const absolutePath = await resolveCaptureSourcePath(panel.sourcePath, sourceRoot)
   const source = await readFile(absolutePath, 'utf8')
   const lines = source.split(/\r?\n/)
   const anchorIndex = lines.findIndex((line) => line.includes(panel.anchor))
@@ -1783,11 +1613,7 @@ export function renderSourceExcerptHtml(
       </html>`
 }
 
-const captureSource = async (
-  browser: Browser,
-  panel: SourcePanel,
-  monoFontBase64: string,
-) => {
+const captureSource = async (browser: Browser, panel: SourcePanel, monoFontBase64: string) => {
   const excerpt = await readCaptureSourceExcerpt(panel)
   const page = await browser.newPage({
     deviceScaleFactor: 1,
@@ -1795,9 +1621,7 @@ const captureSource = async (
   })
 
   try {
-    await page.setContent(
-      renderSourceExcerptHtml(panel, excerpt, monoFontBase64),
-    )
+    await page.setContent(renderSourceExcerptHtml(panel, excerpt, monoFontBase64))
     await page.evaluate(async () => await document.fonts.ready)
     return await page.screenshot({ animations: 'disabled', type: 'png' })
   } finally {
@@ -1899,14 +1723,12 @@ const renderFinalPng = async (
     await page.evaluate(async () => await document.fonts.ready)
     await waitForTargetAssets(page)
 
-    const artifactWindows = await page
-      .locator('.artifact-window')
-      .evaluateAll((elements) =>
-        elements.map((element) => {
-          const rect = element.getBoundingClientRect()
-          return { height: rect.height, width: rect.width }
-        }),
-      )
+    const artifactWindows = await page.locator('.artifact-window').evaluateAll((elements) =>
+      elements.map((element) => {
+        const rect = element.getBoundingClientRect()
+        return { height: rect.height, width: rect.width }
+      }),
+    )
     if (artifactWindows.length !== panelImages.length) {
       throw new Error(
         `${capture.slug} expected ${panelImages.length} artifact windows, received ${artifactWindows.length}.`,
@@ -1919,15 +1741,8 @@ const renderFinalPng = async (
         height: Math.round(measuredTarget.height),
         width: Math.round(measuredTarget.width),
       }
-      const source = Buffer.from(
-        image.dataUrl.replace(/^data:image\/png;base64,/, ''),
-        'base64',
-      )
-      const precomposed = await precomposePanelImage(
-        capture.panels[index],
-        source,
-        target,
-      )
+      const source = Buffer.from(image.dataUrl.replace(/^data:image\/png;base64,/, ''), 'base64')
+      const precomposed = await precomposePanelImage(capture.panels[index], source, target)
       await page
         .locator('.artifact-window img')
         .nth(index)
@@ -1964,9 +1779,7 @@ const validateEncodedCapture = async ({ buffer, capture }: EncodedCapture) => {
 
   if (metadata.format !== 'webp') problems.push(`format ${metadata.format ?? 'unknown'}`)
   if (metadata.width !== canvas.width || metadata.height !== canvas.height) {
-    problems.push(
-      `dimensions ${metadata.width ?? 'unknown'}x${metadata.height ?? 'unknown'}`,
-    )
+    problems.push(`dimensions ${metadata.width ?? 'unknown'}x${metadata.height ?? 'unknown'}`)
   }
   if (buffer.byteLength > maxCaptureBytes) {
     problems.push(`size ${buffer.byteLength} bytes exceeds ${maxCaptureBytes}`)
@@ -1992,10 +1805,7 @@ export async function writeValidatedCaptureBatch(
     plan = await Promise.all(
       encoded.map(async (item) => ({
         buffer: item.buffer,
-        outputPath: await resolveCaptureOutputPath(
-          outputRoot,
-          item.capture.outputPath,
-        ),
+        outputPath: await resolveCaptureOutputPath(outputRoot, item.capture.outputPath),
       })),
     )
     const destinations = new Set(plan.map((item) => item.outputPath))
@@ -2035,7 +1845,9 @@ export async function captureBlogFigures({
   if (requestedSlugs && selectedCaptures.length !== requestedSlugs.size) {
     const knownSlugs = new Set<string>(captures.map((capture) => capture.slug))
     const unknown = [...requestedSlugs].filter((slug) => !knownSlugs.has(slug))
-    throw new Error(`Unknown blog figure capture slug${unknown.length === 1 ? '' : 's'}: ${unknown.join(', ')}`)
+    throw new Error(
+      `Unknown blog figure capture slug${unknown.length === 1 ? '' : 's'}: ${unknown.join(', ')}`,
+    )
   }
 
   const browser = await chromium.launch({ headless: true })
@@ -2047,12 +1859,7 @@ export async function captureBlogFigures({
       const panelImages: CapturedPanel[] = []
 
       for (const panel of capture.panels) {
-        const png = await capturePanel(
-          browser,
-          normalizedBaseURL,
-          panel,
-          fonts,
-        )
+        const png = await capturePanel(browser, normalizedBaseURL, panel, fonts)
         const metadata = await sharp(png).metadata()
         if (!metadata.width || !metadata.height) {
           throw new Error(`${capture.slug}: ${panel.label} has no measurable image dimensions.`)
@@ -2110,8 +1917,7 @@ export const parseCaptureArgs = (argv: readonly string[]) => {
 }
 
 const isMain = () =>
-  Boolean(process.argv[1]) &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+  Boolean(process.argv[1]) && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 
 if (isMain()) {
   await captureBlogFigures(parseCaptureArgs(process.argv.slice(2)))

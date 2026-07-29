@@ -49,7 +49,11 @@ export function IntegrationOrbitDemo({
                   <div style={uprightStyle(index, outer.length)}>
                     <div className="integration-orbit-logo">
                       <div className="flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-xl border border-border/70 bg-background shadow-sm">
-                        <logo.Icon aria-hidden="true" className="size-6 text-foreground/70" strokeWidth={1.75} />
+                        <logo.Icon
+                          aria-hidden="true"
+                          className="size-6 text-foreground/70"
+                          strokeWidth={1.75}
+                        />
                       </div>
                     </div>
                   </div>
@@ -68,7 +72,11 @@ export function IntegrationOrbitDemo({
                   <div style={uprightStyle(index, inner.length)}>
                     <div className="integration-orbit-logo">
                       <div className="flex size-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-xl border border-border/70 bg-background shadow-sm">
-                        <logo.Icon aria-hidden="true" className="size-5 text-foreground/70" strokeWidth={1.75} />
+                        <logo.Icon
+                          aria-hidden="true"
+                          className="size-5 text-foreground/70"
+                          strokeWidth={1.75}
+                        />
                       </div>
                     </div>
                   </div>

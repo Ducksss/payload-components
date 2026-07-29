@@ -1,10 +1,7 @@
 import { resolveArtifact } from './artifacts'
 import { blogVisualCatalog } from './catalog'
 
-import type {
-  BlogVisualSeries,
-  FigureMode,
-} from './types'
+import type { BlogVisualSeries, FigureMode } from './types'
 
 export type DiagramNodeKind = 'code' | 'standard' | 'terminal'
 
@@ -1129,8 +1126,7 @@ export const diagramDefinitions: readonly DiagramDefinition[] = [
     ],
   },
   {
-    path:
-      '/blog/visual-regression-component-registry/figure-01-regression-pipeline.svg',
+    path: '/blog/visual-regression-component-registry/figure-01-regression-pipeline.svg',
     kicker: 'PER-PLATFORM VISUAL GATE',
     title: 'Baseline coverage becomes strict after a platform is minted',
     description:
@@ -1243,8 +1239,7 @@ export const diagramDefinitions: readonly DiagramDefinition[] = [
     ],
   },
   {
-    path:
-      '/blog/reproducible-shadcn-registry/figure-01-deterministic-build.svg',
+    path: '/blog/reproducible-shadcn-registry/figure-01-deterministic-build.svg',
     kicker: 'ACTUAL REGISTRY:CHECK',
     title: 'One temporary build is compared with canonical source in three ways',
     description:
@@ -1415,18 +1410,13 @@ export const hydrateDiagramDefinitions = async (
   const expectedPaths = bindings.map(({ figure }) => figure.path)
   const definitionPaths = definitions.map((definition) => definition.path)
 
-  if (
-    requireCompleteCatalog &&
-    JSON.stringify(definitionPaths) !== JSON.stringify(expectedPaths)
-  ) {
+  if (requireCompleteCatalog && JSON.stringify(definitionPaths) !== JSON.stringify(expectedPaths)) {
     throw new Error(
       'Diagram definitions must match the ordered SVG paths in the blog visual catalog exactly.',
     )
   }
 
-  const bindingsByPath = new Map(
-    bindings.map((binding) => [binding.figure.path, binding] as const),
-  )
+  const bindingsByPath = new Map(bindings.map((binding) => [binding.figure.path, binding] as const))
 
   return await Promise.all(
     definitions.map(async (definition) => {
@@ -1439,10 +1429,7 @@ export const hydrateDiagramDefinitions = async (
       const evidenceRole = definition.evidenceRole ?? 'primary'
       const resolved = await resolveArtifact(binding.entry[evidenceRole])
       const evidenceExcerpt = definition.evidenceLines
-        ? resolved.evidence
-            .split(/\r?\n/)
-            .slice(0, definition.evidenceLines)
-            .join('\n')
+        ? resolved.evidence.split(/\r?\n/).slice(0, definition.evidenceLines).join('\n')
         : undefined
 
       return {

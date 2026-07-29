@@ -73,14 +73,14 @@ covers replace the existing AI-generated abstract artwork completely.
 
 The shared system shifts emphasis by series:
 
-| Series | Primary evidence | Community emphasis |
-| --- | --- | --- |
-| Project notes | Installer pipeline, source diff, or origin artifact | Why the project exists and what help is useful |
-| Foundations | Config, generated type, renderer, or real page composition | A clear first learning step |
-| Installer internals | Terminal output, state, manifest, or scoped patch | Reproducible reports and recovery knowledge |
-| Component design | Real preview comparison and field model | Decisions maintainers can discuss and improve |
-| Production guides | Page blueprint, responsive capture, and implementation evidence | A practical build readers can adapt |
-| Quality and community | Tests, provenance, contribution workflow, or feedback loop | Direct participation and stewardship |
+| Series                | Primary evidence                                                | Community emphasis                             |
+| --------------------- | --------------------------------------------------------------- | ---------------------------------------------- |
+| Project notes         | Installer pipeline, source diff, or origin artifact             | Why the project exists and what help is useful |
+| Foundations           | Config, generated type, renderer, or real page composition      | A clear first learning step                    |
+| Installer internals   | Terminal output, state, manifest, or scoped patch               | Reproducible reports and recovery knowledge    |
+| Component design      | Real preview comparison and field model                         | Decisions maintainers can discuss and improve  |
+| Production guides     | Page blueprint, responsive capture, and implementation evidence | A practical build readers can adapt            |
+| Quality and community | Tests, provenance, contribution workflow, or feedback loop      | Direct participation and stewardship           |
 
 The palette remains white, graphite, muted zinc, and emerald. A warm paper tone
 may appear as a quiet supporting surface. It must not introduce another brand

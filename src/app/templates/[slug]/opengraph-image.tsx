@@ -40,108 +40,111 @@ export default async function TemplateOpenGraphImage({
   if (!template) notFound()
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        alignItems: 'center',
+        backgroundColor: '#ffffff',
+        color: INK,
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        justifyContent: 'center',
+        padding: '60px 80px',
+        position: 'relative',
+        textAlign: 'center',
+        width: '100%',
+      }}
+    >
+      <div
+        style={{
+          background: 'radial-gradient(circle, rgba(5, 150, 105, 0.10) 0%, transparent 68%)',
+          display: 'flex',
+          height: 720,
+          left: 100,
+          position: 'absolute',
+          top: 120,
+          width: 1000,
+        }}
+      />
+
+      <div style={{ alignItems: 'center', display: 'flex', gap: 14 }}>
+        <img alt="" height={46} src={MARK_DATA_URI} width={46} />
+        <div style={{ display: 'flex', fontSize: 29, fontWeight: 700, letterSpacing: -0.6 }}>
+          Payload Components
+        </div>
+      </div>
+
       <div
         style={{
           alignItems: 'center',
-          backgroundColor: '#ffffff',
-          color: INK,
+          border: `2px solid ${EMERALD}`,
+          borderRadius: 999,
+          color: EMERALD,
           display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
-          justifyContent: 'center',
-          padding: '60px 80px',
-          position: 'relative',
-          textAlign: 'center',
-          width: '100%',
+          fontFamily: 'Geist Mono',
+          fontSize: 19,
+          letterSpacing: 2.4,
+          marginTop: 44,
+          padding: '8px 24px',
+          textTransform: 'uppercase',
         }}
       >
-        <div
-          style={{
-            background: 'radial-gradient(circle, rgba(5, 150, 105, 0.10) 0%, transparent 68%)',
-            display: 'flex',
-            height: 720,
-            left: 100,
-            position: 'absolute',
-            top: 120,
-            width: 1000,
-          }}
-        />
-
-        <div style={{ alignItems: 'center', display: 'flex', gap: 14 }}>
-          <img alt="" height={46} src={MARK_DATA_URI} width={46} />
-          <div style={{ display: 'flex', fontSize: 29, fontWeight: 700, letterSpacing: -0.6 }}>
-            Payload Components
-          </div>
-        </div>
-
-        <div
-          style={{
-            alignItems: 'center',
-            border: `2px solid ${EMERALD}`,
-            borderRadius: 999,
-            color: EMERALD,
-            display: 'flex',
-            fontFamily: 'Geist Mono',
-            fontSize: 19,
-            letterSpacing: 2.4,
-            marginTop: 44,
-            padding: '8px 24px',
-            textTransform: 'uppercase',
-          }}
-        >
-          {TEMPLATE_CONCEPT_STATUS_LABEL}
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            fontSize: 84,
-            fontWeight: 700,
-            letterSpacing: -3.4,
-            lineHeight: 1.04,
-            marginTop: 26,
-          }}
-        >
-          {`${template.title} template`}
-        </div>
-
-        <div
-          style={{
-            color: MUTED,
-            display: 'flex',
-            fontSize: 30,
-            lineHeight: 1.4,
-            marginTop: 22,
-            maxWidth: 940,
-          }}
-        >
-          {template.summary}
-        </div>
-
-        <div
-          style={{
-            bottom: 48,
-            color: FAINT,
-            display: 'flex',
-            fontFamily: 'Geist Mono',
-            fontSize: 18,
-            justifyContent: 'center',
-            left: 0,
-            position: 'absolute',
-            right: 0,
-          }}
-        >
-          {`${domain}/templates/${template.slug}`}
-        </div>
+        {TEMPLATE_CONCEPT_STATUS_LABEL}
       </div>
-    ),
+
+      <div
+        style={{
+          display: 'flex',
+          fontSize: 84,
+          fontWeight: 700,
+          letterSpacing: -3.4,
+          lineHeight: 1.04,
+          marginTop: 26,
+        }}
+      >
+        {`${template.title} template`}
+      </div>
+
+      <div
+        style={{
+          color: MUTED,
+          display: 'flex',
+          fontSize: 30,
+          lineHeight: 1.4,
+          marginTop: 22,
+          maxWidth: 940,
+        }}
+      >
+        {template.summary}
+      </div>
+
+      <div
+        style={{
+          bottom: 48,
+          color: FAINT,
+          display: 'flex',
+          fontFamily: 'Geist Mono',
+          fontSize: 18,
+          justifyContent: 'center',
+          left: 0,
+          position: 'absolute',
+          right: 0,
+        }}
+      >
+        {`${domain}/templates/${template.slug}`}
+      </div>
+    </div>,
     {
       ...size,
       fonts: [
         { data: fontFile('Geist-Regular.ttf'), name: 'Geist', style: 'normal', weight: 400 },
         { data: fontFile('Geist-Bold.ttf'), name: 'Geist', style: 'normal', weight: 700 },
-        { data: fontFile('GeistMono-Regular.ttf'), name: 'Geist Mono', style: 'normal', weight: 400 },
+        {
+          data: fontFile('GeistMono-Regular.ttf'),
+          name: 'Geist Mono',
+          style: 'normal',
+          weight: 400,
+        },
       ],
     },
   )

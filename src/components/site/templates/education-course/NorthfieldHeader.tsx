@@ -78,8 +78,10 @@ export function NorthfieldHeader({
   }, [open])
 
   // Route changes close the disclosure; this state update is intentionally tied to navigation.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setOpen(false) }, [pathname])
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpen(false)
+  }, [pathname])
 
   return (
     <motion.header
@@ -114,7 +116,9 @@ export function NorthfieldHeader({
                 aria-current={active ? 'page' : undefined}
                 className={cn(
                   'nf-nav-item relative px-2 py-1.5 text-sm transition-colors lg:px-3',
-                  active ? 'font-medium text-foreground' : 'text-muted-foreground hover:text-foreground',
+                  active
+                    ? 'font-medium text-foreground'
+                    : 'text-muted-foreground hover:text-foreground',
                 )}
                 href={templatePreviewHref(template.slug, item.path)}
                 key={item.path}
@@ -131,7 +135,9 @@ export function NorthfieldHeader({
                     data-nf-reveal
                     initial={{ scaleX: 0 }}
                     transition={
-                      reduceMotion ? { duration: 0 } : { delay: 0.28, duration: 0.5, ease: EASE_OUT }
+                      reduceMotion
+                        ? { duration: 0 }
+                        : { delay: 0.28, duration: 0.5, ease: EASE_OUT }
                     }
                   />
                 ) : null}

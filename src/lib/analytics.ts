@@ -10,11 +10,7 @@ type PostHogTestEvent = {
   properties: AnalyticsProperties
 }
 
-type Gtag = (
-  command: 'event',
-  eventName: string,
-  parameters?: AnalyticsProperties,
-) => void
+type Gtag = (command: 'event', eventName: string, parameters?: AnalyticsProperties) => void
 
 declare global {
   interface Window {
@@ -25,8 +21,7 @@ declare global {
 }
 
 const managedPostHogApiKey = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? ''
-const managedPostHogHost =
-  process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'
+const managedPostHogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'
 const installCommandPattern = /\bpayload-components\s+add\s+([a-z0-9-]+)\b/i
 const siteHostnames = new Set(['payload-components.xyz', 'www.payload-components.xyz'])
 let sessionDistinctId: string | null = null
@@ -129,13 +124,17 @@ function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
 }
 
 function trackEvent(eventName: string, properties: AnalyticsProperties) {
-  if (!analyticsAllowed()) return
-
+  /* Mirrors the two tiers in AnalyticsShell. Vercel is cookieless and mounted
+   * for everyone, so its events need no opt-in; the event names and fields are
+   * the enumerated vocabulary in content/docs/contributing.mdx, never free text.
+   * GA4 and PostHog below are consent-gated. */
   try {
     trackVercelEvent(eventName, properties)
   } catch {
     // Analytics must never block the user action.
   }
+
+  if (!analyticsAllowed()) return
 
   try {
     window.gtag?.('event', eventName, properties)

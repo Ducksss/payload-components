@@ -49,8 +49,7 @@ type RegistryItem = {
   name: string
 }
 
-const describeError = (error: unknown) =>
-  error instanceof Error ? error.message : String(error)
+const describeError = (error: unknown) => (error instanceof Error ? error.message : String(error))
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -197,12 +196,7 @@ const excerptAtAnchor = ({
     throw new Error(`Anchor "${anchor}" is missing from ${sourcePath}.`)
   }
 
-  return source
-    .slice(anchorOffset)
-    .split(/\r?\n/)
-    .slice(0, take)
-    .join('\n')
-    .trimEnd()
+  return source.slice(anchorOffset).split(/\r?\n/).slice(0, take).join('\n').trimEnd()
 }
 
 const resolveSource = async (
@@ -230,12 +224,7 @@ const resolveRegistryItem = async (
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 const resolveRouteDeclaration = async (route: string): Promise<readonly string[]> => {
-  if (
-    !route.startsWith('/') ||
-    route.startsWith('//') ||
-    route.includes('#') ||
-    /\s/.test(route)
-  ) {
+  if (!route.startsWith('/') || route.startsWith('//') || route.includes('#') || /\s/.test(route)) {
     throw new Error(`Route must be a local path: "${route}".`)
   }
 
@@ -244,10 +233,7 @@ const resolveRouteDeclaration = async (route: string): Promise<readonly string[]
   }
 
   if (route === '/templates') {
-    return [
-      'src/app/templates/page.tsx',
-      'src/lib/templates/registry.ts',
-    ]
+    return ['src/app/templates/page.tsx', 'src/lib/templates/registry.ts']
   }
 
   const blogArticle = route.match(/^\/blog\/([a-z0-9-]+)$/)
@@ -270,19 +256,13 @@ const resolveRouteDeclaration = async (route: string): Promise<readonly string[]
       throw new Error(`Preview route slug "${slug}" is missing from the demo registry.`)
     }
 
-    return [
-      'src/app/components/preview/[slug]/page.tsx',
-      'src/components/site/demos/registry.ts',
-    ]
+    return ['src/app/components/preview/[slug]/page.tsx', 'src/components/site/demos/registry.ts']
   }
 
   const componentDocs = route.match(/^\/docs\/components\/([a-z0-9-]+)$/)
 
   if (componentDocs) {
-    return [
-      'src/app/docs/[[...slug]]/page.tsx',
-      `content/docs/components/${componentDocs[1]}.mdx`,
-    ]
+    return ['src/app/docs/[[...slug]]/page.tsx', `content/docs/components/${componentDocs[1]}.mdx`]
   }
 
   throw new Error(`Unsupported local route "${route}".`)
@@ -306,9 +286,7 @@ const resolveRoute = async (
   }
 }
 
-const resolveSequence = (
-  artifact: Extract<Artifact, { kind: 'sequence' }>,
-): ResolvedArtifact => {
+const resolveSequence = (artifact: Extract<Artifact, { kind: 'sequence' }>): ResolvedArtifact => {
   if (artifact.items.length === 0 || artifact.items.some((item) => item.trim() === '')) {
     throw new Error(`Sequence "${artifact.label}" must contain nonempty items.`)
   }
@@ -350,7 +328,9 @@ const resolveDiff = async (
   const declaredContext = [...artifact.before, ...artifact.after].join('\n')
 
   if (artifact.anchor.trim() === '' || !declaredContext.includes(artifact.anchor)) {
-    throw new Error(`Diff context for ${artifact.path} does not include anchor "${artifact.anchor}".`)
+    throw new Error(
+      `Diff context for ${artifact.path} does not include anchor "${artifact.anchor}".`,
+    )
   }
 
   const source = await readRepositoryFile(artifact.path)
@@ -491,9 +471,7 @@ export const validateBlogVisualCatalog = async (
     try {
       await validateEntry(entry, seenSlugs, seenOrders, seenFigures)
     } catch (error) {
-      throw new Error(
-        `Visual evidence for ${owningSlug} is invalid: ${describeError(error)}`,
-      )
+      throw new Error(`Visual evidence for ${owningSlug} is invalid: ${describeError(error)}`)
     }
   }
 }

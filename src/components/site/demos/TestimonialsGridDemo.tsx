@@ -35,7 +35,9 @@ export function TestimonialsGridDemo({
               </Badge>
             ) : null}
 
-            <div className="text-3xl font-medium tracking-title text-balance sm:text-4xl">{title}</div>
+            <div className="text-3xl font-medium tracking-title text-balance sm:text-4xl">
+              {title}
+            </div>
 
             {description ? (
               <p className="max-w-2xl text-base leading-7 text-muted-foreground">{description}</p>

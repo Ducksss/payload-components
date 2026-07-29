@@ -19,12 +19,7 @@ describe('Dependabot update groups', () => {
         .map((line) => line.replace(/^\s*- ['"]?|['"]?$/g, ''))
     }
 
-    expect(patternsFor('next-react')).toEqual([
-      'eslint-config-next',
-      'next',
-      'react',
-      'react-dom',
-    ])
+    expect(patternsFor('next-react')).toEqual(['eslint-config-next', 'next', 'react', 'react-dom'])
     expect(patternsFor('test-tooling')).toEqual([
       '@playwright/*',
       'vite',

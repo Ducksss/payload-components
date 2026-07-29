@@ -176,8 +176,8 @@ export default function BlogIndex() {
             More Payload CMS field notes
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-            Browse implementation lessons, component design notes, and release stories from the
-            open registry.
+            Browse implementation lessons, component design notes, and release stories from the open
+            registry.
           </p>
         </div>
         <Link

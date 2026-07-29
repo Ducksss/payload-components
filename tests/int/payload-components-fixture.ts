@@ -151,10 +151,10 @@ const copyProjectFixture = async () => {
       [
         "import * as React from 'react'",
         '',
-        "export const Accordion = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />",
-        "export const AccordionContent = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />",
-        "export const AccordionItem = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />",
-        "export const AccordionTrigger = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => <button {...props} />",
+        'export const Accordion = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />',
+        'export const AccordionContent = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />',
+        'export const AccordionItem = (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />',
+        'export const AccordionTrigger = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => <button {...props} />',
         '',
       ].join('\n'),
       'utf8',
@@ -176,7 +176,7 @@ const copyProjectFixture = async () => {
       [
         "import * as React from 'react'",
         '',
-        "export const Button = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => <button {...props} />",
+        'export const Button = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => <button {...props} />',
         '',
       ].join('\n'),
       'utf8',
@@ -294,7 +294,10 @@ export const createInstallFixture = async (
   componentName: string,
   options: InstallFixtureOptions = {},
 ) => {
-  const { fixtureDir, manifests } = await createInstallFixtureForComponents([componentName], options)
+  const { fixtureDir, manifests } = await createInstallFixtureForComponents(
+    [componentName],
+    options,
+  )
 
   return {
     fixtureDir,

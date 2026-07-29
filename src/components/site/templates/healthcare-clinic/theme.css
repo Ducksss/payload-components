@@ -165,10 +165,7 @@
 
 /* The twin structure is contract-tested:
    [data-template-section] > [aria-hidden] > frame div. */
-[data-template-theme='healthcare-clinic']
-  [data-template-section]
-  > [aria-hidden='true']
-  > div {
+[data-template-theme='healthcare-clinic'] [data-template-section] > [aria-hidden='true'] > div {
   background-color: transparent;
   border-color: transparent;
   border-radius: 0;
@@ -219,54 +216,50 @@
     ),
     /* transom */
     linear-gradient(
-      180deg,
-      transparent 51%,
-      color-mix(in oklab, var(--al-daylight) 64%, transparent) 51%,
-      color-mix(in oklab, var(--al-daylight) 64%, transparent) 52.8%,
-      transparent 52.8%
-    ),
+        180deg,
+        transparent 51%,
+        color-mix(in oklab, var(--al-daylight) 64%, transparent) 51%,
+        color-mix(in oklab, var(--al-daylight) 64%, transparent) 52.8%,
+        transparent 52.8%
+      ),
     /* mullion */
     linear-gradient(
-      90deg,
-      transparent calc(var(--al-plate-x) - 0.9%),
-      color-mix(in oklab, var(--al-daylight) 64%, transparent) calc(var(--al-plate-x) - 0.9%),
-      color-mix(in oklab, var(--al-daylight) 64%, transparent) calc(var(--al-plate-x) + 0.9%),
-      transparent calc(var(--al-plate-x) + 0.9%)
-    ),
+        90deg,
+        transparent calc(var(--al-plate-x) - 0.9%),
+        color-mix(in oklab, var(--al-daylight) 64%, transparent) calc(var(--al-plate-x) - 0.9%),
+        color-mix(in oklab, var(--al-daylight) 64%, transparent) calc(var(--al-plate-x) + 0.9%),
+        transparent calc(var(--al-plate-x) + 0.9%)
+      ),
     /* the pane */
     radial-gradient(
-      20% 68% at var(--al-plate-x) 90%,
-      color-mix(in oklab, var(--al-sky-pale) 72%, transparent) 97%,
-      transparent 100%
-    ),
+        20% 68% at var(--al-plate-x) 90%,
+        color-mix(in oklab, var(--al-sky-pale) 72%, transparent) 97%,
+        transparent 100%
+      ),
     /* daylight spilling right across the plaster */
     linear-gradient(
-      100deg,
-      color-mix(in oklab, var(--al-sky-pale) 26%, transparent) 6%,
-      transparent 58%
-    ),
+        100deg,
+        color-mix(in oklab, var(--al-sky-pale) 26%, transparent) 6%,
+        transparent 58%
+      ),
     /* warm shade in the far corner */
     radial-gradient(
-      80% 84% at 108% 106%,
-      color-mix(in oklab, var(--al-green) 15%, transparent),
-      transparent 62%
-    ),
+        80% 84% at 108% 106%,
+        color-mix(in oklab, var(--al-green) 15%, transparent),
+        transparent 62%
+      ),
     /* the floor */
     linear-gradient(180deg, transparent 84%, color-mix(in oklab, var(--al-green) 10%, transparent));
 }
 
 /* Where plates repeat — the three clinicians, the three appointment kinds — the
    window slides along the wall so no two rooms are the same photograph. */
-[data-template-theme='healthcare-clinic']
-  [data-template-section='clinicians']
-  .group:nth-child(2),
+[data-template-theme='healthcare-clinic'] [data-template-section='clinicians'] .group:nth-child(2),
 [data-template-theme='healthcare-clinic'] [data-template-section='pathways'] div.grid:nth-child(2) {
   --al-plate-x: 41%;
 }
 
-[data-template-theme='healthcare-clinic']
-  [data-template-section='clinicians']
-  .group:nth-child(3),
+[data-template-theme='healthcare-clinic'] [data-template-section='clinicians'] .group:nth-child(3),
 [data-template-theme='healthcare-clinic'] [data-template-section='pathways'] div.grid:nth-child(3) {
   --al-plate-x: 25%;
 }

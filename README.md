@@ -206,14 +206,14 @@ git and run it only against the intended database.
 
 Good first installs:
 
-| Component            | Use it for                         |
-| -------------------- | ---------------------------------- |
-| `hero-basic`         | A headline-led page hero           |
-| `feature-grid-basic` | A repeatable feature grid          |
-| `feature-split`      | A two-column feature section       |
-| `content-columns`    | Editorial content columns          |
-| `logo-cloud-grid`    | A trust-logo wall                  |
-| `integration-grid`   | Integration cards                  |
+| Component            | Use it for                   |
+| -------------------- | ---------------------------- |
+| `hero-basic`         | A headline-led page hero     |
+| `feature-grid-basic` | A repeatable feature grid    |
+| `feature-split`      | A two-column feature section |
+| `content-columns`    | Editorial content columns    |
+| `logo-cloud-grid`    | A trust-logo wall            |
+| `integration-grid`   | Integration cards            |
 
 Browse the full, current set in the [component catalog][catalog-url].
 
@@ -225,75 +225,77 @@ Every installable registry item, in catalog order. This table and the CLI's
 drift from the registry.
 
 <!-- COMPONENT-INVENTORY:START -->
-| Component | Install command |
-| --- | --- |
-| `hero-basic` | `npx payload-components add hero-basic` |
-| `hero-video` | `npx payload-components add hero-video` |
-| `hero-product-tilt` | `npx payload-components add hero-product-tilt` |
-| `hero-aurora` | `npx payload-components add hero-aurora` |
-| `hero-kinetic` | `npx payload-components add hero-kinetic` |
-| `feature-grid-basic` | `npx payload-components add feature-grid-basic` |
-| `feature-split` | `npx payload-components add feature-split` |
-| `feature-bento` | `npx payload-components add feature-bento` |
-| `feature-steps` | `npx payload-components add feature-steps` |
-| `feature-accordion` | `npx payload-components add feature-accordion` |
-| `feature-cards-media` | `npx payload-components add feature-cards-media` |
-| `feature-icon-grid` | `npx payload-components add feature-icon-grid` |
-| `embed-basic` | `npx payload-components add embed-basic` |
-| `logo-cloud-grid` | `npx payload-components add logo-cloud-grid` |
-| `logo-cloud-hover` | `npx payload-components add logo-cloud-hover` |
-| `logo-cloud-marquee` | `npx payload-components add logo-cloud-marquee` |
-| `logo-cloud-inline` | `npx payload-components add logo-cloud-inline` |
-| `logo-cloud-inline-wrap` | `npx payload-components add logo-cloud-inline-wrap` |
-| `content-columns` | `npx payload-components add content-columns` |
-| `content-image-lead` | `npx payload-components add content-image-lead` |
-| `content-feature-media` | `npx payload-components add content-feature-media` |
-| `content-feature-split` | `npx payload-components add content-feature-split` |
-| `content-showcase` | `npx payload-components add content-showcase` |
-| `content-quote` | `npx payload-components add content-quote` |
-| `content-community` | `npx payload-components add content-community` |
-| `integration-grid` | `npx payload-components add integration-grid` |
-| `integration-cluster` | `npx payload-components add integration-cluster` |
-| `integration-split` | `npx payload-components add integration-split` |
-| `integration-connect` | `npx payload-components add integration-connect` |
-| `integration-orbit` | `npx payload-components add integration-orbit` |
-| `integration-list` | `npx payload-components add integration-list` |
-| `integration-marquee` | `npx payload-components add integration-marquee` |
+
+| Component                 | Install command                                      |
+| ------------------------- | ---------------------------------------------------- |
+| `hero-basic`              | `npx payload-components add hero-basic`              |
+| `hero-video`              | `npx payload-components add hero-video`              |
+| `hero-product-tilt`       | `npx payload-components add hero-product-tilt`       |
+| `hero-aurora`             | `npx payload-components add hero-aurora`             |
+| `hero-kinetic`            | `npx payload-components add hero-kinetic`            |
+| `feature-grid-basic`      | `npx payload-components add feature-grid-basic`      |
+| `feature-split`           | `npx payload-components add feature-split`           |
+| `feature-bento`           | `npx payload-components add feature-bento`           |
+| `feature-steps`           | `npx payload-components add feature-steps`           |
+| `feature-accordion`       | `npx payload-components add feature-accordion`       |
+| `feature-cards-media`     | `npx payload-components add feature-cards-media`     |
+| `feature-icon-grid`       | `npx payload-components add feature-icon-grid`       |
+| `embed-basic`             | `npx payload-components add embed-basic`             |
+| `logo-cloud-grid`         | `npx payload-components add logo-cloud-grid`         |
+| `logo-cloud-hover`        | `npx payload-components add logo-cloud-hover`        |
+| `logo-cloud-marquee`      | `npx payload-components add logo-cloud-marquee`      |
+| `logo-cloud-inline`       | `npx payload-components add logo-cloud-inline`       |
+| `logo-cloud-inline-wrap`  | `npx payload-components add logo-cloud-inline-wrap`  |
+| `content-columns`         | `npx payload-components add content-columns`         |
+| `content-image-lead`      | `npx payload-components add content-image-lead`      |
+| `content-feature-media`   | `npx payload-components add content-feature-media`   |
+| `content-feature-split`   | `npx payload-components add content-feature-split`   |
+| `content-showcase`        | `npx payload-components add content-showcase`        |
+| `content-quote`           | `npx payload-components add content-quote`           |
+| `content-community`       | `npx payload-components add content-community`       |
+| `integration-grid`        | `npx payload-components add integration-grid`        |
+| `integration-cluster`     | `npx payload-components add integration-cluster`     |
+| `integration-split`       | `npx payload-components add integration-split`       |
+| `integration-connect`     | `npx payload-components add integration-connect`     |
+| `integration-orbit`       | `npx payload-components add integration-orbit`       |
+| `integration-list`        | `npx payload-components add integration-list`        |
+| `integration-marquee`     | `npx payload-components add integration-marquee`     |
 | `integration-testimonial` | `npx payload-components add integration-testimonial` |
-| `content-split-rows` | `npx payload-components add content-split-rows` |
-| `content-rows` | `npx payload-components add content-rows` |
-| `content-image-frame` | `npx payload-components add content-image-frame` |
-| `content-stats` | `npx payload-components add content-stats` |
-| `content-list` | `npx payload-components add content-list` |
-| `content-list-columns` | `npx payload-components add content-list-columns` |
-| `content-list-icons` | `npx payload-components add content-list-icons` |
+| `content-split-rows`      | `npx payload-components add content-split-rows`      |
+| `content-rows`            | `npx payload-components add content-rows`            |
+| `content-image-frame`     | `npx payload-components add content-image-frame`     |
+| `content-stats`           | `npx payload-components add content-stats`           |
+| `content-list`            | `npx payload-components add content-list`            |
+| `content-list-columns`    | `npx payload-components add content-list-columns`    |
+| `content-list-icons`      | `npx payload-components add content-list-icons`      |
 | `call-to-action-centered` | `npx payload-components add call-to-action-centered` |
-| `call-to-action-boxed` | `npx payload-components add call-to-action-boxed` |
-| `call-to-action-signup` | `npx payload-components add call-to-action-signup` |
-| `contact-routing-form` | `npx payload-components add contact-routing-form` |
-| `team-roster` | `npx payload-components add team-roster` |
-| `team-grid` | `npx payload-components add team-grid` |
-| `faq-accordion` | `npx payload-components add faq-accordion` |
-| `faq-split` | `npx payload-components add faq-split` |
-| `faq-card` | `npx payload-components add faq-card` |
-| `faq-icons` | `npx payload-components add faq-icons` |
-| `faq-grouped` | `npx payload-components add faq-grouped` |
-| `faq-grid` | `npx payload-components add faq-grid` |
-| `comparator-table` | `npx payload-components add comparator-table` |
-| `comparator-grid` | `npx payload-components add comparator-grid` |
-| `comparator-stack` | `npx payload-components add comparator-stack` |
-| `testimonials-quote` | `npx payload-components add testimonials-quote` |
-| `testimonials-spotlight` | `npx payload-components add testimonials-spotlight` |
-| `testimonials-grid` | `npx payload-components add testimonials-grid` |
-| `testimonials-rating` | `npx payload-components add testimonials-rating` |
-| `testimonials-bento` | `npx payload-components add testimonials-bento` |
-| `testimonials-wall` | `npx payload-components add testimonials-wall` |
-| `stats-proof` | `npx payload-components add stats-proof` |
-| `pricing-cards` | `npx payload-components add pricing-cards` |
-| `pricing-cards-muted` | `npx payload-components add pricing-cards-muted` |
-| `pricing-cards-cta` | `npx payload-components add pricing-cards-cta` |
-| `pricing-split` | `npx payload-components add pricing-split` |
-| `pricing-enterprise` | `npx payload-components add pricing-enterprise` |
+| `call-to-action-boxed`    | `npx payload-components add call-to-action-boxed`    |
+| `call-to-action-signup`   | `npx payload-components add call-to-action-signup`   |
+| `contact-routing-form`    | `npx payload-components add contact-routing-form`    |
+| `team-roster`             | `npx payload-components add team-roster`             |
+| `team-grid`               | `npx payload-components add team-grid`               |
+| `faq-accordion`           | `npx payload-components add faq-accordion`           |
+| `faq-split`               | `npx payload-components add faq-split`               |
+| `faq-card`                | `npx payload-components add faq-card`                |
+| `faq-icons`               | `npx payload-components add faq-icons`               |
+| `faq-grouped`             | `npx payload-components add faq-grouped`             |
+| `faq-grid`                | `npx payload-components add faq-grid`                |
+| `comparator-table`        | `npx payload-components add comparator-table`        |
+| `comparator-grid`         | `npx payload-components add comparator-grid`         |
+| `comparator-stack`        | `npx payload-components add comparator-stack`        |
+| `testimonials-quote`      | `npx payload-components add testimonials-quote`      |
+| `testimonials-spotlight`  | `npx payload-components add testimonials-spotlight`  |
+| `testimonials-grid`       | `npx payload-components add testimonials-grid`       |
+| `testimonials-rating`     | `npx payload-components add testimonials-rating`     |
+| `testimonials-bento`      | `npx payload-components add testimonials-bento`      |
+| `testimonials-wall`       | `npx payload-components add testimonials-wall`       |
+| `stats-proof`             | `npx payload-components add stats-proof`             |
+| `pricing-cards`           | `npx payload-components add pricing-cards`           |
+| `pricing-cards-muted`     | `npx payload-components add pricing-cards-muted`     |
+| `pricing-cards-cta`       | `npx payload-components add pricing-cards-cta`       |
+| `pricing-split`           | `npx payload-components add pricing-split`           |
+| `pricing-enterprise`      | `npx payload-components add pricing-enterprise`      |
+
 <!-- COMPONENT-INVENTORY:END -->
 
 Check a target project without changing files:
@@ -387,15 +389,15 @@ Payload fragments, and the owned/patched file breakdown before and after retryin
 
 Useful checks while changing this repo:
 
-| Check | When to run |
-| --- | --- |
-| `pnpm lint` | After code changes to catch lint errors. |
-| `pnpm source:build` | After docs/frontmatter changes, or before type-checking a fresh checkout; compiles Fumadocs content. |
-| `pnpm exec tsc --noEmit` | After TypeScript changes, to type-check without writing build output. |
-| `pnpm test:registry` | After registry changes; checks schema validity and generated-output reproducibility. |
-| `pnpm run test:int` | After installer, manifest, docs, or source changes; covers those contracts. |
-| `E2E_PORT=3100 pnpm run test:e2e` | After changes to site or browser behavior. |
-| `pnpm build` | Before shipping, to validate the production build. |
+| Check                             | When to run                                                                                          |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `pnpm lint`                       | After code changes to catch lint errors.                                                             |
+| `pnpm source:build`               | After docs/frontmatter changes, or before type-checking a fresh checkout; compiles Fumadocs content. |
+| `pnpm exec tsc --noEmit`          | After TypeScript changes, to type-check without writing build output.                                |
+| `pnpm test:registry`              | After registry changes; checks schema validity and generated-output reproducibility.                 |
+| `pnpm run test:int`               | After installer, manifest, docs, or source changes; covers those contracts.                          |
+| `E2E_PORT=3100 pnpm run test:e2e` | After changes to site or browser behavior.                                                           |
+| `pnpm build`                      | Before shipping, to validate the production build.                                                   |
 
 Run the full local release gate before shipping:
 
