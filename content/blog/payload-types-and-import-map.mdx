@@ -1,164 +1,229 @@
 ---
-title: Why Payload Types and the Admin Import Map Must Stay in Sync
-description: Understand the two generated artifacts that keep a Payload schema, typed frontend, and admin component graph aligned.
+title: "Payload generate:importmap: Command, Output, and Fixes"
+description: Run Payload's generate:importmap command, understand its generated file, and fix stale paths or missing custom components in the admin panel.
 author: Ducksss
 date: 2026-07-14
 series: foundations
 publicationOrder: 7
 cover:
   src: /blog/payload-types-and-import-map/cover.webp
-  alt: Hero Basic manifest post-install generators beside the paths from config to frontend types and from config to the admin import map.
+  alt: Payload generate:importmap and generate:types pipelines from the Payload config to the admin panel and typed frontend.
 tags:
   - Payload CMS
   - TypeScript
   - Admin UI
 ---
 
-Payload has two generated artifacts that are easy to mention in the same breath and easy to confuse:
-TypeScript interfaces and the admin import map. They solve different problems. Types describe data
-shapes to the compiler. The import map tells the admin bundle how configured component paths resolve
-to modules. A complete schema or component change may require both.
+Run `payload generate:importmap` after you add, move, rename, or remove a custom admin component path
+and need to refresh Payload's generated admin imports. From a pnpm project, the direct command is:
 
-I think of them as two projections of the same Payload config. One points toward the application
-code that reads documents. The other points toward the admin UI that authors them. When only one is
-fresh, the repository can look healthy from one side while failing from the other.
+<RunnableCommand
+  command="pnpm payload generate:importmap"
+  label="Copy the Payload generate import map command"
+/>
+
+The command rebuilds the file Payload uses to connect component path strings in `payload.config.ts`
+to real modules in the admin bundle. It does not regenerate your collection and block types. Run
+`payload generate:types` separately when the data schema changes.
+
+That distinction is the shortest route through most import-map problems: the import map describes
+admin modules, while generated types describe document data. A block or plugin change can require
+one command, the other, or both.
 
 <BlogFigure
   src="/blog/payload-types-and-import-map/figure-01-generation-pipelines.svg"
   alt="Two parallel generation pipelines connecting Payload config changes to payload-types.ts for the frontend and importMap.js for the admin"
-  caption="The generators have separate outputs and failure modes, but installation is complete only when both consumers see the current config."
+  caption="Payload reads one config into two generated outputs. The admin import map resolves component modules; payload-types.ts describes saved data."
 />
 
-## Generated types describe document data
+## What `payload generate:importmap` generates
 
-Payload's official [type generation guide](https://payloadcms.com/docs/typescript/generating-types)
-explains how the active config produces TypeScript definitions. For a Blocks field, the generated
-Page type contains union members distinguished by `blockType`. A frontend renderer can narrow that
-union and pass exact fields to the matching component.
+Payload custom components are configured by path instead of being imported directly into
+`payload.config.ts`. A field component might look like this:
 
-When you add, remove, rename, or change a field, regenerate the types. Otherwise, TypeScript reasons
-about an old schema. The runtime may deliver `description` while the compiler still expects `copy`,
-or a new required field may appear optional in application code.
+```ts
+import { buildConfig } from 'payload'
 
-Stale types produce several recognizable symptoms:
-
-- a valid new field is reported as nonexistent;
-- a removed field continues to autocomplete;
-- a new block discriminator is missing from the layout union;
-- the renderer requires an unsafe cast to compile;
-- CI and a developer machine disagree because only one generated locally.
-
-Do not patch the generated file by hand. Fix the Payload config or generation command, run it again,
-and commit the output if your repository tracks generated types. The source of truth is the config.
-
-## The import map describes admin modules
-
-Payload config can refer to custom admin components by path. The admin build needs a concrete map
-from those identifiers to imports. Payload's official
-[custom components overview](https://payloadcms.com/docs/custom-components/overview) documents the
-path-based configuration and generated import-map behavior.
-
-When a component file is added, moved, renamed, or removed, regenerate the import map. The public
-Next.js page can compile perfectly while the admin fails to resolve a field, cell, view, or block
-component. Type generation cannot catch that module-graph problem because the data shape may be
-unchanged.
-
-Common stale-map symptoms include a missing-module error in the admin, an old component continuing
-to load, a path that works on a case-insensitive local filesystem but fails in Linux CI, or an admin
-route that breaks only after a production build.
-
-The map is generated code too. Hand-editing it treats the symptom and guarantees the next generation
-will erase the repair.
-
-## Why block installation touches both
-
-A plain block with only built-in fields may not add a custom admin module. It still changes the
-schema and therefore the generated layout union. A richer component might also ship admin UI or
-alter paths represented in the import map. An installer cannot safely assume that copying source is
-the end of the job.
-
-Payload Components manifests declare post-install scripts so the consumer's own repository performs
-generation with its own config. The installer does not ship a foreign `payload-types.ts` or
-`importMap.js`; those artifacts are specific to the target project. It runs the configured commands
-after files and fragments land, then records the stage in install state.
-
-This is the fifth stage described in [Anatomy of an install](/blog/anatomy-of-an-install). It occurs
-after registry delivery, dependency installation, and source patches because generation must see the
-final config.
-
-## Generation order is part of the workflow
-
-A dependable change follows this order:
-
-1. Add or edit block and field configs.
-2. Add or move any referenced admin components.
-3. Register the block in the owning collection.
-4. Regenerate TypeScript interfaces.
-5. Regenerate the admin import map.
-6. Typecheck and build the application.
-7. Open both the admin and the affected frontend route.
-
-Running generators before registration can produce a type file without the new layout union member.
-Running the import-map generator before its files exist can fail or preserve incomplete resolution.
-The exact commands vary by starter; the invariant is that generation follows the final config.
-
-The [installation documentation](/docs/installation) explains how the companion CLI discovers and
-runs the consumer's scripts rather than assuming one package-manager command.
-
-## Decide how generated artifacts enter version control
-
-Repositories reasonably differ on whether generated files are committed. Tracking them makes schema
-changes visible in review and lets some consumers typecheck without Payload generation during setup.
-Ignoring them reduces generated diff noise but requires every environment to generate reliably
-before compilation.
-
-Whichever convention you choose, make it explicit:
-
-- Pin the relevant package versions through the lockfile.
-- Put generation in documented setup and CI when files are ignored.
-- Add a reproducibility or clean-tree check when files are tracked.
-- Do not let individual developers decide ad hoc whether to commit an output.
-- Run generation in the same Node and package-manager environment used by the project.
-
-A useful CI check for tracked artifacts runs the generators and fails if `git diff` is nonempty.
-That converts “someone forgot” into immediate feedback. For ignored artifacts, typecheck or build
-must depend on generation so a clean checkout proves the path.
-
-## Diagnose the side that is stale
-
-When a new block saves in the admin but TypeScript rejects its fields, inspect type generation. Check
-that the running Payload config includes the block, confirm the output path, regenerate, and search
-the result for the discriminator.
-
-When the frontend renders but an admin route reports a module resolution error, inspect the import
-map. Confirm the configured component path, case, export, and generated entry. Rebuild from a clean
-cache after generation if the dev server retained the old module graph.
-
-When neither side works, start earlier: verify the block config is imported and registered in the
-actual config used by the command. A successful generator can faithfully produce the wrong output
-if it loads a different config or environment than the application.
-
-The broader [block-not-rendering checklist](/blog/payload-block-not-rendering) keeps these checks in a
-useful order and separates saved data from mapping and generation problems.
-
-## Keep generated outputs reviewable
-
-Generated files can be large, but the meaningful change should still be understandable. A new block
-should add a union member and related interfaces, not rewrite unrelated names unpredictably. An
-import-map change should point at the expected source path. Unexpected churn is a signal to check
-tool versions, formatting, environment, or config loading before merging.
-
-This is one reason the installer lands source as a normal git diff. You can see the config edit and
-then inspect the generated consequences. Automation should shorten the path to review, not replace
-review with trust.
-
-Try the workflow on a branch with a catalog component:
-
-```bash
-npx payload-components add hero-basic
+export default buildConfig({
+  admin: {
+    components: {
+      logout: {
+        Button: '/components/LogoutButton#LogoutButton',
+      },
+    },
+  },
+})
 ```
 
-Afterward, search the generated types for `heroBasic`, inspect the import-map diff, typecheck, and
-open the admin. If a supported starter produces unstable or incomplete output, bring the command,
-sanitized paths, and generated diff to the repository. Those concrete reports help improve the
-manifest and project-detection contracts for everyone using the [open registry](/docs/registry).
+Payload's [custom components documentation](https://payloadcms.com/docs/custom-components/overview)
+explains why: keeping component references as paths leaves the server-side config lightweight and
+Node-compatible. The admin build still needs concrete imports, so Payload generates a lookup from
+each configured path to its module and export.
+
+The default output is one of these files, depending on whether your project uses a `src` directory:
+
+```text
+src/app/(payload)/admin/importMap.js
+app/(payload)/admin/importMap.js
+```
+
+You can override that location with `admin.importMap.importMapFile`. You can also set
+`admin.importMap.baseDir` when your component paths should resolve from a directory other than the
+project root. Both options belong in the Payload config, not in the generated file.
+
+## The direct command and the package script
+
+Use the direct Payload CLI command when you want an instruction that does not depend on a repository
+script:
+
+```bash
+npx payload generate:importmap
+```
+
+With pnpm, the equivalent direct invocation is:
+
+```bash
+pnpm payload generate:importmap
+```
+
+Many Payload starters expose the same command through `package.json`:
+
+```json
+{
+  "scripts": {
+    "generate:importmap": "payload generate:importmap"
+  }
+}
+```
+
+Then the shorter project script works:
+
+```bash
+pnpm generate:importmap
+```
+
+The package script is a repository convention, not a different generator. If `pnpm
+generate:importmap` says the script is missing, use the direct command or add the script shown above.
+Payload's [community answer to this question](https://payloadcms.com/community-help/discord/whats-the-right-way-to-manage-importmapjs-is-there-a-tool-to-auto-update-or-regenerate-that)
+makes the same distinction.
+
+## When you need to run it manually
+
+Current Payload v3 documentation says the import map is regenerated at application startup, during
+Hot Module Replacement, and when you run the command manually. That automation covers ordinary
+local editing, but manual generation remains useful when:
+
+- you changed component paths without a dev server running;
+- you are preparing a clean production build or CI job;
+- a branch switch left the generated file behind the config;
+- your project tracks generated output and review should show the exact diff;
+- you are debugging whether Payload can load the intended config;
+- an installer or plugin added custom components outside the current dev session.
+
+The file is generated at startup or build time, not continuously during normal production runtime.
+If you ignore the generated file in Git, make generation a dependable build prerequisite. If you
+commit it, regenerate before review and check that only expected component entries changed.
+
+## Import map versus generated types
+
+The two generators answer different questions:
+
+| Change | Run `generate:importmap` | Run `generate:types` |
+| --- | --- | --- |
+| Add or move a custom admin component path | Yes | Only if the schema also changed |
+| Change a component's named export | Yes | No |
+| Add, remove, or rename a collection field | No | Yes |
+| Add a block to a Blocks field | If it adds an admin component path | Yes |
+| Rename a block field and its admin field component | Yes | Yes |
+
+Payload's [type generation guide](https://payloadcms.com/docs/typescript/generating-types) explains
+how `generate:types` turns the active config into TypeScript definitions. For a Blocks field, the
+generated Page type contains union members distinguished by `blockType`. The import map does not
+contain those data interfaces.
+
+If the admin loads the new component but TypeScript rejects a new block field, regenerate types. If
+the frontend typechecks but the admin cannot resolve a custom component, regenerate the import map.
+If both sides are stale, confirm the collection and component paths are registered in the config
+before running both commands.
+
+## Fix a stale or broken import map
+
+Start with the path in `payload.config.ts`, not the generated file. These checks catch the common
+causes in the order that is cheapest to verify.
+
+### 1. Confirm the path and export
+
+Component paths resolve from the project root unless `admin.importMap.baseDir` changes that rule. A
+named export needs `#ExportName` in the path or an explicit `exportName` property. A default export
+does not.
+
+Check capitalization too. A path can appear to work on a case-insensitive local filesystem and then
+fail in Linux CI or production.
+
+### 2. Confirm the generator loads the same config
+
+Run the command from the project root and with the environment the application expects. If the
+project has more than one Payload config or uses environment-dependent imports, a successful command
+can still generate from the wrong source.
+
+### 3. Regenerate, then inspect the entry
+
+Run the direct command and search the output for the configured component path. The generated import
+should point to the file and export you just checked. Do not repair a wrong generated entry by hand;
+the next generation will overwrite it.
+
+### 4. Restart the process that owns the module graph
+
+If the generated file is correct but the admin still shows the old component, restart the dev server
+or rebuild from a clean application cache. Regeneration updates the source file. A running process
+can still retain an older module graph.
+
+### 5. Check Payload package versions
+
+Keep `payload`, `@payloadcms/next`, and `@payloadcms/ui` on compatible versions through the lockfile.
+Unexpected generator behavior after an upgrade is easier to diagnose when the relevant package
+versions are visible in the same change.
+
+The broader [Payload block not rendering checklist](/blog/payload-block-not-rendering) separates
+import-map failures from missing saved data, renderer mappings, and stale generated types.
+
+## Make generation reproducible
+
+Decide whether generated artifacts enter version control, then make the opposite environment prove
+itself:
+
+- If you commit `importMap.js`, run generation in CI and fail when `git diff` is nonempty.
+- If you ignore it, run generation before the production build in every clean environment.
+- Pin Node, the package manager, and Payload packages so local and CI output agree.
+- Keep `payload.config.ts` free of browser-only imports that the Node-side generator cannot load.
+- Review import-map churn. A one-component change should not silently rewrite unrelated paths.
+
+This workflow turns a stale file from a production surprise into a small, reviewable diff.
+
+## How Payload Components handles the command
+
+Payload Components treats source delivery and generation as separate installation stages. A block
+manifest declares `generate:types` and `generate:importmap` as post-install work. The CLI copies the
+source, registers the block in the Pages collection, maps its renderer, and then runs the target
+project's scripts against the final config.
+
+It does not copy a foreign `payload-types.ts` or `importMap.js` into your project. Those generated
+artifacts depend on your own config, component paths, and output conventions. The
+[installation guide](/docs/installation) shows the complete supported flow, while
+[Anatomy of an install](/blog/anatomy-of-an-install) explains why generation runs only after the
+wiring changes land.
+
+Try the complete workflow on a branch:
+
+<RunnableCommand
+  command="npx payload-components add hero-basic --dry-run"
+  label="Copy the Payload Components dry-run command"
+/>
+
+The dry run lists the files, collection registration, renderer mapping, dependencies, and generation
+commands without changing the project. Remove `--dry-run` when the plan matches your repository.
+
+After installation, inspect the generated entries, typecheck, build, and open the admin. If a
+supported starter produces unstable output, include the command, Payload versions, sanitized paths,
+and generated diff in a report to the [open registry](/docs/registry). That evidence makes a
+generator problem reproducible instead of leaving it as an admin-only symptom.

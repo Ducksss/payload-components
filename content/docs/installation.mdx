@@ -9,6 +9,10 @@ Use the Payload Components CLI to add a typed block to a supported Payload CMS v
 
 After the block is wired, the CLI runs `generate:types` and `generate:importmap`. This refreshes your Payload types and admin import map before the install is recorded in `.payload-components/state.json`.
 
+If the admin cannot resolve a custom component path, use the
+[Payload `generate:importmap` guide](/blog/payload-types-and-import-map) to check
+the command, generated output, path rules, and common failure modes.
+
 ## Requirements
 
 <Callout type="warn">
