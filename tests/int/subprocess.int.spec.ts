@@ -102,7 +102,10 @@ describe('CLI subprocess cleanup', () => {
   }, 5_000)
 
   it('propagates an abort signal and terminates the command process tree', async () => {
-    const pidFile = path.join(os.tmpdir(), `payload-components-abort-child-${process.pid}-${Date.now()}`)
+    const pidFile = path.join(
+      os.tmpdir(),
+      `payload-components-abort-child-${process.pid}-${Date.now()}`,
+    )
     const childScript = [
       "const { spawn } = require('node:child_process')",
       "const { writeFileSync } = require('node:fs')",
@@ -145,10 +148,7 @@ describe('CLI subprocess cleanup', () => {
 
   it('tolerates EPIPE when a command closes stdin before consuming it', async () => {
     const result = await runCommand({
-      args: [
-        '--eval',
-        "process.stdin.destroy(); setTimeout(() => process.exit(0), 25)",
-      ],
+      args: ['--eval', 'process.stdin.destroy(); setTimeout(() => process.exit(0), 25)'],
       captureOutput: true,
       command: process.execPath,
       cwd: process.cwd(),

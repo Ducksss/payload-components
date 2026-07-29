@@ -90,8 +90,10 @@ export function FrameworksHeader({
   }, [open])
 
   // Route changes close the disclosure; this state update is intentionally tied to navigation.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setOpen(false) }, [pathname])
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpen(false)
+  }, [pathname])
 
   return (
     <motion.header
@@ -131,7 +133,9 @@ export function FrameworksHeader({
               initial={{ y: -6 }}
               key={item}
               transition={
-                reduceMotion ? { duration: 0 } : { delay: 0.05 * index, duration: 0.5, ease: EASE_OUT }
+                reduceMotion
+                  ? { duration: 0 }
+                  : { delay: 0.05 * index, duration: 0.5, ease: EASE_OUT }
               }
             >
               {item}
@@ -171,7 +175,9 @@ export function FrameworksHeader({
                     className="fw-nav-bar motion-reduce:transform-none!"
                     initial={{ scaleX: 0 }}
                     transition={
-                      reduceMotion ? { duration: 0 } : { delay: 0.25, duration: 0.55, ease: EASE_OUT }
+                      reduceMotion
+                        ? { duration: 0 }
+                        : { delay: 0.25, duration: 0.55, ease: EASE_OUT }
                     }
                   />
                 ) : null}
@@ -198,11 +204,7 @@ export function FrameworksHeader({
               {open ? 'Close' : 'Rooms'}
             </button>
 
-            <div
-              className="fw-menu-panel"
-              hidden={!open}
-              id="frameworks-mobile-navigation"
-            >
+            <div className="fw-menu-panel" hidden={!open} id="frameworks-mobile-navigation">
               {template.navigation.map((item) => {
                 const active = activePath === item.path
 

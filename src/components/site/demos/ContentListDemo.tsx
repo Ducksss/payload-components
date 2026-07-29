@@ -40,7 +40,8 @@ export function ContentListDemo({
             <div className="flex flex-col gap-6">
               {items.map((item, index) => (
                 <p className="text-muted-foreground" key={index}>
-                  <span className="font-medium text-foreground">{item.term}</span> {item.description}
+                  <span className="font-medium text-foreground">{item.term}</span>{' '}
+                  {item.description}
                 </p>
               ))}
             </div>

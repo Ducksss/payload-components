@@ -141,7 +141,8 @@ describe('public shadcn registry publication', () => {
   })
 
   it('generates a flat public registry that matches the source registry', async () => {
-    const { buildRegistryForCheck } = await import('../../tools/payload-components/check-public-registry')
+    const { buildRegistryForCheck } =
+      await import('../../tools/payload-components/check-public-registry')
     const sourceRegistry = await readJson<RegistryDefinition>(
       path.join(repoRoot, 'payload-components', 'registry.json'),
     )

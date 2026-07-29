@@ -6,10 +6,7 @@ import {
   templatePreviewHref,
   templateShowcases,
 } from '../../src/lib/templates/registry'
-import {
-  formatPaintedContrastReport,
-  measurePaintedTextContrast,
-} from './support/painted-contrast'
+import { formatPaintedContrastReport, measurePaintedTextContrast } from './support/painted-contrast'
 
 /* Accessibility sweep across EVERY template concept — its /templates/<slug>
  * detail page and its chrome-free /templates/<slug>/preview shell — at one
@@ -154,15 +151,10 @@ async function settle(page: Page, { consentBanner = false } = {}) {
 }
 
 async function analyze(page: Page) {
-  return new AxeBuilder({ page })
-    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-    .analyze()
+  return new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
 }
 
-function expectNoBlockingViolations(
-  results: Awaited<ReturnType<typeof analyze>>,
-  label: string,
-) {
+function expectNoBlockingViolations(results: Awaited<ReturnType<typeof analyze>>, label: string) {
   const blocking = results.violations.filter(
     (violation) => violation.impact === 'critical' || violation.impact === 'serious',
   )

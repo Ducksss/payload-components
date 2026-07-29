@@ -106,7 +106,16 @@
 
 /* Flatten every named container radius to the 2px geometry. rounded-full
  * (avatar wells, the hero's eyebrow dot) is deliberately left alone. */
-[data-template-theme='portfolio-solo'] :is(.rounded-frame, .rounded-panel, .rounded-card, .rounded-inset, .rounded-2xl, .rounded-xl, .rounded-lg) {
+[data-template-theme='portfolio-solo']
+  :is(
+    .rounded-frame,
+    .rounded-panel,
+    .rounded-card,
+    .rounded-inset,
+    .rounded-2xl,
+    .rounded-xl,
+    .rounded-lg
+  ) {
   border-radius: var(--radius);
 }
 
@@ -136,7 +145,9 @@
   padding: 0;
 }
 
-[data-template-theme='portfolio-solo'] [data-template-canvas] .rounded-full.tracking-eyebrow::before {
+[data-template-theme='portfolio-solo']
+  [data-template-canvas]
+  .rounded-full.tracking-eyebrow::before {
   background-color: var(--ir-slate);
   content: '';
   display: inline-block;
@@ -192,7 +203,9 @@
   position: relative;
 }
 
-[data-template-theme='portfolio-solo'] [data-template-canvas] > [data-template-section]:first-of-type {
+[data-template-theme='portfolio-solo']
+  [data-template-canvas]
+  > [data-template-section]:first-of-type {
   counter-increment: none;
 }
 
@@ -208,7 +221,9 @@
     top: calc(var(--ir-section-pad) + 0.375rem);
   }
 
-  [data-template-theme='portfolio-solo'] [data-template-canvas] > [data-template-section]:first-of-type::before {
+  [data-template-theme='portfolio-solo']
+    [data-template-canvas]
+    > [data-template-section]:first-of-type::before {
     content: none;
   }
 }
@@ -260,7 +275,9 @@
   }
 }
 
-[data-template-theme='portfolio-solo'] [data-tone='contrast'] .rounded-full.tracking-eyebrow::before {
+[data-template-theme='portfolio-solo']
+  [data-tone='contrast']
+  .rounded-full.tracking-eyebrow::before {
   background-color: var(--ir-slate-soft);
 }
 
@@ -328,12 +345,18 @@
   padding-block: 0;
 }
 
-[data-template-theme='portfolio-solo'] [data-template-section='opening'] > [aria-hidden='true'] > div {
+[data-template-theme='portfolio-solo']
+  [data-template-section='opening']
+  > [aria-hidden='true']
+  > div {
   padding-block: clamp(3.25rem, 6.5vw, 5.5rem) 2.5rem;
 }
 
 @media (min-width: 1024px) {
-  [data-template-theme='portfolio-solo'] [data-template-section='opening'] > [aria-hidden='true'] > div {
+  [data-template-theme='portfolio-solo']
+    [data-template-section='opening']
+    > [aria-hidden='true']
+    > div {
     padding-block: 5.5rem 4rem;
   }
 }
@@ -349,21 +372,28 @@
 /* The closing word of the headline — the one italic serif word on the site.
  * The rest of the manifesto stays Geist Sans, which is precisely the opposite
  * of Northline's all-serif cover, and the word lands in slate. */
-[data-template-theme='portfolio-solo'] [data-template-section='opening'] .tracking-display .font-serif.tracking-title {
+[data-template-theme='portfolio-solo']
+  [data-template-section='opening']
+  .tracking-display
+  .font-serif.tracking-title {
   color: var(--ir-slate);
   letter-spacing: -0.01em;
 }
 
 /* The marquee is an index, not a headline: smaller, lighter, wider-set than
  * the component's text-lg/xl default. */
-[data-template-theme='portfolio-solo'] [data-template-section='opening'] span.text-lg.tracking-eyebrow {
+[data-template-theme='portfolio-solo']
+  [data-template-section='opening']
+  span.text-lg.tracking-eyebrow {
   color: color-mix(in oklab, var(--foreground) 72%, transparent);
   font-size: 0.8125rem;
   font-weight: 400;
   letter-spacing: 0.14em;
 }
 
-[data-template-theme='portfolio-solo'] [data-template-section='opening'] li.text-sm.tracking-eyebrow {
+[data-template-theme='portfolio-solo']
+  [data-template-section='opening']
+  li.text-sm.tracking-eyebrow {
   font-family: var(--font-mono);
   font-size: 0.75rem;
 }
@@ -420,7 +450,11 @@
 }
 
 /* The wall's monogram avatar wells are chrome the quotes do not need. */
-[data-template-theme='portfolio-solo'] [data-template-section='proof'] figure.mb-4 figcaption > div:first-child {
+[data-template-theme='portfolio-solo']
+  [data-template-section='proof']
+  figure.mb-4
+  figcaption
+  > div:first-child {
   display: none;
 }
 

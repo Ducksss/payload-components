@@ -164,9 +164,7 @@ test.describe('Template detail pages (/templates/<slug>)', () => {
       await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0)
 
       await expect(page.locator('h1')).toHaveCount(1)
-      await expect(
-        page.getByRole('heading', { level: 1, name: template.title }),
-      ).toBeVisible()
+      await expect(page.getByRole('heading', { level: 1, name: template.title })).toBeVisible()
       await expect(page.getByText(TEMPLATE_CONCEPT_STATUS_LABEL).first()).toBeVisible()
       await expect(page.getByText(TEMPLATE_CONCEPT_DISCLOSURE).first()).toBeVisible()
 
@@ -177,9 +175,7 @@ test.describe('Template detail pages (/templates/<slug>)', () => {
       })
       await expect(installButton).toHaveCount(1)
       await expect(installButton).toHaveAttribute('data-cta-level', 'primary')
-      await expect(page.locator('main')).toContainText(
-        `This installs only ${starterBlockSlug}`,
-      )
+      await expect(page.locator('main')).toContainText(`This installs only ${starterBlockSlug}`)
       await installButton.click()
       await expect
         .poll(() => page.evaluate(() => navigator.clipboard.readText()))
@@ -314,9 +310,7 @@ test.describe('Template detail pages (/templates/<slug>)', () => {
 
 test.describe('Template full previews (/templates/<slug>/preview/<page>)', () => {
   for (const template of templateShowcases) {
-    test(`${template.slug}: every page serves its shell, recipe, and noindex`, async ({
-      page,
-    }) => {
+    test(`${template.slug}: every page serves its shell, recipe, and noindex`, async ({ page }) => {
       for (const templatePage of template.pages) {
         const href = templatePreviewHref(template.slug, templatePage.path)
         const response = await page.goto(`${baseURL}${href}`, { waitUntil: 'domcontentloaded' })
@@ -445,9 +439,7 @@ test.describe('Template full previews (/templates/<slug>/preview/<page>)', () =>
     // From sm up there is room for the full pill, centred.
     const desktopBox = (await exit.boundingBox())!
     expect(desktopBox.width).toBeGreaterThan(mobileBox.width)
-    expect(
-      Math.abs(desktopBox.x + desktopBox.width / 2 - desktop.width / 2),
-    ).toBeLessThanOrEqual(2)
+    expect(Math.abs(desktopBox.x + desktopBox.width / 2 - desktop.width / 2)).toBeLessThanOrEqual(2)
   })
 
   test('every concept reserves a strip so the exit pill never covers its footer', async ({

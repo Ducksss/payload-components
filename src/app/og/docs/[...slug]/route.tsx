@@ -21,7 +21,11 @@ export async function GET(_request: Request, { params }: DocsImageRouteProps) {
   }
 
   return new ImageResponse(
-    <DefaultImage title={page.data.title} description={page.data.description} site="Payload Components" />,
+    <DefaultImage
+      title={page.data.title}
+      description={page.data.description}
+      site="Payload Components"
+    />,
     {
       height: 630,
       width: 1200,

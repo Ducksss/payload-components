@@ -37,7 +37,10 @@ export function AnalyticsShell() {
             src="https://www.googletagmanager.com/gtag/js?id=G-EMGRZ0H9R9"
             strategy="afterInteractive"
           />
-          <Script id="google-tag" strategy="afterInteractive">{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-EMGRZ0H9R9');`}</Script>
+          <Script
+            id="google-tag"
+            strategy="afterInteractive"
+          >{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-EMGRZ0H9R9');`}</Script>
           <AnalyticsPageview />
         </>
       ) : null}

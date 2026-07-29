@@ -43,7 +43,11 @@ export function IntegrationGridDemo({
                 key={logo.name}
               >
                 <div className="flex size-11 items-center justify-center rounded-xl border border-border/70 bg-card">
-                  <logo.Icon aria-hidden="true" className="size-6 text-foreground/70" strokeWidth={1.75} />
+                  <logo.Icon
+                    aria-hidden="true"
+                    className="size-6 text-foreground/70"
+                    strokeWidth={1.75}
+                  />
                 </div>
 
                 <div className="flex flex-col gap-2">

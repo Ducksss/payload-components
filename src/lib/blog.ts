@@ -33,9 +33,7 @@ export function getRelatedPosts(current: BlogPage, limit = 3) {
   const sameSeries = pages
     .filter((page) => page.data.series === current.data.series)
     .sort(byDistance)
-  const fallback = pages
-    .filter((page) => page.data.series !== current.data.series)
-    .sort(byDistance)
+  const fallback = pages.filter((page) => page.data.series !== current.data.series).sort(byDistance)
 
   // Project notes is an intentional two-post prologue. Every larger series
   // supplies all three results; the prologue fills its remaining cards with

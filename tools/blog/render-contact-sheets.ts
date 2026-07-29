@@ -51,8 +51,7 @@ const escapeXml = (value: string) =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&apos;')
 
-const cellWidth = () =>
-  Math.floor((pageWidth - outerPadding * 2 - gap * (columns - 1)) / columns)
+const cellWidth = () => Math.floor((pageWidth - outerPadding * 2 - gap * (columns - 1)) / columns)
 
 const labelSvg = (width: number, lines: readonly string[]) => {
   const lineHeight = 16
@@ -108,9 +107,8 @@ const createContactSheet = async (
   outputDirectory: string,
 ): Promise<ContactSheetResult> => {
   const width = cellWidth()
-  const thumbnailHeight = kind === 'covers'
-    ? Math.round(width * (630 / 1200))
-    : Math.round(width * (675 / 1200))
+  const thumbnailHeight =
+    kind === 'covers' ? Math.round(width * (630 / 1200)) : Math.round(width * (675 / 1200))
   const rows = Math.ceil(inputs.length / columns)
   const rowHeight = thumbnailHeight + labelHeight
   const height = outerPadding * 2 + rows * rowHeight + Math.max(0, rows - 1) * gap
@@ -133,9 +131,7 @@ const createContactSheet = async (
       .png()
       .toBuffer()
     const mode = getModeFromLabel(input.label)
-    const secondLine = mode
-      ? `${mode.toUpperCase()} · ${input.path}`
-      : input.path
+    const secondLine = mode ? `${mode.toUpperCase()} · ${input.path}` : input.path
 
     composites.push(
       { input: thumbnail, left, top },
@@ -176,17 +172,14 @@ export const renderContactSheets = async ({
   ])
 
   for (const result of results) {
-    logger(
-      `Rendered ${result.kind} contact sheet: ${result.count} assets → ${result.outputPath}`,
-    )
+    logger(`Rendered ${result.kind} contact sheet: ${result.count} assets → ${result.outputPath}`)
   }
 
   return results
 }
 
 const isMain = () =>
-  Boolean(process.argv[1]) &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+  Boolean(process.argv[1]) && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 
 if (isMain()) {
   await renderContactSheets()

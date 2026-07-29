@@ -12,7 +12,10 @@ import {
 import { runCommand } from '../../tools/payload-components/utils'
 
 import { expectInstalledComponents, readInstallState } from './payload-components-assertions'
-import { createInstallFixture, createInstallFixtureForComponents } from './payload-components-fixture'
+import {
+  createInstallFixture,
+  createInstallFixtureForComponents,
+} from './payload-components-fixture'
 
 const repoRoot = process.cwd()
 const payloadComponentBin = path.join(repoRoot, 'bin', 'payload-components.mjs')
@@ -241,7 +244,9 @@ describe('payload-components add', () => {
     expect(result.stdout).toContain('pnpm generate:types (would run)')
     expect(result.stdout).toContain('pnpm generate:importmap (would run)')
     expect(await snapshotFixtureFiles(fixtureDir)).toEqual(before)
-    await expect(access(path.join(fixtureDir, '.payload-components', 'state.json'))).rejects.toThrow()
+    await expect(
+      access(path.join(fixtureDir, '.payload-components', 'state.json')),
+    ).rejects.toThrow()
   })
 
   it('uses preseeded source and declared local dependencies in the default integration fixture', async () => {
@@ -269,19 +274,23 @@ describe('payload-components add', () => {
     ).resolves.toBeTruthy()
   })
 
-  it.each(representativeInstallComponents)('installs %s into a supported repo and records state', async (componentName) => {
-    const { fixtureDir, manifest } = await createInstallFixture(componentName, {
-      preseedSource: true,
-    })
-    tempDirs.push(fixtureDir)
+  it.each(representativeInstallComponents)(
+    'installs %s into a supported repo and records state',
+    async (componentName) => {
+      const { fixtureDir, manifest } = await createInstallFixture(componentName, {
+        preseedSource: true,
+      })
+      tempDirs.push(fixtureDir)
 
-    await runAddCommand(fixtureDir, manifest.name)
+      await runAddCommand(fixtureDir, manifest.name)
 
-    const parsedState = await readInstallState(fixtureDir)
+      const parsedState = await readInstallState(fixtureDir)
 
-    expect(parsedState.version).toBe(2)
-    await expectInstalledComponents(fixtureDir, [manifest])
-  }, 180000)
+      expect(parsedState.version).toBe(2)
+      await expectInstalledComponents(fixtureDir, [manifest])
+    },
+    180000,
+  )
 
   it('installs multiple components without duplicate registrations', async () => {
     const componentNames = ['hero-basic', 'feature-grid-basic', 'logo-cloud-marquee']
@@ -316,19 +325,23 @@ describe('payload-components add', () => {
     expect(sharedFiles.filter((file) => file === 'featureIcons.ts')).toHaveLength(1)
   }, 180000)
 
-  it.each(idempotencyComponents)('treats a second %s install as idempotent', async (componentName) => {
-    const manifest = await loadManifest(componentName)
-    const { fixtureDir } = await createInstallFixture(manifest.name, {
-      preseedSource: true,
-    })
-    tempDirs.push(fixtureDir)
+  it.each(idempotencyComponents)(
+    'treats a second %s install as idempotent',
+    async (componentName) => {
+      const manifest = await loadManifest(componentName)
+      const { fixtureDir } = await createInstallFixture(manifest.name, {
+        preseedSource: true,
+      })
+      tempDirs.push(fixtureDir)
 
-    await runAddCommand(fixtureDir, manifest.name)
+      await runAddCommand(fixtureDir, manifest.name)
 
-    const secondRun = await runAddCommand(fixtureDir, manifest.name)
+      const secondRun = await runAddCommand(fixtureDir, manifest.name)
 
-    expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
-  }, 180000)
+      expect(secondRun.stdout).toContain(`"${manifest.name}" is already installed`)
+    },
+    180000,
+  )
 
   it('records the discovered Bun lockfile name in recovery state', async () => {
     const { fixtureDir, manifest } = await createInstallFixture('logo-cloud-marquee', {
@@ -357,8 +370,12 @@ describe('payload-components fragment patching', () => {
     const { fixtureDir, manifest } = await createInstallFixture('hero-basic')
     tempDirs.push(fixtureDir)
 
-    const renderBlocks = manifest.payloadFragments.find((fragment) => fragment.kind === 'renderBlocks')
-    const pagesLayout = manifest.payloadFragments.find((fragment) => fragment.kind === 'pagesLayout')
+    const renderBlocks = manifest.payloadFragments.find(
+      (fragment) => fragment.kind === 'renderBlocks',
+    )
+    const pagesLayout = manifest.payloadFragments.find(
+      (fragment) => fragment.kind === 'pagesLayout',
+    )
 
     if (renderBlocks?.kind !== 'renderBlocks' || pagesLayout?.kind !== 'pagesLayout') {
       throw new Error('hero-basic must declare both a renderBlocks and a pagesLayout fragment')
@@ -417,7 +434,9 @@ describe('payload-components fragment patching', () => {
     expect(blockKeyMatches, 'renderBlocks gained a duplicate block registration').toHaveLength(1)
 
     const renderImportMatches =
-      patchedRenderBlocks.match(new RegExp(`import\\s*\\{[^}]*\\b${renderBlocks.importName}\\b`, 'g')) ?? []
+      patchedRenderBlocks.match(
+        new RegExp(`import\\s*\\{[^}]*\\b${renderBlocks.importName}\\b`, 'g'),
+      ) ?? []
     expect(renderImportMatches, 'renderBlocks gained a duplicate import').toHaveLength(1)
 
     const pagesImportMatches =

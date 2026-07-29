@@ -20,10 +20,7 @@ import {
   templatesTitle,
 } from '@/lib/site'
 import { templateShowcases } from '@/lib/templates/registry'
-import {
-  TEMPLATE_CONCEPT_DISCLOSURE,
-  TEMPLATE_CONCEPT_STATUS_LABEL,
-} from '@/lib/templates/types'
+import { TEMPLATE_CONCEPT_DISCLOSURE, TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
 import { breadcrumbNode, graph, websiteId } from '@/lib/structured-data'
 
 /* /templates gallery — indexable editorial index of the full-site concepts.
@@ -206,10 +203,10 @@ export default function TemplatesPage() {
                       Use a concept to plan the full site
                     </h3>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                      Open any concept when you want to compare complete page systems before
-                      writing code. Every concept includes page-level previews, visual tokens, and
-                      an ordered block recipe, so you can reuse the composition without pretending
-                      the showcase is a packaged starter repository.
+                      Open any concept when you want to compare complete page systems before writing
+                      code. Every concept includes page-level previews, visual tokens, and an
+                      ordered block recipe, so you can reuse the composition without pretending the
+                      showcase is a packaged starter repository.
                     </p>
                   </div>
                 </article>
@@ -224,8 +221,8 @@ export default function TemplatesPage() {
                 More than a homepage screenshot
               </h2>
               <p className="mt-4 text-sm leading-6 text-background/70">
-                The gallery is designed for evaluating a complete system, not copying a single
-                hero in isolation.
+                The gallery is designed for evaluating a complete system, not copying a single hero
+                in isolation.
               </p>
               <ul className="mt-7 space-y-4 text-sm leading-6 text-background/85">
                 <li className="border-t border-background/15 pt-4">
@@ -274,9 +271,9 @@ export default function TemplatesPage() {
                 How do these differ from Payload’s official template?
               </dt>
               <dd className="mt-3 text-sm leading-6 text-muted-foreground">
-                The official website template gives a new project a complete application
-                foundation. These concepts show how a full marketing site can look and which typed
-                blocks compose each page, without replacing that starter-project role.
+                The official website template gives a new project a complete application foundation.
+                These concepts show how a full marketing site can look and which typed blocks
+                compose each page, without replacing that starter-project role.
               </dd>
             </div>
             <div className="border-t border-border pt-5">

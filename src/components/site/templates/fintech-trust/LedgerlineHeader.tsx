@@ -70,8 +70,10 @@ export function LedgerlineHeader({
   }, [open])
 
   // Route changes close the disclosure; this state update is intentionally tied to navigation.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setOpen(false) }, [pathname])
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpen(false)
+  }, [pathname])
 
   return (
     <>
@@ -131,7 +133,9 @@ export function LedgerlineHeader({
                       data-ledgerline-reveal
                       initial={{ scaleX: 0 }}
                       transition={
-                        reduceMotion ? { duration: 0 } : { delay: 0.3, duration: 0.5, ease: EASE_OUT }
+                        reduceMotion
+                          ? { duration: 0 }
+                          : { delay: 0.3, duration: 0.5, ease: EASE_OUT }
                       }
                     />
                   ) : null}
@@ -167,7 +171,11 @@ export function LedgerlineHeader({
                   strokeWidth="1.5"
                   viewBox="0 0 16 16"
                 >
-                  {open ? <path d="M3 3l10 10M13 3L3 13" /> : <path d="M2 4.5h12M2 8h12M2 11.5h12" />}
+                  {open ? (
+                    <path d="M3 3l10 10M13 3L3 13" />
+                  ) : (
+                    <path d="M2 4.5h12M2 8h12M2 11.5h12" />
+                  )}
                 </svg>
               </button>
 

@@ -41,7 +41,10 @@ export function ContactRoutingFormDemo({
         <div className="mx-auto flex max-w-6xl flex-col gap-10">
           <div className="flex max-w-3xl flex-col gap-4">
             {eyebrow ? (
-              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow">
+              <Badge
+                variant="outline"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
+              >
                 {eyebrow}
               </Badge>
             ) : null}
@@ -86,7 +89,9 @@ export function ContactRoutingFormDemo({
 
             <div className="rounded-panel border border-border/70 bg-background/85 p-6 sm:p-8">
               <div className="mb-6 flex flex-col gap-2">
-                <div className="text-2xl font-medium tracking-title text-foreground">{formTitle}</div>
+                <div className="text-2xl font-medium tracking-title text-foreground">
+                  {formTitle}
+                </div>
                 {formDescription ? (
                   <p className="text-sm leading-6 text-muted-foreground">{formDescription}</p>
                 ) : null}

@@ -46,10 +46,13 @@ async function dismissConsent(page: import('@playwright/test').Page) {
 }
 
 async function main() {
-  const onlyArg = process.argv
-    .find((arg) => arg.startsWith('--only='))
-    ?.slice('--only='.length)
-  const only = onlyArg ? onlyArg.split(',').map((s) => s.trim()).filter(Boolean) : null
+  const onlyArg = process.argv.find((arg) => arg.startsWith('--only='))?.slice('--only='.length)
+  const only = onlyArg
+    ? onlyArg
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : null
 
   const targets = only
     ? clientProjects.filter((project) => only.includes(project.slug))

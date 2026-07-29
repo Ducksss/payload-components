@@ -80,17 +80,20 @@ const homeTheWork: ContentSectionDemoContent = {
   eyebrow: 'What we do',
   features: [
     {
-      description: 'Native trees along the south banks, to hold the water temperature down in August.',
+      description:
+        'Native trees along the south banks, to hold the water temperature down in August.',
       icon: 'sparkles',
       title: 'Shade the water',
     },
     {
-      description: 'Weirs notched or removed so sea trout and lamprey can reach the spawning gravels.',
+      description:
+        'Weirs notched or removed so sea trout and lamprey can reach the spawning gravels.',
       icon: 'zap',
       title: 'Open the channel',
     },
     {
-      description: 'Fenced margins and buffer strips where stock used to walk straight into the beck.',
+      description:
+        'Fenced margins and buffer strips where stock used to walk straight into the beck.',
       icon: 'shield',
       title: 'Keep the silt out',
     },
@@ -264,9 +267,7 @@ const workProgrammes: FeatureIconGridDemoContent = {
 
 const workProjects: ContentSectionDemoContent = {
   eyebrow: 'On the ground now',
-  paragraphs: [
-    { text: 'Where this year’s money and Saturdays are going.' },
-  ],
+  paragraphs: [{ text: 'Where this year’s money and Saturdays are going.' }],
   rows: [
     {
       description:
@@ -298,7 +299,8 @@ const workField: ContentSectionDemoContent = {
 }
 
 const workFaq: FaqDemoContent = {
-  description: 'The questions that come up on the bank most months, answered the way we answer them there.',
+  description:
+    'The questions that come up on the bank most months, answered the way we answer them there.',
   eyebrow: 'Straight answers',
   items: [
     {
@@ -443,12 +445,14 @@ const impactCommunityVoice: TestimonialDemoContent = {
     },
     {
       author: 'Bev Odogwu',
-      quote: 'The peat work upstream matters as much as the pretty bits, and they treat it that way.',
+      quote:
+        'The peat work upstream matters as much as the pretty bits, and they treat it that way.',
       role: 'Kilnmoss Commoners',
     },
     {
       author: 'Errol Tamm',
-      quote: 'I read the same three points every month. It is dull, and the whole record rests on it.',
+      quote:
+        'I read the same three points every month. It is dull, and the whole record rests on it.',
       role: 'Volunteer surveyor',
     },
     {
@@ -695,12 +699,14 @@ const donateWhatItFunds: ContentSectionDemoContent = {
 const donateContact: ContactRoutingFormDemoContent = {
   channels: [
     {
-      description: 'Marta and Nerys read this one. A person replies, usually within two working days.',
+      description:
+        'Marta and Nerys read this one. A person replies, usually within two working days.',
       label: 'The giving team',
       value: 'giving@rivermouth.example',
     },
     {
-      description: 'The Gauge House, Ferney Ford — for legacies, and anything you would rather not email.',
+      description:
+        'The Gauge House, Ferney Ford — for legacies, and anything you would rather not email.',
       label: 'By post',
       value: 'Rivermouth Trust, Ferney Ford',
     },
@@ -711,7 +717,13 @@ const donateContact: ContactRoutingFormDemoContent = {
   formConfigured: true,
   formDescription:
     'The more you tell us about what you want your giving to do, the better we can match it to a reach that needs it.',
-  formLabels: ['Name', 'Email', 'Which path', 'Phone (optional)', 'What you would like your gift to do'],
+  formLabels: [
+    'Name',
+    'Email',
+    'Which path',
+    'Phone (optional)',
+    'What you would like your gift to do',
+  ],
   formTitle: 'Set up a gift',
   submitLabel: 'Send this to the giving team',
   title: 'Tell us what you want your giving to do.',

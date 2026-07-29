@@ -33,11 +33,15 @@ export function ComparatorStackDemo({
           {title || description ? (
             <div className="flex flex-col items-center gap-4 text-center">
               {title ? (
-                <div className="text-4xl font-medium tracking-display text-balance sm:text-5xl">{title}</div>
+                <div className="text-4xl font-medium tracking-display text-balance sm:text-5xl">
+                  {title}
+                </div>
               ) : null}
 
               {description ? (
-                <p className="max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">{description}</p>
+                <p className="max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
+                  {description}
+                </p>
               ) : null}
             </div>
           ) : null}
@@ -68,14 +72,22 @@ export function ComparatorStackDemo({
                     ) : null}
 
                     <div className="mt-4 flex items-baseline gap-1">
-                      <span className="text-3xl font-medium tracking-title text-foreground">{plan.price}</span>
-                      {plan.period ? <span className="text-sm text-muted-foreground">{plan.period}</span> : null}
+                      <span className="text-3xl font-medium tracking-title text-foreground">
+                        {plan.price}
+                      </span>
+                      {plan.period ? (
+                        <span className="text-sm text-muted-foreground">{plan.period}</span>
+                      ) : null}
                     </div>
 
                     {plan.links && plan.links.length > 0 ? (
                       <div className="mt-4 flex flex-col gap-2">
                         {plan.links.map(({ link }, linkIndex) => (
-                          <DemoLink key={linkIndex} appearance={link.appearance} label={link.label} />
+                          <DemoLink
+                            key={linkIndex}
+                            appearance={link.appearance}
+                            label={link.label}
+                          />
                         ))}
                       </div>
                     ) : null}

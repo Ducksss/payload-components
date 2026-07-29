@@ -113,12 +113,7 @@ const listFilesRecursive = async (dir: string): Promise<string[]> => {
     )
     const demoState = JSON.parse(
       await readFile(
-        path.join(
-          fixtureDir,
-          '.payload-components',
-          'demo-state',
-          `${manifest.name}.json`,
-        ),
+        path.join(fixtureDir, '.payload-components', 'demo-state', `${manifest.name}.json`),
         'utf8',
       ),
     ) as { component: string; pageId: unknown; token: string }

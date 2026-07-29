@@ -10,11 +10,7 @@ type PostHogTestEvent = {
   properties: AnalyticsProperties
 }
 
-type Gtag = (
-  command: 'event',
-  eventName: string,
-  parameters?: AnalyticsProperties,
-) => void
+type Gtag = (command: 'event', eventName: string, parameters?: AnalyticsProperties) => void
 
 declare global {
   interface Window {
@@ -25,8 +21,7 @@ declare global {
 }
 
 const managedPostHogApiKey = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? ''
-const managedPostHogHost =
-  process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'
+const managedPostHogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'
 const installCommandPattern = /\bpayload-components\s+add\s+([a-z0-9-]+)\b/i
 const siteHostnames = new Set(['payload-components.xyz', 'www.payload-components.xyz'])
 let sessionDistinctId: string | null = null

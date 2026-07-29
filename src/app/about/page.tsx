@@ -91,8 +91,8 @@ export default function AboutPage() {
                 className="hero-reveal mt-5 max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg"
                 style={{ animationDelay: '340ms' }}
               >
-                Payload Components comes out of years of freelance Payload work — and the tax every one of
-                those projects paid: rebuilding the same blocks, rewiring them by hand, and
+                Payload Components comes out of years of freelance Payload work — and the tax every
+                one of those projects paid: rebuilding the same blocks, rewiring them by hand, and
                 re-proving they worked.
               </p>
             </div>
@@ -103,96 +103,96 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,17rem)] lg:gap-16">
             {/* Prose — left-anchored to the hero's edge, held to a readable measure. */}
             <div className="flex max-w-[60ch] flex-col gap-7 text-base leading-7 text-muted-foreground">
-            <p>
-              <span className="font-medium text-foreground">
-                Payload Components is an open-source registry and CLI that installs typed Payload
-                CMS blocks into Payload v3 + Next.js projects — wired, not pasted.
-              </span>{' '}
-              One command copies a block’s source and does the wiring a hand-paste leaves you to
-              finish: it registers the block in your Pages collection, maps the renderer, and
-              regenerates your types and the admin import map. The rest of this page is why it
-              exists.
-            </p>
+              <p>
+                <span className="font-medium text-foreground">
+                  Payload Components is an open-source registry and CLI that installs typed Payload
+                  CMS blocks into Payload v3 + Next.js projects — wired, not pasted.
+                </span>{' '}
+                One command copies a block’s source and does the wiring a hand-paste leaves you to
+                finish: it registers the block in your Pages collection, maps the renderer, and
+                regenerates your types and the admin import map. The rest of this page is why it
+                exists.
+              </p>
 
-            <p>
-              Freelancing on Payload sites means a new repo every few weeks, and every one of them
-              needs roughly the same surfaces — a hero, a feature grid, post cards, an archive.
-              None of that is the work a client actually hires you for. It is the work that stands
-              between you and that work.
-            </p>
+              <p>
+                Freelancing on Payload sites means a new repo every few weeks, and every one of them
+                needs roughly the same surfaces — a hero, a feature grid, post cards, an archive.
+                None of that is the work a client actually hires you for. It is the work that stands
+                between you and that work.
+              </p>
 
-            <p>
-              <span className="font-medium text-foreground">shadcn changed the expectation</span>{' '}
-              for plain UI: run one command and a real component lands in your repo, in your
-              style, yours to edit. Payload had no shelf like that. And Payload blocks are harder
-              than UI components, because copying the files is the easy part. A pasted block is
-              not live until your collection schema knows it, your renderer maps it, your types
-              include it, and the admin import map sees it.
-            </p>
+              <p>
+                <span className="font-medium text-foreground">shadcn changed the expectation</span>{' '}
+                for plain UI: run one command and a real component lands in your repo, in your
+                style, yours to edit. Payload had no shelf like that. And Payload blocks are harder
+                than UI components, because copying the files is the easy part. A pasted block is
+                not live until your collection schema knows it, your renderer maps it, your types
+                include it, and the admin import map sees it.
+              </p>
 
-            <figure className="rounded-[1.25rem] border border-border bg-muted/40 p-5 sm:p-6">
-              <figcaption className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                After every paste, on every project
-              </figcaption>
-              <ul className="mt-4 flex flex-col gap-2.5">
-                {pasteChecklist.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-3 font-mono text-[13px] leading-6 text-foreground/75"
-                  >
-                    <Square
-                      className="mt-1 size-3.5 shrink-0 text-muted-foreground/60"
-                      aria-hidden="true"
-                    />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </figure>
+              <figure className="rounded-[1.25rem] border border-border bg-muted/40 p-5 sm:p-6">
+                <figcaption className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  After every paste, on every project
+                </figcaption>
+                <ul className="mt-4 flex flex-col gap-2.5">
+                  {pasteChecklist.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-3 font-mono text-[13px] leading-6 text-foreground/75"
+                    >
+                      <Square
+                        className="mt-1 size-3.5 shrink-0 text-muted-foreground/60"
+                        aria-hidden="true"
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </figure>
 
-            <p className="text-xl font-medium leading-8 tracking-[-0.01em] text-foreground">
-              The paste was never the problem. The edits after it were — and proving them, every
-              single time, was worse.
-            </p>
+              <p className="text-xl font-medium leading-8 tracking-[-0.01em] text-foreground">
+                The paste was never the problem. The edits after it were — and proving them, every
+                single time, was worse.
+              </p>
 
-            <p>
-              That last checkbox is where freelance weeks actually went. Wiring a block by hand
-              means verifying it by hand: integration tests, e2e runs, clicking through the admin
-              to make sure nothing half-works in a way the client finds first. Multiply that by
-              every block, every repo, every project, and the job stops being the content model,
-              the design, the launch — the things that really matter — and becomes grunt work.
-            </p>
+              <p>
+                That last checkbox is where freelance weeks actually went. Wiring a block by hand
+                means verifying it by hand: integration tests, e2e runs, clicking through the admin
+                to make sure nothing half-works in a way the client finds first. Multiply that by
+                every block, every repo, every project, and the job stops being the content model,
+                the design, the launch — the things that really matter — and becomes grunt work.
+              </p>
 
-            <p>
-              <span className="font-medium text-foreground">
-                Payload Components is the registry I kept wishing existed.
-              </span>{' '}
-              Blocks that install like shadcn components but finish the job:{' '}
-              <code className="rounded-md border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-[13px] text-foreground/80">
-                npx payload-components add hero-basic
-              </code>{' '}
-              copies the source and does the four edits itself, landing as one reviewable git
-              diff. And the proving moved into the registry: installer tests and a nightly
-              fresh-repo smoke run gate every component centrally, once — instead of being redone by
-              every freelancer on every install.
-            </p>
+              <p>
+                <span className="font-medium text-foreground">
+                  Payload Components is the registry I kept wishing existed.
+                </span>{' '}
+                Blocks that install like shadcn components but finish the job:{' '}
+                <code className="rounded-md border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-[13px] text-foreground/80">
+                  npx payload-components add hero-basic
+                </code>{' '}
+                copies the source and does the four edits itself, landing as one reviewable git
+                diff. And the proving moved into the registry: installer tests and a nightly
+                fresh-repo smoke run gate every component centrally, once — instead of being redone
+                by every freelancer on every install.
+              </p>
 
-            <p>
-              It is MIT-licensed end to end — the registry, the CLI, every component, and this site
-              are one repository. No pricing, no license keys, no gated tier. An installer that
-              edits your repo earns trust the only honest way: by letting you read it. The catalog
-              grows from real installs and pull requests, not roadmap theater — if you ship client
-              sites on Payload,{' '}
-              <a
-                href={githubIssuesUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
-              >
-                tell me which blocks you rebuild every time
-              </a>
-              .
-            </p>
+              <p>
+                It is MIT-licensed end to end — the registry, the CLI, every component, and this
+                site are one repository. No pricing, no license keys, no gated tier. An installer
+                that edits your repo earns trust the only honest way: by letting you read it. The
+                catalog grows from real installs and pull requests, not roadmap theater — if you
+                ship client sites on Payload,{' '}
+                <a
+                  href={githubIssuesUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
+                >
+                  tell me which blocks you rebuild every time
+                </a>
+                .
+              </p>
             </div>
 
             {/* Receipts rail — the proof behind the story, filling the

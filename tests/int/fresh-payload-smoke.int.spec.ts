@@ -19,11 +19,12 @@ describe('fresh Payload smoke component selection', () => {
   })
 
   it('assigns every renderable registry block to exactly one deterministic shard', async () => {
-    const { getInstallableComponentSlugs, getSmokeShard, SMOKE_SHARD_COUNT } = smokeHarness as typeof smokeHarness & {
-      getInstallableComponentSlugs?: () => Promise<string[]>
-      getSmokeShard?: (slugs: string[], shardIndex: number) => string[]
-      SMOKE_SHARD_COUNT?: number
-    }
+    const { getInstallableComponentSlugs, getSmokeShard, SMOKE_SHARD_COUNT } =
+      smokeHarness as typeof smokeHarness & {
+        getInstallableComponentSlugs?: () => Promise<string[]>
+        getSmokeShard?: (slugs: string[], shardIndex: number) => string[]
+        SMOKE_SHARD_COUNT?: number
+      }
 
     expect(getInstallableComponentSlugs).toBeTypeOf('function')
     expect(getSmokeShard).toBeTypeOf('function')
@@ -74,7 +75,10 @@ describe('fresh Payload smoke component selection', () => {
     })
 
     for (const slug of installableSlugs) {
-      expect(assignments.filter((assignment) => assignment === slug), slug).toHaveLength(1)
+      expect(
+        assignments.filter((assignment) => assignment === slug),
+        slug,
+      ).toHaveLength(1)
       const manifest = await loadManifest(slug)
 
       expect(smokeHarness.getRenderableSampleBlockType(manifest), slug).toBe(
@@ -134,12 +138,7 @@ describe('fresh Payload smoke component selection', () => {
     )
     expect(() => smokeHarness.parseSmokeArgs(['--shard-index', '4'])).toThrow(/0 to 3/)
     expect(() =>
-      smokeHarness.parseSmokeArgs([
-        '--components',
-        'hero-basic',
-        '--shard-index',
-        '0',
-      ]),
+      smokeHarness.parseSmokeArgs(['--components', 'hero-basic', '--shard-index', '0']),
     ).toThrow(/cannot be used together/)
   })
 
@@ -185,7 +184,7 @@ describe('fresh Payload smoke component selection', () => {
   it('leaves generated buttons without Radix Slot unchanged', async () => {
     const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-template-'))
     const buttonPath = path.join(tempDir, 'src', 'components', 'ui', 'button.tsx')
-    const source = "export const Button = (props: unknown) => <button {...props} />\n"
+    const source = 'export const Button = (props: unknown) => <button {...props} />\n'
     tempDirs.push(tempDir)
     await mkdir(path.dirname(buttonPath), { recursive: true })
     await writeFile(buttonPath, source)
@@ -243,14 +242,12 @@ describe('fresh Payload smoke seed generation', () => {
 
   it('declares placeholder slots for every curated block with required uploads', async () => {
     const manifests = await Promise.all(
-      ['hero-video', 'hero-product-tilt', 'feature-cards-media'].map((name) =>
-        loadManifest(name),
-      ),
+      ['hero-video', 'hero-product-tilt', 'feature-cards-media'].map((name) => loadManifest(name)),
     )
 
-    expect(manifests.map((manifest) => sampleContentNeedsSmokeMedia(manifest.sampleContent))).toEqual(
-      [true, true, true],
-    )
+    expect(
+      manifests.map((manifest) => sampleContentNeedsSmokeMedia(manifest.sampleContent)),
+    ).toEqual([true, true, true])
   })
 
   it('does not create placeholder media for sample content without upload slots', async () => {
@@ -288,9 +285,9 @@ describe('fresh Payload smoke seed generation', () => {
     const scriptPath = await writeSeedScript(tempDir, manifests)
     const script = await readFile(scriptPath, 'utf8')
 
-    expect(manifests.every((manifest) => sampleContentNeedsSmokeMedia(manifest.sampleContent))).toBe(
-      true,
-    )
+    expect(
+      manifests.every((manifest) => sampleContentNeedsSmokeMedia(manifest.sampleContent)),
+    ).toBe(true)
     expect(script).toContain("members: 'avatar'")
     expect(script).toContain('addSmokeUploadReferences(nestedValue, mediaID, key)')
   })

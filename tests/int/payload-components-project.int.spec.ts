@@ -12,7 +12,9 @@ describe('payload-components project detection', () => {
   const tempDirs: string[] = []
 
   afterEach(async () => {
-    await Promise.all(tempDirs.splice(0).map((tempDir) => rm(tempDir, { force: true, recursive: true })))
+    await Promise.all(
+      tempDirs.splice(0).map((tempDir) => rm(tempDir, { force: true, recursive: true })),
+    )
   })
 
   it('retains bun.lock as the recovery lockfile when both Bun formats exist', async () => {

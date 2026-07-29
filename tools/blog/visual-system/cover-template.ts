@@ -29,8 +29,7 @@ const escapeHtml = (value: string) =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;')
 
-const seriesLabel = (series: BlogVisualEntry['series']) =>
-  series.replaceAll('-', ' ').toUpperCase()
+const seriesLabel = (series: BlogVisualEntry['series']) => series.replaceAll('-', ' ').toUpperCase()
 
 const evidenceDensity = (lineCount: number) => {
   if (lineCount <= 6) return 'code-sheet--roomy'
@@ -139,10 +138,7 @@ const artifactEvidence = (artifact: CoverArtifact) => {
   }
 }
 
-const artifactRegion = (
-  role: 'primary' | 'secondary',
-  artifact: CoverArtifact,
-) => `<section
+const artifactRegion = (role: 'primary' | 'secondary', artifact: CoverArtifact) => `<section
     class="artifact artifact--${role}${role === 'primary' ? ' paper-edge' : ''}"
     data-cover-part="${role}"
     data-artifact-kind="${artifact.kind}"

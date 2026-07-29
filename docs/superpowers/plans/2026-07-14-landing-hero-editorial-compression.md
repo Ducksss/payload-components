@@ -30,11 +30,13 @@
 ### Task 1: Simplify the hero action hierarchy
 
 **Files:**
+
 - Modify: `tests/e2e/frontend.e2e.spec.ts:3-13,92`
 - Modify: `src/lib/site.ts:56-59`
 - Modify: `src/components/site/sections/HeroSection.tsx:3,22-23,77-118`
 
 **Interfaces:**
+
 - Consumes: `githubRepoUrl: string`, `heroPrimaryCta: { href: string; label: string }`, and `heroTertiaryLinks` from `src/lib/site.ts`.
 - Produces: `heroTertiaryLinks` as a readonly one-item tuple containing `{ href: '/components', label: 'Browse the components' }`; visible hero links for Get started, Star on GitHub, and Browse the components.
 
@@ -66,12 +68,8 @@ test('keeps the landing hero action hierarchy focused', async ({ page }) => {
   await page.goto(baseURL)
 
   const hero = page.locator('.hero-shell')
-  await expect(
-    hero.getByRole('link', { name: heroPrimaryCta.label, exact: true }),
-  ).toBeVisible()
-  await expect(hero.locator(`a[href="${githubRepoUrl}"]`)).toHaveAccessibleName(
-    'Star on GitHub',
-  )
+  await expect(hero.getByRole('link', { name: heroPrimaryCta.label, exact: true })).toBeVisible()
+  await expect(hero.locator(`a[href="${githubRepoUrl}"]`)).toHaveAccessibleName('Star on GitHub')
   await expect(
     hero.getByRole('link', { name: heroTertiaryLinks[0].label, exact: true }),
   ).toBeVisible()
@@ -97,9 +95,7 @@ Expected: FAIL because the existing nested `Open source` badge has count 1 (and 
 Change the site data to:
 
 ```ts
-export const heroTertiaryLinks = [
-  { href: '/components', label: 'Browse the components' },
-] as const
+export const heroTertiaryLinks = [{ href: '/components', label: 'Browse the components' }] as const
 ```
 
 In `HeroSection.tsx`, remove `Star` from the Lucide import and consume only the catalog link:
@@ -169,11 +165,13 @@ EOF
 ### Task 2: Compress the desktop hero composition
 
 **Files:**
+
 - Modify: `tests/e2e/frontend.e2e.spec.ts` after the hierarchy regression
 - Modify: `src/components/site/sections/HeroSection.tsx:29-40`
 - Modify: `src/components/site/HeroProductFrame.tsx:73,95,108,191,232`
 
 **Interfaces:**
+
 - Consumes: `.hero-shell`, its direct `.container`, the accessible H1, and `.product-frame` as stable landing-page selectors.
 - Produces: desktop H1 size at most 88px, proof-frame width at most 1024px, outer stack gap of 48px, and desktop top padding of 64px at a 1440px viewport.
 
@@ -233,7 +231,8 @@ In `HeroSection.tsx`, change the two container class strings to:
 Change the H1 class string to:
 
 ```tsx
-className="hero-reveal max-w-5xl text-balance text-[clamp(2.6rem,8.4vw,5.5rem)] font-medium leading-[0.94] tracking-[-0.075em] text-foreground"
+className =
+  'hero-reveal max-w-5xl text-balance text-[clamp(2.6rem,8.4vw,5.5rem)] font-medium leading-[0.94] tracking-[-0.075em] text-foreground'
 ```
 
 - [ ] **Step 4: Implement the exact proof-frame density**
@@ -278,10 +277,12 @@ EOF
 ### Task 3: Refresh visual evidence and run the release gate
 
 **Files:**
+
 - Modify: `tests/e2e/frontend.e2e.spec.ts-snapshots/landing-home-desktop-chromium-darwin.png`
 - Modify: `tests/e2e/frontend.e2e.spec.ts-snapshots/landing-home-mobile-chromium-darwin.png`
 
 **Interfaces:**
+
 - Consumes: the completed hero markup and spacing contract from Tasks 1 and 2.
 - Produces: reviewed Darwin visual baselines and fresh release-gate evidence; Linux baselines remain CI-owned and must be minted by the repository's `visual-baselines` workflow when this branch is published.
 

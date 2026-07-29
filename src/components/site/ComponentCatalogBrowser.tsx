@@ -61,10 +61,15 @@ export function ComponentCatalogBrowser({
     const rawType = params.get('type')
     const type: FamilyKey | 'all' = rawType === 'pages' || rawType === 'posts' ? rawType : 'all'
     const rawCategory = params.get('category') ?? ''
-    return { type, category: rawCategory in categories ? rawCategory : '', query: params.get('q') ?? '' }
+    return {
+      type,
+      category: rawCategory in categories ? rawCategory : '',
+      query: params.get('q') ?? '',
+    }
   }, [categories])
   const rawType = searchParams.get('type')
-  const typeFromUrl: FamilyKey | 'all' = rawType === 'pages' || rawType === 'posts' ? rawType : 'all'
+  const typeFromUrl: FamilyKey | 'all' =
+    rawType === 'pages' || rawType === 'posts' ? rawType : 'all'
   const rawCategory = searchParams.get('category') ?? ''
   const categoryFromUrl = rawCategory in categories ? rawCategory : ''
   const query = searchParams.get('q') ?? ''
@@ -86,7 +91,8 @@ export function ComponentCatalogBrowser({
       if (localQuery) params.set('q', localQuery)
       else params.delete('q')
       const next = params.toString() ? `${pathname}?${params}` : pathname
-      if (next !== `${window.location.pathname}${window.location.search}`) window.history.replaceState(null, '', next)
+      if (next !== `${window.location.pathname}${window.location.search}`)
+        window.history.replaceState(null, '', next)
     }, 250)
     return () => window.clearTimeout(timer)
   }, [localQuery, pathname])
@@ -104,15 +110,27 @@ export function ComponentCatalogBrowser({
 
   const queriedPages = useMemo(
     () =>
-        pages.filter((component) =>
-        matches(localQuery, component.title, component.slug, component.description, component.target),
+      pages.filter((component) =>
+        matches(
+          localQuery,
+          component.title,
+          component.slug,
+          component.description,
+          component.target,
+        ),
       ),
     [pages, localQuery],
   )
   const queriedPosts = useMemo(
     () =>
       posts.filter((component) =>
-        matches(localQuery, component.title, component.slug, component.description, component.target),
+        matches(
+          localQuery,
+          component.title,
+          component.slug,
+          component.description,
+          component.target,
+        ),
       ),
     [posts, localQuery],
   )
@@ -144,8 +162,12 @@ export function ComponentCatalogBrowser({
 
   const showPages = activeFamily === 'all' || activeFamily === 'pages'
   const showPosts = activeFamily === 'all' || activeFamily === 'posts'
-  const pagesCards = queriedPages.filter((component) => !category || component.category === category)
-  const postsCards = queriedPosts.filter((component) => !category || component.category === category)
+  const pagesCards = queriedPages.filter(
+    (component) => !category || component.category === category,
+  )
+  const postsCards = queriedPosts.filter(
+    (component) => !category || component.category === category,
+  )
   const visibleCount = (showPages ? pagesCards.length : 0) + (showPosts ? postsCards.length : 0)
 
   const familyGroups: {

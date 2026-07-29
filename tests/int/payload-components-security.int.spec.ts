@@ -69,13 +69,16 @@ describe('payload-components security invariants', () => {
   it('rejects unknown component slugs before manifest lookup', async () => {
     const { loadManifest, readJsonFile } = await loadManifestWithMockedRegistry()
 
-    await expect(loadManifest('missing-component')).rejects.toThrow('Unknown component "missing-component"')
+    await expect(loadManifest('missing-component')).rejects.toThrow(
+      'Unknown component "missing-component"',
+    )
     expect(readJsonFile).toHaveBeenCalledTimes(1)
     expect(readJsonFile).toHaveBeenCalledWith('/virtual/repo/payload-components/registry.json')
   })
 
   it('rejects registry file paths outside payload-components/source', async () => {
-    const { resolveRegistrySourcePath } = await import('../../tools/payload-components/check-public-registry')
+    const { resolveRegistrySourcePath } =
+      await import('../../tools/payload-components/check-public-registry')
 
     expect(resolveRegistrySourcePath('payload-components/source/blocks/HeroBasic/config.ts')).toBe(
       path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'config.ts'),
@@ -100,7 +103,14 @@ describe('payload-components security invariants', () => {
   it('does not read escaped registry source paths for docs code samples', async () => {
     const registryPath = path.join(repoRoot, 'payload-components', 'registry.json')
     const escapedPath = path.join(repoRoot, 'package.json')
-    const safePath = path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'config.ts')
+    const safePath = path.join(
+      repoRoot,
+      'payload-components',
+      'source',
+      'blocks',
+      'HeroBasic',
+      'config.ts',
+    )
     const readFileMock = vi.fn(async (filePath: string) => {
       if (filePath === registryPath) {
         return JSON.stringify({
@@ -166,7 +176,9 @@ describe('payload-components security invariants', () => {
 
   it('validates signup form actions as same-origin paths', async () => {
     expect(validateSameOriginFormAction('/api/newsletter')).toBe(true)
-    expect(getSafeFormAction('/api/newsletter?source=cta#form')).toBe('/api/newsletter?source=cta#form')
+    expect(getSafeFormAction('/api/newsletter?source=cta#form')).toBe(
+      '/api/newsletter?source=cta#form',
+    )
     expect(validateSameOriginFormAction('https://attacker.example/collect')).toContain(
       'same-origin path',
     )
@@ -184,7 +196,9 @@ describe('payload-components security invariants', () => {
     expect(getSafeContactHref('url', 'javascript:alert(1)')).toBeUndefined()
     expect(getSafeContactHref('email', 'not-an-email')).toBeUndefined()
     expect(getSafeContactHref('phone', 'abc')).toBeUndefined()
-    expect(getSafeContactHref('email', 'hello@example.com\r\nBcc:attacker@example.com')).toBeUndefined()
+    expect(
+      getSafeContactHref('email', 'hello@example.com\r\nBcc:attacker@example.com'),
+    ).toBeUndefined()
 
     expect(validateContactValue('hello@example.com', { siblingData: { type: 'email' } })).toBe(true)
     expect(validateContactValue('not-an-email', { siblingData: { type: 'email' } })).toContain(

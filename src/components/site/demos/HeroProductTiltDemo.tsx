@@ -1,8 +1,5 @@
 import { Badge } from '@/components/ui/badge'
-import {
-  heroProductTiltDemoContent,
-  type HeroProductTiltDemoContent,
-} from '@/lib/demo-content'
+import { heroProductTiltDemoContent, type HeroProductTiltDemoContent } from '@/lib/demo-content'
 
 import { DemoLink } from './DemoLink'
 
@@ -34,7 +31,10 @@ export function HeroProductTiltDemo({
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-10">
           <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
             {eyebrow ? (
-              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow">
+              <Badge
+                variant="outline"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
+              >
                 {eyebrow}
               </Badge>
             ) : null}
@@ -57,7 +57,11 @@ export function HeroProductTiltDemo({
             {proofItems.length > 0 ? (
               <div className="flex flex-wrap justify-center gap-3">
                 {proofItems.map(({ label }, index) => (
-                  <Badge key={`${label}-${index}`} variant="secondary" className="rounded-full px-3 py-1 text-sm">
+                  <Badge
+                    key={`${label}-${index}`}
+                    variant="secondary"
+                    className="rounded-full px-3 py-1 text-sm"
+                  >
                     {label}
                   </Badge>
                 ))}

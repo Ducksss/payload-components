@@ -5,12 +5,12 @@ These TrueType files are read at build time by `src/app/opengraph-image.tsx`
 fetched — so the OG image stays deterministic and the CI release gate never
 depends on a network font request.
 
-| File | Family | Use |
-| --- | --- | --- |
-| `Geist-Regular.ttf` | Geist 400 | Card default / body text |
-| `Geist-Bold.ttf` | Geist 700 | Wordmark, headline primary |
-| `GeistMono-Regular.ttf` | Geist Mono 400 | Terminal card body, footer stack line |
-| `GeistMono-Medium.ttf` | Geist Mono 500 | Terminal prompt + success line |
+| File                         | Family                      | Use                                                             |
+| ---------------------------- | --------------------------- | --------------------------------------------------------------- |
+| `Geist-Regular.ttf`          | Geist 400                   | Card default / body text                                        |
+| `Geist-Bold.ttf`             | Geist 700                   | Wordmark, headline primary                                      |
+| `GeistMono-Regular.ttf`      | Geist Mono 400              | Terminal card body, footer stack line                           |
+| `GeistMono-Medium.ttf`       | Geist Mono 500              | Terminal prompt + success line                                  |
 | `InstrumentSerif-Italic.ttf` | Instrument Serif 400 italic | Headline accent word, mirrors the site `--font-serif` treatment |
 
 Note: every glyph drawn in `opengraph-image.tsx` must exist in these fonts.

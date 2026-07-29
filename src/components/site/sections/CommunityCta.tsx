@@ -31,7 +31,9 @@ export function CommunityCta() {
           <h2 className="mt-4 text-balance text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-[2.6rem]">
             Open source, <HeadingAccent>end to end</HeadingAccent>.
           </h2>
-          <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">{communityIntro}</p>
+          <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">
+            {communityIntro}
+          </p>
 
           <div className="mt-7 grid w-full max-w-xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border border-border bg-background py-1 pl-5 pr-1 shadow-card">
             <code

@@ -28,10 +28,7 @@ import {
   writeSeedScript,
 } from '../../tools/payload-components/seed/seed-script'
 import { CURRENT_ALPHA_TARGET_ID } from '../../tools/payload-components/constants'
-import type {
-  ComponentManifest,
-  InstallState,
-} from '../../tools/payload-components/types'
+import type { ComponentManifest, InstallState } from '../../tools/payload-components/types'
 
 import { createInstallFixture } from './payload-components-fixture'
 

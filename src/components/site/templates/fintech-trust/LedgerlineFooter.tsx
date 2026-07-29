@@ -118,10 +118,7 @@ export function LedgerlineFooter({
             <ul className="flex flex-col gap-2">
               {compliance.map((item) => (
                 <li className="flex items-start gap-2 text-sm text-muted-foreground" key={item}>
-                  <span
-                    aria-hidden="true"
-                    className="mt-2 size-1 shrink-0 rounded-full bg-brand"
-                  />
+                  <span aria-hidden="true" className="mt-2 size-1 shrink-0 rounded-full bg-brand" />
                   {item}
                 </li>
               ))}

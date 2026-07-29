@@ -47,7 +47,9 @@ async function getGtagEvents(page: Page) {
 }
 
 async function getPostHogEvents(page: Page) {
-  return page.evaluate(() => (window as Window & { __posthogEvents?: PostHogTestEvent[] }).__posthogEvents ?? [])
+  return page.evaluate(
+    () => (window as Window & { __posthogEvents?: PostHogTestEvent[] }).__posthogEvents ?? [],
+  )
 }
 
 async function expectCopiedAlert(page: Page) {
@@ -95,17 +97,19 @@ test.describe('Light shadcn frontend', () => {
     await page.goto(baseURL)
 
     await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
-    await expect.poll(() => getPostHogEvents(page)).toEqual(
-      expect.arrayContaining([
-        {
-          event: '$pageview',
-          properties: {
-            page_path: '/',
-            source_path: '/',
+    await expect
+      .poll(() => getPostHogEvents(page))
+      .toEqual(
+        expect.arrayContaining([
+          {
+            event: '$pageview',
+            properties: {
+              page_path: '/',
+              source_path: '/',
+            },
           },
-        },
-      ]),
-    )
+        ]),
+      )
   })
 
   test('keeps the landing hero action hierarchy focused', async ({ page }) => {
@@ -117,9 +121,7 @@ test.describe('Light shadcn frontend', () => {
       hero.getByRole('button', { name: 'Copy install command', exact: true }),
     ).toBeVisible()
     await expect(hero.getByRole('link', { name: heroGuideLink.label, exact: true })).toBeVisible()
-    await expect(hero.locator(`a[href="${githubRepoUrl}"]`)).toHaveAccessibleName(
-      'Star on GitHub',
-    )
+    await expect(hero.locator(`a[href="${githubRepoUrl}"]`)).toHaveAccessibleName('Star on GitHub')
     await expect(
       hero.getByRole('link', { name: heroTertiaryLinks[0].label, exact: true }),
     ).toBeVisible()
@@ -342,9 +344,10 @@ test.describe('Light shadcn frontend', () => {
       .filter({ hasText: 'What is a Payload CMS block?' })
       .getByText('What is a Payload CMS block?')
       .click()
-    await expect(
-      page.getByRole('link', { name: 'Read the Payload blocks guide' }),
-    ).toHaveAttribute('href', '/docs/payload-blocks')
+    await expect(page.getByRole('link', { name: 'Read the Payload blocks guide' })).toHaveAttribute(
+      'href',
+      '/docs/payload-blocks',
+    )
 
     await page
       .getByRole('group')
@@ -389,14 +392,14 @@ test.describe('Light shadcn frontend', () => {
         const headerInnerRect = headerInner?.getBoundingClientRect()
         const documentationTitleRect = documentationTitle?.getBoundingClientRect()
         const headerStyle = headerInner ? getComputedStyle(headerInner) : null
-        const headerPaddingStart = headerStyle ? Number.parseFloat(headerStyle.paddingInlineStart) : null
+        const headerPaddingStart = headerStyle
+          ? Number.parseFloat(headerStyle.paddingInlineStart)
+          : null
         const hasHorizontalOverflow =
           document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
 
         return {
-          brandMark: brandMarkRect
-            ? { width: brandMarkRect.width, x: brandMarkRect.x }
-            : null,
+          brandMark: brandMarkRect ? { width: brandMarkRect.width, x: brandMarkRect.x } : null,
           documentationTitle:
             documentationTitleRect && documentationTitleRect.width > 0
               ? { width: documentationTitleRect.width, x: documentationTitleRect.x }
@@ -554,12 +557,20 @@ test.describe('Light shadcn frontend', () => {
     await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(initial)
     const mobileHeight = (await frame.boundingBox())?.height ?? initial
     await page.getByRole('button', { name: 'Desktop' }).click()
-    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeLessThan(mobileHeight - 2)
+    await expect
+      .poll(async () => (await frame.boundingBox())?.height ?? 0)
+      .toBeLessThan(mobileHeight - 2)
     await page.getByRole('button', { name: 'Mobile' }).click()
-    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(mobileHeight - 2)
+    await expect
+      .poll(async () => (await frame.boundingBox())?.height ?? 0)
+      .toBeGreaterThan(mobileHeight - 2)
 
     await page.goto(`${baseURL}/components/preview/hero-basic`)
-    await expect(page.locator('script[src*="googletagmanager"], script[src*="vercel"], script[src*="posthog"]')).toHaveCount(0)
+    await expect(
+      page.locator(
+        'script[src*="googletagmanager"], script[src*="vercel"], script[src*="posthog"]',
+      ),
+    ).toHaveCount(0)
   })
 
   test('component wiring paths and actions wrap at 390px', async ({ page }) => {
@@ -582,7 +593,9 @@ test.describe('Light shadcn frontend', () => {
     expect(wraps.breakable).toBe(true)
     expect(wraps.multiline).toBe(true)
     expect(wraps.fits).toBe(true)
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    )
     expect(overflow).toBe(false)
     await expect(wiring).toBeVisible()
   })
@@ -610,9 +623,9 @@ test.describe('Light shadcn frontend', () => {
       { label: 'About', path: '/about' },
     ]) {
       await page.goto(`${baseURL}${route.path}`)
-      await expect(page.getByRole('navigation').getByRole('link', { name: route.label })).toHaveClass(
-        /bg-secondary/,
-      )
+      await expect(
+        page.getByRole('navigation').getByRole('link', { name: route.label }),
+      ).toHaveClass(/bg-secondary/)
     }
   })
 
@@ -698,7 +711,9 @@ test.describe('Light shadcn frontend', () => {
     }
   })
 
-  test('filters catalog immediately, debounces shareable URL state, and syncs popstate', async ({ page }) => {
+  test('filters catalog immediately, debounces shareable URL state, and syncs popstate', async ({
+    page,
+  }) => {
     await page.goto(`${baseURL}/components`)
     const search = page.getByLabel('Search components')
     await expect(search).toHaveValue('')
@@ -742,7 +757,10 @@ test.describe('Light shadcn frontend', () => {
     // A family selection made inside the debounce window must carry the
     // in-progress local query instead of restoring stale router state.
     await search.fill('hero')
-    await page.getByRole('button', { name: /Page blocks/ }).first().click()
+    await page
+      .getByRole('button', { name: /Page blocks/ })
+      .first()
+      .click()
     await expect(search).toHaveValue('hero')
     await expect.poll(() => new URL(page.url()).searchParams.get('q')).toBe('hero')
     await expect.poll(() => new URL(page.url()).searchParams.get('type')).toBe('pages')
@@ -784,7 +802,9 @@ test.describe('Light shadcn frontend', () => {
 
     await expect(page.getByRole('contentinfo')).toBeVisible()
     await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
-    await expect(page.getByRole('contentinfo').getByRole('link', { name: 'Brand Guide' })).toBeVisible()
+    await expect(
+      page.getByRole('contentinfo').getByRole('link', { name: 'Brand Guide' }),
+    ).toBeVisible()
   })
 
   test('exposes the Fumadocs docs shell navigation', async ({ page }) => {
@@ -1015,7 +1035,9 @@ test.describe('Light shadcn frontend', () => {
     await waitForCopyController(page)
     await page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copy' }).click()
 
-    await expect(page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copied' })).toBeVisible()
+    await expect(
+      page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copied' }),
+    ).toBeVisible()
     await expectCopiedAlert(page)
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
@@ -1040,10 +1062,7 @@ test.describe('Light shadcn frontend', () => {
       )
     })
 
-    await page
-      .locator('a[href="https://github.com/Ducksss/payload-components"]')
-      .first()
-      .click()
+    await page.locator('a[href="https://github.com/Ducksss/payload-components"]').first().click()
 
     expect(await getGtagEvents(page)).toContainEqual([
       'event',
@@ -1408,7 +1427,10 @@ test.describe('Reduced motion', () => {
   test('opens the Fumadocs search dialog from the docs shell', async ({ page }) => {
     await page.goto(`${baseURL}/docs`)
 
-    await page.getByRole('button', { name: /Search/ }).first().click()
+    await page
+      .getByRole('button', { name: /Search/ })
+      .first()
+      .click()
 
     await expect(page.getByRole('dialog')).toBeVisible()
   })

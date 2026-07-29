@@ -2,10 +2,7 @@ import type { ReactNode } from 'react'
 
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  featureGridBasicDemoContent,
-  type FeatureGridBasicDemoContent,
-} from '@/lib/demo-content'
+import { featureGridBasicDemoContent, type FeatureGridBasicDemoContent } from '@/lib/demo-content'
 import { cn } from '@/utilities/ui'
 
 import { DemoLink } from './DemoLink'

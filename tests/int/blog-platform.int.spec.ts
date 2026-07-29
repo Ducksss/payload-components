@@ -31,7 +31,10 @@ describe('blog delivery platform', () => {
   })
 
   it('defines the editorial frontmatter and deterministic related-post interfaces', async () => {
-    const [sourceConfig, blog] = await Promise.all([read('source.config.ts'), read('src/lib/blog.ts')])
+    const [sourceConfig, blog] = await Promise.all([
+      read('source.config.ts'),
+      read('src/lib/blog.ts'),
+    ])
 
     for (const field of ['series', 'publicationOrder', 'cover', 'tags']) {
       expect(sourceConfig).toContain(`${field}:`)
@@ -74,7 +77,7 @@ describe('blog delivery platform', () => {
 
     expect(post).toContain('blogPostingNode')
     expect(post).toContain('<JsonLd')
-    expect(post).toContain("images: [")
+    expect(post).toContain('images: [')
     expect(structuredData).toContain('export function blogPostingNode')
     expect(structuredData).toContain("'@type': 'BlogPosting'")
     expect(og).toContain('new ImageResponse')

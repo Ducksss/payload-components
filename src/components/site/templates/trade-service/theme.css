@@ -499,11 +499,7 @@
       color-mix(in oklab, var(--hs-paper) 26%, transparent) 0 11%,
       transparent 12%
     ),
-    linear-gradient(
-      168deg,
-      color-mix(in oklab, var(--hs-paper) 14%, transparent),
-      transparent 56%
-    );
+    linear-gradient(168deg, color-mix(in oklab, var(--hs-paper) 14%, transparent), transparent 56%);
 }
 
 [data-template-theme='trade-service'] [data-template-canvas] .rounded-inset.bg-muted\/70 {
@@ -655,10 +651,7 @@
   );
 }
 
-[data-template-theme='trade-service']
-  [data-template-section='hero']
-  > [aria-hidden='true']
-  > div {
+[data-template-theme='trade-service'] [data-template-section='hero'] > [aria-hidden='true'] > div {
   padding-block: clamp(2.5rem, 5vw, 3.75rem);
 }
 

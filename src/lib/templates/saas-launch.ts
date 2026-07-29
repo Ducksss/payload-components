@@ -25,12 +25,7 @@ import type { TemplateShowcase } from './types'
 const relayPlans: PricingPlanDemo[] = [
   {
     description: 'For your first governed metric',
-    features: [
-      'Up to 3 seats',
-      '1M events per month',
-      'Two live dashboards',
-      'Community support',
-    ],
+    features: ['Up to 3 seats', '1M events per month', 'Two live dashboards', 'Community support'],
     link: { appearance: 'outline', label: 'Start free' },
     name: 'Starter',
     period: '/ mo',
@@ -159,8 +154,7 @@ export const saasLaunchTemplate: TemplateShowcase = {
           content: {
             author: 'Maya Lindgren',
             body: 'Adoption compounds: once the first governed dashboard ships, the next team asks for theirs.',
-            description:
-              'Aggregate results across Relay workspaces in their first two quarters.',
+            description: 'Aggregate results across Relay workspaces in their first two quarters.',
             eyebrow: 'Proof, not promises',
             logoLabel: 'NORTHWIND',
             metrics: [
@@ -214,8 +208,7 @@ export const saasLaunchTemplate: TemplateShowcase = {
         {
           componentSlug: 'faq-split',
           content: {
-            description:
-              'The questions teams ask before they point Relay at production data.',
+            description: 'The questions teams ask before they point Relay at production data.',
             eyebrow: 'Good questions',
             items: [
               {
@@ -279,8 +272,7 @@ export const saasLaunchTemplate: TemplateShowcase = {
             description:
               'Relay models events from your product and warehouse into governed metrics, then delivers them as dashboards, digests, and alerts — no nightly export jobs, no version-five spreadsheets.',
             eyebrow: 'Product',
-            imageCaption:
-              'The metric registry on the left, every dashboard it feeds on the right.',
+            imageCaption: 'The metric registry on the left, every dashboard it feeds on the right.',
             links: [
               { link: { appearance: 'default', label: 'Start free' } },
               { link: { appearance: 'outline', label: 'View pricing' } },

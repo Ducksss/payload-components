@@ -764,10 +764,7 @@ export const commerceBrandTemplate: TemplateShowcase = {
               { link: { appearance: 'default', label: 'Browse the coffees' } },
               { link: { appearance: 'outline', label: 'Read our story' } },
             ],
-            proofItems: [
-              { label: 'Answered within a day' },
-              { label: 'Cupping Wednesdays' },
-            ],
+            proofItems: [{ label: 'Answered within a day' }, { label: 'Cupping Wednesdays' }],
             title: 'Come by the mill, or write to the bench.',
           },
           id: 'hero',
@@ -799,8 +796,7 @@ export const commerceBrandTemplate: TemplateShowcase = {
               'Nothing here goes to a call centre. Pick the closest desk and you will get whoever knows the answer.',
             eyebrow: 'Say hello',
             formConfigured: true,
-            formDescription:
-              'Tell us what you brew on and we will point you at the right shelf.',
+            formDescription: 'Tell us what you brew on and we will point you at the right shelf.',
             formLabels: [
               'Name',
               'Email',

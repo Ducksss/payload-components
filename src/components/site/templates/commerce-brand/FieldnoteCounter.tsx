@@ -53,13 +53,7 @@ function FieldnoteBean({ className }: { className?: string }) {
   )
 }
 
-function FieldnoteWordmark({
-  href,
-  reduce,
-}: {
-  href: string
-  reduce: boolean
-}) {
+function FieldnoteWordmark({ href, reduce }: { href: string; reduce: boolean }) {
   return (
     <Link href={href} aria-label="Fieldnote home" className="flex items-center gap-3">
       <span className="fieldnote-mark relative inline-flex size-9 shrink-0 items-center justify-center rounded-full text-brand">
@@ -114,8 +108,10 @@ export function FieldnoteCounter({
   }, [open])
 
   // Route changes close the disclosure; this state update is intentionally tied to navigation.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setOpen(false) }, [pathname])
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpen(false)
+  }, [pathname])
 
   // The veil is state-driven and rendered by a CSS opacity transition, so
   // reduced motion simply lands the final state (see the net in theme.css).
@@ -233,7 +229,11 @@ export function FieldnoteCounter({
                   strokeWidth="1.75"
                   viewBox="0 0 16 16"
                 >
-                  {open ? <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" /> : <path d="M2.5 5h11M2.5 11h11" />}
+                  {open ? (
+                    <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" />
+                  ) : (
+                    <path d="M2.5 5h11M2.5 11h11" />
+                  )}
                 </svg>
               </button>
 
