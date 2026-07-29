@@ -106,10 +106,54 @@ test.describe('Light shadcn frontend', () => {
             properties: {
               page_path: '/',
               source_path: '/',
+              traffic_source: 'other',
+              verification_run: false,
             },
           },
         ]),
       )
+  })
+
+  test('classifies organic visits without sending raw acquisition details', async ({ page }) => {
+    await page.goto(`${baseURL}/?utm_medium=organic&utm_campaign=private-query-text`)
+
+    await expect
+      .poll(() => getPostHogEvents(page))
+      .toEqual(
+        expect.arrayContaining([
+          {
+            event: '$pageview',
+            properties: {
+              page_path: '/',
+              source_path: '/',
+              traffic_source: 'organic_search',
+              verification_run: false,
+            },
+          },
+        ]),
+      )
+    expect(JSON.stringify(await getPostHogEvents(page))).not.toContain('private-query-text')
+  })
+
+  test('marks controlled page views without retaining the verification query', async ({ page }) => {
+    await page.goto(`${baseURL}/?verification_run=1`)
+
+    await expect
+      .poll(() => getPostHogEvents(page))
+      .toEqual(
+        expect.arrayContaining([
+          {
+            event: '$pageview',
+            properties: {
+              page_path: '/',
+              source_path: '/',
+              traffic_source: 'other',
+              verification_run: true,
+            },
+          },
+        ]),
+      )
+    expect(JSON.stringify(await getPostHogEvents(page))).not.toContain('verification_run=1')
   })
 
   test('keeps the landing hero action hierarchy focused', async ({ page }) => {

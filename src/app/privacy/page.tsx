@@ -61,7 +61,7 @@ const processors = [
 
 const events = [
   {
-    fields: 'page_path, source_path',
+    fields: 'page_path, source_path, traffic_source, verification_run',
     name: '$pageview',
     when: 'A public route loads or changes.',
   },
@@ -138,6 +138,13 @@ export default function PrivacyPage() {
               <p className="text-muted-foreground">
                 Three, and their fields are fixed. Every value comes from a committed route, link,
                 or install command — never from anything you type.
+              </p>
+              <p className="text-muted-foreground">
+                Page views label traffic only as organic search or other. That label is derived in
+                your browser from a fixed search-engine list or an explicit organic campaign marker.
+                The raw referrer, campaign, and query string are never sent. Controlled site checks
+                carry a true verification marker so they can be excluded from visitor counts;
+                ordinary visits carry false.
               </p>
               <ul className="space-y-3">
                 {events.map((event) => (
