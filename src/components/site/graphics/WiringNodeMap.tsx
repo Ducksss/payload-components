@@ -96,7 +96,8 @@ export function WiringNodeMap({
 }) {
   const rows = wiringLedger.rows
   const kinds = rows.map((row) => nodeKind(state, row))
-  const command = state === 'unwired' ? wiringLedger.columns.baseline : wiringLedger.columns.component
+  const command =
+    state === 'unwired' ? wiringLedger.columns.baseline : wiringLedger.columns.component
   const branded = state !== 'unwired'
 
   return (

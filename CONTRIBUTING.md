@@ -109,7 +109,7 @@ E2E_PORT=3100 pnpm test:e2e <spec> --update-snapshots
 ```
 
 This matters because nothing in CI can catch a half-mint. The specs' coverage
-guard fails on a *missing* baseline, never a stale one, and `pr-gate` only ever
+guard fails on a _missing_ baseline, never a stale one, and `pr-gate` only ever
 renders linux — so a linux-only mint leaves the darwin image showing the old
 design, green on every PR, failing only for whoever next runs the gate on a Mac.
 
@@ -134,7 +134,7 @@ registering a concept is all it takes to cover it. Two things about it are easy
 to get wrong when extending it:
 
 - **It runs under reduced motion, on purpose.** Straight after `goto`, in-view
-  sections are mid-fade and axe reads ~13%-opacity ink as a *serious* contrast
+  sections are mid-fade and axe reads ~13%-opacity ink as a _serious_ contrast
   violation. `reducedMotion: 'reduce'` lets the CSS nets pin the final frame
   before hydration, and the suite then asserts that every
   `[data-template-section]` and every `data-*-reveal` element really is settled.

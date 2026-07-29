@@ -17,7 +17,13 @@ type Component = (typeof componentEntries)[number]
  * so the entire surface navigates to the contract; the copy button opts back
  * out with a higher stacking context. */
 
-export function ComponentCard({ className, component }: { className?: string; component: Component }) {
+export function ComponentCard({
+  className,
+  component,
+}: {
+  className?: string
+  component: Component
+}) {
   return (
     <article
       id={component.slug}

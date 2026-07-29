@@ -12,7 +12,10 @@ import heroVideoManifest from '../../payload-components/manifests/hero-video.jso
 import statsProofManifest from '../../payload-components/manifests/stats-proof.json' with { type: 'json' }
 
 const productionSiteUrl = 'https://www.payload-components.xyz'
-const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionSiteUrl).replace(/\/+$/, '')
+const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionSiteUrl).replace(
+  /\/+$/,
+  '',
+)
 
 export const siteUrl =
   configuredSiteUrl === 'https://payload-components.xyz' ? productionSiteUrl : configuredSiteUrl
@@ -35,11 +38,23 @@ export const primaryInstallCommand = 'npx payload-components add hero-basic'
 export const cliVersion = packageJson.version
 
 export const pipelineStages = [
-  { detail: 'The block config, component, and shared fields land in src/blocks/.', title: 'Copy the source' },
-  { detail: 'Added to your Pages collection in src/collections/Pages/index.ts.', title: 'Register the block' },
-  { detail: 'Wired into src/blocks/RenderBlocks.tsx so the page renders it.', title: 'Map the renderer' },
+  {
+    detail: 'The block config, component, and shared fields land in src/blocks/.',
+    title: 'Copy the source',
+  },
+  {
+    detail: 'Added to your Pages collection in src/collections/Pages/index.ts.',
+    title: 'Register the block',
+  },
+  {
+    detail: 'Wired into src/blocks/RenderBlocks.tsx so the page renders it.',
+    title: 'Map the renderer',
+  },
   { detail: 'payload generate:types updates src/payload-types.ts.', title: 'Regenerate types' },
-  { detail: 'payload generate:importmap updates the admin import map.', title: 'Regenerate the import map' },
+  {
+    detail: 'payload generate:importmap updates the admin import map.',
+    title: 'Regenerate the import map',
+  },
 ] as const
 
 export const siteDescription =
@@ -66,11 +81,12 @@ export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
 export const heroSubheadline =
   'For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.'
 
-export const heroGuideLink = { href: '/docs/installation', label: 'Read the install guide' } as const
+export const heroGuideLink = {
+  href: '/docs/installation',
+  label: 'Read the install guide',
+} as const
 
-export const heroTertiaryLinks = [
-  { href: '/components', label: 'Browse the components' },
-] as const
+export const heroTertiaryLinks = [{ href: '/components', label: 'Browse the components' }] as const
 
 /**
  * Stylized replay of a real `payload-components add` run. Stage wording tracks
@@ -80,7 +96,10 @@ export const heroTertiaryLinks = [
 export const terminalDemoLines = [
   { kind: 'command', text: 'npx payload-components add hero-basic' },
   { kind: 'info', text: 'payload-components: installing "hero-basic" into ./acme-site' },
-  { kind: 'step', text: `resolved hero-basic@${heroBasicManifest.version} · payload-website-starter` },
+  {
+    kind: 'step',
+    text: `resolved hero-basic@${heroBasicManifest.version} · payload-website-starter`,
+  },
   { kind: 'step', text: 'copied 3 block source files into src/blocks/' },
   { kind: 'step', text: 'registered block in src/collections/Pages/index.ts' },
   { kind: 'step', text: 'wired render mapping in src/blocks/RenderBlocks.tsx' },
@@ -138,7 +157,6 @@ export const receipts = [
   { icon: 'layers', label: 'Payload 3 · Next 15 / 16' },
   { icon: 'braces', label: 'Open registry JSON at /r/registry.json' },
 ] as const
-
 
 export const workflowIntro =
   'No scaffolds, no lock-in — plain source plus two scoped patches you can read.'
@@ -385,8 +403,7 @@ export const componentEntries = [
   {
     category: 'features',
     command: 'npx payload-components add feature-steps',
-    description:
-      'A numbered steps block for sequential, how-it-works feature flows.',
+    description: 'A numbered steps block for sequential, how-it-works feature flows.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'items', 'links'],
     href: '/docs/components/feature-steps',
@@ -616,8 +633,7 @@ export const componentEntries = [
   {
     category: 'integration',
     command: 'npx payload-components add integration-orbit',
-    description:
-      'Concentric rings of integration logos that orbit a featured brand mark on hover.',
+    description: 'Concentric rings of integration logos that orbit a featured brand mark on hover.',
     family: 'pages',
     fields: ['heading', 'subtext', 'integrations', 'featuredLogo'],
     href: '/docs/components/integration-orbit',
@@ -720,8 +736,7 @@ export const componentEntries = [
   {
     category: 'logos',
     command: 'npx payload-components add logo-cloud-marquee',
-    description:
-      'An auto-scrolling marquee of editable logos with progressive-blur edge fades.',
+    description: 'An auto-scrolling marquee of editable logos with progressive-blur edge fades.',
     family: 'pages',
     fields: ['heading', 'logos'],
     href: '/docs/components/logo-cloud-marquee',
@@ -733,8 +748,7 @@ export const componentEntries = [
   {
     category: 'logos',
     command: 'npx payload-components add logo-cloud-hover',
-    description:
-      'A logo wall that dims and blurs on hover to reveal a single call-to-action.',
+    description: 'A logo wall that dims and blurs on hover to reveal a single call-to-action.',
     family: 'pages',
     fields: ['heading', 'logos', 'links'],
     href: '/docs/components/logo-cloud-hover',
@@ -759,8 +773,7 @@ export const componentEntries = [
   {
     category: 'logos',
     command: 'npx payload-components add logo-cloud-inline',
-    description:
-      'A compact label-over-logos strip for editable trust logos.',
+    description: 'A compact label-over-logos strip for editable trust logos.',
     family: 'pages',
     fields: ['heading', 'logos'],
     href: '/docs/components/logo-cloud-inline',
@@ -772,8 +785,7 @@ export const componentEntries = [
   {
     category: 'logos',
     command: 'npx payload-components add logo-cloud-inline-wrap',
-    description:
-      'A single wrapping row that keeps the label inline with editable trust logos.',
+    description: 'A single wrapping row that keeps the label inline with editable trust logos.',
     family: 'pages',
     fields: ['heading', 'logos'],
     href: '/docs/components/logo-cloud-inline-wrap',
@@ -913,8 +925,7 @@ export const componentEntries = [
   {
     category: 'faq',
     command: 'npx payload-components add faq-grouped',
-    description:
-      'An FAQ split into titled, icon-tagged category groups of accordions.',
+    description: 'An FAQ split into titled, icon-tagged category groups of accordions.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'groups'],
     href: '/docs/components/faq-grouped',
@@ -926,8 +937,7 @@ export const componentEntries = [
   {
     category: 'faq',
     command: 'npx payload-components add faq-card',
-    description:
-      'A centered FAQ accordion wrapped in a card with an optional CTA below.',
+    description: 'A centered FAQ accordion wrapped in a card with an optional CTA below.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'items', 'links'],
     href: '/docs/components/faq-card',
@@ -939,8 +949,7 @@ export const componentEntries = [
   {
     category: 'faq',
     command: 'npx payload-components add faq-icons',
-    description:
-      'An FAQ accordion with a per-question icon picked from a fixed allowlist.',
+    description: 'An FAQ accordion with a per-question icon picked from a fixed allowlist.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'items'],
     href: '/docs/components/faq-icons',
@@ -1017,8 +1026,7 @@ export const componentEntries = [
   {
     category: 'content',
     command: 'npx payload-components add content-image-frame',
-    description:
-      'A centered content section with an intro and a layered, framed screenshot.',
+    description: 'A centered content section with an intro and a layered, framed screenshot.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'paragraphs', 'image', 'backgroundImage'],
     href: '/docs/components/content-image-frame',
@@ -1030,8 +1038,7 @@ export const componentEntries = [
   {
     category: 'content',
     command: 'npx payload-components add content-split-rows',
-    description:
-      'A content section with an intro and alternating media-and-text rows.',
+    description: 'A content section with an intro and alternating media-and-text rows.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'paragraphs', 'rows'],
     href: '/docs/components/content-split-rows',
@@ -1043,8 +1050,7 @@ export const componentEntries = [
   {
     category: 'content',
     command: 'npx payload-components add content-rows',
-    description:
-      'A content section with an intro and a uniform stack of media-and-text rows.',
+    description: 'A content section with an intro and a uniform stack of media-and-text rows.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'paragraphs', 'rows'],
     href: '/docs/components/content-rows',
@@ -1056,8 +1062,7 @@ export const componentEntries = [
   {
     category: 'content',
     command: 'npx payload-components add content-stats',
-    description:
-      'A content section with an intro, a grid of icon features, and a stats list.',
+    description: 'A content section with an intro, a grid of icon features, and a stats list.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'paragraphs', 'features', 'stats'],
     href: '/docs/components/content-stats',
@@ -1069,8 +1074,7 @@ export const componentEntries = [
   {
     category: 'content',
     command: 'npx payload-components add content-quote',
-    description:
-      'A content section pairing a media panel with body copy and a cited pull quote.',
+    description: 'A content section pairing a media panel with body copy and a cited pull quote.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'paragraphs', 'image', 'quote', 'citation', 'logo', 'logoLabel'],
     href: '/docs/components/content-quote',
@@ -1108,8 +1112,7 @@ export const componentEntries = [
   {
     category: 'content',
     command: 'npx payload-components add content-list',
-    description:
-      'A serif-headed content section pairing a heading with a labeled-term list.',
+    description: 'A serif-headed content section pairing a heading with a labeled-term list.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'items'],
     href: '/docs/components/content-list',
@@ -1121,8 +1124,7 @@ export const componentEntries = [
   {
     category: 'content',
     command: 'npx payload-components add content-list-columns',
-    description:
-      'A serif-headed content section with a two-column labeled-term list.',
+    description: 'A serif-headed content section with a two-column labeled-term list.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'items'],
     href: '/docs/components/content-list-columns',
@@ -1134,8 +1136,7 @@ export const componentEntries = [
   {
     category: 'content',
     command: 'npx payload-components add content-list-icons',
-    description:
-      'A serif-headed content section with an intro and a multi-column icon list.',
+    description: 'A serif-headed content section with an intro and a multi-column icon list.',
     family: 'pages',
     fields: ['eyebrow', 'title', 'description', 'items'],
     href: '/docs/components/content-list-icons',
@@ -1258,7 +1259,8 @@ export const upcomingComponents = [
 
 export type UpcomingComponent = (typeof upcomingComponents)[number]
 
-export const componentsIntro = 'No screenshots — each specimen is the real component, rendered from source.'
+export const componentsIntro =
+  'No screenshots — each specimen is the real component, rendered from source.'
 
 export const componentFamilies = {
   pages: {
@@ -1379,8 +1381,7 @@ export const faqIntro =
 
 export const faqEntries = [
   {
-    answer:
-      `Yes — and built to stay that way. The registry, the CLI, all ${componentEntries.length} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.`,
+    answer: `Yes — and built to stay that way. The registry, the CLI, all ${componentEntries.length} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.`,
     question: 'Is Payload Components free?',
   },
   {
@@ -1444,11 +1445,9 @@ export const communityInvite = {
 /* ------------------------------------------------------------------ */
 
 export const catalogTitle = `${componentEntries.length} typed Payload CMS blocks and components`
-export const catalogDescription =
-  `Browse all ${componentEntries.length} typed blocks for Payload CMS: heroes, features, pricing, calls to action, integrations, testimonials, FAQs, content, teams, and embeds. One CLI command copies each component and wires its collection registration, renderer mapping, generated types, and admin import map.`
+export const catalogDescription = `Browse all ${componentEntries.length} typed blocks for Payload CMS: heroes, features, pricing, calls to action, integrations, testimonials, FAQs, content, teams, and embeds. One CLI command copies each component and wires its collection registration, renderer mapping, generated types, and admin import map.`
 export const catalogMetadataTitle = `${componentEntries.length} Payload CMS Components & Blocks | Catalog`
-export const catalogMetadataDescription =
-  `Browse all ${componentEntries.length} typed Payload CMS blocks for heroes, features, pricing, integrations, FAQs, content, teams, and embeds, with one-command project wiring.`
+export const catalogMetadataDescription = `Browse all ${componentEntries.length} typed Payload CMS blocks for heroes, features, pricing, integrations, FAQs, content, teams, and embeds, with one-command project wiring.`
 export const catalogInstallationLinkLabel = 'See how one-command installation works'
 export const catalogTemplatesLinkLabel = 'Explore Payload CMS template concepts'
 

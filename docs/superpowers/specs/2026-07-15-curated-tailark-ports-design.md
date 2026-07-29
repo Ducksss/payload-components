@@ -15,15 +15,15 @@ an existing Payload Component.
 
 The approved set is:
 
-| Payload Components slug | Tailark source | New capability |
-| --- | --- | --- |
-| `hero-video` | Dusk `hero-section-5` | Full-bleed, editor-managed video hero |
-| `hero-product-tilt` | Dusk `hero-section-9` | Perspective product-image hero |
-| `feature-accordion` | Dusk `features-12` | Accordion selection synchronized with media |
-| `feature-cards-media` | Dusk `features-10` | Multiple feature cards with individual media |
-| `feature-icon-grid` | Dusk `features-1` | Icon cards with a distinctive masked-grid decorator |
-| `stats-proof` | Dusk `stats-4` | Narrative, prominent metrics, and testimonial proof |
-| `contact-routing-form` | Dusk `contact-2` | Contact channels plus a functional inquiry form |
+| Payload Components slug | Tailark source        | New capability                                      |
+| ----------------------- | --------------------- | --------------------------------------------------- |
+| `hero-video`            | Dusk `hero-section-5` | Full-bleed, editor-managed video hero               |
+| `hero-product-tilt`     | Dusk `hero-section-9` | Perspective product-image hero                      |
+| `feature-accordion`     | Dusk `features-12`    | Accordion selection synchronized with media         |
+| `feature-cards-media`   | Dusk `features-10`    | Multiple feature cards with individual media        |
+| `feature-icon-grid`     | Dusk `features-1`     | Icon cards with a distinctive masked-grid decorator |
+| `stats-proof`           | Dusk `stats-4`        | Narrative, prominent metrics, and testimonial proof |
+| `contact-routing-form`  | Dusk `contact-2`      | Contact channels plus a functional inquiry form     |
 
 The feature implementations at commit `1b7eaf891582e7021865c4574fa295e2524e3637` on local branch
 `claude/keen-shamir-211b4e` are reference material, not merge-ready code. They predate the current

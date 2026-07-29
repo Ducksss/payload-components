@@ -56,12 +56,7 @@ export type FeatureSectionDemoContent = {
 export type FeatureGridBasicDemoContent = FeatureSectionDemoContent
 
 export type FeatureDemoIconName =
-  | 'chart'
-  | 'database'
-  | 'fingerprint'
-  | 'id-card'
-  | 'shield'
-  | 'zap'
+  'chart' | 'database' | 'fingerprint' | 'id-card' | 'shield' | 'zap'
 
 export type FeatureAccordionDemoContent = Omit<FeatureSectionDemoContent, 'items'> & {
   items: {
@@ -231,10 +226,7 @@ export const heroKineticDemoContent: HeroKineticDemoContent = {
     { label: 'Motion' },
     { label: 'Film' },
   ],
-  proofItems: [
-    { label: 'Independent since 2017' },
-    { label: '31 brands shipped' },
-  ],
+  proofItems: [{ label: 'Independent since 2017' }, { label: '31 brands shipped' }],
   title: 'Work that moves. Brands that hold.',
 }
 
@@ -264,7 +256,8 @@ export const featureAccordionDemoContent: FeatureAccordionDemoContent = {
   eyebrow: 'Platform',
   items: [
     {
-      description: 'Give every customer a current view of the metrics that matter to their workspace.',
+      description:
+        'Give every customer a current view of the metrics that matter to their workspace.',
       hasImage: true,
       icon: 'chart',
       title: 'Live dashboards',
@@ -370,7 +363,8 @@ export const featureSplitDemoContent: FeatureSectionDemoContent = {
 }
 
 export const featureBentoDemoContent: FeatureSectionDemoContent = {
-  description: 'Lead with the headline capability, then let the supporting cells fill in around it.',
+  description:
+    'Lead with the headline capability, then let the supporting cells fill in around it.',
   eyebrow: 'Platform',
   items: [
     {
@@ -401,7 +395,8 @@ export const featureStepsDemoContent: FeatureSectionDemoContent = {
   eyebrow: 'Onboarding',
   items: [
     {
-      description: 'Point the SDK at your warehouse or stream events directly — no migration required.',
+      description:
+        'Point the SDK at your warehouse or stream events directly — no migration required.',
       title: 'Connect your data',
     },
     {
@@ -409,7 +404,8 @@ export const featureStepsDemoContent: FeatureSectionDemoContent = {
       title: 'Compose a view',
     },
     {
-      description: 'Embed the finished workspace with one snippet and roll it out to every account.',
+      description:
+        'Embed the finished workspace with one snippet and roll it out to every account.',
       title: 'Ship to customers',
     },
   ],
@@ -823,8 +819,7 @@ export const integrationClusterDemoContent: IntegrationDemoContent = {
 export const integrationSplitDemoContent: IntegrationDemoContent = {
   heading: 'One hub for every integration.',
   links: [{ link: { appearance: 'default', label: 'Browse integrations' } }],
-  subtext:
-    'Connect the tools your team lives in and let Acme keep them in sync, automatically.',
+  subtext: 'Connect the tools your team lives in and let Acme keep them in sync, automatically.',
 }
 
 export const integrationConnectDemoContent: IntegrationDemoContent = {
@@ -929,8 +924,7 @@ export const teamRosterDemoContent: TeamSectionDemoContent = {
 }
 
 export const teamGridDemoContent: TeamSectionDemoContent = {
-  description:
-    'A small, senior team shipping the platform that product teams open every day.',
+  description: 'A small, senior team shipping the platform that product teams open every day.',
   eyebrow: 'Team',
   members: [
     { name: 'Henry Lee', role: 'UX Engineer' },
@@ -1069,7 +1063,8 @@ export const faqGridDemoContent: FaqDemoContent = {
       question: 'How do I create an account?',
     },
     {
-      answer: 'Yes — a 14-day free trial with full access to all features, no credit card required.',
+      answer:
+        'Yes — a 14-day free trial with full access to all features, no credit card required.',
       question: 'Is there a free trial?',
     },
     {
@@ -1077,7 +1072,8 @@ export const faqGridDemoContent: FaqDemoContent = {
       question: 'What payment methods do you accept?',
     },
     {
-      answer: 'We offer a 30-day money-back guarantee — contact support within 30 days for a refund.',
+      answer:
+        'We offer a 30-day money-back guarantee — contact support within 30 days for a refund.',
       question: 'Can I get a refund?',
     },
     {
@@ -1085,8 +1081,7 @@ export const faqGridDemoContent: FaqDemoContent = {
       question: 'Can I change my plan?',
     },
     {
-      answer:
-        'Our team is available by email and live chat, with priority support on paid plans.',
+      answer: 'Our team is available by email and live chat, with priority support on paid plans.',
       question: 'How do I reach support?',
     },
   ],
@@ -1134,7 +1129,8 @@ export const faqGroupedDemoContent: FaqGroupedDemoContent = {
       icon: 'package',
       items: [
         {
-          answer: 'Click Sign up, then connect your first data source — most teams ship in an afternoon.',
+          answer:
+            'Click Sign up, then connect your first data source — most teams ship in an afternoon.',
           question: 'How do I get started?',
         },
         {
@@ -1162,7 +1158,8 @@ export const faqGroupedDemoContent: FaqGroupedDemoContent = {
       icon: 'help-circle',
       items: [
         {
-          answer: 'Email and live chat are available to every plan, with priority routing on paid tiers.',
+          answer:
+            'Email and live chat are available to every plan, with priority routing on paid tiers.',
           question: 'How do I reach support?',
         },
         {
@@ -1224,17 +1221,33 @@ export const comparatorTableDemoContent: ComparatorTableDemoContent = {
   description:
     'A full feature matrix so teams can see exactly what each tier unlocks before they commit.',
   features: [
-    { feature: 'Projects', groupLabel: 'Usage', values: [{ label: '3' }, { label: 'Unlimited' }, { label: 'Unlimited' }] },
-    { feature: 'API calls', values: [{ label: '10K / mo' }, { label: '1M / mo' }, { label: 'Custom' }] },
+    {
+      feature: 'Projects',
+      groupLabel: 'Usage',
+      values: [{ label: '3' }, { label: 'Unlimited' }, { label: 'Unlimited' }],
+    },
+    {
+      feature: 'API calls',
+      values: [{ label: '10K / mo' }, { label: '1M / mo' }, { label: 'Custom' }],
+    },
     { feature: 'Team members', values: [{ label: '1' }, { label: '10' }, { label: 'Unlimited' }] },
-    { feature: 'Analytics dashboard', groupLabel: 'Capabilities', values: [{ included: true }, { included: true }, { included: true }] },
+    {
+      feature: 'Analytics dashboard',
+      groupLabel: 'Capabilities',
+      values: [{ included: true }, { included: true }, { included: true }],
+    },
     { feature: 'Custom webhooks', values: [{}, { included: true }, { included: true }] },
     { feature: 'SSO / SAML', values: [{}, {}, { included: true }] },
     { feature: 'Priority support', values: [{}, { included: true }, { included: true }] },
   ],
   plans: [
     { links: [{ link: { appearance: 'outline', label: 'Get started' } }], name: 'Free' },
-    { badge: 'Most popular', highlighted: true, links: [{ link: { appearance: 'default', label: 'Start free trial' } }], name: 'Pro' },
+    {
+      badge: 'Most popular',
+      highlighted: true,
+      links: [{ link: { appearance: 'default', label: 'Start free trial' } }],
+      name: 'Pro',
+    },
     { links: [{ link: { appearance: 'outline', label: 'Talk to sales' } }], name: 'Scale' },
   ],
   title: 'Compare every plan',
@@ -1243,17 +1256,40 @@ export const comparatorTableDemoContent: ComparatorTableDemoContent = {
 export const comparatorGridDemoContent: ComparatorGridDemoContent = {
   description: 'Compare plans side by side and pick the tier that fits your team today.',
   features: [
-    { feature: 'Integrations', values: [{ label: '5' }, { label: 'Unlimited' }, { label: 'Unlimited' }] },
-    { feature: 'API calls', values: [{ label: '10K / mo' }, { label: '100K / mo' }, { label: '1M / mo' }] },
+    {
+      feature: 'Integrations',
+      values: [{ label: '5' }, { label: 'Unlimited' }, { label: 'Unlimited' }],
+    },
+    {
+      feature: 'API calls',
+      values: [{ label: '10K / mo' }, { label: '100K / mo' }, { label: '1M / mo' }],
+    },
     { feature: 'Team members', values: [{ label: '1' }, { label: '5' }, { label: 'Unlimited' }] },
     { feature: 'Analytics', values: [{ included: true }, { included: true }, { included: true }] },
     { feature: 'Custom webhooks', values: [{}, { included: true }, { included: true }] },
     { feature: 'SSO / SAML', values: [{}, {}, { included: true }] },
   ],
   plans: [
-    { links: [{ link: { appearance: 'outline', label: 'Get started' } }], name: 'Starter', period: '/mo', price: '$0' },
-    { badge: 'Most popular', highlighted: true, links: [{ link: { appearance: 'default', label: 'Start free trial' } }], name: 'Pro', period: '/mo', price: '$29' },
-    { links: [{ link: { appearance: 'outline', label: 'Start free trial' } }], name: 'Team', period: '/mo', price: '$79' },
+    {
+      links: [{ link: { appearance: 'outline', label: 'Get started' } }],
+      name: 'Starter',
+      period: '/mo',
+      price: '$0',
+    },
+    {
+      badge: 'Most popular',
+      highlighted: true,
+      links: [{ link: { appearance: 'default', label: 'Start free trial' } }],
+      name: 'Pro',
+      period: '/mo',
+      price: '$29',
+    },
+    {
+      links: [{ link: { appearance: 'outline', label: 'Start free trial' } }],
+      name: 'Team',
+      period: '/mo',
+      price: '$79',
+    },
   ],
   title: 'Pricing that scales with you',
 }
@@ -1421,7 +1457,8 @@ export const testimonialsBentoDemoContent: TestimonialDemoContent = {
     },
     {
       author: 'Rodrigo Aguilar',
-      quote: 'I love Acme. The blocks are well-structured, simple to use, and beautifully designed.',
+      quote:
+        'I love Acme. The blocks are well-structured, simple to use, and beautifully designed.',
       role: 'Creator, TailwindAwesome',
     },
   ],
@@ -1429,8 +1466,7 @@ export const testimonialsBentoDemoContent: TestimonialDemoContent = {
 }
 
 export const testimonialsWallDemoContent: TestimonialDemoContent = {
-  description:
-    'Hundreds of teams ship on Acme every day. Here is what a few of them told us.',
+  description: 'Hundreds of teams ship on Acme every day. Here is what a few of them told us.',
   items: [
     {
       author: 'Jonathan Yombo',
@@ -1440,7 +1476,8 @@ export const testimonialsWallDemoContent: TestimonialDemoContent = {
     },
     {
       author: 'Yves Kalume',
-      quote: 'With no experience in web design I redesigned my entire site in a few minutes thanks to Acme.',
+      quote:
+        'With no experience in web design I redesigned my entire site in a few minutes thanks to Acme.',
       role: 'GDE — Android',
     },
     {
@@ -1450,12 +1487,14 @@ export const testimonialsWallDemoContent: TestimonialDemoContent = {
     },
     {
       author: 'Zeki',
-      quote: 'Using Acme has been like unlocking a secret design superpower — stunning and user-friendly.',
+      quote:
+        'Using Acme has been like unlocking a secret design superpower — stunning and user-friendly.',
       role: 'Founder, ChatExtend',
     },
     {
       author: 'Joseph Kitheka',
-      quote: 'Acme has transformed the way I develop web applications. The flexibility is unmatched.',
+      quote:
+        'Acme has transformed the way I develop web applications. The flexibility is unmatched.',
       role: 'Fullstack Developer',
     },
     {
@@ -1465,7 +1504,8 @@ export const testimonialsWallDemoContent: TestimonialDemoContent = {
     },
     {
       author: 'Rodrigo Aguilar',
-      quote: 'I love Acme. The blocks are well-structured, simple to use, and beautifully designed.',
+      quote:
+        'I love Acme. The blocks are well-structured, simple to use, and beautifully designed.',
       role: 'Creator, TailwindAwesome',
     },
     {
@@ -1475,7 +1515,8 @@ export const testimonialsWallDemoContent: TestimonialDemoContent = {
     },
     {
       author: 'Shekinah Tshiokufila',
-      quote: 'Acme is redefining the standard of web design — an easy, efficient way to ship beauty.',
+      quote:
+        'Acme is redefining the standard of web design — an easy, efficient way to ship beauty.',
       role: 'Senior Software Engineer',
     },
   ],

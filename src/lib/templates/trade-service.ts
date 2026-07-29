@@ -190,7 +190,7 @@ export const tradeServiceTemplate: TemplateShowcase = {
             quote:
               'We look after ninety-odd rented properties and Halloran do the heating on all of them. They turn up when they say, they ring the tenant themselves, and I have never once had to chase an invoice or an argument.',
             logoLabel: 'NORTHWIND LETTINGS',
-    role: 'Property manager, Northwind Lettings',
+            role: 'Property manager, Northwind Lettings',
             title: 'The numbers, including the bad one.',
           },
           id: 'proof',
@@ -199,8 +199,7 @@ export const tradeServiceTemplate: TemplateShowcase = {
         {
           componentSlug: 'testimonials-rating',
           content: {
-            description:
-              'Left on our page by people in Ashcombe. We have not tidied the wording.',
+            description: 'Left on our page by people in Ashcombe. We have not tidied the wording.',
             eyebrow: 'Recent reviews',
             items: [
               {
@@ -804,7 +803,7 @@ export const tradeServiceTemplate: TemplateShowcase = {
               author: 'Ada Kirkbride',
               quote:
                 'My husband died in the February and the heating went the week after. I did not know where the stopcock was, what a cylinder was, or who to ring. Kieran spent an hour showing me the whole system with a torch, wrote the important bits on the back of an envelope for me, and charged me for one hour.',
-  role: 'Quarry Bank, Ashcombe — a customer since 2011',
+              role: 'Quarry Bank, Ashcombe — a customer since 2011',
             },
           },
           id: 'spotlight',

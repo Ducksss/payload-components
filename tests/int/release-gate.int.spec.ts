@@ -53,12 +53,8 @@ describe('release gate configuration', () => {
 
     const lintedFiles = lintResult.map((result) => result.filePath).sort()
     expect(lintedFiles).toEqual(expectedFiles)
-    expect(lintedFiles).toContain(
-      path.join(sourceRoot, 'blocks', 'HeroBasic', 'config.ts'),
-    )
-    expect(lintedFiles).toContain(
-      path.join(sourceRoot, 'components', 'ui', 'infinite-slider.tsx'),
-    )
+    expect(lintedFiles).toContain(path.join(sourceRoot, 'blocks', 'HeroBasic', 'config.ts'))
+    expect(lintedFiles).toContain(path.join(sourceRoot, 'components', 'ui', 'infinite-slider.tsx'))
 
     const tsconfig = JSON.parse(await readFile(path.join(repoRoot, 'tsconfig.json'), 'utf8')) as {
       exclude?: string[]
@@ -80,7 +76,7 @@ describe('release gate configuration', () => {
 
     const probe = [
       "import config from './playwright.config.ts'",
-      "const webServer = Array.isArray(config.webServer) ? config.webServer[0] : config.webServer",
+      'const webServer = Array.isArray(config.webServer) ? config.webServer[0] : config.webServer',
       "process.stdout.write(String(webServer?.command ?? ''))",
     ].join(';')
     const { stdout } = await execFileAsync(
@@ -113,8 +109,8 @@ describe('release gate configuration', () => {
     const probe = [
       "import config from './playwright.config.ts'",
       "import { getE2ESiteUrl } from './tools/payload-components/build-e2e.ts'",
-      "const webServer = Array.isArray(config.webServer) ? config.webServer[0] : config.webServer",
-      "process.stdout.write(JSON.stringify({ port: webServer?.env?.PORT, siteUrl: getE2ESiteUrl() }))",
+      'const webServer = Array.isArray(config.webServer) ? config.webServer[0] : config.webServer',
+      'process.stdout.write(JSON.stringify({ port: webServer?.env?.PORT, siteUrl: getE2ESiteUrl() }))',
     ].join(';')
     const probeEnv = { ...process.env }
     delete probeEnv.E2E_PORT
@@ -132,9 +128,7 @@ describe('release gate configuration', () => {
     expect(defaults.port).toBeTruthy()
     expect(defaults.siteUrl).toBeTruthy()
     expect(new URL(defaults.siteUrl ?? '').port).toBe(defaults.port)
-    expect(packageJson.scripts?.['build:e2e']).toContain(
-      'tools/payload-components/build-e2e.ts',
-    )
+    expect(packageJson.scripts?.['build:e2e']).toContain('tools/payload-components/build-e2e.ts')
     expect(packageJson.scripts?.['test:release']).toContain('pnpm build:e2e')
   })
 
@@ -157,12 +151,8 @@ describe('release gate configuration', () => {
     expect(workflow).toContain('fresh-payload-artifacts-${{ matrix.shard-index }}')
     expect(workflow).toContain('SMOKE_REGISTRY_URL:')
     expect(workflow).not.toMatch(/^\s+REGISTRY_URL:/m)
-    expect(getWorkflowJob(workflow, 'release-gate')).toContain(
-      'npm install --global bun@1.3.14',
-    )
-    expect(getWorkflowJob(workflow, 'node-20-compat')).toContain(
-      'npm install --global bun@1.3.14',
-    )
+    expect(getWorkflowJob(workflow, 'release-gate')).toContain('npm install --global bun@1.3.14')
+    expect(getWorkflowJob(workflow, 'node-20-compat')).toContain('npm install --global bun@1.3.14')
 
     for (const jobName of jobNames) {
       expect(getWorkflowJob(workflow, jobName), `${jobName} must have a timeout`).toMatch(
@@ -225,10 +215,7 @@ describe('package publish guard', () => {
     const guardModule = (await import('../../tools/payload-components/publish-guard').catch(
       () => ({}),
     )) as {
-      getCandidatePackageVersion?: (input: {
-        cwd: string
-        releaseTag: string
-      }) => Promise<string>
+      getCandidatePackageVersion?: (input: { cwd: string; releaseTag: string }) => Promise<string>
     }
 
     expect(guardModule.getCandidatePackageVersion).toBeTypeOf('function')

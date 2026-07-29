@@ -79,9 +79,7 @@ function FamilyCard({ family }: { family: PageFamily }) {
         className="relative block border-b border-border bg-muted/40"
       >
         <DemoFitFrame className="h-52 [mask-image:linear-gradient(to_bottom,black_82%,transparent)] transition-transform duration-500 ease-out group-hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none">
-          <div className="px-4 py-4">
-            {Demo ? <Demo /> : null}
-          </div>
+          <div className="px-4 py-4">{Demo ? <Demo /> : null}</div>
         </DemoFitFrame>
         <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-border bg-background/90 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground backdrop-blur">
           <span aria-hidden="true" className="size-1.5 rounded-full bg-brand" />
@@ -98,7 +96,10 @@ function FamilyCard({ family }: { family: PageFamily }) {
         </div>
 
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-lg border border-border bg-muted/60 py-1 pl-3 pr-1">
-          <code tabIndex={0} className="overflow-x-auto whitespace-nowrap font-mono text-[11px] text-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <code
+            tabIndex={0}
+            className="overflow-x-auto whitespace-nowrap font-mono text-[11px] text-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             {family.representative.command}
           </code>
           <CommandCopyButton command={family.representative.command} />

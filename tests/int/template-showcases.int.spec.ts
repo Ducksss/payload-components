@@ -97,12 +97,27 @@ const importSpecifiers = (source: string): string[] => {
 /* Consumer-only / Payload-target modules the site-side template runtime must
  * never touch (AGENTS.md "Architecture Boundary" + the templates PRD). */
 const forbiddenImports = [
-  { matches: (s: string) => s.includes('payload-components/source'), name: 'payload-components/source' },
-  { matches: (s: string) => s.includes('payload-components/manifests'), name: 'payload-components/manifests' },
-  { matches: (s: string) => s === '@/payload-types' || s.startsWith('@/payload-types/'), name: '@/payload-types' },
+  {
+    matches: (s: string) => s.includes('payload-components/source'),
+    name: 'payload-components/source',
+  },
+  {
+    matches: (s: string) => s.includes('payload-components/manifests'),
+    name: 'payload-components/manifests',
+  },
+  {
+    matches: (s: string) => s === '@/payload-types' || s.startsWith('@/payload-types/'),
+    name: '@/payload-types',
+  },
   { matches: (s: string) => s === 'payload' || s.startsWith('payload/'), name: 'payload' },
-  { matches: (s: string) => s === '@/components/Media' || s.startsWith('@/components/Media/'), name: '@/components/Media' },
-  { matches: (s: string) => s === '@/components/Link' || s.startsWith('@/components/Link/'), name: '@/components/Link' },
+  {
+    matches: (s: string) => s === '@/components/Media' || s.startsWith('@/components/Media/'),
+    name: '@/components/Media',
+  },
+  {
+    matches: (s: string) => s === '@/components/Link' || s.startsWith('@/components/Link/'),
+    name: '@/components/Link',
+  },
 ] as const
 
 /* Returns the selectors of every rule that is NOT nested beneath the
@@ -186,7 +201,10 @@ describe('Template showcase contract', () => {
     for (const template of templateShowcases) {
       expect(template.status, `${template.slug}: status`).toBe('concept')
       expect(template.schemaVersion, `${template.slug}: schemaVersion`).toBe(1)
-      expect(Number.isInteger(template.revision) && template.revision > 0, `${template.slug}: revision must be a positive integer`).toBe(true)
+      expect(
+        Number.isInteger(template.revision) && template.revision > 0,
+        `${template.slug}: revision must be a positive integer`,
+      ).toBe(true)
     }
   })
 
@@ -195,11 +213,13 @@ describe('Template showcase contract', () => {
       it('has exactly one home page, unique page paths, and unique section ids', () => {
         expect(
           template.pages.filter((page) => page.path === '').length,
-          'exactly one home page (path \'\')',
+          "exactly one home page (path '')",
         ).toBe(1)
 
         const paths = template.pages.map((page) => page.path)
-        expect(new Set(paths).size, `duplicate page paths in ${paths.join(', ')}`).toBe(paths.length)
+        expect(new Set(paths).size, `duplicate page paths in ${paths.join(', ')}`).toBe(
+          paths.length,
+        )
 
         for (const page of template.pages) {
           const ids = page.sections.map((section) => section.id)
@@ -213,17 +233,27 @@ describe('Template showcase contract', () => {
       it('resolves every navigation target and keeps every recipe non-empty', () => {
         const paths = new Set(template.pages.map((page) => page.path))
         for (const item of template.navigation) {
-          expect(paths.has(item.path), `navigation "${item.label}" targets undeclared path "${item.path}"`).toBe(true)
+          expect(
+            paths.has(item.path),
+            `navigation "${item.label}" targets undeclared path "${item.path}"`,
+          ).toBe(true)
         }
         for (const page of template.pages) {
-          expect(page.sections.length, `page "${page.path || '(home)'}" has an empty recipe`).toBeGreaterThan(0)
+          expect(
+            page.sections.length,
+            `page "${page.path || '(home)'}" has an empty recipe`,
+          ).toBeGreaterThan(0)
         }
       })
 
       it('composes only blocks that exist in the catalog AND the demo-twin registry', () => {
         const missing = uniqueTemplateBlockSlugs(template).flatMap((slug) => [
-          ...(componentEntrySlugs.has(slug) ? [] : [`${slug} — not in componentEntries (src/lib/site.ts)`]),
-          ...(knownDemoSlugs.has(slug) ? [] : [`${slug} — no demo twin (src/components/site/demos/registry.ts)`]),
+          ...(componentEntrySlugs.has(slug)
+            ? []
+            : [`${slug} — not in componentEntries (src/lib/site.ts)`]),
+          ...(knownDemoSlugs.has(slug)
+            ? []
+            : [`${slug} — no demo twin (src/components/site/demos/registry.ts)`]),
         ])
         expect(missing, `Unresolvable recipe blocks:\n${missing.join('\n')}`).toEqual([])
       })
@@ -277,7 +307,9 @@ describe('Template showcase contract', () => {
       for (const specifier of importSpecifiers(source)) {
         for (const forbidden of forbiddenImports) {
           if (forbidden.matches(specifier)) {
-            violations.push(`${file}: imports "${specifier}" (${forbidden.name} is consumer/target-side)`)
+            violations.push(
+              `${file}: imports "${specifier}" (${forbidden.name} is consumer/target-side)`,
+            )
           }
         }
       }
@@ -324,8 +356,14 @@ describe('Template showcase contract', () => {
   it('keeps waitlist, coming-soon, and download claims off template surfaces', async () => {
     const forbiddenCopy = [
       { pattern: /\bwaitlist\b/i, reason: 'waitlist copy (community-first — no funnels)' },
-      { pattern: /coming[\s-]soon\b/i, reason: '"coming soon" copy (state the concept status instead)' },
-      { pattern: /\bdownloads?\b/i, reason: 'download copy (concepts are browsable, not downloadable)' },
+      {
+        pattern: /coming[\s-]soon\b/i,
+        reason: '"coming soon" copy (state the concept status instead)',
+      },
+      {
+        pattern: /\bdownloads?\b/i,
+        reason: 'download copy (concepts are browsable, not downloadable)',
+      },
     ] as const
 
     const violations: string[] = []

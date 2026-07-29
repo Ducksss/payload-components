@@ -111,7 +111,9 @@ describe('payload-components doctor', () => {
     expect(result.stderr).toBe('')
     expect(result.stdout).toContain('[ok] project: payload-website-starter')
     expect(result.stdout).toContain('[ok] state: no recorded components')
-    await expect(access(path.join(fixtureDir, '.payload-components', 'state.json'))).rejects.toThrow()
+    await expect(
+      access(path.join(fixtureDir, '.payload-components', 'state.json')),
+    ).rejects.toThrow()
   }, 180000)
 
   it('fails when a recorded component is missing files and Payload fragments', async () => {

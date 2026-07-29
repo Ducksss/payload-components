@@ -46,10 +46,7 @@ export function FaqGridDemo({
           {items.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2">
               {items.map((item, index) => (
-                <Card
-                  key={index}
-                  className="border-border/70 bg-background/85 p-6 shadow-none"
-                >
+                <Card key={index} className="border-border/70 bg-background/85 p-6 shadow-none">
                   <div className="text-base font-medium tracking-title">{item.question}</div>
                   <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.answer}</p>
                 </Card>

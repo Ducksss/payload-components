@@ -3,7 +3,14 @@
 import { Fragment, useEffect, useId, useRef, useState } from 'react'
 
 import type { Transition } from 'motion/react'
-import { animate, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react'
+import {
+  animate,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+} from 'motion/react'
 
 import { Badge } from '@/components/ui/badge'
 import { heroAuroraDemoContent, type HeroAuroraDemoContent } from '@/lib/demo-content'
@@ -141,7 +148,11 @@ function MetricTicker({
 
 function AuroraField() {
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10" data-aurora-field>
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 -z-10"
+      data-aurora-field
+    >
       {/* Base wash pooling under the headline. */}
       <div
         className="absolute inset-0"
@@ -257,7 +268,14 @@ function DashboardGlow({ reduceMotion }: { reduceMotion: boolean }) {
         viewBox="0 0 720 360"
       >
         <defs>
-          <linearGradient gradientUnits="userSpaceOnUse" id={gradientId} x1="0" x2="0" y1="60" y2="360">
+          <linearGradient
+            gradientUnits="userSpaceOnUse"
+            id={gradientId}
+            x1="0"
+            x2="0"
+            y1="60"
+            y2="360"
+          >
             <stop offset="0" stopColor="var(--brand)" stopOpacity="0.25" />
             <stop offset="1" stopColor="var(--brand)" stopOpacity="0" />
           </linearGradient>
@@ -275,7 +293,9 @@ function DashboardGlow({ reduceMotion }: { reduceMotion: boolean }) {
           data-aurora-reveal
           fill={`url(#${gradientId})`}
           initial={{ opacity: 0 }}
-          transition={reduceMotion ? { duration: 0 } : { delay: 1.9, duration: 0.9, ease: 'easeOut' }}
+          transition={
+            reduceMotion ? { duration: 0 } : { delay: 1.9, duration: 0.9, ease: 'easeOut' }
+          }
         />
         <motion.path
           animate={{ opacity: 1, pathLength: 1 }}
@@ -285,16 +305,25 @@ function DashboardGlow({ reduceMotion }: { reduceMotion: boolean }) {
           stroke="var(--brand)"
           strokeLinecap="round"
           strokeWidth="2.5"
-          transition={reduceMotion ? { duration: 0 } : { delay: 1.0, duration: 1.5, ease: 'easeInOut' }}
+          transition={
+            reduceMotion ? { duration: 0 } : { delay: 1.0, duration: 1.5, ease: 'easeInOut' }
+          }
           vectorEffect="non-scaling-stroke"
         />
         <motion.g
           animate={{ opacity: 1 }}
           data-aurora-reveal
           initial={{ opacity: 0 }}
-          transition={reduceMotion ? { duration: 0 } : { delay: 2.3, duration: 0.5, ease: EASE_OUT }}
+          transition={
+            reduceMotion ? { duration: 0 } : { delay: 2.3, duration: 0.5, ease: EASE_OUT }
+          }
         >
-          <circle cx="664" cy="80" fill="color-mix(in oklab, var(--brand) 22%, transparent)" r="14" />
+          <circle
+            cx="664"
+            cy="80"
+            fill="color-mix(in oklab, var(--brand) 22%, transparent)"
+            r="14"
+          />
           <circle cx="664" cy="80" fill="var(--brand)" r="4.5" />
         </motion.g>
       </svg>
@@ -426,7 +455,11 @@ export function HeroAuroraDemo({
                     )}
                   >
                     <dd className="text-3xl font-medium tracking-display tabular-nums text-foreground sm:text-4xl">
-                      <MetricTicker delay={0.95 + index * 0.12} reduceMotion={reduceMotion} value={value} />
+                      <MetricTicker
+                        delay={0.95 + index * 0.12}
+                        reduceMotion={reduceMotion}
+                        value={value}
+                      />
                     </dd>
                     <dt className="text-xs uppercase tracking-eyebrow text-muted-foreground">
                       {label}

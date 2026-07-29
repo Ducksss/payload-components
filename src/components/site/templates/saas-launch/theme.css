@@ -88,10 +88,7 @@
     );
 }
 
-[data-template-theme='saas-launch']
-  [data-template-section='hero']
-  > [aria-hidden='true']
-  > div {
+[data-template-theme='saas-launch'] [data-template-section='hero'] > [aria-hidden='true'] > div {
   padding-block: clamp(4.25rem, 9vw, 6.75rem);
 }
 
@@ -145,7 +142,11 @@
       color-mix(in oklab, var(--brand) 85%, transparent) calc(50% + 1px),
       transparent calc(50% + 1px)
     ),
-    linear-gradient(160deg, transparent 50%, color-mix(in oklab, var(--brand) 15%, transparent) 50%),
+    linear-gradient(
+      160deg,
+      transparent 50%,
+      color-mix(in oklab, var(--brand) 15%, transparent) 50%
+    ),
     repeating-linear-gradient(
       90deg,
       transparent 0 2.75rem,

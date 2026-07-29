@@ -87,6 +87,7 @@ pnpm exec vitest run --config ./vitest.config.mts \
 ### Task 1: Add `hero-video`
 
 **Files:**
+
 - Create: `payload-components/source/blocks/HeroVideo/config.ts`
 - Create: `payload-components/source/blocks/HeroVideo/Component.tsx`
 - Create: `payload-components/source/blocks/HeroVideo/Video.tsx`
@@ -102,6 +103,7 @@ pnpm exec vitest run --config ./vitest.config.mts \
 - Modify: `tools/payload-components/cli.ts`
 
 **Interfaces:**
+
 - Consumes: `heroFields: Field[]`, generated `HeroVideoBlock`, `CMSLink`, `Media`, and `useReducedMotion(): boolean | null`.
 - Produces: `HeroVideo: Block`, `HeroVideoBlock: React.FC<Props>`, and `HeroVideoPlayer({ poster, videoUrl }: { poster: HeroVideoBlockData['poster']; videoUrl?: string }): JSX.Element`.
 
@@ -271,6 +273,7 @@ EOF
 ### Task 2: Add `hero-product-tilt`
 
 **Files:**
+
 - Create: `payload-components/source/blocks/HeroProductTilt/config.ts`
 - Create: `payload-components/source/blocks/HeroProductTilt/Component.tsx`
 - Create: `payload-components/manifests/hero-product-tilt.json`
@@ -279,6 +282,7 @@ EOF
 - Modify: the same registry, catalog, demo-content, demo-registry, metadata, CLI, and curated-contract files from Task 1.
 
 **Interfaces:**
+
 - Consumes: `heroFields`, generated `HeroProductTiltBlock`, `CMSLink`, and `Media`.
 - Produces: `HeroProductTilt: Block` and `HeroProductTiltBlock: React.FC<Props>`.
 
@@ -346,6 +350,7 @@ EOF
 ### Task 3: Add the Feature icon foundation and `feature-accordion`
 
 **Files:**
+
 - Create: `payload-components/source/blocks/shared/featureIcons.ts`
 - Create: `payload-components/source/blocks/FeatureAccordion/config.ts`
 - Create: `payload-components/source/blocks/FeatureAccordion/Component.tsx`
@@ -355,6 +360,7 @@ EOF
 - Modify: registry/catalog/demo/meta/CLI/curated-contract files.
 
 **Interfaces:**
+
 - Produces: `featureIconOptions`, `FeatureIconName`,
   `createFeatureIconField(required?: boolean): Field`, and
   `featureIcons: Record<FeatureIconName, LucideIcon>` with keys `chart`, `database`, `fingerprint`,
@@ -432,6 +438,7 @@ EOF
 ### Task 4: Add `feature-cards-media`
 
 **Files:**
+
 - Create: `payload-components/source/blocks/FeatureCardsMedia/config.ts`
 - Create: `payload-components/source/blocks/FeatureCardsMedia/Component.tsx`
 - Create: `payload-components/manifests/feature-cards-media.json`
@@ -440,6 +447,7 @@ EOF
 - Modify: registry/catalog/demo/meta/CLI/curated-contract files.
 
 **Interfaces:**
+
 - Consumes: `featureFields`, `createFeatureIconField`, `featureIcons`, `CMSLink`, and `Media`.
 - Produces: `FeatureCardsMedia: Block` and `FeatureCardsMediaBlock`.
 
@@ -501,6 +509,7 @@ EOF
 ### Task 5: Add `feature-icon-grid`
 
 **Files:**
+
 - Create: `payload-components/source/blocks/FeatureIconGrid/config.ts`
 - Create: `payload-components/source/blocks/FeatureIconGrid/Component.tsx`
 - Create: `payload-components/manifests/feature-icon-grid.json`
@@ -509,6 +518,7 @@ EOF
 - Modify: registry/catalog/demo/meta/CLI/curated-contract files.
 
 **Interfaces:**
+
 - Consumes: the same Feature shared exports as Task 4.
 - Produces: `FeatureIconGrid: Block` and `FeatureIconGridBlock`.
 
@@ -569,6 +579,7 @@ EOF
 ### Task 6: Add `stats-proof` and the Stats family
 
 **Files:**
+
 - Create: `payload-components/source/blocks/StatsProof/config.ts`
 - Create: `payload-components/source/blocks/StatsProof/Component.tsx`
 - Create: `payload-components/manifests/stats-proof.json`
@@ -578,6 +589,7 @@ EOF
 - Modify: `src/lib/component-page-tree.tsx`
 
 **Interfaces:**
+
 - Produces: `StatsProof: Block` and `StatsProofBlock`.
 - Adds category `{ stats: { family: 'pages', label: 'Stats' } }` and docs family `{ key: 'stats', label: 'Stats', icon: <ChartNoAxesCombined /> }` after Testimonials.
 
@@ -637,6 +649,7 @@ EOF
 ### Task 7: Add `contact-routing-form` and the Contact family
 
 **Files:**
+
 - Create: `payload-components/source/blocks/shared/contactUrls.ts`
 - Create: `payload-components/source/blocks/ContactRoutingForm/config.ts`
 - Create: `payload-components/source/blocks/ContactRoutingForm/Component.tsx`
@@ -649,6 +662,7 @@ EOF
 - Modify: `tests/int/public-registry.int.spec.ts`
 
 **Interfaces:**
+
 - Produces: `contactChannelTypeOptions`, `ContactChannelType`, `getSafeContactHref(type, value): string | undefined`, and `validateContactValue(value, { siblingData }): true | string`.
 - Consumes: `getSafeFormAction` and `validateSameOriginFormAction` from the unchanged `safeUrls.ts`.
 - Produces: `ContactRoutingForm: Block` and `ContactRoutingFormBlock`.
@@ -759,11 +773,13 @@ EOF
 ### Task 8: Lock provenance and multi-component installation behavior
 
 **Files:**
+
 - Modify: `payload-components/PROVENANCE.md`
 - Modify: `tests/int/payload-components.int.spec.ts`
 - Modify: `tests/int/curated-tailark-ports.int.spec.ts`
 
 **Interfaces:**
+
 - Consumes all seven completed manifests and registry items.
 - Produces an auditable upstream map and a deterministic shared-file install test.
 
@@ -855,12 +871,14 @@ EOF
 ### Task 9: Verify docs, builds, visuals, and clean consumers
 
 **Files:**
+
 - Create: `tests/e2e/components-visual.e2e.spec.ts-snapshots/component-{hero-video,hero-product-tilt,feature-accordion,feature-cards-media,feature-icon-grid,stats-proof,contact-routing-form}-chromium-darwin.png`
 - Generated/ignored: `public/r/**`
 - If verification exposes a defect, return to the owning task, add a focused regression assertion,
   fix it, and commit that repair separately before restarting this task.
 
 **Interfaces:**
+
 - Consumes the complete seven-block implementation.
 - Produces a release-gate-clean branch with local visual baselines and a recorded Linux-baseline follow-up workflow run.
 

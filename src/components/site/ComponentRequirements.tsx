@@ -1,6 +1,10 @@
 import type { ReactNode } from 'react'
 
-import { getComponentManifest, getComponentRegistryDependencies, getSupportTarget } from '@/lib/component-manifest'
+import {
+  getComponentManifest,
+  getComponentRegistryDependencies,
+  getSupportTarget,
+} from '@/lib/component-manifest'
 
 /* Backs <ComponentRequirements slug="…" /> — honest, manifest-driven compatibility:
  * supported target, Payload/Next majors, and the shadcn UI it pulls in. */
@@ -43,8 +47,8 @@ export async function ComponentRequirements({ slug }: { slug: string }) {
               <code className="font-mono text-[13px] text-foreground/90">{file}</code>
             </span>
           ))}{' '}
-          — the surfaces <code className="font-mono text-[13px]">payload-components add</code> patches. The
-          CLI verifies this against the support matrix before touching anything.
+          — the surfaces <code className="font-mono text-[13px]">payload-components add</code>{' '}
+          patches. The CLI verifies this against the support matrix before touching anything.
         </p>
       ) : null}
     </div>

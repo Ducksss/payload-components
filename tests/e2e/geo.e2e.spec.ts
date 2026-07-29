@@ -70,9 +70,10 @@ test.describe('AI-readable documentation surfaces', () => {
     await page.goto(baseURL)
 
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', baseURL)
-    await expect(
-      page.locator('link[rel="alternate"][type="application/rss+xml"]'),
-    ).toHaveAttribute('href', `${baseURL}/feed.xml`)
+    await expect(page.locator('link[rel="alternate"][type="application/rss+xml"]')).toHaveAttribute(
+      'href',
+      `${baseURL}/feed.xml`,
+    )
 
     for (const path of ['/docs/installation', '/blog/hello']) {
       await page.goto(`${baseURL}${path}`)
@@ -199,9 +200,7 @@ test.describe('AI-readable documentation surfaces', () => {
       request.get(`${baseURL}/feed.xml`),
     ])
 
-    expect(home.headers()['strict-transport-security']).toBe(
-      'max-age=31536000; includeSubDomains',
-    )
+    expect(home.headers()['strict-transport-security']).toBe('max-age=31536000; includeSubDomains')
     expect(home.headers()['x-content-type-options']).toBe('nosniff')
     expect(home.headers()['referrer-policy']).toBe('strict-origin-when-cross-origin')
     expect(home.headers()['x-frame-options']).toBe('SAMEORIGIN')
@@ -245,16 +244,16 @@ test.describe('AI-readable documentation surfaces', () => {
   test('docs pages expose article metadata and searchable headings', async ({ page }) => {
     await page.goto(`${baseURL}/docs/installation`)
 
-    await expect(page).toHaveTitle(
-      'Payload Components CLI for Payload CMS v3 | Payload Components',
-    )
+    await expect(page).toHaveTitle('Payload Components CLI for Payload CMS v3 | Payload Components')
     await expect(page.locator('meta[name="description"]')).toHaveAttribute(
       'content',
       /regenerates Payload types, and updates the admin import map/,
     )
     await expect(page.getByRole('heading', { level: 1, name: 'Installation' })).toBeVisible()
     await expect(
-      page.getByText(/After the block is wired, the CLI runs generate:types and generate:importmap/),
+      page.getByText(
+        /After the block is wired, the CLI runs generate:types and generate:importmap/,
+      ),
     ).toBeVisible()
     await expect(page.getByRole('heading', { level: 2, name: 'What the CLI does' })).toBeVisible()
     await expect(page.getByRole('button', { name: /Copy Markdown/ })).toBeVisible()

@@ -285,12 +285,12 @@ The skill will:
 
 Every catalog control will carry four tags:
 
-| Axis | Values |
-| --- | --- |
-| Surface | `web`, `docs`, `registry`, `cli`, `external` |
-| Objective | `discovery`, `selection`, `trust`, `freshness`, `handoff`, `verification` |
-| Evidence | `standard`, `project-contract`, `observed`, `estimated`, `unverified`, `not-applicable` |
-| Owner | `repository`, `maintainer`, `platform` |
+| Axis      | Values                                                                                  |
+| --------- | --------------------------------------------------------------------------------------- |
+| Surface   | `web`, `docs`, `registry`, `cli`, `external`                                            |
+| Objective | `discovery`, `selection`, `trust`, `freshness`, `handoff`, `verification`               |
+| Evidence  | `standard`, `project-contract`, `observed`, `estimated`, `unverified`, `not-applicable` |
+| Owner     | `repository`, `maintainer`, `platform`                                                  |
 
 Tags describe status and routing; they are not a numeric score. A control can be
 marked verified only when its acceptance evidence exists.

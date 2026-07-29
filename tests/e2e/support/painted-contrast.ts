@@ -351,29 +351,32 @@ async function repaintInk(page: Page, colour: string) {
 }
 
 async function restoreInk(page: Page) {
-  await page.evaluate((properties: string[]) => {
-    const scope = window as unknown as {
-      __paintedContrastInk?: Map<Element, (string | null)[]>
-    }
-    const saved = scope.__paintedContrastInk
-    if (!saved) return
+  await page.evaluate(
+    (properties: string[]) => {
+      const scope = window as unknown as {
+        __paintedContrastInk?: Map<Element, (string | null)[]>
+      }
+      const saved = scope.__paintedContrastInk
+      if (!saved) return
 
-    for (const [element, values] of saved) {
-      const style = (element as Partial<HTMLElement>).style
-      if (!style) continue
+      for (const [element, values] of saved) {
+        const style = (element as Partial<HTMLElement>).style
+        if (!style) continue
 
-      properties.forEach((property, index) => {
-        const original = values[index]
-        if (original) {
-          style.setProperty(property, original)
-        } else {
-          style.removeProperty(property)
-        }
-      })
-    }
+        properties.forEach((property, index) => {
+          const original = values[index]
+          if (original) {
+            style.setProperty(property, original)
+          } else {
+            style.removeProperty(property)
+          }
+        })
+      }
 
-    delete scope.__paintedContrastInk
-  }, [...INK_PROPERTIES])
+      delete scope.__paintedContrastInk
+    },
+    [...INK_PROPERTIES],
+  )
 }
 
 type Raster = { data: Buffer; height: number; width: number }
@@ -417,10 +420,7 @@ function scoreCandidate(candidate: Candidate, glyphs: Raster, plate: Raster) {
   /* Only the glyph BODY counts, so an antialiased edge — which really is a
      near-background blend — cannot be read as a failing pairing. Body means
      coverage at the ink's own opacity. */
-  const floor = Math.max(
-    MIN_GLYPH_COVERAGE,
-    candidate.inkAlpha * MIN_GLYPH_COVERAGE_SHARE,
-  )
+  const floor = Math.max(MIN_GLYPH_COVERAGE, candidate.inkAlpha * MIN_GLYPH_COVERAGE_SHARE)
 
   /* What the browser puts on screen: translucent ink IS part background. Blended
      per pixel because the plate under a gradient is different at every one. */

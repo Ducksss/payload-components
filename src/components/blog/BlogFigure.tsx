@@ -10,7 +10,10 @@ type BlogFigureProps = {
 
 export function BlogFigure({ alt, caption, height = 675, src, width = 1200 }: BlogFigureProps) {
   return (
-    <figure data-blog-figure className="my-9 overflow-hidden rounded-panel border border-border bg-muted/30 shadow-[var(--shadow-card)]">
+    <figure
+      data-blog-figure
+      className="my-9 overflow-hidden rounded-panel border border-border bg-muted/30 shadow-[var(--shadow-card)]"
+    >
       <div className="relative overflow-hidden bg-background">
         <Image
           alt={alt}

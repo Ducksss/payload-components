@@ -101,7 +101,10 @@ type BlogFile = {
 }
 
 function scalar(frontmatter: string, name: string) {
-  return frontmatter.match(new RegExp(`^${name}:\\s*(.+)$`, 'm'))?.[1]?.trim().replace(/^['"]|['"]$/g, '')
+  return frontmatter
+    .match(new RegExp(`^${name}:\\s*(.+)$`, 'm'))?.[1]
+    ?.trim()
+    .replace(/^['"]|['"]$/g, '')
 }
 
 function parseBlogFile(slug: string, source: string): BlogFile {
@@ -123,7 +126,12 @@ function parseBlogFile(slug: string, source: string): BlogFile {
       series: scalar(frontmatter, 'series'),
       tags: tagsBlock
         .split(/\r?\n/)
-        .map((line) => line.match(/^\s{2}-\s+(.+)$/)?.[1]?.trim().replace(/^['"]|['"]$/g, ''))
+        .map((line) =>
+          line
+            .match(/^\s{2}-\s+(.+)$/)?.[1]
+            ?.trim()
+            .replace(/^['"]|['"]$/g, ''),
+        )
         .filter(Boolean),
     },
   }
@@ -169,10 +177,16 @@ function webpDimensions(buffer: Buffer) {
     const data = offset + 8
 
     if (chunk === 'VP8X') {
-      return { width: buffer.readUIntLE(data + 4, 3) + 1, height: buffer.readUIntLE(data + 7, 3) + 1 }
+      return {
+        width: buffer.readUIntLE(data + 4, 3) + 1,
+        height: buffer.readUIntLE(data + 7, 3) + 1,
+      }
     }
     if (chunk === 'VP8 ') {
-      return { width: buffer.readUInt16LE(data + 6) & 0x3fff, height: buffer.readUInt16LE(data + 8) & 0x3fff }
+      return {
+        width: buffer.readUInt16LE(data + 6) & 0x3fff,
+        height: buffer.readUInt16LE(data + 8) & 0x3fff,
+      }
     }
     if (chunk === 'VP8L') {
       const bits = buffer.readUInt32LE(data + 1)
@@ -192,7 +206,9 @@ async function expectAsset(assetPath: string, kind: 'cover' | 'figure') {
 
   if (extension === '.webp') {
     const dimensions = webpDimensions(await readFile(absolutePath))
-    expect(dimensions, assetPath).toEqual(kind === 'cover' ? { height: 630, width: 1200 } : { height: 900, width: 1600 })
+    expect(dimensions, assetPath).toEqual(
+      kind === 'cover' ? { height: 630, width: 1200 } : { height: 900, width: 1600 },
+    )
     expect(info.size, assetPath).toBeLessThanOrEqual(kind === 'cover' ? 250 * 1024 : 350 * 1024)
     return
   }
@@ -204,7 +220,9 @@ async function expectAsset(assetPath: string, kind: 'cover' | 'figure') {
 }
 
 function internalLinks(source: string) {
-  const links = [...source.matchAll(/(?:\]\(|href=")((?:\/(?!\/)|#)[^\s"\)]*)/g)].map((match) => match[1])
+  const links = [...source.matchAll(/(?:\]\(|href=")((?:\/(?!\/)|#)[^\s"\)]*)/g)].map(
+    (match) => match[1],
+  )
   return [...new Set(links)]
 }
 
@@ -223,7 +241,10 @@ async function expectInternalLinkToResolve(link: string) {
   if (pathname.startsWith('/templates/')) {
     const slug = pathname.slice('/templates/'.length)
     expect(slug, link).toMatch(/^[a-z0-9-]+$/)
-    await expect(stat(path.join(repoRoot, 'src', 'lib', 'templates', `${slug}.ts`)), link).resolves.toBeTruthy()
+    await expect(
+      stat(path.join(repoRoot, 'src', 'lib', 'templates', `${slug}.ts`)),
+      link,
+    ).resolves.toBeTruthy()
     return
   }
 
@@ -234,7 +255,13 @@ async function expectInternalLinkToResolve(link: string) {
       path.join(repoRoot, 'content', 'docs', `${relative}.mdx`),
       path.join(repoRoot, 'content', 'docs', relative, 'index.mdx'),
     ]
-    const resolved = await Promise.all(candidates.map((candidate) => stat(candidate).then(() => true).catch(() => false)))
+    const resolved = await Promise.all(
+      candidates.map((candidate) =>
+        stat(candidate)
+          .then(() => true)
+          .catch(() => false),
+      ),
+    )
     expect(resolved.some(Boolean), link).toBe(true)
     return
   }
@@ -249,9 +276,9 @@ describe('blog editorial contract', () => {
     const metadata = files.map((file) => file.metadata)
 
     expect(new Set(slugs)).toEqual(new Set(expectedSlugs))
-    expect(metadata.map((entry) => entry.publicationOrder).sort((a, b) => Number(a) - Number(b))).toEqual(
-      Array.from({ length: 33 }, (_, index) => index + 1),
-    )
+    expect(
+      metadata.map((entry) => entry.publicationOrder).sort((a, b) => Number(a) - Number(b)),
+    ).toEqual(Array.from({ length: 33 }, (_, index) => index + 1))
 
     for (const entry of metadata) {
       expect(entry.author).toBe('Ducksss')
@@ -295,7 +322,9 @@ describe('blog editorial contract', () => {
       expect(figures.length, file.slug).toBeGreaterThanOrEqual(1)
       for (const figure of figures) {
         const src = getAttribute(figure, 'src')
-        expect(src, file.slug).toMatch(/^\/blog\/[a-z0-9-]+\/figure-\d{2}-[a-z0-9-]+\.(?:svg|webp)$/)
+        expect(src, file.slug).toMatch(
+          /^\/blog\/[a-z0-9-]+\/figure-\d{2}-[a-z0-9-]+\.(?:svg|webp)$/,
+        )
         expect(getAttribute(figure, 'alt')?.trim().length, src).toBeGreaterThanOrEqual(20)
         expect(getAttribute(figure, 'caption')?.trim().length, src).toBeGreaterThanOrEqual(20)
         referencedAssets.add(String(src).replace(/^\/blog\//, ''))
@@ -304,7 +333,9 @@ describe('blog editorial contract', () => {
     }
 
     expect(figureCount).toBe(36)
-    const committedAssets = (await readdir(path.join(repoRoot, 'public', 'blog'), { recursive: true }))
+    const committedAssets = (
+      await readdir(path.join(repoRoot, 'public', 'blog'), { recursive: true })
+    )
       .filter((entry) => /\.(?:svg|webp)$/.test(entry))
       .map((entry) => entry.replaceAll(path.sep, '/'))
     expect(new Set(committedAssets)).toEqual(referencedAssets)
@@ -343,9 +374,12 @@ describe('blog editorial contract', () => {
       expect(wordCount(source), slug).toBeGreaterThanOrEqual(minimumWords)
       expect(links.filter((link) => link.startsWith('/')).length, slug).toBeGreaterThanOrEqual(3)
       expect(installItems.length, slug).toBeGreaterThanOrEqual(1)
-      expect(source, slug).not.toMatch(/\b(?:design partner|early access|paid tier|premium tier|buy now)\b/i)
+      expect(source, slug).not.toMatch(
+        /\b(?:design partner|early access|paid tier|premium tier|buy now)\b/i,
+      )
 
-      for (const item of installItems) expect(registryItems.has(item), `${slug}: ${item}`).toBe(true)
+      for (const item of installItems)
+        expect(registryItems.has(item), `${slug}: ${item}`).toBe(true)
       for (const link of links) await expectInternalLinkToResolve(link)
     }
   })

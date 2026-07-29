@@ -47,7 +47,9 @@ async function getGtagEvents(page: Page) {
 }
 
 async function getPostHogEvents(page: Page) {
-  return page.evaluate(() => (window as Window & { __posthogEvents?: PostHogTestEvent[] }).__posthogEvents ?? [])
+  return page.evaluate(
+    () => (window as Window & { __posthogEvents?: PostHogTestEvent[] }).__posthogEvents ?? [],
+  )
 }
 
 async function expectCopiedAlert(page: Page) {
@@ -95,17 +97,19 @@ test.describe('Light shadcn frontend', () => {
     await page.goto(baseURL)
 
     await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
-    await expect.poll(() => getPostHogEvents(page)).toEqual(
-      expect.arrayContaining([
-        {
-          event: '$pageview',
-          properties: {
-            page_path: '/',
-            source_path: '/',
+    await expect
+      .poll(() => getPostHogEvents(page))
+      .toEqual(
+        expect.arrayContaining([
+          {
+            event: '$pageview',
+            properties: {
+              page_path: '/',
+              source_path: '/',
+            },
           },
-        },
-      ]),
-    )
+        ]),
+      )
   })
 
   test('keeps the landing hero action hierarchy focused', async ({ page }) => {
@@ -117,9 +121,7 @@ test.describe('Light shadcn frontend', () => {
       hero.getByRole('button', { name: 'Copy install command', exact: true }),
     ).toBeVisible()
     await expect(hero.getByRole('link', { name: heroGuideLink.label, exact: true })).toBeVisible()
-    await expect(hero.locator(`a[href="${githubRepoUrl}"]`)).toHaveAccessibleName(
-      'Star on GitHub',
-    )
+    await expect(hero.locator(`a[href="${githubRepoUrl}"]`)).toHaveAccessibleName('Star on GitHub')
     await expect(
       hero.getByRole('link', { name: heroTertiaryLinks[0].label, exact: true }),
     ).toBeVisible()
@@ -187,6 +189,86 @@ test.describe('Light shadcn frontend', () => {
 
     /* Decorative duplicates must not reach the accessibility tree. */
     await expect(wall).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  /* The wall's fit is curated from measured heights, and a curated fit is exactly
+     the kind that rots silently. It was first measured only at 1440px, where it
+     was correct, while 14 of 18 cards were being guillotined mid-sentence on a
+     phone. Any change to a twin's demo content can push a block past its frame
+     again, and none of that is visible in a desktop review — so the fit is
+     asserted, at the widths that broke. */
+  for (const wallViewport of [
+    { height: 844, label: 'phone', width: 390 },
+    { height: 1024, label: 'tablet', width: 768 },
+    { height: 900, label: 'desktop', width: 1440 },
+  ]) {
+    test(`keeps every wall card inside its frame on ${wallViewport.label}`, async ({ page }) => {
+      await page.setViewportSize({ height: wallViewport.height, width: wallViewport.width })
+      await page.goto(baseURL)
+      await expect(page.locator('.component-wall')).toBeAttached()
+
+      const measured = await page.evaluate(() => {
+        /* The wall is tilted and scaled as a whole, and a rotated box reports an
+           axis-aligned bounding box larger than itself — by an amount that grows
+           with width, so frame and content would inflate by different amounts and
+           every reading would be wrong. Neutralised for measurement only. */
+        const tilt = document.querySelector('.component-wall > div')
+        if (tilt instanceof HTMLElement) {
+          tilt.style.rotate = '0deg'
+          tilt.style.scale = '1'
+        }
+
+        return [...document.querySelectorAll('.wall-card-frame')].map((frame) => {
+          const content = frame.firstElementChild
+          const label = frame.parentElement?.querySelector('p')?.textContent?.trim() ?? '?'
+
+          /* Both rects are read in the same coordinate space, so the CSS zoom on
+             the content child is already reflected in its height. */
+          return {
+            label,
+            overrun: Math.round(
+              (content?.getBoundingClientRect().height ?? 0) - frame.getBoundingClientRect().height,
+            ),
+          }
+        })
+      })
+
+      expect(measured.length).toBeGreaterThan(0)
+
+      /* Three twins (content-quote, content-feature-media, content-feature-split)
+         render their own stacked variant below 1024px however wide the wall lays
+         them out — viewport media queries, not container queries — so a residual
+         overrun is expected, and the frame's bottom fade dissolves it rather than
+         cutting it. Measured worst case: 32px on a phone against a 28px fade,
+         44px on a tablet against a 44px one, and nothing at all on desktop.
+
+         The 60px ceiling is deliberately not snug to that 44px. Snug would fail
+         on any copy edit, and this exists to catch the class of regression where
+         a block loses a paragraph — 88px in the tablet band, 165px on a phone
+         before the per-breakpoint zoom — not to freeze the current pixel. */
+      const worst = measured.reduce((a, b) => (b.overrun > a.overrun ? b : a))
+      expect(
+        worst.overrun,
+        `"${worst.label}" overruns its frame by ${worst.overrun}px`,
+      ).toBeLessThanOrEqual(60)
+    })
+  }
+
+  test('keeps the wall frame fade that dissolves an overrun', async ({ page }) => {
+    await page.setViewportSize({ height: 844, width: 390 })
+    await page.goto(baseURL)
+
+    /* The other half of the overflow fix, and the half that already went missing
+       once: the fade was dropped while the cards were briefly natural-height and
+       not restored when they went back to fixed heights, turning every overrun
+       back into a hard cut. Without it, the ceiling above is all that stands
+       between a content tweak and a guillotined block. */
+    const fadeHeight = await page
+      .locator('.wall-card-frame')
+      .first()
+      .evaluate((frame) => getComputedStyle(frame, '::after').height)
+
+    expect(Number.parseFloat(fadeHeight)).toBeGreaterThan(8)
   })
 
   test('renders the light token-driven homepage', async ({ page }) => {
@@ -262,9 +344,10 @@ test.describe('Light shadcn frontend', () => {
       .filter({ hasText: 'What is a Payload CMS block?' })
       .getByText('What is a Payload CMS block?')
       .click()
-    await expect(
-      page.getByRole('link', { name: 'Read the Payload blocks guide' }),
-    ).toHaveAttribute('href', '/docs/payload-blocks')
+    await expect(page.getByRole('link', { name: 'Read the Payload blocks guide' })).toHaveAttribute(
+      'href',
+      '/docs/payload-blocks',
+    )
 
     await page
       .getByRole('group')
@@ -309,14 +392,14 @@ test.describe('Light shadcn frontend', () => {
         const headerInnerRect = headerInner?.getBoundingClientRect()
         const documentationTitleRect = documentationTitle?.getBoundingClientRect()
         const headerStyle = headerInner ? getComputedStyle(headerInner) : null
-        const headerPaddingStart = headerStyle ? Number.parseFloat(headerStyle.paddingInlineStart) : null
+        const headerPaddingStart = headerStyle
+          ? Number.parseFloat(headerStyle.paddingInlineStart)
+          : null
         const hasHorizontalOverflow =
           document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
 
         return {
-          brandMark: brandMarkRect
-            ? { width: brandMarkRect.width, x: brandMarkRect.x }
-            : null,
+          brandMark: brandMarkRect ? { width: brandMarkRect.width, x: brandMarkRect.x } : null,
           documentationTitle:
             documentationTitleRect && documentationTitleRect.width > 0
               ? { width: documentationTitleRect.width, x: documentationTitleRect.x }
@@ -474,12 +557,20 @@ test.describe('Light shadcn frontend', () => {
     await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(initial)
     const mobileHeight = (await frame.boundingBox())?.height ?? initial
     await page.getByRole('button', { name: 'Desktop' }).click()
-    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeLessThan(mobileHeight - 2)
+    await expect
+      .poll(async () => (await frame.boundingBox())?.height ?? 0)
+      .toBeLessThan(mobileHeight - 2)
     await page.getByRole('button', { name: 'Mobile' }).click()
-    await expect.poll(async () => (await frame.boundingBox())?.height ?? 0).toBeGreaterThan(mobileHeight - 2)
+    await expect
+      .poll(async () => (await frame.boundingBox())?.height ?? 0)
+      .toBeGreaterThan(mobileHeight - 2)
 
     await page.goto(`${baseURL}/components/preview/hero-basic`)
-    await expect(page.locator('script[src*="googletagmanager"], script[src*="vercel"], script[src*="posthog"]')).toHaveCount(0)
+    await expect(
+      page.locator(
+        'script[src*="googletagmanager"], script[src*="vercel"], script[src*="posthog"]',
+      ),
+    ).toHaveCount(0)
   })
 
   test('component wiring paths and actions wrap at 390px', async ({ page }) => {
@@ -502,7 +593,9 @@ test.describe('Light shadcn frontend', () => {
     expect(wraps.breakable).toBe(true)
     expect(wraps.multiline).toBe(true)
     expect(wraps.fits).toBe(true)
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    )
     expect(overflow).toBe(false)
     await expect(wiring).toBeVisible()
   })
@@ -530,9 +623,9 @@ test.describe('Light shadcn frontend', () => {
       { label: 'About', path: '/about' },
     ]) {
       await page.goto(`${baseURL}${route.path}`)
-      await expect(page.getByRole('navigation').getByRole('link', { name: route.label })).toHaveClass(
-        /bg-secondary/,
-      )
+      await expect(
+        page.getByRole('navigation').getByRole('link', { name: route.label }),
+      ).toHaveClass(/bg-secondary/)
     }
   })
 
@@ -618,7 +711,9 @@ test.describe('Light shadcn frontend', () => {
     }
   })
 
-  test('filters catalog immediately, debounces shareable URL state, and syncs popstate', async ({ page }) => {
+  test('filters catalog immediately, debounces shareable URL state, and syncs popstate', async ({
+    page,
+  }) => {
     await page.goto(`${baseURL}/components`)
     const search = page.getByLabel('Search components')
     await expect(search).toHaveValue('')
@@ -662,7 +757,10 @@ test.describe('Light shadcn frontend', () => {
     // A family selection made inside the debounce window must carry the
     // in-progress local query instead of restoring stale router state.
     await search.fill('hero')
-    await page.getByRole('button', { name: /Page blocks/ }).first().click()
+    await page
+      .getByRole('button', { name: /Page blocks/ })
+      .first()
+      .click()
     await expect(search).toHaveValue('hero')
     await expect.poll(() => new URL(page.url()).searchParams.get('q')).toBe('hero')
     await expect.poll(() => new URL(page.url()).searchParams.get('type')).toBe('pages')
@@ -704,7 +802,9 @@ test.describe('Light shadcn frontend', () => {
 
     await expect(page.getByRole('contentinfo')).toBeVisible()
     await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
-    await expect(page.getByRole('contentinfo').getByRole('link', { name: 'Brand Guide' })).toBeVisible()
+    await expect(
+      page.getByRole('contentinfo').getByRole('link', { name: 'Brand Guide' }),
+    ).toBeVisible()
   })
 
   test('exposes the Fumadocs docs shell navigation', async ({ page }) => {
@@ -935,7 +1035,9 @@ test.describe('Light shadcn frontend', () => {
     await waitForCopyController(page)
     await page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copy' }).click()
 
-    await expect(page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copied' })).toBeVisible()
+    await expect(
+      page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copied' }),
+    ).toBeVisible()
     await expectCopiedAlert(page)
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
@@ -960,10 +1062,7 @@ test.describe('Light shadcn frontend', () => {
       )
     })
 
-    await page
-      .locator('a[href="https://github.com/Ducksss/payload-components"]')
-      .first()
-      .click()
+    await page.locator('a[href="https://github.com/Ducksss/payload-components"]').first().click()
 
     expect(await getGtagEvents(page)).toContainEqual([
       'event',
@@ -1328,7 +1427,10 @@ test.describe('Reduced motion', () => {
   test('opens the Fumadocs search dialog from the docs shell', async ({ page }) => {
     await page.goto(`${baseURL}/docs`)
 
-    await page.getByRole('button', { name: /Search/ }).first().click()
+    await page
+      .getByRole('button', { name: /Search/ })
+      .first()
+      .click()
 
     await expect(page.getByRole('dialog')).toBeVisible()
   })

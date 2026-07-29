@@ -108,7 +108,9 @@ export function Terminal({
           <span className="size-2.5 rounded-full bg-white/15" />
         </div>
         <span className="font-mono text-[11px] text-terminal-muted">{title}</span>
-        <span className="font-mono text-[11px] text-terminal-muted/70">payload-components 0.1.0</span>
+        <span className="font-mono text-[11px] text-terminal-muted/70">
+          payload-components 0.1.0
+        </span>
       </div>
 
       <div className="overflow-x-auto px-4 py-4 sm:px-5">
@@ -131,7 +133,10 @@ export function Terminal({
               <span aria-hidden="true" className="select-none font-semibold text-success">
                 $
               </span>
-              <span aria-hidden="true" className="animate-caret inline-block h-4 w-2 bg-success/80" />
+              <span
+                aria-hidden="true"
+                className="animate-caret inline-block h-4 w-2 bg-success/80"
+              />
             </div>
           ) : null}
         </div>
@@ -139,4 +144,3 @@ export function Terminal({
     </div>
   )
 }
-

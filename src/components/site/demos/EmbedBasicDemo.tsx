@@ -51,9 +51,7 @@ export function EmbedBasicDemo({
           </div>
         </div>
 
-        {caption ? (
-          <div className="px-6 py-4 text-sm text-muted-foreground">{caption}</div>
-        ) : null}
+        {caption ? <div className="px-6 py-4 text-sm text-muted-foreground">{caption}</div> : null}
       </figure>
     </div>
   )

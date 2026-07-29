@@ -25,9 +25,7 @@ const maxCoverBytes = 250 * 1024
 const routePreviewHeight = 264
 const routePreviewWidth = 960
 
-const knownSeries: ReadonlySet<string> = new Set(
-  blogVisualCatalog.map((entry) => entry.series),
-)
+const knownSeries: ReadonlySet<string> = new Set(blogVisualCatalog.map((entry) => entry.series))
 
 const isBlogVisualSeries = (value: string): value is BlogVisualSeries => knownSeries.has(value)
 
@@ -245,9 +243,7 @@ export const captureRouteRegion = async (
     (selector, index) => normalizedSelectors.indexOf(selector) !== index,
   )
   if (duplicateSelector) {
-    throw new Error(
-      `Duplicate route capture selector "${duplicateSelector}" on ${artifact.route}.`,
-    )
+    throw new Error(`Duplicate route capture selector "${duplicateSelector}" on ${artifact.route}.`)
   }
 
   const effectiveColumns = Math.min(columns, selectors.length)
@@ -271,8 +267,7 @@ export const captureRouteRegion = async (
     const row = Math.floor(index / effectiveColumns)
     const left = Math.floor((column * routePreviewWidth) / effectiveColumns)
     const top = Math.floor((row * routePreviewHeight) / rows)
-    const width =
-      Math.floor(((column + 1) * routePreviewWidth) / effectiveColumns) - left
+    const width = Math.floor(((column + 1) * routePreviewWidth) / effectiveColumns) - left
     const height = Math.floor(((row + 1) * routePreviewHeight) / rows) - top
     const screenshot = await region.screenshot({ animations: 'disabled', type: 'png' })
     const input = await sharp(screenshot)
@@ -338,17 +333,10 @@ const addRoutePreview = async (
   return { ...artifact, previewDataUrl }
 }
 
-type LineRenderedArtifact = Extract<
-  CoverArtifact,
-  { kind: 'diff' | 'registry-item' | 'source' }
->
+type LineRenderedArtifact = Extract<CoverArtifact, { kind: 'diff' | 'registry-item' | 'source' }>
 
-const isLineRenderedArtifact = (
-  artifact: CoverArtifact,
-): artifact is LineRenderedArtifact =>
-  artifact.kind === 'diff' ||
-  artifact.kind === 'registry-item' ||
-  artifact.kind === 'source'
+const isLineRenderedArtifact = (artifact: CoverArtifact): artifact is LineRenderedArtifact =>
+  artifact.kind === 'diff' || artifact.kind === 'registry-item' || artifact.kind === 'source'
 
 const expectedRenderedLines = (artifact: LineRenderedArtifact) =>
   artifact.kind === 'diff'
@@ -380,9 +368,7 @@ export const assertCodeArtifactCardsFit = async (
     const layout = await region.evaluate((element) => {
       const body = element.querySelector<HTMLElement>('.artifact-body')
       const sheet = element.querySelector<HTMLElement>('.code-sheet, .diff-sheet')
-      const lines = [
-        ...element.querySelectorAll<HTMLElement>('.code-line, .diff-line'),
-      ]
+      const lines = [...element.querySelectorAll<HTMLElement>('.code-line, .diff-line')]
 
       if (!body || !sheet) {
         return {
@@ -495,10 +481,7 @@ const encodeCover = async (slug: string, png: Buffer) => {
 
 export const renderCovers = async ({ baseUrl, entries, outputRoot }: CoverRenderOptions) => {
   // Evidence and font bytes are deliberately resolved before Chromium starts.
-  const [preparedCovers, fontData] = await Promise.all([
-    prepareCovers(entries),
-    loadCoverFonts(),
-  ])
+  const [preparedCovers, fontData] = await Promise.all([prepareCovers(entries), loadCoverFonts()])
   const browser = await chromium.launch({ headless: true })
   const routeCache = new Map<string, string>()
 
@@ -508,12 +491,7 @@ export const renderCovers = async ({ baseUrl, entries, outputRoot }: CoverRender
         addRoutePreview(prepared.artifacts.primary, browser, baseUrl, routeCache),
         addRoutePreview(prepared.artifacts.secondary, browser, baseUrl, routeCache),
       ])
-      const png = await renderCoverPng(
-        browser,
-        prepared.entry,
-        { primary, secondary },
-        fontData,
-      )
+      const png = await renderCoverPng(browser, prepared.entry, { primary, secondary }, fontData)
       const cover = await encodeCover(prepared.entry.slug, png)
       const relativeOutput = path.join('public', 'blog', prepared.entry.slug, 'cover.webp')
       const outputPath = path.join(outputRoot, relativeOutput)

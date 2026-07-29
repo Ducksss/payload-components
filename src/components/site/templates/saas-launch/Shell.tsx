@@ -40,8 +40,7 @@ import './theme.css'
 
 const EASE_OUT: Transition['ease'] = [0.16, 1, 0.3, 1]
 
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value))
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 
 const footerReveal = (reduceMotion: boolean, delay: number) => ({
   initial: { opacity: 0, y: 18 },
@@ -165,8 +164,10 @@ export function SaasLaunchShell({ activePath, children, template }: TemplateShel
   }, [open])
 
   // Route changes close the disclosure; this state update is intentionally tied to navigation.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setOpen(false) }, [pathname])
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpen(false)
+  }, [pathname])
 
   return (
     <div
@@ -312,8 +313,8 @@ export function SaasLaunchShell({ activePath, children, template }: TemplateShel
                 </span>
               </div>
               <p className="text-sm leading-6 text-muted-foreground">
-                Product analytics for teams that ship — one governed number for every decision,
-                from the first dashboard to the board deck.
+                Product analytics for teams that ship — one governed number for every decision, from
+                the first dashboard to the board deck.
               </p>
             </motion.div>
 

@@ -62,9 +62,7 @@ export function templatePagePosterSrc(slug: string, path: string) {
 }
 
 export function uniqueTemplateBlockSlugs(template: TemplateShowcase) {
-  return [
-    ...new Set(template.pages.flatMap((page) => page.sections.map((s) => s.componentSlug))),
-  ]
+  return [...new Set(template.pages.flatMap((page) => page.sections.map((s) => s.componentSlug)))]
 }
 
 /* The first rendered block is the honest starting point for trying a concept.
@@ -142,7 +140,9 @@ export function validateTemplateShowcase(
 
   for (const item of template.navigation) {
     if (!pagePaths.has(item.path))
-      errors.push(`${label}: navigation item "${item.label}" targets undeclared path "${item.path}"`)
+      errors.push(
+        `${label}: navigation item "${item.label}" targets undeclared path "${item.path}"`,
+      )
   }
 
   const assetRoot = `/templates/${template.slug}/`

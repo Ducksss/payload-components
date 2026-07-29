@@ -40,17 +40,20 @@ const privacyStructuredData = graph(
    The same vocabulary is pinned by tests/int/analytics-contract.int.spec.ts. */
 const processors = [
   {
+    name: 'Vercel Analytics & Speed Insights',
+    needsConsent: false,
+    purpose: 'Page views and Core Web Vitals for the hosted site.',
+    storage: 'No cookies and no identifier — nothing is stored on your device.',
+  },
+  {
     name: 'Google Analytics 4',
+    needsConsent: true,
     purpose: 'Aggregate page views and traffic sources.',
     storage: 'Sets its own first-party cookies (_ga, _ga_*).',
   },
   {
-    name: 'Vercel Analytics & Speed Insights',
-    purpose: 'Page views and Core Web Vitals for the hosted site.',
-    storage: 'No cookies.',
-  },
-  {
     name: 'PostHog (US)',
+    needsConsent: true,
     purpose: 'The three product events listed below.',
     storage: 'A random pc_distinct_id in localStorage, so repeat visits are one visitor.',
   },
@@ -90,14 +93,20 @@ export default function PrivacyPage() {
           <div className="mt-8 max-w-3xl space-y-10">
             <div className="space-y-3">
               <p className="text-muted-foreground">
-                Nothing on this list loads until you accept. Decline and no analytics script
-                is mounted, no cookie is set, and no identifier is stored. If your browser
-                sends Global Privacy Control or Do Not Track, that is treated as a decline
-                automatically and you are never shown the banner.
+                Anything that would store something on your device waits for your consent. Decline
+                and Google Analytics and PostHog never load — no cookie is set and no identifier is
+                kept. If your browser sends Global Privacy Control or Do Not Track, that counts as a
+                decline automatically and you are never shown the banner.
               </p>
               <p className="text-muted-foreground">
-                There are no accounts on this site, so none of this is tied to an identity.
-                We never collect form input, free text, or the contents of pages you view.
+                Vercel Analytics and Speed Insights are the exception, and they run for everyone.
+                They set no cookies and store no identifier — they measure page loads and
+                performance in aggregate, which is what keeps this site fast. There is nothing on
+                your device to opt out of.
+              </p>
+              <p className="text-muted-foreground">
+                There are no accounts on this site, so none of this is tied to an identity. We never
+                collect form input, free text, or the contents of pages you view.
               </p>
             </div>
 
@@ -109,7 +118,14 @@ export default function PrivacyPage() {
                     className="rounded-card border border-border bg-card p-4 shadow-card"
                     key={processor.name}
                   >
-                    <p className="text-sm font-medium text-foreground">{processor.name}</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-sm font-medium text-foreground">{processor.name}</p>
+                      <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
+                        {processor.needsConsent
+                          ? 'Needs your consent'
+                          : 'Always on, stores nothing'}
+                      </span>
+                    </div>
                     <p className="mt-1 text-sm text-muted-foreground">{processor.purpose}</p>
                     <p className="mt-1 text-sm text-muted-foreground">{processor.storage}</p>
                   </li>
@@ -120,8 +136,8 @@ export default function PrivacyPage() {
             <div className="space-y-4">
               <h2 className="text-lg font-medium text-foreground">The events we send</h2>
               <p className="text-muted-foreground">
-                Three, and their fields are fixed. Every value comes from a committed route,
-                link, or install command — never from anything you type.
+                Three, and their fields are fixed. Every value comes from a committed route, link,
+                or install command — never from anything you type.
               </p>
               <ul className="space-y-3">
                 {events.map((event) => (
@@ -129,13 +145,9 @@ export default function PrivacyPage() {
                     className="rounded-card border border-border bg-card p-4 shadow-card"
                     key={event.name}
                   >
-                    <p className="font-mono text-sm font-medium text-foreground">
-                      {event.name}
-                    </p>
+                    <p className="font-mono text-sm font-medium text-foreground">{event.name}</p>
                     <p className="mt-1 text-sm text-muted-foreground">{event.when}</p>
-                    <p className="mt-1 font-mono text-xs text-muted-foreground">
-                      {event.fields}
-                    </p>
+                    <p className="mt-1 font-mono text-xs text-muted-foreground">{event.fields}</p>
                   </li>
                 ))}
               </ul>
@@ -145,8 +157,8 @@ export default function PrivacyPage() {
               <h2 className="text-lg font-medium text-foreground">Your choice</h2>
               <p className="text-muted-foreground">
                 Your decision is stored locally in your browser under{' '}
-                <code className="font-mono text-sm text-foreground">pc_consent</code>. Change
-                it here at any time — withdrawing takes effect immediately and stops further
+                <code className="font-mono text-sm text-foreground">pc_consent</code>. Change it
+                here at any time — withdrawing takes effect immediately and stops further
                 collection.
               </p>
               <ConsentSettings />

@@ -31,19 +31,14 @@ export function NorthfieldMark() {
         height="2.6"
         initial={{ scaleX: 0 }}
         style={{ originX: 0, originY: 0.5 }}
-        transition={reduceMotion ? { duration: 0 } : { delay: 0.18, duration: 0.55, ease: EASE_OUT }}
+        transition={
+          reduceMotion ? { duration: 0 } : { delay: 0.18, duration: 0.55, ease: EASE_OUT }
+        }
         width="17"
         x="2.5"
         y="8.7"
       />
-      <rect
-        height="18"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        width="13"
-        x="1"
-        y="1"
-      />
+      <rect height="18" stroke="currentColor" strokeWidth="1.2" width="13" x="1" y="1" />
       <g opacity="0.5" stroke="currentColor" strokeWidth="1">
         <path d="M3.6 5.4h7.8" />
         <path d="M3.6 10h6.2" />

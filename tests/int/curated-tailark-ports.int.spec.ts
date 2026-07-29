@@ -115,7 +115,7 @@ describe('curated Tailark ports', () => {
     expect(config).toContain('minRows: 2')
     expect(config).toContain('maxRows: 6')
     expect(component).toContain("'use client'")
-    expect(component).toContain("@/components/ui/accordion")
+    expect(component).toContain('@/components/ui/accordion')
     expect(component).toContain('value={activeValue}')
     expect(component).toContain('onValueChange={setActiveValue}')
     expect(component).toContain('Layout adapted from tailark/blocks (MIT)')

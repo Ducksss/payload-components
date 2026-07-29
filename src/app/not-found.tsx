@@ -35,7 +35,11 @@ export default function NotFoundPage() {
             This route is not in the registry. The components, the docs, and the catalog are.
           </p>
 
-          <Terminal className="mt-8 text-left" lines={notFoundLines} title="payload-components — 404" />
+          <Terminal
+            className="mt-8 text-left"
+            lines={notFoundLines}
+            title="payload-components — 404"
+          />
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Link

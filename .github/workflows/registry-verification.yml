@@ -118,6 +118,7 @@ jobs:
         shell: bash
         run: |
           pnpm lint
+          pnpm format:check
           pnpm source:build
           pnpm exec tsc --noEmit
 

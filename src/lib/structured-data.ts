@@ -86,7 +86,8 @@ export function documentationCollectionNode(): Node {
     '@id': documentationId,
     '@type': 'CollectionPage',
     about: { '@id': softwareId },
-    description: 'Payload Components installation, architecture, registry, and component documentation.',
+    description:
+      'Payload Components installation, architecture, registry, and component documentation.',
     inLanguage: 'en',
     isPartOf: { '@id': websiteId },
     name: 'Payload Components documentation',
@@ -115,8 +116,7 @@ type BlogPostingNodeOptions = {
   title: string
   url: string
 } & (
-  | { date: Date | string; datePublished?: never }
-  | { date?: never; datePublished: Date | string }
+  { date: Date | string; datePublished?: never } | { date?: never; datePublished: Date | string }
 )
 
 export function blogPostingNode(opts: BlogPostingNodeOptions): Node {
@@ -210,7 +210,9 @@ export function catalogCollectionPageNode(): Node {
 
 /* Per-component detail schema for an individual component doc page. Reads the registry
    entry so version, target, and description never drift from the catalog. */
-export function componentSoftwareApplicationNode(component: (typeof componentEntries)[number]): Node {
+export function componentSoftwareApplicationNode(
+  component: (typeof componentEntries)[number],
+): Node {
   const noun = component.family === 'pages' ? 'block' : 'component'
 
   return {

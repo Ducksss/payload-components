@@ -3,7 +3,11 @@ import path from 'node:path'
 
 import { expect } from 'vitest'
 
-import type { InstallState, ComponentManifest, PayloadFragment } from '../../tools/payload-components/types'
+import type {
+  InstallState,
+  ComponentManifest,
+  PayloadFragment,
+} from '../../tools/payload-components/types'
 
 const layoutAnchor = "name: 'layout'"
 

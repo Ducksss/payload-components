@@ -2,10 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import {
-  diagramDefinitions,
-  hydrateDiagramDefinitions,
-} from './visual-system/diagram-data'
+import { diagramDefinitions, hydrateDiagramDefinitions } from './visual-system/diagram-data'
 import {
   renderDiagramSvg,
   validateDiagramDefinitions,
@@ -73,11 +70,7 @@ export const generateFigures = async ({
   // Build, hydrate, render, and validate the complete batch before the first
   // directory or file write. One invalid late definition therefore leaves the
   // existing published set untouched.
-  const outputs = await buildFigureOutputs(
-    definitions,
-    outputRoot,
-    requireCompleteCatalog,
-  )
+  const outputs = await buildFigureOutputs(definitions, outputRoot, requireCompleteCatalog)
 
   for (const output of outputs) {
     await writeOutput(output.outputPath, output.svg)
@@ -89,8 +82,7 @@ export const generateFigures = async ({
 }
 
 const isMain = () =>
-  Boolean(process.argv[1]) &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+  Boolean(process.argv[1]) && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 
 if (isMain()) {
   await generateFigures()

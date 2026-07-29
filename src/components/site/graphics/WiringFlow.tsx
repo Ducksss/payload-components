@@ -19,13 +19,7 @@ const WiringFlowCanvas = dynamic(
  * the canvas's own reveal/flow are gated on scrolling into view. Reduced-motion
  * users and mobile keep the static map; the media query downgrades live if
  * either condition changes. */
-export function WiringFlow({
-  caption,
-  className,
-}: {
-  caption?: ReactNode
-  className?: string
-}) {
+export function WiringFlow({ caption, className }: { caption?: ReactNode; className?: string }) {
   const [enhance, setEnhance] = useState(false)
 
   useEffect(() => {

@@ -147,7 +147,9 @@ describe('Fumadocs site shell', () => {
     expect(troubleshootingPost).toContain('Payload CMS block not showing?')
     expect(troubleshootingPost).toContain('[installation guide](/docs/installation)')
     expect(troubleshootingPost).toContain('The block is missing from the Pages editor')
-    expect(troubleshootingPost).toContain('The editor saves the block, but the page renders nothing')
+    expect(troubleshootingPost).toContain(
+      'The editor saves the block, but the page renders nothing',
+    )
     expect(troubleshootingPost.match(/<RunnableCommand\b/g)).toHaveLength(4)
     expect(troubleshootingPost).toContain('command="pnpm payload generate:types"')
     expect(troubleshootingPost).toContain('command="pnpm payload generate:importmap"')
@@ -180,9 +182,7 @@ describe('Fumadocs site shell', () => {
     expect(guide).toContain(
       '"generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types"',
     )
-    expect(guide).toMatch(
-      /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
-    )
+    expect(guide).toMatch(/command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/)
     expect(guide).toContain('[installation guide](/docs/installation)')
     expect(docsMeta).toContain('"payload-types-errors"')
     expect(installationGuide).toContain(
@@ -206,8 +206,14 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
       readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
-      readFile(path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'config.ts'), 'utf8'),
-      readFile(path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'Component.tsx'), 'utf8'),
+      readFile(
+        path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'config.ts'),
+        'utf8',
+      ),
+      readFile(
+        path.join(repoRoot, 'payload-components', 'source', 'blocks', 'HeroBasic', 'Component.tsx'),
+        'utf8',
+      ),
       readFile(path.join(repoRoot, 'payload-components', 'manifests', 'hero-basic.json'), 'utf8'),
       readFile(path.join(repoRoot, 'README.md'), 'utf8'),
     ])
@@ -229,9 +235,7 @@ describe('Fumadocs site shell', () => {
     expect(guide).toContain('pnpm payload generate:importmap')
     expect(guide).toContain('src/app/(payload)/admin/importMap.js')
     expect(guide).toContain('<ComponentPreview slug="hero-basic" />')
-    expect(guide).toMatch(
-      /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/,
-    )
+    expect(guide).toMatch(/command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/)
     expect(guide).toMatch(
       /command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b[\s\S]*emphasis="primary"/,
     )
@@ -298,7 +302,7 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
     ])
 
-    expect(guide).toContain("current [`hero-basic` registry item]")
+    expect(guide).toContain('current [`hero-basic` registry item]')
     expect(guide).toContain('| Block source | copied | copied |')
     expect(guide).toContain('| Collection schema | — | patched |')
     expect(guide).toContain('| Render mapping | — | patched |')
@@ -346,7 +350,10 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'src', 'app', 'globals.css'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'components', 'site', 'SiteHeader.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'components', 'site', 'CommandCopyButton.tsx'), 'utf8'),
-      readFile(path.join(repoRoot, 'src', 'components', 'site', 'CommandCopyController.tsx'), 'utf8'),
+      readFile(
+        path.join(repoRoot, 'src', 'components', 'site', 'CommandCopyController.tsx'),
+        'utf8',
+      ),
       readFile(path.join(repoRoot, 'src', 'lib', 'source.ts'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', 'docs', '[[...slug]]', 'page.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', 'api', 'search', 'route.ts'), 'utf8'),
@@ -397,7 +404,7 @@ describe('Fumadocs site shell', () => {
     expect(commandCopyButton).toContain('data-copy-command')
     expect(commandCopyController).toContain("'use client'")
     expect(sourceFile).toContain('lucideIconsPlugin')
-    expect(sourceFile).toContain("baseUrl: docsRoute")
+    expect(sourceFile).toContain('baseUrl: docsRoute')
     expect(sourceFile).toContain('getPageMarkdownUrl')
     expect(sourceFile).toContain('getPageImage')
     expect(docsPage).toContain('MarkdownCopyButton')
@@ -414,7 +421,9 @@ describe('Fumadocs site shell', () => {
   it('cache-busts deploy-sensitive app responses without touching hashed assets', async () => {
     const { default: nextConfig } = (await import(
       pathToFileURL(path.join(repoRoot, 'next.config.mjs')).href
-    )) as { default: { headers?: () => Promise<HeaderRule[]>; redirects?: () => Promise<RedirectRule[]> } }
+    )) as {
+      default: { headers?: () => Promise<HeaderRule[]>; redirects?: () => Promise<RedirectRule[]> }
+    }
 
     const headerRules = await nextConfig.headers?.()
     const cacheRules = headerRules?.filter((rule) =>
@@ -658,13 +667,23 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).toContain("href: '/docs/payload-blocks'")
     expect(indexSource).toContain("href: '/blog/anatomy-of-an-install'")
     expect(indexSource).toContain('data-guide-gateway')
-    expect(indexSource).toContain(
-      "alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates }",
+    /* Object-literal pins are matched against whitespace-collapsed source.
+       Prettier owns the line breaks in these files, so whether a nested literal
+       sits on one line or is expanded depends only on how long the surrounding
+       code happens to be — the twitter block in [slug]/page.tsx crossed 100
+       columns and split, which broke this assertion while the metadata it guards
+       was unchanged. What matters here is that the field is re-declared per page
+       (Next does not inherit nested openGraph/twitter fields from the root
+       layout, and no e2e covers them), never how it is formatted. */
+    const collapse = (source: string) => source.replace(/\s+/g, ' ')
+
+    expect(collapse(indexSource)).toContain(
+      'alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates }',
     )
-    expect(indexSource).toContain("twitter: { card: 'summary_large_image'")
+    expect(collapse(indexSource)).toContain("twitter: { card: 'summary_large_image'")
     expect(postSource).toContain("type: 'article'")
     expect(postSource).toContain('publishedTime:')
-    expect(postSource).toContain("twitter: { card: 'summary_large_image'")
+    expect(collapse(postSource)).toContain("twitter: { card: 'summary_large_image'")
     expect(sitemapSource).toContain('blogSource.getPages()')
   })
 
@@ -785,7 +804,9 @@ describe('Fumadocs site shell', () => {
 
   it('keeps the family navigator as the final section on component docs', async () => {
     const componentDocsDir = path.join(repoRoot, 'content', 'docs', 'components')
-    const componentDocs = (await readdir(componentDocsDir)).filter((entry) => entry.endsWith('.mdx'))
+    const componentDocs = (await readdir(componentDocsDir)).filter((entry) =>
+      entry.endsWith('.mdx'),
+    )
 
     for (const entry of componentDocs) {
       const source = await readFile(path.join(componentDocsDir, entry), 'utf8')
@@ -796,7 +817,10 @@ describe('Fumadocs site shell', () => {
   })
 
   it('keeps catalog search local and docs copy factual', async () => {
-    const catalog = await readFile(path.join(repoRoot, 'src/components/site/ComponentCatalogBrowser.tsx'), 'utf8')
+    const catalog = await readFile(
+      path.join(repoRoot, 'src/components/site/ComponentCatalogBrowser.tsx'),
+      'utf8',
+    )
     const catalogPage = await readFile(path.join(repoRoot, 'src/app/components/page.tsx'), 'utf8')
     const registry = await readFile(path.join(repoRoot, 'content/docs/registry.mdx'), 'utf8')
     const {
@@ -812,7 +836,9 @@ describe('Fumadocs site shell', () => {
     expect(registry).not.toContain('sample content for docs and testing')
     expect(catalogTitle).toContain('Payload CMS')
     expect(catalogTitle).toContain('67')
-    expect(catalogDescription).toMatch(/heroes.*features.*pricing.*integrations.*FAQs.*content.*teams.*embeds/)
+    expect(catalogDescription).toMatch(
+      /heroes.*features.*pricing.*integrations.*FAQs.*content.*teams.*embeds/,
+    )
     expect(catalogDescription).toContain('Browse all 67')
     expect(catalogDescription).toContain('One CLI command')
     expect(catalogMetadataTitle).toContain('Payload CMS Components')
@@ -832,7 +858,8 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'content/docs/installation.mdx'), 'utf8'),
       readFile(path.join(repoRoot, 'src/lib/site.ts'), 'utf8'),
     ])
-    const { blogTitle, catalogMetadataTitle, homeMetadataTitle } = await import('../../src/lib/site')
+    const { blogTitle, catalogMetadataTitle, homeMetadataTitle } =
+      await import('../../src/lib/site')
 
     expect(homeMetadataTitle).toBe('Install wired Payload CMS blocks in one command')
     expect(blogTitle).toBe('Payload CMS block and installer guides')
@@ -862,10 +889,7 @@ describe('Fumadocs site shell', () => {
   })
 
   it('makes the first-block guide a specific Payload CMS v3 install entry', async () => {
-    const firstBlock = await readFile(
-      path.join(repoRoot, 'content/docs/first-block.mdx'),
-      'utf8',
-    )
+    const firstBlock = await readFile(path.join(repoRoot, 'content/docs/first-block.mdx'), 'utf8')
 
     expect(firstBlock).toContain('title: Use your first Payload CMS v3 block')
     expect(firstBlock).toContain('seoTitle: Build your first Payload CMS v3 block')
@@ -889,11 +913,17 @@ describe('Fumadocs site shell', () => {
     expect(firstBlock).toContain('href="/components"')
     expect(firstBlock).not.toContain('href="/docs/components"')
 
-    const stages = ['registry-build', 'registry-add', 'dependency-install', 'fragment-apply', 'post-install']
+    const stages = [
+      'registry-build',
+      'registry-add',
+      'dependency-install',
+      'fragment-apply',
+      'post-install',
+    ]
     const stagePositions = stages.map((stage) => installation.indexOf(stage))
     expect(stagePositions.every((position) => position >= 0)).toBe(true)
     expect(stagePositions).toEqual([...stagePositions].sort((a, b) => a - b))
-    expect(installation).toContain('direct `shadcn add` only copies the block\'s source files')
+    expect(installation).toContain("direct `shadcn add` only copies the block's source files")
     expect(installation).not.toContain('sample content')
 
     expect(aboutPage).toContain('pipelineStages.map')
@@ -906,9 +936,13 @@ describe('Fumadocs site shell', () => {
       path.join(repoRoot, 'payload-components', 'manifests', 'hero-basic.json'),
     )
     expect(cliVersion).toBe(packageJson.version)
-    expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${heroManifest.version}`))).toBe(true)
+    expect(
+      terminalDemoLines.some((line) => line.text.includes(`hero-basic@${heroManifest.version}`)),
+    ).toBe(true)
     if (heroManifest.version !== cliVersion) {
-      expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${cliVersion}`))).toBe(false)
+      expect(terminalDemoLines.some((line) => line.text.includes(`hero-basic@${cliVersion}`))).toBe(
+        false,
+      )
     }
     expect(docsLayout).toContain('{cliVersion}')
     expect(docsLayout).not.toMatch(/components v\d+\.\d+\.\d+/)
@@ -1001,8 +1035,9 @@ describe('Fumadocs site shell', () => {
       const expectedLabelAttribute = renderToStaticMarkup(
         createElement('a', { 'aria-label': accessibleName }),
       ).match(/aria-label="[^"]+"/)?.[0]
-      const expectedHrefAttribute = renderToStaticMarkup(createElement('a', { href: project.url }))
-        .match(/href="[^"]+"/)?.[0]
+      const expectedHrefAttribute = renderToStaticMarkup(
+        createElement('a', { href: project.url }),
+      ).match(/href="[^"]+"/)?.[0]
 
       expect(markup.split(expectedHrefAttribute ?? '').length - 1).toBe(2)
       expect(markup.split(expectedLabelAttribute ?? '').length - 1).toBe(2)

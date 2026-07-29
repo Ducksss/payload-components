@@ -63,8 +63,10 @@ export function NorthlineHeader({
   }, [open])
 
   // Route changes close the disclosure; this state update is intentionally tied to navigation.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setOpen(false) }, [pathname])
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpen(false)
+  }, [pathname])
 
   // The scroll detail is state-driven (a CSS transform transition renders it),
   // so reduced motion simply skips the transition and lands the final state.
@@ -121,7 +123,7 @@ export function NorthlineHeader({
                     'relative pb-1 font-mono text-xs uppercase tracking-eyebrow transition-colors',
                     active
                       ? 'text-brand'
-                      : 'text-muted-foreground after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-border after:transition-transform after:duration-300 after:ease-out after:content-[\'\'] hover:text-foreground hover:after:scale-x-100 motion-reduce:after:transition-none',
+                      : "text-muted-foreground after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-border after:transition-transform after:duration-300 after:ease-out after:content-[''] hover:text-foreground hover:after:scale-x-100 motion-reduce:after:transition-none",
                   )}
                 >
                   {item.label}
@@ -131,7 +133,9 @@ export function NorthlineHeader({
                       className="absolute inset-x-0 bottom-0 h-px origin-left bg-brand motion-reduce:transform-none!"
                       initial={{ scaleX: 0 }}
                       animate={{ scaleX: 1 }}
-                      transition={reduce ? { duration: 0 } : { delay: 0.3, duration: 0.6, ease: EASE }}
+                      transition={
+                        reduce ? { duration: 0 } : { delay: 0.3, duration: 0.6, ease: EASE }
+                      }
                     />
                   ) : null}
                 </Link>

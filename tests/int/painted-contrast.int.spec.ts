@@ -139,7 +139,10 @@ describe('painted contrast report', () => {
       ...emptyReport(),
       skippedUnresolved: 2,
       total: 2,
-      unresolvedSelectors: ['.pill > span (excluded chrome)', '.pill > span:nth-child(2) (excluded chrome)'],
+      unresolvedSelectors: [
+        '.pill > span (excluded chrome)',
+        '.pill > span:nth-child(2) (excluded chrome)',
+      ],
     })
 
     expect(report).toContain('0 of 2 axe-incomplete pairing(s)')

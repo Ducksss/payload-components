@@ -17,13 +17,7 @@ import { cn } from '@/utilities/ui'
  * — a true, variable height per twin. (An explicit `w-[200%]` here double-counts
  * that and overflows.) Inner stays presentational; the wrapper reinforces
  * aria-hidden + pointer-events-none. */
-export function DemoFitFrame({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) {
+export function DemoFitFrame({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div
       aria-hidden="true"

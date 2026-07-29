@@ -6,10 +6,7 @@ import {
   templatePreviewHref,
   templateShowcases,
 } from '../../src/lib/templates/registry'
-import {
-  formatPaintedContrastReport,
-  measurePaintedTextContrast,
-} from './support/painted-contrast'
+import { formatPaintedContrastReport, measurePaintedTextContrast } from './support/painted-contrast'
 
 /* Accessibility sweep across EVERY template concept — its /templates/<slug>
  * detail page and its chrome-free /templates/<slug>/preview shell — at one
@@ -68,7 +65,16 @@ const viewports = [
 /* Consent is deliberately NOT granted: like a11y.e2e.spec.ts, this sweep keeps
    the undecided consent banner inside axe's scope so sitewide chrome is held to
    the same bar on these routes. Nothing here clicks, so the fixed banner cannot
-   intercept anything. */
+   intercept anything.
+
+   The banner has to be WAITED for, though. It is client-rendered and lands
+   100-200ms after document.fonts.ready, so analysing at fonts.ready samples the
+   page before it exists — and that is exactly what happened: the same suite saw
+   it on a warm detail route and missed it on the gallery, making its coverage a
+   coin toss. The preview routes never mount it (AnalyticsShell returns null
+   there, which templates.e2e.spec.ts pins), so it is only awaited where it is
+   genuinely expected. */
+const CONSENT_BANNER = '[data-consent-banner]'
 
 /* Every element the reveal choreography animates: the shared section wrapper,
    the detail-page content reveals ([data-template-motion]), and each concept's
@@ -126,7 +132,10 @@ async function expectSettledReveals(page: Page, label: string) {
   ).toEqual([])
 }
 
-async function settle(page: Page) {
+async function settle(page: Page, { consentBanner = false } = {}) {
+  // Before fonts.ready: the banner mounting later would shift nothing, but axe
+  // must not run until it is actually in the tree.
+  if (consentBanner) await expect(page.locator(CONSENT_BANNER)).toBeVisible()
   await page.evaluate(() => document.fonts.ready)
   /* Template pages carry real assets — decode the loaded ones so neither axe
      nor the painted-contrast capture races a paint. Only `complete` images:
@@ -142,15 +151,10 @@ async function settle(page: Page) {
 }
 
 async function analyze(page: Page) {
-  return new AxeBuilder({ page })
-    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-    .analyze()
+  return new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
 }
 
-function expectNoBlockingViolations(
-  results: Awaited<ReturnType<typeof analyze>>,
-  label: string,
-) {
+function expectNoBlockingViolations(results: Awaited<ReturnType<typeof analyze>>, label: string) {
   const blocking = results.violations.filter(
     (violation) => violation.impact === 'critical' || violation.impact === 'serious',
   )
@@ -184,7 +188,7 @@ test.describe('Templates accessibility (axe-core, WCAG 2.1 A/AA)', () => {
     }) => {
       await page.setViewportSize({ height: viewport.height, width: viewport.width })
       await page.goto(`${baseURL}/templates`)
-      await settle(page)
+      await settle(page, { consentBanner: true })
 
       await expectSettledReveals(page, `gallery (${viewport.label})`)
       expectNoBlockingViolations(await analyze(page), `gallery (${viewport.label})`)
@@ -199,7 +203,7 @@ test.describe('Templates accessibility (axe-core, WCAG 2.1 A/AA)', () => {
         await page.setViewportSize({ height: viewport.height, width: viewport.width })
         await page.goto(`${baseURL}${templateDetailHref(template.slug)}`)
         await expect(page.getByRole('heading', { level: 1, name: template.title })).toBeVisible()
-        await settle(page)
+        await settle(page, { consentBanner: true })
 
         await expectSettledReveals(page, label)
         expectNoBlockingViolations(await analyze(page), label)

@@ -137,7 +137,11 @@ const KineticStill: React.FC<{ reduce: boolean }> = ({ reduce }) => (
           'linear-gradient(104deg, transparent 38%, color-mix(in oklab, var(--background) 13%, transparent) 50%, transparent 62%)',
       }}
       animate={reduce ? undefined : { x: ['-3%', '3%'] }}
-      transition={reduce ? undefined : { duration: 16, ease: 'easeInOut', repeat: Infinity, repeatType: 'mirror' }}
+      transition={
+        reduce
+          ? undefined
+          : { duration: 16, ease: 'easeInOut', repeat: Infinity, repeatType: 'mirror' }
+      }
     />
     <div
       className="absolute"
@@ -258,7 +262,10 @@ export function HeroKineticDemo({
   const reduce = useReducedMotion() ?? false
   const lines = useMemo(() => balanceTitle(title), [title])
   const lineOffsets = useMemo(
-    () => lines.map((_, index) => lines.slice(0, index).reduce((total, line) => total + line.length, 0)),
+    () =>
+      lines.map((_, index) =>
+        lines.slice(0, index).reduce((total, line) => total + line.length, 0),
+      ),
     [lines],
   )
 

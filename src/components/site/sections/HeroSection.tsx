@@ -49,8 +49,7 @@ export function HeroSection() {
             className="hero-reveal max-w-5xl text-balance text-[clamp(2.6rem,8.4vw,5.5rem)] font-medium leading-[0.94] tracking-[-0.075em] text-foreground"
             style={{ animationDelay: '60ms' }}
           >
-            {heroHeadlinePrimary}{' '}
-            <span className="hero-headline-accent">{heroHeadlineAccent}</span>
+            {heroHeadlinePrimary} <span className="hero-headline-accent">{heroHeadlineAccent}</span>
           </h1>
 
           <p
@@ -124,8 +123,8 @@ export function HeroSection() {
           is the only place the catalog size is stated on the landing page. */}
       <div className="container relative pb-16 pt-2 text-center sm:pb-20">
         <p className="text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">{componentEntries.length} blocks</span> in the
-          registry — every one wired into Payload by a single command.
+          <span className="font-medium text-foreground">{componentEntries.length} blocks</span> in
+          the registry — every one wired into Payload by a single command.
         </p>
       </div>
     </section>

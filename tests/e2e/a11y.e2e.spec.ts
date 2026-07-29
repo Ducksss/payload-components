@@ -5,9 +5,18 @@ import { expect, test } from '@playwright/test'
  * page is accessible, but it reliably catches the regressions that matter most
  * for a marketing/docs site — missing landmarks/labels, broken heading order,
  * and (given the monochrome + emerald light theme) colour-contrast failures.
- * We gate on serious/critical only so the suite stays signal, not noise. */
+ * We gate on serious/critical only so the suite stays signal, not noise.
+ *
+ * Consent is deliberately not granted, so the undecided consent banner is part
+ * of what gets checked — it is sitewide chrome and belongs to the same bar. That
+ * only holds if axe waits for it: the banner is client-rendered and lands
+ * 100-200ms AFTER document.fonts.ready, so analysing at fonts.ready alone
+ * sampled the page before it existed and its coverage came down to how warm the
+ * server was. Measured on this suite's own routes: absent at fonts.ready on /,
+ * /components and /templates, present on a warm route. */
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
+const consentBanner = '[data-consent-banner]'
 
 const routes = [
   { name: 'landing', path: '/' },
@@ -26,6 +35,7 @@ test.describe('Accessibility (axe-core, WCAG 2.1 A/AA)', () => {
   for (const route of routes) {
     test(`${route.name} has no serious or critical violations`, async ({ page }) => {
       await page.goto(`${baseURL}${route.path}`)
+      await expect(page.locator(consentBanner)).toBeVisible()
       await page.evaluate(() => document.fonts.ready)
 
       const results = await new AxeBuilder({ page })

@@ -19,28 +19,28 @@ The North Star is **open-source, MIT, community-first**. No pricing, no license 
 
 ## The mental model (internalize this one split)
 
-|            | Site runtime                  | Component distribution                              |
-| ---------- | ----------------------------- | --------------------------------------------- |
-| Lives in   | `src/`, `content/docs/`       | `payload-components/`, `tools/payload-components/`         |
-| Runs       | here (Fumadocs / Next.js)     | in the _consumer's_ repo, after install       |
-| Payload?   | none (docs site only)         | the installed component code **is** Payload target code |
+|          | Site runtime              | Component distribution                                  |
+| -------- | ------------------------- | ------------------------------------------------------- |
+| Lives in | `src/`, `content/docs/`   | `payload-components/`, `tools/payload-components/`      |
+| Runs     | here (Fumadocs / Next.js) | in the _consumer's_ repo, after install                 |
+| Payload? | none (docs site only)     | the installed component code **is** Payload target code |
 
 The Payload block code under `payload-components/source/` is **target code** — shipped into consumer repos, never executed by this site. Don't import it into the site, and don't run the site against a database.
 
 ## Repo map
 
-| Path | Purpose |
-| --- | --- |
-| `src/app/` | Routes: `/` (landing), `/docs/[[...slug]]` (Fumadocs), `/components` (catalog), `/about`, `/api/search`, `llms.txt` · `llms-full.txt` · `llms.mdx` (AI surfaces), `og/` + `opengraph-image` |
-| `src/components/site/` | Site UI: `SiteHeader`/`SiteFooter`, `HeroProductFrame` + `HeroInstallReplay` (the install replay), `WiringLedger`, `ComponentSpecimen`/`ComponentCard`/`ComponentGrid`, `Faq`, `CommandCopyButton`, `section.tsx` |
-| `src/components/site/sections/` | Landing sections (Hero, StackBand, Tax, Workflow, Wiring, Catalog, Faq, CommunityCta). `src/app/page.tsx` just orchestrates these |
-| `src/components/site/demos/` | **Demo twins** — live previews that mirror component source class-for-class (see Core flows) |
-| `src/lib/site.ts` | **Single source of truth for all site copy/data** (hero text, FAQ, component entries, landing-section headings, terminal demo lines). Tests import from here |
-| `content/docs/` | Fumadocs MDX (index, architecture, installation, registry, contributing, `components/*`); page tree via `meta.json` |
-| `payload-components/` | `registry.json` (source shadcn registry), `source/` (component target code), `manifests/*.json` (wiring contract), `schema/`, `support-matrix.json` |
-| `tools/payload-components/` + `bin/payload-components.mjs` | The CLI: `add`, `seed`, `init`, and `doctor`; project detection, fragment patching, install state, registry build/check |
-| `tests/` | `e2e/` (Playwright) + `int/` (Vitest) — the contract (below) |
-| `public/r/` | Generated public registry — **gitignored build output**, never hand-edit |
+| Path                                                       | Purpose                                                                                                                                                                                                           |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/`                                                 | Routes: `/` (landing), `/docs/[[...slug]]` (Fumadocs), `/components` (catalog), `/about`, `/api/search`, `llms.txt` · `llms-full.txt` · `llms.mdx` (AI surfaces), `og/` + `opengraph-image`                       |
+| `src/components/site/`                                     | Site UI: `SiteHeader`/`SiteFooter`, `HeroProductFrame` + `HeroInstallReplay` (the install replay), `WiringLedger`, `ComponentSpecimen`/`ComponentCard`/`ComponentGrid`, `Faq`, `CommandCopyButton`, `section.tsx` |
+| `src/components/site/sections/`                            | Landing sections (Hero, StackBand, Tax, Workflow, Wiring, Catalog, Faq, CommunityCta). `src/app/page.tsx` just orchestrates these                                                                                 |
+| `src/components/site/demos/`                               | **Demo twins** — live previews that mirror component source class-for-class (see Core flows)                                                                                                                      |
+| `src/lib/site.ts`                                          | **Single source of truth for all site copy/data** (hero text, FAQ, component entries, landing-section headings, terminal demo lines). Tests import from here                                                      |
+| `content/docs/`                                            | Fumadocs MDX (index, architecture, installation, registry, contributing, `components/*`); page tree via `meta.json`                                                                                               |
+| `payload-components/`                                      | `registry.json` (source shadcn registry), `source/` (component target code), `manifests/*.json` (wiring contract), `schema/`, `support-matrix.json`                                                               |
+| `tools/payload-components/` + `bin/payload-components.mjs` | The CLI: `add`, `seed`, `init`, and `doctor`; project detection, fragment patching, install state, registry build/check                                                                                           |
+| `tests/`                                                   | `e2e/` (Playwright) + `int/` (Vitest) — the contract (below)                                                                                                                                                      |
+| `public/r/`                                                | Generated public registry — **gitignored build output**, never hand-edit                                                                                                                                          |
 
 ## Core flows
 
@@ -74,13 +74,13 @@ Fragment patching is **text-anchor based** — it finds anchors like `const bloc
 
 ## Where to change things
 
-| Task | Touch |
-| --- | --- |
-| Add a component | `payload-components/source/` + `manifests/<component>.json` + `registry.json` + `content/docs/components/<component>.mdx` + installer tests — **all together** (incomplete components don't ship). Scaffold + step-by-step workflow: `payload-components/templates/component-template/` (copy its files; its README is the canonical add-a-component workflow) |
-| Site copy / messaging | `src/lib/site.ts` |
-| Landing layout / visuals | `src/components/site/sections/` + `src/app/globals.css` |
-| Docs content | `content/docs/` |
-| CLI behavior | `tools/payload-components/` |
+| Task                     | Touch                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Add a component          | `payload-components/source/` + `manifests/<component>.json` + `registry.json` + `content/docs/components/<component>.mdx` + installer tests — **all together** (incomplete components don't ship). Scaffold + step-by-step workflow: `payload-components/templates/component-template/` (copy its files; its README is the canonical add-a-component workflow) |
+| Site copy / messaging    | `src/lib/site.ts`                                                                                                                                                                                                                                                                                                                                              |
+| Landing layout / visuals | `src/components/site/sections/` + `src/app/globals.css`                                                                                                                                                                                                                                                                                                        |
+| Docs content             | `content/docs/`                                                                                                                                                                                                                                                                                                                                                |
+| CLI behavior             | `tools/payload-components/`                                                                                                                                                                                                                                                                                                                                    |
 
 ## The contract you must not break
 
@@ -158,7 +158,7 @@ component page. Match it exactly when adding or editing a component; do not inve
 
 - **Header is automatic.** `src/app/docs/[[...slug]]/page.tsx` detects `/docs/components/*` and renders
   `ComponentDocHeader` — title + description + at-a-glance chips (`v{version} · Page block · {Family}
-  family · {target}`, from `componentEntries`) on the left; Copy Page + prev/next arrows (catalog order)
+family · {target}`, from `componentEntries`) on the left; Copy Page + prev/next arrows (catalog order)
   on the right. The component **must** be in `componentEntries` (`src/lib/site.ts`). Do **not** add an `<h1>` or
   repeat the description in the MDX body — frontmatter drives both.
 - **Frontmatter:** `title` (must equal the component's `componentEntries` title — the e2e component-page loop asserts
@@ -171,7 +171,7 @@ component page. Match it exactly when adding or editing a component; do not inve
      `Component.tsx`, shared `*Fields.ts` — read at build via `getComponentSources` in
      `src/lib/component-source.ts`) tabs. A new component **must** register a demo twin, or the preview is empty.
   2. `## Installation` — `<Tabs items={['Command', 'Manual']}>`: Command = `npx payload-components add
-     <slug>`; Manual = the direct `pnpm dlx shadcn@latest add …/r/<slug>.json` URL.
+<slug>`; Manual = the direct `pnpm dlx shadcn@latest add …/r/<slug>.json` URL.
   3. `## What it installs` — `<ComponentWiring slug="<slug>" />`: the copied files + a factual table of the
      edits the install makes (register the block, map the renderer, regenerate types + import map) +
      shared-base callout + idempotency note, all from the manifest. State facts — **not** a

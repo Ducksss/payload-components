@@ -27,12 +27,17 @@ export function TestimonialsWallDemo({
         <div className="mx-auto flex max-w-5xl flex-col gap-10">
           <div className="flex flex-col items-center gap-4 text-center">
             {eyebrow ? (
-              <Badge variant="outline" className="rounded-full px-3 py-1 uppercase tracking-eyebrow">
+              <Badge
+                variant="outline"
+                className="rounded-full px-3 py-1 uppercase tracking-eyebrow"
+              >
                 {eyebrow}
               </Badge>
             ) : null}
 
-            <div className="text-3xl font-medium tracking-title text-balance sm:text-4xl">{title}</div>
+            <div className="text-3xl font-medium tracking-title text-balance sm:text-4xl">
+              {title}
+            </div>
 
             {description ? (
               <p className="max-w-2xl text-base leading-7 text-muted-foreground">{description}</p>

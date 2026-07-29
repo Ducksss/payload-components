@@ -44,8 +44,7 @@ export function TemplateDetailPreview({
   const [activePath, setActivePath] = useState('')
   const [preset, setPreset] = useState<TemplateViewportPreset>('desktop')
 
-  const activePage =
-    template.pages.find((page) => page.path === activePath) ?? template.pages[0]
+  const activePage = template.pages.find((page) => page.path === activePath) ?? template.pages[0]
   const src = templatePreviewHref(template.slug, activePage.path)
 
   return (

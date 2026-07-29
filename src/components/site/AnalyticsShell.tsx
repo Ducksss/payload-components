@@ -14,9 +14,36 @@ export function AnalyticsShell() {
   // Template previews emit their own explicit template_* events instead.
   if (pathname.startsWith('/components/preview/')) return null
   if (/^\/templates\/[^/]+\/preview(\/|$)/.test(pathname)) return null
-  // Nothing that writes to the visitor's device loads before an explicit opt-in.
-  // That includes GA4, which sets its own cookies and auto-collects page views,
-  // so gating only our own events here would be privacy theatre.
-  if (consent !== 'granted') return null
-  return <><Script src="https://www.googletagmanager.com/gtag/js?id=G-EMGRZ0H9R9" strategy="afterInteractive" /><Script id="google-tag" strategy="afterInteractive">{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-EMGRZ0H9R9');`}</Script><AnalyticsPageview /><Analytics /><SpeedInsights /></>
+
+  /* Two tiers, split by what each provider writes to the visitor's device.
+   *
+   * Vercel Analytics and Speed Insights are cookieless and store no identifier,
+   * so they carry no consent requirement and mount for everyone. That keeps Core
+   * Web Vitals measured across all traffic, which is the point of measuring them.
+   *
+   * GA4 sets its own cookies and auto-collects page views, and the PostHog
+   * stream in AnalyticsPageview persists a pc_distinct_id. Both wait for an
+   * explicit opt-in — gating our own events while GA4 loaded anyway would be
+   * privacy theatre. */
+  const optedIn = consent === 'granted'
+
+  return (
+    <>
+      <Analytics />
+      <SpeedInsights />
+      {optedIn ? (
+        <>
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=G-EMGRZ0H9R9"
+            strategy="afterInteractive"
+          />
+          <Script
+            id="google-tag"
+            strategy="afterInteractive"
+          >{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-EMGRZ0H9R9');`}</Script>
+          <AnalyticsPageview />
+        </>
+      ) : null}
+    </>
+  )
 }
