@@ -73,7 +73,16 @@
  * inline — their literal values are baked into the utilities — so the
  * print-sharp geometry is enforced at element level instead. rounded-full
  * (pills, avatar monograms) is deliberately left alone. */
-[data-template-theme='agency-studio'] :is(.rounded-frame, .rounded-panel, .rounded-card, .rounded-inset, .rounded-2xl, .rounded-xl, .rounded-lg) {
+[data-template-theme='agency-studio']
+  :is(
+    .rounded-frame,
+    .rounded-panel,
+    .rounded-card,
+    .rounded-inset,
+    .rounded-2xl,
+    .rounded-xl,
+    .rounded-lg
+  ) {
   border-radius: 0;
 }
 
@@ -120,7 +129,10 @@
   max-width: 96rem;
 }
 
-[data-template-theme='agency-studio'] [data-template-section] > [aria-hidden='true'] > div:first-child {
+[data-template-theme='agency-studio']
+  [data-template-section]
+  > [aria-hidden='true']
+  > div:first-child {
   background-color: transparent;
   border-color: transparent;
   border-radius: 0;
@@ -138,7 +150,9 @@
 }
 
 /* Hairline rules between plates on the same paper surface. */
-[data-template-theme='agency-studio'] [data-template-section][data-tone='base'] + [data-template-section][data-tone='base'] {
+[data-template-theme='agency-studio']
+  [data-template-section][data-tone='base']
+  + [data-template-section][data-tone='base'] {
   border-top: 1px solid var(--border);
 }
 
@@ -207,7 +221,10 @@
  * italic, which would swallow the component's own serif-italic closing word —
  * so the closing word lands in rust instead, with its tracking normalized to
  * the rest of the line (one voice, one accent). */
-[data-template-theme='agency-studio'] [data-template-section='cover'] .tracking-display .font-serif.tracking-title {
+[data-template-theme='agency-studio']
+  [data-template-section='cover']
+  .tracking-display
+  .font-serif.tracking-title {
   color: var(--nl-rust);
   letter-spacing: -0.015em;
 }

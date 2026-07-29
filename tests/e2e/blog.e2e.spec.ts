@@ -21,7 +21,10 @@ type Post = {
 }
 
 const scalar = (frontmatter: string, name: string) =>
-  frontmatter.match(new RegExp(`^${name}:\\s*(.+)$`, 'm'))?.[1]?.trim().replace(/^['"]|['"]$/g, '') ?? ''
+  frontmatter
+    .match(new RegExp(`^${name}:\\s*(.+)$`, 'm'))?.[1]
+    ?.trim()
+    .replace(/^['"]|['"]$/g, '') ?? ''
 
 const posts: Post[] = readdirSync(blogRoot)
   .filter((filename) => filename.endsWith('.mdx'))
@@ -32,7 +35,9 @@ const posts: Post[] = readdirSync(blogRoot)
     return {
       cover: scalar(cover.replace(/^\s{2}/gm, ''), 'src'),
       date: scalar(frontmatter, 'date'),
-      figures: [...source.matchAll(/<BlogFigure[\s\S]*?src="([^"]+)"[\s\S]*?\/>/g)].map((match) => match[1]),
+      figures: [...source.matchAll(/<BlogFigure[\s\S]*?src="([^"]+)"[\s\S]*?\/>/g)].map(
+        (match) => match[1],
+      ),
       order: Number(scalar(frontmatter, 'publicationOrder')),
       series: scalar(frontmatter, 'series'),
       slug: filename.replace(/\.mdx$/, ''),
@@ -61,18 +66,16 @@ test.describe('Blog editorial library', () => {
     )
 
     const gateway = page.locator('[data-guide-gateway]')
-    await expect(gateway.getByRole('link', { name: /Install a wired Payload block/ })).toHaveAttribute(
-      'href',
-      '/docs/installation',
-    )
+    await expect(
+      gateway.getByRole('link', { name: /Install a wired Payload block/ }),
+    ).toHaveAttribute('href', '/docs/installation')
     await expect(gateway.getByRole('link', { name: /Wire a reusable block/ })).toHaveAttribute(
       'href',
       '/docs/payload-blocks',
     )
-    await expect(gateway.getByRole('link', { name: /Fix a block that will not render/ })).toHaveAttribute(
-      'href',
-      '/blog/anatomy-of-an-install',
-    )
+    await expect(
+      gateway.getByRole('link', { name: /Fix a block that will not render/ }),
+    ).toHaveAttribute('href', '/blog/anatomy-of-an-install')
 
     const cards = page.locator('[data-blog-card]')
     await expect(cards).toHaveCount(33)
@@ -81,14 +84,23 @@ test.describe('Blog editorial library', () => {
     await expect(cards.locator('img').nth(3)).toHaveAttribute('loading', 'lazy')
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `${baseURL}/blog`)
 
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      ),
+    ).toBe(true)
   })
 
-  test('every article renders complete shared chrome, metadata, figures, and related reading', async ({ page }) => {
+  test('every article renders complete shared chrome, metadata, figures, and related reading', async ({
+    page,
+  }) => {
     for (const post of posts) {
       await page.goto(`${baseURL}/blog/${post.slug}`)
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(post.title)
-      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `${baseURL}/blog/${post.slug}`)
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+        'href',
+        `${baseURL}/blog/${post.slug}`,
+      )
       await expect(page.locator('[data-blog-cover]')).toHaveAttribute('src', /cover\.webp/)
       await expect(page.locator('[data-blog-cover]')).toHaveJSProperty('complete', true)
 
@@ -102,13 +114,19 @@ test.describe('Blog editorial library', () => {
         (candidate) => candidate.slug !== post.slug && candidate.series === post.series,
       ).length
       await expect(relatedCards).toHaveCount(3)
-      await expect(relatedSection.locator(`[data-blog-card][data-blog-series="${post.series}"]`)).toHaveCount(
-        Math.min(3, availableInSeries),
-      )
+      await expect(
+        relatedSection.locator(`[data-blog-card][data-blog-series="${post.series}"]`),
+      ).toHaveCount(Math.min(3, availableInSeries))
 
       const socialImage = `${baseURL}/og/blog/${post.slug}/image.png`
-      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', socialImage)
-      await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', socialImage)
+      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+        'content',
+        socialImage,
+      )
+      await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute(
+        'content',
+        socialImage,
+      )
 
       const jsonLd = await page.locator('script[type="application/ld+json"]').allTextContents()
       const nodes = jsonLd.flatMap((source) => {
@@ -122,7 +140,11 @@ test.describe('Blog editorial library', () => {
         url: `${baseURL}/blog/${post.slug}`,
       })
 
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+        ),
+      ).toBe(true)
     }
   })
 
@@ -143,9 +165,13 @@ test.describe('Blog editorial library', () => {
     expect(response.headers()['content-type']).toContain('application/rss+xml')
 
     const body = await response.text()
-    const guids = [...body.matchAll(/<guid isPermaLink="true">([^<]+)<\/guid>/g)].map((match) => match[1])
+    const guids = [...body.matchAll(/<guid isPermaLink="true">([^<]+)<\/guid>/g)].map(
+      (match) => match[1],
+    )
     const dates = [...body.matchAll(/<pubDate>([^<]+)<\/pubDate>/g)].map((match) => match[1])
-    const enclosures = [...body.matchAll(/<enclosure url="([^"]+)" length="(\d+)" type="image\/webp" \/>/g)]
+    const enclosures = [
+      ...body.matchAll(/<enclosure url="([^"]+)" length="(\d+)" type="image\/webp" \/>/g),
+    ]
 
     expect(guids).toEqual(posts.map((post) => `${baseURL}/blog/${post.slug}`))
     expect(new Set(guids).size).toBe(33)

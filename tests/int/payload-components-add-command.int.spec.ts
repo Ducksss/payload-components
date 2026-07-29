@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import type { DetectedProject, InstallState, ComponentManifest } from '../../tools/payload-components/types'
+import type {
+  DetectedProject,
+  InstallState,
+  ComponentManifest,
+} from '../../tools/payload-components/types'
 
 import { makeTestManifest } from './manifest-factory'
 
@@ -185,10 +189,7 @@ describe('payload-components add command orchestration', () => {
       .mockResolvedValueOnce({ installed: {}, missing: [] })
     mocks.verifyInstalledManifestFiles.mockResolvedValueOnce({
       isValid: false,
-      missingFiles: [
-        'src/blocks/HeroBasic/config.ts',
-        'src/blocks/HeroBasic/Component.tsx',
-      ],
+      missingFiles: ['src/blocks/HeroBasic/config.ts', 'src/blocks/HeroBasic/Component.tsx'],
       missingRegistryDependencies: [],
     })
     mocks.verifyInstalledPayloadFragments.mockResolvedValueOnce({
@@ -213,7 +214,9 @@ describe('payload-components add command orchestration', () => {
     expect(output).toContain("add import { HeroBasic } from '../../blocks/HeroBasic/config'")
     expect(output).toContain('add HeroBasic in the Pages layout blocks')
     expect(output).toContain('pnpm generate:types (would run)')
-    expect(output).toContain('.payload-components/state.json (would update only after a successful real install)')
+    expect(output).toContain(
+      '.payload-components/state.json (would update only after a successful real install)',
+    )
     expect(mocks.buildRegistry).not.toHaveBeenCalled()
     expect(mocks.installRegistryItem).not.toHaveBeenCalled()
     expect(mocks.installRegistryDependencies).not.toHaveBeenCalled()
@@ -414,7 +417,9 @@ describe('payload-components add command orchestration', () => {
       expect.stringContaining('payload-components: retrying partial install for "hero-basic".'),
     )
     expect(mocks.printHeader).toHaveBeenCalledWith(
-      expect.stringContaining('Last failed stage: post-install. Last error: generate:types failed.'),
+      expect.stringContaining(
+        'Last failed stage: post-install. Last error: generate:types failed.',
+      ),
     )
     expect(mocks.buildRegistry).not.toHaveBeenCalled()
     expect(mocks.installRegistryItem).not.toHaveBeenCalled()

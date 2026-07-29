@@ -69,9 +69,30 @@ const siteTokenGuards = [
  * colour utility is drift away from the semantic token set. None of our tokens
  * collide with these names, so a token can never be mistaken for a palette. */
 const palette = [
-  'slate', 'gray', 'zinc', 'neutral', 'stone', 'red', 'orange', 'amber',
-  'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo',
-  'violet', 'purple', 'fuchsia', 'pink', 'rose', 'white', 'black',
+  'slate',
+  'gray',
+  'zinc',
+  'neutral',
+  'stone',
+  'red',
+  'orange',
+  'amber',
+  'yellow',
+  'lime',
+  'green',
+  'emerald',
+  'teal',
+  'cyan',
+  'sky',
+  'blue',
+  'indigo',
+  'violet',
+  'purple',
+  'fuchsia',
+  'pink',
+  'rose',
+  'white',
+  'black',
 ]
 const paletteValue = new RegExp(`^(?:${palette.join('|')})(?:-\\d{1,3})?$`)
 
@@ -79,8 +100,22 @@ const paletteValue = new RegExp(`^(?:${palette.join('|')})(?:-\\d{1,3})?$`)
  * overloaded with non-colour utilities; that is handled by only flagging
  * palette names + literals, never bare keywords like -center or -dashed. */
 const colorPrefix = [
-  'bg', 'text', 'border', 'ring', 'ring-offset', 'from', 'via', 'to', 'fill',
-  'stroke', 'divide', 'outline', 'decoration', 'placeholder', 'caret', 'accent',
+  'bg',
+  'text',
+  'border',
+  'ring',
+  'ring-offset',
+  'from',
+  'via',
+  'to',
+  'fill',
+  'stroke',
+  'divide',
+  'outline',
+  'decoration',
+  'placeholder',
+  'caret',
+  'accent',
   'shadow',
 ]
 const colorUtility = new RegExp(`^(?:${colorPrefix.join('|')})-(.+)$`)
@@ -148,7 +183,10 @@ const violationFor = (raw: string, scope: 'all' | 'color'): string | null => {
   // distributable product.
   if (scope === 'color') return null
 
-  if (/^rounded(?:-[a-z]+)*-\[.+\]$/.test(token) && arbitraryLiteral.test(token.slice(token.indexOf('[')))) {
+  if (
+    /^rounded(?:-[a-z]+)*-\[.+\]$/.test(token) &&
+    arbitraryLiteral.test(token.slice(token.indexOf('[')))
+  ) {
     return 'arbitrary radius — use rounded-frame/panel/card/inset/lg/full/…'
   }
 

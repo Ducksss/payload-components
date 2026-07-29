@@ -6,11 +6,7 @@ import { TemplatePageRenderer } from '@/components/site/templates/TemplateRender
 import { TemplateVisualCanvas } from '@/components/site/templates/TemplateVisualCanvas'
 import { TemplatePreviewExit } from '@/components/site/templates/shared/TemplatePreviewExit'
 import { templateShellsBySlug } from '@/components/site/templates/shells'
-import {
-  getTemplatePage,
-  getTemplateShowcase,
-  templateShowcases,
-} from '@/lib/templates/registry'
+import { getTemplatePage, getTemplateShowcase, templateShowcases } from '@/lib/templates/registry'
 import { TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
 
 /* Raw full-site preview: the fictional template's own shell (header, internal
@@ -43,11 +39,7 @@ function resolvePreview(slug: string, segments: string[] | undefined) {
   return { page, template }
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: PreviewParams
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: PreviewParams }): Promise<Metadata> {
   const { page: segments, slug } = await params
   const resolved = resolvePreview(slug, segments)
   if (!resolved) return { robots: { follow: false, index: false } }

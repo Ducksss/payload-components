@@ -1,9 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  featureCardsMediaDemoContent,
-  type FeatureCardsMediaDemoContent,
-} from '@/lib/demo-content'
+import { featureCardsMediaDemoContent, type FeatureCardsMediaDemoContent } from '@/lib/demo-content'
 
 import { DemoLink } from './DemoLink'
 import { featureDemoIcons } from './FeatureAccordionDemo'
@@ -36,7 +33,10 @@ export function FeatureCardsMediaDemo({
         <div className="mx-auto flex max-w-6xl flex-col gap-10">
           <div className="flex max-w-3xl flex-col gap-4">
             {eyebrow ? (
-              <Badge variant="outline" className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow">
+              <Badge
+                variant="outline"
+                className="w-fit rounded-full px-3 py-1 uppercase tracking-eyebrow"
+              >
                 {eyebrow}
               </Badge>
             ) : null}

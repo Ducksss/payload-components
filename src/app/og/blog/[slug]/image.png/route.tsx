@@ -17,9 +17,19 @@ export const revalidate = false
 
 const font = (name: string) => readFileSync(path.join(process.cwd(), 'src/app/_fonts', name))
 const fonts = [
-  { data: font('Geist-Regular.ttf'), name: 'Geist', style: 'normal' as const, weight: 400 as const },
+  {
+    data: font('Geist-Regular.ttf'),
+    name: 'Geist',
+    style: 'normal' as const,
+    weight: 400 as const,
+  },
   { data: font('Geist-Bold.ttf'), name: 'Geist', style: 'normal' as const, weight: 700 as const },
-  { data: font('GeistMono-Regular.ttf'), name: 'Geist Mono', style: 'normal' as const, weight: 400 as const },
+  {
+    data: font('GeistMono-Regular.ttf'),
+    name: 'Geist Mono',
+    style: 'normal' as const,
+    weight: 400 as const,
+  },
 ]
 const coverCache = new Map<string, Promise<string>>()
 const mark = sharp(path.join(process.cwd(), 'public/favicon.svg'))
@@ -68,26 +78,78 @@ export async function GET(_request: Request, { params }: BlogImageRouteProps) {
         width: '100%',
       }}
     >
-      <div style={{ display: 'flex', flex: 1, flexDirection: 'column', padding: '16px 48px 12px 8px' }}>
-        <div style={{ alignItems: 'center', display: 'flex', fontSize: 24, fontWeight: 700, gap: 12 }}>
+      <div
+        style={{ display: 'flex', flex: 1, flexDirection: 'column', padding: '16px 48px 12px 8px' }}
+      >
+        <div
+          style={{ alignItems: 'center', display: 'flex', fontSize: 24, fontWeight: 700, gap: 12 }}
+        >
           <img alt="" height={46} src={markSource} width={46} />
           Payload Components
         </div>
-        <div style={{ color: '#047857', display: 'flex', fontFamily: 'Geist Mono', fontSize: 18, marginTop: 72, textTransform: 'uppercase' }}>
+        <div
+          style={{
+            color: '#047857',
+            display: 'flex',
+            fontFamily: 'Geist Mono',
+            fontSize: 18,
+            marginTop: 72,
+            textTransform: 'uppercase',
+          }}
+        >
           {series.label}
         </div>
-        <div style={{ display: 'flex', fontSize: 52, fontWeight: 700, letterSpacing: -2.2, lineHeight: 1.05, marginTop: 18 }}>
+        <div
+          style={{
+            display: 'flex',
+            fontSize: 52,
+            fontWeight: 700,
+            letterSpacing: -2.2,
+            lineHeight: 1.05,
+            marginTop: 18,
+          }}
+        >
           {page.data.title}
         </div>
-        <div style={{ color: '#71717a', display: 'flex', fontSize: 20, lineHeight: 1.45, marginTop: 22 }}>
+        <div
+          style={{
+            color: '#71717a',
+            display: 'flex',
+            fontSize: 20,
+            lineHeight: 1.45,
+            marginTop: 22,
+          }}
+        >
           {page.data.description}
         </div>
-        <div style={{ color: '#a1a1aa', display: 'flex', fontFamily: 'Geist Mono', fontSize: 16, marginTop: 'auto' }}>
+        <div
+          style={{
+            color: '#a1a1aa',
+            display: 'flex',
+            fontFamily: 'Geist Mono',
+            fontSize: 16,
+            marginTop: 'auto',
+          }}
+        >
           {siteUrl.replace(/^https?:\/\//, '')}
         </div>
       </div>
-      <div style={{ border: '1px solid #e4e4e7', borderRadius: 24, display: 'flex', overflow: 'hidden', width: 440 }}>
-        <img alt="" height={534} src={cover} style={{ height: '100%', objectFit: 'cover', width: '100%' }} width={440} />
+      <div
+        style={{
+          border: '1px solid #e4e4e7',
+          borderRadius: 24,
+          display: 'flex',
+          overflow: 'hidden',
+          width: 440,
+        }}
+      >
+        <img
+          alt=""
+          height={534}
+          src={cover}
+          style={{ height: '100%', objectFit: 'cover', width: '100%' }}
+          width={440}
+        />
       </div>
     </div>,
     {

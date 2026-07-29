@@ -49,7 +49,9 @@ export function GET() {
     '## Installable components',
     /* Keep "<title>: <command>" intact (no backticks) — the GEO contract test
        in tests/e2e/geo.e2e.spec.ts pins that exact substring. */
-    ...componentEntries.map((component) => `- ${component.title}: ${component.command} — ${component.description}`),
+    ...componentEntries.map(
+      (component) => `- ${component.title}: ${component.command} — ${component.description}`,
+    ),
     '',
     '## Full-site template concepts',
     'Browsable multi-page site concepts composed from the blocks above. Each is a',

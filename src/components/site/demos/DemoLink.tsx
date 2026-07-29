@@ -12,11 +12,7 @@ const appearances = {
   outline: 'border border-border bg-background text-foreground',
 } as const
 
-export function DemoLink({
-  appearance,
-  className,
-  label,
-}: DemoLinkData & { className?: string }) {
+export function DemoLink({ appearance, className, label }: DemoLinkData & { className?: string }) {
   return (
     <span
       className={cn(

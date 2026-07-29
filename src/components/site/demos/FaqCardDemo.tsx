@@ -55,7 +55,9 @@ export function FaqCardDemo({
                     <div className="text-left text-base tracking-title hover:no-underline">
                       {item.question}
                     </div>
-                    <div className="mt-3 text-sm leading-7 text-muted-foreground">{item.answer}</div>
+                    <div className="mt-3 text-sm leading-7 text-muted-foreground">
+                      {item.answer}
+                    </div>
                   </div>
                 ))}
               </div>

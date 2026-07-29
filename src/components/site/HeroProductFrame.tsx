@@ -26,10 +26,7 @@ const LINE_GAP_MS = 70
 
 /* Progress lines reveal at 1370 / 1590 / 1810. */
 const progressDelay = (index: number) =>
-  LINE_BASE_DELAY_MS +
-  TYPE_DURATION_MS +
-  LINE_GAP_MS +
-  index * (REVEAL_DURATION_MS + LINE_GAP_MS)
+  LINE_BASE_DELAY_MS + TYPE_DURATION_MS + LINE_GAP_MS + index * (REVEAL_DURATION_MS + LINE_GAP_MS)
 
 const OUTCOMES_START_MS = 1940
 const OUTCOME_STAGGER_MS = 120

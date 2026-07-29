@@ -9,7 +9,12 @@ import type { RegistryDefinition } from '../../tools/payload-components/types'
 import { makeTestManifest } from './manifest-factory'
 
 const repoRoot = process.cwd()
-const manifestSchemaPath = path.join(repoRoot, 'payload-components', 'schema', 'poc-manifest.schema.json')
+const manifestSchemaPath = path.join(
+  repoRoot,
+  'payload-components',
+  'schema',
+  'poc-manifest.schema.json',
+)
 
 const baseManifest = makeTestManifest()
 

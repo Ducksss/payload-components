@@ -19,7 +19,13 @@ import type { Edge, EdgeProps, Node, NodeProps } from '@xyflow/react'
 import { wiringLedger } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
-import { ArtifactNodeCard, CommandNodeCard, NODE_ICONS, type NodeKind, nodeKind } from './wiring-nodes'
+import {
+  ArtifactNodeCard,
+  CommandNodeCard,
+  NODE_ICONS,
+  type NodeKind,
+  nodeKind,
+} from './wiring-nodes'
 
 import '@xyflow/react/dist/style.css'
 
@@ -80,8 +86,18 @@ function CommandFlowNode({ data }: NodeProps) {
   return (
     <div className="wiring-reveal" style={cssVars({ '--i': 0 })}>
       <div className="wiring-3d w-[12rem] select-none">
-        <CommandNodeCard branded={d.branded} className="shadow-card" label={d.label} summary={d.summary} />
-        <Handle type="source" position={Position.Right} isConnectable={false} className="wiring-handle" />
+        <CommandNodeCard
+          branded={d.branded}
+          className="shadow-card"
+          label={d.label}
+          summary={d.summary}
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          isConnectable={false}
+          className="wiring-handle"
+        />
       </div>
     </div>
   )
@@ -125,9 +141,17 @@ function ArtifactFlowNode({ data, id }: NodeProps) {
         ref={tiltRef}
         onMouseMove={handleMove}
         onMouseLeave={resetTilt}
-        className={cn('wiring-3d group relative w-[16rem] select-none rounded-xl', active && 'is-active')}
+        className={cn(
+          'wiring-3d group relative w-[16rem] select-none rounded-xl',
+          active && 'is-active',
+        )}
       >
-        <Handle type="target" position={Position.Left} isConnectable={false} className="wiring-handle" />
+        <Handle
+          type="target"
+          position={Position.Left}
+          isConnectable={false}
+          className="wiring-handle"
+        />
         <ArtifactNodeCard
           className={cn(
             'shadow-card transition-[box-shadow,opacity] duration-200',
@@ -144,11 +168,26 @@ function ArtifactFlowNode({ data, id }: NodeProps) {
   )
 }
 
-function FlowEdge({ data, sourcePosition, sourceX, sourceY, targetPosition, targetX, targetY }: EdgeProps) {
+function FlowEdge({
+  data,
+  sourcePosition,
+  sourceX,
+  sourceY,
+  targetPosition,
+  targetX,
+  targetY,
+}: EdgeProps) {
   const { hoveredId } = useContext(InteractionContext)
   const d = (data ?? {}) as EdgeData
   const index = d.nodeId ? Number(d.nodeId.slice(1)) : 0
-  const [path] = getBezierPath({ sourcePosition, sourceX, sourceY, targetPosition, targetX, targetY })
+  const [path] = getBezierPath({
+    sourcePosition,
+    sourceX,
+    sourceY,
+    targetPosition,
+    targetX,
+    targetY,
+  })
 
   const wired = d.kind === 'wired'
   const active = hoveredId === d.nodeId
@@ -167,7 +206,13 @@ function FlowEdge({ data, sourcePosition, sourceX, sourceY, targetPosition, targ
           strokeLinecap="round"
           strokeWidth={active ? 1.75 : 1.25}
         />
-        <circle className="wiring-port" cx={targetX} cy={targetY} r={2.25} fill="var(--muted-foreground)" />
+        <circle
+          className="wiring-port"
+          cx={targetX}
+          cy={targetY}
+          r={2.25}
+          fill="var(--muted-foreground)"
+        />
       </g>
     )
   }
@@ -198,8 +243,20 @@ function FlowEdge({ data, sourcePosition, sourceX, sourceY, targetPosition, targ
         strokeLinecap="round"
         strokeWidth={active ? 3 : 2.25}
       />
-      <circle className="wiring-port" cx={sourceX} cy={sourceY} r={active ? 3 : 2.5} fill="var(--brand)" />
-      <circle className="wiring-port" cx={targetX} cy={targetY} r={active ? 3.5 : 2.75} fill="var(--brand)" />
+      <circle
+        className="wiring-port"
+        cx={sourceX}
+        cy={sourceY}
+        r={active ? 3 : 2.5}
+        fill="var(--brand)"
+      />
+      <circle
+        className="wiring-port"
+        cx={targetX}
+        cy={targetY}
+        r={active ? 3.5 : 2.75}
+        fill="var(--brand)"
+      />
     </g>
   )
 }
@@ -316,7 +373,8 @@ function Canvas() {
           onNodeMouseEnter={(_, node) => setHoveredId(node.id)}
           onNodeMouseLeave={() => setHoveredId(null)}
           onNodeClick={(_, node) => {
-            if (node.type === 'artifact') setExpandedId((prev) => (prev === node.id ? null : node.id))
+            if (node.type === 'artifact')
+              setExpandedId((prev) => (prev === node.id ? null : node.id))
           }}
           onPaneClick={() => setExpandedId(null)}
         >

@@ -15,13 +15,7 @@ export function TemplateGalleryView() {
   return null
 }
 
-export function TemplateDetailView({
-  revision,
-  template,
-}: {
-  revision: number
-  template: string
-}) {
+export function TemplateDetailView({ revision, template }: { revision: number; template: string }) {
   useEffect(() => {
     trackTemplateEvent('template_detail_view', { revision, source: 'detail', template })
   }, [revision, template])

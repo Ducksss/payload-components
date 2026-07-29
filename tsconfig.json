@@ -4,11 +4,7 @@
     "baseUrl": ".",
     "esModuleInterop": true,
     "target": "ES2022",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ES2022"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "allowJs": true,
     "skipLibCheck": true,
     "noEmit": true,
@@ -25,15 +21,9 @@
       }
     ],
     "paths": {
-      "react": [
-        "./node_modules/@types/react"
-      ],
-      "collections/*": [
-        "./.source/*"
-      ],
-      "@/*": [
-        "./src/*"
-      ]
+      "react": ["./node_modules/@types/react"],
+      "collections/*": ["./.source/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": [
@@ -44,10 +34,5 @@
     "next.config.mjs",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "payload-components/source",
-    "payload-components/templates"
-  ]
+  "exclude": ["node_modules", "dist", "payload-components/source", "payload-components/templates"]
 }

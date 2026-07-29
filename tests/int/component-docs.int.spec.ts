@@ -72,7 +72,9 @@ describe('component provenance attribution', () => {
       }
 
       const docs = await readFile(path.join(componentDocsDir, `${slug}.mdx`), 'utf8')
-      if (!docs.includes('adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT)')) {
+      if (
+        !docs.includes('adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT)')
+      ) {
         missingDocsFooters.push(slug)
       }
     }

@@ -12,8 +12,10 @@ export async function ComponentWiring({ slug }: { slug: string }) {
   if (!manifest) return null
 
   const patched = manifest.recovery.patchedFiles
-  const pagesPath = patched.find((p) => p.includes('collections/Pages')) ?? 'src/collections/Pages/index.ts'
-  const renderPath = patched.find((p) => p.includes('RenderBlocks')) ?? 'src/blocks/RenderBlocks.tsx'
+  const pagesPath =
+    patched.find((p) => p.includes('collections/Pages')) ?? 'src/collections/Pages/index.ts'
+  const renderPath =
+    patched.find((p) => p.includes('RenderBlocks')) ?? 'src/blocks/RenderBlocks.tsx'
   const sharedFile = manifest.files.find((file) => file.includes('/shared/'))
 
   const edits: { action: string; file: string }[] = [
@@ -24,20 +26,28 @@ export async function ComponentWiring({ slug }: { slug: string }) {
     edits.push({ action: 'Regenerates types', file: 'src/payload-types.ts' })
   }
   if (manifest.postInstall.includes('generate:importmap')) {
-    edits.push({ action: 'Regenerates the admin import map', file: 'src/app/(payload)/admin/importMap.js' })
+    edits.push({
+      action: 'Regenerates the admin import map',
+      file: 'src/app/(payload)/admin/importMap.js',
+    })
   }
 
   return (
     <div className="not-prose my-6 flex flex-col gap-5">
       <div>
         <p className="mb-3 text-sm leading-6 text-muted-foreground">
-          Copies {manifest.files.length} source{' '}
-          {manifest.files.length === 1 ? 'file' : 'files'} into your project:
+          Copies {manifest.files.length} source {manifest.files.length === 1 ? 'file' : 'files'}{' '}
+          into your project:
         </p>
         <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-lg border border-border bg-muted/30">
           {manifest.files.map((file) => (
-            <li key={file} className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-              <code className="min-w-0 break-all font-mono text-[13px] text-foreground/90">{file}</code>
+            <li
+              key={file}
+              className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
+            >
+              <code className="min-w-0 break-all font-mono text-[13px] text-foreground/90">
+                {file}
+              </code>
               {file === sharedFile ? (
                 <span className="shrink-0 rounded-full border border-border bg-background px-2 py-0.5 font-mono text-[10px] uppercase tracking-micro text-muted-foreground">
                   shared
@@ -68,7 +78,14 @@ export async function ComponentWiring({ slug }: { slug: string }) {
             </tbody>
           </table>
           <div className="divide-y divide-border sm:hidden">
-            {edits.map((edit) => <div key={edit.action} className="flex flex-col gap-1 px-4 py-2.5 text-sm"><span className="font-medium">{edit.action}</span><code className="break-all font-mono text-[13px] text-muted-foreground">{edit.file}</code></div>)}
+            {edits.map((edit) => (
+              <div key={edit.action} className="flex flex-col gap-1 px-4 py-2.5 text-sm">
+                <span className="font-medium">{edit.action}</span>
+                <code className="break-all font-mono text-[13px] text-muted-foreground">
+                  {edit.file}
+                </code>
+              </div>
+            ))}
           </div>
         </div>
       </div>

@@ -29,7 +29,9 @@ export async function GET() {
     `GitHub: ${githubRepoUrl}`,
     '',
     '## Components',
-    ...componentEntries.map((component) => `- ${component.title} (${component.slug}): ${component.command}`),
+    ...componentEntries.map(
+      (component) => `- ${component.title} (${component.slug}): ${component.command}`,
+    ),
     '',
     '## FAQ',
     ...faqEntries.flatMap((entry) => [`### ${entry.question}`, entry.answer, '']),

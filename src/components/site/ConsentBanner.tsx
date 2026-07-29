@@ -36,8 +36,8 @@ export function ConsentBanner() {
             Analytics cookies
           </p>
           <p className="text-sm text-muted-foreground">
-            We use Google Analytics, Vercel Analytics, and PostHog to see which components
-            and docs people actually use. Decline and none of them load.{' '}
+            We use Google Analytics, Vercel Analytics, and PostHog to see which components and docs
+            people actually use. Decline and none of them load.{' '}
             <Link
               className="font-medium text-brand underline underline-offset-4 transition-colors hover:text-brand/80"
               href="/privacy"

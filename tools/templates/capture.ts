@@ -47,7 +47,12 @@ async function main() {
     process.argv.find((arg) => arg.startsWith('--base-url='))?.slice('--base-url='.length) ??
     'http://localhost:3000'
   const onlyArg = process.argv.find((arg) => arg.startsWith('--only='))?.slice('--only='.length)
-  const only = onlyArg ? onlyArg.split(',').map((s) => s.trim()).filter(Boolean) : null
+  const only = onlyArg
+    ? onlyArg
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : null
 
   const targets = only
     ? templateShowcases.filter((template) => only.includes(template.slug))
@@ -98,7 +103,8 @@ async function main() {
 
           const { size } = await stat(outPath)
           const kb = Math.round(size / 1024)
-          const over = size > POSTER_BUDGET_BYTES ? ` — over the ${POSTER_BUDGET_BYTES / 1024} KB budget` : ''
+          const over =
+            size > POSTER_BUDGET_BYTES ? ` — over the ${POSTER_BUDGET_BYTES / 1024} KB budget` : ''
           console.log(`captured ${relative} (${kb} KB)${over}`)
         }
       } catch (error) {

@@ -88,8 +88,10 @@ export function AlderHeader({
   }, [open])
 
   // Route changes close the disclosure; this state update is intentionally tied to navigation.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setOpen(false) }, [pathname])
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpen(false)
+  }, [pathname])
 
   const bookingPath = template.navigation.find((item) => item.path === 'book')?.path ?? ''
 
@@ -98,10 +100,7 @@ export function AlderHeader({
       <div className="alder-utility">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-1 px-5 py-2.5 text-sm sm:px-8">
           {utilityLines.map((line) => (
-            <span
-              key={line.text}
-              className={cn('leading-6', line.hideBelow && 'hidden lg:inline')}
-            >
+            <span key={line.text} className={cn('leading-6', line.hideBelow && 'hidden lg:inline')}>
               {line.text}
             </span>
           ))}

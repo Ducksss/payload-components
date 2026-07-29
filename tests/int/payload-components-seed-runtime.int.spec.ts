@@ -7,10 +7,7 @@ import { promisify } from 'node:util'
 import { afterEach, describe, expect, it } from 'vitest'
 
 import { loadManifest } from '../../tools/payload-components/manifest'
-import {
-  writeSeedScript,
-  type SeedTarget,
-} from '../../tools/payload-components/seed/seed-script'
+import { writeSeedScript, type SeedTarget } from '../../tools/payload-components/seed/seed-script'
 import type { ComponentManifest } from '../../tools/payload-components/types'
 
 type StubCall = {
@@ -51,11 +48,7 @@ const tsxCli = path.join(repoRoot, 'node_modules', 'tsx', 'dist', 'cli.mjs')
 const runtimeTarget: SeedTarget = {
   configFileRelPath: path.join('src', 'payload.config.ts'),
   marker: 'payload-components:demo:logo-cloud-grid',
-  ownershipStateRelPath: path.join(
-    '.payload-components',
-    'demo-state',
-    'logo-cloud-grid.json',
-  ),
+  ownershipStateRelPath: path.join('.payload-components', 'demo-state', 'logo-cloud-grid.json'),
   scriptRelPath: path.join('payload-components', 'seed-logo-cloud-grid.ts'),
   slug: 'payload-components-demo-logo-cloud-grid',
   title: 'Payload Components demo — Logo Cloud Grid',
@@ -174,20 +167,16 @@ const createRuntimeFixture = async ({
         ...loadedManifest,
         sampleContent: {
           ...loadedManifest.sampleContent,
-          logos: (
-            loadedManifest.sampleContent.logos as Array<Record<string, unknown>>
-          ).map((logo, index) => (index === 0 ? { ...logo, logo: '' } : logo)),
+          logos: (loadedManifest.sampleContent.logos as Array<Record<string, unknown>>).map(
+            (logo, index) => (index === 0 ? { ...logo, logo: '' } : logo),
+          ),
         },
       }
     : loadedManifest
   const target = {
     ...runtimeTarget,
     marker: `payload-components:demo:${manifest.name}`,
-    ownershipStateRelPath: path.join(
-      '.payload-components',
-      'demo-state',
-      `${manifest.name}.json`,
-    ),
+    ownershipStateRelPath: path.join('.payload-components', 'demo-state', `${manifest.name}.json`),
     scriptRelPath: path.join('payload-components', `seed-${manifest.name}.ts`),
     slug: `payload-components-demo-${manifest.name}`,
     title: `Payload Components demo — ${manifest.title}`,
@@ -261,9 +250,9 @@ describe('generated demo seed runtime', () => {
         }),
       ]),
     )
-    expect(state.calls.some((call) => call.collection === 'pages' && call.method === 'delete')).toBe(
-      false,
-    )
+    expect(
+      state.calls.some((call) => call.collection === 'pages' && call.method === 'delete'),
+    ).toBe(false)
     expect(state.pages).toHaveLength(1)
     expect(state.pages[0]).toMatchObject({
       _status: 'draft',
@@ -297,9 +286,9 @@ describe('generated demo seed runtime', () => {
 
     const result = await readState(fixture.statePath)
     expect(result.pages).toEqual(state.pages)
-    expect(result.calls.filter((call) => ['create', 'delete', 'update'].includes(call.method))).toEqual(
-      [],
-    )
+    expect(
+      result.calls.filter((call) => ['create', 'delete', 'update'].includes(call.method)),
+    ).toEqual([])
   })
 
   it('refuses marker-like media collisions without deleting or reusing them', async () => {
@@ -326,9 +315,9 @@ describe('generated demo seed runtime', () => {
 
     const result = await readState(fixture.statePath)
     expect(result.media).toEqual(state.media)
-    expect(result.calls.some((call) => call.collection === 'media' && call.method === 'create')).toBe(
-      false,
-    )
+    expect(
+      result.calls.some((call) => call.collection === 'media' && call.method === 'create'),
+    ).toBe(false)
     expect(result.calls.some((call) => call.method === 'delete')).toBe(false)
     expect(result.pages).toEqual([])
   })
@@ -377,9 +366,7 @@ describe('generated demo seed runtime', () => {
 
     const result = await readState(fixture.statePath)
     expect(
-      result.calls.filter(
-        (call) => call.collection === 'media' && call.method === 'create',
-      ),
+      result.calls.filter((call) => call.collection === 'media' && call.method === 'create'),
     ).toHaveLength(0)
     expect(result.media).toEqual(state.media)
     expect(await readOwnershipState(fixture.ownershipStatePath)).toMatchObject({
@@ -412,9 +399,7 @@ describe('generated demo seed runtime', () => {
 
     const afterRetry = await readState(fixture.statePath)
     expect(
-      afterRetry.calls.filter(
-        (call) => call.collection === 'media' && call.method === 'create',
-      ),
+      afterRetry.calls.filter((call) => call.collection === 'media' && call.method === 'create'),
     ).toHaveLength(1)
     expect(afterRetry.media).toHaveLength(1)
     expect(afterRetry.pages).toHaveLength(1)
@@ -442,8 +427,7 @@ describe('generated demo seed runtime', () => {
         {
           blockType: 'heroBasic',
           id:
-            `${fixture.target.marker}:${ownershipState.token}:` +
-            ownershipState.pageOperationToken,
+            `${fixture.target.marker}:${ownershipState.token}:` + ownershipState.pageOperationToken,
         },
       ],
       slug: fixture.target.slug,
@@ -456,9 +440,7 @@ describe('generated demo seed runtime', () => {
 
     const result = await readState(fixture.statePath)
     expect(
-      result.calls.filter(
-        (call) => call.collection === 'pages' && call.method === 'create',
-      ),
+      result.calls.filter((call) => call.collection === 'pages' && call.method === 'create'),
     ).toHaveLength(0)
     expect(result.pages).toHaveLength(1)
     expect(await readOwnershipState(fixture.ownershipStatePath)).toMatchObject({
@@ -491,9 +473,8 @@ describe('generated demo seed runtime', () => {
     await runScript(fixture.scriptPath, fixture.statePath)
 
     const result = await readState(fixture.statePath)
-    const firstLogo = (
-      result.pages[0].layout as Array<{ logos: Array<{ logo: unknown }> }>
-    )[0].logos[0]
+    const firstLogo = (result.pages[0].layout as Array<{ logos: Array<{ logo: unknown }> }>)[0]
+      .logos[0]
 
     expect(firstLogo.logo).toBe(result.media[0].id)
   })
@@ -505,9 +486,7 @@ describe('generated demo seed runtime', () => {
     await runScript(fixture.scriptPath, fixture.statePath)
 
     const result = await readState(fixture.statePath)
-    const hero = (
-      result.pages[0].layout as Array<{ poster: unknown; video: unknown }>
-    )[0]
+    const hero = (result.pages[0].layout as Array<{ poster: unknown; video: unknown }>)[0]
 
     expect(hero).toMatchObject({
       poster: result.media[0].id,
@@ -522,14 +501,10 @@ describe('generated demo seed runtime', () => {
     await runScript(fixture.scriptPath, fixture.statePath)
 
     const result = await readState(fixture.statePath)
-    const featureItems = (
-      result.pages[0].layout as Array<{ items: Array<{ image: unknown }> }>
-    )[0].items
+    const featureItems = (result.pages[0].layout as Array<{ items: Array<{ image: unknown }> }>)[0]
+      .items
 
-    expect(featureItems.map((item) => item.image)).toEqual([
-      result.media[0].id,
-      result.media[0].id,
-    ])
+    expect(featureItems.map((item) => item.image)).toEqual([result.media[0].id, result.media[0].id])
   })
 
   it('refuses a missing private ownership state before querying or mutating Payload', async () => {
@@ -559,8 +534,8 @@ describe('generated demo seed runtime', () => {
     })
 
     const result = await readState(fixture.statePath)
-    expect(result.calls.filter((call) => ['create', 'delete', 'update'].includes(call.method))).toHaveLength(
-      1,
-    )
+    expect(
+      result.calls.filter((call) => ['create', 'delete', 'update'].includes(call.method)),
+    ).toHaveLength(1)
   })
 })

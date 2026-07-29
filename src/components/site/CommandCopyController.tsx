@@ -75,7 +75,10 @@ export function CommandCopyController() {
       }
 
       window.clearTimeout(copiedTimers.get(button))
-      copiedTimers.set(button, window.setTimeout(() => reset(button), 1100))
+      copiedTimers.set(
+        button,
+        window.setTimeout(() => reset(button), 1100),
+      )
     }
 
     const onLinkClick = (event: MouseEvent) => {

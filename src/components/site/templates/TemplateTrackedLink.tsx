@@ -4,7 +4,11 @@ import type { ReactNode } from 'react'
 
 import Link from 'next/link'
 
-import { trackTemplateEvent, type TemplateAnalyticsEvent, type TemplateAnalyticsProperties } from '@/lib/analytics'
+import {
+  trackTemplateEvent,
+  type TemplateAnalyticsEvent,
+  type TemplateAnalyticsProperties,
+} from '@/lib/analytics'
 
 /* A link that reports one approved template event on click. Internal hrefs go
  * through next/link; external ones (GitHub) open a new tab. Analytics never

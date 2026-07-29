@@ -201,11 +201,7 @@
   background-color: var(--ll-ink-deep);
   background-image:
     linear-gradient(180deg, color-mix(in oklab, var(--ll-teal) 9%, transparent), transparent 62%),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 5.5rem,
-      var(--ll-rule) 5.5rem calc(5.5rem + 1px)
-    );
+    repeating-linear-gradient(90deg, transparent 0 5.5rem, var(--ll-rule) 5.5rem calc(5.5rem + 1px));
   box-shadow: inset 0 -1px 0 var(--ll-rule);
 }
 
@@ -251,8 +247,7 @@
 
 /* The marquee's edge fades are mixed from --card; on the customer strip they
    must dissolve into the band instead of printing two lighter columns. */
-[data-template-theme='fintech-trust']
-  [data-template-section='customers'][data-tone='muted'] {
+[data-template-theme='fintech-trust'] [data-template-section='customers'][data-tone='muted'] {
   --card: var(--ll-slate);
 }
 
@@ -291,9 +286,7 @@
 
 /* Index labels flip to the deep teal register on paper, with a pale scrim
    replacing the ink one. */
-[data-template-theme='fintech-trust']
-  [data-tone='contrast']
-  .rounded-full.tracking-eyebrow {
+[data-template-theme='fintech-trust'] [data-tone='contrast'] .rounded-full.tracking-eyebrow {
   background-color: color-mix(in oklab, var(--ll-paper) 82%, transparent);
   border-inline-start-color: var(--ll-teal-deep);
   color: var(--ll-teal-deep);

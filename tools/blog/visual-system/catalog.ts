@@ -297,11 +297,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       path: 'tests/int/payload-components-fragment.int.spec.ts',
       anchor: 'heroBasic: HeroBasicBlock,',
       before: ['const blockComponents = {', '}'],
-      after: [
-        'const blockComponents = {',
-        '  heroBasic: HeroBasicBlock,',
-        '}',
-      ],
+      after: ['const blockComponents = {', '  heroBasic: HeroBasicBlock,', '}'],
     },
     figures: [
       {
@@ -378,12 +374,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
       capture: {
         columns: 2,
         position: 'bottom',
-        selectors: [
-          '#feature-bento',
-          '#feature-split',
-          '#feature-steps',
-          '#feature-grid-basic',
-        ],
+        selectors: ['#feature-bento', '#feature-split', '#feature-steps', '#feature-grid-basic'],
       },
     },
     secondary: {
@@ -756,15 +747,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     secondary: {
       kind: 'sequence',
       label: 'Seven contribution surfaces',
-      items: [
-        'source',
-        'manifest',
-        'registry',
-        'demo twin',
-        'catalog + ledgers',
-        'docs',
-        'tests',
-      ],
+      items: ['source', 'manifest', 'registry', 'demo twin', 'catalog + ledgers', 'docs', 'tests'],
     },
     figures: [
       {

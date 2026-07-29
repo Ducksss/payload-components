@@ -33,9 +33,7 @@ export function ComponentFamily({ slug }: { slug: string }) {
             )}
           >
             <div className="flex items-center justify-between gap-2">
-              <code className="font-mono text-[13px] font-medium text-brand">
-                {component.slug}
-              </code>
+              <code className="font-mono text-[13px] font-medium text-brand">{component.slug}</code>
               {current ? (
                 <span className="shrink-0 rounded-full border border-brand/30 bg-brand/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-brand">
                   current
@@ -45,9 +43,7 @@ export function ComponentFamily({ slug }: { slug: string }) {
             <span className="text-sm font-semibold tracking-tight text-foreground">
               {component.title}
             </span>
-            <span className="text-sm leading-6 text-muted-foreground">
-              {component.description}
-            </span>
+            <span className="text-sm leading-6 text-muted-foreground">{component.description}</span>
           </Link>
         )
       })}

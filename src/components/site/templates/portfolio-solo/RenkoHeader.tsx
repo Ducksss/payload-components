@@ -56,14 +56,13 @@ export function RenkoHeader({
   }, [open])
 
   // Route changes close the disclosure; this state update is intentionally tied to navigation.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setOpen(false) }, [pathname])
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpen(false)
+  }, [pathname])
 
   return (
-    <header
-      data-ir-menu
-      className="sticky top-0 z-40 border-b border-border bg-background"
-    >
+    <header data-ir-menu className="sticky top-0 z-40 border-b border-border bg-background">
       <nav
         aria-label="Ilse Renko site navigation"
         className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-6 px-6 sm:px-8 lg:px-12"

@@ -890,8 +890,7 @@
 
   .wiring-3d:hover,
   .wiring-3d.is-active {
-    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))
-      translateZ(14px);
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(14px);
   }
 
   /* Staggered entry reveal (plays once on scroll-in via .is-revealed). */

@@ -190,8 +190,7 @@ export const fintechTrustTemplate: TemplateShowcase = {
             description:
               'Ledgerline is the ledger, payout, and reconciliation layer underneath your product — one immutable record across every rail, currency, and settlement window.',
             eyebrow: 'Money movement infrastructure',
-            imageCaption:
-              'Authorization, settlement, fees, and reversals — posted to one record.',
+            imageCaption: 'Authorization, settlement, fees, and reversals — posted to one record.',
             links: [
               { link: { appearance: 'default', label: 'Talk to an engineer' } },
               { link: { appearance: 'outline', label: 'Read the security posture' } },

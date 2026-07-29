@@ -56,7 +56,10 @@ export function BlogCard({ headingLevel = 2, page, priority = false }: BlogCardP
 
         <div className="mt-auto flex flex-wrap gap-1.5 pt-5" aria-label="Article tags">
           {page.data.tags.map((tag) => (
-            <span key={tag} className="rounded-md bg-muted px-2 py-1 font-mono text-[10px] text-muted-foreground">
+            <span
+              key={tag}
+              className="rounded-md bg-muted px-2 py-1 font-mono text-[10px] text-muted-foreground"
+            >
               {tag}
             </span>
           ))}

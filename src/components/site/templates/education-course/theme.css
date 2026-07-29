@@ -298,7 +298,10 @@
   box-shadow: inset 0 -1px 0 var(--nf-rule);
 }
 
-[data-template-theme='education-course'] [data-template-section='hero'] > [aria-hidden='true'] > div {
+[data-template-theme='education-course']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > div {
   padding-block: clamp(3rem, 6vw, 4.5rem);
 }
 
@@ -957,8 +960,8 @@
     14% 62%,
     14% 74%,
     14% 90%;
-  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
-    repeat;
+  background-repeat:
+    no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat;
   background-size:
     56% 5.5%,
     72% 3%,

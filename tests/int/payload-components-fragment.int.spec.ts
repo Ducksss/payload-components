@@ -125,7 +125,9 @@ describe('applyPayloadFragments — renderBlocks', () => {
     const renderBlocks = "import React from 'react'\n\nexport const RenderBlocks = () => null\n"
     const dir = await makeProject({ renderBlocks })
 
-    await expect(applyPayloadFragments(dir, [renderBlocksFragment])).rejects.toThrow(/insertion anchor/i)
+    await expect(applyPayloadFragments(dir, [renderBlocksFragment])).rejects.toThrow(
+      /insertion anchor/i,
+    )
     expect(await readRenderBlocks(dir)).toEqual(renderBlocks)
   })
 })
