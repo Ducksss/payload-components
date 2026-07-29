@@ -4,6 +4,8 @@ import path from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
+import { shadcnCliPackage } from '../../tools/payload-components/utils'
+
 const repoRoot = process.cwd()
 
 type RegistryFile = {
@@ -85,7 +87,15 @@ describe('public shadcn registry publication', () => {
       scripts?: Record<string, string>
     }>(path.join(repoRoot, 'package.json'))
 
-    expect(packageJson.devDependencies?.shadcn).toBe('4.7.0')
+    // The shadcn pin is single-sourced from this devDependency: tsup inlines it
+    // into the published CLI, so `payload-components add` and `registry:build`
+    // cannot drift apart. Assert it stays an exact version — a range would make
+    // the generated registry artifacts non-deterministic — and that the CLI
+    // package spec still tracks it. Bumping shadcn is a one-line change here.
+    const shadcnPin = packageJson.devDependencies?.shadcn
+
+    expect(shadcnPin).toMatch(/^\d+\.\d+\.\d+$/)
+    expect(shadcnCliPackage).toBe(`shadcn@${shadcnPin}`)
     expect(packageJson.scripts?.['registry:build']).toBe(
       'cross-env NODE_OPTIONS=--no-deprecation pnpm exec shadcn build payload-components/registry.json --output public/r --cwd .',
     )

@@ -4,6 +4,10 @@ import path from 'node:path'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+// The real pin, resolved from the `shadcn` devDependency. `vi.doMock` is not
+// hoisted, so this static import always binds the unmocked module.
+import { shadcnCliPackage } from '../../tools/payload-components/utils'
+
 describe('payload-components registry install', () => {
   const tempDirs: string[] = []
 
@@ -22,7 +26,7 @@ describe('payload-components registry install', () => {
       return {
         ...actual,
         getShadcnCommand: vi.fn(() => ({
-          args: ['dlx', 'shadcn@4.7.0'],
+          args: ['dlx', shadcnCliPackage],
           command: 'pnpm',
         })),
         repoRoot: '/repo',
@@ -83,12 +87,12 @@ describe('payload-components registry install', () => {
     })
 
     expect(runCommand).toHaveBeenNthCalledWith(1, {
-      args: ['dlx', 'shadcn@4.7.0', 'add', 'badge', '--cwd', targetDir, '--yes'],
+      args: ['dlx', shadcnCliPackage, 'add', 'badge', '--cwd', targetDir, '--yes'],
       command: 'pnpm',
       cwd: '/repo',
     })
     expect(runCommand).toHaveBeenNthCalledWith(2, {
-      args: ['dlx', 'shadcn@4.7.0', 'add', itemFilePath, '--cwd', targetDir, '--yes'],
+      args: ['dlx', shadcnCliPackage, 'add', itemFilePath, '--cwd', targetDir, '--yes'],
       command: 'pnpm',
       cwd: '/repo',
       stdin: expect.stringMatching(/^(n\n){20}$/),
@@ -138,7 +142,7 @@ describe('payload-components registry install', () => {
 
     expect(runCommand).toHaveBeenCalledOnce()
     expect(runCommand).toHaveBeenCalledWith({
-      args: ['dlx', 'shadcn@4.7.0', 'add', itemFilePath, '--cwd', targetDir, '--yes'],
+      args: ['dlx', shadcnCliPackage, 'add', itemFilePath, '--cwd', targetDir, '--yes'],
       command: 'pnpm',
       cwd: '/repo',
       stdin: expect.stringMatching(/^(n\n){20}$/),
