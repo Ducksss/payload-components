@@ -88,14 +88,17 @@ payloads are fixed:
 
 | Signal | When it fires | Allowed action fields |
 | --- | --- | --- |
-| `$pageview` | A public route loads or changes | `page_path`, `source_path` |
-| `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path` |
-| `primary_link_click` | A visitor follows a repository, docs, or components link | `destination`, `href`, `source_path` |
+| `$pageview` | A public route loads or changes | `page_path`, `source_path`, optional `verification_run` |
+| `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path`, optional `verification_run` |
+| `primary_link_click` | A visitor follows a repository, docs, or components link | `destination`, `href`, `source_path`, optional `verification_run` |
 
 These values come from committed routes, links, and install commands, not visitor
 input. PostHog capture adds only `$current_url`, `$pathname`, and `$lib` to the
 action fields, plus the public `api_key` and a first-party pseudonymous
 `distinct_id` in the transport envelope. The request omits browser credentials.
+Controlled production checks opt in with `?verification_run=1`; only those
+events add `verification_run: true`, so demand reports can exclude them without
+changing ordinary visitor payloads. The query string itself is never captured.
 Leaving `NEXT_PUBLIC_POSTHOG_KEY` unset disables PostHog capture for that
 deployment.
 

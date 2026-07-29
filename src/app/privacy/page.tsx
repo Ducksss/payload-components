@@ -61,17 +61,17 @@ const processors = [
 
 const events = [
   {
-    fields: 'page_path, source_path',
+    fields: 'page_path, source_path, verification_run (controlled checks only)',
     name: '$pageview',
     when: 'A public route loads or changes.',
   },
   {
-    fields: 'command, component, source_path',
+    fields: 'command, component, source_path, verification_run (controlled checks only)',
     name: 'copy_install_command',
     when: 'You copy an install command.',
   },
   {
-    fields: 'destination, href, source_path',
+    fields: 'destination, href, source_path, verification_run (controlled checks only)',
     name: 'primary_link_click',
     when: 'You follow a repository, docs, or components link.',
   },

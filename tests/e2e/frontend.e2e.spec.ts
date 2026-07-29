@@ -1103,6 +1103,84 @@ test.describe('Light shadcn frontend', () => {
     )
   })
 
+  test('marks only explicit controlled verification actions', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/?verification_run=1`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+    await page.evaluate(() => {
+      document.addEventListener(
+        'click',
+        (event) => {
+          const target = event.target
+          if (!(target instanceof Element)) return
+
+          if (target.closest('a[href="https://github.com/Ducksss/payload-components"]')) {
+            event.preventDefault()
+          }
+        },
+        { capture: true },
+      )
+    })
+
+    await page.locator('.hero-shell button[data-copy-command]').click()
+    await page.locator('a[href="https://github.com/Ducksss/payload-components"]').first().click()
+
+    expect(await getGtagEvents(page)).toEqual(
+      expect.arrayContaining([
+        [
+          'event',
+          'copy_install_command',
+          {
+            command: primaryInstallCommand,
+            component: 'hero-basic',
+            source_path: '/',
+          },
+        ],
+        [
+          'event',
+          'primary_link_click',
+          {
+            destination: 'github',
+            href: 'https://github.com/Ducksss/payload-components',
+            source_path: '/',
+          },
+        ],
+      ]),
+    )
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: '$pageview',
+          properties: {
+            page_path: '/',
+            source_path: '/',
+            verification_run: true,
+          },
+        },
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: primaryInstallCommand,
+            component: 'hero-basic',
+            source_path: '/',
+            verification_run: true,
+          },
+        },
+        {
+          event: 'primary_link_click',
+          properties: {
+            destination: 'github',
+            href: 'https://github.com/Ducksss/payload-components',
+            source_path: '/',
+            verification_run: true,
+          },
+        },
+      ]),
+    )
+    expect(JSON.stringify(await getPostHogEvents(page))).not.toContain('verification_run=1')
+  })
+
   for (const sourcePath of ['/docs/installation', '/docs/payload-blocks']) {
     test(`keeps GitHub clicks attributable to ${sourcePath}`, async ({ page }) => {
       await page.goto(`${baseURL}${sourcePath}`)

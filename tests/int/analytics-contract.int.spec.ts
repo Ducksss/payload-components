@@ -15,11 +15,12 @@ const eventFields = {
 } as const
 
 const documentedEventRows = {
-  $pageview: '| `$pageview` | A public route loads or changes | `page_path`, `source_path` |',
+  $pageview:
+    '| `$pageview` | A public route loads or changes | `page_path`, `source_path`, optional `verification_run` |',
   copy_install_command:
-    '| `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path` |',
+    '| `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path`, optional `verification_run` |',
   primary_link_click:
-    '| `primary_link_click` | A visitor follows a repository, docs, or components link | `destination`, `href`, `source_path` |',
+    '| `primary_link_click` | A visitor follows a repository, docs, or components link | `destination`, `href`, `source_path`, optional `verification_run` |',
 } as const
 
 const eventCallPattern = (eventName: string) => {
@@ -72,5 +73,15 @@ describe('public anonymous analytics contract', () => {
     expect(contributingDocs).toContain('low-cardinality event name')
     expect(contributingDocs).toContain('Leaving `NEXT_PUBLIC_POSTHOG_KEY` unset')
     expect(envExample).toContain('Leave unset to disable PostHog capture')
+  })
+
+  it('marks only explicit controlled verification runs', async () => {
+    const analyticsSource = await readFile(analyticsPath, 'utf8')
+
+    expect(analyticsSource).toContain(
+      "new URLSearchParams(window.location.search).get('verification_run') !== '1'",
+    )
+    expect(analyticsSource).toContain('verification_run: true')
+    expect(analyticsSource).not.toContain('verification_run: false')
   })
 })

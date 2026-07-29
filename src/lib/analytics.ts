@@ -69,9 +69,10 @@ function analyticsAllowed() {
 
 function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
   const host = managedPostHogHost.replace(/\/$/, '')
+  const eventProperties = withVerificationRun(properties)
   const event = {
     event: eventName,
-    properties,
+    properties: eventProperties,
   }
 
   window.__posthogEvents?.push(event)
@@ -93,7 +94,7 @@ function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
     distinct_id: getSessionDistinctId(),
     event: eventName,
     properties: {
-      ...properties,
+      ...eventProperties,
       $current_url: `${window.location.origin}${getSourcePath()}`,
       $pathname: window.location.pathname,
       $lib: 'payload-components-lite',
@@ -155,6 +156,17 @@ function getSourcePath() {
 
 function getStableSourcePath() {
   return window.location.pathname
+}
+
+function withVerificationRun(properties: AnalyticsProperties) {
+  if (new URLSearchParams(window.location.search).get('verification_run') !== '1') {
+    return properties
+  }
+
+  return {
+    ...properties,
+    verification_run: true,
+  }
 }
 
 export function trackPageView() {
