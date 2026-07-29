@@ -21,7 +21,6 @@
       }
     ],
     "paths": {
-      "react": ["./node_modules/@types/react"],
       "collections/*": ["./.source/*"],
       "@/*": ["./src/*"]
     }
