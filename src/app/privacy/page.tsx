@@ -158,8 +158,12 @@ export default function PrivacyPage() {
               <p className="text-muted-foreground">
                 Your decision is stored locally in your browser under{' '}
                 <code className="font-mono text-sm text-foreground">pc_consent</code>. Change it
-                here at any time — withdrawing takes effect immediately and stops further
-                collection.
+                here at any time. Withdrawing does more than stop collection — it deletes what
+                the opt-in created: the Google Analytics cookies (
+                <code className="font-mono text-sm text-foreground">_ga</code>,{' '}
+                <code className="font-mono text-sm text-foreground">_ga_*</code>) and the PostHog
+                identifier are removed, and the page reloads so nothing already running carries
+                on.
               </p>
               <ConsentSettings />
             </div>

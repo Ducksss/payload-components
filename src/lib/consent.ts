@@ -20,6 +20,47 @@ export const consentChangeEvent = 'pc-consent-change'
 /* Lives here rather than in analytics.ts so withdrawing consent can erase the
  * identifier without importing the analytics module (which imports this one). */
 export const distinctIdStorageKey = 'pc_distinct_id'
+/* GA4's own cookies. `_ga` and `_ga_<measurement-id>` are the current pair;
+ * `_gid` / `_gat*` are legacy but cheap to sweep in case an older tag ran. */
+const analyticsCookiePrefixes = ['_ga', '_gid', '_gat'] as const
+
+/* Withdrawing consent has to remove what the opt-in wrote, not just stop adding
+ * to it. Unmounting the tag leaves `_ga` in place, so the visitor stays
+ * identifiable to GA on their next visit even though nothing is collecting.
+ *
+ * A cookie can only be deleted by re-setting it with a matching domain and path,
+ * and script cannot read which domain a cookie came from — GA sets `_ga` on the
+ * registrable domain. So try each plausible domain; the misses are inert. */
+function clearAnalyticsCookies() {
+  if (typeof document === 'undefined') return
+
+  try {
+    const { hostname } = document.location
+    const labels = hostname.split('.')
+    const domains = new Set<string>(['', hostname, `.${hostname}`])
+
+    if (labels.length > 2) {
+      const registrable = labels.slice(-2).join('.')
+      domains.add(registrable)
+      domains.add(`.${registrable}`)
+    }
+
+    const names = document.cookie
+      .split(';')
+      .map((cookie) => cookie.split('=')[0].trim())
+      .filter((name) =>
+        analyticsCookiePrefixes.some((prefix) => name === prefix || name.startsWith(`${prefix}_`)),
+      )
+
+    for (const name of names) {
+      for (const domain of domains) {
+        document.cookie = `${name}=; path=/; max-age=0${domain ? `; domain=${domain}` : ''}`
+      }
+    }
+  } catch {
+    // document.cookie can throw in sandboxed contexts; consent is denied regardless.
+  }
+}
 
 export function privacySignalOptOut() {
   if (typeof navigator === 'undefined') return false
@@ -61,6 +102,8 @@ export function resolveConsent(): ConsentState | null {
       // Storage unavailable; analytics stays denied either way.
     }
 
+    clearAnalyticsCookies()
+
     return 'denied'
   }
 
@@ -80,6 +123,10 @@ export function setConsent(state: ConsentState) {
     // Persisting is best-effort; the notification below still applies the
     // choice for this page view.
   }
+
+  // Same reasoning, for GA4's cookies rather than our own identifier. Runs
+  // before the reload below so the tag cannot re-set them on the way out.
+  if (state === 'denied') clearAnalyticsCookies()
 
   window.dispatchEvent(new CustomEvent(consentChangeEvent, { detail: state }))
 
