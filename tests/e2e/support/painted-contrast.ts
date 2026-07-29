@@ -106,6 +106,11 @@ export type PaintedContrastReport = {
   /* Nodes whose box held no glyph pixels (text painted by a child element, or
      clipped away) — nothing to measure, so nothing is claimed about them. */
   skippedNoGlyphPixels: number
+  /* Which nodes those were, for the same reason unresolvedSelectors exists: this
+     skip is the other way an unmeasurable node leaves the run, and a bare count
+     gives nobody a way to tell a text-painted-by-a-child node from ink that
+     collided with the sentinel channel or fell under the coverage floor. */
+  skippedNoGlyphPixelsSelectors: string[]
   /* Nodes that no longer resolve, collapsed to an empty box, or sit inside the
      excluded preview chrome. */
   skippedUnresolved: number
@@ -503,6 +508,7 @@ export async function measurePaintedTextContrast(
     skippedCrossFrame,
     skippedGradientInk: 0,
     skippedNoGlyphPixels: 0,
+    skippedNoGlyphPixelsSelectors: [],
     scored: [],
     skippedUnresolved: 0,
     total: incompleteNodes.length,
@@ -563,6 +569,7 @@ export async function measurePaintedTextContrast(
     const scored = scoreCandidate(candidate, glyphs, plate)
     if (!scored) {
       report.skippedNoGlyphPixels += 1
+      report.skippedNoGlyphPixelsSelectors.push(candidate.selector)
       continue
     }
 
@@ -602,6 +609,9 @@ export function formatPaintedContrastReport(label: string, report: PaintedContra
     }
   }
 
+  for (const selector of report.skippedNoGlyphPixelsSelectors) {
+    lines.push(`  no glyph pixels: ${selector}`)
+  }
   for (const selector of report.unresolvedSelectors) lines.push(`  unresolved: ${selector}`)
   for (const failure of report.failures) lines.push(`  FAILS ${describePairing(failure)}`)
 

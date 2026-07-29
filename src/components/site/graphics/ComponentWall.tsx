@@ -131,9 +131,17 @@ function WallCard({ slug }: { slug: string }) {
           zoom looked right on desktop and silently mangled small screens: at
           231px wide, 0.3 laid the twin out at 770px, where it re-wraps to a
           mobile-shaped column two to three times taller than the frame — 14 of
-          18 cards were guillotined mid-sentence on a phone. Pinning the layout
-          width means every card shows the same true desktop proportions at every
-          size, and the frame heights below (derived from that 1280 layout) hold.
+          18 cards were guillotined mid-sentence on a phone.
+
+          What that pinning buys is the LAYOUT width, not the breakpoint: media
+          queries answer to the viewport, so below 1024px three twins still
+          render their own stacked variant however wide the wall lays them out.
+          The frame heights below are measured from the 1280 layout and hold
+          wherever it is what renders; the residue the stacked variants leave in
+          the narrow bands is what the frame's bottom fade dissolves, and
+          frontend.e2e.spec.ts pins both the residue and the fade. Curate heights
+          against a measurement at the band you are changing, not against
+          desktop.
 
           Fixed heights, not natural: letting the box follow its content makes
           the page height depend on how each twin happens to wrap, and on mobile

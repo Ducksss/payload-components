@@ -22,6 +22,7 @@ const emptyReport = (): PaintedContrastReport => ({
   skippedGradientInk: 0,
   scored: [],
   skippedNoGlyphPixels: 0,
+  skippedNoGlyphPixelsSelectors: [],
   skippedUnresolved: 0,
   total: 0,
   unresolvedSelectors: [],
@@ -81,6 +82,8 @@ describe('painted contrast report', () => {
       sampled: 9,
       scored: [failure],
       skippedGradientInk: 1,
+      skippedNoGlyphPixels: 1,
+      skippedNoGlyphPixelsSelectors: ['.stat-value (no glyph pixels)'],
       skippedUnresolved: 2,
       total: 12,
       unresolvedSelectors: ['.pill (excluded chrome)', '.ghost (no match)'],
@@ -90,6 +93,10 @@ describe('painted contrast report', () => {
     expect(report).toContain('1 gradient-filled ink')
     expect(report).toContain('2 unresolved')
     expect(report).toContain('.pill (excluded chrome)')
+    /* Both unmeasurable categories name their nodes. A skip that only bumps a
+       counter reads in the log exactly like a node that was measured and passed,
+       which is the one thing this report exists to prevent. */
+    expect(report).toContain('no glyph pixels: .stat-value (no glyph pixels)')
     expect(report).toContain('FAILS 1.00:1 (needs 4.5:1)')
     // Triage needs the measured pixels, not just the verdict.
     expect(report).toContain('painted ink rgb(244,244,237) on painted rgb(244,244,244)')

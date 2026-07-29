@@ -258,17 +258,29 @@ test.describe('Light shadcn frontend', () => {
     await page.setViewportSize({ height: 844, width: 390 })
     await page.goto(baseURL)
 
+    const readFadeHeight = () =>
+      page
+        .locator('.wall-card-frame')
+        .first()
+        .evaluate((frame) => getComputedStyle(frame, '::after').height)
+
     /* The other half of the overflow fix, and the half that already went missing
        once: the fade was dropped while the cards were briefly natural-height and
        not restored when they went back to fixed heights, turning every overrun
        back into a hard cut. Without it, the ceiling above is all that stands
        between a content tweak and a guillotined block. */
-    const fadeHeight = await page
-      .locator('.wall-card-frame')
-      .first()
-      .evaluate((frame) => getComputedStyle(frame, '::after').height)
+    expect(Number.parseFloat(await readFadeHeight())).toBeGreaterThan(8)
 
-    expect(Number.parseFloat(fadeHeight)).toBeGreaterThan(8)
+    /* The tablet band gets its own taller fade, and it needs its own assertion:
+       the phone check above runs outside the 640–1023px query, so deleting the
+       override would still pass it — and pass the overrun ceiling too, since the
+       measured 44px tablet residue sits under that deliberately loose 60px. Left
+       unpinned, the one band where residue meets the fade exactly is the one band
+       with no coverage. Exact, not a floor: 2.75rem at the default root size, and
+       the whole point is that it matches the overrun rather than merely exceeding
+       the phone value. */
+    await page.setViewportSize({ height: 1024, width: 768 })
+    expect(await readFadeHeight()).toBe('44px')
   })
 
   test('renders the light token-driven homepage', async ({ page }) => {
