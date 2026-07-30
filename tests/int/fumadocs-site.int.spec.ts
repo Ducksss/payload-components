@@ -10,6 +10,16 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { SiteFooter } from '../../src/components/site/SiteFooter'
 
+/* Many assertions below pin exact substrings of source files, and prettier owns
+   the line breaks in every one of those files. A pin that spans more than a
+   single token is therefore a pin on the FORMATTING as much as on the code: when
+   the twitter literal in blog/[slug]/page.tsx crossed 100 columns it was split
+   across lines, and the assertion failed while the metadata it guards was
+   untouched. Collapsing whitespace on both sides keeps the assertion about the
+   code. Use it for anything spanning a brace, an arrow, or a ternary; bare
+   identifiers cannot wrap and are fine matched raw. */
+const collapse = (source: string) => source.replace(/\s+/g, ' ')
+
 const repoRoot = process.cwd()
 
 const readJson = async <T>(filePath: string): Promise<T> =>
@@ -247,7 +257,7 @@ describe('Fumadocs site shell', () => {
     expect(heroConfig).toContain("slug: 'heroBasic'")
     expect(heroConfig).toContain("interfaceName: 'HeroBasicBlock'")
     expect(heroConfig).toContain("singular: 'Hero Basic'")
-    expect(heroComponent).toContain(
+    expect(collapse(heroComponent)).toContain(
       "import type { HeroBasicBlock as HeroBasicBlockData } from '@/payload-types'",
     )
     expect(heroManifest).toContain('"blockSlug": "heroBasic"')
@@ -386,7 +396,7 @@ describe('Fumadocs site shell', () => {
     expect(rootLayout).toContain('CommandCopyController')
     expect(docsLayout).toContain('RootProvider')
     expect(docsLayout).toContain('enabled: false')
-    expect(docsLayout).toContain('themeSwitch={{ enabled: false }}')
+    expect(collapse(docsLayout)).toContain('themeSwitch={{ enabled: false }}')
     expect(docsLayout).not.toContain('defaultTheme')
     expect(docsLayout).not.toContain('forcedTheme')
     expect(docsLayout).toContain('activePath="/docs"')
@@ -398,7 +408,9 @@ describe('Fumadocs site shell', () => {
     expect(siteHeader).toContain('aria-expanded')
     expect(siteHeader).not.toContain('role="menu"')
     expect(siteHeader).not.toContain('role="menuitem"')
-    expect(siteHeader).toContain("rel={item.label === 'GitHub' ? 'noreferrer' : undefined}")
+    expect(collapse(siteHeader)).toContain(
+      "rel={item.label === 'GitHub' ? 'noreferrer' : undefined}",
+    )
     expect(siteHeader).toContain('activePath')
     expect(commandCopyButton).not.toContain("'use client'")
     expect(commandCopyButton).toContain('data-copy-command')
@@ -667,16 +679,6 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).toContain("href: '/docs/payload-blocks'")
     expect(indexSource).toContain("href: '/blog/anatomy-of-an-install'")
     expect(indexSource).toContain('data-guide-gateway')
-    /* Object-literal pins are matched against whitespace-collapsed source.
-       Prettier owns the line breaks in these files, so whether a nested literal
-       sits on one line or is expanded depends only on how long the surrounding
-       code happens to be — the twitter block in [slug]/page.tsx crossed 100
-       columns and split, which broke this assertion while the metadata it guards
-       was unchanged. What matters here is that the field is re-declared per page
-       (Next does not inherit nested openGraph/twitter fields from the root
-       layout, and no e2e covers them), never how it is formatted. */
-    const collapse = (source: string) => source.replace(/\s+/g, ' ')
-
     expect(collapse(indexSource)).toContain(
       'alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates }',
     )

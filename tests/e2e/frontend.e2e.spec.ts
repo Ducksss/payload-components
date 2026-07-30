@@ -242,15 +242,19 @@ test.describe('Light shadcn frontend', () => {
          cutting it. Measured worst case: 32px on a phone against a 28px fade,
          44px on a tablet against a 44px one, and nothing at all on desktop.
 
-         The 60px ceiling is deliberately not snug to that 44px. Snug would fail
-         on any copy edit, and this exists to catch the class of regression where
-         a block loses a paragraph — 88px in the tablet band, 165px on a phone
-         before the per-breakpoint zoom — not to freeze the current pixel. */
+         The 50px ceiling sits just above that 44px worst case. It was 60px, but
+         44-60 was a band where a card could quietly lose a line and still pass,
+         and twin content does drift — TestimonialsBentoDemo changed height in the
+         very promote that shipped this. 50px still absorbs an ordinary copy edit
+         while catching the class of regression this exists for: a block losing a
+         paragraph, 88px in the tablet band and 165px on a phone before the
+         per-breakpoint zoom. If a legitimate content change trips it, re-measure
+         and move the frame, not the ceiling. */
       const worst = measured.reduce((a, b) => (b.overrun > a.overrun ? b : a))
       expect(
         worst.overrun,
         `"${worst.label}" overruns its frame by ${worst.overrun}px`,
-      ).toBeLessThanOrEqual(60)
+      ).toBeLessThanOrEqual(50)
     })
   }
 
