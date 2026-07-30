@@ -1,5 +1,5 @@
 import { spawn, type ChildProcess } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -31,7 +31,33 @@ const resolveRepoRoot = () => {
 }
 
 export const repoRoot = resolveRepoRoot()
-export const shadcnCliPackage = 'shadcn@4.7.0'
+
+// Build-time constant injected by tsup (see tsup.config.ts). Declared as
+// optional so the source path — vitest and tsx, which do not run the bundler —
+// falls back to reading the pin off the repo's package.json.
+declare const __SHADCN_CLI_VERSION__: string | undefined
+
+// Pin the shadcn CLI to the exact version the registry artifacts are built
+// with, so `payload-components add` and `pnpm registry:build` always agree.
+// The version lives in exactly one place: the `shadcn` devDependency.
+const resolveShadcnVersion = () => {
+  if (typeof __SHADCN_CLI_VERSION__ === 'string') {
+    return __SHADCN_CLI_VERSION__
+  }
+
+  const { devDependencies } = JSON.parse(
+    readFileSync(path.join(repoRoot, 'package.json'), 'utf8'),
+  ) as { devDependencies?: Record<string, string> }
+  const version = devDependencies?.shadcn
+
+  if (!version) {
+    throw new Error('Unable to resolve the shadcn CLI version from package.json devDependencies.')
+  }
+
+  return version
+}
+
+export const shadcnCliPackage = `shadcn@${resolveShadcnVersion()}`
 export const DEFAULT_COMMAND_TIMEOUT_MS = 2 * 60 * 1000
 
 export type CommandResult = {

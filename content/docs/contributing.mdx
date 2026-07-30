@@ -134,10 +134,12 @@ Three rules to preserve when touching any of this:
     Do Not Track resolves to `denied` and the banner never appears.
   </Step>
   <Step>
-    **Withdrawal reloads the page.** Unmounting `AnalyticsShell` does not unload
-    a third party that is already running — `gtag` stays initialised on `window`
-    and keeps collecting. `setConsent` reloads on `granted → denied`, and clears
-    `pc_distinct_id`, so opting out erases the identifier rather than freezing it.
+    **Withdrawal reloads the page, and deletes what the opt-in wrote.** Unmounting
+    `AnalyticsShell` does not unload a third party that is already running —
+    `gtag` stays initialised on `window` and keeps collecting. So `setConsent`
+    reloads on `granted → denied`, clears `pc_distinct_id`, and expires GA's own
+    `_ga` / `_ga_*` cookies. Stopping collection while leaving the cookies in
+    place would keep the visitor identifiable on their next visit.
   </Step>
   <Step>
     **Tests grant consent explicitly.** `tests/e2e/consent.ts` seeds

@@ -242,15 +242,19 @@ test.describe('Light shadcn frontend', () => {
          cutting it. Measured worst case: 32px on a phone against a 28px fade,
          44px on a tablet against a 44px one, and nothing at all on desktop.
 
-         The 60px ceiling is deliberately not snug to that 44px. Snug would fail
-         on any copy edit, and this exists to catch the class of regression where
-         a block loses a paragraph — 88px in the tablet band, 165px on a phone
-         before the per-breakpoint zoom — not to freeze the current pixel. */
+         The 50px ceiling sits just above that 44px worst case. It was 60px, but
+         44-60 was a band where a card could quietly lose a line and still pass,
+         and twin content does drift — TestimonialsBentoDemo changed height in the
+         very promote that shipped this. 50px still absorbs an ordinary copy edit
+         while catching the class of regression this exists for: a block losing a
+         paragraph, 88px in the tablet band and 165px on a phone before the
+         per-breakpoint zoom. If a legitimate content change trips it, re-measure
+         and move the frame, not the ceiling. */
       const worst = measured.reduce((a, b) => (b.overrun > a.overrun ? b : a))
       expect(
         worst.overrun,
         `"${worst.label}" overruns its frame by ${worst.overrun}px`,
-      ).toBeLessThanOrEqual(60)
+      ).toBeLessThanOrEqual(50)
     })
   }
 
@@ -258,17 +262,29 @@ test.describe('Light shadcn frontend', () => {
     await page.setViewportSize({ height: 844, width: 390 })
     await page.goto(baseURL)
 
+    const readFadeHeight = () =>
+      page
+        .locator('.wall-card-frame')
+        .first()
+        .evaluate((frame) => getComputedStyle(frame, '::after').height)
+
     /* The other half of the overflow fix, and the half that already went missing
        once: the fade was dropped while the cards were briefly natural-height and
        not restored when they went back to fixed heights, turning every overrun
        back into a hard cut. Without it, the ceiling above is all that stands
        between a content tweak and a guillotined block. */
-    const fadeHeight = await page
-      .locator('.wall-card-frame')
-      .first()
-      .evaluate((frame) => getComputedStyle(frame, '::after').height)
+    expect(Number.parseFloat(await readFadeHeight())).toBeGreaterThan(8)
 
-    expect(Number.parseFloat(fadeHeight)).toBeGreaterThan(8)
+    /* The tablet band gets its own taller fade, and it needs its own assertion:
+       the phone check above runs outside the 640–1023px query, so deleting the
+       override would still pass it — and pass the overrun ceiling too, since the
+       measured 44px tablet residue sits under that deliberately loose 60px. Left
+       unpinned, the one band where residue meets the fade exactly is the one band
+       with no coverage. Exact, not a floor: 2.75rem at the default root size, and
+       the whole point is that it matches the overrun rather than merely exceeding
+       the phone value. */
+    await page.setViewportSize({ height: 1024, width: 768 })
+    expect(await readFadeHeight()).toBe('44px')
   })
 
   test('renders the light token-driven homepage', async ({ page }) => {

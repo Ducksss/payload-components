@@ -131,6 +131,32 @@ test.describe('Analytics consent gate', () => {
     await context.close()
   })
 
+  test('withdrawing deletes the GA cookies the opt-in created', async ({ page }) => {
+    /* Seeded by hand rather than by letting GA set them: this pins our deletion
+     * logic without depending on a live googletagmanager fetch, which would make
+     * the spec network-flaky. The names match what GA4 writes. */
+    await page.goto(`${baseURL}/privacy`)
+    await page.evaluate(() => {
+      window.localStorage.setItem('pc_consent', 'granted')
+      window.localStorage.setItem('pc_distinct_id', 'pc_seeded-id')
+      document.cookie = '_ga=GA1.1.1234567890.1234567890; path=/'
+      document.cookie = '_ga_EMGRZ0H9R9=GS1.1.1234567890; path=/'
+      document.cookie = 'unrelated_cookie=keep-me; path=/'
+    })
+    await page.reload()
+    expect(await page.evaluate(() => document.cookie)).toContain('_ga=')
+
+    await page.getByRole('button', { name: 'Turn analytics off' }).click()
+    await expect(page.getByText('Google Analytics and PostHog are currently off.')).toBeVisible()
+
+    const cookiesAfter = await page.evaluate(() => document.cookie)
+    expect(cookiesAfter).not.toContain('_ga=')
+    expect(cookiesAfter).not.toContain('_ga_EMGRZ0H9R9')
+    expect(await page.evaluate(() => window.localStorage.getItem('pc_distinct_id'))).toBeNull()
+    // Only the analytics cookies go — anything else on the domain is untouched.
+    expect(cookiesAfter).toContain('unrelated_cookie=keep-me')
+  })
+
   test('the banner itself has no serious or critical a11y violations', async ({ page }) => {
     await page.goto(baseURL)
     await expect(page.locator(banner)).toBeVisible()
