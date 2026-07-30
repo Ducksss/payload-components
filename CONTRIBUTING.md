@@ -113,6 +113,23 @@ guard fails on a _missing_ baseline, never a stale one, and `pr-gate` only ever
 renders linux — so a linux-only mint leaves the darwin image showing the old
 design, green on every PR, failing only for whoever next runs the gate on a Mac.
 
+A bare `--update-snapshots` is Playwright's `changed` preset, which rewrites only
+the baselines whose diff exceeded the tolerance. A deliberate visual change that
+lands _under_ it — most colour and spacing nudges do — is therefore skipped, and
+you get the same stale baseline the paragraph above warns about, this time
+without the missing file that would have told you. When the change is meant to be
+visible in the committed PNGs, mint with `--update-snapshots=all` and check the
+result:
+
+```sh
+E2E_PORT=3100 pnpm test:e2e <spec> --update-snapshots=all
+```
+
+`all` rewrites every baseline in the spec, including ones that merely drift
+sub-tolerance against your renderer, so commit the images the change actually
+explains rather than everything the run touched. (`visual-baselines` takes the
+same choice as its `update` input, and its PR needs the same cherry-pick.)
+
 Reviewer checklist: **a diff that touches `*-chromium-linux.png` without the
 matching `*-chromium-darwin.png` (or vice versa) is suspect** — either the other
 platform is now stale, or the change wasn't visual and the PNGs shouldn't be

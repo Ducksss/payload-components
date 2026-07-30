@@ -93,8 +93,15 @@ async function findUnsettledReveals(frame: Frame) {
       if (!animated) continue
 
       const style = getComputedStyle(element)
+      /* Three spellings of "no transform", because Chromium reports whichever
+         one the declaration produced. A settled reveal written as translate3d or
+         carrying a translateZ(0) compositor hint serialises as matrix3d, so
+         matching only the 2D identity would report it unsettled and fail the
+         gate for a reveal that is in fact exactly where it belongs. */
       const settledTransform =
-        style.transform === 'none' || style.transform === 'matrix(1, 0, 0, 1, 0, 0)'
+        style.transform === 'none' ||
+        style.transform === 'matrix(1, 0, 0, 1, 0, 0)' ||
+        style.transform === 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)'
       if (style.opacity === '1' && settledTransform) continue
 
       const identity = attributes
