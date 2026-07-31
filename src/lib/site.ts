@@ -1447,7 +1447,8 @@ export const communityInvite = {
 export const catalogTitle = `${componentEntries.length} typed Payload CMS blocks and components`
 export const catalogDescription = `Browse all ${componentEntries.length} typed blocks for Payload CMS: heroes, features, pricing, calls to action, integrations, testimonials, FAQs, content, teams, and embeds. One CLI command copies each component and wires its collection registration, renderer mapping, generated types, and admin import map.`
 export const catalogMetadataTitle = `${componentEntries.length} Payload CMS Components & Blocks | Catalog`
-export const catalogMetadataDescription = `Browse all ${componentEntries.length} typed Payload CMS blocks for heroes, features, pricing, integrations, FAQs, content, teams, and embeds, with one-command project wiring.`
+export const catalogMetadataDescription =
+  'Browse typed Payload CMS blocks. Run npx payload-components add <component> to wire one into your collection, renderer, generated types, and admin import map.'
 export const catalogInstallationLinkLabel = 'See how one-command installation works'
 export const catalogTemplatesLinkLabel = 'Explore Payload CMS template concepts'
 
