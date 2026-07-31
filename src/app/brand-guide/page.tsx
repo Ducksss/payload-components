@@ -205,18 +205,16 @@ export default function BrandGuidePage() {
             accentWord="wordmark"
             eyebrow="Identity"
             heading="The mark and wordmark"
-            intro="The logo is a prompt chevron and block cursor in an emerald square, set beside the wordmark in Geist. It reads as a terminal — the place the CLI lives."
+            intro="The logo is two blocks keyed together in an emerald square, set beside the wordmark in Geist. It reads as what the CLI does — separate blocks fitted into one page, wired rather than pasted."
           />
 
           <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
             <div className="flex flex-col items-start justify-center gap-6 rounded-[1.25rem] border border-border bg-muted/30 p-8">
               <Wordmark withBadge />
               <p className="text-sm leading-6 text-muted-foreground">
-                The full lockup: the{' '}
-                <code className="rounded-md border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-[13px] text-foreground/80">
-                  &gt;
-                </code>{' '}
-                prompt with its block cursor, the wordmark, and the MIT badge.
+                The full lockup: the two-block mark, the wordmark, and the MIT badge. The blocks
+                overlap by a quarter of their width — enough that the join survives a 16px browser
+                tab.
               </p>
             </div>
 
