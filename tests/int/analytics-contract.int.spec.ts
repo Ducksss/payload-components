@@ -26,7 +26,9 @@ const documentedEventRows = {
 const eventCallPattern = (eventName: string) => {
   const escapedName = eventName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-  return new RegExp(`track(?:PostHog)?Event\\('${escapedName}', \\{([\\s\\S]*?)\\n  \\}\\)`)
+  return new RegExp(
+    `track(?:PostHog)?Event\\(\\s*'${escapedName}',\\s*\\{([\\s\\S]*?)\\n\\s*\\}(?:,|\\))`,
+  )
 }
 
 const getPropertyKeys = (source: string, eventName: string) => {
@@ -36,7 +38,7 @@ const getPropertyKeys = (source: string, eventName: string) => {
     throw new Error(`Could not find the ${eventName} analytics payload.`)
   }
 
-  return [...properties.matchAll(/^\s{4}([a-z_$][\w$]*)(?::|,)/gm)].map(([, property]) => property)
+  return [...properties.matchAll(/^\s+([a-z_$][\w$]*)(?::|,)/gm)].map(([, property]) => property)
 }
 
 describe('public anonymous analytics contract', () => {
