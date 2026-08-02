@@ -1,10 +1,10 @@
 import Link from 'next/link'
 
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Mail } from 'lucide-react'
 
 import { GitHubMark } from '@/components/site/GitHubMark'
 import { Wordmark } from '@/components/site/Wordmark'
-import { footerColumns, githubRepoUrl, primaryInstallCommand } from '@/lib/site'
+import { footerColumns, githubRepoUrl, primaryInstallCommand, supportEmail } from '@/lib/site'
 
 export function SiteFooter() {
   return (
@@ -30,16 +30,28 @@ export function SiteFooter() {
               </span>
               <code className="text-muted-foreground">{primaryInstallCommand}</code>
             </div>
-            <Link
-              href={githubRepoUrl}
-              rel="noreferrer"
-              target="_blank"
-              className="mt-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <GitHubMark className="size-4" aria-hidden="true" />
-              GitHub
-              <ArrowUpRight className="size-3 text-muted-foreground/70" aria-hidden="true" />
-            </Link>
+            <div className="mt-6 flex flex-col items-start gap-3">
+              <Link
+                href={githubRepoUrl}
+                rel="noreferrer"
+                target="_blank"
+                className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <GitHubMark className="size-4" aria-hidden="true" />
+                GitHub
+                <ArrowUpRight className="size-3 text-muted-foreground/70" aria-hidden="true" />
+              </Link>
+              <a
+                href={`mailto:${supportEmail}`}
+                className="inline-flex items-start gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <Mail className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                <span>
+                  <span className="block">Install and component support</span>
+                  <span className="block font-mono text-[11px]">{supportEmail}</span>
+                </span>
+              </a>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
@@ -99,7 +111,17 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-muted-foreground">MIT licensed · © 2026 Ducksss</p>
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+            <span>MIT licensed · © 2026 Ducksss</span>
+            <span aria-hidden="true">·</span>
+            <a
+              href="https://tin.computer"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
+            >
+              <span aria-hidden="true" className="size-[0.9em] shrink-0 bg-[#66DC9D]" />
+              Growth by Tin
+            </a>
+          </p>
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
             Payload v3 · Next.js App Router · open registry
           </p>

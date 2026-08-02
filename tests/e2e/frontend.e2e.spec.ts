@@ -17,6 +17,7 @@ import {
   componentEntries,
   landingSections,
   primaryInstallCommand,
+  supportEmail,
   terminalDemoLines,
   upcomingComponents,
 } from '../../src/lib/site'
@@ -821,6 +822,11 @@ test.describe('Light shadcn frontend', () => {
     await expect(
       page.getByRole('contentinfo').getByRole('link', { name: 'Brand Guide' }),
     ).toBeVisible()
+    const supportLink = page
+      .getByRole('contentinfo')
+      .getByRole('link', { name: /Install and component support/ })
+    await expect(supportLink).toBeVisible()
+    await expect(supportLink).toHaveAttribute('href', `mailto:${supportEmail}`)
   })
 
   test('exposes the Fumadocs docs shell navigation', async ({ page }) => {

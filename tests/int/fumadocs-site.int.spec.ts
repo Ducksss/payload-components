@@ -134,9 +134,9 @@ describe('Fumadocs site shell', () => {
       import('../../src/lib/site'),
     ])
 
-    expect(`${footer}\n${copyButton}`).not.toContain('tin.computer')
-    expect(`${footer}\n${copyButton}`).not.toContain('Growth by Tin')
-    expect(`${footer}\n${copyButton}`).not.toContain('66DC9D')
+    expect(footer).toContain('https://tin.computer')
+    expect(footer).toContain('Growth by Tin')
+    expect(footer).toContain('66DC9D')
     expect(copyButton).toContain('data-[copied=true]:text-brand-foreground')
     expect(copyButton).toContain('motion-reduce:transform-none')
     expect(heroSubheadline).toBe(
