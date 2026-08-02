@@ -278,7 +278,7 @@ test.describe('Light shadcn frontend', () => {
     /* The tablet band gets its own taller fade, and it needs its own assertion:
        the phone check above runs outside the 640–1023px query, so deleting the
        override would still pass it — and pass the overrun ceiling too, since the
-       measured 44px tablet residue sits under that deliberately loose 60px. Left
+       measured 44px tablet residue sits under that deliberately loose 50px. Left
        unpinned, the one band where residue meets the fade exactly is the one band
        with no coverage. Exact, not a floor: 2.75rem at the default root size, and
        the whole point is that it matches the overrun rather than merely exceeding
