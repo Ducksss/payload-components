@@ -228,9 +228,12 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'README.md'), 'utf8'),
     ])
 
+    expect(guide).toContain('title: "Payload CMS blocks: create, register, type, and render in v3"')
+    expect(guide).toContain('seoTitle: "Payload CMS blocks: create, register, type, and render"')
     expect(guide).toContain(
-      'Payload CMS blocks in v3: create, register, type, and render a reusable layout block',
+      'description: Build Payload CMS blocks in v3 from Block config through collection registration, generated types, rendering, the admin import map, and a live page.',
     )
+    expect(guide).toContain('Payload CMS blocks in v3 become live through one chain:')
     expect(guide).toContain("slug: 'heroBasic'")
     expect(guide).toContain("interfaceName: 'HeroBasicBlock'")
     expect(guide).toContain("singular: 'Hero Basic'")
