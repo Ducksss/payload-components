@@ -24,6 +24,27 @@ const managedPostHogApiKey = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? ''
 const managedPostHogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'
 const installCommandPattern = /\bpayload-components\s+add\s+([a-z0-9-]+)\b/i
 const siteHostnames = new Set(['payload-components.xyz', 'www.payload-components.xyz'])
+const organicSearchReferrerHostnames = new Set([
+  'baidu.com',
+  'bing.com',
+  'duckduckgo.com',
+  'ecosia.org',
+  'google.ca',
+  'google.co.in',
+  'google.co.uk',
+  'google.com',
+  'google.com.au',
+  'google.de',
+  'google.es',
+  'google.fr',
+  'google.it',
+  'google.nl',
+  'kagi.com',
+  'search.brave.com',
+  'search.yahoo.com',
+  'startpage.com',
+  'yandex.com',
+])
 let sessionDistinctId: string | null = null
 
 function getSessionDistinctId() {
@@ -157,6 +178,26 @@ function getStableSourcePath() {
   return window.location.pathname
 }
 
+function getTrafficSource() {
+  if (new URLSearchParams(window.location.search).get('utm_medium') === 'organic') {
+    return 'organic_search'
+  }
+
+  if (!document.referrer) return 'other'
+
+  try {
+    const hostname = new URL(document.referrer).hostname.toLowerCase().replace(/^www\./, '')
+
+    return organicSearchReferrerHostnames.has(hostname) ? 'organic_search' : 'other'
+  } catch {
+    return 'other'
+  }
+}
+
+function isVerificationRun() {
+  return new URLSearchParams(window.location.search).get('verification_run') === '1'
+}
+
 export function trackPageView() {
   /* GA4 (gtag config) and Vercel (<Analytics />) already auto-track page views;
      the SDK-less PostHog integration does not, so send only there — using the
@@ -165,6 +206,8 @@ export function trackPageView() {
   trackPostHogEvent('$pageview', {
     page_path: window.location.pathname,
     source_path: getSourcePath(),
+    traffic_source: getTrafficSource(),
+    verification_run: isVerificationRun(),
   })
 }
 
