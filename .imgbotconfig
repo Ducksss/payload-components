@@ -1,0 +1,5 @@
+{
+  "ignoredFiles": ["public/blog/**", "public/favicon.svg", "tests/e2e/**"],
+  "aggressiveCompression": "false",
+  "minKBReduced": 50
+}
