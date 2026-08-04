@@ -1147,7 +1147,7 @@ test.describe('Light shadcn frontend', () => {
     )
   })
 
-  test('marks only Tin-controlled install and GitHub actions', async ({ page, context }) => {
+  test('marks only controlled install and GitHub actions', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(`${baseURL}/?verification_run=1`)
     await waitForCopyController(page)

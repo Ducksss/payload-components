@@ -168,8 +168,9 @@ function trackEvent(
   }
 
   try {
-    /* This opt-in is only an operational marker for Tin-controlled checks.
-     * The caller-controlled query is not a trusted demand or fraud signal. */
+    /* An operational marker for our own controlled site checks, nothing more.
+     * `?verification_run=1` is caller-controlled, so any visitor can set it —
+     * never treat this flag as a trustworthy demand, traffic, or fraud signal. */
     trackPostHogEvent(
       eventName,
       markVerificationRun && isVerificationRun()
