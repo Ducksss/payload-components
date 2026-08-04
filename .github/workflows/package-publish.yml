@@ -64,7 +64,7 @@ jobs:
       - name: Install validated release dependencies
         run: pnpm install --frozen-lockfile
 
-      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec playwright install --with-deps chromium webkit
 
       - name: Full release gate
         run: pnpm test:release

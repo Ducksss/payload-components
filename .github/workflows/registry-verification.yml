@@ -45,7 +45,10 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm exec playwright install --with-deps chromium
+      # webkit too: the `webkit-*` guards run in a WebKit project (see
+      # playwright.config.ts). They own no baselines; they catch WebKit-only
+      # rendering bugs that every Chromium baseline sails past.
+      - run: pnpm exec playwright install --with-deps chromium webkit
 
       - name: Release verification
         shell: bash
