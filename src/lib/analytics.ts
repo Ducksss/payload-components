@@ -144,7 +144,11 @@ function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
   }
 }
 
-function trackEvent(eventName: string, properties: AnalyticsProperties) {
+function trackEvent(
+  eventName: string,
+  properties: AnalyticsProperties,
+  { markVerificationRun = false }: { markVerificationRun?: boolean } = {},
+) {
   /* Mirrors the two tiers in AnalyticsShell. Vercel is cookieless and mounted
    * for everyone, so its events need no opt-in; the event names and fields are
    * the enumerated vocabulary in content/docs/contributing.mdx, never free text.
@@ -164,7 +168,15 @@ function trackEvent(eventName: string, properties: AnalyticsProperties) {
   }
 
   try {
-    trackPostHogEvent(eventName, properties)
+    /* An operational marker for our own controlled site checks, nothing more.
+     * `?verification_run=1` is caller-controlled, so any visitor can set it —
+     * never treat this flag as a trustworthy demand, traffic, or fraud signal. */
+    trackPostHogEvent(
+      eventName,
+      markVerificationRun && isVerificationRun()
+        ? { ...properties, verification_run: true }
+        : properties,
+    )
   } catch {
     // Analytics must never block the user action.
   }
@@ -218,11 +230,15 @@ export function getComponentSlugFromCommand(command: string) {
 export function trackInstallCommandCopy(command: string) {
   const component = getComponentSlugFromCommand(command)
 
-  trackEvent('copy_install_command', {
-    command,
-    component: component ?? 'unknown',
-    source_path: getSourcePath(),
-  })
+  trackEvent(
+    'copy_install_command',
+    {
+      command,
+      component: component ?? 'unknown',
+      source_path: getSourcePath(),
+    },
+    { markVerificationRun: true },
+  )
 }
 
 function normalizeDestination(url: URL) {
@@ -301,9 +317,13 @@ export function trackPrimaryLinkClick(link: HTMLAnchorElement) {
   const normalized = normalizeDestination(url)
   if (!normalized) return
 
-  trackEvent('primary_link_click', {
-    destination: normalized.destination,
-    href: normalized.href,
-    source_path: getStableSourcePath(),
-  })
+  trackEvent(
+    'primary_link_click',
+    {
+      destination: normalized.destination,
+      href: normalized.href,
+      source_path: getStableSourcePath(),
+    },
+    { markVerificationRun: true },
+  )
 }
