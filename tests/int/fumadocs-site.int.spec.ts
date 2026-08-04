@@ -201,6 +201,37 @@ describe('Fumadocs site shell', () => {
     expect(sitemap).toContain('source.getPages()')
   })
 
+  it('keeps the Payload import-map reference separate from the foundations essay', async () => {
+    const [guide, essay, docsMeta, installationGuide, sitemap] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'payload-generate-importmap.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'blog', 'payload-types-and-import-map.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+    ])
+
+    expect(guide).toContain('title: "Payload generate:importmap: command, output, and fixes"')
+    expect(guide).toContain('seoTitle: "Payload generate:importmap command and fixes"')
+    expect(guide).toContain('command="pnpm payload generate:importmap"')
+    expect(guide).toContain('src/app/(payload)/admin/importMap.js')
+    expect(guide).toContain('admin.importMap.baseDir')
+    expect(guide).toContain('admin.importMap.importMapFile')
+    expect(guide).toContain('[installation guide](/docs/installation)')
+    expect(docsMeta).toContain('"payload-generate-importmap"')
+    expect(installationGuide).toContain(
+      '[Payload `generate:importmap` reference](/docs/payload-generate-importmap)',
+    )
+    expect(sitemap).toContain('source.getPages()')
+
+    expect(essay).toContain('title: Why Payload Types and the Admin Import Map Must Stay in Sync')
+    expect(essay).toContain('author: Ducksss')
+    expect(essay).toContain('series: foundations')
+    expect(essay).toContain('publicationOrder: 7')
+    expect(essay).toContain(
+      'Payload has two generated artifacts that are easy to mention in the same breath and easy to confuse:',
+    )
+  })
+
   it('keeps the Payload blocks guide implementation-led, discoverable, and product-true', async () => {
     const [
       guide,
