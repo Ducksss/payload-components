@@ -870,12 +870,12 @@ describe('Fumadocs site shell', () => {
     expect(catalog).toContain('window.history.replaceState')
     expect(catalog).toContain("window.addEventListener('popstate'")
     expect(registry).not.toContain('sample content for docs and testing')
-    expect(catalogTitle).toContain('Payload CMS')
-    expect(catalogTitle).toContain('67')
+    expect(catalogTitle).toBe('67 Payload CMS components and typed blocks')
     expect(catalogDescription).toMatch(
       /heroes.*features.*pricing.*integrations.*FAQs.*content.*teams.*embeds/,
     )
     expect(catalogDescription).toContain('Browse all 67')
+    expect(catalogDescription).toContain('installable Payload CMS components')
     expect(catalogDescription).toContain('One CLI command')
     expect(catalogMetadataTitle).toContain('Payload CMS Components')
     expect(catalogMetadataTitle).toContain('67')
