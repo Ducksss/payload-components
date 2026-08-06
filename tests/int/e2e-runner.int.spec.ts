@@ -70,6 +70,7 @@ describe('e2e runner batches', () => {
       'tests/e2e/templates-a11y.e2e.spec.ts',
       'tests/e2e/templates-visual.e2e.spec.ts',
       'tests/e2e/templates.e2e.spec.ts',
+      'tests/e2e/webkit-landing.e2e.spec.ts',
     ])
   })
 
