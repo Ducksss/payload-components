@@ -30,7 +30,14 @@ const analyticsCookiePrefixes = ['_ga', '_gid', '_gat'] as const
  *
  * A cookie can only be deleted by re-setting it with a matching domain and path,
  * and script cannot read which domain a cookie came from — GA sets `_ga` on the
- * registrable domain. So try each plausible domain; the misses are inert. */
+ * registrable domain. So try each plausible domain; the misses are inert.
+ *
+ * Which parent IS the registrable domain needs a public-suffix list the browser
+ * does not expose, so enumerate every parent instead of assuming the last two
+ * labels. Taking two would send `www.example.co.uk` to `co.uk` and never
+ * `example.co.uk`, leaving the real cookie alive; the extra invalid attempts
+ * (a bare public suffix, or a TLD) are rejected and cost nothing. The bare TLD
+ * is skipped only because no host can ever set a cookie there. */
 function clearAnalyticsCookies() {
   if (typeof document === 'undefined') return
 
@@ -39,10 +46,10 @@ function clearAnalyticsCookies() {
     const labels = hostname.split('.')
     const domains = new Set<string>(['', hostname, `.${hostname}`])
 
-    if (labels.length > 2) {
-      const registrable = labels.slice(-2).join('.')
-      domains.add(registrable)
-      domains.add(`.${registrable}`)
+    for (let index = 1; index < labels.length - 1; index += 1) {
+      const parent = labels.slice(index).join('.')
+      domains.add(parent)
+      domains.add(`.${parent}`)
     }
 
     const names = document.cookie

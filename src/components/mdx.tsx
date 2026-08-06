@@ -7,6 +7,7 @@ import { TypeTable } from 'fumadocs-ui/components/type-table'
 import {
   Blocks,
   Boxes,
+  Database,
   GitPullRequest,
   Layers,
   LayoutGrid,
@@ -31,6 +32,7 @@ import { RunnableCommand } from '@/components/site/RunnableCommand'
 const icons = {
   Blocks,
   Boxes,
+  Database,
   GitPullRequest,
   Layers,
   LayoutGrid,

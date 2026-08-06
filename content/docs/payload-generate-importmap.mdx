@@ -1,0 +1,183 @@
+---
+title: "Payload generate:importmap: command, output, and fixes"
+seoTitle: "Payload generate:importmap command and fixes"
+description: Run Payload's generate:importmap command, understand importMap.js, and fix stale paths or missing custom components in Payload CMS v3.
+icon: RefreshCw
+---
+
+Run `payload generate:importmap` after you add, move, rename, or remove a custom admin component path and need to refresh Payload's generated admin imports.
+
+<RunnableCommand
+  command="pnpm payload generate:importmap"
+  label="Copy the Payload generate import map command"
+/>
+
+The command rebuilds the file Payload uses to connect component path strings in `payload.config.ts` to modules in the admin bundle. It does not regenerate your collection and block types. Run `payload generate:types` separately when the data schema changes.
+
+## What the command generates
+
+Payload custom components are configured by path instead of being imported directly into `payload.config.ts`:
+
+```ts
+import { buildConfig } from 'payload'
+
+export default buildConfig({
+  admin: {
+    components: {
+      logout: {
+        Button: '/components/LogoutButton#LogoutButton',
+      },
+    },
+  },
+})
+```
+
+The admin build still needs concrete imports, so Payload generates a lookup from each configured path to its module and export. The default output is one of these files, depending on whether the project uses a `src` directory:
+
+```text
+src/app/(payload)/admin/importMap.js
+app/(payload)/admin/importMap.js
+```
+
+Payload regenerates this file at application startup, during Hot Module Replacement, and when you run the command manually. It does not regenerate the file during normal production runtime after startup.
+
+## Direct command or package script
+
+The direct pnpm command does not depend on a project script:
+
+```bash
+pnpm payload generate:importmap
+```
+
+Many Payload starters also expose the generator through `package.json`:
+
+```json
+{
+  "scripts": {
+    "generate:importmap": "payload generate:importmap"
+  }
+}
+```
+
+That script runs as:
+
+```bash
+pnpm generate:importmap
+```
+
+If the package script is missing, use the direct command or add the script above. Both routes call the same Payload generator.
+
+## When to run it manually
+
+Automatic regeneration covers ordinary local editing. Manual generation is useful when:
+
+- component paths changed without a development server running;
+- a branch switch left the generated file behind the config;
+- CI or a clean production build needs an explicit generation step;
+- the repository tracks `importMap.js` and review should show its exact diff;
+- a plugin or installer added custom components outside the current development session;
+- you are checking whether Payload can load the intended config.
+
+If the generated file is ignored by Git, make this command a dependable build prerequisite. If the file is committed, regenerate before review and confirm that only expected entries changed.
+
+## Fix a stale or broken import map
+
+Start with `payload.config.ts`, not the generated file. A manual change to `importMap.js` will be overwritten the next time Payload regenerates it.
+
+### 1. Check the component path and export
+
+Component paths resolve from the project root by default. A named export needs `#ExportName` in the path or an explicit `exportName` property. A default export does not need either.
+
+```ts
+admin: {
+  components: {
+    logout: {
+      Button: '/components/LogoutButton#LogoutButton',
+    },
+  },
+}
+```
+
+Check capitalization too. A path can work on a case-insensitive local filesystem and fail in Linux CI or production.
+
+### 2. Check the import-map base directory
+
+Set `admin.importMap.baseDir` when component paths should resolve from somewhere other than the project root:
+
+```ts
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { buildConfig } from 'payload'
+
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
+
+export default buildConfig({
+  admin: {
+    importMap: {
+      baseDir: path.resolve(dirname, 'src'),
+    },
+    components: {
+      logout: {
+        Button: '/components/LogoutButton#LogoutButton',
+      },
+    },
+  },
+})
+```
+
+With this config, `/components/LogoutButton` resolves from `src/components/LogoutButton`.
+
+### 3. Check a custom output path
+
+`admin.importMap.importMapFile` must be an absolute path when the generated file lives somewhere other than the default admin route:
+
+```ts
+admin: {
+  importMap: {
+    importMapFile: path.resolve(
+      dirname,
+      'app',
+      '(payload)',
+      'admin',
+      'custom-import-map.js',
+    ),
+  },
+}
+```
+
+If the admin route moved, also confirm that its layout imports the generated file from the correct relative path.
+
+### 4. Regenerate and inspect the entry
+
+Run the direct command from the project root, then search the output for the configured component path. The generated import should point to the file and export you checked above.
+
+If the command succeeds but generates from the wrong config, confirm the project does not select another Payload config through `PAYLOAD_CONFIG_PATH` or environment-dependent imports.
+
+### 5. Restart the process that owns the module graph
+
+If `importMap.js` is correct but the admin still shows the old component, restart the development server or rebuild the application. The generated source can be current while a running process still holds an older module graph.
+
+## Import map versus generated types
+
+The two Payload generators answer different questions:
+
+| Change | Run `generate:importmap` | Run `generate:types` |
+| --- | --- | --- |
+| Add or move a custom admin component path | Yes | Only if the schema also changed |
+| Change a component's named export | Yes | No |
+| Add, remove, or rename a collection field | No | Yes |
+| Add a block to a Blocks field | If it adds an admin component path | Yes |
+| Rename a block field and its admin field component | Yes | Yes |
+
+If the admin loads the component but TypeScript rejects a new field, regenerate types. If the frontend typechecks but the admin cannot resolve a custom component, regenerate the import map. If both sides are stale, confirm the config contains the final collection and component paths before running both commands.
+
+Use the [Payload generated-types repair guide](/docs/payload-types-errors) when the failing artifact is `payload-types.ts`.
+
+## How Payload Components uses the command
+
+Payload Components treats source delivery and generation as separate installation stages. The CLI copies a block, registers it in the Pages collection, maps its renderer, and then runs the target project's `generate:types` and `generate:importmap` scripts against the final config.
+
+It does not copy another project's `payload-types.ts` or `importMap.js`. Those generated artifacts depend on your config, paths, and output conventions. The [installation guide](/docs/installation) shows the complete supported flow.
+
+For Payload's path syntax, regeneration behavior, and config options, use the official [custom components documentation](https://payloadcms.com/docs/custom-components/overview).

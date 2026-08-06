@@ -83,7 +83,7 @@ describe('painted contrast report', () => {
       scored: [failure],
       skippedGradientInk: 1,
       skippedNoGlyphPixels: 1,
-      skippedNoGlyphPixelsSelectors: ['.stat-value (no glyph pixels)'],
+      skippedNoGlyphPixelsSelectors: ['.stat-value'],
       skippedUnresolved: 2,
       total: 12,
       unresolvedSelectors: ['.pill (excluded chrome)', '.ghost (no match)'],
@@ -95,8 +95,14 @@ describe('painted contrast report', () => {
     expect(report).toContain('.pill (excluded chrome)')
     /* Both unmeasurable categories name their nodes. A skip that only bumps a
        counter reads in the log exactly like a node that was measured and passed,
-       which is the one thing this report exists to prevent. */
-    expect(report).toContain('no glyph pixels: .stat-value (no glyph pixels)')
+       which is the one thing this report exists to prevent.
+
+       The two categories carry different shapes and the fixture has to match, or
+       this asserts a report the producer never emits: `unresolvedSelectors` is
+       pushed pre-suffixed with its reason ("(excluded chrome)" / "(no match)"),
+       while `skippedNoGlyphPixelsSelectors` is pushed as the bare selector and
+       gets its reason from the line label alone. */
+    expect(report).toContain('no glyph pixels: .stat-value')
     expect(report).toContain('FAILS 1.00:1 (needs 4.5:1)')
     // Triage needs the measured pixels, not just the verdict.
     expect(report).toContain('painted ink rgb(244,244,237) on painted rgb(244,244,244)')
