@@ -1,0 +1,221 @@
+---
+title: Seed Payload CMS safely
+seoTitle: "Payload CMS seed script: safe, repeatable demo data"
+description: Write and run a Payload CMS seed script without duplicating content. See a TypeScript example and an owned, retry-safe component demo workflow.
+icon: Database
+---
+
+A Payload CMS seed script creates known documents through the Local API so a new database, preview environment, or local project starts with useful content. The safest scripts are explicit about what they own, refuse ambiguous matches, and can be run twice without creating duplicates.
+
+This guide shows both sides of that job:
+
+- a small project-owned TypeScript seed for a collection you control;
+- the generated demo seed that Payload Components can create for an installed block.
+
+<Callout type="warn" title="A seed script can write directly to your database">
+  Read the script, confirm the target environment, and make a recoverable backup
+  before you run it against valuable data. A seed should create or update only
+  documents it can identify precisely. It should never treat a familiar title or
+  slug as proof that it owns a record.
+</Callout>
+
+## Pick the right seed path
+
+| What you need | Best path | Result |
+| --- | --- | --- |
+| Your own baseline users, settings, or fixtures | Write a project-owned script | A script shaped around your collections and ownership rules |
+| A draft page for one installed Payload Components block | Generate a component demo seed | A reviewable TypeScript file plus private local ownership state |
+| A disposable test database for automated tests | Keep fixtures inside the test harness | Test-scoped data that does not share production credentials |
+
+Payload exposes the [Local API](https://payloadcms.com/docs/local-api/overview) for server-side collection operations. Its [configuration reference](https://payloadcms.com/docs/configuration/overview#custom-bin-scripts) also supports project-owned command scripts. Those primitives are enough to seed a project; the hard part is deciding how a rerun identifies its own records.
+
+## Write a small project-owned seed
+
+Create a TypeScript file inside the project. This example owns one draft page by a dedicated slug, refuses duplicates, and updates the exact document ID returned by the lookup.
+
+```ts title="src/seed.ts"
+import { getPayload } from 'payload'
+
+import config from '@payload-config'
+
+const payload = await getPayload({ config })
+const seedSlug = 'example-seeded-page'
+
+const matches = await payload.find({
+  collection: 'pages',
+  depth: 0,
+  draft: true,
+  limit: 2,
+  overrideAccess: true,
+  where: {
+    slug: {
+      equals: seedSlug,
+    },
+  },
+})
+
+if (matches.docs.length > 1) {
+  throw new Error(`Refusing to seed: more than one Page uses ${seedSlug}`)
+}
+
+const data = {
+  title: 'Example seeded page',
+  slug: seedSlug,
+  layout: [],
+  _status: 'draft' as const,
+}
+
+if (matches.docs[0]) {
+  await payload.update({
+    collection: 'pages',
+    id: matches.docs[0].id,
+    data,
+    draft: true,
+    overrideAccess: true,
+    overrideLock: false,
+  })
+} else {
+  await payload.create({
+    collection: 'pages',
+    data,
+    draft: true,
+    overrideAccess: true,
+  })
+}
+
+console.log(`Seeded draft Page: ${seedSlug}`)
+```
+
+Run the script from the project root:
+
+```bash
+pnpm exec payload run src/seed.ts
+```
+
+Use the equivalent package-manager command if the project does not use pnpm. Keep the script in version control so the team can review changes to its write behavior.
+
+<Callout type="info" title="Adapt the example to your schema">
+  The `pages` collection, `layout` field, drafts setting, and `@payload-config`
+  alias are project-specific. Change them to match your config. Run
+  `generate:types` after schema changes so your script can use the current
+  generated collection types.
+</Callout>
+
+## Make reruns predictable
+
+The example above is intentionally small. Before using the same pattern for a larger seed, decide four things.
+
+<Steps>
+  <Step>
+    **Choose an ownership key.** Use a dedicated slug, external ID, or private seed marker that ordinary editors will not accidentally reuse. A visible title is not a stable ownership key.
+  </Step>
+  <Step>
+    **Reject ambiguity.** Query for at most two matches and stop if more than one record qualifies. Silently taking the first match can update the wrong document.
+  </Step>
+  <Step>
+    **Update by exact ID.** Once a lookup establishes ownership, pass that document's ID to `payload.update`. Do not repeat a broad query for the mutation.
+  </Step>
+  <Step>
+    **Choose create, update, and delete rules separately.** It is usually safe to create a missing fixture and update an owned one. Deletion needs a much stronger ownership contract and is best omitted from demo seeds.
+  </Step>
+</Steps>
+
+If a create can be interrupted after the database commit but before local state is saved, a slug alone is not enough for recovery. Record a unique operation token before the create, write it into the new document, and save the returned ID afterward. A retry can then adopt only the single document carrying that exact token.
+
+For multi-document seeds, keep a private state file that records every created ID. Validate the file before mutations, write state atomically, and stop when the database and local record disagree. This is more work than a short lookup, but it prevents a retry from claiming content it did not create.
+
+## Generate a Payload Components demo seed
+
+Payload Components packages that stricter ownership behavior for installable blocks. Add `--demo` to a normal component install:
+
+<RunnableCommand
+  command="npx payload-components add hero-basic --demo"
+  label="Copy the hero-basic demo install command"
+  trackInstall
+/>
+
+The install writes the block source, registers it in the `Pages` layout and `RenderBlocks`, regenerates types and the admin import map, records install state, and then creates this operator-run script:
+
+<Files>
+  <Folder name="payload-components" defaultOpen>
+    <File name="seed-hero-basic.ts" />
+  </Folder>
+  <Folder name=".payload-components" defaultOpen>
+    <File name="state.json" />
+    <Folder name="demo-state" defaultOpen>
+      <File name="hero-basic.json" />
+    </Folder>
+  </Folder>
+</Files>
+
+The CLI does **not** connect to the database. Review the generated file, select the intended environment, and run it yourself:
+
+```bash
+pnpm exec payload run payload-components/seed-hero-basic.ts
+```
+
+If `hero-basic` is already installed, generate the same script without rerunning the installer:
+
+```bash
+npx payload-components seed hero-basic
+pnpm exec payload run payload-components/seed-hero-basic.ts
+```
+
+The standalone `seed` command checks the recorded install, component files, dependencies, `Pages` registration, renderer mapping, manifest, and registry dependencies before it writes anything. If those checks do not describe a complete current install, it exits non-zero and leaves the seed path unchanged. Repair the install with `npx payload-components add hero-basic`, then retry.
+
+## What the generated demo owns
+
+The generated script uses a narrow contract rather than a generic same-slug update.
+
+| Resource | Ownership evidence | Rerun behavior |
+| --- | --- | --- |
+| Draft Page | Private token, journaled operation token, exact Page ID, slug, title, first block type, and block marker | Update only the exact owned ID |
+| Placeholder Media, when required | Private token, operation token, exact Media ID, and generated alt marker | Reuse the exact owned Media record |
+| Generated script | Versioned Payload Components ownership header | Replace atomically only when the file is still CLI-owned |
+| Private demo state | Component, manifest version, token, operation tokens, and exact IDs | Refuse missing, malformed, mismatched, symlinked, or non-file state |
+
+For `hero-basic`, the generated Page uses:
+
+- slug `payload-components-demo-hero-basic`;
+- title `Payload Components demo — Hero Basic`;
+- a block marker beginning `payload-components:demo:hero-basic`;
+- `_status: 'draft'`, so publishing remains an explicit editor action.
+
+The script requires the `pages` collection to have drafts enabled. It checks that requirement before it queries or mutates content. On a rerun, it updates only the exact Page ID in the private ownership file after the database record still matches the expected token, slug, title, and block shape.
+
+For a component with required uploads, the script can create one marked placeholder Media record and save its ID immediately. It never deletes Media. Temporary placeholder files live in a unique operating-system directory and are removed after the upload attempt.
+
+<Callout type="warn" title="Keep the private demo-state file">
+  Deleting or editing `.payload-components/demo-state/hero-basic.json` removes the
+  proof the generated script needs to touch existing demo content. The script
+  fails closed instead of rebuilding ownership from a public slug or title.
+</Callout>
+
+## Review access and lock behavior
+
+The generated operator-run script uses `overrideAccess: true`. That is deliberate: a seed command runs outside a normal signed-in request and must be able to create the fixture it describes. It is also why you should inspect the target environment and the generated file before running it.
+
+Owned Page updates use `overrideLock: false`. If another editor holds a lock, the seed does not silently bypass it. All Pages are written as drafts, so you can inspect the block fields in the admin panel before publishing.
+
+These boundaries are separate from installation. The wrapper CLI owns files and Payload wiring; the generated script owns the database work. See [how the runtimes stay separate](/docs/architecture) for the full architecture boundary.
+
+## Common seed failures
+
+| Symptom | Likely cause | Safe next step |
+| --- | --- | --- |
+| `seed` says the component install is incomplete | A file, dependency, fragment, or state record drifted after installation | Run `npx payload-components doctor`, repair with the printed `add` command, then regenerate |
+| The generated script requires drafts | The detected `pages` collection has no `versions.drafts` setting | Enable drafts deliberately or use a project-owned fixture that matches your publishing model |
+| The script refuses an existing same-slug Page | The Page does not match the private ownership state | Keep the existing Page; choose a new demo slug or resolve ownership manually |
+| The script says demo state is missing or mismatched | The local ownership file was deleted, edited, copied from another component, or no longer matches the script | Do not force the update; regenerate only after deciding what should happen to existing demo content |
+| TypeScript reports stale Page or block fields | Generated Payload types do not match the current config | Run the project's `generate:types` command and review the seed data again |
+
+## Before you run any seed
+
+- Confirm the database and environment variables belong to the intended local, preview, or production environment.
+- Review every collection the script can create or update.
+- Verify that lookup keys are unique and ambiguous results cause a hard failure.
+- Prefer draft documents when the collection supports editorial review.
+- Back up valuable data and know how to restore it.
+- Run once, inspect the created IDs and fields, then run again to prove the result does not duplicate.
+
+To install a component before generating its demo, start with the [Payload Components installation guide](/docs/installation). To understand every file and collection change made by the installer, follow the [first block walkthrough](/docs/first-block).
