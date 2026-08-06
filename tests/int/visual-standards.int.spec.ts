@@ -289,4 +289,49 @@ describe('Component visual standards', () => {
 
     expect(source).not.toMatch(/value:\s*['"`](?:oklch\(|-?\d+(?:\.\d+)?(?:rem|em)|0(?:deg)?)/)
   })
+
+  /* The logomark is drawn as geometry, and that geometry is duplicated by hand
+     in five files — there is no shared module, because the favicon and the three
+     OG routes each need a standalone string (Satori rasterizes a data URI; the
+     favicon is served as a file). Nothing else notices when one copy is missed:
+     the mark is ~0.04% of a full-page screenshot, well under the visual suite's
+     1% tolerance, so a stale favicon or OG card ships green. When the mark last
+     changed, the source comment claimed two copies and three were missed. This
+     reads the two rects out of every copy and fails unless all five agree. */
+  it('keeps every copy of the logomark geometry identical', async () => {
+    const markFiles = [
+      'src/components/site/Logomark.tsx',
+      'public/favicon.svg',
+      'src/app/opengraph-image.tsx',
+      'src/app/templates/opengraph-image.tsx',
+      'src/app/templates/[slug]/opengraph-image.tsx',
+    ]
+
+    /* Attribute order and quoting differ per file (JSX vs. an SVG string vs. the
+       svgo-normalised favicon), so match on the values rather than the markup. */
+    const readGeometry = (source: string) =>
+      [...source.matchAll(/<rect\b[^>]*\/?>/g)]
+        .map((tag) => {
+          const attribute = (name: string) =>
+            tag[0].match(new RegExp(`\\b${name}=["']([^"']+)["']`))?.[1]
+          return ['x', 'y', 'width', 'height', 'rx'].map(attribute)
+        })
+        // Drop the enclosing emerald plate (no x/y) — only the glyph rects matter.
+        .filter(([x, y]) => x !== undefined && y !== undefined)
+        .map((values) => values.join(','))
+
+    const geometries = await Promise.all(
+      markFiles.map(async (file) => ({
+        file,
+        rects: readGeometry(await readFile(path.join(repoRoot, file), 'utf8')),
+      })),
+    )
+
+    const [reference, ...rest] = geometries
+    expect(reference.rects, `${reference.file} should draw the two-block mark`).toHaveLength(2)
+
+    for (const { file, rects } of rest) {
+      expect(rects, `${file} drifted from ${reference.file}`).toEqual(reference.rects)
+    }
+  })
 })

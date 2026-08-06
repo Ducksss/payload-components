@@ -9,13 +9,14 @@ const contributingPath = path.join(repoRoot, 'content', 'docs', 'contributing.md
 const envExamplePath = path.join(repoRoot, '.env.example')
 
 const eventFields = {
-  $pageview: ['page_path', 'source_path'],
+  $pageview: ['page_path', 'source_path', 'traffic_source', 'verification_run'],
   copy_install_command: ['command', 'component', 'source_path'],
   primary_link_click: ['destination', 'href', 'source_path'],
 } as const
 
 const documentedEventRows = {
-  $pageview: '| `$pageview` | A public route loads or changes | `page_path`, `source_path` |',
+  $pageview:
+    '| `$pageview` | A public route loads or changes | `page_path`, `source_path`, `traffic_source`, `verification_run` |',
   copy_install_command:
     '| `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path` |',
   primary_link_click:
@@ -25,7 +26,9 @@ const documentedEventRows = {
 const eventCallPattern = (eventName: string) => {
   const escapedName = eventName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-  return new RegExp(`track(?:PostHog)?Event\\('${escapedName}', \\{([\\s\\S]*?)\\n  \\}\\)`)
+  return new RegExp(
+    `track(?:PostHog)?Event\\(\\s*'${escapedName}',\\s*\\{([\\s\\S]*?)\\n\\s*\\}(?:,|\\))`,
+  )
 }
 
 const getPropertyKeys = (source: string, eventName: string) => {
@@ -35,7 +38,7 @@ const getPropertyKeys = (source: string, eventName: string) => {
     throw new Error(`Could not find the ${eventName} analytics payload.`)
   }
 
-  return [...properties.matchAll(/^\s{4}([a-z_$][\w$]*)(?::|,)/gm)].map(([, property]) => property)
+  return [...properties.matchAll(/^\s+([a-z_$][\w$]*)(?::|,)/gm)].map(([, property]) => property)
 }
 
 describe('public anonymous analytics contract', () => {
@@ -70,6 +73,8 @@ describe('public anonymous analytics contract', () => {
     }
 
     expect(contributingDocs).toContain('low-cardinality event name')
+    expect(contributingDocs).toContain('never sends the raw referrer')
+    expect(contributingDocs).toContain('never include the query string')
     expect(contributingDocs).toContain('Leaving `NEXT_PUBLIC_POSTHOG_KEY` unset')
     expect(envExample).toContain('Leave unset to disable PostHog capture')
   })

@@ -60,6 +60,7 @@
     <li><a href="#usage">Usage</a></li>
     <li><a href="#package-releases">Package Releases</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#community-examples">Community Examples</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#join-the-community">Join The Community</a></li>
@@ -432,6 +433,39 @@ Read [ROADMAP.md][roadmap-url] for the current direction, or use
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Community Examples
+
+Sites and projects built with Payload Components. If you shipped something with
+these blocks, add it here: open a [pull request][pull-requests-url] into `dev`
+that appends one row to the table.
+
+<!-- COMMUNITY-EXAMPLES:START -->
+
+| Site | Author | Tags | Source |
+| ---- | ------ | ---- | ------ |
+
+<!-- COMMUNITY-EXAMPLES:END -->
+
+Nothing listed yet, so the first row is available. Copy this, fill it in, and add
+it to the end of the table:
+
+```md
+| [example.com](https://example.com) | [@you](https://github.com/you) | agency, marketing | [↗](https://github.com/you/example) |
+```
+
+Row guidelines:
+
+- Site: a public, working URL, linked from the bare domain.
+- Author: your GitHub handle, linked to your profile.
+- Tags: a few words on what the site is, or the component families it leans on.
+- Source: `[↗](repository-url)` when the code is public, `-` when it is not.
+
+There is no minimum size and one installed block counts. Real installs are the
+clearest signal about what to build next, so say in the pull request which
+components you used and what you had to change.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Contributing
 
 Contributions are welcome. The useful shape is a complete change: source,
@@ -502,6 +536,7 @@ information.
 [payload-blocks-guide-url]: https://www.payload-components.xyz/docs/payload-blocks
 [payload-url]: https://payloadcms.com
 [playwright-url]: https://playwright.dev
+[pull-requests-url]: https://github.com/Ducksss/payload-components/pulls
 [react-url]: https://react.dev
 [repo-url]: https://github.com/Ducksss/payload-components
 [roadmap-url]: ./ROADMAP.md
