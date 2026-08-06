@@ -959,6 +959,11 @@ describe('Fumadocs site shell', () => {
     const stagePositions = stages.map((stage) => installation.indexOf(stage))
     expect(stagePositions.every((position) => position >= 0)).toBe(true)
     expect(stagePositions).toEqual([...stagePositions].sort((a, b) => a - b))
+    expect(installation).toContain('seoTitle: Install Payload CMS blocks with the CLI')
+    expect(installation).toContain(
+      'description: Install typed blocks in Payload CMS v3 with the Payload Components CLI.',
+    )
+    expect(installation).toContain('Run `npx payload-components add <component>`')
     expect(installation).toContain("direct `shadcn add` only copies the block's source files")
     expect(installation).not.toContain('sample content')
 
