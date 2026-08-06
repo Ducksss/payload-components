@@ -757,7 +757,7 @@ test.describe('Light shadcn frontend', () => {
       {
         link: /component catalog/,
         path: '/docs/installation',
-        title: /Payload Components CLI for Payload CMS v3/,
+        title: /Install Payload CMS blocks with the CLI/,
       },
     ]
 
