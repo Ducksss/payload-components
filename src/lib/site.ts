@@ -60,26 +60,26 @@ export const pipelineStages = [
 export const siteDescription =
   'Payload Components is an MIT registry and CLI that installs typed Payload CMS blocks into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
 
-export const homeMetadataTitle = 'Install wired Payload CMS blocks in one command'
+export const homeMetadataTitle = 'Payload Components: Wired CMS Blocks in One Command'
 export const homeMetadataDescription =
-  'Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects.'
+  'Payload Components is an MIT registry and CLI for typed Payload CMS blocks, wiring collection config, render mapping, generated types, and the admin import map.'
 
 /* ------------------------------------------------------------------ */
 /* Hero                                                                */
 /* ------------------------------------------------------------------ */
 
-export const heroEyebrow = 'Open-source Payload block registry'
+export const heroEyebrow = 'Open-source Payload CMS component registry'
 
 /* The H1 renders primary + accent as one accessible name; the e2e H1
    assertion consumes the concatenated heroHeadline. The OG card renders the
    two parts separately so it can set the accent in Instrument Serif italic
    (see src/app/opengraph-image.tsx). */
-export const heroHeadlinePrimary = 'Install Payload blocks'
+export const heroHeadlinePrimary = 'Payload Components:'
 export const heroHeadlineAccent = 'wired, not pasted.'
 export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
 
 export const heroSubheadline =
-  'For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.'
+  'Install typed Payload CMS blocks into Payload v3 and Next.js with one command. The CLI wires collection config, renderer mapping, types, and the admin import map.'
 
 export const heroGuideLink = {
   href: '/docs/installation',

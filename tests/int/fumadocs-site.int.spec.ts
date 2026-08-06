@@ -140,7 +140,7 @@ describe('Fumadocs site shell', () => {
     expect(copyButton).toContain('data-[copied=true]:text-brand-foreground')
     expect(copyButton).toContain('motion-reduce:transform-none')
     expect(heroSubheadline).toBe(
-      'For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.',
+      'Install typed Payload CMS blocks into Payload v3 and Next.js with one command. The CLI wires collection config, renderer mapping, types, and the admin import map.',
     )
   })
 
@@ -897,7 +897,7 @@ describe('Fumadocs site shell', () => {
     const { blogTitle, catalogMetadataTitle, homeMetadataTitle } =
       await import('../../src/lib/site')
 
-    expect(homeMetadataTitle).toBe('Install wired Payload CMS blocks in one command')
+    expect(homeMetadataTitle).toBe('Payload Components: Wired CMS Blocks in One Command')
     expect(blogTitle).toBe('Payload CMS block and installer guides')
     expect(catalogMetadataTitle).toBe('67 Payload CMS Components & Blocks | Catalog')
     expect(docsIndex).toContain('seoTitle: CLI setup and architecture')
