@@ -172,7 +172,7 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(suffix.ok()).toBe(true)
     expect(suffix.headers()['content-type']).toContain('text/markdown')
     await expect(suffix.text()).resolves.toContain(
-      'Use the Payload Components CLI to add a typed block to a supported Payload CMS v3 project',
+      'Use the Payload Components CLI to install a typed block in a supported Payload CMS v3 and Next.js App Router project',
     )
 
     const negotiated = await request.get(`${baseURL}/docs/architecture`, {
@@ -244,16 +244,14 @@ test.describe('AI-readable documentation surfaces', () => {
   test('docs pages expose article metadata and searchable headings', async ({ page }) => {
     await page.goto(`${baseURL}/docs/installation`)
 
-    await expect(page).toHaveTitle('Payload Components CLI for Payload CMS v3 | Payload Components')
+    await expect(page).toHaveTitle('Install Payload CMS blocks with the CLI | Payload Components')
     await expect(page.locator('meta[name="description"]')).toHaveAttribute(
       'content',
-      /regenerates Payload types, and updates the admin import map/,
+      /One command wires collection config, rendering, generated types, and the admin import map/,
     )
     await expect(page.getByRole('heading', { level: 1, name: 'Installation' })).toBeVisible()
     await expect(
-      page.getByText(
-        /After the block is wired, the CLI runs generate:types and generate:importmap/,
-      ),
+      page.getByText(/It runs generate:types and generate:importmap, then records the install/),
     ).toBeVisible()
     await expect(page.getByRole('heading', { level: 2, name: 'What the CLI does' })).toBeVisible()
     await expect(page.getByRole('button', { name: /Copy Markdown/ })).toBeVisible()
