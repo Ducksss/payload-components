@@ -1,16 +1,18 @@
 import { compareInstalledFiles } from '../component-files'
 import { buildInventory, selectInstalled } from '../inventory'
-import { loadManifest } from '../manifest'
+import { loadManifest, selectPendingChangelog } from '../manifest'
 import { CANONICAL_HOST_FILES, detectProject, verifyInstalledPayloadFragments } from '../project'
 
-import type { ResolvedHostFiles } from '../types'
+import type { ChangelogEntry, ResolvedHostFiles } from '../types'
 
 export type ComponentDiff = {
+  breakingUpdate: boolean
   isClean: boolean
   missingFiles: string[]
   missingFragments: string[]
   modifiedFiles: string[]
   name: string
+  pendingChangelog: ChangelogEntry[]
   recordedVersion: string
   registryVersion: string
   updateAvailable: boolean
@@ -41,8 +43,13 @@ const resolveComponentDiff = async ({
     () => undefined,
   )
   const updateAvailable = manifest.version !== recordedVersion
+  const pendingChangelog = selectPendingChangelog({
+    changelog: manifest.changelog,
+    recordedVersion,
+  })
 
   return {
+    breakingUpdate: pendingChangelog.some((entry) => entry.breaking === true),
     isClean:
       fileReport.missing.length === 0 &&
       fileReport.modified.length === 0 &&
@@ -52,6 +59,7 @@ const resolveComponentDiff = async ({
     missingFragments: fragmentCheck?.missingFragments ?? [],
     modifiedFiles: fileReport.modified,
     name: componentName,
+    pendingChangelog,
     recordedVersion,
     registryVersion: manifest.version,
     updateAvailable,
@@ -67,7 +75,19 @@ const formatComponentDiff = (diff: ComponentDiff) => {
   const lines = [`  ${diff.name}:`]
 
   if (diff.updateAvailable) {
-    lines.push(`    version   ${diff.recordedVersion} installed, ${diff.registryVersion} in the registry`)
+    lines.push(
+      `    version   ${diff.recordedVersion} installed, ${diff.registryVersion} in the registry`,
+    )
+
+    /* What the upgrade would actually do. Recording a changelog is the whole
+       point: "0.1.0 → 0.2.0" on its own is not a decision anyone can make. */
+    for (const entry of diff.pendingChangelog) {
+      lines.push(`    ${entry.breaking ? 'BREAKING' : 'change  '}  ${entry.version} ${entry.summary}`)
+
+      if (entry.dataMigration) {
+        lines.push(`              migration: ${entry.dataMigration}`)
+      }
+    }
   }
 
   for (const filePath of diff.modifiedFiles) {

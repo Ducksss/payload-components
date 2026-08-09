@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "team-roster",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Team Roster",
   "description": "A team section that groups members into titled departments, each a grid of avatars with name and role, installed as a wired Payload block.",
   "registryItemName": "team-roster",

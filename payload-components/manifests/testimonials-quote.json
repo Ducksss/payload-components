@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "testimonials-quote",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Testimonials Quote",
   "description": "A single featured customer testimonial: a quote with a left accent bar, author, optional role, and avatar.",
   "registryItemName": "testimonials-quote",

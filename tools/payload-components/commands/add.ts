@@ -20,6 +20,7 @@ import {
   verifyInstalledPayloadFragments,
 } from '../project'
 import { copySharedSourceFile } from '../component-files'
+import { installNamespacedItem, isNamespacedItem } from '../namespaced'
 import { runPostInstallScript } from '../post-install'
 import { buildRegistry, installRegistryDependencies, installRegistryItem } from '../registry'
 import {
@@ -483,6 +484,37 @@ export const addCommand = async ({
   dryRun?: boolean
   localized?: boolean
 }) => {
+  /* `@scope/item` addresses someone else's registry. It has no manifest here, so
+     none of the wrapper pipeline applies — hand it to shadcn and say plainly
+     what did and did not happen. */
+  if (isNamespacedItem(componentName)) {
+    if (demo || localized) {
+      throw new Error(
+        `"${componentName}" is a third-party registry item. --demo and --localized need a payload-components manifest, which only first-party components have.`,
+      )
+    }
+
+    const project = await detectProject(cwd)
+
+    if (dryRun) {
+      printHeader(
+        [
+          `payload-components: dry run for "${componentName}" in ${cwd}`,
+          '  Would install files only, through shadcn, from the configured registry.',
+          '  No Payload wiring, no install state.',
+        ].join('\n'),
+      )
+      return
+    }
+
+    await installNamespacedItem({
+      cwd,
+      name: componentName,
+      packageManager: project.packageManager,
+    })
+    return
+  }
+
   await installComponent({ cwd, componentName, dryRun, localized })
 
   if (demo && !dryRun) {

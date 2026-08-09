@@ -1,8 +1,8 @@
 import semver from 'semver'
 
-import type { ComponentManifest, InstallError, InstallStatus } from './types'
+import type { ChangelogEntry, ComponentManifest, InstallError, InstallStatus } from './types'
 
-import { loadAllManifests } from './manifest'
+import { loadAllManifests, selectPendingChangelog } from './manifest'
 import { loadState } from './state'
 
 export type InstalledSummary = {
@@ -15,8 +15,12 @@ export type InstalledSummary = {
 }
 
 export type InventoryEntry = {
+  /* Changelog entries newer than what this project recorded — what an upgrade
+   * would apply. Empty when nothing is installed or nothing is pending. */
+  breakingUpdate: boolean
   installed: InstalledSummary | null
   name: string
+  pendingChangelog: ChangelogEntry[]
   summary: string
   title: string
   updateAvailable: boolean
@@ -56,10 +60,18 @@ export const buildInventory = async ({
   const state = await loadState(cwd)
   const entries = resolvedManifests.map((manifest) => {
     const stateEntry = state.components[manifest.name]
+    const pendingChangelog = stateEntry
+      ? selectPendingChangelog({
+          changelog: manifest.changelog,
+          recordedVersion: stateEntry.manifestVersion,
+        })
+      : []
 
     return {
+      breakingUpdate: pendingChangelog.some((entry) => entry.breaking === true),
       installed: stateEntry ? toInstalledSummary(stateEntry) : null,
       name: manifest.name,
+      pendingChangelog,
       summary: manifest.preview.summary,
       title: manifest.title,
       updateAvailable: stateEntry

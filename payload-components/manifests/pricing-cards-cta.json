@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "pricing-cards-cta",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Pricing Cards CTA",
   "description": "The three-up pricing table with the call-to-action button inside each plan header, installed as a wired Payload block.",
   "registryItemName": "pricing-cards-cta",

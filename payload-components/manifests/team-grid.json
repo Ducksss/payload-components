@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "team-grid",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Team Grid",
   "description": "A team section with a heading, intro paragraph, and a responsive grid of large member photo cards that reveal role and link on hover, installed as a wired Payload block.",
   "registryItemName": "team-grid",

@@ -2,6 +2,10 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "content-quote",
   "version": "0.2.0",
+  "changelog": [
+    { "version": "0.2.0", "summary": "Added an optional logoLabel text field that renders when no logo upload is set." },
+    { "version": "0.1.0", "summary": "Initial release." }
+  ],
   "title": "Content Quote",
   "description": "A content section pairing a media panel with body copy and a pull quote, installed as a wired Payload block.",
   "registryItemName": "content-quote",

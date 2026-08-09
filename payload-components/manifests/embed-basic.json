@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "embed-basic",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Embed Basic",
   "description": "A responsive, accessible sandboxed iframe block for approved HTTPS embeds.",
   "registryItemName": "embed-basic",

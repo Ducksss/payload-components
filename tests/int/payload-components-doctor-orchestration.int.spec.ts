@@ -126,7 +126,8 @@ describe('payload-components doctor orchestration', () => {
 
     const { doctorCommand } = await import('../../tools/payload-components/commands/doctor')
 
-    await expect(doctorCommand({ cwd: detectedProject.cwd })).resolves.toBe(false)
+    /* Component-scoped failures exit 1 — the project itself is usable. */
+    await expect(doctorCommand({ cwd: detectedProject.cwd })).resolves.toBe(1)
     expect(resolveInstallPlan).toHaveBeenCalledTimes(2)
     expect(output.join('')).toContain('[error] hero-basic: registry plan unavailable')
     expect(output.join('')).toContain('[ok] feature-grid-basic: Payload fragments')

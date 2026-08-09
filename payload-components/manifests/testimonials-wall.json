@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "testimonials-wall",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Testimonials Wall",
   "description": "A dense wall-of-love: a heading above a multi-column masonry of compact testimonial cards, each with author, optional role, and avatar.",
   "registryItemName": "testimonials-wall",

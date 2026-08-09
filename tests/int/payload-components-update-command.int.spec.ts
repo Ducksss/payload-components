@@ -76,6 +76,63 @@ const installFixture = async ({
   return { fixtureDir, manifests }
 }
 
+/* A breaking bump does not exist in the shipped catalog yet, so this drives the
+   refusal path off a stubbed inventory rather than rewriting a real manifest on
+   disk — a crashed test must never leave the repo's manifests edited. */
+const setupBreaking = async () => {
+  const addCommand = vi.fn().mockResolvedValue(undefined)
+  const output: string[] = []
+  const breakingEntry = {
+    breaking: true,
+    dataMigration: 'Rename the stored `heading` field to `title`.',
+    summary: 'Renamed the headline field.',
+    version: '0.2.0',
+  }
+
+  vi.doMock('../../tools/payload-components/commands/add', () => ({ addCommand }))
+  vi.doMock('../../tools/payload-components/inventory', () => ({
+    buildInventory: vi.fn().mockResolvedValue({
+      entries: [
+        {
+          breakingUpdate: true,
+          installed: {
+            installedAt: null,
+            lastError: null,
+            localized: false,
+            manifestVersion: '0.1.0',
+            status: 'installed',
+            targetId: 'payload-website-starter',
+          },
+          name: 'hero-basic',
+          pendingChangelog: [breakingEntry],
+          summary: 'Hero',
+          title: 'Hero Basic',
+          updateAvailable: true,
+          version: '0.2.0',
+        },
+      ],
+      orphaned: [],
+    }),
+    selectInstalled: (inventory: { entries: unknown[] }) => inventory.entries,
+  }))
+  vi.doMock('../../tools/payload-components/manifest', () => ({
+    loadManifest: vi.fn().mockResolvedValue({ files: [], version: '0.2.0' }),
+  }))
+  vi.doMock('../../tools/payload-components/component-files', () => ({
+    compareInstalledFiles: vi
+      .fn()
+      .mockResolvedValue({ comparisons: [], missing: [], modified: [] }),
+  }))
+  vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
+    output.push(String(chunk))
+    return true
+  })
+
+  const { updateCommand } = await import('../../tools/payload-components/commands/update')
+
+  return { addCommand, output, updateCommand }
+}
+
 const exists = (filePath: string) =>
   access(filePath).then(
     () => true,
@@ -178,6 +235,30 @@ describe('update', () => {
     expect(await exists(configPath)).toBe(true)
     expect(output.join('')).toContain('(would overwrite)')
     expect(output.join('')).toContain('No files were changed and no commands ran.')
+  })
+
+  it('holds back a breaking upgrade until it is explicitly accepted', async () => {
+    const { addCommand, output, updateCommand } = await setupBreaking()
+
+    await updateCommand({ cwd: '/tmp/project' })
+
+    expect(addCommand).not.toHaveBeenCalled()
+    expect(output.join('')).toContain('held back')
+    expect(output.join('')).toContain('changes stored content')
+    expect(output.join('')).toContain(
+      'migrate first: Rename the stored `heading` field to `title`.',
+    )
+    expect(output.join('')).toContain('re-run with --accept-breaking')
+    expect(process.exitCode).toBe(1)
+  })
+
+  it('applies a breaking upgrade under --accept-breaking', async () => {
+    const { addCommand, updateCommand } = await setupBreaking()
+
+    await updateCommand({ acceptBreaking: true, cwd: '/tmp/project' })
+
+    expect(addCommand).toHaveBeenCalledOnce()
+    expect(process.exitCode).toBeUndefined()
   })
 
   it('rejects a component that is not recorded', async () => {

@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "hero-video",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Hero Video",
   "description": "A full-bleed video hero with editor-managed media, CTA links, proof labels, and a reduced-motion poster fallback.",
   "registryItemName": "hero-video",

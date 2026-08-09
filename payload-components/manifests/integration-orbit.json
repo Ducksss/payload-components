@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "integration-orbit",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Integration Orbit",
   "description": "Concentric rings of integration logos that orbit a featured brand mark on hover, installed as a wired Payload block.",
   "registryItemName": "integration-orbit",

@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "content-community",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Content Community",
   "description": "A centered content section with a heading, body copy, and a wall of community avatars, installed as a wired Payload block.",
   "registryItemName": "content-community",

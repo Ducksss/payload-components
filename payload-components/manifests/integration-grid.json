@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "integration-grid",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Integration Grid",
   "description": "A responsive grid of integration cards — logo, name, description, and a learn-more link — installed as a wired Payload block.",
   "registryItemName": "integration-grid",

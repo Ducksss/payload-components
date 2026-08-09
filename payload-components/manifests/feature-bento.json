@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "feature-bento",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Feature Bento",
   "description": "An asymmetric Payload bento grid that leads with a featured cell and fills supporting cells.",
   "registryItemName": "feature-bento",

@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "hero-kinetic",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Hero Kinetic",
   "description": "A motion-first editorial hero with a line-masked type reveal, cinematic media plate, and a velocity-aware marquee strip.",
   "registryItemName": "hero-kinetic",

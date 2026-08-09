@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "feature-split",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Feature Split",
   "description": "A two-column Payload block pairing section copy and a CTA with a vertical feature list.",
   "registryItemName": "feature-split",

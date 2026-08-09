@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "hero-basic",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Hero Basic",
   "description": "A golden Payload block used to prove that shadcn-compatible registry installs can be wrapped with Payload-specific wiring.",
   "registryItemName": "hero-basic",

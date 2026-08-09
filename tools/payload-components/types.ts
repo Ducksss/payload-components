@@ -19,8 +19,18 @@ export type PayloadFragment =
       importPath: string
     }
 
+export type ChangelogEntry = {
+  /* Upgrading invalidates content already stored in Payload. */
+  breaking?: boolean
+  dataMigration?: string
+  summary: string
+  version: string
+}
+
 export type ComponentManifest = {
   $schema?: string
+  /* Newest first. Optional so an older manifest still loads. */
+  changelog?: ChangelogEntry[]
   dependencies: DependencyMap
   description: string
   files: string[]

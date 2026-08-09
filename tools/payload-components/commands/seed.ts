@@ -20,7 +20,7 @@ const configFilePattern = /(?:^|\/)payload\.config\.(?:[cm]?[jt]s)$/
 
 /* A target may allow the config at more than one path (src/ vs repo root), so
  * pick the one this project actually has rather than the first declared. */
-const getPayloadConfigFile = async (project: DetectedProject) => {
+export const getPayloadConfigFile = async (project: DetectedProject) => {
   const configFile = await findExistingRequiredFile({
     cwd: project.cwd,
     pattern: configFilePattern,
@@ -55,7 +55,7 @@ const createDemoSeedTarget = async ({
   title: `Payload Components demo — ${manifest.title}`,
 })
 
-const getPayloadRunCommand = (packageManager: PackageManager, scriptRelPath: string) => {
+export const getPayloadRunCommand = (packageManager: PackageManager, scriptRelPath: string) => {
   if (packageManager === 'pnpm') {
     return `pnpm exec payload run ${scriptRelPath}`
   }
@@ -105,15 +105,21 @@ const formatInstallPreconditionError = ({
   ].join('\n')
 }
 
-export const seedCommand = async ({
-  cwd,
+/* Every precondition a seed script depends on: the component supports this
+ * project, its install is recorded and complete, its declared dependencies are
+ * present, and its files and Payload wiring are actually on disk. Extracted so a
+ * template seed can run the same gate for every block of every page instead of
+ * re-implementing a weaker version. Returns the loaded manifest. */
+export const assertSeedableInstall = async ({
   componentName,
+  cwd,
+  project,
 }: {
-  cwd: string
   componentName: string
+  cwd: string
+  project: DetectedProject
 }) => {
   const manifest = await loadManifest(componentName)
-  const project = await detectProject(cwd)
 
   assertManifestSupport(project, manifest)
   const plan = await resolveInstallPlan({ cwd, manifest })
@@ -202,6 +208,18 @@ export const seedCommand = async ({
     )
   }
 
+  return manifest
+}
+
+export const seedCommand = async ({
+  cwd,
+  componentName,
+}: {
+  cwd: string
+  componentName: string
+}) => {
+  const project = await detectProject(cwd)
+  const manifest = await assertSeedableInstall({ componentName, cwd, project })
   const target = await createDemoSeedTarget({ manifest, project })
 
   await writeSeedScript(cwd, [manifest], target)
