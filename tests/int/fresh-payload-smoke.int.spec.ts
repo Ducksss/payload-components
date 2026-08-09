@@ -142,6 +142,56 @@ describe('fresh Payload smoke component selection', () => {
     ).toThrow(/cannot be used together/)
   })
 
+  it('scaffolds the website template by default and the blank one for the bare scenario', () => {
+    const base = { projectName: 'p' }
+
+    /* The template literal is the whole difference between "starter app" and
+       "bare app" — the scenario the base bundle exists for. */
+    expect(smokeHarness.getCreatePayloadAppArgs(base)).toContain('website')
+    expect(smokeHarness.getCreatePayloadAppArgs({ ...base, template: 'blank' })).toContain('blank')
+    expect(smokeHarness.getCreatePayloadAppArgs({ ...base, template: 'blank' })).not.toContain(
+      'website',
+    )
+  })
+
+  it('parses --scenario and defaults to running both', () => {
+    expect(smokeHarness.parseSmokeArgs([]).scenario).toBe('all')
+    expect(smokeHarness.parseSmokeArgs(['--scenario', 'bare']).scenario).toBe('bare')
+    expect(smokeHarness.parseSmokeArgs(['--scenario', 'website']).scenario).toBe('website')
+    expect(smokeHarness.parseSmokeArgs(['--', '--scenario', 'bare']).scenario).toBe('bare')
+    expect(() => smokeHarness.parseSmokeArgs(['--scenario', 'nope'])).toThrow(
+      /"all", "bare", or "website"/,
+    )
+  })
+
+  it('covers every base-bundle primitive with the blocks the bare scenario installs', async () => {
+    const manifests = await Promise.all(
+      smokeHarness.BARE_SMOKE_COMPONENTS.map((component) => loadManifest(component)),
+    )
+    const sources = await Promise.all(
+      manifests.flatMap((manifest) =>
+        manifest.files.map((file) =>
+          readFile(
+            path.join(repoRoot, 'payload-components', 'source', file.replace(/^src\//, '')),
+            'utf8',
+          ),
+        ),
+      ),
+    )
+    const combined = sources.join('\n')
+
+    /* If the chosen blocks stopped importing one of these, the bare scenario
+       would typecheck without ever exercising that primitive. */
+    for (const primitive of [
+      '@/utilities/ui',
+      '@/components/Link',
+      '@/components/Media',
+      '@/fields/linkGroup',
+    ]) {
+      expect(combined, `bare smoke must exercise ${primitive}`).toContain(primitive)
+    }
+  })
+
   it('passes the selected database URL to direct target commands', () => {
     expect(
       smokeHarness.smokeEnvForTarget({

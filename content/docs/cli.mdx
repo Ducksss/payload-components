@@ -349,11 +349,20 @@ It copies eight files and registers two collections in your Payload config:
 The result is the official starter's shape, which is why a scaffolded project then detects
 as `payload-website-starter` rather than as a target of its own.
 
+<Callout type="warn">
+  **Set up Tailwind and shadcn first.** Every installed block is Tailwind-classed, and
+  `shadcn init` refuses to run without a Tailwind configuration — which the blank
+  `create-payload-app` template does not ship. Install Tailwind, add
+  `@import 'tailwindcss'` to your frontend stylesheet, then run this command.
+</Callout>
+
 <Callout type="info">
   Nothing is overwritten. A project that already has its own `cn`, `Media`, or Pages
   collection keeps it, and re-running the command creates nothing. If your Payload config
   has no readable `collections: [` array, the command prints the two lines to add rather
-  than rewriting a `buildConfig` call it could not parse.
+  than rewriting a `buildConfig` call it could not parse. If `shadcn init` finishes without
+  writing a `components.json`, the command stops there rather than scaffolding on top of a
+  project that still cannot install anything.
 </Callout>
 
 <Callout type="warn">
