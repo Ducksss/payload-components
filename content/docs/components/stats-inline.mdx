@@ -1,0 +1,68 @@
+---
+title: Stats Inline
+description: Heading and intro above rule-topped rows where each figure reads as one sentence.
+icon: ChartNoAxesCombined
+---
+
+<ComponentPreview slug="stats-inline" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add stats-inline
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-inline.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="stats-inline" />
+
+## Content model
+
+`eyebrow` and `title` come from the shared `statsFields` base that every Stats variant spreads;
+`description` and `metrics` are specific to this variant. Each row renders as `value` followed by
+`label`, so write labels that complete the sentence — `99.9%` + `uptime guarantee.` reads as one line.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title. Shared base field.' },
+    title: { type: 'text', required: true, description: 'The stats band heading. Shared base field.' },
+    description: { type: 'textarea', description: 'Optional intro paragraph under the heading.' },
+    metrics: { type: 'array', required: true, description: 'Two to six figures, one per row.' },
+  }}
+/>
+
+Each item in `metrics` carries:
+
+<TypeTable
+  type={{
+    value: { type: 'text', required: true, description: 'Leading figure such as “99.9%” or “10M+”.' },
+    label: { type: 'text', required: true, description: 'The rest of the sentence, including its full stop.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="stats-inline" />
+
+## Requirements
+
+<ComponentRequirements slug="stats-inline" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.
+
+## In this family
+
+<ComponentFamily slug="stats-inline" />

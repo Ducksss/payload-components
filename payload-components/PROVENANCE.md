@@ -26,6 +26,23 @@ regressions.
 At the audited commit, **nothing we derived from had been removed or renamed**
 upstream — there was no upstream change to follow.
 
+### Upstream layout moved (noted 2026-08-09)
+
+As of `8139698115c1341bfd2e3e286c04bb4d8146f472` (2026-07-29) the generated
+registry directory `apps/www/public/r/` **no longer exists** upstream. Sources now
+live at `registry/bases/<base>/<kit>/blocks/<family>/<variant>.tsx`, where `<base>`
+is `base` or `radix` (two renderings of the same catalog — `base` is canonical for
+our purposes) and `<kit>` is `dusk`, `mist`, or `veil`. Numbered item names such as
+`stats-4` are gone; variants are now spelled `one`, `two`, `three`, ….
+
+Rows added before this note keep their original `<item>` names and must be
+re-pointed by hand at the next full audit. Rows added after it use the new
+`<kit>/<family>/<variant>` form and resolve at:
+
+```
+https://raw.githubusercontent.com/tailark/blocks/<sha>/registry/bases/base/<kit>/blocks/<family>/<variant>.tsx
+```
+
 ## Derived components (attributed)
 
 Each carries a `// Layout adapted from tailark/blocks (MIT) …` source comment and
@@ -56,6 +73,12 @@ approximate (layout intent, not line-for-line).
 | `comparator-grid` | `veil-comparator-1` | CSS-grid comparator with a highlighted column |
 | `comparator-table` | `mist-comparator-1` | semantic `<table>` comparator with grouped rows |
 | `team-roster` | `team-1` | grouped department sections, small circular avatars |
+| `stats-grid` | `mist/stats/two` (also `mist/stats/four`) | heading over a bare metric grid; ours is a semantic `<dl>` on rule-topped columns |
+| `stats-card` | `mist/stats/one` | divided metric panel; ours drops the shadcn `Card` for the house panel tokens and derives its columns from the row count |
+| `stats-inline` | `veil/stats/one` | value-leads-the-sentence rows; ours is a real `<ul>` and omits the upstream decorative image/bar-chart layers |
+| `footer-columns` | `dusk/footer/one` (also `mist/footer/one`) | brand block plus labelled link columns; ours drops the newsletter form and labels each column as its own `<nav>` |
+| `footer-simple` | `mist/footer/four` | compact brand-left / links-right row |
+| `footer-centered` | `veil/footer/two` + `veil/footer/three` | centred brand and nav from `two`, legal-links rule from `three`; social icons omitted (lucide v1 removed brand marks) |
 
 ## Considered but NOT attributed (independent / too generic)
 

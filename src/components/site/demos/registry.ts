@@ -52,12 +52,18 @@ import { LogoCloudGridDemo } from './LogoCloudGridDemo'
 import { LogoCloudHoverDemo } from './LogoCloudHoverDemo'
 import { LogoCloudInlineDemo } from './LogoCloudInlineDemo'
 import { LogoCloudInlineWrapDemo } from './LogoCloudInlineWrapDemo'
+import { FooterCenteredDemo } from './FooterCenteredDemo'
+import { FooterColumnsDemo } from './FooterColumnsDemo'
+import { FooterSimpleDemo } from './FooterSimpleDemo'
 import { LogoCloudMarqueeDemo } from './LogoCloudMarqueeDemo'
 import { PricingCardsDemo } from './PricingCardsDemo'
 import { PricingCardsCtaDemo } from './PricingCardsCtaDemo'
 import { PricingCardsMutedDemo } from './PricingCardsMutedDemo'
 import { PricingEnterpriseDemo } from './PricingEnterpriseDemo'
 import { PricingSplitDemo } from './PricingSplitDemo'
+import { StatsCardDemo } from './StatsCardDemo'
+import { StatsGridDemo } from './StatsGridDemo'
+import { StatsInlineDemo } from './StatsInlineDemo'
 import { StatsProofDemo } from './StatsProofDemo'
 import { TeamGridDemo } from './TeamGridDemo'
 import { TeamRosterDemo } from './TeamRosterDemo'
@@ -133,6 +139,9 @@ export const demosBySlug: Record<string, ComponentType> = {
   'pricing-enterprise': PricingEnterpriseDemo,
   'pricing-split': PricingSplitDemo,
   'stats-proof': StatsProofDemo,
+  'stats-grid': StatsGridDemo,
+  'stats-card': StatsCardDemo,
+  'stats-inline': StatsInlineDemo,
   'team-roster': TeamRosterDemo,
   'team-grid': TeamGridDemo,
   'testimonials-quote': TestimonialsQuoteDemo,
@@ -141,6 +150,9 @@ export const demosBySlug: Record<string, ComponentType> = {
   'testimonials-rating': TestimonialsRatingDemo,
   'testimonials-bento': TestimonialsBentoDemo,
   'testimonials-wall': TestimonialsWallDemo,
+  'footer-columns': FooterColumnsDemo,
+  'footer-simple': FooterSimpleDemo,
+  'footer-centered': FooterCenteredDemo,
 }
 
 export function hasComponentDemo(slug: string) {
