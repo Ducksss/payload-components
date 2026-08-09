@@ -130,7 +130,7 @@ describe('public shadcn registry publication', () => {
         installCommand: `payload-components add ${item.name}`,
         postInstall: ['generate:types', 'generate:importmap'],
         requiresPayloadComponentWrapper: true,
-        supportedTargets: ['payload-website-starter'],
+        supportedTargets: ['payload-website-starter', 'payload-blocks-app'],
       })
 
       expect(item.files?.length).toBeGreaterThan(0)

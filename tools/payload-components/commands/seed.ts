@@ -6,6 +6,7 @@ import { loadManifest } from '../manifest'
 import {
   assertManifestSupport,
   detectProject,
+  findExistingRequiredFile,
   verifyInstalledManifestFiles,
   verifyInstalledPayloadFragments,
 } from '../project'
@@ -17,28 +18,32 @@ import type { ComponentManifest, DetectedProject, PackageManager } from '../type
 
 const configFilePattern = /(?:^|\/)payload\.config\.(?:[cm]?[jt]s)$/
 
-const getPayloadConfigFile = (project: DetectedProject) => {
-  const configFile = project.target.requiredFiles.find((filePath) =>
-    configFilePattern.test(filePath.replaceAll('\\', '/')),
-  )
+/* A target may allow the config at more than one path (src/ vs repo root), so
+ * pick the one this project actually has rather than the first declared. */
+export const getPayloadConfigFile = async (project: DetectedProject) => {
+  const configFile = await findExistingRequiredFile({
+    cwd: project.cwd,
+    pattern: configFilePattern,
+    requiredFiles: project.target.requiredFiles,
+  })
 
   if (!configFile) {
     throw new Error(
-      `Detected target "${project.target.id}" does not declare a Payload config file in requiredFiles.`,
+      `Detected target "${project.target.id}" does not declare a Payload config file in requiredFiles that exists in ${project.cwd}.`,
     )
   }
 
   return configFile
 }
 
-const createDemoSeedTarget = ({
+const createDemoSeedTarget = async ({
   manifest,
   project,
 }: {
   manifest: ComponentManifest
   project: DetectedProject
-}): SeedTarget => ({
-  configFileRelPath: getPayloadConfigFile(project),
+}): Promise<SeedTarget> => ({
+  configFileRelPath: await getPayloadConfigFile(project),
   marker: `payload-components:demo:${manifest.name}`,
   ownershipStateRelPath: path.join(
     '.payload-components',
@@ -50,7 +55,7 @@ const createDemoSeedTarget = ({
   title: `Payload Components demo — ${manifest.title}`,
 })
 
-const getPayloadRunCommand = (packageManager: PackageManager, scriptRelPath: string) => {
+export const getPayloadRunCommand = (packageManager: PackageManager, scriptRelPath: string) => {
   if (packageManager === 'pnpm') {
     return `pnpm exec payload run ${scriptRelPath}`
   }
@@ -100,15 +105,21 @@ const formatInstallPreconditionError = ({
   ].join('\n')
 }
 
-export const seedCommand = async ({
-  cwd,
+/* Every precondition a seed script depends on: the component supports this
+ * project, its install is recorded and complete, its declared dependencies are
+ * present, and its files and Payload wiring are actually on disk. Extracted so a
+ * template seed can run the same gate for every block of every page instead of
+ * re-implementing a weaker version. Returns the loaded manifest. */
+export const assertSeedableInstall = async ({
   componentName,
+  cwd,
+  project,
 }: {
-  cwd: string
   componentName: string
+  cwd: string
+  project: DetectedProject
 }) => {
   const manifest = await loadManifest(componentName)
-  const project = await detectProject(cwd)
 
   assertManifestSupport(project, manifest)
   const plan = await resolveInstallPlan({ cwd, manifest })
@@ -183,7 +194,7 @@ export const seedCommand = async ({
 
   const [fileCheck, fragmentCheck] = await Promise.all([
     verifyInstalledManifestFiles({ cwd, manifest: plan }),
-    verifyInstalledPayloadFragments({ cwd, manifest: plan }),
+    verifyInstalledPayloadFragments({ cwd, hostFiles: project.hostFiles, manifest: plan }),
   ])
 
   if (!fileCheck.isValid || !fragmentCheck.isValid) {
@@ -197,7 +208,19 @@ export const seedCommand = async ({
     )
   }
 
-  const target = createDemoSeedTarget({ manifest, project })
+  return manifest
+}
+
+export const seedCommand = async ({
+  cwd,
+  componentName,
+}: {
+  cwd: string
+  componentName: string
+}) => {
+  const project = await detectProject(cwd)
+  const manifest = await assertSeedableInstall({ componentName, cwd, project })
+  const target = await createDemoSeedTarget({ manifest, project })
 
   await writeSeedScript(cwd, [manifest], target)
 

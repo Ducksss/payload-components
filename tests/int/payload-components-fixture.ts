@@ -209,6 +209,33 @@ const copyProjectFixture = async () => {
       ].join('\n'),
       'utf8',
     ),
+    /* Form primitives, for the components that collect input (contact-routing-form).
+       Without these the install verifier reports a missing registry dependency,
+       which reads as a broken install rather than an incomplete fixture. */
+    writeFile(
+      path.join(tempDir, 'src', 'components', 'ui', 'input.tsx'),
+      [
+        "import * as React from 'react'",
+        '',
+        'export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {',
+        '  return <input data-slot="input" {...props} />',
+        '}',
+        '',
+      ].join('\n'),
+      'utf8',
+    ),
+    writeFile(
+      path.join(tempDir, 'src', 'components', 'ui', 'textarea.tsx'),
+      [
+        "import * as React from 'react'",
+        '',
+        'export function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {',
+        '  return <textarea data-slot="textarea" {...props} />',
+        '}',
+        '',
+      ].join('\n'),
+      'utf8',
+    ),
     writeFile(
       path.join(tempDir, 'src', 'blocks', 'RenderBlocks.tsx'),
       [

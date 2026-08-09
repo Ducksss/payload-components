@@ -1,8 +1,10 @@
 import Link from 'next/link'
 
+import { Check, Plus } from 'lucide-react'
+
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { ComponentPreviewThumb } from '@/components/site/ComponentPreviewThumb'
-import type { componentEntries } from '@/lib/site'
+import { composerAddLabel, composerRemoveLabel, type componentEntries } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
 type Component = (typeof componentEntries)[number]
@@ -20,15 +22,25 @@ type Component = (typeof componentEntries)[number]
 export function ComponentCard({
   className,
   component,
+  onToggleSelect,
+  selected,
 }: {
   className?: string
   component: Component
+  /* Optional: only the catalog browser composes a selection. Passing nothing
+     keeps the card exactly as it renders elsewhere. */
+  onToggleSelect?: (slug: string) => void
+  selected?: boolean
 }) {
   return (
     <article
       id={component.slug}
+      data-selected={onToggleSelect && selected ? 'true' : undefined}
       className={cn(
-        'group relative mb-4 flex break-inside-avoid flex-col overflow-hidden rounded-xl border border-border bg-card shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-frame focus-within:ring-2 focus-within:ring-brand/25',
+        'group relative mb-4 flex break-inside-avoid flex-col overflow-hidden rounded-xl border bg-card shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-frame focus-within:ring-2 focus-within:ring-brand/25',
+        selected
+          ? 'border-brand/45 ring-1 ring-brand/25'
+          : 'border-border hover:border-foreground/15',
         className,
       )}
     >
@@ -48,7 +60,29 @@ export function ComponentCard({
             {component.slug}
           </code>
         </div>
-        <span className="relative z-20 shrink-0">
+        <span className="relative z-20 flex shrink-0 items-center gap-1.5">
+          {onToggleSelect ? (
+            <button
+              type="button"
+              aria-label={
+                selected ? composerRemoveLabel(component.slug) : composerAddLabel(component.slug)
+              }
+              aria-pressed={selected ? 'true' : 'false'}
+              onClick={() => onToggleSelect(component.slug)}
+              className={cn(
+                'inline-flex size-8 shrink-0 items-center justify-center rounded-md border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                selected
+                  ? 'border-brand/40 bg-brand/10 text-brand'
+                  : 'border-border bg-background text-muted-foreground hover:bg-secondary hover:text-foreground',
+              )}
+            >
+              {selected ? (
+                <Check className="size-3.5" aria-hidden="true" />
+              ) : (
+                <Plus className="size-3.5" aria-hidden="true" />
+              )}
+            </button>
+          ) : null}
           <CommandCopyButton command={component.command} />
         </span>
       </div>

@@ -1452,6 +1452,18 @@ export const catalogMetadataDescription =
 export const catalogInstallationLinkLabel = 'See how one-command installation works'
 export const catalogTemplatesLinkLabel = 'Explore Payload CMS template concepts'
 
+/* Composer: pick several blocks across families and get one install command.
+   `payload-components add` takes any number of names, so the selection maps
+   straight onto a single command rather than a list to run one at a time. */
+export const composerTrayLabel = 'Selected components'
+export const composerEmptyHint = 'Select components to build one install command'
+export const composerClearLabel = 'Clear selection'
+export const composerCopyLabel = 'Copy install command'
+export const composerAddLabel = (slug: string) => `Add ${slug} to the install command`
+export const composerRemoveLabel = (slug: string) => `Remove ${slug} from the install command`
+export const composerInstallCommand = (slugs: readonly string[]) =>
+  `npx payload-components add ${slugs.join(' ')}`
+
 /* ------------------------------------------------------------------ */
 /* Templates showcase                                                  */
 /* ------------------------------------------------------------------ */

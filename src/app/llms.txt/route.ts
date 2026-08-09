@@ -10,7 +10,11 @@ import {
   siteUrl,
   stackItems,
 } from '@/lib/site'
-import { templateDetailHref, templateShowcases } from '@/lib/templates/registry'
+import {
+  templateDetailHref,
+  templateInstallCommand,
+  templateShowcases,
+} from '@/lib/templates/registry'
 import { TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
 
 /* Concise, AI-readable site index following the llmstxt.org convention:
@@ -55,10 +59,10 @@ export function GET() {
     '',
     '## Full-site template concepts',
     'Browsable multi-page site concepts composed from the blocks above. Each is a',
-    `${TEMPLATE_CONCEPT_STATUS_LABEL.toLowerCase()} — not an installable template yet; no install command exists for them.`,
+    `${TEMPLATE_CONCEPT_STATUS_LABEL.toLowerCase()}: one command installs and wires the whole block set, and the curated copy is not seeded.`,
     ...templateShowcases.map(
       (template) =>
-        `- [${template.title}](${siteUrl}${templateDetailHref(template.slug)}) — ${template.summary}`,
+        `- [${template.title}](${siteUrl}${templateDetailHref(template.slug)}): ${templateInstallCommand(template)} — ${template.summary}`,
     ),
     '',
     '## FAQ',

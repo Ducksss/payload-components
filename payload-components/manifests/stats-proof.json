@@ -2,6 +2,10 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "stats-proof",
   "version": "0.2.0",
+  "changelog": [
+    { "version": "0.2.0", "summary": "Added an optional logoLabel text field that renders when no logo upload is set." },
+    { "version": "0.1.0", "summary": "Initial release." }
+  ],
   "title": "Stats Proof",
   "description": "A proof section pairing narrative, prominent string metrics, and a semantic customer quote.",
   "registryItemName": "stats-proof",
@@ -10,7 +14,7 @@
     "next": "^15.0.0 || ^16.0.0",
     "payload": "^3.0.0"
   },
-  "supportedTargets": ["payload-website-starter"],
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
   "supports": {
     "payloadMajors": [3],
     "nextMajors": [15, 16]

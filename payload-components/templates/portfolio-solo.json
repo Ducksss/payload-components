@@ -1,0 +1,90 @@
+{
+  "category": "portfolio",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "contact-routing-form",
+    "content-columns",
+    "content-community",
+    "content-feature-split",
+    "content-image-frame",
+    "content-image-lead",
+    "content-quote",
+    "content-rows",
+    "content-showcase",
+    "content-stats",
+    "faq-split",
+    "hero-basic",
+    "hero-kinetic",
+    "stats-proof",
+    "testimonials-wall"
+  ],
+  "description": "Ilse Renko is a fictional solo designer-developer working alone from Tallinn. The concept spans Home, Work, About, Writing, and Contact — the quietest site in the gallery, art-directed as cool off-white paper, near-black ink, hairline rules, and one low-chroma slate accent, with a single narrow column, numbered sections, and generous empty margins. It opens on a kinetic first-person headline whose closing word lands in italic serif, and every section is composed from blocks in the open registry.",
+  "pages": [
+    {
+      "components": [
+        "hero-kinetic",
+        "content-showcase",
+        "content-rows",
+        "stats-proof",
+        "content-quote",
+        "call-to-action-centered"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Ilse Renko — Designer and developer"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-rows",
+        "content-image-frame",
+        "content-feature-split",
+        "testimonials-wall",
+        "call-to-action-centered"
+      ],
+      "label": "Work",
+      "path": "work",
+      "title": "Ilse Renko — Work"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-image-lead",
+        "content-quote",
+        "content-stats",
+        "content-community",
+        "call-to-action-boxed"
+      ],
+      "label": "About",
+      "path": "about",
+      "title": "Ilse Renko — About"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-rows",
+        "content-columns",
+        "call-to-action-centered"
+      ],
+      "label": "Writing",
+      "path": "writing",
+      "title": "Ilse Renko — Writing"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "contact-routing-form",
+        "faq-split"
+      ],
+      "label": "Contact",
+      "path": "contact",
+      "title": "Ilse Renko — Contact"
+    }
+  ],
+  "revision": 2,
+  "slug": "portfolio-solo",
+  "summary": "A quiet, near-monochrome personal site for a fictional solo designer-developer — small precise type, hairline rules, and one grudging slate accent.",
+  "title": "Portfolio Solo",
+  "version": 1
+}

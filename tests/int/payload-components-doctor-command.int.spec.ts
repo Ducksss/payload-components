@@ -23,10 +23,10 @@ const runAddCommand = async (fixtureDir: string, componentName: string) =>
     timeoutMs: integrationCommandTimeoutMs,
   })
 
-const runDoctorCommand = async (fixtureDir: string) => {
+const runDoctorCommand = async (fixtureDir: string, extraArgs: string[] = []) => {
   try {
     const result = await runCommand({
-      args: [payloadComponentBin, 'doctor', '--cwd', fixtureDir],
+      args: [payloadComponentBin, 'doctor', '--cwd', fixtureDir, ...extraArgs],
       captureOutput: true,
       command: process.execPath,
       cwd: repoRoot,
@@ -94,6 +94,9 @@ const writeInstallState = async ({
   )
 }
 
+/* Exit codes are a contract: 2 means the project itself cannot accept installs
+ * (unsupported shape, unreadable state, missing generators), 1 means the project
+ * is fine but a recorded install needs attention. CI responds differently to each. */
 describe('payload-components doctor', () => {
   const tempDirs: string[] = []
 
@@ -200,7 +203,7 @@ describe('payload-components doctor', () => {
 
     const result = await runDoctorCommand(fixtureDir)
 
-    expect(result.code).toBe(1)
+    expect(result.code).toBe(2)
     expect(result.stdout).toContain('[error] project:')
     expect(result.stdout).toContain('Unsupported project shape')
   })
@@ -216,7 +219,7 @@ describe('payload-components doctor', () => {
 
     const result = await runDoctorCommand(fixtureDir)
 
-    expect(result.code).toBe(1)
+    expect(result.code).toBe(2)
     expect(result.stdout).toContain('[error] project:')
     expect(result.stdout).toContain('No components.json found')
     expect(result.stdout).toContain('payload-components init')
@@ -234,7 +237,7 @@ describe('payload-components doctor', () => {
 
     const result = await runDoctorCommand(fixtureDir)
 
-    expect(result.code).toBe(1)
+    expect(result.code).toBe(2)
     expect(result.stdout).toContain('[error] state:')
     expect(result.stdout).toContain('Unsupported payload-components state version')
   }, 180000)
@@ -252,8 +255,69 @@ describe('payload-components doctor', () => {
 
     const result = await runDoctorCommand(fixtureDir)
 
-    expect(result.code).toBe(1)
+    expect(result.code).toBe(2)
     expect(result.stdout).toContain('[error] scripts: missing generate:types')
     expect(result.stdout).toContain('[ok] scripts: generate:importmap')
+  }, 180000)
+})
+
+describe('payload-components doctor --json', () => {
+  const jsonTempDirs: string[] = []
+
+  afterEach(async () => {
+    await Promise.all(
+      jsonTempDirs.splice(0).map((dir) => rm(dir, { force: true, recursive: true })),
+    )
+  })
+
+  it('emits a machine-readable report instead of the text one', async () => {
+    const { fixtureDir } = await createInstallFixture('hero-basic')
+    jsonTempDirs.push(fixtureDir)
+
+    const result = await runDoctorCommand(fixtureDir, ['--json'])
+    const report = JSON.parse(result.stdout) as {
+      components: Array<{ healthy: boolean; name: string }>
+      exitCode: number
+      findings: Array<{ message: string; scope: string; status: string }>
+      healthy: boolean
+    }
+
+    expect(result.code).toBe(0)
+    expect(report).toMatchObject({ components: [], exitCode: 0, healthy: true })
+    /* No human formatting leaks into the JSON stream. */
+    expect(result.stdout).not.toContain('[ok]')
+    expect(report.findings.every(({ status }) => ['error', 'ok', 'warn'].includes(status))).toBe(
+      true,
+    )
+    expect(report.findings.map(({ scope }) => scope)).toContain('project')
+  }, 180000)
+
+  it('scopes findings so a consumer can group them without parsing messages', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('hero-basic')
+    jsonTempDirs.push(fixtureDir)
+    await writeInstallState({ fixtureDir, manifest })
+
+    const result = await runDoctorCommand(fixtureDir, ['--json'])
+    const report = JSON.parse(result.stdout) as {
+      components: Array<{ healthy: boolean; name: string }>
+      exitCode: number
+      findings: Array<{ message: string; scope: string; status: string }>
+    }
+
+    expect(result.code).toBe(1)
+    expect(report.exitCode).toBe(1)
+    expect(report.components).toEqual([{ healthy: false, name: 'hero-basic' }])
+    expect(
+      report.findings.filter(({ scope, status }) => scope === 'hero-basic' && status === 'error')
+        .length,
+    ).toBeGreaterThan(0)
+    /* The project itself is fine here — nothing project-scoped may be an error,
+       or the exit code would have been 2. */
+    expect(
+      report.findings.some(
+        ({ scope, status }) =>
+          status === 'error' && ['project', 'scripts', 'state'].includes(scope),
+      ),
+    ).toBe(false)
   }, 180000)
 })

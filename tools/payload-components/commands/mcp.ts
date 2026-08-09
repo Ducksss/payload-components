@@ -1,0 +1,72 @@
+import { createInterface } from 'node:readline'
+
+import { createMcpServer, JSON_RPC_ERRORS, type JsonRpcRequest } from '../mcp/server'
+
+/* MCP's stdio transport is newline-delimited JSON-RPC 2.0: one JSON object per
+ * line in, one per line out. stdout carries the protocol and nothing else, so
+ * every human-readable message goes to stderr and the tools capture any stdout
+ * their handlers would have written. */
+export const mcpCommand = async ({
+  cwd,
+  input = process.stdin,
+  output = process.stdout,
+}: {
+  cwd: string
+  input?: NodeJS.ReadableStream
+  output?: NodeJS.WritableStream
+}) => {
+  const server = createMcpServer({ cwd })
+  /* Bound up front: a tool handler may swap process.stdout.write while it runs. */
+  const writeLine = (value: string) => {
+    output.write(`${value}\n`)
+  }
+
+  process.stderr.write(
+    `payload-components: MCP server ready over stdio (${server.toolNames.length} read-only tools) in ${cwd}\n`,
+  )
+
+  const lines = createInterface({ crlfDelay: Infinity, input })
+
+  for await (const line of lines) {
+    const trimmed = line.trim()
+
+    if (trimmed === '') {
+      continue
+    }
+
+    let request: JsonRpcRequest
+
+    try {
+      request = JSON.parse(trimmed) as JsonRpcRequest
+    } catch {
+      writeLine(
+        JSON.stringify({
+          error: { code: JSON_RPC_ERRORS.parseError, message: 'Invalid JSON.' },
+          id: null,
+          jsonrpc: '2.0',
+        }),
+      )
+      continue
+    }
+
+    if (request.jsonrpc !== '2.0' || typeof request.method !== 'string') {
+      writeLine(
+        JSON.stringify({
+          error: {
+            code: JSON_RPC_ERRORS.invalidRequest,
+            message: 'Expected a JSON-RPC 2.0 request with a string method.',
+          },
+          id: request.id ?? null,
+          jsonrpc: '2.0',
+        }),
+      )
+      continue
+    }
+
+    const response = await server.handle(request)
+
+    if (response) {
+      writeLine(JSON.stringify(response))
+    }
+  }
+}

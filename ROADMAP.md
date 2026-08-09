@@ -11,11 +11,21 @@ direction, not a commitment. New contributors can start with
 
 ## Current State
 
-- The registry ships 58 installable page blocks across 12 families, with 8 post
+- The registry ships 67 installable page blocks across 12 families, with 8 post
   components in development.
 - `payload-components add` copies files, wires Payload, regenerates types, and
-  records install state.
+  records install state. It takes any number of components in one command, and
+  `--localized` marks a block's text fields for Payload localization.
+- Recorded installs have a full lifecycle: `list`, `diff` (exits non-zero on
+  drift), `update` (never overwrites local edits without `--force`), and `remove`
+  (keeps shared family files a sibling variant still needs).
+- `add-template` installs every block a full-site template concept composes and
+  prints its page plan; it does not seed the curated content.
 - `payload-components doctor` checks supported project shape and install drift.
+- Install targets are path-resolved: `payload-website-starter` plus
+  `payload-blocks-app` for the same page-blocks shape at non-starter paths.
+- `payload-components mcp` exposes the registry to coding agents as a read-only
+  MCP server over stdio.
 - Fresh Payload smoke testing remains the slower confidence path for releases.
 - Anonymous analytics for install-copy and primary-link intent are collected;
   no PII is captured.
@@ -28,8 +38,12 @@ Each priority links representative issues; the [full queue][issues] has the rest
    - Improve diagnostics when anchors move in `RenderBlocks.tsx` or
      `Pages/index.ts` ([#121]).
    - Keep retry behavior idempotent after partial installs.
-   - Expand supported project shapes only with fixtures and docs.
-   - Add a dry-run preview ([#120]) and machine-readable `doctor` output ([#19]).
+   - Expand supported project shapes only with fixtures and docs. The next real
+     step is a base bundle shipping the starter primitives installed blocks
+     import (`@/components/Media`, `@/components/Link`, `@/fields/linkGroup`,
+     `@/utilities/ui`), which is what a bare `create-payload-app` project lacks.
+   - Add machine-readable `doctor` output ([#19]); `list` and `diff` already
+     support `--json`.
 
 2. Grow the catalog by complete bundles.
    - Ship source, manifest, registry entry, docs, demo twin, and install coverage
@@ -86,7 +100,6 @@ Directions under consideration, not scheduled work:
 [#113]: https://github.com/Ducksss/payload-components/issues/113
 [#116]: https://github.com/Ducksss/payload-components/issues/116
 [#119]: https://github.com/Ducksss/payload-components/issues/119
-[#120]: https://github.com/Ducksss/payload-components/issues/120
 [#121]: https://github.com/Ducksss/payload-components/issues/121
 [#123]: https://github.com/Ducksss/payload-components/issues/123
 [#126]: https://github.com/Ducksss/payload-components/issues/126

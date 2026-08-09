@@ -1,0 +1,374 @@
+---
+title: CLI reference
+seoTitle: Payload Components CLI Commands for Payload CMS
+description: Every Payload Components CLI command — install blocks and templates, localize fields, diff and update recorded installs, remove a block, and expose the registry to a coding agent.
+icon: SquareTerminal
+---
+
+Every command is read-only unless it says otherwise, takes `--cwd <path>` to target a
+project other than the working directory, and refuses to run against a project shape it
+does not recognise. Start with [Installation](/docs/installation) for the install pipeline
+itself; this page is the surface.
+
+```bash
+npx payload-components --help
+```
+
+## Install blocks
+
+`add` accepts any number of component names and installs each through the full wrapper
+pipeline, so one command can stand up a whole page:
+
+```bash
+npx payload-components add hero-basic faq-card pricing-cards
+```
+
+The [component catalog](/components) builds this command for you: tick components as you
+browse and copy the single command from the tray at the bottom.
+
+Repeats are collapsed, and each name is installed exactly once. Because every stage is
+idempotent, a name that is already installed is a no-op rather than an error.
+
+| Flag          | Effect                                                                                  |
+| ------------- | --------------------------------------------------------------------------------------- |
+| `--dry-run`   | Print the plan — files, wiring, dependencies, post-install commands — and change nothing |
+| `--demo`      | After a successful install, write the reviewable demo seed script                        |
+| `--localized` | Mark the block's text fields `localized: true` for Payload localization                  |
+
+### Install from another registry
+
+`add` also takes shadcn's namespaced form, so a block from someone else's registry installs
+through the same command:
+
+```bash
+npx payload-components add @acme/hero
+```
+
+The scope must be configured in your `components.json` (or `package.json`) first:
+
+```json
+{
+  "registries": {
+    "@acme": "https://acme.example/r/{name}.json"
+  }
+}
+```
+
+<Callout type="warn">
+  A third-party item is **files only**. It has no Payload Components manifest, so no
+  collection registration, renderer mapping, or type regeneration is applied, nothing is
+  recorded in `.payload-components/state.json`, and `list` / `diff` / `update` / `remove` do
+  not manage it. `--demo` and `--localized` are rejected for the same reason. Only `https`
+  registries are accepted.
+</Callout>
+
+## Install a template
+
+A [template concept](/templates) is a block set plus a page plan. `add-template` installs
+and wires every block it composes, then prints which blocks each page uses:
+
+```bash
+npx payload-components templates
+npx payload-components add-template saas-launch
+```
+
+Add `--demo` to also write one seed script per page of the concept:
+
+```bash
+npx payload-components add-template saas-launch --demo
+```
+
+Each script creates a single **draft** Page holding that page's blocks, in the order the
+page composes them, and never publishes it. Every page owns its own private ownership
+record, so re-running one script updates only its own Page — the same adopt-or-refuse rules
+a single-component `seed` follows.
+
+<Callout type="warn">
+  Seeded blocks carry each block's own sample content, **not** the curated copy you see on
+  the template preview — that copy lives in the site's demo data, not in Payload field shape.
+  Treat the result as a wired skeleton to rewrite in the admin, which is why it lands as a
+  draft. Each page also creates its own placeholder media, so an N-page template leaves N
+  placeholder uploads behind.
+</Callout>
+
+It validates your project shape before installing anything, so an unsupported repo fails
+on the first check rather than part-way through twenty blocks. `--dry-run` prints the block
+list and page plan without touching the project.
+
+## Localize a block
+
+```bash
+npx payload-components add hero-basic --localized
+```
+
+This copies `src/blocks/shared/localizeFields.ts` into your project and wraps the installed
+block config's field list in it:
+
+```ts
+export const HeroBasic: Block = {
+  fields: localizeFields([...heroFields /* variant-specific fields */]),
+}
+```
+
+`localizeFields` marks the leaf fields an editor writes prose into — `text`, `textarea`,
+and `richText` — and recurses through the containers those fields live in. Because the wrap
+sits outside the shared family base's spread, one call covers shared and variant fields
+together.
+
+Three deliberate limits:
+
+- Containers are never marked. Payload rejects a localized field nested inside a localized
+  parent, so localizing only leaves keeps every combination valid.
+- A field that already declares `localized` is left exactly as you wrote it.
+- `select`, `upload`, `relationship`, `number`, and link `url` fields stay single-value.
+  Per-locale media or link targets are a content-modelling decision, not a mechanical
+  default — set those by hand.
+
+<Callout type="warn">
+  Localization also has to be enabled in your Payload config, or `localized: true` does
+  nothing. Adding it to a collection that already holds data changes how that data is
+  stored — migrate before adopting it.
+</Callout>
+
+The choice is recorded in install state, so `update` re-applies it instead of silently
+rewriting the config without the wrapper.
+
+## Maintain an install
+
+A recorded install has a lifecycle. These four commands read and act on
+`.payload-components/state.json`.
+
+### list
+
+```bash
+npx payload-components list
+npx payload-components list --json
+```
+
+Joins the registry catalog with what this project recorded: which components are installed,
+which are behind the version this CLI ships, and which recorded components no longer have a
+manifest. It works in any directory, including one that was never initialized.
+
+### diff
+
+```bash
+npx payload-components diff
+npx payload-components diff hero-basic --json
+```
+
+Compares each recorded install against the registry it came from and reports three kinds of
+drift: a version behind this CLI, a file whose content no longer matches, and wiring that
+has gone missing. Comparison is content-normalized, so line endings and a trailing newline
+are never reported as edits.
+
+When a component is behind, `diff` also prints the changelog entries the upgrade would
+apply, and the migration any breaking entry demands — `0.1.0 → 0.2.0` on its own is not a
+decision anyone can make.
+
+`diff` exits non-zero when anything has drifted, which makes it usable as a CI gate on
+install drift.
+
+### update
+
+```bash
+npx payload-components update
+npx payload-components update hero-basic --force
+```
+
+Re-installs recorded components at the version this CLI ships. Files are deleted first so
+the registry install rewrites them — `add` treats a present file as satisfied, which is
+right for a fresh install and wrong for an upgrade.
+
+**Local edits are protected.** A component with a modified file is skipped, listed by name,
+and the command exits non-zero. Pass `--force` to overwrite it, or copy your edits out
+first. Run `diff` to see exactly which files are involved.
+
+**Content-breaking upgrades are held back.** A component whose changelog marks a pending
+version `breaking` is not installed at all — rewriting the files is the easy half, and you
+still have to migrate the documents already in your database. `update` prints the migration
+the manifest declares and exits non-zero until you pass `--accept-breaking`.
+
+```bash
+npx payload-components update --accept-breaking
+```
+
+These are two different decisions and they have two different flags: `--force` means
+"discard my local edits", `--accept-breaking` means "I have migrated my content".
+
+With no names, `update` targets every component that is behind or left in a partial state.
+`--dry-run` prints the plan.
+
+### Changelogs
+
+Each manifest carries its own release notes, newest first:
+
+```json
+"changelog": [
+  {
+    "version": "0.2.0",
+    "summary": "Renamed the headline field.",
+    "breaking": true,
+    "dataMigration": "Rename the stored `heading` field to `title` before publishing."
+  },
+  { "version": "0.1.0", "summary": "Initial release." }
+]
+```
+
+The registry validates this on every load: entries must be real semver, ordered newest
+first, include the manifest's own version, and a `breaking` entry must say what to migrate —
+otherwise `update` could refuse an upgrade without being able to tell you why. A component's
+newest entry also appears on its docs page once it has moved past its first release.
+
+### remove
+
+```bash
+npx payload-components remove hero-basic
+npx payload-components remove hero-basic --dry-run
+```
+
+The inverse of an install: it deletes the files this component owns, unregisters the block,
+drops its imports, regenerates types and the import map, and removes its state record.
+
+Three things it deliberately does not do:
+
+- **Shared family files survive.** A file another recorded component also ships is kept and
+  reported, so removing `hero-basic` while `hero-video` is installed leaves the shared hero
+  field base in place.
+- **Package dependencies stay.** The CLI cannot know whether your own code adopted them.
+- **Stored content is untouched.** Existing Page documents keep their block data. Delete
+  those blocks in the admin before publishing.
+
+Removal is idempotent, and a repeat run that changes nothing skips the generators instead of
+spending minutes regenerating for no effect.
+
+## Use it from a coding agent
+
+```bash
+npx payload-components mcp
+```
+
+Runs a [Model Context Protocol](https://modelcontextprotocol.io) server over stdio, so an
+agent can search the catalog, read a component's install contract, and preview what an
+install would change — instead of guessing at component names.
+
+```json
+{
+  "mcpServers": {
+    "payload-components": {
+      "command": "npx",
+      "args": ["-y", "payload-components", "mcp"]
+    }
+  }
+}
+```
+
+| Tool                                    | Answers                                                        |
+| --------------------------------------- | -------------------------------------------------------------- |
+| `list_components`, `search_components`  | Which block fits, and is it already installed here             |
+| `get_component`                         | Files, Payload wiring, supported majors, status in this project |
+| `plan_install`                          | Exactly what an install would change                           |
+| `diff`, `doctor`                        | What has drifted, and whether this project can accept installs  |
+| `list_templates`, `get_template`        | The block set and page plan behind a template concept           |
+
+<Callout type="info">
+  Every tool is read-only. The server answers *which block, and what will it change*;
+  installing stays an explicit `payload-components add` run in your shell, where the change
+  is visible and approvable.
+</Callout>
+
+## Contribute a component
+
+```bash
+pnpm payload-components new hero-split
+```
+
+Scaffolds a whole component bundle in a checkout of this repository: the block source,
+manifest, registry item, doc page, and demo twin, plus entries in the demos registry, the
+docs sidebar, the CLI help list, and the README inventory table.
+
+It then prints what it deliberately did **not** decide — where the component belongs in
+`componentEntries` (catalog order is ranked, not chronological), its `dbName` abbreviation
+with a uniqueness check against every existing block, the Content model prose, and the demo
+sample content. See
+[the component template README](https://github.com/Ducksss/payload-components/blob/main/payload-components/templates/component-template/README.md)
+for the full workflow.
+
+## Set up and diagnose
+
+```bash
+npx payload-components init
+npx payload-components doctor
+npx payload-components doctor --json
+npx payload-components seed hero-basic
+```
+
+`init` creates the `components.json` that registry installs need. `doctor` runs a read-only
+health check — see [Installation](/docs/installation#doctor). `seed` writes the demo seed
+script for an already-installed component.
+
+`doctor --json` emits the same run as a structured report. Every finding carries a `scope`
+(`project`, `scripts`, `state`, or a component name) so a CI job can group results without
+parsing prose, and the exit code separates the two failures that need different responses:
+**2** means the project itself cannot accept installs, **1** means the project is fine but a
+recorded install has drifted.
+
+## Supported project shapes
+
+Installs are gated on a recognised project shape. Two are supported, matched in order:
+
+| Target                    | Shape                                                                                                                            |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `payload-website-starter` | The official Payload website starter layout: `src/blocks/RenderBlocks.tsx` and `src/collections/Pages/index.ts`                   |
+| `payload-blocks-app`      | The same page-blocks shape at non-starter paths — a flat `Pages.ts`, a renderer under `src/components`, or a repo without `src/`  |
+
+A target declares candidate paths per file plus the anchors the patcher needs, so a file at
+the right path with the wrong shape is not a match. `doctor` prints which files it resolved.
+
+### Starting from a bare Payload app
+
+A project scaffolded by `create-payload-app` has none of the pieces an install needs: no
+blocks renderer, no Pages collection with a `layout` field, and none of the primitives
+installed blocks import. `init --scaffold` lays that base down:
+
+```bash
+npx payload-components init --scaffold
+```
+
+It copies eight files and registers two collections in your Payload config:
+
+| File | Why it is needed |
+| --- | --- |
+| `src/utilities/ui.ts` | `cn()` — imported by 69 of the shipped source files |
+| `src/fields/link.ts`, `src/fields/linkGroup.ts` | the link field blocks compose for their calls to action |
+| `src/components/Link/index.tsx` | `CMSLink`, which renders a stored link |
+| `src/components/Media/index.tsx` | `Media`, which renders an upload |
+| `src/collections/Media.ts` | the `media` collection those uploads live in |
+| `src/collections/Pages/index.ts` | the `layout` blocks field installs register into |
+| `src/blocks/RenderBlocks.tsx` | the renderer map installs wire into |
+
+The result is the official starter's shape, which is why a scaffolded project then detects
+as `payload-website-starter` rather than as a target of its own.
+
+<Callout type="info">
+  Nothing is overwritten. A project that already has its own `cn`, `Media`, or Pages
+  collection keeps it, and re-running the command creates nothing. If your Payload config
+  has no readable `collections: [` array, the command prints the two lines to add rather
+  than rewriting a `buildConfig` call it could not parse.
+</Callout>
+
+<Callout type="warn">
+  These files are a starting point, not a framework. They are yours after install — the CLI
+  does not track or update them, and they are intentionally thinner than the official
+  Payload website starter's versions (no Button dependency in `CMSLink`, no image-size
+  variants in `Media`). If you are starting a content site from scratch, the website starter
+  itself is still the better base.
+</Callout>
+
+## Exit codes
+
+| Command  | Exits non-zero when                                        |
+| -------- | ---------------------------------------------------------- |
+| `add`    | Any stage fails; partial state is recorded for a safe retry |
+| `diff`   | Any inspected component has drifted                        |
+| `update` | A component was skipped for local edits, or held back as breaking |
+| `doctor` | `1` a recorded install needs attention · `2` the project cannot accept installs |
