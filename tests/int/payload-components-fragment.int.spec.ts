@@ -189,6 +189,28 @@ describe('applyPayloadFragments — renderBlocks', () => {
     expect(error.message).toContain('heroBasic: HeroBasicBlock,')
     expect(await readRenderBlocks(dir)).toEqual(renderBlocks)
   })
+
+  /* The repair is meant to be pasted, so it must not re-add an import the file
+     already has. Nothing is written when a fragment fails, so "already there"
+     is decided against the file on disk, not the in-memory patched copy. */
+  it('omits the import from the repair when the file already has it', async () => {
+    const renderBlocks = [
+      "import React from 'react'",
+      "import { HeroBasicBlock } from '@/blocks/HeroBasic/Component'",
+      '',
+      'const blockComponents = {',
+      '',
+    ].join('\n')
+    const dir = await makeProject({ renderBlocks })
+
+    const error = await captureRejection(applyPayloadFragments(dir, [renderBlocksFragment]))
+
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).not.toContain(
+      "import { HeroBasicBlock } from '@/blocks/HeroBasic/Component'",
+    )
+    expect(error.message).toContain('heroBasic: HeroBasicBlock,')
+  })
 })
 
 describe('applyPayloadFragments — pagesLayout', () => {

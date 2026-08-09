@@ -692,9 +692,17 @@ const applyRenderBlocksFragment = (
 ) => {
   const importLine = `import { ${fragment.importName} } from '${fragment.importPath}'`
   const propertyLine = `  ${fragment.blockSlug}: ${fragment.importName},`
+  /* Against the original source, never the in-memory patched copy: nothing is
+     written when a fragment fails, so an import this run would have added is
+     still absent on disk. Listing one the file already has would have the user
+     paste a duplicate. */
+  const hasImportOnDisk = hasNamedImport(source, fragment.importName, fragment.importPath)
   const describeFailure = (missing: string) =>
     describeFragmentFailure({
-      edits: [importLine, `${propertyLine.trim()}  <- inside the blockComponents object`],
+      edits: [
+        ...(hasImportOnDisk ? [] : [importLine]),
+        `${propertyLine.trim()}  <- inside the blockComponents object`,
+      ],
       filePath,
       missing,
     })
@@ -742,10 +750,11 @@ const applyPagesLayoutFragment = (
   filePath: string,
 ) => {
   const importLine = `import { ${fragment.importName} } from '${fragment.importPath}'`
+  const hasImportOnDisk = hasNamedImport(source, fragment.importName, fragment.importPath)
   const describeFailure = (missing: string) =>
     describeFragmentFailure({
       edits: [
-        importLine,
+        ...(hasImportOnDisk ? [] : [importLine]),
         `${fragment.blockName}  <- added to the "layout" field's blocks: [] list`,
       ],
       filePath,

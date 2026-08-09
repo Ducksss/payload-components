@@ -258,16 +258,16 @@
     <text class="provenance-line" x="48" y="590">tools/payload-components/project.ts</text>
   </g>
   <g data-journal-part="evidence" data-evidence-excerpt="const propertyLine = `  ${fragment.blockSlug}: ${fragment.importName},`
+  /* Against the original source, never the in-memory patched copy: nothing is
+     written when a fragment fails, so an import this run would have added is
+     still absent on disk. Listing one the file already has would have the user
+     paste a duplicate. */
+  const hasImportOnDisk = hasNamedImport(source, fragment.importName, fragment.importPath)
   const describeFailure = (missing: string) =&gt;
-    describeFragmentFailure({
-      edits: [importLine, `${propertyLine.trim()}  &lt;- inside the blockComponents object`],
-      filePath,
-      missing,
-    })
-  const sourceWithImport = insertLineBeforeAnchor({" data-evidence-truncated="true">
+    describeFragmentFailure({" data-evidence-truncated="true">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
   <text class="evidence-line" x="48" y="626">const propertyLine = ` ${fragment.blockSlug}:</text>
-<text class="evidence-line" x="48" y="641">${fragment.importName},` · const describeFailure = (missing: stri …</text>
+<text class="evidence-line" x="48" y="641">${fragment.importName},` · /* Against the original source, never …</text>
 </g>
   <g data-journal-part="prompt" data-prompt="Keep the map boring enough to review.">
     <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
