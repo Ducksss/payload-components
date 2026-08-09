@@ -890,7 +890,7 @@ describe('Fumadocs site shell', () => {
     expect(registry).not.toContain('sample content for docs and testing')
     expect(catalogTitle).toBe('73 Payload CMS components and typed blocks')
     expect(catalogDescription).toMatch(
-      /heroes.*features.*pricing.*integrations.*FAQs.*content.*teams.*embeds/,
+      /heroes.*features.*pricing.*integrations.*stats.*FAQs.*content.*teams.*embeds.*footers/,
     )
     expect(catalogDescription).toContain('Browse all 73')
     expect(catalogDescription).toContain('installable Payload CMS components')

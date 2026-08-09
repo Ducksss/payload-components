@@ -39,7 +39,7 @@ Rows added before this note keep their original `<item>` names and must be
 re-pointed by hand at the next full audit. Rows added after it use the new
 `<kit>/<family>/<variant>` form and resolve at:
 
-```
+```text
 https://raw.githubusercontent.com/tailark/blocks/<sha>/registry/bases/base/<kit>/blocks/<family>/<variant>.tsx
 ```
 
