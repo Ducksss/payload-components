@@ -108,6 +108,42 @@ describe('applyPayloadFragments — renderBlocks', () => {
     expect(source).toContain('  heroBasic: HeroBasicBlock,')
   })
 
+  it('breaks an empty one-line object open instead of writing above it', async () => {
+    /* Regression: `const blockComponents = {}` puts the closing brace on the
+       opening brace's line, so there is no line above it to insert into. The
+       inserted entry used to land above the declaration, producing a file that
+       does not parse — and that shape satisfies the detection anchor, so a real
+       consumer could hit it. Caught by the bare-app smoke scenario. */
+    const dir = await makeProject({
+      renderBlocks: [
+        "import React from 'react'",
+        '',
+        'const blockComponents = {}',
+        '',
+        'export const RenderBlocks = () => null',
+        '',
+      ].join('\n'),
+    })
+
+    await applyPayloadFragments(dir, [renderBlocksFragment])
+
+    const source = await readRenderBlocks(dir)
+
+    expect(source).toContain('const blockComponents = {\n  heroBasic: HeroBasicBlock,\n}')
+    expect(source).toContain("import { HeroBasicBlock } from '@/blocks/HeroBasic/Component'")
+    /* The entry must never precede the declaration. */
+    expect(source.indexOf('const blockComponents')).toBeLessThan(
+      source.indexOf('heroBasic: HeroBasicBlock'),
+    )
+
+    await expect(
+      verifyInstalledPayloadFragments({
+        cwd: dir,
+        manifest: { payloadFragments: [renderBlocksFragment] },
+      }),
+    ).resolves.toMatchObject({ isValid: true })
+  })
+
   it('is idempotent — a second apply adds nothing', async () => {
     const dir = await makeProject({ renderBlocks: CANONICAL_RENDER_BLOCKS })
 

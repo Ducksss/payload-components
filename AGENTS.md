@@ -228,7 +228,7 @@ pnpm run test:e2e
 pnpm build
 ```
 
-`pnpm test:release` runs the full local gate. `pnpm test:fresh` is the slower external Payload smoke test for pre-release or nightly confidence.
+`pnpm test:release` runs the full local gate. `pnpm test:fresh` is the slower external Payload smoke test for pre-release or nightly confidence; it runs two scenarios and `--scenario bare|website|all` selects between them. The **bare** scenario is the only thing that compiles `payload-components/source` — this repo excludes it from tsc and has no `payload` dependency — so run it after touching `source/base` or the fragment patcher. It caught three shipped bugs the moment it first ran.
 
 **Gotchas:**
 
