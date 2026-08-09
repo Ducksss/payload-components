@@ -348,6 +348,18 @@ installed component ships, so a shared family base survives while a sibling
 variant is still installed; package dependencies are always left in place.
 `list` and `diff` accept `--json`, and `update` and `remove` accept `--dry-run`.
 
+Starting from a bare `create-payload-app` project? Lay down the base an install
+needs — the Pages and Media collections, the blocks renderer, and the `cn` /
+`CMSLink` / `Media` / `linkGroup` primitives every block imports:
+
+```sh
+npx payload-components init --scaffold
+```
+
+Nothing is overwritten: files you already have are kept, and a re-run creates
+nothing. The result is the official starter's shape, so the project then detects
+as `payload-website-starter`.
+
 Check a target project without changing files:
 
 ```sh

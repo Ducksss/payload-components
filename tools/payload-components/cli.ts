@@ -28,7 +28,7 @@ Usage:
   payload-components seed <component-name> [--cwd <path>]
   payload-components mcp [--cwd <path>]
   payload-components new <component-name>
-  payload-components init [--cwd <path>]
+  payload-components init [--cwd <path>] [--scaffold]
   payload-components doctor [--cwd <path>] [--json]
   payload-components --help
 
@@ -44,6 +44,7 @@ Commands:
   mcp     Run a read-only Model Context Protocol server over stdio so coding agents can browse the registry.
   new     Scaffold a new component bundle in this repository (contributors only).
   init    Initialize shadcn in the project (creates components.json) so components can be installed.
+          With --scaffold, also lay down the starter base a bare Payload app is missing.
   doctor  Diagnose project readiness and recorded component installs without changing files.
 
 Flags:
@@ -53,6 +54,7 @@ Flags:
   --accept-breaking  Let update apply a version that changes content already stored in Payload.
   --localized  Install the block with its text fields marked localized: true for Payload localization.
   --json  Print machine-readable output from list, diff, and doctor.
+  --scaffold  With init, install the starter base (Pages, Media, RenderBlocks, CMSLink, Media, linkGroup, cn).
 
 Exit codes:
   diff exits 1 when any inspected component has drifted; update exits 1 when a
@@ -141,6 +143,7 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
   let hasCwd = false
   let json = false
   let localized = false
+  let scaffold = false
   const positional: string[] = []
 
   while (args.length > 0) {
@@ -220,6 +223,15 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
       continue
     }
 
+    if (current === '--scaffold') {
+      if (scaffold) {
+        throw new Error('--scaffold may only be specified once.')
+      }
+
+      scaffold = true
+      continue
+    }
+
     if (current === '--help' || current === '-h') {
       help = true
       continue
@@ -242,6 +254,7 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
     json,
     localized,
     positional,
+    scaffold,
   }
 }
 
@@ -306,10 +319,18 @@ export const runCli = async ({
   defaultCwd?: string
   write?: (value: string) => void
 } = {}) => {
-  const { acceptBreaking, cwd, demo, dryRun, force, help, json, localized, positional } = parseArgs(
-    argv,
-    defaultCwd,
-  )
+  const {
+    acceptBreaking,
+    cwd,
+    demo,
+    dryRun,
+    force,
+    help,
+    json,
+    localized,
+    positional,
+    scaffold,
+  } = parseArgs(argv, defaultCwd)
   const [command, ...rest] = positional
 
   if (!command || help) {
@@ -322,7 +343,7 @@ export const runCli = async ({
     'add-template': ['demo', 'dryRun'],
     diff: ['json'],
     doctor: ['json'],
-    init: [],
+    init: ['scaffold'],
     list: ['json'],
     remove: ['dryRun'],
     mcp: [],
@@ -336,7 +357,7 @@ export const runCli = async ({
     assertFlagsAllowed({
       allowed: allowedFlags[command],
       command,
-      flags: { acceptBreaking, demo, dryRun, force, json, localized },
+      flags: { acceptBreaking, demo, dryRun, force, json, localized, scaffold },
     })
   }
 
@@ -508,7 +529,7 @@ export const runCli = async ({
       throw new Error('payload-components init does not accept positional arguments.')
     }
 
-    await commandHandlers.initCommand({ cwd })
+    await commandHandlers.initCommand({ cwd, scaffold })
     return
   }
 

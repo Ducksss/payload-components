@@ -127,11 +127,19 @@ export const compareInstalledFiles = async ({
 export const copySharedSourceFile = async ({
   cwd,
   projectPath,
+  sourceSubdirectory,
 }: {
   cwd: string
   projectPath: string
+  /* Subdirectory of payload-components/source to copy from. Block helpers live
+   * at the root; the starter base bundle lives under `base/`. */
+  sourceSubdirectory?: string
 }) => {
-  const sourcePath = path.resolve(sourceRoot, projectPath.replace(/^src\//, ''))
+  const sourcePath = path.resolve(
+    sourceRoot,
+    sourceSubdirectory ?? '',
+    projectPath.replace(/^src\//, ''),
+  )
 
   if (!isPathInside(sourceRoot, sourcePath)) {
     throw new Error(`Refusing to copy "${projectPath}" from outside payload-components/source.`)
