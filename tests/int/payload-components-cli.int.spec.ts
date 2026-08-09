@@ -16,6 +16,7 @@ type CliModule = {
     json: boolean
     localized: boolean
     positional: string[]
+    scaffold: boolean
   }
   runCli?: (options: {
     argv: string[]
@@ -89,6 +90,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       json: false,
       localized: false,
       positional: ['add', 'hero-basic'],
+      scaffold: false,
     })
   })
 
@@ -108,6 +110,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       json: false,
       localized: false,
       positional: ['update', 'hero-basic', 'faq-card'],
+      scaffold: false,
     })
 
     expect(cli.parseArgs?.(['list', '--json'], '/tmp/workspace')).toEqual({
@@ -120,6 +123,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       json: true,
       localized: false,
       positional: ['list'],
+      scaffold: false,
     })
   })
 

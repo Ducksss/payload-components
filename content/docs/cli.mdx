@@ -324,11 +324,44 @@ Installs are gated on a recognised project shape. Two are supported, matched in 
 A target declares candidate paths per file plus the anchors the patcher needs, so a file at
 the right path with the wrong shape is not a match. `doctor` prints which files it resolved.
 
+### Starting from a bare Payload app
+
+A project scaffolded by `create-payload-app` has none of the pieces an install needs: no
+blocks renderer, no Pages collection with a `layout` field, and none of the primitives
+installed blocks import. `init --scaffold` lays that base down:
+
+```bash
+npx payload-components init --scaffold
+```
+
+It copies eight files and registers two collections in your Payload config:
+
+| File | Why it is needed |
+| --- | --- |
+| `src/utilities/ui.ts` | `cn()` — imported by 69 of the shipped source files |
+| `src/fields/link.ts`, `src/fields/linkGroup.ts` | the link field blocks compose for their calls to action |
+| `src/components/Link/index.tsx` | `CMSLink`, which renders a stored link |
+| `src/components/Media/index.tsx` | `Media`, which renders an upload |
+| `src/collections/Media.ts` | the `media` collection those uploads live in |
+| `src/collections/Pages/index.ts` | the `layout` blocks field installs register into |
+| `src/blocks/RenderBlocks.tsx` | the renderer map installs wire into |
+
+The result is the official starter's shape, which is why a scaffolded project then detects
+as `payload-website-starter` rather than as a target of its own.
+
 <Callout type="info">
-  A bare `create-payload-app` project is not supported yet. Installed block components
-  import starter primitives — `@/components/Media`, `@/components/Link`,
-  `@/fields/linkGroup`, `@/utilities/ui` — that a blank app does not have, so claiming
-  support would produce installs that do not compile.
+  Nothing is overwritten. A project that already has its own `cn`, `Media`, or Pages
+  collection keeps it, and re-running the command creates nothing. If your Payload config
+  has no readable `collections: [` array, the command prints the two lines to add rather
+  than rewriting a `buildConfig` call it could not parse.
+</Callout>
+
+<Callout type="warn">
+  These files are a starting point, not a framework. They are yours after install — the CLI
+  does not track or update them, and they are intentionally thinner than the official
+  Payload website starter's versions (no Button dependency in `CMSLink`, no image-size
+  variants in `Media`). If you are starting a content site from scratch, the website starter
+  itself is still the better base.
 </Callout>
 
 ## Exit codes
