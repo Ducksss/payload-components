@@ -70,7 +70,25 @@ Local API.
 ## Verification
 
 Run the focused checks that match your change, then run the broader suite before
-opening a pull request when practical:
+opening a pull request when practical.
+
+### Focused checks
+
+Start with the row that matches what you touched. These are the smallest checks
+that still cover the change:
+
+| Change type                                            | Run                                                        |
+| ------------------------------------------------------ | ---------------------------------------------------------- |
+| Docs or content only (`content/docs`, `*.md`)          | `pnpm source:build`, `pnpm run test:int`                   |
+| Site UI (`src/app`, `src/components`, `src/lib`)       | `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm run test:e2e` |
+| Registry or component metadata (`payload-components/`) | `pnpm test:registry`, `pnpm run test:int`                  |
+| CLI or tooling (`tools/payload-components`, `bin/`)    | `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm test:install` |
+
+Two rules apply to every row. CI runs `pnpm format:check`, so run `pnpm format`
+before pushing whatever you changed. And any change that alters what a page
+renders also needs new visual baselines — see [Visual baselines](#visual-baselines).
+
+### Full suite
 
 ```sh
 pnpm lint
