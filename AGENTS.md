@@ -228,7 +228,9 @@ pnpm run test:e2e
 pnpm build
 ```
 
-`pnpm test:release` runs the full local gate. `pnpm test:fresh` is the slower external Payload smoke test for pre-release or nightly confidence; it runs two scenarios and `--scenario bare|website|all` selects between them. The **bare** scenario is the only thing that compiles `payload-components/source` — this repo excludes it from tsc and has no `payload` dependency — so run it after touching `source/base` or the fragment patcher. It caught three shipped bugs the moment it first ran.
+`pnpm test:release` runs the full local gate. `pnpm test:fresh` is the slower external Payload smoke test for pre-release or nightly confidence; it runs two scenarios and `--scenario bare|website|all` selects between them. The **bare** scenario compiles the starter base inside a real Payload app — this repo excludes `payload-components/source` from tsc and has no `payload` dependency — so run it after touching `source/base` or the fragment patcher. It caught three shipped bugs the moment it first ran.
+
+**Shipped target code must be compile-checked, not just reviewed.** v1.3.0 shipped a starter base that could not compile: `source/` is excluded from tsc, so no gate ever looked at the bytes being installed. `tests/int/payload-components-source-compiles.int.spec.ts` closes the fast half of that — it walks `source/base` (enumerated, so new files are covered on sight), parses every file, applies real manifest fragments to the shipped `RenderBlocks.tsx` and `Pages/index.ts` and re-parses the result, and typechecks the renderer with a populated block map. It runs in the normal gate and reproduces two of those three bugs in milliseconds. When you add target code that a real project would compile, extend it rather than relying on review or on the network-and-database smoke alone.
 
 **Gotchas:**
 
