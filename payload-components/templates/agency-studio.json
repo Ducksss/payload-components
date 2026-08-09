@@ -1,0 +1,105 @@
+{
+  "category": "agency",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "contact-routing-form",
+    "content-columns",
+    "content-community",
+    "content-feature-split",
+    "content-image-frame",
+    "content-image-lead",
+    "content-quote",
+    "content-rows",
+    "content-showcase",
+    "content-stats",
+    "faq-accordion",
+    "faq-split",
+    "feature-cards-media",
+    "feature-icon-grid",
+    "feature-split",
+    "feature-steps",
+    "hero-basic",
+    "hero-kinetic",
+    "hero-video",
+    "logo-cloud-inline-wrap",
+    "stats-proof",
+    "team-roster",
+    "testimonials-quote",
+    "testimonials-wall"
+  ],
+  "description": "Northline is a fictional twenty-three-person brand and digital-product studio in Amsterdam and New York. The concept spans Home, Services, Work, About, and Contact — an editorial, warm, portfolio-led site composed entirely from blocks in the open registry, opening on a kinetic title-sequence cover and art-directed with paper surfaces, ink serif headlines, hairline rules, and a single rust accent.",
+  "pages": [
+    {
+      "components": [
+        "hero-kinetic",
+        "content-showcase",
+        "logo-cloud-inline-wrap",
+        "feature-split",
+        "stats-proof",
+        "testimonials-quote",
+        "team-roster",
+        "call-to-action-centered"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Northline — A brand and digital product studio"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-columns",
+        "feature-icon-grid",
+        "feature-steps",
+        "feature-cards-media",
+        "faq-accordion",
+        "call-to-action-boxed"
+      ],
+      "label": "Services",
+      "path": "services",
+      "title": "Northline — Services"
+    },
+    {
+      "components": [
+        "hero-video",
+        "content-image-frame",
+        "content-rows",
+        "content-feature-split",
+        "testimonials-wall",
+        "call-to-action-centered"
+      ],
+      "label": "Work",
+      "path": "work",
+      "title": "Northline — Work"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-image-lead",
+        "content-quote",
+        "content-stats",
+        "team-roster",
+        "content-community",
+        "call-to-action-boxed"
+      ],
+      "label": "About",
+      "path": "about",
+      "title": "Northline — About"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "contact-routing-form",
+        "faq-split"
+      ],
+      "label": "Contact",
+      "path": "contact",
+      "title": "Northline — Contact"
+    }
+  ],
+  "revision": 5,
+  "slug": "agency-studio",
+  "summary": "An editorial studio site concept — warm paper, ink serif headlines, one rust accent — for a fictional brand and digital-product practice.",
+  "title": "Agency Studio",
+  "version": 1
+}

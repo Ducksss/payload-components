@@ -1,3 +1,4 @@
+import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 
 import Ajv2020 from 'ajv/dist/2020.js'
@@ -6,7 +7,7 @@ import semver from 'semver'
 
 import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from './constants'
 import { validateDependencyMap } from './dependencies'
-import type { ComponentManifest } from './types'
+import type { ChangelogEntry, ComponentManifest } from './types'
 
 import { isPathInside, readJsonFile, repoRoot } from './utils'
 
@@ -112,6 +113,76 @@ const ensureRecoveryMatchesFragments = (manifest: ComponentManifest) => {
   }
 }
 
+/* The changelog is what makes `update` trustworthy, so its shape is enforced
+   rather than assumed: every entry a real semver, newest first, the manifest's
+   own version present, and a breaking entry carrying the migration it demands. */
+const validateChangelog = (manifest: ComponentManifest) => {
+  const changelog = manifest.changelog
+
+  if (!changelog) {
+    return
+  }
+
+  for (const entry of changelog) {
+    if (!semver.valid(entry.version)) {
+      throw new Error(
+        `Manifest "${manifest.name}" has a changelog entry with invalid version "${entry.version}".`,
+      )
+    }
+
+    if (entry.breaking && !entry.dataMigration) {
+      throw new Error(
+        `Manifest "${manifest.name}" marks ${entry.version} breaking but gives no dataMigration, so "payload-components update" could not tell an operator what to do.`,
+      )
+    }
+  }
+
+  for (let index = 1; index < changelog.length; index += 1) {
+    if (!semver.lt(changelog[index].version, changelog[index - 1].version)) {
+      throw new Error(
+        `Manifest "${manifest.name}" changelog must be ordered newest first; ${changelog[index].version} does not precede ${changelog[index - 1].version}.`,
+      )
+    }
+  }
+
+  if (!changelog.some((entry) => entry.version === manifest.version)) {
+    throw new Error(
+      `Manifest "${manifest.name}" declares version ${manifest.version} with no matching changelog entry.`,
+    )
+  }
+}
+
+/* Entries strictly newer than what a project recorded — exactly what an upgrade
+   is about to apply. */
+export const selectPendingChangelog = ({
+  changelog,
+  recordedVersion,
+}: {
+  changelog: ChangelogEntry[] | undefined
+  recordedVersion: string
+}): ChangelogEntry[] => {
+  if (!changelog || !semver.valid(recordedVersion)) {
+    return []
+  }
+
+  return changelog.filter((entry) => semver.gt(entry.version, recordedVersion))
+}
+
+export const listComponentNames = async () => {
+  const files = await readdir(manifestDir)
+
+  return files
+    .filter((file) => file.endsWith('.json'))
+    .map((file) => file.replace(/\.json$/, ''))
+    .sort()
+}
+
+export const loadAllManifests = async () => {
+  const componentNames = await listComponentNames()
+
+  return await Promise.all(componentNames.map((componentName) => loadManifest(componentName)))
+}
+
 export const loadManifest = async (componentName: string): Promise<ComponentManifest> => {
   await ensureKnownComponentName(componentName)
 
@@ -150,6 +221,7 @@ export const loadManifest = async (componentName: string): Promise<ComponentMani
 
   await ensureRegistryItemExists(manifest)
   ensureRecoveryMatchesFragments(manifest)
+  validateChangelog(manifest)
 
   return manifest
 }

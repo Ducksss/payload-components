@@ -157,4 +157,4 @@ export type TemplateShowcase = {
 export const TEMPLATE_CONCEPT_STATUS_LABEL = 'Concept preview'
 
 export const TEMPLATE_CONCEPT_DISCLOSURE =
-  'This is a browsable full-site concept, not an installable template yet. Every section is composed from blocks in the open registry.'
+  'This is a browsable full-site concept. Every section is composed from blocks in the open registry, and one command installs the whole block set — the curated copy shown here is not seeded, so you assemble the pages yourself in the admin.'

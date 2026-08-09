@@ -299,14 +299,98 @@ drift from the registry.
 
 <!-- COMPONENT-INVENTORY:END -->
 
+Install several blocks in one command — `add` takes any number of names, and the
+catalog's composer builds the command for you as you tick components:
+
+```sh
+npx payload-components add hero-basic faq-card pricing-cards
+```
+
+Install every block a full-site template concept composes, then assemble its
+pages in the admin:
+
+```sh
+npx payload-components templates
+npx payload-components add-template saas-launch
+```
+
+`add-template` installs and wires the whole block set and prints which blocks
+each page uses. Add `--demo` to also write one seed script per page, each
+creating a draft Page from the blocks that page composes. Seeded content is each
+block's own sample content, not the curated copy shown on the site.
+
+Mark a block's text fields as localized for Payload localization:
+
+```sh
+npx payload-components add hero-basic --localized
+```
+
+This also installs `src/blocks/shared/localizeFields.ts` and wraps the block
+config's field list in it, so the shared family base is covered too. Enable
+`localization` in your Payload config for it to take effect, and migrate existing
+data before adopting it on a populated collection.
+
+#### Maintain an install
+
+Recorded installs have a full lifecycle, not just a first run:
+
+```sh
+npx payload-components list              # catalog vs what this project recorded
+npx payload-components diff              # version, file, and wiring drift
+npx payload-components update            # re-install anything behind this CLI
+npx payload-components remove hero-basic # delete owned files and unwire the block
+```
+
+`diff` exits non-zero when anything has drifted, so CI can gate on it. `update`
+never overwrites a file you have edited — it skips that component and exits
+non-zero until you pass `--force`. `remove` deletes only the files no other
+installed component ships, so a shared family base survives while a sibling
+variant is still installed; package dependencies are always left in place.
+`list` and `diff` accept `--json`, and `update` and `remove` accept `--dry-run`.
+
+Starting from a bare `create-payload-app` project? Lay down the base an install
+needs — the Pages and Media collections, the blocks renderer, and the `cn` /
+`CMSLink` / `Media` / `linkGroup` primitives every block imports:
+
+```sh
+npx payload-components init --scaffold
+```
+
+Nothing is overwritten: files you already have are kept, and a re-run creates
+nothing. The result is the official starter's shape, so the project then detects
+as `payload-website-starter`.
+
 Check a target project without changing files:
 
 ```sh
 npx payload-components doctor
 ```
 
-`doctor` validates the supported project shape, required post-install scripts,
-and any recorded `.payload-components/state.json` installs.
+`doctor` validates the supported project shape, resolves which files carry the
+wiring, and checks required post-install scripts and any recorded
+`.payload-components/state.json` installs.
+
+#### Use it from a coding agent
+
+`payload-components mcp` runs a Model Context Protocol server over stdio so an
+agent can browse the registry, read a component's install contract, and preview
+what an install would change:
+
+```jsonc
+// .mcp.json / your client's MCP config
+{
+  "mcpServers": {
+    "payload-components": {
+      "command": "npx",
+      "args": ["-y", "payload-components", "mcp"],
+    },
+  },
+}
+```
+
+Every tool is read-only by design. The server answers _which block and what will
+it change_; installing stays an explicit `payload-components add` run in your
+shell, where the diff is visible and approvable.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

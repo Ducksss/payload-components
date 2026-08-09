@@ -18,6 +18,12 @@ export async function ComponentRequirements({ slug }: { slug: string }) {
     getSupportTarget(manifest.supportedTargets[0] ?? ''),
   ])
 
+  /* A target may accept a file at more than one path (src/ vs repo root); show
+   * every accepted path rather than only the first. */
+  const requiredFiles = (target?.requiredFiles ?? []).map((requirement) =>
+    Array.isArray(requirement) ? requirement.join(' or ') : requirement,
+  )
+
   const rows: { label: string; value: ReactNode }[] = [
     { label: 'Target', value: manifest.supportedTargets.join(', ') },
     { label: 'Payload', value: `v${manifest.supports.payloadMajors.join(' / v')}` },
@@ -38,10 +44,10 @@ export async function ComponentRequirements({ slug }: { slug: string }) {
         ))}
       </dl>
 
-      {target?.requiredFiles.length ? (
+      {requiredFiles.length ? (
         <p className="text-sm leading-6 text-muted-foreground">
           Your project must already expose{' '}
-          {target.requiredFiles.map((file, index) => (
+          {requiredFiles.map((file, index) => (
             <span key={file}>
               {index > 0 ? ', ' : ''}
               <code className="font-mono text-[13px] text-foreground/90">{file}</code>

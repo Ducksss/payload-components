@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "integration-testimonial",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Integration Testimonial",
   "description": "A two-column section pairing a customer quote with a grid of integration logo cards, installed as a wired Payload block.",
   "registryItemName": "integration-testimonial",
@@ -10,7 +11,7 @@
     "next": "^15.0.0 || ^16.0.0",
     "payload": "^3.0.0"
   },
-  "supportedTargets": ["payload-website-starter"],
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
   "supports": {
     "payloadMajors": [3],
     "nextMajors": [15, 16]

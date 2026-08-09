@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "hero-kinetic",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Hero Kinetic",
   "description": "A motion-first editorial hero with a line-masked type reveal, cinematic media plate, and a velocity-aware marquee strip.",
   "registryItemName": "hero-kinetic",
@@ -12,7 +13,7 @@
     "next": "^15.0.0 || ^16.0.0",
     "payload": "^3.0.0"
   },
-  "supportedTargets": ["payload-website-starter"],
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
   "supports": {
     "payloadMajors": [3],
     "nextMajors": [15, 16]

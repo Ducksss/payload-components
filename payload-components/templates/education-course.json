@@ -1,0 +1,102 @@
+{
+  "category": "education",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "call-to-action-signup",
+    "comparator-table",
+    "content-columns",
+    "content-quote",
+    "content-rows",
+    "content-showcase",
+    "content-stats",
+    "faq-accordion",
+    "faq-grouped",
+    "faq-split",
+    "feature-steps",
+    "hero-basic",
+    "hero-product-tilt",
+    "logo-cloud-inline-wrap",
+    "pricing-cards",
+    "pricing-cards-muted",
+    "stats-proof",
+    "team-roster",
+    "testimonials-rating",
+    "testimonials-spotlight",
+    "testimonials-wall"
+  ],
+  "description": "Northfield School is a fictional school of practical typography — ink on chalk with one highlighter accent, and an information architecture nothing else in the gallery has. A numbered module ladder carries the syllabus, content rows carry the lessons inside a module, a marked-up checklist carries the prerequisites, and the comparator matrix compares cohort schedules rather than feature tiers. Five pages, composed entirely from blocks in the open registry.",
+  "pages": [
+    {
+      "components": [
+        "hero-product-tilt",
+        "logo-cloud-inline-wrap",
+        "feature-steps",
+        "content-showcase",
+        "stats-proof",
+        "testimonials-spotlight",
+        "pricing-cards-muted",
+        "faq-split",
+        "call-to-action-boxed"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Northfield School — Typography, taught in order"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-steps",
+        "content-rows",
+        "content-columns",
+        "faq-accordion",
+        "call-to-action-centered"
+      ],
+      "label": "Curriculum",
+      "path": "curriculum",
+      "title": "Northfield School — Curriculum"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "team-roster",
+        "content-quote",
+        "testimonials-wall",
+        "call-to-action-boxed"
+      ],
+      "label": "Instructors",
+      "path": "instructors",
+      "title": "Northfield School — Instructors"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-stats",
+        "stats-proof",
+        "content-showcase",
+        "testimonials-rating",
+        "call-to-action-centered"
+      ],
+      "label": "Outcomes",
+      "path": "outcomes",
+      "title": "Northfield School — Outcomes"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "pricing-cards",
+        "comparator-table",
+        "faq-grouped",
+        "call-to-action-signup"
+      ],
+      "label": "Enroll",
+      "path": "enroll",
+      "title": "Northfield School — Enroll"
+    }
+  ],
+  "revision": 2,
+  "slug": "education-course",
+  "summary": "A patient, structured site for a fictional school of practical typography, built around a numbered module ladder.",
+  "title": "Education Course",
+  "version": 1
+}

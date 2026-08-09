@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "feature-accordion",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Feature Accordion",
   "description": "A synchronized feature accordion with editor-selected icons, optional media, and CTA links.",
   "registryItemName": "feature-accordion",
@@ -12,7 +13,7 @@
     "next": "^15.0.0 || ^16.0.0",
     "payload": "^3.0.0"
   },
-  "supportedTargets": ["payload-website-starter"],
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
   "supports": {
     "payloadMajors": [3],
     "nextMajors": [15, 16]

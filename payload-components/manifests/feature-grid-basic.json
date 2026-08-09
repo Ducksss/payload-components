@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "feature-grid-basic",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Feature Grid Basic",
   "description": "A text-first Payload block for shipping a responsive feature grid with optional CTA wiring.",
   "registryItemName": "feature-grid-basic",
@@ -10,7 +11,7 @@
     "next": "^15.0.0 || ^16.0.0",
     "payload": "^3.0.0"
   },
-  "supportedTargets": ["payload-website-starter"],
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
   "supports": {
     "payloadMajors": [3],
     "nextMajors": [15, 16]

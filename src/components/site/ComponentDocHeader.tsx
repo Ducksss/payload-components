@@ -45,6 +45,7 @@ export function ComponentDocHeader({
   chips,
   description,
   githubUrl,
+  latestChange,
   markdownUrl,
   next,
   prev,
@@ -53,6 +54,9 @@ export function ComponentDocHeader({
   chips?: string[]
   description?: string
   githubUrl: string
+  /* The newest changelog entry, shown only once a component has moved past its
+     first release — otherwise the version chip is the whole story. */
+  latestChange?: { summary: string; version: string }
   markdownUrl: string
   next?: ComponentNav
   prev?: ComponentNav
@@ -76,6 +80,14 @@ export function ComponentDocHeader({
               </span>
             ))}
           </div>
+        ) : null}
+        {latestChange ? (
+          <p className="pt-1 text-sm leading-6 text-muted-foreground">
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-foreground">
+              New in {latestChange.version}
+            </span>{' '}
+            {latestChange.summary}
+          </p>
         ) : null}
       </div>
 
