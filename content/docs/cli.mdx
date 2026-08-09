@@ -35,6 +35,33 @@ idempotent, a name that is already installed is a no-op rather than an error.
 | `--demo`      | After a successful install, write the reviewable demo seed script                        |
 | `--localized` | Mark the block's text fields `localized: true` for Payload localization                  |
 
+### Install from another registry
+
+`add` also takes shadcn's namespaced form, so a block from someone else's registry installs
+through the same command:
+
+```bash
+npx payload-components add @acme/hero
+```
+
+The scope must be configured in your `components.json` (or `package.json`) first:
+
+```json
+{
+  "registries": {
+    "@acme": "https://acme.example/r/{name}.json"
+  }
+}
+```
+
+<Callout type="warn">
+  A third-party item is **files only**. It has no Payload Components manifest, so no
+  collection registration, renderer mapping, or type regeneration is applied, nothing is
+  recorded in `.payload-components/state.json`, and `list` / `diff` / `update` / `remove` do
+  not manage it. `--demo` and `--localized` are rejected for the same reason. Only `https`
+  registries are accepted.
+</Callout>
+
 ## Install a template
 
 A [template concept](/templates) is a block set plus a page plan. `add-template` installs
@@ -45,10 +72,23 @@ npx payload-components templates
 npx payload-components add-template saas-launch
 ```
 
+Add `--demo` to also write one seed script per page of the concept:
+
+```bash
+npx payload-components add-template saas-launch --demo
+```
+
+Each script creates a single **draft** Page holding that page's blocks, in the order the
+page composes them, and never publishes it. Every page owns its own private ownership
+record, so re-running one script updates only its own Page — the same adopt-or-refuse rules
+a single-component `seed` follows.
+
 <Callout type="warn">
-  `add-template` installs blocks, not content. The curated copy in the template previews is
-  not seeded — assemble the pages in your admin, or use `payload-components seed
-  <component>` for per-block demo content.
+  Seeded blocks carry each block's own sample content, **not** the curated copy you see on
+  the template preview — that copy lives in the site's demo data, not in Payload field shape.
+  Treat the result as a wired skeleton to rewrite in the admin, which is why it lands as a
+  draft. Each page also creates its own placeholder media, so an N-page template leaves N
+  placeholder uploads behind.
 </Callout>
 
 It validates your project shape before installing anything, so an unsupported repo fails
@@ -121,6 +161,10 @@ drift: a version behind this CLI, a file whose content no longer matches, and wi
 has gone missing. Comparison is content-normalized, so line endings and a trailing newline
 are never reported as edits.
 
+When a component is behind, `diff` also prints the changelog entries the upgrade would
+apply, and the migration any breaking entry demands — `0.1.0 → 0.2.0` on its own is not a
+decision anyone can make.
+
 `diff` exits non-zero when anything has drifted, which makes it usable as a CI gate on
 install drift.
 
@@ -139,8 +183,41 @@ right for a fresh install and wrong for an upgrade.
 and the command exits non-zero. Pass `--force` to overwrite it, or copy your edits out
 first. Run `diff` to see exactly which files are involved.
 
+**Content-breaking upgrades are held back.** A component whose changelog marks a pending
+version `breaking` is not installed at all — rewriting the files is the easy half, and you
+still have to migrate the documents already in your database. `update` prints the migration
+the manifest declares and exits non-zero until you pass `--accept-breaking`.
+
+```bash
+npx payload-components update --accept-breaking
+```
+
+These are two different decisions and they have two different flags: `--force` means
+"discard my local edits", `--accept-breaking` means "I have migrated my content".
+
 With no names, `update` targets every component that is behind or left in a partial state.
 `--dry-run` prints the plan.
+
+### Changelogs
+
+Each manifest carries its own release notes, newest first:
+
+```json
+"changelog": [
+  {
+    "version": "0.2.0",
+    "summary": "Renamed the headline field.",
+    "breaking": true,
+    "dataMigration": "Rename the stored `heading` field to `title` before publishing."
+  },
+  { "version": "0.1.0", "summary": "Initial release." }
+]
+```
+
+The registry validates this on every load: entries must be real semver, ordered newest
+first, include the manifest's own version, and a `breaking` entry must say what to migrate —
+otherwise `update` could refuse an upgrade without being able to tell you why. A component's
+newest entry also appears on its docs page once it has moved past its first release.
 
 ### remove
 
@@ -199,17 +276,41 @@ install would change — instead of guessing at component names.
   is visible and approvable.
 </Callout>
 
+## Contribute a component
+
+```bash
+pnpm payload-components new hero-split
+```
+
+Scaffolds a whole component bundle in a checkout of this repository: the block source,
+manifest, registry item, doc page, and demo twin, plus entries in the demos registry, the
+docs sidebar, the CLI help list, and the README inventory table.
+
+It then prints what it deliberately did **not** decide — where the component belongs in
+`componentEntries` (catalog order is ranked, not chronological), its `dbName` abbreviation
+with a uniqueness check against every existing block, the Content model prose, and the demo
+sample content. See
+[the component template README](https://github.com/Ducksss/payload-components/blob/main/payload-components/templates/component-template/README.md)
+for the full workflow.
+
 ## Set up and diagnose
 
 ```bash
 npx payload-components init
 npx payload-components doctor
+npx payload-components doctor --json
 npx payload-components seed hero-basic
 ```
 
 `init` creates the `components.json` that registry installs need. `doctor` runs a read-only
 health check — see [Installation](/docs/installation#doctor). `seed` writes the demo seed
 script for an already-installed component.
+
+`doctor --json` emits the same run as a structured report. Every finding carries a `scope`
+(`project`, `scripts`, `state`, or a component name) so a CI job can group results without
+parsing prose, and the exit code separates the two failures that need different responses:
+**2** means the project itself cannot accept installs, **1** means the project is fine but a
+recorded install has drifted.
 
 ## Supported project shapes
 
@@ -236,5 +337,5 @@ the right path with the wrong shape is not a match. `doctor` prints which files 
 | -------- | ---------------------------------------------------------- |
 | `add`    | Any stage fails; partial state is recorded for a safe retry |
 | `diff`   | Any inspected component has drifted                        |
-| `update` | A component was skipped because of local edits             |
-| `doctor` | The project or any recorded install needs attention        |
+| `update` | A component was skipped for local edits, or held back as breaking |
+| `doctor` | `1` a recorded install needs attention · `2` the project cannot accept installs |

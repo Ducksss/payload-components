@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "logo-cloud-marquee",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Logo Cloud Marquee",
   "description": "An auto-scrolling marquee of editable logos with edge fades, installed as a wired Payload block.",
   "registryItemName": "logo-cloud-marquee",

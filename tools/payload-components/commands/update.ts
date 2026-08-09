@@ -4,6 +4,8 @@ import path from 'node:path'
 import { compareInstalledFiles } from '../component-files'
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest } from '../manifest'
+
+import type { ChangelogEntry } from '../types'
 import { isPathInside, printHeader } from '../utils'
 
 import { addCommand } from './add'
@@ -13,16 +15,19 @@ type UpdatePlan = {
   componentName: string
   files: string[]
   localized: boolean
+  pendingChangelog: ChangelogEntry[]
   recordedVersion: string
   registryVersion: string
 }
 
 const formatPlan = ({
+  breaking,
   cwd,
   dryRun,
   plans,
   skipped,
 }: {
+  breaking: UpdatePlan[]
   cwd: string
   dryRun: boolean
   plans: UpdatePlan[]
@@ -39,6 +44,9 @@ const formatPlan = ({
     lines.push(
       '',
       `${plan.componentName}: ${plan.recordedVersion} → ${plan.registryVersion}`,
+      ...plan.pendingChangelog.map(
+        (entry) => `  ${entry.version}: ${entry.summary}`,
+      ),
       ...plan.files.map((filePath) => `  ${filePath} (${verb}overwrite)`),
     )
 
@@ -61,6 +69,27 @@ const formatPlan = ({
     )
   }
 
+  for (const plan of breaking) {
+    const entries = plan.pendingChangelog.filter((entry) => entry.breaking)
+
+    lines.push(
+      '',
+      `${plan.componentName}: held back — ${plan.recordedVersion} → ${plan.registryVersion} changes stored content`,
+    )
+
+    for (const entry of entries) {
+      lines.push(`  ${entry.version}: ${entry.summary}`)
+
+      if (entry.dataMigration) {
+        lines.push(`    migrate first: ${entry.dataMigration}`)
+      }
+    }
+
+    lines.push(
+      `  Migrate your existing documents, then re-run with --accept-breaking.`,
+    )
+  }
+
   if (dryRun) {
     lines.push('', 'No files were changed and no commands ran.')
   }
@@ -74,11 +103,13 @@ const formatPlan = ({
  * upgrade. Local edits are protected — a modified file blocks the component
  * until the caller passes --force. */
 export const updateCommand = async ({
+  acceptBreaking = false,
   componentNames = [],
   cwd,
   dryRun = false,
   force = false,
 }: {
+  acceptBreaking?: boolean
   componentNames?: string[]
   cwd: string
   dryRun?: boolean
@@ -112,6 +143,7 @@ export const updateCommand = async ({
 
   const plans: UpdatePlan[] = []
   const skipped: UpdatePlan[] = []
+  const breaking: UpdatePlan[] = []
 
   for (const entry of targets) {
     const manifest = await loadManifest(entry.name)
@@ -124,8 +156,18 @@ export const updateCommand = async ({
       /* A localized install stays localized: re-running plain `add` would
          rewrite the config without the wrapper and silently drop it. */
       localized,
+      pendingChangelog: entry.pendingChangelog,
       recordedVersion: entry.installed?.manifestVersion ?? 'unknown',
       registryVersion: manifest.version,
+    }
+
+    /* A breaking entry means the upgrade invalidates content already stored in
+       Payload. Rewriting the files is the easy half; the operator still has to
+       migrate documents, so this needs its own explicit consent — --force means
+       "discard my local edits", which is a different decision entirely. */
+    if (entry.breakingUpdate && !acceptBreaking) {
+      breaking.push(plan)
+      continue
     }
 
     if (fileReport.modified.length > 0 && !force) {
@@ -136,7 +178,7 @@ export const updateCommand = async ({
     plans.push(plan)
   }
 
-  printHeader(formatPlan({ cwd, dryRun, plans, skipped }))
+  printHeader(formatPlan({ breaking, cwd, dryRun, plans, skipped }))
 
   if (dryRun) {
     return
@@ -156,7 +198,7 @@ export const updateCommand = async ({
     await addCommand({ componentName: plan.componentName, cwd, localized: plan.localized })
   }
 
-  if (skipped.length > 0) {
+  if (skipped.length > 0 || breaking.length > 0) {
     process.exitCode = 1
   }
 }

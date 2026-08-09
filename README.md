@@ -315,8 +315,9 @@ npx payload-components add-template saas-launch
 ```
 
 `add-template` installs and wires the whole block set and prints which blocks
-each page uses. It does not seed the curated copy shown on the site — use
-`payload-components seed <component>` for per-block demo content.
+each page uses. Add `--demo` to also write one seed script per page, each
+creating a draft Page from the blocks that page composes. Seeded content is each
+block's own sample content, not the curated copy shown on the site.
 
 Mark a block's text fields as localized for Payload localization:
 

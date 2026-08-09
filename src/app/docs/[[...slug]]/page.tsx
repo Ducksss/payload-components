@@ -14,6 +14,7 @@ import { createRelativeLink } from 'fumadocs-ui/mdx'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getMDXComponents } from '@/components/mdx'
 import { ComponentDocHeader } from '@/components/site/ComponentDocHeader'
+import { getComponentManifest } from '@/lib/component-manifest'
 import { familyOfSlug } from '@/lib/component-page-tree'
 import {
   componentEntries,
@@ -115,6 +116,15 @@ export default async function Page({ params }: DocsPageProps) {
   const next =
     index >= 0 && index < componentEntries.length - 1 ? componentEntries[index + 1] : undefined
 
+  /* The newest changelog entry, so the version chip carries meaning instead of
+     just a number. Suppressed while a component is still on its first release. */
+  const manifest = component ? await getComponentManifest(component.slug) : null
+  const [newestChange] = manifest?.changelog ?? []
+  const latestChange =
+    newestChange && (manifest?.changelog?.length ?? 0) > 1
+      ? { summary: newestChange.summary, version: newestChange.version }
+      : undefined
+
   /* At-a-glance chips under the component title. */
   const chips = component
     ? [
@@ -146,6 +156,7 @@ export default async function Page({ params }: DocsPageProps) {
           chips={chips}
           markdownUrl={markdownUrl}
           githubUrl={githubUrl}
+          latestChange={latestChange}
           prev={prev ? { href: prev.href, title: prev.title } : undefined}
           next={next ? { href: next.href, title: next.title } : undefined}
         />

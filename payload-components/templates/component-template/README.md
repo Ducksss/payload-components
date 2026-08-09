@@ -89,6 +89,12 @@ Full spec: `AGENTS.md` → "Component doc page format".
 
 ## Add-a-component workflow
 
+> **Start with the generator.** `pnpm payload-components new <slug>` writes every mechanical
+> file and list below — source, manifest, registry item, doc page, demo twin, the demos
+> registry, the docs sidebar, the CLI help list, and the README inventory table — and then
+> prints exactly the decisions it will not make for you. The steps below are what it
+> generates and what it leaves to you.
+
 Every component ships as one bundle — source, manifest, registry entry, demo twin, catalog/ledger sync,
 doc page, and installer tests, together. Work in this order:
 
@@ -110,19 +116,24 @@ doc page, and installer tests, together. Work in this order:
    `className="…"` literals verbatim (aria-hidden root, no `<a>`/`<button>`/`<h1-6>`; `<h2>`→`<div>`,
    `CMSLink`→`<DemoLink>`, payload types → demo-content types). Add sample content to
    `src/lib/demo-content.ts` and register the slug in `src/components/site/demos/registry.ts`.
-5. **Catalog & ledgers** — add the component to `componentEntries` (`src/lib/site.ts`); update the installable
-   counts (`componentsIntro`, `componentFamilies.pages.countLabel`, `src/app/about/page.tsx`) and the component lists
-   in `src/app/not-found.tsx` and `tools/payload-components/cli.ts`. Fresh smoke discovers every
-   `registry:block` with a matching manifest and renderable `sampleContent.blockType` automatically, so there
-   is no hand-maintained smoke list. Sync
-   the hero ledgers (`terminalDemoLines`/`frameInstalledFiles`/`wiringLedger`) only if a hero component's
-   file set changed.
+5. **Catalog & ledgers** — **insert** the component into `componentEntries` (`src/lib/site.ts`) where it
+   ranks against its family; the order is curated and also drives the docs prev/next arrows and the
+   landing hero, so never append. `componentsIntro`, `componentFamilies.pages.countLabel`,
+   `src/app/about/page.tsx`, and `src/app/not-found.tsx` are all derived now — do not hand-edit them.
+   The `Current components:` list in `tools/payload-components/cli.ts` and the
+   `<!-- COMPONENT-INVENTORY -->` table in `README.md` are still hand-maintained and must follow
+   registry order (both are asserted by `tests/int/inventory-sync.int.spec.ts`). Fresh smoke discovers
+   every `registry:block` with a matching manifest and renderable `sampleContent.blockType`
+   automatically, so there is no hand-maintained smoke list. Sync the hero ledgers
+   (`terminalDemoLines`/`frameInstalledFiles`/`wiringLedger`) only if a hero component's file set changed.
 6. **Doc page** — copy `doc-page.mdx` to `content/docs/components/<slug>.mdx` (see "Doc page" above); add
    the slug to `content/docs/components/meta.json`; optionally add a Card to `content/docs/index.mdx`.
    Sidebar grouping is automatic (`src/lib/component-page-tree.tsx`).
-7. **Tests** — add the `(component, twin)` pair to `tests/int/demo-twins.int.spec.ts`; add the name +
-   `registryDependencies` to `tests/int/public-registry.int.spec.ts`; add an install+state spec to
-   `tests/int/payload-components.int.spec.ts`.
+7. **Tests** — the demo-twin and public-registry specs are data-driven off the manifests directory, so
+   they pick a new component up automatically; only `representativeInstallComponents` in
+   `tests/int/payload-components.int.spec.ts` needs a manual entry, and only for a new family. Bump the
+   literal component count pinned in `tests/int/fumadocs-site.int.spec.ts` and
+   `tests/e2e/frontend.e2e.spec.ts`.
 8. **Verify** — `pnpm registry:build`, then the gate: `pnpm lint && pnpm source:build && pnpm exec
    tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm build:e2e && cross-env
    PLAYWRIGHT_SERVER_MODE=production pnpm run test:e2e`

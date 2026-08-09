@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "logo-cloud-inline",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Logo Cloud Inline",
   "description": "A compact label-over-logos strip for editable trust logos, installed as a wired Payload block.",
   "registryItemName": "logo-cloud-inline",

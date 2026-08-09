@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "call-to-action-signup",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Call To Action Signup",
   "description": "An email-capture call-to-action Payload block: heading, copy, and a form that posts to a same-origin endpoint.",
   "registryItemName": "call-to-action-signup",

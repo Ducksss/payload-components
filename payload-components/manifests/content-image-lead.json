@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "content-image-lead",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Content Image Lead",
   "description": "A content section led by a full-width image above a two-column heading, body, and CTA, installed as a wired Payload block.",
   "registryItemName": "content-image-lead",

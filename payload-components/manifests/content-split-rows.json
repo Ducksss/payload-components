@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "content-split-rows",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Content Split Rows",
   "description": "A content section with an intro and alternating media-and-text rows, installed as a wired Payload block.",
   "registryItemName": "content-split-rows",

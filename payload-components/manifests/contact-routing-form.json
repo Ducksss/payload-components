@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "contact-routing-form",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Contact Routing Form",
   "description": "A contact section with validated channels and a fixed accessible form that posts to a same-origin endpoint.",
   "registryItemName": "contact-routing-form",

@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "logo-cloud-hover",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Logo Cloud Hover",
   "description": "A logo wall that dims and blurs on hover to reveal a single call-to-action, installed as a wired Payload block.",
   "registryItemName": "logo-cloud-hover",

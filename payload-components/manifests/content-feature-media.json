@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "content-feature-media",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Content Feature Media",
   "description": "A content section pairing body copy and two icon features beside a framed media panel, installed as a wired Payload block.",
   "registryItemName": "content-feature-media",

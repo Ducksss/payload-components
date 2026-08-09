@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "pricing-cards-muted",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Pricing Cards Muted",
   "description": "The three-up pricing table on soft muted card surfaces with a highlighted featured plan, installed as a wired Payload block.",
   "registryItemName": "pricing-cards-muted",

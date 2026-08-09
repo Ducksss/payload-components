@@ -7,6 +7,7 @@ type CliModule = {
     argv: string[],
     defaultCwd?: string,
   ) => {
+    acceptBreaking: boolean
     cwd: string
     demo: boolean
     dryRun: boolean
@@ -22,10 +23,11 @@ type CliModule = {
       addCommand: (options: unknown) => Promise<void>
       addTemplateCommand: (options: unknown) => Promise<void>
       diffCommand: (options: unknown) => Promise<boolean>
-      doctorCommand: (options: unknown) => Promise<boolean>
+      doctorCommand: (options: unknown) => Promise<0 | 1 | 2>
       initCommand: (options: unknown) => Promise<void>
       listCommand: (options: unknown) => Promise<void>
       mcpCommand: (options: unknown) => Promise<void>
+      newCommand: (options: unknown) => Promise<void>
       removeCommand: (options: unknown) => Promise<void>
       seedCommand: (options: unknown) => Promise<void>
       templatesCommand: (options: unknown) => Promise<void>
@@ -40,10 +42,11 @@ const makeCommands = () => ({
   addCommand: vi.fn().mockResolvedValue(undefined),
   addTemplateCommand: vi.fn().mockResolvedValue(undefined),
   diffCommand: vi.fn().mockResolvedValue(true),
-  doctorCommand: vi.fn().mockResolvedValue(true),
+  doctorCommand: vi.fn().mockResolvedValue(0),
   initCommand: vi.fn().mockResolvedValue(undefined),
   listCommand: vi.fn().mockResolvedValue(undefined),
   mcpCommand: vi.fn().mockResolvedValue(undefined),
+  newCommand: vi.fn().mockResolvedValue(undefined),
   removeCommand: vi.fn().mockResolvedValue(undefined),
   seedCommand: vi.fn().mockResolvedValue(undefined),
   templatesCommand: vi.fn().mockResolvedValue(undefined),
@@ -77,6 +80,7 @@ describe('payload-components CLI parsing and orchestration', () => {
     expect(
       cli.parseArgs?.(['add', 'hero-basic', '--demo', '--cwd', './consumer'], '/tmp/workspace'),
     ).toEqual({
+      acceptBreaking: false,
       cwd: path.join('/tmp/workspace', 'consumer'),
       demo: true,
       dryRun: false,
@@ -95,6 +99,7 @@ describe('payload-components CLI parsing and orchestration', () => {
         '/tmp/workspace',
       ),
     ).toEqual({
+      acceptBreaking: false,
       cwd: '/tmp/workspace',
       demo: false,
       dryRun: true,
@@ -106,6 +111,7 @@ describe('payload-components CLI parsing and orchestration', () => {
     })
 
     expect(cli.parseArgs?.(['list', '--json'], '/tmp/workspace')).toEqual({
+      acceptBreaking: false,
       cwd: '/tmp/workspace',
       demo: false,
       dryRun: false,
@@ -261,6 +267,7 @@ describe('payload-components CLI parsing and orchestration', () => {
     })
 
     expect(commands.updateCommand).toHaveBeenCalledWith({
+      acceptBreaking: false,
       componentNames: [],
       cwd: '/tmp/workspace',
       dryRun: false,
@@ -287,6 +294,41 @@ describe('payload-components CLI parsing and orchestration', () => {
     })
   })
 
+  it('maps doctor exit codes and passes --json through', async () => {
+    const commands = makeCommands()
+
+    await cli.runCli?.({
+      argv: ['doctor', '--json'],
+      commands,
+      defaultCwd: '/tmp/workspace',
+      write: vi.fn(),
+    })
+
+    expect(commands.doctorCommand).toHaveBeenCalledWith({ cwd: '/tmp/workspace', json: true })
+    expect(process.exitCode).toBeUndefined()
+
+    /* 1 = a recorded install drifted; 2 = the project itself cannot accept
+       installs. CI needs to tell those apart. */
+    commands.doctorCommand.mockResolvedValueOnce(1)
+    await cli.runCli?.({
+      argv: ['doctor'],
+      commands,
+      defaultCwd: '/tmp/workspace',
+      write: vi.fn(),
+    })
+    expect(process.exitCode).toBe(1)
+
+    process.exitCode = undefined
+    commands.doctorCommand.mockResolvedValueOnce(2)
+    await cli.runCli?.({
+      argv: ['doctor'],
+      commands,
+      defaultCwd: '/tmp/workspace',
+      write: vi.fn(),
+    })
+    expect(process.exitCode).toBe(2)
+  })
+
   it('dispatches the template commands', async () => {
     const commands = makeCommands()
 
@@ -308,6 +350,7 @@ describe('payload-components CLI parsing and orchestration', () => {
 
     expect(commands.addTemplateCommand).toHaveBeenCalledWith({
       cwd: '/tmp/workspace',
+      demo: false,
       dryRun: true,
       templateSlug: 'saas-launch',
     })
@@ -429,6 +472,15 @@ describe('payload-components CLI parsing and orchestration', () => {
 
     await expect(
       cli.runCli?.({
+        argv: ['add', 'hero-basic', '--accept-breaking'],
+        commands,
+        defaultCwd: '/tmp/workspace',
+        write: vi.fn(),
+      }),
+    ).rejects.toThrow('--accept-breaking cannot be used with "payload-components add"')
+
+    await expect(
+      cli.runCli?.({
         argv: ['remove', 'hero-basic', '--json'],
         commands,
         defaultCwd: '/tmp/workspace',
@@ -451,6 +503,9 @@ describe('payload-components CLI parsing and orchestration', () => {
     )
     expect(() => cli.parseArgs?.(['update', '--force', '--force'])).toThrow(
       '--force may only be specified once.',
+    )
+    expect(() => cli.parseArgs?.(['update', '--accept-breaking', '--accept-breaking'])).toThrow(
+      '--accept-breaking may only be specified once.',
     )
     expect(() => cli.parseArgs?.(['list', '--json', '--json'])).toThrow(
       '--json may only be specified once.',
