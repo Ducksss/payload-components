@@ -77,12 +77,18 @@ opening a pull request when practical.
 Start with the row that matches what you touched. These are the smallest checks
 that still cover the change:
 
-| Change type                                            | Run                                                        |
-| ------------------------------------------------------ | ---------------------------------------------------------- |
-| Docs or content only (`content/docs`, `*.md`)          | `pnpm source:build`, `pnpm run test:int`                   |
-| Site UI (`src/app`, `src/components`, `src/lib`)       | `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm run test:e2e` |
-| Registry or component metadata (`payload-components/`) | `pnpm test:registry`, `pnpm run test:int`                  |
-| CLI or tooling (`tools/payload-components`, `bin/`)    | `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm test:install` |
+| Change type                                            | Run                                                                             |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| Docs or content only (`content/docs`, `*.md`)          | `pnpm source:build`, `pnpm run test:int`                                        |
+| Site UI (`src/app`, `src/components`, `src/lib`)       | `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm run test:int`, `pnpm run test:e2e` |
+| Registry or component metadata (`payload-components/`) | `pnpm test:registry`, `pnpm run test:int`                                       |
+| CLI or tooling (`tools/payload-components`, `bin/`)    | `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm run test:int`                      |
+
+`pnpm run test:int` is in three of those four rows because the integration suite
+reaches further than its name suggests: it renders site components directly, and
+more than thirty of its specs import the CLI. `pnpm test:install` is a fast
+subset of four specs — useful while iterating, but it is not enough on its own to
+clear a CLI change.
 
 Two rules apply to every row. CI runs `pnpm format:check`, so run `pnpm format`
 before pushing whatever you changed. And any change that alters what a page
