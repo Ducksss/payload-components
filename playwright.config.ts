@@ -28,6 +28,19 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
     },
+    /* WebKit runs ONLY the `webkit-*` guards, never the whole suite. The visual
+       baselines are per-project, so a full second engine would mean a second
+       committed baseline set on both platforms and a materially longer gate.
+       These guards deliberately assert measurable invariants instead of pixels,
+       so they need no baselines and cost one page load — enough to catch the
+       class of bug that reaches iOS while every Chromium baseline stays green.
+       The chromium project intentionally does NOT ignore them: running the same
+       assertions in both engines is what proves they track real drift. */
+    {
+      name: 'webkit',
+      testMatch: /webkit-[^/\\]*\.e2e\.spec\.ts$/,
+      use: { ...devices['Desktop Safari'] },
+    },
   ],
   webServer: {
     command: webServerCommand,
