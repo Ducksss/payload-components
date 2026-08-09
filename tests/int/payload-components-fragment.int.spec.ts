@@ -11,6 +11,7 @@ import {
   applyPayloadFragments,
   verifyInstalledPayloadFragments,
 } from '../../tools/payload-components/project'
+import { captureRejection } from './payload-components-assertions'
 
 /* Fragment patching is text-anchor based and deliberately fragile: it expects
  * the canonical Payload-website-starter file shapes (detectProject's
@@ -157,13 +158,35 @@ describe('applyPayloadFragments — renderBlocks', () => {
     expect(afterSecond.match(/import \{ HeroBasicBlock \}/g)).toHaveLength(1)
   })
 
+  /* A drifted consumer file is the one failure the user has to repair by hand, so
+     the error has to carry the whole repair: which file, what was missing, and
+     both lines the install would have written. Asserting the pieces individually
+     keeps the wording free to change without pinning a whole paragraph. */
   it('fails loudly and leaves the file untouched when the anchor is missing', async () => {
     const renderBlocks = "import React from 'react'\n\nexport const RenderBlocks = () => null\n"
     const dir = await makeProject({ renderBlocks })
 
-    await expect(applyPayloadFragments(dir, [renderBlocksFragment])).rejects.toThrow(
-      /insertion anchor/i,
-    )
+    const error = await captureRejection(applyPayloadFragments(dir, [renderBlocksFragment]))
+
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toContain(RENDER_BLOCKS_FILE)
+    expect(error.message).toContain('insertion anchor "const blockComponents = {"')
+    expect(error.message).toContain("import { HeroBasicBlock } from '@/blocks/HeroBasic/Component'")
+    expect(error.message).toContain('heroBasic: HeroBasicBlock,')
+    expect(await readRenderBlocks(dir)).toEqual(renderBlocks)
+  })
+
+  it('reports the same repair when the blockComponents object cannot be read', async () => {
+    const renderBlocks = "import React from 'react'\n\nconst blockComponents = {\n"
+    const dir = await makeProject({ renderBlocks })
+
+    const error = await captureRejection(applyPayloadFragments(dir, [renderBlocksFragment]))
+
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toContain(RENDER_BLOCKS_FILE)
+    expect(error.message).toContain('blockComponents object')
+    expect(error.message).toContain("import { HeroBasicBlock } from '@/blocks/HeroBasic/Component'")
+    expect(error.message).toContain('heroBasic: HeroBasicBlock,')
     expect(await readRenderBlocks(dir)).toEqual(renderBlocks)
   })
 })
@@ -214,7 +237,28 @@ describe('applyPayloadFragments — pagesLayout', () => {
     ].join('\n')
     const dir = await makeProject({ pagesLayout })
 
-    await expect(applyPayloadFragments(dir, [pagesLayoutFragment])).rejects.toThrow(/layout/i)
+    const error = await captureRejection(applyPayloadFragments(dir, [pagesLayoutFragment]))
+
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toContain(PAGES_LAYOUT_FILE)
+    expect(error.message).toContain('blocks: []')
+    expect(error.message).toContain("import { HeroBasic } from '@/blocks/HeroBasic/config'")
+    expect(error.message).toContain('HeroBasic')
+    expect(await readPagesLayout(dir)).toEqual(pagesLayout)
+  })
+
+  it('reports the repair when the Pages collection anchor is missing', async () => {
+    const pagesLayout =
+      "import type { CollectionConfig } from 'payload'\n\nexport const Other = {}\n"
+    const dir = await makeProject({ pagesLayout })
+
+    const error = await captureRejection(applyPayloadFragments(dir, [pagesLayoutFragment]))
+
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toContain(PAGES_LAYOUT_FILE)
+    expect(error.message).toContain('insertion anchor "export const Pages: CollectionConfig"')
+    expect(error.message).toContain("import { HeroBasic } from '@/blocks/HeroBasic/config'")
+    expect(error.message).toContain('blocks: [] list')
     expect(await readPagesLayout(dir)).toEqual(pagesLayout)
   })
 })

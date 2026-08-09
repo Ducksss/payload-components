@@ -258,16 +258,16 @@
     <text class="provenance-line" x="48" y="590">tools/payload-components/project.ts</text>
   </g>
   <g data-journal-part="evidence" data-evidence-excerpt="const propertyLine = `  ${fragment.blockSlug}: ${fragment.importName},`
-  const sourceWithImport = insertLineBeforeAnchor({
-    anchor: renderBlocksAnchor,
-    isPresent: (current) =&gt; hasNamedImport(current, fragment.importName, fragment.importPath),
-    line: importLine,
-    source,
-  })
-  const objectRange = findRenderBlocksObject(sourceWithImport)" data-evidence-truncated="true">
+  const describeFailure = (missing: string) =&gt;
+    describeFragmentFailure({
+      edits: [importLine, `${propertyLine.trim()}  &lt;- inside the blockComponents object`],
+      filePath,
+      missing,
+    })
+  const sourceWithImport = insertLineBeforeAnchor({" data-evidence-truncated="true">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
   <text class="evidence-line" x="48" y="626">const propertyLine = ` ${fragment.blockSlug}:</text>
-<text class="evidence-line" x="48" y="641">${fragment.importName},` · const sourceWithImport = …</text>
+<text class="evidence-line" x="48" y="641">${fragment.importName},` · const describeFailure = (missing: stri …</text>
 </g>
   <g data-journal-part="prompt" data-prompt="Keep the map boring enough to review.">
     <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>

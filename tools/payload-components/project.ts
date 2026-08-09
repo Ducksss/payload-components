@@ -432,11 +432,16 @@ const hasDirectArrayIdentifier = ({
 
 const insertLineBeforeAnchor = ({
   anchor,
+  describeMissingAnchor,
   isPresent,
   line,
   source,
 }: {
   anchor: string
+  /* Consumer-file callers pass this to replace the bare anchor error with one
+     naming the file and the edits. Omitted for files this CLI wrote itself,
+     where the shape is known and the bare message is already precise. */
+  describeMissingAnchor?: () => string
   isPresent?: (source: string) => boolean
   line: string
   source: string
@@ -448,7 +453,7 @@ const insertLineBeforeAnchor = ({
   const anchorIndex = findTopLevelAnchor(source, anchor)
 
   if (anchorIndex === -1) {
-    throw new Error(`Unable to find insertion anchor "${anchor}".`)
+    throw new Error(describeMissingAnchor?.() ?? `Unable to find insertion anchor "${anchor}".`)
   }
 
   const lineStart = source.lastIndexOf('\n', anchorIndex - 1) + 1
@@ -660,11 +665,43 @@ const removePagesLayoutFragment = (
   })
 }
 
-const applyRenderBlocksFragment = (source: string, fragment: Extract<PayloadFragment, { kind: 'renderBlocks' }>) => {
+/* Anchor failures are the likeliest way a real consumer project stalls: the file
+   is present, the CLI refuses to guess at a shape it does not recognize, and the
+   user is left holding an install that stopped halfway. Naming only the anchor
+   makes that a research task. Name the file, what was missing, and the exact
+   lines the install would have written, so the fallback is a paste. */
+const describeFragmentFailure = ({
+  edits,
+  filePath,
+  missing,
+}: {
+  edits: string[]
+  filePath: string
+  missing: string
+}) =>
+  [
+    `Unable to wire ${filePath}: ${missing}. The file was left unchanged.`,
+    'Apply these edits by hand, then re-run this command:',
+    ...edits.map((edit) => `  ${edit}`),
+  ].join('\n')
+
+const applyRenderBlocksFragment = (
+  source: string,
+  fragment: Extract<PayloadFragment, { kind: 'renderBlocks' }>,
+  filePath: string,
+) => {
   const importLine = `import { ${fragment.importName} } from '${fragment.importPath}'`
   const propertyLine = `  ${fragment.blockSlug}: ${fragment.importName},`
+  const describeFailure = (missing: string) =>
+    describeFragmentFailure({
+      edits: [importLine, `${propertyLine.trim()}  <- inside the blockComponents object`],
+      filePath,
+      missing,
+    })
   const sourceWithImport = insertLineBeforeAnchor({
     anchor: renderBlocksAnchor,
+    describeMissingAnchor: () =>
+      describeFailure(`the insertion anchor "${renderBlocksAnchor}" is missing`),
     isPresent: (current) => hasNamedImport(current, fragment.importName, fragment.importPath),
     line: importLine,
     source,
@@ -672,7 +709,7 @@ const applyRenderBlocksFragment = (source: string, fragment: Extract<PayloadFrag
   const objectRange = findRenderBlocksObject(sourceWithImport)
 
   if (!objectRange) {
-    throw new Error('Unable to find the blockComponents object in RenderBlocks.tsx.')
+    throw new Error(describeFailure('the blockComponents object could not be read'))
   }
 
   if (
@@ -699,10 +736,24 @@ const applyRenderBlocksFragment = (source: string, fragment: Extract<PayloadFrag
   return `${sourceWithImport.slice(0, closingLineStart)}${propertyLine}\n${sourceWithImport.slice(closingLineStart)}`
 }
 
-const applyPagesLayoutFragment = (source: string, fragment: Extract<PayloadFragment, { kind: 'pagesLayout' }>) => {
+const applyPagesLayoutFragment = (
+  source: string,
+  fragment: Extract<PayloadFragment, { kind: 'pagesLayout' }>,
+  filePath: string,
+) => {
   const importLine = `import { ${fragment.importName} } from '${fragment.importPath}'`
+  const describeFailure = (missing: string) =>
+    describeFragmentFailure({
+      edits: [
+        importLine,
+        `${fragment.blockName}  <- added to the "layout" field's blocks: [] list`,
+      ],
+      filePath,
+      missing,
+    })
   const sourceWithImport = insertLineBeforeAnchor({
     anchor: pagesAnchor,
+    describeMissingAnchor: () => describeFailure(`the insertion anchor "${pagesAnchor}" is missing`),
     isPresent: (current) => hasNamedImport(current, fragment.importName, fragment.importPath),
     line: importLine,
     source,
@@ -710,7 +761,9 @@ const applyPagesLayoutFragment = (source: string, fragment: Extract<PayloadFragm
   const blocksRange = findPagesLayoutBlocks(sourceWithImport)
 
   if (!blocksRange) {
-    throw new Error('Unable to find the layout block list in Pages collection config.')
+    throw new Error(
+      describeFailure('the "layout" field\'s blocks: [] list could not be read'),
+    )
   }
 
   if (
@@ -1034,7 +1087,7 @@ export const applyPayloadFragments = async (
     if (fragment.kind === 'renderBlocks') {
       const filePath = getAbsolutePath(cwd, hostFiles.renderBlocks)
       const existing = await readFile(filePath, 'utf8')
-      const updated = applyRenderBlocksFragment(existing, fragment)
+      const updated = applyRenderBlocksFragment(existing, fragment, hostFiles.renderBlocks)
 
       if (updated !== existing) {
         await writeFile(filePath, updated, 'utf8')
@@ -1046,7 +1099,7 @@ export const applyPayloadFragments = async (
     if (fragment.kind === 'pagesLayout') {
       const filePath = getAbsolutePath(cwd, hostFiles.pagesLayout)
       const existing = await readFile(filePath, 'utf8')
-      const updated = applyPagesLayoutFragment(existing, fragment)
+      const updated = applyPagesLayoutFragment(existing, fragment, hostFiles.pagesLayout)
 
       if (updated !== existing) {
         await writeFile(filePath, updated, 'utf8')
