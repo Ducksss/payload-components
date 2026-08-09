@@ -106,10 +106,54 @@ test.describe('Light shadcn frontend', () => {
             properties: {
               page_path: '/',
               source_path: '/',
+              traffic_source: 'other',
+              verification_run: false,
             },
           },
         ]),
       )
+  })
+
+  test('classifies organic visits without sending raw acquisition details', async ({ page }) => {
+    await page.goto(`${baseURL}/?utm_medium=organic&utm_campaign=private-query-text`)
+
+    await expect
+      .poll(() => getPostHogEvents(page))
+      .toEqual(
+        expect.arrayContaining([
+          {
+            event: '$pageview',
+            properties: {
+              page_path: '/',
+              source_path: '/',
+              traffic_source: 'organic_search',
+              verification_run: false,
+            },
+          },
+        ]),
+      )
+    expect(JSON.stringify(await getPostHogEvents(page))).not.toContain('private-query-text')
+  })
+
+  test('marks controlled page views without retaining the verification query', async ({ page }) => {
+    await page.goto(`${baseURL}/?verification_run=1`)
+
+    await expect
+      .poll(() => getPostHogEvents(page))
+      .toEqual(
+        expect.arrayContaining([
+          {
+            event: '$pageview',
+            properties: {
+              page_path: '/',
+              source_path: '/',
+              traffic_source: 'other',
+              verification_run: true,
+            },
+          },
+        ]),
+      )
+    expect(JSON.stringify(await getPostHogEvents(page))).not.toContain('verification_run=1')
   })
 
   test('keeps the landing hero action hierarchy focused', async ({ page }) => {
@@ -278,7 +322,7 @@ test.describe('Light shadcn frontend', () => {
     /* The tablet band gets its own taller fade, and it needs its own assertion:
        the phone check above runs outside the 640–1023px query, so deleting the
        override would still pass it — and pass the overrun ceiling too, since the
-       measured 44px tablet residue sits under that deliberately loose 60px. Left
+       measured 44px tablet residue sits under that deliberately loose 50px. Left
        unpinned, the one band where residue meets the fade exactly is the one band
        with no coverage. Exact, not a floor: 2.75rem at the default root size, and
        the whole point is that it matches the overrun rather than merely exceeding
@@ -713,7 +757,7 @@ test.describe('Light shadcn frontend', () => {
       {
         link: /component catalog/,
         path: '/docs/installation',
-        title: /Payload Components CLI for Payload CMS v3/,
+        title: /Install Payload CMS blocks with the CLI/,
       },
     ]
 
@@ -1103,6 +1147,76 @@ test.describe('Light shadcn frontend', () => {
     )
   })
 
+  test('marks only controlled install and GitHub actions', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/?verification_run=1`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+    await page.evaluate(() => {
+      document.addEventListener(
+        'click',
+        (event) => {
+          const target = event.target
+          if (!(target instanceof Element)) return
+
+          if (target.closest('a[href="https://github.com/Ducksss/payload-components"]')) {
+            event.preventDefault()
+          }
+        },
+        { capture: true },
+      )
+    })
+
+    await page.locator('.hero-shell button[data-copy-command]').click()
+    await page.locator('a[href="https://github.com/Ducksss/payload-components"]').first().click()
+
+    expect(await getGtagEvents(page)).toEqual(
+      expect.arrayContaining([
+        [
+          'event',
+          'copy_install_command',
+          {
+            command: primaryInstallCommand,
+            component: 'hero-basic',
+            source_path: '/',
+          },
+        ],
+        [
+          'event',
+          'primary_link_click',
+          {
+            destination: 'github',
+            href: 'https://github.com/Ducksss/payload-components',
+            source_path: '/',
+          },
+        ],
+      ]),
+    )
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: primaryInstallCommand,
+            component: 'hero-basic',
+            source_path: '/',
+            verification_run: true,
+          },
+        },
+        {
+          event: 'primary_link_click',
+          properties: {
+            destination: 'github',
+            href: 'https://github.com/Ducksss/payload-components',
+            source_path: '/',
+            verification_run: true,
+          },
+        },
+      ]),
+    )
+    expect(JSON.stringify(await getPostHogEvents(page))).not.toContain('verification_run=1')
+  })
+
   for (const sourcePath of ['/docs/installation', '/docs/payload-blocks']) {
     test(`keeps GitHub clicks attributable to ${sourcePath}`, async ({ page }) => {
       await page.goto(`${baseURL}${sourcePath}`)
@@ -1338,6 +1452,27 @@ test.describe('Light shadcn frontend', () => {
     await page.goto(`${baseURL}/docs/payload-blocks`)
     await waitForCopyController(page)
     await stubGtagEvents(page)
+
+    await expect(page).toHaveTitle(
+      'Payload CMS blocks: create, register, type, and render | Payload Components',
+    )
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Payload CMS blocks: create, register, type, and render in v3',
+      }),
+    ).toBeVisible()
+    await expect(
+      page.getByText(
+        'Build Payload CMS blocks in v3 from Block config through collection registration, generated types, rendering, the admin import map, and a live page.',
+        { exact: true },
+      ),
+    ).toBeVisible()
+    await expect(
+      page.getByText('Payload CMS blocks in v3 become live through one chain:', {
+        exact: false,
+      }),
+    ).toBeVisible()
 
     const installButton = page.getByRole('button', {
       name: 'Copy the hero-basic install command',

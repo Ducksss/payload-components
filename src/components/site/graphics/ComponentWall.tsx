@@ -126,12 +126,31 @@ function WallCard({ slug }: { slug: string }) {
           twin showed the same eyebrow → headline → paragraph anatomy, and a
           wall built to prove range read as repetition.
 
-          The zoom VARIES per breakpoint so the inner layout width stays 1280px
-          everywhere (231/0.18046875 = 330/0.2578125 = 384/0.3 = 1280). A single
-          zoom looked right on desktop and silently mangled small screens: at
-          231px wide, 0.3 laid the twin out at 770px, where it re-wraps to a
-          mobile-shaped column two to three times taller than the frame — 14 of
-          18 cards were guillotined mid-sentence on a phone.
+          The layout width is pinned at 1280px and the SCALE varies per
+          breakpoint to map it onto the card (1280 x 0.18046875 = 231,
+          x 0.2578125 = 330, x 0.3 = 384). A single scale looked right on desktop
+          and silently mangled small screens: at 231px wide, 0.3 laid the twin
+          out at 770px, where it re-wraps to a mobile-shaped column two to three
+          times taller than the frame — 14 of 18 cards were guillotined
+          mid-sentence on a phone.
+
+          `transform: scale`, NOT `zoom`, and the width is explicit rather than
+          `w-full`. Both spellings lay out at 1280px in Blink, but `zoom` feeds
+          WebKit's text autosizer, which compares the 1280px layout against the
+          390px viewport and inflates the type to "rescue" it — measured 16px ->
+          49.87px, a boost tracking 1280/390. It does not account for the zoom,
+          so boxes stayed card-sized while text tripled and every twin collapsed
+          into overlapping lines: the wall was unreadable on iOS while Chromium
+          rendered it perfectly, and no visual baseline caught it because the
+          suite is Chromium-only. `-webkit-text-size-adjust` does NOT opt out
+          (inert against this path, verified `none` and `100%` at both the root
+          and the element). A transform is a paint-time operation, so the
+          autosizer never engages — 16px in both engines. Keeping the flow height
+          honest is why the frame heights below are fixed: unlike `zoom`, a
+          transform contributes no layout size, so `shrink-0` is required to stop
+          the flex parent collapsing the 1280px box, and `origin-left` scales
+          about the element's own vertical centre so `items-center` still centres
+          the twin.
 
           What that pinning buys is the LAYOUT width, not the breakpoint: media
           queries answer to the viewport, so below 1024px three twins still
@@ -149,7 +168,7 @@ function WallCard({ slug }: { slug: string }) {
           everything under it. Content is centred so the shorter blocks read as
           deliberately framed rather than stranded in dead space. */}
       <div className="wall-card-frame relative flex h-[180px] items-center overflow-hidden rounded-[0.7rem] bg-background shadow-frame sm:h-[256px] lg:h-[216px]">
-        <div className="w-full [zoom:0.18046875] sm:[zoom:0.2578125] lg:[zoom:0.3]">
+        <div className="w-[1280px] shrink-0 origin-left scale-[0.18046875] sm:scale-[0.2578125] lg:scale-[0.3]">
           <Demo />
         </div>
       </div>

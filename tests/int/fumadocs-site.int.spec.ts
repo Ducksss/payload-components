@@ -201,6 +201,37 @@ describe('Fumadocs site shell', () => {
     expect(sitemap).toContain('source.getPages()')
   })
 
+  it('keeps the Payload import-map reference separate from the foundations essay', async () => {
+    const [guide, essay, docsMeta, installationGuide, sitemap] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'payload-generate-importmap.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'blog', 'payload-types-and-import-map.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+    ])
+
+    expect(guide).toContain('title: "Payload generate:importmap: command, output, and fixes"')
+    expect(guide).toContain('seoTitle: "Payload generate:importmap command and fixes"')
+    expect(guide).toContain('command="pnpm payload generate:importmap"')
+    expect(guide).toContain('src/app/(payload)/admin/importMap.js')
+    expect(guide).toContain('admin.importMap.baseDir')
+    expect(guide).toContain('admin.importMap.importMapFile')
+    expect(guide).toContain('[installation guide](/docs/installation)')
+    expect(docsMeta).toContain('"payload-generate-importmap"')
+    expect(installationGuide).toContain(
+      '[Payload `generate:importmap` reference](/docs/payload-generate-importmap)',
+    )
+    expect(sitemap).toContain('source.getPages()')
+
+    expect(essay).toContain('title: Why Payload Types and the Admin Import Map Must Stay in Sync')
+    expect(essay).toContain('author: Ducksss')
+    expect(essay).toContain('series: foundations')
+    expect(essay).toContain('publicationOrder: 7')
+    expect(essay).toContain(
+      'Payload has two generated artifacts that are easy to mention in the same breath and easy to confuse:',
+    )
+  })
+
   it('keeps the Payload blocks guide implementation-led, discoverable, and product-true', async () => {
     const [
       guide,
@@ -228,9 +259,12 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'README.md'), 'utf8'),
     ])
 
+    expect(guide).toContain('title: "Payload CMS blocks: create, register, type, and render in v3"')
+    expect(guide).toContain('seoTitle: "Payload CMS blocks: create, register, type, and render"')
     expect(guide).toContain(
-      'Payload CMS blocks in v3: create, register, type, and render a reusable layout block',
+      'description: Build Payload CMS blocks in v3 from Block config through collection registration, generated types, rendering, the admin import map, and a live page.',
     )
+    expect(guide).toContain('Payload CMS blocks in v3 become live through one chain:')
     expect(guide).toContain("slug: 'heroBasic'")
     expect(guide).toContain("interfaceName: 'HeroBasicBlock'")
     expect(guide).toContain("singular: 'Hero Basic'")
@@ -836,17 +870,20 @@ describe('Fumadocs site shell', () => {
     expect(catalog).toContain('window.history.replaceState')
     expect(catalog).toContain("window.addEventListener('popstate'")
     expect(registry).not.toContain('sample content for docs and testing')
-    expect(catalogTitle).toContain('Payload CMS')
-    expect(catalogTitle).toContain('67')
+    expect(catalogTitle).toBe('67 Payload CMS components and typed blocks')
     expect(catalogDescription).toMatch(
       /heroes.*features.*pricing.*integrations.*FAQs.*content.*teams.*embeds/,
     )
     expect(catalogDescription).toContain('Browse all 67')
+    expect(catalogDescription).toContain('installable Payload CMS components')
     expect(catalogDescription).toContain('One CLI command')
     expect(catalogMetadataTitle).toContain('Payload CMS Components')
     expect(catalogMetadataTitle).toContain('67')
-    expect(catalogMetadataDescription).toContain('one-command project wiring')
-    expect(catalogMetadataDescription).toContain('all 67')
+    expect(catalogMetadataDescription).toContain('npx payload-components add <component>')
+    expect(catalogMetadataDescription).toContain('collection')
+    expect(catalogMetadataDescription).toContain('renderer')
+    expect(catalogMetadataDescription).toContain('generated types')
+    expect(catalogMetadataDescription).toContain('admin import map')
     expect(catalogPage).toContain('href="/docs/installation"')
     expect(catalogPage).toContain('{catalogInstallationLinkLabel}')
     expect(catalogInstallationLinkLabel).toContain('one-command installation')
@@ -925,6 +962,11 @@ describe('Fumadocs site shell', () => {
     const stagePositions = stages.map((stage) => installation.indexOf(stage))
     expect(stagePositions.every((position) => position >= 0)).toBe(true)
     expect(stagePositions).toEqual([...stagePositions].sort((a, b) => a - b))
+    expect(installation).toContain('seoTitle: Install Payload CMS blocks with the CLI')
+    expect(installation).toContain(
+      'description: Install typed blocks in Payload CMS v3 with the Payload Components CLI.',
+    )
+    expect(installation).toContain('Run `npx payload-components add <component>`')
     expect(installation).toContain("direct `shadcn add` only copies the block's source files")
     expect(installation).not.toContain('sample content')
 

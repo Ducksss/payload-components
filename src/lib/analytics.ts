@@ -24,6 +24,27 @@ const managedPostHogApiKey = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? ''
 const managedPostHogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com'
 const installCommandPattern = /\bpayload-components\s+add\s+([a-z0-9-]+)\b/i
 const siteHostnames = new Set(['payload-components.xyz', 'www.payload-components.xyz'])
+const organicSearchReferrerHostnames = new Set([
+  'baidu.com',
+  'bing.com',
+  'duckduckgo.com',
+  'ecosia.org',
+  'google.ca',
+  'google.co.in',
+  'google.co.uk',
+  'google.com',
+  'google.com.au',
+  'google.de',
+  'google.es',
+  'google.fr',
+  'google.it',
+  'google.nl',
+  'kagi.com',
+  'search.brave.com',
+  'search.yahoo.com',
+  'startpage.com',
+  'yandex.com',
+])
 let sessionDistinctId: string | null = null
 
 function getSessionDistinctId() {
@@ -123,7 +144,11 @@ function trackPostHogEvent(eventName: string, properties: AnalyticsProperties) {
   }
 }
 
-function trackEvent(eventName: string, properties: AnalyticsProperties) {
+function trackEvent(
+  eventName: string,
+  properties: AnalyticsProperties,
+  { markVerificationRun = false }: { markVerificationRun?: boolean } = {},
+) {
   /* Mirrors the two tiers in AnalyticsShell. Vercel is cookieless and mounted
    * for everyone, so its events need no opt-in; the event names and fields are
    * the enumerated vocabulary in content/docs/contributing.mdx, never free text.
@@ -143,7 +168,15 @@ function trackEvent(eventName: string, properties: AnalyticsProperties) {
   }
 
   try {
-    trackPostHogEvent(eventName, properties)
+    /* An operational marker for our own controlled site checks, nothing more.
+     * `?verification_run=1` is caller-controlled, so any visitor can set it —
+     * never treat this flag as a trustworthy demand, traffic, or fraud signal. */
+    trackPostHogEvent(
+      eventName,
+      markVerificationRun && isVerificationRun()
+        ? { ...properties, verification_run: true }
+        : properties,
+    )
   } catch {
     // Analytics must never block the user action.
   }
@@ -157,6 +190,26 @@ function getStableSourcePath() {
   return window.location.pathname
 }
 
+function getTrafficSource() {
+  if (new URLSearchParams(window.location.search).get('utm_medium') === 'organic') {
+    return 'organic_search'
+  }
+
+  if (!document.referrer) return 'other'
+
+  try {
+    const hostname = new URL(document.referrer).hostname.toLowerCase().replace(/^www\./, '')
+
+    return organicSearchReferrerHostnames.has(hostname) ? 'organic_search' : 'other'
+  } catch {
+    return 'other'
+  }
+}
+
+function isVerificationRun() {
+  return new URLSearchParams(window.location.search).get('verification_run') === '1'
+}
+
 export function trackPageView() {
   /* GA4 (gtag config) and Vercel (<Analytics />) already auto-track page views;
      the SDK-less PostHog integration does not, so send only there — using the
@@ -165,6 +218,8 @@ export function trackPageView() {
   trackPostHogEvent('$pageview', {
     page_path: window.location.pathname,
     source_path: getSourcePath(),
+    traffic_source: getTrafficSource(),
+    verification_run: isVerificationRun(),
   })
 }
 
@@ -175,11 +230,15 @@ export function getComponentSlugFromCommand(command: string) {
 export function trackInstallCommandCopy(command: string) {
   const component = getComponentSlugFromCommand(command)
 
-  trackEvent('copy_install_command', {
-    command,
-    component: component ?? 'unknown',
-    source_path: getSourcePath(),
-  })
+  trackEvent(
+    'copy_install_command',
+    {
+      command,
+      component: component ?? 'unknown',
+      source_path: getSourcePath(),
+    },
+    { markVerificationRun: true },
+  )
 }
 
 function normalizeDestination(url: URL) {
@@ -258,9 +317,13 @@ export function trackPrimaryLinkClick(link: HTMLAnchorElement) {
   const normalized = normalizeDestination(url)
   if (!normalized) return
 
-  trackEvent('primary_link_click', {
-    destination: normalized.destination,
-    href: normalized.href,
-    source_path: getStableSourcePath(),
-  })
+  trackEvent(
+    'primary_link_click',
+    {
+      destination: normalized.destination,
+      href: normalized.href,
+      source_path: getStableSourcePath(),
+    },
+    { markVerificationRun: true },
+  )
 }
