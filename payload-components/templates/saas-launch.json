@@ -1,0 +1,107 @@
+{
+  "category": "saas",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "call-to-action-signup",
+    "comparator-table",
+    "contact-routing-form",
+    "content-community",
+    "content-image-lead",
+    "content-quote",
+    "content-stats",
+    "faq-card",
+    "faq-grouped",
+    "faq-split",
+    "feature-bento",
+    "feature-cards-media",
+    "feature-split",
+    "feature-steps",
+    "hero-aurora",
+    "hero-basic",
+    "hero-product-tilt",
+    "integration-cluster",
+    "integration-grid",
+    "logo-cloud-marquee",
+    "pricing-cards",
+    "pricing-cards-muted",
+    "stats-proof",
+    "team-grid",
+    "testimonials-rating",
+    "testimonials-spotlight"
+  ],
+  "description": "Relay is a fictional B2B analytics platform: a precise, optimistic, product-led SaaS marketing site concept spanning Home, Product, Pricing, About, and Contact — cool white and blue-gray surfaces, one cobalt accent, and proof kept close to every claim, composed entirely from blocks in the open registry.",
+  "pages": [
+    {
+      "components": [
+        "hero-aurora",
+        "logo-cloud-marquee",
+        "feature-bento",
+        "stats-proof",
+        "integration-cluster",
+        "testimonials-spotlight",
+        "pricing-cards-muted",
+        "faq-split",
+        "call-to-action-boxed"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Relay — Product analytics for teams that ship"
+    },
+    {
+      "components": [
+        "hero-product-tilt",
+        "feature-split",
+        "feature-cards-media",
+        "feature-steps",
+        "integration-grid",
+        "content-quote",
+        "call-to-action-centered"
+      ],
+      "label": "Product",
+      "path": "product",
+      "title": "Relay — Product"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "pricing-cards",
+        "comparator-table",
+        "testimonials-rating",
+        "faq-grouped",
+        "call-to-action-signup"
+      ],
+      "label": "Pricing",
+      "path": "pricing",
+      "title": "Relay — Pricing"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-image-lead",
+        "content-stats",
+        "team-grid",
+        "content-community",
+        "call-to-action-boxed"
+      ],
+      "label": "About",
+      "path": "about",
+      "title": "Relay — About"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "contact-routing-form",
+        "faq-card"
+      ],
+      "label": "Contact",
+      "path": "contact",
+      "title": "Relay — Contact"
+    }
+  ],
+  "revision": 5,
+  "slug": "saas-launch",
+  "summary": "A precise, optimistic, product-led SaaS marketing site for a fictional B2B analytics platform.",
+  "title": "SaaS Launch",
+  "version": 1
+}

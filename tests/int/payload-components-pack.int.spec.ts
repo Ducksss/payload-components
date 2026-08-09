@@ -19,17 +19,19 @@ const packCommandTimeoutMs = 5 * 60 * 1000
 // the bin runs under plain Node with no tsx.
 const runPackTest = process.env.RUN_PACK_TEST === '1'
 
-const listFilesRecursive = async (dir: string): Promise<string[]> => {
+/* Paths are relative to `root`, not to the directory being walked, so nested
+   entries keep their full package-relative path. */
+const listFilesRecursive = async (dir: string, root = dir): Promise<string[]> => {
   const entries = await readdir(dir, { withFileTypes: true })
   const files = await Promise.all(
     entries.map(async (entry) => {
       const entryPath = path.join(dir, entry.name)
 
       if (entry.isDirectory()) {
-        return listFilesRecursive(entryPath)
+        return listFilesRecursive(entryPath, root)
       }
 
-      return [path.relative(dir, entryPath)]
+      return [path.relative(root, entryPath).split(path.sep).join('/')]
     }),
   )
 
@@ -92,6 +94,18 @@ const listFilesRecursive = async (dir: string): Promise<string[]> => {
     expect(Object.keys(installedPackageJson.dependencies ?? {}).sort()).toEqual(['ajv', 'semver'])
     expect(bundledCli).not.toContain('@playwright/test')
     expect(bundledCli).not.toContain('playwright')
+
+    /* Every data asset the CLI reads at runtime has to be in the files
+       allowlist, or a command silently stops working once published. */
+    for (const asset of [
+      'payload-components/registry.json',
+      'payload-components/support-matrix.json',
+      'payload-components/manifests/hero-basic.json',
+      'payload-components/templates/saas-launch.json',
+      'payload-components/source/blocks/shared/localizeFields.ts',
+    ]) {
+      expect(filesBefore, `${asset} must ship in the package`).toContain(asset)
+    }
 
     const { fixtureDir, manifest } = await createInstallFixture('hero-basic')
     tempDirs.push(fixtureDir)

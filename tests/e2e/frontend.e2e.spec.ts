@@ -5,6 +5,12 @@ import { grantConsent } from './consent'
 import {
   blogTitle,
   catalogInstallationLinkLabel,
+  composerAddLabel,
+  composerClearLabel,
+  composerCopyLabel,
+  composerInstallCommand,
+  composerRemoveLabel,
+  composerTrayLabel,
   catalogMetadataDescription,
   catalogMetadataTitle,
   catalogTitle,
@@ -824,6 +830,61 @@ test.describe('Light shadcn frontend', () => {
     await expect(search).toHaveValue('hero')
     await expect.poll(() => new URL(page.url()).searchParams.get('q')).toBe('hero')
     await expect.poll(() => new URL(page.url()).searchParams.get('type')).toBe('pages')
+  })
+
+  test('composes several blocks into one install command and shares it in the URL', async ({
+    context,
+    page,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(`${baseURL}/components`)
+
+    const tray = page.getByRole('region', { name: composerTrayLabel })
+
+    // No selection, no bar: it must never cover the last row of the wall.
+    await expect(tray).toBeHidden()
+
+    await page.getByRole('button', { name: composerAddLabel('hero-basic') }).click()
+    await expect(tray).toBeVisible()
+
+    // Selecting across families is the point — the command carries both.
+    await page.getByLabel('Search components').fill('faq-card')
+    await page.getByRole('button', { name: composerAddLabel('faq-card') }).click()
+
+    const expectedCommand = composerInstallCommand(['hero-basic', 'faq-card'])
+    await expect(tray.getByText(expectedCommand)).toBeVisible()
+    await expect(tray.getByText('2 selected')).toBeVisible()
+
+    // The selection is shareable state, and the in-progress query is preserved.
+    await expect.poll(() => new URL(page.url()).searchParams.get('add')).toBe('hero-basic,faq-card')
+    await expect.poll(() => new URL(page.url()).searchParams.get('q')).toBe('faq-card')
+
+    // The tray copies one command for the whole set.
+    await tray.getByRole('button', { name: composerCopyLabel }).click()
+    await expect(page.getByText(copiedAlertText)).toBeVisible()
+    await expect
+      .poll(() => page.evaluate(() => navigator.clipboard.readText()))
+      .toBe(expectedCommand)
+
+    // A selected card offers the inverse action.
+    await expect(page.getByRole('button', { name: composerRemoveLabel('faq-card') })).toBeVisible()
+
+    await tray.getByRole('button', { name: composerClearLabel }).click()
+    await expect(tray).toBeHidden()
+    await expect.poll(() => new URL(page.url()).searchParams.get('add')).toBeNull()
+  })
+
+  test('restores a shared selection and ignores unknown slugs in it', async ({ page }) => {
+    await page.goto(`${baseURL}/components?add=hero-basic,not-a-component,hero-basic`)
+
+    const tray = page.getByRole('region', { name: composerTrayLabel })
+
+    // Deduplicated, and an unknown name can never reach the command.
+    await expect(tray.getByText('1 selected')).toBeVisible()
+    await expect(tray.getByText(composerInstallCommand(['hero-basic']))).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: composerRemoveLabel('hero-basic') }),
+    ).toBeVisible()
   })
 
   test('links upcoming components to prefilled request issues', async ({ page }) => {

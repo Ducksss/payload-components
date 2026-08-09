@@ -3,28 +3,56 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { addCommand } from './commands/add'
+import { addTemplateCommand } from './commands/add-template'
+import { diffCommand } from './commands/diff'
 import { doctorCommand } from './commands/doctor'
 import { initCommand } from './commands/init'
+import { listCommand } from './commands/list'
+import { mcpCommand } from './commands/mcp'
+import { removeCommand } from './commands/remove'
 import { seedCommand } from './commands/seed'
+import { templatesCommand } from './commands/templates'
+import { updateCommand } from './commands/update'
 
 export const usage = `payload-components
 
 Usage:
-  payload-components add <component-name> [--cwd <path>] [--demo] [--dry-run]
+  payload-components add <component-name...> [--cwd <path>] [--demo] [--dry-run] [--localized]
+  payload-components add-template <template> [--cwd <path>] [--dry-run]
+  payload-components templates [--cwd <path>] [--json]
+  payload-components list [--cwd <path>] [--json]
+  payload-components diff [component-name...] [--cwd <path>] [--json]
+  payload-components update [component-name...] [--cwd <path>] [--dry-run] [--force]
+  payload-components remove <component-name...> [--cwd <path>] [--dry-run]
   payload-components seed <component-name> [--cwd <path>]
+  payload-components mcp [--cwd <path>]
   payload-components init [--cwd <path>]
   payload-components doctor [--cwd <path>]
   payload-components --help
 
 Commands:
-  add     Install a component through the payload-components wrapper and shadcn-compatible registry flow.
+  add     Install one or more components through the payload-components wrapper and shadcn-compatible registry flow.
+  add-template  Install every block a full-site template composes, then print its page plan.
+  templates  List the full-site templates and how many of their blocks are already installed.
+  list    Show every registry component alongside what this project has recorded.
+  diff    Compare recorded installs against the registry and report version, file, and wiring drift.
+  update  Re-install recorded components at the version this CLI ships, protecting locally edited files.
+  remove  Delete a component's exclusively owned files, unwire its block, and drop its install record.
   seed    Write a safe, runnable demo seed script for an installed component.
+  mcp     Run a read-only Model Context Protocol server over stdio so coding agents can browse the registry.
   init    Initialize shadcn in the project (creates components.json) so components can be installed.
   doctor  Diagnose project readiness and recorded component installs without changing files.
 
 Flags:
   --demo  After a successful add, write the same demo seed script as the seed command.
-  --dry-run  Validate and preview an add without changing files or running commands.
+  --dry-run  Validate and preview an add, update, or remove without changing files or running commands.
+  --force  Let update overwrite files you have edited locally.
+  --localized  Install the block with its text fields marked localized: true for Payload localization.
+  --json  Print machine-readable output from list and diff.
+
+Exit codes:
+  diff exits 1 when any inspected component has drifted; update exits 1 when a
+  component was skipped because of local edits.
 
 Current components:
   hero-basic
@@ -101,8 +129,11 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
   let cwd = defaultCwd
   let demo = false
   let dryRun = false
+  let force = false
   let help = false
   let hasCwd = false
+  let json = false
+  let localized = false
   const positional: string[] = []
 
   while (args.length > 0) {
@@ -146,6 +177,33 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
       continue
     }
 
+    if (current === '--force') {
+      if (force) {
+        throw new Error('--force may only be specified once.')
+      }
+
+      force = true
+      continue
+    }
+
+    if (current === '--json') {
+      if (json) {
+        throw new Error('--json may only be specified once.')
+      }
+
+      json = true
+      continue
+    }
+
+    if (current === '--localized') {
+      if (localized) {
+        throw new Error('--localized may only be specified once.')
+      }
+
+      localized = true
+      continue
+    }
+
     if (current === '--help' || current === '-h') {
       help = true
       continue
@@ -162,23 +220,58 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
     cwd,
     demo,
     dryRun,
+    force,
     help,
+    json,
+    localized,
     positional,
   }
 }
 
 type CliCommands = {
   addCommand: typeof addCommand
+  addTemplateCommand: typeof addTemplateCommand
+  diffCommand: typeof diffCommand
   doctorCommand: typeof doctorCommand
   initCommand: typeof initCommand
+  listCommand: typeof listCommand
+  mcpCommand: typeof mcpCommand
+  removeCommand: typeof removeCommand
   seedCommand: typeof seedCommand
+  templatesCommand: typeof templatesCommand
+  updateCommand: typeof updateCommand
 }
 
 const commands: CliCommands = {
   addCommand,
+  addTemplateCommand,
+  diffCommand,
   doctorCommand,
   initCommand,
+  listCommand,
+  mcpCommand,
+  removeCommand,
   seedCommand,
+  templatesCommand,
+  updateCommand,
+}
+
+/* One place to reject a flag a command does not accept, so an unsupported
+   combination fails loudly instead of being silently ignored. */
+const assertFlagsAllowed = ({
+  allowed,
+  command,
+  flags,
+}: {
+  allowed: string[]
+  command: string
+  flags: Record<string, boolean>
+}) => {
+  for (const [flag, isSet] of Object.entries(flags)) {
+    if (isSet && !allowed.includes(flag)) {
+      throw new Error(`--${flag === 'dryRun' ? 'dry-run' : flag} cannot be used with "payload-components ${command}".`)
+    }
+  }
 }
 
 export const runCli = async ({
@@ -192,7 +285,10 @@ export const runCli = async ({
   defaultCwd?: string
   write?: (value: string) => void
 } = {}) => {
-  const { cwd, demo, dryRun, help, positional } = parseArgs(argv, defaultCwd)
+  const { cwd, demo, dryRun, force, help, json, localized, positional } = parseArgs(
+    argv,
+    defaultCwd,
+  )
   const [command, ...rest] = positional
 
   if (!command || help) {
@@ -200,37 +296,127 @@ export const runCli = async ({
     return
   }
 
-  if (demo && command !== 'add') {
-    throw new Error('--demo can only be used with "payload-components add".')
+  const allowedFlags: Record<string, string[]> = {
+    add: ['demo', 'dryRun', 'localized'],
+    'add-template': ['dryRun'],
+    diff: ['json'],
+    doctor: [],
+    init: [],
+    list: ['json'],
+    remove: ['dryRun'],
+    mcp: [],
+    seed: [],
+    templates: ['json'],
+    update: ['dryRun', 'force'],
   }
 
-  if (dryRun && command !== 'add') {
-    throw new Error('--dry-run can only be used with "payload-components add".')
+  if (allowedFlags[command]) {
+    assertFlagsAllowed({
+      allowed: allowedFlags[command],
+      command,
+      flags: { demo, dryRun, force, json, localized },
+    })
   }
 
   if (demo && dryRun) {
     throw new Error('--demo and --dry-run cannot be used together.')
   }
 
-  if (command === 'add') {
-    const [componentName] = rest
+  /* Deduplicate while preserving the order given: installing a family and its
+     shared base twice in one command would re-run the whole pipeline for no
+     reason, and the second pass would report "already installed". */
+  const uniqueNames = [...new Set(rest)]
 
-    if (!componentName) {
+  if (command === 'add') {
+    if (uniqueNames.length === 0) {
       throw new Error(
         'payload-components add requires a component name. Try "payload-components add hero-basic" or "payload-components add logo-cloud-grid".',
       )
     }
 
-    if (rest.length !== 1) {
-      throw new Error('payload-components add accepts exactly one component name.')
+    for (const componentName of uniqueNames) {
+      await commandHandlers.addCommand({
+        cwd,
+        componentName,
+        demo,
+        dryRun,
+        localized,
+      })
     }
 
-    await commandHandlers.addCommand({
+    return
+  }
+
+  if (command === 'add-template') {
+    const [templateSlug] = uniqueNames
+
+    if (!templateSlug) {
+      throw new Error(
+        'payload-components add-template requires a template name. Try "payload-components add-template saas-launch".',
+      )
+    }
+
+    if (uniqueNames.length !== 1) {
+      throw new Error('payload-components add-template accepts exactly one template name.')
+    }
+
+    await commandHandlers.addTemplateCommand({ cwd, dryRun, templateSlug })
+    return
+  }
+
+  if (command === 'templates') {
+    if (rest.length > 0) {
+      throw new Error('payload-components templates does not accept positional arguments.')
+    }
+
+    await commandHandlers.templatesCommand({ cwd, json })
+    return
+  }
+
+  if (command === 'list') {
+    if (rest.length > 0) {
+      throw new Error('payload-components list does not accept positional arguments.')
+    }
+
+    await commandHandlers.listCommand({ cwd, json })
+    return
+  }
+
+  if (command === 'diff') {
+    const isClean = await commandHandlers.diffCommand({
+      componentNames: uniqueNames,
       cwd,
-      componentName,
-      demo,
-      dryRun,
+      json,
     })
+
+    if (!isClean) {
+      process.exitCode = 1
+    }
+
+    return
+  }
+
+  if (command === 'update') {
+    await commandHandlers.updateCommand({
+      componentNames: uniqueNames,
+      cwd,
+      dryRun,
+      force,
+    })
+    return
+  }
+
+  if (command === 'remove') {
+    if (uniqueNames.length === 0) {
+      throw new Error(
+        'payload-components remove requires a component name. Try "payload-components remove hero-basic".',
+      )
+    }
+
+    for (const componentName of uniqueNames) {
+      await commandHandlers.removeCommand({ componentName, cwd, dryRun })
+    }
+
     return
   }
 
@@ -265,6 +451,15 @@ export const runCli = async ({
       process.exitCode = 1
     }
 
+    return
+  }
+
+  if (command === 'mcp') {
+    if (rest.length > 0) {
+      throw new Error('payload-components mcp does not accept positional arguments.')
+    }
+
+    await commandHandlers.mcpCommand({ cwd })
     return
   }
 

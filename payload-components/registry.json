@@ -21,7 +21,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -64,7 +65,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -109,7 +111,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -152,7 +155,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -193,7 +197,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -234,7 +239,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -275,7 +281,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -316,7 +323,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -357,7 +365,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -401,7 +410,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -450,7 +460,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -499,7 +510,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -542,7 +554,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -580,7 +593,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -618,7 +632,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -659,7 +674,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -707,7 +723,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -745,7 +762,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -785,7 +803,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -825,7 +844,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -865,7 +885,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -910,7 +931,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -955,7 +977,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1000,7 +1023,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1040,7 +1064,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1078,7 +1103,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1116,7 +1142,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1154,7 +1181,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1192,7 +1220,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1230,7 +1259,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1268,7 +1298,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1309,7 +1340,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1352,7 +1384,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1392,7 +1425,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1432,7 +1466,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1472,7 +1507,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1512,7 +1548,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1557,7 +1594,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1592,7 +1630,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1627,7 +1666,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1665,7 +1705,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1703,7 +1744,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1746,7 +1788,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1794,7 +1837,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1839,7 +1883,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1879,7 +1924,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1920,7 +1966,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -1961,7 +2008,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2003,7 +2051,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2044,7 +2093,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2090,7 +2140,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2136,7 +2187,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2176,7 +2228,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2217,7 +2270,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2258,7 +2312,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2296,7 +2351,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2334,7 +2390,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2374,7 +2431,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2414,7 +2472,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2454,7 +2513,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2494,7 +2554,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2534,7 +2595,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2570,7 +2632,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2611,7 +2674,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2652,7 +2716,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2692,7 +2757,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },
@@ -2732,7 +2798,8 @@
           ],
           "requiresPayloadComponentWrapper": true,
           "supportedTargets": [
-            "payload-website-starter"
+            "payload-website-starter",
+            "payload-blocks-app"
           ]
         }
       },

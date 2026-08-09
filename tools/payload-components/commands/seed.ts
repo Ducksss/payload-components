@@ -6,6 +6,7 @@ import { loadManifest } from '../manifest'
 import {
   assertManifestSupport,
   detectProject,
+  findExistingRequiredFile,
   verifyInstalledManifestFiles,
   verifyInstalledPayloadFragments,
 } from '../project'
@@ -17,28 +18,32 @@ import type { ComponentManifest, DetectedProject, PackageManager } from '../type
 
 const configFilePattern = /(?:^|\/)payload\.config\.(?:[cm]?[jt]s)$/
 
-const getPayloadConfigFile = (project: DetectedProject) => {
-  const configFile = project.target.requiredFiles.find((filePath) =>
-    configFilePattern.test(filePath.replaceAll('\\', '/')),
-  )
+/* A target may allow the config at more than one path (src/ vs repo root), so
+ * pick the one this project actually has rather than the first declared. */
+const getPayloadConfigFile = async (project: DetectedProject) => {
+  const configFile = await findExistingRequiredFile({
+    cwd: project.cwd,
+    pattern: configFilePattern,
+    requiredFiles: project.target.requiredFiles,
+  })
 
   if (!configFile) {
     throw new Error(
-      `Detected target "${project.target.id}" does not declare a Payload config file in requiredFiles.`,
+      `Detected target "${project.target.id}" does not declare a Payload config file in requiredFiles that exists in ${project.cwd}.`,
     )
   }
 
   return configFile
 }
 
-const createDemoSeedTarget = ({
+const createDemoSeedTarget = async ({
   manifest,
   project,
 }: {
   manifest: ComponentManifest
   project: DetectedProject
-}): SeedTarget => ({
-  configFileRelPath: getPayloadConfigFile(project),
+}): Promise<SeedTarget> => ({
+  configFileRelPath: await getPayloadConfigFile(project),
   marker: `payload-components:demo:${manifest.name}`,
   ownershipStateRelPath: path.join(
     '.payload-components',
@@ -183,7 +188,7 @@ export const seedCommand = async ({
 
   const [fileCheck, fragmentCheck] = await Promise.all([
     verifyInstalledManifestFiles({ cwd, manifest: plan }),
-    verifyInstalledPayloadFragments({ cwd, manifest: plan }),
+    verifyInstalledPayloadFragments({ cwd, hostFiles: project.hostFiles, manifest: plan }),
   ])
 
   if (!fileCheck.isValid || !fragmentCheck.isValid) {
@@ -197,7 +202,7 @@ export const seedCommand = async ({
     )
   }
 
-  const target = createDemoSeedTarget({ manifest, project })
+  const target = await createDemoSeedTarget({ manifest, project })
 
   await writeSeedScript(cwd, [manifest], target)
 

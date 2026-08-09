@@ -81,6 +81,12 @@ export function templateStarterInstallCommand(template: TemplateShowcase) {
   return `npx payload-components add ${templateStarterBlockSlug(template)}`
 }
 
+/* Installs every block the concept composes, wired, in one command. It does not
+ * seed the curated content — see TEMPLATE_CONCEPT_DISCLOSURE. */
+export function templateInstallCommand(template: Pick<TemplateShowcase, 'slug'>) {
+  return `npx payload-components add-template ${template.slug}`
+}
+
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const PAGE_PATH_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
