@@ -688,6 +688,14 @@ const applyRenderBlocksFragment = (source: string, fragment: Extract<PayloadFrag
 
   const closingLineStart = sourceWithImport.lastIndexOf('\n', objectRange.end - 1) + 1
 
+  /* An empty object written as `= {}` puts its closing brace on the same line as
+     its opening one, so there is no line above the brace to insert into —
+     inserting there would put the entry above the declaration and produce a file
+     that does not parse. Break the object open instead. */
+  if (sourceWithImport.slice(closingLineStart, objectRange.end).trim() !== '') {
+    return `${sourceWithImport.slice(0, objectRange.end)}\n${propertyLine}\n${sourceWithImport.slice(objectRange.end)}`
+  }
+
   return `${sourceWithImport.slice(0, closingLineStart)}${propertyLine}\n${sourceWithImport.slice(closingLineStart)}`
 }
 

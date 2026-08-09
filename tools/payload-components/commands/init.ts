@@ -21,6 +21,20 @@ import {
 // user answers shadcn's prompts directly.
 const runShadcnInit = async (cwd: string) => {
   const packageManager = await detectPackageManager(cwd)
+
+  /* shadcn init is what produces components.json. A project that already has one
+     is already initialized, so re-running it would re-prompt for choices the
+     project has made — and it would make `init --scaffold` non-idempotent for no
+     reason. */
+  try {
+    await access(path.join(cwd, 'components.json'))
+    printHeader(`payload-components: components.json already exists in ${cwd}; skipping shadcn init.`)
+
+    return packageManager
+  } catch {
+    // Not initialized yet — fall through and run shadcn init.
+  }
+
   const shadcn = getShadcnCommand(packageManager)
 
   printHeader(`payload-components: initializing shadcn in ${cwd}`)
@@ -30,6 +44,22 @@ const runShadcnInit = async (cwd: string) => {
     command: shadcn.command,
     cwd,
   })
+
+  /* shadcn init can exit 0 without writing components.json — a declined prompt,
+     or a non-interactive shell that cannot answer one. Scaffolding on top of
+     that would leave a project that still cannot install anything, while
+     reporting success. Stop here instead. */
+  try {
+    await access(path.join(cwd, 'components.json'))
+  } catch {
+    throw new Error(
+      [
+        `shadcn init finished without creating components.json in ${cwd}.`,
+        'That file is what registry installs read, so nothing was scaffolded.',
+        'Run "shadcn init" yourself, answer its prompts, then re-run this command.',
+      ].join('\n'),
+    )
+  }
 
   return packageManager
 }

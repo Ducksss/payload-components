@@ -8,7 +8,8 @@ import React, { Fragment } from 'react'
  * inserts the block's import above `const blockComponents` and its
  * `blockType: Component` entry inside that object. Keep both anchors intact.
  */
-const blockComponents = {}
+const blockComponents = {
+}
 
 type RenderBlocksProps = {
   blocks?: Array<{ blockType?: string; id?: null | string }> | null
@@ -24,19 +25,25 @@ export const RenderBlocks: React.FC<RenderBlocksProps> = ({ blocks }) => {
       {blocks.map((block, index) => {
         const { blockType } = block
 
-        if (!blockType || !(blockType in blockComponents)) {
+        if (!blockType) {
           return null
         }
 
-        const Block = blockComponents[blockType as keyof typeof blockComponents] as
-          | React.FC<Record<string, unknown>>
-          | undefined
+        /* The map is heterogeneous by construction — each installed block
+           contributes its own props type — and the key is only known at runtime,
+           so the lookup is widened to `unknown` and narrowed back by a real
+           runtime check. Indexing the literal directly would type this as `never`
+           while the map is empty and stop compiling the moment a block is
+           installed into it. */
+        const Block = (blockComponents as Record<string, unknown>)[blockType]
 
-        if (!Block) {
+        if (typeof Block !== 'function') {
           return null
         }
 
-        return <Block key={index} {...block} />
+        const BlockComponent = Block as React.ComponentType<Record<string, unknown>>
+
+        return <BlockComponent key={index} {...block} />
       })}
     </Fragment>
   )
