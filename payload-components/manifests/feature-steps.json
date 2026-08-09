@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "feature-steps",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Feature Steps",
   "description": "A numbered Payload steps block for sequential, how-it-works feature flows.",
   "registryItemName": "feature-steps",

@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "call-to-action-centered",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Call To Action Centered",
   "description": "A centered call-to-action Payload block: heading, supporting copy, and one or two CTA links.",
   "registryItemName": "call-to-action-centered",

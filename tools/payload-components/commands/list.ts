@@ -14,7 +14,11 @@ const formatState = (entry: InventoryEntry) => {
   }
 
   if (entry.updateAvailable) {
-    return `${entry.installed.manifestVersion} → ${entry.version} — run "payload-components update ${entry.name}"`
+    const suffix = entry.breakingUpdate
+      ? ' — BREAKING, run "payload-components diff" first'
+      : ` — run "payload-components update ${entry.name}"`
+
+    return `${entry.installed.manifestVersion} → ${entry.version}${suffix}`
   }
 
   return `${entry.installed.manifestVersion} up to date`

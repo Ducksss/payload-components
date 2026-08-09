@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "feature-cards-media",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Feature Cards Media",
   "description": "A two-column feature layout with independent media, optional icons, and CTA links.",
   "registryItemName": "feature-cards-media",

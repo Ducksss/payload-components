@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "integration-split",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Integration Split",
   "description": "A two-column section pairing a featured-mark logo cluster with a heading, subtext, and CTA, installed as a wired Payload block.",
   "registryItemName": "integration-split",

@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "content-list-columns",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Content List Columns",
   "description": "A serif-headed content section with a two-column labeled-term list, installed as a wired Payload block.",
   "registryItemName": "content-list-columns",

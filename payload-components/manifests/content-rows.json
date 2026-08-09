@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "content-rows",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Content Rows",
   "description": "A content section with an intro and a uniform stack of media-and-text rows, installed as a wired Payload block.",
   "registryItemName": "content-rows",

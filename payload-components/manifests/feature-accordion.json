@@ -2,6 +2,7 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "feature-accordion",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Feature Accordion",
   "description": "A synchronized feature accordion with editor-selected icons, optional media, and CTA links.",
   "registryItemName": "feature-accordion",
