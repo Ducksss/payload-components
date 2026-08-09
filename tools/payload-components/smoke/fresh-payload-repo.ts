@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 
 import { chromium } from '@playwright/test'
 
+import { BASE_BUNDLE_FILES } from '../base-bundle'
 import { loadManifest } from '../manifest'
 import {
   runCommand as runBoundedCommand,
@@ -18,10 +19,18 @@ import type { ComponentManifest } from '../types'
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
 export const SMOKE_SHARD_COUNT = 4
 
+/* 'website' scaffolds the official starter template and runs the full pipeline
+ * (install, seed, build, boot, assert in a browser). 'bare' scaffolds a blank
+ * project and proves the starter base bundle makes it installable and that the
+ * result typechecks — the one thing the website scenario cannot show, because
+ * that template already ships the primitives the bundle exists to supply. */
+export type SmokeScenario = 'all' | 'bare' | 'website'
+
 export type SmokeOptions = {
   keepTemp: boolean
   components?: string[]
   registryUrl?: string
+  scenario: SmokeScenario
   shardIndex?: number
   timeoutMs: number
 }
@@ -30,6 +39,7 @@ type CreatePayloadAppArgsInput = {
   dbConnectionString?: string
   payloadVersion?: string
   projectName: string
+  template?: 'blank' | 'website'
 }
 
 type DirectShadcnAddArgsInput = {
@@ -49,6 +59,7 @@ type CommandInput = {
 }
 
 type SmokeSummary = {
+  bareTargetPath?: string
   directTargetPath?: string
   failureStage?: string
   registryUrl: string
@@ -168,6 +179,7 @@ export const parseSmokeArgs = (argv: string[]): SmokeOptions => {
   const options: SmokeOptions = {
     keepTemp: false,
     registryUrl: undefined,
+    scenario: 'all',
     shardIndex: undefined,
     timeoutMs: DEFAULT_TIMEOUT_MS,
   }
@@ -185,6 +197,20 @@ export const parseSmokeArgs = (argv: string[]): SmokeOptions => {
         .split(',')
         .map((component) => component.trim())
         .filter(Boolean)
+      index += 1
+      continue
+    }
+
+    if (arg === '--scenario') {
+      const rawScenario = parseNextValue(argv, index, arg)
+
+      if (rawScenario !== 'all' && rawScenario !== 'bare' && rawScenario !== 'website') {
+        throw new Error(
+          `--scenario must be one of "all", "bare", or "website". Received "${rawScenario}".`,
+        )
+      }
+
+      options.scenario = rawScenario
       index += 1
       continue
     }
@@ -258,6 +284,7 @@ export const getCreatePayloadAppArgs = ({
   dbConnectionString,
   payloadVersion,
   projectName,
+  template = 'website',
 }: CreatePayloadAppArgsInput) => {
   const args = [
     'dlx',
@@ -265,7 +292,7 @@ export const getCreatePayloadAppArgs = ({
     '-n',
     projectName,
     '-t',
-    'website',
+    template,
     '--db',
     dbConnectionString ? 'postgres' : 'sqlite',
   ]
@@ -887,6 +914,158 @@ const packLocalPackage = async (tempRoot: string, timeoutMs: number) => {
   return path.join(tempRoot, tarball)
 }
 
+/* Blocks chosen to exercise every consumer primitive the base bundle supplies:
+ * hero-basic pulls in cn + CMSLink + linkGroup, and content-image-lead adds
+ * Media. A block that only used cn would let three of the four ship unproven. */
+export const BARE_SMOKE_COMPONENTS = ['hero-basic', 'content-image-lead'] as const
+
+/* Blocks import their generated types from @/payload-types, which only exists
+ * after `generate:types` runs against a config that has the Pages collection —
+ * i.e. after the base bundle is installed. */
+const runBarePayloadBaseBundleSmoke = async ({
+  dbConnectionString,
+  stageLog,
+  tarballPath,
+  tempRoot,
+  timeoutMs,
+}: {
+  dbConnectionString?: string
+  stageLog: string[]
+  tarballPath: string
+  tempRoot: string
+  timeoutMs: number
+}) => {
+  stageLog.push('bare-payload-base-bundle-smoke')
+
+  const payloadVersion = await getLocalPayloadVersion()
+  const projectName = 'payload-components-bare-target'
+  const targetPath = path.join(tempRoot, projectName)
+  const normalizedDbConnectionString = normalizeSmokeDatabaseConnectionString(dbConnectionString)
+
+  await runCommand({
+    args: getCreatePayloadAppArgs({
+      dbConnectionString: normalizedDbConnectionString,
+      payloadVersion,
+      projectName,
+      template: 'blank',
+    }),
+    command: 'pnpm',
+    cwd: tempRoot,
+    stage: 'create bare Payload project',
+    timeoutMs,
+  })
+
+  /* Assert the starting point really is bare. If create-payload-app ever starts
+     shipping these, this scenario would silently stop proving anything. */
+  for (const projectPath of ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts']) {
+    const present = await access(path.join(targetPath, projectPath)).then(
+      () => true,
+      () => false,
+    )
+
+    if (present) {
+      throw new Error(
+        `Bare smoke expected a blank project, but "${projectPath}" already exists — this scenario would no longer prove the base bundle is what makes the project installable.`,
+      )
+    }
+  }
+
+  await runCommand({
+    args: ['add', tarballPath],
+    command: 'pnpm',
+    cwd: targetPath,
+    stage: 'install packed payload-components tarball into bare project',
+    timeoutMs,
+  })
+
+  /* The blank Payload template ships no Tailwind, and shadcn init refuses without
+     it. Every installed block is Tailwind-classed, so this is a genuine
+     prerequisite of the registry rather than a quirk of this scenario — the
+     website template simply hides it by shipping Tailwind already. Set it up the
+     way the docs tell a user to, then continue. */
+  await runCommand({
+    args: ['add', 'tailwindcss', '@tailwindcss/postcss', 'postcss'],
+    command: 'pnpm',
+    cwd: targetPath,
+    stage: 'install Tailwind in bare project',
+    timeoutMs,
+  })
+  await writeFile(
+    path.join(targetPath, 'postcss.config.mjs'),
+    `const config = {\n  plugins: {\n    '@tailwindcss/postcss': {},\n  },\n}\n\nexport default config\n`,
+    'utf8',
+  )
+
+  const bareStylesPath = path.join(targetPath, 'src', 'app', '(frontend)', 'styles.css')
+  const bareStyles = await readFile(bareStylesPath, 'utf8').catch(() => '')
+
+  if (!bareStyles.includes('@import \'tailwindcss\'')) {
+    await writeFile(bareStylesPath, `@import 'tailwindcss';\n\n${bareStyles}`, 'utf8')
+  }
+
+  /* shadcn init is interactive about its base and preset, so the scenario runs
+     it non-interactively here. `payload-components init --scaffold` then skips
+     that step (components.json already exists) and does the part under test. */
+  await runCommand({
+    /* --yes alone still leaves the preset prompt, which a non-interactive shell
+       cannot answer; --preset is what makes this actually unattended. */
+    args: [
+      'dlx',
+      shadcnCliPackage,
+      'init',
+      '--cwd',
+      targetPath,
+      '--yes',
+      '--base',
+      'base',
+      '--preset',
+      'nova',
+    ],
+    command: 'pnpm',
+    cwd: targetPath,
+    stage: 'initialize shadcn in bare project',
+    timeoutMs,
+  })
+
+  await runCommand({
+    args: ['exec', 'payload-components', 'init', '--scaffold'],
+    command: 'pnpm',
+    cwd: targetPath,
+    stage: 'payload-components init --scaffold in bare project',
+    timeoutMs,
+  })
+
+  for (const projectPath of BASE_BUNDLE_FILES) {
+    await access(path.join(targetPath, projectPath)).catch(() => {
+      throw new Error(`Base bundle did not create "${projectPath}" in the bare project.`)
+    })
+  }
+
+  for (const component of BARE_SMOKE_COMPONENTS) {
+    await runCommand({
+      args: ['exec', 'payload-components', 'add', component],
+      command: 'pnpm',
+      cwd: targetPath,
+      stage: `payload-components add ${component} in bare project`,
+      timeoutMs,
+    })
+  }
+
+  /* The whole point of this scenario: the copied target code, the installed
+     blocks, and the generated types all have to typecheck together. That is what
+     cannot be proven inside this repository, where payload-components/source is
+     excluded from tsc and there is no payload dependency. */
+  await runCommand({
+    args: ['exec', 'tsc', '--noEmit'],
+    command: 'pnpm',
+    cwd: targetPath,
+    stage: 'typecheck bare project with the base bundle and installed blocks',
+    timeoutMs,
+  })
+
+  return { targetPath }
+}
+
 const runFreshPayloadRepoSmoke = async ({
   dbConnectionString,
   components,
@@ -1107,27 +1286,42 @@ export const runSmoke = async (options: SmokeOptions) => {
       summary.registryUrl = options.registryUrl
     }
 
-    summary.directTargetPath = await runDirectShadcnUrlSmoke({
-      components,
-      manifests,
-      registryUrl: summary.registryUrl,
-      stageLog: summary.stageLog,
-      tempRoot,
-      timeoutMs: options.timeoutMs,
-    })
+    if (options.scenario !== 'bare') {
+      summary.directTargetPath = await runDirectShadcnUrlSmoke({
+        components,
+        manifests,
+        registryUrl: summary.registryUrl,
+        stageLog: summary.stageLog,
+        tempRoot,
+        timeoutMs: options.timeoutMs,
+      })
 
-    const freshResult = await runFreshPayloadRepoSmoke({
-      dbConnectionString: process.env.POSTGRES_URL,
-      components,
-      manifests,
-      stageLog: summary.stageLog,
-      tarballPath,
-      tempRoot,
-      timeoutMs: options.timeoutMs,
-    })
+      const freshResult = await runFreshPayloadRepoSmoke({
+        dbConnectionString: process.env.POSTGRES_URL,
+        components,
+        manifests,
+        stageLog: summary.stageLog,
+        tarballPath,
+        tempRoot,
+        timeoutMs: options.timeoutMs,
+      })
 
-    summary.routeUrl = freshResult.routeUrl
-    summary.targetPath = freshResult.targetPath
+      summary.routeUrl = freshResult.routeUrl
+      summary.targetPath = freshResult.targetPath
+    }
+
+    if (options.scenario !== 'website') {
+      const bareResult = await runBarePayloadBaseBundleSmoke({
+        dbConnectionString: process.env.POSTGRES_URL,
+        stageLog: summary.stageLog,
+        tarballPath,
+        tempRoot,
+        timeoutMs: options.timeoutMs,
+      })
+
+      summary.bareTargetPath = bareResult.targetPath
+    }
+
     success = true
     await writeSummary(summary)
   } catch (error) {
