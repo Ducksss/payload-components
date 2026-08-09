@@ -1,0 +1,73 @@
+---
+title: Footer Centered
+description: A centred brand, tagline, and navigation above a rule carrying copyright and policy links.
+icon: PanelBottom
+---
+
+<ComponentPreview slug="footer-centered" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add footer-centered
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/footer-centered.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="footer-centered" />
+
+## Content model
+
+`logo`, `brandLabel`, and `copyright` come from the shared `footerFields` base that every Footer
+variant spreads; `tagline`, `links`, and `legalLinks` are specific to this variant. `legalLinks` is
+optional — leave it empty and the bottom rule carries the copyright alone.
+
+<TypeTable
+  type={{
+    logo: { type: 'upload', description: 'Brand mark from Media. Falls back to brandLabel when empty. Shared base field.' },
+    brandLabel: { type: 'text', required: true, description: 'Accessible name for the brand, and the visible wordmark when no logo is set. Shared base field.' },
+    copyright: { type: 'text', required: true, description: 'The copyright line on the bottom rule. Shared base field.' },
+    tagline: { type: 'textarea', description: 'Optional short line under the brand.' },
+    links: { type: 'array', required: true, description: 'One to eight primary navigation links, centred under the brand.' },
+    legalLinks: { type: 'array', description: 'Up to four policy links shown beside the copyright.' },
+  }}
+/>
+
+Each item in `links` and `legalLinks` carries:
+
+<TypeTable
+  type={{
+    label: { type: 'text', required: true, description: 'Visible link text.' },
+    href: { type: 'text', required: true, description: 'Same-origin path, HTTPS URL, mailto:, or tel:. Anything else is rejected in the admin and skipped at render.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="footer-centered" />
+
+Footer blocks render inside the Pages layout like every other block. To use one as site-wide chrome
+instead, render the component directly in your root layout and pass it content from a global.
+
+## Requirements
+
+<ComponentRequirements slug="footer-centered" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.
+
+## In this family
+
+<ComponentFamily slug="footer-centered" />

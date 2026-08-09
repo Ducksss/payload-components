@@ -1,8 +1,9 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "stats-proof",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "changelog": [
+    { "version": "0.3.0", "summary": "Moved the eyebrow/title heading and the metric shape onto the shared statsFields base now that the Stats family has sibling variants. Field shape and stored data are unchanged." },
     { "version": "0.2.0", "summary": "Added an optional logoLabel text field that renders when no logo upload is set." },
     { "version": "0.1.0", "summary": "Initial release." }
   ],
@@ -19,7 +20,11 @@
     "payloadMajors": [3],
     "nextMajors": [15, 16]
   },
-  "files": ["src/blocks/StatsProof/config.ts", "src/blocks/StatsProof/Component.tsx"],
+  "files": [
+    "src/blocks/shared/statsFields.ts",
+    "src/blocks/StatsProof/config.ts",
+    "src/blocks/StatsProof/Component.tsx"
+  ],
   "payloadFragments": [
     {
       "kind": "renderBlocks",

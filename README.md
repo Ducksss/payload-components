@@ -291,11 +291,17 @@ drift from the registry.
 | `testimonials-bento`      | `npx payload-components add testimonials-bento`      |
 | `testimonials-wall`       | `npx payload-components add testimonials-wall`       |
 | `stats-proof`             | `npx payload-components add stats-proof`             |
+| `stats-grid`              | `npx payload-components add stats-grid`              |
+| `stats-card`              | `npx payload-components add stats-card`              |
+| `stats-inline`            | `npx payload-components add stats-inline`            |
 | `pricing-cards`           | `npx payload-components add pricing-cards`           |
 | `pricing-cards-muted`     | `npx payload-components add pricing-cards-muted`     |
 | `pricing-cards-cta`       | `npx payload-components add pricing-cards-cta`       |
 | `pricing-split`           | `npx payload-components add pricing-split`           |
 | `pricing-enterprise`      | `npx payload-components add pricing-enterprise`      |
+| `footer-columns`          | `npx payload-components add footer-columns`          |
+| `footer-simple`           | `npx payload-components add footer-simple`           |
+| `footer-centered`         | `npx payload-components add footer-centered`         |
 
 <!-- COMPONENT-INVENTORY:END -->
 

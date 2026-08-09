@@ -123,11 +123,17 @@ Current components:
   testimonials-bento
   testimonials-wall
   stats-proof
+  stats-grid
+  stats-card
+  stats-inline
   pricing-cards
   pricing-cards-muted
   pricing-cards-cta
   pricing-split
   pricing-enterprise
+  footer-columns
+  footer-simple
+  footer-centered
 `
 
 export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {

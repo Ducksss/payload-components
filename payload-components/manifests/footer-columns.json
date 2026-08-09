@@ -1,0 +1,82 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "footer-columns",
+  "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "title": "Footer Columns",
+  "description": "A full site footer with a brand block, labelled columns of navigation links, and a copyright rule, installed as a wired Payload block.",
+  "registryItemName": "footer-columns",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/safeUrls.ts",
+    "src/blocks/shared/footerUrls.ts",
+    "src/blocks/shared/footerFields.ts",
+    "src/blocks/FooterColumns/config.ts",
+    "src/blocks/FooterColumns/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FooterColumnsBlock",
+      "importPath": "@/blocks/FooterColumns/Component",
+      "blockSlug": "footerColumns"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FooterColumns",
+      "importPath": "../../blocks/FooterColumns/config",
+      "blockName": "FooterColumns"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "A brand block beside labelled link columns, closed by a copyright rule."
+  },
+  "sampleContent": {
+    "blockType": "footerColumns",
+    "brandLabel": "Acme",
+    "tagline": "The analytics workspace product teams open every day.",
+    "copyright": "© Acme 2026 — Present",
+    "groups": [
+      {
+        "name": "Product",
+        "links": [
+          { "label": "Security", "href": "/security" },
+          { "label": "Customization", "href": "/customization" },
+          { "label": "Enterprise", "href": "/enterprise" },
+          { "label": "Changelog", "href": "/changelog" }
+        ]
+      },
+      {
+        "name": "Company",
+        "links": [
+          { "label": "About", "href": "/about" },
+          { "label": "Customers", "href": "/customers" },
+          { "label": "Careers", "href": "/careers" },
+          { "label": "Blog", "href": "/blog" }
+        ]
+      },
+      {
+        "name": "Legal",
+        "links": [
+          { "label": "Licence", "href": "/licence" },
+          { "label": "Privacy policy", "href": "/privacy" },
+          { "label": "Terms of service", "href": "/terms" },
+          { "label": "Cookie policy", "href": "/cookies" }
+        ]
+      }
+    ]
+  }
+}

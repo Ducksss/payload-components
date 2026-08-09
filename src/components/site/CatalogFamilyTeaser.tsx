@@ -34,6 +34,7 @@ const familyRepresentatives: Record<string, string> = {
   embed: 'embed-basic',
   comparator: 'comparator-grid',
   pricing: 'pricing-cards',
+  footer: 'footer-columns',
 }
 
 type PageFamily = {

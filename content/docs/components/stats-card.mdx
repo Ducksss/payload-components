@@ -1,0 +1,67 @@
+---
+title: Stats Card
+description: A centred heading above one divided panel that splits metrics into equal columns.
+icon: ChartNoAxesCombined
+---
+
+<ComponentPreview slug="stats-card" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add stats-card
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-card.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="stats-card" />
+
+## Content model
+
+`eyebrow` and `title` come from the shared `statsFields` base that every Stats variant spreads;
+`metrics` is specific to this variant. The panel distributes its columns evenly from the row count,
+so two, three, or four metrics all stay balanced without a layout setting.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title. Shared base field.' },
+    title: { type: 'text', required: true, description: 'The stats band heading. Shared base field.' },
+    metrics: { type: 'array', required: true, description: 'Two to four metrics, one per panel column.' },
+  }}
+/>
+
+Each item in `metrics` carries:
+
+<TypeTable
+  type={{
+    value: { type: 'text', required: true, description: 'Display value such as “+1,200” or “56%”.' },
+    label: { type: 'text', required: true, description: 'Short explanation of the metric.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="stats-card" />
+
+## Requirements
+
+<ComponentRequirements slug="stats-card" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.
+
+## In this family
+
+<ComponentFamily slug="stats-card" />

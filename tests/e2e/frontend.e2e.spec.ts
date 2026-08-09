@@ -746,7 +746,7 @@ test.describe('Light shadcn frontend', () => {
         title: new RegExp(homeMetadataTitle),
       },
       {
-        link: /Browse all 67 installable components/,
+        link: /Browse all 73 installable components/,
         path: '/blog',
         title: new RegExp(blogTitle),
       },

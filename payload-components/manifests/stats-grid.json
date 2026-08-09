@@ -1,0 +1,57 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "stats-grid",
+  "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "title": "Stats Grid",
+  "description": "A stats band with a heading, optional intro, and a responsive grid of large string metrics on rule-topped columns, installed as a wired Payload block.",
+  "registryItemName": "stats-grid",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/statsFields.ts",
+    "src/blocks/StatsGrid/config.ts",
+    "src/blocks/StatsGrid/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "StatsGridBlock",
+      "importPath": "@/blocks/StatsGrid/Component",
+      "blockSlug": "statsGrid"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "StatsGrid",
+      "importPath": "../../blocks/StatsGrid/config",
+      "blockName": "StatsGrid"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Heading and intro above a responsive grid of large metrics on rule-topped columns."
+  },
+  "sampleContent": {
+    "blockType": "statsGrid",
+    "eyebrow": "By the numbers",
+    "title": "Growth teams can measure.",
+    "description": "Every workspace reports the same governed metrics, so the numbers on this page are the numbers in the product.",
+    "metrics": [
+      { "value": "90+", "label": "Integrations" },
+      { "value": "56%", "label": "Productivity boost" },
+      { "value": "24/7", "label": "Customer support" },
+      { "value": "10k+", "label": "Active users" }
+    ]
+  }
+}

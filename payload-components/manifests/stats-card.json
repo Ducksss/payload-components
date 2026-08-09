@@ -1,0 +1,55 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "stats-card",
+  "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "title": "Stats Card",
+  "description": "A centred stats band whose metrics sit in one divided panel that splits into equal columns on wider screens, installed as a wired Payload block.",
+  "registryItemName": "stats-card",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/statsFields.ts",
+    "src/blocks/StatsCard/config.ts",
+    "src/blocks/StatsCard/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "StatsCardBlock",
+      "importPath": "@/blocks/StatsCard/Component",
+      "blockSlug": "statsCard"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "StatsCard",
+      "importPath": "../../blocks/StatsCard/config",
+      "blockName": "StatsCard"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "A centred heading above one divided panel of equal metric columns."
+  },
+  "sampleContent": {
+    "blockType": "statsCard",
+    "eyebrow": "Adoption",
+    "title": "Trusted where the numbers matter.",
+    "metrics": [
+      { "value": "+1,200", "label": "Stars on GitHub" },
+      { "value": "56%", "label": "Conversion rate" },
+      { "value": "+500", "label": "Powered apps" }
+    ]
+  }
+}

@@ -214,13 +214,17 @@ describe('curated Tailark ports', () => {
     )
     expect(site).toContain("stats: { family: 'pages', label: 'Stats' }")
     expect(pageTree).toContain("key: 'stats', label: 'Stats'")
+    // The Stats family gained sibling variants, so stats-proof now spreads the
+    // shared statsFields base and ships it alongside its own two files.
     expect(JSON.parse(manifest).files).toEqual([
+      'src/blocks/shared/statsFields.ts',
       'src/blocks/StatsProof/config.ts',
       'src/blocks/StatsProof/Component.tsx',
     ])
+    expect(config).toContain("from '@/blocks/shared/statsFields'")
     expect(docs).toContain('npx payload-components add stats-proof')
     expect(docs).toContain('tailark/blocks')
-    expect(docs).not.toContain('## In this family')
+    expect(docs).toContain('## In this family')
   })
 
   it('ships contact-routing-form with safe channels and form fallbacks', async () => {
