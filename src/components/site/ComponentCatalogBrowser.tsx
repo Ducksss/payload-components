@@ -5,9 +5,17 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ArrowUpRight, Search, X } from 'lucide-react'
 
+import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { ComponentCard } from '@/components/site/ComponentCard'
 import { UpcomingComponentCard } from '@/components/site/ComponentGrid'
-import type { ComponentEntry, UpcomingComponent } from '@/lib/site'
+import {
+  composerClearLabel,
+  composerCopyLabel,
+  composerInstallCommand,
+  composerTrayLabel,
+  type ComponentEntry,
+  type UpcomingComponent,
+} from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
 type FamilyKey = 'pages' | 'posts'
@@ -55,6 +63,7 @@ export function ComponentCatalogBrowser({
 }: ComponentCatalogBrowserProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const knownSlugs = useMemo(() => new Set(pages.map((component) => component.slug)), [pages])
 
   const readUrlFilters = useCallback(() => {
     const params = new URLSearchParams(window.location.search)
@@ -65,17 +74,23 @@ export function ComponentCatalogBrowser({
       type,
       category: rawCategory in categories ? rawCategory : '',
       query: params.get('q') ?? '',
+      selected: parseSelection(params.get('add'), knownSlugs),
     }
-  }, [categories])
+  }, [categories, knownSlugs])
   const rawType = searchParams.get('type')
   const typeFromUrl: FamilyKey | 'all' =
     rawType === 'pages' || rawType === 'posts' ? rawType : 'all'
   const rawCategory = searchParams.get('category') ?? ''
   const categoryFromUrl = rawCategory in categories ? rawCategory : ''
   const query = searchParams.get('q') ?? ''
+  const selectionFromUrl = useMemo(
+    () => parseSelection(searchParams.get('add'), knownSlugs),
+    [knownSlugs, searchParams],
+  )
   const [localQuery, setLocalQuery] = useState(query)
   const [localType, setLocalType] = useState<FamilyKey | 'all'>(typeFromUrl)
   const [localCategory, setLocalCategory] = useState(categoryFromUrl)
+  const [selected, setSelected] = useState<string[]>(selectionFromUrl)
   const type = localType
   const category = localCategory
   // URL search params are external state; mirror them after router/popstate updates.
@@ -84,7 +99,8 @@ export function ComponentCatalogBrowser({
     setLocalQuery(query)
     setLocalType(typeFromUrl)
     setLocalCategory(categoryFromUrl)
-  }, [query, typeFromUrl, categoryFromUrl])
+    setSelected(selectionFromUrl)
+  }, [query, typeFromUrl, categoryFromUrl, selectionFromUrl])
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const params = new URLSearchParams(window.location.search)
@@ -102,6 +118,7 @@ export function ComponentCatalogBrowser({
       setLocalQuery(next.query)
       setLocalType(next.type)
       setLocalCategory(next.category)
+      setSelected(next.selected)
     }
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
@@ -158,6 +175,25 @@ export function ComponentCatalogBrowser({
     setLocalQuery(next.query)
     setLocalType(next.type)
     setLocalCategory(next.category)
+    setSelected(next.selected)
+  }
+
+  /* Selection is shareable state: the URL carries it so a curated set can be
+     sent to a teammate, and it survives back/forward like the filters do. */
+  function writeSelection(nextSelection: string[]) {
+    setSelected(nextSelection)
+
+    const params = new URLSearchParams(window.location.search)
+    if (nextSelection.length > 0) params.set('add', nextSelection.join(','))
+    else params.delete('add')
+    const queryString = params.toString()
+    window.history.replaceState(null, '', queryString ? `${pathname}?${queryString}` : pathname)
+  }
+
+  function toggleSelected(slug: string) {
+    writeSelection(
+      selected.includes(slug) ? selected.filter((entry) => entry !== slug) : [...selected, slug],
+    )
   }
 
   const showPages = activeFamily === 'all' || activeFamily === 'pages'
@@ -310,7 +346,12 @@ export function ComponentCatalogBrowser({
                   ) : null}
                   <div className="columns-1 gap-4 sm:columns-2 xl:columns-3">
                     {pagesCards.map((component) => (
-                      <ComponentCard key={component.slug} component={component} />
+                      <ComponentCard
+                        key={component.slug}
+                        component={component}
+                        onToggleSelect={toggleSelected}
+                        selected={selected.includes(component.slug)}
+                      />
                     ))}
 
                     {localQuery === '' && !category ? (
@@ -361,7 +402,66 @@ export function ComponentCatalogBrowser({
           )}
         </div>
       </div>
+
+      <ComposerTray onClear={() => writeSelection([])} selected={selected} />
     </section>
+  )
+}
+
+/* Only slugs that exist in this catalog, deduplicated and order-preserving, so a
+   hand-edited or stale ?add= cannot put an unknown name in the command. */
+function parseSelection(raw: null | string, knownSlugs: ReadonlySet<string>) {
+  if (!raw) return []
+
+  return [...new Set(raw.split(',').map((value) => value.trim()))].filter((slug) =>
+    knownSlugs.has(slug),
+  )
+}
+
+/* Docked bar that turns the selection into the one command that installs all of
+   it. `payload-components add` accepts any number of names, so this is a real
+   single command, not a list to run one by one. Rendered only when something is
+   selected: an always-present bar would cover the last row of the wall. */
+function ComposerTray({ onClear, selected }: { onClear: () => void; selected: string[] }) {
+  if (selected.length === 0) return null
+
+  const command = composerInstallCommand(selected)
+
+  return (
+    <div
+      aria-label={composerTrayLabel}
+      role="region"
+      className="sticky bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur"
+    >
+      <div className="container flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
+        <p
+          aria-live="polite"
+          className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground"
+        >
+          {selected.length} selected
+        </p>
+        {/* The command grows with the selection, so it scrolls inside its own
+            box — the page itself must never scroll horizontally. */}
+        <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap rounded-md border border-border bg-muted/40 px-2.5 py-1.5 font-mono text-xs text-foreground">
+          {command}
+        </code>
+        <span className="flex shrink-0 items-center gap-2">
+          <CommandCopyButton
+            ariaLabel={composerCopyLabel}
+            command={command}
+            label={composerCopyLabel}
+          />
+          <button
+            type="button"
+            onClick={onClear}
+            className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            <X className="size-3.5" aria-hidden="true" />
+            {composerClearLabel}
+          </button>
+        </span>
+      </div>
+    </div>
   )
 }
 

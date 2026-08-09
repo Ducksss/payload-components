@@ -1,3 +1,4 @@
+import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 
 import Ajv2020 from 'ajv/dist/2020.js'
@@ -110,6 +111,21 @@ const ensureRecoveryMatchesFragments = (manifest: ComponentManifest) => {
       )
     }
   }
+}
+
+export const listComponentNames = async () => {
+  const files = await readdir(manifestDir)
+
+  return files
+    .filter((file) => file.endsWith('.json'))
+    .map((file) => file.replace(/\.json$/, ''))
+    .sort()
+}
+
+export const loadAllManifests = async () => {
+  const componentNames = await listComponentNames()
+
+  return await Promise.all(componentNames.map((componentName) => loadManifest(componentName)))
 }
 
 export const loadManifest = async (componentName: string): Promise<ComponentManifest> => {

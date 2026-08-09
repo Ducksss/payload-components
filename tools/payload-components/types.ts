@@ -54,6 +54,9 @@ export type InstallStateEntry = {
   installedAt: string | null
   lastAttemptAt: string
   lastError: InstallError | null
+  /* Present only when the component was installed with --localized, so state
+   * files for ordinary installs are unchanged. */
+  localized?: boolean
   manifestVersion: string
   patchedFiles: string[]
   registryItemName: string
@@ -87,20 +90,35 @@ export type SupportMatrix = {
   version: number
 }
 
+/* The two files every install patches. A target declares candidate paths for
+ * each because the same page-blocks shape lives at different paths across real
+ * repos (flat Pages file, no src directory); the first candidate that exists
+ * and carries every anchor wins. */
+export type HostFileRole = 'pagesLayout' | 'renderBlocks'
+
+export type HostFileRequirement = {
+  anchors: string[]
+  candidates: string[]
+}
+
+/* Each entry must exist. An array means "any one of these paths". */
+export type RequiredFile = string | string[]
+
 export type SupportedTarget = {
   allowedNextMajors: number[]
   allowedPayloadMajors: number[]
   description: string
+  hostFiles: Record<HostFileRole, HostFileRequirement>
   id: string
-  requiredAnchors: Array<{
-    file: string
-    text: string
-  }>
-  requiredFiles: string[]
+  requiredFiles: RequiredFile[]
 }
+
+/* Where this project actually keeps the files the installer patches. */
+export type ResolvedHostFiles = Record<HostFileRole, string>
 
 export type DetectedProject = {
   cwd: string
+  hostFiles: ResolvedHostFiles
   lockfilePath: string
   nextMajor: number
   packageManager: PackageManager

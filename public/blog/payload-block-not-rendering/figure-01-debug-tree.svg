@@ -300,7 +300,7 @@
   try {
     const [project, manifests] = await Promise.all([detectProject(cwd), loadKnownManifests()])
 
-    log(" data-evidence-truncated="true">
+    logProjectSummary(project)" data-evidence-truncated="true">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
   <text class="evidence-line" x="48" y="626">export const doctorCommand = async ({ cwd }: { cwd: string }) =&gt; { ·</text>
 <text class="evidence-line" x="48" y="641">let isHealthy = true · try { · const [project, manifests] = await …</text>

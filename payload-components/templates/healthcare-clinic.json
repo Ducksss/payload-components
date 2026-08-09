@@ -1,0 +1,97 @@
+{
+  "category": "healthcare",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "contact-routing-form",
+    "content-columns",
+    "content-community",
+    "content-image-frame",
+    "content-image-lead",
+    "content-quote",
+    "content-rows",
+    "content-stats",
+    "faq-accordion",
+    "faq-card",
+    "faq-grouped",
+    "faq-split",
+    "feature-icon-grid",
+    "feature-steps",
+    "hero-basic",
+    "team-grid",
+    "team-roster",
+    "testimonials-quote"
+  ],
+  "description": "Alder Practice is a fictional family clinic on Alder Road: the calmest, plainest concept in the gallery, written for someone who is unwell or in a hurry. Five pages — Home, Services, Our Team, Visiting Us and Book — composed entirely from blocks in the open registry, on soft alder green and sky over warm white, with body copy and muted text held well above the AA floor.",
+  "pages": [
+    {
+      "components": [
+        "hero-basic",
+        "content-columns",
+        "feature-icon-grid",
+        "feature-steps",
+        "team-grid",
+        "content-community",
+        "faq-accordion",
+        "call-to-action-centered"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Alder Practice — A family clinic on Alder Road"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-rows",
+        "feature-icon-grid",
+        "content-columns",
+        "faq-grouped",
+        "call-to-action-boxed"
+      ],
+      "label": "Services",
+      "path": "services",
+      "title": "Alder Practice — Services"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "team-roster",
+        "content-quote",
+        "content-image-lead",
+        "testimonials-quote",
+        "call-to-action-boxed"
+      ],
+      "label": "Our Team",
+      "path": "team",
+      "title": "Alder Practice — Our Team"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-image-frame",
+        "content-columns",
+        "content-stats",
+        "faq-card",
+        "call-to-action-centered"
+      ],
+      "label": "Visiting Us",
+      "path": "visiting",
+      "title": "Alder Practice — Visiting Us"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "contact-routing-form",
+        "faq-split"
+      ],
+      "label": "Book",
+      "path": "book",
+      "title": "Alder Practice — Book an appointment"
+    }
+  ],
+  "revision": 2,
+  "slug": "healthcare-clinic",
+  "summary": "A calm, plainspoken site for a fictional family clinic.",
+  "title": "Healthcare Clinic",
+  "version": 1
+}

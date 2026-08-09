@@ -1,0 +1,240 @@
+---
+title: CLI reference
+seoTitle: Payload Components CLI Commands for Payload CMS
+description: Every Payload Components CLI command — install blocks and templates, localize fields, diff and update recorded installs, remove a block, and expose the registry to a coding agent.
+icon: SquareTerminal
+---
+
+Every command is read-only unless it says otherwise, takes `--cwd <path>` to target a
+project other than the working directory, and refuses to run against a project shape it
+does not recognise. Start with [Installation](/docs/installation) for the install pipeline
+itself; this page is the surface.
+
+```bash
+npx payload-components --help
+```
+
+## Install blocks
+
+`add` accepts any number of component names and installs each through the full wrapper
+pipeline, so one command can stand up a whole page:
+
+```bash
+npx payload-components add hero-basic faq-card pricing-cards
+```
+
+The [component catalog](/components) builds this command for you: tick components as you
+browse and copy the single command from the tray at the bottom.
+
+Repeats are collapsed, and each name is installed exactly once. Because every stage is
+idempotent, a name that is already installed is a no-op rather than an error.
+
+| Flag          | Effect                                                                                  |
+| ------------- | --------------------------------------------------------------------------------------- |
+| `--dry-run`   | Print the plan — files, wiring, dependencies, post-install commands — and change nothing |
+| `--demo`      | After a successful install, write the reviewable demo seed script                        |
+| `--localized` | Mark the block's text fields `localized: true` for Payload localization                  |
+
+## Install a template
+
+A [template concept](/templates) is a block set plus a page plan. `add-template` installs
+and wires every block it composes, then prints which blocks each page uses:
+
+```bash
+npx payload-components templates
+npx payload-components add-template saas-launch
+```
+
+<Callout type="warn">
+  `add-template` installs blocks, not content. The curated copy in the template previews is
+  not seeded — assemble the pages in your admin, or use `payload-components seed
+  <component>` for per-block demo content.
+</Callout>
+
+It validates your project shape before installing anything, so an unsupported repo fails
+on the first check rather than part-way through twenty blocks. `--dry-run` prints the block
+list and page plan without touching the project.
+
+## Localize a block
+
+```bash
+npx payload-components add hero-basic --localized
+```
+
+This copies `src/blocks/shared/localizeFields.ts` into your project and wraps the installed
+block config's field list in it:
+
+```ts
+export const HeroBasic: Block = {
+  fields: localizeFields([...heroFields /* variant-specific fields */]),
+}
+```
+
+`localizeFields` marks the leaf fields an editor writes prose into — `text`, `textarea`,
+and `richText` — and recurses through the containers those fields live in. Because the wrap
+sits outside the shared family base's spread, one call covers shared and variant fields
+together.
+
+Three deliberate limits:
+
+- Containers are never marked. Payload rejects a localized field nested inside a localized
+  parent, so localizing only leaves keeps every combination valid.
+- A field that already declares `localized` is left exactly as you wrote it.
+- `select`, `upload`, `relationship`, `number`, and link `url` fields stay single-value.
+  Per-locale media or link targets are a content-modelling decision, not a mechanical
+  default — set those by hand.
+
+<Callout type="warn">
+  Localization also has to be enabled in your Payload config, or `localized: true` does
+  nothing. Adding it to a collection that already holds data changes how that data is
+  stored — migrate before adopting it.
+</Callout>
+
+The choice is recorded in install state, so `update` re-applies it instead of silently
+rewriting the config without the wrapper.
+
+## Maintain an install
+
+A recorded install has a lifecycle. These four commands read and act on
+`.payload-components/state.json`.
+
+### list
+
+```bash
+npx payload-components list
+npx payload-components list --json
+```
+
+Joins the registry catalog with what this project recorded: which components are installed,
+which are behind the version this CLI ships, and which recorded components no longer have a
+manifest. It works in any directory, including one that was never initialized.
+
+### diff
+
+```bash
+npx payload-components diff
+npx payload-components diff hero-basic --json
+```
+
+Compares each recorded install against the registry it came from and reports three kinds of
+drift: a version behind this CLI, a file whose content no longer matches, and wiring that
+has gone missing. Comparison is content-normalized, so line endings and a trailing newline
+are never reported as edits.
+
+`diff` exits non-zero when anything has drifted, which makes it usable as a CI gate on
+install drift.
+
+### update
+
+```bash
+npx payload-components update
+npx payload-components update hero-basic --force
+```
+
+Re-installs recorded components at the version this CLI ships. Files are deleted first so
+the registry install rewrites them — `add` treats a present file as satisfied, which is
+right for a fresh install and wrong for an upgrade.
+
+**Local edits are protected.** A component with a modified file is skipped, listed by name,
+and the command exits non-zero. Pass `--force` to overwrite it, or copy your edits out
+first. Run `diff` to see exactly which files are involved.
+
+With no names, `update` targets every component that is behind or left in a partial state.
+`--dry-run` prints the plan.
+
+### remove
+
+```bash
+npx payload-components remove hero-basic
+npx payload-components remove hero-basic --dry-run
+```
+
+The inverse of an install: it deletes the files this component owns, unregisters the block,
+drops its imports, regenerates types and the import map, and removes its state record.
+
+Three things it deliberately does not do:
+
+- **Shared family files survive.** A file another recorded component also ships is kept and
+  reported, so removing `hero-basic` while `hero-video` is installed leaves the shared hero
+  field base in place.
+- **Package dependencies stay.** The CLI cannot know whether your own code adopted them.
+- **Stored content is untouched.** Existing Page documents keep their block data. Delete
+  those blocks in the admin before publishing.
+
+Removal is idempotent, and a repeat run that changes nothing skips the generators instead of
+spending minutes regenerating for no effect.
+
+## Use it from a coding agent
+
+```bash
+npx payload-components mcp
+```
+
+Runs a [Model Context Protocol](https://modelcontextprotocol.io) server over stdio, so an
+agent can search the catalog, read a component's install contract, and preview what an
+install would change — instead of guessing at component names.
+
+```json
+{
+  "mcpServers": {
+    "payload-components": {
+      "command": "npx",
+      "args": ["-y", "payload-components", "mcp"]
+    }
+  }
+}
+```
+
+| Tool                                    | Answers                                                        |
+| --------------------------------------- | -------------------------------------------------------------- |
+| `list_components`, `search_components`  | Which block fits, and is it already installed here             |
+| `get_component`                         | Files, Payload wiring, supported majors, status in this project |
+| `plan_install`                          | Exactly what an install would change                           |
+| `diff`, `doctor`                        | What has drifted, and whether this project can accept installs  |
+| `list_templates`, `get_template`        | The block set and page plan behind a template concept           |
+
+<Callout type="info">
+  Every tool is read-only. The server answers *which block, and what will it change*;
+  installing stays an explicit `payload-components add` run in your shell, where the change
+  is visible and approvable.
+</Callout>
+
+## Set up and diagnose
+
+```bash
+npx payload-components init
+npx payload-components doctor
+npx payload-components seed hero-basic
+```
+
+`init` creates the `components.json` that registry installs need. `doctor` runs a read-only
+health check — see [Installation](/docs/installation#doctor). `seed` writes the demo seed
+script for an already-installed component.
+
+## Supported project shapes
+
+Installs are gated on a recognised project shape. Two are supported, matched in order:
+
+| Target                    | Shape                                                                                                                            |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `payload-website-starter` | The official Payload website starter layout: `src/blocks/RenderBlocks.tsx` and `src/collections/Pages/index.ts`                   |
+| `payload-blocks-app`      | The same page-blocks shape at non-starter paths — a flat `Pages.ts`, a renderer under `src/components`, or a repo without `src/`  |
+
+A target declares candidate paths per file plus the anchors the patcher needs, so a file at
+the right path with the wrong shape is not a match. `doctor` prints which files it resolved.
+
+<Callout type="info">
+  A bare `create-payload-app` project is not supported yet. Installed block components
+  import starter primitives — `@/components/Media`, `@/components/Link`,
+  `@/fields/linkGroup`, `@/utilities/ui` — that a blank app does not have, so claiming
+  support would produce installs that do not compile.
+</Callout>
+
+## Exit codes
+
+| Command  | Exits non-zero when                                        |
+| -------- | ---------------------------------------------------------- |
+| `add`    | Any stage fails; partial state is recorded for a safe retry |
+| `diff`   | Any inspected component has drifted                        |
+| `update` | A component was skipped because of local edits             |
+| `doctor` | The project or any recorded install needs attention        |

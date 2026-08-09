@@ -13,7 +13,12 @@ import {
 import { loadState } from '../state'
 import { repoRoot } from '../utils'
 
-import type { ComponentManifest, InstallStateEntry } from '../types'
+import type {
+  ComponentManifest,
+  DetectedProject,
+  InstallStateEntry,
+  ResolvedHostFiles,
+} from '../types'
 
 const manifestsDir = path.join(repoRoot, 'payload-components', 'manifests')
 
@@ -67,12 +72,14 @@ const checkPostInstallScripts = async (cwd: string, manifests: ComponentManifest
 const checkRecordedComponent = async ({
   componentName,
   cwd,
+  hostFiles,
   manifest,
   targetId,
   entry,
 }: {
   componentName: string
   cwd: string
+  hostFiles: ResolvedHostFiles
   manifest: ComponentManifest
   targetId: string
   entry: InstallStateEntry
@@ -176,7 +183,7 @@ const checkRecordedComponent = async ({
     log('ok', `${componentName}: registry dependencies`)
   }
 
-  const fragmentCheck = await verifyInstalledPayloadFragments({ cwd, manifest: plan })
+  const fragmentCheck = await verifyInstalledPayloadFragments({ cwd, hostFiles, manifest: plan })
 
   if (fragmentCheck.isValid) {
     log('ok', `${componentName}: Payload fragments`)
@@ -192,16 +199,21 @@ const checkRecordedComponent = async ({
   return isHealthy
 }
 
+const logProjectSummary = (project: DetectedProject) => {
+  log(
+    'ok',
+    `project: ${project.target.id} (Payload ${project.payloadMajor}, Next ${project.nextMajor}, ${project.packageManager})`,
+  )
+  log('ok', `wiring: ${project.hostFiles.renderBlocks} + ${project.hostFiles.pagesLayout}`)
+}
+
 export const doctorCommand = async ({ cwd }: { cwd: string }) => {
   let isHealthy = true
 
   try {
     const [project, manifests] = await Promise.all([detectProject(cwd), loadKnownManifests()])
 
-    log(
-      'ok',
-      `project: ${project.target.id} (Payload ${project.payloadMajor}, Next ${project.nextMajor}, ${project.packageManager})`,
-    )
+    logProjectSummary(project)
 
     for (const manifest of manifests) {
       try {
@@ -249,6 +261,7 @@ export const doctorCommand = async ({ cwd }: { cwd: string }) => {
           componentName,
           cwd,
           entry,
+          hostFiles: project.hostFiles,
           manifest,
           targetId: project.target.id,
         }))

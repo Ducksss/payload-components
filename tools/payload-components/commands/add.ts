@@ -6,16 +6,21 @@ import {
   getRuntimePatchedFiles,
   installManifestDependencies,
 } from '../dependencies'
-import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from '../constants'
 import { resolveInstallPlan } from '../install-plan'
 import { loadManifest } from '../manifest'
 import {
+  applyLocalizedFields,
   applyPayloadFragments,
   assertManifestSupport,
   detectProject,
+  isBlockConfigFile,
+  LOCALIZE_HELPER_FILE,
+  resolveRecoveryPatchedFiles,
   verifyInstalledManifestFiles,
   verifyInstalledPayloadFragments,
 } from '../project'
+import { copySharedSourceFile } from '../component-files'
+import { runPostInstallScript } from '../post-install'
 import { buildRegistry, installRegistryDependencies, installRegistryItem } from '../registry'
 import {
   loadState,
@@ -23,26 +28,18 @@ import {
   recordInstallAttempt,
   recordInstallFailure,
 } from '../state'
-import { getRunScriptCommand, printHeader, runCommand } from '../utils'
+import { getRunScriptCommand, printHeader } from '../utils'
 
 import type {
   DetectedProject,
   InstallError,
   InstallStage,
   PayloadFragment,
+  ResolvedHostFiles,
   ResolvedInstallPlan,
 } from '../types'
 
 import { seedCommand } from './seed'
-
-const postInstallEnv = {
-  ...process.env,
-  CRON_SECRET: process.env.CRON_SECRET ?? 'payload-components-poc-cron-secret',
-  NEXT_PUBLIC_SERVER_URL: process.env.NEXT_PUBLIC_SERVER_URL ?? 'http://localhost:3000',
-  PAYLOAD_SECRET: process.env.PAYLOAD_SECRET ?? 'payload-components-poc-secret',
-  POSTGRES_URL: process.env.POSTGRES_URL ?? 'postgres://127.0.0.1:5432/payload-components-poc',
-  PREVIEW_SECRET: process.env.PREVIEW_SECRET ?? 'payload-components-poc-preview-secret',
-}
 
 const formatStageError = (error: unknown) => (error instanceof Error ? error.message : 'Unknown error')
 
@@ -99,9 +96,11 @@ const formatPartialRetryNotice = ({
 
 const formatDryRunFragment = ({
   fragment,
+  hostFiles,
   missingFragments,
 }: {
   fragment: PayloadFragment
+  hostFiles: ResolvedHostFiles
   missingFragments: string[]
 }) => {
   if (fragment.kind === 'renderBlocks') {
@@ -109,7 +108,7 @@ const formatDryRunFragment = ({
     const needsRegistration = missingFragments.includes(`renderBlocks.block:${fragment.blockSlug}`)
 
     return [
-      `  ${RENDER_BLOCKS_FILE}${needsImport || needsRegistration ? ' (would patch)' : ' (already wired)'}`,
+      `  ${hostFiles.renderBlocks}${needsImport || needsRegistration ? ' (would patch)' : ' (already wired)'}`,
       `    ${needsImport ? 'add' : 'keep'} import { ${fragment.importName} } from '${fragment.importPath}'`,
       `    ${needsRegistration ? 'add' : 'keep'} renderer mapping ${fragment.blockSlug}: ${fragment.importName}`,
     ]
@@ -119,7 +118,7 @@ const formatDryRunFragment = ({
   const needsRegistration = missingFragments.includes(`pagesLayout.block:${fragment.blockName}`)
 
   return [
-    `  ${PAGES_LAYOUT_FILE}${needsImport || needsRegistration ? ' (would patch)' : ' (already wired)'}`,
+    `  ${hostFiles.pagesLayout}${needsImport || needsRegistration ? ' (would patch)' : ' (already wired)'}`,
     `    ${needsImport ? 'add' : 'keep'} import { ${fragment.importName} } from '${fragment.importPath}'`,
     `    ${needsRegistration ? 'add' : 'keep'} ${fragment.blockName} in the Pages layout blocks`,
   ]
@@ -130,6 +129,7 @@ const formatDryRunPlan = ({
   dependencyCheck,
   fileCheck,
   fragmentCheck,
+  localized,
   plan,
   project,
 }: {
@@ -140,6 +140,7 @@ const formatDryRunPlan = ({
     missingRegistryDependencies?: Array<{ name: string; targetFile: string }>
   }
   fragmentCheck: { missingFragments: string[] }
+  localized: boolean
   plan: ResolvedInstallPlan
   project: DetectedProject
 }) => {
@@ -161,7 +162,11 @@ const formatDryRunPlan = ({
     '',
     'Payload wiring:',
     ...plan.payloadFragments.flatMap((fragment) =>
-      formatDryRunFragment({ fragment, missingFragments: fragmentCheck.missingFragments }),
+      formatDryRunFragment({
+        fragment,
+        hostFiles: project.hostFiles,
+        missingFragments: fragmentCheck.missingFragments,
+      }),
     ),
     '',
     'Package dependencies:',
@@ -174,6 +179,15 @@ const formatDryRunPlan = ({
       lines.push(
         `  ${dependencyName}@${plan.dependencies[dependencyName]} (would add to package.json and ${project.lockfilePath})`,
       )
+    }
+  }
+
+  if (localized) {
+    lines.push('', 'Localization:')
+    lines.push(`  ${LOCALIZE_HELPER_FILE} (would create if absent)`)
+
+    for (const filePath of plan.files.filter((candidate) => isBlockConfigFile(candidate))) {
+      lines.push(`  ${filePath} (would wrap fields in localizeFields)`)
     }
   }
 
@@ -201,10 +215,12 @@ const installComponent = async ({
   cwd,
   componentName,
   dryRun,
+  localized,
 }: {
   cwd: string
   componentName: string
   dryRun: boolean
+  localized: boolean
 }) => {
   const manifest = await loadManifest(componentName)
   const project = await detectProject(cwd)
@@ -231,12 +247,16 @@ const installComponent = async ({
   })
   const fragmentCheck = await verifyInstalledPayloadFragments({
     cwd,
+    hostFiles: project.hostFiles,
     manifest: plan,
   })
   const patchedFiles = getRuntimePatchedFiles({
     dependencies: plan.dependencies,
     lockfilePath: project.lockfilePath,
-    recoveryPatchedFiles: plan.recovery.patchedFiles,
+    recoveryPatchedFiles: resolveRecoveryPatchedFiles({
+      hostFiles: project.hostFiles,
+      recoveryPatchedFiles: plan.recovery.patchedFiles,
+    }),
   })
   const existingState = await loadState(cwd)
   const installedEntry = existingState.components[manifest.name]
@@ -251,6 +271,7 @@ const installComponent = async ({
         dependencyCheck,
         fileCheck,
         fragmentCheck,
+        localized,
         plan,
         project,
       }),
@@ -263,13 +284,14 @@ const installComponent = async ({
     installedEntry.registryItemName === manifest.registryItemName &&
     installedEntry.status === 'installed' &&
     installedEntry.targetId === project.target.id &&
-    onDiskInstallValid
+    onDiskInstallValid &&
+    (!localized || installedEntry.localized === true)
   ) {
     printHeader(`payload-components: "${manifest.name}" is already installed.`)
     return
   }
 
-  if (!installedEntry && onDiskInstallValid) {
+  if (!installedEntry && onDiskInstallValid && !localized) {
     await recordInstalledState({
       cwd,
       manifest,
@@ -294,6 +316,7 @@ const installComponent = async ({
 
   await recordInstallAttempt({
     cwd,
+    localized,
     manifest,
     patchedFiles,
     targetId: project.target.id,
@@ -307,6 +330,7 @@ const installComponent = async ({
 
       await recordInstallFailure({
         cwd,
+        localized,
         manifest,
         patchedFiles,
         stage,
@@ -386,20 +410,36 @@ const installComponent = async ({
   }
 
   if (!fragmentCheck.isValid) {
-    await executeStage('fragment-apply', () => applyPayloadFragments(cwd, plan.payloadFragments))
+    await executeStage('fragment-apply', () =>
+      applyPayloadFragments(cwd, plan.payloadFragments, project.hostFiles),
+    )
+  }
+
+  if (localized) {
+    await executeStage('fragment-apply', async () => {
+      await copySharedSourceFile({ cwd, projectPath: LOCALIZE_HELPER_FILE })
+
+      const localizedFiles = await applyLocalizedFields({
+        configFiles: plan.files.filter((filePath) => isBlockConfigFile(filePath)),
+        cwd,
+      })
+
+      printHeader(
+        localizedFiles.length > 0
+          ? `payload-components: localized ${localizedFiles.join(', ')}`
+          : 'payload-components: block config was already localized.',
+      )
+    })
   }
 
   for (const script of plan.postInstall) {
-    const command = getRunScriptCommand(project.packageManager, script)
-
     printHeader(`payload-components: running ${script}`)
 
     await executeStage('post-install', () =>
-      runCommand({
-        args: command.args,
-        command: command.command,
+      runPostInstallScript({
         cwd,
-        env: postInstallEnv,
+        packageManager: project.packageManager,
+        script,
       }),
     )
   }
@@ -407,6 +447,7 @@ const installComponent = async ({
   await recordInstalledState({
     cwd,
     installedAt: installedEntry?.installedAt ?? undefined,
+    localized: localized || installedEntry?.localized,
     manifest,
     patchedFiles,
     targetId: project.target.id,
@@ -434,13 +475,15 @@ export const addCommand = async ({
   componentName,
   demo = false,
   dryRun = false,
+  localized = false,
 }: {
   cwd: string
   componentName: string
   demo?: boolean
   dryRun?: boolean
+  localized?: boolean
 }) => {
-  await installComponent({ cwd, componentName, dryRun })
+  await installComponent({ cwd, componentName, dryRun, localized })
 
   if (demo && !dryRun) {
     await seedCommand({ cwd, componentName })

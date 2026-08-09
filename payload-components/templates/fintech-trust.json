@@ -1,0 +1,105 @@
+{
+  "category": "fintech",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "call-to-action-signup",
+    "comparator-table",
+    "contact-routing-form",
+    "content-columns",
+    "content-quote",
+    "content-stats",
+    "faq-card",
+    "faq-grouped",
+    "faq-split",
+    "feature-bento",
+    "feature-cards-media",
+    "feature-icon-grid",
+    "feature-split",
+    "feature-steps",
+    "hero-aurora",
+    "hero-basic",
+    "integration-cluster",
+    "integration-grid",
+    "logo-cloud-marquee",
+    "pricing-cards",
+    "pricing-cards-muted",
+    "stats-proof",
+    "testimonials-rating",
+    "testimonials-spotlight"
+  ],
+  "description": "Ledgerline is a fictional money-movement infrastructure platform: a dense, institutional, trust-first fintech marketing site concept spanning Home, Product, Security, Pricing, and Contact — deep ink and cool-slate surfaces, a restrained teal used only as signal, tabular figures and hairline rules throughout, and inverted paper bands wherever the numbers and written guarantees live. Composed entirely from blocks in the open registry.",
+  "pages": [
+    {
+      "components": [
+        "hero-aurora",
+        "logo-cloud-marquee",
+        "feature-bento",
+        "stats-proof",
+        "integration-grid",
+        "testimonials-spotlight",
+        "pricing-cards-muted",
+        "faq-split",
+        "call-to-action-boxed"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Ledgerline — Money movement, engineered for trust"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-split",
+        "feature-cards-media",
+        "feature-steps",
+        "integration-cluster",
+        "content-quote",
+        "call-to-action-centered"
+      ],
+      "label": "Product",
+      "path": "product",
+      "title": "Ledgerline — Product"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-icon-grid",
+        "content-stats",
+        "content-columns",
+        "faq-grouped",
+        "call-to-action-boxed"
+      ],
+      "label": "Security",
+      "path": "security",
+      "title": "Ledgerline — Security"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "pricing-cards",
+        "comparator-table",
+        "testimonials-rating",
+        "faq-grouped",
+        "call-to-action-signup"
+      ],
+      "label": "Pricing",
+      "path": "pricing",
+      "title": "Ledgerline — Pricing"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "contact-routing-form",
+        "faq-card"
+      ],
+      "label": "Contact",
+      "path": "contact",
+      "title": "Ledgerline — Contact"
+    }
+  ],
+  "revision": 3,
+  "slug": "fintech-trust",
+  "summary": "A dense, institutional, trust-first marketing site for a fictional money-movement platform.",
+  "title": "Fintech Trust",
+  "version": 1
+}

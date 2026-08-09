@@ -12,6 +12,10 @@ import { makeTestManifest } from './manifest-factory'
 
 const detectedProject: DetectedProject = {
   cwd: '/tmp/fixture',
+  hostFiles: {
+    pagesLayout: 'src/collections/Pages/index.ts',
+    renderBlocks: 'src/blocks/RenderBlocks.tsx',
+  },
   lockfilePath: 'pnpm-lock.yaml',
   nextMajor: 16,
   packageManager: 'pnpm',
@@ -20,8 +24,11 @@ const detectedProject: DetectedProject = {
     allowedNextMajors: [15, 16],
     allowedPayloadMajors: [3],
     description: 'Target',
+    hostFiles: {
+      pagesLayout: { anchors: [], candidates: ['src/collections/Pages/index.ts'] },
+      renderBlocks: { anchors: [], candidates: ['src/blocks/RenderBlocks.tsx'] },
+    },
     id: 'payload-website-starter',
-    requiredAnchors: [],
     requiredFiles: [],
   },
 }

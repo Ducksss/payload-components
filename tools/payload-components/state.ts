@@ -106,6 +106,7 @@ const upsertEntry = ({
   installedAt,
   lastAttemptAt,
   lastError,
+  localized,
   manifest,
   patchedFiles,
   status,
@@ -114,6 +115,7 @@ const upsertEntry = ({
   installedAt: string | null
   lastAttemptAt: string
   lastError: InstallError | null
+  localized?: boolean
   manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
   status: InstallStateEntry['status']
@@ -126,6 +128,7 @@ const upsertEntry = ({
   installedAt,
   lastAttemptAt,
   lastError,
+  ...(localized ? { localized: true } : {}),
   patchedFiles: normalizeFileList(patchedFiles),
   status,
 })
@@ -174,11 +177,13 @@ export const saveState = async (cwd: string, state: InstallState) => {
 
 export const recordInstallAttempt = async ({
   cwd,
+  localized,
   manifest,
   patchedFiles,
   targetId,
 }: {
   cwd: string
+  localized?: boolean
   manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
   targetId: string
@@ -191,6 +196,7 @@ export const recordInstallAttempt = async ({
     installedAt: currentEntry?.installedAt ?? null,
     lastAttemptAt: now,
     lastError: null,
+    localized: localized ?? currentEntry?.localized,
     manifest,
     patchedFiles,
     status: 'partial',
@@ -202,6 +208,7 @@ export const recordInstallAttempt = async ({
 
 export const recordInstallFailure = async ({
   cwd,
+  localized,
   manifest,
   patchedFiles,
   stage,
@@ -209,6 +216,7 @@ export const recordInstallFailure = async ({
   message,
 }: {
   cwd: string
+  localized?: boolean
   manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
   stage: InstallStage
@@ -226,6 +234,7 @@ export const recordInstallFailure = async ({
       message,
       stage,
     },
+    localized: localized ?? currentEntry?.localized,
     manifest,
     patchedFiles,
     status: 'partial',
@@ -235,15 +244,38 @@ export const recordInstallFailure = async ({
   await saveState(cwd, state)
 }
 
+/* Drop a component's record after its files and wiring are gone. Returns
+   whether anything was recorded so callers can stay quiet on a no-op. */
+export const removeRecordedState = async ({
+  componentName,
+  cwd,
+}: {
+  componentName: string
+  cwd: string
+}) => {
+  const state = await loadState(cwd)
+
+  if (!state.components[componentName]) {
+    return false
+  }
+
+  delete state.components[componentName]
+  await saveState(cwd, state)
+
+  return true
+}
+
 export const recordInstalledState = async ({
   cwd,
   installedAt,
+  localized,
   manifest,
   patchedFiles,
   targetId,
 }: {
   cwd: string
   installedAt?: string
+  localized?: boolean
   manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
   targetId: string
@@ -255,6 +287,7 @@ export const recordInstalledState = async ({
     installedAt: installedAt ?? now,
     lastAttemptAt: now,
     lastError: null,
+    localized,
     manifest,
     patchedFiles,
     status: 'installed',

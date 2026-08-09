@@ -5,7 +5,7 @@
   "title": "Testimonials Grid",
   "description": "A testimonials section: a heading above a responsive grid of quote cards, each with author, optional role, and avatar.",
   "registryItemName": "testimonials-grid",
-  "supportedTargets": ["payload-website-starter"],
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
   "supports": {
     "payloadMajors": [3],
     "nextMajors": [15, 16]

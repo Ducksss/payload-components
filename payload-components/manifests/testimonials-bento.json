@@ -5,7 +5,7 @@
   "title": "Testimonials Bento",
   "description": "A testimonials bento: an asymmetric grid with one featured quote in a large cell and supporting quotes around it, each with optional logo and avatar.",
   "registryItemName": "testimonials-bento",
-  "supportedTargets": ["payload-website-starter"],
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
   "supports": {
     "payloadMajors": [3],
     "nextMajors": [15, 16]

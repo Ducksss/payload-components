@@ -1,0 +1,104 @@
+{
+  "category": "nonprofit",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "contact-routing-form",
+    "content-columns",
+    "content-community",
+    "content-image-frame",
+    "content-image-lead",
+    "content-quote",
+    "content-rows",
+    "content-showcase",
+    "content-stats",
+    "faq-accordion",
+    "faq-card",
+    "faq-split",
+    "feature-cards-media",
+    "feature-icon-grid",
+    "feature-steps",
+    "hero-basic",
+    "hero-video",
+    "logo-cloud-marquee",
+    "stats-proof",
+    "team-roster",
+    "testimonials-quote",
+    "testimonials-wall"
+  ],
+  "description": "Rivermouth Trust is a fictional river trust mending nine miles of the invented River Corrow. Five pages — Home, Our Work, Impact, Get Involved and Donate — carry the one register the rest of the gallery does not: the ask is give and volunteer, the persuasion is done by published monitoring rather than promises, and the Donate page names four giving paths instead of amounts. Composed entirely from blocks in the open registry.",
+  "pages": [
+    {
+      "components": [
+        "hero-video",
+        "logo-cloud-marquee",
+        "content-showcase",
+        "stats-proof",
+        "content-image-lead",
+        "testimonials-quote",
+        "team-roster",
+        "call-to-action-centered"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Rivermouth Trust — Restoring a river, reach by reach"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-columns",
+        "feature-icon-grid",
+        "content-rows",
+        "content-image-frame",
+        "faq-accordion",
+        "call-to-action-boxed"
+      ],
+      "label": "Our Work",
+      "path": "work",
+      "title": "Rivermouth Trust — Our Work"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-stats",
+        "stats-proof",
+        "content-quote",
+        "testimonials-wall",
+        "call-to-action-boxed"
+      ],
+      "label": "Impact",
+      "path": "impact",
+      "title": "Rivermouth Trust — Impact"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-steps",
+        "content-columns",
+        "content-community",
+        "faq-split",
+        "call-to-action-centered"
+      ],
+      "label": "Get Involved",
+      "path": "involved",
+      "title": "Rivermouth Trust — Get Involved"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-cards-media",
+        "content-stats",
+        "contact-routing-form",
+        "faq-card"
+      ],
+      "label": "Donate",
+      "path": "donate",
+      "title": "Rivermouth Trust — Donate"
+    }
+  ],
+  "revision": 2,
+  "slug": "nonprofit-cause",
+  "summary": "A place-led site for a fictional river trust, where the ask is give and volunteer and the proof is published monitoring.",
+  "title": "Nonprofit Cause",
+  "version": 1
+}
