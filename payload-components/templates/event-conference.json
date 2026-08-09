@@ -1,0 +1,100 @@
+{
+  "category": "event",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "call-to-action-signup",
+    "comparator-table",
+    "content-image-frame",
+    "content-image-lead",
+    "content-quote",
+    "content-rows",
+    "content-stats",
+    "faq-card",
+    "faq-grouped",
+    "feature-split",
+    "feature-steps",
+    "hero-aurora",
+    "hero-basic",
+    "logo-cloud-inline-wrap",
+    "pricing-cards",
+    "stats-proof",
+    "team-grid",
+    "team-roster",
+    "testimonials-quote",
+    "testimonials-wall"
+  ],
+  "description": "Frameworks ’26 is a fictional design + engineering conference in Berlin — the gallery’s one near-black concept. Electric violet on a near-black stage, oversized display type, hard edges, and dense date/room/time information across Home, Speakers, Schedule, Venue, and Tickets. Every section is composed from blocks in the open registry.",
+  "pages": [
+    {
+      "components": [
+        "hero-aurora",
+        "logo-cloud-inline-wrap",
+        "stats-proof",
+        "feature-split",
+        "team-grid",
+        "feature-steps",
+        "testimonials-quote",
+        "pricing-cards",
+        "call-to-action-signup"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Frameworks ’26 — Two days for people who ship the web"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "team-roster",
+        "content-quote",
+        "testimonials-wall",
+        "call-to-action-centered"
+      ],
+      "label": "Speakers",
+      "path": "speakers",
+      "title": "Frameworks ’26 — Speakers"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-steps",
+        "content-rows",
+        "faq-grouped",
+        "call-to-action-boxed"
+      ],
+      "label": "Schedule",
+      "path": "schedule",
+      "title": "Frameworks ’26 — Schedule"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-image-lead",
+        "content-image-frame",
+        "content-stats",
+        "faq-card",
+        "call-to-action-boxed"
+      ],
+      "label": "Venue",
+      "path": "venue",
+      "title": "Frameworks ’26 — Venue"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "pricing-cards",
+        "comparator-table",
+        "faq-grouped",
+        "call-to-action-signup"
+      ],
+      "label": "Tickets",
+      "path": "tickets",
+      "title": "Frameworks ’26 — Tickets"
+    }
+  ],
+  "revision": 3,
+  "slug": "event-conference",
+  "summary": "A near-black, electric-violet concept for a fictional two-day design and engineering conference in Berlin.",
+  "title": "Event Conference",
+  "version": 1
+}

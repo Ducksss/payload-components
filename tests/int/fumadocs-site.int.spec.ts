@@ -685,6 +685,24 @@ describe('Fumadocs site shell', () => {
     expect(found).toEqual([])
   })
 
+  it('lists every component page in the docs sidebar', async () => {
+    const componentsDir = path.join(repoRoot, 'content', 'docs', 'components')
+    const [meta, files] = await Promise.all([
+      readJson<MetaFile>(path.join(componentsDir, 'meta.json')),
+      readdir(componentsDir),
+    ])
+    const pages = files
+      .filter((file) => file.endsWith('.mdx'))
+      .map((file) => file.replace(/\.mdx$/, ''))
+      .sort()
+
+    /* The existing meta check only proves entries resolve to files. Without this
+       reverse direction a new component page can exist, build, and never appear
+       in the sidebar — which is exactly how hero-aurora and hero-kinetic went
+       missing. */
+    expect([...(meta.pages ?? [])].sort()).toEqual(pages)
+  })
+
   it('keeps docs navigation metadata pointed at real pages', async () => {
     await expectMetaEntriesResolve(path.join(repoRoot, 'content', 'docs'))
   })

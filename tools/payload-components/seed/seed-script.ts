@@ -19,14 +19,32 @@ type SampleValue = Record<string, unknown>
 
 export const SEED_SCRIPT_OWNERSHIP_HEADER = '// payload-components:generated-seed:v1'
 
+export type SeedOwnershipIdentity = {
+  /* What the private ownership record is keyed to. Defaults to the first
+   * manifest's name, which is right for a single-component seed. A template page
+   * must pass its own identity: several pages of one template legitimately start
+   * with the same block, so keying on that block would make them collide. */
+  id: string
+  /* Bumped when the seeded shape changes, so a stale record is refused rather
+   * than silently reused. */
+  version: string
+}
+
 export type SeedTarget = {
   configFileRelPath: string
   marker: string
+  ownership?: SeedOwnershipIdentity
   ownershipStateRelPath: string
   scriptRelPath: string
   slug: string
   title: string
 }
+
+export const resolveSeedOwnership = (
+  manifests: ComponentManifest[],
+  target: SeedTarget,
+): SeedOwnershipIdentity =>
+  target.ownership ?? { id: manifests[0].name, version: manifests[0].version }
 
 type SeedOwnershipState = {
   component: string
@@ -144,6 +162,7 @@ export const buildSeedScript = ({
 
   const firstManifest = manifests[0]
   const firstBlockType = getBlockType(firstManifest)
+  const ownership = resolveSeedOwnership(manifests, target)
   const rawLayout = manifests.map((manifest) => manifest.sampleContent)
   const rawLayoutBlockNames = manifests.map((manifest) => manifest.name)
   const rawLayoutBlockTypes = manifests.map((manifest) => getBlockType(manifest))
@@ -188,8 +207,8 @@ const demoMediaMarkerPrefix = ${quoteTsString(demoMediaMarkerPrefix)}
 const ownershipToken = ${quoteTsString(ownershipState.token)}
 const demoTitle = ${quoteTsString(target.title)}
 const demoBlockType = ${quoteTsString(firstBlockType)}
-const expectedComponent = ${quoteTsString(firstManifest.name)}
-const expectedManifestVersion = ${quoteTsString(firstManifest.version)}
+const expectedComponent = ${quoteTsString(ownership.id)}
+const expectedManifestVersion = ${quoteTsString(ownership.version)}
 const ownershipStatePath = new URL(${quoteTsString(ownershipStateImportPath)}, import.meta.url)
 const rawLayout = ${JSON.stringify(rawLayout, null, 2)} satisfies DemoSampleValue[]
 const rawLayoutBlockNames = ${JSON.stringify(rawLayoutBlockNames)} as const
@@ -716,10 +735,10 @@ const assertReplaceableSeedScript = async (scriptPath: string) => {
 }
 
 const readOrCreateOwnershipState = async ({
-  manifest,
+  ownership,
   statePath,
 }: {
-  manifest: ComponentManifest
+  ownership: SeedOwnershipIdentity
   statePath: string
 }): Promise<SeedOwnershipState> => {
   let fileHandle
@@ -732,8 +751,8 @@ const readOrCreateOwnershipState = async ({
   } catch (error) {
     if (isMissingPathError(error)) {
       const state: SeedOwnershipState = {
-        component: manifest.name,
-        manifestVersion: manifest.version,
+        component: ownership.id,
+        manifestVersion: ownership.version,
         mediaId: null,
         mediaOperationToken: null,
         pageId: null,
@@ -789,8 +808,8 @@ const readOrCreateOwnershipState = async ({
 
     if (
       state.version !== 1 ||
-      state.component !== manifest.name ||
-      state.manifestVersion !== manifest.version ||
+      state.component !== ownership.id ||
+      state.manifestVersion !== ownership.version ||
       typeof state.token !== 'string' ||
       !/^[0-9a-f-]{36}$/.test(state.token) ||
       (state.pageOperationToken !== null &&
@@ -813,7 +832,7 @@ const readOrCreateOwnershipState = async ({
       (state.mediaId !== null && state.mediaOperationToken === null)
     ) {
       throw new Error(
-        `Refusing mismatched demo ownership state for "${manifest.name}" at ${statePath}. Remove the demo content and state explicitly before regenerating.`,
+        `Refusing mismatched demo ownership state for "${ownership.id}" at ${statePath}. Remove the demo content and state explicitly before regenerating.`,
       )
     }
 
@@ -868,7 +887,7 @@ export const writeSeedScript = async (
   await assertReplaceableSeedScript(scriptPath)
   await ensureSafeDirectory(targetRoot, ownershipStateDirectory, 'demo ownership state')
   const ownershipState = await readOrCreateOwnershipState({
-    manifest: manifests[0],
+    ownership: resolveSeedOwnership(manifests, target),
     statePath: ownershipStatePath,
   })
   const source = buildSeedScript({ manifests, ownershipState, target })

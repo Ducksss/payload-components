@@ -1,31 +1,53 @@
 {
-  "version": 1,
+  "version": 2,
   "targets": [
     {
       "id": "payload-website-starter",
-      "description": "Payload v3 + Next.js App Router projects that render page layout blocks through src/blocks/RenderBlocks.tsx and register page blocks in src/collections/Pages/index.ts.",
+      "description": "Payload v3 + Next.js App Router projects laid out like the official website starter: page layout blocks rendered through src/blocks/RenderBlocks.tsx and registered in src/collections/Pages/index.ts.",
+      "allowedPayloadMajors": [3],
+      "allowedNextMajors": [15, 16],
+      "requiredFiles": ["components.json", "src/payload.config.ts"],
+      "hostFiles": {
+        "renderBlocks": {
+          "candidates": ["src/blocks/RenderBlocks.tsx"],
+          "anchors": ["const blockComponents = {"]
+        },
+        "pagesLayout": {
+          "candidates": ["src/collections/Pages/index.ts"],
+          "anchors": ["name: 'layout'", "type: 'blocks'"]
+        }
+      }
+    },
+    {
+      "id": "payload-blocks-app",
+      "description": "Payload v3 + Next.js App Router projects that keep the same page-blocks shape at non-starter paths — a flat Pages collection file, a renderer under src/components, or a repo without a src directory. Requires the starter's cn utility at utilities/ui because installed block components import it.",
       "allowedPayloadMajors": [3],
       "allowedNextMajors": [15, 16],
       "requiredFiles": [
         "components.json",
-        "src/payload.config.ts",
-        "src/blocks/RenderBlocks.tsx",
-        "src/collections/Pages/index.ts"
+        ["src/payload.config.ts", "payload.config.ts"],
+        ["src/utilities/ui.ts", "utilities/ui.ts"]
       ],
-      "requiredAnchors": [
-        {
-          "file": "src/blocks/RenderBlocks.tsx",
-          "text": "const blockComponents = {"
+      "hostFiles": {
+        "renderBlocks": {
+          "candidates": [
+            "src/blocks/RenderBlocks.tsx",
+            "src/components/RenderBlocks.tsx",
+            "blocks/RenderBlocks.tsx",
+            "components/RenderBlocks.tsx"
+          ],
+          "anchors": ["const blockComponents = {"]
         },
-        {
-          "file": "src/collections/Pages/index.ts",
-          "text": "name: 'layout'"
-        },
-        {
-          "file": "src/collections/Pages/index.ts",
-          "text": "type: 'blocks'"
+        "pagesLayout": {
+          "candidates": [
+            "src/collections/Pages/index.ts",
+            "src/collections/Pages.ts",
+            "collections/Pages/index.ts",
+            "collections/Pages.ts"
+          ],
+          "anchors": ["name: 'layout'", "type: 'blocks'"]
         }
-      ]
+      }
     }
   ]
 }

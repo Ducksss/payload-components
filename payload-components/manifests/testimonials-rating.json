@@ -2,10 +2,11 @@
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "testimonials-rating",
   "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
   "title": "Testimonials Rating",
   "description": "A testimonials section: a responsive grid of review cards, each with a star rating, quote, author, optional role, and avatar.",
   "registryItemName": "testimonials-rating",
-  "supportedTargets": ["payload-website-starter"],
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
   "supports": {
     "payloadMajors": [3],
     "nextMajors": [15, 16]

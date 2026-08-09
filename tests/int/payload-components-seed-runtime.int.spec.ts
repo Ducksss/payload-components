@@ -187,6 +187,43 @@ const createRuntimeFixture = async ({
   return { fixtureDir, ownershipStatePath, scriptPath, statePath, target }
 }
 
+/* The template variant: several manifests on one page, and an ownership identity
+   that is the template page rather than the first block. */
+const createTemplateRuntimeFixture = async ({
+  componentNames,
+  pageKey = 'home',
+  templateSlug = 'demo-template',
+}: {
+  componentNames: string[]
+  pageKey?: string
+  templateSlug?: string
+}) => {
+  const fixture = await createRuntimeFixture({ manifestName: componentNames[0] })
+  const manifests = await Promise.all(componentNames.map((name) => loadManifest(name)))
+  const identity = `${templateSlug}-${pageKey}`
+  const target = {
+    ...runtimeTarget,
+    marker: `payload-components:demo:template:${identity}`,
+    ownership: { id: `template:${templateSlug}:${pageKey}`, version: '3.0.0' },
+    ownershipStateRelPath: path.join(
+      '.payload-components',
+      'demo-state',
+      `template-${identity}.json`,
+    ),
+    scriptRelPath: path.join('payload-components', `seed-template-${identity}.ts`),
+    slug: `payload-components-demo-${identity}`,
+    title: `Demo Template — ${pageKey}`,
+  }
+  const scriptPath = await writeSeedScript(fixture.fixtureDir, manifests, target)
+
+  return {
+    ...fixture,
+    ownershipStatePath: path.join(fixture.fixtureDir, target.ownershipStateRelPath),
+    scriptPath,
+    target,
+  }
+}
+
 const runScript = (
   scriptPath: string,
   statePath: string,
@@ -505,6 +542,78 @@ describe('generated demo seed runtime', () => {
       .items
 
     expect(featureItems.map((item) => item.image)).toEqual([result.media[0].id, result.media[0].id])
+  })
+
+  it('creates one draft Page holding every block of a template page', async () => {
+    const componentNames = ['hero-basic', 'faq-card', 'call-to-action-centered']
+    const fixture = await createTemplateRuntimeFixture({ componentNames })
+    tempDirs.push(fixture.fixtureDir)
+
+    await runScript(fixture.scriptPath, fixture.statePath)
+
+    const state = await readState(fixture.statePath)
+    const created = state.calls.filter(
+      (call) => call.collection === 'pages' && call.method === 'create',
+    )
+
+    expect(created).toHaveLength(1)
+
+    const layout = (created[0].data as { layout: Array<{ blockType: string }> }).layout
+    const expectedBlockTypes = await Promise.all(
+      componentNames.map(async (name) => (await loadManifest(name)).sampleContent.blockType),
+    )
+
+    /* Blocks land in the page's own order, not the catalog's. */
+    expect(layout.map(({ blockType }) => blockType)).toEqual(expectedBlockTypes)
+    expect((created[0].data as { _status: string })._status).toBe('draft')
+
+    /* The record is keyed to the template page, so sibling pages that start with
+       the same block cannot claim it. */
+    const ownership = await readOwnershipState(fixture.ownershipStatePath)
+
+    expect(ownership.component).toBe('template:demo-template:home')
+  })
+
+  it('keeps two template pages that share a first block fully independent', async () => {
+    const home = await createTemplateRuntimeFixture({
+      componentNames: ['hero-basic', 'faq-card'],
+      pageKey: 'home',
+    })
+    tempDirs.push(home.fixtureDir)
+
+    /* Same fixture project, same leading block, different page. */
+    const aboutTarget = {
+      ...home.target,
+      marker: 'payload-components:demo:template:demo-template-about',
+      ownership: { id: 'template:demo-template:about', version: '3.0.0' },
+      ownershipStateRelPath: path.join(
+        '.payload-components',
+        'demo-state',
+        'template-demo-template-about.json',
+      ),
+      scriptRelPath: path.join('payload-components', 'seed-template-demo-template-about.ts'),
+      slug: 'payload-components-demo-demo-template-about',
+    }
+    const aboutScript = await writeSeedScript(
+      home.fixtureDir,
+      [await loadManifest('hero-basic')],
+      aboutTarget,
+    )
+
+    await runScript(home.scriptPath, home.statePath)
+    await runScript(aboutScript, home.statePath)
+
+    const state = await readState(home.statePath)
+    const created = state.calls.filter(
+      (call) => call.collection === 'pages' && call.method === 'create',
+    )
+
+    /* Two pages, two records — neither refuses the other's document. */
+    expect(created).toHaveLength(2)
+    expect(created.map((call) => (call.data as { slug: string }).slug)).toEqual([
+      'payload-components-demo-demo-template-home',
+      'payload-components-demo-demo-template-about',
+    ])
   })
 
   it('refuses a missing private ownership state before querying or mutating Payload', async () => {

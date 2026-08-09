@@ -1,0 +1,99 @@
+{
+  "category": "trade",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "contact-routing-form",
+    "content-columns",
+    "content-image-frame",
+    "content-quote",
+    "content-rows",
+    "content-stats",
+    "faq-accordion",
+    "faq-card",
+    "faq-grouped",
+    "faq-split",
+    "feature-cards-media",
+    "feature-icon-grid",
+    "feature-steps",
+    "hero-basic",
+    "hero-kinetic",
+    "logo-cloud-inline-wrap",
+    "stats-proof",
+    "testimonials-rating",
+    "testimonials-spotlight",
+    "testimonials-wall"
+  ],
+  "description": "Halloran & Sons is a fictional second-generation heating and plumbing firm in the fictional town of Ashcombe: deliberately the plainest concept in the gallery, built to be believed and phoned rather than admired. Safety orange and steel on off-white paper, heavy type, hard edges, signwriter label bars, and corrugated-steel plates carry five pages — Home, Services, Areas, Reviews, and Contact — with reviews as the entire proof engine and every rate stated the way a tradesman says it out loud. Composed entirely from blocks in the open registry.",
+  "pages": [
+    {
+      "components": [
+        "hero-kinetic",
+        "logo-cloud-inline-wrap",
+        "feature-icon-grid",
+        "stats-proof",
+        "testimonials-rating",
+        "content-columns",
+        "faq-accordion",
+        "call-to-action-boxed"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Halloran & Sons — Heating and plumbing in Ashcombe"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-cards-media",
+        "content-rows",
+        "feature-steps",
+        "faq-grouped",
+        "call-to-action-centered"
+      ],
+      "label": "Services",
+      "path": "services",
+      "title": "Halloran & Sons — What we fix"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-columns",
+        "content-stats",
+        "content-image-frame",
+        "faq-card",
+        "call-to-action-boxed"
+      ],
+      "label": "Areas",
+      "path": "areas",
+      "title": "Halloran & Sons — Where we come out to"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "testimonials-rating",
+        "testimonials-wall",
+        "testimonials-spotlight",
+        "content-quote",
+        "call-to-action-centered"
+      ],
+      "label": "Reviews",
+      "path": "reviews",
+      "title": "Halloran & Sons — What people say"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "contact-routing-form",
+        "faq-split"
+      ],
+      "label": "Contact",
+      "path": "contact",
+      "title": "Halloran & Sons — Get hold of us"
+    }
+  ],
+  "revision": 2,
+  "slug": "trade-service",
+  "summary": "The plainest site in the gallery, on purpose: a fictional family heating and plumbing firm built to be believed and phoned.",
+  "title": "Trade Service",
+  "version": 1
+}

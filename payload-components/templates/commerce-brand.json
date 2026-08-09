@@ -1,0 +1,98 @@
+{
+  "category": "commerce",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "contact-routing-form",
+    "content-community",
+    "content-image-frame",
+    "content-image-lead",
+    "content-quote",
+    "content-rows",
+    "content-showcase",
+    "content-stats",
+    "faq-card",
+    "faq-split",
+    "feature-cards-media",
+    "hero-basic",
+    "hero-kinetic",
+    "hero-video",
+    "logo-cloud-marquee",
+    "pricing-cards",
+    "stats-proof",
+    "team-grid",
+    "testimonials-wall"
+  ],
+  "description": "Fieldnote is a fictional specialty-coffee roastery: a warm, tactile, product-forward DTC marketing site concept spanning Home, Collection, Our Story, Journal, and Contact — cream paper and deep espresso ink with one burnt-orange ember accent, token-derived product plates, soft rounded geometry, and a roast-to-order promise carried through every page, composed entirely from blocks in the open registry.",
+  "pages": [
+    {
+      "components": [
+        "hero-kinetic",
+        "logo-cloud-marquee",
+        "content-showcase",
+        "feature-cards-media",
+        "stats-proof",
+        "testimonials-wall",
+        "pricing-cards",
+        "call-to-action-centered"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Fieldnote — Coffee roasted to order"
+    },
+    {
+      "components": [
+        "hero-video",
+        "content-rows",
+        "feature-cards-media",
+        "content-image-lead",
+        "faq-card",
+        "call-to-action-boxed"
+      ],
+      "label": "Collection",
+      "path": "collection",
+      "title": "Fieldnote — The Collection"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-image-lead",
+        "content-quote",
+        "content-stats",
+        "team-grid",
+        "content-community",
+        "call-to-action-boxed"
+      ],
+      "label": "Our Story",
+      "path": "story",
+      "title": "Fieldnote — Our Story"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-rows",
+        "content-showcase",
+        "content-image-frame",
+        "call-to-action-centered"
+      ],
+      "label": "Journal",
+      "path": "journal",
+      "title": "Fieldnote — Journal"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "contact-routing-form",
+        "faq-split"
+      ],
+      "label": "Contact",
+      "path": "contact",
+      "title": "Fieldnote — Contact"
+    }
+  ],
+  "revision": 4,
+  "slug": "commerce-brand",
+  "summary": "A warm, product-forward DTC marketing site for a fictional specialty-coffee roastery.",
+  "title": "Commerce Brand",
+  "version": 1
+}

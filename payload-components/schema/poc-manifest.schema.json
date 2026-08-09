@@ -178,6 +178,35 @@
     },
     "sampleContent": {
       "type": "object"
+    },
+    "changelog": {
+      "description": "Release notes for this component, newest first. Consumed by \"payload-components update\" so an upgrade states what changed, and so a change that invalidates stored Payload data cannot apply silently.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["version", "summary"],
+        "properties": {
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "breaking": {
+            "type": "boolean",
+            "description": "Upgrading invalidates content already stored in Payload. \"update\" refuses the component unless --accept-breaking is passed."
+          },
+          "dataMigration": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What an operator must do to existing documents before adopting this version."
+          }
+        }
+      },
+      "minItems": 1
     }
   }
 }

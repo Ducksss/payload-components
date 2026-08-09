@@ -125,6 +125,83 @@ describe('payload-components manifest validation', () => {
     await expect(loadManifest('hero-basic')).rejects.toThrow('postInstall.1')
   })
 
+  it('fails a changelog entry that is breaking without saying how to migrate', async () => {
+    const { loadManifest } = await loadManifestWithMocks(
+      makeTestManifest({
+        changelog: [{ breaking: true, summary: 'Renamed a field.', version: '0.1.0' }],
+      }),
+    )
+
+    await expect(loadManifest('hero-basic')).rejects.toThrow(
+      /marks 0\.1\.0 breaking but gives no dataMigration/,
+    )
+  })
+
+  it('fails a changelog that is not ordered newest first', async () => {
+    const { loadManifest } = await loadManifestWithMocks(
+      makeTestManifest({
+        changelog: [
+          { summary: 'Initial release.', version: '0.1.0' },
+          { summary: 'Added a field.', version: '0.2.0' },
+        ],
+        version: '0.2.0',
+      }),
+    )
+
+    await expect(loadManifest('hero-basic')).rejects.toThrow(/ordered newest first/)
+  })
+
+  it('fails a manifest whose own version has no changelog entry', async () => {
+    const { loadManifest } = await loadManifestWithMocks(
+      makeTestManifest({
+        changelog: [{ summary: 'Initial release.', version: '0.1.0' }],
+        version: '0.2.0',
+      }),
+    )
+
+    await expect(loadManifest('hero-basic')).rejects.toThrow(
+      /declares version 0\.2\.0 with no matching changelog entry/,
+    )
+  })
+
+  it('fails a changelog entry with a non-semver version', async () => {
+    const { loadManifest } = await loadManifestWithMocks(
+      makeTestManifest({ changelog: [{ summary: 'Initial release.', version: 'v1' }] }),
+    )
+
+    await expect(loadManifest('hero-basic')).rejects.toThrow(/invalid version "v1"/)
+  })
+
+  it('accepts a well-formed changelog and a manifest without one', async () => {
+    const withChangelog = await loadManifestWithMocks(
+      makeTestManifest({
+        changelog: [
+          {
+            breaking: true,
+            dataMigration: 'Rename `heading` to `title`.',
+            summary: 'Renamed.',
+            version: '0.2.0',
+          },
+          { summary: 'Initial release.', version: '0.1.0' },
+        ],
+        version: '0.2.0',
+      }),
+    )
+
+    await expect(withChangelog.loadManifest('hero-basic')).resolves.toMatchObject({
+      version: '0.2.0',
+    })
+
+    vi.resetModules()
+
+    /* The field is optional: an older manifest still loads. */
+    const withoutChangelog = await loadManifestWithMocks(makeTestManifest())
+
+    await expect(withoutChangelog.loadManifest('hero-basic')).resolves.not.toHaveProperty(
+      'changelog',
+    )
+  })
+
   it('fails when the manifest references an unknown registry item', async () => {
     const manifest = {
       ...baseManifest,
@@ -138,6 +215,10 @@ describe('payload-components manifest validation', () => {
   it('fails support checks for unsupported targets and version majors', () => {
     const baseProject = {
       cwd: '/tmp/fixture',
+      hostFiles: {
+        pagesLayout: 'src/collections/Pages/index.ts',
+        renderBlocks: 'src/blocks/RenderBlocks.tsx',
+      },
       lockfilePath: 'pnpm-lock.yaml',
       nextMajor: 16,
       packageManager: 'pnpm' as const,
@@ -146,8 +227,11 @@ describe('payload-components manifest validation', () => {
         allowedNextMajors: [15, 16],
         allowedPayloadMajors: [3],
         description: 'Target',
+        hostFiles: {
+          pagesLayout: { anchors: [], candidates: ['src/collections/Pages/index.ts'] },
+          renderBlocks: { anchors: [], candidates: ['src/blocks/RenderBlocks.tsx'] },
+        },
         id: 'payload-website-starter',
-        requiredAnchors: [],
         requiredFiles: [],
       },
     }

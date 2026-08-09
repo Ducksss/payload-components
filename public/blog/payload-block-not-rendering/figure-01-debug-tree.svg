@@ -294,16 +294,16 @@
     <text class="footer-label" x="48" y="571">PROVENANCE</text>
     <text class="provenance-line" x="48" y="590">tools/payload-components/commands/doctor.ts</text>
   </g>
-  <g data-journal-part="evidence" data-evidence-excerpt="export const doctorCommand = async ({ cwd }: { cwd: string }) =&gt; {
-  let isHealthy = true
-
-  try {
-    const [project, manifests] = await Promise.all([detectProject(cwd), loadKnownManifests()])
-
-    log(" data-evidence-truncated="true">
+  <g data-journal-part="evidence" data-evidence-excerpt="export const doctorCommand = async ({
+  cwd,
+  json = false,
+}: {
+  cwd: string
+  json?: boolean
+}): Promise&lt;DoctorExitCode&gt; =&gt; {">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
-  <text class="evidence-line" x="48" y="626">export const doctorCommand = async ({ cwd }: { cwd: string }) =&gt; { ·</text>
-<text class="evidence-line" x="48" y="641">let isHealthy = true · try { · const [project, manifests] = await …</text>
+  <text class="evidence-line" x="48" y="626">export const doctorCommand = async ({ · cwd, · json = false, · }: {</text>
+<text class="evidence-line" x="48" y="641">· cwd: string · json?: boolean · }): Promise&lt;DoctorExitCode&gt; =&gt; {</text>
 </g>
   <g data-journal-part="prompt" data-prompt="Bring evidence, not guesses, to the issue.">
     <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>
