@@ -157,12 +157,26 @@ describe('applyPayloadFragments — renderBlocks', () => {
     expect(afterSecond.match(/import \{ HeroBasicBlock \}/g)).toHaveLength(1)
   })
 
-  it('fails loudly and leaves the file untouched when the anchor is missing', async () => {
+  it('fails loudly and actionably, and leaves the file untouched, when the anchor is missing', async () => {
     const renderBlocks = "import React from 'react'\n\nexport const RenderBlocks = () => null\n"
     const dir = await makeProject({ renderBlocks })
 
-    await expect(applyPayloadFragments(dir, [renderBlocksFragment])).rejects.toThrow(
-      /insertion anchor/i,
+    let caught: Error | undefined
+
+    try {
+      await applyPayloadFragments(dir, [renderBlocksFragment])
+    } catch (error) {
+      caught = error as Error
+    }
+
+    expect(caught).toBeInstanceOf(Error)
+    expect(caught?.message).toContain(RENDER_BLOCKS_FILE)
+    expect(caught?.message).toContain('const blockComponents = {')
+    expect(caught?.message).toContain(
+      "Add this import: import { HeroBasicBlock } from '@/blocks/HeroBasic/Component'",
+    )
+    expect(caught?.message).toContain(
+      'Add this entry to blockComponents: heroBasic: HeroBasicBlock,',
     )
     expect(await readRenderBlocks(dir)).toEqual(renderBlocks)
   })
@@ -202,7 +216,37 @@ describe('applyPayloadFragments — pagesLayout', () => {
     expect(afterSecond.match(/import \{ HeroBasic \}/g)).toHaveLength(1)
   })
 
-  it('fails loudly when the layout anchor is missing', async () => {
+  it('fails loudly and actionably, and leaves the file untouched, when the Pages anchor is missing', async () => {
+    const pagesLayout = [
+      "import type { CollectionConfig } from 'payload'",
+      '',
+      'export const PagesConfig = {',
+      "  slug: 'pages',",
+      '  fields: [],',
+      '}',
+      '',
+    ].join('\n')
+    const dir = await makeProject({ pagesLayout })
+
+    let caught: Error | undefined
+
+    try {
+      await applyPayloadFragments(dir, [pagesLayoutFragment])
+    } catch (error) {
+      caught = error as Error
+    }
+
+    expect(caught).toBeInstanceOf(Error)
+    expect(caught?.message).toContain(PAGES_LAYOUT_FILE)
+    expect(caught?.message).toContain('export const Pages: CollectionConfig')
+    expect(caught?.message).toContain(
+      "Add this import: import { HeroBasic } from '@/blocks/HeroBasic/config'",
+    )
+    expect(caught?.message).toContain('Add this block to blocks: []: HeroBasic')
+    expect(await readPagesLayout(dir)).toEqual(pagesLayout)
+  })
+
+  it('fails loudly and actionably when the layout blocks list cannot be found', async () => {
     const pagesLayout = [
       "import type { CollectionConfig } from 'payload'",
       '',
@@ -214,7 +258,21 @@ describe('applyPayloadFragments — pagesLayout', () => {
     ].join('\n')
     const dir = await makeProject({ pagesLayout })
 
-    await expect(applyPayloadFragments(dir, [pagesLayoutFragment])).rejects.toThrow(/layout/i)
+    let caught: Error | undefined
+
+    try {
+      await applyPayloadFragments(dir, [pagesLayoutFragment])
+    } catch (error) {
+      caught = error as Error
+    }
+
+    expect(caught).toBeInstanceOf(Error)
+    expect(caught?.message).toContain(PAGES_LAYOUT_FILE)
+    expect(caught?.message).toContain('blocks: []')
+    expect(caught?.message).toContain(
+      "Add this import: import { HeroBasic } from '@/blocks/HeroBasic/config'",
+    )
+    expect(caught?.message).toContain('Add this block to blocks: []: HeroBasic')
     expect(await readPagesLayout(dir)).toEqual(pagesLayout)
   })
 })

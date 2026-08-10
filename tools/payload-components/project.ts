@@ -660,19 +660,63 @@ const removePagesLayoutFragment = (
   })
 }
 
-const applyRenderBlocksFragment = (source: string, fragment: Extract<PayloadFragment, { kind: 'renderBlocks' }>) => {
+/* Anchor failures are unrecoverable without a human decision, so the error has to
+   double as a manual patch recipe: where to look, and exactly what to add. */
+const formatRenderBlocksAnchorError = ({
+  filePath,
+  fragment,
+  missingAnchor,
+}: {
+  filePath: string
+  fragment: Extract<PayloadFragment, { kind: 'renderBlocks' }>
+  missingAnchor: string
+}) =>
+  [
+    `Unable to find "${missingAnchor}" in ${filePath}.`,
+    `  Missing anchor: ${missingAnchor}`,
+    `  Add this import: import { ${fragment.importName} } from '${fragment.importPath}'`,
+    `  Add this entry to blockComponents: ${fragment.blockSlug}: ${fragment.importName},`,
+  ].join('\n')
+
+const applyRenderBlocksFragment = (
+  source: string,
+  fragment: Extract<PayloadFragment, { kind: 'renderBlocks' }>,
+  filePath: string = RENDER_BLOCKS_FILE,
+) => {
   const importLine = `import { ${fragment.importName} } from '${fragment.importPath}'`
   const propertyLine = `  ${fragment.blockSlug}: ${fragment.importName},`
-  const sourceWithImport = insertLineBeforeAnchor({
-    anchor: renderBlocksAnchor,
-    isPresent: (current) => hasNamedImport(current, fragment.importName, fragment.importPath),
-    line: importLine,
-    source,
-  })
+
+  /* insertLineBeforeAnchor only needs the literal anchor when it actually has to
+     insert an import line (isPresent false); when the import is already present
+     it returns the source untouched without ever looking for the anchor. Gate
+     the actionable error on a real failure from that call instead of checking
+     the literal anchor unconditionally up front — the literal string is far
+     stricter than the regex-based object finder below, so a file with
+     non-canonical whitespace around `blockComponents` (multi-line declaration,
+     no space before `{`, etc.) can satisfy the object finder while failing a
+     blanket literal-anchor precheck, which would wrongly reject an install that
+     used to work. */
+  let sourceWithImport: string
+
+  try {
+    sourceWithImport = insertLineBeforeAnchor({
+      anchor: renderBlocksAnchor,
+      isPresent: (current) => hasNamedImport(current, fragment.importName, fragment.importPath),
+      line: importLine,
+      source,
+    })
+  } catch {
+    throw new Error(
+      formatRenderBlocksAnchorError({ filePath, fragment, missingAnchor: renderBlocksAnchor }),
+    )
+  }
+
   const objectRange = findRenderBlocksObject(sourceWithImport)
 
   if (!objectRange) {
-    throw new Error('Unable to find the blockComponents object in RenderBlocks.tsx.')
+    throw new Error(
+      formatRenderBlocksAnchorError({ filePath, fragment, missingAnchor: renderBlocksAnchor }),
+    )
   }
 
   if (
@@ -699,18 +743,60 @@ const applyRenderBlocksFragment = (source: string, fragment: Extract<PayloadFrag
   return `${sourceWithImport.slice(0, closingLineStart)}${propertyLine}\n${sourceWithImport.slice(closingLineStart)}`
 }
 
-const applyPagesLayoutFragment = (source: string, fragment: Extract<PayloadFragment, { kind: 'pagesLayout' }>) => {
+/* Mirrors formatRenderBlocksAnchorError for the Pages layout side: the same
+   file path + missing-anchor + would-insert recipe, tailored to the config
+   import and the blocks: [] entry. */
+const formatPagesLayoutAnchorError = ({
+  filePath,
+  fragment,
+  missingAnchor,
+}: {
+  filePath: string
+  fragment: Extract<PayloadFragment, { kind: 'pagesLayout' }>
+  missingAnchor: string
+}) =>
+  [
+    `Unable to find "${missingAnchor}" in ${filePath}.`,
+    `  Missing anchor: ${missingAnchor}`,
+    `  Add this import: import { ${fragment.importName} } from '${fragment.importPath}'`,
+    `  Add this block to blocks: []: ${fragment.blockName}`,
+  ].join('\n')
+
+const applyPagesLayoutFragment = (
+  source: string,
+  fragment: Extract<PayloadFragment, { kind: 'pagesLayout' }>,
+  filePath: string = PAGES_LAYOUT_FILE,
+) => {
   const importLine = `import { ${fragment.importName} } from '${fragment.importPath}'`
-  const sourceWithImport = insertLineBeforeAnchor({
-    anchor: pagesAnchor,
-    isPresent: (current) => hasNamedImport(current, fragment.importName, fragment.importPath),
-    line: importLine,
-    source,
-  })
+
+  /* See the matching comment in applyRenderBlocksFragment: gate the actionable
+     error on a real failure from insertLineBeforeAnchor rather than a blanket
+     literal-anchor precheck, so an already-imported project with non-canonical
+     whitespace around the Pages declaration (which the object-finder regex
+     below still tolerates) isn't wrongly rejected. */
+  let sourceWithImport: string
+
+  try {
+    sourceWithImport = insertLineBeforeAnchor({
+      anchor: pagesAnchor,
+      isPresent: (current) => hasNamedImport(current, fragment.importName, fragment.importPath),
+      line: importLine,
+      source,
+    })
+  } catch {
+    throw new Error(formatPagesLayoutAnchorError({ filePath, fragment, missingAnchor: pagesAnchor }))
+  }
+
   const blocksRange = findPagesLayoutBlocks(sourceWithImport)
 
   if (!blocksRange) {
-    throw new Error('Unable to find the layout block list in Pages collection config.')
+    throw new Error(
+      formatPagesLayoutAnchorError({
+        filePath,
+        fragment,
+        missingAnchor: "blocks: [] inside the layout field's blocks-typed config",
+      }),
+    )
   }
 
   if (
@@ -1034,7 +1120,7 @@ export const applyPayloadFragments = async (
     if (fragment.kind === 'renderBlocks') {
       const filePath = getAbsolutePath(cwd, hostFiles.renderBlocks)
       const existing = await readFile(filePath, 'utf8')
-      const updated = applyRenderBlocksFragment(existing, fragment)
+      const updated = applyRenderBlocksFragment(existing, fragment, hostFiles.renderBlocks)
 
       if (updated !== existing) {
         await writeFile(filePath, updated, 'utf8')
@@ -1046,7 +1132,7 @@ export const applyPayloadFragments = async (
     if (fragment.kind === 'pagesLayout') {
       const filePath = getAbsolutePath(cwd, hostFiles.pagesLayout)
       const existing = await readFile(filePath, 'utf8')
-      const updated = applyPagesLayoutFragment(existing, fragment)
+      const updated = applyPagesLayoutFragment(existing, fragment, hostFiles.pagesLayout)
 
       if (updated !== existing) {
         await writeFile(filePath, updated, 'utf8')
