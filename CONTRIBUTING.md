@@ -84,11 +84,11 @@ that still cover the change:
 | Registry or component metadata (`payload-components/`) | `pnpm test:registry`, `pnpm run test:int`                                       |
 | CLI or tooling (`tools/payload-components`, `bin/`)    | `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm run test:int`                      |
 
-`pnpm run test:int` is in three of those four rows because the integration suite
+`pnpm run test:int` is in every one of those rows because the integration suite
 reaches further than its name suggests: it renders site components directly, and
-more than thirty of its specs import the CLI. `pnpm test:install` is a fast
-subset of four specs — useful while iterating, but it is not enough on its own to
-clear a CLI change.
+32 of its 46 specs import the CLI. `pnpm test:install` is a fast subset of four
+specs — useful while iterating, but it is not enough on its own to clear a CLI
+change.
 
 Two rules apply to every row. CI runs `pnpm format:check`, so run `pnpm format`
 before pushing whatever you changed. And any change that alters what a page
