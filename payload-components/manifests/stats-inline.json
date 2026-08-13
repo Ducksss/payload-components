@@ -1,0 +1,56 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "stats-inline",
+  "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "title": "Stats Inline",
+  "description": "A quiet stats band where each figure reads as a full sentence on its own rule-topped row, installed as a wired Payload block.",
+  "registryItemName": "stats-inline",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/statsFields.ts",
+    "src/blocks/StatsInline/config.ts",
+    "src/blocks/StatsInline/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "StatsInlineBlock",
+      "importPath": "@/blocks/StatsInline/Component",
+      "blockSlug": "statsInline"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "StatsInline",
+      "importPath": "../../blocks/StatsInline/config",
+      "blockName": "StatsInline"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Heading and intro above rule-topped rows that each read as one sentence."
+  },
+  "sampleContent": {
+    "blockType": "statsInline",
+    "eyebrow": "Reliability",
+    "title": "Trusted by teams worldwide.",
+    "description": "The platform delivers measurable results that help businesses scale faster and work smarter.",
+    "metrics": [
+      { "value": "99.9%", "label": "uptime guarantee." },
+      { "value": "10M+", "label": "API requests processed daily." },
+      { "value": "500+", "label": "enterprise customers." }
+    ]
+  }
+}

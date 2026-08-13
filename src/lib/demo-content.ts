@@ -440,6 +440,118 @@ export const statsProofDemoContent: StatsProofDemoContent = {
   title: 'A platform customers adopt and teams can prove.',
 }
 
+/* Shared by the bare stats bands (stats-grid, stats-card, stats-inline). stats-proof
+   keeps its own richer type because it also carries the customer quote. */
+export type StatsBandDemoContent = {
+  description?: string
+  eyebrow?: string
+  metrics: { label: string; value: string }[]
+  title: string
+}
+
+export const statsGridDemoContent: StatsBandDemoContent = {
+  description:
+    'Every workspace reports the same governed metrics, so the numbers on this page are the numbers in the product.',
+  eyebrow: 'By the numbers',
+  metrics: [
+    { label: 'Integrations', value: '90+' },
+    { label: 'Productivity boost', value: '56%' },
+    { label: 'Customer support', value: '24/7' },
+    { label: 'Active users', value: '10k+' },
+  ],
+  title: 'Growth teams can measure.',
+}
+
+export const statsCardDemoContent: StatsBandDemoContent = {
+  eyebrow: 'Adoption',
+  metrics: [
+    { label: 'Stars on GitHub', value: '+1,200' },
+    { label: 'Conversion rate', value: '56%' },
+    { label: 'Powered apps', value: '+500' },
+  ],
+  title: 'Trusted where the numbers matter.',
+}
+
+export const statsInlineDemoContent: StatsBandDemoContent = {
+  description:
+    'The platform delivers measurable results that help businesses scale faster and work smarter.',
+  eyebrow: 'Reliability',
+  metrics: [
+    { label: 'uptime guarantee.', value: '99.9%' },
+    { label: 'API requests processed daily.', value: '10M+' },
+    { label: 'enterprise customers.', value: '500+' },
+  ],
+  title: 'Trusted by teams worldwide.',
+}
+
+/* Shared by every footer variant. Links carry only their label — the twins render
+   them as plain <div>s, so no href is needed. */
+export type FooterDemoContent = {
+  brandLabel: string
+  copyright: string
+  groups?: { links: { label: string }[]; name: string }[]
+  legalLinks?: { label: string }[]
+  links?: { label: string }[]
+  tagline?: string
+}
+
+export const footerColumnsDemoContent: FooterDemoContent = {
+  brandLabel: 'Acme',
+  copyright: '© Acme 2026 — Present',
+  groups: [
+    {
+      links: [
+        { label: 'Security' },
+        { label: 'Customization' },
+        { label: 'Enterprise' },
+        { label: 'Changelog' },
+      ],
+      name: 'Product',
+    },
+    {
+      links: [{ label: 'About' }, { label: 'Customers' }, { label: 'Careers' }, { label: 'Blog' }],
+      name: 'Company',
+    },
+    {
+      links: [
+        { label: 'Licence' },
+        { label: 'Privacy policy' },
+        { label: 'Terms of service' },
+        { label: 'Cookie policy' },
+      ],
+      name: 'Legal',
+    },
+  ],
+  tagline: 'The analytics workspace product teams open every day.',
+}
+
+export const footerSimpleDemoContent: FooterDemoContent = {
+  brandLabel: 'Acme',
+  copyright: '© Acme 2026 — All rights reserved',
+  links: [
+    { label: 'Features' },
+    { label: 'Solution' },
+    { label: 'Customers' },
+    { label: 'Pricing' },
+    { label: 'Help' },
+    { label: 'About' },
+  ],
+}
+
+export const footerCenteredDemoContent: FooterDemoContent = {
+  brandLabel: 'Acme',
+  copyright: '© Acme 2026',
+  legalLinks: [{ label: 'Privacy policy' }, { label: 'Terms of service' }, { label: 'Cookies' }],
+  links: [
+    { label: 'Features' },
+    { label: 'Pricing' },
+    { label: 'About' },
+    { label: 'Blog' },
+    { label: 'Contact' },
+  ],
+  tagline: 'One governed metric layer for every team in the company.',
+}
+
 export const contactRoutingFormDemoContent: ContactRoutingFormDemoContent = {
   channels: [
     {

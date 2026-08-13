@@ -49,6 +49,11 @@ const representativeInstallComponents = [
   'testimonials-grid',
   'pricing-cards',
   'stats-proof',
+  'stats-grid',
+  // The footer family is the only one that installs three shared files at once
+  // (safeUrls → footerUrls → footerFields), so it covers transitive shared-file
+  // ordering that no other representative exercises.
+  'footer-columns',
 ] as const
 
 const curatedTailarkPortComponents = [
