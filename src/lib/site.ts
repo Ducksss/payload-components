@@ -10,6 +10,12 @@ import heroKineticManifest from '../../payload-components/manifests/hero-kinetic
 import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
 import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
 import statsProofManifest from '../../payload-components/manifests/stats-proof.json' with { type: 'json' }
+import statsGridManifest from '../../payload-components/manifests/stats-grid.json' with { type: 'json' }
+import statsCardManifest from '../../payload-components/manifests/stats-card.json' with { type: 'json' }
+import statsInlineManifest from '../../payload-components/manifests/stats-inline.json' with { type: 'json' }
+import footerColumnsManifest from '../../payload-components/manifests/footer-columns.json' with { type: 'json' }
+import footerSimpleManifest from '../../payload-components/manifests/footer-simple.json' with { type: 'json' }
+import footerCenteredManifest from '../../payload-components/manifests/footer-centered.json' with { type: 'json' }
 
 const productionSiteUrl = 'https://www.payload-components.xyz'
 const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionSiteUrl).replace(
@@ -60,7 +66,14 @@ export const pipelineStages = [
 export const siteDescription =
   'Payload Components is an MIT registry and CLI that installs typed Payload CMS blocks into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
 
-export const homeMetadataTitle = 'Install wired Payload CMS blocks in one command'
+/* The homepage lives in the same route segment as the root layout, so the
+   '%s | Payload Components' title template never applies to it — whatever this
+   string says is the whole <title>. It therefore has to carry the brand itself,
+   or the one page most likely to rank for "payload components" is the only page
+   on the site that never names it. Brand first, then the head term verbatim
+   ("Payload CMS blocks"), then the differentiator, so the front of the string
+   survives SERP truncation. */
+export const homeMetadataTitle = 'Payload Components: Wired Payload CMS Blocks in One Command'
 export const homeMetadataDescription =
   'Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects.'
 
@@ -253,8 +266,9 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
    sidebar, the wall via componentEntries below, and the landing family teaser). Page families
    are ranked "landing-page essentials first": the universal sections every site builds first
    (Hero, Features, Comparator/pricing, Call to action), then social-proof / ecosystem
-   (Integration, Logo cloud, Testimonials), then support (FAQ), then the deep editorial Content
-   set, trailing with the niche utilities (Team, Embed). Mirror this order in
+   (Integration, Logo cloud, Testimonials, Stats), then support (FAQ), then the deep editorial
+   Content set, then the niche utilities (Team, Embed), trailing with the chrome that closes a
+   layout rather than fills it (Footer). Mirror this order in
    src/lib/component-page-tree.tsx FAMILIES (docs nav) and in componentEntries below (the wall). */
 export const componentCategories = {
   hero: { family: 'pages', label: 'Hero' },
@@ -271,6 +285,7 @@ export const componentCategories = {
   content: { family: 'pages', label: 'Content' },
   team: { family: 'pages', label: 'Team' },
   embed: { family: 'pages', label: 'Embed' },
+  footer: { family: 'pages', label: 'Footer' },
   cards: { family: 'posts', label: 'Cards' },
   archive: { family: 'posts', label: 'Archive' },
   header: { family: 'posts', label: 'Post header' },
@@ -897,6 +912,45 @@ export const componentEntries = [
     version: statsProofManifest.version,
   },
   {
+    category: 'stats',
+    command: 'npx payload-components add stats-grid',
+    description:
+      'Heading and intro above a responsive grid of large string metrics on rule-topped columns.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'metrics'],
+    href: '/docs/components/stats-grid',
+    slug: 'stats-grid',
+    target: 'Stats section',
+    title: 'Stats Grid',
+    version: statsGridManifest.version,
+  },
+  {
+    category: 'stats',
+    command: 'npx payload-components add stats-card',
+    description:
+      'A centred heading above one divided panel that splits metrics into equal columns.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'metrics'],
+    href: '/docs/components/stats-card',
+    slug: 'stats-card',
+    target: 'Stats section',
+    title: 'Stats Card',
+    version: statsCardManifest.version,
+  },
+  {
+    category: 'stats',
+    command: 'npx payload-components add stats-inline',
+    description:
+      'Heading and intro above rule-topped rows where each figure reads as one sentence.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'metrics'],
+    href: '/docs/components/stats-inline',
+    slug: 'stats-inline',
+    target: 'Stats section',
+    title: 'Stats Inline',
+    version: statsInlineManifest.version,
+  },
+  {
     category: 'faq',
     command: 'npx payload-components add faq-split',
     description:
@@ -1184,6 +1238,45 @@ export const componentEntries = [
     title: 'Embed Basic',
     version: '0.1.0',
   },
+  {
+    category: 'footer',
+    command: 'npx payload-components add footer-columns',
+    description:
+      'A brand block beside labelled columns of navigation links, closed by a copyright rule.',
+    family: 'pages',
+    fields: ['logo', 'brandLabel', 'copyright', 'tagline', 'groups'],
+    href: '/docs/components/footer-columns',
+    slug: 'footer-columns',
+    target: 'Footer',
+    title: 'Footer Columns',
+    version: footerColumnsManifest.version,
+  },
+  {
+    category: 'footer',
+    command: 'npx payload-components add footer-simple',
+    description:
+      'A compact footer keeping the brand and one wrapped row of links on a line, copyright beneath.',
+    family: 'pages',
+    fields: ['logo', 'brandLabel', 'copyright', 'links'],
+    href: '/docs/components/footer-simple',
+    slug: 'footer-simple',
+    target: 'Footer',
+    title: 'Footer Simple',
+    version: footerSimpleManifest.version,
+  },
+  {
+    category: 'footer',
+    command: 'npx payload-components add footer-centered',
+    description:
+      'A centred brand, tagline, and navigation above a rule carrying copyright and policy links.',
+    family: 'pages',
+    fields: ['logo', 'brandLabel', 'copyright', 'tagline', 'links', 'legalLinks'],
+    href: '/docs/components/footer-centered',
+    slug: 'footer-centered',
+    target: 'Footer',
+    title: 'Footer Centered',
+    version: footerCenteredManifest.version,
+  },
 ] as const
 
 export type ComponentEntry = (typeof componentEntries)[number]
@@ -1445,7 +1538,7 @@ export const communityInvite = {
 /* ------------------------------------------------------------------ */
 
 export const catalogTitle = `${componentEntries.length} Payload CMS components and typed blocks`
-export const catalogDescription = `Browse all ${componentEntries.length} installable Payload CMS components across heroes, features, pricing, calls to action, integrations, testimonials, FAQs, content, teams, and embeds. One CLI command copies a block and wires its collection registration, renderer mapping, generated types, and admin import map.`
+export const catalogDescription = `Browse all ${componentEntries.length} installable Payload CMS components across heroes, features, pricing, calls to action, integrations, testimonials, stats, FAQs, content, teams, embeds, and footers. One CLI command copies a block and wires its collection registration, renderer mapping, generated types, and admin import map.`
 export const catalogMetadataTitle = `${componentEntries.length} Payload CMS Components & Blocks | Catalog`
 export const catalogMetadataDescription =
   'Browse typed Payload CMS blocks. Run npx payload-components add <component> to wire one into your collection, renderer, generated types, and admin import map.'

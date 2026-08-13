@@ -1,0 +1,82 @@
+---
+title: Footer Columns
+description: A brand block beside labelled columns of navigation links, closed by a copyright rule.
+icon: PanelBottom
+---
+
+<ComponentPreview slug="footer-columns" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add footer-columns
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/footer-columns.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="footer-columns" />
+
+## Content model
+
+`logo`, `brandLabel`, and `copyright` come from the shared `footerFields` base that every Footer
+variant spreads; `tagline` and `groups` are specific to this variant. Each group renders as its own
+labelled navigation region, so the group name is both the visible column heading and the accessible
+name for that set of links.
+
+<TypeTable
+  type={{
+    logo: { type: 'upload', description: 'Brand mark from Media. Falls back to brandLabel when empty. Shared base field.' },
+    brandLabel: { type: 'text', required: true, description: 'Accessible name for the brand, and the visible wordmark when no logo is set. Shared base field.' },
+    copyright: { type: 'text', required: true, description: 'The copyright line below the rule. Shared base field.' },
+    tagline: { type: 'textarea', description: 'Optional short line under the brand.' },
+    groups: { type: 'array', required: true, description: 'One to four labelled link columns.' },
+  }}
+/>
+
+Each item in `groups` carries:
+
+<TypeTable
+  type={{
+    name: { type: 'text', required: true, description: 'Column heading, and the accessible name for that group.' },
+    links: { type: 'array', required: true, description: 'One to eight links in the column.' },
+  }}
+/>
+
+Each item in `links` carries:
+
+<TypeTable
+  type={{
+    label: { type: 'text', required: true, description: 'Visible link text.' },
+    href: { type: 'text', required: true, description: 'Same-origin path, HTTPS URL, mailto:, or tel:. Anything else is rejected in the admin and skipped at render.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="footer-columns" />
+
+Footer blocks render inside the Pages layout like every other block. To use one as site-wide chrome
+instead, render the component directly in your root layout and pass it content from a global.
+
+## Requirements
+
+<ComponentRequirements slug="footer-columns" />
+
+---
+
+Layout adapted from [tailark/blocks](https://github.com/tailark/blocks) (MIT), retokenized onto the Payload Components design system.
+
+## In this family
+
+<ComponentFamily slug="footer-columns" />

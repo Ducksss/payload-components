@@ -14,6 +14,7 @@ import {
   verifyInstalledPayloadFragments,
 } from '../../tools/payload-components/project'
 import { recordInstalledState } from '../../tools/payload-components/state'
+import { captureRejection } from './payload-components-assertions'
 
 import type { PayloadFragment } from '../../tools/payload-components/types'
 
@@ -220,6 +221,33 @@ describe('wiring a non-starter layout', () => {
         manifest: { payloadFragments: heroFragments },
       }),
     ).resolves.toMatchObject({ isValid: false })
+  })
+
+  /* The repair instructions are only useful if they point at the file this
+     project actually keeps, so the failure must name the resolved host path
+     rather than the canonical starter one it was authored against. */
+  it('names the resolved host path when a variant layout has drifted', async () => {
+    const dir = await makeProject({
+      'src/blocks/RenderBlocks.tsx': RENDER_BLOCKS_SOURCE,
+      'src/collections/Pages.ts': PAGES_SOURCE,
+      'src/payload.config.ts': 'export default {}\n',
+      'src/utilities/ui.ts': 'export const cn = () => ""\n',
+    })
+    const project = await detectProject(dir)
+
+    await writeFile(
+      path.join(dir, 'src/collections/Pages.ts'),
+      "import type { CollectionConfig } from 'payload'\n\nexport const Pages: CollectionConfig = {\n  slug: 'pages',\n  fields: [],\n}\n",
+      'utf8',
+    )
+
+    const error = await captureRejection(
+      applyPayloadFragments(dir, heroFragments, project.hostFiles),
+    )
+
+    expect(error).toBeInstanceOf(Error)
+    expect(error.message).toContain('src/collections/Pages.ts')
+    expect(error.message).not.toContain('src/collections/Pages/index.ts')
   })
 
   it('maps manifest recovery paths onto the resolved host files', () => {

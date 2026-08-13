@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { statsFields, statsMetricFields } from '@/blocks/shared/statsFields'
+
 export const StatsProof: Block = {
   slug: 'statsProof',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -7,15 +9,9 @@ export const StatsProof: Block = {
   dbName: 'pc_stats_proof',
   interfaceName: 'StatsProofBlock',
   fields: [
-    {
-      name: 'eyebrow',
-      type: 'text',
-    },
-    {
-      name: 'title',
-      type: 'text',
-      required: true,
-    },
+    // Shared stats core (eyebrow, title). Variant-specific fields follow; edit the
+    // shared shape in @/blocks/shared/statsFields.
+    ...statsFields,
     {
       name: 'description',
       type: 'textarea',
@@ -34,18 +30,8 @@ export const StatsProof: Block = {
       admin: {
         initCollapsed: true,
       },
-      fields: [
-        {
-          name: 'value',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'label',
-          type: 'text',
-          required: true,
-        },
-      ],
+      // Shared metric shape — see @/blocks/shared/statsFields.
+      fields: statsMetricFields,
     },
     {
       name: 'quote',
