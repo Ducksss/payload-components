@@ -918,7 +918,7 @@ describe('Fumadocs site shell', () => {
     const { blogTitle, catalogMetadataTitle, homeMetadataTitle } =
       await import('../../src/lib/site')
 
-    expect(homeMetadataTitle).toBe('Install wired Payload CMS blocks in one command')
+    expect(homeMetadataTitle).toBe('Payload Components: Wired Payload CMS Blocks in One Command')
     expect(blogTitle).toBe('Payload CMS block and installer guides')
     expect(catalogMetadataTitle).toBe('73 Payload CMS Components & Blocks | Catalog')
     expect(docsIndex).toContain('seoTitle: CLI setup and architecture')

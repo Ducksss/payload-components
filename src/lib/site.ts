@@ -66,7 +66,14 @@ export const pipelineStages = [
 export const siteDescription =
   'Payload Components is an MIT registry and CLI that installs typed Payload CMS blocks into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
 
-export const homeMetadataTitle = 'Install wired Payload CMS blocks in one command'
+/* The homepage lives in the same route segment as the root layout, so the
+   '%s | Payload Components' title template never applies to it — whatever this
+   string says is the whole <title>. It therefore has to carry the brand itself,
+   or the one page most likely to rank for "payload components" is the only page
+   on the site that never names it. Brand first, then the head term verbatim
+   ("Payload CMS blocks"), then the differentiator, so the front of the string
+   survives SERP truncation. */
+export const homeMetadataTitle = 'Payload Components: Wired Payload CMS Blocks in One Command'
 export const homeMetadataDescription =
   'Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects.'
 
