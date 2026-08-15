@@ -2,20 +2,16 @@ import type { Block } from 'payload'
 
 import { statsFields } from '@/blocks/shared/statsFields'
 
-export const StatsProof: Block = {
-  slug: 'statsProof',
+export const StatsGrid: Block = {
+  slug: 'statsGrid',
   // Existing apps must migrate stored data before adopting this identifier:
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
-  dbName: 'pc_stats_proof',
-  interfaceName: 'StatsProofBlock',
+  dbName: 'pc_stats_grid',
+  interfaceName: 'StatsGridBlock',
   fields: [
     // Shared stats core (eyebrow, title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/statsFields.
     ...statsFields,
-    {
-      name: 'body',
-      type: 'textarea',
-    },
     {
       name: 'metrics',
       type: 'array',
@@ -36,41 +32,25 @@ export const StatsProof: Block = {
           type: 'text',
           required: true,
         },
+        {
+          name: 'detail',
+          type: 'text',
+          admin: {
+            description: 'Optional qualifier shown under the label — a period, source, or caveat.',
+          },
+        },
       ],
     },
     {
-      name: 'quote',
-      type: 'textarea',
-      required: true,
-    },
-    {
-      name: 'author',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'role',
-      type: 'text',
-    },
-    {
-      name: 'logo',
-      type: 'upload',
-      relationTo: 'media',
-      admin: {
-        description: 'Customer logo shown above the quote. Falls back to Logo label when empty.',
-      },
-    },
-    {
-      name: 'logoLabel',
+      name: 'footnote',
       type: 'text',
       admin: {
-        description:
-          'Text wordmark used when no logo upload is set — for customers whose mark you do not have as an asset.',
+        description: 'Optional measurement note rendered under the grid.',
       },
     },
   ],
   labels: {
-    plural: 'Stats Proof Blocks',
-    singular: 'Stats Proof',
+    plural: 'Stats Grid Blocks',
+    singular: 'Stats Grid',
   },
 }

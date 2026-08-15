@@ -1,7 +1,7 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "stats-proof",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "title": "Stats Proof",
   "description": "A proof section pairing narrative, prominent string metrics, and a semantic customer quote.",
   "registryItemName": "stats-proof",
@@ -15,7 +15,11 @@
     "payloadMajors": [3],
     "nextMajors": [15, 16]
   },
-  "files": ["src/blocks/StatsProof/config.ts", "src/blocks/StatsProof/Component.tsx"],
+  "files": [
+    "src/blocks/shared/statsFields.ts",
+    "src/blocks/StatsProof/config.ts",
+    "src/blocks/StatsProof/Component.tsx"
+  ],
   "payloadFragments": [
     {
       "kind": "renderBlocks",

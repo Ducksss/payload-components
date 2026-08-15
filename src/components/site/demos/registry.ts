@@ -3,9 +3,11 @@ import type { ComponentType } from 'react'
 import { CallToActionBoxedDemo } from './CallToActionBoxedDemo'
 import { CallToActionCenteredDemo } from './CallToActionCenteredDemo'
 import { CallToActionSignupDemo } from './CallToActionSignupDemo'
+import { CallToActionSplitDemo } from './CallToActionSplitDemo'
 import { ComparatorGridDemo } from './ComparatorGridDemo'
 import { ComparatorStackDemo } from './ComparatorStackDemo'
 import { ComparatorTableDemo } from './ComparatorTableDemo'
+import { ContactChannelsDemo } from './ContactChannelsDemo'
 import { ContactRoutingFormDemo } from './ContactRoutingFormDemo'
 import { ContentColumnsDemo } from './ContentColumnsDemo'
 import { ContentCommunityDemo } from './ContentCommunityDemo'
@@ -58,7 +60,9 @@ import { PricingCardsCtaDemo } from './PricingCardsCtaDemo'
 import { PricingCardsMutedDemo } from './PricingCardsMutedDemo'
 import { PricingEnterpriseDemo } from './PricingEnterpriseDemo'
 import { PricingSplitDemo } from './PricingSplitDemo'
+import { StatsGridDemo } from './StatsGridDemo'
 import { StatsProofDemo } from './StatsProofDemo'
+import { TeamBiosDemo } from './TeamBiosDemo'
 import { TeamGridDemo } from './TeamGridDemo'
 import { TeamRosterDemo } from './TeamRosterDemo'
 import { TestimonialsBentoDemo } from './TestimonialsBentoDemo'
@@ -77,9 +81,11 @@ export const demosBySlug: Record<string, ComponentType> = {
   'call-to-action-boxed': CallToActionBoxedDemo,
   'call-to-action-centered': CallToActionCenteredDemo,
   'call-to-action-signup': CallToActionSignupDemo,
+  'call-to-action-split': CallToActionSplitDemo,
   'comparator-grid': ComparatorGridDemo,
   'comparator-stack': ComparatorStackDemo,
   'comparator-table': ComparatorTableDemo,
+  'contact-channels': ContactChannelsDemo,
   'contact-routing-form': ContactRoutingFormDemo,
   'content-columns': ContentColumnsDemo,
   'content-community': ContentCommunityDemo,
@@ -132,8 +138,10 @@ export const demosBySlug: Record<string, ComponentType> = {
   'pricing-cards-muted': PricingCardsMutedDemo,
   'pricing-enterprise': PricingEnterpriseDemo,
   'pricing-split': PricingSplitDemo,
+  'stats-grid': StatsGridDemo,
   'stats-proof': StatsProofDemo,
   'team-roster': TeamRosterDemo,
+  'team-bios': TeamBiosDemo,
   'team-grid': TeamGridDemo,
   'testimonials-quote': TestimonialsQuoteDemo,
   'testimonials-spotlight': TestimonialsSpotlightDemo,

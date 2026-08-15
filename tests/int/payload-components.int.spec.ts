@@ -49,6 +49,10 @@ const representativeInstallComponents = [
   'testimonials-grid',
   'pricing-cards',
   'stats-proof',
+  'stats-grid',
+  'call-to-action-split',
+  'team-bios',
+  'contact-channels',
 ] as const
 
 const curatedTailarkPortComponents = [

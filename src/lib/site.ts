@@ -1,4 +1,6 @@
 import packageJson from '../../package.json' with { type: 'json' }
+import callToActionSplitManifest from '../../payload-components/manifests/call-to-action-split.json' with { type: 'json' }
+import contactChannelsManifest from '../../payload-components/manifests/contact-channels.json' with { type: 'json' }
 import contactRoutingFormManifest from '../../payload-components/manifests/contact-routing-form.json' with { type: 'json' }
 import featureAccordionManifest from '../../payload-components/manifests/feature-accordion.json' with { type: 'json' }
 import featureCardsMediaManifest from '../../payload-components/manifests/feature-cards-media.json' with { type: 'json' }
@@ -9,6 +11,8 @@ import heroBasicManifest from '../../payload-components/manifests/hero-basic.jso
 import heroKineticManifest from '../../payload-components/manifests/hero-kinetic.json' with { type: 'json' }
 import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
 import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
+import statsGridManifest from '../../payload-components/manifests/stats-grid.json' with { type: 'json' }
+import teamBiosManifest from '../../payload-components/manifests/team-bios.json' with { type: 'json' }
 import statsProofManifest from '../../payload-components/manifests/stats-proof.json' with { type: 'json' }
 
 const productionSiteUrl = 'https://www.payload-components.xyz'
@@ -596,6 +600,19 @@ export const componentEntries = [
   },
   {
     category: 'cta',
+    command: 'npx payload-components add call-to-action-split',
+    description:
+      'A split call-to-action block: heading and copy on one side, CTA links and an assurance line on the other.',
+    family: 'pages',
+    fields: ['title', 'description', 'assurance', 'links'],
+    href: '/docs/components/call-to-action-split',
+    slug: 'call-to-action-split',
+    target: 'Split CTA',
+    title: 'Call To Action Split',
+    version: callToActionSplitManifest.version,
+  },
+  {
+    category: 'cta',
     command: 'npx payload-components add call-to-action-signup',
     description:
       'An email-capture call-to-action block: heading, copy, and a form that posts to a same-origin endpoint.',
@@ -629,6 +646,19 @@ export const componentEntries = [
     target: 'Contact section',
     title: 'Contact Routing Form',
     version: contactRoutingFormManifest.version,
+  },
+  {
+    category: 'contact',
+    command: 'npx payload-components add contact-channels',
+    description:
+      'A form-free contact section: heading, supporting copy, and a grid of validated email, phone, and URL channels.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'channels', 'footnote'],
+    href: '/docs/components/contact-channels',
+    slug: 'contact-channels',
+    target: 'Contact channels',
+    title: 'Contact Channels',
+    version: contactChannelsManifest.version,
   },
   {
     category: 'integration',
@@ -897,6 +927,19 @@ export const componentEntries = [
     version: statsProofManifest.version,
   },
   {
+    category: 'stats',
+    command: 'npx payload-components add stats-grid',
+    description:
+      'A metrics-only stats grid: heading, supporting copy, and a four-up row of prominent string figures with optional qualifiers.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'metrics', 'footnote'],
+    href: '/docs/components/stats-grid',
+    slug: 'stats-grid',
+    target: 'Metric grid',
+    title: 'Stats Grid',
+    version: statsGridManifest.version,
+  },
+  {
     category: 'faq',
     command: 'npx payload-components add faq-split',
     description:
@@ -1157,6 +1200,19 @@ export const componentEntries = [
     target: 'Team section',
     title: 'Team Grid',
     version: '0.1.0',
+  },
+  {
+    category: 'team',
+    command: 'npx payload-components add team-bios',
+    description:
+      'A bio-forward team section: heading, intro, and two-up member cards carrying avatar, role, and a short biography.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'members'],
+    href: '/docs/components/team-bios',
+    slug: 'team-bios',
+    target: 'Team bios',
+    title: 'Team Bios',
+    version: teamBiosManifest.version,
   },
   {
     category: 'team',

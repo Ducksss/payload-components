@@ -1,0 +1,76 @@
+---
+title: Stats Grid
+description: A metrics-only stats grid pairing a short narrative with a four-up row of prominent string figures.
+icon: ChartNoAxesCombined
+---
+
+<ComponentPreview slug="stats-grid" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add stats-grid
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-grid.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="stats-grid" />
+
+## Content model
+
+`eyebrow`, `title`, and `description` come from the shared stats base at
+`src/blocks/shared/statsFields.ts`, so editing them updates every installed stats block at once.
+`metrics` and `footnote` are specific to this variant.
+
+Metric values stay strings, so editors can enter percentages, signed values, counts, or abbreviated
+totals without formatting logic.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title. Shared base field.' },
+    title: { type: 'text', required: true, description: 'The stats section heading. Shared base field.' },
+    description: {
+      type: 'textarea',
+      required: true,
+      description: 'Primary supporting copy. Shared base field.',
+    },
+    metrics: { type: 'array', required: true, description: 'Two to four prominent metrics.' },
+    footnote: { type: 'text', description: 'Optional measurement note rendered under the grid.' },
+  }}
+/>
+
+Each item in `metrics` carries:
+
+<TypeTable
+  type={{
+    value: { type: 'text', required: true, description: 'Display value such as “56%” or “22M”.' },
+    label: { type: 'text', required: true, description: 'Short explanation of the metric.' },
+    detail: {
+      type: 'text',
+      description: 'Optional qualifier under the label — a period, source, or caveat.',
+    },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="stats-grid" />
+
+## Requirements
+
+<ComponentRequirements slug="stats-grid" />
+
+## In this family
+
+<ComponentFamily slug="stats-grid" />

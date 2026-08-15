@@ -1,0 +1,61 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "stats-grid",
+  "version": "0.1.0",
+  "title": "Stats Grid",
+  "description": "A metrics-only Payload stats block: heading, supporting copy, and a four-up grid of string metrics with optional qualifiers.",
+  "registryItemName": "stats-grid",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/statsFields.ts",
+    "src/blocks/StatsGrid/config.ts",
+    "src/blocks/StatsGrid/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "StatsGridBlock",
+      "importPath": "@/blocks/StatsGrid/Component",
+      "blockSlug": "statsGrid"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "StatsGrid",
+      "importPath": "../../blocks/StatsGrid/config",
+      "blockName": "StatsGrid"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Metrics-only stats grid: heading, copy, and a four-up row of prominent figures."
+  },
+  "sampleContent": {
+    "blockType": "statsGrid",
+    "eyebrow": "By the numbers",
+    "title": "Proof that the platform holds up in production.",
+    "description": "Every figure below is measured across live customer workspaces, not a benchmark environment.",
+    "metrics": [
+      {
+        "value": "56%",
+        "label": "Faster analytics launches",
+        "detail": "Median across 40 rollouts"
+      },
+      { "value": "+1,200", "label": "Customer workspaces served", "detail": "Up from 310 last year" },
+      { "value": "22M", "label": "Governed monthly queries" },
+      { "value": "99.99%", "label": "Platform availability", "detail": "Trailing twelve months" }
+    ],
+    "footnote": "Measured between January and December on production workspaces."
+  }
+}

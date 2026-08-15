@@ -11,7 +11,7 @@ direction, not a commitment. New contributors can start with
 
 ## Current State
 
-- The registry ships 58 installable page blocks across 12 families, with 8 post
+- The registry ships 71 installable page blocks across 14 families, with 8 post
   components in development.
 - `payload-components add` copies files, wires Payload, regenerates types, and
   records install state.

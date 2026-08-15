@@ -1,0 +1,74 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "team-bios",
+  "version": "0.1.0",
+  "title": "Team Bios",
+  "description": "A bio-forward Payload team block: heading, supporting copy, and two-up member cards with avatar, role, biography, and an optional profile link.",
+  "registryItemName": "team-bios",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/teamFields.ts",
+    "src/blocks/TeamBios/config.ts",
+    "src/blocks/TeamBios/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "TeamBiosBlock",
+      "importPath": "@/blocks/TeamBios/Component",
+      "blockSlug": "teamBios"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "TeamBios",
+      "importPath": "../../blocks/TeamBios/config",
+      "blockName": "TeamBios"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Bio-forward team cards: avatar, name, role, and a short biography per member."
+  },
+  "sampleContent": {
+    "blockType": "teamBios",
+    "eyebrow": "Leadership",
+    "title": "The people accountable for the platform.",
+    "description": "A small team with long tenure in analytics infrastructure — the same people you will talk to after you sign.",
+    "members": [
+      {
+        "name": "Maya Chen",
+        "role": "Chief Executive Officer",
+        "bio": "Previously led the reporting platform at Northwind. Maya sets product direction and still reviews every customer escalation personally.",
+        "href": "/team/maya-chen"
+      },
+      {
+        "name": "Daniel Okafor",
+        "role": "Chief Technology Officer",
+        "bio": "Built query infrastructure for two data platforms before Acme. Daniel owns reliability, and the on-call rotation he shares with the team.",
+        "href": "/team/daniel-okafor"
+      },
+      {
+        "name": "Priya Raman",
+        "role": "VP Customer Engineering",
+        "bio": "Runs onboarding and solution architecture. Priya's team gets most workspaces to first dashboard inside a single afternoon."
+      },
+      {
+        "name": "Tom Vasquez",
+        "role": "Head of Design",
+        "bio": "Responsible for the editor experience and the design system every Acme surface is built from."
+      }
+    ]
+  }
+}
