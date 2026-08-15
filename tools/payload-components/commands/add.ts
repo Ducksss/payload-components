@@ -19,7 +19,7 @@ import {
   verifyInstalledManifestFiles,
   verifyInstalledPayloadFragments,
 } from '../project'
-import { copySharedSourceFile } from '../component-files'
+import { copySharedSourceFile, hashInstalledFiles } from '../component-files'
 import { installNamespacedItem, isNamespacedItem } from '../namespaced'
 import { runPostInstallScript } from '../post-install'
 import { buildRegistry, installRegistryDependencies, installRegistryItem } from '../registry'
@@ -295,6 +295,10 @@ const installComponent = async ({
   if (!installedEntry && onDiskInstallValid && !localized) {
     await recordInstalledState({
       cwd,
+      /* Adopting files this run did not write: only the ones that still match
+         the shipped source get stamped, so any pre-existing edit stays
+         protected from a later `update`. */
+      fileHashes: await hashInstalledFiles({ cwd, manifest }),
       manifest,
       patchedFiles,
       targetId: project.target.id,
@@ -445,10 +449,15 @@ const installComponent = async ({
     )
   }
 
+  const installLocalized = localized || installedEntry?.localized === true
+
   await recordInstalledState({
     cwd,
+    /* Stamp the files as written, so the next content-changing version bump can
+       upgrade them instead of reporting them as local edits (#474). */
+    fileHashes: await hashInstalledFiles({ cwd, localized: installLocalized, manifest }),
     installedAt: installedEntry?.installedAt ?? undefined,
-    localized: localized || installedEntry?.localized,
+    localized: installLocalized,
     manifest,
     patchedFiles,
     targetId: project.target.id,

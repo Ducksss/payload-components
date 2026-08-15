@@ -253,17 +253,17 @@
     <text class="provenance-line" x="48" y="590">tools/payload-components/state.ts</text>
   </g>
   <g data-journal-part="evidence" data-evidence-excerpt="state.components[manifest.name] = upsertEntry({
+    fileHashes: currentEntry?.fileHashes,
     installedAt: currentEntry?.installedAt ?? null,
     lastAttemptAt: now,
     lastError: null,
     localized: localized ?? currentEntry?.localized,
     manifest,
     patchedFiles,
-    status: &apos;partial&apos;,
-    targetId," data-evidence-truncated="true">
+    status: &apos;partial&apos;," data-evidence-truncated="true">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
-  <text class="evidence-line" x="48" y="626">state.components[manifest.name] = upsertEntry({ · installedAt:</text>
-<text class="evidence-line" x="48" y="641">currentEntry?.installedAt ?? null, · lastAttemptAt: now, · …</text>
+  <text class="evidence-line" x="48" y="626">state.components[manifest.name] = upsertEntry({ · fileHashes:</text>
+<text class="evidence-line" x="48" y="641">currentEntry?.fileHashes, · installedAt: currentEntry?.installedA …</text>
 </g>
   <g data-journal-part="prompt" data-prompt="Turn the failure into a fixture.">
     <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>

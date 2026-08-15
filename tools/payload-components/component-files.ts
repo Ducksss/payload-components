@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { copyFile, mkdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 
@@ -16,7 +17,12 @@ export type CanonicalFile = {
   sourcePath: string
 }
 
-export type InstalledFileStatus = 'missing' | 'modified' | 'unchanged' | 'unpublished'
+/* `outdated` is the file this CLI wrote at an earlier version, still untouched:
+ * it differs from what ships now, but matches the hash recorded at install, so
+ * overwriting it loses nothing. Only `modified` — differing from both — is a
+ * local edit. Without a recorded hash the two are indistinguishable and
+ * everything that differs stays `modified`, which is the safe reading. */
+export type InstalledFileStatus = 'missing' | 'modified' | 'outdated' | 'unchanged' | 'unpublished'
 
 export type InstalledFileComparison = {
   projectPath: string
@@ -27,12 +33,18 @@ export type InstalledFileReport = {
   comparisons: InstalledFileComparison[]
   missing: string[]
   modified: string[]
+  outdated: string[]
 }
 
 /* Compare copied source by content, not bytes: the only differences a healthy
  * install can introduce are line endings and a trailing newline (git autocrlf,
  * editors-on-save). Anything else is a real local edit we must not clobber. */
 const normalizeSource = (value: string) => value.replaceAll('\r\n', '\n').replace(/\s+$/, '')
+
+/* Hash the normalized text, so the line-ending and trailing-newline drift that
+ * `normalizeSource` forgives cannot turn a recorded file into a false edit. */
+export const hashSource = (value: string) =>
+  createHash('sha256').update(normalizeSource(value)).digest('hex')
 
 /* Map a registry item's shipped files to where they land in a consumer repo.
  * The registry item is the source of truth for that mapping (`target`), so
@@ -65,6 +77,25 @@ export const resolveCanonicalFiles = async (registryItemName: string) => {
   return canonicalFiles
 }
 
+/* What an install of this component would write to `projectPath` right now. A
+ * localized install legitimately differs from the shipped source: its block
+ * config's fields array is wrapped in localizeFields(...). Applying the same
+ * deterministic transform to the canonical side makes a localized component read
+ * as clean, while a real local edit on top of it still reads as modified. */
+const readCanonicalSource = async ({
+  canonicalFile,
+  localized,
+  projectPath,
+}: {
+  canonicalFile: CanonicalFile
+  localized: boolean
+  projectPath: string
+}) => {
+  const shipped = await readFile(canonicalFile.sourcePath, 'utf8')
+
+  return localized && isBlockConfigFile(projectPath) ? localizeBlockConfigSource(shipped) : shipped
+}
+
 /* Classify every file a component owns in the consumer repo. `unpublished`
  * means the manifest claims a file the registry item does not ship — a repo
  * authoring bug rather than consumer drift, so it is never treated as an edit. */
@@ -72,14 +103,15 @@ export const compareInstalledFiles = async ({
   cwd,
   localized = false,
   manifest,
+  recordedHashes,
 }: {
   cwd: string
-  /* A localized install legitimately differs from the shipped source: its block
-   * config's fields array is wrapped in localizeFields(...). Apply the same
-   * deterministic transform to the canonical side so a localized component reads
-   * as clean, and a real local edit on top of it still reads as modified. */
   localized?: boolean
   manifest: Pick<ComponentManifest, 'files' | 'registryItemName'>
+  /* Per-file hashes from install state — what this CLI last wrote. Supplying
+   * them is what separates an untouched older version from a local edit; without
+   * them every difference from the current source reads as an edit. */
+  recordedHashes?: Record<string, string>
 }): Promise<InstalledFileReport> => {
   const canonicalFiles = await resolveCanonicalFiles(manifest.registryItemName)
   const comparisons: InstalledFileComparison[] = []
@@ -99,24 +131,73 @@ export const compareInstalledFiles = async ({
       continue
     }
 
-    const shipped = await readFile(canonicalFile.sourcePath, 'utf8')
-    const canonical =
-      localized && isBlockConfigFile(projectPath) ? localizeBlockConfigSource(shipped) : shipped
+    const canonical = await readCanonicalSource({ canonicalFile, localized, projectPath })
+
+    if (normalizeSource(installed) === normalizeSource(canonical)) {
+      comparisons.push({ projectPath, status: 'unchanged' })
+      continue
+    }
+
+    const recordedHash = recordedHashes?.[projectPath]
 
     comparisons.push({
       projectPath,
-      status:
-        normalizeSource(installed) === normalizeSource(canonical) ? 'unchanged' : 'modified',
+      status: recordedHash !== undefined && recordedHash === hashSource(installed)
+        ? 'outdated'
+        : 'modified',
     })
   }
 
+  const collect = (status: InstalledFileStatus) =>
+    comparisons.filter((comparison) => comparison.status === status).map(({ projectPath }) => projectPath)
+
   return {
     comparisons,
-    missing: comparisons.filter(({ status }) => status === 'missing').map(({ projectPath }) => projectPath),
-    modified: comparisons
-      .filter(({ status }) => status === 'modified')
-      .map(({ projectPath }) => projectPath),
+    missing: collect('missing'),
+    modified: collect('modified'),
+    outdated: collect('outdated'),
   }
+}
+
+/* Stamp what an install just wrote, for the state entry. Only files that match
+ * the shipped source right now are stamped: anything already differing may carry
+ * local edits, and recording those would license a later `update` to overwrite
+ * them. An unstamped file simply keeps the conservative old behaviour. */
+export const hashInstalledFiles = async ({
+  cwd,
+  localized = false,
+  manifest,
+}: {
+  cwd: string
+  localized?: boolean
+  manifest: Pick<ComponentManifest, 'files' | 'registryItemName'>
+}): Promise<Record<string, string>> => {
+  const canonicalFiles = await resolveCanonicalFiles(manifest.registryItemName)
+  const fileHashes: Record<string, string> = {}
+
+  for (const projectPath of manifest.files) {
+    const canonicalFile = canonicalFiles.get(projectPath)
+
+    if (!canonicalFile) {
+      continue
+    }
+
+    const installed = await readFile(path.join(cwd, projectPath), 'utf8').catch(() => undefined)
+
+    if (installed === undefined) {
+      continue
+    }
+
+    const canonical = await readCanonicalSource({ canonicalFile, localized, projectPath })
+
+    if (normalizeSource(installed) !== normalizeSource(canonical)) {
+      continue
+    }
+
+    fileHashes[projectPath] = hashSource(installed)
+  }
+
+  return fileHashes
 }
 
 /* Copy a shipped shared helper straight into the project. Helpers like

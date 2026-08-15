@@ -12,6 +12,10 @@ export type ComponentDiff = {
   missingFragments: string[]
   modifiedFiles: string[]
   name: string
+  /* Differs from the shipped source but matches what the install wrote: an
+   * upgrade waiting to happen, not a local edit. Reported separately so `update`
+   * and this command agree about which files are actually the consumer's. */
+  outdatedFiles: string[]
   pendingChangelog: ChangelogEntry[]
   recordedVersion: string
   registryVersion: string
@@ -29,16 +33,18 @@ const resolveComponentDiff = async ({
   cwd,
   hostFiles,
   localized,
+  recordedHashes,
   recordedVersion,
 }: {
   componentName: string
   cwd: string
   hostFiles: ResolvedHostFiles
   localized: boolean
+  recordedHashes?: Record<string, string>
   recordedVersion: string
 }): Promise<ComponentDiff> => {
   const manifest = await loadManifest(componentName)
-  const fileReport = await compareInstalledFiles({ cwd, localized, manifest })
+  const fileReport = await compareInstalledFiles({ cwd, localized, manifest, recordedHashes })
   const fragmentCheck = await verifyInstalledPayloadFragments({ cwd, hostFiles, manifest }).catch(
     () => undefined,
   )
@@ -59,6 +65,7 @@ const resolveComponentDiff = async ({
     missingFragments: fragmentCheck?.missingFragments ?? [],
     modifiedFiles: fileReport.modified,
     name: componentName,
+    outdatedFiles: fileReport.outdated,
     pendingChangelog,
     recordedVersion,
     registryVersion: manifest.version,
@@ -92,6 +99,12 @@ const formatComponentDiff = (diff: ComponentDiff) => {
 
   for (const filePath of diff.modifiedFiles) {
     lines.push(`    modified  ${filePath}`)
+  }
+
+  /* Named apart from `modified` because the remedy is the opposite: these want
+     an ordinary `update`, not a decision about whose version to keep. */
+  for (const filePath of diff.outdatedFiles) {
+    lines.push(`    outdated  ${filePath} (unedited, replaced by update)`)
   }
 
   for (const filePath of diff.missingFiles) {
@@ -151,6 +164,7 @@ export const diffCommand = async ({
         cwd,
         hostFiles,
         localized: entry?.installed?.localized === true,
+        recordedHashes: entry?.installed?.fileHashes,
         recordedVersion: entry?.installed?.manifestVersion ?? 'unknown',
       }),
     )

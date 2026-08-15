@@ -130,6 +130,7 @@ const formatComponentDetail = async ({ component, cwd }: { component: string; cw
         cwd,
         localized: entry.installed.localized,
         manifest,
+        recordedHashes: entry.installed.fileHashes,
       }).catch(() => undefined)
     : undefined
 
@@ -142,6 +143,7 @@ const formatComponentDetail = async ({ component, cwd }: { component: string; cw
         ? {
             localized: entry.installed.localized,
             modifiedFiles: fileReport?.modified ?? [],
+            outdatedFiles: fileReport?.outdated ?? [],
             status: entry.installed.status,
             updateAvailable: entry.updateAvailable,
             version: entry.installed.manifestVersion,

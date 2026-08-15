@@ -61,6 +61,12 @@ export type InstallError = {
 }
 
 export type InstallStateEntry = {
+  /* sha256 of every owned file as this CLI wrote it, keyed by project path.
+   * Without it, a file left over from an older version and a file the consumer
+   * edited are byte-for-byte indistinguishable, so `update` has to treat both as
+   * local edits. Absent on installs recorded before this field existed, and on
+   * files that already differed from the shipped source when they were recorded. */
+  fileHashes?: Record<string, string>
   installedAt: string | null
   lastAttemptAt: string
   lastError: InstallError | null

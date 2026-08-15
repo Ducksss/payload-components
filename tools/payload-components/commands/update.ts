@@ -13,8 +13,17 @@ import { addCommand } from './add'
 type UpdatePlan = {
   blockedFiles: string[]
   componentName: string
+  /* Whether install state records what this CLI wrote for the blocked files. If
+     it does not, "modified" is a guess: an untouched file from the recorded
+     version is indistinguishable from an edited one, and the skip message has to
+     say so rather than accuse the consumer of edits they did not make. */
+  editsTracked: boolean
   files: string[]
   localized: boolean
+  /* Files superseded by a newer version but never touched locally. They are
+     overwritten like any other file; listing them keeps the plan honest about
+     what changed under the consumer. */
+  outdatedFiles: string[]
   pendingChangelog: ChangelogEntry[]
   recordedVersion: string
   registryVersion: string
@@ -47,7 +56,11 @@ const formatPlan = ({
       ...plan.pendingChangelog.map(
         (entry) => `  ${entry.version}: ${entry.summary}`,
       ),
-      ...plan.files.map((filePath) => `  ${filePath} (${verb}overwrite)`),
+      ...plan.files.map((filePath) =>
+        plan.outdatedFiles.includes(filePath)
+          ? `  ${filePath} (${verb}overwrite — unedited ${plan.recordedVersion} file)`
+          : `  ${filePath} (${verb}overwrite)`,
+      ),
     )
 
     if (plan.blockedFiles.length > 0) {
@@ -64,6 +77,17 @@ const formatPlan = ({
       '',
       `${plan.componentName}: skipped — ${plan.blockedFiles.length} locally modified file${plan.blockedFiles.length === 1 ? '' : 's'}`,
       ...plan.blockedFiles.map((filePath) => `  ${filePath} (modified)`),
+    )
+
+    if (!plan.editsTracked) {
+      lines.push(
+        `  This install was recorded before this CLI tracked file contents, so an`,
+        `  untouched ${plan.recordedVersion} file reads the same as an edited one. If you have not`,
+        `  edited these files, --force only restores them to ${plan.registryVersion}.`,
+      )
+    }
+
+    lines.push(
       `  Re-run with --force to overwrite, or copy your edits out first.`,
       `  Inspect with "payload-components diff ${plan.componentName}".`,
     )
@@ -148,14 +172,20 @@ export const updateCommand = async ({
   for (const entry of targets) {
     const manifest = await loadManifest(entry.name)
     const localized = entry.installed?.localized === true
-    const fileReport = await compareInstalledFiles({ cwd, localized, manifest })
+    const recordedHashes = entry.installed?.fileHashes
+    /* An outdated file — different from what ships now, identical to what the
+       install wrote — is exactly what this command exists to replace. Comparing
+       against the recorded hashes is what keeps it out of blockedFiles. */
+    const fileReport = await compareInstalledFiles({ cwd, localized, manifest, recordedHashes })
     const plan: UpdatePlan = {
       blockedFiles: fileReport.modified,
       componentName: entry.name,
+      editsTracked: recordedHashes !== undefined,
       files: manifest.files.filter((filePath) => !fileReport.modified.includes(filePath)),
       /* A localized install stays localized: re-running plain `add` would
          rewrite the config without the wrapper and silently drop it. */
       localized,
+      outdatedFiles: fileReport.outdated,
       pendingChangelog: entry.pendingChangelog,
       recordedVersion: entry.installed?.manifestVersion ?? 'unknown',
       registryVersion: manifest.version,
