@@ -247,6 +247,7 @@ pnpm build
 ## Branch & release flow
 
 - **`dev`** = integration branch; **`main`** = production (protected, gated by the `pr-gate` check). Work on a feature branch → open a PR into `dev` → promote `dev → main` via PR. Direct pushes to `main` are blocked.
+- **Put closing keywords in the promote PR body, not the feature PR.** GitHub fires `Closes #123` only when the commit carrying it lands on the default branch. Feature work is squashed onto `dev` and squashed again on promote, so a keyword written on a feature PR never reaches `main` and the issue silently stays open. The promote PR is the only one that merges into `main`, so its body is the one place a keyword works. v1.4.0 is the worked example: #473 wrote `(closes #108)` in its table and #108 closed on merge, while #100, #101, and #121 shipped in the same release without a keyword on the promote and had to be closed by hand. When writing the promote body, add a keyword for every issue the cycle resolves.
 
 ## Deeper docs
 
