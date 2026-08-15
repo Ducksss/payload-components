@@ -498,68 +498,75 @@ test.describe('Light shadcn frontend', () => {
     }
   })
 
-  test('exposes docs, catalog, component pages, and no horizontal overflow', async ({ page }) => {
-    // Each /docs/components/<slug> page embeds a live-preview iframe that compiles a
-    // second route (/components/preview/<slug>). Walking every route while also
-    // compiling every preview overwhelms the dev server mid-walk (ERR_CONNECTION_RESET).
-    // This smoke check only asserts each page's title/h1/overflow, so block the preview
-    // subframe. Production mode checks every prebuilt page; development mode checks one
-    // representative per category so Next's on-demand compiler does not restart mid-run.
-    await page.route('**/components/preview/**', (route) => route.abort())
+  // Production mode checks every prebuilt component page; development mode checks
+  // one representative per category so Next's on-demand compiler does not restart
+  // mid-run.
+  const overflowCheckedComponents = isProductionE2E
+    ? componentEntries
+    : componentEntries.filter(
+        (component, index, entries) =>
+          entries.findIndex((entry) => entry.category === component.category) === index,
+      )
+  const overflowComponentTitleOverrides = new Map([
+    ['content-feature-media', /Feature Media Block for Payload CMS/],
+    ['content-image-lead', /Image-led Content Block for Payload CMS/],
+  ])
 
-    const checkedComponents = isProductionE2E
-      ? componentEntries
-      : componentEntries.filter(
-          (component, index, entries) =>
-            entries.findIndex((entry) => entry.category === component.category) === index,
-        )
-    const componentTitleOverrides = new Map([
-      ['content-feature-media', /Feature Media Block for Payload CMS/],
-      ['content-image-lead', /Image-led Content Block for Payload CMS/],
-    ])
+  const overflowRoutes = [
+    {
+      h1: heroHeadline,
+      path: '/',
+      title: homeMetadataTitle,
+    },
+    {
+      h1: 'Introduction',
+      path: '/docs',
+      title: /CLI setup and architecture/,
+    },
+    {
+      h1: 'Architecture',
+      path: '/docs/architecture',
+      title: /Architecture/,
+    },
+    {
+      h1: catalogTitle,
+      path: '/components',
+      title: new RegExp(catalogMetadataTitle),
+    },
+    {
+      h1: 'Why Payload Components exists',
+      path: '/about',
+      title: /About/,
+    },
+    {
+      h1: 'The Payload Components brand',
+      path: '/brand-guide',
+      title: /Brand Guide/,
+    },
+    ...overflowCheckedComponents.map((component) => ({
+      h1: component.title,
+      path: component.href,
+      title: overflowComponentTitleOverrides.get(component.slug) ?? new RegExp(component.title),
+    })),
+  ]
 
-    const routes = [
-      {
-        h1: heroHeadline,
-        path: '/',
-        title: homeMetadataTitle,
-      },
-      {
-        h1: 'Introduction',
-        path: '/docs',
-        title: /CLI setup and architecture/,
-      },
-      {
-        h1: 'Architecture',
-        path: '/docs/architecture',
-        title: /Architecture/,
-      },
-      {
-        h1: catalogTitle,
-        path: '/components',
-        title: new RegExp(catalogMetadataTitle),
-      },
-      {
-        h1: 'Why Payload Components exists',
-        path: '/about',
-        title: /About/,
-      },
-      {
-        h1: 'The Payload Components brand',
-        path: '/brand-guide',
-        title: /Brand Guide/,
-      },
-      ...checkedComponents.map((component) => ({
-        h1: component.title,
-        path: component.href,
-        title: componentTitleOverrides.get(component.slug) ?? new RegExp(component.title),
-      })),
-    ]
+  /* One test per route rather than one long walk: the walk used to fold every
+     route into a single sequential test, so one slow navigation could push the
+     whole matrix over the per-test timeout even though every route passed in
+     isolation, and a failure only pointed at the matrix, never the route. */
+  for (const overflowRoute of overflowRoutes) {
+    test(`route ${overflowRoute.path} exposes title, h1, and no horizontal overflow`, async ({
+      page,
+    }) => {
+      // Each /docs/components/<slug> page embeds a live-preview iframe that compiles a
+      // second route (/components/preview/<slug>). Compiling that preview alongside the
+      // page overwhelms the dev server (ERR_CONNECTION_RESET). This smoke check only
+      // asserts the page's title/h1/overflow, so block the preview subframe.
+      await page.route('**/components/preview/**', (previewRoute) => previewRoute.abort())
 
-    for (const route of routes) {
-      await page.goto(`${baseURL}${route.path}`, { waitUntil: 'domcontentloaded' })
-      await expect(page).toHaveTitle(route.title)
-      await expect(page.getByRole('heading', { level: 1, name: route.h1 })).toBeVisible()
+      await page.goto(`${baseURL}${overflowRoute.path}`, { waitUntil: 'domcontentloaded' })
+      await expect(page).toHaveTitle(overflowRoute.title)
+      await expect(page.getByRole('heading', { level: 1, name: overflowRoute.h1 })).toBeVisible()
 
       // domcontentloaded can fire before webfonts settle final layout widths.
       await page.evaluate(() => document.fonts.ready)
@@ -567,8 +574,8 @@ test.describe('Light shadcn frontend', () => {
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       )
       expect(hasHorizontalOverflow).toBe(false)
-    }
-  })
+    })
+  }
 
   test('drives the responsive component preview frame', async ({ page }) => {
     await page.goto(`${baseURL}/docs/components/hero-basic`)
@@ -746,7 +753,7 @@ test.describe('Light shadcn frontend', () => {
         title: new RegExp(homeMetadataTitle),
       },
       {
-        link: /Browse all 67 installable components/,
+        link: /Browse all 73 installable components/,
         path: '/blog',
         title: new RegExp(blogTitle),
       },

@@ -1,0 +1,65 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "footer-centered",
+  "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "title": "Footer Centered",
+  "description": "A centred site footer stacking brand, tagline, and navigation above a rule that carries the copyright and policy links, installed as a wired Payload block.",
+  "registryItemName": "footer-centered",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/safeUrls.ts",
+    "src/blocks/shared/footerUrls.ts",
+    "src/blocks/shared/footerFields.ts",
+    "src/blocks/FooterCentered/config.ts",
+    "src/blocks/FooterCentered/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FooterCenteredBlock",
+      "importPath": "@/blocks/FooterCentered/Component",
+      "blockSlug": "footerCentered"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FooterCentered",
+      "importPath": "../../blocks/FooterCentered/config",
+      "blockName": "FooterCentered"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Centred brand and navigation above a rule carrying copyright and policy links."
+  },
+  "sampleContent": {
+    "blockType": "footerCentered",
+    "brandLabel": "Acme",
+    "tagline": "One governed metric layer for every team in the company.",
+    "copyright": "© Acme 2026",
+    "links": [
+      { "label": "Features", "href": "/features" },
+      { "label": "Pricing", "href": "/pricing" },
+      { "label": "About", "href": "/about" },
+      { "label": "Blog", "href": "/blog" },
+      { "label": "Contact", "href": "/contact" }
+    ],
+    "legalLinks": [
+      { "label": "Privacy policy", "href": "/privacy" },
+      { "label": "Terms of service", "href": "/terms" },
+      { "label": "Cookies", "href": "/cookies" }
+    ]
+  }
+}

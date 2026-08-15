@@ -1,0 +1,60 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "footer-simple",
+  "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "title": "Footer Simple",
+  "description": "A compact site footer that keeps the brand and a single row of links on one line, with the copyright below, installed as a wired Payload block.",
+  "registryItemName": "footer-simple",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/safeUrls.ts",
+    "src/blocks/shared/footerUrls.ts",
+    "src/blocks/shared/footerFields.ts",
+    "src/blocks/FooterSimple/config.ts",
+    "src/blocks/FooterSimple/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "FooterSimpleBlock",
+      "importPath": "@/blocks/FooterSimple/Component",
+      "blockSlug": "footerSimple"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "FooterSimple",
+      "importPath": "../../blocks/FooterSimple/config",
+      "blockName": "FooterSimple"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Brand on the left, one wrapped row of links on the right, copyright beneath."
+  },
+  "sampleContent": {
+    "blockType": "footerSimple",
+    "brandLabel": "Acme",
+    "copyright": "© Acme 2026 — All rights reserved",
+    "links": [
+      { "label": "Features", "href": "/features" },
+      { "label": "Solution", "href": "/solution" },
+      { "label": "Customers", "href": "/customers" },
+      { "label": "Pricing", "href": "/pricing" },
+      { "label": "Help", "href": "/help" },
+      { "label": "About", "href": "/about" }
+    ]
+  }
+}

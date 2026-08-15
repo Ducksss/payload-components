@@ -291,11 +291,17 @@ drift from the registry.
 | `testimonials-bento`      | `npx payload-components add testimonials-bento`      |
 | `testimonials-wall`       | `npx payload-components add testimonials-wall`       |
 | `stats-proof`             | `npx payload-components add stats-proof`             |
+| `stats-grid`              | `npx payload-components add stats-grid`              |
+| `stats-card`              | `npx payload-components add stats-card`              |
+| `stats-inline`            | `npx payload-components add stats-inline`            |
 | `pricing-cards`           | `npx payload-components add pricing-cards`           |
 | `pricing-cards-muted`     | `npx payload-components add pricing-cards-muted`     |
 | `pricing-cards-cta`       | `npx payload-components add pricing-cards-cta`       |
 | `pricing-split`           | `npx payload-components add pricing-split`           |
 | `pricing-enterprise`      | `npx payload-components add pricing-enterprise`      |
+| `footer-columns`          | `npx payload-components add footer-columns`          |
+| `footer-simple`           | `npx payload-components add footer-simple`           |
+| `footer-centered`         | `npx payload-components add footer-centered`         |
 
 <!-- COMPONENT-INVENTORY:END -->
 
@@ -556,6 +562,14 @@ Contributions are welcome. The useful shape is a complete change: source,
 manifest, docs, demo twin, and installer coverage together when adding or
 changing a component.
 
+Looking for a first issue? Both searches list currently open work, so they stay
+accurate as issues land:
+
+- [Good first issues][good-first-issue-url] - small, self-contained tasks that do
+  not assume prior context on the registry or CLI.
+- [Help wanted][help-wanted-url] - open work of any size where a contributor
+  would be welcome.
+
 Community docs:
 
 - [CONTRIBUTING.md][contributing-url] - setup, branches, tests, and PR shape.
@@ -610,6 +624,8 @@ information.
 [forks-shield]: https://img.shields.io/github/forks/Ducksss/payload-components.svg?style=for-the-badge
 [forks-url]: https://github.com/Ducksss/payload-components/network/members
 [fumadocs-url]: https://fumadocs.dev
+[good-first-issue-url]: https://github.com/Ducksss/payload-components/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22
+[help-wanted-url]: https://github.com/Ducksss/payload-components/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22
 [issues-shield]: https://img.shields.io/github/issues/Ducksss/payload-components.svg?style=for-the-badge
 [issues-url]: https://github.com/Ducksss/payload-components/issues
 [license-shield]: https://img.shields.io/github/license/Ducksss/payload-components.svg?style=for-the-badge

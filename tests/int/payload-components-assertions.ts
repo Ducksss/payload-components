@@ -11,6 +11,19 @@ import type {
 
 const layoutAnchor = "name: 'layout'"
 
+/* `rejects.toThrow` matches one pattern per call, which is the wrong shape for
+   errors that are asserted fact by fact. Capture the rejection instead, narrowed
+   to Error so the assertions can read `.message` directly. */
+export const captureRejection = async (promise: Promise<unknown>) => {
+  try {
+    await promise
+  } catch (error) {
+    return error as Error
+  }
+
+  throw new Error('Expected the call to reject, but it resolved.')
+}
+
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 const normalizeFileList = (files: string[]) => [...new Set(files)].sort()

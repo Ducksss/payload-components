@@ -2602,6 +2602,11 @@
       },
       "files": [
         {
+          "path": "payload-components/source/blocks/shared/statsFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/statsFields.ts"
+        },
+        {
           "path": "payload-components/source/blocks/StatsProof/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/StatsProof/config.ts"
@@ -2610,6 +2615,129 @@
           "path": "payload-components/source/blocks/StatsProof/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/StatsProof/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "stats-grid",
+      "type": "registry:block",
+      "title": "Stats Grid",
+      "description": "Heading and intro above a responsive grid of large string metrics on rule-topped columns.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add stats-grid\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-grid.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add stats-grid` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add stats-grid",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/statsFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/statsFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/StatsGrid/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/StatsGrid/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/StatsGrid/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/StatsGrid/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "stats-card",
+      "type": "registry:block",
+      "title": "Stats Card",
+      "description": "A centred heading above one divided panel that splits metrics into equal columns.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add stats-card\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-card.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add stats-card` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add stats-card",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/statsFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/statsFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/StatsCard/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/StatsCard/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/StatsCard/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/StatsCard/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "stats-inline",
+      "type": "registry:block",
+      "title": "Stats Inline",
+      "description": "Heading and intro above rule-topped rows where each figure reads as one sentence.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add stats-inline\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-inline.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add stats-inline` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add stats-inline",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/statsFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/statsFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/StatsInline/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/StatsInline/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/StatsInline/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/StatsInline/Component.tsx"
         }
       ]
     },
@@ -2818,6 +2946,153 @@
           "path": "payload-components/source/blocks/PricingEnterprise/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/PricingEnterprise/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "footer-columns",
+      "type": "registry:block",
+      "title": "Footer Columns",
+      "description": "A brand block beside labelled columns of navigation links, closed by a copyright rule.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add footer-columns\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/footer-columns.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add footer-columns` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add footer-columns",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/safeUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/safeUrls.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/footerUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/footerUrls.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/footerFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/footerFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FooterColumns/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FooterColumns/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FooterColumns/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/FooterColumns/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "footer-simple",
+      "type": "registry:block",
+      "title": "Footer Simple",
+      "description": "A compact footer keeping the brand and one wrapped row of links on a line, copyright beneath.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add footer-simple\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/footer-simple.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add footer-simple` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add footer-simple",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/safeUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/safeUrls.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/footerUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/footerUrls.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/footerFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/footerFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FooterSimple/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FooterSimple/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FooterSimple/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/FooterSimple/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "footer-centered",
+      "type": "registry:block",
+      "title": "Footer Centered",
+      "description": "A centred brand, tagline, and navigation above a rule carrying copyright and policy links.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add footer-centered\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/footer-centered.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add footer-centered` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add footer-centered",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/safeUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/safeUrls.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/footerUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/footerUrls.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/footerFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/footerFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FooterCentered/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FooterCentered/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FooterCentered/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/FooterCentered/Component.tsx"
         }
       ]
     }
