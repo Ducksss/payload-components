@@ -1,10 +1,15 @@
 'use client'
 
 import { usePathname, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { type CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ArrowUpRight, Search, X } from 'lucide-react'
 
+import {
+  CatalogThemeControl,
+  defaultBrandHue,
+  defaultRadiusRem,
+} from '@/components/site/CatalogThemeControl'
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { ComponentCard } from '@/components/site/ComponentCard'
 import { UpcomingComponentCard } from '@/components/site/ComponentGrid'
@@ -90,6 +95,10 @@ export function ComponentCatalogBrowser({
   const [localQuery, setLocalQuery] = useState(query)
   const [localType, setLocalType] = useState<FamilyKey | 'all'>(typeFromUrl)
   const [localCategory, setLocalCategory] = useState(categoryFromUrl)
+  /* Preview-only theming. Deliberately not URL-synced: it's a try-it-on
+     affordance, not a filter, so it shouldn't leak into shared catalog links. */
+  const [brandHue, setBrandHue] = useState<number>(defaultBrandHue)
+  const [radiusRem, setRadiusRem] = useState<number>(defaultRadiusRem)
   const [selected, setSelected] = useState<string[]>(selectionFromUrl)
   const type = localType
   const category = localCategory
@@ -272,13 +281,24 @@ export function ComponentCatalogBrowser({
           </nav>
         </aside>
 
-        <div className="min-w-0">
+        {/* --preview-hue / --preview-radius cascade to every .preview-themed
+            surface below; only the demo twins read them, so the toolbar and
+            card chrome keep the emerald accent and the site's own radius. */}
+        <div
+          className="min-w-0"
+          style={
+            {
+              '--preview-hue': `${brandHue}deg`,
+              '--preview-radius': `${radiusRem}rem`,
+            } as CSSProperties
+          }
+        >
           {/* Sticky toolbar: the single search input (its sr-only label is the
               e2e anchor), the live result count, and — below lg — a horizontal
               chip strip mirroring the rail tree. */}
           <div className="sticky top-14 z-30 mb-6 flex flex-col gap-3 border-b border-border bg-background/85 py-3 backdrop-blur lg:mb-8">
-            <div className="flex items-center gap-3">
-              <label className="relative block flex-1">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <label className="relative block min-w-[12rem] flex-1">
                 <span className="sr-only">Search components</span>
                 <Search
                   aria-hidden="true"
@@ -295,6 +315,12 @@ export function ComponentCatalogBrowser({
               <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
                 {visibleCount} {visibleCount === 1 ? 'result' : 'results'}
               </p>
+              <CatalogThemeControl
+                hue={brandHue}
+                onHueChange={setBrandHue}
+                onRadiusChange={setRadiusRem}
+                radiusRem={radiusRem}
+              />
             </div>
 
             <div className="-mb-1 flex gap-2 overflow-x-auto pb-1 lg:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
