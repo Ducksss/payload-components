@@ -1,0 +1,65 @@
+---
+title: Call To Action Split
+description: A split call-to-action block — heading and copy on one side, CTA links and an assurance line on the other.
+icon: SquareStack
+---
+
+<ComponentPreview slug="call-to-action-split" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add call-to-action-split
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/call-to-action-split.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="call-to-action-split" />
+
+## Content model
+
+`title` and `description` come from the shared call-to-action base at
+`src/blocks/shared/callToActionFields.ts`, so editing them updates every installed call-to-action
+block at once. `assurance` and `links` are specific to this variant.
+
+The copy column stays left-aligned while the actions sit at the end of the row on large screens, so
+this variant suits a mid-page or footer prompt where a centered layout would break the reading line.
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'The call-to-action heading. Shared base field.' },
+    description: { type: 'textarea', description: 'Supporting copy under the heading. Shared base field.' },
+    assurance: {
+      type: 'text',
+      description: 'Optional reassurance under the actions — pricing, timing, or terms.',
+    },
+    links: { type: 'array', description: 'One or two CTA links rendered as buttons.' },
+  }}
+/>
+
+Each item in `links` carries a `link` group with the standard Payload link fields (`type`, `reference`,
+`url`, `label`, `newTab`, `appearance`). The first link renders as the default button and an
+`outline` appearance renders as the secondary action.
+
+## Usage
+
+<ComponentUsage slug="call-to-action-split" />
+
+## Requirements
+
+<ComponentRequirements slug="call-to-action-split" />
+
+## In this family
+
+<ComponentFamily slug="call-to-action-split" />

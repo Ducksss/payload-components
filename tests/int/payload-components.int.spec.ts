@@ -31,6 +31,9 @@ type RegistryDefinition = {
 }
 
 const representativeInstallComponents = [
+  'call-to-action-split',
+  'team-bios',
+  'contact-channels',
   'contact-routing-form',
   'embed-basic',
   'feature-accordion',
