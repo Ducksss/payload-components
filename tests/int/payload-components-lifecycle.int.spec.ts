@@ -5,12 +5,16 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type { ComponentManifest } from '../../tools/payload-components/types'
 
-import { compareInstalledFiles } from '../../tools/payload-components/component-files'
+import {
+  compareInstalledFiles,
+  hashInstalledFiles,
+  hashSource,
+} from '../../tools/payload-components/component-files'
 import { diffCommand } from '../../tools/payload-components/commands/diff'
 import { listCommand } from '../../tools/payload-components/commands/list'
 import { removeCommand } from '../../tools/payload-components/commands/remove'
 import { applyPayloadFragments } from '../../tools/payload-components/project'
-import { loadState, recordInstalledState } from '../../tools/payload-components/state'
+import { loadState, recordInstalledState, saveState } from '../../tools/payload-components/state'
 
 import { createInstallFixtureForComponents } from './payload-components-fixture'
 
@@ -51,6 +55,7 @@ const installFixture = async (componentNames: string[]) => {
     await applyPayloadFragments(fixtureDir, manifest.payloadFragments)
     await recordInstalledState({
       cwd: fixtureDir,
+      fileHashes: await hashInstalledFiles({ cwd: fixtureDir, manifest }),
       manifest,
       patchedFiles: manifest.recovery.patchedFiles,
       targetId: 'payload-website-starter',
@@ -140,6 +145,38 @@ describe('diff', () => {
     expect(output).toContain('modified  src/blocks/HeroBasic/config.ts')
     expect(output).toContain('missing   src/blocks/HeroBasic/Component.tsx')
     expect(manifest.files).toContain('src/blocks/HeroBasic/config.ts')
+  })
+
+  /* Same on-disk symptom as a local edit — content that differs from what ships
+     — but the opposite remedy, so `diff` has to name them differently or the
+     consumer is told to protect edits they never made. */
+  it('separates an unedited older file from a locally edited one', async () => {
+    const { fixtureDir } = await installFixture(['hero-basic'])
+    const configPath = path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts')
+    const olderSource = `${await readFile(configPath, 'utf8')}\n// fields as shipped at 0.0.9\n`
+
+    await writeFile(configPath, olderSource, 'utf8')
+
+    const state = await loadState(fixtureDir)
+    const entry = state.components['hero-basic']
+
+    entry.manifestVersion = '0.0.9'
+    entry.fileHashes = {
+      ...entry.fileHashes,
+      [configPath.slice(fixtureDir.length + 1)]: hashSource(olderSource),
+    }
+    await saveState(fixtureDir, state)
+
+    const read = captureStdout()
+
+    await expect(diffCommand({ cwd: fixtureDir })).resolves.toBe(false)
+
+    const output = read()
+
+    expect(output).toContain(
+      'outdated  src/blocks/HeroBasic/config.ts (unedited, replaced by update)',
+    )
+    expect(output).not.toContain('modified  src/blocks/HeroBasic/config.ts')
   })
 
   it('ignores line-ending and trailing-whitespace differences', async () => {

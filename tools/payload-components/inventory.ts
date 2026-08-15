@@ -6,6 +6,9 @@ import { loadAllManifests, selectPendingChangelog } from './manifest'
 import { loadState } from './state'
 
 export type InstalledSummary = {
+  /* Absent on installs recorded before hashes were tracked, which is what tells
+   * `diff`/`update` they cannot separate an old file from an edited one. */
+  fileHashes?: Record<string, string>
   installedAt: string | null
   lastError: InstallError | null
   localized: boolean
@@ -38,6 +41,7 @@ export type Inventory = {
 const toInstalledSummary = (
   entry: Awaited<ReturnType<typeof loadState>>['components'][string],
 ): InstalledSummary => ({
+  ...(entry.fileHashes ? { fileHashes: entry.fileHashes } : {}),
   installedAt: entry.installedAt,
   lastError: entry.lastError,
   localized: entry.localized === true,

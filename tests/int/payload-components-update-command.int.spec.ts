@@ -3,6 +3,7 @@ import path from 'node:path'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { hashInstalledFiles, hashSource } from '../../tools/payload-components/component-files'
 import { applyPayloadFragments } from '../../tools/payload-components/project'
 import { loadState, recordInstalledState, saveState } from '../../tools/payload-components/state'
 
@@ -39,13 +40,18 @@ const setup = async () => {
 
 /* Install the components, then rewrite their recorded manifestVersion so the
  * catalog looks newer than what the project has — the exact state `update`
- * exists to resolve. */
+ * exists to resolve. Hashes are recorded exactly as `add` records them, so what
+ * these specs drive is the real classification, not a friendlier version of it. */
 const installFixture = async ({
   componentNames,
   recordedVersion,
+  untracked = false,
 }: {
   componentNames: string[]
   recordedVersion?: string
+  /* Drop the per-file hashes, reproducing an install recorded by a CLI that did
+     not track them yet. Those projects keep the old, blunter behaviour. */
+  untracked?: boolean
 }) => {
   const { fixtureDir, manifests } = await createInstallFixtureForComponents(componentNames, {
     preseedSource: true,
@@ -57,23 +63,59 @@ const installFixture = async ({
     await applyPayloadFragments(fixtureDir, manifest.payloadFragments)
     await recordInstalledState({
       cwd: fixtureDir,
+      fileHashes: await hashInstalledFiles({ cwd: fixtureDir, manifest }),
       manifest,
       patchedFiles: manifest.recovery.patchedFiles,
       targetId: 'payload-website-starter',
     })
   }
 
-  if (recordedVersion) {
+  if (recordedVersion || untracked) {
     const state = await loadState(fixtureDir)
 
     for (const componentName of Object.keys(state.components)) {
-      state.components[componentName].manifestVersion = recordedVersion
+      if (recordedVersion) {
+        state.components[componentName].manifestVersion = recordedVersion
+      }
+
+      if (untracked) {
+        delete state.components[componentName].fileHashes
+      }
     }
 
     await saveState(fixtureDir, state)
   }
 
   return { fixtureDir, manifests }
+}
+
+/* Put the previous version's content on disk and record it as what the install
+ * wrote — a consumer who installed at the older version and never opened the
+ * file. The content only has to differ from what ships now; nothing in these
+ * specs compiles it, because `add` is stubbed. */
+const installedAtOlderVersion = async ({
+  fixtureDir,
+  projectPath,
+}: {
+  fixtureDir: string
+  projectPath: string
+}) => {
+  const absolutePath = path.join(fixtureDir, projectPath)
+  const olderSource = `${await readFile(absolutePath, 'utf8')}\n// fields as shipped at 0.0.9\n`
+
+  await writeFile(absolutePath, olderSource, 'utf8')
+
+  const state = await loadState(fixtureDir)
+
+  for (const entry of Object.values(state.components)) {
+    if (entry.fileHashes?.[projectPath]) {
+      entry.fileHashes[projectPath] = hashSource(olderSource)
+    }
+  }
+
+  await saveState(fixtureDir, state)
+
+  return absolutePath
 }
 
 /* A breaking bump does not exist in the shipped catalog yet, so this drives the
@@ -121,7 +163,7 @@ const setupBreaking = async () => {
   vi.doMock('../../tools/payload-components/component-files', () => ({
     compareInstalledFiles: vi
       .fn()
-      .mockResolvedValue({ comparisons: [], missing: [], modified: [] }),
+      .mockResolvedValue({ comparisons: [], missing: [], modified: [], outdated: [] }),
   }))
   vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
     output.push(String(chunk))
@@ -182,6 +224,72 @@ describe('update', () => {
     expect(addCommand).toHaveBeenCalledOnce()
     expect(await exists(path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts'))).toBe(false)
     expect(await exists(path.join(fixtureDir, 'src/blocks/shared/heroFields.ts'))).toBe(false)
+  })
+
+  /* The case #474 reported: the file on disk is genuinely out of date, which is
+     precisely what this command exists to fix, and it was being refused as a
+     local edit. The older fixtures only ever made the recorded *version* stale,
+     never the content, so nothing could catch it. */
+  it('upgrades an untouched file left behind by an older version', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic'],
+      recordedVersion: '0.0.9',
+    })
+    const configPath = await installedAtOlderVersion({
+      fixtureDir,
+      projectPath: 'src/blocks/HeroBasic/config.ts',
+    })
+
+    await updateCommand({ cwd: fixtureDir })
+
+    expect(addCommand).toHaveBeenCalledOnce()
+    expect(await exists(configPath)).toBe(false)
+    expect(output.join('')).toContain(
+      'src/blocks/HeroBasic/config.ts (overwrite — unedited 0.0.9 file)',
+    )
+    expect(output.join('')).not.toContain('locally modified')
+    expect(process.exitCode).toBeUndefined()
+  })
+
+  it('still blocks a file edited on top of an older version', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic'],
+      recordedVersion: '0.0.9',
+    })
+    const configPath = await installedAtOlderVersion({
+      fixtureDir,
+      projectPath: 'src/blocks/HeroBasic/config.ts',
+    })
+
+    await writeFile(configPath, `${await readFile(configPath, 'utf8')}\n// local tweak\n`, 'utf8')
+
+    await updateCommand({ cwd: fixtureDir })
+
+    expect(addCommand).not.toHaveBeenCalled()
+    expect(await exists(configPath)).toBe(true)
+    expect(output.join('')).toContain('skipped — 1 locally modified file')
+    expect(process.exitCode).toBe(1)
+  })
+
+  it('admits it cannot tell edits apart when the install predates hash tracking', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic'],
+      recordedVersion: '0.0.9',
+      untracked: true,
+    })
+    const configPath = path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts')
+
+    await writeFile(configPath, `${await readFile(configPath, 'utf8')}\n// older shape\n`, 'utf8')
+
+    await updateCommand({ cwd: fixtureDir })
+
+    expect(addCommand).not.toHaveBeenCalled()
+    expect(output.join('')).toContain('recorded before this CLI tracked file contents')
+    expect(output.join('')).toContain('--force only restores them to 0.1.0')
+    expect(process.exitCode).toBe(1)
   })
 
   it('skips a component with local edits, keeps the file, and exits non-zero', async () => {

@@ -161,6 +161,11 @@ drift: a version behind this CLI, a file whose content no longer matches, and wi
 has gone missing. Comparison is content-normalized, so line endings and a trailing newline
 are never reported as edits.
 
+A file that differs from what ships now is reported as `outdated` when it still matches what
+the install wrote, and `modified` only when it matches neither. Those need opposite responses
+— an outdated file wants an ordinary `update`, a modified one wants a decision about whose
+version to keep — so they are never collapsed into one label.
+
 When a component is behind, `diff` also prints the changelog entries the upgrade would
 apply, and the migration any breaking entry demands — `0.1.0 → 0.2.0` on its own is not a
 decision anyone can make.
@@ -182,6 +187,13 @@ right for a fresh install and wrong for an upgrade.
 **Local edits are protected.** A component with a modified file is skipped, listed by name,
 and the command exits non-zero. Pass `--force` to overwrite it, or copy your edits out
 first. Run `diff` to see exactly which files are involved.
+
+**A file left behind by an older version is not a local edit.** When a version bump rewrites
+a file, the copy on disk stops matching what ships — that is the upgrade, not drift, and
+`update` replaces it without asking. Install state records a hash of every file as it was
+written, which is what separates the two; an install recorded before this CLI tracked those
+hashes cannot make the distinction, so it still reports the file as modified and says so in
+the skip message.
 
 **Content-breaking upgrades are held back.** A component whose changelog marks a pending
 version `breaking` is not installed at all — rewriting the files is the easy half, and you

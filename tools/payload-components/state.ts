@@ -103,6 +103,7 @@ const normalizeState = (state: InstallState): InstallState => ({
 })
 
 const upsertEntry = ({
+  fileHashes,
   installedAt,
   lastAttemptAt,
   lastError,
@@ -112,6 +113,7 @@ const upsertEntry = ({
   status,
   targetId,
 }: {
+  fileHashes?: Record<string, string>
   installedAt: string | null
   lastAttemptAt: string
   lastError: InstallError | null
@@ -125,6 +127,7 @@ const upsertEntry = ({
     manifest,
     targetId,
   }),
+  ...(fileHashes && Object.keys(fileHashes).length > 0 ? { fileHashes } : {}),
   installedAt,
   lastAttemptAt,
   lastError,
@@ -192,7 +195,11 @@ export const recordInstallAttempt = async ({
   const now = new Date().toISOString()
   const currentEntry = state.components[manifest.name]
 
+  /* An attempt writes no files of its own, so the hashes from the last completed
+     install still describe what is on disk. Dropping them here would make every
+     retry look like a locally edited install. */
   state.components[manifest.name] = upsertEntry({
+    fileHashes: currentEntry?.fileHashes,
     installedAt: currentEntry?.installedAt ?? null,
     lastAttemptAt: now,
     lastError: null,
@@ -228,6 +235,7 @@ export const recordInstallFailure = async ({
   const currentEntry = state.components[manifest.name]
 
   state.components[manifest.name] = upsertEntry({
+    fileHashes: currentEntry?.fileHashes,
     installedAt: currentEntry?.installedAt ?? null,
     lastAttemptAt: now,
     lastError: {
@@ -267,6 +275,7 @@ export const removeRecordedState = async ({
 
 export const recordInstalledState = async ({
   cwd,
+  fileHashes,
   installedAt,
   localized,
   manifest,
@@ -274,6 +283,9 @@ export const recordInstalledState = async ({
   targetId,
 }: {
   cwd: string
+  /* What this install wrote, per owned file. Recording it is what lets a later
+     `update` tell an untouched older file from one the consumer edited. */
+  fileHashes?: Record<string, string>
   installedAt?: string
   localized?: boolean
   manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
@@ -284,6 +296,9 @@ export const recordInstalledState = async ({
   const now = new Date().toISOString()
 
   state.components[manifest.name] = upsertEntry({
+    /* Keep the previous stamp when a caller records an install without one,
+       rather than silently downgrading a tracked install to an untracked one. */
+    fileHashes: fileHashes ?? state.components[manifest.name]?.fileHashes,
     installedAt: installedAt ?? now,
     lastAttemptAt: now,
     lastError: null,
