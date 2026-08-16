@@ -26,20 +26,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
           body="${PR_BODY:-}"
-          closing_keyword_regex='(^|[^[:alnum:]])(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]+[^[:space:]]*#[0-9]+'
+          closing_keyword_regex='(^|[^[:alnum:]])(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]+[^[:space:]]*#[0-9]+([^[:alnum:]]|$)'
           opt_out_regex='^[[:space:]]*No issues closed this cycle\.[[:space:]]*$'
-
           if grep -Eiq "$closing_keyword_regex" <<<"$body"; then
             echo "Closing keyword found in the promote pull-request body."
             exit 0
           fi
-
-          if grep -Eiq "$opt_out_regex" <<<"$body"; then
+          if grep -Eq "$opt_out_regex" <<<"$body"; then
             echo "Explicit no-issues opt-out found in the promote pull-request body."
             exit 0
           fi
-
           echo "::error::Add a closing keyword such as 'Closes #123', or add the exact opt-out line 'No issues closed this cycle.'."
           exit 1
