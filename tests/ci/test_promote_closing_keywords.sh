@@ -2,12 +2,29 @@
 set -euo pipefail
 
 workflow="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/.github/workflows/promote-closing-keywords.yml"
-closing_keyword_regex='(^|[^[:alnum:]])(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]+[^[:space:]]*#[0-9]+'
-opt_out_regex='^[[:space:]]*No issues closed this cycle\.[[:space:]]*$'
+
+for event in opened reopened edited synchronize; do
+  grep -Fqx "      - $event" "$workflow"
+done
+grep -Fqx '      - main' "$workflow"
+grep -Fqx '  contents: read' "$workflow"
+grep -Fqx "    if: github.event_name == 'pull_request' && github.base_ref == 'main'" "$workflow"
+grep -Fq "Closes #123" "$workflow"
+grep -Fq "No issues closed this cycle." "$workflow"
+if grep -Eq '^[[:space:]]+uses:' "$workflow"; then
+  echo "FAIL: workflow must not use third-party actions" >&2
+  exit 1
+fi
+
+run_script="$(sed -n '/^        run: |/,$p' "$workflow" | sed '1d; s/^          //')"
+if [[ -z "$run_script" ]]; then
+  echo "FAIL: could not extract workflow validation script" >&2
+  exit 1
+fi
 
 check_body() {
   local body="$1"
-  grep -Eiq "$closing_keyword_regex" <<<"$body" || grep -Eiq "$opt_out_regex" <<<"$body"
+  PR_BODY="$body" bash -c "$run_script" >/dev/null 2>&1
 }
 
 pass_case() {
@@ -28,18 +45,15 @@ fail_case() {
   fi
 }
 
-# Keep the test coupled to the workflow's documented contract.
-grep -Fq "branches:" "$workflow"
-grep -Fq "edited" "$workflow"
-grep -Fq "No issues closed this cycle." "$workflow"
-
 pass_case "standard closing keyword" $'Summary\nCloses #477'
 pass_case "cross-repository closing keyword" "Fixes upstream/project#12"
-pass_case "explicit no-issues opt-out" "No issues closed this cycle."
 pass_case "case-insensitive keyword" "resolves #9"
+pass_case "exact no-issues opt-out" "No issues closed this cycle."
 
 fail_case "empty body" ""
 fail_case "closing verb without issue reference" "This change closes a documentation gap."
 fail_case "near-miss opt-out" "No issues closed this cycle"
+fail_case "malformed issue reference suffix" "Closes #123abc"
+fail_case "case-variant opt-out" "no issues closed this cycle."
 
 printf '%s\n' "All promote closing-keyword contract cases passed."
