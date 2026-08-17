@@ -21,15 +21,27 @@ const staticRoutes = [
   priority: number
 }>
 
+const releaseDates = {
+  '/': new Date('2026-08-15'),
+  '/components': new Date('2026-08-09'),
+  '/docs/installation': new Date('2026-08-09'),
+} as const satisfies Partial<Record<string, Date>>
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const marketing: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
     changeFrequency: route.changeFrequency,
+    ...(route.path in releaseDates
+      ? { lastModified: releaseDates[route.path as keyof typeof releaseDates] }
+      : {}),
     priority: route.priority,
     url: `${siteUrl}${route.path}`,
   }))
 
   const docs: MetadataRoute.Sitemap = source.getPages().map((page) => ({
     changeFrequency: 'weekly',
+    ...(page.url in releaseDates
+      ? { lastModified: releaseDates[page.url as keyof typeof releaseDates] }
+      : {}),
     // The docs landing carries more weight than an individual guide.
     priority: page.url === '/docs' ? 0.8 : 0.7,
     url: `${siteUrl}${page.url}`,

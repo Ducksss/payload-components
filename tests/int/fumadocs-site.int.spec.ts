@@ -763,7 +763,7 @@ describe('Fumadocs site shell', () => {
       },
     ]
     const sourceMock = () => ({
-      source: { getPages: () => [{ url: '/docs' }] },
+      source: { getPages: () => [{ url: '/docs' }, { url: '/docs/installation' }] },
     })
     const blogSourceMock = () => ({
       blogSource: { getPages: () => blogPages },
@@ -783,11 +783,15 @@ describe('Fumadocs site shell', () => {
 
     const entries = sitemap()
     const home = entries.find((entry) => entry.url === `${siteUrl}/`)
+    const components = entries.find((entry) => entry.url === `${siteUrl}/components`)
     const docs = entries.find((entry) => entry.url === `${siteUrl}/docs`)
+    const installation = entries.find((entry) => entry.url === `${siteUrl}/docs/installation`)
     const blogPost = entries.find((entry) => entry.url === `${siteUrl}/blog/hello`)
 
-    expect(home?.lastModified).toBeUndefined()
+    expect(home?.lastModified).toEqual(new Date('2026-08-15'))
+    expect(components?.lastModified).toEqual(new Date('2026-08-09'))
     expect(docs?.lastModified).toBeUndefined()
+    expect(installation?.lastModified).toEqual(new Date('2026-08-09'))
     expect(blogPost?.lastModified).toEqual(new Date('2026-06-18'))
 
     expect(feedModule.escapeXml(`<tag attr="value">Tom & Jerry's</tag>`)).toBe(
