@@ -232,6 +232,36 @@ describe('Fumadocs site shell', () => {
     )
   })
 
+  it('keeps the Payload npm guide distinct, discoverable, and version-safe', async () => {
+    const [guide, docsMeta, docsIndex, installationGuide, sitemap] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'payload-cms-npm.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'index.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+    ])
+
+    expect(guide).toContain('seoTitle: "Payload CMS npm install: packages, setup, and fixes"')
+    expect(guide).toContain('command="npx create-payload-app@latest"')
+    expect(guide).toContain('npm install --save-exact payload @payloadcms/next')
+    expect(guide).toContain('@payloadcms/db-postgres')
+    expect(guide).toContain('@payloadcms/db-mongodb')
+    expect(guide).toContain('@payloadcms/db-sqlite')
+    expect(guide).toContain('npm ls payload @payloadcms/next @payloadcms/ui react react-dom')
+    expect(guide).toContain('npm dedupe')
+    expect(guide).toContain('command="npx payload-components add hero-basic"')
+    expect(guide).toMatch(/command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/)
+    expect(guide).toContain('[generated-types repair guide](/docs/payload-types-errors)')
+    expect(guide).toContain(
+      '[`generate:importmap` command reference](/docs/payload-generate-importmap)',
+    )
+    expect(guide).toContain('[Payload Components installation guide](/docs/installation)')
+    expect(docsMeta).toContain('"payload-cms-npm"')
+    expect(docsIndex).toContain('href="/docs/payload-cms-npm"')
+    expect(installationGuide).toContain('[Payload CMS npm setup guide](/docs/payload-cms-npm)')
+    expect(sitemap).toContain('source.getPages()')
+  })
+
   it('keeps the Payload blocks guide implementation-led, discoverable, and product-true', async () => {
     const [
       guide,
