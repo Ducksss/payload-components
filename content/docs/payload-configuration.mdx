@@ -1,0 +1,234 @@
+---
+title: "Payload configuration: payload.config.ts setup and structure"
+seoTitle: "Payload configuration: payload.config.ts setup guide"
+description: Configure Payload CMS v3 in payload.config.ts. Map the database, schema, admin, security, generated types, plugins, and environment values clearly.
+icon: Workflow
+---
+
+Payload configuration starts in `payload.config.ts`. This one typed file chooses the database adapter, loads collections and globals, sets the admin user and editor, defines security boundaries, and controls generated TypeScript output.
+
+The file should stay a readable composition root, not become the home for every field, hook, and access rule in the project. Keep the root decisions together, move each content model into its own module, and regenerate derived files after the config changes.
+
+<Callout type="info" title="This guide maps the root configuration">
+  For the narrower path from one `Block` config to the Pages editor and frontend,
+  use the [Payload CMS blocks guide](/docs/payload-blocks). The
+  [Payload Components architecture](/docs/architecture) explains why this docs site
+  does not load a Payload runtime.
+</Callout>
+
+## What payload.config.ts controls
+
+Payload is code-first. `buildConfig()` receives the root configuration object that Payload loads for the admin panel, APIs, Local API, generated types, and database-backed content model.
+
+| Responsibility | Root option | What belongs there |
+| --- | --- | --- |
+| Runtime | `db`, `secret`, `sharp` | Database adapter, encryption secret, and optional image processing dependency. |
+| Content model | `collections`, `globals` | Imported collection and singleton configs that define stored data and editor screens. |
+| Editor | `admin`, `editor` | Admin user collection, component import-map base, rich-text editor, live preview, and other editor behavior. |
+| Generated code | `typescript` | The output path for interfaces generated from the active schema. |
+| Network boundary | `serverURL`, `cors`, `csrf` | Public server address and the browser origins allowed to call Payload or send cookies. |
+| Extensions | `plugins`, `hooks`, `endpoints` | Project-wide plugins, root lifecycle hooks, and custom HTTP endpoints. |
+
+The [official Payload config reference](https://payloadcms.com/docs/configuration/overview) lists every root option. Start with the few responsibilities your project actually needs, then add settings when a real requirement appears.
+
+## Put the config where every runtime can find it
+
+Payload normally looks for `payload.config.ts` at the project root or beside the Next.js app. The supported Payload Components project shape keeps it under `src/`:
+
+<Files>
+  <File name="package.json" />
+  <File name="tsconfig.json" />
+  <Folder name="src" defaultOpen>
+    <File name="payload.config.ts" />
+    <Folder name="collections" defaultOpen>
+      <Folder name="Users" />
+      <Folder name="Media" />
+      <Folder name="Pages" />
+    </Folder>
+    <Folder name="globals" />
+    <Folder name="plugins" />
+  </Folder>
+</Files>
+
+Point the `@payload-config` alias at that exact file so the Next.js routes, scripts, and server code resolve the same configuration:
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "paths": {
+      "@payload-config": ["./src/payload.config.ts"]
+    }
+  }
+}
+```
+
+If a Payload CLI command cannot discover the file, set the path in that script instead of moving or duplicating the config:
+
+```json title="package.json"
+{
+  "scripts": {
+    "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
+    "generate:importmap": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:importmap"
+  }
+}
+```
+
+Every entry point should load the same file. A second config for scripts or seeds will eventually drift from the schema the application serves.
+
+## Start with a small, complete root config
+
+This example uses Postgres and the website-style `Users`, `Media`, and `Pages` collections. MongoDB and SQLite use different adapters, but the rest of the responsibility map stays the same.
+
+```ts title="src/payload.config.ts"
+import { postgresAdapter } from '@payloadcms/db-postgres'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import path from 'path'
+import { buildConfig } from 'payload'
+import sharp from 'sharp'
+import { fileURLToPath } from 'url'
+
+import { Media } from './collections/Media'
+import { Pages } from './collections/Pages'
+import { Users } from './collections/Users'
+
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
+
+export default buildConfig({
+  admin: {
+    user: Users.slug,
+    importMap: {
+      baseDir: path.resolve(dirname),
+    },
+  },
+  collections: [Users, Media, Pages],
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URI || '',
+    },
+  }),
+  editor: lexicalEditor(),
+  secret: process.env.PAYLOAD_SECRET || '',
+  sharp,
+  typescript: {
+    outputFile: path.resolve(dirname, 'payload-types.ts'),
+  },
+})
+```
+
+Before the app starts, provide a real `DATABASE_URI` and a long, unguessable `PAYLOAD_SECRET` through your environment. The empty strings only keep this portable example type-correct. Do not commit either value or use a shared fallback secret in production.
+
+The database adapter is a deliberate project choice. Payload currently maintains adapters for Postgres, MongoDB, and SQLite; follow the [official database guide](https://payloadcms.com/docs/database/overview) for the adapter-specific connection options.
+
+## Keep schema modules out of the root file
+
+The main config should answer which models run. Each collection should answer how one model behaves.
+
+```ts title="src/collections/Pages/index.ts"
+import type { CollectionConfig } from 'payload'
+
+export const Pages: CollectionConfig = {
+  slug: 'pages',
+  admin: {
+    useAsTitle: 'title',
+  },
+  fields: [
+    {
+      name: 'title',
+      type: 'text',
+      required: true,
+    },
+  ],
+}
+```
+
+That boundary keeps field definitions, hooks, access rules, versions, and blocks close to the model they affect. The root file imports `Pages` once and stays easy to scan.
+
+Use the same split for globals, plugins, and reusable field groups:
+
+- Collections hold repeatable documents such as pages, posts, media, and users.
+- Globals hold singleton content such as navigation, site settings, or a footer.
+- Reusable field groups and blocks live near the collections that register them.
+- Project-wide plugins are composed in one imported array when the list grows.
+
+Do not hide all of this behind one opaque helper. Someone reviewing `payload.config.ts` should still be able to see the active database, collections, globals, plugins, admin user, and generated-type path.
+
+## Treat security and network options as boundaries
+
+Three settings are easy to copy without understanding their jobs:
+
+- `secret` protects Payload encryption workflows. Keep one strong value per environment and rotate it as an operational change, not a routine deploy.
+- `cors` allows specified origins to make cross-origin requests to Payload. A same-origin Next.js app often needs no extra origin.
+- `csrf` lists origins from which Payload may accept cookie-authenticated requests. Add only the browser origins that should send those cookies.
+
+`serverURL` is the absolute public origin of the Payload app, such as `https://example.com`. It contains the protocol and host, not an `/admin` or `/api` path.
+
+Keep environment-specific URLs and secrets in environment variables. Keep the decision about how Payload uses them in the typed config.
+
+## Regenerate only what the change affects
+
+`payload.config.ts` is source. `payload-types.ts` and the admin import map are derived output, and they respond to different changes.
+
+| Change | Follow-up |
+| --- | --- |
+| Collection, global, field, or block schema | Run `payload generate:types`. |
+| Custom admin component path | Run `payload generate:importmap`. |
+| Database adapter, secret, plugin, or environment value | Restart the process and exercise the affected runtime path. |
+| Stored slug, field name, or database identifier | Plan a data migration before changing production content. |
+
+<RunnableCommand
+  command="pnpm payload generate:types"
+  label="Copy the Payload type generation command"
+/>
+
+<RunnableCommand
+  command="pnpm payload generate:importmap"
+  label="Copy the Payload import-map generation command"
+/>
+
+Do not hand-edit either generated file. If type generation fails or a schema type is missing, use the [Payload generated-types repair guide](/docs/payload-types-errors). If the admin cannot resolve a component path, use the [`generate:importmap` command reference](/docs/payload-generate-importmap).
+
+## Diagnose configuration failures by responsibility
+
+When Payload fails during startup or generation, find the responsibility that failed before changing unrelated settings.
+
+### Payload cannot find the config
+
+Check the `@payload-config` path and the current working directory. For CLI scripts, make `PAYLOAD_CONFIG_PATH=src/payload.config.ts` explicit.
+
+### The database connection fails
+
+Confirm that the configured adapter matches its installed package and that the connection environment variable exists in this runtime. A working local `.env` does not prove the deploy has the same value.
+
+### The admin panel rejects the user collection
+
+`admin.user` must match the slug of an auth-enabled collection included in `collections`. Importing `Users` without registering it, or pointing at a non-auth collection, breaks that chain.
+
+### Generated types do not include a field or block
+
+The schema module must be reachable from the active root config before type generation runs. A block file on disk does not count until a registered collection or global references it.
+
+### An admin component import fails
+
+Use a component path string in config where Payload expects one, keep `admin.importMap.baseDir` aligned with those paths, then regenerate the import map. Do not import browser-only component code directly into a config that server scripts also load.
+
+## Add blocks after the project config is healthy
+
+Payload Components does not replace your database, user collection, access rules, or root configuration. On a supported Payload v3 + Next.js project, it adds one selected block and completes the app-owned wiring: source files, Pages layout registration, renderer mapping, generated types, and the admin import map.
+
+Run the read-only check first if you are unsure whether the project shape is ready:
+
+```bash
+npx payload-components doctor
+```
+
+Then install a block as a reviewable diff:
+
+<RunnableCommand
+  command="npx payload-components add hero-basic"
+  label="Copy the hero-basic install command"
+  trackInstall
+  emphasis="primary"
+/>
+
+The [installation guide](/docs/installation) lists the exact supported project shape and the dry-run option. The root config remains yours; the installer only applies the block-specific changes it can validate.
