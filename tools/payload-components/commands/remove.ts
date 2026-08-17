@@ -1,14 +1,20 @@
 import { access, readdir, rm, rmdir } from 'node:fs/promises'
 import path from 'node:path'
 
-import { partitionOwnedFiles } from '../component-files'
+import {
+  compareInstalledFiles,
+  partitionOwnedFiles,
+  resolveRecordedFileHashes,
+} from '../component-files'
 import { loadManifest } from '../manifest'
 import { runPostInstallScript } from '../post-install'
-import { detectProject, removePayloadFragments } from '../project'
+import {
+  detectProject,
+  removePayloadFragments,
+  verifyInstalledPayloadFragments,
+} from '../project'
 import { loadState, removeRecordedState } from '../state'
 import { isPathInside, printHeader } from '../utils'
-
-import type { ComponentManifest } from '../types'
 
 const fileExists = async (absolutePath: string) => {
   try {
@@ -19,30 +25,46 @@ const fileExists = async (absolutePath: string) => {
   }
 }
 
-/* Load the manifests of everything that stays recorded, so shared family files
- * are never deleted out from under a sibling variant. A recorded component
- * whose manifest has since disappeared is skipped rather than fatal — removal
- * must still work against an older state file. */
-const loadRetainedManifests = async ({
+/* Resolve ownership from the baseline recorded at install time, not today's
+ * manifests. That matters when a family changed its shared files between
+ * releases, and it still works for an orphaned component whose manifest was
+ * removed as long as v3 state retained its file hashes. */
+const loadOwnership = async ({
   componentName,
   cwd,
+  manifest,
 }: {
   componentName: string
   cwd: string
+  manifest: Awaited<ReturnType<typeof loadManifest>>
 }) => {
   const state = await loadState(cwd)
+  const installed = state.components[componentName]
   const retainedNames = Object.keys(state.components).filter((name) => name !== componentName)
-  const manifests: ComponentManifest[] = []
+  const retained: Array<{ files: string[]; name: string }> = []
+  const unresolved: string[] = []
 
   for (const name of retainedNames) {
-    const manifest = await loadManifest(name).catch(() => undefined)
+    const retainedManifest = await loadManifest(name).catch(() => undefined)
+    const fileHashes = await resolveRecordedFileHashes({
+      componentName: name,
+      installed: state.components[name],
+      manifest: retainedManifest,
+    })
 
-    if (manifest) {
-      manifests.push(manifest)
+    if (!fileHashes) {
+      unresolved.push(name)
+      continue
     }
+
+    retained.push({ files: Object.keys(fileHashes), name })
   }
 
-  return { isRecorded: Boolean(state.components[componentName]), manifests }
+  const targetFileHashes = installed
+    ? await resolveRecordedFileHashes({ componentName, installed, manifest })
+    : undefined
+
+  return { installed, retained, targetFileHashes, unresolved }
 }
 
 /* Remove now-empty directories the component left behind, walking up toward the
@@ -79,6 +101,7 @@ const formatPlan = ({
   cwd,
   dryRun,
   exclusiveFiles,
+  forcedModifiedFiles,
   postInstall,
   sharedFiles,
 }: {
@@ -86,6 +109,7 @@ const formatPlan = ({
   cwd: string
   dryRun: boolean
   exclusiveFiles: string[]
+  forcedModifiedFiles: string[]
   postInstall: string[]
   sharedFiles: Array<{ owners: string[]; projectPath: string }>
 }) => {
@@ -102,7 +126,10 @@ const formatPlan = ({
     lines.push('  none exclusively owned by this component')
   } else {
     for (const projectPath of exclusiveFiles) {
-      lines.push(`  ${projectPath} (${verb}delete)`)
+      const forceSuffix = forcedModifiedFiles.includes(projectPath)
+        ? ' — local edits discarded by --force'
+        : ''
+      lines.push(`  ${projectPath} (${verb}delete${forceSuffix})`)
     }
   }
 
@@ -143,28 +170,93 @@ export const removeCommand = async ({
   componentName,
   cwd,
   dryRun = false,
+  force = false,
 }: {
   componentName: string
   cwd: string
   dryRun?: boolean
+  force?: boolean
 }) => {
   const manifest = await loadManifest(componentName)
   const project = await detectProject(cwd)
-  const { isRecorded, manifests: retainedManifests } = await loadRetainedManifests({
+  const { installed, retained, targetFileHashes, unresolved } = await loadOwnership({
     componentName,
     cwd,
+    manifest,
   })
 
-  if (!isRecorded) {
+  if (!installed) {
+    const hasFiles = (
+      await Promise.all(
+        manifest.files.map((projectPath) => fileExists(path.join(cwd, projectPath))),
+      )
+    ).some(Boolean)
+    const fragmentCheck = await verifyInstalledPayloadFragments({
+      cwd,
+      hostFiles: project.hostFiles,
+      manifest,
+    }).catch(() => undefined)
+    const expectedFragments = manifest.payloadFragments.length * 2
+    const hasWiring =
+      fragmentCheck === undefined || fragmentCheck.missingFragments.length < expectedFragments
+
+    if (!hasFiles && !hasWiring) {
+      printHeader(`payload-components: nothing to remove for "${componentName}".`)
+      return
+    }
+
+    if (!force) {
+      throw new Error(
+        `Component "${componentName}" is not recorded in ${cwd}, but matching files or wiring exist. Refusing to delete source with unknown ownership. Inspect it first, then re-run with --force only if those leftovers should be removed.`,
+      )
+    }
+
     printHeader(
-      `payload-components: "${componentName}" is not recorded in ${cwd}. Removing any leftover files and wiring anyway.`,
+      `payload-components: "${componentName}" is not recorded in ${cwd}. --force accepted removal of matching leftovers with unknown ownership.`,
     )
   }
 
+  if (installed && !targetFileHashes && !force) {
+    throw new Error(
+      `Component "${componentName}" has no recorded source baseline for version ${installed.manifestVersion}. Refusing to delete files whose ownership cannot be verified. Copy them out first, then re-run with --force if removal is intended.`,
+    )
+  }
+
+  if (unresolved.length > 0 && !force) {
+    throw new Error(
+      `Cannot verify shared-file ownership because these retained installs have no readable manifest or recorded file baseline: ${unresolved.join(', ')}. Refusing removal; restore their manifests or re-run with --force after reviewing the shared files.`,
+    )
+  }
+
+  if (unresolved.length > 0) {
+    printHeader(
+      `payload-components: --force accepted incomplete shared-file ownership for: ${unresolved.join(', ')}.`,
+    )
+  }
+
+  const ownedFiles = targetFileHashes ? Object.keys(targetFileHashes) : manifest.files
+
   const { exclusiveFiles, sharedFiles } = partitionOwnedFiles({
-    files: manifest.files,
-    retainedManifests,
+    files: ownedFiles,
+    retainedManifests: retained,
   })
+  const fileReport = targetFileHashes
+    ? await compareInstalledFiles({
+        baselineHashes: targetFileHashes,
+        cwd,
+        localized: installed?.localized === true,
+        manifest: { files: ownedFiles, registryItemName: manifest.registryItemName },
+      })
+    : undefined
+  const modifiedExclusiveFiles = (fileReport?.modified ?? []).filter((projectPath) =>
+    exclusiveFiles.includes(projectPath),
+  )
+
+  if (modifiedExclusiveFiles.length > 0 && !force) {
+    throw new Error(
+      `Refusing to remove "${componentName}" because ${modifiedExclusiveFiles.length} exclusively owned file${modifiedExclusiveFiles.length === 1 ? '' : 's'} changed after installation: ${modifiedExclusiveFiles.join(', ')}. Copy your edits out first, or re-run with --force to delete them.`,
+    )
+  }
 
   printHeader(
     formatPlan({
@@ -172,6 +264,7 @@ export const removeCommand = async ({
       cwd,
       dryRun,
       exclusiveFiles,
+      forcedModifiedFiles: force ? modifiedExclusiveFiles : [],
       postInstall: manifest.postInstall,
       sharedFiles,
     }),
@@ -223,7 +316,9 @@ export const removeCommand = async ({
     }
   }
 
-  const wasRecorded = await removeRecordedState({ componentName, cwd })
+  const wasRecorded = installed
+    ? await removeRecordedState({ componentName, cwd })
+    : false
 
   if (!changedProject && !wasRecorded) {
     printHeader(`payload-components: nothing to remove for "${componentName}".`)

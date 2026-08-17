@@ -41,7 +41,7 @@ const detectedProject: DetectedProject = {
 
 const defaultState: InstallState = {
   components: {},
-  version: 2,
+  version: 3,
 }
 
 describe('payload-components add command orchestration', () => {
@@ -391,6 +391,7 @@ describe('payload-components add command orchestration', () => {
       loadStateValue: {
         components: {
           'hero-basic': {
+            fileHashes: {},
             installedAt: null,
             lastAttemptAt: '2026-04-16T00:00:00.000Z',
             lastError: {
@@ -404,7 +405,7 @@ describe('payload-components add command orchestration', () => {
             targetId: 'payload-website-starter',
           },
         },
-        version: 2,
+        version: 3,
       },
     })
 

@@ -32,6 +32,7 @@
   "files": [
     "dist/",
     "payload-components/registry.json",
+    "payload-components/install-baselines.json",
     "payload-components/support-matrix.json",
     "payload-components/manifests/",
     "payload-components/schema/",

@@ -1,9 +1,10 @@
 import { rm } from 'node:fs/promises'
 import path from 'node:path'
 
-import { compareInstalledFiles } from '../component-files'
+import { compareInstalledFiles, resolveRecordedFileHashes } from '../component-files'
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest } from '../manifest'
+import { loadState } from '../state'
 
 import type { ChangelogEntry } from '../types'
 import { isPathInside, printHeader } from '../utils'
@@ -11,6 +12,7 @@ import { isPathInside, printHeader } from '../utils'
 import { addCommand } from './add'
 
 type UpdatePlan = {
+  baselineUnavailable: boolean
   blockedFiles: string[]
   componentName: string
   files: string[]
@@ -53,13 +55,28 @@ const formatPlan = ({
     if (plan.blockedFiles.length > 0) {
       lines.push(
         ...plan.blockedFiles.map(
-          (filePath) => `  ${filePath} (${verb}overwrite — local edits discarded by --force)`,
+          (filePath) =>
+            `  ${filePath} (${verb}overwrite — ${
+              plan.baselineUnavailable
+                ? 'source baseline unavailable, accepted by --force'
+                : 'local edits discarded by --force'
+            })`,
         ),
       )
     }
   }
 
   for (const plan of skipped) {
+    if (plan.baselineUnavailable) {
+      lines.push(
+        '',
+        `${plan.componentName}: skipped — recorded source baseline unavailable`,
+        `  This CLI cannot distinguish that older release from local edits.`,
+        `  Re-run with --force to overwrite, or copy your files out first.`,
+      )
+      continue
+    }
+
     lines.push(
       '',
       `${plan.componentName}: skipped — ${plan.blockedFiles.length} locally modified file${plan.blockedFiles.length === 1 ? '' : 's'}`,
@@ -116,6 +133,7 @@ export const updateCommand = async ({
   force?: boolean
 }) => {
   const inventory = await buildInventory({ cwd })
+  const state = await loadState(cwd)
   const installed = selectInstalled(inventory)
   const installedNames = installed.map(({ name }) => name)
 
@@ -148,11 +166,34 @@ export const updateCommand = async ({
   for (const entry of targets) {
     const manifest = await loadManifest(entry.name)
     const localized = entry.installed?.localized === true
-    const fileReport = await compareInstalledFiles({ cwd, localized, manifest })
+    const installedEntry = state.components[entry.name]
+
+    if (!installedEntry) {
+      throw new Error(`Component "${entry.name}" disappeared from install state while updating.`)
+    }
+
+    const baselineHashes = await resolveRecordedFileHashes({
+      componentName: entry.name,
+      installed: installedEntry,
+      manifest,
+    })
+    /* Compare and replace the union of the old recorded file set and today's
+       manifest. Otherwise an upgrade that removes or renames a source file
+       leaves the old owned file behind in the consumer project. */
+    const files = [
+      ...new Set([...manifest.files, ...Object.keys(baselineHashes ?? {})]),
+    ]
+    const fileReport = await compareInstalledFiles({
+      ...(baselineHashes ? { baselineHashes } : {}),
+      cwd,
+      localized,
+      manifest: { files, registryItemName: manifest.registryItemName },
+    })
     const plan: UpdatePlan = {
+      baselineUnavailable: baselineHashes === undefined,
       blockedFiles: fileReport.modified,
       componentName: entry.name,
-      files: manifest.files.filter((filePath) => !fileReport.modified.includes(filePath)),
+      files: files.filter((filePath) => !fileReport.modified.includes(filePath)),
       /* A localized install stays localized: re-running plain `add` would
          rewrite the config without the wrapper and silently drop it. */
       localized,
@@ -170,7 +211,7 @@ export const updateCommand = async ({
       continue
     }
 
-    if (fileReport.modified.length > 0 && !force) {
+    if ((fileReport.modified.length > 0 || !baselineHashes) && !force) {
       skipped.push(plan)
       continue
     }

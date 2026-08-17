@@ -1,11 +1,13 @@
-import { compareInstalledFiles } from '../component-files'
+import { compareInstalledFiles, resolveRecordedFileHashes } from '../component-files'
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest, selectPendingChangelog } from '../manifest'
 import { CANONICAL_HOST_FILES, detectProject, verifyInstalledPayloadFragments } from '../project'
+import { loadState } from '../state'
 
-import type { ChangelogEntry, ResolvedHostFiles } from '../types'
+import type { ChangelogEntry, InstallStateEntry, ResolvedHostFiles } from '../types'
 
 export type ComponentDiff = {
+  baselineAvailable: boolean
   breakingUpdate: boolean
   isClean: boolean
   missingFiles: string[]
@@ -29,16 +31,31 @@ const resolveComponentDiff = async ({
   cwd,
   hostFiles,
   localized,
+  installed,
   recordedVersion,
 }: {
   componentName: string
   cwd: string
   hostFiles: ResolvedHostFiles
   localized: boolean
+  installed: InstallStateEntry
   recordedVersion: string
 }): Promise<ComponentDiff> => {
   const manifest = await loadManifest(componentName)
-  const fileReport = await compareInstalledFiles({ cwd, localized, manifest })
+  const baselineHashes = await resolveRecordedFileHashes({
+    componentName,
+    installed,
+    manifest,
+  })
+  const files = [
+    ...new Set([...manifest.files, ...Object.keys(baselineHashes ?? {})]),
+  ]
+  const fileReport = await compareInstalledFiles({
+    ...(baselineHashes ? { baselineHashes } : {}),
+    cwd,
+    localized,
+    manifest: { files, registryItemName: manifest.registryItemName },
+  })
   const fragmentCheck = await verifyInstalledPayloadFragments({ cwd, hostFiles, manifest }).catch(
     () => undefined,
   )
@@ -49,15 +66,17 @@ const resolveComponentDiff = async ({
   })
 
   return {
+    baselineAvailable: baselineHashes !== undefined,
     breakingUpdate: pendingChangelog.some((entry) => entry.breaking === true),
     isClean:
       fileReport.missing.length === 0 &&
+      baselineHashes !== undefined &&
       fileReport.modified.length === 0 &&
       !updateAvailable &&
       fragmentCheck?.isValid === true,
     missingFiles: fileReport.missing,
     missingFragments: fragmentCheck?.missingFragments ?? [],
-    modifiedFiles: fileReport.modified,
+    modifiedFiles: baselineHashes ? fileReport.modified : [],
     name: componentName,
     pendingChangelog,
     recordedVersion,
@@ -88,6 +107,12 @@ const formatComponentDiff = (diff: ComponentDiff) => {
         lines.push(`              migration: ${entry.dataMigration}`)
       }
     }
+  }
+
+  if (!diff.baselineAvailable) {
+    lines.push(
+      '    unverified recorded source baseline is unavailable; update requires --force',
+    )
   }
 
   for (const filePath of diff.modifiedFiles) {
@@ -123,6 +148,7 @@ export const diffCommand = async ({
   json?: boolean
 }) => {
   const inventory = await buildInventory({ cwd })
+  const state = await loadState(cwd)
   const installedNames = selectInstalled(inventory).map(({ name }) => name)
 
   for (const componentName of componentNames) {
@@ -144,12 +170,18 @@ export const diffCommand = async ({
 
   for (const componentName of targetNames) {
     const entry = inventory.entries.find(({ name }) => name === componentName)
+    const installedEntry = state.components[componentName]
+
+    if (!installedEntry) {
+      throw new Error(`Component "${componentName}" disappeared from install state while diffing.`)
+    }
 
     components.push(
       await resolveComponentDiff({
         componentName,
         cwd,
         hostFiles,
+        installed: installedEntry,
         localized: entry?.installed?.localized === true,
         recordedVersion: entry?.installed?.manifestVersion ?? 'unknown',
       }),

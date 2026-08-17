@@ -1,10 +1,12 @@
-import { access, readFile, rm, writeFile } from 'node:fs/promises'
+import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { applyPayloadFragments } from '../../tools/payload-components/project'
 import { loadState, recordInstalledState, saveState } from '../../tools/payload-components/state'
+
+import type { InstallStateV2 } from '../../tools/payload-components/types'
 
 import { createInstallFixtureForComponents } from './payload-components-fixture'
 
@@ -76,6 +78,64 @@ const installFixture = async ({
   return { fixtureDir, manifests }
 }
 
+/* Reproduce the actual state left by CLI v1.3: stats-proof 0.2.0 source on
+   disk and v2 install state with no hashes. This is the transition that used
+   to compare old installed source with 0.3.0 and falsely call it a local edit. */
+const installLegacyStatsProofV2 = async () => {
+  const { fixtureDir, manifests } = await createInstallFixtureForComponents(['stats-proof'], {
+    preseedSource: true,
+  })
+  const [manifest] = manifests
+
+  if (!manifest) {
+    throw new Error('stats-proof fixture did not return a manifest.')
+  }
+
+  fixtureDirs.push(fixtureDir)
+  await applyPayloadFragments(fixtureDir, manifest.payloadFragments)
+
+  const legacySourceDir = path.join(process.cwd(), 'tests/int/fixtures/stats-proof-0.2.0')
+
+  await Promise.all([
+    writeFile(
+      path.join(fixtureDir, 'src/blocks/StatsProof/config.ts'),
+      await readFile(path.join(legacySourceDir, 'config.ts.txt'), 'utf8'),
+      'utf8',
+    ),
+    writeFile(
+      path.join(fixtureDir, 'src/blocks/StatsProof/Component.tsx'),
+      await readFile(path.join(legacySourceDir, 'Component.tsx.txt'), 'utf8'),
+      'utf8',
+    ),
+    rm(path.join(fixtureDir, 'src/blocks/shared/statsFields.ts'), { force: true }),
+  ])
+
+  const state: InstallStateV2 = {
+    components: {
+      'stats-proof': {
+        installedAt: '2026-07-01T00:00:00.000Z',
+        lastAttemptAt: '2026-07-01T00:00:00.000Z',
+        lastError: null,
+        manifestVersion: '0.2.0',
+        patchedFiles: manifest.recovery.patchedFiles,
+        registryItemName: manifest.registryItemName,
+        status: 'installed',
+        targetId: 'payload-website-starter',
+      },
+    },
+    version: 2,
+  }
+
+  await mkdir(path.join(fixtureDir, '.payload-components'), { recursive: true })
+  await writeFile(
+    path.join(fixtureDir, '.payload-components/state.json'),
+    `${JSON.stringify(state, null, 2)}\n`,
+    'utf8',
+  )
+
+  return fixtureDir
+}
+
 /* A breaking bump does not exist in the shipped catalog yet, so this drives the
    refusal path off a stubbed inventory rather than rewriting a real manifest on
    disk — a crashed test must never leave the repo's manifests edited. */
@@ -122,6 +182,26 @@ const setupBreaking = async () => {
     compareInstalledFiles: vi
       .fn()
       .mockResolvedValue({ comparisons: [], missing: [], modified: [] }),
+    resolveRecordedFileHashes: vi.fn().mockResolvedValue({}),
+  }))
+  vi.doMock('../../tools/payload-components/state', () => ({
+    loadState: vi.fn().mockResolvedValue({
+      components: {
+        'hero-basic': {
+          fileHashes: {},
+          installedAt: null,
+          lastAttemptAt: '2026-04-16T00:00:00.000Z',
+          lastError: null,
+          localized: false,
+          manifestVersion: '0.1.0',
+          patchedFiles: [],
+          registryItemName: 'hero-basic',
+          status: 'installed',
+          targetId: 'payload-website-starter',
+        },
+      },
+      version: 3,
+    }),
   }))
   vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
     output.push(String(chunk))
@@ -182,6 +262,38 @@ describe('update', () => {
     expect(addCommand).toHaveBeenCalledOnce()
     expect(await exists(path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts'))).toBe(false)
     expect(await exists(path.join(fixtureDir, 'src/blocks/shared/heroFields.ts'))).toBe(false)
+  })
+
+  it('updates a pristine stats-proof 0.2.0 install using its historical baseline', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const fixtureDir = await installLegacyStatsProofV2()
+
+    await updateCommand({ cwd: fixtureDir })
+
+    expect(addCommand).toHaveBeenCalledOnce()
+    expect(addCommand).toHaveBeenCalledWith({
+      componentName: 'stats-proof',
+      cwd: fixtureDir,
+      localized: false,
+    })
+    expect(output.join('')).toContain('stats-proof: 0.2.0 → 0.3.0')
+    expect(output.join('')).not.toContain('skipped')
+    expect(await exists(path.join(fixtureDir, 'src/blocks/StatsProof/config.ts'))).toBe(false)
+    expect(await exists(path.join(fixtureDir, 'src/blocks/StatsProof/Component.tsx'))).toBe(false)
+  })
+
+  it('still protects a real local edit on top of stats-proof 0.2.0', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const fixtureDir = await installLegacyStatsProofV2()
+    const configPath = path.join(fixtureDir, 'src/blocks/StatsProof/config.ts')
+
+    await writeFile(configPath, `${await readFile(configPath, 'utf8')}\n// local tweak\n`, 'utf8')
+    await updateCommand({ cwd: fixtureDir })
+
+    expect(addCommand).not.toHaveBeenCalled()
+    expect(output.join('')).toContain('skipped — 1 locally modified file')
+    expect(await exists(configPath)).toBe(true)
+    expect(process.exitCode).toBe(1)
   })
 
   it('skips a component with local edits, keeps the file, and exits non-zero', async () => {

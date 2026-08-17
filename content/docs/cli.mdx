@@ -156,10 +156,19 @@ npx payload-components diff
 npx payload-components diff hero-basic --json
 ```
 
-Compares each recorded install against the registry it came from and reports three kinds of
+Compares each recorded install against the source baseline captured by its successful install and reports three kinds of
 drift: a version behind this CLI, a file whose content no longer matches, and wiring that
 has gone missing. Comparison is content-normalized, so line endings and a trailing newline
 are never reported as edits.
+
+Current installs record normalized source hashes in `.payload-components/state.json`. Older
+state is migrated automatically; the CLI carries the known pre-hash release baselines and
+fails closed when it cannot prove one, instead of guessing whether an upstream change is a
+local edit.
+
+Mutating CLI invocations lock the target project for their full operation, including host-file
+patches and state writes. A second `add`, `update`, `remove`, `seed`, or `init` against the same
+project exits with the active command and PID instead of racing a read-modify-write step.
 
 When a component is behind, `diff` also prints the changelog entries the upgrade would
 apply, and the migration any breaking entry demands — `0.1.0 → 0.2.0` on its own is not a
@@ -182,6 +191,9 @@ right for a fresh install and wrong for an upgrade.
 **Local edits are protected.** A component with a modified file is skipped, listed by name,
 and the command exits non-zero. Pass `--force` to overwrite it, or copy your edits out
 first. Run `diff` to see exactly which files are involved.
+
+If an older recorded version has no reconstructable source baseline, it is protected the same
+way: `update` skips it until you review the installed files and explicitly pass `--force`.
 
 **Content-breaking upgrades are held back.** A component whose changelog marks a pending
 version `breaking` is not installed at all — rewriting the files is the easy half, and you
@@ -224,16 +236,24 @@ newest entry also appears on its docs page once it has moved past its first rele
 ```bash
 npx payload-components remove hero-basic
 npx payload-components remove hero-basic --dry-run
+npx payload-components remove hero-basic --force
 ```
 
 The inverse of an install: it deletes the files this component owns, unregisters the block,
 drops its imports, regenerates types and the import map, and removes its state record.
 
+**Owned source is protected.** Removal refuses an exclusively owned file that changed after
+installation. It also refuses matching source or wiring with no install record, an unknown
+legacy baseline, or a retained orphan whose shared-file ownership cannot be resolved. Review
+and copy out anything you need first; `--force` is the explicit instruction to accept that
+destructive uncertainty.
+
 Three things it deliberately does not do:
 
 - **Shared family files survive.** A file another recorded component also ships is kept and
-  reported, so removing `hero-basic` while `hero-video` is installed leaves the shared hero
-  field base in place.
+  reported. Ownership comes from each component's recorded install-time file set, so removing
+  `hero-basic` while `hero-video` is installed leaves the shared hero field base in place even
+  if a retained component's current manifest moved or disappeared.
 - **Package dependencies stay.** The CLI cannot know whether your own code adopted them.
 - **Stored content is untouched.** Existing Page documents keep their block data. Delete
   those blocks in the admin before publishing.

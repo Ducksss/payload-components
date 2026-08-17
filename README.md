@@ -348,10 +348,12 @@ npx payload-components remove hero-basic # delete owned files and unwire the blo
 ```
 
 `diff` exits non-zero when anything has drifted, so CI can gate on it. `update`
+compares against the source hashes captured at the last successful install and
 never overwrites a file you have edited — it skips that component and exits
-non-zero until you pass `--force`. `remove` deletes only the files no other
-installed component ships, so a shared family base survives while a sibling
-variant is still installed; package dependencies are always left in place.
+non-zero until you pass `--force`. `remove` protects edited or unrecorded source
+unless you pass its own `--force`, and deletes only files no other recorded
+install owns, so a shared family base survives while a sibling variant is still
+installed; package dependencies are always left in place.
 `list` and `diff` accept `--json`, and `update` and `remove` accept `--dry-run`.
 
 Starting from a bare `create-payload-app` project? Lay down the base an install
@@ -445,7 +447,10 @@ The installer runs five idempotent stages:
 5. Run post-install scripts for generated types and the admin import map.
 
 Install state is written to `.payload-components/state.json` inside the
-consumer project, so partial installs are visible and retries can converge.
+consumer project, so partial installs are visible and retries can converge. A
+successful install also records normalized hashes for its owned source files;
+`diff`, `update`, and `remove` use that install-time baseline to distinguish an
+upstream release from a consumer edit.
 
 Demo scripts are separate and opt-in. `add <component> --demo` writes one only
 after those install stages and installed-state recording succeed;

@@ -126,7 +126,9 @@ whether copied files are user-owned, whether patches landed, and which work is s
 `.payload-components/state.json`, the command records the manifest version, registry item, target,
 status, attempt and install timestamps, last error, and patched host files. In the file these fields
 are `manifestVersion`, `registryItemName`, `targetId`, `status`, `installedAt`, `lastAttemptAt`,
-`lastError`, and `patchedFiles`.
+`lastError`, `patchedFiles`, and `fileHashes`. The last field captures normalized hashes of the
+source that actually landed after a successful install, so later lifecycle commands can separate
+registry evolution from consumer edits.
 
 The state file does not replace inspection of the repository. It gives the installer a consistent
 recovery vocabulary. `payload-components doctor` can report a partial install and compare declared

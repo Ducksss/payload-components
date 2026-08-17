@@ -99,6 +99,7 @@ const listFilesRecursive = async (dir: string, root = dir): Promise<string[]> =>
        allowlist, or a command silently stops working once published. */
     for (const asset of [
       'payload-components/registry.json',
+      'payload-components/install-baselines.json',
       'payload-components/support-matrix.json',
       'payload-components/manifests/hero-basic.json',
       'payload-components/templates/saas-launch.json',
