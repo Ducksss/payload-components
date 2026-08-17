@@ -9,6 +9,7 @@ import { Eyebrow } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import {
+  catalogBlocksGuideLinkLabel,
   catalogDescription,
   catalogInstallationLinkLabel,
   catalogMetadataDescription,
@@ -76,6 +77,12 @@ export default function ComponentsPage() {
                   className="inline-flex rounded-sm text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
                 >
                   {catalogInstallationLinkLabel}
+                </Link>
+                <Link
+                  href="/docs/payload-blocks"
+                  className="inline-flex rounded-sm text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
+                >
+                  {catalogBlocksGuideLinkLabel}
                 </Link>
                 <Link
                   href="/templates"
