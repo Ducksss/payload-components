@@ -232,6 +232,39 @@ describe('Fumadocs site shell', () => {
     )
   })
 
+  it('keeps the Payload configuration guide distinct, discoverable, and actionable', async () => {
+    const [guide, docsMeta, docsIndex, installationGuide, sitemap] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'payload-configuration.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'index.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+    ])
+
+    expect(guide).toContain('title: "Payload configuration: payload.config.ts setup and structure"')
+    expect(guide).toContain('seoTitle: "Payload configuration: payload.config.ts setup guide"')
+    expect(guide).toContain("import { buildConfig } from 'payload'")
+    expect(guide).toContain('collections: [Users, Media, Pages]')
+    expect(guide).toContain('admin.importMap.baseDir')
+    expect(guide).toContain('typescript: {')
+    expect(guide).toContain("outputFile: path.resolve(dirname, 'payload-types.ts')")
+    expect(guide).toContain('serverURL')
+    expect(guide).toContain('cors')
+    expect(guide).toContain('csrf')
+    expect(guide).toContain('command="pnpm payload generate:types"')
+    expect(guide).toContain('command="pnpm payload generate:importmap"')
+    expect(guide).toMatch(/command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/)
+    expect(guide).toContain('[Payload CMS blocks guide](/docs/payload-blocks)')
+    expect(guide).not.toContain('blockComponents =')
+    expect(guide).not.toContain('npx create-payload-app')
+    expect(docsMeta).toContain('"payload-configuration"')
+    expect(docsIndex).toContain('href="/docs/payload-configuration"')
+    expect(installationGuide).toContain(
+      '[Payload configuration guide](/docs/payload-configuration)',
+    )
+    expect(sitemap).toContain('source.getPages()')
+  })
+
   it('keeps the Payload blocks guide implementation-led, discoverable, and product-true', async () => {
     const [
       guide,
