@@ -80,7 +80,7 @@ export const withProjectMutationLock = async <T>({
   }
   let acquired = false
 
-  for (let attempt = 0; attempt < 2; attempt += 1) {
+  for (let attempt = 0; attempt < 4; attempt += 1) {
     let handle: Awaited<ReturnType<typeof open>> | undefined
 
     try {
@@ -122,7 +122,44 @@ export const withProjectMutationLock = async <T>({
         )
       }
 
-      await rm(lockPath, { force: true })
+      /* Only one contender may reclaim a dead owner's file. Without this guard,
+       * two contenders can both read the stale metadata; the slower unlink can
+       * then delete the faster contender's newly acquired live lock. */
+      const reclaimPath = `${lockPath}.reclaim`
+      let reclaimHandle: Awaited<ReturnType<typeof open>> | undefined
+
+      try {
+        reclaimHandle = await open(reclaimPath, 'wx', 0o600)
+      } catch (reclaimError) {
+        if ((reclaimError as NodeJS.ErrnoException).code !== 'EEXIST') {
+          throw reclaimError
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 10))
+        continue
+      }
+
+      try {
+        const currentOwner = await readOwner(lockPath)
+
+        if (!currentOwner) {
+          await new Promise((resolve) => setTimeout(resolve, 10))
+          continue
+        }
+
+        if (processIsAlive(currentOwner.pid)) {
+          throw new Error(
+            `Another payload-components command is already changing ${canonicalCwd} (` +
+              `${currentOwner.operation}, pid ${currentOwner.pid}, started ${currentOwner.createdAt}). ` +
+              'Wait for it to finish before running another mutating command.',
+          )
+        }
+
+        await rm(lockPath, { force: true })
+      } finally {
+        await reclaimHandle.close()
+        await rm(reclaimPath, { force: true })
+      }
     }
   }
 

@@ -221,6 +221,89 @@ describe('payload-components state', () => {
     })
   })
 
+  it("does not adopt an existing owner's local edit as a clean shared-file baseline", async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-state-'))
+    tempDirs.push(tempDir)
+    const projectPath = 'src/blocks/shared/heroFields.ts'
+    const installedSource = "export const heroFields = ['heading']\n"
+    const editedSource = `${installedSource}// consumer edit\n`
+    const sharedManifest = (name: string) => ({
+      files: [projectPath],
+      name,
+      registryItemName: name,
+      version: '0.1.0',
+    })
+
+    await mkdir(path.dirname(path.join(tempDir, projectPath)), { recursive: true })
+    await writeFile(path.join(tempDir, projectPath), installedSource, 'utf8')
+    await recordInstalledState({
+      cwd: tempDir,
+      manifest: sharedManifest('hero-basic'),
+      patchedFiles: [],
+      rewrittenFiles: [projectPath],
+      targetId: 'payload-website-starter',
+    })
+    await writeFile(path.join(tempDir, projectPath), editedSource, 'utf8')
+    await recordInstalledState({
+      cwd: tempDir,
+      manifest: sharedManifest('hero-video'),
+      patchedFiles: [],
+      rewrittenFiles: [],
+      targetId: 'payload-website-starter',
+    })
+
+    const state = await loadState(tempDir)
+
+    expect(state.components['hero-video'].fileHashes[projectPath]).toBe(hashSource(installedSource))
+    expect(state.components['hero-video'].fileHashes[projectPath]).not.toBe(
+      hashSource(editedSource),
+    )
+  })
+
+  it('updates every recorded owner baseline after rewriting a shared file', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-state-'))
+    tempDirs.push(tempDir)
+    const projectPath = 'src/blocks/shared/heroFields.ts'
+    const oldSource = "export const heroFields = ['heading']\n"
+    const newSource = "export const heroFields = ['heading', 'eyebrow']\n"
+    const sharedManifest = (name: string) => ({
+      files: [projectPath],
+      name,
+      registryItemName: name,
+      version: '0.2.0',
+    })
+
+    await mkdir(path.dirname(path.join(tempDir, projectPath)), { recursive: true })
+    await writeFile(path.join(tempDir, projectPath), oldSource, 'utf8')
+    await recordInstalledState({
+      cwd: tempDir,
+      manifest: sharedManifest('hero-basic'),
+      patchedFiles: [],
+      rewrittenFiles: [projectPath],
+      targetId: 'payload-website-starter',
+    })
+    await recordInstalledState({
+      cwd: tempDir,
+      manifest: sharedManifest('hero-video'),
+      patchedFiles: [],
+      rewrittenFiles: [],
+      targetId: 'payload-website-starter',
+    })
+    await writeFile(path.join(tempDir, projectPath), newSource, 'utf8')
+    await recordInstalledState({
+      cwd: tempDir,
+      manifest: sharedManifest('hero-video'),
+      patchedFiles: [],
+      rewrittenFiles: [projectPath],
+      targetId: 'payload-website-starter',
+    })
+
+    const state = await loadState(tempDir)
+
+    expect(state.components['hero-basic'].fileHashes[projectPath]).toBe(hashSource(newSource))
+    expect(state.components['hero-video'].fileHashes[projectPath]).toBe(hashSource(newSource))
+  })
+
   it('serializes concurrent state mutations without dropping component entries', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-state-'))
     tempDirs.push(tempDir)

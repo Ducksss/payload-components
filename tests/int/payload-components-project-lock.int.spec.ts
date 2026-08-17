@@ -95,6 +95,45 @@ describe('payload-components project mutation lock', () => {
     ).resolves.toBe('recovered')
   })
 
+  it('serializes concurrent contenders reclaiming the same stale lock', async () => {
+    const cwd = await createProject()
+    const { canonicalCwd, lockPath } = await getProjectLockPath(cwd)
+    let active = 0
+    let maxActive = 0
+
+    await mkdir(path.dirname(lockPath), { recursive: true })
+    await writeFile(
+      lockPath,
+      `${JSON.stringify({
+        createdAt: '2026-01-01T00:00:00.000Z',
+        cwd: canonicalCwd,
+        operation: 'stale update',
+        pid: 2_147_483_647,
+        token: 'stale-owner',
+      })}\n`,
+      'utf8',
+    )
+
+    const results = await Promise.allSettled(
+      Array.from({ length: 12 }, (_, index) =>
+        withProjectMutationLock({
+          cwd,
+          operation: `contender ${index}`,
+          run: async () => {
+            active += 1
+            maxActive = Math.max(maxActive, active)
+            await new Promise((resolve) => setTimeout(resolve, 100))
+            active -= 1
+            return index
+          },
+        }),
+      ),
+    )
+
+    expect(maxActive).toBe(1)
+    expect(results.filter(({ status }) => status === 'fulfilled')).toHaveLength(1)
+  })
+
   it('fails closed instead of deleting a lock with unreadable owner metadata', async () => {
     const cwd = await createProject()
     const { lockPath } = await getProjectLockPath(cwd)

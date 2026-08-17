@@ -12,7 +12,7 @@ import type {
 } from './types'
 
 import { CURRENT_ALPHA_TARGET_ID, SHARED_PATCHED_FILES } from './constants'
-import { snapshotInstalledFiles } from './component-files'
+import { resolveRecordedFileHashes, snapshotInstalledFiles } from './component-files'
 import { readJsonFile, repoRoot, writeJsonFile } from './utils'
 
 // Return a fresh object every time: callers (recordInstall*) mutate the loaded
@@ -332,6 +332,7 @@ export const recordInstalledState = async ({
   localized,
   manifest,
   patchedFiles,
+  rewrittenFiles = [],
   targetId,
 }: {
   cwd: string
@@ -339,16 +340,81 @@ export const recordInstalledState = async ({
   localized?: boolean
   manifest: Pick<ComponentManifest, 'files' | 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
+  /* Only files this invocation actually created or transformed may establish a
+   * new clean baseline. Existing shared files can carry consumer edits; a later
+   * component must inherit the earlier owner's baseline instead of blessing the
+   * current bytes as pristine. */
+  rewrittenFiles?: string[]
   targetId: string
 }) => {
   const installedFileHashes = await snapshotInstalledFiles({ cwd, files: manifest.files })
+  const rewritten = new Set(rewrittenFiles)
 
-  await mutateState(cwd, (state) => {
+  await mutateState(cwd, async (state) => {
     const now = new Date().toISOString()
     const currentEntry = state.components[manifest.name]
+    const resolvedOwnerHashes = new Map<string, Record<string, string>>()
+
+    for (const [componentName, entry] of Object.entries(state.components)) {
+      if (componentName === manifest.name) {
+        continue
+      }
+
+      const ownerManifest = await readJsonFile<ComponentManifest>(
+        getManifestPath(componentName),
+      ).catch(() => undefined)
+      const fileHashes = await resolveRecordedFileHashes({
+        componentName,
+        installed: entry,
+        manifest: ownerManifest,
+      })
+
+      if (fileHashes) {
+        resolvedOwnerHashes.set(componentName, fileHashes)
+        /* Materialize a reconstructable legacy baseline before synchronizing a
+         * shared rewrite. Keeping only one path would make the remaining owned
+         * files disappear from v3 ownership state. */
+        if (Object.keys(entry.fileHashes).length === 0) {
+          entry.fileHashes = normalizeFileHashes(fileHashes)
+        }
+      }
+    }
+
+    const fileHashes = Object.fromEntries(
+      Object.entries(installedFileHashes).map(([projectPath, installedHash]) => {
+        if (rewritten.has(projectPath)) {
+          /* A shared source rewrite upgrades every recorded owner at once. Keep
+           * their merge bases aligned so the new registry bytes do not look like
+           * a consumer edit to a sibling component later. */
+          for (const [componentName, entry] of Object.entries(state.components)) {
+            if (
+              componentName !== manifest.name &&
+              resolvedOwnerHashes.get(componentName)?.[projectPath]
+            ) {
+              entry.fileHashes[projectPath] = installedHash
+            }
+          }
+
+          return [projectPath, installedHash]
+        }
+
+        const currentBaseline = currentEntry?.fileHashes[projectPath]
+
+        if (currentBaseline) {
+          return [projectPath, currentBaseline]
+        }
+
+        const inheritedBaseline = [...resolvedOwnerHashes.entries()]
+          .sort(([left], [right]) => left.localeCompare(right))
+          .map(([, hashes]) => hashes[projectPath])
+          .find((hash): hash is string => Boolean(hash))
+
+        return [projectPath, inheritedBaseline ?? installedHash]
+      }),
+    )
 
     state.components[manifest.name] = upsertEntry({
-      fileHashes: installedFileHashes,
+      fileHashes,
       installedAt: installedAt ?? currentEntry?.installedAt ?? now,
       lastAttemptAt: now,
       lastError: null,

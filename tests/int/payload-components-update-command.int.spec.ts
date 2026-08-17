@@ -3,6 +3,7 @@ import path from 'node:path'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { hashSource } from '../../tools/payload-components/component-files'
 import { applyPayloadFragments } from '../../tools/payload-components/project'
 import { loadState, recordInstalledState, saveState } from '../../tools/payload-components/state'
 
@@ -294,6 +295,50 @@ describe('update', () => {
     expect(output.join('')).toContain('skipped — 1 locally modified file')
     expect(await exists(configPath)).toBe(true)
     expect(process.exitCode).toBe(1)
+  })
+
+  it('protects an edit to a shared file even when the target recorded the edited bytes', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic', 'hero-video'],
+    })
+    const sharedPath = 'src/blocks/shared/heroFields.ts'
+    const absoluteSharedPath = path.join(fixtureDir, sharedPath)
+    const editedSource = `${await readFile(absoluteSharedPath, 'utf8')}\n// consumer edit\n`
+    const state = await loadState(fixtureDir)
+
+    await writeFile(absoluteSharedPath, editedSource, 'utf8')
+    state.components['hero-video'].fileHashes[sharedPath] = hashSource(editedSource)
+    state.components['hero-video'].manifestVersion = '0.0.9'
+    await saveState(fixtureDir, state)
+
+    await updateCommand({ componentNames: ['hero-video'], cwd: fixtureDir })
+
+    expect(addCommand).not.toHaveBeenCalled()
+    expect(await readFile(absoluteSharedPath, 'utf8')).toBe(editedSource)
+    expect(output.join('')).toContain(`${sharedPath} (modified)`)
+    expect(process.exitCode).toBe(1)
+  })
+
+  it('keeps a retired file when another recorded component still owns it', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic', 'hero-video'],
+    })
+    const retainedPath = 'src/blocks/HeroBasic/config.ts'
+    const absoluteRetainedPath = path.join(fixtureDir, retainedPath)
+    const state = await loadState(fixtureDir)
+
+    state.components['hero-video'].fileHashes[retainedPath] =
+      state.components['hero-basic'].fileHashes[retainedPath]
+    state.components['hero-video'].manifestVersion = '0.0.9'
+    await saveState(fixtureDir, state)
+
+    await updateCommand({ componentNames: ['hero-video'], cwd: fixtureDir })
+
+    expect(addCommand).toHaveBeenCalledOnce()
+    expect(await exists(absoluteRetainedPath)).toBe(true)
+    expect(output.join('')).toContain(`${retainedPath} (keep — still used by hero-basic)`)
   })
 
   it('skips a component with local edits, keeps the file, and exits non-zero', async () => {

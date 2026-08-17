@@ -1,7 +1,11 @@
-import { rm } from 'node:fs/promises'
+import { readFile, rm } from 'node:fs/promises'
 import path from 'node:path'
 
-import { compareInstalledFiles, resolveRecordedFileHashes } from '../component-files'
+import {
+  compareInstalledFiles,
+  hashSource,
+  resolveRecordedFileHashes,
+} from '../component-files'
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest } from '../manifest'
 import { loadState } from '../state'
@@ -20,6 +24,46 @@ type UpdatePlan = {
   pendingChangelog: ChangelogEntry[]
   recordedVersion: string
   registryVersion: string
+  retainedFiles: Array<{ owners: string[]; projectPath: string }>
+}
+
+type RecordedFileOwner = {
+  hash?: string
+  name: string
+}
+
+const loadRecordedFileOwners = async (
+  state: Awaited<ReturnType<typeof loadState>>,
+) => {
+  const entries = await Promise.all(
+    Object.entries(state.components).map(async ([componentName, installed]) => {
+      const manifest = await loadManifest(componentName).catch(() => undefined)
+      const fileHashes = await resolveRecordedFileHashes({
+        componentName,
+        installed,
+        manifest,
+      })
+
+      return { componentName, fileHashes, manifest }
+    }),
+  )
+  const owners = new Map<string, RecordedFileOwner[]>()
+  const unresolved = entries
+    .filter(({ fileHashes, manifest }) => !fileHashes && !manifest)
+    .map(({ componentName }) => componentName)
+
+  for (const { componentName, fileHashes, manifest } of entries) {
+    const ownedFiles = fileHashes ? Object.keys(fileHashes) : (manifest?.files ?? [])
+
+    for (const projectPath of ownedFiles) {
+      owners.set(projectPath, [
+        ...(owners.get(projectPath) ?? []),
+        { hash: fileHashes?.[projectPath], name: componentName },
+      ])
+    }
+  }
+
+  return { owners, unresolved }
 }
 
 const formatPlan = ({
@@ -50,6 +94,10 @@ const formatPlan = ({
         (entry) => `  ${entry.version}: ${entry.summary}`,
       ),
       ...plan.files.map((filePath) => `  ${filePath} (${verb}overwrite)`),
+      ...plan.retainedFiles.map(
+        ({ owners, projectPath }) =>
+          `  ${projectPath} (keep — still used by ${owners.join(', ')})`,
+      ),
     )
 
     if (plan.blockedFiles.length > 0) {
@@ -134,6 +182,7 @@ export const updateCommand = async ({
 }) => {
   const inventory = await buildInventory({ cwd })
   const state = await loadState(cwd)
+  const recordedOwnership = await loadRecordedFileOwners(state)
   const installed = selectInstalled(inventory)
   const installedNames = installed.map(({ name }) => name)
 
@@ -180,26 +229,77 @@ export const updateCommand = async ({
     /* Compare and replace the union of the old recorded file set and today's
        manifest. Otherwise an upgrade that removes or renames a source file
        leaves the old owned file behind in the consumer project. */
-    const files = [
-      ...new Set([...manifest.files, ...Object.keys(baselineHashes ?? {})]),
-    ]
+    const currentFiles = new Set(manifest.files)
+    const recordedFiles = Object.keys(baselineHashes ?? {})
+    const retainedFiles = recordedFiles
+      .filter((projectPath) => !currentFiles.has(projectPath))
+      .map((projectPath) => ({
+        owners: (recordedOwnership.owners.get(projectPath) ?? [])
+          .filter(({ name }) => name !== entry.name)
+          .map(({ name }) => name)
+          .sort(),
+        projectPath,
+      }))
+      .filter(({ owners }) => owners.length > 0)
+    const retainedPaths = new Set(retainedFiles.map(({ projectPath }) => projectPath))
+    const files = [...new Set([...manifest.files, ...recordedFiles])].filter(
+      (projectPath) => !retainedPaths.has(projectPath),
+    )
     const fileReport = await compareInstalledFiles({
       ...(baselineHashes ? { baselineHashes } : {}),
       cwd,
       localized,
       manifest: { files, registryItemName: manifest.registryItemName },
     })
+    const sharedBaselineConflicts: string[] = []
+
+    for (const projectPath of files) {
+      const otherOwners = (recordedOwnership.owners.get(projectPath) ?? []).filter(
+        ({ name }) => name !== entry.name,
+      )
+
+      if (otherOwners.length === 0) {
+        continue
+      }
+
+      const installedSource = await readFile(path.join(cwd, projectPath), 'utf8').catch(
+        () => undefined,
+      )
+
+      if (otherOwners.some(({ hash }) => !hash)) {
+        sharedBaselineConflicts.push(projectPath)
+        continue
+      }
+
+      if (
+        installedSource !== undefined &&
+        otherOwners.some(({ hash }) => hash !== hashSource(installedSource))
+      ) {
+        sharedBaselineConflicts.push(projectPath)
+      }
+    }
+
+    const unresolvedOwnership =
+      recordedOwnership.unresolved.some((name) => name !== entry.name)
+    const blockedFiles = [
+      ...new Set([
+        ...fileReport.modified,
+        ...sharedBaselineConflicts,
+        ...(unresolvedOwnership ? files : []),
+      ]),
+    ]
     const plan: UpdatePlan = {
-      baselineUnavailable: baselineHashes === undefined,
-      blockedFiles: fileReport.modified,
+      baselineUnavailable: baselineHashes === undefined || unresolvedOwnership,
+      blockedFiles,
       componentName: entry.name,
-      files: files.filter((filePath) => !fileReport.modified.includes(filePath)),
+      files: files.filter((filePath) => !blockedFiles.includes(filePath)),
       /* A localized install stays localized: re-running plain `add` would
          rewrite the config without the wrapper and silently drop it. */
       localized,
       pendingChangelog: entry.pendingChangelog,
       recordedVersion: entry.installed?.manifestVersion ?? 'unknown',
       registryVersion: manifest.version,
+      retainedFiles,
     }
 
     /* A breaking entry means the upgrade invalidates content already stored in
@@ -211,7 +311,7 @@ export const updateCommand = async ({
       continue
     }
 
-    if ((fileReport.modified.length > 0 || !baselineHashes) && !force) {
+    if ((blockedFiles.length > 0 || plan.baselineUnavailable) && !force) {
       skipped.push(plan)
       continue
     }
