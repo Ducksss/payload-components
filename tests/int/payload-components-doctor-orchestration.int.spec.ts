@@ -34,6 +34,7 @@ const detectedProject: DetectedProject = {
 }
 
 const stateEntryFor = (manifest: ComponentManifest): InstallStateEntry => ({
+  fileHashes: {},
   installedAt: '2026-07-13T00:00:00.000Z',
   lastAttemptAt: '2026-07-13T00:00:00.000Z',
   lastError: null,
@@ -75,7 +76,7 @@ describe('payload-components doctor orchestration', () => {
         [heroManifest.name]: stateEntryFor(heroManifest),
         [featureManifest.name]: stateEntryFor(featureManifest),
       },
-      version: 2,
+      version: 3,
     }
     const resolveInstallPlan = vi
       .fn()

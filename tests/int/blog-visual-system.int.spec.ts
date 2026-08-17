@@ -1999,6 +1999,7 @@ describe('Field Journal diagram renderer', () => {
       'lastAttemptAt',
       'lastError',
       'patchedFiles',
+      'fileHashes',
     ]) {
       expect(state).toContain(field)
     }

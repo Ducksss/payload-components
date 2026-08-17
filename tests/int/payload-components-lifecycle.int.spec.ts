@@ -10,7 +10,7 @@ import { diffCommand } from '../../tools/payload-components/commands/diff'
 import { listCommand } from '../../tools/payload-components/commands/list'
 import { removeCommand } from '../../tools/payload-components/commands/remove'
 import { applyPayloadFragments } from '../../tools/payload-components/project'
-import { loadState, recordInstalledState } from '../../tools/payload-components/state'
+import { loadState, recordInstalledState, saveState } from '../../tools/payload-components/state'
 
 import { createInstallFixtureForComponents } from './payload-components-fixture'
 
@@ -227,6 +227,81 @@ describe('remove', () => {
     expect(pagesLayout).toContain('HeroVideo')
     expect(pagesLayout).not.toContain('HeroBasic,')
     expect((await loadState(fixtureDir)).components['hero-video']).toBeDefined()
+  })
+
+  it('refuses to delete a locally edited owned file unless --force is explicit', async () => {
+    const { fixtureDir } = await installFixture(['hero-basic'])
+    const configPath = path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts')
+
+    await writeFile(configPath, `${await readFile(configPath, 'utf8')}\n// local tweak\n`, 'utf8')
+
+    await expect(removeCommand({ componentName: 'hero-basic', cwd: fixtureDir })).rejects.toThrow(
+      'changed after installation',
+    )
+    expect(await exists(configPath)).toBe(true)
+    expect((await loadState(fixtureDir)).components['hero-basic']).toBeDefined()
+
+    const read = captureStdout()
+    await removeCommand({ componentName: 'hero-basic', cwd: fixtureDir, force: true })
+
+    expect(read()).toContain('local edits discarded by --force')
+    expect(await exists(configPath)).toBe(false)
+  })
+
+  it('refuses unrecorded leftovers, while --force removes them deliberately', async () => {
+    const { fixtureDir } = await createInstallFixtureForComponents(['hero-basic'], {
+      preseedSource: true,
+    })
+    const configPath = path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts')
+
+    fixtureDirs.push(fixtureDir)
+
+    await expect(removeCommand({ componentName: 'hero-basic', cwd: fixtureDir })).rejects.toThrow(
+      'source with unknown ownership',
+    )
+    expect(await exists(configPath)).toBe(true)
+
+    await removeCommand({ componentName: 'hero-basic', cwd: fixtureDir, force: true })
+
+    expect(await exists(configPath)).toBe(false)
+  })
+
+  it('keeps a shared file owned by an orphaned recorded component', async () => {
+    const { fixtureDir } = await installFixture(['hero-basic'])
+    const state = await loadState(fixtureDir)
+    const heroEntry = state.components['hero-basic']
+    const sharedPath = 'src/blocks/shared/heroFields.ts'
+
+    state.components['retired-hero'] = {
+      ...heroEntry,
+      fileHashes: { [sharedPath]: heroEntry.fileHashes[sharedPath] },
+      registryItemName: 'retired-hero',
+    }
+    await saveState(fixtureDir, state)
+
+    const read = captureStdout()
+    await removeCommand({ componentName: 'hero-basic', cwd: fixtureDir })
+
+    expect(read()).toContain(`${sharedPath} (keep — still used by retired-hero)`)
+    expect(await exists(path.join(fixtureDir, sharedPath))).toBe(true)
+  })
+
+  it('fails closed when a retained orphan has no manifest or source baseline', async () => {
+    const { fixtureDir } = await installFixture(['hero-basic'])
+    const state = await loadState(fixtureDir)
+
+    state.components['retired-unknown'] = {
+      ...state.components['hero-basic'],
+      fileHashes: {},
+      manifestVersion: '9.9.9',
+      registryItemName: 'retired-unknown',
+    }
+    await saveState(fixtureDir, state)
+
+    await expect(removeCommand({ componentName: 'hero-basic', cwd: fixtureDir })).rejects.toThrow(
+      'Cannot verify shared-file ownership',
+    )
+    expect(await exists(path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts'))).toBe(true)
   })
 
   it('is idempotent — a second remove is a no-op that still succeeds', async () => {

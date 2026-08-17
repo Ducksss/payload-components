@@ -184,6 +184,8 @@ export function ComponentCatalogBrowser({
     setSelected(nextSelection)
 
     const params = new URLSearchParams(window.location.search)
+    if (localQuery) params.set('q', localQuery)
+    else params.delete('q')
     if (nextSelection.length > 0) params.set('add', nextSelection.join(','))
     else params.delete('add')
     const queryString = params.toString()
