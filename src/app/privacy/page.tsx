@@ -55,7 +55,8 @@ const processors = [
     name: 'PostHog (US)',
     needsConsent: true,
     purpose: 'The three product events listed below.',
-    storage: 'A random pc_distinct_id in localStorage, so repeat visits are one visitor.',
+    storage:
+      'A random pc_distinct_id in localStorage, plus an organic entry pathname in sessionStorage for the current tab.',
   },
 ] as const
 
@@ -66,12 +67,12 @@ const events = [
     when: 'A public route loads or changes.',
   },
   {
-    fields: 'command, component, source_path',
+    fields: 'command, component, source_path, entry_page',
     name: 'copy_install_command',
     when: 'You copy an install command.',
   },
   {
-    fields: 'destination, href, source_path',
+    fields: 'destination, href, source_path, entry_page',
     name: 'primary_link_click',
     when: 'You follow a repository, docs, or components link.',
   },
@@ -146,6 +147,13 @@ export default function PrivacyPage() {
                 carry a true verification marker so they can be excluded from visitor counts;
                 ordinary visits carry false.
               </p>
+              <p className="text-muted-foreground">
+                After consent, organic visits keep the first same-site pathname for the current
+                browser tab. Install copies and primary link clicks include that pathname as
+                <code className="font-mono text-sm text-foreground"> entry_page</code>. Direct and
+                referral visits do not. It never contains a query string or raw referrer and is
+                deleted when you withdraw consent.
+              </p>
               <ul className="space-y-3">
                 {events.map((event) => (
                   <li
@@ -170,6 +178,7 @@ export default function PrivacyPage() {
                 <code className="font-mono text-sm text-foreground">_ga</code>,{' '}
                 <code className="font-mono text-sm text-foreground">_ga_*</code>) and the PostHog
                 identifier are removed, and the page reloads so nothing already running carries on.
+                The session-only organic entry pathname is removed too.
               </p>
               <ConsentSettings />
             </div>
