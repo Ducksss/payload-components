@@ -107,10 +107,13 @@ Current components:
   content-list-icons
   call-to-action-centered
   call-to-action-boxed
+  call-to-action-split
   call-to-action-signup
   contact-routing-form
+  contact-channels
   team-roster
   team-grid
+  team-bios
   faq-accordion
   faq-split
   faq-card

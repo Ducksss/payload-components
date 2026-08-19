@@ -16,7 +16,10 @@ export function ComponentPreviewThumb({ slug }: { slug: string }) {
   if (!Demo) return null
 
   return (
-    <div className="relative overflow-hidden border-b border-border bg-muted/40">
+    /* preview-themed rebuilds the brand ramp from --preview-hue (set by the
+       catalog's brand control). Inert when the variable is unset, so the doc
+       pages and the landing keep rendering these twins in emerald. */
+    <div className="preview-themed relative overflow-hidden border-b border-border bg-muted/40">
       {/* zoom-based frame self-sizes to the twin; the hover lift rides on the
           frame's transform and is reduced-motion safe. */}
       <DemoFitFrame className="max-h-[26rem] transition-transform duration-500 ease-out [mask-image:linear-gradient(to_bottom,black_93%,transparent)] group-hover:scale-[1.01] motion-reduce:transform-none motion-reduce:transition-none">
