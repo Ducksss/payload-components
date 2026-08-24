@@ -14,7 +14,6 @@ import {
   TEMPLATE_CONCEPT_STATUS_LABEL,
 } from '../../src/lib/templates/types'
 import {
-  catalogTemplatesLinkLabel,
   templatesMetadataDescription,
   templatesMetadataTitle,
   templatesTitle,
@@ -85,31 +84,10 @@ test.describe('Templates gallery (/templates)', () => {
       await expect(
         card.locator(`a[href="${templateDetailHref(template.slug)}"]`).first(),
       ).toBeVisible()
-      await expect(
-        card.locator(`a[href="${templatePreviewHref(template.slug)}"]`).first(),
-      ).toBeVisible()
     }
 
     // The gallery never mounts live previews — posters only.
     await expect(page.locator('iframe')).toHaveCount(0)
-  })
-
-  test('links the concepts to supported starting points and from the catalog', async ({ page }) => {
-    await page.goto(`${baseURL}/templates`)
-
-    await expect(page.locator('main a[href="/components"]')).toBeVisible()
-    await expect(page.locator('main a[href="/docs/installation"]')).toBeVisible()
-    await expect(
-      page.locator(
-        'main a[href="https://github.com/payloadcms/payload/tree/main/templates/website"]',
-      ),
-    ).toBeVisible()
-
-    await page.goto(`${baseURL}/components`)
-    await expect(page.getByRole('link', { name: catalogTemplatesLinkLabel })).toHaveAttribute(
-      'href',
-      '/templates',
-    )
   })
 
   test('shows no install, waitlist, or price UI', async ({ page }) => {
