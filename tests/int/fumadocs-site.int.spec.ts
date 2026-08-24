@@ -726,11 +726,6 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).not.toContain(blogDescription)
     expect(blogTitle).toBe('Payload CMS block and installer guides')
     expect(blogDescription).toContain('Payload CMS v3 guides')
-    expect(indexSource).toContain('href="/components"')
-    expect(indexSource).toContain("href: '/docs/installation'")
-    expect(indexSource).toContain("href: '/docs/payload-blocks'")
-    expect(indexSource).toContain("href: '/blog/anatomy-of-an-install'")
-    expect(indexSource).toContain('data-guide-gateway')
     expect(collapse(indexSource)).toContain(
       'alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates }',
     )

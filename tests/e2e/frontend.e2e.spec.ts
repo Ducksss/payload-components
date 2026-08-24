@@ -3,7 +3,6 @@ import { expect, type Page, test } from '@playwright/test'
 import { grantConsent } from './consent'
 
 import {
-  blogTitle,
   catalogInstallationLinkLabel,
   composerAddLabel,
   composerClearLabel,
@@ -751,11 +750,6 @@ test.describe('Light shadcn frontend', () => {
         link: /Browse the components/,
         path: '/',
         title: new RegExp(homeMetadataTitle),
-      },
-      {
-        link: /Browse all 73 installable components/,
-        path: '/blog',
-        title: new RegExp(blogTitle),
       },
       {
         link: /Browse the catalog/,

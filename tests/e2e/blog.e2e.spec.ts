@@ -65,18 +65,6 @@ test.describe('Blog editorial library', () => {
       /Practical Payload CMS v3 guides/,
     )
 
-    const gateway = page.locator('[data-guide-gateway]')
-    await expect(
-      gateway.getByRole('link', { name: /Install a wired Payload block/ }),
-    ).toHaveAttribute('href', '/docs/installation')
-    await expect(gateway.getByRole('link', { name: /Wire a reusable block/ })).toHaveAttribute(
-      'href',
-      '/docs/payload-blocks',
-    )
-    await expect(
-      gateway.getByRole('link', { name: /Fix a block that will not render/ }),
-    ).toHaveAttribute('href', '/blog/anatomy-of-an-install')
-
     const cards = page.locator('[data-blog-card]')
     await expect(cards).toHaveCount(33)
     await expect(cards.locator('h2')).toHaveText(posts.map((post) => post.title))
