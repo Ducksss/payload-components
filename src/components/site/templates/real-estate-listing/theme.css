@@ -1,0 +1,206 @@
+/* Moorhouse & Kent (real-estate-listing) scoped theme — WAVE 0 SCAFFOLD.
+ *
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='real-estate-listing'] root the shell renders. It
+ * overrides the semantic variables the demo twins consume and never touches
+ * :root, .dark, another template's scope, or src/app/globals.css. The site
+ * stays forced-light; the intentionally dark surfaces below are named tokens.
+ *
+ * Art direction (for the art-direction wave): warm stone and slate ink with a
+ * brick-red accent — hairline rules and the assured, surveyed calm of a firm
+ * that puts every guide in writing. */
+
+[data-template-theme='real-estate-listing'] {
+  /* Warm stone paper */
+  --background: oklch(96.8% 0.008 80deg);
+  --foreground: oklch(26% 0.016 250deg);
+
+  --card: oklch(98.8% 0.005 80deg);
+  --card-foreground: oklch(26% 0.016 250deg);
+  --popover: oklch(98.8% 0.005 80deg);
+  --popover-foreground: oklch(26% 0.016 250deg);
+
+  /* The one accent: brick red */
+  --primary: oklch(45.5% 0.118 35deg);
+  --primary-foreground: oklch(97.6% 0.006 80deg);
+  --brand: oklch(45.5% 0.118 35deg);
+  --brand-foreground: oklch(97.6% 0.006 80deg);
+  --brand-50: oklch(96.2% 0.014 50deg);
+  --brand-100: oklch(92.4% 0.03 45deg);
+  --brand-200: oklch(86% 0.055 42deg);
+  --brand-600: oklch(41% 0.115 35deg);
+
+  /* Stone support surfaces */
+  --secondary: oklch(93.4% 0.012 78deg);
+  --secondary-foreground: oklch(31% 0.02 250deg);
+  --muted: oklch(94.4% 0.01 79deg);
+  --muted-foreground: oklch(43% 0.02 252deg);
+  --accent: oklch(92.2% 0.018 70deg);
+  --accent-foreground: oklch(33% 0.05 40deg);
+
+  --border: oklch(88.6% 0.012 78deg);
+  --input: oklch(86% 0.014 78deg);
+  --ring: oklch(53% 0.1 38deg);
+
+  --radius: 0.25rem;
+
+  /* Moorhouse & Kent named surfaces */
+  --mk-slate: oklch(24.5% 0.02 252deg);
+  --mk-slate-raised: oklch(28% 0.024 252deg);
+  --mk-band: oklch(94.8% 0.01 79deg);
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* ---------------------------------------------------------------- */
+/* Section rhythm: flatten the catalog specimen frame into full-bleed */
+/* site bands ([data-template-section] > [aria-hidden] > frame div).  */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='real-estate-listing'] [data-template-section] > [aria-hidden='true'] > div {
+  border-color: transparent;
+  border-radius: 0;
+  background-color: transparent;
+  padding-block: clamp(3.5rem, 7vw, 5.5rem);
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(4.25rem, 9vw, 6.5rem);
+}
+
+/* ---------------------------------------------------------------- */
+/* Tone bands. `tone` is set per section in the template definition.  */
+/* ---------------------------------------------------------------- */
+
+/* Muted: a deeper stone band between hairlines. */
+[data-template-theme='real-estate-listing'] [data-tone='muted'] {
+  --muted: oklch(91.4% 0.012 78deg);
+  --accent: oklch(90.2% 0.018 70deg);
+  --card: oklch(97.4% 0.007 80deg);
+
+  background-color: var(--mk-band);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    inset 0 -1px 0 var(--border);
+}
+
+/* Contrast: the slate band. Semantic variables are re-mapped so the twins'
+ * token classes resolve to AA-safe dark-band values; the primary action
+ * inverts to a light button on slate. */
+[data-template-theme='real-estate-listing'] [data-tone='contrast'],
+[data-template-theme='real-estate-listing'] .mk-rail {
+  --background: oklch(24.5% 0.02 252deg);
+  --foreground: oklch(96.6% 0.006 80deg);
+  --card: oklch(28% 0.024 252deg);
+  --card-foreground: oklch(96.6% 0.006 80deg);
+  --popover: oklch(28% 0.024 252deg);
+  --popover-foreground: oklch(96.6% 0.006 80deg);
+  --primary: oklch(96.6% 0.006 80deg);
+  --primary-foreground: oklch(25% 0.02 252deg);
+  --brand: oklch(74% 0.08 45deg);
+  --brand-foreground: oklch(22% 0.018 252deg);
+  --secondary: oklch(32% 0.024 252deg);
+  --secondary-foreground: oklch(92.6% 0.008 79deg);
+  --muted: oklch(29.5% 0.022 252deg);
+  --muted-foreground: oklch(79.5% 0.012 78deg);
+  --accent: oklch(34% 0.03 252deg);
+  --accent-foreground: oklch(94% 0.008 79deg);
+  --border: oklch(100% 0 0deg / 16%);
+  --input: oklch(100% 0 0deg / 24%);
+  --ring: oklch(76% 0.07 48deg);
+
+  background-color: var(--mk-slate);
+  color: var(--foreground);
+}
+
+/* ---------------------------------------------------------------- */
+/* Shell chrome                                                      */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='real-estate-listing'] .mk-utility {
+  background-color: var(--mk-slate);
+  color: oklch(92.8% 0.008 79deg);
+}
+
+[data-template-theme='real-estate-listing'] .mk-masthead {
+  background-color: color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow: inset 0 -1px 0 var(--border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+[data-template-theme='real-estate-listing'] .mk-action {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+[data-template-theme='real-estate-listing'] .mk-action:hover {
+  background-color: var(--brand-600);
+}
+
+[data-template-theme='real-estate-listing'] [data-mk-active] {
+  text-decoration: underline;
+  text-decoration-color: var(--primary);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+[data-template-theme='real-estate-listing'] .mk-trigger {
+  border: 1px solid var(--border);
+  background-color: var(--card);
+}
+
+[data-template-theme='real-estate-listing'] .mk-trigger-bar {
+  display: block;
+  width: 1.125rem;
+  height: 2px;
+  border-radius: 999px;
+  background-color: currentcolor;
+}
+
+[data-template-theme='real-estate-listing'] .mk-sheet {
+  background-color: var(--card);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    0 16px 32px -20px color-mix(in oklab, var(--foreground) 40%, transparent);
+}
+
+[data-template-theme='real-estate-listing'] .mk-sheet-link {
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+[data-template-theme='real-estate-listing'] .mk-sheet-note {
+  color: var(--muted-foreground);
+}
+
+[data-template-theme='real-estate-listing'] .mk-focus {
+  outline: none;
+}
+
+[data-template-theme='real-estate-listing'] .mk-focus:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+[data-template-theme='real-estate-listing'] .mk-footer {
+  background-color: var(--mk-band);
+  box-shadow: inset 0 1px 0 var(--border);
+}
+
+[data-template-theme='real-estate-listing'] .mk-footer-label {
+  color: var(--foreground);
+}
+
+/* Reduced-motion net: the shell's own transitions land on their final frame
+ * instantly, even before hydration. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='real-estate-listing'] .mk-nav-link,
+  [data-template-theme='real-estate-listing'] .mk-action,
+  [data-template-theme='real-estate-listing'] .mk-focus {
+    transition-duration: 0.001s !important;
+  }
+}

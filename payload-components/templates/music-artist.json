@@ -1,0 +1,95 @@
+{
+  "category": "music",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "call-to-action-signup",
+    "contact-routing-form",
+    "content-columns",
+    "content-community",
+    "content-image-frame",
+    "content-image-lead",
+    "content-quote",
+    "content-rows",
+    "faq-card",
+    "faq-split",
+    "hero-basic",
+    "hero-kinetic",
+    "integration-cluster",
+    "logo-cloud-inline-wrap",
+    "stats-proof",
+    "team-grid",
+    "testimonials-quote",
+    "testimonials-wall"
+  ],
+  "description": "Pale Meridian is a fictional four-piece touring behind their fourth record, Sodium Lights, on their own label out of the laundrette that named them. The concept owns the gig-poster register — nocturnal, flyposted, personality-led — across five pages: Home, Tour, Music, About, and Contact, with the tour-date table as the working heart of the site and the mailing list as the band’s own channel. Composed entirely from blocks in the open registry.",
+  "pages": [
+    {
+      "components": [
+        "hero-kinetic",
+        "content-image-lead",
+        "content-rows",
+        "testimonials-quote",
+        "logo-cloud-inline-wrap",
+        "call-to-action-signup"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Pale Meridian — Sodium Lights, out now"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-rows",
+        "stats-proof",
+        "faq-card",
+        "call-to-action-centered"
+      ],
+      "label": "Tour",
+      "path": "tour",
+      "title": "Pale Meridian — Tour dates"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-rows",
+        "content-quote",
+        "integration-cluster",
+        "testimonials-wall",
+        "call-to-action-signup"
+      ],
+      "label": "Music",
+      "path": "music",
+      "title": "Pale Meridian — The records"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-columns",
+        "team-grid",
+        "content-image-frame",
+        "content-community",
+        "call-to-action-boxed"
+      ],
+      "label": "About",
+      "path": "about",
+      "title": "Pale Meridian — About the band"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "contact-routing-form",
+        "faq-split",
+        "call-to-action-signup"
+      ],
+      "label": "Contact",
+      "path": "contact",
+      "title": "Pale Meridian — Contact"
+    }
+  ],
+  "revision": 1,
+  "slug": "music-artist",
+  "summary": "A fictional four-piece on tour behind their fourth record — the gig-poster register, built around a tour-date table, a discography, and a mailing list.",
+  "title": "Music Artist",
+  "version": 1
+}

@@ -1,0 +1,207 @@
+/* Pale Meridian (music-artist) scoped theme — WAVE 0 SCAFFOLD.
+ *
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='music-artist'] root the shell renders. It overrides
+ * the semantic variables the demo twins consume and never touches :root,
+ * .dark, another template's scope, or src/app/globals.css. The site stays
+ * forced-light — this concept's night-time base is its own named palette, not
+ * a dark mode.
+ *
+ * Art direction (for the art-direction wave): sodium-lamp amber on near-black
+ * indigo with bone-white type — flyposted, nocturnal, analog. */
+
+[data-template-theme='music-artist'] {
+  /* Night-street base: near-black indigo under sodium light */
+  --background: oklch(19.5% 0.028 290deg);
+  --foreground: oklch(94% 0.012 90deg);
+
+  --card: oklch(23.5% 0.03 290deg);
+  --card-foreground: oklch(94% 0.012 90deg);
+  --popover: oklch(23.5% 0.03 290deg);
+  --popover-foreground: oklch(94% 0.012 90deg);
+
+  /* The accent: sodium-lamp amber, used as fields and filled actions with
+     dark text — never as body text on the night base. */
+  --primary: oklch(76% 0.135 75deg);
+  --primary-foreground: oklch(20% 0.028 290deg);
+  --brand: oklch(76% 0.135 75deg);
+  --brand-foreground: oklch(20% 0.028 290deg);
+  --brand-50: oklch(30% 0.045 82deg);
+  --brand-100: oklch(38% 0.065 80deg);
+  --brand-200: oklch(50% 0.09 78deg);
+  --brand-600: oklch(70% 0.13 74deg);
+
+  /* Raised night surfaces */
+  --secondary: oklch(27.5% 0.032 290deg);
+  --secondary-foreground: oklch(91% 0.012 90deg);
+  --muted: oklch(25.5% 0.03 290deg);
+  --muted-foreground: oklch(76% 0.018 85deg);
+  --accent: oklch(30% 0.038 288deg);
+  --accent-foreground: oklch(92% 0.02 85deg);
+
+  --border: oklch(100% 0 0deg / 14%);
+  --input: oklch(100% 0 0deg / 22%);
+  --ring: oklch(78% 0.11 76deg);
+
+  --radius: 0.25rem;
+
+  /* Pale Meridian named surfaces */
+  --pm-night: oklch(15.5% 0.026 290deg);
+  --pm-night-raised: oklch(22% 0.03 290deg);
+  --pm-bone: oklch(94% 0.012 90deg);
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* ---------------------------------------------------------------- */
+/* Section rhythm: flatten the catalog specimen frame into full-bleed */
+/* site bands ([data-template-section] > [aria-hidden] > frame div).  */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='music-artist'] [data-template-section] > [aria-hidden='true'] > div {
+  border-color: transparent;
+  border-radius: 0;
+  background-color: transparent;
+  padding-block: clamp(3.5rem, 7vw, 5.5rem);
+}
+
+[data-template-theme='music-artist'] [data-template-section='hero'] > [aria-hidden='true'] > div,
+[data-template-theme='music-artist']
+  [data-template-section='marquee-hero']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(4.25rem, 9vw, 6.5rem);
+}
+
+/* ---------------------------------------------------------------- */
+/* Tone bands. `tone` is set per section in the template definition.  */
+/* ---------------------------------------------------------------- */
+
+/* Muted: a raised indigo band between hairlines. */
+[data-template-theme='music-artist'] [data-tone='muted'] {
+  --muted: oklch(28.5% 0.032 290deg);
+  --accent: oklch(32.5% 0.038 288deg);
+  --card: oklch(26% 0.03 290deg);
+
+  background-color: var(--pm-night-raised);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    inset 0 -1px 0 var(--border);
+}
+
+/* Contrast: the deepest night band, lit from the sodium lamp — the loudest
+ * surface on the poster. Tokens step deeper rather than inverting; the amber
+ * action stays the amber action. */
+[data-template-theme='music-artist'] [data-tone='contrast'],
+[data-template-theme='music-artist'] .pm-rail {
+  --background: oklch(15.5% 0.026 290deg);
+  --foreground: oklch(95% 0.014 88deg);
+  --card: oklch(20% 0.028 290deg);
+  --card-foreground: oklch(95% 0.014 88deg);
+  --popover: oklch(20% 0.028 290deg);
+  --popover-foreground: oklch(95% 0.014 88deg);
+  --primary: oklch(78% 0.135 75deg);
+  --primary-foreground: oklch(17% 0.026 290deg);
+  --brand: oklch(78% 0.135 75deg);
+  --brand-foreground: oklch(17% 0.026 290deg);
+  --secondary: oklch(24% 0.03 290deg);
+  --secondary-foreground: oklch(92% 0.012 88deg);
+  --muted: oklch(22% 0.028 290deg);
+  --muted-foreground: oklch(77% 0.02 84deg);
+  --accent: oklch(27% 0.036 288deg);
+  --accent-foreground: oklch(93% 0.02 85deg);
+  --border: oklch(100% 0 0deg / 15%);
+  --input: oklch(100% 0 0deg / 24%);
+  --ring: oklch(80% 0.11 76deg);
+
+  background-color: var(--pm-night);
+  color: var(--foreground);
+}
+
+/* ---------------------------------------------------------------- */
+/* Shell chrome                                                      */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='music-artist'] .pm-masthead {
+  background-color: color-mix(in oklab, var(--pm-night) 88%, transparent);
+  box-shadow: inset 0 -1px 0 var(--border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+[data-template-theme='music-artist'] .pm-action {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+[data-template-theme='music-artist'] .pm-action:hover {
+  background-color: var(--brand-600);
+}
+
+[data-template-theme='music-artist'] [data-pm-active] {
+  text-decoration: underline;
+  text-decoration-color: var(--primary);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+[data-template-theme='music-artist'] .pm-trigger {
+  border: 1px solid var(--border);
+  background-color: var(--card);
+}
+
+[data-template-theme='music-artist'] .pm-trigger-bar {
+  display: block;
+  width: 1.125rem;
+  height: 2px;
+  border-radius: 999px;
+  background-color: currentcolor;
+}
+
+[data-template-theme='music-artist'] .pm-sheet {
+  background-color: var(--pm-night-raised);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    0 16px 32px -20px oklch(0% 0 0deg / 60%);
+}
+
+[data-template-theme='music-artist'] .pm-sheet-link {
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+[data-template-theme='music-artist'] .pm-sheet-note {
+  color: var(--muted-foreground);
+}
+
+[data-template-theme='music-artist'] .pm-focus {
+  outline: none;
+}
+
+[data-template-theme='music-artist'] .pm-focus:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+[data-template-theme='music-artist'] .pm-footer {
+  background-color: var(--pm-night-raised);
+  box-shadow: inset 0 1px 0 var(--border);
+}
+
+[data-template-theme='music-artist'] .pm-footer-label {
+  color: var(--foreground);
+}
+
+[data-template-theme='music-artist'] .pm-rail {
+  box-shadow: inset 0 1px 0 var(--border);
+}
+
+/* Reduced-motion net: the shell's own transitions land on their final frame
+ * instantly, even before hydration. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='music-artist'] .pm-nav-link,
+  [data-template-theme='music-artist'] .pm-action,
+  [data-template-theme='music-artist'] .pm-focus {
+    transition-duration: 0.001s !important;
+  }
+}

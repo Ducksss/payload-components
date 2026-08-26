@@ -6,8 +6,11 @@ import { educationCourseTemplate } from './education-course'
 import { eventConferenceTemplate } from './event-conference'
 import { fintechTrustTemplate } from './fintech-trust'
 import { healthcareClinicTemplate } from './healthcare-clinic'
+import { musicArtistTemplate } from './music-artist'
 import { nonprofitCauseTemplate } from './nonprofit-cause'
 import { portfolioSoloTemplate } from './portfolio-solo'
+import { realEstateListingTemplate } from './real-estate-listing'
+import { restaurantBistroTemplate } from './restaurant-bistro'
 import { saasLaunchTemplate } from './saas-launch'
 import { tradeServiceTemplate } from './trade-service'
 
@@ -24,6 +27,9 @@ export const templateShowcases: readonly TemplateShowcase[] = [
   educationCourseTemplate,
   healthcareClinicTemplate,
   tradeServiceTemplate,
+  restaurantBistroTemplate,
+  realEstateListingTemplate,
+  musicArtistTemplate,
 ]
 
 export const templatesBySlug: Record<string, TemplateShowcase> = Object.fromEntries(
