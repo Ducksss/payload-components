@@ -7,16 +7,21 @@ import { templatePreviewHref } from '@/lib/templates/registry'
 import { MarlefordHeader } from './MarlefordHeader'
 import './theme.css'
 
-/* Marleford District Council (civic-council) template shell — WAVE 0 SCAFFOLD
- * for the art-direction wave to rework.
+/* Marleford District Council (civic-council) template shell.
  *
- * Contract (final even where visuals are not): everything renders beneath
- * data-template-theme='civic-council'; internal navigation goes through
- * templatePreviewHref with aria-current on the active page; every interactive
- * element lives in this chrome, never inside the aria-hidden visual canvas;
- * the footer carries the fictional disclosure and the generic emergency note.
- * Scoped colour lives in theme.css; nothing here touches :root, .dark, or
- * globals.css. A civic site's chrome is deliberately still. */
+ * Contract: everything renders beneath data-template-theme='civic-council';
+ * internal navigation goes through templatePreviewHref with aria-current on
+ * the active page; every interactive element lives in this chrome, never
+ * inside the aria-hidden visual canvas; the footer carries the fictional
+ * disclosure and the generic emergency note — both are fiction-safety
+ * surfaces and stay. Scoped colour lives in theme.css; nothing here touches
+ * :root, .dark, or globals.css.
+ *
+ * The footer is the committee slate (the theme's contrast remap covers
+ * .mdc-footer, so the semantic utility classes below resolve dark-safe),
+ * entered over a 6px teal task rule: crest and name first, then pages, the
+ * phone line, and the Guildhall, then the disclosure rail. A civic site's
+ * chrome is deliberately still — no entrances, no reveals, nothing moves. */
 
 export function CivicCouncilShell({ activePath, children, template }: TemplateShellProps) {
   return (
@@ -30,9 +35,14 @@ export function CivicCouncilShell({ activePath, children, template }: TemplateSh
 
       <footer className="mdc-footer">
         <div className="mx-auto flex max-w-6xl flex-col gap-10 px-5 py-14 sm:px-8">
+          <div className="flex items-center gap-3">
+            <span aria-hidden="true" className="mdc-crest" />
+            <span className="mdc-footer-name">Marleford District Council</span>
+          </div>
+
           <div className="grid gap-10 sm:grid-cols-3">
             <div className="flex flex-col gap-3">
-              <span className="mdc-footer-label text-base font-semibold">Pages</span>
+              <span className="mdc-footer-label">Pages</span>
               <nav
                 aria-label="Marleford District Council footer navigation"
                 className="flex flex-col gap-1"
@@ -42,7 +52,7 @@ export function CivicCouncilShell({ activePath, children, template }: TemplateSh
                     key={item.path}
                     href={templatePreviewHref(template.slug, item.path)}
                     aria-current={activePath === item.path ? 'page' : undefined}
-                    className="mdc-focus inline-flex min-h-11 w-fit items-center rounded-md pe-2 text-base text-muted-foreground transition-colors hover:text-foreground"
+                    className="mdc-focus inline-flex min-h-11 w-fit items-center pe-2 text-base text-muted-foreground transition-colors hover:text-foreground"
                   >
                     {item.label}
                   </Link>
@@ -51,7 +61,7 @@ export function CivicCouncilShell({ activePath, children, template }: TemplateSh
             </div>
 
             <div className="flex flex-col gap-3">
-              <span className="mdc-footer-label text-base font-semibold">Reach us</span>
+              <span className="mdc-footer-label">Reach us</span>
               <span className="text-base leading-7 text-muted-foreground">
                 01632 960 700 · weekdays 8:30–5
               </span>
@@ -64,7 +74,7 @@ export function CivicCouncilShell({ activePath, children, template }: TemplateSh
             </div>
 
             <div className="flex flex-col gap-3">
-              <span className="mdc-footer-label text-base font-semibold">The Guildhall</span>
+              <span className="mdc-footer-label">The Guildhall</span>
               <address className="flex flex-col gap-3 not-italic">
                 <span className="text-base leading-7 text-muted-foreground">
                   Bridge Street, Marleford

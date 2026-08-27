@@ -3,16 +3,33 @@ import type { TemplateShowcase } from './types'
 /* Civic — "Marleford District Council", a fictional local council for the
  * fictional district of Marleford.
  *
- * WAVE 0 SKELETON — the recipe (pages, sections, tones) is frozen; the copy
- * below is a coherent first draft the art-direction wave replaces. Do not ship
- * this file without that pass.
+ * Art direction: the plain-language public-service register, which no other
+ * concept in the gallery owns. The site is a front desk, not a brochure: paper
+ * white, near-black ink, ONE civic teal, and nothing decorative that does not
+ * help someone finish a task. The design problem is making institutional
+ * plainness genuinely handsome rather than bare, and every move answers it
+ * typographically: headings run heavy (700) at a slightly reduced scale,
+ * everything ranges LEFT — the theme un-centers every centered twin header,
+ * because forms are read, not admired — eyebrows become form captions (a thick
+ * teal dash, then a small tracked ink label), form fields take the 2px ink
+ * border of a government form, and the only pictures are working documents
+ * painted from tokens: survey-map tiles, bin-colour plates, calendar leaves, a
+ * ruled minutes page. GOV.UK-adjacent in discipline, original in execution —
+ * and deliberately distinct from trade-service's signwriter plainness (this is
+ * a counter, not a yard) and healthcare-clinic's calm warmth (this is duty,
+ * not reassurance).
  *
- * Register this concept must own (uncovered by the other fourteen): the
- * plain-language public-service register. No marketing voice at all: short
- * sentences, verbs first, tasks before institutions, reading age kept low on
- * purpose. The information architecture is top-task design — the home page is
- * a front desk, not a brochure — and the design challenge is making that
- * plainness handsome rather than bare.
+ *   Home      the front desk: the six tasks people come for, this month's
+ *             notices, and the year's work counted honestly
+ *   Services  every service in plain words, the bins exactly, and the
+ *             collection-day matrix
+ *   Report    the task the whole site defers to: reference, fix date, fixed
+ *   Council   who decides and how to watch them do it, by ward, in public
+ *   Contact   one line, one desk, one door — and what the Guildhall offers
+ *
+ * Copy rules for the register, applied throughout: short sentences, verbs
+ * first, no marketing adjectives, reading age kept low on purpose, dates and
+ * hours concrete. Where a sibling concept would persuade, Marleford states.
  *
  * Canonical facts, kept consistent across every page: the district is the
  * town of Marleford plus the villages of Netherfield, Combe Ash, Priors Halt,
@@ -22,14 +39,16 @@ import type { TemplateShowcase } from './types'
  * published within five working days; one phone line, 01632 960 700, open
  * 8:30 to 5 on weekdays; the Guildhall has step-free access from Bridge
  * Street and a hearing loop at every desk; a reported pothole gets a fix date
- * within two working days and the median fix is nine days.
+ * within two working days and the median fix is nine days; the river Marle
+ * runs through the town (it is the wavy band on the map tiles and the crest).
  *
  * Everything is fictional: the district, every village, street, councillor,
  * ward, meeting, and figure. No real statute, regulator, ombudsman, or
  * national scheme is named or invented — obligations are stated as "council
  * policy". Emergency guidance stays generic ("contact your local emergency
  * number"). The phone number sits inside the 01632 96xxxx fiction range;
- * email uses the reserved `.example` domain.
+ * email uses the reserved `.example` domain. Members are listed by ward only;
+ * no party is named or implied.
  *
  * There are NO currency amounts anywhere. A council solves this the way its
  * own letters do: council tax is discussed as bands set each March and looked
@@ -40,6 +59,11 @@ import type { TemplateShowcase } from './types'
 export const civicCouncilTemplate: TemplateShowcase = {
   assets: [],
   category: 'civic',
+  /* This description flows into the generated install manifest
+   * (payload-components/templates/civic-council.json) byte for byte, and the
+   * art-direction wave leaves that manifest untouched — so the wording stays
+   * the frozen Wave-0 text. The theme.description below carries the visual
+   * direction instead. */
   description:
     'Marleford District Council is a fictional local authority for a fictional district of just under forty thousand people: one phone line, a Guildhall on Bridge Street, and a website that is a front desk rather than a brochure. The concept owns the plain-language public-service register — short sentences, verbs first, top tasks before institutions — across five pages: Home, Services, Report a problem, The council, and Contact, with reporting a problem as the task everything else defers to. Composed entirely from blocks in the open registry.',
   navigation: [
@@ -57,11 +81,21 @@ export const civicCouncilTemplate: TemplateShowcase = {
       path: '',
       sections: [
         {
+          /* The front desk. hero-basic is the quietest hero in the registry
+           * and that is the argument for it: a council's above-fold frame is a
+           * question and two buttons, not an atmosphere. The theme keeps the
+           * band bare paper with a single hairline at its foot — no gradient,
+           * no wash; the register's hero is a desk, not a sunrise — and lets
+           * the type scale carry it. The proof chips are re-cut as counter
+           * tickets (a wash field with a thick teal notch on the left edge),
+           * each one a concrete promise with a number or an hour in it. CTAs
+           * map to real routes: Report a problem → report, Find a service →
+           * services. */
           componentSlug: 'hero-basic',
           content: {
             description:
               'This site is for doing things: report a problem, find your bin day, book the recycling centre, see what the council decided. If you get stuck, ring 01632 960 700 — a person answers, weekdays 8:30 to 5.',
-            eyebrow: 'Marleford District Council',
+            eyebrow: 'The front desk',
             links: [
               { link: { appearance: 'default', label: 'Report a problem' } },
               { link: { appearance: 'outline', label: 'Find a service' } },
@@ -76,6 +110,18 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'front-desk',
         },
         {
+          /* The signature section of the concept. feature-icon-grid ships a
+           * 128px graph-paper icon decorator on every card — decoration that
+           * finishes nobody's task, drawn from an icon allowlist that is a
+           * software set (zap, database, fingerprint) with no honest civic
+           * mapping — so the theme hides the decorator outright and re-cuts
+           * each card as a TASK TILE: a thick ink rule across the top, a teal
+           * underlined title that reads as the task link it would be in
+           * production, and the description stating what you need before you
+           * start. Six tiles, ranged left, on bare paper: the closest thing
+           * the gallery has to a government task list, built from a block
+           * designed to do the opposite. Icon values stay in the data because
+           * the block requires them and installs render them. */
           componentSlug: 'feature-icon-grid',
           content: {
             description:
@@ -84,7 +130,7 @@ export const civicCouncilTemplate: TemplateShowcase = {
             items: [
               {
                 description:
-                  'Potholes, broken street lights, fly-tipping, and blocked drains. You get a reference and a fix date within two working days.',
+                  'Potholes, broken street lights, fly-tipping, and blocked drains. You get a reference at once and a fix date within two working days.',
                 icon: 'zap',
                 title: 'Report a problem',
               },
@@ -114,7 +160,7 @@ export const civicCouncilTemplate: TemplateShowcase = {
               },
               {
                 description:
-                  'Every meeting is public. See what is on the agenda before it happens and what was decided within five working days after.',
+                  'Every meeting is public. See the agenda a week before it happens and what was decided within five working days after.',
                 icon: 'fingerprint',
                 title: 'See what was decided',
               },
@@ -125,6 +171,15 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'top-tasks',
         },
         {
+          /* Notices on the muted band. content-rows gives each notice a 4:3
+           * plate, and the theme paints every one as a SURVEY-MAP TILE — a
+           * pale field under a fine survey grid, the river Marle crossing as a
+           * soft teal band, a green open space pooled in one corner — because
+           * a map of the affected street is the one picture a roadworks
+           * notice actually needs. Per-row variables move the river and the
+           * green so no two tiles are the same sheet. The copy rule is in the
+           * intro and honoured in every row: if a notice affects your street,
+           * the dates are in the first line. */
           componentSlug: 'content-rows',
           content: {
             eyebrow: 'This month',
@@ -156,6 +211,17 @@ export const civicCouncilTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* The one ink band on the page — committee slate, with a teal
+           * keyline along its top edge. A council has no metrics culture to
+           * flatter, so the four numbers are the ones a resident would
+           * actually check, including the one that counts against us (missed
+           * collections), and the quote comes from the residents' panel — the
+           * fictional body that audits the council's own words. logoLabel is
+           * set to that panel's name: the twin renders it as a wordmark slot,
+           * and the theme re-cuts it into a small tracked lockup in bright
+           * teal, which is exactly what a citizens' panel letterhead looks
+           * like. Every teal painted on this band steps up to --mdc-teal-lift
+           * via the tone remap so nothing drops below AA on the slate. */
           componentSlug: 'stats-proof',
           content: {
             author: 'From the residents’ panel',
@@ -163,6 +229,7 @@ export const civicCouncilTemplate: TemplateShowcase = {
             description:
               'The year’s work, counted the way residents asked us to count it: fixed things, honest medians, and the one number we are still not happy with.',
             eyebrow: 'The year, counted',
+            logoLabel: 'Marleford Residents’ Panel',
             metrics: [
               { label: 'problems reported and given a fix date', value: '4,180' },
               { label: 'days, the median pothole fix', value: '9' },
@@ -178,6 +245,13 @@ export const civicCouncilTemplate: TemplateShowcase = {
           tone: 'contrast',
         },
         {
+          /* faq-accordion arrives centered; the theme ranges it left like
+           * everything else — a centered FAQ reads as marketing, a left-ranged
+           * one as a counter leaflet. Answer rules thicken to full-strength
+           * hairlines so the list reads as a printed form, and each question
+           * holds the weight of a field label. The framing is the honest one:
+           * these are the phone line's real top questions, published so nobody
+           * queues for them. */
           componentSlug: 'faq-accordion',
           content: {
             description:
@@ -211,6 +285,13 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'asked-most',
         },
         {
+          /* The closing move is a counter window, not a billboard:
+           * call-to-action-boxed's inner panel is re-cut with a 2px ink
+           * frame and a solid teal band down its left edge, ranged left, so
+           * it reads as the "if in doubt" box printed at the foot of every
+           * council letter. The copy keeps the concept's best promise: a
+           * person answers, and if it is not our job they will tell you whose
+           * job it is. */
           componentSlug: 'call-to-action-boxed',
           content: {
             description:
@@ -233,6 +314,12 @@ export const civicCouncilTemplate: TemplateShowcase = {
       path: 'services',
       sections: [
         {
+          /* One header treatment for the whole site: the same bare-paper
+           * hero-basic at interior weight, because a council with five page
+           * headers has one design for them. The proof chips carry the access
+           * promises — plain words checked yearly, paper versions, and
+           * interpreters — which is where they belong: on the page that lists
+           * everything. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -252,6 +339,13 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* One block does the whole overview: six service summaries in the
+           * features grid — deliberately WITHOUT icons, because the content
+           * icon allowlist is a software set and a list of civic services
+           * reads better as plain bold terms — and the four numbers that hold
+           * across all of them in the arrow ledger underneath. The theme sets
+           * the ledger arrows to full-strength teal and the stat values to
+           * 700, so the section closes on the site's four hard promises. */
           componentSlug: 'content-stats',
           content: {
             eyebrow: 'The big six',
@@ -303,6 +397,15 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'the-big-six',
         },
         {
+          /* The concept's most literal picture-as-instruction move. The three
+           * content-rows plates are painted the colour of the bin each row
+           * describes — a green field, a blue field, a grey field, each with a
+           * darker moulded lid across the top and a small paper label patch —
+           * so the picture IS the sorting instruction, legible from across
+           * the room the way the bins themselves are. Painted per-row from
+           * named tokens under [data-template-section='the-bins']; nothing on
+           * any other page reuses these colours, so the one-teal rule holds
+           * everywhere but here, where the subject is literally the colours. */
           componentSlug: 'content-rows',
           content: {
             eyebrow: 'The bins, exactly',
@@ -334,6 +437,14 @@ export const civicCouncilTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* comparator-table repurposed from a pricing matrix into a
+           * collection-day matrix: the three areas of the district stand as
+           * the "plans", the three bins as the feature rows, and the assisted
+           * row's check marks state that the service holds everywhere. No
+           * highlighted plan, no badges, no plan links — a timetable ranks
+           * nothing. The theme rules the header row off with a 2px ink line
+           * and sets the day names in tabular weight, so it prints like the
+           * back of the collection calendar every household gets. */
           componentSlug: 'comparator-table',
           content: {
             description:
@@ -366,6 +477,11 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'bin-days',
         },
         {
+          /* Grouped questions, worded the way the phone line hears them. The
+           * group icons come from the FAQ allowlist and are kept because the
+           * mapping is honest for once — truck for collections, clock for
+           * response times, help-circle for the rest — recoloured to the one
+           * teal at full strength. Left-ranged like every FAQ here. */
           componentSlug: 'faq-grouped',
           content: {
             description: 'Grouped by service, worded the way people actually ask.',
@@ -425,6 +541,10 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'service-questions',
         },
         {
+          /* The plain-words promise as a feedback loop: an unclear page is a
+           * fault, and faults get references and fix dates. Deliberately the
+           * unboxed CTA variant — after a page of tables and groups it closes
+           * on open paper, ranged left, two buttons. */
           componentSlug: 'call-to-action-centered',
           content: {
             description:
@@ -447,6 +567,11 @@ export const civicCouncilTemplate: TemplateShowcase = {
       path: 'report',
       sections: [
         {
+          /* The imperative page gets the imperative headline — three words,
+           * verb first. The chips state the contract up front: reference at
+           * once, date in two working days, photo optional. Same bare-paper
+           * header as everywhere; the urgency is carried by the words, which
+           * is the register's whole thesis. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -466,6 +591,12 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* The journey of a report, stated before the form asks anything —
+           * the reference in your inbox has to mean something. feature-steps'
+           * numerals are re-cut from pills to solid teal stamps (a square
+           * with a white numeral, the way a form numbers its parts), and each
+           * card takes the task tile's ink top rule so the three steps read
+           * as one printed procedure. */
           componentSlug: 'feature-steps',
           content: {
             description:
@@ -494,6 +625,14 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'what-happens',
         },
         {
+          /* The working heart of the concept. The channel cards are ordered
+           * by seriousness with the generic emergency route first — a
+           * fiction-safety surface as well as good triage — and the theme
+           * gives that first card a solid teal edge so it cannot be missed.
+           * The form takes the government-form treatment whole: 2px ink
+           * field borders at 3rem height, hard corners, a solid teal submit,
+           * and both columns pinned to the top of the grid so the panel ends
+           * where its fields do. Labels ask only what an inspector needs. */
           componentSlug: 'contact-routing-form',
           content: {
             channels: [
@@ -536,6 +675,12 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'report-form',
         },
         {
+          /* Proof that the loop closes, on the muted band: four fixed things
+           * from four named fictional places, then the ledger with the honest
+           * line item — twelve reopened under the one-year rule — because a
+           * report page that only counts wins reads as marketing, and this
+           * register does not do marketing. No icons on the features, same
+           * argument as the big six: places read better plain. */
           componentSlug: 'content-stats',
           content: {
             eyebrow: 'Fixed lately',
@@ -578,9 +723,14 @@ export const civicCouncilTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* Questions about the mechanism itself. faq-card's boxed variant
+           * earns its place here — after the open ledger above, the card's
+           * ink frame closes the page the way the counter box closes a form —
+           * and the answers carry the two commitments the whole concept
+           * hangs on: no account needed, and the one-year rule. */
           componentSlug: 'faq-card',
           content: {
-            description: 'About reporting itself.',
+            description: 'How references, fix dates, and the one-year rule work.',
             eyebrow: 'Reporting questions',
             items: [
               {
@@ -619,6 +769,10 @@ export const civicCouncilTemplate: TemplateShowcase = {
       path: 'council',
       sections: [
         {
+          /* The institutional page opens on the same desk as every other —
+           * democracy in this register is a service with opening hours. The
+           * chips carry the three facts that make it usable: how many, when,
+           * and how fast the minutes land. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -638,6 +792,12 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* How the machine runs, in two paragraphs — including the by-ward,
+           * no-party rule, which lives HERE because the team-roster twin
+           * below renders no description field, and a fact that important
+           * cannot ride in a slot that never prints. Half past six "so
+           * working people can come" is the register at its best: the reason
+           * stated, not the virtue. */
           componentSlug: 'content-columns',
           content: {
             eyebrow: 'How it works',
@@ -647,7 +807,7 @@ export const civicCouncilTemplate: TemplateShowcase = {
                 text: 'The full council meets in public on the first Tuesday of every month at the Guildhall, at half past six so working people can come. The agenda is published a week ahead, in plain words, with the officer’s recommendation stated on every item.',
               },
               {
-                text: 'Anyone who lives in the district can ask a question at a full council meeting: write to the clerk three working days ahead and you get five minutes and a written answer. Committees for planning and services meet in the weeks between, publicly, on the same terms.',
+                text: 'Members are listed by ward, not by party — you are represented by where you live, and how each member votes is in the minutes, by name. Anyone in the district can ask a question at a full council meeting: write to the clerk three working days ahead and you get five minutes and a written answer.',
               },
             ],
             title: 'First Tuesday, half past six, in public.',
@@ -655,10 +815,16 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'how-it-works',
         },
         {
+          /* The register of members, on the muted band. The theme squares the
+           * roster's avatar circles along with every other corner and paints
+           * each portrait slot as a NAMEPLATE — a quiet wash tile over a
+           * solid teal base rule — because sixteen identical grey circles
+           * read as a broken image grid, and no likeness, drawn or implied,
+           * is allowed anywhere on this concept. Eight of thirty-six members
+           * shown, two groups, wards as roles; the title carries the full
+           * count so the sample reads as a sample. */
           componentSlug: 'team-roster',
           content: {
-            description:
-              'Members are listed by ward, not by party — you are represented by where you live. Full lists and surgery times are on each ward’s page.',
             eyebrow: 'The members',
             groups: [
               {
@@ -686,6 +852,13 @@ export const civicCouncilTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* The next three meetings. Each content-rows plate is painted as a
+           * CALENDAR LEAF — a month grid ruled from hairlines with one day
+           * filled solid teal — the one picture a meeting listing needs. The
+           * filled day moves across the three leaves (first Tuesday, second
+           * Thursday, third Tuesday), so the row of tiles quietly draws the
+           * committee cycle itself. Agendas-on-paper stays in the intro: the
+           * Guildhall desk is this concept's answer to every "where else". */
           componentSlug: 'content-rows',
           content: {
             eyebrow: 'Meetings',
@@ -716,6 +889,12 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'meetings',
         },
         {
+          /* The page the whole register answers to. content-quote's plate is
+           * painted as a RULED MINUTES PAGE — a white sheet, hairline rules,
+           * a teal letterhead band, a margin rule — the document the promise
+           * lives in. logoLabel is deliberately omitted: the twin renders it
+           * as a wordmark line under the citation, and a lockup under a named
+           * councillor reads as nonsense — the citation line does the work. */
           componentSlug: 'content-quote',
           content: {
             citation: 'Cllr Edie Stanhope, leader of the council',
@@ -732,9 +911,12 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'the-promise',
         },
         {
+          /* Practicalities of scrutiny, split layout so the standing answer —
+           * just turn up — sits beside the questions. The last answer states
+           * the by-ward rule one more time, in the voice of the minutes. */
           componentSlug: 'faq-split',
           content: {
-            description: 'About the council itself.',
+            description: 'Attending, minutes, and how to find your councillor.',
             eyebrow: 'Council questions',
             items: [
               {
@@ -773,6 +955,10 @@ export const civicCouncilTemplate: TemplateShowcase = {
       path: 'contact',
       sections: [
         {
+          /* One line, one email, one building — the header states the whole
+           * page. A single outline CTA on purpose: on the contact page the
+           * form below IS the primary action, and a second filled button in
+           * the hero would compete with it. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -789,6 +975,15 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* Four channels, each stating who answers and how fast — the
+           * routing form's real job on a council site is managing
+           * expectations, so every description carries a working-day number
+           * or an opening hour. The phone leads (the twin gives the first
+           * channel the emphasis treatment and the phone has earned it), and
+           * the form promises the thing residents actually doubt: it goes to
+           * the service that owns the answer, not a general inbox. Same 2px
+           * ink fields and teal submit as the report form — one form design
+           * for the whole council. */
           componentSlug: 'contact-routing-form',
           content: {
             channels: [
@@ -837,6 +1032,12 @@ export const civicCouncilTemplate: TemplateShowcase = {
           id: 'contact',
         },
         {
+          /* The access statement, on the muted band, written as facts rather
+           * than warmth: step-free, hearing loop, quiet room "you can ask for
+           * without explaining why", paper and large print, interpreters with
+           * a stated lead time. This is where the register's plainness earns
+           * its keep — every sentence here is a promise someone can hold the
+           * council to. */
           componentSlug: 'content-columns',
           content: {
             eyebrow: 'Access',
@@ -855,9 +1056,14 @@ export const civicCouncilTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* Closing practicalities. The first answer is the concept in
+           * miniature — the queue fact plus the dry aside about bin day —
+           * and the last one loops the plain-words promise a final time, so
+           * the site ends where the home page began: unclear pages are
+           * faults, and faults get fix dates. */
           componentSlug: 'faq-split',
           content: {
-            description: 'Before you get in touch.',
+            description: 'Queue times and reply times, stated plainly.',
             eyebrow: 'Practical',
             items: [
               {
@@ -898,9 +1104,9 @@ export const civicCouncilTemplate: TemplateShowcase = {
     'A fictional district council in the plain-language public-service register — top-task design, verbs first, and a front desk instead of a brochure.',
   theme: {
     description:
-      'Paper white and near-black ink with one civic teal — thick task rules, heavy clear type, prominent focus states, and no decoration that does not help someone finish a task.',
+      'Paper white and near-black ink under one civic teal — heavy left-ranged type, thick task rules, form captions, 2px form fields, prominent focus states, and no decoration that does not help someone finish a task.',
     id: 'civic-council',
-    swatches: ['#ffffff', '#0f1214', '#11705f'],
+    swatches: ['#ffffff', '#0f1518', '#005c5a'],
   },
   title: 'Civic Council',
   visualTone: ['Plain-language', 'Task-first', 'Institutional'],
