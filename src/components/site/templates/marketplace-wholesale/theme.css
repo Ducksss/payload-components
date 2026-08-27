@@ -1,0 +1,188 @@
+/* Trestle (marketplace-wholesale) scoped theme — WAVE 0 SCAFFOLD.
+ *
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='marketplace-wholesale'] root the shell renders. It
+ * overrides the semantic variables the demo twins consume and never touches
+ * :root, .dark, another template's scope, or src/app/globals.css. The site
+ * stays forced-light; the intentionally dark surfaces below are named Trestle
+ * tokens.
+ *
+ * Art-direction wave: kraft paper and spruce-green ink, a stamped mercantile
+ * hand — this scaffold only establishes an AA-safe palette, the specimen-frame
+ * flatten, the tone bands, and the shell chrome hooks. */
+
+[data-template-theme='marketplace-wholesale'] {
+  /* Kraft-paper base */
+  --background: oklch(96.8% 0.012 92deg);
+  --foreground: oklch(26% 0.024 155deg);
+
+  --card: oklch(98.6% 0.008 95deg);
+  --card-foreground: oklch(26% 0.024 155deg);
+  --popover: oklch(98.6% 0.008 95deg);
+  --popover-foreground: oklch(26% 0.024 155deg);
+
+  /* The one accent: spruce green (AA as type on the paper) */
+  --primary: oklch(44% 0.085 160deg);
+  --primary-foreground: oklch(97.5% 0.01 95deg);
+  --brand: oklch(44% 0.085 160deg);
+  --brand-foreground: oklch(97.5% 0.01 95deg);
+  --brand-50: oklch(96% 0.02 158deg);
+  --brand-100: oklch(92.5% 0.035 158deg);
+  --brand-200: oklch(86.5% 0.055 158deg);
+  --brand-600: oklch(40% 0.085 160deg);
+
+  --secondary: oklch(93% 0.018 100deg);
+  --secondary-foreground: oklch(30% 0.03 155deg);
+  --muted: oklch(93.6% 0.015 96deg);
+  --muted-foreground: oklch(42% 0.028 152deg);
+  --accent: oklch(91.5% 0.025 130deg);
+  --accent-foreground: oklch(32% 0.05 158deg);
+
+  --border: oklch(87% 0.02 100deg);
+  --input: oklch(84% 0.022 100deg);
+  --ring: oklch(50% 0.09 160deg);
+
+  --radius: 0.25rem;
+
+  /* Trestle-only named surfaces */
+  --tr-ink: oklch(24.5% 0.03 158deg);
+  --tr-ink-raised: oklch(28% 0.032 158deg);
+  --tr-band: oklch(94% 0.016 96deg);
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* ---------------------------------------------------------------- */
+/* Section rhythm: flatten the catalog specimen frame into full-bleed */
+/* site bands ([data-template-section] > [aria-hidden] > frame div).  */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='marketplace-wholesale'] [data-template-section] > [aria-hidden='true'] > div {
+  border-color: transparent;
+  border-radius: 0;
+  background-color: transparent;
+  padding-block: clamp(3.5rem, 7vw, 5.5rem);
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-section='hero'] {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--brand) 7%, transparent),
+    transparent 68%
+  );
+}
+
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(4.25rem, 9vw, 6.5rem);
+}
+
+/* ---------------------------------------------------------------- */
+/* Tone bands                                                        */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='marketplace-wholesale'] [data-tone='muted'] {
+  --muted: oklch(90.5% 0.016 96deg);
+  --accent: oklch(89% 0.024 130deg);
+  --card: oklch(97% 0.01 95deg);
+
+  background-color: var(--tr-band);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    inset 0 -1px 0 var(--border);
+}
+
+/* Contrast + footer: spruce ink. Semantic variables remapped so twin token
+   classes resolve to AA-safe dark-band values. */
+[data-template-theme='marketplace-wholesale'] [data-tone='contrast'],
+[data-template-theme='marketplace-wholesale'] .tr-footer {
+  --background: var(--tr-ink);
+  --foreground: oklch(96.5% 0.012 95deg);
+  --card: var(--tr-ink-raised);
+  --card-foreground: oklch(96.5% 0.012 95deg);
+  --popover: var(--tr-ink-raised);
+  --popover-foreground: oklch(96.5% 0.012 95deg);
+  --primary: oklch(96.5% 0.012 95deg);
+  --primary-foreground: oklch(24% 0.028 158deg);
+  --brand: oklch(78% 0.07 155deg);
+  --brand-foreground: oklch(22% 0.028 158deg);
+  --secondary: oklch(32% 0.032 158deg);
+  --secondary-foreground: oklch(93% 0.014 95deg);
+  --muted: oklch(29.5% 0.03 158deg);
+  --muted-foreground: oklch(81% 0.02 120deg);
+  --accent: oklch(34% 0.04 158deg);
+  --accent-foreground: oklch(94% 0.016 100deg);
+  --border: oklch(100% 0 0deg / 16%);
+  --input: oklch(100% 0 0deg / 24%);
+  --ring: oklch(76% 0.07 155deg);
+
+  background-color: var(--tr-ink);
+  color: var(--foreground);
+}
+
+/* ---------------------------------------------------------------- */
+/* Shell chrome                                                      */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='marketplace-wholesale'] .tr-utility {
+  background-color: var(--tr-ink);
+  color: oklch(93% 0.014 95deg);
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-masthead {
+  background-color: color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow: inset 0 -1px 0 var(--border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-action {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-trigger {
+  border: 1px solid var(--border);
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-sheet {
+  background-color: var(--card);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    0 16px 32px -20px color-mix(in oklab, var(--foreground) 45%, transparent);
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-sheet-link {
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-footer {
+  border-top: 1px solid oklch(100% 0 0deg / 10%);
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-footer-label {
+  color: var(--brand);
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-rail {
+  background-color: color-mix(in oklab, var(--tr-ink) 88%, black);
+  color: oklch(84% 0.016 100deg);
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-focus:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Reduced-motion net: any shell choreography the art-direction wave adds must
+   land on its finished frame instantly, even before hydration. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='marketplace-wholesale'] [data-tr-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition-duration: 0.001s !important;
+  }
+}

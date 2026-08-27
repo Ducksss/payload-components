@@ -1,0 +1,190 @@
+/* Marleford District Council (civic-council) scoped theme — WAVE 0 SCAFFOLD.
+ *
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='civic-council'] root the shell renders. It overrides
+ * the semantic variables the demo twins consume and never touches :root,
+ * .dark, another template's scope, or src/app/globals.css. The site stays
+ * forced-light; the intentionally dark surfaces below are named Marleford
+ * tokens.
+ *
+ * Art-direction wave: plain-language civic — paper white, near-black ink, one
+ * civic teal, thick task rules, prominent focus states. This scaffold only
+ * establishes an AA-safe palette, the specimen-frame flatten, the tone bands,
+ * and the shell chrome hooks. */
+
+[data-template-theme='civic-council'] {
+  /* Paper white and near-black ink */
+  --background: oklch(100% 0 0deg);
+  --foreground: oklch(18% 0.008 240deg);
+
+  --card: oklch(98.4% 0.002 240deg);
+  --card-foreground: oklch(18% 0.008 240deg);
+  --popover: oklch(100% 0 0deg);
+  --popover-foreground: oklch(18% 0.008 240deg);
+
+  /* The one accent: civic teal (AA as type on white) */
+  --primary: oklch(45% 0.085 185deg);
+  --primary-foreground: oklch(99% 0 0deg);
+  --brand: oklch(45% 0.085 185deg);
+  --brand-foreground: oklch(99% 0 0deg);
+  --brand-50: oklch(96.5% 0.015 185deg);
+  --brand-100: oklch(93% 0.03 185deg);
+  --brand-200: oklch(87% 0.05 185deg);
+  --brand-600: oklch(41% 0.085 185deg);
+
+  --secondary: oklch(94.5% 0.006 220deg);
+  --secondary-foreground: oklch(24% 0.01 240deg);
+  --muted: oklch(95.5% 0.004 220deg);
+  --muted-foreground: oklch(38% 0.012 235deg);
+  --accent: oklch(93% 0.014 185deg);
+  --accent-foreground: oklch(28% 0.05 185deg);
+
+  --border: oklch(85% 0.006 230deg);
+  --input: oklch(80% 0.008 230deg);
+  --ring: oklch(50% 0.1 185deg);
+
+  --radius: 0.125rem;
+
+  /* Marleford-only named surfaces */
+  --mdc-ink: oklch(20% 0.015 220deg);
+  --mdc-ink-raised: oklch(24% 0.017 220deg);
+  --mdc-band: oklch(96.4% 0.005 210deg);
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* ---------------------------------------------------------------- */
+/* Section rhythm: flatten the catalog specimen frame into full-bleed */
+/* site bands ([data-template-section] > [aria-hidden] > frame div).  */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='civic-council'] [data-template-section] > [aria-hidden='true'] > div {
+  border-color: transparent;
+  border-radius: 0;
+  background-color: transparent;
+  padding-block: clamp(3.25rem, 6.5vw, 5rem);
+}
+
+/* The front desk band: a flat teal-tinted rule-off, no atmosphere — a civic
+   site's hero is a desk, not a sunrise. */
+[data-template-theme='civic-council'] [data-template-section='front-desk'],
+[data-template-theme='civic-council'] [data-template-section='hero'] {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--brand) 6%, transparent),
+    transparent 62%
+  );
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+/* ---------------------------------------------------------------- */
+/* Tone bands                                                        */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='civic-council'] [data-tone='muted'] {
+  --muted: oklch(92.5% 0.005 210deg);
+  --accent: oklch(90.5% 0.014 185deg);
+  --card: oklch(99% 0.001 240deg);
+
+  background-color: var(--mdc-band);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    inset 0 -1px 0 var(--border);
+}
+
+/* Contrast + footer: institutional ink. Semantic variables remapped so twin
+   token classes resolve to AA-safe dark-band values. */
+[data-template-theme='civic-council'] [data-tone='contrast'],
+[data-template-theme='civic-council'] .mdc-footer {
+  --background: var(--mdc-ink);
+  --foreground: oklch(97.5% 0.002 240deg);
+  --card: var(--mdc-ink-raised);
+  --card-foreground: oklch(97.5% 0.002 240deg);
+  --popover: var(--mdc-ink-raised);
+  --popover-foreground: oklch(97.5% 0.002 240deg);
+  --primary: oklch(97.5% 0.002 240deg);
+  --primary-foreground: oklch(20% 0.014 220deg);
+  --brand: oklch(80% 0.06 185deg);
+  --brand-foreground: oklch(18% 0.014 220deg);
+  --secondary: oklch(30% 0.018 220deg);
+  --secondary-foreground: oklch(93.5% 0.004 240deg);
+  --muted: oklch(27% 0.017 220deg);
+  --muted-foreground: oklch(82% 0.008 220deg);
+  --accent: oklch(32% 0.025 195deg);
+  --accent-foreground: oklch(94% 0.008 200deg);
+  --border: oklch(100% 0 0deg / 18%);
+  --input: oklch(100% 0 0deg / 26%);
+  --ring: oklch(78% 0.06 185deg);
+
+  background-color: var(--mdc-ink);
+  color: var(--foreground);
+}
+
+/* ---------------------------------------------------------------- */
+/* Shell chrome                                                      */
+/* ---------------------------------------------------------------- */
+
+[data-template-theme='civic-council'] .mdc-crownbar {
+  background-color: var(--mdc-ink);
+  color: oklch(93.5% 0.004 240deg);
+}
+
+[data-template-theme='civic-council'] .mdc-masthead {
+  background-color: var(--background);
+  box-shadow: inset 0 -2px 0 var(--brand);
+}
+
+[data-template-theme='civic-council'] .mdc-trigger {
+  border: 2px solid var(--foreground);
+}
+
+[data-template-theme='civic-council'] .mdc-sheet {
+  background-color: var(--background);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    0 16px 32px -20px color-mix(in oklab, var(--foreground) 45%, transparent);
+}
+
+[data-template-theme='civic-council'] .mdc-sheet-link {
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+[data-template-theme='civic-council'] .mdc-sheet-note {
+  color: var(--muted-foreground);
+}
+
+[data-template-theme='civic-council'] .mdc-footer {
+  border-top: 4px solid oklch(80% 0.06 185deg);
+}
+
+[data-template-theme='civic-council'] .mdc-footer-label {
+  color: var(--brand);
+}
+
+[data-template-theme='civic-council'] .mdc-footer-notice {
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+[data-template-theme='civic-council'] .mdc-rail {
+  background-color: color-mix(in oklab, var(--mdc-ink) 86%, black);
+  color: oklch(85% 0.005 220deg);
+}
+
+/* Prominent civic focus: a thick visible ring everywhere, the register's one
+   non-negotiable ornament. */
+[data-template-theme='civic-council'] .mdc-focus:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Reduced-motion net: any shell choreography the art-direction wave adds must
+   land on its finished frame instantly, even before hydration. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='civic-council'] [data-mdc-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition-duration: 0.001s !important;
+  }
+}
