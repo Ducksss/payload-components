@@ -1,41 +1,60 @@
 import type { TemplateShowcase } from './types'
 
 /* Music — "Pale Meridian", a fictional four-piece band on tour behind their
- * fourth record.
+ * fourth record, "Sodium Lights".
  *
- * WAVE 0 SKELETON — the recipe (pages, sections, tones) is frozen; the copy
- * below is a coherent first draft the art-direction wave replaces. Do not ship
- * this file without that pass.
+ * Art direction: the gig poster — the gallery's flyposted dark. Sodium-lamp
+ * amber on near-black indigo, bone-white type, heavy tight-set headlines,
+ * ticket-perforation rules, and every image surface token-derived (wet walls,
+ * blind-slat light, painted record sleeves — no raster assets, no likenesses).
+ * Deliberately NOT the gallery's other dark: Frameworks '26 (event-conference)
+ * is institutional and lanyarded — electric violet, monospace track labels, a
+ * printed programme. Pale Meridian is flyposted and personality-led — amber
+ * sticker eyebrows, a tour-date table, one zine pull quote, and a band who
+ * write their own letters.
  *
- * Register this concept must own (uncovered by the other twelve): the gig
- * poster. Nocturnal, loud, personality-led — the information architecture is a
- * tour-date table and a discography, and the one recurring action is joining
- * the mailing list (the band's own channel, not a funnel). Distinct from
- * event-conference's institutional dark: this is flyposted, not lanyarded.
+ * The register this concept owns: nocturnal, loud, human. The information
+ * architecture is a date table and a discography; the one recurring action is
+ * joining the mailing list ("the letters") — the band's own channel, warm and
+ * plain-spoken, never funnel-shaped.
+ *
+ *   Home     the poster wall: the record, the next four nights, one clipping,
+ *            a letter excerpt, and the list
+ *   Tour     the working heart: every night of the autumn run as a date
+ *            table, the road ledger, and the before-doors questions
+ *   Music    the discography as four token-drawn sleeves, the liner-note
+ *            story, where to listen, and the clippings wall
+ *   About    the room above the laundrette: the story, the six faces, the
+ *            wall, and the scene
+ *   Contact  four channels that all reach a person, and the form that goes up
+ *            the stairs
  *
  * Canonical facts, kept consistent across every page: four members — Vesper
  * Lindqvist (voice, guitar), Row Okafor (bass), Juno Marsh (drums), Kit
  * Aldercott (keys, tape loops); formed nine years ago above a laundrette on
- * Meridian Street, which named the band; four records, the new one is "Sodium
- * Lights"; the autumn tour runs eighteen nights; they run their own label,
- * Laundrette Tapes; Mabel Finch manages them.
+ * Meridian Street in Fennworth, which named the band; four records — Meridian
+ * Street, Passing Places, The Slow Hours, Sodium Lights — all on their own
+ * label, Laundrette Tapes; the autumn tour runs eighteen nights, Old Casino
+ * open most of them, strings on the seated nights; Mabel Finch manages them;
+ * Dot Szabó does front of house.
  *
- * Everything is fictional: the band, the members, the label, the venues, the
- * cities are real-scale but the venues in them are invented, the zines and
- * radio shows quoted are invented, and every figure is illustrative. No
- * charting body, awards show, streaming platform, or real publication is named
- * or invented as an authority. Tickets are always "from the venue" — this site
- * sells nothing. Email uses the reserved `.example` domain.
- *
- * There are NO currency amounts anywhere, and the word "download" is banned on
- * concept surfaces — records are "on the shelf", "at the merch table", or
- * "wherever you listen". */
+ * Everything is fictional: the band, the members, the label, the support act,
+ * the venues, the cities, the zines and radio shows quoted, and every figure.
+ * No charting body, awards show, streaming platform, performing-rights
+ * society, or real publication is named or invented as an authority — press
+ * quotes come from explicitly invented zines and the copy says so on the
+ * surface. Tickets are always "from each venue's own box office" — this site
+ * sells nothing. Email uses the reserved `.example` domain. There are NO
+ * currency amounts anywhere; records are "at the shows", "on the shelf at the
+ * label", or "wherever you listen". All copy stays editor-shaped
+ * (demo-content types); layout belongs to the twins and to the Pale Meridian
+ * shell and theme. */
 
 export const musicArtistTemplate: TemplateShowcase = {
   assets: [],
   category: 'music',
   description:
-    'Pale Meridian is a fictional four-piece touring behind their fourth record, Sodium Lights, on their own label out of the laundrette that named them. The concept owns the gig-poster register — nocturnal, flyposted, personality-led — across five pages: Home, Tour, Music, About, and Contact, with the tour-date table as the working heart of the site and the mailing list as the band’s own channel. Composed entirely from blocks in the open registry.',
+    'Pale Meridian is a fictional four-piece touring behind their fourth record, Sodium Lights, on their own label out of the laundrette that named them. The concept owns the gig-poster register — sodium-lamp amber on near-black indigo, bone-white type, flyposted and personality-led — across five pages: Home, Tour, Music, About, and Contact, with the tour-date table as the working heart of the site and the mailing list as the band’s own channel. Every image surface is token-derived, from the blind-slat light on the record sleeve to the lamp-lit stage doors in the date table. Composed entirely from blocks in the open registry.',
   navigation: [
     { label: 'Home', path: '' },
     { label: 'Tour', path: 'tour' },
@@ -46,17 +65,27 @@ export const musicArtistTemplate: TemplateShowcase = {
   pages: [
     {
       description:
-        'The poster wall: the new record, the next four nights of the tour, and the mailing list — everything the band would staple to a lamppost.',
+        'The poster wall: the new record, the next four nights, one zine clipping, a letter from the band, and the list — everything they would staple to a lamppost.',
       label: 'Home',
       path: '',
       sections: [
         {
+          /* The flypost. hero-kinetic's letterbox still and marquee diamonds
+           * mix from --brand, tuned in theme.css to sodium amber — the plate
+           * is repainted as the lit stage door of a small venue and the
+           * marquee reads as the tour route chalked along the poster's foot.
+           * All eleven cities of the run ride the marquee, so the home page
+           * carries the whole tour before the fold. The word cascade lands on
+           * "autumn." in the accent slot — kept serif italic and painted
+           * amber-bright, the one scrawled word on a heavy-set poster. CTAs
+           * map to real routes: tour and music. */
           componentSlug: 'hero-kinetic',
           content: {
             description:
               'The fourth Pale Meridian record, out now on Laundrette Tapes — eleven songs about streetlights, night buses, and staying. On tour with it all autumn: eighteen nights, no two setlists the same.',
             eyebrow: 'Pale Meridian · Sodium Lights',
-            imageCaption: 'Night three, from the back of the room. Someone’s coat still on stage.',
+            imageCaption:
+              'The stage door at the Trades Hall, half past ten. Someone’s coat still on stage.',
             links: [
               { link: { appearance: 'default', label: 'See the tour dates' } },
               { link: { appearance: 'outline', label: 'Hear the record' } },
@@ -70,6 +99,9 @@ export const musicArtistTemplate: TemplateShowcase = {
               { label: 'Fennworth' },
               { label: 'Bellcaster' },
               { label: 'Marrowgate' },
+              { label: 'Thurnbridge' },
+              { label: 'Aldenholt' },
+              { label: 'Grayswick' },
             ],
             proofItems: [
               { label: 'Sodium Lights, out now' },
@@ -81,6 +113,12 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'marquee-hero',
         },
         {
+          /* The record, on the deepest band. The 16/7 plate is repainted in
+           * theme.css as the Sodium Lights sleeve itself — sodium light
+           * through a venetian blind, the exact scene the liner notes
+           * describe — and the same recipe paints the fourth sleeve in the
+           * Music page's discography, so the record keeps one face
+           * everywhere it appears. */
           componentSlug: 'content-image-lead',
           content: {
             eyebrow: 'The record',
@@ -99,6 +137,11 @@ export const musicArtistTemplate: TemplateShowcase = {
           tone: 'contrast',
         },
         {
+          /* The signature move: content-rows restyled from a media list into
+           * a tour poster's date block — small venue-stamp plates, uppercase
+           * city names, hairline rules, tight tabular rhythm (see the
+           * date-table rules in theme.css). Four nights only; the full run
+           * lives on the tour page this section points to. */
           componentSlug: 'content-rows',
           content: {
             eyebrow: 'Next up',
@@ -132,6 +175,10 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'dates-soon',
         },
         {
+          /* One zine clipping, set as a serif pull quote on a raised band —
+           * a poster quotes one review, not a wall of them (the wall lives on
+           * the Music page). The quote credits an explicitly invented zine,
+           * named as fictional in its own role line. */
           componentSlug: 'testimonials-quote',
           content: {
             testimonial: {
@@ -142,14 +189,39 @@ export const musicArtistTemplate: TemplateShowcase = {
             },
           },
           id: 'press',
-        },
-        {
-          componentSlug: 'logo-cloud-inline-wrap',
-          content: { heading: 'Played this year at' },
-          id: 'played-at',
           tone: 'muted',
         },
         {
+          /* SWAPPED from logo-cloud-inline-wrap. The strip's marks are fixed,
+           * shared demo lockups that read as invented tech companies — the
+           * wrong register for a band — and a "played this year at" wall
+           * skirts inventing festival authorities, which the fiction rules
+           * ban. What a band actually posts between the dates and the list is
+           * its own voice, so this is a letter excerpt instead: content-quote
+           * with the plate painted as the lit window above the laundrette,
+           * teeing up the signup band directly below. logoLabel is
+           * deliberately omitted — a letter is signed by a person, not a
+           * lockup. */
+          componentSlug: 'content-quote',
+          content: {
+            citation: 'Vesper Lindqvist, from letter eighty-four',
+            eyebrow: 'The letters',
+            paragraphs: [
+              {
+                text: 'The letters are the band’s own channel — where we are playing, what we are listening to, and the early versions before anyone else hears them. Written at the same table the label is run from, and answered, slowly, by Vesper.',
+              },
+            ],
+            quote:
+              'The van has a new door and Juno has a new snare, and only one of those was planned. Doverline — we are bringing the strings, so wear whatever you can sit still in.',
+            title: 'Typed above the laundrette, once a month.',
+          },
+          id: 'the-letters',
+        },
+        {
+          /* The recurring action. Every signup band in this concept sits on
+           * the same stage-door tone (contrast), so "the letters" keep one
+           * recognisable face across the site. Warm and human, never
+           * funnel-shaped: what you get, how often, and nothing else. */
           componentSlug: 'call-to-action-signup',
           content: {
             description:
@@ -159,6 +231,7 @@ export const musicArtistTemplate: TemplateShowcase = {
             title: 'Get the letters.',
           },
           id: 'mailing-list',
+          tone: 'contrast',
         },
       ],
       title: 'Pale Meridian — Sodium Lights, out now',
@@ -170,6 +243,12 @@ export const musicArtistTemplate: TemplateShowcase = {
       path: 'tour',
       sections: [
         {
+          /* Interior pages open on hero-basic styled as a poster header: one
+           * sodium wash from the top corner, an amber sticker eyebrow, and
+           * proof chips restyled as perforated ticket stubs. The description
+           * carries the concept's ticket rule — the venue's own box office,
+           * never us — stated the way a band would actually word the
+           * warning. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -189,6 +268,11 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* The date table proper — the concept's signature IA move. Each row
+           * is one night: uppercase city, one line of venue detail, and a
+           * small stamp plate lit from a different angle per row so the
+           * column reads as six different doors rather than one repeated
+           * tile (per-row lamp variables in theme.css). */
           componentSlug: 'content-rows',
           content: {
             eyebrow: 'October',
@@ -219,6 +303,9 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'october-leg',
         },
         {
+          /* The second leg on a raised band, so the two months read as two
+           * sheets pasted one over the other rather than one twelve-row
+           * table. Same date-block styling as October. */
           componentSlug: 'content-rows',
           content: {
             eyebrow: 'November',
@@ -243,6 +330,11 @@ export const musicArtistTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* The one metrics band a band can honestly have: counted from the
+           * van, and the copy says so. The numerals get poster weight in
+           * theme.css; the quote panel carries the label's lockup (logoLabel)
+           * restyled as a small tracked stamp — the only place the "brand"
+           * speaks on the whole site; everywhere else, people do. */
           componentSlug: 'stats-proof',
           content: {
             author: 'Mabel Finch',
@@ -266,6 +358,9 @@ export const musicArtistTemplate: TemplateShowcase = {
           tone: 'contrast',
         },
         {
+          /* Before-doors practicalities, answered in the band's own voice —
+           * including the earplugs answer, because a loud band that cares is
+           * exactly the register this concept sells. */
           componentSlug: 'faq-card',
           content: {
             description: 'Asked before doors, most nights.',
@@ -298,6 +393,9 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'show-questions',
         },
         {
+          /* The list, argued from the tour page's own angle: dates change,
+           * and the letters hear first. Centered CTA rather than the signup
+           * band so the page closes on a pointer, not a second form. */
           componentSlug: 'call-to-action-centered',
           content: {
             description:
@@ -315,7 +413,7 @@ export const musicArtistTemplate: TemplateShowcase = {
     },
     {
       description:
-        'The discography: four records in order, the liner-note story of the new one, and where each of them lives.',
+        'The discography: four records in order as painted sleeves, the liner-note story of the new one, and where each of them lives.',
       label: 'Music',
       path: 'music',
       sections: [
@@ -339,6 +437,14 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* The discography as objects: content-rows' 4/3 plates squared into
+           * record sleeves, each painted a different token-derived cover in
+           * theme.css — a diagonal amber slash for the loud debut, road
+           * dashes for the van record, a near-dark plate with one pale disc
+           * for The Slow Hours, and the venetian-blind light for Sodium
+           * Lights (the same recipe as the home page's billboard, so the new
+           * record keeps its face). Oldest first, because that is the order
+           * the street heard them. */
           componentSlug: 'content-rows',
           content: {
             eyebrow: 'Discography',
@@ -374,6 +480,10 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'the-records',
         },
         {
+          /* The liner notes, on the stage-door band. The 4/3 plate takes the
+           * default wet-wall recipe with the lamp pulled low — the room above
+           * the laundrette at four in the morning, which is where the quote
+           * says the title track was cut. */
           componentSlug: 'content-quote',
           content: {
             citation: 'Vesper Lindqvist, from the liner notes',
@@ -391,6 +501,11 @@ export const musicArtistTemplate: TemplateShowcase = {
           tone: 'contrast',
         },
         {
+          /* Where to listen, without naming a platform: integration-cluster
+           * renders anonymous icon tiles (no service names), which is exactly
+           * as specific as the fiction rules allow — and honestly as specific
+           * as a band's "everywhere" claim ever is. The centre tile glows
+           * amber in theme.css: the record, surrounded by places it lives. */
           componentSlug: 'integration-cluster',
           content: {
             heading: 'Wherever you listen, we are there.',
@@ -402,6 +517,10 @@ export const musicArtistTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* The clippings wall — the masonry testimonial wall as a corkboard
+           * of cut-out reviews. Every publication is invented and the intro
+           * line says so out loud, which is both the safety rule and a joke
+           * the register can afford. */
           componentSlug: 'testimonials-wall',
           content: {
             description:
@@ -450,6 +569,8 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'clippings',
         },
         {
+          /* The letters again, argued from the music page's angle: demos and
+           * early versions. Same stage-door band as every signup. */
           componentSlug: 'call-to-action-signup',
           content: {
             description:
@@ -459,6 +580,7 @@ export const musicArtistTemplate: TemplateShowcase = {
             title: 'Hear the early versions.',
           },
           id: 'mailing-list',
+          tone: 'contrast',
         },
       ],
       title: 'Pale Meridian — The records',
@@ -489,6 +611,10 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* The origin story in two paragraphs, with the one detail that does
+           * the work of a whole biography: Mrs Okonkwo, the only critic the
+           * band is afraid of. Personality-led is the register — the copy
+           * carries it, the layout stays plain. */
           componentSlug: 'content-columns',
           content: {
             eyebrow: 'The story',
@@ -506,6 +632,12 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'the-story',
         },
         {
+          /* team-grid pins its hover-revealed roles visible in theme.css (the
+           * roles ARE the content on a band page — and in every static
+           * capture), keeps the "Profile" affordance hidden because no member
+           * routes exist, and shortens the portrait plates into six lamp-lit
+           * doorway portraits, no two lit alike. Six on the grid: the four of
+           * them plus the two the title says matter. */
           componentSlug: 'team-grid',
           content: {
             description:
@@ -525,6 +657,11 @@ export const musicArtistTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* content-image-frame's nested plates become the flyposted wall
+           * itself in theme.css: the outer mount is the wet wall with two
+           * older posters ghosting through the paste, and the inner print is
+           * the practice-room wall under its lamp — nine years of laminates
+           * and setlists as one warm rectangle of light. */
           componentSlug: 'content-image-frame',
           content: {
             eyebrow: 'The wall',
@@ -541,6 +678,10 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'the-wall',
         },
         {
+          /* The scene, credited by name: the support act, the zines, the
+           * list. The avatar row is repainted in theme.css as a string of
+           * warm lamps rather than portrait discs — no likenesses, and a
+           * better metaphor anyway. */
           componentSlug: 'content-community',
           content: {
             avatars: [
@@ -561,6 +702,9 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'the-scene',
         },
         {
+          /* Booking, on the stage-door band, boxed like a notice pinned to
+           * the door — the panel gets an amber tape-edge in theme.css. One
+           * route: everything goes through Mabel. */
           componentSlug: 'call-to-action-boxed',
           content: {
             description:
@@ -572,6 +716,7 @@ export const musicArtistTemplate: TemplateShowcase = {
             title: 'Want the band for something?',
           },
           id: 'booking-cta',
+          tone: 'contrast',
         },
       ],
       title: 'Pale Meridian — About the band',
@@ -599,6 +744,12 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* Four channels, four humans, each with the detail that proves a
+           * person reads it (demos get listened to in the van on Fridays).
+           * The lead channel's amber address is the one place amber appears
+           * as body-adjacent text — amber-bright in theme.css, measured AA on
+           * the night base. The submit label is the best line on the page and
+           * earns the filled button. */
           componentSlug: 'contact-routing-form',
           content: {
             channels: [
@@ -633,7 +784,13 @@ export const musicArtistTemplate: TemplateShowcase = {
             formConfigured: true,
             formDescription:
               'Say who you are, what it is about, and — if it is a show — the room and the date. Mabel replies within the week; the band replies when the van has wifi.',
-            formLabels: ['Your name', 'Email', 'What is this about?', 'The details'],
+            formLabels: [
+              'Your name',
+              'Email',
+              'What is this about?',
+              'If it is a show: the room',
+              'The details',
+            ],
             formTitle: 'Or use the form',
             submitLabel: 'Send it up the stairs',
             title: 'Four channels, all human.',
@@ -641,6 +798,10 @@ export const musicArtistTemplate: TemplateShowcase = {
           id: 'booking',
         },
         {
+          /* The pre-writing questions, split layout so the answers read as a
+           * notice pinned beside the form. The licensing answer ("we have
+           * said yes to strange things and no to sensible ones") carries the
+           * band's whole decision process in one line. */
           componentSlug: 'faq-split',
           content: {
             description: 'Asked often enough to write down.',
@@ -671,8 +832,12 @@ export const musicArtistTemplate: TemplateShowcase = {
             title: 'Before you write',
           },
           id: 'practical',
+          tone: 'muted',
         },
         {
+          /* The letters close the contact page too — with the exit stated up
+           * front, because a channel you can leave without hard feelings is
+           * the whole difference between a letter and a funnel. */
           componentSlug: 'call-to-action-signup',
           content: {
             description:
@@ -682,6 +847,7 @@ export const musicArtistTemplate: TemplateShowcase = {
             title: 'Or just get the letters.',
           },
           id: 'mailing-list',
+          tone: 'contrast',
         },
       ],
       title: 'Pale Meridian — Contact',
@@ -692,7 +858,7 @@ export const musicArtistTemplate: TemplateShowcase = {
   slug: 'music-artist',
   status: 'concept',
   summary:
-    'A fictional four-piece on tour behind their fourth record — the gig-poster register, built around a tour-date table, a discography, and a mailing list.',
+    'A fictional four-piece on tour behind their fourth record — the gig-poster register, built around a tour-date table, a discography of painted sleeves, and a mailing list called the letters.',
   theme: {
     description:
       'Sodium-lamp amber on near-black indigo with bone-white type — flyposted, nocturnal, and analog, like a poster wheat-pasted to a wet wall outside the venue.',

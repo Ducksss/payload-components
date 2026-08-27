@@ -9,14 +9,17 @@ import type { TemplateShowcase } from '@/lib/templates/types'
 import { templatePreviewHref } from '@/lib/templates/registry'
 import { cn } from '@/utilities/ui'
 
-/* Pale Meridian's masthead — WAVE 0 SCAFFOLD for the art-direction wave to
- * restyle.
+/* Pale Meridian's masthead — the top edge of the poster. An amber tape strip
+ * runs along the very top (painted by .pm-masthead in theme.css), the
+ * wordmark is set at poster weight with the release as an amber sticker that
+ * never quite goes on straight, and the nav is small tracked uppercase with
+ * an amber underline on the active page.
  *
- * The interaction contract is final and must survive any restyle: a real
- * <button> trigger with aria-expanded + aria-controls, Escape closes the
- * disclosure AND returns focus to the trigger, pointerdown outside closes,
- * route changes close, and every interactive element lives in this chrome,
- * never inside the aria-hidden visual canvas. Pattern follows
+ * The interaction contract is frozen and survives the restyle unchanged: a
+ * real <button> trigger with aria-expanded + aria-controls, Escape closes
+ * the disclosure AND returns focus to the trigger, pointerdown outside
+ * closes, route changes close, and every interactive element lives in this
+ * chrome, never inside the aria-hidden visual canvas. Pattern follows
  * src/components/site/SiteHeader.tsx via the shipped template headers. */
 
 export function PaleMeridianHeader({
@@ -65,12 +68,10 @@ export function PaleMeridianHeader({
         >
           <Link
             href={templatePreviewHref(template.slug)}
-            className="pm-focus flex items-baseline gap-3 rounded-md py-1 text-foreground"
+            className="pm-focus flex items-center gap-3 rounded-md py-1 text-foreground"
           >
-            <span className="text-lg font-semibold uppercase tracking-heading">Pale Meridian</span>
-            <span className="hidden text-sm text-muted-foreground sm:inline">
-              Sodium Lights, out now
-            </span>
+            <span className="pm-wordmark uppercase">Pale Meridian</span>
+            <span className="pm-release hidden sm:inline">Sodium Lights · out now</span>
           </Link>
 
           <div className="ms-auto hidden items-center gap-1 lg:flex">

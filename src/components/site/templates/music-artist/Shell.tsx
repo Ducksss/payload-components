@@ -7,7 +7,11 @@ import { templatePreviewHref } from '@/lib/templates/registry'
 import { PaleMeridianHeader } from './PaleMeridianHeader'
 import './theme.css'
 
-/* Pale Meridian (music-artist) template shell — WAVE 0 SCAFFOLD.
+/* Pale Meridian (music-artist) template shell — the band's own chrome, in the
+ * gig-poster register: sodium-lamp amber on near-black indigo, bone-white
+ * type, flyposted rather than lanyarded (the deliberate opposite of
+ * event-conference's institutional dark). The footer is the poster tail — the
+ * name printed at poster size over an amber rule, then the small print.
  *
  * Contract (frozen): everything renders beneath
  * data-template-theme='music-artist'; internal navigation goes through
@@ -15,11 +19,7 @@ import './theme.css'
  * disclosure lives in PaleMeridianHeader; every interactive element lives in
  * this chrome, never inside the aria-hidden visual canvas. The site stays
  * forced-light — this concept's night-time surfaces come entirely from named
- * tokens in theme.css and nothing here touches :root, .dark, or globals.css.
- *
- * Art direction (for the art-direction wave): the gig-poster register —
- * sodium-lamp amber on near-black indigo with bone-white type. Flyposted, not
- * lanyarded; distinct from event-conference's institutional dark. */
+ * tokens in theme.css and nothing here touches :root, .dark, or globals.css. */
 
 const bandLines = [
   'Vesper Lindqvist · Row Okafor',
@@ -45,14 +45,17 @@ export function MusicArtistShell({ activePath, children, template }: TemplateShe
 
       <footer className="pm-footer">
         <div className="mx-auto flex max-w-6xl flex-col gap-12 px-5 py-14 sm:px-8 lg:py-20">
-          <p className="max-w-2xl text-2xl leading-9 tracking-heading">
-            Four records, one van, and the room above the laundrette. The letters go out once a
-            month; the list hears everything first.
-          </p>
+          <div className="flex flex-col gap-6">
+            <p className="pm-footer-mark">Pale Meridian</p>
+            <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
+              Four records, one van, and the room above the laundrette. The letters go out once a
+              month; the list hears everything first.
+            </p>
+          </div>
 
           <div className="grid gap-10 border-t border-border pt-12 sm:grid-cols-3">
             <div className="flex flex-col gap-4">
-              <span className="pm-footer-label text-base font-semibold">The band</span>
+              <span className="pm-footer-label">The band</span>
               <div className="flex flex-col gap-3">
                 {bandLines.map((line) => (
                   <span key={line} className="text-base leading-7 text-muted-foreground">
@@ -63,7 +66,7 @@ export function MusicArtistShell({ activePath, children, template }: TemplateShe
             </div>
 
             <div className="flex flex-col gap-4">
-              <span className="pm-footer-label text-base font-semibold">The label</span>
+              <span className="pm-footer-label">The label</span>
               <div className="flex flex-col gap-3">
                 {labelLines.map((line) => (
                   <span key={line} className="text-base leading-7 text-muted-foreground">
@@ -77,7 +80,7 @@ export function MusicArtistShell({ activePath, children, template }: TemplateShe
             </div>
 
             <div className="flex flex-col gap-4">
-              <span className="pm-footer-label text-base font-semibold">Pages</span>
+              <span className="pm-footer-label">Pages</span>
               <nav aria-label="Pale Meridian footer navigation" className="flex flex-col gap-1">
                 {template.navigation.map((item) => (
                   <Link
