@@ -323,6 +323,21 @@
   color: var(--mk-clay);
 }
 
+/* The dash-rule eyebrow paints --mk-brick literally (it is not a .text-brand
+   consumer), so the step-up above misses it — brick on slate is 2.1:1. Re-cut
+   the label and its leading rule in clay on the slate bands. */
+[data-template-theme='real-estate-listing']
+  [data-tone='contrast']
+  .rounded-full.px-3.tracking-eyebrow {
+  color: var(--mk-clay);
+}
+
+[data-template-theme='real-estate-listing']
+  [data-tone='contrast']
+  .rounded-full.px-3.tracking-eyebrow::before {
+  background-color: var(--mk-clay);
+}
+
 /* ————————————————————— Surfaces ————————————————————— */
 
 /* The twins paint inner cards with bg-background/85|80|70|60, which on stone
