@@ -1,176 +1,931 @@
-/* Moorhouse & Kent (real-estate-listing) scoped theme — WAVE 0 SCAFFOLD.
+/* Moorhouse & Kent (real-estate-listing) scoped theme — the listing register.
  *
  * Convention (frozen contract): every rule in this file lives beneath the
  * [data-template-theme='real-estate-listing'] root the shell renders. It
- * overrides the semantic variables the demo twins consume and never touches
- * :root, .dark, another template's scope, or src/app/globals.css. The site
- * stays forced-light; the intentionally dark surfaces below are named tokens.
+ * overrides the semantic variables the demo twins consume and adds named
+ * Moorhouse tokens; it never touches :root, .dark, another template's scope,
+ * or src/app/globals.css. The site stays forced-light — the slate record band,
+ * the utility strip, and the footer rail are intentional dark surfaces built
+ * from the tokens below, not a theme.
  *
- * Art direction (for the art-direction wave): warm stone and slate ink with a
- * brick-red accent — hairline rules and the assured, surveyed calm of a firm
- * that puts every guide in writing. */
+ * Art direction: warm stone paper, slate ink, ONE brick-red accent, and
+ * hairline rules doing all the structural work — the assured, surveyed calm of
+ * a firm that puts every guide in writing. Every decision is a stationer's
+ * decision:
+ *   · Instrument Serif italic (the face the root layout already loads; italic
+ *     is its only style, declared explicitly) is the letterhead voice —
+ *     display headlines and the ledger figures. Body and UI stay Geist.
+ *   · zero radius on frames, panels, cards, and buttons — printed particulars
+ *     have corners — but avatars KEEP their circles and become monogram
+ *     medallions with a serif initial, the wax-seal detail.
+ *   · eyebrows drop the catalog pill for a brick DASH-RULE small-caps label,
+ *     the way a schedule heading is set; hero proof chips become hairline
+ *     stamps.
+ *   · every image surface is token-derived and drawn as a surveyor's
+ *     artefact: floor-plan hatching in the property cards, house elevations
+ *     with a brick "agreed" sash, the ruled pages of the buyers' book, the
+ *     six sash windows of the office, and the card display in the Sheep
+ *     Street window. No raster assets, no likenesses.
+ *
+ * Contrast, measured rather than guessed:
+ *   · brick (--mk-brick, L 45.5%) reads AS TYPE on the paper: ≈5.5:1, over
+ *     the 4.5:1 floor — unlike trade-service's safety orange, this accent may
+ *     carry small text. Paper-white on a brick fill measures ≈6.1:1, so the
+ *     filled valuation buttons hold AA at 14px.
+ *   · on the slate band brick dies (<2.5:1), so anything that resolves to
+ *     accent type steps up to --mk-clay (L 76%, ≈7:1 on slate) and the
+ *     primary action inverts to a paper button with ink text (≈12:1).
+ *   · ink on paper ≈13:1; --muted-foreground (L 43.5%) ≈7:1 on paper and
+ *     ≈6:1 on the deeper stone band; the slate band's muted text (L 80%)
+ *     ≈7:1 on slate. */
 
 [data-template-theme='real-estate-listing'] {
-  /* Warm stone paper */
-  --background: oklch(96.8% 0.008 80deg);
-  --foreground: oklch(26% 0.016 250deg);
+  /* ————— Moorhouse palette ————— */
+  --mk-paper: oklch(96.8% 0.009 84deg); /* the page: warm stone */
+  --mk-paper-deep: oklch(93.4% 0.012 82deg); /* muted band */
+  --mk-panel: oklch(99% 0.004 84deg); /* every card and inner panel */
+  --mk-sheet: oklch(94.8% 0.014 82deg); /* the drawing sheet in media wells */
+  --mk-ink: oklch(25.5% 0.018 255deg); /* foreground: slate ink */
+  --mk-slate: oklch(24.5% 0.02 252deg); /* the dark band paint */
+  --mk-slate-panel: oklch(28.5% 0.024 252deg); /* panels on the dark band */
 
-  --card: oklch(98.8% 0.005 80deg);
-  --card-foreground: oklch(26% 0.016 250deg);
-  --popover: oklch(98.8% 0.005 80deg);
-  --popover-foreground: oklch(26% 0.016 250deg);
+  /* The one accent. Brick is dark enough to BE type on paper; --mk-clay is
+     the same earth lifted light enough to be read on slate. */
+  --mk-brick: oklch(45.5% 0.118 35deg);
+  --mk-brick-deep: oklch(40.5% 0.112 35deg);
+  --mk-clay: oklch(76% 0.075 45deg);
 
-  /* The one accent: brick red */
-  --primary: oklch(45.5% 0.118 35deg);
-  --primary-foreground: oklch(97.6% 0.006 80deg);
-  --brand: oklch(45.5% 0.118 35deg);
-  --brand-foreground: oklch(97.6% 0.006 80deg);
-  --brand-50: oklch(96.2% 0.014 50deg);
-  --brand-100: oklch(92.4% 0.03 45deg);
-  --brand-200: oklch(86% 0.055 42deg);
-  --brand-600: oklch(41% 0.115 35deg);
+  /* The painted shopfront frame (the "blue-framed window" of the fiction). */
+  --mk-frame-blue: oklch(40% 0.05 245deg);
 
-  /* Stone support surfaces */
-  --secondary: oklch(93.4% 0.012 78deg);
-  --secondary-foreground: oklch(31% 0.02 250deg);
-  --muted: oklch(94.4% 0.01 79deg);
-  --muted-foreground: oklch(43% 0.02 252deg);
-  --accent: oklch(92.2% 0.018 70deg);
+  /* Hairlines. --mk-line-strong is the rule weight for table heads and the
+     masthead's Oxford rule. */
+  --mk-line: oklch(87.5% 0.013 80deg);
+  --mk-line-strong: color-mix(in oklab, var(--mk-ink) 55%, transparent);
+
+  /* ————— Semantic variables the twins consume ————— */
+  --background: var(--mk-paper);
+  --foreground: var(--mk-ink);
+  --card: var(--mk-panel);
+  --card-foreground: var(--mk-ink);
+  --popover: var(--mk-panel);
+  --popover-foreground: var(--mk-ink);
+
+  /* Actions are brick with warm paper-white on them — a letterpress button,
+     and the pairing that keeps them AA at 14px. */
+  --primary: var(--mk-brick);
+  --primary-foreground: oklch(97.8% 0.006 84deg);
+  --secondary: oklch(92.4% 0.013 82deg);
+  --secondary-foreground: var(--mk-ink);
+  /* Pale warm stone: empty review stars and small chips stay quiet. The big
+     media wells get their own artefact recipes below and never show this. */
+  --muted: oklch(91.4% 0.012 82deg);
+  --muted-foreground: oklch(43.5% 0.02 254deg);
+  --accent: oklch(91.8% 0.016 76deg);
   --accent-foreground: oklch(33% 0.05 40deg);
 
-  --border: oklch(88.6% 0.012 78deg);
-  --input: oklch(86% 0.014 78deg);
-  --ring: oklch(53% 0.1 38deg);
+  --brand: var(--mk-brick);
+  --brand-foreground: oklch(97.8% 0.006 84deg);
+  --brand-50: oklch(96.4% 0.012 50deg);
+  --brand-100: oklch(92.6% 0.028 46deg);
+  --brand-200: oklch(86.4% 0.052 42deg);
+  --brand-600: var(--mk-brick);
 
-  --radius: 0.25rem;
+  --border: var(--mk-line);
+  --input: oklch(82.5% 0.015 80deg);
+  --ring: var(--mk-brick);
 
-  /* Moorhouse & Kent named surfaces */
-  --mk-slate: oklch(24.5% 0.02 252deg);
-  --mk-slate-raised: oklch(28% 0.024 252deg);
-  --mk-band: oklch(94.8% 0.01 79deg);
+  /* Printed particulars have corners. --radius feeds the sm–xl scale; the
+     named container radii are @theme literals, zeroed per class below. */
+  --radius: 0px;
 
-  background-color: var(--background);
+  /* Letterhead type. The serif wants looser tracking than the catalog's
+     Geist display scale, and the display sizes step up a little so the
+     italic can breathe. */
+  --tracking-display: -0.014em;
+  --tracking-title: -0.012em;
+  --tracking-snug: -0.014em;
+  --tracking-heading: -0.01em;
+  --tracking-eyebrow: 0.16em;
+
+  --text-4xl: 2.375rem;
+  --text-4xl--line-height: 1.14;
+  --text-5xl: 3.25rem;
+  --text-5xl--line-height: 1.08;
+
+  background-color: var(--mk-paper);
   color: var(--foreground);
 }
 
-/* ---------------------------------------------------------------- */
-/* Section rhythm: flatten the catalog specimen frame into full-bleed */
-/* site bands ([data-template-section] > [aria-hidden] > frame div).  */
-/* ---------------------------------------------------------------- */
+[data-template-theme='real-estate-listing'] ::selection {
+  background-color: color-mix(in oklab, var(--mk-brick) 26%, transparent);
+  color: var(--mk-ink);
+}
+
+/* ————————————————————— Geometry: printed corners ————————————————————— */
+
+/* Frames, panels, cards, wells, and buttons all square off. rounded-full is
+   deliberately NOT in this list: avatars stay circular medallions, and pill
+   eyebrows/chips are re-cut by their own rules below. */
+[data-template-theme='real-estate-listing']
+  :is(
+    .rounded-frame,
+    .rounded-panel,
+    .rounded-card,
+    .rounded-inset,
+    .rounded-2xl,
+    .rounded-xl,
+    .rounded-lg,
+    .rounded-md,
+    .rounded-sm
+  ) {
+  border-radius: 0;
+}
+
+/* ————————————————————— Typography: the letterhead voice ————————————————————— */
+
+/* Display headlines and the ledger figures (stats-proof's dd numerals share
+   .tracking-display) take Instrument Serif. The loaded face is italic-only,
+   so italic is declared to match it exactly. */
+[data-template-theme='real-estate-listing'] [data-template-canvas] .tracking-display {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Section-scale .tracking-title headlines (reviews, the team, the wall) join
+   the serif voice; the text-3xl guard keeps card titles, FAQ questions, and
+   plan names in the table set by their own rules. */
+[data-template-theme='real-estate-listing'] [data-template-canvas] .text-3xl.tracking-title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.006em;
+}
+
+/* FAQ questions and other small tracking-title lines firm up so the question
+   reads a step darker than its answer. */
+[data-template-theme='real-estate-listing'] [data-template-canvas] .text-base.tracking-title {
+  font-weight: 560;
+}
+
+/* ————————————————————— Eyebrows become dash-rule labels ————————————————————— */
+
+/* Every twin eyebrow is a Badge carrying `rounded-full px-3 py-1 uppercase
+   tracking-eyebrow`. The px-3 guard keeps the comparator's small px-2 badges
+   (Chain free / By arrangement) on their own stamp rule below. The pill
+   dissolves into a brick small-caps label led by a short brick rule — a
+   schedule heading, not a chip. */
+[data-template-theme='real-estate-listing']
+  [data-template-canvas]
+  .rounded-full.px-3.tracking-eyebrow {
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--mk-brick);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  padding: 0;
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-canvas]
+  .rounded-full.px-3.tracking-eyebrow::before {
+  background-color: var(--mk-brick);
+  content: '';
+  height: 1px;
+  margin-inline-end: 0.625rem;
+  width: 1.625rem;
+}
+
+/* The comparator's plan badges: a hairline stamp in the table's own voice. */
+[data-template-theme='real-estate-listing']
+  [data-template-canvas]
+  .rounded-full.px-2.tracking-eyebrow {
+  background-color: transparent;
+  border-color: color-mix(in oklab, var(--mk-ink) 38%, transparent);
+  border-radius: 0;
+  color: var(--muted-foreground);
+  font-weight: 600;
+}
+
+/* hero-basic's proof chips (rounded-full px-3 py-1 text-sm, never
+   tracking-eyebrow): surveyed stamps — hairline ring, square corners, quiet
+   stone fill. */
+[data-template-theme='real-estate-listing'] [data-template-canvas] .rounded-full.px-3.py-1.text-sm {
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--mk-ink) 34%, transparent);
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+/* ————————————————————— Actions ————————————————————— */
+
+/* DemoLink and the two submit spans are the only action-shaped SPANS in the
+   twins (the contact form's field wells share the metrics but are divs).
+   Letterpress buttons: a touch taller, slightly tracked, squared above. */
+[data-template-theme='real-estate-listing'] [data-template-canvas] span.h-10.rounded-md {
+  font-size: 0.875rem;
+  font-weight: 600;
+  height: 2.75rem;
+  letter-spacing: 0.01em;
+  padding-inline: 1.375rem;
+}
+
+/* The outline appearance gets a firmer rule and raised paper so it holds on
+   the stone page and the deeper band alike. */
+[data-template-theme='real-estate-listing']
+  [data-template-canvas]
+  span.border-border.bg-background {
+  background-color: var(--mk-panel);
+  border-color: color-mix(in oklab, var(--mk-ink) 36%, transparent);
+}
+
+/* ————————————————————— Section rhythm ————————————————————— */
+
+/* Dissolve the catalog's specimen frame so every section reads as one band of
+   one site; the rhythm is measured — an agency's particulars do not crowd. */
+[data-template-theme='real-estate-listing'] [data-template-section] {
+  position: relative;
+}
 
 [data-template-theme='real-estate-listing'] [data-template-section] > [aria-hidden='true'] > div {
+  background-color: transparent;
   border-color: transparent;
   border-radius: 0;
-  background-color: transparent;
-  padding-block: clamp(3.5rem, 7vw, 5.5rem);
+  padding-block: clamp(3.25rem, 6.5vw, 5rem);
+}
+
+/* One hairline between bands, drawn as an inset shadow so it can never shift
+   layout. The slate band supplies its own edge and opts out. */
+[data-template-theme='real-estate-listing']
+  [data-template-section]
+  + [data-template-section]:not([data-tone='contrast']) {
+  box-shadow: inset 0 1px 0 var(--border);
+}
+
+/* ————————————————————— Tone bands ————————————————————— */
+
+/* muted: a deeper sheet of the same stone. Cards keep raised paper so the
+   particulars pop off the band. */
+[data-template-theme='real-estate-listing'] [data-template-section][data-tone='muted'] {
+  --border: oklch(85% 0.014 80deg);
+
+  background-color: var(--mk-paper-deep);
+}
+
+/* contrast: the slate band. Every semantic variable is remapped so the twins'
+   paper-first markup resolves to an AA-safe dark surface set; --mk-panel is
+   redefined so the inner-panel remap below follows the band down, and the
+   primary action inverts to a paper button with ink text. */
+[data-template-theme='real-estate-listing'] [data-template-section][data-tone='contrast'] {
+  --mk-panel: var(--mk-slate-panel);
+
+  --background: var(--mk-slate);
+  --foreground: oklch(96.6% 0.006 84deg);
+  --card: var(--mk-slate-panel);
+  --card-foreground: oklch(96.6% 0.006 84deg);
+  --popover: var(--mk-slate-panel);
+  --popover-foreground: oklch(96.6% 0.006 84deg);
+  --primary: oklch(96.6% 0.006 84deg);
+  --primary-foreground: oklch(25% 0.02 252deg);
+  --brand: var(--mk-clay);
+  --brand-foreground: oklch(22% 0.018 252deg);
+  --secondary: oklch(32% 0.024 252deg);
+  --secondary-foreground: oklch(92.6% 0.008 80deg);
+  --muted: oklch(30% 0.022 252deg);
+  --muted-foreground: oklch(80% 0.012 78deg);
+  --accent: oklch(34% 0.03 252deg);
+  --accent-foreground: oklch(94% 0.008 80deg);
+  --border: oklch(100% 0 0deg / 16%);
+  --input: oklch(100% 0 0deg / 24%);
+  --ring: var(--mk-clay);
+
+  background-color: var(--mk-slate);
+  color: var(--foreground);
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section][data-tone='contrast']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(3.75rem, 7vw, 5.5rem);
+}
+
+/* Brick type steps up to clay wherever the band is slate, including the
+   spotlight's quote mark and the stars if a rated section ever lands there. */
+[data-template-theme='real-estate-listing']
+  [data-tone='contrast']
+  :is(.text-brand, .text-brand-600, span.text-primary, svg.text-primary) {
+  color: var(--mk-clay);
+}
+
+/* ————————————————————— Surfaces ————————————————————— */
+
+/* The twins paint inner cards with bg-background/85|80|70|60, which on stone
+   paper dissolve into the page (and on tinted bands worse). One remap to
+   raised paper gives a single two-step surface story that also holds on the
+   slate band, where --mk-panel is redefined. */
+[data-template-theme='real-estate-listing']
+  [data-template-canvas]
+  :is(.bg-background\/85, .bg-background\/80, .bg-background\/70, .bg-background\/60) {
+  background-color: var(--mk-panel);
+}
+
+/* Avatars become monogram medallions: raised paper, a hairline ring, and the
+   initial in the letterhead serif inked brick — the wax-seal detail in place
+   of the portraits this concept never fabricates. */
+[data-template-theme='real-estate-listing'] [data-template-canvas] .rounded-full.bg-card {
+  background-color: var(--mk-panel);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--mk-ink) 32%, transparent);
+}
+
+[data-template-theme='real-estate-listing'] [data-template-canvas] .rounded-full.bg-card > span {
+  color: var(--mk-brick);
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  font-style: italic;
+}
+
+/* On the slate band the medallion's brick initial dies against the raised
+   slate — it steps up to clay like every other accent glyph. */
+[data-template-theme='real-estate-listing'] [data-tone='contrast'] .rounded-full.bg-card > span {
+  color: var(--mk-clay);
+}
+
+/* ————————————————— The letterhead and interior headers ————————————————— */
+
+/* The surveyor's grid, fading in from the right of the band — the sheet the
+   whole concept is drawn on. A solid paper layer covers the left so the type
+   column stays clean, and the grid emerges under the actions' side. One
+   treatment for the whole site; the home letterhead runs it deeper. */
+[data-template-theme='real-estate-listing']
+  :is([data-template-section='letterhead'], [data-template-section='hero']) {
+  background-color: var(--mk-paper);
+  background-image:
+    linear-gradient(
+      90deg,
+      var(--mk-paper) 0 44%,
+      color-mix(in oklab, var(--mk-paper) 72%, transparent) 64%,
+      transparent 90%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--mk-ink) 8%, transparent) 0 1px,
+      transparent 1px 26px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--mk-ink) 8%, transparent) 0 1px,
+      transparent 1px 26px
+    );
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section='letterhead']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(4.5rem, 9vw, 6.75rem);
 }
 
 [data-template-theme='real-estate-listing']
   [data-template-section='hero']
   > [aria-hidden='true']
   > div {
-  padding-block: clamp(4.25rem, 9vw, 6.5rem);
+  padding-block: clamp(3rem, 6vw, 4.25rem);
 }
 
-/* ---------------------------------------------------------------- */
-/* Tone bands. `tone` is set per section in the template definition.  */
-/* ---------------------------------------------------------------- */
+/* ————————————————— Homes as cards: the floor plans ————————————————— */
 
-/* Muted: a deeper stone band between hairlines. */
-[data-template-theme='real-estate-listing'] [data-tone='muted'] {
-  --muted: oklch(91.4% 0.012 78deg);
-  --accent: oklch(90.2% 0.018 70deg);
-  --card: oklch(97.4% 0.007 80deg);
-
-  background-color: var(--mk-band);
-  box-shadow:
-    inset 0 1px 0 var(--border),
-    inset 0 -1px 0 var(--border);
+/* feature-cards-media's media well is the property-photography slot, and it
+   becomes a surveyor's drawing sheet: warm paper with a fine plot grid. */
+[data-template-theme='real-estate-listing'] [data-template-canvas] .aspect-video.bg-muted {
+  background-color: var(--mk-sheet);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--mk-ink) 7%, transparent) 0 1px,
+      transparent 1px 13px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--mk-ink) 7%, transparent) 0 1px,
+      transparent 1px 13px
+    );
 }
 
-/* Contrast: the slate band. Semantic variables are re-mapped so the twins'
- * token classes resolve to AA-safe dark-band values; the primary action
- * inverts to a light button on slate. */
-[data-template-theme='real-estate-listing'] [data-tone='contrast'],
-[data-template-theme='real-estate-listing'] .mk-rail {
-  --background: oklch(24.5% 0.02 252deg);
-  --foreground: oklch(96.6% 0.006 80deg);
-  --card: oklch(28% 0.024 252deg);
-  --card-foreground: oklch(96.6% 0.006 80deg);
-  --popover: oklch(28% 0.024 252deg);
-  --popover-foreground: oklch(96.6% 0.006 80deg);
-  --primary: oklch(96.6% 0.006 80deg);
-  --primary-foreground: oklch(25% 0.02 252deg);
-  --brand: oklch(74% 0.08 45deg);
-  --brand-foreground: oklch(22% 0.018 252deg);
-  --secondary: oklch(32% 0.024 252deg);
-  --secondary-foreground: oklch(92.6% 0.008 79deg);
-  --muted: oklch(29.5% 0.022 252deg);
-  --muted-foreground: oklch(79.5% 0.012 78deg);
-  --accent: oklch(34% 0.03 252deg);
-  --accent-foreground: oklch(94% 0.008 79deg);
-  --border: oklch(100% 0 0deg / 16%);
-  --input: oklch(100% 0 0deg / 24%);
-  --ring: oklch(76% 0.07 48deg);
+/* The twin's opaque illustration panel drops away so the sheet shows through
+   the 3px gaps between cells — the gaps become the plan's wall lines. */
+[data-template-theme='real-estate-listing'] [data-template-canvas] .grid-cols-3.bg-background {
+  background-color: transparent;
+}
 
+/* The four cells become the rooms of a floor plan: hairline walls and
+   directional hatching, with the one brick-tinted cell reading as the
+   garden. Hatch angle and pitch are per-card variables so no two plans on
+   the page draw alike. */
+[data-template-theme='real-estate-listing'] [data-template-canvas] .rounded-inset.bg-accent\/30 {
+  background-color: color-mix(in oklab, var(--mk-panel) 76%, transparent);
+  background-image: repeating-linear-gradient(
+    var(--mk-hatch, 45deg),
+    color-mix(in oklab, var(--mk-ink) 9%, transparent) 0 1px,
+    transparent 1px var(--mk-hatch-pitch, 8px)
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--mk-ink) 34%, transparent);
+}
+
+[data-template-theme='real-estate-listing'] [data-template-canvas] .rounded-inset.bg-muted {
+  background-color: color-mix(in oklab, var(--mk-panel) 55%, transparent);
+  background-image:
+    repeating-linear-gradient(
+      var(--mk-hatch, 45deg),
+      color-mix(in oklab, var(--mk-ink) 10%, transparent) 0 1px,
+      transparent 1px 5px
+    ),
+    repeating-linear-gradient(
+      calc(var(--mk-hatch, 45deg) + 90deg),
+      color-mix(in oklab, var(--mk-ink) 10%, transparent) 0 1px,
+      transparent 1px 5px
+    );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--mk-ink) 34%, transparent);
+}
+
+[data-template-theme='real-estate-listing'] [data-template-canvas] .rounded-inset.bg-primary\/15 {
+  background-color: color-mix(in oklab, var(--mk-brick) 10%, var(--mk-sheet));
+  background-image: repeating-linear-gradient(
+    var(--mk-hatch, 45deg),
+    color-mix(in oklab, var(--mk-brick) 30%, transparent) 0 1px,
+    transparent 1px 6px
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--mk-brick) 55%, transparent);
+}
+
+[data-template-theme='real-estate-listing'] [data-template-canvas] .rounded-inset.bg-muted\/70 {
+  background-color: color-mix(in oklab, var(--mk-panel) 68%, transparent);
+  background-image: repeating-linear-gradient(
+    calc(var(--mk-hatch, 45deg) + 45deg),
+    color-mix(in oklab, var(--mk-ink) 9%, transparent) 0 1px,
+    transparent 1px 9px
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--mk-ink) 34%, transparent);
+}
+
+/* Per-card plan variation. The home page's three and the register's six each
+   rotate the hatch so the row reads as different houses, not one plan
+   copied. */
+[data-template-theme='real-estate-listing']
+  :is([data-template-section='new-this-week'], [data-template-section='for-sale'])
+  .grid.gap-5
+  > div:nth-child(2) {
+  --mk-hatch: 135deg;
+  --mk-hatch-pitch: 10px;
+}
+
+[data-template-theme='real-estate-listing']
+  :is([data-template-section='new-this-week'], [data-template-section='for-sale'])
+  .grid.gap-5
+  > div:nth-child(3) {
+  --mk-hatch: 90deg;
+  --mk-hatch-pitch: 6px;
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section='for-sale']
+  .grid.gap-5
+  > div:nth-child(4) {
+  --mk-hatch: 0deg;
+  --mk-hatch-pitch: 9px;
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section='for-sale']
+  .grid.gap-5
+  > div:nth-child(5) {
+  --mk-hatch: 160deg;
+  --mk-hatch-pitch: 7px;
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section='for-sale']
+  .grid.gap-5
+  > div:nth-child(6) {
+  --mk-hatch: 20deg;
+  --mk-hatch-pitch: 11px;
+}
+
+/* Three homes on the home page read as a window display, not two cards and an
+   orphan: the grid widens to three-up on desktop. The register page keeps the
+   twin's two-column ledger. */
+@media (min-width: 1024px) {
+  [data-template-theme='real-estate-listing']
+    [data-template-section='new-this-week']
+    .md\:grid-cols-2 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ————————————————— Just agreed: elevations with the sash ————————————————— */
+
+/* content-rows' plates become house elevations — slate roofline, a window
+   grid drawn in mullions — each pasted with the brick corner sash an agent
+   slips across the particulars the morning a sale is agreed. Pane pitch and
+   sash depth vary per row. */
+[data-template-theme='real-estate-listing'] [data-template-section='just-agreed'] .bg-muted {
+  background-color: var(--mk-sheet);
+  background-image:
+    linear-gradient(
+      135deg,
+      var(--mk-brick) 0 var(--mk-sash, 2.75rem),
+      transparent var(--mk-sash, 2.75rem)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--mk-slate) 86%, transparent) 0 17%,
+      transparent 17%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 var(--mk-pane-w, 56px),
+      color-mix(in oklab, var(--mk-ink) 20%, transparent) var(--mk-pane-w, 56px)
+        calc(var(--mk-pane-w, 56px) + 2px)
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 var(--mk-pane-h, 46px),
+      color-mix(in oklab, var(--mk-ink) 15%, transparent) var(--mk-pane-h, 46px)
+        calc(var(--mk-pane-h, 46px) + 2px)
+    ),
+    linear-gradient(180deg, transparent 40%, color-mix(in oklab, var(--mk-ink) 9%, transparent));
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section='just-agreed']
+  .grid:nth-child(2)
+  .bg-muted {
+  --mk-pane-h: 30px;
+  --mk-pane-w: 34px;
+  --mk-sash: 3.375rem;
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section='just-agreed']
+  .grid:nth-child(3)
+  .bg-muted {
+  --mk-pane-h: 52px;
+  --mk-pane-w: 62px;
+  --mk-sash: 2.25rem;
+}
+
+/* ————————————————— The buyers' book ————————————————— */
+
+/* content-quote's plate is Davey's notebook drawn in CSS: a raised-paper
+   page, feint rules, and the brick margin line of a ledger. */
+[data-template-theme='real-estate-listing'] [data-template-section='buying-through-us'] .bg-muted {
+  background-color: var(--mk-panel);
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent 0 calc(15% - 1px),
+      color-mix(in oklab, var(--mk-brick) 52%, transparent) calc(15% - 1px) 15%,
+      transparent 15%
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 25px,
+      color-mix(in oklab, var(--mk-ink) 13%, transparent) 25px 26px
+    ),
+    linear-gradient(115deg, color-mix(in oklab, var(--mk-ink) 5%, transparent), transparent 42%);
+}
+
+/* ————————————————— The office: six sash windows ————————————————— */
+
+/* team-grid's tall portrait plates become the sash windows of 12 Sheep
+   Street — a pane grid, evening light down the glass, and a warm lamp pooled
+   low, each member's window lit a little differently. No likenesses. */
+[data-template-theme='real-estate-listing'] [data-template-section='the-office'] .bg-muted {
+  background-color: oklch(84.5% 0.016 82deg);
+  background-image:
+    linear-gradient(
+      var(--mk-light, 205deg),
+      color-mix(in oklab, var(--mk-panel) 58%, transparent),
+      transparent 56%
+    ),
+    radial-gradient(
+      58% 42% at var(--mk-lamp, 30%) 80%,
+      color-mix(in oklab, var(--mk-brick) 24%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0 calc(50% - 1.5px),
+      color-mix(in oklab, var(--mk-ink) 36%, transparent) calc(50% - 1.5px) calc(50% + 1.5px),
+      transparent calc(50% + 1.5px)
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 calc(33.333% - 3px),
+      color-mix(in oklab, var(--mk-ink) 36%, transparent) calc(33.333% - 3px) 33.333%
+    );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--mk-ink) 32%, transparent);
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section='the-office']
+  .grid
+  > div:nth-child(2) {
+  --mk-lamp: 72%;
+  --mk-light: 155deg;
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section='the-office']
+  .grid
+  > div:nth-child(3) {
+  --mk-lamp: 50%;
+  --mk-light: 180deg;
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section='the-office']
+  .grid
+  > div:nth-child(4) {
+  --mk-lamp: 18%;
+  --mk-light: 230deg;
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section='the-office']
+  .grid
+  > div:nth-child(5) {
+  --mk-lamp: 84%;
+  --mk-light: 195deg;
+}
+
+[data-template-theme='real-estate-listing']
+  [data-template-section='the-office']
+  .grid
+  > div:nth-child(6) {
+  --mk-lamp: 40%;
+  --mk-light: 165deg;
+}
+
+/* The twin hides roles behind a hover translate. Tailwind v4 compiles
+   translate-* to the `translate` property, so `transform: none` is inert —
+   the variable itself is zeroed and opacity restored, pinning "Founder ·
+   Tuesdays" into the static frame that posters and reduced-motion visitors
+   see. */
+[data-template-theme='real-estate-listing'] [data-template-section='the-office'] .translate-y-6 {
+  --tw-translate-y: 0;
+
+  opacity: 1;
+  translate: var(--tw-translate-x, 0) var(--tw-translate-y, 0);
+}
+
+/* The hover-only "Profile" affordance gestures at member pages this concept
+   does not have — retired rather than pinned. */
+[data-template-theme='real-estate-listing'] [data-template-section='the-office'] .translate-y-8 {
+  display: none;
+}
+
+/* The _01… index marks set in mono brick, a plan-drawer's sheet number. */
+[data-template-theme='real-estate-listing'] [data-template-section='the-office'] span.text-xs {
+  color: var(--mk-brick);
+  font-family: var(--font-mono);
+}
+
+/* ————————————————— The window on Sheep Street ————————————————— */
+
+/* content-image-frame's nested plates become the shopfront: the outer plate
+   is the painted blue frame the Contact page describes, the inner plate the
+   card display itself — a spaced grid of window cards, each with its brick
+   header band, over a raking glass reflection. */
+[data-template-theme='real-estate-listing']
+  [data-template-section='the-window']
+  .rounded-panel.bg-muted {
+  background-color: var(--mk-frame-blue);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--mk-panel) 14%, transparent),
+    transparent 45%
+  );
+}
+
+[data-template-theme='real-estate-listing'] [data-template-section='the-window'] .shadow-xl {
+  border-color: color-mix(in oklab, var(--mk-ink) 45%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--mk-ink) 30%, transparent);
+}
+
+[data-template-theme='real-estate-listing'] [data-template-section='the-window'] .aspect-\[16\/9\] {
+  background-color: var(--mk-paper-deep);
+  background-image:
+    linear-gradient(115deg, color-mix(in oklab, var(--mk-panel) 42%, transparent), transparent 38%),
+    linear-gradient(180deg, var(--mk-brick) 0 13%, var(--mk-panel) 13%);
+  background-repeat: no-repeat, space;
+  background-size:
+    auto,
+    15% 32%;
+}
+
+/* ————————————————— The schedule tables ————————————————— */
+
+/* The comparator is set like a printed schedule of particulars: serif plan
+   names, a double rule closing the header row (the classic table-head rule),
+   and the highlighted column washed in the palest brick. Applies to both the
+   three-homes table and the two-ways-to-sell table. */
+[data-template-theme='real-estate-listing'] [data-template-canvas] th .text-base.font-medium {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+}
+
+[data-template-theme='real-estate-listing'] [data-template-canvas] thead th {
+  border-bottom: 3px double var(--mk-line-strong);
+}
+
+/* ————————————————— Per-section refinements ————————————————— */
+
+/* The record's press attribution: THE VALE GAZETTE reads as a newspaper
+   masthead lockup in clay — tracked caps, not a heading. */
+[data-template-theme='real-estate-listing'] [data-tone='contrast'] .h-9 .tracking-title {
+  color: var(--mk-clay);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  letter-spacing: 0.2em;
+}
+
+/* Step numerals want the weight of a stamped folio number on their brick
+   squares (rounded-full survives — a brick roundel reads as a surveyor's
+   button). */
+[data-template-theme='real-estate-listing'] [data-template-canvas] .bg-primary.font-mono {
+  font-weight: 700;
+}
+
+/* The valuation closer is the firm's appointment card: a double hairline —
+   border plus inset outline — rules the panel the way a printed card is
+   ruled. Both pages' 'valuation' sections share it; the remap above already
+   raised the panel to paper. */
+[data-template-theme='real-estate-listing'] [data-template-section='valuation'] .rounded-2xl {
+  border-color: color-mix(in oklab, var(--mk-ink) 32%, transparent);
+  outline: 1px solid var(--border);
+  outline-offset: -7px;
+}
+
+/* The register slip: call-to-action-signup's email well becomes a ruled paper
+   slip (squared above, raised by the surface remap) with a firm hairline. */
+[data-template-theme='real-estate-listing']
+  [data-template-section='register']
+  .rounded-frame.border {
+  border-color: color-mix(in oklab, var(--mk-ink) 34%, transparent);
+}
+
+/* The contact form's field wells read as a printed form: paper wells with a
+   feint baseline shadow. The wells are divs, so the action-span rule above
+   never inflates them. */
+[data-template-theme='real-estate-listing'] [data-template-section='contact'] .border-input {
+  background-color: var(--mk-paper);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--mk-ink) 12%, transparent);
+}
+
+/* Four channel cards make the left column taller than the form; both columns
+   top-align so neither stretches into blank paper. (.grid.gap-8 is the outer
+   two-column grid only; the form's inner grid is gap-5.) */
+[data-template-theme='real-estate-listing'] [data-template-section='contact'] .grid.gap-8 {
+  align-items: start;
+}
+
+/* The office number is the lead channel: brick, and heavy enough to be dialled
+   from across the desk. (Brick holds 5.5:1 on paper, so unlike trade's orange
+   it may carry type.) */
+[data-template-theme='real-estate-listing'] [data-template-canvas] span.text-primary {
+  font-weight: 700;
+}
+
+/* ————————————————— Shell chrome ————————————————— */
+
+/* The slate utility strip: address and hours in tracked caps, the number in
+   clay — the top rule of the letterhead. */
+[data-template-theme='real-estate-listing'] .mk-utility {
   background-color: var(--mk-slate);
+  color: oklch(88% 0.01 80deg);
+  font-size: 0.6875rem;
+  font-weight: 550;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='real-estate-listing'] .mk-utility-lead {
+  color: var(--mk-clay);
+  font-weight: 700;
+}
+
+/* The masthead: opaque paper under an Oxford rule (one strong line at the
+   bottom edge, a hairline above it) — the double rule every page of
+   particulars is printed under. Opaque on purpose: no translucency or blur
+   composites the brick action toward the page while the header is pinned. */
+[data-template-theme='real-estate-listing'] .mk-masthead {
+  background-color: var(--mk-paper);
+  box-shadow:
+    inset 0 -1px 0 var(--mk-line-strong),
+    inset 0 -4px 0 var(--mk-paper),
+    inset 0 -5px 0 var(--border);
+}
+
+/* The wordmark is the letterhead itself: the two names in Instrument Serif
+   italic, the trade line in tracked caps beneath. */
+[data-template-theme='real-estate-listing'] .mk-wordmark-name {
+  color: var(--foreground);
+  font-family: var(--font-serif);
+  font-size: 1.4375rem;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+[data-template-theme='real-estate-listing'] .mk-wordmark-trade {
+  color: var(--muted-foreground);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+[data-template-theme='real-estate-listing'] .mk-nav-link {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 550;
+  transition: color 0.15s ease-out;
+}
+
+[data-template-theme='real-estate-listing'] .mk-nav-link:hover {
   color: var(--foreground);
 }
 
-/* ---------------------------------------------------------------- */
-/* Shell chrome                                                      */
-/* ---------------------------------------------------------------- */
-
-[data-template-theme='real-estate-listing'] .mk-utility {
-  background-color: var(--mk-slate);
-  color: oklch(92.8% 0.008 79deg);
+[data-template-theme='real-estate-listing'] [data-mk-active] {
+  color: var(--foreground);
+  text-decoration-color: var(--mk-brick);
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 7px;
 }
 
-[data-template-theme='real-estate-listing'] .mk-masthead {
-  background-color: color-mix(in oklab, var(--card) 92%, transparent);
-  box-shadow: inset 0 -1px 0 var(--border);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
+/* The one filled action in the chrome: brick, square, letterpress. */
 [data-template-theme='real-estate-listing'] .mk-action {
-  background-color: var(--primary);
-  color: var(--primary-foreground);
+  background-color: var(--mk-brick);
+  border-radius: 0;
+  color: oklch(97.8% 0.006 84deg);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background-color 0.15s ease-out;
 }
 
 [data-template-theme='real-estate-listing'] .mk-action:hover {
-  background-color: var(--brand-600);
-}
-
-[data-template-theme='real-estate-listing'] [data-mk-active] {
-  text-decoration: underline;
-  text-decoration-color: var(--primary);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
+  background-color: var(--mk-brick-deep);
 }
 
 [data-template-theme='real-estate-listing'] .mk-trigger {
-  border: 1px solid var(--border);
-  background-color: var(--card);
+  background-color: var(--mk-panel);
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--mk-ink) 40%, transparent);
+  color: var(--foreground);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 [data-template-theme='real-estate-listing'] .mk-trigger-bar {
-  display: block;
-  width: 1.125rem;
-  height: 2px;
-  border-radius: 999px;
   background-color: currentcolor;
+  border-radius: 0;
+  display: block;
+  height: 2px;
+  width: 1.125rem;
 }
 
 [data-template-theme='real-estate-listing'] .mk-sheet {
-  background-color: var(--card);
+  background-color: var(--mk-paper);
   box-shadow:
     inset 0 1px 0 var(--border),
-    0 16px 32px -20px color-mix(in oklab, var(--foreground) 40%, transparent);
+    0 16px 32px -20px color-mix(in oklab, var(--mk-ink) 45%, transparent);
 }
 
 [data-template-theme='real-estate-listing'] .mk-sheet-link {
   box-shadow: inset 0 -1px 0 var(--border);
+}
+
+[data-template-theme='real-estate-listing'] .mk-sheet-link[data-mk-active] {
+  box-shadow:
+    inset 3px 0 0 var(--mk-brick),
+    inset 0 -1px 0 var(--border);
+  text-decoration: none;
 }
 
 [data-template-theme='real-estate-listing'] .mk-sheet-note {
@@ -182,25 +937,83 @@
 }
 
 [data-template-theme='real-estate-listing'] .mk-focus:focus-visible {
-  outline: 2px solid var(--ring);
+  outline: 2px solid var(--mk-brick);
   outline-offset: 2px;
 }
 
+/* ————————————————— Footer ————————————————— */
+
 [data-template-theme='real-estate-listing'] .mk-footer {
-  background-color: var(--mk-band);
-  box-shadow: inset 0 1px 0 var(--border);
+  background-color: var(--mk-paper-deep);
+  box-shadow: inset 0 1px 0 var(--mk-line-strong);
+}
+
+/* The footer's pull line speaks in the letterhead voice. */
+[data-template-theme='real-estate-listing'] .mk-footer-line {
+  color: var(--foreground);
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 3.2vw, 2rem);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.008em;
+  line-height: 1.3;
 }
 
 [data-template-theme='real-estate-listing'] .mk-footer-label {
   color: var(--foreground);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
 }
 
-/* Reduced-motion net: the shell's own transitions land on their final frame
- * instantly, even before hydration. */
+[data-template-theme='real-estate-listing'] .mk-footer-link {
+  color: var(--muted-foreground);
+  transition: color 0.15s ease-out;
+}
+
+[data-template-theme='real-estate-listing'] .mk-footer-link:hover {
+  color: var(--foreground);
+}
+
+[data-template-theme='real-estate-listing'] .mk-footer-link[data-mk-active] {
+  color: var(--mk-brick);
+  text-decoration: none;
+}
+
+[data-template-theme='real-estate-listing'] .mk-rail {
+  background-color: var(--mk-slate);
+  box-shadow: inset 0 3px 0 var(--mk-brick);
+  color: oklch(82% 0.012 80deg);
+}
+
+/* ————————————————— Narrow chrome ————————————————— */
+
+/* At 390px the masthead must fit the serif wordmark and the menu trigger in
+   ~350px: the trade line drops, the names tighten, and the utility strip
+   sheds its address so it stays one line. */
+@media (max-width: 639px) {
+  [data-template-theme='real-estate-listing'] .mk-wordmark-trade {
+    display: none;
+  }
+
+  [data-template-theme='real-estate-listing'] .mk-wordmark-name {
+    font-size: 1.25rem;
+  }
+
+  [data-template-theme='real-estate-listing'] .mk-utility-address {
+    display: none;
+  }
+}
+
+/* ————————————————— Reduced motion ————————————————— */
+
+/* Final frame, instantly, even before hydration — the same guarantee
+   template-motion.css gives the section reveals. Playwright captures and the
+   poster tool both run reducedMotion=reduce, so this is what they record. */
 @media (prefers-reduced-motion: reduce) {
-  [data-template-theme='real-estate-listing'] .mk-nav-link,
-  [data-template-theme='real-estate-listing'] .mk-action,
-  [data-template-theme='real-estate-listing'] .mk-focus {
+  [data-template-theme='real-estate-listing']
+    :is(.mk-nav-link, .mk-action, .mk-footer-link, .mk-focus) {
     transition-duration: 0.001s !important;
   }
 }

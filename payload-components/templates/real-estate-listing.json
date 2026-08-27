@@ -7,7 +7,7 @@
     "comparator-table",
     "contact-routing-form",
     "content-columns",
-    "content-community",
+    "content-image-frame",
     "content-quote",
     "content-rows",
     "content-stats",
@@ -23,7 +23,7 @@
     "testimonials-spotlight",
     "testimonials-wall"
   ],
-  "description": "Moorhouse & Kent is a fictional two-name estate agency in the fictional market town of Abbotsmoor: one office on Sheep Street, six people, and about ninety homes a year across the town and the five villages of the Vale. The concept owns the listing register — homes as cards, particulars as tables, \"just agreed\" as proof — across five pages: Home, Properties, Selling, About, and Contact, with a valuation booking as the one action the seller-facing pages point at. Composed entirely from blocks in the open registry.",
+  "description": "Moorhouse & Kent is a fictional two-name estate agency in the fictional market town of Abbotsmoor: one office on Sheep Street, six people, and about ninety homes a year across the town and the five villages of the Vale. The concept owns the listing register — homes as cards, particulars as tables, \"just agreed\" as proof — set in warm stone, slate ink, and one brick-red accent, with every image surface drawn as a surveyor's artefact: floor-plan hatching, window grids, the ruled pages of the buyers' book. Five pages — Home, Properties, Selling, About, and Contact — court sellers and route buyers through one nav, with a valuation booking as the single seller-facing action. Composed entirely from blocks in the open registry.",
   "pages": [
     {
       "components": [
@@ -71,7 +71,7 @@
         "hero-basic",
         "content-columns",
         "team-grid",
-        "content-community",
+        "content-image-frame",
         "testimonials-wall",
         "call-to-action-centered"
       ],

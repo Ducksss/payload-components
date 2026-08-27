@@ -3,38 +3,55 @@ import type { TemplateShowcase } from './types'
 /* Real estate — "Moorhouse & Kent", a fictional estate agency in the fictional
  * market town of Abbotsmoor.
  *
- * WAVE 0 SKELETON — the recipe (pages, sections, tones) is frozen; the copy
- * below is a coherent first draft the art-direction wave replaces. Do not ship
- * this file without that pass.
+ * Art direction: THE LISTING REGISTER. An estate agency site is an inventory
+ * with an argument attached — homes as cards, particulars as tables, "just
+ * agreed" as proof — and two audiences share one nav: sellers being courted,
+ * buyers being routed. No other concept in the gallery owns that register.
+ * The voice is a firm that puts every guide in writing: warm stone paper,
+ * slate ink, one brick-red accent, hairline rules everywhere, Instrument
+ * Serif italic for the display voice (the letterhead, the ledger figures),
+ * and every image surface drawn as a surveyor's artefact — floor-plan
+ * hatching, window grids, plot lines, the ruled pages of the buyers' book —
+ * so the missing photography reads as particulars, not as absence.
  *
- * Register this concept must own (uncovered by the other twelve): the listing.
- * An estate agency site is an inventory with an argument attached — homes as
- * cards, particulars as tables, "just agreed" as proof — and two distinct
- * audiences (sellers being courted, buyers being routed) sharing one nav.
+ *   Home        the firm on one letterhead: this week's homes, the record,
+ *               the method, and the two doors (valuation / homes for sale)
+ *   Properties  the register proper: every home as a card, "just agreed" as
+ *               the honest advertisement, three homes compared in a table
+ *   Selling     the seller's argument: the method in full, what the fee
+ *               covers, two levels of service, the questions grouped
+ *   About       thirty-eight years of one office: the people, the window,
+ *               and the wall of what clients have said
+ *   Contact     one number, six people, and a form that routes to the right
+ *               one of them
  *
  * Canonical facts, kept consistent across every page: founded 1987 by Iris
  * Moorhouse; Davey Kent joined in 1994; Iris's daughter Nell Moorhouse runs it
  * now; one office at 12 Sheep Street; six people; they cover Abbotsmoor and the
- * five villages of the Vale; roughly ninety homes a year; an average of nine
- * viewings to an agreed sale; no sale, no fee.
+ * five villages of the Vale (Steeple Vale, Lower Cray, Fenny Cross, Marle
+ * Hill, Bell End Green); roughly ninety homes a year; an average of nine
+ * viewings to an agreed sale; 19 in 20 agreed sales complete; no sale, no fee.
  *
  * Everything is fictional: the firm, the people, the town and villages, every
- * street, every listed home, every buyer and seller. No ombudsman, redress
- * scheme, professional body, or regulator is named or invented — where the
- * copy touches conduct it stays generic ("in writing", "no sale, no fee").
- * Phone numbers sit inside the 01632 96xxxx fiction range; email uses the
- * reserved `.example` domain.
+ * street, every listed home, every buyer and seller, and the local paper (The
+ * Vale Gazette). No ombudsman, redress scheme, professional body, regulator,
+ * licence number, or insurer is named or invented — where the copy touches
+ * conduct it stays generic ("in writing", "no sale, no fee"). Phone numbers
+ * sit inside the 01632 96xxxx fiction range; email uses the reserved
+ * `.example` domain.
  *
  * There are NO currency amounts anywhere. An estate agency solves this the way
  * agents actually talk on the doorstep: "guide on request", offers "over the
  * guide", fees as "a fixed percentage agreed in writing before the board goes
- * up" — never a number with a sign on it. */
+ * up" — never a number with a sign on it. All copy stays editor-shaped
+ * (demo-content types); layout belongs to the twins and to the Moorhouse
+ * shell and theme. */
 
 export const realEstateListingTemplate: TemplateShowcase = {
   assets: [],
   category: 'real-estate',
   description:
-    'Moorhouse & Kent is a fictional two-name estate agency in the fictional market town of Abbotsmoor: one office on Sheep Street, six people, and about ninety homes a year across the town and the five villages of the Vale. The concept owns the listing register — homes as cards, particulars as tables, "just agreed" as proof — across five pages: Home, Properties, Selling, About, and Contact, with a valuation booking as the one action the seller-facing pages point at. Composed entirely from blocks in the open registry.',
+    'Moorhouse & Kent is a fictional two-name estate agency in the fictional market town of Abbotsmoor: one office on Sheep Street, six people, and about ninety homes a year across the town and the five villages of the Vale. The concept owns the listing register — homes as cards, particulars as tables, "just agreed" as proof — set in warm stone, slate ink, and one brick-red accent, with every image surface drawn as a surveyor\'s artefact: floor-plan hatching, window grids, the ruled pages of the buyers\' book. Five pages — Home, Properties, Selling, About, and Contact — court sellers and route buyers through one nav, with a valuation booking as the single seller-facing action. Composed entirely from blocks in the open registry.',
   navigation: [
     { label: 'Home', path: '' },
     { label: 'Properties', path: 'properties' },
@@ -50,6 +67,18 @@ export const realEstateListingTemplate: TemplateShowcase = {
       path: '',
       sections: [
         {
+          /* The letterhead — id'd apart from the interior 'hero' sections so
+           * the theme can give the home page the full letterhead treatment
+           * (deeper band, the surveyor's grid fading in from the right, serif
+           * display at its largest) while interior heroes take the same
+           * grammar dialled back. hero-basic rather than any kinetic variant:
+           * the register is assured, surveyed calm — a firm this sure of its
+           * guide does not animate at you. The headline is the whole pitch in
+           * eight words and lands in Instrument Serif italic, the concept's
+           * letterhead voice. Both CTAs are real routes and name the two
+           * audiences: Book a valuation → selling's action, Homes for sale →
+           * properties. The proof chips are restyled by the theme into
+           * hairline-ruled stamps — the three facts a seller checks first. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -66,9 +95,22 @@ export const realEstateListingTemplate: TemplateShowcase = {
             ],
             title: 'The right buyer for a house like yours.',
           },
-          id: 'hero',
+          id: 'letterhead',
         },
         {
+          /* Homes as cards — the concept's signature object, first thing under
+           * the letterhead. feature-cards-media because its media well is the
+           * property-photography slot, and the theme repaints that well as
+           * estate particulars: the well becomes a surveyor's drawing sheet
+           * (fine plot grid on warm paper) and the twin's four inner panels
+           * become the rooms of a floor plan — hairline walls, directional
+           * hatching, the one brick-tinted cell reading as the garden. Each
+           * card varies its hatch angle and pitch by position so three homes
+           * read as three different plans, not one plan copied. Copy keeps
+           * the no-currency rule in the agent's own idiom: "guide on
+           * request", "offers invited over the guide". The theme also widens
+           * this grid to three columns on desktop so the row reads as a
+           * window display rather than two cards and an orphan. */
           componentSlug: 'feature-cards-media',
           content: {
             description:
@@ -97,6 +139,15 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'new-this-week',
         },
         {
+          /* The one slate band on the home page. A ledger, not a brag — the
+           * four numbers are the ones a seller would actually check,
+           * including the honest denominator (19 in 20, not "all"), and the
+           * quote comes from the local paper rather than the firm. The theme
+           * sets the ledger figures in serif italic (the letterhead voice
+           * doing arithmetic) and the logoLabel as a tracked-caps masthead in
+           * clay, so THE VALE GAZETTE reads as a newspaper lockup, not a
+           * heading. logoLabel is set deliberately: without it the quote
+           * panel has no attribution anchor. */
           componentSlug: 'stats-proof',
           content: {
             author: 'Hedda Brownlow',
@@ -120,6 +171,13 @@ export const realEstateListingTemplate: TemplateShowcase = {
           tone: 'contrast',
         },
         {
+          /* The method in three numbered cards on the deeper stone band —
+           * feature-steps because selling with an agent IS a sequence, and
+           * numbered steps promise the seller a process rather than a
+           * personality. The step numerals take the brick fill (ink-safe
+           * white on brick), the one loud mark on the band. Copy plants the
+           * Friday note — the firm's signature promise — which the Selling
+           * page then pays off in full. */
           componentSlug: 'feature-steps',
           content: {
             description:
@@ -149,6 +207,14 @@ export const realEstateListingTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* Star-rated cards because portal-style reviews are the register
+           * buyers and sellers already trust — and one deliberate four-star
+           * review with the reason stated does more for believability than a
+           * wall of fives. The stars take the brick fill; avatars become
+           * monogram medallions with a serif italic initial (the wax-seal
+           * detail, in place of portraits this concept never fabricates).
+           * Roles name streets and months, the way real reviews sign
+           * themselves. */
           componentSlug: 'testimonials-rating',
           content: {
             description: 'From sellers and buyers this year, unedited.',
@@ -181,6 +247,14 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'sellers-say',
         },
         {
+          /* The four questions every valuation starts with, answered the way
+           * the firm talks: the fee stated without a number ("a fixed
+           * percentage agreed in writing"), the timeline in weeks, the guide
+           * as something staked rather than hoped. faq-accordion's centred,
+           * hairline-ruled column is already the shape of printed
+           * particulars — the theme only firms the question weight. The
+           * outline link routes deeper to Selling rather than repeating the
+           * valuation CTA, which belongs to the closer below. */
           componentSlug: 'faq-accordion',
           content: {
             description: 'The four questions every valuation starts with.',
@@ -213,6 +287,12 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'asked-first',
         },
         {
+          /* The closer. call-to-action-boxed becomes the appointment card:
+           * the theme rules its inner panel with a double hairline (border
+           * plus inset outline), the way a printed valuation card is ruled.
+           * Copy keeps the promise proportionate — an hour, in writing, no
+           * obligation — because overselling a free valuation is exactly what
+           * this firm would never do. */
           componentSlug: 'call-to-action-boxed',
           content: {
             description:
@@ -230,11 +310,17 @@ export const realEstateListingTemplate: TemplateShowcase = {
     },
     {
       description:
-        'The listing page proper: every home on the market as a card, the week’s agreed sales as proof, and three homes compared side by side.',
+        'The listing page proper: every home on the market as a card, the month’s agreed sales as proof, and three homes compared side by side.',
       label: 'Properties',
       path: 'properties',
       sections: [
         {
+          /* Interior header — the letterhead grammar dialled back: same
+           * surveyor's grid, tighter band, so the whole site keeps one header
+           * treatment the way a real agency's print does. The CTAs split the
+           * two audiences again, buyers first this time (Register your
+           * search), and the proof chips state the register's promises:
+           * current, walked, on request. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -254,6 +340,14 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* The register in full: six cards, two columns — this page keeps
+           * the twin's two-column grid (unlike the home page's three-up
+           * window display) because six particulars stacked two abreast read
+           * as a ledger to work down, not a shopfront. The same floor-plan
+           * media wells as the home page, varied per card by nth-child so no
+           * two plans hatch alike. The copy line "half our sales never reach
+           * this page" plants the buyers' book the quote section below pays
+           * off. */
           componentSlug: 'feature-cards-media',
           content: {
             description:
@@ -297,6 +391,14 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'for-sale',
         },
         {
+          /* "Just agreed" — the honest advertisement, on the deeper stone
+           * band. content-rows because each agreed sale wants a plate and a
+           * story; the theme repaints the plates as house elevations — slate
+           * roofline, window grid — each with a brick corner sash, the slip
+           * an agent pastes across the particulars the morning a sale is
+           * agreed. Rows vary their window pitch so three elevations read as
+           * three houses. Copy states the why outright: what actually sells,
+           * and how fast, matters more than what is merely listed. */
           componentSlug: 'content-rows',
           content: {
             eyebrow: 'Just agreed',
@@ -328,6 +430,13 @@ export const realEstateListingTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* The signature move: three homes honestly compared, in a table —
+           * particulars as particulars. No other concept in the gallery puts
+           * a comparator to work on inventory rather than pricing tiers. The
+           * theme sets it like a printed schedule: serif plan names, a double
+           * rule under the header row, the highlighted column washed in the
+           * palest brick. The honest register does the persuading — "Work
+           * needed: the workshop" sits in the same grid as "Chain: none". */
           componentSlug: 'comparator-table',
           content: {
             description:
@@ -368,6 +477,12 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'at-a-glance',
         },
         {
+          /* The buyers' book — content-quote because it pairs a plate with a
+           * first-person voice, and the plate is the concept's most literal
+           * artefact: the theme rules it as a ledger page, feint lines and a
+           * brick margin rule, Davey's notebook drawn in CSS. The quote is
+           * the firm's whole matching philosophy in two sentences, cited to
+           * the partner who keeps the book. */
           componentSlug: 'content-quote',
           content: {
             citation: 'Davey Kent, partner',
@@ -384,6 +499,12 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'buying-through-us',
         },
         {
+          /* The buyer's one action, on the deeper band so the page closes on
+           * a tear-off card: register the search. call-to-action-signup's
+           * email well is restyled as a ruled paper slip with a brick submit.
+           * The copy promises restraint — Davey rings once, when it is
+           * actually right — because a firm that hates portals would say
+           * exactly that about mailing lists. */
           componentSlug: 'call-to-action-signup',
           content: {
             description:
@@ -393,6 +514,7 @@ export const realEstateListingTemplate: TemplateShowcase = {
             title: 'Register your search.',
           },
           id: 'register',
+          tone: 'muted',
         },
       ],
       title: 'Moorhouse & Kent — Homes for sale',
@@ -404,6 +526,10 @@ export const realEstateListingTemplate: TemplateShowcase = {
       path: 'selling',
       sections: [
         {
+          /* The seller's header. The description names the real shape of a
+           * sale — a six-to-ten-week argument between hope and evidence — and
+           * plants the firm on evidence's side, which is the entire pitch of
+           * the page below. Proof chips are the three written promises. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -423,6 +549,11 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* The home page's three steps, paid off in full: same block, same
+           * numbering, deeper copy — so a seller who arrived from "Walked,
+           * written, accompanied" recognises the method instantly and reads
+           * the detail here. The Friday note runs the length of it, stated in
+           * the intro so all three cards inherit it. */
           componentSlug: 'feature-steps',
           content: {
             description:
@@ -451,6 +582,13 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'the-method',
         },
         {
+          /* The money section a no-currency concept has to earn: what the
+           * fee covers, without a figure anywhere. content-stats carries the
+           * argument in three registers at once — a paragraph stating the
+           * shape of the fee, four feature cells itemising what it buys, and
+           * a stats rail restating the record ("No fee" sits in the value
+           * slot where another site would put a price). On the deeper stone
+           * band so it reads as the schedule page of the particulars. */
           componentSlug: 'content-stats',
           content: {
             eyebrow: 'What the fee covers',
@@ -493,6 +631,13 @@ export const realEstateListingTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* The comparator's second outing, this time doing its native job —
+           * two service levels — but still without a price row: the columns
+           * are compared on what is done, not what it costs, because the fee
+           * section above already settled the money in words. "The quiet
+           * sale" is the estate-agent object other templates cannot offer:
+           * shown only to the book, no board, no window. The standard listing
+           * is the highlighted column because it is the honest default. */
           componentSlug: 'comparator-table',
           content: {
             description:
@@ -528,6 +673,13 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'levels-of-service',
         },
         {
+          /* One seller, at length, on the slate band — the emotional centre
+           * of the page. testimonials-spotlight because a single accompanied
+           * move told properly outweighs another grid of praise, and because
+           * the slate band gives the page its one dark beat between the
+           * schedule and the questions. Wilf's letter about the apple trees
+           * is the detail the whole concept would keep if it could keep only
+           * one. */
           componentSlug: 'testimonials-spotlight',
           content: {
             testimonial: {
@@ -541,6 +693,12 @@ export const realEstateListingTemplate: TemplateShowcase = {
           tone: 'contrast',
         },
         {
+          /* Sellers' questions, grouped the way sellers actually ask them —
+           * timing, money, the day itself — because a seller's anxieties come
+           * in clusters, not a flat list. faq-grouped's icon keys (clock,
+           * credit-card, truck) are the block's own allowlist; the theme
+           * inks them brick. The money group repeats the fee's shape in the
+           * same words as everywhere else — consistency is the trust move. */
           componentSlug: 'faq-grouped',
           content: {
             description: 'Grouped the way sellers ask them: timing, money, and the day itself.',
@@ -600,6 +758,12 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'selling-questions',
         },
         {
+          /* The seller's closer, same ruled appointment card as the home
+           * page — one card design across the site, the way one firm prints
+           * one card. The worst case is stated as a benefit ("you learn what
+           * the extension would be worth") because that is this firm's brand
+           * of honesty: Beatrix on the About wall was talked out of selling
+           * entirely. */
           componentSlug: 'call-to-action-boxed',
           content: {
             description:
@@ -617,11 +781,15 @@ export const realEstateListingTemplate: TemplateShowcase = {
     },
     {
       description:
-        'Thirty-eight years of one office — who the six people are, what the town is, and the wall of things clients have said.',
+        'Thirty-eight years of one office — who the six people are, the window on Sheep Street, and the wall of things clients have said.',
       label: 'About',
       path: 'about',
       sections: [
         {
+          /* The firm's history in one breath: the kettle and the card index
+           * carry thirty-eight years better than a paragraph of milestones
+           * would, and "the kettle is the same kettle" is the whole brand.
+           * Proof chips restate the canonical facts. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -641,6 +809,12 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* The manifesto, in the two-column register: headline left, the
+           * argument right. Staying small is framed as the discipline the
+           * reputation stands on — growth would mean listing houses they have
+           * not walked — and the coverage paragraph names all five villages
+           * once, canonically, so every other page can gesture at "the Vale"
+           * without re-listing them. */
           componentSlug: 'content-columns',
           content: {
             eyebrow: 'Who we are',
@@ -658,6 +832,18 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'who-we-are',
         },
         {
+          /* The six people, on the deeper band. team-grid's tall portrait
+           * plates are repainted by the theme as the six sash windows of 12
+           * Sheep Street — pane grids with evening light, each lit a little
+           * differently — because this concept fabricates no likenesses, and
+           * six windows of one office says "six people, one address" better
+           * than six grey rectangles. The twin hides roles behind a hover
+           * translate; the theme pins them visible (zeroed --tw-translate-y,
+           * opacity restored) so the static frame — what posters and
+           * reduced-motion visitors get — is finished, and retires the
+           * hover-only "Profile" affordance that would gesture at pages this
+           * concept does not have. Iris's role, "Founder · Tuesdays", is the
+           * fiction's best line — it must stay visible. */
           componentSlug: 'team-grid',
           content: {
             description:
@@ -677,26 +863,41 @@ export const realEstateListingTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
-          componentSlug: 'content-community',
+          /* SWAPPED from content-community. Two reasons: the avatar strip
+           * renders five empty circles this no-likeness concept cannot fill
+           * with faces, and the town section deserved the concept's best
+           * object instead — the window. content-image-frame's nested plates
+           * become the shopfront at 12 Sheep Street: the outer plate painted
+           * as the blue-framed window the Contact page already describes, the
+           * inner plate as the card display itself — a grid of window cards,
+           * each with its brick header band, spaced the way an assistant
+           * lines them up on a Saturday morning. The copy folds the old
+           * town paragraph into the window's discipline: the display changes
+           * the morning a sale is agreed, so walking past it is reading the
+           * market, not an advertisement. */
+          componentSlug: 'content-image-frame',
           content: {
-            avatars: [
-              { name: 'Nell Moorhouse' },
-              { name: 'Davey Kent' },
-              { name: 'Wilf Marchbank' },
-              { name: 'Hedda Brownlow' },
-              { name: 'Tomos Frayne' },
-            ],
-            eyebrow: 'The town',
+            eyebrow: 'The window',
             paragraphs: [
               {
-                text: 'Most of our instructions arrive on foot, from people we sold to a decade ago. That only happens in a town where the agent has to stand behind the guide at the market stall on Saturday — which is exactly the discipline we would choose.',
+                text: 'The window between the bakery and the bank has carried the list since 1987, and it changes the morning a sale is agreed — walk past on a Saturday and you are reading the market, not an advertisement.',
+              },
+              {
+                text: 'Most of our instructions still arrive on foot, from people we sold to a decade ago. That only happens in a town where the agent has to stand behind every card in that window at the market stall — which is exactly the discipline we would choose.',
               },
             ],
             title: 'Abbotsmoor keeps us honest.',
           },
-          id: 'the-town',
+          id: 'the-window',
         },
         {
+          /* The wall — nine voices in a masonry of ruled cards, the proof
+           * engine at full width. The mix is deliberate: sellers, buyers, a
+           * first-time buyer walked through what a survey is, a quiet-sale
+           * client, and Beatrix — the person the firm talked OUT of selling —
+           * because an agent who argues against her own fee is the review
+           * money cannot write. Roles pin each voice to a named street or
+           * village so the wall reads as the town talking. */
           componentSlug: 'testimonials-wall',
           content: {
             description:
@@ -763,6 +964,10 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'what-clients-say',
         },
         {
+          /* A conversational closer rather than the ruled appointment card —
+           * this page courts nothing; it asks you to ring and name a house.
+           * call-to-action-centered keeps it unboxed so the page ends on the
+           * firm's voice, not on chrome. */
           componentSlug: 'call-to-action-centered',
           content: {
             description:
@@ -785,6 +990,10 @@ export const realEstateListingTemplate: TemplateShowcase = {
       path: 'contact',
       sections: [
         {
+          /* The contact header keeps only one CTA (Homes for sale, outline)
+           * because the page itself is the action — repeating "Book a
+           * valuation" above a form that books valuations would be noise.
+           * Proof chips carry the practical facts: hours and the address. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -801,6 +1010,17 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* The routing form — four channels ordered by urgency (the phone
+           * first: the theme sets its number heavy and brick), each channel
+           * card explaining who actually answers, because "whoever is nearest
+           * the kettle" is worth more than a departments list. The form's
+           * fields are the agent's real triage questions — which house,
+           * selling or buying, what should happen next — and the submit
+           * label posts it to the address rather than to a void. The theme
+           * squares the panels, rules the field wells like a printed form,
+           * and top-aligns the two columns so neither stretches into blank
+           * paper. Phone and email stay inside the fiction ranges
+           * (01632 96xxxx, .example). */
           componentSlug: 'contact-routing-form',
           content: {
             channels: [
@@ -849,6 +1069,13 @@ export const realEstateListingTemplate: TemplateShowcase = {
           id: 'contact',
         },
         {
+          /* The practical questions, split layout so the page ends compact:
+           * headline and link left, answers right. These four are the
+           * before-you-ring set — valuation lead time, viewing one of the
+           * listed homes, how to make an offer (in writing, relayed the same
+           * day, never answered with silence), and the coverage boundary
+           * restated as a virtue. On the deeper band to close the page the
+           * way the others close. */
           componentSlug: 'faq-split',
           content: {
             description: 'The practical ones, before you ring.',
@@ -879,6 +1106,7 @@ export const realEstateListingTemplate: TemplateShowcase = {
             title: 'Before you ring',
           },
           id: 'practical',
+          tone: 'muted',
         },
       ],
       title: 'Moorhouse & Kent — Contact the office',
@@ -892,7 +1120,7 @@ export const realEstateListingTemplate: TemplateShowcase = {
     'A fictional market-town estate agency built around the listing register — homes as cards, particulars as tables, and "just agreed" as the proof engine.',
   theme: {
     description:
-      'Warm stone and slate ink with a brick-red accent — hairline rules, measured serif headings, and the assured, surveyed calm of a firm that puts every guide in writing.',
+      'Warm stone and slate ink with a brick-red accent — hairline rules, serif-italic ledger headings, and every image surface drawn as a surveyor’s artefact: floor plans, window grids, the ruled buyers’ book.',
     id: 'real-estate-listing',
     swatches: ['#f5f1ea', '#252a30', '#9c4a2f'],
   },

@@ -9,8 +9,15 @@ import type { TemplateShowcase } from '@/lib/templates/types'
 import { templatePreviewHref } from '@/lib/templates/registry'
 import { cn } from '@/utilities/ui'
 
-/* Moorhouse & Kent's masthead — WAVE 0 SCAFFOLD for the art-direction wave to
- * restyle.
+/* Moorhouse & Kent's masthead — the letterhead as chrome.
+ *
+ * Two rules of slate and paper: a slate utility strip carrying the address
+ * and the office number (the number in clay — the one thing a caller needs),
+ * then an opaque paper masthead under an Oxford rule (theme.css) with the
+ * two names in Instrument Serif italic, the trade line in tracked caps, the
+ * page links, and the single brick action. Opaque on purpose: the masthead is
+ * sticky, and a translucent bar would composite the brick button toward
+ * whatever scrolls beneath it.
  *
  * The interaction contract is final and must survive any restyle: a real
  * <button> trigger with aria-expanded + aria-controls, Escape closes the
@@ -59,23 +66,25 @@ export function MoorhouseHeader({
   return (
     <header data-mk-menu className="mk-header sticky top-0 z-40">
       <div className="mk-utility">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-1 px-5 py-2 text-sm sm:px-8">
-          <span className="leading-6">12 Sheep Street, Abbotsmoor</span>
-          <span className="ms-auto font-medium leading-6">Office 01632 960 233</span>
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-1 px-5 py-2 sm:px-8">
+          <span className="mk-utility-address leading-6">12 Sheep Street, Abbotsmoor</span>
+          <span className="ms-auto leading-6">
+            Office <span className="mk-utility-lead">01632 960 233</span>
+          </span>
         </div>
       </div>
 
       <div className="mk-masthead">
         <nav
           aria-label="Moorhouse & Kent site navigation"
-          className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-3.5 sm:px-8"
+          className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-4 pb-5 sm:px-8"
         >
           <Link
             href={templatePreviewHref(template.slug)}
-            className="mk-focus flex flex-col rounded-md py-1 text-foreground"
+            className="mk-focus flex flex-col gap-0.5 rounded-md py-1"
           >
-            <span className="text-lg font-semibold tracking-heading">Moorhouse &amp; Kent</span>
-            <span className="text-sm text-muted-foreground">Estate agents · Est. 1987</span>
+            <span className="mk-wordmark-name">Moorhouse &amp; Kent</span>
+            <span className="mk-wordmark-trade">Estate agents · Est. 1987</span>
           </Link>
 
           <div className="ms-auto hidden items-center gap-1 lg:flex">
@@ -88,10 +97,7 @@ export function MoorhouseHeader({
                   href={templatePreviewHref(template.slug, item.path)}
                   aria-current={active ? 'page' : undefined}
                   data-mk-active={active ? '' : undefined}
-                  className={cn(
-                    'mk-focus mk-nav-link inline-flex min-h-11 items-center rounded-md px-3.5 text-base',
-                    active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
-                  )}
+                  className="mk-focus mk-nav-link inline-flex min-h-11 items-center rounded-md px-3.5"
                 >
                   {item.label}
                 </Link>
@@ -101,7 +107,7 @@ export function MoorhouseHeader({
 
           <Link
             href={templatePreviewHref(template.slug, 'contact')}
-            className="mk-action mk-focus ms-2 hidden min-h-12 items-center rounded-md px-6 text-base font-medium lg:inline-flex"
+            className="mk-action mk-focus ms-2 hidden min-h-12 items-center px-6 lg:inline-flex"
           >
             Book a valuation
           </Link>
@@ -113,7 +119,7 @@ export function MoorhouseHeader({
             aria-expanded={open}
             aria-label={open ? 'Close menu' : 'Open menu'}
             onClick={() => setOpen((value) => !value)}
-            className="mk-focus mk-trigger ms-auto inline-flex min-h-12 items-center gap-2.5 rounded-md px-4 text-base font-medium lg:hidden"
+            className="mk-focus mk-trigger ms-auto inline-flex min-h-12 items-center gap-2.5 px-4 lg:hidden"
           >
             <span aria-hidden="true" className="flex flex-col gap-1">
               <span className="mk-trigger-bar" />

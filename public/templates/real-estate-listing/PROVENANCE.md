@@ -31,16 +31,27 @@ uses the reserved `.example` top-level domain
 `assets: []` in `src/lib/templates/real-estate-listing.ts` — this concept ships
 and hotlinks **no raster runtime assets at all**.
 
-- Every image surface is **token-derived**: the demo twins render their
-  backend-free `bg-muted` placeholders, restyled by
-  `src/components/site/templates/real-estate-listing/theme.css`. **No likeness,
-  real or synthetic, is depicted anywhere**, and no real property is pictured
-  or described.
-- Avatars are the shared twins' monogram placeholders.
-- Typography uses only the fonts the root layout already loads via `next/font`.
+- Every image surface is **token-derived**, drawn entirely in scoped CSS
+  (`src/components/site/templates/real-estate-listing/theme.css`) over the demo
+  twins' backend-free placeholders, as surveyor's artefacts rather than missing
+  photographs: the property cards' media wells are floor plans (plot-grid
+  sheets, hairline walls, directional hatching that varies per card), the
+  "just agreed" plates are house elevations with a brick corner sash, the
+  buyers'-book plate is a ruled ledger page with a brick margin line, the six
+  team plates are the sash windows of 12 Sheep Street, and the About page's
+  framed plate is the shopfront window with its spaced grid of window cards.
+  **No likeness, real or synthetic, is depicted anywhere**, and no real
+  property is pictured or described.
+- Avatars are the shared twins' monogram placeholders, restyled as serif
+  monogram medallions — initials, never faces.
+- Typography uses only the fonts the root layout already loads via `next/font`
+  (Geist, Geist Mono, and Instrument Serif italic — the concept's letterhead
+  voice for display headlines and ledger figures).
 - Colour is entirely scoped CSS variables under
-  `[data-template-theme='real-estate-listing']`. The site itself stays
-  forced-light; nothing here touches `:root`, `.dark`, or `globals.css`.
+  `[data-template-theme='real-estate-listing']` — warm stone paper, slate ink,
+  and one brick-red accent (AA-checked as type on paper; it steps up to a clay
+  tint on the slate bands). The site itself stays forced-light; nothing here
+  touches `:root`, `.dark`, or `globals.css`.
 
 ## Generated posters
 
