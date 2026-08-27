@@ -231,7 +231,7 @@ describe('MCP tools', () => {
       templates: Array<{ blocks: number; installCommand: string; slug: string }>
     }
 
-    expect(templates).toHaveLength(13)
+    expect(templates).toHaveLength(15)
     expect(templates[0].installCommand).toMatch(/^npx payload-components add-template /)
     expect(templates[0].blocks).toBeGreaterThan(5)
   })

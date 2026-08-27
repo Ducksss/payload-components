@@ -1,0 +1,947 @@
+/* Marleford District Council (civic-council) scoped theme — the plain-language one.
+ *
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='civic-council'] root the shell renders. It overrides
+ * the semantic variables the demo twins consume and adds named Marleford
+ * tokens; it never touches :root, .dark, another template's scope, or
+ * src/app/globals.css. The site stays forced-light — the committee slate band,
+ * the crownbar, and the footer are intentional dark surfaces built from the
+ * tokens below, not a theme.
+ *
+ * Art direction: the front-desk register. A council site is a counter, not a
+ * brochure, so every decision is a forms-clerk's decision rather than a
+ * designer's:
+ *   · paper white — actual white, not off-white — under near-black ink and ONE
+ *     civic teal; nothing else is allowed a colour except the bins section,
+ *     where the colours ARE the content;
+ *   · everything ranges LEFT. The twins center their FAQ headers and CTAs for
+ *     marketing pages; here every centered header is un-centered, because a
+ *     form is read from the left margin down;
+ *   · headings run heavy (700) at a slightly reduced scale — a council
+ *     announces, it does not shout — and eyebrows become form captions: a
+ *     thick teal dash, then a small tracked ink label;
+ *   · zero radius on everything, including the roster's avatar circles: hard
+ *     corners read as print, and one stray pill reads as an oversight;
+ *   · form fields take the 2px ink border of a government form at 3rem
+ *     height; buttons are solid teal or 2px-ink-outlined paper;
+ *   · the only pictures are working documents painted from tokens — survey-map
+ *     tiles, bin-colour plates, calendar leaves, a ruled minutes page — every
+ *     one of them the picture its section actually needs. No raster assets.
+ *   · stillness is the design: this concept ships NO chrome motion of its own,
+ *     and under reduced motion every hover transition resolves instantly
+ *     (healthcare-clinic precedent, applied harder — a counter does not move).
+ *
+ * Contrast, measured from rendered sRGB rather than guessed at:
+ *   · ink (--mdc-ink) is 18.44:1 on paper, 16.55:1 on the muted band, and
+ *     15.78:1 on the teal wash;
+ *   · quiet body text (--mdc-quiet) holds AAA everywhere it can land: 9.16:1
+ *     on paper, 8.22:1 on the band, 7.84:1 on the wash;
+ *   · the one teal is really three cuts of one hue. --mdc-teal (L 43%) is the
+ *     cut that survives paper as TYPE: 7.79:1 on paper, 6.99:1 on the band.
+ *     --mdc-teal-fill (L 44%) is the action fill: white on it is 7.23:1.
+ *     --mdc-teal-lift (L 78%) is the cut that survives the slate: 8.88:1 on
+ *     the band, 7.84:1 on its raised panels — and every custom rule that
+ *     paints teal does so through --mdc-task, which the contrast band and the
+ *     footer remap to the lift, so no re-cut element can miss the step-up;
+ *   · the slate band's foreground is 15.60:1, its muted text 9.91:1 on the
+ *     band and 8.75:1 on raised panels — all AAA;
+ *   · the 3px focus ring (5.58:1 on paper) clears the 3:1 non-text floor with
+ *     room, and is the register's one non-negotiable ornament. */
+
+[data-template-theme='civic-council'] {
+  /* ————— Marleford palette ————— */
+  --mdc-paper: oklch(100% 0 0deg); /* the page: actual paper white */
+  --mdc-ink: oklch(19% 0.012 235deg); /* near-black ink, 18.44:1 */
+  --mdc-quiet: oklch(40% 0.018 230deg); /* muted text, AAA on every surface */
+  --mdc-band: oklch(96.2% 0.006 200deg); /* the muted tone band */
+  --mdc-wash: oklch(94.5% 0.014 192deg); /* chips and tinted wells */
+
+  /* One teal, three cuts (see the contrast ledger above). */
+  --mdc-teal: oklch(43% 0.075 192deg);
+  --mdc-teal-fill: oklch(44% 0.078 192deg);
+  --mdc-teal-lift: oklch(78% 0.07 185deg);
+
+  /* The committee slate: the one dark band, and the footer. */
+  --mdc-slate: oklch(22% 0.02 225deg);
+  --mdc-slate-raised: oklch(26.5% 0.022 225deg);
+
+  /* Indirection the whole file paints teal through: on paper it is the ink
+     cut; the contrast band and the footer remap it to the lift. Custom rules
+     must use var(--mdc-task), never a teal literal — that is what makes the
+     dark-band step-up impossible to miss. */
+  --mdc-task: var(--mdc-teal);
+
+  /* Raised surface for the twins' bg-background/85|70|60 inner panels, which
+     would dissolve on white paper and on the slate alike. Paper-white here;
+     the contrast band remaps it to the raised slate. */
+  --mdc-panel: var(--mdc-paper);
+
+  /* ————— Semantic variables the twins consume ————— */
+  --background: var(--mdc-paper);
+  --foreground: var(--mdc-ink);
+  --card: var(--mdc-paper);
+  --card-foreground: var(--mdc-ink);
+  --popover: var(--mdc-paper);
+  --popover-foreground: var(--mdc-ink);
+
+  /* Actions are solid teal with paper-white type — 7.23:1, a counter stamp,
+     not a tech button. */
+  --primary: var(--mdc-teal-fill);
+  --primary-foreground: oklch(99% 0.002 220deg);
+  --secondary: var(--mdc-band);
+  --secondary-foreground: var(--mdc-ink);
+  --muted: var(--mdc-band);
+  --muted-foreground: var(--mdc-quiet);
+  --accent: var(--mdc-wash);
+  --accent-foreground: var(--mdc-ink);
+
+  --brand: var(--mdc-teal);
+  --brand-foreground: oklch(99% 0.002 220deg);
+  --brand-50: oklch(97% 0.012 192deg);
+  --brand-100: oklch(93.5% 0.028 192deg);
+  --brand-200: oklch(87% 0.05 190deg);
+  --brand-600: oklch(39% 0.07 192deg);
+
+  --border: oklch(85.5% 0.008 220deg);
+  --input: oklch(60% 0.02 225deg);
+  --ring: oklch(50% 0.1 192deg);
+
+  /* Print has no corners. --radius feeds the sm–xl scale through the @theme
+     calc()s; the named container radii are @theme inline literals, so those
+     are zeroed at element level below. */
+  --radius: 0px;
+
+  /* Civic type: heavy, clear, and barely tracked — painted letters on a
+     public notice want air, and the display sizes step DOWN so a plain
+     question still fits its line at a desk. */
+  --tracking-display: -0.022em;
+  --tracking-title: -0.014em;
+  --tracking-snug: -0.01em;
+  --tracking-heading: -0.008em;
+  --tracking-eyebrow: 0.1em;
+
+  --text-4xl: 2.125rem;
+  --text-4xl--line-height: 1.12;
+  --text-5xl: 2.625rem;
+  --text-5xl--line-height: 1.06;
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+[data-template-theme='civic-council'] ::selection {
+  background-color: color-mix(in oklab, var(--mdc-teal) 24%, transparent);
+  color: var(--mdc-ink);
+}
+
+/* ———————————————————— Hard corners, everywhere ———————————————————— */
+
+/* Including rounded-full: the roster's portrait circles become nameplates and
+   the step numerals become stamped squares. Print is square; consistency is
+   what makes plain read as deliberate instead of unfinished. */
+[data-template-theme='civic-council']
+  :is(
+    .rounded-frame,
+    .rounded-panel,
+    .rounded-card,
+    .rounded-inset,
+    .rounded-2xl,
+    .rounded-xl,
+    .rounded-lg,
+    .rounded-md,
+    .rounded-sm,
+    .rounded-full
+  ) {
+  border-radius: 0;
+}
+
+/* ———————————————————— Everything ranges left ———————————————————— */
+
+/* The twins center FAQ headers and CTA sections for marketing pages. A form
+   is read from the left margin down, so the theme un-centers all of it: the
+   text, the stacked flex columns, and the responsive link rows. (The scoped
+   div qualifier keeps the numeral stamps and button labels — inline-flex
+   spans — centered inside their own boxes.) */
+[data-template-theme='civic-council'] [data-template-canvas] .text-center {
+  text-align: start;
+}
+
+[data-template-theme='civic-council'] [data-template-canvas] div.flex-col.items-center {
+  align-items: flex-start;
+}
+
+[data-template-theme='civic-council'] [data-template-canvas] div.justify-center {
+  justify-content: flex-start;
+}
+
+[data-template-theme='civic-council'] [data-template-canvas] .sm\:justify-center {
+  justify-content: flex-start;
+}
+
+[data-template-theme='civic-council'] [data-template-canvas] .mx-auto.tracking-eyebrow {
+  margin-inline: 0;
+}
+
+/* ———————————————————— Typography ———————————————————— */
+
+[data-template-theme='civic-council'] [data-template-canvas] .tracking-display {
+  font-weight: 700;
+}
+
+[data-template-theme='civic-council'] [data-template-canvas] .tracking-title {
+  font-weight: 650;
+}
+
+[data-template-theme='civic-council']
+  [data-template-canvas]
+  :is(.tracking-heading, .tracking-snug) {
+  font-weight: 650;
+}
+
+/* The front desk's question is the largest thing on the site — the one place
+   the scale steps UP instead of down. Ink on bare paper at 18.44:1. */
+[data-template-theme='civic-council'] [data-template-section='front-desk'] .tracking-display {
+  font-size: clamp(2.5rem, 5vw, 3.25rem);
+  letter-spacing: -0.026em;
+  line-height: 1.05;
+}
+
+/* ———————————————————— Eyebrows become form captions ———————————————————— */
+
+/* Every twin eyebrow is a Badge carrying `rounded-full … uppercase
+   tracking-eyebrow`. The pill is dropped for the caption a council form
+   prints above each fieldset: a thick teal dash, then a small tracked ink
+   label. hero-basic's proof chips share rounded-full but never
+   tracking-eyebrow, so this pair selects eyebrows only. The dash paints
+   var(--mdc-task), so it lifts automatically on the slate. */
+[data-template-theme='civic-council'] [data-template-canvas] .rounded-full.tracking-eyebrow {
+  align-items: center;
+  background-color: transparent;
+  border: 0;
+  color: var(--foreground);
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 700;
+  gap: 0.625rem;
+  padding: 0;
+}
+
+[data-template-theme='civic-council']
+  [data-template-canvas]
+  .rounded-full.tracking-eyebrow::before {
+  background-color: var(--mdc-task);
+  content: '';
+  flex: none;
+  height: 0.3125rem;
+  width: 1.375rem;
+}
+
+/* ———————————————————— Actions and chips ———————————————————— */
+
+/* DemoLink and the form submit are the only h-10 rounded-md SPANS in the
+   twins (the form's field wells share the metrics but are divs), so this
+   grows real actions only. 3rem targets: a council site is used by everyone,
+   one-handed, in a hurry. */
+[data-template-theme='civic-council'] [data-template-canvas] span.h-10.rounded-md {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  height: 3rem;
+  padding-inline: 1.5rem;
+}
+
+/* The outline action is a real second choice, not a ghost: a 2px ink frame on
+   paper. On the slate, --foreground resolves light, so the frame follows. */
+[data-template-theme='civic-council'] [data-template-canvas] span.h-10.rounded-md.border-border {
+  border-color: var(--foreground);
+  border-width: 2px;
+}
+
+/* hero-basic's proof chips become counter tickets: a wash field with a thick
+   teal notch down the left edge, each one a promise with an hour or a number
+   in it. */
+[data-template-theme='civic-council'] [data-template-canvas] .rounded-full.px-3.py-1.text-sm {
+  background-color: var(--mdc-wash);
+  box-shadow: inset 0.3125rem 0 0 var(--mdc-task);
+  color: var(--foreground);
+  font-weight: 600;
+  padding: 0.5rem 0.875rem 0.5rem 1.25rem;
+}
+
+/* ———————————————————— Section rhythm ———————————————————— */
+
+/* The twins arrive wrapped in the catalog's specimen frame (rounded-frame
+   border bg-card/35). Dissolve it so each page reads as one continuous
+   counter, at a working rhythm — a council page states and moves on. */
+[data-template-theme='civic-council'] [data-template-section] > [aria-hidden='true'] > div {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding-block: clamp(3.25rem, 6.5vw, 5.25rem);
+}
+
+/* One hairline between sections, drawn as an inset shadow so it can never
+   shift layout. The slate band supplies its own edges, so it opts out. */
+[data-template-theme='civic-council']
+  [data-template-section]
+  + [data-template-section]:not([data-tone='contrast']) {
+  box-shadow: inset 0 1px 0 var(--border);
+}
+
+/* The heroes: bare paper, more air, and NOTHING else — no wash, no gradient,
+   no atmosphere. A council's hero is a desk, and what keeps it from reading
+   unfinished is the caption dash, the heavy question, and the ticket row —
+   type doing the work decoration would fake. */
+[data-template-theme='civic-council']
+  :is([data-template-section='front-desk'], [data-template-section='hero'])
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(3.75rem, 7.5vw, 6rem) clamp(3.25rem, 6vw, 4.75rem);
+}
+
+/* ———————————————————— Tone bands ———————————————————— */
+
+/* muted: a cool sheet of counter paper, hairline-edged by the section rule
+   above. Inner cards keep lifting to pure white. */
+[data-template-theme='civic-council'] [data-template-section][data-tone='muted'] {
+  --border: oklch(83% 0.01 215deg);
+
+  background-color: var(--mdc-band);
+}
+
+/* contrast + footer: the committee slate. Every semantic variable is remapped
+   so the twins' paper-first markup resolves to an AA-safe dark set, and the
+   two indirections (--mdc-task, --mdc-panel) follow the band down — which is
+   what keeps every custom teal element and every raised panel honest here
+   without a per-element override. */
+[data-template-theme='civic-council'] [data-template-section][data-tone='contrast'],
+[data-template-theme='civic-council'] .mdc-footer {
+  --mdc-task: var(--mdc-teal-lift);
+  --mdc-panel: var(--mdc-slate-raised);
+
+  --background: var(--mdc-slate);
+  --foreground: oklch(96.5% 0.004 220deg);
+  --card: var(--mdc-slate-raised);
+  --card-foreground: oklch(96.5% 0.004 220deg);
+  --popover: var(--mdc-slate-raised);
+  --popover-foreground: oklch(96.5% 0.004 220deg);
+  --secondary: oklch(30% 0.02 225deg);
+  --secondary-foreground: oklch(96.5% 0.004 220deg);
+  --muted: oklch(29% 0.02 225deg);
+  --muted-foreground: oklch(82% 0.01 210deg);
+  --accent: oklch(31% 0.03 200deg);
+  --accent-foreground: oklch(94% 0.01 200deg);
+  --brand: var(--mdc-teal-lift);
+  --brand-foreground: var(--mdc-slate);
+  --border: oklch(100% 0 0deg / 20%);
+  --input: oklch(100% 0 0deg / 30%);
+  --ring: var(--mdc-teal-lift);
+
+  background-color: var(--mdc-slate);
+  color: var(--foreground);
+}
+
+/* The slate band leads with a teal keyline — the task rule crossing the one
+   dark surface — and gets the deepest breath on the page. */
+[data-template-theme='civic-council'] [data-template-section][data-tone='contrast'] {
+  box-shadow: inset 0 4px 0 var(--mdc-teal);
+}
+
+[data-template-theme='civic-council']
+  [data-template-section][data-tone='contrast']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(3.75rem, 7vw, 5.75rem);
+}
+
+/* ———————————————————— Raised panels ———————————————————— */
+
+/* The twins paint inner cards with bg-background/85|70|60, which dissolves on
+   white paper and on the slate alike. One indirection fixes both bands. */
+[data-template-theme='civic-council']
+  [data-template-canvas]
+  :is(.bg-background\/85, .bg-background\/70, .bg-background\/60) {
+  background-color: var(--mdc-panel);
+}
+
+/* Depth is a border's job in print; the catalog's drop shadows read as screen
+   chrome on paper this white. */
+[data-template-theme='civic-council'] [data-template-canvas] :is(.shadow-xl, .shadow-lg) {
+  box-shadow: none;
+}
+
+/* ———————————————————— The survey-map tiles ———————————————————— */
+
+/* Every backend-free upload placeholder (bg-muted) is painted as a tile off
+   the district survey map: pale plan paper under a fine survey grid, the
+   river Marle crossing as a banked teal band — darker edge lines are what
+   make a water band read cartographic instead of a diagonal sash — and a
+   green open space pooled in one corner; a map of the affected street is the
+   one picture a council notice actually needs. Per-section variables move
+   the river and the green, so no two tiles are the same sheet. No raster
+   assets. */
+[data-template-theme='civic-council'] [data-template-canvas] .bg-muted {
+  background-color: oklch(97.8% 0.006 130deg);
+  background-image:
+    linear-gradient(
+      var(--mdc-river-angle, 112deg),
+      transparent calc(var(--mdc-river-at, 46%) - 3.5%),
+      color-mix(in oklab, var(--mdc-teal) 52%, transparent) calc(var(--mdc-river-at, 46%) - 3.5%),
+      color-mix(in oklab, var(--mdc-teal) 52%, transparent)
+        calc(var(--mdc-river-at, 46%) - 3.5% + 2px),
+      color-mix(in oklab, var(--mdc-teal) 24%, transparent)
+        calc(var(--mdc-river-at, 46%) - 3.5% + 2px),
+      color-mix(in oklab, var(--mdc-teal) 24%, transparent)
+        calc(var(--mdc-river-at, 46%) + 3.5% - 2px),
+      color-mix(in oklab, var(--mdc-teal) 52%, transparent)
+        calc(var(--mdc-river-at, 46%) + 3.5% - 2px),
+      color-mix(in oklab, var(--mdc-teal) 52%, transparent) calc(var(--mdc-river-at, 46%) + 3.5%),
+      transparent calc(var(--mdc-river-at, 46%) + 3.5%)
+    ),
+    radial-gradient(
+      34% 42% at var(--mdc-park-x, 78%) var(--mdc-park-y, 24%),
+      color-mix(in oklab, oklch(62% 0.09 145deg) 26%, transparent),
+      transparent 72%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--mdc-ink) 9%, transparent) 0 1px,
+      transparent 1px 22px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--mdc-ink) 9%, transparent) 0 1px,
+      transparent 1px 22px
+    );
+}
+
+/* The three notices are three different corners of the district. Each
+   content-rows row is the section's only div.grid, so :nth-child counts rows
+   without touching the header stack. */
+[data-template-theme='civic-council'] [data-template-section='this-month'] div.grid:nth-child(2) {
+  --mdc-park-x: 20%;
+  --mdc-park-y: 72%;
+  --mdc-river-angle: 64deg;
+  --mdc-river-at: 30%;
+}
+
+[data-template-theme='civic-council'] [data-template-section='this-month'] div.grid:nth-child(3) {
+  --mdc-park-x: 66%;
+  --mdc-park-y: 80%;
+  --mdc-river-angle: 128deg;
+  --mdc-river-at: 62%;
+}
+
+/* ———————————————————— The bin plates (Services) ———————————————————— */
+
+/* The one section allowed colours beyond the teal, because here the colours
+   ARE the instruction: each row's plate is the bin it describes — the field
+   is the body, the darker band across the top is the moulded lid, and the
+   small paper patch is the address label. Legible from across a room, the
+   way the bins themselves are. */
+[data-template-theme='civic-council'] [data-template-section='the-bins'] div.grid .bg-muted {
+  background-color: var(--mdc-bin, oklch(50% 0.11 150deg));
+  background-image:
+    linear-gradient(var(--mdc-paper), var(--mdc-paper)),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--mdc-ink) 32%, var(--mdc-bin, oklch(50% 0.11 150deg))) 0 24%,
+      transparent 24%
+    );
+  background-position:
+    50% 66%,
+    0 0;
+  background-repeat: no-repeat, no-repeat;
+  background-size:
+    30% 17%,
+    100% 100%;
+}
+
+[data-template-theme='civic-council'] [data-template-section='the-bins'] div.grid:nth-child(1) {
+  --mdc-bin: oklch(50% 0.11 150deg);
+}
+
+[data-template-theme='civic-council'] [data-template-section='the-bins'] div.grid:nth-child(2) {
+  --mdc-bin: oklch(48% 0.09 250deg);
+}
+
+[data-template-theme='civic-council'] [data-template-section='the-bins'] div.grid:nth-child(3) {
+  --mdc-bin: oklch(52% 0.012 240deg);
+}
+
+/* ———————————————————— The calendar leaves (Council) ———————————————————— */
+
+/* Each meeting's plate becomes a month leaf: a wash header band, a ruled
+   7×6 grid, and the meeting day filled solid teal. The filled day moves
+   across the three leaves — first Tuesday, second Thursday, third Tuesday —
+   so the row quietly draws the committee cycle itself. */
+[data-template-theme='civic-council'] [data-template-section='meetings'] div.grid .bg-muted {
+  background-color: var(--mdc-paper);
+  background-image:
+    linear-gradient(var(--mdc-teal), var(--mdc-teal)),
+    linear-gradient(180deg, var(--mdc-wash) 0 16%, transparent 16%),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--mdc-ink) 12%, transparent) 0 1px,
+      transparent 1px calc(100% / 7)
+    ),
+    repeating-linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--mdc-ink) 12%, transparent) 0 1px,
+      transparent 1px 14%
+    );
+  background-position:
+    var(--mdc-day-x, 30%) var(--mdc-day-y, 36%),
+    0 0,
+    0 0,
+    0 0;
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
+  background-size:
+    9.5% 12%,
+    100% 100%,
+    auto,
+    auto;
+}
+
+[data-template-theme='civic-council'] [data-template-section='meetings'] div.grid:nth-child(2) {
+  --mdc-day-x: 64%;
+  --mdc-day-y: 52%;
+}
+
+[data-template-theme='civic-council'] [data-template-section='meetings'] div.grid:nth-child(3) {
+  --mdc-day-x: 30%;
+  --mdc-day-y: 68%;
+}
+
+/* ———————————————————— The minutes page (Council) ———————————————————— */
+
+/* The plain-words promise sits beside the document it lives in: a ruled
+   minutes page — teal letterhead band, a margin rule, hairline text rules —
+   painted from the same tokens. */
+[data-template-theme='civic-council'] [data-template-section='the-promise'] .bg-muted {
+  background-color: var(--mdc-paper);
+  background-image:
+    linear-gradient(180deg, var(--mdc-teal) 0 7%, transparent 7%),
+    linear-gradient(
+      90deg,
+      transparent 0 12%,
+      color-mix(in oklab, var(--mdc-teal) 45%, transparent) 12% calc(12% + 2px),
+      transparent calc(12% + 2px)
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 21px,
+      color-mix(in oklab, var(--mdc-ink) 16%, transparent) 21px 22px
+    );
+  background-position: 0 0;
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size:
+    100% 100%,
+    100% 100%,
+    auto;
+}
+
+/* ———————————————————— The nameplates (Council roster) ———————————————————— */
+
+/* Sixteen identical portrait wells would read as a broken image grid, and no
+   likeness — drawn or implied — is allowed anywhere on this concept. Squared
+   by the radius rule above, each well becomes a nameplate: a quiet wash tile
+   over a solid teal base rule. Names take label weight. */
+[data-template-theme='civic-council'] [data-template-section='members'] .bg-muted {
+  background-color: var(--mdc-wash);
+  background-image: linear-gradient(180deg, transparent 74%, var(--mdc-teal) 74%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+[data-template-theme='civic-council'] [data-template-section='members'] span.text-sm {
+  font-weight: 600;
+}
+
+/* ———————————————————— The task tiles (home) ———————————————————— */
+
+/* feature-icon-grid ships a 128px graph-paper icon decorator on every card —
+   decoration that finishes nobody's task, drawn from a software icon set. It
+   is removed outright, and each card is re-cut as a task tile: a thick ink
+   rule across the top, a teal underlined title that reads as the task link
+   it is in production, the description stating what you need before you
+   start. The gallery's closest thing to a government task list. */
+[data-template-theme='civic-council'] [data-template-section='top-tasks'] .h-32.overflow-hidden {
+  display: none;
+}
+
+[data-template-theme='civic-council'] [data-template-section='top-tasks'] .bg-background\/85 {
+  background-color: transparent;
+  border-color: transparent;
+  border-top: 4px solid var(--foreground);
+}
+
+[data-template-theme='civic-council'] [data-template-section='top-tasks'] .p-6 {
+  padding: 1.25rem 0 0.25rem;
+}
+
+[data-template-theme='civic-council'] [data-template-section='top-tasks'] .text-xl.tracking-title {
+  color: var(--mdc-task);
+  text-decoration-color: color-mix(in oklab, var(--mdc-task) 55%, transparent);
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+}
+
+/* ———————————————————— The procedure tiles (report) ———————————————————— */
+
+/* feature-steps takes the same open-tile treatment, so the three steps read
+   as one printed procedure; the numerals are already square (radius rule)
+   solid-teal stamps and only need the weight of one. */
+[data-template-theme='civic-council'] [data-template-section='what-happens'] .bg-background\/85 {
+  background-color: transparent;
+  border-color: transparent;
+  border-top: 4px solid var(--foreground);
+}
+
+[data-template-theme='civic-council'] [data-template-section='what-happens'] .p-5 {
+  padding-inline: 0;
+}
+
+[data-template-theme='civic-council'] [data-template-section='what-happens'] .bg-primary {
+  font-weight: 700;
+}
+
+/* ———————————————————— The slate ledger (home) ———————————————————— */
+
+/* stats-proof on the slate: the metrics rule off with brighter hairlines, the
+   panel takes a teal-lift spine, and the residents' panel wordmark becomes a
+   small tracked lockup — a citizens' panel letterhead, not a heading. All
+   teal here paints --mdc-task, already lifted by the band remap. */
+[data-template-theme='civic-council'] [data-template-section='the-report'] figure {
+  box-shadow: inset 0.375rem 0 0 var(--mdc-task);
+}
+
+[data-template-theme='civic-council'] [data-template-section='the-report'] .h-9 .tracking-title {
+  color: var(--mdc-task);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='civic-council'] [data-template-section='the-report'] dl dd {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ———————————————————— The ledgers (content-stats) ———————————————————— */
+
+/* The arrow lists carry the site's hard promises; markers at 50% opacity are
+   the least legible thing on the most load-bearing lines, so they become
+   full-strength teal and the values take ledger weight. */
+[data-template-theme='civic-council'] [data-template-canvas] svg.size-4.opacity-50 {
+  color: var(--mdc-task);
+  opacity: 1;
+}
+
+[data-template-theme='civic-council'] [data-template-canvas] li > .font-medium.text-foreground {
+  font-weight: 700;
+}
+
+/* faq-grouped's category icons follow the same rule: one teal, full
+   strength. (FaqDemoIcon is the only size-5 svg in these recipes.) */
+[data-template-theme='civic-council'] [data-template-canvas] svg.size-5 {
+  color: var(--mdc-task);
+}
+
+/* ———————————————————— The collection-day matrix ———————————————————— */
+
+/* comparator-table repurposed as a timetable: the header row rules off with
+   a 2px ink line, area names and row labels take label weight, and the day
+   cells stay quiet — it should print like the back of the collection
+   calendar every household gets. */
+[data-template-theme='civic-council'] [data-template-section='bin-days'] thead th {
+  border-bottom: 2px solid var(--foreground);
+}
+
+[data-template-theme='civic-council'] [data-template-section='bin-days'] th .text-base {
+  font-weight: 700;
+}
+
+[data-template-theme='civic-council'] [data-template-section='bin-days'] td.text-muted-foreground {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+/* ———————————————————— The forms ———————————————————— */
+
+/* The government-form move, whole: field wells take a 2px ink border at 3rem
+   height on white, the panel takes a 2px ink frame, and both grid columns pin
+   to the top so the panel ends where its fields do. div.h-10.rounded-md and
+   .h-28 are the form wells only — the actions with those metrics are spans. */
+[data-template-theme='civic-council'] [data-template-canvas] div.h-10.rounded-md {
+  background-color: var(--mdc-paper);
+  border-color: var(--foreground);
+  border-width: 2px;
+  height: 3rem;
+}
+
+[data-template-theme='civic-council'] [data-template-canvas] .h-28 {
+  background-color: var(--mdc-paper);
+  border-color: var(--foreground);
+  border-width: 2px;
+}
+
+[data-template-theme='civic-council']
+  :is([data-template-section='report-form'], [data-template-section='contact'])
+  .rounded-panel.bg-background\/85 {
+  border-color: var(--foreground);
+  border-width: 2px;
+}
+
+[data-template-theme='civic-council']
+  :is([data-template-section='report-form'], [data-template-section='contact'])
+  .grid.gap-8 {
+  align-items: start;
+}
+
+/* The first channel is the one that must not be missed — the generic
+   emergency route on the report page, the phone line on the contact page —
+   so it takes the solid teal spine. Channel emphasis values hold ink weight
+   through the teal cut that survives paper. */
+[data-template-theme='civic-council']
+  :is([data-template-section='report-form'], [data-template-section='contact'])
+  address
+  .rounded-panel:first-child {
+  box-shadow: inset 0.375rem 0 0 var(--mdc-task);
+}
+
+[data-template-theme='civic-council'] [data-template-canvas] span.text-primary {
+  color: var(--mdc-teal);
+  font-weight: 700;
+}
+
+/* ———————————————————— The counter boxes ———————————————————— */
+
+/* call-to-action-boxed's inner panel and faq-card's frame both become the
+   "if in doubt" box printed at the foot of a council letter: a 2px ink
+   frame, and on the CTA a solid teal spine. */
+[data-template-theme='civic-council'] [data-template-canvas] .rounded-2xl.bg-background\/60 {
+  border-color: var(--foreground);
+  border-width: 2px;
+  box-shadow: inset 0.5rem 0 0 var(--mdc-task);
+}
+
+[data-template-theme='civic-council']
+  [data-template-section='reporting-questions']
+  .bg-background\/85.p-2 {
+  border-color: var(--foreground);
+  border-width: 2px;
+  padding: 0.5rem 1rem;
+}
+
+/* ———————————————————— FAQ rules ———————————————————— */
+
+/* Question dividers thicken to full-strength hairlines so every list reads
+   as a printed form rather than a soft accordion. */
+[data-template-theme='civic-council'] [data-template-canvas] .border-b {
+  border-color: var(--border);
+}
+
+/* content-quote's pull rule joins the one-teal system — the minuted promise
+   deserves the task colour, and --mdc-task keeps it honest on any band. */
+[data-template-theme='civic-council'] [data-template-canvas] blockquote.border-l-2 {
+  border-color: var(--mdc-task);
+}
+
+/* ———————————————————— Shell chrome ———————————————————— */
+
+/* The crownbar: the fiction disclosure and the phone line on a slate strip —
+   the most-read line on the site is the first one. */
+[data-template-theme='civic-council'] .mdc-crownbar {
+  background-color: var(--mdc-slate);
+  color: oklch(93% 0.005 220deg);
+}
+
+[data-template-theme='civic-council'] .mdc-crownline {
+  color: oklch(97% 0.003 220deg);
+  font-weight: 600;
+}
+
+/* The masthead closes with the site's thickest task rule: 4px of teal that
+   the active tab's bar sits on. */
+[data-template-theme='civic-council'] .mdc-masthead {
+  background-color: var(--mdc-paper);
+  box-shadow: inset 0 -4px 0 var(--mdc-teal);
+}
+
+/* The crest: a shield cut from the teal with the river Marle crossing it in
+   paper white — plain CSS, no SVG, no image file, and no real heraldry. */
+[data-template-theme='civic-council'] .mdc-crest {
+  background-color: var(--mdc-teal-fill);
+  clip-path: polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%);
+  display: inline-block;
+  flex: none;
+  height: 2.5rem;
+  position: relative;
+  width: 2.125rem;
+}
+
+[data-template-theme='civic-council'] .mdc-crest::after {
+  background: linear-gradient(
+    174deg,
+    transparent 42%,
+    oklch(97% 0.006 200deg) 42% 56%,
+    transparent 56%
+  );
+  content: '';
+  inset: 0;
+  position: absolute;
+}
+
+[data-template-theme='civic-council'] .mdc-wordmark-name {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  letter-spacing: -0.012em;
+  line-height: 1.25;
+}
+
+[data-template-theme='civic-council'] .mdc-wordmark-sub {
+  color: var(--mdc-quiet);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+/* Nav: label-weight links; the active page carries a solid 4px teal bar that
+   meets the masthead rule — a folder tab, a state mark that survives being
+   printed or photocopied. */
+[data-template-theme='civic-council'] .mdc-nav-link {
+  color: var(--mdc-quiet);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  position: relative;
+  transition: color 0.15s ease-out;
+}
+
+[data-template-theme='civic-council'] .mdc-nav-link:hover {
+  color: var(--foreground);
+}
+
+[data-template-theme='civic-council'] .mdc-nav-link[aria-current='page'] {
+  color: var(--foreground);
+}
+
+[data-template-theme='civic-council'] .mdc-nav-link[aria-current='page']::after {
+  background-color: var(--mdc-teal);
+  bottom: 0;
+  content: '';
+  height: 4px;
+  inset-inline: 0.875rem;
+  position: absolute;
+}
+
+[data-template-theme='civic-council'] .mdc-trigger {
+  background-color: var(--mdc-paper);
+  border: 2px solid var(--foreground);
+  font-weight: 600;
+}
+
+/* The mobile sheet: full-width paper rows, hairline separated, the active row
+   flagged with a teal spine on a wash — no floating card, no animation. */
+[data-template-theme='civic-council'] .mdc-sheet {
+  background-color: var(--mdc-paper);
+  border-bottom: 2px solid var(--foreground);
+  box-shadow: inset 0 1px 0 var(--border);
+}
+
+[data-template-theme='civic-council'] .mdc-sheet-link {
+  box-shadow: inset 0 -1px 0 var(--border);
+  color: var(--foreground);
+}
+
+[data-template-theme='civic-council'] .mdc-sheet-link[aria-current='page'] {
+  background-color: var(--mdc-wash);
+  box-shadow:
+    inset 0.375rem 0 0 var(--mdc-teal),
+    inset 0 -1px 0 var(--border);
+}
+
+[data-template-theme='civic-council'] .mdc-sheet-note {
+  color: var(--mdc-quiet);
+}
+
+/* ———————————————————— Footer ———————————————————— */
+
+/* The footer shares the slate remap above (its variables resolve dark-safe),
+   enters over a 6px teal task rule, and keeps the emergency note at full
+   foreground weight — it is a fiction-safety surface, not a nicety. */
+[data-template-theme='civic-council'] .mdc-footer {
+  border-top: 6px solid var(--mdc-teal);
+}
+
+[data-template-theme='civic-council'] .mdc-footer-label {
+  color: var(--mdc-task);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='civic-council'] .mdc-footer-notice {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+[data-template-theme='civic-council'] .mdc-footer .mdc-crest {
+  height: 2.125rem;
+  width: 1.8125rem;
+}
+
+[data-template-theme='civic-council'] .mdc-footer-name {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+[data-template-theme='civic-council'] .mdc-rail {
+  background-color: color-mix(in oklab, var(--mdc-slate) 84%, black);
+  color: oklch(84% 0.008 215deg);
+}
+
+/* Prominent civic focus: one thick visible ring for every interactive element
+   in the chrome, at a weight that is obvious rather than tasteful — the
+   register's one non-negotiable ornament. --ring resolves per surface (teal
+   on paper, lifted teal on the slate via the footer remap). */
+[data-template-theme='civic-council'] .mdc-focus:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ———————————————————— Narrow chrome ———————————————————— */
+
+/* At 390px the masthead has to fit a crest, the council's name, and the menu
+   trigger. The village line goes first, then the name tightens. */
+@media (max-width: 639px) {
+  [data-template-theme='civic-council'] .mdc-header .mdc-wordmark-sub {
+    display: none;
+  }
+
+  [data-template-theme='civic-council'] .mdc-header .mdc-wordmark-name {
+    font-size: 0.9375rem;
+  }
+
+  [data-template-theme='civic-council'] .mdc-header .mdc-crest {
+    height: 2.125rem;
+    width: 1.8125rem;
+  }
+}
+
+/* ———————————————————— Reduced motion ———————————————————— */
+
+/* This concept ships NO chrome motion at all — no entrances, no scroll
+   behaviour, no reveals of its own — a stillness kept on purpose: a counter
+   does not perform. The shared section choreography already pins its final
+   frame under reduce; what is left to net is the hover colour transitions,
+   which resolve instantly here, and any future motion added beneath this
+   scope inherits the same guarantee. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='civic-council'] * {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+  }
+}
