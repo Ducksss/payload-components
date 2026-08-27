@@ -155,6 +155,61 @@ describe('payload-components doctor', () => {
     )
   }, 180000)
 
+  it('names the required localization setting a config is missing', async () => {
+    const { fixtureDir } = await createInstallFixture('hero-basic')
+    tempDirs.push(fixtureDir)
+    /* Payload v3 requires defaultLocale alongside locales; reporting a healthy
+       locale count around the hole would hide a config Payload rejects. */
+    await writeFile(
+      path.join(fixtureDir, 'src', 'payload.config.ts'),
+      [
+        "import { buildConfig } from 'payload'",
+        '',
+        'export default buildConfig({',
+        "  localization: { locales: ['en', 'zh'] },",
+        '  collections: [],',
+        '})',
+        '',
+      ].join('\n'),
+      'utf8',
+    )
+
+    const result = await runDoctorCommand(fixtureDir)
+
+    expect(result.code).toBe(0)
+    expect(result.stdout).toContain('[ok] localization: 2 locales — en (English), zh (简体中文)')
+    expect(result.stdout).toContain(
+      '[warn] localization: src/payload.config.ts declares locales but no defaultLocale',
+    )
+  }, 180000)
+
+  it('reads a runtime-computed locale set as configured, not as missing', async () => {
+    const { fixtureDir } = await createInstallFixture('hero-basic')
+    tempDirs.push(fixtureDir)
+    await writeFile(
+      path.join(fixtureDir, 'src', 'payload.config.ts'),
+      [
+        "import { buildConfig } from 'payload'",
+        '',
+        'export default buildConfig({',
+        '  localization: {',
+        "    defaultLocale: 'en',",
+        '    locales: getLocales(),',
+        '  },',
+        '  collections: [],',
+        '})',
+        '',
+      ].join('\n'),
+      'utf8',
+    )
+
+    const result = await runDoctorCommand(fixtureDir)
+
+    expect(result.code).toBe(0)
+    expect(result.stdout).toContain('(locales resolved at runtime)')
+    expect(result.stdout).not.toContain('declares no locales')
+  }, 180000)
+
   it('warns when a component is localized but the config declares no locales', async () => {
     const { fixtureDir, manifest } = await createInstallFixture('hero-basic', {
       preseedSource: true,

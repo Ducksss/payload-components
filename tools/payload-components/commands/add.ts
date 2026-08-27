@@ -241,18 +241,25 @@ const readDeclaredLocales = async ({ cwd, project }: { cwd: string; project: Det
     return undefined
   }
 
-  return {
-    configFileRelPath,
-    locales: readPayloadLocalization(configSource)?.locales ?? [],
-  }
+  return { configFileRelPath, declared: readPayloadLocalization(configSource) }
 }
 
-/* An unreadable config counts as declared: it is not this command's job to
-   second-guess a shape it could not parse. */
+/* Two shapes count as declared even though no locale code is in hand: a config
+   this CLI could not parse at all, and one that computes its locales at runtime.
+   Neither is this command's business to second-guess — only a config that plainly
+   has no locales earns the nudge. */
 const hasDeclaredLocales = async (options: { cwd: string; project: DetectedProject }) => {
-  const declared = await readDeclaredLocales(options)
+  const read = await readDeclaredLocales(options)
 
-  return declared === undefined || declared.locales.length > 0
+  if (!read) {
+    return true
+  }
+
+  return (
+    read.declared === undefined ||
+    read.declared.locales.length > 0 ||
+    !read.declared.localesEnumerable
+  )
 }
 
 /* `localized: true` is inert until the Payload config declares locales, and
@@ -263,15 +270,15 @@ const warnWhenNoLocalesDeclared = async (options: {
   cwd: string
   project: DetectedProject
 }) => {
-  const declared = await readDeclaredLocales(options)
+  const read = await readDeclaredLocales(options)
 
-  if (!declared || declared.locales.length > 0) {
+  if (!read || (await hasDeclaredLocales(options))) {
     return
   }
 
   printHeader(
     [
-      `payload-components: ${declared.configFileRelPath} does not declare any locales, so localized: true has no effect yet.`,
+      `payload-components: ${read.configFileRelPath} does not declare any locales, so localized: true has no effect yet.`,
       '  Declare them with:',
       '    payload-components localize --locales en,zh',
     ].join('\n'),

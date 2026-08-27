@@ -133,6 +133,21 @@ describe('locale resolution', () => {
     expect(resolveLocales({ codes: ['en', 'zh'], defaultLocale: 'zh' }).defaultLocale).toBe('zh')
   })
 
+  it('escapes anything that would break out of the generated string literal', () => {
+    /* Catalog labels are tame and codes are pattern-checked, but a helper that
+       emits TypeScript has to survive whatever it is handed — a raw line
+       terminator inside a single-quoted literal is a syntax error. */
+    const rendered = renderLocalizationBlock({
+      defaultLocale: 'en',
+      fallback: true,
+      locales: [{ code: 'en', label: "O'Brien\r\n\u2028\u2029\\x" }],
+    })
+
+    expect(rendered).toContain(String.raw`{ code: 'en', label: 'O\'Brien\r\n\u2028\u2029\\x' }`)
+    /* One line per locale — nothing leaked a real newline into the output. */
+    expect(rendered.split('\n').filter((line) => line.includes('code:'))).toHaveLength(1)
+  })
+
   it('renders a Payload localization block at the given indentation', () => {
     expect(
       renderLocalizationBlock({
@@ -261,7 +276,12 @@ describe('readPayloadLocalization', () => {
           '})',
         ].join('\n'),
       ),
-    ).toEqual({ defaultLocale: 'zh', fallback: false, locales: ['zh', 'en'] })
+    ).toEqual({
+      defaultLocale: 'zh',
+      fallback: false,
+      locales: ['zh', 'en'],
+      localesEnumerable: true,
+    })
 
     expect(
       readPayloadLocalization(
@@ -269,13 +289,44 @@ describe('readPayloadLocalization', () => {
           '\n',
         ),
       ),
-    ).toEqual({ locales: ['en', 'ja'] })
+    ).toEqual({ locales: ['en', 'ja'], localesEnumerable: true })
 
     expect(
       readPayloadLocalization(
         ['export default buildConfig({', '  collections: [],', '})'].join('\n'),
       ),
     ).toBeUndefined()
+  })
+
+  /* An empty list is two different answers, and conflating them is what made
+   * `add` nag a localized project and `localize` refuse to wrap its blocks. */
+  it('separates a computed locale set from a genuinely empty one', () => {
+    expect(
+      readPayloadLocalization(
+        [
+          'export default buildConfig({',
+          '  localization: {',
+          "    defaultLocale: 'en',",
+          '    locales: getLocales(),',
+          '  },',
+          '})',
+        ].join('\n'),
+      ),
+    ).toEqual({ defaultLocale: 'en', locales: [], localesEnumerable: false })
+
+    /* A whole localization object built elsewhere reads the same way. */
+    expect(
+      readPayloadLocalization(
+        ['export default buildConfig({', '  localization: localizationConfig,', '})'].join('\n'),
+      ),
+    ).toEqual({ locales: [], localesEnumerable: false })
+
+    /* `locales: []` is a literal answer — empty, and a misconfiguration. */
+    expect(
+      readPayloadLocalization(
+        ['export default buildConfig({', '  localization: { locales: [] },', '})'].join('\n'),
+      ),
+    ).toEqual({ locales: [], localesEnumerable: true })
   })
 })
 
@@ -468,6 +519,37 @@ describe('localizeCommand', () => {
       'src/blocks/HeroBasic/config.ts (missing — run "payload-components add hero-basic")',
     )
     expect((await loadState(fixtureDir)).components['hero-basic']?.localized).toBeUndefined()
+    /* In scope and not wrapped, so the run reports itself incomplete. */
+    expect(process.exitCode).toBe(1)
+  })
+
+  /* The config computes its locales, so this command cannot name them — but the
+     project IS localized, and refusing to wrap its blocks was the bug. */
+  it('wraps blocks for a config whose locales are computed at runtime', async () => {
+    const computed = CONFIG_SOURCE.replace(
+      '  collections: [Pages],',
+      [
+        '  localization: {',
+        "    defaultLocale: 'en',",
+        '    locales: getLocales(),',
+        '  },',
+        '  collections: [Pages],',
+      ].join('\n'),
+    )
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic'],
+      configSource: computed,
+    })
+    const { localizeCommand, output } = await setup()
+
+    await localizeCommand({ cwd: fixtureDir })
+
+    expect(await readBlockConfig(fixtureDir, 'HeroBasic')).toContain('fields: localizeFields([')
+    /* The config is read, never rewritten, on this path. */
+    expect(await readConfig(fixtureDir)).toBe(computed)
+    expect((await loadState(fixtureDir)).components['hero-basic']?.localized).toBe(true)
+    expect(output()).toContain('computed at runtime — this command cannot name them')
+    expect(process.exitCode).toBeUndefined()
   })
 
   it('rejects a component that is not recorded as installed', async () => {

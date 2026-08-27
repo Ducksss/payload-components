@@ -155,9 +155,21 @@ export const resolveLocales = ({
 }
 
 /* Single quotes and no trailing semicolons to match what the rest of the
- * installer writes into consumer projects. The escape is belt-and-braces: no
- * catalog label contains a quote, and codes are pattern-checked above. */
-const quote = (value: string) => `'${value.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`
+ * installer writes into consumer projects.
+ *
+ * Correct in isolation rather than relying on its callers: no catalog label
+ * contains any of these and codes are pattern-checked above, but a helper that
+ * emits source has to survive whatever it is handed. Line terminators matter
+ * most — a raw newline, U+2028, or U+2029 inside a single-quoted literal is a
+ * syntax error, not just ugly output. */
+const quote = (value: string) =>
+  `'${value
+    .replaceAll('\\', '\\\\')
+    .replaceAll("'", "\\'")
+    .replaceAll('\r', '\\r')
+    .replaceAll('\n', '\\n')
+    .replaceAll('\u2028', '\\u2028')
+    .replaceAll('\u2029', '\\u2029')}'`
 
 const renderLocaleEntry = (locale: LocaleDefinition) =>
   [

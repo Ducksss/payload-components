@@ -12,7 +12,7 @@ import {
   parseLocaleCodes,
   renderLocalizationBlock,
   resolveLocales,
-  type LocaleDefinition,
+  type ResolvedLocales,
 } from '../locales'
 import { loadManifest } from '../manifest'
 import {
@@ -69,24 +69,21 @@ const formatPlan = ({
   configFileRelPath,
   configOutcome,
   cwd,
-  defaultLocale,
   dryRun,
   fallback,
-  locales,
   plans,
   skipped,
-  unlabelled,
+  summary,
 }: {
   configFileRelPath: string
   configOutcome: ConfigOutcome
   cwd: string
-  defaultLocale: string
   dryRun: boolean
   fallback: boolean
-  locales: LocaleDefinition[]
   plans: ComponentPlan[]
   skipped: ComponentPlan[]
-  unlabelled: string[]
+  /* Undefined when the config computes its locales at runtime. */
+  summary: ResolvedLocales | undefined
 }) => {
   const verb = dryRun ? 'would ' : ''
   const wrapped = plans.flatMap(({ pendingFiles }) => pendingFiles)
@@ -95,13 +92,19 @@ const formatPlan = ({
       ? `payload-components: dry run for localizing ${cwd}`
       : `payload-components: localizing ${cwd}`,
     '',
-    `Locales: ${formatLocaleList(locales)}`,
-    `  default: ${defaultLocale}${fallback ? ' · fallback to the default when a locale is empty' : ' · no fallback'}`,
+    ...(summary
+      ? [
+          `Locales: ${formatLocaleList(summary.locales)}`,
+          `  default: ${summary.defaultLocale}${fallback ? ' · fallback to the default when a locale is empty' : ' · no fallback'}`,
+        ]
+      : [
+          `Locales: declared in ${configFileRelPath}, but computed at runtime — this command cannot name them`,
+        ]),
   ]
 
-  if (unlabelled.length > 0) {
+  if (summary && summary.unlabelled.length > 0) {
     lines.push(
-      `  no catalog label for ${unlabelled.join(', ')} — the code is used as the label; edit it in ${configFileRelPath}`,
+      `  no catalog label for ${summary.unlabelled.join(', ')} — the code is used as the label; edit it in ${configFileRelPath}`,
     )
   }
 
@@ -166,15 +169,18 @@ const formatPlan = ({
 }
 
 const formatNextSteps = ({
-  defaultLocale,
-  locales,
   packageManager,
+  summary,
 }: {
-  defaultLocale: string
-  locales: LocaleDefinition[]
   packageManager: string
+  summary: ResolvedLocales | undefined
 }) => {
-  const secondLocale = locales.find(({ code }) => code !== defaultLocale)?.code ?? defaultLocale
+  /* A stand-in when the locales are computed at runtime: the query snippet is
+   * illustrative, and a placeholder reads better than omitting the step. */
+  const secondLocale = summary
+    ? (summary.locales.find(({ code }) => code !== summary.defaultLocale)?.code ??
+      summary.defaultLocale)
+    : '<locale>'
   const runner = packageManager === 'npm' ? 'npx' : `${packageManager} exec`
 
   return [
@@ -282,7 +288,12 @@ export const localizeCommand = async ({
   const configSource = await readFile(configPath, 'utf8')
   const declared = readPayloadLocalization(configSource)
 
-  if (!localeCodes && (declared?.locales.length ?? 0) === 0) {
+  /* A config that computes its locales — `locales: getLocales()` — is localized;
+   * this command just cannot enumerate the set. Wrapping its blocks is still the
+   * right thing to do, so only a plainly locale-less config is refused. */
+  const declaresLocales = declared !== undefined && (!declared.localesEnumerable || declared.locales.length > 0)
+
+  if (!localeCodes && !declaresLocales) {
     throw new Error(
       [
         `${configFileRelPath} does not declare any locales yet, so there is nothing to localize into.`,
@@ -324,22 +335,32 @@ export const localizeCommand = async ({
     declared?.defaultLocale && declaredCodes.includes(declared.defaultLocale)
       ? declared.defaultLocale
       : undefined
-  const resolved = localeCodes
+  /* Set only when --locales asked for a specific set. It is the one input that
+   * can produce a config patch, so keeping it separate is what lets the writer
+   * below stay non-optional. */
+  const requested = localeCodes
     ? resolveLocales({ codes: parseLocaleCodes(localeCodes), defaultLocale })
-    : resolveLocales({
-        codes: declaredCodes,
-        ...(declaredDefault ? { defaultLocale: declaredDefault } : {}),
-      })
-  const resolvedFallback = localeCodes ? fallback : (declared?.fallback ?? true)
-  const configPatch = localeCodes
+    : undefined
+  /* What to print. Undefined when the config computes its locales at runtime —
+   * there is a locale set, this command just cannot name it. */
+  const summary =
+    requested ??
+    (declaredCodes.length > 0
+      ? resolveLocales({
+          codes: declaredCodes,
+          ...(declaredDefault ? { defaultLocale: declaredDefault } : {}),
+        })
+      : undefined)
+  const resolvedFallback = requested ? fallback : (declared?.fallback ?? true)
+  const configPatch = requested
     ? setPayloadLocalization({
         force,
         renderBlock: (indent) =>
           renderLocalizationBlock({
-            defaultLocale: resolved.defaultLocale,
+            defaultLocale: requested.defaultLocale,
             fallback: resolvedFallback,
             indent,
-            locales: resolved.locales,
+            locales: requested.locales,
           }),
         source: configSource,
       })
@@ -386,13 +407,11 @@ export const localizeCommand = async ({
       configFileRelPath,
       configOutcome,
       cwd,
-      defaultLocale: resolved.defaultLocale,
       dryRun,
       fallback: resolvedFallback,
-      locales: resolved.locales,
       plans,
       skipped,
-      unlabelled: resolved.unlabelled,
+      summary,
     }),
   )
 
@@ -437,17 +456,16 @@ export const localizeCommand = async ({
   )
 
   printHeader(
-    formatNextSteps({
-      defaultLocale: resolved.defaultLocale,
-      locales: resolved.locales,
-      packageManager: project.packageManager,
-    }),
+    formatNextSteps({ packageManager: project.packageManager, summary }),
   )
 
   /* Non-zero whenever this run left something it was asked to change, so CI can
-   * gate on "the project is fully localized" the way it gates on `diff`. */
+   * gate on "the project is fully localized" the way it gates on `diff`. A
+   * recorded component whose block config is not on disk counts: it was in scope
+   * and did not get wrapped, whatever the reason. */
   const leftUntouched =
     skipped.length > 0 ||
+    plans.some((plan) => plan.missingFiles.length > 0) ||
     configOutcome.kind === 'no-build-config' ||
     configOutcome.kind === 'existing-unreadable' ||
     (configOutcome.kind === 'already-configured' && !configOutcome.matches)

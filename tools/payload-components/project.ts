@@ -1160,12 +1160,17 @@ export type ReadLocalization = {
   defaultLocale?: string
   fallback?: boolean
   locales: string[]
+  /* True when `locales` is the complete set, read straight from source. False
+   * when the config declares localization but does not spell the locales out —
+   * `locales: getLocales()`, or a whole `localization: config` reference. The
+   * empty list then means "cannot tell", not "none", and the two must not be
+   * confused: a project whose locales are computed at runtime is localized, and
+   * telling it otherwise would both nag it and refuse to wrap its blocks. */
+  localesEnumerable: boolean
 }
 
 /* Read back what the config declares, for reporting only — doctor says how many
- * locales a project has, and localize prints the set it is about to keep. A
- * config whose locales are computed at runtime reports an empty list rather
- * than pretending to know. */
+ * locales a project has, and localize prints the set it is about to keep. */
 export const readPayloadLocalization = (source: string): ReadLocalization | undefined => {
   const configObject = findBuildConfigObject(source)
 
@@ -1180,7 +1185,7 @@ export const readPayloadLocalization = (source: string): ReadLocalization | unde
   }
 
   if (!property.readable) {
-    return { locales: [] }
+    return { locales: [], localesEnumerable: false }
   }
 
   const block = source.slice(property.valueStart, property.end)
@@ -1195,10 +1200,16 @@ export const readPayloadLocalization = (source: string): ReadLocalization | unde
   const [, defaultLocale] = /\bdefaultLocale\s*:\s*['"]([^'"]+)['"]/.exec(block) ?? []
   const [, fallback] = /\bfallback\s*:\s*(true|false)/.exec(block) ?? []
 
+  /* An empty literal array is a real, enumerable answer — `locales: []` is a
+   * misconfiguration worth naming. A `locales:` value that is neither an array
+   * literal nor a list of code objects is a computed one. */
+  const hasLiteralArray = /\blocales\s*:\s*\[/.test(block)
+
   return {
     ...(defaultLocale ? { defaultLocale } : {}),
     ...(fallback ? { fallback: fallback === 'true' } : {}),
     locales: codes.length > 0 ? codes : shorthand,
+    localesEnumerable: codes.length > 0 || hasLiteralArray,
   }
 }
 

@@ -321,8 +321,24 @@ const checkLocalization = async ({
     return
   }
 
+  if (!declared.localesEnumerable) {
+    log(
+      'ok',
+      `localization: enabled in ${configFileRelPath} (locales resolved at runtime)`,
+      'localization',
+    )
+    return
+  }
+
+  /* Payload v3 requires both `locales` and `defaultLocale`. A config missing
+     either is one Payload rejects, so name the missing half rather than
+     reporting a healthy locale count around the hole. */
   if (declared.locales.length === 0) {
-    log('ok', `localization: enabled in ${configFileRelPath} (locales resolved at runtime)`, 'localization')
+    log(
+      'warn',
+      `localization: ${configFileRelPath} declares an empty locales array — Payload needs at least one locale`,
+      'localization',
+    )
     return
   }
 
@@ -339,7 +355,13 @@ const checkLocalization = async ({
     'localization',
   )
 
-  if (declared.defaultLocale && !declared.locales.includes(declared.defaultLocale)) {
+  if (!declared.defaultLocale) {
+    log(
+      'warn',
+      `localization: ${configFileRelPath} declares locales but no defaultLocale — Payload requires one`,
+      'localization',
+    )
+  } else if (!declared.locales.includes(declared.defaultLocale)) {
     log(
       'warn',
       `localization: defaultLocale "${declared.defaultLocale}" is not one of the locales ${configFileRelPath} declares — Payload requires it to be`,
