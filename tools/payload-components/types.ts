@@ -61,6 +61,11 @@ export type InstallError = {
 }
 
 export type InstallStateEntry = {
+  /* Normalized SHA-256 hashes of the component-owned files at the last
+   * successful install. They are the merge base for diff/update/remove: the
+   * current registry source cannot tell an upstream release change from a
+   * consumer's local edit. */
+  fileHashes: Record<string, string>
   installedAt: string | null
   lastAttemptAt: string
   lastError: InstallError | null
@@ -75,10 +80,12 @@ export type InstallStateEntry = {
 }
 
 export type InstallState = {
-  components: Record<
-    string,
-    InstallStateEntry
-  >
+  components: Record<string, InstallStateEntry>
+  version: 3
+}
+
+export type InstallStateV2 = {
+  components: Record<string, Omit<InstallStateEntry, 'fileHashes'>>
   version: 2
 }
 

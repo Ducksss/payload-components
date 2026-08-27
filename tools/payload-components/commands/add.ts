@@ -297,6 +297,7 @@ const installComponent = async ({
       cwd,
       manifest,
       patchedFiles,
+      rewrittenFiles: [],
       targetId: project.target.id,
     })
 
@@ -305,6 +306,7 @@ const installComponent = async ({
   }
 
   printHeader(`payload-components: installing "${manifest.name}" into ${cwd}`)
+  const rewrittenFiles = new Set(fileCheck.missingFiles)
 
   if (installedEntry?.status === 'partial') {
     printHeader(
@@ -425,6 +427,10 @@ const installComponent = async ({
         cwd,
       })
 
+      for (const filePath of localizedFiles) {
+        rewrittenFiles.add(filePath)
+      }
+
       printHeader(
         localizedFiles.length > 0
           ? `payload-components: localized ${localizedFiles.join(', ')}`
@@ -451,6 +457,7 @@ const installComponent = async ({
     localized: localized || installedEntry?.localized,
     manifest,
     patchedFiles,
+    rewrittenFiles: [...rewrittenFiles],
     targetId: project.target.id,
   })
 

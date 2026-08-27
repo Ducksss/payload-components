@@ -279,7 +279,7 @@ describe('payload-components CLI parsing and orchestration', () => {
     })
 
     await cli.runCli?.({
-      argv: ['remove', 'hero-basic', 'faq-card', '--dry-run'],
+      argv: ['remove', 'hero-basic', 'faq-card', '--dry-run', '--force'],
       commands,
       defaultCwd: '/tmp/workspace',
       write: vi.fn(),
@@ -290,11 +290,13 @@ describe('payload-components CLI parsing and orchestration', () => {
       componentName: 'hero-basic',
       cwd: '/tmp/workspace',
       dryRun: true,
+      force: true,
     })
     expect(commands.removeCommand).toHaveBeenNthCalledWith(2, {
       componentName: 'faq-card',
       cwd: '/tmp/workspace',
       dryRun: true,
+      force: true,
     })
   })
 

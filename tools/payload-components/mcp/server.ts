@@ -1,10 +1,11 @@
-import { compareInstalledFiles } from '../component-files'
+import { compareInstalledFiles, resolveRecordedFileHashes } from '../component-files'
 import { addCommand } from '../commands/add'
 import { diffCommand } from '../commands/diff'
 import { doctorCommand } from '../commands/doctor'
 import { listCommand } from '../commands/list'
 import { buildInventory } from '../inventory'
 import { loadAllManifests, loadManifest } from '../manifest'
+import { loadState } from '../state'
 import { loadAllTemplateManifests, loadTemplateManifest } from '../templates'
 
 /* A Model Context Protocol server so coding agents can browse this registry and
@@ -125,11 +126,22 @@ const formatComponentDetail = async ({ component, cwd }: { component: string; cw
   const manifest = await loadManifest(component)
   const inventory = await buildInventory({ cwd })
   const entry = inventory.entries.find(({ name }) => name === component)
+  const state = await loadState(cwd)
+  const installedEntry = state.components[component]
+  const baselineHashes = installedEntry
+    ? await resolveRecordedFileHashes({
+        componentName: component,
+        installed: installedEntry,
+        manifest,
+      })
+    : undefined
+  const files = [...new Set([...manifest.files, ...Object.keys(baselineHashes ?? {})])]
   const fileReport = entry?.installed
     ? await compareInstalledFiles({
+        ...(baselineHashes ? { baselineHashes } : {}),
         cwd,
         localized: entry.installed.localized,
-        manifest,
+        manifest: { files, registryItemName: manifest.registryItemName },
       }).catch(() => undefined)
     : undefined
 
@@ -140,8 +152,9 @@ const formatComponentDetail = async ({ component, cwd }: { component: string; cw
       installCommand: `npx payload-components add ${manifest.name}`,
       installed: entry?.installed
         ? {
+            baselineAvailable: baselineHashes !== undefined,
             localized: entry.installed.localized,
-            modifiedFiles: fileReport?.modified ?? [],
+            modifiedFiles: baselineHashes ? (fileReport?.modified ?? []) : [],
             status: entry.installed.status,
             updateAvailable: entry.updateAvailable,
             version: entry.installed.manifestVersion,

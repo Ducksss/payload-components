@@ -254,7 +254,7 @@
   <text class="node-index" x="196" y="437.35135135135135">06</text>
   <text class="node-title node-title--mono" x="223" y="438.35135135135135">Install state</text>
   <text class="node-body node-body--mono" data-role="body-line" x="196" y="468.35135135135135">manifestVersion · registryItemName · targetId · status</text>
-<text class="node-body node-body--mono" data-role="body-line" x="196" y="484.35135135135135">installedAt · lastAttemptAt · lastError · patchedFiles</text>
+<text class="node-body node-body--mono" data-role="body-line" x="196" y="484.35135135135135">installedAt · lastAttemptAt · lastError · patchedFiles · fileHashes</text>
 </g>
   </g>
   <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />

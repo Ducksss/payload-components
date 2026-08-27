@@ -1,4 +1,4 @@
-import { access } from 'node:fs/promises'
+import { access, realpath } from 'node:fs/promises'
 import path from 'node:path'
 
 import type {
@@ -6,11 +6,13 @@ import type {
   InstallState,
   InstallStateEntry,
   InstallStateV1,
+  InstallStateV2,
   InstallStage,
   ComponentManifest,
 } from './types'
 
 import { CURRENT_ALPHA_TARGET_ID, SHARED_PATCHED_FILES } from './constants'
+import { resolveRecordedFileHashes, snapshotInstalledFiles } from './component-files'
 import { readJsonFile, repoRoot, writeJsonFile } from './utils'
 
 // Return a fresh object every time: callers (recordInstall*) mutate the loaded
@@ -18,10 +20,12 @@ import { readJsonFile, repoRoot, writeJsonFile } from './utils'
 // loads within a single process.
 const createDefaultState = (): InstallState => ({
   components: {},
-  version: 2,
+  version: 3,
 })
 
 const normalizeFileList = (files: string[]) => [...new Set(files)].sort()
+const normalizeFileHashes = (fileHashes: Record<string, string>) =>
+  Object.fromEntries(Object.entries(fileHashes).sort(([left], [right]) => left.localeCompare(right)))
 
 const getManifestPath = (componentName: string) =>
   path.join(repoRoot, 'payload-components', 'manifests', `${componentName}.json`)
@@ -59,6 +63,7 @@ const migrateLegacyEntry = async ({
   )
 
   return {
+    fileHashes: {},
     installedAt: legacyEntry.status === 'installed' ? legacyEntry.installedAt : null,
     lastAttemptAt: legacyEntry.installedAt,
     lastError: null,
@@ -84,17 +89,28 @@ const migrateLegacyState = async (state: InstallStateV1): Promise<InstallState> 
 
   return {
     components: Object.fromEntries(migratedEntries),
-    version: 2,
+    version: 3,
   }
 }
 
+const migrateV2State = (state: InstallStateV2): InstallState => ({
+  components: Object.fromEntries(
+    Object.entries(state.components).map(([componentName, entry]) => [
+      componentName,
+      { ...entry, fileHashes: {} },
+    ]),
+  ),
+  version: 3,
+})
+
 const normalizeState = (state: InstallState): InstallState => ({
-  version: 2,
+  version: 3,
   components: Object.fromEntries(
     Object.entries(state.components).map(([componentName, entry]) => [
       componentName,
       {
         ...entry,
+        fileHashes: normalizeFileHashes(entry.fileHashes),
         lastError: entry.lastError ?? null,
         patchedFiles: normalizeFileList(entry.patchedFiles),
       },
@@ -103,6 +119,7 @@ const normalizeState = (state: InstallState): InstallState => ({
 })
 
 const upsertEntry = ({
+  fileHashes,
   installedAt,
   lastAttemptAt,
   lastError,
@@ -112,6 +129,7 @@ const upsertEntry = ({
   status,
   targetId,
 }: {
+  fileHashes: Record<string, string>
   installedAt: string | null
   lastAttemptAt: string
   lastError: InstallError | null
@@ -125,6 +143,7 @@ const upsertEntry = ({
     manifest,
     targetId,
   }),
+  fileHashes: normalizeFileHashes(fileHashes),
   installedAt,
   lastAttemptAt,
   lastError,
@@ -144,10 +163,10 @@ export const loadState = async (cwd: string): Promise<InstallState> => {
     return createDefaultState()
   }
 
-  let rawState: InstallState | InstallStateV1
+  let rawState: InstallState | InstallStateV1 | InstallStateV2
 
   try {
-    rawState = await readJsonFile<InstallState | InstallStateV1>(statePath)
+    rawState = await readJsonFile<InstallState | InstallStateV1 | InstallStateV2>(statePath)
   } catch (error) {
     // A corrupt / half-written state file shouldn't wedge the CLI. Fall back to a
     // clean slate — the per-stage dedup and verify logic keep a re-run idempotent.
@@ -165,14 +184,58 @@ export const loadState = async (cwd: string): Promise<InstallState> => {
   }
 
   if (rawState.version === 2) {
+    return normalizeState(migrateV2State(rawState))
+  }
+
+  if (rawState.version === 3) {
     return normalizeState(rawState)
   }
 
   throw new Error(`Unsupported payload-components state version "${String((rawState as { version?: unknown }).version)}".`)
 }
 
-export const saveState = async (cwd: string, state: InstallState) => {
+const saveStateUnlocked = async (cwd: string, state: InstallState) => {
   await writeJsonFile(getStatePath(cwd), normalizeState(state))
+}
+
+/* State writes are read-modify-write operations. Atomic rename protects a
+ * single JSON write from truncation, but it does not stop two concurrent
+ * callers from both reading the same state and then dropping each other's
+ * entry. Queue mutations per project inside this process; the CLI-level project
+ * lock handles separate processes and protects host-file patches as well. */
+const stateMutationQueues = new Map<string, Promise<void>>()
+
+const mutateState = async <T>(cwd: string, mutation: (state: InstallState) => Promise<T> | T) => {
+  const key = await realpath(cwd).catch(() => path.resolve(cwd))
+  const previous = stateMutationQueues.get(key) ?? Promise.resolve()
+  let release = () => {}
+  const turn = new Promise<void>((resolve) => {
+    release = resolve
+  })
+  const tail = previous.then(() => turn)
+
+  stateMutationQueues.set(key, tail)
+  await previous
+
+  try {
+    const state = await loadState(cwd)
+    const result = await mutation(state)
+
+    await saveStateUnlocked(cwd, state)
+    return result
+  } finally {
+    release()
+
+    if (stateMutationQueues.get(key) === tail) {
+      stateMutationQueues.delete(key)
+    }
+  }
+}
+
+export const saveState = async (cwd: string, state: InstallState) => {
+  await mutateState(cwd, (latest) => {
+    latest.components = state.components
+  })
 }
 
 export const recordInstallAttempt = async ({
@@ -188,22 +251,22 @@ export const recordInstallAttempt = async ({
   patchedFiles: string[]
   targetId: string
 }) => {
-  const state = await loadState(cwd)
-  const now = new Date().toISOString()
-  const currentEntry = state.components[manifest.name]
+  await mutateState(cwd, (state) => {
+    const now = new Date().toISOString()
+    const currentEntry = state.components[manifest.name]
 
-  state.components[manifest.name] = upsertEntry({
-    installedAt: currentEntry?.installedAt ?? null,
-    lastAttemptAt: now,
-    lastError: null,
-    localized: localized ?? currentEntry?.localized,
-    manifest,
-    patchedFiles,
-    status: 'partial',
-    targetId,
+    state.components[manifest.name] = upsertEntry({
+      fileHashes: currentEntry?.fileHashes ?? {},
+      installedAt: currentEntry?.installedAt ?? null,
+      lastAttemptAt: now,
+      lastError: null,
+      localized: localized ?? currentEntry?.localized,
+      manifest,
+      patchedFiles,
+      status: 'partial',
+      targetId,
+    })
   })
-
-  await saveState(cwd, state)
 }
 
 export const recordInstallFailure = async ({
@@ -223,25 +286,25 @@ export const recordInstallFailure = async ({
   targetId: string
   message: string
 }) => {
-  const state = await loadState(cwd)
-  const now = new Date().toISOString()
-  const currentEntry = state.components[manifest.name]
+  await mutateState(cwd, (state) => {
+    const now = new Date().toISOString()
+    const currentEntry = state.components[manifest.name]
 
-  state.components[manifest.name] = upsertEntry({
-    installedAt: currentEntry?.installedAt ?? null,
-    lastAttemptAt: now,
-    lastError: {
-      message,
-      stage,
-    },
-    localized: localized ?? currentEntry?.localized,
-    manifest,
-    patchedFiles,
-    status: 'partial',
-    targetId,
+    state.components[manifest.name] = upsertEntry({
+      fileHashes: currentEntry?.fileHashes ?? {},
+      installedAt: currentEntry?.installedAt ?? null,
+      lastAttemptAt: now,
+      lastError: {
+        message,
+        stage,
+      },
+      localized: localized ?? currentEntry?.localized,
+      manifest,
+      patchedFiles,
+      status: 'partial',
+      targetId,
+    })
   })
-
-  await saveState(cwd, state)
 }
 
 /* Drop a component's record after its files and wiring are gone. Returns
@@ -253,16 +316,14 @@ export const removeRecordedState = async ({
   componentName: string
   cwd: string
 }) => {
-  const state = await loadState(cwd)
+  return await mutateState(cwd, (state) => {
+    if (!state.components[componentName]) {
+      return false
+    }
 
-  if (!state.components[componentName]) {
-    return false
-  }
-
-  delete state.components[componentName]
-  await saveState(cwd, state)
-
-  return true
+    delete state.components[componentName]
+    return true
+  })
 }
 
 export const recordInstalledState = async ({
@@ -271,28 +332,97 @@ export const recordInstalledState = async ({
   localized,
   manifest,
   patchedFiles,
+  rewrittenFiles = [],
   targetId,
 }: {
   cwd: string
   installedAt?: string
   localized?: boolean
-  manifest: Pick<ComponentManifest, 'name' | 'registryItemName' | 'version'>
+  manifest: Pick<ComponentManifest, 'files' | 'name' | 'registryItemName' | 'version'>
   patchedFiles: string[]
+  /* Only files this invocation actually created or transformed may establish a
+   * new clean baseline. Existing shared files can carry consumer edits; a later
+   * component must inherit the earlier owner's baseline instead of blessing the
+   * current bytes as pristine. */
+  rewrittenFiles?: string[]
   targetId: string
 }) => {
-  const state = await loadState(cwd)
-  const now = new Date().toISOString()
+  const installedFileHashes = await snapshotInstalledFiles({ cwd, files: manifest.files })
+  const rewritten = new Set(rewrittenFiles)
 
-  state.components[manifest.name] = upsertEntry({
-    installedAt: installedAt ?? now,
-    lastAttemptAt: now,
-    lastError: null,
-    localized,
-    manifest,
-    patchedFiles,
-    status: 'installed',
-    targetId,
+  await mutateState(cwd, async (state) => {
+    const now = new Date().toISOString()
+    const currentEntry = state.components[manifest.name]
+    const resolvedOwnerHashes = new Map<string, Record<string, string>>()
+
+    for (const [componentName, entry] of Object.entries(state.components)) {
+      if (componentName === manifest.name) {
+        continue
+      }
+
+      const ownerManifest = await readJsonFile<ComponentManifest>(
+        getManifestPath(componentName),
+      ).catch(() => undefined)
+      const fileHashes = await resolveRecordedFileHashes({
+        componentName,
+        installed: entry,
+        manifest: ownerManifest,
+      })
+
+      if (fileHashes) {
+        resolvedOwnerHashes.set(componentName, fileHashes)
+        /* Materialize a reconstructable legacy baseline before synchronizing a
+         * shared rewrite. Keeping only one path would make the remaining owned
+         * files disappear from v3 ownership state. */
+        if (Object.keys(entry.fileHashes).length === 0) {
+          entry.fileHashes = normalizeFileHashes(fileHashes)
+        }
+      }
+    }
+
+    const fileHashes = Object.fromEntries(
+      Object.entries(installedFileHashes).map(([projectPath, installedHash]) => {
+        if (rewritten.has(projectPath)) {
+          /* A shared source rewrite upgrades every recorded owner at once. Keep
+           * their merge bases aligned so the new registry bytes do not look like
+           * a consumer edit to a sibling component later. */
+          for (const [componentName, entry] of Object.entries(state.components)) {
+            if (
+              componentName !== manifest.name &&
+              resolvedOwnerHashes.get(componentName)?.[projectPath]
+            ) {
+              entry.fileHashes[projectPath] = installedHash
+            }
+          }
+
+          return [projectPath, installedHash]
+        }
+
+        const currentBaseline = currentEntry?.fileHashes[projectPath]
+
+        if (currentBaseline) {
+          return [projectPath, currentBaseline]
+        }
+
+        const inheritedBaseline = [...resolvedOwnerHashes.entries()]
+          .sort(([left], [right]) => left.localeCompare(right))
+          .map(([, hashes]) => hashes[projectPath])
+          .find((hash): hash is string => Boolean(hash))
+
+        return [projectPath, inheritedBaseline ?? installedHash]
+      }),
+    )
+
+    state.components[manifest.name] = upsertEntry({
+      fileHashes,
+      installedAt: installedAt ?? currentEntry?.installedAt ?? now,
+      lastAttemptAt: now,
+      lastError: null,
+      localized,
+      manifest,
+      patchedFiles,
+      status: 'installed',
+      targetId,
+    })
   })
-
-  await saveState(cwd, state)
 }

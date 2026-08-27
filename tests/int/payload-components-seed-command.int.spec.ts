@@ -121,8 +121,10 @@ describe('payload-components seed command', () => {
   it('refuses to write when Payload fragments exist but manifest files are missing', async () => {
     const { fixtureDir, manifest } = await createInstallFixture('hero-basic')
     tempDirs.push(fixtureDir)
+    await writeManifestFiles(fixtureDir, manifest)
     await applyPayloadFragments(fixtureDir, manifest.payloadFragments)
     await recordInstalled(fixtureDir, manifest)
+    await Promise.all(manifest.files.map((filePath) => rm(path.join(fixtureDir, filePath))))
 
     await expect(runSeed(fixtureDir, manifest.name)).rejects.toMatchObject({
       stderr: expect.stringContaining('Missing manifest files'),
