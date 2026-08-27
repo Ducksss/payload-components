@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 import { JsonLd } from '@/components/seo/JsonLd'
 import { Eyebrow, Section, SectionHeading } from '@/components/site/section'
@@ -12,6 +13,7 @@ import {
   siteUrl,
   templateCategoryLabels,
   templatesContribution,
+  templatesDescription,
   templatesEyebrow,
   templatesMetadataDescription,
   templatesMetadataTitle,
@@ -20,6 +22,13 @@ import {
 import { templateShowcases } from '@/lib/templates/registry'
 import { TEMPLATE_CONCEPT_DISCLOSURE, TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
 import { breadcrumbNode, graph, websiteId } from '@/lib/structured-data'
+
+/* /templates gallery — indexable editorial index of the full-site concepts.
+ * Contract: one H1, the concept disclosure up top, compact navigation to the
+ * component catalog and installation guide, poster-led cards linking to detail
+ * pages, a community close, and hard absences: no iframes, no install command,
+ * no price, no capture. Category filtering stays client-side and URL-synced,
+ * while every rendered card still ships in the initial server HTML. */
 
 /* Category chips in first-appearance (curated registry) order. */
 const galleryCategories = (() => {
@@ -97,6 +106,28 @@ export default function TemplatesPage() {
               <p className="text-sm leading-6 text-muted-foreground">
                 {TEMPLATE_CONCEPT_DISCLOSURE}
               </p>
+            </div>
+          </div>
+        </section>
+
+        <section aria-label="Choose a starting point" className="border-b border-border">
+          <div className="container grid gap-5 py-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-10">
+            <p className="max-w-3xl text-pretty text-sm leading-6 text-muted-foreground">
+              {templatesDescription}
+            </p>
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              <Link
+                href="/components"
+                className="inline-flex min-h-11 items-center rounded-sm text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
+              >
+                Browse installable components
+              </Link>
+              <Link
+                href="/docs/installation"
+                className="inline-flex min-h-11 items-center rounded-sm text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
+              >
+                Read the installation guide
+              </Link>
             </div>
           </div>
         </section>

@@ -14,6 +14,8 @@ import {
   TEMPLATE_CONCEPT_STATUS_LABEL,
 } from '../../src/lib/templates/types'
 import {
+  catalogTemplatesLinkLabel,
+  templatesDescription,
   templatesMetadataDescription,
   templatesMetadataTitle,
   templatesTitle,
@@ -88,6 +90,20 @@ test.describe('Templates gallery (/templates)', () => {
 
     // The gallery never mounts live previews — posters only.
     await expect(page.locator('iframe')).toHaveCount(0)
+  })
+
+  test('keeps supported starting points connected to the gallery', async ({ page }) => {
+    await page.goto(`${baseURL}/templates`)
+
+    await expect(page.getByText(templatesDescription)).toBeVisible()
+    await expect(page.locator('main a[href="/components"]')).toBeVisible()
+    await expect(page.locator('main a[href="/docs/installation"]')).toBeVisible()
+
+    await page.goto(`${baseURL}/components`)
+    await expect(page.getByRole('link', { name: catalogTemplatesLinkLabel })).toHaveAttribute(
+      'href',
+      '/templates',
+    )
   })
 
   test('shows no install, waitlist, or price UI', async ({ page }) => {
