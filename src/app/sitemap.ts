@@ -21,6 +21,8 @@ const staticRoutes = [
   priority: number
 }>
 
+// These three launch dates are deliberately maintained here. When a mapped
+// page changes, update its date and the matching integration test in that PR.
 const releaseDates = {
   '/': new Date('2026-08-15'),
   '/components': new Date('2026-08-09'),
