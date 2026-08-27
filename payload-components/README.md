@@ -123,7 +123,7 @@ a Payload app:
 - multi-component install order avoids duplicate wiring
 - repeated installs are idempotent
 - `RenderBlocks.tsx` and `Pages/index.ts` are wired exactly once
-- `.payload-components/state.json` records success and partial failure stages correctly
+- `.payload-components/state.json` records success, partial failure stages, and successful-install source hashes correctly
 - the wrapper installs missing public `registryDependencies`, then strips them from its temporary shadcn item before installing the block files
 
 ### Fresh-consumer smoke validation
@@ -229,6 +229,12 @@ pnpm payload-components doctor
 When a stage fails, the entry stays `partial` in `.payload-components/state.json` with
 `lastError.stage` and `lastError.message`. The `add` output names the component, the failed
 stage, the safest retry command, the owned component files, and the patched host files.
+
+After a successful install, `fileHashes` records normalized SHA-256 hashes for every owned
+source file. Lifecycle commands compare against that install-time baseline rather than today's
+registry source, so a registry upgrade is not mistaken for a consumer edit. State from older
+CLI releases migrates in memory; unknown legacy baselines are protected unless the operator
+explicitly accepts the overwrite or removal with `--force`.
 
 Use this sequence to debug recovery:
 

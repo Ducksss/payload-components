@@ -14,6 +14,8 @@ import { removeCommand } from './commands/remove'
 import { seedCommand } from './commands/seed'
 import { templatesCommand } from './commands/templates'
 import { updateCommand } from './commands/update'
+import { withProjectMutationLock } from './project-lock'
+import { repoRoot } from './utils'
 
 export const usage = `payload-components
 
@@ -24,7 +26,7 @@ Usage:
   payload-components list [--cwd <path>] [--json]
   payload-components diff [component-name...] [--cwd <path>] [--json]
   payload-components update [component-name...] [--cwd <path>] [--dry-run] [--force] [--accept-breaking]
-  payload-components remove <component-name...> [--cwd <path>] [--dry-run]
+  payload-components remove <component-name...> [--cwd <path>] [--dry-run] [--force]
   payload-components seed <component-name> [--cwd <path>]
   payload-components mcp [--cwd <path>]
   payload-components new <component-name>
@@ -50,7 +52,7 @@ Commands:
 Flags:
   --demo  After a successful add, write the demo seed script; with add-template, one per template page.
   --dry-run  Validate and preview an add, update, or remove without changing files or running commands.
-  --force  Let update overwrite files you have edited locally.
+  --force  Let update overwrite local edits, or let remove delete source whose ownership cannot be verified.
   --accept-breaking  Let update apply a version that changes content already stored in Payload.
   --localized  Install the block with its text fields marked localized: true for Payload localization.
   --json  Print machine-readable output from list, diff, and doctor.
@@ -339,6 +341,20 @@ export const runCli = async ({
   } = parseArgs(argv, defaultCwd)
   const [command, ...rest] = positional
 
+  const runMutation = async <T>(
+    operation: string,
+    mutationCwd: string,
+    run: () => Promise<T>,
+  ) => {
+    /* Unit tests inject handlers and assert only CLI routing. The real command
+     * table is the published execution path that needs the cross-process lock. */
+    if (commandHandlers !== commands || dryRun) {
+      return await run()
+    }
+
+    return await withProjectMutationLock({ cwd: mutationCwd, operation, run })
+  }
+
   if (!command || help) {
     write(`${usage}\n`)
     return
@@ -351,7 +367,7 @@ export const runCli = async ({
     doctor: ['json'],
     init: ['scaffold'],
     list: ['json'],
-    remove: ['dryRun'],
+    remove: ['dryRun', 'force'],
     mcp: [],
     new: [],
     seed: [],
@@ -383,15 +399,17 @@ export const runCli = async ({
       )
     }
 
-    for (const componentName of uniqueNames) {
-      await commandHandlers.addCommand({
-        cwd,
-        componentName,
-        demo,
-        dryRun,
-        localized,
-      })
-    }
+    await runMutation(`add ${uniqueNames.join(', ')}`, cwd, async () => {
+      for (const componentName of uniqueNames) {
+        await commandHandlers.addCommand({
+          cwd,
+          componentName,
+          demo,
+          dryRun,
+          localized,
+        })
+      }
+    })
 
     return
   }
@@ -409,7 +427,9 @@ export const runCli = async ({
       throw new Error('payload-components add-template accepts exactly one template name.')
     }
 
-    await commandHandlers.addTemplateCommand({ cwd, demo, dryRun, templateSlug })
+    await runMutation(`add-template ${templateSlug}`, cwd, () =>
+      commandHandlers.addTemplateCommand({ cwd, demo, dryRun, templateSlug }),
+    )
     return
   }
 
@@ -446,13 +466,15 @@ export const runCli = async ({
   }
 
   if (command === 'update') {
-    await commandHandlers.updateCommand({
-      acceptBreaking,
-      componentNames: uniqueNames,
-      cwd,
-      dryRun,
-      force,
-    })
+    await runMutation('update', cwd, () =>
+      commandHandlers.updateCommand({
+        acceptBreaking,
+        componentNames: uniqueNames,
+        cwd,
+        dryRun,
+        force,
+      }),
+    )
     return
   }
 
@@ -463,9 +485,11 @@ export const runCli = async ({
       )
     }
 
-    for (const componentName of uniqueNames) {
-      await commandHandlers.removeCommand({ componentName, cwd, dryRun })
-    }
+    await runMutation(`remove ${uniqueNames.join(', ')}`, cwd, async () => {
+      for (const componentName of uniqueNames) {
+        await commandHandlers.removeCommand({ componentName, cwd, dryRun, force })
+      }
+    })
 
     return
   }
@@ -483,10 +507,12 @@ export const runCli = async ({
       throw new Error('payload-components seed accepts exactly one component name.')
     }
 
-    await commandHandlers.seedCommand({
-      cwd,
-      componentName,
-    })
+    await runMutation(`seed ${componentName}`, cwd, () =>
+      commandHandlers.seedCommand({
+        cwd,
+        componentName,
+      }),
+    )
     return
   }
 
@@ -526,7 +552,9 @@ export const runCli = async ({
       throw new Error('payload-components new accepts exactly one component name.')
     }
 
-    await commandHandlers.newCommand({ componentSlug })
+    await runMutation(`new ${componentSlug}`, repoRoot, () =>
+      commandHandlers.newCommand({ componentSlug }),
+    )
     return
   }
 
@@ -535,7 +563,7 @@ export const runCli = async ({
       throw new Error('payload-components init does not accept positional arguments.')
     }
 
-    await commandHandlers.initCommand({ cwd, scaffold })
+    await runMutation('init', cwd, () => commandHandlers.initCommand({ cwd, scaffold }))
     return
   }
 

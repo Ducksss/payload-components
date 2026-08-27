@@ -97,9 +97,10 @@ fixed, a rerun checks the repository again and performs whatever work is still r
 
 Each component entry in `.payload-components/state.json` has exactly the installer fields
 `manifestVersion`, `registryItemName`, `targetId`, `status`, `installedAt`, `lastAttemptAt`,
-`lastError`, and `patchedFiles`. It records results rather than telling a retry where to begin. It is
-not allowed to overrule the filesystem. If the manifest expects an owned file and a developer
-deleted it, `doctor` reports the mismatch.
+`lastError`, `patchedFiles`, and `fileHashes`. The normalized source hashes are the successful
+install's merge base for lifecycle safety; the rest records execution rather than telling a retry
+where to begin. State is not allowed to overrule the filesystem. If the manifest expects an owned
+file and a developer deleted it, `doctor` reports the mismatch.
 
 This makes state an index of expected truth rather than truth itself. The installer can compare
 record and repository, explain discrepancies, and choose a safe next action. A blind “installed:

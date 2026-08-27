@@ -247,6 +247,7 @@ pnpm build
 ## Branch & release flow
 
 - **`dev`** = integration branch; **`main`** = production (protected, gated by the `pr-gate` check). Work on a feature branch → open a PR into `dev` → promote `dev → main` via PR. Direct pushes to `main` are blocked.
+- **Put closing keywords in the promote PR body, not the feature PR.** GitHub fires `Closes #123` only when the commit carrying it lands on the default branch. Feature work is squashed onto `dev` and squashed again on promote, so a keyword written on a feature PR never reaches `main` and the issue silently stays open. The promote PR is the only one that merges into `main`, so its body is the one place a keyword works. v1.4.0 is the worked example: #473 wrote `(closes #108)` in its table and #108 closed on merge, while #100, #101, and #121 shipped in the same release without a keyword on the promote and had to be closed by hand. When writing the promote body, add a keyword for every issue the cycle resolves.
 
 ## Deeper docs
 
@@ -254,3 +255,13 @@ pnpm build
 - `CONTRIBUTING.md` — local setup, good first contributions, PR checklist.
 - `payload-components/README.md` — the registry/manifest contract in depth.
 - `content/docs/{architecture,installation,registry}.mdx` — the user-facing system docs.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

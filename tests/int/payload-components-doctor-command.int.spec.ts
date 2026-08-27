@@ -58,6 +58,7 @@ const getStateEntry = (
   manifest: ComponentManifest,
   overrides: Partial<InstallState['components'][string]> = {},
 ): InstallState['components'][string] => ({
+  fileHashes: {},
   installedAt: '2026-04-16T00:00:00.000Z',
   lastAttemptAt: '2026-04-16T00:00:00.000Z',
   lastError: null,
@@ -84,7 +85,7 @@ const writeInstallState = async ({
     components: {
       [manifest.name]: getStateEntry(manifest, overrides),
     },
-    version: 2,
+    version: 3,
   }
 
   await writeFile(

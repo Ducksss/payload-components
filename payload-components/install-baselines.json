@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "components": {
+    "content-quote": {
+      "0.1.0": {
+        "src/blocks/shared/contentFields.ts": {
+          "default": "a018a675a313890c4022dc0dc0071d087590b73f1a95643c510d6a8291f45dbd"
+        },
+        "src/blocks/ContentQuote/config.ts": {
+          "default": "32c523b825cba5106cb3467248f7d7ebe482d5c38d6a70acb63e36547fedc067",
+          "localized": "6dc874fa421bc4b2978b5139971bd15401aa73bcf8cdcef4c3a791d295caee88"
+        },
+        "src/blocks/ContentQuote/Component.tsx": {
+          "default": "9fdf488d986ca475d55f0293a461a029c9499c7afce80b3fa175e7148c14abe5"
+        }
+      }
+    },
+    "stats-proof": {
+      "0.1.0": {
+        "src/blocks/StatsProof/config.ts": {
+          "default": "a226f08c51edeb0d9aff43e28ddf27aecce909e67bf418e8962023b49e9e1ca0",
+          "localized": "f2ee42030490aacc51db28311a7165c41ff5f37fb9cc58c5aa4f65a5c5d14a5c"
+        },
+        "src/blocks/StatsProof/Component.tsx": {
+          "default": "e7f622192d0d04b0493bdfa546b67585f778d7cc7879e78d302afb4d3aad2c4c"
+        }
+      },
+      "0.2.0": {
+        "src/blocks/StatsProof/config.ts": {
+          "default": "79bfd559929b7a3751c4b5ae46051aa9c4875e78a4ece1f1cc8ae47a948dfe7e",
+          "localized": "3369457e7acbd2339f4f0e8cb2c725b271165768c74c57202f595892c5c57995"
+        },
+        "src/blocks/StatsProof/Component.tsx": {
+          "default": "0d48de9a8c4603cba6d8cab3e8466cd291ffb585479f34df1de4c004be4a894d"
+        }
+      }
+    }
+  }
+}

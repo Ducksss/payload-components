@@ -548,7 +548,7 @@ export const diagramDefinitions: readonly DiagramDefinition[] = [
         {
           id: 'state',
           title: 'Install state',
-          body: 'manifestVersion · registryItemName · targetId · status\ninstalledAt · lastAttemptAt · lastError · patchedFiles',
+          body: 'manifestVersion · registryItemName · targetId · status\ninstalledAt · lastAttemptAt · lastError · patchedFiles · fileHashes',
           kind: 'code',
         },
       ],

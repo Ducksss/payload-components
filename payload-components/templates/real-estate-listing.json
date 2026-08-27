@@ -1,0 +1,98 @@
+{
+  "category": "real-estate",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "call-to-action-signup",
+    "comparator-table",
+    "contact-routing-form",
+    "content-columns",
+    "content-image-frame",
+    "content-quote",
+    "content-rows",
+    "content-stats",
+    "faq-accordion",
+    "faq-grouped",
+    "faq-split",
+    "feature-cards-media",
+    "feature-steps",
+    "hero-basic",
+    "stats-proof",
+    "team-grid",
+    "testimonials-rating",
+    "testimonials-spotlight",
+    "testimonials-wall"
+  ],
+  "description": "Moorhouse & Kent is a fictional two-name estate agency in the fictional market town of Abbotsmoor: one office on Sheep Street, six people, and about ninety homes a year across the town and the five villages of the Vale. The concept owns the listing register — homes as cards, particulars as tables, \"just agreed\" as proof — set in warm stone, slate ink, and one brick-red accent, with every image surface drawn as a surveyor's artefact: floor-plan hatching, window grids, the ruled pages of the buyers' book. Five pages — Home, Properties, Selling, About, and Contact — court sellers and route buyers through one nav, with a valuation booking as the single seller-facing action. Composed entirely from blocks in the open registry.",
+  "pages": [
+    {
+      "components": [
+        "hero-basic",
+        "feature-cards-media",
+        "stats-proof",
+        "feature-steps",
+        "testimonials-rating",
+        "faq-accordion",
+        "call-to-action-boxed"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Moorhouse & Kent — Estate agents in Abbotsmoor"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-cards-media",
+        "content-rows",
+        "comparator-table",
+        "content-quote",
+        "call-to-action-signup"
+      ],
+      "label": "Properties",
+      "path": "properties",
+      "title": "Moorhouse & Kent — Homes for sale"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-steps",
+        "content-stats",
+        "comparator-table",
+        "testimonials-spotlight",
+        "faq-grouped",
+        "call-to-action-boxed"
+      ],
+      "label": "Selling",
+      "path": "selling",
+      "title": "Moorhouse & Kent — Selling"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-columns",
+        "team-grid",
+        "content-image-frame",
+        "testimonials-wall",
+        "call-to-action-centered"
+      ],
+      "label": "About",
+      "path": "about",
+      "title": "Moorhouse & Kent — About the firm"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "contact-routing-form",
+        "faq-split"
+      ],
+      "label": "Contact",
+      "path": "contact",
+      "title": "Moorhouse & Kent — Contact the office"
+    }
+  ],
+  "revision": 1,
+  "slug": "real-estate-listing",
+  "summary": "A fictional market-town estate agency built around the listing register — homes as cards, particulars as tables, and \"just agreed\" as the proof engine.",
+  "title": "Real Estate Listing",
+  "version": 1
+}

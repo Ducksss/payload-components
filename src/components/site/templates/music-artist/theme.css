@@ -1,0 +1,1332 @@
+/* Pale Meridian (music-artist) scoped theme — the flyposted dark.
+ *
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='music-artist'] root the shell renders. It overrides
+ * the semantic variables the demo twins consume and adds named Pale Meridian
+ * tokens; it never touches :root, .dark, another template's scope, or
+ * src/app/globals.css. The site stays forced-light — ALL of this concept's
+ * night comes from the tokens below; there is no `dark` class anywhere.
+ *
+ * Art direction — a gig poster wheat-pasted to a wet wall:
+ *   · near-black indigo, three tonal bands deep, with the contrast band lit
+ *     from above like a stage door under a sodium lamp;
+ *   · one sodium amber, used as a FIELD — sticker eyebrows, filled actions,
+ *     lamp glows — with near-black ink on it; the only amber allowed near
+ *     type on the night base is --pm-amber-bright, tuned to clear AA;
+ *   · bone-white type, set heavy and tight (750/700), with the kinetic
+ *     hero's serif-italic closing word kept — the one scrawled word on a
+ *     heavy-set poster — and painted amber-bright;
+ *   · ticket-perforation rules between sections (dashed bone hairlines),
+ *     hard corners on every paper surface, pills spared only where a shape
+ *     is genuinely round (avatars);
+ *   · imagery is entirely token-derived: wet walls under raking lamps,
+ *     blind-slat light for the record's face, four painted record sleeves,
+ *     a lit window for the letters. No raster assets, no likenesses.
+ *
+ * How this dark differs from Frameworks '26 (event-conference), the
+ * gallery's institutional dark: amber vs electric violet; heavy tight
+ * mixed-case display vs their 600-weight poster type; amber field stickers
+ * vs their mono violet-barred track labels; dashed ticket rules vs their
+ * printed violet register marks; wet-wall lamp plates vs their halftone
+ * duotone plates. Side by side the two should never be mistaken.
+ *
+ * Contrast, computed before these values were written (oklch L ≈ cbrt(Y)):
+ *   · body/muted text (--muted-foreground, L 77%) measures ≈ 7.9:1 on the
+ *     deepest band and ≥ 7:1 on every raised surface, well over AA 4.5:1;
+ *   · ink on amber (--pm-ink L 19% on --pm-amber L 75%) ≈ 8:1 — every filled
+ *     action and sticker is AA by construction;
+ *   · --pm-amber-bright (L 82%) as small text on the night base ≈ 10:1, so
+ *     the kinetic hero's mono numerals, the lead contact channel, and the
+ *     serif closing word all clear AA with margin. */
+
+[data-template-theme='music-artist'] {
+  /* ————— Pale Meridian palette ————— */
+  --pm-night: oklch(17% 0.028 283deg); /* the page: wet-wall indigo */
+  --pm-night-deep: oklch(13% 0.028 281deg); /* contrast band: the stage door */
+  --pm-night-raised: oklch(21.5% 0.03 283deg); /* muted band */
+  --pm-panel: oklch(24% 0.032 283deg); /* cards and inner panels */
+  --pm-well: oklch(14.5% 0.026 282deg); /* form field wells */
+  --pm-bone: oklch(94.5% 0.012 88deg); /* the type */
+  --pm-ink: oklch(19% 0.028 283deg); /* type ON amber */
+
+  /* The one accent. --pm-amber is the lamp — a field, a fill, a glow, never
+     body type on the night base. --pm-amber-bright is the same lamp tuned
+     light enough to BE type (AA ≈ 10:1 on the page). --pm-amber-deep is the
+     hover state of a filled action. */
+  --pm-amber: oklch(75% 0.14 74deg);
+  --pm-amber-bright: oklch(83% 0.125 80deg);
+  --pm-amber-deep: oklch(68% 0.145 68deg);
+
+  /* ————— Semantic variables the twins consume ————— */
+  --background: var(--pm-night);
+  --foreground: var(--pm-bone);
+  --card: var(--pm-panel);
+  --card-foreground: var(--pm-bone);
+  --popover: var(--pm-panel);
+  --popover-foreground: var(--pm-bone);
+
+  /* Actions are sodium amber with ink on them — a stage-door lamp, not a
+     product button. */
+  --primary: var(--pm-amber);
+  --primary-foreground: var(--pm-ink);
+  --secondary: oklch(26.5% 0.032 283deg);
+  --secondary-foreground: var(--pm-bone);
+  --muted: oklch(25% 0.03 283deg);
+  /* 77%: warm bone-grey body text, ≈ 7.9:1 on the page and ≥ 7:1 on every
+     raised band and remapped panel. */
+  --muted-foreground: oklch(77% 0.02 82deg);
+  --accent: oklch(29% 0.036 283deg);
+  --accent-foreground: var(--pm-bone);
+
+  --brand: var(--pm-amber);
+  --brand-foreground: var(--pm-ink);
+  /* The ramp is INVERTED against the light catalog: on near-black the
+     "tints" must be brighter, not paler. The kinetic still reads --brand for
+     its lamp pool and threshold hairline; brand-600 must hold AA as text. */
+  --brand-50: oklch(30% 0.05 78deg);
+  --brand-100: oklch(46% 0.09 76deg);
+  --brand-200: oklch(62% 0.12 75deg);
+  --brand-600: var(--pm-amber-bright);
+
+  --border: oklch(100% 0 0deg / 16%);
+  --input: oklch(100% 0 0deg / 26%);
+  --ring: var(--pm-amber-bright);
+
+  /* Poster paper has hard corners. --radius feeds the sm–xl scale through
+     calc(); the named container radii are @theme inline literals, zeroed at
+     element level below. */
+  --radius: 0px;
+
+  background-color: var(--pm-night);
+  color: var(--foreground);
+}
+
+[data-template-theme='music-artist'] ::selection {
+  background-color: color-mix(in oklab, var(--pm-amber) 45%, transparent);
+  color: var(--pm-ink);
+}
+
+/* Hard corners on every paper surface. rounded-full is spared here — genuinely
+   round things (testimonial monograms, the scene's lamp dots) stay round; the
+   eyebrow badges that carry rounded-full are squared into stickers below. */
+[data-template-theme='music-artist']
+  :is(
+    .rounded-frame,
+    .rounded-panel,
+    .rounded-card,
+    .rounded-inset,
+    .rounded-2xl,
+    .rounded-xl,
+    .rounded-lg,
+    .rounded-md,
+    .rounded-sm
+  ) {
+  border-radius: 0;
+}
+
+/* ————————————————————————— Typography ————————————————————————— */
+
+/* Poster lettering: heavier and tighter than the catalog default. Mixed case
+   on purpose — the loudness comes from weight and the amber, not from caps,
+   which keeps long titles safe at 390px. */
+[data-template-theme='music-artist'] [data-template-canvas] .tracking-display {
+  font-weight: 750;
+  letter-spacing: -0.042em;
+}
+
+[data-template-theme='music-artist'] [data-template-canvas] .tracking-title {
+  font-weight: 700;
+  letter-spacing: -0.028em;
+}
+
+[data-template-theme='music-artist'] [data-template-canvas] .tracking-heading {
+  font-weight: 650;
+}
+
+/* The kinetic hero's serif-italic closing word — kept, unlike the trade
+   concept which paints its own out: on a gig poster the scrawled word IS the
+   register. Instrument Serif ships one weight, so it is normalised to 400 and
+   lifted to the bright amber (AA ≈ 10:1 on the page). */
+[data-template-theme='music-artist']
+  [data-template-canvas]
+  .tracking-display
+  .font-serif.tracking-title {
+  color: var(--pm-amber-bright);
+  font-weight: 400;
+  letter-spacing: -0.012em;
+}
+
+/* ————————————————————— Eyebrows become amber stickers ————————————————————— */
+
+/* Every twin eyebrow is a Badge carrying `rounded-full … tracking-eyebrow`.
+   They become sodium-amber stickers — ink on an amber field, hard corners,
+   and a half-degree tilt, the way a sticker never quite goes on straight.
+   hero-basic's proof chips share rounded-full but never tracking-eyebrow, so
+   this selects eyebrows only. */
+[data-template-theme='music-artist'] [data-template-canvas] .rounded-full.tracking-eyebrow {
+  background-color: var(--pm-amber);
+  border: 0;
+  border-radius: 0;
+  color: var(--pm-ink);
+  font-size: 0.6875rem;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  padding: 0.375rem 0.625rem;
+  rotate: -0.5deg;
+}
+
+/* The kinetic hero's eyebrow is a plain <p> (not a Badge): the band name and
+   record, running as a bright amber strapline behind an amber dot. */
+[data-template-theme='music-artist'] [data-template-section='marquee-hero'] p.tracking-eyebrow {
+  color: var(--pm-amber-bright);
+  font-weight: 650;
+}
+
+/* hero-basic's proof chips become perforated ticket stubs: dashed bone
+   hairline, no fill, uppercase. */
+[data-template-theme='music-artist'] [data-template-canvas] .rounded-full.px-3.py-1.text-sm {
+  background-color: transparent;
+  border: 1px dashed color-mix(in oklab, var(--pm-bone) 44%, transparent);
+  border-radius: 0;
+  color: var(--foreground);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Real actions get door-handle weight. DemoLink and the contact submit are
+   the only h-10 rounded-md SPANS in the twins, so this grows actions and
+   nothing else. */
+[data-template-theme='music-artist'] [data-template-canvas] span.h-10.rounded-md {
+  font-size: 0.9375rem;
+  font-weight: 650;
+  height: 2.875rem;
+  padding-inline: 1.375rem;
+}
+
+/* The outline appearance ships border-border bg-background, which on tonal
+   bands paints a band-coloured box — let the band through and strengthen the
+   hairline instead. */
+[data-template-theme='music-artist'] [data-template-canvas] span.h-10.border-border {
+  background-color: transparent;
+  border-color: color-mix(in oklab, var(--pm-bone) 38%, transparent);
+}
+
+/* The signup band's submit sits inside the input well at h-9. */
+[data-template-theme='music-artist'] [data-template-canvas] span.h-9.bg-primary {
+  font-weight: 650;
+}
+
+/* Metric numerals — the road ledger is the loudest thing on the tour page
+   after the headline. */
+[data-template-theme='music-artist'] [data-template-section='road-ledger'] dl dd {
+  font-weight: 750;
+}
+
+/* stats-proof's logoLabel: the label's lockup as a small tracked stamp — the
+   only place the "brand" speaks on the whole site. */
+[data-template-theme='music-artist'] [data-template-canvas] .h-9 .tracking-title {
+  color: var(--pm-amber-bright);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+/* ————————————————————————— Section rhythm ————————————————————————— */
+
+/* The twins arrive wrapped in the catalog's specimen frame (rounded-frame
+   border bg-card/35). Dissolve it so every section reads as a full-bleed band
+   of one flyposted site. */
+[data-template-theme='music-artist'] [data-template-section] {
+  position: relative;
+}
+
+[data-template-theme='music-artist'] [data-template-section] > [aria-hidden='true'] > div {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding-block: clamp(3.25rem, 6.5vw, 5.25rem);
+}
+
+/* A ticket-perforation rule between sections: a dashed bone hairline, the
+   tear line between one poster and the next on the same wall. */
+[data-template-theme='music-artist'] [data-template-section] + [data-template-section]::before {
+  background: repeating-linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--pm-bone) 30%, transparent) 0 7px,
+    transparent 7px 15px
+  );
+  content: '';
+  height: 1px;
+  inset-inline: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+}
+
+/* ————————————————————————— Tonal bands ————————————————————————— */
+
+/* muted: a sheet pasted one layer up from the wall. */
+[data-template-theme='music-artist'] [data-template-section][data-tone='muted'] {
+  --background: var(--pm-night-raised);
+  --card: oklch(26% 0.032 283deg);
+  --pm-panel: oklch(26.5% 0.033 283deg);
+  --muted: oklch(29% 0.032 283deg);
+  --secondary: oklch(30% 0.032 283deg);
+  --accent: oklch(32% 0.036 283deg);
+  --border: oklch(100% 0 0deg / 19%);
+
+  background-color: var(--pm-night-raised);
+}
+
+/* contrast: the stage door. Deeper than the page, lit from above by the
+   sodium lamp — every semantic variable is remapped so the twins' bg-card /
+   text-muted-foreground / border-border markup resolves to a coherent,
+   AA-safe surface set under the wash. */
+[data-template-theme='music-artist'] [data-template-section][data-tone='contrast'] {
+  --background: var(--pm-night-deep);
+  --foreground: oklch(95.5% 0.014 86deg);
+  --card: oklch(19.5% 0.03 282deg);
+  --card-foreground: oklch(95.5% 0.014 86deg);
+  --popover: oklch(19.5% 0.03 282deg);
+  --popover-foreground: oklch(95.5% 0.014 86deg);
+  --pm-panel: oklch(19.5% 0.03 282deg);
+  --primary: oklch(76% 0.14 74deg);
+  --primary-foreground: oklch(16% 0.026 282deg);
+  --secondary: oklch(23% 0.03 282deg);
+  --secondary-foreground: oklch(93% 0.012 86deg);
+  --muted: oklch(21.5% 0.028 282deg);
+  --muted-foreground: oklch(78% 0.02 82deg);
+  --accent: oklch(26% 0.034 282deg);
+  --accent-foreground: oklch(94% 0.02 84deg);
+  --border: oklch(100% 0 0deg / 17%);
+  --input: oklch(100% 0 0deg / 27%);
+
+  background-color: var(--pm-night-deep);
+  background-image: radial-gradient(
+    110% 72% at 50% -8%,
+    color-mix(in oklab, var(--pm-amber) 14%, transparent),
+    transparent 60%
+  );
+  color: var(--foreground);
+}
+
+[data-template-theme='music-artist']
+  [data-template-section][data-tone='contrast']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(3.75rem, 7vw, 6rem);
+}
+
+/* ————————————————————————— The flypost (heroes) ————————————————————————— */
+
+/* Interior page headers: one lamp over the top corner of the sheet. */
+[data-template-theme='music-artist'] [data-template-section='hero'] {
+  background-image: radial-gradient(
+    52rem 24rem at 14% -8rem,
+    color-mix(in oklab, var(--pm-amber) 12%, transparent),
+    transparent 64%
+  );
+}
+
+[data-template-theme='music-artist'] [data-template-section='hero'] > [aria-hidden='true'] > div {
+  padding-block: clamp(3.25rem, 6vw, 5rem);
+}
+
+/* The kinetic hero gets the full streetlight: a high sodium pool and more
+   room to breathe than a body section. */
+[data-template-theme='music-artist'] [data-template-section='marquee-hero'] {
+  background-image:
+    radial-gradient(
+      64rem 30rem at 78% -10rem,
+      color-mix(in oklab, var(--pm-amber) 15%, transparent),
+      transparent 62%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--pm-night-deep) 85%, transparent),
+      transparent 46%
+    );
+}
+
+[data-template-theme='music-artist']
+  [data-template-section='marquee-hero']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(3.75rem, 7.5vw, 5.75rem) 2.5rem;
+}
+
+/* The letterbox still: the twin composes its film still over a solid
+   bg-foreground layer — bone-white on this palette, so it is repainted as
+   the stage door itself: a wet wall, the lamp burning above the door (the
+   twin's own dark disc sits inside this glow and reads as the lamp head),
+   the door slab under it, and a sliver of amber where the door stands ajar.
+   The twin's overlays then finish the scene: its --background washes become
+   night falling down the wall, its --brand pool becomes the sodium spill on
+   the pavement, and its --brand hairline becomes the lit threshold. */
+[data-template-theme='music-artist'] [data-template-section='marquee-hero'] .bg-foreground {
+  background-color: oklch(25% 0.036 276deg);
+  background-image:
+    linear-gradient(180deg, color-mix(in oklab, var(--pm-ink) 62%, transparent), transparent 38%),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-amber) 88%, transparent),
+      color-mix(in oklab, var(--pm-amber-deep) 80%, transparent)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-bone) 13%, transparent),
+      color-mix(in oklab, var(--pm-bone) 6%, transparent)
+    ),
+    radial-gradient(
+      54% 68% at 76% 12%,
+      color-mix(in oklab, var(--pm-amber) 30%, transparent),
+      transparent 60%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--pm-bone) 8%, transparent) 0 1px,
+      transparent 1px 8px
+    ),
+    linear-gradient(202deg, transparent 44%, color-mix(in oklab, var(--pm-ink) 58%, transparent));
+  background-position:
+    0 0,
+    70.6% 100%,
+    77% 100%,
+    0 0,
+    0 0,
+    0 0;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat, no-repeat;
+  background-size:
+    auto,
+    0.7% 58%,
+    11% 60%,
+    auto,
+    auto,
+    auto;
+}
+
+/* The plate under that layer only ever shows as a seam — keep it the same
+   wall rather than the generic lamp-plate recipe. */
+[data-template-theme='music-artist'] [data-template-section='marquee-hero'] .bg-muted {
+  background-color: oklch(25% 0.036 276deg);
+  background-image: none;
+}
+
+/* The twin's corner ticks are --background at 60% — invisible on night.
+   Repainted as bone registration marks. */
+[data-template-theme='music-artist'] [data-template-section='marquee-hero'] span.size-5 {
+  border-color: color-mix(in oklab, var(--pm-bone) 46%, transparent);
+}
+
+/* The catalog's drop shadow reads as screen chrome on a poster — a hard
+   edge instead. */
+[data-template-theme='music-artist'] [data-template-section='marquee-hero'] .shadow-xl {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--pm-bone) 22%, transparent);
+}
+
+/* Full-bleed marquee: the twin's negative margins only escape the frame
+   padding, not the centred max-width column, so the bleed is re-derived from
+   the viewport. The frame's own overflow-hidden clips the scrollbar-width
+   excess. */
+[data-template-theme='music-artist'] [data-template-section='marquee-hero'] div.border-t {
+  border-color: color-mix(in oklab, var(--pm-bone) 18%, transparent);
+  margin-inline: calc(50% - 50vw);
+}
+
+/* The marquee's city names arrive at 75% foreground, tuned for light themes
+   — on the night base the tour route should read across the street. */
+[data-template-theme='music-artist'] [data-template-section='marquee-hero'] .text-foreground\/75 {
+  color: var(--foreground);
+  font-weight: 650;
+}
+
+/* Under reduced motion the twin swaps the moving track for a wrapped list —
+   and captures and posters run reduce, so that list IS the route most people
+   see. Same weight, amber diamond separators, one voice with the ticker. */
+[data-template-theme='music-artist'] [data-template-section='marquee-hero'] li.tracking-eyebrow {
+  align-items: center;
+  color: var(--foreground);
+  display: inline-flex;
+  font-weight: 650;
+}
+
+[data-template-theme='music-artist']
+  [data-template-section='marquee-hero']
+  li.text-sm.tracking-eyebrow:not(:last-child)::after {
+  background-color: var(--pm-amber);
+  content: '';
+  height: 0.3125rem;
+  margin-inline-start: 1rem;
+  rotate: 45deg;
+  width: 0.3125rem;
+}
+
+/* The kinetic hero's numbered proof strip: mono numerals resolve to
+   text-brand — stepped up to the bright amber so they hold AA at 12px. */
+[data-template-theme='music-artist'] [data-template-section='marquee-hero'] .font-mono.text-brand {
+  color: var(--pm-amber-bright);
+}
+
+/* ————————————————————————— Surfaces ————————————————————————— */
+
+/* The twins paint inner panels with bg-background at 85/80/70/60% — alphas
+   tuned for a white page that DISSOLVE on night. Remapped to one named
+   raised surface (--pm-panel), which the tonal bands redefine, so the
+   two-step surface story holds on every band. This is the single most
+   load-bearing rule on a dark concept. */
+[data-template-theme='music-artist']
+  [data-template-canvas]
+  :is(.bg-background\/85, .bg-background\/80, .bg-background\/70, .bg-background\/60) {
+  background-color: var(--pm-panel);
+}
+
+/* ————————————————————— Token-derived plate art ————————————————————— */
+
+/* Every backend-free upload placeholder (bg-muted) becomes a stretch of the
+   wet wall under a sodium lamp: a warm pool from a per-section lamp
+   position, fine vertical rain streaks, and shade falling away across the
+   rake. It reads as the street the band actually lives on rather than a
+   missing photograph, and it re-tints itself with the band it sits in. No
+   raster assets anywhere. */
+[data-template-theme='music-artist'] [data-template-canvas] .bg-muted {
+  background-color: var(--pm-plate-tint, oklch(25.5% 0.034 278deg));
+  background-image:
+    radial-gradient(
+      72% 64% at var(--pm-lamp-x, 76%) var(--pm-lamp-y, 10%),
+      color-mix(in oklab, var(--pm-amber) var(--pm-lamp, 30%), transparent),
+      transparent 64%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--pm-bone) 6%, transparent) 0 1px,
+      transparent 1px var(--pm-streak, 9px)
+    ),
+    linear-gradient(
+      var(--pm-rake, 196deg),
+      transparent 42%,
+      color-mix(in oklab, var(--pm-ink) 56%, transparent)
+    );
+}
+
+/* The record's face: sodium light through a venetian blind — the exact
+   scene the liner notes describe. One recipe, used twice: the home page's
+   16/7 billboard and the fourth sleeve in the discography, so Sodium Lights
+   keeps one face everywhere it appears. */
+[data-template-theme='music-artist'] [data-template-section='the-record'] .bg-muted,
+[data-template-theme='music-artist']
+  [data-template-section='the-records']
+  .sm\:grid-cols-2:nth-child(4)
+  .bg-muted {
+  background-color: oklch(19% 0.032 279deg);
+  background-image:
+    linear-gradient(
+      94deg,
+      transparent 10%,
+      color-mix(in oklab, var(--pm-ink) 55%, transparent) 46%,
+      color-mix(in oklab, var(--pm-ink) 86%, transparent) 82%
+    ),
+    radial-gradient(
+      58% 78% at 20% 32%,
+      color-mix(in oklab, var(--pm-amber) 34%, transparent),
+      transparent 72%
+    ),
+    repeating-linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-amber) 52%, transparent) 0 var(--pm-slat-bar, 3px),
+      color-mix(in oklab, var(--pm-ink) 66%, transparent) var(--pm-slat-bar, 3px)
+        var(--pm-slat, 14px)
+    );
+}
+
+/* At billboard width the sleeve's 14px blind reads as ruled paper — the
+   home plate opens the slats up to window scale. */
+[data-template-theme='music-artist'] [data-template-section='the-record'] .bg-muted {
+  --pm-slat: 26px;
+  --pm-slat-bar: 5px;
+}
+
+/* The other three sleeves, each its own painted cover:
+   Meridian Street — the loud debut: one diagonal amber slash. */
+[data-template-theme='music-artist']
+  [data-template-section='the-records']
+  .sm\:grid-cols-2:nth-child(1)
+  .bg-muted {
+  background-color: oklch(22% 0.036 275deg);
+  background-image:
+    linear-gradient(24deg, transparent 0 44%, var(--pm-amber) 44.5% 58%, transparent 58.5%),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--pm-bone) 5%, transparent) 0 1px,
+      transparent 1px 7px
+    );
+}
+
+/* Passing Places — the van record: road dashes running to a dusk horizon. */
+[data-template-theme='music-artist']
+  [data-template-section='the-records']
+  .sm\:grid-cols-2:nth-child(2)
+  .bg-muted {
+  background-color: oklch(20% 0.03 281deg);
+  background-image:
+    linear-gradient(
+      180deg,
+      transparent 0 61.5%,
+      color-mix(in oklab, var(--pm-bone) 66%, transparent) 61.5% 63%,
+      transparent 63% 100%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--pm-amber) 58%, transparent) 0 16px,
+      transparent 16px 34px
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-ink) 50%, transparent) 0 38%,
+      color-mix(in oklab, var(--pm-amber) 16%, transparent) 58%,
+      color-mix(in oklab, var(--pm-ink) 46%, transparent) 100%
+    );
+  background-size:
+    auto,
+    auto 3px,
+    auto;
+  background-position:
+    0 0,
+    0 76%,
+    0 0;
+  background-repeat: no-repeat, repeat-x, no-repeat;
+}
+
+/* The Slow Hours — the quiet one: near-dark, one pale disc. */
+[data-template-theme='music-artist']
+  [data-template-section='the-records']
+  .sm\:grid-cols-2:nth-child(3)
+  .bg-muted {
+  background-color: oklch(16.5% 0.028 281deg);
+  background-image:
+    radial-gradient(
+      circle at 72% 26%,
+      color-mix(in oklab, var(--pm-bone) 78%, transparent) 0 7%,
+      color-mix(in oklab, var(--pm-bone) 22%, transparent) 8% 11%,
+      transparent 12%
+    ),
+    linear-gradient(200deg, transparent 50%, color-mix(in oklab, var(--pm-ink) 52%, transparent));
+}
+
+/* The letters' plate: the lit window above the laundrette — four warm panes
+   and their glow on the wall. */
+[data-template-theme='music-artist'] [data-template-section='the-letters'] .bg-muted {
+  background-color: oklch(19.5% 0.032 279deg);
+  background-image:
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-amber) 88%, transparent),
+      color-mix(in oklab, var(--pm-amber-deep) 88%, transparent)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-amber) 88%, transparent),
+      color-mix(in oklab, var(--pm-amber-deep) 88%, transparent)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-amber) 78%, transparent),
+      color-mix(in oklab, var(--pm-amber-deep) 78%, transparent)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-amber) 78%, transparent),
+      color-mix(in oklab, var(--pm-amber-deep) 78%, transparent)
+    ),
+    radial-gradient(
+      46% 52% at 33% 44%,
+      color-mix(in oklab, var(--pm-amber) 26%, transparent),
+      transparent 70%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--pm-bone) 5%, transparent) 0 1px,
+      transparent 1px 9px
+    ),
+    linear-gradient(196deg, transparent 46%, color-mix(in oklab, var(--pm-ink) 58%, transparent));
+  background-position:
+    24% 30%,
+    42% 30%,
+    24% 62%,
+    42% 62%,
+    0 0,
+    0 0,
+    0 0;
+  background-repeat: no-repeat;
+  background-size:
+    11% 21%,
+    11% 21%,
+    11% 21%,
+    11% 21%,
+    auto,
+    auto,
+    auto;
+}
+
+/* The liner-notes plate: the room at four in the morning — one tight lamp
+   pool low on the floor, and the streetlight's diagonal bars falling across
+   the room through the blind. */
+[data-template-theme='music-artist'] [data-template-section='liner-notes'] .bg-muted {
+  background-color: oklch(22.5% 0.034 278deg);
+  background-image:
+    radial-gradient(
+      36% 44% at 24% 76%,
+      color-mix(in oklab, var(--pm-amber) 46%, transparent),
+      transparent 70%
+    ),
+    repeating-linear-gradient(
+      168deg,
+      color-mix(in oklab, var(--pm-amber) 15%, transparent) 0 3px,
+      transparent 3px 30px
+    ),
+    linear-gradient(150deg, transparent 38%, color-mix(in oklab, var(--pm-ink) 60%, transparent));
+}
+
+/* ————————————————————————— The date tables ————————————————————————— */
+
+/* The signature move: content-rows restyled from a media list into a tour
+   poster's date block. The rows container collapses its gap into hairline
+   rules; each row becomes stamp + city + one line; the 4/3 media plate is
+   squared into a small lamp-lit venue stamp. */
+[data-template-theme='music-artist']
+  :is(
+    [data-template-section='dates-soon'],
+    [data-template-section='october-leg'],
+    [data-template-section='november-leg']
+  )
+  .max-w-5xl
+  > .gap-12 {
+  box-shadow: inset 0 -1px 0 var(--border);
+  gap: 0;
+}
+
+[data-template-theme='music-artist']
+  :is(
+    [data-template-section='dates-soon'],
+    [data-template-section='october-leg'],
+    [data-template-section='november-leg']
+  )
+  .max-w-5xl
+  > .gap-12
+  > .grid {
+  align-items: center;
+  box-shadow: inset 0 1px 0 var(--border);
+  gap: 0.25rem 1.375rem;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  padding-block: 1.125rem;
+}
+
+[data-template-theme='music-artist']
+  :is(
+    [data-template-section='dates-soon'],
+    [data-template-section='october-leg'],
+    [data-template-section='november-leg']
+  )
+  .max-w-5xl
+  > .gap-12
+  > .grid
+  > .rounded-card {
+  border-color: color-mix(in oklab, var(--pm-amber) 32%, transparent);
+  grid-row: span 2;
+}
+
+[data-template-theme='music-artist']
+  :is(
+    [data-template-section='dates-soon'],
+    [data-template-section='october-leg'],
+    [data-template-section='november-leg']
+  )
+  .aspect-\[4\/3\] {
+  aspect-ratio: 1;
+}
+
+/* City names read like the city line on a tour poster. */
+[data-template-theme='music-artist']
+  :is(
+    [data-template-section='dates-soon'],
+    [data-template-section='october-leg'],
+    [data-template-section='november-leg']
+  )
+  .text-xl.tracking-heading {
+  font-size: 1.1875rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* The row's inner text column keeps its own stack tight so city and detail
+   read as one entry. */
+[data-template-theme='music-artist']
+  :is(
+    [data-template-section='dates-soon'],
+    [data-template-section='october-leg'],
+    [data-template-section='november-leg']
+  )
+  .max-w-5xl
+  > .gap-12
+  > .grid
+  > .flex-col {
+  gap: 0.25rem;
+}
+
+/* Every stamp is lit from a different angle, so a column of them reads as a
+   row of different doors, not one repeated tile. Stamps run hotter than the
+   big plates — at 4.25rem a 30% lamp reads as a smudge. */
+[data-template-theme='music-artist']
+  :is(
+    [data-template-section='dates-soon'],
+    [data-template-section='october-leg'],
+    [data-template-section='november-leg']
+  )
+  .max-w-5xl
+  > .gap-12
+  > .grid
+  .bg-muted {
+  --pm-lamp: 52%;
+  --pm-plate-tint: oklch(24% 0.034 278deg);
+  --pm-streak: 5px;
+}
+
+[data-template-theme='music-artist']
+  :is(
+    [data-template-section='dates-soon'],
+    [data-template-section='october-leg'],
+    [data-template-section='november-leg']
+  )
+  .max-w-5xl
+  > .gap-12
+  > .grid:nth-child(3n + 1)
+  .bg-muted {
+  --pm-lamp-x: 24%;
+  --pm-lamp-y: 18%;
+}
+
+[data-template-theme='music-artist']
+  :is(
+    [data-template-section='dates-soon'],
+    [data-template-section='october-leg'],
+    [data-template-section='november-leg']
+  )
+  .max-w-5xl
+  > .gap-12
+  > .grid:nth-child(3n + 2)
+  .bg-muted {
+  --pm-lamp: 58%;
+  --pm-lamp-x: 76%;
+  --pm-lamp-y: 72%;
+  --pm-rake: 152deg;
+}
+
+[data-template-theme='music-artist']
+  :is(
+    [data-template-section='dates-soon'],
+    [data-template-section='october-leg'],
+    [data-template-section='november-leg']
+  )
+  .max-w-5xl
+  > .gap-12
+  > .grid:nth-child(3n)
+  .bg-muted {
+  --pm-lamp: 44%;
+  --pm-lamp-x: 54%;
+  --pm-lamp-y: 2%;
+  --pm-streak: 8px;
+}
+
+/* ————————————————————————— The discography ————————————————————————— */
+
+/* Sleeves are square objects, not media rows: the plate column narrows, the
+   sleeve gets an amber-warmed hairline, and below 640px it stays a
+   hand-sized square instead of a full-width banner. */
+[data-template-theme='music-artist'] [data-template-section='the-records'] .aspect-\[4\/3\] {
+  aspect-ratio: 1;
+}
+
+[data-template-theme='music-artist']
+  [data-template-section='the-records']
+  .max-w-5xl
+  > .gap-12
+  > .grid
+  > .rounded-card {
+  border-color: color-mix(in oklab, var(--pm-bone) 24%, transparent);
+  max-width: 13rem;
+}
+
+@media (min-width: 640px) {
+  [data-template-theme='music-artist']
+    [data-template-section='the-records']
+    .max-w-5xl
+    > .gap-12
+    > .grid {
+    gap: 0 3rem;
+    grid-template-columns: 13rem minmax(0, 1fr);
+  }
+}
+
+/* ————————————————————— Per-section refinements ————————————————————— */
+
+/* The zine clipping: a serif pull quote behind a fat amber rule — the one
+   editorial voice on the page, set apart from the poster sans. */
+[data-template-theme='music-artist'] [data-template-section='press'] figure {
+  border-left-width: 3px;
+}
+
+[data-template-theme='music-artist'] [data-template-section='press'] blockquote {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+/* team-grid hides each member's role behind hover — but on a band page (and
+   in every static capture and poster) the role IS the content, so it is
+   pinned visible. The "Profile" affordance (.translate-y-8) stays hidden:
+   no member routes exist in this concept.
+   NOTE: Tailwind v4 compiles translate-* to the `translate` property fed by
+   --tw-translate-y, so zeroing the custom property is the only reliable
+   lever — `transform: none` is inert against it. */
+[data-template-theme='music-artist'] [data-template-section='the-band'] .translate-y-6 {
+  --tw-translate-y: 0px;
+
+  opacity: 1;
+}
+
+/* Six h-96 portraits stack to nearly 2,300px on a phone — shortened into
+   doorway portraits instead, each lit from its own angle below. */
+[data-template-theme='music-artist'] [data-template-section='the-band'] .h-96 {
+  height: 15rem;
+}
+
+@media (min-width: 1024px) {
+  [data-template-theme='music-artist'] [data-template-section='the-band'] .h-96 {
+    height: 20rem;
+  }
+}
+
+[data-template-theme='music-artist']
+  [data-template-section='the-band']
+  .grid
+  > div:nth-child(1)
+  .bg-muted {
+  --pm-lamp-x: 24%;
+  --pm-lamp-y: 8%;
+}
+
+[data-template-theme='music-artist']
+  [data-template-section='the-band']
+  .grid
+  > div:nth-child(2)
+  .bg-muted {
+  --pm-lamp: 34%;
+  --pm-lamp-x: 82%;
+  --pm-lamp-y: 70%;
+  --pm-rake: 150deg;
+}
+
+[data-template-theme='music-artist']
+  [data-template-section='the-band']
+  .grid
+  > div:nth-child(3)
+  .bg-muted {
+  --pm-lamp: 24%;
+  --pm-lamp-x: 50%;
+  --pm-lamp-y: 2%;
+  --pm-streak: 13px;
+}
+
+[data-template-theme='music-artist']
+  [data-template-section='the-band']
+  .grid
+  > div:nth-child(4)
+  .bg-muted {
+  --pm-lamp-x: 88%;
+  --pm-lamp-y: 12%;
+  --pm-plate-tint: oklch(23% 0.032 280deg);
+}
+
+[data-template-theme='music-artist']
+  [data-template-section='the-band']
+  .grid
+  > div:nth-child(5)
+  .bg-muted {
+  --pm-lamp: 30%;
+  --pm-lamp-x: 14%;
+  --pm-lamp-y: 62%;
+  --pm-rake: 210deg;
+  --pm-streak: 7px;
+}
+
+[data-template-theme='music-artist']
+  [data-template-section='the-band']
+  .grid
+  > div:nth-child(6)
+  .bg-muted {
+  --pm-lamp: 22%;
+  --pm-lamp-x: 64%;
+  --pm-lamp-y: 88%;
+  --pm-plate-tint: oklch(22% 0.034 276deg);
+}
+
+/* The member index marks (_01 … _06) become amber ticks. */
+[data-template-theme='music-artist']
+  [data-template-section='the-band']
+  .text-xs.text-muted-foreground {
+  color: var(--pm-amber-bright);
+}
+
+/* content-image-frame nests two plates. The outer mount becomes the
+   flyposted wall itself — two older posters ghosting through the paste —
+   and the inner print is the practice-room wall under its own warm lamp. */
+[data-template-theme='music-artist'] [data-template-section='the-wall'] .rounded-panel.bg-muted {
+  background-color: oklch(15% 0.028 280deg);
+  background-image:
+    linear-gradient(
+      179deg,
+      transparent 0 12%,
+      color-mix(in oklab, var(--pm-bone) 7%, transparent) 12% 54%,
+      transparent 54.5%
+    ),
+    linear-gradient(
+      92deg,
+      transparent 0 64%,
+      color-mix(in oklab, var(--pm-bone) 5%, transparent) 64% 92%,
+      transparent 92.5%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--pm-bone) 4%, transparent) 0 1px,
+      transparent 1px 10px
+    );
+  background-position:
+    6% 30%,
+    0 70%,
+    0 0;
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size:
+    22% 70%,
+    auto 34%,
+    auto;
+}
+
+/* The print itself: the practice-room wall under its lamp — nine years of
+   pinned things. Seven no-repeat rectangles stand in for the laminates and
+   setlists (bone sheets at differing ages of white), one slatted amber
+   rectangle is the blind from the Sodium Lights cover, and a warm wash falls
+   from the top of the frame. Every layer is a gradient; nothing is an
+   image. */
+[data-template-theme='music-artist'] [data-template-section='the-wall'] .rounded-inset .bg-muted {
+  background-color: oklch(26% 0.034 279deg);
+  background-image:
+    repeating-linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-amber) 60%, transparent) 0 2px,
+      color-mix(in oklab, var(--pm-ink) 55%, transparent) 2px 8px
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-bone) 18%, transparent),
+      color-mix(in oklab, var(--pm-bone) 10%, transparent)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-bone) 12%, transparent),
+      color-mix(in oklab, var(--pm-bone) 6%, transparent)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-bone) 20%, transparent),
+      color-mix(in oklab, var(--pm-bone) 12%, transparent)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-bone) 10%, transparent),
+      color-mix(in oklab, var(--pm-bone) 5%, transparent)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-bone) 15%, transparent),
+      color-mix(in oklab, var(--pm-bone) 8%, transparent)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-amber) 32%, transparent),
+      color-mix(in oklab, var(--pm-amber) 18%, transparent)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--pm-bone) 13%, transparent),
+      color-mix(in oklab, var(--pm-bone) 7%, transparent)
+    ),
+    radial-gradient(
+      66% 56% at 50% -14%,
+      color-mix(in oklab, var(--pm-amber) 30%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(196deg, transparent 46%, color-mix(in oklab, var(--pm-ink) 52%, transparent));
+  background-position:
+    31% 34%,
+    10% 24%,
+    50% 70%,
+    72% 26%,
+    89% 72%,
+    20% 80%,
+    62% 84%,
+    84% 38%,
+    0 0,
+    0 0;
+  background-repeat: no-repeat;
+  background-size:
+    10% 26%,
+    9% 22%,
+    8% 24%,
+    11% 28%,
+    7% 18%,
+    8% 20%,
+    12% 7%,
+    6% 16%,
+    auto,
+    auto;
+}
+
+[data-template-theme='music-artist'] [data-template-section='the-wall'] .rounded-inset.shadow-xl {
+  border-color: color-mix(in oklab, var(--pm-bone) 26%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--pm-ink) 60%, transparent);
+}
+
+/* The scene's avatar row: no likenesses — the discs become a string of
+   warm lamps down the street, each burning a little differently. */
+[data-template-theme='music-artist'] [data-template-section='the-scene'] .size-14 {
+  border-color: color-mix(in oklab, var(--pm-amber) 38%, transparent);
+}
+
+[data-template-theme='music-artist'] [data-template-section='the-scene'] .size-14 .bg-muted {
+  background-color: color-mix(in oklab, var(--pm-amber) 22%, var(--pm-night-raised));
+  background-image: radial-gradient(
+    circle at 50% 38%,
+    color-mix(in oklab, var(--pm-amber) 72%, transparent) 0 26%,
+    transparent 62%
+  );
+}
+
+[data-template-theme='music-artist']
+  [data-template-section='the-scene']
+  .justify-center
+  > div:nth-child(2n)
+  .bg-muted {
+  background-image: radial-gradient(
+    circle at 50% 38%,
+    color-mix(in oklab, var(--pm-amber) 48%, transparent) 0 22%,
+    transparent 58%
+  );
+}
+
+/* Where to listen: anonymous service tiles on raised panels; the centre
+   tile — the record itself — glows amber. */
+[data-template-theme='music-artist'] [data-template-section='listen'] .size-16.bg-background {
+  background-color: var(--pm-panel);
+}
+
+[data-template-theme='music-artist'] [data-template-section='listen'] .size-16.shadow-lg {
+  background-color: color-mix(in oklab, var(--pm-amber) 14%, var(--pm-panel));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--pm-amber) 55%, transparent);
+}
+
+/* The contact form: field wells sink into the panel, and the two columns
+   top-align so four channels never stretch the form into dead space. */
+[data-template-theme='music-artist'] [data-template-section='booking'] .border-input {
+  background-color: var(--pm-well);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--pm-ink) 65%, transparent);
+}
+
+[data-template-theme='music-artist'] [data-template-section='booking'] .grid.gap-8 {
+  align-items: start;
+}
+
+/* The lead channel's address arrives as text-primary — bright amber so a
+   16px address holds AA on the panel. */
+[data-template-theme='music-artist'] [data-template-section='booking'] span.text-primary {
+  color: var(--pm-amber-bright);
+  font-weight: 600;
+}
+
+/* The boxed booking CTA: a notice pinned to the stage door, with an amber
+   tape edge along the top. */
+[data-template-theme='music-artist'] [data-template-section='booking-cta'] .rounded-2xl {
+  box-shadow: inset 0 3px 0 var(--pm-amber);
+}
+
+/* ————————————————————————— Shell chrome ————————————————————————— */
+
+/* The masthead: the top edge of the poster. A 2px amber strip runs along
+   the very top of the page — the tape holding the sheet to the wall. */
+[data-template-theme='music-artist'] .pm-masthead {
+  background-color: color-mix(in oklab, var(--pm-night-deep) 88%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    inset 0 2px 0 var(--pm-amber),
+    inset 0 -1px 0 var(--border);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+[data-template-theme='music-artist'] .pm-wordmark {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+/* The release sticker: ink on amber, never quite on straight. */
+[data-template-theme='music-artist'] .pm-release {
+  background-color: var(--pm-amber);
+  color: var(--pm-ink);
+  font-size: 0.625rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  padding: 0.3125rem 0.4375rem;
+  rotate: -1deg;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+[data-template-theme='music-artist'] .pm-nav-link {
+  font-size: 0.8125rem;
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  transition: color 0.15s ease-out;
+}
+
+[data-template-theme='music-artist'] [data-pm-active] {
+  text-decoration: underline;
+  text-decoration-color: var(--pm-amber);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 8px;
+}
+
+[data-template-theme='music-artist'] .pm-action {
+  background-color: var(--pm-amber);
+  color: var(--pm-ink);
+  font-size: 0.8125rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background-color 0.15s ease-out;
+}
+
+[data-template-theme='music-artist'] .pm-action:hover {
+  background-color: var(--pm-amber-deep);
+}
+
+[data-template-theme='music-artist'] .pm-trigger {
+  border: 1px solid color-mix(in oklab, var(--pm-bone) 42%, transparent);
+  color: var(--foreground);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='music-artist'] .pm-trigger-bar {
+  background-color: currentcolor;
+  display: block;
+  height: 2px;
+  width: 1.125rem;
+}
+
+[data-template-theme='music-artist'] .pm-sheet {
+  background-color: var(--pm-night-deep);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    0 18px 36px -20px oklch(0% 0 0deg / 70%);
+}
+
+[data-template-theme='music-artist'] .pm-sheet-link {
+  box-shadow: inset 0 -1px 0 var(--border);
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='music-artist'] .pm-sheet-link[data-pm-active] {
+  box-shadow:
+    inset 4px 0 0 var(--pm-amber),
+    inset 0 -1px 0 var(--border);
+  text-decoration: none;
+}
+
+[data-template-theme='music-artist'] .pm-sheet-note {
+  color: var(--muted-foreground);
+}
+
+[data-template-theme='music-artist'] .pm-focus {
+  outline: none;
+}
+
+[data-template-theme='music-artist'] .pm-focus:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ————————————————————————— Footer ————————————————————————— */
+
+/* The poster tail: the band's name printed at poster size over the deepest
+   band, with the amber rule under it — then the small print. */
+[data-template-theme='music-artist'] .pm-footer {
+  background-color: var(--pm-night-deep);
+  box-shadow: inset 0 1px 0 var(--border);
+}
+
+[data-template-theme='music-artist'] .pm-footer-mark {
+  border-bottom: 3px solid var(--pm-amber);
+  font-size: clamp(2.375rem, 7.5vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  padding-bottom: 1.25rem;
+  text-transform: uppercase;
+}
+
+[data-template-theme='music-artist'] .pm-footer-label {
+  color: var(--pm-amber-bright);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='music-artist'] .pm-rail {
+  background-color: oklch(11% 0.024 281deg);
+  box-shadow: inset 0 1px 0 var(--border);
+  color: var(--muted-foreground);
+}
+
+/* ————————————————————————— Narrow chrome ————————————————————————— */
+
+/* At 390px the masthead fits the wordmark and the trigger; the release
+   sticker is already hidden below sm by the shell. */
+@media (max-width: 639px) {
+  [data-template-theme='music-artist'] .pm-wordmark {
+    font-size: 0.9375rem;
+  }
+}
+
+/* ————————————————————————— Reduced motion ————————————————————————— */
+
+/* Final frame, instantly, even before hydration — the same guarantee
+   template-motion.css gives section reveals. Playwright captures and the
+   poster tool both run reducedMotion=reduce, so this is what they record. */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='music-artist'] .pm-nav-link,
+  [data-template-theme='music-artist'] .pm-action,
+  [data-template-theme='music-artist'] .pm-focus {
+    transition-duration: 0.001s !important;
+  }
+}
