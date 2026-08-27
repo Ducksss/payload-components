@@ -1,0 +1,183 @@
+---
+title: Internationalization
+seoTitle: Payload CMS Localization for Blocks — English, Chinese, Any Locale
+description: Ship a multilingual Payload site — declare your locales, mark installed block text localized, and query a locale from the front end.
+icon: Languages
+---
+
+A multilingual Payload site needs two things to agree, and either one alone does
+nothing:
+
+<Cards>
+  <Card icon={<Globe />} title="Locales, in the config">
+    `localization` in `payload.config.ts` is what makes a locale exist. Without it, a
+    localized field is ignored outright.
+  </Card>
+  <Card icon={<Languages />} title="Localized fields, in the blocks">
+    `localized: true` is what makes a field store one value per locale. Without it, every
+    locale reads the same copy.
+  </Card>
+</Cards>
+
+`payload-components localize` sets both, for the blocks you already installed:
+
+```bash
+npx payload-components localize --locales en,zh
+```
+
+## What that command changes
+
+<Steps>
+  <Step>
+    **Declares the locales.** It inserts a `localization` block into your
+    `buildConfig({ ... })` call, labelled in each language:
+
+    ```ts title="src/payload.config.ts"
+    export default buildConfig({
+      localization: {
+        defaultLocale: 'en',
+        fallback: true,
+        locales: [
+          { code: 'en', label: 'English' },
+          { code: 'zh', label: '简体中文' },
+        ],
+      },
+      // your config, untouched
+    })
+    ```
+
+  </Step>
+  <Step>
+    **Marks the installed blocks' text localized.** It copies
+    `src/blocks/shared/localizeFields.ts` and wraps each installed block config's field
+    list in it — the same transform `add --localized` applies:
+
+    ```ts title="src/blocks/HeroBasic/config.ts"
+    export const HeroBasic: Block = {
+      fields: localizeFields([...heroFields /* variant-specific fields */]),
+    }
+    ```
+
+  </Step>
+  <Step>
+    **Records the choice** in `.payload-components/state.json`, so `update` re-applies the
+    wrapper instead of reinstalling a config without it, and `diff` reads clean.
+  </Step>
+</Steps>
+
+Every step is idempotent, so re-run it after installing more blocks. With the locales
+already declared, drop the flag and it only wraps what is new:
+
+```bash
+npx payload-components add pricing-cards
+npx payload-components localize
+```
+
+## Choosing locales
+
+| Flag                       | Effect                                                                     |
+| -------------------------- | -------------------------------------------------------------------------- |
+| `--locales <codes>`        | Comma-separated language tags — `en,zh`, `en,zh-TW,ja`, `en,pt-BR,es-MX`   |
+| `--default-locale <code>`  | The locale Payload treats as canonical; defaults to the first `--locales`  |
+| `--no-fallback`            | Write `fallback: false`, so an untranslated locale renders empty           |
+| `--dry-run`                | Print the whole plan and change nothing                                    |
+| `--force`                  | Replace an existing `localization` block, and wrap locally edited configs  |
+
+Codes come with a native label where one is known — `zh` is written as `简体中文`, not
+"Chinese (Simplified)", because that is what an editor scans the locale switcher for.
+Right-to-left scripts get `rtl: true`. A code with no catalog label uses the code itself
+and the command tells you, so you can name it yourself in one edit:
+
+```bash
+npx payload-components localize --locales en,gsw
+# no catalog label for gsw — the code is used as the label; edit it in src/payload.config.ts
+```
+
+## What gets marked localized
+
+`localizeFields` marks the leaf fields an editor writes prose into — `text`, `textarea`,
+and `richText` — and recurses through the containers those fields live in. Because the
+wrap sits outside the shared family base's spread, one call covers shared and variant
+fields together.
+
+Three deliberate limits:
+
+- Containers are never marked. Payload rejects a localized field nested inside a localized
+  parent, so localizing only leaves keeps every combination valid.
+- A field that already declares `localized` is left exactly as you wrote it.
+- `select`, `upload`, `relationship`, `number`, and link `url` fields stay single-value.
+  Per-locale media or link targets are a content-modelling decision, not a mechanical
+  default — set those by hand.
+
+## Installing a block already localized
+
+A block installed after the locales are declared can be wrapped in the same step:
+
+```bash
+npx payload-components add hero-basic --localized
+```
+
+That is the per-install form of the same transform. `localize` is the project-wide form,
+and it is the only one that touches your Payload config.
+
+## Reading a locale from the front end
+
+Payload returns one locale per query. Pass the code:
+
+```ts title="src/app/[locale]/[slug]/page.tsx"
+const payload = await getPayload({ config })
+
+const { docs } = await payload.find({
+  collection: 'pages',
+  locale: 'zh',
+  where: { slug: { equals: params.slug } },
+})
+```
+
+With `fallback: true` (the default this command writes), a field with no Chinese value
+falls back to the default locale rather than rendering blank — so a half-translated page
+still renders. `locale: 'all'` returns every locale at once, which is what you want for a
+language switcher that has to know which translations exist.
+
+## Translating the admin UI
+
+Content locales and the admin interface language are separate settings. The locales above
+decide what an editor can *write*; `i18n` decides what language the admin *chrome* is in:
+
+```ts title="src/payload.config.ts"
+import { en } from '@payloadcms/translations/languages/en'
+import { zh } from '@payloadcms/translations/languages/zh'
+
+export default buildConfig({
+  i18n: {
+    fallbackLanguage: 'en',
+    supportedLanguages: { en, zh },
+  },
+})
+```
+
+`localize` does not write this — which admin languages to ship is your call, and the import
+is a one-liner. Check `@payloadcms/translations/languages/` for the codes Payload ships;
+a content locale with no admin translation is fine, the chrome just stays in the fallback
+language.
+
+## Adopting it on a populated database
+
+<Callout type="warn">
+  Turning on localization changes how Payload stores the affected fields. Existing values
+  land under the default locale, and the change is not free to undo. Back up and migrate a
+  database that already holds content before running this, and run `--dry-run` first.
+</Callout>
+
+`payload-components doctor` reports both halves once you have them, and names whichever
+one is missing:
+
+```text
+[ok] localization: 2 locales — en (English), zh (简体中文), default en
+[warn] localization: hero-basic marks its text localized, but src/payload.config.ts
+       declares no locales — run "payload-components localize --locales en,zh"
+```
+
+Run `npx payload generate:types` afterwards so `@/payload-types` reflects the
+localized fields, then restart the dev server — the locale selector appears in the
+document toolbar in the admin.

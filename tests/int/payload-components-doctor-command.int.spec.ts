@@ -120,6 +120,56 @@ describe('payload-components doctor', () => {
     ).rejects.toThrow()
   }, 180000)
 
+  /* Internationalization only works when the config declares locales AND the
+     installed blocks mark their text localized. Each half is silently inert
+     without the other, so doctor names whichever one is missing. */
+  it('reports the locales the Payload config declares', async () => {
+    const { fixtureDir } = await createInstallFixture('hero-basic')
+    tempDirs.push(fixtureDir)
+    await writeFile(
+      path.join(fixtureDir, 'src', 'payload.config.ts'),
+      [
+        "import { buildConfig } from 'payload'",
+        '',
+        'export default buildConfig({',
+        '  localization: {',
+        "    defaultLocale: 'en',",
+        '    fallback: true,',
+        '    locales: [',
+        "      { code: 'en', label: 'English' },",
+        "      { code: 'zh', label: '简体中文' },",
+        '    ],',
+        '  },',
+        '  collections: [],',
+        '})',
+        '',
+      ].join('\n'),
+      'utf8',
+    )
+
+    const result = await runDoctorCommand(fixtureDir)
+
+    expect(result.code).toBe(0)
+    expect(result.stdout).toContain(
+      '[ok] localization: 2 locales — en (English), zh (简体中文), default en',
+    )
+  }, 180000)
+
+  it('warns when a component is localized but the config declares no locales', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('hero-basic', {
+      preseedSource: true,
+    })
+    tempDirs.push(fixtureDir)
+    await writeInstallState({ fixtureDir, manifest, overrides: { localized: true } })
+
+    const result = await runDoctorCommand(fixtureDir)
+
+    expect(result.stdout).toContain(
+      '[warn] localization: hero-basic marks its text localized, but src/payload.config.ts declares no locales',
+    )
+    expect(result.stdout).toContain('payload-components localize --locales en,zh')
+  }, 180000)
+
   it('fails when a recorded component is missing files and Payload fragments', async () => {
     const { fixtureDir, manifest } = await createInstallFixture('hero-basic')
     tempDirs.push(fixtureDir)

@@ -1,4 +1,4 @@
-import { rm } from 'node:fs/promises'
+import { readFile, rm } from 'node:fs/promises'
 import path from 'node:path'
 
 import {
@@ -15,6 +15,7 @@ import {
   detectProject,
   isBlockConfigFile,
   LOCALIZE_HELPER_FILE,
+  readPayloadLocalization,
   resolveRecoveryPatchedFiles,
   verifyInstalledManifestFiles,
   verifyInstalledPayloadFragments,
@@ -30,6 +31,8 @@ import {
   recordInstallFailure,
 } from '../state'
 import { getRunScriptCommand, printHeader } from '../utils'
+
+import { getPayloadConfigFile } from './seed'
 
 import type {
   DetectedProject,
@@ -130,6 +133,7 @@ const formatDryRunPlan = ({
   dependencyCheck,
   fileCheck,
   fragmentCheck,
+  localesDeclared,
   localized,
   plan,
   project,
@@ -141,6 +145,7 @@ const formatDryRunPlan = ({
     missingRegistryDependencies?: Array<{ name: string; targetFile: string }>
   }
   fragmentCheck: { missingFragments: string[] }
+  localesDeclared: boolean
   localized: boolean
   plan: ResolvedInstallPlan
   project: DetectedProject
@@ -190,6 +195,13 @@ const formatDryRunPlan = ({
     for (const filePath of plan.files.filter((candidate) => isBlockConfigFile(candidate))) {
       lines.push(`  ${filePath} (would wrap fields in localizeFields)`)
     }
+
+    if (!localesDeclared) {
+      lines.push(
+        '  note: your Payload config declares no locales, so this alone changes nothing —',
+        '        run "payload-components localize --locales en,zh" to declare them',
+      )
+    }
   }
 
   lines.push('', 'Post-install commands:')
@@ -210,6 +222,60 @@ const formatDryRunPlan = ({
   )
 
   return lines.join('\n')
+}
+
+/* What the project's Payload config says about locales, or undefined when there
+   is no config to read. */
+const readDeclaredLocales = async ({ cwd, project }: { cwd: string; project: DetectedProject }) => {
+  const configFileRelPath = await getPayloadConfigFile(project).catch(() => undefined)
+
+  if (!configFileRelPath) {
+    return undefined
+  }
+
+  const configSource = await readFile(path.join(cwd, configFileRelPath), 'utf8').catch(
+    () => undefined,
+  )
+
+  if (configSource === undefined) {
+    return undefined
+  }
+
+  return {
+    configFileRelPath,
+    locales: readPayloadLocalization(configSource)?.locales ?? [],
+  }
+}
+
+/* An unreadable config counts as declared: it is not this command's job to
+   second-guess a shape it could not parse. */
+const hasDeclaredLocales = async (options: { cwd: string; project: DetectedProject }) => {
+  const declared = await readDeclaredLocales(options)
+
+  return declared === undefined || declared.locales.length > 0
+}
+
+/* `localized: true` is inert until the Payload config declares locales, and
+   nothing about the install itself reveals that. Say so at the moment the wrap
+   lands, and name the command that fixes it. Reporting only — a config we cannot
+   read is not a reason to fail an otherwise clean install. */
+const warnWhenNoLocalesDeclared = async (options: {
+  cwd: string
+  project: DetectedProject
+}) => {
+  const declared = await readDeclaredLocales(options)
+
+  if (!declared || declared.locales.length > 0) {
+    return
+  }
+
+  printHeader(
+    [
+      `payload-components: ${declared.configFileRelPath} does not declare any locales, so localized: true has no effect yet.`,
+      '  Declare them with:',
+      '    payload-components localize --locales en,zh',
+    ].join('\n'),
+  )
 }
 
 const installComponent = async ({
@@ -272,6 +338,7 @@ const installComponent = async ({
         dependencyCheck,
         fileCheck,
         fragmentCheck,
+        localesDeclared: localized ? await hasDeclaredLocales({ cwd, project }) : true,
         localized,
         plan,
         project,
@@ -436,6 +503,8 @@ const installComponent = async ({
           ? `payload-components: localized ${localizedFiles.join(', ')}`
           : 'payload-components: block config was already localized.',
       )
+
+      await warnWhenNoLocalesDeclared({ cwd, project })
     })
   }
 

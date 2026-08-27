@@ -4,14 +4,18 @@ import path from 'node:path'
 import { checkDependencyRequirements } from '../dependencies'
 import { resolveInstallPlan } from '../install-plan'
 import { loadManifest } from '../manifest'
+import { formatLocaleList, resolveLocales } from '../locales'
 import {
   assertManifestSupport,
   detectProject,
+  readPayloadLocalization,
   verifyInstalledManifestFiles,
   verifyInstalledPayloadFragments,
 } from '../project'
 import { loadState } from '../state'
 import { repoRoot } from '../utils'
+
+import { getPayloadConfigFile } from './seed'
 
 import type {
   ComponentManifest,
@@ -274,6 +278,84 @@ const checkRecordedComponent = async ({
   return isHealthy
 }
 
+/* Internationalization only works when both halves agree: the config declares
+   locales, and installed blocks mark their text localized. Each half is silently
+   inert without the other, which is exactly the class of misconfiguration a
+   doctor should name. Never an error — a project with no localization at all is
+   perfectly healthy, and one that is half-configured still installs fine. */
+const checkLocalization = async ({
+  cwd,
+  log,
+  project,
+  state,
+}: {
+  cwd: string
+  log: Log
+  project: DetectedProject
+  state: Awaited<ReturnType<typeof loadState>>
+}) => {
+  const configFileRelPath = await getPayloadConfigFile(project).catch(() => undefined)
+
+  if (!configFileRelPath) {
+    return
+  }
+
+  const source = await readFile(path.join(cwd, configFileRelPath), 'utf8').catch(() => undefined)
+
+  if (source === undefined) {
+    return
+  }
+
+  const declared = readPayloadLocalization(source)
+  const recorded = Object.entries(state.components)
+  const localized = recorded.filter(([, entry]) => entry.localized === true).map(([name]) => name)
+
+  if (!declared) {
+    log(
+      localized.length > 0 ? 'warn' : 'ok',
+      localized.length > 0
+        ? `localization: ${localized.join(', ')} ${localized.length === 1 ? 'marks its' : 'mark their'} text localized, but ${configFileRelPath} declares no locales — run "payload-components localize --locales en,zh"`
+        : 'localization: not configured',
+      'localization',
+    )
+    return
+  }
+
+  if (declared.locales.length === 0) {
+    log('ok', `localization: enabled in ${configFileRelPath} (locales resolved at runtime)`, 'localization')
+    return
+  }
+
+  /* Labels only — the default locale is validated separately below rather than
+     through resolveLocales, so a config Payload would reject is reported instead
+     of throwing out of the whole doctor run. */
+  const { locales } = resolveLocales({ codes: declared.locales })
+
+  log(
+    'ok',
+    `localization: ${locales.length} locale${locales.length === 1 ? '' : 's'} — ${formatLocaleList(locales)}${
+      declared.defaultLocale ? `, default ${declared.defaultLocale}` : ''
+    }`,
+    'localization',
+  )
+
+  if (declared.defaultLocale && !declared.locales.includes(declared.defaultLocale)) {
+    log(
+      'warn',
+      `localization: defaultLocale "${declared.defaultLocale}" is not one of the locales ${configFileRelPath} declares — Payload requires it to be`,
+      'localization',
+    )
+  }
+
+  if (recorded.length > 0 && localized.length === 0) {
+    log(
+      'warn',
+      `localization: no recorded component marks its text localized, so every locale stores the same copy — run "payload-components localize"`,
+      'localization',
+    )
+  }
+}
+
 const logProjectSummary = (project: DetectedProject, log: Log) => {
   log(
     'ok',
@@ -318,6 +400,8 @@ const inspectProject = async ({
     if (!state) {
       return
     }
+
+    await checkLocalization({ cwd, log, project, state })
 
     const entries = Object.entries(state.components)
 
