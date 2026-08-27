@@ -3,15 +3,30 @@ import type { TemplateShowcase } from './types'
 /* Marketplace — "Trestle", a fictional wholesale marketplace connecting
  * independent makers with independent shops.
  *
- * WAVE 0 SKELETON — the recipe (pages, sections, tones) is frozen; the copy
- * below is a coherent first draft the art-direction wave replaces. Do not ship
- * this file without that pass.
+ * Art direction: TWO SIDES OF ONE LEDGER. The register is mercantile
+ * stewardship — kraft paper printed in one spruce-green ink, a stamped mono
+ * marking hand (Geist Mono carries every eyebrow, action, numeral, and the
+ * wordmark, the way a ledger's entries are typed while its prose is set), and
+ * ledger ruling: display titles close with a thick-thin double rule, FAQ rows
+ * separate on dotted leader lines, and sections part on dotted rules instead
+ * of hairlines. Avatars become postmarks — a double ring around a mono
+ * initial — and every image surface is a crate, a parcel, or the ledger
+ * itself, drawn from tokens.
  *
- * Register this concept must own (uncovered by the other fourteen): the
- * TWO-SIDED pitch. A marketplace site serves two audiences with different
- * economics through one nav — shops being courted with terms, makers being
- * courted with reach — and the trust page in the middle has to convince both
- * at once. No other concept splits its reader in half on the home page.
+ * The signature problem is the split reader, and it is solved with GEOMETRY,
+ * not hue:
+ *   · the home page sets the shopkeeper's pitch and the maker's pitch
+ *     recto/verso — the maker's split flips its columns at desktop widths and
+ *     each band's wash anchors to its own edge, two facing pages of one book;
+ *   · the buyers and suppliers pages mirror each other page-wide — the shell
+ *     stamps data-tr-side, and the hero wash and side rules anchor left for
+ *     shops, right for makers;
+ *   · how-it-works must convince both sides at once, so its bands are
+ *     symmetric and its one picture is the open ledger spread itself.
+ * A second ink was considered — red is the traditional debit ink — and
+ * rejected: brick-red on warm paper is Moorhouse & Kent's register
+ * (real-estate-listing). One spruce, told apart by mirroring, keeps Trestle
+ * unmistakably its own object.
  *
  * Canonical facts, kept consistent across every page: founded by Ro Beckett
  * (who kept a homeware shop, Gather, for twelve years) and Sam Odedra (who
@@ -33,7 +48,8 @@ import type { TemplateShowcase } from './types'
  * not prices: "sixty days to pay", "one flat commission", "your wholesale
  * price is yours", minimums counted in pieces. All copy stays editor-shaped
  * (demo-content types); layout belongs to the twins and the Trestle shell and
- * theme. */
+ * theme. The block set is the Wave-0 recipe unchanged — every slug earns its
+ * place, so the committed install manifest is untouched. */
 
 export const marketplaceWholesaleTemplate: TemplateShowcase = {
   assets: [],
@@ -55,6 +71,14 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
       path: '',
       sections: [
         {
+          /* The split moment. Deliberately hero-basic rather than a showpiece
+           * hero: the two-sided pitch is one sentence and two doors, not a
+           * product still. The theme cuts the two CTAs as the two doors — "I
+           * keep a shop" is the filled spruce action, "I make things" the
+           * double-framed stamp outline — and washes the band from BOTH top
+           * corners, so neither side owns the page the reader has not chosen
+           * yet. The proof chips restyle into hairline stamps carrying the
+           * three terms the whole site keeps repeating. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -74,12 +98,24 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* A static wrapped line of maker marks, not a marquee: motion here
+           * would read promotional, and the marks must read as studios stocked
+           * this season, never as certifying bodies (inventing those is off
+           * limits). The muted tone makes it the first deeper-kraft shelf on
+           * the page, and the theme keeps the band shallow — a rail, not a
+           * section. */
           componentSlug: 'logo-cloud-inline-wrap',
           content: { heading: 'Stocked this season from' },
           id: 'makers-strip',
           tone: 'muted',
         },
         {
+          /* The RECTO page. feature-split puts the pitch on the left and the
+           * three terms cards on the right; the theme anchors a faint spruce
+           * wash to the LEFT edge of the band and rules each card's left edge
+           * in spruce — this is the shopkeeper's side of the book. Items run
+           * in the order a shopkeeper actually asks: what will sell, what it
+           * costs to find out, what happens if it does not. */
           componentSlug: 'feature-split',
           content: {
             description:
@@ -108,6 +144,13 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'for-shops',
         },
         {
+          /* The VERSO page — the same block held up to a mirror. At desktop
+           * widths the theme flips this split's columns (cards left, pitch
+           * right), anchors its wash to the RIGHT edge, and moves the cards'
+           * spruce rule to their right edge. The mirror is the design system's
+           * core statement, so it is made with geometry alone: same block,
+           * same ink, opposite hand. Items run in the maker's asking order:
+           * who sets the price, when the money arrives, who does the chasing. */
           componentSlug: 'feature-split',
           content: {
             description:
@@ -136,6 +179,15 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'for-makers',
         },
         {
+          /* The one ink flood on the page: the spruce contrast band. A
+           * marketplace asking two audiences to trust one intermediary owes
+           * them numbers, counted the boring way — including the sixty, which
+           * is a cost the company carries, not a boast. The metrics print as
+           * mono ledger figures over double rules; the quote panel is the
+           * band's raised surface; logoLabel is set as THE SHOPKEEPER'S
+           * ALMANAC masthead lockup in sage — the trade paper is the one
+           * voice that can vouch for both sides at once, which is why the
+           * quote is theirs and not a customer's. */
           componentSlug: 'stats-proof',
           content: {
             author: 'Marnie Okafor',
@@ -159,6 +211,11 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           tone: 'contrast',
         },
         {
+          /* One voice, at ease, after the numbers. Ines Fabbri is the
+           * concept's returning character — she reappears at length on the
+           * suppliers page, because a marketplace's best proof is the same
+           * person still saying yes two pages later. The quote's left rule
+           * prints in spruce and her initial sits in a postmark ring. */
           componentSlug: 'testimonials-quote',
           content: {
             testimonial: {
@@ -171,6 +228,11 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'both-sides',
         },
         {
+          /* Four questions, two from each side of the counter, on dotted
+           * leader rules — the ledger's own ruling. The centered head keeps
+           * its double rule centered (the theme handles the alignment); the
+           * outline link hands off to the trust page rather than repeating
+           * either side's application CTA here. */
           componentSlug: 'faq-accordion',
           content: {
             description: 'The four questions Dolly answers most, from both sides of the counter.',
@@ -203,6 +265,10 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'asked-first',
         },
         {
+          /* The closer is a ticket: call-to-action-boxed's inner panel gets
+           * the double-framed rule of a printed pass, and the two doors from
+           * the hero return in the same order — filled for the shop, stamped
+           * outline for the maker — so the page ends the way it opened. */
           componentSlug: 'call-to-action-boxed',
           content: {
             description:
@@ -225,6 +291,11 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
       path: 'buyers',
       sections: [
         {
+          /* The shops-side page header. The shell stamps data-tr-side='shops'
+           * on this route, so the hero wash and its spruce edge rule anchor
+           * LEFT — hold this page against the suppliers page and they mirror,
+           * which is the whole point of the pair. The chips carry the three
+           * terms a buyer checks before reading a word of prose. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -244,6 +315,10 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* Three steps, three stamped seals: the theme keeps feature-steps'
+           * round numerals ROUND on purpose — spruce postmark roundels with a
+           * double ring, the one circular geometry this square-cornered
+           * concept allows itself (postmarks and avatars). */
           componentSlug: 'feature-steps',
           content: {
             description:
@@ -272,6 +347,13 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'first-order',
         },
         {
+          /* The four shelves are the page's picture moment, and the media
+           * wells repaint as CRATE SIDES: corrugated kraft board carrying a
+           * ruled shipping label, a double-ring postmark, fragile stripes,
+           * and a run of twine — all tokens, no rasters. Flute pitch, stripe
+           * angle, and mark positions vary per card so four crates read as
+           * four crates, not one crate copied. Muted tone: the deeper kraft
+           * of the stockroom. */
           componentSlug: 'feature-cards-media',
           content: {
             description:
@@ -306,6 +388,13 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* The terms in full, set as ledger entries: each of the four terms
+           * opens with its own thick-thin double rule (the theme draws it),
+           * the closing stats keep their posting arrows — recut in spruce —
+           * and every figure prints in mono. content-stats is the right block
+           * because it is the only one that lets prose, terms, and figures
+           * share a single column the way a schedule of terms actually
+           * reads. */
           componentSlug: 'content-stats',
           content: {
             eyebrow: 'The terms',
@@ -347,6 +436,10 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'the-terms',
         },
         {
+          /* Shop proof with the ratings kept honest: the four-star review
+           * stays, because a testimonial wall with no grievance reads as
+           * copywriting. Stars fill spruce, authors sit in postmark rings,
+           * and the shop names keep the fiction local to Ellsworth. */
           componentSlug: 'testimonials-rating',
           content: {
             description: 'From shopkeepers this year, unedited.',
@@ -379,6 +472,11 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'shops-say',
         },
         {
+          /* faq-card over a second accordion: the card panel reads as a paper
+           * index card pulled from the office, which keeps this page's FAQ
+           * visually distinct from the home page's ruled list. Dolly appears
+           * by name — the application process is a person in this fiction,
+           * and the copy keeps saying so. */
           componentSlug: 'faq-card',
           content: {
             description: 'The practical ones, before you apply.',
@@ -411,6 +509,9 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'shop-questions',
         },
         {
+          /* The application slip: call-to-action-signup's email well restyles
+           * as a ruled paper slip with a mono stamped submit. The placeholder
+           * stays on the reserved .example domain. */
           componentSlug: 'call-to-action-signup',
           content: {
             description:
@@ -431,6 +532,10 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
       path: 'suppliers',
       sections: [
         {
+          /* The makers-side page header — the buyers hero held up to a
+           * mirror. data-tr-side='makers' anchors the wash and the spruce
+           * edge rule RIGHT. Same block, same chip treatment, opposite hand:
+           * the pair of pages is the recto/verso statement at route scale. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -450,6 +555,10 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* The mirror of the buyers page's three steps — same block, same
+           * postmark numerals, the maker's half of the same journey. The
+           * copy admits the application is a gate and says why: curation is
+           * the product on this side. */
           componentSlug: 'feature-steps',
           content: {
             description:
@@ -478,6 +587,14 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'from-studio-to-shelf',
         },
         {
+          /* The maker page's picture moment: content-rows' three plates
+           * repaint as WRAPPED PARCELS — kraft board, two runs of twine
+           * crossing at a knot, corner shade — with the tie point moved per
+           * row so three parcels read as three parcels. The register's
+           * crate-and-parcel imagery belongs to the makers' side; the shops'
+           * side got the crates. Muted tone: the same stockroom kraft as the
+           * buyers page's shelves, so the mirrored pages share their deeper
+           * band too. */
           componentSlug: 'content-rows',
           content: {
             eyebrow: 'What you control',
@@ -509,6 +626,12 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* The honest table. comparator-table is set as a ledger opening:
+           * double rule under the head, dotted row rules, mono column heads,
+           * the Trestle column washed in the palest spruce. Two rows are the
+           * design: "Who sets the wholesale price — You / You" and "Who owns
+           * the shop relationship — You / Still you", because a comparison
+           * that only ever favours the service reads as a brochure. */
           componentSlug: 'comparator-table',
           content: {
             description:
@@ -548,6 +671,11 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'with-and-without',
         },
         {
+          /* Ines Fabbri's long version, on the spruce ink flood — the home
+           * page's short quote paid off at length, which is the returning-
+           * character move this fiction leans on. The spotlight's quote mark
+           * and her postmark ring step up to sage on the band (spruce type
+           * dies on spruce ink; the theme carries the override). */
           componentSlug: 'testimonials-spotlight',
           content: {
             testimonial: {
@@ -561,6 +689,11 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           tone: 'contrast',
         },
         {
+          /* faq-split keeps the maker questions beside their heading rather
+           * than under it — this page has already asked the reader to study
+           * a table, so the FAQ stays scannable. The first answer states the
+           * curation line ("we say no to resellers") that justifies the
+           * application gate two sections up. */
           componentSlug: 'faq-split',
           content: {
             description: 'The questions makers ask before showing us the work.',
@@ -593,6 +726,9 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'maker-questions',
         },
         {
+          /* The mirrored application slip — same block as the buyers page's
+           * closer, so the two side pages end identically, each on its own
+           * side of the ledger. */
           componentSlug: 'call-to-action-signup',
           content: {
             description:
@@ -613,6 +749,10 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
       path: 'how-it-works',
       sections: [
         {
+          /* The page that must convince both sides at once, so its hero is
+           * SYMMETRIC — the wash sits on both edges (data-tr-side='both'),
+           * neither hand favoured. Both applications share the link row, in
+           * the same order as everywhere else. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -632,6 +772,11 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* The life of one order — the third and final use of feature-steps,
+           * and the one where both halves meet: step one belongs to the shop,
+           * step two to the maker, step three to both. The middle step names
+           * the exact moment the risk transfers (the courier's first scan),
+           * because that sentence is the entire business model. */
           componentSlug: 'feature-steps',
           content: {
             description:
@@ -660,6 +805,12 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'the-flow',
         },
         {
+          /* Who does what, as a three-column ledger — the shop, the maker,
+           * and Trestle highlighted as the service column with the spruce
+           * wash. Empty cells print as em dashes on purpose: a ledger shows
+           * where nothing is owed. The last row ("Owns the relationship —
+           * Both / Both / —") is the page's argument in one line: the
+           * intermediary owns nothing. */
           componentSlug: 'comparator-table',
           content: {
             description:
@@ -700,6 +851,13 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'who-does-what',
         },
         {
+          /* The founding story, and the concept's ONE literal picture: the
+           * content-quote plate repaints as an open ledger spread — two ruled
+           * pages, a spruce margin line on each, a darkened centre crease —
+           * the two-sides-of-one-ledger image drawn as an object rather than
+           * said as a slogan. The quote's left rule prints spruce; the
+           * citation names Ro and grounds the fiction (Gather, twelve years,
+           * the till in the office). */
           componentSlug: 'content-quote',
           content: {
             citation: 'Ro Beckett, co-founder — kept Gather for twelve years',
@@ -716,6 +874,11 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'the-ledger-story',
         },
         {
+          /* The one systems moment, kept mercantile: integration-cluster's
+           * tiles restyle as paper shipping labels and the centre tile prints
+           * solid spruce — the ledger sitting between everyone's own tills
+           * and stock books. Muted band; the copy stays deliberately
+           * non-technical ("keeps everyone's numbers agreeing"). */
           componentSlug: 'integration-cluster',
           content: {
             heading: 'One connection, both sides of the trade.',
@@ -727,6 +890,11 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           tone: 'muted',
         },
         {
+          /* Grouped the way the two sides ask, with the money deliberately in
+           * the middle group — the gap between "paid on dispatch" and "sixty
+           * days to settle" is the service, and this is where the site says
+           * so in one answer. Icons stay in the block's allowlist: package,
+           * credit-card, truck. */
           componentSlug: 'faq-grouped',
           content: {
             description: 'Grouped the way the two sides ask them, plus the money in the middle.',
@@ -786,6 +954,10 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'the-detail',
         },
         {
+          /* An unboxed closer — after a page of tables and grouped detail, a
+           * second framed panel would read as more furniture. Centered, both
+           * doors, and the page's promise restated as the button copy's
+           * warrant: "the terms you have just read are the terms you get." */
           componentSlug: 'call-to-action-centered',
           content: {
             description:
@@ -808,6 +980,10 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
       path: 'contact',
       sections: [
         {
+          /* Support is a person in this fiction, and the hero says so in
+           * three words. Symmetric wash (both sides ring the same office);
+           * the one link is an outline hand-off, because this page's real
+           * actions live in the routing form below. */
           componentSlug: 'hero-basic',
           content: {
             description:
@@ -824,6 +1000,15 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'hero',
         },
         {
+          /* The two desks ARE the two-sided concept at contact scale: the
+           * shops desk and the makers desk lead the channel column as twin
+           * ledger slips, the phone and the office behind them. The theme
+           * sets the lead value in bold spruce (it clears AA on kraft, unlike
+           * trade's orange), draws the field wells as kraft paper with a
+           * baseline shadow, and top-aligns the two columns so neither
+           * stretches into blank paper. The form's third label asks the
+           * concept's one question outright. Phone stays in the 01632 96xxxx
+           * fiction range; addresses on .example. */
           componentSlug: 'contact-routing-form',
           content: {
             channels: [
@@ -872,6 +1057,11 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
           id: 'contact',
         },
         {
+          /* The practical closers, including the one answer that states the
+           * dispute rule — "the terms win, and that cuts both ways" — which
+           * is the two-sided promise restated as governance. faq-split keeps
+           * the page compact; contact pages do not need a closer CTA when
+           * the form is the page. */
           componentSlug: 'faq-split',
           content: {
             description: 'The practical ones, before you write.',
@@ -915,9 +1105,9 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
     'A fictional two-sided wholesale marketplace between independent makers and independent shops — the split-audience register, with the trust page that must convince both sides at once.',
   theme: {
     description:
-      'Kraft paper and spruce-green ink with a stamped, mercantile hand — ledger rules, twin-column symmetry for the two audiences, and terms set like they are printed on the crate.',
+      'Kraft paper printed in one spruce-green ink — a stamped mono marking hand, ledger double rules and dotted leaders, postmark avatars, and mirrored recto/verso geometry that tells the two sides apart without a second colour.',
     id: 'marketplace-wholesale',
-    swatches: ['#f6f3ea', '#22301f', '#2f6b4f'],
+    swatches: ['#f6f1e2', '#15241b', '#125b3a'],
   },
   title: 'Marketplace Wholesale',
   visualTone: ['Two-sided', 'Mercantile', 'Stamped'],

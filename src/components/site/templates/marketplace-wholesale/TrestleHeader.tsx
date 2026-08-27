@@ -4,18 +4,37 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
+import type { Transition } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
+
 import type { TemplateShowcase } from '@/lib/templates/types'
 
 import { templatePreviewHref } from '@/lib/templates/registry'
 import { cn } from '@/utilities/ui'
 
-/* Trestle's masthead — WAVE 0 SCAFFOLD for the art-direction wave to rework.
+/* Trestle's masthead — the crate edge, stuck to the top of the screen.
  *
- * The interaction contract is final even where the visuals are not: the mobile
- * disclosure is a real <button> carrying aria-expanded + aria-controls, Escape
- * closes it and returns focus to the trigger, pointerdown outside closes, and
- * route changes close. Internal navigation goes through templatePreviewHref and
- * the active page carries aria-current. */
+ * A spruce-ink topline prints the three terms in mono caps (the line stencilled
+ * along a crate's edge), then an opaque kraft masthead under a ledger foot rule
+ * carries the postmark roundel, the mono wordmark, the page index, and the one
+ * filled action. Opaque on purpose: the masthead is sticky, and a translucent
+ * bar would composite the spruce action toward whatever scrolls beneath it.
+ *
+ * The interaction contract is final and must survive any restyle: a real
+ * <button> trigger with aria-expanded + aria-controls whose accessible name
+ * says "menu", Escape closes the disclosure AND returns focus to the trigger,
+ * pointerdown outside closes, route changes close, internal navigation goes
+ * through templatePreviewHref, and the active page carries aria-current.
+ *
+ * Choreography is TRANSFORM ONLY (the chrome carries a filled CTA — an opacity
+ * fade would alpha-composite the spruce block toward the kraft mid-entrance
+ * and transiently drop its label below AA, which axe catches): the header
+ * drops in from behind the top edge. useReducedMotion only ever swaps the
+ * transition value — never the tree — so SSR and reduce clients hydrate the
+ * same markup, and theme.css pins [data-tr-reveal] to its final frame before
+ * hydration. */
+
+const EASE_OUT: Transition['ease'] = [0.16, 1, 0.3, 1]
 
 export function TrestleHeader({
   activePath,
@@ -27,6 +46,7 @@ export function TrestleHeader({
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const reduceMotion = useReducedMotion() ?? false
 
   useEffect(() => {
     if (!open) return
@@ -55,28 +75,39 @@ export function TrestleHeader({
   }, [pathname])
 
   return (
-    <header data-trestle-menu className="tr-header sticky top-0 z-40">
-      <div className="tr-utility">
-        <div className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-2 text-sm sm:px-8">
-          <span className="leading-6">Sixty days to pay · Makers paid on dispatch</span>
-          <span className="ms-auto hidden font-medium leading-6 sm:inline">
-            The wholesale market
+    <motion.header
+      animate={{ y: 0 }}
+      className="sticky top-0 z-40"
+      data-tr-reveal
+      data-trestle-menu
+      initial={{ y: -14 }}
+      transition={reduceMotion ? { duration: 0 } : { duration: 0.5, ease: EASE_OUT }}
+    >
+      <div className="tr-topline">
+        <div className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-1.5 sm:px-8">
+          <span className="leading-6">
+            <span className="tr-topline-lead">Sixty days to pay</span> · Makers paid on dispatch
           </span>
+          <span className="tr-topline-end ms-auto leading-6">One flat commission</span>
         </div>
       </div>
 
       <div className="tr-masthead">
         <nav
           aria-label="Trestle site navigation"
-          className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-3.5 sm:px-8"
+          className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-3 pb-4 sm:px-8"
         >
           <Link
+            aria-label={`${template.title} home`}
             href={templatePreviewHref(template.slug)}
-            className="tr-focus flex items-baseline gap-2 rounded-md py-1 text-foreground"
+            className="tr-focus flex items-center gap-3 rounded-md py-1"
           >
-            <span className="text-lg font-semibold tracking-heading">Trestle</span>
-            <span className="hidden text-sm text-muted-foreground sm:inline">
-              Makers × shops · Ellsworth
+            <span aria-hidden="true" className="tr-postmark">
+              T
+            </span>
+            <span className="flex flex-col gap-1">
+              <span className="tr-wordmark-name">Trestle</span>
+              <span className="tr-wordmark-trade">Makers × shops · Ellsworth</span>
             </span>
           </Link>
 
@@ -89,10 +120,8 @@ export function TrestleHeader({
                   key={item.path}
                   href={templatePreviewHref(template.slug, item.path)}
                   aria-current={active ? 'page' : undefined}
-                  className={cn(
-                    'tr-focus tr-nav-link inline-flex min-h-11 items-center rounded-md px-3.5 text-base',
-                    active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
-                  )}
+                  data-tr-active={active ? '' : undefined}
+                  className="tr-focus tr-nav-link inline-flex min-h-11 items-center rounded-md px-3"
                 >
                   {item.label}
                 </Link>
@@ -102,7 +131,7 @@ export function TrestleHeader({
 
           <Link
             href={templatePreviewHref(template.slug, 'buyers')}
-            className="tr-action tr-focus ms-2 hidden min-h-11 items-center rounded-md px-5 text-base font-medium lg:inline-flex"
+            className="tr-action tr-focus ms-2 hidden min-h-11 items-center px-5 lg:inline-flex"
           >
             Open a shop account
           </Link>
@@ -114,8 +143,12 @@ export function TrestleHeader({
             aria-expanded={open}
             aria-label={open ? 'Close menu' : 'Open menu'}
             onClick={() => setOpen((value) => !value)}
-            className="tr-focus tr-trigger ms-auto inline-flex min-h-11 items-center gap-2 rounded-md px-4 text-base font-medium lg:hidden"
+            className="tr-focus tr-trigger ms-auto inline-flex min-h-11 items-center gap-2.5 px-4 lg:hidden"
           >
+            <span aria-hidden="true" className="flex flex-col gap-1">
+              <span className="tr-trigger-bar" />
+              <span className="tr-trigger-bar" />
+            </span>
             {open ? 'Close' : 'Menu'}
           </button>
         </nav>
@@ -134,6 +167,7 @@ export function TrestleHeader({
               key={item.path}
               href={templatePreviewHref(template.slug, item.path)}
               aria-current={active ? 'page' : undefined}
+              data-tr-active={active ? '' : undefined}
               onClick={() => setOpen(false)}
               className={cn(
                 'tr-focus tr-sheet-link flex min-h-14 items-center px-5 text-lg sm:px-8',
@@ -144,7 +178,10 @@ export function TrestleHeader({
             </Link>
           )
         })}
+        <p className="tr-sheet-note px-5 py-4 text-base leading-7 sm:px-8">
+          Two desks, one door — shops@trestle.example · makers@trestle.example
+        </p>
       </div>
-    </header>
+    </motion.header>
   )
 }

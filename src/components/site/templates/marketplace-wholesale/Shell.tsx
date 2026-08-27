@@ -7,20 +7,47 @@ import { templatePreviewHref } from '@/lib/templates/registry'
 import { TrestleHeader } from './TrestleHeader'
 import './theme.css'
 
-/* Trestle (marketplace-wholesale) template shell — WAVE 0 SCAFFOLD for the
- * art-direction wave to rework.
+/* Trestle (marketplace-wholesale) template shell — two sides of one ledger.
  *
- * Contract (final even where visuals are not): everything renders beneath
+ * The shell stamps two data attributes theme.css keys the mirror grammar on:
+ * data-tr-page (deepens the home hero) and data-tr-side — 'shops' on the
+ * buyers route, 'makers' on suppliers, 'both' everywhere else — which anchors
+ * each page header's wash and spruce edge rule to its own side of the ledger,
+ * so the two audience pages render as mirror images of one another.
+ *
+ * The footer closes every page the way the ledger closes: the two-sided
+ * promise as a pull line, then four ruled columns — the pages, the SHOPS DESK
+ * and the MAKERS DESK side by side (the footer's own recto/verso), and the
+ * office — over a rail carrying the fiction disclosure.
+ *
+ * Contract (frozen): everything renders beneath
  * data-template-theme='marketplace-wholesale'; internal navigation goes
  * through templatePreviewHref with aria-current on the active page; every
  * interactive element lives in this chrome, never inside the aria-hidden
- * visual canvas; the footer carries the fictional disclosure. Scoped colour
- * lives in theme.css; nothing here touches :root, .dark, or globals.css. */
+ * visual canvas. Scoped colour lives in theme.css; nothing here touches
+ * :root, .dark, or globals.css. */
+
+const desks = [
+  {
+    label: 'The shops desk',
+    lines: ['Orders, terms, returns, applications.', 'Answered inside a working day.'],
+    value: 'shops@trestle.example',
+  },
+  {
+    label: 'The makers desk',
+    lines: ['Listings, dispatch, payments.', 'Read by people who have packed a kiln.'],
+    value: 'makers@trestle.example',
+  },
+] as const
 
 export function MarketplaceWholesaleShell({ activePath, children, template }: TemplateShellProps) {
+  const side = activePath === 'buyers' ? 'shops' : activePath === 'suppliers' ? 'makers' : 'both'
+
   return (
     <div
       data-template-theme="marketplace-wholesale"
+      data-tr-page={activePath === '' ? 'home' : activePath}
+      data-tr-side={side}
       className="flex min-h-screen flex-col bg-background text-foreground antialiased"
     >
       <TrestleHeader activePath={activePath} template={template} />
@@ -28,22 +55,23 @@ export function MarketplaceWholesaleShell({ activePath, children, template }: Te
       <main className="flex-1">{children}</main>
 
       <footer className="tr-footer">
-        <div className="mx-auto flex max-w-6xl flex-col gap-10 px-5 py-14 sm:px-8">
-          <p className="max-w-2xl text-2xl leading-9 tracking-heading">
-            The wholesale market between people who make things and people who keep shops. Sixty
-            days to pay, makers paid on dispatch, one flat commission.
+        <div className="mx-auto flex max-w-6xl flex-col gap-12 px-5 py-14 sm:px-8 lg:py-16">
+          <p className="tr-footer-line max-w-2xl">
+            Two sides, one ledger — sixty days to pay for the shops, paid on dispatch for the
+            makers, one flat commission in the middle.
           </p>
 
-          <div className="grid gap-10 border-t border-border pt-10 sm:grid-cols-3">
-            <div className="flex flex-col gap-3">
-              <span className="tr-footer-label text-base font-semibold">The market</span>
+          <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="tr-footer-col flex flex-col gap-3.5">
+              <span className="tr-footer-label">The market</span>
               <nav aria-label="Trestle footer navigation" className="flex flex-col gap-1">
                 {template.navigation.map((item) => (
                   <Link
                     key={item.path}
                     href={templatePreviewHref(template.slug, item.path)}
                     aria-current={activePath === item.path ? 'page' : undefined}
-                    className="tr-focus inline-flex min-h-11 w-fit items-center rounded-md pe-2 text-base text-muted-foreground transition-colors hover:text-foreground"
+                    data-tr-active={activePath === item.path ? '' : undefined}
+                    className="tr-focus tr-footer-link inline-flex min-h-11 w-fit items-center rounded-md pe-2"
                   >
                     {item.label}
                   </Link>
@@ -51,26 +79,24 @@ export function MarketplaceWholesaleShell({ activePath, children, template }: Te
               </nav>
             </div>
 
-            <div className="flex flex-col gap-3">
-              <span className="tr-footer-label text-base font-semibold">The desks</span>
-              <span className="text-base leading-7 text-muted-foreground">
-                shops@trestle.example
-              </span>
-              <span className="text-base leading-7 text-muted-foreground">
-                makers@trestle.example
-              </span>
-              <span className="text-base leading-7 text-muted-foreground">01632 960 512</span>
-            </div>
+            {desks.map((desk) => (
+              <div key={desk.label} className="tr-footer-col flex flex-col gap-3.5">
+                <span className="tr-footer-label">{desk.label}</span>
+                <span className="tr-footer-strong break-words">{desk.value}</span>
+                {desk.lines.map((line) => (
+                  <span key={line} className="tr-footer-item">
+                    {line}
+                  </span>
+                ))}
+              </div>
+            ))}
 
-            <div className="flex flex-col gap-3">
-              <span className="tr-footer-label text-base font-semibold">The office</span>
-              <address className="flex flex-col gap-3 not-italic">
-                <span className="text-base leading-7 text-muted-foreground">
-                  Unit 9, Rope Court, Ellsworth
-                </span>
-                <span className="text-base leading-7 text-muted-foreground">
-                  Weekdays 9–6 · Visitors by arrangement
-                </span>
+            <div className="tr-footer-col flex flex-col gap-3.5">
+              <span className="tr-footer-label">The office</span>
+              <address className="flex flex-col gap-3.5 not-italic">
+                <span className="tr-footer-item">Unit 9, Rope Court, Ellsworth</span>
+                <span className="tr-footer-item">Weekdays 9–6 · Visitors by arrangement</span>
+                <span className="tr-footer-strong">01632 960 512</span>
               </address>
             </div>
           </div>

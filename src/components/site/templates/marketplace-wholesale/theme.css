@@ -1,175 +1,1143 @@
-/* Trestle (marketplace-wholesale) scoped theme — WAVE 0 SCAFFOLD.
+/* Trestle (marketplace-wholesale) scoped theme — two sides of one ledger.
  *
  * Convention (frozen contract): every rule in this file lives beneath the
  * [data-template-theme='marketplace-wholesale'] root the shell renders. It
- * overrides the semantic variables the demo twins consume and never touches
- * :root, .dark, another template's scope, or src/app/globals.css. The site
- * stays forced-light; the intentionally dark surfaces below are named Trestle
- * tokens.
+ * overrides the semantic variables the demo twins consume and adds named
+ * Trestle tokens; it never touches :root, .dark, another template's scope, or
+ * src/app/globals.css. The site stays forced-light — the spruce ink bands and
+ * the footer are intentional dark surfaces built from the tokens below.
  *
- * Art-direction wave: kraft paper and spruce-green ink, a stamped mercantile
- * hand — this scaffold only establishes an AA-safe palette, the specimen-frame
- * flatten, the tone bands, and the shell chrome hooks. */
+ * Art direction: kraft paper printed in ONE spruce-green ink, marked by a
+ * stamped mono hand. Every decision is a warehouse clerk's decision:
+ *   · Geist Mono carries the markings — eyebrows become double-framed stamps,
+ *     actions become stamped instructions in caps, the ledger figures print
+ *     mono — while prose stays Geist Sans. No serif anywhere: the letterhead
+ *     serif is Moorhouse & Kent's voice (real-estate-listing), not Trestle's.
+ *   · ledger ruling does the structure: display titles close with a short
+ *     thick-thin double rule, FAQ rows part on dotted leaders, sections part
+ *     on dotted rules, table heads close with a double rule.
+ *   · 3px "stamp corners" on every container; the only circles are postmarks
+ *     (avatars and step numerals: a double ring around a mono glyph).
+ *   · the TWO-SIDED grammar is geometry, not hue: the home page's two splits
+ *     are recto/verso (the maker's flips its columns and its wash), the
+ *     buyers/suppliers heroes anchor their wash and edge rule to opposite
+ *     sides via the shell's data-tr-side, and how-it-works stays symmetric.
+ *     A second "debit red" ink was rejected — brick on warm paper is the
+ *     real-estate concept's register.
+ *   · every image surface is token-derived crate-and-parcel matter: crate
+ *     sides with labels, postmarks and fragile stripes; parcels tied with
+ *     twine; and the one literal picture, an open ledger spread.
+ *
+ * Contrast, measured with the WCAG formula on the resolved sRGB values (see
+ * the concept's PROVENANCE.md) rather than guessed:
+ *   · ink on kraft 14.2:1, on the deeper band 12.9:1, on raised paper 15.5:1.
+ *   · spruce (--tr-spruce, L 42%) reads AS TYPE: 7.2:1 on kraft, 6.5:1 on the
+ *     deeper band, 7.8:1 on paper — unlike trade-service's safety orange this
+ *     accent may carry small text, and the contact page's lead value does.
+ *   · paper on a spruce fill is 7.5:1, so the filled mono actions hold AA at
+ *     their 12px caps size with room to spare.
+ *   · on the spruce ink band, spruce type dies (~1.6:1): everything that
+ *     resolves to accent type steps up to --tr-sage (9.3:1 on the band,
+ *     8.0:1 on its raised panels) via the --tr-stamp-ink indirection, so the
+ *     re-cut stamps, rules, and postmarks follow automatically — element,
+ *     ::before, and ::after alike.
+ *   · band foreground is 13.9:1 on the band; band muted text 8.3:1. */
 
 [data-template-theme='marketplace-wholesale'] {
-  /* Kraft-paper base */
-  --background: oklch(96.8% 0.012 92deg);
-  --foreground: oklch(26% 0.024 155deg);
+  /* ————— Trestle palette ————— */
+  --tr-kraft: oklch(95.8% 0.02 90deg); /* the page */
+  --tr-kraft-deep: oklch(92.6% 0.024 88deg); /* muted band: stockroom kraft */
+  --tr-paper: oklch(98.6% 0.008 92deg); /* raised label paper */
+  --tr-board: oklch(88% 0.035 84deg); /* crate/parcel board (plates only) */
+  --tr-board-deep: oklch(83.5% 0.038 82deg);
+  --tr-ink: oklch(24.5% 0.028 155deg); /* foreground: spruce-black ink */
+  --tr-band: oklch(26% 0.04 156deg); /* the ink flood (contrast + footer) */
+  --tr-band-raised: oklch(30.5% 0.045 156deg);
+  --tr-rail: oklch(22% 0.036 156deg);
 
-  --card: oklch(98.6% 0.008 95deg);
-  --card-foreground: oklch(26% 0.024 155deg);
-  --popover: oklch(98.6% 0.008 95deg);
-  --popover-foreground: oklch(26% 0.024 155deg);
+  /* The one accent, and its dark-band step-up. */
+  --tr-spruce: oklch(42% 0.09 158deg);
+  --tr-spruce-deep: oklch(36% 0.085 158deg);
+  --tr-sage: oklch(83% 0.06 150deg);
 
-  /* The one accent: spruce green (AA as type on the paper) */
-  --primary: oklch(44% 0.085 160deg);
-  --primary-foreground: oklch(97.5% 0.01 95deg);
-  --brand: oklch(44% 0.085 160deg);
-  --brand-foreground: oklch(97.5% 0.01 95deg);
-  --brand-50: oklch(96% 0.02 158deg);
-  --brand-100: oklch(92.5% 0.035 158deg);
-  --brand-200: oklch(86.5% 0.055 158deg);
-  --brand-600: oklch(40% 0.085 160deg);
+  /* Indirections every re-cut element paints with. Redefined per tone band,
+     so stamps, rules, and postmarks re-ink themselves — element, ::before,
+     and ::after — without per-element contrast overrides. */
+  --tr-stamp-ink: var(--tr-spruce);
+  --tr-rule: color-mix(in oklab, var(--tr-ink) 72%, transparent);
+  --tr-dot: color-mix(in oklab, var(--tr-ink) 36%, transparent);
+  --tr-line-strong: color-mix(in oklab, var(--tr-ink) 55%, transparent);
 
-  --secondary: oklch(93% 0.018 100deg);
-  --secondary-foreground: oklch(30% 0.03 155deg);
-  --muted: oklch(93.6% 0.015 96deg);
-  --muted-foreground: oklch(42% 0.028 152deg);
-  --accent: oklch(91.5% 0.025 130deg);
-  --accent-foreground: oklch(32% 0.05 158deg);
+  /* ————— Semantic variables the twins consume ————— */
+  --background: var(--tr-kraft);
+  --foreground: var(--tr-ink);
+  --card: var(--tr-paper);
+  --card-foreground: var(--tr-ink);
+  --popover: var(--tr-paper);
+  --popover-foreground: var(--tr-ink);
 
-  --border: oklch(87% 0.02 100deg);
-  --input: oklch(84% 0.022 100deg);
-  --ring: oklch(50% 0.09 160deg);
+  /* Actions are spruce with warm paper on them — a stamped instruction, and
+     the pairing that keeps the mono caps AA at 12px (7.5:1). */
+  --primary: var(--tr-spruce);
+  --primary-foreground: oklch(97.5% 0.012 92deg);
+  --secondary: oklch(91% 0.026 88deg);
+  --secondary-foreground: var(--tr-ink);
+  /* Pale kraft: empty rating stars and small chips stay quiet. The big
+     plates get their own crate recipes below and never show this value. */
+  --muted: oklch(90.5% 0.026 88deg);
+  /* 41%: green-grey body ink, ~7.7:1 on kraft and ~7:1 on the deeper band. */
+  --muted-foreground: oklch(41% 0.03 152deg);
+  --accent: oklch(90% 0.03 120deg);
+  --accent-foreground: oklch(30% 0.06 155deg);
 
-  --radius: 0.25rem;
+  --brand: var(--tr-spruce);
+  --brand-foreground: oklch(97.5% 0.012 92deg);
+  --brand-50: oklch(95.5% 0.018 150deg);
+  --brand-100: oklch(91.5% 0.035 152deg);
+  --brand-200: oklch(85% 0.055 154deg);
+  --brand-600: var(--tr-spruce);
 
-  /* Trestle-only named surfaces */
-  --tr-ink: oklch(24.5% 0.03 158deg);
-  --tr-ink-raised: oklch(28% 0.032 158deg);
-  --tr-band: oklch(94% 0.016 96deg);
+  --border: oklch(85.5% 0.024 90deg);
+  --input: oklch(80% 0.03 88deg);
+  --ring: var(--tr-spruce);
 
-  background-color: var(--background);
+  /* Stamp corners. --radius feeds the sm–xl scale through the @theme calc()s;
+     the named container radii are @theme inline literals, re-cut at element
+     level below. */
+  --radius: 0.1875rem;
+
+  /* The marking hand is mono, and mono is wide: the eyebrow tracking steps
+     down from the catalog's 0.16em so stamped labels stay one line. Display
+     sizes pull down a notch — a ledger's headings are set, not shouted. */
+  --tracking-eyebrow: 0.12em;
+  --tracking-display: -0.022em;
+
+  --text-4xl: 2.125rem;
+  --text-4xl--line-height: 1.16;
+  --text-5xl: 2.75rem;
+  --text-5xl--line-height: 1.08;
+
+  background-color: var(--tr-kraft);
   color: var(--foreground);
 }
 
-/* ---------------------------------------------------------------- */
-/* Section rhythm: flatten the catalog specimen frame into full-bleed */
-/* site bands ([data-template-section] > [aria-hidden] > frame div).  */
-/* ---------------------------------------------------------------- */
-
-[data-template-theme='marketplace-wholesale'] [data-template-section] > [aria-hidden='true'] > div {
-  border-color: transparent;
-  border-radius: 0;
-  background-color: transparent;
-  padding-block: clamp(3.5rem, 7vw, 5.5rem);
+[data-template-theme='marketplace-wholesale'] ::selection {
+  background-color: color-mix(in oklab, var(--tr-spruce) 28%, transparent);
+  color: var(--tr-ink);
 }
 
-[data-template-theme='marketplace-wholesale'] [data-template-section='hero'] {
-  background: linear-gradient(
+/* ————————————————— Geometry: stamp corners ————————————————— */
+
+/* Containers square down to a 3px stamp corner. rounded-full is deliberately
+   NOT here: avatars and step numerals stay circular and become postmarks. */
+[data-template-theme='marketplace-wholesale']
+  :is(
+    .rounded-frame,
+    .rounded-panel,
+    .rounded-card,
+    .rounded-inset,
+    .rounded-2xl,
+    .rounded-xl,
+    .rounded-lg,
+    .rounded-md,
+    .rounded-sm
+  ) {
+  border-radius: 0.1875rem;
+}
+
+/* ————————————————— Typography: the clerk's hand ————————————————— */
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .tracking-display {
+  font-weight: 640;
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .tracking-title {
+  font-weight: 600;
+}
+
+/* Every display title closes with the ledger's head rule — a short thick-thin
+   double rule drawn from --tr-rule, which re-inks itself on the dark bands.
+   Titles are <div>s in the twins; the dd numerals that share .tracking-display
+   are <dd>s, so the element selector keeps the rule off the figures. */
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] div.tracking-display::after {
+  background-image: linear-gradient(
     to bottom,
-    color-mix(in oklab, var(--brand) 7%, transparent),
-    transparent 68%
+    var(--tr-rule) 0 2px,
+    transparent 2px 4px,
+    var(--tr-rule) 4px 5px
   );
+  content: '';
+  display: block;
+  height: 5px;
+  margin-top: 1.125rem;
+  width: 3.25rem;
+}
+
+/* Centered headers (the FAQ family, the CTA family) centre their rule. */
+[data-template-theme='marketplace-wholesale']
+  [data-template-canvas]
+  .text-center
+  div.tracking-display::after {
+  margin-inline: auto;
+}
+
+/* ————————————————— Eyebrows become stamps ————————————————— */
+
+/* Every twin eyebrow is a Badge carrying `rounded-full px-3 py-1 uppercase
+   tracking-eyebrow` (the comparator's px-2 plan badges get their own quieter
+   cut below). The pill re-cuts as a rubber stamp: mono caps in stamp ink
+   inside a double frame — a 1px border and an inner hairline ::before. */
+[data-template-theme='marketplace-wholesale']
+  [data-template-canvas]
+  .rounded-full.px-3.tracking-eyebrow {
+  background-color: transparent;
+  border: 1px solid color-mix(in oklab, var(--tr-stamp-ink) 78%, transparent);
+  border-radius: 0.1875rem;
+  color: var(--tr-stamp-ink);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.3125rem 0.625rem;
+  position: relative;
 }
 
 [data-template-theme='marketplace-wholesale']
-  [data-template-section='hero']
-  > [aria-hidden='true']
-  > div {
-  padding-block: clamp(4.25rem, 9vw, 6.5rem);
+  [data-template-canvas]
+  .rounded-full.px-3.tracking-eyebrow::before {
+  border: 1px solid color-mix(in oklab, var(--tr-stamp-ink) 34%, transparent);
+  border-radius: 1px;
+  content: '';
+  inset: 2px;
+  pointer-events: none;
+  position: absolute;
 }
 
-/* ---------------------------------------------------------------- */
-/* Tone bands                                                        */
-/* ---------------------------------------------------------------- */
-
-[data-template-theme='marketplace-wholesale'] [data-tone='muted'] {
-  --muted: oklch(90.5% 0.016 96deg);
-  --accent: oklch(89% 0.024 130deg);
-  --card: oklch(97% 0.01 95deg);
-
-  background-color: var(--tr-band);
-  box-shadow:
-    inset 0 1px 0 var(--border),
-    inset 0 -1px 0 var(--border);
+/* The comparator's plan badges: a single-hairline stamp in the table's own
+   quieter voice. */
+[data-template-theme='marketplace-wholesale']
+  [data-template-canvas]
+  .rounded-full.px-2.tracking-eyebrow {
+  background-color: transparent;
+  border-color: color-mix(in oklab, var(--tr-ink) 38%, transparent);
+  border-radius: 0.1875rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-weight: 600;
 }
 
-/* Contrast + footer: spruce ink. Semantic variables remapped so twin token
-   classes resolve to AA-safe dark-band values. */
-[data-template-theme='marketplace-wholesale'] [data-tone='contrast'],
-[data-template-theme='marketplace-wholesale'] .tr-footer {
-  --background: var(--tr-ink);
+/* hero-basic's proof chips (rounded-full px-3 py-1 text-sm, never
+   tracking-eyebrow): hairline term stamps, square-cut, quiet. */
+[data-template-theme='marketplace-wholesale']
+  [data-template-canvas]
+  .rounded-full.px-3.py-1.text-sm {
+  background-color: color-mix(in oklab, var(--tr-paper) 55%, transparent);
+  border-radius: 0.1875rem;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tr-ink) 36%, transparent);
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+/* ————————————————— Actions: stamped instructions ————————————————— */
+
+/* DemoLink and the two submit spans are the only action-shaped SPANS in the
+   twins (the contact form's field wells share the metrics but are divs). They
+   set in mono caps — a stamped instruction, the concept's loudest signature —
+   and grow to a proper tap target. */
+[data-template-theme='marketplace-wholesale']
+  [data-template-canvas]
+  :is(span.h-10.rounded-md, span.h-9.rounded-md) {
+  border-radius: 0.1875rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] span.h-10.rounded-md {
+  height: 2.875rem;
+  padding-inline: 1.375rem;
+}
+
+/* The outline appearance is the maker's door on the home hero and the second
+   action everywhere: a double-framed stamp — firm border, inner hairline via
+   inset outline — on raised paper so it holds on every band. */
+[data-template-theme='marketplace-wholesale']
+  [data-template-canvas]
+  span.border-border.bg-background {
+  background-color: var(--card);
+  border-color: color-mix(in oklab, var(--tr-ink) 45%, transparent);
+  outline: 1px solid color-mix(in oklab, var(--tr-ink) 22%, transparent);
+  outline-offset: -4px;
+}
+
+/* ————————————————— Section rhythm ————————————————— */
+
+/* The twins arrive wrapped in the catalog's specimen frame (rounded-frame
+   border bg-card/35). Dissolve it so every section reads as a full-bleed band
+   of one site. hero-basic's frame child is a plain <div> (no <style> first
+   child on this concept), but `> div` is used regardless — it is the selector
+   that survives a twin gaining one. */
+[data-template-theme='marketplace-wholesale'] [data-template-section] {
+  position: relative;
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-section] > [aria-hidden='true'] > div {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding-block: clamp(3.25rem, 6.5vw, 5rem);
+}
+
+/* Sections part on a dotted ledger leader, drawn as a top background strip so
+   it can never shift layout. The ink bands bring their own edge and opt out;
+   the two home splits repaint it inside their own wash stacks below. */
+[data-template-theme='marketplace-wholesale']
+  [data-template-section]
+  + [data-template-section]:not([data-tone='contrast']) {
+  background-image: repeating-linear-gradient(90deg, var(--tr-dot) 0 3px, transparent 3px 9px);
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+}
+
+/* ————————————————— Tone bands ————————————————— */
+
+/* muted: the stockroom — a deeper sheet of the same kraft. Cards stay raised
+   paper so labels keep popping off the band. */
+[data-template-theme='marketplace-wholesale'] [data-template-section][data-tone='muted'] {
+  --border: oklch(83% 0.026 88deg);
+
+  background-color: var(--tr-kraft-deep);
+}
+
+/* contrast: the spruce ink flood. Every semantic variable is remapped so the
+   twins' paper-first markup resolves to an AA-safe dark set; --tr-paper is
+   redefined so the inner-panel remap follows the band down; and the stamp
+   indirections re-ink to sage, which carries every re-cut element (stamps,
+   ledger rules, postmark rings) across without per-element overrides. The
+   primary action inverts to a paper stamp with ink text. */
+[data-template-theme='marketplace-wholesale'] [data-template-section][data-tone='contrast'] {
+  --tr-paper: var(--tr-band-raised);
+  --tr-stamp-ink: var(--tr-sage);
+  --tr-rule: color-mix(in oklab, var(--tr-sage) 82%, transparent);
+  --tr-dot: oklch(100% 0 0deg / 30%);
+  --tr-line-strong: oklch(100% 0 0deg / 42%);
+
+  --background: var(--tr-band);
   --foreground: oklch(96.5% 0.012 95deg);
-  --card: var(--tr-ink-raised);
+  --card: var(--tr-band-raised);
   --card-foreground: oklch(96.5% 0.012 95deg);
-  --popover: var(--tr-ink-raised);
+  --popover: var(--tr-band-raised);
   --popover-foreground: oklch(96.5% 0.012 95deg);
   --primary: oklch(96.5% 0.012 95deg);
-  --primary-foreground: oklch(24% 0.028 158deg);
-  --brand: oklch(78% 0.07 155deg);
-  --brand-foreground: oklch(22% 0.028 158deg);
-  --secondary: oklch(32% 0.032 158deg);
+  --primary-foreground: oklch(24% 0.03 156deg);
+  --brand: var(--tr-sage);
+  --brand-foreground: oklch(22% 0.03 156deg);
+  --secondary: oklch(33% 0.045 156deg);
   --secondary-foreground: oklch(93% 0.014 95deg);
-  --muted: oklch(29.5% 0.03 158deg);
-  --muted-foreground: oklch(81% 0.02 120deg);
-  --accent: oklch(34% 0.04 158deg);
+  --muted: oklch(30.5% 0.04 156deg);
+  --muted-foreground: oklch(80% 0.02 130deg);
+  --accent: oklch(34.5% 0.05 156deg);
   --accent-foreground: oklch(94% 0.016 100deg);
-  --border: oklch(100% 0 0deg / 16%);
+  --border: oklch(100% 0 0deg / 17%);
   --input: oklch(100% 0 0deg / 24%);
-  --ring: oklch(76% 0.07 155deg);
+  --ring: var(--tr-sage);
 
-  background-color: var(--tr-ink);
+  background-color: var(--tr-band);
   color: var(--foreground);
 }
 
-/* ---------------------------------------------------------------- */
-/* Shell chrome                                                      */
-/* ---------------------------------------------------------------- */
+[data-template-theme='marketplace-wholesale']
+  [data-template-section][data-tone='contrast']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(3.75rem, 7vw, 5.5rem);
+}
 
-[data-template-theme='marketplace-wholesale'] .tr-utility {
-  background-color: var(--tr-ink);
+/* Spruce type steps up to sage wherever the band is ink: the twins' brand
+   classes, the spotlight's quote mark, and the rating stars if one ever lands
+   there. (The re-cut elements follow via --tr-stamp-ink instead.) */
+[data-template-theme='marketplace-wholesale']
+  [data-tone='contrast']
+  :is(.text-brand, .text-brand-600, span.text-primary, svg.text-primary) {
+  color: var(--tr-sage);
+}
+
+/* ————————————————— Surfaces ————————————————— */
+
+/* The twins paint inner panels with bg-background/85|80|70|60, which dissolve
+   on kraft and worse on the tinted bands. One remap to raised label paper
+   gives a single two-step surface story that also holds on the ink band,
+   where --tr-paper is redefined. */
+[data-template-theme='marketplace-wholesale']
+  [data-template-canvas]
+  :is(.bg-background\/85, .bg-background\/80, .bg-background\/70, .bg-background\/60) {
+  background-color: var(--tr-paper);
+}
+
+/* ————————————————— Postmarks ————————————————— */
+
+/* Avatars become postmarks: a double ring — hairline border plus inner ring —
+   around a mono initial in stamp ink. The one circular geometry the concept
+   keeps, because a postmark is the mercantile mark that never depicts anyone:
+   no likeness, real or invented, anywhere. */
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .rounded-full.bg-card {
+  background-color: var(--tr-paper);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--tr-stamp-ink) 75%, transparent),
+    inset 0 0 0 3px var(--tr-paper),
+    inset 0 0 0 4px color-mix(in oklab, var(--tr-stamp-ink) 40%, transparent);
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .rounded-full.bg-card > span {
+  color: var(--tr-stamp-ink);
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+/* feature-steps' numerals join the postmark family: a spruce roundel with a
+   sage-paper ring inside, the stamped seal on each step. On the ink band the
+   inverted --primary makes them paper seals with ink numerals by itself. */
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .rounded-full.bg-primary {
+  box-shadow:
+    inset 0 0 0 2px var(--primary),
+    inset 0 0 0 3px color-mix(in oklab, var(--primary-foreground) 65%, transparent);
+  font-weight: 700;
+}
+
+/* ————————————————— Ledger figures ————————————————— */
+
+/* stats-proof's metrics are the ledger's entries: mono, tabular, a notch
+   smaller than the display scale (mono runs wide), over a thick-thin double
+   rule instead of the twin's single hairline. */
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] dd {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .flex-col-reverse.border-t {
+  border-top: 3px double var(--tr-line-strong);
+}
+
+/* content-stats' closing list is the posting column: double rule above, the
+   arrows re-inked as posting marks, values in mono. */
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] ul.border-t {
+  border-top: 3px double var(--tr-line-strong);
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] ul.border-t .opacity-50 {
+  color: var(--tr-stamp-ink);
+  opacity: 0.9;
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] ul.border-t span.font-medium {
+  font-family: var(--font-mono);
+  font-weight: 650;
+}
+
+/* ————————————————— Page headers: one hero, two hands ————————————————— */
+
+/* One header treatment for the whole site: a kraft-deep wash falling out of
+   the top edge, a spruce breath anchored to the page's OWN side of the
+   ledger, and a dotted leader closing the band. The shell stamps
+   data-tr-side — 'shops' anchors left, 'makers' anchors right, 'both'
+   (home, how-it-works, contact) holds the wash symmetric. */
+[data-template-theme='marketplace-wholesale'] [data-template-section='hero'] {
+  background-image:
+    repeating-linear-gradient(90deg, var(--tr-dot) 0 3px, transparent 3px 9px),
+    radial-gradient(
+      44rem 26rem at 8% -10rem,
+      color-mix(in oklab, var(--tr-spruce) 11%, transparent),
+      transparent 68%
+    ),
+    radial-gradient(
+      44rem 26rem at 92% -10rem,
+      color-mix(in oklab, var(--tr-spruce) 11%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--tr-kraft-deep) 80%, transparent),
+      transparent 66%
+    );
+  background-position:
+    bottom,
+    0 0,
+    0 0,
+    0 0;
+  background-repeat: no-repeat;
+  background-size:
+    100% 1px,
+    auto,
+    auto,
+    auto;
+}
+
+/* The shops-side hand: wash and edge rule anchor LEFT, and the right-corner
+   wash drops out. */
+[data-template-theme='marketplace-wholesale']
+  [data-tr-side='shops']
+  [data-template-section='hero'] {
+  background-image:
+    repeating-linear-gradient(90deg, var(--tr-dot) 0 3px, transparent 3px 9px),
+    radial-gradient(
+      48rem 28rem at 0% -10rem,
+      color-mix(in oklab, var(--tr-spruce) 14%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--tr-kraft-deep) 80%, transparent),
+      transparent 66%
+    );
+  background-size:
+    100% 1px,
+    auto,
+    auto;
+  box-shadow: inset 4px 0 0 var(--tr-spruce);
+}
+
+/* The makers-side hand — the same header held up to a mirror. */
+[data-template-theme='marketplace-wholesale']
+  [data-tr-side='makers']
+  [data-template-section='hero'] {
+  background-image:
+    repeating-linear-gradient(90deg, var(--tr-dot) 0 3px, transparent 3px 9px),
+    radial-gradient(
+      48rem 28rem at 100% -10rem,
+      color-mix(in oklab, var(--tr-spruce) 14%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--tr-kraft-deep) 80%, transparent),
+      transparent 66%
+    );
+  background-size:
+    100% 1px,
+    auto,
+    auto;
+  box-shadow: inset -4px 0 0 var(--tr-spruce);
+}
+
+/* The home hero is the split moment and gets the deepest band on the site. */
+[data-template-theme='marketplace-wholesale']
+  [data-tr-page='home']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(4.5rem, 9vw, 6.75rem);
+}
+
+/* ————————————————— The home mirror: recto/verso ————————————————— */
+
+/* The shopkeeper's page: wash from the LEFT edge, and its terms cards carry
+   a spruce rule down their LEFT edge. The dotted section leader is repainted
+   into the stack because a custom background-image would otherwise clobber
+   it. */
+[data-template-theme='marketplace-wholesale'] [data-template-section='for-shops'] {
+  background-image:
+    repeating-linear-gradient(90deg, var(--tr-dot) 0 3px, transparent 3px 9px),
+    radial-gradient(
+      40rem 30rem at 0% 24%,
+      color-mix(in oklab, var(--tr-spruce) 8%, transparent),
+      transparent 70%
+    );
+  background-position:
+    top,
+    0 0;
+  background-repeat: no-repeat;
+  background-size:
+    100% 1px,
+    auto;
+}
+
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='for-shops']
+  .bg-background\/85 {
+  box-shadow: inset 3px 0 0 color-mix(in oklab, var(--tr-spruce) 80%, transparent);
+}
+
+/* The maker's page — the same block, opposite hand: wash from the RIGHT, the
+   cards' rule on their RIGHT edge, and at desktop widths the whole split
+   flips its columns so the two sections face each other like the recto and
+   verso of one opened ledger. Below lg the twin's own stacking keeps the
+   pitch above the cards, so the flip is desktop-only on purpose. */
+[data-template-theme='marketplace-wholesale'] [data-template-section='for-makers'] {
+  background-image:
+    repeating-linear-gradient(90deg, var(--tr-dot) 0 3px, transparent 3px 9px),
+    radial-gradient(
+      40rem 30rem at 100% 24%,
+      color-mix(in oklab, var(--tr-spruce) 8%, transparent),
+      transparent 70%
+    );
+  background-position:
+    top,
+    0 0;
+  background-repeat: no-repeat;
+  background-size:
+    100% 1px,
+    auto;
+}
+
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='for-makers']
+  .bg-background\/85 {
+  box-shadow: inset -3px 0 0 color-mix(in oklab, var(--tr-spruce) 80%, transparent);
+}
+
+@media (min-width: 1024px) {
+  [data-template-theme='marketplace-wholesale']
+    [data-template-section='for-makers']
+    .lg\:grid-cols-2
+    > div:first-child {
+    order: 2;
+  }
+}
+
+/* ————————————————— The crates (For shops · this-season) ————————————————— */
+
+/* feature-cards-media's media well is the product-photography slot, and it
+   repaints as a CRATE SIDE: corrugated kraft board (vertical flutes mixed
+   from ink), a light sheen falling from the top, and shade pooling at the
+   foot. The markings live in the illustration cells below; everything is
+   tokens, nothing is raster. */
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .aspect-video.bg-muted {
+  background-color: var(--tr-board);
+  background-image:
+    linear-gradient(180deg, color-mix(in oklab, var(--tr-paper) 32%, transparent), transparent 42%),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--tr-ink) 9%, transparent) 0 1px,
+      transparent 1px var(--tr-flute, 8px)
+    ),
+    linear-gradient(180deg, transparent 62%, color-mix(in oklab, var(--tr-ink) 14%, transparent));
+}
+
+/* The twin's opaque illustration panel drops away so the board shows through
+   the 3px gaps — the gaps become the crate's batten lines. */
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .grid-cols-3.bg-background {
+  background-color: transparent;
+}
+
+/* The four cells become the crate's markings — same grammar, no two alike:
+   a ruled shipping label under a spruce head band, a double-ring postmark,
+   a run of fragile stripes, and a twine-crossed panel. */
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .rounded-inset.bg-accent\/30 {
+  background-color: var(--tr-paper);
+  background-image:
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--tr-spruce) 88%, transparent) 0 var(--tr-label-head, 26%),
+      transparent var(--tr-label-head, 26%)
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 11px,
+      color-mix(in oklab, var(--tr-ink) 20%, transparent) 11px 12px
+    );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tr-ink) 34%, transparent);
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .rounded-inset.bg-muted {
+  background-color: var(--tr-board-deep);
+  background-image: radial-gradient(
+    circle at var(--tr-mark-x, 50%) 50%,
+    transparent 0 24%,
+    color-mix(in oklab, var(--tr-spruce) 85%, transparent) 25% 29%,
+    transparent 30% 36%,
+    color-mix(in oklab, var(--tr-spruce) 60%, transparent) 37% 39%,
+    transparent 40%
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tr-ink) 22%, transparent);
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .rounded-inset.bg-primary\/15 {
+  background-color: var(--tr-board);
+  background-image: repeating-linear-gradient(
+    var(--tr-stripe, 45deg),
+    color-mix(in oklab, var(--tr-spruce) 78%, transparent) 0 9px,
+    transparent 9px 20px
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tr-ink) 26%, transparent);
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .rounded-inset.bg-muted\/70 {
+  background-color: color-mix(in oklab, var(--tr-board) 82%, var(--tr-paper));
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent 0 calc(var(--tr-tie, 34%) - 1px),
+      color-mix(in oklab, var(--tr-ink) 55%, transparent) calc(var(--tr-tie, 34%) - 1px)
+        calc(var(--tr-tie, 34%) + 1px),
+      transparent calc(var(--tr-tie, 34%) + 1px)
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0 calc(50% - 1px),
+      color-mix(in oklab, var(--tr-ink) 45%, transparent) calc(50% - 1px) calc(50% + 1px),
+      transparent calc(50% + 1px)
+    );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tr-ink) 26%, transparent);
+}
+
+/* Four cards, four crates: flute pitch, stripe angle, postmark seat, label
+   depth, and twine seat all move per card, so the row reads as a stack of
+   different crates rather than one crate copied. */
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='this-season']
+  .grid.gap-5
+  > div:nth-child(2) {
+  --tr-flute: 6px;
+  --tr-label-head: 34%;
+  --tr-mark-x: 30%;
+  --tr-stripe: 135deg;
+  --tr-tie: 62%;
+}
+
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='this-season']
+  .grid.gap-5
+  > div:nth-child(3) {
+  --tr-flute: 11px;
+  --tr-label-head: 20%;
+  --tr-mark-x: 68%;
+  --tr-stripe: 90deg;
+  --tr-tie: 22%;
+}
+
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='this-season']
+  .grid.gap-5
+  > div:nth-child(4) {
+  --tr-flute: 8px;
+  --tr-label-head: 28%;
+  --tr-mark-x: 42%;
+  --tr-stripe: 0deg;
+  --tr-tie: 74%;
+}
+
+/* The card icon disc is a quiet stamped tile, not a crate. */
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .size-10.bg-muted {
+  background-color: var(--muted);
+  background-image: none;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tr-ink) 24%, transparent);
+}
+
+/* ————————————————— The parcels (For makers · what-you-control) ————————————— */
+
+/* content-rows' plates repaint as wrapped parcels: kraft board, two runs of
+   twine crossing at a knot, a sheen from the top and shade at the foot. The
+   tie point moves per row, so three parcels read as three parcels. */
+[data-template-theme='marketplace-wholesale'] [data-template-section='what-you-control'] .bg-muted {
+  background-color: var(--tr-board-deep);
+  background-image:
+    radial-gradient(
+      circle at var(--tr-tie-x, 66%) var(--tr-tie-y, 38%),
+      color-mix(in oklab, var(--tr-ink) 80%, transparent) 0 6px,
+      transparent 7px
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0 calc(var(--tr-tie-x, 66%) - 2px),
+      color-mix(in oklab, var(--tr-ink) 62%, transparent) calc(var(--tr-tie-x, 66%) - 2px)
+        calc(var(--tr-tie-x, 66%) + 2px),
+      transparent calc(var(--tr-tie-x, 66%) + 2px)
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0 calc(var(--tr-tie-y, 38%) - 2px),
+      color-mix(in oklab, var(--tr-ink) 54%, transparent) calc(var(--tr-tie-y, 38%) - 2px)
+        calc(var(--tr-tie-y, 38%) + 2px),
+      transparent calc(var(--tr-tie-y, 38%) + 2px)
+    ),
+    linear-gradient(180deg, color-mix(in oklab, var(--tr-paper) 22%, transparent), transparent 30%),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--tr-ink) 11%, transparent) 0 1px,
+      transparent 1px 9px
+    ),
+    linear-gradient(168deg, transparent 48%, color-mix(in oklab, var(--tr-ink) 24%, transparent));
+}
+
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='what-you-control']
+  .grid:nth-child(2)
+  .bg-muted {
+  --tr-tie-x: 30%;
+  --tr-tie-y: 60%;
+}
+
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='what-you-control']
+  .grid:nth-child(3)
+  .bg-muted {
+  --tr-tie-x: 55%;
+  --tr-tie-y: 26%;
+}
+
+/* ————————————————— The open ledger (How it works · the-ledger-story) ———————— */
+
+/* The concept's one literal picture: content-quote's plate becomes the open
+   ledger spread — two ruled pages, a spruce margin line on each, feint entry
+   rules, a double head rule, and a darkened centre crease. Two sides of one
+   ledger, drawn as an object. */
+[data-template-theme='marketplace-wholesale'] [data-template-section='the-ledger-story'] .bg-muted {
+  background-color: var(--tr-paper);
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent calc(50% - 10px),
+      color-mix(in oklab, var(--tr-ink) 14%, transparent) calc(50% - 3px),
+      color-mix(in oklab, var(--tr-ink) 48%, transparent) 50%,
+      color-mix(in oklab, var(--tr-ink) 14%, transparent) calc(50% + 3px),
+      transparent calc(50% + 10px)
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0 calc(11% - 2px),
+      color-mix(in oklab, var(--tr-spruce) 75%, transparent) calc(11% - 2px) 11%,
+      transparent 11% calc(61% - 2px),
+      color-mix(in oklab, var(--tr-spruce) 75%, transparent) calc(61% - 2px) 61%,
+      transparent 61%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0 24px,
+      color-mix(in oklab, var(--tr-ink) 55%, transparent) 24px 26px,
+      transparent 26px 29px,
+      color-mix(in oklab, var(--tr-ink) 55%, transparent) 29px 30px,
+      transparent 30px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 23px,
+      color-mix(in oklab, var(--tr-ink) 20%, transparent) 23px 24px
+    ),
+    linear-gradient(180deg, transparent 78%, color-mix(in oklab, var(--tr-ink) 8%, transparent));
+}
+
+/* The quote rules print spruce: content-quote's citation rule and the home
+   page's testimonial rule alike. */
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] blockquote.border-l-2 {
+  border-left-color: var(--tr-stamp-ink);
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] figure.border-l-2 {
+  border-left-color: var(--tr-stamp-ink);
+}
+
+/* ————————————————— The ledger tables ————————————————— */
+
+/* Both comparators set as ledger openings: mono column heads, a double rule
+   closing the head row, dotted leaders between entries, and the service
+   column washed in the palest spruce. */
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] th .text-base.font-medium {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] thead th {
+  border-bottom: 3px double var(--tr-line-strong);
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] tbody tr.border-t {
+  border-top-color: color-mix(in oklab, var(--tr-ink) 30%, transparent);
+  border-top-style: dotted;
+}
+
+[data-template-theme='marketplace-wholesale']
+  [data-template-canvas]
+  :is(th.bg-primary\/5, td.bg-primary\/5) {
+  background-color: color-mix(in oklab, var(--tr-spruce) 7%, transparent);
+}
+
+/* ————————————————— Dotted leaders (the FAQ family) ————————————————— */
+
+/* FAQ rows part on dotted ledger leaders — the py-4 guard keeps the rule off
+   the crate wells, which carry border-b too. Questions firm up a step above
+   their answers. */
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .border-b.py-4 {
+  border-bottom-color: color-mix(in oklab, var(--tr-ink) 32%, transparent);
+  border-bottom-style: dotted;
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] .text-base.tracking-title {
+  font-weight: 580;
+}
+
+/* ————————————————— Per-section refinements ————————————————— */
+
+/* The maker strip is a rail, not a section: shallow, with the marks read as
+   stamped maker lockups at near-full ink. */
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='makers-strip']
+  > [aria-hidden='true']
+  > div {
+  padding-block: 1.875rem;
+}
+
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='makers-strip']
+  .text-foreground\/70 {
+  color: color-mix(in oklab, var(--foreground) 90%, transparent);
+}
+
+/* The ledger band's press lockup: THE SHOPKEEPER'S ALMANAC reads as a
+   masthead — tracked mono caps in sage — rather than a heading. */
+[data-template-theme='marketplace-wholesale'] [data-tone='contrast'] .h-9 .tracking-title {
+  color: var(--tr-sage);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+/* The terms on the buyers page are ledger entries: each opens with its own
+   thick-thin head rule. */
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='the-terms']
+  .grid
+  > div::before {
+  background-image: linear-gradient(
+    to bottom,
+    var(--tr-rule) 0 2px,
+    transparent 2px 4px,
+    var(--tr-rule) 4px 5px
+  );
+  content: '';
+  display: block;
+  height: 5px;
+  margin-bottom: 0.375rem;
+  width: 2.25rem;
+}
+
+/* The network: integration-cluster's tiles read as paper shipping labels, and
+   the centre tile — the ledger itself — prints solid spruce with its mark
+   re-inked in paper. */
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='the-network']
+  .rounded-2xl.bg-background {
+  background-color: var(--tr-paper);
+  border-color: color-mix(in oklab, var(--tr-ink) 26%, transparent);
+}
+
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='the-network']
+  .rounded-2xl.shadow-lg {
+  background-color: var(--tr-spruce);
+  border-color: var(--tr-spruce-deep);
+  box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--tr-paper) 40%, transparent);
+}
+
+[data-template-theme='marketplace-wholesale']
+  [data-template-section='the-network']
+  .shadow-lg
+  svg.text-primary {
+  color: oklch(97.5% 0.012 92deg);
+}
+
+/* The home closer is a ticket: call-to-action-boxed's inner panel takes the
+   double frame of a printed pass — firm border, inner hairline. */
+[data-template-theme='marketplace-wholesale'] [data-template-section='join'] .rounded-2xl {
+  border-color: color-mix(in oklab, var(--tr-ink) 36%, transparent);
+  outline: 1px solid var(--border);
+  outline-offset: -7px;
+}
+
+/* The application slips: the signup well squares off on raised paper with a
+   firmer hairline, and its stamped submit tightens so the instruction stays
+   one line inside the slip (mono caps run wider than the twin planned for). */
+[data-template-theme='marketplace-wholesale']
+  [data-template-canvas]
+  .rounded-frame.bg-background\/80 {
+  border-color: color-mix(in oklab, var(--tr-ink) 36%, transparent);
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] span.h-9.rounded-md {
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  padding-inline: 0.75rem;
+  white-space: nowrap;
+}
+
+/* The contact form reads as a printed form: kraft field wells under a feint
+   baseline shadow, and both columns top-aligned so neither stretches into
+   blank paper (.grid.gap-8 is the outer two-column grid only). The lead
+   channel value — the shops desk — prints bold spruce; it clears AA on kraft
+   where trade's orange could not. */
+[data-template-theme='marketplace-wholesale'] [data-template-section='contact'] .border-input {
+  background-color: var(--tr-kraft);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--tr-ink) 12%, transparent);
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-section='contact'] .grid.gap-8 {
+  align-items: start;
+}
+
+[data-template-theme='marketplace-wholesale'] [data-template-canvas] span.text-primary {
+  font-weight: 700;
+}
+
+/* ————————————————— Shell chrome: the masthead ————————————————— */
+
+/* The terms strip: spruce ink, mono caps — the line printed along the crate's
+   edge. The lead term inks in sage. */
+[data-template-theme='marketplace-wholesale'] .tr-topline {
+  background-color: var(--tr-band);
   color: oklch(93% 0.014 95deg);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
+[data-template-theme='marketplace-wholesale'] .tr-topline-lead {
+  color: var(--tr-sage);
+  font-weight: 700;
+}
+
+/* The masthead is opaque kraft under a ledger foot rule — a dotted leader
+   over a solid 2px line, drawn as background strips so the sticky bar never
+   shifts. Opaque on purpose: translucency would composite the spruce action
+   toward whatever scrolls beneath it. */
 [data-template-theme='marketplace-wholesale'] .tr-masthead {
-  background-color: color-mix(in oklab, var(--card) 92%, transparent);
-  box-shadow: inset 0 -1px 0 var(--border);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background-color: var(--tr-kraft);
+  background-image:
+    linear-gradient(var(--tr-line-strong), var(--tr-line-strong)),
+    repeating-linear-gradient(90deg, var(--tr-dot) 0 3px, transparent 3px 9px);
+  background-position:
+    0 100%,
+    0 calc(100% - 5px);
+  background-repeat: no-repeat;
+  background-size:
+    100% 2px,
+    100% 1px;
 }
 
+/* The mark is a postmark: a double-ring roundel with the initial in mono
+   spruce — the same object the avatars and step seals are cut from. */
+[data-template-theme='marketplace-wholesale'] .tr-postmark {
+  align-items: center;
+  background-color: var(--tr-paper);
+  border-radius: 9999px;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--tr-spruce) 80%, transparent),
+    inset 0 0 0 3px var(--tr-paper),
+    inset 0 0 0 4px color-mix(in oklab, var(--tr-spruce) 45%, transparent);
+  color: var(--tr-spruce);
+  display: inline-flex;
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  height: 2.375rem;
+  justify-content: center;
+  width: 2.375rem;
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-wordmark-name {
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-wordmark-trade {
+  color: var(--muted-foreground);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-nav-link {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.15s ease-out;
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-nav-link:hover {
+  color: var(--foreground);
+}
+
+/* The active page is a stamped cell: a hairline box around the label, the way
+   a clerk rules the entry that is open. */
+[data-template-theme='marketplace-wholesale'] .tr-nav-link[data-tr-active] {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tr-ink) 50%, transparent);
+  color: var(--foreground);
+}
+
+/* The one filled action in the chrome: a stamped spruce instruction. */
 [data-template-theme='marketplace-wholesale'] .tr-action {
-  background-color: var(--primary);
-  color: var(--primary-foreground);
+  background-color: var(--tr-spruce);
+  border-radius: 0.1875rem;
+  color: oklch(97.5% 0.012 92deg);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background-color 0.15s ease-out;
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-action:hover {
+  background-color: var(--tr-spruce-deep);
 }
 
 [data-template-theme='marketplace-wholesale'] .tr-trigger {
-  border: 1px solid var(--border);
+  background-color: var(--tr-paper);
+  border-radius: 0.1875rem;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tr-ink) 45%, transparent);
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-trigger-bar {
+  background-color: currentcolor;
+  display: block;
+  height: 2px;
+  width: 1.125rem;
 }
 
 [data-template-theme='marketplace-wholesale'] .tr-sheet {
-  background-color: var(--card);
+  background-color: var(--tr-kraft);
   box-shadow:
     inset 0 1px 0 var(--border),
-    0 16px 32px -20px color-mix(in oklab, var(--foreground) 45%, transparent);
+    0 16px 32px -20px color-mix(in oklab, var(--tr-ink) 45%, transparent);
 }
 
 [data-template-theme='marketplace-wholesale'] .tr-sheet-link {
-  box-shadow: inset 0 -1px 0 var(--border);
+  border-bottom: 1px dotted color-mix(in oklab, var(--tr-ink) 32%, transparent);
+  color: var(--foreground);
 }
 
-[data-template-theme='marketplace-wholesale'] .tr-footer {
-  border-top: 1px solid oklch(100% 0 0deg / 10%);
+[data-template-theme='marketplace-wholesale'] .tr-sheet-link[data-tr-active] {
+  box-shadow: inset 3px 0 0 var(--tr-spruce);
+  font-weight: 600;
 }
 
-[data-template-theme='marketplace-wholesale'] .tr-footer-label {
-  color: var(--brand);
-}
-
-[data-template-theme='marketplace-wholesale'] .tr-rail {
-  background-color: color-mix(in oklab, var(--tr-ink) 88%, black);
-  color: oklch(84% 0.016 100deg);
+[data-template-theme='marketplace-wholesale'] .tr-sheet-note {
+  color: var(--muted-foreground);
 }
 
 [data-template-theme='marketplace-wholesale'] .tr-focus:focus-visible {
@@ -177,12 +1145,145 @@
   outline-offset: 2px;
 }
 
-/* Reduced-motion net: any shell choreography the art-direction wave adds must
-   land on its finished frame instantly, even before hydration. */
+/* ————————————————— Shell chrome: the footer ————————————————— */
+
+/* The footer is the ledger's cover: the spruce ink flood with the semantic
+   set remapped so every token class inside resolves AA-safe, and the stamp
+   indirections re-inked to sage — same recipe as the contrast band. */
+[data-template-theme='marketplace-wholesale'] .tr-footer {
+  --tr-paper: var(--tr-band-raised);
+  --tr-stamp-ink: var(--tr-sage);
+  --tr-rule: color-mix(in oklab, var(--tr-sage) 82%, transparent);
+  --tr-dot: oklch(100% 0 0deg / 30%);
+  --tr-line-strong: oklch(100% 0 0deg / 42%);
+
+  --background: var(--tr-band);
+  --foreground: oklch(96.5% 0.012 95deg);
+  --muted-foreground: oklch(80% 0.02 130deg);
+  --border: oklch(100% 0 0deg / 17%);
+  --ring: var(--tr-sage);
+
+  background-color: var(--tr-band);
+  color: var(--foreground);
+}
+
+/* The pull line: the two-sided promise, set a step up from body and closed by
+   the same ledger head rule the canvas titles carry. */
+[data-template-theme='marketplace-wholesale'] .tr-footer-line {
+  color: var(--foreground);
+  font-size: clamp(1.375rem, 2.6vw, 1.75rem);
+  font-weight: 560;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-footer-line::after {
+  background-image: linear-gradient(
+    to bottom,
+    var(--tr-rule) 0 2px,
+    transparent 2px 4px,
+    var(--tr-rule) 4px 5px
+  );
+  content: '';
+  display: block;
+  height: 5px;
+  margin-top: 1.25rem;
+  width: 3.25rem;
+}
+
+/* Each ledger column opens under its own double rule, its label stamped in
+   sage mono. The two desk columns sit side by side — the footer's own
+   recto/verso. */
+[data-template-theme='marketplace-wholesale'] .tr-footer-col {
+  border-top: 3px double oklch(100% 0 0deg / 38%);
+  padding-top: 1.125rem;
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-footer-label {
+  color: var(--tr-sage);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-footer-item {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-footer-strong {
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.65;
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-footer-link {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  transition: color 0.15s ease-out;
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-footer-link:hover {
+  color: var(--foreground);
+}
+
+[data-template-theme='marketplace-wholesale'] .tr-footer-link[data-tr-active] {
+  color: var(--tr-sage);
+}
+
+/* The rail: deeper spruce under a dotted leader, carrying the fiction
+   disclosure in plain small text. */
+[data-template-theme='marketplace-wholesale'] .tr-rail {
+  background-color: var(--tr-rail);
+  background-image: repeating-linear-gradient(
+    90deg,
+    oklch(100% 0 0deg / 32%) 0 3px,
+    transparent 3px 9px
+  );
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  color: oklch(84% 0.016 100deg);
+}
+
+/* ————————————————— Narrow chrome ————————————————— */
+
+/* At 390px the masthead must fit a postmark, the mono wordmark, and the
+   trigger in ~350px: the trade line drops, the mark tightens, and the topline
+   sheds its trailing item so it stays one line. */
+@media (max-width: 639px) {
+  [data-template-theme='marketplace-wholesale'] .tr-wordmark-trade {
+    display: none;
+  }
+
+  [data-template-theme='marketplace-wholesale'] .tr-postmark {
+    font-size: 0.875rem;
+    height: 2rem;
+    width: 2rem;
+  }
+
+  [data-template-theme='marketplace-wholesale'] .tr-topline-end {
+    display: none;
+  }
+}
+
+/* ————————————————— Reduced motion ————————————————— */
+
+/* Final frame, instantly, even before hydration — the same guarantee
+   template-motion.css gives the section reveals. Playwright captures and the
+   poster tool both run reducedMotion=reduce, so this is what they record. */
 @media (prefers-reduced-motion: reduce) {
   [data-template-theme='marketplace-wholesale'] [data-tr-reveal] {
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  [data-template-theme='marketplace-wholesale']
+    :is(.tr-nav-link, .tr-action, .tr-footer-link, .tr-focus) {
     transition-duration: 0.001s !important;
   }
 }

@@ -28,22 +28,49 @@ top-level domain (`shops@trestle.example`, `makers@trestle.example`).
 `assets: []` in `src/lib/templates/marketplace-wholesale.ts` — this concept
 ships and hotlinks **no raster runtime assets at all**.
 
-- Every image surface is **token-derived**: the demo twins render their
-  backend-free `bg-muted` placeholders, restyled by
+- Every image surface is **token-derived**, restyled by
   `src/components/site/templates/marketplace-wholesale/theme.css` from the
-  concept's own scoped tokens. The art-direction wave documents each repaint
-  here as it lands.
+  concept's own scoped tokens into crate-and-parcel matter:
+  - the four shelf cards on the For shops page (`feature-cards-media`) repaint
+    as **crate sides** — corrugated kraft board with a ruled shipping label
+    under a spruce head band, a double-ring postmark, fragile stripes, and a
+    run of twine, with flute pitch, stripe angle, and mark positions varied
+    per card so no two crates repeat;
+  - the three plates on the For makers page (`content-rows`) repaint as
+    **wrapped parcels** — kraft board tied with two crossing runs of twine
+    meeting at a knot, the tie point moved per row;
+  - the one plate on How it works (`content-quote`) is the concept's single
+    literal picture: an **open ledger spread** — two ruled pages, a spruce
+    margin line on each, a double head rule, a darkened centre crease.
 - The maker marks in the logo strip come from the shared demo twin
   (`src/components/site/demos/DemoLogos.tsx`) — invented monochrome lockups
   for fictional companies, carrying no third-party trademark. On this concept
   they read as maker marks, not certifying bodies.
-- Avatar surfaces are the shared twins' monogram placeholders. **No likeness,
-  real or synthetic, is depicted anywhere.**
-- Typography uses only the fonts the root layout already loads via `next/font`.
-  This concept ships no font files.
+- Avatar surfaces are the shared twins' monogram placeholders, restyled as
+  **postmarks** — a double ring around a mono initial. `feature-steps`'
+  numerals join the same postmark family. **No likeness, real or synthetic,
+  is depicted anywhere.**
+- The Trestle mark in the shell is the same postmark object — a double-ring
+  roundel with a mono initial — drawn in plain CSS in the header. No SVG or
+  image file ships.
+- The `stats-proof` twin renders a static press wordmark (THE SHOPKEEPER'S
+  ALMANAC) that belongs to this concept's fictional trade paper; the theme
+  restyles it as a tracked mono masthead lockup.
+- Typography uses only the fonts the root layout already loads via `next/font`
+  (Geist Sans, Geist Mono). This concept ships no font files and uses **no**
+  Instrument Serif anywhere — the letterhead serif is the real-estate
+  concept's voice; Trestle's marking hand is Geist Mono (eyebrow stamps,
+  stamped mono-caps actions, ledger figures, the wordmark).
+- The two-sided grammar ships as **geometry, not assets**: the shell stamps
+  `data-tr-side` per route and the theme mirrors washes, edge rules, and the
+  home page's two feature splits (recto/verso) off it. No second accent
+  colour exists.
 - Colour is entirely scoped CSS variables under
   `[data-template-theme='marketplace-wholesale']`. The site itself stays
-  forced-light; nothing here touches `:root`, `.dark`, or `globals.css`.
+  forced-light; nothing here touches `:root`, `.dark`, or `globals.css`. All
+  contrast pairings are measured, not guessed — the figures are recorded at
+  the top of `theme.css` (spruce type is 7.2:1 on kraft; on the spruce ink
+  bands every accent steps up to sage at 9.3:1 via one indirection).
 
 ## Generated posters
 
