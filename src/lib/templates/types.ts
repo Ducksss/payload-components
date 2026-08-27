@@ -34,11 +34,13 @@ import type {
 export type TemplateStatus = 'concept'
 export type TemplateCategory =
   | 'agency'
+  | 'civic'
   | 'commerce'
   | 'education'
   | 'event'
   | 'fintech'
   | 'healthcare'
+  | 'marketplace'
   | 'music'
   | 'nonprofit'
   | 'portfolio'
