@@ -24,7 +24,7 @@
     "testimonials-quote",
     "testimonials-spotlight"
   ],
-  "description": "Tansy is a fictional 38-seat dining room in the fictional harbour town of Porthmere: a menu written at four each afternoon after the boats come in, a zinc counter, and a phone number you ring before six. The concept owns the hospitality register — sensory, unhurried, food-first — across five pages: Home, Menu, Private dining, Our story, and Find us, with the reservation as the one action everything points at. Composed entirely from blocks in the open registry.",
+  "description": "Tansy is a fictional 38-seat dining room in the fictional harbour town of Porthmere: a menu written at four each afternoon after the boats come in, a zinc counter, and a phone number you ring before six. The concept owns the hospitality register — candlelit warm cream, deep umber ink, one burnt-copper accent, and headlines set in a menu serif — across five pages: Home, Menu, Private dining, Our story, and Find us, with the reservation as the one action everything points at. Composed entirely from blocks in the open registry.",
   "pages": [
     {
       "components": [
@@ -43,6 +43,7 @@
     {
       "components": [
         "hero-basic",
+        "content-stats",
         "content-rows",
         "pricing-cards-muted",
         "faq-card",
@@ -92,7 +93,7 @@
   ],
   "revision": 1,
   "slug": "restaurant-bistro",
-  "summary": "A fictional 38-seat harbour-town dining room where the menu is written at four each afternoon — the hospitality register, built around a menu and a phone number.",
+  "summary": "A fictional 38-seat harbour-town dining room where the menu is written at four each afternoon — the hospitality register: candlelit, unhurried, food-first, built around a menu and a phone number.",
   "title": "Restaurant Bistro",
   "version": 1
 }

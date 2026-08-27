@@ -9,9 +9,19 @@ import type { TemplateShowcase } from '@/lib/templates/types'
 import { templatePreviewHref } from '@/lib/templates/registry'
 import { cn } from '@/utilities/ui'
 
-/* Tansy's masthead — WAVE 0 SCAFFOLD for the art-direction wave to restyle.
+/* Tansy's masthead — a menu cover, not an app bar.
  *
- * The interaction contract is final and must survive any restyle: a real
+ * Two strips: the night-ink utility line (the hours in tracked caps, the
+ * booking number in candle amber — the most important string on the site, at
+ * the highest point of every page), then a cream masthead with the serif
+ * wordmark, small-caps navigation, and the one copper action. The active page
+ * carries a copper diamond, the same fleuron the canvas eyebrows use, so the
+ * chrome and the composed pages speak one language. Nothing in this header
+ * animates — an unhurried room holds still, and a still header is always
+ * complete in a capture (theme.css also nets hover transitions under
+ * reduced motion).
+ *
+ * The interaction contract is final and survives this restyle: a real
  * <button> trigger with aria-expanded + aria-controls, Escape closes the
  * disclosure AND returns focus to the trigger, pointerdown outside closes,
  * route changes close, and every interactive element lives in this chrome,
@@ -58,23 +68,28 @@ export function TansyHeader({
   return (
     <header data-tansy-menu className="tansy-header sticky top-0 z-40">
       <div className="tansy-utility">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-1 px-5 py-2 text-sm sm:px-8">
-          <span className="leading-6">Dinner from six, Wednesday to Sunday</span>
-          <span className="ms-auto font-medium leading-6">Bookings 01632 960 447</span>
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-1 px-5 py-2 sm:px-8">
+          <span className="tansy-utility-fact">Dinner from six · Wednesday to Sunday</span>
+          <span className="ms-auto inline-flex items-baseline gap-2">
+            <span className="tansy-utility-fact">Bookings</span>
+            <span className="tansy-utility-phone">01632 960 447</span>
+          </span>
         </div>
       </div>
 
       <div className="tansy-masthead">
         <nav
           aria-label="Tansy site navigation"
-          className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-3.5 sm:px-8"
+          className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-3 sm:px-8"
         >
           <Link
             href={templatePreviewHref(template.slug)}
-            className="tansy-focus flex items-baseline gap-3 rounded-md py-1 text-foreground"
+            className="tansy-focus rounded-md py-1 pe-2"
           >
-            <span className="text-xl font-semibold tracking-heading">Tansy</span>
-            <span className="text-sm text-muted-foreground">A dining room in Porthmere</span>
+            <span className="tansy-wordmark">
+              <span className="tansy-wordmark-name">Tansy</span>
+              <span className="tansy-wordmark-place">Porthmere · Est. ten years</span>
+            </span>
           </Link>
 
           <div className="ms-auto hidden items-center gap-1 lg:flex">
@@ -87,10 +102,7 @@ export function TansyHeader({
                   href={templatePreviewHref(template.slug, item.path)}
                   aria-current={active ? 'page' : undefined}
                   data-tansy-active={active ? '' : undefined}
-                  className={cn(
-                    'tansy-focus tansy-nav-link inline-flex min-h-11 items-center rounded-md px-3.5 text-base',
-                    active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
-                  )}
+                  className="tansy-focus tansy-nav-link inline-flex min-h-11 items-center rounded-md px-3.5"
                 >
                   {item.label}
                 </Link>
@@ -100,7 +112,7 @@ export function TansyHeader({
 
           <Link
             href={templatePreviewHref(template.slug, 'visit')}
-            className="tansy-action tansy-focus ms-2 hidden min-h-12 items-center rounded-md px-6 text-base font-medium lg:inline-flex"
+            className="tansy-action tansy-focus ms-2 hidden min-h-12 items-center px-6 text-sm font-medium lg:inline-flex"
           >
             Book a table
           </Link>
@@ -112,7 +124,7 @@ export function TansyHeader({
             aria-expanded={open}
             aria-label={open ? 'Close menu' : 'Open menu'}
             onClick={() => setOpen((value) => !value)}
-            className="tansy-focus tansy-trigger ms-auto inline-flex min-h-12 items-center gap-2.5 rounded-md px-4 text-base font-medium lg:hidden"
+            className="tansy-focus tansy-trigger ms-auto inline-flex min-h-12 items-center gap-2.5 px-4 text-sm font-medium lg:hidden"
           >
             <span aria-hidden="true" className="flex flex-col gap-1">
               <span className="tansy-trigger-bar" />
@@ -139,8 +151,8 @@ export function TansyHeader({
               data-tansy-active={active ? '' : undefined}
               onClick={() => setOpen(false)}
               className={cn(
-                'tansy-focus tansy-sheet-link flex min-h-14 items-center px-5 text-lg sm:px-8',
-                active ? 'font-medium text-foreground' : 'text-foreground',
+                'tansy-focus tansy-sheet-link flex min-h-14 items-center px-5 text-xl text-foreground sm:px-8',
+                active && 'font-medium',
               )}
             >
               {item.label}

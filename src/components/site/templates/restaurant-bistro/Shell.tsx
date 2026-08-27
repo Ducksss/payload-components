@@ -7,7 +7,7 @@ import { templatePreviewHref } from '@/lib/templates/registry'
 import { TansyHeader } from './TansyHeader'
 import './theme.css'
 
-/* Tansy (restaurant-bistro) template shell — WAVE 0 SCAFFOLD.
+/* Tansy (restaurant-bistro) template shell — the candlelit room's chrome.
  *
  * Contract (frozen): everything renders beneath
  * data-template-theme='restaurant-bistro'; internal navigation goes through
@@ -17,10 +17,13 @@ import './theme.css'
  * forced-light — every colour comes from named tokens in theme.css and nothing
  * here touches :root, .dark, or globals.css.
  *
- * Art direction (for the art-direction wave): the hospitality register — a
- * candlelit room. Warm cream paper, deep umber ink, one burnt-copper accent,
- * and an unhurried rhythm; the reservation is the one action everything on the
- * page points at. */
+ * Art direction: the page opens and closes on the same night ink — the
+ * utility strip above the masthead and the rail under the footer — so every
+ * page is bracketed by evening while the room between stays warm cream. The
+ * footer is where a dining room's practical facts live: the hours, the
+ * address, the phone, set under copper small-caps labels, beneath one closing
+ * line in the menu serif. Nothing in this shell moves; an unhurried room
+ * holds still (theme.css nets the hover transitions under reduced motion). */
 
 const hoursLines = [
   'Dinner from six, Wednesday to Sunday',
@@ -28,7 +31,10 @@ const hoursLines = [
   'The kitchen rests Monday and Tuesday',
 ] as const
 
-const findUsLines = ['4 Weir Street, Porthmere', 'Two minutes up from the harbour steps'] as const
+const findUsLines = [
+  '4 Weir Street, Porthmere',
+  'The blue door, two minutes up from the harbour steps',
+] as const
 
 export function RestaurantBistroShell({ activePath, children, template }: TemplateShellProps) {
   return (
@@ -42,14 +48,14 @@ export function RestaurantBistroShell({ activePath, children, template }: Templa
 
       <footer className="tansy-footer">
         <div className="mx-auto flex max-w-6xl flex-col gap-12 px-5 py-14 sm:px-8 lg:py-20">
-          <p className="max-w-2xl text-2xl leading-9 tracking-heading">
+          <p className="tansy-footer-line max-w-2xl text-3xl leading-10">
             A small dining room by the harbour wall. The menu is written at four; the phone is
             answered from three.
           </p>
 
           <div className="grid gap-10 border-t border-border pt-12 sm:grid-cols-3">
             <div className="flex flex-col gap-4">
-              <span className="tansy-footer-label text-base font-semibold">Hours</span>
+              <span className="tansy-footer-label">Hours</span>
               <div className="flex flex-col gap-3">
                 {hoursLines.map((line) => (
                   <span key={line} className="text-base leading-7 text-muted-foreground">
@@ -60,7 +66,7 @@ export function RestaurantBistroShell({ activePath, children, template }: Templa
             </div>
 
             <div className="flex flex-col gap-4">
-              <span className="tansy-footer-label text-base font-semibold">Find us</span>
+              <span className="tansy-footer-label">Find us</span>
               <address className="flex flex-col gap-3 not-italic">
                 {findUsLines.map((line) => (
                   <span key={line} className="text-base leading-7 text-muted-foreground">
@@ -74,7 +80,7 @@ export function RestaurantBistroShell({ activePath, children, template }: Templa
             </div>
 
             <div className="flex flex-col gap-4">
-              <span className="tansy-footer-label text-base font-semibold">Pages</span>
+              <span className="tansy-footer-label">Pages</span>
               <nav aria-label="Tansy footer navigation" className="flex flex-col gap-1">
                 {template.navigation.map((item) => (
                   <Link
