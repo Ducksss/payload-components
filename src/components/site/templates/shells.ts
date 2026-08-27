@@ -8,8 +8,11 @@ import { EducationCourseShell } from './education-course/Shell'
 import { EventConferenceShell } from './event-conference/Shell'
 import { FintechTrustShell } from './fintech-trust/Shell'
 import { HealthcareClinicShell } from './healthcare-clinic/Shell'
+import { MusicArtistShell } from './music-artist/Shell'
 import { NonprofitCauseShell } from './nonprofit-cause/Shell'
 import { PortfolioSoloShell } from './portfolio-solo/Shell'
+import { RealEstateListingShell } from './real-estate-listing/Shell'
+import { RestaurantBistroShell } from './restaurant-bistro/Shell'
 import { SaasLaunchShell } from './saas-launch/Shell'
 import { TradeServiceShell } from './trade-service/Shell'
 
@@ -30,8 +33,11 @@ export const templateShellsBySlug: Record<string, ComponentType<TemplateShellPro
   'event-conference': EventConferenceShell,
   'fintech-trust': FintechTrustShell,
   'healthcare-clinic': HealthcareClinicShell,
+  'music-artist': MusicArtistShell,
   'nonprofit-cause': NonprofitCauseShell,
   'portfolio-solo': PortfolioSoloShell,
+  'real-estate-listing': RealEstateListingShell,
+  'restaurant-bistro': RestaurantBistroShell,
   'saas-launch': SaasLaunchShell,
   'trade-service': TradeServiceShell,
 }
