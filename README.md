@@ -230,6 +230,7 @@ drift from the registry.
 | Component                 | Install command                                      |
 | ------------------------- | ---------------------------------------------------- |
 | `hero-basic`              | `npx payload-components add hero-basic`              |
+| `hero-split`              | `npx payload-components add hero-split`              |
 | `hero-video`              | `npx payload-components add hero-video`              |
 | `hero-product-tilt`       | `npx payload-components add hero-product-tilt`       |
 | `hero-aurora`             | `npx payload-components add hero-aurora`             |

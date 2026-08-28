@@ -45,6 +45,47 @@
       ]
     },
     {
+      "name": "hero-split",
+      "type": "registry:block",
+      "title": "Hero Split",
+      "description": "Two-column Payload hero block with an editor-placed visual.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add hero-split\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-split.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add hero-split` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add hero-split",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/heroFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/heroFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroSplit/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroSplit/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroSplit/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroSplit/Component.tsx"
+        }
+      ]
+    },
+    {
       "name": "hero-video",
       "type": "registry:block",
       "title": "Hero Video",

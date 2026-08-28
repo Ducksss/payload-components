@@ -1,0 +1,78 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "hero-split",
+  "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "title": "Hero Split",
+  "description": "A two-column hero pairing the shared hero copy with an editor-managed visual on either side.",
+  "registryItemName": "hero-split",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
+  "supports": {
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
+  },
+  "files": [
+    "src/blocks/shared/heroFields.ts",
+    "src/blocks/HeroSplit/config.ts",
+    "src/blocks/HeroSplit/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "HeroSplitBlock",
+      "importPath": "@/blocks/HeroSplit/Component",
+      "blockSlug": "heroSplit"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "HeroSplit",
+      "importPath": "../../blocks/HeroSplit/config",
+      "blockName": "HeroSplit"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+  },
+  "postInstall": ["generate:types", "generate:importmap"],
+  "preview": {
+    "summary": "Two-column hero with a side visual an editor can flip left or right."
+  },
+  "sampleContent": {
+    "blockType": "heroSplit",
+    "eyebrow": "Acme Cloud · Platform",
+    "title": "Ship the dashboard your customers keep open all day.",
+    "description": "Model the data once, then hand your team a workspace that reads clearly on the first look and holds up under a thousand rows.",
+    "media": null,
+    "mediaPosition": "right",
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/start",
+          "label": "Start free trial",
+          "appearance": "default"
+        }
+      },
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/tour",
+          "label": "Take the tour",
+          "appearance": "outline"
+        }
+      }
+    ],
+    "highlights": [
+      { "label": "Typed end to end, from field to render" },
+      { "label": "Flip the visual per block, no second component" },
+      { "label": "Reviewable diff on every install" }
+    ]
+  }
+}

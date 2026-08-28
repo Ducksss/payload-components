@@ -6,6 +6,7 @@ import featureIconGridManifest from '../../payload-components/manifests/feature-
 import heroAuroraManifest from '../../payload-components/manifests/hero-aurora.json' with { type: 'json' }
 import contentQuoteManifest from '../../payload-components/manifests/content-quote.json' with { type: 'json' }
 import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
+import heroSplitManifest from '../../payload-components/manifests/hero-split.json' with { type: 'json' }
 import heroKineticManifest from '../../payload-components/manifests/hero-kinetic.json' with { type: 'json' }
 import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
 import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
@@ -310,6 +311,19 @@ export const componentEntries = [
     target: 'Hero section',
     title: 'Hero Basic',
     version: heroBasicManifest.version,
+  },
+  {
+    category: 'hero',
+    command: 'npx payload-components add hero-split',
+    description:
+      'A two-column hero pairing the shared hero copy with an editor-managed visual that can sit on either side.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'links', 'media', 'mediaPosition', 'highlights'],
+    href: '/docs/components/hero-split',
+    slug: 'hero-split',
+    target: 'Split hero',
+    title: 'Hero Split',
+    version: heroSplitManifest.version,
   },
   {
     category: 'hero',

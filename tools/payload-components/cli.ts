@@ -74,6 +74,7 @@ Exit codes:
 
 Current components:
   hero-basic
+  hero-split
   hero-video
   hero-product-tilt
   hero-aurora
