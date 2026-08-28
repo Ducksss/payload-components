@@ -20,14 +20,14 @@ export const HeroSplitBlock: React.FC<Props> = ({
   eyebrow,
   highlights,
   id,
+  image,
+  imagePosition,
   links,
-  media,
-  mediaPosition,
   title,
 }) => {
   /* The visual leads on mobile whichever side it takes on desktop: a stacked
      hero that opens with prose pushes the image below the fold for no gain. */
-  const mediaFirst = mediaPosition === 'left'
+  const imageFirst = imagePosition === 'left'
 
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
@@ -37,7 +37,7 @@ export const HeroSplitBlock: React.FC<Props> = ({
             'mx-auto max-w-6xl': !disableInnerContainer,
           })}
         >
-          <div className={cn('flex flex-col gap-8', { 'lg:order-2': mediaFirst })}>
+          <div className={cn('flex flex-col gap-8', { 'lg:order-2': imageFirst })}>
             <div className="flex flex-col gap-4">
               {eyebrow ? (
                 <Badge
@@ -86,10 +86,10 @@ export const HeroSplitBlock: React.FC<Props> = ({
           <div
             className={cn(
               'relative overflow-hidden rounded-card border border-border/70 bg-muted',
-              { 'lg:order-1': mediaFirst },
+              { 'lg:order-1': imageFirst },
             )}
           >
-            <Media resource={media} imgClassName="aspect-[4/3] h-full w-full object-cover" />
+            <Media resource={image} imgClassName="aspect-[4/3] h-full w-full object-cover" />
           </div>
         </div>
       </div>

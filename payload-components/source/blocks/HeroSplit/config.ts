@@ -13,7 +13,7 @@ export const HeroSplit: Block = {
     // fields follow; edit the shared shape in @/blocks/shared/heroFields.
     ...heroFields,
     {
-      name: 'media',
+      name: 'image',
       type: 'upload',
       relationTo: 'media',
       required: true,
@@ -22,7 +22,7 @@ export const HeroSplit: Block = {
       // Which side the visual sits on. A field rather than a second component,
       // because alternating sides down a page is a layout decision an editor
       // makes per block, not a different kind of hero.
-      name: 'mediaPosition',
+      name: 'imagePosition',
       type: 'select',
       defaultValue: 'right',
       options: [

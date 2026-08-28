@@ -318,7 +318,7 @@ export const componentEntries = [
     description:
       'A two-column hero pairing the shared hero copy with an editor-managed visual that can sit on either side.',
     family: 'pages',
-    fields: ['eyebrow', 'title', 'description', 'links', 'media', 'mediaPosition', 'highlights'],
+    fields: ['eyebrow', 'title', 'description', 'links', 'image', 'imagePosition', 'highlights'],
     href: '/docs/components/hero-split',
     slug: 'hero-split',
     target: 'Split hero',

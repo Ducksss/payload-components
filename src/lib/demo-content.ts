@@ -28,7 +28,7 @@ export type HeroVideoDemoContent = HeroBasicDemoContent
 
 export type HeroSplitDemoContent = Omit<HeroBasicDemoContent, 'proofItems'> & {
   highlights: { label: string }[]
-  mediaPosition?: 'left' | 'right'
+  imagePosition?: 'left' | 'right'
 }
 
 export type HeroProductTiltDemoContent = HeroBasicDemoContent & {
@@ -189,7 +189,7 @@ export const heroSplitDemoContent: HeroSplitDemoContent = {
     { link: { appearance: 'default', label: 'Start free trial' } },
     { link: { appearance: 'outline', label: 'Take the tour' } },
   ],
-  mediaPosition: 'right',
+  imagePosition: 'right',
   title: 'Ship the dashboard your customers keep open all day.',
 }
 

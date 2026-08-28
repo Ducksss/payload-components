@@ -47,8 +47,8 @@
     "eyebrow": "Acme Cloud · Platform",
     "title": "Ship the dashboard your customers keep open all day.",
     "description": "Model the data once, then hand your team a workspace that reads clearly on the first look and holds up under a thousand rows.",
-    "media": null,
-    "mediaPosition": "right",
+    "image": null,
+    "imagePosition": "right",
     "links": [
       {
         "link": {

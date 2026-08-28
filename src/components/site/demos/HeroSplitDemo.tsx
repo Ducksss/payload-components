@@ -9,10 +9,10 @@ import { DemoLink } from './DemoLink'
  *   <section className={cn('container', …)}> → <div> root (no landmark)
  *   <h2>                                     → <div> (the catalog owns its outline)
  *   CMSLink                                  → <DemoLink> (@/components/Link is consumer-only)
- *   Media upload                             → empty bg-muted panel
+ *   image upload                             → empty bg-muted panel
  *   HeroSplitBlockData                       → HeroSplitDemoContent
  *   cn() inner wrapper                       → fixed max-width div
- *   mediaPosition                            → the same lg:order-* swap, from demo content
+ *   imagePosition                            → the same lg:order-* swap, from demo content
  * imgClassName values are not mirrored (they live on imgClassName, not className).
  * If the component Component.tsx changes, update this file in the same PR. */
 
@@ -23,14 +23,14 @@ export function HeroSplitDemo({
   className?: string
   content?: HeroSplitDemoContent
 }) {
-  const { description, eyebrow, highlights, links, mediaPosition, title } = content
-  const mediaFirst = mediaPosition === 'left'
+  const { description, eyebrow, highlights, imagePosition, links, title } = content
+  const imageFirst = imagePosition === 'left'
 
   return (
     <div aria-hidden="true" className={className}>
       <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <div className={`flex flex-col gap-8${mediaFirst ? ' lg:order-2' : ''}`}>
+          <div className={`flex flex-col gap-8${imageFirst ? ' lg:order-2' : ''}`}>
             <div className="flex flex-col gap-4">
               {eyebrow ? (
                 <Badge
@@ -76,7 +76,7 @@ export function HeroSplitDemo({
 
           <div
             className={`relative overflow-hidden rounded-card border border-border/70 bg-muted${
-              mediaFirst ? ' lg:order-1' : ''
+              imageFirst ? ' lg:order-1' : ''
             } aspect-[4/3]`}
           />
         </div>

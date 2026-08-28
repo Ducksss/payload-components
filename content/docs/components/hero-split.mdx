@@ -29,7 +29,7 @@ icon: Columns2
 
 ## Content model
 
-The first four fields come from the shared `heroFields` base. `media`, `mediaPosition`, and
+The first four fields come from the shared `heroFields` base. `image`, `imagePosition`, and
 `highlights` are specific to this variant.
 
 <TypeTable
@@ -42,12 +42,12 @@ The first four fields come from the shared `heroFields` base. `media`, `mediaPos
       description: 'Supporting copy beneath the headline.',
     },
     links: { type: 'array', required: true, description: 'One or two CTA links (min 1, max 2).' },
-    media: {
+    image: {
       type: 'upload',
       required: true,
       description: 'The visual beside the copy. Rendered through the starter’s Media component.',
     },
-    mediaPosition: {
+    imagePosition: {
       type: "select: 'left' | 'right'",
       default: "'right'",
       description: 'Which side the visual takes on large screens.',
@@ -59,7 +59,7 @@ The first four fields come from the shared `heroFields` base. `media`, `mediaPos
   }}
 />
 
-`mediaPosition` is a field rather than a second component, because alternating sides down a
+`imagePosition` is a field rather than a second component, because alternating sides down a
 page is a layout decision an editor makes per block — not a different kind of hero. On small
 screens the visual always leads, since a stacked hero that opens with prose pushes the image
 below the fold for no gain.
