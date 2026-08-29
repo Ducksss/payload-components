@@ -1,10 +1,16 @@
+import Link from 'next/link'
+
+import { ArrowRight } from 'lucide-react'
+
 import type { TemplateShowcase } from '@/lib/templates/types'
 
 import { TemplateCardPoster } from '@/components/site/templates/TemplateCardPoster'
+import { TemplateTrackedLink } from '@/components/site/templates/TemplateTrackedLink'
 import { templateCategoryLabels } from '@/lib/site'
 import {
   templateDetailHref,
   templatePosterSrc,
+  templatePreviewHref,
   uniqueTemplateBlockSlugs,
 } from '@/lib/templates/registry'
 import { TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
@@ -15,6 +21,13 @@ import { TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
 export const TEMPLATE_POSTER_WIDTH = 1280
 export const TEMPLATE_POSTER_HEIGHT = 800
 
+/* One editorial gallery card: poster-led, with the concept status impossible
+ * to miss and exactly two actions — explore the indexable detail page, or open
+ * the raw full preview. No install command, no price, no capture.
+ *
+ * Stays a SERVER component (it reads the registry); the poster's springed
+ * hover lift is isolated in the TemplateCardPoster client island, and the
+ * entrance/filter choreography belongs to TemplateGalleryFilter. */
 export function TemplateCard({
   priority = false,
   template,
@@ -72,6 +85,29 @@ export function TemplateCard({
           <p className="ml-auto shrink-0 font-mono text-xs text-muted-foreground">
             {template.pages.length} pages · {blockCount} unique blocks
           </p>
+        </div>
+
+        <div className="mt-auto flex flex-wrap gap-3 pt-2">
+          <Link
+            href={detailHref}
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            Explore template
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </Link>
+          <TemplateTrackedLink
+            event="template_preview_open"
+            href={templatePreviewHref(template.slug)}
+            properties={{
+              page: '',
+              revision: template.revision,
+              source: 'gallery',
+              template: template.slug,
+            }}
+            className="inline-flex h-10 items-center justify-center rounded-full border border-border bg-background px-5 text-sm font-medium text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            Open full preview
+          </TemplateTrackedLink>
         </div>
       </div>
     </article>

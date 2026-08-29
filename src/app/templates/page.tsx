@@ -25,10 +25,11 @@ import { breadcrumbNode, graph, websiteId } from '@/lib/structured-data'
 
 /* /templates gallery — indexable editorial index of the full-site concepts.
  * Contract: one H1, the concept disclosure up top, compact navigation to the
- * component catalog and installation guide, poster-led cards linking to detail
- * pages, a community close, and hard absences: no iframes, no install command,
- * no price, no capture. Category filtering stays client-side and URL-synced,
- * while every rendered card still ships in the initial server HTML. */
+ * component catalog, the installation guide, and the official Payload website
+ * template, poster-led cards linking to detail + full preview, a community
+ * close, and hard absences: no iframes, no install command, no price, no
+ * capture. Category filtering stays client-side and URL-synced, while every
+ * rendered card still ships in the initial server HTML. */
 
 /* Category chips in first-appearance (curated registry) order. */
 const galleryCategories = (() => {
@@ -128,6 +129,14 @@ export default function TemplatesPage() {
               >
                 Read the installation guide
               </Link>
+              <a
+                href="https://github.com/payloadcms/payload/tree/main/templates/website"
+                className="inline-flex min-h-11 items-center rounded-sm text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Start from the official Payload template
+              </a>
             </div>
           </div>
         </section>

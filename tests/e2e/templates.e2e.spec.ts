@@ -86,6 +86,9 @@ test.describe('Templates gallery (/templates)', () => {
       await expect(
         card.locator(`a[href="${templateDetailHref(template.slug)}"]`).first(),
       ).toBeVisible()
+      await expect(
+        card.locator(`a[href="${templatePreviewHref(template.slug)}"]`).first(),
+      ).toBeVisible()
     }
 
     // The gallery never mounts live previews — posters only.
@@ -98,6 +101,11 @@ test.describe('Templates gallery (/templates)', () => {
     await expect(page.getByText(templatesDescription)).toBeVisible()
     await expect(page.locator('main a[href="/components"]')).toBeVisible()
     await expect(page.locator('main a[href="/docs/installation"]')).toBeVisible()
+    await expect(
+      page.locator(
+        'main a[href="https://github.com/payloadcms/payload/tree/main/templates/website"]',
+      ),
+    ).toBeVisible()
 
     await page.goto(`${baseURL}/components`)
     await expect(page.getByRole('link', { name: catalogTemplatesLinkLabel })).toHaveAttribute(
