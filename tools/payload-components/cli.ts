@@ -8,6 +8,7 @@ import { diffCommand } from './commands/diff'
 import { doctorCommand } from './commands/doctor'
 import { initCommand } from './commands/init'
 import { listCommand } from './commands/list'
+import { localizeCommand } from './commands/localize'
 import { mcpCommand } from './commands/mcp'
 import { newCommand } from './commands/new'
 import { removeCommand } from './commands/remove'
@@ -24,6 +25,8 @@ Usage:
   payload-components add-template <template> [--cwd <path>] [--demo] [--dry-run]
   payload-components templates [--cwd <path>] [--json]
   payload-components list [--cwd <path>] [--json]
+  payload-components localize [component-name...] [--cwd <path>] [--locales <codes>]
+                              [--default-locale <code>] [--no-fallback] [--dry-run] [--force]
   payload-components diff [component-name...] [--cwd <path>] [--json]
   payload-components update [component-name...] [--cwd <path>] [--dry-run] [--force] [--accept-breaking]
   payload-components remove <component-name...> [--cwd <path>] [--dry-run] [--force]
@@ -39,6 +42,7 @@ Commands:
   add-template  Install every block a full-site template composes, then print its page plan.
   templates  List the full-site templates and how many of their blocks are already installed.
   list    Show every registry component alongside what this project has recorded.
+  localize  Turn on Payload localization for the project and mark installed blocks' text localized.
   diff    Compare recorded installs against the registry and report version, file, and wiring drift.
   update  Re-install recorded components at the version this CLI ships, protecting locally edited files.
   remove  Delete a component's exclusively owned files, unwire its block, and drop its install record.
@@ -55,12 +59,16 @@ Flags:
   --force  Let update overwrite local edits, or let remove delete source whose ownership cannot be verified.
   --accept-breaking  Let update apply a version that changes content already stored in Payload.
   --localized  Install the block with its text fields marked localized: true for Payload localization.
+  --locales  Comma-separated locale codes for localize, e.g. --locales en,zh,pt-BR.
+  --default-locale  The locale localize falls back to; defaults to the first --locales entry.
+  --no-fallback  Let localize write fallback: false, so an empty locale renders empty.
   --json  Print machine-readable output from list, diff, and doctor.
   --scaffold  With init, install the starter base (Pages, Media, RenderBlocks, CMSLink, Media, linkGroup, cn).
 
 Exit codes:
   diff exits 1 when any inspected component has drifted; update exits 1 when a
-  component was skipped because of local edits or held back as breaking; doctor
+  component was skipped because of local edits or held back as breaking;
+  localize exits 1 when it left the config or a block config untouched; doctor
   exits 1 when a recorded install needs attention and 2 when the project itself
   cannot accept installs.
 
@@ -146,6 +154,7 @@ Current components:
 export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
   const args = [...argv]
   let cwd = defaultCwd
+  let defaultLocale: string | undefined
   let demo = false
   let dryRun = false
   let acceptBreaking = false
@@ -153,7 +162,9 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
   let help = false
   let hasCwd = false
   let json = false
+  let locales: string | undefined
   let localized = false
+  let noFallback = false
   let scaffold = false
   const positional: string[] = []
 
@@ -177,6 +188,39 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
 
       hasCwd = true
       cwd = path.resolve(defaultCwd, value)
+      continue
+    }
+
+    /* Value-taking flags follow --cwd: one occurrence, a value that is not
+       itself a flag, and a named error when either rule is broken. */
+    if (current === '--locales' || current === '--default-locale') {
+      const isLocales = current === '--locales'
+
+      if (isLocales ? locales !== undefined : defaultLocale !== undefined) {
+        throw new Error(`${current} may only be specified once.`)
+      }
+
+      const value = args.shift()
+
+      if (!value || value.startsWith('-')) {
+        throw new Error(`Missing value for ${current}.`)
+      }
+
+      if (isLocales) {
+        locales = value
+      } else {
+        defaultLocale = value
+      }
+
+      continue
+    }
+
+    if (current === '--no-fallback') {
+      if (noFallback) {
+        throw new Error('--no-fallback may only be specified once.')
+      }
+
+      noFallback = true
       continue
     }
 
@@ -258,12 +302,15 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
   return {
     acceptBreaking,
     cwd,
+    defaultLocale,
     demo,
     dryRun,
     force,
     help,
     json,
+    locales,
     localized,
+    noFallback,
     positional,
     scaffold,
   }
@@ -276,6 +323,7 @@ type CliCommands = {
   doctorCommand: typeof doctorCommand
   initCommand: typeof initCommand
   listCommand: typeof listCommand
+  localizeCommand: typeof localizeCommand
   mcpCommand: typeof mcpCommand
   newCommand: typeof newCommand
   removeCommand: typeof removeCommand
@@ -291,6 +339,7 @@ const commands: CliCommands = {
   doctorCommand,
   initCommand,
   listCommand,
+  localizeCommand,
   mcpCommand,
   newCommand,
   removeCommand,
@@ -333,12 +382,15 @@ export const runCli = async ({
   const {
     acceptBreaking,
     cwd,
+    defaultLocale,
     demo,
     dryRun,
     force,
     help,
     json,
+    locales,
     localized,
+    noFallback,
     positional,
     scaffold,
   } = parseArgs(argv, defaultCwd)
@@ -370,6 +422,7 @@ export const runCli = async ({
     doctor: ['json'],
     init: ['scaffold'],
     list: ['json'],
+    localize: ['defaultLocale', 'dryRun', 'force', 'locales', 'noFallback'],
     remove: ['dryRun', 'force'],
     mcp: [],
     new: [],
@@ -382,7 +435,18 @@ export const runCli = async ({
     assertFlagsAllowed({
       allowed: allowedFlags[command],
       command,
-      flags: { acceptBreaking, demo, dryRun, force, json, localized, scaffold },
+      flags: {
+        acceptBreaking,
+        defaultLocale: Boolean(defaultLocale),
+        demo,
+        dryRun,
+        force,
+        json,
+        locales: Boolean(locales),
+        localized,
+        noFallback,
+        scaffold,
+      },
     })
   }
 
@@ -451,6 +515,21 @@ export const runCli = async ({
     }
 
     await commandHandlers.listCommand({ cwd, json })
+    return
+  }
+
+  if (command === 'localize') {
+    await runMutation('localize', cwd, () =>
+      commandHandlers.localizeCommand({
+        componentNames: uniqueNames,
+        cwd,
+        ...(defaultLocale ? { defaultLocale } : {}),
+        dryRun,
+        ...(noFallback ? { fallback: false } : {}),
+        force,
+        ...(locales ? { locales } : {}),
+      }),
+    )
     return
   }
 

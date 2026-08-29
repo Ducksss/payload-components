@@ -9,12 +9,15 @@ type CliModule = {
   ) => {
     acceptBreaking: boolean
     cwd: string
+    defaultLocale?: string
     demo: boolean
     dryRun: boolean
     force: boolean
     help: boolean
     json: boolean
+    locales?: string
     localized: boolean
+    noFallback: boolean
     positional: string[]
     scaffold: boolean
   }
@@ -27,6 +30,7 @@ type CliModule = {
       doctorCommand: (options: unknown) => Promise<0 | 1 | 2>
       initCommand: (options: unknown) => Promise<void>
       listCommand: (options: unknown) => Promise<void>
+      localizeCommand: (options: unknown) => Promise<void>
       mcpCommand: (options: unknown) => Promise<void>
       newCommand: (options: unknown) => Promise<void>
       removeCommand: (options: unknown) => Promise<void>
@@ -46,6 +50,7 @@ const makeCommands = () => ({
   doctorCommand: vi.fn().mockResolvedValue(0),
   initCommand: vi.fn().mockResolvedValue(undefined),
   listCommand: vi.fn().mockResolvedValue(undefined),
+  localizeCommand: vi.fn().mockResolvedValue(undefined),
   mcpCommand: vi.fn().mockResolvedValue(undefined),
   newCommand: vi.fn().mockResolvedValue(undefined),
   removeCommand: vi.fn().mockResolvedValue(undefined),
@@ -89,6 +94,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       help: false,
       json: false,
       localized: false,
+      noFallback: false,
       positional: ['add', 'hero-basic'],
       scaffold: false,
     })
@@ -109,6 +115,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       help: false,
       json: false,
       localized: false,
+      noFallback: false,
       positional: ['update', 'hero-basic', 'faq-card'],
       scaffold: false,
     })
@@ -122,6 +129,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       help: false,
       json: true,
       localized: false,
+      noFallback: false,
       positional: ['list'],
       scaffold: false,
     })
@@ -528,5 +536,119 @@ describe('payload-components CLI parsing and orchestration', () => {
         write: vi.fn(),
       }),
     ).rejects.toThrow('--demo and --dry-run cannot be used together')
+  })
+
+  it('parses the localize value flags and keeps component names positional', () => {
+    expect(
+      cli.parseArgs?.(
+        ['localize', 'hero-basic', '--locales', 'en,zh-TW', '--default-locale', 'zh-TW'],
+        '/tmp/workspace',
+      ),
+    ).toEqual({
+      acceptBreaking: false,
+      cwd: '/tmp/workspace',
+      defaultLocale: 'zh-TW',
+      demo: false,
+      dryRun: false,
+      force: false,
+      help: false,
+      json: false,
+      locales: 'en,zh-TW',
+      localized: false,
+      noFallback: false,
+      positional: ['localize', 'hero-basic'],
+      scaffold: false,
+    })
+  })
+
+  it('dispatches localize with its locale selection and fallback default', async () => {
+    const commands = makeCommands()
+
+    await cli.runCli?.({
+      argv: ['localize', '--locales', 'en,zh', '--cwd', './consumer'],
+      commands,
+      defaultCwd: '/tmp/workspace',
+      write: vi.fn(),
+    })
+
+    /* fallback is an override, not a mandatory input: it reaches the command
+       only when --no-fallback asks for it. */
+    expect(commands.localizeCommand).toHaveBeenCalledWith({
+      componentNames: [],
+      cwd: path.join('/tmp/workspace', 'consumer'),
+      dryRun: false,
+      force: false,
+      locales: 'en,zh',
+    })
+  })
+
+  it('turns --no-fallback into fallback: false and passes named components through', async () => {
+    const commands = makeCommands()
+
+    await cli.runCli?.({
+      argv: ['localize', 'hero-basic', 'faq-card', 'hero-basic', '--no-fallback', '--dry-run'],
+      commands,
+      defaultCwd: '/tmp/workspace',
+      write: vi.fn(),
+    })
+
+    expect(commands.localizeCommand).toHaveBeenCalledWith({
+      componentNames: ['hero-basic', 'faq-card'],
+      cwd: '/tmp/workspace',
+      dryRun: true,
+      fallback: false,
+      force: false,
+    })
+  })
+
+  it('rejects the localize flags on other commands and their duplicates', async () => {
+    const commands = makeCommands()
+
+    await expect(
+      cli.runCli?.({
+        argv: ['add', 'hero-basic', '--locales', 'en,zh'],
+        commands,
+        defaultCwd: '/tmp/workspace',
+        write: vi.fn(),
+      }),
+    ).rejects.toThrow('--locales cannot be used with "payload-components add"')
+
+    await expect(
+      cli.runCli?.({
+        argv: ['add', 'hero-basic', '--default-locale', 'en'],
+        commands,
+        defaultCwd: '/tmp/workspace',
+        write: vi.fn(),
+      }),
+    ).rejects.toThrow('--default-locale cannot be used with "payload-components add"')
+
+    await expect(
+      cli.runCli?.({
+        argv: ['update', '--no-fallback'],
+        commands,
+        defaultCwd: '/tmp/workspace',
+        write: vi.fn(),
+      }),
+    ).rejects.toThrow('--no-fallback cannot be used with "payload-components update"')
+
+    await expect(
+      cli.runCli?.({
+        argv: ['localize', '--json'],
+        commands,
+        defaultCwd: '/tmp/workspace',
+        write: vi.fn(),
+      }),
+    ).rejects.toThrow('--json cannot be used with "payload-components localize"')
+
+    expect(() => cli.parseArgs?.(['localize', '--locales', 'en', '--locales', 'zh'])).toThrow(
+      '--locales may only be specified once.',
+    )
+    expect(() => cli.parseArgs?.(['localize', '--locales', '--dry-run'])).toThrow(
+      'Missing value for --locales.',
+    )
+    expect(() => cli.parseArgs?.(['localize', '--default-locale'])).toThrow(
+      'Missing value for --default-locale.',
+    )
+    expect(commands.localizeCommand).not.toHaveBeenCalled()
   })
 })

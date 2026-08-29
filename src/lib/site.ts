@@ -1606,20 +1606,25 @@ export const composerInstallCommand = (slugs: readonly string[]) =>
 export const templatesEyebrow = 'Templates'
 export const templatesTitle = 'Payload CMS template concepts, built from installable blocks'
 export const templatesDescription =
-  'Explore complete Payload CMS and Next.js site concepts across ten verticals — SaaS, agency, commerce, healthcare, education, nonprofit and more. Open every page in a live preview, then trace each section back to a typed block you can install today.'
+  'Explore complete Payload CMS and Next.js site concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate, music and more. Open every page in a live preview, then trace each section back to a typed block you can install today.'
 export const templatesMetadataTitle = 'Payload CMS Templates for Next.js | Concepts & Recipes'
 export const templatesMetadataDescription =
-  'Explore Payload CMS template concepts across ten verticals — SaaS, agency, commerce, healthcare, education and more — preview every page and inspect the typed block recipe.'
+  'Explore Payload CMS template concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate and more — preview every page and inspect the typed block recipe.'
 
 export const templateCategoryLabels = {
   agency: 'Agency',
+  civic: 'Civic',
   commerce: 'Commerce',
   education: 'Education',
   event: 'Event',
   fintech: 'Fintech',
   healthcare: 'Healthcare',
+  marketplace: 'Marketplace',
+  music: 'Music',
   nonprofit: 'Nonprofit',
   portfolio: 'Portfolio',
+  'real-estate': 'Real estate',
+  restaurant: 'Restaurant',
   saas: 'SaaS',
   trade: 'Trade',
 } as const
@@ -1641,6 +1646,13 @@ export const templatesContribution = {
       external: true,
       href: githubRepoUrl,
       label: 'Browse the repository',
+    },
+    {
+      description:
+        'Should the curated concept copy become seedable? The proposal, what already works, and the open questions.',
+      external: true,
+      href: `${githubRepoUrl}/blob/main/rfcs/0001-installable-templates.md`,
+      label: 'Read the installer RFC',
     },
     {
       description:

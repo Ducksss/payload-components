@@ -1,0 +1,976 @@
+/* Tansy (restaurant-bistro) scoped theme — the candlelit room.
+ *
+ * Convention (frozen contract): every rule in this file lives beneath the
+ * [data-template-theme='restaurant-bistro'] root the shell renders. It
+ * overrides the semantic variables the demo twins consume and adds named Tansy
+ * tokens; it never touches :root, .dark, another template's scope, or
+ * src/app/globals.css. The site stays forced-light — the night bands and the
+ * candlelit plates below are intentional dark surfaces built from these
+ * tokens, not a theme.
+ *
+ * Art direction — low light on a forced-light site, solved by inverting where
+ * the light lives:
+ *   · the PAGE stays warm cream paper; the candlelight lives in the objects on
+ *     it — every backend-free image plate is repainted as a small dark still
+ *     with a candle glow pooled in it, and each page carries exactly ONE night
+ *     band (the room after dark);
+ *   · headlines, dish names, and pull quotes move to the serif the root layout
+ *     already loads (Instrument Serif), so every page reads as a written menu
+ *     — which is the fiction: the menu is written at four, daily, by hand;
+ *   · eyebrows drop the catalog pill for a copper small-caps course heading
+ *     between two diamonds, the way a printed menu titles its courses;
+ *   · body type steps up to 17px on an opened leading — "generous type" is one
+ *     third of the brief, and an unhurried room reads at arm's length;
+ *   · geometry is a printed card: one small radius everywhere, hairline rules
+ *     between sections, and the reservation panel framed by a double rule like
+ *     a menu cover.
+ *
+ * Contrast, measured (oklch → sRGB → WCAG, not guessed):
+ *   · ink on paper 14.80:1, on the deep-cream band 13.73:1, on raised cream
+ *     15.69:1;
+ *   · muted ink (--ty-ink-soft) is held at AAA everywhere it can land:
+ *     8.08:1 on paper, 7.50:1 on the deep band, 8.56:1 on raised cream;
+ *   · burnt copper is the accent that survives as TYPE: 6.67:1 on paper,
+ *     6.19:1 on the deep band, 7.08:1 on raised cream. Cream on a copper fill
+ *     (every primary action) is 6.67:1, 8.41:1 on the hover step;
+ *   · the night band: cream text 14.84:1 (13.23:1 on raised night), muted
+ *     cream 8.96:1 (7.98:1 raised), and copper flips to candle amber — 8.53:1
+ *     as type, 8.53:1 as the inverted primary action with night ink on it.
+ *     Bright flame (--ty-flame) is a GLOW, never a text colour, anywhere. */
+
+[data-template-theme='restaurant-bistro'] {
+  /* ————— Tansy palette ————— */
+  --ty-paper: oklch(96.6% 0.018 88deg); /* the page: warm cream */
+  --ty-paper-deep: oklch(94.1% 0.027 86deg); /* muted band: the same cream, lower light */
+  --ty-raised: oklch(98.6% 0.01 90deg); /* every inner card and panel */
+  --ty-ink: oklch(24.5% 0.03 55deg); /* deep umber ink */
+  --ty-ink-soft: oklch(41% 0.035 58deg); /* muted ink, AAA on every surface */
+
+  --ty-night: oklch(23.5% 0.028 52deg); /* the room after dark: one band per page */
+  --ty-night-raised: oklch(27.5% 0.032 52deg); /* cards on the night band */
+  --ty-night-text: oklch(95.8% 0.018 86deg);
+  --ty-night-muted: oklch(80% 0.032 78deg);
+
+  /* The one accent, in three registers: copper reads on paper, candle reads on
+     night, flame is only ever light. */
+  --ty-copper: oklch(46.5% 0.128 45deg);
+  --ty-copper-deep: oklch(41% 0.118 44deg);
+  --ty-candle: oklch(79% 0.112 72deg);
+  --ty-flame: oklch(70% 0.15 55deg);
+
+  /* Accent-as-ink that survives the band it sits on: copper on paper,
+     re-pointed to candle inside the night band below. */
+  --ty-accent-ink: var(--ty-copper);
+
+  /* Candlelit plate defaults — sections move the glow so no two stills on the
+     site are the same photograph. */
+  --ty-plate: oklch(31% 0.034 54deg);
+  --ty-glow-x: 30%;
+  --ty-glow-y: 74%;
+  --ty-glow-mix: 58%;
+  --ty-table: 84%;
+
+  /* ————— Semantic variables the twins consume ————— */
+  --background: var(--ty-paper);
+  --foreground: var(--ty-ink);
+  --card: var(--ty-raised);
+  --card-foreground: var(--ty-ink);
+  --popover: var(--ty-raised);
+  --popover-foreground: var(--ty-ink);
+
+  --primary: var(--ty-copper);
+  --primary-foreground: oklch(97.8% 0.012 88deg);
+  --secondary: oklch(93% 0.024 84deg);
+  --secondary-foreground: var(--ty-ink);
+  --muted: oklch(93.6% 0.022 85deg);
+  --muted-foreground: var(--ty-ink-soft);
+  --accent: oklch(92% 0.03 78deg);
+  --accent-foreground: var(--ty-ink);
+
+  --brand: var(--ty-copper);
+  --brand-foreground: oklch(97.8% 0.012 88deg);
+  --brand-50: oklch(96.8% 0.02 72deg);
+  --brand-100: oklch(93% 0.04 64deg);
+  --brand-200: oklch(87% 0.066 58deg);
+  --brand-600: var(--ty-copper-deep);
+
+  --border: oklch(87.5% 0.024 80deg);
+  /* Field borders are UI boundaries: heavier than the decorative hairline so
+     the booking form's wells clear WCAG 1.4.11 against raised cream. */
+  --input: oklch(60% 0.05 60deg);
+  --ring: var(--ty-copper);
+
+  /* Printed-card geometry: one small radius. The named container radii
+     (frame/panel/card/inset) are @theme inline literals, so they are
+     normalised at element level below. */
+  --radius: 0.25rem;
+
+  /* ————— Type: the written menu —————
+   * Body steps up to 17px and the display sizes step up with it — Instrument
+   * Serif at its native 400 needs a size, not a synthetic weight. Tracking
+   * relaxes to near zero: a serif menu face wants air, not compression. */
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.1875rem;
+  --text-xl: 1.4375rem;
+  --text-2xl: 1.6875rem;
+  --text-3xl: 2.125rem;
+  --text-3xl--line-height: 1.16;
+  --text-4xl: 2.625rem;
+  --text-4xl--line-height: 1.1;
+  --text-5xl: 3.3125rem;
+  --text-5xl--line-height: 1.05;
+
+  --tracking-display: -0.006em;
+  --tracking-title: -0.004em;
+  --tracking-snug: 0em;
+  --tracking-heading: 0em;
+  --tracking-micro: 0em;
+  --tracking-eyebrow: 0.22em;
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+[data-template-theme='restaurant-bistro'] ::selection {
+  background-color: color-mix(in oklab, var(--ty-candle) 55%, transparent);
+  color: var(--ty-ink);
+}
+
+/* ————————————————————————— Printed-card geometry ————————————————————————— */
+
+/* One radius for every container: a menu card has one die-cut, not a system of
+   pillows. rounded-full survives — the monogram discs, the step seals, and the
+   lit windows are meant to be round. rounded-md (buttons, field wells) is
+   restated in their own rules. */
+[data-template-theme='restaurant-bistro']
+  :is(
+    .rounded-frame,
+    .rounded-panel,
+    .rounded-card,
+    .rounded-inset,
+    .rounded-2xl,
+    .rounded-xl,
+    .rounded-lg
+  ) {
+  border-radius: 0.375rem;
+}
+
+/* ————————————————————————— The menu voice ————————————————————————— */
+
+/* Headlines, dish names, card titles, and FAQ questions move to the serif at
+   its native 400 — the twins carry font-medium, which would synthetically
+   embolden a face that ships one weight. The stats-proof wordmark lockup is
+   carved out below (it is a masthead, not a headline). */
+[data-template-theme='restaurant-bistro']
+  [data-template-canvas]
+  :is(.tracking-display, .tracking-title, .tracking-heading, .tracking-snug) {
+  font-family: var(--font-serif);
+  font-weight: 400;
+}
+
+/* Pull quotes are the evening's spoken lines: serif italic, and the twins'
+   own not-italic <cite> keeps attributions upright. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] blockquote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  letter-spacing: -0.004em;
+}
+
+/* FAQ questions ride tracking-title at text-base — a serif question at 17px
+   reads mumbled next to its sans answer, so it steps up a size. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .text-base.tracking-title {
+  font-size: 1.3125rem;
+}
+
+/* The press lockup in the ledger (stats-proof logoLabel) is the one
+   tracking-title that must NOT be a serif headline: it is The Porthmere
+   Courant's masthead, so it becomes a small tracked-caps mark in candle amber
+   on the night band. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .h-9 .tracking-title {
+  color: var(--ty-candle);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+}
+
+/* ————————————————————————— Readability ————————————————————————— */
+
+/* The twins pin leading in rem; at 17px body those ratios close up. Restated
+   as ratios so the bigger type keeps the unhurried air the brief asks for. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .leading-6 {
+  line-height: 1.7;
+}
+
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .leading-7 {
+  line-height: 1.78;
+}
+
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .leading-8 {
+  line-height: 1.5;
+}
+
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .leading-9 {
+  line-height: 1.42;
+}
+
+/* Prose measure trims: 17px copy in the twins' 42/48rem columns runs past 75
+   characters; these bring reading columns back to the mid-60s. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .max-w-2xl {
+  max-width: 39rem;
+}
+
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .max-w-3xl {
+  max-width: 45rem;
+}
+
+/* ————————————————————————— Section rhythm ————————————————————————— */
+
+/* Dissolve the catalog's specimen frame so each page reads as one room, and
+   rule the courses apart with a single hairline — the way a set menu is
+   divided. Tone bands draw their own edges, so they opt out of the rule. */
+[data-template-theme='restaurant-bistro'] [data-template-section] > [aria-hidden='true'] > div {
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding-block: clamp(3.75rem, 7.5vw, 6rem);
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-section]
+  + [data-template-section]:not([data-tone='contrast']):not([data-tone='muted']) {
+  box-shadow: inset 0 1px 0 var(--border);
+}
+
+/* ————————————————————————— Tone bands ————————————————————————— */
+
+/* muted: the same cream, lower light — a breath, never a slab. */
+[data-template-theme='restaurant-bistro'] [data-template-section][data-tone='muted'] {
+  --border: oklch(85% 0.028 80deg);
+
+  background-color: var(--ty-paper-deep);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    inset 0 -1px 0 var(--border);
+}
+
+/* contrast: the room after dark — each page's ONE night band. Every semantic
+   variable is remapped so the twins' paper-first markup resolves to a
+   measured dark set, and the primary action inverts to the candle: a lit
+   button with night ink on it (8.53:1). --ty-raised follows the band down so
+   the inner-panel remap below darkens with it, and --ty-accent-ink re-points
+   from copper to candle so accent type stays readable. */
+[data-template-theme='restaurant-bistro'] [data-template-section][data-tone='contrast'] {
+  --ty-raised: var(--ty-night-raised);
+  --ty-accent-ink: var(--ty-candle);
+
+  --background: var(--ty-night);
+  --foreground: var(--ty-night-text);
+  --card: var(--ty-night-raised);
+  --card-foreground: var(--ty-night-text);
+  --popover: var(--ty-night-raised);
+  --popover-foreground: var(--ty-night-text);
+  --primary: var(--ty-candle);
+  --primary-foreground: var(--ty-night);
+  --secondary: oklch(30.5% 0.032 54deg);
+  --secondary-foreground: var(--ty-night-text);
+  --muted: oklch(29.5% 0.032 53deg);
+  --muted-foreground: var(--ty-night-muted);
+  --accent: oklch(32.5% 0.036 54deg);
+  --accent-foreground: var(--ty-night-text);
+  --brand: var(--ty-candle);
+  --brand-foreground: var(--ty-night);
+  --border: oklch(100% 0 0deg / 17%);
+  --input: oklch(100% 0 0deg / 32%);
+  --ring: var(--ty-candle);
+
+  background-color: var(--ty-night);
+  color: var(--foreground);
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-section][data-tone='contrast']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(4.25rem, 8vw, 6.5rem);
+}
+
+/* ————————————————————————— Eyebrows: course headings ————————————————————————— */
+
+/* Every twin eyebrow is a Badge carrying `rounded-full … uppercase
+   tracking-eyebrow`; the proof chips share rounded-full but never
+   tracking-eyebrow, so this selects eyebrows only. The pill dissolves into a
+   copper small-caps course heading between two diamonds — the fleuron a
+   printed menu sets over each course — and it works both left-set and
+   centred. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .rounded-full.tracking-eyebrow {
+  align-items: center;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--ty-accent-ink);
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 600;
+  gap: 0.75rem;
+  letter-spacing: 0.22em;
+  padding: 0;
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-canvas]
+  .rounded-full.tracking-eyebrow::before,
+[data-template-theme='restaurant-bistro']
+  [data-template-canvas]
+  .rounded-full.tracking-eyebrow::after {
+  background-color: var(--ty-accent-ink);
+  content: '';
+  flex: none;
+  height: 0.3125rem;
+  transform: rotate(45deg);
+  width: 0.3125rem;
+}
+
+/* hero-basic's proof chips become the menu-foot line: plain facts separated by
+   copper diamonds, no pills. The diamond belongs to the gap, so the last item
+   carries none. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .rounded-full.px-3.py-1.text-sm {
+  align-items: center;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--foreground);
+  display: inline-flex;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 0;
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-canvas]
+  .rounded-full.px-3.py-1.text-sm:not(:last-child)::after {
+  background-color: var(--ty-accent-ink);
+  content: '';
+  height: 0.3125rem;
+  margin-inline-start: 0.75rem;
+  transform: rotate(45deg);
+  width: 0.3125rem;
+}
+
+/* ————————————————————————— Actions and fields ————————————————————————— */
+
+/* DemoLink and the form submits are the only h-10 rounded-md SPANS in the
+   twins (field wells with the same metrics are divs), so this grows real
+   actions only. 48px targets: the site is used one-handed on a phone outside
+   the blue door. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] span.h-10.rounded-md {
+  border-radius: 0.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  height: 3rem;
+  letter-spacing: 0.01em;
+  padding-inline: 1.625rem;
+}
+
+/* The outline action is a real second choice: a copper rule and copper ink,
+   not a ghost. On the night band --ty-accent-ink re-points to candle. */
+[data-template-theme='restaurant-bistro']
+  [data-template-canvas]
+  span.h-10.rounded-md.border-border {
+  border-color: color-mix(in oklab, var(--ty-accent-ink) 60%, var(--border));
+  color: var(--ty-accent-ink);
+}
+
+/* Field wells (booking form + enquiry input): raised cream, a visible border
+   weight, and the same 48px height as the actions beside them. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] div.h-10.rounded-md {
+  background-color: var(--ty-raised);
+  border-radius: 0.25rem;
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--ty-ink) 10%, transparent);
+  height: 3rem;
+}
+
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .h-28 {
+  background-color: var(--ty-raised);
+  border-radius: 0.25rem;
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--ty-ink) 10%, transparent);
+  height: 8.5rem;
+}
+
+/* The contact page's lead channel is the phone number — the whole fiction
+   runs through it, so it reads in copper at weight. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] span.text-primary {
+  color: var(--ty-accent-ink);
+  font-weight: 600;
+}
+
+/* Channel cards and the form panel start at the top and end where their
+   content does — a stretched form panel leaves a cream void under the submit.
+   (.grid.gap-8 is contact-routing-form's outer two-column grid only.) */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .grid.gap-8 {
+  align-items: start;
+}
+
+/* ————————————————————————— Surfaces ————————————————————————— */
+
+/* The twins paint inner panels with bg-background/85|80|70|60 — translucent
+   white over cream dissolves on the deep band and vanishes on the night band.
+   All four remap to the raised surface, which follows each band down. */
+[data-template-theme='restaurant-bistro']
+  [data-template-canvas]
+  :is(.bg-background\/85, .bg-background\/80, .bg-background\/70, .bg-background\/60) {
+  background-color: var(--ty-raised);
+}
+
+/* Depth is a warm breath, not screen chrome. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] :is(.shadow-xl, .shadow-lg) {
+  box-shadow: 0 26px 48px -36px color-mix(in oklab, var(--ty-ink) 60%, transparent);
+}
+
+/* Monogram discs (testimonial avatars) are place cards: raised surface, a
+   hairline, and the initial at full ink. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .rounded-full.bg-card {
+  background-color: var(--ty-raised);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ty-ink) 26%, transparent);
+}
+
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .rounded-full.bg-card > span {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+/* ————————————————————————— The candlelit plates ————————————————————————— */
+
+/* Every backend-free upload placeholder becomes a small candlelit still: deep
+   umber shade falling from the ceiling, a candle glow pooled where the
+   section says the light is, the flame's bright heart above it, and a thin
+   amber line where the table edge catches. It reads as the low-lit room the
+   copy describes rather than a missing photograph, it is derived entirely
+   from the tokens above, and no likeness — real or invented — is depicted
+   anywhere. Sections move --ty-glow-x/-y, the table height, and the plate
+   tint, so no two stills on the site are the same photograph. */
+[data-template-theme='restaurant-bistro']
+  [data-template-canvas]
+  :is(div[class*='aspect-'].bg-muted, .h-full.w-full.bg-muted) {
+  background-color: var(--ty-plate);
+  background-image:
+    /* the table edge, caught by the flame */
+    linear-gradient(
+      180deg,
+      transparent calc(var(--ty-table) - 1.5%),
+      color-mix(in oklab, var(--ty-candle) 38%, transparent) var(--ty-table),
+      color-mix(in oklab, var(--ty-candle) 12%, transparent) calc(var(--ty-table) + 3%),
+      transparent calc(var(--ty-table) + 16%)
+    ),
+    /* the flame's bright heart */
+    radial-gradient(
+        7% 9% at var(--ty-glow-x) calc(var(--ty-glow-y) - 7%),
+        color-mix(in oklab, var(--ty-candle) 88%, transparent),
+        transparent 100%
+      ),
+    /* the glow, pooled */
+    radial-gradient(
+        56% 54% at var(--ty-glow-x) var(--ty-glow-y),
+        color-mix(in oklab, var(--ty-flame) var(--ty-glow-mix), transparent),
+        color-mix(in oklab, var(--ty-flame) 16%, transparent) 48%,
+        transparent 74%
+      ),
+    /* ceiling shade */
+    linear-gradient(180deg, color-mix(in oklab, var(--ty-ink) 58%, transparent), transparent 46%),
+    /* shade gathering in the far corner */
+    radial-gradient(
+        110% 120% at calc(100% - var(--ty-glow-x)) -18%,
+        color-mix(in oklab, var(--ty-ink) 44%, transparent),
+        transparent 58%
+      );
+}
+
+/* Small round wells (the town's faces on the story page) are too small for a
+   still — they become lit windows: a warm pane glowing out of the night
+   surface, which on the "Porthmere keeps the lights on" band is the design
+   pun played straight. */
+[data-template-theme='restaurant-bistro']
+  [data-template-canvas]
+  .rounded-full
+  > .h-full.w-full.bg-muted {
+  background-color: var(--ty-night-raised);
+  background-image: radial-gradient(
+    72% 72% at 50% 60%,
+    color-mix(in oklab, var(--ty-candle) 76%, transparent),
+    color-mix(in oklab, var(--ty-flame) 30%, transparent) 56%,
+    transparent 88%
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ty-candle) 30%, transparent);
+}
+
+/* ————————————————————————— Per-section light ————————————————————————— */
+
+/* Home, "The room": the counter lamp sits low left; the wide 16/7 still gets
+   a slightly higher table line so the zinc counter reads across it. */
+[data-template-theme='restaurant-bistro'] [data-template-section='the-room'] {
+  --ty-glow-x: 20%;
+  --ty-glow-y: 70%;
+  --ty-table: 80%;
+}
+
+/* Home, "Tonight, roughly": three dishes, three corners of the same room. */
+[data-template-theme='restaurant-bistro']
+  [data-template-section='tonight']
+  .flex-col
+  > div:nth-child(2) {
+  --ty-glow-x: 74%;
+  --ty-glow-y: 66%;
+  --ty-plate: oklch(29% 0.036 50deg);
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-section='tonight']
+  .flex-col
+  > div:nth-child(3) {
+  --ty-glow-x: 46%;
+  --ty-glow-y: 82%;
+  --ty-table: 90%;
+  --ty-plate: oklch(33% 0.032 58deg);
+}
+
+/* Menu, "From the fire": the page's one image band burns hotter and lower
+   than anywhere else — coals, not candles. */
+[data-template-theme='restaurant-bistro'] [data-template-section='from-the-fire'] {
+  --ty-glow-mix: 74%;
+  --ty-glow-y: 92%;
+  --ty-table: 97%;
+  --ty-plate: oklch(27.5% 0.04 46deg);
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-section='from-the-fire']
+  .flex-col
+  > div:nth-child(2) {
+  --ty-glow-x: 68%;
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-section='from-the-fire']
+  .flex-col
+  > div:nth-child(3) {
+  --ty-glow-x: 44%;
+  --ty-glow-mix: 62%;
+}
+
+/* Story, "The idea": the menu is written at four, so this one still is
+   afternoon — the plate lifts, the light comes high from the window side, and
+   the table line sits where a desk would. */
+[data-template-theme='restaurant-bistro'] [data-template-section='the-idea'] {
+  --ty-glow-x: 72%;
+  --ty-glow-y: 30%;
+  --ty-glow-mix: 44%;
+  --ty-table: 70%;
+  --ty-plate: oklch(40% 0.032 62deg);
+}
+
+/* Story, "The people": six portraits, each lit from a different side, the
+   glow raised to head height. */
+[data-template-theme='restaurant-bistro'] [data-template-section='the-people'] .group {
+  --ty-glow-y: 58%;
+  --ty-glow-mix: 48%;
+  --ty-table: 92%;
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-section='the-people']
+  .group:nth-child(2n) {
+  --ty-glow-x: 68%;
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-section='the-people']
+  .group:nth-child(3n) {
+  --ty-glow-x: 48%;
+  --ty-plate: oklch(29% 0.032 50deg);
+}
+
+/* Private dining, "The Long Room": the twins nest a plate inside a plate, and
+   the theme uses that literally — the outer plate is the dark landing at the
+   top of the chandlery stair (flat, near-black, no glow), the inner 16/9 is
+   the lit room seen through the doorway, one long pool of light down the
+   middle where the table runs. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .rounded-panel.bg-muted {
+  background-color: oklch(20.5% 0.024 52deg);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--ty-ink) 40%, transparent),
+    transparent 60%
+  );
+}
+
+[data-template-theme='restaurant-bistro'] [data-template-section='the-long-room'] {
+  --ty-glow-x: 50%;
+  --ty-glow-y: 64%;
+  --ty-glow-mix: 66%;
+  --ty-table: 86%;
+}
+
+/* ————————————————————————— The heroes ————————————————————————— */
+
+/* Candlelight comes from LOW: the home hero's wash rises from the foot of the
+   band — a wide warm glow under the serif headline — with a deeper cream
+   settling at the top and a hairline closing the band like the front of a
+   menu card. Ink keeps ≥13:1 at the warmest point of the wash. */
+[data-template-theme='restaurant-bistro'] [data-template-section='welcome'] {
+  background-image:
+    radial-gradient(
+      64rem 30rem at 50% calc(100% + 16rem),
+      color-mix(in oklab, var(--ty-flame) 20%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--ty-paper-deep) 78%, transparent),
+      transparent 56%
+    );
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-section='welcome']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(4.5rem, 9.5vw, 7.5rem) clamp(4rem, 8vw, 6rem);
+}
+
+/* Interior page headers take the same light, dialled back — one header
+   treatment for the whole site. */
+[data-template-theme='restaurant-bistro'] [data-template-section='hero'] {
+  background-image:
+    radial-gradient(
+      56rem 24rem at 50% calc(100% + 14rem),
+      color-mix(in oklab, var(--ty-flame) 12%, transparent),
+      transparent 66%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--ty-paper-deep) 62%, transparent),
+      transparent 58%
+    );
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-section='hero']
+  > [aria-hidden='true']
+  > div {
+  padding-block: clamp(3.5rem, 7vw, 5.25rem) clamp(3rem, 6vw, 4.5rem);
+}
+
+/* ————————————————————————— Per-section refinements ————————————————————————— */
+
+/* The reservation card (call-to-action-boxed): the one object the whole site
+   points at, framed like a printed menu cover — an outer copper hairline, a
+   4px mat of raised cream, and a second finer rule inside it. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .rounded-2xl.border {
+  background-color: var(--ty-raised);
+  border-color: color-mix(in oklab, var(--ty-copper) 50%, var(--border));
+  box-shadow:
+    inset 0 0 0 4px var(--ty-raised),
+    inset 0 0 0 5px color-mix(in oklab, var(--ty-copper) 34%, var(--border));
+}
+
+/* Step numerals in "How a night runs" become copper seals with serif
+   numerals — the wax-seal register of an invitation, not an onboarding flow. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] .size-9.bg-primary {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  font-weight: 400;
+}
+
+/* The spotlight's quote mark is the loudest graphic on the private-dining
+   night band; it takes the candle. (--primary already re-points there, this
+   pins the intent.) */
+[data-template-theme='restaurant-bistro'] [data-template-section='a-wedding'] svg.text-primary {
+  color: var(--ty-candle);
+}
+
+/* testimonials-quote's left rule takes the copper: the quiet quote reads as a
+   margin-noted line in the menu. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] figure.border-l-2 {
+  border-color: var(--ty-accent-ink);
+}
+
+/* content-quote (Etta's words): the copper rule moves to the blockquote, and
+   the citation closes with a short copper stroke — a signature line, since
+   the logoLabel wordmark is deliberately omitted in the definition. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] blockquote.border-l-2 {
+  border-color: var(--ty-accent-ink);
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-section='the-idea']
+  blockquote
+  cite::after {
+  background-color: var(--ty-accent-ink);
+  content: '';
+  display: block;
+  height: 2px;
+  margin-top: 0.75rem;
+  width: 3rem;
+}
+
+/* The suppliers' and the menu's margin notes (content-stats arrow lists):
+   markers at 50% opacity are the least legible thing on the most practical
+   lists, so they become full copper. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] svg.size-4.opacity-50 {
+  color: var(--ty-accent-ink);
+  opacity: 1;
+}
+
+/* The comparator's highlighted column washes copper rather than the default
+   primary tint so the chosen room reads warm, not loud. */
+[data-template-theme='restaurant-bistro'] [data-template-canvas] :is(th, td).bg-primary\/5 {
+  background-color: color-mix(in oklab, var(--ty-copper) 7%, transparent);
+}
+
+/* The team grid, made honest: the twins hide each person's ROLE behind a
+   hover reveal and dangle a dead "Profile" link with a portfolio ordinal.
+   On the page about who feeds you the role is the point, so it is pinned
+   visible (Tailwind v4 drives translate through --tw-translate-*, so the
+   variable is zeroed as well as the property), and the dead link and `_01`
+   ordinals are removed. Names become serif place cards, and nothing in the
+   grid moves on hover. */
+[data-template-theme='restaurant-bistro'] [data-template-section='the-people'] .translate-y-6 {
+  --tw-translate-y: 0;
+
+  opacity: 1;
+  translate: none;
+}
+
+[data-template-theme='restaurant-bistro'] [data-template-section='the-people'] .translate-y-8,
+[data-template-theme='restaurant-bistro']
+  [data-template-section='the-people']
+  .justify-between
+  > span.text-xs {
+  display: none;
+}
+
+[data-template-theme='restaurant-bistro'] [data-template-section='the-people'] .group * {
+  letter-spacing: 0;
+  transition: none;
+}
+
+[data-template-theme='restaurant-bistro']
+  [data-template-section='the-people']
+  .text-base.font-medium {
+  font-family: var(--font-serif);
+  font-size: 1.3125rem;
+  font-weight: 400;
+}
+
+/* Portrait plates step down from h-96 — six full-height empty frames would
+   swallow the page — and take a hairline ring so the candlelit stills sit ON
+   the deep-cream band rather than punching holes in it. */
+[data-template-theme='restaurant-bistro'] [data-template-section='the-people'] .h-96 {
+  border-radius: 0.375rem;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ty-ink) 22%, transparent);
+  height: 15rem;
+}
+
+@media (min-width: 64rem) {
+  [data-template-theme='restaurant-bistro'] [data-template-section='the-people'] .h-96 {
+    height: 17rem;
+  }
+}
+
+/* ————————————————————————— Shell chrome ————————————————————————— */
+
+/* The strip above the masthead is the evening sky over the room: night ink,
+   the hours in tracked caps, and the phone number in candle — the single
+   most important string on the site, at the highest point of every page. */
+[data-template-theme='restaurant-bistro'] .tansy-utility {
+  background-color: var(--ty-night);
+  color: var(--ty-night-muted);
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-utility-fact {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 1.7;
+  text-transform: uppercase;
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-utility-phone {
+  color: var(--ty-candle);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-masthead {
+  background-color: var(--ty-paper);
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+/* The wordmark is the menu cover: Tansy in the serif at size, the town in
+   copper small caps beneath it. */
+[data-template-theme='restaurant-bistro'] .tansy-wordmark {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-wordmark-name {
+  color: var(--foreground);
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-wordmark-place {
+  color: var(--ty-copper);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-nav-link {
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.15s ease-out;
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-nav-link:hover {
+  color: var(--foreground);
+}
+
+/* The active page carries a copper diamond beneath it — the same fleuron the
+   eyebrows use, so the chrome and the canvas speak one language. */
+[data-template-theme='restaurant-bistro'] .tansy-nav-link {
+  position: relative;
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-nav-link[data-tansy-active] {
+  color: var(--foreground);
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-nav-link[data-tansy-active]::after {
+  background-color: var(--ty-copper);
+  bottom: 0.375rem;
+  content: '';
+  height: 0.3125rem;
+  left: 50%;
+  position: absolute;
+  transform: translateX(-50%) rotate(45deg);
+  width: 0.3125rem;
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-action {
+  background-color: var(--ty-copper);
+  border-radius: 0.25rem;
+  color: oklch(97.8% 0.012 88deg);
+  transition: background-color 0.15s ease-out;
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-action:hover {
+  background-color: var(--ty-copper-deep);
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-trigger {
+  border: 1px solid color-mix(in oklab, var(--ty-copper) 55%, var(--border));
+  border-radius: 0.25rem;
+  color: var(--foreground);
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-trigger-bar {
+  background-color: currentcolor;
+  display: block;
+  height: 2px;
+  width: 1.125rem;
+}
+
+/* The mobile sheet is a plain full-width card flush under the masthead:
+   56px rows, hairline separated, the active page marked with an inset copper
+   rule. No animation — the sheet is either open or it is not. */
+[data-template-theme='restaurant-bistro'] .tansy-sheet {
+  background-color: var(--ty-paper);
+  box-shadow:
+    inset 0 1px 0 var(--border),
+    0 18px 36px -24px color-mix(in oklab, var(--ty-ink) 50%, transparent);
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-sheet-link {
+  box-shadow: inset 0 -1px 0 var(--border);
+  font-family: var(--font-serif);
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-sheet-link[data-tansy-active] {
+  box-shadow:
+    inset 3px 0 0 var(--ty-copper),
+    inset 0 -1px 0 var(--border);
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-sheet-note {
+  background-color: var(--ty-paper-deep);
+  color: var(--muted-foreground);
+}
+
+/* One visible focus style for every interactive element in the shell. */
+[data-template-theme='restaurant-bistro'] .tansy-focus {
+  outline: none;
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-focus:focus-visible {
+  outline: 2px solid var(--ty-copper);
+  outline-offset: 2px;
+}
+
+/* ————————————————————————— Footer ————————————————————————— */
+
+[data-template-theme='restaurant-bistro'] .tansy-footer {
+  background-color: var(--ty-paper-deep);
+  box-shadow: inset 0 1px 0 var(--border);
+}
+
+/* The closing statement reads in the menu serif — the last written line
+   before the night rail. */
+[data-template-theme='restaurant-bistro'] .tansy-footer-line {
+  font-family: var(--font-serif);
+}
+
+[data-template-theme='restaurant-bistro'] .tansy-footer-label {
+  color: var(--ty-copper);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* The rail is the same night as the utility strip, so the page closes the way
+   it opened — the room, after dark. */
+[data-template-theme='restaurant-bistro'] .tansy-rail {
+  background-color: var(--ty-night);
+  color: var(--ty-night-muted);
+}
+
+/* ————————————————————————— Reduced motion ————————————————————————— */
+
+/* The Tansy chrome ships NO motion of its own — no entrances, no scroll
+   veils; an unhurried room holds still, and a still header is always complete
+   in a capture. What remains are hover/focus colour transitions in the shell
+   and twins: under reduce they resolve instantly, and any future motion added
+   beneath this scope inherits the same guarantee. (The shared section reveals
+   pin their final frame via template-motion.css.) */
+@media (prefers-reduced-motion: reduce) {
+  [data-template-theme='restaurant-bistro'] * {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+  }
+}
