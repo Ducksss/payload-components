@@ -1585,6 +1585,7 @@ export const catalogMetadataTitle = `${componentEntries.length} Payload CMS Comp
 export const catalogMetadataDescription =
   'Browse typed Payload CMS blocks. Run npx payload-components add <component> to wire one into your collection, renderer, generated types, and admin import map.'
 export const catalogInstallationLinkLabel = 'See how one-command installation works'
+export const catalogBlocksGuideLinkLabel = 'Follow a block from config to live page'
 export const catalogTemplatesLinkLabel = 'Explore Payload CMS template concepts'
 
 /* Composer: pick several blocks across families and get one install command.
