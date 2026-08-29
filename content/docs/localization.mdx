@@ -117,7 +117,13 @@ A block installed after the locales are declared can be wrapped in the same step
 npx payload-components add hero-basic --localized
 ```
 
-That is the per-install form of the same transform. `localize` is the project-wide form,
+A whole template takes the same flag, so a fifteen-block site does not need a second pass:
+
+```bash
+npx payload-components add-template saas-launch --localized
+```
+
+Those are the per-install form of the same transform. `localize` is the project-wide form,
 and it is the only one that touches your Payload config.
 
 ## Reading a locale from the front end

@@ -25,3 +25,8 @@ content
 
 # Playwright's committed PNG baselines.
 **/*-snapshots
+
+# Per-machine Claude Code settings. Git-ignored (often via a global gitignore, so
+# `git status` stays quiet about it) but still on disk, which made `format:check`
+# fail locally on a file no commit can contain.
+.claude/settings.local.json
