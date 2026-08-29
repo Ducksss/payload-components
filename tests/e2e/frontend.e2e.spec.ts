@@ -4,6 +4,7 @@ import { grantConsent } from './consent'
 
 import {
   blogTitle,
+  catalogBlocksGuideLinkLabel,
   catalogInstallationLinkLabel,
   composerAddLabel,
   composerClearLabel,
@@ -739,6 +740,9 @@ test.describe('Light shadcn frontend', () => {
     await expect(
       page.getByRole('link', { name: catalogInstallationLinkLabel, exact: true }),
     ).toHaveAttribute('href', '/docs/installation')
+    await expect(
+      page.getByRole('link', { name: catalogBlocksGuideLinkLabel, exact: true }),
+    ).toHaveAttribute('href', '/docs/payload-blocks')
 
     for (const component of componentEntries) {
       await expect(page.locator(`a[href="${component.href}"]`).first()).toBeAttached()
