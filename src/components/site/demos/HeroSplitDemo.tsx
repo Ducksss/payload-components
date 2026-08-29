@@ -75,8 +75,8 @@ export function HeroSplitDemo({
           </div>
 
           <div
-            className={`relative overflow-hidden rounded-card border border-border/70 bg-muted${
-              imageFirst ? ' lg:order-1' : ''
+            className={`order-first relative overflow-hidden rounded-card border border-border/70 bg-muted${
+              imageFirst ? ' lg:order-1' : ' lg:order-none'
             } aspect-[4/3]`}
           />
         </div>

@@ -85,8 +85,8 @@ export const HeroSplitBlock: React.FC<Props> = ({
 
           <div
             className={cn(
-              'relative overflow-hidden rounded-card border border-border/70 bg-muted',
-              { 'lg:order-1': imageFirst },
+              'order-first relative overflow-hidden rounded-card border border-border/70 bg-muted',
+              imageFirst ? 'lg:order-1' : 'lg:order-none',
             )}
           >
             <Media resource={image} imgClassName="aspect-[4/3] h-full w-full object-cover" />
