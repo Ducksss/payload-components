@@ -266,7 +266,7 @@ const hasDeclaredLocales = async (options: { cwd: string; project: DetectedProje
    nothing about the install itself reveals that. Say so at the moment the wrap
    lands, and name the command that fixes it. Reporting only — a config we cannot
    read is not a reason to fail an otherwise clean install. */
-const warnWhenNoLocalesDeclared = async (options: {
+export const warnWhenNoLocalesDeclared = async (options: {
   cwd: string
   project: DetectedProject
 }) => {
@@ -288,11 +288,15 @@ const warnWhenNoLocalesDeclared = async (options: {
 const installComponent = async ({
   cwd,
   componentName,
+  deferLocaleNotice,
   dryRun,
   localized,
 }: {
   cwd: string
   componentName: string
+  /* Set by a caller installing several blocks at once, which reports the locale
+     situation itself rather than repeating it per block. */
+  deferLocaleNotice: boolean
   dryRun: boolean
   localized: boolean
 }) => {
@@ -511,7 +515,9 @@ const installComponent = async ({
           : 'payload-components: block config was already localized.',
       )
 
-      await warnWhenNoLocalesDeclared({ cwd, project })
+      if (!deferLocaleNotice) {
+        await warnWhenNoLocalesDeclared({ cwd, project })
+      }
     })
   }
 
@@ -557,12 +563,15 @@ const installComponent = async ({
 export const addCommand = async ({
   cwd,
   componentName,
+  deferLocaleNotice = false,
   demo = false,
   dryRun = false,
   localized = false,
 }: {
   cwd: string
   componentName: string
+  /* For callers installing a whole set — see installComponent. */
+  deferLocaleNotice?: boolean
   demo?: boolean
   dryRun?: boolean
   localized?: boolean
@@ -598,7 +607,7 @@ export const addCommand = async ({
     return
   }
 
-  await installComponent({ cwd, componentName, dryRun, localized })
+  await installComponent({ cwd, componentName, deferLocaleNotice, dryRun, localized })
 
   if (demo && !dryRun) {
     await seedCommand({ cwd, componentName })

@@ -132,12 +132,15 @@ Naming components narrows it to those:
 npx payload-components localize hero-basic faq-card
 ```
 
-A single block can also be installed localized in one step, which is the same field-level
-transform without the config half:
+A single block — or every block of a template — can also be installed localized in one
+step, which is the same field-level transform without the config half:
 
 ```bash
 npx payload-components add hero-basic --localized
+npx payload-components add-template saas-launch --localized
 ```
+
+On a template the locale notice is printed once for the run, not once per block.
 
 `localize` refuses rather than guesses in three cases, each exiting non-zero with the
 config or block left exactly as you wrote it: a config with no `buildConfig({ ... })` call,
