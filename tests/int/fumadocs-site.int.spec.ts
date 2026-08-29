@@ -878,6 +878,7 @@ describe('Fumadocs site shell', () => {
     const catalogPage = await readFile(path.join(repoRoot, 'src/app/components/page.tsx'), 'utf8')
     const registry = await readFile(path.join(repoRoot, 'content/docs/registry.mdx'), 'utf8')
     const {
+      catalogBlocksGuideLinkLabel,
       catalogDescription,
       catalogInstallationLinkLabel,
       catalogMetadataDescription,
@@ -905,6 +906,9 @@ describe('Fumadocs site shell', () => {
     expect(catalogPage).toContain('href="/docs/installation"')
     expect(catalogPage).toContain('{catalogInstallationLinkLabel}')
     expect(catalogInstallationLinkLabel).toContain('one-command installation')
+    expect(catalogPage).toContain('href="/docs/payload-blocks"')
+    expect(catalogPage).toContain('{catalogBlocksGuideLinkLabel}')
+    expect(catalogBlocksGuideLinkLabel).toContain('config to live page')
   })
 
   it('gives nearby search surfaces distinct jobs and routes catalog intent to components', async () => {
@@ -922,6 +926,7 @@ describe('Fumadocs site shell', () => {
     expect(blogTitle).toBe('Payload CMS block and installer guides')
     expect(catalogMetadataTitle).toBe('74 Payload CMS Components & Blocks | Catalog')
     expect(docsIndex).toContain('seoTitle: CLI setup and architecture')
+    expect(docsIndex).toContain('title="Build and wire a block" href="/docs/payload-blocks"')
 
     for (const source of [aboutPage, blogPage, docsIndex, installationGuide, homepage]) {
       expect(source).toContain('/components')
