@@ -1,0 +1,92 @@
+{
+  "category": "civic",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "comparator-table",
+    "contact-routing-form",
+    "content-columns",
+    "content-quote",
+    "content-rows",
+    "content-stats",
+    "faq-accordion",
+    "faq-card",
+    "faq-grouped",
+    "faq-split",
+    "feature-icon-grid",
+    "feature-steps",
+    "hero-basic",
+    "stats-proof",
+    "team-roster"
+  ],
+  "description": "Marleford District Council is a fictional local authority for a fictional district of just under forty thousand people: one phone line, a Guildhall on Bridge Street, and a website that is a front desk rather than a brochure. The concept owns the plain-language public-service register — short sentences, verbs first, top tasks before institutions — across five pages: Home, Services, Report a problem, The council, and Contact, with reporting a problem as the task everything else defers to. Composed entirely from blocks in the open registry.",
+  "pages": [
+    {
+      "components": [
+        "hero-basic",
+        "feature-icon-grid",
+        "content-rows",
+        "stats-proof",
+        "faq-accordion",
+        "call-to-action-boxed"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Marleford District Council — What do you need to do?"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-stats",
+        "content-rows",
+        "comparator-table",
+        "faq-grouped",
+        "call-to-action-centered"
+      ],
+      "label": "Services",
+      "path": "services",
+      "title": "Marleford District Council — Services"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-steps",
+        "contact-routing-form",
+        "content-stats",
+        "faq-card"
+      ],
+      "label": "Report a problem",
+      "path": "report",
+      "title": "Marleford District Council — Report a problem"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "content-columns",
+        "team-roster",
+        "content-rows",
+        "content-quote",
+        "faq-split"
+      ],
+      "label": "The council",
+      "path": "council",
+      "title": "Marleford District Council — The council"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "contact-routing-form",
+        "content-columns",
+        "faq-split"
+      ],
+      "label": "Contact",
+      "path": "contact",
+      "title": "Marleford District Council — Contact"
+    }
+  ],
+  "revision": 1,
+  "slug": "civic-council",
+  "summary": "A fictional district council in the plain-language public-service register — top-task design, verbs first, and a front desk instead of a brochure.",
+  "title": "Civic Council",
+  "version": 1
+}

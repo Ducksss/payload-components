@@ -1,0 +1,101 @@
+{
+  "category": "marketplace",
+  "components": [
+    "call-to-action-boxed",
+    "call-to-action-centered",
+    "call-to-action-signup",
+    "comparator-table",
+    "contact-routing-form",
+    "content-quote",
+    "content-rows",
+    "content-stats",
+    "faq-accordion",
+    "faq-card",
+    "faq-grouped",
+    "faq-split",
+    "feature-cards-media",
+    "feature-split",
+    "feature-steps",
+    "hero-basic",
+    "integration-cluster",
+    "logo-cloud-inline-wrap",
+    "stats-proof",
+    "testimonials-quote",
+    "testimonials-rating",
+    "testimonials-spotlight"
+  ],
+  "description": "Trestle is a fictional wholesale marketplace between people who make things and people who keep shops: 388 makers, 1,145 shops, sixty days to pay on every order, and one flat commission that has never changed. The concept owns the two-sided register — the home page splits its reader in half, the buyers and suppliers pages mirror each other, and the trust page must convince both sides at once — across five pages: Home, For shops, For makers, How it works, and Contact. Composed entirely from blocks in the open registry.",
+  "pages": [
+    {
+      "components": [
+        "hero-basic",
+        "logo-cloud-inline-wrap",
+        "feature-split",
+        "stats-proof",
+        "testimonials-quote",
+        "faq-accordion",
+        "call-to-action-boxed"
+      ],
+      "label": "Home",
+      "path": "",
+      "title": "Trestle — Wholesale between makers and shops"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-steps",
+        "feature-cards-media",
+        "content-stats",
+        "testimonials-rating",
+        "faq-card",
+        "call-to-action-signup"
+      ],
+      "label": "For shops",
+      "path": "buyers",
+      "title": "Trestle — For shops"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-steps",
+        "content-rows",
+        "comparator-table",
+        "testimonials-spotlight",
+        "faq-split",
+        "call-to-action-signup"
+      ],
+      "label": "For makers",
+      "path": "suppliers",
+      "title": "Trestle — For makers"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "feature-steps",
+        "comparator-table",
+        "content-quote",
+        "integration-cluster",
+        "faq-grouped",
+        "call-to-action-centered"
+      ],
+      "label": "How it works",
+      "path": "how-it-works",
+      "title": "Trestle — How it works"
+    },
+    {
+      "components": [
+        "hero-basic",
+        "contact-routing-form",
+        "faq-split"
+      ],
+      "label": "Contact",
+      "path": "contact",
+      "title": "Trestle — Contact"
+    }
+  ],
+  "revision": 1,
+  "slug": "marketplace-wholesale",
+  "summary": "A fictional two-sided wholesale marketplace between independent makers and independent shops — the split-audience register, with the trust page that must convince both sides at once.",
+  "title": "Marketplace Wholesale",
+  "version": 1
+}

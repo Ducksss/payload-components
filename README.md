@@ -325,16 +325,33 @@ each page uses. Add `--demo` to also write one seed script per page, each
 creating a draft Page from the blocks that page composes. Seeded content is each
 block's own sample content, not the curated copy shown on the site.
 
-Mark a block's text fields as localized for Payload localization:
+Make the project multilingual — English, Chinese, or any language tag Payload
+accepts:
 
 ```sh
-npx payload-components add hero-basic --localized
+npx payload-components localize --locales en,zh
 ```
 
-This also installs `src/blocks/shared/localizeFields.ts` and wraps the block
-config's field list in it, so the shared family base is covered too. Enable
-`localization` in your Payload config for it to take effect, and migrate existing
-data before adopting it on a populated collection.
+`localize` sets both halves of Payload internationalization, which have to agree
+before an editor sees a locale switcher. It declares the locales in your
+`buildConfig({ ... })` call (labelled in each language, `rtl` where the script
+needs it), installs `src/blocks/shared/localizeFields.ts` and wraps every
+installed block config's field list in it so the shared family base is covered
+too, and records the choice in install state so `update` keeps the wrapper. Every
+step is idempotent — re-run it after installing more blocks, and drop `--locales`
+to keep the ones already declared.
+
+`--default-locale` picks the canonical locale, `--no-fallback` lets an
+untranslated locale render empty, and `--dry-run` prints the whole plan without
+touching a file. A config it cannot read, a `localization` block that already
+declares something else, and a locally edited block config are all reported and
+skipped rather than rewritten; `--force` overrides the last two. A single block
+can also be installed localized in one step with
+`npx payload-components add hero-basic --localized`, which is the same field-level
+transform without the config half.
+
+Turning on localization changes how Payload stores the affected fields, so
+migrate existing data before adopting it on a populated collection.
 
 #### Maintain an install
 
@@ -344,6 +361,7 @@ Recorded installs have a full lifecycle, not just a first run:
 npx payload-components list              # catalog vs what this project recorded
 npx payload-components diff              # version, file, and wiring drift
 npx payload-components update            # re-install anything behind this CLI
+npx payload-components localize          # declare locales and localize installed blocks
 npx payload-components remove hero-basic # delete owned files and unwire the block
 ```
 
