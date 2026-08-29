@@ -2,7 +2,7 @@
 
 import { track as trackVercelEvent } from '@vercel/analytics'
 
-import { distinctIdStorageKey, resolveConsent } from '@/lib/consent'
+import { distinctIdStorageKey, organicEntryPageStorageKey, resolveConsent } from '@/lib/consent'
 
 type AnalyticsProperties = Record<string, string | number | boolean>
 type PostHogTestEvent = {
@@ -190,6 +190,25 @@ function getStableSourcePath() {
   return window.location.pathname
 }
 
+function normalizeSameSitePath(value: string) {
+  if (
+    !value.startsWith('/') ||
+    value.startsWith('//') ||
+    value.includes('?') ||
+    value.includes('#')
+  ) {
+    return null
+  }
+
+  try {
+    const url = new URL(value, window.location.origin)
+
+    return url.origin === window.location.origin && url.pathname === value ? url.pathname : null
+  } catch {
+    return null
+  }
+}
+
 function getTrafficSource() {
   if (new URLSearchParams(window.location.search).get('utm_medium') === 'organic') {
     return 'organic_search'
@@ -206,6 +225,34 @@ function getTrafficSource() {
   }
 }
 
+function getOrganicEntryPage(trafficSource = getTrafficSource()) {
+  // The entry path is part of the consented analytics stream. Do not even
+  // create browser storage for visitors who decline or have not chosen yet.
+  if (!analyticsAllowed()) return null
+
+  try {
+    const stored = window.sessionStorage.getItem(organicEntryPageStorageKey)
+    const normalized = stored ? normalizeSameSitePath(stored) : null
+
+    if (normalized) return normalized
+    if (stored) window.sessionStorage.removeItem(organicEntryPageStorageKey)
+  } catch {
+    // Storage is best-effort. An action on this page can still carry its entry.
+  }
+
+  if (trafficSource !== 'organic_search') return null
+
+  const entryPage = getStableSourcePath()
+
+  try {
+    window.sessionStorage.setItem(organicEntryPageStorageKey, entryPage)
+  } catch {
+    // The current action can still use the in-memory value below.
+  }
+
+  return entryPage
+}
+
 function isVerificationRun() {
   return new URLSearchParams(window.location.search).get('verification_run') === '1'
 }
@@ -215,10 +262,13 @@ export function trackPageView() {
      the SDK-less PostHog integration does not, so send only there — using the
      native $pageview event so PostHog's web-analytics and paths views populate.
      Routing this through trackEvent would double-count GA4 (auto + manual). */
+  const trafficSource = getTrafficSource()
+  getOrganicEntryPage(trafficSource)
+
   trackPostHogEvent('$pageview', {
     page_path: window.location.pathname,
     source_path: getSourcePath(),
-    traffic_source: getTrafficSource(),
+    traffic_source: trafficSource,
     verification_run: isVerificationRun(),
   })
 }
@@ -229,6 +279,7 @@ export function getComponentSlugFromCommand(command: string) {
 
 export function trackInstallCommandCopy(command: string) {
   const component = getComponentSlugFromCommand(command)
+  const entryPage = getOrganicEntryPage()
 
   trackEvent(
     'copy_install_command',
@@ -236,6 +287,7 @@ export function trackInstallCommandCopy(command: string) {
       command,
       component: component ?? 'unknown',
       source_path: getSourcePath(),
+      ...(entryPage ? { entry_page: entryPage } : {}),
     },
     { markVerificationRun: true },
   )
@@ -316,6 +368,7 @@ export function trackPrimaryLinkClick(link: HTMLAnchorElement) {
 
   const normalized = normalizeDestination(url)
   if (!normalized) return
+  const entryPage = getOrganicEntryPage()
 
   trackEvent(
     'primary_link_click',
@@ -323,6 +376,7 @@ export function trackPrimaryLinkClick(link: HTMLAnchorElement) {
       destination: normalized.destination,
       href: normalized.href,
       source_path: getStableSourcePath(),
+      ...(entryPage ? { entry_page: entryPage } : {}),
     },
     { markVerificationRun: true },
   )

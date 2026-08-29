@@ -1,13 +1,18 @@
 import type { TemplatePage, TemplateShowcase } from './types'
 
 import { agencyStudioTemplate } from './agency-studio'
+import { civicCouncilTemplate } from './civic-council'
 import { commerceBrandTemplate } from './commerce-brand'
 import { educationCourseTemplate } from './education-course'
 import { eventConferenceTemplate } from './event-conference'
 import { fintechTrustTemplate } from './fintech-trust'
 import { healthcareClinicTemplate } from './healthcare-clinic'
+import { marketplaceWholesaleTemplate } from './marketplace-wholesale'
+import { musicArtistTemplate } from './music-artist'
 import { nonprofitCauseTemplate } from './nonprofit-cause'
 import { portfolioSoloTemplate } from './portfolio-solo'
+import { realEstateListingTemplate } from './real-estate-listing'
+import { restaurantBistroTemplate } from './restaurant-bistro'
 import { saasLaunchTemplate } from './saas-launch'
 import { tradeServiceTemplate } from './trade-service'
 
@@ -24,6 +29,11 @@ export const templateShowcases: readonly TemplateShowcase[] = [
   educationCourseTemplate,
   healthcareClinicTemplate,
   tradeServiceTemplate,
+  restaurantBistroTemplate,
+  realEstateListingTemplate,
+  musicArtistTemplate,
+  marketplaceWholesaleTemplate,
+  civicCouncilTemplate,
 ]
 
 export const templatesBySlug: Record<string, TemplateShowcase> = Object.fromEntries(

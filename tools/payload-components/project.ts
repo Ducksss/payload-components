@@ -1016,6 +1016,203 @@ export const applyLocalizedFields = async ({
 
 export const isBlockConfigFile = (projectPath: string) => projectPath.endsWith('/config.ts')
 
+/* ---------------------------------------------------------------------------
+ * Config-level localization
+ *
+ * `localized: true` on a field does nothing until the Payload config declares
+ * which locales exist, so `payload-components localize` patches both halves.
+ * Same rules as every other patch in this file: text-anchored, idempotent, and
+ * it reports rather than rewrites anything whose shape it cannot read. */
+
+const findBuildConfigObject = (source: string) =>
+  findTopLevelObject(source, /\bbuildConfig\s*\(\s*\{/g)
+
+/* The indentation the object's own properties use, so an inserted block lines
+ * up with its neighbours instead of with this file's assumptions. */
+const detectObjectIndent = (source: string, objectStart: number) => {
+  const firstLineBreak = source.indexOf('\n', objectStart)
+
+  if (firstLineBreak === -1) {
+    return '  '
+  }
+
+  const [, indent] = /^([ \t]+)\S/.exec(source.slice(firstLineBreak + 1)) ?? []
+
+  return indent ?? '  '
+}
+
+/* The `localization:` property directly inside buildConfig({ ... }), with the
+ * span of its value — including a trailing comma so a replacement does not
+ * leave a stray one behind. */
+const findLocalizationProperty = ({
+  configObject,
+  source,
+}: {
+  configObject: DelimiterRange
+  source: string
+}) => {
+  const maskedSource = maskIgnoredSource(source)
+
+  for (const match of maskedSource.matchAll(/\blocalization\s*:\s*/g)) {
+    if (
+      typeof match.index !== 'number' ||
+      match.index <= configObject.start ||
+      match.index >= configObject.end ||
+      !isDirectlyWithin(maskedSource, configObject.start + 1, match.index)
+    ) {
+      continue
+    }
+
+    const valueStart = match.index + match[0].length
+
+    if (maskedSource[valueStart] !== '{') {
+      /* `localization: localizationConfig` or `localization: true`. Replacing a
+       * value we cannot read is exactly the edit nobody could review. */
+      return { readable: false as const, start: match.index }
+    }
+
+    const valueEnd = findMatchingDelimiter({
+      close: '}',
+      maskedSource,
+      open: '{',
+      start: valueStart,
+    })
+
+    if (valueEnd === -1) {
+      return { readable: false as const, start: match.index }
+    }
+
+    const afterValue = maskedSource[valueEnd + 1] === ',' ? valueEnd + 2 : valueEnd + 1
+
+    return { end: afterValue, readable: true as const, start: match.index, valueStart }
+  }
+
+  return undefined
+}
+
+export type LocalizationConfigPatch =
+  | { block: string; kind: 'patched'; source: string }
+  | { block: string; kind: 'replaced'; previous: string; source: string }
+  /* `matches` distinguishes "already exactly this" (a clean no-op) from
+   * "something else is configured" (needs an explicit --force). */
+  | { existing: string; kind: 'already-configured'; matches: boolean }
+  | { kind: 'existing-unreadable' }
+  | { kind: 'no-build-config' }
+
+/* Insert (or, with force, replace) the localization block in a Payload config.
+ * The block is rendered by the caller so the locale table stays in one place. */
+export const setPayloadLocalization = ({
+  force = false,
+  renderBlock,
+  source,
+}: {
+  force?: boolean
+  /* Called with the object's own indentation once it is known. */
+  renderBlock: (indent: string) => string
+  source: string
+}): LocalizationConfigPatch => {
+  const configObject = findBuildConfigObject(source)
+
+  if (!configObject) {
+    return { kind: 'no-build-config' }
+  }
+
+  const indent = detectObjectIndent(source, configObject.start)
+  const block = renderBlock(indent)
+  const existingProperty = findLocalizationProperty({ configObject, source })
+
+  if (existingProperty && !existingProperty.readable) {
+    return { kind: 'existing-unreadable' }
+  }
+
+  if (existingProperty?.readable) {
+    const previous = source.slice(existingProperty.start, existingProperty.end).trimEnd()
+    const replacement = block.trimStart()
+
+    const matches = previous.replace(/,$/, '') === replacement.replace(/,$/, '')
+
+    if (matches || !force) {
+      return { existing: previous, kind: 'already-configured', matches }
+    }
+
+    return {
+      block,
+      kind: 'replaced',
+      previous,
+      source: `${source.slice(0, existingProperty.start)}${replacement}${source.slice(
+        existingProperty.end,
+      )}`,
+    }
+  }
+
+  const insertAt = configObject.start + 1
+  const rest = source.slice(insertAt)
+  const separator = rest.startsWith('\n') || rest.startsWith('\r') ? '' : '\n'
+
+  return {
+    block,
+    kind: 'patched',
+    source: `${source.slice(0, insertAt)}\n${block}${separator}${rest}`,
+  }
+}
+
+export type ReadLocalization = {
+  defaultLocale?: string
+  fallback?: boolean
+  locales: string[]
+  /* True when `locales` is the complete set, read straight from source. False
+   * when the config declares localization but does not spell the locales out —
+   * `locales: getLocales()`, or a whole `localization: config` reference. The
+   * empty list then means "cannot tell", not "none", and the two must not be
+   * confused: a project whose locales are computed at runtime is localized, and
+   * telling it otherwise would both nag it and refuse to wrap its blocks. */
+  localesEnumerable: boolean
+}
+
+/* Read back what the config declares, for reporting only — doctor says how many
+ * locales a project has, and localize prints the set it is about to keep. */
+export const readPayloadLocalization = (source: string): ReadLocalization | undefined => {
+  const configObject = findBuildConfigObject(source)
+
+  if (!configObject) {
+    return undefined
+  }
+
+  const property = findLocalizationProperty({ configObject, source })
+
+  if (!property) {
+    return undefined
+  }
+
+  if (!property.readable) {
+    return { locales: [], localesEnumerable: false }
+  }
+
+  const block = source.slice(property.valueStart, property.end)
+  const codes = [...block.matchAll(/\bcode\s*:\s*['"]([^'"]+)['"]/g)].map(([, code]) => code)
+  /* A bare `locales: ['en', 'zh']` array is equally valid Payload config. */
+  const shorthand =
+    codes.length === 0
+      ? [...(/\blocales\s*:\s*\[([^\]]*)\]/.exec(block)?.[1] ?? '').matchAll(/['"]([^'"]+)['"]/g)].map(
+          ([, code]) => code,
+        )
+      : []
+  const [, defaultLocale] = /\bdefaultLocale\s*:\s*['"]([^'"]+)['"]/.exec(block) ?? []
+  const [, fallback] = /\bfallback\s*:\s*(true|false)/.exec(block) ?? []
+
+  /* An empty literal array is a real, enumerable answer — `locales: []` is a
+   * misconfiguration worth naming. A `locales:` value that is neither an array
+   * literal nor a list of code objects is a computed one. */
+  const hasLiteralArray = /\blocales\s*:\s*\[/.test(block)
+
+  return {
+    ...(defaultLocale ? { defaultLocale } : {}),
+    ...(fallback ? { fallback: fallback === 'true' } : {}),
+    locales: codes.length > 0 ? codes : shorthand,
+    localesEnumerable: codes.length > 0 || hasLiteralArray,
+  }
+}
+
 /* Every path a target may require, with any-of groups flattened. Used for
    display and for picking the candidate a project actually has on disk. */
 export const flattenRequiredFiles = (requiredFiles: RequiredFile[]) =>
