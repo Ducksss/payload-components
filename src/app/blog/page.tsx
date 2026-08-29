@@ -193,7 +193,7 @@ export default function BlogIndex() {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post, index) => (
-            <BlogCard key={post.url} page={post} priority={index < 3} />
+            <BlogCard key={post.url} page={post} priority={index < 3} compact />
           ))}
         </div>
       )}
