@@ -89,8 +89,8 @@ payloads are fixed:
 | Signal | When it fires | Allowed action fields |
 | --- | --- | --- |
 | `$pageview` | A public route loads or changes | `page_path`, `source_path`, `traffic_source`, `verification_run` |
-| `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path` |
-| `primary_link_click` | A visitor follows a repository, docs, or components link | `destination`, `href`, `source_path` |
+| `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path`, `entry_page` |
+| `primary_link_click` | A visitor follows a repository, docs, or components link | `destination`, `href`, `source_path`, `entry_page` |
 
 These values come from committed routes, links, and install commands, not visitor
 input. On page views, `traffic_source` is only `organic_search` or `other`. The
@@ -99,6 +99,12 @@ browser derives it from a fixed search-engine hostname list or the exact
 query values. `verification_run` is true only when a controlled check opens the
 page with `verification_run=1`; ordinary visits report false. Page paths and
 `$current_url` never include the query string.
+
+On consented organic visits, `entry_page` is the first same-site pathname in the
+current browser tab and is added to later install-copy and primary-link actions.
+It is absent for direct and referral visits. The browser keeps only that path in
+session storage, never a query string or referrer, and deletes it when consent is
+withdrawn.
 
 PostHog capture adds only `$current_url`, `$pathname`, and `$lib` to the action
 fields, plus the public `api_key` and a first-party pseudonymous `distinct_id` in
