@@ -39,14 +39,25 @@ jobs:
           keyword_pattern='(^|[^[:alnum:]])(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]*:?[[:space:]]*(#|[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+#|https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/issues/)[0-9]+'
           optout_pattern='^[[:space:]]*no issues closed this cycle\.?[[:space:]]*$'
 
-          if printf '%s' "$PR_BODY" | grep -Eiq "$keyword_pattern"; then
-            matched=$(printf '%s' "$PR_BODY" | grep -Eio "$keyword_pattern" | tr -d '\n' | head -c 200)
+          # Every grep here reads the body to EOF (-o / -c), never -q: -q exits
+          # at the first match, which SIGPIPEs the printf still writing a large
+          # body, and under pipefail that turns a *matching* body into exit 141
+          # — a false negative, the failure mode this check must never have.
+          # GitHub caps bodies at 65536 characters, which multibyte text can
+          # push past the 64KiB pipe buffer. Truncation happens after capture,
+          # outside the pipeline, for the same reason.
+          matched=$(printf '%s' "$PR_BODY" | { grep -Eio "$keyword_pattern" || true; } | tr -d '\n')
+          matched=${matched:0:200}
+
+          if [ -n "$matched" ]; then
             echo "Found a closing keyword: ${matched}"
             echo "A closing keyword is present. Note this checks presence, not that the list is complete." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
-          if printf '%s' "$PR_BODY" | grep -Eiq "$optout_pattern"; then
+          optout_count=$(printf '%s' "$PR_BODY" | { grep -Eic "$optout_pattern" || true; })
+
+          if [ "${optout_count:-0}" -gt 0 ]; then
             echo "Found the explicit opt-out line."
             echo "Promote declares that it closes no issues." >> "$GITHUB_STEP_SUMMARY"
             exit 0
