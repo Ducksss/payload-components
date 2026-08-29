@@ -26,6 +26,9 @@ test.describe('Analytics consent gate', () => {
     await expect(page.locator(gatedScripts)).toHaveCount(0)
     await expect(page.locator('script#google-tag')).toHaveCount(0)
     expect(await page.evaluate(() => window.localStorage.getItem('pc_distinct_id'))).toBeNull()
+    expect(
+      await page.evaluate(() => window.sessionStorage.getItem('pc_organic_entry_page')),
+    ).toBeNull()
   })
 
   test('still measures Web Vitals before a choice is made', async ({ page }) => {
@@ -37,6 +40,9 @@ test.describe('Analytics consent gate', () => {
     await expect(page.locator(vercelScripts).first()).toBeAttached()
     // ...while still storing nothing on the device.
     expect(await page.evaluate(() => window.localStorage.getItem('pc_distinct_id'))).toBeNull()
+    expect(
+      await page.evaluate(() => window.sessionStorage.getItem('pc_organic_entry_page')),
+    ).toBeNull()
     expect(await page.evaluate(() => window.localStorage.getItem('pc_consent'))).toBeNull()
   })
 
@@ -98,6 +104,9 @@ test.describe('Analytics consent gate', () => {
     await page.goto(baseURL)
     await page.getByRole('button', { name: 'Accept' }).click()
     await page.evaluate(() => window.localStorage.setItem('pc_distinct_id', 'pc_stale-id'))
+    await page.evaluate(() =>
+      window.sessionStorage.setItem('pc_organic_entry_page', '/docs/installation'),
+    )
 
     await context.addInitScript(() => {
       Object.defineProperty(navigator, 'globalPrivacyControl', { get: () => true })
@@ -106,6 +115,9 @@ test.describe('Analytics consent gate', () => {
 
     await expect(page.locator(gatedScripts)).toHaveCount(0)
     expect(await page.evaluate(() => window.localStorage.getItem('pc_distinct_id'))).toBeNull()
+    expect(
+      await page.evaluate(() => window.sessionStorage.getItem('pc_organic_entry_page')),
+    ).toBeNull()
 
     await context.close()
   })
@@ -139,6 +151,7 @@ test.describe('Analytics consent gate', () => {
     await page.evaluate(() => {
       window.localStorage.setItem('pc_consent', 'granted')
       window.localStorage.setItem('pc_distinct_id', 'pc_seeded-id')
+      window.sessionStorage.setItem('pc_organic_entry_page', '/docs/installation')
       document.cookie = '_ga=GA1.1.1234567890.1234567890; path=/'
       document.cookie = '_ga_EMGRZ0H9R9=GS1.1.1234567890; path=/'
       document.cookie = 'unrelated_cookie=keep-me; path=/'
@@ -153,6 +166,9 @@ test.describe('Analytics consent gate', () => {
     expect(cookiesAfter).not.toContain('_ga=')
     expect(cookiesAfter).not.toContain('_ga_EMGRZ0H9R9')
     expect(await page.evaluate(() => window.localStorage.getItem('pc_distinct_id'))).toBeNull()
+    expect(
+      await page.evaluate(() => window.sessionStorage.getItem('pc_organic_entry_page')),
+    ).toBeNull()
     // Only the analytics cookies go — anything else on the domain is untouched.
     expect(cookiesAfter).toContain('unrelated_cookie=keep-me')
   })
