@@ -426,3 +426,44 @@ export const recordInstalledState = async ({
     })
   })
 }
+
+/* Flip a recorded install to localized after the files were wrapped.
+ *
+ * `localize` runs against an already-installed component, so the block config on
+ * disk no longer matches the baseline recorded at install time. Re-snapshot only
+ * the files this run actually rewrote: `diff` then reads clean, and `update`
+ * re-applies the wrapper instead of quietly reinstalling a config without it.
+ * A file the component never recorded a baseline for is left alone — blessing
+ * bytes that were never a known-clean install is how a consumer edit becomes
+ * invisible. Returns false when nothing is recorded under that name. */
+export const recordLocalizedInstall = async ({
+  componentName,
+  cwd,
+  rewrittenFiles,
+}: {
+  componentName: string
+  cwd: string
+  rewrittenFiles: string[]
+}) => {
+  const hashes =
+    rewrittenFiles.length > 0 ? await snapshotInstalledFiles({ cwd, files: rewrittenFiles }) : {}
+
+  return await mutateState(cwd, (state) => {
+    const entry = state.components[componentName]
+
+    if (!entry) {
+      return false
+    }
+
+    entry.localized = true
+    entry.lastAttemptAt = new Date().toISOString()
+
+    for (const [projectPath, hash] of Object.entries(hashes)) {
+      if (entry.fileHashes[projectPath] !== undefined) {
+        entry.fileHashes[projectPath] = hash
+      }
+    }
+
+    return true
+  })
+}

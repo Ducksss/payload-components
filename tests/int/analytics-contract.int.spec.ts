@@ -6,21 +6,22 @@ import { describe, expect, it } from 'vitest'
 const repoRoot = process.cwd()
 const analyticsPath = path.join(repoRoot, 'src', 'lib', 'analytics.ts')
 const contributingPath = path.join(repoRoot, 'content', 'docs', 'contributing.mdx')
+const privacyPath = path.join(repoRoot, 'src', 'app', 'privacy', 'page.tsx')
 const envExamplePath = path.join(repoRoot, '.env.example')
 
 const eventFields = {
   $pageview: ['page_path', 'source_path', 'traffic_source', 'verification_run'],
-  copy_install_command: ['command', 'component', 'source_path'],
-  primary_link_click: ['destination', 'href', 'source_path'],
+  copy_install_command: ['command', 'component', 'source_path', 'entry_page'],
+  primary_link_click: ['destination', 'href', 'source_path', 'entry_page'],
 } as const
 
 const documentedEventRows = {
   $pageview:
     '| `$pageview` | A public route loads or changes | `page_path`, `source_path`, `traffic_source`, `verification_run` |',
   copy_install_command:
-    '| `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path` |',
+    '| `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path`, `entry_page` |',
   primary_link_click:
-    '| `primary_link_click` | A visitor follows a repository, docs, or components link | `destination`, `href`, `source_path` |',
+    '| `primary_link_click` | A visitor follows a repository, docs, or components link | `destination`, `href`, `source_path`, `entry_page` |',
 } as const
 
 const eventCallPattern = (eventName: string) => {
@@ -38,7 +39,14 @@ const getPropertyKeys = (source: string, eventName: string) => {
     throw new Error(`Could not find the ${eventName} analytics payload.`)
   }
 
-  return [...properties.matchAll(/^\s+([a-z_$][\w$]*)(?::|,)/gm)].map(([, property]) => property)
+  const direct = [...properties.matchAll(/^\s+([a-z_$][\w$]*)(?::|,)/gm)].map(
+    ([, property]) => property,
+  )
+  const conditional = [...properties.matchAll(/\{\s*([a-z_$][\w$]*)\s*:/g)].map(
+    ([, property]) => property,
+  )
+
+  return [...direct, ...conditional]
 }
 
 describe('public anonymous analytics contract', () => {
@@ -57,8 +65,9 @@ describe('public anonymous analytics contract', () => {
   })
 
   it('keeps the privacy boundary and deployment opt-out public', async () => {
-    const [contributingDocs, envExample] = await Promise.all([
+    const [contributingDocs, privacyPage, envExample] = await Promise.all([
       readFile(contributingPath, 'utf8'),
+      readFile(privacyPath, 'utf8'),
       readFile(envExamplePath, 'utf8'),
     ])
 
@@ -75,6 +84,10 @@ describe('public anonymous analytics contract', () => {
     expect(contributingDocs).toContain('low-cardinality event name')
     expect(contributingDocs).toContain('never sends the raw referrer')
     expect(contributingDocs).toContain('never include the query string')
+    expect(contributingDocs).toContain('first same-site pathname')
+    expect(contributingDocs).toContain('It is absent for direct and referral visits')
+    expect(privacyPage).toContain('entry_page')
+    expect(privacyPage).toContain('never contains a query string or raw referrer')
     expect(contributingDocs).toContain('Leaving `NEXT_PUBLIC_POSTHOG_KEY` unset')
     expect(envExample).toContain('Leave unset to disable PostHog capture')
   })
