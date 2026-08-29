@@ -1621,6 +1621,13 @@ export const templatesContribution = {
     },
     {
       description:
+        'Should the curated concept copy become seedable? The proposal, what already works, and the open questions.',
+      external: true,
+      href: `${githubRepoUrl}/blob/main/rfcs/0001-installable-templates.md`,
+      label: 'Read the installer RFC',
+    },
+    {
+      description:
         'Tell us which template, page, or block recipe you would actually ship — or propose a new one.',
       external: true,
       href: githubIssuesUrl,
