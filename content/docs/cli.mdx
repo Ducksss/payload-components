@@ -1,7 +1,7 @@
 ---
 title: CLI reference
 seoTitle: Payload Components CLI Commands for Payload CMS
-description: Every Payload Components CLI command — install blocks and templates, localize fields, diff and update recorded installs, remove a block, and expose the registry to a coding agent.
+description: Every Payload Components CLI command — install blocks and templates, localize a project for multiple languages, diff and update recorded installs, remove a block, and expose the registry to a coding agent.
 icon: SquareTerminal
 ---
 
@@ -95,43 +95,65 @@ It validates your project shape before installing anything, so an unsupported re
 on the first check rather than part-way through twenty blocks. `--dry-run` prints the block
 list and page plan without touching the project.
 
-## Localize a block
+## Localize
+
+Payload internationalization has two halves that have to agree, and either one alone does
+nothing: the config declares which locales exist, and the block fields declare which text
+stores one value per locale. `localize` sets both, across every block already installed:
+
+```bash
+npx payload-components localize --locales en,zh
+```
+
+It inserts a `localization` block into your `buildConfig({ ... })` call — labelled in each
+language, `rtl` where the script needs it — copies
+`src/blocks/shared/localizeFields.ts`, wraps each installed block config's field list in
+it, and records the choice in install state so `update` re-applies the wrapper rather than
+reinstalling a config without it.
+
+| Flag                      | Effect                                                                      |
+| ------------------------- | --------------------------------------------------------------------------- |
+| `--locales <codes>`       | Comma-separated language tags — `en,zh`, `en,zh-TW,ja`, `en,pt-BR`          |
+| `--default-locale <code>` | The canonical locale; defaults to the first `--locales` entry               |
+| `--no-fallback`           | Write `fallback: false`, so an untranslated locale renders empty            |
+| `--dry-run`               | Print the whole plan and change nothing                                     |
+| `--force`                 | Replace an existing `localization` block, and wrap locally edited configs   |
+
+Every step is idempotent, so re-run it after installing more blocks. Once the locales are
+declared, drop the flag and it wraps only what is new:
+
+```bash
+npx payload-components localize
+```
+
+Naming components narrows it to those:
+
+```bash
+npx payload-components localize hero-basic faq-card
+```
+
+A single block can also be installed localized in one step, which is the same field-level
+transform without the config half:
 
 ```bash
 npx payload-components add hero-basic --localized
 ```
 
-This copies `src/blocks/shared/localizeFields.ts` into your project and wraps the installed
-block config's field list in it:
-
-```ts
-export const HeroBasic: Block = {
-  fields: localizeFields([...heroFields /* variant-specific fields */]),
-}
-```
-
-`localizeFields` marks the leaf fields an editor writes prose into — `text`, `textarea`,
-and `richText` — and recurses through the containers those fields live in. Because the wrap
-sits outside the shared family base's spread, one call covers shared and variant fields
-together.
-
-Three deliberate limits:
-
-- Containers are never marked. Payload rejects a localized field nested inside a localized
-  parent, so localizing only leaves keeps every combination valid.
-- A field that already declares `localized` is left exactly as you wrote it.
-- `select`, `upload`, `relationship`, `number`, and link `url` fields stay single-value.
-  Per-locale media or link targets are a content-modelling decision, not a mechanical
-  default — set those by hand.
+`localize` refuses rather than guesses in three cases, each exiting non-zero with the
+config or block left exactly as you wrote it: a config with no `buildConfig({ ... })` call,
+a `localization` value that is not an object literal, and an existing `localization` block
+that declares something else (`--force` replaces it). A block config with local edits is
+skipped the same way, because wrapping it would re-baseline your edit as pristine.
 
 <Callout type="warn">
-  Localization also has to be enabled in your Payload config, or `localized: true` does
-  nothing. Adding it to a collection that already holds data changes how that data is
-  stored — migrate before adopting it.
+  Turning on localization changes how Payload stores the affected fields. Existing values
+  land under the default locale. Back up and migrate a database that already holds content
+  before adopting it, and run `--dry-run` first.
 </Callout>
 
-The choice is recorded in install state, so `update` re-applies it instead of silently
-rewriting the config without the wrapper.
+See [Internationalization](/docs/localization) for the full story — what
+`localizeFields` marks and deliberately does not, querying a locale from the front end,
+and translating the admin UI itself.
 
 ## Maintain an install
 
@@ -400,4 +422,5 @@ as `payload-website-starter` rather than as a target of its own.
 | `add`    | Any stage fails; partial state is recorded for a safe retry |
 | `diff`   | Any inspected component has drifted                        |
 | `update` | A component was skipped for local edits, or held back as breaking |
+| `localize` | It left the Payload config or a block config untouched |
 | `doctor` | `1` a recorded install needs attention · `2` the project cannot accept installs |
