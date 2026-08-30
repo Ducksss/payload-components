@@ -24,8 +24,8 @@ export const brandPresets = [
   { hue: 65, label: 'Amber' },
 ] as const
 
-/* Radius is the higher-leverage knob: 68 of 73 twins carry a rounded-* class
-   against 7 that reference a brand token, and the whole radius scale derives
+/* Radius is the higher-leverage knob: most twins carry a rounded-* class while
+   only a handful reference a brand token, and the whole radius scale derives
    from --radius. Values bracket the 0.625rem default. */
 export const radiusPresets = [
   { label: 'Sharp', rem: 0 },
