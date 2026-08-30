@@ -1,0 +1,68 @@
+---
+title: Team Bios
+description: A bio-forward team section pairing avatar, role, and a short biography in two-up member cards.
+icon: Users
+---
+
+<ComponentPreview slug="team-bios" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add team-bios
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/team-bios.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="team-bios" />
+
+## Content model
+
+`eyebrow` and `title` come from the shared team base at `src/blocks/shared/teamFields.ts`, and each
+member reuses the shared `teamMemberFields` shape so a person looks the same across every team
+variant. This block appends a required `bio` to that shape — the compact `team-grid` and
+`team-roster` layouts have no room to render one, so it stays off their schemas.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title. Shared base field.' },
+    title: { type: 'text', required: true, description: 'The team section heading. Shared base field.' },
+    description: { type: 'textarea', description: 'Optional intro under the heading.' },
+    members: { type: 'array', required: true, description: 'One to eight team members.' },
+  }}
+/>
+
+Each item in `members` carries:
+
+<TypeTable
+  type={{
+    avatar: { type: 'upload', required: true, description: 'Member photo from Media. Shared member field.' },
+    name: { type: 'text', required: true, description: 'Member name. Shared member field.' },
+    role: { type: 'text', required: true, description: 'Job title or role. Shared member field.' },
+    href: { type: 'text', description: 'Optional profile link. Shared member field.' },
+    bio: { type: 'textarea', required: true, description: 'Short biography rendered under the name.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="team-bios" />
+
+## Requirements
+
+<ComponentRequirements slug="team-bios" />
+
+## In this family
+
+<ComponentFamily slug="team-bios" />

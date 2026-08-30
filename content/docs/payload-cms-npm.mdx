@@ -1,0 +1,211 @@
+---
+title: "Payload CMS npm install: start or repair a v3 project"
+seoTitle: "Payload CMS npm install: packages, setup, and fixes"
+description: Start a Payload CMS v3 project with npm or add Payload to Next.js. Install the right packages, pin versions, and fix duplicate dependency errors.
+icon: Package
+---
+
+For a new Payload CMS project, run `npx create-payload-app@latest`. If Payload already lives in a Next.js app, use npm to keep `payload`, every `@payloadcms/*` package, React, and the selected database adapter on one compatible set of versions.
+
+<RunnableCommand
+  command="npx create-payload-app@latest"
+  label="Copy the Payload CMS create-app command"
+  emphasis="primary"
+/>
+
+This guide separates three jobs that are easy to mix together:
+
+- scaffold a complete Payload app;
+- add the Payload packages to an existing Next.js app;
+- use the local Payload CLI after the app is installed.
+
+Payload supports npm, pnpm, and Yarn 2 or newer. The commands below use npm because they answer the npm setup path directly. Payload's [current installation requirements](https://payloadcms.com/docs/getting-started/installation) remain the source of truth for supported Node.js and Next.js versions.
+
+## Start a new Payload project
+
+The app generator is the shortest path because it creates more than a `package.json`. It adds the Payload config, database adapter, admin and API routes, TypeScript aliases, and scripts that a working project needs.
+
+```bash
+npx create-payload-app@latest
+```
+
+Follow the prompts to choose a template and database, move into the generated directory, then start the app:
+
+```bash
+npm run dev
+```
+
+Open the admin route printed by the development server and create the first user. Do this before adding blocks or plugins. A working admin screen proves that the config, database connection, generated routes, and installed packages agree.
+
+Payload also publishes focused templates. For example, the official website template starts with collections and a frontend that fit a CMS-backed site:
+
+```bash
+npx create-payload-app@latest -t website
+```
+
+Use the blank template when you want to define the collections and frontend from scratch:
+
+```bash
+npx create-payload-app@latest -t blank
+```
+
+## Add Payload to an existing Next.js app
+
+An npm install alone does not turn a Next.js app into a Payload app. It provides the packages, but the app still needs Payload routes, a config file, a database adapter, the `withPayload` Next.js wrapper, and the `@payload-config` TypeScript alias.
+
+Install the core packages plus exactly one database adapter. This example uses Postgres:
+
+```bash
+npm install --save-exact payload @payloadcms/next @payloadcms/db-postgres
+```
+
+Choose the adapter that matches the project instead:
+
+<Tabs items={['Postgres', 'MongoDB', 'SQLite']}>
+  <Tab value="Postgres">
+    ```bash
+    npm install --save-exact @payloadcms/db-postgres
+    ```
+  </Tab>
+  <Tab value="MongoDB">
+    ```bash
+    npm install --save-exact @payloadcms/db-mongodb
+    ```
+  </Tab>
+  <Tab value="SQLite">
+    ```bash
+    npm install --save-exact @payloadcms/db-sqlite
+    ```
+  </Tab>
+</Tabs>
+
+Common optional packages depend on the features you use:
+
+```bash
+npm install --save-exact @payloadcms/richtext-lexical sharp graphql
+```
+
+`@payloadcms/richtext-lexical` supplies the Lexical rich text editor. `sharp` enables image resizing and focal-point work for uploads. `graphql` is only needed when the project exposes the GraphQL API.
+
+Then complete Payload's [existing Next.js app setup](https://payloadcms.com/docs/getting-started/installation#adding-to-an-existing-app). In practical terms, the project needs all of these pieces:
+
+<Files>
+  <File name="next.config.mjs" />
+  <File name="payload.config.ts" />
+  <File name="tsconfig.json" />
+  <Folder name="app" defaultOpen>
+    <Folder name="(payload)" defaultOpen>
+      <Folder name="admin" />
+      <Folder name="api" />
+      <File name="layout.tsx" />
+    </Folder>
+  </Folder>
+</Files>
+
+The exact route files come from Payload's maintained blank template. Keep those generated route wrappers small. Project-owned collections, globals, hooks, access rules, and adapters belong in `payload.config.ts` and the modules it imports.
+
+## Keep every Payload package on the same version
+
+Payload's packages are released as one system. `payload` and every installed `@payloadcms/*` package must resolve to exactly the same version and only one installed copy. A mixed dependency tree can fail at runtime even when TypeScript passes.
+
+`--save-exact` removes `^` and `~` ranges from newly saved dependencies. Check an existing project with npm:
+
+```bash
+npm ls payload @payloadcms/next @payloadcms/ui react react-dom
+```
+
+Include the project's database, rich text, storage, email, and plugin packages in the command when they use the `@payloadcms/` scope. The output should show one Payload version across the tree, not several versions under different parents.
+
+Before upgrading, commit the lockfile and project changes. Then update the Payload packages together and keep the resolved versions exact. Review the current Next.js and React compatibility ranges in Payload's installation documentation instead of guessing them from an old starter.
+
+<Callout type="warn" title="Do not fix a mismatch by editing package-lock.json">
+  Change `package.json`, install again, and let npm rewrite the lockfile. A manual
+  lockfile edit can hide the conflict without producing a valid dependency tree.
+</Callout>
+
+## Fix duplicate or mismatched dependencies
+
+Version skew often shows up as a React context error, an admin component that cannot read config, or hooks that claim their provider is missing. Start by confirming the tree rather than deleting files at random.
+
+<Steps>
+  <Step>
+    **Inspect the installed versions.** Run `npm ls` for `payload`, the installed `@payloadcms/*` packages, `react`, and `react-dom`.
+  </Step>
+  <Step>
+    **Pin the intended versions in `package.json`.** Remove range prefixes from Payload and React packages. Keep every Payload package on the same exact release.
+  </Step>
+  <Step>
+    **Reinstall from the declared project state.** Run `npm install`, then inspect the tree again. Keep the resulting `package-lock.json` in version control.
+  </Step>
+  <Step>
+    **Deduplicate compatible copies.** Run `npm dedupe`, then repeat `npm ls`. A persistent mismatch usually means another workspace package or plugin still declares a conflicting version.
+  </Step>
+</Steps>
+
+```bash
+npm install
+npm dedupe
+npm ls payload @payloadcms/next @payloadcms/ui react react-dom
+```
+
+If a monorepo contains more than one app or package that imports Payload, check every workspace manifest. npm can hoist a package to the root, so the dependency that introduced a second version may live outside the app you are debugging. Payload's [dependency mismatch guide](https://payloadcms.com/docs/troubleshooting/troubleshooting#dependency-mismatches) covers the same rule for workspaces and other package managers.
+
+## Run the local Payload CLI with npm
+
+The `payload` package provides the project CLI. `npx` resolves the locally installed executable when you run it from the project root:
+
+```bash
+npx payload generate:types
+npx payload generate:importmap
+```
+
+`generate:types` rebuilds TypeScript interfaces from `payload.config.ts`. `generate:importmap` rebuilds the admin component lookup. They solve different problems, so a schema change can require the first while an admin component path change requires the second.
+
+For repeatable team commands, expose them as package scripts:
+
+```json title="package.json"
+{
+  "scripts": {
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap"
+  }
+}
+```
+
+Then run:
+
+```bash
+npm run generate:types
+npm run generate:importmap
+```
+
+Use the [generated-types repair guide](/docs/payload-types-errors) when `payload-types.ts` is missing or stale. Use the [`generate:importmap` command reference](/docs/payload-generate-importmap) when the admin bundle cannot resolve a custom component path.
+
+## Add a wired block after Payload works
+
+Payload Components expects a working Payload v3 and Next.js project with a Pages layout and renderer. Preview the project-specific changes first:
+
+```bash
+npx payload-components add hero-basic --dry-run
+```
+
+The dry run checks the Payload and Next.js majors, required project files, package scripts, component dependencies, collection registration, renderer mapping, and install state without writing anything.
+
+When the preview matches the project, use the supported install:
+
+<RunnableCommand
+  command="npx payload-components add hero-basic"
+  label="Copy the hero-basic install command"
+  trackInstall
+/>
+
+The wrapper installs the source, registers the block in the Pages collection, maps it in `RenderBlocks`, and runs the two Payload generators above. The [Payload Components installation guide](/docs/installation) lists the exact project shape and every file the command can change.
+
+## npm setup checklist
+
+- Start a new app with `npx create-payload-app@latest` when possible.
+- For an existing Next.js app, install the core packages and one database adapter, then add Payload's maintained route and config files.
+- Keep `payload` and every `@payloadcms/*` package on the same exact version.
+- Inspect duplicates with `npm ls`; use `npm dedupe` only after the manifests agree.
+- Prove the admin route works before installing blocks, plugins, or project-specific customizations.
+- Run the Payload and Payload Components commands from the project root so they resolve the intended config and local dependencies.

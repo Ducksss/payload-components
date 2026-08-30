@@ -272,10 +272,13 @@ drift from the registry.
 | `content-list-icons`      | `npx payload-components add content-list-icons`      |
 | `call-to-action-centered` | `npx payload-components add call-to-action-centered` |
 | `call-to-action-boxed`    | `npx payload-components add call-to-action-boxed`    |
+| `call-to-action-split`    | `npx payload-components add call-to-action-split`    |
 | `call-to-action-signup`   | `npx payload-components add call-to-action-signup`   |
 | `contact-routing-form`    | `npx payload-components add contact-routing-form`    |
+| `contact-channels`        | `npx payload-components add contact-channels`        |
 | `team-roster`             | `npx payload-components add team-roster`             |
 | `team-grid`               | `npx payload-components add team-grid`               |
+| `team-bios`               | `npx payload-components add team-bios`               |
 | `faq-accordion`           | `npx payload-components add faq-accordion`           |
 | `faq-split`               | `npx payload-components add faq-split`               |
 | `faq-card`                | `npx payload-components add faq-card`                |
@@ -346,10 +349,11 @@ to keep the ones already declared.
 untranslated locale render empty, and `--dry-run` prints the whole plan without
 touching a file. A config it cannot read, a `localization` block that already
 declares something else, and a locally edited block config are all reported and
-skipped rather than rewritten; `--force` overrides the last two. A single block
-can also be installed localized in one step with
-`npx payload-components add hero-basic --localized`, which is the same field-level
-transform without the config half.
+skipped rather than rewritten; `--force` overrides the last two. A single block, or
+every block of a template, can also be installed localized in one step with
+`npx payload-components add hero-basic --localized` or
+`npx payload-components add-template saas-launch --localized` — the same
+field-level transform without the config half.
 
 Turning on localization changes how Payload stores the affected fields, so
 migrate existing data before adopting it on a populated collection.

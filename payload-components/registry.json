@@ -1809,6 +1809,45 @@
       ]
     },
     {
+      "name": "call-to-action-split",
+      "type": "registry:block",
+      "title": "Call To Action Split",
+      "description": "Split Payload call-to-action block: heading and copy on one side, CTA links and assurance on the other.",
+      "registryDependencies": [],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add call-to-action-split\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/call-to-action-split.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add call-to-action-split` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add call-to-action-split",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/callToActionFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/callToActionFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CallToActionSplit/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/CallToActionSplit/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CallToActionSplit/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/CallToActionSplit/Component.tsx"
+        }
+      ]
+    },
+    {
       "name": "call-to-action-signup",
       "type": "registry:block",
       "title": "Call To Action Signup",
@@ -1895,6 +1934,11 @@
           "target": "~/src/blocks/shared/contactUrls.ts"
         },
         {
+          "path": "payload-components/source/blocks/shared/contactFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/contactFields.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ContactRoutingForm/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/ContactRoutingForm/config.ts"
@@ -1903,6 +1947,57 @@
           "path": "payload-components/source/blocks/ContactRoutingForm/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ContactRoutingForm/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "contact-channels",
+      "type": "registry:block",
+      "title": "Contact Channels",
+      "description": "Form-free Payload contact block: a grid of validated email, phone, and URL channels.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add contact-channels\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/contact-channels.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add contact-channels` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add contact-channels",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/safeUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/safeUrls.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/contactUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/contactUrls.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/contactFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/contactFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContactChannels/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContactChannels/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContactChannels/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContactChannels/Component.tsx"
         }
       ]
     },
@@ -1985,6 +2080,47 @@
           "path": "payload-components/source/blocks/TeamGrid/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/TeamGrid/Component.tsx"
+        }
+      ]
+    },
+    {
+      "name": "team-bios",
+      "type": "registry:block",
+      "title": "Team Bios",
+      "description": "Bio-forward Payload team block: two-up member cards with avatar, role, and biography.",
+      "registryDependencies": [
+        "badge"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add team-bios\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/team-bios.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add team-bios` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add team-bios",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/teamFields.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/teamFields.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TeamBios/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TeamBios/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TeamBios/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/TeamBios/Component.tsx"
         }
       ]
     },
