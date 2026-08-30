@@ -15,6 +15,7 @@ import {
 } from '../../src/lib/templates/types'
 import {
   catalogTemplatesLinkLabel,
+  templatesDescription,
   templatesMetadataDescription,
   templatesMetadataTitle,
   templatesTitle,
@@ -94,9 +95,10 @@ test.describe('Templates gallery (/templates)', () => {
     await expect(page.locator('iframe')).toHaveCount(0)
   })
 
-  test('links the concepts to supported starting points and from the catalog', async ({ page }) => {
+  test('keeps supported starting points connected to the gallery', async ({ page }) => {
     await page.goto(`${baseURL}/templates`)
 
+    await expect(page.getByText(templatesDescription)).toBeVisible()
     await expect(page.locator('main a[href="/components"]')).toBeVisible()
     await expect(page.locator('main a[href="/docs/installation"]')).toBeVisible()
     await expect(
