@@ -3,6 +3,7 @@
   "icon": "Blocks",
   "pages": [
     "hero-basic",
+    "hero-split",
     "hero-video",
     "hero-product-tilt",
     "hero-aurora",

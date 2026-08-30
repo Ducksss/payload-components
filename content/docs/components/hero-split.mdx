@@ -1,0 +1,77 @@
+---
+title: Hero Split
+description: A two-column hero — shared hero copy on one side, an editor-managed visual on the other, with the side chosen per block.
+icon: Columns2
+---
+
+<ComponentPreview slug="hero-split" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add hero-split
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-split.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="hero-split" />
+
+## Content model
+
+The first four fields come from the shared `heroFields` base. `image`, `imagePosition`, and
+`highlights` are specific to this variant.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the headline.' },
+    title: { type: 'text', required: true, description: 'The hero headline.' },
+    description: {
+      type: 'textarea',
+      required: true,
+      description: 'Supporting copy beneath the headline.',
+    },
+    links: { type: 'array', required: true, description: 'One or two CTA links (min 1, max 2).' },
+    image: {
+      type: 'upload',
+      required: true,
+      description: 'The visual beside the copy. Rendered through the starter’s Media component.',
+    },
+    imagePosition: {
+      type: "select: 'left' | 'right'",
+      default: "'right'",
+      description: 'Which side the visual takes on large screens.',
+    },
+    highlights: {
+      type: 'array',
+      description: 'Up to three short supporting lines listed under the CTAs.',
+    },
+  }}
+/>
+
+`imagePosition` is a field rather than a second component, because alternating sides down a
+page is a layout decision an editor makes per block — not a different kind of hero. On small
+screens the visual always leads, since a stacked hero that opens with prose pushes the image
+below the fold for no gain.
+
+## Usage
+
+<ComponentUsage slug="hero-split" />
+
+## Requirements
+
+<ComponentRequirements slug="hero-split" />
+
+## In this family
+
+<ComponentFamily slug="hero-split" />

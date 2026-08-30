@@ -26,6 +26,11 @@ export type HeroBasicDemoContent = {
 
 export type HeroVideoDemoContent = HeroBasicDemoContent
 
+export type HeroSplitDemoContent = Omit<HeroBasicDemoContent, 'proofItems'> & {
+  highlights: { label: string }[]
+  imagePosition?: 'left' | 'right'
+}
+
 export type HeroProductTiltDemoContent = HeroBasicDemoContent & {
   imageCaption?: string
 }
@@ -181,6 +186,23 @@ export const heroVideoDemoContent: HeroVideoDemoContent = {
     { label: 'No credit card' },
   ],
   title: 'See every customer signal as it happens.',
+}
+
+export const heroSplitDemoContent: HeroSplitDemoContent = {
+  description:
+    'Model the data once, then hand your team a workspace that reads clearly on the first look and holds up under a thousand rows.',
+  eyebrow: 'Acme Cloud · Platform',
+  highlights: [
+    { label: 'Typed end to end, from field to render' },
+    { label: 'Flip the visual per block, no second component' },
+    { label: 'Reviewable diff on every install' },
+  ],
+  links: [
+    { link: { appearance: 'default', label: 'Start free trial' } },
+    { link: { appearance: 'outline', label: 'Take the tour' } },
+  ],
+  imagePosition: 'right',
+  title: 'Ship the dashboard your customers keep open all day.',
 }
 
 export const heroProductTiltDemoContent: HeroProductTiltDemoContent = {

@@ -39,6 +39,7 @@ const representativeInstallComponents = [
   'feature-accordion',
   'feature-cards-media',
   'hero-basic',
+  'hero-split',
   'feature-icon-grid',
   'feature-grid-basic',
   'hero-product-tilt',

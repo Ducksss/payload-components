@@ -41,6 +41,7 @@ import { HeroAuroraDemo } from './HeroAuroraDemo'
 import { HeroBasicDemo } from './HeroBasicDemo'
 import { HeroKineticDemo } from './HeroKineticDemo'
 import { HeroProductTiltDemo } from './HeroProductTiltDemo'
+import { HeroSplitDemo } from './HeroSplitDemo'
 import { HeroVideoDemo } from './HeroVideoDemo'
 import { IntegrationClusterDemo } from './IntegrationClusterDemo'
 import { IntegrationConnectDemo } from './IntegrationConnectDemo'
@@ -124,6 +125,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'hero-basic': HeroBasicDemo,
   'hero-kinetic': HeroKineticDemo,
   'hero-product-tilt': HeroProductTiltDemo,
+  'hero-split': HeroSplitDemo,
   'hero-video': HeroVideoDemo,
   'integration-cluster': IntegrationClusterDemo,
   'integration-connect': IntegrationConnectDemo,
