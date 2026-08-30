@@ -1,9 +1,6 @@
 import type { Block } from 'payload'
 
-import {
-  contactChannelTypeOptions,
-  validateContactValue,
-} from '@/blocks/shared/contactUrls'
+import { contactChannelFields, contactFields } from '@/blocks/shared/contactFields'
 import { validateSameOriginFormAction } from '@/blocks/shared/safeUrls'
 
 export const ContactRoutingForm: Block = {
@@ -13,19 +10,9 @@ export const ContactRoutingForm: Block = {
   dbName: 'pc_contact_route',
   interfaceName: 'ContactRoutingFormBlock',
   fields: [
-    {
-      name: 'eyebrow',
-      type: 'text',
-    },
-    {
-      name: 'title',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'description',
-      type: 'textarea',
-    },
+    // Shared contact core (eyebrow, title, description). Variant-specific fields
+    // follow; edit the shared shape in @/blocks/shared/contactFields.
+    ...contactFields,
     {
       name: 'channels',
       type: 'array',
@@ -35,32 +22,8 @@ export const ContactRoutingForm: Block = {
       admin: {
         initCollapsed: true,
       },
-      fields: [
-        {
-          name: 'label',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'type',
-          type: 'select',
-          options: contactChannelTypeOptions.map((value) => ({
-            label: value.charAt(0).toUpperCase() + value.slice(1),
-            value,
-          })),
-          required: true,
-        },
-        {
-          name: 'value',
-          type: 'text',
-          required: true,
-          validate: validateContactValue,
-        },
-        {
-          name: 'description',
-          type: 'text',
-        },
-      ],
+      // Shared channel shape — see @/blocks/shared/contactFields.
+      fields: contactChannelFields,
     },
     {
       name: 'formTitle',

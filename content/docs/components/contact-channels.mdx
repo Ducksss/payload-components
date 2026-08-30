@@ -1,0 +1,77 @@
+---
+title: Contact Channels
+description: A form-free contact section listing validated email, phone, and URL channels in a card grid.
+icon: Mail
+---
+
+<ComponentPreview slug="contact-channels" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add contact-channels
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/contact-channels.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="contact-channels" />
+
+## Content model
+
+`eyebrow`, `title`, `description`, and the per-channel shape come from the shared contact base at
+`src/blocks/shared/contactFields.ts`, so a channel validates and renders the same way in every
+contact variant. Use this block when the form lives elsewhere — a dedicated contact route, a
+Payload form-builder page, or a scheduling tool — and the page only needs to route people.
+
+Each channel's `value` is validated on save: an `email` must parse as an address, a `phone` must be
+7–15 digits, and a `url` must be an HTTPS URL or a same-origin path. A value that would not resolve
+to a safe href is rejected in the admin, and the renderer falls back to plain text rather than
+emitting a dead link.
+
+<TypeTable
+  type={{
+    eyebrow: { type: 'text', description: 'Small label shown above the title. Shared base field.' },
+    title: { type: 'text', required: true, description: 'The contact section heading. Shared base field.' },
+    description: { type: 'textarea', description: 'Optional intro under the heading. Shared base field.' },
+    channels: { type: 'array', required: true, description: 'Two to six contact channels.' },
+    footnote: { type: 'text', description: 'Optional response-time or hours note under the grid.' },
+  }}
+/>
+
+Each item in `channels` carries:
+
+<TypeTable
+  type={{
+    label: { type: 'text', required: true, description: 'Channel name, such as “Sales”.' },
+    type: { type: 'select', required: true, description: 'One of email, phone, or url.' },
+    value: {
+      type: 'text',
+      required: true,
+      description: 'The address, number, or URL. Validated against the selected type.',
+    },
+    description: { type: 'text', description: 'Optional qualifier such as coverage hours.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="contact-channels" />
+
+## Requirements
+
+<ComponentRequirements slug="contact-channels" />
+
+## In this family
+
+<ComponentFamily slug="contact-channels" />

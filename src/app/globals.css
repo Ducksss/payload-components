@@ -158,10 +158,14 @@
   /* Named container radii — replace the rounded-[…] arbitraries that recur
      across the blocks (the outer frame is on every block). Values match the
      originals exactly, so adopting them is a pure refactor. */
-  --radius-inset: 1rem;
-  --radius-card: 1.25rem;
-  --radius-panel: 1.5rem;
-  --radius-frame: 2rem;
+  /* Exact multiples of --radius rather than literals: 1.6/2/2.4/3.2 x 0.625rem
+     resolves to 1/1.25/1.5/2rem, so default rendering is bit-identical and no
+     visual baseline moves. Deriving them is what lets the catalog's radius
+     preview reach the whole scale instead of only sm-xl. */
+  --radius-inset: calc(var(--radius) * 1.6);
+  --radius-card: calc(var(--radius) * 2);
+  --radius-panel: calc(var(--radius) * 2.4);
+  --radius-frame: calc(var(--radius) * 3.2);
 }
 
 @theme {
@@ -473,6 +477,28 @@
     width: 100%;
     margin-inline: auto;
     padding-inline: 1.25rem;
+  }
+
+  /* Catalog brand preview. The brand ramp is a single OKLCH hue held at fixed
+     lightness and chroma, so rotating --preview-hue recolours a demo twin
+     without moving any contrast ratio — the a11y gate holds at every hue.
+     @theme inline is what lets the override land: bg-brand compiles to
+     var(--brand) resolved at the use site, not to a value frozen at :root.
+     The var() fallbacks keep this class inert until ComponentCatalogBrowser
+     sets the variable, so an unthemed preview stays emerald. Scoped to the
+     preview surface on purpose — site chrome keeps the brand accent. */
+  .preview-themed {
+    --brand: oklch(50.8% 0.118 var(--preview-hue, 165.6deg));
+    --brand-50: oklch(97.6% 0.018 var(--preview-hue, 165.6deg));
+    --brand-100: oklch(94.6% 0.044 var(--preview-hue, 165.6deg));
+    --brand-200: oklch(89% 0.072 var(--preview-hue, 165.6deg));
+    --brand-600: oklch(44% 0.112 var(--preview-hue, 165.6deg));
+
+    /* Radius reaches far more of the catalog than the accent does: most twins
+       carry a rounded-* class, only a handful reference a brand token. The
+       whole scale (sm-xl and the named container radii) derives from --radius,
+       so this one line restyles every block. */
+    --radius: var(--preview-radius, 0.625rem);
   }
 
   /* Logo Cloud Marquee twin: scrolls the duplicated logo track. The global
