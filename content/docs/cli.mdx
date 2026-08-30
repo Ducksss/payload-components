@@ -1,18 +1,118 @@
 ---
 title: CLI reference
-seoTitle: Payload Components CLI Commands for Payload CMS
-description: Every Payload Components CLI command — install blocks and templates, localize a project for multiple languages, diff and update recorded installs, remove a block, and expose the registry to a coding agent.
+seoTitle: "Payload CMS CLI: setup, generate, migrate, install"
+description: Use the right Payload CMS CLI command for app setup, generated types, import maps, migrations, and wired block installs, with pnpm and npx examples.
 icon: SquareTerminal
 ---
 
-Every command is read-only unless it says otherwise, takes `--cwd <path>` to target a
-project other than the working directory, and refuses to run against a project shape it
-does not recognise. Start with [Installation](/docs/installation) for the install pipeline
-itself; this page is the surface.
+Payload CMS projects use two command-line tools with similar names. The official Payload
+CLI creates projects, generates types and import maps, and manages database migrations.
+The community-built Payload Components CLI installs blocks and wires them into a Payload
+v3 project. It complements the Payload CLI; it does not replace it.
+
+This guide maps each job to the right command, then documents every Payload Components
+command. Start with the table below if you arrived here looking for the Payload CMS CLI.
+
+## Which Payload CLI command should I run?
+
+| Job | Command | Provided by |
+| --- | --- | --- |
+| Create a Payload app | `npx create-payload-app@latest` | Payload |
+| Generate TypeScript types | `pnpm payload generate:types` | Payload CLI |
+| Generate the admin import map | `pnpm payload generate:importmap` | Payload CLI |
+| Create a database migration | `pnpm payload migrate:create` | Payload CLI |
+| Check migration status | `pnpm payload migrate:status` | Payload CLI |
+| Install and wire a block | `npx payload-components add hero-basic` | Payload Components CLI |
+| Preview a block install | `npx payload-components add hero-basic --dry-run` | Payload Components CLI |
+| Diagnose block-install readiness | `npx payload-components doctor` | Payload Components CLI |
+
+The `pnpm payload ...` examples assume your `package.json` has a `payload` script. If it
+does not, run the binary through your package manager or add the script used by the
+official starter. The commands after `payload` stay the same with npm, pnpm, or Yarn.
+
+<Callout type="info">
+  **Payload Components is an independent MIT project.** Its `payload-components` binary is
+  not part of the official Payload package. Use Payload's own CLI for config-derived work
+  such as types, import maps, and migrations. Use this project's CLI when you want to copy
+  a block and apply the collection, renderer, generated-type, and admin import-map wiring.
+</Callout>
+
+## Use the official Payload CMS CLI
+
+### Create a new app
+
+Payload's project initializer is the fastest route to a supported Payload v3 and Next.js
+app:
+
+```bash
+npx create-payload-app@latest
+```
+
+Choose the website starter when you want an existing Pages collection, blocks renderer,
+and media setup. A blank app can also accept Payload Components, but it needs the
+[starter scaffold](#starting-from-a-bare-payload-app) before a block can be wired.
+
+See Payload's [installation documentation](https://payloadcms.com/docs/getting-started/installation)
+for the current runtime requirements and starter choices.
+
+### Generate TypeScript types
+
+Run type generation after changing collections, globals, or block fields:
+
+```bash
+pnpm payload generate:types
+```
+
+Payload reads your config and updates the generated declaration file. If the CLI cannot
+find the config, set `PAYLOAD_CONFIG_PATH` to its location for that command. The dedicated
+[Payload type-errors guide](/docs/payload-types-errors) covers stale generated types,
+config-path failures, and the checks to run before committing the output.
+
+Payload's [generated types documentation](https://payloadcms.com/docs/typescript/generating-types)
+is the source of truth for `typescript.outputFile` and config-specific behavior.
+
+### Generate the admin import map
+
+Payload normally regenerates the import map while the dev server runs. Generate it
+directly after moving admin components, changing component paths, or repairing a stale
+map:
+
+```bash
+pnpm payload generate:importmap
+```
+
+The [Payload import-map command guide](/docs/payload-generate-importmap) explains the
+output, custom config paths, and common repair sequence. Payload's
+[custom-components documentation](https://payloadcms.com/docs/custom-components/overview)
+defines how component paths become import-map entries.
+
+### Run database migrations
+
+Migration commands belong to the official Payload CLI. Create a migration after a schema
+change, inspect what is pending, then apply it in the environment that owns the database:
+
+```bash
+pnpm payload migrate:create
+pnpm payload migrate:status
+pnpm payload migrate
+```
+
+Payload also provides rollback and reset commands. Those can destroy or replace local
+data, so read the adapter-specific behavior before running them. Payload's
+[migration documentation](https://payloadcms.com/docs/database/migrations) lists the
+complete command set and the production workflow.
+
+## Use the Payload Components CLI
+
+Run the package help command to see the available commands and flags:
 
 ```bash
 npx payload-components --help
 ```
+
+Payload Components commands accept `--cwd <path>` when the target project is not the
+working directory. Commands that change files validate the project shape first. Planning
+commands such as `diff`, `doctor`, and `--dry-run` do not write to the target project.
 
 ## Install blocks
 
@@ -132,12 +232,15 @@ Naming components narrows it to those:
 npx payload-components localize hero-basic faq-card
 ```
 
-A single block can also be installed localized in one step, which is the same field-level
-transform without the config half:
+A single block — or every block of a template — can also be installed localized in one
+step, which is the same field-level transform without the config half:
 
 ```bash
 npx payload-components add hero-basic --localized
+npx payload-components add-template saas-launch --localized
 ```
+
+On a template the locale notice is printed once for the run, not once per block.
 
 `localize` refuses rather than guesses in three cases, each exiting non-zero with the
 config or block left exactly as you wrote it: a config with no `buildConfig({ ... })` call,

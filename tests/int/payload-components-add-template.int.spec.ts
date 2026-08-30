@@ -21,9 +21,13 @@ afterEach(async () => {
 
 const setup = async () => {
   const addCommand = vi.fn().mockResolvedValue(undefined)
+  const warnWhenNoLocalesDeclared = vi.fn().mockResolvedValue(undefined)
   const output: string[] = []
 
-  vi.doMock('../../tools/payload-components/commands/add', () => ({ addCommand }))
+  vi.doMock('../../tools/payload-components/commands/add', () => ({
+    addCommand,
+    warnWhenNoLocalesDeclared,
+  }))
   vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
     output.push(String(chunk))
     return true
@@ -32,7 +36,7 @@ const setup = async () => {
   const { addTemplateCommand } =
     await import('../../tools/payload-components/commands/add-template')
 
-  return { addCommand, addTemplateCommand, output }
+  return { addCommand, addTemplateCommand, output, warnWhenNoLocalesDeclared }
 }
 
 const makeFixture = async () => {
@@ -75,6 +79,39 @@ describe('add-template', () => {
       expect(text).toContain(`/${page.path} — ${page.label}`)
       expect(text).toContain(page.components.join(' → '))
     }
+  })
+
+  it('localizes every block of the template, reporting the locale situation once', async () => {
+    const { addCommand, addTemplateCommand, output, warnWhenNoLocalesDeclared } = await setup()
+    const fixtureDir = await makeFixture()
+    const template = await loadTemplateManifest('portfolio-solo')
+
+    await addTemplateCommand({ cwd: fixtureDir, localized: true, templateSlug: 'portfolio-solo' })
+
+    expect(addCommand).toHaveBeenCalledTimes(template.components.length)
+
+    for (const [options] of addCommand.mock.calls) {
+      expect(options).toMatchObject({ deferLocaleNotice: true, localized: true })
+    }
+
+    /* Deferred per block and emitted once for the template — a 20-block template
+       would otherwise repeat the same locale notice 20 times. */
+    expect(warnWhenNoLocalesDeclared).toHaveBeenCalledTimes(1)
+    expect(output.join('')).toContain('Localization:')
+  })
+
+  it('leaves blocks unlocalized without the flag', async () => {
+    const { addCommand, addTemplateCommand, output, warnWhenNoLocalesDeclared } = await setup()
+    const fixtureDir = await makeFixture()
+
+    await addTemplateCommand({ cwd: fixtureDir, templateSlug: 'portfolio-solo' })
+
+    for (const [options] of addCommand.mock.calls) {
+      expect(options).toMatchObject({ localized: false })
+    }
+
+    expect(warnWhenNoLocalesDeclared).not.toHaveBeenCalled()
+    expect(output.join('')).not.toContain('Localization:')
   })
 
   it('changes nothing under --dry-run', async () => {

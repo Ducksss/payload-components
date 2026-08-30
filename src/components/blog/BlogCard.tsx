@@ -4,12 +4,18 @@ import Link from 'next/link'
 import { blogSeries, type BlogPage } from '@/lib/blog'
 
 type BlogCardProps = {
+  compact?: boolean
   headingLevel?: 2 | 3
   page: BlogPage
   priority?: boolean
 }
 
-export function BlogCard({ headingLevel = 2, page, priority = false }: BlogCardProps) {
+export function BlogCard({
+  compact = false,
+  headingLevel = 2,
+  page,
+  priority = false,
+}: BlogCardProps) {
   const Heading = headingLevel === 2 ? 'h2' : 'h3'
   const series = blogSeries[page.data.series]
 
@@ -48,22 +54,24 @@ export function BlogCard({ headingLevel = 2, page, priority = false }: BlogCardP
         <Heading className="mt-4 text-xl font-semibold leading-tight tracking-heading text-foreground transition-colors group-hover:text-brand-600">
           {page.data.title}
         </Heading>
-        {page.data.description ? (
+        {!compact && page.data.description ? (
           <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">
             {page.data.description}
           </p>
         ) : null}
 
-        <div className="mt-auto flex flex-wrap gap-1.5 pt-5" aria-label="Article tags">
-          {page.data.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-md bg-muted px-2 py-1 font-mono text-[10px] text-muted-foreground"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+        {!compact ? (
+          <div className="mt-auto flex flex-wrap gap-1.5 pt-5" aria-label="Article tags">
+            {page.data.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-md bg-muted px-2 py-1 font-mono text-[10px] text-muted-foreground"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        ) : null}
       </div>
     </Link>
   )

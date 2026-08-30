@@ -1,0 +1,86 @@
+name: Promote Closing Keywords
+
+# Its own workflow rather than a job in Registry Verification, because this has
+# to re-run on `edited`: a maintainer who adds the keywords in response to a red
+# check must be able to turn it green without pushing a commit. Adding `edited`
+# to that workflow's trigger would re-run the whole release gate — including four
+# ~90-minute fresh-consumer shards — on every description tweak.
+on:
+  pull_request:
+    # `branches` filters on the *base*, so this never runs on PRs into dev.
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+
+permissions:
+  contents: read
+
+jobs:
+  closing-keywords:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require closing keywords or an explicit opt-out
+        shell: bash
+        # The body is untrusted input. It arrives through the environment, never
+        # interpolated into the script, so a PR description cannot inject shell.
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+
+          # Accept #123, owner/repo#123, and full issue URLs. Deliberately
+          # permissive about the separator: a false negative here blocks a
+          # correct promote, which is the worse failure.
+          keyword_pattern='(^|[^[:alnum:]])(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]*:?[[:space:]]*(#|[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+#|https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/issues/)[0-9]+'
+          optout_pattern='^[[:space:]]*no issues closed this cycle\.?[[:space:]]*$'
+
+          # Every grep here reads the body to EOF (-o / -c), never -q: -q exits
+          # at the first match, which SIGPIPEs the printf still writing a large
+          # body, and under pipefail that turns a *matching* body into exit 141
+          # — a false negative, the failure mode this check must never have.
+          # GitHub caps bodies at 65536 characters, which multibyte text can
+          # push past the 64KiB pipe buffer. Truncation happens after capture,
+          # outside the pipeline, for the same reason.
+          matched=$(printf '%s' "$PR_BODY" | { grep -Eio "$keyword_pattern" || true; } | tr -d '\n')
+          matched=${matched:0:200}
+
+          if [ -n "$matched" ]; then
+            echo "Found a closing keyword: ${matched}"
+            echo "A closing keyword is present. Note this checks presence, not that the list is complete." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          optout_count=$(printf '%s' "$PR_BODY" | { grep -Eic "$optout_pattern" || true; })
+
+          if [ "${optout_count:-0}" -gt 0 ]; then
+            echo "Found the explicit opt-out line."
+            echo "Promote declares that it closes no issues." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          cat <<'MESSAGE'
+          This promote PR body neither closes an issue nor says that it closes none.
+
+          A keyword written on a feature PR never reaches main: feature work is
+          squashed onto dev and squashed again on promote, so the commit carrying
+          the keyword is not the one that lands on the default branch. The promote
+          body is the only place a keyword fires.
+
+          Satisfy this check either way:
+
+            1. Add a closing keyword for every issue this cycle resolves, e.g.
+                 Closes #123
+               Accepted forms: closes / fixes / resolves (and their -s / -d
+               variants), against #123, owner/repo#123, or a full issue URL.
+
+            2. If this cycle genuinely resolves nothing, say so on its own line:
+                 No issues closed this cycle.
+
+          Editing the description re-runs this check — no new commit needed.
+          MESSAGE
+          exit 1

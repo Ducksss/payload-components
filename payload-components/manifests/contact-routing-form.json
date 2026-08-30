@@ -1,8 +1,17 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "contact-routing-form",
-  "version": "0.1.0",
-  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "version": "0.2.0",
+  "changelog": [
+    {
+      "version": "0.2.0",
+      "summary": "Moved the eyebrow/title/description heading and the channel shape onto the shared contactFields base now that the Contact family has a sibling variant. Field shape and stored data are unchanged."
+    },
+    {
+      "version": "0.1.0",
+      "summary": "Initial release."
+    }
+  ],
   "title": "Contact Routing Form",
   "description": "A contact section with validated channels and a fixed accessible form that posts to a same-origin endpoint.",
   "registryItemName": "contact-routing-form",
@@ -11,14 +20,23 @@
     "next": "^15.0.0 || ^16.0.0",
     "payload": "^3.0.0"
   },
-  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
+  "supportedTargets": [
+    "payload-website-starter",
+    "payload-blocks-app"
+  ],
   "supports": {
-    "payloadMajors": [3],
-    "nextMajors": [15, 16]
+    "payloadMajors": [
+      3
+    ],
+    "nextMajors": [
+      15,
+      16
+    ]
   },
   "files": [
     "src/blocks/shared/safeUrls.ts",
     "src/blocks/shared/contactUrls.ts",
+    "src/blocks/shared/contactFields.ts",
     "src/blocks/ContactRoutingForm/config.ts",
     "src/blocks/ContactRoutingForm/Component.tsx"
   ],
@@ -37,9 +55,15 @@
     }
   ],
   "recovery": {
-    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
   },
-  "postInstall": ["generate:types", "generate:importmap"],
+  "postInstall": [
+    "generate:types",
+    "generate:importmap"
+  ],
   "preview": {
     "summary": "Validated contact channels beside an accessible same-origin inquiry form."
   },
@@ -59,7 +83,7 @@
         "label": "Talk to sales",
         "type": "phone",
         "value": "+1 (555) 010-1000",
-        "description": "Weekdays, 9:00–17:00 Pacific."
+        "description": "Weekdays, 9:00\u201317:00 Pacific."
       }
     ],
     "formTitle": "Tell us what you are building",

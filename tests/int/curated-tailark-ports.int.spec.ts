@@ -228,8 +228,9 @@ describe('curated Tailark ports', () => {
   })
 
   it('ships contact-routing-form with safe channels and form fallbacks', async () => {
-    const [config, component, manifest, docs, site, pageTree] = await Promise.all([
+    const [config, sharedFields, component, manifest, docs, site, pageTree] = await Promise.all([
       read('payload-components/source/blocks/ContactRoutingForm/config.ts'),
+      read('payload-components/source/blocks/shared/contactFields.ts'),
       read('payload-components/source/blocks/ContactRoutingForm/Component.tsx'),
       read('payload-components/manifests/contact-routing-form.json'),
       read('content/docs/components/contact-routing-form.mdx'),
@@ -240,7 +241,11 @@ describe('curated Tailark ports', () => {
     expect(config).toContain("slug: 'contactRoutingForm'")
     expect(config).toContain("dbName: 'pc_contact_route'")
     expect(config).toContain('validateSameOriginFormAction')
-    expect(config).toContain('validateContactValue')
+    /* The Contact family gained contact-channels, so the channel shape and its
+       value validator moved into the shared base the config composes. */
+    expect(config).toContain('...contactFields')
+    expect(config).toContain('fields: contactChannelFields')
+    expect(sharedFields).toContain('validateContactValue')
     expect(component).toContain('const formAction = getSafeFormAction(action)')
     expect(component).toContain('getSafeContactHref')
     expect(component).toContain('method="post"')
@@ -256,11 +261,12 @@ describe('curated Tailark ports', () => {
     expect(JSON.parse(manifest).files).toEqual([
       'src/blocks/shared/safeUrls.ts',
       'src/blocks/shared/contactUrls.ts',
+      'src/blocks/shared/contactFields.ts',
       'src/blocks/ContactRoutingForm/config.ts',
       'src/blocks/ContactRoutingForm/Component.tsx',
     ])
     expect(docs).toContain('npx payload-components add contact-routing-form')
     expect(docs).toContain('tailark/blocks')
-    expect(docs).not.toContain('## In this family')
+    expect(docs).toContain('## In this family')
   })
 })

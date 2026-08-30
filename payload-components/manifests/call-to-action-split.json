@@ -1,0 +1,90 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "call-to-action-split",
+  "version": "0.1.0",
+  "changelog": [
+    {
+      "version": "0.1.0",
+      "summary": "Initial release."
+    }
+  ],
+  "title": "Call To Action Split",
+  "description": "A split call-to-action Payload block: heading and copy on one side, CTA links and an assurance line on the other.",
+  "registryItemName": "call-to-action-split",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": [
+    "payload-website-starter",
+    "payload-blocks-app"
+  ],
+  "supports": {
+    "payloadMajors": [
+      3
+    ],
+    "nextMajors": [
+      15,
+      16
+    ]
+  },
+  "files": [
+    "src/blocks/shared/callToActionFields.ts",
+    "src/blocks/CallToActionSplit/config.ts",
+    "src/blocks/CallToActionSplit/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "CallToActionSplitBlock",
+      "importPath": "@/blocks/CallToActionSplit/Component",
+      "blockSlug": "callToActionSplit"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "CallToActionSplit",
+      "importPath": "../../blocks/CallToActionSplit/config",
+      "blockName": "CallToActionSplit"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
+  },
+  "postInstall": [
+    "generate:types",
+    "generate:importmap"
+  ],
+  "preview": {
+    "summary": "Split call-to-action: heading and copy left, CTA buttons and assurance right."
+  },
+  "sampleContent": {
+    "blockType": "callToActionSplit",
+    "title": "Ready to move your reporting onto Acme?",
+    "description": "Start with a workspace today and invite your team when you are ready \u2014 no migration project required.",
+    "assurance": "Free for 14 days. No card required.",
+    "links": [
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/signup",
+          "label": "Start free",
+          "appearance": "default"
+        }
+      },
+      {
+        "link": {
+          "type": "custom",
+          "newTab": false,
+          "url": "/contact",
+          "label": "Talk to sales",
+          "appearance": "outline"
+        }
+      }
+    ]
+  }
+}
