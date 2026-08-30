@@ -451,7 +451,7 @@ export function HeroAuroraDemo({
                     key={`${label}-${index}`}
                     className={cn(
                       'flex flex-col items-center gap-1',
-                      index > 0 && 'sm:border-l sm:border-border/70 sm:pl-10',
+                      index > 0 && 'sm:border-s sm:border-border/70 sm:ps-10',
                     )}
                   >
                     <dd className="text-3xl font-medium tracking-display tabular-nums text-foreground sm:text-4xl">

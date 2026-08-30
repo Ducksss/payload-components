@@ -145,6 +145,48 @@ falls back to the default locale rather than rendering blank — so a half-trans
 still renders. `locale: 'all'` returns every locale at once, which is what you want for a
 language switcher that has to know which translations exist.
 
+## Right-to-left languages
+
+Arabic, Hebrew, Persian, and Urdu are written right to left, and `localize` marks them
+`rtl: true` in the config it writes:
+
+```ts
+{ code: 'ar', label: 'العربية', rtl: true }
+```
+
+That flag mirrors the **admin**. The front end needs one more thing from you, because no
+block can know the active locale: set `dir` in your root layout.
+
+```tsx title="src/app/(frontend)/[locale]/layout.tsx"
+const RTL_LOCALES = new Set(['ar', 'he', 'fa', 'ur'])
+
+export default async function RootLayout({ children, params }) {
+  const { locale } = await params
+
+  return (
+    <html lang={locale} dir={RTL_LOCALES.has(locale) ? 'rtl' : 'ltr'}>
+      <body>{children}</body>
+    </html>
+  )
+}
+```
+
+Every installed block then mirrors on its own. They express reading-order geometry with
+CSS logical properties — `ps-*`/`pe-*`, `border-s`/`border-e`, `rounded-s-*`,
+`text-start`/`text-end` — which follow `dir` automatically. Their physical counterparts
+(`pl-*`, `border-l`, `text-left`) do not, which is why a block written with those would
+render left-aligned inside a mirrored page. `tests/int/visual-standards.int.spec.ts`
+fails the build if one creeps back in.
+
+Purely geometric positioning is left physical on purpose. `left-1/2` paired with
+`-translate-x-1/2` centres an element; the logical `start-1/2` would not, because the
+transform does not mirror with it.
+
+<Callout>
+  Nothing in the install can set `dir` for you — it lives in your layout, above every
+  block. Without it the page stays left-to-right and the mirroring never applies.
+</Callout>
+
 ## Translating the admin UI
 
 Content locales and the admin interface language are separate settings. The locales above

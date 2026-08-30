@@ -68,7 +68,7 @@ export const FaqGroupedBlock: React.FC<Props> = ({
                           value={item.id ?? `group-${groupIndex}-item-${index}`}
                           className="border-border/70"
                         >
-                          <AccordionTrigger className="text-left text-base tracking-title hover:no-underline">
+                          <AccordionTrigger className="text-start text-base tracking-title hover:no-underline">
                             {item.question}
                           </AccordionTrigger>
                           <AccordionContent className="text-sm leading-7 text-muted-foreground">

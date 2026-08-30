@@ -24,7 +24,7 @@ export function TestimonialsQuoteDemo({
   return (
     <div aria-hidden="true" className={className}>
       <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-12 sm:px-8 lg:px-12 lg:py-16">
-        <figure className="mx-auto max-w-2xl border-l-2 border-primary pl-6">
+        <figure className="mx-auto max-w-2xl border-s-2 border-primary ps-6">
           <blockquote className="text-pretty text-xl leading-8 text-foreground sm:text-2xl">
             {quote}
           </blockquote>

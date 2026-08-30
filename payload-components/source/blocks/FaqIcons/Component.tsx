@@ -60,7 +60,7 @@ export const FaqIconsBlock: React.FC<Props> = ({
                     value={item.id ?? `item-${index}`}
                     className="border-border/70"
                   >
-                    <AccordionTrigger className="text-left text-base tracking-title hover:no-underline">
+                    <AccordionTrigger className="text-start text-base tracking-title hover:no-underline">
                       <span className="flex items-center gap-3">
                         {Icon ? <Icon className="size-4 text-muted-foreground" /> : null}
                         {item.question}

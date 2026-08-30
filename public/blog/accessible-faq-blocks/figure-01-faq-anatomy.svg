@@ -272,7 +272,7 @@
                   value={item.id ?? `item-${index}`}
                   className=&quot;border-border/70&quot;
                 &gt;
-                  &lt;AccordionTrigger className=&quot;text-left text-base tracking-title hover:no-underline&quot;&gt;" data-evidence-truncated="true">
+                  &lt;AccordionTrigger className=&quot;text-start text-base tracking-title hover:no-underline&quot;&gt;" data-evidence-truncated="true">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
   <text class="evidence-line" x="48" y="626">&lt;Accordion type=&quot;single&quot; collapsible className=&quot;w-full&quot;&gt; ·</text>
 <text class="evidence-line" x="48" y="641">{items.map((item, index) =&gt; ( · &lt;AccordionItem · key={item.id ?? …</text>

@@ -28,7 +28,7 @@ export const LogoCloudMarqueeBlock: React.FC<Props> = ({
             'mx-auto max-w-6xl': !disableInnerContainer,
           })}
         >
-          <div className="md:max-w-44 md:border-r md:border-border/70 md:pr-6">
+          <div className="md:max-w-44 md:border-e md:border-border/70 md:pe-6">
             <p className="text-center text-sm text-muted-foreground md:text-end">{heading}</p>
           </div>
 
