@@ -5,7 +5,7 @@ import {
 } from '@/lib/demo-content'
 
 /* DEMO TWIN of payload-components/source/blocks/ContactRoutingForm/Component.tsx
- * (contact-routing-form@0.1.0). Class strings are copied verbatim from the
+ * (contact-routing-form@0.2.0). Class strings are copied verbatim from the
  * component source, in source order. Deliberate substitutions — nothing else
  * may diverge:
  *   <section className={cn('container', …)}> → <div> root (no landmark)
