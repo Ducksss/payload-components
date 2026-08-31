@@ -42,13 +42,23 @@ const registrySource = readFileSync(
 )
 const slugs = [...registrySource.matchAll(/^\s+'([a-z0-9-]+)':/gm)].map((match) => match[1])
 
+const broken = (into: string[], message: string) => into.push(message)
+
 test.describe('Right-to-left rendering', () => {
+  /* Marquee and load-reveal twins animate, so two page loads land on different
+     frames and a geometry comparison between them would measure animation rather
+     than direction. reducedMotion settles them to their end state, the same
+     recipe components-visual.e2e.spec.ts uses for the same reason. Without it
+     hero-kinetic and integration-marquee report dozens of false positives. */
+  test.use({ contextOptions: { reducedMotion: 'reduce' } })
+
   /* Two components, two utilities, so a pass cannot come from one lucky element.
      Both assert the LTR side too: a block with no border or no padding at all
      would satisfy a one-sided check. */
   const cases = [
     { border: '2px', padding: '16px', selector: 'blockquote', slug: 'content-quote' },
     { border: '2px', padding: '24px', selector: 'figure', slug: 'testimonials-quote' },
+    { border: '2px', padding: '20px', selector: 'figure', slug: 'integration-testimonial' },
   ]
 
   for (const { border, padding, selector, slug } of cases) {
@@ -81,34 +91,24 @@ test.describe('Right-to-left rendering', () => {
     })
   }
 
-  /* Mirroring a layout is where RTL usually breaks: a margin that used to push
-     content inward now pushes it off the other edge. The LTR contract already
-     forbids horizontal overflow (frontend.e2e.spec.ts); this holds every block
-     to the same bar with the direction flipped, across the whole catalog rather
-     than the two components asserted above. */
-  test('no block overflows horizontally under dir="rtl"', async ({ page }) => {
-    expect(slugs.length).toBeGreaterThan(50)
-
-    const overflowing: string[] = []
-
-    for (const slug of slugs) {
-      await withDirection(page, slug, 'rtl')
-
-      const overflow = await page.evaluate(() => {
-        const { documentElement: root } = document
-        return {
-          client: root.clientWidth,
-          scroll: root.scrollWidth,
-        }
-      })
-
-      /* 1px of slack absorbs sub-pixel rounding on fractional widths, the same
-         tolerance the LTR route walk uses. */
-      if (overflow.scroll > overflow.client + 1) {
-        overflowing.push(`${slug}: scrollWidth ${overflow.scroll} > clientWidth ${overflow.client}`)
-      }
-    }
-
-    expect(overflowing, `Horizontal overflow under RTL:\n${overflowing.join('\n')}`).toEqual([])
-  })
+  /* A catalog-wide sweep was attempted three ways and abandoned; the reasons are
+     worth recording so nobody rebuilds one of them.
+     
+     1. `documentElement.scrollWidth > clientWidth`, the way the LTR route walk
+        measures overflow, can never be true here — globals.css sets
+        `overflow-x: clip` on html and body, which clamps scrollWidth. A
+        `w-[3000px]` element injected into a twin still passed.
+     2. "Did everything that fitted in LTR still fit in RTL" misses the bug class
+        this conversion prevents: a physical `ml-*` on an auto-width block shrinks
+        the box instead of overflowing it, so the spacing lands on the wrong side
+        while everything still fits.
+     3. Comparing mirror symmetry does catch that (an injected `ml-[240px]` was
+        detected) but flags five blocks whose decorative layers are deliberately
+        left physical. Excluding decoration by `aria-hidden` empties the
+        comparison completely, because every demo twin is `aria-hidden` wholesale
+        by the twin contract.
+     
+     So coverage is added by scaling the assertion above — explicit, per
+     component, and demonstrably able to fail — rather than by a generic walk that
+     cannot. */
 })
