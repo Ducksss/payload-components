@@ -49,7 +49,7 @@ export function ContentQuoteDemo({
               </p>
             ))}
 
-            <blockquote className="border-l-2 border-border pl-4">
+            <blockquote className="border-s-2 border-border ps-4">
               <p className="text-base leading-7 text-foreground">{quote}</p>
               <div className="mt-4 flex flex-col gap-3">
                 <cite className="text-sm font-medium not-italic text-foreground">{citation}</cite>

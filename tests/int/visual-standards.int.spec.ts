@@ -263,6 +263,57 @@ describe('Component visual standards', () => {
     expect(violations, `Visual drift:\n${violations.join('\n')}`).toEqual([])
   })
 
+  /* Right-to-left readiness.
+   *
+   * The locale catalog marks Arabic, Hebrew, Persian, and Urdu `rtl: true`, and
+   * a consumer whose root layout sets `dir` gets a mirrored admin for free. The
+   * blocks only follow if they express reading-order geometry logically:
+   * `ps-*`/`pe-*`, `ms-*`/`me-*`, `border-s`/`border-e`, `rounded-s-*`, and
+   * `text-start`/`text-end` all flip with `dir`; their physical counterparts do
+   * not, so an Arabic page would render left-aligned inside a mirrored shell.
+   *
+   * Deliberately not banned: `left-*`, `right-*`, and `inset-*`. Those are
+   * positioning, and the common case is geometric rather than directional —
+   * `left-1/2` paired with `-translate-x-1/2` centres an element, and swapping it
+   * for `start-1/2` breaks that (the translate does not mirror). Judge those per
+   * case; this guard covers the mechanical ones, where the logical form is always
+   * correct and renders identically under `dir="ltr"`. */
+  it('keeps reading-order geometry logical so the blocks mirror under dir="rtl"', async () => {
+    const physical: Array<{ pattern: RegExp; use: string }> = [
+      { pattern: /^text-(left|right)$/, use: 'text-start / text-end' },
+      { pattern: /^(ml|mr)-/, use: 'ms-* / me-*' },
+      { pattern: /^(pl|pr)-/, use: 'ps-* / pe-*' },
+      { pattern: /^border-[lr]$/, use: 'border-s / border-e' },
+      { pattern: /^border-[lr]-/, use: 'border-s-* / border-e-*' },
+      { pattern: /^rounded-[lr]-/, use: 'rounded-s-* / rounded-e-*' },
+    ]
+    const groups = await Promise.all(
+      scanTargets.map(async ({ dir, match }) => await collectFiles(dir, match)),
+    )
+
+    let inspected = 0
+    const violations: string[] = []
+
+    for (const files of groups) {
+      for (const file of files) {
+        const source = await readFile(file, 'utf8')
+        const relative = path.relative(repoRoot, file)
+        for (const token of classTokens(source)) {
+          inspected += 1
+          const core = coreClass(token)
+          const hit = physical.find(({ pattern }) => pattern.test(core))
+          if (hit)
+            violations.push(
+              `${relative}: "${token}" — use ${hit.use} so it mirrors under dir="rtl"`,
+            )
+        }
+      }
+    }
+
+    expect(inspected).toBeGreaterThan(0)
+    expect(violations, `Physical direction utilities:\n${violations.join('\n')}`).toEqual([])
+  })
+
   it('keeps site-only visual details on named tokens', async () => {
     const css = await readFile(globalsPath, 'utf8')
     const violations: string[] = []

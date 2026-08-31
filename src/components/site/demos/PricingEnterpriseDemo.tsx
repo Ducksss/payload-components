@@ -55,7 +55,7 @@ export function PricingEnterpriseDemo({
           {plan ? (
             <div className="rounded-frame border border-border/70 bg-background/60 shadow-none">
               <div className="grid items-center gap-12 divide-y divide-border/70 p-8 sm:p-12 md:grid-cols-2 md:divide-x md:divide-y-0">
-                <div className="flex flex-col items-center gap-4 text-center md:pr-12">
+                <div className="flex flex-col items-center gap-4 text-center md:pe-12">
                   <div className="text-2xl font-semibold tracking-title">{plan.name}</div>
                   {plan.description ? (
                     <p className="text-base text-muted-foreground">{plan.description}</p>
@@ -72,7 +72,7 @@ export function PricingEnterpriseDemo({
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-6 md:pl-12">
+                <div className="flex flex-col gap-6 md:ps-12">
                   <ul className="flex flex-col gap-4 text-sm">
                     {plan.features.map((feature, featureIndex) => (
                       <li key={`${feature}-${featureIndex}`} className="flex items-center gap-2">

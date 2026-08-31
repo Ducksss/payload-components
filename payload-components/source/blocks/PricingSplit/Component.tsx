@@ -53,7 +53,7 @@ export const PricingSplitBlock: React.FC<Props> = ({
 
           {entry && highlight ? (
             <div className="grid gap-6 md:grid-cols-5 md:gap-0">
-              <div className="flex flex-col justify-between gap-8 rounded-frame border border-border/70 p-6 md:col-span-2 md:my-2 md:rounded-r-none md:border-r-0 lg:p-10">
+              <div className="flex flex-col justify-between gap-8 rounded-frame border border-border/70 p-6 md:col-span-2 md:my-2 md:rounded-e-none md:border-e-0 lg:p-10">
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-1">
                     <h3 className="font-medium tracking-title">{entry.name}</h3>

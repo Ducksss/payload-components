@@ -182,6 +182,10 @@ const formatNextSteps = ({
       summary.defaultLocale)
     : '<locale>'
   const runner = packageManager === 'npm' ? 'npx' : `${packageManager} exec`
+  /* The blocks express reading-order geometry logically, so they mirror on their
+   * own — but only once something sets `dir`, and nothing in the install can do
+   * that for you. Say it only when an RTL locale was actually chosen. */
+  const rtl = summary?.locales.filter((locale) => locale.rtl) ?? []
 
   return [
     'payload-components: next',
@@ -193,6 +197,15 @@ const formatNextSteps = ({
     "  4. The admin UI's own language is a separate setting (i18n.supportedLanguages),",
     '     and so is per-locale media. Both are covered here:',
     '       https://www.payload-components.xyz/docs/localization',
+    ...(rtl.length > 0
+      ? [
+          '',
+          `  ${formatLocaleList(rtl)} ${rtl.length === 1 ? 'reads' : 'read'} right to left.`,
+          '  The blocks mirror themselves, but only once your root layout sets dir:',
+          "       <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>",
+          '  Without it the page stays left-to-right and the mirroring never applies.',
+        ]
+      : []),
     '',
     '  Localizing a collection that already holds data changes how that data is',
     '  stored. Back up and migrate before running this against a populated',
