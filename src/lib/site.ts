@@ -1,4 +1,7 @@
 import packageJson from '../../package.json' with { type: 'json' }
+import callToActionSplitManifest from '../../payload-components/manifests/call-to-action-split.json' with { type: 'json' }
+import contactChannelsManifest from '../../payload-components/manifests/contact-channels.json' with { type: 'json' }
+import teamBiosManifest from '../../payload-components/manifests/team-bios.json' with { type: 'json' }
 import contactRoutingFormManifest from '../../payload-components/manifests/contact-routing-form.json' with { type: 'json' }
 import featureAccordionManifest from '../../payload-components/manifests/feature-accordion.json' with { type: 'json' }
 import featureCardsMediaManifest from '../../payload-components/manifests/feature-cards-media.json' with { type: 'json' }
@@ -6,6 +9,7 @@ import featureIconGridManifest from '../../payload-components/manifests/feature-
 import heroAuroraManifest from '../../payload-components/manifests/hero-aurora.json' with { type: 'json' }
 import contentQuoteManifest from '../../payload-components/manifests/content-quote.json' with { type: 'json' }
 import heroBasicManifest from '../../payload-components/manifests/hero-basic.json' with { type: 'json' }
+import heroSplitManifest from '../../payload-components/manifests/hero-split.json' with { type: 'json' }
 import heroKineticManifest from '../../payload-components/manifests/hero-kinetic.json' with { type: 'json' }
 import heroProductTiltManifest from '../../payload-components/manifests/hero-product-tilt.json' with { type: 'json' }
 import heroVideoManifest from '../../payload-components/manifests/hero-video.json' with { type: 'json' }
@@ -313,6 +317,19 @@ export const componentEntries = [
   },
   {
     category: 'hero',
+    command: 'npx payload-components add hero-split',
+    description:
+      'A two-column hero pairing the shared hero copy with an editor-managed visual that can sit on either side.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'links', 'image', 'imagePosition', 'highlights'],
+    href: '/docs/components/hero-split',
+    slug: 'hero-split',
+    target: 'Split hero',
+    title: 'Hero Split',
+    version: heroSplitManifest.version,
+  },
+  {
+    category: 'hero',
     command: 'npx payload-components add hero-video',
     description:
       'A full-bleed video hero with editor-managed media, CTA links, proof labels, and a reduced-motion poster fallback.',
@@ -611,6 +628,19 @@ export const componentEntries = [
   },
   {
     category: 'cta',
+    command: 'npx payload-components add call-to-action-split',
+    description:
+      'A split call-to-action block: heading and copy on one side, CTA links and an assurance line on the other.',
+    family: 'pages',
+    fields: ['title', 'description', 'assurance', 'links'],
+    href: '/docs/components/call-to-action-split',
+    slug: 'call-to-action-split',
+    target: 'Split CTA',
+    title: 'Call To Action Split',
+    version: callToActionSplitManifest.version,
+  },
+  {
+    category: 'cta',
     command: 'npx payload-components add call-to-action-signup',
     description:
       'An email-capture call-to-action block: heading, copy, and a form that posts to a same-origin endpoint.',
@@ -644,6 +674,19 @@ export const componentEntries = [
     target: 'Contact section',
     title: 'Contact Routing Form',
     version: contactRoutingFormManifest.version,
+  },
+  {
+    category: 'contact',
+    command: 'npx payload-components add contact-channels',
+    description:
+      'A form-free contact section: heading, supporting copy, and a grid of validated email, phone, and URL channels.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'channels', 'footnote'],
+    href: '/docs/components/contact-channels',
+    slug: 'contact-channels',
+    target: 'Contact channels',
+    title: 'Contact Channels',
+    version: contactChannelsManifest.version,
   },
   {
     category: 'integration',
@@ -1214,6 +1257,19 @@ export const componentEntries = [
   },
   {
     category: 'team',
+    command: 'npx payload-components add team-bios',
+    description:
+      'A bio-forward team section: heading, intro, and two-up member cards carrying avatar, role, and a short biography.',
+    family: 'pages',
+    fields: ['eyebrow', 'title', 'description', 'members'],
+    href: '/docs/components/team-bios',
+    slug: 'team-bios',
+    target: 'Team bios',
+    title: 'Team Bios',
+    version: teamBiosManifest.version,
+  },
+  {
+    category: 'team',
     command: 'npx payload-components add team-roster',
     description:
       'A team section that groups members into titled departments, each a grid of avatars with name and role.',
@@ -1543,6 +1599,7 @@ export const catalogMetadataTitle = `${componentEntries.length} Payload CMS Comp
 export const catalogMetadataDescription =
   'Browse typed Payload CMS blocks. Run npx payload-components add <component> to wire one into your collection, renderer, generated types, and admin import map.'
 export const catalogInstallationLinkLabel = 'See how one-command installation works'
+export const catalogBlocksGuideLinkLabel = 'Follow a block from config to live page'
 export const catalogTemplatesLinkLabel = 'Explore Payload CMS template concepts'
 
 /* Composer: pick several blocks across families and get one install command.

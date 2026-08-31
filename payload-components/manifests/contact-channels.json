@@ -1,0 +1,111 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "contact-channels",
+  "version": "0.1.0",
+  "changelog": [
+    {
+      "version": "0.1.0",
+      "summary": "Initial release."
+    }
+  ],
+  "title": "Contact Channels",
+  "description": "A form-free Payload contact block: heading, supporting copy, and a grid of validated email, phone, and URL channels.",
+  "registryItemName": "contact-channels",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": [
+    "payload-website-starter",
+    "payload-blocks-app"
+  ],
+  "supports": {
+    "payloadMajors": [
+      3
+    ],
+    "nextMajors": [
+      15,
+      16
+    ]
+  },
+  "files": [
+    "src/blocks/shared/safeUrls.ts",
+    "src/blocks/shared/contactUrls.ts",
+    "src/blocks/shared/contactFields.ts",
+    "src/blocks/ContactChannels/config.ts",
+    "src/blocks/ContactChannels/Component.tsx"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContactChannelsBlock",
+      "importPath": "@/blocks/ContactChannels/Component",
+      "blockSlug": "contactChannels"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContactChannels",
+      "importPath": "../../blocks/ContactChannels/config",
+      "blockName": "ContactChannels"
+    }
+  ],
+  "recovery": {
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
+  },
+  "postInstall": [
+    "generate:types",
+    "generate:importmap"
+  ],
+  "preview": {
+    "summary": "Form-free contact grid: validated email, phone, and URL channels with optional notes."
+  },
+  "sampleContent": {
+    "blockType": "contactChannels",
+    "eyebrow": "Contact",
+    "title": "Reach the team that owns the answer.",
+    "description": "Every channel below is monitored by the team named on it \u2014 nothing routes through a shared triage inbox.",
+    "channels": [
+      {
+        "label": "Product and support",
+        "type": "email",
+        "value": "hello@example.com",
+        "description": "Implementation questions and existing workspaces."
+      },
+      {
+        "label": "Sales",
+        "type": "email",
+        "value": "sales@example.com",
+        "description": "Pricing, procurement, and security review."
+      },
+      {
+        "label": "Phone",
+        "type": "phone",
+        "value": "+1 555 0100",
+        "description": "Weekdays, 9am to 6pm Eastern."
+      },
+      {
+        "label": "Status page",
+        "type": "url",
+        "value": "https://status.example.com",
+        "description": "Live incident history and uptime."
+      },
+      {
+        "label": "Documentation",
+        "type": "url",
+        "value": "/docs",
+        "description": "Guides, API reference, and changelog."
+      },
+      {
+        "label": "Security",
+        "type": "email",
+        "value": "security@example.com",
+        "description": "Coordinated vulnerability disclosure."
+      }
+    ],
+    "footnote": "We answer support email within one business day."
+  }
+}

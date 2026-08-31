@@ -4,6 +4,7 @@ import { grantConsent } from './consent'
 
 import {
   blogTitle,
+  catalogBlocksGuideLinkLabel,
   catalogInstallationLinkLabel,
   composerAddLabel,
   composerClearLabel,
@@ -139,6 +140,127 @@ test.describe('Light shadcn frontend', () => {
         ]),
       )
     expect(JSON.stringify(await getPostHogEvents(page))).not.toContain('private-query-text')
+  })
+
+  test('preserves the first organic entry on install and GitHub actions', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(
+      `${baseURL}/docs/installation?utm_medium=organic&utm_campaign=private-entry-query`,
+    )
+    await expect
+      .poll(() => page.evaluate(() => window.sessionStorage.getItem('pc_organic_entry_page')))
+      .toBe('/docs/installation')
+
+    // A second organic-looking route must not replace the first entry path.
+    await page.goto(`${baseURL}/?utm_medium=organic&utm_campaign=private-second-query`)
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+    await page.evaluate(() => {
+      document.addEventListener(
+        'click',
+        (event) => {
+          const target = event.target
+          if (!(target instanceof Element)) return
+
+          if (target.closest('a[href="https://github.com/Ducksss/payload-components"]')) {
+            event.preventDefault()
+          }
+        },
+        { capture: true },
+      )
+    })
+
+    await page.locator('.hero-shell button[data-copy-command]').click()
+    await page.locator('a[href="https://github.com/Ducksss/payload-components"]').first().click()
+
+    const entryPage = '/docs/installation'
+    expect(await getGtagEvents(page)).toEqual(
+      expect.arrayContaining([
+        [
+          'event',
+          'copy_install_command',
+          {
+            command: primaryInstallCommand,
+            component: 'hero-basic',
+            source_path: '/',
+            entry_page: entryPage,
+          },
+        ],
+        [
+          'event',
+          'primary_link_click',
+          {
+            destination: 'github',
+            href: 'https://github.com/Ducksss/payload-components',
+            source_path: '/',
+            entry_page: entryPage,
+          },
+        ],
+      ]),
+    )
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: primaryInstallCommand,
+            component: 'hero-basic',
+            source_path: '/',
+            entry_page: entryPage,
+          },
+        },
+        {
+          event: 'primary_link_click',
+          properties: {
+            destination: 'github',
+            href: 'https://github.com/Ducksss/payload-components',
+            source_path: '/',
+            entry_page: entryPage,
+          },
+        },
+      ]),
+    )
+    expect(JSON.stringify(await getPostHogEvents(page))).not.toContain('private-entry-query')
+    expect(JSON.stringify(await getPostHogEvents(page))).not.toContain('private-second-query')
+  })
+
+  test('does not create an organic entry for referral visits', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto(baseURL, {
+      referer: 'https://example.com/private-referral-path?campaign=private-referral-query',
+    })
+    await waitForCopyController(page)
+    await stubGtagEvents(page)
+    await page.locator('.hero-shell button[data-copy-command]').click()
+
+    expect(
+      await page.evaluate(() => window.sessionStorage.getItem('pc_organic_entry_page')),
+    ).toBeNull()
+    expect(await getGtagEvents(page)).toContainEqual([
+      'event',
+      'copy_install_command',
+      {
+        command: primaryInstallCommand,
+        component: 'hero-basic',
+        source_path: '/',
+      },
+    ])
+    expect(await getPostHogEvents(page)).toEqual(
+      expect.arrayContaining([
+        {
+          event: 'copy_install_command',
+          properties: {
+            command: primaryInstallCommand,
+            component: 'hero-basic',
+            source_path: '/',
+          },
+        },
+      ]),
+    )
+    expect(JSON.stringify(await getPostHogEvents(page))).not.toContain('private-referral')
   })
 
   test('marks controlled page views without retaining the verification query', async ({ page }) => {
@@ -739,6 +861,9 @@ test.describe('Light shadcn frontend', () => {
     await expect(
       page.getByRole('link', { name: catalogInstallationLinkLabel, exact: true }),
     ).toHaveAttribute('href', '/docs/installation')
+    await expect(
+      page.getByRole('link', { name: catalogBlocksGuideLinkLabel, exact: true }),
+    ).toHaveAttribute('href', '/docs/payload-blocks')
 
     for (const component of componentEntries) {
       await expect(page.locator(`a[href="${component.href}"]`).first()).toBeAttached()
@@ -753,7 +878,7 @@ test.describe('Light shadcn frontend', () => {
         title: new RegExp(homeMetadataTitle),
       },
       {
-        link: /Browse all 73 installable components/,
+        link: /Browse all 77 installable components/,
         path: '/blog',
         title: new RegExp(blogTitle),
       },

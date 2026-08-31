@@ -22,7 +22,7 @@ export const usage = `payload-components
 
 Usage:
   payload-components add <component-name...> [--cwd <path>] [--demo] [--dry-run] [--localized]
-  payload-components add-template <template> [--cwd <path>] [--demo] [--dry-run]
+  payload-components add-template <template> [--cwd <path>] [--demo] [--dry-run] [--localized]
   payload-components templates [--cwd <path>] [--json]
   payload-components list [--cwd <path>] [--json]
   payload-components localize [component-name...] [--cwd <path>] [--locales <codes>]
@@ -58,7 +58,7 @@ Flags:
   --dry-run  Validate and preview an add, update, or remove without changing files or running commands.
   --force  Let update overwrite local edits, or let remove delete source whose ownership cannot be verified.
   --accept-breaking  Let update apply a version that changes content already stored in Payload.
-  --localized  Install the block with its text fields marked localized: true for Payload localization.
+  --localized  Install the block, or every block of a template, with its text fields marked localized: true.
   --locales  Comma-separated locale codes for localize, e.g. --locales en,zh,pt-BR.
   --default-locale  The locale localize falls back to; defaults to the first --locales entry.
   --no-fallback  Let localize write fallback: false, so an empty locale renders empty.
@@ -74,6 +74,7 @@ Exit codes:
 
 Current components:
   hero-basic
+  hero-split
   hero-video
   hero-product-tilt
   hero-aurora
@@ -115,10 +116,13 @@ Current components:
   content-list-icons
   call-to-action-centered
   call-to-action-boxed
+  call-to-action-split
   call-to-action-signup
   contact-routing-form
+  contact-channels
   team-roster
   team-grid
+  team-bios
   faq-accordion
   faq-split
   faq-card
@@ -414,7 +418,7 @@ export const runCli = async ({
 
   const allowedFlags: Record<string, string[]> = {
     add: ['demo', 'dryRun', 'localized'],
-    'add-template': ['demo', 'dryRun'],
+    'add-template': ['demo', 'dryRun', 'localized'],
     diff: ['json'],
     doctor: ['json'],
     init: ['scaffold'],
@@ -492,7 +496,7 @@ export const runCli = async ({
     }
 
     await runMutation(`add-template ${templateSlug}`, cwd, () =>
-      commandHandlers.addTemplateCommand({ cwd, demo, dryRun, templateSlug }),
+      commandHandlers.addTemplateCommand({ cwd, demo, dryRun, localized, templateSlug }),
     )
     return
   }

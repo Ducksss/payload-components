@@ -3,9 +3,11 @@ import type { ComponentType } from 'react'
 import { CallToActionBoxedDemo } from './CallToActionBoxedDemo'
 import { CallToActionCenteredDemo } from './CallToActionCenteredDemo'
 import { CallToActionSignupDemo } from './CallToActionSignupDemo'
+import { CallToActionSplitDemo } from './CallToActionSplitDemo'
 import { ComparatorGridDemo } from './ComparatorGridDemo'
 import { ComparatorStackDemo } from './ComparatorStackDemo'
 import { ComparatorTableDemo } from './ComparatorTableDemo'
+import { ContactChannelsDemo } from './ContactChannelsDemo'
 import { ContactRoutingFormDemo } from './ContactRoutingFormDemo'
 import { ContentColumnsDemo } from './ContentColumnsDemo'
 import { ContentCommunityDemo } from './ContentCommunityDemo'
@@ -39,6 +41,7 @@ import { HeroAuroraDemo } from './HeroAuroraDemo'
 import { HeroBasicDemo } from './HeroBasicDemo'
 import { HeroKineticDemo } from './HeroKineticDemo'
 import { HeroProductTiltDemo } from './HeroProductTiltDemo'
+import { HeroSplitDemo } from './HeroSplitDemo'
 import { HeroVideoDemo } from './HeroVideoDemo'
 import { IntegrationClusterDemo } from './IntegrationClusterDemo'
 import { IntegrationConnectDemo } from './IntegrationConnectDemo'
@@ -65,6 +68,7 @@ import { StatsCardDemo } from './StatsCardDemo'
 import { StatsGridDemo } from './StatsGridDemo'
 import { StatsInlineDemo } from './StatsInlineDemo'
 import { StatsProofDemo } from './StatsProofDemo'
+import { TeamBiosDemo } from './TeamBiosDemo'
 import { TeamGridDemo } from './TeamGridDemo'
 import { TeamRosterDemo } from './TeamRosterDemo'
 import { TestimonialsBentoDemo } from './TestimonialsBentoDemo'
@@ -83,9 +87,11 @@ export const demosBySlug: Record<string, ComponentType> = {
   'call-to-action-boxed': CallToActionBoxedDemo,
   'call-to-action-centered': CallToActionCenteredDemo,
   'call-to-action-signup': CallToActionSignupDemo,
+  'call-to-action-split': CallToActionSplitDemo,
   'comparator-grid': ComparatorGridDemo,
   'comparator-stack': ComparatorStackDemo,
   'comparator-table': ComparatorTableDemo,
+  'contact-channels': ContactChannelsDemo,
   'contact-routing-form': ContactRoutingFormDemo,
   'content-columns': ContentColumnsDemo,
   'content-community': ContentCommunityDemo,
@@ -119,6 +125,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'hero-basic': HeroBasicDemo,
   'hero-kinetic': HeroKineticDemo,
   'hero-product-tilt': HeroProductTiltDemo,
+  'hero-split': HeroSplitDemo,
   'hero-video': HeroVideoDemo,
   'integration-cluster': IntegrationClusterDemo,
   'integration-connect': IntegrationConnectDemo,
@@ -143,6 +150,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'stats-card': StatsCardDemo,
   'stats-inline': StatsInlineDemo,
   'team-roster': TeamRosterDemo,
+  'team-bios': TeamBiosDemo,
   'team-grid': TeamGridDemo,
   'testimonials-quote': TestimonialsQuoteDemo,
   'testimonials-spotlight': TestimonialsSpotlightDemo,

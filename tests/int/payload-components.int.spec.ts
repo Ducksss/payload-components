@@ -31,11 +31,15 @@ type RegistryDefinition = {
 }
 
 const representativeInstallComponents = [
+  'call-to-action-split',
+  'team-bios',
+  'contact-channels',
   'contact-routing-form',
   'embed-basic',
   'feature-accordion',
   'feature-cards-media',
   'hero-basic',
+  'hero-split',
   'feature-icon-grid',
   'feature-grid-basic',
   'hero-product-tilt',

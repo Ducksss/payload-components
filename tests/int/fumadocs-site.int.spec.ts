@@ -232,6 +232,69 @@ describe('Fumadocs site shell', () => {
     )
   })
 
+  it('keeps the Payload npm guide distinct, discoverable, and version-safe', async () => {
+    const [guide, docsMeta, docsIndex, installationGuide, sitemap] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'payload-cms-npm.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'index.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+    ])
+
+    expect(guide).toContain('seoTitle: "Payload CMS npm install: packages, setup, and fixes"')
+    expect(guide).toContain('command="npx create-payload-app@latest"')
+    expect(guide).toContain('npm install --save-exact payload @payloadcms/next')
+    expect(guide).toContain('@payloadcms/db-postgres')
+    expect(guide).toContain('@payloadcms/db-mongodb')
+    expect(guide).toContain('@payloadcms/db-sqlite')
+    expect(guide).toContain('npm ls payload @payloadcms/next @payloadcms/ui react react-dom')
+    expect(guide).toContain('npm dedupe')
+    expect(guide).toContain('command="npx payload-components add hero-basic"')
+    expect(guide).toMatch(/command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/)
+    expect(guide).toContain('[generated-types repair guide](/docs/payload-types-errors)')
+    expect(guide).toContain(
+      '[`generate:importmap` command reference](/docs/payload-generate-importmap)',
+    )
+    expect(guide).toContain('[Payload Components installation guide](/docs/installation)')
+    expect(docsMeta).toContain('"payload-cms-npm"')
+    expect(docsIndex).toContain('href="/docs/payload-cms-npm"')
+    expect(installationGuide).toContain('[Payload CMS npm setup guide](/docs/payload-cms-npm)')
+    expect(sitemap).toContain('source.getPages()')
+  })
+
+  it('keeps the Payload configuration guide distinct, discoverable, and actionable', async () => {
+    const [guide, docsMeta, docsIndex, installationGuide, sitemap] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'payload-configuration.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'index.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'installation.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'sitemap.ts'), 'utf8'),
+    ])
+
+    expect(guide).toContain('title: "Payload configuration: payload.config.ts setup and structure"')
+    expect(guide).toContain('seoTitle: "Payload configuration: payload.config.ts setup guide"')
+    expect(guide).toContain("import { buildConfig } from 'payload'")
+    expect(guide).toContain('collections: [Users, Media, Pages]')
+    expect(guide).toContain('admin.importMap.baseDir')
+    expect(guide).toContain('typescript: {')
+    expect(guide).toContain("outputFile: path.resolve(dirname, 'payload-types.ts')")
+    expect(guide).toContain('serverURL')
+    expect(guide).toContain('cors')
+    expect(guide).toContain('csrf')
+    expect(guide).toContain('command="pnpm payload generate:types"')
+    expect(guide).toContain('command="pnpm payload generate:importmap"')
+    expect(guide).toMatch(/command="npx payload-components add hero-basic"[\s\S]*\btrackInstall\b/)
+    expect(guide).toContain('[Payload CMS blocks guide](/docs/payload-blocks)')
+    expect(guide).not.toContain('blockComponents =')
+    expect(guide).not.toContain('npx create-payload-app')
+    expect(docsMeta).toContain('"payload-configuration"')
+    expect(docsIndex).toContain('href="/docs/payload-configuration"')
+    expect(installationGuide).toContain(
+      '[Payload configuration guide](/docs/payload-configuration)',
+    )
+    expect(sitemap).toContain('source.getPages()')
+  })
+
   it('keeps the Payload blocks guide implementation-led, discoverable, and product-true', async () => {
     const [
       guide,
@@ -878,6 +941,7 @@ describe('Fumadocs site shell', () => {
     const catalogPage = await readFile(path.join(repoRoot, 'src/app/components/page.tsx'), 'utf8')
     const registry = await readFile(path.join(repoRoot, 'content/docs/registry.mdx'), 'utf8')
     const {
+      catalogBlocksGuideLinkLabel,
       catalogDescription,
       catalogInstallationLinkLabel,
       catalogMetadataDescription,
@@ -888,15 +952,15 @@ describe('Fumadocs site shell', () => {
     expect(catalog).toContain('window.history.replaceState')
     expect(catalog).toContain("window.addEventListener('popstate'")
     expect(registry).not.toContain('sample content for docs and testing')
-    expect(catalogTitle).toBe('73 Payload CMS components and typed blocks')
+    expect(catalogTitle).toBe('77 Payload CMS components and typed blocks')
     expect(catalogDescription).toMatch(
       /heroes.*features.*pricing.*integrations.*stats.*FAQs.*content.*teams.*embeds.*footers/,
     )
-    expect(catalogDescription).toContain('Browse all 73')
+    expect(catalogDescription).toContain('Browse all 77')
     expect(catalogDescription).toContain('installable Payload CMS components')
     expect(catalogDescription).toContain('One CLI command')
     expect(catalogMetadataTitle).toContain('Payload CMS Components')
-    expect(catalogMetadataTitle).toContain('73')
+    expect(catalogMetadataTitle).toContain('77')
     expect(catalogMetadataDescription).toContain('npx payload-components add <component>')
     expect(catalogMetadataDescription).toContain('collection')
     expect(catalogMetadataDescription).toContain('renderer')
@@ -905,6 +969,9 @@ describe('Fumadocs site shell', () => {
     expect(catalogPage).toContain('href="/docs/installation"')
     expect(catalogPage).toContain('{catalogInstallationLinkLabel}')
     expect(catalogInstallationLinkLabel).toContain('one-command installation')
+    expect(catalogPage).toContain('href="/docs/payload-blocks"')
+    expect(catalogPage).toContain('{catalogBlocksGuideLinkLabel}')
+    expect(catalogBlocksGuideLinkLabel).toContain('config to live page')
   })
 
   it('gives nearby search surfaces distinct jobs and routes catalog intent to components', async () => {
@@ -920,8 +987,9 @@ describe('Fumadocs site shell', () => {
 
     expect(homeMetadataTitle).toBe('Payload Components: Wired Payload CMS Blocks in One Command')
     expect(blogTitle).toBe('Payload CMS block and installer guides')
-    expect(catalogMetadataTitle).toBe('73 Payload CMS Components & Blocks | Catalog')
+    expect(catalogMetadataTitle).toBe('77 Payload CMS Components & Blocks | Catalog')
     expect(docsIndex).toContain('seoTitle: CLI setup and architecture')
+    expect(docsIndex).toContain('title="Build and wire a block" href="/docs/payload-blocks"')
 
     for (const source of [aboutPage, blogPage, docsIndex, installationGuide, homepage]) {
       expect(source).toContain('/components')

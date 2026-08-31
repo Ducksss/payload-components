@@ -20,6 +20,10 @@ export const consentChangeEvent = 'pc-consent-change'
 /* Lives here rather than in analytics.ts so withdrawing consent can erase the
  * identifier without importing the analytics module (which imports this one). */
 export const distinctIdStorageKey = 'pc_distinct_id'
+/* Session-scoped because this is an entry path for the current browser visit,
+ * not a durable profile. Kept here so withdrawing consent can erase it without
+ * importing analytics.ts (which already imports this module). */
+export const organicEntryPageStorageKey = 'pc_organic_entry_page'
 /* GA4's own cookies. `_ga` and `_ga_<measurement-id>` are the current pair;
  * `_gid` / `_gat*` are legacy but cheap to sweep in case an older tag ran. */
 const analyticsCookiePrefixes = ['_ga', '_gid', '_gat'] as const
@@ -69,6 +73,20 @@ function clearAnalyticsCookies() {
   }
 }
 
+function clearAnalyticsStorage() {
+  try {
+    window.localStorage.removeItem(distinctIdStorageKey)
+  } catch {
+    // localStorage may be unavailable; consent is denied regardless.
+  }
+
+  try {
+    window.sessionStorage.removeItem(organicEntryPageStorageKey)
+  } catch {
+    // sessionStorage may be unavailable; consent is denied regardless.
+  }
+}
+
 export function privacySignalOptOut() {
   if (typeof navigator === 'undefined') return false
 
@@ -103,11 +121,7 @@ export function resolveConsent(): ConsentState | null {
      * pc_distinct_id behind: not sent while denied, but enough to re-link the
      * visitor to their old identity if they ever opt back in. Treat the signal
      * the same way as an explicit withdrawal and erase it. */
-    try {
-      window.localStorage.removeItem(distinctIdStorageKey)
-    } catch {
-      // Storage unavailable; analytics stays denied either way.
-    }
+    clearAnalyticsStorage()
 
     clearAnalyticsCookies()
 
@@ -122,14 +136,14 @@ export function setConsent(state: ConsentState) {
 
   try {
     window.localStorage.setItem(consentStorageKey, state)
-
-    // Opting out must also erase what the opt-in created, not merely stop
-    // adding to it — otherwise the visitor stays re-identifiable on return.
-    if (state === 'denied') window.localStorage.removeItem(distinctIdStorageKey)
   } catch {
     // Persisting is best-effort; the notification below still applies the
     // choice for this page view.
   }
+
+  // Opting out must also erase what the opt-in created, not merely stop adding
+  // to it — otherwise the visitor stays re-identifiable on return.
+  if (state === 'denied') clearAnalyticsStorage()
 
   // Same reasoning, for GA4's cookies rather than our own identifier. Runs
   // before the reload below so the tag cannot re-set them on the way out.

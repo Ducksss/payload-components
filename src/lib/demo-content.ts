@@ -26,6 +26,11 @@ export type HeroBasicDemoContent = {
 
 export type HeroVideoDemoContent = HeroBasicDemoContent
 
+export type HeroSplitDemoContent = Omit<HeroBasicDemoContent, 'proofItems'> & {
+  highlights: { label: string }[]
+  imagePosition?: 'left' | 'right'
+}
+
 export type HeroProductTiltDemoContent = HeroBasicDemoContent & {
   imageCaption?: string
 }
@@ -106,6 +111,17 @@ export type StatsProofDemoContent = {
   title: string
 }
 
+/* The form-free contact variant: the shared heading plus the channel grid and
+   an optional response-time note. Channel hrefs are resolved by the block at
+   render time, so the twin only needs the display strings. */
+export type ContactChannelsDemoContent = {
+  channels: { description?: string; label: string; value: string }[]
+  description?: string
+  eyebrow?: string
+  footnote?: string
+  title: string
+}
+
 export type ContactRoutingFormDemoContent = {
   channels: { description?: string; label: string; value: string }[]
   description?: string
@@ -133,6 +149,7 @@ export type LogoCloudDemoContent = {
    centered/boxed variants, and the email-form labels for the signup variant. */
 export type CtaDemoContent = {
   title: string
+  assurance?: string
   description?: string
   emailPlaceholder?: string
   links?: { link: DemoLinkData }[]
@@ -169,6 +186,23 @@ export const heroVideoDemoContent: HeroVideoDemoContent = {
     { label: 'No credit card' },
   ],
   title: 'See every customer signal as it happens.',
+}
+
+export const heroSplitDemoContent: HeroSplitDemoContent = {
+  description:
+    'Model the data once, then hand your team a workspace that reads clearly on the first look and holds up under a thousand rows.',
+  eyebrow: 'Acme Cloud · Platform',
+  highlights: [
+    { label: 'Typed end to end, from field to render' },
+    { label: 'Flip the visual per block, no second component' },
+    { label: 'Reviewable diff on every install' },
+  ],
+  links: [
+    { link: { appearance: 'default', label: 'Start free trial' } },
+    { link: { appearance: 'outline', label: 'Take the tour' } },
+  ],
+  imagePosition: 'right',
+  title: 'Ship the dashboard your customers keep open all day.',
 }
 
 export const heroProductTiltDemoContent: HeroProductTiltDemoContent = {
@@ -550,6 +584,42 @@ export const footerCenteredDemoContent: FooterDemoContent = {
     { label: 'Contact' },
   ],
   tagline: 'One governed metric layer for every team in the company.',
+}
+
+export const contactChannelsDemoContent: ContactChannelsDemoContent = {
+  channels: [
+    {
+      description: 'Implementation questions and existing workspaces.',
+      label: 'Product and support',
+      value: 'hello@example.com',
+    },
+    {
+      description: 'Pricing, procurement, and security review.',
+      label: 'Sales',
+      value: 'sales@example.com',
+    },
+    { description: 'Weekdays, 9am to 6pm Eastern.', label: 'Phone', value: '+1 555 0100' },
+    {
+      description: 'Live incident history and uptime.',
+      label: 'Status page',
+      value: 'status.example.com',
+    },
+    {
+      description: 'Guides, API reference, and changelog.',
+      label: 'Documentation',
+      value: '/docs',
+    },
+    {
+      description: 'Coordinated vulnerability disclosure.',
+      label: 'Security',
+      value: 'security@example.com',
+    },
+  ],
+  description:
+    'Every channel below is monitored by the team named on it — nothing routes through a shared triage inbox.',
+  eyebrow: 'Contact',
+  footnote: 'We answer support email within one business day.',
+  title: 'Reach the team that owns the answer.',
 }
 
 export const contactRoutingFormDemoContent: ContactRoutingFormDemoContent = {
@@ -987,6 +1057,17 @@ export const callToActionBoxedDemoContent: CtaDemoContent = {
   title: 'Bring your team to Acme.',
 }
 
+export const callToActionSplitDemoContent: CtaDemoContent = {
+  assurance: 'Free for 14 days. No card required.',
+  description:
+    'Start with a workspace today and invite your team when you are ready — no migration project required.',
+  links: [
+    { link: { appearance: 'default', label: 'Start free' } },
+    { link: { appearance: 'outline', label: 'Talk to sales' } },
+  ],
+  title: 'Ready to move your reporting onto Acme?',
+}
+
 export const callToActionSignupDemoContent: CtaDemoContent = {
   description:
     'Join the Acme newsletter for product updates, changelog highlights, and the occasional deep dive.',
@@ -1000,7 +1081,7 @@ export const callToActionSignupDemoContent: CtaDemoContent = {
    member grid (team-grid) a given variant uses. Member avatars are backend-free
    on the landing/docs previews, so the twins render presentational placeholders
    rather than real images — only names and roles carry into the preview. */
-export type TeamMemberDemo = { name: string; role: string }
+export type TeamMemberDemo = { bio?: string; name: string; role: string }
 
 export type TeamSectionDemoContent = {
   description?: string
@@ -1047,6 +1128,35 @@ export const teamGridDemoContent: TeamSectionDemoContent = {
     { name: 'Elijah Jones', role: 'Co-Founder & CTO' },
   ],
   title: 'Our dream team.',
+}
+
+export const teamBiosDemoContent: TeamSectionDemoContent = {
+  description:
+    'A small team with long tenure in analytics infrastructure — the same people you will talk to after you sign.',
+  eyebrow: 'Leadership',
+  members: [
+    {
+      bio: 'Previously led the reporting platform at Northwind. Maya sets product direction and still reviews every customer escalation personally.',
+      name: 'Maya Chen',
+      role: 'Chief Executive Officer',
+    },
+    {
+      bio: 'Built query infrastructure for two data platforms before Acme. Daniel owns reliability, and the on-call rotation he shares with the team.',
+      name: 'Daniel Okafor',
+      role: 'Chief Technology Officer',
+    },
+    {
+      bio: "Runs onboarding and solution architecture. Priya's team gets most workspaces to first dashboard inside a single afternoon.",
+      name: 'Priya Raman',
+      role: 'VP Customer Engineering',
+    },
+    {
+      bio: 'Responsible for the editor experience and the design system every Acme surface is built from.',
+      name: 'Tom Vasquez',
+      role: 'Head of Design',
+    },
+  ],
+  title: 'The people accountable for the platform.',
 }
 
 export type FaqIconKey = 'clock' | 'credit-card' | 'truck' | 'globe' | 'package' | 'help-circle'

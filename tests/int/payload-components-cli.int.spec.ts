@@ -366,6 +366,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       cwd: '/tmp/workspace',
       demo: false,
       dryRun: true,
+      localized: false,
       templateSlug: 'saas-launch',
     })
 
@@ -598,6 +599,25 @@ describe('payload-components CLI parsing and orchestration', () => {
       dryRun: true,
       fallback: false,
       force: false,
+    })
+  })
+
+  it('passes --localized through to add-template', async () => {
+    const commands = makeCommands()
+
+    await cli.runCli?.({
+      argv: ['add-template', 'saas-launch', '--localized'],
+      commands,
+      defaultCwd: '/tmp/workspace',
+      write: vi.fn(),
+    })
+
+    expect(commands.addTemplateCommand).toHaveBeenCalledWith({
+      cwd: '/tmp/workspace',
+      demo: false,
+      dryRun: false,
+      localized: true,
+      templateSlug: 'saas-launch',
     })
   })
 

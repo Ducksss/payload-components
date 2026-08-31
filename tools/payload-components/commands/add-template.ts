@@ -4,18 +4,20 @@ import { writeTemplateSeedScripts } from '../seed/template-seed'
 import { loadTemplateManifest, type TemplateInstallManifest } from '../templates'
 import { printHeader } from '../utils'
 
-import { addCommand } from './add'
+import { addCommand, warnWhenNoLocalesDeclared } from './add'
 import { getPayloadRunCommand } from './seed'
 
 const formatPlan = ({
   cwd,
   dryRun,
   installedNames,
+  localized,
   template,
 }: {
   cwd: string
   dryRun: boolean
   installedNames: string[]
+  localized: boolean
   template: TemplateInstallManifest
 }) => {
   const pending = template.components.filter((name) => !installedNames.includes(name))
@@ -35,6 +37,13 @@ const formatPlan = ({
       `  /${page.path} — ${page.label}`,
       `    ${page.components.join(' → ')}`,
     ]),
+    ...(localized
+      ? [
+          '',
+          'Localization:',
+          `  every block's text fields marked localized: true (${template.components.length} configs)`,
+        ]
+      : []),
   ]
 
   if (dryRun) {
@@ -55,11 +64,13 @@ export const addTemplateCommand = async ({
   cwd,
   demo = false,
   dryRun = false,
+  localized = false,
   templateSlug,
 }: {
   cwd: string
   demo?: boolean
   dryRun?: boolean
+  localized?: boolean
   templateSlug: string
 }) => {
   const template = await loadTemplateManifest(templateSlug)
@@ -73,14 +84,20 @@ export const addTemplateCommand = async ({
     .filter((entry) => entry.installed?.status === 'installed')
     .map(({ name }) => name)
 
-  printHeader(formatPlan({ cwd, dryRun, installedNames, template }))
+  printHeader(formatPlan({ cwd, dryRun, installedNames, localized, template }))
 
   if (dryRun) {
     return
   }
 
   for (const componentName of template.components) {
-    await addCommand({ componentName, cwd })
+    /* One notice for the template, not one per block: a 20-block template would
+       otherwise repeat the same locale warning 20 times. */
+    await addCommand({ componentName, cwd, deferLocaleNotice: true, localized })
+  }
+
+  if (localized) {
+    await warnWhenNoLocalesDeclared({ cwd, project })
   }
 
   printHeader(

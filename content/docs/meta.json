@@ -7,6 +7,8 @@
     "payload-blocks",
     "shadcn-vs-payload-components",
     "installation",
+    "payload-cms-npm",
+    "payload-configuration",
     "payload-cms-seed",
     "payload-types-errors",
     "first-block",
