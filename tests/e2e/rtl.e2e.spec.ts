@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+
 import { expect, test } from '@playwright/test'
 
 /* Right-to-left rendering.
@@ -31,6 +33,14 @@ const withDirection = async (page: import('@playwright/test').Page, slug: string
   await page.goto(`${baseURL}/components/preview/${slug}`)
   await page.evaluate((value) => document.documentElement.setAttribute('dir', value), dir)
 }
+
+/* Every preview slug, read as text so this spec never imports the demo React
+   modules — same approach as components-visual.e2e.spec.ts. */
+const registrySource = readFileSync(
+  new URL('../../src/components/site/demos/registry.ts', import.meta.url),
+  'utf8',
+)
+const slugs = [...registrySource.matchAll(/^\s+'([a-z0-9-]+)':/gm)].map((match) => match[1])
 
 test.describe('Right-to-left rendering', () => {
   /* Two components, two utilities, so a pass cannot come from one lucky element.
@@ -70,4 +80,35 @@ test.describe('Right-to-left rendering', () => {
       })
     })
   }
+
+  /* Mirroring a layout is where RTL usually breaks: a margin that used to push
+     content inward now pushes it off the other edge. The LTR contract already
+     forbids horizontal overflow (frontend.e2e.spec.ts); this holds every block
+     to the same bar with the direction flipped, across the whole catalog rather
+     than the two components asserted above. */
+  test('no block overflows horizontally under dir="rtl"', async ({ page }) => {
+    expect(slugs.length).toBeGreaterThan(50)
+
+    const overflowing: string[] = []
+
+    for (const slug of slugs) {
+      await withDirection(page, slug, 'rtl')
+
+      const overflow = await page.evaluate(() => {
+        const { documentElement: root } = document
+        return {
+          client: root.clientWidth,
+          scroll: root.scrollWidth,
+        }
+      })
+
+      /* 1px of slack absorbs sub-pixel rounding on fractional widths, the same
+         tolerance the LTR route walk uses. */
+      if (overflow.scroll > overflow.client + 1) {
+        overflowing.push(`${slug}: scrollWidth ${overflow.scroll} > clientWidth ${overflow.client}`)
+      }
+    }
+
+    expect(overflowing, `Horizontal overflow under RTL:\n${overflowing.join('\n')}`).toEqual([])
+  })
 })
