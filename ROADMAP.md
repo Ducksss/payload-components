@@ -11,8 +11,14 @@ direction, not a commitment. New contributors can start with
 
 ## Current State
 
-- The registry ships 67 installable page blocks across 12 families, with 8 post
-  components in development.
+- The registry ships 77 installable page blocks spanning the major
+  landing-page families, hero through footer (`payload-components/registry.json`
+  is the source of truth; the [catalog] renders the live inventory).
+  shadcn-native post components are scoped in the issue queue but none have
+  shipped yet.
+- The registry is listed in the official shadcn registry directory under the
+  `@payload-components` namespace ([#16], shipped 2026-06-24 via
+  shadcn-ui/ui#11006), so `shadcn add @payload-components/<item>` resolves.
 - `payload-components add` copies files, wires Payload, regenerates types, and
   records install state. It takes any number of components in one command, and
   `--localized` marks a block's text fields for Payload localization.
@@ -76,8 +82,9 @@ Each priority links representative issues; the [full queue][issues] has the rest
 
 Directions under consideration, not scheduled work:
 
-- Submit Payload Components to the shadcn registry index ([#16]).
-- Prove raw `shadcn` URL installs from a clean external project ([#15]).
+- Prove raw `shadcn` URL installs from a clean external project ([#15]) — the
+  fresh smoke's `--registry-url` path covers most of this; what remains is
+  closing the issue's exact acceptance criteria.
 
 ## Not Planned
 
@@ -86,6 +93,7 @@ Directions under consideration, not scheduled work:
 - No broad repo-shape support without a reproducible fixture.
 
 [issues]: https://github.com/Ducksss/payload-components/issues
+[catalog]: https://www.payload-components.xyz/components
 [gfi]: https://github.com/Ducksss/payload-components/labels/good%20first%20issue
 [ufg]: https://github.com/Ducksss/payload-components/labels/up-for-grabs
 [enh]: https://github.com/Ducksss/payload-components/labels/enhancement

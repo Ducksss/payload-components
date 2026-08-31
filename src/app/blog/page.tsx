@@ -12,6 +12,7 @@ import {
   componentEntries,
   feedMetadataAlternates,
   siteUrl,
+  siteOpenGraphDefaults,
 } from '@/lib/site'
 import { blogNode, breadcrumbNode, graph } from '@/lib/structured-data'
 
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
   description: blogDescription,
   alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates },
   openGraph: {
+    ...siteOpenGraphDefaults,
     title: blogTitle,
     description: blogDescription,
     url: `${siteUrl}/blog`,
@@ -67,7 +69,7 @@ export default function BlogIndex() {
   const posts = sortBlogPages()
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16">
+    <main id="main" className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16">
       <JsonLd data={blogStructuredData} />
       <header className="max-w-4xl">
         <p className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand-600">

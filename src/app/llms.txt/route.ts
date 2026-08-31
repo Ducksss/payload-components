@@ -50,11 +50,16 @@ export function GET() {
     '## Supported stack',
     ...stackItems.map((item) => `- ${item.label} (${item.detail})`),
     '',
+    '## Markdown and agent surfaces',
+    `Every docs page is also plain markdown — append \`.md\` to its URL (for example ${siteUrl}/docs/installation.md).`,
+    `The CLI ships a read-only MCP server for coding agents: \`npx payload-components mcp\` — see [CLI reference](${siteUrl}/docs/cli).`,
+    '',
     '## Installable components',
     /* Keep "<title>: <command>" intact (no backticks) — the GEO contract test
        in tests/e2e/geo.e2e.spec.ts pins that exact substring. */
     ...componentEntries.map(
-      (component) => `- ${component.title}: ${component.command} — ${component.description}`,
+      (component) =>
+        `- ${component.title}: ${component.command} — ${component.description} (${siteUrl}${component.href})`,
     ),
     '',
     '## Full-site template concepts',

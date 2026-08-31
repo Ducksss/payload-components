@@ -34,10 +34,10 @@ export const mcpCommand = async ({
       continue
     }
 
-    let request: JsonRpcRequest
+    let parsed: unknown
 
     try {
-      request = JSON.parse(trimmed) as JsonRpcRequest
+      parsed = JSON.parse(trimmed)
     } catch {
       writeLine(
         JSON.stringify({
@@ -49,21 +49,28 @@ export const mcpCommand = async ({
       continue
     }
 
-    if (request.jsonrpc !== '2.0' || typeof request.method !== 'string') {
+    /* `null`, numbers, strings, and arrays are valid JSON but not JSON-RPC
+     * frames; reading fields off them would throw and kill the whole loop. */
+    const record =
+      typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)
+        ? (parsed as Record<string, unknown>)
+        : null
+
+    if (!record || record.jsonrpc !== '2.0' || typeof record.method !== 'string') {
       writeLine(
         JSON.stringify({
           error: {
             code: JSON_RPC_ERRORS.invalidRequest,
             message: 'Expected a JSON-RPC 2.0 request with a string method.',
           },
-          id: request.id ?? null,
+          id: record?.id ?? null,
           jsonrpc: '2.0',
         }),
       )
       continue
     }
 
-    const response = await server.handle(request)
+    const response = await server.handle(record as unknown as JsonRpcRequest)
 
     if (response) {
       writeLine(JSON.stringify(response))

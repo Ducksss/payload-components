@@ -166,6 +166,12 @@
   --radius-card: calc(var(--radius) * 2);
   --radius-panel: calc(var(--radius) * 2.4);
   --radius-frame: calc(var(--radius) * 3.2);
+
+  /* Tailwind's own 2xl/3xl are static (1rem/1.5rem), so rounded-2xl/3xl blocks
+     ignored the catalog's radius preview knob. Same multiples as above resolve
+     to the identical defaults — bit-for-bit inert until --radius moves. */
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-3xl: calc(var(--radius) * 2.4);
 }
 
 @theme {
@@ -196,22 +202,8 @@
     0 0 0 1px oklch(0% 0 0deg / 4%), 0 2px 6px -1px oklch(0% 0 0deg / 7%),
     0 24px 48px -24px oklch(0% 0 0deg / 18%);
 
-  --animate-fade-rise: component-fade-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   --animate-line-in: component-line-in 0.3s ease-out both;
   --animate-caret: component-caret 1.1s steps(2, jump-none) infinite;
-  --animate-node-on: component-node-on 0.4s ease-out both;
-
-  @keyframes component-fade-rise {
-    from {
-      opacity: 0;
-      transform: translateY(14px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 
   @keyframes component-line-in {
     from {
@@ -233,16 +225,6 @@
 
     50% {
       opacity: 0;
-    }
-  }
-
-  @keyframes component-node-on {
-    from {
-      opacity: 0.25;
-    }
-
-    to {
-      opacity: 1;
     }
   }
 }
@@ -981,6 +963,18 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+  }
+
+  /* Keyboard focus must be visible on the monochrome palette. The outline-ring/50
+     default above only recolors outlines to a 50%-alpha light gray — far below the
+     3:1 non-text contrast floor — so plain links (header nav, footer, FAQ
+     summaries) focused invisibly. currentColor tracks the surface: muted links
+     focus in their own AA-safe text color, terminal-surface links in their light
+     foreground. Components that draw their own focus-visible ring still win —
+     utilities like focus-visible:outline-none outrank this base-layer rule. */
+  :focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
   }
 
   html {

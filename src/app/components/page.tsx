@@ -22,6 +22,7 @@ import {
   feedMetadataAlternates,
   githubRepoUrl,
   upcomingComponents,
+  siteOpenGraphDefaults,
 } from '@/lib/site'
 import { breadcrumbNode, catalogCollectionPageNode, graph } from '@/lib/structured-data'
 
@@ -30,6 +31,7 @@ export const metadata: Metadata = {
   title: catalogMetadataTitle,
   description: catalogMetadataDescription,
   openGraph: {
+    ...siteOpenGraphDefaults,
     description: catalogMetadataDescription,
     title: catalogMetadataTitle,
     type: 'website',
@@ -56,7 +58,7 @@ export default function ComponentsPage() {
       <JsonLd data={catalogStructuredData} />
       <SiteHeader activePath="/components" />
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="relative overflow-hidden border-b border-border">
           <div
             aria-hidden="true"

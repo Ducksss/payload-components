@@ -39,7 +39,9 @@ export const blogRoute = '/blog'
 export const feedRoute = '/feed.xml'
 export const aiDiscoveryRoute = '/docs/ai-discovery'
 export const feedMetadataAlternates = {
-  types: { 'application/rss+xml': feedRoute },
+  /* text/plain advertises /llms.txt to agents that only follow links from HTML —
+     nothing else on the site references it (robots.ts's typed shape cannot). */
+  types: { 'application/rss+xml': feedRoute, 'text/plain': '/llms.txt' },
 } as const
 export const blogTitle = 'Payload CMS block and installer guides'
 export const blogDescription =
@@ -69,6 +71,15 @@ export const pipelineStages = [
 
 export const siteDescription =
   'Payload Components is an MIT registry and CLI that installs typed Payload CMS blocks into Payload v3 + Next.js projects with config, render maps, types, and import maps wired.'
+
+/* Next 16 does not deep-merge page-level `openGraph` with the root layout's
+   nested fields, so any page that declares its own drops siteName/locale (and
+   the share card loses its "Payload Components" attribution). Spread this into
+   every page-level openGraph declaration. */
+export const siteOpenGraphDefaults = {
+  locale: 'en_US',
+  siteName: 'Payload Components',
+} as const
 
 /* The homepage lives in the same route segment as the root layout, so the
    '%s | Payload Components' title template never applies to it — whatever this

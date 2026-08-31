@@ -9,7 +9,6 @@ import {
   componentEntries,
   siteDescription,
   siteUrl,
-  upcomingComponents,
 } from '@/lib/site'
 
 /* Stable @id anchors. The Organization and WebSite nodes are emitted once,
@@ -44,14 +43,6 @@ export function websiteNode(): Node {
     description: siteDescription,
     inLanguage: 'en',
     name: 'Payload Components',
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${siteUrl}/api/search?query={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
-    },
     publisher: { '@id': organizationId },
     url: `${siteUrl}/`,
   }
@@ -170,14 +161,15 @@ export function breadcrumbNode(items: ReadonlyArray<{ name: string; path: string
 }
 
 /* The component catalog as an ItemList of SoftwareSourceCode entries. Installable
-   components link to their docs contract; in-development components point at the catalog. */
+   components only: the visible catalog also teases upcoming components, but the
+   list's name/description claim installable items, and upcoming entries have no
+   distinct URL — counting them inflated numberOfItems and emitted duplicate
+   /components ListItems. */
 export function catalogItemListNode(): Node {
-  const entries = [...componentEntries, ...upcomingComponents]
-
   return {
     '@type': 'ItemList',
     description: catalogDescription,
-    itemListElement: entries.map((component, index) => ({
+    itemListElement: componentEntries.map((component, index) => ({
       '@type': 'ListItem',
       item: {
         '@type': 'SoftwareSourceCode',
@@ -187,12 +179,12 @@ export function catalogItemListNode(): Node {
         name: component.title,
         programmingLanguage: 'TypeScript',
         runtimePlatform: 'Payload CMS v3, Next.js',
-        url: 'href' in component ? `${siteUrl}${component.href}` : `${siteUrl}/components`,
+        url: `${siteUrl}${component.href}`,
       },
       position: index + 1,
     })),
     name: 'Payload Components catalog',
-    numberOfItems: entries.length,
+    numberOfItems: componentEntries.length,
   }
 }
 

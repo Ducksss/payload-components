@@ -5,7 +5,7 @@ import { ConsentSettings } from '@/components/site/ConsentSettings'
 import { Section, SectionHeading } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
-import { feedMetadataAlternates } from '@/lib/site'
+import { feedMetadataAlternates, siteOpenGraphDefaults } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
 const description =
@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   title: 'Privacy',
   description,
   openGraph: {
+    ...siteOpenGraphDefaults,
     description,
     title: 'Privacy — Payload Components',
     type: 'website',
@@ -83,7 +84,7 @@ export default function PrivacyPage() {
     <>
       <JsonLd data={privacyStructuredData} />
       <SiteHeader />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <Section>
           <SectionHeading
             accentWord="measure"
