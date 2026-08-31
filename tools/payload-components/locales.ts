@@ -62,14 +62,6 @@ export const LOCALE_CATALOG: readonly LocaleDefinition[] = [
   { code: 'ur', label: 'اردو', rtl: true },
 ]
 
-/* Locale codes end up inside generated TypeScript, so the shape is validated
- * rather than trusted: a loose BCP-47 subset (`en`, `zh-TW`, `es-419`) catches
- * typos and makes it impossible for an argument to break out of the string
- * literal it is written into. Casing is not part of the check — a catalog match
- * canonicalizes it, and an unlisted code is written exactly as typed. Payload
- * itself would accept more; nothing real is excluded. */
-const LOCALE_CODE_PATTERN = /^[A-Za-z]{2,3}(?:-[A-Za-z\d]{2,8})*$/
-
 const catalogByCode = new Map(LOCALE_CATALOG.map((locale) => [locale.code, locale]))
 
 /* Case-insensitive lookup so `--locales EN,zh-tw` resolves, while the code that
@@ -88,6 +80,16 @@ export type ResolvedLocales = {
   locales: LocaleDefinition[]
 }
 
+const canonicalizeLocaleCode = (code: string) => {
+  try {
+    return Intl.getCanonicalLocales(code)[0]
+  } catch {
+    throw new Error(
+      `"${code}" is not a usable locale code. Use a language tag like "en", "zh", or "pt-BR".`,
+    )
+  }
+}
+
 export const parseLocaleCodes = (value: string) => {
   const codes = value
     .split(',')
@@ -98,27 +100,26 @@ export const parseLocaleCodes = (value: string) => {
     throw new Error('--locales needs at least one locale code, e.g. --locales en,zh.')
   }
 
-  for (const code of codes) {
-    if (!LOCALE_CODE_PATTERN.test(code)) {
-      throw new Error(
-        `"${code}" is not a usable locale code. Use a language tag like "en", "zh", or "pt-BR".`,
-      )
-    }
+  const canonical: string[] = []
+
+  for (const code of codes) canonical.push(canonicalizeLocaleCode(code))
+
+  /* Canonical tags deduplicate equivalent casing while retaining extensions
+     and private-use subtags the previous loose regex rejected. */
+  return [...new Set(canonical)]
+}
+
+const isRtlLocale = (code: string) => {
+  try {
+    return (
+      new Intl.Locale(code) as Intl.Locale & {
+        textInfo?: { direction?: string }
+      }
+    ).textInfo?.direction === 'rtl'
+  } catch {
+    /* Existing Payload configs may use arbitrary non-BCP-47 identifiers. */
+    return false
   }
-
-  /* Deduplicate on the canonical code, so `--locales en,EN` is one locale
-   * rather than a config Payload would reject. */
-  const seen = new Map<string, string>()
-
-  for (const code of codes) {
-    const canonical = findCatalogLocale(code)?.code ?? code
-
-    if (!seen.has(canonical.toLowerCase())) {
-      seen.set(canonical.toLowerCase(), canonical)
-    }
-  }
-
-  return [...seen.values()]
 }
 
 export const resolveLocales = ({
@@ -131,11 +132,16 @@ export const resolveLocales = ({
   const locales = codes.map((code) => {
     const known = findCatalogLocale(code)
 
-    return known ? { ...known } : { code, label: code }
+    return known
+      ? { ...known }
+      : { code, label: code, ...(isRtlLocale(code) ? { rtl: true } : {}) }
   })
-  const resolvedDefault = defaultLocale
-    ? (findCatalogLocale(defaultLocale)?.code ?? defaultLocale)
-    : locales[0]?.code
+  const resolvedDefault =
+    defaultLocale === undefined
+      ? locales[0]?.code
+      : (findCatalogLocale(defaultLocale)?.code ??
+        locales.find(({ code }) => code === defaultLocale)?.code ??
+        canonicalizeLocaleCode(defaultLocale))
 
   if (!resolvedDefault) {
     throw new Error('Localization needs at least one locale.')
@@ -158,8 +164,8 @@ export const resolveLocales = ({
  * installer writes into consumer projects.
  *
  * Correct in isolation rather than relying on its callers: no catalog label
- * contains any of these and codes are pattern-checked above, but a helper that
- * emits source has to survive whatever it is handed. Line terminators matter
+ * contains any of these, but a helper that emits source has to survive whatever
+ * it is handed. Line terminators matter
  * most — a raw newline, U+2028, or U+2029 inside a single-quoted literal is a
  * syntax error, not just ugly output. */
 const quote = (value: string) =>

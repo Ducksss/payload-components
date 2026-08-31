@@ -1,7 +1,15 @@
+import { access } from 'node:fs/promises'
+import path from 'node:path'
+
 import { compareInstalledFiles, resolveRecordedFileHashes } from '../component-files'
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest, selectPendingChangelog } from '../manifest'
-import { CANONICAL_HOST_FILES, detectProject, verifyInstalledPayloadFragments } from '../project'
+import {
+  CANONICAL_HOST_FILES,
+  detectProject,
+  LOCALIZE_HELPER_FILE,
+  verifyInstalledPayloadFragments,
+} from '../project'
 import { loadState } from '../state'
 
 import type { ChangelogEntry, InstallStateEntry, ResolvedHostFiles } from '../types'
@@ -56,6 +64,18 @@ const resolveComponentDiff = async ({
     localized,
     manifest: { files, registryItemName: manifest.registryItemName },
   })
+  /* The helper is shared, intentionally user-editable, and therefore has no
+   * source baseline. A localized config still imports it, so only its presence
+   * participates in drift reporting. */
+  const localizationHelperMissing =
+    localized &&
+    !(await access(path.join(cwd, LOCALIZE_HELPER_FILE)).then(
+      () => true,
+      () => false,
+    ))
+  const missingFiles = localizationHelperMissing
+    ? [...fileReport.missing, LOCALIZE_HELPER_FILE]
+    : fileReport.missing
   const fragmentCheck = await verifyInstalledPayloadFragments({ cwd, hostFiles, manifest }).catch(
     () => undefined,
   )
@@ -69,12 +89,12 @@ const resolveComponentDiff = async ({
     baselineAvailable: baselineHashes !== undefined,
     breakingUpdate: pendingChangelog.some((entry) => entry.breaking === true),
     isClean:
-      fileReport.missing.length === 0 &&
+      missingFiles.length === 0 &&
       baselineHashes !== undefined &&
       fileReport.modified.length === 0 &&
       !updateAvailable &&
       fragmentCheck?.isValid === true,
-    missingFiles: fileReport.missing,
+    missingFiles,
     missingFragments: fragmentCheck?.missingFragments ?? [],
     modifiedFiles: baselineHashes ? fileReport.modified : [],
     name: componentName,

@@ -126,14 +126,16 @@ const formatPlan = ({
     lines.push(`  ${configFileRelPath} (skipped — no buildConfig({ ... }) call found)`)
   } else {
     lines.push(
-      `  ${configFileRelPath} (skipped — its localization value is not an object literal)`,
+      `  ${configFileRelPath} (skipped — its localization config cannot be safely replaced)`,
     )
   }
 
   lines.push('', 'Blocks:')
 
   if (plans.length === 0 && skipped.length === 0) {
-    lines.push('  no recorded components — installs from here pick the locales up automatically')
+    lines.push(
+      '  no recorded components — use --localized on future installs, or re-run localize afterward',
+    )
   }
 
   for (const plan of plans) {
@@ -181,7 +183,12 @@ const formatNextSteps = ({
     ? (summary.locales.find(({ code }) => code !== summary.defaultLocale)?.code ??
       summary.defaultLocale)
     : '<locale>'
-  const runner = packageManager === 'npm' ? 'npx' : `${packageManager} exec`
+  const runner =
+    packageManager === 'npm'
+      ? 'npx'
+      : packageManager === 'bun'
+        ? 'bunx'
+        : `${packageManager} exec`
   /* The blocks express reading-order geometry logically, so they mirror on their
    * own — but only once something sets `dir`, and nothing in the install can do
    * that for you. Say it only when an RTL locale was actually chosen. */
@@ -202,14 +209,16 @@ const formatNextSteps = ({
           '',
           `  ${formatLocaleList(rtl)} ${rtl.length === 1 ? 'reads' : 'read'} right to left.`,
           '  The blocks mirror themselves, but only once your root layout sets dir:',
-          "       <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>",
+          `       const RTL_LOCALES = new Set(${JSON.stringify(rtl.map(({ code }) => code))})`,
+          "       <html lang={locale} dir={RTL_LOCALES.has(locale) ? 'rtl' : 'ltr'}>",
           '  Without it the page stays left-to-right and the mirroring never applies.',
         ]
       : []),
     '',
     '  Localizing a collection that already holds data changes how that data is',
-    '  stored. Back up and migrate before running this against a populated',
-    '  database — existing values land under the default locale.',
+    '  stored. Payload does not backfill existing values. Back up the database',
+    '  and explicitly migrate them into the default locale before applying the',
+    '  schema change.',
   ].join('\n')
 }
 
@@ -441,7 +450,7 @@ export const localizeCommand = async ({
   for (const plan of plans) {
     const configFiles = [...plan.pendingFiles, ...plan.blockedFiles]
 
-    if (configFiles.length > 0) {
+    if (configFiles.length > 0 || plan.alreadyWrapped.length > 0) {
       await copySharedSourceFile({ cwd, projectPath: LOCALIZE_HELPER_FILE })
     }
 

@@ -242,16 +242,17 @@ npx payload-components add-template saas-launch --localized
 
 On a template the locale notice is printed once for the run, not once per block.
 
-`localize` refuses rather than guesses in three cases, each exiting non-zero with the
-config or block left exactly as you wrote it: a config with no `buildConfig({ ... })` call,
-a `localization` value that is not an object literal, and an existing `localization` block
-that declares something else (`--force` replaces it). A block config with local edits is
-skipped the same way, because wrapping it would re-baseline your edit as pristine.
+`localize` refuses rather than guesses, exiting non-zero with the config or block left
+exactly as you wrote it. That includes a config with no `buildConfig({ ... })` call, a
+`localization` value it cannot safely replace (such as a reference, assertion, or later
+spread), and an existing direct `localization` block that declares something else
+(`--force` replaces that last shape). A block config with local edits is skipped the same
+way, because wrapping it would re-baseline your edit as pristine.
 
 <Callout type="warn">
-  Turning on localization changes how Payload stores the affected fields. Existing values
-  land under the default locale. Back up and migrate a database that already holds content
-  before adopting it, and run `--dry-run` first.
+  Turning on localization changes how Payload stores the affected fields. Payload does not
+  backfill existing values. Back up the database and explicitly migrate them into the default
+  locale before applying the schema change, and run `--dry-run` first.
 </Callout>
 
 See [Internationalization](/docs/localization) for the full story — what

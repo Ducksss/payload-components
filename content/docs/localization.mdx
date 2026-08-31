@@ -117,7 +117,7 @@ A block installed after the locales are declared can be wrapped in the same step
 npx payload-components add hero-basic --localized
 ```
 
-A whole template takes the same flag, so a fifteen-block site does not need a second pass:
+A whole template takes the same flag, so a multi-block site does not need a second pass:
 
 ```bash
 npx payload-components add-template saas-launch --localized
@@ -192,6 +192,10 @@ transform does not mirror with it.
 Content locales and the admin interface language are separate settings. The locales above
 decide what an editor can *write*; `i18n` decides what language the admin *chrome* is in:
 
+```bash
+pnpm add @payloadcms/translations
+```
+
 ```ts title="src/payload.config.ts"
 import { en } from '@payloadcms/translations/languages/en'
 import { zh } from '@payloadcms/translations/languages/zh'
@@ -204,17 +208,17 @@ export default buildConfig({
 })
 ```
 
-`localize` does not write this — which admin languages to ship is your call, and the import
-is a one-liner. Check `@payloadcms/translations/languages/` for the codes Payload ships;
-a content locale with no admin translation is fine, the chrome just stays in the fallback
+`localize` does not install the package or write this config — which admin languages to ship
+is your call. Check `@payloadcms/translations/languages/` for the codes Payload ships; a
+content locale with no admin translation is fine, the chrome just stays in the fallback
 language.
 
 ## Adopting it on a populated database
 
 <Callout type="warn">
-  Turning on localization changes how Payload stores the affected fields. Existing values
-  land under the default locale, and the change is not free to undo. Back up and migrate a
-  database that already holds content before running this, and run `--dry-run` first.
+  Turning on localization changes how Payload stores the affected fields. Payload does not
+  backfill existing values. Back up the database and explicitly migrate them into the default
+  locale before applying the schema change, and run `--dry-run` first.
 </Callout>
 
 `payload-components doctor` reports both halves once you have them, and names whichever
