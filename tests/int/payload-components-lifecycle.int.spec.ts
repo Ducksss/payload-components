@@ -5,12 +5,24 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type { ComponentManifest } from '../../tools/payload-components/types'
 
-import { compareInstalledFiles } from '../../tools/payload-components/component-files'
+import {
+  compareInstalledFiles,
+  copySharedSourceFile,
+} from '../../tools/payload-components/component-files'
 import { diffCommand } from '../../tools/payload-components/commands/diff'
 import { listCommand } from '../../tools/payload-components/commands/list'
 import { removeCommand } from '../../tools/payload-components/commands/remove'
-import { applyPayloadFragments } from '../../tools/payload-components/project'
-import { loadState, recordInstalledState, saveState } from '../../tools/payload-components/state'
+import {
+  applyLocalizedFields,
+  applyPayloadFragments,
+  LOCALIZE_HELPER_FILE,
+} from '../../tools/payload-components/project'
+import {
+  loadState,
+  recordInstalledState,
+  recordLocalizedInstall,
+  saveState,
+} from '../../tools/payload-components/state'
 
 import { createInstallFixtureForComponents } from './payload-components-fixture'
 
@@ -140,6 +152,37 @@ describe('diff', () => {
     expect(output).toContain('modified  src/blocks/HeroBasic/config.ts')
     expect(output).toContain('missing   src/blocks/HeroBasic/Component.tsx')
     expect(manifest.files).toContain('src/blocks/HeroBasic/config.ts')
+  })
+
+  it('requires the shared helper for localized installs without comparing its content', async () => {
+    const { fixtureDir } = await installFixture(['hero-basic'])
+    const configFile = 'src/blocks/HeroBasic/config.ts'
+
+    await copySharedSourceFile({ cwd: fixtureDir, projectPath: LOCALIZE_HELPER_FILE })
+    const rewrittenFiles = await applyLocalizedFields({
+      configFiles: [configFile],
+      cwd: fixtureDir,
+    })
+    await recordLocalizedInstall({
+      componentName: 'hero-basic',
+      cwd: fixtureDir,
+      rewrittenFiles,
+    })
+
+    const helperPath = path.join(fixtureDir, LOCALIZE_HELPER_FILE)
+    const read = captureStdout()
+
+    await writeFile(helperPath, '// consumer-owned helper edit\n', 'utf8')
+    await expect(diffCommand({ componentNames: ['hero-basic'], cwd: fixtureDir })).resolves.toBe(
+      true,
+    )
+
+    await rm(helperPath)
+
+    await expect(diffCommand({ componentNames: ['hero-basic'], cwd: fixtureDir })).resolves.toBe(
+      false,
+    )
+    expect(read()).toContain(`missing   ${LOCALIZE_HELPER_FILE}`)
   })
 
   it('ignores line-ending and trailing-whitespace differences', async () => {
