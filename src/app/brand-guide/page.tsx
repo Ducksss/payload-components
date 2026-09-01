@@ -5,7 +5,7 @@ import { HeadingAccent, Section, SectionHeading } from '@/components/site/sectio
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { Wordmark } from '@/components/site/Wordmark'
-import { feedMetadataAlternates } from '@/lib/site'
+import { feedMetadataAlternates, siteOpenGraphDefaults } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 import { cn } from '@/utilities/ui'
 
@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   title: 'Brand Guide',
   description,
   openGraph: {
+    ...siteOpenGraphDefaults,
     description,
     title: 'Payload Components Brand Guide',
     type: 'website',
@@ -83,7 +84,7 @@ function SwatchGrid({ swatches }: { swatches: readonly Swatch[] }) {
       {swatches.map((swatch) => (
         <div
           key={swatch.token}
-          className="overflow-hidden rounded-[1rem] border border-border bg-card shadow-[var(--shadow-card)]"
+          className="overflow-hidden rounded-inset border border-border bg-card shadow-[var(--shadow-card)]"
         >
           <div
             className={cn(
@@ -166,7 +167,7 @@ export default function BrandGuidePage() {
       <JsonLd data={brandStructuredData} />
       <SiteHeader />
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="hero-shell overflow-hidden border-b border-border/60">
           <div aria-hidden="true" className="hero-atmosphere" />
 
@@ -209,7 +210,7 @@ export default function BrandGuidePage() {
           />
 
           <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-            <div className="flex flex-col items-start justify-center gap-6 rounded-[1.25rem] border border-border bg-muted/30 p-8">
+            <div className="flex flex-col items-start justify-center gap-6 rounded-card border border-border bg-muted/30 p-8">
               <Wordmark withBadge />
               <p className="text-sm leading-6 text-muted-foreground">
                 The full lockup: the two-block mark, the wordmark, and the MIT badge. The blocks
@@ -218,8 +219,8 @@ export default function BrandGuidePage() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-4 rounded-[1.25rem] border border-border bg-card p-8">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            <div className="flex flex-col gap-4 rounded-card border border-border bg-card p-8">
+              <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                 Usage
               </p>
               <ul className="flex flex-col gap-3 text-sm leading-6 text-foreground/80">
@@ -261,7 +262,7 @@ export default function BrandGuidePage() {
 
           <div className="mt-10 flex flex-col gap-10">
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                 Base &amp; monochrome
               </p>
               <div className="mt-4">
@@ -270,7 +271,7 @@ export default function BrandGuidePage() {
             </div>
 
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                 Emerald accent &amp; tints
               </p>
               <div className="mt-4">
@@ -280,7 +281,7 @@ export default function BrandGuidePage() {
 
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
               <div>
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                   Status
                 </p>
                 <div className="mt-4">
@@ -288,7 +289,7 @@ export default function BrandGuidePage() {
                 </div>
               </div>
               <div>
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                   Terminal surfaces
                 </p>
                 <div className="mt-4">
@@ -309,8 +310,8 @@ export default function BrandGuidePage() {
           />
 
           <div className="mt-10 flex flex-col gap-4">
-            <div className="rounded-[1.25rem] border border-border bg-card p-6 sm:p-8">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            <div className="rounded-card border border-border bg-card p-6 sm:p-8">
+              <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                 Geist Sans · --font-sans
               </p>
               <p className="mt-4 font-sans text-4xl font-medium tracking-[-0.04em] text-foreground">
@@ -318,8 +319,8 @@ export default function BrandGuidePage() {
               </p>
             </div>
 
-            <div className="rounded-[1.25rem] border border-border bg-card p-6 sm:p-8">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            <div className="rounded-card border border-border bg-card p-6 sm:p-8">
+              <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                 Instrument Serif italic · --font-serif
               </p>
               <p className="mt-4 font-serif text-4xl font-normal italic tracking-[-0.015em] text-foreground">
@@ -327,8 +328,8 @@ export default function BrandGuidePage() {
               </p>
             </div>
 
-            <div className="rounded-[1.25rem] border border-border bg-card p-6 sm:p-8">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            <div className="rounded-card border border-border bg-card p-6 sm:p-8">
+              <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                 Geist Mono · --font-mono
               </p>
               <p className="mt-4 font-mono text-xl text-foreground/85">
@@ -349,8 +350,8 @@ export default function BrandGuidePage() {
 
           <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
             {/* Tracking */}
-            <div className="rounded-[1.25rem] border border-border bg-card p-6 sm:p-8">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            <div className="rounded-card border border-border bg-card p-6 sm:p-8">
+              <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                 Letter-spacing
               </p>
               <ul className="mt-5 flex flex-col divide-y divide-border">
@@ -372,8 +373,8 @@ export default function BrandGuidePage() {
 
             <div className="flex flex-col gap-6">
               {/* Radius */}
-              <div className="rounded-[1.25rem] border border-border bg-card p-6 sm:p-8">
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              <div className="rounded-card border border-border bg-card p-6 sm:p-8">
+                <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                   Radius
                 </p>
                 <ul className="mt-5 flex flex-col gap-3">
@@ -395,8 +396,8 @@ export default function BrandGuidePage() {
               </div>
 
               {/* Shadow */}
-              <div className="rounded-[1.25rem] border border-border bg-card p-6 sm:p-8">
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              <div className="rounded-card border border-border bg-card p-6 sm:p-8">
+                <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                   Shadow
                 </p>
                 <div className="mt-5 flex flex-wrap gap-5">
@@ -404,7 +405,7 @@ export default function BrandGuidePage() {
                     <div key={item.token} className="flex flex-col items-center gap-2.5">
                       <span
                         aria-hidden="true"
-                        className={cn('size-16 rounded-[1rem] bg-card', item.className)}
+                        className={cn('size-16 rounded-inset bg-card', item.className)}
                       />
                       <span className="font-mono text-[11px] text-muted-foreground">
                         {item.token}

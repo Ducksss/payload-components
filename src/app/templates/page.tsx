@@ -18,6 +18,7 @@ import {
   templatesMetadataDescription,
   templatesMetadataTitle,
   templatesTitle,
+  siteOpenGraphDefaults,
 } from '@/lib/site'
 import { templateShowcases } from '@/lib/templates/registry'
 import { TEMPLATE_CONCEPT_DISCLOSURE, TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
@@ -50,6 +51,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/templates' },
   description: templatesMetadataDescription,
   openGraph: {
+    ...siteOpenGraphDefaults,
     description: templatesMetadataDescription,
     title: templatesMetadataTitle,
     type: 'website',
@@ -86,7 +88,7 @@ export default function TemplatesPage() {
       <SiteHeader activePath="/templates" />
       <TemplateGalleryView />
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="relative overflow-hidden border-b border-border">
           <div
             aria-hidden="true"

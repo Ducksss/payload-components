@@ -4,11 +4,11 @@ This directory holds the in-repo registry, manifests, support matrix, and intern
 
 ## Goal
 
-Prove that real shadcn-compatible registry items can be wrapped by `payload-components add`, then wired into Payload and regenerated successfully. The shipped set now covers hero, feature, embed, content, logo-cloud, integration, call-to-action, and team page blocks.
+Wrap real shadcn-compatible registry items with `payload-components add`, wire them into Payload, and regenerate types and the admin import map — landing every install as one reviewable diff. The shipped catalog spans the major landing-page families — hero through pricing, testimonials, stats, and footer; the root `README.md` carries the full inventory, kept in sync with `registry.json` by test.
 
-## Viability Gate
+## Install contract
 
-The POC passes only if all of the following are true:
+Every installable page block must keep all of the following true — the release gate enforces them on every change:
 
 - Every installable page block installs through a real shadcn-compatible registry flow.
 - The install adds the block source files to the target project.
@@ -17,7 +17,7 @@ The POC passes only if all of the following are true:
 - The install runs `generate:types` and `generate:importmap` successfully.
 - A second install is idempotent.
 
-If any of those fail because of brittle repo patching or unreliable generation, we should stop and reconsider the product shape before building private registries, auth, or a larger component catalog.
+Brittle repo patching or unreliable generation is a release blocker, not a rough edge: fixes to the install contract land before catalog growth.
 
 Workspace reality: `payload-components add` installs components, `payload-components add --dry-run` validates and prints the same file, wiring, dependency, command, and state plan without mutating the target, `payload-components seed` writes an opt-in demo script for a fully installed component, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` delegates to `shadcn init` to create the `components.json` baseline for targets missing it. `payload-components add` expects that baseline and does not run init automatically as a side effect.
 
@@ -208,7 +208,7 @@ Normalized component blocks should:
 - `../public/r/`: ignored, generated public shadcn registry artifacts
 - `manifests/`: component manifests for the shipped and in-progress components
 - `schema/poc-manifest.schema.json`: manifest validation schema
-- `support-matrix.json`: supported repo-shape contract for the POC
+- `support-matrix.json`: the supported repo-shape contract
 - `templates/component-template/`: internal scaffolds for future component authoring
 
 ## Manual Smoke Test

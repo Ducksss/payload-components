@@ -22,6 +22,7 @@ import {
   templateCategoryLabels,
   templatesContribution,
   templatesRecipeIntro,
+  siteOpenGraphDefaults,
 } from '@/lib/site'
 import {
   getTemplateShowcase,
@@ -65,6 +66,7 @@ export async function generateMetadata({ params }: { params: DetailParams }): Pr
     alternates: { canonical: templateDetailHref(template.slug) },
     description: template.summary,
     openGraph: {
+      ...siteOpenGraphDefaults,
       description: template.summary,
       title,
       type: 'website',
@@ -109,7 +111,7 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
       <SiteHeader activePath="/templates" />
       <TemplateDetailView revision={template.revision} template={template.slug} />
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="relative overflow-hidden border-b border-border">
           <div
             aria-hidden="true"

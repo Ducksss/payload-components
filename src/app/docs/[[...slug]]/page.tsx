@@ -22,6 +22,7 @@ import {
   feedMetadataAlternates,
   githubContentBranch,
   githubRepoUrl,
+  siteOpenGraphDefaults,
 } from '@/lib/site'
 import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source'
 import {
@@ -67,6 +68,7 @@ export async function generateMetadata({ params }: DocsPageProps): Promise<Metad
     title,
     description: page.data.description,
     openGraph: {
+      ...siteOpenGraphDefaults,
       images: getPageImage(page).url,
       title,
       description: page.data.description,
