@@ -7,6 +7,8 @@ import { grantConsent } from './consent'
 
 import { blogTitle } from '../../src/lib/site'
 
+import { expectNoHorizontalOverflow } from './support/horizontal-overflow'
+
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 const blogRoot = path.resolve(import.meta.dirname, '../../content/blog')
 
@@ -84,11 +86,8 @@ test.describe('Blog editorial library', () => {
     await expect(cards.locator('img').nth(3)).toHaveAttribute('loading', 'lazy')
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `${baseURL}/blog`)
 
-    expect(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
-      ),
-    ).toBe(true)
+    const indexOverflow = await expectNoHorizontalOverflow(page, '/blog')
+    expect(indexOverflow.offenders, indexOverflow.message).toEqual([])
   })
 
   test('every article renders complete shared chrome, metadata, figures, and related reading', async ({
@@ -140,11 +139,8 @@ test.describe('Blog editorial library', () => {
         url: `${baseURL}/blog/${post.slug}`,
       })
 
-      expect(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
-        ),
-      ).toBe(true)
+      const postOverflow = await expectNoHorizontalOverflow(page, `/blog/${post.slug}`)
+      expect(postOverflow.offenders, postOverflow.message).toEqual([])
     }
   })
 
