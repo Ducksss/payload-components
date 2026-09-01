@@ -1,7 +1,21 @@
 {
   "name": "payload-components",
   "version": "1.0.0",
-  "description": "Fumadocs-powered docs and registry tooling for installable Payload CMS components.",
+  "description": "MIT registry and CLI for installing wired Payload CMS blocks into Payload v3 + Next.js projects.",
+  "keywords": [
+    "payload",
+    "payload-cms",
+    "payloadcms",
+    "nextjs",
+    "react",
+    "shadcn",
+    "tailwindcss",
+    "typescript",
+    "cms",
+    "component-library",
+    "open-source",
+    "open-source-projects"
+  ],
   "license": "MIT",
   "homepage": "https://www.payload-components.xyz",
   "repository": {
@@ -12,6 +26,24 @@
     "url": "https://github.com/Ducksss/payload-components/issues"
   },
   "type": "module",
+  "files": [
+    "bin/",
+    "tools/payload-components/cli.ts",
+    "tools/payload-components/commands/",
+    "tools/payload-components/constants.ts",
+    "tools/payload-components/dependencies.ts",
+    "tools/payload-components/manifest.ts",
+    "tools/payload-components/project.ts",
+    "tools/payload-components/registry.ts",
+    "tools/payload-components/state.ts",
+    "tools/payload-components/types.ts",
+    "tools/payload-components/utils.ts",
+    "payload-components/registry.json",
+    "payload-components/manifests/",
+    "payload-components/schema/",
+    "payload-components/source/",
+    "payload-components/support-matrix.json"
+  ],
   "bin": {
     "payload-components": "./bin/payload-components.mjs"
   },
@@ -56,7 +88,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "semver": "^7.7.4",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "tsx": "4.22.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -73,7 +106,6 @@
     "postcss": "^8.5.14",
     "prettier": "^3.4.2",
     "tailwindcss": "^4.1.18",
-    "tsx": "4.22.4",
     "typescript": "5.7.3",
     "vite": "7.3.5",
     "vite-tsconfig-paths": "6.0.5",

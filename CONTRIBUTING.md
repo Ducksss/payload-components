@@ -61,8 +61,10 @@ Local API.
 
 - `main` is the production release line.
 - `dev` is the staging line where stable feature branches are collected.
-- Feature branches, including `v2`, should target `dev` first.
-- Promote from `dev` to `main` only after the release gate passes.
+- Fork the repository before contributing.
+- Create feature branches from `dev`.
+- Open pull requests into `dev`.
+- Maintainers promote from `dev` to `main` only after the release gate passes.
 
 ## Verification
 

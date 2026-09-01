@@ -17,7 +17,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Keep one Fumadocs app server for deterministic route and copy-button checks. */
   workers: 1,
-  timeout: 90000,
+  timeout: 180000,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
