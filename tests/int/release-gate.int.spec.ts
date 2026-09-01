@@ -282,6 +282,10 @@ describe('package publish guard', () => {
     expect(workflow).toContain('tools/payload-components/publish-guard.ts')
     expect(workflow).toContain('pnpm install --frozen-lockfile --ignore-scripts')
     expect(workflow).toContain('npm install --global bun@1.3.14')
+    expect(workflow).toContain(
+      'pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10',
+    )
+    expect(workflow).not.toContain('pnpm/action-setup@v6')
 
     const fetchCandidateIndex = workflow.indexOf('Fetch candidate release tag')
     const trustedInstallIndex = workflow.indexOf('Install trusted guard dependencies')
