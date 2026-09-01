@@ -104,28 +104,36 @@ measurable. All four mechanisms, ordered by signal value.
 
 ## Phase 1 — Credible catalog + an install you can trust (parallel tracks)
 
-### Track A — Catalog to ~9 kits (the "mix")
+### Track A — Catalog to ~10 kits (starter parity + editorial primitives)
 
 Build the five-part bundle for each kit (source + manifest + registry entry + docs
 + installer test/sampleContent), scaffolding from `payload-kits/templates/alpha-kit/`,
 then register it in `src/lib/site.ts` and the catalog.
 
-Priority order — **page blocks first**, because they showcase the wiring:
+Priority order — **starter parity and post authoring before marketing breadth**.
+The research note lives at
+`docs/research/payload-pages-posts-needs.md`.
+Current Payload starter drawers are the baseline: Pages expose `Call to Action`,
+`Content`, `Media Block`, `Archive`, and `Form Block`; Posts expose `Code`,
+`Media Block`, and `Banner`.
 
 | # | Kit | Type | Why | Notes |
 |---|---|---|---|---|
 | ✓ | hero-basic | page block | shipped | |
 | ✓ | feature-grid-basic | page block | shipped | |
-| 1 | **cta-basic** | page block | Universal; cleanest second wiring demo | independent |
-| 2 | **pricing-basic** | page block | High value on every marketing site | independent |
-| 3 | **faq-basic** | page block | Common, structured, easy win | independent |
-| 4 | **post-card** | post component | Foundation of the editorial story | archive depends on it |
-| 5 | **post-archive** | post component | The "list of posts" surface | needs post-card |
-| 6 | **post-hero** | post component | Post header | independent |
-| 7 | **author-card** | post component | Byline / social proof | independent |
+| 1 | **content-basic** | page block | Official starter parity; every page needs prose/columns | likely shared base for content variants |
+| 2 | **media-block** | page + post authoring | Official starter parity; pages and posts both need media/captions | first dual-context target candidate |
+| 3 | **cta-basic** | page block | Universal; clean wiring demo | independent |
+| 4 | **embed-basic** | page + post authoring | Missing primitive for YouTube/Vimeo/maps/forms/widgets | PRD: `docs/prds/embed-basic.md`; controlled iframe allowlist, no raw HTML |
+| 5 | **banner-callout** | page + post authoring | Official post pattern; notices/promos/warnings | useful in Lexical |
+| 6 | **code-block** | post authoring | Official post pattern; important for dev/content sites | Lexical block |
+| 7 | **archive-basic** | page block | Official starter parity; list posts/news/projects | can reuse post-card later |
+| 8 | **post-card** | post component | Foundation of archive/related surfaces | archive depends on it |
+| 9 | **post-archive** | post component | The "list of posts" surface | needs post-card |
+| 10 | **post-hero** | post component | Article header | independent |
 
-Stretch if fast: `testimonial-basic` (page block) or `newsletter-callout` (post
-component — pairs naturally with the 0.1 email capture).
+Stretch if fast: `author-card`, `faq-basic`, or `pricing-basic`. Do not ship a
+raw HTML block in alpha; `embed-basic` covers the real iframe need more safely.
 
 ### Track B — Stop the installer failing silently (launch-blocker only)
 
@@ -145,6 +153,10 @@ brittle closing-brace heuristic, string-match verification) and
 3. **Recoverable.** A `--force` / `payload-kit recover` path that reads `partial`
    state and completes or rolls back, instead of a wedged "already installed"
    dead-end.
+4. **Posts rich-text patcher.** When the first post authoring block ships
+   (`media-block`, `embed-basic`, `banner-callout`, or `code-block`), add the
+   scoped `Posts/index.ts` Lexical `BlocksFeature` wiring path. Do not build it
+   speculatively before that kit forces the shape.
 
 **Deferred to Phase 3** (gated on demand): AST-based wiring, multi-target support
 beyond `payload-website-starter`, and removing the hardcoded POC env defaults from
@@ -231,8 +243,9 @@ kit-request / roadmap item.
 - **Expand supported targets** beyond `payload-website-starter` once telemetry shows
   what real repos actually look like.
 - **Harden the installer** to AST-based wiring once install volume justifies it.
-- **Finish the remaining post components** (post-list, featured-post, related-posts,
-  newsletter-callout) as demand pulls them.
+- **Finish the remaining post authoring and presentation kits** (`table-basic`,
+  `download-block`, `post-list`, `featured-post`, `share-bar`, `post-toc`,
+  `newsletter-callout`) as demand pulls them.
 
 ---
 
@@ -244,13 +257,17 @@ The unit is **family × variant × install mode** — every kit belongs to a fam
 and a family is one shared field base plus N variants (the model proven by
 `hero-basic` + `payload-kits/source/blocks/shared/heroFields.ts`).
 
-### Two install modes
+### Three install modes
 
 - **Page blocks** — installed with full Payload wiring (Pages collection + render
   map + `generate:types` + import map). This is the differentiator; **lead with
   these.** Each page-block family shares a field base so its variants don't diverge.
-- **Post components** — file-only shadcn-native installs for the Posts collection,
-  no block wiring. Lower effort, lower differentiation; they add breadth.
+- **Post authoring blocks** — installed into the Posts rich-text editor through
+  Lexical `BlocksFeature`. These are the real editorial need: media, code,
+  callout/banner, embed, table/comparison, downloads, related posts.
+- **Post presentation components** — file-only shadcn-native installs for archive,
+  card, hero, byline, share, and footer surfaces. Useful, but they sit around the
+  post instead of improving the editor.
 
 ### The family map
 
@@ -261,12 +278,21 @@ and a family is one shared field base plus N variants (the model proven by
 | Hero | `hero-basic` ✓ · `hero-split` · `hero-media` · `hero-dramatic` | `heroFields` ✓ |
 | Feature | `feature-grid-basic` ✓ · `feature-split` · `feature-bento` · `feature-steps` | `featureFields` (extract next) |
 | CTA | `cta-basic` · `cta-banner` · `cta-split` | `ctaFields` |
+| Content / media | `content-basic` · `content-columns` · `media-block` · `media-content` | `contentFields` / `mediaField` |
+| Embed | `embed-basic` | `embedFields` |
+| Archive / query | `archive-basic` · `related-posts` | `postSummaryFields` |
 | Pricing | `pricing-basic` (tiers) · `pricing-comparison` · `pricing-single` | `pricingFields` |
 | Social proof | `testimonial-basic` · `testimonial-grid` · `logo-cloud` · `stats-band` | mixed |
 | FAQ | `faq-basic` (accordion) · `faq-grid` | `faqFields` |
-| Content / media (Payload starter parity) | `content-columns` · `media-block` · `banner` · `code-block` | — |
+| Editorial utility | `banner-callout` · `code-block` · `download-block` · `table-basic` | — |
 | Team | `team-grid` · `team-member` | — |
 | Forms | `form-block` (form-builder) · `newsletter-inline` · `contact-split` | — |
+
+**Post authoring blocks (Lexical `BlocksFeature`)**
+
+`media-block` · `code-block` · `banner-callout` · `embed-basic` · `table-basic` ·
+`download-block` · `related-posts`. These need Posts collection editor wiring,
+not just file copies.
 
 **Post components (file-only)**
 
@@ -283,19 +309,23 @@ and a family is one shared field base plus N variants (the model proven by
 ### Build waves
 
 Waves are the *component* sequence; they feed the GTM phases above (Wave 1 ≈
-Phase 1 · Track A). Page blocks before post components — the wiring is the moat.
+Phase 1 · Track A). Starter parity and post authoring blocks come before generic
+marketing breadth.
 
 | Wave | Build | Maps to |
 |---|---|---|
-| **1 — Launch catalog** | `cta-basic`, `pricing-basic`, `faq-basic`, `testimonial-basic` (page) + `post-card`, `post-archive`, `post-hero`, `author-card` (posts) | Phase 1 · Track A |
-| **2 — Depth via variants** | `hero-split`, `hero-media`; `feature-split`, `feature-bento`; extract `featureFields` / `ctaFields`; `content-columns` + `media-block` | post-launch — the payoff of the shared-base model |
-| **3 — Breadth** | remaining posts (`post-list`, `featured-post`, `related-posts`, `newsletter-callout`), `team-grid`, `logo-cloud`, `stats-band`, `form-block` | Phase 3 · build on demand (vote-for-next-kit picks order) |
-| **4 — Chrome & advanced** | `header` / nav, `footer`, `pricing-comparison`, multi-target support | gated on volume (Phase 3) |
+| **1 — Starter parity + embed** | `content-basic`, `media-block`, `cta-basic`, `embed-basic`, `banner-callout`, `code-block`, `archive-basic` | Phase 1 · Track A |
+| **2 — Post surfaces** | `post-card`, `post-archive`, `post-hero`, `author-card`, `related-posts` | Phase 1 · Track A / early Phase 3 |
+| **3 — Marketing breadth** | `faq-basic`, `pricing-basic`, `testimonial-basic`, `logo-cloud`, `stats-band`, `form-block` | Phase 3 · build on demand |
+| **4 — Depth via variants** | `hero-split`, `hero-media`; `feature-split`, `feature-bento`; `content-columns`, `media-content`, `cta-banner`; extract shared field bases | post-launch — the payoff of the shared-base model |
+| **5 — Chrome & advanced** | `header` / nav, `footer`, `pricing-comparison`, raw HTML, multi-target support | gated on volume and security posture |
 
 ### Sequencing rules
 
-- **Page blocks before post components** — they exercise the wiring, which is the
-  core pitch. Post components grow the count but not the differentiator.
+- **Authoring primitives before presentation components** — they match Payload's
+  official starter and improve what editors do all day.
+- **Controlled embed before raw HTML** — iframe embeds are necessary; arbitrary
+  HTML is a security and rendering support burden.
 - **Within a family: base first, then extract, then variants.** Ship the `-basic`
   base, extract its shared field base (the `heroFields` step), *then* add variants
   that compose it. A second variant is cheap once the base exists; a one-variant
