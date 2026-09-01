@@ -16,15 +16,17 @@ function timestamp(value: Date | string) {
   return new Date(value).getTime()
 }
 
-export function sortBlogPages(pages: readonly BlogPage[] = blogSource.getPages()) {
+export function sortBlogPages(pages: readonly BlogPage[] = blogSource.getPages('en')) {
   return [...pages].sort((a, b) => {
     const dateDifference = timestamp(b.data.date) - timestamp(a.data.date)
     return dateDifference || a.data.publicationOrder - b.data.publicationOrder
   })
 }
 
-export function getRelatedPosts(current: BlogPage, limit = 3) {
-  const pages = blogSource.getPages().filter((page) => page.url !== current.url)
+export function getRelatedPosts(current: BlogPage, locale = 'en', limit = 3) {
+  const pages = blogSource
+    .getPages(locale)
+    .filter((page) => page.slugs.join('/') !== current.slugs.join('/'))
   const byDistance = (a: BlogPage, b: BlogPage) => {
     const aDistance = Math.abs(a.data.publicationOrder - current.data.publicationOrder)
     const bDistance = Math.abs(b.data.publicationOrder - current.data.publicationOrder)

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { CheckCircle2 } from 'lucide-react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -10,9 +11,14 @@ const copiedTimers = new WeakMap<HTMLButtonElement, number>()
 const alertDurationMs = 2200
 
 export function CommandCopyController() {
+  const t = useTranslations('Common')
   const [alertKey, setAlertKey] = useState(0)
   const [showAlert, setShowAlert] = useState(false)
   const alertTimer = useRef<number | null>(null)
+  /* The confirmed label is swapped in imperatively, so it has to be captured
+     here rather than read from a translation hook inside the DOM listener. */
+  const copiedLabel = t('copied')
+  const defaultLabel = t('copy')
 
   useEffect(() => {
     const showCopiedAlert = () => {
@@ -27,7 +33,7 @@ export function CommandCopyController() {
       delete button.dataset.copied
       button
         .querySelector('[data-copy-label]')
-        ?.replaceChildren(button.dataset.copyDefaultLabel ?? 'Copy')
+        ?.replaceChildren(button.dataset.copyDefaultLabel ?? defaultLabel)
     }
 
     const clipboard = navigator.clipboard
@@ -69,7 +75,7 @@ export function CommandCopyController() {
       }
 
       button.dataset.copied = 'true'
-      button.querySelector('[data-copy-label]')?.replaceChildren('Copied')
+      button.querySelector('[data-copy-label]')?.replaceChildren(copiedLabel)
       if (button.dataset.trackInstall === 'true') {
         trackInstallCommandCopy(command)
       }
@@ -106,7 +112,7 @@ export function CommandCopyController() {
       }
       if (alertTimer.current) window.clearTimeout(alertTimer.current)
     }
-  }, [])
+  }, [copiedLabel, defaultLabel])
 
   if (!showAlert) return null
 
@@ -116,8 +122,8 @@ export function CommandCopyController() {
       className="pointer-events-none fixed right-4 bottom-4 z-50 w-[calc(100vw-2rem)] max-w-sm shadow-card sm:right-6 sm:bottom-6"
     >
       <CheckCircle2 aria-hidden="true" />
-      <AlertTitle>Copied</AlertTitle>
-      <AlertDescription>Copied to clipboard.</AlertDescription>
+      <AlertTitle>{copiedLabel}</AlertTitle>
+      <AlertDescription>{t('copiedDescription')}</AlertDescription>
     </Alert>
   )
 }

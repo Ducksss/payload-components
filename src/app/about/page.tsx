@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
-import Link from 'next/link'
+import Link from '@/i18n/Link'
+import { getTranslations } from 'next-intl/server'
 
 import { ArrowRight, Square } from 'lucide-react'
 
@@ -11,6 +12,8 @@ import { HeadingAccent, Section, SectionHeading } from '@/components/site/sectio
 import { ClientShowcase } from '@/components/site/sections/ClientShowcase'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
+import { localeAlternates, localeDetails, localizeHref } from '@/i18n/config'
+import { getSiteLocale } from '@/lib/i18n'
 import {
   feedMetadataAlternates,
   githubIssuesUrl,
@@ -21,33 +24,30 @@ import {
 } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
-const description =
-  'Why Payload Components exists: stop rebuilding the same Payload blocks, rewiring them by hand, and re-proving every install across freelance projects.'
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'PageMetadata.about' })
+  const canonical = localizeHref('/about', locale)
 
-export const metadata: Metadata = {
-  alternates: { canonical: '/about', ...feedMetadataAlternates },
-  title: 'About',
-  description,
-  openGraph: {
-    ...siteOpenGraphDefaults,
-    description,
-    title: 'About Payload Components',
-    type: 'website',
-    url: '/about',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    description,
-    title: 'About Payload Components',
-  },
+  return {
+    alternates: { canonical, languages: localeAlternates('/about'), ...feedMetadataAlternates },
+    title: t('title'),
+    description: t('description'),
+    openGraph: {
+      ...siteOpenGraphDefaults,
+      description: t('description'),
+      locale: localeDetails[locale].openGraphLocale,
+      title: t('openGraphTitle'),
+      type: 'website',
+      url: canonical,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      description: t('description'),
+      title: t('openGraphTitle'),
+    },
+  }
 }
-
-const aboutStructuredData = graph(
-  breadcrumbNode([
-    { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
-  ]),
-)
 
 /* The grunt-work loop, deliberately unchecked — the landing's wiring
    ledger shows the same items checked off by the installer. */
@@ -62,7 +62,15 @@ const pasteChecklist = [
 /* The install pipeline, in the order `payload-components add` runs it —
    mirrors terminalDemoLines in lib/site; the section closes by noting all
    five land as one reviewable diff. */
-export default function AboutPage() {
+export default async function AboutPage() {
+  const locale = await getSiteLocale()
+  const aboutStructuredData = graph(
+    breadcrumbNode([
+      { name: locale === 'zh' ? '首页' : 'Home', path: localizeHref('/', locale) },
+      { name: locale === 'zh' ? '关于' : 'About', path: localizeHref('/about', locale) },
+    ]),
+  )
+
   return (
     <>
       <JsonLd data={aboutStructuredData} />

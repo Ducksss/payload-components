@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 
 import { JsonLd } from '@/components/seo/JsonLd'
 import { ParallaxController } from '@/components/site/ParallaxController'
@@ -11,26 +12,38 @@ import { WiringSection } from '@/components/site/sections/WiringSection'
 import { WorkflowSection } from '@/components/site/sections/WorkflowSection'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
-import { feedMetadataAlternates, homeMetadataDescription, homeMetadataTitle } from '@/lib/site'
+import { localeDetails, localizeHref } from '@/i18n/config'
+import { getSiteLocale } from '@/lib/i18n'
+import { feedMetadataAlternates } from '@/lib/site'
 import { faqNode, graph, softwareApplicationNode } from '@/lib/structured-data'
 
-export const metadata: Metadata = {
-  alternates: { canonical: '/', ...feedMetadataAlternates },
-  description: homeMetadataDescription,
-  openGraph: {
-    description: homeMetadataDescription,
-    locale: 'en_US',
-    siteName: 'Payload Components',
-    title: homeMetadataTitle,
-    type: 'website',
-    url: '/',
-  },
-  title: homeMetadataTitle,
-  twitter: {
-    card: 'summary_large_image',
-    description: homeMetadataDescription,
-    title: homeMetadataTitle,
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'HomeMetadata' })
+  const canonical = localizeHref('/', locale)
+
+  return {
+    alternates: {
+      canonical,
+      languages: { en: '/', 'zh-CN': '/zh', 'x-default': '/' },
+      ...feedMetadataAlternates,
+    },
+    description: t('description'),
+    openGraph: {
+      description: t('description'),
+      locale: localeDetails[locale].openGraphLocale,
+      siteName: 'Payload Components',
+      title: t('title'),
+      type: 'website',
+      url: canonical,
+    },
+    title: t('title'),
+    twitter: {
+      card: 'summary_large_image',
+      description: t('description'),
+      title: t('title'),
+    },
+  }
 }
 
 /* SoftwareApplication answers "what is Payload Components" for AI engines; FAQPage

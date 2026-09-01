@@ -1,5 +1,7 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
+
 import { privacySignalOptOut, setConsent } from '@/lib/consent'
 
 import { useConsent } from './useConsent'
@@ -13,6 +15,7 @@ const primaryButtonClass =
  * privacy page carries the live state and both switches. Rendered as a status
  * region: the text changes under the visitor without moving focus. */
 export function ConsentSettings() {
+  const t = useTranslations('Privacy.settings')
   const consent = useConsent()
 
   if (consent === undefined) {
@@ -30,24 +33,24 @@ export function ConsentSettings() {
     >
       <p className="text-sm text-muted-foreground" role="status">
         {signalled
-          ? 'Your browser sends a privacy signal (Global Privacy Control or Do Not Track), so Google Analytics and PostHog stay off and this cannot be overridden here.'
+          ? t('privacySignal')
           : consent === 'granted'
-            ? 'Google Analytics and PostHog are currently on.'
+            ? t('on')
             : consent === 'denied'
-              ? 'Google Analytics and PostHog are currently off.'
-              : 'You have not chosen yet, so Google Analytics and PostHog are off.'}
+              ? t('off')
+              : t('undecided')}
       </p>
       {signalled ? null : (
         <div className="flex flex-wrap gap-2">
           <button className={buttonClass} onClick={() => setConsent('denied')} type="button">
-            Turn analytics off
+            {t('turnOff')}
           </button>
           <button
             className={primaryButtonClass}
             onClick={() => setConsent('granted')}
             type="button"
           >
-            Turn analytics on
+            {t('turnOn')}
           </button>
         </div>
       )}

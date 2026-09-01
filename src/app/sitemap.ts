@@ -1,10 +1,23 @@
 import type { MetadataRoute } from 'next'
 
+import { localizeHref } from '@/i18n/config'
 import { siteUrl } from '@/lib/site'
 import { source } from '@/lib/source'
 import { blogSource } from '@/lib/blog-source'
 import { sortBlogPages } from '@/lib/blog'
 import { templateDetailHref, templateShowcases } from '@/lib/templates/registry'
+
+function localizedEntry(path: string) {
+  return {
+    alternates: {
+      languages: {
+        en: `${siteUrl}${localizeHref(path, 'en')}`,
+        'zh-CN': `${siteUrl}${localizeHref(path, 'zh')}`,
+      },
+    },
+    url: `${siteUrl}${localizeHref(path, 'en')}`,
+  }
+}
 
 /* Static marketing routes. The /docs index and every component/guide page come
    from the Fumadocs source below, so they are intentionally absent here. */
@@ -25,14 +38,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const marketing: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
     changeFrequency: route.changeFrequency,
     priority: route.priority,
-    url: `${siteUrl}${route.path}`,
+    ...localizedEntry(route.path),
   }))
 
-  const docs: MetadataRoute.Sitemap = source.getPages().map((page) => ({
+  const docs: MetadataRoute.Sitemap = source.getPages('en').map((page) => ({
     changeFrequency: 'weekly',
     // The docs landing carries more weight than an individual guide.
     priority: page.url === '/docs' ? 0.8 : 0.7,
-    url: `${siteUrl}${page.url}`,
+    ...localizedEntry(page.url),
   }))
 
   /* Template detail pages are indexable; raw /templates/<slug>/preview routes
@@ -41,15 +54,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const templates: MetadataRoute.Sitemap = templateShowcases.map((template) => ({
     changeFrequency: 'weekly',
     priority: 0.7,
-    url: `${siteUrl}${templateDetailHref(template.slug)}`,
+    ...localizedEntry(templateDetailHref(template.slug)),
   }))
 
-  const blogPages = sortBlogPages(blogSource.getPages())
+  const blogPages = sortBlogPages(blogSource.getPages('en'))
   const blog: MetadataRoute.Sitemap = blogPages.map((page) => ({
     changeFrequency: 'monthly',
     lastModified: new Date(page.data.date),
     priority: 0.6,
-    url: `${siteUrl}${page.url}`,
+    ...localizedEntry(page.url),
   }))
   const latestBlogDate = blogPages.reduce<Date | undefined>((latest, page) => {
     const published = new Date(page.data.date)
@@ -64,7 +77,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       ...(latestBlogDate ? { lastModified: latestBlogDate } : {}),
       priority: 0.7,
-      url: `${siteUrl}/blog`,
+      ...localizedEntry('/blog'),
     },
     ...blog,
   ]

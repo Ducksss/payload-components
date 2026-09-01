@@ -28,6 +28,8 @@ import {
   upcomingComponents,
 } from '../../src/lib/site'
 
+import { expectNoHorizontalOverflow } from './support/horizontal-overflow'
+
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 const isProductionE2E = process.env.PLAYWRIGHT_SERVER_MODE === 'production'
 const googleTagId = 'G-EMGRZ0H9R9'
@@ -338,10 +340,8 @@ test.describe('Light shadcn frontend', () => {
 
     /* The wall is full-bleed and tilted; it must still never scroll the page
        sideways. */
-    const hasHorizontalOverflow = await page.evaluate(
-      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-    )
-    expect(hasHorizontalOverflow).toBe(false)
+    const wallOverflow = await expectNoHorizontalOverflow(page, 'the landing hero wall')
+    expect(wallOverflow.offenders, wallOverflow.message).toEqual([])
   })
 
   test('the hero wall renders real catalog twins and states the catalog size', async ({ page }) => {
@@ -583,16 +583,12 @@ test.describe('Light shadcn frontend', () => {
         const headerPaddingStart = headerStyle
           ? Number.parseFloat(headerStyle.paddingInlineStart)
           : null
-        const hasHorizontalOverflow =
-          document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
-
         return {
           brandMark: brandMarkRect ? { width: brandMarkRect.width, x: brandMarkRect.x } : null,
           documentationTitle:
             documentationTitleRect && documentationTitleRect.width > 0
               ? { width: documentationTitleRect.width, x: documentationTitleRect.x }
               : null,
-          hasHorizontalOverflow,
           headerPaddingStart,
           headerStart: headerInnerRect?.x ?? null,
         }
@@ -600,7 +596,8 @@ test.describe('Light shadcn frontend', () => {
 
       expect(geometry.brandMark, viewport.name).not.toBeNull()
       expect(geometry.brandMark!.width, viewport.name).toBe(24)
-      expect(geometry.hasHorizontalOverflow, viewport.name).toBe(false)
+      const headerOverflow = await expectNoHorizontalOverflow(page, viewport.name)
+      expect(headerOverflow.offenders, headerOverflow.message).toEqual([])
 
       if (viewport.alignTo === 'documentation-title') {
         expect(geometry.documentationTitle, viewport.name).not.toBeNull()
@@ -692,12 +689,63 @@ test.describe('Light shadcn frontend', () => {
 
       // domcontentloaded can fire before webfonts settle final layout widths.
       await page.evaluate(() => document.fonts.ready)
+      const routeOverflow = await expectNoHorizontalOverflow(page, overflowRoute.path)
+      expect(routeOverflow.offenders, routeOverflow.message).toEqual([])
+    })
+  }
+
+  const localizedOverflowRoutes = [
+    { h1: /安装 Payload 区块.*接好线，不只是复制。/, path: '/zh' },
+    { h1: 'Introduction', path: '/zh/docs' },
+    { h1: /77 个 Payload CMS 组件与类型化区块/, path: '/zh/components' },
+    { h1: '由可安装区块组成的 Payload CMS 模板概念', path: '/zh/templates' },
+    { h1: 'Payload CMS 区块与安装器指南', path: '/zh/blog' },
+    { h1: 'Why Payload Components exists', path: '/zh/about' },
+  ]
+
+  for (const localizedRoute of localizedOverflowRoutes) {
+    test(`localized route ${localizedRoute.path} uses Chinese chrome without overflow`, async ({
+      page,
+    }) => {
+      await page.goto(`${baseURL}${localizedRoute.path}`, { waitUntil: 'domcontentloaded' })
+
+      await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
+      await expect(page.getByRole('heading', { level: 1, name: localizedRoute.h1 })).toBeVisible()
+      await expect(
+        page.getByRole('navigation').getByRole('link', { name: '组件' }),
+      ).toHaveAttribute('href', '/zh/components')
+
+      await page.evaluate(() => document.fonts.ready)
       const hasHorizontalOverflow = await page.evaluate(
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       )
       expect(hasHorizontalOverflow).toBe(false)
     })
   }
+
+  test('switches locale explicitly while preserving the route, query, and hash', async ({
+    page,
+  }) => {
+    await page.goto(`${baseURL}/zh/components?q=hero#hero-basic`)
+
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/zh\/components$/)
+    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+      'href',
+      /\/components$/,
+    )
+    await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveAttribute(
+      'href',
+      /\/zh\/components$/,
+    )
+
+    await page.getByLabel('语言').first().selectOption('en')
+    await expect(page).toHaveURL(`${baseURL}/components?q=hero#hero-basic`)
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+
+    await page.getByLabel('Language').first().selectOption('zh')
+    await expect(page).toHaveURL(`${baseURL}/zh/components?q=hero#hero-basic`)
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
+  })
 
   test('drives the responsive component preview frame', async ({ page }) => {
     await page.goto(`${baseURL}/docs/components/hero-basic`)
@@ -738,7 +786,8 @@ test.describe('Light shadcn frontend', () => {
     await expect(navigation).toBeAttached()
     await expect(navigation).toBeHidden()
     await expect(trigger).toBeFocused()
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
+    const mobileNavOverflow = await expectNoHorizontalOverflow(page, 'the 320px mobile navigation')
+    expect(mobileNavOverflow.offenders, mobileNavOverflow.message).toEqual([])
   })
 
   test('preview frame grows and shrinks across presets without analytics', async ({ page }) => {
@@ -788,10 +837,8 @@ test.describe('Light shadcn frontend', () => {
     expect(wraps.breakable).toBe(true)
     expect(wraps.multiline).toBe(true)
     expect(wraps.fits).toBe(true)
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
-    )
-    expect(overflow).toBe(false)
+    const ledgerOverflow = await expectNoHorizontalOverflow(page, 'the wiring ledger')
+    expect(ledgerOverflow.offenders, ledgerOverflow.message).toEqual([])
     await expect(wiring).toBeVisible()
   })
 
@@ -802,10 +849,8 @@ test.describe('Light shadcn frontend', () => {
     // The bare iframe target inherits only the root layout — no header/footer.
     await expect(page.getByRole('contentinfo')).toHaveCount(0)
 
-    const hasHorizontalOverflow = await page.evaluate(
-      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-    )
-    expect(hasHorizontalOverflow).toBe(false)
+    const previewOverflow = await expectNoHorizontalOverflow(page, 'the standalone preview route')
+    expect(previewOverflow.offenders, previewOverflow.message).toEqual([])
   })
 
   test('marks only the current top-level navigation item active', async ({ page }) => {
@@ -1270,11 +1315,8 @@ test.describe('Light shadcn frontend', () => {
           },
         ]),
       )
-      expect(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-        ),
-      ).toBe(false)
+      const entryOverflow = await expectNoHorizontalOverflow(page, sourcePath)
+      expect(entryOverflow.offenders, entryOverflow.message).toEqual([])
     }
   })
 
@@ -1485,11 +1527,8 @@ test.describe('Light shadcn frontend', () => {
     await waitForCopyController(page)
     await stubGtagEvents(page)
 
-    expect(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-      ),
-    ).toBe(false)
+    const postOverflow = await expectNoHorizontalOverflow(page, '/blog/anatomy-of-an-install')
+    expect(postOverflow.offenders, postOverflow.message).toEqual([])
 
     const maintenanceCommands = [
       ['Copy the generate types command', 'pnpm payload generate:types'],
@@ -1762,10 +1801,8 @@ test.describe('Reduced motion', () => {
       workflow.getByRole('button', { name: 'Replay the install animation' }),
     ).toBeHidden()
 
-    const hasHorizontalOverflow = await page.evaluate(
-      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-    )
-    expect(hasHorizontalOverflow).toBe(false)
+    const workflowOverflow = await expectNoHorizontalOverflow(page, 'the workflow section')
+    expect(workflowOverflow.offenders, workflowOverflow.message).toEqual([])
   })
 
   test('opens the Fumadocs search dialog from the docs shell', async ({ page }) => {

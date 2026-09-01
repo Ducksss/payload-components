@@ -4,11 +4,15 @@ import type { ReactNode } from 'react'
 import { Instrument_Serif } from 'next/font/google'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
+import { NextIntlClientProvider } from 'next-intl'
+import { getMessages, getTranslations } from 'next-intl/server'
 
 import { JsonLd } from '@/components/seo/JsonLd'
 import { AnalyticsShell } from '@/components/site/AnalyticsShell'
 import { CommandCopyController } from '@/components/site/CommandCopyController'
 import { ConsentBanner } from '@/components/site/ConsentBanner'
+import { localeDetails, localizeHref } from '@/i18n/config'
+import { getSiteLocale } from '@/lib/i18n'
 import { feedMetadataAlternates, githubRepoUrl, siteDescription, siteUrl } from '@/lib/site'
 import {
   documentationCollectionNode,
@@ -30,65 +34,77 @@ const instrumentSerif = Instrument_Serif({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  alternates: feedMetadataAlternates,
-  title: {
-    default: 'Payload Components — fully-wired blocks for Payload CMS',
-    template: '%s | Payload Components',
-  },
-  description: siteDescription,
-  applicationName: 'Payload Components',
-  authors: [{ name: 'Ducksss', url: githubRepoUrl }],
-  category: 'technology',
-  creator: 'Ducksss',
-  publisher: 'Payload Components',
-  keywords: [
-    'Payload CMS blocks',
-    'Payload blocks',
-    'Payload CMS components',
-    'Payload block library',
-    'Payload hero block',
-    'Payload feature grid',
-    'copy-paste blocks for Payload CMS',
-    'shadcn registry',
-    'Payload v3',
-    'Next.js',
-  ],
-  formatDetection: { telephone: false },
-  icons: {
-    apple: '/favicon.svg',
-    icon: [
-      { type: 'image/svg+xml', url: '/favicon.svg' },
-      { sizes: '48x48', url: '/favicon.ico' },
-    ],
-    shortcut: '/favicon.ico',
-  },
-  manifest: '/manifest.webmanifest',
-  openGraph: {
-    description: siteDescription,
-    locale: 'en_US',
-    siteName: 'Payload Components',
-    title: 'Payload Components — fully-wired blocks for Payload CMS',
-    type: 'website',
-    url: '/',
-  },
-  robots: {
-    follow: true,
-    googleBot: {
-      follow: true,
-      index: true,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-      'max-video-preview': -1,
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'Metadata' })
+  const canonical = localizeHref('/', locale)
+  const description = locale === 'en' ? siteDescription : t('description')
+  const title = t('title')
+
+  return {
+    metadataBase: new URL(siteUrl),
+    alternates: {
+      ...feedMetadataAlternates,
+      canonical,
+      languages: { en: '/', 'zh-CN': '/zh', 'x-default': '/' },
     },
-    index: true,
-  },
-  twitter: {
-    card: 'summary_large_image',
-    description: siteDescription,
-    title: 'Payload Components — fully-wired blocks for Payload CMS',
-  },
+    title: {
+      default: title,
+      template: '%s | Payload Components',
+    },
+    description,
+    applicationName: 'Payload Components',
+    authors: [{ name: 'Ducksss', url: githubRepoUrl }],
+    category: 'technology',
+    creator: 'Ducksss',
+    publisher: 'Payload Components',
+    keywords: [
+      'Payload CMS blocks',
+      'Payload blocks',
+      'Payload CMS components',
+      'Payload block library',
+      'Payload hero block',
+      'Payload feature grid',
+      'copy-paste blocks for Payload CMS',
+      'shadcn registry',
+      'Payload v3',
+      'Next.js',
+    ],
+    formatDetection: { telephone: false },
+    icons: {
+      apple: '/favicon.svg',
+      icon: [
+        { type: 'image/svg+xml', url: '/favicon.svg' },
+        { sizes: '48x48', url: '/favicon.ico' },
+      ],
+      shortcut: '/favicon.ico',
+    },
+    manifest: '/manifest.webmanifest',
+    openGraph: {
+      description,
+      locale: localeDetails[locale].openGraphLocale,
+      siteName: 'Payload Components',
+      title,
+      type: 'website',
+      url: canonical,
+    },
+    robots: {
+      follow: true,
+      googleBot: {
+        follow: true,
+        index: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+        'max-video-preview': -1,
+      },
+      index: true,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      description,
+      title,
+    },
+  }
 }
 
 /* Emitted once on every page: the Organization + WebSite identity that
@@ -99,10 +115,13 @@ export const viewport: Viewport = {
   themeColor: '#ffffff',
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const locale = await getSiteLocale()
+  const messages = await getMessages()
+
   return (
     <html
-      lang="en"
+      lang={localeDetails[locale].htmlLang}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
       /* Font variables live on <html>: the @theme font tokens reference them
@@ -120,11 +139,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <noscript>
           <style>{`[data-landing-motion]{opacity:1!important;transform:none!important}`}</style>
         </noscript>
-        <JsonLd data={siteStructuredData} />
-        <AnalyticsShell />
-        {children}
-        <CommandCopyController />
-        <ConsentBanner />
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <JsonLd data={siteStructuredData} />
+          <AnalyticsShell />
+          {children}
+          <CommandCopyController />
+          <ConsentBanner />
+        </NextIntlClientProvider>
       </body>
     </html>
   )

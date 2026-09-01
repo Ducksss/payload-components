@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 import type { ReactNode } from 'react'
 
@@ -66,6 +67,7 @@ export function TemplateGalleryFilter({
   categories: readonly TemplateFilterCategory[]
   items: readonly TemplateFilterItem[]
 }) {
+  const t = useTranslations('Templates')
   const reduceMotion = useReducedMotion() ?? false
   const [active, setActive] = useState<string>(ALL)
   /* Before the first chip click the gallery is arriving, not changing — that
@@ -75,7 +77,7 @@ export function TemplateGalleryFilter({
 
   const total = categories.reduce((sum, category) => sum + category.count, 0)
   const options: TemplateFilterCategory[] = [
-    { count: total, label: 'All concepts', value: ALL },
+    { count: total, label: t('allConcepts'), value: ALL },
     ...categories,
   ]
 
@@ -115,11 +117,7 @@ export function TemplateGalleryFilter({
   return (
     <>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-4 sm:justify-between">
-        <div
-          role="group"
-          aria-label="Filter concepts by category"
-          className="flex flex-wrap items-center gap-2"
-        >
+        <div role="group" aria-label={t('filter')} className="flex flex-wrap items-center gap-2">
           {options.map((option) => {
             const selected = active === option.value
             return (
@@ -151,7 +149,7 @@ export function TemplateGalleryFilter({
 
         {/* Announces the reflow for anyone who cannot see it happen. */}
         <p role="status" className="font-mono text-xs tabular-nums text-muted-foreground">
-          Showing {visible.length} of {items.length} concepts
+          {t('showing', { total: items.length, visible: visible.length })}
         </p>
       </div>
 

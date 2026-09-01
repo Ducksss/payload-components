@@ -1,5 +1,7 @@
 import defaultMdxComponents from 'fumadocs-ui/mdx'
+import type { ComponentProps } from 'react'
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion'
+import { Card as FumadocsCard, type CardProps } from 'fumadocs-ui/components/card'
 import { File, Files, Folder } from 'fumadocs-ui/components/files'
 import { Step, Steps } from 'fumadocs-ui/components/steps'
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
@@ -20,6 +22,7 @@ import {
   Workflow,
 } from 'lucide-react'
 import type { MDXComponents } from 'mdx/types'
+import { useLocale } from 'next-intl'
 
 import { BlogFigure } from '@/components/blog/BlogFigure'
 import { ComponentDocPreview } from '@/components/site/ComponentDocPreview'
@@ -28,6 +31,8 @@ import { ComponentRequirements } from '@/components/site/ComponentRequirements'
 import { ComponentUsage } from '@/components/site/ComponentUsage'
 import { ComponentWiring } from '@/components/site/ComponentWiring'
 import { RunnableCommand } from '@/components/site/RunnableCommand'
+import Link from '@/i18n/Link'
+import { localizeHref, normalizeSiteLocale } from '@/i18n/config'
 
 // Curated Lucide set so MDX can pass `icon={<Layers />}` to <Card> without a
 // per-file import. Keep this list tight — only icons the docs actually use.
@@ -47,6 +52,17 @@ const icons = {
   Workflow,
 }
 
+function LocalizedCard({ href, ...props }: CardProps) {
+  const locale = normalizeSiteLocale(useLocale())
+
+  return <FumadocsCard href={href ? localizeHref(href, locale) : href} {...props} />
+}
+
+function LocalizedAnchor({ href, ...props }: ComponentProps<'a'>) {
+  if (!href) return <a {...props} />
+  return <Link href={href} {...props} />
+}
+
 // `defaultMdxComponents` already wires `Card`, `Cards`, `Callout`, code blocks,
 // headings, and links. We layer on the structural components the docs use —
 // step flows, tabbed alternatives, file trees, field tables — so MDX authors
@@ -57,7 +73,9 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     ...icons,
     Accordion,
     Accordions,
+    a: LocalizedAnchor,
     BlogFigure,
+    Card: LocalizedCard,
     File,
     Files,
     Folder,

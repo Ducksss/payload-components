@@ -1,5 +1,5 @@
 'use client'
-import Link from 'next/link'
+import Link from '@/i18n/Link'
 
 import type { Transition } from 'motion/react'
 import { motion, useReducedMotion } from 'motion/react'

@@ -1,4 +1,5 @@
 import { createMDX } from 'fumadocs-mdx/next'
+import createNextIntlPlugin from 'next-intl/plugin'
 
 const deployFreshHeaders = [
   {
@@ -128,5 +129,6 @@ const nextConfig = {
 }
 
 const withMDX = createMDX()
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
-export default withMDX(nextConfig)
+export default withNextIntl(withMDX(nextConfig))

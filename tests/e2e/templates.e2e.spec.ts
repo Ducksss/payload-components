@@ -21,6 +21,8 @@ import {
   templatesTitle,
 } from '../../src/lib/site'
 
+import { expectNoHorizontalOverflow } from './support/horizontal-overflow'
+
 /* Full-site template showcases — /templates gallery, /templates/<slug> detail,
  * and the raw /templates/<slug>/preview/<page> routes (website-only "Concept
  * preview" phase).
@@ -38,10 +40,10 @@ const googleTagId = 'G-EMGRZ0H9R9'
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-async function hasHorizontalOverflow(page: Page) {
-  return page.evaluate(
-    () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-  )
+async function hasHorizontalOverflow(page: Page, context = 'the page') {
+  const { offenders } = await expectNoHorizontalOverflow(page, context)
+
+  return offenders.length > 0
 }
 
 /* Page-switcher buttons carry aria-pressed; the label alone could collide with

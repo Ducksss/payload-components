@@ -1,85 +1,86 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
+
+import { getTranslations } from 'next-intl/server'
 
 import { JsonLd } from '@/components/seo/JsonLd'
 import { ConsentSettings } from '@/components/site/ConsentSettings'
 import { Section, SectionHeading } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
+import { localeAlternates, localeDetails, localizeHref } from '@/i18n/config'
+import { getSiteLocale } from '@/lib/i18n'
 import { feedMetadataAlternates, siteOpenGraphDefaults } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
-const description =
-  'What Payload Components measures, which third parties receive it, and how to change or withdraw your choice at any time.'
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'PageMetadata.privacy' })
+  const canonical = localizeHref('/privacy', locale)
 
-export const metadata: Metadata = {
-  alternates: { canonical: '/privacy', ...feedMetadataAlternates },
-  title: 'Privacy',
-  description,
-  openGraph: {
-    ...siteOpenGraphDefaults,
-    description,
-    title: 'Privacy — Payload Components',
-    type: 'website',
-    url: '/privacy',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    description,
-    title: 'Privacy — Payload Components',
-  },
+  return {
+    alternates: { canonical, languages: localeAlternates('/privacy'), ...feedMetadataAlternates },
+    title: t('title'),
+    description: t('description'),
+    openGraph: {
+      ...siteOpenGraphDefaults,
+      description: t('description'),
+      locale: localeDetails[locale].openGraphLocale,
+      title: t('openGraphTitle'),
+      type: 'website',
+      url: canonical,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      description: t('description'),
+      title: t('openGraphTitle'),
+    },
+  }
 }
-
-const privacyStructuredData = graph(
-  breadcrumbNode([
-    { name: 'Home', path: '/' },
-    { name: 'Privacy', path: '/privacy' },
-  ]),
-)
 
 /* Kept deliberately specific: naming the three processors and the exact event
    vocabulary is what makes the disclosure verifiable rather than boilerplate.
-   The same vocabulary is pinned by tests/int/analytics-contract.int.spec.ts. */
+   The same vocabulary is pinned by tests/int/analytics-contract.int.spec.ts.
+   Names and field lists are identifiers, not copy — they stay untranslated and
+   identical in every locale; only the prose around them moves to messages. */
 const processors = [
-  {
-    name: 'Vercel Analytics & Speed Insights',
-    needsConsent: false,
-    purpose: 'Page views and Core Web Vitals for the hosted site.',
-    storage: 'No cookies and no identifier — nothing is stored on your device.',
-  },
-  {
-    name: 'Google Analytics 4',
-    needsConsent: true,
-    purpose: 'Aggregate page views and traffic sources.',
-    storage: 'Sets its own first-party cookies (_ga, _ga_*).',
-  },
-  {
-    name: 'PostHog (US)',
-    needsConsent: true,
-    purpose: 'The three product events listed below.',
-    storage:
-      'A random pc_distinct_id in localStorage, plus an organic entry pathname in sessionStorage for the current tab.',
-  },
+  { id: 'vercel', name: 'Vercel Analytics & Speed Insights', needsConsent: false },
+  { id: 'ga4', name: 'Google Analytics 4', needsConsent: true },
+  { id: 'posthog', name: 'PostHog (US)', needsConsent: true },
 ] as const
 
 const events = [
   {
     fields: 'page_path, source_path, traffic_source, verification_run',
+    id: 'pageview',
     name: '$pageview',
-    when: 'A public route loads or changes.',
   },
   {
     fields: 'command, component, source_path, entry_page',
+    id: 'copyInstallCommand',
     name: 'copy_install_command',
-    when: 'You copy an install command.',
   },
   {
     fields: 'destination, href, source_path, entry_page',
+    id: 'primaryLinkClick',
     name: 'primary_link_click',
-    when: 'You follow a repository, docs, or components link.',
   },
 ] as const
 
-export default function PrivacyPage() {
+const inlineCode = (chunks: ReactNode) => (
+  <code className="font-mono text-sm text-foreground">{chunks}</code>
+)
+
+export default async function PrivacyPage() {
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'Privacy' })
+  const privacyStructuredData = graph(
+    breadcrumbNode([
+      { name: locale === 'zh' ? '首页' : 'Home', path: localizeHref('/', locale) },
+      { name: locale === 'zh' ? '隐私' : 'Privacy', path: localizeHref('/privacy', locale) },
+    ]),
+  )
+
   return (
     <>
       <JsonLd data={privacyStructuredData} />
@@ -87,33 +88,20 @@ export default function PrivacyPage() {
       <main id="main" className="flex-1">
         <Section>
           <SectionHeading
-            accentWord="measure"
-            eyebrow="Privacy"
-            heading="Exactly what we measure."
-            intro="Nothing that stores anything on your device loads until you accept. This page names every processor, every event, and every field — and lets you change your mind at any time."
+            accentWord={t('accentWord')}
+            eyebrow={t('eyebrow')}
+            heading={t('heading')}
+            intro={t('intro')}
           />
           <div className="mt-8 max-w-3xl space-y-10">
             <div className="space-y-3">
-              <p className="text-muted-foreground">
-                Anything that would store something on your device waits for your consent. Decline
-                and Google Analytics and PostHog never load — no cookie is set and no identifier is
-                kept. If your browser sends Global Privacy Control or Do Not Track, that counts as a
-                decline automatically and you are never shown the banner.
-              </p>
-              <p className="text-muted-foreground">
-                Vercel Analytics and Speed Insights are the exception, and they run for everyone.
-                They set no cookies and store no identifier — they measure page loads and
-                performance in aggregate, which is what keeps this site fast. There is nothing on
-                your device to opt out of.
-              </p>
-              <p className="text-muted-foreground">
-                There are no accounts on this site, so none of this is tied to an identity. We never
-                collect form input, free text, or the contents of pages you view.
-              </p>
+              <p className="text-muted-foreground">{t('consent')}</p>
+              <p className="text-muted-foreground">{t('alwaysOnProcessors')}</p>
+              <p className="text-muted-foreground">{t('noAccounts')}</p>
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-lg font-medium text-foreground">Who receives data</h2>
+              <h2 className="text-lg font-medium text-foreground">{t('processorsTitle')}</h2>
               <ul className="space-y-3">
                 {processors.map((processor) => (
                   <li
@@ -123,38 +111,25 @@ export default function PrivacyPage() {
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="text-sm font-medium text-foreground">{processor.name}</p>
                       <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
-                        {processor.needsConsent
-                          ? 'Needs your consent'
-                          : 'Always on, stores nothing'}
+                        {processor.needsConsent ? t('needsConsent') : t('alwaysOn')}
                       </span>
                     </div>
-                    <p className="mt-1 text-sm text-muted-foreground">{processor.purpose}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{processor.storage}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {t(`processors.${processor.id}.purpose`)}
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {t(`processors.${processor.id}.storage`)}
+                    </p>
                   </li>
                 ))}
               </ul>
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-lg font-medium text-foreground">The events we send</h2>
-              <p className="text-muted-foreground">
-                Three, and their fields are fixed. Every value comes from a committed route, link,
-                or install command — never from anything you type.
-              </p>
-              <p className="text-muted-foreground">
-                Page views label traffic only as organic search or other. That label is derived in
-                your browser from a fixed search-engine list or an explicit organic campaign marker.
-                The raw referrer, campaign, and query string are never sent. Controlled site checks
-                carry a true verification marker so they can be excluded from visitor counts;
-                ordinary visits carry false.
-              </p>
-              <p className="text-muted-foreground">
-                After consent, organic visits keep the first same-site pathname for the current
-                browser tab. Install copies and primary link clicks include that pathname as
-                <code className="font-mono text-sm text-foreground"> entry_page</code>. Direct and
-                referral visits do not. It never contains a query string or raw referrer and is
-                deleted when you withdraw consent.
-              </p>
+              <h2 className="text-lg font-medium text-foreground">{t('eventsTitle')}</h2>
+              <p className="text-muted-foreground">{t('eventsIntro')}</p>
+              <p className="text-muted-foreground">{t('trafficSource')}</p>
+              <p className="text-muted-foreground">{t.rich('entryPage', { code: inlineCode })}</p>
               <ul className="space-y-3">
                 {events.map((event) => (
                   <li
@@ -162,7 +137,9 @@ export default function PrivacyPage() {
                     key={event.name}
                   >
                     <p className="font-mono text-sm font-medium text-foreground">{event.name}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{event.when}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {t(`events.${event.id}.when`)}
+                    </p>
                     <p className="mt-1 font-mono text-xs text-muted-foreground">{event.fields}</p>
                   </li>
                 ))}
@@ -170,17 +147,8 @@ export default function PrivacyPage() {
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-lg font-medium text-foreground">Your choice</h2>
-              <p className="text-muted-foreground">
-                Your decision is stored locally in your browser under{' '}
-                <code className="font-mono text-sm text-foreground">pc_consent</code>. Change it
-                here at any time. Withdrawing does more than stop collection — it deletes what the
-                opt-in created: the Google Analytics cookies (
-                <code className="font-mono text-sm text-foreground">_ga</code>,{' '}
-                <code className="font-mono text-sm text-foreground">_ga_*</code>) and the PostHog
-                identifier are removed, and the page reloads so nothing already running carries on.
-                The session-only organic entry pathname is removed too.
-              </p>
+              <h2 className="text-lg font-medium text-foreground">{t('choiceTitle')}</h2>
+              <p className="text-muted-foreground">{t.rich('choice', { code: inlineCode })}</p>
               <ConsentSettings />
             </div>
           </div>

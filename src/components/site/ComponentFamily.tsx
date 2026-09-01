@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/i18n/Link'
 
 import { familyOfSlug } from '@/lib/component-page-tree'
 import { componentEntries } from '@/lib/site'
