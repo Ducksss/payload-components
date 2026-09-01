@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 
 import { ExternalLink, Monitor, Smartphone, Tablet } from 'lucide-react'
 
+import { localizeHref, normalizeSiteLocale } from '@/i18n/config'
 import type { TemplateShowcase, TemplateViewportPreset } from '@/lib/templates/types'
 
 import { trackTemplateEvent } from '@/lib/analytics'
@@ -43,16 +45,18 @@ export function TemplateDetailPreview({
 }) {
   const [activePath, setActivePath] = useState('')
   const [preset, setPreset] = useState<TemplateViewportPreset>('desktop')
+  const locale = normalizeSiteLocale(useLocale())
+  const t = useTranslations('Templates')
 
   const activePage = template.pages.find((page) => page.path === activePath) ?? template.pages[0]
-  const src = templatePreviewHref(template.slug, activePage.path)
+  const src = localizeHref(templatePreviewHref(template.slug, activePage.path), locale)
 
   return (
     <div className="overflow-hidden rounded-frame border border-border bg-card shadow-card">
       <div className="flex flex-wrap items-center gap-3 border-b border-border bg-muted/60 px-3 py-2">
         <div
           role="group"
-          aria-label={`${template.title} preview page`}
+          aria-label={t('previewPageLabel', { title: template.title })}
           className="flex flex-wrap items-center gap-0.5"
         >
           {template.pages.map((page) => (
@@ -86,37 +90,41 @@ export function TemplateDetailPreview({
 
         <div
           role="group"
-          aria-label="Preview viewport size"
+          aria-label={t('previewViewport')}
           className="ml-auto flex items-center gap-0.5 rounded-md border border-border bg-background p-0.5"
         >
-          {PRESETS.map(({ icon: Icon, label, value }) => (
-            <button
-              key={value}
-              type="button"
-              aria-label={label}
-              aria-pressed={preset === value}
-              title={label}
-              onClick={() => {
-                setPreset(value)
-                onViewportChange?.(value)
-                trackTemplateEvent('template_preview_viewport_change', {
-                  page: activePage.path,
-                  revision: template.revision,
-                  source: 'detail',
-                  template: template.slug,
-                  viewport: value,
-                })
-              }}
-              className={cn(
-                'inline-flex size-7 items-center justify-center rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                preset === value
-                  ? 'bg-brand/15 text-brand-600'
-                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
-              )}
-            >
-              <Icon className="size-4" aria-hidden="true" />
-            </button>
-          ))}
+          {PRESETS.map(({ icon: Icon, value }) => {
+            const localizedLabel = t(value)
+
+            return (
+              <button
+                key={value}
+                type="button"
+                aria-label={localizedLabel}
+                aria-pressed={preset === value}
+                title={localizedLabel}
+                onClick={() => {
+                  setPreset(value)
+                  onViewportChange?.(value)
+                  trackTemplateEvent('template_preview_viewport_change', {
+                    page: activePage.path,
+                    revision: template.revision,
+                    source: 'detail',
+                    template: template.slug,
+                    viewport: value,
+                  })
+                }}
+                className={cn(
+                  'inline-flex size-7 items-center justify-center rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  preset === value
+                    ? 'bg-brand/15 text-brand-600'
+                    : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
+                )}
+              >
+                <Icon className="size-4" aria-hidden="true" />
+              </button>
+            )
+          })}
         </div>
 
         <a
@@ -135,8 +143,8 @@ export function TemplateDetailPreview({
           className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 font-mono text-[11px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <ExternalLink className="size-3.5" aria-hidden="true" />
-          <span className="hidden sm:inline">Open full preview</span>
-          <span className="sr-only sm:hidden">Open full preview</span>
+          <span className="hidden sm:inline">{t('openPreview')}</span>
+          <span className="sr-only sm:hidden">{t('openPreview')}</span>
         </a>
       </div>
 
@@ -150,7 +158,7 @@ export function TemplateDetailPreview({
         >
           <iframe
             src={src}
-            title={`${template.title} template preview — ${activePage.label} page`}
+            title={t('previewFrameTitle', { page: activePage.label, title: template.title })}
             loading="lazy"
             className="block w-full bg-background"
             style={{ height: 'min(75vh, 900px)' }}

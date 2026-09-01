@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import Link from '@/i18n/Link'
 
 import { motion, useReducedMotion } from 'motion/react'
 

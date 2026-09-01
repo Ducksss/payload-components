@@ -1,5 +1,7 @@
+import { defaultSiteLocale, localeDetails, localizeHref, type SiteLocale } from '@/i18n/config'
 import {
   blogDescription,
+  blogRoute,
   blogTitle,
   catalogDescription,
   catalogTitle,
@@ -21,6 +23,13 @@ export const documentationId = `${siteUrl}/docs#documentation`
 export const blogId = `${siteUrl}/blog#blog`
 
 const logoUrl = `${siteUrl}/favicon.svg`
+
+/* /blog and /zh/blog are separate entities: each carries its own canonical URL,
+   language, and copy, so a post published under one must not claim membership
+   of the other. The English id stays `blogId` so sitewide references are stable. */
+function blogIdFor(locale: SiteLocale) {
+  return `${siteUrl}${localizeHref(blogRoute, locale)}#blog`
+}
 
 type Node = Record<string, unknown>
 
@@ -86,16 +95,20 @@ export function documentationCollectionNode(): Node {
   }
 }
 
-export function blogNode(): Node {
+export function blogNode(
+  opts: { description?: string; locale?: SiteLocale; name?: string } = {},
+): Node {
+  const locale = opts.locale ?? defaultSiteLocale
+
   return {
-    '@id': blogId,
+    '@id': blogIdFor(locale),
     '@type': 'Blog',
-    description: blogDescription,
-    inLanguage: 'en',
+    description: opts.description ?? blogDescription,
+    inLanguage: localeDetails[locale].htmlLang,
     isPartOf: { '@id': websiteId },
-    name: blogTitle,
+    name: opts.name ?? blogTitle,
     publisher: { '@id': organizationId },
-    url: `${siteUrl}/blog`,
+    url: `${siteUrl}${localizeHref(blogRoute, locale)}`,
   }
 }
 
@@ -103,6 +116,9 @@ type BlogPostingNodeOptions = {
   author: string
   description?: string
   image?: string
+  /* Pass the localized post path as `url` alongside this so the @id, canonical
+     URL, and declared language all describe the same page. */
+  locale?: SiteLocale
   tags?: readonly string[]
   title: string
   url: string
@@ -112,6 +128,7 @@ type BlogPostingNodeOptions = {
 
 export function blogPostingNode(opts: BlogPostingNodeOptions): Node {
   const published = opts.datePublished ?? opts.date
+  const locale = opts.locale ?? defaultSiteLocale
 
   return {
     '@id': `${siteUrl}${opts.url}#article`,
@@ -124,8 +141,8 @@ export function blogPostingNode(opts: BlogPostingNodeOptions): Node {
     datePublished: new Date(published).toISOString(),
     description: opts.description,
     headline: opts.title,
-    inLanguage: 'en',
-    isPartOf: { '@id': blogId },
+    inLanguage: localeDetails[locale].htmlLang,
+    isPartOf: { '@id': blogIdFor(locale) },
     ...(opts.image ? { image: `${siteUrl}${opts.image}` } : {}),
     ...(opts.tags?.length ? { keywords: opts.tags.join(', ') } : {}),
     mainEntityOfPage: `${siteUrl}${opts.url}`,
@@ -231,6 +248,9 @@ export function componentSoftwareApplicationNode(
 export function techArticleNode(opts: {
   description?: string
   image?: string
+  /* Pass the localized doc path as `url` alongside this so the @id, canonical
+     URL, and declared language all describe the same page. */
+  locale?: SiteLocale
   title: string
   url: string
 }): Node {
@@ -240,7 +260,7 @@ export function techArticleNode(opts: {
     author: { '@id': organizationId },
     description: opts.description,
     headline: opts.title,
-    inLanguage: 'en',
+    inLanguage: localeDetails[opts.locale ?? defaultSiteLocale].htmlLang,
     isPartOf: { '@id': documentationId },
     mainEntityOfPage: `${siteUrl}${opts.url}`,
     publisher: { '@id': organizationId },

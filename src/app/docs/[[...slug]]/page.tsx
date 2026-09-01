@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import type { ComponentProps } from 'react'
 
 import { notFound } from 'next/navigation'
 import {
@@ -14,8 +15,11 @@ import { createRelativeLink } from 'fumadocs-ui/mdx'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getMDXComponents } from '@/components/mdx'
 import { ComponentDocHeader } from '@/components/site/ComponentDocHeader'
+import Link from '@/i18n/Link'
+import { localizeHref, localeDetails } from '@/i18n/config'
 import { getComponentManifest } from '@/lib/component-manifest'
 import { familyOfSlug } from '@/lib/component-page-tree'
+import { getSiteLocale } from '@/lib/i18n'
 import {
   componentEntries,
   docsRoute,
@@ -38,13 +42,19 @@ type DocsPageProps = {
   }>
 }
 
+function LocalizedMdxLink({ href, ...props }: ComponentProps<'a'>) {
+  if (!href) return <a {...props} />
+  return <Link href={href} {...props} />
+}
+
 export function generateStaticParams() {
-  return source.generateParams()
+  return source.getPages('en').map((page) => ({ slug: page.slugs }))
 }
 
 export async function generateMetadata({ params }: DocsPageProps): Promise<Metadata> {
   const { slug } = await params
-  const page = source.getPage(slug)
+  const locale = await getSiteLocale()
+  const page = source.getPage(slug, locale)
 
   if (!page) {
     return {}
@@ -64,16 +74,25 @@ export async function generateMetadata({ params }: DocsPageProps): Promise<Metad
       : page.data.title)
 
   return {
-    alternates: { canonical: page.url, ...feedMetadataAlternates },
+    alternates: {
+      canonical: localizeHref(page.url, locale),
+      languages: {
+        en: localizeHref(page.url, 'en'),
+        'zh-CN': localizeHref(page.url, 'zh'),
+        'x-default': localizeHref(page.url, 'en'),
+      },
+      ...feedMetadataAlternates,
+    },
     title,
     description: page.data.description,
     openGraph: {
       ...siteOpenGraphDefaults,
-      images: getPageImage(page).url,
+      images: getPageImage(page, locale).url,
+      locale: localeDetails[locale].openGraphLocale,
       title,
       description: page.data.description,
       type: 'article',
-      url: page.url,
+      url: localizeHref(page.url, locale),
     },
     twitter: {
       card: 'summary_large_image',
@@ -85,23 +104,25 @@ export async function generateMetadata({ params }: DocsPageProps): Promise<Metad
 
 export default async function Page({ params }: DocsPageProps) {
   const { slug } = await params
-  const page = source.getPage(slug)
+  const locale = await getSiteLocale()
+  const page = source.getPage(slug, locale)
 
   if (!page) {
     notFound()
   }
 
   const MDX = page.data.body
-  const markdownUrl = getPageMarkdownUrl(page).url
+  const markdownUrl = getPageMarkdownUrl(page, locale).url
   const githubUrl = `${githubRepoUrl}/blob/${githubContentBranch}/content/docs/${page.path}`
 
   /* Breadcrumb trail: Home › Documentation › this page. The docs index is its
      own root, so it skips the redundant "Documentation" rung. */
-  const crumbs = [{ name: 'Home', path: '/' }]
-  if (page.url !== docsRoute) {
-    crumbs.push({ name: 'Documentation', path: docsRoute })
+  const localizedDocsRoute = localizeHref(docsRoute, locale)
+  const crumbs = [{ name: locale === 'zh' ? '首页' : 'Home', path: localizeHref('/', locale) }]
+  if (localizeHref(page.url, locale) !== localizedDocsRoute) {
+    crumbs.push({ name: locale === 'zh' ? '文档' : 'Documentation', path: localizedDocsRoute })
   }
-  crumbs.push({ name: page.data.title, path: page.url })
+  crumbs.push({ name: page.data.title, path: localizeHref(page.url, locale) })
 
   /* Component doc pages (/docs/components/<slug>) carry per-component SoftwareApplication
      detail (from the registry entry) plus a custom header with prev/next and at-a-glance chips. */
@@ -141,9 +162,10 @@ export default async function Page({ params }: DocsPageProps) {
     breadcrumbNode(crumbs),
     techArticleNode({
       description: page.data.description,
-      image: getPageImage(page).url,
+      image: getPageImage(page, locale).url,
+      locale,
       title: page.data.title,
-      url: page.url,
+      url: localizeHref(page.url, locale),
     }),
     ...(component ? [componentSoftwareApplicationNode(component)] : []),
   )
@@ -175,7 +197,7 @@ export default async function Page({ params }: DocsPageProps) {
       <DocsBody>
         <MDX
           components={getMDXComponents({
-            a: createRelativeLink(source, page),
+            a: createRelativeLink(source, page, LocalizedMdxLink),
           })}
         />
       </DocsBody>

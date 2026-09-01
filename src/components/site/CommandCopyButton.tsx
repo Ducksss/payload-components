@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import { Check, Copy } from 'lucide-react'
 
 import { cn } from '@/utilities/ui'
@@ -5,23 +7,27 @@ import { cn } from '@/utilities/ui'
 export function CommandCopyButton({
   command,
   emphasis = 'default',
-  label = 'Copy',
+  label,
   ariaLabel,
   trackInstall = true,
 }: {
   command: string
   emphasis?: 'default' | 'primary'
+  /* Call sites that name the command they copy pass their own label; the bare
+     control falls back to the shared, translated "Copy". */
   label?: string
   ariaLabel?: string
   trackInstall?: boolean
 }) {
+  const t = useTranslations('Common')
+  const resolvedLabel = label ?? t('copy')
   const primary = emphasis === 'primary'
 
   return (
     <button
       type="button"
       data-copy-command={command}
-      data-copy-default-label={label}
+      data-copy-default-label={resolvedLabel}
       data-cta-level={primary ? 'primary' : 'secondary'}
       data-track-install={trackInstall ? 'true' : undefined}
       aria-label={ariaLabel}
@@ -34,7 +40,7 @@ export function CommandCopyButton({
     >
       <Copy className="copy-icon-idle size-3.5" aria-hidden="true" />
       <Check className="copy-icon-done size-3.5" aria-hidden="true" />
-      <span data-copy-label>{label}</span>
+      <span data-copy-label>{resolvedLabel}</span>
     </button>
   )
 }

@@ -1,4 +1,5 @@
 import { ArrowUpRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { TemplateTrackedLink } from '@/components/site/templates/TemplateTrackedLink'
 import { templatesContribution } from '@/lib/site'
@@ -15,9 +16,11 @@ export function TemplateContribution({
   source: 'detail' | 'gallery'
   template?: string
 }) {
+  const t = useTranslations('Templates')
+
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      {templatesContribution.links.map((link) => (
+      {templatesContribution.links.map((link, index) => (
         <TemplateTrackedLink
           key={link.href}
           event="template_contribution_click"
@@ -27,13 +30,15 @@ export function TemplateContribution({
           className="group flex flex-col gap-2 rounded-card border border-border bg-card p-6 shadow-card transition-shadow duration-300 hover:shadow-frame focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <span className="flex items-center justify-between gap-3 text-base font-medium text-foreground">
-            {link.label}
+            {index === 0 ? t('contributionRepository') : t('contributionRfc')}
             <ArrowUpRight
               className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-brand"
               aria-hidden="true"
             />
           </span>
-          <span className="text-sm leading-6 text-muted-foreground">{link.description}</span>
+          <span className="text-sm leading-6 text-muted-foreground">
+            {index === 0 ? t('contributionRepositoryDescription') : t('contributionRfcDescription')}
+          </span>
         </TemplateTrackedLink>
       ))}
     </div>

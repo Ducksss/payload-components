@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 
-import Link from 'next/link'
+import Link from '@/i18n/Link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 
 import { ArrowLeft } from 'lucide-react'
 
@@ -17,9 +18,10 @@ import { TemplatePagesGrid } from '@/components/site/templates/TemplatePagesGrid
 import { TemplateRecipe } from '@/components/site/templates/TemplateRecipe'
 import { TemplateReveal } from '@/components/site/templates/TemplateReveal'
 import { TemplateVisualSystem } from '@/components/site/templates/TemplateVisualSystem'
+import { localeAlternates, localeDetails, localizeHref } from '@/i18n/config'
+import { getSiteLocale } from '@/lib/i18n'
 import {
   siteUrl,
-  templateCategoryLabels,
   templatesContribution,
   templatesRecipeIntro,
   siteOpenGraphDefaults,
@@ -32,7 +34,6 @@ import {
   templateStarterInstallCommand,
   uniqueTemplateBlockSlugs,
 } from '@/lib/templates/registry'
-import { TEMPLATE_CONCEPT_DISCLOSURE, TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
 /* /templates/[slug] detail — the indexable editorial page for one full-site
@@ -57,20 +58,27 @@ type DetailParams = Promise<{ slug: string }>
 
 export async function generateMetadata({ params }: { params: DetailParams }): Promise<Metadata> {
   const { slug } = await params
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'Templates' })
   const template = getTemplateShowcase(slug)
   if (!template) return {}
 
-  const title = `${template.title} template`
+  const title = t('detailTitle', { title: template.title })
+  const canonical = localizeHref(templateDetailHref(template.slug), locale)
 
   return {
-    alternates: { canonical: templateDetailHref(template.slug) },
+    alternates: {
+      canonical,
+      languages: localeAlternates(templateDetailHref(template.slug)),
+    },
     description: template.summary,
     openGraph: {
       ...siteOpenGraphDefaults,
       description: template.summary,
+      locale: localeDetails[locale].openGraphLocale,
       title,
       type: 'website',
-      url: templateDetailHref(template.slug),
+      url: canonical,
     },
     title,
     twitter: {
@@ -83,6 +91,8 @@ export async function generateMetadata({ params }: { params: DetailParams }): Pr
 
 export default async function TemplateDetailPage({ params }: { params: DetailParams }) {
   const { slug } = await params
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'Templates' })
   const template = getTemplateShowcase(slug)
   if (!template) notFound()
 
@@ -91,17 +101,20 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
   const starterInstallCommand = templateStarterInstallCommand(template)
   const structuredData = graph(
     breadcrumbNode([
-      { name: 'Home', path: '/' },
-      { name: 'Templates', path: '/templates' },
-      { name: template.title, path: templateDetailHref(template.slug) },
+      { name: locale === 'zh' ? '首页' : 'Home', path: localizeHref('/', locale) },
+      { name: t('back'), path: localizeHref('/templates', locale) },
+      {
+        name: template.title,
+        path: localizeHref(templateDetailHref(template.slug), locale),
+      },
     ]),
     {
-      '@id': `${siteUrl}${templateDetailHref(template.slug)}#template`,
+      '@id': `${siteUrl}${localizeHref(templateDetailHref(template.slug), locale)}#template`,
       '@type': 'WebPage',
       description: template.summary,
-      inLanguage: 'en',
-      name: `${template.title} template`,
-      url: `${siteUrl}${templateDetailHref(template.slug)}`,
+      inLanguage: localeDetails[locale].htmlLang,
+      name: t('detailTitle', { title: template.title }),
+      url: `${siteUrl}${localizeHref(templateDetailHref(template.slug), locale)}`,
     },
   )
 
@@ -124,14 +137,14 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
                 className="inline-flex items-center gap-1.5 rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
               >
                 <ArrowLeft className="size-3.5" aria-hidden="true" />
-                Templates
+                {t('back')}
               </Link>
               <span aria-hidden="true" className="text-muted-foreground/50">
                 /
               </span>
-              <span className="text-brand">{templateCategoryLabels[template.category]}</span>
+              <span className="text-brand">{t(`categories.${template.category}`)}</span>
               <span className="ml-1 rounded-full border border-brand/30 bg-brand/10 px-3 py-1 text-brand">
-                {TEMPLATE_CONCEPT_STATUS_LABEL}
+                {t('status')}
               </span>
             </div>
 
@@ -233,9 +246,9 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
         <Section className="bg-muted/40" containerClassName="py-12 sm:py-14 lg:py-16">
           <div className="mb-10 flex max-w-2xl flex-col gap-3 rounded-card border border-border bg-background/85 p-4 sm:flex-row sm:items-start sm:gap-4">
             <span className="w-fit shrink-0 rounded-full border border-brand/30 bg-brand/10 px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand">
-              {TEMPLATE_CONCEPT_STATUS_LABEL}
+              {t('status')}
             </span>
-            <p className="text-sm leading-6 text-muted-foreground">{TEMPLATE_CONCEPT_DISCLOSURE}</p>
+            <p className="text-sm leading-6 text-muted-foreground">{t('disclosure')}</p>
           </div>
 
           <TemplateReveal>

@@ -1,15 +1,19 @@
 import { RevealItem, RevealStagger } from '@/components/site/motion/Reveal'
-import { stackBandLede, stackItems } from '@/lib/site'
+import { useTranslations } from 'next-intl'
+
+import { stackItems } from '@/lib/site'
 
 /* The honest "logo cloud": no customer logos, just the stack components
  * install into — set as a quiet support-matrix pill row, version chips in
  * emerald. */
 export function StackBand() {
+  const t = useTranslations('Landing.stack')
+
   return (
-    <section aria-label="Supported stack" className="bg-muted/30">
+    <section aria-label={t('label')} className="bg-muted/30">
       <div className="container flex flex-col items-center gap-6 py-9 sm:py-11">
         <p className="font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
-          {stackBandLede}
+          {t('lede')}
         </p>
         <RevealStagger
           as="ul"

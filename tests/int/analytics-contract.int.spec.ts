@@ -7,6 +7,9 @@ const repoRoot = process.cwd()
 const analyticsPath = path.join(repoRoot, 'src', 'lib', 'analytics.ts')
 const contributingPath = path.join(repoRoot, 'content', 'docs', 'contributing.mdx')
 const privacyPath = path.join(repoRoot, 'src', 'app', 'privacy', 'page.tsx')
+/* The privacy disclosure is localized, so its prose lives in the message
+   catalogue; the event names and field lists stay in the page as identifiers. */
+const privacyMessagesPath = path.join(repoRoot, 'messages', 'en.json')
 const envExamplePath = path.join(repoRoot, '.env.example')
 
 const eventFields = {
@@ -65,9 +68,10 @@ describe('public anonymous analytics contract', () => {
   })
 
   it('keeps the privacy boundary and deployment opt-out public', async () => {
-    const [contributingDocs, privacyPage, envExample] = await Promise.all([
+    const [contributingDocs, privacyPage, privacyMessages, envExample] = await Promise.all([
       readFile(contributingPath, 'utf8'),
       readFile(privacyPath, 'utf8'),
+      readFile(privacyMessagesPath, 'utf8'),
       readFile(envExamplePath, 'utf8'),
     ])
 
@@ -87,7 +91,7 @@ describe('public anonymous analytics contract', () => {
     expect(contributingDocs).toContain('first same-site pathname')
     expect(contributingDocs).toContain('It is absent for direct and referral visits')
     expect(privacyPage).toContain('entry_page')
-    expect(privacyPage).toContain('never contains a query string or raw referrer')
+    expect(privacyMessages).toContain('never contains a query string or raw referrer')
     expect(contributingDocs).toContain('Leaving `NEXT_PUBLIC_POSTHOG_KEY` unset')
     expect(envExample).toContain('Leave unset to disable PostHog capture')
   })

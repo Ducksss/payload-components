@@ -4,11 +4,22 @@ import { access, readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-import { Children, createElement, isValidElement, type ReactNode } from 'react'
+import { createElement, type FunctionComponent, type ReactNode } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { NextIntlClientProvider } from 'next-intl'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+vi.mock('server-only', () => ({}))
+/* Stamps every next/link anchor so a rendered assertion can tell a native <a>
+   apart from the routed Link the two render identically to otherwise. */
+vi.mock('next/link', () => ({
+  default: ({ href, children, ...props }: { href: unknown; children?: ReactNode }) =>
+    createElement('a', { ...props, 'data-next-link': 'true', href: String(href) }, children),
+}))
+vi.mock('next/navigation', () => ({ usePathname: () => '/' }))
+
 import { SiteFooter } from '../../src/components/site/SiteFooter'
+import { SiteHeader } from '../../src/components/site/SiteHeader'
 
 /* Many assertions below pin exact substrings of source files, and prettier owns
    the line breaks in every one of those files. A pin that spans more than a
@@ -24,6 +35,28 @@ const repoRoot = process.cwd()
 
 const readJson = async <T>(filePath: string): Promise<T> =>
   JSON.parse(await readFile(filePath, 'utf8')) as T
+
+type IntlMessages = { [key: string]: string | IntlMessages }
+
+/* The provider's own props type demands `children`, which would force the
+   children-as-prop form eslint forbids. Narrowing it to the two props this
+   helper sets lets children stay a createElement argument. */
+const IntlProvider = NextIntlClientProvider as unknown as FunctionComponent<{
+  locale: string
+  messages: IntlMessages
+}>
+
+/* Site chrome reads its copy through next-intl, so rendering it needs the
+   provider the app supplies. English messages keep the assertions readable. */
+async function renderWithMessages(node: ReactNode) {
+  const messages = await readJson<IntlMessages>(path.join(repoRoot, 'messages', 'en.json'))
+
+  return renderToStaticMarkup(createElement(IntlProvider, { locale: 'en', messages }, node))
+}
+
+function anchorFor(markup: string, href: string) {
+  return markup.match(/<a\b[^>]*>/g)?.find((tag) => tag.includes(`href="${href}"`))
+}
 
 type HeaderRule = {
   has?: Array<{ key: string; type: string; value?: string }>
@@ -70,16 +103,6 @@ async function expectMetaEntriesResolve(directory: string) {
     if (await pathExists(childMetaPath)) {
       await expectMetaEntriesResolve(path.join(directory, entry))
     }
-  }
-}
-
-function findElementTypeByHref(node: ReactNode, href: string): unknown {
-  for (const child of Children.toArray(node)) {
-    if (!isValidElement<{ children?: ReactNode; href?: string }>(child)) continue
-    if (child.props.href === href) return child.type
-
-    const nestedType = findElementTypeByHref(child.props.children, href)
-    if (nestedType) return nestedType
   }
 }
 
@@ -144,8 +167,35 @@ describe('Fumadocs site shell', () => {
     )
   })
 
-  it('renders the external registry resource as a native anchor', () => {
-    expect(findElementTypeByHref(SiteFooter(), '/r/registry.json')).toBe('a')
+  it('renders external footer and header links as secured native anchors', async () => {
+    const [footer, header] = await Promise.all([
+      renderWithMessages(createElement(SiteFooter)),
+      renderWithMessages(createElement(SiteHeader, {})),
+    ])
+    const { githubRepoUrl } = await import('../../src/lib/site')
+
+    /* The registry JSON is an asset, not a route: routing it through next/link
+       would prefetch and client-navigate a download. */
+    const registryAnchor = anchorFor(footer, '/r/registry.json')
+    expect(registryAnchor, '/r/registry.json anchor').toBeDefined()
+    expect(registryAnchor).not.toContain('data-next-link')
+    expect(registryAnchor).toContain('target="_blank"')
+    expect(registryAnchor).toContain('rel="noreferrer"')
+
+    /* Every cross-origin link that opens a tab carries rel="noreferrer" —
+       asserted on the rendered anchors, not on a substring of the file. */
+    const externalAnchors = [footer, header].flatMap(
+      (markup) =>
+        markup.match(/<a\b[^>]*>/g)?.filter((tag) => tag.includes('target="_blank"')) ?? [],
+    )
+    expect(externalAnchors.length).toBeGreaterThanOrEqual(3)
+    for (const anchor of externalAnchors) {
+      expect(anchor, anchor).toContain('rel="noreferrer"')
+    }
+
+    expect(anchorFor(header, githubRepoUrl), 'header GitHub anchor').toContain('rel="noreferrer"')
+    /* Internal navigation still routes through next/link. */
+    expect(anchorFor(header, '/docs'), 'header docs link').toContain('data-next-link')
   })
 
   it('connects the block troubleshooting article to the installation guide', async () => {
@@ -198,7 +248,7 @@ describe('Fumadocs site shell', () => {
     expect(installationGuide).toContain(
       '[Payload 3 generated-types repair guide](/docs/payload-types-errors)',
     )
-    expect(sitemap).toContain('source.getPages()')
+    expect(sitemap).toContain("source.getPages('en')")
   })
 
   it('keeps the Payload import-map reference separate from the foundations essay', async () => {
@@ -221,7 +271,7 @@ describe('Fumadocs site shell', () => {
     expect(installationGuide).toContain(
       '[Payload `generate:importmap` reference](/docs/payload-generate-importmap)',
     )
-    expect(sitemap).toContain('source.getPages()')
+    expect(sitemap).toContain("source.getPages('en')")
 
     expect(essay).toContain('title: Why Payload Types and the Admin Import Map Must Stay in Sync')
     expect(essay).toContain('author: Ducksss')
@@ -259,7 +309,7 @@ describe('Fumadocs site shell', () => {
     expect(docsMeta).toContain('"payload-cms-npm"')
     expect(docsIndex).toContain('href="/docs/payload-cms-npm"')
     expect(installationGuide).toContain('[Payload CMS npm setup guide](/docs/payload-cms-npm)')
-    expect(sitemap).toContain('source.getPages()')
+    expect(sitemap).toContain("source.getPages('en')")
   })
 
   it('keeps the Payload configuration guide distinct, discoverable, and actionable', async () => {
@@ -292,7 +342,7 @@ describe('Fumadocs site shell', () => {
     expect(installationGuide).toContain(
       '[Payload configuration guide](/docs/payload-configuration)',
     )
-    expect(sitemap).toContain('source.getPages()')
+    expect(sitemap).toContain("source.getPages('en')")
   })
 
   it('keeps the Payload blocks guide implementation-led, discoverable, and product-true', async () => {
@@ -370,7 +420,7 @@ describe('Fumadocs site shell', () => {
     expect(rootReadme).toContain(
       '[payload-blocks-guide-url]: https://www.payload-components.xyz/docs/payload-blocks',
     )
-    expect(sitemap).toContain('source.getPages()')
+    expect(sitemap).toContain("source.getPages('en')")
   })
 
   it('keeps the GitHub mark independent from removed Lucide brand icons', async () => {
@@ -420,7 +470,7 @@ describe('Fumadocs site shell', () => {
     expect(guide).toContain('command="npx payload-components add hero-basic"')
     expect(guide).toContain('label="Copy install command"')
     expect(docsMeta).toContain('"shadcn-vs-payload-components"')
-    expect(sitemap).toContain('source.getPages()')
+    expect(sitemap).toContain("source.getPages('en')")
     await expect(
       pathExists(
         path.join(repoRoot, 'src', 'app', 'compare', 'shadcn-vs-payload-components', 'page.tsx'),
@@ -505,9 +555,8 @@ describe('Fumadocs site shell', () => {
     expect(siteHeader).toContain('aria-expanded')
     expect(siteHeader).not.toContain('role="menu"')
     expect(siteHeader).not.toContain('role="menuitem"')
-    expect(collapse(siteHeader)).toContain(
-      "rel={item.label === 'GitHub' ? 'noreferrer' : undefined}",
-    )
+    /* rel/target on the external links is asserted against the rendered anchors
+       in 'renders external footer and header links as secured native anchors'. */
     expect(siteHeader).toContain('activePath')
     expect(commandCopyButton).not.toContain("'use client'")
     expect(commandCopyButton).toContain('data-copy-command')
@@ -807,12 +856,10 @@ describe('Fumadocs site shell', () => {
     const { blogDescription, blogTitle } = await import('../../src/lib/site')
 
     expect(layoutSource).toContain('<SiteFooter />')
-    expect(indexSource).toContain('blogDescription')
-    expect(indexSource).toContain('blogTitle')
-    expect(indexSource).toContain('title: blogTitle')
-    expect(indexSource).toContain('description: blogDescription')
-    expect(indexSource).toContain('{blogTitle}')
-    expect(indexSource).toContain('{blogDescription}')
+    expect(indexSource).toContain("namespace: 'Blog'")
+    expect(indexSource).toContain("t('metadataTitle')")
+    expect(indexSource).toContain("t('metadataDescription')")
+    expect(indexSource).toContain('blogSource.getPages(locale)')
     expect(indexSource).not.toContain(blogDescription)
     expect(blogTitle).toBe('Payload CMS block and installer guides')
     expect(blogDescription).toContain('Payload CMS v3 guides')
@@ -821,14 +868,12 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).toContain("href: '/docs/payload-blocks'")
     expect(indexSource).toContain("href: '/blog/anatomy-of-an-install'")
     expect(indexSource).toContain('data-guide-gateway')
-    expect(collapse(indexSource)).toContain(
-      'alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates }',
-    )
+    expect(indexSource).toContain("localeAlternates('/blog')")
     expect(collapse(indexSource)).toContain("twitter: { card: 'summary_large_image'")
     expect(postSource).toContain("type: 'article'")
     expect(postSource).toContain('publishedTime:')
     expect(collapse(postSource)).toContain("twitter: { card: 'summary_large_image'")
-    expect(sitemapSource).toContain('blogSource.getPages()')
+    expect(sitemapSource).toContain("blogSource.getPages('en')")
   })
 
   it('publishes truthful sitemap freshness and a canonical RSS feed', async () => {
@@ -944,6 +989,33 @@ describe('Fumadocs site shell', () => {
       isPartOf: { '@id': `${siteUrl}/blog#blog` },
       mainEntityOfPage: `${siteUrl}/blog/hello`,
     })
+
+    /* Under /zh the canonical URL, the declared language, and the blog the post
+       belongs to all move together — a Chinese page that claims the English
+       URL or `inLanguage: en` contradicts its own canonical and hreflang. */
+    expect(blogNode({ description: '中文描述', locale: 'zh', name: '中文标题' })).toMatchObject({
+      '@id': `${siteUrl}/zh/blog#blog`,
+      description: '中文描述',
+      inLanguage: 'zh-CN',
+      name: '中文标题',
+      url: `${siteUrl}/zh/blog`,
+    })
+
+    expect(
+      blogPostingNode({
+        author: 'Ducksss',
+        date: new Date('2026-06-18'),
+        locale: 'zh',
+        title: 'Hello',
+        url: '/zh/blog/hello',
+      }),
+    ).toMatchObject({
+      '@id': `${siteUrl}/zh/blog/hello#article`,
+      inLanguage: 'zh-CN',
+      isPartOf: { '@id': `${siteUrl}/zh/blog#blog` },
+      mainEntityOfPage: `${siteUrl}/zh/blog/hello`,
+      url: `${siteUrl}/zh/blog/hello`,
+    })
   })
 
   it('keeps the family navigator as the final section on component docs', async () => {
@@ -994,10 +1066,10 @@ describe('Fumadocs site shell', () => {
     expect(catalogMetadataDescription).toContain('generated types')
     expect(catalogMetadataDescription).toContain('admin import map')
     expect(catalogPage).toContain('href="/docs/installation"')
-    expect(catalogPage).toContain('{catalogInstallationLinkLabel}')
+    expect(catalogPage).toContain("{t('installation')}")
     expect(catalogInstallationLinkLabel).toContain('one-command installation')
     expect(catalogPage).toContain('href="/docs/payload-blocks"')
-    expect(catalogPage).toContain('{catalogBlocksGuideLinkLabel}')
+    expect(catalogPage).toContain("{t('blocksGuide')}")
     expect(catalogBlocksGuideLinkLabel).toContain('config to live page')
   })
 
@@ -1101,7 +1173,7 @@ describe('Fumadocs site shell', () => {
         false,
       )
     }
-    expect(docsLayout).toContain('{cliVersion}')
+    expect(docsLayout).toContain("t('versionBanner', { version: cliVersion })")
     expect(docsLayout).not.toMatch(/components v\d+\.\d+\.\d+/)
   })
 

@@ -1,25 +1,43 @@
 'use client'
-import Link from 'next/link'
+import Link from '@/i18n/Link'
 import { useEffect, useRef, useState } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 
+import { Menu, X } from 'lucide-react'
+
 import { GitHubMark } from '@/components/site/GitHubMark'
+import { LanguageSwitcher } from '@/components/site/LanguageSwitcher'
 import { Wordmark } from '@/components/site/Wordmark'
+import { localizeHref, normalizeSiteLocale, splitLocalePathname } from '@/i18n/config'
 import { githubRepoUrl } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
 const navLinks = [
-  { href: '/docs', label: 'Docs' },
-  { href: '/components', label: 'Components' },
-  { href: '/templates', label: 'Templates' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/about', label: 'About' },
+  { href: '/docs', label: 'docs' },
+  { href: '/components', label: 'components' },
+  { href: '/templates', label: 'templates' },
+  { href: '/blog', label: 'blog' },
+  { href: '/about', label: 'about' },
 ] as const
+
+/* Shared by every interactive item in the bar so the keyboard ring is one
+   shape across links, the GitHub button and the mobile trigger. */
+const focusRing =
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
 
 export function SiteHeader({ activePath }: { activePath?: (typeof navLinks)[number]['href'] }) {
   const [open, setOpen] = useState(false)
+  const locale = normalizeSiteLocale(useLocale())
+  const t = useTranslations('Header')
   const pathname = usePathname()
   const triggerRef = useRef<HTMLButtonElement>(null)
+  /* Docs is the only full-bleed layout: its brand mark is measured against the
+     Fumadocs sidebar rail, not the page container, so the bar runs edge to edge
+     there. Every other route centres its content in .container — the bar has to
+     ride the same grid or the wordmark floats hundreds of pixels outside it on a
+     wide display. */
+  const railAligned = splitLocalePathname(pathname || '/').pathname.startsWith('/docs')
   useEffect(() => {
     if (!open) return
     const onKey = (event: KeyboardEvent) => {
@@ -49,82 +67,119 @@ export function SiteHeader({ activePath }: { activePath?: (typeof navLinks)[numb
   const skipTarget = activePath === '/docs' ? '#nd-page' : '#main'
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/95">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
       <a
         href={skipTarget}
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-2.5 focus:z-50 focus:rounded-md focus:bg-background focus:px-3 focus:py-1.5 focus:text-sm focus:font-medium focus:text-foreground"
       >
-        Skip to content
+        {t('skip')}
       </a>
-      <div className="flex h-14 items-center justify-between gap-4 pl-4 pr-5 md:pr-8">
-        <Link href="/" aria-label="Payload Components home">
+      <div
+        className={cn(
+          'flex h-14 items-center justify-between gap-4',
+          railAligned ? 'pl-4 pr-5 md:pr-8' : 'container',
+        )}
+      >
+        <Link
+          href={localizeHref('/', locale)}
+          aria-label={t('home')}
+          className={cn('rounded-md', focusRing)}
+        >
           <Wordmark mobileIconOnly withBadge />
         </Link>
 
-        <nav className="hidden items-center gap-1 sm:flex sm:gap-1.5">
+        {/* md, not sm: at 640px the five links plus the wordmark and badge left
+            exactly 16px of slack — the row read as packed rather than laid out. */}
+        <nav className="hidden items-center gap-1 md:flex md:gap-1.5">
           {navLinks.map((item) => {
             const active = activePath === item.href
 
             return (
               <Link
                 key={item.href}
-                href={item.href}
+                href={localizeHref(item.href, locale)}
+                aria-current={active ? 'page' : undefined}
                 className={cn(
                   'rounded-md px-3 py-1.5 text-sm transition-colors',
+                  focusRing,
                   active
                     ? 'bg-secondary text-foreground'
-                    : 'text-muted-foreground hover:text-foreground',
+                    : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground',
                 )}
               >
-                {item.label}
+                {t(`nav.${item.label}`)}
               </Link>
             )
           })}
+
+          <LanguageSwitcher className="ml-1" />
 
           <a
             href={githubRepoUrl}
             target="_blank"
             rel="noreferrer"
-            aria-label="GitHub repository"
-            className="flex size-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:ml-1"
+            aria-label={t('github')}
+            className={cn(
+              'ml-1.5 flex size-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground',
+              focusRing,
+            )}
           >
             <GitHubMark className="size-4" aria-hidden="true" />
           </a>
         </nav>
-        <div className="relative sm:hidden" data-mobile-menu>
+        <div className="relative md:hidden" data-mobile-menu>
           <button
             ref={triggerRef}
             type="button"
             aria-expanded={open}
             aria-controls="mobile-navigation"
-            aria-label={open ? 'Close navigation' : 'Open navigation'}
+            aria-label={open ? t('closeNavigation') : t('openNavigation')}
             onClick={() => setOpen((value) => !value)}
-            className="inline-flex size-9 items-center justify-center rounded-md border border-border text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className={cn(
+              'inline-flex size-9 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-secondary',
+              focusRing,
+            )}
           >
-            ☰
+            {open ? (
+              <X className="size-4" aria-hidden="true" />
+            ) : (
+              <Menu className="size-4" aria-hidden="true" />
+            )}
           </button>
           <div
             id="mobile-navigation"
             hidden={!open}
-            className="absolute right-0 top-11 z-50 flex w-48 flex-col gap-1 rounded-lg border border-border bg-background p-2 shadow-lg"
+            className="absolute right-0 top-12 z-50 flex w-48 flex-col gap-1 rounded-lg border border-border bg-background p-2 shadow-lg"
           >
-            {[...navLinks, { href: githubRepoUrl, label: 'GitHub' }].map((item) => (
+            {navLinks.map((item) => (
               <Link
-                key={item.label}
-                href={item.href}
-                target={item.label === 'GitHub' ? '_blank' : undefined}
-                rel={item.label === 'GitHub' ? 'noreferrer' : undefined}
+                key={item.href}
+                href={localizeHref(item.href, locale)}
                 onClick={() => setOpen(false)}
+                aria-current={activePath === item.href ? 'page' : undefined}
                 className={cn(
                   'rounded-md px-3 py-2 text-sm transition-colors',
+                  focusRing,
                   activePath === item.href
                     ? 'bg-secondary text-foreground'
                     : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
                 )}
               >
-                {item.label}
+                {t(`nav.${item.label}`)}
               </Link>
             ))}
+            <a
+              href={githubRepoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className={cn(
+                'rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground',
+                focusRing,
+              )}
+            >
+              GitHub
+            </a>
+            <LanguageSwitcher className="mt-1 h-9 w-full justify-between px-2" />
           </div>
         </div>
       </div>
