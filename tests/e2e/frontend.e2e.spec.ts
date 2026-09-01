@@ -41,7 +41,7 @@ test.describe('Docs-native frontend', () => {
         title: /Architecture/,
       },
       {
-        h1: 'Kit catalog',
+        h1: 'Installable blocks with documented contracts.',
         path: '/components',
         title: /Kit Catalog/,
       },
@@ -62,9 +62,21 @@ test.describe('Docs-native frontend', () => {
   test('exposes the product documentation homepage sections', async ({ page }) => {
     await page.goto(baseURL)
 
-    await expect(page.getByRole('heading', { level: 2, name: 'How it works' })).toBeVisible()
-    await expect(page.getByRole('heading', { level: 2, name: 'Current kits' })).toBeVisible()
-    await expect(page.getByText('Built for Payload projects')).toBeVisible()
+    await expect(
+      page.getByRole('heading', {
+        level: 2,
+        name: 'A registry alone copies files. Payload blocks need wiring.',
+      }),
+    ).toBeVisible()
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'The work you stop doing by hand.' }),
+    ).toBeVisible()
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'Three steps from catalog to rendered block.' }),
+    ).toBeVisible()
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'A small catalog, proven end to end.' }),
+    ).toBeVisible()
     await expect(page.getByRole('link', { name: /GitHub/ }).first()).toBeVisible()
   })
 
@@ -72,7 +84,7 @@ test.describe('Docs-native frontend', () => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
 
-    await page.getByRole('button', { name: 'Copy' }).click()
+    await page.getByRole('button', { name: 'Copy' }).first().click()
 
     await expect(page.getByRole('button', { name: 'Copied' })).toBeVisible()
     await expect

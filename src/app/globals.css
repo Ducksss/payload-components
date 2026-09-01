@@ -116,4 +116,66 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  ::selection {
+    background: oklch(20.5% 0 0deg);
+    color: oklch(98.5% 0 0deg);
+  }
+}
+
+@layer utilities {
+  .hero-grid-bg {
+    background-image:
+      linear-gradient(to right, oklch(96.7% 0 0deg) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(96.7% 0 0deg) 1px, transparent 1px);
+    background-size: 3.5rem 3.5rem;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes terminal-line {
+  from {
+    opacity: 0;
+    transform: translateY(0.2rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-fade-up {
+    opacity: 0;
+    animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: var(--stagger, 0s);
+  }
+
+  .terminal-line {
+    opacity: 0;
+    animation: terminal-line 0.35s ease forwards;
+    animation-delay: var(--stagger, 0s);
+  }
+
+  .terminal-caret {
+    animation: caret-blink 1.1s steps(1) infinite;
+  }
 }

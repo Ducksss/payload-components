@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-import { ArrowRight } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 
+import { KitPreviewCard } from '@/components/landing/KitPreviewCard'
+import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
-import { kitEntries } from '@/lib/site'
+import { githubRepoUrl, kitEntries } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Kit Catalog',
@@ -13,54 +15,51 @@ export const metadata: Metadata = {
 
 export default function ComponentsPage() {
   return (
-    <main className="min-h-screen bg-white text-zinc-950">
+    <main className="flex min-h-screen flex-col bg-white text-zinc-950">
       <SiteHeader />
-      <section className="border-b border-zinc-200">
-        <div className="container py-14 lg:py-20">
-          <h1 className="max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl">
-            Kit catalog
-          </h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-zinc-600">
-            Installable Payload blocks with docs, registry metadata, and wrapper CLI support. Each
-            kit links to its contract before you add it to a project.
-          </p>
-        </div>
-      </section>
-
-      <section>
-        <div className="container py-12">
-          <div className="overflow-hidden rounded-lg border border-zinc-200">
-            {kitEntries.map((kit) => (
-              <article
-                id={kit.slug}
-                key={kit.slug}
-                className="grid gap-5 border-b border-zinc-200 bg-white p-5 last:border-b-0 lg:grid-cols-[0.65fr_1fr_auto] lg:items-center"
-              >
-                <div>
-                  <code className="font-mono text-sm text-zinc-950">{kit.slug}</code>
-                  <p className="mt-2 text-xs uppercase tracking-[0.14em] text-zinc-500">
-                    {kit.status} / {kit.target}
-                  </p>
-                </div>
-                <div>
-                  <h2 className="text-2xl font-semibold text-zinc-950">{kit.title}</h2>
-                  <p className="mt-3 text-sm leading-6 text-zinc-600">{kit.description}</p>
-                  <code className="mt-4 block overflow-x-auto whitespace-nowrap rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 font-mono text-xs text-zinc-700">
-                    {kit.command}
-                  </code>
-                </div>
-                <Link
-                  href={kit.href}
-                  className="inline-flex h-9 w-fit items-center gap-2 rounded-md border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-950 hover:border-emerald-700 hover:text-emerald-700"
-                >
-                  Read docs
-                  <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
-              </article>
-            ))}
+      <div className="flex-1">
+        <section className="border-b border-zinc-200">
+          <div className="container pt-16 pb-14 sm:pt-20 sm:pb-16">
+            <p className="font-mono text-[0.6875rem] uppercase tracking-[0.18em] text-zinc-400">
+              Kit catalog
+            </p>
+            <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-[1.02] tracking-[-0.03em] sm:text-6xl">
+              Installable blocks with documented contracts.
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-7 text-zinc-600">
+              Each kit ships docs, registry metadata, and wrapper CLI support. Read the contract
+              before you add it to a project — fields, Payload target, and install path are all
+              public.
+            </p>
           </div>
-        </div>
-      </section>
+        </section>
+
+        <section>
+          <div className="container py-14 sm:py-16">
+            <div className="grid gap-6 sm:grid-cols-2">
+              {kitEntries.map((kit) => (
+                <KitPreviewCard key={kit.slug} kit={kit} />
+              ))}
+            </div>
+            <div className="mt-6 flex flex-col justify-between gap-4 rounded-lg border border-dashed border-zinc-300 px-6 py-5 sm:flex-row sm:items-center">
+              <p className="text-sm leading-6 text-zinc-600">
+                The catalog stays small while the install contract proves itself. Have a kit in
+                mind?
+              </p>
+              <Link
+                href={`${githubRepoUrl}/issues`}
+                rel="noreferrer"
+                target="_blank"
+                className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-zinc-950 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-950"
+              >
+                Suggest a kit
+                <ArrowUpRight className="size-3.5" aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      </div>
+      <SiteFooter />
     </main>
   )
 }

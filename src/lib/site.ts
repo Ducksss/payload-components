@@ -1,13 +1,3 @@
-import {
-  BookOpenText,
-  Boxes,
-  Code2,
-  FileCode2,
-  GitBranch,
-  Github,
-  Terminal,
-} from 'lucide-react'
-
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 export const githubRepoUrl = 'https://github.com/Ducksss/payload-components'
 export const primaryInstallCommand = 'npx payload-kit add hero-basic'
@@ -38,65 +28,105 @@ export const kitEntries = [
   },
 ] as const
 
-export const workflowSteps = [
+export const heroBadge = 'MIT · Payload v3 · Next.js 15/16'
+
+export const heroSubheadline =
+  'One command copies the kit, registers the block, wires RenderBlocks, and regenerates your types. Typed end-to-end, safe to re-run.'
+
+export const terminalSteps = [
+  'Detected Payload v3 · Next.js 16',
+  'Copied 4 files from registry',
+  'Registered block in Pages layout',
+  'Wired RenderBlocks.tsx mapping',
+  'Ran generate:types',
+  'Ran generate:importmap',
+] as const
+
+export const terminalFinalLine = 'Installed hero-basic — 0 manual edits.'
+
+export const proofPoints = [
+  'shadcn-compatible registry',
+  'Idempotent installs',
+  'Typed end-to-end',
+  'MIT licensed',
+] as const
+
+export const installComparison = {
+  manual: {
+    command: 'pnpm dlx shadcn add …',
+    label: 'Registry only',
+    steps: [
+      { done: true, text: 'Files copied' },
+      { done: false, text: 'Register block in Pages layout — manual' },
+      { done: false, text: 'Edit RenderBlocks.tsx — manual' },
+      { done: false, text: 'Regenerate payload-types.ts — manual' },
+      { done: false, text: 'Rebuild import map — manual' },
+    ],
+  },
+  wired: {
+    command: 'npx payload-kit add hero-basic',
+    label: 'Registry + wiring',
+    steps: [
+      { done: true, text: 'Files copied' },
+      { done: true, text: 'Block registered in Pages layout' },
+      { done: true, text: 'RenderBlocks.tsx wired' },
+      { done: true, text: 'Types + import map regenerated' },
+      { done: true, text: 'Safe to re-run — idempotent' },
+    ],
+  },
+} as const
+
+export const featureCells = [
   {
-    description: 'Start from kit docs that show the source shape, Payload target, and install path.',
-    icon: BookOpenText,
-    title: 'Read the kit contract',
+    description: 'Every block ships an explicit interface name and lands in your generated payload-types.ts.',
+    title: 'Typed end-to-end',
   },
   {
-    description:
-      'Run the wrapper CLI so registry files, layout fragments, and state tracking stay together.',
-    icon: GitBranch,
-    title: 'Install with payload-kit',
+    description: 'Pages layout entries land in the right place without hand-editing collection configs.',
+    title: 'Auto-registration',
   },
   {
-    description:
-      'Regenerate target project types and import maps after Payload block wiring lands.',
-    icon: FileCode2,
-    title: 'Keep Payload generated output current',
+    description: 'Re-running an install never duplicates imports, fragments, or layout entries.',
+    title: 'Idempotent installs',
+  },
+  {
+    description: 'Unsupported project shapes fail cleanly with actionable errors before anything is written.',
+    title: 'Shape detection',
+  },
+  {
+    description: 'generate:types and generate:importmap run for you after the wiring lands.',
+    title: 'Post-install codegen',
+  },
+  {
+    description: 'Each kit documents its fields, Payload target, and install path before you add it.',
+    title: 'Docs-first contracts',
   },
 ] as const
 
-export const surfaceLinks = [
-  {
-    description: 'Architecture, install behavior, support matrix, and kit-specific guidance.',
-    icon: FileCode2,
-    href: '/docs',
-    title: 'Documentation',
-  },
-  {
-    description: 'Current alpha kits, exact commands, and links into each kit contract.',
-    icon: Boxes,
-    href: '/components',
-    title: 'Kit catalog',
-  },
-  {
-    description: 'Registry delivery plus Payload-specific registration and render-block wiring.',
-    icon: Terminal,
-    href: '/docs/installation',
-    title: 'Install workflow',
-  },
-] as const
+export const generatedTypeSnippet = `interface HeroBasicBlock {
+  eyebrow?: string
+  title: string
+  description: string
+  links?: LinkItem[]
+  badges?: BadgeItem[]
+}`
 
-export const targetPrinciples = [
-  'The website stays a static Fumadocs/Next.js app.',
-  'Payload code lives in installable kit source, not site runtime routes.',
-  'Direct shadcn installs copy files; payload-kit owns Payload wiring.',
-  'Every new kit should ship source, manifest metadata, docs, and installer coverage together.',
-] as const
-
-export const communityLinks = [
+export const footerLinkGroups = [
   {
-    description: 'Source, issues, roadmap, and contribution discussion live in the open.',
-    href: githubRepoUrl,
-    icon: Github,
-    label: 'GitHub repository',
+    links: [
+      { href: '/docs', label: 'Documentation' },
+      { href: '/components', label: 'Kit catalog' },
+      { href: '/docs/installation', label: 'Installation' },
+      { href: '/docs/architecture', label: 'Architecture' },
+    ],
+    title: 'Product',
   },
   {
-    description: 'Suggest a kit, report install drift, or help shape the registry contract.',
-    href: `${githubRepoUrl}/issues`,
-    icon: Code2,
-    label: 'Open an issue',
+    links: [
+      { external: true, href: githubRepoUrl, label: 'GitHub' },
+      { external: true, href: `${githubRepoUrl}/issues`, label: 'Issues' },
+      { href: '/docs/contributing', label: 'Contributing' },
+    ],
+    title: 'Community',
   },
 ] as const
