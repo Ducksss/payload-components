@@ -707,6 +707,11 @@ describe('Fumadocs site shell', () => {
           key: 'Permissions-Policy',
           value: 'camera=(), geolocation=(), microphone=(), payment=(), usb=()',
         },
+        {
+          key: 'Content-Security-Policy-Report-Only',
+          value:
+            "default-src 'self'; base-uri 'self'; connect-src 'self' https://*.google-analytics.com https://*.posthog.com https://*.vercel-insights.com; font-src 'self' data:; form-action 'self'; frame-ancestors 'self'; frame-src 'self'; img-src 'self' blob: data: https://*.google-analytics.com; manifest-src 'self'; media-src 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:;",
+        },
       ],
     })
 
