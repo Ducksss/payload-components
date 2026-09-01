@@ -13,7 +13,7 @@ import { linkGroup } from '@/fields/linkGroup'
  * Installed once per repo at `src/blocks/shared/heroFields.ts`; re-running
  * `payload-components add hero-*` never overwrites a copy you have already edited.
  */
-export const heroFields: Field[] = [
+export const createHeroFields = (): Field[] => [
   {
     name: 'eyebrow',
     type: 'text',

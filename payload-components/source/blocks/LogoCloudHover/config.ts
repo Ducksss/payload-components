@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { logoCloudFields } from '@/blocks/shared/logoCloudFields'
+import { createLogoCloudFields } from '@/blocks/shared/logoCloudFields'
 import { linkGroup } from '@/fields/linkGroup'
 
 export const LogoCloudHover: Block = {
@@ -9,7 +9,7 @@ export const LogoCloudHover: Block = {
   fields: [
     // Shared logo-cloud core (heading + logos). Edit the shared shape in
     // @/blocks/shared/logoCloudFields to update every logo-cloud variant.
-    ...logoCloudFields,
+    ...createLogoCloudFields(),
     // Variant-specific: a single CTA revealed on hover over the logo wall.
     linkGroup({
       overrides: {

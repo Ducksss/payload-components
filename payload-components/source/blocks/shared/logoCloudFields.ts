@@ -17,7 +17,7 @@ import type { Field } from 'payload'
  * Installed once per repo at `src/blocks/shared/logoCloudFields.ts`; re-running
  * `payload-components add logo-cloud-*` never overwrites a copy you have already edited.
  */
-export const logoCloudFields: Field[] = [
+export const createLogoCloudFields = (): Field[] => [
   {
     name: 'heading',
     type: 'text',

@@ -45,7 +45,7 @@ const validateTeamHref = (value: unknown) => {
  * Installed once per repo at `src/blocks/shared/teamFields.ts`; re-running
  * `payload-components add team-*` never overwrites a copy you have already edited.
  */
-export const teamFields: Field[] = [
+export const createTeamFields = (): Field[] => [
   {
     name: 'eyebrow',
     type: 'text',
@@ -57,7 +57,7 @@ export const teamFields: Field[] = [
   },
 ]
 
-export const teamMemberFields: Field[] = [
+export const createTeamMemberFields = (): Field[] => [
   {
     name: 'avatar',
     type: 'upload',

@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { integrationFeaturedMark, integrationFields } from '@/blocks/shared/integrationFields'
+import { createIntegrationFeaturedMark, createIntegrationFields } from '@/blocks/shared/integrationFields'
 import { linkGroup } from '@/fields/linkGroup'
 
 export const IntegrationCluster: Block = {
@@ -9,9 +9,9 @@ export const IntegrationCluster: Block = {
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared
     // shape in @/blocks/shared/integrationFields to update every integration variant.
-    ...integrationFields,
+    ...createIntegrationFields(),
     // Variant-specific: a featured center brand mark and a single CTA.
-    integrationFeaturedMark,
+    createIntegrationFeaturedMark(),
     linkGroup({
       overrides: {
         admin: {

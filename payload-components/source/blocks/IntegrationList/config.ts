@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { integrationFields } from '@/blocks/shared/integrationFields'
+import { createIntegrationFields } from '@/blocks/shared/integrationFields'
 
 export const IntegrationList: Block = {
   slug: 'integrationList',
@@ -9,7 +9,7 @@ export const IntegrationList: Block = {
     // Shared integration core (heading + subtext + integrations). Edit the shared
     // shape in @/blocks/shared/integrationFields to update every integration variant.
     // Each row uses the per-item description and optional href for its action.
-    ...integrationFields,
+    ...createIntegrationFields(),
   ],
   labels: {
     plural: 'Integration List Blocks',

@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { contentFields } from '@/blocks/shared/contentFields'
+import { createContentFields } from '@/blocks/shared/contentFields'
 import { iconField } from '@/blocks/shared/contentIcons'
 
 export const ContentShowcase: Block = {
@@ -9,7 +9,7 @@ export const ContentShowcase: Block = {
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/contentFields.
-    ...contentFields,
+    ...createContentFields(),
     {
       name: 'image',
       type: 'upload',

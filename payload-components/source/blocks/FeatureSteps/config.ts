@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { featureFields } from '@/blocks/shared/featureFields'
+import { createFeatureFields } from '@/blocks/shared/featureFields'
 import { linkGroup } from '@/fields/linkGroup'
 
 export const FeatureSteps: Block = {
@@ -9,7 +9,7 @@ export const FeatureSteps: Block = {
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/featureFields.
-    ...featureFields,
+    ...createFeatureFields(),
     {
       name: 'items',
       type: 'array',

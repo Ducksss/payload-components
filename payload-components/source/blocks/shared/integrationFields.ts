@@ -20,7 +20,7 @@ import type { Field } from 'payload'
  * Installed once per repo at `src/blocks/shared/integrationFields.ts`; re-running
  * `payload-components add integration-*` never overwrites a copy you have already edited.
  */
-export const integrationFields: Field[] = [
+export const createIntegrationFields = (): Field[] => [
   {
     name: 'heading',
     type: 'text',
@@ -68,11 +68,11 @@ export const integrationFields: Field[] = [
  * integration logos around a focal point (cluster, split, connect, orbit,
  * marquee). Left empty, the variant renders without a center mark.
  */
-export const integrationFeaturedMark: Field = {
+export const createIntegrationFeaturedMark = (): Field => ({
   name: 'featuredLogo',
   type: 'upload',
   relationTo: 'media',
   admin: {
     description: 'Optional center brand mark shown at the focal point of the integration layout.',
   },
-}
+})

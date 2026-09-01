@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { heroFields } from '@/blocks/shared/heroFields'
+import { createHeroFields } from '@/blocks/shared/heroFields'
 
 export const HeroBasic: Block = {
   slug: 'heroBasic',
@@ -8,7 +8,7 @@ export const HeroBasic: Block = {
   fields: [
     // Shared hero core (eyebrow, title, description, CTA links). Variant-specific
     // fields follow; edit the shared shape in @/blocks/shared/heroFields.
-    ...heroFields,
+    ...createHeroFields(),
     {
       name: 'proofItems',
       type: 'array',

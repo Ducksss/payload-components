@@ -18,7 +18,7 @@ import type { Field } from 'payload'
  * Installed once per repo at `src/blocks/shared/contentFields.ts`; re-running
  * `payload-components add content-*` never overwrites a copy you have already edited.
  */
-export const contentFields: Field[] = [
+export const createContentFields = (): Field[] => [
   {
     name: 'eyebrow',
     type: 'text',

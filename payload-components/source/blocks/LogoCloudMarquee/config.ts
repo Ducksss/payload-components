@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { logoCloudFields } from '@/blocks/shared/logoCloudFields'
+import { createLogoCloudFields } from '@/blocks/shared/logoCloudFields'
 
 export const LogoCloudMarquee: Block = {
   slug: 'logoCloudMarquee',
@@ -8,7 +8,7 @@ export const LogoCloudMarquee: Block = {
   fields: [
     // Shared logo-cloud core (heading + logos). Edit the shared shape in
     // @/blocks/shared/logoCloudFields to update every logo-cloud variant.
-    ...logoCloudFields,
+    ...createLogoCloudFields(),
   ],
   labels: {
     plural: 'Logo Cloud Marquee Blocks',

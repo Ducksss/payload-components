@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { integrationFeaturedMark, integrationFields } from '@/blocks/shared/integrationFields'
+import { createIntegrationFeaturedMark, createIntegrationFields } from '@/blocks/shared/integrationFields'
 
 export const IntegrationConnect: Block = {
   slug: 'integrationConnect',
@@ -8,9 +8,9 @@ export const IntegrationConnect: Block = {
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared
     // shape in @/blocks/shared/integrationFields to update every integration variant.
-    ...integrationFields,
+    ...createIntegrationFields(),
     // Variant-specific: a featured center brand mark the logos connect to.
-    integrationFeaturedMark,
+    createIntegrationFeaturedMark(),
   ],
   labels: {
     plural: 'Integration Connect Blocks',

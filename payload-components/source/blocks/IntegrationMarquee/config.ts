@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { integrationFeaturedMark, integrationFields } from '@/blocks/shared/integrationFields'
+import { createIntegrationFeaturedMark, createIntegrationFields } from '@/blocks/shared/integrationFields'
 
 export const IntegrationMarquee: Block = {
   slug: 'integrationMarquee',
@@ -8,9 +8,9 @@ export const IntegrationMarquee: Block = {
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared
     // shape in @/blocks/shared/integrationFields to update every integration variant.
-    ...integrationFields,
+    ...createIntegrationFields(),
     // Variant-specific: a featured center brand mark over the scrolling rows.
-    integrationFeaturedMark,
+    createIntegrationFeaturedMark(),
   ],
   labels: {
     plural: 'Integration Marquee Blocks',

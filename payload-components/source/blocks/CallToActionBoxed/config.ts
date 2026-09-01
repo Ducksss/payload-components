@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { callToActionFields } from '@/blocks/shared/callToActionFields'
+import { createCallToActionFields } from '@/blocks/shared/callToActionFields'
 import { linkGroup } from '@/fields/linkGroup'
 
 export const CallToActionBoxed: Block = {
@@ -9,12 +9,13 @@ export const CallToActionBoxed: Block = {
   fields: [
     // Shared call-to-action core (title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/callToActionFields.
-    ...callToActionFields,
+    ...createCallToActionFields(),
     linkGroup({
       overrides: {
         admin: {
           initCollapsed: true,
         },
+        dbName: 'cta_boxed_links',
         maxRows: 2,
         minRows: 1,
       },

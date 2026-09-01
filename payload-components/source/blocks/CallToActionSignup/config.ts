@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { callToActionFields } from '@/blocks/shared/callToActionFields'
+import { createCallToActionFields } from '@/blocks/shared/callToActionFields'
 
 const validateAction = (value: unknown) => {
   if (typeof value !== 'string' || value.trim() === '') {
@@ -27,7 +27,7 @@ export const CallToActionSignup: Block = {
   fields: [
     // Shared call-to-action core (title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/callToActionFields.
-    ...callToActionFields,
+    ...createCallToActionFields(),
     {
       name: 'emailPlaceholder',
       type: 'text',

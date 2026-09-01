@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { integrationFields } from '@/blocks/shared/integrationFields'
+import { createIntegrationFields } from '@/blocks/shared/integrationFields'
 
 export const IntegrationTestimonial: Block = {
   slug: 'integrationTestimonial',
@@ -8,7 +8,7 @@ export const IntegrationTestimonial: Block = {
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared
     // shape in @/blocks/shared/integrationFields to update every integration variant.
-    ...integrationFields,
+    ...createIntegrationFields(),
     // Variant-specific: a customer quote shown beside the grid of integration cards.
     {
       name: 'quote',

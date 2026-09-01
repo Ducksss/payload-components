@@ -13,7 +13,7 @@ import type { Field } from 'payload'
  * Installed once per repo at `src/blocks/shared/callToActionFields.ts`; re-running
  * `payload-components add call-to-action-*` never overwrites a copy you have already edited.
  */
-export const callToActionFields: Field[] = [
+export const createCallToActionFields = (): Field[] => [
   {
     name: 'title',
     type: 'text',

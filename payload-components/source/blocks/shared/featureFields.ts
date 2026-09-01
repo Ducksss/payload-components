@@ -13,7 +13,7 @@ import type { Field } from 'payload'
  * Installed once per repo at `src/blocks/shared/featureFields.ts`; re-running
  * `payload-components add feature-*` never overwrites a copy you have already edited.
  */
-export const featureFields: Field[] = [
+export const createFeatureFields = (): Field[] => [
   {
     name: 'eyebrow',
     type: 'text',

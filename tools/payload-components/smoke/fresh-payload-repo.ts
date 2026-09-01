@@ -618,10 +618,13 @@ type SmokeSampleBlock = SmokeSampleItem & {
 const rawLayout = ${JSON.stringify(layout, null, 2)} satisfies SmokeSampleBlock[]
 const needsSmokeMedia = ${JSON.stringify(needsSmokeMedia)}
 
+const isMissingUploadReference = (item: SmokeSampleItem, fieldName: string) =>
+  typeof item[fieldName] === 'undefined' || item[fieldName] === null || item[fieldName] === ''
+
 const addUploadReference = (items: SmokeSampleItem[] | undefined, fieldName: string, mediaID: unknown) =>
   items?.map((item) => ({
     ...item,
-    [fieldName]: item[fieldName] ?? mediaID,
+    [fieldName]: isMissingUploadReference(item, fieldName) ? mediaID : item[fieldName],
   }))
 
 const addGroupMemberUploadReferences = (

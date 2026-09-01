@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 
-import { teamFields, teamMemberFields } from '@/blocks/shared/teamFields'
+import { createTeamFields, createTeamMemberFields } from '@/blocks/shared/teamFields'
 
 export const TeamGrid: Block = {
   slug: 'teamGrid',
@@ -8,7 +8,7 @@ export const TeamGrid: Block = {
   fields: [
     // Shared team core (eyebrow, title). Variant-specific fields follow; edit the
     // shared shape in @/blocks/shared/teamFields.
-    ...teamFields,
+    ...createTeamFields(),
     {
       name: 'description',
       type: 'textarea',
@@ -23,7 +23,7 @@ export const TeamGrid: Block = {
         initCollapsed: true,
       },
       // Shared member shape — see @/blocks/shared/teamFields.
-      fields: teamMemberFields,
+      fields: createTeamMemberFields(),
     },
   ],
   labels: {
