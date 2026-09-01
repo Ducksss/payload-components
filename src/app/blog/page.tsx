@@ -75,7 +75,11 @@ export default function BlogIndex() {
       { name: locale === 'zh' ? '首页' : 'Home', path: localizeHref('/', locale) },
       { name: t('metadataTitle'), path: localizeHref('/blog', locale) },
     ]),
-    blogNode(),
+    blogNode({
+      description: t('metadataDescription'),
+      locale,
+      name: t('metadataTitle'),
+    }),
   )
 
   return (

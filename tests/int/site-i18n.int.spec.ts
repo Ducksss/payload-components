@@ -13,7 +13,7 @@ import {
   siteLocales,
   splitLocalePathname,
 } from '../../src/i18n/config'
-import { componentCategories } from '../../src/lib/site'
+import { componentCategories, composerAddLabel, composerRemoveLabel } from '../../src/lib/site'
 
 const repoRoot = process.cwd()
 
@@ -99,10 +99,26 @@ describe('site internationalization', () => {
 
     const translate = createTranslator({ locale: 'en', messages: englishMessages }) as unknown as (
       key: string,
+      values?: Record<string, string>,
     ) => string
     expect(translate('Catalog.metadataDescription')).toContain(
       'npx payload-components add <component>',
     )
+
+    /* The catalog composer e2e finds these buttons by accessible name through
+       composerAddLabel / composerRemoveLabel. The English message has to render
+       the identical string, or the selection flow stops being covered without
+       anything going red. */
+    expect(translate('CatalogBrowser.composerAdd', { slug: 'hero-basic' })).toBe(
+      composerAddLabel('hero-basic'),
+    )
+    expect(translate('CatalogBrowser.composerRemove', { slug: 'hero-basic' })).toBe(
+      composerRemoveLabel('hero-basic'),
+    )
+    /* Copy control: the button label and its confirmed state are swapped in by
+       CommandCopyController, and the e2e asserts both accessible names. */
+    expect(translate('Common.copy')).toBe('Copy')
+    expect(translate('Common.copied')).toBe('Copied')
   })
 
   it('wires next-intl, Fumadocs fallback, request routing, and locale-aware links together', async () => {

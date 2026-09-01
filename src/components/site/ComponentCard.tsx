@@ -1,10 +1,11 @@
 import Link from '@/i18n/Link'
+import { useTranslations } from 'next-intl'
 
 import { Check, Plus } from 'lucide-react'
 
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { ComponentPreviewThumb } from '@/components/site/ComponentPreviewThumb'
-import { composerAddLabel, composerRemoveLabel, type componentEntries } from '@/lib/site'
+import { type componentEntries } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
 type Component = (typeof componentEntries)[number]
@@ -32,6 +33,8 @@ export function ComponentCard({
   onToggleSelect?: (slug: string) => void
   selected?: boolean
 }) {
+  const t = useTranslations('CatalogBrowser')
+
   return (
     <article
       id={component.slug}
@@ -65,7 +68,9 @@ export function ComponentCard({
             <button
               type="button"
               aria-label={
-                selected ? composerRemoveLabel(component.slug) : composerAddLabel(component.slug)
+                selected
+                  ? t('composerRemove', { slug: component.slug })
+                  : t('composerAdd', { slug: component.slug })
               }
               aria-pressed={selected ? 'true' : 'false'}
               onClick={() => onToggleSelect(component.slug)}

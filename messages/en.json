@@ -3,6 +3,11 @@
     "title": "Payload Components — fully-wired blocks for Payload CMS",
     "description": "Open-source Payload CMS blocks that install with their collection config, renderer mapping, generated types, and admin import map."
   },
+  "Common": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "copiedDescription": "Copied to clipboard."
+  },
   "Header": {
     "skip": "Skip to content",
     "home": "Payload Components home",
@@ -35,7 +40,10 @@
   },
   "Docs": {
     "versionBanner": "MIT registry · components v{version}",
-    "github": "Star on GitHub"
+    "github": "Star on GitHub",
+    "previousComponent": "Previous component: {title}",
+    "nextComponent": "Next component: {title}",
+    "newIn": "New in {version}"
   },
   "HomeMetadata": {
     "title": "Payload Components: Wired Payload CMS Blocks in One Command",
@@ -161,7 +169,9 @@
       "author": "Author",
       "newsletter": "Newsletter",
       "related": "Related"
-    }
+    },
+    "composerAdd": "Add {slug} to the install command",
+    "composerRemove": "Remove {slug} from the install command"
   },
   "Templates": {
     "metadataTitle": "Payload CMS Templates for Next.js | Concepts & Recipes",

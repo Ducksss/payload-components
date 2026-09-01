@@ -3,6 +3,11 @@
     "title": "Payload Components — 为 Payload CMS 完整接线的内容区块",
     "description": "开源 Payload CMS 内容区块：一条命令即可安装集合配置、渲染器映射、生成类型与管理后台导入映射。"
   },
+  "Common": {
+    "copy": "复制",
+    "copied": "已复制",
+    "copiedDescription": "已复制到剪贴板。"
+  },
   "Header": {
     "skip": "跳到主要内容",
     "home": "Payload Components 首页",
@@ -35,7 +40,10 @@
   },
   "Docs": {
     "versionBanner": "MIT 注册表 · 组件 v{version}",
-    "github": "在 GitHub 上加星"
+    "github": "在 GitHub 上加星",
+    "previousComponent": "上一个组件：{title}",
+    "nextComponent": "下一个组件：{title}",
+    "newIn": "{version} 新增"
   },
   "HomeMetadata": {
     "title": "Payload Components：一条命令安装并接线 Payload CMS 区块",
@@ -161,7 +169,9 @@
       "author": "作者",
       "newsletter": "简报",
       "related": "相关内容"
-    }
+    },
+    "composerAdd": "将 {slug} 加入安装命令",
+    "composerRemove": "从安装命令中移除 {slug}"
   },
   "Templates": {
     "metadataTitle": "Next.js 的 Payload CMS 模板 | 概念与配方",

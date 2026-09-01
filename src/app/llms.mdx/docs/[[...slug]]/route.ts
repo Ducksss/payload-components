@@ -20,7 +20,7 @@ export async function GET(_request: Request, { params }: PageMarkdownRouteProps)
     notFound()
   }
 
-  return new Response(await getLLMText(page), {
+  return new Response(await getLLMText(page, locale), {
     headers: {
       'content-type': 'text/markdown; charset=utf-8',
       /* The markdown twins are AI surfaces, not search targets. Without this

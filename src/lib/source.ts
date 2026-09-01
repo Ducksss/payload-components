@@ -5,7 +5,7 @@ import { docs } from 'collections/server'
 
 import { getComponentManifest, getComponentRegistryDependencies } from '@/lib/component-manifest'
 import { regroupComponentTree } from '@/lib/component-page-tree'
-import { localizeHref, type SiteLocale } from '@/i18n/config'
+import { defaultSiteLocale, localizeHref, type SiteLocale } from '@/i18n/config'
 import { fumadocsI18n } from '@/lib/i18n'
 import { docsContentRoute, docsImageRoute, docsRoute } from '@/lib/site'
 
@@ -121,14 +121,16 @@ async function componentInstallContract(page: SourcePage) {
   ].join('\n')
 }
 
-export async function getLLMText(page: SourcePage) {
+/* A Chinese route that falls back to the English source keeps `page.url` at
+   /docs/…; the heading has to name the URL the agent actually requested. */
+export async function getLLMText(page: SourcePage, locale: SiteLocale = defaultSiteLocale) {
   const processed = await page.data.getText('processed')
   const contract =
     page.slugs.length === 2 && page.slugs[0] === 'components'
       ? await componentInstallContract(page)
       : ''
 
-  return `# ${page.data.title} (${page.url})
+  return `# ${page.data.title} (${localizeHref(page.url, locale)})
 
 ${processed}${contract}`
 }

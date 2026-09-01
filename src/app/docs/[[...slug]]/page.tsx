@@ -163,6 +163,7 @@ export default async function Page({ params }: DocsPageProps) {
     techArticleNode({
       description: page.data.description,
       image: getPageImage(page, locale).url,
+      locale,
       title: page.data.title,
       url: localizeHref(page.url, locale),
     }),

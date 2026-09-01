@@ -1,4 +1,5 @@
 import Link from '@/i18n/Link'
+import { useTranslations } from 'next-intl'
 
 import { MarkdownCopyButton, ViewOptionsPopover } from 'fumadocs-ui/layouts/docs/page'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
@@ -17,6 +18,7 @@ function NavArrow({
   component?: ComponentNav
   direction: 'next' | 'prev'
 }) {
+  const t = useTranslations('Docs')
   const Icon = direction === 'prev' ? ArrowLeft : ArrowRight
   const base =
     'inline-flex size-8 items-center justify-center rounded-md border border-border bg-background'
@@ -33,7 +35,9 @@ function NavArrow({
     <Link
       href={component.href}
       title={component.title}
-      aria-label={`${direction === 'prev' ? 'Previous' : 'Next'} component: ${component.title}`}
+      aria-label={t(direction === 'prev' ? 'previousComponent' : 'nextComponent', {
+        title: component.title,
+      })}
       className={`${base} text-foreground transition-colors hover:bg-secondary`}
     >
       <Icon className="size-4" aria-hidden="true" />
@@ -62,6 +66,8 @@ export function ComponentDocHeader({
   prev?: ComponentNav
   title: string
 }) {
+  const t = useTranslations('Docs')
+
   return (
     <div className="mb-6 flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-start sm:justify-between">
       <div className="flex flex-col gap-2">
@@ -84,7 +90,7 @@ export function ComponentDocHeader({
         {latestChange ? (
           <p className="pt-1 text-sm leading-6 text-muted-foreground">
             <span className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-foreground">
-              New in {latestChange.version}
+              {t('newIn', { version: latestChange.version })}
             </span>{' '}
             {latestChange.summary}
           </p>

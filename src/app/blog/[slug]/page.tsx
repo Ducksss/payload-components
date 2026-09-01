@@ -29,7 +29,9 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
   const locale = await getSiteLocale()
   const page = blogSource.getPage([slug], locale)
   if (!page) return {}
-  const socialImage = `${siteUrl}/og/blog/${slug}/image.png`
+  /* The OG route resolves its locale from the request, so the advertised URL
+     has to carry the prefix — an unprefixed one renders the English card. */
+  const socialImage = `${siteUrl}${localizeHref(`/og/blog/${slug}/image.png`, locale)}`
   const canonical = localizeHref(page.url, locale)
 
   return {
@@ -78,9 +80,10 @@ export default async function BlogPost({ params }: BlogPostProps) {
       datePublished: page.data.date,
       description: page.data.description,
       image: page.data.cover.src,
+      locale,
       tags: page.data.tags,
       title: page.data.title,
-      url: page.url,
+      url: localizeHref(page.url, locale),
     }),
   )
 
