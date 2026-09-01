@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/i18n/Link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 
 import { InlineTOC } from 'fumadocs-ui/components/inline-toc'
 import { ArrowLeft } from 'lucide-react'
@@ -9,8 +10,9 @@ import { ArrowLeft } from 'lucide-react'
 import { RelatedPosts } from '@/components/blog/RelatedPosts'
 import { getMDXComponents } from '@/components/mdx'
 import { JsonLd } from '@/components/seo/JsonLd'
-import { blogSeries } from '@/lib/blog'
+import { localeAlternates, localeDetails, localizeHref } from '@/i18n/config'
 import { blogSource } from '@/lib/blog-source'
+import { getSiteLocale } from '@/lib/i18n'
 import { feedMetadataAlternates, siteUrl, siteOpenGraphDefaults } from '@/lib/site'
 import { blogPostingNode, breadcrumbNode, graph } from '@/lib/structured-data'
 
@@ -19,26 +21,33 @@ interface BlogPostProps {
 }
 
 export function generateStaticParams() {
-  return blogSource.getPages().map((page) => ({ slug: page.slugs[0] }))
+  return blogSource.getPages('en').map((page) => ({ slug: page.slugs[0] }))
 }
 
 export async function generateMetadata({ params }: BlogPostProps): Promise<Metadata> {
   const { slug } = await params
-  const page = blogSource.getPage([slug])
+  const locale = await getSiteLocale()
+  const page = blogSource.getPage([slug], locale)
   if (!page) return {}
   const socialImage = `${siteUrl}/og/blog/${slug}/image.png`
+  const canonical = localizeHref(page.url, locale)
 
   return {
     title: page.data.title,
     description: page.data.description,
-    alternates: { canonical: `${siteUrl}${page.url}`, ...feedMetadataAlternates },
+    alternates: {
+      canonical,
+      languages: localeAlternates(page.url),
+      ...feedMetadataAlternates,
+    },
     openGraph: {
       ...siteOpenGraphDefaults,
+      locale: localeDetails[locale].openGraphLocale,
       type: 'article',
       title: page.data.title,
       description: page.data.description,
       images: [{ alt: page.data.cover.alt, height: 630, url: socialImage, width: 1200 }],
-      url: `${siteUrl}${page.url}`,
+      url: canonical,
       publishedTime: new Date(page.data.date).toISOString(),
     },
     twitter: {
@@ -52,16 +61,17 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
 
 export default async function BlogPost({ params }: BlogPostProps) {
   const { slug } = await params
-  const page = blogSource.getPage([slug])
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'Blog' })
+  const page = blogSource.getPage([slug], locale)
   if (!page) notFound()
 
   const MDX = page.data.body
-  const series = blogSeries[page.data.series]
   const structuredData = graph(
     breadcrumbNode([
-      { name: 'Home', path: '/' },
-      { name: 'Blog', path: '/blog' },
-      { name: page.data.title, path: page.url },
+      { name: locale === 'zh' ? '首页' : 'Home', path: localizeHref('/', locale) },
+      { name: locale === 'zh' ? '博客' : 'Blog', path: localizeHref('/blog', locale) },
+      { name: page.data.title, path: localizeHref(page.url, locale) },
     ]),
     blogPostingNode({
       author: page.data.author,
@@ -82,12 +92,12 @@ export default async function BlogPost({ params }: BlogPostProps) {
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="size-4" aria-hidden="true" />
-        Back to blog
+        {t('back')}
       </Link>
 
       <header className="mt-7 max-w-4xl">
         <span className="inline-flex rounded-full border border-brand/20 bg-brand-50 px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-micro text-brand-600">
-          {series.label}
+          {t(`series.${page.data.series}`)}
         </span>
         <h1 className="mt-5 text-4xl font-semibold leading-[1.05] tracking-display text-foreground sm:text-5xl md:text-6xl">
           {page.data.title}
@@ -99,7 +109,11 @@ export default async function BlogPost({ params }: BlogPostProps) {
           <span className="font-medium text-foreground">{page.data.author}</span>
           <span aria-hidden="true">·</span>
           <time dateTime={new Date(page.data.date).toISOString()}>
-            {new Date(page.data.date).toDateString()}
+            {new Date(page.data.date).toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+            })}
           </time>
           <span aria-hidden="true">·</span>
           <span>{page.data.tags.join(' · ')}</span>

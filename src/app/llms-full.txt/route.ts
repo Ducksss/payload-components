@@ -17,7 +17,7 @@ import {
 
 export async function GET() {
   const [docs, blog] = await Promise.all([
-    Promise.all(source.getPages().map(getLLMText)),
+    Promise.all(source.getPages('en').map(getLLMText)),
     Promise.all(getBlogPages().map(getBlogLLMText)),
   ])
   const body = [

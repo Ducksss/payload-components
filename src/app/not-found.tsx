@@ -1,9 +1,12 @@
-import Link from 'next/link'
+import Link from '@/i18n/Link'
 
 import { ArrowRight } from 'lucide-react'
+import { getTranslations } from 'next-intl/server'
 
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { Terminal } from '@/components/site/Terminal'
+import { localizeHref } from '@/i18n/config'
+import { getSiteLocale } from '@/lib/i18n'
 import { componentEntries } from '@/lib/site'
 
 const notFoundLines = [
@@ -15,7 +18,10 @@ const notFoundLines = [
   },
 ] as const
 
-export default function NotFoundPage() {
+export default async function NotFoundPage() {
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'NotFound' })
+
   return (
     <>
       <SiteHeader />
@@ -26,34 +32,28 @@ export default function NotFoundPage() {
         />
         <div className="container relative max-w-xl py-20 text-center">
           <p className="font-mono text-xs uppercase tracking-eyebrow text-muted-foreground">
-            Error 404
+            {t('eyebrow')}
           </p>
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            Page not found
+            {t('title')}
           </h1>
-          <p className="mt-4 text-base leading-7 text-muted-foreground">
-            This route is not in the registry. The components, the docs, and the catalog are.
-          </p>
+          <p className="mt-4 text-base leading-7 text-muted-foreground">{t('description')}</p>
 
-          <Terminal
-            className="mt-8 text-left"
-            lines={notFoundLines}
-            title="payload-components — 404"
-          />
+          <Terminal className="mt-8 text-left" lines={notFoundLines} title={t('terminalTitle')} />
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
-              href="/"
+              href={localizeHref('/', locale)}
               className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Go home
+              {t('home')}
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
             <Link
-              href="/docs"
+              href={localizeHref('/docs', locale)}
               className="inline-flex h-10 items-center justify-center rounded-full border border-border bg-background px-5 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
             >
-              Read the docs
+              {t('docs')}
             </Link>
           </div>
         </div>

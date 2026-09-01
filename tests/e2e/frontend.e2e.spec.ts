@@ -699,6 +699,59 @@ test.describe('Light shadcn frontend', () => {
     })
   }
 
+  const localizedOverflowRoutes = [
+    { h1: /安装 Payload 区块.*接好线，不只是复制。/, path: '/zh' },
+    { h1: 'Introduction', path: '/zh/docs' },
+    { h1: /77 个 Payload CMS 组件与类型化区块/, path: '/zh/components' },
+    { h1: '由可安装区块组成的 Payload CMS 模板概念', path: '/zh/templates' },
+    { h1: 'Payload CMS 区块与安装器指南', path: '/zh/blog' },
+    { h1: 'Why Payload Components exists', path: '/zh/about' },
+  ]
+
+  for (const localizedRoute of localizedOverflowRoutes) {
+    test(`localized route ${localizedRoute.path} uses Chinese chrome without overflow`, async ({
+      page,
+    }) => {
+      await page.goto(`${baseURL}${localizedRoute.path}`, { waitUntil: 'domcontentloaded' })
+
+      await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
+      await expect(page.getByRole('heading', { level: 1, name: localizedRoute.h1 })).toBeVisible()
+      await expect(
+        page.getByRole('navigation').getByRole('link', { name: '组件' }),
+      ).toHaveAttribute('href', '/zh/components')
+
+      await page.evaluate(() => document.fonts.ready)
+      const hasHorizontalOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+      )
+      expect(hasHorizontalOverflow).toBe(false)
+    })
+  }
+
+  test('switches locale explicitly while preserving the route, query, and hash', async ({
+    page,
+  }) => {
+    await page.goto(`${baseURL}/zh/components?q=hero#hero-basic`)
+
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/zh\/components$/)
+    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+      'href',
+      /\/components$/,
+    )
+    await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveAttribute(
+      'href',
+      /\/zh\/components$/,
+    )
+
+    await page.getByLabel('语言').first().selectOption('en')
+    await expect(page).toHaveURL(`${baseURL}/components?q=hero#hero-basic`)
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+
+    await page.getByLabel('Language').first().selectOption('zh')
+    await expect(page).toHaveURL(`${baseURL}/zh/components?q=hero#hero-basic`)
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
+  })
+
   test('drives the responsive component preview frame', async ({ page }) => {
     await page.goto(`${baseURL}/docs/components/hero-basic`)
 

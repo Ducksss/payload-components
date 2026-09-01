@@ -1,13 +1,17 @@
 import { loader } from 'fumadocs-core/source'
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons'
+import type { Folder, Node, Root } from 'fumadocs-core/page-tree'
 import { docs } from 'collections/server'
 
 import { getComponentManifest, getComponentRegistryDependencies } from '@/lib/component-manifest'
 import { regroupComponentTree } from '@/lib/component-page-tree'
+import { localizeHref, type SiteLocale } from '@/i18n/config'
+import { fumadocsI18n } from '@/lib/i18n'
 import { docsContentRoute, docsImageRoute, docsRoute } from '@/lib/site'
 
 export const source = loader({
   baseUrl: docsRoute,
+  i18n: fumadocsI18n,
   // Inline transformer (not a typed object) so it stays decoupled from the loader's
   // inferred storage generic — see the gotcha in component-page-tree.tsx.
   pageTree: { transformers: [{ root: regroupComponentTree }] },
@@ -17,21 +21,50 @@ export const source = loader({
 
 type SourcePage = (typeof source)['$inferPage']
 
-export function getPageImage(page: SourcePage) {
-  const segments = [...page.slugs, 'image.png']
+function localizeTreeNode(node: Node, locale: SiteLocale): Node {
+  if (node.type === 'page') return { ...node, url: localizeHref(node.url, locale) }
+  if (node.type === 'separator') return { ...node }
 
+  const folder: Folder = {
+    ...node,
+    children: node.children.map((child) => localizeTreeNode(child, locale)),
+    index: node.index ? { ...node.index, url: localizeHref(node.index.url, locale) } : undefined,
+  }
+
+  return folder
+}
+
+/** Fallback pages retain their English source URL; clone the tree so its links
+ * still stay inside the visitor's selected locale. */
+function localizeTreeRoot(tree: Root, locale: SiteLocale): Root {
   return {
-    segments,
-    url: `${docsImageRoute}/${segments.join('/')}`,
+    ...tree,
+    children: tree.children.map((node) => localizeTreeNode(node, locale)),
+    fallback: tree.fallback ? localizeTreeRoot(tree.fallback, locale) : undefined,
   }
 }
 
-export function getPageMarkdownUrl(page: SourcePage) {
-  const segments = [...page.slugs, 'content.md']
+export function getLocalizedPageTree(locale: SiteLocale): Root {
+  return localizeTreeRoot(source.getPageTree(locale), locale)
+}
+
+export function getPageImage(page: SourcePage, locale = page.locale) {
+  const segments = [...page.slugs, 'image.png']
+  const localePrefix = locale === 'zh' ? '/zh' : ''
 
   return {
     segments,
-    url: `${docsContentRoute}/${segments.join('/')}`,
+    url: `${localePrefix}${docsImageRoute}/${segments.join('/')}`,
+  }
+}
+
+export function getPageMarkdownUrl(page: SourcePage, locale = page.locale) {
+  const segments = [...page.slugs, 'content.md']
+  const localePrefix = locale === 'zh' ? '/zh' : ''
+
+  return {
+    segments,
+    url: `${localePrefix}${docsContentRoute}/${segments.join('/')}`,
   }
 }
 

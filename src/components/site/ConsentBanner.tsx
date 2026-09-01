@@ -1,8 +1,10 @@
 'use client'
 
-import Link from 'next/link'
+import Link from '@/i18n/Link'
+import { useLocale, useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 
+import { localizeHref, normalizeSiteLocale, splitLocalePathname } from '@/i18n/config'
 import { setConsent } from '@/lib/consent'
 
 import { useConsent } from './useConsent'
@@ -13,12 +15,15 @@ import { useConsent } from './useConsent'
  * before this renders, so GPC/DNT visitors are never prompted at all. */
 export function ConsentBanner() {
   const pathname = usePathname()
+  const locale = normalizeSiteLocale(useLocale())
+  const t = useTranslations('Consent')
   const consent = useConsent()
+  const unlocalizedPathname = splitLocalePathname(pathname).pathname
 
   // Chrome-free iframe targets never carry site chrome; a banner inside an
   // embedded preview would be both wrong and unreachable.
-  if (pathname.startsWith('/components/preview/')) return null
-  if (/^\/templates\/[^/]+\/preview(\/|$)/.test(pathname)) return null
+  if (unlocalizedPathname.startsWith('/components/preview/')) return null
+  if (/^\/templates\/[^/]+\/preview(\/|$)/.test(unlocalizedPathname)) return null
   // `undefined` is the pre-hydration state — render nothing so server and first
   // client render agree; the effect in useConsent supplies the real value.
   if (consent !== null) return null
@@ -33,17 +38,15 @@ export function ConsentBanner() {
       <div className="mx-auto flex max-w-3xl flex-col gap-4 rounded-card border border-border bg-card p-4 shadow-card sm:flex-row sm:items-center sm:justify-between sm:p-5">
         <div className="space-y-1">
           <p className="text-sm font-medium text-foreground" id="consent-banner-title">
-            Analytics cookies
+            {t('title')}
           </p>
           <p className="text-sm text-muted-foreground">
-            We use Google Analytics and PostHog to see which components and docs people actually
-            use. Decline and neither one loads — no cookie, no identifier. Page-speed measurement
-            runs either way and stores nothing.{' '}
+            {t('description')}{' '}
             <Link
               className="font-medium text-brand underline underline-offset-4 transition-colors hover:text-brand/80"
-              href="/privacy"
+              href={localizeHref('/privacy', locale)}
             >
-              Privacy
+              {t('privacy')}
             </Link>
           </p>
         </div>
@@ -53,14 +56,14 @@ export function ConsentBanner() {
             onClick={() => setConsent('denied')}
             type="button"
           >
-            Decline
+            {t('decline')}
           </button>
           <button
             className="inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             onClick={() => setConsent('granted')}
             type="button"
           >
-            Accept
+            {t('accept')}
           </button>
         </div>
       </div>

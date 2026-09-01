@@ -20,6 +20,10 @@ import {
   uniqueTemplateBlockSlugs,
   validateTemplateShowcases,
 } from '../../src/lib/templates/registry'
+import {
+  TEMPLATE_CONCEPT_DISCLOSURE,
+  TEMPLATE_CONCEPT_STATUS_LABEL,
+} from '../../src/lib/templates/types'
 
 /* Full-site template showcase contract (website-only "Concept preview" phase).
  *
@@ -341,14 +345,21 @@ describe('Template showcase contract', () => {
     expect(violations, `Unscoped theme rules:\n${violations.join('\n')}`).toEqual([])
   })
 
-  it('renders concept status and disclosure via the shared constants on gallery and detail', async () => {
+  it('renders localized concept status and disclosure aligned with the shared constants', async () => {
+    const messages = JSON.parse(
+      await readFile(path.join(repoRoot, 'messages/en.json'), 'utf8'),
+    ) as {
+      Templates: { disclosure: string; status: string }
+    }
+
+    expect(messages.Templates.status).toBe(TEMPLATE_CONCEPT_STATUS_LABEL)
+    expect(messages.Templates.disclosure).toBe(TEMPLATE_CONCEPT_DISCLOSURE)
+
     for (const file of ['src/app/templates/page.tsx', 'src/app/templates/[slug]/page.tsx']) {
       const source = await readFile(path.join(repoRoot, file), 'utf8')
-      expect(source, `${file} must render TEMPLATE_CONCEPT_STATUS_LABEL`).toMatch(
-        /\bTEMPLATE_CONCEPT_STATUS_LABEL\b/,
-      )
-      expect(source, `${file} must render TEMPLATE_CONCEPT_DISCLOSURE`).toMatch(
-        /\bTEMPLATE_CONCEPT_DISCLOSURE\b/,
+      expect(source, `${file} must render the localized concept status`).toContain("t('status')")
+      expect(source, `${file} must render the localized concept disclosure`).toContain(
+        "t('disclosure')",
       )
     }
   })

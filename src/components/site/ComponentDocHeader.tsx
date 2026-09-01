@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/i18n/Link'
 
 import { MarkdownCopyButton, ViewOptionsPopover } from 'fumadocs-ui/layouts/docs/page'
 import { ArrowLeft, ArrowRight } from 'lucide-react'

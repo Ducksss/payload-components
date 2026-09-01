@@ -1,4 +1,5 @@
-import Link from 'next/link'
+import Link from '@/i18n/Link'
+import { useTranslations } from 'next-intl'
 
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
 
@@ -6,12 +7,7 @@ import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { ComponentFamilyHeader } from '@/components/site/ComponentGrid'
 import { DemoFitFrame } from '@/components/site/demos/DemoFitFrame'
 import { demosBySlug } from '@/components/site/demos/registry'
-import {
-  componentCategories,
-  componentEntries,
-  componentFamilies,
-  type ComponentEntry,
-} from '@/lib/site'
+import { componentCategories, componentEntries, type ComponentEntry } from '@/lib/site'
 
 /* The landing catalog, visual-first: instead of re-listing all installable
  * components as text rows (that index now lives in full at /components), each
@@ -66,8 +62,11 @@ function pageFamilies(): PageFamily[] {
 }
 
 function FamilyCard({ family }: { family: PageFamily }) {
+  const t = useTranslations('Landing.catalog')
+  const categoryT = useTranslations('CatalogBrowser.categories')
   const Demo = demosBySlug[family.representative.slug]
   const categoryHref = `/components?category=${family.key}`
+  const familyLabel = categoryT(family.key)
 
   return (
     <article
@@ -76,7 +75,7 @@ function FamilyCard({ family }: { family: PageFamily }) {
     >
       <Link
         href={categoryHref}
-        aria-label={`Browse ${family.label} components`}
+        aria-label={t('browseFamily', { family: familyLabel })}
         className="relative block border-b border-border bg-muted/40"
       >
         <DemoFitFrame className="h-52 [mask-image:linear-gradient(to_bottom,black_82%,transparent)] transition-transform duration-500 ease-out group-hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none">
@@ -84,15 +83,15 @@ function FamilyCard({ family }: { family: PageFamily }) {
         </DemoFitFrame>
         <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-border bg-background/90 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground backdrop-blur">
           <span aria-hidden="true" className="size-1.5 rounded-full bg-brand" />
-          Live preview
+          {t('preview')}
         </span>
       </Link>
 
       <div className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
         <div className="flex items-baseline justify-between gap-3">
-          <h4 className="text-base font-semibold tracking-tight text-foreground">{family.label}</h4>
+          <h4 className="text-base font-semibold tracking-tight text-foreground">{familyLabel}</h4>
           <span className="shrink-0 rounded-full border border-border bg-muted/50 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
-            {family.count} {family.count === 1 ? 'block' : 'blocks'}
+            {t('blockCount', { count: family.count })}
           </span>
         </div>
 
@@ -110,7 +109,7 @@ function FamilyCard({ family }: { family: PageFamily }) {
           href={categoryHref}
           className="mt-auto inline-flex items-center gap-1 pt-1 text-sm font-medium text-foreground transition-colors hover:text-brand"
         >
-          Browse {family.label.toLowerCase()}
+          {t('browseFamily', { family: familyLabel })}
           <ArrowRight className="size-3.5" aria-hidden="true" />
         </Link>
       </div>
@@ -119,15 +118,16 @@ function FamilyCard({ family }: { family: PageFamily }) {
 }
 
 export function CatalogFamilyTeaser() {
+  const t = useTranslations('Landing.catalog')
   const families = pageFamilies()
   const installableCount = componentEntries.length
 
   return (
     <div className="flex flex-col gap-8">
       <ComponentFamilyHeader
-        countLabel={componentFamilies.pages.countLabel}
-        description={componentFamilies.pages.description}
-        name={componentFamilies.pages.name}
+        countLabel={t('familyCount')}
+        description={t('familyDescription')}
+        name={t('familyName')}
       />
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -142,14 +142,14 @@ export function CatalogFamilyTeaser() {
           href="/components"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground transition-colors hover:text-brand"
         >
-          Browse all {installableCount} components
+          {t('allComponents', { count: installableCount })}
           <ArrowRight className="size-4" aria-hidden="true" />
         </Link>
         <Link
           href="/components"
           className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
         >
-          Post components · {componentFamilies.posts.countLabel}
+          {t('postComponents')}
           <ArrowUpRight className="size-3.5" aria-hidden="true" />
         </Link>
       </div>

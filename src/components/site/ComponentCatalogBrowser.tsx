@@ -2,6 +2,7 @@
 
 import { usePathname, useSearchParams } from 'next/navigation'
 import { type CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 import { ArrowUpRight, Search, X } from 'lucide-react'
 
@@ -13,14 +14,7 @@ import {
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { ComponentCard } from '@/components/site/ComponentCard'
 import { UpcomingComponentCard } from '@/components/site/ComponentGrid'
-import {
-  composerClearLabel,
-  composerCopyLabel,
-  composerInstallCommand,
-  composerTrayLabel,
-  type ComponentEntry,
-  type UpcomingComponent,
-} from '@/lib/site'
+import { composerInstallCommand, type ComponentEntry, type UpcomingComponent } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
 type FamilyKey = 'pages' | 'posts'
@@ -66,6 +60,7 @@ export function ComponentCatalogBrowser({
   pages,
   posts,
 }: ComponentCatalogBrowserProps) {
+  const t = useTranslations('CatalogBrowser')
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const knownSlugs = useMemo(() => new Set(pages.map((component) => component.slug)), [pages])
@@ -247,11 +242,11 @@ export function ComponentCatalogBrowser({
             never run past the viewport. Hidden below lg — mobile filters live
             in the toolbar chip strip instead of stacking above the wall. */}
         <aside className="hidden lg:sticky lg:top-[4.5rem] lg:block lg:max-h-[calc(100vh-5.5rem)] lg:self-start lg:overflow-y-auto lg:pr-1">
-          <nav aria-label="Filter components" className="flex flex-col gap-1">
+          <nav aria-label={t('filter')} className="flex flex-col gap-1">
             <FilterButton
               active={type === 'all' && !category}
               count={queriedPages.length + queriedPosts.length}
-              label="All components"
+              label={t('allComponents')}
               onClick={() => updateParams({ type: '', category: '' })}
             />
 
@@ -301,7 +296,7 @@ export function ComponentCatalogBrowser({
           <div className="sticky top-14 z-30 mb-6 flex flex-col gap-3 border-b border-border bg-background/85 py-3 backdrop-blur lg:mb-8">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
               <label className="relative block min-w-[12rem] flex-1">
-                <span className="sr-only">Search components</span>
+                <span className="sr-only">{t('search')}</span>
                 <Search
                   aria-hidden="true"
                   className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
@@ -310,12 +305,12 @@ export function ComponentCatalogBrowser({
                   type="search"
                   value={localQuery}
                   onChange={(event) => setLocalQuery(event.target.value)}
-                  placeholder="Search components"
+                  placeholder={t('search')}
                   className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand/50 focus:ring-2 focus:ring-brand/15"
                 />
               </label>
               <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                {visibleCount} {visibleCount === 1 ? 'result' : 'results'}
+                {t('result', { count: visibleCount })}
               </p>
               <CatalogThemeControl
                 hue={brandHue}
@@ -329,7 +324,7 @@ export function ComponentCatalogBrowser({
               <FilterChip
                 active={type === 'all' && !category}
                 count={queriedPages.length + queriedPosts.length}
-                label="All"
+                label={t('all')}
                 onClick={() => updateParams({ type: '', category: '' })}
               />
               {familyGroups.flatMap((group) => [
@@ -355,14 +350,14 @@ export function ComponentCatalogBrowser({
 
           {visibleCount === 0 ? (
             <div className="flex flex-col items-start gap-3 rounded-xl border border-dashed border-border bg-muted/30 p-8">
-              <p className="text-sm text-muted-foreground">No components match your filters.</p>
+              <p className="text-sm text-muted-foreground">{t('empty')}</p>
               <button
                 type="button"
                 onClick={() => updateParams({ type: '', category: '', q: '' })}
                 className="inline-flex items-center gap-1 text-sm font-medium text-foreground transition-colors hover:text-brand"
               >
                 <X className="size-3.5" aria-hidden="true" />
-                Reset filters
+                {t('reset')}
               </button>
             </div>
           ) : (
@@ -392,12 +387,9 @@ export function ComponentCatalogBrowser({
                         <span className="font-mono text-xs text-muted-foreground">
                           your-component-here
                         </span>
-                        <p className="text-xs leading-5 text-muted-foreground">
-                          The catalog grows deliberately — source, manifest, docs, and installer
-                          coverage ship together. Propose the next one.
-                        </p>
+                        <p className="text-xs leading-5 text-muted-foreground">{t('proposal')}</p>
                         <span className="inline-flex items-center gap-1 text-[13px] font-medium text-foreground transition-colors group-hover:text-brand">
-                          Open an issue
+                          {t('issue')}
                           <ArrowUpRight className="size-3.5" aria-hidden="true" />
                         </span>
                       </a>
@@ -411,7 +403,7 @@ export function ComponentCatalogBrowser({
                   {!category ? (
                     <SectionDivider
                       count={postsCards.length}
-                      label="in development"
+                      label={t('inDevelopment')}
                       name={families.posts.name}
                     />
                   ) : null}
@@ -451,13 +443,15 @@ function parseSelection(raw: null | string, knownSlugs: ReadonlySet<string>) {
    single command, not a list to run one by one. Rendered only when something is
    selected: an always-present bar would cover the last row of the wall. */
 function ComposerTray({ onClear, selected }: { onClear: () => void; selected: string[] }) {
+  const t = useTranslations('CatalogBrowser')
+
   if (selected.length === 0) return null
 
   const command = composerInstallCommand(selected)
 
   return (
     <div
-      aria-label={composerTrayLabel}
+      aria-label={t('tray')}
       role="region"
       className="sticky bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur"
     >
@@ -466,7 +460,7 @@ function ComposerTray({ onClear, selected }: { onClear: () => void; selected: st
           aria-live="polite"
           className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground"
         >
-          {selected.length} selected
+          {t('selected', { count: selected.length })}
         </p>
         {/* The command grows with the selection, so it scrolls inside its own
             box — the page itself must never scroll horizontally. */}
@@ -474,18 +468,14 @@ function ComposerTray({ onClear, selected }: { onClear: () => void; selected: st
           {command}
         </code>
         <span className="flex shrink-0 items-center gap-2">
-          <CommandCopyButton
-            ariaLabel={composerCopyLabel}
-            command={command}
-            label={composerCopyLabel}
-          />
+          <CommandCopyButton ariaLabel={t('copy')} command={command} label={t('copy')} />
           <button
             type="button"
             onClick={onClear}
             className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <X className="size-3.5" aria-hidden="true" />
-            {composerClearLabel}
+            {t('clear')}
           </button>
         </span>
       </div>

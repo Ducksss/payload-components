@@ -1,7 +1,8 @@
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/i18n/Link'
+import { useLocale, useTranslations } from 'next-intl'
 
-import { blogSeries, type BlogPage } from '@/lib/blog'
+import type { BlogPage } from '@/lib/blog'
 
 type BlogCardProps = {
   compact?: boolean
@@ -16,8 +17,9 @@ export function BlogCard({
   page,
   priority = false,
 }: BlogCardProps) {
+  const locale = useLocale()
+  const t = useTranslations('Blog')
   const Heading = headingLevel === 2 ? 'h2' : 'h3'
-  const series = blogSeries[page.data.series]
 
   return (
     <Link
@@ -40,10 +42,10 @@ export function BlogCard({
       <div className="flex flex-1 flex-col p-5 sm:p-6">
         <div className="flex flex-wrap items-center gap-2 text-[11px] font-medium uppercase tracking-micro text-muted-foreground">
           <span className="rounded-full border border-brand/20 bg-brand-50 px-2.5 py-1 text-brand-600">
-            {series.label}
+            {t(`series.${page.data.series}`)}
           </span>
           <time dateTime={new Date(page.data.date).toISOString()}>
-            {new Date(page.data.date).toLocaleDateString('en-US', {
+            {new Date(page.data.date).toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
               day: 'numeric',
               month: 'short',
               year: 'numeric',
@@ -61,7 +63,7 @@ export function BlogCard({
         ) : null}
 
         {!compact ? (
-          <div className="mt-auto flex flex-wrap gap-1.5 pt-5" aria-label="Article tags">
+          <div className="mt-auto flex flex-wrap gap-1.5 pt-5" aria-label={t('tags')}>
             {page.data.tags.map((tag) => (
               <span
                 key={tag}

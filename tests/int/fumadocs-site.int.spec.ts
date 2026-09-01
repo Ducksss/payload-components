@@ -4,11 +4,11 @@ import { access, readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-import { Children, createElement, isValidElement, type ReactNode } from 'react'
+import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { SiteFooter } from '../../src/components/site/SiteFooter'
+vi.mock('server-only', () => ({}))
 
 /* Many assertions below pin exact substrings of source files, and prettier owns
    the line breaks in every one of those files. A pin that spans more than a
@@ -73,16 +73,6 @@ async function expectMetaEntriesResolve(directory: string) {
   }
 }
 
-function findElementTypeByHref(node: ReactNode, href: string): unknown {
-  for (const child of Children.toArray(node)) {
-    if (!isValidElement<{ children?: ReactNode; href?: string }>(child)) continue
-    if (child.props.href === href) return child.type
-
-    const nestedType = findElementTypeByHref(child.props.children, href)
-    if (nestedType) return nestedType
-  }
-}
-
 describe('Fumadocs site shell', () => {
   afterEach(() => {
     vi.unstubAllEnvs()
@@ -144,8 +134,15 @@ describe('Fumadocs site shell', () => {
     )
   })
 
-  it('renders the external registry resource as a native anchor', () => {
-    expect(findElementTypeByHref(SiteFooter(), '/r/registry.json')).toBe('a')
+  it('renders external footer resources as native anchors', async () => {
+    const footer = await readFile(
+      path.join(repoRoot, 'src', 'components', 'site', 'SiteFooter.tsx'),
+      'utf8',
+    )
+
+    expect(collapse(footer)).toContain('external ? ( <a href={link.href}')
+    expect(footer).toContain('rel="noreferrer"')
+    expect(footer).toContain('target="_blank"')
   })
 
   it('connects the block troubleshooting article to the installation guide', async () => {
@@ -198,7 +195,7 @@ describe('Fumadocs site shell', () => {
     expect(installationGuide).toContain(
       '[Payload 3 generated-types repair guide](/docs/payload-types-errors)',
     )
-    expect(sitemap).toContain('source.getPages()')
+    expect(sitemap).toContain("source.getPages('en')")
   })
 
   it('keeps the Payload import-map reference separate from the foundations essay', async () => {
@@ -221,7 +218,7 @@ describe('Fumadocs site shell', () => {
     expect(installationGuide).toContain(
       '[Payload `generate:importmap` reference](/docs/payload-generate-importmap)',
     )
-    expect(sitemap).toContain('source.getPages()')
+    expect(sitemap).toContain("source.getPages('en')")
 
     expect(essay).toContain('title: Why Payload Types and the Admin Import Map Must Stay in Sync')
     expect(essay).toContain('author: Ducksss')
@@ -259,7 +256,7 @@ describe('Fumadocs site shell', () => {
     expect(docsMeta).toContain('"payload-cms-npm"')
     expect(docsIndex).toContain('href="/docs/payload-cms-npm"')
     expect(installationGuide).toContain('[Payload CMS npm setup guide](/docs/payload-cms-npm)')
-    expect(sitemap).toContain('source.getPages()')
+    expect(sitemap).toContain("source.getPages('en')")
   })
 
   it('keeps the Payload configuration guide distinct, discoverable, and actionable', async () => {
@@ -292,7 +289,7 @@ describe('Fumadocs site shell', () => {
     expect(installationGuide).toContain(
       '[Payload configuration guide](/docs/payload-configuration)',
     )
-    expect(sitemap).toContain('source.getPages()')
+    expect(sitemap).toContain("source.getPages('en')")
   })
 
   it('keeps the Payload blocks guide implementation-led, discoverable, and product-true', async () => {
@@ -370,7 +367,7 @@ describe('Fumadocs site shell', () => {
     expect(rootReadme).toContain(
       '[payload-blocks-guide-url]: https://www.payload-components.xyz/docs/payload-blocks',
     )
-    expect(sitemap).toContain('source.getPages()')
+    expect(sitemap).toContain("source.getPages('en')")
   })
 
   it('keeps the GitHub mark independent from removed Lucide brand icons', async () => {
@@ -420,7 +417,7 @@ describe('Fumadocs site shell', () => {
     expect(guide).toContain('command="npx payload-components add hero-basic"')
     expect(guide).toContain('label="Copy install command"')
     expect(docsMeta).toContain('"shadcn-vs-payload-components"')
-    expect(sitemap).toContain('source.getPages()')
+    expect(sitemap).toContain("source.getPages('en')")
     await expect(
       pathExists(
         path.join(repoRoot, 'src', 'app', 'compare', 'shadcn-vs-payload-components', 'page.tsx'),
@@ -505,9 +502,7 @@ describe('Fumadocs site shell', () => {
     expect(siteHeader).toContain('aria-expanded')
     expect(siteHeader).not.toContain('role="menu"')
     expect(siteHeader).not.toContain('role="menuitem"')
-    expect(collapse(siteHeader)).toContain(
-      "rel={item.label === 'GitHub' ? 'noreferrer' : undefined}",
-    )
+    expect(siteHeader).toContain('rel="noreferrer"')
     expect(siteHeader).toContain('activePath')
     expect(commandCopyButton).not.toContain("'use client'")
     expect(commandCopyButton).toContain('data-copy-command')
@@ -807,12 +802,10 @@ describe('Fumadocs site shell', () => {
     const { blogDescription, blogTitle } = await import('../../src/lib/site')
 
     expect(layoutSource).toContain('<SiteFooter />')
-    expect(indexSource).toContain('blogDescription')
-    expect(indexSource).toContain('blogTitle')
-    expect(indexSource).toContain('title: blogTitle')
-    expect(indexSource).toContain('description: blogDescription')
-    expect(indexSource).toContain('{blogTitle}')
-    expect(indexSource).toContain('{blogDescription}')
+    expect(indexSource).toContain("namespace: 'Blog'")
+    expect(indexSource).toContain("t('metadataTitle')")
+    expect(indexSource).toContain("t('metadataDescription')")
+    expect(indexSource).toContain('blogSource.getPages(locale)')
     expect(indexSource).not.toContain(blogDescription)
     expect(blogTitle).toBe('Payload CMS block and installer guides')
     expect(blogDescription).toContain('Payload CMS v3 guides')
@@ -821,14 +814,12 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).toContain("href: '/docs/payload-blocks'")
     expect(indexSource).toContain("href: '/blog/anatomy-of-an-install'")
     expect(indexSource).toContain('data-guide-gateway')
-    expect(collapse(indexSource)).toContain(
-      'alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates }',
-    )
+    expect(indexSource).toContain("localeAlternates('/blog')")
     expect(collapse(indexSource)).toContain("twitter: { card: 'summary_large_image'")
     expect(postSource).toContain("type: 'article'")
     expect(postSource).toContain('publishedTime:')
     expect(collapse(postSource)).toContain("twitter: { card: 'summary_large_image'")
-    expect(sitemapSource).toContain('blogSource.getPages()')
+    expect(sitemapSource).toContain("blogSource.getPages('en')")
   })
 
   it('publishes truthful sitemap freshness and a canonical RSS feed', async () => {
@@ -994,10 +985,10 @@ describe('Fumadocs site shell', () => {
     expect(catalogMetadataDescription).toContain('generated types')
     expect(catalogMetadataDescription).toContain('admin import map')
     expect(catalogPage).toContain('href="/docs/installation"')
-    expect(catalogPage).toContain('{catalogInstallationLinkLabel}')
+    expect(catalogPage).toContain("{t('installation')}")
     expect(catalogInstallationLinkLabel).toContain('one-command installation')
     expect(catalogPage).toContain('href="/docs/payload-blocks"')
-    expect(catalogPage).toContain('{catalogBlocksGuideLinkLabel}')
+    expect(catalogPage).toContain("{t('blocksGuide')}")
     expect(catalogBlocksGuideLinkLabel).toContain('config to live page')
   })
 
@@ -1101,7 +1092,7 @@ describe('Fumadocs site shell', () => {
         false,
       )
     }
-    expect(docsLayout).toContain('{cliVersion}')
+    expect(docsLayout).toContain("t('versionBanner', { version: cliVersion })")
     expect(docsLayout).not.toMatch(/components v\d+\.\d+\.\d+/)
   })
 

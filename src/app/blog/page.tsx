@@ -1,42 +1,43 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import Link from '@/i18n/Link'
+import { useLocale, useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 
 import { ArrowRight, Blocks, TerminalSquare, Wrench } from 'lucide-react'
 
 import { BlogCard } from '@/components/blog/BlogCard'
 import { JsonLd } from '@/components/seo/JsonLd'
+import { localeAlternates, localeDetails, localizeHref, normalizeSiteLocale } from '@/i18n/config'
 import { sortBlogPages } from '@/lib/blog'
-import {
-  blogDescription,
-  blogTitle,
-  componentEntries,
-  feedMetadataAlternates,
-  siteUrl,
-  siteOpenGraphDefaults,
-} from '@/lib/site'
+import { blogSource } from '@/lib/blog-source'
+import { getSiteLocale } from '@/lib/i18n'
+import { componentEntries, feedMetadataAlternates, siteOpenGraphDefaults } from '@/lib/site'
 import { blogNode, breadcrumbNode, graph } from '@/lib/structured-data'
 
-export const metadata: Metadata = {
-  title: blogTitle,
-  description: blogDescription,
-  alternates: { canonical: `${siteUrl}/blog`, ...feedMetadataAlternates },
-  openGraph: {
-    ...siteOpenGraphDefaults,
-    title: blogTitle,
-    description: blogDescription,
-    url: `${siteUrl}/blog`,
-    type: 'website',
-  },
-  twitter: { card: 'summary_large_image', title: blogTitle, description: blogDescription },
-}
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'Blog' })
+  const canonical = localizeHref('/blog', locale)
 
-const blogStructuredData = graph(
-  breadcrumbNode([
-    { name: 'Home', path: '/' },
-    { name: blogTitle, path: '/blog' },
-  ]),
-  blogNode(),
-)
+  return {
+    title: t('metadataTitle'),
+    description: t('metadataDescription'),
+    alternates: { canonical, languages: localeAlternates('/blog'), ...feedMetadataAlternates },
+    openGraph: {
+      ...siteOpenGraphDefaults,
+      title: t('metadataTitle'),
+      description: t('metadataDescription'),
+      locale: localeDetails[locale].openGraphLocale,
+      url: canonical,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('metadataTitle'),
+      description: t('metadataDescription'),
+    },
+  }
+}
 
 const featuredGuides = [
   {
@@ -66,20 +67,29 @@ const featuredGuides = [
 ] as const
 
 export default function BlogIndex() {
-  const posts = sortBlogPages()
+  const locale = normalizeSiteLocale(useLocale())
+  const t = useTranslations('Blog')
+  const posts = sortBlogPages(blogSource.getPages(locale))
+  const blogStructuredData = graph(
+    breadcrumbNode([
+      { name: locale === 'zh' ? '首页' : 'Home', path: localizeHref('/', locale) },
+      { name: t('metadataTitle'), path: localizeHref('/blog', locale) },
+    ]),
+    blogNode(),
+  )
 
   return (
     <main id="main" className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16">
       <JsonLd data={blogStructuredData} />
       <header className="max-w-4xl">
         <p className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand-600">
-          Practical Payload CMS v3 guidance
+          {t('eyebrow')}
         </p>
         <h1 className="mt-3 text-balance text-4xl font-semibold tracking-display text-foreground sm:text-5xl">
-          {blogTitle}
+          {t('metadataTitle')}
         </h1>
         <p className="mt-4 max-w-3xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg">
-          {blogDescription}
+          {t('metadataDescription')}
         </p>
       </header>
 
@@ -89,7 +99,7 @@ export default function BlogIndex() {
         data-guide-gateway
       >
         <h2 id="featured-guides-title" className="sr-only">
-          Start with a proven guide
+          {t('featured')}
         </h2>
 
         {featuredGuides.slice(0, 1).map((guide) => {
@@ -103,7 +113,7 @@ export default function BlogIndex() {
             >
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-background/65">
-                  {guide.label}
+                  {t('installationLabel')}
                 </span>
                 <span className="grid size-11 place-items-center rounded-full border border-background/15 bg-background/5">
                   <Icon className="size-5 text-success" aria-hidden="true" />
@@ -115,13 +125,13 @@ export default function BlogIndex() {
                   npx payload-components add hero-basic
                 </p>
                 <h3 className="mt-4 max-w-xl text-balance text-3xl font-semibold tracking-heading sm:text-4xl">
-                  {guide.title}
+                  {t('installationTitle')}
                 </h3>
                 <p className="mt-4 max-w-2xl text-pretty text-sm leading-6 text-background/70 sm:text-base sm:leading-7">
-                  {guide.description}
+                  {t('installationDescription')}
                 </p>
                 <span className="mt-7 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-background">
-                  Follow the installation guide
+                  {t('installationAction')}
                   <ArrowRight
                     className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
                     aria-hidden="true"
@@ -144,19 +154,21 @@ export default function BlogIndex() {
               >
                 <div className="flex items-center justify-between gap-4">
                   <span className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand-600">
-                    {guide.label}
+                    {guide === featuredGuides[1] ? t('wiringLabel') : t('troubleshootingLabel')}
                   </span>
                   <Icon className="size-5 text-brand" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className="text-balance text-xl font-semibold tracking-heading text-foreground">
-                    {guide.title}
+                    {guide === featuredGuides[1] ? t('wiringTitle') : t('troubleshootingTitle')}
                   </h3>
                   <p className="mt-2 text-pretty text-sm leading-6 text-muted-foreground">
-                    {guide.description}
+                    {guide === featuredGuides[1]
+                      ? t('wiringDescription')
+                      : t('troubleshootingDescription')}
                   </p>
                   <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-foreground">
-                    Read the guide
+                    {t('readGuide')}
                     <ArrowRight
                       className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
                       aria-hidden="true"
@@ -172,26 +184,25 @@ export default function BlogIndex() {
       <div className="mb-8 mt-16 flex flex-col gap-4 border-t border-border pt-10 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand-600">
-            Field notes from the registry
+            {t('notesEyebrow')}
           </p>
           <h2 className="mt-2 text-2xl font-semibold tracking-heading text-foreground sm:text-3xl">
-            More Payload CMS field notes
+            {t('notesTitle')}
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-            Browse implementation lessons, component design notes, and release stories from the open
-            registry.
+            {t('notesDescription')}
           </p>
         </div>
         <Link
           href="/components"
           className="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
         >
-          Browse all {componentEntries.length} installable components
+          {t('browseComponents', { count: componentEntries.length })}
         </Link>
       </div>
 
       {posts.length === 0 ? (
-        <p className="text-muted-foreground">No posts yet — check back soon.</p>
+        <p className="text-muted-foreground">{t('empty')}</p>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post, index) => (

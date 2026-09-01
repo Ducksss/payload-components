@@ -1,40 +1,41 @@
 import type { Metadata } from 'next'
 
+import { getTranslations } from 'next-intl/server'
+
 import { JsonLd } from '@/components/seo/JsonLd'
 import { ConsentSettings } from '@/components/site/ConsentSettings'
 import { Section, SectionHeading } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
+import { localeAlternates, localeDetails, localizeHref } from '@/i18n/config'
+import { getSiteLocale } from '@/lib/i18n'
 import { feedMetadataAlternates, siteOpenGraphDefaults } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
-const description =
-  'What Payload Components measures, which third parties receive it, and how to change or withdraw your choice at any time.'
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'PageMetadata.privacy' })
+  const canonical = localizeHref('/privacy', locale)
 
-export const metadata: Metadata = {
-  alternates: { canonical: '/privacy', ...feedMetadataAlternates },
-  title: 'Privacy',
-  description,
-  openGraph: {
-    ...siteOpenGraphDefaults,
-    description,
-    title: 'Privacy — Payload Components',
-    type: 'website',
-    url: '/privacy',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    description,
-    title: 'Privacy — Payload Components',
-  },
+  return {
+    alternates: { canonical, languages: localeAlternates('/privacy'), ...feedMetadataAlternates },
+    title: t('title'),
+    description: t('description'),
+    openGraph: {
+      ...siteOpenGraphDefaults,
+      description: t('description'),
+      locale: localeDetails[locale].openGraphLocale,
+      title: t('openGraphTitle'),
+      type: 'website',
+      url: canonical,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      description: t('description'),
+      title: t('openGraphTitle'),
+    },
+  }
 }
-
-const privacyStructuredData = graph(
-  breadcrumbNode([
-    { name: 'Home', path: '/' },
-    { name: 'Privacy', path: '/privacy' },
-  ]),
-)
 
 /* Kept deliberately specific: naming the three processors and the exact event
    vocabulary is what makes the disclosure verifiable rather than boilerplate.
@@ -79,7 +80,15 @@ const events = [
   },
 ] as const
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const locale = await getSiteLocale()
+  const privacyStructuredData = graph(
+    breadcrumbNode([
+      { name: locale === 'zh' ? '首页' : 'Home', path: localizeHref('/', locale) },
+      { name: locale === 'zh' ? '隐私' : 'Privacy', path: localizeHref('/privacy', locale) },
+    ]),
+  )
+
   return (
     <>
       <JsonLd data={privacyStructuredData} />

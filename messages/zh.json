@@ -1,0 +1,349 @@
+{
+  "Metadata": {
+    "title": "Payload Components — 为 Payload CMS 完整接线的内容区块",
+    "description": "开源 Payload CMS 内容区块：一条命令即可安装集合配置、渲染器映射、生成类型与管理后台导入映射。"
+  },
+  "Header": {
+    "skip": "跳到主要内容",
+    "home": "Payload Components 首页",
+    "github": "GitHub 代码库",
+    "openNavigation": "打开导航",
+    "closeNavigation": "关闭导航",
+    "language": "语言",
+    "nav": {
+      "docs": "文档",
+      "components": "组件",
+      "templates": "模板",
+      "blog": "博客",
+      "about": "关于"
+    }
+  },
+  "Consent": {
+    "title": "分析 Cookie",
+    "description": "我们使用 Google Analytics 和 PostHog 了解大家实际使用的组件与文档。如果拒绝，两者都不会加载，也不会留下 Cookie 或标识符。页面性能测量仍会运行，但不会存储数据。",
+    "privacy": "隐私说明",
+    "decline": "拒绝",
+    "accept": "接受"
+  },
+  "NotFound": {
+    "eyebrow": "404 错误",
+    "title": "找不到页面",
+    "description": "该路径不在注册表中。你仍可以访问组件、文档和目录。",
+    "home": "返回首页",
+    "docs": "阅读文档",
+    "terminalTitle": "payload-components — 404"
+  },
+  "Docs": {
+    "versionBanner": "MIT 注册表 · 组件 v{version}",
+    "github": "在 GitHub 上加星"
+  },
+  "HomeMetadata": {
+    "title": "Payload Components：一条命令安装并接线 Payload CMS 区块",
+    "description": "一条命令安装可复用的 Payload CMS 区块，同时完成集合配置、渲染映射、类型生成和 Next.js 管理后台导入映射。"
+  },
+  "Landing": {
+    "hero": {
+      "eyebrow": "开源 Payload 区块注册表",
+      "primary": "安装 Payload 区块",
+      "accent": "接好线，不只是复制。",
+      "subheadline": "专为 Payload CMS 开发者打造：一条命令即可安装区块、接入 Payload，并产生可审查的 git diff。",
+      "guide": "阅读安装指南",
+      "github": "在 GitHub 上加星",
+      "browse": "浏览组件",
+      "copy": "复制安装命令",
+      "count": "注册表已收录 {count} 个区块 — 每个都能通过一条命令接入 Payload。"
+    },
+    "stack": {
+      "label": "支持的技术栈",
+      "lede": "直接安装到你正在使用的技术栈"
+    },
+    "wiring": {
+      "eyebrow": "安装边界",
+      "heading": "区块接好线，才算真正上线。",
+      "intro": "复制文件只是简单的一步；真正耗时的，是之后每个区块、每个仓库都要完成的四处接线。",
+      "source": "来源"
+    },
+    "workflow": {
+      "eyebrow": "工作流程",
+      "heading": "从目录到提交，只需三步。",
+      "intro": "没有脚手架，没有锁定：只有普通源码和两个作用域明确、可直接审阅的补丁。",
+      "steps": {
+        "oneTitle": "查看安装合约",
+        "oneDescription": "运行任何命令之前，先看字段、文件和补丁。",
+        "twoTitle": "运行一条命令",
+        "twoDescription": "CLI 先检查你的项目，然后一次完成全部接线。",
+        "threeTitle": "提交可运行的区块",
+        "threeDescription": "源码、两处补丁和重新生成的类型，像普通 PR 一样审查。"
+      },
+      "badge": "由源码实时渲染",
+      "caption": "提交后的结果：真实组件源码已接入 Payload，并能像任何 PR 一样审查。"
+    },
+    "catalog": {
+      "eyebrow": "组件目录",
+      "heading": "目录中的组件，全部实时渲染。",
+      "intro": "这里没有截图：每个示例都是直接从源码渲染的真实组件。",
+      "browse": "浏览组件目录",
+      "preview": "实时预览",
+      "blockCount": "{count} 个区块",
+      "browseFamily": "浏览{family}",
+      "allComponents": "浏览全部 {count} 个组件",
+      "postComponents": "文章组件 · 开发中",
+      "familyCount": "可安装",
+      "familyName": "页面区块",
+      "familyDescription": "面向 Pages 布局构建器的区块，安装时完成全部接线：集合配置、渲染映射、类型生成和导入映射。"
+    },
+    "faq": {
+      "heading": "关键问题，直接回答。",
+      "intro": "这是文档的简明版。每个答案都能回到代码库中核实。",
+      "dogfood": "这个区块本身就是我们的组件之一"
+    },
+    "community": {
+      "eyebrow": "开源",
+      "heading": "从头到尾，",
+      "accent": "全部开源",
+      "intro": "注册表、CLI、组件和这个站点都在同一个 MIT 许可的代码库中。先阅读安装器源码，再决定是否信任它：这正是开源的意义。",
+      "copy": "复制安装命令",
+      "repository": "GitHub 代码库",
+      "issue": "提交问题",
+      "invite": "正在真实仓库中使用？欢迎提交 issue，早期安装案例将有机会展示在这里。"
+    }
+  },
+  "Catalog": {
+    "metadataTitle": "{count} 个 Payload CMS 组件与类型化区块 | 目录",
+    "metadataDescription": "浏览类型化的 Payload CMS 区块。运行 npx payload-components add '<component>'，即可接入集合、渲染器、生成类型和管理后台导入映射。",
+    "eyebrow": "注册表",
+    "title": "{count} 个 Payload CMS 组件与类型化区块",
+    "description": "浏览全部 {count} 个可安装的 Payload CMS 组件，涵盖首屏、功能、定价、行动召唤、集成、用户评价、数据、常见问题、内容、团队、嵌入和页脚。一条 CLI 命令即可复制区块，并完成集合注册、渲染映射、类型生成和管理后台导入映射。",
+    "installation": "了解一条命令的安装流程",
+    "blocksGuide": "跟随区块从配置走到上线页面",
+    "templates": "探索 Payload CMS 模板概念",
+    "license": "MIT 许可"
+  },
+  "CatalogBrowser": {
+    "filter": "筛选组件",
+    "allComponents": "全部组件",
+    "all": "全部",
+    "search": "搜索组件",
+    "result": "{count} 个结果",
+    "empty": "没有组件符合当前筛选条件。",
+    "reset": "重置筛选",
+    "proposal": "目录会有节制地扩展：源码、manifest、文档和安装器测试必须一起发布。欢迎提议下一个组件。",
+    "issue": "提交 issue",
+    "inDevelopment": "开发中",
+    "selected": "已选 {count} 个",
+    "tray": "已选组件",
+    "copy": "复制安装命令",
+    "clear": "清除选择",
+    "families": {
+      "pages": "页面区块",
+      "posts": "文章组件"
+    },
+    "categories": {
+      "hero": "首屏",
+      "features": "功能",
+      "comparator": "对比",
+      "pricing": "定价",
+      "cta": "行动召唤",
+      "contact": "联系",
+      "integration": "集成",
+      "logos": "Logo 墙",
+      "testimonials": "用户评价",
+      "stats": "数据",
+      "faq": "常见问题",
+      "content": "内容",
+      "team": "团队",
+      "embed": "嵌入",
+      "footer": "页脚",
+      "cards": "卡片",
+      "archive": "归档",
+      "header": "页头",
+      "index": "索引",
+      "author": "作者",
+      "newsletter": "简报",
+      "related": "相关内容"
+    }
+  },
+  "Templates": {
+    "metadataTitle": "Next.js 的 Payload CMS 模板 | 概念与配方",
+    "metadataDescription": "探索涵盖十五个行业的 Payload CMS 模板概念，包括 SaaS、代理商、商务、医疗、餐饮和房地产等。预览每个页面，并查看类型化区块配方。",
+    "detailTitle": "{title} 模板",
+    "back": "模板",
+    "previewPageLabel": "{title} 预览页面",
+    "previewViewport": "预览视口尺寸",
+    "desktop": "桌面",
+    "tablet": "平板",
+    "mobile": "手机",
+    "previewFrameTitle": "{title} 模板预览 — {page} 页面",
+    "eyebrow": "模板",
+    "title": "由可安装区块组成的 Payload CMS 模板概念",
+    "status": "概念预览",
+    "disclosure": "这是一个可浏览的整站概念。每个区段都由开放注册表中的区块组成，一条命令可安装整套区块；但这里展示的精选文案不会被写入，因此你仍需在管理后台自行组装页面。",
+    "startingPoint": "选择一个起点",
+    "description": "探索涵盖十五个行业的完整 Payload CMS 与 Next.js 站点概念，包括 SaaS、代理商、商务、医疗、餐饮、房地产和音乐等。在实时预览中打开每个页面，再追溯每个区块对应的可安装组件。",
+    "components": "浏览可安装组件",
+    "installation": "阅读安装指南",
+    "official": "从 Payload 官方模板开始",
+    "showcases": "模板展示",
+    "questionsEyebrow": "常见问题",
+    "questionsHeading": "Payload CMS 模板问题，集中回答",
+    "questionsIntro": "我们会清楚标示哪些能力今天已可用，哪些仍是设计参考。",
+    "q1": "这些 Payload CMS 模板可以安装吗？",
+    "a1": "不可以。它们是可浏览的整站概念，不是已打包的启动仓库。但每个配方中的独立区块都可安装，而且配方会链接到相应的组件文档。",
+    "q2": "它们与 Payload 官方模板有什么不同？",
+    "a2": "官方网站模板为新项目提供完整应用基础。这些概念展示完整营销站点的视觉效果，以及每个页面由哪些类型化区块组成，不会取代官方启动项目。",
+    "q3": "我能在现有 Payload 项目中使用这些配方吗？",
+    "a3": "可以。打开一个概念，查看有序配方，再选择适合你站点的区块。目录会说明每个区块的字段和支持的 Payload CMS v3 安装路径。",
+    "communityEyebrow": "社区",
+    "communityHeading": "模板在公开讨论中决定",
+    "communityIntro": "这些概念用来与社区共同回答一个问题：整站模板是否应该变成可安装产品？配方、虚构品牌和安装器 RFC 都在公开代码库中，没有门槛，也不收集邮箱。",
+    "allConcepts": "全部概念",
+    "filter": "按类别筛选概念",
+    "showing": "正在显示 {visible} / {total} 个概念",
+    "visualTone": "视觉风格",
+    "counts": "{pages} 个页面 · {blocks} 个不重复区块",
+    "explore": "探索模板",
+    "openPreview": "打开完整预览",
+    "posterLabel": "探索 {title} 模板",
+    "posterAlt": "{title} 模板 — 首页概念海报",
+    "contributionRepository": "浏览代码库",
+    "contributionRepositoryDescription": "阅读展示源码：每个配方都是代码库中的普通数据。",
+    "contributionRfc": "阅读安装器 RFC",
+    "contributionRfcDescription": "审阅如何将概念配方转化为可选、透明的安装流程。",
+    "categories": {
+      "agency": "代理商",
+      "civic": "公共服务",
+      "commerce": "商务",
+      "education": "教育",
+      "event": "活动",
+      "fintech": "金融科技",
+      "healthcare": "医疗",
+      "marketplace": "市场",
+      "music": "音乐",
+      "nonprofit": "非营利",
+      "portfolio": "作品集",
+      "real-estate": "房地产",
+      "restaurant": "餐饮",
+      "saas": "SaaS",
+      "trade": "专业服务"
+    }
+  },
+  "Blog": {
+    "metadataTitle": "Payload CMS 区块与安装器指南",
+    "metadataDescription": "Payload CMS v3 实用指南：安装可复用区块、接线集合与渲染器、生成类型，并排查区块无法渲染的问题。",
+    "eyebrow": "Payload CMS v3 实用指南",
+    "featured": "从已验证的指南开始",
+    "installationLabel": "安装指南",
+    "installationTitle": "安装已接线的 Payload 区块",
+    "installationDescription": "使用受支持的 CLI 添加真实区块，然后审查所有新增文件和接线更改。",
+    "installationAction": "按安装指南操作",
+    "wiringLabel": "区块接线指南",
+    "wiringTitle": "接入可复用区块",
+    "wiringDescription": "跟随一个 Payload CMS v3 区块，从配置、注册一路到渲染、生成类型和管理后台导入映射。",
+    "troubleshootingLabel": "故障排查指南",
+    "troubleshootingTitle": "修复无法渲染的区块",
+    "troubleshootingDescription": "检查四个最常见的位置，找出为什么已保存的区块没有出现在页面上。",
+    "readGuide": "阅读指南",
+    "notesEyebrow": "注册表实战笔记",
+    "notesTitle": "更多 Payload CMS 实战笔记",
+    "notesDescription": "浏览开源注册表的实现经验、组件设计笔记和发布故事。",
+    "browseComponents": "浏览全部 {count} 个可安装组件",
+    "empty": "暂无文章，欢迎稍后再来。",
+    "back": "返回博客",
+    "keepReading": "继续阅读",
+    "related": "相关阅读",
+    "tags": "文章标签",
+    "series": {
+      "project-notes": "项目笔记",
+      "foundations": "基础",
+      "installer-internals": "安装器内部",
+      "component-design": "组件设计",
+      "production-guides": "生产指南",
+      "open-source": "质量与社区"
+    }
+  },
+  "Footer": {
+    "home": "Payload Components 首页",
+    "intro": "安装时自带接线的类型化 Payload CMS 组件：一条命令完成集合配置、渲染映射、类型生成和导入映射。",
+    "product": "产品",
+    "components": "组件",
+    "project": "项目",
+    "componentCatalog": "组件目录",
+    "templateConcepts": "模板概念",
+    "documentation": "文档",
+    "installWorkflow": "安装流程",
+    "architecture": "架构",
+    "aiDiscovery": "AI 发现",
+    "allComponents": "全部 {count} 个组件",
+    "about": "关于",
+    "brandGuide": "品牌指南",
+    "openIssue": "提交 issue",
+    "releases": "发布记录",
+    "updates": "更新订阅",
+    "contributing": "参与贡献",
+    "privacy": "隐私",
+    "registry": "注册表 JSON",
+    "license": "MIT 许可 · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · 开放注册表"
+  },
+  "Maintainer": {
+    "body": "我创建 payload-components，是因为安装 Payload 区块的难点从来不是复制粘贴，而是之后的四处接线。CLI 的作用，就是让第二个、第十个项目也能免费得到同样的接线。信任它之前，先阅读安装器源码；以 MIT 许可发布，正是重点。",
+    "role": "Payload Components 维护者",
+    "github": "{name} 的 GitHub"
+  },
+  "PageMetadata": {
+    "about": {
+      "title": "关于",
+      "openGraphTitle": "关于 Payload Components",
+      "description": "了解 Payload Components 为何诞生：不再为每个自由职业项目重复构建相同的 Payload 区块、手动接线，并反复验证每次安装。"
+    },
+    "privacy": {
+      "title": "隐私",
+      "openGraphTitle": "隐私 — Payload Components",
+      "description": "了解 Payload Components 会测量什么、哪些第三方会接收数据，以及如何随时更改或撤回你的选择。"
+    },
+    "brandGuide": {
+      "title": "品牌指南",
+      "openGraphTitle": "Payload Components 品牌指南",
+      "description": "Payload Components 的品牌规范：以浅色为主的 shadcn 单色调色板、祖母绿强调色、Geist 与 Instrument Serif 字体系统、标志用法和品牌语气。"
+    }
+  },
+  "FaqContent": {
+    "entries": {
+      "one": {
+        "question": "Payload Components 免费吗？",
+        "answer": "免费，而且从设计上就会一直如此。注册表、CLI、全部 {count} 个可安装组件和这个站点都在同一个 MIT 许可仓库中：没有定价、许可密钥或付费层级。目录由真实安装和社区贡献推动，而不是付费路线图。"
+      },
+      "two": {
+        "question": "什么是 Payload CMS 区块？",
+        "answer": "在 Payload 中，区块是可组合的页面构建字段：编辑可以堆叠首屏、功能网格或行动召唤等可复用内容区段来排版页面。Payload Components 不仅提供预制区块，还会完成使其上线的接线：注册到 Pages 集合、映射到渲染器、生成类型，并加入管理后台导入映射。",
+        "link": "阅读 Payload 区块指南"
+      },
+      "three": {
+        "question": "如何向 Payload CMS 添加首屏区块？",
+        "answer": "使用 CLI 安装：`npx payload-components add hero-basic`。它会将区块源码复制到项目，注册到 Pages 集合，在 RenderBlocks 中建立映射，并重新生成 Payload 类型和管理后台导入映射，最终形成一个可审查的 git diff。"
+      },
+      "four": {
+        "question": "一次安装究竟会修改仓库中的什么？",
+        "answer": "三类变化：复制组件源文件（区块配置、组件和共享工具），精确修补两个文件（Pages 集合与 RenderBlocks.tsx），然后由 Payload 重新生成 payload-types.ts 和管理后台导入映射。所有变化都会出现在普通 git diff 中。",
+        "link": "阅读安装指南"
+      },
+      "five": {
+        "question": "如果连续运行两次同一安装会怎样？",
+        "answer": "结果会收敛。CLI 会检测已存在的接线并跳过，安装状态记录在 .payload-components/state.json 中，因此部分安装会被明确显示并可恢复，而不是静默损坏。"
+      },
+      "six": {
+        "question": "目前支持哪些项目？",
+        "answer": "支持与官方 website starter 形状一致的 Payload v3 + Next.js 15/16 项目：通过 src/blocks/RenderBlocks.tsx 渲染布局区块，并在 src/collections/Pages/index.ts 中注册页面区块。CLI 会在修改任何文件前，根据已发布的支持矩阵检查项目。"
+      },
+      "seven": {
+        "question": "为什么不直接运行 npx shadcn add？",
+        "answer": "普通 shadcn 安装只复制文件。Payload 区块只有在集合 schema 中注册、映射到渲染器、生成类型并加入管理后台导入映射后才会工作。payload-components 在相同的注册表交付之上完成这些接线，这条边界就是产品。",
+        "link": "阅读完整 shadcn 对比"
+      },
+      "eight": {
+        "question": "新组件如何进入目录？",
+        "answer": "我们刻意保持克制。只有当源码、manifest 元数据、文档页和安装器测试覆盖一起发布时，组件才会进入目录。欢迎通过 GitHub issue 提议下一个组件。"
+      }
+    }
+  }
+}

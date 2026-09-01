@@ -1,41 +1,46 @@
 import type { Metadata } from 'next'
 
+import { getTranslations } from 'next-intl/server'
+
 import { JsonLd } from '@/components/seo/JsonLd'
 import { HeadingAccent, Section, SectionHeading } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { Wordmark } from '@/components/site/Wordmark'
+import { localeAlternates, localeDetails, localizeHref } from '@/i18n/config'
+import { getSiteLocale } from '@/lib/i18n'
 import { feedMetadataAlternates, siteOpenGraphDefaults } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 import { cn } from '@/utilities/ui'
 
-const description =
-  'The Payload Components brand: a light-first shadcn monochrome palette with one emerald accent, the Geist and Instrument Serif type system, logo usage, and voice.'
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'PageMetadata.brandGuide' })
+  const canonical = localizeHref('/brand-guide', locale)
 
-export const metadata: Metadata = {
-  alternates: { canonical: '/brand-guide', ...feedMetadataAlternates },
-  title: 'Brand Guide',
-  description,
-  openGraph: {
-    ...siteOpenGraphDefaults,
-    description,
-    title: 'Payload Components Brand Guide',
-    type: 'website',
-    url: '/brand-guide',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    description,
-    title: 'Payload Components Brand Guide',
-  },
+  return {
+    alternates: {
+      canonical,
+      languages: localeAlternates('/brand-guide'),
+      ...feedMetadataAlternates,
+    },
+    title: t('title'),
+    description: t('description'),
+    openGraph: {
+      ...siteOpenGraphDefaults,
+      description: t('description'),
+      locale: localeDetails[locale].openGraphLocale,
+      title: t('openGraphTitle'),
+      type: 'website',
+      url: canonical,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      description: t('description'),
+      title: t('openGraphTitle'),
+    },
+  }
 }
-
-const brandStructuredData = graph(
-  breadcrumbNode([
-    { name: 'Home', path: '/' },
-    { name: 'Brand Guide', path: '/brand-guide' },
-  ]),
-)
 
 /* globals.css is the source of truth. This page documents token names and paints
    with live utilities; it does not copy primitive CSS values into TypeScript. */
@@ -161,7 +166,18 @@ const shadowScale = [
   { name: 'Frame', token: '--shadow-frame', className: 'shadow-[var(--shadow-frame)]' },
 ] as const
 
-export default function BrandGuidePage() {
+export default async function BrandGuidePage() {
+  const locale = await getSiteLocale()
+  const brandStructuredData = graph(
+    breadcrumbNode([
+      { name: locale === 'zh' ? '首页' : 'Home', path: localizeHref('/', locale) },
+      {
+        name: locale === 'zh' ? '品牌指南' : 'Brand Guide',
+        path: localizeHref('/brand-guide', locale),
+      },
+    ]),
+  )
+
   return (
     <>
       <JsonLd data={brandStructuredData} />
