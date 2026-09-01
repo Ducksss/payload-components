@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs'
-
 import { expect, test } from '@playwright/test'
 
 /* Right-to-left rendering.
@@ -33,16 +31,6 @@ const withDirection = async (page: import('@playwright/test').Page, slug: string
   await page.goto(`${baseURL}/components/preview/${slug}`)
   await page.evaluate((value) => document.documentElement.setAttribute('dir', value), dir)
 }
-
-/* Every preview slug, read as text so this spec never imports the demo React
-   modules — same approach as components-visual.e2e.spec.ts. */
-const registrySource = readFileSync(
-  new URL('../../src/components/site/demos/registry.ts', import.meta.url),
-  'utf8',
-)
-const slugs = [...registrySource.matchAll(/^\s+'([a-z0-9-]+)':/gm)].map((match) => match[1])
-
-const broken = (into: string[], message: string) => into.push(message)
 
 test.describe('Right-to-left rendering', () => {
   /* Marquee and load-reveal twins animate, so two page loads land on different
