@@ -168,10 +168,15 @@ export function SiteHeader({ activePath }: { activePath?: (typeof navLinks)[numb
                 {t(`nav.${item.label}`)}
               </Link>
             ))}
+            {/* "GitHub" is a brand name and reads the same in every locale, so
+                the visible label stays put; the accessible name is localized to
+                match the desktop control, which is icon-only and has nothing
+                else to announce. */}
             <a
               href={githubRepoUrl}
               target="_blank"
               rel="noreferrer"
+              aria-label={t('github')}
               className={cn(
                 'rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground',
                 focusRing,
