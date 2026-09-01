@@ -119,6 +119,16 @@ describe('site internationalization', () => {
        CommandCopyController, and the e2e asserts both accessible names. */
     expect(translate('Common.copy')).toBe('Copy')
     expect(translate('Common.copied')).toBe('Copied')
+
+    /* consent.e2e drives the privacy page's live consent control by its visible
+       English text, and the analytics contract spec reads the disclosure out of
+       this catalogue. Both break silently if the English wording drifts. */
+    expect(translate('Privacy.settings.turnOff')).toBe('Turn analytics off')
+    expect(translate('Privacy.settings.turnOn')).toBe('Turn analytics on')
+    expect(translate('Privacy.settings.on')).toBe('Google Analytics and PostHog are currently on.')
+    expect(translate('Privacy.settings.off')).toBe(
+      'Google Analytics and PostHog are currently off.',
+    )
   })
 
   it('wires next-intl, Fumadocs fallback, request routing, and locale-aware links together', async () => {

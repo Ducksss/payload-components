@@ -30,6 +30,57 @@
     "decline": "拒绝",
     "accept": "接受"
   },
+  "Privacy": {
+    "eyebrow": "隐私",
+    "heading": "我们究竟测量什么。",
+    "accentWord": "测量",
+    "intro": "在你同意之前，任何会在你设备上存储内容的功能都不会加载。本页列出每一个数据处理方、每一个事件和每一个字段——你也可以随时改变主意。",
+    "consent": "任何会在你设备上存储内容的功能都会等待你的同意。选择拒绝后，Google Analytics 和 PostHog 永远不会加载——不设置任何 Cookie，也不保留任何标识符。如果你的浏览器发送 Global Privacy Control 或 Do Not Track 信号，我们会自动视为拒绝，并且不再向你展示同意横幅。",
+    "alwaysOnProcessors": "Vercel Analytics 和 Speed Insights 是例外，它们对所有访客都会运行。它们不设置 Cookie，也不存储标识符——只以聚合方式测量页面加载与性能，这正是这个站点保持快速的原因。你的设备上没有任何内容需要退出。",
+    "noAccounts": "本站没有账号体系，因此这些数据都不与任何身份关联。我们从不收集表单输入、自由文本，或你所浏览页面的内容。",
+    "processorsTitle": "谁会收到数据",
+    "needsConsent": "需要你的同意",
+    "alwaysOn": "始终启用，不存储任何内容",
+    "processors": {
+      "vercel": {
+        "purpose": "托管站点的页面浏览量与 Core Web Vitals。",
+        "storage": "不使用 Cookie，也不使用标识符——不会在你的设备上存储任何内容。"
+      },
+      "ga4": {
+        "purpose": "聚合的页面浏览量与流量来源。",
+        "storage": "设置自己的第一方 Cookie（_ga、_ga_*）。"
+      },
+      "posthog": {
+        "purpose": "下方列出的三个产品事件。",
+        "storage": "在 localStorage 中存放一个随机的 pc_distinct_id，并在 sessionStorage 中为当前标签页存放一个自然流量入口路径。"
+      }
+    },
+    "eventsTitle": "我们发送的事件",
+    "eventsIntro": "只有三个，字段也是固定的。每个值都来自已提交的路由、链接或安装命令——绝不来自你输入的任何内容。",
+    "trafficSource": "页面浏览事件只把流量标记为自然搜索或其他。这个标记在你的浏览器中根据固定的搜索引擎清单或明确的自然流量活动标记推导得出。原始 referrer、活动参数和查询字符串从不发送。受控的站点检查会带上值为 true 的验证标记，以便从访客统计中排除；普通访问带的是 false。",
+    "entryPage": "在你同意之后，自然流量访问会为当前浏览器标签页保留第一个同站路径。复制安装命令和点击主要链接的事件会把该路径作为 <code>entry_page</code> 一并发送，直接访问和引荐访问则不会。它绝不包含查询字符串或原始 referrer，并会在你撤回同意时被删除。",
+    "events": {
+      "pageview": {
+        "when": "公开路由加载或发生变化时。"
+      },
+      "copyInstallCommand": {
+        "when": "你复制安装命令时。"
+      },
+      "primaryLinkClick": {
+        "when": "你点击仓库、文档或组件链接时。"
+      }
+    },
+    "choiceTitle": "你的选择",
+    "choice": "你的决定以 <code>pc_consent</code> 为键存储在你自己的浏览器本地，随时可以在这里更改。撤回同意不只是停止收集——它还会删除同意所创建的内容：Google Analytics 的 Cookie（<code>_ga</code>、<code>_ga_*</code>）和 PostHog 标识符会被移除，页面随后重新加载，让已经在运行的脚本不再继续。仅限当前会话的自然流量入口路径也会被一并删除。",
+    "settings": {
+      "privacySignal": "你的浏览器发送了隐私信号（Global Privacy Control 或 Do Not Track），因此 Google Analytics 和 PostHog 保持关闭，并且无法在此处覆盖该设置。",
+      "on": "Google Analytics 和 PostHog 目前已开启。",
+      "off": "Google Analytics 和 PostHog 目前已关闭。",
+      "undecided": "你尚未做出选择，因此 Google Analytics 和 PostHog 处于关闭状态。",
+      "turnOff": "关闭分析",
+      "turnOn": "开启分析"
+    }
+  },
   "NotFound": {
     "eyebrow": "404 错误",
     "title": "找不到页面",

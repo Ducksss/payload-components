@@ -59,10 +59,18 @@ test.describe('AI-readable documentation surfaces', () => {
 
     const sitemapBody = await sitemap.text()
 
+    /* Localized routes carry <xhtml:link> alternates, which Next declares by
+       adding the xhtml namespace to <urlset>. */
     expect(sitemapBody).toMatch(
-      /^<\?xml version="1.0" encoding="UTF-8"\?>\n<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9">/,
+      /^<\?xml version="1.0" encoding="UTF-8"\?>\n<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9" xmlns:xhtml="http:\/\/www.w3.org\/1999\/xhtml">/,
     )
     expect(sitemapBody).toContain(`<loc>${baseURL}/</loc>`)
+    expect(sitemapBody).toContain(
+      `<xhtml:link rel="alternate" hreflang="zh-CN" href="${baseURL}/zh/docs/installation" />`,
+    )
+    expect(sitemapBody).toContain(
+      `<xhtml:link rel="alternate" hreflang="en" href="${baseURL}/docs/installation" />`,
+    )
     expect(sitemapBody).toContain(`<loc>${baseURL}/components</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/docs/installation</loc>`)
     expect(sitemapBody).toContain(`<loc>${baseURL}/docs/ai-discovery</loc>`)
