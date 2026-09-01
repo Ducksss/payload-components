@@ -43,7 +43,7 @@ export function CallToActionSplitDemo({
                 ))}
               </div>
               {assurance ? (
-                <p className="text-sm leading-6 text-muted-foreground lg:text-right">{assurance}</p>
+                <p className="text-sm leading-6 text-muted-foreground lg:text-end">{assurance}</p>
               ) : null}
             </div>
           ) : null}

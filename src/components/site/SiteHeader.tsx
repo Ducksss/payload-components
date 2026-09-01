@@ -44,8 +44,18 @@ export function SiteHeader({ activePath }: { activePath?: (typeof navLinks)[numb
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setOpen(false)
   }, [pathname])
+  /* Fumadocs owns the docs <main> (id="nd-page"); every site page carries
+     id="main" on its own landmark. */
+  const skipTarget = activePath === '/docs' ? '#nd-page' : '#main'
+
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95">
+      <a
+        href={skipTarget}
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-2.5 focus:z-50 focus:rounded-md focus:bg-background focus:px-3 focus:py-1.5 focus:text-sm focus:font-medium focus:text-foreground"
+      >
+        Skip to content
+      </a>
       <div className="flex h-14 items-center justify-between gap-4 pl-4 pr-5 md:pr-8">
         <Link href="/" aria-label="Payload Components home">
           <Wordmark mobileIconOnly withBadge />

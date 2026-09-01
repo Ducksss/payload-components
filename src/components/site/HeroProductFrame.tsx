@@ -102,7 +102,7 @@ export function HeroProductFrame() {
               </span>
             </div>
 
-            <div className="rounded-[1.5rem] border border-background/10 bg-background/6 p-4">
+            <div className="rounded-panel border border-background/10 bg-background/6 p-4">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-xs uppercase tracking-[0.22em] text-background/55">
@@ -190,7 +190,7 @@ export function HeroProductFrame() {
             <p className="text-xs uppercase tracking-[0.22em] text-background/55">
               The block, rendered
             </p>
-            <div className="mt-4 rounded-[1.5rem] border border-background/10 bg-background text-foreground">
+            <div className="mt-4 rounded-panel border border-background/10 bg-background text-foreground">
               <div className="border-b border-border px-5 py-4">
                 <p className="text-sm font-medium">{heroComponent.title}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
@@ -226,7 +226,7 @@ export function HeroProductFrame() {
             <p className="text-xs uppercase tracking-[0.22em] text-background/55">
               Files the install wrote
             </p>
-            <div className="mt-4 flex flex-col gap-3 rounded-[1.5rem] border border-background/10 bg-background/6 p-4">
+            <div className="mt-4 flex flex-col gap-3 rounded-panel border border-background/10 bg-background/6 p-4">
               {frameInstalledFiles.map((filePath) => (
                 <div key={filePath} className="flex items-center gap-3 text-sm text-background/78">
                   <FileCode2 className="size-4 shrink-0 text-background" aria-hidden="true" />

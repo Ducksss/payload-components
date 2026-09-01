@@ -19,13 +19,13 @@ export default function NotFoundPage() {
   return (
     <>
       <SiteHeader />
-      <main className="relative flex flex-1 items-center overflow-hidden">
+      <main id="main" className="relative flex flex-1 items-center overflow-hidden">
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-dots [mask-image:radial-gradient(34rem_24rem_at_50%_40%,black,transparent)]"
         />
         <div className="container relative max-w-xl py-20 text-center">
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="font-mono text-xs uppercase tracking-eyebrow text-muted-foreground">
             Error 404
           </p>
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">

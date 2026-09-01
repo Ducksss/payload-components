@@ -11,6 +11,7 @@ import {
   readPayloadLocalization,
   verifyInstalledManifestFiles,
   verifyInstalledPayloadFragments,
+  LOCALIZE_HELPER_FILE,
 } from '../project'
 import { loadState } from '../state'
 import { repoRoot } from '../utils'
@@ -294,6 +295,25 @@ const checkLocalization = async ({
   project: DetectedProject
   state: Awaited<ReturnType<typeof loadState>>
 }) => {
+  const recorded = Object.entries(state.components)
+  const localized = recorded.filter(([, entry]) => entry.localized === true).map(([name]) => name)
+  const unlocalized = recorded.filter(([, entry]) => entry.localized !== true).map(([name]) => name)
+
+  if (localized.length > 0) {
+    const helperPresent = await readFile(path.join(cwd, LOCALIZE_HELPER_FILE)).then(
+      () => true,
+      () => false,
+    )
+
+    if (!helperPresent) {
+      log(
+        'error',
+        `localization: missing ${LOCALIZE_HELPER_FILE}, required by ${localized.join(', ')} — run "payload-components update ${localized[0]}" to restore it`,
+        'localization',
+      )
+    }
+  }
+
   const configFileRelPath = await getPayloadConfigFile(project).catch(() => undefined)
 
   if (!configFileRelPath) {
@@ -307,8 +327,15 @@ const checkLocalization = async ({
   }
 
   const declared = readPayloadLocalization(source)
-  const recorded = Object.entries(state.components)
-  const localized = recorded.filter(([, entry]) => entry.localized === true).map(([name]) => name)
+  const warnForUnlocalizedComponents = () => {
+    for (const componentName of unlocalized) {
+      log(
+        'warn',
+        `localization: ${componentName} does not mark its text localized, so every locale stores the same copy — run "payload-components localize ${componentName}"`,
+        'localization',
+      )
+    }
+  }
 
   if (!declared) {
     log(
@@ -321,10 +348,31 @@ const checkLocalization = async ({
     return
   }
 
-  if (!declared.localesEnumerable) {
+  if (declared.disabled) {
+    log(
+      localized.length > 0 ? 'warn' : 'ok',
+      localized.length > 0
+        ? `localization: ${configFileRelPath} sets localization: false, so localized text in ${localized.join(', ')} has no effect`
+        : `localization: disabled in ${configFileRelPath}`,
+      'localization',
+    )
+    return
+  }
+
+  if (declared.localesStatus === 'computed') {
     log(
       'ok',
       `localization: enabled in ${configFileRelPath} (locales resolved at runtime)`,
+      'localization',
+    )
+    warnForUnlocalizedComponents()
+    return
+  }
+
+  if (declared.localesStatus === 'absent') {
+    log(
+      'warn',
+      `localization: ${configFileRelPath} declares localization but no locales — Payload needs at least one locale`,
       'localization',
     )
     return
@@ -350,18 +398,26 @@ const checkLocalization = async ({
   log(
     'ok',
     `localization: ${locales.length} locale${locales.length === 1 ? '' : 's'} — ${formatLocaleList(locales)}${
-      declared.defaultLocale ? `, default ${declared.defaultLocale}` : ''
+      declared.defaultLocale
+        ? `, default ${declared.defaultLocale}`
+        : declared.defaultLocaleStatus === 'computed'
+          ? ', default resolved at runtime'
+          : ''
     }`,
     'localization',
   )
 
-  if (!declared.defaultLocale) {
+  if (declared.defaultLocaleStatus === 'absent') {
     log(
       'warn',
       `localization: ${configFileRelPath} declares locales but no defaultLocale — Payload requires one`,
       'localization',
     )
-  } else if (!declared.locales.includes(declared.defaultLocale)) {
+  } else if (
+    declared.defaultLocaleStatus === 'literal' &&
+    declared.defaultLocale &&
+    !declared.locales.includes(declared.defaultLocale)
+  ) {
     log(
       'warn',
       `localization: defaultLocale "${declared.defaultLocale}" is not one of the locales ${configFileRelPath} declares — Payload requires it to be`,
@@ -369,13 +425,7 @@ const checkLocalization = async ({
     )
   }
 
-  if (recorded.length > 0 && localized.length === 0) {
-    log(
-      'warn',
-      `localization: no recorded component marks its text localized, so every locale stores the same copy — run "payload-components localize"`,
-      'localization',
-    )
-  }
+  warnForUnlocalizedComponents()
 }
 
 const logProjectSummary = (project: DetectedProject, log: Log) => {

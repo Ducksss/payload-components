@@ -26,7 +26,7 @@ export const TestimonialsQuoteBlock: React.FC<Props> = ({
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
       <div className="overflow-hidden rounded-frame border border-border/70 bg-card/35 px-6 py-12 sm:px-8 lg:px-12 lg:py-16">
         <figure
-          className={cn('border-l-2 border-primary pl-6', {
+          className={cn('border-s-2 border-primary ps-6', {
             'mx-auto max-w-2xl': !disableInnerContainer,
           })}
         >

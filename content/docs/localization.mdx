@@ -117,13 +117,13 @@ A block installed after the locales are declared can be wrapped in the same step
 npx payload-components add hero-basic --localized
 ```
 
-A whole template takes the same flag, so a fifteen-block site does not need a second pass:
+A whole template takes the same flag, so a multi-block site does not need a second pass:
 
 ```bash
 npx payload-components add-template saas-launch --localized
 ```
 
-Those are the per-install form of the same transform. `localize` is the project-wide form,
+Those are the per-install forms of the same transform. `localize` is the project-wide form,
 and it is the only one that touches your Payload config.
 
 ## Reading a locale from the front end
@@ -145,10 +145,56 @@ falls back to the default locale rather than rendering blank — so a half-trans
 still renders. `locale: 'all'` returns every locale at once, which is what you want for a
 language switcher that has to know which translations exist.
 
+## Right-to-left languages
+
+Arabic, Hebrew, Persian, and Urdu are written right to left, and `localize` marks them
+`rtl: true` in the config it writes:
+
+```ts
+{ code: 'ar', label: 'العربية', rtl: true }
+```
+
+That flag mirrors the **admin**. The front end needs one more thing from you, because no
+block can know the active locale: set `dir` in your root layout.
+
+```tsx title="src/app/(frontend)/[locale]/layout.tsx"
+const RTL_LOCALES = new Set(['ar', 'he', 'fa', 'ur'])
+
+export default async function RootLayout({ children, params }) {
+  const { locale } = await params
+
+  return (
+    <html lang={locale} dir={RTL_LOCALES.has(locale) ? 'rtl' : 'ltr'}>
+      <body>{children}</body>
+    </html>
+  )
+}
+```
+
+Every installed block then mirrors on its own. They express reading-order geometry with
+CSS logical properties — `ps-*`/`pe-*`, `border-s`/`border-e`, `rounded-s-*`,
+`text-start`/`text-end` — which follow `dir` automatically. Their physical counterparts
+(`pl-*`, `border-l`, `text-left`) do not, which is why a block written with those would
+render left-aligned inside a mirrored page. `tests/int/visual-standards.int.spec.ts`
+fails the build if one creeps back in.
+
+Purely geometric positioning is left physical on purpose. `left-1/2` paired with
+`-translate-x-1/2` centres an element; the logical `start-1/2` would not, because the
+transform does not mirror with it.
+
+<Callout>
+  Nothing in the install can set `dir` for you — it lives in your layout, above every
+  block. Without it the page stays left-to-right and the mirroring never applies.
+</Callout>
+
 ## Translating the admin UI
 
 Content locales and the admin interface language are separate settings. The locales above
 decide what an editor can *write*; `i18n` decides what language the admin *chrome* is in:
+
+```bash
+pnpm add @payloadcms/translations
+```
 
 ```ts title="src/payload.config.ts"
 import { en } from '@payloadcms/translations/languages/en'
@@ -162,17 +208,17 @@ export default buildConfig({
 })
 ```
 
-`localize` does not write this — which admin languages to ship is your call, and the import
-is a one-liner. Check `@payloadcms/translations/languages/` for the codes Payload ships;
-a content locale with no admin translation is fine, the chrome just stays in the fallback
+`localize` does not install the package or write this config — which admin languages to ship
+is your call. Check `@payloadcms/translations/languages/` for the codes Payload ships; a
+content locale with no admin translation is fine, the chrome just stays in the fallback
 language.
 
 ## Adopting it on a populated database
 
 <Callout type="warn">
-  Turning on localization changes how Payload stores the affected fields. Existing values
-  land under the default locale, and the change is not free to undo. Back up and migrate a
-  database that already holds content before running this, and run `--dry-run` first.
+  Turning on localization changes how Payload stores the affected fields. Payload does not
+  backfill existing values. Back up the database and explicitly migrate them into the default
+  locale before applying the schema change, and run `--dry-run` first.
 </Callout>
 
 `payload-components doctor` reports both halves once you have them, and names whichever

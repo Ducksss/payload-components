@@ -77,6 +77,21 @@ const nextConfig = {
         headers: crawlMetadataHeaders,
       },
       {
+        source: '/blog/rss.xml',
+        headers: crawlMetadataHeaders,
+      },
+      // The llms surfaces compile every doc (llms-full walks the whole tree),
+      // so they are the most expensive text routes on the site — cache them
+      // like the other crawl metadata.
+      {
+        source: '/llms.txt',
+        headers: crawlMetadataHeaders,
+      },
+      {
+        source: '/llms-full.txt',
+        headers: crawlMetadataHeaders,
+      },
+      {
         source: '/favicon.svg',
         headers: publicAssetHeaders,
       },

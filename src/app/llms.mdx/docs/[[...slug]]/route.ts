@@ -21,6 +21,12 @@ export async function GET(_request: Request, { params }: PageMarkdownRouteProps)
   return new Response(await getLLMText(page), {
     headers: {
       'content-type': 'text/markdown; charset=utf-8',
+      /* The markdown twins are AI surfaces, not search targets. Without this
+         they are indexable duplicates of the HTML pages (they're discoverable
+         from every page's Copy Markdown control) and split ranking signals.
+         The proxy rewrites /docs/<slug>.md and Accept: text/markdown here, so
+         one header covers all three access paths. */
+      'x-robots-tag': 'noindex',
     },
   })
 }

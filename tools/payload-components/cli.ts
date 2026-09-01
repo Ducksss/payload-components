@@ -55,12 +55,12 @@ Commands:
 
 Flags:
   --demo  After a successful add, write the demo seed script; with add-template, one per template page.
-  --dry-run  Validate and preview an add, update, or remove without changing files or running commands.
-  --force  Let update overwrite local edits, or let remove delete source whose ownership cannot be verified.
+  --dry-run  Validate and preview an add, localize, update, or remove without changing files or running commands.
+  --force  Let localize replace configured locales and wrap edited configs, let update overwrite edits, or let remove delete unverifiable source.
   --accept-breaking  Let update apply a version that changes content already stored in Payload.
   --localized  Install the block, or every block of a template, with its text fields marked localized: true.
   --locales  Comma-separated locale codes for localize, e.g. --locales en,zh,pt-BR.
-  --default-locale  The locale localize falls back to; defaults to the first --locales entry.
+  --default-locale  The canonical locale for localized values; defaults to the first --locales entry.
   --no-fallback  Let localize write fallback: false, so an empty locale renders empty.
   --json  Print machine-readable output from list, diff, and doctor.
   --scaffold  With init, install the starter base (Pages, Media, RenderBlocks, CMSLink, Media, linkGroup, cn).

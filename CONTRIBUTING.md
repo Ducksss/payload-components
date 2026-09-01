@@ -86,7 +86,7 @@ that still cover the change:
 
 `pnpm run test:int` is in every one of those rows because the integration suite
 reaches further than its name suggests: it renders site components directly, and
-32 of its 46 specs import the CLI. `pnpm test:install` is a fast subset of four
+most of its specs import the CLI. `pnpm test:install` is a fast subset of four
 specs — useful while iterating, but it is not enough on its own to clear a CLI
 change.
 

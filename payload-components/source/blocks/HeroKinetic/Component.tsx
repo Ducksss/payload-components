@@ -244,14 +244,14 @@ const KineticPlate: React.FC<{
 
         <motion.span
           aria-hidden="true"
-          className="pointer-events-none absolute left-4 top-4 size-5 border-l border-t border-background/60 motion-reduce:opacity-100!"
+          className="pointer-events-none absolute start-4 top-4 size-5 border-s border-t border-background/60 motion-reduce:opacity-100!"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={reduce ? { duration: 0 } : { delay: 1.2, duration: 0.6, ease: 'easeOut' }}
         />
         <motion.span
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-4 right-4 size-5 border-b border-r border-background/60 motion-reduce:opacity-100!"
+          className="pointer-events-none absolute bottom-4 end-4 size-5 border-b border-e border-background/60 motion-reduce:opacity-100!"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={reduce ? { duration: 0 } : { delay: 1.2, duration: 0.6, ease: 'easeOut' }}

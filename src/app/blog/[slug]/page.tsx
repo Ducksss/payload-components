@@ -11,7 +11,7 @@ import { getMDXComponents } from '@/components/mdx'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { blogSeries } from '@/lib/blog'
 import { blogSource } from '@/lib/blog-source'
-import { feedMetadataAlternates, siteUrl } from '@/lib/site'
+import { feedMetadataAlternates, siteUrl, siteOpenGraphDefaults } from '@/lib/site'
 import { blogPostingNode, breadcrumbNode, graph } from '@/lib/structured-data'
 
 interface BlogPostProps {
@@ -33,6 +33,7 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
     description: page.data.description,
     alternates: { canonical: `${siteUrl}${page.url}`, ...feedMetadataAlternates },
     openGraph: {
+      ...siteOpenGraphDefaults,
       type: 'article',
       title: page.data.title,
       description: page.data.description,
@@ -74,7 +75,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
   )
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-12 md:px-8 md:py-16">
+    <main id="main" className="mx-auto w-full max-w-6xl px-4 py-12 md:px-8 md:py-16">
       <JsonLd data={structuredData} />
       <Link
         href="/blog"

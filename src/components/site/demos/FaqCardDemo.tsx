@@ -52,7 +52,7 @@ export function FaqCardDemo({
               <div className="w-full">
                 {items.map((item, index) => (
                   <div className="border-border/70 border-b px-4 py-4" key={index}>
-                    <div className="text-left text-base tracking-title hover:no-underline">
+                    <div className="text-start text-base tracking-title hover:no-underline">
                       {item.question}
                     </div>
                     <div className="mt-3 text-sm leading-7 text-muted-foreground">

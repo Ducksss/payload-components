@@ -99,12 +99,16 @@ describe('locale resolution', () => {
     /* Catalog casing wins, and a repeat under different casing is one locale —
        Payload rejects a duplicated code. */
     expect(parseLocaleCodes('EN,zh-tw,en')).toEqual(['en', 'zh-TW'])
+    expect(parseLocaleCodes('EN-us-u-ca-gregory,de-de-x-phonebk')).toEqual([
+      'en-US-u-ca-gregory',
+      'de-DE-x-phonebk',
+    ])
   })
 
   it('rejects codes that are not language tags', () => {
     expect(() => parseLocaleCodes('')).toThrow('--locales needs at least one locale code')
     expect(() => parseLocaleCodes("en','; rm -rf /")).toThrow('is not a usable locale code')
-    expect(() => parseLocaleCodes('english')).toThrow('is not a usable locale code')
+    expect(() => parseLocaleCodes('en_US')).toThrow('is not a usable locale code')
   })
 
   it('labels known locales in their own language and flags right-to-left scripts', () => {
@@ -124,6 +128,16 @@ describe('locale resolution', () => {
 
     expect(locales.at(-1)).toEqual({ code: 'gsw', label: 'gsw' })
     expect(unlabelled).toEqual(['gsw'])
+    expect(resolveLocales({ codes: ['custom_locale'] }).locales).toEqual([
+      { code: 'custom_locale', label: 'custom_locale' },
+    ])
+  })
+
+  it('derives writing direction for an unlisted right-to-left locale', () => {
+    const { locales, unlabelled } = resolveLocales({ codes: parseLocaleCodes('yi') })
+
+    expect(locales).toEqual([{ code: 'yi', label: 'yi', rtl: true }])
+    expect(unlabelled).toEqual(['yi'])
   })
 
   it('requires the default locale to be one of the configured locales', () => {
@@ -131,6 +145,12 @@ describe('locale resolution', () => {
       'is not in the locale list',
     )
     expect(resolveLocales({ codes: ['en', 'zh'], defaultLocale: 'zh' }).defaultLocale).toBe('zh')
+    expect(
+      resolveLocales({ codes: parseLocaleCodes('gsw'), defaultLocale: 'GSW' }).defaultLocale,
+    ).toBe('gsw')
+    expect(() => resolveLocales({ codes: ['en'], defaultLocale: 'en_US' })).toThrow(
+      'is not a usable locale code',
+    )
   })
 
   it('escapes anything that would break out of the generated string literal', () => {
@@ -206,9 +226,145 @@ describe('setPayloadLocalization', () => {
     const patch = setPayloadLocalization({ renderBlock, source })
 
     expect(patch.kind).toBe('patched')
-    expect(patch.kind === 'patched' && patch.source).toMatch(
-      /buildConfig\(\{\n {2}localization: \{\n {4}defaultLocale/,
+    expect(patch.kind === 'patched' && readPayloadLocalization(patch.source)).toMatchObject({
+      locales: ['en', 'zh'],
+      localesStatus: 'literal',
+    })
+  })
+
+  it('recognizes a quoted localization key instead of adding a duplicate', () => {
+    const source = [
+      'export default buildConfig({',
+      "  'localization': { locales: ['fr'] },",
+      '})',
+      '',
+    ].join('\n')
+
+    expect(setPayloadLocalization({ renderBlock, source })).toMatchObject({
+      kind: 'already-configured',
+      matches: false,
+    })
+  })
+
+  it('reads and replaces the last duplicate key because it wins at runtime', () => {
+    const source = [
+      'export default buildConfig({',
+      "  localization: { defaultLocale: 'fr', locales: ['fr'] },",
+      "  localization: { defaultLocale: 'de', locales: ['de'] },",
+      '})',
+      '',
+    ].join('\n')
+
+    expect(readPayloadLocalization(source)).toMatchObject({
+      defaultLocale: 'de',
+      locales: ['de'],
+    })
+
+    const forced = setPayloadLocalization({ force: true, renderBlock, source })
+
+    expect(forced.kind).toBe('replaced')
+    expect(forced.kind === 'replaced' && readPayloadLocalization(forced.source)).toMatchObject({
+      defaultLocale: 'en',
+      locales: ['en', 'zh'],
+    })
+  })
+
+  it('treats a later shorthand as the runtime winner', () => {
+    const source = [
+      'export default buildConfig({',
+      "  localization: { defaultLocale: 'fr', locales: ['fr'] },",
+      '  localization,',
+      '})',
+      '',
+    ].join('\n')
+
+    expect(readPayloadLocalization(source)).toMatchObject({
+      defaultLocaleStatus: 'computed',
+      localesStatus: 'computed',
+    })
+    expect(setPayloadLocalization({ force: true, renderBlock, source })).toEqual({
+      kind: 'existing-unreadable',
+    })
+
+    expect(
+      readPayloadLocalization(
+        [
+          'export default buildConfig({',
+          "  localization: { defaultLocale: 'en', locales: ['en'], locales },",
+          '})',
+        ].join('\n'),
+      ),
+    ).toMatchObject({
+      defaultLocale: 'en',
+      localesStatus: 'computed',
+    })
+  })
+
+  it('refuses a shorthand localization property instead of adding a duplicate', () => {
+    const source = [
+      'export default buildConfig({',
+      '  localization,',
+      '  collections: [],',
+      '})',
+    ].join('\n')
+
+    expect(setPayloadLocalization({ force: true, renderBlock, source })).toEqual({
+      kind: 'existing-unreadable',
+    })
+  })
+
+  it.each([' as const', ' satisfies LocalizationConfig'])(
+    'refuses an object literal with the %s suffix instead of corrupting it',
+    (suffix) => {
+      const source = [
+        'export default buildConfig({',
+        `  localization: { locales: ['fr'] }${suffix},`,
+        '  collections: [],',
+        '})',
+        '',
+      ].join('\n')
+
+      expect(setPayloadLocalization({ force: true, renderBlock, source })).toEqual({
+        kind: 'existing-unreadable',
+      })
+    },
+  )
+
+  it('inserts after a trailing spread so the requested localization wins', () => {
+    const source = [
+      'export default buildConfig({',
+      '  collections: [],',
+      '  ...baseConfig,',
+      '})',
+      '',
+    ].join('\n')
+    const patch = setPayloadLocalization({ renderBlock, source })
+
+    expect(patch.kind).toBe('patched')
+    expect(patch.kind === 'patched' && patch.source.indexOf('localization:')).toBeGreaterThan(
+      patch.kind === 'patched' ? patch.source.indexOf('...baseConfig') : 0,
     )
+  })
+
+  it('refuses to replace a localization block that a later spread can override', () => {
+    const source = [
+      'export default buildConfig({',
+      "  localization: { locales: ['fr'] },",
+      '  ...baseConfig,',
+      '})',
+      '',
+    ].join('\n')
+
+    expect(setPayloadLocalization({ force: true, renderBlock, source })).toEqual({
+      kind: 'existing-unreadable',
+    })
+    expect(readPayloadLocalization(source)).toEqual({
+      defaultLocaleStatus: 'computed',
+      disabled: false,
+      locales: [],
+      localesEnumerable: false,
+      localesStatus: 'computed',
+    })
   })
 
   it('refuses to replace a localization value it cannot read', () => {
@@ -260,6 +416,21 @@ describe('setPayloadLocalization', () => {
       ].join('\n'),
     )
   })
+
+  it('preserves one comma when a comment follows the replaced block', () => {
+    const source = [
+      'export default buildConfig({',
+      "  localization: { locales: ['fr'] } /* keep */,",
+      '  collections: [],',
+      '})',
+      '',
+    ].join('\n')
+    const patch = setPayloadLocalization({ force: true, renderBlock, source })
+
+    expect(patch.kind).toBe('replaced')
+    expect(patch.kind === 'replaced' && patch.source).toContain('  } /* keep */,\n')
+    expect(patch.kind === 'replaced' && patch.source).not.toContain('/* keep */,,')
+  })
 })
 
 describe('readPayloadLocalization', () => {
@@ -277,10 +448,13 @@ describe('readPayloadLocalization', () => {
         ].join('\n'),
       ),
     ).toEqual({
+      defaultLocaleStatus: 'literal',
       defaultLocale: 'zh',
+      disabled: false,
       fallback: false,
       locales: ['zh', 'en'],
       localesEnumerable: true,
+      localesStatus: 'literal',
     })
 
     expect(
@@ -289,7 +463,13 @@ describe('readPayloadLocalization', () => {
           '\n',
         ),
       ),
-    ).toEqual({ locales: ['en', 'ja'], localesEnumerable: true })
+    ).toEqual({
+      defaultLocaleStatus: 'absent',
+      disabled: false,
+      locales: ['en', 'ja'],
+      localesEnumerable: true,
+      localesStatus: 'literal',
+    })
 
     expect(
       readPayloadLocalization(
@@ -312,21 +492,128 @@ describe('readPayloadLocalization', () => {
           '})',
         ].join('\n'),
       ),
-    ).toEqual({ defaultLocale: 'en', locales: [], localesEnumerable: false })
+    ).toEqual({
+      defaultLocale: 'en',
+      defaultLocaleStatus: 'literal',
+      disabled: false,
+      locales: [],
+      localesEnumerable: false,
+      localesStatus: 'computed',
+    })
 
     /* A whole localization object built elsewhere reads the same way. */
     expect(
       readPayloadLocalization(
         ['export default buildConfig({', '  localization: localizationConfig,', '})'].join('\n'),
       ),
-    ).toEqual({ locales: [], localesEnumerable: false })
+    ).toEqual({
+      defaultLocaleStatus: 'computed',
+      disabled: false,
+      locales: [],
+      localesEnumerable: false,
+      localesStatus: 'computed',
+    })
 
     /* `locales: []` is a literal answer — empty, and a misconfiguration. */
     expect(
       readPayloadLocalization(
         ['export default buildConfig({', '  localization: { locales: [] },', '})'].join('\n'),
       ),
-    ).toEqual({ locales: [], localesEnumerable: true })
+    ).toEqual({
+      defaultLocaleStatus: 'absent',
+      disabled: false,
+      locales: [],
+      localesEnumerable: true,
+      localesStatus: 'literal',
+    })
+  })
+
+  it('distinguishes missing, disabled, partial, and commented locale declarations', () => {
+    const read = (localization: string) =>
+      readPayloadLocalization(
+        ['export default buildConfig({', `  localization: ${localization},`, '})'].join('\n'),
+      )
+
+    expect(read("{ defaultLocale: 'en' }")).toMatchObject({
+      disabled: false,
+      locales: [],
+      localesEnumerable: true,
+      localesStatus: 'absent',
+    })
+    expect(read('false')).toEqual({
+      defaultLocaleStatus: 'absent',
+      disabled: true,
+      locales: [],
+      localesEnumerable: true,
+      localesStatus: 'absent',
+    })
+    expect(read("{ locales: ['en', ...moreLocales] }")).toMatchObject({
+      disabled: false,
+      locales: [],
+      localesEnumerable: false,
+      localesStatus: 'computed',
+    })
+    expect(read("{ defaultLocale: getDefaultLocale(), locales: ['en', 'zh'] }")).toMatchObject({
+      defaultLocaleStatus: 'computed',
+      locales: ['en', 'zh'],
+      localesStatus: 'literal',
+    })
+    expect(read('{ locales, defaultLocale }')).toMatchObject({
+      defaultLocaleStatus: 'computed',
+      locales: [],
+      localesEnumerable: false,
+      localesStatus: 'computed',
+    })
+    expect(
+      read(["{ defaultLocale: 'en',", "    // locales: ['en', 'zh']", '  }'].join('\n')),
+    ).toMatchObject({
+      locales: [],
+      localesStatus: 'absent',
+    })
+  })
+
+  it('respects direct spread precedence inside the localization object', () => {
+    const read = (localization: string) =>
+      readPayloadLocalization(
+        ['export default buildConfig({', `  localization: ${localization},`, '})'].join('\n'),
+      )
+
+    expect(read("{ defaultLocale: 'en', locales: ['en'], ...runtimeLocalization }")).toEqual({
+      defaultLocaleStatus: 'computed',
+      disabled: false,
+      locales: [],
+      localesEnumerable: false,
+      localesStatus: 'computed',
+    })
+    expect(read("{ ...runtimeLocalization, locales: ['en'] }")).toEqual({
+      defaultLocaleStatus: 'computed',
+      disabled: false,
+      locales: ['en'],
+      localesEnumerable: true,
+      localesStatus: 'literal',
+    })
+  })
+
+  it('respects root spread precedence for localization: false', () => {
+    const read = (properties: string[]) =>
+      readPayloadLocalization(
+        ['export default buildConfig({', ...properties.map((line) => `  ${line}`), '})'].join('\n'),
+      )
+
+    expect(read(['localization: false,', '...baseConfig,'])).toEqual({
+      defaultLocaleStatus: 'computed',
+      disabled: false,
+      locales: [],
+      localesEnumerable: false,
+      localesStatus: 'computed',
+    })
+    expect(read(['...baseConfig,', 'localization: false,'])).toEqual({
+      defaultLocaleStatus: 'absent',
+      disabled: true,
+      locales: [],
+      localesEnumerable: true,
+      localesStatus: 'absent',
+    })
   })
 })
 
@@ -364,6 +651,33 @@ describe('localizeCommand', () => {
     expect(state.components['hero-basic']?.localized).toBe(true)
     expect(state.components['faq-card']?.localized).toBe(true)
     expect(output()).toContain('Locales: en (English), zh (简体中文), ar (العربية)')
+    expect(output()).toContain('const RTL_LOCALES = new Set(["ar"])')
+    expect(output()).toContain('Payload does not backfill existing values')
+    expect(process.exitCode).toBeUndefined()
+  })
+
+  it('prints the Bun executable runner for generated Payload types', async () => {
+    const { fixtureDir } = await installFixture({ componentNames: ['hero-basic'] })
+
+    await rm(path.join(fixtureDir, 'pnpm-lock.yaml'))
+    await writeFile(path.join(fixtureDir, 'bun.lock'), '', 'utf8')
+
+    const { localizeCommand, output } = await setup()
+
+    await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
+
+    expect(output()).toContain('Regenerate types: bunx payload generate:types')
+  })
+
+  it('gives future-install guidance when the project has no recorded components', async () => {
+    const { fixtureDir } = await installFixture({ componentNames: [] })
+    const { localizeCommand, output } = await setup()
+
+    await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
+
+    expect(output()).toContain(
+      'no recorded components — use --localized on future installs, or re-run localize afterward',
+    )
     expect(process.exitCode).toBeUndefined()
   })
 
@@ -397,6 +711,17 @@ describe('localizeCommand', () => {
     expect(process.exitCode).toBeUndefined()
   })
 
+  it('recreates a deleted localization helper for an already wrapped block', async () => {
+    const { fixtureDir } = await installFixture({ componentNames: ['hero-basic'] })
+    const { localizeCommand } = await setup()
+
+    await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
+    await rm(path.join(fixtureDir, LOCALIZE_HELPER_FILE))
+    await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
+
+    await expect(access(path.join(fixtureDir, LOCALIZE_HELPER_FILE))).resolves.toBeUndefined()
+  })
+
   it('keeps the locales the config already declares when no --locales is given', async () => {
     const { fixtureDir } = await installFixture({ componentNames: ['hero-basic'] })
     const { localizeCommand, output } = await setup()
@@ -421,6 +746,24 @@ describe('localizeCommand', () => {
       'does not declare any locales yet',
     )
     expect(await readConfig(fixtureDir)).toBe(CONFIG_SOURCE)
+  })
+
+  it('treats localization: false as disabled rather than runtime-computed locales', async () => {
+    const disabled = CONFIG_SOURCE.replace(
+      '  collections: [Pages],',
+      ['  localization: false,', '  collections: [Pages],'].join('\n'),
+    )
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic'],
+      configSource: disabled,
+    })
+    const { localizeCommand } = await setup()
+
+    await expect(localizeCommand({ cwd: fixtureDir })).rejects.toThrow(
+      'does not declare any locales yet',
+    )
+    expect(await readConfig(fixtureDir)).toBe(disabled)
+    expect(await readBlockConfig(fixtureDir, 'HeroBasic')).not.toContain('localizeFields')
   })
 
   it('rejects a locale flag that would be silently dropped without --locales', async () => {

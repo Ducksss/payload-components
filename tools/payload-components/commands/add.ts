@@ -20,7 +20,11 @@ import {
   verifyInstalledManifestFiles,
   verifyInstalledPayloadFragments,
 } from '../project'
-import { copySharedSourceFile } from '../component-files'
+import {
+  compareInstalledFiles,
+  copySharedSourceFile,
+  resolveRecordedFileHashes,
+} from '../component-files'
 import { installNamespacedItem, isNamespacedItem } from '../namespaced'
 import { runPostInstallScript } from '../post-install'
 import { buildRegistry, installRegistryDependencies, installRegistryItem } from '../registry'
@@ -244,10 +248,9 @@ const readDeclaredLocales = async ({ cwd, project }: { cwd: string; project: Det
   return { configFileRelPath, declared: readPayloadLocalization(configSource) }
 }
 
-/* Two shapes count as declared even though no locale code is in hand: a config
-   this CLI could not parse at all, and one that computes its locales at runtime.
-   Neither is this command's business to second-guess — only a config that plainly
-   has no locales earns the nudge. */
+/* An unreadable config file is not this command's business to second-guess. A
+   readable config with no localization property plainly has no locales; a
+   localization object that computes them at runtime does. */
 const hasDeclaredLocales = async (options: { cwd: string; project: DetectedProject }) => {
   const read = await readDeclaredLocales(options)
 
@@ -256,9 +259,8 @@ const hasDeclaredLocales = async (options: { cwd: string; project: DetectedProje
   }
 
   return (
-    read.declared === undefined ||
-    read.declared.locales.length > 0 ||
-    !read.declared.localesEnumerable
+    read.declared !== undefined &&
+    (read.declared.locales.length > 0 || !read.declared.localesEnumerable)
   )
 }
 
@@ -338,9 +340,39 @@ const installComponent = async ({
   })
   const existingState = await loadState(cwd)
   const installedEntry = existingState.components[manifest.name]
+  const effectiveLocalized = localized || installedEntry?.localized === true
   const missingRegistryDependencies = fileCheck.missingRegistryDependencies ?? []
   const onDiskInstallValid =
     fileCheck.isValid && fragmentCheck.isValid && dependencyCheck.missing.length === 0
+
+  /* Converting an existing install must not bless a consumer-edited config as
+   * the new clean baseline. `localize --force` is the explicit path for that. */
+  if (localized && installedEntry && installedEntry.localized !== true) {
+    const baselineHashes = await resolveRecordedFileHashes({
+      componentName: manifest.name,
+      installed: installedEntry,
+      manifest,
+    })
+
+    if (!baselineHashes) {
+      throw new Error(
+        `Refusing to localize "${manifest.name}" because its recorded source baseline is unavailable. Inspect the block config, then run "payload-components localize ${manifest.name} --force" only if those bytes should become the new baseline.`,
+      )
+    }
+
+    const configFiles = plan.files.filter((filePath) => isBlockConfigFile(filePath))
+    const fileReport = await compareInstalledFiles({
+      baselineHashes,
+      cwd,
+      manifest: { files: configFiles, registryItemName: manifest.registryItemName },
+    })
+
+    if (fileReport.modified.length > 0) {
+      throw new Error(
+        `Refusing to localize "${manifest.name}" because its block config changed after installation: ${fileReport.modified.join(', ')}. Run "payload-components localize ${manifest.name} --force" to accept and wrap those edits, or restore them first.`,
+      )
+    }
+  }
 
   if (dryRun) {
     printHeader(
@@ -349,8 +381,8 @@ const installComponent = async ({
         dependencyCheck,
         fileCheck,
         fragmentCheck,
-        localesDeclared: localized ? await hasDeclaredLocales({ cwd, project }) : true,
-        localized,
+        localesDeclared: effectiveLocalized ? await hasDeclaredLocales({ cwd, project }) : true,
+        localized: effectiveLocalized,
         plan,
         project,
       }),
@@ -370,7 +402,7 @@ const installComponent = async ({
     return
   }
 
-  if (!installedEntry && onDiskInstallValid && !localized) {
+  if (!installedEntry && onDiskInstallValid && !effectiveLocalized) {
     await recordInstalledState({
       cwd,
       manifest,
@@ -397,7 +429,7 @@ const installComponent = async ({
 
   await recordInstallAttempt({
     cwd,
-    localized,
+    localized: effectiveLocalized,
     manifest,
     patchedFiles,
     targetId: project.target.id,
@@ -411,7 +443,7 @@ const installComponent = async ({
 
       await recordInstallFailure({
         cwd,
-        localized,
+        localized: effectiveLocalized,
         manifest,
         patchedFiles,
         stage,
@@ -496,7 +528,7 @@ const installComponent = async ({
     )
   }
 
-  if (localized) {
+  if (effectiveLocalized) {
     await executeStage('fragment-apply', async () => {
       await copySharedSourceFile({ cwd, projectPath: LOCALIZE_HELPER_FILE })
 
@@ -536,7 +568,7 @@ const installComponent = async ({
   await recordInstalledState({
     cwd,
     installedAt: installedEntry?.installedAt ?? undefined,
-    localized: localized || installedEntry?.localized,
+    localized: effectiveLocalized,
     manifest,
     patchedFiles,
     rewrittenFiles: [...rewrittenFiles],

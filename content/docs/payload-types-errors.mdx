@@ -71,6 +71,13 @@ If the command cannot locate the config, point the package script at it explicit
 }
 ```
 
+`cross-env` is what makes that assignment portable: a bare `PAYLOAD_CONFIG_PATH=... payload` prefix is POSIX shell syntax, so it fails in `cmd.exe` and PowerShell. It is not part of Payload, so install it in the project first:
+
+<RunnableCommand
+  command="pnpm add -D cross-env"
+  label="Copy the cross-env install command"
+/>
+
 ## Install without repairing the wiring by hand
 
 The wrapper installer registers the block, regenerates `src/payload-types.ts`, refreshes the admin import map, and records the install as one flow:

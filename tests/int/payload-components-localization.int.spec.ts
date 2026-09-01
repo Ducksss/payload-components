@@ -8,11 +8,15 @@ import {
   compareInstalledFiles,
   copySharedSourceFile,
 } from '../../tools/payload-components/component-files'
+import { addCommand } from '../../tools/payload-components/commands/add'
+import { diffCommand } from '../../tools/payload-components/commands/diff'
 import {
+  applyPayloadFragments,
   applyLocalizedFields,
   isBlockConfigFile,
   LOCALIZE_HELPER_FILE,
 } from '../../tools/payload-components/project'
+import { loadState, recordInstalledState } from '../../tools/payload-components/state'
 
 import { createInstallFixtureForComponents } from './payload-components-fixture'
 
@@ -115,7 +119,7 @@ describe('applyLocalizedFields', () => {
     expect(afterFirst.match(/import \{ localizeFields \}/g)).toHaveLength(1)
   })
 
-  it('leaves a fields value that is already a helper call alone', async () => {
+  it('fails safely when fields already uses an unsupported transform', async () => {
     const dir = await makeProject({
       'src/blocks/HeroBasic/config.ts': CONFIG_SOURCE.replace(
         '  fields: [',
@@ -123,13 +127,12 @@ describe('applyLocalizedFields', () => {
       ).replace('  ],\n  labels', '  ]),\n  labels'),
     })
 
-    const patched = await applyLocalizedFields({
-      configFiles: ['src/blocks/HeroBasic/config.ts'],
-      cwd: dir,
-    })
+    const before = await readConfig(dir)
 
-    expect(patched).toEqual([])
-    expect(await readConfig(dir)).toContain('myOwnTransform([')
+    await expect(
+      applyLocalizedFields({ configFiles: ['src/blocks/HeroBasic/config.ts'], cwd: dir }),
+    ).rejects.toThrow()
+    expect(await readConfig(dir)).toBe(before)
   })
 
   it('fails loudly when the file is not a block config', async () => {
@@ -225,6 +228,36 @@ describe('drift detection for a localized install', () => {
     await expect(
       compareInstalledFiles({ cwd: fixtureDir, localized: true, manifest }),
     ).resolves.toMatchObject({ modified: ['src/blocks/HeroBasic/config.ts'] })
+  })
+
+  it('keeps an edited recorded config dirty when add --localized refuses it', async () => {
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents(['hero-basic'], {
+      preseedSource: true,
+    })
+    tempDirs.push(fixtureDir)
+    const [manifest] = manifests
+
+    await applyPayloadFragments(fixtureDir, manifest.payloadFragments)
+    await recordInstalledState({
+      cwd: fixtureDir,
+      manifest,
+      patchedFiles: manifest.recovery.patchedFiles,
+      targetId: 'payload-website-starter',
+    })
+
+    const configPath = path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts')
+
+    await writeFile(configPath, `${await readFile(configPath, 'utf8')}\n// consumer edit\n`, 'utf8')
+    const stateBefore = await loadState(fixtureDir)
+
+    await expect(
+      addCommand({ componentName: 'hero-basic', cwd: fixtureDir, localized: true }),
+    ).rejects.toThrow('payload-components localize hero-basic --force')
+
+    expect(await loadState(fixtureDir)).toEqual(stateBefore)
+    await expect(diffCommand({ componentNames: ['hero-basic'], cwd: fixtureDir })).resolves.toBe(
+      false,
+    )
   })
 })
 

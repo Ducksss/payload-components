@@ -49,7 +49,7 @@ export function FaqIconsDemo({
             <div className="w-full">
               {items.map((item, index) => (
                 <div className="border-border/70 border-b py-4" key={index}>
-                  <div className="text-left text-base tracking-title hover:no-underline">
+                  <div className="text-start text-base tracking-title hover:no-underline">
                     <span className="flex items-center gap-3">
                       <FaqDemoIcon name={item.icon} className="size-4 text-muted-foreground" />
                       {item.question}

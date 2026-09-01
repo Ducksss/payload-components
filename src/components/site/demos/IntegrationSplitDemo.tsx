@@ -62,7 +62,7 @@ export function IntegrationSplitDemo({
             ))}
           </div>
 
-          <div className="flex flex-col gap-5 text-center sm:text-left">
+          <div className="flex flex-col gap-5 text-center sm:text-start">
             <div className="text-balance text-2xl font-semibold tracking-heading text-foreground sm:text-3xl">
               {heading}
             </div>
