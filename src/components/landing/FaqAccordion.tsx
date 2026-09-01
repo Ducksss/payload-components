@@ -13,16 +13,14 @@ import { faqItems } from './content'
 export const FaqAccordion = () => {
   return (
     <div
-      className={cn(
-        'rounded-[1.75rem] border border-border/70 bg-background/82 px-5 backdrop-blur-sm transition-colors sm:px-6',
-      )}
+      className={cn('rounded-2xl border border-border bg-background px-5 sm:px-6')}
     >
       <Accordion type="single" collapsible className="w-full" defaultValue="item-0">
         {faqItems.map((item, index) => (
           <AccordionItem
             key={item.question}
             value={`item-${index}`}
-            className="border-border/60 last:border-b-0"
+            className="border-border last:border-b-0"
           >
             <AccordionTrigger
               className={cn(

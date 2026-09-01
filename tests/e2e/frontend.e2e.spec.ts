@@ -7,7 +7,7 @@ test.describe('Frontend', () => {
     await expect(
       page.getByRole('heading', {
         level: 1,
-        name: 'Install production-ready Payload blocks with one command.',
+        name: 'Payload blocks that install themselves.',
       }),
     ).toBeVisible()
   })
@@ -16,7 +16,7 @@ test.describe('Frontend', () => {
     const routes = [
       {
         canonical: 'http://localhost:3000',
-        h1: 'Install production-ready Payload blocks with one command.',
+        h1: 'Payload blocks that install themselves.',
         path: '/',
         title: /Payload Kits/,
       },

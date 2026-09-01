@@ -45,6 +45,7 @@
   --breakpoint-2xl: 86rem;
   --font-mono: var(--font-geist-mono);
   --font-sans: var(--font-geist-sans);
+  --font-display: var(--font-bricolage-grotesque);
 }
 
 @layer utilities {
@@ -123,6 +124,8 @@
   --success: oklch(78% 0.08 200deg);
   --warning: oklch(89% 0.1 75deg);
   --error: oklch(75% 0.15 25deg);
+  --brand: oklch(52% 0.24 262deg);
+  --brand-foreground: oklch(100% 0 0deg);
 }
 
 [data-theme='dark'] {
@@ -161,6 +164,8 @@
   --success: oklch(28% 0.1 200deg);
   --warning: oklch(35% 0.08 70deg);
   --error: oklch(45% 0.1 25deg);
+  --brand: oklch(62% 0.21 262deg);
+  --brand-foreground: oklch(100% 0 0deg);
 }
 
 @theme inline {
@@ -203,6 +208,8 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-error: var(--error);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
 }
 
 @layer base {

@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { cn } from '@/utilities/ui'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
+import { Bricolage_Grotesque } from 'next/font/google'
 import React from 'react'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -20,11 +21,21 @@ import './globals.css'
 import { buildOrganizationJsonLd, buildWebSiteJsonLd } from '@/utilities/seo'
 import { getSiteURL, siteConfig } from '@/utilities/site'
 
+const BricolageGrotesque = Bricolage_Grotesque({
+  display: 'swap',
+  subsets: ['latin'],
+  variable: '--font-bricolage-grotesque',
+})
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
 
   return (
-    <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
+    <html
+      className={cn(GeistSans.variable, GeistMono.variable, BricolageGrotesque.variable)}
+      lang="en"
+      suppressHydrationWarning
+    >
       <head>
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />

@@ -163,13 +163,13 @@ describe('SEO metadata', () => {
   it('declares a canonical landing page with share-card metadata', () => {
     expect(landingMetadata.alternates).toEqual({ canonical: '/' })
     expect(landingMetadata.openGraph).toMatchObject({
-      title: 'Payload Kits | Install production-ready Payload blocks with one command',
+      title: 'Payload Kits | Payload blocks that install themselves',
       type: 'website',
       url: '/',
     })
     expect(landingMetadata.twitter).toMatchObject({
       card: 'summary_large_image',
-      title: 'Payload Kits | Install production-ready Payload blocks with one command',
+      title: 'Payload Kits | Payload blocks that install themselves',
     })
   })
 })
@@ -233,11 +233,14 @@ describe('On-page SEO semantics', () => {
     expect(screen.getByRole('link', { name: 'Open Feature Grid Basic live preview' })).toBeTruthy()
   })
 
-  it('keeps landing page stats as definition-list terms and definitions', () => {
-    const { container } = render(<LandingPage />)
+  it('keeps a single descriptive level-one heading on the landing page', () => {
+    render(<LandingPage />)
 
-    expect(container.querySelectorAll('dl dt')).toHaveLength(3)
-    expect(container.querySelectorAll('dl dd')).toHaveLength(6)
-    expect(container.querySelector('dl p')).toBeNull()
+    expect(
+      screen.getAllByRole('heading', {
+        level: 1,
+        name: 'Payload blocks that install themselves.',
+      }),
+    ).toHaveLength(1)
   })
 })

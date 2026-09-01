@@ -6,7 +6,7 @@ export const siteConfig = {
   defaultDescription:
     'Payload Kits is a Payload-native kit platform for agencies and freelancers. Install curated block kits with one command, including schema wiring, render components, type generation, and import-map updates.',
   defaultOgImagePath: '/website-template-OG.webp',
-  defaultTitle: 'Payload Kits | Install production-ready Payload blocks with one command',
+  defaultTitle: 'Payload Kits | Payload blocks that install themselves',
   githubUrl: 'https://github.com/Ducksss/payload-components',
   name: 'Payload Kits',
   twitterCreator: '@payloadcms',

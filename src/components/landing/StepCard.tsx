@@ -1,17 +1,15 @@
-import { CheckCircle2, Clock3, TerminalSquare } from 'lucide-react'
+import { CheckCircle2, Clock3 } from 'lucide-react'
 
-import { Badge } from '@/components/ui/badge'
 import { cn } from '@/utilities/ui'
 
 import type { Step } from './content'
 import styles from './landing.module.css'
 
 type StepCardProps = {
-  isLast?: boolean
   step: Step
 }
 
-export const StepCard = ({ isLast = false, step }: StepCardProps) => {
+export const StepCard = ({ step }: StepCardProps) => {
   const isShipped = step.status === 'shipped'
   const StatusIcon = isShipped ? CheckCircle2 : Clock3
 
@@ -19,65 +17,49 @@ export const StepCard = ({ isLast = false, step }: StepCardProps) => {
     <article
       className={cn(
         styles.stepCard,
-        'group relative flex h-full flex-col gap-6 rounded-[1.75rem] border border-border/70 bg-background/82 p-6 backdrop-blur-sm transition-all duration-200 sm:p-7',
-        'hover:-translate-y-1 hover:border-border hover:shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)]',
+        'flex h-full min-w-0 flex-col gap-6 rounded-2xl border border-border bg-background p-6 transition-shadow duration-200 hover:shadow-[0_16px_50px_-28px_rgba(15,23,42,0.35)] sm:p-7',
       )}
       data-status={step.status}
     >
-      {!isLast && <span aria-hidden="true" className={styles.stepConnector} />}
-
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <span
-            className={cn(
-              styles.stepBadge,
-              'grid size-10 place-items-center rounded-2xl border border-border/70 bg-card text-base font-semibold tracking-[-0.04em] text-foreground',
-              isShipped && styles.stepBadgeShipped,
-            )}
-          >
-            {step.label}
-          </span>
-          <span className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
-            Step {step.label}
-          </span>
-        </div>
+        <span className="font-mono text-2xl font-semibold tracking-[-0.04em] text-brand">
+          {step.label}
+        </span>
 
-        <Badge
-          variant={isShipped ? 'secondary' : 'outline'}
+        <span
           className={cn(
-            'flex items-center gap-1.5 rounded-full px-3 py-1 text-[0.7rem] font-medium uppercase tracking-[0.16em]',
-            isShipped ? 'bg-foreground text-background hover:bg-foreground' : 'text-muted-foreground',
+            'inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[0.68rem] font-semibold tracking-[0.12em] uppercase',
+            isShipped
+              ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400'
+              : 'border border-border text-muted-foreground',
           )}
         >
-          <StatusIcon className="size-3" />
+          <StatusIcon className="size-3" aria-hidden="true" />
           {step.statusLabel}
-        </Badge>
+        </span>
       </div>
 
       <div className="flex flex-col gap-3">
-        <h3 className="text-2xl font-medium tracking-[-0.05em] text-balance sm:text-[1.65rem]">
+        <h3 className="font-display text-2xl font-semibold tracking-[-0.02em] text-balance">
           {step.title}
         </h3>
         <p className="text-base leading-7 text-muted-foreground">{step.description}</p>
       </div>
 
-      <div className="flex flex-col gap-5">
-        <div
-          className={cn(
-            'flex items-center gap-3 overflow-x-auto rounded-2xl border border-border/80 bg-card/85 px-4 py-3 text-sm text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]',
-          )}
-        >
-          <TerminalSquare className="size-4 shrink-0 text-muted-foreground" />
-          <code className="font-mono text-[0.85rem] tracking-tight">{step.command}</code>
+      <div className="mt-auto flex flex-col gap-5">
+        <div className="overflow-x-auto rounded-xl bg-zinc-950 px-4 py-3">
+          <code className="font-mono text-[0.82rem] whitespace-nowrap text-zinc-100">
+            <span aria-hidden="true" className="select-none text-zinc-500">
+              ${' '}
+            </span>
+            {step.command}
+          </code>
         </div>
 
         <ul className="flex flex-col gap-2.5">
           {step.items.map((item) => (
-            <li
-              key={item}
-              className="flex items-start gap-3 text-sm leading-6 text-muted-foreground"
-            >
-              <CheckCircle2 className="mt-[3px] size-4 shrink-0 text-foreground/85" />
+            <li key={item} className="flex items-start gap-3 text-sm leading-6 text-muted-foreground">
+              <CheckCircle2 className="mt-[3px] size-4 shrink-0 text-brand" aria-hidden="true" />
               <span>{item}</span>
             </li>
           ))}
