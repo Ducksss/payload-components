@@ -19,9 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
-      # Action versions are kept in lockstep across all workflows (registry,
-      # publish, visual-baselines) so the ref-exact Actions allowlist only has to
-      # admit one major per action. Bump them together.
+      # The publish job holds NPM_TOKEN, so third-party actions are pinned to a
+      # reviewed commit and admitted by that exact ref in the Actions allowlist.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -35,7 +34,7 @@ jobs:
             main:refs/remotes/origin/main \
             "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
           version: 10.24.0
 
