@@ -778,9 +778,13 @@ test.describe('Light shadcn frontend', () => {
     await expect(navigation.getByRole('link', { name: 'Components' })).toHaveClass(
       /text-muted-foreground/,
     )
-    const githubLink = navigation.getByRole('link', { name: 'GitHub' })
+    /* The accessible name is the localized Header.github string, matching the
+       desktop control; "GitHub" stays the visible label, which is what keeps
+       the name label-in-name compliant. */
+    const githubLink = navigation.getByRole('link', { name: 'GitHub repository' })
     await expect(githubLink).toHaveAttribute('target', '_blank')
     await expect(githubLink).toHaveAttribute('rel', 'noreferrer')
+    await expect(githubLink).toHaveText('GitHub')
     await expect(page.getByRole('button', { name: 'Close navigation' })).toBeVisible()
     await page.keyboard.press('Escape')
     await expect(navigation).toBeAttached()
@@ -788,6 +792,21 @@ test.describe('Light shadcn frontend', () => {
     await expect(trigger).toBeFocused()
     const mobileNavOverflow = await expectNoHorizontalOverflow(page, 'the 320px mobile navigation')
     expect(mobileNavOverflow.offenders, mobileNavOverflow.message).toEqual([])
+  })
+
+  test('mobile GitHub link localizes its accessible name without translating the brand', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 800 })
+    await page.goto(`${baseURL}/zh/docs`)
+
+    await page.getByRole('button', { name: '打开导航' }).click()
+    const githubLink = page
+      .locator('#mobile-navigation')
+      .getByRole('link', { name: 'GitHub 代码库' })
+
+    await expect(githubLink).toBeVisible()
+    await expect(githubLink).toHaveText('GitHub')
   })
 
   test('preview frame grows and shrinks across presets without analytics', async ({ page }) => {
