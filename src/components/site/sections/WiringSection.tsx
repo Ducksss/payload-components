@@ -1,26 +1,29 @@
 import { siteIcons } from '@/components/site/icons'
+import { useTranslations } from 'next-intl'
 import { Reveal, RevealItem, RevealStagger } from '@/components/site/motion/Reveal'
 import { Section, SectionHeading } from '@/components/site/section'
 import { WiringLedger } from '@/components/site/WiringLedger'
 import { WiringFlow } from '@/components/site/graphics/WiringFlow'
-import { landingSections, receipts, wiringIntro, wiringLedger, wiringMapCaption } from '@/lib/site'
+import { landingSections, receipts, wiringLedger, wiringMapCaption } from '@/lib/site'
 
 /* The install boundary — the page's single "copying isn't the hard part"
  * beat. The node map shows the shape (one file a paste covers, four
  * payload-components wires); the ledger is the artifact-by-artifact receipt
  * against a plain shadcn add. */
 export function WiringSection() {
+  const t = useTranslations('Landing.wiring')
+
   return (
     <Section id={landingSections.wiring.id}>
       <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
         <SectionHeading
           accentWord="wired"
-          eyebrow="The install boundary"
-          heading={landingSections.wiring.heading}
-          intro={wiringIntro}
+          eyebrow={t('eyebrow')}
+          heading={t('heading')}
+          intro={t('intro')}
         />
         <code className="hidden shrink-0 pb-1 font-mono text-[11px] text-muted-foreground lg:block">
-          source: {wiringLedger.source}
+          {t('source')}: {wiringLedger.source}
         </code>
       </div>
 

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import Link from '@/i18n/Link'
+import { useLocale, useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 
 import { JsonLd } from '@/components/seo/JsonLd'
 import { Eyebrow, Section, SectionHeading } from '@/components/site/section'
@@ -9,19 +11,10 @@ import { TemplateGalleryView } from '@/components/site/templates/TemplateAnalyti
 import { TemplateCard } from '@/components/site/templates/TemplateCard'
 import { TemplateContribution } from '@/components/site/templates/TemplateContribution'
 import { TemplateGalleryFilter } from '@/components/site/templates/TemplateGalleryFilter'
-import {
-  siteUrl,
-  templateCategoryLabels,
-  templatesContribution,
-  templatesDescription,
-  templatesEyebrow,
-  templatesMetadataDescription,
-  templatesMetadataTitle,
-  templatesTitle,
-  siteOpenGraphDefaults,
-} from '@/lib/site'
+import { localeAlternates, localeDetails, localizeHref, normalizeSiteLocale } from '@/i18n/config'
+import { getSiteLocale } from '@/lib/i18n'
+import { siteUrl, siteOpenGraphDefaults } from '@/lib/site'
 import { templateShowcases } from '@/lib/templates/registry'
-import { TEMPLATE_CONCEPT_DISCLOSURE, TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
 import { breadcrumbNode, graph, websiteId } from '@/lib/structured-data'
 
 /* /templates gallery — indexable editorial index of the full-site concepts.
@@ -42,46 +35,59 @@ const galleryCategories = (() => {
   }
   return order.map((value) => ({
     count: counts.get(value) ?? 0,
-    label: templateCategoryLabels[value as keyof typeof templateCategoryLabels],
+    label: value,
     value,
   }))
 })()
 
-export const metadata: Metadata = {
-  alternates: { canonical: '/templates' },
-  description: templatesMetadataDescription,
-  openGraph: {
-    ...siteOpenGraphDefaults,
-    description: templatesMetadataDescription,
-    title: templatesMetadataTitle,
-    type: 'website',
-    url: '/templates',
-  },
-  title: templatesMetadataTitle,
-  twitter: {
-    card: 'summary_large_image',
-    description: templatesMetadataDescription,
-    title: templatesMetadataTitle,
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getSiteLocale()
+  const t = await getTranslations({ locale, namespace: 'Templates' })
+  const canonical = localizeHref('/templates', locale)
+
+  return {
+    alternates: { canonical, languages: localeAlternates('/templates') },
+    description: t('metadataDescription'),
+    openGraph: {
+      ...siteOpenGraphDefaults,
+      description: t('metadataDescription'),
+      locale: localeDetails[locale].openGraphLocale,
+      title: t('metadataTitle'),
+      type: 'website',
+      url: canonical,
+    },
+    title: t('metadataTitle'),
+    twitter: {
+      card: 'summary_large_image',
+      description: t('metadataDescription'),
+      title: t('metadataTitle'),
+    },
+  }
 }
 
-const templatesStructuredData = graph(
-  breadcrumbNode([
-    { name: 'Home', path: '/' },
-    { name: 'Templates', path: '/templates' },
-  ]),
-  {
-    '@id': `${siteUrl}/templates#collection`,
-    '@type': 'CollectionPage',
-    description: templatesMetadataDescription,
-    inLanguage: 'en',
-    isPartOf: { '@id': websiteId },
-    name: templatesMetadataTitle,
-    url: `${siteUrl}/templates`,
-  },
-)
-
 export default function TemplatesPage() {
+  const locale = normalizeSiteLocale(useLocale())
+  const t = useTranslations('Templates')
+  const localizedCategories = galleryCategories.map((category) => ({
+    ...category,
+    label: t(`categories.${category.value}`),
+  }))
+  const templatesStructuredData = graph(
+    breadcrumbNode([
+      { name: locale === 'zh' ? '首页' : 'Home', path: localizeHref('/', locale) },
+      { name: t('eyebrow'), path: localizeHref('/templates', locale) },
+    ]),
+    {
+      '@id': `${siteUrl}${localizeHref('/templates', locale)}#collection`,
+      '@type': 'CollectionPage',
+      description: t('metadataDescription'),
+      inLanguage: localeDetails[locale].htmlLang,
+      isPartOf: { '@id': websiteId },
+      name: t('metadataTitle'),
+      url: `${siteUrl}${localizeHref('/templates', locale)}`,
+    },
+  )
+
   return (
     <>
       <JsonLd data={templatesStructuredData} />
@@ -96,40 +102,38 @@ export default function TemplatesPage() {
           />
           <div className="container relative flex flex-col gap-5 py-12 sm:py-16">
             <div className="max-w-3xl">
-              <Eyebrow>{templatesEyebrow}</Eyebrow>
+              <Eyebrow>{t('eyebrow')}</Eyebrow>
               <h1 className="mt-4 text-balance text-4xl font-medium tracking-display text-foreground sm:text-5xl">
-                {templatesTitle}
+                {t('title')}
               </h1>
             </div>
 
             <div className="flex max-w-2xl flex-col gap-3 rounded-card border border-border bg-background/85 p-4 backdrop-blur-sm sm:flex-row sm:items-start sm:gap-4">
               <span className="w-fit shrink-0 rounded-full border border-brand/30 bg-brand/10 px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand">
-                {TEMPLATE_CONCEPT_STATUS_LABEL}
+                {t('status')}
               </span>
-              <p className="text-sm leading-6 text-muted-foreground">
-                {TEMPLATE_CONCEPT_DISCLOSURE}
-              </p>
+              <p className="text-sm leading-6 text-muted-foreground">{t('disclosure')}</p>
             </div>
           </div>
         </section>
 
-        <section aria-label="Choose a starting point" className="border-b border-border">
+        <section aria-label={t('startingPoint')} className="border-b border-border">
           <div className="container grid gap-5 py-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-10">
             <p className="max-w-3xl text-pretty text-sm leading-6 text-muted-foreground">
-              {templatesDescription}
+              {t('description')}
             </p>
             <div className="flex flex-wrap gap-x-5 gap-y-2">
               <Link
                 href="/components"
                 className="inline-flex min-h-11 items-center rounded-sm text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
               >
-                Browse installable components
+                {t('components')}
               </Link>
               <Link
                 href="/docs/installation"
                 className="inline-flex min-h-11 items-center rounded-sm text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
               >
-                Read the installation guide
+                {t('installation')}
               </Link>
               <a
                 href="https://github.com/payloadcms/payload/tree/main/templates/website"
@@ -137,16 +141,16 @@ export default function TemplatesPage() {
                 rel="noreferrer"
                 target="_blank"
               >
-                Start from the official Payload template
+                {t('official')}
               </a>
             </div>
           </div>
         </section>
 
-        <section aria-label="Template showcases">
+        <section aria-label={t('showcases')}>
           <div className="container py-12 lg:py-16">
             <TemplateGalleryFilter
-              categories={galleryCategories}
+              categories={localizedCategories}
               items={templateShowcases.map((template, index) => ({
                 card: <TemplateCard priority={index === 0} template={template} />,
                 category: template.category,
@@ -159,50 +163,32 @@ export default function TemplatesPage() {
         <Section className="bg-muted/40" containerClassName="py-14 sm:py-16 lg:py-20">
           <SectionHeading
             accentWord="questions"
-            eyebrow="Questions"
-            heading="Payload CMS template questions, answered"
-            intro="The concepts are intentionally open about what works today and what remains a design reference."
+            eyebrow={t('questionsEyebrow')}
+            heading={t('questionsHeading')}
+            intro={t('questionsIntro')}
           />
           <dl className="mt-10 grid gap-x-10 gap-y-8 lg:grid-cols-3">
             <div className="border-t border-border pt-5">
-              <dt className="text-base font-semibold text-foreground">
-                Are these Payload CMS templates installable?
-              </dt>
-              <dd className="mt-3 text-sm leading-6 text-muted-foreground">
-                No. They are browsable full-site concepts, not packaged starter repositories. The
-                individual blocks in each recipe are installable, and every recipe links to the
-                relevant component documentation.
-              </dd>
+              <dt className="text-base font-semibold text-foreground">{t('q1')}</dt>
+              <dd className="mt-3 text-sm leading-6 text-muted-foreground">{t('a1')}</dd>
             </div>
             <div className="border-t border-border pt-5">
-              <dt className="text-base font-semibold text-foreground">
-                How do these differ from Payload’s official template?
-              </dt>
-              <dd className="mt-3 text-sm leading-6 text-muted-foreground">
-                The official website template gives a new project a complete application foundation.
-                These concepts show how a full marketing site can look and which typed blocks
-                compose each page, without replacing that starter-project role.
-              </dd>
+              <dt className="text-base font-semibold text-foreground">{t('q2')}</dt>
+              <dd className="mt-3 text-sm leading-6 text-muted-foreground">{t('a2')}</dd>
             </div>
             <div className="border-t border-border pt-5">
-              <dt className="text-base font-semibold text-foreground">
-                Can I use the recipes in an existing Payload project?
-              </dt>
-              <dd className="mt-3 text-sm leading-6 text-muted-foreground">
-                Yes. Open a concept, inspect its ordered recipe, and choose the sections that fit
-                your site. The catalog documents each block’s fields and the supported Payload CMS
-                v3 installation path.
-              </dd>
+              <dt className="text-base font-semibold text-foreground">{t('q3')}</dt>
+              <dd className="mt-3 text-sm leading-6 text-muted-foreground">{t('a3')}</dd>
             </div>
           </dl>
         </Section>
 
         <Section className="bg-muted/40">
           <SectionHeading
-            accentWord="open"
-            eyebrow="Community"
-            heading={templatesContribution.heading}
-            intro={templatesContribution.intro}
+            accentWord={locale === 'zh' ? '公开' : 'open'}
+            eyebrow={t('communityEyebrow')}
+            heading={t('communityHeading')}
+            intro={t('communityIntro')}
           />
           <div className="mt-10">
             <TemplateContribution source="gallery" />

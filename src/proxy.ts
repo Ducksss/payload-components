@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { isMarkdownPreferred, rewritePath } from 'fumadocs-core/negotiation'
 
+import { localeRequestHeader, splitLocalePathname } from '@/i18n/config'
 import { docsContentRoute, docsRoute } from '@/lib/site'
 
 const { rewrite: rewriteDocs } = rewritePath(
@@ -15,19 +16,34 @@ const { rewrite: rewriteSuffix } = rewritePath(
 )
 
 export default function proxy(request: NextRequest) {
-  const suffixResult = rewriteSuffix(request.nextUrl.pathname)
+  const { locale, pathname } = splitLocalePathname(request.nextUrl.pathname)
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set(localeRequestHeader, locale)
+
+  const rewrite = (destination: string) => {
+    const url = new URL(destination, request.nextUrl)
+    url.search = request.nextUrl.search
+
+    return NextResponse.rewrite(url, {
+      request: { headers: requestHeaders },
+    })
+  }
+
+  const suffixResult = rewriteSuffix(pathname)
 
   if (suffixResult) {
-    return NextResponse.rewrite(new URL(suffixResult, request.nextUrl))
+    return rewrite(suffixResult)
   }
 
   if (isMarkdownPreferred(request)) {
-    const docsResult = rewriteDocs(request.nextUrl.pathname)
+    const docsResult = rewriteDocs(pathname)
 
     if (docsResult) {
-      return NextResponse.rewrite(new URL(docsResult, request.nextUrl))
+      return rewrite(docsResult)
     }
   }
 
-  return NextResponse.next()
+  if (locale === 'zh') return rewrite(pathname)
+
+  return NextResponse.next({ request: { headers: requestHeaders } })
 }

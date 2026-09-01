@@ -1,4 +1,5 @@
-import Link from 'next/link'
+import Link from '@/i18n/Link'
+import { useLocale, useTranslations } from 'next-intl'
 
 import { ArrowUpRight } from 'lucide-react'
 
@@ -7,17 +8,15 @@ import { GitHubMark } from '@/components/site/GitHubMark'
 import { MaintainerNote } from '@/components/site/MaintainerNote'
 import { Reveal } from '@/components/site/motion/Reveal'
 import { Eyebrow, HeadingAccent, Section } from '@/components/site/section'
-import {
-  communityIntro,
-  communityInvite,
-  communityLinks,
-  landingSections,
-  primaryInstallCommand,
-} from '@/lib/site'
+import { localizeHref, normalizeSiteLocale } from '@/i18n/config'
+import { communityInvite, communityLinks, landingSections, primaryInstallCommand } from '@/lib/site'
 
 /* Open-source close — asymmetric: the pitch beside the one real voice. The
  * honest CTA in place of a waitlist: read it, run it, open an issue. */
 export function CommunityCta() {
+  const locale = normalizeSiteLocale(useLocale())
+  const t = useTranslations('Landing.community')
+
   return (
     <Section id={landingSections.community.id} className="relative overflow-hidden">
       <div
@@ -27,13 +26,11 @@ export function CommunityCta() {
       />
       <div className="relative grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
         <div className="flex flex-col items-start">
-          <Eyebrow>Open source</Eyebrow>
+          <Eyebrow>{t('eyebrow')}</Eyebrow>
           <h2 className="mt-4 text-balance text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-[2.6rem]">
-            Open source, <HeadingAccent>end to end</HeadingAccent>.
+            {t('heading')} <HeadingAccent>{t('accent')}</HeadingAccent>.
           </h2>
-          <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">
-            {communityIntro}
-          </p>
+          <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">{t('intro')}</p>
 
           <div className="mt-7 grid w-full max-w-xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border border-border bg-background py-1 pl-5 pr-1 shadow-card">
             <code
@@ -45,7 +42,7 @@ export function CommunityCta() {
             <CommandCopyButton
               command={primaryInstallCommand}
               emphasis="primary"
-              label="Copy install command"
+              label={t('copy')}
             />
           </div>
 
@@ -58,7 +55,7 @@ export function CommunityCta() {
               className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-border bg-background px-4 font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <GitHubMark className="size-4" aria-hidden="true" />
-              {communityLinks[0].label}
+              {t('repository')}
             </Link>
             <Link
               href={communityLinks[1].href}
@@ -67,18 +64,18 @@ export function CommunityCta() {
               data-cta-level="tertiary"
               className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
             >
-              {communityLinks[1].label}
+              {t('issue')}
               <ArrowUpRight className="size-3.5" aria-hidden="true" />
             </Link>
           </div>
 
           <a
-            href={communityInvite.href}
+            href={localizeHref(communityInvite.href, locale)}
             target="_blank"
             rel="noreferrer"
             className="mt-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
-            {communityInvite.label}
+            {t('invite')}
             <ArrowUpRight className="size-3.5" aria-hidden="true" />
           </a>
         </div>

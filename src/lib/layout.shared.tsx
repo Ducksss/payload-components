@@ -1,8 +1,9 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
 
+import { localizeHref, type SiteLocale } from '@/i18n/config'
 import { githubRepoUrl } from '@/lib/site'
 
-export function baseOptions(): BaseLayoutProps {
+export function baseOptions(locale: SiteLocale = 'en'): BaseLayoutProps {
   return {
     githubUrl: githubRepoUrl,
     nav: {
@@ -11,7 +12,7 @@ export function baseOptions(): BaseLayoutProps {
       title: (
         <span className="text-sm font-semibold tracking-tight text-foreground">Documentation</span>
       ),
-      url: '/docs',
+      url: localizeHref('/docs', locale),
     },
   }
 }

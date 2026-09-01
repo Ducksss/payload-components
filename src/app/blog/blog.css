@@ -3,3 +3,14 @@
 @import 'fumadocs-ui/css/preset.css';
 
 @source '../../../node_modules/fumadocs-ui/dist/**/*.js';
+
+/* This route imports Tailwind a second time (the Fumadocs preset needs its own
+   entry), so it regenerates every utility from the stock theme — including the
+   .container ladder, which tops out at the default 2xl of 96rem instead of the
+   86rem globals.css sets. Anything using .container therefore measured 1536px
+   wide here and 1376px on every other route; the shared SiteFooter is the
+   visible one today. Re-declaring the single breakpoint globals.css customises
+   keeps both Tailwind builds on one grid. */
+@theme {
+  --breakpoint-2xl: 86rem;
+}

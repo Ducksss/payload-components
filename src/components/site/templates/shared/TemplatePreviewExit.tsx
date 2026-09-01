@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/i18n/Link'
 
 import { TEMPLATE_CONCEPT_STATUS_LABEL } from '@/lib/templates/types'
 import { templateDetailHref } from '@/lib/templates/registry'

@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { generate as DefaultImage } from 'fumadocs-ui/og'
 
+import { getSiteLocale } from '@/lib/i18n'
 import { getPageImage, source } from '@/lib/source'
 
 type DocsImageRouteProps = {
@@ -14,7 +15,8 @@ export const revalidate = false
 
 export async function GET(_request: Request, { params }: DocsImageRouteProps) {
   const { slug } = await params
-  const page = source.getPage(slug.slice(0, -1))
+  const locale = await getSiteLocale()
+  const page = source.getPage(slug.slice(0, -1), locale)
 
   if (!page) {
     notFound()
@@ -34,7 +36,7 @@ export async function GET(_request: Request, { params }: DocsImageRouteProps) {
 }
 
 export function generateStaticParams() {
-  return source.getPages().map((page) => ({
+  return source.getPages('en').map((page) => ({
     slug: getPageImage(page).segments,
   }))
 }

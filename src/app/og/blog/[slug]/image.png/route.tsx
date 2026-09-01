@@ -6,6 +6,7 @@ import sharp from 'sharp'
 
 import { blogSeries } from '@/lib/blog'
 import { blogSource } from '@/lib/blog-source'
+import { getSiteLocale } from '@/lib/i18n'
 import { siteUrl } from '@/lib/site'
 
 /* ImageResponse rasterizes raw image elements server-side; next/image is a
@@ -55,12 +56,13 @@ type BlogImageRouteProps = {
 }
 
 export function generateStaticParams() {
-  return blogSource.getPages().map((page) => ({ slug: page.slugs[0] }))
+  return blogSource.getPages('en').map((page) => ({ slug: page.slugs[0] }))
 }
 
 export async function GET(_request: Request, { params }: BlogImageRouteProps) {
   const { slug } = await params
-  const page = blogSource.getPage([slug])
+  const locale = await getSiteLocale()
+  const page = blogSource.getPage([slug], locale)
   if (!page) return new Response('Not found', { status: 404 })
 
   const coverPath = path.join(process.cwd(), 'public', page.data.cover.src.replace(/^\//, ''))

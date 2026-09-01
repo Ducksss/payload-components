@@ -1,8 +1,11 @@
 import { BlogCard } from '@/components/blog/BlogCard'
+import { useLocale, useTranslations } from 'next-intl'
 import { getRelatedPosts, type BlogPage } from '@/lib/blog'
 
 export function RelatedPosts({ page }: { page: BlogPage }) {
-  const related = getRelatedPosts(page)
+  const locale = useLocale()
+  const t = useTranslations('Blog')
+  const related = getRelatedPosts(page, locale)
   if (related.length === 0) return null
 
   return (
@@ -10,13 +13,13 @@ export function RelatedPosts({ page }: { page: BlogPage }) {
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
           <p className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand-600">
-            Keep reading
+            {t('keepReading')}
           </p>
           <h2
             id="related-posts-title"
             className="mt-2 text-2xl font-semibold tracking-title text-foreground"
           >
-            Related reading
+            {t('related')}
           </h2>
         </div>
       </div>
