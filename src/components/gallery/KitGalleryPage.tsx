@@ -2,7 +2,6 @@ import Link from 'next/link'
 
 import { componentsGalleryRoute, kitGalleryEntries } from '@/content/kitGallery'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 
@@ -10,21 +9,18 @@ import { KitPreviewSurface } from './KitPreviewSurface'
 
 export const KitGalleryPage = () => {
   return (
-    <main className="border-t border-border/60">
+    <main className="border-t border-border">
       <section className="container py-16 lg:py-24">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
-          <Badge
-            variant="outline"
-            className="rounded-full px-3.5 py-1 text-[0.72rem] uppercase tracking-[0.18em]"
-          >
-            Live components gallery
-          </Badge>
+          <p className="text-[0.7rem] font-mono font-medium uppercase tracking-[0.28em] text-muted-foreground">
+            Components gallery
+          </p>
           <h1 className="text-4xl font-medium tracking-[-0.06em] text-balance sm:text-5xl">
-            Browse the real kits that ship in the current alpha.
+            Production Payload blocks, live and ready to install.
           </h1>
           <p className="text-base leading-7 text-muted-foreground sm:text-lg">
-            This route renders the actual shipped block components with typed preset data. Use it to
-            inspect what `payload-kit add` installs today before touching a repo.
+            Every kit renders here with real typed data. Preview the blocks, copy the install
+            command, and wire it into your Payload v3 repo in seconds.
           </p>
           <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             <Button asChild size="lg" className="rounded-full px-6">
@@ -47,17 +43,17 @@ export const KitGalleryPage = () => {
             <section
               key={entry.slug}
               id={entry.slug}
-              className="rounded-[2rem] border border-border/70 bg-background/82 px-6 py-8 shadow-none sm:px-8 lg:px-10 lg:py-10"
+              className="rounded-[2rem] border border-border bg-background px-6 py-8 shadow-none sm:px-8 lg:px-10 lg:py-10"
             >
               <div className="grid gap-8 xl:grid-cols-[0.34fr_0.66fr] xl:items-start">
                 <div className="flex flex-col gap-5">
                   <div className="flex flex-wrap items-center gap-3">
-                    <Badge variant="secondary" className="rounded-full px-3 py-1">
+                    <span className="inline-flex items-center rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
                       {entry.statusLabel}
-                    </Badge>
-                    <Badge variant="outline" className="rounded-full px-3 py-1">
+                    </span>
+                    <span className="inline-flex items-center rounded-full border border-border px-3 py-1 font-mono text-xs text-muted-foreground">
                       {entry.slug}
-                    </Badge>
+                    </span>
                   </div>
 
                   <div className="space-y-3">
@@ -67,25 +63,27 @@ export const KitGalleryPage = () => {
                     <p className="text-base leading-7 text-muted-foreground">{entry.summary}</p>
                   </div>
 
-                  <div className="rounded-[1.5rem] border border-border/70 bg-card/40 p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  <div className="rounded-[1.5rem] border border-border bg-card p-4">
+                    <p className="text-[0.65rem] font-mono uppercase tracking-[0.22em] text-muted-foreground">
                       Install command
                     </p>
-                    <code className="mt-3 block overflow-x-auto rounded-xl border border-border/70 bg-background px-3 py-3 text-sm">
-                      {entry.installCommand}
-                    </code>
+                    <div className="mt-3 overflow-hidden rounded-xl bg-zinc-950">
+                      <code className="block overflow-x-auto px-4 py-3 font-mono text-sm text-white/90">
+                        {entry.installCommand}
+                      </code>
+                    </div>
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-4">
-                  <div className="rounded-[1.5rem] border border-border/70 bg-card/30 p-4">
+                  <div className="rounded-[1.5rem] border border-border bg-card p-4">
                     <p className="text-sm font-medium">{entry.preview.label}</p>
                     <p className="mt-2 text-sm leading-7 text-muted-foreground">
                       {entry.preview.description}
                     </p>
                   </div>
 
-                  <div className="overflow-hidden rounded-[1.75rem] border border-border/70 bg-card/20 p-4 sm:p-5">
+                  <div className="overflow-hidden rounded-[1.75rem] border border-border bg-card p-4 sm:p-5">
                     <KitPreviewSurface entry={entry} />
                   </div>
                 </div>
@@ -94,23 +92,23 @@ export const KitGalleryPage = () => {
           ))}
         </div>
 
-        <div className="mt-12 rounded-[1.75rem] border border-border/70 bg-card/35 p-6 sm:p-8">
+        <div className="mt-12 rounded-[1.75rem] border border-border bg-card p-6 sm:p-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl space-y-3">
-              <Badge variant="outline" className="rounded-full px-3 py-1 uppercase tracking-[0.18em]">
-                Current alpha boundary
-              </Badge>
+              <p className="text-[0.7rem] font-mono font-medium uppercase tracking-[0.28em] text-muted-foreground">
+                What ships today
+              </p>
               <h2 className="text-3xl font-medium tracking-[-0.05em]">
-                `payload-kit add` is real. `init` and `doctor` still follow.
+                `payload-kit add` wires schema, types, and import-map in one command.
               </h2>
               <p className="text-base leading-7 text-muted-foreground">
-                The shipped surface today is the two public kits above. The next engineering tranche
-                returns to `payload-kit doctor`, not a third kit.
+                Two production kits ship fully wired. Schema, render components, types, and
+                import-map updates all land at once — as if written by hand.
               </p>
             </div>
 
-            <div className="rounded-[1.5rem] border border-border/70 bg-background px-4 py-3">
-              <code className="text-sm">{componentsGalleryRoute}</code>
+            <div className="overflow-hidden rounded-[1.5rem] bg-zinc-950 px-4 py-3">
+              <code className="font-mono text-sm text-white/90">{componentsGalleryRoute}</code>
             </div>
           </div>
         </div>
