@@ -794,6 +794,21 @@ test.describe('Light shadcn frontend', () => {
     expect(mobileNavOverflow.offenders, mobileNavOverflow.message).toEqual([])
   })
 
+  test('mobile GitHub link localizes its accessible name without translating the brand', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 800 })
+    await page.goto(`${baseURL}/zh/docs`)
+
+    await page.getByRole('button', { name: '打开导航' }).click()
+    const githubLink = page
+      .locator('#mobile-navigation')
+      .getByRole('link', { name: 'GitHub 代码库' })
+
+    await expect(githubLink).toBeVisible()
+    await expect(githubLink).toHaveText('GitHub')
+  })
+
   test('preview frame grows and shrinks across presets without analytics', async ({ page }) => {
     await page.setViewportSize({ width: 1200, height: 900 })
     await page.goto(`${baseURL}/docs/components/hero-basic`)
