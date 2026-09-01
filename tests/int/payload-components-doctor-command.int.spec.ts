@@ -4,7 +4,10 @@ import path from 'node:path'
 
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { createInstallFixture } from './payload-components-fixture'
+import {
+  createInstallFixture,
+  createInstallFixtureForComponents,
+} from './payload-components-fixture'
 
 import type { ComponentManifest, InstallState } from '../../tools/payload-components/types'
 import { runCommand } from '../../tools/payload-components/utils'
@@ -13,9 +16,9 @@ const repoRoot = process.cwd()
 const payloadComponentBin = path.join(repoRoot, 'bin', 'payload-components.mjs')
 const integrationCommandTimeoutMs = 30_000
 
-const runAddCommand = async (fixtureDir: string, componentName: string) =>
+const runAddCommand = async (fixtureDir: string, componentName: string, extraArgs: string[] = []) =>
   runCommand({
-    args: [payloadComponentBin, 'add', componentName, '--cwd', fixtureDir],
+    args: [payloadComponentBin, 'add', componentName, '--cwd', fixtureDir, ...extraArgs],
     captureOutput: true,
     command: process.execPath,
     cwd: repoRoot,
@@ -184,8 +187,11 @@ describe('payload-components doctor', () => {
   }, 180000)
 
   it('reads a runtime-computed locale set as configured, not as missing', async () => {
-    const { fixtureDir } = await createInstallFixture('hero-basic')
+    const { fixtureDir, manifest } = await createInstallFixture('hero-basic', {
+      preseedSource: true,
+    })
     tempDirs.push(fixtureDir)
+    await runAddCommand(fixtureDir, manifest.name)
     await writeFile(
       path.join(fixtureDir, 'src', 'payload.config.ts'),
       [
@@ -194,7 +200,8 @@ describe('payload-components doctor', () => {
         'export default buildConfig({',
         '  localization: {',
         "    defaultLocale: 'en',",
-        '    locales: getLocales(),',
+        "    locales: ['en'],",
+        '    ...runtimeLocalization,',
         '  },',
         '  collections: [],',
         '})',
@@ -208,6 +215,72 @@ describe('payload-components doctor', () => {
     expect(result.code).toBe(0)
     expect(result.stdout).toContain('(locales resolved at runtime)')
     expect(result.stdout).not.toContain('declares no locales')
+    expect(result.stdout).toContain(
+      '[warn] localization: hero-basic does not mark its text localized, so every locale stores the same copy',
+    )
+  }, 180000)
+
+  it('names every recorded component that is not localized', async () => {
+    const { fixtureDir, manifests } = await createInstallFixtureForComponents(
+      ['hero-basic', 'faq-card'],
+      { preseedSource: true },
+    )
+    tempDirs.push(fixtureDir)
+
+    for (const manifest of manifests) {
+      await runAddCommand(
+        fixtureDir,
+        manifest.name,
+        manifest.name === 'hero-basic' ? ['--localized'] : [],
+      )
+    }
+    await writeFile(
+      path.join(fixtureDir, 'src', 'payload.config.ts'),
+      [
+        "import { buildConfig } from 'payload'",
+        '',
+        'export default buildConfig({',
+        "  localization: { defaultLocale: 'en', locales: ['en', 'zh'] },",
+        '  collections: [],',
+        '})',
+        '',
+      ].join('\n'),
+      'utf8',
+    )
+
+    const result = await runDoctorCommand(fixtureDir)
+
+    expect(result.code).toBe(0)
+    expect(result.stdout).toContain(
+      '[warn] localization: faq-card does not mark its text localized, so every locale stores the same copy',
+    )
+    expect(result.stdout).not.toContain(
+      '[warn] localization: hero-basic does not mark its text localized',
+    )
+  }, 180000)
+
+  it('reports localization: false as disabled rather than runtime-configured', async () => {
+    const { fixtureDir } = await createInstallFixture('hero-basic')
+    tempDirs.push(fixtureDir)
+    await writeFile(
+      path.join(fixtureDir, 'src', 'payload.config.ts'),
+      [
+        "import { buildConfig } from 'payload'",
+        '',
+        'export default buildConfig({',
+        '  localization: false,',
+        '  collections: [],',
+        '})',
+        '',
+      ].join('\n'),
+      'utf8',
+    )
+
+    const result = await runDoctorCommand(fixtureDir)
+
+    expect(result.code).toBe(0)
+    expect(result.stdout).toContain('[ok] localization: disabled in src/payload.config.ts')
+    expect(result.stdout).not.toContain('(locales resolved at runtime)')
   }, 180000)
 
   it('warns when a component is localized but the config declares no locales', async () => {
@@ -223,6 +296,23 @@ describe('payload-components doctor', () => {
       '[warn] localization: hero-basic marks its text localized, but src/payload.config.ts declares no locales',
     )
     expect(result.stdout).toContain('payload-components localize --locales en,zh')
+  }, 180000)
+
+  it('fails when a recorded localized install is missing its shared helper', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('hero-basic', {
+      preseedSource: true,
+    })
+    tempDirs.push(fixtureDir)
+    await runAddCommand(fixtureDir, manifest.name, ['--localized'])
+    await rm(path.join(fixtureDir, 'src', 'blocks', 'shared', 'localizeFields.ts'))
+
+    const result = await runDoctorCommand(fixtureDir)
+
+    expect(result.code).toBe(1)
+    expect(result.stdout).toContain(
+      '[error] localization: missing src/blocks/shared/localizeFields.ts, required by hero-basic',
+    )
+    expect(result.stdout).toContain('payload-components update hero-basic')
   }, 180000)
 
   it('fails when a recorded component is missing files and Payload fragments', async () => {

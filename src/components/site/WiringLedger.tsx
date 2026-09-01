@@ -80,7 +80,7 @@ export function WiringLedger() {
       {/* Column heads — the two commands. Hidden under md; each verdict
           cell carries its own command prefix there. */}
       <div className="hidden md:grid md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1fr)]">
-        <div className="px-6 py-4 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+        <div className="px-6 py-4 font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
           Artifact
         </div>
         <div className="border-l border-border px-6 py-4">

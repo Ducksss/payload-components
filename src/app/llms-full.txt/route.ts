@@ -9,6 +9,11 @@ import {
   siteDescription,
   siteUrl,
 } from '@/lib/site'
+import {
+  templateDetailHref,
+  templateInstallCommand,
+  templateShowcases,
+} from '@/lib/templates/registry'
 
 export async function GET() {
   const [docs, blog] = await Promise.all([
@@ -31,6 +36,12 @@ export async function GET() {
     '## Components',
     ...componentEntries.map(
       (component) => `- ${component.title} (${component.slug}): ${component.command}`,
+    ),
+    '',
+    '## Templates',
+    ...templateShowcases.map(
+      (template) =>
+        `- ${template.title} (${siteUrl}${templateDetailHref(template.slug)}): ${templateInstallCommand(template)} — ${template.summary}`,
     ),
     '',
     '## FAQ',

@@ -398,7 +398,7 @@ describe('Fumadocs site shell', () => {
     ])
 
     expect(sourceConfig).toContain("dir: 'content/docs'")
-    expect(docsIndex).toContain('The v2 app is intentionally not a Payload CMS site.')
+    expect(docsIndex).toContain('This site is intentionally not a Payload CMS site.')
     expect(architecture).toContain('No Payload admin, collection config, global config')
   })
 
@@ -580,6 +580,33 @@ describe('Fumadocs site shell', () => {
       },
       {
         source: '/feed.xml',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
+          },
+        ],
+      },
+      {
+        source: '/blog/rss.xml',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
+          },
+        ],
+      },
+      {
+        source: '/llms.txt',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
+          },
+        ],
+      },
+      {
+        source: '/llms-full.txt',
         headers: [
           {
             key: 'Cache-Control',

@@ -84,7 +84,7 @@ export const FeatureAccordionBlock: React.FC<Props> = ({
                     value={`${index}`}
                     className="border-border/70"
                   >
-                    <AccordionTrigger className="text-left text-lg tracking-title hover:no-underline">
+                    <AccordionTrigger className="text-start text-lg tracking-title hover:no-underline">
                       {item.title}
                     </AccordionTrigger>
                     <AccordionContent className="text-sm leading-7 text-muted-foreground">

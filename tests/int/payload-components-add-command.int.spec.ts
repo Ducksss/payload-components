@@ -1,3 +1,7 @@
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
+
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type {
@@ -44,10 +48,16 @@ const defaultState: InstallState = {
   version: 3,
 }
 
+const fixtureDirs: string[] = []
+
 describe('payload-components add command orchestration', () => {
   afterEach(() => {
     vi.resetModules()
     vi.restoreAllMocks()
+  })
+
+  afterEach(async () => {
+    await Promise.all(fixtureDirs.splice(0).map((dir) => rm(dir, { force: true, recursive: true })))
   })
 
   const setup = async ({
@@ -83,6 +93,7 @@ describe('payload-components add command orchestration', () => {
     const applyPayloadFragments = vi
       .fn()
       .mockResolvedValue(['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'])
+    const applyLocalizedFields = vi.fn().mockResolvedValue(['src/blocks/HeroBasic/config.ts'])
     const checkDependencyRequirements = vi.fn()
     const installManifestDependencies = vi.fn().mockResolvedValue(undefined)
     const getRuntimePatchedFiles = vi
@@ -91,6 +102,16 @@ describe('payload-components add command orchestration', () => {
     const buildRegistry = vi.fn().mockResolvedValue('/tmp/payload-components-registry')
     const installRegistryDependencies = vi.fn().mockResolvedValue(undefined)
     const installRegistryItem = vi.fn().mockResolvedValue(undefined)
+    const compareInstalledFiles = vi.fn().mockResolvedValue({
+      comparisons: [],
+      missing: [],
+      modified: [],
+    })
+    const copySharedSourceFile = vi.fn().mockResolvedValue(true)
+    const resolveRecordedFileHashes = vi.fn().mockResolvedValue({
+      'src/blocks/HeroBasic/Component.tsx': 'component-hash',
+      'src/blocks/HeroBasic/config.ts': 'config-hash',
+    })
     const loadState = vi.fn().mockResolvedValue(loadStateValue)
     const recordInstallAttempt = vi.fn().mockResolvedValue(undefined)
     const recordInstallFailure = vi.fn().mockResolvedValue(undefined)
@@ -109,15 +130,38 @@ describe('payload-components add command orchestration', () => {
     vi.doMock('../../tools/payload-components/install-plan', () => ({
       resolveInstallPlan,
     }))
-    vi.doMock('../../tools/payload-components/project', () => ({
-      applyPayloadFragments,
-      assertManifestSupport,
-      detectProject,
-      resolveRecoveryPatchedFiles: ({ recoveryPatchedFiles }: { recoveryPatchedFiles: string[] }) =>
-        recoveryPatchedFiles,
-      verifyInstalledManifestFiles,
-      verifyInstalledPayloadFragments,
-    }))
+    vi.doMock('../../tools/payload-components/project', async () => {
+      const actual = await vi.importActual<typeof import('../../tools/payload-components/project')>(
+        '../../tools/payload-components/project',
+      )
+
+      return {
+        ...actual,
+        applyLocalizedFields,
+        applyPayloadFragments,
+        assertManifestSupport,
+        detectProject,
+        resolveRecoveryPatchedFiles: ({
+          recoveryPatchedFiles,
+        }: {
+          recoveryPatchedFiles: string[]
+        }) => recoveryPatchedFiles,
+        verifyInstalledManifestFiles,
+        verifyInstalledPayloadFragments,
+      }
+    })
+    vi.doMock('../../tools/payload-components/component-files', async () => {
+      const actual = await vi.importActual<
+        typeof import('../../tools/payload-components/component-files')
+      >('../../tools/payload-components/component-files')
+
+      return {
+        ...actual,
+        compareInstalledFiles,
+        copySharedSourceFile,
+        resolveRecordedFileHashes,
+      }
+    })
     vi.doMock('../../tools/payload-components/dependencies', () => ({
       checkDependencyRequirements,
       getRuntimePatchedFiles,
@@ -135,6 +179,7 @@ describe('payload-components add command orchestration', () => {
       recordInstallFailure,
     }))
     vi.doMock('../../tools/payload-components/commands/seed', () => ({
+      getPayloadConfigFile: vi.fn().mockResolvedValue('src/payload.config.ts'),
       seedCommand,
     }))
     vi.doMock('../../tools/payload-components/utils', async () => {
@@ -155,18 +200,22 @@ describe('payload-components add command orchestration', () => {
     return {
       addCommand: addCommandModule.addCommand,
       mocks: {
+        applyLocalizedFields,
         applyPayloadFragments,
         buildRegistry,
         checkDependencyRequirements,
+        compareInstalledFiles,
         getRunScriptCommand,
         installManifestDependencies,
         installRegistryDependencies,
         installRegistryItem,
+        copySharedSourceFile,
         loadState,
         printHeader,
         recordInstallAttempt,
         recordInstallFailure,
         recordInstalledState,
+        resolveRecordedFileHashes,
         runCommand,
         seedCommand,
         verifyInstalledManifestFiles,
@@ -437,6 +486,123 @@ describe('payload-components add command orchestration', () => {
     expect(mocks.applyPayloadFragments).not.toHaveBeenCalled()
     expect(mocks.runCommand).toHaveBeenCalledOnce()
     expect(mocks.recordInstalledState).toHaveBeenCalledOnce()
+  })
+
+  it.each(['installed', 'partial'] as const)(
+    'preserves localization when a plain repair restores a missing config from %s state',
+    async (status) => {
+      const { addCommand, mocks } = await setup({
+        loadStateValue: {
+          components: {
+            'hero-basic': {
+              fileHashes: {},
+              installedAt: '2026-04-16T00:00:00.000Z',
+              lastAttemptAt: '2026-04-16T00:00:00.000Z',
+              lastError: null,
+              localized: true,
+              manifestVersion: '0.1.0',
+              patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
+              registryItemName: 'hero-basic',
+              status,
+              targetId: 'payload-website-starter',
+            },
+          },
+          version: 3,
+        },
+      })
+
+      mocks.checkDependencyRequirements
+        .mockResolvedValueOnce({ installed: { payload: '3.82.1' }, missing: [] })
+        .mockResolvedValueOnce({ installed: {}, missing: [] })
+      mocks.verifyInstalledManifestFiles
+        .mockResolvedValueOnce({
+          isValid: false,
+          missingFiles: ['src/blocks/HeroBasic/config.ts'],
+          missingRegistryDependencies: [],
+        })
+        .mockResolvedValueOnce({
+          isValid: true,
+          missingFiles: [],
+          missingRegistryDependencies: [],
+        })
+
+      await addCommand({ cwd: '/tmp/fixture', componentName: 'hero-basic' })
+
+      expect(mocks.applyLocalizedFields).toHaveBeenCalledWith({
+        configFiles: ['src/blocks/HeroBasic/config.ts'],
+        cwd: '/tmp/fixture',
+      })
+      expect(mocks.copySharedSourceFile).toHaveBeenCalledOnce()
+      expect(mocks.recordInstallAttempt).toHaveBeenCalledWith(
+        expect.objectContaining({ localized: true }),
+      )
+      expect(mocks.recordInstalledState).toHaveBeenCalledWith(
+        expect.objectContaining({ localized: true }),
+      )
+    },
+  )
+
+  it('refuses to localize an edited recorded config without blessing a new baseline', async () => {
+    const { addCommand, mocks } = await setup({
+      loadStateValue: {
+        components: {
+          'hero-basic': {
+            fileHashes: {
+              'src/blocks/HeroBasic/Component.tsx': 'component-hash',
+              'src/blocks/HeroBasic/config.ts': 'config-hash',
+            },
+            installedAt: '2026-04-16T00:00:00.000Z',
+            lastAttemptAt: '2026-04-16T00:00:00.000Z',
+            lastError: null,
+            manifestVersion: '0.1.0',
+            patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
+            registryItemName: 'hero-basic',
+            status: 'installed',
+            targetId: 'payload-website-starter',
+          },
+        },
+        version: 3,
+      },
+    })
+
+    mocks.checkDependencyRequirements
+      .mockResolvedValueOnce({ installed: { payload: '3.82.1' }, missing: [] })
+      .mockResolvedValueOnce({ installed: {}, missing: [] })
+    mocks.compareInstalledFiles.mockResolvedValueOnce({
+      comparisons: [{ projectPath: 'src/blocks/HeroBasic/config.ts', status: 'modified' }],
+      missing: [],
+      modified: ['src/blocks/HeroBasic/config.ts'],
+    })
+
+    await expect(
+      addCommand({ componentName: 'hero-basic', cwd: '/tmp/fixture', localized: true }),
+    ).rejects.toThrow('payload-components localize hero-basic --force')
+
+    expect(mocks.applyLocalizedFields).not.toHaveBeenCalled()
+    expect(mocks.recordInstallAttempt).not.toHaveBeenCalled()
+    expect(mocks.recordInstalledState).not.toHaveBeenCalled()
+  })
+
+  it('warns when a fresh --localized install has no configured locales', async () => {
+    const cwd = await mkdtemp(path.join(os.tmpdir(), 'payload-components-add-localized-'))
+    fixtureDirs.push(cwd)
+    await mkdir(path.join(cwd, 'src'), { recursive: true })
+    await writeFile(
+      path.join(cwd, 'src/payload.config.ts'),
+      "import { buildConfig } from 'payload'\nexport default buildConfig({})\n",
+      'utf8',
+    )
+    const { addCommand, mocks } = await setup()
+
+    mocks.checkDependencyRequirements
+      .mockResolvedValueOnce({ installed: { payload: '3.82.1' }, missing: [] })
+      .mockResolvedValueOnce({ installed: {}, missing: [] })
+
+    await addCommand({ componentName: 'hero-basic', cwd, localized: true })
+
+    expect(mocks.printHeader).toHaveBeenCalledWith(
+      expect.stringContaining('does not declare any locales, so localized: true has no effect yet'),
+    )
   })
 
   it('writes the demo seed only after a successful install records installed state', async () => {

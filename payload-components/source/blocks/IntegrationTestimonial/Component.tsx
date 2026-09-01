@@ -41,7 +41,7 @@ export const IntegrationTestimonialBlock: React.FC<Props> = ({
               ) : null}
             </div>
 
-            <figure className="flex flex-col gap-4 border-l-2 border-border pl-5">
+            <figure className="flex flex-col gap-4 border-s-2 border-border ps-5">
               <blockquote className="text-pretty text-sm text-foreground sm:text-base">
                 {quote}
               </blockquote>

@@ -73,7 +73,7 @@ export function FeatureAccordionDemo({
               <div className="w-full">
                 {items.map((item, index) => (
                   <div key={`${item.title}-${index}`} className="border-border/70 border-b">
-                    <div className="py-4 text-left text-lg tracking-title hover:no-underline">
+                    <div className="py-4 text-start text-lg tracking-title hover:no-underline">
                       {item.title}
                     </div>
                     {index === 0 ? (
@@ -88,7 +88,7 @@ export function FeatureAccordionDemo({
               <div className="relative aspect-[4/3] overflow-hidden rounded-panel border border-border/70 bg-muted">
                 {activeItem?.hasImage ? (
                   <div className="grid h-full grid-cols-[0.35fr_1fr] bg-background">
-                    <div className="border-r border-border/70 bg-muted/50 p-4" />
+                    <div className="border-e border-border/70 bg-muted/50 p-4" />
                     <div className="grid grid-cols-2 gap-4 p-5">
                       <div className="col-span-2 rounded-inset bg-accent/30" />
                       <div className="rounded-inset bg-muted" />

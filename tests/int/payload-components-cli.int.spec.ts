@@ -41,6 +41,7 @@ type CliModule = {
     defaultCwd: string
     write: (value: string) => void
   }) => Promise<void>
+  usage?: string
 }
 
 const makeCommands = () => ({
@@ -78,6 +79,18 @@ describe('payload-components CLI parsing and orchestration', () => {
 
   afterEach(() => {
     process.exitCode = undefined
+  })
+
+  it('describes the localize mutation flags accurately', () => {
+    expect(cli.usage).toContain(
+      '--dry-run  Validate and preview an add, localize, update, or remove without changing files or running commands.',
+    )
+    expect(cli.usage).toContain(
+      '--force  Let localize replace configured locales and wrap edited configs, let update overwrite edits, or let remove delete unverifiable source.',
+    )
+    expect(cli.usage).toContain(
+      '--default-locale  The canonical locale for localized values; defaults to the first --locales entry.',
+    )
   })
 
   it('parses --demo for add and resolves --cwd from the invocation directory', () => {

@@ -103,7 +103,7 @@ export function WiringNodeMap({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-[1.5rem] border border-border bg-background p-5 shadow-card sm:p-6',
+        'overflow-hidden rounded-panel border border-border bg-background p-5 shadow-card sm:p-6',
         className,
       )}
     >

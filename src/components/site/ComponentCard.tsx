@@ -37,7 +37,7 @@ export function ComponentCard({
       id={component.slug}
       data-selected={onToggleSelect && selected ? 'true' : undefined}
       className={cn(
-        'group relative mb-4 flex break-inside-avoid flex-col overflow-hidden rounded-xl border bg-card shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-frame focus-within:ring-2 focus-within:ring-brand/25',
+        'group relative mb-4 flex break-inside-avoid flex-col overflow-hidden rounded-xl border bg-card shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-frame focus-within:ring-2 focus-within:ring-brand',
         selected
           ? 'border-brand/45 ring-1 ring-brand/25'
           : 'border-border hover:border-foreground/15',

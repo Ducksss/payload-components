@@ -130,6 +130,9 @@ export function ComponentPreviewFrame({ slug, title }: { slug: string; title: st
           href={src}
           target="_blank"
           rel="noreferrer"
+          /* The text label is hidden below sm and the icon is aria-hidden, so
+             without this the link has no accessible name on mobile. */
+          aria-label="Open preview in a new tab"
           className="inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 font-mono text-[11px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
         >
           <ExternalLink className="size-3.5" aria-hidden="true" />

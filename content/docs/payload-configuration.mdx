@@ -73,6 +73,15 @@ If a Payload CLI command cannot discover the file, set the path in that script i
 }
 ```
 
+`cross-env` is what makes that assignment portable: a bare `PAYLOAD_CONFIG_PATH=... payload` prefix is POSIX shell syntax, so it fails in `cmd.exe` and PowerShell. It is not part of Payload, so install it in the project first:
+
+<RunnableCommand
+  command="pnpm add -D cross-env"
+  label="Copy the cross-env install command"
+/>
+
+On a project that never runs these scripts on Windows, drop the prefix and keep the bare `PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types`.
+
 Every entry point should load the same file. A second config for scripts or seeds will eventually drift from the schema the application serves.
 
 ## Start with a small, complete root config

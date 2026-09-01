@@ -34,12 +34,16 @@ export function GET() {
 
   const body = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<rss version="2.0">',
+    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
     '  <channel>',
     '    <title>Payload Components Blog</title>',
     `    <link>${siteUrl}/blog</link>`,
+    `    <atom:link href="${siteUrl}/blog/rss.xml" rel="self" type="application/rss+xml" />`,
     `    <description>${xml(siteDescription)}</description>`,
     '    <language>en-us</language>',
+    ...(posts.length
+      ? [`    <lastBuildDate>${new Date(posts[0].data.date).toUTCString()}</lastBuildDate>`]
+      : []),
     ...items,
     '  </channel>',
     '</rss>',

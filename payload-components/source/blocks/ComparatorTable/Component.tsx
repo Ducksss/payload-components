@@ -49,7 +49,7 @@ export const ComparatorTableBlock: React.FC<Props> = ({
 
           {plans && plans.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-left text-sm">
+              <table className="w-full border-collapse text-start text-sm">
                 <thead>
                   <tr>
                     <th className="w-2/5 p-4 align-bottom" />

@@ -89,7 +89,7 @@ export async function GET(_request: Request, { params }: BlogImageRouteProps) {
         </div>
         <div
           style={{
-            color: '#047857',
+            color: '#059669',
             display: 'flex',
             fontFamily: 'Geist Mono',
             fontSize: 18,

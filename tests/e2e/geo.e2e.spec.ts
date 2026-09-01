@@ -145,7 +145,7 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(body).toContain('# AI discovery and verification')
     expect(body).toContain('# Hello — and why I built Payload Components')
     expect(body).toContain('The itch that started this')
-    expect(body).toContain('The v2 app is intentionally not a Payload CMS site.')
+    expect(body).toContain('This site is intentionally not a Payload CMS site.')
     expect(body).toContain('npx payload-components add feature-grid-basic')
   })
 

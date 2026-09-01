@@ -17,6 +17,7 @@ import {
   receipts,
   wiringLedger,
   pipelineStages,
+  siteOpenGraphDefaults,
 } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
@@ -28,6 +29,7 @@ export const metadata: Metadata = {
   title: 'About',
   description,
   openGraph: {
+    ...siteOpenGraphDefaults,
     description,
     title: 'About Payload Components',
     type: 'website',
@@ -66,7 +68,7 @@ export default function AboutPage() {
       <JsonLd data={aboutStructuredData} />
       <SiteHeader activePath="/about" />
 
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="hero-shell overflow-hidden border-b border-border/60">
           <div aria-hidden="true" className="hero-atmosphere" />
 
@@ -130,8 +132,8 @@ export default function AboutPage() {
                 include it, and the admin import map sees it.
               </p>
 
-              <figure className="rounded-[1.25rem] border border-border bg-muted/40 p-5 sm:p-6">
-                <figcaption className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              <figure className="rounded-card border border-border bg-muted/40 p-5 sm:p-6">
+                <figcaption className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                   After every paste, on every project
                 </figcaption>
                 <ul className="mt-4 flex flex-col gap-2.5">
@@ -198,8 +200,8 @@ export default function AboutPage() {
             {/* Receipts rail — the proof behind the story, filling the
                 right column instead of leaving it empty. */}
             <aside className="lg:sticky lg:top-24 lg:self-start">
-              <div className="rounded-[1.25rem] border border-border bg-muted/30 p-6">
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              <div className="rounded-card border border-border bg-muted/30 p-6">
+                <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
                   The receipts
                 </p>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
@@ -236,7 +238,7 @@ export default function AboutPage() {
           {/* The framing as numbers — reusing the landing ledger's columns so the
               commands and tallies never drift from what the installer actually does. */}
           <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="flex min-w-0 flex-col gap-3 rounded-[1.25rem] border border-border bg-background p-6">
+            <div className="flex min-w-0 flex-col gap-3 rounded-card border border-border bg-background p-6">
               <code className="block max-w-full overflow-x-auto whitespace-nowrap rounded-md border border-border bg-muted/50 px-3 py-2 font-mono text-xs text-foreground/80">
                 {wiringLedger.columns.baseline.command}
               </code>
@@ -248,7 +250,7 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="flex min-w-0 flex-col gap-3 rounded-[1.25rem] border border-border bg-background p-6">
+            <div className="flex min-w-0 flex-col gap-3 rounded-card border border-border bg-background p-6">
               <code className="block max-w-full overflow-x-auto whitespace-nowrap rounded-md border border-border bg-muted/50 px-3 py-2 font-mono text-xs text-foreground/80">
                 {wiringLedger.columns.component.command}
               </code>

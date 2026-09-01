@@ -72,7 +72,7 @@ export function HeroProductTiltDemo({
           <div className="w-full max-w-5xl lg:perspective-distant">
             <div className="aspect-video overflow-hidden rounded-panel border border-border/70 bg-muted shadow-xl lg:origin-top lg:rotate-x-6">
               <div className="grid h-full grid-cols-[0.3fr_1fr] bg-background">
-                <div className="border-r border-border/70 bg-muted/40 p-4">
+                <div className="border-e border-border/70 bg-muted/40 p-4">
                   <div className="mb-5 h-5 w-20 rounded-full bg-foreground/15" />
                   <div className="space-y-3">
                     <div className="h-3 w-full rounded-full bg-foreground/10" />
