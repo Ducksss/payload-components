@@ -6,7 +6,7 @@ import type { DependencyMap, PackageManager } from './types'
 
 import { PACKAGE_JSON_FILE } from './constants'
 import { resolveSafeProjectPath, readSafeProjectFile } from './safe-path'
-import { getLockfileName, runCommand } from './utils'
+import { detectPackageManagerDetails, runCommand } from './utils'
 
 type PackageJson = {
   dependencies?: Record<string, string>
@@ -35,9 +35,17 @@ export const assertSafePackageManagerTargets = async ({
   packageManager: PackageManager
 }) => {
   await readSafeProjectFile({ cwd, filePath: path.join(cwd, PACKAGE_JSON_FILE) })
+  const detected = await detectPackageManagerDetails(cwd)
+
+  if (detected.packageManager !== packageManager) {
+    throw new Error(
+      `Refusing package-manager write: expected ${packageManager}, but the current project lockfile selects ${detected.packageManager}.`,
+    )
+  }
+
   await resolveSafeProjectPath({
     cwd,
-    targetPath: path.join(cwd, getLockfileName(packageManager)),
+    targetPath: path.join(cwd, detected.lockfilePath),
   })
   await resolveSafeProjectPath({ cwd, targetPath: path.join(cwd, 'node_modules') })
 }

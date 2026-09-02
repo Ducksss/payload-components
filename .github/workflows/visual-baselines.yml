@@ -47,6 +47,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
@@ -116,7 +118,9 @@ jobs:
           git checkout -b "$branch"
           git add "$snapshots"
           git commit -m "test(chore): mint ${RUNNER_OS} visual baselines (${SPEC})"
-          git push origin "$branch"
+          git -c credential.helper= \
+            -c credential.helper="!f() { echo username=x-access-token; echo \"password=\$GH_TOKEN\"; }; f" \
+            push origin "$branch"
           gh pr create \
             --base "$GITHUB_REF_NAME" \
             --head "$branch" \

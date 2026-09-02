@@ -7,6 +7,13 @@ type FileContents = Parameters<Awaited<ReturnType<typeof open>>['writeFile']>[0]
 const noFollow = typeof constants.O_NOFOLLOW === 'number' ? constants.O_NOFOLLOW : 0
 let tempFileCounter = 0
 
+/* This boundary rejects lexical escapes and every symlink present when an
+ * operation inspects or opens its target. It is not a privilege sandbox against
+ * another process running concurrently as the same OS user: Node 20 exposes no
+ * portable openat/renameat/unlinkat API, and that process already has authority
+ * to write the user's files directly. Never run this CLI elevated against a
+ * project tree writable by a less-trusted user. */
+
 const isMissing = (error: unknown) =>
   error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT'
 

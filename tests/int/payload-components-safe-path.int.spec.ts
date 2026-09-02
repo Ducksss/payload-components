@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises'
+import { mkdtemp, mkdir, readFile, rm, symlink, unlink, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
@@ -155,5 +155,30 @@ describe('canonical project filesystem boundary', () => {
     await expect(
       assertSafePackageManagerTargets({ cwd: modulesFixture.project, packageManager: 'npm' }),
     ).rejects.toThrow(/symbolic link/)
+  })
+
+  it('revalidates the exact detected bun lockfile before a package-manager write', async () => {
+    const { outside, project } = await makeFixture()
+    const lockfilePath = path.join(project, 'bun.lockb')
+    const outsideLockfile = path.join(outside, 'bun.lockb')
+
+    await Promise.all([
+      writeFile(path.join(project, 'package.json'), '{}\n', 'utf8'),
+      writeFile(lockfilePath, 'trusted lockfile\n', 'utf8'),
+      writeFile(outsideLockfile, 'outside stays intact\n', 'utf8'),
+    ])
+
+    await expect(detectPackageManagerDetails(project)).resolves.toEqual({
+      lockfilePath: 'bun.lockb',
+      packageManager: 'bun',
+    })
+
+    await unlink(lockfilePath)
+    await symlink(outsideLockfile, lockfilePath)
+
+    await expect(
+      assertSafePackageManagerTargets({ cwd: project, packageManager: 'bun' }),
+    ).rejects.toThrow(/symbolic link/)
+    await expect(readFile(outsideLockfile, 'utf8')).resolves.toBe('outside stays intact\n')
   })
 })
