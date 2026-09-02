@@ -210,7 +210,8 @@ export const updateCommand = async ({
           (entry) =>
             entry.updateAvailable ||
             entry.installed?.status === 'partial' ||
-            entry.installed?.localizationPolicy !== 'semantic-v1',
+            (entry.installed?.localized === true &&
+              entry.installed.localizationPolicy !== 'semantic-v1'),
         )
 
   if (targets.length === 0) {

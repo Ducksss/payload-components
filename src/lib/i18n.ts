@@ -4,7 +4,6 @@ import { locale as rootLocale } from 'next/root-params'
 import { defineI18n } from 'fumadocs-core/i18n'
 import { defineI18nUI } from 'fumadocs-ui/i18n'
 import { zhCN } from '@fumadocs/language/zh-cn'
-import fumadocsTranslations from '../../messages/fumadocs.json'
 
 import {
   defaultSiteLocale,
@@ -30,23 +29,12 @@ const zhTranslations = Object.fromEntries(
     return typeof entry[1] === 'string'
   }),
 )
-const translatedFumadocsUI = fumadocsTranslations as Partial<
-  Record<SiteLocale, Record<string, string>>
->
-
+/* Only register a docs-shell translation when it comes from an upstream or
+ * native-reviewed pack. Other localized docs routes deliberately use the
+ * English fallback named by their TranslationNotice instead of pretending
+ * that duplicated English strings are translations. */
 export const fumadocsI18nUI = defineI18nUI(fumadocsI18n, {
   zh: { displayName: localeDetails.zh.label, ...zhTranslations },
-  ...Object.fromEntries(
-    siteLocales
-      .filter((locale) => locale !== 'en' && locale !== 'zh')
-      .map((locale) => [
-        locale,
-        {
-          displayName: localeDetails[locale].label,
-          ...translatedFumadocsUI[locale],
-        },
-      ]),
-  ),
 })
 
 export async function getSiteLocale(): Promise<SiteLocale> {

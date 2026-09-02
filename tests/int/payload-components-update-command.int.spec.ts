@@ -231,6 +231,22 @@ describe('update', () => {
     expect(output.join('')).toContain('already at the version this CLI ships')
   })
 
+  it('does not rewrite a current non-localized install whose legacy state has no policy', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const { fixtureDir } = await installFixture({ componentNames: ['hero-basic'] })
+    const state = await loadState(fixtureDir)
+
+    state.components['hero-basic'].localized = false
+    delete state.components['hero-basic'].localizationPolicy
+    await saveState(fixtureDir, state)
+
+    await updateCommand({ cwd: fixtureDir })
+
+    expect(addCommand).not.toHaveBeenCalled()
+    expect(output.join('')).toContain('already at the version this CLI ships')
+    expect(await exists(path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts'))).toBe(true)
+  })
+
   it('re-installs only the components whose recorded version is behind', async () => {
     const { addCommand, output, updateCommand } = await setup()
     const { fixtureDir } = await installFixture({ componentNames: ['hero-basic', 'faq-card'] })
@@ -382,7 +398,6 @@ describe('update', () => {
     const { addCommand, output, updateCommand } = await setup()
     const { fixtureDir } = await installFixture({
       componentNames: ['hero-basic'],
-      recordedVersion: '0.0.9',
     })
     const state = await loadState(fixtureDir)
 

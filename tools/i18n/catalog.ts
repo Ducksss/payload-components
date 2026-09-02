@@ -174,6 +174,9 @@ export function validateCatalogs(
         errors.push(`${locale}:${key} is empty`)
         continue
       }
+      if (/<<<\s*\d+\s*>>>/.test(value)) {
+        errors.push(`${locale}:${key} contains a translation transport marker`)
+      }
       validateMessage(errors, english[key], value, locale, `${locale}:${key}`)
     }
   }

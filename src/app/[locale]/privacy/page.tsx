@@ -18,7 +18,10 @@ import { breadcrumbNode, graph } from '@/lib/structured-data'
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getSiteLocale()
   const publication = getPublication('/privacy', locale)
-  const t = await getTranslations({ locale, namespace: 'PageMetadata.privacy' })
+  const t = await getTranslations({
+    locale: publication.contentLocale,
+    namespace: 'PageMetadata.privacy',
+  })
 
   return {
     alternates: {
@@ -31,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       ...siteOpenGraphDefaults,
       description: t('description'),
-      locale: localeDetails[locale].openGraphLocale,
+      locale: localeDetails[publication.contentLocale].openGraphLocale,
       title: t('openGraphTitle'),
       type: 'website',
       url: publication.canonical,
@@ -80,7 +83,8 @@ const inlineCode = (chunks: ReactNode) => (
 
 export default async function PrivacyPage() {
   const locale = await getSiteLocale()
-  const t = await getTranslations({ locale, namespace: 'Privacy' })
+  const publication = getPublication('/privacy', locale)
+  const t = await getTranslations({ locale: publication.contentLocale, namespace: 'Privacy' })
   const commonT = await getTranslations({ locale, namespace: 'Common' })
   const privacyStructuredData = graph(
     breadcrumbNode([

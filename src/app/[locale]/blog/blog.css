@@ -2,7 +2,7 @@
 @import 'fumadocs-ui/css/lib/default-colors.css';
 @import 'fumadocs-ui/css/preset.css';
 
-@source '../../../node_modules/fumadocs-ui/dist/**/*.js';
+@source '../../../../node_modules/fumadocs-ui/dist/**/*.js';
 
 /* This route imports Tailwind a second time (the Fumadocs preset needs its own
    entry), so it regenerates every utility from the stock theme — including the

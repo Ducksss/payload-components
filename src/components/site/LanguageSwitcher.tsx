@@ -28,6 +28,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
         className,
       )}
       method="get"
+      noValidate
       onSubmit={preserveLocationSuffix}
     >
       <input ref={returnTo} type="hidden" name="returnTo" value={pathname || '/'} readOnly />

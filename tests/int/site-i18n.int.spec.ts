@@ -65,6 +65,7 @@ describe('site internationalization', () => {
 
   it('adds, replaces, and removes locale prefixes without changing URL suffixes', () => {
     expect(splitLocalePathname('/docs')).toEqual({ locale: 'en', pathname: '/docs' })
+    expect(splitLocalePathname('/en/docs')).toEqual({ locale: 'en', pathname: '/docs' })
     expect(splitLocalePathname('/zh')).toEqual({ locale: 'zh', pathname: '/' })
     expect(splitLocalePathname('/zh/docs')).toEqual({ locale: 'zh', pathname: '/docs' })
     expect(splitLocalePathname('/ar/components')).toEqual({
@@ -101,6 +102,7 @@ describe('site internationalization', () => {
   it('keeps machine translations and English fallbacks honest per resource', () => {
     const machine = getPublication('/components', 'zh')
     const fallback = getPublication('/docs/installation', 'zh')
+    const privacyFallback = getPublication('/privacy', 'ja')
 
     expect(machine).toMatchObject({
       canonical: '/zh/components',
@@ -120,6 +122,12 @@ describe('site internationalization', () => {
     expect(fallback.alternates).toEqual({
       en: '/docs/installation',
       'x-default': '/docs/installation',
+    })
+    expect(privacyFallback).toMatchObject({
+      canonical: '/privacy',
+      contentLocale: 'en',
+      index: false,
+      status: 'fallback',
     })
 
     expect(isLocaleNeutralPath('/opengraph-image')).toBe(true)
@@ -210,6 +218,18 @@ describe('site internationalization', () => {
     expect(Object.keys(catalogs)).toEqual(siteLocales.slice(1))
   })
 
+  it('rejects translation transport markers before they reach a page', async () => {
+    const { catalogs, english } = await loadCatalogs(repoRoot)
+    const markedCatalogs = {
+      ...catalogs,
+      ja: { ...catalogs.ja, 'Header.language': '言語 <<<46 >>>' },
+    }
+
+    expect(validateCatalogs(english, markedCatalogs)).toContain(
+      'ja:Header.language contains a translation transport marker',
+    )
+  })
+
   it('renders locale-specific plural categories instead of flattening ICU branches', async () => {
     const arabic = (await getSiteMessages('ar')) as Messages
     const polish = (await getSiteMessages('pl')) as Messages
@@ -227,24 +247,13 @@ describe('site internationalization', () => {
     expect(translatePolish('CatalogBrowser.result', { count: 5 })).toBe('5 wyników')
   })
 
-  it('ships documentation-shell translations for every added locale', async () => {
-    const source = await readFile(path.join(repoRoot, 'messages', 'fumadocs.json'), 'utf8')
-    const translations = JSON.parse(source) as Record<string, Record<string, string>>
-    const translatedLocales = siteLocales.filter((locale) => locale !== 'en' && locale !== 'zh')
+  it('only registers reviewed documentation-shell translations', async () => {
+    const docsI18n = await readFile(path.join(repoRoot, 'src/lib/i18n.ts'), 'utf8')
 
-    expect(Object.keys(translations).sort()).toEqual([...translatedLocales].sort())
-
-    for (const locale of translatedLocales) {
-      expect(Object.keys(translations[locale]).length, locale).toBeGreaterThan(40)
-      expect(Object.values(translations[locale]).every(Boolean), locale).toBe(true)
-      expect(translations[locale]['Search(search dialog)'], locale).toBeTruthy()
-      expect(
-        messageArguments(
-          translations[locale]['Read {url}, I want to ask questions about it.(page actions)'],
-        ),
-        locale,
-      ).toEqual(['url'])
-    }
+    expect(docsI18n).toContain("import { zhCN } from '@fumadocs/language/zh-cn'")
+    expect(docsI18n).toContain('zh: { displayName: localeDetails.zh.label, ...zhTranslations }')
+    expect(docsI18n).not.toContain('fumadocs.json')
+    expect(docsI18n).not.toContain('translatedFumadocsUI')
   })
 
   it('wires next-intl, Fumadocs fallback, request routing, and locale-aware links together', async () => {

@@ -213,7 +213,10 @@ export function splitLocalePathname(pathname: string): {
 } {
   const firstSegment = pathname.split('/')[1]
 
-  if (isSiteLocale(firstSegment) && firstSegment !== defaultSiteLocale) {
+  /* Middleware rewrites the public default-locale path (`/docs`) to the
+   * internal route (`/en/docs`). Strip that explicit internal prefix too so
+   * pathname-based layout decisions see the same resource in either form. */
+  if (isSiteLocale(firstSegment)) {
     const prefix = `/${firstSegment}`
     return {
       locale: firstSegment,

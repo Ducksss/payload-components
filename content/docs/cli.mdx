@@ -339,7 +339,9 @@ localize URLs, prices, or form actions. After migrating those stored values back
 fields, `--accept-localization-policy-change` adopts the explicit `semantic-v1` policies.
 The CLI updates source and state only; it never migrates the database.
 
-With no names, `update` targets every component that is behind or left in a partial state.
+With no names, `update` targets every component that is behind, left in a partial state, or
+recorded as localized under the legacy policy. A current non-localized install is not rewritten
+merely because older state predates the localization-policy field.
 `--dry-run` prints the plan.
 
 ### Changelogs

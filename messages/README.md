@@ -32,6 +32,8 @@ The checker requires exact keys, valid ICU, matching argument types and tags, an
 every plural category required by each locale's `Intl.PluralRules`. Preserve
 commands, paths, product names, and every `{argument}` during review.
 
-`fumadocs.json` is separate because it contains upstream documentation-shell
-labels rather than Payload Components copy. Long-form MDX and hard-coded showcase
-content still fall back to English until a reviewed translation exists.
+The Fumadocs documentation shell follows the same publication rule. Chinese uses
+the upstream Fumadocs language pack; every unreviewed locale uses the explicit
+English fallback rather than shipping duplicated English labels under a locale
+name. Long-form MDX and hard-coded showcase content also fall back to English
+until a reviewed translation exists.

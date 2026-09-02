@@ -19,7 +19,10 @@ type Publication = {
   status: TranslationStatus
 }
 
-const machineTranslatedRoutes = new Set(['/', '/components', '/templates', '/privacy'])
+/* Legal/privacy copy stays on the reviewed English source until a native
+ * reviewer explicitly publishes that resource. Machine-translated product
+ * routes can be useful previews; an unreviewed legal disclosure cannot. */
+const machineTranslatedRoutes = new Set(['/', '/components', '/templates'])
 const reviewed = translationStatus.reviewed as Partial<Record<SiteLocale, string[]>>
 
 function normalizedPath(pathname: string) {
