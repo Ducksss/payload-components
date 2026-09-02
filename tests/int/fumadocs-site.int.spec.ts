@@ -10,6 +10,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('server-only', () => ({}))
+vi.mock('next/root-params', () => ({ locale: async () => 'en' }))
 /* Stamps every next/link anchor so a rendered assertion can tell a native <a>
    apart from the routed Link the two render identically to otherwise. */
 vi.mock('next/link', () => ({
@@ -142,7 +143,7 @@ describe('Fumadocs site shell', () => {
 
   it('keeps evergreen about and blog copy free of numeric catalog counts', async () => {
     const [aboutPage, helloPost] = await Promise.all([
-      readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', '[locale]', 'about', 'page.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'content', 'blog', 'hello.mdx'), 'utf8'),
     ])
 
@@ -426,7 +427,7 @@ describe('Fumadocs site shell', () => {
   it('keeps the GitHub mark independent from removed Lucide brand icons', async () => {
     const githubLinkSources = await Promise.all(
       [
-        'src/app/docs/layout.tsx',
+        'src/app/[locale]/docs/layout.tsx',
         'src/components/site/SiteFooter.tsx',
         'src/components/site/SiteHeader.tsx',
         'src/components/site/sections/CommunityCta.tsx',
@@ -501,9 +502,9 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, '.github', 'workflows', 'registry-verification.yml'), 'utf8'),
       readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),
       readFile(path.join(repoRoot, 'next.config.mjs'), 'utf8'),
-      readFile(path.join(repoRoot, 'src', 'app', 'docs', 'docs.css'), 'utf8'),
-      readFile(path.join(repoRoot, 'src', 'app', 'docs', 'layout.tsx'), 'utf8'),
-      readFile(path.join(repoRoot, 'src', 'app', 'layout.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', '[locale]', 'docs', 'docs.css'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', '[locale]', 'docs', 'layout.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', '[locale]', 'layout.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', 'globals.css'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'components', 'site', 'SiteHeader.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'components', 'site', 'CommandCopyButton.tsx'), 'utf8'),
@@ -512,14 +513,29 @@ describe('Fumadocs site shell', () => {
         'utf8',
       ),
       readFile(path.join(repoRoot, 'src', 'lib', 'source.ts'), 'utf8'),
-      readFile(path.join(repoRoot, 'src', 'app', 'docs', '[[...slug]]', 'page.tsx'), 'utf8'),
+      readFile(
+        path.join(repoRoot, 'src', 'app', '[locale]', 'docs', '[[...slug]]', 'page.tsx'),
+        'utf8',
+      ),
       readFile(path.join(repoRoot, 'src', 'app', 'api', 'search', 'route.ts'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', 'llms-full.txt', 'route.ts'), 'utf8'),
       readFile(
-        path.join(repoRoot, 'src', 'app', 'llms.mdx', 'docs', '[[...slug]]', 'route.ts'),
+        path.join(
+          repoRoot,
+          'src',
+          'app',
+          '[locale]',
+          'llms.mdx',
+          'docs',
+          '[[...slug]]',
+          'route.ts',
+        ),
         'utf8',
       ),
-      readFile(path.join(repoRoot, 'src', 'app', 'og', 'docs', '[...slug]', 'route.tsx'), 'utf8'),
+      readFile(
+        path.join(repoRoot, 'src', 'app', '[locale]', 'og', 'docs', '[...slug]', 'route.tsx'),
+        'utf8',
+      ),
       readFile(path.join(repoRoot, 'src', 'proxy.ts'), 'utf8'),
     ])
 
@@ -882,9 +898,9 @@ describe('Fumadocs site shell', () => {
 
   it('keeps blog routes wired to shared chrome and complete metadata', async () => {
     const [layoutSource, indexSource, postSource, sitemapSource] = await Promise.all([
-      readFile(path.join(repoRoot, 'src/app/blog/layout.tsx'), 'utf8'),
-      readFile(path.join(repoRoot, 'src/app/blog/page.tsx'), 'utf8'),
-      readFile(path.join(repoRoot, 'src/app/blog/[slug]/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/blog/layout.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/blog/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/blog/[slug]/page.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src/app/sitemap.ts'), 'utf8'),
     ])
     const { blogDescription, blogTitle } = await import('../../src/lib/site')
@@ -893,7 +909,7 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).toContain("namespace: 'Blog'")
     expect(indexSource).toContain("t('metadataTitle')")
     expect(indexSource).toContain("t('metadataDescription')")
-    expect(indexSource).toContain('blogSource.getPages(locale)')
+    expect(indexSource).toContain('blogSource.getPages(publication.contentLocale)')
     expect(indexSource).not.toContain(blogDescription)
     expect(blogTitle).toBe('Payload CMS block and installer guides')
     expect(blogDescription).toContain('Payload CMS v3 guides')
@@ -902,7 +918,9 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).toContain("href: '/docs/payload-blocks'")
     expect(indexSource).toContain("href: '/blog/anatomy-of-an-install'")
     expect(indexSource).toContain('data-guide-gateway')
-    expect(indexSource).toContain("localeAlternates('/blog')")
+    expect(indexSource).toContain("getPublication('/blog', locale)")
+    expect(indexSource).toContain('languages: publication.alternates')
+    expect(indexSource).toContain('robots: publicationRobots(publication)')
     expect(collapse(indexSource)).toContain("twitter: { card: 'summary_large_image'")
     expect(postSource).toContain("type: 'article'")
     expect(postSource).toContain('publishedTime:')
@@ -1071,7 +1089,10 @@ describe('Fumadocs site shell', () => {
       path.join(repoRoot, 'src/components/site/ComponentCatalogBrowser.tsx'),
       'utf8',
     )
-    const catalogPage = await readFile(path.join(repoRoot, 'src/app/components/page.tsx'), 'utf8')
+    const catalogPage = await readFile(
+      path.join(repoRoot, 'src/app/[locale]/components/page.tsx'),
+      'utf8',
+    )
     const registry = await readFile(path.join(repoRoot, 'content/docs/registry.mdx'), 'utf8')
     const {
       catalogBlocksGuideLinkLabel,
@@ -1109,8 +1130,8 @@ describe('Fumadocs site shell', () => {
 
   it('gives nearby search surfaces distinct jobs and routes catalog intent to components', async () => {
     const [aboutPage, blogPage, docsIndex, installationGuide, homepage] = await Promise.all([
-      readFile(path.join(repoRoot, 'src/app/about/page.tsx'), 'utf8'),
-      readFile(path.join(repoRoot, 'src/app/blog/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/about/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/blog/page.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'content/docs/index.mdx'), 'utf8'),
       readFile(path.join(repoRoot, 'content/docs/installation.mdx'), 'utf8'),
       readFile(path.join(repoRoot, 'src/lib/site.ts'), 'utf8'),
@@ -1131,7 +1152,10 @@ describe('Fumadocs site shell', () => {
 
   it('keeps catalog page-block count copy aligned with installable components', async () => {
     const { componentFamilies, componentsIntro } = await import('../../src/lib/site')
-    const aboutPage = await readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8')
+    const aboutPage = await readFile(
+      path.join(repoRoot, 'src', 'app', '[locale]', 'about', 'page.tsx'),
+      'utf8',
+    )
 
     expect(componentFamilies.pages.countLabel).toBe('Installable')
     expect(componentFamilies.posts.countLabel).toBe('In development')
@@ -1164,9 +1188,9 @@ describe('Fumadocs site shell', () => {
     const [firstBlock, installation, aboutPage, siteSource, docsLayout] = await Promise.all([
       readFile(path.join(repoRoot, 'content/docs/first-block.mdx'), 'utf8'),
       readFile(path.join(repoRoot, 'content/docs/installation.mdx'), 'utf8'),
-      readFile(path.join(repoRoot, 'src/app/about/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/about/page.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src/lib/site.ts'), 'utf8'),
-      readFile(path.join(repoRoot, 'src/app/docs/layout.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/docs/layout.tsx'), 'utf8'),
     ])
     expect(firstBlock).toContain('href="/components"')
     expect(firstBlock).not.toContain('href="/docs/components"')

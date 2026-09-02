@@ -21,6 +21,7 @@ export const HeroProductTilt: Block = {
     {
       name: 'imageCaption',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'proofItems',
@@ -32,6 +33,7 @@ export const HeroProductTilt: Block = {
         {
           name: 'label',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],

@@ -26,15 +26,18 @@ export const pricingFields: Field[] = [
   {
     name: 'eyebrow',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
   {
     name: 'title',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
   {
     name: 'description',
     type: 'textarea',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
 ]
 
@@ -47,20 +50,24 @@ export const planFields: Field[] = [
   {
     name: 'name',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
   {
     name: 'price',
     type: 'text',
+    custom: { payloadComponents: { localization: 'global' } },
     required: true,
   },
   {
     name: 'period',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
   {
     name: 'description',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
   {
     name: 'featured',
@@ -80,6 +87,7 @@ export const planFields: Field[] = [
       {
         name: 'feature',
         type: 'text',
+        custom: { payloadComponents: { localization: 'localized' } },
         required: true,
       },
     ],

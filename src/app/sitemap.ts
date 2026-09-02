@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 
-import { localizeHref } from '@/i18n/config'
+import { localeAlternates, localizeHref } from '@/i18n/config'
 import { siteUrl } from '@/lib/site'
 import { source } from '@/lib/source'
 import { blogSource } from '@/lib/blog-source'
@@ -10,10 +10,12 @@ import { templateDetailHref, templateShowcases } from '@/lib/templates/registry'
 function localizedEntry(path: string) {
   return {
     alternates: {
-      languages: {
-        en: `${siteUrl}${localizeHref(path, 'en')}`,
-        'zh-CN': `${siteUrl}${localizeHref(path, 'zh')}`,
-      },
+      languages: Object.fromEntries(
+        Object.entries(localeAlternates(path)).map(([locale, href]) => [
+          locale,
+          `${siteUrl}${href}`,
+        ]),
+      ),
     },
     url: `${siteUrl}${localizeHref(path, 'en')}`,
   }

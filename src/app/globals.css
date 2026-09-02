@@ -759,6 +759,25 @@
     color: var(--foreground);
   }
 
+  /* Script-aware display type: Instrument Serif only contains Latin glyphs,
+     and tight Latin tracking harms Arabic, Hebrew, CJK, and Thai shaping. */
+  html[data-script='arabic'] .hero-headline,
+  html[data-script='hebrew'] .hero-headline,
+  html[data-script='cjk'] .hero-headline,
+  html[data-script='thai'] .hero-headline {
+    line-height: 1.08;
+    letter-spacing: 0;
+  }
+
+  html[data-script='arabic'] .hero-headline-accent,
+  html[data-script='hebrew'] .hero-headline-accent,
+  html[data-script='cjk'] .hero-headline-accent,
+  html[data-script='thai'] .hero-headline-accent {
+    font-family: var(--font-sans);
+    font-style: normal;
+    letter-spacing: 0;
+  }
+
   /* Product-proof window: soft ground shadow. The perpetual float loop was
      removed — it kept the entire (large) frame subtree on an animating
      compositor layer for the life of the page. */

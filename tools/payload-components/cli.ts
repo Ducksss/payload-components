@@ -28,7 +28,7 @@ Usage:
   payload-components localize [component-name...] [--cwd <path>] [--locales <codes>]
                               [--default-locale <code>] [--no-fallback] [--dry-run] [--force]
   payload-components diff [component-name...] [--cwd <path>] [--json]
-  payload-components update [component-name...] [--cwd <path>] [--dry-run] [--force] [--accept-breaking]
+  payload-components update [component-name...] [--cwd <path>] [--dry-run] [--force] [--accept-breaking] [--accept-localization-policy-change]
   payload-components remove <component-name...> [--cwd <path>] [--dry-run] [--force]
   payload-components seed <component-name> [--cwd <path>]
   payload-components mcp [--cwd <path>]
@@ -58,6 +58,7 @@ Flags:
   --dry-run  Validate and preview an add, localize, update, or remove without changing files or running commands.
   --force  Let localize replace configured locales and wrap edited configs, let update overwrite edits, or let remove delete unverifiable source.
   --accept-breaking  Let update apply a version that changes content already stored in Payload.
+  --accept-localization-policy-change  Adopt semantic field policies after migrating existing localized data.
   --localized  Install the block, or every block of a template, with its text fields marked localized: true.
   --locales  Comma-separated locale codes for localize, e.g. --locales en,zh,pt-BR.
   --default-locale  The canonical locale for localized values; defaults to the first --locales entry.
@@ -159,6 +160,7 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
   let demo = false
   let dryRun = false
   let acceptBreaking = false
+  let acceptLocalizationPolicyChange = false
   let force = false
   let help = false
   let hasCwd = false
@@ -252,6 +254,15 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
       continue
     }
 
+    if (current === '--accept-localization-policy-change') {
+      if (acceptLocalizationPolicyChange) {
+        throw new Error('--accept-localization-policy-change may only be specified once.')
+      }
+
+      acceptLocalizationPolicyChange = true
+      continue
+    }
+
     if (current === '--force') {
       if (force) {
         throw new Error('--force may only be specified once.')
@@ -302,6 +313,7 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
 
   return {
     acceptBreaking,
+    acceptLocalizationPolicyChange,
     cwd,
     defaultLocale,
     demo,
@@ -382,6 +394,7 @@ export const runCli = async ({
 } = {}) => {
   const {
     acceptBreaking,
+    acceptLocalizationPolicyChange,
     cwd,
     defaultLocale,
     demo,
@@ -429,7 +442,7 @@ export const runCli = async ({
     new: [],
     seed: [],
     templates: ['json'],
-    update: ['acceptBreaking', 'dryRun', 'force'],
+    update: ['acceptBreaking', 'acceptLocalizationPolicyChange', 'dryRun', 'force'],
   }
 
   if (allowedFlags[command]) {
@@ -438,6 +451,7 @@ export const runCli = async ({
       command,
       flags: {
         acceptBreaking,
+        acceptLocalizationPolicyChange,
         defaultLocale: Boolean(defaultLocale),
         demo,
         dryRun,
@@ -552,6 +566,7 @@ export const runCli = async ({
     await runMutation('update', cwd, () =>
       commandHandlers.updateCommand({
         acceptBreaking,
+        acceptLocalizationPolicyChange,
         componentNames: uniqueNames,
         cwd,
         dryRun,

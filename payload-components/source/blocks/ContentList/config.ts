@@ -10,10 +10,12 @@ export const ContentList: Block = {
     {
       name: 'eyebrow',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'title',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
       required: true,
     },
     {
@@ -29,11 +31,13 @@ export const ContentList: Block = {
         {
           name: 'term',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
         {
           name: 'description',
           type: 'textarea',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],

@@ -296,6 +296,8 @@ describe('payload-components doctor', () => {
       '[warn] localization: hero-basic marks its text localized, but src/payload.config.ts declares no locales',
     )
     expect(result.stdout).toContain('payload-components localize --locales en,zh')
+    expect(result.stdout).toContain('uses the legacy type-inferred field policy')
+    expect(result.stdout).toContain('--accept-localization-policy-change')
   }, 180000)
 
   it('fails when a recorded localized install is missing its shared helper', async () => {

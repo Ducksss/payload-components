@@ -21,6 +21,7 @@ type UpdatePlan = {
   componentName: string
   files: string[]
   localized: boolean
+  localizationPolicyChange: boolean
   pendingChangelog: ChangelogEntry[]
   recordedVersion: string
   registryVersion: string
@@ -90,6 +91,12 @@ const formatPlan = ({
     lines.push(
       '',
       `${plan.componentName}: ${plan.recordedVersion} → ${plan.registryVersion}`,
+      ...(plan.localizationPolicyChange
+        ? [
+            '  localization policy: legacy type inference → semantic-v1',
+            '  no database migration will run; existing documents must already be migrated',
+          ]
+        : []),
       ...plan.pendingChangelog.map(
         (entry) => `  ${entry.version}: ${entry.summary}`,
       ),
@@ -169,12 +176,14 @@ const formatPlan = ({
  * until the caller passes --force. */
 export const updateCommand = async ({
   acceptBreaking = false,
+  acceptLocalizationPolicyChange = false,
   componentNames = [],
   cwd,
   dryRun = false,
   force = false,
 }: {
   acceptBreaking?: boolean
+  acceptLocalizationPolicyChange?: boolean
   componentNames?: string[]
   cwd: string
   dryRun?: boolean
@@ -197,7 +206,12 @@ export const updateCommand = async ({
   const targets =
     componentNames.length > 0
       ? installed.filter(({ name }) => componentNames.includes(name))
-      : installed.filter((entry) => entry.updateAvailable || entry.installed?.status === 'partial')
+      : installed.filter(
+          (entry) =>
+            entry.updateAvailable ||
+            entry.installed?.status === 'partial' ||
+            entry.installed?.localizationPolicy !== 'semantic-v1',
+        )
 
   if (targets.length === 0) {
     printHeader(
@@ -219,6 +233,15 @@ export const updateCommand = async ({
 
     if (!installedEntry) {
       throw new Error(`Component "${entry.name}" disappeared from install state while updating.`)
+    }
+
+    const localizationPolicyChange =
+      localized && installedEntry.localizationPolicy !== 'semantic-v1'
+
+    if (localizationPolicyChange && !acceptLocalizationPolicyChange) {
+      throw new Error(
+        `Component "${entry.name}" uses the legacy type-inferred localization policy. The semantic-v1 policy keeps URLs, form actions, prices, metrics, and identifiers global, which can change stored Payload data. Migrate existing documents first, then re-run with --accept-localization-policy-change. No database migration is run automatically.`,
+      )
     }
 
     const baselineHashes = await resolveRecordedFileHashes({
@@ -297,6 +320,7 @@ export const updateCommand = async ({
       /* A localized install stays localized: re-running plain `add` would
          rewrite the config without the wrapper and silently drop it. */
       localized,
+      localizationPolicyChange,
       pendingChangelog: entry.pendingChangelog,
       recordedVersion: entry.installed?.manifestVersion ?? 'unknown',
       registryVersion: manifest.version,
@@ -331,7 +355,12 @@ export const updateCommand = async ({
       await removeSafeProjectFile({ cwd, filePath: path.join(cwd, projectPath) })
     }
 
-    await addCommand({ componentName: plan.componentName, cwd, localized: plan.localized })
+    await addCommand({
+      ...(plan.localizationPolicyChange ? { acceptLocalizationPolicyChange: true } : {}),
+      componentName: plan.componentName,
+      cwd,
+      localized: plan.localized,
+    })
   }
 
   if (skipped.length > 0 || breaking.length > 0) {

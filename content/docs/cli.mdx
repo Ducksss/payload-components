@@ -133,7 +133,7 @@ idempotent, a name that is already installed is a no-op rather than an error.
 | ------------- | --------------------------------------------------------------------------------------- |
 | `--dry-run`   | Print the plan — files, wiring, dependencies, post-install commands — and change nothing |
 | `--demo`      | After a successful install, write the reviewable demo seed script                        |
-| `--localized` | Mark the block's text fields `localized: true` for Payload localization                  |
+| `--localized` | Apply the block's explicit semantic localization policies                              |
 
 ### Install from another registry
 
@@ -208,7 +208,7 @@ npx payload-components localize --locales en,zh
 It inserts a `localization` block into your `buildConfig({ ... })` call — labelled in each
 language, `rtl` where the script needs it — copies
 `src/blocks/shared/localizeFields.ts`, wraps each installed block config's field list in
-it, and records the choice in install state so `update` re-applies the wrapper rather than
+it, and records policy version `semantic-v1` in install state so `update` re-applies the wrapper rather than
 reinstalling a config without it.
 
 | Flag                      | Effect                                                                      |
@@ -308,6 +308,7 @@ install drift.
 ```bash
 npx payload-components update
 npx payload-components update hero-basic --force
+npx payload-components update --accept-localization-policy-change
 ```
 
 Re-installs recorded components at the version this CLI ships. Files are deleted first so
@@ -330,8 +331,13 @@ the manifest declares and exits non-zero until you pass `--accept-breaking`.
 npx payload-components update --accept-breaking
 ```
 
-These are two different decisions and they have two different flags: `--force` means
-"discard my local edits", `--accept-breaking` means "I have migrated my content".
+These are separate decisions with separate flags: `--force` means "discard my local
+edits", while `--accept-breaking` means "I have migrated the manifest's content change".
+
+Legacy localized installs have a third guard. They used field-type inference, which could
+localize URLs, prices, or form actions. After migrating those stored values back to global
+fields, `--accept-localization-policy-change` adopts the explicit `semantic-v1` policies.
+The CLI updates source and state only; it never migrates the database.
 
 With no names, `update` targets every component that is behind or left in a partial state.
 `--dry-run` prints the plan.

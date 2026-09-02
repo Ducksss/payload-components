@@ -699,7 +699,7 @@ test.describe('Light shadcn frontend', () => {
     { h1: 'Introduction', path: '/zh/docs' },
     { h1: /77 个 Payload CMS 组件与类型化区块/, path: '/zh/components' },
     { h1: '由可安装区块组成的 Payload CMS 模板概念', path: '/zh/templates' },
-    { h1: 'Payload CMS 区块与安装器指南', path: '/zh/blog' },
+    { h1: 'Payload CMS block and installer guides', path: '/zh/blog' },
     { h1: 'Why Payload Components exists', path: '/zh/about' },
   ]
 
@@ -733,10 +733,8 @@ test.describe('Light shadcn frontend', () => {
       'href',
       /\/components$/,
     )
-    await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveAttribute(
-      'href',
-      /\/zh\/components$/,
-    )
+    await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveCount(0)
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow')
 
     await page.getByLabel('语言').first().selectOption('en')
     await expect(page).toHaveURL(`${baseURL}/components?q=hero#hero-basic`)
@@ -745,6 +743,34 @@ test.describe('Light shadcn frontend', () => {
     await page.getByLabel('Language').first().selectOption('zh')
     await expect(page).toHaveURL(`${baseURL}/zh/components?q=hero#hero-basic`)
     await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
+  })
+
+  test('renders RTL and CJK locales with localized routing and stable layout', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 })
+    await page.goto(`${baseURL}/ar/components?q=hero#hero-basic`)
+
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar')
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+    await expect(page.locator('html')).toHaveAttribute('data-script', 'arabic')
+    await expect(page.locator('link[rel="alternate"][hreflang="ja"]')).toHaveCount(0)
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow')
+
+    const trigger = page.getByRole('button', { name: 'افتح التنقل' })
+    await trigger.click()
+    const switcher = page.locator('#mobile-navigation').getByRole('combobox', { name: 'اللغة' })
+    await expect(switcher.locator('option')).toHaveCount(22)
+    await switcher.selectOption('ja')
+
+    await expect(page).toHaveURL(`${baseURL}/ja/components?q=hero#hero-basic`)
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ja')
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr')
+    await expect(page.locator('html')).toHaveAttribute('data-script', 'cjk')
+
+    await page.evaluate(() => document.fonts.ready)
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    )
+    expect(hasHorizontalOverflow).toBe(false)
   })
 
   test('drives the responsive component preview frame', async ({ page }) => {

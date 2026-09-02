@@ -1,0 +1,445 @@
+{
+  "Metadata": {
+    "title": "Payload Components — volledig bekabelde blokken voor Payload CMS",
+    "description": "Open-source Payload CMS-blokken die worden geïnstalleerd met hun verzamelingsconfiguratie, renderertoewijzing, gegenereerde typen en beheerdersimportkaart."
+  },
+  "Common": {
+    "home": "Startpagina",
+    "documentation": "Documentatie",
+    "blog": "Blog",
+    "componentCatalog": "Componentencatalogus",
+    "brandGuide": "Merkgids",
+    "about": "Over",
+    "privacy": "Privacy",
+    "copy": "Kopiëren",
+    "copied": "Gekopieerd",
+    "copiedDescription": "Gekopieerd naar klembord."
+  },
+  "Header": {
+    "skip": "Ga naar de inhoud",
+    "home": "Startpagina van Payload Components",
+    "github": "GitHub opslagplaats",
+    "openNavigation": "Navigatie openen",
+    "closeNavigation": "Navigatie sluiten",
+    "language": "Taal",
+    "nav": {
+      "docs": "Documenten",
+      "components": "Componenten",
+      "templates": "Sjablonen",
+      "blog": "Blog",
+      "about": "Over"
+    }
+  },
+  "Consent": {
+    "title": "Analytics-cookies",
+    "description": "We gebruiken Google Analytics en PostHog om te zien welke componenten en documenten mensen daadwerkelijk gebruiken. Weigeren en geen van beide laadt – geen cookie, geen identificatie. Meting van de paginasnelheid werkt in beide richtingen en slaat niets op.",
+    "privacy": "Privacy",
+    "decline": "Daling",
+    "accept": "Accepteren"
+  },
+  "Privacy": {
+    "eyebrow": "Privacy",
+    "heading": "Precies wat we meten.",
+    "accentWord": "maatregel",
+    "intro": "Niets dat iets op uw apparaat opslaat, wordt geladen totdat u akkoord gaat. Op deze pagina wordt elke processor, elke gebeurtenis en elk veld benoemd, zodat u op elk moment van gedachten kunt veranderen.",
+    "consent": "Alles wat iets op uw apparaat zou opslaan, wacht op uw toestemming. Weigeren en Google Analytics en PostHog worden nooit geladen: er wordt geen cookie geplaatst en er wordt geen identificatie bewaard. Als uw browser Global Privacy Control of Do Not Track verzendt, telt dat automatisch als een weigering en krijgt u nooit de banner te zien.",
+    "alwaysOnProcessors": "Vercel Analytics en Speed Insights zijn uitzonderingen en gelden voor iedereen. Ze plaatsen geen cookies en slaan geen identificatie op. Ze meten de totale paginabelasting en prestaties, wat deze site snel houdt. Er staat niets op uw apparaat waarvoor u zich kunt afmelden.",
+    "noAccounts": "Er zijn geen accounts op deze site, dus niets hiervan is gekoppeld aan een identiteit. We verzamelen nooit formulierinvoer, vrije tekst of de inhoud van pagina's die u bekijkt.",
+    "processorsTitle": "Wie ontvangt gegevens",
+    "needsConsent": "Heeft uw toestemming nodig",
+    "alwaysOn": "Altijd aan, slaat niets op",
+    "processors": {
+      "vercel": {
+        "purpose": "Paginaweergaven en [0] voor de gehoste site.",
+        "storage": "Geen cookies en geen identificatie: er wordt niets op uw apparaat opgeslagen."
+      },
+      "ga4": {
+        "purpose": "Verzamel paginaweergaven en verkeersbronnen.",
+        "storage": "Stelt zijn eigen first-party cookies in (_ga, _ga_*)."
+      },
+      "posthog": {
+        "purpose": "De drie onderstaande productevenementen.",
+        "storage": "Een willekeurige pc_distinct_id in localStorage, plus een organisch padnaam in sessionStorage voor het huidige tabblad."
+      }
+    },
+    "eventsTitle": "De gebeurtenissen die we verzenden",
+    "eventsIntro": "Drie, en hun velden staan vast. Elke waarde is afkomstig van een vastgelegde route-, link- of installatieopdracht, nooit van iets dat u typt.",
+    "trafficSource": "Paginaweergaven labelen verkeer alleen als organisch zoeken of anders. Dat label wordt in uw browser afgeleid van een vaste zoekmachinelijst of een expliciete organische campagnemarkering. De onbewerkte verwijzing, campagne en queryreeks worden nooit verzonden. Gecontroleerde sitecontroles zijn voorzien van een echte verificatiemarkering, zodat ze kunnen worden uitgesloten van bezoekersaantallen; gewone bezoeken brengen vals met zich mee.",
+    "entryPage": "Na toestemming behouden organische bezoeken de eerste padnaam van dezelfde site voor het huidige browsertabblad. Installatiekopieën en klikken op primaire koppelingen bevatten de padnaam als <code>entry_page</code>. Directe en verwijzingsbezoeken niet. Het bevat nooit een zoekreeks of onbewerkte verwijzing en wordt verwijderd wanneer u uw toestemming intrekt.",
+    "events": {
+      "pageview": {
+        "when": "Een openbare route wordt geladen of gewijzigd."
+      },
+      "copyInstallCommand": {
+        "when": "U kopieert een installatieopdracht."
+      },
+      "primaryLinkClick": {
+        "when": "U volgt een link naar een repository, documenten of componenten."
+      }
+    },
+    "choiceTitle": "Jouw keuze",
+    "choice": "Uw beslissing wordt lokaal in uw browser opgeslagen onder <code>pc_consent</code>. Wijzig het hier op elk gewenst moment. Intrekken doet meer dan het verzamelen stoppen - het verwijdert wat de opt-in heeft gemaakt: de Google Analytics cookies (<code>_ga</code>, <code>_ga_*</code>) en de PostHog identificatie worden verwijderd, en de pagina wordt opnieuw geladen, zodat niets dat al actief is, verdergaat. De padnaam voor het organische item voor alleen de sessie wordt ook verwijderd.",
+    "settings": {
+      "privacySignal": "Uw browser verzendt een privacysignaal (Global Privacy Control of Do Not Track), dus Google Analytics en PostHog blijven uit en dit kan hier niet worden overschreven.",
+      "on": "Google Analytics en PostHog zijn momenteel ingeschakeld.",
+      "off": "Google Analytics en PostHog zijn momenteel uitgeschakeld.",
+      "undecided": "Je hebt nog niet gekozen, dus Google Analytics en PostHog zijn uitgeschakeld.",
+      "turnOff": "Schakel analyses uit",
+      "turnOn": "Schakel analyses in"
+    }
+  },
+  "NotFound": {
+    "eyebrow": "Fout 404",
+    "title": "Pagina niet gevonden",
+    "description": "Deze route staat niet in het register. De componenten, de documenten en de catalogus zijn.",
+    "home": "Ga naar huis",
+    "docs": "Lees de documenten",
+    "terminalTitle": "payload-components — 404"
+  },
+  "Docs": {
+    "title": "Documentatie",
+    "versionBanner": "MIT register · componenten v{version}",
+    "github": "Ster op GitHub",
+    "previousComponent": "Vorig onderdeel: {title}",
+    "nextComponent": "Volgend onderdeel: {title}",
+    "newIn": "Nieuw in {version}"
+  },
+  "HomeMetadata": {
+    "title": "Payload Components: Bedraad Payload CMS Blokken in één commando",
+    "description": "Installeer herbruikbare Payload CMS-blokken met één opdracht, inclusief verzamelingsconfiguratie, renderkaarten, gegenereerde typen en de admin-importkaart voor Next.js-projecten."
+  },
+  "Landing": {
+    "hero": {
+      "eyebrow": "Open-source Payload blokregister",
+      "primary": "Installeer Payload blokken",
+      "accent": "bedraad, niet geplakt.",
+      "subheadline": "Voor Payload CMS-ontwikkelaars installeert één commando het blok, koppelt het aan Payload en levert een reviewbare git diff op.",
+      "guide": "Lees de installatiehandleiding",
+      "github": "Ster op GitHub",
+      "browse": "Blader door de componenten",
+      "copy": "Kopieer de installatieopdracht",
+      "count": "{count}-blokken in het register — allemaal aangesloten op Payload met één enkele opdracht."
+    },
+    "stack": {
+      "label": "Ondersteunde stapel",
+      "lede": "Installeert in de stapel die u al gebruikt"
+    },
+    "wiring": {
+      "eyebrow": "De installatiegrens",
+      "heading": "Een blok staat pas onder spanning als het is aangesloten.",
+      "intro": "Het kopiëren van de bestanden is het makkelijke gedeelte; bij de vier bewerkingen daarna verliest elk blok, elke repository de dag.",
+      "source": "bron"
+    },
+    "workflow": {
+      "eyebrow": "Werkstroom",
+      "heading": "Van catalogus naar commit in drie zetten.",
+      "intro": "Geen steigers, geen lock-in - duidelijke bron plus twee scoped-patches die u kunt lezen.",
+      "steps": {
+        "oneTitle": "Lees het contract",
+        "oneDescription": "Velden, bestanden en patches — voordat u iets uitvoert.",
+        "twoTitle": "Voer één opdracht uit",
+        "twoDescription": "De CLI controleert uw project en bedraadt het vervolgens in één keer.",
+        "threeTitle": "Voer een werkblok in",
+        "threeDescription": "Bron, twee patches, geregenereerde typen — beoordeeld zoals elke PR."
+      },
+      "badge": "Weergegeven vanuit de bron",
+      "caption": "Het toegewijde resultaat: echte componentbron, aangesloten op Payload en beoordeeld zoals elke PR."
+    },
+    "catalog": {
+      "eyebrow": "De catalogus",
+      "heading": "De catalogus, live weergegeven.",
+      "intro": "Geen screenshots — elk exemplaar is het echte onderdeel, weergegeven vanuit de broncode.",
+      "browse": "Blader door de catalogus",
+      "preview": "Livevoorbeeld",
+      "blockCount": "{count, plural, one {# blok} other {# blokken}}",
+      "browseFamily": "Blader door {family}",
+      "allComponents": "Blader door alle {count} componenten",
+      "postComponents": "Postcomponenten · In ontwikkeling",
+      "familyCount": "Installeerbaar",
+      "familyName": "Paginablokken",
+      "familyDescription": "Blokken voor de Pages-lay-outbouwer — geïnstalleerd met volledige bedrading: verzamelingsconfiguratie, rendertoewijzing, gegenereerde typen, importkaart."
+    },
+    "faq": {
+      "heading": "Vragen, direct beantwoord.",
+      "intro": "De korte versie van de documenten. Elk antwoord linkt terug naar iets dat u in de repository kunt verifiëren.",
+      "dogfood": "Deze sectie is een van onze blokken"
+    },
+    "community": {
+      "eyebrow": "Open source",
+      "heading": "Open source,",
+      "accent": "van begin tot eind",
+      "intro": "Het register, de CLI, de componenten en deze site vormen één MIT-gelicentieerde repository. Lees het installatieprogramma voordat u het vertrouwt – dat is het punt.",
+      "copy": "Kopieer de installatieopdracht",
+      "repository": "GitHub opslagplaats",
+      "issue": "Open een probleem",
+      "invite": "Het in een echte opslagplaats uitvoeren? Open een probleem: vroege installaties worden uitgelicht."
+    }
+  },
+  "Catalog": {
+    "metadataTitle": "{count} Payload CMS Componenten en blokken | Catalogus",
+    "metadataDescription": "Blader door getypte Payload CMS blokken. Voer npx payload-components add '<component>' uit om er een in uw verzameling, renderer, gegenereerde typen en beheerdersimportkaart te plaatsen.",
+    "eyebrow": "Register",
+    "title": "{count} Payload CMS componenten en getypte blokken",
+    "description": "Blader door alle {count} installeerbare Payload CMS componenten in helden, functies, prijzen, oproepen tot actie, integraties, getuigenissen, statistieken, FAQs, inhoud, teams, insluitingen en voetteksten. Eén CLI-opdracht kopieert een blok en bedraadt de verzamelingsregistratie, renderertoewijzing, gegenereerde typen en beheerdersimportkaart.",
+    "installation": "Bekijk hoe installatie met één opdracht werkt",
+    "blocksGuide": "Volg een blok van configuratie naar livepagina",
+    "templates": "Verken '0'-sjabloonconcepten",
+    "license": "MIT gelicentieerd"
+  },
+  "CatalogBrowser": {
+    "filter": "Filtercomponenten",
+    "allComponents": "Alle componenten",
+    "all": "Alles",
+    "search": "Zoek componenten",
+    "result": "{count, plural, one {# resultaat} other {# resultaten}}",
+    "empty": "Er zijn geen componenten die overeenkomen met uw filters.",
+    "reset": "Filters opnieuw instellen",
+    "proposal": "De catalogus groeit doelbewust: bron, manifest, documentatie en installatiedekking worden samen verzonden. Stel de volgende voor.",
+    "issue": "Open een probleem",
+    "inDevelopment": "in ontwikkeling",
+    "selected": "{count} geselecteerd",
+    "tray": "Geselecteerde componenten",
+    "copy": "Kopieer de installatieopdracht",
+    "clear": "Duidelijke selectie",
+    "families": {
+      "pages": "Paginablokken",
+      "posts": "Postcomponenten"
+    },
+    "categories": {
+      "hero": "Held",
+      "features": "Kenmerken",
+      "comparator": "Vergelijker",
+      "pricing": "Prijzen",
+      "cta": "Oproep tot actie",
+      "contact": "Contactpersoon",
+      "integration": "Integratie",
+      "logos": "Logowolk",
+      "testimonials": "Getuigenissen",
+      "stats": "Statistieken",
+      "faq": "FAQ",
+      "content": "Inhoud",
+      "team": "Team",
+      "embed": "Insluiten",
+      "footer": "Voettekst",
+      "cards": "Kaarten",
+      "archive": "Archief",
+      "header": "Koptekst",
+      "index": "Index",
+      "author": "Auteur",
+      "newsletter": "Nieuwsbrief",
+      "related": "Gerelateerd"
+    },
+    "composerAdd": "Voeg {slug} toe aan de installatieopdracht",
+    "composerRemove": "Verwijder {slug} uit het installatiecommando",
+    "theme": {
+      "brandLegend": "Bekijk een voorbeeld van de catalogus in uw merkkleur",
+      "brandLabel": "Merk",
+      "previewBrand": "Voorbeeld in {color}",
+      "colors": {
+        "emerald": "Smaragd",
+        "sky": "Hemel",
+        "indigo": "Indigo",
+        "violet": "Violet",
+        "rose": "Roos",
+        "amber": "Amber"
+      },
+      "radiusLegend": "Bekijk een voorbeeld van de catalogus op een andere hoekradius",
+      "radiusLabel": "Straal",
+      "previewRadius": "Voorbeeld met {style}-hoeken",
+      "radii": {
+        "sharp": "Scherp",
+        "default": "Standaard",
+        "round": "Rond"
+      }
+    }
+  },
+  "Templates": {
+    "metadataTitle": "Payload CMS Sjablonen voor Next.js | Concepten & Recepten",
+    "metadataDescription": "Ontdek Payload CMS-sjabloonconcepten in vijftien branches - SaaS, bureaus, handel, gezondheidszorg, restaurants, onroerend goed en meer - bekijk een voorbeeld van elke pagina en inspecteer het getypte blokrecept.",
+    "detailTitle": "{title} sjabloon",
+    "back": "Sjablonen",
+    "previewPageLabel": "{title} voorbeeldpagina",
+    "previewViewport": "Voorbeeld van de viewportgrootte",
+    "desktop": "Bureaublad",
+    "tablet": "Tablet",
+    "mobile": "Mobiel",
+    "previewFrameTitle": "{title} sjabloonvoorbeeld — {page} pagina",
+    "eyebrow": "Sjablonen",
+    "title": "Payload CMS sjabloonconcepten, opgebouwd uit installeerbare blokken",
+    "status": "Conceptvoorbeeld",
+    "disclosure": "Dit is een doorzoekbaar full-site concept. Elke sectie is samengesteld uit blokken in het open register, en één opdracht installeert de hele blokkenset. De hier getoonde samengestelde kopie is niet gezaaid, dus u stelt de pagina's zelf samen in de beheerder.",
+    "startingPoint": "Kies een startpunt",
+    "description": "Ontdek volledige Payload CMS en Next.js siteconcepten in vijftien branches: SaaS, agentschappen, handel, gezondheidszorg, restaurants, onroerend goed, muziek en meer. Open elke pagina in een live preview en traceer vervolgens elke sectie terug naar een getypt blok dat u vandaag nog kunt installeren.",
+    "components": "Blader door installeerbare componenten",
+    "installation": "Lees de installatiehandleiding",
+    "official": "Begin met het officiële Payload-sjabloon",
+    "showcases": "Sjabloonvitrines",
+    "questionsEyebrow": "Vragen",
+    "questionsHeading": "Payload CMS sjabloonvragen, beantwoord",
+    "questionsIntro": "De concepten zijn bewust open over wat vandaag de dag werkt en wat een ontwerpreferentie blijft.",
+    "q1": "Zijn deze [0] sjablonen installeerbaar?",
+    "a1": "Nee. Het zijn doorbladerbare concepten voor de volledige site, geen verpakte startersrepository's. De afzonderlijke blokken in elk recept zijn installeerbaar en elk recept linkt naar de relevante componentdocumentatie.",
+    "q2": "Hoe verschillen deze van de officiële sjabloon van Payload?",
+    "a2": "Het officiële websitesjabloon geeft een nieuw project een complete applicatiebasis. Deze concepten laten zien hoe een volledige marketingsite eruit kan zien en uit welke getypte blokken elke pagina bestaat, zonder de rol van starterproject te vervangen.",
+    "q3": "Kan ik de recepten gebruiken in een bestaand Payload project?",
+    "a3": "Ja. Open een concept, bekijk het bestelde recept en kies de secties die bij uw site passen. De catalogus documenteert de velden van elk blok en het ondersteunde installatiepad van Payload CMS v3.",
+    "communityEyebrow": "Gemeenschap",
+    "communityHeading": "Sjablonen worden in het openbaar besloten",
+    "communityIntro": "Deze concepten bestaan om één vraag van de gemeenschap te beantwoorden: moeten sjablonen voor de volledige site installeerbaar worden? De recepten, fictieve merken en RFC-installatieprogramma bevinden zich allemaal in de openbare repository: niets beveiligd, geen e-mailregistratie.",
+    "allConcepts": "Alle concepten",
+    "filter": "Filter concepten op categorie",
+    "showing": "Toont {visible} van {total} concepten",
+    "visualTone": "Visuele toon",
+    "counts": "{pages} pagina's · {blocks} unieke blokken",
+    "explore": "Sjabloon verkennen",
+    "openPreview": "Volledig voorbeeld openen",
+    "posterLabel": "Verken het sjabloon {title}",
+    "posterAlt": "{title}-sjabloon — conceptposter voor de startpagina",
+    "contributionRepository": "Blader door de repository",
+    "contributionRepositoryDescription": "Lees de showcasebron — elk recept bestaat uit gewone gegevens in de repository.",
+    "contributionRfc": "Lees de RFC van het installatieprogramma",
+    "contributionRfcDescription": "Beoordeel het voorstel om conceptrecepten om te zetten in een optionele, transparante installatieworkflow.",
+    "categories": {
+      "agency": "Agentschap",
+      "civic": "Burgerlijk",
+      "commerce": "Handel",
+      "education": "Onderwijs",
+      "event": "Gebeurtenis",
+      "fintech": "Fintech",
+      "healthcare": "Gezondheidszorg",
+      "marketplace": "Marktplaats",
+      "music": "Muziek",
+      "nonprofit": "Non-profitorganisatie",
+      "portfolio": "Portefeuille",
+      "real-estate": "Onroerend goed",
+      "restaurant": "Restaurant",
+      "saas": "SaaS",
+      "trade": "Handel"
+    }
+  },
+  "Blog": {
+    "metadataTitle": "Payload CMS blok- en installatiehandleidingen",
+    "metadataDescription": "Praktische Payload CMS v3-handleidingen voor het installeren van herbruikbare blokken, bedradingsverzamelingen en renderers, generatietypes en het repareren van blokken die niet renderen.",
+    "eyebrow": "Praktische Payload CMS v3-begeleiding",
+    "featured": "Begin met een beproefde gids",
+    "installationLabel": "Installatiehandleiding",
+    "installationTitle": "Installeer een bedraad Payload blok",
+    "installationDescription": "Voeg een echt blok toe met de ondersteunde CLI en bekijk vervolgens elk bestand en elke bedradingswijziging die zich voordoet.",
+    "installationAction": "Volg de installatiehandleiding",
+    "wiringLabel": "Blokbedradingsgids",
+    "wiringTitle": "Bedraad een herbruikbaar blok",
+    "wiringDescription": "Volg een Payload CMS v3-blok van configuratie tot registratie, weergave, gegenereerde typen en de beheerdersimportkaart.",
+    "troubleshootingLabel": "Gids voor probleemoplossing",
+    "troubleshootingTitle": "Repareer een blok dat niet wordt weergegeven",
+    "troubleshootingDescription": "Vink de vier plaatsen aan die doorgaans verklaren waarom een opgeslagen blok niet op de pagina verschijnt.",
+    "readGuide": "Lees de handleiding",
+    "notesEyebrow": "Veldnotities uit het register",
+    "notesTitle": "Meer veldnotities met Payload CMS",
+    "notesDescription": "Blader door implementatielessen, ontwerpnotities van componenten en releaseverhalen uit het open register.",
+    "browseComponents": "Blader door alle {count} installeerbare componenten",
+    "empty": "Nog geen berichten — kom binnenkort nog eens terug.",
+    "back": "Terug naar blog",
+    "keepReading": "Blijf lezen",
+    "related": "Gerelateerde literatuur",
+    "tags": "Artikeltags",
+    "series": {
+      "project-notes": "Projectnotities",
+      "foundations": "Funderingen",
+      "installer-internals": "Interne onderdelen van de installateur",
+      "component-design": "Componentontwerp",
+      "production-guides": "Productiehandleidingen",
+      "open-source": "Kwaliteit & gemeenschap"
+    }
+  },
+  "Footer": {
+    "home": "Startpagina van Payload Components",
+    "intro": "Getypte Payload CMS componenten die met hun bedrading worden geïnstalleerd - verzamelingsconfiguratie, rendertoewijzing, gegenereerde typen en importkaart in één opdracht.",
+    "product": "Product",
+    "components": "Componenten",
+    "project": "Project",
+    "componentCatalog": "Componentencatalogus",
+    "templateConcepts": "Sjabloonconcepten",
+    "documentation": "Documentatie",
+    "installWorkflow": "Werkstroom installeren",
+    "architecture": "Architectuur",
+    "aiDiscovery": "AI-ontdekking",
+    "allComponents": "Alle {count} componenten",
+    "about": "Over",
+    "brandGuide": "Merkgids",
+    "openIssue": "Open een probleem",
+    "releases": "Uitgaven",
+    "updates": "Updates van de feed",
+    "contributing": "Bijdragen",
+    "privacy": "Privacy",
+    "registry": "Register JSON",
+    "license": "MIT licentie · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · register openen"
+  },
+  "Maintainer": {
+    "body": "Ik heb payload-components gebouwd omdat het installeren van een Payload-blok nooit het kopiëren en plakken was; het waren de vier bewerkingen erna. De CLI bestaat, dus het tweede project, en het tiende, krijgen die bedrading gratis. Lees de bron van het installatieprogramma voordat u deze vertrouwt; het verzenden ervan MIT is het punt.",
+    "role": "Onderhouder, Payload Components",
+    "github": "{name} op GitHub"
+  },
+  "PageMetadata": {
+    "about": {
+      "title": "Over",
+      "openGraphTitle": "Over Payload Components",
+      "description": "Waarom Payload Components bestaat: stop met het opnieuw opbouwen van dezelfde Payload-blokken, ze met de hand opnieuw te bedraden en elke installatie in freelance-projecten opnieuw te testen."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "openGraphTitle": "Privacy — Payload Components",
+      "description": "Welke Payload Components meet, welke derden deze ontvangen en hoe u uw keuze op elk moment kunt wijzigen of intrekken."
+    },
+    "brandGuide": {
+      "title": "Merkgids",
+      "openGraphTitle": "Payload Components Merkgids",
+      "description": "Het merk Payload Components: een licht-eerst shadcn monochroom palet met één smaragdgroen accent, het Geist en Instrument Serif-typesysteem, logogebruik en stem."
+    }
+  },
+  "FaqContent": {
+    "entries": {
+      "one": {
+        "question": "Is Payload Components gratis?",
+        "answer": "Ja — en gebouwd om zo te blijven. Het register, de CLI, alle {count} installeerbare componenten en deze site vormen één MIT-gelicentieerde repository: geen prijzen, geen licentiesleutel, geen gated tier. Payload Components is door het ontwerp community-first: de catalogus groeit op basis van echte installaties en bijdragen, niet op basis van een betaalde routekaart."
+      },
+      "two": {
+        "question": "Wat is een Payload CMS-blok?",
+        "answer": "In Payload is een blok een samen te stellen paginabouwerveld - een herbruikbare inhoudssectie (hero, feature grid, CTA) die door editors wordt gestapeld om een ​​pagina op te maken. Payload Components levert kant-en-klare blokken plus de bedrading die ze live maakt, zodat een blok niet zomaar wordt gekopieerd: het wordt geregistreerd in uw Pages-verzameling, in kaart gebracht in uw renderer, getypt en toegevoegd aan de beheerdersimportkaart.",
+        "link": "Lees de Payload blokkengids"
+      },
+      "three": {
+        "question": "Hoe voeg ik een heldenblok toe aan Payload CMS?",
+        "answer": "Installeer er een met de CLI — `npx payload-components add hero-basic`. Het kopieert de blokbron naar uw project en verbindt het van begin tot eind: registreert het in uw Pages-verzameling, brengt het in kaart in RenderBlocks, en genereert uw Payload-types en beheerdersimportkaart opnieuw, waardoor het als één beoordeelbare git diff terechtkomt. Met hetzelfde commando wordt elk blok in de catalogus toegevoegd."
+      },
+      "four": {
+        "question": "Wat verandert er precies bij een installatie in mijn repository?",
+        "answer": "Drie dingen: componentbronbestanden worden gekopieerd (blokconfiguratie, component, gedeelde hulpprogramma's), precies twee bestanden worden gepatcht (uw Pages-verzameling en RenderBlocks.tsx — elk componentmanifest declareert ze), en Payload genereert zijn eigen uitvoer opnieuw (payload-types.ts en de admin-importkaart). Het wordt allemaal weergegeven als een gewone git diff.",
+        "link": "Lees de installatiehandleiding"
+      },
+      "five": {
+        "question": "Wat gebeurt er als ik dezelfde installatie tweemaal uitvoer?",
+        "answer": "Het convergeert. De CLI detecteert bestaande bedrading en slaat deze over; de werkelijke uitvoer is payload-components: \"hero-basic\" is already installed. De installatiestatus wordt vastgelegd in .payload-components/state.json, dus gedeeltelijke installaties zijn zichtbaar en herstelbaar in plaats van stil te worden afgebroken."
+      },
+      "six": {
+        "question": "Welke projecten worden vandaag ondersteund?",
+        "answer": "Payload v3 + Next.js 15/16 projecten in de vorm van de officiële website-starter — weergave van lay-outblokken tot en met src/blocks/RenderBlocks.tsx en registratie van paginablokken in src/collections/Pages/index.ts. De CLI vergelijkt uw project met de gepubliceerde ondersteuningsmatrix voordat u iets aanraakt."
+      },
+      "seven": {
+        "question": "Waarom voer je niet gewoon '0' in?",
+        "answer": "Een gewone shadcn installatie kopieert bestanden en stopt. Payload blokken werken alleen nadat ze zijn geregistreerd in uw verzamelingsschema, in kaart zijn gebracht in uw renderer, getypt en toegevoegd aan de beheerdersimportkaart. payload-components verpakt dezelfde registerlevering met precies die bedrading - die grens is het product, en het bedradingsboek hierboven toont het rij voor rij.",
+        "link": "Lees de volledige ‘0’-vergelijking"
+      },
+      "eight": {
+        "question": "Hoe komen nieuwe componenten in de catalogus?",
+        "answer": "Met opzet. Een component komt pas terecht als de bron, de manifestmetagegevens, de documentenpagina en de testdekking van het installatieprogramma samen worden verzonden; half-wired blokken bereiken nooit de catalogus. Stel het volgende onderdeel voor in een '0'-probleem; de catalogus groeit uit echte installaties."
+      }
+    }
+  },
+  "TranslationNotice": {
+    "fallback": "Deze pagina is nog niet vertaald; daarom wordt de Engelse brontekst weergegeven.",
+    "label": "Vertaalstatus",
+    "machine": "Deze pagina is automatisch vertaald en nog niet beoordeeld door een moedertaalspreker.",
+    "viewEnglish": "Engelse bron bekijken"
+  }
+}

@@ -1,8 +1,15 @@
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
-import { afterEach, describe, expect, it } from 'vitest'
+import ts from 'typescript'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+
+vi.mock('payload/shared', () => ({
+  fieldHasSubFields: (field: { type?: string }) =>
+    ['array', 'collapsible', 'group', 'row'].includes(field.type ?? ''),
+  fieldIsBlockType: (field: { type?: string }) => field.type === 'blocks',
+}))
 
 import {
   compareInstalledFiles,
@@ -286,7 +293,7 @@ describe('the shipped localizeFields helper', () => {
     ).rejects.toThrow('outside')
   })
 
-  it('marks prose leaves localized and leaves containers and other types alone', async () => {
+  it('applies explicit semantic policies and leaves unmarked or global text alone', async () => {
     /* Exercise the shipped target code itself, so this asserts the exact bytes a
      * consumer receives rather than a copy of the logic. The specifier goes
      * through a variable on purpose: a static import would pull Payload target
@@ -298,14 +305,37 @@ describe('the shipped localizeFields helper', () => {
     }
 
     const result = localizeFields([
-      { name: 'title', type: 'text' },
-      { name: 'body', type: 'richText' },
-      { name: 'blurb', type: 'textarea', localized: false },
+      {
+        custom: { payloadComponents: { localization: 'localized' } },
+        name: 'title',
+        type: 'text',
+      },
+      {
+        custom: { payloadComponents: { localization: 'localized' } },
+        name: 'body',
+        type: 'richText',
+      },
+      {
+        custom: { payloadComponents: { localization: 'localized' } },
+        localized: false,
+        name: 'blurb',
+        type: 'textarea',
+      },
+      {
+        custom: { payloadComponents: { localization: 'global' } },
+        name: 'url',
+        type: 'text',
+      },
+      { name: 'legacyText', type: 'text' },
       { name: 'appearance', type: 'select', options: [] },
       { name: 'image', type: 'upload', relationTo: 'media' },
       {
         fields: [
-          { name: 'label', type: 'text' },
+          {
+            custom: { payloadComponents: { localization: 'localized' } },
+            name: 'label',
+            type: 'text',
+          },
           { name: 'count', type: 'number' },
         ],
         name: 'items',
@@ -319,15 +349,65 @@ describe('the shipped localizeFields helper', () => {
     expect(result[2]).toMatchObject({ localized: false, name: 'blurb' })
     expect(result[3]).not.toHaveProperty('localized')
     expect(result[4]).not.toHaveProperty('localized')
+    expect(result[5]).not.toHaveProperty('localized')
+    expect(result[6]).not.toHaveProperty('localized')
     /* The container itself is never localized — Payload rejects a localized
      * field nested inside a localized parent — but its prose leaves are. */
-    expect(result[5]).not.toHaveProperty('localized')
-    expect((result[5] as { fields: Array<Record<string, unknown>> }).fields[0]).toMatchObject({
+    expect(result[7]).not.toHaveProperty('localized')
+    expect((result[7] as { fields: Array<Record<string, unknown>> }).fields[0]).toMatchObject({
       localized: true,
       name: 'label',
     })
-    expect((result[5] as { fields: Array<Record<string, unknown>> }).fields[1]).not.toHaveProperty(
+    expect((result[7] as { fields: Array<Record<string, unknown>> }).fields[1]).not.toHaveProperty(
       'localized',
     )
+  })
+
+  it('requires an explicit policy on every shipped persisted text field', async () => {
+    const sourceRoot = path.join(process.cwd(), 'payload-components', 'source', 'blocks')
+    const entries = await readdir(sourceRoot, { recursive: true, withFileTypes: true })
+    const files = entries
+      .filter((entry) => entry.isFile() && entry.name.endsWith('.ts'))
+      .map((entry) => path.join(entry.parentPath, entry.name))
+    const missing: string[] = []
+    let leaves = 0
+
+    for (const file of files) {
+      const text = await readFile(file, 'utf8')
+      const source = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
+
+      const visit = (node: ts.Node) => {
+        if (ts.isObjectLiteralExpression(node)) {
+          const properties = new Map(
+            node.properties.flatMap((property) =>
+              ts.isPropertyAssignment(property) && ts.isIdentifier(property.name)
+                ? [[property.name.text, property] as const]
+                : [],
+            ),
+          )
+          const type = properties.get('type')
+          const name = properties.get('name')
+          if (
+            type &&
+            ts.isStringLiteral(type.initializer) &&
+            ['richText', 'text', 'textarea'].includes(type.initializer.text) &&
+            name &&
+            ts.isStringLiteral(name.initializer)
+          ) {
+            leaves += 1
+            const custom = properties.get('custom')
+            const policySource = custom?.initializer.getText(source) ?? ''
+            if (!/localization:\s*'(global|localized)'/.test(policySource)) {
+              missing.push(`${path.relative(sourceRoot, file)}:${name.initializer.text}`)
+            }
+          }
+        }
+        ts.forEachChild(node, visit)
+      }
+      visit(source)
+    }
+
+    expect(leaves).toBe(177)
+    expect(missing).toEqual([])
   })
 })

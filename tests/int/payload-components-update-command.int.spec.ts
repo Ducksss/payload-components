@@ -378,6 +378,39 @@ describe('update', () => {
     expect(process.exitCode).toBeUndefined()
   })
 
+  it('requires explicit consent before replacing legacy type-inferred localization', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic'],
+      recordedVersion: '0.0.9',
+    })
+    const state = await loadState(fixtureDir)
+
+    state.components['hero-basic'].localized = true
+    delete state.components['hero-basic'].localizationPolicy
+    await saveState(fixtureDir, state)
+
+    await expect(updateCommand({ cwd: fixtureDir })).rejects.toThrow(
+      '--accept-localization-policy-change',
+    )
+    expect(addCommand).not.toHaveBeenCalled()
+
+    await updateCommand({
+      acceptLocalizationPolicyChange: true,
+      cwd: fixtureDir,
+      force: true,
+    })
+
+    expect(addCommand).toHaveBeenCalledWith({
+      acceptLocalizationPolicyChange: true,
+      componentName: 'hero-basic',
+      cwd: fixtureDir,
+      localized: true,
+    })
+    expect(output.join('')).toContain('legacy type inference → semantic-v1')
+    expect(output.join('')).toContain('no database migration will run')
+  })
+
   it('changes nothing under --dry-run', async () => {
     const { addCommand, output, updateCommand } = await setup()
     const { fixtureDir } = await installFixture({

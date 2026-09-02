@@ -4,6 +4,13 @@
     "description": "Open-source Payload CMS blocks that install with their collection config, renderer mapping, generated types, and admin import map."
   },
   "Common": {
+    "home": "Home",
+    "documentation": "Documentation",
+    "blog": "Blog",
+    "componentCatalog": "Component catalog",
+    "brandGuide": "Brand Guide",
+    "about": "About",
+    "privacy": "Privacy",
     "copy": "Copy",
     "copied": "Copied",
     "copiedDescription": "Copied to clipboard."
@@ -90,6 +97,7 @@
     "terminalTitle": "payload-components — 404"
   },
   "Docs": {
+    "title": "Documentation",
     "versionBanner": "MIT registry · components v{version}",
     "github": "Star on GitHub",
     "previousComponent": "Previous component: {title}",
@@ -222,7 +230,28 @@
       "related": "Related"
     },
     "composerAdd": "Add {slug} to the install command",
-    "composerRemove": "Remove {slug} from the install command"
+    "composerRemove": "Remove {slug} from the install command",
+    "theme": {
+      "brandLegend": "Preview the catalog in your brand colour",
+      "brandLabel": "Brand",
+      "previewBrand": "Preview in {color}",
+      "colors": {
+        "emerald": "Emerald",
+        "sky": "Sky",
+        "indigo": "Indigo",
+        "violet": "Violet",
+        "rose": "Rose",
+        "amber": "Amber"
+      },
+      "radiusLegend": "Preview the catalog at a different corner radius",
+      "radiusLabel": "Radius",
+      "previewRadius": "Preview with {style} corners",
+      "radii": {
+        "sharp": "Sharp",
+        "default": "Default",
+        "round": "Round"
+      }
+    }
   },
   "Templates": {
     "metadataTitle": "Payload CMS Templates for Next.js | Concepts & Recipes",
@@ -406,5 +435,11 @@
         "answer": "Deliberately. A component lands only when its source, manifest metadata, docs page, and installer test coverage ship together — half-wired blocks never reach the catalog. Propose the next component in a GitHub issue; the catalog grows from real installs."
       }
     }
+  },
+  "TranslationNotice": {
+    "fallback": "This page is not translated yet, so its source content is shown in English.",
+    "label": "Translation status",
+    "machine": "This page was machine translated and has not been reviewed by a native speaker.",
+    "viewEnglish": "View English source"
   }
 }

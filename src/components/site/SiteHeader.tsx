@@ -77,7 +77,7 @@ export function SiteHeader({ activePath }: { activePath?: (typeof navLinks)[numb
       <div
         className={cn(
           'flex h-14 items-center justify-between gap-4',
-          railAligned ? 'pl-4 pr-5 md:pr-8' : 'container',
+          railAligned ? 'ps-4 pe-5 md:pe-8' : 'container',
         )}
       >
         <Link
@@ -88,9 +88,10 @@ export function SiteHeader({ activePath }: { activePath?: (typeof navLinks)[numb
           <Wordmark mobileIconOnly withBadge />
         </Link>
 
-        {/* md, not sm: at 640px the five links plus the wordmark and badge left
-            exactly 16px of slack — the row read as packed rather than laid out. */}
-        <nav className="hidden items-center gap-1 md:flex md:gap-1.5">
+        {/* The native locale picker sizes itself for the longest of 22 native
+            labels. Keep the compact disclosure through tablet widths so those
+            names never force the desktop navigation beyond the viewport. */}
+        <nav className="hidden items-center gap-1 lg:flex lg:gap-1.5">
           {navLinks.map((item) => {
             const active = activePath === item.href
 
@@ -127,7 +128,7 @@ export function SiteHeader({ activePath }: { activePath?: (typeof navLinks)[numb
             <GitHubMark className="size-4" aria-hidden="true" />
           </a>
         </nav>
-        <div className="relative md:hidden" data-mobile-menu>
+        <div className="relative lg:hidden" data-mobile-menu>
           <button
             ref={triggerRef}
             type="button"
@@ -149,7 +150,7 @@ export function SiteHeader({ activePath }: { activePath?: (typeof navLinks)[numb
           <div
             id="mobile-navigation"
             hidden={!open}
-            className="absolute right-0 top-12 z-50 flex w-48 flex-col gap-1 rounded-lg border border-border bg-background p-2 shadow-lg"
+            className="absolute end-0 top-12 z-50 flex w-52 flex-col gap-1 rounded-lg border border-border bg-background p-2 shadow-lg"
           >
             {navLinks.map((item) => (
               <Link
