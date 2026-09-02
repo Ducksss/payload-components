@@ -46,6 +46,31 @@ describe('commitFileChanges', () => {
     await expect(readFile(deleted, 'utf8')).rejects.toMatchObject({ code: 'ENOENT' })
   })
 
+  it('keeps a successful commit successful when private artifact cleanup fails', async () => {
+    const dir = await makeTempDir()
+    const replaced = path.join(dir, 'replaced.ts')
+    const created = path.join(dir, 'created.ts')
+
+    await writeFile(replaced, 'before replacement\n', 'utf8')
+
+    await expect(
+      commitFileChanges(
+        [
+          { content: 'after replacement\n', filePath: replaced },
+          { content: 'created\n', filePath: created },
+        ],
+        {
+          cleanupArtifact: async () => {
+            throw new Error('simulated cleanup failure')
+          },
+        },
+      ),
+    ).resolves.toBeUndefined()
+
+    await expect(readFile(replaced, 'utf8')).resolves.toBe('after replacement\n')
+    await expect(readFile(created, 'utf8')).resolves.toBe('created\n')
+  })
+
   it('rejects non-regular destinations before changing any file', async () => {
     const dir = await makeTempDir()
     const untouched = path.join(dir, 'untouched.ts')

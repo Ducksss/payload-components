@@ -175,7 +175,14 @@ export type FileChange = {
  * boundary instead of exposing half of a multi-file edit. */
 export const commitFileChanges = async (
   changes: FileChange[],
-  { cwd }: { cwd?: string } = {},
+  {
+    cleanupArtifact = (filePath: string) => rm(filePath, { force: true }),
+    cwd,
+  }: {
+    /** @internal Test seam for verifying post-commit cleanup failures. */
+    cleanupArtifact?: (filePath: string) => Promise<void>
+    cwd?: string
+  } = {},
 ) => {
   if (changes.length === 0) {
     return
@@ -264,9 +271,9 @@ export const commitFileChanges = async (
       }
     }
   } catch (error) {
-    await Promise.all(
+    await Promise.allSettled(
       staged.flatMap(({ tempCreated, tempPath }) =>
-        tempCreated ? [rm(tempPath, { force: true })] : [],
+        tempCreated ? [cleanupArtifact(tempPath)] : [],
       ),
     )
     throw error
@@ -331,11 +338,14 @@ export const commitFileChanges = async (
 
     throw error
   } finally {
-    await Promise.all(
+    /* Cleanup is best-effort. Once commit or rollback has established the
+     * destination state, an orphaned private artifact must not change that
+     * authoritative outcome or mask the error that caused a rollback. */
+    await Promise.allSettled(
       staged.flatMap((entry) => [
-        ...(entry.tempCreated ? [rm(entry.tempPath, { force: true })] : []),
+        ...(entry.tempCreated ? [cleanupArtifact(entry.tempPath)] : []),
         ...(entry.backedUp && !entry.preserveBackup
-          ? [rm(entry.backupPath, { force: true })]
+          ? [cleanupArtifact(entry.backupPath)]
           : []),
       ]),
     )
