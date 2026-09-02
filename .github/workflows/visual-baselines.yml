@@ -13,9 +13,14 @@ on:
     inputs:
       spec:
         description: 'Playwright spec filter to (re)generate baselines for'
-        required: false
+        required: true
         default: 'components-visual'
-        type: string
+        type: choice
+        options:
+          - components-visual
+          - template-visual
+          - blog-visual
+          - all-visual
       update:
         # 'changed' (Playwright's own preset for a bare --update-snapshots) only
         # rewrites baselines whose diff exceeded maxDiffPixelRatio, so an
@@ -41,13 +46,13 @@ jobs:
   mint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
           version: 10.24.0
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
           cache: pnpm
@@ -68,9 +73,8 @@ jobs:
 
       - name: Update visual baselines
         env:
-          # Passed as an env var, not a ${{ }} splice, so the dispatch input stays
-          # shell data instead of shell code. Left unquoted on purpose: the filter
-          # may name several specs (e.g. "components-visual frontend").
+          # Passed as an env var and validated into an argv array below, so the
+          # dispatch value can never become an option, glob, path, or shell code.
           SPEC: ${{ inputs.spec }}
           # Quoted at the use site: unlike SPEC this is always a single token.
           UPDATE: ${{ inputs.update }}
@@ -79,7 +83,21 @@ jobs:
           # runs PLAYWRIGHT_SERVER_MODE=production against `pnpm start`, and a dev
           # render is not pixel-identical to a production one.
           PLAYWRIGHT_SERVER_MODE: production
-        run: pnpm test:e2e $SPEC --update-snapshots="$UPDATE"
+        run: |
+          set -euo pipefail
+          case "$SPEC" in
+            components-visual|template-visual|blog-visual)
+              spec_args=("$SPEC")
+              ;;
+            all-visual)
+              spec_args=(components-visual template-visual blog-visual)
+              ;;
+            *)
+              echo "Unsupported visual baseline spec: $SPEC" >&2
+              exit 2
+              ;;
+          esac
+          pnpm test:e2e "${spec_args[@]}" --update-snapshots="$UPDATE"
 
       - name: Open PR with minted baselines
         env:
@@ -107,7 +125,7 @@ jobs:
 
       - name: Upload baselines artifact
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: visual-baselines
           path: tests/e2e/**/*-snapshots/**

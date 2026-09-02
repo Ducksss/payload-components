@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url'
 
 import type { PackageManager } from './types'
 
+import { safeProjectFileExists } from './safe-path'
+
 // Resolve the directory that holds the bundled data assets (registry.json,
 // manifests, schema, support matrix, block source). This must work in two
 // layouts: running from source under tsx (this file lives at
@@ -203,14 +205,11 @@ export const detectPackageManagerDetails = async (cwd: string): Promise<{
   ]
 
   for (const [manager, lockfile] of lockfiles) {
-    try {
-      await readFile(path.join(cwd, lockfile), 'utf8')
+    if (await safeProjectFileExists({ cwd, filePath: path.join(cwd, lockfile) })) {
       return {
         lockfilePath: lockfile,
         packageManager: manager,
       }
-    } catch {
-      // Continue checking the remaining lockfiles.
     }
   }
 

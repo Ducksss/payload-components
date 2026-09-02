@@ -1,15 +1,18 @@
-import { access, mkdtemp } from 'node:fs/promises'
+import { mkdtemp } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
 import type { PackageManager } from './types'
 
+import { assertSafePackageManagerTargets } from './dependencies'
+import { readSafeProjectFile, resolveSafeProjectPath, safeProjectFileExists } from './safe-path'
 import { getShadcnCommand, isPathInside, readJsonFile, repoRoot, runCommand, writeJsonFile } from './utils'
 
 const registryDefinitionPath = path.join(repoRoot, 'payload-components', 'registry.json')
 const skipExistingFilePrompts = Array.from({ length: 20 }, () => 'n').join('\n') + '\n'
 
 type BuiltRegistryItem = {
+  files?: Array<{ target?: string }>
   registryDependencies?: string[]
   [key: string]: unknown
 }
@@ -40,21 +43,17 @@ export const resolveAliasPath = (targetDir: string, aliasPath: string) => {
 }
 
 export const getShadcnUiDir = async (targetDir: string) => {
-  const componentsJson = await readJsonFile<ComponentsJson>(path.join(targetDir, 'components.json'))
+  const componentsJson = JSON.parse(
+    await readSafeProjectFile({
+      cwd: targetDir,
+      filePath: path.join(targetDir, 'components.json'),
+    }),
+  ) as ComponentsJson
   const uiAlias =
     componentsJson.aliases?.ui ??
     (componentsJson.aliases?.components ? `${componentsJson.aliases.components}/ui` : '@/components/ui')
 
   return resolveAliasPath(targetDir, uiAlias)
-}
-
-const fileExists = async (filePath: string) => {
-  try {
-    await access(filePath)
-    return true
-  } catch {
-    return false
-  }
 }
 
 const getMissingRegistryDependencies = async ({
@@ -69,10 +68,14 @@ const getMissingRegistryDependencies = async ({
   }
 
   const uiDir = await getShadcnUiDir(targetDir)
+  await resolveSafeProjectPath({ cwd: targetDir, targetPath: uiDir })
   const missingDependencies = await Promise.all(
     dependencies.map(async (dependency) => ({
       dependency,
-      isMissing: !(await fileExists(path.join(uiDir, `${dependency}.tsx`))),
+      isMissing: !(await safeProjectFileExists({
+        cwd: targetDir,
+        filePath: path.join(uiDir, `${dependency}.tsx`),
+      })),
     })),
   )
 
@@ -114,6 +117,16 @@ export const installRegistryDependencies = async ({
   }
 
   const shadcn = getShadcnCommand(packageManager)
+  const uiDir = await getShadcnUiDir(targetDir)
+
+  for (const dependency of missingDependencies) {
+    await resolveSafeProjectPath({
+      cwd: targetDir,
+      targetPath: path.join(uiDir, `${dependency}.tsx`),
+    })
+  }
+
+  await assertSafePackageManagerTargets({ cwd: targetDir, packageManager })
 
   await runCommand({
     args: [...shadcn.args, 'add', ...missingDependencies, '--cwd', targetDir, '--yes'],
@@ -146,6 +159,19 @@ export const installRegistryItem = async ({
 }) => {
   const shadcn = getShadcnCommand(packageManager)
   const registryDependencies = await stripRegistryDependenciesForWrapperInstall(itemFilePath)
+  const item = await readJsonFile<BuiltRegistryItem>(itemFilePath)
+
+  await assertSafePackageManagerTargets({ cwd: targetDir, packageManager })
+
+  for (const file of item.files ?? []) {
+    if (!file.target) continue
+
+    const projectPath = file.target.replace(/^~\//, '')
+    await resolveSafeProjectPath({
+      cwd: targetDir,
+      targetPath: path.resolve(targetDir, projectPath),
+    })
+  }
 
   await installRegistryDependencies({
     dependencies: registryDependencies,

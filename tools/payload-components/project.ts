@@ -1,4 +1,3 @@
-import { access, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import type {
@@ -13,6 +12,7 @@ import type {
 } from './types'
 
 import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from './constants'
+import { readSafeProjectFile, safeProjectFileExists, writeSafeProjectFile } from './safe-path'
 import { detectPackageManagerDetails, extractMajor, readJsonFile, repoRoot } from './utils'
 
 /* Manifests are authored against the canonical starter paths, so those double as
@@ -795,21 +795,14 @@ const applyPagesLayoutFragment = (
   return `${sourceWithImport.slice(0, blocksRange.start + 1)}${replacement}${sourceWithImport.slice(blocksRange.end)}`
 }
 
-const fileExists = async (absolutePath: string) => {
-  try {
-    await access(absolutePath)
-    return true
-  } catch {
-    return false
-  }
-}
-
 /* Every entry must resolve; an array entry is satisfied by any one of its paths. */
 const hasRequiredFiles = async ({ cwd, requiredFiles }: { cwd: string; requiredFiles: RequiredFile[] }) => {
   for (const requirement of requiredFiles) {
     const candidates = Array.isArray(requirement) ? requirement : [requirement]
     const matches = await Promise.all(
-      candidates.map((candidate) => fileExists(path.join(cwd, candidate))),
+      candidates.map((candidate) =>
+        safeProjectFileExists({ cwd, filePath: path.join(cwd, candidate) }),
+      ),
     )
 
     if (!matches.includes(true)) {
@@ -831,7 +824,10 @@ const resolveHostFile = async ({
   requirement: HostFileRequirement
 }) => {
   for (const candidate of requirement.candidates) {
-    const content = await readFile(path.join(cwd, candidate), 'utf8').catch(() => undefined)
+    const content = await readSafeProjectFile({
+      cwd,
+      filePath: path.join(cwd, candidate),
+    }).catch(() => undefined)
 
     if (content === undefined) {
       continue
@@ -847,10 +843,12 @@ const resolveHostFile = async ({
 
 export const detectProject = async (cwd: string): Promise<DetectedProject> => {
   const supportMatrix = await readJsonFile<SupportMatrix>(supportMatrixPath)
-  const packageJson = await readJsonFile<{
+  const packageJson = JSON.parse(
+    await readSafeProjectFile({ cwd, filePath: path.join(cwd, 'package.json') }),
+  ) as {
     dependencies?: Record<string, string>
     devDependencies?: Record<string, string>
-  }>(path.join(cwd, 'package.json'))
+  }
   const dependencies = {
     ...packageJson.devDependencies,
     ...packageJson.dependencies,
@@ -890,7 +888,10 @@ export const detectProject = async (cwd: string): Promise<DetectedProject> => {
     }
   }
 
-  const componentsJsonPresent = await readFile(path.join(cwd, 'components.json'), 'utf8')
+  const componentsJsonPresent = await readSafeProjectFile({
+    cwd,
+    filePath: path.join(cwd, 'components.json'),
+  })
     .then(() => true)
     .catch(() => false)
 
@@ -1033,11 +1034,11 @@ export const applyLocalizedFields = async ({
 
   for (const projectPath of configFiles) {
     const filePath = getAbsolutePath(cwd, projectPath)
-    const existing = await readFile(filePath, 'utf8')
+    const existing = await readSafeProjectFile({ cwd, filePath })
     const updated = localizeBlockConfigSource(existing)
 
     if (updated !== existing) {
-      await writeFile(filePath, updated, 'utf8')
+      await writeSafeProjectFile({ contents: updated, cwd, filePath })
       patchedFiles.push(projectPath)
     }
   }
@@ -1686,7 +1687,7 @@ export const findExistingRequiredFile = async ({
   )
 
   for (const candidate of candidates) {
-    if (await fileExists(path.join(cwd, candidate))) {
+    if (await safeProjectFileExists({ cwd, filePath: path.join(cwd, candidate) })) {
       return candidate
     }
   }
@@ -1746,11 +1747,11 @@ export const applyPayloadFragments = async (
   for (const fragment of fragments) {
     if (fragment.kind === 'renderBlocks') {
       const filePath = getAbsolutePath(cwd, hostFiles.renderBlocks)
-      const existing = await readFile(filePath, 'utf8')
+      const existing = await readSafeProjectFile({ cwd, filePath })
       const updated = applyRenderBlocksFragment(existing, fragment, hostFiles.renderBlocks)
 
       if (updated !== existing) {
-        await writeFile(filePath, updated, 'utf8')
+        await writeSafeProjectFile({ contents: updated, cwd, filePath })
       }
 
       touchedFiles.add(hostFiles.renderBlocks)
@@ -1758,11 +1759,11 @@ export const applyPayloadFragments = async (
 
     if (fragment.kind === 'pagesLayout') {
       const filePath = getAbsolutePath(cwd, hostFiles.pagesLayout)
-      const existing = await readFile(filePath, 'utf8')
+      const existing = await readSafeProjectFile({ cwd, filePath })
       const updated = applyPagesLayoutFragment(existing, fragment, hostFiles.pagesLayout)
 
       if (updated !== existing) {
-        await writeFile(filePath, updated, 'utf8')
+        await writeSafeProjectFile({ contents: updated, cwd, filePath })
       }
 
       touchedFiles.add(hostFiles.pagesLayout)
@@ -1786,14 +1787,14 @@ export const removePayloadFragments = async (
     const projectPath =
       fragment.kind === 'renderBlocks' ? hostFiles.renderBlocks : hostFiles.pagesLayout
     const filePath = getAbsolutePath(cwd, projectPath)
-    const existing = await readFile(filePath, 'utf8')
+    const existing = await readSafeProjectFile({ cwd, filePath })
     const updated =
       fragment.kind === 'renderBlocks'
         ? removeRenderBlocksFragment(existing, fragment)
         : removePagesLayoutFragment(existing, fragment)
 
     if (updated !== existing) {
-      await writeFile(filePath, updated, 'utf8')
+      await writeSafeProjectFile({ contents: updated, cwd, filePath })
       touchedFiles.add(projectPath)
     }
   }
@@ -1814,17 +1815,18 @@ export const verifyInstalledManifestFiles = async ({
   const missingRegistryDependencies: ResolvedRegistryDependency[] = []
 
   for (const filePath of manifest.files) {
-    try {
-      await access(getAbsolutePath(cwd, filePath))
-    } catch {
+    if (!(await safeProjectFileExists({ cwd, filePath: getAbsolutePath(cwd, filePath) }))) {
       missingFiles.push(filePath)
     }
   }
 
   for (const dependency of manifest.registryDependencies ?? []) {
-    try {
-      await access(getAbsolutePath(cwd, dependency.targetFile))
-    } catch {
+    if (
+      !(await safeProjectFileExists({
+        cwd,
+        filePath: getAbsolutePath(cwd, dependency.targetFile),
+      }))
+    ) {
       missingRegistryDependencies.push(dependency)
     }
   }
@@ -1849,7 +1851,10 @@ export const verifyInstalledPayloadFragments = async ({
 
   for (const fragment of manifest.payloadFragments) {
     if (fragment.kind === 'renderBlocks') {
-      const renderBlocksSource = await readFile(getAbsolutePath(cwd, hostFiles.renderBlocks), 'utf8')
+      const renderBlocksSource = await readSafeProjectFile({
+        cwd,
+        filePath: getAbsolutePath(cwd, hostFiles.renderBlocks),
+      })
 
       if (!hasNamedImport(renderBlocksSource, fragment.importName, fragment.importPath)) {
         missingFragments.push(`renderBlocks.import:${fragment.importName}`)
@@ -1871,7 +1876,10 @@ export const verifyInstalledPayloadFragments = async ({
     }
 
     if (fragment.kind === 'pagesLayout') {
-      const pagesSource = await readFile(getAbsolutePath(cwd, hostFiles.pagesLayout), 'utf8')
+      const pagesSource = await readSafeProjectFile({
+        cwd,
+        filePath: getAbsolutePath(cwd, hostFiles.pagesLayout),
+      })
 
       if (!hasNamedImport(pagesSource, fragment.importName, fragment.importPath)) {
         missingFragments.push(`pagesLayout.import:${fragment.importName}`)

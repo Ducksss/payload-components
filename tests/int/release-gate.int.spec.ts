@@ -305,4 +305,35 @@ describe('package publish guard', () => {
     expect(packGateIndex).toBeGreaterThan(releaseGateIndex)
     expect(publishIndex).toBeGreaterThan(packGateIndex)
   })
+
+  it('pins every remote GitHub Action to an immutable full commit SHA', async () => {
+    const workflowsDir = path.join(repoRoot, '.github', 'workflows')
+    const workflowNames = (await readdir(workflowsDir)).filter((name) => /\.ya?ml$/.test(name))
+
+    for (const workflowName of workflowNames) {
+      const workflow = await readFile(path.join(workflowsDir, workflowName), 'utf8')
+      const references = [...workflow.matchAll(/\buses:\s+([^\s@]+)@([^\s#]+)/g)]
+
+      for (const [, action, reference] of references) {
+        if (action.startsWith('./')) continue
+
+        expect(reference, `${workflowName}: ${action} must use a full commit SHA`).toMatch(
+          /^[a-f0-9]{40}$/,
+        )
+      }
+    }
+  })
+
+  it('constrains visual-baseline dispatches to known spec names and quoted argv', async () => {
+    const workflow = await readFile(
+      path.join(repoRoot, '.github', 'workflows', 'visual-baselines.yml'),
+      'utf8',
+    )
+
+    expect(workflow).toContain('type: choice')
+    expect(workflow).toContain('components-visual|template-visual|blog-visual)')
+    expect(workflow).toContain('spec_args=(components-visual template-visual blog-visual)')
+    expect(workflow).toContain('pnpm test:e2e "${spec_args[@]}"')
+    expect(workflow).not.toMatch(/pnpm test:e2e \$SPEC/)
+  })
 })

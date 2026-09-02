@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import semver from 'semver'
@@ -6,7 +5,8 @@ import semver from 'semver'
 import type { DependencyMap, PackageManager } from './types'
 
 import { PACKAGE_JSON_FILE } from './constants'
-import { runCommand } from './utils'
+import { resolveSafeProjectPath, readSafeProjectFile } from './safe-path'
+import { getLockfileName, runCommand } from './utils'
 
 type PackageJson = {
   dependencies?: Record<string, string>
@@ -19,9 +19,27 @@ type DependencyCheckResult = {
 }
 
 const readPackageJson = async (cwd: string): Promise<PackageJson> => {
-  const raw = await readFile(path.join(cwd, PACKAGE_JSON_FILE), 'utf8')
+  const raw = await readSafeProjectFile({
+    cwd,
+    filePath: path.join(cwd, PACKAGE_JSON_FILE),
+  })
 
   return JSON.parse(raw) as PackageJson
+}
+
+export const assertSafePackageManagerTargets = async ({
+  cwd,
+  packageManager,
+}: {
+  cwd: string
+  packageManager: PackageManager
+}) => {
+  await readSafeProjectFile({ cwd, filePath: path.join(cwd, PACKAGE_JSON_FILE) })
+  await resolveSafeProjectPath({
+    cwd,
+    targetPath: path.join(cwd, getLockfileName(packageManager)),
+  })
+  await resolveSafeProjectPath({ cwd, targetPath: path.join(cwd, 'node_modules') })
 }
 
 const getDeclaredDependencies = async (cwd: string) => {
@@ -137,6 +155,8 @@ export const installManifestDependencies = async ({
   if (!entries.length) {
     return
   }
+
+  await assertSafePackageManagerTargets({ cwd, packageManager })
 
   const packages = entries
     .sort(([leftName], [rightName]) => leftName.localeCompare(rightName))

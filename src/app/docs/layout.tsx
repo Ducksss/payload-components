@@ -6,6 +6,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
 import { GitHubMark } from '@/components/site/GitHubMark'
+import { DocsSearchDialog, DocsSearchFocusCapture } from '@/components/site/DocsSearchDialog'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { baseOptions } from '@/lib/layout.shared'
 import { fumadocsI18nUI, getSiteLocale } from '@/lib/i18n'
@@ -21,11 +22,12 @@ export default async function DocsRootLayout({ children }: { children: ReactNode
   return (
     <RootProvider
       i18n={fumadocsI18nUI.provider(locale)}
-      search={{ enabled: true }}
+      search={{ enabled: true, SearchDialog: DocsSearchDialog }}
       theme={{
         enabled: false,
       }}
     >
+      <DocsSearchFocusCapture />
       <SiteHeader activePath="/docs" />
       <DocsLayout
         {...baseOptions(locale)}

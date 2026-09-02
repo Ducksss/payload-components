@@ -37,19 +37,22 @@ describe('payload-components registry install', () => {
 
   const writeTargetComponentsConfig = async (targetDir: string) => {
     await mkdir(targetDir, { recursive: true })
-    await writeFile(
-      path.join(targetDir, 'components.json'),
-      `${JSON.stringify(
-        {
-          aliases: {
-            components: '@/components',
+    await Promise.all([
+      writeFile(path.join(targetDir, 'package.json'), '{}\n', 'utf8'),
+      writeFile(
+        path.join(targetDir, 'components.json'),
+        `${JSON.stringify(
+          {
+            aliases: {
+              components: '@/components',
+            },
           },
-        },
-        null,
-        2,
-      )}\n`,
-      'utf8',
-    )
+          null,
+          2,
+        )}\n`,
+        'utf8',
+      ),
+    ])
   }
 
   it('installs missing public registry dependencies before wrapper installs', async () => {

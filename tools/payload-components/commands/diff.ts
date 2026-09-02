@@ -1,4 +1,3 @@
-import { access } from 'node:fs/promises'
 import path from 'node:path'
 
 import { compareInstalledFiles, resolveRecordedFileHashes } from '../component-files'
@@ -11,6 +10,7 @@ import {
   verifyInstalledPayloadFragments,
 } from '../project'
 import { loadState } from '../state'
+import { safeProjectFileExists } from '../safe-path'
 
 import type { ChangelogEntry, InstallStateEntry, ResolvedHostFiles } from '../types'
 
@@ -69,10 +69,7 @@ const resolveComponentDiff = async ({
    * participates in drift reporting. */
   const localizationHelperMissing =
     localized &&
-    !(await access(path.join(cwd, LOCALIZE_HELPER_FILE)).then(
-      () => true,
-      () => false,
-    ))
+    !(await safeProjectFileExists({ cwd, filePath: path.join(cwd, LOCALIZE_HELPER_FILE) }))
   const missingFiles = localizationHelperMissing
     ? [...fileReport.missing, LOCALIZE_HELPER_FILE]
     : fileReport.missing

@@ -1,4 +1,4 @@
-import { access, realpath } from 'node:fs/promises'
+import { realpath } from 'node:fs/promises'
 import path from 'node:path'
 
 import type {
@@ -13,7 +13,8 @@ import type {
 
 import { CURRENT_ALPHA_TARGET_ID, SHARED_PATCHED_FILES } from './constants'
 import { resolveRecordedFileHashes, snapshotInstalledFiles } from './component-files'
-import { readJsonFile, repoRoot, writeJsonFile } from './utils'
+import { readSafeProjectFile, writeSafeProjectJsonFile } from './safe-path'
+import { readJsonFile, repoRoot } from './utils'
 
 // Return a fresh object every time: callers (recordInstall*) mutate the loaded
 // state in place, so handing out a shared singleton would leak entries across
@@ -157,17 +158,21 @@ export const getStatePath = (cwd: string) => path.join(cwd, '.payload-components
 export const loadState = async (cwd: string): Promise<InstallState> => {
   const statePath = getStatePath(cwd)
 
-  try {
-    await access(statePath)
-  } catch {
-    return createDefaultState()
-  }
-
   let rawState: InstallState | InstallStateV1 | InstallStateV2
 
   try {
-    rawState = await readJsonFile<InstallState | InstallStateV1 | InstallStateV2>(statePath)
+    rawState = JSON.parse(
+      await readSafeProjectFile({ cwd, filePath: statePath }),
+    ) as InstallState | InstallStateV1 | InstallStateV2
   } catch (error) {
+    if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return createDefaultState()
+    }
+
+    if (/Refusing unsafe project path/.test(error instanceof Error ? error.message : '')) {
+      throw error
+    }
+
     // A corrupt / half-written state file shouldn't wedge the CLI. Fall back to a
     // clean slate — the per-stage dedup and verify logic keep a re-run idempotent.
     process.stderr.write(
@@ -195,7 +200,7 @@ export const loadState = async (cwd: string): Promise<InstallState> => {
 }
 
 const saveStateUnlocked = async (cwd: string, state: InstallState) => {
-  await writeJsonFile(getStatePath(cwd), normalizeState(state))
+  await writeSafeProjectJsonFile({ cwd, filePath: getStatePath(cwd), value: normalizeState(state) })
 }
 
 /* State writes are read-modify-write operations. Atomic rename protects a

@@ -1,7 +1,7 @@
-import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { copySharedSourceFile } from './component-files'
+import { readSafeProjectFile, writeSafeProjectFile } from './safe-path'
 
 /* The starter primitives every installed block imports.
  *
@@ -67,7 +67,7 @@ export const registerBaseCollections = async ({
   cwd: string
 }) => {
   const configPath = path.join(cwd, configFileRelPath)
-  const source = await readFile(configPath, 'utf8')
+  const source = await readSafeProjectFile({ cwd, filePath: configPath })
   const anchor = CONFIG_COLLECTIONS_ANCHOR.exec(source)
 
   if (!anchor || anchor.index === undefined) {
@@ -92,7 +92,7 @@ export const registerBaseCollections = async ({
   const insertAt = anchor.index + anchor[0].length
   const patched = `${imports}\n${source.slice(0, insertAt)}${missing.join(', ')}, ${source.slice(insertAt)}`
 
-  await writeFile(configPath, patched, 'utf8')
+  await writeSafeProjectFile({ contents: patched, cwd, filePath: configPath })
 
   return { patched: true, reason: 'registered' as const, registered: missing }
 }

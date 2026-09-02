@@ -1,4 +1,3 @@
-import { readFile, rm } from 'node:fs/promises'
 import path from 'node:path'
 
 import {
@@ -8,10 +7,11 @@ import {
 } from '../component-files'
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest } from '../manifest'
+import { readSafeProjectFile, removeSafeProjectFile } from '../safe-path'
 import { loadState } from '../state'
 
 import type { ChangelogEntry } from '../types'
-import { isPathInside, printHeader } from '../utils'
+import { printHeader } from '../utils'
 
 import { addCommand } from './add'
 
@@ -262,9 +262,10 @@ export const updateCommand = async ({
         continue
       }
 
-      const installedSource = await readFile(path.join(cwd, projectPath), 'utf8').catch(
-        () => undefined,
-      )
+      const installedSource = await readSafeProjectFile({
+        cwd,
+        filePath: path.join(cwd, projectPath),
+      }).catch(() => undefined)
 
       if (otherOwners.some(({ hash }) => !hash)) {
         sharedBaselineConflicts.push(projectPath)
@@ -327,13 +328,7 @@ export const updateCommand = async ({
 
   for (const plan of plans) {
     for (const projectPath of [...plan.files, ...plan.blockedFiles]) {
-      const absolutePath = path.join(cwd, projectPath)
-
-      if (!isPathInside(cwd, absolutePath)) {
-        throw new Error(`Refusing to overwrite "${projectPath}" because it resolves outside ${cwd}.`)
-      }
-
-      await rm(absolutePath, { force: true })
+      await removeSafeProjectFile({ cwd, filePath: path.join(cwd, projectPath) })
     }
 
     await addCommand({ componentName: plan.componentName, cwd, localized: plan.localized })

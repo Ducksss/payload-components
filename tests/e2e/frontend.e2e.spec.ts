@@ -1827,11 +1827,15 @@ test.describe('Reduced motion', () => {
   test('opens the Fumadocs search dialog from the docs shell', async ({ page }) => {
     await page.goto(`${baseURL}/docs`)
 
-    await page
-      .getByRole('button', { name: /Search/ })
-      .first()
-      .click()
+    const searchTrigger = page.getByRole('button', { name: /Search/ }).first()
+    await searchTrigger.click()
 
     await expect(page.getByRole('dialog')).toBeVisible()
+    await expect(page.getByRole('dialog').getByRole('textbox')).toBeFocused()
+
+    await page.keyboard.press('Escape')
+
+    await expect(page.getByRole('dialog')).toBeHidden()
+    await expect(searchTrigger).toBeFocused()
   })
 })

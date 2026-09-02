@@ -1,4 +1,4 @@
-import { readdir, readFile } from 'node:fs/promises'
+import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 
 import { checkDependencyRequirements } from '../dependencies'
@@ -14,6 +14,7 @@ import {
   LOCALIZE_HELPER_FILE,
 } from '../project'
 import { loadState } from '../state'
+import { readSafeProjectFile, safeProjectFileExists } from '../safe-path'
 import { repoRoot } from '../utils'
 
 import { getPayloadConfigFile } from './seed'
@@ -100,7 +101,9 @@ const loadKnownManifests = async () => {
 }
 
 const readPackageJson = async (cwd: string) =>
-  JSON.parse(await readFile(path.join(cwd, 'package.json'), 'utf8')) as PackageJson
+  JSON.parse(
+    await readSafeProjectFile({ cwd, filePath: path.join(cwd, 'package.json') }),
+  ) as PackageJson
 
 const checkPostInstallScripts = async (cwd: string, manifests: ComponentManifest[], log: Log) => {
   const packageJson = await readPackageJson(cwd)
@@ -300,10 +303,10 @@ const checkLocalization = async ({
   const unlocalized = recorded.filter(([, entry]) => entry.localized !== true).map(([name]) => name)
 
   if (localized.length > 0) {
-    const helperPresent = await readFile(path.join(cwd, LOCALIZE_HELPER_FILE)).then(
-      () => true,
-      () => false,
-    )
+    const helperPresent = await safeProjectFileExists({
+      cwd,
+      filePath: path.join(cwd, LOCALIZE_HELPER_FILE),
+    })
 
     if (!helperPresent) {
       log(
@@ -320,7 +323,10 @@ const checkLocalization = async ({
     return
   }
 
-  const source = await readFile(path.join(cwd, configFileRelPath), 'utf8').catch(() => undefined)
+  const source = await readSafeProjectFile({
+    cwd,
+    filePath: path.join(cwd, configFileRelPath),
+  }).catch(() => undefined)
 
   if (source === undefined) {
     return

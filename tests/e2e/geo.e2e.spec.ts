@@ -215,6 +215,9 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(home.headers()['permissions-policy']).toBe(
       'camera=(), geolocation=(), microphone=(), payment=(), usb=()',
     )
+    expect(home.headers()['content-security-policy']).toContain("default-src 'self'")
+    expect(home.headers()['content-security-policy']).toContain("object-src 'none'")
+    expect(home.headers()['x-powered-by']).toBeUndefined()
 
     expect(feed.ok()).toBe(true)
     expect(feed.headers()['content-type']).toContain('application/rss+xml')

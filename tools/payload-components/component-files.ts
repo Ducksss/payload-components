@@ -1,10 +1,11 @@
 import { createHash } from 'node:crypto'
-import { copyFile, mkdir, readFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import type { ComponentManifest, InstallStateEntry, RegistryDefinition } from './types'
 
 import { isBlockConfigFile, localizeBlockConfigSource } from './project'
+import { readSafeProjectFile, resolveSafeProjectPath, writeSafeProjectFile } from './safe-path'
 import { isPathInside, readJsonFile, repoRoot } from './utils'
 
 const registryDefinitionPath = path.join(repoRoot, 'payload-components', 'registry.json')
@@ -141,7 +142,9 @@ export const snapshotInstalledFiles = async ({
       throw new Error(`Refusing to snapshot "${projectPath}" because it resolves outside ${cwd}.`)
     }
 
-    const source = await readFile(absolutePath, 'utf8').catch(() => undefined)
+    const source = await readSafeProjectFile({ cwd, filePath: absolutePath }).catch(
+      () => undefined,
+    )
 
     if (source === undefined) {
       throw new Error(`Cannot record installed source baseline because "${projectPath}" is missing.`)
@@ -222,7 +225,10 @@ export const compareInstalledFiles = async ({
       continue
     }
 
-    const installed = await readFile(path.join(cwd, projectPath), 'utf8').catch(() => undefined)
+    const installed = await readSafeProjectFile({
+      cwd,
+      filePath: path.join(cwd, projectPath),
+    }).catch(() => undefined)
 
     if (installed === undefined) {
       comparisons.push({ projectPath, status: 'missing' })
@@ -281,13 +287,11 @@ export const copySharedSourceFile = async ({
     throw new Error(`Refusing to copy "${projectPath}" from outside payload-components/source.`)
   }
 
-  const destinationPath = path.resolve(cwd, projectPath)
+  const destinationPath = (
+    await resolveSafeProjectPath({ cwd, targetPath: path.resolve(cwd, projectPath) })
+  ).path
 
-  if (!isPathInside(cwd, destinationPath)) {
-    throw new Error(`Refusing to write "${projectPath}" outside ${cwd}.`)
-  }
-
-  const alreadyPresent = await readFile(destinationPath, 'utf8').then(
+  const alreadyPresent = await readSafeProjectFile({ cwd, filePath: destinationPath }).then(
     () => true,
     () => false,
   )
@@ -296,8 +300,8 @@ export const copySharedSourceFile = async ({
     return false
   }
 
-  await mkdir(path.dirname(destinationPath), { recursive: true })
-  await copyFile(sourcePath, destinationPath)
+  const source = await readFile(sourcePath)
+  await writeSafeProjectFile({ contents: source, cwd, filePath: destinationPath })
 
   return true
 }

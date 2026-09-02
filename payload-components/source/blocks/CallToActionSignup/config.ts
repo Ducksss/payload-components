@@ -24,6 +24,7 @@ export const CallToActionSignup: Block = {
     {
       name: 'action',
       type: 'text',
+      required: true,
       validate: validateSameOriginFormAction,
       admin: {
         description: 'Same-origin path where the email form posts, such as /api/newsletter.',
