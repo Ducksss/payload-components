@@ -36,14 +36,14 @@
     "accentWord": "测量",
     "intro": "在你同意之前，任何会在你设备上存储内容的功能都不会加载。本页列出每一个数据处理方、每一个事件和每一个字段——你也可以随时改变主意。",
     "consent": "任何会在你设备上存储内容的功能都会等待你的同意。选择拒绝后，Google Analytics 和 PostHog 永远不会加载——不设置任何 Cookie，也不保留任何标识符。如果你的浏览器发送 Global Privacy Control 或 Do Not Track 信号，我们会自动视为拒绝，并且不再向你展示同意横幅。",
-    "alwaysOnProcessors": "Vercel Analytics 和 Speed Insights 是例外，它们对所有访客都会运行。它们不设置 Cookie，也不存储标识符——只以聚合方式测量页面加载与性能，这正是这个站点保持快速的原因。你的设备上没有任何内容需要退出。",
+    "alwaysOnProcessors": "Vercel Analytics 和 Speed Insights 是例外，它们对所有访客都会运行。它们不设置 Cookie，也不存储标识符——只以聚合方式测量页面加载、性能和大家对高级版组件的兴趣。你的设备上没有任何内容需要退出。",
     "noAccounts": "本站没有账号体系，因此这些数据都不与任何身份关联。我们从不收集表单输入、自由文本，或你所浏览页面的内容。",
     "processorsTitle": "谁会收到数据",
     "needsConsent": "需要你的同意",
     "alwaysOn": "始终启用，不存储任何内容",
     "processors": {
       "vercel": {
-        "purpose": "托管站点的页面浏览量与 Core Web Vitals。",
+        "purpose": "托管站点的页面浏览量、Core Web Vitals，以及匿名的高级版组件兴趣信号。",
         "storage": "不使用 Cookie，也不使用标识符——不会在你的设备上存储任何内容。"
       },
       "ga4": {
@@ -56,7 +56,7 @@
       }
     },
     "eventsTitle": "我们发送的事件",
-    "eventsIntro": "只有三个，字段也是固定的。每个值都来自已提交的路由、链接或安装命令——绝不来自你输入的任何内容。",
+    "eventsIntro": "只有四个，字段也是固定的。每个值都来自已提交的路由、链接、安装命令或目录组件——绝不来自你输入的任何内容。",
     "trafficSource": "页面浏览事件只把流量标记为自然搜索或其他。这个标记在你的浏览器中根据固定的搜索引擎清单或明确的自然流量活动标记推导得出。原始 referrer、活动参数和查询字符串从不发送。受控的站点检查会带上值为 true 的验证标记，以便从访客统计中排除；普通访问带的是 false。",
     "entryPage": "在你同意之后，自然流量访问会为当前浏览器标签页保留第一个同站路径。复制安装命令和点击主要链接的事件会把该路径作为 <code>entry_page</code> 一并发送，直接访问和引荐访问则不会。它绝不包含查询字符串或原始 referrer，并会在你撤回同意时被删除。",
     "events": {
@@ -68,6 +68,10 @@
       },
       "primaryLinkClick": {
         "when": "你点击仓库、文档或组件链接时。"
+      },
+      "premiumComponentInterest": {
+        "when": "你从已锁定的文章组件进入“探索高级版”时。",
+        "delivery": "仅发送至 Vercel Analytics——不使用 Cookie，也不存储标识符。"
       }
     },
     "choiceTitle": "你的选择",
@@ -188,7 +192,11 @@
     "reset": "重置筛选",
     "proposal": "目录会有节制地扩展：源码、manifest、文档和安装器测试必须一起发布。欢迎提议下一个组件。",
     "issue": "提交 issue",
-    "inDevelopment": "开发中",
+    "inDevelopment": "高级版辑",
+    "previewLocked": "完整预览见高级版",
+    "planned": "高级版辑",
+    "interest": "查看高级版辑",
+    "interestLabel": "在高级版辑中查看 {component}",
     "selected": "已选 {count} 个",
     "tray": "已选组件",
     "copy": "复制安装命令",
@@ -223,6 +231,34 @@
     },
     "composerAdd": "将 {slug} 加入安装命令",
     "composerRemove": "从安装命令中移除 {slug}"
+  },
+  "Premium": {
+    "metadataTitle": "Payload Components 高级版 · 编辑辑",
+    "metadataDescription": "预览一套面向生产级 Payload CMS 内容发布体验、经过系统打磨的编辑组件。",
+    "eyebrow": "Payload Components / 高级版",
+    "headline": "为<editorial>专业内容发布</editorial>而精心构建的系统。",
+    "intro": "八个经过整体设计的组件，让内容体验从归档页到文章页都保持克制、连贯与完整。",
+    "status": "第一辑 · 预览",
+    "seeCollection": "查看组件辑",
+    "backToCatalog": "返回组件目录",
+    "suiteEyebrow": "编辑辑",
+    "suiteTitle": "如同一份出版物般统一设计。",
+    "suiteDescription": "从内容发现、阅读、作者信息到再次访问，始终使用同一套视觉与实现语言。",
+    "collectionEyebrow": "组件系列",
+    "collectionTitle": "八个部分，一套内容发布语言。",
+    "collectionIntro": "每个组件都承担明确的编辑职责；它们共同组成从首次浏览归档到阅读相关文章的完整系统。",
+    "benefitsEyebrow": "高级版辑",
+    "benefitsTitle": "价值来自完整的整体。",
+    "benefitsIntro": "高级版被构想为持续维护的产品层：减少零散决策，交付更完整、更统一的结果。",
+    "benefits": {
+      "systemTitle": "作为整体而设计",
+      "systemDescription": "层级、间距、状态与内容模型以统一的编辑语言来处理，而不是八张彼此割裂的组件卡片。",
+      "implementationTitle": "面向生产环境打磨",
+      "implementationDescription": "这些模式从真实的 Payload 与 Next.js 项目出发，并将周边集成细节一并纳入考虑。",
+      "maintainedTitle": "以完整辑持续维护",
+      "maintainedDescription": "组件系列能够随内容发布技术栈共同演进，同时为使用它的团队保持一致、完整的产品界面。"
+    },
+    "privacyNote": "进入高级版页面会记录一次匿名的组件兴趣信号。不会创建账号、Cookie 或访客标识符。"
   },
   "Templates": {
     "metadataTitle": "Next.js 的 Payload CMS 模板 | 概念与配方",

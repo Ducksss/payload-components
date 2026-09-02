@@ -1348,8 +1348,8 @@ export const componentEntries = [
 
 export type ComponentEntry = (typeof componentEntries)[number]
 
-/* The in-development posts suite — real components from the registry roadmap,
-   shown as "Coming soon" until their installer coverage lands. */
+/* The planned posts suite — previewed as one editorial edition while the
+   production implementation lives outside this MIT registry. */
 export const upcomingComponents = [
   {
     category: 'cards',

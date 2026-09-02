@@ -3,6 +3,7 @@
 import { track as trackVercelEvent } from '@vercel/analytics'
 
 import { distinctIdStorageKey, organicEntryPageStorageKey, resolveConsent } from '@/lib/consent'
+import type { UpcomingComponent } from '@/lib/site'
 
 type AnalyticsProperties = Record<string, string | number | boolean>
 type PostHogTestEvent = {
@@ -291,6 +292,22 @@ export function trackInstallCommandCopy(command: string) {
     },
     { markVerificationRun: true },
   )
+}
+
+/* A cookieless aggregate interest signal for navigation from a locked post card
+ * to the Premium product page. This intentionally bypasses trackEvent: GA4 and
+ * PostHog would add consented attribution and a pseudonymous browser id, while
+ * this action promises no identity and no storage. The slug comes from the
+ * committed upcomingComponents catalog. */
+export function trackPremiumComponentInterest(component: UpcomingComponent['slug']) {
+  try {
+    trackVercelEvent('premium_component_interest', {
+      component,
+      source_path: getStableSourcePath(),
+    })
+  } catch {
+    // Analytics must never block the user action.
+  }
 }
 
 function normalizeDestination(url: URL) {

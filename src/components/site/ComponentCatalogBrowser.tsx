@@ -14,6 +14,7 @@ import {
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { ComponentCard } from '@/components/site/ComponentCard'
 import { UpcomingComponentCard } from '@/components/site/ComponentGrid'
+import { trackPremiumComponentInterest } from '@/lib/analytics'
 import { composerInstallCommand, type ComponentEntry, type UpcomingComponent } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
@@ -40,17 +41,6 @@ function countByCategory(items: { category: string }[]) {
   const counts = new Map<string, number>()
   for (const item of items) counts.set(item.category, (counts.get(item.category) ?? 0) + 1)
   return counts
-}
-
-function componentRequestUrl(repoUrl: string, component: UpcomingComponent) {
-  const params = new URLSearchParams({
-    area: 'New component',
-    proposal: `Ship ${component.title} (${component.slug}) as a Payload Components post component.`,
-    template: 'feature_request.yml',
-    title: `[feature] ${component.slug}`,
-  })
-
-  return `${repoUrl}/issues/new?${params.toString()}`
 }
 
 export function ComponentCatalogBrowser({
@@ -200,6 +190,10 @@ export function ComponentCatalogBrowser({
     writeSelection(
       selected.includes(slug) ? selected.filter((entry) => entry !== slug) : [...selected, slug],
     )
+  }
+
+  function signalPostInterest(slug: UpcomingComponent['slug']) {
+    trackPremiumComponentInterest(slug)
   }
 
   const showPages = activeFamily === 'all' || activeFamily === 'pages'
@@ -412,7 +406,8 @@ export function ComponentCatalogBrowser({
                       <UpcomingComponentCard
                         key={component.slug}
                         component={component}
-                        requestHref={componentRequestUrl(githubRepoUrl, component)}
+                        onInterest={signalPostInterest}
+                        premiumHref={`/premium?component=${component.slug}`}
                       />
                     ))}
                   </div>

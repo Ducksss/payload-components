@@ -15,6 +15,7 @@ const envExamplePath = path.join(repoRoot, '.env.example')
 const eventFields = {
   $pageview: ['page_path', 'source_path', 'traffic_source', 'verification_run'],
   copy_install_command: ['command', 'component', 'source_path', 'entry_page'],
+  premium_component_interest: ['component', 'source_path'],
   primary_link_click: ['destination', 'href', 'source_path', 'entry_page'],
 } as const
 
@@ -23,6 +24,8 @@ const documentedEventRows = {
     '| `$pageview` | A public route loads or changes | `page_path`, `source_path`, `traffic_source`, `verification_run` |',
   copy_install_command:
     '| `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path`, `entry_page` |',
+  premium_component_interest:
+    '| `premium_component_interest` | A visitor opens Premium from a locked post component | `component`, `source_path` |',
   primary_link_click:
     '| `primary_link_click` | A visitor follows a repository, docs, or components link | `destination`, `href`, `source_path`, `entry_page` |',
 } as const
@@ -31,7 +34,7 @@ const eventCallPattern = (eventName: string) => {
   const escapedName = eventName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
   return new RegExp(
-    `track(?:PostHog)?Event\\(\\s*'${escapedName}',\\s*\\{([\\s\\S]*?)\\n\\s*\\}(?:,|\\))`,
+    `track(?:PostHog|Vercel)?Event\\(\\s*'${escapedName}',\\s*\\{([\\s\\S]*?)\\n\\s*\\}(?:,|\\))`,
   )
 }
 
@@ -53,7 +56,7 @@ const getPropertyKeys = (source: string, eventName: string) => {
 }
 
 describe('public anonymous analytics contract', () => {
-  it('matches the three general-site event payloads', async () => {
+  it('matches the four general-site event payloads', async () => {
     const [analyticsSource, contributingDocs] = await Promise.all([
       readFile(analyticsPath, 'utf8'),
       readFile(contributingPath, 'utf8'),
@@ -65,6 +68,30 @@ describe('public anonymous analytics contract', () => {
         documentedEventRows[eventName as keyof typeof documentedEventRows],
       )
     }
+  })
+
+  it('keeps premium component interest cookieless and Vercel-only', async () => {
+    const [analyticsSource, contributingDocs, privacyPage, privacyMessages] = await Promise.all([
+      readFile(analyticsPath, 'utf8'),
+      readFile(contributingPath, 'utf8'),
+      readFile(privacyPath, 'utf8'),
+      readFile(privacyMessagesPath, 'utf8'),
+    ])
+    const start = analyticsSource.indexOf('export function trackPremiumComponentInterest')
+    const end = analyticsSource.indexOf('\n}\n\nfunction normalizeDestination', start)
+    const interestFunction = analyticsSource.slice(start, end)
+
+    expect(start).toBeGreaterThan(-1)
+    expect(end).toBeGreaterThan(start)
+    expect(interestFunction).toContain("trackVercelEvent('premium_component_interest'")
+    expect(interestFunction).not.toContain('trackEvent(')
+    expect(interestFunction).not.toContain('trackPostHogEvent(')
+    expect(interestFunction).not.toMatch(/localStorage|sessionStorage|document\.cookie/)
+    expect(contributingDocs).toMatch(/goes only to\s+Vercel Analytics, never to GA4 or PostHog/)
+    expect(privacyPage).toContain('premium_component_interest')
+    expect(privacyMessages).toContain(
+      'Vercel Analytics only — cookieless, with no stored identifier.',
+    )
   })
 
   it('keeps the privacy boundary and deployment opt-out public', async () => {

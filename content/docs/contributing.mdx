@@ -83,7 +83,7 @@ Every block speaks one visual language — light shadcn monochrome with a single
 
 ## Anonymous analytics contract
 
-The general site analytics is limited to three anonymous signals. Their action
+The general site analytics is limited to four anonymous signals. Their action
 payloads are fixed:
 
 | Signal | When it fires | Allowed action fields |
@@ -91,14 +91,21 @@ payloads are fixed:
 | `$pageview` | A public route loads or changes | `page_path`, `source_path`, `traffic_source`, `verification_run` |
 | `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path`, `entry_page` |
 | `primary_link_click` | A visitor follows a repository, docs, or components link | `destination`, `href`, `source_path`, `entry_page` |
+| `premium_component_interest` | A visitor opens Premium from a locked post component | `component`, `source_path` |
 
-These values come from committed routes, links, and install commands, not visitor
-input. On page views, `traffic_source` is only `organic_search` or `other`. The
-browser derives it from a fixed search-engine hostname list or the exact
-`utm_medium=organic` marker and never sends the raw referrer, campaign, or other
-query values. `verification_run` is true only when a controlled check opens the
-page with `verification_run=1`; ordinary visits report false. Page paths and
-`$current_url` never include the query string.
+`premium_component_interest` records navigation through an “Explore Premium”
+link. It is the cookieless exception within this vocabulary: it goes only to
+Vercel Analytics, never to GA4 or PostHog, and creates no browser storage. Its
+`component` value is a committed catalog slug and its `source_path` is the stable
+pathname without a query string or hash.
+
+These values come from committed routes, links, install commands, and catalog
+components, not visitor input. On page views, `traffic_source` is only
+`organic_search` or `other`. The browser derives it from a fixed search-engine
+hostname list or the exact `utm_medium=organic` marker and never sends the raw referrer,
+campaign, or other query values. `verification_run` is true only when a controlled
+check opens the page with `verification_run=1`; ordinary visits report false. Page
+paths and `$current_url` never include the query string.
 
 On consented organic visits, `entry_page` is the first same-site pathname in the
 current browser tab and is added to later install-copy and primary-link actions.
@@ -112,13 +119,13 @@ the transport envelope. The request omits browser credentials.
 Leaving `NEXT_PUBLIC_POSTHOG_KEY` unset disables PostHog capture for that
 deployment.
 
-The three signals above describe the events *this repo emits*. They are not the
+The four signals above describe the events *this repo emits*. They are not the
 whole picture of what runs in a visitor's browser: `AnalyticsShell` also mounts
 Google Analytics 4 (`googletagmanager.com/gtag/js`) and Vercel Analytics plus
 Speed Insights. GA4 auto-collects its own page views and sets its own cookies,
 and both GA4 and PostHog are third-party processors. Keep this paragraph accurate
 if that stack changes — `tests/int/analytics-contract.int.spec.ts` pins the
-PostHog event payloads only and cannot catch an undisclosed provider.
+general-site event payloads but cannot catch an undisclosed provider.
 
 ## Consent
 
