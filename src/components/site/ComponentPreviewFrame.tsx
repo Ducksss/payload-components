@@ -39,11 +39,12 @@ export function ComponentPreviewFrame({ slug, title }: { slug: string; title: st
      contentDocument is briefly null around navigation. */
   const syncHeight = useCallback(() => {
     const doc = frameRef.current?.contentDocument
-    if (!doc) return
+    const root = doc?.documentElement
+    if (!doc || !root) return
     const main = doc.querySelector('main')
     const next = main
       ? Math.max(main.scrollHeight, main.getBoundingClientRect().height)
-      : doc.documentElement.scrollHeight
+      : root.scrollHeight
     setHeight(Math.max(120, Math.ceil(next)))
   }, [])
 
@@ -66,8 +67,12 @@ export function ComponentPreviewFrame({ slug, title }: { slug: string; title: st
     contentObserverRef.current?.disconnect()
     const doc = frameRef.current?.contentDocument
     if (!doc || typeof ResizeObserver === 'undefined') return
+    const target = doc.querySelector('main') ?? doc.documentElement
+
+    if (!target) return
+
     const observer = new ResizeObserver(syncHeight)
-    observer.observe(doc.querySelector('main') ?? doc.documentElement)
+    observer.observe(target)
     contentObserverRef.current = observer
   }, [syncHeight])
 

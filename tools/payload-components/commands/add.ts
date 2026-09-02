@@ -1,4 +1,4 @@
-import { readFile, rm } from 'node:fs/promises'
+import { rm } from 'node:fs/promises'
 import path from 'node:path'
 
 import {
@@ -28,6 +28,7 @@ import {
 import { installNamespacedItem, isNamespacedItem } from '../namespaced'
 import { runPostInstallScript } from '../post-install'
 import { buildRegistry, installRegistryDependencies, installRegistryItem } from '../registry'
+import { readSafeProjectFile } from '../safe-path'
 import {
   loadState,
   recordInstalledState,
@@ -237,9 +238,10 @@ const readDeclaredLocales = async ({ cwd, project }: { cwd: string; project: Det
     return undefined
   }
 
-  const configSource = await readFile(path.join(cwd, configFileRelPath), 'utf8').catch(
-    () => undefined,
-  )
+  const configSource = await readSafeProjectFile({
+    cwd,
+    filePath: path.join(cwd, configFileRelPath),
+  }).catch(() => undefined)
 
   if (configSource === undefined) {
     return undefined

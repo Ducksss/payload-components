@@ -117,6 +117,17 @@ describe('payload-components doctor orchestration', () => {
         missingFragments: [],
       }),
     }))
+    vi.doMock('../../tools/payload-components/safe-path', () => ({
+      readSafeProjectFile: vi.fn().mockResolvedValue(
+        JSON.stringify({
+          scripts: {
+            'generate:importmap': 'payload generate:importmap',
+            'generate:types': 'payload generate:types',
+          },
+        }),
+      ),
+      safeProjectFileExists: vi.fn().mockResolvedValue(true),
+    }))
     vi.doMock('../../tools/payload-components/state', () => ({
       loadState: vi.fn().mockResolvedValue(state),
     }))

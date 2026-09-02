@@ -1,4 +1,3 @@
-import { access } from 'node:fs/promises'
 import path from 'node:path'
 
 import {
@@ -6,7 +5,8 @@ import {
   copyBaseBundle,
   registerBaseCollections,
 } from '../base-bundle'
-import { installManifestDependencies } from '../dependencies'
+import { assertSafePackageManagerTargets, installManifestDependencies } from '../dependencies'
+import { resolveSafeProjectPath, safeProjectFileExists } from '../safe-path'
 import {
   detectPackageManager,
   getShadcnCommand,
@@ -26,14 +26,16 @@ const runShadcnInit = async (cwd: string) => {
      is already initialized, so re-running it would re-prompt for choices the
      project has made — and it would make `init --scaffold` non-idempotent for no
      reason. */
-  try {
-    await access(path.join(cwd, 'components.json'))
+  const componentsJsonPath = path.join(cwd, 'components.json')
+
+  if (await safeProjectFileExists({ cwd, filePath: componentsJsonPath })) {
     printHeader(`payload-components: components.json already exists in ${cwd}; skipping shadcn init.`)
 
     return packageManager
-  } catch {
-    // Not initialized yet — fall through and run shadcn init.
   }
+
+  await resolveSafeProjectPath({ cwd, targetPath: componentsJsonPath })
+  await assertSafePackageManagerTargets({ cwd, packageManager })
 
   const shadcn = getShadcnCommand(packageManager)
 
@@ -49,9 +51,7 @@ const runShadcnInit = async (cwd: string) => {
      or a non-interactive shell that cannot answer one. Scaffolding on top of
      that would leave a project that still cannot install anything, while
      reporting success. Stop here instead. */
-  try {
-    await access(path.join(cwd, 'components.json'))
-  } catch {
+  if (!(await safeProjectFileExists({ cwd, filePath: componentsJsonPath }))) {
     throw new Error(
       [
         `shadcn init finished without creating components.json in ${cwd}.`,
@@ -66,11 +66,8 @@ const runShadcnInit = async (cwd: string) => {
 
 const findPayloadConfig = async (cwd: string) => {
   for (const candidate of ['src/payload.config.ts', 'payload.config.ts']) {
-    try {
-      await access(path.join(cwd, candidate))
+    if (await safeProjectFileExists({ cwd, filePath: path.join(cwd, candidate) })) {
       return candidate
-    } catch {
-      // Try the next candidate.
     }
   }
 

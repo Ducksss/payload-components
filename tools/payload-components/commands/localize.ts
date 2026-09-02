@@ -1,4 +1,3 @@
-import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import {
@@ -24,6 +23,7 @@ import {
   setPayloadLocalization,
   LOCALIZE_HELPER_FILE,
 } from '../project'
+import { readSafeProjectFile, writeSafeProjectFile } from '../safe-path'
 import { loadState, recordLocalizedInstall } from '../state'
 import { printHeader } from '../utils'
 
@@ -239,7 +239,10 @@ const buildComponentPlan = async ({
   const missingFiles: string[] = []
 
   for (const projectPath of configFiles) {
-    const existing = await readFile(path.join(cwd, projectPath), 'utf8').catch(() => undefined)
+    const existing = await readSafeProjectFile({
+      cwd,
+      filePath: path.join(cwd, projectPath),
+    }).catch(() => undefined)
 
     if (existing === undefined) {
       missingFiles.push(projectPath)
@@ -307,7 +310,7 @@ export const localizeCommand = async ({
   const project = await detectProject(cwd)
   const configFileRelPath = await getPayloadConfigFile(project)
   const configPath = path.join(cwd, configFileRelPath)
-  const configSource = await readFile(configPath, 'utf8')
+  const configSource = await readSafeProjectFile({ cwd, filePath: configPath })
   const declared = readPayloadLocalization(configSource)
 
   /* A config that computes its locales — `locales: getLocales()` — is localized;
@@ -442,7 +445,7 @@ export const localizeCommand = async ({
   }
 
   if (configPatch && (configPatch.kind === 'patched' || configPatch.kind === 'replaced')) {
-    await writeFile(configPath, configPatch.source, 'utf8')
+    await writeSafeProjectFile({ contents: configPatch.source, cwd, filePath: configPath })
   }
 
   const wrappedComponents: string[] = []

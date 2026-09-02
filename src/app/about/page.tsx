@@ -251,7 +251,7 @@ export default async function AboutPage() {
                 {wiringLedger.columns.baseline.command}
               </code>
               <p className="font-mono text-4xl font-semibold tracking-tight text-muted-foreground">
-                1 <span className="text-muted-foreground/40">/ 5</span>
+                1 <span className="text-muted-foreground">/ 5</span>
               </p>
               <p className="text-sm leading-6 text-muted-foreground">
                 {wiringLedger.columns.baseline.summary}
@@ -263,7 +263,7 @@ export default async function AboutPage() {
                 {wiringLedger.columns.component.command}
               </code>
               <p className="font-mono text-4xl font-semibold tracking-tight text-brand">
-                5 <span className="text-brand/40">/ 5</span>
+                5 <span className="text-muted-foreground">/ 5</span>
               </p>
               <p className="text-sm leading-6 text-muted-foreground">
                 {wiringLedger.columns.component.summary}

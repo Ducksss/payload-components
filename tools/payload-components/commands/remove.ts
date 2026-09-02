@@ -1,4 +1,3 @@
-import { access, readdir, rm, rmdir } from 'node:fs/promises'
 import path from 'node:path'
 
 import {
@@ -13,15 +12,24 @@ import {
   removePayloadFragments,
   verifyInstalledPayloadFragments,
 } from '../project'
+import {
+  readSafeProjectFile,
+  removeSafeProjectDirectoryIfEmpty,
+  removeSafeProjectFile,
+} from '../safe-path'
 import { loadState, removeRecordedState } from '../state'
 import { isPathInside, printHeader } from '../utils'
 
-const fileExists = async (absolutePath: string) => {
+const fileExists = async (cwd: string, filePath: string) => {
   try {
-    await access(absolutePath)
+    await readSafeProjectFile({ cwd, filePath })
     return true
-  } catch {
-    return false
+  } catch (error) {
+    if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return false
+    }
+
+    throw error
   }
 }
 
@@ -84,13 +92,20 @@ const pruneEmptyDirectories = async ({
     let currentDir = candidateDir
 
     while (isPathInside(cwd, currentDir) && currentDir !== cwd) {
-      const entries = await readdir(currentDir).catch(() => undefined)
+      const removed = await removeSafeProjectDirectoryIfEmpty({
+        cwd,
+        directoryPath: currentDir,
+      }).catch((error) => {
+        if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
+          return false
+        }
 
-      if (entries === undefined || entries.length > 0) {
+        throw error
+      })
+
+      if (!removed) {
         break
       }
-
-      await rmdir(currentDir).catch(() => undefined)
       currentDir = path.dirname(currentDir)
     }
   }
@@ -188,7 +203,7 @@ export const removeCommand = async ({
   if (!installed) {
     const hasFiles = (
       await Promise.all(
-        manifest.files.map((projectPath) => fileExists(path.join(cwd, projectPath))),
+        manifest.files.map((projectPath) => fileExists(cwd, path.join(cwd, projectPath))),
       )
     ).some(Boolean)
     const fragmentCheck = await verifyInstalledPayloadFragments({
@@ -277,19 +292,9 @@ export const removeCommand = async ({
   const deletedFiles: string[] = []
 
   for (const projectPath of exclusiveFiles) {
-    const absolutePath = path.join(cwd, projectPath)
-
-    if (!isPathInside(cwd, absolutePath)) {
-      throw new Error(
-        `Refusing to delete "${projectPath}" because it resolves outside ${cwd}.`,
-      )
-    }
-
-    if (await fileExists(absolutePath)) {
+    if (await removeSafeProjectFile({ cwd, filePath: path.join(cwd, projectPath) })) {
       deletedFiles.push(projectPath)
     }
-
-    await rm(absolutePath, { force: true })
   }
 
   await pruneEmptyDirectories({ cwd, projectPaths: exclusiveFiles })

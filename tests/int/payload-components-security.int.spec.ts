@@ -219,20 +219,39 @@ describe('payload-components security invariants', () => {
     expect(source).not.toContain('web-share')
   })
 
-  it('ships signup forms that fall back when the stored action is unsafe', async () => {
-    const source = await readFile(
-      path.join(
-        repoRoot,
-        'payload-components',
-        'source',
-        'blocks',
-        'CallToActionSignup',
-        'Component.tsx',
+  it('ships signup forms that fail closed with a label-in-name-safe submit control', async () => {
+    const [componentSource, configSource] = await Promise.all([
+      readFile(
+        path.join(
+          repoRoot,
+          'payload-components',
+          'source',
+          'blocks',
+          'CallToActionSignup',
+          'Component.tsx',
+        ),
+        'utf8',
       ),
-      'utf8',
-    )
+      readFile(
+        path.join(
+          repoRoot,
+          'payload-components',
+          'source',
+          'blocks',
+          'CallToActionSignup',
+          'config.ts',
+        ),
+        'utf8',
+      ),
+    ])
 
-    expect(source).toContain("const formAction = getSafeFormAction(action) ?? '#'")
-    expect(source).toContain('action={formAction}')
+    expect(configSource).toMatch(/name: 'action',[\s\S]*?required: true/)
+    expect(componentSource).toContain('const formAction = getSafeFormAction(action)')
+    expect(componentSource).not.toContain("?? '#'")
+    expect(componentSource).toContain('{formAction ? (')
+    expect(componentSource).toContain('disabled={!formAction}')
+    expect(componentSource).toContain('Signup unavailable.')
+    expect(componentSource).toContain('<span className="sr-only sm:not-sr-only">')
+    expect(componentSource).not.toContain('aria-label="Subscribe"')
   })
 })

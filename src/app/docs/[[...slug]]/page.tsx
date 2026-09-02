@@ -171,7 +171,7 @@ export default async function Page({ params }: DocsPageProps) {
   )
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full || Boolean(component)}>
+    <DocsPage role="main" toc={page.data.toc} full={page.data.full || Boolean(component)}>
       <JsonLd data={structuredData} />
       {component ? (
         <ComponentDocHeader

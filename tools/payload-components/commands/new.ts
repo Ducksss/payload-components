@@ -1,6 +1,7 @@
-import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 
+import { readSafeProjectFile, writeSafeProjectFile } from '../safe-path'
 import { isPathInside, printHeader, repoRoot } from '../utils'
 
 /* Scaffolds a component bundle in THIS repo — the authoring side, not the
@@ -73,7 +74,7 @@ const writeNewFile = async (filePath: string, contents: string) => {
     throw new Error(`Refusing to write "${filePath}" outside the repository.`)
   }
 
-  const exists = await readFile(filePath, 'utf8').then(
+  const exists = await readSafeProjectFile({ cwd: repoRoot, filePath }).then(
     () => true,
     () => false,
   )
@@ -82,8 +83,7 @@ const writeNewFile = async (filePath: string, contents: string) => {
     throw new Error(`Refusing to overwrite existing file: ${path.relative(repoRoot, filePath)}`)
   }
 
-  await mkdir(path.dirname(filePath), { recursive: true })
-  await writeFile(filePath, contents, 'utf8')
+  await writeSafeProjectFile({ contents, cwd: repoRoot, filePath })
 
   return path.relative(repoRoot, filePath)
 }
@@ -206,7 +206,7 @@ const buildRegistryItem = (names: ComponentNames) => ({
    surrounding two-space style and spliced in before the closing bracket rather
    than round-tripped through JSON.parse. */
 const appendRegistryItem = async (names: ComponentNames) => {
-  const source = await readFile(registryPath, 'utf8')
+  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: registryPath })
 
   if (source.includes(`"name": "${names.slug}"`)) {
     throw new Error(`registry.json already has an item named "${names.slug}".`)
@@ -222,18 +222,18 @@ const appendRegistryItem = async (names: ComponentNames) => {
     throw new Error('Could not find the end of the registry items array in registry.json.')
   }
 
-  await writeFile(
-    registryPath,
-    `${source.slice(0, closing)},\n${serialized}${source.slice(closing)}`,
-    'utf8',
-  )
+  await writeSafeProjectFile({
+    contents: `${source.slice(0, closing)},\n${serialized}${source.slice(closing)}`,
+    cwd: repoRoot,
+    filePath: registryPath,
+  })
 
   return path.relative(repoRoot, registryPath)
 }
 
 const appendDemoRegistryEntry = async (names: ComponentNames) => {
   const registryFile = path.join(demosDir, 'registry.ts')
-  const source = await readFile(registryFile, 'utf8')
+  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: registryFile })
   const demoName = `${names.pascal}Demo`
   const importLine = `import { ${demoName} } from '@/components/site/demos/${demoName}'\n`
   const lastImportEnd = source.lastIndexOf("'\n", source.indexOf('export')) + 2
@@ -244,36 +244,36 @@ const appendDemoRegistryEntry = async (names: ComponentNames) => {
     throw new Error('Could not find the end of demosBySlug in the demo registry.')
   }
 
-  await writeFile(
-    registryFile,
-    `${withImport.slice(0, mapClose)}\n  '${names.slug}': ${demoName},${withImport.slice(mapClose)}`,
-    'utf8',
-  )
+  await writeSafeProjectFile({
+    contents: `${withImport.slice(0, mapClose)}\n  '${names.slug}': ${demoName},${withImport.slice(mapClose)}`,
+    cwd: repoRoot,
+    filePath: registryFile,
+  })
 
   return path.relative(repoRoot, registryFile)
 }
 
 const appendDocsMetaEntry = async (names: ComponentNames) => {
   const metaPath = path.join(componentDocsDir, 'meta.json')
-  const source = await readFile(metaPath, 'utf8')
+  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: metaPath })
   const closing = source.lastIndexOf('\n  ]')
 
   if (closing === -1) {
     throw new Error('Could not find the end of the docs meta pages array.')
   }
 
-  await writeFile(
-    metaPath,
-    `${source.slice(0, closing)},\n    "${names.slug}"${source.slice(closing)}`,
-    'utf8',
-  )
+  await writeSafeProjectFile({
+    contents: `${source.slice(0, closing)},\n    "${names.slug}"${source.slice(closing)}`,
+    cwd: repoRoot,
+    filePath: metaPath,
+  })
 
   return path.relative(repoRoot, metaPath)
 }
 
 const appendCliHelpEntry = async (names: ComponentNames) => {
   const cliPath = path.join(repoRoot, 'tools', 'payload-components', 'cli.ts')
-  const source = await readFile(cliPath, 'utf8')
+  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: cliPath })
   const marker = 'Current components:\n'
   const start = source.indexOf(marker)
   const end = source.indexOf('`', start)
@@ -282,14 +282,18 @@ const appendCliHelpEntry = async (names: ComponentNames) => {
     throw new Error('Could not find the "Current components:" list in cli.ts.')
   }
 
-  await writeFile(cliPath, `${source.slice(0, end)}  ${names.slug}\n${source.slice(end)}`, 'utf8')
+  await writeSafeProjectFile({
+    contents: `${source.slice(0, end)}  ${names.slug}\n${source.slice(end)}`,
+    cwd: repoRoot,
+    filePath: cliPath,
+  })
 
   return path.relative(repoRoot, cliPath)
 }
 
 const appendReadmeInventoryRow = async (names: ComponentNames) => {
   const readmePath = path.join(repoRoot, 'README.md')
-  const source = await readFile(readmePath, 'utf8')
+  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: readmePath })
   const end = source.indexOf('\n<!-- COMPONENT-INVENTORY:END -->')
 
   if (end === -1) {
@@ -305,11 +309,11 @@ const appendReadmeInventoryRow = async (names: ComponentNames) => {
 
   /* The rows are column-aligned; a ragged one would show up as a diff on every
      neighbouring line the next time anyone reformats the table. */
-  await writeFile(
-    readmePath,
-    `${source.slice(0, end)}\n|${nameCell}|${commandCell}|${source.slice(end)}`,
-    'utf8',
-  )
+  await writeSafeProjectFile({
+    contents: `${source.slice(0, end)}\n|${nameCell}|${commandCell}|${source.slice(end)}`,
+    cwd: repoRoot,
+    filePath: readmePath,
+  })
 
   return path.relative(repoRoot, readmePath)
 }

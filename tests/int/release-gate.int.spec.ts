@@ -6,6 +6,7 @@ import { promisify } from 'node:util'
 
 import { ESLint } from 'eslint'
 import { describe, expect, it } from 'vitest'
+import { parse } from 'yaml'
 
 const execFileAsync = promisify(execFile)
 const repoRoot = process.cwd()
@@ -304,5 +305,94 @@ describe('package publish guard', () => {
     expect(releaseGateIndex).toBeGreaterThan(installCandidateIndex)
     expect(packGateIndex).toBeGreaterThan(releaseGateIndex)
     expect(publishIndex).toBeGreaterThan(packGateIndex)
+  })
+
+  it('pins every remote GitHub Action to an immutable full commit SHA', async () => {
+    const workflowsDir = path.join(repoRoot, '.github', 'workflows')
+    const workflowNames = (await readdir(workflowsDir)).filter((name) => /\.ya?ml$/.test(name))
+
+    for (const workflowName of workflowNames) {
+      const workflow = await readFile(path.join(workflowsDir, workflowName), 'utf8')
+      const parsed = parse(workflow) as {
+        jobs?: Record<string, { steps?: Array<{ uses?: unknown }>; uses?: unknown }>
+      }
+      const references = Object.values(parsed.jobs ?? {}).flatMap((job) => [
+        job.uses,
+        ...(job.steps ?? []).map((step) => step.uses),
+      ])
+
+      for (const uses of references) {
+        if (uses === undefined) continue
+
+        expect(typeof uses, `${workflowName}: every uses value must be a string`).toBe('string')
+        if (typeof uses !== 'string' || uses.startsWith('./') || uses.startsWith('docker://')) {
+          continue
+        }
+
+        const separatorIndex = uses.lastIndexOf('@')
+        expect(
+          separatorIndex,
+          `${workflowName}: ${uses} must include an immutable ref`,
+        ).toBeGreaterThan(0)
+        const action = uses.slice(0, separatorIndex)
+        const reference = uses.slice(separatorIndex + 1)
+
+        expect(reference, `${workflowName}: ${action} must use a full commit SHA`).toMatch(
+          /^[a-f0-9]{40}$/,
+        )
+      }
+    }
+  })
+
+  it('constrains visual-baseline dispatches to known spec names and quoted argv', async () => {
+    const workflow = await readFile(
+      path.join(repoRoot, '.github', 'workflows', 'visual-baselines.yml'),
+      'utf8',
+    )
+
+    const parsed = parse(workflow) as {
+      on?: { workflow_dispatch?: { inputs?: { spec?: { options?: unknown } } } }
+    }
+
+    expect(parsed.on?.workflow_dispatch?.inputs?.spec?.options).toEqual([
+      'components-visual',
+      'template-visual',
+      'blog-visual',
+      'all-visual',
+    ])
+    expect(workflow).toContain('components-visual|template-visual|blog-visual)')
+    expect(workflow).toContain('spec_args=(components-visual template-visual blog-visual)')
+    expect(workflow).toContain('pnpm test:e2e "${spec_args[@]}"')
+    expect(workflow).not.toMatch(/pnpm test:e2e \$SPEC/)
+  })
+
+  it('disables persisted checkout credentials and authenticates writes one command at a time', async () => {
+    const workflowsDir = path.join(repoRoot, '.github', 'workflows')
+    const workflowNames = (await readdir(workflowsDir)).filter((name) => /\.ya?ml$/.test(name))
+
+    for (const workflowName of workflowNames) {
+      const workflow = await readFile(path.join(workflowsDir, workflowName), 'utf8')
+      const parsed = parse(workflow) as {
+        jobs?: Record<string, { steps?: Array<{ uses?: unknown; with?: Record<string, unknown> }> }>
+      }
+
+      for (const job of Object.values(parsed.jobs ?? {})) {
+        for (const step of job.steps ?? []) {
+          if (typeof step.uses === 'string' && step.uses.startsWith('actions/checkout@')) {
+            expect(
+              step.with?.['persist-credentials'],
+              `${workflowName}: checkout credentials must not persist`,
+            ).toBe(false)
+          }
+        }
+      }
+    }
+
+    for (const workflowName of ['package-publish.yml', 'visual-baselines.yml']) {
+      const workflow = await readFile(path.join(workflowsDir, workflowName), 'utf8')
+
+      expect(workflow).toContain('-c credential.helper=')
+      expect(workflow).toContain('password=\\$GH_TOKEN')
+    }
   })
 })

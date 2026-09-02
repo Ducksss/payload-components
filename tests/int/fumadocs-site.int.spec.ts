@@ -580,7 +580,11 @@ describe('Fumadocs site shell', () => {
     const { default: nextConfig } = (await import(
       pathToFileURL(path.join(repoRoot, 'next.config.mjs')).href
     )) as {
-      default: { headers?: () => Promise<HeaderRule[]>; redirects?: () => Promise<RedirectRule[]> }
+      default: {
+        headers?: () => Promise<HeaderRule[]>
+        poweredByHeader?: boolean
+        redirects?: () => Promise<RedirectRule[]>
+      }
     }
 
     const headerRules = await nextConfig.headers?.()
@@ -595,7 +599,15 @@ describe('Fumadocs site shell', () => {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=0, stale-while-revalidate=30',
+            value: 'public, max-age=0, must-revalidate',
+          },
+          {
+            key: 'CDN-Cache-Control',
+            value: 'public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=604800',
+          },
+          {
+            key: 'Vercel-CDN-Cache-Control',
+            value: 'public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=604800',
           },
         ],
       },
@@ -605,7 +617,15 @@ describe('Fumadocs site shell', () => {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=0, stale-while-revalidate=30',
+            value: 'public, max-age=0, must-revalidate',
+          },
+          {
+            key: 'CDN-Cache-Control',
+            value: 'public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=604800',
+          },
+          {
+            key: 'Vercel-CDN-Cache-Control',
+            value: 'public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=604800',
           },
         ],
       },
@@ -699,6 +719,10 @@ describe('Fumadocs site shell', () => {
     ).toEqual({
       source: '/:path*',
       headers: [
+        {
+          key: 'Content-Security-Policy',
+          value: expect.stringContaining("default-src 'self'; script-src 'self' 'unsafe-inline'"),
+        },
         { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
         { key: 'X-Content-Type-Options', value: 'nosniff' },
         { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
@@ -709,6 +733,16 @@ describe('Fumadocs site shell', () => {
         },
       ],
     })
+
+    const contentSecurityPolicy = headerRules
+      ?.flatMap((rule) => rule.headers)
+      .find((header) => header.key === 'Content-Security-Policy')?.value
+
+    expect(contentSecurityPolicy).toContain("object-src 'none'")
+    expect(contentSecurityPolicy).toContain("base-uri 'self'")
+    expect(contentSecurityPolicy).toContain("form-action 'self'")
+    expect(contentSecurityPolicy).toContain("frame-ancestors 'self'")
+    expect(nextConfig.poweredByHeader).toBe(false)
 
     await expect(nextConfig.redirects?.()).resolves.toEqual([
       { source: '/docs/kits', destination: '/components', permanent: true },
