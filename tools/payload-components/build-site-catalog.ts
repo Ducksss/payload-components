@@ -17,17 +17,25 @@ export type SiteCatalog = {
   version: 1
 }
 
+type CreateSiteCatalogOptions = {
+  manifestOverrides?: Record<string, ComponentManifest>
+  registry?: RegistryDefinition
+}
+
 /* Technical catalog facts come from the install contract and are projected
  * into a small client-safe artifact. Site code can keep editorial grouping and
  * sample field labels without importing 77 full manifests into its client
  * graph or duplicating install versions and commands by hand. */
-export const createSiteCatalog = async (): Promise<SiteCatalog> => {
-  const registry = await readJsonFile<RegistryDefinition>(registryPath)
+export const createSiteCatalog = async ({
+  manifestOverrides = {},
+  registry: suppliedRegistry,
+}: CreateSiteCatalogOptions = {}): Promise<SiteCatalog> => {
+  const registry = suppliedRegistry ?? (await readJsonFile<RegistryDefinition>(registryPath))
   const components = await Promise.all(
     registry.items.map(async ({ name }) => {
-      const manifest = await readJsonFile<ComponentManifest>(
-        path.join(manifestsPath, `${name}.json`),
-      )
+      const manifest =
+        manifestOverrides[name] ??
+        (await readJsonFile<ComponentManifest>(path.join(manifestsPath, `${name}.json`)))
 
       if (manifest.name !== name) {
         throw new Error(`Registry item "${name}" has no matching manifest contract.`)

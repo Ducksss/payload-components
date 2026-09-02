@@ -1,9 +1,12 @@
 import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 
-import { buildSiteCatalog, siteCatalogPath } from '../build-site-catalog'
-import { readSafeProjectFile, writeSafeProjectFile } from '../safe-path'
-import { isPathInside, printHeader, repoRoot } from '../utils'
+import { createSiteCatalog, siteCatalogPath } from '../build-site-catalog'
+import { readSafeProjectFile } from '../safe-path'
+import { commitFileChanges, isPathInside, printHeader, repoRoot } from '../utils'
+
+import type { ComponentManifest, RegistryDefinition } from '../types'
+import type { FileChange } from '../utils'
 
 /* Scaffolds a component bundle in THIS repo — the authoring side, not the
  * consumer side. Adding a component touches a dozen files and the shape of every
@@ -69,7 +72,12 @@ const renameTemplate = (source: string, names: ComponentNames) =>
     .replaceAll('example-basic', names.slug)
     .replaceAll('Example Basic', names.title)
 
-const writeNewFile = async (filePath: string, contents: string) => {
+type PreparedFile = {
+  change: FileChange
+  relativePath: string
+}
+
+const prepareNewFile = async (filePath: string, contents: string): Promise<PreparedFile> => {
   if (!isPathInside(repoRoot, filePath)) {
     throw new Error(`Refusing to write "${filePath}" outside the repository.`)
   }
@@ -83,9 +91,10 @@ const writeNewFile = async (filePath: string, contents: string) => {
     throw new Error(`Refusing to overwrite existing file: ${path.relative(repoRoot, filePath)}`)
   }
 
-  await writeSafeProjectFile({ contents, cwd: repoRoot, filePath })
-
-  return path.relative(repoRoot, filePath)
+  return {
+    change: { content: contents, filePath },
+    relativePath: path.relative(repoRoot, filePath),
+  }
 }
 
 /* Every dbName already in the catalog, so a suggestion can be checked rather
@@ -203,7 +212,7 @@ const buildRegistryItem = (names: ComponentNames) => ({
 /* registry.json is prettier-ignored, so the item is serialized to match the
    surrounding two-space style and spliced in before the closing bracket rather
    than round-tripped through JSON.parse. */
-const appendRegistryItem = async (names: ComponentNames) => {
+const prepareRegistryItem = async (names: ComponentNames): Promise<PreparedFile> => {
   const source = await readSafeProjectFile({ cwd: repoRoot, filePath: registryPath })
 
   if (source.includes(`"name": "${names.slug}"`)) {
@@ -220,16 +229,16 @@ const appendRegistryItem = async (names: ComponentNames) => {
     throw new Error('Could not find the end of the registry items array in registry.json.')
   }
 
-  await writeSafeProjectFile({
-    contents: `${source.slice(0, closing)},\n${serialized}${source.slice(closing)}`,
-    cwd: repoRoot,
-    filePath: registryPath,
-  })
-
-  return path.relative(repoRoot, registryPath)
+  return {
+    change: {
+      content: `${source.slice(0, closing)},\n${serialized}${source.slice(closing)}`,
+      filePath: registryPath,
+    },
+    relativePath: path.relative(repoRoot, registryPath),
+  }
 }
 
-const appendDemoRegistryEntry = async (names: ComponentNames) => {
+const prepareDemoRegistryEntry = async (names: ComponentNames): Promise<PreparedFile> => {
   const registryFile = path.join(demosDir, 'registry.ts')
   const source = await readSafeProjectFile({ cwd: repoRoot, filePath: registryFile })
   const demoName = `${names.pascal}Demo`
@@ -242,16 +251,16 @@ const appendDemoRegistryEntry = async (names: ComponentNames) => {
     throw new Error('Could not find the end of demosBySlug in the demo registry.')
   }
 
-  await writeSafeProjectFile({
-    contents: `${withImport.slice(0, mapClose)}\n  '${names.slug}': ${demoName},${withImport.slice(mapClose)}`,
-    cwd: repoRoot,
-    filePath: registryFile,
-  })
-
-  return path.relative(repoRoot, registryFile)
+  return {
+    change: {
+      content: `${withImport.slice(0, mapClose)}\n  '${names.slug}': ${demoName},${withImport.slice(mapClose)}`,
+      filePath: registryFile,
+    },
+    relativePath: path.relative(repoRoot, registryFile),
+  }
 }
 
-const appendDocsMetaEntry = async (names: ComponentNames) => {
+const prepareDocsMetaEntry = async (names: ComponentNames): Promise<PreparedFile> => {
   const metaPath = path.join(componentDocsDir, 'meta.json')
   const source = await readSafeProjectFile({ cwd: repoRoot, filePath: metaPath })
   const closing = source.lastIndexOf('\n  ]')
@@ -260,16 +269,16 @@ const appendDocsMetaEntry = async (names: ComponentNames) => {
     throw new Error('Could not find the end of the docs meta pages array.')
   }
 
-  await writeSafeProjectFile({
-    contents: `${source.slice(0, closing)},\n    "${names.slug}"${source.slice(closing)}`,
-    cwd: repoRoot,
-    filePath: metaPath,
-  })
-
-  return path.relative(repoRoot, metaPath)
+  return {
+    change: {
+      content: `${source.slice(0, closing)},\n    "${names.slug}"${source.slice(closing)}`,
+      filePath: metaPath,
+    },
+    relativePath: path.relative(repoRoot, metaPath),
+  }
 }
 
-const appendReadmeInventoryRow = async (names: ComponentNames) => {
+const prepareReadmeInventoryRow = async (names: ComponentNames): Promise<PreparedFile> => {
   const readmePath = path.join(repoRoot, 'README.md')
   const source = await readSafeProjectFile({ cwd: repoRoot, filePath: readmePath })
   const end = source.indexOf('\n<!-- COMPONENT-INVENTORY:END -->')
@@ -287,13 +296,13 @@ const appendReadmeInventoryRow = async (names: ComponentNames) => {
 
   /* The rows are column-aligned; a ragged one would show up as a diff on every
      neighbouring line the next time anyone reformats the table. */
-  await writeSafeProjectFile({
-    contents: `${source.slice(0, end)}\n|${nameCell}|${commandCell}|${source.slice(end)}`,
-    cwd: repoRoot,
-    filePath: readmePath,
-  })
-
-  return path.relative(repoRoot, readmePath)
+  return {
+    change: {
+      content: `${source.slice(0, end)}\n|${nameCell}|${commandCell}|${source.slice(end)}`,
+      filePath: readmePath,
+    },
+    relativePath: path.relative(repoRoot, readmePath),
+  }
 }
 
 const formatCuratedSteps = (names: ComponentNames, dbNameIsFree: boolean) =>
@@ -344,44 +353,64 @@ export const newCommand = async ({ componentSlug }: { componentSlug: string }) =
     collectUsedDbNames(),
   ])
 
-  const written = [
-    await writeNewFile(
+  const manifestSource = buildManifest(names)
+  const written = await Promise.all([
+    prepareNewFile(
       path.join(sourceBlocksDir, names.pascal, 'config.ts'),
       renameTemplate(configTemplate, names),
     ),
-    await writeNewFile(
+    prepareNewFile(
       path.join(sourceBlocksDir, names.pascal, 'Component.tsx'),
       renameTemplate(componentTemplate, names),
     ),
-    await writeNewFile(path.join(manifestsDir, `${names.slug}.json`), buildManifest(names)),
-    await writeNewFile(
+    prepareNewFile(path.join(manifestsDir, `${names.slug}.json`), manifestSource),
+    prepareNewFile(
       path.join(componentDocsDir, `${names.slug}.mdx`),
       renameTemplate(docTemplate, names),
     ),
-    await writeNewFile(path.join(demosDir, `${names.pascal}Demo.tsx`), buildDemoTwin(names)),
-  ]
+    prepareNewFile(path.join(demosDir, `${names.pascal}Demo.tsx`), buildDemoTwin(names)),
+  ])
 
-  const appended = [
-    await appendRegistryItem(names),
-    await appendDemoRegistryEntry(names),
-    await appendDocsMetaEntry(names),
-    await appendReadmeInventoryRow(names),
-  ]
-  await buildSiteCatalog()
-  const generated = [path.relative(repoRoot, siteCatalogPath)]
+  const appended = await Promise.all([
+    prepareRegistryItem(names),
+    prepareDemoRegistryEntry(names),
+    prepareDocsMetaEntry(names),
+    prepareReadmeInventoryRow(names),
+  ])
+  const registry = JSON.parse(appended[0].change.content!) as RegistryDefinition
+  const manifest = JSON.parse(manifestSource) as ComponentManifest
+  const catalog = await createSiteCatalog({
+    manifestOverrides: { [names.slug]: manifest },
+    registry,
+  })
+  const generated: PreparedFile = {
+    change: {
+      content: `${JSON.stringify(catalog, null, 2)}\n`,
+      filePath: siteCatalogPath,
+    },
+    relativePath: path.relative(repoRoot, siteCatalogPath),
+  }
+
+  /* No repository bytes change until every template, insertion anchor, and
+   * generated projection has been prepared successfully. The final commit is
+   * rollback-capable, so `new` either lands the complete scaffold or nothing. */
+  await commitFileChanges(
+    [...written, ...appended, generated].map(({ change }) => change),
+    { cwd: repoRoot },
+  )
 
   printHeader(
     [
       `payload-components: scaffolded "${names.slug}".`,
       '',
       'Created:',
-      ...written.map((file) => `  ${file}`),
+      ...written.map(({ relativePath }) => `  ${relativePath}`),
       '',
       'Appended:',
-      ...appended.map((file) => `  ${file}`),
+      ...appended.map(({ relativePath }) => `  ${relativePath}`),
       '',
       'Generated:',
-      ...generated.map((file) => `  ${file}`),
+      `  ${generated.relativePath}`,
       formatCuratedSteps(names, !usedDbNames.has(names.dbNameSuggestion)),
     ].join('\n'),
   )

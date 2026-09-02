@@ -141,7 +141,7 @@ export const replaceCanonicalComponentFiles = async ({
   await commitFileChanges(changes, { cwd })
 }
 
-const hashCanonicalFiles = async ({
+export const resolveCanonicalFileHashes = async ({
   localized,
   manifest,
 }: {
@@ -219,7 +219,7 @@ export const resolveRecordedFileHashes = async ({
   const localized = installed.localized === true
 
   if (manifest && installed.manifestVersion === manifest.version) {
-    return await hashCanonicalFiles({ localized, manifest })
+    return await resolveCanonicalFileHashes({ localized, manifest })
   }
 
   const baselines = await readJsonFile<InstallBaselines>(installBaselinesPath)

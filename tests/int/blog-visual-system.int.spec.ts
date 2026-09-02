@@ -1489,7 +1489,7 @@ describe('Field Journal real UI capture contract', () => {
       'demo-twins': {
         alt: 'A structure-only Hero Basic demo fixture beside the Hero Basic documentation Code tab and the per-element class-group mirror assertion from the demo-twin integration test',
         caption:
-          'The preview is explicitly labeled as fixture content; the source and test panels show how the docs site mirrors shipped class tokens without importing the Payload runtime.',
+          'The preview is explicitly labeled as fixture content; the source and test panels show how the docs site mirrors every shipped per-element class group without importing the Payload runtime.',
       },
       'editor-friendly-feature-sections': {
         alt: 'Four structure-only repository demo fixtures comparing Feature Bento, Feature Split, Feature Steps, and Feature Grid Basic at the same capture width',

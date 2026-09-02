@@ -106,11 +106,6 @@ export const initCommand = async ({
 
   const state = await loadState(cwd)
   const baseVersion = await getBaseBundleVersion()
-  const { adopted, created, fileHashes, kept, modified, removed, updated } = await syncBaseBundle({
-    cwd,
-    force,
-    recordedFileHashes: state.base?.fileHashes,
-  })
   const configFileRelPath = await findPayloadConfig(cwd)
   const dependencyCheck = await checkDependencyRequirements({
     allowMissing: true,
@@ -131,6 +126,15 @@ export const initCommand = async ({
       packageManager,
     })
   }
+
+  /* Dependency compatibility is a precondition for the scaffold, not a later
+   * repair step. In particular, an incompatible declared version must fail
+   * before any managed files are written into the consumer project. */
+  const { adopted, created, fileHashes, kept, modified, removed, updated } = await syncBaseBundle({
+    cwd,
+    force,
+    recordedFileHashes: state.base?.fileHashes,
+  })
 
   const registration = configFileRelPath
     ? await registerBaseCollections({ configFileRelPath, cwd })

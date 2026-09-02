@@ -225,6 +225,31 @@ describe('the starter base bundle', () => {
     expect(state.base?.version).toBe(await getBaseBundleVersion())
     expect(Object.keys(state.base?.fileHashes ?? {})).toEqual([...BASE_BUNDLE_FILES].sort())
   })
+
+  it('rejects incompatible dependencies before writing scaffold files or state', async () => {
+    const cwd = await makeBareProject()
+    const packageJsonPath = path.join(cwd, 'package.json')
+    const configPath = path.join(cwd, 'src', 'payload.config.ts')
+    const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as {
+      dependencies: Record<string, string>
+    }
+    const configBefore = await readFile(configPath, 'utf8')
+
+    packageJson.dependencies['tailwind-merge'] = '^2.0.0'
+    await writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`, 'utf8')
+
+    await expect(initCommand({ cwd, scaffold: true })).rejects.toThrow(
+      'does not satisfy the required range "^3.0.0"',
+    )
+
+    await expect(
+      readFile(path.join(cwd, 'src', 'blocks', 'RenderBlocks.tsx'), 'utf8'),
+    ).rejects.toMatchObject({ code: 'ENOENT' })
+    await expect(
+      readFile(path.join(cwd, '.payload-components', 'state.json'), 'utf8'),
+    ).rejects.toMatchObject({ code: 'ENOENT' })
+    await expect(readFile(configPath, 'utf8')).resolves.toBe(configBefore)
+  })
 })
 
 describe('registering the base collections', () => {

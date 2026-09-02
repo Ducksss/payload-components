@@ -520,8 +520,10 @@ reports local edits, while `init --scaffold --force` explicitly replaces those m
 </Callout>
 
 <Callout type="warn">
-  These files are a starting point, not a framework. They are yours after install — the CLI
-  does not track or update them, and they are intentionally thinner than the official
+  These files are a starting point, not a framework. Files created or adopted by the
+  scaffold are lifecycle-managed: later runs update pristine copies and preserve local
+  edits unless you pass `--force`. Custom implementations that did not match the scaffold
+  stay yours and unowned. The managed files are intentionally thinner than the official
   Payload website starter's versions (no Button dependency in `CMSLink`, no image-size
   variants in `Media`). If you are starting a content site from scratch, the website starter
   itself is still the better base.

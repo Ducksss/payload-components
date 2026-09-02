@@ -62,7 +62,7 @@ Flags:
   --default-locale  The canonical locale for localized values; defaults to the first --locales entry.
   --no-fallback  Let localize write fallback: false, so an empty locale renders empty.
   --json  Print machine-readable output from list, diff, and doctor.
-  --scaffold  With init, install and lifecycle-manage the starter base (Pages, Media, RenderBlocks, CMSLink, Media, linkGroup, cn).
+  --scaffold  With init, install and lifecycle-manage the starter base (Pages, Media, RenderBlocks, CMSLink, linkGroup, cn).
 
 Exit codes:
   diff exits 1 when any inspected component has drifted; update exits 1 when a

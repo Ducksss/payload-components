@@ -291,4 +291,57 @@ describe('payload-components new', () => {
       'Refusing to overwrite existing file',
     )
   })
+
+  it('leaves the repository unchanged when generated catalog validation fails', async () => {
+    const root = await createScaffoldRoot()
+    const existingPaths = [
+      ['payload-components', 'registry.json'],
+      ['src', 'components', 'site', 'demos', 'registry.ts'],
+      ['content', 'docs', 'components', 'meta.json'],
+      ['README.md'],
+    ]
+    const heroManifestPath = path.join(root, 'payload-components', 'manifests', 'hero-basic.json')
+    const heroManifest = JSON.parse(await readFile(heroManifestPath, 'utf8')) as Record<
+      string,
+      unknown
+    >
+
+    /* The existing registry projection fails only after every new file and
+       insertion has been prepared. This used to strand all of those earlier
+       writes in the repository. */
+    heroManifest.name = 'mismatched-existing-manifest'
+    await writeFile(heroManifestPath, `${JSON.stringify(heroManifest, null, 2)}\n`, 'utf8')
+    const before = await Promise.all(
+      existingPaths.map((segments) => readRootFile(root, ...segments)),
+    )
+
+    vi.doMock('../../tools/payload-components/utils', async () => {
+      const actual = await vi.importActual<typeof import('../../tools/payload-components/utils')>(
+        '../../tools/payload-components/utils',
+      )
+
+      return { ...actual, repoRoot: root }
+    })
+
+    const { newCommand } = await import('../../tools/payload-components/commands/new')
+
+    await expect(newCommand({ componentSlug: SLUG })).rejects.toThrow(
+      'Registry item "hero-basic" has no matching manifest contract.',
+    )
+
+    await expect(
+      Promise.all(existingPaths.map((segments) => readRootFile(root, ...segments))),
+    ).resolves.toEqual(before)
+
+    for (const segments of [
+      ['payload-components', 'source', 'blocks', PASCAL, 'config.ts'],
+      ['payload-components', 'source', 'blocks', PASCAL, 'Component.tsx'],
+      ['payload-components', 'manifests', `${SLUG}.json`],
+      ['content', 'docs', 'components', `${SLUG}.mdx`],
+      ['src', 'components', 'site', 'demos', `${PASCAL}Demo.tsx`],
+      ['src', 'generated', 'component-catalog.json'],
+    ]) {
+      await expect(readRootFile(root, ...segments)).rejects.toMatchObject({ code: 'ENOENT' })
+    }
+  })
 })

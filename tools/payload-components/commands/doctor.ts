@@ -508,6 +508,13 @@ const inspectProject = async ({
         cwd,
         dependencies: BASE_BUNDLE_DEPENDENCIES,
         label: 'dependencies',
+      }).catch((error) => {
+        log(
+          'error',
+          `starter base: ${error instanceof Error ? error.message : 'dependency check failed'}`,
+          'base',
+        )
+        return undefined
       })
 
       if (base.isClean) {
@@ -538,7 +545,7 @@ const inspectProject = async ({
         }
       }
 
-      if (baseDependencies.missing.length > 0) {
+      if (baseDependencies && baseDependencies.missing.length > 0) {
         log(
           'error',
           `starter base: missing dependencies ${formatList(baseDependencies.missing)} — run "payload-components init --scaffold"`,

@@ -22,14 +22,41 @@ afterEach(async () => {
   await Promise.all(fixtureDirs.splice(0).map((dir) => rm(dir, { force: true, recursive: true })))
   vi.resetModules()
   vi.restoreAllMocks()
+  vi.doUnmock('../../tools/payload-components/component-files')
+  vi.doUnmock('../../tools/payload-components/inventory')
+  vi.doUnmock('../../tools/payload-components/manifest')
+  vi.doUnmock('../../tools/payload-components/state')
   process.exitCode = undefined
 })
 
-const setup = async () => {
+const setup = async ({
+  canonicalHashOverrides = {},
+}: {
+  canonicalHashOverrides?: Record<string, Record<string, string>>
+} = {}) => {
   const addCommand = vi.fn().mockResolvedValue(undefined)
   const output: string[] = []
 
   vi.doMock('../../tools/payload-components/commands/add', () => ({ addCommand }))
+
+  if (Object.keys(canonicalHashOverrides).length > 0) {
+    vi.doMock('../../tools/payload-components/component-files', async () => {
+      const actual = await vi.importActual<
+        typeof import('../../tools/payload-components/component-files')
+      >('../../tools/payload-components/component-files')
+
+      return {
+        ...actual,
+        resolveCanonicalFileHashes: async (
+          options: Parameters<typeof actual.resolveCanonicalFileHashes>[0],
+        ) => ({
+          ...(await actual.resolveCanonicalFileHashes(options)),
+          ...canonicalHashOverrides[options.manifest.registryItemName],
+        }),
+      }
+    })
+  }
+
   vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
     output.push(String(chunk))
     return true
@@ -183,6 +210,7 @@ const setupBreaking = async () => {
     compareInstalledFiles: vi
       .fn()
       .mockResolvedValue({ comparisons: [], missing: [], modified: [] }),
+    resolveCanonicalFileHashes: vi.fn().mockResolvedValue({}),
     resolveRecordedFileHashes: vi.fn().mockResolvedValue({}),
     replaceCanonicalComponentFiles: vi.fn().mockResolvedValue(undefined),
   }))
@@ -327,7 +355,40 @@ describe('update', () => {
 
     expect(addCommand).not.toHaveBeenCalled()
     expect(await readFile(absoluteSharedPath, 'utf8')).toBe(editedSource)
-    expect(output.join('')).toContain(`${sharedPath} (modified)`)
+    expect(output.join('')).toContain('skipped — shared-file ownership conflict')
+    expect(output.join('')).toContain(sharedPath)
+    expect(isComplete).toBe(false)
+  })
+
+  it('rejects prospective shared bytes that a retained owner does not accept, even under --force', async () => {
+    const sharedPath = 'src/blocks/shared/heroFields.ts'
+    const { addCommand, output, updateCommand } = await setup({
+      canonicalHashOverrides: {
+        'hero-video': { [sharedPath]: hashSource('// next hero-video-only shared source\n') },
+      },
+    })
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic', 'hero-video'],
+    })
+    const absoluteSharedPath = path.join(fixtureDir, sharedPath)
+    const before = await readFile(absoluteSharedPath, 'utf8')
+    const state = await loadState(fixtureDir)
+
+    state.components['hero-video'].manifestVersion = '0.0.9'
+    await saveState(fixtureDir, state)
+
+    const isComplete = await updateCommand({
+      componentNames: ['hero-video'],
+      cwd: fixtureDir,
+      force: true,
+    })
+
+    expect(addCommand).not.toHaveBeenCalled()
+    expect(await readFile(absoluteSharedPath, 'utf8')).toBe(before)
+    expect(output.join('')).toContain('skipped — shared-file ownership conflict')
+    expect(output.join('')).toContain(
+      `${sharedPath} (retained owners do not accept these bytes: hero-basic)`,
+    )
     expect(isComplete).toBe(false)
   })
 
