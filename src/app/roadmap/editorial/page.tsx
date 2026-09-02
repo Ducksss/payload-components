@@ -1,30 +1,32 @@
 import type { Metadata } from 'next'
 
-import Link from '@/i18n/Link'
+import { ArrowDown, ArrowLeft, ArrowUpRight, CircleDashed } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
-
-import { ArrowDown, ArrowLeft, LockKeyhole } from 'lucide-react'
 
 import { JsonLd } from '@/components/seo/JsonLd'
 import { Eyebrow, Section } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
+import Link from '@/i18n/Link'
 import { localeDetails, localizeHref, normalizeSiteLocale } from '@/i18n/config'
 import { getSiteLocale } from '@/lib/i18n'
 import { siteOpenGraphDefaults, upcomingComponents } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
 
-const premiumBenefits = [
+const roadmapBenefits = [
   { key: 'system' },
   { key: 'implementation' },
   { key: 'maintained' },
 ] as const
 
+const contributionHref =
+  'https://github.com/Ducksss/payload-components/issues/new?template=feature_request.yml&area=New%20component'
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getSiteLocale()
-  const t = await getTranslations({ locale, namespace: 'Premium' })
-  const canonical = localizeHref('/premium', locale)
+  const t = await getTranslations({ locale, namespace: 'EditorialRoadmap' })
+  const canonical = localizeHref('/roadmap/editorial', locale)
 
   return {
     alternates: { canonical },
@@ -37,7 +39,6 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'website',
       url: canonical,
     },
-    robots: { follow: false, index: false },
     title: t('metadataTitle'),
     twitter: {
       card: 'summary_large_image',
@@ -47,19 +48,19 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function PremiumPage() {
+export default function EditorialRoadmapPage() {
   const locale = normalizeSiteLocale(useLocale())
-  const t = useTranslations('Premium')
-  const premiumStructuredData = graph(
+  const t = useTranslations('EditorialRoadmap')
+  const structuredData = graph(
     breadcrumbNode([
       { name: locale === 'zh' ? '首页' : 'Home', path: localizeHref('/', locale) },
-      { name: t('eyebrow'), path: localizeHref('/premium', locale) },
+      { name: t('eyebrow'), path: localizeHref('/roadmap/editorial', locale) },
     ]),
   )
 
   return (
     <>
-      <JsonLd data={premiumStructuredData} />
+      <JsonLd data={structuredData} />
       <SiteHeader />
 
       <main id="main" className="flex-1">
@@ -113,7 +114,7 @@ export default function PremiumPage() {
               <aside className="relative bg-background p-6 text-foreground sm:p-8 lg:col-span-5 lg:p-10">
                 <div className="flex items-center justify-between gap-4 border-b border-foreground/15 pb-5">
                   <span className="inline-flex items-center gap-2 font-mono text-[10px] font-medium uppercase tracking-eyebrow text-muted-foreground">
-                    <LockKeyhole className="size-3.5 text-brand" aria-hidden="true" />
+                    <CircleDashed className="size-3.5 text-brand" aria-hidden="true" />
                     {t('suiteEyebrow')}
                   </span>
                   <span className="font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground">
@@ -163,8 +164,9 @@ export default function PremiumPage() {
           <ol className="mt-12 border-y border-foreground/15">
             {upcomingComponents.map((component, index) => (
               <li
+                id={component.slug}
                 key={component.slug}
-                className="grid grid-cols-12 gap-x-4 gap-y-3 border-b border-foreground/10 py-7 last:border-b-0 sm:gap-x-6 lg:items-baseline"
+                className="grid scroll-mt-24 grid-cols-12 gap-x-4 gap-y-3 border-b border-foreground/10 py-7 last:border-b-0 sm:gap-x-6 lg:items-baseline"
               >
                 <span className="col-span-2 font-mono text-[10px] font-medium tracking-eyebrow text-brand-600 sm:col-span-1">
                   {String(index + 1).padStart(2, '0')}
@@ -196,7 +198,7 @@ export default function PremiumPage() {
             </p>
           </div>
           <div className="mt-12 grid border-y border-foreground/15 md:grid-cols-3 md:divide-x md:divide-foreground/15">
-            {premiumBenefits.map(({ key }, index) => (
+            {roadmapBenefits.map(({ key }, index) => (
               <article
                 key={key}
                 className="border-b border-foreground/15 py-8 last:border-b-0 md:border-b-0 md:px-8 md:first:pl-0 md:last:pr-0"
@@ -217,14 +219,18 @@ export default function PremiumPage() {
 
         <section className="border-t border-border">
           <div className="container flex flex-col gap-5 py-10 sm:flex-row sm:items-center sm:justify-between">
-            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">{t('privacyNote')}</p>
-            <Link
-              href="/components?type=posts"
+            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+              {t('contributionNote')}
+            </p>
+            <a
+              href={contributionHref}
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-sm text-sm font-semibold text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
             >
-              <ArrowLeft className="size-4" aria-hidden="true" />
-              {t('backToCatalog')}
-            </Link>
+              {t('contribute')}
+              <ArrowUpRight className="size-4" aria-hidden="true" />
+            </a>
           </div>
         </section>
       </main>

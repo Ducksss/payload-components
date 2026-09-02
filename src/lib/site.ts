@@ -1348,8 +1348,8 @@ export const componentEntries = [
 
 export type ComponentEntry = (typeof componentEntries)[number]
 
-/* The planned posts suite — previewed as one editorial edition while the
-   production implementation lives outside this MIT registry. */
+/* The planned posts suite — public proposals that will ship through the same
+   source, manifest, docs, and installer workflow as the existing MIT registry. */
 export const upcomingComponents = [
   {
     category: 'cards',

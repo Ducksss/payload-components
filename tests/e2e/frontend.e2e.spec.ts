@@ -658,9 +658,9 @@ test.describe('Light shadcn frontend', () => {
       title: /About/,
     },
     {
-      h1: 'A considered system for editorial publishing.',
-      path: '/premium',
-      title: /Payload Components Premium/,
+      h1: 'Help shape an editorial publishing system.',
+      path: '/roadmap/editorial',
+      title: /Editorial component roadmap/,
     },
     {
       h1: 'The Payload Components brand',
@@ -706,7 +706,7 @@ test.describe('Light shadcn frontend', () => {
     { h1: '由可安装区块组成的 Payload CMS 模板概念', path: '/zh/templates' },
     { h1: 'Payload CMS 区块与安装器指南', path: '/zh/blog' },
     { h1: 'Why Payload Components exists', path: '/zh/about' },
-    { h1: '为专业内容发布而精心构建的系统。', path: '/zh/premium' },
+    { h1: '一起完善编辑内容发布系统。', path: '/zh/roadmap/editorial' },
   ]
 
   for (const localizedRoute of localizedOverflowRoutes) {
@@ -1089,53 +1089,31 @@ test.describe('Light shadcn frontend', () => {
     ).toBeVisible()
   })
 
-  test('locks premium previews and routes through an official anonymous interest link', async ({
-    context,
-    page,
-  }) => {
+  test('presents upcoming post components as public roadmap proposals', async ({ page }) => {
     const component = upcomingComponents.find((entry) => entry.slug === 'post-card')!
 
-    // Override the file-level opt-in: this Vercel-only action must not depend on
-    // consented GA4/PostHog, and neither provider may race the storage assertion.
-    await context.addInitScript(() => window.localStorage.setItem('pc_consent', 'denied'))
     await page.goto(`${baseURL}/components?type=posts`)
 
-    await expect(page.getByText('Full preview in Premium', { exact: true })).toHaveCount(
+    await expect(page.getByText('Concept preview', { exact: true })).toHaveCount(
       upcomingComponents.length,
     )
     await expect(page.getByText(component.title).first()).toBeVisible()
 
-    const premiumLink = page.getByRole('link', {
-      name: `View ${component.title} in the Premium edition`,
+    const roadmapLink = page.getByRole('link', {
+      name: `View ${component.title} on the editorial roadmap`,
     })
-    await expect(premiumLink).toHaveAttribute('href', `/premium?component=${component.slug}`)
+    await expect(roadmapLink).toHaveAttribute('href', `/roadmap/editorial#${component.slug}`)
 
-    const browserStateBefore = await page.evaluate(() => ({
-      cookies: document.cookie,
-      local: { ...window.localStorage },
-      session: { ...window.sessionStorage },
-    }))
-    const contextCookiesBefore = await page.context().cookies()
-
-    await premiumLink.focus()
-    await expect(premiumLink).toBeFocused()
+    await roadmapLink.focus()
+    await expect(roadmapLink).toBeFocused()
     await page.keyboard.press('Enter')
-    await expect(page).toHaveURL(`${baseURL}/premium?component=${component.slug}`)
+    await expect(page).toHaveURL(`${baseURL}/roadmap/editorial#${component.slug}`)
     await expect(
       page.getByRole('heading', {
         level: 1,
-        name: 'A considered system for editorial publishing.',
+        name: 'Help shape an editorial publishing system.',
       }),
     ).toBeVisible()
-
-    expect(
-      await page.evaluate(() => ({
-        cookies: document.cookie,
-        local: { ...window.localStorage },
-        session: { ...window.sessionStorage },
-      })),
-    ).toEqual(browserStateBefore)
-    expect(await page.context().cookies()).toEqual(contextCookiesBefore)
   })
 
   test('exposes every landing section, the catalog teaser, and the footer', async ({ page }) => {

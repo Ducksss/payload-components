@@ -36,14 +36,14 @@
     "accentWord": "measure",
     "intro": "Nothing that stores anything on your device loads until you accept. This page names every processor, every event, and every field — and lets you change your mind at any time.",
     "consent": "Anything that would store something on your device waits for your consent. Decline and Google Analytics and PostHog never load — no cookie is set and no identifier is kept. If your browser sends Global Privacy Control or Do Not Track, that counts as a decline automatically and you are never shown the banner.",
-    "alwaysOnProcessors": "Vercel Analytics and Speed Insights are the exception, and they run for everyone. They set no cookies and store no identifier — they measure page loads, performance, and premium-component interest in aggregate. There is nothing on your device to opt out of.",
+    "alwaysOnProcessors": "Vercel Analytics and Speed Insights are the exception, and they run for everyone. They set no cookies and store no identifier — they measure page loads and performance in aggregate, which is what keeps this site fast. There is nothing on your device to opt out of.",
     "noAccounts": "There are no accounts on this site, so none of this is tied to an identity. We never collect form input, free text, or the contents of pages you view.",
     "processorsTitle": "Who receives data",
     "needsConsent": "Needs your consent",
     "alwaysOn": "Always on, stores nothing",
     "processors": {
       "vercel": {
-        "purpose": "Page views, Core Web Vitals, and anonymous premium-component interest for the hosted site.",
+        "purpose": "Page views and Core Web Vitals for the hosted site.",
         "storage": "No cookies and no identifier — nothing is stored on your device."
       },
       "ga4": {
@@ -56,7 +56,7 @@
       }
     },
     "eventsTitle": "The events we send",
-    "eventsIntro": "Four, and their fields are fixed. Every value comes from a committed route, link, install command, or catalog component — never from anything you type.",
+    "eventsIntro": "Three, and their fields are fixed. Every value comes from a committed route, link, or install command — never from anything you type.",
     "trafficSource": "Page views label traffic only as organic search or other. That label is derived in your browser from a fixed search-engine list or an explicit organic campaign marker. The raw referrer, campaign, and query string are never sent. Controlled site checks carry a true verification marker so they can be excluded from visitor counts; ordinary visits carry false.",
     "entryPage": "After consent, organic visits keep the first same-site pathname for the current browser tab. Install copies and primary link clicks include that pathname as <code>entry_page</code>. Direct and referral visits do not. It never contains a query string or raw referrer and is deleted when you withdraw consent.",
     "events": {
@@ -68,10 +68,6 @@
       },
       "primaryLinkClick": {
         "when": "You follow a repository, docs, or components link."
-      },
-      "premiumComponentInterest": {
-        "when": "You follow Explore Premium from a locked post component.",
-        "delivery": "Vercel Analytics only — cookieless, with no stored identifier."
       }
     },
     "choiceTitle": "Your choice",
@@ -192,11 +188,11 @@
     "reset": "Reset filters",
     "proposal": "The catalog grows deliberately — source, manifest, docs, and installer coverage ship together. Propose the next one.",
     "issue": "Open an issue",
-    "inDevelopment": "Premium edition",
-    "previewLocked": "Full preview in Premium",
-    "planned": "Premium edition",
-    "interest": "View the edition",
-    "interestLabel": "View {component} in the Premium edition",
+    "inDevelopment": "In development",
+    "roadmapPreview": "Concept preview",
+    "planned": "Open-source roadmap",
+    "interest": "View the roadmap",
+    "interestLabel": "View {component} on the editorial roadmap",
     "selected": "{count} selected",
     "tray": "Selected components",
     "copy": "Copy install command",
@@ -232,33 +228,34 @@
     "composerAdd": "Add {slug} to the install command",
     "composerRemove": "Remove {slug} from the install command"
   },
-  "Premium": {
-    "metadataTitle": "Payload Components Premium — Editorial Edition",
-    "metadataDescription": "Preview a considered editorial component system for production Payload CMS publishing experiences.",
-    "eyebrow": "Payload Components / Premium",
-    "headline": "A considered system for <editorial>editorial publishing.</editorial>",
-    "intro": "Eight composed components for teams who want the publishing experience to feel deliberate from archive to article.",
-    "status": "Edition 01 · Preview",
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
-    "suiteEyebrow": "The editorial edition",
+    "suiteEyebrow": "The proposed suite",
     "suiteTitle": "Designed as one publication.",
-    "suiteDescription": "A single visual and implementation language across discovery, reading, authorship, and return visits.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
     "collectionTitle": "Eight parts. One publishing language.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
-    "benefitsEyebrow": "The edition",
-    "benefitsTitle": "The value is in the whole.",
-    "benefitsIntro": "Premium is conceived as a maintained product layer: fewer disconnected decisions, a more resolved result.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
     "benefits": {
       "systemTitle": "Composed together",
       "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
-      "implementationTitle": "Shaped for production",
-      "implementationDescription": "The patterns are considered in the context of real Payload and Next.js projects, including the integration details around them.",
-      "maintainedTitle": "Maintained as an edition",
-      "maintainedDescription": "The collection can evolve with the publishing stack while preserving a coherent surface for the teams who use it."
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
     },
-    "privacyNote": "Following a Premium link records one anonymous component-interest signal. No account, cookie, or visitor identifier is created."
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
   },
   "Templates": {
     "metadataTitle": "Payload CMS Templates for Next.js | Concepts & Recipes",

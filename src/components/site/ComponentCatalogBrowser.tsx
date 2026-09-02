@@ -14,7 +14,6 @@ import {
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { ComponentCard } from '@/components/site/ComponentCard'
 import { UpcomingComponentCard } from '@/components/site/ComponentGrid'
-import { trackPremiumComponentInterest } from '@/lib/analytics'
 import { composerInstallCommand, type ComponentEntry, type UpcomingComponent } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
@@ -190,10 +189,6 @@ export function ComponentCatalogBrowser({
     writeSelection(
       selected.includes(slug) ? selected.filter((entry) => entry !== slug) : [...selected, slug],
     )
-  }
-
-  function signalPostInterest(slug: UpcomingComponent['slug']) {
-    trackPremiumComponentInterest(slug)
   }
 
   const showPages = activeFamily === 'all' || activeFamily === 'pages'
@@ -406,8 +401,7 @@ export function ComponentCatalogBrowser({
                       <UpcomingComponentCard
                         key={component.slug}
                         component={component}
-                        onInterest={signalPostInterest}
-                        premiumHref={`/premium?component=${component.slug}`}
+                        roadmapHref={`/roadmap/editorial#${component.slug}`}
                       />
                     ))}
                   </div>

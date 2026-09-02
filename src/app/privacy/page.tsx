@@ -54,25 +54,16 @@ const events = [
     fields: 'page_path, source_path, traffic_source, verification_run',
     id: 'pageview',
     name: '$pageview',
-    delivery: null,
   },
   {
     fields: 'command, component, source_path, entry_page',
     id: 'copyInstallCommand',
     name: 'copy_install_command',
-    delivery: null,
   },
   {
     fields: 'destination, href, source_path, entry_page',
     id: 'primaryLinkClick',
     name: 'primary_link_click',
-    delivery: null,
-  },
-  {
-    fields: 'component, source_path',
-    id: 'premiumComponentInterest',
-    name: 'premium_component_interest',
-    delivery: 'vercelOnly',
   },
 ] as const
 
@@ -149,11 +140,6 @@ export default async function PrivacyPage() {
                     <p className="mt-1 text-sm text-muted-foreground">
                       {t(`events.${event.id}.when`)}
                     </p>
-                    {event.delivery ? (
-                      <p className="mt-1 text-sm font-medium text-foreground">
-                        {t(`events.${event.id}.delivery`)}
-                      </p>
-                    ) : null}
                     <p className="mt-1 font-mono text-xs text-muted-foreground">{event.fields}</p>
                   </li>
                 ))}

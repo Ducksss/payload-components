@@ -2,7 +2,7 @@ import type { UpcomingComponent } from '@/lib/site'
 
 import Link from '@/i18n/Link'
 
-import { ArrowUpRight, LockKeyhole } from 'lucide-react'
+import { ArrowUpRight, CircleDashed } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { cn } from '@/utilities/ui'
@@ -126,31 +126,30 @@ function ThumbShapes({ slug }: { slug: string }) {
   }
 }
 
-function LockedComponentThumb({
+function RoadmapComponentThumb({
   label,
-  premiumLabel,
+  roadmapLabel,
   slug,
 }: {
   label: string
-  premiumLabel: string
+  roadmapLabel: string
   slug: string
 }) {
   return (
-    <div className="relative flex h-40 items-center justify-center overflow-hidden border-b border-border bg-muted/60 px-5">
+    <div className="relative flex h-40 items-center justify-center overflow-hidden border-b border-dashed border-border bg-muted/40 px-5">
       <div
         aria-hidden="true"
         className="absolute -right-10 -top-12 size-40 rounded-full bg-brand/15 blur-3xl"
       />
-      <div aria-hidden="true" className="w-full max-w-[16rem] scale-110 opacity-70 blur-sm">
+      <div aria-hidden="true" className="w-full max-w-[16rem] opacity-65">
         <ThumbShapes slug={slug} />
       </div>
-      <div aria-hidden="true" className="absolute inset-0 bg-background/30 backdrop-blur-sm" />
       <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-4">
         <span className="font-mono text-[9px] font-medium uppercase tracking-eyebrow text-foreground/65">
-          {premiumLabel}
+          {roadmapLabel}
         </span>
         <span className="inline-flex size-8 items-center justify-center rounded-full border border-foreground/15 bg-background/70 text-foreground shadow-card backdrop-blur-md">
-          <LockKeyhole className="size-3.5" aria-hidden="true" />
+          <CircleDashed className="size-3.5" aria-hidden="true" />
         </span>
       </div>
       <div className="absolute inset-x-4 bottom-4 flex items-center gap-3">
@@ -169,20 +168,18 @@ function LockedComponentThumb({
 
 export function UpcomingComponentCard({
   component,
-  onInterest,
-  premiumHref,
+  roadmapHref,
 }: {
   component: UpcomingComponent
-  onInterest: (slug: UpcomingComponent['slug']) => void
-  premiumHref: string
+  roadmapHref: string
 }) {
   const t = useTranslations('CatalogBrowser')
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-card border border-border bg-card transition-colors hover:border-foreground/20">
-      <LockedComponentThumb
-        label={t('previewLocked')}
-        premiumLabel={t('planned')}
+      <RoadmapComponentThumb
+        label={t('roadmapPreview')}
+        roadmapLabel={t('planned')}
         slug={component.slug}
       />
       <div className="flex flex-1 flex-col p-5">
@@ -196,9 +193,8 @@ export function UpcomingComponentCard({
           {component.description}
         </p>
         <Link
-          href={premiumHref}
+          href={roadmapHref}
           aria-label={t('interestLabel', { component: component.title })}
-          onClick={() => onInterest(component.slug)}
           className="mt-5 inline-flex w-fit cursor-pointer items-center gap-2 border-b border-foreground/30 pb-1 text-xs font-semibold text-foreground transition-colors hover:border-brand hover:text-brand-600 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
         >
           {t('interest')}
