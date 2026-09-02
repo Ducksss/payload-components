@@ -1,6 +1,7 @@
 import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 
+import { buildSiteCatalog, siteCatalogPath } from '../build-site-catalog'
 import { readSafeProjectFile, writeSafeProjectFile } from '../safe-path'
 import { isPathInside, printHeader, repoRoot } from '../utils'
 
@@ -9,10 +10,9 @@ import { isPathInside, printHeader, repoRoot } from '../utils'
  * one of them is derivable from the slug, so the mechanical parts are written
  * here and the parts that need judgment are printed as snippets.
  *
- * The split is deliberate. Catalog order is ranked, not chronological: a new
- * component belongs wherever it ranks against its family, so appending it to
- * `componentEntries` would quietly degrade a curated list. Same for the dbName
- * abbreviation, the Content model prose, and the demo sample copy. */
+ * The split is deliberate. Editorial catalog context, dbName abbreviations,
+ * Content model prose, and demo sample copy need human judgment. Registry order,
+ * versions, commands, and routes are mechanical projections. */
 
 const templateDir = path.join(repoRoot, 'payload-components', 'templates', 'component-template')
 const sourceBlocksDir = path.join(repoRoot, 'payload-components', 'source', 'blocks')
@@ -99,9 +99,10 @@ const collectUsedDbNames = async () => {
       continue
     }
 
-    const config = await readFile(path.join(sourceBlocksDir, entry.name, 'config.ts'), 'utf8').catch(
-      () => '',
-    )
+    const config = await readFile(
+      path.join(sourceBlocksDir, entry.name, 'config.ts'),
+      'utf8',
+    ).catch(() => '')
     const match = /dbName:\s*'([^']+)'/.exec(config)
 
     if (match) {
@@ -126,10 +127,7 @@ const buildManifest = (names: ComponentNames) =>
       peerDependencies: { next: '^15.0.0 || ^16.0.0', payload: '^3.0.0' },
       supportedTargets: ['payload-website-starter', 'payload-blocks-app'],
       supports: { payloadMajors: [3], nextMajors: [15, 16] },
-      files: [
-        `src/blocks/${names.pascal}/config.ts`,
-        `src/blocks/${names.pascal}/Component.tsx`,
-      ],
+      files: [`src/blocks/${names.pascal}/config.ts`, `src/blocks/${names.pascal}/Component.tsx`],
       payloadFragments: [
         {
           kind: 'renderBlocks',
@@ -271,26 +269,6 @@ const appendDocsMetaEntry = async (names: ComponentNames) => {
   return path.relative(repoRoot, metaPath)
 }
 
-const appendCliHelpEntry = async (names: ComponentNames) => {
-  const cliPath = path.join(repoRoot, 'tools', 'payload-components', 'cli.ts')
-  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: cliPath })
-  const marker = 'Current components:\n'
-  const start = source.indexOf(marker)
-  const end = source.indexOf('`', start)
-
-  if (start === -1 || end === -1) {
-    throw new Error('Could not find the "Current components:" list in cli.ts.')
-  }
-
-  await writeSafeProjectFile({
-    contents: `${source.slice(0, end)}  ${names.slug}\n${source.slice(end)}`,
-    cwd: repoRoot,
-    filePath: cliPath,
-  })
-
-  return path.relative(repoRoot, cliPath)
-}
-
 const appendReadmeInventoryRow = async (names: ComponentNames) => {
   const readmePath = path.join(repoRoot, 'README.md')
   const source = await readSafeProjectFile({ cwd: repoRoot, filePath: readmePath })
@@ -323,21 +301,17 @@ const formatCuratedSteps = (names: ComponentNames, dbNameIsFree: boolean) =>
     '',
     'Now the parts that need a decision — none of these were written for you:',
     '',
-    `1. src/lib/site.ts → componentEntries: insert (do not append) where ${names.slug} ranks`,
-    '   against its family. Catalog order is curated, and it also drives the docs prev/next',
-    '   arrows and the landing hero.',
+    `1. src/lib/component-catalog.ts → componentEditorialEntries: add ${names.slug}`,
+    '   beside its family. Registry order drives the catalog and docs prev/next arrows;',
+    '   commands, routes, family, and version are derived rather than repeated here.',
     '',
     '   {',
     `     category: 'TODO',`,
-    `     command: 'npx payload-components add ${names.slug}',`,
     `     description: 'TODO',`,
-    `     family: 'pages',`,
     `     fields: ['TODO'],`,
-    `     href: '/docs/components/${names.slug}',`,
     `     slug: '${names.slug}',`,
     `     target: 'TODO',`,
     `     title: '${names.title}',`,
-    `     version: '0.1.0',`,
     '   },',
     '',
     `2. ${`payload-components/source/blocks/${names.pascal}/config.ts`} → dbName: pick a readable`,
@@ -350,7 +324,7 @@ const formatCuratedSteps = (names: ComponentNames, dbNameIsFree: boolean) =>
     `4. src/lib/demo-content.ts → sample content for the twin, unless the family already`,
     '   shares a shape.',
     '',
-    '5. Only if this is a new family: src/lib/site.ts componentCategories,',
+    '5. Only if this is a new family: src/lib/component-catalog.ts componentCategories,',
     '   src/lib/component-page-tree.tsx FAMILIES, CatalogFamilyTeaser familyRepresentatives,',
     '   and tests/int/payload-components.int.spec.ts representativeInstallComponents.',
     '',
@@ -384,19 +358,17 @@ export const newCommand = async ({ componentSlug }: { componentSlug: string }) =
       path.join(componentDocsDir, `${names.slug}.mdx`),
       renameTemplate(docTemplate, names),
     ),
-    await writeNewFile(
-      path.join(demosDir, `${names.pascal}Demo.tsx`),
-      buildDemoTwin(names),
-    ),
+    await writeNewFile(path.join(demosDir, `${names.pascal}Demo.tsx`), buildDemoTwin(names)),
   ]
 
   const appended = [
     await appendRegistryItem(names),
     await appendDemoRegistryEntry(names),
     await appendDocsMetaEntry(names),
-    await appendCliHelpEntry(names),
     await appendReadmeInventoryRow(names),
   ]
+  await buildSiteCatalog()
+  const generated = [path.relative(repoRoot, siteCatalogPath)]
 
   printHeader(
     [
@@ -407,20 +379,23 @@ export const newCommand = async ({ componentSlug }: { componentSlug: string }) =
       '',
       'Appended:',
       ...appended.map((file) => `  ${file}`),
+      '',
+      'Generated:',
+      ...generated.map((file) => `  ${file}`),
       formatCuratedSteps(names, !usedDbNames.has(names.dbNameSuggestion)),
     ].join('\n'),
   )
 }
 
-/* A twin has to mirror the component's className literals verbatim, which only
-   makes sense once the component has real markup — so this is a valid, passing
-   skeleton rather than a guess at the finished mirror. */
+/* A twin has to keep each source class group attached to one preview element.
+   That only makes sense once the component has real markup, so this is a valid,
+   passing skeleton rather than a guess at the finished mirror. */
 const buildDemoTwin = (names: ComponentNames) =>
   [
     `/* Demo twin for ${names.slug}.`,
     ' *',
-    ' * Mirror every className="…" literal from',
-    ` * payload-components/source/blocks/${names.pascal}/Component.tsx verbatim — the mirror is`,
+    ' * Keep every className="…" group from',
+    ` * payload-components/source/blocks/${names.pascal}/Component.tsx on one corresponding element — this is`,
     ' * enforced by tests/int/demo-twins.int.spec.ts. Keep the root aria-hidden, and use no',
     ' * interactive elements or headings: <h2> becomes <div>, CMSLink becomes <DemoLink>,',
     ' * <Media> becomes a bg-muted placeholder.',

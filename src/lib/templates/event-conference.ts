@@ -205,6 +205,7 @@ const homeTickets: PricingDemoContent = {
 }
 
 const homeCta: CtaDemoContent = {
+  action: '/programme-updates',
   description:
     'One email when the board lands, one when the last workshop seats open. That is the entire list.',
   emailPlaceholder: 'you@yourteam.dev',
@@ -828,6 +829,7 @@ const ticketsFaq: FaqGroupedDemoContent = {
 }
 
 const ticketsCta: CtaDemoContent = {
+  action: '/ticket-updates',
   description:
     'One email the morning it opens and one when the workshop ballot closes. Nothing else, and nothing from a sponsor.',
   emailPlaceholder: 'you@yourteam.dev',

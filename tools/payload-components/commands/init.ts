@@ -2,11 +2,17 @@ import path from 'node:path'
 
 import {
   BASE_BUNDLE_DEPENDENCIES,
-  copyBaseBundle,
+  getBaseBundleVersion,
   registerBaseCollections,
+  syncBaseBundle,
 } from '../base-bundle'
-import { assertSafePackageManagerTargets, installManifestDependencies } from '../dependencies'
+import {
+  assertSafePackageManagerTargets,
+  checkDependencyRequirements,
+  installManifestDependencies,
+} from '../dependencies'
 import { resolveSafeProjectPath, safeProjectFileExists } from '../safe-path'
+import { loadState, recordBaseBundleState } from '../state'
 import {
   detectPackageManager,
   getShadcnCommand,
@@ -29,7 +35,9 @@ const runShadcnInit = async (cwd: string) => {
   const componentsJsonPath = path.join(cwd, 'components.json')
 
   if (await safeProjectFileExists({ cwd, filePath: componentsJsonPath })) {
-    printHeader(`payload-components: components.json already exists in ${cwd}; skipping shadcn init.`)
+    printHeader(
+      `payload-components: components.json already exists in ${cwd}; skipping shadcn init.`,
+    )
 
     return packageManager
   }
@@ -76,9 +84,11 @@ const findPayloadConfig = async (cwd: string) => {
 
 export const initCommand = async ({
   cwd,
+  force = false,
   scaffold = false,
 }: {
   cwd: string
+  force?: boolean
   scaffold?: boolean
 }) => {
   const packageManager = await runShadcnInit(cwd)
@@ -94,13 +104,30 @@ export const initCommand = async ({
     return
   }
 
-  const { created, skipped } = await copyBaseBundle({ cwd })
+  const state = await loadState(cwd)
+  const baseVersion = await getBaseBundleVersion()
+  const { adopted, created, fileHashes, kept, modified, removed, updated } = await syncBaseBundle({
+    cwd,
+    force,
+    recordedFileHashes: state.base?.fileHashes,
+  })
   const configFileRelPath = await findPayloadConfig(cwd)
+  const dependencyCheck = await checkDependencyRequirements({
+    allowMissing: true,
+    cwd,
+    dependencies: BASE_BUNDLE_DEPENDENCIES,
+    label: 'dependencies',
+  })
 
-  if (created.length > 0) {
+  if (dependencyCheck.missing.length > 0) {
     await installManifestDependencies({
       cwd,
-      dependencies: BASE_BUNDLE_DEPENDENCIES,
+      dependencies: Object.fromEntries(
+        dependencyCheck.missing.map((name) => [
+          name,
+          BASE_BUNDLE_DEPENDENCIES[name as keyof typeof BASE_BUNDLE_DEPENDENCIES],
+        ]),
+      ),
       packageManager,
     })
   }
@@ -108,6 +135,16 @@ export const initCommand = async ({
   const registration = configFileRelPath
     ? await registerBaseCollections({ configFileRelPath, cwd })
     : undefined
+  const recordedBaseVersion = modified.length > 0 && state.base ? state.base.version : baseVersion
+
+  await recordBaseBundleState({
+    cwd,
+    fileHashes,
+    installedAt: state.base?.installedAt,
+    /* A locally edited owned file was deliberately not upgraded. Retain the
+     * old contract version so diff/doctor continue to flag the incomplete run. */
+    version: recordedBaseVersion,
+  })
 
   printHeader(
     [
@@ -115,9 +152,28 @@ export const initCommand = async ({
       '',
       created.length > 0 ? 'Created:' : 'Created nothing — every file was already present.',
       ...created.map((filePath) => `  ${filePath}`),
-      ...(skipped.length > 0
-        ? ['', 'Kept your existing:', ...skipped.map((filePath) => `  ${filePath}`)]
+      ...(updated.length > 0
+        ? ['', 'Updated:', ...updated.map((filePath) => `  ${filePath}`)]
         : []),
+      ...(removed.length > 0
+        ? ['', 'Removed retired managed files:', ...removed.map((filePath) => `  ${filePath}`)]
+        : []),
+      ...(adopted.length > 0
+        ? ['', 'Adopted matching starter files:', ...adopted.map((filePath) => `  ${filePath}`)]
+        : []),
+      ...(kept.length > 0
+        ? ['', 'Kept your existing implementations:', ...kept.map((filePath) => `  ${filePath}`)]
+        : []),
+      ...(modified.length > 0
+        ? [
+            '',
+            'Kept locally edited managed files:',
+            ...modified.map((filePath) => `  ${filePath}`),
+            '  Re-run with --force only if those edits should be replaced by the current starter base.',
+          ]
+        : []),
+      '',
+      `Recorded starter base: ${recordedBaseVersion}`,
     ].join('\n'),
   )
 

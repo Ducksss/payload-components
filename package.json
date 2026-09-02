@@ -50,6 +50,7 @@
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "build:cli": "cross-env NODE_OPTIONS=--no-deprecation tsup",
     "build:e2e": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/build-e2e.ts",
+    "catalog:build": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/build-site-catalog.ts",
     "dev": "cross-env NODE_OPTIONS='--no-deprecation --max-old-space-size=12288' next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "format": "prettier --write .",

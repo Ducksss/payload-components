@@ -459,7 +459,7 @@ export const captures = [
     title: 'Six concepts make the same registry feel different',
   },
   {
-    deck: 'A site-only fixture, shipped source, and the test that keeps their tokens aligned.',
+    deck: 'A site-only fixture, shipped source, and the test that keeps their class groups aligned.',
     figure: 2,
     issue: 27,
     layout: 'triptych',
@@ -474,10 +474,10 @@ export const captures = [
         'Component.tsx',
       ),
       {
-        anchor: 'const missing = literals.flatMap',
+        anchor: 'const missing = literals.filter',
         kind: 'source',
-        label: 'Integration test · class-token mirror',
-        provenance: 'tests/int/demo-twins.int.spec.ts:78-85',
+        label: 'Integration test · per-element class mirror',
+        provenance: 'tests/int/demo-twins.int.spec.ts',
         sourcePath: 'tests/int/demo-twins.int.spec.ts',
         take: 8,
       },

@@ -3,11 +3,12 @@ import path from 'node:path'
 import {
   compareInstalledFiles,
   hashSource,
+  replaceCanonicalComponentFiles,
   resolveRecordedFileHashes,
 } from '../component-files'
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest } from '../manifest'
-import { readSafeProjectFile, removeSafeProjectFile } from '../safe-path'
+import { readSafeProjectFile } from '../safe-path'
 import { loadState } from '../state'
 
 import type { ChangelogEntry } from '../types'
@@ -32,9 +33,7 @@ type RecordedFileOwner = {
   name: string
 }
 
-const loadRecordedFileOwners = async (
-  state: Awaited<ReturnType<typeof loadState>>,
-) => {
+const loadRecordedFileOwners = async (state: Awaited<ReturnType<typeof loadState>>) => {
   const entries = await Promise.all(
     Object.entries(state.components).map(async ([componentName, installed]) => {
       const manifest = await loadManifest(componentName).catch(() => undefined)
@@ -90,13 +89,10 @@ const formatPlan = ({
     lines.push(
       '',
       `${plan.componentName}: ${plan.recordedVersion} → ${plan.registryVersion}`,
-      ...plan.pendingChangelog.map(
-        (entry) => `  ${entry.version}: ${entry.summary}`,
-      ),
+      ...plan.pendingChangelog.map((entry) => `  ${entry.version}: ${entry.summary}`),
       ...plan.files.map((filePath) => `  ${filePath} (${verb}overwrite)`),
       ...plan.retainedFiles.map(
-        ({ owners, projectPath }) =>
-          `  ${projectPath} (keep — still used by ${owners.join(', ')})`,
+        ({ owners, projectPath }) => `  ${projectPath} (keep — still used by ${owners.join(', ')})`,
       ),
     )
 
@@ -150,9 +146,7 @@ const formatPlan = ({
       }
     }
 
-    lines.push(
-      `  Migrate your existing documents, then re-run with --accept-breaking.`,
-    )
+    lines.push(`  Migrate your existing documents, then re-run with --accept-breaking.`)
   }
 
   if (dryRun) {
@@ -162,11 +156,10 @@ const formatPlan = ({
   return lines.join('\n')
 }
 
-/* Re-install a recorded component at the version this CLI ships. Files are
- * deleted first so the registry install rewrites them: `add` treats present
- * files as satisfied, which is right for a fresh install and wrong for an
- * upgrade. Local edits are protected — a modified file blocks the component
- * until the caller passes --force. */
+/* Re-install a recorded component at the version this CLI ships. Source files
+ * are staged and replaced as one batch before add reconciles dependencies,
+ * wiring, generators, and state. Local edits are protected — a modified file
+ * blocks the component until the caller passes --force. */
 export const updateCommand = async ({
   acceptBreaking = false,
   componentNames = [],
@@ -205,7 +198,7 @@ export const updateCommand = async ({
         ? `payload-components: no recorded components in ${cwd}. Nothing to update.`
         : `payload-components: all ${installed.length} recorded component${installed.length === 1 ? '' : 's'} are already at the version this CLI ships.`,
     )
-    return
+    return true
   }
 
   const plans: UpdatePlan[] = []
@@ -280,8 +273,7 @@ export const updateCommand = async ({
       }
     }
 
-    const unresolvedOwnership =
-      recordedOwnership.unresolved.some((name) => name !== entry.name)
+    const unresolvedOwnership = recordedOwnership.unresolved.some((name) => name !== entry.name)
     const blockedFiles = [
       ...new Set([
         ...fileReport.modified,
@@ -323,18 +315,28 @@ export const updateCommand = async ({
   printHeader(formatPlan({ breaking, cwd, dryRun, plans, skipped }))
 
   if (dryRun) {
-    return
+    return true
   }
 
   for (const plan of plans) {
-    for (const projectPath of [...plan.files, ...plan.blockedFiles]) {
-      await removeSafeProjectFile({ cwd, filePath: path.join(cwd, projectPath) })
-    }
+    const manifest = await loadManifest(plan.componentName)
+    const replacedFiles = [...plan.files, ...plan.blockedFiles]
+    const currentFiles = new Set(manifest.files)
 
-    await addCommand({ componentName: plan.componentName, cwd, localized: plan.localized })
+    await replaceCanonicalComponentFiles({
+      cwd,
+      deleteFiles: replacedFiles.filter((projectPath) => !currentFiles.has(projectPath)),
+      localized: plan.localized,
+      manifest,
+    })
+
+    await addCommand({
+      componentName: plan.componentName,
+      cwd,
+      localized: plan.localized,
+      prewrittenFiles: manifest.files.filter((projectPath) => replacedFiles.includes(projectPath)),
+    })
   }
 
-  if (skipped.length > 0 || breaking.length > 0) {
-    process.exitCode = 1
-  }
+  return skipped.length === 0 && breaking.length === 0
 }

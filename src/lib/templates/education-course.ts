@@ -1072,6 +1072,7 @@ export const educationCourseTemplate: TemplateShowcase = {
         {
           componentSlug: 'call-to-action-signup',
           content: {
+            action: '/enrolment',
             description:
               'One email back with the term dates, the timetable for all three cohorts, and the fee schedule in full. Nothing else follows unless you reply.',
             emailPlaceholder: 'you@yourstudio.example',

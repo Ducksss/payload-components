@@ -88,7 +88,7 @@ const writeInstallState = async ({
     components: {
       [manifest.name]: getStateEntry(manifest, overrides),
     },
-    version: 3,
+    version: 4,
   }
 
   await writeFile(

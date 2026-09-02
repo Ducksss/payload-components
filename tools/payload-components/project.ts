@@ -12,8 +12,14 @@ import type {
 } from './types'
 
 import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from './constants'
-import { readSafeProjectFile, safeProjectFileExists, writeSafeProjectFile } from './safe-path'
-import { detectPackageManagerDetails, extractMajor, readJsonFile, repoRoot } from './utils'
+import { readSafeProjectFile, safeProjectFileExists } from './safe-path'
+import {
+  commitFileChanges,
+  detectPackageManagerDetails,
+  extractMajor,
+  readJsonFile,
+  repoRoot,
+} from './utils'
 
 /* Manifests are authored against the canonical starter paths, so those double as
  * the default when a caller has not detected a project (tests, and the
@@ -43,7 +49,8 @@ type DelimiterRange = {
    arrays while extracting an import's original quoted module path. */
 const maskIgnoredSource = (source: string) => {
   const masked = source.split('')
-  let mode: 'blockComment' | 'code' | 'doubleQuote' | 'lineComment' | 'singleQuote' | 'template' = 'code'
+  let mode: 'blockComment' | 'code' | 'doubleQuote' | 'lineComment' | 'singleQuote' | 'template' =
+    'code'
 
   const blank = (index: number) => {
     if (masked[index] !== '\n' && masked[index] !== '\r') {
@@ -77,8 +84,7 @@ const maskIgnoredSource = (source: string) => {
     }
 
     if (mode !== 'code') {
-      const closingDelimiter =
-        mode === 'singleQuote' ? "'" : mode === 'doubleQuote' ? '"' : '`'
+      const closingDelimiter = mode === 'singleQuote' ? "'" : mode === 'doubleQuote' ? '"' : '`'
 
       if (character === '\\') {
         blank(index)
@@ -355,10 +361,7 @@ const findPagesLayoutBlocks = (source: string): DelimiterRange | undefined => {
       maskedSource,
     })
 
-    if (
-      !layoutObject ||
-      !isDirectlyWithin(maskedSource, layoutObject.start + 1, match.index)
-    ) {
+    if (!layoutObject || !isDirectlyWithin(maskedSource, layoutObject.start + 1, match.index)) {
       continue
     }
 
@@ -394,7 +397,10 @@ const findPagesLayoutBlocks = (source: string): DelimiterRange | undefined => {
   // Payload's current website starter nests the field metadata between the
   // `name` and `blocks` properties; use the field's explicit type as a
   // bounded fallback when delimiter ancestry is obscured by that nesting.
-  const layoutField = /name\s*:\s*['"]layout['"][\s\S]{0,1200}?type\s*:\s*['"]blocks['"][\s\S]{0,400}?blocks\s*:\s*\[/m.exec(source)
+  const layoutField =
+    /name\s*:\s*['"]layout['"][\s\S]{0,1200}?type\s*:\s*['"]blocks['"][\s\S]{0,400}?blocks\s*:\s*\[/m.exec(
+      source,
+    )
   if (layoutField && layoutField.index !== undefined) {
     const start = maskedSource.indexOf('[', layoutField.index)
     const end = findMatchingDelimiter({ close: ']', maskedSource, open: '[', start })
@@ -564,9 +570,7 @@ const removeNamedImport = ({
     .split(',')
     .map((specifier) => specifier.trim())
     .filter(Boolean)
-    .filter(
-      (specifier) => specifier !== importName && !specifier.startsWith(`${importName} as `),
-    )
+    .filter((specifier) => specifier !== importName && !specifier.startsWith(`${importName} as `))
 
   if (remainingSpecifiers.length > 0) {
     return `${source.slice(0, range.braceStart + 1)} ${remainingSpecifiers.join(', ')} ${source.slice(range.braceEnd)}`
@@ -650,9 +654,7 @@ const removePagesLayoutFragment = (
       .filter(Boolean)
 
     if (currentEntries.includes(fragment.blockName)) {
-      const replacement = currentEntries
-        .filter((entry) => entry !== fragment.blockName)
-        .join(', ')
+      const replacement = currentEntries.filter((entry) => entry !== fragment.blockName).join(', ')
 
       sourceWithoutEntry = `${source.slice(0, blocksRange.start + 1)}${replacement}${source.slice(blocksRange.end)}`
     }
@@ -762,7 +764,8 @@ const applyPagesLayoutFragment = (
     })
   const sourceWithImport = insertLineBeforeAnchor({
     anchor: pagesAnchor,
-    describeMissingAnchor: () => describeFailure(`the insertion anchor "${pagesAnchor}" is missing`),
+    describeMissingAnchor: () =>
+      describeFailure(`the insertion anchor "${pagesAnchor}" is missing`),
     isPresent: (current) => hasNamedImport(current, fragment.importName, fragment.importPath),
     line: importLine,
     source,
@@ -770,9 +773,7 @@ const applyPagesLayoutFragment = (
   const blocksRange = findPagesLayoutBlocks(sourceWithImport)
 
   if (!blocksRange) {
-    throw new Error(
-      describeFailure('the "layout" field\'s blocks: [] list could not be read'),
-    )
+    throw new Error(describeFailure('the "layout" field\'s blocks: [] list could not be read'))
   }
 
   if (
@@ -796,7 +797,13 @@ const applyPagesLayoutFragment = (
 }
 
 /* Every entry must resolve; an array entry is satisfied by any one of its paths. */
-const hasRequiredFiles = async ({ cwd, requiredFiles }: { cwd: string; requiredFiles: RequiredFile[] }) => {
+const hasRequiredFiles = async ({
+  cwd,
+  requiredFiles,
+}: {
+  cwd: string
+  requiredFiles: RequiredFile[]
+}) => {
   for (const requirement of requiredFiles) {
     const candidates = Array.isArray(requirement) ? requirement : [requirement]
     const matches = await Promise.all(
@@ -924,10 +931,7 @@ export { LOCALIZE_HELPER_FILE }
    `Block` object with a top-level `fields:` array. Already-wrapped configs are
    returned untouched so --localized stays idempotent across re-runs. */
 export const localizeBlockConfigSource = (source: string) => {
-  const blockObject = findTopLevelObject(
-    source,
-    /\bexport\s+const\s+\w+\s*:\s*Block\s*=\s*\{/g,
-  )
+  const blockObject = findTopLevelObject(source, /\bexport\s+const\s+\w+\s*:\s*Block\s*=\s*\{/g)
 
   if (!blockObject) {
     throw new Error('Unable to find an exported Payload Block object to localize.')
@@ -957,10 +961,7 @@ export const localizeBlockConfigSource = (source: string) => {
         maskedSource.slice(valueStart),
       )
 
-      if (
-        helperCall &&
-        hasNamedImport(source, LOCALIZE_HELPER, LOCALIZE_IMPORT_PATH)
-      ) {
+      if (helperCall && hasNamedImport(source, LOCALIZE_HELPER, LOCALIZE_IMPORT_PATH)) {
         const parenthesisStart = maskedSource.indexOf('(', valueStart)
         const parenthesisEnd = findMatchingDelimiter({
           close: ')',
@@ -1030,6 +1031,7 @@ export const applyLocalizedFields = async ({
   configFiles: string[]
   cwd: string
 }) => {
+  const changes: Array<{ content: string; filePath: string }> = []
   const patchedFiles: string[] = []
 
   for (const projectPath of configFiles) {
@@ -1038,10 +1040,12 @@ export const applyLocalizedFields = async ({
     const updated = localizeBlockConfigSource(existing)
 
     if (updated !== existing) {
-      await writeSafeProjectFile({ contents: updated, cwd, filePath })
+      changes.push({ content: updated, filePath })
       patchedFiles.push(projectPath)
     }
   }
+
+  await commitFileChanges(changes, { cwd })
 
   return normalizeFileList(patchedFiles)
 }
@@ -1228,8 +1232,7 @@ const findLocalizationProperty = ({
     return undefined
   }
 
-  const shadowedBySpread =
-    lastDirectSpread !== undefined && lastDirectSpread > property.start
+  const shadowedBySpread = lastDirectSpread !== undefined && lastDirectSpread > property.start
 
   if (maskedSource[property.valueStart] !== '{') {
     /* `localization: localizationConfig`, `true`, or `false`. Replacing a value
@@ -1348,10 +1351,7 @@ export const setPayloadLocalization = ({
     lastContentIndex -= 1
   }
 
-  if (
-    lastContentIndex > configObject.start &&
-    maskedSource[lastContentIndex] !== ','
-  ) {
+  if (lastContentIndex > configObject.start && maskedSource[lastContentIndex] !== ',') {
     sourceWithComma = `${source.slice(0, lastContentIndex + 1)},${source.slice(
       lastContentIndex + 1,
     )}`
@@ -1439,10 +1439,7 @@ const findDirectArrayEntries = ({
   let entryStart = start + 1
 
   for (let cursor = entryStart; cursor < end; cursor += 1) {
-    if (
-      maskedSource[cursor] === ',' &&
-      isDirectlyWithin(maskedSource, start + 1, cursor)
-    ) {
+    if (maskedSource[cursor] === ',' && isDirectlyWithin(maskedSource, start + 1, cursor)) {
       const entry = trimIgnoredRange(maskedSource, entryStart, cursor)
 
       if (entry.start < entry.end) entries.push(entry)
@@ -1583,31 +1580,32 @@ export const readPayloadLocalization = (source: string): ReadLocalization | unde
   const defaultComputedBySpread =
     lastSpread !== undefined &&
     (!effectiveDefaultProperty || effectiveDefaultProperty.start < lastSpread)
-  const defaultLocale = effectiveDefaultProperty && !defaultComputedBySpread
-    ? readDirectString({
-        containerEnd: object.end,
-        maskedSource,
-        source,
-        valueStart: effectiveDefaultProperty.valueStart,
-      })
-    : undefined
+  const defaultLocale =
+    effectiveDefaultProperty && !defaultComputedBySpread
+      ? readDirectString({
+          containerEnd: object.end,
+          maskedSource,
+          source,
+          valueStart: effectiveDefaultProperty.valueStart,
+        })
+      : undefined
   const defaultLocaleStatus = defaultComputedBySpread
     ? 'computed'
     : !effectiveDefaultProperty
-    ? defaultShorthand
-      ? 'computed'
-      : 'absent'
-    : defaultLocale === undefined
-      ? 'computed'
-      : 'literal'
+      ? defaultShorthand
+        ? 'computed'
+        : 'absent'
+      : defaultLocale === undefined
+        ? 'computed'
+        : 'literal'
   const fallbackProperty = findDirectProperty({ object, propertyName: 'fallback', source })
   const fallbackShorthand = findDirectShorthand({ object, propertyName: 'fallback', source })
   const fallbackValue =
     fallbackProperty &&
     (!fallbackShorthand || fallbackProperty.start > fallbackShorthand.start) &&
     (lastSpread === undefined || fallbackProperty.start > lastSpread)
-    ? /^(true|false)\b/.exec(maskedSource.slice(fallbackProperty.valueStart))?.[1]
-    : undefined
+      ? /^(true|false)\b/.exec(maskedSource.slice(fallbackProperty.valueStart))?.[1]
+      : undefined
   const localesProperty = findDirectProperty({ object, propertyName: 'locales', source })
   const localesShorthand = findDirectShorthand({ object, propertyName: 'locales', source })
   const effectiveLocalesProperty =
@@ -1621,10 +1619,10 @@ export const readPayloadLocalization = (source: string): ReadLocalization | unde
   let localesStatus: ReadLocalization['localesStatus'] = localesComputedBySpread
     ? 'computed'
     : effectiveLocalesProperty
-    ? 'computed'
-    : localesShorthand
       ? 'computed'
-      : 'absent'
+      : localesShorthand
+        ? 'computed'
+        : 'absent'
 
   if (effectiveLocalesProperty && !localesComputedBySpread) {
     if (maskedSource[effectiveLocalesProperty.valueStart] === '[') {
@@ -1733,7 +1731,9 @@ export const assertManifestSupport = (project: DetectedProject, manifest: Compon
   }
 
   if (!manifest.supports.nextMajors.includes(project.nextMajor)) {
-    throw new Error(`Component "${manifest.name}" does not support Next.js major version ${project.nextMajor}.`)
+    throw new Error(
+      `Component "${manifest.name}" does not support Next.js major version ${project.nextMajor}.`,
+    )
   }
 }
 
@@ -1743,32 +1743,34 @@ export const applyPayloadFragments = async (
   hostFiles: ResolvedHostFiles = CANONICAL_HOST_FILES,
 ) => {
   const touchedFiles = new Set<string>()
+  const originalSources = new Map<string, string>()
+  const sources = new Map<string, string>()
 
   for (const fragment of fragments) {
-    if (fragment.kind === 'renderBlocks') {
-      const filePath = getAbsolutePath(cwd, hostFiles.renderBlocks)
-      const existing = await readSafeProjectFile({ cwd, filePath })
-      const updated = applyRenderBlocksFragment(existing, fragment, hostFiles.renderBlocks)
+    const projectPath =
+      fragment.kind === 'renderBlocks' ? hostFiles.renderBlocks : hostFiles.pagesLayout
+    const filePath = getAbsolutePath(cwd, projectPath)
+    const existing =
+      sources.get(projectPath) ?? (await readSafeProjectFile({ cwd, filePath }))
+    originalSources.set(projectPath, originalSources.get(projectPath) ?? existing)
+    const updated =
+      fragment.kind === 'renderBlocks'
+        ? applyRenderBlocksFragment(existing, fragment, hostFiles.renderBlocks)
+        : applyPagesLayoutFragment(existing, fragment, hostFiles.pagesLayout)
 
-      if (updated !== existing) {
-        await writeSafeProjectFile({ contents: updated, cwd, filePath })
-      }
-
-      touchedFiles.add(hostFiles.renderBlocks)
-    }
-
-    if (fragment.kind === 'pagesLayout') {
-      const filePath = getAbsolutePath(cwd, hostFiles.pagesLayout)
-      const existing = await readSafeProjectFile({ cwd, filePath })
-      const updated = applyPagesLayoutFragment(existing, fragment, hostFiles.pagesLayout)
-
-      if (updated !== existing) {
-        await writeSafeProjectFile({ contents: updated, cwd, filePath })
-      }
-
-      touchedFiles.add(hostFiles.pagesLayout)
-    }
+    sources.set(projectPath, updated)
+    touchedFiles.add(projectPath)
   }
+
+  await commitFileChanges(
+    [...sources.entries()]
+      .filter(([projectPath, content]) => content !== originalSources.get(projectPath))
+      .map(([projectPath, content]) => ({
+        content,
+        filePath: getAbsolutePath(cwd, projectPath),
+      })),
+    { cwd },
+  )
 
   return normalizeFileList([...touchedFiles])
 }
@@ -1776,30 +1778,53 @@ export const applyPayloadFragments = async (
 /* Exact inverse of applyPayloadFragments: unregister the block and drop the
    import it added. Missing wiring is not an error — removal has to be as
    idempotent as install, so a half-removed repo can be finished off safely. */
-export const removePayloadFragments = async (
+export const preparePayloadFragmentRemoval = async (
   cwd: string,
   fragments: PayloadFragment[],
   hostFiles: ResolvedHostFiles = CANONICAL_HOST_FILES,
 ) => {
   const touchedFiles = new Set<string>()
+  const originalSources = new Map<string, string>()
+  const sources = new Map<string, string>()
 
   for (const fragment of fragments) {
     const projectPath =
       fragment.kind === 'renderBlocks' ? hostFiles.renderBlocks : hostFiles.pagesLayout
     const filePath = getAbsolutePath(cwd, projectPath)
-    const existing = await readSafeProjectFile({ cwd, filePath })
+    const existing =
+      sources.get(projectPath) ?? (await readSafeProjectFile({ cwd, filePath }))
+    originalSources.set(projectPath, originalSources.get(projectPath) ?? existing)
     const updated =
       fragment.kind === 'renderBlocks'
         ? removeRenderBlocksFragment(existing, fragment)
         : removePagesLayoutFragment(existing, fragment)
 
     if (updated !== existing) {
-      await writeSafeProjectFile({ contents: updated, cwd, filePath })
+      sources.set(projectPath, updated)
       touchedFiles.add(projectPath)
     }
   }
 
-  return normalizeFileList([...touchedFiles])
+  const changes = [...sources.entries()]
+    .filter(([projectPath, content]) => content !== originalSources.get(projectPath))
+    .map(([projectPath, content]) => ({
+      content,
+      filePath: getAbsolutePath(cwd, projectPath),
+    }))
+
+  return { changes, touchedFiles: normalizeFileList([...touchedFiles]) }
+}
+
+export const removePayloadFragments = async (
+  cwd: string,
+  fragments: PayloadFragment[],
+  hostFiles: ResolvedHostFiles = CANONICAL_HOST_FILES,
+) => {
+  const prepared = await preparePayloadFragmentRemoval(cwd, fragments, hostFiles)
+
+  await commitFileChanges(prepared.changes, { cwd })
+
+  return prepared.touchedFiles
 }
 
 export const verifyInstalledManifestFiles = async ({

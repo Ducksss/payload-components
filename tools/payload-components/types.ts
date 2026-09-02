@@ -79,7 +79,23 @@ export type InstallStateEntry = {
   targetId: string
 }
 
+export type BaseBundleStateEntry = {
+  /* Only files whose bytes came from the scaffold are owned. Existing consumer
+   * implementations are deliberately absent, so later scaffold runs cannot
+   * claim or overwrite them. */
+  fileHashes: Record<string, string>
+  installedAt: string
+  lastAttemptAt: string
+  version: string
+}
+
 export type InstallState = {
+  base?: BaseBundleStateEntry
+  components: Record<string, InstallStateEntry>
+  version: 4
+}
+
+export type InstallStateV3 = {
   components: Record<string, InstallStateEntry>
   version: 3
 }

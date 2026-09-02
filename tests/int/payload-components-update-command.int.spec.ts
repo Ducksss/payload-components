@@ -11,10 +11,10 @@ import type { InstallStateV2 } from '../../tools/payload-components/types'
 
 import { createInstallFixtureForComponents } from './payload-components-fixture'
 
-/* `update` deletes files so the registry install rewrites them, then delegates
- * to `add`. The delegation is stubbed here: what matters is which components it
- * decides to re-install, and that a locally edited file blocks the component
- * until --force. A real re-install is covered by the add-command specs. */
+/* `update` stages canonical source replacements, then delegates the remaining
+ * dependency/wiring/state reconciliation to `add`. The delegation is stubbed
+ * here: what matters is which components it re-installs, that live source never
+ * disappears between stages, and that local edits still require --force. */
 
 const fixtureDirs: string[] = []
 
@@ -184,6 +184,7 @@ const setupBreaking = async () => {
       .fn()
       .mockResolvedValue({ comparisons: [], missing: [], modified: [] }),
     resolveRecordedFileHashes: vi.fn().mockResolvedValue({}),
+    replaceCanonicalComponentFiles: vi.fn().mockResolvedValue(undefined),
   }))
   vi.doMock('../../tools/payload-components/state', () => ({
     loadState: vi.fn().mockResolvedValue({
@@ -201,7 +202,7 @@ const setupBreaking = async () => {
           targetId: 'payload-website-starter',
         },
       },
-      version: 3,
+      version: 4,
     }),
   }))
   vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
@@ -246,12 +247,17 @@ describe('update', () => {
       componentName: 'hero-basic',
       cwd: fixtureDir,
       localized: false,
+      prewrittenFiles: [
+        'src/blocks/shared/heroFields.ts',
+        'src/blocks/HeroBasic/config.ts',
+        'src/blocks/HeroBasic/Component.tsx',
+      ],
     })
     expect(output.join('')).toContain('hero-basic: 0.0.9 → 0.1.0')
     expect(await exists(path.join(fixtureDir, 'src/blocks/FaqCard/config.ts'))).toBe(true)
   })
 
-  it('deletes the component files so the registry install rewrites them', async () => {
+  it('keeps canonical component files present while the remaining install stages run', async () => {
     const { addCommand, updateCommand } = await setup()
     const { fixtureDir } = await installFixture({
       componentNames: ['hero-basic'],
@@ -261,8 +267,8 @@ describe('update', () => {
     await updateCommand({ cwd: fixtureDir })
 
     expect(addCommand).toHaveBeenCalledOnce()
-    expect(await exists(path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts'))).toBe(false)
-    expect(await exists(path.join(fixtureDir, 'src/blocks/shared/heroFields.ts'))).toBe(false)
+    expect(await exists(path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts'))).toBe(true)
+    expect(await exists(path.join(fixtureDir, 'src/blocks/shared/heroFields.ts'))).toBe(true)
   })
 
   it('updates a pristine stats-proof 0.2.0 install using its historical baseline', async () => {
@@ -276,11 +282,16 @@ describe('update', () => {
       componentName: 'stats-proof',
       cwd: fixtureDir,
       localized: false,
+      prewrittenFiles: [
+        'src/blocks/shared/statsFields.ts',
+        'src/blocks/StatsProof/config.ts',
+        'src/blocks/StatsProof/Component.tsx',
+      ],
     })
     expect(output.join('')).toContain('stats-proof: 0.2.0 → 0.3.0')
     expect(output.join('')).not.toContain('skipped')
-    expect(await exists(path.join(fixtureDir, 'src/blocks/StatsProof/config.ts'))).toBe(false)
-    expect(await exists(path.join(fixtureDir, 'src/blocks/StatsProof/Component.tsx'))).toBe(false)
+    expect(await exists(path.join(fixtureDir, 'src/blocks/StatsProof/config.ts'))).toBe(true)
+    expect(await exists(path.join(fixtureDir, 'src/blocks/StatsProof/Component.tsx'))).toBe(true)
   })
 
   it('still protects a real local edit on top of stats-proof 0.2.0', async () => {
@@ -289,12 +300,12 @@ describe('update', () => {
     const configPath = path.join(fixtureDir, 'src/blocks/StatsProof/config.ts')
 
     await writeFile(configPath, `${await readFile(configPath, 'utf8')}\n// local tweak\n`, 'utf8')
-    await updateCommand({ cwd: fixtureDir })
+    const isComplete = await updateCommand({ cwd: fixtureDir })
 
     expect(addCommand).not.toHaveBeenCalled()
     expect(output.join('')).toContain('skipped — 1 locally modified file')
     expect(await exists(configPath)).toBe(true)
-    expect(process.exitCode).toBe(1)
+    expect(isComplete).toBe(false)
   })
 
   it('protects an edit to a shared file even when the target recorded the edited bytes', async () => {
@@ -312,12 +323,12 @@ describe('update', () => {
     state.components['hero-video'].manifestVersion = '0.0.9'
     await saveState(fixtureDir, state)
 
-    await updateCommand({ componentNames: ['hero-video'], cwd: fixtureDir })
+    const isComplete = await updateCommand({ componentNames: ['hero-video'], cwd: fixtureDir })
 
     expect(addCommand).not.toHaveBeenCalled()
     expect(await readFile(absoluteSharedPath, 'utf8')).toBe(editedSource)
     expect(output.join('')).toContain(`${sharedPath} (modified)`)
-    expect(process.exitCode).toBe(1)
+    expect(isComplete).toBe(false)
   })
 
   it('keeps a retired file when another recorded component still owns it', async () => {
@@ -351,13 +362,13 @@ describe('update', () => {
 
     await writeFile(configPath, `${await readFile(configPath, 'utf8')}\n// local tweak\n`, 'utf8')
 
-    await updateCommand({ cwd: fixtureDir })
+    const isComplete = await updateCommand({ cwd: fixtureDir })
 
     expect(addCommand).not.toHaveBeenCalled()
     expect(await exists(configPath)).toBe(true)
     expect(output.join('')).toContain('skipped — 1 locally modified file')
     expect(output.join('')).toContain('Re-run with --force')
-    expect(process.exitCode).toBe(1)
+    expect(isComplete).toBe(false)
   })
 
   it('overwrites local edits under --force', async () => {
@@ -370,12 +381,12 @@ describe('update', () => {
 
     await writeFile(configPath, `${await readFile(configPath, 'utf8')}\n// local tweak\n`, 'utf8')
 
-    await updateCommand({ cwd: fixtureDir, force: true })
+    const isComplete = await updateCommand({ cwd: fixtureDir, force: true })
 
     expect(addCommand).toHaveBeenCalledOnce()
-    expect(await exists(configPath)).toBe(false)
+    expect(await exists(configPath)).toBe(true)
     expect(output.join('')).toContain('local edits discarded by --force')
-    expect(process.exitCode).toBeUndefined()
+    expect(isComplete).toBe(true)
   })
 
   it('changes nothing under --dry-run', async () => {
@@ -397,7 +408,7 @@ describe('update', () => {
   it('holds back a breaking upgrade until it is explicitly accepted', async () => {
     const { addCommand, output, updateCommand } = await setupBreaking()
 
-    await updateCommand({ cwd: '/tmp/project' })
+    const isComplete = await updateCommand({ cwd: '/tmp/project' })
 
     expect(addCommand).not.toHaveBeenCalled()
     expect(output.join('')).toContain('held back')
@@ -406,16 +417,16 @@ describe('update', () => {
       'migrate first: Rename the stored `heading` field to `title`.',
     )
     expect(output.join('')).toContain('re-run with --accept-breaking')
-    expect(process.exitCode).toBe(1)
+    expect(isComplete).toBe(false)
   })
 
   it('applies a breaking upgrade under --accept-breaking', async () => {
     const { addCommand, updateCommand } = await setupBreaking()
 
-    await updateCommand({ acceptBreaking: true, cwd: '/tmp/project' })
+    const isComplete = await updateCommand({ acceptBreaking: true, cwd: '/tmp/project' })
 
     expect(addCommand).toHaveBeenCalledOnce()
-    expect(process.exitCode).toBeUndefined()
+    expect(isComplete).toBe(true)
   })
 
   it('rejects a component that is not recorded', async () => {

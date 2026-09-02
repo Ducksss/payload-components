@@ -55,6 +55,10 @@ const createScaffoldRoot = async () => {
     path.join(root, 'payload-components', 'source', 'blocks', 'HeroBasic'),
     { recursive: true },
   )
+  await cp(
+    path.join(repoRoot, 'payload-components', 'manifests', 'hero-basic.json'),
+    path.join(root, 'payload-components', 'manifests', 'hero-basic.json'),
+  )
 
   await Promise.all([
     writeFile(
@@ -215,12 +219,12 @@ describe('payload-components new', () => {
 
     await runScaffold(root)
 
-    const [registry, demoRegistry, docsMeta, cli, readme] = await Promise.all([
+    const [registry, demoRegistry, docsMeta, readme, siteCatalog] = await Promise.all([
       readRootFile(root, 'payload-components', 'registry.json'),
       readRootFile(root, 'src', 'components', 'site', 'demos', 'registry.ts'),
       readRootFile(root, 'content', 'docs', 'components', 'meta.json'),
-      readRootFile(root, 'tools', 'payload-components', 'cli.ts'),
       readRootFile(root, 'README.md'),
+      readRootFile(root, 'src', 'generated', 'component-catalog.json'),
     ])
 
     /* registry.json and meta.json are spliced as text to preserve their
@@ -232,18 +236,21 @@ describe('payload-components new', () => {
     expect(JSON.parse(docsMeta).pages).toEqual(['hero-basic', SLUG])
     expect(demoRegistry).toContain(`import { ${PASCAL}Demo }`)
     expect(demoRegistry).toContain(`'${SLUG}': ${PASCAL}Demo,`)
-    expect(cli).toContain(`\n  ${SLUG}\n`)
     expect(readme).toContain(`| \`${SLUG}\``)
     expect(readme).toContain(`npx payload-components add ${SLUG}`)
+    expect(JSON.parse(siteCatalog).components.at(-1)).toEqual({
+      slug: SLUG,
+      version: '0.1.0',
+    })
   })
 
   it('prints the curated decisions instead of guessing at them', async () => {
     const root = await createScaffoldRoot()
     const { output } = await runScaffold(root)
 
-    /* Catalog order is ranked, so componentEntries is never auto-appended. */
-    expect(output).toContain('insert (do not append)')
-    expect(output).toContain('componentEntries')
+    expect(output).toContain('componentEditorialEntries')
+    expect(output).toContain('commands, routes, family, and version are derived')
+    expect(output).toContain('src/generated/component-catalog.json')
     expect(output).toContain('Visual baselines cannot be generated here')
     /* The dbName suggestion is checked against the blocks that already exist. */
     expect(output).toContain('pc_aa_sca')

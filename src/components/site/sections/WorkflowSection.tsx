@@ -8,7 +8,7 @@ import { Section, SectionHeading } from '@/components/site/section'
 import { landingSections, workflowSteps } from '@/lib/site'
 
 /* How it works — a vertical numbered timeline beside the live result: three
- * moves on the left, a real block rendered from source on the right, then the
+ * moves on the left, a source-mirrored visual specimen on the right, then the
  * install replay underneath as the receipt.
  *
  * The replay used to headline the hero; it reads better here, where "run the

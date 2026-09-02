@@ -5,15 +5,11 @@ import path from 'node:path'
 import type { ComponentManifest, InstallStateEntry, RegistryDefinition } from './types'
 
 import { isBlockConfigFile, localizeBlockConfigSource } from './project'
-import { readSafeProjectFile, resolveSafeProjectPath, writeSafeProjectFile } from './safe-path'
-import { isPathInside, readJsonFile, repoRoot } from './utils'
+import { readSafeProjectFile, resolveSafeProjectPath } from './safe-path'
+import { commitFileChanges, isPathInside, readJsonFile, repoRoot } from './utils'
 
 const registryDefinitionPath = path.join(repoRoot, 'payload-components', 'registry.json')
-const installBaselinesPath = path.join(
-  repoRoot,
-  'payload-components',
-  'install-baselines.json',
-)
+const installBaselinesPath = path.join(repoRoot, 'payload-components', 'install-baselines.json')
 const sourceRoot = path.join(repoRoot, 'payload-components', 'source')
 
 type InstallBaselines = {
@@ -56,8 +52,7 @@ export type InstalledFileReport = {
 /* Compare copied source by content, not bytes: the only differences a healthy
  * install can introduce are line endings and a trailing newline (git autocrlf,
  * editors-on-save). Anything else is a real local edit we must not clobber. */
-export const normalizeSource = (value: string) =>
-  value.replaceAll('\r\n', '\n').replace(/\s+$/, '')
+export const normalizeSource = (value: string) => value.replaceAll('\r\n', '\n').replace(/\s+$/, '')
 
 export const hashSource = (value: string) =>
   createHash('sha256').update(normalizeSource(value)).digest('hex')
@@ -93,6 +88,59 @@ export const resolveCanonicalFiles = async (registryItemName: string) => {
   return canonicalFiles
 }
 
+/* Update owns source delivery directly instead of deleting live files and
+ * asking shadcn to recreate them. Every replacement and retired-file deletion
+ * is staged, then committed as one rollback-capable batch. Dependency and
+ * wiring reconciliation still runs through add's idempotent pipeline. */
+export const replaceCanonicalComponentFiles = async ({
+  cwd,
+  deleteFiles = [],
+  localized = false,
+  manifest,
+}: {
+  cwd: string
+  deleteFiles?: string[]
+  localized?: boolean
+  manifest: Pick<ComponentManifest, 'files' | 'registryItemName'>
+}) => {
+  const canonicalFiles = await resolveCanonicalFiles(manifest.registryItemName)
+  const changes: Array<{ content: string | null; filePath: string }> = []
+
+  for (const projectPath of manifest.files) {
+    const canonicalFile = canonicalFiles.get(projectPath)
+
+    if (!canonicalFile) {
+      throw new Error(
+        `Registry item "${manifest.registryItemName}" does not ship manifest file "${projectPath}".`,
+      )
+    }
+
+    const absolutePath = path.resolve(cwd, projectPath)
+
+    if (!isPathInside(cwd, absolutePath)) {
+      throw new Error(`Refusing to update "${projectPath}" outside ${cwd}.`)
+    }
+
+    const shipped = await readFile(canonicalFile.sourcePath, 'utf8')
+    const content =
+      localized && isBlockConfigFile(projectPath) ? localizeBlockConfigSource(shipped) : shipped
+
+    changes.push({ content, filePath: absolutePath })
+  }
+
+  for (const projectPath of deleteFiles) {
+    const absolutePath = path.resolve(cwd, projectPath)
+
+    if (!isPathInside(cwd, absolutePath)) {
+      throw new Error(`Refusing to retire "${projectPath}" outside ${cwd}.`)
+    }
+
+    changes.push({ content: null, filePath: absolutePath })
+  }
+
+  await commitFileChanges(changes, { cwd })
+}
+
 const hashCanonicalFiles = async ({
   localized,
   manifest,
@@ -112,9 +160,7 @@ const hashCanonicalFiles = async ({
 
     const shipped = await readFile(canonicalFile.sourcePath, 'utf8')
     const canonical =
-      localized && isBlockConfigFile(projectPath)
-        ? localizeBlockConfigSource(shipped)
-        : shipped
+      localized && isBlockConfigFile(projectPath) ? localizeBlockConfigSource(shipped) : shipped
 
     hashes[projectPath] = hashSource(canonical)
   }
@@ -126,13 +172,7 @@ const hashCanonicalFiles = async ({
  * consumer files matters: localized installs deliberately differ from the
  * registry source, and only the final on-disk bytes describe what update may
  * safely replace later. */
-export const snapshotInstalledFiles = async ({
-  cwd,
-  files,
-}: {
-  cwd: string
-  files: string[]
-}) => {
+export const snapshotInstalledFiles = async ({ cwd, files }: { cwd: string; files: string[] }) => {
   const hashes: Record<string, string> = {}
 
   for (const projectPath of [...new Set(files)].sort()) {
@@ -147,7 +187,9 @@ export const snapshotInstalledFiles = async ({
     )
 
     if (source === undefined) {
-      throw new Error(`Cannot record installed source baseline because "${projectPath}" is missing.`)
+      throw new Error(
+        `Cannot record installed source baseline because "${projectPath}" is missing.`,
+      )
     }
 
     hashes[projectPath] = hashSource(source)
@@ -254,7 +296,9 @@ export const compareInstalledFiles = async ({
 
   return {
     comparisons,
-    missing: comparisons.filter(({ status }) => status === 'missing').map(({ projectPath }) => projectPath),
+    missing: comparisons
+      .filter(({ status }) => status === 'missing')
+      .map(({ projectPath }) => projectPath),
     modified: comparisons
       .filter(({ status }) => status === 'modified')
       .map(({ projectPath }) => projectPath),
@@ -293,15 +337,20 @@ export const copySharedSourceFile = async ({
 
   const alreadyPresent = await readSafeProjectFile({ cwd, filePath: destinationPath }).then(
     () => true,
-    () => false,
+    (error: NodeJS.ErrnoException) => {
+      if (error.code === 'ENOENT') return false
+      throw error
+    },
   )
 
   if (alreadyPresent) {
     return false
   }
 
-  const source = await readFile(sourcePath)
-  await writeSafeProjectFile({ contents: source, cwd, filePath: destinationPath })
+  await commitFileChanges(
+    [{ content: await readFile(sourcePath, 'utf8'), filePath: destinationPath }],
+    { cwd },
+  )
 
   return true
 }
