@@ -673,11 +673,12 @@ describe('localizeCommand', () => {
     const { fixtureDir } = await installFixture({ componentNames: [] })
     const { localizeCommand, output } = await setup()
 
-    await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
+    const isComplete = await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
 
     expect(output()).toContain(
       'no recorded components — use --localized on future installs, or re-run localize afterward',
     )
+    expect(isComplete).toBe(true)
     expect(process.exitCode).toBeUndefined()
   })
 
@@ -856,14 +857,14 @@ describe('localizeCommand', () => {
     const { localizeCommand, output } = await setup()
 
     await rm(path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts'))
-    await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
+    const isComplete = await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
 
     expect(output()).toContain(
       'src/blocks/HeroBasic/config.ts (missing — run "payload-components add hero-basic")',
     )
     expect((await loadState(fixtureDir)).components['hero-basic']?.localized).toBeUndefined()
     /* In scope and not wrapped, so the run reports itself incomplete. */
-    expect(process.exitCode).toBe(1)
+    expect(isComplete).toBe(false)
   })
 
   /* The config computes its locales, so this command cannot name them — but the
@@ -914,23 +915,27 @@ describe('localizeCommand', () => {
     )
 
     await writeFile(blockConfigPath, edited, 'utf8')
-    await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
+    const isComplete = await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
 
     expect(await readFile(blockConfigPath, 'utf8')).toBe(edited)
     /* The config half is not held hostage by a block-level edit. */
     expect(await readConfig(fixtureDir)).toContain('  localization: {')
     expect((await loadState(fixtureDir)).components['hero-basic']?.localized).toBeUndefined()
     expect(output()).toContain('skipped — 1 locally modified block config')
-    expect(process.exitCode).toBe(1)
+    expect(isComplete).toBe(false)
 
-    process.exitCode = undefined
-    await localizeCommand({ cwd: fixtureDir, force: true, locales: 'en,zh' })
+    const forcedComplete = await localizeCommand({
+      cwd: fixtureDir,
+      force: true,
+      locales: 'en,zh',
+    })
 
     const forced = await readFile(blockConfigPath, 'utf8')
 
     expect(forced).toContain('fields: localizeFields([')
     expect(forced).toContain('// our own note')
     expect((await loadState(fixtureDir)).components['hero-basic']?.localized).toBe(true)
+    expect(forcedComplete).toBe(true)
   })
 
   it('keeps an existing localization block until --force and exits non-zero', async () => {
@@ -946,22 +951,25 @@ describe('localizeCommand', () => {
     })
     const { localizeCommand, output } = await setup()
 
-    await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
+    const isComplete = await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
 
     expect(await readConfig(fixtureDir)).toBe(existing)
     expect(output()).toContain('already declares a different localization block')
-    expect(process.exitCode).toBe(1)
+    expect(isComplete).toBe(false)
     /* The block half still runs — the two halves fail independently. */
     expect(await readBlockConfig(fixtureDir, 'HeroBasic')).toContain('localizeFields')
 
-    process.exitCode = undefined
-    await localizeCommand({ cwd: fixtureDir, force: true, locales: 'en,zh' })
+    const forcedComplete = await localizeCommand({
+      cwd: fixtureDir,
+      force: true,
+      locales: 'en,zh',
+    })
 
     const config = await readConfig(fixtureDir)
 
     expect(config).toContain("      { code: 'zh', label: '简体中文' },")
     expect(config).not.toContain("locales: ['en', 'fr']")
-    expect(process.exitCode).toBeUndefined()
+    expect(forcedComplete).toBe(true)
   })
 
   it('reports a config it cannot patch instead of rewriting it', async () => {
@@ -971,10 +979,10 @@ describe('localizeCommand', () => {
     })
     const { localizeCommand, output } = await setup()
 
-    await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
+    const isComplete = await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
 
     expect(await readConfig(fixtureDir)).toBe('export default {}\n')
     expect(output()).toContain('no buildConfig({ ... }) call found')
-    expect(process.exitCode).toBe(1)
+    expect(isComplete).toBe(false)
   })
 })

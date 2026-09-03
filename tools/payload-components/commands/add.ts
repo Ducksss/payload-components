@@ -50,7 +50,8 @@ import type {
 
 import { seedCommand } from './seed'
 
-const formatStageError = (error: unknown) => (error instanceof Error ? error.message : 'Unknown error')
+const formatStageError = (error: unknown) =>
+  error instanceof Error ? error.message : 'Unknown error'
 
 const formatFileSummary = (files: string[]) => {
   if (files.length === 0) {
@@ -164,11 +165,13 @@ const formatDryRunPlan = ({
     'No files will be changed, no dependencies will be installed, and no commands will run.',
     '',
     'Component files:',
-    ...plan.files.map((filePath) =>
-      `  ${filePath} (${missingFiles.has(filePath) ? 'would create' : 'already present'})`,
+    ...plan.files.map(
+      (filePath) =>
+        `  ${filePath} (${missingFiles.has(filePath) ? 'would create' : 'already present'})`,
     ),
-    ...plan.registryDependencies.map(({ name, targetFile }) =>
-      `  ${targetFile} (${missingRegistryDependencies.has(targetFile) ? `would install registry dependency ${name}` : `registry dependency ${name} already present`})`,
+    ...plan.registryDependencies.map(
+      ({ name, targetFile }) =>
+        `  ${targetFile} (${missingRegistryDependencies.has(targetFile) ? `would install registry dependency ${name}` : `registry dependency ${name} already present`})`,
     ),
     '',
     'Payload wiring:',
@@ -295,6 +298,7 @@ const installComponent = async ({
   deferLocaleNotice,
   dryRun,
   localized,
+  prewrittenFiles,
 }: {
   cwd: string
   componentName: string
@@ -303,6 +307,7 @@ const installComponent = async ({
   deferLocaleNotice: boolean
   dryRun: boolean
   localized: boolean
+  prewrittenFiles: string[]
 }) => {
   const manifest = await loadManifest(componentName)
   const project = await detectProject(cwd)
@@ -413,14 +418,32 @@ const installComponent = async ({
       targetId: project.target.id,
     })
 
-    printHeader(`payload-components: "${manifest.name}" is already present. Recorded install state.`)
+    printHeader(
+      `payload-components: "${manifest.name}" is already present. Recorded install state.`,
+    )
     return
   }
 
   printHeader(`payload-components: installing "${manifest.name}" into ${cwd}`)
-  const rewrittenFiles = new Set(fileCheck.missingFiles)
+  const rewrittenFiles = new Set([...fileCheck.missingFiles, ...prewrittenFiles])
 
   if (installedEntry?.status === 'partial') {
+    /* An update may have committed canonical source before a later dependency,
+     * fragment, or generator stage failed. On a plain retry there is no in-memory
+     * prewrittenFiles hand-off, so recover it from exact canonical bytes instead
+     * of retaining the old release's hashes under the new manifest version. */
+    const canonicalReport = await compareInstalledFiles({
+      cwd,
+      localized: effectiveLocalized,
+      manifest: plan,
+    })
+
+    for (const comparison of canonicalReport.comparisons) {
+      if (comparison.status === 'unchanged') {
+        rewrittenFiles.add(comparison.projectPath)
+      }
+    }
+
     printHeader(
       formatPartialRetryNotice({
         componentName: manifest.name,
@@ -469,7 +492,9 @@ const installComponent = async ({
   }
 
   if (fileCheck.missingFiles.length > 0) {
-    const registryOutputDir = await executeStage('registry-build', () => buildRegistry(project.packageManager))
+    const registryOutputDir = await executeStage('registry-build', () =>
+      buildRegistry(project.packageManager),
+    )
     const registryItemPath = path.join(registryOutputDir, `${manifest.registryItemName}.json`)
 
     try {
@@ -512,7 +537,10 @@ const installComponent = async ({
 
   if (dependencyCheck.missing.length > 0) {
     const missingDependencies = Object.fromEntries(
-      dependencyCheck.missing.map((dependencyName) => [dependencyName, plan.dependencies[dependencyName]]),
+      dependencyCheck.missing.map((dependencyName) => [
+        dependencyName,
+        plan.dependencies[dependencyName],
+      ]),
     )
 
     await executeStage('dependency-install', () =>
@@ -601,6 +629,7 @@ export const addCommand = async ({
   demo = false,
   dryRun = false,
   localized = false,
+  prewrittenFiles = [],
 }: {
   cwd: string
   componentName: string
@@ -609,6 +638,9 @@ export const addCommand = async ({
   demo?: boolean
   dryRun?: boolean
   localized?: boolean
+  /* Internal update hand-off: bytes already replaced transactionally before
+   * the idempotent dependency/wiring/post-install stages run. */
+  prewrittenFiles?: string[]
 }) => {
   /* `@scope/item` addresses someone else's registry. It has no manifest here, so
      none of the wrapper pipeline applies — hand it to shadcn and say plainly
@@ -641,7 +673,14 @@ export const addCommand = async ({
     return
   }
 
-  await installComponent({ cwd, componentName, deferLocaleNotice, dryRun, localized })
+  await installComponent({
+    cwd,
+    componentName,
+    deferLocaleNotice,
+    dryRun,
+    localized,
+    prewrittenFiles,
+  })
 
   if (demo && !dryRun) {
     await seedCommand({ cwd, componentName })

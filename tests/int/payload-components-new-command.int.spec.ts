@@ -55,6 +55,10 @@ const createScaffoldRoot = async () => {
     path.join(root, 'payload-components', 'source', 'blocks', 'HeroBasic'),
     { recursive: true },
   )
+  await cp(
+    path.join(repoRoot, 'payload-components', 'manifests', 'hero-basic.json'),
+    path.join(root, 'payload-components', 'manifests', 'hero-basic.json'),
+  )
 
   await Promise.all([
     writeFile(
@@ -215,12 +219,12 @@ describe('payload-components new', () => {
 
     await runScaffold(root)
 
-    const [registry, demoRegistry, docsMeta, cli, readme] = await Promise.all([
+    const [registry, demoRegistry, docsMeta, readme, siteCatalog] = await Promise.all([
       readRootFile(root, 'payload-components', 'registry.json'),
       readRootFile(root, 'src', 'components', 'site', 'demos', 'registry.ts'),
       readRootFile(root, 'content', 'docs', 'components', 'meta.json'),
-      readRootFile(root, 'tools', 'payload-components', 'cli.ts'),
       readRootFile(root, 'README.md'),
+      readRootFile(root, 'src', 'generated', 'component-catalog.json'),
     ])
 
     /* registry.json and meta.json are spliced as text to preserve their
@@ -232,18 +236,21 @@ describe('payload-components new', () => {
     expect(JSON.parse(docsMeta).pages).toEqual(['hero-basic', SLUG])
     expect(demoRegistry).toContain(`import { ${PASCAL}Demo }`)
     expect(demoRegistry).toContain(`'${SLUG}': ${PASCAL}Demo,`)
-    expect(cli).toContain(`\n  ${SLUG}\n`)
     expect(readme).toContain(`| \`${SLUG}\``)
     expect(readme).toContain(`npx payload-components add ${SLUG}`)
+    expect(JSON.parse(siteCatalog).components.at(-1)).toEqual({
+      slug: SLUG,
+      version: '0.1.0',
+    })
   })
 
   it('prints the curated decisions instead of guessing at them', async () => {
     const root = await createScaffoldRoot()
     const { output } = await runScaffold(root)
 
-    /* Catalog order is ranked, so componentEntries is never auto-appended. */
-    expect(output).toContain('insert (do not append)')
-    expect(output).toContain('componentEntries')
+    expect(output).toContain('componentEditorialEntries')
+    expect(output).toContain('commands, routes, family, and version are derived')
+    expect(output).toContain('src/generated/component-catalog.json')
     expect(output).toContain('Visual baselines cannot be generated here')
     /* The dbName suggestion is checked against the blocks that already exist. */
     expect(output).toContain('pc_aa_sca')
@@ -283,5 +290,58 @@ describe('payload-components new', () => {
     await expect(newCommand({ componentSlug: SLUG })).rejects.toThrow(
       'Refusing to overwrite existing file',
     )
+  })
+
+  it('leaves the repository unchanged when generated catalog validation fails', async () => {
+    const root = await createScaffoldRoot()
+    const existingPaths = [
+      ['payload-components', 'registry.json'],
+      ['src', 'components', 'site', 'demos', 'registry.ts'],
+      ['content', 'docs', 'components', 'meta.json'],
+      ['README.md'],
+    ]
+    const heroManifestPath = path.join(root, 'payload-components', 'manifests', 'hero-basic.json')
+    const heroManifest = JSON.parse(await readFile(heroManifestPath, 'utf8')) as Record<
+      string,
+      unknown
+    >
+
+    /* The existing registry projection fails only after every new file and
+       insertion has been prepared. This used to strand all of those earlier
+       writes in the repository. */
+    heroManifest.name = 'mismatched-existing-manifest'
+    await writeFile(heroManifestPath, `${JSON.stringify(heroManifest, null, 2)}\n`, 'utf8')
+    const before = await Promise.all(
+      existingPaths.map((segments) => readRootFile(root, ...segments)),
+    )
+
+    vi.doMock('../../tools/payload-components/utils', async () => {
+      const actual = await vi.importActual<typeof import('../../tools/payload-components/utils')>(
+        '../../tools/payload-components/utils',
+      )
+
+      return { ...actual, repoRoot: root }
+    })
+
+    const { newCommand } = await import('../../tools/payload-components/commands/new')
+
+    await expect(newCommand({ componentSlug: SLUG })).rejects.toThrow(
+      'Registry item "hero-basic" has no matching manifest contract.',
+    )
+
+    await expect(
+      Promise.all(existingPaths.map((segments) => readRootFile(root, ...segments))),
+    ).resolves.toEqual(before)
+
+    for (const segments of [
+      ['payload-components', 'source', 'blocks', PASCAL, 'config.ts'],
+      ['payload-components', 'source', 'blocks', PASCAL, 'Component.tsx'],
+      ['payload-components', 'manifests', `${SLUG}.json`],
+      ['content', 'docs', 'components', `${SLUG}.mdx`],
+      ['src', 'components', 'site', 'demos', `${PASCAL}Demo.tsx`],
+      ['src', 'generated', 'component-catalog.json'],
+    ]) {
+      await expect(readRootFile(root, ...segments)).rejects.toMatchObject({ code: 'ENOENT' })
+    }
   })
 })

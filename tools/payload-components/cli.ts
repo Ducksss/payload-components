@@ -10,13 +10,13 @@ import { initCommand } from './commands/init'
 import { listCommand } from './commands/list'
 import { localizeCommand } from './commands/localize'
 import { mcpCommand } from './commands/mcp'
-import { newCommand } from './commands/new'
 import { removeCommand } from './commands/remove'
 import { seedCommand } from './commands/seed'
 import { templatesCommand } from './commands/templates'
 import { updateCommand } from './commands/update'
+import { withCommandOutput, writeCommandOutput } from './command-output'
+import { listRegistryComponentNames } from './manifest'
 import { withProjectMutationLock } from './project-lock'
-import { repoRoot } from './utils'
 
 export const usage = `payload-components
 
@@ -29,11 +29,10 @@ Usage:
                               [--default-locale <code>] [--no-fallback] [--dry-run] [--force]
   payload-components diff [component-name...] [--cwd <path>] [--json]
   payload-components update [component-name...] [--cwd <path>] [--dry-run] [--force] [--accept-breaking]
-  payload-components remove <component-name...> [--cwd <path>] [--dry-run] [--force]
+  payload-components remove <component-name...> [--cwd <path>] [--dry-run] [--force] [--accept-stored-content]
   payload-components seed <component-name> [--cwd <path>]
   payload-components mcp [--cwd <path>]
-  payload-components new <component-name>
-  payload-components init [--cwd <path>] [--scaffold]
+  payload-components init [--cwd <path>] [--scaffold] [--force]
   payload-components doctor [--cwd <path>] [--json]
   payload-components --help
 
@@ -48,7 +47,6 @@ Commands:
   remove  Delete a component's exclusively owned files, unwire its block, and drop its install record.
   seed    Write a safe, runnable demo seed script for an installed component.
   mcp     Run a read-only Model Context Protocol server over stdio so coding agents can browse the registry.
-  new     Scaffold a new component bundle in this repository (contributors only).
   init    Initialize shadcn in the project (creates components.json) so components can be installed.
           With --scaffold, also lay down the starter base a bare Payload app is missing.
   doctor  Diagnose project readiness and recorded component installs without changing files.
@@ -56,14 +54,15 @@ Commands:
 Flags:
   --demo  After a successful add, write the demo seed script; with add-template, one per template page.
   --dry-run  Validate and preview an add, localize, update, or remove without changing files or running commands.
-  --force  Let localize replace configured locales and wrap edited configs, let update overwrite edits, or let remove delete unverifiable source.
+  --force  Let localize replace configured locales and wrap edited configs, update overwrite edits, remove delete unverifiable source, or init replace edited managed base files.
   --accept-breaking  Let update apply a version that changes content already stored in Payload.
+  --accept-stored-content  Confirm that stored Page blocks were migrated or removed before their component code is removed.
   --localized  Install the block, or every block of a template, with its text fields marked localized: true.
   --locales  Comma-separated locale codes for localize, e.g. --locales en,zh,pt-BR.
   --default-locale  The canonical locale for localized values; defaults to the first --locales entry.
   --no-fallback  Let localize write fallback: false, so an empty locale renders empty.
   --json  Print machine-readable output from list, diff, and doctor.
-  --scaffold  With init, install the starter base (Pages, Media, RenderBlocks, CMSLink, Media, linkGroup, cn).
+  --scaffold  With init, install and lifecycle-manage the starter base (Pages, Media, RenderBlocks, CMSLink, linkGroup, cn).
 
 Exit codes:
   diff exits 1 when any inspected component has drifted; update exits 1 when a
@@ -72,89 +71,18 @@ Exit codes:
   exits 1 when a recorded install needs attention and 2 when the project itself
   cannot accept installs.
 
-Current components:
-  hero-basic
-  hero-split
-  hero-video
-  hero-product-tilt
-  hero-aurora
-  hero-kinetic
-  feature-grid-basic
-  feature-split
-  feature-bento
-  feature-steps
-  feature-accordion
-  feature-cards-media
-  feature-icon-grid
-  embed-basic
-  logo-cloud-grid
-  logo-cloud-hover
-  logo-cloud-marquee
-  logo-cloud-inline
-  logo-cloud-inline-wrap
-  content-columns
-  content-image-lead
-  content-feature-media
-  content-feature-split
-  content-showcase
-  content-quote
-  content-community
-  integration-grid
-  integration-cluster
-  integration-split
-  integration-connect
-  integration-orbit
-  integration-list
-  integration-marquee
-  integration-testimonial
-  content-split-rows
-  content-rows
-  content-image-frame
-  content-stats
-  content-list
-  content-list-columns
-  content-list-icons
-  call-to-action-centered
-  call-to-action-boxed
-  call-to-action-split
-  call-to-action-signup
-  contact-routing-form
-  contact-channels
-  team-roster
-  team-grid
-  team-bios
-  faq-accordion
-  faq-split
-  faq-card
-  faq-icons
-  faq-grouped
-  faq-grid
-  comparator-table
-  comparator-grid
-  comparator-stack
-  testimonials-quote
-  testimonials-spotlight
-  testimonials-grid
-  testimonials-rating
-  testimonials-bento
-  testimonials-wall
-  stats-proof
-  stats-grid
-  stats-card
-  stats-inline
-  pricing-cards
-  pricing-cards-muted
-  pricing-cards-cta
-  pricing-split
-  pricing-enterprise
-  footer-columns
-  footer-simple
-  footer-centered
 `
+
+export const getUsage = async () => {
+  const componentNames = await listRegistryComponentNames()
+
+  return `${usage}\nCurrent components:\n${componentNames.map((name) => `  ${name}`).join('\n')}`
+}
 
 export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
   const args = [...argv]
   let cwd = defaultCwd
+  let acceptStoredContent = false
   let defaultLocale: string | undefined
   let demo = false
   let dryRun = false
@@ -252,6 +180,15 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
       continue
     }
 
+    if (current === '--accept-stored-content') {
+      if (acceptStoredContent) {
+        throw new Error('--accept-stored-content may only be specified once.')
+      }
+
+      acceptStoredContent = true
+      continue
+    }
+
     if (current === '--force') {
       if (force) {
         throw new Error('--force may only be specified once.')
@@ -302,6 +239,7 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
 
   return {
     acceptBreaking,
+    acceptStoredContent,
     cwd,
     defaultLocale,
     demo,
@@ -326,7 +264,6 @@ type CliCommands = {
   listCommand: typeof listCommand
   localizeCommand: typeof localizeCommand
   mcpCommand: typeof mcpCommand
-  newCommand: typeof newCommand
   removeCommand: typeof removeCommand
   seedCommand: typeof seedCommand
   templatesCommand: typeof templatesCommand
@@ -342,7 +279,6 @@ const commands: CliCommands = {
   listCommand,
   localizeCommand,
   mcpCommand,
-  newCommand,
   removeCommand,
   seedCommand,
   templatesCommand,
@@ -379,278 +315,269 @@ export const runCli = async ({
   commands?: CliCommands
   defaultCwd?: string
   write?: (value: string) => void
-} = {}) => {
-  const {
-    acceptBreaking,
-    cwd,
-    defaultLocale,
-    demo,
-    dryRun,
-    force,
-    help,
-    json,
-    locales,
-    localized,
-    noFallback,
-    positional,
-    scaffold,
-  } = parseArgs(argv, defaultCwd)
-  const [command, ...rest] = positional
-
-  const runMutation = async <T>(
-    operation: string,
-    mutationCwd: string,
-    run: () => Promise<T>,
-  ) => {
-    /* Unit tests inject handlers and assert only CLI routing. The real command
-     * table is the published execution path that needs the cross-process lock. */
-    if (commandHandlers !== commands || dryRun) {
-      return await run()
-    }
-
-    return await withProjectMutationLock({ cwd: mutationCwd, operation, run })
-  }
-
-  if (!command || help) {
-    write(`${usage}\n`)
-    return
-  }
-
-  const allowedFlags: Record<string, string[]> = {
-    add: ['demo', 'dryRun', 'localized'],
-    'add-template': ['demo', 'dryRun', 'localized'],
-    diff: ['json'],
-    doctor: ['json'],
-    init: ['scaffold'],
-    list: ['json'],
-    localize: ['defaultLocale', 'dryRun', 'force', 'locales', 'noFallback'],
-    remove: ['dryRun', 'force'],
-    mcp: [],
-    new: [],
-    seed: [],
-    templates: ['json'],
-    update: ['acceptBreaking', 'dryRun', 'force'],
-  }
-
-  if (allowedFlags[command]) {
-    assertFlagsAllowed({
-      allowed: allowedFlags[command],
-      command,
-      flags: {
+} = {}): Promise<0 | 1 | 2> => {
+  return await withCommandOutput({
+    write,
+    run: async () => {
+      const {
         acceptBreaking,
-        defaultLocale: Boolean(defaultLocale),
+        acceptStoredContent,
+        cwd,
+        defaultLocale,
         demo,
         dryRun,
         force,
+        help,
         json,
-        locales: Boolean(locales),
+        locales,
         localized,
         noFallback,
+        positional,
         scaffold,
-      },
-    })
-  }
+      } = parseArgs(argv, defaultCwd)
+      const [command, ...rest] = positional
 
-  if (demo && dryRun) {
-    throw new Error('--demo and --dry-run cannot be used together.')
-  }
+      const runMutation = async <T>(
+        operation: string,
+        mutationCwd: string,
+        run: () => Promise<T>,
+      ) => {
+        /* Unit tests inject handlers and assert only CLI routing. The real command
+         * table is the published execution path that needs the cross-process lock. */
+        if (commandHandlers !== commands || dryRun) {
+          return await run()
+        }
 
-  /* Deduplicate while preserving the order given: installing a family and its
-     shared base twice in one command would re-run the whole pipeline for no
-     reason, and the second pass would report "already installed". */
-  const uniqueNames = [...new Set(rest)]
+        return await withProjectMutationLock({ cwd: mutationCwd, operation, run })
+      }
 
-  if (command === 'add') {
-    if (uniqueNames.length === 0) {
-      throw new Error(
-        'payload-components add requires a component name. Try "payload-components add hero-basic" or "payload-components add logo-cloud-grid".',
-      )
-    }
+      if (!command || help) {
+        writeCommandOutput(`${await getUsage()}\n`)
+        return 0
+      }
 
-    await runMutation(`add ${uniqueNames.join(', ')}`, cwd, async () => {
-      for (const componentName of uniqueNames) {
-        await commandHandlers.addCommand({
-          cwd,
-          componentName,
-          demo,
-          dryRun,
-          localized,
+      const allowedFlags: Record<string, string[]> = {
+        add: ['demo', 'dryRun', 'localized'],
+        'add-template': ['demo', 'dryRun', 'localized'],
+        diff: ['json'],
+        doctor: ['json'],
+        init: ['force', 'scaffold'],
+        list: ['json'],
+        localize: ['defaultLocale', 'dryRun', 'force', 'locales', 'noFallback'],
+        remove: ['acceptStoredContent', 'dryRun', 'force'],
+        mcp: [],
+        seed: [],
+        templates: ['json'],
+        update: ['acceptBreaking', 'dryRun', 'force'],
+      }
+
+      if (allowedFlags[command]) {
+        assertFlagsAllowed({
+          allowed: allowedFlags[command],
+          command,
+          flags: {
+            acceptBreaking,
+            acceptStoredContent,
+            defaultLocale: Boolean(defaultLocale),
+            demo,
+            dryRun,
+            force,
+            json,
+            locales: Boolean(locales),
+            localized,
+            noFallback,
+            scaffold,
+          },
         })
       }
-    })
 
-    return
-  }
-
-  if (command === 'add-template') {
-    const [templateSlug] = uniqueNames
-
-    if (!templateSlug) {
-      throw new Error(
-        'payload-components add-template requires a template name. Try "payload-components add-template saas-launch".',
-      )
-    }
-
-    if (uniqueNames.length !== 1) {
-      throw new Error('payload-components add-template accepts exactly one template name.')
-    }
-
-    await runMutation(`add-template ${templateSlug}`, cwd, () =>
-      commandHandlers.addTemplateCommand({ cwd, demo, dryRun, localized, templateSlug }),
-    )
-    return
-  }
-
-  if (command === 'templates') {
-    if (rest.length > 0) {
-      throw new Error('payload-components templates does not accept positional arguments.')
-    }
-
-    await commandHandlers.templatesCommand({ cwd, json })
-    return
-  }
-
-  if (command === 'list') {
-    if (rest.length > 0) {
-      throw new Error('payload-components list does not accept positional arguments.')
-    }
-
-    await commandHandlers.listCommand({ cwd, json })
-    return
-  }
-
-  if (command === 'localize') {
-    await runMutation('localize', cwd, () =>
-      commandHandlers.localizeCommand({
-        componentNames: uniqueNames,
-        cwd,
-        ...(defaultLocale ? { defaultLocale } : {}),
-        dryRun,
-        ...(noFallback ? { fallback: false } : {}),
-        force,
-        ...(locales ? { locales } : {}),
-      }),
-    )
-    return
-  }
-
-  if (command === 'diff') {
-    const isClean = await commandHandlers.diffCommand({
-      componentNames: uniqueNames,
-      cwd,
-      json,
-    })
-
-    if (!isClean) {
-      process.exitCode = 1
-    }
-
-    return
-  }
-
-  if (command === 'update') {
-    await runMutation('update', cwd, () =>
-      commandHandlers.updateCommand({
-        acceptBreaking,
-        componentNames: uniqueNames,
-        cwd,
-        dryRun,
-        force,
-      }),
-    )
-    return
-  }
-
-  if (command === 'remove') {
-    if (uniqueNames.length === 0) {
-      throw new Error(
-        'payload-components remove requires a component name. Try "payload-components remove hero-basic".',
-      )
-    }
-
-    await runMutation(`remove ${uniqueNames.join(', ')}`, cwd, async () => {
-      for (const componentName of uniqueNames) {
-        await commandHandlers.removeCommand({ componentName, cwd, dryRun, force })
+      if (demo && dryRun) {
+        throw new Error('--demo and --dry-run cannot be used together.')
       }
-    })
 
-    return
-  }
+      /* Deduplicate while preserving the order given: installing a family and its
+     shared base twice in one command would re-run the whole pipeline for no
+     reason, and the second pass would report "already installed". */
+      const uniqueNames = [...new Set(rest)]
 
-  if (command === 'seed') {
-    const [componentName] = rest
+      if (command === 'add') {
+        if (uniqueNames.length === 0) {
+          throw new Error(
+            'payload-components add requires a component name. Try "payload-components add hero-basic" or "payload-components add logo-cloud-grid".',
+          )
+        }
 
-    if (!componentName) {
-      throw new Error(
-        'payload-components seed requires a component name. Try "payload-components seed hero-basic".',
-      )
-    }
+        await runMutation(`add ${uniqueNames.join(', ')}`, cwd, async () => {
+          for (const componentName of uniqueNames) {
+            await commandHandlers.addCommand({
+              cwd,
+              componentName,
+              demo,
+              dryRun,
+              localized,
+            })
+          }
+        })
 
-    if (rest.length !== 1) {
-      throw new Error('payload-components seed accepts exactly one component name.')
-    }
+        return 0
+      }
 
-    await runMutation(`seed ${componentName}`, cwd, () =>
-      commandHandlers.seedCommand({
-        cwd,
-        componentName,
-      }),
-    )
-    return
-  }
+      if (command === 'add-template') {
+        const [templateSlug] = uniqueNames
 
-  if (command === 'doctor') {
-    if (rest.length > 0) {
-      throw new Error('payload-components doctor does not accept positional arguments.')
-    }
+        if (!templateSlug) {
+          throw new Error(
+            'payload-components add-template requires a template name. Try "payload-components add-template saas-launch".',
+          )
+        }
 
-    const exitCode = await commandHandlers.doctorCommand({ cwd, json })
+        if (uniqueNames.length !== 1) {
+          throw new Error('payload-components add-template accepts exactly one template name.')
+        }
 
-    if (exitCode !== 0) {
-      process.exitCode = exitCode
-    }
+        await runMutation(`add-template ${templateSlug}`, cwd, () =>
+          commandHandlers.addTemplateCommand({ cwd, demo, dryRun, localized, templateSlug }),
+        )
+        return 0
+      }
 
-    return
-  }
+      if (command === 'templates') {
+        if (rest.length > 0) {
+          throw new Error('payload-components templates does not accept positional arguments.')
+        }
 
-  if (command === 'mcp') {
-    if (rest.length > 0) {
-      throw new Error('payload-components mcp does not accept positional arguments.')
-    }
+        await commandHandlers.templatesCommand({ cwd, json })
+        return 0
+      }
 
-    await commandHandlers.mcpCommand({ cwd })
-    return
-  }
+      if (command === 'list') {
+        if (rest.length > 0) {
+          throw new Error('payload-components list does not accept positional arguments.')
+        }
 
-  if (command === 'new') {
-    const [componentSlug] = uniqueNames
+        await commandHandlers.listCommand({ cwd, json })
+        return 0
+      }
 
-    if (!componentSlug) {
-      throw new Error(
-        'payload-components new requires a component name. Try "payload-components new hero-split".',
-      )
-    }
+      if (command === 'localize') {
+        const isComplete = await runMutation('localize', cwd, () =>
+          commandHandlers.localizeCommand({
+            componentNames: uniqueNames,
+            cwd,
+            ...(defaultLocale ? { defaultLocale } : {}),
+            dryRun,
+            ...(noFallback ? { fallback: false } : {}),
+            force,
+            ...(locales ? { locales } : {}),
+          }),
+        )
 
-    if (uniqueNames.length !== 1) {
-      throw new Error('payload-components new accepts exactly one component name.')
-    }
+        return isComplete ? 0 : 1
+      }
 
-    await runMutation(`new ${componentSlug}`, repoRoot, () =>
-      commandHandlers.newCommand({ componentSlug }),
-    )
-    return
-  }
+      if (command === 'diff') {
+        const isClean = await commandHandlers.diffCommand({
+          componentNames: uniqueNames,
+          cwd,
+          json,
+        })
 
-  if (command === 'init') {
-    if (rest.length > 0) {
-      throw new Error('payload-components init does not accept positional arguments.')
-    }
+        return isClean ? 0 : 1
+      }
 
-    await runMutation('init', cwd, () => commandHandlers.initCommand({ cwd, scaffold }))
-    return
-  }
+      if (command === 'update') {
+        const isComplete = await runMutation('update', cwd, () =>
+          commandHandlers.updateCommand({
+            acceptBreaking,
+            componentNames: uniqueNames,
+            cwd,
+            dryRun,
+            force,
+          }),
+        )
 
-  throw new Error(`Unknown command "${command}".\n\n${usage}`)
+        return isComplete ? 0 : 1
+      }
+
+      if (command === 'remove') {
+        if (uniqueNames.length === 0) {
+          throw new Error(
+            'payload-components remove requires a component name. Try "payload-components remove hero-basic".',
+          )
+        }
+
+        await runMutation(`remove ${uniqueNames.join(', ')}`, cwd, async () => {
+          for (const componentName of uniqueNames) {
+            await commandHandlers.removeCommand({
+              acceptStoredContent,
+              componentName,
+              cwd,
+              dryRun,
+              force,
+            })
+          }
+        })
+
+        return 0
+      }
+
+      if (command === 'seed') {
+        const [componentName] = rest
+
+        if (!componentName) {
+          throw new Error(
+            'payload-components seed requires a component name. Try "payload-components seed hero-basic".',
+          )
+        }
+
+        if (rest.length !== 1) {
+          throw new Error('payload-components seed accepts exactly one component name.')
+        }
+
+        await runMutation(`seed ${componentName}`, cwd, () =>
+          commandHandlers.seedCommand({
+            cwd,
+            componentName,
+          }),
+        )
+        return 0
+      }
+
+      if (command === 'doctor') {
+        if (rest.length > 0) {
+          throw new Error('payload-components doctor does not accept positional arguments.')
+        }
+
+        const exitCode = await commandHandlers.doctorCommand({ cwd, json })
+
+        return exitCode
+      }
+
+      if (command === 'mcp') {
+        if (rest.length > 0) {
+          throw new Error('payload-components mcp does not accept positional arguments.')
+        }
+
+        await commandHandlers.mcpCommand({ cwd })
+        return 0
+      }
+
+      if (command === 'init') {
+        if (rest.length > 0) {
+          throw new Error('payload-components init does not accept positional arguments.')
+        }
+
+        if (force && !scaffold) {
+          throw new Error('--force requires "payload-components init --scaffold".')
+        }
+
+        await runMutation('init', cwd, () => commandHandlers.initCommand({ cwd, force, scaffold }))
+        return 0
+      }
+
+      throw new Error(`Unknown command "${command}".\n\n${await getUsage()}`)
+    },
+  })
 }
 
 const isDirectRun = (() => {
@@ -666,9 +593,13 @@ const isDirectRun = (() => {
 })()
 
 if (isDirectRun) {
-  runCli().catch((error) => {
-    const message = error instanceof Error ? error.message : 'Unknown error'
-    process.stderr.write(`payload-components: ${message}\n`)
-    process.exitCode = 1
-  })
+  runCli()
+    .then((exitCode) => {
+      process.exitCode = exitCode
+    })
+    .catch((error) => {
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      process.stderr.write(`payload-components: ${message}\n`)
+      process.exitCode = 1
+    })
 }

@@ -1,0 +1,313 @@
+{
+  "components": [
+    {
+      "slug": "hero-basic",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "hero-split",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "hero-video",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "hero-product-tilt",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "hero-aurora",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "hero-kinetic",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "feature-grid-basic",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "feature-split",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "feature-bento",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "feature-steps",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "feature-accordion",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "feature-cards-media",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "feature-icon-grid",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "embed-basic",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "logo-cloud-grid",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "logo-cloud-hover",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "logo-cloud-marquee",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "logo-cloud-inline",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "logo-cloud-inline-wrap",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-columns",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-image-lead",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-feature-media",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-feature-split",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-showcase",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-quote",
+      "version": "0.2.0"
+    },
+    {
+      "slug": "content-community",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "integration-grid",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "integration-cluster",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "integration-split",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "integration-connect",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "integration-orbit",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "integration-list",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "integration-marquee",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "integration-testimonial",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-split-rows",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-rows",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-image-frame",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-stats",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-list",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-list-columns",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "content-list-icons",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "call-to-action-centered",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "call-to-action-boxed",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "call-to-action-split",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "call-to-action-signup",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "contact-routing-form",
+      "version": "0.2.0"
+    },
+    {
+      "slug": "contact-channels",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "team-roster",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "team-grid",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "team-bios",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "faq-accordion",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "faq-split",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "faq-card",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "faq-icons",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "faq-grouped",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "faq-grid",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "comparator-table",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "comparator-grid",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "comparator-stack",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "testimonials-quote",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "testimonials-spotlight",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "testimonials-grid",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "testimonials-rating",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "testimonials-bento",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "testimonials-wall",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "stats-proof",
+      "version": "0.3.0"
+    },
+    {
+      "slug": "stats-grid",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "stats-card",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "stats-inline",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "pricing-cards",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "pricing-cards-muted",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "pricing-cards-cta",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "pricing-split",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "pricing-enterprise",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "footer-columns",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "footer-simple",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "footer-centered",
+      "version": "0.1.0"
+    }
+  ],
+  "version": 1
+}
