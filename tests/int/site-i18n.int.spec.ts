@@ -250,15 +250,30 @@ describe('site internationalization', () => {
     expect(Object.keys(catalogs)).toEqual(siteLocales.slice(1))
   })
 
-  it('rejects translation transport markers before they reach a page', async () => {
+  it('rejects translation artifacts before they reach a page', async () => {
     const { catalogs, english } = await loadCatalogs(repoRoot)
     const markedCatalogs = {
       ...catalogs,
-      ja: { ...catalogs.ja, 'Header.language': '言語 <<<46 >>>' },
+      ja: {
+        ...catalogs.ja,
+        'Catalog.description': catalogs.ja['Catalog.description'].replace('Payload CMS', ''),
+        'Header.language': '言語 <<<46 >>>',
+        'Templates.metadataDescription': `${catalogs.ja['Templates.metadataDescription']}\nテンプレート`,
+        'Templates.tablet': '[0]',
+      },
     }
 
     expect(validateCatalogs(english, markedCatalogs)).toContain(
       'ja:Header.language contains a translation transport marker',
+    )
+    expect(validateCatalogs(english, markedCatalogs)).toContain(
+      'ja:Catalog.description removes protected term "Payload CMS"',
+    )
+    expect(validateCatalogs(english, markedCatalogs)).toContain(
+      'ja:Templates.metadataDescription adds an unexpected line break',
+    )
+    expect(validateCatalogs(english, markedCatalogs)).toContain(
+      'ja:Templates.tablet contains a numeric translation artifact',
     )
   })
 

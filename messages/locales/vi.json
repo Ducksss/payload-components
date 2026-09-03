@@ -169,7 +169,7 @@
       "heading": "Mã nguồn mở,",
       "accent": "từ đầu đến cuối",
       "intro": "Cơ quan đăng ký, CLI, các thành phần và trang web này là một kho lưu trữ được cấp phép MIT. Đọc trình cài đặt trước khi bạn tin tưởng nó - đó chính là vấn đề.",
-      "copy": "Sao chép lệnh cài đặt\nkho lưu trữ",
+      "copy": "Sao chép lệnh cài đặt",
       "repository": "GitHub",
       "issue": "Mở một vấn đề",
       "invite": "Chạy nó trong một repo thực sự? Mở một vấn đề — các lượt cài đặt sớm sẽ được nêu bật."
@@ -288,7 +288,7 @@
   },
   "Templates": {
     "metadataTitle": "Payload CMS Mẫu cho Next.js | Khái niệm & Bí quyết",
-    "metadataDescription": "Khám phá các khái niệm mẫu Payload CMS trên mười lăm ngành dọc — SaaS, đại lý, thương mại, chăm sóc sức khỏe, nhà hàng, bất động sản, v.v. — xem trước mọi trang và kiểm tra công thức khối đã nhập.\nmẫu",
+    "metadataDescription": "Khám phá các khái niệm mẫu Payload CMS trên mười lăm ngành dọc — SaaS, đại lý, thương mại, chăm sóc sức khỏe, nhà hàng, bất động sản, v.v. — xem trước mọi trang và kiểm tra công thức khối đã nhập.",
     "detailTitle": "{title}",
     "back": "Mẫu",
     "previewPageLabel": "{title} trang xem trước",

@@ -9,7 +9,7 @@
     "blog": "Blog",
     "componentCatalog": "Alkatrészkatalógus",
     "brandGuide": "Márkaútmutató",
-    "about": "Körülbelül",
+    "about": "Rólunk",
     "privacy": "Adatvédelem",
     "copy": "Másolás",
     "copied": "Másolva",
@@ -27,7 +27,7 @@
       "components": "Alkatrészek",
       "templates": "Sablonok",
       "blog": "Blog",
-      "about": "Körülbelül"
+      "about": "Rólunk"
     }
   },
   "Consent": {
@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# blokk} other {# blokk}}",
       "browseFamily": "Böngészés {family}",
       "allComponents": "Az összes {count} összetevő böngészése",
-      "postComponents": "Posta komponensek · Fejlesztés alatt",
+      "postComponents": "Bejegyzéskomponensek · Fejlesztés alatt",
       "familyCount": "Telepíthető",
       "familyName": "Oldalblokkok",
       "familyDescription": "Az Oldalak elrendezéskészítőjének blokkok – teljes vezetékezéssel telepítve: gyűjteménykonfiguráció, renderelési leképezés, generált típusok, térkép importálása."
@@ -207,7 +207,7 @@
     "clear": "Kijelölés törlése",
     "families": {
       "pages": "Oldalblokkok",
-      "posts": "Összetevők közzététele"
+      "posts": "Bejegyzéskomponensek"
     },
     "categories": {
       "hero": "Hős",
@@ -397,7 +397,7 @@
     "architecture": "Építészet",
     "aiDiscovery": "AI felfedezés",
     "allComponents": "Minden {count} összetevő",
-    "about": "Körülbelül",
+    "about": "Rólunk",
     "brandGuide": "Márkaútmutató",
     "openIssue": "Nyisson meg egy problémát",
     "releases": "Kiadások",
@@ -415,8 +415,8 @@
   },
   "PageMetadata": {
     "about": {
-      "title": "Körülbelül",
-      "openGraphTitle": "Körülbelül Payload Components",
+      "title": "Rólunk",
+      "openGraphTitle": "A Payload Components bemutatása",
       "description": "Miért létezik a Payload Components: ne építse újra ugyanazokat az Payload blokkokat, ne kösse át őket kézzel, és ne bizonyítson újra minden telepítést a szabadúszó projektekben."
     },
     "privacy": {

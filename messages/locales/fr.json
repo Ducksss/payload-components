@@ -288,7 +288,7 @@
   },
   "Templates": {
     "metadataTitle": "Payload CMS Modèles pour Next.js | Concepts et recettes",
-    "metadataDescription": "Explorez les concepts de modèles Payload CMS dans quinze secteurs verticaux : SaaS, agence, commerce, soins de santé, restaurant, immobilier et plus encore - prévisualisez chaque page et inspectez la recette de bloc saisie.\nModèle",
+    "metadataDescription": "Explorez les concepts de modèles Payload CMS dans quinze secteurs verticaux : SaaS, agence, commerce, soins de santé, restaurant, immobilier et plus encore - prévisualisez chaque page et inspectez la recette de bloc saisie.",
     "detailTitle": "{title}",
     "back": "Modèles",
     "previewPageLabel": "{title} page d'aperçu",
@@ -326,7 +326,7 @@
     "counts": "{pages} pages · {blocks} blocs uniques",
     "explore": "Explorer le modèle",
     "openPreview": "Ouvrir l'aperçu complet",
-    "posterLabel": "Explorez le modèle {title}\nModèle",
+    "posterLabel": "Explorez le modèle {title}",
     "posterAlt": "{title} — affiche conceptuelle de la page d'accueil",
     "contributionRepository": "Parcourir le référentiel",
     "contributionRepositoryDescription": "Lisez la source de la vitrine — chaque recette est une donnée simple dans le référentiel.",

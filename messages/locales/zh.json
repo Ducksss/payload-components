@@ -434,7 +434,7 @@
     "entries": {
       "one": {
         "question": "Payload Components 免费吗？",
-        "answer": "免费，而且从设计上就会一直如此。注册表、CLI、全部 {count} 个可安装组件和这个站点都在同一个 MIT 许可仓库中：没有定价、许可密钥或付费层级。目录由真实安装和社区贡献推动，而不是付费路线图。"
+        "answer": "免费，而且从设计上就会一直如此。注册表、CLI、全部 {count} 个可安装组件和这个站点都在同一个 MIT 许可仓库中：没有定价、许可密钥或付费层级。Payload Components 以社区为先——目录由真实安装和社区贡献推动，而不是付费路线图。"
       },
       "two": {
         "question": "什么是 Payload CMS 区块？",

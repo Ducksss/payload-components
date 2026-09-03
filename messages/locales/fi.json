@@ -64,7 +64,7 @@
     },
     "eventsTitle": "Lähettämämme tapahtumat",
     "eventsIntro": "Kolme, ja niiden kentät ovat kiinteät. Jokainen arvo tulee sitoutuneesta reitistä, linkistä tai asennuskomennosta – ei koskaan mistään kirjoittamastasi.",
-    "trafficSource": "Sivun katselukerrat merkitsevät liikennettä vain maksuttomaksi hauksi tai muuksi. Tämä tunniste on johdettu selaimessasi kiinteästä hakukoneluettelosta tai selkeästä maksuttomasta kampanjamerkistä. Raaka viittausta, kampanjaa ja kyselymerkkijonoa ei koskaan lähetetä. Valvotuissa sivustotarkistuksissa on todellinen vahvistusmerkki, joten ne voidaan jättää pois kävijämääristä. tavalliset vierailut sisältävät vääriä.",
+    "trafficSource": "Sivun katselukerrat merkitsevät liikenteen vain orgaaniseksi hauksi tai muuksi liikenteeksi. Tämä tunniste johdetaan selaimessasi kiinteästä hakukoneluettelosta tai nimenomaisesta orgaanisen kampanjan merkinnästä. Raakaa viittaustietoa, kampanjaa ja kyselymerkkijonoa ei koskaan lähetetä. Valvotuissa sivustotarkistuksissa on tosi vahvistusmerkki, joten ne voidaan jättää pois kävijämääristä; tavallisissa vierailuissa merkki on epätosi.",
     "entryPage": "Suostumuksen jälkeen maksuttomat käynnit säilyttävät nykyisen selainvälilehden ensimmäisen saman sivuston polun. Asennuskopiot ja ensisijaisen linkin napsautukset sisältävät polun nimen <code>entry_page</code>. Suorat ja viittauskäynnit eivät. Se ei koskaan sisällä kyselymerkkijonoa tai raakaviittausta, ja se poistetaan, kun peruutat suostumuksen.",
     "events": {
       "pageview": {

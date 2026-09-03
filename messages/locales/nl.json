@@ -50,7 +50,7 @@
     "alwaysOn": "Altijd aan, slaat niets op",
     "processors": {
       "vercel": {
-        "purpose": "Paginaweergaven en [0] voor de gehoste site.",
+        "purpose": "Paginaweergaven en Core Web Vitals voor de gehoste site.",
         "storage": "Geen cookies en geen identificatie: er wordt niets op uw apparaat opgeslagen."
       },
       "ga4": {
@@ -183,7 +183,7 @@
     "description": "Blader door alle {count} installeerbare Payload CMS componenten in helden, functies, prijzen, oproepen tot actie, integraties, getuigenissen, statistieken, FAQs, inhoud, teams, insluitingen en voetteksten. Eén CLI-opdracht kopieert een blok en bedraadt de verzamelingsregistratie, renderertoewijzing, gegenereerde typen en beheerdersimportkaart.",
     "installation": "Bekijk hoe installatie met één opdracht werkt",
     "blocksGuide": "Volg een blok van configuratie naar livepagina",
-    "templates": "Verken '0'-sjabloonconcepten",
+    "templates": "Ontdek Payload CMS-sjabloonconcepten",
     "license": "MIT gelicentieerd"
   },
   "CatalogBrowser": {
@@ -310,7 +310,7 @@
     "questionsEyebrow": "Vragen",
     "questionsHeading": "Payload CMS sjabloonvragen, beantwoord",
     "questionsIntro": "De concepten zijn bewust open over wat vandaag de dag werkt en wat een ontwerpreferentie blijft.",
-    "q1": "Zijn deze [0] sjablonen installeerbaar?",
+    "q1": "Zijn deze Payload CMS-sjablonen installeerbaar?",
     "a1": "Nee. Het zijn doorbladerbare concepten voor de volledige site, geen verpakte startersrepository's. De afzonderlijke blokken in elk recept zijn installeerbaar en elk recept linkt naar de relevante componentdocumentatie.",
     "q2": "Hoe verschillen deze van de officiële sjabloon van Payload?",
     "a2": "Het officiële websitesjabloon geeft een nieuw project een complete applicatiebasis. Deze concepten laten zien hoe een volledige marketingsite eruit kan zien en uit welke getypte blokken elke pagina bestaat, zonder de rol van starterproject te vervangen.",
@@ -459,13 +459,13 @@
         "answer": "Payload v3 + Next.js 15/16 projecten in de vorm van de officiële website-starter — weergave van lay-outblokken tot en met src/blocks/RenderBlocks.tsx en registratie van paginablokken in src/collections/Pages/index.ts. De CLI vergelijkt uw project met de gepubliceerde ondersteuningsmatrix voordat u iets aanraakt."
       },
       "seven": {
-        "question": "Waarom voer je niet gewoon '0' in?",
+        "question": "Waarom voer je niet gewoon npx shadcn add uit?",
         "answer": "Een gewone shadcn installatie kopieert bestanden en stopt. Payload blokken werken alleen nadat ze zijn geregistreerd in uw verzamelingsschema, in kaart zijn gebracht in uw renderer, getypt en toegevoegd aan de beheerdersimportkaart. payload-components verpakt dezelfde registerlevering met precies die bedrading - die grens is het product, en het bedradingsboek hierboven toont het rij voor rij.",
-        "link": "Lees de volledige ‘0’-vergelijking"
+        "link": "Lees de volledige shadcn-vergelijking"
       },
       "eight": {
         "question": "Hoe komen nieuwe componenten in de catalogus?",
-        "answer": "Met opzet. Een component komt pas terecht als de bron, de manifestmetagegevens, de documentenpagina en de testdekking van het installatieprogramma samen worden verzonden; half-wired blokken bereiken nooit de catalogus. Stel het volgende onderdeel voor in een '0'-probleem; de catalogus groeit uit echte installaties."
+        "answer": "Met opzet. Een component komt pas terecht als de bron, de manifestmetagegevens, de documentenpagina en de testdekking van het installatieprogramma samen worden verzonden; half-aangesloten blokken bereiken nooit de catalogus. Stel het volgende onderdeel voor in een GitHub-issue; de catalogus groeit uit echte installaties."
       }
     }
   },

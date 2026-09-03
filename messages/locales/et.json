@@ -32,7 +32,7 @@
   },
   "Consent": {
     "title": "Analyticsi küpsised",
-    "description": "Kasutame numbreid Google Analytics ja PostHog, et näha, milliseid komponente ja dokumente inimesed tegelikult kasutavad. Keeldu ja kumbki ei laadi – ei küpsist ega identifikaatorit. Lehekülje kiiruse mõõtmine töötab mõlemal viisil ja ei salvesta midagi.",
+    "description": "Kasutame Google Analyticsit ja PostHogi, et näha, milliseid komponente ja dokumente inimesed tegelikult kasutavad. Kui keeldute, ei laadita kumbagi – ei küpsiseid ega identifikaatoreid. Lehe kiiruse mõõtmine töötab mõlemal juhul ega salvesta midagi.",
     "privacy": "Privaatsus",
     "decline": "Keeldu",
     "accept": "Nõustu"
