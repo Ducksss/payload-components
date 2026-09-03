@@ -1,17 +1,12 @@
 import { buildInventory } from '../inventory'
+import { writeCommandOutput } from '../command-output'
 import { loadAllTemplateManifests } from '../templates'
 
-export const templatesCommand = async ({
-  cwd,
-  json = false,
-}: {
-  cwd: string
-  json?: boolean
-}) => {
+export const templatesCommand = async ({ cwd, json = false }: { cwd: string; json?: boolean }) => {
   const templates = await loadAllTemplateManifests()
 
   if (json) {
-    process.stdout.write(`${JSON.stringify({ templates }, null, 2)}\n`)
+    writeCommandOutput(`${JSON.stringify({ templates }, null, 2)}\n`)
     return
   }
 
@@ -38,5 +33,5 @@ export const templatesCommand = async ({
 
   lines.push('', 'Install one with "payload-components add-template <template>".')
 
-  process.stdout.write(`${lines.join('\n')}\n`)
+  writeCommandOutput(`${lines.join('\n')}\n`)
 }

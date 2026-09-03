@@ -610,6 +610,7 @@ export const saasLaunchTemplate: TemplateShowcase = {
         {
           componentSlug: 'call-to-action-signup',
           content: {
+            action: '/newsletter',
             description:
               'Get the monthly Relay notes: pricing changes, new connectors, and what shipped — no drip sequence, unsubscribe anytime.',
             emailPlaceholder: 'you@company.com',

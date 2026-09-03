@@ -17,7 +17,7 @@ import {
 
 /* Hero — the claim set in Geist with one italic-serif clause, the install
  * command above the fold, then the catalog itself as proof: three drifting
- * rows of the real component twins.
+ * rows of backend-free component specimens.
  *
  * The wall replaced a single-component install replay here. A hero has one
  * job, and for a registry that job is range — one block installing proves the

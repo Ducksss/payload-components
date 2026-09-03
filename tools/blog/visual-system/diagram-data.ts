@@ -1078,9 +1078,9 @@ export const diagramDefinitions: readonly DiagramDefinition[] = [
   {
     path: '/blog/demo-twins/figure-01-architecture-mirror.svg',
     kicker: 'SOURCE / PREVIEW MIRROR',
-    title: 'Separate runtimes share a one-way visual token guard',
+    title: 'Separate runtimes share a one-way visual class guard',
     description:
-      'Installable target code and site demo twins stay separate while the test requires every plain source class token to appear in its twin.',
+      'Installable target code and site demo twins stay separate while the test keeps each source class group attached to one preview element.',
     evidenceLines: 8,
     rows: [
       [
@@ -1112,8 +1112,8 @@ export const diagramDefinitions: readonly DiagramDefinition[] = [
       [
         {
           id: 'test',
-          title: 'Class-token guard',
-          body: 'Every source className token appears in its twin\none-way token presence, not runtime reuse',
+          title: 'Per-element class guard',
+          body: 'Each source class group stays on one twin element\none-way class containment, not runtime reuse',
           kind: 'code',
         },
       ],

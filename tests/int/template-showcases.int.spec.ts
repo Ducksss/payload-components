@@ -254,7 +254,7 @@ describe('Template showcase contract', () => {
         const missing = uniqueTemplateBlockSlugs(template).flatMap((slug) => [
           ...(componentEntrySlugs.has(slug)
             ? []
-            : [`${slug} — not in componentEntries (src/lib/site.ts)`]),
+            : [`${slug} — not in componentEntries (src/lib/component-catalog.ts)`]),
           ...(knownDemoSlugs.has(slug)
             ? []
             : [`${slug} — no demo twin (src/components/site/demos/registry.ts)`]),

@@ -148,6 +148,7 @@ export type LogoCloudDemoContent = {
    demo-content shape: the shared title+description, optional CTA links for the
    centered/boxed variants, and the email-form labels for the signup variant. */
 export type CtaDemoContent = {
+  action?: string
   title: string
   assurance?: string
   description?: string
@@ -1069,6 +1070,7 @@ export const callToActionSplitDemoContent: CtaDemoContent = {
 }
 
 export const callToActionSignupDemoContent: CtaDemoContent = {
+  action: '/newsletter',
   description:
     'Join the Acme newsletter for product updates, changelog highlights, and the occasional deep dive.',
   emailPlaceholder: 'Your email address',

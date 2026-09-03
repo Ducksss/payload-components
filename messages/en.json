@@ -142,13 +142,13 @@
         "threeTitle": "Commit a working block",
         "threeDescription": "Source, two patches, regenerated types — reviewed like any PR."
       },
-      "badge": "Rendered from source",
-      "caption": "The committed result — real component source, wired into Payload and reviewed like any PR."
+      "badge": "Source-mirrored specimen",
+      "caption": "A backend-free specimen that mirrors the installable component's visual classes. The committed source is wired into Payload and reviewed like any PR."
     },
     "catalog": {
       "eyebrow": "The catalog",
       "heading": "The catalog, rendered live.",
-      "intro": "No screenshots — each specimen is the real component, rendered from source.",
+      "intro": "No screenshots — each backend-free specimen mirrors the installable component's visual classes.",
       "browse": "Browse the catalog",
       "preview": "Live preview",
       "blockCount": "{count, plural, one {# block} other {# blocks}}",

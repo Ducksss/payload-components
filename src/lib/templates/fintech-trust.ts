@@ -857,6 +857,7 @@ export const fintechTrustTemplate: TemplateShowcase = {
         {
           componentSlug: 'call-to-action-signup',
           content: {
+            action: '/newsletter',
             description:
               'Rail status, settlement-window changes, and what shipped in the ledger — one plain-text note a month, no sequence, unsubscribe in one click.',
             emailPlaceholder: 'you@treasury.example',

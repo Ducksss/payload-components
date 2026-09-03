@@ -1,6 +1,8 @@
 import path from 'node:path'
 
+import { inspectBaseBundle } from '../base-bundle'
 import { compareInstalledFiles, resolveRecordedFileHashes } from '../component-files'
+import { writeCommandOutput } from '../command-output'
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest, selectPendingChangelog } from '../manifest'
 import {
@@ -30,8 +32,33 @@ export type ComponentDiff = {
 }
 
 export type DiffReport = {
+  base: Awaited<ReturnType<typeof inspectBaseBundle>> | null
   components: ComponentDiff[]
   isClean: boolean
+}
+
+const formatBaseDiff = (base: NonNullable<DiffReport['base']>) => {
+  if (base.isClean) {
+    return ['  starter-base: clean']
+  }
+
+  const lines = ['  starter-base:']
+
+  if (base.updateAvailable) {
+    lines.push('    version   a newer starter base ships with this CLI')
+  }
+
+  for (const filePath of base.modifiedFiles) {
+    lines.push(`    modified  ${filePath}`)
+  }
+
+  for (const filePath of base.missingFiles) {
+    lines.push(`    missing   ${filePath}`)
+  }
+
+  lines.push('    repair    payload-components init --scaffold')
+
+  return lines
 }
 
 const resolveComponentDiff = async ({
@@ -55,9 +82,7 @@ const resolveComponentDiff = async ({
     installed,
     manifest,
   })
-  const files = [
-    ...new Set([...manifest.files, ...Object.keys(baselineHashes ?? {})]),
-  ]
+  const files = [...new Set([...manifest.files, ...Object.keys(baselineHashes ?? {})])]
   const fileReport = await compareInstalledFiles({
     ...(baselineHashes ? { baselineHashes } : {}),
     cwd,
@@ -118,7 +143,9 @@ const formatComponentDiff = (diff: ComponentDiff) => {
     /* What the upgrade would actually do. Recording a changelog is the whole
        point: "0.1.0 → 0.2.0" on its own is not a decision anyone can make. */
     for (const entry of diff.pendingChangelog) {
-      lines.push(`    ${entry.breaking ? 'BREAKING' : 'change  '}  ${entry.version} ${entry.summary}`)
+      lines.push(
+        `    ${entry.breaking ? 'BREAKING' : 'change  '}  ${entry.version} ${entry.summary}`,
+      )
 
       if (entry.dataMigration) {
         lines.push(`              migration: ${entry.dataMigration}`)
@@ -127,9 +154,7 @@ const formatComponentDiff = (diff: ComponentDiff) => {
   }
 
   if (!diff.baselineAvailable) {
-    lines.push(
-      '    unverified recorded source baseline is unavailable; update requires --force',
-    )
+    lines.push('    unverified recorded source baseline is unavailable; update requires --force')
   }
 
   for (const filePath of diff.modifiedFiles) {
@@ -178,6 +203,10 @@ export const diffCommand = async ({
 
   const targetNames = componentNames.length > 0 ? componentNames : installedNames
   const components: ComponentDiff[] = []
+  const base =
+    componentNames.length === 0 && state.base
+      ? await inspectBaseBundle({ cwd, installed: state.base })
+      : null
   /* Wiring lives wherever this project keeps it, not at the canonical starter
      paths — checking the wrong file would report every install on a non-starter
      layout as unwired. An undetectable project falls back to the canonical
@@ -206,25 +235,28 @@ export const diffCommand = async ({
   }
 
   const report: DiffReport = {
+    base,
     components,
-    isClean: components.every(({ isClean }) => isClean),
+    isClean: (base?.isClean ?? true) && components.every(({ isClean }) => isClean),
   }
 
   if (json) {
-    process.stdout.write(`${JSON.stringify(report, null, 2)}\n`)
+    writeCommandOutput(`${JSON.stringify(report, null, 2)}\n`)
     return report.isClean
   }
 
-  if (targetNames.length === 0) {
-    process.stdout.write(
-      `payload-components: no recorded components in ${cwd}. Nothing to diff.\n`,
-    )
+  if (targetNames.length === 0 && !base) {
+    writeCommandOutput(`payload-components: no recorded components in ${cwd}. Nothing to diff.\n`)
     return true
   }
 
   const lines = [
-    `payload-components: comparing ${targetNames.length} recorded component${targetNames.length === 1 ? '' : 's'} in ${cwd} against the registry`,
+    base
+      ? `payload-components: comparing managed install state in ${cwd} against shipped contracts`
+      : `payload-components: comparing ${targetNames.length} recorded component${targetNames.length === 1 ? '' : 's'} in ${cwd} against the registry`,
     '',
+    ...(base ? formatBaseDiff(base) : []),
+    ...(base && components.length > 0 ? [''] : []),
     ...components.flatMap((diff) => formatComponentDiff(diff)),
   ]
 
@@ -235,7 +267,7 @@ export const diffCommand = async ({
     )
   }
 
-  process.stdout.write(`${lines.join('\n')}\n`)
+  writeCommandOutput(`${lines.join('\n')}\n`)
 
   return report.isClean
 }

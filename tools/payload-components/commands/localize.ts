@@ -141,7 +141,9 @@ const formatPlan = ({
   for (const plan of plans) {
     lines.push(
       `  ${plan.componentName}:`,
-      ...plan.pendingFiles.map((filePath) => `    ${filePath} (${verb}wrap fields in localizeFields)`),
+      ...plan.pendingFiles.map(
+        (filePath) => `    ${filePath} (${verb}wrap fields in localizeFields)`,
+      ),
       ...plan.alreadyWrapped.map((filePath) => `    ${filePath} (already localized)`),
       ...plan.blockedFiles.map(
         (filePath) => `    ${filePath} (${verb}wrap — local edits accepted by --force)`,
@@ -184,11 +186,7 @@ const formatNextSteps = ({
       summary.defaultLocale)
     : '<locale>'
   const runner =
-    packageManager === 'npm'
-      ? 'npx'
-      : packageManager === 'bun'
-        ? 'bunx'
-        : `${packageManager} exec`
+    packageManager === 'npm' ? 'npx' : packageManager === 'bun' ? 'bunx' : `${packageManager} exec`
   /* The blocks express reading-order geometry logically, so they mirror on their
    * own — but only once something sets `dir`, and nothing in the install can do
    * that for you. Say it only when an RTL locale was actually chosen. */
@@ -316,7 +314,8 @@ export const localizeCommand = async ({
   /* A config that computes its locales — `locales: getLocales()` — is localized;
    * this command just cannot enumerate the set. Wrapping its blocks is still the
    * right thing to do, so only a plainly locale-less config is refused. */
-  const declaresLocales = declared !== undefined && (!declared.localesEnumerable || declared.locales.length > 0)
+  const declaresLocales =
+    declared !== undefined && (!declared.localesEnumerable || declared.locales.length > 0)
 
   if (!localeCodes && !declaresLocales) {
     throw new Error(
@@ -455,7 +454,7 @@ export const localizeCommand = async ({
   )
 
   if (dryRun) {
-    return
+    return true
   }
 
   if (configPatch && (configPatch.kind === 'patched' || configPatch.kind === 'replaced')) {
@@ -494,9 +493,7 @@ export const localizeCommand = async ({
     ].join('\n'),
   )
 
-  printHeader(
-    formatNextSteps({ packageManager: project.packageManager, summary }),
-  )
+  printHeader(formatNextSteps({ packageManager: project.packageManager, summary }))
 
   /* Non-zero whenever this run left something it was asked to change, so CI can
    * gate on "the project is fully localized" the way it gates on `diff`. A
@@ -509,7 +506,5 @@ export const localizeCommand = async ({
     configOutcome.kind === 'existing-unreadable' ||
     (configOutcome.kind === 'already-configured' && !configOutcome.matches)
 
-  if (leftUntouched) {
-    process.exitCode = 1
-  }
+  return !leftUntouched
 }

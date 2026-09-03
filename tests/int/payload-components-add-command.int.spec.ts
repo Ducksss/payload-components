@@ -45,7 +45,7 @@ const detectedProject: DetectedProject = {
 
 const defaultState: InstallState = {
   components: {},
-  version: 3,
+  version: 4,
 }
 
 const fixtureDirs: string[] = []
@@ -454,7 +454,7 @@ describe('payload-components add command orchestration', () => {
             targetId: 'payload-website-starter',
           },
         },
-        version: 3,
+        version: 4,
       },
     })
 
@@ -508,7 +508,7 @@ describe('payload-components add command orchestration', () => {
               targetId: 'payload-website-starter',
             },
           },
-          version: 3,
+          version: 4,
         },
       })
 
@@ -562,7 +562,7 @@ describe('payload-components add command orchestration', () => {
             targetId: 'payload-website-starter',
           },
         },
-        version: 3,
+        version: 4,
       },
     })
 

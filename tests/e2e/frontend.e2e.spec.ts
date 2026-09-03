@@ -870,18 +870,21 @@ test.describe('Light shadcn frontend', () => {
       .locator('code:visible')
       .filter({ hasText: 'src/blocks/LogoCloudInlineWrap/Component.tsx' })
     await expect(path).toBeVisible()
-    const wraps = await path.evaluate((el) => {
-      const style = getComputedStyle(el)
-      const line = Number.parseFloat(style.lineHeight)
-      return {
-        breakable: style.overflowWrap === 'anywhere' || style.wordBreak === 'break-all',
-        multiline: el.getBoundingClientRect().height > line * 1.5,
-        fits: el.scrollWidth <= el.clientWidth,
-      }
-    })
-    expect(wraps.breakable).toBe(true)
-    expect(wraps.multiline).toBe(true)
-    expect(wraps.fits).toBe(true)
+    await page.evaluate(() => document.fonts.ready)
+    await expect
+      .poll(async () =>
+        path.evaluate((el) => {
+          const style = getComputedStyle(el)
+          const line = Number.parseFloat(style.lineHeight)
+
+          return {
+            breakable: style.overflowWrap === 'anywhere' || style.wordBreak === 'break-all',
+            fits: el.scrollWidth <= el.clientWidth,
+            multiline: el.getBoundingClientRect().height > line * 1.5,
+          }
+        }),
+      )
+      .toEqual({ breakable: true, fits: true, multiline: true })
     const ledgerOverflow = await expectNoHorizontalOverflow(page, 'the wiring ledger')
     expect(ledgerOverflow.offenders, ledgerOverflow.message).toEqual([])
     await expect(wiring).toBeVisible()
