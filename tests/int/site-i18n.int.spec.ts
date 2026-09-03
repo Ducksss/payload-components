@@ -16,7 +16,11 @@ import {
   splitLocalePathname,
 } from '../../src/i18n/config'
 import { getSiteMessages } from '../../src/i18n/message-catalog'
-import { getPublication, publicationRobots } from '../../src/i18n/publication'
+import {
+  getPublication,
+  publicationContentAttributes,
+  publicationRobots,
+} from '../../src/i18n/publication'
 import { componentCategories, composerAddLabel, composerRemoveLabel } from '../../src/lib/site'
 import { flattenMessages, loadCatalogs, validateCatalogs } from '../../tools/i18n/catalog'
 
@@ -160,6 +164,16 @@ describe('site internationalization', () => {
       contentLocale: 'en',
       index: false,
       status: 'fallback',
+    })
+    expect(publicationContentAttributes(getPublication('/components', 'ar'))).toEqual({
+      'data-content-script': 'arabic',
+      dir: 'rtl',
+      lang: 'ar',
+    })
+    expect(publicationContentAttributes(fallback)).toEqual({
+      'data-content-script': 'latin',
+      dir: 'ltr',
+      lang: 'en',
     })
 
     expect(isLocaleNeutralPath('/opengraph-image')).toBe(true)

@@ -9,7 +9,7 @@ import { SiteHeader } from '@/components/site/SiteHeader'
 import { TranslationNotice } from '@/components/site/TranslationNotice'
 import { Wordmark } from '@/components/site/Wordmark'
 import { localeDetails, localizeHref } from '@/i18n/config'
-import { getPublication, publicationRobots } from '@/i18n/publication'
+import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
 import { getSiteLocale } from '@/lib/i18n'
 import { feedMetadataAlternates, siteOpenGraphDefaults } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
@@ -174,6 +174,7 @@ const shadowScale = [
 
 export default async function BrandGuidePage() {
   const locale = await getSiteLocale()
+  const publication = getPublication('/brand-guide', locale)
   const commonT = await getTranslations({ locale, namespace: 'Common' })
   const brandStructuredData = graph(
     breadcrumbNode([
@@ -191,7 +192,7 @@ export default async function BrandGuidePage() {
       <SiteHeader />
       <TranslationNotice pathname="/brand-guide" />
 
-      <main id="main" className="flex-1">
+      <main {...publicationContentAttributes(publication)} id="main" className="flex-1">
         <section className="hero-shell overflow-hidden border-b border-border/60">
           <div aria-hidden="true" className="hero-atmosphere" />
 

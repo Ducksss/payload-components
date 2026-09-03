@@ -14,7 +14,7 @@ import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { TranslationNotice } from '@/components/site/TranslationNotice'
 import { localeDetails, localizeHref } from '@/i18n/config'
-import { getPublication, publicationRobots } from '@/i18n/publication'
+import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
 import { getSiteLocale } from '@/lib/i18n'
 import {
   feedMetadataAlternates,
@@ -74,6 +74,7 @@ const pasteChecklist = [
    five land as one reviewable diff. */
 export default async function AboutPage() {
   const locale = await getSiteLocale()
+  const publication = getPublication('/about', locale)
   const commonT = await getTranslations({ locale, namespace: 'Common' })
   const aboutStructuredData = graph(
     breadcrumbNode([
@@ -88,7 +89,7 @@ export default async function AboutPage() {
       <SiteHeader activePath="/about" />
       <TranslationNotice pathname="/about" />
 
-      <main id="main" className="flex-1">
+      <main {...publicationContentAttributes(publication)} id="main" className="flex-1">
         <section className="hero-shell overflow-hidden border-b border-border/60">
           <div aria-hidden="true" className="hero-atmosphere" />
 

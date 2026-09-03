@@ -10,7 +10,7 @@ import { SiteHeader } from '@/components/site/SiteHeader'
 import { TranslationNotice } from '@/components/site/TranslationNotice'
 import Link from '@/i18n/Link'
 import { localeDetails, localizeHref } from '@/i18n/config'
-import { getPublication, publicationRobots } from '@/i18n/publication'
+import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
 import { getSiteLocale } from '@/lib/i18n'
 import { siteOpenGraphDefaults, upcomingComponents } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
@@ -79,7 +79,7 @@ export default async function EditorialRoadmapPage() {
       <SiteHeader />
       <TranslationNotice pathname="/roadmap/editorial" />
 
-      <main id="main" className="flex-1">
+      <main {...publicationContentAttributes(publication)} id="main" className="flex-1">
         <section className="relative overflow-hidden border-b border-foreground/15 bg-foreground text-background">
           <div
             aria-hidden="true"
@@ -100,7 +100,7 @@ export default async function EditorialRoadmapPage() {
                 <h1 className="max-w-4xl text-balance text-5xl font-medium leading-none tracking-title text-background sm:text-6xl lg:text-7xl xl:text-8xl">
                   {t.rich('headline', {
                     editorial: (chunks) => (
-                      <span className="font-serif font-normal italic tracking-heading text-brand-200">
+                      <span className="script-aware-serif-accent font-serif font-normal italic tracking-heading text-brand-200">
                         {chunks}
                       </span>
                     ),

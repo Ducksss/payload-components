@@ -779,6 +779,31 @@ test.describe('Light shadcn frontend', () => {
     expect(hasHorizontalOverflow).toBe(false)
   })
 
+  test('keeps English fallback content LTR inside RTL localized chrome', async ({ page }) => {
+    await page.goto(`${baseURL}/ar/docs`, { waitUntil: 'domcontentloaded' })
+
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar')
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+
+    const content = page.getByRole('main')
+    await expect(content).toHaveAttribute('lang', 'en')
+    await expect(content).toHaveAttribute('dir', 'ltr')
+    await expect(content).toHaveAttribute('data-content-script', 'latin')
+    await expect(content).toHaveCSS('direction', 'ltr')
+  })
+
+  test('uses script-safe editorial emphasis on the Chinese roadmap', async ({ page }) => {
+    await page.goto(`${baseURL}/zh/roadmap/editorial`, { waitUntil: 'domcontentloaded' })
+
+    const content = page.getByRole('main')
+    await expect(content).toHaveAttribute('data-content-script', 'cjk')
+
+    const accent = page
+      .getByRole('heading', { level: 1, name: '一起完善编辑内容发布系统。' })
+      .locator('.script-aware-serif-accent')
+    await expect(accent).toHaveCSS('font-style', 'normal')
+  })
+
   test('drives the responsive component preview frame', async ({ page }) => {
     await page.goto(`${baseURL}/docs/components/hero-basic`)
 

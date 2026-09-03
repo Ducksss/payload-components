@@ -22,7 +22,7 @@ export function Eyebrow({ children, className }: { children: ReactNode; classNam
    asserts headings by their exact name). */
 export function HeadingAccent({ children }: { children: ReactNode }) {
   return (
-    <span className="font-serif text-[1.06em] font-normal italic tracking-[-0.01em]">
+    <span className="script-aware-serif-accent font-serif text-[1.06em] font-normal italic tracking-[-0.01em]">
       {children}
     </span>
   )

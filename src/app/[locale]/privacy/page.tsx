@@ -10,7 +10,7 @@ import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { TranslationNotice } from '@/components/site/TranslationNotice'
 import { localeDetails, localizeHref } from '@/i18n/config'
-import { getPublication, publicationRobots } from '@/i18n/publication'
+import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
 import { getSiteLocale } from '@/lib/i18n'
 import { feedMetadataAlternates, siteOpenGraphDefaults } from '@/lib/site'
 import { breadcrumbNode, graph } from '@/lib/structured-data'
@@ -98,7 +98,7 @@ export default async function PrivacyPage() {
       <JsonLd data={privacyStructuredData} />
       <SiteHeader />
       <TranslationNotice pathname="/privacy" />
-      <main id="main" className="flex-1">
+      <main {...publicationContentAttributes(publication)} id="main" className="flex-1">
         <Section>
           <SectionHeading
             accentWord={t('accentWord')}
@@ -162,7 +162,13 @@ export default async function PrivacyPage() {
             <div className="space-y-4">
               <h2 className="text-lg font-medium text-foreground">{t('choiceTitle')}</h2>
               <p className="text-muted-foreground">{t.rich('choice', { code: inlineCode })}</p>
-              <ConsentSettings />
+              <div
+                lang={localeDetails[locale].htmlLang}
+                dir={localeDetails[locale].direction}
+                data-content-script={localeDetails[locale].script}
+              >
+                <ConsentSettings />
+              </div>
             </div>
           </div>
         </Section>

@@ -11,7 +11,7 @@ import { RelatedPosts } from '@/components/blog/RelatedPosts'
 import { getMDXComponents } from '@/components/mdx'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { localeDetails, localizeHref } from '@/i18n/config'
-import { getPublication, publicationRobots } from '@/i18n/publication'
+import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
 import { blogSource } from '@/lib/blog-source'
 import { getSiteLocale } from '@/lib/i18n'
 import { feedMetadataAlternates, siteUrl, siteOpenGraphDefaults } from '@/lib/site'
@@ -92,7 +92,11 @@ export default async function BlogPost({ params }: BlogPostProps) {
   )
 
   return (
-    <main id="main" className="mx-auto w-full max-w-6xl px-4 py-12 md:px-8 md:py-16">
+    <main
+      {...publicationContentAttributes(publication)}
+      id="main"
+      className="mx-auto w-full max-w-6xl px-4 py-12 md:px-8 md:py-16"
+    >
       <JsonLd data={structuredData} />
       <Link
         href="/blog"

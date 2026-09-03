@@ -12,7 +12,7 @@ import { TemplateCard } from '@/components/site/templates/TemplateCard'
 import { TemplateContribution } from '@/components/site/templates/TemplateContribution'
 import { TemplateGalleryFilter } from '@/components/site/templates/TemplateGalleryFilter'
 import { localeDetails, localizeHref } from '@/i18n/config'
-import { getPublication, publicationRobots } from '@/i18n/publication'
+import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
 import { getSiteLocale } from '@/lib/i18n'
 import { siteUrl, siteOpenGraphDefaults } from '@/lib/site'
 import { templateShowcases } from '@/lib/templates/registry'
@@ -69,6 +69,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function TemplatesPage() {
   const locale = await getSiteLocale()
+  const publication = getPublication('/templates', locale)
   const t = await getTranslations({ locale, namespace: 'Templates' })
   const commonT = await getTranslations({ locale, namespace: 'Common' })
   const localizedCategories = galleryCategories.map((category) => ({
@@ -98,7 +99,7 @@ export default async function TemplatesPage() {
       <TranslationNotice pathname="/templates" />
       <TemplateGalleryView />
 
-      <main id="main" className="flex-1">
+      <main {...publicationContentAttributes(publication)} id="main" className="flex-1">
         <section className="relative overflow-hidden border-b border-border">
           <div
             aria-hidden="true"

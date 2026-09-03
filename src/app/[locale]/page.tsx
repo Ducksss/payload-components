@@ -14,7 +14,7 @@ import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { TranslationNotice } from '@/components/site/TranslationNotice'
 import { localeDetails } from '@/i18n/config'
-import { getPublication, publicationRobots } from '@/i18n/publication'
+import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
 import { getSiteLocale } from '@/lib/i18n'
 import { componentEntries, feedMetadataAlternates } from '@/lib/site'
 import { faqNode, graph, softwareApplicationNode } from '@/lib/structured-data'
@@ -55,6 +55,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * works → the catalog live → questions → open-source close. */
 export default async function HomePage() {
   const locale = await getSiteLocale()
+  const publication = getPublication('/', locale)
   const faqT = await getTranslations({ locale, namespace: 'FaqContent' })
   const entries = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'].map((key) => ({
     answer: faqT(`entries.${key}.answer`, { count: componentEntries.length }),
@@ -69,7 +70,7 @@ export default async function HomePage() {
       <SiteHeader />
       <TranslationNotice pathname="/" />
 
-      <main id="main" className="flex-1">
+      <main {...publicationContentAttributes(publication)} id="main" className="flex-1">
         <HeroSection />
         <StackBand />
         <WiringSection />

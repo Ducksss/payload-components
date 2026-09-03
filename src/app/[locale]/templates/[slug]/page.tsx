@@ -20,7 +20,7 @@ import { TemplateRecipe } from '@/components/site/templates/TemplateRecipe'
 import { TemplateReveal } from '@/components/site/templates/TemplateReveal'
 import { TemplateVisualSystem } from '@/components/site/templates/TemplateVisualSystem'
 import { localeDetails, localizeHref } from '@/i18n/config'
-import { getPublication, publicationRobots } from '@/i18n/publication'
+import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
 import { getSiteLocale } from '@/lib/i18n'
 import {
   siteUrl,
@@ -98,11 +98,13 @@ export async function generateMetadata({ params }: { params: DetailParams }): Pr
 export default async function TemplateDetailPage({ params }: { params: DetailParams }) {
   const { slug } = await params
   const locale = await getSiteLocale()
-  const t = await getTranslations({ locale, namespace: 'Templates' })
-  const commonT = await getTranslations({ locale, namespace: 'Common' })
   const template = getTemplateShowcase(slug)
   if (!template) notFound()
   const publication = getPublication(templateDetailHref(template.slug), locale)
+  const [t, commonT] = await Promise.all([
+    getTranslations({ locale: publication.contentLocale, namespace: 'Templates' }),
+    getTranslations({ locale, namespace: 'Common' }),
+  ])
 
   const blockCount = uniqueTemplateBlockSlugs(template).length
   const starterBlockSlug = templateStarterBlockSlug(template)
@@ -133,7 +135,7 @@ export default async function TemplateDetailPage({ params }: { params: DetailPar
       <TranslationNotice pathname={templateDetailHref(template.slug)} />
       <TemplateDetailView revision={template.revision} template={template.slug} />
 
-      <main id="main" className="flex-1">
+      <main {...publicationContentAttributes(publication)} id="main" className="flex-1">
         <section className="relative overflow-hidden border-b border-border">
           <div
             aria-hidden="true"

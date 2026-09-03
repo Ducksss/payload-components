@@ -49,7 +49,8 @@ export function HeroSection() {
             className="hero-headline hero-reveal max-w-5xl text-balance text-[clamp(2.6rem,8.4vw,5.5rem)] font-medium leading-[0.94] tracking-[-0.075em] text-foreground"
             style={{ animationDelay: '60ms' }}
           >
-            {t('primary')} <span className="hero-headline-accent">{t('accent')}</span>
+            {t('primary')}{' '}
+            <span className="hero-headline-accent script-aware-serif-accent">{t('accent')}</span>
           </h1>
 
           <p

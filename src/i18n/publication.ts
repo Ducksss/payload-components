@@ -2,6 +2,7 @@ import translationStatus from '../../messages/status.json'
 
 import {
   defaultSiteLocale,
+  localeDetails,
   localeAlternates,
   localizeHref,
   siteLocales,
@@ -98,5 +99,20 @@ export function publicationRobots(publication: Publication) {
       'max-video-preview': -1,
     },
     index: publication.index,
+  }
+}
+
+/**
+ * Keep localized chrome in the selected locale while declaring the language
+ * and reading direction of the resource body itself. This matters when an
+ * Arabic or Hebrew route intentionally renders the English source fallback.
+ */
+export function publicationContentAttributes(publication: Publication) {
+  const contentLocale = localeDetails[publication.contentLocale]
+
+  return {
+    'data-content-script': contentLocale.script,
+    dir: contentLocale.direction,
+    lang: contentLocale.htmlLang,
   }
 }

@@ -769,10 +769,11 @@
     letter-spacing: 0;
   }
 
-  html[data-script='arabic'] .hero-headline-accent,
-  html[data-script='hebrew'] .hero-headline-accent,
-  html[data-script='cjk'] .hero-headline-accent,
-  html[data-script='thai'] .hero-headline-accent {
+  [data-content-script='arabic'] .script-aware-serif-accent,
+  [data-content-script='hebrew'] .script-aware-serif-accent,
+  [data-content-script='cjk'] .script-aware-serif-accent,
+  [data-content-script='cyrillic'] .script-aware-serif-accent,
+  [data-content-script='thai'] .script-aware-serif-accent {
     font-family: var(--font-sans);
     font-style: normal;
     letter-spacing: 0;

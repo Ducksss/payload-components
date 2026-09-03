@@ -7,7 +7,7 @@ import { ArrowRight, Blocks, TerminalSquare, Wrench } from 'lucide-react'
 import { BlogCard } from '@/components/blog/BlogCard'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { localeDetails, localizeHref } from '@/i18n/config'
-import { getPublication, publicationRobots } from '@/i18n/publication'
+import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
 import { sortBlogPages } from '@/lib/blog'
 import { blogSource } from '@/lib/blog-source'
 import { getSiteLocale } from '@/lib/i18n'
@@ -93,7 +93,11 @@ export default async function BlogIndex() {
   )
 
   return (
-    <main id="main" className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16">
+    <main
+      {...publicationContentAttributes(publication)}
+      id="main"
+      className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16"
+    >
       <JsonLd data={blogStructuredData} />
       <header className="max-w-4xl">
         <p className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand-600">

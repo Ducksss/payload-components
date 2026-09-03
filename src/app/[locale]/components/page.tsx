@@ -11,7 +11,7 @@ import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { TranslationNotice } from '@/components/site/TranslationNotice'
 import { localeDetails, localizeHref } from '@/i18n/config'
-import { getPublication, publicationRobots } from '@/i18n/publication'
+import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
 import { getSiteLocale } from '@/lib/i18n'
 import {
   componentCategories,
@@ -56,6 +56,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ComponentsPage() {
   const locale = await getSiteLocale()
+  const publication = getPublication('/components', locale)
   const t = await getTranslations({ locale, namespace: 'Catalog' })
   const commonT = await getTranslations({ locale, namespace: 'Common' })
   const browserT = await getTranslations({ locale, namespace: 'CatalogBrowser' })
@@ -86,7 +87,7 @@ export default async function ComponentsPage() {
       <SiteHeader activePath="/components" />
       <TranslationNotice pathname="/components" />
 
-      <main id="main" className="flex-1">
+      <main {...publicationContentAttributes(publication)} id="main" className="flex-1">
         <section className="relative overflow-hidden border-b border-border">
           <div
             aria-hidden="true"

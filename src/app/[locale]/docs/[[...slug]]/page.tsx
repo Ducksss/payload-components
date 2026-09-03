@@ -18,7 +18,7 @@ import { getMDXComponents } from '@/components/mdx'
 import { ComponentDocHeader } from '@/components/site/ComponentDocHeader'
 import Link from '@/i18n/Link'
 import { localizeHref, localeDetails } from '@/i18n/config'
-import { getPublication, publicationRobots } from '@/i18n/publication'
+import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
 import { getComponentManifest } from '@/lib/component-manifest'
 import { familyOfSlug } from '@/lib/component-page-tree'
 import { getSiteLocale } from '@/lib/i18n'
@@ -173,7 +173,12 @@ export default async function Page({ params }: DocsPageProps) {
   )
 
   return (
-    <DocsPage role="main" toc={page.data.toc} full={page.data.full || Boolean(component)}>
+    <DocsPage
+      {...publicationContentAttributes(publication)}
+      role="main"
+      toc={page.data.toc}
+      full={page.data.full || Boolean(component)}
+    >
       <JsonLd data={structuredData} />
       {component ? (
         <ComponentDocHeader
