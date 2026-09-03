@@ -1,5 +1,10 @@
 import type { UpcomingComponent } from '@/lib/site'
 
+import Link from '@/i18n/Link'
+
+import { ArrowUpRight, CircleDashed } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+
 import { cn } from '@/utilities/ui'
 
 /* Catalog-page building blocks for the in-development posts suite.
@@ -121,14 +126,37 @@ function ThumbShapes({ slug }: { slug: string }) {
   }
 }
 
-function ComponentThumb({ muted = false, slug }: { muted?: boolean; slug: string }) {
+function RoadmapComponentThumb({
+  label,
+  roadmapLabel,
+  slug,
+}: {
+  label: string
+  roadmapLabel: string
+  slug: string
+}) {
   return (
-    <div
-      aria-hidden="true"
-      className="flex h-28 items-center justify-center border-b border-border bg-muted/40 px-4"
-    >
-      <div className={cn('w-full max-w-[16rem]', muted && 'opacity-55')}>
+    <div className="relative flex h-40 items-center justify-center overflow-hidden border-b border-dashed border-border bg-muted/40 px-5">
+      <div
+        aria-hidden="true"
+        className="absolute -right-10 -top-12 size-40 rounded-full bg-brand/15 blur-3xl"
+      />
+      <div aria-hidden="true" className="w-full max-w-[16rem] opacity-65">
         <ThumbShapes slug={slug} />
+      </div>
+      <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-4">
+        <span className="font-mono text-[9px] font-medium uppercase tracking-eyebrow text-foreground/65">
+          {roadmapLabel}
+        </span>
+        <span className="inline-flex size-8 items-center justify-center rounded-full border border-foreground/15 bg-background/70 text-foreground shadow-card backdrop-blur-md">
+          <CircleDashed className="size-3.5" aria-hidden="true" />
+        </span>
+      </div>
+      <div className="absolute inset-x-4 bottom-4 flex items-center gap-3">
+        <span aria-hidden="true" className="h-px flex-1 bg-foreground/20" />
+        <span className="font-mono text-[9px] font-medium uppercase tracking-eyebrow text-foreground/70">
+          {label}
+        </span>
       </div>
     </div>
   )
@@ -140,41 +168,41 @@ function ComponentThumb({ muted = false, slug }: { muted?: boolean; slug: string
 
 export function UpcomingComponentCard({
   component,
-  requestHref,
+  roadmapHref,
 }: {
   component: UpcomingComponent
-  requestHref?: string
+  roadmapHref: string
 }) {
+  const t = useTranslations('CatalogBrowser')
+
   return (
-    <article className="flex flex-col overflow-hidden rounded-xl border border-dashed border-border bg-card/50">
-      <ComponentThumb muted slug={component.slug} />
-      <div className="flex flex-1 flex-col gap-1.5 p-4">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="truncate text-[13px] font-semibold tracking-tight text-foreground/80">
-            {component.title}
-          </h3>
-          <span className="shrink-0 rounded-full border border-border bg-background px-1.5 py-0.5 font-mono text-[9px] font-medium uppercase tracking-eyebrow text-muted-foreground">
-            Soon
-          </span>
-        </div>
-        <p className="line-clamp-2 text-xs leading-5 text-muted-foreground">
+    <article className="group flex flex-col overflow-hidden rounded-card border border-border bg-card transition-colors hover:border-foreground/20">
+      <RoadmapComponentThumb
+        label={t('roadmapPreview')}
+        roadmapLabel={t('planned')}
+        slug={component.slug}
+      />
+      <div className="flex flex-1 flex-col p-5">
+        <span className="truncate font-mono text-[9px] uppercase tracking-eyebrow text-muted-foreground">
+          {component.target}
+        </span>
+        <h3 className="mt-4 truncate font-serif text-xl font-normal leading-none text-foreground">
+          {component.title}
+        </h3>
+        <p className="mt-2 line-clamp-2 text-xs leading-5 text-muted-foreground">
           {component.description}
         </p>
-        <div className="mt-auto flex items-center justify-between gap-3 pt-1">
-          <span className="truncate font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground">
-            {component.target}
-          </span>
-          {requestHref ? (
-            <a
-              href={requestHref}
-              target="_blank"
-              rel="noreferrer"
-              className="shrink-0 text-xs font-medium text-foreground transition-colors hover:text-brand"
-            >
-              Request {component.title}
-            </a>
-          ) : null}
-        </div>
+        <Link
+          href={roadmapHref}
+          aria-label={t('interestLabel', { component: component.title })}
+          className="mt-5 inline-flex w-fit cursor-pointer items-center gap-2 border-b border-foreground/30 pb-1 text-xs font-semibold text-foreground transition-colors hover:border-brand hover:text-brand-600 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
+        >
+          {t('interest')}
+          <ArrowUpRight
+            className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            aria-hidden="true"
+          />
+        </Link>
       </div>
     </article>
   )

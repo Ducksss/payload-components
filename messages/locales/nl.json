@@ -50,7 +50,7 @@
     "alwaysOn": "Altijd aan, slaat niets op",
     "processors": {
       "vercel": {
-        "purpose": "Paginaweergaven en [0] voor de gehoste site.",
+        "purpose": "Paginaweergaven en Core Web Vitals voor de gehoste site.",
         "storage": "Geen cookies en geen identificatie: er wordt niets op uw apparaat opgeslagen."
       },
       "ga4": {
@@ -183,7 +183,7 @@
     "description": "Blader door alle {count} installeerbare Payload CMS componenten in helden, functies, prijzen, oproepen tot actie, integraties, getuigenissen, statistieken, FAQs, inhoud, teams, insluitingen en voetteksten. Eén CLI-opdracht kopieert een blok en bedraadt de verzamelingsregistratie, renderertoewijzing, gegenereerde typen en beheerdersimportkaart.",
     "installation": "Bekijk hoe installatie met één opdracht werkt",
     "blocksGuide": "Volg een blok van configuratie naar livepagina",
-    "templates": "Verken '0'-sjabloonconcepten",
+    "templates": "Ontdek Payload CMS-sjabloonconcepten",
     "license": "MIT gelicentieerd"
   },
   "CatalogBrowser": {
@@ -197,6 +197,10 @@
     "proposal": "De catalogus groeit doelbewust: bron, manifest, documentatie en installatiedekking worden samen verzonden. Stel de volgende voor.",
     "issue": "Open een probleem",
     "inDevelopment": "in ontwikkeling",
+    "roadmapPreview": "Conceptvoorbeeld",
+    "planned": "Open-sourceroadmap",
+    "interest": "Roadmap bekijken",
+    "interestLabel": "{component} bekijken op de roadmap voor redactionele componenten",
     "selected": "{count} geselecteerd",
     "tray": "Geselecteerde componenten",
     "copy": "Kopieer de installatieopdracht",
@@ -253,6 +257,35 @@
       }
     }
   },
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
+    "seeCollection": "View the collection",
+    "backToCatalog": "Back to the component catalog",
+    "suiteEyebrow": "The proposed suite",
+    "suiteTitle": "Designed as one publication.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
+    "collectionEyebrow": "The collection",
+    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
+    "benefits": {
+      "systemTitle": "Composed together",
+      "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
+    },
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
+  },
   "Templates": {
     "metadataTitle": "Payload CMS Sjablonen voor Next.js | Concepten & Recepten",
     "metadataDescription": "Ontdek Payload CMS-sjabloonconcepten in vijftien branches - SaaS, bureaus, handel, gezondheidszorg, restaurants, onroerend goed en meer - bekijk een voorbeeld van elke pagina en inspecteer het getypte blokrecept.",
@@ -277,7 +310,7 @@
     "questionsEyebrow": "Vragen",
     "questionsHeading": "Payload CMS sjabloonvragen, beantwoord",
     "questionsIntro": "De concepten zijn bewust open over wat vandaag de dag werkt en wat een ontwerpreferentie blijft.",
-    "q1": "Zijn deze [0] sjablonen installeerbaar?",
+    "q1": "Zijn deze Payload CMS-sjablonen installeerbaar?",
     "a1": "Nee. Het zijn doorbladerbare concepten voor de volledige site, geen verpakte startersrepository's. De afzonderlijke blokken in elk recept zijn installeerbaar en elk recept linkt naar de relevante componentdocumentatie.",
     "q2": "Hoe verschillen deze van de officiële sjabloon van Payload?",
     "a2": "Het officiële websitesjabloon geeft een nieuw project een complete applicatiebasis. Deze concepten laten zien hoe een volledige marketingsite eruit kan zien en uit welke getypte blokken elke pagina bestaat, zonder de rol van starterproject te vervangen.",
@@ -426,13 +459,13 @@
         "answer": "Payload v3 + Next.js 15/16 projecten in de vorm van de officiële website-starter — weergave van lay-outblokken tot en met src/blocks/RenderBlocks.tsx en registratie van paginablokken in src/collections/Pages/index.ts. De CLI vergelijkt uw project met de gepubliceerde ondersteuningsmatrix voordat u iets aanraakt."
       },
       "seven": {
-        "question": "Waarom voer je niet gewoon '0' in?",
+        "question": "Waarom voer je niet gewoon npx shadcn add uit?",
         "answer": "Een gewone shadcn installatie kopieert bestanden en stopt. Payload blokken werken alleen nadat ze zijn geregistreerd in uw verzamelingsschema, in kaart zijn gebracht in uw renderer, getypt en toegevoegd aan de beheerdersimportkaart. payload-components verpakt dezelfde registerlevering met precies die bedrading - die grens is het product, en het bedradingsboek hierboven toont het rij voor rij.",
-        "link": "Lees de volledige ‘0’-vergelijking"
+        "link": "Lees de volledige shadcn-vergelijking"
       },
       "eight": {
         "question": "Hoe komen nieuwe componenten in de catalogus?",
-        "answer": "Met opzet. Een component komt pas terecht als de bron, de manifestmetagegevens, de documentenpagina en de testdekking van het installatieprogramma samen worden verzonden; half-wired blokken bereiken nooit de catalogus. Stel het volgende onderdeel voor in een '0'-probleem; de catalogus groeit uit echte installaties."
+        "answer": "Met opzet. Een component komt pas terecht als de bron, de manifestmetagegevens, de documentenpagina en de testdekking van het installatieprogramma samen worden verzonden; half-aangesloten blokken bereiken nooit de catalogus. Stel het volgende onderdeel voor in een GitHub-issue; de catalogus groeit uit echte installaties."
       }
     }
   },

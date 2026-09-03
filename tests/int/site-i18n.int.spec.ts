@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { createTranslator } from 'next-intl'
+import { unstable_doesMiddlewareMatch } from 'next/experimental/testing/server'
 import { describe, expect, it } from 'vitest'
 
 import {
@@ -20,6 +21,7 @@ import { componentCategories, composerAddLabel, composerRemoveLabel } from '../.
 import { flattenMessages, loadCatalogs, validateCatalogs } from '../../tools/i18n/catalog'
 
 const repoRoot = process.cwd()
+const publicRouteMatcher = '/((?!api(?:/|$)|r(?:/|$)|_next(?:/|$)|_vercel(?:/|$)|.*\\..*).*)'
 
 interface Messages {
   [key: string]: string | Messages
@@ -85,6 +87,21 @@ describe('site internationalization', () => {
     )
   })
 
+  it('runs locale middleware for routes that begin with r without matching registry assets', () => {
+    expect(
+      unstable_doesMiddlewareMatch({
+        config: { matcher: [publicRouteMatcher] },
+        url: 'https://www.payload-components.xyz/roadmap/editorial',
+      }),
+    ).toBe(true)
+    expect(
+      unstable_doesMiddlewareMatch({
+        config: { matcher: [publicRouteMatcher] },
+        url: 'https://www.payload-components.xyz/r/hero-basic.json',
+      }),
+    ).toBe(false)
+  })
+
   it('only publishes native-reviewed languages as search alternates', () => {
     const alternates = localeAlternates('/docs/installation')
 
@@ -101,6 +118,8 @@ describe('site internationalization', () => {
 
   it('keeps machine translations and English fallbacks honest per resource', () => {
     const machine = getPublication('/components', 'zh')
+    const roadmapMachine = getPublication('/roadmap/editorial', 'zh')
+    const roadmapFallback = getPublication('/roadmap/editorial', 'ja')
     const fallback = getPublication('/docs/installation', 'zh')
     const privacyFallback = getPublication('/privacy', 'ja')
 
@@ -112,6 +131,19 @@ describe('site internationalization', () => {
     })
     expect(machine.alternates).toEqual({ en: '/components', 'x-default': '/components' })
     expect(publicationRobots(machine).index).toBe(false)
+
+    expect(roadmapMachine).toMatchObject({
+      canonical: '/zh/roadmap/editorial',
+      contentLocale: 'zh',
+      index: false,
+      status: 'machine',
+    })
+    expect(roadmapFallback).toMatchObject({
+      canonical: '/roadmap/editorial',
+      contentLocale: 'en',
+      index: false,
+      status: 'fallback',
+    })
 
     expect(fallback).toMatchObject({
       canonical: '/docs/installation',
@@ -218,15 +250,30 @@ describe('site internationalization', () => {
     expect(Object.keys(catalogs)).toEqual(siteLocales.slice(1))
   })
 
-  it('rejects translation transport markers before they reach a page', async () => {
+  it('rejects translation artifacts before they reach a page', async () => {
     const { catalogs, english } = await loadCatalogs(repoRoot)
     const markedCatalogs = {
       ...catalogs,
-      ja: { ...catalogs.ja, 'Header.language': '言語 <<<46 >>>' },
+      ja: {
+        ...catalogs.ja,
+        'Catalog.description': catalogs.ja['Catalog.description'].replace('Payload CMS', ''),
+        'Header.language': '言語 <<<46 >>>',
+        'Templates.metadataDescription': `${catalogs.ja['Templates.metadataDescription']}\nテンプレート`,
+        'Templates.tablet': '[0]',
+      },
     }
 
     expect(validateCatalogs(english, markedCatalogs)).toContain(
       'ja:Header.language contains a translation transport marker',
+    )
+    expect(validateCatalogs(english, markedCatalogs)).toContain(
+      'ja:Catalog.description removes protected term "Payload CMS"',
+    )
+    expect(validateCatalogs(english, markedCatalogs)).toContain(
+      'ja:Templates.metadataDescription adds an unexpected line break',
+    )
+    expect(validateCatalogs(english, markedCatalogs)).toContain(
+      'ja:Templates.tablet contains a numeric translation artifact',
     )
   })
 
@@ -271,6 +318,7 @@ describe('site internationalization', () => {
     expect(nextConfig).toContain('createNextIntlPlugin')
     expect(requestConfig).toContain('getRequestConfig')
     expect(proxy).toContain('createMiddleware(routing)')
+    expect(proxy).toContain(publicRouteMatcher.replaceAll('\\', '\\\\'))
     expect(proxy).toContain('isLocaleNeutralPath(request.nextUrl.pathname)')
     expect(proxy).toContain("'/llms.mdx/:path*'")
     expect(proxy).toContain("'/og/:path*'")

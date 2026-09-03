@@ -658,6 +658,11 @@ test.describe('Light shadcn frontend', () => {
       title: /About/,
     },
     {
+      h1: 'Help shape an editorial publishing system.',
+      path: '/roadmap/editorial',
+      title: /Editorial component roadmap/,
+    },
+    {
       h1: 'The Payload Components brand',
       path: '/brand-guide',
       title: /Brand Guide/,
@@ -701,6 +706,7 @@ test.describe('Light shadcn frontend', () => {
     { h1: '由可安装区块组成的 Payload CMS 模板概念', path: '/zh/templates' },
     { h1: 'Payload CMS block and installer guides', path: '/zh/blog' },
     { h1: 'Why Payload Components exists', path: '/zh/about' },
+    { h1: '一起完善编辑内容发布系统。', path: '/zh/roadmap/editorial' },
   ]
 
   for (const localizedRoute of localizedOverflowRoutes) {
@@ -1112,25 +1118,31 @@ test.describe('Light shadcn frontend', () => {
     ).toBeVisible()
   })
 
-  test('links upcoming components to prefilled request issues', async ({ page }) => {
+  test('presents upcoming post components as public roadmap proposals', async ({ page }) => {
     const component = upcomingComponents.find((entry) => entry.slug === 'post-card')!
 
     await page.goto(`${baseURL}/components?type=posts`)
 
-    const requestLink = page.getByRole('link', { name: 'Request' }).first()
-    await expect(requestLink).toBeVisible()
-    await expect(requestLink).toHaveAttribute(
-      'href',
-      new RegExp(
-        `/issues/new\\?${[
-          'area=New\\+component',
-          'proposal=Ship\\+Post\\+Card\\+%28post-card%29\\+as\\+a\\+Payload\\+Components\\+post\\+component\\.',
-          'template=feature_request\\.yml',
-          'title=%5Bfeature%5D\\+post-card',
-        ].join('.*')}`,
-      ),
+    await expect(page.getByText('Concept preview', { exact: true })).toHaveCount(
+      upcomingComponents.length,
     )
     await expect(page.getByText(component.title).first()).toBeVisible()
+
+    const roadmapLink = page.getByRole('link', {
+      name: `View ${component.title} on the editorial roadmap`,
+    })
+    await expect(roadmapLink).toHaveAttribute('href', `/roadmap/editorial#${component.slug}`)
+
+    await roadmapLink.focus()
+    await expect(roadmapLink).toBeFocused()
+    await page.keyboard.press('Enter')
+    await expect(page).toHaveURL(`${baseURL}/roadmap/editorial#${component.slug}`)
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Help shape an editorial publishing system.',
+      }),
+    ).toBeVisible()
   })
 
   test('exposes every landing section, the catalog teaser, and the footer', async ({ page }) => {

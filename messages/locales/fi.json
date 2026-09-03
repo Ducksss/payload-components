@@ -64,7 +64,7 @@
     },
     "eventsTitle": "Lähettämämme tapahtumat",
     "eventsIntro": "Kolme, ja niiden kentät ovat kiinteät. Jokainen arvo tulee sitoutuneesta reitistä, linkistä tai asennuskomennosta – ei koskaan mistään kirjoittamastasi.",
-    "trafficSource": "Sivun katselukerrat merkitsevät liikennettä vain maksuttomaksi hauksi tai muuksi. Tämä tunniste on johdettu selaimessasi kiinteästä hakukoneluettelosta tai selkeästä maksuttomasta kampanjamerkistä. Raaka viittausta, kampanjaa ja kyselymerkkijonoa ei koskaan lähetetä. Valvotuissa sivustotarkistuksissa on todellinen vahvistusmerkki, joten ne voidaan jättää pois kävijämääristä. tavalliset vierailut sisältävät vääriä.",
+    "trafficSource": "Sivun katselukerrat merkitsevät liikenteen vain orgaaniseksi hauksi tai muuksi liikenteeksi. Tämä tunniste johdetaan selaimessasi kiinteästä hakukoneluettelosta tai nimenomaisesta orgaanisen kampanjan merkinnästä. Raakaa viittaustietoa, kampanjaa ja kyselymerkkijonoa ei koskaan lähetetä. Valvotuissa sivustotarkistuksissa on tosi vahvistusmerkki, joten ne voidaan jättää pois kävijämääristä; tavallisissa vierailuissa merkki on epätosi.",
     "entryPage": "Suostumuksen jälkeen maksuttomat käynnit säilyttävät nykyisen selainvälilehden ensimmäisen saman sivuston polun. Asennuskopiot ja ensisijaisen linkin napsautukset sisältävät polun nimen <code>entry_page</code>. Suorat ja viittauskäynnit eivät. Se ei koskaan sisällä kyselymerkkijonoa tai raakaviittausta, ja se poistetaan, kun peruutat suostumuksen.",
     "events": {
       "pageview": {
@@ -197,6 +197,10 @@
     "proposal": "Luettelo kasvaa tietoisesti – lähde, luettelo, asiakirjat ja asentajan kattavuus toimitetaan yhdessä. Ehdota seuraavaa.",
     "issue": "Avaa ongelma",
     "inDevelopment": "kehitteillä",
+    "roadmapPreview": "Konseptin esikatselu",
+    "planned": "Avoimen lähdekoodin etenemissuunnitelma",
+    "interest": "Näytä etenemissuunnitelma",
+    "interestLabel": "Näytä {component} toimituksellisten komponenttien etenemissuunnitelmassa",
     "selected": "{count} valittu",
     "tray": "Valitut komponentit",
     "copy": "Kopioi asennuskomento",
@@ -252,6 +256,35 @@
         "round": "Pyöreä"
       }
     }
+  },
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
+    "seeCollection": "View the collection",
+    "backToCatalog": "Back to the component catalog",
+    "suiteEyebrow": "The proposed suite",
+    "suiteTitle": "Designed as one publication.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
+    "collectionEyebrow": "The collection",
+    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
+    "benefits": {
+      "systemTitle": "Composed together",
+      "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
+    },
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
   },
   "Templates": {
     "metadataTitle": "Payload CMS Mallit Next.js | Käsitteet & Reseptit",

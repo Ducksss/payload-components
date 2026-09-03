@@ -42,7 +42,7 @@
     "heading": "Genau das, was wir messen.",
     "accentWord": "messen",
     "intro": "Nichts, was etwas auf Ihrem Gerät speichert, wird geladen, bis Sie es akzeptieren. Diese Seite benennt jeden Prozessor, jedes Ereignis und jedes Feld – und ermöglicht es Ihnen, Ihre Meinung jederzeit zu ändern.",
-    "consent": "Alles, was etwas auf Ihrem Gerät speichern würde, wartet auf Ihre Zustimmung. Ablehnen und Google Analytics und PostHog werden nie geladen – es wird kein Cookie gesetzt und keine Kennung gespeichert. Wenn Ihr Browser „1“ oder „2“ sendet, gilt dies automatisch als Ablehnung und Ihnen wird das Banner nie angezeigt.",
+    "consent": "Alles, was etwas auf Ihrem Gerät speichern würde, wartet auf Ihre Zustimmung. Ablehnen und Google Analytics und PostHog werden nie geladen – es wird kein Cookie gesetzt und keine Kennung gespeichert. Wenn Ihr Browser Global Privacy Control oder Do Not Track sendet, gilt dies automatisch als Ablehnung und Ihnen wird das Banner nie angezeigt.",
     "alwaysOnProcessors": "Vercel Analytics und Speed Insights sind die Ausnahme und gelten für alle. Sie setzen keine Cookies und speichern keine Kennungen – sie messen die Seitenladevorgänge und die Leistung insgesamt, was die Geschwindigkeit dieser Website gewährleistet. Es gibt nichts auf Ihrem Gerät, das Sie deaktivieren können.",
     "noAccounts": "Es gibt keine Konten auf dieser Website, daher ist nichts davon mit einer Identität verknüpft. Wir erfassen niemals Formulareingaben, Freitext oder den Inhalt der von Ihnen angezeigten Seiten.",
     "processorsTitle": "Wer erhält Daten?",
@@ -78,7 +78,7 @@
       }
     },
     "choiceTitle": "Ihre Wahl",
-    "choice": "Ihre Entscheidung wird lokal in Ihrem Browser unter „0“ gespeichert. Ändern Sie es hier jederzeit. Durch das Zurückziehen wird nicht nur die Erfassung gestoppt – es wird gelöscht, was durch das Opt-in erstellt wurde: Die „3“ Cookies (<code>_ga</code>, „〖2“) und die Kennung „4“ werden entfernt, und die Seite wird neu geladen, sodass nichts, was bereits läuft, weitergeführt wird. Der nur für die Sitzung gültige organische Eintragspfadname wird ebenfalls entfernt.",
+    "choice": "Ihre Entscheidung wird lokal in Ihrem Browser unter <code>pc_consent</code> gespeichert. Ändern Sie sie hier jederzeit. Durch das Zurückziehen wird nicht nur die Erfassung gestoppt – es wird gelöscht, was durch das Opt-in erstellt wurde: Die Cookies von Google Analytics (<code>_ga</code>, <code>_ga_*</code>) und die PostHog-Kennung werden entfernt, und die Seite wird neu geladen, sodass nichts, was bereits läuft, weitergeführt wird. Der nur für die Sitzung gültige organische Eintragspfadname wird ebenfalls entfernt.",
     "settings": {
       "privacySignal": "Ihr Browser sendet ein Datenschutzsignal (Global Privacy Control oder Do Not Track), daher bleiben Google Analytics und PostHog ausgeschaltet und dies kann hier nicht überschrieben werden.",
       "on": "Google Analytics und PostHog sind derzeit eingeschaltet.",
@@ -197,6 +197,10 @@
     "proposal": "Der Katalog wächst bewusst – Quelle, Manifest, Dokumente und Installationsprogrammabdeckung werden zusammen geliefert. Schlagen Sie den nächsten vor.",
     "issue": "Öffnen Sie ein Problem",
     "inDevelopment": "in Entwicklung",
+    "roadmapPreview": "Konzeptvorschau",
+    "planned": "Open-Source-Roadmap",
+    "interest": "Roadmap ansehen",
+    "interestLabel": "{component} auf der Roadmap für redaktionelle Komponenten ansehen",
     "selected": "{count} ausgewählt",
     "tray": "Ausgewählte Komponenten",
     "copy": "Installationsbefehl kopieren",
@@ -252,6 +256,35 @@
         "round": "Rund"
       }
     }
+  },
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
+    "seeCollection": "View the collection",
+    "backToCatalog": "Back to the component catalog",
+    "suiteEyebrow": "The proposed suite",
+    "suiteTitle": "Designed as one publication.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
+    "collectionEyebrow": "The collection",
+    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
+    "benefits": {
+      "systemTitle": "Composed together",
+      "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
+    },
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
   },
   "Templates": {
     "metadataTitle": "Payload CMS Vorlagen für Next.js | Konzepte und Rezepte",
@@ -410,7 +443,7 @@
       },
       "three": {
         "question": "Wie füge ich einen Heldenblock zu Payload CMS hinzu?",
-        "answer": "Installieren Sie eine mit CLI – `npx payload-components add hero-basic`. Es kopiert die Blockquelle in Ihr Projekt und verbindet sie durchgehend: Registriert sie in Ihrer Pages-Sammlung, ordnet sie in „1“ zu und generiert Ihre „4“ Typen und die Admin-Importzuordnung neu – und landet als eine überprüfbare Einheit „2“. Der gleiche Befehl fügt einen beliebigen Block im Katalog hinzu."
+        "answer": "Installieren Sie einen Block mit der CLI – `npx payload-components add hero-basic`. Sie kopiert die Blockquelle in Ihr Projekt und verbindet sie durchgehend: Sie registriert den Block in Ihrer Pages-Sammlung, ordnet ihn in RenderBlocks zu und generiert Ihre Payload-Typen und die Admin-Importzuordnung neu – alles als ein überprüfbarer git diff. Der gleiche Befehl fügt einen beliebigen Block im Katalog hinzu."
       },
       "four": {
         "question": "Was genau ändert eine Installation in meinem Repo?",
@@ -419,7 +452,7 @@
       },
       "five": {
         "question": "Was passiert, wenn ich dieselbe Installation zweimal ausführe?",
-        "answer": "Es konvergiert. Der CLI erkennt die vorhandene Verkabelung und überspringt sie – der tatsächliche Ausgang ist payload-components: \"hero-basic\" is already installed. Der Installationsstatus wird in „1“ aufgezeichnet, sodass Teilinstallationen sichtbar und wiederherstellbar sind und nicht stillschweigend unterbrochen werden."
+        "answer": "Der Vorgang konvergiert. Die CLI erkennt die vorhandene Verkabelung und überspringt sie – die tatsächliche Ausgabe lautet payload-components: \"hero-basic\" is already installed. Der Installationsstatus wird in .payload-components/state.json aufgezeichnet, sodass Teilinstallationen sichtbar und wiederherstellbar sind, anstatt unbemerkt beschädigt zu bleiben."
       },
       "six": {
         "question": "Welche Projekte werden heute unterstützt?",
@@ -427,7 +460,7 @@
       },
       "seven": {
         "question": "Warum nicht einfach npx shadcn add ausführen?",
-        "answer": "Eine einfache shadcn-Installation kopiert Dateien und stoppt. „2“ Blöcke funktionieren erst, nachdem sie in Ihrem Sammlungsschema registriert, in Ihrem Renderer zugeordnet, typisiert und zur Admin-Importzuordnung hinzugefügt wurden. payload-components umschließt die gleiche Registrierungslieferung mit genau dieser Verkabelung – diese Grenze ist das Produkt, und das Verkabelungsbuch oben zeigt es Zeile für Zeile.",
+        "answer": "Eine einfache shadcn-Installation kopiert Dateien und stoppt. Payload-Blöcke funktionieren erst, nachdem sie in Ihrem Sammlungsschema registriert, in Ihrem Renderer zugeordnet, typisiert und zur Admin-Importzuordnung hinzugefügt wurden. payload-components umschließt die gleiche Registrierungslieferung mit genau dieser Verkabelung – diese Grenze ist das Produkt, und das Verkabelungsbuch oben zeigt es Zeile für Zeile.",
         "link": "Lesen Sie den vollständigen shadcn-Vergleich"
       },
       "eight": {

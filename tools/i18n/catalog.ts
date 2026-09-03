@@ -45,6 +45,23 @@ type MessageShape = {
   tags: Set<string>
 }
 
+const protectedTerms = [
+  'Google Analytics',
+  'PostHog',
+  'Core Web Vitals',
+  'Global Privacy Control',
+  'Do Not Track',
+  'RenderBlocks',
+  'Payload CMS',
+  'Payload',
+  'git diff',
+  '.payload-components/state.json',
+  'npx shadcn add',
+  'GitHub',
+]
+
+const numericTranslationArtifact = /(?:["“”„«»‘’‹›]\s*\d+\s*["“”„«»‘’‹›]|\[\d+\]|〖)/u
+
 function inspectElements(elements: MessageFormatElement[], shape: MessageShape) {
   for (const element of elements) {
     switch (element.type) {
@@ -103,6 +120,18 @@ function validateMessage(
   locale: Exclude<SiteLocale, 'en'>,
   location: string,
 ) {
+  if (!english.includes('\n') && localized.includes('\n')) {
+    errors.push(`${location} adds an unexpected line break`)
+  }
+  if (numericTranslationArtifact.test(localized)) {
+    errors.push(`${location} contains a numeric translation artifact`)
+  }
+  for (const term of protectedTerms) {
+    if (english.includes(term) && !localized.includes(term)) {
+      errors.push(`${location} removes protected term ${JSON.stringify(term)}`)
+    }
+  }
+
   try {
     const source = inspectMessage(english)
     const target = inspectMessage(localized)

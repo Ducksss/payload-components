@@ -197,6 +197,10 @@
     "proposal": "目录会有节制地扩展：源码、manifest、文档和安装器测试必须一起发布。欢迎提议下一个组件。",
     "issue": "提交 issue",
     "inDevelopment": "开发中",
+    "roadmapPreview": "概念预览",
+    "planned": "开源路线图",
+    "interest": "查看路线图",
+    "interestLabel": "在编辑组件路线图中查看 {component}",
     "selected": "已选 {count} 个",
     "tray": "已选组件",
     "copy": "复制安装命令",
@@ -252,6 +256,35 @@
         "round": "圆润"
       }
     }
+  },
+  "EditorialRoadmap": {
+    "metadataTitle": "Payload Components 编辑组件路线图",
+    "metadataDescription": "查看八个面向生产级 Payload CMS 内容发布体验的开源组件提案。",
+    "eyebrow": "Payload Components / 路线图",
+    "headline": "一起完善<editorial>编辑内容发布系统。</editorial>",
+    "intro": "八个公开提案，目标是让内容体验从归档页到文章页保持统一。通过评审的组件都会进入公开的 MIT 许可 registry。",
+    "status": "开源 · 提案中",
+    "seeCollection": "查看组件集",
+    "backToCatalog": "返回组件目录",
+    "suiteEyebrow": "组件提案",
+    "suiteTitle": "如同一份出版物般统一设计。",
+    "suiteDescription": "公开规划一套从内容发现、阅读、作者信息到再次访问都保持一致的视觉与实现语言。",
+    "collectionEyebrow": "组件系列",
+    "collectionTitle": "八个部分，一套内容发布语言。",
+    "collectionIntro": "每个组件都承担明确的编辑职责；它们共同组成从首次浏览归档到阅读相关文章的完整系统。",
+    "benefitsEyebrow": "交付方式",
+    "benefitsTitle": "公开共建，形成完整系统。",
+    "benefitsIntro": "每个提案都遵循相同的社区流程：公开讨论、生产级实现、文档和安装器测试。",
+    "benefits": {
+      "systemTitle": "作为整体而设计",
+      "systemDescription": "层级、间距、状态与内容模型以统一的编辑语言来处理，而不是八张彼此割裂的组件卡片。",
+      "implementationTitle": "公开实现",
+      "implementationDescription": "通过评审的模式会在此仓库中开发，并覆盖 Payload 与 Next.js 的相关集成细节。",
+      "maintainedTitle": "社区维护",
+      "maintainedDescription": "组件系列会随内容发布技术栈共同演进，并始终采用 MIT 许可证。"
+    },
+    "contributionNote": "这些是公开提案，不是付费或受限版本。欢迎提交 issue，讨论优先级、使用场景或实现细节。",
+    "contribute": "提议或讨论组件"
   },
   "Templates": {
     "metadataTitle": "Next.js 的 Payload CMS 模板 | 概念与配方",
@@ -401,7 +434,7 @@
     "entries": {
       "one": {
         "question": "Payload Components 免费吗？",
-        "answer": "免费，而且从设计上就会一直如此。注册表、CLI、全部 {count} 个可安装组件和这个站点都在同一个 MIT 许可仓库中：没有定价、许可密钥或付费层级。目录由真实安装和社区贡献推动，而不是付费路线图。"
+        "answer": "免费，而且从设计上就会一直如此。注册表、CLI、全部 {count} 个可安装组件和这个站点都在同一个 MIT 许可仓库中：没有定价、许可密钥或付费层级。Payload Components 以社区为先——目录由真实安装和社区贡献推动，而不是付费路线图。"
       },
       "two": {
         "question": "什么是 Payload CMS 区块？",

@@ -9,7 +9,7 @@
     "blog": "Blog",
     "componentCatalog": "Alkatrészkatalógus",
     "brandGuide": "Márkaútmutató",
-    "about": "Körülbelül",
+    "about": "Rólunk",
     "privacy": "Adatvédelem",
     "copy": "Másolás",
     "copied": "Másolva",
@@ -27,7 +27,7 @@
       "components": "Alkatrészek",
       "templates": "Sablonok",
       "blog": "Blog",
-      "about": "Körülbelül"
+      "about": "Rólunk"
     }
   },
   "Consent": {
@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# blokk} other {# blokk}}",
       "browseFamily": "Böngészés {family}",
       "allComponents": "Az összes {count} összetevő böngészése",
-      "postComponents": "Posta komponensek · Fejlesztés alatt",
+      "postComponents": "Bejegyzéskomponensek · Fejlesztés alatt",
       "familyCount": "Telepíthető",
       "familyName": "Oldalblokkok",
       "familyDescription": "Az Oldalak elrendezéskészítőjének blokkok – teljes vezetékezéssel telepítve: gyűjteménykonfiguráció, renderelési leképezés, generált típusok, térkép importálása."
@@ -197,13 +197,17 @@
     "proposal": "A katalógus szándékosan bővül – a forrás, a jegyzék, a dokumentumok és a telepítői lefedettség együtt érkezik. Javasolja a következőt.",
     "issue": "Nyisson meg egy problémát",
     "inDevelopment": "fejlesztés alatt",
+    "roadmapPreview": "Koncepció-előnézet",
+    "planned": "Nyílt forráskódú ütemterv",
+    "interest": "Ütemterv megtekintése",
+    "interestLabel": "A(z) {component} megtekintése a szerkesztőségi komponensek ütemtervében",
     "selected": "{count} kiválasztva",
     "tray": "Kiválasztott összetevők",
     "copy": "Telepítési parancs másolása",
     "clear": "Kijelölés törlése",
     "families": {
       "pages": "Oldalblokkok",
-      "posts": "Összetevők közzététele"
+      "posts": "Bejegyzéskomponensek"
     },
     "categories": {
       "hero": "Hős",
@@ -252,6 +256,35 @@
         "round": "Kerek"
       }
     }
+  },
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
+    "seeCollection": "View the collection",
+    "backToCatalog": "Back to the component catalog",
+    "suiteEyebrow": "The proposed suite",
+    "suiteTitle": "Designed as one publication.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
+    "collectionEyebrow": "The collection",
+    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
+    "benefits": {
+      "systemTitle": "Composed together",
+      "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
+    },
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
   },
   "Templates": {
     "metadataTitle": "Payload CMS Sablonok Next.js | Fogalmak és receptek",
@@ -364,7 +397,7 @@
     "architecture": "Építészet",
     "aiDiscovery": "AI felfedezés",
     "allComponents": "Minden {count} összetevő",
-    "about": "Körülbelül",
+    "about": "Rólunk",
     "brandGuide": "Márkaútmutató",
     "openIssue": "Nyisson meg egy problémát",
     "releases": "Kiadások",
@@ -382,8 +415,8 @@
   },
   "PageMetadata": {
     "about": {
-      "title": "Körülbelül",
-      "openGraphTitle": "Körülbelül Payload Components",
+      "title": "Rólunk",
+      "openGraphTitle": "A Payload Components bemutatása",
       "description": "Miért létezik a Payload Components: ne építse újra ugyanazokat az Payload blokkokat, ne kösse át őket kézzel, és ne bizonyítson újra minden telepítést a szabadúszó projektekben."
     },
     "privacy": {

@@ -54,6 +54,9 @@ export const config = {
     // exclusion below cannot discover the hidden default-locale segment.
     '/llms.mdx/:path*',
     '/og/:path*',
-    '/((?!api|r|_next|_vercel|.*\\..*).*)',
+    // Keep the exclusions scoped to complete first segments. A bare `r`
+    // alternative also excludes every route beginning with that letter (for
+    // example `/roadmap`), so those requests never reach locale middleware.
+    '/((?!api(?:/|$)|r(?:/|$)|_next(?:/|$)|_vercel(?:/|$)|.*\\..*).*)',
   ],
 }

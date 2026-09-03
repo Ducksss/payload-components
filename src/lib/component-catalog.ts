@@ -848,6 +848,8 @@ if (componentEntries.length !== componentEditorialEntries.length) {
 
 export type ComponentEntry = (typeof componentEntries)[number]
 
+/* The planned posts suite is a set of public proposals that will ship through
+ * the same source, manifest, docs, and installer workflow as the MIT registry. */
 export const upcomingComponents = [
   {
     category: 'cards',

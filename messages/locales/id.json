@@ -63,7 +63,7 @@
       }
     },
     "eventsTitle": "Acara yang kami kirim",
-    "eventsIntro": "Tiga, dan ladangnya tetap. Setiap nilai berasal dari perintah rute, tautan, atau pemasangan khusus — tidak pernah dari apa pun yang Anda ketik.",
+    "eventsIntro": "Hanya tiga, dan kolomnya tetap. Setiap nilai berasal dari rute, tautan, atau perintah pemasangan yang sudah ditentukan — tidak pernah dari apa pun yang Anda ketik.",
     "trafficSource": "Tampilan laman memberi label lalu lintas hanya sebagai penelusuran organik atau lainnya. Label tersebut diperoleh di browser Anda dari daftar mesin pencari tetap atau penanda kampanye organik yang eksplisit. Perujuk mentah, kampanye, dan string kueri tidak pernah dikirim. Pemeriksaan situs yang terkontrol membawa penanda verifikasi yang sebenarnya sehingga dapat dikecualikan dari jumlah pengunjung; kunjungan biasa membawa kepalsuan.",
     "entryPage": "Setelah persetujuan, kunjungan organik mempertahankan nama jalur situs pertama yang sama untuk tab browser saat ini. Instal salinan dan klik tautan utama sertakan nama jalur tersebut sebagai <code>entry_page</code>. Kunjungan langsung dan rujukan tidak. Itu tidak pernah berisi string kueri atau perujuk mentah dan dihapus saat Anda membatalkan persetujuan.",
     "events": {
@@ -197,6 +197,10 @@
     "proposal": "Katalog berkembang dengan sengaja — cakupan sumber, manifes, dokumen, dan penginstal dikirimkan bersamaan. Usulkan yang berikutnya.",
     "issue": "Buka terbitan",
     "inDevelopment": "dalam pengembangan",
+    "roadmapPreview": "Pratinjau konsep",
+    "planned": "Peta jalan sumber terbuka",
+    "interest": "Lihat peta jalan",
+    "interestLabel": "Lihat {component} di peta jalan komponen editorial",
     "selected": "{count} dipilih",
     "tray": "Komponen yang dipilih",
     "copy": "Salin perintah pemasangan",
@@ -252,6 +256,35 @@
         "round": "Membulat"
       }
     }
+  },
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
+    "seeCollection": "View the collection",
+    "backToCatalog": "Back to the component catalog",
+    "suiteEyebrow": "The proposed suite",
+    "suiteTitle": "Designed as one publication.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
+    "collectionEyebrow": "The collection",
+    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
+    "benefits": {
+      "systemTitle": "Composed together",
+      "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
+    },
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
   },
   "Templates": {
     "metadataTitle": "Payload CMS Templat untuk Next.js | Konsep & Resep",

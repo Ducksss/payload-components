@@ -64,7 +64,7 @@
     },
     "eventsTitle": "האירועים שאנו שולחים",
     "eventsIntro": "שלושה, והשדות שלהם קבועים. כל ערך מגיע ממסלול מחויב, קישור או פקודת התקנה - לעולם לא מכל דבר שאתה מקליד.",
-    "trafficSource": "תצוגות עמוד תויגות תנועה רק כחיפוש אורגני או אחר. התווית הזו נגזרת בדפדפן שלך מרשימת מנועי חיפוש קבועה או מסמן מסע פרסום אורגני מפורש. המפנה הגולמי, מסע הפרסום ומחרת השאילתה לעולם לא נשלחים. בדיקות אתרים מבוקרות נושאות סמן אימות אמיתי כך שניתן להחריג אותן מספירת מבקרים; ביקורים רגילים נושאים שווא.",
+    "trafficSource": "תצוגות עמוד תויגות תנועה רק כחיפוש אורגני או אחר. התווית הזו נגזרת בדפדפן שלך מרשימת מנועי חיפוש קבועה או מסמן מסע פרסום אורגני מפורש. המפנה הגולמי, מסע הפרסום ומחרוזת השאילתה לעולם לא נשלחים. בדיקות אתרים מבוקרות נושאות סמן אימות אמיתי כך שניתן להחריג אותן מספירת מבקרים; ביקורים רגילים נושאים שווא.",
     "entryPage": "לאחר הסכמה, ביקורים אורגניים שומרים על שם הנתיב הראשון של אותו אתר עבור כרטיסיית הדפדפן הנוכחית. עותקי התקנה ולחיצות על קישור ראשי כוללים את שם הנתיב הזה כ-<code>entry_page</code>. ביקורים ישירים והפניה לא. הוא לעולם לא מכיל מחרוזת שאילתה או מפנה גולמי והוא נמחק כאשר אתה מבטל את ההסכמה.",
     "events": {
       "pageview": {
@@ -180,7 +180,7 @@
     "metadataDescription": "עיין בלוקים מוקלדים Payload CMS. הפעל npx payload-components add '<component>' כדי לחבר אחד לאוסף, למעבד, לסוגים שנוצרו ולמפת הייבוא ​​של מנהל המערכת.",
     "eyebrow": "רישום",
     "title": "רכיבים {count} Payload CMS ובלוקים מוקלדים",
-    "description": "עיין בכל רכיבי ה-{count} הניתנים להתקנה על פני גיבורים, תכונות, תמחור, קריאות לפעולה, אינטגרציות, המלצות, סטטיסטיקות, FAQ, תוכן, צוותים, הטמעות וכותרות תחתונות. פקודת CLI אחת מעתיקה בלוק ומחברת את רישום האוסף שלו, מיפוי המעבד, הסוגים שנוצרו ומפת ייבוא ​​המנהל.",
+    "description": "עיין בכל {count} רכיבי Payload CMS הניתנים להתקנה על פני גיבורים, תכונות, תמחור, קריאות לפעולה, אינטגרציות, המלצות, סטטיסטיקות, FAQ, תוכן, צוותים, הטמעות וכותרות תחתונות. פקודת CLI אחת מעתיקה בלוק ומחברת את רישום האוסף שלו, מיפוי המעבד, הסוגים שנוצרו ומפת ייבוא ​​המנהל.",
     "installation": "ראה כיצד פועלת התקנה בפקודה אחת",
     "blocksGuide": "עקוב אחר חסימה מתצורה לדף חי",
     "templates": "חקור מושגי תבנית Payload CMS",
@@ -197,6 +197,10 @@
     "proposal": "הקטלוג גדל בכוונה - מקור, מניפסט, מסמכים וכיסוי מתקין נכללים ביחד. הצע את הבא.",
     "issue": "פתח בעיה",
     "inDevelopment": "בפיתוח",
+    "roadmapPreview": "תצוגה מקדימה של הקונספט",
+    "planned": "מפת דרכים בקוד פתוח",
+    "interest": "הצגת מפת הדרכים",
+    "interestLabel": "הצגת {component} במפת הדרכים של רכיבי התוכן",
     "selected": "נבחר {count}",
     "tray": "רכיבים נבחרים",
     "copy": "העתק את פקודת ההתקנה",
@@ -252,6 +256,35 @@
         "round": "עגול"
       }
     }
+  },
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
+    "seeCollection": "View the collection",
+    "backToCatalog": "Back to the component catalog",
+    "suiteEyebrow": "The proposed suite",
+    "suiteTitle": "Designed as one publication.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
+    "collectionEyebrow": "The collection",
+    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
+    "benefits": {
+      "systemTitle": "Composed together",
+      "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
+    },
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
   },
   "Templates": {
     "metadataTitle": "Payload CMS תבניות עבור Next.js | מושגים ומתכונים",

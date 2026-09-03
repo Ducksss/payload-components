@@ -25,6 +25,8 @@ const routes = [
   { name: 'docs architecture', path: '/docs/architecture' },
   { name: 'signup component reference', path: '/docs/components/call-to-action-signup' },
   { name: 'component catalog', path: '/components' },
+  { name: 'post component roadmap catalog', path: '/components?type=posts' },
+  { name: 'editorial roadmap', path: '/roadmap/editorial' },
   { name: 'templates catalog', path: '/templates' },
   { name: 'about', path: '/about' },
   { name: 'privacy', path: '/privacy' },

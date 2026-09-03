@@ -23,6 +23,9 @@ type Publication = {
  * reviewer explicitly publishes that resource. Machine-translated product
  * routes can be useful previews; an unreviewed legal disclosure cannot. */
 const machineTranslatedRoutes = new Set(['/', '/components', '/templates'])
+const routeMachineLocales = new Map<string, ReadonlySet<SiteLocale>>([
+  ['/roadmap/editorial', new Set<SiteLocale>(['zh'])],
+])
 const reviewed = translationStatus.reviewed as Partial<Record<SiteLocale, string[]>>
 
 function normalizedPath(pathname: string) {
@@ -65,7 +68,7 @@ export function getPublication(pathname: string, locale: SiteLocale): Publicatio
     }
   }
 
-  if (machineTranslatedRoutes.has(path)) {
+  if (machineTranslatedRoutes.has(path) || routeMachineLocales.get(path)?.has(locale)) {
     return {
       alternates,
       canonical: localizeHref(path, locale),
