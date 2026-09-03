@@ -91,6 +91,7 @@ payloads are fixed:
 | `$pageview` | A public route loads or changes | `page_path`, `source_path`, `traffic_source`, `verification_run` |
 | `copy_install_command` | A visitor copies a supported install command | `command`, `component`, `source_path`, `entry_page` |
 | `primary_link_click` | A visitor follows a repository, docs, or components link | `destination`, `href`, `source_path`, `entry_page` |
+
 These values come from committed routes, links, and install commands, not visitor
 input. On page views, `traffic_source` is only `organic_search` or `other`. The
 browser derives it from a fixed search-engine hostname list or the exact

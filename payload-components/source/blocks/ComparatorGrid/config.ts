@@ -26,15 +26,18 @@ export const ComparatorGrid: Block = {
         {
           name: 'name',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
         {
           name: 'price',
           type: 'text',
+          custom: { payloadComponents: { localization: 'global' } },
         },
         {
           name: 'period',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           admin: {
             description: 'Shown next to the price, e.g. "/month".',
           },
@@ -42,6 +45,7 @@ export const ComparatorGrid: Block = {
         {
           name: 'badge',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           admin: {
             description: 'Optional pill above the plan name, e.g. "Most popular".',
           },
@@ -72,13 +76,15 @@ export const ComparatorGrid: Block = {
         {
           name: 'feature',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
         {
           name: 'values',
           type: 'array',
           admin: {
-            description: 'One cell per plan, in the same order as Plans. Tick "included" for a checkmark, or set a label for a text value.',
+            description:
+              'One cell per plan, in the same order as Plans. Tick "included" for a checkmark, or set a label for a text value.',
           },
           fields: [
             {
@@ -88,6 +94,7 @@ export const ComparatorGrid: Block = {
             {
               name: 'label',
               type: 'text',
+              custom: { payloadComponents: { localization: 'localized' } },
             },
           ],
         },

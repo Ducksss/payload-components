@@ -27,6 +27,7 @@ export const FaqGrouped: Block = {
         {
           name: 'title',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
         {
@@ -38,11 +39,13 @@ export const FaqGrouped: Block = {
             {
               name: 'question',
               type: 'text',
+              custom: { payloadComponents: { localization: 'localized' } },
               required: true,
             },
             {
               name: 'answer',
               type: 'textarea',
+              custom: { payloadComponents: { localization: 'localized' } },
               required: true,
             },
           ],

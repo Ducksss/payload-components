@@ -48,8 +48,8 @@ describe('blog delivery platform', () => {
 
   it('renders image-led cards, captioned figures, and related posts', async () => {
     const [index, post, mdx, card, figure, related] = await Promise.all([
-      read('src/app/blog/page.tsx'),
-      read('src/app/blog/[slug]/page.tsx'),
+      read('src/app/[locale]/blog/page.tsx'),
+      read('src/app/[locale]/blog/[slug]/page.tsx'),
       read('src/components/mdx.tsx'),
       read('src/components/blog/BlogCard.tsx'),
       read('src/components/blog/BlogFigure.tsx'),
@@ -67,9 +67,9 @@ describe('blog delivery platform', () => {
 
   it('publishes post-specific social cards, BlogPosting JSON-LD, RSS, and discovery links', async () => {
     const [post, structuredData, og, rss, llms, sitemap] = await Promise.all([
-      read('src/app/blog/[slug]/page.tsx'),
+      read('src/app/[locale]/blog/[slug]/page.tsx'),
       read('src/lib/structured-data.ts'),
-      read('src/app/og/blog/[slug]/image.png/route.tsx'),
+      read('src/app/[locale]/og/blog/[slug]/image.png/route.tsx'),
       read('src/app/blog/rss.xml/route.ts'),
       read('src/app/llms.txt/route.ts'),
       read('src/app/sitemap.ts'),

@@ -1,4 +1,5 @@
 import { compareInstalledFiles, resolveRecordedFileHashes } from '../component-files'
+import { captureCommandOutput } from '../command-output'
 import { addCommand } from '../commands/add'
 import { diffCommand } from '../commands/diff'
 import { doctorCommand } from '../commands/doctor'
@@ -101,27 +102,6 @@ const requireString = (args: Record<string, unknown>, key: string) => {
   return value
 }
 
-/* The install pipeline and the report commands print to stdout, which is the
-   protocol stream. Capture their output and hand it back as the tool's text
-   result instead of letting it reach the transport. */
-const captureStdout = async (run: () => Promise<unknown>) => {
-  const originalWrite = process.stdout.write.bind(process.stdout)
-  const chunks: string[] = []
-
-  process.stdout.write = ((chunk: unknown) => {
-    chunks.push(String(chunk))
-    return true
-  }) as typeof process.stdout.write
-
-  try {
-    await run()
-  } finally {
-    process.stdout.write = originalWrite
-  }
-
-  return chunks.join('').trim()
-}
-
 const formatComponentDetail = async ({ component, cwd }: { component: string; cwd: string }) => {
   const manifest = await loadManifest(component)
   const inventory = await buildInventory({ cwd })
@@ -177,13 +157,7 @@ const formatComponentDetail = async ({ component, cwd }: { component: string; cw
   )
 }
 
-const matchesQuery = ({
-  query,
-  values,
-}: {
-  query: string
-  values: Array<string | undefined>
-}) => {
+const matchesQuery = ({ query, values }: { query: string; values: Array<string | undefined> }) => {
   const needles = query.toLowerCase().split(/\s+/).filter(Boolean)
   const haystack = values.filter(Boolean).join(' ').toLowerCase()
 
@@ -197,7 +171,7 @@ export const createMcpServer = ({ cwd }: { cwd: string }) => {
         'List every Payload block in the registry with its install command, and whether this project already has it installed or out of date.',
       inputSchema: emptySchema,
       name: 'list_components',
-      run: async () => await captureStdout(() => listCommand({ cwd, json: true })),
+      run: async () => await captureCommandOutput(() => listCommand({ cwd, json: true })),
       title: 'List components',
     },
     {
@@ -222,7 +196,12 @@ export const createMcpServer = ({ cwd }: { cwd: string }) => {
           .filter((manifest) =>
             matchesQuery({
               query,
-              values: [manifest.name, manifest.title, manifest.description, manifest.preview.summary],
+              values: [
+                manifest.name,
+                manifest.title,
+                manifest.description,
+                manifest.preview.summary,
+              ],
             }),
           )
           .map((manifest) => ({
@@ -251,7 +230,7 @@ export const createMcpServer = ({ cwd }: { cwd: string }) => {
       inputSchema: componentNameSchema,
       name: 'plan_install',
       run: async (args) =>
-        await captureStdout(() =>
+        await captureCommandOutput(() =>
           addCommand({ componentName: requireString(args, 'component'), cwd, dryRun: true }),
         ),
       title: 'Plan an install',
@@ -261,7 +240,7 @@ export const createMcpServer = ({ cwd }: { cwd: string }) => {
         'Compare recorded installs against the registry and report version, file, and wiring drift. Use before suggesting an update.',
       inputSchema: emptySchema,
       name: 'diff',
-      run: async () => await captureStdout(() => diffCommand({ cwd, json: true })),
+      run: async () => await captureCommandOutput(() => diffCommand({ cwd, json: true })),
       title: 'Diff installs',
     },
     {
@@ -269,7 +248,7 @@ export const createMcpServer = ({ cwd }: { cwd: string }) => {
         'Diagnose whether this project can accept installs, and check every recorded install for drift.',
       inputSchema: emptySchema,
       name: 'doctor',
-      run: async () => await captureStdout(() => doctorCommand({ cwd })),
+      run: async () => await captureCommandOutput(() => doctorCommand({ cwd })),
       title: 'Doctor',
     },
     {
@@ -352,9 +331,7 @@ export const createMcpServer = ({ cwd }: { cwd: string }) => {
       }
     } catch (error) {
       return {
-        content: [
-          { text: error instanceof Error ? error.message : 'Unknown error', type: 'text' },
-        ],
+        content: [{ text: error instanceof Error ? error.message : 'Unknown error', type: 'text' }],
         isError: true,
       }
     }
@@ -377,7 +354,7 @@ export const createMcpServer = ({ cwd }: { cwd: string }) => {
         return respond({
           capabilities: { tools: { listChanged: false } },
           instructions:
-            'Read-only registry access. Use search_components or list_components to find a block, get_component for its contract, and plan_install to see what an install would change. To actually install, run the printed npx command in the user\'s shell.',
+            "Read-only registry access. Use search_components or list_components to find a block, get_component for its contract, and plan_install to see what an install would change. To actually install, run the printed npx command in the user's shell.",
           protocolVersion:
             typeof requested === 'string' && SUPPORTED_PROTOCOL_VERSIONS.includes(requested)
               ? requested
@@ -399,7 +376,10 @@ export const createMcpServer = ({ cwd }: { cwd: string }) => {
       }
 
       return {
-        error: { code: JSON_RPC_ERRORS.methodNotFound, message: `Unknown method "${request.method}".` },
+        error: {
+          code: JSON_RPC_ERRORS.methodNotFound,
+          message: `Unknown method "${request.method}".`,
+        },
         id,
         jsonrpc: '2.0',
       }

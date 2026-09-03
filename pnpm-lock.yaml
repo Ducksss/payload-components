@@ -30,6 +30,9 @@ importers:
       '@axe-core/playwright':
         specifier: ^4.11.3
         version: 4.12.1(playwright-core@1.62.1)
+      '@formatjs/icu-messageformat-parser':
+        specifier: 3.5.17
+        version: 3.5.17
       '@fumadocs/language':
         specifier: 0.2.4
         version: 0.2.4(23b53bfd967feb6fb89e7d64588e8cb4)

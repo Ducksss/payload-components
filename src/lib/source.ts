@@ -5,7 +5,13 @@ import { docs } from 'collections/server'
 
 import { getComponentManifest, getComponentRegistryDependencies } from '@/lib/component-manifest'
 import { regroupComponentTree } from '@/lib/component-page-tree'
-import { defaultSiteLocale, localizeHref, type SiteLocale } from '@/i18n/config'
+import {
+  defaultSiteLocale,
+  localePathPrefix,
+  localizeHref,
+  normalizeSiteLocale,
+  type SiteLocale,
+} from '@/i18n/config'
 import { fumadocsI18n } from '@/lib/i18n'
 import { docsContentRoute, docsImageRoute, docsRoute } from '@/lib/site'
 
@@ -48,9 +54,9 @@ export function getLocalizedPageTree(locale: SiteLocale): Root {
   return localizeTreeRoot(source.getPageTree(locale), locale)
 }
 
-export function getPageImage(page: SourcePage, locale = page.locale) {
+export function getPageImage(page: SourcePage, locale = normalizeSiteLocale(page.locale)) {
   const segments = [...page.slugs, 'image.png']
-  const localePrefix = locale === 'zh' ? '/zh' : ''
+  const localePrefix = localePathPrefix(locale)
 
   return {
     segments,
@@ -58,9 +64,9 @@ export function getPageImage(page: SourcePage, locale = page.locale) {
   }
 }
 
-export function getPageMarkdownUrl(page: SourcePage, locale = page.locale) {
+export function getPageMarkdownUrl(page: SourcePage, locale = normalizeSiteLocale(page.locale)) {
   const segments = [...page.slugs, 'content.md']
-  const localePrefix = locale === 'zh' ? '/zh' : ''
+  const localePrefix = localePathPrefix(locale)
 
   return {
     segments,

@@ -21,7 +21,7 @@ export function CallToActionSignupDemo({
   className?: string
   content?: CtaDemoContent
 }) {
-  const { description, emailPlaceholder, submitLabel, title } = content
+  const { action, description, emailPlaceholder, submitLabel, title } = content
 
   return (
     <div aria-hidden="true" className={className}>
@@ -48,6 +48,12 @@ export function CallToActionSignupDemo({
                 <SendHorizonal className="size-4 sm:hidden" strokeWidth={2} />
               </span>
             </div>
+
+            {!action ? (
+              <p className="mt-2 text-sm text-muted-foreground">
+                Signup unavailable. Add a valid same-origin form action in Payload.
+              </p>
+            ) : null}
           </div>
         </div>
       </div>

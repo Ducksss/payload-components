@@ -15,6 +15,7 @@ export const FooterCentered: Block = {
     {
       name: 'tagline',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'links',

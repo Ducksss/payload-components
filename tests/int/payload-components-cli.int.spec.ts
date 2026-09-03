@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 
 type CliModule = {
   parseArgs?: (
@@ -8,6 +8,8 @@ type CliModule = {
     defaultCwd?: string,
   ) => {
     acceptBreaking: boolean
+    acceptLocalizationPolicyChange: boolean
+    acceptStoredContent: boolean
     cwd: string
     defaultLocale?: string
     demo: boolean
@@ -30,17 +32,16 @@ type CliModule = {
       doctorCommand: (options: unknown) => Promise<0 | 1 | 2>
       initCommand: (options: unknown) => Promise<void>
       listCommand: (options: unknown) => Promise<void>
-      localizeCommand: (options: unknown) => Promise<void>
+      localizeCommand: (options: unknown) => Promise<boolean>
       mcpCommand: (options: unknown) => Promise<void>
-      newCommand: (options: unknown) => Promise<void>
       removeCommand: (options: unknown) => Promise<void>
       seedCommand: (options: unknown) => Promise<void>
       templatesCommand: (options: unknown) => Promise<void>
-      updateCommand: (options: unknown) => Promise<void>
+      updateCommand: (options: unknown) => Promise<boolean>
     }
     defaultCwd: string
     write: (value: string) => void
-  }) => Promise<void>
+  }) => Promise<0 | 1 | 2>
   usage?: string
 }
 
@@ -51,13 +52,12 @@ const makeCommands = () => ({
   doctorCommand: vi.fn().mockResolvedValue(0),
   initCommand: vi.fn().mockResolvedValue(undefined),
   listCommand: vi.fn().mockResolvedValue(undefined),
-  localizeCommand: vi.fn().mockResolvedValue(undefined),
+  localizeCommand: vi.fn().mockResolvedValue(true),
   mcpCommand: vi.fn().mockResolvedValue(undefined),
-  newCommand: vi.fn().mockResolvedValue(undefined),
   removeCommand: vi.fn().mockResolvedValue(undefined),
   seedCommand: vi.fn().mockResolvedValue(undefined),
   templatesCommand: vi.fn().mockResolvedValue(undefined),
-  updateCommand: vi.fn().mockResolvedValue(undefined),
+  updateCommand: vi.fn().mockResolvedValue(true),
 })
 
 describe('payload-components CLI parsing and orchestration', () => {
@@ -77,16 +77,12 @@ describe('payload-components CLI parsing and orchestration', () => {
     }
   })
 
-  afterEach(() => {
-    process.exitCode = undefined
-  })
-
   it('describes the localize mutation flags accurately', () => {
     expect(cli.usage).toContain(
       '--dry-run  Validate and preview an add, localize, update, or remove without changing files or running commands.',
     )
     expect(cli.usage).toContain(
-      '--force  Let localize replace configured locales and wrap edited configs, let update overwrite edits, or let remove delete unverifiable source.',
+      '--force  Let localize replace configured locales and wrap edited configs, update overwrite edits, remove delete unverifiable source, or init replace edited managed base files.',
     )
     expect(cli.usage).toContain(
       '--default-locale  The canonical locale for localized values; defaults to the first --locales entry.',
@@ -100,6 +96,8 @@ describe('payload-components CLI parsing and orchestration', () => {
       cli.parseArgs?.(['add', 'hero-basic', '--demo', '--cwd', './consumer'], '/tmp/workspace'),
     ).toEqual({
       acceptBreaking: false,
+      acceptLocalizationPolicyChange: false,
+      acceptStoredContent: false,
       cwd: path.join('/tmp/workspace', 'consumer'),
       demo: true,
       dryRun: false,
@@ -121,6 +119,8 @@ describe('payload-components CLI parsing and orchestration', () => {
       ),
     ).toEqual({
       acceptBreaking: false,
+      acceptLocalizationPolicyChange: false,
+      acceptStoredContent: false,
       cwd: '/tmp/workspace',
       demo: false,
       dryRun: true,
@@ -135,6 +135,8 @@ describe('payload-components CLI parsing and orchestration', () => {
 
     expect(cli.parseArgs?.(['list', '--json'], '/tmp/workspace')).toEqual({
       acceptBreaking: false,
+      acceptLocalizationPolicyChange: false,
+      acceptStoredContent: false,
       cwd: '/tmp/workspace',
       demo: false,
       dryRun: false,
@@ -175,6 +177,43 @@ describe('payload-components CLI parsing and orchestration', () => {
       cwd: path.join('/tmp/workspace', 'consumer'),
     })
     expect(commands.addCommand).not.toHaveBeenCalled()
+  })
+
+  it('keeps starter-base replacement scoped to init --scaffold', async () => {
+    const commands = makeCommands()
+
+    await expect(
+      cli.runCli?.({
+        argv: ['init', '--force'],
+        commands,
+        defaultCwd: '/tmp/workspace',
+        write: vi.fn(),
+      }),
+    ).rejects.toThrow('--force requires "payload-components init --scaffold"')
+
+    await cli.runCli?.({
+      argv: ['init', '--scaffold', '--force'],
+      commands,
+      defaultCwd: '/tmp/workspace',
+      write: vi.fn(),
+    })
+
+    expect(commands.initCommand).toHaveBeenCalledWith({
+      cwd: '/tmp/workspace',
+      force: true,
+      scaffold: true,
+    })
+  })
+
+  it('does not expose repository-only contributor commands in the consumer router', async () => {
+    await expect(
+      cli.runCli?.({
+        argv: ['new', 'hero-example'],
+        commands: makeCommands(),
+        defaultCwd: '/tmp/workspace',
+        write: vi.fn(),
+      }),
+    ).rejects.toThrow('Unknown command "new"')
   })
 
   it('passes --demo only to add orchestration', async () => {
@@ -248,7 +287,7 @@ describe('payload-components CLI parsing and orchestration', () => {
 
     commands.diffCommand.mockResolvedValueOnce(false)
 
-    await cli.runCli?.({
+    const exitCode = await cli.runCli?.({
       argv: ['diff', 'hero-basic', '--json'],
       commands,
       defaultCwd: '/tmp/workspace',
@@ -260,13 +299,13 @@ describe('payload-components CLI parsing and orchestration', () => {
       cwd: '/tmp/workspace',
       json: true,
     })
-    expect(process.exitCode).toBe(1)
+    expect(exitCode).toBe(1)
   })
 
   it('leaves the exit code alone when diff reports a clean tree', async () => {
     const commands = makeCommands()
 
-    await cli.runCli?.({
+    const exitCode = await cli.runCli?.({
       argv: ['diff'],
       commands,
       defaultCwd: '/tmp/workspace',
@@ -278,7 +317,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       cwd: '/tmp/workspace',
       json: false,
     })
-    expect(process.exitCode).toBeUndefined()
+    expect(exitCode).toBe(0)
   })
 
   it('dispatches update with its flags and remove once per component', async () => {
@@ -293,6 +332,7 @@ describe('payload-components CLI parsing and orchestration', () => {
 
     expect(commands.updateCommand).toHaveBeenCalledWith({
       acceptBreaking: false,
+      acceptLocalizationPolicyChange: false,
       componentNames: [],
       cwd: '/tmp/workspace',
       dryRun: false,
@@ -300,7 +340,7 @@ describe('payload-components CLI parsing and orchestration', () => {
     })
 
     await cli.runCli?.({
-      argv: ['remove', 'hero-basic', 'faq-card', '--dry-run', '--force'],
+      argv: ['remove', 'hero-basic', 'faq-card', '--dry-run', '--force', '--accept-stored-content'],
       commands,
       defaultCwd: '/tmp/workspace',
       write: vi.fn(),
@@ -308,12 +348,14 @@ describe('payload-components CLI parsing and orchestration', () => {
 
     expect(commands.removeCommand).toHaveBeenCalledTimes(2)
     expect(commands.removeCommand).toHaveBeenNthCalledWith(1, {
+      acceptStoredContent: true,
       componentName: 'hero-basic',
       cwd: '/tmp/workspace',
       dryRun: true,
       force: true,
     })
     expect(commands.removeCommand).toHaveBeenNthCalledWith(2, {
+      acceptStoredContent: true,
       componentName: 'faq-card',
       cwd: '/tmp/workspace',
       dryRun: true,
@@ -321,10 +363,41 @@ describe('payload-components CLI parsing and orchestration', () => {
     })
   })
 
-  it('maps doctor exit codes and passes --json through', async () => {
+  it('passes the localization policy migration consent only to update', async () => {
     const commands = makeCommands()
 
     await cli.runCli?.({
+      argv: ['update', 'hero-basic', '--accept-localization-policy-change'],
+      commands,
+      defaultCwd: '/tmp/workspace',
+      write: vi.fn(),
+    })
+
+    expect(commands.updateCommand).toHaveBeenCalledWith({
+      acceptBreaking: false,
+      acceptLocalizationPolicyChange: true,
+      componentNames: ['hero-basic'],
+      cwd: '/tmp/workspace',
+      dryRun: false,
+      force: false,
+    })
+
+    await expect(
+      cli.runCli?.({
+        argv: ['add', 'hero-basic', '--accept-localization-policy-change'],
+        commands,
+        defaultCwd: '/tmp/workspace',
+        write: vi.fn(),
+      }),
+    ).rejects.toThrow(
+      '--accept-localization-policy-change cannot be used with "payload-components add"',
+    )
+  })
+
+  it('maps doctor exit codes and passes --json through', async () => {
+    const commands = makeCommands()
+
+    const cleanExitCode = await cli.runCli?.({
       argv: ['doctor', '--json'],
       commands,
       defaultCwd: '/tmp/workspace',
@@ -332,28 +405,27 @@ describe('payload-components CLI parsing and orchestration', () => {
     })
 
     expect(commands.doctorCommand).toHaveBeenCalledWith({ cwd: '/tmp/workspace', json: true })
-    expect(process.exitCode).toBeUndefined()
+    expect(cleanExitCode).toBe(0)
 
     /* 1 = a recorded install drifted; 2 = the project itself cannot accept
        installs. CI needs to tell those apart. */
     commands.doctorCommand.mockResolvedValueOnce(1)
-    await cli.runCli?.({
+    const driftedExitCode = await cli.runCli?.({
       argv: ['doctor'],
       commands,
       defaultCwd: '/tmp/workspace',
       write: vi.fn(),
     })
-    expect(process.exitCode).toBe(1)
+    expect(driftedExitCode).toBe(1)
 
-    process.exitCode = undefined
     commands.doctorCommand.mockResolvedValueOnce(2)
-    await cli.runCli?.({
+    const invalidProjectExitCode = await cli.runCli?.({
       argv: ['doctor'],
       commands,
       defaultCwd: '/tmp/workspace',
       write: vi.fn(),
     })
-    expect(process.exitCode).toBe(2)
+    expect(invalidProjectExitCode).toBe(2)
   })
 
   it('dispatches the template commands', async () => {
@@ -535,6 +607,21 @@ describe('payload-components CLI parsing and orchestration', () => {
     expect(() => cli.parseArgs?.(['update', '--accept-breaking', '--accept-breaking'])).toThrow(
       '--accept-breaking may only be specified once.',
     )
+    expect(() =>
+      cli.parseArgs?.([
+        'update',
+        '--accept-localization-policy-change',
+        '--accept-localization-policy-change',
+      ]),
+    ).toThrow('--accept-localization-policy-change may only be specified once.')
+    expect(() =>
+      cli.parseArgs?.([
+        'remove',
+        'hero-basic',
+        '--accept-stored-content',
+        '--accept-stored-content',
+      ]),
+    ).toThrow('--accept-stored-content may only be specified once.')
     expect(() => cli.parseArgs?.(['list', '--json', '--json'])).toThrow(
       '--json may only be specified once.',
     )
@@ -560,6 +647,8 @@ describe('payload-components CLI parsing and orchestration', () => {
       ),
     ).toEqual({
       acceptBreaking: false,
+      acceptLocalizationPolicyChange: false,
+      acceptStoredContent: false,
       cwd: '/tmp/workspace',
       defaultLocale: 'zh-TW',
       demo: false,

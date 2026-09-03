@@ -1,12 +1,11 @@
-import { headers } from 'next/headers'
 import { getRequestConfig } from 'next-intl/server'
+import { locale as rootLocale } from 'next/root-params'
 
-import { localeRequestHeader, normalizeSiteLocale } from '@/i18n/config'
+import { normalizeSiteLocale } from '@/i18n/config'
+import { getSiteMessages } from '@/i18n/message-catalog'
 
-export default getRequestConfig(async () => {
-  const requestHeaders = await headers()
-  const locale = normalizeSiteLocale(requestHeaders.get(localeRequestHeader))
-  const messages = (await import(`../../messages/${locale}.json`)).default
+export default getRequestConfig(async ({ locale: configuredLocale }) => {
+  const locale = normalizeSiteLocale(configuredLocale ?? (await rootLocale()))
 
-  return { locale, messages }
+  return { locale, messages: await getSiteMessages(locale) }
 })

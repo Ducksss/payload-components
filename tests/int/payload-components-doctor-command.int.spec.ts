@@ -26,6 +26,16 @@ const runAddCommand = async (fixtureDir: string, componentName: string, extraArg
     timeoutMs: integrationCommandTimeoutMs,
   })
 
+const runInitScaffoldCommand = async (fixtureDir: string) =>
+  runCommand({
+    args: [payloadComponentBin, 'init', '--cwd', fixtureDir, '--scaffold'],
+    captureOutput: true,
+    command: process.execPath,
+    cwd: repoRoot,
+    env: process.env,
+    timeoutMs: integrationCommandTimeoutMs,
+  })
+
 const runDoctorCommand = async (fixtureDir: string, extraArgs: string[] = []) => {
   try {
     const result = await runCommand({
@@ -88,7 +98,7 @@ const writeInstallState = async ({
     components: {
       [manifest.name]: getStateEntry(manifest, overrides),
     },
-    version: 3,
+    version: 4,
   }
 
   await writeFile(
@@ -296,6 +306,8 @@ describe('payload-components doctor', () => {
       '[warn] localization: hero-basic marks its text localized, but src/payload.config.ts declares no locales',
     )
     expect(result.stdout).toContain('payload-components localize --locales en,zh')
+    expect(result.stdout).toContain('uses the legacy type-inferred field policy')
+    expect(result.stdout).toContain('--accept-localization-policy-change')
   }, 180000)
 
   it('fails when a recorded localized install is missing its shared helper', async () => {
@@ -355,6 +367,32 @@ describe('payload-components doctor', () => {
 
     expect(repairedResult.code).toBe(0)
     expect(repairedResult.stdout).toContain('[ok] faq-accordion: registry dependencies')
+  }, 180000)
+
+  it('scopes an incompatible starter dependency to the base and continues component checks', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('hero-basic', {
+      preseedSource: true,
+    })
+    tempDirs.push(fixtureDir)
+    await runAddCommand(fixtureDir, manifest.name)
+    await runInitScaffoldCommand(fixtureDir)
+
+    const packageJsonPath = path.join(fixtureDir, 'package.json')
+    const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as {
+      dependencies: Record<string, string>
+    }
+
+    packageJson.dependencies['tailwind-merge'] = '^2.0.0'
+    await writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`, 'utf8')
+
+    const result = await runDoctorCommand(fixtureDir)
+
+    expect(result.code).toBe(1)
+    expect(result.stdout).toContain(
+      '[error] starter base: The target project declares dependencies package "tailwind-merge"',
+    )
+    expect(result.stdout).toContain('[ok] hero-basic: Payload fragments')
+    expect(result.stdout).not.toContain('[error] project: The target project declares')
   }, 180000)
 
   it('reports partial install state with the failed stage and message', async () => {

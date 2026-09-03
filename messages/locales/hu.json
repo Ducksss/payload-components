@@ -1,0 +1,478 @@
+{
+  "Metadata": {
+    "title": "Payload Components — teljesen vezetékes blokkok az Payload CMS számára",
+    "description": "Nyílt forráskódú Payload CMS blokkok, amelyek gyűjteménykonfigurációjukkal, renderelő-leképezésükkel, generált típusaikkal és adminisztrátori importálási térképükkel együtt települnek."
+  },
+  "Common": {
+    "home": "Kezdőlap",
+    "documentation": "Dokumentáció",
+    "blog": "Blog",
+    "componentCatalog": "Alkatrészkatalógus",
+    "brandGuide": "Márkaútmutató",
+    "about": "Körülbelül",
+    "privacy": "Adatvédelem",
+    "copy": "Másolás",
+    "copied": "Másolva",
+    "copiedDescription": "A vágólapra másolva."
+  },
+  "Header": {
+    "skip": "Ugrás a tartalomhoz",
+    "home": "Payload Components kezdőlap",
+    "github": "GitHub tároló",
+    "openNavigation": "Navigáció megnyitása",
+    "closeNavigation": "Navigáció bezárása",
+    "language": "Nyelv",
+    "nav": {
+      "docs": "Dokumentumok",
+      "components": "Alkatrészek",
+      "templates": "Sablonok",
+      "blog": "Blog",
+      "about": "Körülbelül"
+    }
+  },
+  "Consent": {
+    "title": "Analytics cookie-k",
+    "description": "A Google Analytics és az PostHog segítségével megnézzük, hogy az emberek mely összetevőket és dokumentumokat használják valójában. Elutasítás, és egyik sem töltődik be – nincs cookie, nincs azonosító. Az oldalsebesség mérése mindkét irányban fut, és nem tárol semmit.",
+    "privacy": "Adatvédelem",
+    "decline": "Elutasítás",
+    "accept": "Elfogadás"
+  },
+  "Privacy": {
+    "eyebrow": "Adatvédelem",
+    "heading": "Pontosan azt, amit mérünk.",
+    "accentWord": "mérni",
+    "intro": "Semmi sem töltődik be, ami bármit is tárol az eszközén, amíg el nem fogadja. Ez az oldal minden processzort, eseményt és mezőt megnevez – és bármikor meggondolhatja magát.",
+    "consent": "Bármi, ami tárolna valamit az eszközén, az Ön beleegyezésére vár. Decline és a Google Analytics és a PostHog soha nem töltődik be – nincs cookie beállítva és azonosító sem marad meg. Ha a böngészője Global Privacy Control vagy Do Not Track üzenetet küld, az automatikusan elutasításnak számít, és soha nem jelenik meg a szalaghirdetés.",
+    "alwaysOnProcessors": "A Vercel Analytics és az Speed Insights a kivétel, és mindenkire futnak. Nem állítanak be cookie-kat és nem tárolnak azonosítót – összesítve mérik az oldalbetöltést és a teljesítményt, ami miatt ez a webhely gyors. Eszközén nincs semmi, amiről leiratkozhatna.",
+    "noAccounts": "Ezen a webhelyen nincsenek fiókok, így ezek egyike sincs személyazonossághoz kötve. Soha nem gyűjtünk űrlapbevitelt, szabad szöveget vagy a megtekintett oldalak tartalmát.",
+    "processorsTitle": "Ki kapja meg az adatokat",
+    "needsConsent": "Az Ön beleegyezése szükséges",
+    "alwaysOn": "Mindig be van kapcsolva, nem tárol semmit",
+    "processors": {
+      "vercel": {
+        "purpose": "Oldalmegtekintések és Core Web Vitals a tárolt webhelyen.",
+        "storage": "Nincsenek cookie-k és nincs azonosító – semmi sem kerül tárolásra az Ön eszközén."
+      },
+      "ga4": {
+        "purpose": "Oldalmegtekintések és forgalmi források összesítése.",
+        "storage": "Beállítja saját belső cookie-jait (_ga, _ga_*)."
+      },
+      "posthog": {
+        "purpose": "Az alábbiakban felsorolt ​​három termékesemény.",
+        "storage": "Egy véletlenszerű pc_distinct_id az localStorage-ban, valamint egy organikus belépési útvonal a sessionStorage-ban az aktuális laphoz."
+      }
+    },
+    "eventsTitle": "Az általunk elküldött események",
+    "eventsIntro": "Három, és a mezőik rögzítettek. Minden érték egy kijelölt útvonalból, hivatkozásból vagy telepítési parancsból származik – soha semmiből, amit begépel.",
+    "trafficSource": "Az oldalmegtekintések a forgalmat csak organikus keresésként vagy egyébként jelölik meg. Ez a címke a böngészőben rögzített keresőmotor-listából vagy egy kifejezett organikus kampányjelölőből származik. A nyers hivatkozó, kampány és lekérdezési karakterlánc soha nem kerül elküldésre. Az ellenőrzött helyszíni ellenőrzések valódi ellenőrző jelzőt tartalmaznak, így kizárhatók a látogatók számlálásából; a hétköznapi látogatások hamisat hordoznak.",
+    "entryPage": "A beleegyezés után az organikus látogatások megtartják az aktuális böngészőlap első, ugyanazon webhely elérési útját. A telepítési másolatok és az elsődleges hivatkozásra leadott kattintások <code>entry_page</code>-ként tartalmazzák az elérési utat. A közvetlen és áttételes látogatások nem. Soha nem tartalmaz lekérdezési karakterláncot vagy nyers hivatkozást, és a hozzájárulás visszavonásakor törlődik.",
+    "events": {
+      "pageview": {
+        "when": "Egy nyilvános útvonal betöltődik vagy megváltozik."
+      },
+      "copyInstallCommand": {
+        "when": "Másol egy telepítési parancsot."
+      },
+      "primaryLinkClick": {
+        "when": "Követi a tároló, a dokumentumok vagy az összetevők hivatkozását."
+      }
+    },
+    "choiceTitle": "Az Ön választása",
+    "choice": "Döntése helyileg a böngészőjében, a <code>pc_consent</code> alatt tárolódik. Itt bármikor módosíthatja. A visszavonás többet jelent, mint leállítja a gyűjtést – törli azt, amit a feliratkozás létrehozott: a Google Analytics cookie-kat (<code>_ga</code>, <code>_ga_*</code>) és a PostHog azonosítót eltávolítják, és az oldal újra betöltődik, így a már futó semmi sem folytatódik. A csak munkamenethez tartozó organikus bejegyzés elérési útja is eltávolításra kerül.",
+    "settings": {
+      "privacySignal": "A böngészője adatvédelmi jelet küld (Global Privacy Control vagy Do Not Track), így a Google Analytics és a PostHog kikapcsolva marad, és ez itt nem bírálható felül.",
+      "on": "A Google Analytics és az PostHog jelenleg be van kapcsolva.",
+      "off": "A Google Analytics és az PostHog jelenleg ki van kapcsolva.",
+      "undecided": "Még nem választottál, így a Google Analytics és az PostHog ki van kapcsolva.",
+      "turnOff": "Kapcsolja ki az elemzést",
+      "turnOn": "Kapcsolja be az elemzést"
+    }
+  },
+  "NotFound": {
+    "eyebrow": "404-es hiba",
+    "title": "Az oldal nem található",
+    "description": "Ez az útvonal nem szerepel a beállításjegyzékben. Az összetevők, a dokumentumok és a katalógus.",
+    "home": "Menjen haza",
+    "docs": "Olvassa el a dokumentumokat",
+    "terminalTitle": "payload-components — 404"
+  },
+  "Docs": {
+    "title": "Dokumentáció",
+    "versionBanner": "MIT registry · összetevők v{version}",
+    "github": "Csillag a GitHub",
+    "previousComponent": "Előző összetevő: {title}",
+    "nextComponent": "Következő összetevő: {title}",
+    "newIn": "Új a {version}"
+  },
+  "HomeMetadata": {
+    "title": "Payload Components: Vezetékes Payload CMS blokkok egy parancsban",
+    "description": "Telepítse az újrafelhasználható Payload CMS blokkokat egyetlen paranccsal, beleértve a gyűjteménykonfigurációt, a renderelési térképeket, a generált típusokat és az adminisztrátori importtérképet az Next.js projektekhez."
+  },
+  "Landing": {
+    "hero": {
+      "eyebrow": "Nyílt forráskódú Payload blokknyilvántartás",
+      "primary": "Telepítse a Payload blokkokat",
+      "accent": "vezetékes, nincs beillesztve.",
+      "subheadline": "A Payload CMS fejlesztők számára egy parancs telepíti a blokkot, beköti a Payload-be, és egy áttekinthető git diff jön létre.",
+      "guide": "Olvassa el a telepítési útmutatót",
+      "github": "Csillag a GitHub",
+      "browse": "Böngésszen az összetevők között",
+      "copy": "Telepítési parancs másolása",
+      "count": "{count} blokkok a rendszerleíró adatbázisban – mindegyik egyetlen paranccsal be van kötve az Payload-be."
+    },
+    "stack": {
+      "label": "Támogatott verem",
+      "lede": "A már futtatott verembe települ"
+    },
+    "wiring": {
+      "eyebrow": "A telepítés határa",
+      "heading": "Egy blokk addig nem él, amíg nincs bekötve.",
+      "intro": "A fájlok másolása a legegyszerűbb rész – az ezt követő négy szerkesztés az, ahol minden blokk, minden repo elveszíti a napot.",
+      "source": "forrás"
+    },
+    "workflow": {
+      "eyebrow": "Munkafolyamat",
+      "heading": "Katalógusból a véglegesítésig három lépésben.",
+      "intro": "Nincs állvány, nincs bezárás – sima forrás, plusz két olvasható javítás.",
+      "steps": {
+        "oneTitle": "Olvassa el a szerződést",
+        "oneDescription": "Mezők, fájlok és javítások – mielőtt bármit futtatna.",
+        "twoTitle": "Futtasson egy parancsot",
+        "twoDescription": "A CLI ellenőrzi a projektet, majd egy menetben beköti.",
+        "threeTitle": "Végezze el a munkablokkot",
+        "threeDescription": "Forrás, két javítás, regenerált típusok – áttekintve, mint minden PR."
+      },
+      "badge": "Forrásból renderelve",
+      "caption": "Az elkötelezett eredmény – valódi komponensforrás, a Payload-ba bekötve, és felülvizsgálva, mint bármely PR-t."
+    },
+    "catalog": {
+      "eyebrow": "A katalógus",
+      "heading": "A katalógus élőben megjelenítve.",
+      "intro": "Nincsenek képernyőképek – minden példány a valódi komponens, a forrásból előállítva.",
+      "browse": "Böngésszen a katalógusban",
+      "preview": "Élő előnézet",
+      "blockCount": "{count, plural, one {# blokk} other {# blokk}}",
+      "browseFamily": "Böngészés {family}",
+      "allComponents": "Az összes {count} összetevő böngészése",
+      "postComponents": "Posta komponensek · Fejlesztés alatt",
+      "familyCount": "Telepíthető",
+      "familyName": "Oldalblokkok",
+      "familyDescription": "Az Oldalak elrendezéskészítőjének blokkok – teljes vezetékezéssel telepítve: gyűjteménykonfiguráció, renderelési leképezés, generált típusok, térkép importálása."
+    },
+    "faq": {
+      "heading": "Kérdések, egyenesen válaszolva.",
+      "intro": "A dokumentumok rövid változata. Minden válasz valamire hivatkozik, amelyet ellenőrizhet a tárolóban.",
+      "dogfood": "Ez a szakasz az egyik blokkunk"
+    },
+    "community": {
+      "eyebrow": "Nyílt forráskód",
+      "heading": "Nyílt forráskód,",
+      "accent": "végétől a végéig",
+      "intro": "A rendszerleíró adatbázis, a CLI, az összetevők és ez a webhely egy MIT licenccel rendelkező adattár. Olvassa el a telepítőt, mielőtt megbízik benne – ez a lényeg.",
+      "copy": "Telepítési parancs másolása",
+      "repository": "GitHub tároló",
+      "issue": "Nyisson meg egy problémát",
+      "invite": "Valódi repóban futtatja? Nyissa meg a problémát – a korai telepítések megjelennek."
+    }
+  },
+  "Catalog": {
+    "metadataTitle": "{count} Payload CMS Komponensek és blokkok | Katalógus",
+    "metadataDescription": "Böngésszen a beírt Payload CMS blokkok között. Futtassa a npx payload-components add '<component>'-t, hogy beköthessen egyet a gyűjteményébe, a renderelőbe, a generált típusokba és a rendszergazdai importálási térképbe.",
+    "eyebrow": "Registry",
+    "title": "{count} Payload CMS komponensek és gépelt blokkok",
+    "description": "Böngésszen az összes {count} telepíthető Payload CMS összetevő között a hősök, funkciók, árak, cselekvésre ösztönzés, integrációk, ajánlások, statisztikák, FAQ, tartalom, csapatok, beágyazások és láblécek között. Egy CLI parancs lemásolja a blokkot, és beköti a gyűjtemény regisztrációját, a renderelő leképezést, a generált típusokat és az adminisztrátori importálási térképet.",
+    "installation": "Tekintse meg, hogyan működik az egyparancsos telepítés",
+    "blocksGuide": "Kövessen egy blokkot a konfigurációtól az élő oldalig",
+    "templates": "Fedezze fel a Payload CMS sablon fogalmait",
+    "license": "MIT licenccel"
+  },
+  "CatalogBrowser": {
+    "filter": "Összetevők szűrője",
+    "allComponents": "Minden összetevő",
+    "all": "Mind",
+    "search": "Összetevők keresése",
+    "result": "{count, plural, one {# találat} other {# találat}}",
+    "empty": "Egyetlen összetevő sem felel meg a szűrőknek.",
+    "reset": "Szűrők visszaállítása",
+    "proposal": "A katalógus szándékosan bővül – a forrás, a jegyzék, a dokumentumok és a telepítői lefedettség együtt érkezik. Javasolja a következőt.",
+    "issue": "Nyisson meg egy problémát",
+    "inDevelopment": "fejlesztés alatt",
+    "roadmapPreview": "Koncepció-előnézet",
+    "planned": "Nyílt forráskódú ütemterv",
+    "interest": "Ütemterv megtekintése",
+    "interestLabel": "A(z) {component} megtekintése a szerkesztőségi komponensek ütemtervében",
+    "selected": "{count} kiválasztva",
+    "tray": "Kiválasztott összetevők",
+    "copy": "Telepítési parancs másolása",
+    "clear": "Kijelölés törlése",
+    "families": {
+      "pages": "Oldalblokkok",
+      "posts": "Összetevők közzététele"
+    },
+    "categories": {
+      "hero": "Hős",
+      "features": "Jellemzők",
+      "comparator": "Összehasonlító",
+      "pricing": "Árképzés",
+      "cta": "Cselekvésre ösztönzés",
+      "contact": "Kapcsolatfelvétel",
+      "integration": "Integráció",
+      "logos": "Logófelhő",
+      "testimonials": "Beszámolók",
+      "stats": "Statisztikák",
+      "faq": "FAQ",
+      "content": "Tartalom",
+      "team": "Csapat",
+      "embed": "Beágyazás",
+      "footer": "Lábléc",
+      "cards": "Kártyák",
+      "archive": "Archívum",
+      "header": "Fejléc",
+      "index": "Index",
+      "author": "Szerző",
+      "newsletter": "Hírlevél",
+      "related": "Kapcsolódó"
+    },
+    "composerAdd": "Adja hozzá a {slug}-t az install parancshoz",
+    "composerRemove": "Távolítsa el a {slug}-t az install parancsból",
+    "theme": {
+      "brandLegend": "Tekintse meg a katalógus előnézetét a márkája színében",
+      "brandLabel": "Márka",
+      "previewBrand": "Előnézet {color}-ban",
+      "colors": {
+        "emerald": "Smaragd",
+        "sky": "Égbolt",
+        "indigo": "Indigó",
+        "violet": "Violet",
+        "rose": "Rose",
+        "amber": "Amber"
+      },
+      "radiusLegend": "Tekintse meg a katalógus előnézetét egy másik saroksugárban",
+      "radiusLabel": "Sugár",
+      "previewRadius": "Előnézet {style} sarkokkal",
+      "radii": {
+        "sharp": "Éles",
+        "default": "Alapértelmezett",
+        "round": "Kerek"
+      }
+    }
+  },
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
+    "seeCollection": "View the collection",
+    "backToCatalog": "Back to the component catalog",
+    "suiteEyebrow": "The proposed suite",
+    "suiteTitle": "Designed as one publication.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
+    "collectionEyebrow": "The collection",
+    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
+    "benefits": {
+      "systemTitle": "Composed together",
+      "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
+    },
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
+  },
+  "Templates": {
+    "metadataTitle": "Payload CMS Sablonok Next.js | Fogalmak és receptek",
+    "metadataDescription": "Fedezze fel a Payload CMS sablonkoncepciókat tizenöt ágazatban – SaaS, ügynökség, kereskedelem, egészségügy, étterem, ingatlan stb. – tekintsen meg minden oldal előnézetét, és ellenőrizze a beírt blokk receptjét.",
+    "detailTitle": "{title} sablon",
+    "back": "Sablonok",
+    "previewPageLabel": "{title} előnézeti oldal",
+    "previewViewport": "A nézetablak méretének előnézete",
+    "desktop": "Asztali",
+    "tablet": "Tablet",
+    "mobile": "Mobil",
+    "previewFrameTitle": "{title} sablon előnézet – {page} oldal",
+    "eyebrow": "Sablonok",
+    "title": "Payload CMS sablonkoncepciók, telepíthető blokkokból",
+    "status": "Koncepció előnézete",
+    "disclosure": "Ez a teljes webhely böngészhető koncepciója. Minden szakasz a nyitott rendszerleíró adatbázis blokkjaiból áll, és egy parancs telepíti a teljes blokkkészletet – az itt látható kurált példány nincs magolva, ezért az oldalakat saját maga állítja össze az adminisztrátorban.",
+    "startingPoint": "Válasszon kiindulási pontot",
+    "description": "Fedezze fel a teljes Payload CMS és Next.js webhelykoncepciót tizenöt ágazatban – SaaS, ügynökség, kereskedelem, egészségügy, étterem, ingatlan, zene és még sok más. Nyissa meg az összes oldalt élő előnézetben, majd minden szakaszt nyomjon vissza egy gépelt blokkra, amelyet ma telepíthet.",
+    "components": "Böngésszen a telepíthető összetevők között",
+    "installation": "Olvassa el a telepítési útmutatót",
+    "official": "Kezdje a hivatalos Payload sablonnal",
+    "showcases": "Sablonok",
+    "questionsEyebrow": "Kérdések",
+    "questionsHeading": "Payload CMS sablonkérdések, válaszolva",
+    "questionsIntro": "A koncepciók szándékosan nyitottak arra vonatkozóan, hogy mi működik ma, és mi marad a tervezési referencia.",
+    "q1": "Ezek a Payload CMS sablonok telepíthetők?",
+    "a1": "Nem. Ezek böngészhető teljes webhely-koncepciók, nem csomagolt indítótárolók. Az egyes receptek egyes blokkjai telepíthetők, és minden recept hivatkozik a megfelelő komponens dokumentációjára.",
+    "q2": "Miben különböznek ezek a Payload hivatalos sablonjától?",
+    "a2": "A hivatalos webhelysablon teljes pályázati alapot ad egy új projektnek. Ezek a koncepciók megmutatják, hogyan nézhet ki egy teljes marketingwebhely, és mely gépelt blokkok alkotják az egyes oldalakat anélkül, hogy felváltanák ezt a projektindító szerepet.",
+    "q3": "Használhatom a recepteket egy meglévő Payload projektben?",
+    "a3": "Igen. Nyisson meg egy koncepciót, nézze meg a megrendelt receptjét, és válassza ki a webhelyéhez illeszkedő részeket. A katalógus dokumentálja az egyes blokkok mezőit és a támogatott Payload CMS v3 telepítési útvonalat.",
+    "communityEyebrow": "Közösség",
+    "communityHeading": "A sablonok döntése nyíltan történik",
+    "communityIntro": "Ezek a fogalmak egy kérdés megválaszolására szolgálnak a közösséggel: a teljes webhely sablonjait telepíthetővé kell tenni? A receptek, a kitalált márkák és a telepítő RFC mind a nyilvános adattárban élnek – semmi sem zárt, sem e-mailek rögzítése.",
+    "allConcepts": "Minden fogalom",
+    "filter": "A fogalmak szűrése kategória szerint",
+    "showing": "{visible}/{total} fogalom megjelenítése",
+    "visualTone": "Vizuális tónus",
+    "counts": "{pages} oldal · {blocks} egyedi blokk",
+    "explore": "Sablon felfedezése",
+    "openPreview": "Teljes előnézet megnyitása",
+    "posterLabel": "Fedezze fel a {title} sablont",
+    "posterAlt": "{title} sablon — kezdőlap koncepció poszter",
+    "contributionRepository": "Böngésszen az adattárban",
+    "contributionRepositoryDescription": "Olvassa el a bemutató forrást – minden recept egyszerű adat a tárban.",
+    "contributionRfc": "Olvassa el a telepítő RFC-jét",
+    "contributionRfcDescription": "Tekintse át a koncepcióreceptek opcionális, átlátható telepítési munkafolyamattá alakítására vonatkozó javaslatot.",
+    "categories": {
+      "agency": "Ügynökség",
+      "civic": "Polgári",
+      "commerce": "Kereskedelem",
+      "education": "Oktatás",
+      "event": "Esemény",
+      "fintech": "Fintech",
+      "healthcare": "Egészségügy",
+      "marketplace": "Piactér",
+      "music": "Zene",
+      "nonprofit": "Nonprofit",
+      "portfolio": "Portfólió",
+      "real-estate": "Ingatlan",
+      "restaurant": "Étterem",
+      "saas": "SaaS",
+      "trade": "Kereskedelem"
+    }
+  },
+  "Blog": {
+    "metadataTitle": "Payload CMS blokk és telepítői útmutatók",
+    "metadataDescription": "Gyakorlati Payload CMS v3 útmutatók újrafelhasználható blokkok, vezetékgyűjtemények és renderelők telepítéséhez, típusok generálásához és a nem renderelő blokkok rögzítéséhez.",
+    "eyebrow": "Gyakorlati Payload CMS v3 útmutatás",
+    "featured": "Kezdje egy bevált útmutatóval",
+    "installationLabel": "Telepítési útmutató",
+    "installationTitle": "Telepítsen egy vezetékes Payload blokkot",
+    "installationDescription": "Adjon hozzá egy valós blokkot a támogatott CLI-val, majd tekintse át az összes fájlt és vezetékezési változtatást.",
+    "installationAction": "Kövesse a telepítési útmutatót",
+    "wiringLabel": "Blokk huzalozási útmutató",
+    "wiringTitle": "Csatlakoztasson egy újrafelhasználható blokkot",
+    "wiringDescription": "Kövesse a Payload CMS v3 blokkot a konfigurációtól kezdve a regisztráción, a renderelésen, a generált típusokon és az adminisztrációs importálási térképen keresztül.",
+    "troubleshootingLabel": "Hibaelhárítási útmutató",
+    "troubleshootingTitle": "Javítson ki egy blokkot, amely nem jelenik meg",
+    "troubleshootingDescription": "Jelölje be azt a négy helyet, amelyek általában megmagyarázzák, miért nem jelenik meg egy mentett blokk az oldalon.",
+    "readGuide": "Olvassa el az útmutatót",
+    "notesEyebrow": "Mezőjegyzetek a rendszerleíró adatbázisból",
+    "notesTitle": "További Payload CMS mező megjegyzések",
+    "notesDescription": "Böngésszen a megvalósítási leckékben, a komponenstervezési megjegyzésekben és a kiadási történetekben a nyílt rendszerleíró adatbázisban.",
+    "browseComponents": "Böngésszen az összes {count} telepíthető összetevő között",
+    "empty": "Még nincsenek bejegyzések – térjen vissza hamarosan.",
+    "back": "Vissza a bloghoz",
+    "keepReading": "Olvass tovább",
+    "related": "Kapcsolódó olvasmány",
+    "tags": "Cikkcímkék",
+    "series": {
+      "project-notes": "Projekt megjegyzések",
+      "foundations": "Alapítványok",
+      "installer-internals": "Telepítő belső részei",
+      "component-design": "Alkatrész tervezés",
+      "production-guides": "Gyártási útmutatók",
+      "open-source": "Minőség és közösség"
+    }
+  },
+  "Footer": {
+    "home": "Payload Components kezdőlap",
+    "intro": "Beírt Payload CMS összetevők, amelyek a bekötésükkel együtt települnek – gyűjteménykonfiguráció, leképezés, generált típusok és importleképezés egyetlen parancsban.",
+    "product": "Termék",
+    "components": "Alkatrészek",
+    "project": "Projekt",
+    "componentCatalog": "Alkatrészkatalógus",
+    "templateConcepts": "Sablon fogalmak",
+    "documentation": "Dokumentáció",
+    "installWorkflow": "Munkafolyamat telepítése",
+    "architecture": "Építészet",
+    "aiDiscovery": "AI felfedezés",
+    "allComponents": "Minden {count} összetevő",
+    "about": "Körülbelül",
+    "brandGuide": "Márkaútmutató",
+    "openIssue": "Nyisson meg egy problémát",
+    "releases": "Kiadások",
+    "updates": "Frissíti a hírcsatornát",
+    "contributing": "Hozzájárulás",
+    "privacy": "Adatvédelem",
+    "registry": "Registry JSON",
+    "license": "MIT licencelve · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · rendszerleíró adatbázis megnyitása"
+  },
+  "Maintainer": {
+    "body": "Megépítettem a payload-components-t, mert a Payload blokk telepítése soha nem volt másolás-beillesztés – ez a négy szerkesztés után történt. Az CLI létezik, így a második és a tizedik projekt ingyen kapja meg ezt a vezetéket. Olvassa el a telepítő forrását, mielőtt megbízik benne; szállítása a MIT a lényeg.",
+    "role": "Karbantartó, Payload Components",
+    "github": "{name} az GitHub-on"
+  },
+  "PageMetadata": {
+    "about": {
+      "title": "Körülbelül",
+      "openGraphTitle": "Körülbelül Payload Components",
+      "description": "Miért létezik a Payload Components: ne építse újra ugyanazokat az Payload blokkokat, ne kösse át őket kézzel, és ne bizonyítson újra minden telepítést a szabadúszó projektekben."
+    },
+    "privacy": {
+      "title": "Adatvédelem",
+      "openGraphTitle": "Adatvédelem — Payload Components",
+      "description": "Mit mér a Payload Components, mely harmadik felek kapják meg, és hogyan módosíthatja vagy visszavonhatja választását bármikor."
+    },
+    "brandGuide": {
+      "title": "Márkaútmutató",
+      "openGraphTitle": "Payload Components Márkaútmutató",
+      "description": "A Payload Components márka: fény-első shadcn monokróm paletta egyetlen smaragd akcentussal, Geist és Instrument Serif típusú rendszerrel, logóhasználattal és hanggal."
+    }
+  },
+  "FaqContent": {
+    "entries": {
+      "one": {
+        "question": "A Payload Components ingyenes?",
+        "answer": "Igen – és úgy készült, hogy az is maradjon. A rendszerleíró adatbázis, a CLI, az összes {count} telepíthető komponens és ez a webhely egy MIT licencelt tároló: nincs árképzés, nincs licenckulcs, nincs zárt szint. Az Payload Components tervezésénél fogva a közösség az első – a katalógus valódi telepítésekből és hozzájárulásokból, nem fizetett ütemtervből nő."
+      },
+      "two": {
+        "question": "Mi az a Payload CMS blokk?",
+        "answer": "Az Payload-ban a blokk egy összeírható oldal-készítő mező – egy újrafelhasználható tartalomszakasz (hős, jellemző rács, CTA) szerkesztők egymásra halmozva az oldal elrendezéséhez. A Payload Components előre elkészített blokkokat, valamint az őket működőképes vezetékeket szállítja, így a blokkokat nem csak bemásolják: regisztrálják az oldalak gyűjteményében, leképezik a megjelenítőben, beírják és hozzáadják az adminisztrátori importtérképhez.",
+        "link": "Olvassa el a Payload blokkok útmutatóját"
+      },
+      "three": {
+        "question": "Hogyan adhatok hősblokkot a Payload CMS-hoz?",
+        "answer": "Telepítsen egyet a CLI — `npx payload-components add hero-basic` jellel. Bemásolja a blokkforrást a projektbe, és végétől a végéig vezetékekkel: regisztrálja az oldalak gyűjteményébe, leképezi az RenderBlocks-ba, és újragenerálja a Payload típusokat és az adminisztrátori importtérképet – egy áttekinthető git diffként landol. Ugyanez a parancs bármely blokkot hozzáad a katalógushoz."
+      },
+      "four": {
+        "question": "Pontosan mit változtat egy telepítés a tárhelyemen?",
+        "answer": "Három dolog: a komponens forrásfájljai be vannak másolva (blokkkonfiguráció, komponens, megosztott segédprogramok), pontosan két fájl javításra kerül (a Pages gyűjtemény és az RenderBlocks.tsx – mindegyik összetevő manifest deklarálja őket), és a Payload újragenerálja a saját kimenetét (payload-types.ts és az adminisztrátori importtérkép). Mindez egy közönséges git diffként jelenik meg.",
+        "link": "Olvassa el a telepítési útmutatót"
+      },
+      "five": {
+        "question": "Mi történik, ha kétszer futtatom ugyanazt a telepítést?",
+        "answer": "Konvergál. A CLI érzékeli a meglévő vezetékeket, és kihagyja – a valódi kimenet payload-components: \"hero-basic\" is already installed. A telepítés állapotát az .payload-components/state.json rögzíti, így a részleges telepítések láthatóak és helyreállíthatók, nem pedig csendben."
+      },
+      "six": {
+        "question": "Mely projekteket támogatják ma?",
+        "answer": "Payload v3 + Next.js 15/16 projektek a hivatalos webhelyindítóhoz hasonlóan – az elrendezési blokkok megjelenítése az src/blocks/RenderBlocks.tsx-en keresztül, és az oldalblokkok regisztrálása a src/collections/Pages/index.ts.-ban A CLI, mielőtt bármit is érintene, ellenőrzi a projektet a közzétett támogatási mátrixban."
+      },
+      "seven": {
+        "question": "Miért nem futtatja a npx shadcn add-t?",
+        "answer": "Egy egyszerű shadcn telepítés lemásolja a fájlokat és leállítja. A Payload blokkok csak akkor működnek, ha regisztrálásra kerültek a gyűjteménysémában, leképezték őket a megjelenítőben, begépelték és hozzáadták őket az adminisztrátori importtérképhez. A payload-components ugyanazt a rendszerleíró adatbázis-szállítást pontosan ezzel a vezetékezéssel burkolja – ez a határ a termék, és a fenti vezetékkönyv soronként mutatja.",
+        "link": "Olvassa el a teljes shadcn összehasonlítást"
+      },
+      "eight": {
+        "question": "Hogyan kerülnek az új alkatrészek a katalógusba?",
+        "answer": "Szándékosan. Egy összetevő csak akkor érkezik meg, ha a forrása, a jegyzék metaadatai, a dokumentumok oldala és a telepítői teszt lefedettsége együtt érkezik – a félig vezetékes blokkok soha nem érik el a katalógust. Javasolja a következő komponenst egy GitHub kérdésben; a katalógus valódi telepítésekből nő ki."
+      }
+    }
+  },
+  "TranslationNotice": {
+    "fallback": "Ez az oldal még nincs lefordítva, ezért az angol forrásszöveg jelenik meg.",
+    "label": "Fordítás állapota",
+    "machine": "Ezt az oldalt gép fordította, és anyanyelvi lektor még nem ellenőrizte.",
+    "viewEnglish": "Angol forrás megtekintése"
+  }
+}

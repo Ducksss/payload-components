@@ -1,0 +1,478 @@
+{
+  "Metadata": {
+    "title": "Payload Components — täysin johdotetut lohkot Payload CMS",
+    "description": "Avoimen lähdekoodin Payload CMS-lohkot, jotka asennetaan kokoelmamäärityksineen, renderöijäkartoituksen, luotujen tyyppien ja järjestelmänvalvojan tuontikartan kanssa."
+  },
+  "Common": {
+    "home": "Etusivu",
+    "documentation": "Dokumentaatio",
+    "blog": "Blogi",
+    "componentCatalog": "Komponenttiluettelo",
+    "brandGuide": "Brändiopas",
+    "about": "Tietoja",
+    "privacy": "Tietosuoja",
+    "copy": "Kopioi",
+    "copied": "Kopioitu",
+    "copiedDescription": "Kopioitu leikepöydälle."
+  },
+  "Header": {
+    "skip": "Siirry sisältöön",
+    "home": "Payload Components -etusivu",
+    "github": "GitHub arkisto",
+    "openNavigation": "Avaa navigointi",
+    "closeNavigation": "Sulje navigointi",
+    "language": "Kieli",
+    "nav": {
+      "docs": "Asiakirjat",
+      "components": "Komponentit",
+      "templates": "Mallit",
+      "blog": "Blogi",
+      "about": "Tietoja"
+    }
+  },
+  "Consent": {
+    "title": "Analytics-evästeet",
+    "description": "Käytämme Google Analytics ja PostHog nähdäksemme, mitä komponentteja ja asiakirjoja ihmiset todella käyttävät. Hylkää, eikä kumpikaan lataudu – ei evästettä, ei tunnistetta. Sivunopeuden mittaus toimii kumpaankin suuntaan eikä tallenna mitään.",
+    "privacy": "Yksityisyys",
+    "decline": "Hylkää",
+    "accept": "Hyväksy"
+  },
+  "Privacy": {
+    "eyebrow": "Yksityisyys",
+    "heading": "Juuri mitä mittaamme.",
+    "accentWord": "mittaa",
+    "intro": "Mikään, joka tallentaa mitään laitteellesi, latautuu, ennen kuin hyväksyt sen. Tällä sivulla nimetään jokainen prosessori, jokainen tapahtuma ja jokainen kenttä – ja voit muuttaa mieltäsi milloin tahansa.",
+    "consent": "Kaikki, mikä tallentaisi jotain laitteellesi, odottaa suostumustasi. Decline ja Google Analytics ja PostHog eivät koskaan lataudu – evästettä ei aseteta eikä tunnistetta säilytetä. Jos selaimesi lähettää numeron Global Privacy Control tai Do Not Track, se lasketaan automaattisesti hylkäämiseksi, eikä banneria koskaan näytetä.",
+    "alwaysOnProcessors": "Vercel Analytics ja Speed Insights ovat poikkeus, ja ne toimivat kaikille. Ne eivät aseta evästeitä eivätkä tallenna tunnistetta – ne mittaavat sivujen latauksia ja suorituskykyä yhdessä, mikä pitää tämän sivuston nopeana. Laitteessasi ei ole mitään, josta voisi kieltäytyä.",
+    "noAccounts": "Tällä sivustolla ei ole tilejä, joten mikään näistä ei ole sidottu henkilöllisyyteen. Emme koskaan kerää lomakesyöttöä, vapaata tekstiä tai katsomiesi sivujen sisältöä.",
+    "processorsTitle": "Kuka vastaanottaa tiedot",
+    "needsConsent": "Tarvitsee suostumuksesi",
+    "alwaysOn": "Aina päällä, ei tallenna mitään",
+    "processors": {
+      "vercel": {
+        "purpose": "Isännöidyn sivuston näyttökerrat ja Core Web Vitals.",
+        "storage": "Ei evästeitä eikä tunnistetta – mitään ei tallenneta laitteellesi."
+      },
+      "ga4": {
+        "purpose": "Kokoa sivun katselukerrat ja liikenteen lähteet.",
+        "storage": "Asettaa omat ensimmäisen osapuolen evästeensä (_ga, _ga_*)."
+      },
+      "posthog": {
+        "purpose": "Alla luetellut kolme tuotetapahtumaa.",
+        "storage": "Satunnainen pc_distinct_id kohdassa localStorage sekä orgaaninen syöttöpolku kohdassa sessionStorage nykyiselle välilehdelle."
+      }
+    },
+    "eventsTitle": "Lähettämämme tapahtumat",
+    "eventsIntro": "Kolme, ja niiden kentät ovat kiinteät. Jokainen arvo tulee sitoutuneesta reitistä, linkistä tai asennuskomennosta – ei koskaan mistään kirjoittamastasi.",
+    "trafficSource": "Sivun katselukerrat merkitsevät liikennettä vain maksuttomaksi hauksi tai muuksi. Tämä tunniste on johdettu selaimessasi kiinteästä hakukoneluettelosta tai selkeästä maksuttomasta kampanjamerkistä. Raaka viittausta, kampanjaa ja kyselymerkkijonoa ei koskaan lähetetä. Valvotuissa sivustotarkistuksissa on todellinen vahvistusmerkki, joten ne voidaan jättää pois kävijämääristä. tavalliset vierailut sisältävät vääriä.",
+    "entryPage": "Suostumuksen jälkeen maksuttomat käynnit säilyttävät nykyisen selainvälilehden ensimmäisen saman sivuston polun. Asennuskopiot ja ensisijaisen linkin napsautukset sisältävät polun nimen <code>entry_page</code>. Suorat ja viittauskäynnit eivät. Se ei koskaan sisällä kyselymerkkijonoa tai raakaviittausta, ja se poistetaan, kun peruutat suostumuksen.",
+    "events": {
+      "pageview": {
+        "when": "Julkinen reitti latautuu tai muuttuu."
+      },
+      "copyInstallCommand": {
+        "when": "Kopioit asennuskomennon."
+      },
+      "primaryLinkClick": {
+        "when": "Seuraat arkiston, dokumenttien tai komponenttien linkkiä."
+      }
+    },
+    "choiceTitle": "Valintasi",
+    "choice": "Päätöksesi tallennetaan paikallisesti selaimeesi kohtaan <code>pc_consent</code>. Vaihda se täällä milloin tahansa. Peruuttaminen ei muuta kuin pysäyttää keräämisen – se poistaa sen, mitä osallistuja on luonut: Google Analytics-evästeet (<code>_ga</code>, <code>_ga_*</code>) ja PostHog-tunniste poistetaan, ja sivu latautuu uudelleen, joten mikään jo käynnissä olevasta ei jatku. Myös vain istunnon orgaaninen syöttöpolku poistetaan.",
+    "settings": {
+      "privacySignal": "Selaimesi lähettää tietosuojasignaalin (Global Privacy Control tai Do Not Track), joten Google Analytics ja PostHog pysyvät poissa, eikä tätä voi ohittaa tässä.",
+      "on": "Google Analytics ja PostHog ovat tällä hetkellä päällä.",
+      "off": "Google Analytics ja PostHog ovat tällä hetkellä pois päältä.",
+      "undecided": "Et ole vielä valinnut, joten Google Analytics ja PostHog ovat pois päältä.",
+      "turnOff": "Poista analytiikka käytöstä",
+      "turnOn": "Ota analytiikka käyttöön"
+    }
+  },
+  "NotFound": {
+    "eyebrow": "Virhe 404",
+    "title": "Sivua ei löydy",
+    "description": "Tämä reitti ei ole rekisterissä. Komponentit, asiakirjat ja luettelo ovat.",
+    "home": "Mene kotiin",
+    "docs": "Lue asiakirjat",
+    "terminalTitle": "payload-components — 404"
+  },
+  "Docs": {
+    "title": "Dokumentaatio",
+    "versionBanner": "MIT rekisteri · komponentit v{version}",
+    "github": "Tähti kohdassa GitHub",
+    "previousComponent": "Edellinen komponentti: {title}",
+    "nextComponent": "Seuraava komponentti: {title}",
+    "newIn": "Uutta luvussa {version}"
+  },
+  "HomeMetadata": {
+    "title": "Payload Components: langallinen Payload CMS Blocks yhdessä komennossa",
+    "description": "Asenna uudelleenkäytettävät Payload CMS-lohkot yhdellä komennolla, mukaan lukien kokoelman asetukset, renderöintikartat, luodut tyypit ja järjestelmänvalvojan tuontikartta Next.js-projekteille."
+  },
+  "Landing": {
+    "hero": {
+      "eyebrow": "Avoimen lähdekoodin Payload-lohkorekisteri",
+      "primary": "Asenna Payload lohkoa",
+      "accent": "langallinen, ei liimattu.",
+      "subheadline": "Payload CMS-kehittäjille yksi komento asentaa lohkon, kytkee sen Payload-liittimeen ja laskee tarkistettavan git diff.",
+      "guide": "Lue asennusopas",
+      "github": "Tähti kohdassa GitHub",
+      "browse": "Selaa komponentteja",
+      "copy": "Kopioi asennuskomento",
+      "count": "{count} lohkot rekisterissä - jokainen kytketty Payload yhdellä komennolla."
+    },
+    "stack": {
+      "label": "Tuettu pino",
+      "lede": "Asentuu jo käyttämääsi pinoon"
+    },
+    "wiring": {
+      "eyebrow": "Asennusraja",
+      "heading": "Lohko ei ole päällä ennen kuin se on kytketty.",
+      "intro": "Tiedostojen kopioiminen on helppo osa – neljä muokkausta sen jälkeen ovat sellaisia, joissa jokainen lohko, jokainen repo menettää päivän.",
+      "source": "lähde"
+    },
+    "workflow": {
+      "eyebrow": "Työnkulku",
+      "heading": "Luettelosta sitoutumiseen kolmessa siirrossa.",
+      "intro": "Ei rakennustelineitä, ei lukitusta – yksinkertainen lähde ja kaksi laajennettua korjaustiedostoa, joita voit lukea.",
+      "steps": {
+        "oneTitle": "Lue sopimus",
+        "oneDescription": "Kentät, tiedostot ja korjaustiedostot – ennen kuin suoritat mitään.",
+        "twoTitle": "Suorita yksi komento",
+        "twoDescription": "CLI tarkistaa projektisi ja kytkee sen sitten yhdellä kertaa.",
+        "threeTitle": "Tee työlohko",
+        "threeDescription": "Lähde, kaksi korjausta, regeneroidut tyypit – tarkistettu kuten mikä tahansa PR."
+      },
+      "badge": "Renderöity lähteestä",
+      "caption": "Sitoutunut tulos – todellinen komponenttilähde, kytketty Payload:iin ja tarkistettu kuten mikä tahansa PR."
+    },
+    "catalog": {
+      "eyebrow": "Luettelo",
+      "heading": "Luettelo, tehty livenä.",
+      "intro": "Ei kuvakaappauksia – jokainen näyte on todellinen komponentti, joka on renderöity lähteestä.",
+      "browse": "Selaa luetteloa",
+      "preview": "Live-esikatselu",
+      "blockCount": "{count, plural, one {# lohko} other {# lohkoa}}",
+      "browseFamily": "Selaa {family}",
+      "allComponents": "Selaa kaikkia {count} komponentteja",
+      "postComponents": "Postkomponentit · Kehityksessä",
+      "familyCount": "Asennettavissa",
+      "familyName": "Sivulohkot",
+      "familyDescription": "Sivujen asettelun rakennustyökalun lohkot – asennettu täydellä johdotuksella: kokoelmamääritykset, renderöintikartoitus, luodut tyypit, tuontikartta."
+    },
+    "faq": {
+      "heading": "Kysymyksiä, suoraan vastattu.",
+      "intro": "Dokumenttien lyhyt versio. Jokainen vastaus viittaa johonkin, jonka voit tarkistaa arkistossa.",
+      "dogfood": "Tämä osio on yksi lohkoistamme"
+    },
+    "community": {
+      "eyebrow": "Avoin lähdekoodi",
+      "heading": "Avoin lähdekoodi,",
+      "accent": "päästä päähän",
+      "intro": "Rekisteri, CLI, komponentit ja tämä sivusto ovat yksi MIT-lisensoitu arkisto. Lue asennusohjelma ennen kuin luotat siihen – se on pointti.",
+      "copy": "Kopioi asennuskomento",
+      "repository": "GitHub arkisto",
+      "issue": "Avaa ongelma",
+      "invite": "Suoritetaanko se todellisessa repossa? Avaa ongelma – varhaiset asennukset ovat esillä."
+    }
+  },
+  "Catalog": {
+    "metadataTitle": "{count} Payload CMS Komponentit ja lohkot | Katalogi",
+    "metadataDescription": "Selaa kirjoitettuja Payload CMS-lohkoja. Suorita npx payload-components add '<component>' liittääksesi yhden kokoelmaasi, renderöijaan, luotuihin tyyppeihin ja järjestelmänvalvojan tuontikarttaan.",
+    "eyebrow": "Rekisteri",
+    "title": "{count} Payload CMS komponentit ja kirjoitetut lohkot",
+    "description": "Selaa kaikkia {count} asennettavia Payload CMS-komponentteja sankareiden, ominaisuuksien, hinnoittelun, toimintakehotusten, integraatioiden, suosittelujen, tilastojen, FAQ, sisällön, tiimien, upotusten ja alatunnisteiden välillä. Yksi CLI-komento kopioi lohkon ja kytkee sen kokoelman rekisteröinnin, renderöijän kartoituksen, luodut tyypit ja järjestelmänvalvojan tuontikartan.",
+    "installation": "Katso kuinka yhden komennon asennus toimii",
+    "blocksGuide": "Seuraa lohkoa konfiguraatiosta live-sivulle",
+    "templates": "Tutustu Payload CMS-mallin käsitteisiin",
+    "license": "MIT lisensoitu"
+  },
+  "CatalogBrowser": {
+    "filter": "Suodata komponentit",
+    "allComponents": "Kaikki komponentit",
+    "all": "Kaikki",
+    "search": "Hae komponentteja",
+    "result": "{count, plural, one {# tulos} other {# tulosta}}",
+    "empty": "Yksikään komponentti ei vastaa suodattimiasi.",
+    "reset": "Nollaa suodattimet",
+    "proposal": "Luettelo kasvaa tietoisesti – lähde, luettelo, asiakirjat ja asentajan kattavuus toimitetaan yhdessä. Ehdota seuraavaa.",
+    "issue": "Avaa ongelma",
+    "inDevelopment": "kehitteillä",
+    "roadmapPreview": "Konseptin esikatselu",
+    "planned": "Avoimen lähdekoodin etenemissuunnitelma",
+    "interest": "Näytä etenemissuunnitelma",
+    "interestLabel": "Näytä {component} toimituksellisten komponenttien etenemissuunnitelmassa",
+    "selected": "{count} valittu",
+    "tray": "Valitut komponentit",
+    "copy": "Kopioi asennuskomento",
+    "clear": "Tyhjennä valinta",
+    "families": {
+      "pages": "Sivulohkot",
+      "posts": "Lähetä komponentit"
+    },
+    "categories": {
+      "hero": "Sankari",
+      "features": "Ominaisuudet",
+      "comparator": "Vertailija",
+      "pricing": "Hinnoittelu",
+      "cta": "Toimintakehotus",
+      "contact": "Ota yhteyttä",
+      "integration": "Integrointi",
+      "logos": "Logopilvi",
+      "testimonials": "Todistuksia",
+      "stats": "Tilastot",
+      "faq": "FAQ",
+      "content": "Sisältö",
+      "team": "Joukkue",
+      "embed": "Upota",
+      "footer": "Alatunniste",
+      "cards": "Kortit",
+      "archive": "Arkisto",
+      "header": "Otsikko",
+      "index": "Hakemisto",
+      "author": "Tekijä",
+      "newsletter": "Uutiskirje",
+      "related": "Liittyy"
+    },
+    "composerAdd": "Lisää {slug} asennuskomentoon",
+    "composerRemove": "Poista {slug} asennuskomennosta",
+    "theme": {
+      "brandLegend": "Esikatsele luetteloa brändisi värillä",
+      "brandLabel": "Tuotemerkki",
+      "previewBrand": "Esikatselu muodossa {color}",
+      "colors": {
+        "emerald": "Smaragdi",
+        "sky": "Sky",
+        "indigo": "Indigo",
+        "violet": "Violetti",
+        "rose": "Rose",
+        "amber": "Amber"
+      },
+      "radiusLegend": "Esikatsele luetteloa eri kulman säteellä",
+      "radiusLabel": "Säde",
+      "previewRadius": "Esikatselu {style}-kulmilla",
+      "radii": {
+        "sharp": "Terävä",
+        "default": "Oletus",
+        "round": "Pyöreä"
+      }
+    }
+  },
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
+    "seeCollection": "View the collection",
+    "backToCatalog": "Back to the component catalog",
+    "suiteEyebrow": "The proposed suite",
+    "suiteTitle": "Designed as one publication.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
+    "collectionEyebrow": "The collection",
+    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
+    "benefits": {
+      "systemTitle": "Composed together",
+      "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
+    },
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
+  },
+  "Templates": {
+    "metadataTitle": "Payload CMS Mallit Next.js | Käsitteet & Reseptit",
+    "metadataDescription": "Tutustu Payload CMS mallikonsepteihin viidellätoista eri toimialalla – SaaS, agentuuri, kauppa, terveydenhuolto, ravintola, kiinteistö ja paljon muuta – esikatsele jokaista sivua ja tarkista kirjoitettu lohkoresepti.",
+    "detailTitle": "{title} -malli",
+    "back": "Mallit",
+    "previewPageLabel": "{title} esikatselusivu",
+    "previewViewport": "Esikatsele näkymän kokoa",
+    "desktop": "Työpöytä",
+    "tablet": "Tabletti",
+    "mobile": "Matkapuhelin",
+    "previewFrameTitle": "{title} mallin esikatselu — {page} sivu",
+    "eyebrow": "Mallit",
+    "title": "Payload CMS mallikonseptit, rakennettu asennettavista lohkoista",
+    "status": "Konseptin esikatselu",
+    "disclosure": "Tämä on selattava koko sivuston konsepti. Jokainen osio koostuu avoimen rekisterin lohkoista, ja yksi komento asentaa koko lohkojoukon – tässä näkyvää kuratoitua kopiota ei ole kylvetty, joten kokoat sivut itse järjestelmänvalvojassa.",
+    "startingPoint": "Valitse aloituspiste",
+    "description": "Tutustu täydellisiin Payload CMS ja Next.js -sivustokonsepteihin viidellätoista eri toimialalla – SaaS, agentuuri, kauppa, terveydenhuolto, ravintola, kiinteistöt, musiikki ja paljon muuta. Avaa jokainen sivu live-esikatselussa ja jäljitä sitten jokainen osio takaisin kirjoitettuun lohkoon, jonka voit asentaa tänään.",
+    "components": "Selaa asennettavia komponentteja",
+    "installation": "Lue asennusopas",
+    "official": "Aloita virallisesta Payload-mallista",
+    "showcases": "Malliesittelyt",
+    "questionsEyebrow": "Kysymyksiä",
+    "questionsHeading": "Payload CMS mallikysymyksiä, vastattu",
+    "questionsIntro": "Käsitteet ovat tarkoituksella avoimia siitä, mikä toimii nykyään ja mikä jää suunnittelun referenssiksi.",
+    "q1": "Ovatko nämä Payload CMS-mallit asennettavissa?",
+    "a1": "Ei. Ne ovat selattavia koko sivuston käsitteitä, eivät paketoituja aloitustietovarastoja. Jokaisen reseptin yksittäiset lohkot ovat asennettavissa, ja jokainen resepti linkittää asiaankuuluvien komponenttien dokumentaatioon.",
+    "q2": "Miten nämä eroavat Payload:n virallisesta mallista?",
+    "a2": "Virallinen verkkosivustomalli antaa uudelle hankkeelle täydellisen sovellusperustan. Nämä käsitteet osoittavat, miltä täydellinen markkinointisivusto voi näyttää ja mitkä kirjoitetut lohkot muodostavat kunkin sivun ilman, että se korvaa aloitusprojektin roolia.",
+    "q3": "Voinko käyttää reseptejä olemassa olevassa Payload-projektissa?",
+    "a3": "Kyllä. Avaa konsepti, tarkista sen tilattu resepti ja valitse sivustollesi sopivat osiot. Luettelossa dokumentoidaan kunkin lohkon kentät ja tuettu Payload CMS v3 -asennuspolku.",
+    "communityEyebrow": "yhteisö",
+    "communityHeading": "Mallit päätetään avoimesti",
+    "communityIntro": "Nämä käsitteet ovat olemassa vastaamaan yhteen kysymykseen yhteisön kanssa: pitäisikö koko sivuston mallien asentaa? Reseptit, kuvitteelliset tuotemerkit ja asennusohjelman RFC ovat kaikki julkisessa arkistossa – ei mitään aidattuja, ei sähköpostin talteenottoa.",
+    "allConcepts": "Kaikki käsitteet",
+    "filter": "Suodata käsitteet luokan mukaan",
+    "showing": "Näytetään {visible}/{total} käsitteestä",
+    "visualTone": "Visuaalinen sävy",
+    "counts": "{pages} sivua · {blocks} yksilöityä lohkoa",
+    "explore": "Tutustu malliin",
+    "openPreview": "Avaa koko esikatselu",
+    "posterLabel": "Tutustu {title}-malliin",
+    "posterAlt": "{title} malli — kotisivun konseptijuliste",
+    "contributionRepository": "Selaa arkistoa",
+    "contributionRepositoryDescription": "Lue esittelylähde – jokainen resepti on arkistossa pelkkää dataa.",
+    "contributionRfc": "Lue asennusohjelman RFC",
+    "contributionRfcDescription": "Tarkista ehdotus konseptireseptien muuttamisesta valinnaiseksi, läpinäkyväksi asennustyönkuluksi.",
+    "categories": {
+      "agency": "Toimisto",
+      "civic": "Civic",
+      "commerce": "Kauppa",
+      "education": "Koulutus",
+      "event": "Tapahtuma",
+      "fintech": "Fintech",
+      "healthcare": "Terveydenhuolto",
+      "marketplace": "Markkinapaikka",
+      "music": "Musiikki",
+      "nonprofit": "Järjestö",
+      "portfolio": "Portfolio",
+      "real-estate": "Kiinteistöt",
+      "restaurant": "Ravintola",
+      "saas": "SaaS",
+      "trade": "Kauppa"
+    }
+  },
+  "Blog": {
+    "metadataTitle": "Payload CMS lohko- ja asennusoppaat",
+    "metadataDescription": "Käytännön Payload CMS v3 oppaita uudelleenkäytettävien lohkojen, johdotuskokoelmien ja renderöijien asentamiseen, tyyppien luomiseen ja sellaisten lohkojen kiinnittämiseen, jotka eivät renderöidy.",
+    "eyebrow": "Käytännön Payload CMS v3 -opastus",
+    "featured": "Aloita todistetusta oppaasta",
+    "installationLabel": "Asennusopas",
+    "installationTitle": "Asenna langallinen Payload-lohko",
+    "installationDescription": "Lisää todellinen lohko, jossa on tuettu CLI, ja tarkista sitten kaikki tiedostot ja johdotuksen muutokset.",
+    "installationAction": "Seuraa asennusopasta",
+    "wiringLabel": "Lohkon johdotusopas",
+    "wiringTitle": "Kytke uudelleen käytettävä lohko",
+    "wiringDescription": "Seuraa Payload CMS v3 -lohkoa konfiguraatiosta rekisteröinnin, renderöinnin, luotujen tyyppien ja järjestelmänvalvojan tuontikartan kautta.",
+    "troubleshootingLabel": "Vianetsintäopas",
+    "troubleshootingTitle": "Korjaa lohko, joka ei hahmonnu",
+    "troubleshootingDescription": "Tarkista neljä paikkaa, jotka yleensä selittävät, miksi tallennettu lohko ei näy sivulla.",
+    "readGuide": "Lue opas",
+    "notesEyebrow": "Kentän muistiinpanot rekisteristä",
+    "notesTitle": "Lisää Payload CMS kenttähuomautuksia",
+    "notesDescription": "Selaa toteutusoppitunteja, komponenttien suunnitteluhuomautuksia ja julkaisutarinoita avoimesta rekisteristä.",
+    "browseComponents": "Selaa kaikkia {count} asennettavia komponentteja",
+    "empty": "Ei viestejä vielä – tarkista pian.",
+    "back": "Takaisin blogiin",
+    "keepReading": "Jatka lukemista",
+    "related": "Aiheeseen liittyvää luettavaa",
+    "tags": "Artikkelin tunnisteet",
+    "series": {
+      "project-notes": "Projektin muistiinpanot",
+      "foundations": "Perusteet",
+      "installer-internals": "Asentimen sisäosat",
+      "component-design": "Komponenttisuunnittelu",
+      "production-guides": "Tuotantooppaat",
+      "open-source": "Laatu ja yhteisöllisyys"
+    }
+  },
+  "Footer": {
+    "home": "Payload Components -etusivu",
+    "intro": "Kirjoitetut Payload CMS komponentit, jotka asennetaan johdotuksensa kanssa — kokoelman kokoonpano, renderöintikartoitus, luodut tyypit ja tuontikartta yhdessä komennossa.",
+    "product": "Tuote",
+    "components": "Komponentit",
+    "project": "Projekti",
+    "componentCatalog": "Komponenttiluettelo",
+    "templateConcepts": "Mallin käsitteet",
+    "documentation": "Dokumentaatio",
+    "installWorkflow": "Asenna työnkulku",
+    "architecture": "Arkkitehtuuri",
+    "aiDiscovery": "AI-löytö",
+    "allComponents": "Kaikki {count} komponentit",
+    "about": "Tietoja",
+    "brandGuide": "Tuotemerkkiopas",
+    "openIssue": "Avaa ongelma",
+    "releases": "Julkaisut",
+    "updates": "Päivittää syötteen",
+    "contributing": "Osallistuminen",
+    "privacy": "Yksityisyys",
+    "registry": "Rekisteri JSON",
+    "license": "MIT lisensoitu · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · avaa rekisteri"
+  },
+  "Maintainer": {
+    "body": "Rakensin payload-components, koska Payload-lohkon asentaminen ei koskaan ollut copy-paste - se oli neljä muokkausta sen jälkeen. CLI on olemassa, joten toinen projekti ja kymmenes projekti saavat johdotuksen ilmaiseksi. Lue asennusohjelman lähde ennen kuin luotat siihen; toimitus sen MIT on pointti.",
+    "role": "Ylläpitäjä, Payload Components",
+    "github": "{name} GitHub"
+  },
+  "PageMetadata": {
+    "about": {
+      "title": "Tietoja",
+      "openGraphTitle": "Noin Payload Components",
+      "description": "Miksi Payload Components on olemassa: lopeta samojen Payload-lohkojen uudelleenrakentaminen, niiden uudelleenjohdottaminen käsin ja jokaisen freelance-projektien asennuksen uudelleentodistaminen."
+    },
+    "privacy": {
+      "title": "Yksityisyys",
+      "openGraphTitle": "Yksityisyys — Payload Components",
+      "description": "Mitä Payload Components mittaa, mitkä kolmannet osapuolet saavat sen ja kuinka muuttaa tai peruuttaa valintaasi milloin tahansa."
+    },
+    "brandGuide": {
+      "title": "Tuotemerkkiopas",
+      "openGraphTitle": "Payload Components Brändiopas",
+      "description": "Payload Components-brändi: valon ensimmäinen shadcn yksivärinen paletti, jossa on yksi smaragdikorostus, Geist and Instrument Serif -tyyppinen järjestelmä, logon käyttö ja ääni."
+    }
+  },
+  "FaqContent": {
+    "entries": {
+      "one": {
+        "question": "Onko Payload Components ilmainen?",
+        "answer": "Kyllä – ja suunniteltu pysymään sellaisena. Rekisteri, CLI, kaikki {count} asennettavat komponentit ja tämä sivusto ovat yksi MIT-lisensoitu arkisto: ei hinnoittelua, ei lisenssiavainta, ei aidattua tasoa. Payload Components on suunnittelultaan yhteisöllinen – luettelo kasvaa todellisista asennuksista ja lahjoituksista, ei maksetusta etenemissuunnitelmasta."
+      },
+      "two": {
+        "question": "Mikä on Payload CMS-lohko?",
+        "answer": "Kohdassa Payload lohko on kirjoitettava sivunrakennuskenttä – uudelleenkäytettävän sisältöosan (sankari, ominaisuusruudukko, toimintakehotus) editorit pinoavat sivun asettelua varten. Payload Components toimittaa valmiiksi rakennetut lohkot sekä johdotuksen, joka saa ne toimimaan, joten lohkoa ei vain kopioida: se rekisteröidään Pages-kokoelmaasi, kartoitetaan renderöijassasi, kirjoitetaan ja lisätään järjestelmänvalvojan tuontikarttaan.",
+        "link": "Lue Payload-lohkoopas"
+      },
+      "three": {
+        "question": "Kuinka lisään sankarilohkon arvoon Payload CMS?",
+        "answer": "Asenna sellainen, jossa on CLI — `npx payload-components add hero-basic`. Se kopioi lohkolähteen projektiisi ja kytkee sen päähän: rekisteröi sen Pages-kokoelmaasi, kartoittaa sen RenderBlocks-muotoon ja luo uudelleen Payload-tyypit ja järjestelmänvalvojan tuontikartan – laskeutuu yhdeksi tarkistettavaksi git diff. Sama komento lisää minkä tahansa lohkon luetteloon."
+      },
+      "four": {
+        "question": "Mitä asennus tarkalleen ottaen muuttaa repossani?",
+        "answer": "Kolme asiaa: komponenttien lähdetiedostot kopioidaan (lohkokokoonpano, komponentti, jaetut apuohjelmat), täsmälleen kaksi tiedostoa on korjattu (sivujesi kokoelma ja RenderBlocks.tsx — jokainen komponenttiluettelo ilmoittaa ne) ja Payload luo uudelleen oman tulostensa (payload-types.ts ja järjestelmänvalvojan tuontikartta). Kaikki se näkyy tavallisena git diff.",
+        "link": "Lue asennusopas"
+      },
+      "five": {
+        "question": "Mitä tapahtuu, jos suoritan saman asennuksen kahdesti?",
+        "answer": "Se konvergoi. CLI havaitsee olemassa olevat johdot ja ohittaa sen - todellinen lähtö on payload-components: \"hero-basic\" is already installed. Asennustila tallennetaan kohtaan .payload-components/state.json, joten osittaiset asennukset ovat näkyvissä ja palautettavissa hiljaisen katkeamisen sijaan."
+      },
+      "six": {
+        "question": "Mitä hankkeita tuetaan nykyään?",
+        "answer": "Payload v3 + Next.js 15/16 -projektit, jotka on muotoiltu virallisen verkkosivuston käynnistimen tapaan – asettelulohkojen hahmontaminen src/blocks/RenderBlocks.tsx:n kautta ja sivulohkojen rekisteröinti src/collections/Pages/index.ts.:iin CLI tarkistaa ennen kuin projektisi koskettaa julkaistua tukimatriisia."
+      },
+      "seven": {
+        "question": "Mikset vain aja npx shadcn add?",
+        "answer": "Tavallinen shadcn-asennus kopioi tiedostot ja pysäyttää. Payload-lohkot toimivat vasta sen jälkeen, kun ne on rekisteröity kokoelmaskeemaasi, yhdistetty renderöijaan, kirjoitettu ja lisätty järjestelmänvalvojan tuontikarttaan. payload-components käärii saman rekisteritoimituksen täsmälleen tällä johdotuksella – tämä raja on tuote, ja yllä oleva johdotuskirja näyttää sen rivi riviltä.",
+        "link": "Lue koko shadcn-vertailu"
+      },
+      "eight": {
+        "question": "Miten uudet komponentit pääsevät luetteloon?",
+        "answer": "Tarkoituksella. Komponentti laskeutuu vain, kun sen lähde, luettelon metatiedot, asiakirjasivu ja asennusohjelman testikattavuus toimitetaan yhdessä – puolijohdotetut lohkot eivät koskaan pääse luetteloon. Ehdota seuraavaa komponenttia GitHub-ongelmassa; luettelo kasvaa todellisista asennuksista."
+      }
+    }
+  },
+  "TranslationNotice": {
+    "fallback": "Tätä sivua ei ole vielä käännetty, joten englanninkielinen lähdesisältö näytetään.",
+    "label": "Käännöksen tila",
+    "machine": "Tämä sivu on konekäännetty, eikä äidinkielinen puhuja ole vielä tarkistanut sitä.",
+    "viewEnglish": "Näytä englanninkielinen lähde"
+  }
+}

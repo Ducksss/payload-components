@@ -1,0 +1,46 @@
+name: Crowdin translations
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - messages/en.json
+      - crowdin.yml
+      - .github/workflows/crowdin.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: crowdin-translations
+  cancel-in-progress: false
+
+jobs:
+  synchronize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Upload source and download translations
+        uses: crowdin/github-action@8f01d54f70f1713ee3f09d82c2bbb2daeac28689 # v2
+        with:
+          upload_sources: true
+          upload_translations: false
+          download_translations: true
+          create_pull_request: true
+          pull_request_base_branch_name: dev
+          localization_branch_name: codex/crowdin-translations
+          pull_request_title: 'chore(i18n): sync Crowdin translations'
+          pull_request_body: |
+            Automated translation catalogue update from Crowdin.
+
+            Machine-translated routes remain `noindex` until their locale is marked reviewed in `messages/status.json`.
+          commit_message: 'chore(i18n): sync Crowdin translations'
+        env:
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

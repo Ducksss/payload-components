@@ -1,0 +1,478 @@
+{
+  "Metadata": {
+    "title": "Payload Components — các khối được nối dây đầy đủ cho Payload CMS",
+    "description": "Các khối Payload CMS mã nguồn mở cài đặt với cấu hình bộ sưu tập, ánh xạ trình kết xuất, loại được tạo và bản đồ nhập quản trị viên."
+  },
+  "Common": {
+    "home": "Trang chủ",
+    "documentation": "Tài liệu",
+    "blog": "Blog",
+    "componentCatalog": "Danh mục linh kiện",
+    "brandGuide": "Hướng dẫn thương hiệu",
+    "about": "Giới thiệu",
+    "privacy": "Quyền riêng tư",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép",
+    "copiedDescription": "Đã sao chép vào bảng nhớ tạm."
+  },
+  "Header": {
+    "skip": "Chuyển tới nội dung",
+    "home": "Trang chủ Payload Components",
+    "github": "GitHub",
+    "openNavigation": "Mở điều hướng",
+    "closeNavigation": "Đóng điều hướng",
+    "language": "Ngôn ngữ",
+    "nav": {
+      "docs": "Tài liệu",
+      "components": "Linh kiện",
+      "templates": "Mẫu",
+      "blog": "Blog",
+      "about": "Giới thiệu"
+    }
+  },
+  "Consent": {
+    "title": "Cookie phân tích",
+    "description": "Chúng tôi sử dụng Google Analytics và PostHog để xem mọi người thực sự sử dụng thành phần và tài liệu nào. Từ chối và không ai tải - không có cookie, không có mã định danh. Đo lường tốc độ trang chạy theo một trong hai cách và không lưu trữ gì.",
+    "privacy": "Quyền riêng tư",
+    "decline": "Từ chối",
+    "accept": "Chấp nhận"
+  },
+  "Privacy": {
+    "eyebrow": "Quyền riêng tư",
+    "heading": "Chính xác là những gì chúng tôi đo lường được.",
+    "accentWord": "đo",
+    "intro": "Không có gì lưu trữ bất cứ thứ gì trên thiết bị của bạn tải cho đến khi bạn chấp nhận. Trang này đặt tên cho mọi bộ xử lý, mọi sự kiện và mọi trường — đồng thời cho phép bạn thay đổi quyết định bất kỳ lúc nào.",
+    "consent": "Bất cứ thứ gì lưu trữ thứ gì đó trên thiết bị của bạn đều phải chờ sự đồng ý của bạn. Từ chối và Google Analytics và PostHog không bao giờ tải — không có cookie nào được đặt và không có mã định danh nào được giữ lại. Nếu trình duyệt của bạn gửi Global Privacy Control hoặc Do Not Track, điều đó sẽ tự động được tính là từ chối và bạn sẽ không bao giờ được hiển thị biểu ngữ.",
+    "alwaysOnProcessors": "Vercel Analytics và Speed Insights là ngoại lệ và chúng áp dụng cho tất cả mọi người. Họ không đặt cookie và không lưu trữ số nhận dạng — họ đo lường tổng số lượt tải trang và hiệu suất, đây là điều giúp trang web này luôn hoạt động nhanh. Không có gì trên thiết bị của bạn để từ chối.",
+    "noAccounts": "Không có tài khoản nào trên trang web này, vì vậy không có tài khoản nào trong số này gắn liền với danh tính. Chúng tôi không bao giờ thu thập thông tin nhập vào biểu mẫu, văn bản miễn phí hoặc nội dung của các trang bạn xem.",
+    "processorsTitle": "Ai nhận dữ liệu",
+    "needsConsent": "Cần sự đồng ý của bạn",
+    "alwaysOn": "Luôn bật, không lưu trữ gì",
+    "processors": {
+      "vercel": {
+        "purpose": "Lượt xem trang và Core Web Vitals cho trang được lưu trữ.",
+        "storage": "Không có cookie và không có mã định danh — không có gì được lưu trữ trên thiết bị của bạn."
+      },
+      "ga4": {
+        "purpose": "Tổng hợp lượt xem trang và nguồn lưu lượng truy cập.",
+        "storage": "Đặt cookie của bên thứ nhất (_ga, _ga_*)."
+      },
+      "posthog": {
+        "purpose": "Ba sự kiện sản phẩm được liệt kê bên dưới.",
+        "storage": "Một pc_distinct_id ngẫu nhiên trong localStorage, cộng với tên đường dẫn mục nhập tự nhiên trong sessionStorage cho tab hiện tại."
+      }
+    },
+    "eventsTitle": "Các sự kiện chúng tôi gửi",
+    "eventsIntro": "Ba, và các trường của chúng được cố định. Mọi giá trị đều đến từ lộ trình, liên kết hoặc lệnh cài đặt đã cam kết — không bao giờ đến từ bất kỳ thứ gì bạn nhập.",
+    "trafficSource": "Lượt xem trang chỉ gắn nhãn lưu lượng truy cập dưới dạng tìm kiếm không phải trả tiền hoặc tìm kiếm khác. Nhãn đó được lấy trong trình duyệt của bạn từ danh sách công cụ tìm kiếm cố định hoặc điểm đánh dấu chiến dịch không phải trả tiền rõ ràng. Liên kết giới thiệu thô, chiến dịch và chuỗi truy vấn không bao giờ được gửi. Các hoạt động kiểm tra địa điểm được kiểm soát mang theo điểm đánh dấu xác minh thực sự để chúng có thể được loại trừ khỏi số lượng khách truy cập; những chuyến thăm bình thường mang lại sai lầm.",
+    "entryPage": "Sau khi có sự đồng ý, các lượt truy cập không phải trả tiền sẽ giữ nguyên tên đường dẫn cùng trang web đầu tiên cho tab trình duyệt hiện tại. Bản cài đặt và các lần nhấp vào liên kết chính bao gồm tên đường dẫn đó là <code>entry_page</code>. Các chuyến thăm trực tiếp và giới thiệu thì không. Nó không bao giờ chứa chuỗi truy vấn hoặc liên kết giới thiệu thô và sẽ bị xóa khi bạn rút lại sự đồng ý.",
+    "events": {
+      "pageview": {
+        "when": "Một tuyến đường công cộng được tải hoặc thay đổi."
+      },
+      "copyInstallCommand": {
+        "when": "Bạn copy lệnh cài đặt."
+      },
+      "primaryLinkClick": {
+        "when": "Bạn theo liên kết kho lưu trữ, tài liệu hoặc thành phần."
+      }
+    },
+    "choiceTitle": "Sự lựa chọn của bạn",
+    "choice": "Quyết định của bạn được lưu trữ cục bộ trong trình duyệt của bạn dưới <code>pc_consent</code>. Thay đổi nó ở đây bất cứ lúc nào. Việc rút tiền không chỉ dừng việc thu thập — nó xóa những gì mà việc chọn tham gia đã tạo: cookie Google Analytics (<code>_ga</code>, <code>_ga_*</code>) và mã định danh PostHog bị xóa và trang sẽ tải lại nên không có nội dung nào đang chạy tiếp tục. Tên đường dẫn mục nhập tự nhiên chỉ dành cho phiên cũng bị xóa.",
+    "settings": {
+      "privacySignal": "Trình duyệt của bạn gửi tín hiệu riêng tư (Global Privacy Control hoặc Do Not Track), vì vậy Google Analytics và PostHog hãy tắt và không thể ghi đè tín hiệu này tại đây.",
+      "on": "Google Analytics và PostHog hiện đang bật.",
+      "off": "Google Analytics và PostHog hiện đang tắt.",
+      "undecided": "Bạn chưa chọn nên Google Analytics và PostHog bị tắt.",
+      "turnOff": "Tắt phân tích",
+      "turnOn": "Bật phân tích"
+    }
+  },
+  "NotFound": {
+    "eyebrow": "Lỗi 404",
+    "title": "Không tìm thấy trang",
+    "description": "Tuyến đường này không có trong sổ đăng ký. Các thành phần, tài liệu và danh mục là.",
+    "home": "Về nhà đi",
+    "docs": "Đọc tài liệu",
+    "terminalTitle": "payload-components — 404"
+  },
+  "Docs": {
+    "title": "Tài liệu",
+    "versionBanner": "MIT đăng ký · thành phần v{version}",
+    "github": "Sao trên GitHub",
+    "previousComponent": "Thành phần trước: {title}",
+    "nextComponent": "Thành phần tiếp theo: {title}",
+    "newIn": "Mới trong {version}"
+  },
+  "HomeMetadata": {
+    "title": "Payload Components: Các khối Payload CMS có dây trong một lệnh",
+    "description": "Cài đặt các khối Payload CMS có thể tái sử dụng bằng một lệnh, bao gồm cấu hình bộ sưu tập, bản đồ kết xuất, loại được tạo và bản đồ nhập quản trị viên cho các dự án Next.js."
+  },
+  "Landing": {
+    "hero": {
+      "eyebrow": "Đăng ký khối Payload mã nguồn mở",
+      "primary": "Cài đặt khối Payload",
+      "accent": "có dây, không dán.",
+      "subheadline": "Đối với các nhà phát triển Payload CMS, một lệnh sẽ cài đặt khối, nối nó vào Payload và đưa ra một git diff có thể xem lại.",
+      "guide": "Đọc hướng dẫn cài đặt",
+      "github": "Sao trên GitHub",
+      "browse": "Duyệt các thành phần",
+      "copy": "Sao chép lệnh cài đặt",
+      "count": "Các khối {count} trong sổ đăng ký — mỗi khối được nối vào Payload bằng một lệnh duy nhất."
+    },
+    "stack": {
+      "label": "Ngăn xếp được hỗ trợ",
+      "lede": "Cài đặt vào ngăn xếp bạn đã chạy"
+    },
+    "wiring": {
+      "eyebrow": "Ranh giới cài đặt",
+      "heading": "Một khối không tồn tại cho đến khi nó được nối dây.",
+      "intro": "Sao chép các tập tin là phần dễ dàng — bốn lần chỉnh sửa sau đó khiến mọi khối, mọi kho lưu trữ đều mất cả ngày.",
+      "source": "nguồn"
+    },
+    "workflow": {
+      "eyebrow": "Quy trình làm việc",
+      "heading": "Từ danh mục đến cam kết trong ba bước.",
+      "intro": "Không có giàn giáo, không có khóa - nguồn đơn giản cộng với hai bản vá có phạm vi mà bạn có thể đọc.",
+      "steps": {
+        "oneTitle": "Đọc hợp đồng",
+        "oneDescription": "Các trường, tệp và bản vá — trước khi bạn chạy bất cứ thứ gì.",
+        "twoTitle": "Chạy một lệnh",
+        "twoDescription": "CLI kiểm tra dự án của bạn, sau đó nối dây trong một lần.",
+        "threeTitle": "Cam kết một khối làm việc",
+        "threeDescription": "Nguồn, hai bản vá, loại được tạo lại - được xem xét giống như bất kỳ PR nào."
+      },
+      "badge": "Kết xuất từ nguồn",
+      "caption": "Kết quả đã cam kết — nguồn thành phần thực, được nối vào Payload và được xem xét như bất kỳ PR nào."
+    },
+    "catalog": {
+      "eyebrow": "Danh mục",
+      "heading": "Danh mục được hiển thị trực tiếp.",
+      "intro": "Không có ảnh chụp màn hình - mỗi mẫu vật là thành phần thực, được hiển thị từ nguồn.",
+      "browse": "Duyệt qua danh mục",
+      "preview": "Xem trước trực tiếp",
+      "blockCount": "{count, plural, other {# khối}}",
+      "browseFamily": "Duyệt {family}",
+      "allComponents": "Duyệt qua tất cả các thành phần {count}",
+      "postComponents": "Đăng thành phần · Đang phát triển",
+      "familyCount": "Có thể cài đặt",
+      "familyName": "Khối trang",
+      "familyDescription": "Các khối dành cho trình tạo bố cục Trang — được cài đặt với hệ thống dây đầy đủ: cấu hình bộ sưu tập, ánh xạ hiển thị, các loại được tạo, nhập bản đồ."
+    },
+    "faq": {
+      "heading": "Câu hỏi, trả lời thẳng thắn.",
+      "intro": "Phiên bản ngắn của tài liệu. Mọi câu trả lời đều liên kết trở lại nội dung nào đó mà bạn có thể xác minh trong kho lưu trữ.",
+      "dogfood": "Phần này là một trong những khối của chúng tôi"
+    },
+    "community": {
+      "eyebrow": "Mã nguồn mở",
+      "heading": "Mã nguồn mở,",
+      "accent": "từ đầu đến cuối",
+      "intro": "Cơ quan đăng ký, CLI, các thành phần và trang web này là một kho lưu trữ được cấp phép MIT. Đọc trình cài đặt trước khi bạn tin tưởng nó - đó chính là vấn đề.",
+      "copy": "Sao chép lệnh cài đặt\nkho lưu trữ",
+      "repository": "GitHub",
+      "issue": "Mở một vấn đề",
+      "invite": "Chạy nó trong một repo thực sự? Mở một vấn đề — các lượt cài đặt sớm sẽ được nêu bật."
+    }
+  },
+  "Catalog": {
+    "metadataTitle": "{count} Payload CMS Thành phần & Khối | Danh mục",
+    "metadataDescription": "Duyệt qua các khối Payload CMS đã gõ. Chạy npx payload-components add '<component>' để kết nối một cái vào bộ sưu tập, trình kết xuất, loại được tạo và bản đồ nhập quản trị viên của bạn.",
+    "eyebrow": "Đăng ký",
+    "title": "{count} Payload CMS thành phần và khối được gõ",
+    "description": "Duyệt qua tất cả các thành phần {count} có thể cài đặt Payload CMS trên các anh hùng, tính năng, giá cả, lời kêu gọi hành động, tích hợp, lời chứng thực, số liệu thống kê, FAQ, nội dung, nhóm, nội dung nhúng và chân trang. Một lệnh CLI sao chép một khối và nối dây đăng ký bộ sưu tập, ánh xạ trình kết xuất, các loại được tạo và bản đồ nhập quản trị viên.",
+    "installation": "Xem cách cài đặt bằng một lệnh hoạt động",
+    "blocksGuide": "Theo dõi một khối từ cấu hình đến trang trực tiếp",
+    "templates": "Khám phá các khái niệm mẫu Payload CMS",
+    "license": "MIT được cấp phép"
+  },
+  "CatalogBrowser": {
+    "filter": "Thành phần bộ lọc",
+    "allComponents": "Tất cả các thành phần",
+    "all": "Tất cả",
+    "search": "Tìm kiếm thành phần",
+    "result": "{count, plural, other {# kết quả}}",
+    "empty": "Không có thành phần nào phù hợp với bộ lọc của bạn.",
+    "reset": "Đặt lại bộ lọc",
+    "proposal": "Danh mục này phát triển có chủ ý — nguồn, bảng kê khai, tài liệu và trình cài đặt đi cùng nhau. Đề xuất tiếp theo.",
+    "issue": "Mở một vấn đề",
+    "inDevelopment": "đang phát triển",
+    "roadmapPreview": "Bản xem trước ý tưởng",
+    "planned": "Lộ trình mã nguồn mở",
+    "interest": "Xem lộ trình",
+    "interestLabel": "Xem {component} trong lộ trình thành phần biên tập",
+    "selected": "{count} đã chọn",
+    "tray": "Các thành phần được chọn",
+    "copy": "Sao chép lệnh cài đặt",
+    "clear": "Xóa lựa chọn",
+    "families": {
+      "pages": "Khối trang",
+      "posts": "Đăng thành phần"
+    },
+    "categories": {
+      "hero": "Anh hùng",
+      "features": "Tính năng",
+      "comparator": "Bộ so sánh",
+      "pricing": "Giá cả",
+      "cta": "Kêu gọi hành động",
+      "contact": "Liên hệ",
+      "integration": "Tích hợp",
+      "logos": "Đám mây biểu tượng",
+      "testimonials": "Lời chứng thực",
+      "stats": "Thống kê",
+      "faq": "FAQ",
+      "content": "Nội dung",
+      "team": "Đội",
+      "embed": "Nhúng",
+      "footer": "Chân trang",
+      "cards": "Thẻ",
+      "archive": "Lưu trữ",
+      "header": "Tiêu đề",
+      "index": "Chỉ mục",
+      "author": "Tác giả",
+      "newsletter": "Bản tin",
+      "related": "Liên quan"
+    },
+    "composerAdd": "Thêm {slug} vào lệnh cài đặt",
+    "composerRemove": "Xóa {slug} khỏi lệnh cài đặt",
+    "theme": {
+      "brandLegend": "Xem trước danh mục theo màu thương hiệu của bạn",
+      "brandLabel": "Thương hiệu",
+      "previewBrand": "Xem trước trong {color}",
+      "colors": {
+        "emerald": "ngọc lục bảo",
+        "sky": "bầu trời",
+        "indigo": "màu chàm",
+        "violet": "màu tím",
+        "rose": "hoa hồng",
+        "amber": "Hổ phách"
+      },
+      "radiusLegend": "Xem trước danh mục ở bán kính góc khác",
+      "radiusLabel": "Bán kính",
+      "previewRadius": "Xem trước với các góc {style}",
+      "radii": {
+        "sharp": "sắc nét",
+        "default": "Mặc định",
+        "round": "vòng"
+      }
+    }
+  },
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
+    "seeCollection": "View the collection",
+    "backToCatalog": "Back to the component catalog",
+    "suiteEyebrow": "The proposed suite",
+    "suiteTitle": "Designed as one publication.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
+    "collectionEyebrow": "The collection",
+    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
+    "benefits": {
+      "systemTitle": "Composed together",
+      "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
+    },
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
+  },
+  "Templates": {
+    "metadataTitle": "Payload CMS Mẫu cho Next.js | Khái niệm & Bí quyết",
+    "metadataDescription": "Khám phá các khái niệm mẫu Payload CMS trên mười lăm ngành dọc — SaaS, đại lý, thương mại, chăm sóc sức khỏe, nhà hàng, bất động sản, v.v. — xem trước mọi trang và kiểm tra công thức khối đã nhập.\nmẫu",
+    "detailTitle": "{title}",
+    "back": "Mẫu",
+    "previewPageLabel": "{title} trang xem trước",
+    "previewViewport": "Xem trước kích thước khung nhìn",
+    "desktop": "Máy tính để bàn",
+    "tablet": "Máy tính bảng",
+    "mobile": "Di động",
+    "previewFrameTitle": "xem trước mẫu {title} — trang {page}",
+    "eyebrow": "Mẫu",
+    "title": "Payload CMS khái niệm mẫu, được xây dựng từ các khối có thể cài đặt",
+    "status": "Xem trước khái niệm",
+    "disclosure": "Đây là khái niệm toàn bộ trang web có thể duyệt được. Mỗi phần được tạo từ các khối trong sổ đăng ký mở và một lệnh sẽ cài đặt toàn bộ tập hợp khối — bản sao được quản lý hiển thị ở đây không được tạo hạt giống, do đó bạn tự tập hợp các trang trong quản trị viên.",
+    "startingPoint": "Chọn điểm xuất phát",
+    "description": "Khám phá các khái niệm trang web Payload CMS và Next.js hoàn chỉnh trên 15 ngành dọc — SaaS, đại lý, thương mại, chăm sóc sức khỏe, nhà hàng, bất động sản, âm nhạc và hơn thế nữa. Mở mọi trang trong bản xem trước trực tiếp, sau đó theo dõi từng phần trở lại khối đã nhập mà bạn có thể cài đặt ngay hôm nay.",
+    "components": "Duyệt qua các thành phần có thể cài đặt",
+    "installation": "Đọc hướng dẫn cài đặt",
+    "official": "Bắt đầu từ mẫu Payload chính thức",
+    "showcases": "Trưng bày mẫu",
+    "questionsEyebrow": "Câu hỏi",
+    "questionsHeading": "Payload CMS câu hỏi mẫu, đã trả lời",
+    "questionsIntro": "Các khái niệm này được mở ra một cách có chủ ý về những gì hiệu quả ngày nay và những gì vẫn là tài liệu tham khảo về thiết kế.",
+    "q1": "Những mẫu Payload CMS này có thể cài đặt được không?",
+    "a1": "Không. Chúng là các khái niệm toàn trang có thể duyệt được, không phải là kho lưu trữ ban đầu được đóng gói. Các khối riêng lẻ trong mỗi công thức đều có thể cài đặt được và mọi công thức đều liên kết đến tài liệu thành phần có liên quan.",
+    "q2": "Những mẫu này khác với mẫu chính thức của Payload như thế nào?",
+    "a2": "Mẫu trang web chính thức cung cấp cho dự án mới một nền tảng ứng dụng hoàn chỉnh. Những khái niệm này cho thấy một trang web tiếp thị đầy đủ có thể trông như thế nào và các khối được nhập nào tạo nên mỗi trang mà không thay thế vai trò dự án khởi đầu đó.",
+    "q3": "Tôi có thể sử dụng các công thức nấu ăn trong dự án Payload hiện có không?",
+    "a3": "Vâng. Mở một khái niệm, kiểm tra công thức theo thứ tự của nó và chọn các phần phù hợp với trang web của bạn. Danh mục ghi lại các trường của từng khối và đường dẫn cài đặt Payload CMS v3 được hỗ trợ.",
+    "communityEyebrow": "Cộng đồng",
+    "communityHeading": "Các mẫu được quyết định công khai",
+    "communityIntro": "Những khái niệm này tồn tại để trả lời một câu hỏi của cộng đồng: các mẫu toàn trang có thể cài đặt được không? Tất cả các công thức nấu ăn, nhãn hiệu hư cấu và trình cài đặt RFC đều nằm trong kho lưu trữ công cộng — không có cổng, không có email.",
+    "allConcepts": "Tất cả các khái niệm",
+    "filter": "Lọc các khái niệm theo danh mục",
+    "showing": "Hiển thị {visible} trong tổng số {total} khái niệm",
+    "visualTone": "Giai điệu trực quan",
+    "counts": "{pages} trang · {blocks} khối duy nhất",
+    "explore": "Khám phá mẫu",
+    "openPreview": "Mở bản xem trước đầy đủ",
+    "posterLabel": "Khám phá mẫu {title}",
+    "posterAlt": "{title} mẫu — áp phích khái niệm trang chủ",
+    "contributionRepository": "Duyệt qua kho lưu trữ",
+    "contributionRepositoryDescription": "Đọc nguồn giới thiệu - mọi công thức đều là dữ liệu đơn giản trong kho lưu trữ.",
+    "contributionRfc": "Đọc RFC của trình cài đặt",
+    "contributionRfcDescription": "Xem xét đề xuất biến các công thức ý tưởng thành quy trình cài đặt minh bạch, tùy chọn.",
+    "categories": {
+      "agency": "Đại lý",
+      "civic": "Công dân",
+      "commerce": "Thương mại",
+      "education": "Giáo dục",
+      "event": "Sự kiện",
+      "fintech": "Công nghệ tài chính",
+      "healthcare": "Chăm sóc sức khỏe",
+      "marketplace": "Thị trường",
+      "music": "Âm nhạc",
+      "nonprofit": "Phi lợi nhuận",
+      "portfolio": "Danh mục đầu tư",
+      "real-estate": "Bất động sản",
+      "restaurant": "Nhà hàng",
+      "saas": "SaaS",
+      "trade": "Giao dịch"
+    }
+  },
+  "Blog": {
+    "metadataTitle": "Hướng dẫn cài đặt và khối Payload CMS",
+    "metadataDescription": "Hướng dẫn thực tế Payload CMS v3 để cài đặt các khối có thể tái sử dụng, bộ sưu tập nối dây và trình kết xuất, các loại tạo và sửa các khối không hiển thị.",
+    "eyebrow": "Hướng dẫn thực tế Payload CMS v3",
+    "featured": "Bắt đầu với hướng dẫn đã được chứng minh",
+    "installationLabel": "Hướng dẫn cài đặt",
+    "installationTitle": "Cài đặt khối Payload có dây",
+    "installationDescription": "Thêm một khối thực với CLI được hỗ trợ, sau đó xem lại mọi tệp và thay đổi hệ thống dây dẫn xảy ra.",
+    "installationAction": "Làm theo hướng dẫn cài đặt",
+    "wiringLabel": "Hướng dẫn nối dây khối",
+    "wiringTitle": "Nối dây một khối có thể tái sử dụng",
+    "wiringDescription": "Thực hiện theo khối Payload CMS v3 từ cấu hình thông qua đăng ký, kết xuất, loại được tạo và bản đồ nhập quản trị viên.",
+    "troubleshootingLabel": "Hướng dẫn khắc phục sự cố",
+    "troubleshootingTitle": "Sửa một khối không hiển thị",
+    "troubleshootingDescription": "Kiểm tra bốn vị trí thường giải thích tại sao khối đã lưu không xuất hiện trên trang.",
+    "readGuide": "Đọc hướng dẫn",
+    "notesEyebrow": "Ghi chú hiện trường từ sổ đăng ký",
+    "notesTitle": "Ghi chú trường Payload CMS khác",
+    "notesDescription": "Duyệt qua các bài học triển khai, ghi chú thiết kế thành phần và câu chuyện phát hành từ sổ đăng ký mở.",
+    "browseComponents": "Duyệt qua tất cả các thành phần có thể cài đặt {count}",
+    "empty": "Chưa có bài đăng nào - hãy kiểm tra lại sớm.",
+    "back": "Quay lại blog",
+    "keepReading": "Đọc tiếp",
+    "related": "Bài đọc liên quan",
+    "tags": "Thẻ bài viết",
+    "series": {
+      "project-notes": "Ghi chú dự án",
+      "foundations": "Nền tảng",
+      "installer-internals": "Nội bộ của trình cài đặt",
+      "component-design": "Thiết kế thành phần",
+      "production-guides": "Hướng dẫn sản xuất",
+      "open-source": "Chất lượng & cộng đồng"
+    }
+  },
+  "Footer": {
+    "home": "Trang chủ Payload Components",
+    "intro": "Đã nhập các thành phần Payload CMS cài đặt bằng hệ thống dây điện của chúng — cấu hình bộ sưu tập, ánh xạ hiển thị, các loại được tạo và nhập bản đồ trong một lệnh.",
+    "product": "Sản phẩm",
+    "components": "Thành phần",
+    "project": "Dự án",
+    "componentCatalog": "Danh mục linh kiện",
+    "templateConcepts": "Khái niệm mẫu",
+    "documentation": "Tài liệu",
+    "installWorkflow": "Quy trình cài đặt",
+    "architecture": "Kiến trúc",
+    "aiDiscovery": "Khám phá AI",
+    "allComponents": "Tất cả các thành phần {count}",
+    "about": "Giới thiệu",
+    "brandGuide": "Hướng dẫn thương hiệu",
+    "openIssue": "Mở một vấn đề",
+    "releases": "Phát hành",
+    "updates": "Cập nhật nguồn cấp dữ liệu",
+    "contributing": "Đóng góp",
+    "privacy": "Quyền riêng tư",
+    "registry": "Đăng ký JSON",
+    "license": "MIT được cấp phép · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · mở đăng ký"
+  },
+  "Maintainer": {
+    "body": "Tôi đã xây dựng payload-components vì việc cài đặt khối Payload chưa bao giờ là sao chép-dán — mà là bốn lần chỉnh sửa sau đó. CLI tồn tại nên dự án thứ hai và dự án thứ mười sẽ nhận được hệ thống dây điện đó miễn phí. Đọc nguồn trình cài đặt trước khi bạn tin cậy nó; vận chuyển nó MIT là vấn đề.",
+    "role": "Người bảo trì, Payload Components",
+    "github": "{name} trên GitHub"
+  },
+  "PageMetadata": {
+    "about": {
+      "title": "Giới thiệu",
+      "openGraphTitle": "Giới thiệu về Payload Components",
+      "description": "Tại sao Payload Components tồn tại: ngừng xây dựng lại các khối Payload giống nhau, nối lại chúng bằng tay và chứng minh lại mọi cài đặt trong các dự án tự do."
+    },
+    "privacy": {
+      "title": "Quyền riêng tư",
+      "openGraphTitle": "Quyền riêng tư — Payload Components",
+      "description": "Biện pháp Payload Components là gì, bên thứ ba nào nhận được nó và cách thay đổi hoặc rút lại lựa chọn của bạn bất kỳ lúc nào."
+    },
+    "brandGuide": {
+      "title": "Hướng dẫn thương hiệu",
+      "openGraphTitle": "Payload Components Hướng dẫn thương hiệu",
+      "description": "Thương hiệu Payload Components: bảng màu đơn sắc shadcn đầu tiên nhẹ nhàng với một điểm nhấn màu ngọc lục bảo, hệ thống loại Geist và Instrument Serif, cách sử dụng logo và giọng nói."
+    }
+  },
+  "FaqContent": {
+    "entries": {
+      "one": {
+        "question": "Payload Components có miễn phí không?",
+        "answer": "Có — và được thiết kế để duy trì điều đó. Cơ quan đăng ký, CLI, tất cả các thành phần có thể cài đặt {count} và trang web này là một kho lưu trữ được cấp phép MIT: không có giá, không có khóa cấp phép, không có cấp cổng. Payload Components là thiết kế ưu tiên cộng đồng — danh mục phát triển từ lượt cài đặt và đóng góp thực tế chứ không phải lộ trình trả phí."
+      },
+      "two": {
+        "question": "Khối Payload CMS là gì?",
+        "answer": "Trong Payload, một khối là một trường trình tạo trang có thể kết hợp — một phần nội dung có thể tái sử dụng (hero, lưới tính năng, CTA) được xếp chồng lên nhau để bố cục một trang. Payload Components vận chuyển các khối được tạo sẵn cùng với hệ thống dây điện giúp chúng hoạt động, do đó, một khối không chỉ được sao chép vào: nó được đăng ký trong bộ sưu tập Trang của bạn, được ánh xạ trong trình kết xuất của bạn, được nhập và thêm vào bản đồ nhập của quản trị viên.",
+        "link": "Đọc hướng dẫn về khối Payload"
+      },
+      "three": {
+        "question": "Làm cách nào để thêm khối anh hùng vào Payload CMS?",
+        "answer": "Cài đặt một cái với CLI — `npx payload-components add hero-basic`. Nó sao chép nguồn khối vào dự án của bạn và nối nó từ đầu đến cuối: đăng ký nó trong bộ sưu tập Trang của bạn, ánh xạ nó vào RenderBlocks và tạo lại các loại Payload và bản đồ nhập quản trị viên của bạn - hạ cánh dưới dạng một bản đồ có thể xem lại git diff. Lệnh tương tự sẽ thêm bất kỳ khối nào vào danh mục."
+      },
+      "four": {
+        "question": "Chính xác thì cài đặt thay đổi gì trong kho lưu trữ của tôi?",
+        "answer": "Ba điều: tệp nguồn thành phần được sao chép vào (cấu hình khối, thành phần, tiện ích dùng chung), chính xác hai tệp được vá (bộ sưu tập Trang của bạn và RenderBlocks.tsx — mỗi tệp kê khai thành phần khai báo chúng) và Payload tạo lại đầu ra của chính nó (payload-types.ts và bản đồ nhập của quản trị viên). Tất cả đều hiển thị dưới dạng git diff bình thường.",
+        "link": "Đọc hướng dẫn cài đặt"
+      },
+      "five": {
+        "question": "Điều gì xảy ra nếu tôi chạy cùng một bản cài đặt hai lần?",
+        "answer": "Nó hội tụ. CLI phát hiện hệ thống dây điện hiện có và bỏ qua nó - đầu ra thực sự là payload-components: \"hero-basic\" is already installed. Trạng thái cài đặt được ghi lại trong .payload-components/state.json, do đó, các lượt cài đặt một phần sẽ hiển thị và có thể phục hồi thay vì bị hỏng một cách âm thầm."
+      },
+      "six": {
+        "question": "Những dự án nào được hỗ trợ ngày hôm nay?",
+        "answer": "Payload v3 + Next.js 15/16 dự án có hình dạng giống như trang khởi động trang web chính thức — hiển thị các khối bố cục thông qua src/blocks/RenderBlocks.tsx và đăng ký các khối trang trong src/collections/Pages/index.ts. CLI kiểm tra dự án của bạn dựa trên ma trận hỗ trợ đã xuất bản trước khi chạm vào bất kỳ thứ gì."
+      },
+      "seven": {
+        "question": "Tại sao không chạy npx shadcn add?",
+        "answer": "Cài đặt đơn giản shadcn sao chép các tập tin và dừng lại. Các khối Payload chỉ hoạt động sau khi chúng được đăng ký trong lược đồ bộ sưu tập của bạn, được ánh xạ trong trình kết xuất của bạn, được nhập và thêm vào bản đồ nhập quản trị viên. payload-components bao bọc cùng một quá trình phân phối đăng ký với chính xác hệ thống dây đó - ranh giới đó là sản phẩm và sổ cái hệ thống dây điện ở trên hiển thị từng hàng.",
+        "link": "Đọc toàn bộ so sánh shadcn"
+      },
+      "eight": {
+        "question": "Các thành phần mới được đưa vào danh mục bằng cách nào?",
+        "answer": "Cố ý. Một thành phần chỉ hạ cánh khi nguồn, siêu dữ liệu tệp kê khai, trang tài liệu và phạm vi kiểm tra trình cài đặt đi cùng nhau — các khối nửa dây không bao giờ đến được danh mục. Đề xuất thành phần tiếp theo trong vấn đề GitHub; danh mục phát triển từ các lượt cài đặt thực sự."
+      }
+    }
+  },
+  "TranslationNotice": {
+    "fallback": "Trang này chưa được dịch, vì vậy nội dung gốc tiếng Anh được hiển thị.",
+    "label": "Trạng thái bản dịch",
+    "machine": "Trang này được dịch bằng máy và chưa được người bản ngữ kiểm duyệt.",
+    "viewEnglish": "Xem bản gốc tiếng Anh"
+  }
+}

@@ -27,6 +27,7 @@ export const ContactChannels: Block = {
     {
       name: 'footnote',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
       admin: {
         description: 'Optional response-time or hours note rendered under the channels.',
       },

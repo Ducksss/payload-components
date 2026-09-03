@@ -45,11 +45,13 @@ export const PricingEnterprise: Block = {
         {
           name: 'name',
           type: 'text',
+          custom: { payloadComponents: { localization: 'global' } },
           required: true,
         },
         {
           name: 'href',
           type: 'text',
+          custom: { payloadComponents: { localization: 'global' } },
           // Logos link out to arbitrary customer sites, so this can't reuse the
           // embed/form allowlists in shared/safeUrls — but still reject anything
           // that isn't an absolute http(s) URL (e.g. a `javascript:` payload).

@@ -189,7 +189,7 @@ export function UpcomingComponentCard({
         <h3 className="mt-4 truncate font-serif text-xl font-normal leading-none text-foreground">
           {component.title}
         </h3>
-        <p className="line-clamp-2 text-xs leading-5 text-muted-foreground">
+        <p className="mt-2 line-clamp-2 text-xs leading-5 text-muted-foreground">
           {component.description}
         </p>
         <Link
