@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest'
 const repoRoot = process.cwd()
 const analyticsPath = path.join(repoRoot, 'src', 'lib', 'analytics.ts')
 const contributingPath = path.join(repoRoot, 'content', 'docs', 'contributing.mdx')
-const privacyPath = path.join(repoRoot, 'src', 'app', 'privacy', 'page.tsx')
+const privacyPath = path.join(repoRoot, 'src', 'app', '[locale]', 'privacy', 'page.tsx')
 /* The privacy disclosure is localized, so its prose lives in the message
    catalogue; the event names and field lists stay in the page as identifiers. */
 const privacyMessagesPath = path.join(repoRoot, 'messages', 'en.json')

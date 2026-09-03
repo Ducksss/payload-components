@@ -293,6 +293,7 @@ export const warnWhenNoLocalesDeclared = async (options: {
 }
 
 const installComponent = async ({
+  acceptLocalizationPolicyChange,
   cwd,
   componentName,
   deferLocaleNotice,
@@ -300,6 +301,7 @@ const installComponent = async ({
   localized,
   prewrittenFiles,
 }: {
+  acceptLocalizationPolicyChange: boolean
   cwd: string
   componentName: string
   /* Set by a caller installing several blocks at once, which reports the locale
@@ -348,6 +350,17 @@ const installComponent = async ({
   const existingState = await loadState(cwd)
   const installedEntry = existingState.components[manifest.name]
   const effectiveLocalized = localized || installedEntry?.localized === true
+
+  if (
+    installedEntry?.localized === true &&
+    installedEntry.localizationPolicy !== 'semantic-v1' &&
+    !acceptLocalizationPolicyChange
+  ) {
+    throw new Error(
+      `Component "${manifest.name}" uses the legacy type-inferred localization policy. Repair it through "payload-components update ${manifest.name} --accept-localization-policy-change" after migrating stored operational values; plain add cannot silently change that schema.`,
+    )
+  }
+
   const missingRegistryDependencies = fileCheck.missingRegistryDependencies ?? []
   const onDiskInstallValid =
     fileCheck.isValid && fragmentCheck.isValid && dependencyCheck.missing.length === 0
@@ -623,6 +636,7 @@ const installComponent = async ({
 }
 
 export const addCommand = async ({
+  acceptLocalizationPolicyChange = false,
   cwd,
   componentName,
   deferLocaleNotice = false,
@@ -631,6 +645,8 @@ export const addCommand = async ({
   localized = false,
   prewrittenFiles = [],
 }: {
+  /* Internal update hand-off after the operator accepted semantic-v1. */
+  acceptLocalizationPolicyChange?: boolean
   cwd: string
   componentName: string
   /* For callers installing a whole set — see installComponent. */
@@ -674,6 +690,7 @@ export const addCommand = async ({
   }
 
   await installComponent({
+    acceptLocalizationPolicyChange,
     cwd,
     componentName,
     deferLocaleNotice,

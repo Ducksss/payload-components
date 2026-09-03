@@ -8,6 +8,7 @@ type CliModule = {
     defaultCwd?: string,
   ) => {
     acceptBreaking: boolean
+    acceptLocalizationPolicyChange: boolean
     acceptStoredContent: boolean
     cwd: string
     defaultLocale?: string
@@ -95,6 +96,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       cli.parseArgs?.(['add', 'hero-basic', '--demo', '--cwd', './consumer'], '/tmp/workspace'),
     ).toEqual({
       acceptBreaking: false,
+      acceptLocalizationPolicyChange: false,
       acceptStoredContent: false,
       cwd: path.join('/tmp/workspace', 'consumer'),
       demo: true,
@@ -117,6 +119,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       ),
     ).toEqual({
       acceptBreaking: false,
+      acceptLocalizationPolicyChange: false,
       acceptStoredContent: false,
       cwd: '/tmp/workspace',
       demo: false,
@@ -132,6 +135,7 @@ describe('payload-components CLI parsing and orchestration', () => {
 
     expect(cli.parseArgs?.(['list', '--json'], '/tmp/workspace')).toEqual({
       acceptBreaking: false,
+      acceptLocalizationPolicyChange: false,
       acceptStoredContent: false,
       cwd: '/tmp/workspace',
       demo: false,
@@ -328,6 +332,7 @@ describe('payload-components CLI parsing and orchestration', () => {
 
     expect(commands.updateCommand).toHaveBeenCalledWith({
       acceptBreaking: false,
+      acceptLocalizationPolicyChange: false,
       componentNames: [],
       cwd: '/tmp/workspace',
       dryRun: false,
@@ -356,6 +361,37 @@ describe('payload-components CLI parsing and orchestration', () => {
       dryRun: true,
       force: true,
     })
+  })
+
+  it('passes the localization policy migration consent only to update', async () => {
+    const commands = makeCommands()
+
+    await cli.runCli?.({
+      argv: ['update', 'hero-basic', '--accept-localization-policy-change'],
+      commands,
+      defaultCwd: '/tmp/workspace',
+      write: vi.fn(),
+    })
+
+    expect(commands.updateCommand).toHaveBeenCalledWith({
+      acceptBreaking: false,
+      acceptLocalizationPolicyChange: true,
+      componentNames: ['hero-basic'],
+      cwd: '/tmp/workspace',
+      dryRun: false,
+      force: false,
+    })
+
+    await expect(
+      cli.runCli?.({
+        argv: ['add', 'hero-basic', '--accept-localization-policy-change'],
+        commands,
+        defaultCwd: '/tmp/workspace',
+        write: vi.fn(),
+      }),
+    ).rejects.toThrow(
+      '--accept-localization-policy-change cannot be used with "payload-components add"',
+    )
   })
 
   it('maps doctor exit codes and passes --json through', async () => {
@@ -573,6 +609,13 @@ describe('payload-components CLI parsing and orchestration', () => {
     )
     expect(() =>
       cli.parseArgs?.([
+        'update',
+        '--accept-localization-policy-change',
+        '--accept-localization-policy-change',
+      ]),
+    ).toThrow('--accept-localization-policy-change may only be specified once.')
+    expect(() =>
+      cli.parseArgs?.([
         'remove',
         'hero-basic',
         '--accept-stored-content',
@@ -604,6 +647,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       ),
     ).toEqual({
       acceptBreaking: false,
+      acceptLocalizationPolicyChange: false,
       acceptStoredContent: false,
       cwd: '/tmp/workspace',
       defaultLocale: 'zh-TW',

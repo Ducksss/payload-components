@@ -165,6 +165,7 @@ const upsertEntry = ({
   lastAttemptAt,
   lastError,
   ...(localized ? { localized: true } : {}),
+  localizationPolicy: 'semantic-v1' as const,
   patchedFiles: normalizeFileList(patchedFiles),
   status,
 })
@@ -502,6 +503,7 @@ export const recordLocalizedInstall = async ({
     }
 
     entry.localized = true
+    entry.localizationPolicy = 'semantic-v1'
     entry.lastAttemptAt = new Date().toISOString()
 
     for (const [projectPath, hash] of Object.entries(hashes)) {

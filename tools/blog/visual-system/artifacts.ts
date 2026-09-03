@@ -229,21 +229,21 @@ const resolveRouteDeclaration = async (route: string): Promise<readonly string[]
   }
 
   if (route === '/blog') {
-    return ['src/app/blog/page.tsx']
+    return ['src/app/[locale]/blog/page.tsx']
   }
 
   if (route === '/templates') {
-    return ['src/app/templates/page.tsx', 'src/lib/templates/registry.ts']
+    return ['src/app/[locale]/templates/page.tsx', 'src/lib/templates/registry.ts']
   }
 
   const blogArticle = route.match(/^\/blog\/([a-z0-9-]+)$/)
 
   if (blogArticle) {
-    return ['src/app/blog/[slug]/page.tsx', `content/blog/${blogArticle[1]}.mdx`]
+    return ['src/app/[locale]/blog/[slug]/page.tsx', `content/blog/${blogArticle[1]}.mdx`]
   }
 
   if (route === '/components' || /^\/components\?[^#\s]+$/.test(route)) {
-    return ['src/app/components/page.tsx']
+    return ['src/app/[locale]/components/page.tsx']
   }
 
   const componentPreview = route.match(/^\/components\/preview\/([a-z0-9-]+)$/)
@@ -256,13 +256,19 @@ const resolveRouteDeclaration = async (route: string): Promise<readonly string[]
       throw new Error(`Preview route slug "${slug}" is missing from the demo registry.`)
     }
 
-    return ['src/app/components/preview/[slug]/page.tsx', 'src/components/site/demos/registry.ts']
+    return [
+      'src/app/[locale]/components/preview/[slug]/page.tsx',
+      'src/components/site/demos/registry.ts',
+    ]
   }
 
   const componentDocs = route.match(/^\/docs\/components\/([a-z0-9-]+)$/)
 
   if (componentDocs) {
-    return ['src/app/docs/[[...slug]]/page.tsx', `content/docs/components/${componentDocs[1]}.mdx`]
+    return [
+      'src/app/[locale]/docs/[[...slug]]/page.tsx',
+      `content/docs/components/${componentDocs[1]}.mdx`,
+    ]
   }
 
   throw new Error(`Unsupported local route "${route}".`)

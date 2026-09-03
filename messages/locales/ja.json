@@ -1,0 +1,445 @@
+{
+  "Metadata": {
+    "title": "Payload Components — Payload CMS の完全に配線されたブロック",
+    "description": "コレクション設定、レンダラーマッピング、生成型、管理画面のインポートマップまでまとめてインストールできる、オープンソースの Payload CMS ブロックです。"
+  },
+  "Common": {
+    "home": "ホーム",
+    "documentation": "ドキュメント",
+    "blog": "ブログ",
+    "componentCatalog": "コンポーネントカタログ",
+    "brandGuide": "ブランドガイド",
+    "about": "概要",
+    "privacy": "プライバシー",
+    "copy": "コピー",
+    "copied": "コピーしました",
+    "copiedDescription": "クリップボードにコピーされました。"
+  },
+  "Header": {
+    "skip": "コンテンツへスキップ",
+    "home": "Payload Components ホーム",
+    "github": "GitHub リポジトリ",
+    "openNavigation": "ナビゲーションを開く",
+    "closeNavigation": "ナビゲーションを閉じる",
+    "language": "言語",
+    "nav": {
+      "docs": "ドキュメント",
+      "components": "コンポーネント",
+      "templates": "テンプレート",
+      "blog": "ブログ",
+      "about": "概要"
+    }
+  },
+  "Consent": {
+    "title": "分析 Cookie",
+    "description": "Google Analytics と PostHog を使用して、ユーザーが実際にどのコンポーネントやドキュメントを使用しているかを確認します。拒否すると、どちらも読み込まれません。Cookie も識別子もありません。ページ速度の測定はどちらの方法でも実行され、何も保存されません。",
+    "privacy": "プライバシー",
+    "decline": "拒否する",
+    "accept": "同意する"
+  },
+  "Privacy": {
+    "eyebrow": "プライバシー",
+    "heading": "まさに私たちが測定したものです。",
+    "accentWord": "メジャー",
+    "intro": "同意するまで、デバイスに保存されているものは何も読み込まれません。このページには、すべてのプロセッサ、すべてのイベント、すべてのフィールドに名前が付けられており、いつでも考えを変更できます。",
+    "consent": "デバイスに何かを保存するものはすべて、あなたの同意を待ちます。「拒否」を選択すると、Google Analytics および PostHog はロードされません。Cookie は設定されず、識別子も保持されません。ブラウザが Global Privacy Control または Do Not Track を送信した場合、自動的に拒否とみなされ、バナーは表示されません。",
+    "alwaysOnProcessors": "Vercel Analytics と Speed Insights は例外であり、全員に対して実行されます。 Cookie を設定せず、識別子も保存しません。ページの読み込みとパフォーマンスを総合的に測定するため、このサイトの速度が維持されます。デバイスにはオプトアウトできるものは何もありません。",
+    "noAccounts": "このサイトにはアカウントがないため、これらはいずれも身元に関連付けられません。当社は、フォーム入力、フリーテキスト、または閲覧したページのコンテンツを収集することはありません。",
+    "processorsTitle": "データの受信者",
+    "needsConsent": "あなたの同意が必要です",
+    "alwaysOn": "常にオン、何も保存しない",
+    "processors": {
+      "vercel": {
+        "purpose": "ホストサイトのページビューとCore Web Vitals。",
+        "storage": "Cookie も識別子もありません。デバイスには何も保存されません。"
+      },
+      "ga4": {
+        "purpose": "ページビューとトラフィックソースを集約します。",
+        "storage": "独自のファーストパーティ Cookie (_ga、_ga_*) を設定します。"
+      },
+      "posthog": {
+        "purpose": "以下の 3 つの製品イベント。",
+        "storage": "localStorage にランダムな pc_distinct_id と、現在のタブの sessionStorage にあるオーガニック エントリ パス名。"
+      }
+    },
+    "eventsTitle": "送信するイベント",
+    "eventsIntro": "送信するイベントは3つで、フィールドは固定されています。すべての値は、コミット済みのルート、リンク、またはインストールコマンドから取得され、入力内容から取得されることはありません。",
+    "trafficSource": "ページビューは、トラフィックのみをオーガニック検索またはその他としてラベル付けします。そのラベルは、固定検索エンジンのリストまたは明示的なオーガニック キャンペーン マーカーからブラウザーで取得されます。生のリファラー、キャンペーン、クエリ文字列は送信されません。管理されたサイトのチェックには真の検証マーカーが含まれるため、訪問者数から除外できます。通常の訪問には虚偽が含まれます。",
+    "entryPage": "同意後、オーガニック訪問では、現在のブラウザー タブの最初の同じサイトのパス名が保持されます。インストール コピーとプライマリ リンクのクリックには、そのパス名が <code>entry_page</code> として含まれます。直接訪問および紹介訪問は行いません。クエリ文字列や生のリファラーは決して含まれず、同意を撤回すると削除されます。",
+    "events": {
+      "pageview": {
+        "when": "パブリック ルートがロードまたは変更されます。"
+      },
+      "copyInstallCommand": {
+        "when": "インストール コマンドをコピーします。"
+      },
+      "primaryLinkClick": {
+        "when": "リポジトリ、ドキュメント、またはコンポーネントのリンクをたどります。"
+      }
+    },
+    "choiceTitle": "あなたの選択",
+    "choice": "あなたの決定は、ローカルのブラウザの<code>pc_consent</code>に保存されます。ここでいつでも変更できます。取り消しは収集を停止するだけではなく、オプトインによって作成されたものを削除します。Google Analytics Cookie (<code>_ga</code>、<code>_ga_*</code>) と PostHog 識別子が削除され、ページがリロードされるため、既に実行されているものは引き継がれません。セッションのみのオーガニックエントリのパス名も削除されます。",
+    "settings": {
+      "privacySignal": "ブラウザはプライバシー信号 (Global Privacy Control または Do Not Track) を送信するため、Google Analytics と PostHog はオフのままであり、ここでこれをオーバーライドすることはできません。",
+      "on": "Google AnalyticsとPostHogが進行中です。",
+      "off": "Google AnalyticsとPostHogは現在停止中です。",
+      "undecided": "まだ選択していないのでGoogle AnalyticsとPostHogは外れています。",
+      "turnOff": "分析をオフにする",
+      "turnOn": "分析をオンにする"
+    }
+  },
+  "NotFound": {
+    "eyebrow": "エラー 404",
+    "title": "ページが見つかりません",
+    "description": "このルートはレジストリにありません。コンポーネント、ドキュメント、カタログは次のとおりです。",
+    "home": "家に帰ります",
+    "docs": "ドキュメントを読む",
+    "terminalTitle": "payload-components — 404"
+  },
+  "Docs": {
+    "title": "ドキュメント",
+    "versionBanner": "MIT レジストリ · コンポーネント v{version}",
+    "github": "GitHubのスター",
+    "previousComponent": "前のコンポーネント: {title}",
+    "nextComponent": "次のコンポーネント: {title}",
+    "newIn": "{version}の新規"
+  },
+  "HomeMetadata": {
+    "title": "Payload Components: 1 つのコマンドで有線Payload CMS ブロック",
+    "description": "コレクション構成、レンダー マップ、生成されたタイプ、Next.js プロジェクトの管理インポート マップを含む、再利用可能な Payload CMS ブロックを 1 つのコマンドでインストールします。"
+  },
+  "Landing": {
+    "hero": {
+      "eyebrow": "オープンソース Payload ブロック レジストリ",
+      "primary": "Payload ブロックをインストール。",
+      "accent": "コピーだけでなく、配線まで。",
+      "subheadline": "Payload CMS 開発者向け。1 つのコマンドでブロックをインストールし、Payload への組み込みまで行い、レビュできる git diff として反映します。",
+      "guide": "インストールガイドを読む",
+      "github": "GitHubのスター",
+      "browse": "コンポーネントを参照する",
+      "copy": "インストールコマンドをコピー",
+      "count": "レジストリ内の {count} ブロック — すべてのブロックが 1 つのコマンドで Payload に接続されます。"
+    },
+    "stack": {
+      "label": "サポートされているスタック",
+      "lede": "すでに実行しているスタックにインストールします"
+    },
+    "wiring": {
+      "eyebrow": "インストール境界",
+      "heading": "ブロックは配線されるまでライブではありません。",
+      "intro": "ファイルのコピーは簡単な部分です。その後の 4 つの編集では、すべてのブロック、すべてのリポジトリが無駄になります。",
+      "source": "ソース"
+    },
+    "workflow": {
+      "eyebrow": "ワークフロー",
+      "heading": "カタログからコミットまで 3 つの動作で完了します。",
+      "intro": "スキャフォールドもロックインもありません。プレーンなソースと、読み取り可能な 2 つのスコープ付きパッチです。",
+      "steps": {
+        "oneTitle": "契約書を読む",
+        "oneDescription": "フィールド、ファイル、およびパッチ - 何かを実行する前。",
+        "twoTitle": "1 つのコマンドを実行する",
+        "twoDescription": "CLI はプロジェクトをチェックし、1 回のパスで接続します。",
+        "threeTitle": "作業ブロックをコミットする",
+        "threeDescription": "ソース、2 つのパッチ、再生成されたタイプ — 他の PR と同様にレビューされます。"
+      },
+      "badge": "ソースからレンダリング",
+      "caption": "コミットされた結果 — 実際のコンポーネント ソース、Payload に接続され、他の PR と同様にレビューされました。"
+    },
+    "catalog": {
+      "eyebrow": "カタログ",
+      "heading": "ライブでレンダリングされたカタログ。",
+      "intro": "スクリーンショットはありません。各標本はソースからレンダリングされた実際のコンポーネントです。",
+      "browse": "カタログを閲覧する",
+      "preview": "ライブプレビュー",
+      "blockCount": "{count, plural, other {#ブロック}}",
+      "browseFamily": "{family}を参照",
+      "allComponents": "すべての{count}コンポーネントを参照",
+      "postComponents": "ポストコンポーネント · 開発中",
+      "familyCount": "インストール可能",
+      "familyName": "ページブロック",
+      "familyDescription": "Pages レイアウト ビルダーのブロック — コレクション構成、レンダリング マッピング、生成されたタイプ、インポート マップの完全な配線でインストールされます。"
+    },
+    "faq": {
+      "heading": "質問にはストレートに答えました。",
+      "intro": "ドキュメントの短縮版。すべての回答は、リポジトリで確認できるものにリンクしています。",
+      "dogfood": "このセクションはブロックの 1 つです"
+    },
+    "community": {
+      "eyebrow": "オープンソース",
+      "heading": "オープンソース、",
+      "accent": "エンドツーエンド",
+      "intro": "レジストリ、CLI、コンポーネント、およびこのサイトは、MIT ライセンスを取得した 1 つのリポジトリです。インストーラーを信頼する前に読んでください。それがポイントです。",
+      "copy": "コピーインストールコマンド",
+      "repository": "GitHub リポジトリ",
+      "issue": "問題を開く",
+      "invite": "実際のリポジトリで実行しますか?問題を開く — 初期のインストールが注目されます。"
+    }
+  },
+  "Catalog": {
+    "metadataTitle": "{count} Payload CMS コンポーネントとブロック |カタログ",
+    "metadataDescription": "型付きのPayload CMSブロックを参照します。 npx payload-components add '<component>' を実行して、コレクション、レンダラー、生成されたタイプ、管理インポート マップに接続します。",
+    "eyebrow": "レジストリ",
+    "title": "{count} Payload CMS コンポーネントと型付きブロック",
+    "description": "ヒーロー、機能、価格設定、CTA、統合、お客様の声、統計、FAQ、コンテンツ、チーム、埋め込み、フッターにわたるすべての {count} インストール可能な Payload CMS コンポーネントを参照します。 1 つの CLI コマンドでブロックをコピーし、そのコレクション登録、レンダラー マッピング、生成されたタイプ、管理インポート マップを接続します。",
+    "installation": "1 つのコマンドによるインストールの仕組みを確認する",
+    "blocksGuide": "構成からライブページまでブロックをたどります",
+    "templates": "Payload CMS テンプレートの概念を調べる",
+    "license": "MIT ライセンス取得"
+  },
+  "CatalogBrowser": {
+    "filter": "フィルタコンポーネント",
+    "allComponents": "すべてのコンポーネント",
+    "all": "すべて",
+    "search": "コンポーネントの検索",
+    "result": "{count, plural, other {#件}}",
+    "empty": "フィルタに一致するコンポーネントはありません。",
+    "reset": "フィルターをリセット",
+    "proposal": "カタログは意図的に増加します。ソース、マニフェスト、ドキュメント、およびインストーラーの範囲は一緒に出荷されます。次のものを提案してください。",
+    "issue": "問題を開く",
+    "inDevelopment": "開発中",
+    "selected": "{count}を選択しました",
+    "tray": "選択したコンポーネント",
+    "copy": "コピーインストールコマンド",
+    "clear": "選択をクリア",
+    "families": {
+      "pages": "ページブロック",
+      "posts": "ポストコンポーネント"
+    },
+    "categories": {
+      "hero": "ヒーロー",
+      "features": "特徴",
+      "comparator": "コンパレータ",
+      "pricing": "価格",
+      "cta": "行動喚起",
+      "contact": "お問い合わせ",
+      "integration": "統合",
+      "logos": "ロゴクラウド",
+      "testimonials": "お客様の声",
+      "stats": "統計",
+      "faq": "FAQ",
+      "content": "内容",
+      "team": "チーム",
+      "embed": "埋め込む",
+      "footer": "フッター",
+      "cards": "カード",
+      "archive": "アーカイブ",
+      "header": "ヘッダー",
+      "index": "インデックス",
+      "author": "著者",
+      "newsletter": "ニュースレター",
+      "related": "関連"
+    },
+    "composerAdd": "インストールコマンドに{slug}を追加",
+    "composerRemove": "インストールコマンドから{slug}を削除",
+    "theme": {
+      "brandLegend": "ブランドカラーでカタログをプレビューする",
+      "brandLabel": "ブランド",
+      "previewBrand": "{color} でプレビュー",
+      "colors": {
+        "emerald": "エメラルド",
+        "sky": "スカイ",
+        "indigo": "インディゴ",
+        "violet": "バイオレット",
+        "rose": "ローズ",
+        "amber": "アンバー"
+      },
+      "radiusLegend": "角丸を変えてカタログをプレビュー",
+      "radiusLabel": "角丸",
+      "previewRadius": "{style}でプレビュー",
+      "radii": {
+        "sharp": "角なし",
+        "default": "標準",
+        "round": "丸め"
+      }
+    }
+  },
+  "Templates": {
+    "metadataTitle": "Payload CMS Next.js のテンプレート |コンセプトとレシピ",
+    "metadataDescription": "SaaS、代理店、コマース、ヘルスケア、レストラン、不動産など、15 の業種にわたるPayload CMS テンプレートのコンセプトを探索し、すべてのページをプレビューし、型付きブロックのレシピを検査します。",
+    "detailTitle": "{title} テンプレート",
+    "back": "テンプレート",
+    "previewPageLabel": "{title} プレビューページ",
+    "previewViewport": "プレビューのビューポート サイズ",
+    "desktop": "デスクトップ",
+    "tablet": "タブレット",
+    "mobile": "モバイル",
+    "previewFrameTitle": "{title} テンプレート プレビュー — {page} ページ",
+    "eyebrow": "テンプレート",
+    "title": "Payload CMS テンプレートの概念、インストール可能なブロックから構築",
+    "status": "コンセプトプレビュー",
+    "disclosure": "これは、閲覧可能なフルサイトのコンセプトです。すべてのセクションはオープン レジストリ内のブロックから構成されており、1 つのコマンドでブロック セット全体がインストールされます。ここに示されている厳選されたコピーはシードされていないため、管理画面で自分でページを組み立てます。",
+    "startingPoint": "開始点を選択してください",
+    "description": "SaaS、代理店、コマース、ヘルスケア、レストラン、不動産、音楽など、15 の分野にわたって完全な Payload CMS および Next.js のサイト コンセプトを探索します。ライブ プレビューですべてのページを開き、各セクションを今すぐインストールできる型付きブロックまで追跡します。",
+    "components": "インストール可能なコンポーネントを参照する",
+    "installation": "インストールガイドを読む",
+    "official": "公式Payloadテンプレートからスタート",
+    "showcases": "テンプレートのショーケース",
+    "questionsEyebrow": "質問",
+    "questionsHeading": "Payload CMS テンプレートの質問、回答",
+    "questionsIntro": "コンセプトは、現在機能するものとデザインのリファレンスとして残るものについて意図的にオープンになっています。",
+    "q1": "これらのPayload CMSテンプレートはインストール可能ですか?",
+    "a1": "いいえ。これらはブラウズ可能なフルサイトの概念であり、パッケージ化されたスターター リポジトリではありません。各レシピの個々のブロックはインストール可能であり、すべてのレシピは関連するコンポーネントのドキュメントにリンクしています。",
+    "q2": "Payloadの公式テンプレートとどう違うのですか？",
+    "a2": "公式 Web サイトのテンプレートは、新しいプロジェクトに完全なアプリケーション基盤を提供します。これらの概念は、スターター プロジェクトの役割を置き換えることなく、完全なマーケティング サイトがどのように見えるか、および各ページを構成する型付きブロックを示します。",
+    "q3": "既存のPayloadプロジェクトでレシピを使用できますか?",
+    "a3": "はい。コンセプトを開き、その注文されたレシピを調べて、サイトに適したセクションを選択します。カタログには、各ブロックのフィールドとサポートされている Payload CMS v3 インストール パスが記載されています。",
+    "communityEyebrow": "コミュニティ",
+    "communityHeading": "テンプレートは公開で決定されます",
+    "communityIntro": "これらの概念は、コミュニティからの 1 つの質問、つまりフルサイト テンプレートをインストール可能にする必要があるかという質問に答えるために存在します。レシピ、架空のブランド、インストーラー RFC はすべてパブリック リポジトリに存在し、ゲートや電子メールのキャプチャはありません。",
+    "allConcepts": "すべてのコンセプト",
+    "filter": "カテゴリごとにコンセプトをフィルタリングする",
+    "showing": "{total} コンセプト中 {visible} を表示しています",
+    "visualTone": "視覚的なトーン",
+    "counts": "{pages} ページ · {blocks} 固有ブロック",
+    "explore": "テンプレートの探索",
+    "openPreview": "フルプレビューを開く",
+    "posterLabel": "{title} テンプレートを探索する",
+    "posterAlt": "{title} テンプレート — ホームページのコンセプト ポスター",
+    "contributionRepository": "リポジトリを参照する",
+    "contributionRepositoryDescription": "ショーケースのソースを読んでください。すべてのレシピはリポジトリ内のプレーン データです。",
+    "contributionRfc": "インストーラー RFC を読む",
+    "contributionRfcDescription": "コンセプト レシピをオプションの透過的なインストール ワークフローに変えるための提案を確認します。",
+    "categories": {
+      "agency": "代理店",
+      "civic": "シビック",
+      "commerce": "商業",
+      "education": "教育",
+      "event": "イベント",
+      "fintech": "フィンテック",
+      "healthcare": "ヘルスケア",
+      "marketplace": "マーケットプレイス",
+      "music": "音楽",
+      "nonprofit": "非営利団体",
+      "portfolio": "ポートフォリオ",
+      "real-estate": "不動産",
+      "restaurant": "レストラン",
+      "saas": "SaaS",
+      "trade": "貿易"
+    }
+  },
+  "Blog": {
+    "metadataTitle": "Payload CMS ブロックとインストーラー ガイド",
+    "metadataDescription": "再利用可能なブロックのインストール、コレクションとレンダラーの配線、タイプの生成、レンダリングされないブロックの修正に関する実用的な Payload CMS v3 ガイド。",
+    "eyebrow": "実践Payload CMS v3 ガイダンス",
+    "featured": "実績のあるガイドから始めましょう",
+    "installationLabel": "インストールガイド",
+    "installationTitle": "有線Payloadブロックを設置する",
+    "installationDescription": "サポートされている CLI を使用して実際のブロックを追加し、見つかったすべてのファイルと配線の変更を確認します。",
+    "installationAction": "インストールガイドに従ってください",
+    "wiringLabel": "ブロック配線ガイド",
+    "wiringTitle": "再利用可能なブロックを配線する",
+    "wiringDescription": "構成から登録、レンダリング、生成されたタイプ、管理インポート マップを介して Payload CMS v3 ブロックに従います。",
+    "troubleshootingLabel": "トラブルシューティング ガイド",
+    "troubleshootingTitle": "レンダリングされないブロックを修正",
+    "troubleshootingDescription": "保存されたブロックがページに表示されない理由を説明する 4 つの場所を確認してください。",
+    "readGuide": "ガイドを読む",
+    "notesEyebrow": "レジストリのフィールド ノート",
+    "notesTitle": "Payload CMSフィールドノートをもっと見る",
+    "notesDescription": "オープン レジストリから実装レッスン、コンポーネント設計ノート、リリース ストーリーを参照します。",
+    "browseComponents": "{count} のインストール可能なコンポーネントをすべて参照する",
+    "empty": "まだ投稿はありません — すぐにもう一度チェックしてください。",
+    "back": "ブログに戻る",
+    "keepReading": "続きを読む",
+    "related": "関連書籍",
+    "tags": "記事のタグ",
+    "series": {
+      "project-notes": "プロジェクトノート",
+      "foundations": "財団",
+      "installer-internals": "インストーラーの内部構造",
+      "component-design": "コンポーネント設計",
+      "production-guides": "制作ガイド",
+      "open-source": "品質とコミュニティ"
+    }
+  },
+  "Footer": {
+    "home": "Payload Components ホーム",
+    "intro": "1 つのコマンドでコレクション構成、レンダリング マッピング、生成されたタイプ、およびインポート マップを配線とともにインストールする、型指定された Payload CMS コンポーネント。",
+    "product": "製品",
+    "components": "コンポーネント",
+    "project": "プロジェクト",
+    "componentCatalog": "コンポーネントカタログ",
+    "templateConcepts": "テンプレートの概念",
+    "documentation": "ドキュメント",
+    "installWorkflow": "インストールワークフロー",
+    "architecture": "建築",
+    "aiDiscovery": "AI の発見",
+    "allComponents": "すべての{count}コンポーネント",
+    "about": "について",
+    "brandGuide": "ブランドガイド",
+    "openIssue": "問題を開く",
+    "releases": "リリース",
+    "updates": "フィードを更新します",
+    "contributing": "貢献",
+    "privacy": "プライバシー",
+    "registry": "レジストリ JSON",
+    "license": "MIT ライセンス取得 · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · レジストリを開く"
+  },
+  "Maintainer": {
+    "body": "私が payload-components を構築したのは、Payload ブロックのインストールがコピー＆ペーストではなく、その後 4 回の編集を行ったからです。 CLI が存在するので、2 番目のプロジェクトと 10 番目のプロジェクトはその配線を無料で入手できます。インストーラーのソースを信頼する前に読んでください。発送MITがポイントです。",
+    "role": "メンテナー、Payload Components",
+    "github": "GitHubの{name}"
+  },
+  "PageMetadata": {
+    "about": {
+      "title": "について",
+      "openGraphTitle": "Payload Components程度",
+      "description": "Payload Components が存在する理由: 同じ Payload ブロックを再構築したり、手動で再配線したり、フリーランス プロジェクト全体ですべてのインストールを再検証したりするのはやめてください。"
+    },
+    "privacy": {
+      "title": "プライバシー",
+      "openGraphTitle": "プライバシー — Payload Components",
+      "description": "Payload Components の措置、どの第三者がそれを受け取るか、いつでも選択を変更または撤回する方法。"
+    },
+    "brandGuide": {
+      "title": "ブランドガイド",
+      "openGraphTitle": "Payload Components ブランドガイド",
+      "description": "Payload Components ブランド: エメラルド 1 個のアクセントを備えたライトファーストの shadcn モノクロ パレット、Geist および Instrument Serif タイプ システム、ロゴの使用法、音声。"
+    }
+  },
+  "FaqContent": {
+    "entries": {
+      "one": {
+        "question": "Payload Componentsは無料ですか？",
+        "answer": "はい、その状態を維持するように設計されています。レジストリ、CLI、すべての{count} インストール可能なコンポーネント、およびこのサイトは 1 つのMIT ライセンス付きリポジトリです。価格設定、ライセンス キー、ゲート階層はありません。 Payload Components はコミュニティファーストの設計となっており、カタログは有料のロードマップではなく、実際のインストールと貢献から成長しています。"
+      },
+      "two": {
+        "question": "Payload CMSブロックとは何ですか？",
+        "answer": "Payload では、ブロックは構成可能なページ ビルダー フィールド、つまりページをレイアウトするための再利用可能なコンテンツ セクション (ヒーロー、フィーチャー グリッド、CTA) エディター スタックです。 Payload Components には、事前に構築されたブロックと、それらを有効にする配線が同梱されているため、ブロックは単にコピーされるだけではなく、Pages コレクションに登録され、レンダラーにマッピングされ、入力され、管理インポート マップに追加されます。",
+        "link": "Payload ブロック ガイドを読む"
+      },
+      "three": {
+        "question": "Payload CMSにヒーローブロックを追加するにはどうすればよいですか?",
+        "answer": "CLI～`npx payload-components add hero-basic`のいずれかを取り付けてください。ブロック ソースをプロジェクトにコピーし、エンドツーエンドで接続します。Pag​​es コレクションに登録し、RenderBlocks にマップし、Payload タイプと管理インポート マップを再生成して、1 つのレビュー可能なgit diff として着陸します。同じコマンドでカタログ内のブロックを追加します。"
+      },
+      "four": {
+        "question": "インストールすると、リポジトリでは具体的に何が変わりますか?",
+        "answer": "3 つのこと: コンポーネントのソース ファイルがコピーされ (ブロック構成、コンポーネント、共有ユーティリティ)、ちょうど 2 つのファイルにパッチが適用され (Pages コレクションと RenderBlocks.tsx — 各コンポーネント マニフェストがそれらを宣言します)、Payload が独自の出力 (payload-types.ts と管理インポート マップ) を再生成します。全て普通のgit diffとして現れます。",
+        "link": "インストールガイドを読む"
+      },
+      "five": {
+        "question": "同じインストールを 2 回実行するとどうなりますか?",
+        "answer": "収束します。 CLI は既存の配線を検出してスキップします。実際の出力は payload-components: \"hero-basic\" is already installed です。インストール状態は .payload-components/state.json に記録されるため、部分的なインストールは表示され、サイレントに中断されるのではなく回復可能です。"
+      },
+      "six": {
+        "question": "現在サポートされているプロジェクトはどれですか?",
+        "answer": "Payload v3 + Next.js 15/16 プロジェクトは公式 Web サイトのスターターのような形をしています — src/blocks/RenderBlocks.tsx でレイアウト ブロックをレンダリングし、src/collections/Pages/index.ts. でページ ブロックを登録します CLI は、何かに触れる前に、公開されているサポート マトリックスに対してプロジェクトをチェックします。"
+      },
+      "seven": {
+        "question": "npx shadcn add を実行してみてはいかがでしょうか。",
+        "answer": "単純な shadcn インストールでは、ファイルがコピーされて停止します。 Payload ブロックは、コレクション スキーマに登録され、レンダラーにマッピングされ、入力され、管理インポート マップに追加された後にのみ機能します。 payload-components は、同じレジストリ配信をその配線でラップします。その境界が製品であり、上記の配線台帳はそれを行ごとに示しています。",
+        "link": "shadcn の比較全文を読む"
+      },
+      "eight": {
+        "question": "新しいコンポーネントはどのようにしてカタログに追加されますか?",
+        "answer": "故意に。コンポーネントは、そのソース、マニフェスト メタデータ、ドキュメント ページ、およびインストーラーのテスト カバレッジが一緒に出荷される場合にのみ配置されます。半配線されたブロックはカタログに到達しません。 GitHub号で次のコンポーネントを提案します。カタログは実際のインストールから成長します。"
+      }
+    }
+  },
+  "TranslationNotice": {
+    "fallback": "このページはまだ翻訳されていないため、英語の原文を表示しています。",
+    "label": "翻訳状況",
+    "machine": "このページは機械翻訳されており、まだネイティブ話者による確認を受けていません。",
+    "viewEnglish": "英語の原文を見る"
+  }
+}

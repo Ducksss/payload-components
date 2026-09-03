@@ -15,11 +15,13 @@ export const StatsProof: Block = {
     {
       name: 'description',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
       required: true,
     },
     {
       name: 'body',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'metrics',
@@ -36,16 +38,19 @@ export const StatsProof: Block = {
     {
       name: 'quote',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
       required: true,
     },
     {
       name: 'author',
       type: 'text',
+      custom: { payloadComponents: { localization: 'global' } },
       required: true,
     },
     {
       name: 'role',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'logo',
@@ -58,6 +63,7 @@ export const StatsProof: Block = {
     {
       name: 'logoLabel',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
       admin: {
         description:
           'Text wordmark used when no logo upload is set — for customers whose mark you do not have as an asset.',

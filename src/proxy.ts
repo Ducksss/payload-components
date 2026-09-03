@@ -1,9 +1,11 @@
 import type { NextRequest } from 'next/server'
 
+import createMiddleware from 'next-intl/middleware'
 import { NextResponse } from 'next/server'
 import { isMarkdownPreferred, rewritePath } from 'fumadocs-core/negotiation'
 
-import { localeRequestHeader, splitLocalePathname } from '@/i18n/config'
+import { isLocaleNeutralPath, splitLocalePathname } from '@/i18n/config'
+import { routing } from '@/i18n/routing'
 import { docsContentRoute, docsRoute } from '@/lib/site'
 
 const { rewrite: rewriteDocs } = rewritePath(
@@ -14,19 +16,17 @@ const { rewrite: rewriteSuffix } = rewritePath(
   `${docsRoute}{/*path}.md`,
   `${docsContentRoute}{/*path}/content.md`,
 )
+const internationalize = createMiddleware(routing)
 
 export default function proxy(request: NextRequest) {
+  if (isLocaleNeutralPath(request.nextUrl.pathname)) return NextResponse.next()
+
   const { locale, pathname } = splitLocalePathname(request.nextUrl.pathname)
-  const requestHeaders = new Headers(request.headers)
-  requestHeaders.set(localeRequestHeader, locale)
 
   const rewrite = (destination: string) => {
-    const url = new URL(destination, request.nextUrl)
+    const url = new URL(`/${locale}${destination}`, request.nextUrl)
     url.search = request.nextUrl.search
-
-    return NextResponse.rewrite(url, {
-      request: { headers: requestHeaders },
-    })
+    return NextResponse.rewrite(url)
   }
 
   const suffixResult = rewriteSuffix(pathname)
@@ -43,7 +43,17 @@ export default function proxy(request: NextRequest) {
     }
   }
 
-  if (locale === 'zh') return rewrite(pathname)
+  return internationalize(request)
+}
 
-  return NextResponse.next({ request: { headers: requestHeaders } })
+export const config = {
+  matcher: [
+    '/docs/:path*',
+    '/:locale/docs/:path*',
+    // These public content routes contain a literal dot, so the general asset
+    // exclusion below cannot discover the hidden default-locale segment.
+    '/llms.mdx/:path*',
+    '/og/:path*',
+    '/((?!api|r|_next|_vercel|.*\\..*).*)',
+  ],
 }

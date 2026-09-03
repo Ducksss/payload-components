@@ -16,6 +16,7 @@ export const CallToActionSplit: Block = {
     {
       name: 'assurance',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
       admin: {
         description: 'Optional reassurance line under the actions — pricing, timing, or terms.',
       },

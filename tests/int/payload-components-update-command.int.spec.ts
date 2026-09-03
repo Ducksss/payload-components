@@ -260,6 +260,22 @@ describe('update', () => {
     expect(output.join('')).toContain('already at the version this CLI ships')
   })
 
+  it('does not rewrite a current non-localized install whose legacy state has no policy', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const { fixtureDir } = await installFixture({ componentNames: ['hero-basic'] })
+    const state = await loadState(fixtureDir)
+
+    state.components['hero-basic'].localized = false
+    delete state.components['hero-basic'].localizationPolicy
+    await saveState(fixtureDir, state)
+
+    await updateCommand({ cwd: fixtureDir })
+
+    expect(addCommand).not.toHaveBeenCalled()
+    expect(output.join('')).toContain('already at the version this CLI ships')
+    expect(await exists(path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts'))).toBe(true)
+  })
+
   it('re-installs only the components whose recorded version is behind', async () => {
     const { addCommand, output, updateCommand } = await setup()
     const { fixtureDir } = await installFixture({ componentNames: ['hero-basic', 'faq-card'] })
@@ -448,6 +464,43 @@ describe('update', () => {
     expect(await exists(configPath)).toBe(true)
     expect(output.join('')).toContain('local edits discarded by --force')
     expect(isComplete).toBe(true)
+  })
+
+  it('requires explicit consent before replacing legacy type-inferred localization', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic'],
+    })
+    const state = await loadState(fixtureDir)
+
+    state.components['hero-basic'].localized = true
+    delete state.components['hero-basic'].localizationPolicy
+    await saveState(fixtureDir, state)
+
+    await expect(updateCommand({ cwd: fixtureDir })).rejects.toThrow(
+      '--accept-localization-policy-change',
+    )
+    expect(addCommand).not.toHaveBeenCalled()
+
+    await updateCommand({
+      acceptLocalizationPolicyChange: true,
+      cwd: fixtureDir,
+      force: true,
+    })
+
+    expect(addCommand).toHaveBeenCalledWith({
+      acceptLocalizationPolicyChange: true,
+      componentName: 'hero-basic',
+      cwd: fixtureDir,
+      localized: true,
+      prewrittenFiles: [
+        'src/blocks/shared/heroFields.ts',
+        'src/blocks/HeroBasic/config.ts',
+        'src/blocks/HeroBasic/Component.tsx',
+      ],
+    })
+    expect(output.join('')).toContain('legacy type inference → semantic-v1')
+    expect(output.join('')).toContain('no database migration will run')
   })
 
   it('changes nothing under --dry-run', async () => {

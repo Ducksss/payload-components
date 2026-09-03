@@ -320,6 +320,14 @@ const checkLocalization = async ({
 }) => {
   const recorded = Object.entries(state.components)
   const localized = recorded.filter(([, entry]) => entry.localized === true).map(([name]) => name)
+  const legacyPolicy = recorded
+    .filter(
+      ([, entry]) => entry.localized === true && entry.localizationPolicy !== 'semantic-v1',
+    )
+    .map(([name]) => name)
+  const missingPolicy = recorded
+    .filter(([, entry]) => entry.localizationPolicy !== 'semantic-v1')
+    .map(([name]) => name)
   const unlocalized = recorded.filter(([, entry]) => entry.localized !== true).map(([name]) => name)
 
   if (localized.length > 0) {
@@ -335,6 +343,23 @@ const checkLocalization = async ({
         'localization',
       )
     }
+
+    if (legacyPolicy.length > 0) {
+      log(
+        'warn',
+        `localization: ${legacyPolicy.join(', ')} ${legacyPolicy.length === 1 ? 'uses' : 'use'} the legacy type-inferred field policy — migrate stored localized operational values, then run "payload-components update ${legacyPolicy.join(' ')} --accept-localization-policy-change"`,
+        'localization',
+      )
+    }
+  }
+
+  const safePolicyUpgrade = missingPolicy.filter((name) => !legacyPolicy.includes(name))
+  if (safePolicyUpgrade.length > 0) {
+    log(
+      'warn',
+      `localization: ${safePolicyUpgrade.join(', ')} ${safePolicyUpgrade.length === 1 ? 'is' : 'are'} missing semantic field metadata — run "payload-components update ${safePolicyUpgrade.join(' ')}" before localizing`,
+      'localization',
+    )
   }
 
   const configFileRelPath = await getPayloadConfigFile(project).catch(() => undefined)

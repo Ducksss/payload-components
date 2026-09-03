@@ -412,6 +412,20 @@ export const localizeCommand = async ({
     componentNames.length > 0
       ? installed.filter(({ name }) => componentNames.includes(name))
       : installed
+  const missingPolicies = targets.filter(
+    ({ name }) => state.components[name]?.localizationPolicy !== 'semantic-v1',
+  )
+
+  if (missingPolicies.length > 0) {
+    throw new Error(
+      [
+        `Semantic localization policies are missing from: ${missingPolicies.map(({ name }) => name).join(', ')}.`,
+        'Install the current field metadata before changing Payload storage:',
+        `  payload-components update ${missingPolicies.map(({ name }) => name).join(' ')}`,
+        'If any of those components is already localized, migrate its operational values first and add --accept-localization-policy-change.',
+      ].join('\n'),
+    )
+  }
   const plans: ComponentPlan[] = []
   const skipped: ComponentPlan[] = []
 

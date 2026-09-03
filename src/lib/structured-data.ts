@@ -24,7 +24,7 @@ export const blogId = `${siteUrl}/blog#blog`
 
 const logoUrl = `${siteUrl}/favicon.svg`
 
-/* /blog and /zh/blog are separate entities: each carries its own canonical URL,
+/* Each localized /<locale>/blog route is a separate entity: it carries its own canonical URL,
    language, and copy, so a post published under one must not claim membership
    of the other. The English id stays `blogId` so sitewide references are stable. */
 function blogIdFor(locale: SiteLocale) {
@@ -151,17 +151,27 @@ export function blogPostingNode(opts: BlogPostingNodeOptions): Node {
   }
 }
 
-export function faqNode(): Node {
+export function faqNode(
+  opts: {
+    entries?: ReadonlyArray<{ answer: string; question: string }>
+    locale?: SiteLocale
+  } = {},
+): Node {
+  const locale = opts.locale ?? defaultSiteLocale
+  const entries = opts.entries ?? faqEntries
+  const url = `${siteUrl}${localizeHref('/', locale)}#faq`
+
   return {
-    '@id': `${siteUrl}/#faq`,
+    '@id': url,
     '@type': 'FAQPage',
+    inLanguage: localeDetails[locale].htmlLang,
     name: 'Payload Components FAQ',
-    mainEntity: faqEntries.map((entry) => ({
+    mainEntity: entries.map((entry) => ({
       '@type': 'Question',
       acceptedAnswer: { '@type': 'Answer', text: entry.answer },
       name: entry.question,
     })),
-    url: `${siteUrl}/#faq`,
+    url,
   }
 }
 

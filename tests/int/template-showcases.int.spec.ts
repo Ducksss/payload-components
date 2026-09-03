@@ -52,7 +52,7 @@ const knownDemoSlugs = new Set(Object.keys(demosBySlug))
 const componentEntrySlugs = new Set(componentEntries.map((entry) => entry.slug))
 
 const templateSurfaceRoots = [
-  'src/app/templates',
+  'src/app/[locale]/templates',
   'src/components/site/templates',
   'src/lib/templates',
 ] as const
@@ -355,7 +355,10 @@ describe('Template showcase contract', () => {
     expect(messages.Templates.status).toBe(TEMPLATE_CONCEPT_STATUS_LABEL)
     expect(messages.Templates.disclosure).toBe(TEMPLATE_CONCEPT_DISCLOSURE)
 
-    for (const file of ['src/app/templates/page.tsx', 'src/app/templates/[slug]/page.tsx']) {
+    for (const file of [
+      'src/app/[locale]/templates/page.tsx',
+      'src/app/[locale]/templates/[slug]/page.tsx',
+    ]) {
       const source = await readFile(path.join(repoRoot, file), 'utf8')
       expect(source, `${file} must render the localized concept status`).toContain("t('status')")
       expect(source, `${file} must render the localized concept disclosure`).toContain(

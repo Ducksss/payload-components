@@ -3,6 +3,7 @@ import Link from '@/i18n/Link'
 import { useLocale, useTranslations } from 'next-intl'
 
 import type { BlogPage } from '@/lib/blog'
+import { localeDetails, normalizeSiteLocale } from '@/i18n/config'
 
 type BlogCardProps = {
   compact?: boolean
@@ -45,11 +46,14 @@ export function BlogCard({
             {t(`series.${page.data.series}`)}
           </span>
           <time dateTime={new Date(page.data.date).toISOString()}>
-            {new Date(page.data.date).toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
-              day: 'numeric',
-              month: 'short',
-              year: 'numeric',
-            })}
+            {new Date(page.data.date).toLocaleDateString(
+              localeDetails[normalizeSiteLocale(locale)].htmlLang,
+              {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+              },
+            )}
           </time>
         </div>
 

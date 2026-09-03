@@ -46,7 +46,7 @@ export function HeroSection() {
           </span>
 
           <h1
-            className="hero-reveal max-w-5xl text-balance text-[clamp(2.6rem,8.4vw,5.5rem)] font-medium leading-[0.94] tracking-[-0.075em] text-foreground"
+            className="hero-headline hero-reveal max-w-5xl text-balance text-[clamp(2.6rem,8.4vw,5.5rem)] font-medium leading-[0.94] tracking-[-0.075em] text-foreground"
             style={{ animationDelay: '60ms' }}
           >
             {t('primary')} <span className="hero-headline-accent">{t('accent')}</span>
@@ -62,7 +62,7 @@ export function HeroSection() {
           {/* The command itself, above the fold — first Copy button on the
               page (the e2e copy assertion targets it). */}
           <div
-            className="hero-reveal grid w-full max-w-xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border border-border bg-background py-1 pl-5 pr-1 shadow-card"
+            className="hero-reveal grid w-full max-w-xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border border-border bg-background py-1 pe-1 ps-5 shadow-card"
             style={{ animationDelay: '150ms' }}
           >
             <code
@@ -88,7 +88,7 @@ export function HeroSection() {
               className="inline-flex items-center gap-1.5 font-medium text-foreground transition-opacity hover:opacity-75"
             >
               {t('guide')}
-              <ArrowRight className="size-3.5" aria-hidden="true" />
+              <ArrowRight className="size-3.5 rtl:rotate-180" aria-hidden="true" />
             </Link>
             <a
               href={githubRepoUrl}
