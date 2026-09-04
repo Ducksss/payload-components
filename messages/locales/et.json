@@ -1,259 +1,259 @@
 {
   "Metadata": {
-    "title": "Payload Components — täisjuhtmega plokid Payload CMS jaoks",
-    "description": "Avatud lähtekoodiga Payload CMS plokid, mis installitakse koos nende kogu konfiguratsiooni, renderdaja vastenduse, loodud tüüpide ja administraatori impordikaardiga."
+    "title": "Payload Components — fully-wired blocks for Payload CMS",
+    "description": "Open-source Payload CMS blocks that install with their collection config, renderer mapping, generated types, and admin import map."
   },
   "Common": {
-    "home": "Avaleht",
-    "documentation": "Dokumentatsioon",
-    "blog": "Blogi",
-    "componentCatalog": "Komponentide kataloog",
-    "brandGuide": "Brändijuhend",
-    "about": "Teave",
-    "privacy": "Privaatsus",
-    "copy": "Kopeeri",
-    "copied": "Kopeeritud",
-    "copiedDescription": "Kopeeriti lõikelauale."
+    "home": "Home",
+    "documentation": "Documentation",
+    "blog": "Blog",
+    "componentCatalog": "Component catalog",
+    "brandGuide": "Brand Guide",
+    "about": "About",
+    "privacy": "Privacy",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copiedDescription": "Copied to clipboard."
   },
   "Header": {
-    "skip": "Jätke sisu juurde",
-    "home": "Payload Components avaleht",
-    "github": "GitHub hoidla",
-    "openNavigation": "Avage navigeerimine",
-    "closeNavigation": "Sule navigeerimine",
-    "language": "Keel",
+    "skip": "Skip to content",
+    "home": "Payload Components home",
+    "github": "GitHub repository",
+    "openNavigation": "Open navigation",
+    "closeNavigation": "Close navigation",
+    "language": "Language",
     "nav": {
-      "docs": "Dokumendid",
-      "components": "Komponendid",
-      "templates": "Mallid",
-      "blog": "Blogi",
-      "about": "Teave"
+      "docs": "Docs",
+      "components": "Components",
+      "templates": "Templates",
+      "blog": "Blog",
+      "about": "About"
     }
   },
   "Consent": {
-    "title": "Analyticsi küpsised",
-    "description": "Kasutame Google Analyticsit ja PostHogi, et näha, milliseid komponente ja dokumente inimesed tegelikult kasutavad. Kui keeldute, ei laadita kumbagi – ei küpsiseid ega identifikaatoreid. Lehe kiiruse mõõtmine töötab mõlemal juhul ega salvesta midagi.",
-    "privacy": "Privaatsus",
-    "decline": "Keeldu",
-    "accept": "Nõustu"
+    "title": "Analytics cookies",
+    "description": "We use Google Analytics and PostHog to see which components and docs people actually use. Decline and neither one loads — no cookie, no identifier. Page-speed measurement runs either way and stores nothing.",
+    "privacy": "Privacy",
+    "decline": "Decline",
+    "accept": "Accept"
   },
   "Privacy": {
-    "eyebrow": "Privaatsus",
-    "heading": "Täpselt see, mida me mõõdame.",
-    "accentWord": "mõõta",
-    "intro": "Midagi, mis teie seadmesse salvestab, ei laadita enne, kui nõustute. Sellel lehel nimetatakse iga protsessor, iga sündmus ja iga väli – ja saate igal ajal meelt muuta.",
-    "consent": "Kõik, mis salvestaks midagi teie seadmesse, ootab teie nõusolekut. Keeldu ja Google Analytics ja PostHog ei laadi kunagi – küpsist ei seadistata ja identifikaatorit ei jäeta alles. Kui teie brauser saadab Global Privacy Control või Do Not Track, loetakse see automaatselt tagasilükkamiseks ja teile ei näidata kunagi bännerit.",
-    "alwaysOnProcessors": "Vercel Analytics ja Speed Insights on erand ja need kehtivad kõigile. Nad ei määra küpsiseid ega salvesta identifikaatorit – nad mõõdavad lehtede laadimist ja toimivust koondandmetena, mis hoiab selle saidi kiirena. Teie seadmes pole midagi, millest loobuda.",
-    "noAccounts": "Sellel saidil pole kontosid, seega pole ükski neist seotud identiteediga. Me ei kogu kunagi vormisisendit, vaba teksti ega teie vaadatavate lehtede sisu.",
-    "processorsTitle": "Kes andmeid saab",
-    "needsConsent": "Vajab teie nõusolekut",
-    "alwaysOn": "Alati sees, ei salvesta midagi",
+    "eyebrow": "Privacy",
+    "heading": "Exactly what we measure.",
+    "accentWord": "measure",
+    "intro": "Nothing that stores anything on your device loads until you accept. This page names every processor, every event, and every field — and lets you change your mind at any time.",
+    "consent": "Anything that would store something on your device waits for your consent. Decline and Google Analytics and PostHog never load — no cookie is set and no identifier is kept. If your browser sends Global Privacy Control or Do Not Track, that counts as a decline automatically and you are never shown the banner.",
+    "alwaysOnProcessors": "Vercel Analytics and Speed Insights are the exception, and they run for everyone. They set no cookies and store no identifier — they measure page loads and performance in aggregate, which is what keeps this site fast. There is nothing on your device to opt out of.",
+    "noAccounts": "There are no accounts on this site, so none of this is tied to an identity. We never collect form input, free text, or the contents of pages you view.",
+    "processorsTitle": "Who receives data",
+    "needsConsent": "Needs your consent",
+    "alwaysOn": "Always on, stores nothing",
     "processors": {
       "vercel": {
-        "purpose": "Hostitud saidi lehevaatamised ja Core Web Vitals.",
-        "storage": "Küpsiseid ja identifikaatorit pole – teie seadmesse ei salvestata midagi."
+        "purpose": "Page views and Core Web Vitals for the hosted site.",
+        "storage": "No cookies and no identifier — nothing is stored on your device."
       },
       "ga4": {
-        "purpose": "Lehevaadete ja liikluse allikate koondamine.",
-        "storage": "Määrab oma esimese osapoole küpsised (_ga, _ga_*)."
+        "purpose": "Aggregate page views and traffic sources.",
+        "storage": "Sets its own first-party cookies (_ga, _ga_*)."
       },
       "posthog": {
-        "purpose": "Allpool loetletud kolm tootesündmust.",
-        "storage": "Juhuslik pc_distinct_id localStorage, pluss orgaaniline sisestustee nimi sessionStorage praegusel vahekaardil."
+        "purpose": "The three product events listed below.",
+        "storage": "A random pc_distinct_id in localStorage, plus an organic entry pathname in sessionStorage for the current tab."
       }
     },
-    "eventsTitle": "Sündmused, mida saadame",
-    "eventsIntro": "Kolm ja nende väljad on fikseeritud. Iga väärtus pärineb määratud marsruudist, lingist või installikäsklusest – mitte kunagi millestki, mida sisestate.",
-    "trafficSource": "Lehevaatamised märgivad liikluse ainult orgaaniliseks otsinguks või muuks. See silt on teie brauseris tuletatud fikseeritud otsingumootori loendist või selgesõnalisest orgaanilisest kampaaniamarkerist. Toores viitajat, kampaaniat ja päringustringi ei saadeta kunagi. Kontrollitud saidikontrollid kannavad tõelist kinnitusmarkerit, nii et neid saab külastajate loendist välja jätta; tavalised külastused kannavad valet.",
-    "entryPage": "Pärast nõusolekut säilitavad orgaanilised külastused praeguse brauseri vahekaardi esimese sama saidi teenime. Installimise koopiad ja esmase lingi klõpsud sisaldavad selle tee nime <code>entry_page</code>. Otsesed ja suunamiskülastused seda ei tee. See ei sisalda kunagi päringustringi ega töötlemata viitajat ja see kustutatakse, kui võtate nõusoleku.",
+    "eventsTitle": "The events we send",
+    "eventsIntro": "Three, and their fields are fixed. Every value comes from a committed route, link, or install command — never from anything you type.",
+    "trafficSource": "Page views label traffic only as organic search or other. That label is derived in your browser from a fixed search-engine list or an explicit organic campaign marker. The raw referrer, campaign, and query string are never sent. Controlled site checks carry a true verification marker so they can be excluded from visitor counts; ordinary visits carry false.",
+    "entryPage": "After consent, organic visits keep the first same-site pathname for the current browser tab. Install copies and primary link clicks include that pathname as <code>entry_page</code>. Direct and referral visits do not. It never contains a query string or raw referrer and is deleted when you withdraw consent.",
     "events": {
       "pageview": {
-        "when": "Avalik marsruut laaditakse või muutub."
+        "when": "A public route loads or changes."
       },
       "copyInstallCommand": {
-        "when": "Kopeerite installikäsu."
+        "when": "You copy an install command."
       },
       "primaryLinkClick": {
-        "when": "Jälgite hoidla, dokumentide või komponentide linki."
+        "when": "You follow a repository, docs, or components link."
       }
     },
-    "choiceTitle": "Teie valik",
-    "choice": "Teie otsus salvestatakse teie brauseris lokaalselt numbri <code>pc_consent</code> alla. Muutke seda igal ajal siin. Eemaldamine ei peata kogumist – see kustutab selle, mida lubas loonud: Google Analytics küpsised (<code>_ga</code>, <code>_ga_*</code>) ja identifikaator PostHog eemaldatakse ning leht laaditakse uuesti, nii et midagi juba töötavat ei jätka. Samuti eemaldatakse ainult seansi orgaanilise sisestuse tee nimi.",
+    "choiceTitle": "Your choice",
+    "choice": "Your decision is stored locally in your browser under <code>pc_consent</code>. Change it here at any time. Withdrawing does more than stop collection — it deletes what the opt-in created: the Google Analytics cookies (<code>_ga</code>, <code>_ga_*</code>) and the PostHog identifier are removed, and the page reloads so nothing already running carries on. The session-only organic entry pathname is removed too.",
     "settings": {
-      "privacySignal": "Teie brauser saadab privaatsussignaali (Global Privacy Control või Do Not Track), nii et Google Analytics ja PostHog jäävad välja ja seda ei saa siin tühistada.",
-      "on": "Google Analytics ja PostHog on praegu sisse lülitatud.",
-      "off": "Google Analytics ja PostHog on praegu välja lülitatud.",
-      "undecided": "Te pole veel valinud, seega on Google Analytics ja PostHog välja lülitatud.",
-      "turnOff": "Lülitage analüütika välja",
-      "turnOn": "Lülitage analüüs sisse"
+      "privacySignal": "Your browser sends a privacy signal (Global Privacy Control or Do Not Track), so Google Analytics and PostHog stay off and this cannot be overridden here.",
+      "on": "Google Analytics and PostHog are currently on.",
+      "off": "Google Analytics and PostHog are currently off.",
+      "undecided": "You have not chosen yet, so Google Analytics and PostHog are off.",
+      "turnOff": "Turn analytics off",
+      "turnOn": "Turn analytics on"
     }
   },
   "NotFound": {
-    "eyebrow": "Viga 404",
-    "title": "Lehekülge ei leitud",
-    "description": "Seda marsruuti pole registris. Komponendid, dokumendid ja kataloog on.",
-    "home": "Mine koju",
-    "docs": "Lugege dokumente",
+    "eyebrow": "Error 404",
+    "title": "Page not found",
+    "description": "This route is not in the registry. The components, the docs, and the catalog are.",
+    "home": "Go home",
+    "docs": "Read the docs",
     "terminalTitle": "payload-components — 404"
   },
   "Docs": {
-    "title": "Dokumentatsioon",
-    "versionBanner": "MIT register · komponendid v{version}",
-    "github": "Tärn numbril GitHub",
-    "previousComponent": "Eelmine komponent: {title}",
-    "nextComponent": "Järgmine komponent: {title}",
-    "newIn": "Uus jaotises {version}"
+    "title": "Documentation",
+    "versionBanner": "MIT registry · components v{version}",
+    "github": "Star on GitHub",
+    "previousComponent": "Previous component: {title}",
+    "nextComponent": "Next component: {title}",
+    "newIn": "New in {version}"
   },
   "HomeMetadata": {
-    "title": "Payload Components: juhtmega Payload CMS plokid ühes käsus",
-    "description": "Installige korduvkasutatavad Payload CMS plokid ühe käsuga, sealhulgas kogumise konfiguratsioon, renderduskaardid, genereeritud tüübid ja administraatori impordikaart Next.js projektide jaoks."
+    "title": "Payload Components: Wired Payload CMS Blocks in One Command",
+    "description": "Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects."
   },
   "Landing": {
     "hero": {
-      "eyebrow": "Avatud lähtekoodiga Payload plokkide register",
-      "primary": "Installige Payload plokid",
-      "accent": "juhtmega, pole kleebitud.",
-      "subheadline": "Payload CMS arendajate jaoks installib üks käsk ploki, ühendab selle Payload ja loob ülevaatava git diff.",
-      "guide": "Lugege installijuhendit",
-      "github": "Tärn numbril GitHub",
-      "browse": "Sirvige komponente",
-      "copy": "Kopeeri installikäsk",
-      "count": "{count} plokid registris – kõik on ühendatud Payload ühe käsuga."
+      "eyebrow": "Open-source Payload block registry",
+      "primary": "Install Payload blocks",
+      "accent": "wired, not pasted.",
+      "subheadline": "For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.",
+      "guide": "Read the install guide",
+      "github": "Star on GitHub",
+      "browse": "Browse the components",
+      "copy": "Copy install command",
+      "count": "{count} blocks in the registry — every one wired into Payload by a single command."
     },
     "stack": {
-      "label": "Toetatud virn",
-      "lede": "Installib juba käivitatud virna"
+      "label": "Supported stack",
+      "lede": "Installs into the stack you already run"
     },
     "wiring": {
-      "eyebrow": "Installimise piir",
-      "heading": "Plokk ei ole pinge all, kuni see on ühendatud.",
-      "intro": "Failide kopeerimine on lihtne osa – neli järgnevat redigeerimist on see, kus iga plokk, iga repo kaotab päeva.",
-      "source": "allikas"
+      "eyebrow": "The install boundary",
+      "heading": "A block isn't live until it's wired.",
+      "intro": "Copying the files is the easy part — the four edits after are where every block, every repo, loses the day.",
+      "source": "source"
     },
     "workflow": {
-      "eyebrow": "Töövoog",
-      "heading": "Kataloogist kuni kolme käiguga sidumiseni.",
-      "intro": "Ei mingeid tellinguid, pole lukustust – tavaline allikas pluss kaks skoobiga plaastrit, mida saate lugeda.",
+      "eyebrow": "Workflow",
+      "heading": "From catalog to commit in three moves.",
+      "intro": "No scaffolds, no lock-in — plain source plus two scoped patches you can read.",
       "steps": {
-        "oneTitle": "Lugege lepingut",
-        "oneDescription": "Väljad, failid ja paigad – enne kui midagi käivitate.",
-        "twoTitle": "Käivitage üks käsk",
-        "twoDescription": "CLI kontrollib teie projekti ja ühendab selle siis ühe läbimisega.",
-        "threeTitle": "Kinnitage tööplokk",
-        "threeDescription": "Allikas, kaks plaastrit, regenereeritud tüübid – vaadatud nagu iga PR."
+        "oneTitle": "Read the contract",
+        "oneDescription": "Fields, files, and patches — before you run anything.",
+        "twoTitle": "Run one command",
+        "twoDescription": "The CLI checks your project, then wires it in one pass.",
+        "threeTitle": "Commit a working block",
+        "threeDescription": "Source, two patches, regenerated types — reviewed like any PR."
       },
-      "badge": "Renderdatud allikast",
-      "caption": "Pühendunud tulemus – tõeline komponentide allikas, mis on ühendatud Payload ja vaadatakse üle nagu iga PR."
+      "badge": "Source-mirrored specimen",
+      "caption": "A backend-free specimen that mirrors the installable component's visual classes. The committed source is wired into Payload and reviewed like any PR."
     },
     "catalog": {
-      "eyebrow": "Kataloog",
-      "heading": "Kataloog on reaalajas renderdatud.",
-      "intro": "Ekraanipilte pole – iga isend on tegelik komponent, renderdatud allikast.",
-      "browse": "Sirvige kataloogi",
-      "preview": "Reaalajas eelvaade",
-      "blockCount": "{count, plural, one {# plokk} other {# plokki}}",
-      "browseFamily": "Sirvi {family}",
-      "allComponents": "Sirvige kõiki {count} komponente",
-      "postComponents": "Komponentide postitamine · Arendamisel",
-      "familyCount": "Paigaldatav",
-      "familyName": "Leheküljeplokid",
-      "familyDescription": "Lehekülgede paigutuse koostaja plokid – installitud täieliku juhtmestikuga: kogumise konfiguratsioon, renderdamise vastendamine, genereeritud tüübid, impordikaart."
+      "eyebrow": "The catalog",
+      "heading": "The catalog, rendered live.",
+      "intro": "No screenshots — each backend-free specimen mirrors the installable component's visual classes.",
+      "browse": "Browse the catalog",
+      "preview": "Live preview",
+      "blockCount": "{count, plural, one {# block} other {# blocks}}",
+      "browseFamily": "Browse {family}",
+      "allComponents": "Browse all {count} components",
+      "postComponents": "Post components · In development",
+      "familyCount": "Installable",
+      "familyName": "Page blocks",
+      "familyDescription": "Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map."
     },
     "faq": {
-      "heading": "Küsimused, otse vastused.",
-      "intro": "Dokumentide lühiversioon. Iga vastus viitab millelegi, mida saate hoidlas kontrollida.",
-      "dogfood": "See jaotis on üks meie plokkidest"
+      "heading": "Questions, answered straight.",
+      "intro": "The short version of the docs. Every answer links back to something you can verify in the repository.",
+      "dogfood": "This section is one of our blocks"
     },
     "community": {
-      "eyebrow": "Avatud lähtekoodiga",
-      "heading": "Avatud lähtekoodiga,",
-      "accent": "otsast lõpuni",
-      "intro": "Register, CLI, komponendid ja see sait on üks MIT-litsentsiga hoidla. Lugege installerit enne, kui seda usaldate – see on asja mõte.",
-      "copy": "Kopeeri installikäsk",
-      "repository": "GitHub hoidla",
-      "issue": "Avage probleem",
-      "invite": "Kas käitada seda päris repos? Avage probleem – esile tõstetakse varased installid."
+      "eyebrow": "Open source",
+      "heading": "Open source,",
+      "accent": "end to end",
+      "intro": "The registry, the CLI, the components, and this site are one MIT-licensed repository. Read the installer before you trust it — that is the point.",
+      "copy": "Copy install command",
+      "repository": "GitHub repository",
+      "issue": "Open an issue",
+      "invite": "Running it in a real repo? Open an issue — early installs get featured."
     }
   },
   "Catalog": {
-    "metadataTitle": "{count} Payload CMS Komponendid ja plokid | Kataloog",
-    "metadataDescription": "Sirvige sisestatud Payload CMS plokke. Käivitage npx payload-components add '<component>', et ühendada see oma kogusse, renderdajasse, loodud tüüpidesse ja administraatori impordikaardile.",
-    "eyebrow": "Register",
-    "title": "{count} Payload CMS komponendid ja trükitud plokid",
-    "description": "Sirvige kõiki {count} installitavaid Payload CMS komponente kangelaste, funktsioonide, hindade, kutsete tegevusele, integratsioonide, iseloomustuste, statistika, FAQ, sisu, meeskondade, manuste ja jaluste lõikes. Üks käsk CLI kopeerib ploki ja ühendab selle kogu registreerimise, renderdaja kaardistamise, genereeritud tüübid ja administraatori impordikaardi.",
-    "installation": "Vaadake, kuidas ühe käsuga installimine töötab",
-    "blocksGuide": "Järgige blokki konfiguratsioonist reaalajas lehele",
-    "templates": "Tutvuge Payload CMS mallikontseptsioonidega",
-    "license": "MIT litsentsitud"
+    "metadataTitle": "{count} Payload CMS Components & Blocks | Catalog",
+    "metadataDescription": "Browse typed Payload CMS blocks. Run npx payload-components add '<component>' to wire one into your collection, renderer, generated types, and admin import map.",
+    "eyebrow": "Registry",
+    "title": "{count} Payload CMS components and typed blocks",
+    "description": "Browse all {count} installable Payload CMS components across heroes, features, pricing, calls to action, integrations, testimonials, stats, FAQs, content, teams, embeds, and footers. One CLI command copies a block and wires its collection registration, renderer mapping, generated types, and admin import map.",
+    "installation": "See how one-command installation works",
+    "blocksGuide": "Follow a block from config to live page",
+    "templates": "Explore Payload CMS template concepts",
+    "license": "MIT licensed"
   },
   "CatalogBrowser": {
-    "filter": "Filtreerige komponente",
-    "allComponents": "Kõik komponendid",
-    "all": "Kõik",
-    "search": "Otsige komponente",
-    "result": "{count, plural, one {# tulemus} other {# tulemust}}",
-    "empty": "Ükski komponent ei vasta teie filtritele.",
-    "reset": "Lähtestage filtrid",
-    "proposal": "Kataloog kasvab tahtlikult – allikas, manifest, dokumendid ja installija leviala tarnitakse koos. Paku välja järgmine.",
-    "issue": "Avage probleem",
-    "inDevelopment": "arendamisel",
-    "roadmapPreview": "Kontseptsiooni eelvaade",
-    "planned": "Avatud lähtekoodiga tegevuskava",
-    "interest": "Vaata tegevuskava",
-    "interestLabel": "Vaata komponenti {component} toimetuskomponentide tegevuskavas",
-    "selected": "{count} valitud",
-    "tray": "Valitud komponendid",
-    "copy": "Kopeeri installikäsk",
-    "clear": "Tühjenda valik",
+    "filter": "Filter components",
+    "allComponents": "All components",
+    "all": "All",
+    "search": "Search components",
+    "result": "{count, plural, one {# result} other {# results}}",
+    "empty": "No components match your filters.",
+    "reset": "Reset filters",
+    "proposal": "The catalog grows deliberately — source, manifest, docs, and installer coverage ship together. Propose the next one.",
+    "issue": "Open an issue",
+    "inDevelopment": "In development",
+    "roadmapPreview": "Concept preview",
+    "planned": "Open-source roadmap",
+    "interest": "View the roadmap",
+    "interestLabel": "View {component} on the editorial roadmap",
+    "selected": "{count} selected",
+    "tray": "Selected components",
+    "copy": "Copy install command",
+    "clear": "Clear selection",
     "families": {
-      "pages": "Leheküljeplokid",
-      "posts": "Komponentide postitamine"
+      "pages": "Page blocks",
+      "posts": "Post components"
     },
     "categories": {
-      "hero": "Kangelane",
-      "features": "Funktsioonid",
-      "comparator": "Võrdleja",
-      "pricing": "Hinnakujundus",
-      "cta": "Üleskutse tegevusele",
-      "contact": "Võtke ühendust",
-      "integration": "Integratsioon",
-      "logos": "Logo pilv",
-      "testimonials": "Iseloomustused",
-      "stats": "Statistika",
+      "hero": "Hero",
+      "features": "Features",
+      "comparator": "Comparator",
+      "pricing": "Pricing",
+      "cta": "Call to action",
+      "contact": "Contact",
+      "integration": "Integration",
+      "logos": "Logo cloud",
+      "testimonials": "Testimonials",
+      "stats": "Stats",
       "faq": "FAQ",
-      "content": "Sisu",
-      "team": "Meeskond",
-      "embed": "Manusta",
-      "footer": "Jalus",
-      "cards": "Kaardid",
-      "archive": "Arhiiv",
-      "header": "Päis",
-      "index": "Indeks",
-      "author": "Autor",
-      "newsletter": "Uudiskiri",
-      "related": "Seotud"
+      "content": "Content",
+      "team": "Team",
+      "embed": "Embed",
+      "footer": "Footer",
+      "cards": "Cards",
+      "archive": "Archive",
+      "header": "Header",
+      "index": "Index",
+      "author": "Author",
+      "newsletter": "Newsletter",
+      "related": "Related"
     },
-    "composerAdd": "Lisage installikäsule {slug}",
-    "composerRemove": "Eemaldage installikäsult {slug}",
+    "composerAdd": "Add {slug} to the install command",
+    "composerRemove": "Remove {slug} from the install command",
     "theme": {
-      "brandLegend": "Vaadake kataloogi eelvaadet oma kaubamärgi värviga",
-      "brandLabel": "Kaubamärk",
-      "previewBrand": "Eelvaade keeles {color}",
+      "brandLegend": "Preview the catalog in your brand colour",
+      "brandLabel": "Brand",
+      "previewBrand": "Preview in {color}",
       "colors": {
-        "emerald": "Smaragd",
-        "sky": "Taevas",
+        "emerald": "Emerald",
+        "sky": "Sky",
         "indigo": "Indigo",
-        "violet": "Violetne",
-        "rose": "Roos",
-        "amber": "Merevaik"
+        "violet": "Violet",
+        "rose": "Rose",
+        "amber": "Amber"
       },
-      "radiusLegend": "Vaadake kataloogi eelvaadet erineva nurgaraadiusega",
-      "radiusLabel": "Raadius",
-      "previewRadius": "Eelvaade {style} nurkadega",
+      "radiusLegend": "Preview the catalog at a different corner radius",
+      "radiusLabel": "Radius",
+      "previewRadius": "Preview with {style} corners",
       "radii": {
-        "sharp": "Terav",
-        "default": "Vaikimisi",
-        "round": "Ümar"
+        "sharp": "Sharp",
+        "default": "Default",
+        "round": "Round"
       }
     }
   },
@@ -287,192 +287,192 @@
     "contribute": "Propose or discuss a component"
   },
   "Templates": {
-    "metadataTitle": "Payload CMS Mallid Next.js jaoks | Mõisted ja retseptid",
-    "metadataDescription": "Avastage Payload CMS mallikontseptsioone viieteistkümnes vertikaalis – SaaS, agentuur, kaubandus, tervishoid, restoran, kinnisvara ja palju muud – vaadake iga lehe eelvaadet ja kontrollige trükitud ploki retsepti.",
-    "detailTitle": "{title} mall",
-    "back": "Mallid",
-    "previewPageLabel": "{title} eelvaateleht",
-    "previewViewport": "Vaateava suuruse eelvaade",
-    "desktop": "Töölaud",
-    "tablet": "Tahvelarvuti",
-    "mobile": "Mobiil",
-    "previewFrameTitle": "{title} malli eelvaade – {page} leht",
-    "eyebrow": "Mallid",
-    "title": "Payload CMS mallikontseptsioonid, mis on ehitatud installitavatest plokkidest",
-    "status": "Kontseptsiooni eelvaade",
-    "disclosure": "See on sirvitav kogu saidi kontseptsioon. Iga jaotis koosneb avatud registri plokkidest ja üks käsk installib kogu plokikomplekti – siin näidatud kureeritud koopiat ei külvata, seega koostate lehed ise administraatoris.",
-    "startingPoint": "Valige alguspunkt",
-    "description": "Avastage täielikke Payload CMS ja Next.js saidikontseptsioone viieteistkümnes vertikaalis – SaaS, agentuur, kaubandus, tervishoid, restoran, kinnisvara, muusika ja palju muud. Avage reaalajas eelvaates iga leht, seejärel jälgige iga jaotist trükitud plokini, mille saate juba täna installida.",
-    "components": "Sirvige installitavaid komponente",
-    "installation": "Lugege paigaldusjuhendit",
-    "official": "Alustage ametlikust mallist Payload",
-    "showcases": "Mallide vitriinid",
-    "questionsEyebrow": "Küsimused",
-    "questionsHeading": "Payload CMS malliküsimused, vastatud",
-    "questionsIntro": "Kontseptsioonid on tahtlikult avatud selle kohta, mis tänapäeval töötab ja mis jääb disaini viideteks.",
-    "q1": "Kas need Payload CMS mallid on installitavad?",
-    "a1": "Ei. Need on sirvitavad kogu saidi kontseptsioonid, mitte pakendatud käivitushoidlad. Iga retsepti üksikud plokid on installitavad ja iga retsept lingib vastava komponendi dokumentatsioonile.",
-    "q2": "Mille poolest need erinevad Payload ametlikust mallist?",
-    "a2": "Ametliku veebisaidi mall annab uuele projektile täieliku rakenduse aluse. Need kontseptsioonid näitavad, kuidas terviklik turundussait välja näeb ja millised trükitud plokid moodustavad iga lehe, ilma seda projekti käivitaja rolli asendamata.",
-    "q3": "Kas ma saan kasutada retsepte olemasolevas Payload projektis?",
-    "a3": "Jah. Avage kontseptsioon, kontrollige selle tellitud retsepti ja valige oma saidile sobivad jaotised. Kataloog dokumenteerib iga ploki väljad ja toetatud Payload CMS v3 installitee.",
-    "communityEyebrow": "Kogukond",
-    "communityHeading": "Mallid otsustatakse avalikult",
-    "communityIntro": "Need kontseptsioonid on loodud selleks, et vastata kogukonnaga ühele küsimusele: kas kogu saidi mallid peaksid olema installitavad? Retseptid, väljamõeldud kaubamärgid ja installija RFC asuvad kõik avalikus hoidlas – pole midagi suletud ega meilihõivet.",
-    "allConcepts": "Kõik mõisted",
-    "filter": "Filtreerige mõisteid kategooria järgi",
-    "showing": "Kuvatud on {visible} {total}-st",
-    "visualTone": "Visuaalne toon",
-    "counts": "{pages} lehekülge · {blocks} kordumatut plokki",
-    "explore": "Uurige malli",
-    "openPreview": "Ava täielik eelvaade",
-    "posterLabel": "Tutvuge malliga {title}",
-    "posterAlt": "{title} mall — kodulehe kontseptsiooni plakat",
-    "contributionRepository": "Sirvige hoidlat",
-    "contributionRepositoryDescription": "Lugege esitlusallikat – iga retsept on repositooriumis lihtsad andmed.",
-    "contributionRfc": "Lugege installija RFC-d",
-    "contributionRfcDescription": "Vaadake üle ettepanek muuta kontseptsiooniretseptid valikuliseks läbipaistvaks installitöövooks.",
+    "metadataTitle": "Payload CMS Templates for Next.js | Concepts & Recipes",
+    "metadataDescription": "Explore Payload CMS template concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate and more — preview every page and inspect the typed block recipe.",
+    "detailTitle": "{title} template",
+    "back": "Templates",
+    "previewPageLabel": "{title} preview page",
+    "previewViewport": "Preview viewport size",
+    "desktop": "Desktop",
+    "tablet": "Tablet",
+    "mobile": "Mobile",
+    "previewFrameTitle": "{title} template preview — {page} page",
+    "eyebrow": "Templates",
+    "title": "Payload CMS template concepts, built from installable blocks",
+    "status": "Concept preview",
+    "disclosure": "This is a browsable full-site concept. Every section is composed from blocks in the open registry, and one command installs the whole block set — the curated copy shown here is not seeded, so you assemble the pages yourself in the admin.",
+    "startingPoint": "Choose a starting point",
+    "description": "Explore complete Payload CMS and Next.js site concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate, music and more. Open every page in a live preview, then trace each section back to a typed block you can install today.",
+    "components": "Browse installable components",
+    "installation": "Read the installation guide",
+    "official": "Start from the official Payload template",
+    "showcases": "Template showcases",
+    "questionsEyebrow": "Questions",
+    "questionsHeading": "Payload CMS template questions, answered",
+    "questionsIntro": "The concepts are intentionally open about what works today and what remains a design reference.",
+    "q1": "Are these Payload CMS templates installable?",
+    "a1": "No. They are browsable full-site concepts, not packaged starter repositories. The individual blocks in each recipe are installable, and every recipe links to the relevant component documentation.",
+    "q2": "How do these differ from Payload’s official template?",
+    "a2": "The official website template gives a new project a complete application foundation. These concepts show how a full marketing site can look and which typed blocks compose each page, without replacing that starter-project role.",
+    "q3": "Can I use the recipes in an existing Payload project?",
+    "a3": "Yes. Open a concept, inspect its ordered recipe, and choose the sections that fit your site. The catalog documents each block’s fields and the supported Payload CMS v3 installation path.",
+    "communityEyebrow": "Community",
+    "communityHeading": "Templates are decided in the open",
+    "communityIntro": "These concepts exist to answer one question with the community: should full-site templates become installable? The recipes, fictional brands, and installer RFC all live in the public repository — nothing gated, no email capture.",
+    "allConcepts": "All concepts",
+    "filter": "Filter concepts by category",
+    "showing": "Showing {visible} of {total} concepts",
+    "visualTone": "Visual tone",
+    "counts": "{pages} pages · {blocks} unique blocks",
+    "explore": "Explore template",
+    "openPreview": "Open full preview",
+    "posterLabel": "Explore the {title} template",
+    "posterAlt": "{title} template — home page concept poster",
+    "contributionRepository": "Browse the repository",
+    "contributionRepositoryDescription": "Read the showcase source — every recipe is plain data in the repository.",
+    "contributionRfc": "Read the installer RFC",
+    "contributionRfcDescription": "Review the proposal for turning concept recipes into an optional, transparent install workflow.",
     "categories": {
-      "agency": "Agentuur",
-      "civic": "Kodanik",
-      "commerce": "Kaubandus",
-      "education": "Haridus",
-      "event": "Sündmus",
+      "agency": "Agency",
+      "civic": "Civic",
+      "commerce": "Commerce",
+      "education": "Education",
+      "event": "Event",
       "fintech": "Fintech",
-      "healthcare": "Tervishoid",
-      "marketplace": "Turg",
-      "music": "Muusika",
-      "nonprofit": "Mittetulundusühing",
-      "portfolio": "Portfell",
-      "real-estate": "Kinnisvara",
-      "restaurant": "Restoran",
+      "healthcare": "Healthcare",
+      "marketplace": "Marketplace",
+      "music": "Music",
+      "nonprofit": "Nonprofit",
+      "portfolio": "Portfolio",
+      "real-estate": "Real estate",
+      "restaurant": "Restaurant",
       "saas": "SaaS",
-      "trade": "Kaubandus"
+      "trade": "Trade"
     }
   },
   "Blog": {
-    "metadataTitle": "Payload CMS plokkide ja paigaldaja juhendid",
-    "metadataDescription": "Praktilised Payload CMS v3 juhendid korduvkasutatavate plokkide, juhtmestiku kogumite ja renderdajate paigaldamiseks, tüüpide genereerimiseks ja plokkide kinnitamiseks, mis ei renderda.",
-    "eyebrow": "Praktilised Payload CMS v3 juhised",
-    "featured": "Alustage tõestatud juhendiga",
-    "installationLabel": "Paigaldusjuhend",
-    "installationTitle": "Paigaldage juhtmega Payload plokk",
-    "installationDescription": "Lisage tõeline plokk toetatud numbriga CLI, seejärel vaadake üle kõik tehtud failid ja juhtmestiku muudatused.",
-    "installationAction": "Järgige paigaldusjuhendit",
-    "wiringLabel": "Ploki juhtmestiku juhend",
-    "wiringTitle": "Ühendage korduvkasutatav plokk",
-    "wiringDescription": "Järgige Payload CMS v3 plokki konfiguratsioonist registreerimise, renderdamise, genereeritud tüüpide ja administraatori impordikaardi kaudu.",
-    "troubleshootingLabel": "Veaotsingu juhend",
-    "troubleshootingTitle": "Parandage plokk, mida ei renderdata",
-    "troubleshootingDescription": "Kontrollige nelja kohta, mis tavaliselt selgitavad, miks salvestatud plokki lehel ei kuvata.",
-    "readGuide": "Lugege juhendit",
-    "notesEyebrow": "Välja märkmed registrist",
-    "notesTitle": "Rohkem Payload CMS väljamärkmeid",
-    "notesDescription": "Sirvige avatud registrist juurutamise õppetükke, komponentide disaini märkmeid ja väljalaskelugusid.",
-    "browseComponents": "Sirvige kõiki {count} installitavaid komponente",
-    "empty": "Postitusi pole veel – tulge varsti tagasi.",
-    "back": "Tagasi blogisse",
-    "keepReading": "Jätkake lugemist",
-    "related": "Seotud lugemine",
-    "tags": "Artiklite sildid",
+    "metadataTitle": "Payload CMS block and installer guides",
+    "metadataDescription": "Practical Payload CMS v3 guides for installing reusable blocks, wiring collections and renderers, generating types, and fixing blocks that do not render.",
+    "eyebrow": "Practical Payload CMS v3 guidance",
+    "featured": "Start with a proven guide",
+    "installationLabel": "Installation guide",
+    "installationTitle": "Install a wired Payload block",
+    "installationDescription": "Add a real block with the supported CLI, then review every file and wiring change that lands.",
+    "installationAction": "Follow the installation guide",
+    "wiringLabel": "Block wiring guide",
+    "wiringTitle": "Wire a reusable block",
+    "wiringDescription": "Follow a Payload CMS v3 block from config through registration, rendering, generated types, and the admin import map.",
+    "troubleshootingLabel": "Troubleshooting guide",
+    "troubleshootingTitle": "Fix a block that will not render",
+    "troubleshootingDescription": "Check the four places that usually explain why a saved block does not appear on the page.",
+    "readGuide": "Read the guide",
+    "notesEyebrow": "Field notes from the registry",
+    "notesTitle": "More Payload CMS field notes",
+    "notesDescription": "Browse implementation lessons, component design notes, and release stories from the open registry.",
+    "browseComponents": "Browse all {count} installable components",
+    "empty": "No posts yet — check back soon.",
+    "back": "Back to blog",
+    "keepReading": "Keep reading",
+    "related": "Related reading",
+    "tags": "Article tags",
     "series": {
-      "project-notes": "Projekti märkmed",
-      "foundations": "Vundamendid",
-      "installer-internals": "Installeri sisemised osad",
-      "component-design": "Komponentide disain",
-      "production-guides": "Tootmisjuhendid",
-      "open-source": "Kvaliteet ja kogukond"
+      "project-notes": "Project notes",
+      "foundations": "Foundations",
+      "installer-internals": "Installer internals",
+      "component-design": "Component design",
+      "production-guides": "Production guides",
+      "open-source": "Quality & community"
     }
   },
   "Footer": {
-    "home": "Payload Components avaleht",
-    "intro": "Trükitud Payload CMS komponendid, mis installitakse koos nende juhtmestikuga – kogumise konfiguratsioon, renderdamise vastendamine, genereeritud tüübid ja impordikaart ühe käsuga.",
-    "product": "Toode",
-    "components": "Komponendid",
-    "project": "Projekt",
-    "componentCatalog": "Komponentide kataloog",
-    "templateConcepts": "Mallide kontseptsioonid",
-    "documentation": "Dokumentatsioon",
-    "installWorkflow": "Installige töövoog",
-    "architecture": "Arhitektuur",
-    "aiDiscovery": "AI avastus",
-    "allComponents": "Kõik {count} komponendid",
-    "about": "Umbes",
-    "brandGuide": "Brändijuhend",
-    "openIssue": "Avage probleem",
-    "releases": "Väljaanded",
-    "updates": "Värskendab voogu",
-    "contributing": "Kaastööd",
-    "privacy": "Privaatsus",
+    "home": "Payload Components home",
+    "intro": "Typed Payload CMS components that install with their wiring — collection config, render mapping, generated types, and import map in one command.",
+    "product": "Product",
+    "components": "Components",
+    "project": "Project",
+    "componentCatalog": "Component catalog",
+    "templateConcepts": "Template concepts",
+    "documentation": "Documentation",
+    "installWorkflow": "Install workflow",
+    "architecture": "Architecture",
+    "aiDiscovery": "AI discovery",
+    "allComponents": "All {count} components",
+    "about": "About",
+    "brandGuide": "Brand Guide",
+    "openIssue": "Open an issue",
+    "releases": "Releases",
+    "updates": "Updates feed",
+    "contributing": "Contributing",
+    "privacy": "Privacy",
     "registry": "Registry JSON",
-    "license": "MIT litsentsitud · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · ava register"
+    "license": "MIT licensed · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · open registry"
   },
   "Maintainer": {
-    "body": "Ma ehitasin payload-components, sest ploki Payload installimine ei olnud kunagi kopeeri-kleebi – see oli neli muudatust pärast. CLI on olemas, nii et teine ​​ja kümnes projekt saavad selle juhtmestiku tasuta. Lugege installeri allikat enne kui usaldate seda; Selle MIT saatmine on asja mõte.",
-    "role": "Hooldaja, Payload Components",
-    "github": "{name} numbril GitHub"
+    "body": "I built payload-components because installing a Payload block was never the copy-paste — it was the four edits after. The CLI exists so the second project, and the tenth, get that wiring for free. Read the installer source before you trust it; shipping it MIT is the point.",
+    "role": "Maintainer, Payload Components",
+    "github": "{name} on GitHub"
   },
   "PageMetadata": {
     "about": {
-      "title": "Umbes",
-      "openGraphTitle": "Umbes Payload Components",
-      "description": "Miks Payload Components eksisteerib: lõpetage samade Payload plokkide ümberehitamine, käsitsi ümber juhtmete ühendamine ja iga vabakutseliste projektide installimise uuesti tõestamine."
+      "title": "About",
+      "openGraphTitle": "About Payload Components",
+      "description": "Why Payload Components exists: stop rebuilding the same Payload blocks, rewiring them by hand, and re-proving every install across freelance projects."
     },
     "privacy": {
-      "title": "Privaatsus",
-      "openGraphTitle": "Privaatsus – Payload Components",
-      "description": "Mida Payload Components mõõdab, millised kolmandad osapooled selle saavad ja kuidas oma valikut igal ajal muuta või tagasi võtta."
+      "title": "Privacy",
+      "openGraphTitle": "Privacy — Payload Components",
+      "description": "What Payload Components measures, which third parties receive it, and how to change or withdraw your choice at any time."
     },
     "brandGuide": {
-      "title": "Brändijuhend",
-      "openGraphTitle": "Payload Components Brändijuhend",
-      "description": "Kaubamärk Payload Components: ühe smaragdse aktsendiga ühevärviline valguse esiteks shadcn palett, Geist ja Instrument Serif tüüpi süsteem, logo kasutamine ja hääl."
+      "title": "Brand Guide",
+      "openGraphTitle": "Payload Components Brand Guide",
+      "description": "The Payload Components brand: a light-first shadcn monochrome palette with one emerald accent, the Geist and Instrument Serif type system, logo usage, and voice."
     }
   },
   "FaqContent": {
     "entries": {
       "one": {
-        "question": "Kas Payload Components on tasuta?",
-        "answer": "Jah – ja ehitatud nii, et see nii ka jääks. Register, CLI, kõik {count} installitavad komponendid ja see sait on üks MIT-litsentsiga hoidla: hinnakujundus puudub, litsentsivõti puudub, suletud tase puudub. Payload Components on disainilt kogukonnale esikohal – kataloog kasvab tegelikest installimistest ja panustest, mitte tasulisest tegevuskavast."
+        "question": "Is Payload Components free?",
+        "answer": "Yes — and built to stay that way. The registry, the CLI, all {count} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap."
       },
       "two": {
-        "question": "Mis on Payload CMS plokk?",
-        "answer": "Funktsioonis Payload on plokk komponeeritav lehekoostaja väli – korduvkasutatava sisujaotise (kangelane, funktsioonide ruudustik, CTA) redaktorite virn lehe küljendamiseks. Payload Components tarnib eelehitatud plokke ja juhtmestikku, mis paneb need tööle, nii et plokki ei kopeerita lihtsalt sisse: see registreeritakse teie lehtede kogus, kaardistatakse teie renderdajas, sisestatakse ja lisatakse administraatori impordikaardile.",
-        "link": "Lugege Payload plokkide juhendit"
+        "question": "What is a Payload CMS block?",
+        "answer": "In Payload, a block is a composable page-builder field — a reusable content section (hero, feature grid, CTA) editors stack to lay out a page. Payload Components ships pre-built blocks plus the wiring that makes them live, so a block is not just copied in: it is registered in your Pages collection, mapped in your renderer, typed, and added to the admin import map.",
+        "link": "Read the Payload blocks guide"
       },
       "three": {
-        "question": "Kuidas lisada kangelaseplokki numbrile Payload CMS?",
-        "answer": "Installige see, millel on CLI — `npx payload-components add hero-basic`. See kopeerib ploki allika teie projekti ja ühendab selle otsast lõpuni: registreerib selle teie lehtede kogusse, kaardistab selle jaotisesse RenderBlocks ning genereerib uuesti teie Payload tüübid ja administraatori impordikaardi – see maandub ühe ülevaatava git diffna. Sama käsk lisab kataloogi mis tahes ploki."
+        "question": "How do I add a hero block to Payload CMS?",
+        "answer": "Install one with the CLI — `npx payload-components add hero-basic`. It copies the block source into your project and wires it end to end: registers it in your Pages collection, maps it in RenderBlocks, and regenerates your Payload types and admin import map — landing as one reviewable git diff. The same command adds any block in the catalog."
       },
       "four": {
-        "question": "Mida installimine minu repos täpselt muudab?",
-        "answer": "Kolm asja: komponentide lähtefailid kopeeritakse (ploki konfiguratsioon, komponent, jagatud utiliidid), täpselt kaks faili on paigatud (teie lehtede kogu ja RenderBlocks.tsx — iga komponendi manifest deklareerib need) ja Payload genereerib uuesti oma väljundi (payload-types.ts ja administraatori impordikaart). Kõik see kuvatakse kui tavaline git diff.",
-        "link": "Lugege paigaldusjuhendit"
+        "question": "What exactly does an install change in my repo?",
+        "answer": "Three things: component source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each component manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.",
+        "link": "Read the installation guide"
       },
       "five": {
-        "question": "Mis juhtub, kui käivitan sama installi kaks korda?",
-        "answer": "See läheneb. CLI tuvastab olemasoleva juhtmestiku ja jätab selle vahele – tegelik väljund on payload-components: \"hero-basic\" is already installed. Installi olek salvestatakse jaotises .payload-components/state.json, nii et osalised installid on nähtavad ja taastatavad, mitte vaikselt katkestada."
+        "question": "What happens if I run the same install twice?",
+        "answer": "It converges. The CLI detects existing wiring and skips it — the real output is payload-components: \"hero-basic\" is already installed. Install state is recorded in .payload-components/state.json, so partial installs are visible and recoverable instead of silently broken."
       },
       "six": {
-        "question": "Milliseid projekte täna toetatakse?",
-        "answer": "Payload v3 + Next.js 15/16 projektid, mis on kujundatud nagu ametliku veebisaidi käivitaja – paigutusplokkide renderdamine läbi src/blocks/RenderBlocks.tsx ja leheplokkide registreerimine jaotises src/collections/Pages/index.ts. CLI kontrollib teie projekti enne avaldatud tugimaatriksi puudutamist."
+        "question": "Which projects are supported today?",
+        "answer": "Payload v3 + Next.js 15/16 projects shaped like the official website starter — rendering layout blocks through src/blocks/RenderBlocks.tsx and registering page blocks in src/collections/Pages/index.ts. The CLI checks your project against the published support matrix before touching anything."
       },
       "seven": {
-        "question": "Miks mitte lihtsalt käivitada npx shadcn add?",
-        "answer": "Tavaline shadcn install kopeerib failid ja peatab. Payload plokid töötavad alles pärast seda, kui need on registreeritud teie koguskeemis, kaardistatud renderdajas, sisestatud ja lisatud administraatori impordikaardile. payload-components ümbritseb sama registri tarne täpselt selle juhtmestikuga – see piir on toode ja ülaltoodud juhtmestiku pearaamat näitab seda ridade kaupa.",
-        "link": "Lugege täielikku shadcn võrdlust"
+        "question": "Why not just run npx shadcn add?",
+        "answer": "A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-components wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.",
+        "link": "Read the full shadcn comparison"
       },
       "eight": {
-        "question": "Kuidas uued komponendid kataloogi jõuavad?",
-        "answer": "Tahtlikult. Komponent maandub ainult siis, kui selle allikas, manifesti metaandmed, dokumentide leht ja installija testi katvus tarnitakse koos – pooljuhtmega plokid ei jõua kunagi kataloogi. Pakkuge välja GitHub järgmine komponent; kataloog kasvab tegelikest installimistest."
+        "question": "How do new components get into the catalog?",
+        "answer": "Deliberately. A component lands only when its source, manifest metadata, docs page, and installer test coverage ship together — half-wired blocks never reach the catalog. Propose the next component in a GitHub issue; the catalog grows from real installs."
       }
     }
   },
   "TranslationNotice": {
-    "fallback": "Seda lehte pole veel tõlgitud, seega kuvatakse ingliskeelne lähtesisu.",
-    "label": "Tõlke olek",
-    "machine": "See leht on masintõlgitud ja emakeelne kõneleja pole seda veel üle vaadanud.",
-    "viewEnglish": "Vaata ingliskeelset allikat"
+    "fallback": "This page is not translated yet, so its source content is shown in English.",
+    "label": "Translation status",
+    "machine": "This page was machine translated and has not been reviewed by a native speaker.",
+    "viewEnglish": "View English source"
   }
 }

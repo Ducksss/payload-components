@@ -1,259 +1,259 @@
 {
   "Metadata": {
-    "title": "Payload Components — Payload CMS için tamamen kablolu bloklar",
-    "description": "Koleksiyon yapılandırmaları, oluşturucu eşlemeleri, oluşturulan türler ve yönetici içe aktarma eşlemeleriyle yüklenen açık kaynaklı Payload CMS blokları."
+    "title": "Payload Components — fully-wired blocks for Payload CMS",
+    "description": "Open-source Payload CMS blocks that install with their collection config, renderer mapping, generated types, and admin import map."
   },
   "Common": {
-    "home": "Ana sayfa",
-    "documentation": "Belgeler",
+    "home": "Home",
+    "documentation": "Documentation",
     "blog": "Blog",
-    "componentCatalog": "Bileşen kataloğu",
-    "brandGuide": "Marka Kılavuzu",
-    "about": "Hakkında",
-    "privacy": "Gizlilik",
-    "copy": "Kopyala",
-    "copied": "Kopyalandı",
-    "copiedDescription": "Panoya kopyalandı."
+    "componentCatalog": "Component catalog",
+    "brandGuide": "Brand Guide",
+    "about": "About",
+    "privacy": "Privacy",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copiedDescription": "Copied to clipboard."
   },
   "Header": {
-    "skip": "İçeriğe atla",
-    "home": "Payload Components ana sayfası",
-    "github": "GitHub deposu",
-    "openNavigation": "Gezinmeyi aç",
-    "closeNavigation": "Gezinmeyi kapat",
-    "language": "Dil",
+    "skip": "Skip to content",
+    "home": "Payload Components home",
+    "github": "GitHub repository",
+    "openNavigation": "Open navigation",
+    "closeNavigation": "Close navigation",
+    "language": "Language",
     "nav": {
-      "docs": "Dokümanlar",
-      "components": "Bileşenler",
-      "templates": "Şablonlar",
+      "docs": "Docs",
+      "components": "Components",
+      "templates": "Templates",
       "blog": "Blog",
-      "about": "Hakkında"
+      "about": "About"
     }
   },
   "Consent": {
-    "title": "Analitik çerezleri",
-    "description": "İnsanların gerçekte hangi bileşenleri ve belgeleri kullandığını görmek için Google Analytics ve PostHog kullanıyoruz. Reddederseniz ikisi de yüklenmez; çerez yok, tanımlayıcı yok. Sayfa hızı ölçümü her iki şekilde de çalışır ve hiçbir şey saklamaz.",
-    "privacy": "Gizlilik",
-    "decline": "Reddet",
-    "accept": "Kabul et"
+    "title": "Analytics cookies",
+    "description": "We use Google Analytics and PostHog to see which components and docs people actually use. Decline and neither one loads — no cookie, no identifier. Page-speed measurement runs either way and stores nothing.",
+    "privacy": "Privacy",
+    "decline": "Decline",
+    "accept": "Accept"
   },
   "Privacy": {
-    "eyebrow": "Gizlilik",
-    "heading": "Tam olarak ölçtüğümüz şey.",
-    "accentWord": "ölçü",
-    "intro": "Siz kabul edene kadar cihazınızda herhangi bir şey depolayan hiçbir şey yüklenmez. Bu sayfa her işlemciyi, her olayı ve her alanı adlandırır ve fikrinizi istediğiniz zaman değiştirmenize olanak tanır.",
-    "consent": "Cihazınızda bir şey depolayacak her şey sizin izninizi bekler. Reddet ve Google Analytics ve PostHog hiçbir zaman yüklenmez; hiçbir çerez ayarlanmaz ve hiçbir tanımlayıcı tutulmaz. Tarayıcınız Global Privacy Control veya Do Not Track gönderirse, bu otomatik olarak reddedilmiş sayılır ve banner hiçbir zaman gösterilmez.",
-    "alwaysOnProcessors": "Vercel Analytics ve Speed Insights istisnadır ve herkes için çalışırlar. Hiçbir çerez ayarlamazlar ve hiçbir tanımlayıcı saklamazlar; sayfa yüklerini ve performansı toplu olarak ölçerler, bu da bu siteyi hızlı tutan şeydir. Cihazınızda devre dışı bırakabileceğiniz hiçbir şey yok.",
-    "noAccounts": "Bu sitede hesap yok, dolayısıyla bunların hiçbiri bir kimliğe bağlı değil. Form girişlerini, serbest metinleri veya görüntülediğiniz sayfaların içeriğini asla toplamayız.",
-    "processorsTitle": "Verileri kim alır?",
-    "needsConsent": "İzniniz gerekiyor",
-    "alwaysOn": "Her zaman açık, hiçbir şey saklamaz",
+    "eyebrow": "Privacy",
+    "heading": "Exactly what we measure.",
+    "accentWord": "measure",
+    "intro": "Nothing that stores anything on your device loads until you accept. This page names every processor, every event, and every field — and lets you change your mind at any time.",
+    "consent": "Anything that would store something on your device waits for your consent. Decline and Google Analytics and PostHog never load — no cookie is set and no identifier is kept. If your browser sends Global Privacy Control or Do Not Track, that counts as a decline automatically and you are never shown the banner.",
+    "alwaysOnProcessors": "Vercel Analytics and Speed Insights are the exception, and they run for everyone. They set no cookies and store no identifier — they measure page loads and performance in aggregate, which is what keeps this site fast. There is nothing on your device to opt out of.",
+    "noAccounts": "There are no accounts on this site, so none of this is tied to an identity. We never collect form input, free text, or the contents of pages you view.",
+    "processorsTitle": "Who receives data",
+    "needsConsent": "Needs your consent",
+    "alwaysOn": "Always on, stores nothing",
     "processors": {
       "vercel": {
-        "purpose": "Sayfa görünümleri ve barındırılan site için Core Web Vitals.",
-        "storage": "Çerez ve tanımlayıcı yok — cihazınızda hiçbir şey saklanmaz."
+        "purpose": "Page views and Core Web Vitals for the hosted site.",
+        "storage": "No cookies and no identifier — nothing is stored on your device."
       },
       "ga4": {
-        "purpose": "Sayfa görünümlerini ve trafik kaynaklarını toplayın.",
-        "storage": "Kendi birinci taraf çerezlerini ayarlar (_ga, _ga_*)."
+        "purpose": "Aggregate page views and traffic sources.",
+        "storage": "Sets its own first-party cookies (_ga, _ga_*)."
       },
       "posthog": {
-        "purpose": "Aşağıda listelenen üç ürün etkinliği.",
-        "storage": "Geçerli sekme için localStorage'de rastgele bir pc_distinct_id artı sessionStorage'de bir organik giriş yol adı."
+        "purpose": "The three product events listed below.",
+        "storage": "A random pc_distinct_id in localStorage, plus an organic entry pathname in sessionStorage for the current tab."
       }
     },
-    "eventsTitle": "Gönderdiğimiz olaylar",
-    "eventsIntro": "Üç olup alanları sabittir. Her değer taahhüt edilmiş bir rotadan, bağlantıdan veya kurulum komutundan gelir; asla yazdığınız herhangi bir şeyden gelmez.",
-    "trafficSource": "Sayfa görünümleri trafiği yalnızca organik arama veya diğer şekilde etiketler. Bu etiket, tarayıcınızda sabit bir arama motoru listesinden veya açık bir organik kampanya işaretçisinden türetilmiştir. Ham yönlendiren, kampanya ve sorgu dizesi hiçbir zaman gönderilmez. Kontrollü site kontrolleri, ziyaretçi sayımından hariç tutulabilmeleri için gerçek bir doğrulama işaretçisi taşır; sıradan ziyaretler yanlıştır.",
-    "entryPage": "Onayın ardından organik ziyaretler, geçerli tarayıcı sekmesi için aynı sitenin ilk yol adını korur. Yükleme kopyaları ve birincil bağlantı tıklamaları bu yol adını <code>entry_page</code> olarak içerir. Doğrudan ve yönlendirme ziyaretleri geçerli değildir. Hiçbir zaman bir sorgu dizesi veya ham yönlendiren içermez ve izni geri çektiğinizde silinir.",
+    "eventsTitle": "The events we send",
+    "eventsIntro": "Three, and their fields are fixed. Every value comes from a committed route, link, or install command — never from anything you type.",
+    "trafficSource": "Page views label traffic only as organic search or other. That label is derived in your browser from a fixed search-engine list or an explicit organic campaign marker. The raw referrer, campaign, and query string are never sent. Controlled site checks carry a true verification marker so they can be excluded from visitor counts; ordinary visits carry false.",
+    "entryPage": "After consent, organic visits keep the first same-site pathname for the current browser tab. Install copies and primary link clicks include that pathname as <code>entry_page</code>. Direct and referral visits do not. It never contains a query string or raw referrer and is deleted when you withdraw consent.",
     "events": {
       "pageview": {
-        "when": "Genel bir rota yüklenir veya değişir."
+        "when": "A public route loads or changes."
       },
       "copyInstallCommand": {
-        "when": "Bir yükleme komutunu kopyalıyorsunuz."
+        "when": "You copy an install command."
       },
       "primaryLinkClick": {
-        "when": "Bir depo, dokümanlar veya bileşenler bağlantısını takip edersiniz."
+        "when": "You follow a repository, docs, or components link."
       }
     },
-    "choiceTitle": "Sizin seçiminiz",
-    "choice": "Kararınız yerel olarak tarayıcınızda <code>pc_consent</code> altında saklanır. İstediğiniz zaman buradan değiştirin. Geri çekme, toplamayı durdurmaktan daha fazlasını yapar; katılımın yarattığı şeyi siler: Google Analytics çerezler (<code>_ga</code>, <code>_ga_*</code>) ve PostHog tanımlayıcı kaldırılır ve sayfa yeniden yüklenir, böylece halihazırda çalışan hiçbir şey devam etmez. Yalnızca oturuma yönelik organik giriş yol adı da kaldırılır.",
+    "choiceTitle": "Your choice",
+    "choice": "Your decision is stored locally in your browser under <code>pc_consent</code>. Change it here at any time. Withdrawing does more than stop collection — it deletes what the opt-in created: the Google Analytics cookies (<code>_ga</code>, <code>_ga_*</code>) and the PostHog identifier are removed, and the page reloads so nothing already running carries on. The session-only organic entry pathname is removed too.",
     "settings": {
-      "privacySignal": "Tarayıcınız bir gizlilik sinyali gönderir (Global Privacy Control veya Do Not Track), dolayısıyla Google Analytics ve PostHog kapalı kalır ve bu burada geçersiz kılınamaz.",
-      "on": "Google Analytics ve PostHog şu anda açık.",
-      "off": "Google Analytics ve PostHog şu anda kapalı.",
-      "undecided": "Henüz seçmediniz, dolayısıyla Google Analytics ve PostHog kapalı.",
-      "turnOff": "Analitiği kapat",
-      "turnOn": "Analitiği açın"
+      "privacySignal": "Your browser sends a privacy signal (Global Privacy Control or Do Not Track), so Google Analytics and PostHog stay off and this cannot be overridden here.",
+      "on": "Google Analytics and PostHog are currently on.",
+      "off": "Google Analytics and PostHog are currently off.",
+      "undecided": "You have not chosen yet, so Google Analytics and PostHog are off.",
+      "turnOff": "Turn analytics off",
+      "turnOn": "Turn analytics on"
     }
   },
   "NotFound": {
-    "eyebrow": "Hata 404",
-    "title": "Sayfa bulunamadı",
-    "description": "Bu rota kayıt defterinde yok. Bileşenler, belgeler ve katalog.",
-    "home": "Eve git",
-    "docs": "Dokümanları okuyun",
+    "eyebrow": "Error 404",
+    "title": "Page not found",
+    "description": "This route is not in the registry. The components, the docs, and the catalog are.",
+    "home": "Go home",
+    "docs": "Read the docs",
     "terminalTitle": "payload-components — 404"
   },
   "Docs": {
-    "title": "Belgeler",
-    "versionBanner": "MIT kayıt defteri · bileşenler v{version}",
-    "github": "GitHub'da yıldız",
-    "previousComponent": "Önceki bileşen: {title}",
-    "nextComponent": "Sonraki bileşen: {title}",
-    "newIn": "{version}'da yeni"
+    "title": "Documentation",
+    "versionBanner": "MIT registry · components v{version}",
+    "github": "Star on GitHub",
+    "previousComponent": "Previous component: {title}",
+    "nextComponent": "Next component: {title}",
+    "newIn": "New in {version}"
   },
   "HomeMetadata": {
-    "title": "Payload Components: Tek Komutta Kablolu Payload CMS Bloklar",
-    "description": "Koleksiyon yapılandırması, oluşturma haritaları, oluşturulan türler ve Next.js projeler için yönetici içe aktarma haritası dahil olmak üzere yeniden kullanılabilir Payload CMS bloklarını tek komutla kurun."
+    "title": "Payload Components: Wired Payload CMS Blocks in One Command",
+    "description": "Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects."
   },
   "Landing": {
     "hero": {
-      "eyebrow": "Açık kaynaklı Payload kayıt defterini engelle",
-      "primary": "Payload bloklarını yükle",
-      "accent": "kablolu, yapıştırılmamış.",
-      "subheadline": "Payload CMS geliştiricileri için, bir komut bloğu yükler, onu Payload'ye bağlar ve incelenebilir bir git diff'e getirir.",
-      "guide": "Kurulum kılavuzunu okuyun",
-      "github": "GitHub'da yıldız",
-      "browse": "Bileşenlere göz atın",
-      "copy": "Kurulum komutunu kopyala",
-      "count": "Kayıt defterindeki {count} bloklar — her biri tek bir komutla Payload'e bağlanır."
+      "eyebrow": "Open-source Payload block registry",
+      "primary": "Install Payload blocks",
+      "accent": "wired, not pasted.",
+      "subheadline": "For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.",
+      "guide": "Read the install guide",
+      "github": "Star on GitHub",
+      "browse": "Browse the components",
+      "copy": "Copy install command",
+      "count": "{count} blocks in the registry — every one wired into Payload by a single command."
     },
     "stack": {
-      "label": "Desteklenen yığın",
-      "lede": "Zaten çalıştırdığınız yığına kurulur"
+      "label": "Supported stack",
+      "lede": "Installs into the stack you already run"
     },
     "wiring": {
-      "eyebrow": "Kurulum sınırı",
-      "heading": "Bir blok kablolanana kadar canlı değildir.",
-      "intro": "Dosyaları kopyalamak işin kolay kısmıdır — sonraki dört düzenlemede her blok, her repo günü kaybeder.",
-      "source": "kaynak"
+      "eyebrow": "The install boundary",
+      "heading": "A block isn't live until it's wired.",
+      "intro": "Copying the files is the easy part — the four edits after are where every block, every repo, loses the day.",
+      "source": "source"
     },
     "workflow": {
-      "eyebrow": "İş Akışı",
-      "heading": "Katalogdan uygulamaya üç hamlede geçin.",
-      "intro": "Yapı iskelesi yok, bağımlılığa gerek yok — sade kaynak artı okuyabileceğiniz iki kapsamlı yama.",
+      "eyebrow": "Workflow",
+      "heading": "From catalog to commit in three moves.",
+      "intro": "No scaffolds, no lock-in — plain source plus two scoped patches you can read.",
       "steps": {
-        "oneTitle": "Sözleşmeyi okuyun",
-        "oneDescription": "Alanlar, dosyalar ve yamalar — herhangi bir şeyi çalıştırmadan önce.",
-        "twoTitle": "Bir komut çalıştır",
-        "twoDescription": "CLI projenizi kontrol eder, ardından tek geçişte kablolar.",
-        "threeTitle": "Bir çalışma bloğu taahhüt edin",
-        "threeDescription": "Kaynak, iki yama, yeniden oluşturulmuş türler — herhangi bir PR gibi incelendi."
+        "oneTitle": "Read the contract",
+        "oneDescription": "Fields, files, and patches — before you run anything.",
+        "twoTitle": "Run one command",
+        "twoDescription": "The CLI checks your project, then wires it in one pass.",
+        "threeTitle": "Commit a working block",
+        "threeDescription": "Source, two patches, regenerated types — reviewed like any PR."
       },
-      "badge": "Kaynaktan oluşturuldu",
-      "caption": "Taahhüt edilen sonuç — Payload'a bağlanan ve herhangi bir PR gibi gözden geçirilen gerçek bileşen kaynağı."
+      "badge": "Source-mirrored specimen",
+      "caption": "A backend-free specimen that mirrors the installable component's visual classes. The committed source is wired into Payload and reviewed like any PR."
     },
     "catalog": {
-      "eyebrow": "Katalog",
-      "heading": "Katalog canlı hale getirildi.",
-      "intro": "Ekran görüntüsü yok — her örnek, kaynaktan oluşturulan gerçek bileşendir.",
-      "browse": "Kataloğa göz atın",
-      "preview": "Canlı önizleme",
-      "blockCount": "{count, plural, one {# blok} other {# blok}}",
-      "browseFamily": "Gözat {family}",
-      "allComponents": "Tüm {count} bileşenlerine göz atın",
-      "postComponents": "Post bileşenleri · Geliştirme aşamasında",
-      "familyCount": "Kurulabilir",
-      "familyName": "Sayfa blokları",
-      "familyDescription": "Sayfa düzeni oluşturucu için bloklar — tam kablolamayla kurulur: koleksiyon yapılandırması, oluşturma eşlemesi, oluşturulan türler, içe aktarma haritası."
+      "eyebrow": "The catalog",
+      "heading": "The catalog, rendered live.",
+      "intro": "No screenshots — each backend-free specimen mirrors the installable component's visual classes.",
+      "browse": "Browse the catalog",
+      "preview": "Live preview",
+      "blockCount": "{count, plural, one {# block} other {# blocks}}",
+      "browseFamily": "Browse {family}",
+      "allComponents": "Browse all {count} components",
+      "postComponents": "Post components · In development",
+      "familyCount": "Installable",
+      "familyName": "Page blocks",
+      "familyDescription": "Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map."
     },
     "faq": {
-      "heading": "Sorular, doğrudan yanıtlandı.",
-      "intro": "Dokümanların kısa versiyonu. Her yanıt, depoda doğrulayabileceğiniz bir şeye bağlanır.",
-      "dogfood": "Bu bölüm bloklarımızdan biridir"
+      "heading": "Questions, answered straight.",
+      "intro": "The short version of the docs. Every answer links back to something you can verify in the repository.",
+      "dogfood": "This section is one of our blocks"
     },
     "community": {
-      "eyebrow": "Açık kaynak",
-      "heading": "Açık kaynak,",
-      "accent": "uçtan uca",
-      "intro": "Kayıt defteri, CLI, bileşenler ve bu site MIT lisanslı bir depodur. Güvenmeden önce yükleyiciyi okuyun; önemli olan budur.",
-      "copy": "Kurulum komutunu kopyala",
-      "repository": "GitHub deposu",
-      "issue": "Bir sorun aç",
-      "invite": "Gerçek bir depoda mı çalıştırıyorsunuz? Bir sorun açın; erken yüklemeler öne çıkar."
+      "eyebrow": "Open source",
+      "heading": "Open source,",
+      "accent": "end to end",
+      "intro": "The registry, the CLI, the components, and this site are one MIT-licensed repository. Read the installer before you trust it — that is the point.",
+      "copy": "Copy install command",
+      "repository": "GitHub repository",
+      "issue": "Open an issue",
+      "invite": "Running it in a real repo? Open an issue — early installs get featured."
     }
   },
   "Catalog": {
-    "metadataTitle": "{count} Payload CMS Bileşenler ve Bloklar | Katalog",
-    "metadataDescription": "Yazılan Payload CMS bloklara göz atın. Koleksiyonunuza, oluşturucunuza, oluşturulan türlere ve yönetici içe aktarma haritanıza bir tane bağlamak için npx payload-components add '<component>' komutunu çalıştırın.",
-    "eyebrow": "Kayıt Defteri",
-    "title": "{count} Payload CMS bileşenler ve yazılan bloklar",
-    "description": "Kahramanlar, özellikler, fiyatlandırma, harekete geçirici mesajlar, entegrasyonlar, referanslar, istatistikler, FAQ'ler, içerik, ekipler, yerleştirmeler ve altbilgiler genelinde tüm {count} kurulabilir Payload CMS bileşenlerine göz atın. Bir CLI komutu bir bloğu kopyalar ve onun koleksiyon kaydını, oluşturucu eşlemesini, oluşturulan türleri ve yönetici içe aktarma haritasını bağlar.",
-    "installation": "Tek komutla kurulumun nasıl çalıştığını görün",
-    "blocksGuide": "Yapılandırmadan canlı sayfaya kadar bir bloğu takip edin",
-    "templates": "Payload CMS şablon kavramlarını keşfedin",
-    "license": "MIT lisanslı"
+    "metadataTitle": "{count} Payload CMS Components & Blocks | Catalog",
+    "metadataDescription": "Browse typed Payload CMS blocks. Run npx payload-components add '<component>' to wire one into your collection, renderer, generated types, and admin import map.",
+    "eyebrow": "Registry",
+    "title": "{count} Payload CMS components and typed blocks",
+    "description": "Browse all {count} installable Payload CMS components across heroes, features, pricing, calls to action, integrations, testimonials, stats, FAQs, content, teams, embeds, and footers. One CLI command copies a block and wires its collection registration, renderer mapping, generated types, and admin import map.",
+    "installation": "See how one-command installation works",
+    "blocksGuide": "Follow a block from config to live page",
+    "templates": "Explore Payload CMS template concepts",
+    "license": "MIT licensed"
   },
   "CatalogBrowser": {
-    "filter": "Filtre bileşenleri",
-    "allComponents": "Tüm bileşenler",
-    "all": "Hepsi",
-    "search": "Arama bileşenleri",
-    "result": "{count, plural, one {# sonuç} other {# sonuç}}",
-    "empty": "Filtrelerinizle eşleşen hiçbir bileşen yok.",
-    "reset": "Filtreleri sıfırla",
-    "proposal": "Katalog kasıtlı olarak büyüyor; kaynak, bildirim, dokümanlar ve yükleyici kapsamı birlikte sunuluyor. Bir sonrakini önerin.",
-    "issue": "Bir sorun açın",
-    "inDevelopment": "geliştirme aşamasında",
-    "roadmapPreview": "Konsept önizlemesi",
-    "planned": "Açık kaynak yol haritası",
-    "interest": "Yol haritasını görüntüle",
-    "interestLabel": "{component} bileşenini editoryal bileşen yol haritasında görüntüle",
-    "selected": "{count} seçildi",
-    "tray": "Seçilen bileşenler",
-    "copy": "Kurulum komutunu kopyala",
-    "clear": "Seçimi temizle",
+    "filter": "Filter components",
+    "allComponents": "All components",
+    "all": "All",
+    "search": "Search components",
+    "result": "{count, plural, one {# result} other {# results}}",
+    "empty": "No components match your filters.",
+    "reset": "Reset filters",
+    "proposal": "The catalog grows deliberately — source, manifest, docs, and installer coverage ship together. Propose the next one.",
+    "issue": "Open an issue",
+    "inDevelopment": "In development",
+    "roadmapPreview": "Concept preview",
+    "planned": "Open-source roadmap",
+    "interest": "View the roadmap",
+    "interestLabel": "View {component} on the editorial roadmap",
+    "selected": "{count} selected",
+    "tray": "Selected components",
+    "copy": "Copy install command",
+    "clear": "Clear selection",
     "families": {
-      "pages": "Sayfa blokları",
-      "posts": "Gönderi bileşenleri"
+      "pages": "Page blocks",
+      "posts": "Post components"
     },
     "categories": {
-      "hero": "Kahraman",
-      "features": "Özellikler",
-      "comparator": "Karşılaştırıcı",
-      "pricing": "Fiyatlandırma",
-      "cta": "Harekete geçirici mesaj",
-      "contact": "İletişim",
-      "integration": "Entegrasyon",
-      "logos": "Logo bulutu",
-      "testimonials": "Görüşler",
-      "stats": "İstatistikler",
+      "hero": "Hero",
+      "features": "Features",
+      "comparator": "Comparator",
+      "pricing": "Pricing",
+      "cta": "Call to action",
+      "contact": "Contact",
+      "integration": "Integration",
+      "logos": "Logo cloud",
+      "testimonials": "Testimonials",
+      "stats": "Stats",
       "faq": "FAQ",
-      "content": "İçerik",
-      "team": "Takım",
-      "embed": "Yerleştir",
-      "footer": "Altbilgi",
-      "cards": "Kartlar",
-      "archive": "Arşiv",
-      "header": "Başlık",
-      "index": "Dizin",
-      "author": "Yazar",
-      "newsletter": "Bülten",
-      "related": "İlgili"
+      "content": "Content",
+      "team": "Team",
+      "embed": "Embed",
+      "footer": "Footer",
+      "cards": "Cards",
+      "archive": "Archive",
+      "header": "Header",
+      "index": "Index",
+      "author": "Author",
+      "newsletter": "Newsletter",
+      "related": "Related"
     },
-    "composerAdd": "Kurulum komutuna {slug} ekleyin",
-    "composerRemove": "Kurulum komutundan {slug} karakterini kaldırın",
+    "composerAdd": "Add {slug} to the install command",
+    "composerRemove": "Remove {slug} from the install command",
     "theme": {
-      "brandLegend": "Kataloğu marka renginizde önizleyin",
-      "brandLabel": "Marka",
-      "previewBrand": "{color}'da önizleme",
+      "brandLegend": "Preview the catalog in your brand colour",
+      "brandLabel": "Brand",
+      "previewBrand": "Preview in {color}",
       "colors": {
-        "emerald": "Zümrüt",
-        "sky": "Gökyüzü",
-        "indigo": "Çivit mavisi",
-        "violet": "Menekşe",
-        "rose": "Gül",
-        "amber": "kehribar"
+        "emerald": "Emerald",
+        "sky": "Sky",
+        "indigo": "Indigo",
+        "violet": "Violet",
+        "rose": "Rose",
+        "amber": "Amber"
       },
-      "radiusLegend": "Kataloğu farklı bir köşe yarıçapında önizleyin",
-      "radiusLabel": "Yarıçap",
-      "previewRadius": "{style} köşeleriyle önizleme",
+      "radiusLegend": "Preview the catalog at a different corner radius",
+      "radiusLabel": "Radius",
+      "previewRadius": "Preview with {style} corners",
       "radii": {
-        "sharp": "Keskin",
-        "default": "Varsayılan",
-        "round": "Yuvarlak"
+        "sharp": "Sharp",
+        "default": "Default",
+        "round": "Round"
       }
     }
   },
@@ -287,192 +287,192 @@
     "contribute": "Propose or discuss a component"
   },
   "Templates": {
-    "metadataTitle": "Payload CMS Next.js için şablonlar | Konseptler ve Tarifler",
-    "metadataDescription": "On beş sektördeki (SaaS, ajans, ticaret, sağlık hizmetleri, restoran, emlak ve daha fazlası) Payload CMS şablon kavramlarını keşfedin - her sayfayı önizleyin ve yazılan blok tarifini inceleyin.",
-    "detailTitle": "{title} şablonu",
-    "back": "Şablonlar",
-    "previewPageLabel": "{title} önizleme sayfası",
-    "previewViewport": "Görüntü alanı boyutunu önizleyin",
-    "desktop": "Masaüstü",
+    "metadataTitle": "Payload CMS Templates for Next.js | Concepts & Recipes",
+    "metadataDescription": "Explore Payload CMS template concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate and more — preview every page and inspect the typed block recipe.",
+    "detailTitle": "{title} template",
+    "back": "Templates",
+    "previewPageLabel": "{title} preview page",
+    "previewViewport": "Preview viewport size",
+    "desktop": "Desktop",
     "tablet": "Tablet",
-    "mobile": "Mobil",
-    "previewFrameTitle": "{title} şablon önizlemesi — {page} sayfa",
-    "eyebrow": "Şablonlar",
-    "title": "Payload CMS şablon konseptleri, kurulabilir bloklardan oluşturulmuştur",
-    "status": "Konsept önizlemesi",
-    "disclosure": "Bu, göz atılabilir bir tam site konseptidir. Her bölüm açık kayıt defterindeki bloklardan oluşur ve bir komut tüm blok kümesini yükler; burada gösterilen seçilmiş kopya eklenmez, bu nedenle sayfaları yöneticide kendiniz birleştirirsiniz.",
-    "startingPoint": "Bir başlangıç noktası seçin",
-    "description": "On beş sektördeki eksiksiz Payload CMS ve Next.js site konseptlerini keşfedin - SaaS, ajans, ticaret, sağlık hizmetleri, restoran, emlak, müzik ve daha fazlası. Her sayfayı canlı önizlemede açın, ardından her bölümü bugün kurabileceğiniz yazılı bir bloğa kadar takip edin.",
-    "components": "Yüklenebilir bileşenlere göz atın",
-    "installation": "Kurulum kılavuzunu okuyun",
-    "official": "Resmi Payload şablonundan başlayın",
-    "showcases": "Şablon vitrinleri",
-    "questionsEyebrow": "Sorular",
-    "questionsHeading": "Payload CMS şablon soruları, yanıtlandı",
-    "questionsIntro": "Bugün neyin işe yaradığı ve neyin tasarım referansı olarak kaldığı konusunda kavramlar kasıtlı olarak açıktır.",
-    "q1": "Bu Payload CMS şablonları yüklenebilir mi?",
-    "a1": "Hayır. Bunlar, paketli başlangıç ​​depoları değil, göz atılabilir tam site konseptleridir. Her tarifteki ayrı bloklar kurulabilir ve her tarif, ilgili bileşen belgelerine bağlanır.",
-    "q2": "Bunların Payload'ın resmi şablonundan farkı nedir?",
-    "a2": "Resmi web sitesi şablonu, yeni bir projeye eksiksiz bir uygulama temeli sağlar. Bu kavramlar, başlangıç-proje rolünü değiştirmeden, tam bir pazarlama sitesinin nasıl görünebileceğini ve her sayfayı hangi yazılan blokların oluşturduğunu gösterir.",
-    "q3": "Tarifleri mevcut bir Payload projesinde kullanabilir miyim?",
-    "a3": "Evet. Bir konsept açın, sipariş edilen tarifini inceleyin ve sitenize uygun bölümleri seçin. Katalog, her bloğun alanlarını ve desteklenen Payload CMS v3 kurulum yolunu belgelemektedir.",
-    "communityEyebrow": "Topluluk",
-    "communityHeading": "Şablonlara açık olarak karar verilir",
-    "communityIntro": "Bu kavramlar topluluktaki bir soruyu yanıtlamak için var: tam site şablonları kurulabilir hale gelmeli mi? Tarifler, kurgusal markalar ve yükleyici RFC'nin tümü halka açık depoda bulunur; hiçbir geçit yoktur, e-posta yakalama yoktur.",
-    "allConcepts": "Tüm konseptler",
-    "filter": "Kavramları kategoriye göre filtreleyin",
-    "showing": "{total} kavramlarının {visible}'ı gösteriliyor",
-    "visualTone": "Görsel ton",
-    "counts": "{pages} sayfa · {blocks} benzersiz bloklar",
-    "explore": "Şablonu keşfedin",
-    "openPreview": "Tam önizlemeyi aç",
-    "posterLabel": "{title} şablonunu keşfedin",
-    "posterAlt": "{title} şablonu — ana sayfa konsept posteri",
-    "contributionRepository": "Depoya göz atın",
-    "contributionRepositoryDescription": "Vitrin kaynağını okuyun — her tarif, depodaki düz verilerdir.",
-    "contributionRfc": "Yükleyici RFC'sini okuyun",
-    "contributionRfcDescription": "Konsept tarifleri isteğe bağlı, şeffaf bir kurulum iş akışına dönüştürme önerisini inceleyin.",
+    "mobile": "Mobile",
+    "previewFrameTitle": "{title} template preview — {page} page",
+    "eyebrow": "Templates",
+    "title": "Payload CMS template concepts, built from installable blocks",
+    "status": "Concept preview",
+    "disclosure": "This is a browsable full-site concept. Every section is composed from blocks in the open registry, and one command installs the whole block set — the curated copy shown here is not seeded, so you assemble the pages yourself in the admin.",
+    "startingPoint": "Choose a starting point",
+    "description": "Explore complete Payload CMS and Next.js site concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate, music and more. Open every page in a live preview, then trace each section back to a typed block you can install today.",
+    "components": "Browse installable components",
+    "installation": "Read the installation guide",
+    "official": "Start from the official Payload template",
+    "showcases": "Template showcases",
+    "questionsEyebrow": "Questions",
+    "questionsHeading": "Payload CMS template questions, answered",
+    "questionsIntro": "The concepts are intentionally open about what works today and what remains a design reference.",
+    "q1": "Are these Payload CMS templates installable?",
+    "a1": "No. They are browsable full-site concepts, not packaged starter repositories. The individual blocks in each recipe are installable, and every recipe links to the relevant component documentation.",
+    "q2": "How do these differ from Payload’s official template?",
+    "a2": "The official website template gives a new project a complete application foundation. These concepts show how a full marketing site can look and which typed blocks compose each page, without replacing that starter-project role.",
+    "q3": "Can I use the recipes in an existing Payload project?",
+    "a3": "Yes. Open a concept, inspect its ordered recipe, and choose the sections that fit your site. The catalog documents each block’s fields and the supported Payload CMS v3 installation path.",
+    "communityEyebrow": "Community",
+    "communityHeading": "Templates are decided in the open",
+    "communityIntro": "These concepts exist to answer one question with the community: should full-site templates become installable? The recipes, fictional brands, and installer RFC all live in the public repository — nothing gated, no email capture.",
+    "allConcepts": "All concepts",
+    "filter": "Filter concepts by category",
+    "showing": "Showing {visible} of {total} concepts",
+    "visualTone": "Visual tone",
+    "counts": "{pages} pages · {blocks} unique blocks",
+    "explore": "Explore template",
+    "openPreview": "Open full preview",
+    "posterLabel": "Explore the {title} template",
+    "posterAlt": "{title} template — home page concept poster",
+    "contributionRepository": "Browse the repository",
+    "contributionRepositoryDescription": "Read the showcase source — every recipe is plain data in the repository.",
+    "contributionRfc": "Read the installer RFC",
+    "contributionRfcDescription": "Review the proposal for turning concept recipes into an optional, transparent install workflow.",
     "categories": {
-      "agency": "Ajans",
-      "civic": "Sivil",
-      "commerce": "Ticaret",
-      "education": "Eğitim",
-      "event": "Olay",
+      "agency": "Agency",
+      "civic": "Civic",
+      "commerce": "Commerce",
+      "education": "Education",
+      "event": "Event",
       "fintech": "Fintech",
-      "healthcare": "Sağlık",
-      "marketplace": "Pazaryeri",
-      "music": "Müzik",
-      "nonprofit": "Kâr Amacı Gütmeyen Kuruluş",
-      "portfolio": "Portföy",
-      "real-estate": "Gayrimenkul",
-      "restaurant": "Restoran",
+      "healthcare": "Healthcare",
+      "marketplace": "Marketplace",
+      "music": "Music",
+      "nonprofit": "Nonprofit",
+      "portfolio": "Portfolio",
+      "real-estate": "Real estate",
+      "restaurant": "Restaurant",
       "saas": "SaaS",
-      "trade": "Ticaret"
+      "trade": "Trade"
     }
   },
   "Blog": {
-    "metadataTitle": "Payload CMS blok ve kurulum kılavuzları",
-    "metadataDescription": "Yeniden kullanılabilir blokları kurmak, koleksiyonları ve oluşturucuları kablolamak, türleri oluşturmak ve işlemeyen blokları düzeltmek için pratik Payload CMS v3 kılavuzları.",
-    "eyebrow": "Pratik Payload CMS v3 kılavuzu",
-    "featured": "Kanıtlanmış bir kılavuzla başlayın",
-    "installationLabel": "Kurulum kılavuzu",
-    "installationTitle": "Kablolu bir Payload bloğu kurun",
-    "installationDescription": "Desteklenen CLI ile gerçek bir blok ekleyin, ardından gelen her dosyayı ve kablolama değişikliğini gözden geçirin.",
-    "installationAction": "Kurulum kılavuzunu takip edin",
-    "wiringLabel": "Blok kablolama kılavuzu",
-    "wiringTitle": "Yeniden kullanılabilir bir blok bağlayın",
-    "wiringDescription": "Kayıt, oluşturma, oluşturulan türler ve yönetici içe aktarma haritası yoluyla yapılandırmadan Payload CMS v3 bloğunu izleyin.",
-    "troubleshootingLabel": "Sorun giderme kılavuzu",
-    "troubleshootingTitle": "Oluşturulmayacak bir bloğu düzeltin",
-    "troubleshootingDescription": "Kaydedilmiş bir bloğun sayfada neden görünmediğini genellikle açıklayan dört yeri işaretleyin.",
-    "readGuide": "Kılavuzu okuyun",
-    "notesEyebrow": "Kayıt defterinden alan notları",
-    "notesTitle": "Daha fazla Payload CMS alan notu",
-    "notesDescription": "Uygulama derslerine, bileşen tasarım notlarına göz atın ve açık kayıt defterindeki yayın öykülerine göz atın.",
-    "browseComponents": "Tüm {count} kurulabilir bileşenlere göz atın",
-    "empty": "Henüz gönderi yok — kısa süre sonra tekrar kontrol edin.",
-    "back": "Bloga geri dön",
-    "keepReading": "Okumaya devam edin",
-    "related": "İlgili okumalar",
-    "tags": "Makale etiketleri",
+    "metadataTitle": "Payload CMS block and installer guides",
+    "metadataDescription": "Practical Payload CMS v3 guides for installing reusable blocks, wiring collections and renderers, generating types, and fixing blocks that do not render.",
+    "eyebrow": "Practical Payload CMS v3 guidance",
+    "featured": "Start with a proven guide",
+    "installationLabel": "Installation guide",
+    "installationTitle": "Install a wired Payload block",
+    "installationDescription": "Add a real block with the supported CLI, then review every file and wiring change that lands.",
+    "installationAction": "Follow the installation guide",
+    "wiringLabel": "Block wiring guide",
+    "wiringTitle": "Wire a reusable block",
+    "wiringDescription": "Follow a Payload CMS v3 block from config through registration, rendering, generated types, and the admin import map.",
+    "troubleshootingLabel": "Troubleshooting guide",
+    "troubleshootingTitle": "Fix a block that will not render",
+    "troubleshootingDescription": "Check the four places that usually explain why a saved block does not appear on the page.",
+    "readGuide": "Read the guide",
+    "notesEyebrow": "Field notes from the registry",
+    "notesTitle": "More Payload CMS field notes",
+    "notesDescription": "Browse implementation lessons, component design notes, and release stories from the open registry.",
+    "browseComponents": "Browse all {count} installable components",
+    "empty": "No posts yet — check back soon.",
+    "back": "Back to blog",
+    "keepReading": "Keep reading",
+    "related": "Related reading",
+    "tags": "Article tags",
     "series": {
-      "project-notes": "Proje notları",
-      "foundations": "Temeller",
-      "installer-internals": "Kurulumcunun dahili bileşenleri",
-      "component-design": "Bileşen tasarımı",
-      "production-guides": "Üretim kılavuzları",
-      "open-source": "Kalite ve topluluk"
+      "project-notes": "Project notes",
+      "foundations": "Foundations",
+      "installer-internals": "Installer internals",
+      "component-design": "Component design",
+      "production-guides": "Production guides",
+      "open-source": "Quality & community"
     }
   },
   "Footer": {
-    "home": "Payload Components ana sayfası",
-    "intro": "Kablolamalarıyla birlikte yüklenen, yazılan Payload CMS bileşenler — tek komutta koleksiyon yapılandırması, oluşturma eşlemesi, oluşturulan türler ve içe aktarma haritası.",
-    "product": "Ürün",
-    "components": "Bileşenler",
-    "project": "Proje",
-    "componentCatalog": "Bileşen kataloğu",
-    "templateConcepts": "Şablon kavramları",
-    "documentation": "Belgeler",
-    "installWorkflow": "İş akışını yükleyin",
-    "architecture": "Mimarlık",
-    "aiDiscovery": "Yapay zeka keşfi",
-    "allComponents": "Tüm {count} bileşenler",
-    "about": "Hakkında",
-    "brandGuide": "Marka Kılavuzu",
-    "openIssue": "Bir sorun aç",
-    "releases": "Sürümler",
-    "updates": "Güncelleme beslemesi",
-    "contributing": "Katkıda Bulunmak",
-    "privacy": "Gizlilik",
-    "registry": "Kayıt Defteri JSON",
-    "license": "MIT lisanslı · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · kayıt defterini aç"
+    "home": "Payload Components home",
+    "intro": "Typed Payload CMS components that install with their wiring — collection config, render mapping, generated types, and import map in one command.",
+    "product": "Product",
+    "components": "Components",
+    "project": "Project",
+    "componentCatalog": "Component catalog",
+    "templateConcepts": "Template concepts",
+    "documentation": "Documentation",
+    "installWorkflow": "Install workflow",
+    "architecture": "Architecture",
+    "aiDiscovery": "AI discovery",
+    "allComponents": "All {count} components",
+    "about": "About",
+    "brandGuide": "Brand Guide",
+    "openIssue": "Open an issue",
+    "releases": "Releases",
+    "updates": "Updates feed",
+    "contributing": "Contributing",
+    "privacy": "Privacy",
+    "registry": "Registry JSON",
+    "license": "MIT licensed · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · open registry"
   },
   "Maintainer": {
-    "body": "payload-components'ı oluşturdum çünkü Payload bloğu yüklemek hiçbir zaman kopyala-yapıştır işlemi olmadı - sonraki dört düzenlemeydi. CLI var, dolayısıyla ikinci ve onuncu proje bu kablolamayı ücretsiz olarak alacak. Güvenmeden önce yükleyici kaynağını okuyun; nakliyesi MIT önemli olan.",
-    "role": "Bakımcı, Payload Components",
+    "body": "I built payload-components because installing a Payload block was never the copy-paste — it was the four edits after. The CLI exists so the second project, and the tenth, get that wiring for free. Read the installer source before you trust it; shipping it MIT is the point.",
+    "role": "Maintainer, Payload Components",
     "github": "{name} on GitHub"
   },
   "PageMetadata": {
     "about": {
-      "title": "Hakkında",
-      "openGraphTitle": "Payload Components Hakkında",
-      "description": "Neden Payload Components var: aynı Payload blokları yeniden inşa etmeyi, bunları elle yeniden kablolamayı ve serbest projelerdeki her kurulumu yeniden kanıtlamayı bırakın."
+      "title": "About",
+      "openGraphTitle": "About Payload Components",
+      "description": "Why Payload Components exists: stop rebuilding the same Payload blocks, rewiring them by hand, and re-proving every install across freelance projects."
     },
     "privacy": {
-      "title": "Gizlilik",
-      "openGraphTitle": "Gizlilik — Payload Components",
-      "description": "Payload Components neyi ölçer, hangi üçüncü taraflara verilir ve seçiminizi istediğiniz zaman nasıl değiştirebilir veya geri çekebilirsiniz."
+      "title": "Privacy",
+      "openGraphTitle": "Privacy — Payload Components",
+      "description": "What Payload Components measures, which third parties receive it, and how to change or withdraw your choice at any time."
     },
     "brandGuide": {
-      "title": "Marka Kılavuzu",
-      "openGraphTitle": "Payload Components Marka Rehberi",
-      "description": "Payload Components markası: zümrüt vurgulu, ışık öncelikli shadcn monokrom palet, Geist ve Instrument Serif tipi sistem, logo kullanımı ve ses."
+      "title": "Brand Guide",
+      "openGraphTitle": "Payload Components Brand Guide",
+      "description": "The Payload Components brand: a light-first shadcn monochrome palette with one emerald accent, the Geist and Instrument Serif type system, logo usage, and voice."
     }
   },
   "FaqContent": {
     "entries": {
       "one": {
-        "question": "Payload Components ücretsiz mi?",
-        "answer": "Evet — ve bu şekilde kalacak şekilde tasarlandı. Kayıt defteri, CLI, tüm {count} kurulabilir bileşenler ve bu site MIT lisanslı bir depodur: fiyatlandırma yok, lisans anahtarı yok, geçitli katman yok. Payload Components tasarımı itibarıyla toplulukta ilk sırada yer alır; katalog, ücretli bir yol haritasından değil, gerçek kurulumlardan ve katkılardan oluşur."
+        "question": "Is Payload Components free?",
+        "answer": "Yes — and built to stay that way. The registry, the CLI, all {count} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap."
       },
       "two": {
-        "question": "Payload CMS bloğu nedir?",
-        "answer": "Payload'de bir blok, birleştirilebilir bir sayfa oluşturucu alanıdır - bir sayfayı düzenlemek için yeniden kullanılabilir bir içerik bölümü (kahraman, özellik ızgarası, CTA) düzenleyicileri yığınıdır. Payload Components önceden oluşturulmuş blokları artı onları canlı kılan kabloları gönderir, böylece bir blok yalnızca kopyalanmaz: Sayfalar koleksiyonunuza kaydedilir, oluşturucunuzda eşlenir, yazılır ve yönetici içe aktarma haritasına eklenir.",
-        "link": "Payload blok kılavuzunu okuyun"
+        "question": "What is a Payload CMS block?",
+        "answer": "In Payload, a block is a composable page-builder field — a reusable content section (hero, feature grid, CTA) editors stack to lay out a page. Payload Components ships pre-built blocks plus the wiring that makes them live, so a block is not just copied in: it is registered in your Pages collection, mapped in your renderer, typed, and added to the admin import map.",
+        "link": "Read the Payload blocks guide"
       },
       "three": {
-        "question": "Payload CMS'a nasıl kahraman bloğu eklerim?",
-        "answer": "CLI — `npx payload-components add hero-basic` ile bir tane yükleyin. Blok kaynağını projenize kopyalar ve uçtan uca bağlar: onu Sayfalar koleksiyonunuza kaydeder, RenderBlocks'de eşler ve Payload türlerinizi ve yönetici içe aktarma haritanızı yeniden oluşturur - incelenebilir bir git diff olarak açılır. Aynı komut kataloğa herhangi bir bloğu ekler."
+        "question": "How do I add a hero block to Payload CMS?",
+        "answer": "Install one with the CLI — `npx payload-components add hero-basic`. It copies the block source into your project and wires it end to end: registers it in your Pages collection, maps it in RenderBlocks, and regenerates your Payload types and admin import map — landing as one reviewable git diff. The same command adds any block in the catalog."
       },
       "four": {
-        "question": "Yükleme işlemi depomda tam olarak neyi değiştirir?",
-        "answer": "Üç şey: bileşen kaynak dosyaları kopyalanır (blok yapılandırması, bileşen, paylaşılan yardımcı programlar), tam olarak iki dosya yamanır (Pages koleksiyonunuz ve RenderBlocks.tsx — her bileşen bildirimi bunları bildirir) ve Payload kendi çıktısını yeniden oluşturur (payload-types.ts ve yönetici içe aktarma haritası). Hepsi sıradan bir git diff olarak görünüyor.",
-        "link": "Kurulum kılavuzunu okuyun"
+        "question": "What exactly does an install change in my repo?",
+        "answer": "Three things: component source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each component manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.",
+        "link": "Read the installation guide"
       },
       "five": {
-        "question": "Aynı kurulumu iki kez çalıştırırsam ne olur?",
-        "answer": "Yakınsar. CLI mevcut kablolamayı algılar ve atlar — gerçek çıkış payload-components: \"hero-basic\" is already installed'dır. Yükleme durumu .payload-components/state.json'e kaydedilir, böylece kısmi yüklemeler sessizce bozulmak yerine görünür ve kurtarılabilir olur."
+        "question": "What happens if I run the same install twice?",
+        "answer": "It converges. The CLI detects existing wiring and skips it — the real output is payload-components: \"hero-basic\" is already installed. Install state is recorded in .payload-components/state.json, so partial installs are visible and recoverable instead of silently broken."
       },
       "six": {
-        "question": "Bugün hangi projeler destekleniyor?",
-        "answer": "Payload v3 + Next.js 15/16 resmi web sitesi başlatıcısı gibi şekillendirilmiş projeler — src/blocks/RenderBlocks.tsx aracılığıyla düzen bloklarını işlemek ve src/collections/Pages/index.ts.'ye sayfa bloklarını kaydetmek CLI herhangi bir şeye dokunmadan önce projenizi yayınlanan destek matrisiyle karşılaştırır."
+        "question": "Which projects are supported today?",
+        "answer": "Payload v3 + Next.js 15/16 projects shaped like the official website starter — rendering layout blocks through src/blocks/RenderBlocks.tsx and registering page blocks in src/collections/Pages/index.ts. The CLI checks your project against the published support matrix before touching anything."
       },
       "seven": {
-        "question": "Neden sadece npx shadcn add komutunu çalıştırmıyorsunuz?",
-        "answer": "Düz bir shadcn kurulumu dosyaları kopyalar ve durur. Payload bloklar yalnızca koleksiyon şemanıza kaydedildikten, oluşturucunuzda eşlendikten, yazıldıktan ve yönetici içe aktarma haritasına eklendikten sonra çalışır. payload-components aynı kayıt defteri teslimatını tam olarak bu kablolamayla sarar; bu sınır üründür ve yukarıdaki kablolama defteri bunu satır satır gösterir.",
-        "link": "shadcn karşılaştırmasının tamamını okuyun"
+        "question": "Why not just run npx shadcn add?",
+        "answer": "A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-components wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.",
+        "link": "Read the full shadcn comparison"
       },
       "eight": {
-        "question": "Yeni bileşenler kataloğa nasıl girer?",
-        "answer": "Kasıtlı olarak. Bir bileşen yalnızca kaynağı, manifest meta verileri, dokümanlar sayfası ve yükleyici test kapsamı birlikte gönderildiğinde gelir; yarı kablolu bloklar asla kataloğa ulaşmaz. Bir GitHub sayısında sonraki bileşeni önerin; katalog gerçek yüklemelerden oluşur."
+        "question": "How do new components get into the catalog?",
+        "answer": "Deliberately. A component lands only when its source, manifest metadata, docs page, and installer test coverage ship together — half-wired blocks never reach the catalog. Propose the next component in a GitHub issue; the catalog grows from real installs."
       }
     }
   },
   "TranslationNotice": {
-    "fallback": "Bu sayfa henüz çevrilmedi; bu nedenle İngilizce kaynak içerik gösteriliyor.",
-    "label": "Çeviri durumu",
-    "machine": "Bu sayfa makineyle çevrildi ve henüz ana dili konuşan biri tarafından incelenmedi.",
-    "viewEnglish": "İngilizce kaynağı görüntüle"
+    "fallback": "This page is not translated yet, so its source content is shown in English.",
+    "label": "Translation status",
+    "machine": "This page was machine translated and has not been reviewed by a native speaker.",
+    "viewEnglish": "View English source"
   }
 }

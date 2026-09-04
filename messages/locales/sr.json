@@ -1,259 +1,259 @@
 {
   "Metadata": {
-    "title": "Payload Components — потпуно ожичени блокови за Payload CMS",
-    "description": "Блокови отвореног кода Payload CMS који се инсталирају са својом конфигурацијом колекције, мапирањем рендерера, генерисаним типовима и мапом увоза администратора."
+    "title": "Payload Components — fully-wired blocks for Payload CMS",
+    "description": "Open-source Payload CMS blocks that install with their collection config, renderer mapping, generated types, and admin import map."
   },
   "Common": {
-    "home": "Почетна",
-    "documentation": "Документација",
-    "blog": "Блог",
-    "componentCatalog": "Каталог компоненти",
-    "brandGuide": "Водич за бренд",
-    "about": "О",
-    "privacy": "Приватност",
-    "copy": "Копирај",
-    "copied": "Копирано",
-    "copiedDescription": "Копирано у међуспремник."
+    "home": "Home",
+    "documentation": "Documentation",
+    "blog": "Blog",
+    "componentCatalog": "Component catalog",
+    "brandGuide": "Brand Guide",
+    "about": "About",
+    "privacy": "Privacy",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copiedDescription": "Copied to clipboard."
   },
   "Header": {
-    "skip": "Прескочи на садржај",
-    "home": "Почетна страница Payload Components",
-    "github": "GitHub спремиште",
-    "openNavigation": "Отвори навигацију",
-    "closeNavigation": "Затвори навигацију",
-    "language": "Језик",
+    "skip": "Skip to content",
+    "home": "Payload Components home",
+    "github": "GitHub repository",
+    "openNavigation": "Open navigation",
+    "closeNavigation": "Close navigation",
+    "language": "Language",
     "nav": {
-      "docs": "Документи",
-      "components": "Компоненте",
-      "templates": "Шаблони",
-      "blog": "Блог",
-      "about": "О"
+      "docs": "Docs",
+      "components": "Components",
+      "templates": "Templates",
+      "blog": "Blog",
+      "about": "About"
     }
   },
   "Consent": {
-    "title": "Колачићи аналитике",
-    "description": "Користимо Google Analytics и PostHog да видимо које компоненте и документе људи заправо користе. Одбијте и ниједан се не учитава — без колачића, без идентификатора. Мерење брзине странице се одвија у оба смера и не чува ништа.",
-    "privacy": "Приватност",
-    "decline": "Одбиј",
-    "accept": "Прихвати"
+    "title": "Analytics cookies",
+    "description": "We use Google Analytics and PostHog to see which components and docs people actually use. Decline and neither one loads — no cookie, no identifier. Page-speed measurement runs either way and stores nothing.",
+    "privacy": "Privacy",
+    "decline": "Decline",
+    "accept": "Accept"
   },
   "Privacy": {
-    "eyebrow": "Приватност",
-    "heading": "Управо оно што меримо.",
-    "accentWord": "мере",
-    "intro": "Ништа што чува било шта на вашем уређају се не учитава док не прихватите. Ова страница именује сваки процесор, сваки догађај и свако поље — и омогућава вам да се предомислите у било ком тренутку.",
-    "consent": "Све што би сачувало нешто на вашем уређају чека вашу сагласност. Одбиј и Google Analytics и PostHog се никада не учитавају — колачић се не поставља и не чува се идентификатор. Ако ваш претраживач пошаље Global Privacy Control или Do Not Track, то се аутоматски рачуна као одбијање и никада вам се не приказује банер.",
-    "alwaysOnProcessors": "Vercel Analytics и Speed Insights су изузетак и користе се за све. Не постављају колачиће и не чувају идентификатор — мере учитавање страница и перформансе у збиру, што је оно што одржава ову веб локацију брзом. На вашем уређају нема шта да се одјавите.",
-    "noAccounts": "На овом сајту нема налога, тако да ништа од овога није везано за идентитет. Никада не прикупљамо унос обрасца, слободан текст или садржај страница које прегледате.",
-    "processorsTitle": "Ко прима податке",
-    "needsConsent": "Потребан је ваш пристанак",
-    "alwaysOn": "Увек укључен, ништа не складишти",
+    "eyebrow": "Privacy",
+    "heading": "Exactly what we measure.",
+    "accentWord": "measure",
+    "intro": "Nothing that stores anything on your device loads until you accept. This page names every processor, every event, and every field — and lets you change your mind at any time.",
+    "consent": "Anything that would store something on your device waits for your consent. Decline and Google Analytics and PostHog never load — no cookie is set and no identifier is kept. If your browser sends Global Privacy Control or Do Not Track, that counts as a decline automatically and you are never shown the banner.",
+    "alwaysOnProcessors": "Vercel Analytics and Speed Insights are the exception, and they run for everyone. They set no cookies and store no identifier — they measure page loads and performance in aggregate, which is what keeps this site fast. There is nothing on your device to opt out of.",
+    "noAccounts": "There are no accounts on this site, so none of this is tied to an identity. We never collect form input, free text, or the contents of pages you view.",
+    "processorsTitle": "Who receives data",
+    "needsConsent": "Needs your consent",
+    "alwaysOn": "Always on, stores nothing",
     "processors": {
       "vercel": {
-        "purpose": "Прикази странице и Core Web Vitals за хостовани сајт.",
-        "storage": "Без колачића и без идентификатора — ништа се не чува на вашем уређају."
+        "purpose": "Page views and Core Web Vitals for the hosted site.",
+        "storage": "No cookies and no identifier — nothing is stored on your device."
       },
       "ga4": {
-        "purpose": "Збирни прикази страница и извори саобраћаја.",
-        "storage": "Поставља сопствене колачиће прве стране (_ga, _га_*)."
+        "purpose": "Aggregate page views and traffic sources.",
+        "storage": "Sets its own first-party cookies (_ga, _ga_*)."
       },
       "posthog": {
-        "purpose": "Три догађаја производа наведена у наставку.",
-        "storage": "Насумични pc_distinct_id у localStorage, плус име путање органског уноса у sessionStorage за тренутну картицу."
+        "purpose": "The three product events listed below.",
+        "storage": "A random pc_distinct_id in localStorage, plus an organic entry pathname in sessionStorage for the current tab."
       }
     },
-    "eventsTitle": "Догађаји које шаљемо",
-    "eventsIntro": "Три, и њихова поља су фиксна. Свака вредност долази из урезане руте, везе или команде за инсталацију - никада из било чега што унесете.",
-    "trafficSource": "Прикази странице означавају саобраћај само као органску претрагу или друго. Та ознака је изведена у вашем прегледачу из фиксне листе претраживача или експлицитног органског маркера кампање. Необрађени упућивач, кампања и стринг упита се никада не шаљу. Контролисане провере сајтова носе прави верификациони маркер тако да могу бити искључене из броја посетилаца; обичне посете носе лажне.",
-    "entryPage": "Након пристанка, органске посете задржавају прву путању истог сајта за тренутну картицу прегледача. Копије за инсталирање и кликови на примарни линк укључују то име путање као <code>entry_page</code>. Директне посете и посете упутница не. Никада не садржи стринг упита или необрађени упућивач и брише се када повучете сагласност.",
+    "eventsTitle": "The events we send",
+    "eventsIntro": "Three, and their fields are fixed. Every value comes from a committed route, link, or install command — never from anything you type.",
+    "trafficSource": "Page views label traffic only as organic search or other. That label is derived in your browser from a fixed search-engine list or an explicit organic campaign marker. The raw referrer, campaign, and query string are never sent. Controlled site checks carry a true verification marker so they can be excluded from visitor counts; ordinary visits carry false.",
+    "entryPage": "After consent, organic visits keep the first same-site pathname for the current browser tab. Install copies and primary link clicks include that pathname as <code>entry_page</code>. Direct and referral visits do not. It never contains a query string or raw referrer and is deleted when you withdraw consent.",
     "events": {
       "pageview": {
-        "when": "Јавна рута се учитава или мења."
+        "when": "A public route loads or changes."
       },
       "copyInstallCommand": {
-        "when": "Копирате команду за инсталацију."
+        "when": "You copy an install command."
       },
       "primaryLinkClick": {
-        "when": "Пратите везу за складиште, документе или компоненте."
+        "when": "You follow a repository, docs, or components link."
       }
     },
-    "choiceTitle": "Ваш избор",
-    "choice": "Ваша одлука се чува локално у вашем претраживачу под <code>pc_consent</code>. Промените га овде у било ком тренутку. Повлачење чини више од заустављања прикупљања — брише оно што је омогућено креирање: Google Analytics колачићи (<code>_ga</code>, <code>_ga_*</code>) и PostHog идентификатор се уклањају, а страница се поново учитава тако да се ништа већ покренуто не наставља. Уклоњена је и путања органског уноса само за сесију.",
+    "choiceTitle": "Your choice",
+    "choice": "Your decision is stored locally in your browser under <code>pc_consent</code>. Change it here at any time. Withdrawing does more than stop collection — it deletes what the opt-in created: the Google Analytics cookies (<code>_ga</code>, <code>_ga_*</code>) and the PostHog identifier are removed, and the page reloads so nothing already running carries on. The session-only organic entry pathname is removed too.",
     "settings": {
-      "privacySignal": "Ваш претраживач шаље сигнал приватности (Global Privacy Control или Do Not Track), тако да Google Analytics и PostHog остају искључени и ово се овде не може заменити.",
-      "on": "Google Analytics и PostHog су тренутно укључени.",
-      "off": "Google Analytics и PostHog су тренутно искључени.",
-      "undecided": "Још увек нисте изабрали, па су Google Analytics и PostHog искључени.",
-      "turnOff": "Искључите аналитику",
-      "turnOn": "Укључите аналитику"
+      "privacySignal": "Your browser sends a privacy signal (Global Privacy Control or Do Not Track), so Google Analytics and PostHog stay off and this cannot be overridden here.",
+      "on": "Google Analytics and PostHog are currently on.",
+      "off": "Google Analytics and PostHog are currently off.",
+      "undecided": "You have not chosen yet, so Google Analytics and PostHog are off.",
+      "turnOff": "Turn analytics off",
+      "turnOn": "Turn analytics on"
     }
   },
   "NotFound": {
-    "eyebrow": "Грешка 404",
-    "title": "Страница није пронађена",
-    "description": "Ова рута није у регистру. Компоненте, документи и каталог су.",
-    "home": "Иди кући",
-    "docs": "Прочитајте документе",
+    "eyebrow": "Error 404",
+    "title": "Page not found",
+    "description": "This route is not in the registry. The components, the docs, and the catalog are.",
+    "home": "Go home",
+    "docs": "Read the docs",
     "terminalTitle": "payload-components — 404"
   },
   "Docs": {
-    "title": "Документација",
-    "versionBanner": "MIT регистар · компоненте в{version}",
-    "github": "Звездица на GitHub",
-    "previousComponent": "Претходна компонента: {title}",
-    "nextComponent": "Следећа компонента: {title}",
-    "newIn": "Ново у {version}"
+    "title": "Documentation",
+    "versionBanner": "MIT registry · components v{version}",
+    "github": "Star on GitHub",
+    "previousComponent": "Previous component: {title}",
+    "nextComponent": "Next component: {title}",
+    "newIn": "New in {version}"
   },
   "HomeMetadata": {
-    "title": "Payload Components: Жичани Payload CMS блокови у једној команди",
-    "description": "Инсталирајте блокове Payload CMS за вишекратну употребу једном командом, укључујући конфигурацију колекције, мапе за рендеровање, генерисане типове и мапу увоза администратора за пројекте Next.js."
+    "title": "Payload Components: Wired Payload CMS Blocks in One Command",
+    "description": "Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects."
   },
   "Landing": {
     "hero": {
-      "eyebrow": "Отворени Payload блок регистар",
-      "primary": "Инсталирај Payload блокове",
-      "accent": "ожичен, не залепљен.",
-      "subheadline": "За Payload CMS програмере, једна команда инсталира блок, повезује га у Payload и поставља git diff који се може прегледати.",
-      "guide": "Прочитајте водич за инсталацију",
-      "github": "Звездица на GitHub",
-      "browse": "Прегледајте компоненте",
-      "copy": "Копирај команду инсталације",
-      "count": "{count} блокова у регистратору — сваки је повезан са Payload једном командом."
+      "eyebrow": "Open-source Payload block registry",
+      "primary": "Install Payload blocks",
+      "accent": "wired, not pasted.",
+      "subheadline": "For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.",
+      "guide": "Read the install guide",
+      "github": "Star on GitHub",
+      "browse": "Browse the components",
+      "copy": "Copy install command",
+      "count": "{count} blocks in the registry — every one wired into Payload by a single command."
     },
     "stack": {
-      "label": "Подржани стек",
-      "lede": "Инсталира се у стек који сте већ покренули"
+      "label": "Supported stack",
+      "lede": "Installs into the stack you already run"
     },
     "wiring": {
-      "eyebrow": "Граница инсталације",
-      "heading": "Блок није под напоном док није повезан.",
-      "intro": "Копирање датотека је лак део — четири измене после су где сваки блок, сваки репо губи дан.",
-      "source": "извор"
+      "eyebrow": "The install boundary",
+      "heading": "A block isn't live until it's wired.",
+      "intro": "Copying the files is the easy part — the four edits after are where every block, every repo, loses the day.",
+      "source": "source"
     },
     "workflow": {
-      "eyebrow": "Ток рада",
-      "heading": "Из каталога до урезивања у три потеза.",
-      "intro": "Без скела, без закључавања — обичан извор плус две закрпе са опсегом које можете прочитати.",
+      "eyebrow": "Workflow",
+      "heading": "From catalog to commit in three moves.",
+      "intro": "No scaffolds, no lock-in — plain source plus two scoped patches you can read.",
       "steps": {
-        "oneTitle": "Прочитајте уговор",
-        "oneDescription": "Поља, датотеке и закрпе — пре него што било шта покренете.",
-        "twoTitle": "Покрените једну команду",
-        "twoDescription": "CLI проверава ваш пројекат, а затим га повезује у једном пролазу.",
-        "threeTitle": "Урежи радни блок",
-        "threeDescription": "Извор, две закрпе, регенерисани типови — прегледан као сваки ПР."
+        "oneTitle": "Read the contract",
+        "oneDescription": "Fields, files, and patches — before you run anything.",
+        "twoTitle": "Run one command",
+        "twoDescription": "The CLI checks your project, then wires it in one pass.",
+        "threeTitle": "Commit a working block",
+        "threeDescription": "Source, two patches, regenerated types — reviewed like any PR."
       },
-      "badge": "Рендеред фром соурце",
-      "caption": "Обавезни резултат — прави извор компоненти, повезан у Payload и прегледан као сваки ПР."
+      "badge": "Source-mirrored specimen",
+      "caption": "A backend-free specimen that mirrors the installable component's visual classes. The committed source is wired into Payload and reviewed like any PR."
     },
     "catalog": {
-      "eyebrow": "Каталог",
-      "heading": "Каталог, приказан уживо.",
-      "intro": "Нема снимака екрана — сваки примерак је права компонента, приказана из извора.",
-      "browse": "Прегледајте каталог",
-      "preview": "Преглед уживо",
-      "blockCount": "{count, plural, one {# blok} few {# bloka} other {# blokova}}",
-      "browseFamily": "Прегледај {family}",
-      "allComponents": "Прегледај све {count} компоненте",
-      "postComponents": "Пост компоненте · У развоју",
-      "familyCount": "Може се инсталирати",
-      "familyName": "Блокови странице",
-      "familyDescription": "Блокови за прављење распореда страница — инсталирани са комплетним ожичењем: конфигурација колекције, мапирање рендеровања, генерисани типови, мапа увоза."
+      "eyebrow": "The catalog",
+      "heading": "The catalog, rendered live.",
+      "intro": "No screenshots — each backend-free specimen mirrors the installable component's visual classes.",
+      "browse": "Browse the catalog",
+      "preview": "Live preview",
+      "blockCount": "{count, plural, one {# block} other {# blocks}}",
+      "browseFamily": "Browse {family}",
+      "allComponents": "Browse all {count} components",
+      "postComponents": "Post components · In development",
+      "familyCount": "Installable",
+      "familyName": "Page blocks",
+      "familyDescription": "Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map."
     },
     "faq": {
-      "heading": "Питања, одговорено директно.",
-      "intro": "Кратка верзија докумената. Сваки одговор се везује за нешто што можете да проверите у спремишту.",
-      "dogfood": "Овај одељак је један од наших блокова"
+      "heading": "Questions, answered straight.",
+      "intro": "The short version of the docs. Every answer links back to something you can verify in the repository.",
+      "dogfood": "This section is one of our blocks"
     },
     "community": {
-      "eyebrow": "Отворени извор",
-      "heading": "Отворени код,",
-      "accent": "од краја до краја",
-      "intro": "Регистар, CLI, компоненте и ова локација су једно MIT-лиценцирано спремиште. Прочитајте инсталатер пре него што му верујете - то је поента.",
-      "copy": "Копирај команду инсталације",
-      "repository": "GitHub спремиште",
-      "issue": "Отворите проблем",
-      "invite": "Покретање у правом репо? Отворите проблем — ране инсталације се приказују."
+      "eyebrow": "Open source",
+      "heading": "Open source,",
+      "accent": "end to end",
+      "intro": "The registry, the CLI, the components, and this site are one MIT-licensed repository. Read the installer before you trust it — that is the point.",
+      "copy": "Copy install command",
+      "repository": "GitHub repository",
+      "issue": "Open an issue",
+      "invite": "Running it in a real repo? Open an issue — early installs get featured."
     }
   },
   "Catalog": {
-    "metadataTitle": "{count} Payload CMS Компоненте и блокови | Каталог",
-    "metadataDescription": "Прегледајте откуцане блокове Payload CMS. Покрените npx payload-components add '<component>' да повежете један са својом колекцијом, рендерером, генерисаним типовима и мапом увоза администратора.",
-    "eyebrow": "Регистар",
-    "title": "{count} Payload CMS компоненте и откуцани блокови",
-    "description": "Прегледајте све компоненте {count} Payload CMS које се могу инсталирати међу херојима, функцијама, ценама, позивима на акцију, интеграцијама, сведочењима, статистиком, FAQс, садржајем, тимовима, уграђеним елементима и подножјима. Једна команда CLI копира блок и повезује регистрацију његове колекције, мапирање рендерера, генерисане типове и мапу увоза администратора.",
-    "installation": "Погледајте како функционише инсталација са једном командом",
-    "blocksGuide": "Пратите блок од конфигурације до странице уживо",
-    "templates": "Истражите концепте шаблона Payload CMS",
-    "license": "MIT лиценцирано"
+    "metadataTitle": "{count} Payload CMS Components & Blocks | Catalog",
+    "metadataDescription": "Browse typed Payload CMS blocks. Run npx payload-components add '<component>' to wire one into your collection, renderer, generated types, and admin import map.",
+    "eyebrow": "Registry",
+    "title": "{count} Payload CMS components and typed blocks",
+    "description": "Browse all {count} installable Payload CMS components across heroes, features, pricing, calls to action, integrations, testimonials, stats, FAQs, content, teams, embeds, and footers. One CLI command copies a block and wires its collection registration, renderer mapping, generated types, and admin import map.",
+    "installation": "See how one-command installation works",
+    "blocksGuide": "Follow a block from config to live page",
+    "templates": "Explore Payload CMS template concepts",
+    "license": "MIT licensed"
   },
   "CatalogBrowser": {
-    "filter": "Компоненте филтера",
-    "allComponents": "Све компоненте",
-    "all": "Све",
-    "search": "Претражи компоненте",
-    "result": "{count, plural, one {# rezultat} few {# rezultata} other {# rezultata}}",
-    "empty": "Ниједна компонента не одговара вашим филтерима.",
-    "reset": "Ресетуј филтере",
-    "proposal": "Каталог намерно расте — извор, манифест, документи и покривеност инсталатера испоручују се заједно. Предложи следећу.",
-    "issue": "Отворите проблем",
-    "inDevelopment": "у развоју",
-    "roadmapPreview": "Pregled koncepta",
-    "planned": "Plan razvoja otvorenog koda",
-    "interest": "Pogledaj plan razvoja",
-    "interestLabel": "Pogledaj {component} u planu razvoja uredničkih komponenti",
-    "selected": "{count} изабрано",
-    "tray": "Изабране компоненте",
-    "copy": "Копирај команду инсталације",
-    "clear": "Обриши избор",
+    "filter": "Filter components",
+    "allComponents": "All components",
+    "all": "All",
+    "search": "Search components",
+    "result": "{count, plural, one {# result} other {# results}}",
+    "empty": "No components match your filters.",
+    "reset": "Reset filters",
+    "proposal": "The catalog grows deliberately — source, manifest, docs, and installer coverage ship together. Propose the next one.",
+    "issue": "Open an issue",
+    "inDevelopment": "In development",
+    "roadmapPreview": "Concept preview",
+    "planned": "Open-source roadmap",
+    "interest": "View the roadmap",
+    "interestLabel": "View {component} on the editorial roadmap",
+    "selected": "{count} selected",
+    "tray": "Selected components",
+    "copy": "Copy install command",
+    "clear": "Clear selection",
     "families": {
-      "pages": "Блокови странице",
-      "posts": "Пост компоненте"
+      "pages": "Page blocks",
+      "posts": "Post components"
     },
     "categories": {
-      "hero": "Херој",
-      "features": "Карактеристике",
-      "comparator": "Цомпаратор",
-      "pricing": "Цене",
-      "cta": "Позив на акцију",
-      "contact": "Контакт",
-      "integration": "Интеграција",
-      "logos": "Лого облак",
-      "testimonials": "Препоруке",
-      "stats": "Статистика",
+      "hero": "Hero",
+      "features": "Features",
+      "comparator": "Comparator",
+      "pricing": "Pricing",
+      "cta": "Call to action",
+      "contact": "Contact",
+      "integration": "Integration",
+      "logos": "Logo cloud",
+      "testimonials": "Testimonials",
+      "stats": "Stats",
       "faq": "FAQ",
-      "content": "Садржај",
-      "team": "Тим",
-      "embed": "Ембед",
-      "footer": "Подножје",
-      "cards": "Карте",
-      "archive": "Архива",
-      "header": "Заглавље",
-      "index": "Индекс",
-      "author": "Аутор",
-      "newsletter": "Билтен",
-      "related": "Повезано"
+      "content": "Content",
+      "team": "Team",
+      "embed": "Embed",
+      "footer": "Footer",
+      "cards": "Cards",
+      "archive": "Archive",
+      "header": "Header",
+      "index": "Index",
+      "author": "Author",
+      "newsletter": "Newsletter",
+      "related": "Related"
     },
-    "composerAdd": "Додајте {slug} наредби за инсталацију",
-    "composerRemove": "Уклоните {slug} из команде за инсталацију",
+    "composerAdd": "Add {slug} to the install command",
+    "composerRemove": "Remove {slug} from the install command",
     "theme": {
-      "brandLegend": "Прегледајте каталог у боји вашег бренда",
-      "brandLabel": "Боја",
-      "previewBrand": "Преглед у боји {color}",
+      "brandLegend": "Preview the catalog in your brand colour",
+      "brandLabel": "Brand",
+      "previewBrand": "Preview in {color}",
       "colors": {
-        "emerald": "Смарагдна",
-        "sky": "Небескоплава",
-        "indigo": "Индиго",
-        "violet": "Љубичаста",
-        "rose": "Ружичаста",
-        "amber": "Ћилибарска"
+        "emerald": "Emerald",
+        "sky": "Sky",
+        "indigo": "Indigo",
+        "violet": "Violet",
+        "rose": "Rose",
+        "amber": "Amber"
       },
-      "radiusLegend": "Прегледајте каталог са различито заобљеним угловима",
-      "radiusLabel": "Углови",
-      "previewRadius": "Преглед са {style} угловима",
+      "radiusLegend": "Preview the catalog at a different corner radius",
+      "radiusLabel": "Radius",
+      "previewRadius": "Preview with {style} corners",
       "radii": {
-        "sharp": "Оштри",
-        "default": "Подразумевани",
-        "round": "Заобљени"
+        "sharp": "Sharp",
+        "default": "Default",
+        "round": "Round"
       }
     }
   },
@@ -287,192 +287,192 @@
     "contribute": "Propose or discuss a component"
   },
   "Templates": {
-    "metadataTitle": "Payload CMS Шаблони за Next.js | Концепти и рецепти",
-    "metadataDescription": "Истражите концепте шаблона Payload CMS у петнаест вертикала — СааС, агенција, трговина, здравство, ресторан, некретнине и још много тога — прегледајте сваку страницу и прегледајте откуцани рецепт за блок.",
-    "detailTitle": "{title} шаблон",
-    "back": "Шаблони",
-    "previewPageLabel": "{title} страница за преглед",
-    "previewViewport": "Величина прозора за преглед",
-    "desktop": "Десктоп",
-    "tablet": "Таблет",
-    "mobile": "Мобилни",
-    "previewFrameTitle": "{title} преглед шаблона — {page} страница",
-    "eyebrow": "Шаблони",
-    "title": "Payload CMS концепти шаблона, изграђени од блокова који се могу инсталирати",
-    "status": "Преглед концепта",
-    "disclosure": "Ово је концепт целог сајта који се може прегледати. Сваки одељак је састављен од блокова у отвореном регистру, а једна команда инсталира цео скуп блокова — курирана копија приказана овде није засејана, тако да сами састављате странице у администратору.",
-    "startingPoint": "Одаберите почетну тачку",
-    "description": "Истражите комплетне концепте сајтова Payload CMS и Next.js у петнаест вертикала — СааС, агенција, трговина, здравство, ресторан, некретнине, музика и још много тога. Отворите сваку страницу у прегледу уживо, а затим пратите сваки одељак до откуцаног блока који можете да инсталирате данас.",
-    "components": "Прегледајте компоненте које се могу инсталирати",
-    "installation": "Прочитајте упутство за инсталацију",
-    "official": "Почните од званичног шаблона Payload",
-    "showcases": "Шаблони витрине",
-    "questionsEyebrow": "Питања",
-    "questionsHeading": "Payload CMS шаблонска питања, одговорено",
-    "questionsIntro": "Концепти су намерно отворени о томе шта данас функционише и шта остаје референца за дизајн.",
-    "q1": "Да ли се ови шаблони Payload CMS могу инсталирати?",
-    "a1": "Не. То су концепти целог сајта који се могу прегледати, а не упакована стартна спремишта. Појединачни блокови у сваком рецепту се могу инсталирати, а сваки рецепт је повезан са релевантном документацијом компоненте.",
-    "q2": "Како се ови разликују од званичног шаблона Payload?",
-    "a2": "Званични шаблон веб странице даје новом пројекту потпуну основу за апликацију. Ови концепти показују како комплетан маркетиншки сајт може да изгледа и који укуцани блокови чине сваку страницу, без замене улоге покретача пројекта.",
-    "q3": "Могу ли да користим рецепте у постојећем пројекту Payload?",
-    "a3": "Да. Отворите концепт, прегледајте наручени рецепт и изаберите одељке који одговарају вашој веб локацији. Каталог документује поља сваког блока и подржану путању инсталације Payload CMS в3.",
-    "communityEyebrow": "Заједница",
-    "communityHeading": "Шаблони се одлучују на отвореном",
-    "communityIntro": "Ови концепти постоје да би одговорили на једно питање са заједницом: да ли шаблони целог сајта постану инсталирани? Рецепти, измишљени брендови и РФЦ за инсталацију живе у јавном спремишту — ништа није затворено, нема снимања е-поште.",
-    "allConcepts": "Сви концепти",
-    "filter": "Филтрирајте концепте по категорији",
-    "showing": "Приказује {visible} од {total} концепата",
-    "visualTone": "Визуелни тон",
-    "counts": "{pages} страница · {blocks} јединствених блокова",
-    "explore": "Истражите шаблон",
-    "openPreview": "Отвори пуни преглед",
-    "posterLabel": "Истражите шаблон {title}",
-    "posterAlt": "{title} шаблон — постер концепта почетне странице",
-    "contributionRepository": "Прегледајте спремиште",
-    "contributionRepositoryDescription": "Прочитајте извор за презентацију — сваки рецепт је обичан податак у спремишту.",
-    "contributionRfc": "Прочитајте РФЦ инсталатера",
-    "contributionRfcDescription": "Прегледајте предлог за претварање концептуалних рецепата у опциони, транспарентни ток рада инсталације.",
+    "metadataTitle": "Payload CMS Templates for Next.js | Concepts & Recipes",
+    "metadataDescription": "Explore Payload CMS template concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate and more — preview every page and inspect the typed block recipe.",
+    "detailTitle": "{title} template",
+    "back": "Templates",
+    "previewPageLabel": "{title} preview page",
+    "previewViewport": "Preview viewport size",
+    "desktop": "Desktop",
+    "tablet": "Tablet",
+    "mobile": "Mobile",
+    "previewFrameTitle": "{title} template preview — {page} page",
+    "eyebrow": "Templates",
+    "title": "Payload CMS template concepts, built from installable blocks",
+    "status": "Concept preview",
+    "disclosure": "This is a browsable full-site concept. Every section is composed from blocks in the open registry, and one command installs the whole block set — the curated copy shown here is not seeded, so you assemble the pages yourself in the admin.",
+    "startingPoint": "Choose a starting point",
+    "description": "Explore complete Payload CMS and Next.js site concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate, music and more. Open every page in a live preview, then trace each section back to a typed block you can install today.",
+    "components": "Browse installable components",
+    "installation": "Read the installation guide",
+    "official": "Start from the official Payload template",
+    "showcases": "Template showcases",
+    "questionsEyebrow": "Questions",
+    "questionsHeading": "Payload CMS template questions, answered",
+    "questionsIntro": "The concepts are intentionally open about what works today and what remains a design reference.",
+    "q1": "Are these Payload CMS templates installable?",
+    "a1": "No. They are browsable full-site concepts, not packaged starter repositories. The individual blocks in each recipe are installable, and every recipe links to the relevant component documentation.",
+    "q2": "How do these differ from Payload’s official template?",
+    "a2": "The official website template gives a new project a complete application foundation. These concepts show how a full marketing site can look and which typed blocks compose each page, without replacing that starter-project role.",
+    "q3": "Can I use the recipes in an existing Payload project?",
+    "a3": "Yes. Open a concept, inspect its ordered recipe, and choose the sections that fit your site. The catalog documents each block’s fields and the supported Payload CMS v3 installation path.",
+    "communityEyebrow": "Community",
+    "communityHeading": "Templates are decided in the open",
+    "communityIntro": "These concepts exist to answer one question with the community: should full-site templates become installable? The recipes, fictional brands, and installer RFC all live in the public repository — nothing gated, no email capture.",
+    "allConcepts": "All concepts",
+    "filter": "Filter concepts by category",
+    "showing": "Showing {visible} of {total} concepts",
+    "visualTone": "Visual tone",
+    "counts": "{pages} pages · {blocks} unique blocks",
+    "explore": "Explore template",
+    "openPreview": "Open full preview",
+    "posterLabel": "Explore the {title} template",
+    "posterAlt": "{title} template — home page concept poster",
+    "contributionRepository": "Browse the repository",
+    "contributionRepositoryDescription": "Read the showcase source — every recipe is plain data in the repository.",
+    "contributionRfc": "Read the installer RFC",
+    "contributionRfcDescription": "Review the proposal for turning concept recipes into an optional, transparent install workflow.",
     "categories": {
-      "agency": "Агенција",
-      "civic": "Цивиц",
-      "commerce": "Трговина",
-      "education": "Образовање",
-      "event": "Догађај",
-      "fintech": "Финтецх",
-      "healthcare": "Здравство",
-      "marketplace": "Маркетплаце",
-      "music": "Музика",
-      "nonprofit": "Непрофитна",
-      "portfolio": "Портфолио",
-      "real-estate": "Некретнине",
-      "restaurant": "Ресторан",
-      "saas": "СааС",
-      "trade": "Трговина"
+      "agency": "Agency",
+      "civic": "Civic",
+      "commerce": "Commerce",
+      "education": "Education",
+      "event": "Event",
+      "fintech": "Fintech",
+      "healthcare": "Healthcare",
+      "marketplace": "Marketplace",
+      "music": "Music",
+      "nonprofit": "Nonprofit",
+      "portfolio": "Portfolio",
+      "real-estate": "Real estate",
+      "restaurant": "Restaurant",
+      "saas": "SaaS",
+      "trade": "Trade"
     }
   },
   "Blog": {
-    "metadataTitle": "Payload CMS блок и водичи за инсталатере",
-    "metadataDescription": "Практични Payload CMS в3 водичи за инсталирање блокова за вишекратну употребу, колекција ожичења и рендерера, генерисање типова и фиксирање блокова који се не приказују.",
-    "eyebrow": "Практично Payload CMS в3 упутство",
-    "featured": "Почните са провереним водичем",
-    "installationLabel": "Упутство за инсталацију",
-    "installationTitle": "Инсталирајте жичани Payload блок",
-    "installationDescription": "Додајте прави блок са подржаним CLI, а затим прегледајте сваки фајл и промену ожичења која дође.",
-    "installationAction": "Пратите упутство за инсталацију",
-    "wiringLabel": "Блок водич за ожичење",
-    "wiringTitle": "Повежите блок за вишекратну употребу",
-    "wiringDescription": "Пратите блок Payload CMS в3 од конфигурације преко регистрације, рендеровања, генерисаних типова и мапе увоза администратора.",
-    "troubleshootingLabel": "Водич за решавање проблема",
-    "troubleshootingTitle": "Поправи блок који се неће приказати",
-    "troubleshootingDescription": "Проверите четири места која обично објашњавају зашто се сачувани блок не појављује на страници.",
-    "readGuide": "Прочитајте водич",
-    "notesEyebrow": "Теренске напомене из регистра",
-    "notesTitle": "Још Payload CMS напомена о пољу",
-    "notesDescription": "Прегледајте лекције имплементације, белешке о дизајну компоненти и приче о издавању из отвореног регистра.",
-    "browseComponents": "Прегледајте све {count} компоненте које се могу инсталирати",
-    "empty": "Још нема постова — проверите поново ускоро.",
-    "back": "Назад на блог",
-    "keepReading": "Наставите да читате",
-    "related": "Повезано читање",
-    "tags": "Ознаке чланака",
+    "metadataTitle": "Payload CMS block and installer guides",
+    "metadataDescription": "Practical Payload CMS v3 guides for installing reusable blocks, wiring collections and renderers, generating types, and fixing blocks that do not render.",
+    "eyebrow": "Practical Payload CMS v3 guidance",
+    "featured": "Start with a proven guide",
+    "installationLabel": "Installation guide",
+    "installationTitle": "Install a wired Payload block",
+    "installationDescription": "Add a real block with the supported CLI, then review every file and wiring change that lands.",
+    "installationAction": "Follow the installation guide",
+    "wiringLabel": "Block wiring guide",
+    "wiringTitle": "Wire a reusable block",
+    "wiringDescription": "Follow a Payload CMS v3 block from config through registration, rendering, generated types, and the admin import map.",
+    "troubleshootingLabel": "Troubleshooting guide",
+    "troubleshootingTitle": "Fix a block that will not render",
+    "troubleshootingDescription": "Check the four places that usually explain why a saved block does not appear on the page.",
+    "readGuide": "Read the guide",
+    "notesEyebrow": "Field notes from the registry",
+    "notesTitle": "More Payload CMS field notes",
+    "notesDescription": "Browse implementation lessons, component design notes, and release stories from the open registry.",
+    "browseComponents": "Browse all {count} installable components",
+    "empty": "No posts yet — check back soon.",
+    "back": "Back to blog",
+    "keepReading": "Keep reading",
+    "related": "Related reading",
+    "tags": "Article tags",
     "series": {
-      "project-notes": "Белешке о пројекту",
-      "foundations": "Фондације",
-      "installer-internals": "Унутрашњост инсталатера",
-      "component-design": "Дизајн компоненти",
-      "production-guides": "Водичи за производњу",
-      "open-source": "Квалитет и заједница"
+      "project-notes": "Project notes",
+      "foundations": "Foundations",
+      "installer-internals": "Installer internals",
+      "component-design": "Component design",
+      "production-guides": "Production guides",
+      "open-source": "Quality & community"
     }
   },
   "Footer": {
-    "home": "Почетна страница Payload Components",
-    "intro": "Откуцане компоненте Payload CMS које се инсталирају са њиховим ожичењем — конфигурација колекције, мапирање рендеровања, генерисани типови и мапа за увоз у једној команди.",
-    "product": "Производ",
-    "components": "Компоненте",
-    "project": "Пројекат",
-    "componentCatalog": "Каталог компоненти",
-    "templateConcepts": "Концепти шаблона",
-    "documentation": "Документација",
-    "installWorkflow": "Инсталирајте радни ток",
-    "architecture": "Архитектура",
-    "aiDiscovery": "Откриће АИ",
-    "allComponents": "Све компоненте {count}",
-    "about": "О",
-    "brandGuide": "Водич за бренд",
-    "openIssue": "Отворите проблем",
-    "releases": "Издања",
-    "updates": "Феед ажурирања",
-    "contributing": "Допринос",
-    "privacy": "Приватност",
-    "registry": "Регистар JSON",
-    "license": "MIT лиценцирано · © 2026 Дуцкссс",
-    "stack": "Payload в3 · Next.js App Router · отвори регистар"
+    "home": "Payload Components home",
+    "intro": "Typed Payload CMS components that install with their wiring — collection config, render mapping, generated types, and import map in one command.",
+    "product": "Product",
+    "components": "Components",
+    "project": "Project",
+    "componentCatalog": "Component catalog",
+    "templateConcepts": "Template concepts",
+    "documentation": "Documentation",
+    "installWorkflow": "Install workflow",
+    "architecture": "Architecture",
+    "aiDiscovery": "AI discovery",
+    "allComponents": "All {count} components",
+    "about": "About",
+    "brandGuide": "Brand Guide",
+    "openIssue": "Open an issue",
+    "releases": "Releases",
+    "updates": "Updates feed",
+    "contributing": "Contributing",
+    "privacy": "Privacy",
+    "registry": "Registry JSON",
+    "license": "MIT licensed · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · open registry"
   },
   "Maintainer": {
-    "body": "Направио сам payload-components јер инсталирање блока Payload никада није било копирање-пејст – то су биле четири измене после. CLI постоји тако да други пројекат, и десети, добијате то ожичење бесплатно. Прочитајте извор инсталатера пре него што му верујете; испорука MIT је поента.",
-    "role": "Маинтаинер, Payload Components",
-    "github": "{name} на GitHub"
+    "body": "I built payload-components because installing a Payload block was never the copy-paste — it was the four edits after. The CLI exists so the second project, and the tenth, get that wiring for free. Read the installer source before you trust it; shipping it MIT is the point.",
+    "role": "Maintainer, Payload Components",
+    "github": "{name} on GitHub"
   },
   "PageMetadata": {
     "about": {
-      "title": "О",
-      "openGraphTitle": "О Payload Components",
-      "description": "Зашто Payload Components постоји: престаните да обнављате исте Payload блокове, ручно их ожичавате и поново доказујете сваку инсталацију у оквиру слободних пројеката."
+      "title": "About",
+      "openGraphTitle": "About Payload Components",
+      "description": "Why Payload Components exists: stop rebuilding the same Payload blocks, rewiring them by hand, and re-proving every install across freelance projects."
     },
     "privacy": {
-      "title": "Приватност",
-      "openGraphTitle": "Приватност — Payload Components",
-      "description": "Шта мери Payload Components, које треће стране га примају и како да промените или повучете свој избор у било ком тренутку."
+      "title": "Privacy",
+      "openGraphTitle": "Privacy — Payload Components",
+      "description": "What Payload Components measures, which third parties receive it, and how to change or withdraw your choice at any time."
     },
     "brandGuide": {
-      "title": "Водич за бренд",
-      "openGraphTitle": "Payload Components Водич за бренд",
-      "description": "Бренд Payload Components: једнобојна палета shadcn са једним смарагдним акцентом, систем типа Геист и Инструмент Сериф, употреба логотипа и глас."
+      "title": "Brand Guide",
+      "openGraphTitle": "Payload Components Brand Guide",
+      "description": "The Payload Components brand: a light-first shadcn monochrome palette with one emerald accent, the Geist and Instrument Serif type system, logo usage, and voice."
     }
   },
   "FaqContent": {
     "entries": {
       "one": {
-        "question": "Да ли је Payload Components бесплатно?",
-        "answer": "Да — и направљено да тако и остане. Регистар, CLI, све {count} компоненте које се могу инсталирати и ова локација су једно MIT лиценцирано спремиште: без цена, без лиценцног кључа, без затвореног нивоа. Payload Components је по дизајну на првом месту у заједници — каталог расте из стварних инсталација и доприноса, а не из плаћеног плана пута."
+        "question": "Is Payload Components free?",
+        "answer": "Yes — and built to stay that way. The registry, the CLI, all {count} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap."
       },
       "two": {
-        "question": "Шта је Payload CMS блок?",
-        "answer": "У Payload, блок је поље за састављање странице - одељак садржаја који се може вишекратно користити (херој, мрежа са карактеристикама, ЦТА) уређивачи нагомилавају да би поставили страницу. Payload Components испоручује унапред изграђене блокове плус ожичење које их чини активним, тако да блок није само копиран: он се региструје у вашој колекцији страница, мапира у вашем рендереру, откуцава и додаје на мапу увоза администратора.",
-        "link": "Прочитајте водич за блокове Payload"
+        "question": "What is a Payload CMS block?",
+        "answer": "In Payload, a block is a composable page-builder field — a reusable content section (hero, feature grid, CTA) editors stack to lay out a page. Payload Components ships pre-built blocks plus the wiring that makes them live, so a block is not just copied in: it is registered in your Pages collection, mapped in your renderer, typed, and added to the admin import map.",
+        "link": "Read the Payload blocks guide"
       },
       "three": {
-        "question": "Како да додам блок хероја на Payload CMS?",
-        "answer": "Инсталирајте један са CLI — `npx payload-components add hero-basic`. Копира извор блока у ваш пројекат и повезује га од краја до краја: региструје га у вашој колекцији Пагес, мапира га у RenderBlocks и поново генерише ваше Payload типове и мапу увоза администратора — слетање као једна git diff која се може прегледати. Иста команда додаје било који блок у каталог."
+        "question": "How do I add a hero block to Payload CMS?",
+        "answer": "Install one with the CLI — `npx payload-components add hero-basic`. It copies the block source into your project and wires it end to end: registers it in your Pages collection, maps it in RenderBlocks, and regenerates your Payload types and admin import map — landing as one reviewable git diff. The same command adds any block in the catalog."
       },
       "four": {
-        "question": "Шта тачно инсталација мења у мом репо-у?",
-        "answer": "Три ствари: изворни фајлови компоненте су копирани (конфигурација блока, компонента, дељени услужни програми), закрпљене су тачно две датотеке (ваша колекција страница и RenderBlocks.tsx — манифест сваке компоненте их декларише), а Payload регенерише сопствени излаз (payload-types.ts и мапа увоза администратора). Све се то појављује као обичан git diff.",
-        "link": "Прочитајте упутство за инсталацију"
+        "question": "What exactly does an install change in my repo?",
+        "answer": "Three things: component source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each component manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.",
+        "link": "Read the installation guide"
       },
       "five": {
-        "question": "Шта се дешава ако двапут покренем исту инсталацију?",
-        "answer": "Конвергира. CLI детектује постојеће ожичење и прескаче га — прави излаз је payload-components: \"hero-basic\" is already installed. Стање инсталације се бележи у .payload-components/state.json, тако да су делимичне инсталације видљиве и повратне уместо да се тихо покваре."
+        "question": "What happens if I run the same install twice?",
+        "answer": "It converges. The CLI detects existing wiring and skips it — the real output is payload-components: \"hero-basic\" is already installed. Install state is recorded in .payload-components/state.json, so partial installs are visible and recoverable instead of silently broken."
       },
       "six": {
-        "question": "Који пројекти се данас подржавају?",
-        "answer": "Payload в3 + Next.js 15/16 пројекти обликовани као почетни стартер званичне веб странице — приказивање блокова распореда кроз src/blocks/RenderBlocks.tsx и регистрација блокова страница у src/collections/Pages/index.ts. CLI проверава ваш пројекат у односу на објављену подршку за додир ма трик."
+        "question": "Which projects are supported today?",
+        "answer": "Payload v3 + Next.js 15/16 projects shaped like the official website starter — rendering layout blocks through src/blocks/RenderBlocks.tsx and registering page blocks in src/collections/Pages/index.ts. The CLI checks your project against the published support matrix before touching anything."
       },
       "seven": {
-        "question": "Зашто једноставно не покренете npx shadcn add?",
-        "answer": "Обична shadcn инсталација копира датотеке и зауставља се. Payload блокови раде само након што се региструју у вашој шеми колекције, мапирају у вашем рендереру, откуцају и додају на мапу увоза администратора. payload-components обавија исту испоруку регистра са тачно тим ожичењем — та граница је производ, а горња књига ожичења приказује је ред по ред.",
-        "link": "Прочитајте комплетно поређење shadcn"
+        "question": "Why not just run npx shadcn add?",
+        "answer": "A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-components wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.",
+        "link": "Read the full shadcn comparison"
       },
       "eight": {
-        "question": "Како нове компоненте улазе у каталог?",
-        "answer": "Намерно. Компонента долази само када се њен извор, метаподаци манифеста, страница докумената и тест покривености инсталатера испоручују заједно — полуожичени блокови никада не стигну у каталог. Предложите следећу компоненту у издању GitHub; каталог расте из стварних инсталација."
+        "question": "How do new components get into the catalog?",
+        "answer": "Deliberately. A component lands only when its source, manifest metadata, docs page, and installer test coverage ship together — half-wired blocks never reach the catalog. Propose the next component in a GitHub issue; the catalog grows from real installs."
       }
     }
   },
   "TranslationNotice": {
-    "fallback": "Ова страница још није преведена, па је приказан изворни садржај на енглеском.",
-    "label": "Статус превода",
-    "machine": "Ова страница је машински преведена и још је није прегледао изворни говорник.",
-    "viewEnglish": "Погледај енглески извор"
+    "fallback": "This page is not translated yet, so its source content is shown in English.",
+    "label": "Translation status",
+    "machine": "This page was machine translated and has not been reviewed by a native speaker.",
+    "viewEnglish": "View English source"
   }
 }

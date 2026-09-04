@@ -1,259 +1,259 @@
 {
   "Metadata": {
-    "title": "Payload Components — повністю підключені блоки для Payload CMS",
-    "description": "Блоки Payload CMS з відкритим кодом, які встановлюються разом із конфігурацією колекції, відображенням рендерера, згенерованими типами та картою імпорту адміністратора."
+    "title": "Payload Components — fully-wired blocks for Payload CMS",
+    "description": "Open-source Payload CMS blocks that install with their collection config, renderer mapping, generated types, and admin import map."
   },
   "Common": {
-    "home": "Головна",
-    "documentation": "Документація",
-    "blog": "Блог",
-    "componentCatalog": "Каталог компонентів",
-    "brandGuide": "Довідник брендів",
-    "about": "Про",
-    "privacy": "Конфіденційність",
-    "copy": "Копія",
-    "copied": "Скопійовано",
-    "copiedDescription": "Скопійовано в буфер обміну."
+    "home": "Home",
+    "documentation": "Documentation",
+    "blog": "Blog",
+    "componentCatalog": "Component catalog",
+    "brandGuide": "Brand Guide",
+    "about": "About",
+    "privacy": "Privacy",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copiedDescription": "Copied to clipboard."
   },
   "Header": {
-    "skip": "Перейти до вмісту",
-    "home": "Головна сторінка Payload Components",
-    "github": "Репозиторій GitHub",
-    "openNavigation": "Відкрити навігацію",
-    "closeNavigation": "Закрити навігацію",
-    "language": "Мова",
+    "skip": "Skip to content",
+    "home": "Payload Components home",
+    "github": "GitHub repository",
+    "openNavigation": "Open navigation",
+    "closeNavigation": "Close navigation",
+    "language": "Language",
     "nav": {
-      "docs": "Документи",
-      "components": "Компоненти",
-      "templates": "Шаблони",
-      "blog": "Блог",
-      "about": "Про"
+      "docs": "Docs",
+      "components": "Components",
+      "templates": "Templates",
+      "blog": "Blog",
+      "about": "About"
     }
   },
   "Consent": {
-    "title": "Аналітичні файли cookie",
-    "description": "Ми використовуємо Google Analytics і PostHog, щоб побачити, які компоненти та документи люди насправді використовують. Відхиляється, і жодне не завантажується — ні cookie, ні ідентифікатора. Вимірювання швидкості завантаження сторінок виконується в будь-який спосіб і нічого не зберігає.",
-    "privacy": "Конфіденційність",
-    "decline": "Відхилити",
-    "accept": "Прийняти"
+    "title": "Analytics cookies",
+    "description": "We use Google Analytics and PostHog to see which components and docs people actually use. Decline and neither one loads — no cookie, no identifier. Page-speed measurement runs either way and stores nothing.",
+    "privacy": "Privacy",
+    "decline": "Decline",
+    "accept": "Accept"
   },
   "Privacy": {
-    "eyebrow": "Конфіденційність",
-    "heading": "Саме те, що ми вимірюємо.",
-    "accentWord": "міра",
-    "intro": "Ніщо, що зберігає щось на вашому пристрої, не завантажується, доки ви не приймете. Ця сторінка називає кожен процесор, кожну подію та кожне поле — і ви можете будь-коли передумати.",
-    "consent": "Все, що може зберігати щось на вашому пристрої, чекає вашої згоди. Відхилити, а Google Analytics і PostHog ніколи не завантажуються — не встановлюється файл cookie та не зберігається ідентифікатор. Якщо ваш браузер надсилає Global Privacy Control або Do Not Track, це автоматично зараховується як відхилення, і вам ніколи не показується банер.",
-    "alwaysOnProcessors": "Vercel Analytics і Speed Insights є винятком, і вони працюють для всіх. Вони не встановлюють файли cookie та не зберігають ідентифікатор — вони вимірюють завантаження сторінок і продуктивність у сукупності, що забезпечує швидкість сайту. На вашому пристрої немає нічого, від чого можна відмовитися.",
-    "noAccounts": "На цьому сайті немає облікових записів, тому нічого з цього не пов’язано з особою. Ми ніколи не збираємо введені форми, довільний текст або вміст сторінок, які ви переглядаєте.",
-    "processorsTitle": "Хто отримує дані",
-    "needsConsent": "Потрібна ваша згода",
-    "alwaysOn": "Завжди ввімкнено, нічого не зберігає",
+    "eyebrow": "Privacy",
+    "heading": "Exactly what we measure.",
+    "accentWord": "measure",
+    "intro": "Nothing that stores anything on your device loads until you accept. This page names every processor, every event, and every field — and lets you change your mind at any time.",
+    "consent": "Anything that would store something on your device waits for your consent. Decline and Google Analytics and PostHog never load — no cookie is set and no identifier is kept. If your browser sends Global Privacy Control or Do Not Track, that counts as a decline automatically and you are never shown the banner.",
+    "alwaysOnProcessors": "Vercel Analytics and Speed Insights are the exception, and they run for everyone. They set no cookies and store no identifier — they measure page loads and performance in aggregate, which is what keeps this site fast. There is nothing on your device to opt out of.",
+    "noAccounts": "There are no accounts on this site, so none of this is tied to an identity. We never collect form input, free text, or the contents of pages you view.",
+    "processorsTitle": "Who receives data",
+    "needsConsent": "Needs your consent",
+    "alwaysOn": "Always on, stores nothing",
     "processors": {
       "vercel": {
-        "purpose": "Перегляди сторінок і Core Web Vitals для розміщеного сайту.",
-        "storage": "Без файлів cookie та ідентифікатора — на вашому пристрої нічого не зберігається."
+        "purpose": "Page views and Core Web Vitals for the hosted site.",
+        "storage": "No cookies and no identifier — nothing is stored on your device."
       },
       "ga4": {
-        "purpose": "Сукупні перегляди сторінок і джерела трафіку.",
-        "storage": "Встановлює власні файли cookie першої сторони (_ga, _ga_*)."
+        "purpose": "Aggregate page views and traffic sources.",
+        "storage": "Sets its own first-party cookies (_ga, _ga_*)."
       },
       "posthog": {
-        "purpose": "Три події продукту, перелічені нижче.",
-        "storage": "Випадковий pc_distinct_id у localStorage, а також органічний шлях до sessionStorage для поточної вкладки."
+        "purpose": "The three product events listed below.",
+        "storage": "A random pc_distinct_id in localStorage, plus an organic entry pathname in sessionStorage for the current tab."
       }
     },
-    "eventsTitle": "Події, які ми надсилаємо",
-    "eventsIntro": "Три, і їх поля закріплені. Кожне значення походить із визначеного маршруту, посилання чи команди встановлення — ніколи з того, що ви вводите.",
-    "trafficSource": "Перегляди сторінки позначають трафік лише як звичайний пошук чи інше. Ця мітка виводиться у вашому браузері з фіксованого списку пошукової системи або явного маркера звичайної кампанії. Необроблений реферер, кампанія та рядок запиту ніколи не надсилаються. Контрольовані перевірки сайтів містять справжній маркер перевірки, тому їх можна виключити з підрахунку відвідувачів; звичайні візити несуть фальшиві.",
-    "entryPage": "Після отримання згоди звичайні відвідування зберігають перший шлях до сайту для поточної вкладки браузера. Інсталяційні копії та натискання основного посилання включають цей шлях як <code>entry_page</code>. Прямі візити та відвідування за направленням – ні. Він ніколи не містить рядок запиту чи необроблений реферер і видаляється, коли ви відкликаєте згоду.",
+    "eventsTitle": "The events we send",
+    "eventsIntro": "Three, and their fields are fixed. Every value comes from a committed route, link, or install command — never from anything you type.",
+    "trafficSource": "Page views label traffic only as organic search or other. That label is derived in your browser from a fixed search-engine list or an explicit organic campaign marker. The raw referrer, campaign, and query string are never sent. Controlled site checks carry a true verification marker so they can be excluded from visitor counts; ordinary visits carry false.",
+    "entryPage": "After consent, organic visits keep the first same-site pathname for the current browser tab. Install copies and primary link clicks include that pathname as <code>entry_page</code>. Direct and referral visits do not. It never contains a query string or raw referrer and is deleted when you withdraw consent.",
     "events": {
       "pageview": {
-        "when": "Загальнодоступний маршрут завантажується або змінюється."
+        "when": "A public route loads or changes."
       },
       "copyInstallCommand": {
-        "when": "Ви копіюєте команду встановлення."
+        "when": "You copy an install command."
       },
       "primaryLinkClick": {
-        "when": "Ви переходите за посиланням на репозиторій, документи чи компоненти."
+        "when": "You follow a repository, docs, or components link."
       }
     },
-    "choiceTitle": "Ваш вибір",
-    "choice": "Ваше рішення зберігається локально у вашому браузері під <code>pc_consent</code>. Змініть його тут у будь-який час. Відкликання означає більше, ніж припинення збору — воно видаляє те, що було створено під час згоди: файли cookie Google Analytics (<code>_ga</code>, <code>_ga_*</code>) та ідентифікатор PostHog видаляються, а сторінка перезавантажується, тому нічого, що вже запущено, не продовжується. Ім’я звичайного запису лише для сеансу також видалено.",
+    "choiceTitle": "Your choice",
+    "choice": "Your decision is stored locally in your browser under <code>pc_consent</code>. Change it here at any time. Withdrawing does more than stop collection — it deletes what the opt-in created: the Google Analytics cookies (<code>_ga</code>, <code>_ga_*</code>) and the PostHog identifier are removed, and the page reloads so nothing already running carries on. The session-only organic entry pathname is removed too.",
     "settings": {
-      "privacySignal": "Ваш браузер надсилає сигнал конфіденційності (Global Privacy Control або Do Not Track), тому Google Analytics і PostHog залишаються вимкненими, і це не можна змінити тут.",
-      "on": "Google Analytics і PostHog наразі ввімкнено.",
-      "off": "Google Analytics і PostHog наразі вимкнено.",
-      "undecided": "Ви ще не вибрали, тому Google Analytics і PostHog вимкнено.",
-      "turnOff": "Вимкніть аналітику",
-      "turnOn": "Увімкніть аналітику"
+      "privacySignal": "Your browser sends a privacy signal (Global Privacy Control or Do Not Track), so Google Analytics and PostHog stay off and this cannot be overridden here.",
+      "on": "Google Analytics and PostHog are currently on.",
+      "off": "Google Analytics and PostHog are currently off.",
+      "undecided": "You have not chosen yet, so Google Analytics and PostHog are off.",
+      "turnOff": "Turn analytics off",
+      "turnOn": "Turn analytics on"
     }
   },
   "NotFound": {
-    "eyebrow": "Помилка 404",
-    "title": "Сторінка не знайдена",
-    "description": "Цього маршруту немає в реєстрі. Компоненти, документи та каталог є.",
-    "home": "Іди додому",
-    "docs": "Прочитайте документи",
+    "eyebrow": "Error 404",
+    "title": "Page not found",
+    "description": "This route is not in the registry. The components, the docs, and the catalog are.",
+    "home": "Go home",
+    "docs": "Read the docs",
     "terminalTitle": "payload-components — 404"
   },
   "Docs": {
-    "title": "Документація",
-    "versionBanner": "MIT реєстр · компоненти v{version}",
-    "github": "Зірочка на GitHub",
-    "previousComponent": "Попередній компонент: {title}",
-    "nextComponent": "Наступний компонент: {title}",
-    "newIn": "Нове в {version}"
+    "title": "Documentation",
+    "versionBanner": "MIT registry · components v{version}",
+    "github": "Star on GitHub",
+    "previousComponent": "Previous component: {title}",
+    "nextComponent": "Next component: {title}",
+    "newIn": "New in {version}"
   },
   "HomeMetadata": {
-    "title": "Payload Components: Дротова Payload CMS Блоки однією командою",
-    "description": "Встановіть багаторазові блоки Payload CMS за допомогою однієї команди, включаючи конфігурацію колекції, карти візуалізації, згенеровані типи та карту імпорту адміністратора для проектів Next.js."
+    "title": "Payload Components: Wired Payload CMS Blocks in One Command",
+    "description": "Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects."
   },
   "Landing": {
     "hero": {
-      "eyebrow": "Реєстр блоків Payload з відкритим кодом",
-      "primary": "Встановити блоки Payload",
-      "accent": "дротова, не оклеєна.",
-      "subheadline": "Для розробників Payload CMS одна команда встановлює блок, підключає його до Payload та отримує git diff для перегляду.",
-      "guide": "Прочитайте посібник із встановлення",
-      "github": "Зірочка на GitHub",
-      "browse": "Перегляньте компоненти",
-      "copy": "Копіювати команду встановлення",
-      "count": "Блоки {count} в реєстрі — кожен з них підключається до Payload однією командою."
+      "eyebrow": "Open-source Payload block registry",
+      "primary": "Install Payload blocks",
+      "accent": "wired, not pasted.",
+      "subheadline": "For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.",
+      "guide": "Read the install guide",
+      "github": "Star on GitHub",
+      "browse": "Browse the components",
+      "copy": "Copy install command",
+      "count": "{count} blocks in the registry — every one wired into Payload by a single command."
     },
     "stack": {
-      "label": "Підтримуваний стек",
-      "lede": "Встановлюється в стек, який ви вже запускаєте"
+      "label": "Supported stack",
+      "lede": "Installs into the stack you already run"
     },
     "wiring": {
-      "eyebrow": "Межа встановлення",
-      "heading": "Блок не працює, поки його не підключено.",
-      "intro": "Копіювання файлів є найпростішою частиною — чотири редагування після того, як кожен блок, кожне репо, втрачають вагу.",
-      "source": "джерело"
+      "eyebrow": "The install boundary",
+      "heading": "A block isn't live until it's wired.",
+      "intro": "Copying the files is the easy part — the four edits after are where every block, every repo, loses the day.",
+      "source": "source"
     },
     "workflow": {
-      "eyebrow": "Робочий процес",
-      "heading": "Від каталогу до фіксації в три ходи.",
-      "intro": "Жодних скаффолдів, жодного блокування — звичайне джерело плюс два патчі, які можна прочитати.",
+      "eyebrow": "Workflow",
+      "heading": "From catalog to commit in three moves.",
+      "intro": "No scaffolds, no lock-in — plain source plus two scoped patches you can read.",
       "steps": {
-        "oneTitle": "Прочитайте договір",
-        "oneDescription": "Поля, файли та латки — перед тим, як щось запускати.",
-        "twoTitle": "Виконати одну команду",
-        "twoDescription": "CLI перевіряє ваш проект, а потім підключає його за один прохід.",
-        "threeTitle": "Зафіксувати робочий блок",
-        "threeDescription": "Джерело, два патчі, відновлені типи — переглядається як будь-який PR."
+        "oneTitle": "Read the contract",
+        "oneDescription": "Fields, files, and patches — before you run anything.",
+        "twoTitle": "Run one command",
+        "twoDescription": "The CLI checks your project, then wires it in one pass.",
+        "threeTitle": "Commit a working block",
+        "threeDescription": "Source, two patches, regenerated types — reviewed like any PR."
       },
-      "badge": "Відтворено з джерела",
-      "caption": "Запланований результат — реальне джерело компонентів, підключене до Payload та перевірене як будь-який PR."
+      "badge": "Source-mirrored specimen",
+      "caption": "A backend-free specimen that mirrors the installable component's visual classes. The committed source is wired into Payload and reviewed like any PR."
     },
     "catalog": {
-      "eyebrow": "Каталог",
-      "heading": "Каталог в реальному часі.",
-      "intro": "Немає скріншотів — кожен екземпляр є справжнім компонентом, відрендереним із джерела.",
-      "browse": "Перегляньте каталог",
-      "preview": "Попередній перегляд",
-      "blockCount": "{count, plural, one {# блок} few {# блоки} many {# блоків} other {# блока}}",
-      "browseFamily": "Огляд {family}",
-      "allComponents": "Переглянути всі компоненти {count}",
-      "postComponents": "Компоненти публікації · У розробці",
-      "familyCount": "Встановлюється",
-      "familyName": "Блоки сторінок",
-      "familyDescription": "Блоки для конструктора макетів сторінок — встановлено з повним підключенням: конфігурація колекції, відображення візуалізації, згенеровані типи, карта імпорту."
+      "eyebrow": "The catalog",
+      "heading": "The catalog, rendered live.",
+      "intro": "No screenshots — each backend-free specimen mirrors the installable component's visual classes.",
+      "browse": "Browse the catalog",
+      "preview": "Live preview",
+      "blockCount": "{count, plural, one {# block} other {# blocks}}",
+      "browseFamily": "Browse {family}",
+      "allComponents": "Browse all {count} components",
+      "postComponents": "Post components · In development",
+      "familyCount": "Installable",
+      "familyName": "Page blocks",
+      "familyDescription": "Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map."
     },
     "faq": {
-      "heading": "Питання, відповіді прямо.",
-      "intro": "Коротка версія док. Кожна відповідь посилається на те, що ви можете перевірити в репозиторії.",
-      "dogfood": "Цей розділ є одним із наших блоків"
+      "heading": "Questions, answered straight.",
+      "intro": "The short version of the docs. Every answer links back to something you can verify in the repository.",
+      "dogfood": "This section is one of our blocks"
     },
     "community": {
-      "eyebrow": "Відкритий код",
-      "heading": "Відкритий код,",
-      "accent": "кінець в кінець",
-      "intro": "Реєстр, CLI, компоненти та цей сайт є одним MIT-ліцензійним сховищем. Прочитайте програму встановлення, перш ніж довіряти їй — ось у чому суть.",
-      "copy": "Копіювати команду встановлення",
-      "repository": "Репозиторій GitHub",
-      "issue": "Відкрити випуск",
-      "invite": "Запустити його в реальному репо? Відкрийте проблему — з’являться ранні встановлення."
+      "eyebrow": "Open source",
+      "heading": "Open source,",
+      "accent": "end to end",
+      "intro": "The registry, the CLI, the components, and this site are one MIT-licensed repository. Read the installer before you trust it — that is the point.",
+      "copy": "Copy install command",
+      "repository": "GitHub repository",
+      "issue": "Open an issue",
+      "invite": "Running it in a real repo? Open an issue — early installs get featured."
     }
   },
   "Catalog": {
-    "metadataTitle": "{count} Payload CMS Компоненти та блоки | Каталог",
-    "metadataDescription": "Перегляньте введені блоки Payload CMS. Запустіть npx payload-components add '<component>', щоб підключити один до вашої колекції, рендерера, згенерованих типів і карти імпорту адміністратора.",
-    "eyebrow": "Реєстр",
-    "title": "{count} Payload CMS компоненти та типізовані блоки",
-    "description": "Перегляньте всі {count} компоненти Payload CMS, які можна встановити, серед героїв, функцій, цін, закликів до дії, інтеграції, відгуків, статистики, FAQ, вмісту, команд, вставок і нижніх колонтитулів. Одна команда CLI копіює блок і з’єднує його реєстрацію колекції, відображення рендерера, згенеровані типи та карту імпорту адміністратора.",
-    "installation": "Подивіться, як працює інсталяція однією командою",
-    "blocksGuide": "Слідкуйте за блоком від конфігурації до сторінки в реальному часі",
-    "templates": "Ознайомтеся з концепціями шаблонів Payload CMS",
-    "license": "MIT ліцензовано"
+    "metadataTitle": "{count} Payload CMS Components & Blocks | Catalog",
+    "metadataDescription": "Browse typed Payload CMS blocks. Run npx payload-components add '<component>' to wire one into your collection, renderer, generated types, and admin import map.",
+    "eyebrow": "Registry",
+    "title": "{count} Payload CMS components and typed blocks",
+    "description": "Browse all {count} installable Payload CMS components across heroes, features, pricing, calls to action, integrations, testimonials, stats, FAQs, content, teams, embeds, and footers. One CLI command copies a block and wires its collection registration, renderer mapping, generated types, and admin import map.",
+    "installation": "See how one-command installation works",
+    "blocksGuide": "Follow a block from config to live page",
+    "templates": "Explore Payload CMS template concepts",
+    "license": "MIT licensed"
   },
   "CatalogBrowser": {
-    "filter": "Компоненти фільтра",
-    "allComponents": "Всі комплектуючі",
-    "all": "Всі",
-    "search": "Компоненти пошуку",
-    "result": "{count, plural, one {# результат} few {# результати} many {# результатів} other {# результату}}",
-    "empty": "Жоден компонент не відповідає вашим фільтрам.",
-    "reset": "Скинути фільтри",
-    "proposal": "Каталог розширюється навмисно — джерело, маніфест, документи та покриття програми встановлення разом. Запропонуйте наступний.",
-    "issue": "Відкрити випуск",
-    "inDevelopment": "в розробці",
-    "roadmapPreview": "Попередній перегляд концепції",
-    "planned": "Дорожня карта відкритого коду",
-    "interest": "Переглянути дорожню карту",
-    "interestLabel": "Переглянути {component} на дорожній карті редакційних компонентів",
-    "selected": "Вибрано {count}",
-    "tray": "Вибрані компоненти",
-    "copy": "Копіювати команду встановлення",
-    "clear": "Очистити виділення",
+    "filter": "Filter components",
+    "allComponents": "All components",
+    "all": "All",
+    "search": "Search components",
+    "result": "{count, plural, one {# result} other {# results}}",
+    "empty": "No components match your filters.",
+    "reset": "Reset filters",
+    "proposal": "The catalog grows deliberately — source, manifest, docs, and installer coverage ship together. Propose the next one.",
+    "issue": "Open an issue",
+    "inDevelopment": "In development",
+    "roadmapPreview": "Concept preview",
+    "planned": "Open-source roadmap",
+    "interest": "View the roadmap",
+    "interestLabel": "View {component} on the editorial roadmap",
+    "selected": "{count} selected",
+    "tray": "Selected components",
+    "copy": "Copy install command",
+    "clear": "Clear selection",
     "families": {
-      "pages": "Блоки сторінок",
-      "posts": "Компоненти посту"
+      "pages": "Page blocks",
+      "posts": "Post components"
     },
     "categories": {
-      "hero": "Герой",
-      "features": "Особливості",
-      "comparator": "Компаратор",
-      "pricing": "Ціноутворення",
-      "cta": "Заклик до дії",
-      "contact": "Контакти",
-      "integration": "Інтеграція",
-      "logos": "Хмара логотипу",
-      "testimonials": "Відгуки",
-      "stats": "Статистика",
+      "hero": "Hero",
+      "features": "Features",
+      "comparator": "Comparator",
+      "pricing": "Pricing",
+      "cta": "Call to action",
+      "contact": "Contact",
+      "integration": "Integration",
+      "logos": "Logo cloud",
+      "testimonials": "Testimonials",
+      "stats": "Stats",
       "faq": "FAQ",
-      "content": "Зміст",
-      "team": "Команда",
-      "embed": "Вставити",
-      "footer": "Нижній колонтитул",
-      "cards": "Листівки",
-      "archive": "Архів",
-      "header": "Заголовок",
-      "index": "Покажчик",
-      "author": "Автор",
-      "newsletter": "Розсилка",
-      "related": "Пов'язані"
+      "content": "Content",
+      "team": "Team",
+      "embed": "Embed",
+      "footer": "Footer",
+      "cards": "Cards",
+      "archive": "Archive",
+      "header": "Header",
+      "index": "Index",
+      "author": "Author",
+      "newsletter": "Newsletter",
+      "related": "Related"
     },
-    "composerAdd": "Додайте {slug} до команди встановлення",
-    "composerRemove": "Видаліть {slug} з команди встановлення",
+    "composerAdd": "Add {slug} to the install command",
+    "composerRemove": "Remove {slug} from the install command",
     "theme": {
-      "brandLegend": "Перегляньте каталог у кольорі вашого бренду",
-      "brandLabel": "Бренд",
-      "previewBrand": "Попередній перегляд у {color}",
+      "brandLegend": "Preview the catalog in your brand colour",
+      "brandLabel": "Brand",
+      "previewBrand": "Preview in {color}",
       "colors": {
-        "emerald": "Смарагдовий",
-        "sky": "небо",
-        "indigo": "Індиго",
-        "violet": "Фіалка",
-        "rose": "Роза",
-        "amber": "Бурштин"
+        "emerald": "Emerald",
+        "sky": "Sky",
+        "indigo": "Indigo",
+        "violet": "Violet",
+        "rose": "Rose",
+        "amber": "Amber"
       },
-      "radiusLegend": "Попередній перегляд каталогу в іншому радіусі кута",
-      "radiusLabel": "Радіус",
-      "previewRadius": "Попередній перегляд із {style} кутами",
+      "radiusLegend": "Preview the catalog at a different corner radius",
+      "radiusLabel": "Radius",
+      "previewRadius": "Preview with {style} corners",
       "radii": {
-        "sharp": "Гострий",
-        "default": "За замовчуванням",
-        "round": "Круглий"
+        "sharp": "Sharp",
+        "default": "Default",
+        "round": "Round"
       }
     }
   },
@@ -287,192 +287,192 @@
     "contribute": "Propose or discuss a component"
   },
   "Templates": {
-    "metadataTitle": "Payload CMS Шаблони для Next.js | Поняття та рецепти",
-    "metadataDescription": "Ознайомтеся з концепціями шаблонів Payload CMS у п’ятнадцяти сферах — SaaS, агентства, торгівля, охорона здоров’я, ресторани, нерухомість тощо — попередньо перегляньте кожну сторінку та перевірте введений рецепт блоку.",
-    "detailTitle": "Шаблон {title}",
-    "back": "Шаблони",
-    "previewPageLabel": "{title} сторінка попереднього перегляду",
-    "previewViewport": "Розмір вікна попереднього перегляду",
-    "desktop": "Робочий стіл",
-    "tablet": "Планшет",
-    "mobile": "Мобільний",
-    "previewFrameTitle": "{title} попередній перегляд шаблону — {page} сторінка",
-    "eyebrow": "Шаблони",
-    "title": "Концепції шаблону Payload CMS, створені з блоків, які можна встановити",
-    "status": "Попередній перегляд концепції",
-    "disclosure": "Це концепція повного сайту для перегляду. Кожен розділ складається з блоків у відкритому реєстрі, і одна команда встановлює весь набір блоків — рекомендована копія, показана тут, не заповнюється, тому ви збираєте сторінки самостійно в адміністраторі.",
-    "startingPoint": "Виберіть початкову точку",
-    "description": "Ознайомтеся з повними концепціями сайтів Payload CMS і Next.js у п’ятнадцяти сферах — SaaS, агентство, торгівля, охорона здоров’я, ресторан, нерухомість, музика тощо. Відкрийте кожну сторінку в режимі попереднього перегляду в реальному часі, а потім відстежте кожен розділ назад до введеного блоку, який ви можете встановити сьогодні.",
-    "components": "Огляд компонентів, які можна встановити",
-    "installation": "Прочитайте посібник із встановлення",
-    "official": "Почніть з офіційного шаблону Payload",
-    "showcases": "Шаблонні вітрини",
-    "questionsEyebrow": "Питання",
-    "questionsHeading": "Payload CMS питання шаблону, відповіді",
-    "questionsIntro": "Концепції навмисно відкрито про те, що працює сьогодні, а що залишається еталонним дизайном.",
-    "q1": "Чи можна встановити ці шаблони Payload CMS?",
-    "a1": "Ні. Це концепції повного сайту, які можна переглядати, а не пакетні початкові сховища. Окремі блоки в кожному рецепті можна встановити, і кожен рецепт посилається на відповідну документацію компонента.",
-    "q2": "Чим вони відрізняються від офіційного шаблону Payload?",
-    "a2": "Шаблон офіційного веб-сайту надає новому проекту повну основу для застосування. Ці концепції показують, як може виглядати повноцінний маркетинговий сайт і які введені блоки складають кожну сторінку, не замінюючи роль початкового проекту.",
-    "q3": "Чи можу я використати рецепти в існуючому проекті Payload?",
-    "a3": "Так. Відкрийте концепцію, перегляньте її замовлений рецепт і виберіть розділи, які відповідають вашому сайту. У каталозі задокументовано поля кожного блоку та підтримуваний шлях встановлення Payload CMS v3.",
-    "communityEyebrow": "Громада",
-    "communityHeading": "Шаблони вирішуються у відкритому вигляді",
-    "communityIntro": "Ці концепції існують, щоб відповісти на одне запитання спільноти: чи повинні повноцінні шаблони сайтів бути доступними для встановлення? Рецепти, вигадані бренди та RFC інсталятора – усе це доступно у загальнодоступному сховищі – нічого закритого та електронної пошти.",
-    "allConcepts": "Усі поняття",
-    "filter": "Фільтрувати концепції за категоріями",
-    "showing": "Показано {visible} з {total} концепцій",
-    "visualTone": "Візуальний тон",
-    "counts": "{pages} сторінок · {blocks} унікальних блоків",
-    "explore": "Дослідити шаблон",
-    "openPreview": "Відкрити повний попередній перегляд",
-    "posterLabel": "Дослідіть шаблон {title}",
-    "posterAlt": "Шаблон {title} — концепт-постер домашньої сторінки",
-    "contributionRepository": "Перегляньте сховище",
-    "contributionRepositoryDescription": "Ознайомтеся з вихідним кодом вітрини — кожен рецепт є простими даними в репозиторії.",
-    "contributionRfc": "Прочитайте RFC інсталятора",
-    "contributionRfcDescription": "Перегляньте пропозицію щодо перетворення концептуальних рецептів у додатковий прозорий робочий процес встановлення.",
+    "metadataTitle": "Payload CMS Templates for Next.js | Concepts & Recipes",
+    "metadataDescription": "Explore Payload CMS template concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate and more — preview every page and inspect the typed block recipe.",
+    "detailTitle": "{title} template",
+    "back": "Templates",
+    "previewPageLabel": "{title} preview page",
+    "previewViewport": "Preview viewport size",
+    "desktop": "Desktop",
+    "tablet": "Tablet",
+    "mobile": "Mobile",
+    "previewFrameTitle": "{title} template preview — {page} page",
+    "eyebrow": "Templates",
+    "title": "Payload CMS template concepts, built from installable blocks",
+    "status": "Concept preview",
+    "disclosure": "This is a browsable full-site concept. Every section is composed from blocks in the open registry, and one command installs the whole block set — the curated copy shown here is not seeded, so you assemble the pages yourself in the admin.",
+    "startingPoint": "Choose a starting point",
+    "description": "Explore complete Payload CMS and Next.js site concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate, music and more. Open every page in a live preview, then trace each section back to a typed block you can install today.",
+    "components": "Browse installable components",
+    "installation": "Read the installation guide",
+    "official": "Start from the official Payload template",
+    "showcases": "Template showcases",
+    "questionsEyebrow": "Questions",
+    "questionsHeading": "Payload CMS template questions, answered",
+    "questionsIntro": "The concepts are intentionally open about what works today and what remains a design reference.",
+    "q1": "Are these Payload CMS templates installable?",
+    "a1": "No. They are browsable full-site concepts, not packaged starter repositories. The individual blocks in each recipe are installable, and every recipe links to the relevant component documentation.",
+    "q2": "How do these differ from Payload’s official template?",
+    "a2": "The official website template gives a new project a complete application foundation. These concepts show how a full marketing site can look and which typed blocks compose each page, without replacing that starter-project role.",
+    "q3": "Can I use the recipes in an existing Payload project?",
+    "a3": "Yes. Open a concept, inspect its ordered recipe, and choose the sections that fit your site. The catalog documents each block’s fields and the supported Payload CMS v3 installation path.",
+    "communityEyebrow": "Community",
+    "communityHeading": "Templates are decided in the open",
+    "communityIntro": "These concepts exist to answer one question with the community: should full-site templates become installable? The recipes, fictional brands, and installer RFC all live in the public repository — nothing gated, no email capture.",
+    "allConcepts": "All concepts",
+    "filter": "Filter concepts by category",
+    "showing": "Showing {visible} of {total} concepts",
+    "visualTone": "Visual tone",
+    "counts": "{pages} pages · {blocks} unique blocks",
+    "explore": "Explore template",
+    "openPreview": "Open full preview",
+    "posterLabel": "Explore the {title} template",
+    "posterAlt": "{title} template — home page concept poster",
+    "contributionRepository": "Browse the repository",
+    "contributionRepositoryDescription": "Read the showcase source — every recipe is plain data in the repository.",
+    "contributionRfc": "Read the installer RFC",
+    "contributionRfcDescription": "Review the proposal for turning concept recipes into an optional, transparent install workflow.",
     "categories": {
-      "agency": "Агентство",
-      "civic": "Громадянська",
-      "commerce": "Комерція",
-      "education": "Освіта",
-      "event": "Подія",
-      "fintech": "Фінтех",
-      "healthcare": "Охорона здоров'я",
-      "marketplace": "Ринок",
-      "music": "Музика",
-      "nonprofit": "Некомерційна організація",
-      "portfolio": "Портфоліо",
-      "real-estate": "Нерухомість",
-      "restaurant": "Ресторан",
+      "agency": "Agency",
+      "civic": "Civic",
+      "commerce": "Commerce",
+      "education": "Education",
+      "event": "Event",
+      "fintech": "Fintech",
+      "healthcare": "Healthcare",
+      "marketplace": "Marketplace",
+      "music": "Music",
+      "nonprofit": "Nonprofit",
+      "portfolio": "Portfolio",
+      "real-estate": "Real estate",
+      "restaurant": "Restaurant",
       "saas": "SaaS",
-      "trade": "Торгівля"
+      "trade": "Trade"
     }
   },
   "Blog": {
-    "metadataTitle": "Payload CMS Блок і посібники з встановлення",
-    "metadataDescription": "Практичні посібники Payload CMS v3 для встановлення багаторазових блоків, збірок проводів і рендерів, генерації типів і виправлення блоків, які не рендеряться.",
-    "eyebrow": "Практичний посібник Payload CMS v3",
-    "featured": "Почніть з перевіреного керівництва",
-    "installationLabel": "Керівництво по установці",
-    "installationTitle": "Встановіть дротовий блок Payload",
-    "installationDescription": "Додайте реальний блок із підтримуваним CLI, а потім перевірте всі файли та зміни проводки, які потрапляють.",
-    "installationAction": "Дотримуйтесь інструкцій зі встановлення",
-    "wiringLabel": "Інструкція з підключення блоку",
-    "wiringTitle": "Проводити багаторазовий блок",
-    "wiringDescription": "Дотримуйтеся блоку Payload CMS v3 від конфігурації до реєстрації, відтворення, згенерованих типів і карти імпорту адміністратора.",
-    "troubleshootingLabel": "Посібник з усунення несправностей",
-    "troubleshootingTitle": "Виправте блок, який не відображається",
-    "troubleshootingDescription": "Позначте чотири місця, які зазвичай пояснюють, чому збережений блок не відображається на сторінці.",
-    "readGuide": "Прочитати посібник",
-    "notesEyebrow": "Польові примітки з реєстру",
-    "notesTitle": "Більше приміток до поля Payload CMS",
-    "notesDescription": "Ознайомтеся з уроками впровадження, нотатками щодо дизайну компонентів та історіями випуску з відкритого реєстру.",
-    "browseComponents": "Переглянути всі {count} компоненти, які можна встановити",
-    "empty": "Поки ще немає публікацій — перевірте пізніше.",
-    "back": "Повернутися до блогу",
-    "keepReading": "Продовжуйте читати",
-    "related": "Пов'язане читання",
-    "tags": "Теги статей",
+    "metadataTitle": "Payload CMS block and installer guides",
+    "metadataDescription": "Practical Payload CMS v3 guides for installing reusable blocks, wiring collections and renderers, generating types, and fixing blocks that do not render.",
+    "eyebrow": "Practical Payload CMS v3 guidance",
+    "featured": "Start with a proven guide",
+    "installationLabel": "Installation guide",
+    "installationTitle": "Install a wired Payload block",
+    "installationDescription": "Add a real block with the supported CLI, then review every file and wiring change that lands.",
+    "installationAction": "Follow the installation guide",
+    "wiringLabel": "Block wiring guide",
+    "wiringTitle": "Wire a reusable block",
+    "wiringDescription": "Follow a Payload CMS v3 block from config through registration, rendering, generated types, and the admin import map.",
+    "troubleshootingLabel": "Troubleshooting guide",
+    "troubleshootingTitle": "Fix a block that will not render",
+    "troubleshootingDescription": "Check the four places that usually explain why a saved block does not appear on the page.",
+    "readGuide": "Read the guide",
+    "notesEyebrow": "Field notes from the registry",
+    "notesTitle": "More Payload CMS field notes",
+    "notesDescription": "Browse implementation lessons, component design notes, and release stories from the open registry.",
+    "browseComponents": "Browse all {count} installable components",
+    "empty": "No posts yet — check back soon.",
+    "back": "Back to blog",
+    "keepReading": "Keep reading",
+    "related": "Related reading",
+    "tags": "Article tags",
     "series": {
-      "project-notes": "Примітки до проекту",
-      "foundations": "Фундаменти",
-      "installer-internals": "Внутрішні елементи інсталятора",
-      "component-design": "Дизайн компонентів",
-      "production-guides": "Виробничі посібники",
-      "open-source": "Якість і спільнота"
+      "project-notes": "Project notes",
+      "foundations": "Foundations",
+      "installer-internals": "Installer internals",
+      "component-design": "Component design",
+      "production-guides": "Production guides",
+      "open-source": "Quality & community"
     }
   },
   "Footer": {
-    "home": "Головна сторінка Payload Components",
-    "intro": "Компоненти з типом Payload CMS, які встановлюються разом із підключенням — конфігурація колекції, відображення візуалізації, згенеровані типи та карта імпорту в одній команді.",
-    "product": "Товар",
-    "components": "Компоненти",
-    "project": "Проект",
-    "componentCatalog": "Каталог компонентів",
-    "templateConcepts": "Концепції шаблону",
-    "documentation": "Документація",
-    "installWorkflow": "Процес встановлення",
-    "architecture": "Архітектура",
-    "aiDiscovery": "Відкриття ШІ",
-    "allComponents": "Усі компоненти {count}",
-    "about": "Про",
-    "brandGuide": "Довідник брендів",
-    "openIssue": "Відкрити випуск",
-    "releases": "Релізи",
-    "updates": "Стрічка оновлень",
-    "contributing": "Сприяння",
-    "privacy": "Конфіденційність",
-    "registry": "РеєстрJSON",
-    "license": "MIT ліцензовано · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · відкритий реєстр"
+    "home": "Payload Components home",
+    "intro": "Typed Payload CMS components that install with their wiring — collection config, render mapping, generated types, and import map in one command.",
+    "product": "Product",
+    "components": "Components",
+    "project": "Project",
+    "componentCatalog": "Component catalog",
+    "templateConcepts": "Template concepts",
+    "documentation": "Documentation",
+    "installWorkflow": "Install workflow",
+    "architecture": "Architecture",
+    "aiDiscovery": "AI discovery",
+    "allComponents": "All {count} components",
+    "about": "About",
+    "brandGuide": "Brand Guide",
+    "openIssue": "Open an issue",
+    "releases": "Releases",
+    "updates": "Updates feed",
+    "contributing": "Contributing",
+    "privacy": "Privacy",
+    "registry": "Registry JSON",
+    "license": "MIT licensed · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · open registry"
   },
   "Maintainer": {
-    "body": "Я створив payload-components, оскільки встановлення блоку Payload ніколи не було копіюванням і вставленням — це було чотири редагування після. CLI існує, тому другий проект і десятий отримають цю проводку безкоштовно. Прочитайте джерело інсталятора, перш ніж довіряти йому; відправити його MIT.",
-    "role": "Супроводжувач, Payload Components",
-    "github": "{name} на GitHub"
+    "body": "I built payload-components because installing a Payload block was never the copy-paste — it was the four edits after. The CLI exists so the second project, and the tenth, get that wiring for free. Read the installer source before you trust it; shipping it MIT is the point.",
+    "role": "Maintainer, Payload Components",
+    "github": "{name} on GitHub"
   },
   "PageMetadata": {
     "about": {
-      "title": "Про",
-      "openGraphTitle": "Про Payload Components",
-      "description": "Чому існує Payload Components: припиніть перебудовувати ті самі блоки Payload, перемонтовувати їх вручну та повторно перевіряти кожну інсталяцію в позаштатних проектах."
+      "title": "About",
+      "openGraphTitle": "About Payload Components",
+      "description": "Why Payload Components exists: stop rebuilding the same Payload blocks, rewiring them by hand, and re-proving every install across freelance projects."
     },
     "privacy": {
-      "title": "Конфіденційність",
-      "openGraphTitle": "Конфіденційність — Payload Components",
-      "description": "Що вимірює Payload Components, які треті сторони його отримують і як у будь-який час змінити або скасувати свій вибір."
+      "title": "Privacy",
+      "openGraphTitle": "Privacy — Payload Components",
+      "description": "What Payload Components measures, which third parties receive it, and how to change or withdraw your choice at any time."
     },
     "brandGuide": {
-      "title": "Довідник брендів",
-      "openGraphTitle": "Payload Components Довідник бренду",
-      "description": "Бренд Payload Components: монохромна палітра shadcn насамперед світла з одним смарагдовим акцентом, системою шрифтів Geist і Instrument Serif, використанням логотипу та голосом."
+      "title": "Brand Guide",
+      "openGraphTitle": "Payload Components Brand Guide",
+      "description": "The Payload Components brand: a light-first shadcn monochrome palette with one emerald accent, the Geist and Instrument Serif type system, logo usage, and voice."
     }
   },
   "FaqContent": {
     "entries": {
       "one": {
-        "question": "Payload Components безкоштовний?",
-        "answer": "Так — і створено, щоб залишатися таким. Реєстр, CLI, усі {count} компоненти, які можна встановити, і цей сайт є одним MIT-ліцензійним сховищем: без цін, без ліцензійного ключа, без закритого рівня. Payload Components за своєю конструкцією в першу чергу створено спільнотою — каталог розвивається завдяки реальним встановленням і внескам, а не платній дорожній карті."
+        "question": "Is Payload Components free?",
+        "answer": "Yes — and built to stay that way. The registry, the CLI, all {count} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap."
       },
       "two": {
-        "question": "Що таке блок Payload CMS?",
-        "answer": "У Payload блок — це поле конструктора сторінок, яке можна складати — розділ вмісту, який можна багаторазово використовувати (герой, сітка функцій, CTA), який редактори збирають для компонування сторінки. Payload Components надсилає попередньо зібрані блоки та електропроводку, яка робить їх живими, тож блок не просто копіюється: він реєструється у вашій колекції Pages, відображається у вашому рендерері, вводиться та додається до карти імпорту адміністратора.",
-        "link": "Прочитайте посібник з блоків Payload"
+        "question": "What is a Payload CMS block?",
+        "answer": "In Payload, a block is a composable page-builder field — a reusable content section (hero, feature grid, CTA) editors stack to lay out a page. Payload Components ships pre-built blocks plus the wiring that makes them live, so a block is not just copied in: it is registered in your Pages collection, mapped in your renderer, typed, and added to the admin import map.",
+        "link": "Read the Payload blocks guide"
       },
       "three": {
-        "question": "Як додати блок героя до Payload CMS?",
-        "answer": "Встановіть один із CLI — `npx payload-components add hero-basic`. Він копіює вихідний код блоку у ваш проект і з’єднує його впритул: реєструє його у вашій колекції Pages, відображає його в RenderBlocks, а також повторно генерує ваші Payload типи та карту імпорту адміністратора — потрапляє як один доступний для перегляду git diff. Ця ж команда додає будь-який блок до каталогу."
+        "question": "How do I add a hero block to Payload CMS?",
+        "answer": "Install one with the CLI — `npx payload-components add hero-basic`. It copies the block source into your project and wires it end to end: registers it in your Pages collection, maps it in RenderBlocks, and regenerates your Payload types and admin import map — landing as one reviewable git diff. The same command adds any block in the catalog."
       },
       "four": {
-        "question": "Що саме змінює встановлення в моєму репо?",
-        "answer": "Три речі: вихідні файли компонентів копіюються в (конфігурація блоку, компонент, спільні утиліти), рівно два файли виправляються (ваша колекція сторінок і RenderBlocks.tsx — маніфест кожного компонента оголошує їх), а Payload відновлює власний вихід (payload-types.ts і карта імпорту адміністратора). Все це виглядає як звичайний git diff.",
-        "link": "Прочитайте посібник із встановлення"
+        "question": "What exactly does an install change in my repo?",
+        "answer": "Three things: component source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each component manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.",
+        "link": "Read the installation guide"
       },
       "five": {
-        "question": "Що станеться, якщо я запусту ту саму установку двічі?",
-        "answer": "Сходиться. CLI виявляє наявну проводку та пропускає її — реальний вихід payload-components: \"hero-basic\" is already installed. Стан інсталяції записується в .payload-components/state.json, тому часткові інсталяції є видимими та відновлюваними, а не мовчки порушуються."
+        "question": "What happens if I run the same install twice?",
+        "answer": "It converges. The CLI detects existing wiring and skips it — the real output is payload-components: \"hero-basic\" is already installed. Install state is recorded in .payload-components/state.json, so partial installs are visible and recoverable instead of silently broken."
       },
       "six": {
-        "question": "Які проекти підтримуються сьогодні?",
-        "answer": "Проекти Payload v3 + Next.js 15/16 мають форму офіційного стартового веб-сайту — відтворення блоків макета через src/blocks/RenderBlocks.tsx та реєстрація блоків сторінок у src/collections/Pages/index.ts. CLI перевіряє ваш проект на відповідність опублікованій матриці підтримки перед тим, як щось торкатися."
+        "question": "Which projects are supported today?",
+        "answer": "Payload v3 + Next.js 15/16 projects shaped like the official website starter — rendering layout blocks through src/blocks/RenderBlocks.tsx and registering page blocks in src/collections/Pages/index.ts. The CLI checks your project against the published support matrix before touching anything."
       },
       "seven": {
-        "question": "Чому б просто не запустити npx shadcn add?",
-        "answer": "Звичайна інсталяція shadcn копіює файли та зупиняється. Блоки Payload працюють лише після того, як вони зареєстровані у вашій схемі колекції, зіставлені у вашому рендерері, введені та додані до карти імпорту адміністратора. payload-components обгортає ту саму доставку реєстру саме з тими проводами — ця межа є продуктом, і в реєстрі проводів вище показано його рядок за рядком.",
-        "link": "Прочитайте повне порівняння shadcn"
+        "question": "Why not just run npx shadcn add?",
+        "answer": "A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-components wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.",
+        "link": "Read the full shadcn comparison"
       },
       "eight": {
-        "question": "Як нові комплектуючі потрапляють в каталог?",
-        "answer": "Свідомо. Компонент потрапляє лише тоді, коли його джерело, метадані маніфесту, сторінка документів і тестове покриття інсталятора відправляються разом — напівпроводові блоки ніколи не потрапляють до каталогу. Запропонувати наступний компонент у GitHub випуску; каталог зростає за рахунок реальних інсталяцій."
+        "question": "How do new components get into the catalog?",
+        "answer": "Deliberately. A component lands only when its source, manifest metadata, docs page, and installer test coverage ship together — half-wired blocks never reach the catalog. Propose the next component in a GitHub issue; the catalog grows from real installs."
       }
     }
   },
   "TranslationNotice": {
-    "fallback": "Цю сторінку ще не перекладено, тому показано англійський оригінал.",
-    "label": "Статус перекладу",
-    "machine": "Цю сторінку перекладено машинно й ще не перевірено носієм мови.",
-    "viewEnglish": "Переглянути англійський оригінал"
+    "fallback": "This page is not translated yet, so its source content is shown in English.",
+    "label": "Translation status",
+    "machine": "This page was machine translated and has not been reviewed by a native speaker.",
+    "viewEnglish": "View English source"
   }
 }

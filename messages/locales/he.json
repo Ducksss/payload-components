@@ -1,259 +1,259 @@
 {
   "Metadata": {
-    "title": "Payload Components - בלוקים עם חוטים מלאים עבור Payload CMS",
-    "description": "בלוקים בקוד פתוח Payload CMS שמתקיימים עם תצורת האוסף שלהם, מיפוי renderer, טיפוסים שנוצרו ומפת ייבוא אדמין."
+    "title": "Payload Components — fully-wired blocks for Payload CMS",
+    "description": "Open-source Payload CMS blocks that install with their collection config, renderer mapping, generated types, and admin import map."
   },
   "Common": {
-    "home": "דף הבית",
-    "documentation": "תיעוד",
-    "blog": "בלוג",
-    "componentCatalog": "קטלוג רכיבים",
-    "brandGuide": "מדריך מותג",
-    "about": "אודות",
-    "privacy": "פרטיות",
-    "copy": "העתק",
-    "copied": "הועתק",
-    "copiedDescription": "הועתק ללוח."
+    "home": "Home",
+    "documentation": "Documentation",
+    "blog": "Blog",
+    "componentCatalog": "Component catalog",
+    "brandGuide": "Brand Guide",
+    "about": "About",
+    "privacy": "Privacy",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copiedDescription": "Copied to clipboard."
   },
   "Header": {
-    "skip": "דלג לתוכן",
-    "home": "דף הבית של Payload Components",
-    "github": "מאגר GitHub",
-    "openNavigation": "פתח את הניווט",
-    "closeNavigation": "סגור ניווט",
-    "language": "שפה",
+    "skip": "Skip to content",
+    "home": "Payload Components home",
+    "github": "GitHub repository",
+    "openNavigation": "Open navigation",
+    "closeNavigation": "Close navigation",
+    "language": "Language",
     "nav": {
-      "docs": "מסמכים",
-      "components": "רכיבים",
-      "templates": "תבניות",
-      "blog": "בלוג",
-      "about": "אודות"
+      "docs": "Docs",
+      "components": "Components",
+      "templates": "Templates",
+      "blog": "Blog",
+      "about": "About"
     }
   },
   "Consent": {
-    "title": "קובצי Cookie של Analytics",
-    "description": "אנו משתמשים ב-Google Analytics ו-PostHog כדי לראות באילו רכיבים ומסמכים אנשים משתמשים בפועל. דחה ואף אחד מהם לא נטען - אין קובץ cookie, אין מזהה. מדידת מהירות העמוד פועלת לשני הכיוונים ולא מאחסנת דבר.",
-    "privacy": "פרטיות",
-    "decline": "דחייה",
-    "accept": "קבל"
+    "title": "Analytics cookies",
+    "description": "We use Google Analytics and PostHog to see which components and docs people actually use. Decline and neither one loads — no cookie, no identifier. Page-speed measurement runs either way and stores nothing.",
+    "privacy": "Privacy",
+    "decline": "Decline",
+    "accept": "Accept"
   },
   "Privacy": {
-    "eyebrow": "פרטיות",
-    "heading": "בדיוק מה שאנחנו מודדים.",
-    "accentWord": "מידה",
-    "intro": "שום דבר שמאחסן משהו במכשיר שלך לא נטען עד שאתה מקבל. דף זה נותן שם לכל מעבד, כל אירוע וכל תחום - ומאפשר לך לשנות את דעתך בכל עת.",
-    "consent": "כל דבר שיאחסן משהו במכשיר שלך ממתין להסכמתך. Decline ו-Google Analytics ו-PostHog לעולם לא נטענים - לא הוגדר קובץ Cookie ולא נשמר מזהה. אם הדפדפן שלך שולח Global Privacy Control או Do Not Track, זה נחשב כדחיה אוטומטית ולעולם לא תוצג לך הבאנר.",
-    "alwaysOnProcessors": "Vercel Analytics ו-Speed Insights הם היוצאים מן הכלל, והם פועלים עבור כולם. הם לא מגדירים קובצי Cookie ואינם מאחסנים מזהה - הם מודדים עומסי דפים וביצועים מצטברים, וזה מה ששומר על האתר הזה מהיר. אין שום דבר במכשיר שלך לבטל את ההסכמה.",
-    "noAccounts": "אין חשבונות באתר הזה, כך שכל זה לא קשור לזהות. לעולם איננו אוספים קלט טפסים, טקסט חופשי או תוכן של דפים שאתה מציג.",
-    "processorsTitle": "מי מקבל נתונים",
-    "needsConsent": "זקוק להסכמתך",
-    "alwaysOn": "פועל תמיד, לא שומר כלום",
+    "eyebrow": "Privacy",
+    "heading": "Exactly what we measure.",
+    "accentWord": "measure",
+    "intro": "Nothing that stores anything on your device loads until you accept. This page names every processor, every event, and every field — and lets you change your mind at any time.",
+    "consent": "Anything that would store something on your device waits for your consent. Decline and Google Analytics and PostHog never load — no cookie is set and no identifier is kept. If your browser sends Global Privacy Control or Do Not Track, that counts as a decline automatically and you are never shown the banner.",
+    "alwaysOnProcessors": "Vercel Analytics and Speed Insights are the exception, and they run for everyone. They set no cookies and store no identifier — they measure page loads and performance in aggregate, which is what keeps this site fast. There is nothing on your device to opt out of.",
+    "noAccounts": "There are no accounts on this site, so none of this is tied to an identity. We never collect form input, free text, or the contents of pages you view.",
+    "processorsTitle": "Who receives data",
+    "needsConsent": "Needs your consent",
+    "alwaysOn": "Always on, stores nothing",
     "processors": {
       "vercel": {
-        "purpose": "צפיות בעמוד ו-Core Web Vitals עבור האתר המתארח.",
-        "storage": "ללא קובצי Cookie וללא מזהה - שום דבר לא מאוחסן במכשיר שלך."
+        "purpose": "Page views and Core Web Vitals for the hosted site.",
+        "storage": "No cookies and no identifier — nothing is stored on your device."
       },
       "ga4": {
-        "purpose": "צפיות דפים ומקורות תנועה מצטברים.",
-        "storage": "מגדיר קובצי Cookie משלו של צד ראשון (_ga, _ga_*)."
+        "purpose": "Aggregate page views and traffic sources.",
+        "storage": "Sets its own first-party cookies (_ga, _ga_*)."
       },
       "posthog": {
-        "purpose": "שלושת אירועי המוצר המפורטים להלן.",
-        "storage": "pc_distinct_id אקראי ב-localStorage, בתוספת שם נתיב כניסה אורגני ב-sessionStorage עבור הכרטיסייה הנוכחית."
+        "purpose": "The three product events listed below.",
+        "storage": "A random pc_distinct_id in localStorage, plus an organic entry pathname in sessionStorage for the current tab."
       }
     },
-    "eventsTitle": "האירועים שאנו שולחים",
-    "eventsIntro": "שלושה, והשדות שלהם קבועים. כל ערך מגיע ממסלול מחויב, קישור או פקודת התקנה - לעולם לא מכל דבר שאתה מקליד.",
-    "trafficSource": "תצוגות עמוד תויגות תנועה רק כחיפוש אורגני או אחר. התווית הזו נגזרת בדפדפן שלך מרשימת מנועי חיפוש קבועה או מסמן מסע פרסום אורגני מפורש. המפנה הגולמי, מסע הפרסום ומחרוזת השאילתה לעולם לא נשלחים. בדיקות אתרים מבוקרות נושאות סמן אימות אמיתי כך שניתן להחריג אותן מספירת מבקרים; ביקורים רגילים נושאים שווא.",
-    "entryPage": "לאחר הסכמה, ביקורים אורגניים שומרים על שם הנתיב הראשון של אותו אתר עבור כרטיסיית הדפדפן הנוכחית. עותקי התקנה ולחיצות על קישור ראשי כוללים את שם הנתיב הזה כ-<code>entry_page</code>. ביקורים ישירים והפניה לא. הוא לעולם לא מכיל מחרוזת שאילתה או מפנה גולמי והוא נמחק כאשר אתה מבטל את ההסכמה.",
+    "eventsTitle": "The events we send",
+    "eventsIntro": "Three, and their fields are fixed. Every value comes from a committed route, link, or install command — never from anything you type.",
+    "trafficSource": "Page views label traffic only as organic search or other. That label is derived in your browser from a fixed search-engine list or an explicit organic campaign marker. The raw referrer, campaign, and query string are never sent. Controlled site checks carry a true verification marker so they can be excluded from visitor counts; ordinary visits carry false.",
+    "entryPage": "After consent, organic visits keep the first same-site pathname for the current browser tab. Install copies and primary link clicks include that pathname as <code>entry_page</code>. Direct and referral visits do not. It never contains a query string or raw referrer and is deleted when you withdraw consent.",
     "events": {
       "pageview": {
-        "when": "נתיב ציבורי נטען או משתנה."
+        "when": "A public route loads or changes."
       },
       "copyInstallCommand": {
-        "when": "אתה מעתיק פקודת התקנה."
+        "when": "You copy an install command."
       },
       "primaryLinkClick": {
-        "when": "אתה עוקב אחר קישור למאגר, מסמכים או רכיבים."
+        "when": "You follow a repository, docs, or components link."
       }
     },
-    "choiceTitle": "הבחירה שלך",
-    "choice": "ההחלטה שלך מאוחסנת באופן מקומי בדפדפן שלך תחת <code>pc_consent</code>. שנה אותו כאן בכל עת. משיכה עושה יותר מאשר לעצור את האיסוף - היא מוחקת את מה שיצרה ההצטרפות: קובצי ה-Google Analytics (<code>_ga</code>, <code>_ga_*</code>) והמזהה PostHog מוסרים, והדף נטען מחדש כך ששום דבר שכבר פועל לא ממשיך. גם שם נתיב הכניסה האורגני להפעלה בלבד הוסר.",
+    "choiceTitle": "Your choice",
+    "choice": "Your decision is stored locally in your browser under <code>pc_consent</code>. Change it here at any time. Withdrawing does more than stop collection — it deletes what the opt-in created: the Google Analytics cookies (<code>_ga</code>, <code>_ga_*</code>) and the PostHog identifier are removed, and the page reloads so nothing already running carries on. The session-only organic entry pathname is removed too.",
     "settings": {
-      "privacySignal": "הדפדפן שלך שולח אות פרטיות (Global Privacy Control או Do Not Track), אז Google Analytics ו-PostHog נשארים כבויים ולא ניתן לעקוף זאת כאן.",
-      "on": "Google Analytics ו-PostHog מופעלים כעת.",
-      "off": "Google Analytics ו-PostHog כבויים כרגע.",
-      "undecided": "עדיין לא בחרת, אז Google Analytics ו-PostHog כבויים.",
-      "turnOff": "כבה את הניתוח",
-      "turnOn": "הפעל את הניתוח"
+      "privacySignal": "Your browser sends a privacy signal (Global Privacy Control or Do Not Track), so Google Analytics and PostHog stay off and this cannot be overridden here.",
+      "on": "Google Analytics and PostHog are currently on.",
+      "off": "Google Analytics and PostHog are currently off.",
+      "undecided": "You have not chosen yet, so Google Analytics and PostHog are off.",
+      "turnOff": "Turn analytics off",
+      "turnOn": "Turn analytics on"
     }
   },
   "NotFound": {
-    "eyebrow": "שגיאה 404",
-    "title": "הדף לא נמצא",
-    "description": "מסלול זה אינו נמצא ברישום. הרכיבים, המסמכים והקטלוג הם.",
-    "home": "לך הביתה",
-    "docs": "קרא את המסמכים",
-    "terminalTitle": "payload-components - 404"
+    "eyebrow": "Error 404",
+    "title": "Page not found",
+    "description": "This route is not in the registry. The components, the docs, and the catalog are.",
+    "home": "Go home",
+    "docs": "Read the docs",
+    "terminalTitle": "payload-components — 404"
   },
   "Docs": {
-    "title": "תיעוד",
-    "versionBanner": "MIT רישום · רכיבים v{version}",
-    "github": "כוכב על GitHub",
-    "previousComponent": "הרכיב הקודם: {title}",
-    "nextComponent": "הרכיב הבא: {title}",
-    "newIn": "חדש ב-{version}"
+    "title": "Documentation",
+    "versionBanner": "MIT registry · components v{version}",
+    "github": "Star on GitHub",
+    "previousComponent": "Previous component: {title}",
+    "nextComponent": "Next component: {title}",
+    "newIn": "New in {version}"
   },
   "HomeMetadata": {
-    "title": "Payload Components: קווי Payload CMS בלוקים בפקודה אחת",
-    "description": "התקן בלוקים Payload CMS הניתנים לשימוש חוזר בפקודה אחת, כולל תצורת אוסף, מפות רינדור, טיפוסים שנוצרו ומפת הייבוא של מנהל המערכת עבור פרויקטים של Next.js."
+    "title": "Payload Components: Wired Payload CMS Blocks in One Command",
+    "description": "Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects."
   },
   "Landing": {
     "hero": {
-      "eyebrow": "רישום בלוק קוד פתוח Payload",
-      "primary": "התקן Payload בלוקים",
-      "accent": "חוטי, לא מודבק.",
-      "subheadline": "עבור מפתחי Payload CMS, פקודה אחת מתקינה את הבלוק, מחברת אותו אל Payload ומנחת git diff הניתן לבדיקה.",
-      "guide": "קרא את מדריך ההתקנה",
-      "github": "כוכב על GitHub",
-      "browse": "עיין ברכיבים",
-      "copy": "העתק את פקודת ההתקנה",
-      "count": "{count} חוסמים ברישום - כל אחד מחובר אל Payload בפקודה בודדת."
+      "eyebrow": "Open-source Payload block registry",
+      "primary": "Install Payload blocks",
+      "accent": "wired, not pasted.",
+      "subheadline": "For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.",
+      "guide": "Read the install guide",
+      "github": "Star on GitHub",
+      "browse": "Browse the components",
+      "copy": "Copy install command",
+      "count": "{count} blocks in the registry — every one wired into Payload by a single command."
     },
     "stack": {
-      "label": "מחסנית נתמכת",
-      "lede": "מותקן בערימה שכבר הפעלת"
+      "label": "Supported stack",
+      "lede": "Installs into the stack you already run"
     },
     "wiring": {
-      "eyebrow": "גבול ההתקנה",
-      "heading": "בלוק לא פעיל עד שהוא חוטי.",
-      "intro": "העתקת הקבצים היא החלק הקל - ארבע העריכות שלאחר מכן הן המקום שבו כל בלוק, כל ריפו, מפסידים את היום.",
-      "source": "מָקוֹר"
+      "eyebrow": "The install boundary",
+      "heading": "A block isn't live until it's wired.",
+      "intro": "Copying the files is the easy part — the four edits after are where every block, every repo, loses the day.",
+      "source": "source"
     },
     "workflow": {
-      "eyebrow": "זרימת עבודה",
-      "heading": "מקטלוג להתחייבות בשלושה מהלכים.",
-      "intro": "ללא פיגומים, ללא נעילה - מקור רגיל בתוספת שני תיקונים בהיקף שניתן לקרוא.",
+      "eyebrow": "Workflow",
+      "heading": "From catalog to commit in three moves.",
+      "intro": "No scaffolds, no lock-in — plain source plus two scoped patches you can read.",
       "steps": {
-        "oneTitle": "קרא את החוזה",
-        "oneDescription": "שדות, קבצים ותיקונים - לפני שתפעיל משהו.",
-        "twoTitle": "הפעל פקודה אחת",
-        "twoDescription": "ה-CLI בודק את הפרויקט שלך, ואז מחבר אותו במעבר אחד.",
-        "threeTitle": "הגדר בלוק עובד",
-        "threeDescription": "מקור, שני תיקונים, סוגים מחודשים - נבדק כמו כל יחסי ציבור."
+        "oneTitle": "Read the contract",
+        "oneDescription": "Fields, files, and patches — before you run anything.",
+        "twoTitle": "Run one command",
+        "twoDescription": "The CLI checks your project, then wires it in one pass.",
+        "threeTitle": "Commit a working block",
+        "threeDescription": "Source, two patches, regenerated types — reviewed like any PR."
       },
-      "badge": "מוצג ממקור",
-      "caption": "התוצאה המחויבת - מקור רכיב אמיתי, מחובר ל-Payload ונבדק כמו כל יחסי ציבור."
+      "badge": "Source-mirrored specimen",
+      "caption": "A backend-free specimen that mirrors the installable component's visual classes. The committed source is wired into Payload and reviewed like any PR."
     },
     "catalog": {
-      "eyebrow": "הקטלוג",
-      "heading": "הקטלוג, מועבר בזמן אמת.",
-      "intro": "ללא צילומי מסך - כל דגימה היא הרכיב האמיתי, מעובד מהמקור.",
-      "browse": "עיין בקטלוג",
-      "preview": "תצוגה מקדימה חיה",
-      "blockCount": "{count, plural, one {# בלוק} two {# בלוקים} other {# בלוקים}}",
-      "browseFamily": "עיין ב-{family}",
-      "allComponents": "עיין בכל הרכיבים {count}",
-      "postComponents": "רכיבי פוסט · בפיתוח",
-      "familyCount": "ניתן להתקנה",
-      "familyName": "חסימות דפים",
-      "familyDescription": "בלוקים עבור בונה פריסת דפים - מותקן עם חיווט מלא: תצורת אוסף, מיפוי רנדר, סוגים שנוצרו, מפת ייבוא."
+      "eyebrow": "The catalog",
+      "heading": "The catalog, rendered live.",
+      "intro": "No screenshots — each backend-free specimen mirrors the installable component's visual classes.",
+      "browse": "Browse the catalog",
+      "preview": "Live preview",
+      "blockCount": "{count, plural, one {# block} other {# blocks}}",
+      "browseFamily": "Browse {family}",
+      "allComponents": "Browse all {count} components",
+      "postComponents": "Post components · In development",
+      "familyCount": "Installable",
+      "familyName": "Page blocks",
+      "familyDescription": "Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map."
     },
     "faq": {
-      "heading": "שאלות, ענה ישר.",
-      "intro": "הגרסה הקצרה של המסמכים. כל תשובה מקשרת למשהו שאתה יכול לאמת במאגר.",
-      "dogfood": "החלק הזה הוא אחד מהבלוקים שלנו"
+      "heading": "Questions, answered straight.",
+      "intro": "The short version of the docs. Every answer links back to something you can verify in the repository.",
+      "dogfood": "This section is one of our blocks"
     },
     "community": {
-      "eyebrow": "קוד פתוח",
-      "heading": "קוד פתוח,",
-      "accent": "מקצה לקצה",
-      "intro": "הרישום, ה-CLI, הרכיבים והאתר הזה הם מאגר אחד ברישיון MIT. קרא את המתקין לפני שאתה סומך עליו - זו הנקודה.",
-      "copy": "העתק את פקודת ההתקנה",
-      "repository": "מאגר GitHub",
-      "issue": "פתח בעיה",
-      "invite": "מפעיל אותו בריפו אמיתי? פתח בעיה - התקנות מוקדמות מוצגות."
+      "eyebrow": "Open source",
+      "heading": "Open source,",
+      "accent": "end to end",
+      "intro": "The registry, the CLI, the components, and this site are one MIT-licensed repository. Read the installer before you trust it — that is the point.",
+      "copy": "Copy install command",
+      "repository": "GitHub repository",
+      "issue": "Open an issue",
+      "invite": "Running it in a real repo? Open an issue — early installs get featured."
     }
   },
   "Catalog": {
-    "metadataTitle": "{count} Payload CMS רכיבים ובלוקים | קטלוג",
-    "metadataDescription": "עיין בלוקים מוקלדים Payload CMS. הפעל npx payload-components add '<component>' כדי לחבר אחד לאוסף, למעבד, לסוגים שנוצרו ולמפת הייבוא ​​של מנהל המערכת.",
-    "eyebrow": "רישום",
-    "title": "רכיבים {count} Payload CMS ובלוקים מוקלדים",
-    "description": "עיין בכל {count} רכיבי Payload CMS הניתנים להתקנה על פני גיבורים, תכונות, תמחור, קריאות לפעולה, אינטגרציות, המלצות, סטטיסטיקות, FAQ, תוכן, צוותים, הטמעות וכותרות תחתונות. פקודת CLI אחת מעתיקה בלוק ומחברת את רישום האוסף שלו, מיפוי המעבד, הסוגים שנוצרו ומפת ייבוא ​​המנהל.",
-    "installation": "ראה כיצד פועלת התקנה בפקודה אחת",
-    "blocksGuide": "עקוב אחר חסימה מתצורה לדף חי",
-    "templates": "חקור מושגי תבנית Payload CMS",
-    "license": "MIT מורשה"
+    "metadataTitle": "{count} Payload CMS Components & Blocks | Catalog",
+    "metadataDescription": "Browse typed Payload CMS blocks. Run npx payload-components add '<component>' to wire one into your collection, renderer, generated types, and admin import map.",
+    "eyebrow": "Registry",
+    "title": "{count} Payload CMS components and typed blocks",
+    "description": "Browse all {count} installable Payload CMS components across heroes, features, pricing, calls to action, integrations, testimonials, stats, FAQs, content, teams, embeds, and footers. One CLI command copies a block and wires its collection registration, renderer mapping, generated types, and admin import map.",
+    "installation": "See how one-command installation works",
+    "blocksGuide": "Follow a block from config to live page",
+    "templates": "Explore Payload CMS template concepts",
+    "license": "MIT licensed"
   },
   "CatalogBrowser": {
-    "filter": "רכיבי סינון",
-    "allComponents": "כל הרכיבים",
-    "all": "הכל",
-    "search": "רכיבי חיפוש",
-    "result": "{count, plural, one {# תוצאה} two {# תוצאות} other {# תוצאות}}",
-    "empty": "אין רכיבים שתואמים למסננים שלך.",
-    "reset": "אפס מסננים",
-    "proposal": "הקטלוג גדל בכוונה - מקור, מניפסט, מסמכים וכיסוי מתקין נכללים ביחד. הצע את הבא.",
-    "issue": "פתח בעיה",
-    "inDevelopment": "בפיתוח",
-    "roadmapPreview": "תצוגה מקדימה של הקונספט",
-    "planned": "מפת דרכים בקוד פתוח",
-    "interest": "הצגת מפת הדרכים",
-    "interestLabel": "הצגת {component} במפת הדרכים של רכיבי התוכן",
-    "selected": "נבחר {count}",
-    "tray": "רכיבים נבחרים",
-    "copy": "העתק את פקודת ההתקנה",
-    "clear": "נקה בחירה",
+    "filter": "Filter components",
+    "allComponents": "All components",
+    "all": "All",
+    "search": "Search components",
+    "result": "{count, plural, one {# result} other {# results}}",
+    "empty": "No components match your filters.",
+    "reset": "Reset filters",
+    "proposal": "The catalog grows deliberately — source, manifest, docs, and installer coverage ship together. Propose the next one.",
+    "issue": "Open an issue",
+    "inDevelopment": "In development",
+    "roadmapPreview": "Concept preview",
+    "planned": "Open-source roadmap",
+    "interest": "View the roadmap",
+    "interestLabel": "View {component} on the editorial roadmap",
+    "selected": "{count} selected",
+    "tray": "Selected components",
+    "copy": "Copy install command",
+    "clear": "Clear selection",
     "families": {
-      "pages": "חסימות דפים",
-      "posts": "רכיבי פוסט"
+      "pages": "Page blocks",
+      "posts": "Post components"
     },
     "categories": {
-      "hero": "גיבור",
-      "features": "תכונות",
-      "comparator": "משווה",
-      "pricing": "תמחור",
-      "cta": "קריאה לפעולה",
-      "contact": "איש קשר",
-      "integration": "אינטגרציה",
-      "logos": "ענן לוגו",
-      "testimonials": "המלצות",
-      "stats": "סטטיסטיקות",
+      "hero": "Hero",
+      "features": "Features",
+      "comparator": "Comparator",
+      "pricing": "Pricing",
+      "cta": "Call to action",
+      "contact": "Contact",
+      "integration": "Integration",
+      "logos": "Logo cloud",
+      "testimonials": "Testimonials",
+      "stats": "Stats",
       "faq": "FAQ",
-      "content": "תוכן",
-      "team": "צוות",
-      "embed": "הטמע",
-      "footer": "כותרת תחתונה",
-      "cards": "כרטיסים",
-      "archive": "ארכיון",
-      "header": "כותרת",
-      "index": "אינדקס",
-      "author": "מחבר",
-      "newsletter": "ניוזלטר",
-      "related": "קשורים"
+      "content": "Content",
+      "team": "Team",
+      "embed": "Embed",
+      "footer": "Footer",
+      "cards": "Cards",
+      "archive": "Archive",
+      "header": "Header",
+      "index": "Index",
+      "author": "Author",
+      "newsletter": "Newsletter",
+      "related": "Related"
     },
-    "composerAdd": "הוסף {slug} לפקודת ההתקנה",
-    "composerRemove": "הסר את {slug} מפקודת ההתקנה",
+    "composerAdd": "Add {slug} to the install command",
+    "composerRemove": "Remove {slug} from the install command",
     "theme": {
-      "brandLegend": "הצג תצוגה מקדימה של הקטלוג בצבע המותג שלך",
-      "brandLabel": "מותג",
-      "previewBrand": "תצוגה מקדימה ב-{color}",
+      "brandLegend": "Preview the catalog in your brand colour",
+      "brandLabel": "Brand",
+      "previewBrand": "Preview in {color}",
       "colors": {
-        "emerald": "אמרלד",
-        "sky": "שמיים",
-        "indigo": "אינדיגו",
-        "violet": "ויולט",
-        "rose": "ורד",
-        "amber": "ענבר"
+        "emerald": "Emerald",
+        "sky": "Sky",
+        "indigo": "Indigo",
+        "violet": "Violet",
+        "rose": "Rose",
+        "amber": "Amber"
       },
-      "radiusLegend": "הצג תצוגה מקדימה של הקטלוג ברדיוס פינתי אחר",
-      "radiusLabel": "רדיוס",
-      "previewRadius": "תצוגה מקדימה עם פינות {style}",
+      "radiusLegend": "Preview the catalog at a different corner radius",
+      "radiusLabel": "Radius",
+      "previewRadius": "Preview with {style} corners",
       "radii": {
-        "sharp": "חד",
-        "default": "ברירת מחדל",
-        "round": "עגול"
+        "sharp": "Sharp",
+        "default": "Default",
+        "round": "Round"
       }
     }
   },
@@ -287,192 +287,192 @@
     "contribute": "Propose or discuss a component"
   },
   "Templates": {
-    "metadataTitle": "Payload CMS תבניות עבור Next.js | מושגים ומתכונים",
-    "metadataDescription": "חקור מושגי תבנית Payload CMS על פני חמישה עשר ענפים - SaaS, סוכנות, מסחר, בריאות, מסעדות, נדל\"ן ועוד - הצג תצוגה מקדימה של כל עמוד ובדוק את מתכון הבלוק שהוקלד.",
-    "detailTitle": "תבנית {title}",
-    "back": "תבניות",
-    "previewPageLabel": "דף תצוגה מקדימה {title}",
-    "previewViewport": "תצוגה מקדימה של גודל נקודת התצוגה",
-    "desktop": "שולחן עבודה",
-    "tablet": "טאבלט",
-    "mobile": "נייד",
-    "previewFrameTitle": "{title} תצוגה מקדימה של תבנית - עמוד {page}",
-    "eyebrow": "תבניות",
-    "title": "מושגי תבנית Payload CMS, בנויים מבלוקים הניתנים להתקנה",
-    "status": "תצוגה מקדימה של קונספט",
-    "disclosure": "זהו מושג שניתן לעיין באתר מלא. כל קטע מורכב מבלוקים ברישום הפתוח, ופקודה אחת מתקינה את כל ערכת הבלוקים - העותק האצור המוצג כאן אינו מושבע, אז אתה מרכיב את הדפים בעצמך במנהל המערכת.",
-    "startingPoint": "בחר נקודת התחלה",
-    "description": "חקור את המושגים המלאים של האתר Payload CMS ו-Next.js בחמישה עשר ענפים - SaaS, סוכנות, מסחר, שירותי בריאות, מסעדות, נדל\"ן, מוזיקה ועוד. פתח כל עמוד בתצוגה מקדימה חיה, ואז עקוב אחר כל קטע חזרה לבלוק מודפס שאתה יכול להתקין היום.",
-    "components": "עיין ברכיבים הניתנים להתקנה",
-    "installation": "קרא את מדריך ההתקנה",
-    "official": "התחל מהתבנית הרשמית Payload",
-    "showcases": "חלונות ראווה של תבניות",
-    "questionsEyebrow": "שאלות",
-    "questionsHeading": "Payload CMS שאלות תבנית, ענה",
-    "questionsIntro": "המושגים פתוחים בכוונה לגבי מה שעובד היום ומה שנותר התייחסות עיצובית.",
-    "q1": "האם תבניות Payload CMS אלו ניתנות להתקנה?",
-    "a1": "לא. הם מושגים שניתן לעיין באתר מלא, לא מאגרי מתחילים ארוזים. הבלוקים הנפרדים בכל מתכון ניתנים להתקנה, וכל מתכון מקשר לתיעוד הרכיב הרלוונטי.",
-    "q2": "במה הם שונים מהתבנית הרשמית של Payload?",
-    "a2": "תבנית האתר הרשמית מעניקה לפרויקט חדש בסיס יישום מלא. מושגים אלה מראים כיצד אתר שיווקי מלא יכול להיראות ואילו בלוקים מודפסים מרכיבים כל עמוד, מבלי להחליף את התפקיד של פרויקט מתחיל.",
-    "q3": "האם אני יכול להשתמש במתכונים בפרויקט Payload קיים?",
-    "a3": "כן. פתח קונספט, בדוק את המתכון המוזמן שלו ובחר את הקטעים המתאימים לאתר שלך. הקטלוג מתעד את השדות של כל בלוק ואת נתיב ההתקנה הנתמך Payload CMS v3.",
-    "communityEyebrow": "קהילה",
-    "communityHeading": "תבניות נקבעות באופן פתוח",
-    "communityIntro": "מושגים אלה קיימים כדי לענות על שאלה אחת עם הקהילה: האם תבניות של אתר מלא יהפכו לניתנות להתקנה? המתכונים, המותגים הבדיוניים וה-RFC המתקין כולם חיים במאגר הציבורי - שום דבר לא סגור, אין לכידת אימייל.",
-    "allConcepts": "כל המושגים",
-    "filter": "סנן מושגים לפי קטגוריה",
-    "showing": "מציג {visible} מתוך {total} מושגים",
-    "visualTone": "טון ויזואלי",
-    "counts": "{pages} דפים · {blocks} בלוקים ייחודיים",
-    "explore": "חקור תבנית",
-    "openPreview": "פתח את התצוגה המקדימה המלאה",
-    "posterLabel": "חקור את התבנית {title}",
-    "posterAlt": "תבנית {title} — פוסטר קונספט של דף הבית",
-    "contributionRepository": "עיין במאגר",
-    "contributionRepositoryDescription": "קרא את מקור הראווה - כל מתכון הוא נתונים רגילים במאגר.",
-    "contributionRfc": "קרא את ה-RFC של המתקין",
-    "contributionRfcDescription": "סקור את ההצעה להפיכת מתכוני קונספט לזרימת עבודה אופציונלית ושקופה להתקנה.",
+    "metadataTitle": "Payload CMS Templates for Next.js | Concepts & Recipes",
+    "metadataDescription": "Explore Payload CMS template concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate and more — preview every page and inspect the typed block recipe.",
+    "detailTitle": "{title} template",
+    "back": "Templates",
+    "previewPageLabel": "{title} preview page",
+    "previewViewport": "Preview viewport size",
+    "desktop": "Desktop",
+    "tablet": "Tablet",
+    "mobile": "Mobile",
+    "previewFrameTitle": "{title} template preview — {page} page",
+    "eyebrow": "Templates",
+    "title": "Payload CMS template concepts, built from installable blocks",
+    "status": "Concept preview",
+    "disclosure": "This is a browsable full-site concept. Every section is composed from blocks in the open registry, and one command installs the whole block set — the curated copy shown here is not seeded, so you assemble the pages yourself in the admin.",
+    "startingPoint": "Choose a starting point",
+    "description": "Explore complete Payload CMS and Next.js site concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate, music and more. Open every page in a live preview, then trace each section back to a typed block you can install today.",
+    "components": "Browse installable components",
+    "installation": "Read the installation guide",
+    "official": "Start from the official Payload template",
+    "showcases": "Template showcases",
+    "questionsEyebrow": "Questions",
+    "questionsHeading": "Payload CMS template questions, answered",
+    "questionsIntro": "The concepts are intentionally open about what works today and what remains a design reference.",
+    "q1": "Are these Payload CMS templates installable?",
+    "a1": "No. They are browsable full-site concepts, not packaged starter repositories. The individual blocks in each recipe are installable, and every recipe links to the relevant component documentation.",
+    "q2": "How do these differ from Payload’s official template?",
+    "a2": "The official website template gives a new project a complete application foundation. These concepts show how a full marketing site can look and which typed blocks compose each page, without replacing that starter-project role.",
+    "q3": "Can I use the recipes in an existing Payload project?",
+    "a3": "Yes. Open a concept, inspect its ordered recipe, and choose the sections that fit your site. The catalog documents each block’s fields and the supported Payload CMS v3 installation path.",
+    "communityEyebrow": "Community",
+    "communityHeading": "Templates are decided in the open",
+    "communityIntro": "These concepts exist to answer one question with the community: should full-site templates become installable? The recipes, fictional brands, and installer RFC all live in the public repository — nothing gated, no email capture.",
+    "allConcepts": "All concepts",
+    "filter": "Filter concepts by category",
+    "showing": "Showing {visible} of {total} concepts",
+    "visualTone": "Visual tone",
+    "counts": "{pages} pages · {blocks} unique blocks",
+    "explore": "Explore template",
+    "openPreview": "Open full preview",
+    "posterLabel": "Explore the {title} template",
+    "posterAlt": "{title} template — home page concept poster",
+    "contributionRepository": "Browse the repository",
+    "contributionRepositoryDescription": "Read the showcase source — every recipe is plain data in the repository.",
+    "contributionRfc": "Read the installer RFC",
+    "contributionRfcDescription": "Review the proposal for turning concept recipes into an optional, transparent install workflow.",
     "categories": {
-      "agency": "סוכנות",
-      "civic": "סיוויק",
-      "commerce": "מסחר",
-      "education": "חינוך",
-      "event": "אירוע",
-      "fintech": "פינטק",
-      "healthcare": "שירותי בריאות",
-      "marketplace": "שוק",
-      "music": "מוזיקה",
-      "nonprofit": "מלכ\"ר",
-      "portfolio": "תיק",
-      "real-estate": "נדל\"ן",
-      "restaurant": "מסעדה",
+      "agency": "Agency",
+      "civic": "Civic",
+      "commerce": "Commerce",
+      "education": "Education",
+      "event": "Event",
+      "fintech": "Fintech",
+      "healthcare": "Healthcare",
+      "marketplace": "Marketplace",
+      "music": "Music",
+      "nonprofit": "Nonprofit",
+      "portfolio": "Portfolio",
+      "real-estate": "Real estate",
+      "restaurant": "Restaurant",
       "saas": "SaaS",
-      "trade": "סחר"
+      "trade": "Trade"
     }
   },
   "Blog": {
-    "metadataTitle": "Payload CMS מדריכי בלוק ומתקין",
-    "metadataDescription": "מדריכים מעשיים Payload CMS v3 להתקנת בלוקים לשימוש חוזר, אוספי חיווט ורינדרים, יצירת סוגים ותיקון בלוקים שאינם מעבדים.",
-    "eyebrow": "הדרכה מעשית Payload CMS v3",
-    "featured": "התחל עם מדריך מוכח",
-    "installationLabel": "מדריך התקנה",
-    "installationTitle": "התקן בלוק Payload קווי",
-    "installationDescription": "הוסף בלוק אמיתי עם ה-CLI הנתמך, ולאחר מכן סקור כל קובץ ושינוי חיווט שנוחת.",
-    "installationAction": "עקוב אחר מדריך ההתקנה",
-    "wiringLabel": "מדריך חיווט חסימה",
-    "wiringTitle": "חוט בלוק לשימוש חוזר",
-    "wiringDescription": "עקוב אחר בלוק Payload CMS v3 מהתצורה דרך הרישום, העיבוד, הסוגים שנוצרו ומפת הייבוא של המנהל.",
-    "troubleshootingLabel": "מדריך לפתרון בעיות",
-    "troubleshootingTitle": "תקן בלוק שלא יעבד",
-    "troubleshootingDescription": "בדוק את ארבעת המקומות שבדרך כלל מסבירים מדוע בלוק שמור לא מופיע בעמוד.",
-    "readGuide": "קרא את המדריך",
-    "notesEyebrow": "הערות שדה מהרישום",
-    "notesTitle": "עוד הערות שדה Payload CMS",
-    "notesDescription": "עיין בשיעורי הטמעה, הערות עיצוב רכיבים וסיפורי שחרור מהרישום הפתוח.",
-    "browseComponents": "עיין בכל הרכיבים הניתנים להתקנה {count}",
-    "empty": "עדיין אין פוסטים - בדוק שוב בקרוב.",
-    "back": "חזרה לבלוג",
-    "keepReading": "המשיכו לקרוא",
-    "related": "קריאה קשורה",
-    "tags": "תגיות מאמרים",
+    "metadataTitle": "Payload CMS block and installer guides",
+    "metadataDescription": "Practical Payload CMS v3 guides for installing reusable blocks, wiring collections and renderers, generating types, and fixing blocks that do not render.",
+    "eyebrow": "Practical Payload CMS v3 guidance",
+    "featured": "Start with a proven guide",
+    "installationLabel": "Installation guide",
+    "installationTitle": "Install a wired Payload block",
+    "installationDescription": "Add a real block with the supported CLI, then review every file and wiring change that lands.",
+    "installationAction": "Follow the installation guide",
+    "wiringLabel": "Block wiring guide",
+    "wiringTitle": "Wire a reusable block",
+    "wiringDescription": "Follow a Payload CMS v3 block from config through registration, rendering, generated types, and the admin import map.",
+    "troubleshootingLabel": "Troubleshooting guide",
+    "troubleshootingTitle": "Fix a block that will not render",
+    "troubleshootingDescription": "Check the four places that usually explain why a saved block does not appear on the page.",
+    "readGuide": "Read the guide",
+    "notesEyebrow": "Field notes from the registry",
+    "notesTitle": "More Payload CMS field notes",
+    "notesDescription": "Browse implementation lessons, component design notes, and release stories from the open registry.",
+    "browseComponents": "Browse all {count} installable components",
+    "empty": "No posts yet — check back soon.",
+    "back": "Back to blog",
+    "keepReading": "Keep reading",
+    "related": "Related reading",
+    "tags": "Article tags",
     "series": {
-      "project-notes": "הערות לפרויקט",
-      "foundations": "יסודות",
-      "installer-internals": "פנימיות של מתקין",
-      "component-design": "עיצוב רכיבים",
-      "production-guides": "מדריכי הפקה",
-      "open-source": "איכות וקהילה"
+      "project-notes": "Project notes",
+      "foundations": "Foundations",
+      "installer-internals": "Installer internals",
+      "component-design": "Component design",
+      "production-guides": "Production guides",
+      "open-source": "Quality & community"
     }
   },
   "Footer": {
-    "home": "דף הבית של Payload Components",
-    "intro": "רכיבים מסוג Payload CMS שמתקיימים עם החיווט שלהם - תצורת איסוף, מיפוי עיבוד, טיפוסים שנוצרו וייבוא מפה בפקודה אחת.",
-    "product": "מוצר",
-    "components": "רכיבים",
-    "project": "פרויקט",
-    "componentCatalog": "קטלוג רכיבים",
-    "templateConcepts": "מושגי תבניות",
-    "documentation": "תיעוד",
-    "installWorkflow": "התקן זרימת עבודה",
-    "architecture": "אדריכלות",
-    "aiDiscovery": "גילוי בינה מלאכותית",
-    "allComponents": "כל הרכיבים {count}",
-    "about": "אודות",
-    "brandGuide": "מדריך מותג",
-    "openIssue": "פתח בעיה",
-    "releases": "מהדורות",
-    "updates": "עדכון עדכונים",
-    "contributing": "תורם",
-    "privacy": "פרטיות",
-    "registry": "רישום JSON",
-    "license": "MIT מורשה · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · פתח את הרישום"
+    "home": "Payload Components home",
+    "intro": "Typed Payload CMS components that install with their wiring — collection config, render mapping, generated types, and import map in one command.",
+    "product": "Product",
+    "components": "Components",
+    "project": "Project",
+    "componentCatalog": "Component catalog",
+    "templateConcepts": "Template concepts",
+    "documentation": "Documentation",
+    "installWorkflow": "Install workflow",
+    "architecture": "Architecture",
+    "aiDiscovery": "AI discovery",
+    "allComponents": "All {count} components",
+    "about": "About",
+    "brandGuide": "Brand Guide",
+    "openIssue": "Open an issue",
+    "releases": "Releases",
+    "updates": "Updates feed",
+    "contributing": "Contributing",
+    "privacy": "Privacy",
+    "registry": "Registry JSON",
+    "license": "MIT licensed · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · open registry"
   },
   "Maintainer": {
-    "body": "בניתי payload-components כי התקנת בלוק Payload מעולם לא הייתה העתק-הדבק - זה היה ארבע העריכות שאחרי. ה-CLI קיים כך שהפרויקט השני, והעשירי, מקבלים את החיווט הזה בחינם. קרא את מקור המתקין לפני שאתה סומך עליו; משלוח זה MIT הוא העיקר.",
-    "role": "מנהל, Payload Components",
-    "github": "{name} ב-GitHub"
+    "body": "I built payload-components because installing a Payload block was never the copy-paste — it was the four edits after. The CLI exists so the second project, and the tenth, get that wiring for free. Read the installer source before you trust it; shipping it MIT is the point.",
+    "role": "Maintainer, Payload Components",
+    "github": "{name} on GitHub"
   },
   "PageMetadata": {
     "about": {
-      "title": "אודות",
-      "openGraphTitle": "אודות Payload Components",
-      "description": "מדוע Payload Components קיים: הפסק לבנות מחדש את אותם בלוקים Payload, חיווט מחדש ביד, והוכח מחדש כל התקנה בפרויקטים עצמאיים."
+      "title": "About",
+      "openGraphTitle": "About Payload Components",
+      "description": "Why Payload Components exists: stop rebuilding the same Payload blocks, rewiring them by hand, and re-proving every install across freelance projects."
     },
     "privacy": {
-      "title": "פרטיות",
-      "openGraphTitle": "פרטיות - Payload Components",
-      "description": "באילו שיטות Payload Components, אילו צדדים שלישיים מקבלים את זה, וכיצד לשנות או לבטל את בחירתך בכל עת."
+      "title": "Privacy",
+      "openGraphTitle": "Privacy — Payload Components",
+      "description": "What Payload Components measures, which third parties receive it, and how to change or withdraw your choice at any time."
     },
     "brandGuide": {
-      "title": "מדריך מותג",
-      "openGraphTitle": "Payload Components מדריך מותג",
-      "description": "המותג Payload Components: פלטת מונוכרום shadcn קלה ראשונה עם מבטא אמרלד אחד, מערכת מסוג Geist ו-Instrument Serif, שימוש בלוגו וקול."
+      "title": "Brand Guide",
+      "openGraphTitle": "Payload Components Brand Guide",
+      "description": "The Payload Components brand: a light-first shadcn monochrome palette with one emerald accent, the Geist and Instrument Serif type system, logo usage, and voice."
     }
   },
   "FaqContent": {
     "entries": {
       "one": {
-        "question": "האם Payload Components בחינם?",
-        "answer": "כן - ובנוי כדי להישאר כך. הרישום, ה-CLI, כל הרכיבים {count} הניתנים להתקנה, ואתר זה הם מאגר אחד ברישיון MIT: ללא תמחור, ללא מפתח רישיון, ללא שכבה מגודרת. Payload Components הוא הקהילה הראשון בעיצובו - הקטלוג צומח מהתקנות ותרומות אמיתיות, לא ממפת דרכים בתשלום."
+        "question": "Is Payload Components free?",
+        "answer": "Yes — and built to stay that way. The registry, the CLI, all {count} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap."
       },
       "two": {
-        "question": "מהו בלוק Payload CMS?",
-        "answer": "ב-Payload, בלוק הוא שדה בונה דפים הניתן לחיבור - קטע תוכן שניתן לשימוש חוזר (גיבור, רשת תכונה, CTA) שעורכים עורכים לפריסת עמוד. Payload Components שולח בלוקים מובנים מראש בתוספת החיווט שהופך אותם לחיות, כך שבלוק לא מועתק רק פנימה: הוא נרשם באוסף הדפים שלך, ממופה במעבד שלך, מוקלד ומתווסף למפת הייבוא ​​של המנהל.",
-        "link": "קרא את המדריך Payload בלוקים"
+        "question": "What is a Payload CMS block?",
+        "answer": "In Payload, a block is a composable page-builder field — a reusable content section (hero, feature grid, CTA) editors stack to lay out a page. Payload Components ships pre-built blocks plus the wiring that makes them live, so a block is not just copied in: it is registered in your Pages collection, mapped in your renderer, typed, and added to the admin import map.",
+        "link": "Read the Payload blocks guide"
       },
       "three": {
-        "question": "כיצד אוכל להוסיף בלוק גיבור ל-Payload CMS?",
-        "answer": "התקן אחד עם ה-CLI — `npx payload-components add hero-basic`. הוא מעתיק את מקור הבלוק לתוך הפרויקט שלך ומחבר אותו מקצה לקצה: רושם אותו באוסף הדפים שלך, ממפה אותו ב-RenderBlocks, ומחדש את Payload סוגי ה-Payload ואת מפת הייבוא ​​של מנהל המערכת - נוחתת כ-git diff אחת הניתנת לבדיקה. אותה פקודה מוסיפה כל בלוק בקטלוג."
+        "question": "How do I add a hero block to Payload CMS?",
+        "answer": "Install one with the CLI — `npx payload-components add hero-basic`. It copies the block source into your project and wires it end to end: registers it in your Pages collection, maps it in RenderBlocks, and regenerates your Payload types and admin import map — landing as one reviewable git diff. The same command adds any block in the catalog."
       },
       "four": {
-        "question": "מה בדיוק משנה התקנה בריפו שלי?",
-        "answer": "שלושה דברים: קובצי מקור של רכיבים מועתקים פנימה (תצורת בלוק, רכיב, כלי עזר משותפים), שני קבצים בדיוק מתוקנים (אוסף הדפים שלך ו-RenderBlocks.tsx - כל מניפסט רכיב מצהיר עליהם), ו-Payload יוצר מחדש את הפלט שלו (payload-types.ts ואת מפת הייבוא ​​של ה-Admin). כל זה מופיע כ-git diff רגיל.",
-        "link": "קרא את מדריך ההתקנה"
+        "question": "What exactly does an install change in my repo?",
+        "answer": "Three things: component source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each component manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.",
+        "link": "Read the installation guide"
       },
       "five": {
-        "question": "מה קורה אם אני מפעיל את אותה התקנה פעמיים?",
-        "answer": "זה מתכנס. ה-CLI מזהה חיווט קיים ומדלג עליו - הפלט האמיתי הוא payload-components: \"hero-basic\" is already installed. מצב ההתקנה מתועד ב-.payload-components/state.json, כך שהתקנות חלקיות גלויות וניתנות לשחזור במקום מקולקלות בשקט."
+        "question": "What happens if I run the same install twice?",
+        "answer": "It converges. The CLI detects existing wiring and skips it — the real output is payload-components: \"hero-basic\" is already installed. Install state is recorded in .payload-components/state.json, so partial installs are visible and recoverable instead of silently broken."
       },
       "six": {
-        "question": "אילו פרויקטים נתמכים היום?",
-        "answer": "פרויקטים של Payload v3 + Next.js 15/16 המעוצבים כמו מפעיל האתר הרשמי - רינדור בלוקי פריסה דרך src/blocks/RenderBlocks.tsx ורישום בלוקים של דפים בsrc/collections/Pages/index.ts. הCLI בודק את הפרויקט שלך מול מטריצת התמיכה שפורסמה לפני נגיעה."
+        "question": "Which projects are supported today?",
+        "answer": "Payload v3 + Next.js 15/16 projects shaped like the official website starter — rendering layout blocks through src/blocks/RenderBlocks.tsx and registering page blocks in src/collections/Pages/index.ts. The CLI checks your project against the published support matrix before touching anything."
       },
       "seven": {
-        "question": "למה לא פשוט להפעיל את npx shadcn add?",
-        "answer": "התקנה רגילה של shadcn מעתיקה קבצים ומפסיקה. בלוקים Payload פועלים רק לאחר שהם נרשמים בסכימת האוסף שלך, ממופים במעבד שלך, מוקלדים ומתווספים למפת הייבוא ​​של מנהל המערכת. payload-components עוטף את אותה משלוח רישום עם החיווט הזה בדיוק - הגבול הזה הוא המוצר, ופנקס החיווט למעלה מציג אותו שורה אחר שורה.",
-        "link": "קרא את ההשוואה המלאה של shadcn"
+        "question": "Why not just run npx shadcn add?",
+        "answer": "A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-components wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.",
+        "link": "Read the full shadcn comparison"
       },
       "eight": {
-        "question": "כיצד נכנסים רכיבים חדשים לקטלוג?",
-        "answer": "בכוונה. רכיב נוחת רק כאשר המקור, המטא-נתונים של המניפסט, דף המסמכים וכיסוי בדיקת המתקין שלו נשלחים יחדיו - בלוקים חצי חוטים לעולם אינם מגיעים לקטלוג. הצע את הרכיב הבא בגיליון GitHub; הקטלוג צומח מהתקנות אמיתיות."
+        "question": "How do new components get into the catalog?",
+        "answer": "Deliberately. A component lands only when its source, manifest metadata, docs page, and installer test coverage ship together — half-wired blocks never reach the catalog. Propose the next component in a GitHub issue; the catalog grows from real installs."
       }
     }
   },
   "TranslationNotice": {
-    "fallback": "הדף עדיין לא תורגם, ולכן תוכן המקור מוצג באנגלית.",
-    "label": "מצב התרגום",
-    "machine": "הדף תורגם אוטומטית ועדיין לא נבדק בידי דובר ילידי.",
-    "viewEnglish": "הצגת המקור באנגלית"
+    "fallback": "This page is not translated yet, so its source content is shown in English.",
+    "label": "Translation status",
+    "machine": "This page was machine translated and has not been reviewed by a native speaker.",
+    "viewEnglish": "View English source"
   }
 }

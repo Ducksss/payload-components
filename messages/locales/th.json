@@ -1,259 +1,259 @@
 {
   "Metadata": {
-    "title": "Payload Components — บล็อกแบบมีสายเต็มสำหรับ Payload CMS",
-    "description": "โอเพ่นซอร์ส Payload CMS บล็อกที่ติดตั้งด้วยการกำหนดค่าคอลเลกชัน การแมปตัวแสดงผล ประเภทที่สร้างขึ้น และแผนที่การนำเข้าของผู้ดูแลระบบ"
+    "title": "Payload Components — fully-wired blocks for Payload CMS",
+    "description": "Open-source Payload CMS blocks that install with their collection config, renderer mapping, generated types, and admin import map."
   },
   "Common": {
-    "home": "หน้าแรก",
-    "documentation": "เอกสารประกอบ",
-    "blog": "บล็อก",
-    "componentCatalog": "แค็ตตาล็อกส่วนประกอบ",
-    "brandGuide": "คู่มือแบรนด์",
-    "about": "เกี่ยวกับ",
-    "privacy": "ความเป็นส่วนตัว",
-    "copy": "คัดลอก",
-    "copied": "คัดลอกแล้ว",
-    "copiedDescription": "คัดลอกไปยังคลิปบอร์ดแล้ว"
+    "home": "Home",
+    "documentation": "Documentation",
+    "blog": "Blog",
+    "componentCatalog": "Component catalog",
+    "brandGuide": "Brand Guide",
+    "about": "About",
+    "privacy": "Privacy",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copiedDescription": "Copied to clipboard."
   },
   "Header": {
-    "skip": "ข้ามไปที่เนื้อหา",
-    "home": "หน้าแรกของ Payload Components",
-    "github": "GitHub พื้นที่เก็บข้อมูล",
-    "openNavigation": "เปิดการนำทาง",
-    "closeNavigation": "ปิดการนำทาง",
-    "language": "ภาษา",
+    "skip": "Skip to content",
+    "home": "Payload Components home",
+    "github": "GitHub repository",
+    "openNavigation": "Open navigation",
+    "closeNavigation": "Close navigation",
+    "language": "Language",
     "nav": {
-      "docs": "เอกสาร",
-      "components": "ส่วนประกอบ",
-      "templates": "เทมเพลต",
-      "blog": "บล็อก",
-      "about": "เกี่ยวกับ"
+      "docs": "Docs",
+      "components": "Components",
+      "templates": "Templates",
+      "blog": "Blog",
+      "about": "About"
     }
   },
   "Consent": {
-    "title": "คุกกี้การวิเคราะห์",
-    "description": "เราใช้ Google Analytics และ PostHog เพื่อดูว่าผู้คนใช้ส่วนประกอบและเอกสารใดบ้าง ปฏิเสธและไม่มีใครโหลด — ไม่มีคุกกี้ ไม่มีตัวระบุ การวัดความเร็วเพจทำงานด้วยวิธีใดวิธีหนึ่งและไม่เก็บอะไรเลย",
-    "privacy": "ความเป็นส่วนตัว",
-    "decline": "ปฏิเสธ",
-    "accept": "ยอมรับ"
+    "title": "Analytics cookies",
+    "description": "We use Google Analytics and PostHog to see which components and docs people actually use. Decline and neither one loads — no cookie, no identifier. Page-speed measurement runs either way and stores nothing.",
+    "privacy": "Privacy",
+    "decline": "Decline",
+    "accept": "Accept"
   },
   "Privacy": {
-    "eyebrow": "ความเป็นส่วนตัว",
-    "heading": "ตรงกับสิ่งที่เราวัด",
-    "accentWord": "วัด",
-    "intro": "ไม่มีสิ่งใดที่เก็บสิ่งใดบนอุปกรณ์ของคุณโหลดจนกว่าคุณจะยอมรับ หน้านี้ตั้งชื่อโปรเซสเซอร์ทุกตัว ทุกเหตุการณ์ และทุกฟิลด์ — และช่วยให้คุณเปลี่ยนใจได้ตลอดเวลา",
-    "consent": "สิ่งใดก็ตามที่จะจัดเก็บบางสิ่งไว้ในอุปกรณ์ของคุณจะต้องรอการยินยอมจากคุณ ปฏิเสธและ Google Analytics และ PostHog ไม่เคยโหลด — ไม่มีการตั้งค่าคุกกี้และไม่มีการเก็บตัวระบุ หากเบราว์เซอร์ของคุณส่ง Global Privacy Control หรือ Do Not Track จะนับเป็นการปฏิเสธโดยอัตโนมัติและคุณจะไม่แสดงแบนเนอร์เลย",
-    "alwaysOnProcessors": "Vercel Analytics และ Speed Insights เป็นข้อยกเว้น และพวกเขาวิ่งเพื่อทุกคน พวกเขาไม่ตั้งค่าคุกกี้และไม่เก็บตัวระบุ — พวกเขาวัดการโหลดหน้าเว็บและประสิทธิภาพโดยรวม ซึ่งทำให้ไซต์นี้รวดเร็ว ไม่มีสิ่งใดในอุปกรณ์ของคุณที่จะยกเลิก",
-    "noAccounts": "ไม่มีบัญชีบนไซต์นี้ ดังนั้นจึงไม่มีสิ่งใดที่เกี่ยวข้องกับข้อมูลประจำตัว เราจะไม่รวบรวมการกรอกแบบฟอร์ม ข้อความอิสระ หรือเนื้อหาของหน้าเว็บที่คุณดู",
-    "processorsTitle": "ใครรับข้อมูล",
-    "needsConsent": "ต้องการความยินยอมจากคุณ",
-    "alwaysOn": "เปิดตลอดเวลา ไม่เก็บอะไรเลย",
+    "eyebrow": "Privacy",
+    "heading": "Exactly what we measure.",
+    "accentWord": "measure",
+    "intro": "Nothing that stores anything on your device loads until you accept. This page names every processor, every event, and every field — and lets you change your mind at any time.",
+    "consent": "Anything that would store something on your device waits for your consent. Decline and Google Analytics and PostHog never load — no cookie is set and no identifier is kept. If your browser sends Global Privacy Control or Do Not Track, that counts as a decline automatically and you are never shown the banner.",
+    "alwaysOnProcessors": "Vercel Analytics and Speed Insights are the exception, and they run for everyone. They set no cookies and store no identifier — they measure page loads and performance in aggregate, which is what keeps this site fast. There is nothing on your device to opt out of.",
+    "noAccounts": "There are no accounts on this site, so none of this is tied to an identity. We never collect form input, free text, or the contents of pages you view.",
+    "processorsTitle": "Who receives data",
+    "needsConsent": "Needs your consent",
+    "alwaysOn": "Always on, stores nothing",
     "processors": {
       "vercel": {
-        "purpose": "การดูหน้าเว็บและ Core Web Vitals สำหรับไซต์ที่โฮสต์",
-        "storage": "ไม่มีคุกกี้และไม่มีตัวระบุ — ไม่มีสิ่งใดถูกจัดเก็บไว้ในอุปกรณ์ของคุณ"
+        "purpose": "Page views and Core Web Vitals for the hosted site.",
+        "storage": "No cookies and no identifier — nothing is stored on your device."
       },
       "ga4": {
-        "purpose": "รวมการดูหน้าเว็บและแหล่งที่มาของการเข้าชม",
-        "storage": "ตั้งค่าคุกกี้บุคคลที่หนึ่งของตนเอง (_ga, _ga_*)"
+        "purpose": "Aggregate page views and traffic sources.",
+        "storage": "Sets its own first-party cookies (_ga, _ga_*)."
       },
       "posthog": {
-        "purpose": "กิจกรรมผลิตภัณฑ์ทั้งสามรายการด้านล่าง",
-        "storage": "สุ่ม pc_distinct_id ใน localStorage บวกกับชื่อพาธรายการทั่วไปใน sessionStorage สำหรับแท็บปัจจุบัน"
+        "purpose": "The three product events listed below.",
+        "storage": "A random pc_distinct_id in localStorage, plus an organic entry pathname in sessionStorage for the current tab."
       }
     },
-    "eventsTitle": "กิจกรรมที่เราส่ง",
-    "eventsIntro": "สาม และฟิลด์ได้รับการแก้ไขแล้ว ทุกค่ามาจากเส้นทาง ลิงก์ หรือคำสั่งการติดตั้ง — ไม่เคยมาจากสิ่งที่คุณพิมพ์",
-    "trafficSource": "ป้ายกำกับการเข้าชมเพจเป็นการค้นหาทั่วไปหรืออื่นๆ เท่านั้น ป้ายกำกับนั้นได้มาจากเบราว์เซอร์ของคุณจากรายการเครื่องมือค้นหาที่ตายตัวหรือเครื่องหมายแคมเปญทั่วไปที่ชัดเจน ผู้อ้างอิงดิบ แคมเปญ และสตริงคำค้นหาจะไม่ถูกส่งไป การตรวจสอบไซต์ที่ได้รับการควบคุมจะมีเครื่องหมายยืนยันที่แท้จริง เพื่อให้สามารถแยกออกจากจำนวนผู้เยี่ยมชมได้ การเข้าชมปกติถือเป็นเท็จ",
-    "entryPage": "หลังจากได้รับความยินยอม การเข้าชมทั่วไปจะเก็บชื่อพาธของไซต์เดียวกันชื่อแรกสำหรับแท็บเบราว์เซอร์ปัจจุบัน ติดตั้งสำเนาและการคลิกลิงก์หลักรวมชื่อพาธเป็น <code>entry_page</code> การเยี่ยมชมโดยตรงและการอ้างอิงไม่ได้ ไม่เคยประกอบด้วยสตริงการสืบค้นหรือผู้อ้างอิงดิบ และจะถูกลบเมื่อคุณเพิกถอนความยินยอม",
+    "eventsTitle": "The events we send",
+    "eventsIntro": "Three, and their fields are fixed. Every value comes from a committed route, link, or install command — never from anything you type.",
+    "trafficSource": "Page views label traffic only as organic search or other. That label is derived in your browser from a fixed search-engine list or an explicit organic campaign marker. The raw referrer, campaign, and query string are never sent. Controlled site checks carry a true verification marker so they can be excluded from visitor counts; ordinary visits carry false.",
+    "entryPage": "After consent, organic visits keep the first same-site pathname for the current browser tab. Install copies and primary link clicks include that pathname as <code>entry_page</code>. Direct and referral visits do not. It never contains a query string or raw referrer and is deleted when you withdraw consent.",
     "events": {
       "pageview": {
-        "when": "มีการโหลดหรือเปลี่ยนแปลงเส้นทางสาธารณะ"
+        "when": "A public route loads or changes."
       },
       "copyInstallCommand": {
-        "when": "คุณคัดลอกคำสั่งการติดตั้ง"
+        "when": "You copy an install command."
       },
       "primaryLinkClick": {
-        "when": "คุณติดตามลิงก์พื้นที่เก็บข้อมูล เอกสาร หรือส่วนประกอบ"
+        "when": "You follow a repository, docs, or components link."
       }
     },
-    "choiceTitle": "ทางเลือกของคุณ",
-    "choice": "การตัดสินใจของคุณจะถูกจัดเก็บไว้ในเบราว์เซอร์ของคุณภายใต้ <code>pc_consent</code> เปลี่ยนที่นี่ได้ตลอดเวลา การถอนทำได้มากกว่าการหยุดการรวบรวม — โดยจะลบสิ่งที่การเลือกรับสร้างขึ้น: คุกกี้ Google Analytics (<code>_ga</code>, <code>_ga_*</code>) และตัวระบุ PostHog จะถูกลบออก และหน้าจะโหลดซ้ำ ดังนั้นจึงไม่มีอะไรทำงานต่อไป ชื่อพาธรายการออร์แกนิกเฉพาะเซสชันจะถูกลบออกด้วย",
+    "choiceTitle": "Your choice",
+    "choice": "Your decision is stored locally in your browser under <code>pc_consent</code>. Change it here at any time. Withdrawing does more than stop collection — it deletes what the opt-in created: the Google Analytics cookies (<code>_ga</code>, <code>_ga_*</code>) and the PostHog identifier are removed, and the page reloads so nothing already running carries on. The session-only organic entry pathname is removed too.",
     "settings": {
-      "privacySignal": "เบราว์เซอร์ของคุณส่งสัญญาณความเป็นส่วนตัว (Global Privacy Control หรือ Do Not Track) ดังนั้น Google Analytics และ PostHog จะถูกปิดไว้ และไม่สามารถแทนที่ได้ที่นี่",
-      "on": "Google Analytics และ PostHog เปิดอยู่",
-      "off": "Google Analytics และ PostHog ปิดอยู่ในขณะนี้",
-      "undecided": "คุณยังไม่ได้เลือก ดังนั้น Google Analytics และ PostHog จึงปิดอยู่",
-      "turnOff": "ปิดการวิเคราะห์",
-      "turnOn": "เปิดการวิเคราะห์"
+      "privacySignal": "Your browser sends a privacy signal (Global Privacy Control or Do Not Track), so Google Analytics and PostHog stay off and this cannot be overridden here.",
+      "on": "Google Analytics and PostHog are currently on.",
+      "off": "Google Analytics and PostHog are currently off.",
+      "undecided": "You have not chosen yet, so Google Analytics and PostHog are off.",
+      "turnOff": "Turn analytics off",
+      "turnOn": "Turn analytics on"
     }
   },
   "NotFound": {
-    "eyebrow": "ข้อผิดพลาด 404",
-    "title": "ไม่พบเพจ",
-    "description": "เส้นทางนี้ไม่ได้อยู่ในรีจิสทรี ส่วนประกอบ เอกสาร และแค็ตตาล็อกมีดังนี้",
-    "home": "กลับบ้าน",
-    "docs": "อ่านเอกสาร",
+    "eyebrow": "Error 404",
+    "title": "Page not found",
+    "description": "This route is not in the registry. The components, the docs, and the catalog are.",
+    "home": "Go home",
+    "docs": "Read the docs",
     "terminalTitle": "payload-components — 404"
   },
   "Docs": {
-    "title": "เอกสารประกอบ",
-    "versionBanner": "MIT รีจิสทรี · ส่วนประกอบ v{version}",
-    "github": "ติดดาว GitHub",
-    "previousComponent": "องค์ประกอบก่อนหน้า: {title}",
-    "nextComponent": "องค์ประกอบถัดไป: {title}",
-    "newIn": "ใหม่ใน {version}"
+    "title": "Documentation",
+    "versionBanner": "MIT registry · components v{version}",
+    "github": "Star on GitHub",
+    "previousComponent": "Previous component: {title}",
+    "nextComponent": "Next component: {title}",
+    "newIn": "New in {version}"
   },
   "HomeMetadata": {
-    "title": "Payload Components: มีสาย Payload CMS บล็อกในคำสั่งเดียว",
-    "description": "ติดตั้งบล็อก Payload CMS ที่นำมาใช้ซ้ำได้ด้วยคำสั่งเดียว รวมถึงการกำหนดค่าคอลเลกชัน การเรนเดอร์แมป ประเภทที่สร้างขึ้น และแมปการนำเข้าของผู้ดูแลระบบสำหรับโปรเจ็กต์ Next.js"
+    "title": "Payload Components: Wired Payload CMS Blocks in One Command",
+    "description": "Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects."
   },
   "Landing": {
     "hero": {
-      "eyebrow": "โอเพ่นซอร์ส Payload บล็อกรีจิสทรี",
-      "primary": "ติดตั้ง Payload บล็อก",
-      "accent": "มีสายไม่ได้วาง",
-      "subheadline": "สำหรับนักพัฒนา Payload CMS หนึ่งคำสั่งจะติดตั้งบล็อก เชื่อมต่อเข้ากับ Payload และลงจอด git diff ที่ตรวจสอบได้",
-      "guide": "อ่านคู่มือการติดตั้ง",
-      "github": "ติดดาวบน GitHub",
-      "browse": "เรียกดูส่วนประกอบ",
-      "copy": "คัดลอกคำสั่งติดตั้ง",
-      "count": "{count} บล็อกในรีจิสทรี — ทุกบล็อกเชื่อมต่อเข้ากับ Payload ด้วยคำสั่งเดียว"
+      "eyebrow": "Open-source Payload block registry",
+      "primary": "Install Payload blocks",
+      "accent": "wired, not pasted.",
+      "subheadline": "For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.",
+      "guide": "Read the install guide",
+      "github": "Star on GitHub",
+      "browse": "Browse the components",
+      "copy": "Copy install command",
+      "count": "{count} blocks in the registry — every one wired into Payload by a single command."
     },
     "stack": {
-      "label": "สแต็กที่รองรับ",
-      "lede": "ติดตั้งลงในสแต็กที่คุณเรียกใช้แล้ว"
+      "label": "Supported stack",
+      "lede": "Installs into the stack you already run"
     },
     "wiring": {
-      "eyebrow": "ขอบเขตการติดตั้ง",
-      "heading": "บล็อกจะไม่ทำงานจนกว่าจะมีสาย",
-      "intro": "การคัดลอกไฟล์เป็นส่วนที่ง่าย — การแก้ไขสี่ครั้งหลังจากนั้นคือจุดที่ทุกบล็อก ทุก repo สูญเสียวัน",
-      "source": "แหล่งที่มา"
+      "eyebrow": "The install boundary",
+      "heading": "A block isn't live until it's wired.",
+      "intro": "Copying the files is the easy part — the four edits after are where every block, every repo, loses the day.",
+      "source": "source"
     },
     "workflow": {
-      "eyebrow": "ขั้นตอนการทำงาน",
-      "heading": "จากแคตตาล็อกไปจนถึงการดำเนินการในสามขั้นตอน",
-      "intro": "ไม่มีโครง ไม่มีการล็อคอิน — แหล่งที่มาธรรมดาบวกกับแพตช์ที่กำหนดขอบเขตสองอันที่คุณสามารถอ่านได้",
+      "eyebrow": "Workflow",
+      "heading": "From catalog to commit in three moves.",
+      "intro": "No scaffolds, no lock-in — plain source plus two scoped patches you can read.",
       "steps": {
-        "oneTitle": "อ่านสัญญา",
-        "oneDescription": "ช่อง ไฟล์ และแพตช์ — ก่อนที่คุณจะเรียกใช้สิ่งใดๆ",
-        "twoTitle": "เรียกใช้หนึ่งคำสั่ง",
-        "twoDescription": "CLI ตรวจสอบโปรเจ็กต์ของคุณ จากนั้นจึงต่อสายในครั้งเดียว",
-        "threeTitle": "ยอมรับบล็อกการทำงาน",
-        "threeDescription": "แหล่งที่มา สองแพตช์ ประเภทที่สร้างใหม่ — ตรวจสอบแล้วเหมือนกับ PR ทั่วไป"
+        "oneTitle": "Read the contract",
+        "oneDescription": "Fields, files, and patches — before you run anything.",
+        "twoTitle": "Run one command",
+        "twoDescription": "The CLI checks your project, then wires it in one pass.",
+        "threeTitle": "Commit a working block",
+        "threeDescription": "Source, two patches, regenerated types — reviewed like any PR."
       },
-      "badge": "แสดงผลจากแหล่งที่มา",
-      "caption": "ผลลัพธ์ที่มุ่งมั่น — แหล่งที่มาของส่วนประกอบจริง เชื่อมต่อเข้ากับ Payload และตรวจสอบเช่นเดียวกับ PR อื่นๆ"
+      "badge": "Source-mirrored specimen",
+      "caption": "A backend-free specimen that mirrors the installable component's visual classes. The committed source is wired into Payload and reviewed like any PR."
     },
     "catalog": {
-      "eyebrow": "แค็ตตาล็อก",
-      "heading": "แคตตาล็อก แสดงผลสด",
-      "intro": "ไม่มีภาพหน้าจอ — แต่ละตัวอย่างเป็นส่วนประกอบจริง ซึ่งเรนเดอร์จากแหล่งที่มา",
-      "browse": "เรียกดูแคตตาล็อก",
-      "preview": "ดูตัวอย่างสด",
-      "blockCount": "{count, plural, other {# บล็อก}}",
-      "browseFamily": "เรียกดู {family}",
-      "allComponents": "เรียกดูส่วนประกอบ {count} ทั้งหมด",
-      "postComponents": "โพสต์ส่วนประกอบ · อยู่ระหว่างการพัฒนา",
-      "familyCount": "ติดตั้งได้",
-      "familyName": "บล็อกหน้า",
-      "familyDescription": "บล็อกสำหรับตัวสร้างเลย์เอาต์ของ Pages — ติดตั้งพร้อมการเดินสายแบบเต็ม: การกำหนดค่าคอลเลกชัน, การแมปการเรนเดอร์, ประเภทที่สร้างขึ้น, การนำเข้าแผนที่"
+      "eyebrow": "The catalog",
+      "heading": "The catalog, rendered live.",
+      "intro": "No screenshots — each backend-free specimen mirrors the installable component's visual classes.",
+      "browse": "Browse the catalog",
+      "preview": "Live preview",
+      "blockCount": "{count, plural, one {# block} other {# blocks}}",
+      "browseFamily": "Browse {family}",
+      "allComponents": "Browse all {count} components",
+      "postComponents": "Post components · In development",
+      "familyCount": "Installable",
+      "familyName": "Page blocks",
+      "familyDescription": "Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map."
     },
     "faq": {
-      "heading": "คำถามตอบตรงๆ",
-      "intro": "เอกสารฉบับย่อ ทุกคำตอบจะเชื่อมโยงกลับไปยังสิ่งที่คุณสามารถตรวจสอบได้ในพื้นที่เก็บข้อมูล",
-      "dogfood": "ส่วนนี้เป็นหนึ่งในบล็อกของเรา"
+      "heading": "Questions, answered straight.",
+      "intro": "The short version of the docs. Every answer links back to something you can verify in the repository.",
+      "dogfood": "This section is one of our blocks"
     },
     "community": {
-      "eyebrow": "โอเพ่นซอร์ส",
-      "heading": "โอเพ่นซอร์ส",
-      "accent": "ตั้งแต่ต้นจนจบ",
-      "intro": "รีจิสทรี CLI ส่วนประกอบ และไซต์นี้เป็นพื้นที่เก็บข้อมูลที่ได้รับใบอนุญาต MIT อ่านตัวติดตั้งก่อนที่คุณจะเชื่อถือ — นั่นคือประเด็น",
-      "copy": "คัดลอกคำสั่งติดตั้ง",
-      "repository": "GitHub พื้นที่เก็บข้อมูล",
-      "issue": "เปิดประเด็น",
-      "invite": "ใช้งานใน repo จริงหรือไม่ เปิดประเด็น — การติดตั้งตั้งแต่เนิ่นๆ ได้รับการแนะนำ"
+      "eyebrow": "Open source",
+      "heading": "Open source,",
+      "accent": "end to end",
+      "intro": "The registry, the CLI, the components, and this site are one MIT-licensed repository. Read the installer before you trust it — that is the point.",
+      "copy": "Copy install command",
+      "repository": "GitHub repository",
+      "issue": "Open an issue",
+      "invite": "Running it in a real repo? Open an issue — early installs get featured."
     }
   },
   "Catalog": {
-    "metadataTitle": "{count} Payload CMS ส่วนประกอบและบล็อก | แคตตาล็อก",
-    "metadataDescription": "เรียกดูบล็อกที่พิมพ์ Payload CMS เรียกใช้ npx payload-components add '<component>' เพื่อเชื่อมโยงเข้ากับคอลเล็กชัน ตัวเรนเดอร์ ประเภทที่สร้างขึ้น และแผนที่นำเข้าของผู้ดูแลระบบ",
-    "eyebrow": "รีจิสทรี",
-    "title": "{count} Payload CMS ส่วนประกอบและบล็อกที่พิมพ์",
-    "description": "ค้นหา {count} ที่ติดตั้งได้ Payload CMS ส่วนประกอบต่างๆ ครอบคลุมฮีโร่ คุณสมบัติ ราคา คำกระตุ้นการตัดสินใจ การบูรณาการ ข้อความรับรอง สถิติ FAQ เนื้อหา ทีม การฝัง และส่วนท้าย คำสั่ง CLI หนึ่งคำสั่งจะคัดลอกบล็อกและโยงการลงทะเบียนคอลเลกชัน การแมปตัวเรนเดอร์ ประเภทที่สร้างขึ้น และการนำเข้าแมปของผู้ดูแลระบบ",
-    "installation": "ดูวิธีการทำงานของการติดตั้งด้วยคำสั่งเดียว",
-    "blocksGuide": "ติดตามบล็อกตั้งแต่การกำหนดค่าไปจนถึงเพจที่ใช้งานอยู่",
-    "templates": "สำรวจ Payload CMS แนวคิดเทมเพลต",
-    "license": "MIT ได้รับใบอนุญาต"
+    "metadataTitle": "{count} Payload CMS Components & Blocks | Catalog",
+    "metadataDescription": "Browse typed Payload CMS blocks. Run npx payload-components add '<component>' to wire one into your collection, renderer, generated types, and admin import map.",
+    "eyebrow": "Registry",
+    "title": "{count} Payload CMS components and typed blocks",
+    "description": "Browse all {count} installable Payload CMS components across heroes, features, pricing, calls to action, integrations, testimonials, stats, FAQs, content, teams, embeds, and footers. One CLI command copies a block and wires its collection registration, renderer mapping, generated types, and admin import map.",
+    "installation": "See how one-command installation works",
+    "blocksGuide": "Follow a block from config to live page",
+    "templates": "Explore Payload CMS template concepts",
+    "license": "MIT licensed"
   },
   "CatalogBrowser": {
-    "filter": "ส่วนประกอบตัวกรอง",
-    "allComponents": "ส่วนประกอบทั้งหมด",
-    "all": "ทั้งหมด",
-    "search": "ค้นหาส่วนประกอบ",
-    "result": "{count, plural, other {# ผลลัพธ์}}",
-    "empty": "ไม่มีองค์ประกอบที่ตรงกับตัวกรองของคุณ",
-    "reset": "รีเซ็ตตัวกรอง",
-    "proposal": "แค็ตตาล็อกเติบโตขึ้นอย่างจงใจ — แหล่งที่มา รายการ เอกสาร และความคุ้มครองของผู้ติดตั้งจัดส่งพร้อมกัน เสนอเรื่องต่อไปครับ.",
-    "issue": "เปิดประเด็น",
-    "inDevelopment": "อยู่ระหว่างการพัฒนา",
-    "roadmapPreview": "ตัวอย่างแนวคิด",
-    "planned": "แผนงานโอเพนซอร์ส",
-    "interest": "ดูแผนงาน",
-    "interestLabel": "ดู {component} ในแผนงานคอมโพเนนต์สำหรับงานบรรณาธิการ",
-    "selected": "{count} เลือกแล้ว",
-    "tray": "ส่วนประกอบที่เลือก",
-    "copy": "คัดลอกคำสั่งติดตั้ง",
-    "clear": "ล้างการเลือก",
+    "filter": "Filter components",
+    "allComponents": "All components",
+    "all": "All",
+    "search": "Search components",
+    "result": "{count, plural, one {# result} other {# results}}",
+    "empty": "No components match your filters.",
+    "reset": "Reset filters",
+    "proposal": "The catalog grows deliberately — source, manifest, docs, and installer coverage ship together. Propose the next one.",
+    "issue": "Open an issue",
+    "inDevelopment": "In development",
+    "roadmapPreview": "Concept preview",
+    "planned": "Open-source roadmap",
+    "interest": "View the roadmap",
+    "interestLabel": "View {component} on the editorial roadmap",
+    "selected": "{count} selected",
+    "tray": "Selected components",
+    "copy": "Copy install command",
+    "clear": "Clear selection",
     "families": {
-      "pages": "บล็อกหน้า",
-      "posts": "โพสต์ส่วนประกอบ"
+      "pages": "Page blocks",
+      "posts": "Post components"
     },
     "categories": {
-      "hero": "ฮีโร่",
-      "features": "คุณสมบัติ",
-      "comparator": "ตัวเปรียบเทียบ",
-      "pricing": "ราคา",
-      "cta": "คำกระตุ้นการตัดสินใจ",
-      "contact": "ติดต่อ",
-      "integration": "บูรณาการ",
-      "logos": "โลโก้คลาวด์",
-      "testimonials": "ข้อความรับรอง",
-      "stats": "สถิติ",
+      "hero": "Hero",
+      "features": "Features",
+      "comparator": "Comparator",
+      "pricing": "Pricing",
+      "cta": "Call to action",
+      "contact": "Contact",
+      "integration": "Integration",
+      "logos": "Logo cloud",
+      "testimonials": "Testimonials",
+      "stats": "Stats",
       "faq": "FAQ",
-      "content": "เนื้อหา",
-      "team": "ทีมงาน",
-      "embed": "ฝัง",
-      "footer": "ส่วนท้าย",
-      "cards": "การ์ด",
-      "archive": "เอกสารเก่า",
-      "header": "ส่วนหัว",
-      "index": "ดัชนี",
-      "author": "ผู้เขียน",
-      "newsletter": "จดหมายข่าว",
-      "related": "ที่เกี่ยวข้อง"
+      "content": "Content",
+      "team": "Team",
+      "embed": "Embed",
+      "footer": "Footer",
+      "cards": "Cards",
+      "archive": "Archive",
+      "header": "Header",
+      "index": "Index",
+      "author": "Author",
+      "newsletter": "Newsletter",
+      "related": "Related"
     },
-    "composerAdd": "เพิ่ม {slug} ในคำสั่งติดตั้ง",
-    "composerRemove": "ลบ {slug} ออกจากคำสั่งติดตั้ง",
+    "composerAdd": "Add {slug} to the install command",
+    "composerRemove": "Remove {slug} from the install command",
     "theme": {
-      "brandLegend": "ดูตัวอย่างแคตตาล็อกตามสีแบรนด์ของคุณ",
-      "brandLabel": "สีแบรนด์",
-      "previewBrand": "ดูตัวอย่างใน {color}",
+      "brandLegend": "Preview the catalog in your brand colour",
+      "brandLabel": "Brand",
+      "previewBrand": "Preview in {color}",
       "colors": {
-        "emerald": "มรกต",
-        "sky": "ท้องฟ้า",
-        "indigo": "สีคราม",
-        "violet": "สีม่วง",
-        "rose": "โรส",
-        "amber": "อำพัน"
+        "emerald": "Emerald",
+        "sky": "Sky",
+        "indigo": "Indigo",
+        "violet": "Violet",
+        "rose": "Rose",
+        "amber": "Amber"
       },
-      "radiusLegend": "ดูตัวอย่างแค็ตตาล็อกด้วยความโค้งมนแบบต่าง ๆ",
-      "radiusLabel": "มุม",
-      "previewRadius": "ดูตัวอย่างแบบ{style}",
+      "radiusLegend": "Preview the catalog at a different corner radius",
+      "radiusLabel": "Radius",
+      "previewRadius": "Preview with {style} corners",
       "radii": {
-        "sharp": "เหลี่ยม",
-        "default": "ค่าเริ่มต้น",
-        "round": "โค้งมน"
+        "sharp": "Sharp",
+        "default": "Default",
+        "round": "Round"
       }
     }
   },
@@ -287,192 +287,192 @@
     "contribute": "Propose or discuss a component"
   },
   "Templates": {
-    "metadataTitle": "Payload CMS เทมเพลตสำหรับ Next.js | แนวคิดและสูตรอาหาร",
-    "metadataDescription": "สำรวจแนวคิดเทมเพลต Payload CMS ใน 15 ประเภทธุรกิจ — SaaS, เอเจนซี่, การพาณิชย์, การดูแลสุขภาพ, ร้านอาหาร, อสังหาริมทรัพย์ และอื่นๆ — ดูตัวอย่างทุกหน้าและตรวจสอบสูตรบล็อกที่พิมพ์",
-    "detailTitle": "{title} เทมเพลต",
-    "back": "เทมเพลต",
-    "previewPageLabel": "{title} หน้าตัวอย่าง",
-    "previewViewport": "ดูตัวอย่างขนาดวิวพอร์ต",
-    "desktop": "เดสก์ท็อป",
-    "tablet": "แท็บเล็ต",
-    "mobile": "มือถือ",
-    "previewFrameTitle": "{title} ตัวอย่างเทมเพลต — {page} หน้า",
-    "eyebrow": "เทมเพลต",
-    "title": "Payload CMS แนวคิดเทมเพลต สร้างขึ้นจากบล็อกที่ติดตั้งได้",
-    "status": "ตัวอย่างแนวคิด",
-    "disclosure": "นี่คือแนวคิดแบบเต็มไซต์ที่สามารถเรียกดูได้ ทุกส่วนประกอบด้วยบล็อกในรีจิสตรีแบบเปิด และคำสั่งเดียวจะติดตั้งชุดบล็อกทั้งหมด - สำเนาที่รวบรวมไว้ที่แสดงไว้ที่นี่ไม่ได้รับการเริ่มต้น ดังนั้น คุณจึงประกอบหน้าต่างๆ ด้วยตนเองในผู้ดูแลระบบ",
-    "startingPoint": "เลือกจุดเริ่มต้น",
-    "description": "สำรวจแนวคิดไซต์ Payload CMS และ Next.js ที่สมบูรณ์ใน 15 แนวดิ่ง - SaaS, เอเจนซี่, การพาณิชย์, การดูแลสุขภาพ, ร้านอาหาร, อสังหาริมทรัพย์, ดนตรี และอื่นๆ เปิดทุกหน้าในการดูตัวอย่างสด จากนั้นติดตามแต่ละส่วนกลับไปยังบล็อกที่พิมพ์ซึ่งคุณสามารถติดตั้งได้วันนี้",
-    "components": "เรียกดูส่วนประกอบที่ติดตั้งได้",
-    "installation": "อ่านคู่มือการติดตั้ง",
-    "official": "เริ่มจากเทมเพลต Payload อย่างเป็นทางการ",
-    "showcases": "การนำเสนอเทมเพลต",
-    "questionsEyebrow": "คำถาม",
-    "questionsHeading": "Payload CMS คำถามเทมเพลตตอบแล้ว",
-    "questionsIntro": "แนวคิดนี้ตั้งใจเปิดกว้างเกี่ยวกับสิ่งที่ใช้ได้ผลในปัจจุบันและสิ่งที่ยังคงเป็นข้อมูลอ้างอิงในการออกแบบ",
-    "q1": "เทมเพลต Payload CMS เหล่านี้สามารถติดตั้งได้หรือไม่",
-    "a1": "ไม่ เป็นแนวคิดแบบเต็มไซต์ที่สามารถเรียกดูได้ ไม่ใช่ที่เก็บข้อมูลเริ่มต้นแบบแพ็กเกจ แต่ละบล็อกในแต่ละสูตรสามารถติดตั้งได้ และทุกสูตรจะลิงก์ไปยังเอกสารส่วนประกอบที่เกี่ยวข้อง",
-    "q2": "สิ่งเหล่านี้แตกต่างจากเทมเพลตอย่างเป็นทางการของ Payload อย่างไร?",
-    "a2": "เทมเพลตเว็บไซต์อย่างเป็นทางการช่วยให้โปรเจ็กต์ใหม่มีพื้นฐานการสมัครที่สมบูรณ์ แนวคิดเหล่านี้แสดงให้เห็นว่าไซต์ทางการตลาดเต็มรูปแบบสามารถมีลักษณะอย่างไร และบล็อกประเภทใดที่ประกอบเป็นแต่ละเพจ โดยไม่ต้องแทนที่บทบาทเริ่มต้นของโครงการ",
-    "q3": "ฉันสามารถใช้สูตรอาหารในโครงการ Payload ที่มีอยู่ได้หรือไม่",
-    "a3": "ใช่ เปิดแนวคิด ตรวจสอบสูตรอาหารที่สั่ง และเลือกส่วนที่เหมาะสมกับเว็บไซต์ของคุณ แค็ตตาล็อกจัดทำเอกสารฟิลด์ของแต่ละบล็อกและเส้นทางการติดตั้ง Payload CMS v3 ที่รองรับ",
-    "communityEyebrow": "ชุมชน",
-    "communityHeading": "เทมเพลตจะถูกตัดสินใจแบบเปิด",
-    "communityIntro": "แนวคิดเหล่านี้มีอยู่เพื่อตอบคำถามหนึ่งข้อกับชุมชน: เทมเพลตแบบเต็มไซต์ควรติดตั้งได้หรือไม่ สูตรอาหาร แบรนด์สมมติ และผู้ติดตั้ง RFC ทั้งหมดอยู่ในพื้นที่เก็บข้อมูลสาธารณะ ไม่มีอะไรกั้น ไม่มีการบันทึกอีเมล",
-    "allConcepts": "ครบทุกแนวคิด",
-    "filter": "กรองแนวคิดตามหมวดหมู่",
-    "showing": "กำลังแสดง {visible} จาก {total} แนวคิด",
-    "visualTone": "โทนภาพ",
-    "counts": "{pages} หน้า · {blocks} บล็อกที่ไม่ซ้ำ",
-    "explore": "สำรวจเทมเพลต",
-    "openPreview": "เปิดตัวอย่างแบบเต็ม",
-    "posterLabel": "สำรวจเทมเพลต {title}",
-    "posterAlt": "{title} เทมเพลต — โปสเตอร์แนวคิดหน้าแรก",
-    "contributionRepository": "เรียกดูพื้นที่เก็บข้อมูล",
-    "contributionRepositoryDescription": "อ่านแหล่งที่มาของการแสดง — ทุกสูตรเป็นข้อมูลธรรมดาในที่เก็บ",
-    "contributionRfc": "อ่านโปรแกรมติดตั้ง RFC",
-    "contributionRfcDescription": "ทบทวนข้อเสนอในการเปลี่ยนสูตรแนวคิดให้เป็นขั้นตอนการติดตั้งที่เป็นทางเลือกและโปร่งใส",
+    "metadataTitle": "Payload CMS Templates for Next.js | Concepts & Recipes",
+    "metadataDescription": "Explore Payload CMS template concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate and more — preview every page and inspect the typed block recipe.",
+    "detailTitle": "{title} template",
+    "back": "Templates",
+    "previewPageLabel": "{title} preview page",
+    "previewViewport": "Preview viewport size",
+    "desktop": "Desktop",
+    "tablet": "Tablet",
+    "mobile": "Mobile",
+    "previewFrameTitle": "{title} template preview — {page} page",
+    "eyebrow": "Templates",
+    "title": "Payload CMS template concepts, built from installable blocks",
+    "status": "Concept preview",
+    "disclosure": "This is a browsable full-site concept. Every section is composed from blocks in the open registry, and one command installs the whole block set — the curated copy shown here is not seeded, so you assemble the pages yourself in the admin.",
+    "startingPoint": "Choose a starting point",
+    "description": "Explore complete Payload CMS and Next.js site concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate, music and more. Open every page in a live preview, then trace each section back to a typed block you can install today.",
+    "components": "Browse installable components",
+    "installation": "Read the installation guide",
+    "official": "Start from the official Payload template",
+    "showcases": "Template showcases",
+    "questionsEyebrow": "Questions",
+    "questionsHeading": "Payload CMS template questions, answered",
+    "questionsIntro": "The concepts are intentionally open about what works today and what remains a design reference.",
+    "q1": "Are these Payload CMS templates installable?",
+    "a1": "No. They are browsable full-site concepts, not packaged starter repositories. The individual blocks in each recipe are installable, and every recipe links to the relevant component documentation.",
+    "q2": "How do these differ from Payload’s official template?",
+    "a2": "The official website template gives a new project a complete application foundation. These concepts show how a full marketing site can look and which typed blocks compose each page, without replacing that starter-project role.",
+    "q3": "Can I use the recipes in an existing Payload project?",
+    "a3": "Yes. Open a concept, inspect its ordered recipe, and choose the sections that fit your site. The catalog documents each block’s fields and the supported Payload CMS v3 installation path.",
+    "communityEyebrow": "Community",
+    "communityHeading": "Templates are decided in the open",
+    "communityIntro": "These concepts exist to answer one question with the community: should full-site templates become installable? The recipes, fictional brands, and installer RFC all live in the public repository — nothing gated, no email capture.",
+    "allConcepts": "All concepts",
+    "filter": "Filter concepts by category",
+    "showing": "Showing {visible} of {total} concepts",
+    "visualTone": "Visual tone",
+    "counts": "{pages} pages · {blocks} unique blocks",
+    "explore": "Explore template",
+    "openPreview": "Open full preview",
+    "posterLabel": "Explore the {title} template",
+    "posterAlt": "{title} template — home page concept poster",
+    "contributionRepository": "Browse the repository",
+    "contributionRepositoryDescription": "Read the showcase source — every recipe is plain data in the repository.",
+    "contributionRfc": "Read the installer RFC",
+    "contributionRfcDescription": "Review the proposal for turning concept recipes into an optional, transparent install workflow.",
     "categories": {
-      "agency": "เอเจนซี่",
-      "civic": "ซีวิค",
-      "commerce": "พาณิชย์",
-      "education": "การศึกษา",
-      "event": "กิจกรรม",
-      "fintech": "ฟินเทค",
-      "healthcare": "การดูแลสุขภาพ",
-      "marketplace": "ตลาด",
-      "music": "ดนตรี",
-      "nonprofit": "ไม่แสวงหาผลกำไร",
-      "portfolio": "ผลงาน",
-      "real-estate": "อสังหาริมทรัพย์",
-      "restaurant": "ร้านอาหาร",
+      "agency": "Agency",
+      "civic": "Civic",
+      "commerce": "Commerce",
+      "education": "Education",
+      "event": "Event",
+      "fintech": "Fintech",
+      "healthcare": "Healthcare",
+      "marketplace": "Marketplace",
+      "music": "Music",
+      "nonprofit": "Nonprofit",
+      "portfolio": "Portfolio",
+      "real-estate": "Real estate",
+      "restaurant": "Restaurant",
       "saas": "SaaS",
-      "trade": "การค้าขาย"
+      "trade": "Trade"
     }
   },
   "Blog": {
-    "metadataTitle": "Payload CMS บล็อกและคู่มือการติดตั้ง",
-    "metadataDescription": "คู่มือการปฏิบัติ Payload CMS v3 สำหรับการติดตั้งบล็อกที่ใช้ซ้ำได้ การรวบรวมการเดินสายและการเรนเดอร์ ประเภทการสร้าง และการแก้ไขบล็อกที่ไม่แสดงผล",
-    "eyebrow": "การปฏิบัติ Payload CMS คำแนะนำ v3",
-    "featured": "เริ่มต้นด้วยคำแนะนำที่ได้รับการพิสูจน์แล้ว",
-    "installationLabel": "คู่มือการติดตั้ง",
-    "installationTitle": "ติดตั้งบล็อก Payload แบบใช้สาย",
-    "installationDescription": "เพิ่มบล็อกจริงด้วย CLI ที่รองรับ จากนั้นตรวจสอบทุกไฟล์และการเปลี่ยนแปลงการเดินสายไฟที่เกิดขึ้น",
-    "installationAction": "ปฏิบัติตามคู่มือการติดตั้ง",
-    "wiringLabel": "คู่มือการเดินสายไฟบล็อก",
-    "wiringTitle": "ต่อสายบล็อกที่ใช้ซ้ำได้",
-    "wiringDescription": "ติดตามบล็อก Payload CMS v3 จากการกำหนดค่าผ่านการลงทะเบียน การเรนเดอร์ ประเภทที่สร้างขึ้น และแผนที่การนำเข้าของผู้ดูแลระบบ",
-    "troubleshootingLabel": "คำแนะนำในการแก้ไขปัญหา",
-    "troubleshootingTitle": "แก้ไขบล็อกที่จะไม่แสดงผล",
-    "troubleshootingDescription": "ตรวจสอบสี่ตำแหน่งที่มักจะอธิบายว่าทำไมบล็อกที่บันทึกไว้จึงไม่ปรากฏบนเพจ",
-    "readGuide": "อ่านคำแนะนำ",
-    "notesEyebrow": "บันทึกภาคสนามจากสำนักทะเบียน",
-    "notesTitle": "เพิ่มเติม Payload CMSบันทึกภาคสนาม",
-    "notesDescription": "เรียกดูบทเรียนการใช้งาน บันทึกการออกแบบส่วนประกอบ และเผยแพร่เรื่องราวจากการลงทะเบียนแบบเปิด",
-    "browseComponents": "เรียกดู {count} ส่วนประกอบที่ติดตั้งได้ทั้งหมด",
-    "empty": "ยังไม่มีโพสต์ — โปรดกลับมาตรวจสอบอีกครั้งเร็วๆ นี้",
-    "back": "กลับสู่บล็อก",
-    "keepReading": "อ่านต่อครับ",
-    "related": "การอ่านที่เกี่ยวข้อง",
-    "tags": "แท็กบทความ",
+    "metadataTitle": "Payload CMS block and installer guides",
+    "metadataDescription": "Practical Payload CMS v3 guides for installing reusable blocks, wiring collections and renderers, generating types, and fixing blocks that do not render.",
+    "eyebrow": "Practical Payload CMS v3 guidance",
+    "featured": "Start with a proven guide",
+    "installationLabel": "Installation guide",
+    "installationTitle": "Install a wired Payload block",
+    "installationDescription": "Add a real block with the supported CLI, then review every file and wiring change that lands.",
+    "installationAction": "Follow the installation guide",
+    "wiringLabel": "Block wiring guide",
+    "wiringTitle": "Wire a reusable block",
+    "wiringDescription": "Follow a Payload CMS v3 block from config through registration, rendering, generated types, and the admin import map.",
+    "troubleshootingLabel": "Troubleshooting guide",
+    "troubleshootingTitle": "Fix a block that will not render",
+    "troubleshootingDescription": "Check the four places that usually explain why a saved block does not appear on the page.",
+    "readGuide": "Read the guide",
+    "notesEyebrow": "Field notes from the registry",
+    "notesTitle": "More Payload CMS field notes",
+    "notesDescription": "Browse implementation lessons, component design notes, and release stories from the open registry.",
+    "browseComponents": "Browse all {count} installable components",
+    "empty": "No posts yet — check back soon.",
+    "back": "Back to blog",
+    "keepReading": "Keep reading",
+    "related": "Related reading",
+    "tags": "Article tags",
     "series": {
-      "project-notes": "หมายเหตุโครงการ",
-      "foundations": "มูลนิธิ",
-      "installer-internals": "ตัวติดตั้งภายใน",
-      "component-design": "การออกแบบส่วนประกอบ",
-      "production-guides": "คู่มือการผลิต",
-      "open-source": "คุณภาพและชุมชน"
+      "project-notes": "Project notes",
+      "foundations": "Foundations",
+      "installer-internals": "Installer internals",
+      "component-design": "Component design",
+      "production-guides": "Production guides",
+      "open-source": "Quality & community"
     }
   },
   "Footer": {
-    "home": "หน้าแรกของ Payload Components",
-    "intro": "พิมพ์ส่วนประกอบ Payload CMS ที่ติดตั้งพร้อมกับการเดินสาย — การกำหนดค่าการรวบรวม การเรนเดอร์แมป ประเภทที่สร้างขึ้น และนำเข้าแผนที่ในคำสั่งเดียว",
-    "product": "สินค้า",
-    "components": "ส่วนประกอบ",
-    "project": "โครงการ",
-    "componentCatalog": "แค็ตตาล็อกส่วนประกอบ",
-    "templateConcepts": "แนวคิดเทมเพลต",
-    "documentation": "เอกสารประกอบ",
-    "installWorkflow": "ติดตั้งเวิร์กโฟลว์",
-    "architecture": "สถาปัตยกรรม",
-    "aiDiscovery": "การค้นพบ AI",
-    "allComponents": "ส่วนประกอบ {count} ทั้งหมด",
-    "about": "เกี่ยวกับ",
-    "brandGuide": "คู่มือแบรนด์",
-    "openIssue": "เปิดประเด็น",
-    "releases": "ข่าวประชาสัมพันธ์",
-    "updates": "อัปเดตฟีด",
-    "contributing": "มีส่วนร่วม",
-    "privacy": "ความเป็นส่วนตัว",
-    "registry": "ทะเบียน JSON",
-    "license": "MIT ได้รับใบอนุญาต · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · เปิดรีจิสทรี"
+    "home": "Payload Components home",
+    "intro": "Typed Payload CMS components that install with their wiring — collection config, render mapping, generated types, and import map in one command.",
+    "product": "Product",
+    "components": "Components",
+    "project": "Project",
+    "componentCatalog": "Component catalog",
+    "templateConcepts": "Template concepts",
+    "documentation": "Documentation",
+    "installWorkflow": "Install workflow",
+    "architecture": "Architecture",
+    "aiDiscovery": "AI discovery",
+    "allComponents": "All {count} components",
+    "about": "About",
+    "brandGuide": "Brand Guide",
+    "openIssue": "Open an issue",
+    "releases": "Releases",
+    "updates": "Updates feed",
+    "contributing": "Contributing",
+    "privacy": "Privacy",
+    "registry": "Registry JSON",
+    "license": "MIT licensed · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · open registry"
   },
   "Maintainer": {
-    "body": "ฉันสร้าง payload-components เพราะการติดตั้งบล็อก Payload ไม่เคยเป็นการคัดลอกและวาง - มันเป็นการแก้ไขสี่ครั้งหลังจากนั้น CLI มีอยู่ ดังนั้นโปรเจ็กต์ที่ 2 และโปรเจ็กต์ที่ 10 จึงเดินสายไฟได้ฟรี อ่านแหล่งที่มาของโปรแกรมติดตั้งก่อนที่คุณจะเชื่อถือ จัดส่งมันMITคือประเด็น",
-    "role": "ผู้ดูแล Payload Components",
-    "github": "{name} บน GitHub"
+    "body": "I built payload-components because installing a Payload block was never the copy-paste — it was the four edits after. The CLI exists so the second project, and the tenth, get that wiring for free. Read the installer source before you trust it; shipping it MIT is the point.",
+    "role": "Maintainer, Payload Components",
+    "github": "{name} on GitHub"
   },
   "PageMetadata": {
     "about": {
-      "title": "เกี่ยวกับ",
-      "openGraphTitle": "เกี่ยวกับ Payload Components",
-      "description": "เพราะเหตุใด Payload Components จึงมีอยู่: หยุดสร้างบล็อก Payload เดิมขึ้นมาใหม่ เดินสายไฟใหม่ด้วยตนเอง และพิสูจน์ทุกการติดตั้งในโครงการอิสระอีกครั้ง"
+      "title": "About",
+      "openGraphTitle": "About Payload Components",
+      "description": "Why Payload Components exists: stop rebuilding the same Payload blocks, rewiring them by hand, and re-proving every install across freelance projects."
     },
     "privacy": {
-      "title": "ความเป็นส่วนตัว",
-      "openGraphTitle": "ความเป็นส่วนตัว — Payload Components",
-      "description": "Payload Components มีมาตรการอะไรบ้าง ซึ่งบุคคลที่สามได้รับ และวิธีเปลี่ยนแปลงหรือเพิกถอนตัวเลือกของคุณได้ตลอดเวลา"
+      "title": "Privacy",
+      "openGraphTitle": "Privacy — Payload Components",
+      "description": "What Payload Components measures, which third parties receive it, and how to change or withdraw your choice at any time."
     },
     "brandGuide": {
-      "title": "คู่มือแบรนด์",
-      "openGraphTitle": "Payload Components คู่มือแบรนด์",
-      "description": "แบรนด์ Payload Components: จานสีโมโนโครม shadcn ที่เน้นสีมรกตหนึ่งสี ระบบประเภท Geist และ Instrument Serif การใช้โลโก้ และเสียงพูด"
+      "title": "Brand Guide",
+      "openGraphTitle": "Payload Components Brand Guide",
+      "description": "The Payload Components brand: a light-first shadcn monochrome palette with one emerald accent, the Geist and Instrument Serif type system, logo usage, and voice."
     }
   },
   "FaqContent": {
     "entries": {
       "one": {
-        "question": "Payload Components ฟรีหรือเปล่า?",
-        "answer": "ใช่ — และสร้างขึ้นเพื่อให้คงอยู่อย่างนั้น รีจิสทรี, CLI, ส่วนประกอบทั้งหมด {count} ที่ติดตั้งได้ และไซต์นี้เป็นหนึ่งในพื้นที่เก็บข้อมูลที่ได้รับลิขสิทธิ์ MIT: ไม่มีการกำหนดราคา, ไม่มีคีย์ใบอนุญาต, ไม่มีระดับที่มีรั้วรอบขอบชิด Payload Components ให้ความสำคัญกับชุมชนเป็นหลักโดยการออกแบบ - แค็ตตาล็อกเติบโตขึ้นจากการติดตั้งและการมีส่วนร่วมจริง ไม่ใช่แผนงานที่ต้องเสียค่าใช้จ่าย"
+        "question": "Is Payload Components free?",
+        "answer": "Yes — and built to stay that way. The registry, the CLI, all {count} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap."
       },
       "two": {
-        "question": "บล็อก Payload CMS คืออะไร?",
-        "answer": "ใน Payload บล็อกคือฟิลด์ตัวสร้างเพจที่เขียนได้ — ส่วนเนื้อหาที่นำมาใช้ซ้ำได้ (ฮีโร่, ตารางฟีเจอร์, CTA) สแต็กเพื่อจัดวางเพจ Payload Components จัดส่งบล็อกที่สร้างไว้ล่วงหน้าพร้อมสายไฟที่ทำให้ใช้งานได้ ดังนั้นบล็อกจึงไม่ได้คัดลอกไว้เท่านั้น แต่ยังได้รับการลงทะเบียนในคอลเลกชัน Pages ของคุณ แมปในโปรแกรมเรนเดอร์ของคุณ พิมพ์ และเพิ่มลงในแมปการนำเข้าของผู้ดูแลระบบ",
-        "link": "อ่านคำแนะนำ Payload บล็อก"
+        "question": "What is a Payload CMS block?",
+        "answer": "In Payload, a block is a composable page-builder field — a reusable content section (hero, feature grid, CTA) editors stack to lay out a page. Payload Components ships pre-built blocks plus the wiring that makes them live, so a block is not just copied in: it is registered in your Pages collection, mapped in your renderer, typed, and added to the admin import map.",
+        "link": "Read the Payload blocks guide"
       },
       "three": {
-        "question": "ฉันจะเพิ่มบล็อกฮีโร่ไปที่ Payload CMS ได้อย่างไร?",
-        "answer": "ติดตั้งอันหนึ่งด้วย CLI — `npx payload-components add hero-basic` โดยจะคัดลอกแหล่งที่มาของบล็อกลงในโปรเจ็กต์ของคุณและเชื่อมโยงตั้งแต่ต้นจนจบ: ลงทะเบียนไว้ในคอลเลกชัน Pages ของคุณ แมปใน RenderBlocks และสร้างประเภท Payload ของคุณใหม่และแมปการนำเข้าของผู้ดูแลระบบ - ลงจอดเป็นรายการที่ตรวจสอบได้ git diff คำสั่งเดียวกันนี้จะเพิ่มบล็อกใดๆ ในแค็ตตาล็อก"
+        "question": "How do I add a hero block to Payload CMS?",
+        "answer": "Install one with the CLI — `npx payload-components add hero-basic`. It copies the block source into your project and wires it end to end: registers it in your Pages collection, maps it in RenderBlocks, and regenerates your Payload types and admin import map — landing as one reviewable git diff. The same command adds any block in the catalog."
       },
       "four": {
-        "question": "การติดตั้งเปลี่ยนแปลงอะไรใน repo ของฉัน",
-        "answer": "สามสิ่ง: ไฟล์ต้นฉบับของคอมโพเนนต์จะถูกคัดลอก (บล็อกการกำหนดค่า ส่วนประกอบ ยูทิลิตีที่แชร์) มีแพตช์สองไฟล์พอดี (คอลเลกชันเพจของคุณและ RenderBlocks.tsx — แต่ละคอมโพเนนต์ manifest ประกาศ) และ Payload สร้างเอาต์พุตของตัวเองใหม่ (payload-types.ts และแผนที่การนำเข้าของผู้ดูแลระบบ) ทั้งหมดนั้นก็ปรากฏเป็นธรรมดา git diff",
-        "link": "อ่านคู่มือการติดตั้ง"
+        "question": "What exactly does an install change in my repo?",
+        "answer": "Three things: component source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each component manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.",
+        "link": "Read the installation guide"
       },
       "five": {
-        "question": "จะเกิดอะไรขึ้นหากฉันรันการติดตั้งเดิมสองครั้ง?",
-        "answer": "มันมาบรรจบกัน CLI ตรวจจับสายไฟที่มีอยู่แล้วข้ามไป — เอาต์พุตจริงคือ payload-components: \"hero-basic\" is already installed สถานะการติดตั้งจะถูกบันทึกไว้ใน .payload-components/state.json ดังนั้นการติดตั้งบางส่วนจึงสามารถมองเห็นได้และสามารถกู้คืนได้ แทนที่จะเสียหายโดยไม่โต้ตอบ"
+        "question": "What happens if I run the same install twice?",
+        "answer": "It converges. The CLI detects existing wiring and skips it — the real output is payload-components: \"hero-basic\" is already installed. Install state is recorded in .payload-components/state.json, so partial installs are visible and recoverable instead of silently broken."
       },
       "six": {
-        "question": "โครงการใดบ้างที่ได้รับการสนับสนุนในปัจจุบัน?",
-        "answer": "Payload v3 + Next.js 15/16 โปรเจ็กต์ที่มีรูปร่างเหมือนตัวเริ่มต้นเว็บไซต์อย่างเป็นทางการ — เรนเดอร์บล็อกเลย์เอาต์ผ่าน src/blocks/RenderBlocks.tsx และลงทะเบียนบล็อกหน้าใน src/collections/Pages/index.ts. CLI จะตรวจสอบโปรเจ็กต์ของคุณกับเมทริกซ์สนับสนุนที่เผยแพร่ก่อนที่จะแตะสิ่งใดๆ"
+        "question": "Which projects are supported today?",
+        "answer": "Payload v3 + Next.js 15/16 projects shaped like the official website starter — rendering layout blocks through src/blocks/RenderBlocks.tsx and registering page blocks in src/collections/Pages/index.ts. The CLI checks your project against the published support matrix before touching anything."
       },
       "seven": {
-        "question": "ทำไมไม่วิ่ง npx shadcn addล่ะ?",
-        "answer": "ธรรมดา shadcn ติดตั้งคัดลอกไฟล์และหยุด Payload การบล็อกจะทำงานหลังจากที่ลงทะเบียนในสคีมาคอลเลกชันของคุณ แมปในตัวเรนเดอร์ของคุณ พิมพ์ และเพิ่มลงในแมปการนำเข้าของผู้ดูแลระบบเท่านั้น payload-components ล้อมการจัดส่งรีจิสทรีแบบเดียวกันด้วยการต่อสายไฟนั้น - ขอบเขตนั้นคือผลิตภัณฑ์ และบัญชีแยกประเภทการเดินสายไฟด้านบนจะแสดงทีละแถว",
-        "link": "อ่านการเปรียบเทียบ shadcn ฉบับเต็ม"
+        "question": "Why not just run npx shadcn add?",
+        "answer": "A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-components wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.",
+        "link": "Read the full shadcn comparison"
       },
       "eight": {
-        "question": "ส่วนประกอบใหม่จะเข้าสู่แค็ตตาล็อกได้อย่างไร?",
-        "answer": "จงใจ. คอมโพเนนต์จะเข้าสู่เมื่อแหล่งที่มา ข้อมูลเมตา รายการ หน้าเอกสาร และความครอบคลุมการทดสอบโปรแกรมติดตั้งรวมเข้าด้วยกันเท่านั้น - บล็อกแบบครึ่งสายจะไม่ไปถึงแค็ตตาล็อก เสนอองค์ประกอบถัดไปในประเด็น GitHub แค็ตตาล็อกเติบโตจากการติดตั้งจริง"
+        "question": "How do new components get into the catalog?",
+        "answer": "Deliberately. A component lands only when its source, manifest metadata, docs page, and installer test coverage ship together — half-wired blocks never reach the catalog. Propose the next component in a GitHub issue; the catalog grows from real installs."
       }
     }
   },
   "TranslationNotice": {
-    "fallback": "หน้านี้ยังไม่ได้แปล จึงแสดงเนื้อหาต้นฉบับภาษาอังกฤษ",
-    "label": "สถานะการแปล",
-    "machine": "หน้านี้แปลด้วยเครื่องและยังไม่ได้รับการตรวจทานโดยเจ้าของภาษา",
-    "viewEnglish": "ดูต้นฉบับภาษาอังกฤษ"
+    "fallback": "This page is not translated yet, so its source content is shown in English.",
+    "label": "Translation status",
+    "machine": "This page was machine translated and has not been reviewed by a native speaker.",
+    "viewEnglish": "View English source"
   }
 }
