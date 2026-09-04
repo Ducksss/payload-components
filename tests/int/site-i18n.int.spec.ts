@@ -8,6 +8,7 @@ import { unstable_doesMiddlewareMatch } from 'next/experimental/testing/server'
 import { describe, expect, it } from 'vitest'
 
 import {
+  isChromeFreePreviewPath,
   isLocaleNeutralPath,
   localeAlternates,
   localeDetails,
@@ -89,6 +90,44 @@ describe('site internationalization', () => {
     expect(localizeHref('https://github.com/Ducksss/payload-components', 'zh')).toBe(
       'https://github.com/Ducksss/payload-components',
     )
+  })
+
+  it('treats chrome-free previews as chrome-free in every locale', async () => {
+    /* The guard used to compare usePathname() with an unprefixed literal, so a
+     * locale prefix exempted the route: /zh previews mounted the GA tag that
+     * their English equivalents suppress, double-counting every embedded view
+     * the localized template detail loads in its own localized iframe. */
+    for (const prefix of ['', '/en', '/zh', '/ar']) {
+      expect(isChromeFreePreviewPath(`${prefix}/components/preview/hero-basic`)).toBe(true)
+      expect(isChromeFreePreviewPath(`${prefix}/templates/saas-launch/preview`)).toBe(true)
+      expect(isChromeFreePreviewPath(`${prefix}/templates/saas-launch/preview/pricing`)).toBe(true)
+    }
+
+    // Chrome-carrying routes keep both the banner and the general stream.
+    for (const chromed of [
+      '/',
+      '/zh',
+      '/components',
+      '/zh/components',
+      '/components/previewer',
+      '/templates/saas-launch',
+      '/zh/templates/saas-launch',
+    ]) {
+      expect(isChromeFreePreviewPath(chromed)).toBe(false)
+    }
+
+    /* Both call sites must delegate rather than re-derive: the bug was one of
+     * the two forgetting to strip the prefix the other already stripped. */
+    const [analyticsShell, consentBanner] = await Promise.all([
+      readFile(path.join(repoRoot, 'src/components/site/AnalyticsShell.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/components/site/ConsentBanner.tsx'), 'utf8'),
+    ])
+
+    for (const source of [analyticsShell, consentBanner]) {
+      expect(source).toContain('isChromeFreePreviewPath(pathname)')
+      expect(source).not.toContain("'/components/preview/'")
+      expect(source).not.toContain('/preview(')
+    }
   })
 
   it('runs locale middleware for routes that begin with r without matching registry assets', () => {

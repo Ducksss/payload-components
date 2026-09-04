@@ -4,7 +4,7 @@ import Link from '@/i18n/Link'
 import { useLocale, useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 
-import { localizeHref, normalizeSiteLocale, splitLocalePathname } from '@/i18n/config'
+import { isChromeFreePreviewPath, localizeHref, normalizeSiteLocale } from '@/i18n/config'
 import { setConsent } from '@/lib/consent'
 
 import { useConsent } from './useConsent'
@@ -18,12 +18,10 @@ export function ConsentBanner() {
   const locale = normalizeSiteLocale(useLocale())
   const t = useTranslations('Consent')
   const consent = useConsent()
-  const unlocalizedPathname = splitLocalePathname(pathname).pathname
 
   // Chrome-free iframe targets never carry site chrome; a banner inside an
   // embedded preview would be both wrong and unreachable.
-  if (unlocalizedPathname.startsWith('/components/preview/')) return null
-  if (/^\/templates\/[^/]+\/preview(\/|$)/.test(unlocalizedPathname)) return null
+  if (isChromeFreePreviewPath(pathname)) return null
   // `undefined` is the pre-hydration state — render nothing so server and first
   // client render agree; the effect in useConsent supplies the real value.
   if (consent !== null) return null
