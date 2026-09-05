@@ -1,4 +1,4 @@
-import englishMessages from '../../messages/en.json'
+import englishMessages from '../../messages/en.json' with { type: 'json' }
 
 import generatedCatalog from '@/generated/component-catalog.json' with { type: 'json' }
 

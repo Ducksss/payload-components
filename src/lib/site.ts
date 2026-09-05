@@ -1,4 +1,4 @@
-import englishMessages from '../../messages/en.json'
+import englishMessages from '../../messages/en.json' with { type: 'json' }
 
 import packageJson from '../../package.json' with { type: 'json' }
 
