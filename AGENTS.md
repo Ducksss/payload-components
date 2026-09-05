@@ -67,6 +67,16 @@ Fragment patching is **text-anchor based** — it finds anchors like `const bloc
 
 **Install targets are path-resolved.** `support-matrix.json` declares, per target, candidate paths and required anchors for each host file role (`renderBlocks`, `pagesLayout`); `detectProject` resolves them into `DetectedProject.hostFiles`, and `applyPayloadFragments` / `removePayloadFragments` / `verifyInstalledPayloadFragments` patch **those** paths. Manifests still declare the canonical starter paths in `recovery.patchedFiles`; `resolveRecoveryPatchedFiles` maps them onto the resolved ones. `payload-website-starter` is matched first; `payload-blocks-app` covers the same shape at non-starter paths (flat `Pages.ts`, no `src/`). A bare `create-payload-app` becomes supported after `init --scaffold` installs and registers the lifecycle-managed starter base (`Pages`, `Media`, `RenderBlocks`, `CMSLink`, `linkGroup`, and `cn`).
 
+**Site translations** are separate from consumer Payload localization. `messages/en.json`
+is the canonical source for translated site copy, including catalogue titles, descriptions,
+and target labels under `Components.<slug>`. `src/lib/site.ts` and
+`src/lib/component-catalog.ts` expose English projections for existing contracts; keep
+identifiers and install data in TypeScript. Chinese catalogue prose is complete; other
+locales use the narrow English fallback defined in `src/i18n/catalog-policy.ts` until their
+catalogue translations are ready. See `messages/README.md` for Crowdin bootstrap, export
+validation, and native-review publication rules. Never replace real locale values with
+English to make key checks pass.
+
 **Localization / i18n:** Payload internationalization has two halves that are each inert without the other, and the CLI owns both.
 
 _Field level_ — `add <component> --localized` (and `add-template <slug> --localized`, which passes it to every block and emits the locale notice once via `deferLocaleNotice`) copies `payload-components/source/blocks/shared/localizeFields.ts` into the project and wraps the installed block config's top-level `fields` array in `localizeFields(...)`, which marks prose leaves (`text`, `textarea`, `richText`) localized and recurses containers without localizing them. The wrap sits outside the shared-base spread, so one call covers shared and variant fields. The choice is recorded in install state so `update` re-applies it.

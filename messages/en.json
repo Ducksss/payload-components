@@ -474,5 +474,432 @@
     "label": "Translation status",
     "machine": "This page was machine translated and has not been reviewed by a native speaker.",
     "viewEnglish": "View English source"
+  },
+  "Components": {
+    "hero-basic": {
+      "title": "Hero Basic",
+      "description": "A headline-led marketing hero with CTA links, proof badges, Payload block config, and frontend rendering.",
+      "target": "Hero section"
+    },
+    "hero-split": {
+      "title": "Hero Split",
+      "description": "A two-column hero pairing the shared hero copy with an editor-managed visual that can sit on either side.",
+      "target": "Split hero"
+    },
+    "hero-video": {
+      "title": "Hero Video",
+      "description": "A full-bleed video hero with editor-managed media, CTA links, proof labels, and a reduced-motion poster fallback.",
+      "target": "Video hero"
+    },
+    "hero-product-tilt": {
+      "title": "Hero Product Tilt",
+      "description": "A centered product hero with a static perspective frame, CTA links, proof labels, and editor-managed media.",
+      "target": "Product hero"
+    },
+    "hero-aurora": {
+      "title": "Hero Aurora",
+      "description": "A motion-first product hero with an animated aurora field, staggered headline reveal, pointer-parallax media panel, and a live metric ticker.",
+      "target": "Motion hero"
+    },
+    "hero-kinetic": {
+      "title": "Hero Kinetic",
+      "description": "A motion-first editorial hero with a line-masked type reveal, cinematic media plate, and a velocity-aware marquee strip.",
+      "target": "Editorial motion hero"
+    },
+    "feature-bento": {
+      "title": "Feature Bento",
+      "description": "An asymmetric bento grid that leads with a featured cell and fills supporting cells.",
+      "target": "Bento grid"
+    },
+    "feature-split": {
+      "title": "Feature Split",
+      "description": "A two-column feature section pairing a heading and CTA with a stacked feature list.",
+      "target": "Split section"
+    },
+    "feature-steps": {
+      "title": "Feature Steps",
+      "description": "A numbered steps block for sequential, how-it-works feature flows.",
+      "target": "Steps section"
+    },
+    "feature-grid-basic": {
+      "title": "Feature Grid Basic",
+      "description": "A text-first feature grid with repeatable items, optional CTA wiring, and idempotent registration.",
+      "target": "Feature section"
+    },
+    "feature-accordion": {
+      "title": "Feature Accordion",
+      "description": "A synchronized feature accordion with editor-selected icons, optional media, and CTA links.",
+      "target": "Feature accordion"
+    },
+    "feature-cards-media": {
+      "title": "Feature Cards Media",
+      "description": "A two-column feature layout with independent media, optional icons, and CTA links.",
+      "target": "Media feature cards"
+    },
+    "feature-icon-grid": {
+      "title": "Feature Icon Grid",
+      "description": "A dense feature grid with editor-selected icons and a tokenized radial grid decorator.",
+      "target": "Icon feature grid"
+    },
+    "comparator-grid": {
+      "title": "Comparator Grid",
+      "description": "A plan-column comparison card: pricing columns over a feature matrix, with a highlighted column and per-plan CTAs.",
+      "target": "Pricing grid"
+    },
+    "comparator-table": {
+      "title": "Comparator Table",
+      "description": "A tiered feature-comparison table: plan columns with CTAs over grouped feature rows of checkmarks or text values.",
+      "target": "Comparison table"
+    },
+    "comparator-stack": {
+      "title": "Comparator Stack",
+      "description": "A stacked plan-card comparison: one card per plan with its own price, CTA, and feature checklist.",
+      "target": "Plan cards"
+    },
+    "pricing-cards": {
+      "title": "Pricing Cards",
+      "description": "A three-up pricing table of editable plan cards — price, period, feature list, and CTA — with one plan highlighted in emerald.",
+      "target": "Pricing section"
+    },
+    "pricing-cards-muted": {
+      "title": "Pricing Cards Muted",
+      "description": "The three-up pricing table on soft muted card surfaces, with one plan highlighted in emerald.",
+      "target": "Pricing section"
+    },
+    "pricing-cards-cta": {
+      "title": "Pricing Cards CTA",
+      "description": "The three-up pricing table with the call-to-action button placed inside each plan header.",
+      "target": "Pricing section"
+    },
+    "pricing-split": {
+      "title": "Pricing Split",
+      "description": "A two-plan split pricing layout — a compact entry plan beside an expanded featured plan with its full feature list.",
+      "target": "Pricing section"
+    },
+    "pricing-enterprise": {
+      "title": "Pricing Enterprise",
+      "description": "A single wide enterprise pricing panel: price and CTA beside an included-features list and an editable wall of trust logos.",
+      "target": "Pricing section"
+    },
+    "call-to-action-centered": {
+      "title": "Call To Action Centered",
+      "description": "A centered call-to-action block: heading, supporting copy, and one or two CTA links.",
+      "target": "Call to action"
+    },
+    "call-to-action-boxed": {
+      "title": "Call To Action Boxed",
+      "description": "A boxed call-to-action block: heading, copy, and CTA links inside a nested panel.",
+      "target": "Boxed CTA"
+    },
+    "call-to-action-split": {
+      "title": "Call To Action Split",
+      "description": "A split call-to-action block: heading and copy on one side, CTA links and an assurance line on the other.",
+      "target": "Split CTA"
+    },
+    "call-to-action-signup": {
+      "title": "Call To Action Signup",
+      "description": "An email-capture call-to-action block: heading, copy, and a form that posts to a same-origin endpoint.",
+      "target": "Email capture"
+    },
+    "contact-routing-form": {
+      "title": "Contact Routing Form",
+      "description": "A contact section with validated channels and a fixed accessible form that posts to a same-origin endpoint.",
+      "target": "Contact section"
+    },
+    "contact-channels": {
+      "title": "Contact Channels",
+      "description": "A form-free contact section: heading, supporting copy, and a grid of validated email, phone, and URL channels.",
+      "target": "Contact channels"
+    },
+    "integration-orbit": {
+      "title": "Integration Orbit",
+      "description": "Concentric rings of integration logos that orbit a featured brand mark on hover.",
+      "target": "Integration section"
+    },
+    "integration-marquee": {
+      "title": "Integration Marquee",
+      "description": "Three auto-scrolling rows of integration logos around a featured brand mark, with progressive edge fades.",
+      "target": "Integration section"
+    },
+    "integration-connect": {
+      "title": "Integration Connect",
+      "description": "Integration logos wired to a central brand mark by connector lines, installed as a wired Payload block.",
+      "target": "Integration section"
+    },
+    "integration-cluster": {
+      "title": "Integration Cluster",
+      "description": "A centered cluster of integration logos around a featured brand mark, with a heading and CTA.",
+      "target": "Integration section"
+    },
+    "integration-split": {
+      "title": "Integration Split",
+      "description": "A two-column section pairing a featured-mark logo cluster with a heading, subtext, and CTA.",
+      "target": "Integration section"
+    },
+    "integration-grid": {
+      "title": "Integration Grid",
+      "description": "A responsive grid of integration cards — logo, name, description, and a learn-more link — installed as a wired Payload block.",
+      "target": "Integration section"
+    },
+    "integration-list": {
+      "title": "Integration List",
+      "description": "A vertical list of integration rows — logo, name, description, and an add action — installed as a wired Payload block.",
+      "target": "Integration section"
+    },
+    "integration-testimonial": {
+      "title": "Integration Testimonial",
+      "description": "A two-column section pairing a customer quote with a grid of integration logo cards.",
+      "target": "Integration section"
+    },
+    "logo-cloud-marquee": {
+      "title": "Logo Cloud Marquee",
+      "description": "An auto-scrolling marquee of editable logos with progressive-blur edge fades.",
+      "target": "Logo cloud"
+    },
+    "logo-cloud-hover": {
+      "title": "Logo Cloud Hover",
+      "description": "A logo wall that dims and blurs on hover to reveal a single call-to-action.",
+      "target": "Logo cloud"
+    },
+    "logo-cloud-grid": {
+      "title": "Logo Cloud Grid",
+      "description": "A centered, wrapping wall of editable logo uploads under a heading, installed as a wired Payload block.",
+      "target": "Logo cloud"
+    },
+    "logo-cloud-inline": {
+      "title": "Logo Cloud Inline",
+      "description": "A compact label-over-logos strip for editable trust logos.",
+      "target": "Logo cloud"
+    },
+    "logo-cloud-inline-wrap": {
+      "title": "Logo Cloud Inline Wrap",
+      "description": "A single wrapping row that keeps the label inline with editable trust logos.",
+      "target": "Logo cloud"
+    },
+    "testimonials-grid": {
+      "title": "Testimonials Grid",
+      "description": "A testimonials section: a heading above a responsive grid of quote cards, each with author, optional role, and avatar.",
+      "target": "Testimonials section"
+    },
+    "testimonials-bento": {
+      "title": "Testimonials Bento",
+      "description": "A testimonials bento: an asymmetric grid with one featured quote in a large cell and supporting quotes around it.",
+      "target": "Testimonials section"
+    },
+    "testimonials-wall": {
+      "title": "Testimonials Wall",
+      "description": "A dense wall-of-love: a multi-column masonry of compact testimonial cards, each with author, optional role, and avatar.",
+      "target": "Testimonials section"
+    },
+    "testimonials-rating": {
+      "title": "Testimonials Rating",
+      "description": "A testimonials section: a responsive grid of review cards, each with a star rating, quote, author, optional role, and avatar.",
+      "target": "Testimonials section"
+    },
+    "testimonials-spotlight": {
+      "title": "Testimonials Spotlight",
+      "description": "A single centered testimonial with a quote-mark, large avatar, author, and role — a hero-style social-proof moment.",
+      "target": "Testimonials section"
+    },
+    "testimonials-quote": {
+      "title": "Testimonials Quote",
+      "description": "A single featured testimonial: a quote with a left accent bar, author, optional role, and avatar.",
+      "target": "Testimonials section"
+    },
+    "stats-proof": {
+      "title": "Stats Proof",
+      "description": "A proof section pairing narrative, prominent string metrics, and a semantic customer quote.",
+      "target": "Stats section"
+    },
+    "stats-grid": {
+      "title": "Stats Grid",
+      "description": "Heading and intro above a responsive grid of large string metrics on rule-topped columns.",
+      "target": "Stats section"
+    },
+    "stats-card": {
+      "title": "Stats Card",
+      "description": "A centred heading above one divided panel that splits metrics into equal columns.",
+      "target": "Stats section"
+    },
+    "stats-inline": {
+      "title": "Stats Inline",
+      "description": "Heading and intro above rule-topped rows where each figure reads as one sentence.",
+      "target": "Stats section"
+    },
+    "faq-split": {
+      "title": "Faq Split",
+      "description": "A two-column FAQ pairing a sticky heading and CTA with an accordion of question/answer items.",
+      "target": "FAQ section"
+    },
+    "faq-accordion": {
+      "title": "Faq Accordion",
+      "description": "A centered FAQ accordion of question/answer items with an optional CTA — the base of the FAQ family.",
+      "target": "FAQ section"
+    },
+    "faq-grouped": {
+      "title": "Faq Grouped",
+      "description": "An FAQ split into titled, icon-tagged category groups of accordions.",
+      "target": "FAQ section"
+    },
+    "faq-card": {
+      "title": "Faq Card",
+      "description": "A centered FAQ accordion wrapped in a card with an optional CTA below.",
+      "target": "FAQ section"
+    },
+    "faq-icons": {
+      "title": "Faq Icons",
+      "description": "An FAQ accordion with a per-question icon picked from a fixed allowlist.",
+      "target": "FAQ section"
+    },
+    "faq-grid": {
+      "title": "Faq Grid",
+      "description": "A static two-column grid of question/answer cards — every answer visible, no accordion.",
+      "target": "FAQ section"
+    },
+    "content-showcase": {
+      "title": "Content Showcase",
+      "description": "A centered content section with an intro, a full-width image, and a four-up grid of icon features.",
+      "target": "Content section"
+    },
+    "content-image-lead": {
+      "title": "Content Image Lead",
+      "description": "A content section led by a full-width image above a two-column heading, body, and CTA.",
+      "target": "Content section"
+    },
+    "content-feature-split": {
+      "title": "Content Feature Split",
+      "description": "A content section pairing a side media panel with body copy and two icon features.",
+      "target": "Content section"
+    },
+    "content-feature-media": {
+      "title": "Content Feature Media",
+      "description": "A content section pairing body copy and two icon features beside a framed media panel.",
+      "target": "Content section"
+    },
+    "content-image-frame": {
+      "title": "Content Image Frame",
+      "description": "A centered content section with an intro and a layered, framed screenshot.",
+      "target": "Content section"
+    },
+    "content-split-rows": {
+      "title": "Content Split Rows",
+      "description": "A content section with an intro and alternating media-and-text rows.",
+      "target": "Content section"
+    },
+    "content-rows": {
+      "title": "Content Rows",
+      "description": "A content section with an intro and a uniform stack of media-and-text rows.",
+      "target": "Content section"
+    },
+    "content-stats": {
+      "title": "Content Stats",
+      "description": "A content section with an intro, a grid of icon features, and a stats list.",
+      "target": "Content section"
+    },
+    "content-quote": {
+      "title": "Content Quote",
+      "description": "A content section pairing a media panel with body copy and a cited pull quote.",
+      "target": "Content section"
+    },
+    "content-community": {
+      "title": "Content Community",
+      "description": "A centered content section with a heading, body copy, and a wall of community avatars.",
+      "target": "Content section"
+    },
+    "content-columns": {
+      "title": "Content Columns",
+      "description": "A two-column content section pairing a heading with body paragraphs and a CTA, installed as a wired Payload block.",
+      "target": "Content section"
+    },
+    "content-list": {
+      "title": "Content List",
+      "description": "A serif-headed content section pairing a heading with a labeled-term list.",
+      "target": "Content section"
+    },
+    "content-list-columns": {
+      "title": "Content List Columns",
+      "description": "A serif-headed content section with a two-column labeled-term list.",
+      "target": "Content section"
+    },
+    "content-list-icons": {
+      "title": "Content List Icons",
+      "description": "A serif-headed content section with an intro and a multi-column icon list.",
+      "target": "Content section"
+    },
+    "team-grid": {
+      "title": "Team Grid",
+      "description": "A team section with a heading, intro, and a responsive grid of member photo cards that reveal role on hover.",
+      "target": "Team section"
+    },
+    "team-bios": {
+      "title": "Team Bios",
+      "description": "A bio-forward team section: heading, intro, and two-up member cards carrying avatar, role, and a short biography.",
+      "target": "Team bios"
+    },
+    "team-roster": {
+      "title": "Team Roster",
+      "description": "A team section that groups members into titled departments, each a grid of avatars with name and role.",
+      "target": "Team section"
+    },
+    "embed-basic": {
+      "title": "Embed Basic",
+      "description": "A responsive, sandboxed iframe block for approved HTTPS embeds with a selectable aspect ratio.",
+      "target": "Embed / media"
+    },
+    "footer-columns": {
+      "title": "Footer Columns",
+      "description": "A brand block beside labelled columns of navigation links, closed by a copyright rule.",
+      "target": "Footer"
+    },
+    "footer-simple": {
+      "title": "Footer Simple",
+      "description": "A compact footer keeping the brand and one wrapped row of links on a line, copyright beneath.",
+      "target": "Footer"
+    },
+    "footer-centered": {
+      "title": "Footer Centered",
+      "description": "A centred brand, tagline, and navigation above a rule carrying copyright and policy links.",
+      "target": "Footer"
+    },
+    "post-card": {
+      "title": "Post Card",
+      "description": "A post card with image, categories, date, title, and excerpt.",
+      "target": "Archive card"
+    },
+    "post-archive": {
+      "title": "Post Archive",
+      "description": "An archive grid for rendering arrays of post summaries.",
+      "target": "Archive grid"
+    },
+    "post-hero": {
+      "title": "Post Hero",
+      "description": "A post hero with category, author, date, and summary.",
+      "target": "Post header"
+    },
+    "featured-post": {
+      "title": "Featured Post",
+      "description": "A featured post surface with image, category, and date.",
+      "target": "Index spotlight"
+    },
+    "post-list": {
+      "title": "Post List",
+      "description": "A compact post list with dates, categories, and descriptions.",
+      "target": "Compact index"
+    },
+    "author-card": {
+      "title": "Author Card",
+      "description": "An author profile card for article pages and editorial bylines.",
+      "target": "Byline"
+    },
+    "newsletter-callout": {
+      "title": "Newsletter Callout",
+      "description": "A newsletter callout for post pages and editorial surfaces.",
+      "target": "Engagement"
+    },
+    "related-posts": {
+      "title": "Related Posts",
+      "description": "A related-posts section for compact recommendations.",
+      "target": "Post footer"
+    }
   }
 }

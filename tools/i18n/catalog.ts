@@ -10,6 +10,8 @@ import {
   type SiteLocale,
 } from '../../src/i18n/config'
 
+import { allowsCatalogFallback } from '../../src/i18n/catalog-policy'
+
 export type FlatMessages = Record<string, string>
 export type MessageTree = { [key: string]: MessageTree | string }
 
@@ -194,11 +196,12 @@ export function validateCatalogs(
       errors.push(`${locale}:${key} has no English source message`)
     }
     for (const key of keyDifference(englishKeys, localizedKeys)) {
-      errors.push(`${locale}:${key} is missing`)
+      if (!allowsCatalogFallback(locale, key)) errors.push(`${locale}:${key} is missing`)
     }
 
     for (const key of englishKeys) {
       const value = localized[key]
+      if (value === undefined && allowsCatalogFallback(locale, key)) continue
       if (!value?.trim()) {
         errors.push(`${locale}:${key} is empty`)
         continue

@@ -22,9 +22,9 @@ import {
 } from '../project'
 import {
   compareInstalledFiles,
-  copySharedSourceFile,
   resolveRecordedFileHashes,
 } from '../component-files'
+import { ensureLocalizationHelper, prepareLocalizationHelper } from '../localization-helper'
 import { installNamespacedItem, isNamespacedItem } from '../namespaced'
 import { runPostInstallScript } from '../post-install'
 import { buildRegistry, installRegistryDependencies, installRegistryItem } from '../registry'
@@ -410,7 +410,15 @@ const installComponent = async ({
     return
   }
 
+  // Migration consent here only finalizes update's handoff. Update has already
+  // committed canonical field metadata and the shared helper together. Never
+  // forward that consent to this helper-only check: add may retain existing
+  // config files, so migrating just the helper could change their storage shape.
+  if (effectiveLocalized) await prepareLocalizationHelper({ cwd })
+
   if (
+    prewrittenFiles.length === 0 &&
+    !acceptLocalizationPolicyChange &&
     installedEntry?.manifestVersion === manifest.version &&
     installedEntry.registryItemName === manifest.registryItemName &&
     installedEntry.status === 'installed' &&
@@ -573,7 +581,7 @@ const installComponent = async ({
 
   if (effectiveLocalized) {
     await executeStage('fragment-apply', async () => {
-      await copySharedSourceFile({ cwd, projectPath: LOCALIZE_HELPER_FILE })
+      await ensureLocalizationHelper(cwd)
 
       const localizedFiles = await applyLocalizedFields({
         configFiles: plan.files.filter((filePath) => isBlockConfigFile(filePath)),
@@ -646,6 +654,7 @@ export const addCommand = async ({
   prewrittenFiles = [],
 }: {
   /* Internal update hand-off after the operator accepted semantic-v1. */
+  // Internal update handoff after source + helper reconciliation; not an add CLI flag.
   acceptLocalizationPolicyChange?: boolean
   cwd: string
   componentName: string

@@ -107,7 +107,7 @@ describe('payload-components add command orchestration', () => {
       missing: [],
       modified: [],
     })
-    const copySharedSourceFile = vi.fn().mockResolvedValue(true)
+    const ensureLocalizationHelper = vi.fn().mockResolvedValue(true)
     const resolveRecordedFileHashes = vi.fn().mockResolvedValue({
       'src/blocks/HeroBasic/Component.tsx': 'component-hash',
       'src/blocks/HeroBasic/config.ts': 'config-hash',
@@ -158,10 +158,13 @@ describe('payload-components add command orchestration', () => {
       return {
         ...actual,
         compareInstalledFiles,
-        copySharedSourceFile,
         resolveRecordedFileHashes,
       }
     })
+    vi.doMock('../../tools/payload-components/localization-helper', () => ({
+      ensureLocalizationHelper,
+      prepareLocalizationHelper: vi.fn().mockResolvedValue([]),
+    }))
     vi.doMock('../../tools/payload-components/dependencies', () => ({
       checkDependencyRequirements,
       getRuntimePatchedFiles,
@@ -209,7 +212,7 @@ describe('payload-components add command orchestration', () => {
         installManifestDependencies,
         installRegistryDependencies,
         installRegistryItem,
-        copySharedSourceFile,
+        ensureLocalizationHelper,
         loadState,
         printHeader,
         recordInstallAttempt,
@@ -533,7 +536,7 @@ describe('payload-components add command orchestration', () => {
         configFiles: ['src/blocks/HeroBasic/config.ts'],
         cwd: '/tmp/fixture',
       })
-      expect(mocks.copySharedSourceFile).toHaveBeenCalledOnce()
+      expect(mocks.ensureLocalizationHelper).toHaveBeenCalledOnce()
       expect(mocks.recordInstallAttempt).toHaveBeenCalledWith(
         expect.objectContaining({ localized: true }),
       )
