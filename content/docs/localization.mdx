@@ -255,6 +255,7 @@ one is missing:
        declares no locales — run "payload-components localize --locales en,zh"
 ```
 
-Run `npx payload generate:types` afterwards so `@/payload-types` reflects the
-localized fields, then restart the dev server — the locale selector appears in the
+After `localize` or separate schema edits, run `npx payload generate:types` so
+`@/payload-types` reflects the localized fields. `update` already runs type and import-map
+generation. Restart the dev server afterwards — the locale selector appears in the
 document toolbar in the admin.

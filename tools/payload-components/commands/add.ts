@@ -410,6 +410,10 @@ const installComponent = async ({
     return
   }
 
+  // Migration consent here only finalizes update's handoff. Update has already
+  // committed canonical field metadata and the shared helper together. Never
+  // forward that consent to this helper-only check: add may retain existing
+  // config files, so migrating just the helper could change their storage shape.
   if (effectiveLocalized) await prepareLocalizationHelper({ cwd })
 
   if (
@@ -650,6 +654,7 @@ export const addCommand = async ({
   prewrittenFiles = [],
 }: {
   /* Internal update hand-off after the operator accepted semantic-v1. */
+  // Internal update handoff after source + helper reconciliation; not an add CLI flag.
   acceptLocalizationPolicyChange?: boolean
   cwd: string
   componentName: string
