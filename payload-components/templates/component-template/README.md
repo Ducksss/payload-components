@@ -90,8 +90,8 @@ Full spec: `AGENTS.md` → "Component doc page format".
 ## Add-a-component workflow
 
 > **Start with the generator.** `pnpm payload-components new <slug>` writes every mechanical
-> file and list below — source, manifest, registry item, doc page, demo twin, the demos
-> registry, the docs sidebar, the CLI help list, and the README inventory table — and then
+> file and list below — source, manifest, registry item, generated site-catalog projection,
+> doc page, demo twin, the demos registry, docs sidebar, and README inventory table — and then
 > prints exactly the decisions it will not make for you. The steps below are what it
 > generates and what it leaves to you.
 
@@ -116,13 +116,15 @@ doc page, and installer tests, together. Work in this order:
    `className="…"` literals verbatim (aria-hidden root, no `<a>`/`<button>`/`<h1-6>`; `<h2>`→`<div>`,
    `CMSLink`→`<DemoLink>`, payload types → demo-content types). Add sample content to
    `src/lib/demo-content.ts` and register the slug in `src/components/site/demos/registry.ts`.
-5. **Catalog & ledgers** — **insert** the component into `componentEntries` (`src/lib/site.ts`) where it
-   ranks against its family; the order is curated and also drives the docs prev/next arrows and the
-   landing hero, so never append. `componentsIntro`, `componentFamilies.pages.countLabel`,
+5. **Catalog & ledgers** — add the hand-curated title, description, fields, and target to
+   `componentEditorialEntries` (`src/lib/component-catalog.ts`) beside its family. The generator
+   already refreshes `src/generated/component-catalog.json`; rerun `pnpm catalog:build` after any
+   later registry-order or manifest-version edit. Registry order drives the catalog and docs prev/next arrows; version,
+   command, route, and family are derived. `componentsIntro`, `componentFamilies.pages.countLabel`,
    `src/app/about/page.tsx`, and `src/app/not-found.tsx` are all derived now — do not hand-edit them.
-   The `Current components:` list in `tools/payload-components/cli.ts` and the
-   `<!-- COMPONENT-INVENTORY -->` table in `README.md` are still hand-maintained and must follow
-   registry order (both are asserted by `tests/int/inventory-sync.int.spec.ts`). Fresh smoke discovers
+   CLI help derives `Current components:` from the registry; only the
+   `<!-- COMPONENT-INVENTORY -->` table in `README.md` remains a documented projection and is
+   asserted by `tests/int/inventory-sync.int.spec.ts`. Fresh smoke discovers
    every `registry:block` with a matching manifest and renderable `sampleContent.blockType`
    automatically, so there is no hand-maintained smoke list. Sync the hero ledgers
    (`terminalDemoLines`/`frameInstalledFiles`/`wiringLedger`) only if a hero component's file set changed.

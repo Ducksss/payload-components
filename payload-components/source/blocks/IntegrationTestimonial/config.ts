@@ -16,16 +16,19 @@ export const IntegrationTestimonial: Block = {
     {
       name: 'quote',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
       required: true,
     },
     {
       name: 'author',
       type: 'text',
+      custom: { payloadComponents: { localization: 'global' } },
       required: true,
     },
     {
       name: 'role',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'authorAvatar',

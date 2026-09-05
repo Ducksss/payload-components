@@ -1,0 +1,478 @@
+{
+  "Metadata": {
+    "title": "Payload Components — bloques completamente cableados para Payload CMS",
+    "description": "Bloques Payload CMS de código abierto que se instalan con su configuración de colección, mapeo de renderizador, tipos generados y mapa de importación de administrador."
+  },
+  "Common": {
+    "home": "Inicio",
+    "documentation": "Documentación",
+    "blog": "Blog",
+    "componentCatalog": "Catálogo de componentes",
+    "brandGuide": "Guía de Marca",
+    "about": "Acerca de",
+    "privacy": "Privacidad",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "copiedDescription": "Copiado al portapapeles."
+  },
+  "Header": {
+    "skip": "Saltar al contenido",
+    "home": "Página de inicio de Payload Components",
+    "github": "GitHub repositorio",
+    "openNavigation": "Abrir navegación",
+    "closeNavigation": "Cerrar navegación",
+    "language": "Idioma",
+    "nav": {
+      "docs": "Documentos",
+      "components": "Componentes",
+      "templates": "Plantillas",
+      "blog": "Blog",
+      "about": "Acerca de"
+    }
+  },
+  "Consent": {
+    "title": "Cookies analíticas",
+    "description": "Usamos Google Analytics y PostHog para ver qué componentes y documentos usa realmente la gente. Rechace y ninguno de los dos se cargará: ni cookie, ni identificador. La medición de la velocidad de la página se ejecuta en ambos sentidos y no almacena nada.",
+    "privacy": "Privacidad",
+    "decline": "Rechazar",
+    "accept": "Aceptar"
+  },
+  "Privacy": {
+    "eyebrow": "Privacidad",
+    "heading": "Exactamente lo que medimos.",
+    "accentWord": "medida",
+    "intro": "Nada de lo que almacena en su dispositivo se carga hasta que usted acepta. Esta página nombra cada procesador, cada evento y cada campo, y le permite cambiar de opinión en cualquier momento.",
+    "consent": "Cualquier cosa que almacene algo en su dispositivo espera su consentimiento. Rechazar y Google Analytics y PostHog nunca se cargan: no se establece ninguna cookie ni se guarda ningún identificador. Si su navegador envía Global Privacy Control o Do Not Track, eso cuenta como un rechazo automáticamente y nunca se le mostrará el banner.",
+    "alwaysOnProcessors": "Vercel Analytics y Speed Insights son la excepción y funcionan para todos. No establecen cookies ni almacenan ningún identificador; miden la carga de la página y el rendimiento en conjunto, que es lo que mantiene rápido este sitio. No hay nada en su dispositivo que pueda cancelar.",
+    "noAccounts": "No hay cuentas en este sitio, por lo que nada de esto está vinculado a una identidad. Nunca recopilamos datos de formularios, texto libre ni el contenido de las páginas que usted visita.",
+    "processorsTitle": "Quién recibe los datos",
+    "needsConsent": "Necesita tu consentimiento",
+    "alwaysOn": "Siempre encendido, no almacena nada",
+    "processors": {
+      "vercel": {
+        "purpose": "Vistas de página y Core Web Vitals para el sitio alojado.",
+        "storage": "Sin cookies ni identificador: no se almacena nada en su dispositivo."
+      },
+      "ga4": {
+        "purpose": "Vistas de página agregadas y fuentes de tráfico.",
+        "storage": "Establece sus propias cookies de origen (_ga, _ga_*)."
+      },
+      "posthog": {
+        "purpose": "Los tres eventos de productos que se enumeran a continuación.",
+        "storage": "Un pc_distinct_id aleatorio en localStorage, más una ruta de acceso orgánica en sessionStorage para la pestaña actual."
+      }
+    },
+    "eventsTitle": "Los eventos que enviamos",
+    "eventsIntro": "Tres, y sus campos son fijos. Cada valor proviene de una ruta, enlace o comando de instalación confirmado, nunca de nada que escriba.",
+    "trafficSource": "Las visitas a la página etiquetan el tráfico solo como búsqueda orgánica u otro. Esa etiqueta se deriva en su navegador a partir de una lista fija de un motor de búsqueda o de un marcador de campaña orgánico explícito. La referencia sin formato, la campaña y la cadena de consulta nunca se envían. Los controles controlados del sitio llevan un marcador de verificación real para que puedan excluirse del recuento de visitantes; Las visitas ordinarias son falsas.",
+    "entryPage": "Después del consentimiento, las visitas orgánicas mantienen la primera ruta del mismo sitio para la pestaña actual del navegador. Las copias de instalación y los clics en el enlace principal incluyen ese nombre de ruta como <code>entry_page</code>. Las visitas directas y de referencia no. Nunca contiene una cadena de consulta ni una referencia sin formato y se elimina cuando retira su consentimiento.",
+    "events": {
+      "pageview": {
+        "when": "Una ruta pública se carga o cambia."
+      },
+      "copyInstallCommand": {
+        "when": "Copias un comando de instalación."
+      },
+      "primaryLinkClick": {
+        "when": "Sigues un enlace de repositorio, documentos o componentes."
+      }
+    },
+    "choiceTitle": "Tu elección",
+    "choice": "Su decisión se almacena localmente en su navegador en <code>pc_consent</code>. Cámbialo aquí en cualquier momento. Retirar hace más que detener la recopilación: elimina lo que creó la suscripción: las cookies Google Analytics (<code>_ga</code>, <code>_ga_*</code>) y el identificador PostHog se eliminan, y la página se recarga para que nada de lo que ya se está ejecutando continúe. También se elimina el nombre de la ruta de entrada orgánica de solo sesión.",
+    "settings": {
+      "privacySignal": "Su navegador envía una señal de privacidad (Global Privacy Control o Do Not Track), por lo que Google Analytics y PostHog permanecen desactivados y esto no se puede anular aquí.",
+      "on": "Google Analytics y PostHog están activados actualmente.",
+      "off": "Google Analytics y PostHog están actualmente desactivados.",
+      "undecided": "Aún no has elegido, así que Google Analytics y PostHog están desactivados.",
+      "turnOff": "Desactivar análisis",
+      "turnOn": "Activar análisis"
+    }
+  },
+  "NotFound": {
+    "eyebrow": "Error 404",
+    "title": "Página no encontrada",
+    "description": "Esta ruta no está en el registro. Los componentes, los documentos y el catálogo lo son.",
+    "home": "Ir a casa",
+    "docs": "Leer los documentos",
+    "terminalTitle": "payload-components — 404"
+  },
+  "Docs": {
+    "title": "Documentación",
+    "versionBanner": "MIT registro · componentes v{version}",
+    "github": "Estrella en GitHub",
+    "previousComponent": "Componente anterior: {title}",
+    "nextComponent": "Siguiente componente: {title}",
+    "newIn": "Nuevo en {version}"
+  },
+  "HomeMetadata": {
+    "title": "Payload Components: Bloques Payload CMS cableados en un solo comando",
+    "description": "Instale bloques Payload CMS reutilizables con un solo comando, incluida la configuración de la colección, mapas de renderizado, tipos generados y el mapa de importación de administrador para proyectos Next.js."
+  },
+  "Landing": {
+    "hero": {
+      "eyebrow": "Registro de bloques Payload de código abierto",
+      "primary": "Instalar bloques Payload",
+      "accent": "cableado, no pegado.",
+      "subheadline": "Para los desarrolladores Payload CMS, un comando instala el bloque, lo conecta a Payload y obtiene un git diff revisable.",
+      "guide": "Lea la guía de instalación",
+      "github": "Estrella en GitHub",
+      "browse": "Explorar los componentes",
+      "copy": "Copiar comando de instalación",
+      "count": "bloques {count} en el registro: cada uno de ellos conectado a Payload mediante un solo comando."
+    },
+    "stack": {
+      "label": "Pila admitida",
+      "lede": "Se instala en la pila que ya ejecuta"
+    },
+    "wiring": {
+      "eyebrow": "El límite de instalación",
+      "heading": "Un bloque no está activo hasta que está cableado.",
+      "intro": "Copiar los archivos es la parte fácil: las cuatro ediciones posteriores son donde cada bloque, cada repositorio, pierde el día.",
+      "source": "fuente"
+    },
+    "workflow": {
+      "eyebrow": "Flujo de trabajo",
+      "heading": "Del catálogo al commit en tres movimientos.",
+      "intro": "Sin andamios, sin bloqueo: fuente simple más dos parches con alcance que puedes leer.",
+      "steps": {
+        "oneTitle": "Leer el contrato",
+        "oneDescription": "Campos, archivos y parches, antes de ejecutar cualquier cosa.",
+        "twoTitle": "Ejecutar un comando",
+        "twoDescription": "El CLI verifica su proyecto y luego lo cablea en una sola pasada.",
+        "threeTitle": "Confirmar un bloque de trabajo",
+        "threeDescription": "Fuente, dos parches, tipos regenerados: revisados ​​como cualquier PR."
+      },
+      "badge": "Renderizado desde la fuente",
+      "caption": "El resultado confirmado: fuente de componente real, conectada a Payload y revisada como cualquier PR."
+    },
+    "catalog": {
+      "eyebrow": "El catálogo",
+      "heading": "El catálogo, renderizado en vivo.",
+      "intro": "Sin capturas de pantalla: cada muestra es el componente real, renderizado desde la fuente.",
+      "browse": "Navegar por el catálogo",
+      "preview": "Vista previa en vivo",
+      "blockCount": "{count, plural, one {# bloque} many {# bloques} other {# bloques}}",
+      "browseFamily": "Explorar {family}",
+      "allComponents": "Explorar todos los componentes {count}",
+      "postComponents": "Componentes de la publicación · En desarrollo",
+      "familyCount": "Instalable",
+      "familyName": "Bloques de página",
+      "familyDescription": "Bloques para el generador de diseño de páginas: instalados con cableado completo: configuración de colección, mapeo de renderizado, tipos generados, mapa de importación."
+    },
+    "faq": {
+      "heading": "Preguntas, respondidas directamente.",
+      "intro": "La versión corta de los documentos. Cada respuesta enlaza con algo que puedes verificar en el repositorio.",
+      "dogfood": "Esta sección es uno de nuestros bloques"
+    },
+    "community": {
+      "eyebrow": "Código abierto",
+      "heading": "Código abierto,",
+      "accent": "de extremo a extremo",
+      "intro": "El registro, el CLI, los componentes y este sitio son un repositorio con licencia MIT. Lea el instalador antes de confiar en él; ese es el punto.",
+      "copy": "Copiar comando de instalación",
+      "repository": "GitHub repositorio",
+      "issue": "Abrir un problema",
+      "invite": "¿Ejecutándolo en un repositorio real? Abra un problema: se destacan las instalaciones tempranas."
+    }
+  },
+  "Catalog": {
+    "metadataTitle": "{count} Payload CMS Componentes y Bloques | Catálogo",
+    "metadataDescription": "Examinar los bloques Payload CMS escritos. Ejecute npx payload-components add '<component>' para conectar uno a su colección, renderizador, tipos generados y mapa de importación de administrador.",
+    "eyebrow": "Registro",
+    "title": "{count} Payload CMS componentes y bloques tipificados",
+    "description": "Explore todos los componentes {count} instalables Payload CMS en héroes, funciones, precios, llamados a la acción, integraciones, testimonios, estadísticas, FAQ, contenido, equipos, incrustaciones y pies de página. Un comando CLI copia un bloque y conecta su registro de colección, mapeo de renderizador, tipos generados y mapa de importación de administrador.",
+    "installation": "Vea cómo funciona la instalación con un solo comando",
+    "blocksGuide": "Sigue un bloque desde la configuración hasta la página en vivo",
+    "templates": "Explorar conceptos de plantilla Payload CMS",
+    "license": "MIT con licencia"
+  },
+  "CatalogBrowser": {
+    "filter": "Filtrar componentes",
+    "allComponents": "Todos los componentes",
+    "all": "Todos",
+    "search": "Componentes de búsqueda",
+    "result": "{count, plural, one {# resultado} many {# resultados} other {# resultados}}",
+    "empty": "Ningún componente coincide con sus filtros.",
+    "reset": "Restablecer filtros",
+    "proposal": "El catálogo crece deliberadamente: la cobertura del código fuente, el manifiesto, los documentos y el instalador se envían juntos. Proponer el siguiente.",
+    "issue": "Abrir un problema",
+    "inDevelopment": "en desarrollo",
+    "roadmapPreview": "Vista previa del concepto",
+    "planned": "Hoja de ruta de código abierto",
+    "interest": "Ver la hoja de ruta",
+    "interestLabel": "Ver {component} en la hoja de ruta de componentes editoriales",
+    "selected": "{count} seleccionado",
+    "tray": "Componentes seleccionados",
+    "copy": "Copiar comando de instalación",
+    "clear": "Borrar selección",
+    "families": {
+      "pages": "Bloques de página",
+      "posts": "Componentes de la publicación"
+    },
+    "categories": {
+      "hero": "Héroe",
+      "features": "Características",
+      "comparator": "Comparador",
+      "pricing": "Precios",
+      "cta": "Llamado a la acción",
+      "contact": "Contacto",
+      "integration": "Integración",
+      "logos": "Logotipo de la nube",
+      "testimonials": "Testimonios",
+      "stats": "Estadísticas",
+      "faq": "FAQ",
+      "content": "Contenido",
+      "team": "Equipo",
+      "embed": "Insertar",
+      "footer": "Pie de página",
+      "cards": "Tarjetas",
+      "archive": "Archivo",
+      "header": "Encabezado",
+      "index": "Índice",
+      "author": "Autor",
+      "newsletter": "Boletín",
+      "related": "Relacionados"
+    },
+    "composerAdd": "Agregue {slug} al comando de instalación",
+    "composerRemove": "Eliminar {slug} del comando de instalación",
+    "theme": {
+      "brandLegend": "Vista previa del catálogo en el color de su marca",
+      "brandLabel": "Marca",
+      "previewBrand": "Vista previa en {color}",
+      "colors": {
+        "emerald": "Esmeralda",
+        "sky": "cielo",
+        "indigo": "índigo",
+        "violet": "violeta",
+        "rose": "rosa",
+        "amber": "ámbar"
+      },
+      "radiusLegend": "Vista previa del catálogo en un radio de esquina diferente",
+      "radiusLabel": "Radio",
+      "previewRadius": "Vista previa con esquinas {style}",
+      "radii": {
+        "sharp": "Afilado",
+        "default": "Predeterminado",
+        "round": "redondo"
+      }
+    }
+  },
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
+    "seeCollection": "View the collection",
+    "backToCatalog": "Back to the component catalog",
+    "suiteEyebrow": "The proposed suite",
+    "suiteTitle": "Designed as one publication.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
+    "collectionEyebrow": "The collection",
+    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
+    "benefits": {
+      "systemTitle": "Composed together",
+      "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
+    },
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
+  },
+  "Templates": {
+    "metadataTitle": "Payload CMS Plantillas para Next.js | Conceptos y recetas",
+    "metadataDescription": "Explore conceptos de plantilla Payload CMS en quince verticales (SaaS, agencia, comercio, atención médica, restaurante, bienes raíces y más), obtenga una vista previa de cada página e inspeccione la receta del bloque escrito.",
+    "detailTitle": "{title} plantilla",
+    "back": "Plantillas",
+    "previewPageLabel": "{title} página de vista previa",
+    "previewViewport": "Vista previa del tamaño de la ventana gráfica",
+    "desktop": "Escritorio",
+    "tablet": "Tableta",
+    "mobile": "Móvil",
+    "previewFrameTitle": "{title} vista previa de plantilla — página {page}",
+    "eyebrow": "Plantillas",
+    "title": "Payload CMS conceptos de plantilla, construidos a partir de bloques instalables",
+    "status": "Vista previa del concepto",
+    "disclosure": "Este es un concepto de sitio completo navegable. Cada sección se compone de bloques en el registro abierto, y un comando instala todo el conjunto de bloques; la copia seleccionada que se muestra aquí no está inicializada, por lo que usted mismo ensambla las páginas en el administrador.",
+    "startingPoint": "Elige un punto de partida",
+    "description": "Explore conceptos completos de sitios Payload CMS y Next.js en quince sectores verticales: SaaS, agencia, comercio, atención médica, restaurantes, bienes raíces, música y más. Abra cada página en una vista previa en vivo, luego rastree cada sección hasta un bloque escrito que puede instalar hoy.",
+    "components": "Explorar componentes instalables",
+    "installation": "Leer la guía de instalación",
+    "official": "Comience desde la plantilla oficial Payload",
+    "showcases": "Plantillas de presentación",
+    "questionsEyebrow": "Preguntas",
+    "questionsHeading": "Payload CMS preguntas de plantilla, respondidas",
+    "questionsIntro": "Los conceptos son intencionalmente abiertos sobre lo que funciona hoy y lo que sigue siendo una referencia de diseño.",
+    "q1": "¿Se pueden instalar estas plantillas Payload CMS?",
+    "a1": "No. Son conceptos de sitio completo navegables, no repositorios de inicio empaquetados. Los bloques individuales de cada receta se pueden instalar y cada receta enlaza con la documentación del componente relevante.",
+    "q2": "¿En qué se diferencian de la plantilla oficial de Payload?",
+    "a2": "La plantilla del sitio web oficial brinda a un nuevo proyecto una base de aplicación completa. Estos conceptos muestran cómo puede verse un sitio de marketing completo y qué bloques escritos componen cada página, sin reemplazar esa función de proyecto inicial.",
+    "q3": "¿Puedo usar las recetas en un proyecto Payload existente?",
+    "a3": "Sí. Abra un concepto, inspeccione su receta ordenada y elija las secciones que se ajusten a su sitio. El catálogo documenta los campos de cada bloque y la ruta de instalación compatible de Payload CMS v3.",
+    "communityEyebrow": "Comunidad",
+    "communityHeading": "Las plantillas se deciden al aire libre",
+    "communityIntro": "Estos conceptos existen para responder una pregunta de la comunidad: ¿deberían ser instalables las plantillas de sitio completo? Las recetas, las marcas ficticias y el RFC del instalador se encuentran en el repositorio público: nada cerrado, sin captura de correo electrónico.",
+    "allConcepts": "Todos los conceptos",
+    "filter": "Filtrar conceptos por categoría",
+    "showing": "Mostrando {visible} de {total} conceptos",
+    "visualTone": "Tono visual",
+    "counts": "{pages} páginas · {blocks} bloques únicos",
+    "explore": "Explorar plantilla",
+    "openPreview": "Abrir vista previa completa",
+    "posterLabel": "Explora la plantilla {title}",
+    "posterAlt": "Plantilla {title} — póster conceptual de la página de inicio",
+    "contributionRepository": "Explorar el repositorio",
+    "contributionRepositoryDescription": "Lea la fuente de presentación: cada receta son datos simples en el repositorio.",
+    "contributionRfc": "Leer el RFC del instalador",
+    "contributionRfcDescription": "Revise la propuesta para convertir recetas conceptuales en un flujo de trabajo de instalación transparente y opcional.",
+    "categories": {
+      "agency": "Agencia",
+      "civic": "Cívico",
+      "commerce": "Comercio",
+      "education": "Educación",
+      "event": "Evento",
+      "fintech": "Fintech",
+      "healthcare": "Atención sanitaria",
+      "marketplace": "Mercado",
+      "music": "Música",
+      "nonprofit": "Sin fines de lucro",
+      "portfolio": "Portafolio",
+      "real-estate": "Bienes raíces",
+      "restaurant": "Restaurante",
+      "saas": "SaaS",
+      "trade": "Comercio"
+    }
+  },
+  "Blog": {
+    "metadataTitle": "Payload CMS bloque y guías de instalación",
+    "metadataDescription": "Guías prácticas Payload CMS v3 para instalar bloques reutilizables, colecciones de cableado y renderizadores, generar tipos y arreglar bloques que no renderizan.",
+    "eyebrow": "Guía práctica Payload CMS v3",
+    "featured": "Comience con una guía comprobada",
+    "installationLabel": "Guía de instalación",
+    "installationTitle": "Instalar un bloque Payload cableado",
+    "installationDescription": "Agregue un bloque real con el CLI compatible, luego revise cada archivo y cambio de cableado que llegue.",
+    "installationAction": "Sigue la guía de instalación.",
+    "wiringLabel": "Guía de cableado del bloque",
+    "wiringTitle": "Cablear un bloque reutilizable",
+    "wiringDescription": "Siga un bloque Payload CMS v3 desde la configuración hasta el registro, la representación, los tipos generados y el mapa de importación del administrador.",
+    "troubleshootingLabel": "Guía de solución de problemas",
+    "troubleshootingTitle": "Arreglar un bloque que no se renderiza",
+    "troubleshootingDescription": "Consulta los cuatro lugares que suelen explicar por qué un bloque guardado no aparece en la página.",
+    "readGuide": "Leer la guía",
+    "notesEyebrow": "Notas de campo del registro",
+    "notesTitle": "Más notas de campo Payload CMS",
+    "notesDescription": "Explore lecciones de implementación, notas de diseño de componentes e historias de versiones del registro abierto.",
+    "browseComponents": "Explorar todos los componentes instalables {count}",
+    "empty": "Aún no hay publicaciones; vuelve a consultar pronto.",
+    "back": "Volver al blog",
+    "keepReading": "Sigue leyendo",
+    "related": "Lectura relacionada",
+    "tags": "Etiquetas de artículos",
+    "series": {
+      "project-notes": "Notas del proyecto",
+      "foundations": "Cimentaciones",
+      "installer-internals": "Partes internas del instalador",
+      "component-design": "Diseño de componentes",
+      "production-guides": "Guías de producción",
+      "open-source": "Calidad y comunidad"
+    }
+  },
+  "Footer": {
+    "home": "Página de inicio de Payload Components",
+    "intro": "Componentes escritos Payload CMS que se instalan con su cableado: configuración de colección, mapeo de renderizado, tipos generados e importación de mapa en un solo comando.",
+    "product": "Producto",
+    "components": "Componentes",
+    "project": "Proyecto",
+    "componentCatalog": "Catálogo de componentes",
+    "templateConcepts": "Conceptos de plantilla",
+    "documentation": "Documentación",
+    "installWorkflow": "Instalar flujo de trabajo",
+    "architecture": "Arquitectura",
+    "aiDiscovery": "Descubrimiento de IA",
+    "allComponents": "Todos los componentes {count}",
+    "about": "Acerca de",
+    "brandGuide": "Guía de Marca",
+    "openIssue": "Abrir un problema",
+    "releases": "Lanzamientos",
+    "updates": "Fuente de actualizaciones",
+    "contributing": "Contribuyendo",
+    "privacy": "Privacidad",
+    "registry": "Registro JSON",
+    "license": "MIT licenciado · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · registro abierto"
+  },
+  "Maintainer": {
+    "body": "Construí payload-components porque instalar un bloque Payload nunca fue copiar y pegar, fueron las cuatro ediciones posteriores. El CLI existe, por lo que el segundo proyecto y el décimo obtienen ese cableado de forma gratuita. Lea la fuente del instalador antes de confiar en él; enviarlo MIT es el punto.",
+    "role": "Mantenedor, Payload Components",
+    "github": "{name} en GitHub"
+  },
+  "PageMetadata": {
+    "about": {
+      "title": "Acerca de",
+      "openGraphTitle": "Acerca de Payload Components",
+      "description": "Por qué existe Payload Components: deja de reconstruir los mismos bloques Payload, recableándolos a mano y volviendo a probar cada instalación en proyectos independientes."
+    },
+    "privacy": {
+      "title": "Privacidad",
+      "openGraphTitle": "Privacidad — Payload Components",
+      "description": "Qué mide Payload Components, qué terceros lo reciben y cómo cambiar o retirar su elección en cualquier momento."
+    },
+    "brandGuide": {
+      "title": "Guía de Marca",
+      "openGraphTitle": "Payload Components Guía de Marcas",
+      "description": "La marca Payload Components: una paleta monocromática shadcn que da prioridad a la luz con un acento esmeralda, el sistema de tipografía Geist e Instrument Serif, uso de logotipo y voz."
+    }
+  },
+  "FaqContent": {
+    "entries": {
+      "one": {
+        "question": "¿Payload Components es gratis?",
+        "answer": "Sí, y está diseñado para seguir siéndolo. El registro, el CLI, todos los componentes instalables {count} y este sitio son un repositorio con licencia MIT: sin precio, sin clave de licencia, sin nivel cerrado. Payload Components es, por diseño, prioritario para la comunidad: el catálogo crece a partir de instalaciones y contribuciones reales, no de una hoja de ruta paga."
+      },
+      "two": {
+        "question": "¿Qué es un bloque Payload CMS?",
+        "answer": "En Payload, un bloque es un campo de creación de páginas componible: una pila de editores de sección de contenido reutilizable (héroe, cuadrícula de funciones, CTA) para diseñar una página. Payload Components incluye bloques prediseñados más el cableado que los activa, por lo que un bloque no se copia simplemente: se registra en su colección de páginas, se asigna en su renderizador, se escribe y se agrega al mapa de importación del administrador.",
+        "link": "Leer la guía de bloques Payload"
+      },
+      "three": {
+        "question": "¿Cómo agrego un bloque de héroe a Payload CMS?",
+        "answer": "Instale uno con el CLI — `npx payload-components add hero-basic`. Copia el código fuente del bloque en su proyecto y lo conecta de extremo a extremo: lo registra en su colección de páginas, lo asigna en RenderBlocks y regenera sus tipos Payload y el mapa de importación de administrador, aterrizando como uno revisable git diff. El mismo comando agrega cualquier bloque en el catálogo."
+      },
+      "four": {
+        "question": "¿Qué cambia exactamente una instalación en mi repositorio?",
+        "answer": "Tres cosas: los archivos fuente de los componentes se copian (configuración de bloque, componente, utilidades compartidas), se parchean exactamente dos archivos (su colección de páginas y RenderBlocks.tsx, el manifiesto de cada componente los declara), y Payload regenera su propia salida (payload-types.ts y el mapa de importación del administrador). Todo esto aparece como un git diff ordinario.",
+        "link": "Leer la guía de instalación"
+      },
+      "five": {
+        "question": "¿Qué sucede si ejecuto la misma instalación dos veces?",
+        "answer": "Converge. El CLI detecta el cableado existente y lo omite; la salida real es payload-components: \"hero-basic\" is already installed. El estado de instalación se registra en .payload-components/state.json, por lo que las instalaciones parciales son visibles y recuperables en lugar de interrumpirse silenciosamente."
+      },
+      "six": {
+        "question": "¿Qué proyectos se apoyan hoy?",
+        "answer": "Payload v3 + Next.js 15/16 proyectos con la forma del inicio del sitio web oficial: renderiza bloques de diseño a través de src/blocks/RenderBlocks.tsx y registra bloques de página en src/collections/Pages/index.ts.. El CLI compara tu proyecto con la matriz de soporte publicada antes de tocar nada."
+      },
+      "seven": {
+        "question": "¿Por qué no simplemente ejecutar npx shadcn add?",
+        "answer": "Una instalación simple shadcn copia archivos y se detiene. Los bloques Payload solo funcionan después de que se registran en el esquema de su colección, se asignan en su renderizador, se escriben y se agregan al mapa de importación del administrador. payload-components envuelve la misma entrega de registro exactamente con ese cableado: ese límite es el producto, y el libro de cableado de arriba lo muestra fila por fila.",
+        "link": "Lea la comparación completa de shadcn"
+      },
+      "eight": {
+        "question": "¿Cómo entran los nuevos componentes en el catálogo?",
+        "answer": "Deliberadamente. Un componente aterriza solo cuando su fuente, metadatos de manifiesto, página de documentos y cobertura de prueba del instalador se envían juntos: los bloques medio conectados nunca llegan al catálogo. Proponer el siguiente componente en un número GitHub; el catálogo crece a partir de instalaciones reales."
+      }
+    }
+  },
+  "TranslationNotice": {
+    "fallback": "Esta página aún no está traducida, por lo que se muestra el contenido original en inglés.",
+    "label": "Estado de la traducción",
+    "machine": "Esta página se tradujo automáticamente y aún no ha sido revisada por un hablante nativo.",
+    "viewEnglish": "Ver original en inglés"
+  }
+}

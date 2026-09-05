@@ -17,10 +17,12 @@ export const callToActionFields: Field[] = [
   {
     name: 'title',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
   {
     name: 'description',
     type: 'textarea',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
 ]

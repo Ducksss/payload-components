@@ -1,12 +1,20 @@
 import type { Field } from 'payload'
+import { fieldHasSubFields, fieldIsBlockType } from 'payload/shared'
 
 /**
  * Mark a block's editorial text as localized.
  *
  * Payload localization is per field: `localized: true` stores a value per
- * configured locale. `localizeFields` walks a block's field list and sets it on
- * the leaf fields an editor writes prose into — `text`, `textarea`, and
- * `richText` — recursing through the containers those fields live in.
+ * configured locale. `localizeFields` walks a block's field list and applies
+ * the explicit policy authored on each persisted text leaf:
+ *
+ * ```ts
+ * custom: { payloadComponents: { localization: 'localized' } }
+ * custom: { payloadComponents: { localization: 'global' } }
+ * ```
+ *
+ * Storage type is deliberately not policy. A URL and a heading are both
+ * Payload `text` fields, but only the heading should gain per-locale storage.
  *
  * Installed by `payload-components add <component> --localized`, which also
  * wraps the block config's `fields` array in this call:
@@ -25,11 +33,11 @@ import type { Field } from 'payload'
  *   nested inside a localized parent, so localizing only leaves keeps every
  *   combination valid and makes the transform safe to re-apply.
  * - A field that already declares `localized` is left exactly as authored, so
- *   your own choices always win.
- * - Non-prose fields (`select`, `upload`, `relationship`, `number`, `checkbox`,
- *   and link `url`s) stay single-value. Localize those by hand where you want
- *   per-locale media or targets — the decision is content modelling, not a
- *   mechanical default.
+ *   consumer choices always win.
+ * - Unmarked fields stay global. This conservative default keeps fields from
+ *   consumer helpers (including link URLs) out of per-locale storage.
+ * - Non-text fields stay single-value. Localize those by hand where you want
+ *   per-locale media or targets — the decision is content modelling.
  *
  * Localization must also be enabled at the config level, or `localized: true`
  * has no effect:
@@ -44,9 +52,6 @@ import type { Field } from 'payload'
  * data is stored — migrate an existing database before adopting it.
  */
 
-/* Narrowing on `field.type` rather than importing Payload's internal field
-   guards: the discriminant is part of Payload's public Field union, so this stays
-   type-safe without depending on helper exports that move between releases. */
 const LOCALIZED_LEAF_TYPES = ['richText', 'text', 'textarea'] as const
 
 type LocalizedLeafType = (typeof LOCALIZED_LEAF_TYPES)[number]
@@ -54,18 +59,25 @@ type LocalizedLeafType = (typeof LOCALIZED_LEAF_TYPES)[number]
 const isLocalizedLeaf = (field: Field): field is Extract<Field, { type: LocalizedLeafType }> =>
   LOCALIZED_LEAF_TYPES.includes(field.type as LocalizedLeafType)
 
+type LocalizationPolicy = 'global' | 'localized'
+
+const getLocalizationPolicy = (field: Field): LocalizationPolicy | undefined => {
+  if (!('custom' in field) || !field.custom || typeof field.custom !== 'object') return undefined
+
+  const payloadComponents = (field.custom as Record<string, unknown>).payloadComponents
+  if (!payloadComponents || typeof payloadComponents !== 'object') return undefined
+
+  const policy = (payloadComponents as Record<string, unknown>).localization
+  return policy === 'global' || policy === 'localized' ? policy : undefined
+}
+
 const localizeField = (field: Field): Field => {
   if (isLocalizedLeaf(field)) {
-    return 'localized' in field && field.localized !== undefined
-      ? field
-      : { ...field, localized: true }
+    if ('localized' in field && field.localized !== undefined) return field
+    return getLocalizationPolicy(field) === 'localized' ? { ...field, localized: true } : field
   }
 
-  if (field.type === 'array' || field.type === 'collapsible' || field.type === 'group') {
-    return { ...field, fields: localizeFields(field.fields) }
-  }
-
-  if (field.type === 'row') {
+  if (fieldHasSubFields(field)) {
     return { ...field, fields: localizeFields(field.fields) }
   }
 
@@ -76,7 +88,7 @@ const localizeField = (field: Field): Field => {
     }
   }
 
-  if (field.type === 'blocks') {
+  if (fieldIsBlockType(field)) {
     return {
       ...field,
       blocks: field.blocks.map((block) => ({ ...block, fields: localizeFields(block.fields) })),

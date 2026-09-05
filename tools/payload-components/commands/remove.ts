@@ -1,4 +1,3 @@
-import { access, readdir, rm, rmdir } from 'node:fs/promises'
 import path from 'node:path'
 
 import {
@@ -10,18 +9,26 @@ import { loadManifest } from '../manifest'
 import { runPostInstallScript } from '../post-install'
 import {
   detectProject,
-  removePayloadFragments,
+  preparePayloadFragmentRemoval,
   verifyInstalledPayloadFragments,
 } from '../project'
+import {
+  readSafeProjectFile,
+  removeSafeProjectDirectoryIfEmpty,
+} from '../safe-path'
 import { loadState, removeRecordedState } from '../state'
-import { isPathInside, printHeader } from '../utils'
+import { commitFileChanges, isPathInside, printHeader } from '../utils'
 
-const fileExists = async (absolutePath: string) => {
+const fileExists = async (cwd: string, filePath: string) => {
   try {
-    await access(absolutePath)
+    await readSafeProjectFile({ cwd, filePath })
     return true
-  } catch {
-    return false
+  } catch (error) {
+    if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return false
+    }
+
+    throw error
   }
 }
 
@@ -84,13 +91,20 @@ const pruneEmptyDirectories = async ({
     let currentDir = candidateDir
 
     while (isPathInside(cwd, currentDir) && currentDir !== cwd) {
-      const entries = await readdir(currentDir).catch(() => undefined)
+      const removed = await removeSafeProjectDirectoryIfEmpty({
+        cwd,
+        directoryPath: currentDir,
+      }).catch((error) => {
+        if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
+          return false
+        }
 
-      if (entries === undefined || entries.length > 0) {
+        throw error
+      })
+
+      if (!removed) {
         break
       }
-
-      await rmdir(currentDir).catch(() => undefined)
       currentDir = path.dirname(currentDir)
     }
   }
@@ -139,6 +153,12 @@ const formatPlan = ({
 
   lines.push('', 'Payload wiring:', `  ${verb}unregister the block and drop its imports`)
 
+  lines.push(
+    '',
+    'Stored content:',
+    '  Page documents are not changed; migrate or delete this block data in /admin first',
+  )
+
   lines.push('', 'Post-install commands:')
 
   if (postInstall.length === 0) {
@@ -167,11 +187,13 @@ const formatPlan = ({
  * map so the project compiles again. Package dependencies are intentionally
  * left in place — the CLI cannot know whether other code adopted them. */
 export const removeCommand = async ({
+  acceptStoredContent = false,
   componentName,
   cwd,
   dryRun = false,
   force = false,
 }: {
+  acceptStoredContent?: boolean
   componentName: string
   cwd: string
   dryRun?: boolean
@@ -188,7 +210,7 @@ export const removeCommand = async ({
   if (!installed) {
     const hasFiles = (
       await Promise.all(
-        manifest.files.map((projectPath) => fileExists(path.join(cwd, projectPath))),
+        manifest.files.map((projectPath) => fileExists(cwd, path.join(cwd, projectPath))),
       )
     ).some(Boolean)
     const fragmentCheck = await verifyInstalledPayloadFragments({
@@ -258,6 +280,16 @@ export const removeCommand = async ({
     )
   }
 
+  if (!dryRun && !acceptStoredContent) {
+    throw new Error(
+      [
+        `Removing "${componentName}" changes code, not stored Payload documents.`,
+        'Pages may still contain this block data and must be migrated or deleted in /admin before the code is removed.',
+        `Run "payload-components remove ${componentName} --dry-run" to review the code change, then re-run with --accept-stored-content after the documents are safe.`,
+      ].join('\n'),
+    )
+  }
+
   printHeader(
     formatPlan({
       componentName,
@@ -275,36 +307,41 @@ export const removeCommand = async ({
   }
 
   const deletedFiles: string[] = []
+  const deletionChanges: Array<{ content: null; filePath: string }> = []
 
   for (const projectPath of exclusiveFiles) {
     const absolutePath = path.join(cwd, projectPath)
 
     if (!isPathInside(cwd, absolutePath)) {
-      throw new Error(
-        `Refusing to delete "${projectPath}" because it resolves outside ${cwd}.`,
-      )
+      throw new Error(`Refusing to delete "${projectPath}" because it resolves outside ${cwd}.`)
     }
 
-    if (await fileExists(absolutePath)) {
+    if (await fileExists(cwd, absolutePath)) {
       deletedFiles.push(projectPath)
     }
 
-    await rm(absolutePath, { force: true })
+    deletionChanges.push({ content: null, filePath: absolutePath })
   }
 
-  await pruneEmptyDirectories({ cwd, projectPaths: exclusiveFiles })
-
-  const unwiredFiles = await removePayloadFragments(
+  const fragmentRemoval = await preparePayloadFragmentRemoval(
     cwd,
     manifest.payloadFragments,
     project.hostFiles,
   )
+
+  await commitFileChanges([...deletionChanges, ...fragmentRemoval.changes], { cwd })
+
+  await pruneEmptyDirectories({ cwd, projectPaths: exclusiveFiles })
+
+  const unwiredFiles = fragmentRemoval.touchedFiles
   const changedProject = deletedFiles.length > 0 || unwiredFiles.length > 0
+  const needsPostInstall = changedProject || installed !== undefined
 
   /* Types and the import map only go stale when files or wiring actually
-     changed. A repeat removal touches nothing, so re-running the generators
-     would cost minutes of a consumer's time for no effect. */
-  if (changedProject) {
+     changed, or when a previous removal committed those changes but failed in a
+     generator before dropping state. A completed repeat has no state and still
+     skips the generators. */
+  if (needsPostInstall) {
     for (const script of manifest.postInstall) {
       printHeader(`payload-components: running ${script}`)
 
@@ -316,9 +353,7 @@ export const removeCommand = async ({
     }
   }
 
-  const wasRecorded = installed
-    ? await removeRecordedState({ componentName, cwd })
-    : false
+  const wasRecorded = installed ? await removeRecordedState({ componentName, cwd }) : false
 
   if (!changedProject && !wasRecorded) {
     printHeader(`payload-components: nothing to remove for "${componentName}".`)
@@ -330,7 +365,7 @@ export const removeCommand = async ({
       `payload-components: removed "${componentName}".`,
       `  Deleted ${deletedFiles.length} file${deletedFiles.length === 1 ? '' : 's'}, unwired ${unwiredFiles.length} host file${unwiredFiles.length === 1 ? '' : 's'}.`,
       `  Package dependencies were left installed — remove them yourself if nothing else uses them.`,
-      `  Existing Page documents keep their stored block data; delete those blocks in /admin before publishing.`,
+      `  Stored Page documents were intentionally left unchanged (--accept-stored-content).`,
     ].join('\n'),
   )
 }

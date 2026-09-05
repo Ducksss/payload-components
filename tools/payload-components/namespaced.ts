@@ -1,6 +1,8 @@
 import path from 'node:path'
 
-import { getShadcnCommand, printHeader, readJsonFile, runCommand } from './utils'
+import { assertSafePackageManagerTargets } from './dependencies'
+import { readSafeProjectFile, safeProjectFileExists } from './safe-path'
+import { getShadcnCommand, printHeader, runCommand } from './utils'
 
 import type { PackageManager } from './types'
 
@@ -34,9 +36,17 @@ export const parseNamespacedItem = (name: string) => {
 
 const readRegistries = async (cwd: string) => {
   const configs = await Promise.all(
-    ['components.json', 'package.json'].map((file) =>
-      readJsonFile<{ registries?: RegistriesConfig }>(path.join(cwd, file)).catch(() => undefined),
-    ),
+    ['components.json', 'package.json'].map(async (file) => {
+      const filePath = path.join(cwd, file)
+
+      if (!(await safeProjectFileExists({ cwd, filePath }))) {
+        return undefined
+      }
+
+      return JSON.parse(await readSafeProjectFile({ cwd, filePath })) as {
+        registries?: RegistriesConfig
+      }
+    }),
   )
 
   return configs.reduce<RegistriesConfig>(
@@ -85,6 +95,8 @@ export const installNamespacedItem = async ({
   const { item, scope } = parseNamespacedItem(name)
   const url = await resolveNamespacedRegistry({ cwd, scope })
   const shadcn = getShadcnCommand(packageManager)
+
+  await assertSafePackageManagerTargets({ cwd, packageManager })
 
   printHeader(
     [

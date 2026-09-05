@@ -76,7 +76,7 @@ describe('payload-components doctor orchestration', () => {
         [heroManifest.name]: stateEntryFor(heroManifest),
         [featureManifest.name]: stateEntryFor(featureManifest),
       },
-      version: 3,
+      version: 4,
     }
     const resolveInstallPlan = vi
       .fn()
@@ -116,6 +116,17 @@ describe('payload-components doctor orchestration', () => {
         isValid: true,
         missingFragments: [],
       }),
+    }))
+    vi.doMock('../../tools/payload-components/safe-path', () => ({
+      readSafeProjectFile: vi.fn().mockResolvedValue(
+        JSON.stringify({
+          scripts: {
+            'generate:importmap': 'payload generate:importmap',
+            'generate:types': 'payload generate:types',
+          },
+        }),
+      ),
+      safeProjectFileExists: vi.fn().mockResolvedValue(true),
     }))
     vi.doMock('../../tools/payload-components/state', () => ({
       loadState: vi.fn().mockResolvedValue(state),

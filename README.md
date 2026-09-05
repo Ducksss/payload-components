@@ -220,10 +220,9 @@ Browse the full, current set in the [component catalog][catalog-url].
 
 #### All components
 
-Every installable registry item, in catalog order. This table and the CLI's
-`Current components` help output are both verified against
-`payload-components/registry.json` by a focused test, so neither can silently
-drift from the registry.
+Every installable registry item, in catalog order. The CLI derives its
+`Current components` help output directly from `payload-components/registry.json`;
+this table is verified against the same source by a focused test.
 
 <!-- COMPONENT-INVENTORY:START -->
 
@@ -367,7 +366,7 @@ npx payload-components list              # catalog vs what this project recorded
 npx payload-components diff              # version, file, and wiring drift
 npx payload-components update            # re-install anything behind this CLI
 npx payload-components localize          # declare locales and localize installed blocks
-npx payload-components remove hero-basic # delete owned files and unwire the block
+npx payload-components remove hero-basic --accept-stored-content # after migrating/removing stored blocks
 ```
 
 `diff` exits non-zero when anything has drifted, so CI can gate on it. `update`
@@ -376,7 +375,8 @@ never overwrites a file you have edited — it skips that component and exits
 non-zero until you pass `--force`. `remove` protects edited or unrecorded source
 unless you pass its own `--force`, and deletes only files no other recorded
 install owns, so a shared family base survives while a sibling variant is still
-installed; package dependencies are always left in place.
+installed. It also requires `--accept-stored-content`, because removing code does
+not migrate Page documents. Package dependencies are always left in place.
 `list` and `diff` accept `--json`, and `update` and `remove` accept `--dry-run`.
 
 Starting from a bare `create-payload-app` project? Lay down the base an install
@@ -387,9 +387,11 @@ needs — the Pages and Media collections, the blocks renderer, and the `cn` /
 npx payload-components init --scaffold
 ```
 
-Nothing is overwritten: files you already have are kept, and a re-run creates
-nothing. The result is the official starter's shape, so the project then detects
-as `payload-website-starter`.
+The base is recorded with content-addressed ownership in install state. Matching
+starter files are adopted, existing custom implementations are left unowned, and
+later runs update only pristine managed files. Locally edited managed files are
+kept until you explicitly pass `--force`. The result is the official starter's
+shape, so the project then detects as `payload-website-starter`.
 
 Check a target project without changing files:
 

@@ -1,7 +1,11 @@
-import { readFile, writeFile } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
-import { copySharedSourceFile } from './component-files'
+import { hashSource } from './component-files'
+import { readSafeProjectFile, safeProjectFileExists, writeSafeProjectFile } from './safe-path'
+import type { BaseBundleStateEntry } from './types'
+import { commitFileChanges, isPathInside, repoRoot } from './utils'
 
 /* The starter primitives every installed block imports.
  *
@@ -13,8 +17,9 @@ import { copySharedSourceFile } from './component-files'
  *
  * These are copied, never `shadcn add`ed: they are not catalog components, they
  * carry no Payload wiring of their own, and they must not appear in the catalog.
- * An existing file is always left alone — a project that already has its own
- * `cn` or `Media` keeps it. */
+ * A pre-existing implementation is left alone; files created or adopted by the
+ * scaffold are recorded so later runs can update clean copies without treating
+ * consumer-owned code as ours. */
 
 export const BASE_BUNDLE_FILES = [
   'src/utilities/ui.ts',
@@ -33,23 +38,185 @@ export const BASE_BUNDLE_DEPENDENCIES = {
   'tailwind-merge': '^3.0.0',
 } as const
 
-const CONFIG_COLLECTIONS_ANCHOR = /collections:\s*\[/
+const baseSourceRoot = path.join(repoRoot, 'payload-components', 'source', 'base')
 
-export const copyBaseBundle = async ({ cwd }: { cwd: string }) => {
-  const created: string[] = []
-  const skipped: string[] = []
+const getBaseSourcePath = (projectPath: string) =>
+  path.resolve(baseSourceRoot, projectPath.replace(/^src\//, ''))
+
+const readOptionalFile = async (cwd: string, filePath: string) =>
+  (await safeProjectFileExists({ cwd, filePath }))
+    ? await readSafeProjectFile({ cwd, filePath })
+    : undefined
+
+const readCanonicalBaseFiles = async (): Promise<Map<string, string>> => {
+  const files = await Promise.all(
+    BASE_BUNDLE_FILES.map(async (projectPath) => {
+      const sourcePath = getBaseSourcePath(projectPath)
+
+      if (!isPathInside(baseSourceRoot, sourcePath)) {
+        throw new Error(`Refusing to read starter base source outside ${baseSourceRoot}.`)
+      }
+
+      return [projectPath, await readFile(sourcePath, 'utf8')] as const
+    }),
+  )
+
+  return new Map<string, string>(files)
+}
+
+/* The version is the contract itself, not a hand-maintained number that can be
+ * forgotten when a primitive, dependency, or file set changes. */
+export const getBaseBundleVersion = async () => {
+  const canonical = await readCanonicalBaseFiles()
+  const digest = createHash('sha256')
 
   for (const projectPath of BASE_BUNDLE_FILES) {
-    const wrote = await copySharedSourceFile({
-      cwd,
-      projectPath,
-      sourceSubdirectory: 'base',
-    })
-
-    ;(wrote ? created : skipped).push(projectPath)
+    digest.update(projectPath)
+    digest.update('\0')
+    digest.update(canonical.get(projectPath) ?? '')
+    digest.update('\0')
   }
 
-  return { created, skipped }
+  digest.update(JSON.stringify(BASE_BUNDLE_DEPENDENCIES))
+
+  return `sha256:${digest.digest('hex')}`
+}
+
+const CONFIG_COLLECTIONS_ANCHOR = /collections:\s*\[/
+
+export const syncBaseBundle = async ({
+  cwd,
+  force = false,
+  recordedFileHashes = {},
+}: {
+  cwd: string
+  force?: boolean
+  recordedFileHashes?: BaseBundleStateEntry['fileHashes']
+}) => {
+  const canonical = await readCanonicalBaseFiles()
+  const adopted: string[] = []
+  const created: string[] = []
+  const fileHashes: Record<string, string> = {}
+  const kept: string[] = []
+  const modified: string[] = []
+  const removed: string[] = []
+  const updated: string[] = []
+  const changes: Array<{ content: string | null; filePath: string }> = []
+
+  for (const projectPath of new Set([...BASE_BUNDLE_FILES, ...Object.keys(recordedFileHashes)])) {
+    const destinationPath = path.resolve(cwd, projectPath)
+
+    if (!isPathInside(cwd, destinationPath)) {
+      throw new Error(`Refusing to scaffold "${projectPath}" outside ${cwd}.`)
+    }
+
+    const current = await readOptionalFile(cwd, destinationPath)
+    const recordedHash = recordedFileHashes[projectPath]
+    const canonicalSource = canonical.get(projectPath)
+
+    if (canonicalSource === undefined) {
+      if (current === undefined) {
+        continue
+      }
+
+      if (recordedHash && (hashSource(current) === recordedHash || force)) {
+        changes.push({ content: null, filePath: destinationPath })
+        removed.push(projectPath)
+      } else {
+        modified.push(projectPath)
+        if (recordedHash) fileHashes[projectPath] = recordedHash
+      }
+
+      continue
+    }
+
+    const canonicalHash = hashSource(canonicalSource)
+
+    if (current === undefined) {
+      changes.push({ content: canonicalSource, filePath: destinationPath })
+      created.push(projectPath)
+      fileHashes[projectPath] = canonicalHash
+      continue
+    }
+
+    const currentHash = hashSource(current)
+
+    if (currentHash === canonicalHash) {
+      fileHashes[projectPath] = canonicalHash
+
+      if (!recordedHash) {
+        adopted.push(projectPath)
+      }
+
+      continue
+    }
+
+    if (!recordedHash) {
+      kept.push(projectPath)
+      continue
+    }
+
+    if (currentHash !== recordedHash && !force) {
+      modified.push(projectPath)
+      fileHashes[projectPath] = recordedHash
+      continue
+    }
+
+    if (currentHash !== canonicalHash) {
+      changes.push({ content: canonicalSource, filePath: destinationPath })
+      updated.push(projectPath)
+    }
+
+    fileHashes[projectPath] = canonicalHash
+  }
+
+  await commitFileChanges(changes, { cwd })
+
+  return { adopted, created, fileHashes, kept, modified, removed, updated }
+}
+
+export const inspectBaseBundle = async ({
+  cwd,
+  installed,
+}: {
+  cwd: string
+  installed: BaseBundleStateEntry
+}) => {
+  const missingFiles: string[] = []
+  const modifiedFiles: string[] = []
+
+  for (const [projectPath, recordedHash] of Object.entries(installed.fileHashes)) {
+    const current = await readOptionalFile(cwd, path.join(cwd, projectPath))
+
+    if (current === undefined) {
+      missingFiles.push(projectPath)
+    } else if (hashSource(current) !== recordedHash) {
+      modifiedFiles.push(projectPath)
+    }
+  }
+
+  const registryVersion = await getBaseBundleVersion()
+
+  return {
+    isClean:
+      installed.version === registryVersion &&
+      missingFiles.length === 0 &&
+      modifiedFiles.length === 0,
+    missingFiles,
+    modifiedFiles,
+    recordedVersion: installed.version,
+    registryVersion,
+    updateAvailable: installed.version !== registryVersion,
+  }
+}
+
+export const copyBaseBundle = async ({ cwd }: { cwd: string }) => {
+  const result = await syncBaseBundle({ cwd })
+
+  return {
+    created: result.created,
+    skipped: [...result.adopted, ...result.kept, ...result.modified],
+  }
 }
 
 /* Register the two collections in the project's Payload config.
@@ -67,7 +234,7 @@ export const registerBaseCollections = async ({
   cwd: string
 }) => {
   const configPath = path.join(cwd, configFileRelPath)
-  const source = await readFile(configPath, 'utf8')
+  const source = await readSafeProjectFile({ cwd, filePath: configPath })
   const anchor = CONFIG_COLLECTIONS_ANCHOR.exec(source)
 
   if (!anchor || anchor.index === undefined) {
@@ -92,7 +259,7 @@ export const registerBaseCollections = async ({
   const insertAt = anchor.index + anchor[0].length
   const patched = `${imports}\n${source.slice(0, insertAt)}${missing.join(', ')}, ${source.slice(insertAt)}`
 
-  await writeFile(configPath, patched, 'utf8')
+  await writeSafeProjectFile({ contents: patched, cwd, filePath: configPath })
 
   return { patched: true, reason: 'registered' as const, registered: missing }
 }

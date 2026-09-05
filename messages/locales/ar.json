@@ -1,0 +1,478 @@
+{
+  "Metadata": {
+    "title": "Payload Components — كتل موصلة بالكامل لـ Payload CMS",
+    "description": "الكتل مفتوحة المصدر Payload CMS التي يتم تثبيتها مع تكوين المجموعة الخاصة بها، وتعيين العارض، والأنواع التي تم إنشاؤها، وخريطة استيراد المسؤول."
+  },
+  "Common": {
+    "home": "الصفحة الرئيسية",
+    "documentation": "التوثيق",
+    "blog": "المدونة",
+    "componentCatalog": "كتالوج المكونات",
+    "brandGuide": "دليل العلامة التجارية",
+    "about": "حول",
+    "privacy": "الخصوصية",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "copiedDescription": "تم النسخ إلى الحافظة."
+  },
+  "Header": {
+    "skip": "انتقل إلى المحتوى",
+    "home": "الصفحة الرئيسية لـ Payload Components",
+    "github": "مستودع GitHub",
+    "openNavigation": "افتح التنقل",
+    "closeNavigation": "إغلاق التنقل",
+    "language": "اللغة",
+    "nav": {
+      "docs": "المستندات",
+      "components": "المكونات",
+      "templates": "القوالب",
+      "blog": "المدونة",
+      "about": "حول"
+    }
+  },
+  "Consent": {
+    "title": "ملفات تعريف الارتباط التحليلية",
+    "description": "نستخدم Google Analytics وPostHog لمعرفة المكونات والمستندات التي يستخدمها الأشخاص بالفعل. رفض ولا يتم تحميل أي منهما - لا يوجد ملف تعريف ارتباط ولا معرف. يتم تشغيل قياس سرعة الصفحة في كلا الاتجاهين ولا يخزن أي شيء.",
+    "privacy": "الخصوصية",
+    "decline": "رفض",
+    "accept": "قبول"
+  },
+  "Privacy": {
+    "eyebrow": "الخصوصية",
+    "heading": "بالضبط ما نقيسه.",
+    "accentWord": "القياس",
+    "intro": "لا يتم تحميل أي شيء يخزن أي شيء على جهازك حتى تقبله. تقوم هذه الصفحة بتسمية كل معالج، وكل حدث، وكل مجال - وتتيح لك تغيير رأيك في أي وقت.",
+    "consent": "أي شيء من شأنه تخزين شيء ما على جهازك ينتظر موافقتك. رفض وGoogle Analytics وPostHog لا يتم تحميلهما مطلقًا - لم يتم تعيين ملف تعريف الارتباط ولا يتم الاحتفاظ بأي معرف. إذا أرسل متصفحك Global Privacy Control أو Do Not Track، فسيتم احتساب ذلك بمثابة رفض تلقائيًا ولن يظهر لك الشعار مطلقًا.",
+    "alwaysOnProcessors": "Vercel Analytics و Speed Insights هما الاستثناء، ويتم تشغيلهما للجميع. لا يقومون بتعيين ملفات تعريف الارتباط ولا يخزنون أي معرف - بل يقيسون تحميل الصفحات والأداء بشكل إجمالي، وهو ما يحافظ على سرعة هذا الموقع. لا يوجد شيء على جهازك لإلغاء الاشتراك فيه.",
+    "noAccounts": "لا توجد حسابات على هذا الموقع، لذا لا يرتبط أي من هذا بهوية. نحن لا نجمع مطلقًا مدخلات النموذج أو النص الحر أو محتويات الصفحات التي تشاهدها.",
+    "processorsTitle": "من يتلقى البيانات",
+    "needsConsent": "يحتاج إلى موافقتك",
+    "alwaysOn": "قيد التشغيل دائمًا، ولا يخزن أي شيء",
+    "processors": {
+      "vercel": {
+        "purpose": "مشاهدات الصفحة وCore Web Vitals للموقع المستضاف.",
+        "storage": "لا توجد ملفات تعريف ارتباط ولا معرف - لا يتم تخزين أي شيء على جهازك."
+      },
+      "ga4": {
+        "purpose": "تجميع مشاهدات الصفحة ومصادر الزيارات.",
+        "storage": "يقوم بتعيين ملفات تعريف الارتباط الخاصة بالطرف الأول (_ga, _ga_*)."
+      },
+      "posthog": {
+        "purpose": "أحداث المنتج الثلاثة المذكورة أدناه.",
+        "storage": "pc_distinct_id عشوائي في localStorage، بالإضافة إلى اسم مسار إدخال عضوي في sessionStorage لعلامة التبويب الحالية."
+      }
+    },
+    "eventsTitle": "الأحداث التي نرسلها",
+    "eventsIntro": "ثلاثة وحقولهم ثابتة. تأتي كل قيمة من مسار أو رابط أو أمر تثبيت مخصص - ولا تأتي أبدًا من أي شيء تكتبه.",
+    "trafficSource": "تُصنف مشاهدات الصفحة حركة المرور على أنها بحث عضوي فقط أو غيره. يتم اشتقاق هذا التصنيف في متصفحك من قائمة محركات البحث الثابتة أو علامة الحملة العضوية الواضحة. لا يتم إرسال المرجع الأولي والحملة وسلسلة الاستعلام أبدًا. تحمل عمليات فحص الموقع الخاضعة للرقابة علامة تحقق حقيقية حتى يمكن استبعادها من أعداد الزوار؛ الزيارات العادية تحمل كاذبة.",
+    "entryPage": "بعد الموافقة، تحتفظ الزيارات العضوية باسم مسار الموقع الأول لعلامة تبويب المتصفح الحالية. تتضمن نسخ التثبيت والنقرات على الرابط الأساسي اسم المسار هذا كـ <code>entry_page</code>. الزيارات المباشرة والإحالة لا تفعل ذلك. ولا يحتوي أبدًا على سلسلة استعلام أو مُحيل أولي ويتم حذفه عند سحب الموافقة.",
+    "events": {
+      "pageview": {
+        "when": "يتم تحميل المسار العام أو تغييره."
+      },
+      "copyInstallCommand": {
+        "when": "قمت بنسخ أمر التثبيت."
+      },
+      "primaryLinkClick": {
+        "when": "أنت تتبع رابط المستودع أو المستندات أو المكونات."
+      }
+    },
+    "choiceTitle": "اختيارك",
+    "choice": "يتم تخزين قرارك محليًا في متصفحك تحت <code>pc_consent</code>. تغييره هنا في أي وقت. يؤدي السحب إلى أكثر من مجرد إيقاف التجميع - فهو يحذف ما أنشأه الاشتراك: تتم إزالة ملفات تعريف الارتباط Google Analytics (<code>_ga</code>، <code>_ga_*</code>) والمعرف PostHog، ويتم إعادة تحميل الصفحة بحيث لا يستمر أي شيء قيد التشغيل بالفعل. تتم أيضًا إزالة اسم مسار الإدخال العضوي للجلسة فقط.",
+    "settings": {
+      "privacySignal": "يرسل متصفحك إشارة خصوصية (Global Privacy Control أو Do Not Track)، لذلك يظل Google Analytics وPostHog بعيدًا ولا يمكن تجاوز هذا هنا.",
+      "on": "Google Analytics وPostHog قيد التشغيل حاليًا.",
+      "off": "Google Analytics و PostHog متوقفان حاليًا.",
+      "undecided": "لم تقم بالاختيار بعد، لذا تم إيقاف Google Analytics وPostHog.",
+      "turnOff": "قم بإيقاف تشغيل التحليلات",
+      "turnOn": "قم بتشغيل التحليلات"
+    }
+  },
+  "NotFound": {
+    "eyebrow": "خطأ 404",
+    "title": "الصفحة غير موجودة",
+    "description": "هذا المسار غير موجود في التسجيل. المكونات والمستندات والكتالوج هي.",
+    "home": "اذهب للمنزل",
+    "docs": "اقرأ المستندات",
+    "terminalTitle": "payload-components — 404"
+  },
+  "Docs": {
+    "title": "التوثيق",
+    "versionBanner": "MIT التسجيل · المكونات v{version}",
+    "github": "نجمة على GitHub",
+    "previousComponent": "المكون السابق: {title}",
+    "nextComponent": "المكون التالي: {title}",
+    "newIn": "الجديد في {version}"
+  },
+  "HomeMetadata": {
+    "title": "Payload Components: كتل سلكية Payload CMS في أمر واحد",
+    "description": "قم بتثبيت كتل Payload CMS القابلة لإعادة الاستخدام بأمر واحد، بما في ذلك تكوين المجموعة وخرائط العرض والأنواع التي تم إنشاؤها وخريطة استيراد المسؤول لمشاريع Next.js."
+  },
+  "Landing": {
+    "hero": {
+      "eyebrow": "تسجيل كتلة مفتوح المصدر Payload",
+      "primary": "تثبيت الكتل Payload",
+      "accent": "سلكي، غير لاصق.",
+      "subheadline": "بالنسبة لمطوري Payload CMS، يقوم أمر واحد بتثبيت الكتلة، وتوصيلها إلى Payload، والحصول على git diff قابلة للمراجعة.",
+      "guide": "اقرأ دليل التثبيت",
+      "github": "نجمة على GitHub",
+      "browse": "تصفح المكونات",
+      "copy": "انسخ أمر التثبيت",
+      "count": "{count} كتل في التسجيل - كل واحدة متصلة بـ Payload بواسطة أمر واحد."
+    },
+    "stack": {
+      "label": "المكدس المدعوم",
+      "lede": "يتم التثبيت في المكدس الذي تقوم بتشغيله بالفعل"
+    },
+    "wiring": {
+      "eyebrow": "حدود التثبيت",
+      "heading": "لا تصبح الكتلة حية حتى يتم توصيلها بالأسلاك.",
+      "intro": "يعد نسخ الملفات هو الجزء السهل - فالتعديلات الأربعة التالية هي التي تخسر فيها كل كتلة وكل ريبو اليوم.",
+      "source": "المصدر"
+    },
+    "workflow": {
+      "eyebrow": "سير العمل",
+      "heading": "من الكتالوج للالتزام بثلاث حركات.",
+      "intro": "لا توجد سقالات ولا قفل - مصدر عادي بالإضافة إلى تصحيحين محددين يمكنك قراءتهما.",
+      "steps": {
+        "oneTitle": "اقرأ العقد",
+        "oneDescription": "الحقول والملفات والتصحيحات — قبل تشغيل أي شيء.",
+        "twoTitle": "قم بتشغيل أمر واحد",
+        "twoDescription": "يقوم CLI بفحص مشروعك، ثم توصيله في مسار واحد.",
+        "threeTitle": "تنفيذ كتلة العمل",
+        "threeDescription": "المصدر، رقعتان، أنواع متجددة - تمت مراجعتها مثل أي علاقات عامة."
+      },
+      "badge": "منقول من المصدر",
+      "caption": "النتيجة الملتزم بها — مصدر مكون حقيقي، متصل بـ Payload ومراجعته مثل أي علاقات عامة."
+    },
+    "catalog": {
+      "eyebrow": "الكتالوج",
+      "heading": "تم عرض الكتالوج مباشرة.",
+      "intro": "لا توجد لقطات شاشة - كل عينة هي المكون الحقيقي، المقدمة من المصدر.",
+      "browse": "تصفح الكتالوج",
+      "preview": "معاينة مباشرة",
+      "blockCount": "{count, plural, zero {لا كتل} one {كتلة واحدة} two {كتلتان} few {# كتل} many {# كتلة} other {# كتلة}}",
+      "browseFamily": "تصفح {family}",
+      "allComponents": "تصفح جميع مكونات {count}",
+      "postComponents": "مكونات المشاركة · قيد التطوير",
+      "familyCount": "قابل للتثبيت",
+      "familyName": "كتل الصفحة",
+      "familyDescription": "الكتل الخاصة بمنشئ تخطيط الصفحات - مثبتة بأسلاك كاملة: تكوين المجموعة، ورسم الخرائط، والأنواع التي تم إنشاؤها، واستيراد الخريطة."
+    },
+    "faq": {
+      "heading": "أسئلة، الإجابة عليها مباشرة.",
+      "intro": "النسخة القصيرة من المستندات. ترتبط كل إجابة بشيء يمكنك التحقق منه في المستودع.",
+      "dogfood": "هذا القسم هو أحد الكتل لدينا"
+    },
+    "community": {
+      "eyebrow": "مفتوح المصدر",
+      "heading": "مفتوح المصدر،",
+      "accent": "من النهاية إلى النهاية",
+      "intro": "يعد السجل وCLI والمكونات وهذا الموقع مستودعًا واحدًا مرخصًا MIT. اقرأ برنامج التثبيت قبل أن تثق به — هذه هي النقطة المهمة.",
+      "copy": "انسخ أمر التثبيت",
+      "repository": "GitHub المستودع",
+      "issue": "افتح مشكلة",
+      "invite": "تشغيله في الريبو الحقيقي؟ افتح مشكلة - يتم تمييز عمليات التثبيت المبكرة."
+    }
+  },
+  "Catalog": {
+    "metadataTitle": "{count} Payload CMS المكونات والكتل | كتالوج",
+    "metadataDescription": "تصفح الكتل المكتوبة Payload CMS. قم بتشغيل npx payload-components add '<component>' لتوصيل واحد إلى مجموعتك، والعارض، والأنواع التي تم إنشاؤها، وخريطة استيراد المسؤول.",
+    "eyebrow": "التسجيل",
+    "title": "{count} Payload CMS المكونات والكتل المكتوبة",
+    "description": "تصفح جميع مكونات {count} القابلة للتثبيت Payload CMS عبر الأبطال والميزات والتسعير والعبارات التي تحث المستخدم على اتخاذ إجراء وعمليات التكامل والشهادات والإحصائيات وFAQ والمحتوى والفرق والتضمينات والتذييلات. يقوم أمر CLI واحد بنسخ كتلة وتوصيل تسجيل مجموعتها وتعيين العارض والأنواع التي تم إنشاؤها وخريطة استيراد المسؤول.",
+    "installation": "تعرف على كيفية عمل التثبيت بأمر واحد",
+    "blocksGuide": "اتبع الكتلة من التكوين إلى الصفحة المباشرة",
+    "templates": "اكتشف مفاهيم القالب Payload CMS",
+    "license": "MIT مرخص"
+  },
+  "CatalogBrowser": {
+    "filter": "مكونات التصفية",
+    "allComponents": "جميع المكونات",
+    "all": "الكل",
+    "search": "البحث في المكونات",
+    "result": "{count, plural, zero {لا نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}",
+    "empty": "لا توجد مكونات تتطابق مع عوامل التصفية الخاصة بك.",
+    "reset": "إعادة تعيين المرشحات",
+    "proposal": "ينمو الكتالوج بشكل متعمد - يتم الجمع بين المصدر والبيان والمستندات وتغطية المثبت معًا. اقترح التالي.",
+    "issue": "افتح مشكلة",
+    "inDevelopment": "قيد التطوير",
+    "roadmapPreview": "معاينة المفهوم",
+    "planned": "خارطة طريق مفتوحة المصدر",
+    "interest": "عرض خارطة الطريق",
+    "interestLabel": "عرض {component} في خارطة طريق المكونات التحريرية",
+    "selected": "{count} تم التحديد",
+    "tray": "المكونات المحددة",
+    "copy": "انسخ أمر التثبيت",
+    "clear": "مسح التحديد",
+    "families": {
+      "pages": "كتل الصفحة",
+      "posts": "مكونات المشاركة"
+    },
+    "categories": {
+      "hero": "البطل",
+      "features": "المميزات",
+      "comparator": "المقارنة",
+      "pricing": "التسعير",
+      "cta": "عبارة تحث المستخدم على اتخاذ إجراء",
+      "contact": "جهة الاتصال",
+      "integration": "التكامل",
+      "logos": "سحابة الشعار",
+      "testimonials": "الشهادات",
+      "stats": "الإحصائيات",
+      "faq": "FAQ",
+      "content": "المحتوى",
+      "team": "الفريق",
+      "embed": "تضمين",
+      "footer": "تذييل الصفحة",
+      "cards": "البطاقات",
+      "archive": "الأرشيف",
+      "header": "رأس الصفحة",
+      "index": "الفهرس",
+      "author": "المؤلف",
+      "newsletter": "النشرة الإخبارية",
+      "related": "ذات صلة"
+    },
+    "composerAdd": "أضف {slug} إلى أمر التثبيت",
+    "composerRemove": "قم بإزالة {slug} من أمر التثبيت",
+    "theme": {
+      "brandLegend": "قم بمعاينة الكتالوج بلون علامتك التجارية",
+      "brandLabel": "لون العلامة",
+      "previewBrand": "معاينة باللون {color}",
+      "colors": {
+        "emerald": "الزمرد",
+        "sky": "السماء",
+        "indigo": "نيلي",
+        "violet": "البنفسجي",
+        "rose": "وردي",
+        "amber": "العنبر"
+      },
+      "radiusLegend": "معاينة الكتالوج بدرجات مختلفة من تدوير الزوايا",
+      "radiusLabel": "الزوايا",
+      "previewRadius": "معاينة بزوايا {style}",
+      "radii": {
+        "sharp": "حادة",
+        "default": "افتراضية",
+        "round": "مستديرة"
+      }
+    }
+  },
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
+    "seeCollection": "View the collection",
+    "backToCatalog": "Back to the component catalog",
+    "suiteEyebrow": "The proposed suite",
+    "suiteTitle": "Designed as one publication.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
+    "collectionEyebrow": "The collection",
+    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
+    "benefits": {
+      "systemTitle": "Composed together",
+      "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
+    },
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
+  },
+  "Templates": {
+    "metadataTitle": "Payload CMS قوالب لـ Next.js | المفاهيم والوصفات",
+    "metadataDescription": "استكشف مفاهيم القالب Payload CMS عبر خمسة عشر قطاعًا - SaaS والوكالة والتجارة والرعاية الصحية والمطاعم والعقارات والمزيد - قم بمعاينة كل صفحة وتفقد وصفة الكتلة المكتوبة.",
+    "detailTitle": "{title} القالب",
+    "back": "القوالب",
+    "previewPageLabel": "{title} صفحة المعاينة",
+    "previewViewport": "معاينة حجم إطار العرض",
+    "desktop": "سطح المكتب",
+    "tablet": "تابلت",
+    "mobile": "الجوال",
+    "previewFrameTitle": "{title} معاينة القالب — {page} الصفحة",
+    "eyebrow": "القوالب",
+    "title": "Payload CMS مفاهيم القالب، مبنية من كتل قابلة للتثبيت",
+    "status": "معاينة المفهوم",
+    "disclosure": "هذا مفهوم كامل للموقع قابل للتصفح. يتكون كل قسم من كتل في السجل المفتوح، ويقوم أمر واحد بتثبيت مجموعة الكتل بأكملها - النسخة المنسقة الموضحة هنا ليست مصنفة، لذا يمكنك تجميع الصفحات بنفسك في المسؤول.",
+    "startingPoint": "اختر نقطة البداية",
+    "description": "استكشف مفاهيم مواقع Payload CMS وNext.js الكاملة عبر خمسة عشر قطاعًا - SaaS والوكالات والتجارة والرعاية الصحية والمطاعم والعقارات والموسيقى والمزيد. افتح كل صفحة في معاينة مباشرة، ثم قم بتتبع كل قسم مرة أخرى إلى كتلة مكتوبة يمكنك تثبيتها اليوم.",
+    "components": "تصفح المكونات القابلة للتثبيت",
+    "installation": "اقرأ دليل التثبيت",
+    "official": "ابدأ من القالب Payload الرسمي",
+    "showcases": "يعرض القالب",
+    "questionsEyebrow": "أسئلة",
+    "questionsHeading": "Payload CMS أسئلة نموذجية، تم الإجابة عليها",
+    "questionsIntro": "المفاهيم مفتوحة عمدا حول ما يصلح اليوم وما يبقى مرجعا للتصميم.",
+    "q1": "هل هذه القوالب Payload CMS قابلة للتثبيت؟",
+    "a1": "لا. إنها مفاهيم موقع كامل قابلة للتصفح، وليست مستودعات بداية مجمعة. الكتل الفردية في كل وصفة قابلة للتثبيت، وكل وصفة ترتبط بوثائق المكونات ذات الصلة.",
+    "q2": "كيف تختلف هذه عن القالب الرسمي لـ Payload؟",
+    "a2": "يوفر قالب الموقع الرسمي للمشروع الجديد أساسًا كاملاً للتطبيق. توضح هذه المفاهيم كيف يمكن أن يبدو موقع التسويق الكامل وأي الكتل المكتوبة تشكل كل صفحة، دون استبدال دور المشروع المبدئي.",
+    "q3": "هل يمكنني استخدام الوصفات في مشروع Payload موجود؟",
+    "a3": "نعم. افتح المفهوم، وافحص الوصفة المطلوبة، ثم اختر الأقسام التي تناسب موقعك. يوثق الكتالوج حقول كل كتلة ومسار التثبيت Payload CMS v3 المدعوم.",
+    "communityEyebrow": "المجتمع",
+    "communityHeading": "يتم تحديد القوالب بشكل علني",
+    "communityIntro": "توجد هذه المفاهيم للإجابة على سؤال واحد مع المجتمع: هل يجب أن تصبح قوالب الموقع الكاملة قابلة للتثبيت؟ الوصفات والعلامات التجارية الخيالية وبرنامج التثبيت RFC جميعها موجودة في المستودع العام - لا يوجد أي بوابات، ولا التقاط البريد الإلكتروني.",
+    "allConcepts": "جميع المفاهيم",
+    "filter": "تصفية المفاهيم حسب الفئة",
+    "showing": "عرض {visible} من {total} المفاهيم",
+    "visualTone": "النغمة البصرية",
+    "counts": "{pages} صفحات · {blocks} كتل فريدة",
+    "explore": "استكشاف القالب",
+    "openPreview": "فتح المعاينة الكاملة",
+    "posterLabel": "استكشف القالب {title}",
+    "posterAlt": "{title} قالب — ملصق مفهوم الصفحة الرئيسية",
+    "contributionRepository": "تصفح المستودع",
+    "contributionRepositoryDescription": "اقرأ مصدر العرض — كل وصفة عبارة عن بيانات واضحة في المستودع.",
+    "contributionRfc": "اقرأ برنامج التثبيت RFC",
+    "contributionRfcDescription": "قم بمراجعة الاقتراح الخاص بتحويل الوصفات المفاهيمية إلى سير عمل تثبيت اختياري وشفاف.",
+    "categories": {
+      "agency": "الوكالة",
+      "civic": "سيفيك",
+      "commerce": "التجارة",
+      "education": "التعليم",
+      "event": "الحدث",
+      "fintech": "التكنولوجيا المالية",
+      "healthcare": "الرعاية الصحية",
+      "marketplace": "السوق",
+      "music": "الموسيقى",
+      "nonprofit": "غير ربحية",
+      "portfolio": "المحفظة",
+      "real-estate": "العقارات",
+      "restaurant": "مطعم",
+      "saas": "ادارة العلاقات مع",
+      "trade": "التجارة"
+    }
+  },
+  "Blog": {
+    "metadataTitle": "Payload CMS أدلة التثبيت والكتلة",
+    "metadataDescription": "أدلة عملية Payload CMS v3 لتثبيت الكتل القابلة لإعادة الاستخدام، ومجموعات الأسلاك والعارضين، وتوليد الأنواع، وإصلاح الكتل التي لا يتم عرضها.",
+    "eyebrow": "إرشادات عملية Payload CMS الإصدار 3",
+    "featured": "ابدأ بدليل مثبت",
+    "installationLabel": "دليل التثبيت",
+    "installationTitle": "قم بتثبيت كتلة سلكية Payload",
+    "installationDescription": "أضف كتلة حقيقية مع CLI المدعومة، ثم قم بمراجعة كل تغيير في الملفات والأسلاك.",
+    "installationAction": "اتبع دليل التثبيت",
+    "wiringLabel": "كتلة دليل الأسلاك",
+    "wiringTitle": "قم بتوصيل كتلة قابلة لإعادة الاستخدام",
+    "wiringDescription": "اتبع كتلة Payload CMS v3 من التكوين من خلال التسجيل والعرض والأنواع التي تم إنشاؤها وخريطة استيراد المسؤول.",
+    "troubleshootingLabel": "دليل استكشاف الأخطاء وإصلاحها",
+    "troubleshootingTitle": "إصلاح الكتلة التي لن يتم عرضها",
+    "troubleshootingDescription": "حدد الأماكن الأربعة التي تشرح عادةً سبب عدم ظهور الكتلة المحفوظة على الصفحة.",
+    "readGuide": "اقرأ الدليل",
+    "notesEyebrow": "ملاحظات ميدانية من التسجيل",
+    "notesTitle": "المزيد من الملاحظات الميدانية Payload CMS",
+    "notesDescription": "تصفح دروس التنفيذ وملاحظات تصميم المكونات وقصص الإصدار من السجل المفتوح.",
+    "browseComponents": "تصفح كافة المكونات القابلة للتثبيت {count}",
+    "empty": "لا توجد مشاركات حتى الآن — يرجى التحقق مرة أخرى قريبًا.",
+    "back": "العودة إلى المدونة",
+    "keepReading": "تابع القراءة",
+    "related": "القراءة ذات الصلة",
+    "tags": "علامات المقالة",
+    "series": {
+      "project-notes": "ملاحظات المشروع",
+      "foundations": "أسس",
+      "installer-internals": "الأجزاء الداخلية للمثبت",
+      "component-design": "تصميم المكونات",
+      "production-guides": "أدلة الإنتاج",
+      "open-source": "الجودة والمجتمع"
+    }
+  },
+  "Footer": {
+    "home": "الصفحة الرئيسية لـ Payload Components",
+    "intro": "المكونات المكتوبة Payload CMS التي يتم تثبيتها مع الأسلاك الخاصة بها - تكوين المجموعة، وعرض التعيين، والأنواع التي تم إنشاؤها، واستيراد الخريطة في أمر واحد.",
+    "product": "المنتج",
+    "components": "المكونات",
+    "project": "المشروع",
+    "componentCatalog": "كتالوج المكونات",
+    "templateConcepts": "مفاهيم القالب",
+    "documentation": "التوثيق",
+    "installWorkflow": "تثبيت سير العمل",
+    "architecture": "العمارة",
+    "aiDiscovery": "اكتشاف الذكاء الاصطناعي",
+    "allComponents": "جميع مكونات {count}",
+    "about": "حول",
+    "brandGuide": "دليل العلامة التجارية",
+    "openIssue": "افتح مشكلة",
+    "releases": "الإصدارات",
+    "updates": "موجز التحديثات",
+    "contributing": "المساهمة",
+    "privacy": "الخصوصية",
+    "registry": "التسجيل JSON",
+    "license": "MIT مرخص · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · فتح التسجيل"
+  },
+  "Maintainer": {
+    "body": "لقد أنشأت payload-components لأن تثبيت كتلة Payload لم يكن أبدًا عبارة عن نسخ ولصق - بل كان التعديلات الأربعة اللاحقة. CLI موجود لذا المشروع الثاني والعاشر يحصلان على هذه الأسلاك مجانًا. اقرأ مصدر أداة التثبيت قبل أن تثق به؛ شحنه MIT هو النقطة.",
+    "role": "مشرف، Payload Components",
+    "github": "{name} على GitHub"
+  },
+  "PageMetadata": {
+    "about": {
+      "title": "حول",
+      "openGraphTitle": "حول Payload Components",
+      "description": "لماذا يوجد Payload Components: توقف عن إعادة بناء نفس الكتل Payload، وإعادة توصيلها يدويًا، وإعادة إثبات كل تثبيت عبر المشاريع المستقلة."
+    },
+    "privacy": {
+      "title": "الخصوصية",
+      "openGraphTitle": "الخصوصية — Payload Components",
+      "description": "ما هي التدابير Payload Components، والأطراف الثالثة التي تتلقاها، وكيفية تغيير اختيارك أو سحبه في أي وقت."
+    },
+    "brandGuide": {
+      "title": "دليل العلامة التجارية",
+      "openGraphTitle": "Payload Components دليل العلامة التجارية",
+      "description": "العلامة التجارية Payload Components: لوحة ألوان أحادية اللون خفيفة لأول مرة shadcn مع لمسة زمردية واحدة، ونظام نوع Geist وInstrument Serif، واستخدام الشعار، والصوت."
+    }
+  },
+  "FaqContent": {
+    "entries": {
+      "one": {
+        "question": "هل Payload Components مجاني؟",
+        "answer": "نعم - ومصمم ليبقى على هذا النحو. السجل، وCLI، وجميع المكونات القابلة للتثبيت {count}، وهذا الموقع عبارة عن مستودع واحد مرخص MIT: لا يوجد تسعير، ولا مفتاح ترخيص، ولا طبقة مسورة. Payload Components هو المجتمع أولاً من حيث التصميم — ينمو الكتالوج من عمليات التثبيت والمساهمات الحقيقية، وليس من خريطة طريق مدفوعة."
+      },
+      "two": {
+        "question": "ما هي الكتلة Payload CMS؟",
+        "answer": "في Payload، الكتلة عبارة عن حقل منشئ صفحات قابل للتركيب - مكدس محرري قسم المحتوى القابل لإعادة الاستخدام (البطل، شبكة الميزات، CTA) لتخطيط الصفحة. Payload Components يشحن الكتل المعدة مسبقًا بالإضافة إلى الأسلاك التي تجعلها حية، لذلك لا يتم نسخ الكتلة فقط: بل يتم تسجيلها في مجموعة الصفحات الخاصة بك، وتعيينها في العارض الخاص بك، وكتابتها، وإضافتها إلى خريطة استيراد المسؤول.",
+        "link": "اقرأ دليل الكتل Payload"
+      },
+      "three": {
+        "question": "كيف يمكنني إضافة كتلة البطل إلى Payload CMS؟",
+        "answer": "قم بتثبيت واحد باستخدام CLI — `npx payload-components add hero-basic`. فهو ينسخ مصدر الكتلة في مشروعك ويوصله من النهاية إلى النهاية: يسجله في مجموعة الصفحات الخاصة بك، ويعينه في RenderBlocks، ويعيد إنشاء أنواع Payload وخريطة استيراد المسؤول - ويهبط كواحد قابل للمراجعة git diff. يضيف الأمر نفسه أي كتلة في الكتالوج."
+      },
+      "four": {
+        "question": "ما الذي يتغير بالضبط عند التثبيت في الريبو الخاص بي؟",
+        "answer": "ثلاثة أشياء: يتم نسخ ملفات مصدر المكون (تكوين الكتلة، المكون، الأدوات المساعدة المشتركة)، ويتم تصحيح ملفين بالضبط (مجموعة الصفحات الخاصة بك وRenderBlocks.tsx - يعلن كل بيان مكون عنهما)، وPayload يعيد إنشاء مخرجاته الخاصة (payload-types.ts وخريطة استيراد المسؤول). يظهر كل ذلك في git diff عادي.",
+        "link": "اقرأ دليل التثبيت"
+      },
+      "five": {
+        "question": "ماذا يحدث إذا قمت بتشغيل نفس التثبيت مرتين؟",
+        "answer": "يتقارب. يكتشف CLI الأسلاك الموجودة ويتخطىها - الإخراج الحقيقي هو payload-components: \"hero-basic\" is already installed. يتم تسجيل حالة التثبيت في .payload-components/state.json، لذا تكون عمليات التثبيت الجزئية مرئية وقابلة للاسترداد بدلاً من انقطاعها بصمت."
+      },
+      "six": {
+        "question": "ما هي المشاريع المدعومة اليوم؟",
+        "answer": "Payload v3 + Next.js 15/16 مشاريع على شكل بداية الموقع الرسمي - عرض كتل التخطيط من خلال src/blocks/RenderBlocks.tsx وتسجيل كتل الصفحات في src/collections/Pages/index.ts. يقوم CLI بفحص مشروعك مقابل مصفوفة الدعم المنشورة قبل لمس أي شيء."
+      },
+      "seven": {
+        "question": "لماذا لا تقوم فقط بتشغيل npx shadcn add؟",
+        "answer": "تثبيت عادي shadcn ينسخ الملفات ويتوقف. تعمل الكتل Payload فقط بعد تسجيلها في مخطط المجموعة الخاص بك، وتعيينها في العارض الخاص بك، وكتابتها، وإضافتها إلى خريطة استيراد المسؤول. payload-components يغلف تسليم التسجيل نفسه بهذه الأسلاك بالضبط - تلك الحدود هي المنتج، ويظهر دفتر أستاذ الأسلاك أعلاه صفًا تلو الآخر.",
+        "link": "اقرأ المقارنة الكاملة shadcn"
+      },
+      "eight": {
+        "question": "كيف يتم إدخال المكونات الجديدة إلى الكتالوج؟",
+        "answer": "عمدا. يتم وصول المكون فقط عندما يتم دمج مصدره وبيانات تعريف البيان وصفحة المستندات وتغطية اختبار المثبت معًا - ولا تصل الكتل نصف السلكية أبدًا إلى الكتالوج. اقتراح المكون التالي في العدد GitHub؛ ينمو الكتالوج من عمليات التثبيت الحقيقية."
+      }
+    }
+  },
+  "TranslationNotice": {
+    "fallback": "لم تُترجم هذه الصفحة بعد، لذلك يظهر محتواها الأصلي بالإنجليزية.",
+    "label": "حالة الترجمة",
+    "machine": "تُرجمت هذه الصفحة آليًا ولم يراجعها متحدث أصلي بعد.",
+    "viewEnglish": "عرض المصدر الإنجليزي"
+  }
+}

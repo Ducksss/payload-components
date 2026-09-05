@@ -1,17 +1,21 @@
-import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 
-import { isPathInside, printHeader, repoRoot } from '../utils'
+import { createSiteCatalog, siteCatalogPath } from '../build-site-catalog'
+import { readSafeProjectFile } from '../safe-path'
+import { commitFileChanges, isPathInside, printHeader, repoRoot } from '../utils'
+
+import type { ComponentManifest, RegistryDefinition } from '../types'
+import type { FileChange } from '../utils'
 
 /* Scaffolds a component bundle in THIS repo — the authoring side, not the
  * consumer side. Adding a component touches a dozen files and the shape of every
  * one of them is derivable from the slug, so the mechanical parts are written
  * here and the parts that need judgment are printed as snippets.
  *
- * The split is deliberate. Catalog order is ranked, not chronological: a new
- * component belongs wherever it ranks against its family, so appending it to
- * `componentEntries` would quietly degrade a curated list. Same for the dbName
- * abbreviation, the Content model prose, and the demo sample copy. */
+ * The split is deliberate. Editorial catalog context, dbName abbreviations,
+ * Content model prose, and demo sample copy need human judgment. Registry order,
+ * versions, commands, and routes are mechanical projections. */
 
 const templateDir = path.join(repoRoot, 'payload-components', 'templates', 'component-template')
 const sourceBlocksDir = path.join(repoRoot, 'payload-components', 'source', 'blocks')
@@ -68,12 +72,17 @@ const renameTemplate = (source: string, names: ComponentNames) =>
     .replaceAll('example-basic', names.slug)
     .replaceAll('Example Basic', names.title)
 
-const writeNewFile = async (filePath: string, contents: string) => {
+type PreparedFile = {
+  change: FileChange
+  relativePath: string
+}
+
+const prepareNewFile = async (filePath: string, contents: string): Promise<PreparedFile> => {
   if (!isPathInside(repoRoot, filePath)) {
     throw new Error(`Refusing to write "${filePath}" outside the repository.`)
   }
 
-  const exists = await readFile(filePath, 'utf8').then(
+  const exists = await readSafeProjectFile({ cwd: repoRoot, filePath }).then(
     () => true,
     () => false,
   )
@@ -82,10 +91,10 @@ const writeNewFile = async (filePath: string, contents: string) => {
     throw new Error(`Refusing to overwrite existing file: ${path.relative(repoRoot, filePath)}`)
   }
 
-  await mkdir(path.dirname(filePath), { recursive: true })
-  await writeFile(filePath, contents, 'utf8')
-
-  return path.relative(repoRoot, filePath)
+  return {
+    change: { content: contents, filePath },
+    relativePath: path.relative(repoRoot, filePath),
+  }
 }
 
 /* Every dbName already in the catalog, so a suggestion can be checked rather
@@ -99,9 +108,10 @@ const collectUsedDbNames = async () => {
       continue
     }
 
-    const config = await readFile(path.join(sourceBlocksDir, entry.name, 'config.ts'), 'utf8').catch(
-      () => '',
-    )
+    const config = await readFile(
+      path.join(sourceBlocksDir, entry.name, 'config.ts'),
+      'utf8',
+    ).catch(() => '')
     const match = /dbName:\s*'([^']+)'/.exec(config)
 
     if (match) {
@@ -126,10 +136,7 @@ const buildManifest = (names: ComponentNames) =>
       peerDependencies: { next: '^15.0.0 || ^16.0.0', payload: '^3.0.0' },
       supportedTargets: ['payload-website-starter', 'payload-blocks-app'],
       supports: { payloadMajors: [3], nextMajors: [15, 16] },
-      files: [
-        `src/blocks/${names.pascal}/config.ts`,
-        `src/blocks/${names.pascal}/Component.tsx`,
-      ],
+      files: [`src/blocks/${names.pascal}/config.ts`, `src/blocks/${names.pascal}/Component.tsx`],
       payloadFragments: [
         {
           kind: 'renderBlocks',
@@ -205,8 +212,8 @@ const buildRegistryItem = (names: ComponentNames) => ({
 /* registry.json is prettier-ignored, so the item is serialized to match the
    surrounding two-space style and spliced in before the closing bracket rather
    than round-tripped through JSON.parse. */
-const appendRegistryItem = async (names: ComponentNames) => {
-  const source = await readFile(registryPath, 'utf8')
+const prepareRegistryItem = async (names: ComponentNames): Promise<PreparedFile> => {
+  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: registryPath })
 
   if (source.includes(`"name": "${names.slug}"`)) {
     throw new Error(`registry.json already has an item named "${names.slug}".`)
@@ -222,18 +229,18 @@ const appendRegistryItem = async (names: ComponentNames) => {
     throw new Error('Could not find the end of the registry items array in registry.json.')
   }
 
-  await writeFile(
-    registryPath,
-    `${source.slice(0, closing)},\n${serialized}${source.slice(closing)}`,
-    'utf8',
-  )
-
-  return path.relative(repoRoot, registryPath)
+  return {
+    change: {
+      content: `${source.slice(0, closing)},\n${serialized}${source.slice(closing)}`,
+      filePath: registryPath,
+    },
+    relativePath: path.relative(repoRoot, registryPath),
+  }
 }
 
-const appendDemoRegistryEntry = async (names: ComponentNames) => {
+const prepareDemoRegistryEntry = async (names: ComponentNames): Promise<PreparedFile> => {
   const registryFile = path.join(demosDir, 'registry.ts')
-  const source = await readFile(registryFile, 'utf8')
+  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: registryFile })
   const demoName = `${names.pascal}Demo`
   const importLine = `import { ${demoName} } from '@/components/site/demos/${demoName}'\n`
   const lastImportEnd = source.lastIndexOf("'\n", source.indexOf('export')) + 2
@@ -244,52 +251,36 @@ const appendDemoRegistryEntry = async (names: ComponentNames) => {
     throw new Error('Could not find the end of demosBySlug in the demo registry.')
   }
 
-  await writeFile(
-    registryFile,
-    `${withImport.slice(0, mapClose)}\n  '${names.slug}': ${demoName},${withImport.slice(mapClose)}`,
-    'utf8',
-  )
-
-  return path.relative(repoRoot, registryFile)
+  return {
+    change: {
+      content: `${withImport.slice(0, mapClose)}\n  '${names.slug}': ${demoName},${withImport.slice(mapClose)}`,
+      filePath: registryFile,
+    },
+    relativePath: path.relative(repoRoot, registryFile),
+  }
 }
 
-const appendDocsMetaEntry = async (names: ComponentNames) => {
+const prepareDocsMetaEntry = async (names: ComponentNames): Promise<PreparedFile> => {
   const metaPath = path.join(componentDocsDir, 'meta.json')
-  const source = await readFile(metaPath, 'utf8')
+  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: metaPath })
   const closing = source.lastIndexOf('\n  ]')
 
   if (closing === -1) {
     throw new Error('Could not find the end of the docs meta pages array.')
   }
 
-  await writeFile(
-    metaPath,
-    `${source.slice(0, closing)},\n    "${names.slug}"${source.slice(closing)}`,
-    'utf8',
-  )
-
-  return path.relative(repoRoot, metaPath)
-}
-
-const appendCliHelpEntry = async (names: ComponentNames) => {
-  const cliPath = path.join(repoRoot, 'tools', 'payload-components', 'cli.ts')
-  const source = await readFile(cliPath, 'utf8')
-  const marker = 'Current components:\n'
-  const start = source.indexOf(marker)
-  const end = source.indexOf('`', start)
-
-  if (start === -1 || end === -1) {
-    throw new Error('Could not find the "Current components:" list in cli.ts.')
+  return {
+    change: {
+      content: `${source.slice(0, closing)},\n    "${names.slug}"${source.slice(closing)}`,
+      filePath: metaPath,
+    },
+    relativePath: path.relative(repoRoot, metaPath),
   }
-
-  await writeFile(cliPath, `${source.slice(0, end)}  ${names.slug}\n${source.slice(end)}`, 'utf8')
-
-  return path.relative(repoRoot, cliPath)
 }
 
-const appendReadmeInventoryRow = async (names: ComponentNames) => {
+const prepareReadmeInventoryRow = async (names: ComponentNames): Promise<PreparedFile> => {
   const readmePath = path.join(repoRoot, 'README.md')
-  const source = await readFile(readmePath, 'utf8')
+  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: readmePath })
   const end = source.indexOf('\n<!-- COMPONENT-INVENTORY:END -->')
 
   if (end === -1) {
@@ -305,13 +296,13 @@ const appendReadmeInventoryRow = async (names: ComponentNames) => {
 
   /* The rows are column-aligned; a ragged one would show up as a diff on every
      neighbouring line the next time anyone reformats the table. */
-  await writeFile(
-    readmePath,
-    `${source.slice(0, end)}\n|${nameCell}|${commandCell}|${source.slice(end)}`,
-    'utf8',
-  )
-
-  return path.relative(repoRoot, readmePath)
+  return {
+    change: {
+      content: `${source.slice(0, end)}\n|${nameCell}|${commandCell}|${source.slice(end)}`,
+      filePath: readmePath,
+    },
+    relativePath: path.relative(repoRoot, readmePath),
+  }
 }
 
 const formatCuratedSteps = (names: ComponentNames, dbNameIsFree: boolean) =>
@@ -319,21 +310,17 @@ const formatCuratedSteps = (names: ComponentNames, dbNameIsFree: boolean) =>
     '',
     'Now the parts that need a decision — none of these were written for you:',
     '',
-    `1. src/lib/site.ts → componentEntries: insert (do not append) where ${names.slug} ranks`,
-    '   against its family. Catalog order is curated, and it also drives the docs prev/next',
-    '   arrows and the landing hero.',
+    `1. src/lib/component-catalog.ts → componentEditorialEntries: add ${names.slug}`,
+    '   beside its family. Registry order drives the catalog and docs prev/next arrows;',
+    '   commands, routes, family, and version are derived rather than repeated here.',
     '',
     '   {',
     `     category: 'TODO',`,
-    `     command: 'npx payload-components add ${names.slug}',`,
     `     description: 'TODO',`,
-    `     family: 'pages',`,
     `     fields: ['TODO'],`,
-    `     href: '/docs/components/${names.slug}',`,
     `     slug: '${names.slug}',`,
     `     target: 'TODO',`,
     `     title: '${names.title}',`,
-    `     version: '0.1.0',`,
     '   },',
     '',
     `2. ${`payload-components/source/blocks/${names.pascal}/config.ts`} → dbName: pick a readable`,
@@ -346,7 +333,7 @@ const formatCuratedSteps = (names: ComponentNames, dbNameIsFree: boolean) =>
     `4. src/lib/demo-content.ts → sample content for the twin, unless the family already`,
     '   shares a shape.',
     '',
-    '5. Only if this is a new family: src/lib/site.ts componentCategories,',
+    '5. Only if this is a new family: src/lib/component-catalog.ts componentCategories,',
     '   src/lib/component-page-tree.tsx FAMILIES, CatalogFamilyTeaser familyRepresentatives,',
     '   and tests/int/payload-components.int.spec.ts representativeInstallComponents.',
     '',
@@ -366,57 +353,78 @@ export const newCommand = async ({ componentSlug }: { componentSlug: string }) =
     collectUsedDbNames(),
   ])
 
-  const written = [
-    await writeNewFile(
+  const manifestSource = buildManifest(names)
+  const written = await Promise.all([
+    prepareNewFile(
       path.join(sourceBlocksDir, names.pascal, 'config.ts'),
       renameTemplate(configTemplate, names),
     ),
-    await writeNewFile(
+    prepareNewFile(
       path.join(sourceBlocksDir, names.pascal, 'Component.tsx'),
       renameTemplate(componentTemplate, names),
     ),
-    await writeNewFile(path.join(manifestsDir, `${names.slug}.json`), buildManifest(names)),
-    await writeNewFile(
+    prepareNewFile(path.join(manifestsDir, `${names.slug}.json`), manifestSource),
+    prepareNewFile(
       path.join(componentDocsDir, `${names.slug}.mdx`),
       renameTemplate(docTemplate, names),
     ),
-    await writeNewFile(
-      path.join(demosDir, `${names.pascal}Demo.tsx`),
-      buildDemoTwin(names),
-    ),
-  ]
+    prepareNewFile(path.join(demosDir, `${names.pascal}Demo.tsx`), buildDemoTwin(names)),
+  ])
 
-  const appended = [
-    await appendRegistryItem(names),
-    await appendDemoRegistryEntry(names),
-    await appendDocsMetaEntry(names),
-    await appendCliHelpEntry(names),
-    await appendReadmeInventoryRow(names),
-  ]
+  const appended = await Promise.all([
+    prepareRegistryItem(names),
+    prepareDemoRegistryEntry(names),
+    prepareDocsMetaEntry(names),
+    prepareReadmeInventoryRow(names),
+  ])
+  const registry = JSON.parse(appended[0].change.content!) as RegistryDefinition
+  const manifest = JSON.parse(manifestSource) as ComponentManifest
+  const catalog = await createSiteCatalog({
+    manifestOverrides: { [names.slug]: manifest },
+    registry,
+  })
+  const generated: PreparedFile = {
+    change: {
+      content: `${JSON.stringify(catalog, null, 2)}\n`,
+      filePath: siteCatalogPath,
+    },
+    relativePath: path.relative(repoRoot, siteCatalogPath),
+  }
+
+  /* No repository bytes change until every template, insertion anchor, and
+   * generated projection has been prepared successfully. The final commit is
+   * rollback-capable, so `new` either lands the complete scaffold or nothing. */
+  await commitFileChanges(
+    [...written, ...appended, generated].map(({ change }) => change),
+    { cwd: repoRoot },
+  )
 
   printHeader(
     [
       `payload-components: scaffolded "${names.slug}".`,
       '',
       'Created:',
-      ...written.map((file) => `  ${file}`),
+      ...written.map(({ relativePath }) => `  ${relativePath}`),
       '',
       'Appended:',
-      ...appended.map((file) => `  ${file}`),
+      ...appended.map(({ relativePath }) => `  ${relativePath}`),
+      '',
+      'Generated:',
+      `  ${generated.relativePath}`,
       formatCuratedSteps(names, !usedDbNames.has(names.dbNameSuggestion)),
     ].join('\n'),
   )
 }
 
-/* A twin has to mirror the component's className literals verbatim, which only
-   makes sense once the component has real markup — so this is a valid, passing
-   skeleton rather than a guess at the finished mirror. */
+/* A twin has to keep each source class group attached to one preview element.
+   That only makes sense once the component has real markup, so this is a valid,
+   passing skeleton rather than a guess at the finished mirror. */
 const buildDemoTwin = (names: ComponentNames) =>
   [
     `/* Demo twin for ${names.slug}.`,
     ' *',
-    ' * Mirror every className="…" literal from',
-    ` * payload-components/source/blocks/${names.pascal}/Component.tsx verbatim — the mirror is`,
+    ' * Keep every className="…" group from',
+    ` * payload-components/source/blocks/${names.pascal}/Component.tsx on one corresponding element — this is`,
     ' * enforced by tests/int/demo-twins.int.spec.ts. Keep the root aria-hidden, and use no',
     ' * interactive elements or headings: <h2> becomes <div>, CMSLink becomes <DemoLink>,',
     ' * <Media> becomes a bg-muted placeholder.',

@@ -3,6 +3,7 @@ import type { INSTALL_STAGES } from './constants'
 export type PackageManager = 'bun' | 'npm' | 'pnpm' | 'yarn'
 export type InstallStage = (typeof INSTALL_STAGES)[number]
 export type InstallStatus = 'installed' | 'partial'
+export type LocalizationPolicyVersion = 'semantic-v1'
 export type DependencyMap = Record<string, string>
 
 export type PayloadFragment =
@@ -72,6 +73,9 @@ export type InstallStateEntry = {
   /* Present only when the component was installed with --localized, so state
    * files for ordinary installs are unchanged. */
   localized?: boolean
+  /* Versioned because changing a field from localized to global changes the
+   * shape of stored Payload data and must be an explicit consumer migration. */
+  localizationPolicy?: LocalizationPolicyVersion
   manifestVersion: string
   patchedFiles: string[]
   registryItemName: string
@@ -79,7 +83,23 @@ export type InstallStateEntry = {
   targetId: string
 }
 
+export type BaseBundleStateEntry = {
+  /* Only files whose bytes came from the scaffold are owned. Existing consumer
+   * implementations are deliberately absent, so later scaffold runs cannot
+   * claim or overwrite them. */
+  fileHashes: Record<string, string>
+  installedAt: string
+  lastAttemptAt: string
+  version: string
+}
+
 export type InstallState = {
+  base?: BaseBundleStateEntry
+  components: Record<string, InstallStateEntry>
+  version: 4
+}
+
+export type InstallStateV3 = {
   components: Record<string, InstallStateEntry>
   version: 3
 }

@@ -26,15 +26,18 @@ export const contactFields: Field[] = [
   {
     name: 'eyebrow',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
   {
     name: 'title',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
   {
     name: 'description',
     type: 'textarea',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
 ]
 
@@ -42,6 +45,7 @@ export const contactChannelFields: Field[] = [
   {
     name: 'label',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
   {
@@ -56,11 +60,13 @@ export const contactChannelFields: Field[] = [
   {
     name: 'value',
     type: 'text',
+    custom: { payloadComponents: { localization: 'global' } },
     required: true,
     validate: validateContactValue,
   },
   {
     name: 'description',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
 ]

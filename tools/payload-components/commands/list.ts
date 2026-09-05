@@ -1,4 +1,5 @@
 import { buildInventory, selectInstalled } from '../inventory'
+import { writeCommandOutput } from '../command-output'
 
 import type { InventoryEntry } from '../inventory'
 
@@ -32,17 +33,11 @@ const formatRows = (entries: InventoryEntry[]) => {
   return entries.map((entry) => `  ${padRight(entry.name, nameWidth)}  ${formatState(entry)}`)
 }
 
-export const listCommand = async ({
-  cwd,
-  json = false,
-}: {
-  cwd: string
-  json?: boolean
-}) => {
+export const listCommand = async ({ cwd, json = false }: { cwd: string; json?: boolean }) => {
   const inventory = await buildInventory({ cwd })
 
   if (json) {
-    process.stdout.write(`${JSON.stringify(inventory, null, 2)}\n`)
+    writeCommandOutput(`${JSON.stringify(inventory, null, 2)}\n`)
     return
   }
 
@@ -74,5 +69,5 @@ export const listCommand = async ({
 
   lines.push('', 'Add one with "payload-components add <component>".')
 
-  process.stdout.write(`${lines.join('\n')}\n`)
+  writeCommandOutput(`${lines.join('\n')}\n`)
 }

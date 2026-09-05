@@ -21,16 +21,20 @@ jobs:
     steps:
       # The publish job holds NPM_TOKEN, so third-party actions are pinned to a
       # reviewed commit and admitted by that exact ref in the Actions allowlist.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
           ref: main
 
       - name: Fetch candidate release tag
         env:
+          GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
-          git fetch --force --no-tags origin \
+          git -c credential.helper= \
+            -c credential.helper="!f() { echo username=x-access-token; echo \"password=\$GH_TOKEN\"; }; f" \
+            fetch --force --no-tags origin \
             main:refs/remotes/origin/main \
             "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"
 
@@ -38,7 +42,7 @@ jobs:
         with:
           version: 10.24.0
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
           cache: pnpm
@@ -94,7 +98,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
           registry-url: https://npm.pkg.github.com

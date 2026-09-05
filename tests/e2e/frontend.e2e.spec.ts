@@ -658,6 +658,11 @@ test.describe('Light shadcn frontend', () => {
       title: /About/,
     },
     {
+      h1: 'Help shape an editorial publishing system.',
+      path: '/roadmap/editorial',
+      title: /Editorial component roadmap/,
+    },
+    {
       h1: 'The Payload Components brand',
       path: '/brand-guide',
       title: /Brand Guide/,
@@ -699,8 +704,9 @@ test.describe('Light shadcn frontend', () => {
     { h1: 'Introduction', path: '/zh/docs' },
     { h1: /77 个 Payload CMS 组件与类型化区块/, path: '/zh/components' },
     { h1: '由可安装区块组成的 Payload CMS 模板概念', path: '/zh/templates' },
-    { h1: 'Payload CMS 区块与安装器指南', path: '/zh/blog' },
+    { h1: 'Payload CMS block and installer guides', path: '/zh/blog' },
     { h1: 'Why Payload Components exists', path: '/zh/about' },
+    { h1: '一起完善编辑内容发布系统。', path: '/zh/roadmap/editorial' },
   ]
 
   for (const localizedRoute of localizedOverflowRoutes) {
@@ -733,10 +739,8 @@ test.describe('Light shadcn frontend', () => {
       'href',
       /\/components$/,
     )
-    await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveAttribute(
-      'href',
-      /\/zh\/components$/,
-    )
+    await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveCount(0)
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow')
 
     await page.getByLabel('语言').first().selectOption('en')
     await expect(page).toHaveURL(`${baseURL}/components?q=hero#hero-basic`)
@@ -745,6 +749,59 @@ test.describe('Light shadcn frontend', () => {
     await page.getByLabel('Language').first().selectOption('zh')
     await expect(page).toHaveURL(`${baseURL}/zh/components?q=hero#hero-basic`)
     await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
+  })
+
+  test('renders RTL and CJK locales with localized routing and stable layout', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 })
+    await page.goto(`${baseURL}/ar/components?q=hero#hero-basic`)
+
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar')
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+    await expect(page.locator('html')).toHaveAttribute('data-script', 'arabic')
+    await expect(page.locator('link[rel="alternate"][hreflang="ja"]')).toHaveCount(0)
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow')
+
+    const trigger = page.getByRole('button', { name: 'افتح التنقل' })
+    await trigger.click()
+    const switcher = page.locator('#mobile-navigation').getByRole('combobox', { name: 'اللغة' })
+    await expect(switcher.locator('option')).toHaveCount(22)
+    await switcher.selectOption('ja')
+
+    await expect(page).toHaveURL(`${baseURL}/ja/components?q=hero#hero-basic`)
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ja')
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr')
+    await expect(page.locator('html')).toHaveAttribute('data-script', 'cjk')
+
+    await page.evaluate(() => document.fonts.ready)
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    )
+    expect(hasHorizontalOverflow).toBe(false)
+  })
+
+  test('keeps English fallback content LTR inside RTL localized chrome', async ({ page }) => {
+    await page.goto(`${baseURL}/ar/docs`, { waitUntil: 'domcontentloaded' })
+
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar')
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+
+    const content = page.getByRole('main')
+    await expect(content).toHaveAttribute('lang', 'en')
+    await expect(content).toHaveAttribute('dir', 'ltr')
+    await expect(content).toHaveAttribute('data-content-script', 'latin')
+    await expect(content).toHaveCSS('direction', 'ltr')
+  })
+
+  test('uses script-safe editorial emphasis on the Chinese roadmap', async ({ page }) => {
+    await page.goto(`${baseURL}/zh/roadmap/editorial`, { waitUntil: 'domcontentloaded' })
+
+    const content = page.getByRole('main')
+    await expect(content).toHaveAttribute('data-content-script', 'cjk')
+
+    const accent = page
+      .getByRole('heading', { level: 1, name: '一起完善编辑内容发布系统。' })
+      .locator('.script-aware-serif-accent')
+    await expect(accent).toHaveCSS('font-style', 'normal')
   })
 
   test('drives the responsive component preview frame', async ({ page }) => {
@@ -844,18 +901,21 @@ test.describe('Light shadcn frontend', () => {
       .locator('code:visible')
       .filter({ hasText: 'src/blocks/LogoCloudInlineWrap/Component.tsx' })
     await expect(path).toBeVisible()
-    const wraps = await path.evaluate((el) => {
-      const style = getComputedStyle(el)
-      const line = Number.parseFloat(style.lineHeight)
-      return {
-        breakable: style.overflowWrap === 'anywhere' || style.wordBreak === 'break-all',
-        multiline: el.getBoundingClientRect().height > line * 1.5,
-        fits: el.scrollWidth <= el.clientWidth,
-      }
-    })
-    expect(wraps.breakable).toBe(true)
-    expect(wraps.multiline).toBe(true)
-    expect(wraps.fits).toBe(true)
+    await page.evaluate(() => document.fonts.ready)
+    await expect
+      .poll(async () =>
+        path.evaluate((el) => {
+          const style = getComputedStyle(el)
+          const line = Number.parseFloat(style.lineHeight)
+
+          return {
+            breakable: style.overflowWrap === 'anywhere' || style.wordBreak === 'break-all',
+            fits: el.scrollWidth <= el.clientWidth,
+            multiline: el.getBoundingClientRect().height > line * 1.5,
+          }
+        }),
+      )
+      .toEqual({ breakable: true, fits: true, multiline: true })
     const ledgerOverflow = await expectNoHorizontalOverflow(page, 'the wiring ledger')
     expect(ledgerOverflow.offenders, ledgerOverflow.message).toEqual([])
     await expect(wiring).toBeVisible()
@@ -1083,25 +1143,31 @@ test.describe('Light shadcn frontend', () => {
     ).toBeVisible()
   })
 
-  test('links upcoming components to prefilled request issues', async ({ page }) => {
+  test('presents upcoming post components as public roadmap proposals', async ({ page }) => {
     const component = upcomingComponents.find((entry) => entry.slug === 'post-card')!
 
     await page.goto(`${baseURL}/components?type=posts`)
 
-    const requestLink = page.getByRole('link', { name: 'Request' }).first()
-    await expect(requestLink).toBeVisible()
-    await expect(requestLink).toHaveAttribute(
-      'href',
-      new RegExp(
-        `/issues/new\\?${[
-          'area=New\\+component',
-          'proposal=Ship\\+Post\\+Card\\+%28post-card%29\\+as\\+a\\+Payload\\+Components\\+post\\+component\\.',
-          'template=feature_request\\.yml',
-          'title=%5Bfeature%5D\\+post-card',
-        ].join('.*')}`,
-      ),
+    await expect(page.getByText('Concept preview', { exact: true })).toHaveCount(
+      upcomingComponents.length,
     )
     await expect(page.getByText(component.title).first()).toBeVisible()
+
+    const roadmapLink = page.getByRole('link', {
+      name: `View ${component.title} on the editorial roadmap`,
+    })
+    await expect(roadmapLink).toHaveAttribute('href', `/roadmap/editorial#${component.slug}`)
+
+    await roadmapLink.focus()
+    await expect(roadmapLink).toBeFocused()
+    await page.keyboard.press('Enter')
+    await expect(page).toHaveURL(`${baseURL}/roadmap/editorial#${component.slug}`)
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Help shape an editorial publishing system.',
+      }),
+    ).toBeVisible()
   })
 
   test('exposes every landing section, the catalog teaser, and the footer', async ({ page }) => {
@@ -1827,11 +1893,15 @@ test.describe('Reduced motion', () => {
   test('opens the Fumadocs search dialog from the docs shell', async ({ page }) => {
     await page.goto(`${baseURL}/docs`)
 
-    await page
-      .getByRole('button', { name: /Search/ })
-      .first()
-      .click()
+    const searchTrigger = page.getByRole('button', { name: /Search/ }).first()
+    await searchTrigger.click()
 
     await expect(page.getByRole('dialog')).toBeVisible()
+    await expect(page.getByRole('dialog').getByRole('textbox')).toBeFocused()
+
+    await page.keyboard.press('Escape')
+
+    await expect(page.getByRole('dialog')).toBeHidden()
+    await expect(searchTrigger).toBeFocused()
   })
 })

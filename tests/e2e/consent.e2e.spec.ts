@@ -114,10 +114,15 @@ test.describe('Analytics consent gate', () => {
     await page.reload()
 
     await expect(page.locator(gatedScripts)).toHaveCount(0)
-    expect(await page.evaluate(() => window.localStorage.getItem('pc_distinct_id'))).toBeNull()
-    expect(
-      await page.evaluate(() => window.sessionStorage.getItem('pc_organic_entry_page')),
-    ).toBeNull()
+    // The privacy signal is applied in the post-hydration consent effect. The
+    // absence of gated SSR scripts is immediate, so wait for that effect's
+    // storage cleanup instead of accidentally racing it.
+    await expect
+      .poll(() => page.evaluate(() => window.localStorage.getItem('pc_distinct_id')))
+      .toBeNull()
+    await expect
+      .poll(() => page.evaluate(() => window.sessionStorage.getItem('pc_organic_entry_page')))
+      .toBeNull()
 
     await context.close()
   })

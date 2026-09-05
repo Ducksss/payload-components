@@ -22,6 +22,7 @@ export const HeroBasic: Block = {
         {
           name: 'label',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],

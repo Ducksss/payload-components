@@ -1,4 +1,4 @@
-import { access, realpath } from 'node:fs/promises'
+import { realpath } from 'node:fs/promises'
 import path from 'node:path'
 
 import type {
@@ -7,25 +7,29 @@ import type {
   InstallStateEntry,
   InstallStateV1,
   InstallStateV2,
+  InstallStateV3,
   InstallStage,
   ComponentManifest,
 } from './types'
 
 import { CURRENT_ALPHA_TARGET_ID, SHARED_PATCHED_FILES } from './constants'
 import { resolveRecordedFileHashes, snapshotInstalledFiles } from './component-files'
-import { readJsonFile, repoRoot, writeJsonFile } from './utils'
+import { readSafeProjectFile, writeSafeProjectJsonFile } from './safe-path'
+import { readJsonFile, repoRoot } from './utils'
 
 // Return a fresh object every time: callers (recordInstall*) mutate the loaded
 // state in place, so handing out a shared singleton would leak entries across
 // loads within a single process.
 const createDefaultState = (): InstallState => ({
   components: {},
-  version: 3,
+  version: 4,
 })
 
 const normalizeFileList = (files: string[]) => [...new Set(files)].sort()
 const normalizeFileHashes = (fileHashes: Record<string, string>) =>
-  Object.fromEntries(Object.entries(fileHashes).sort(([left], [right]) => left.localeCompare(right)))
+  Object.fromEntries(
+    Object.entries(fileHashes).sort(([left], [right]) => left.localeCompare(right)),
+  )
 
 const getManifestPath = (componentName: string) =>
   path.join(repoRoot, 'payload-components', 'manifests', `${componentName}.json`)
@@ -89,7 +93,7 @@ const migrateLegacyState = async (state: InstallStateV1): Promise<InstallState> 
 
   return {
     components: Object.fromEntries(migratedEntries),
-    version: 3,
+    version: 4,
   }
 }
 
@@ -100,11 +104,24 @@ const migrateV2State = (state: InstallStateV2): InstallState => ({
       { ...entry, fileHashes: {} },
     ]),
   ),
-  version: 3,
+  version: 4,
+})
+
+const migrateV3State = (state: InstallStateV3): InstallState => ({
+  components: state.components,
+  version: 4,
 })
 
 const normalizeState = (state: InstallState): InstallState => ({
-  version: 3,
+  ...(state.base
+    ? {
+        base: {
+          ...state.base,
+          fileHashes: normalizeFileHashes(state.base.fileHashes),
+        },
+      }
+    : {}),
+  version: 4,
   components: Object.fromEntries(
     Object.entries(state.components).map(([componentName, entry]) => [
       componentName,
@@ -148,6 +165,7 @@ const upsertEntry = ({
   lastAttemptAt,
   lastError,
   ...(localized ? { localized: true } : {}),
+  localizationPolicy: 'semantic-v1' as const,
   patchedFiles: normalizeFileList(patchedFiles),
   status,
 })
@@ -157,26 +175,25 @@ export const getStatePath = (cwd: string) => path.join(cwd, '.payload-components
 export const loadState = async (cwd: string): Promise<InstallState> => {
   const statePath = getStatePath(cwd)
 
-  try {
-    await access(statePath)
-  } catch {
-    return createDefaultState()
-  }
-
-  let rawState: InstallState | InstallStateV1 | InstallStateV2
+  let rawState: InstallState | InstallStateV1 | InstallStateV2 | InstallStateV3
 
   try {
-    rawState = await readJsonFile<InstallState | InstallStateV1 | InstallStateV2>(statePath)
+    rawState = JSON.parse(
+      await readSafeProjectFile({ cwd, filePath: statePath }),
+    ) as InstallState | InstallStateV1 | InstallStateV2 | InstallStateV3
   } catch (error) {
-    // A corrupt / half-written state file shouldn't wedge the CLI. Fall back to a
-    // clean slate — the per-stage dedup and verify logic keep a re-run idempotent.
-    process.stderr.write(
-      `payload-components: ignoring unreadable install state at ${statePath} (${
-        error instanceof Error ? error.message : String(error)
-      }); starting from a clean state.\n`,
-    )
+    if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return createDefaultState()
+    }
 
-    return createDefaultState()
+    if (/Refusing unsafe project path/.test(error instanceof Error ? error.message : '')) {
+      throw error
+    }
+
+    throw new Error(
+      `Cannot read install state at ${statePath}. Refusing to discard recorded file ownership; repair or restore this JSON before retrying.`,
+      { cause: error },
+    )
   }
 
   if (rawState.version === 1) {
@@ -188,14 +205,20 @@ export const loadState = async (cwd: string): Promise<InstallState> => {
   }
 
   if (rawState.version === 3) {
+    return normalizeState(migrateV3State(rawState))
+  }
+
+  if (rawState.version === 4) {
     return normalizeState(rawState)
   }
 
-  throw new Error(`Unsupported payload-components state version "${String((rawState as { version?: unknown }).version)}".`)
+  throw new Error(
+    `Unsupported payload-components state version "${String((rawState as { version?: unknown }).version)}".`,
+  )
 }
 
 const saveStateUnlocked = async (cwd: string, state: InstallState) => {
-  await writeJsonFile(getStatePath(cwd), normalizeState(state))
+  await writeSafeProjectJsonFile({ cwd, filePath: getStatePath(cwd), value: normalizeState(state) })
 }
 
 /* State writes are read-modify-write operations. Atomic rename protects a
@@ -234,7 +257,31 @@ const mutateState = async <T>(cwd: string, mutation: (state: InstallState) => Pr
 
 export const saveState = async (cwd: string, state: InstallState) => {
   await mutateState(cwd, (latest) => {
+    latest.base = state.base
     latest.components = state.components
+  })
+}
+
+export const recordBaseBundleState = async ({
+  cwd,
+  fileHashes,
+  installedAt,
+  version,
+}: {
+  cwd: string
+  fileHashes: Record<string, string>
+  installedAt?: string
+  version: string
+}) => {
+  await mutateState(cwd, (state) => {
+    const now = new Date().toISOString()
+
+    state.base = {
+      fileHashes: normalizeFileHashes(fileHashes),
+      installedAt: installedAt ?? state.base?.installedAt ?? now,
+      lastAttemptAt: now,
+      version,
+    }
   })
 }
 
@@ -456,6 +503,7 @@ export const recordLocalizedInstall = async ({
     }
 
     entry.localized = true
+    entry.localizationPolicy = 'semantic-v1'
     entry.lastAttemptAt = new Date().toISOString()
 
     for (const [projectPath, hash] of Object.entries(hashes)) {

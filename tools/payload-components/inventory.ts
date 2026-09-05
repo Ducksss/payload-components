@@ -1,6 +1,12 @@
 import semver from 'semver'
 
-import type { ChangelogEntry, ComponentManifest, InstallError, InstallStatus } from './types'
+import type {
+  ChangelogEntry,
+  ComponentManifest,
+  InstallError,
+  InstallStatus,
+  LocalizationPolicyVersion,
+} from './types'
 
 import { loadAllManifests, selectPendingChangelog } from './manifest'
 import { loadState } from './state'
@@ -9,6 +15,7 @@ export type InstalledSummary = {
   installedAt: string | null
   lastError: InstallError | null
   localized: boolean
+  localizationPolicy?: LocalizationPolicyVersion
   manifestVersion: string
   status: InstallStatus
   targetId: string
@@ -41,6 +48,7 @@ const toInstalledSummary = (
   installedAt: entry.installedAt,
   lastError: entry.lastError,
   localized: entry.localized === true,
+  ...(entry.localizationPolicy ? { localizationPolicy: entry.localizationPolicy } : {}),
   manifestVersion: entry.manifestVersion,
   status: entry.status,
   targetId: entry.targetId,

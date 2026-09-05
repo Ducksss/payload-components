@@ -42,17 +42,6 @@ function countByCategory(items: { category: string }[]) {
   return counts
 }
 
-function componentRequestUrl(repoUrl: string, component: UpcomingComponent) {
-  const params = new URLSearchParams({
-    area: 'New component',
-    proposal: `Ship ${component.title} (${component.slug}) as a Payload Components post component.`,
-    template: 'feature_request.yml',
-    title: `[feature] ${component.slug}`,
-  })
-
-  return `${repoUrl}/issues/new?${params.toString()}`
-}
-
 export function ComponentCatalogBrowser({
   categories,
   families,
@@ -299,14 +288,14 @@ export function ComponentCatalogBrowser({
                 <span className="sr-only">{t('search')}</span>
                 <Search
                   aria-hidden="true"
-                  className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                  className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
                 />
                 <input
                   type="search"
                   value={localQuery}
                   onChange={(event) => setLocalQuery(event.target.value)}
                   placeholder={t('search')}
-                  className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand/50 focus:ring-2 focus:ring-brand/15"
+                  className="w-full rounded-lg border border-border bg-background py-2 pe-3 ps-9 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand/50 focus:ring-2 focus:ring-brand/15"
                 />
               </label>
               <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
@@ -412,7 +401,7 @@ export function ComponentCatalogBrowser({
                       <UpcomingComponentCard
                         key={component.slug}
                         component={component}
-                        requestHref={componentRequestUrl(githubRepoUrl, component)}
+                        roadmapHref={`/roadmap/editorial#${component.slug}`}
                       />
                     ))}
                   </div>

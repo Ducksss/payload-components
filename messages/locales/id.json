@@ -1,0 +1,478 @@
+{
+  "Metadata": {
+    "title": "Payload Components — blok berkabel penuh untuk Payload CMS",
+    "description": "Blok Payload CMS sumber terbuka yang diinstal dengan konfigurasi koleksinya, pemetaan penyaji, tipe yang dihasilkan, dan peta impor admin."
+  },
+  "Common": {
+    "home": "Beranda",
+    "documentation": "Dokumentasi",
+    "blog": "Blog",
+    "componentCatalog": "Katalog komponen",
+    "brandGuide": "Panduan Merek",
+    "about": "Tentang",
+    "privacy": "Privasi",
+    "copy": "Salin",
+    "copied": "Disalin",
+    "copiedDescription": "Disalin ke papan klip."
+  },
+  "Header": {
+    "skip": "Lompat ke konten",
+    "home": "Beranda Payload Components",
+    "github": "GitHub repositori",
+    "openNavigation": "Buka navigasi",
+    "closeNavigation": "Tutup navigasi",
+    "language": "Bahasa",
+    "nav": {
+      "docs": "Dokumen",
+      "components": "Komponen",
+      "templates": "Templat",
+      "blog": "Blog",
+      "about": "Tentang"
+    }
+  },
+  "Consent": {
+    "title": "Cookie Analytics",
+    "description": "Kami menggunakan Google Analytics dan PostHog untuk melihat komponen dan dokumen mana yang sebenarnya digunakan orang. Tolak dan tidak ada yang memuat — tidak ada cookie, tidak ada pengenal. Pengukuran kecepatan halaman berjalan baik dan tidak menyimpan apa pun.",
+    "privacy": "Privasi",
+    "decline": "Tolak",
+    "accept": "Terima"
+  },
+  "Privacy": {
+    "eyebrow": "Privasi",
+    "heading": "Persis seperti yang kami ukur.",
+    "accentWord": "mengukur",
+    "intro": "Tidak ada apa pun yang menyimpan apa pun di perangkat Anda yang dimuat sampai Anda menerimanya. Halaman ini memberi nama setiap prosesor, setiap peristiwa, dan setiap bidang — dan memungkinkan Anda berubah pikiran kapan saja.",
+    "consent": "Apa pun yang akan menyimpan sesuatu di perangkat Anda menunggu persetujuan Anda. Tolak dan Google Analytics dan PostHog jangan pernah dimuat — tidak ada cookie yang disetel dan tidak ada pengenal yang disimpan. Jika browser Anda mengirimkan Global Privacy Control atau Do Not Track, itu otomatis dianggap sebagai penolakan dan Anda tidak akan pernah melihat banner tersebut.",
+    "alwaysOnProcessors": "Vercel Analytics dan Speed Insights adalah pengecualian, dan dijalankan untuk semua orang. Mereka tidak menyetel cookie dan tidak menyimpan pengenal — mereka mengukur pemuatan halaman dan kinerja secara agregat, yang membuat situs ini tetap cepat. Tidak ada apa pun di perangkat Anda yang dapat Anda pilih untuk tidak ikut serta.",
+    "noAccounts": "Tidak ada akun di situs ini, jadi tidak ada yang terikat dengan identitas. Kami tidak pernah mengumpulkan masukan formulir, teks bebas, atau konten halaman yang Anda lihat.",
+    "processorsTitle": "Siapa yang menerima data",
+    "needsConsent": "Membutuhkan persetujuan Anda",
+    "alwaysOn": "Selalu aktif, tidak menyimpan apa pun",
+    "processors": {
+      "vercel": {
+        "purpose": "Tampilan halaman dan Core Web Vitals untuk situs yang dihosting.",
+        "storage": "Tanpa cookie dan tanpa pengenal — tidak ada yang disimpan di perangkat Anda."
+      },
+      "ga4": {
+        "purpose": "Tampilan halaman gabungan dan sumber lalu lintas.",
+        "storage": "Menyetel cookie pihak pertamanya sendiri (_ga, _ga_*)."
+      },
+      "posthog": {
+        "purpose": "Tiga acara produk tercantum di bawah ini.",
+        "storage": "pc_distinct_id acak di localStorage, ditambah nama jalur entri organik di sessionStorage untuk tab saat ini."
+      }
+    },
+    "eventsTitle": "Acara yang kami kirim",
+    "eventsIntro": "Hanya tiga, dan kolomnya tetap. Setiap nilai berasal dari rute, tautan, atau perintah pemasangan yang sudah ditentukan — tidak pernah dari apa pun yang Anda ketik.",
+    "trafficSource": "Tampilan laman memberi label lalu lintas hanya sebagai penelusuran organik atau lainnya. Label tersebut diperoleh di browser Anda dari daftar mesin pencari tetap atau penanda kampanye organik yang eksplisit. Perujuk mentah, kampanye, dan string kueri tidak pernah dikirim. Pemeriksaan situs yang terkontrol membawa penanda verifikasi yang sebenarnya sehingga dapat dikecualikan dari jumlah pengunjung; kunjungan biasa membawa kepalsuan.",
+    "entryPage": "Setelah persetujuan, kunjungan organik mempertahankan nama jalur situs pertama yang sama untuk tab browser saat ini. Instal salinan dan klik tautan utama sertakan nama jalur tersebut sebagai <code>entry_page</code>. Kunjungan langsung dan rujukan tidak. Itu tidak pernah berisi string kueri atau perujuk mentah dan dihapus saat Anda membatalkan persetujuan.",
+    "events": {
+      "pageview": {
+        "when": "Rute publik dimuat atau diubah."
+      },
+      "copyInstallCommand": {
+        "when": "Anda menyalin perintah instal."
+      },
+      "primaryLinkClick": {
+        "when": "Anda mengikuti tautan repositori, dokumen, atau komponen."
+      }
+    },
+    "choiceTitle": "Pilihan Anda",
+    "choice": "Keputusan Anda disimpan secara lokal di browser Anda di bawah <code>pc_consent</code>. Ubah di sini kapan saja. Penarikan tidak hanya menghentikan pengumpulan — tindakan ini menghapus apa yang dibuat oleh keikutsertaan: cookie Google Analytics (<code>_ga</code>, <code>_ga_*</code>) dan pengidentifikasi PostHog dihapus, dan halaman dimuat ulang sehingga tidak ada yang berjalan yang dapat dilanjutkan. Nama jalur entri organik khusus sesi juga dihapus.",
+    "settings": {
+      "privacySignal": "Browser Anda mengirimkan sinyal privasi (Global Privacy Control atau Do Not Track), jadi Google Analytics dan PostHog tidak aktif dan ini tidak dapat ditimpa di sini.",
+      "on": "Google Analytics dan PostHog sedang aktif.",
+      "off": "Google Analytics dan PostHog sedang nonaktif.",
+      "undecided": "Anda belum memilih, jadi Google Analytics dan PostHog tidak aktif.",
+      "turnOff": "Nonaktifkan analitik",
+      "turnOn": "Aktifkan analitik"
+    }
+  },
+  "NotFound": {
+    "eyebrow": "Kesalahan 404",
+    "title": "Halaman tidak ditemukan",
+    "description": "Rute ini tidak ada dalam registri. Komponen, dokumen, dan katalognya adalah.",
+    "home": "Pulanglah",
+    "docs": "Baca dokumennya",
+    "terminalTitle": "payload-components — 404"
+  },
+  "Docs": {
+    "title": "Dokumentasi",
+    "versionBanner": "MIT registri · komponen v{version}",
+    "github": "Bintangi GitHub",
+    "previousComponent": "Komponen sebelumnya: {title}",
+    "nextComponent": "Komponen selanjutnya: {title}",
+    "newIn": "Baru di {version}"
+  },
+  "HomeMetadata": {
+    "title": "Payload Components: Blok Payload CMS Berkabel dalam Satu Perintah",
+    "description": "Instal blok Payload CMS yang dapat digunakan kembali dengan satu perintah, termasuk konfigurasi koleksi, render peta, tipe yang dihasilkan, dan peta impor admin untuk proyek Next.js."
+  },
+  "Landing": {
+    "hero": {
+      "eyebrow": "Registri blok Payload sumber terbuka",
+      "primary": "Pasang blok Payload",
+      "accent": "berkabel, tidak ditempel.",
+      "subheadline": "Untuk pengembang Payload CMS, satu perintah akan menginstal blok, menyambungkannya ke Payload, dan mendapatkan git diff yang dapat ditinjau.",
+      "guide": "Baca panduan pemasangan",
+      "github": "Bintangi GitHub",
+      "browse": "Telusuri komponennya",
+      "copy": "Salin perintah pemasangan",
+      "count": "{count} blok di registri — semuanya dihubungkan ke Payload dengan satu perintah."
+    },
+    "stack": {
+      "label": "Tumpukan yang didukung",
+      "lede": "Menginstal ke dalam tumpukan yang sudah Anda jalankan"
+    },
+    "wiring": {
+      "eyebrow": "Batas pemasangan",
+      "heading": "Sebuah blok tidak akan aktif sampai dikabelkan.",
+      "intro": "Menyalin file adalah bagian yang mudah — empat pengeditan setelahnya membuat setiap blok, setiap repo, kehilangan waktu.",
+      "source": "sumber"
+    },
+    "workflow": {
+      "eyebrow": "Alur Kerja",
+      "heading": "Dari katalog untuk dilakukan dalam tiga langkah.",
+      "intro": "Tanpa perancah, tanpa penguncian — sumber biasa ditambah dua patch cakupan yang dapat Anda baca.",
+      "steps": {
+        "oneTitle": "Baca kontraknya",
+        "oneDescription": "Bidang, file, dan patch — sebelum Anda menjalankan apa pun.",
+        "twoTitle": "Jalankan satu perintah",
+        "twoDescription": "CLI memeriksa proyek Anda, lalu mengirimkannya dalam sekali jalan.",
+        "threeTitle": "Melakukan blok kerja",
+        "threeDescription": "Sumber, dua patch, tipe yang dibuat ulang — ditinjau seperti PR lainnya."
+      },
+      "badge": "Dirender dari sumber",
+      "caption": "Hasil komitmen — sumber komponen nyata, dihubungkan ke Payload dan ditinjau seperti PR lainnya."
+    },
+    "catalog": {
+      "eyebrow": "Katalog",
+      "heading": "Katalog, ditampilkan secara langsung.",
+      "intro": "Tidak ada tangkapan layar — setiap spesimen adalah komponen sebenarnya, dirender dari sumber.",
+      "browse": "Jelajahi katalog",
+      "preview": "Pratinjau langsung",
+      "blockCount": "{count, plural, other {# blok}}",
+      "browseFamily": "Telusuri {family}",
+      "allComponents": "Jelajahi semua komponen {count}",
+      "postComponents": "Posting komponen · Dalam pengembangan",
+      "familyCount": "Dapat dipasang",
+      "familyName": "Blok halaman",
+      "familyDescription": "Blok untuk pembuat tata letak Halaman — dipasang dengan kabel lengkap: konfigurasi koleksi, pemetaan render, tipe yang dihasilkan, impor peta."
+    },
+    "faq": {
+      "heading": "Pertanyaan, dijawab langsung.",
+      "intro": "Dokumen versi singkat. Setiap jawaban tertaut kembali ke sesuatu yang dapat Anda verifikasi di repositori.",
+      "dogfood": "Bagian ini adalah salah satu blok kami"
+    },
+    "community": {
+      "eyebrow": "Sumber terbuka",
+      "heading": "Sumber terbuka,",
+      "accent": "ujung ke ujung",
+      "intro": "Registri, CLI, komponen, dan situs ini adalah satu repositori berlisensi MIT. Baca penginstalnya sebelum Anda memercayainya — itulah intinya.",
+      "copy": "Salin perintah pemasangan",
+      "repository": "GitHub repositori",
+      "issue": "Buka terbitan",
+      "invite": "Menjalankannya di repo asli? Buka masalah — pemasangan awal akan diunggulkan."
+    }
+  },
+  "Catalog": {
+    "metadataTitle": "{count} Payload CMS Komponen & Blok | Katalog",
+    "metadataDescription": "Telusuri dengan mengetik Payload CMS blok. Jalankan npx payload-components add '<component>' untuk menyambungkannya ke koleksi Anda, penyaji, tipe yang dihasilkan, dan peta impor admin.",
+    "eyebrow": "Registri",
+    "title": "{count} Payload CMS komponen dan blok yang diketik",
+    "description": "Jelajahi semua komponen {count} yang dapat diinstal Payload CMS di seluruh hero, fitur, harga, ajakan bertindak, integrasi, testimonial, statistik, FAQ, konten, tim, penyematan, dan footer. Satu perintah CLI menyalin sebuah blok dan menyambungkan registrasi koleksinya, pemetaan penyaji, tipe yang dihasilkan, dan peta impor admin.",
+    "installation": "Lihat cara kerja instalasi satu perintah",
+    "blocksGuide": "Ikuti blok dari konfigurasi ke halaman aktif",
+    "templates": "Jelajahi konsep template Payload CMS",
+    "license": "MIT berlisensi"
+  },
+  "CatalogBrowser": {
+    "filter": "Filter komponen",
+    "allComponents": "Semua komponen",
+    "all": "Semua",
+    "search": "Cari komponen",
+    "result": "{count, plural, other {# hasil}}",
+    "empty": "Tidak ada komponen yang cocok dengan filter Anda.",
+    "reset": "Atur ulang filter",
+    "proposal": "Katalog berkembang dengan sengaja — cakupan sumber, manifes, dokumen, dan penginstal dikirimkan bersamaan. Usulkan yang berikutnya.",
+    "issue": "Buka terbitan",
+    "inDevelopment": "dalam pengembangan",
+    "roadmapPreview": "Pratinjau konsep",
+    "planned": "Peta jalan sumber terbuka",
+    "interest": "Lihat peta jalan",
+    "interestLabel": "Lihat {component} di peta jalan komponen editorial",
+    "selected": "{count} dipilih",
+    "tray": "Komponen yang dipilih",
+    "copy": "Salin perintah pemasangan",
+    "clear": "Hapus pilihan",
+    "families": {
+      "pages": "Blok halaman",
+      "posts": "Posting komponen"
+    },
+    "categories": {
+      "hero": "Pahlawan",
+      "features": "Fitur",
+      "comparator": "Pembanding",
+      "pricing": "Harga",
+      "cta": "Ajakan bertindak",
+      "contact": "Kontak",
+      "integration": "Integrasi",
+      "logos": "Logo awan",
+      "testimonials": "Testimonial",
+      "stats": "Statistik",
+      "faq": "FAQ",
+      "content": "Konten",
+      "team": "Tim",
+      "embed": "Sematkan",
+      "footer": "Catatan Kaki",
+      "cards": "Kartu",
+      "archive": "Arsip",
+      "header": "Tajuk",
+      "index": "Indeks",
+      "author": "Penulis",
+      "newsletter": "Buletin",
+      "related": "Terkait"
+    },
+    "composerAdd": "Tambahkan {slug} ke perintah instal",
+    "composerRemove": "Hapus {slug} dari perintah instal",
+    "theme": {
+      "brandLegend": "Pratinjau katalog dalam warna merek Anda",
+      "brandLabel": "Warna merek",
+      "previewBrand": "Pratinjau dalam {color}",
+      "colors": {
+        "emerald": "Zamrud",
+        "sky": "Langit",
+        "indigo": "nila",
+        "violet": "Violet",
+        "rose": "Mawar",
+        "amber": "Amber"
+      },
+      "radiusLegend": "Pratinjau katalog dengan tingkat lengkung sudut yang berbeda",
+      "radiusLabel": "Sudut",
+      "previewRadius": "Pratinjau dengan sudut {style}",
+      "radii": {
+        "sharp": "Siku",
+        "default": "Bawaan",
+        "round": "Membulat"
+      }
+    }
+  },
+  "EditorialRoadmap": {
+    "metadataTitle": "Editorial component roadmap | Payload Components",
+    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "eyebrow": "Payload Components / Roadmap",
+    "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
+    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "status": "Open source · Proposals",
+    "seeCollection": "View the collection",
+    "backToCatalog": "Back to the component catalog",
+    "suiteEyebrow": "The proposed suite",
+    "suiteTitle": "Designed as one publication.",
+    "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
+    "collectionEyebrow": "The collection",
+    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
+    "benefitsEyebrow": "How it ships",
+    "benefitsTitle": "Built in public, as one system.",
+    "benefitsIntro": "Each proposal follows the same community workflow: public discussion, production-ready implementation, docs, and installer coverage.",
+    "benefits": {
+      "systemTitle": "Composed together",
+      "systemDescription": "Hierarchy, spacing, states, and content-model decisions are resolved as one editorial language—not eight isolated cards.",
+      "implementationTitle": "Implemented in public",
+      "implementationDescription": "Every accepted pattern is developed in this repository with the Payload and Next.js integration details around it.",
+      "maintainedTitle": "Community maintained",
+      "maintainedDescription": "The collection evolves with the publishing stack while remaining available under the MIT license."
+    },
+    "contributionNote": "These are public proposals, not a gated edition. Open an issue to discuss priorities, use cases, or implementation details.",
+    "contribute": "Propose or discuss a component"
+  },
+  "Templates": {
+    "metadataTitle": "Payload CMS Templat untuk Next.js | Konsep & Resep",
+    "metadataDescription": "Jelajahi konsep templat Payload CMS di lima belas vertikal — SaaS, agensi, perdagangan, layanan kesehatan, restoran, real estat, dan banyak lagi — pratinjau setiap halaman dan periksa resep blok yang diketik.",
+    "detailTitle": "{title} templat",
+    "back": "Templat",
+    "previewPageLabel": "{title} halaman pratinjau",
+    "previewViewport": "Pratinjau ukuran area pandang",
+    "desktop": "Desktop",
+    "tablet": "Tablet",
+    "mobile": "Seluler",
+    "previewFrameTitle": "{title} pratinjau templat — {page} halaman",
+    "eyebrow": "Templat",
+    "title": "konsep templat Payload CMS, dibuat dari blok yang dapat dipasang",
+    "status": "Pratinjau konsep",
+    "disclosure": "Ini adalah konsep situs lengkap yang dapat dijelajahi. Setiap bagian terdiri dari blok-blok di registri terbuka, dan satu perintah menginstal seluruh rangkaian blok — salinan hasil kurasi yang ditampilkan di sini tidak diunggulkan, jadi Anda merakit sendiri halaman-halaman tersebut di admin.",
+    "startingPoint": "Pilih titik awal",
+    "description": "Jelajahi konsep situs Payload CMS dan Next.js lengkap di lima belas vertikal — SaaS, agensi, perdagangan, layanan kesehatan, restoran, real estat, musik, dan banyak lagi. Buka setiap halaman dalam pratinjau langsung, lalu lacak setiap bagian kembali ke blok yang diketik yang dapat Anda instal hari ini.",
+    "components": "Jelajahi komponen yang dapat diinstal",
+    "installation": "Baca panduan instalasi",
+    "official": "Mulai dari templat resmi Payload",
+    "showcases": "Templat dipamerkan",
+    "questionsEyebrow": "Pertanyaan",
+    "questionsHeading": "Payload CMS pertanyaan templat, terjawab",
+    "questionsIntro": "Konsepnya sengaja dibuat terbuka tentang apa yang berhasil saat ini dan apa yang masih menjadi referensi desain.",
+    "q1": "Apakah templat Payload CMS ini dapat diinstal?",
+    "a1": "Tidak. Itu adalah konsep situs lengkap yang dapat dijelajahi, bukan repositori pemula yang dikemas. Blok individual di setiap resep dapat diinstal, dan setiap resep tertaut ke dokumentasi komponen yang relevan.",
+    "q2": "Apa bedanya dengan template resmi Payload?",
+    "a2": "Templat situs web resmi memberikan proyek baru landasan aplikasi yang lengkap. Konsep ini menunjukkan tampilan situs pemasaran lengkap dan blok jenis apa yang menyusun setiap halaman, tanpa menggantikan peran proyek awal tersebut.",
+    "q3": "Bisakah saya menggunakan resep di proyek Payload yang sudah ada?",
+    "a3": "Ya. Buka sebuah konsep, periksa resep yang dipesan, dan pilih bagian yang sesuai dengan situs Anda. Katalog mendokumentasikan bidang setiap blok dan jalur instalasi Payload CMS v3 yang didukung.",
+    "communityEyebrow": "Komunitas",
+    "communityHeading": "Template diputuskan secara terbuka",
+    "communityIntro": "Konsep-konsep ini hadir untuk menjawab satu pertanyaan komunitas: haruskah templat situs lengkap dapat diinstal? Resep, merek fiksi, dan penginstal RFC semuanya ada di repositori publik — tidak ada yang terjaga keamanannya, tidak ada pengambilan email.",
+    "allConcepts": "Semua konsep",
+    "filter": "Filter konsep berdasarkan kategori",
+    "showing": "Menampilkan {visible} dari {total} konsep",
+    "visualTone": "Nada visual",
+    "counts": "{pages} halaman · {blocks} blok unik",
+    "explore": "Jelajahi templat",
+    "openPreview": "Buka pratinjau penuh",
+    "posterLabel": "Jelajahi templat {title}",
+    "posterAlt": "Templat {title} — poster konsep halaman beranda",
+    "contributionRepository": "Jelajahi repositori",
+    "contributionRepositoryDescription": "Baca sumber etalase — setiap resep adalah data biasa di repositori.",
+    "contributionRfc": "Baca RFC penginstal",
+    "contributionRfcDescription": "Tinjau proposal untuk mengubah resep konsep menjadi alur kerja instalasi opsional dan transparan.",
+    "categories": {
+      "agency": "Agensi",
+      "civic": "Kewarganegaraan",
+      "commerce": "Perdagangan",
+      "education": "Pendidikan",
+      "event": "Acara",
+      "fintech": "Fintech",
+      "healthcare": "Perawatan Kesehatan",
+      "marketplace": "Pasar",
+      "music": "Musik",
+      "nonprofit": "Nirlaba",
+      "portfolio": "Portofolio",
+      "real-estate": "Real estat",
+      "restaurant": "Restoran",
+      "saas": "SaaS",
+      "trade": "Perdagangan"
+    }
+  },
+  "Blog": {
+    "metadataTitle": "Payload CMS blok dan panduan penginstal",
+    "metadataDescription": "Panduan praktis Payload CMS v3 untuk memasang blok yang dapat digunakan kembali, kumpulan kabel dan penyaji, menghasilkan tipe, dan memperbaiki blok yang tidak dirender.",
+    "eyebrow": "Panduan praktis Payload CMS v3",
+    "featured": "Mulailah dengan panduan yang sudah terbukti",
+    "installationLabel": "Panduan instalasi",
+    "installationTitle": "Pasang blok Payload berkabel",
+    "installationDescription": "Tambahkan blok nyata dengan CLI yang didukung, lalu tinjau setiap file dan perubahan kabel yang terjadi.",
+    "installationAction": "Ikuti panduan instalasi",
+    "wiringLabel": "Panduan pengkabelan blok",
+    "wiringTitle": "Hubungkan blok yang dapat digunakan kembali",
+    "wiringDescription": "Ikuti blok Payload CMS v3 dari konfigurasi melalui registrasi, rendering, tipe yang dihasilkan, dan peta impor admin.",
+    "troubleshootingLabel": "Panduan pemecahan masalah",
+    "troubleshootingTitle": "Memperbaiki blok yang tidak dapat dirender",
+    "troubleshootingDescription": "Periksa empat tempat yang biasanya menjelaskan mengapa blok yang disimpan tidak muncul di halaman.",
+    "readGuide": "Baca panduannya",
+    "notesEyebrow": "Catatan lapangan dari registri",
+    "notesTitle": "Catatan lapangan Payload CMS lainnya",
+    "notesDescription": "Jelajahi pelajaran implementasi, catatan desain komponen, dan cerita rilis dari registri terbuka.",
+    "browseComponents": "Telusuri semua {count} komponen yang dapat diinstal",
+    "empty": "Belum ada kiriman — periksa lagi nanti.",
+    "back": "Kembali ke blog",
+    "keepReading": "Teruslah membaca",
+    "related": "Bacaan terkait",
+    "tags": "Tag artikel",
+    "series": {
+      "project-notes": "Catatan proyek",
+      "foundations": "Yayasan",
+      "installer-internals": "Pemasang internal",
+      "component-design": "Desain komponen",
+      "production-guides": "Panduan produksi",
+      "open-source": "Kualitas & komunitas"
+    }
+  },
+  "Footer": {
+    "home": "Beranda Payload Components",
+    "intro": "Ketik komponen Payload CMS yang diinstal beserta pengkabelannya — konfigurasi kumpulan, pemetaan render, tipe yang dihasilkan, dan impor peta dalam satu perintah.",
+    "product": "Produk",
+    "components": "Komponen",
+    "project": "Proyek",
+    "componentCatalog": "Katalog komponen",
+    "templateConcepts": "Konsep templat",
+    "documentation": "Dokumentasi",
+    "installWorkflow": "Instal alur kerja",
+    "architecture": "Arsitektur",
+    "aiDiscovery": "Penemuan AI",
+    "allComponents": "Semua komponen {count}",
+    "about": "Tentang",
+    "brandGuide": "Panduan Merek",
+    "openIssue": "Buka terbitan",
+    "releases": "Rilis",
+    "updates": "Memperbarui umpan",
+    "contributing": "Berkontribusi",
+    "privacy": "Privasi",
+    "registry": "Registri JSON",
+    "license": "MIT berlisensi · © 2026 Ducksss",
+    "stack": "Payload v3 · Next.js App Router · buka registri"
+  },
+  "Maintainer": {
+    "body": "Saya membuat payload-components karena memasang blok Payload bukanlah proses salin-tempel — melainkan empat pengeditan setelahnya. CLI ada untuk proyek kedua, dan proyek kesepuluh, dapatkan kabel itu secara gratis. Baca sumber penginstal sebelum Anda mempercayainya; mengirimkannya MIT adalah intinya.",
+    "role": "Pemelihara, Payload Components",
+    "github": "{name} pada GitHub"
+  },
+  "PageMetadata": {
+    "about": {
+      "title": "Tentang",
+      "openGraphTitle": "Tentang Payload Components",
+      "description": "Mengapa Payload Components ada: berhenti membangun kembali blok Payload yang sama, melakukan pemasangan ulang kabel dengan tangan, dan membuktikan ulang setiap pemasangan di seluruh proyek freelance."
+    },
+    "privacy": {
+      "title": "Privasi",
+      "openGraphTitle": "Privasi — Payload Components",
+      "description": "Tindakan Payload Components, pihak ketiga mana yang menerimanya, dan cara mengubah atau membatalkan pilihan Anda kapan saja."
+    },
+    "brandGuide": {
+      "title": "Panduan Merek",
+      "openGraphTitle": "Payload Components Panduan Merek",
+      "description": "Merek Payload Components: palet monokrom shadcn yang ringan dengan satu aksen zamrud, sistem tipe Geist dan Instrument Serif, penggunaan logo, dan suara."
+    }
+  },
+  "FaqContent": {
+    "entries": {
+      "one": {
+        "question": "Apakah Payload Components gratis?",
+        "answer": "Ya — dan dibuat agar tetap seperti itu. Registri, CLI, semua komponen {count} yang dapat diinstal, dan situs ini merupakan satu repositori berlisensi MIT: tanpa harga, tanpa kunci lisensi, tanpa tingkatan yang terjaga keamanannya. Payload Components dirancang untuk mengutamakan komunitas — katalog berkembang dari instalasi dan kontribusi nyata, bukan peta jalan berbayar."
+      },
+      "two": {
+        "question": "Apa itu blok Payload CMS?",
+        "answer": "Di Payload, blok adalah bidang pembuat halaman yang dapat disusun — bagian konten yang dapat digunakan kembali (pahlawan, kisi fitur, CTA) ditumpuk oleh editor untuk menata tata letak halaman. Payload Components mengirimkan blok yang telah dibuat sebelumnya ditambah kabel yang membuatnya aktif, sehingga sebuah blok tidak hanya disalin: blok tersebut didaftarkan di koleksi Halaman Anda, dipetakan di perender Anda, diketik, dan ditambahkan ke peta impor admin.",
+        "link": "Baca panduan blok Payload"
+      },
+      "three": {
+        "question": "Bagaimana cara menambahkan blok pahlawan ke Payload CMS?",
+        "answer": "Instal yang memiliki CLI — `npx payload-components add hero-basic`. Ini menyalin sumber blok ke dalam proyek Anda dan menyambungkannya dari ujung ke ujung: mendaftarkannya di koleksi Halaman Anda, memetakannya di RenderBlocks, dan membuat ulang jenis Payload dan peta impor admin — mendarat sebagai satu yang dapat ditinjau git diff. Perintah yang sama menambahkan blok apa pun di katalog."
+      },
+      "four": {
+        "question": "Apa sebenarnya perubahan instalasi di repo saya?",
+        "answer": "Tiga hal: file sumber komponen disalin (konfigurasi blok, komponen, utilitas bersama), tepat dua file ditambal (koleksi Halaman Anda dan RenderBlocks.tsx — setiap manifes komponen mendeklarasikannya), dan Payload membuat ulang outputnya sendiri (payload-types.ts dan admin mengimpor peta). Semuanya muncul sebagai git diff biasa.",
+        "link": "Baca panduan instalasi"
+      },
+      "five": {
+        "question": "Apa yang terjadi jika saya menjalankan instalasi yang sama dua kali?",
+        "answer": "Itu menyatu. CLI mendeteksi kabel yang ada dan melewatkannya — keluaran sebenarnya adalah payload-components: \"hero-basic\" is already installed. Status penginstalan dicatat di .payload-components/state.json, sehingga penginstalan sebagian dapat dilihat dan dipulihkan, bukan dirusak secara diam-diam."
+      },
+      "six": {
+        "question": "Proyek apa saja yang didukung saat ini?",
+        "answer": "Payload v3 + Next.js 15/16 proyek berbentuk seperti starter situs web resmi — merender blok tata letak melalui src/blocks/RenderBlocks.tsx dan mendaftarkan blok halaman di src/collections/Pages/index.ts. CLI memeriksa proyek Anda terhadap matriks dukungan yang diterbitkan sebelum menyentuh apa pun."
+      },
+      "seven": {
+        "question": "Mengapa tidak menjalankan npx shadcn add saja?",
+        "answer": "Instalasi biasa shadcn menyalin file dan berhenti. Payload blok hanya berfungsi setelah terdaftar di skema koleksi Anda, dipetakan di penyaji Anda, diketik, dan ditambahkan ke peta impor admin. payload-components membungkus pengiriman registri yang sama dengan pengkabelan yang persis sama — batasnya adalah produk, dan buku besar pengkabelan di atas menunjukkannya baris demi baris.",
+        "link": "Baca perbandingan shadcn selengkapnya"
+      },
+      "eight": {
+        "question": "Bagaimana cara komponen baru masuk ke katalog?",
+        "answer": "Sengaja. Sebuah komponen hanya mendarat ketika sumbernya, metadata manifes, halaman dokumen, dan cakupan pengujian penginstal dikirimkan bersama-sama — blok setengah kabel tidak pernah mencapai katalog. Usulkan komponen berikutnya dalam terbitan GitHub; katalog berkembang dari pemasangan nyata."
+      }
+    }
+  },
+  "TranslationNotice": {
+    "fallback": "Halaman ini belum diterjemahkan, jadi konten sumber berbahasa Inggris ditampilkan.",
+    "label": "Status terjemahan",
+    "machine": "Halaman ini diterjemahkan oleh mesin dan belum ditinjau oleh penutur asli.",
+    "viewEnglish": "Lihat sumber bahasa Inggris"
+  }
+}

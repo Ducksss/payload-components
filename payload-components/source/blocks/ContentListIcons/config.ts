@@ -12,15 +12,18 @@ export const ContentListIcons: Block = {
     {
       name: 'eyebrow',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'title',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
       required: true,
     },
     {
       name: 'description',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'items',
@@ -36,11 +39,13 @@ export const ContentListIcons: Block = {
         {
           name: 'term',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
         {
           name: 'description',
           type: 'textarea',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],

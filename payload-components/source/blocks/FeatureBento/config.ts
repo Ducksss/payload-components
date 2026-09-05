@@ -27,11 +27,13 @@ export const FeatureBento: Block = {
         {
           name: 'title',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
         {
           name: 'description',
           type: 'textarea',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],

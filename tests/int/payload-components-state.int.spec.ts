@@ -12,7 +12,11 @@ import {
   recordInstallFailure,
 } from '../../tools/payload-components/state'
 
-import type { InstallStateV1, InstallStateV2 } from '../../tools/payload-components/types'
+import type {
+  InstallStateV1,
+  InstallStateV2,
+  InstallStateV3,
+} from '../../tools/payload-components/types'
 
 const legacyState: InstallStateV1 = {
   components: {
@@ -54,6 +58,16 @@ const legacyV2State: InstallStateV2 = {
   version: 2,
 }
 
+const legacyV3State: InstallStateV3 = {
+  components: {
+    'hero-basic': {
+      ...legacyV2State.components['hero-basic'],
+      fileHashes: { 'src/blocks/HeroBasic/config.ts': 'recorded-hash' },
+    },
+  },
+  version: 3,
+}
+
 describe('payload-components state', () => {
   const tempDirs: string[] = []
 
@@ -61,7 +75,7 @@ describe('payload-components state', () => {
     await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
   })
 
-  it('migrates v1 state into the v3 shape', async () => {
+  it('migrates v1 state into the v4 shape', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-state-'))
     tempDirs.push(tempDir)
 
@@ -74,7 +88,7 @@ describe('payload-components state', () => {
 
     const migratedState = await loadState(tempDir)
 
-    expect(migratedState.version).toBe(3)
+    expect(migratedState.version).toBe(4)
     expect(migratedState.components['hero-basic']).toMatchObject({
       fileHashes: {},
       patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
@@ -105,8 +119,28 @@ describe('payload-components state', () => {
           status: 'installed',
         },
       },
-      version: 3,
+      version: 4,
     })
+  })
+
+  it('migrates v3 component baselines without claiming a starter base', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-state-'))
+    tempDirs.push(tempDir)
+
+    await mkdir(path.join(tempDir, '.payload-components'), { recursive: true })
+    await writeFile(
+      path.join(tempDir, '.payload-components', 'state.json'),
+      `${JSON.stringify(legacyV3State, null, 2)}\n`,
+      'utf8',
+    )
+
+    const migratedState = await loadState(tempDir)
+
+    expect(migratedState.version).toBe(4)
+    expect(migratedState.base).toBeUndefined()
+    expect(migratedState.components['hero-basic'].fileHashes).toEqual(
+      legacyV3State.components['hero-basic'].fileHashes,
+    )
   })
 
   it('records partial install attempts and stage-specific failures', async () => {
@@ -184,7 +218,7 @@ describe('payload-components state', () => {
     expect(state.components['hero-basic'].installedAt).toBeTruthy()
   })
 
-  it('falls back to a clean state when state.json is corrupt', async () => {
+  it('fails closed when state.json is corrupt instead of forgetting ownership', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-state-'))
     tempDirs.push(tempDir)
 
@@ -195,9 +229,7 @@ describe('payload-components state', () => {
       'utf8',
     )
 
-    const state = await loadState(tempDir)
-
-    expect(state).toEqual({ components: {}, version: 3 })
+    await expect(loadState(tempDir)).rejects.toThrow('Refusing to discard recorded file ownership')
   })
 
   it('records normalized hashes for the files that actually landed on disk', async () => {

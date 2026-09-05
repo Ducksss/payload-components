@@ -187,13 +187,13 @@ describe('curated Tailark ports', () => {
   })
 
   it('ships stats-proof as a semantic first-class Stats family block', async () => {
-    const [config, component, demo, manifest, docs, site, pageTree] = await Promise.all([
+    const [config, component, demo, manifest, docs, catalog, pageTree] = await Promise.all([
       read('payload-components/source/blocks/StatsProof/config.ts'),
       read('payload-components/source/blocks/StatsProof/Component.tsx'),
       read('src/components/site/demos/StatsProofDemo.tsx'),
       read('payload-components/manifests/stats-proof.json'),
       read('content/docs/components/stats-proof.mdx'),
-      read('src/lib/site.ts'),
+      read('src/lib/component-catalog.ts'),
       read('src/lib/component-page-tree.tsx'),
     ])
 
@@ -212,7 +212,7 @@ describe('curated Tailark ports', () => {
     expect(demo).toMatch(
       /<dt[^>]*>\s*\{metric\.label\}\s*<\/dt>\s*<dd[^>]*>\s*\{metric\.value\}\s*<\/dd>/,
     )
-    expect(site).toContain("stats: { family: 'pages', label: 'Stats' }")
+    expect(catalog).toMatch(/stats:\s*\{\s*family: 'pages',\s*label: 'Stats',?\s*\}/)
     expect(pageTree).toContain("key: 'stats', label: 'Stats'")
     // The Stats family gained sibling variants, so stats-proof now spreads the
     // shared statsFields base and ships it alongside its own two files.
@@ -228,13 +228,13 @@ describe('curated Tailark ports', () => {
   })
 
   it('ships contact-routing-form with safe channels and form fallbacks', async () => {
-    const [config, sharedFields, component, manifest, docs, site, pageTree] = await Promise.all([
+    const [config, sharedFields, component, manifest, docs, catalog, pageTree] = await Promise.all([
       read('payload-components/source/blocks/ContactRoutingForm/config.ts'),
       read('payload-components/source/blocks/shared/contactFields.ts'),
       read('payload-components/source/blocks/ContactRoutingForm/Component.tsx'),
       read('payload-components/manifests/contact-routing-form.json'),
       read('content/docs/components/contact-routing-form.mdx'),
-      read('src/lib/site.ts'),
+      read('src/lib/component-catalog.ts'),
       read('src/lib/component-page-tree.tsx'),
     ])
 
@@ -256,7 +256,7 @@ describe('curated Tailark ports', () => {
     expect(component).toContain('disabled={!formAction}')
     expect(component).toContain('Configure a valid same-origin form action before publishing.')
     expect(component).toContain('Layout adapted from tailark/blocks (MIT)')
-    expect(site).toContain("contact: { family: 'pages', label: 'Contact' }")
+    expect(catalog).toMatch(/contact:\s*\{\s*family: 'pages',\s*label: 'Contact',?\s*\}/)
     expect(pageTree).toContain("key: 'contact', label: 'Contact'")
     expect(JSON.parse(manifest).files).toEqual([
       'src/blocks/shared/safeUrls.ts',
