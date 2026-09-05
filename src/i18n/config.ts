@@ -249,6 +249,23 @@ export function isLocaleNeutralPath(pathname: string) {
   )
 }
 
+/* Chrome-free iframe targets. The embedding page already carries the site
+ * chrome and the general analytics stream, so anything mounted per-page here is
+ * either unreachable (a consent banner inside an iframe) or a double count.
+ *
+ * A localized preview is the same resource as its unprefixed form, and the
+ * localized template detail deliberately localizes its iframe URL. Classifying
+ * on the raw pathname therefore exempts only English — hence the split here
+ * rather than at each call site, so no caller can forget it. */
+export function isChromeFreePreviewPath(pathname: string): boolean {
+  const unlocalized = splitLocalePathname(pathname).pathname
+
+  return (
+    unlocalized.startsWith('/components/preview/') ||
+    /^\/templates\/[^/]+\/preview(\/|$)/.test(unlocalized)
+  )
+}
+
 /** Add or replace the public locale prefix without touching external URLs. */
 export function localizeHref(href: string, locale: SiteLocale): string {
   if (!href.startsWith('/') || href.startsWith('//')) return href

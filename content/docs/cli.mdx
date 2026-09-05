@@ -519,12 +519,14 @@ reports local edits, while `init --scaffold --force` explicitly replaces those m
 </Callout>
 
 <Callout type="info">
-  Nothing is overwritten. A project that already has its own `cn`, `Media`, or Pages
-  collection keeps it, and re-running the command creates nothing. If your Payload config
-  has no readable `collections: [` array, the command prints the two lines to add rather
-  than rewriting a `buildConfig` call it could not parse. If `shadcn init` finishes without
-  writing a `components.json`, the command stops there rather than scaffolding on top of a
-  project that still cannot install anything.
+  Your own code is never overwritten. A project that already has its own `cn`, `Media`, or
+  Pages collection keeps it as an unowned file the scaffold will not touch. A rerun can still
+  create any other missing canonical managed files. For files the scaffold already owns, it
+  updates pristine copies and reports edited copies rather than replacing them unless you pass
+  `--force`. If your Payload config has no readable `collections: [` array, the command prints
+  the two lines to add rather than rewriting a `buildConfig` call it could not parse. If
+  `shadcn init` finishes without writing a `components.json`, the command stops there rather
+  than scaffolding on top of a project that still cannot install anything.
 </Callout>
 
 <Callout type="warn">
