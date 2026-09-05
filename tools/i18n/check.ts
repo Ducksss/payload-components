@@ -1,7 +1,36 @@
-import { loadCatalogs, validateCatalogs } from './catalog'
+import { execFileSync } from 'node:child_process'
+
+import { flattenMessages, loadCatalogs, translatedSiteLocales, validateCatalogs } from './catalog'
+
+import { translationRegressions } from './translation-regressions'
 
 const { catalogs, english } = await loadCatalogs()
 const errors = validateCatalogs(english, catalogs)
+
+const baseRef = process.env.I18N_BASE_REF
+if (baseRef) {
+  const readBase = (file: string) =>
+    flattenMessages(
+      JSON.parse(
+        execFileSync('git', ['show', `${baseRef}:${file}`], {
+          encoding: 'utf8',
+          maxBuffer: 5_000_000,
+        }),
+      ),
+    )
+  const previousEnglish = readBase('messages/en.json')
+  for (const locale of translatedSiteLocales) {
+    errors.push(
+      ...translationRegressions({
+        english,
+        previousEnglish,
+        previous: readBase(`messages/locales/${locale}.json`),
+        next: catalogs[locale],
+        locale,
+      }),
+    )
+  }
+}
 
 if (errors.length) {
   console.error('Translation catalog check failed:\n')

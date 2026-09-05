@@ -474,5 +474,432 @@
     "label": "翻译状态",
     "machine": "此页面由机器翻译，尚未经母语者审核。",
     "viewEnglish": "查看英文原文"
+  },
+  "Components": {
+    "hero-basic": {
+      "title": "基础首屏",
+      "description": "以标题为核心的营销首屏，包含行动链接、信任徽章、Payload 区块配置和前端渲染。",
+      "target": "首屏区域"
+    },
+    "hero-split": {
+      "title": "分栏首屏",
+      "description": "双栏首屏，将共享文案与编辑可管理的视觉内容组合，图片可置于任意一侧。",
+      "target": "分栏首屏"
+    },
+    "hero-video": {
+      "title": "视频首屏",
+      "description": "铺满区域的视频首屏，包含编辑可管理的媒体、行动链接和信任标签，并在减少动态效果时回退为封面图。",
+      "target": "视频首屏"
+    },
+    "hero-product-tilt": {
+      "title": "透视产品首屏",
+      "description": "居中的产品首屏，包含静态透视展示框、行动链接、信任标签和编辑可管理的媒体。",
+      "target": "产品首屏"
+    },
+    "hero-aurora": {
+      "title": "极光首屏",
+      "description": "以动态效果为主的产品首屏，包含极光背景、错落浮现的标题、指针视差媒体面板和实时指标滚动条。",
+      "target": "动态首屏"
+    },
+    "hero-kinetic": {
+      "title": "动感首屏",
+      "description": "以动态效果为主的编辑式首屏，包含逐行遮罩文字入场、电影感媒体画面和随速度变化的滚动条。",
+      "target": "编辑式动态首屏"
+    },
+    "feature-bento": {
+      "title": "便当式功能网格",
+      "description": "不对称的便当式网格，以重点单元格为主，周围搭配辅助内容。",
+      "target": "便当式网格"
+    },
+    "feature-split": {
+      "title": "分栏功能区",
+      "description": "双栏功能区域，将标题和行动链接与纵向功能列表组合。",
+      "target": "分栏区域"
+    },
+    "feature-steps": {
+      "title": "功能步骤",
+      "description": "带编号的步骤区块，用于按顺序介绍工作流程。",
+      "target": "步骤区域"
+    },
+    "feature-grid-basic": {
+      "title": "基础功能网格",
+      "description": "以文字为主的功能网格，包含可重复条目、可选行动链接连接和幂等注册。",
+      "target": "功能区域"
+    },
+    "feature-accordion": {
+      "title": "功能折叠面板",
+      "description": "同步切换的功能折叠面板，支持编辑选择图标、可选媒体和行动链接。",
+      "target": "功能折叠面板"
+    },
+    "feature-cards-media": {
+      "title": "媒体功能卡片",
+      "description": "双栏功能布局，包含独立媒体、可选图标和行动链接。",
+      "target": "媒体功能卡片"
+    },
+    "feature-icon-grid": {
+      "title": "图标功能网格",
+      "description": "紧凑的功能网格，支持编辑选择图标，并使用设计令牌控制放射状网格装饰。",
+      "target": "图标功能网格"
+    },
+    "comparator-grid": {
+      "title": "方案对比网格",
+      "description": "按方案分列的对比卡片，在功能矩阵上方展示价格，支持突出一列并为各方案配置行动链接。",
+      "target": "价格网格"
+    },
+    "comparator-table": {
+      "title": "功能对比表",
+      "description": "分级功能对比表，在分组功能行上方展示方案和行动链接，功能值可为勾选标记或文字。",
+      "target": "对比表格"
+    },
+    "comparator-stack": {
+      "title": "堆叠方案对比",
+      "description": "堆叠排列的方案对比卡片，每张卡片包含价格、行动链接和功能清单。",
+      "target": "方案卡片"
+    },
+    "pricing-cards": {
+      "title": "价格卡片",
+      "description": "三列可编辑价格卡片，包含价格、计费周期、功能列表和行动链接，并以翠绿色突出一个方案。",
+      "target": "价格区域"
+    },
+    "pricing-cards-muted": {
+      "title": "柔和价格卡片",
+      "description": "三列价格表，使用柔和的卡片背景，并以翠绿色突出一个方案。",
+      "target": "价格区域"
+    },
+    "pricing-cards-cta": {
+      "title": "带按钮的价格卡片",
+      "description": "三列价格表，将行动按钮放在各方案的标题区域内。",
+      "target": "价格区域"
+    },
+    "pricing-split": {
+      "title": "分栏价格区",
+      "description": "双方案价格布局，紧凑的入门方案旁是展开的重点方案及完整功能列表。",
+      "target": "价格区域"
+    },
+    "pricing-enterprise": {
+      "title": "企业价格面板",
+      "description": "宽幅企业价格面板，将价格和行动链接与所含功能列表及可编辑的信任标志墙并排展示。",
+      "target": "价格区域"
+    },
+    "call-to-action-centered": {
+      "title": "居中行动区",
+      "description": "居中的行动区块，包含标题、辅助文案和一至两个行动链接。",
+      "target": "行动区域"
+    },
+    "call-to-action-boxed": {
+      "title": "面板行动区",
+      "description": "面板式行动区块，将标题、文案和行动链接放在嵌套面板内。",
+      "target": "面板行动区"
+    },
+    "call-to-action-split": {
+      "title": "分栏行动区",
+      "description": "分栏行动区块，一侧展示标题和文案，另一侧展示行动链接和承诺说明。",
+      "target": "分栏行动区"
+    },
+    "call-to-action-signup": {
+      "title": "订阅行动区",
+      "description": "用于收集邮箱的行动区块，包含标题、文案和提交到同源端点的表单。",
+      "target": "邮箱收集"
+    },
+    "contact-routing-form": {
+      "title": "联系路由表单",
+      "description": "联系区域，包含经过验证的联系方式和固定的无障碍表单，提交到同源端点。",
+      "target": "联系区域"
+    },
+    "contact-channels": {
+      "title": "联系方式",
+      "description": "无需表单的联系区域，包含标题、辅助文案，以及经过验证的邮箱、电话和网址网格。",
+      "target": "联系方式"
+    },
+    "integration-orbit": {
+      "title": "轨道集成标志",
+      "description": "多圈集成标志围绕重点品牌标志排列，悬停时沿轨道旋转。",
+      "target": "集成区域"
+    },
+    "integration-marquee": {
+      "title": "滚动集成标志",
+      "description": "三行自动滚动的集成标志围绕重点品牌标志排列，边缘逐渐淡出。",
+      "target": "集成区域"
+    },
+    "integration-connect": {
+      "title": "连线集成标志",
+      "description": "通过连线连接到中央品牌标志的集成标志，安装时自动完成 Payload 区块连接。",
+      "target": "集成区域"
+    },
+    "integration-cluster": {
+      "title": "集成标志簇",
+      "description": "居中的集成标志簇围绕重点品牌标志排列，配有标题和行动链接。",
+      "target": "集成区域"
+    },
+    "integration-split": {
+      "title": "分栏集成区",
+      "description": "双栏区域，将重点品牌标志簇与标题、辅助文字和行动链接组合。",
+      "target": "集成区域"
+    },
+    "integration-grid": {
+      "title": "集成卡片网格",
+      "description": "响应式集成卡片网格，包含标志、名称、描述和了解更多链接，安装时自动完成 Payload 区块连接。",
+      "target": "集成区域"
+    },
+    "integration-list": {
+      "title": "集成列表",
+      "description": "纵向集成列表，包含标志、名称、描述和添加操作，安装时自动完成 Payload 区块连接。",
+      "target": "集成区域"
+    },
+    "integration-testimonial": {
+      "title": "集成客户评价",
+      "description": "双栏区域，将客户引语与集成标志卡片网格组合。",
+      "target": "集成区域"
+    },
+    "logo-cloud-marquee": {
+      "title": "滚动标志墙",
+      "description": "自动滚动的可编辑标志墙，边缘逐渐模糊并淡出。",
+      "target": "标志墙"
+    },
+    "logo-cloud-hover": {
+      "title": "悬停标志墙",
+      "description": "悬停时变暗并模糊的标志墙，显示一个行动链接。",
+      "target": "标志墙"
+    },
+    "logo-cloud-grid": {
+      "title": "标志网格",
+      "description": "标题下方居中排列、自动换行的可编辑上传标志墙，安装时自动完成 Payload 区块连接。",
+      "target": "标志墙"
+    },
+    "logo-cloud-inline": {
+      "title": "紧凑标志条",
+      "description": "紧凑的信任标志条，标签位于可编辑标志上方。",
+      "target": "标志墙"
+    },
+    "logo-cloud-inline-wrap": {
+      "title": "行内换行标志条",
+      "description": "自动换行的单行布局，将标签与可编辑信任标志保持在同一行。",
+      "target": "标志墙"
+    },
+    "testimonials-grid": {
+      "title": "客户评价网格",
+      "description": "标题下方的响应式评价卡片网格，每张卡片包含作者、可选职务和头像。",
+      "target": "客户评价区域"
+    },
+    "testimonials-bento": {
+      "title": "便当式客户评价",
+      "description": "不对称的评价网格，在大单元格中突出一条评价，周围搭配其他评价。",
+      "target": "客户评价区域"
+    },
+    "testimonials-wall": {
+      "title": "客户好评墙",
+      "description": "紧凑的多列瀑布流评价卡片墙，每张卡片包含作者、可选职务和头像。",
+      "target": "客户评价区域"
+    },
+    "testimonials-rating": {
+      "title": "星级客户评价",
+      "description": "响应式评价卡片网格，每张卡片包含星级、评价、作者、可选职务和头像。",
+      "target": "客户评价区域"
+    },
+    "testimonials-spotlight": {
+      "title": "重点客户评价",
+      "description": "单条居中的重点评价，包含引号标记、大头像、作者和职务，形成首屏式信任展示。",
+      "target": "客户评价区域"
+    },
+    "testimonials-quote": {
+      "title": "客户引语",
+      "description": "单条重点评价，包含左侧强调线、作者、可选职务和头像。",
+      "target": "客户评价区域"
+    },
+    "stats-proof": {
+      "title": "数据与口碑",
+      "description": "将叙述、醒目的文字指标与带语义标记的客户引语组合的数据证明区域。",
+      "target": "数据区域"
+    },
+    "stats-grid": {
+      "title": "数据网格",
+      "description": "标题和简介下方的响应式大号文字指标网格，每列顶部配有分隔线。",
+      "target": "数据区域"
+    },
+    "stats-card": {
+      "title": "数据卡片",
+      "description": "居中标题下方是一个分隔面板，将指标均分为多列。",
+      "target": "数据区域"
+    },
+    "stats-inline": {
+      "title": "行内数据",
+      "description": "标题和简介下方是带顶部分隔线的数据行，每项数字均组成一个完整句子。",
+      "target": "数据区域"
+    },
+    "faq-split": {
+      "title": "分栏常见问题",
+      "description": "双栏常见问题区域，将固定标题和行动链接与问答折叠面板组合。",
+      "target": "常见问题区域"
+    },
+    "faq-accordion": {
+      "title": "常见问题折叠面板",
+      "description": "居中的问答折叠面板，带可选行动链接，是常见问题系列的基础形式。",
+      "target": "常见问题区域"
+    },
+    "faq-grouped": {
+      "title": "分组常见问题",
+      "description": "按类别分组的常见问题折叠面板，每组配有标题和图标。",
+      "target": "常见问题区域"
+    },
+    "faq-card": {
+      "title": "常见问题卡片",
+      "description": "置于卡片内的居中问答折叠面板，下方可添加行动链接。",
+      "target": "常见问题区域"
+    },
+    "faq-icons": {
+      "title": "图标常见问题",
+      "description": "每个问题都可从固定选项中选择图标的问答折叠面板。",
+      "target": "常见问题区域"
+    },
+    "faq-grid": {
+      "title": "常见问题网格",
+      "description": "静态双栏问答卡片网格，所有答案始终可见，无需展开。",
+      "target": "常见问题区域"
+    },
+    "content-showcase": {
+      "title": "内容展示区",
+      "description": "居中的内容区域，包含简介、全宽图片和四列图标功能网格。",
+      "target": "内容区域"
+    },
+    "content-image-lead": {
+      "title": "图片引导内容区",
+      "description": "以全宽图片开头的内容区域，下方以双栏展示标题、正文和行动链接。",
+      "target": "内容区域"
+    },
+    "content-feature-split": {
+      "title": "分栏功能内容区",
+      "description": "将侧边媒体面板与正文及两个图标功能组合的内容区域。",
+      "target": "内容区域"
+    },
+    "content-feature-media": {
+      "title": "媒体功能内容区",
+      "description": "将正文和两个图标功能与带边框的媒体面板并排展示的内容区域。",
+      "target": "内容区域"
+    },
+    "content-image-frame": {
+      "title": "画框内容区",
+      "description": "居中的内容区域，包含简介和带层叠边框的截图。",
+      "target": "内容区域"
+    },
+    "content-split-rows": {
+      "title": "交错图文行",
+      "description": "包含简介的内容区域，以交替布局的行展示媒体和文字。",
+      "target": "内容区域"
+    },
+    "content-rows": {
+      "title": "图文内容行",
+      "description": "包含简介的内容区域，以统一排列的纵向行展示媒体和文字。",
+      "target": "内容区域"
+    },
+    "content-stats": {
+      "title": "数据内容区",
+      "description": "包含简介、图标功能网格和数据列表的内容区域。",
+      "target": "内容区域"
+    },
+    "content-quote": {
+      "title": "引语内容区",
+      "description": "将媒体面板与正文及注明出处的引语组合的内容区域。",
+      "target": "内容区域"
+    },
+    "content-community": {
+      "title": "社区内容区",
+      "description": "居中的内容区域，包含标题、正文和社区头像墙。",
+      "target": "内容区域"
+    },
+    "content-columns": {
+      "title": "分栏内容区",
+      "description": "双栏内容区域，将标题与正文段落和行动链接组合，安装时自动完成 Payload 区块连接。",
+      "target": "内容区域"
+    },
+    "content-list": {
+      "title": "术语内容列表",
+      "description": "使用衬线标题的内容区域，将标题与带标签的术语列表组合。",
+      "target": "内容区域"
+    },
+    "content-list-columns": {
+      "title": "分栏术语列表",
+      "description": "使用衬线标题和双栏带标签术语列表的内容区域。",
+      "target": "内容区域"
+    },
+    "content-list-icons": {
+      "title": "图标内容列表",
+      "description": "使用衬线标题的内容区域，包含简介和多列图标列表。",
+      "target": "内容区域"
+    },
+    "team-grid": {
+      "title": "团队网格",
+      "description": "团队区域，包含标题、简介和响应式成员照片卡片网格，悬停时显示职务。",
+      "target": "团队区域"
+    },
+    "team-bios": {
+      "title": "团队简介",
+      "description": "以成员简介为主的团队区域，包含标题、介绍和双列成员卡片，展示头像、职务和简短履历。",
+      "target": "团队简介"
+    },
+    "team-roster": {
+      "title": "团队名册",
+      "description": "按有标题的部门分组展示团队成员，每组以头像网格呈现姓名和职务。",
+      "target": "团队区域"
+    },
+    "embed-basic": {
+      "title": "基础嵌入区",
+      "description": "响应式沙箱 iframe 区块，用于允许的 HTTPS 嵌入内容，可选择宽高比。",
+      "target": "嵌入媒体"
+    },
+    "footer-columns": {
+      "title": "分栏页脚",
+      "description": "品牌区块旁是带标签的多列导航链接，底部以版权分隔线收尾。",
+      "target": "页脚"
+    },
+    "footer-simple": {
+      "title": "简洁页脚",
+      "description": "紧凑页脚，将品牌与可换行的链接放在同一行，下方显示版权信息。",
+      "target": "页脚"
+    },
+    "footer-centered": {
+      "title": "居中页脚",
+      "description": "居中的品牌、标语和导航，下方分隔线承载版权信息及政策链接。",
+      "target": "页脚"
+    },
+    "post-card": {
+      "title": "文章卡片",
+      "description": "包含图片、分类、日期、标题和摘要的文章卡片。",
+      "target": "归档卡片"
+    },
+    "post-archive": {
+      "title": "文章归档",
+      "description": "用于渲染文章摘要数组的归档网格。",
+      "target": "归档网格"
+    },
+    "post-hero": {
+      "title": "文章首屏",
+      "description": "包含分类、作者、日期和摘要的文章首屏。",
+      "target": "文章页首"
+    },
+    "featured-post": {
+      "title": "精选文章",
+      "description": "包含图片、分类和日期的精选文章展示区。",
+      "target": "索引精选区"
+    },
+    "post-list": {
+      "title": "文章列表",
+      "description": "包含日期、分类和描述的紧凑文章列表。",
+      "target": "紧凑索引"
+    },
+    "author-card": {
+      "title": "作者卡片",
+      "description": "用于文章页面和编辑署名的作者资料卡片。",
+      "target": "作者署名"
+    },
+    "newsletter-callout": {
+      "title": "通讯订阅提示",
+      "description": "用于文章页面和编辑内容区域的通讯订阅提示。",
+      "target": "互动区域"
+    },
+    "related-posts": {
+      "title": "相关文章",
+      "description": "紧凑展示推荐文章的相关文章区域。",
+      "target": "文章页尾"
+    }
   }
 }

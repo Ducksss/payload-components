@@ -1,5 +1,7 @@
 import englishMessages from '../../messages/en.json'
 
+import { allowsCatalogFallback } from './catalog-policy'
+
 import { defaultSiteLocale, type SiteLocale } from '@/i18n/config'
 
 export type MessageTree = { [key: string]: MessageTree | string }
@@ -37,5 +39,27 @@ const catalogLoaders: Record<Exclude<SiteLocale, 'en'>, CatalogLoader> = {
 export async function getSiteMessages(locale: SiteLocale): Promise<MessageTree> {
   if (locale === defaultSiteLocale) return englishMessages as MessageTree
   const translatedLocale = locale as Exclude<SiteLocale, 'en'>
-  return (await catalogLoaders[translatedLocale]()).default
+  const messages = (await catalogLoaders[translatedLocale]()).default
+  return withCatalogFallback(englishMessages, messages, locale)
+}
+
+function withCatalogFallback(
+  source: MessageTree,
+  translated: MessageTree,
+  locale: SiteLocale,
+  prefix = '',
+): MessageTree {
+  return Object.fromEntries(
+    Object.entries(source).map(([key, value]) => {
+      const fullKey = prefix ? `${prefix}.${key}` : key
+      const localized = translated[key]
+      if (typeof value === 'string') {
+        return [key, localized ?? (allowsCatalogFallback(locale, fullKey) ? value : localized)]
+      }
+      return [
+        key,
+        withCatalogFallback(value, typeof localized === 'object' ? localized : {}, locale, fullKey),
+      ]
+    }),
+  ) as MessageTree
 }

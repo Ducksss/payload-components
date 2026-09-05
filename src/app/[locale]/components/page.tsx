@@ -60,6 +60,13 @@ export default async function ComponentsPage() {
   const t = await getTranslations({ locale, namespace: 'Catalog' })
   const commonT = await getTranslations({ locale, namespace: 'Common' })
   const browserT = await getTranslations({ locale, namespace: 'CatalogBrowser' })
+  const componentT = await getTranslations({ locale, namespace: 'Components' })
+  const translateComponent = <T extends { slug: string }>(entry: T) => ({
+    ...entry,
+    title: componentT(`${entry.slug}.title`),
+    description: componentT(`${entry.slug}.description`),
+    target: componentT(`${entry.slug}.target`),
+  })
   const localizedCategories = Object.fromEntries(
     Object.entries(componentCategories).map(([key, value]) => [
       key,
@@ -134,8 +141,8 @@ export default async function ComponentsPage() {
             categories={localizedCategories}
             families={localizedFamilies}
             githubRepoUrl={githubRepoUrl}
-            pages={[...componentEntries]}
-            posts={[...upcomingComponents]}
+            pages={componentEntries.map(translateComponent)}
+            posts={upcomingComponents.map(translateComponent)}
           />
         </Suspense>
       </main>

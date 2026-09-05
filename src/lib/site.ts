@@ -1,3 +1,5 @@
+import englishMessages from '../../messages/en.json'
+
 import packageJson from '../../package.json' with { type: 'json' }
 
 import {
@@ -40,9 +42,8 @@ export const feedMetadataAlternates = {
      nothing else on the site references it (robots.ts's typed shape cannot). */
   types: { 'application/rss+xml': feedRoute, 'text/plain': '/llms.txt' },
 } as const
-export const blogTitle = 'Payload CMS block and installer guides'
-export const blogDescription =
-  'Practical Payload CMS v3 guides for installing reusable blocks, wiring collections and renderers, generating types, and fixing blocks that do not render.'
+export const blogTitle = englishMessages['Blog']['metadataTitle']
+export const blogDescription = englishMessages['Blog']['metadataDescription']
 export const cliVersion = packageJson.version
 const heroBasicComponent = componentEntries.find(({ slug }) => slug === 'hero-basic')
 
@@ -91,33 +92,33 @@ export const siteOpenGraphDefaults = {
    on the site that never names it. Brand first, then the head term verbatim
    ("Payload CMS blocks"), then the differentiator, so the front of the string
    survives SERP truncation. */
-export const homeMetadataTitle = 'Payload Components: Wired Payload CMS Blocks in One Command'
-export const homeMetadataDescription =
-  'Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects.'
+export const homeMetadataTitle = englishMessages['HomeMetadata']['title']
+export const homeMetadataDescription = englishMessages['HomeMetadata']['description']
 
 /* ------------------------------------------------------------------ */
 /* Hero                                                                */
 /* ------------------------------------------------------------------ */
 
-export const heroEyebrow = 'Open-source Payload block registry'
+export const heroEyebrow = englishMessages['Landing']['hero']['eyebrow']
 
 /* The H1 renders primary + accent as one accessible name; the e2e H1
    assertion consumes the concatenated heroHeadline. The OG card renders the
    two parts separately so it can set the accent in Instrument Serif italic
    (see src/app/opengraph-image.tsx). */
-export const heroHeadlinePrimary = 'Install Payload blocks'
-export const heroHeadlineAccent = 'wired, not pasted.'
+export const heroHeadlinePrimary = englishMessages['Landing']['hero']['primary']
+export const heroHeadlineAccent = englishMessages['Landing']['hero']['accent']
 export const heroHeadline = `${heroHeadlinePrimary} ${heroHeadlineAccent}`
 
-export const heroSubheadline =
-  'For Payload CMS developers, one command installs the block, wires it into Payload, and lands a reviewable git diff.'
+export const heroSubheadline = englishMessages['Landing']['hero']['subheadline']
 
 export const heroGuideLink = {
   href: '/docs/installation',
-  label: 'Read the install guide',
+  label: englishMessages['Landing']['hero']['guide'],
 } as const
 
-export const heroTertiaryLinks = [{ href: '/components', label: 'Browse the components' }] as const
+export const heroTertiaryLinks = [
+  { href: '/components', label: englishMessages['Landing']['hero']['browse'] },
+] as const
 
 /**
  * Stylized replay of a real `payload-components add` run. Stage wording tracks
@@ -157,10 +158,10 @@ export const frameInstalledFiles = [
 
 export const landingSections = {
   community: { heading: 'Open source, end to end.', id: 'community' },
-  faq: { heading: 'Questions, answered straight.', id: 'faq' },
-  components: { heading: 'The catalog, rendered live.', id: 'components' },
-  wiring: { heading: "A block isn't live until it's wired.", id: 'wiring' },
-  workflow: { heading: 'From catalog to commit in three moves.', id: 'workflow' },
+  faq: { heading: englishMessages['Landing']['faq']['heading'], id: 'faq' },
+  components: { heading: englishMessages['Landing']['catalog']['heading'], id: 'components' },
+  wiring: { heading: englishMessages['Landing']['wiring']['heading'], id: 'wiring' },
+  workflow: { heading: englishMessages['Landing']['workflow']['heading'], id: 'workflow' },
 } as const
 
 /* ------------------------------------------------------------------ */
@@ -168,7 +169,7 @@ export const landingSections = {
 /* honest "works with" row is the supported stack.                      */
 /* ------------------------------------------------------------------ */
 
-export const stackBandLede = 'Installs into the stack you already run'
+export const stackBandLede = englishMessages['Landing']['stack']['lede']
 
 export const stackItems = [
   { detail: 'v3', label: 'Payload CMS' },
@@ -189,24 +190,23 @@ export const receipts = [
   { icon: 'braces', label: 'Open registry JSON at /r/registry.json' },
 ] as const
 
-export const workflowIntro =
-  'No scaffolds, no lock-in — plain source plus two scoped patches you can read.'
+export const workflowIntro = englishMessages['Landing']['workflow']['intro']
 
 export const workflowSteps = [
   {
     command: '/components',
-    description: 'Fields, files, and patches — before you run anything.',
-    title: 'Read the contract',
+    description: englishMessages['Landing']['workflow']['steps']['oneDescription'],
+    title: englishMessages['Landing']['workflow']['steps']['oneTitle'],
   },
   {
     command: 'npx payload-components add hero-basic',
-    description: 'The CLI checks your project, then wires it in one pass.',
-    title: 'Run one command',
+    description: englishMessages['Landing']['workflow']['steps']['twoDescription'],
+    title: englishMessages['Landing']['workflow']['steps']['twoTitle'],
   },
   {
     command: 'git diff --stat',
-    description: 'Source, two patches, regenerated types — reviewed like any PR.',
-    title: 'Commit a working block',
+    description: englishMessages['Landing']['workflow']['steps']['threeDescription'],
+    title: englishMessages['Landing']['workflow']['steps']['threeTitle'],
   },
 ] as const
 
@@ -216,8 +216,7 @@ export const workflowSteps = [
 /* generate:types / generate:importmap postInstall steps.              */
 /* ------------------------------------------------------------------ */
 
-export const wiringIntro =
-  'Copying the files is the easy part — the four edits after are where every block, every repo, loses the day.'
+export const wiringIntro = englishMessages['Landing']['wiring']['intro']
 
 /* Caption under the boundary node map: which of the five a plain paste covers. */
 export const wiringMapCaption =
@@ -280,10 +279,10 @@ export type WiringLedgerRow = (typeof wiringLedger.rows)[number]
    anchors the open-source close. No fabricated quotes: real installs
    get featured here only when they exist. */
 export const maintainerNote = {
-  body: 'I built payload-components because installing a Payload block was never the copy-paste — it was the four edits after. The CLI exists so the second project, and the tenth, get that wiring for free. Read the installer source before you trust it; shipping it MIT is the point.',
+  body: englishMessages['Maintainer']['body'],
   href: 'https://github.com/Ducksss',
   name: 'Ducksss',
-  role: 'Maintainer, Payload Components',
+  role: englishMessages['Maintainer']['role'],
 } as const
 
 /* ------------------------------------------------------------------ */
@@ -371,54 +370,46 @@ export const clientProjects: readonly ClientProject[] = [
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
-export const faqIntro =
-  'The short version of the docs. Every answer links back to something you can verify in the repository.'
+export const faqIntro = englishMessages['Landing']['faq']['intro']
 
 export const faqEntries = [
   {
     answer: `Yes — and built to stay that way. The registry, the CLI, all ${componentEntries.length} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.`,
-    question: 'Is Payload Components free?',
+    question: englishMessages['FaqContent']['entries']['one']['question'],
   },
   {
-    answer:
-      'In Payload, a block is a composable page-builder field — a reusable content section (hero, feature grid, CTA) editors stack to lay out a page. Payload Components ships pre-built blocks plus the wiring that makes them live, so a block is not just copied in: it is registered in your Pages collection, mapped in your renderer, typed, and added to the admin import map.',
+    answer: englishMessages['FaqContent']['entries']['two']['answer'],
     href: '/docs/payload-blocks',
-    linkLabel: 'Read the Payload blocks guide',
-    question: 'What is a Payload CMS block?',
+    linkLabel: englishMessages['FaqContent']['entries']['two']['link'],
+    question: englishMessages['FaqContent']['entries']['two']['question'],
   },
   {
-    answer:
-      'Install one with the CLI — `npx payload-components add hero-basic`. It copies the block source into your project and wires it end to end: registers it in your Pages collection, maps it in RenderBlocks, and regenerates your Payload types and admin import map — landing as one reviewable git diff. The same command adds any block in the catalog.',
-    question: 'How do I add a hero block to Payload CMS?',
+    answer: englishMessages['FaqContent']['entries']['three']['answer'],
+    question: englishMessages['FaqContent']['entries']['three']['question'],
   },
   {
-    answer:
-      'Three things: component source files are copied in (block config, component, shared utilities), exactly two files are patched (your Pages collection and RenderBlocks.tsx — each component manifest declares them), and Payload regenerates its own output (payload-types.ts and the admin import map). All of it shows up as an ordinary git diff.',
+    answer: englishMessages['FaqContent']['entries']['four']['answer'],
     href: '/docs/installation',
-    linkLabel: 'Read the installation guide',
-    question: 'What exactly does an install change in my repo?',
+    linkLabel: englishMessages['Templates']['installation'],
+    question: englishMessages['FaqContent']['entries']['four']['question'],
   },
   {
-    answer:
-      'It converges. The CLI detects existing wiring and skips it — the real output is payload-components: "hero-basic" is already installed. Install state is recorded in .payload-components/state.json, so partial installs are visible and recoverable instead of silently broken.',
-    question: 'What happens if I run the same install twice?',
+    answer: englishMessages['FaqContent']['entries']['five']['answer'],
+    question: englishMessages['FaqContent']['entries']['five']['question'],
   },
   {
-    answer:
-      'Payload v3 + Next.js 15/16 projects shaped like the official website starter — rendering layout blocks through src/blocks/RenderBlocks.tsx and registering page blocks in src/collections/Pages/index.ts. The CLI checks your project against the published support matrix before touching anything.',
-    question: 'Which projects are supported today?',
+    answer: englishMessages['FaqContent']['entries']['six']['answer'],
+    question: englishMessages['FaqContent']['entries']['six']['question'],
   },
   {
-    answer:
-      'A plain shadcn install copies files and stops. Payload blocks only work after they are registered in your collection schema, mapped in your renderer, typed, and added to the admin import map. payload-components wraps the same registry delivery with exactly that wiring — that boundary is the product, and the wiring ledger above shows it row by row.',
+    answer: englishMessages['FaqContent']['entries']['seven']['answer'],
     href: '/docs/shadcn-vs-payload-components',
-    linkLabel: 'Read the full shadcn comparison',
-    question: 'Why not just run npx shadcn add?',
+    linkLabel: englishMessages['FaqContent']['entries']['seven']['link'],
+    question: englishMessages['FaqContent']['entries']['seven']['question'],
   },
   {
-    answer:
-      'Deliberately. A component lands only when its source, manifest metadata, docs page, and installer test coverage ship together — half-wired blocks never reach the catalog. Propose the next component in a GitHub issue; the catalog grows from real installs.',
-    question: 'How do new components get into the catalog?',
+    answer: englishMessages['FaqContent']['entries']['eight']['answer'],
+    question: englishMessages['FaqContent']['entries']['eight']['question'],
   },
 ] as const
 
@@ -426,13 +417,12 @@ export const faqEntries = [
 /* Community / CTA                                                     */
 /* ------------------------------------------------------------------ */
 
-export const communityIntro =
-  'The registry, the CLI, the components, and this site are one MIT-licensed repository. Read the installer before you trust it — that is the point.'
+export const communityIntro = englishMessages['Landing']['community']['intro']
 
 /* The quiet replacement for placeholder testimonial slots. */
 export const communityInvite = {
   href: githubIssuesUrl,
-  label: 'Running it in a real repo? Open an issue — early installs get featured.',
+  label: englishMessages['Landing']['community']['invite'],
 } as const
 
 /* ------------------------------------------------------------------ */
@@ -444,17 +434,17 @@ export const catalogDescription = `Browse all ${componentEntries.length} install
 export const catalogMetadataTitle = `${componentEntries.length} Payload CMS Components & Blocks | Catalog`
 export const catalogMetadataDescription =
   'Browse typed Payload CMS blocks. Run npx payload-components add <component> to wire one into your collection, renderer, generated types, and admin import map.'
-export const catalogInstallationLinkLabel = 'See how one-command installation works'
-export const catalogBlocksGuideLinkLabel = 'Follow a block from config to live page'
-export const catalogTemplatesLinkLabel = 'Explore Payload CMS template concepts'
+export const catalogInstallationLinkLabel = englishMessages['Catalog']['installation']
+export const catalogBlocksGuideLinkLabel = englishMessages['Catalog']['blocksGuide']
+export const catalogTemplatesLinkLabel = englishMessages['Catalog']['templates']
 
 /* Composer: pick several blocks across families and get one install command.
    `payload-components add` takes any number of names, so the selection maps
    straight onto a single command rather than a list to run one at a time. */
-export const composerTrayLabel = 'Selected components'
+export const composerTrayLabel = englishMessages['CatalogBrowser']['tray']
 export const composerEmptyHint = 'Select components to build one install command'
-export const composerClearLabel = 'Clear selection'
-export const composerCopyLabel = 'Copy install command'
+export const composerClearLabel = englishMessages['CatalogBrowser']['clear']
+export const composerCopyLabel = englishMessages['Landing']['hero']['copy']
 export const composerAddLabel = (slug: string) => `Add ${slug} to the install command`
 export const composerRemoveLabel = (slug: string) => `Remove ${slug} from the install command`
 export const composerInstallCommand = (slugs: readonly string[]) =>
@@ -464,28 +454,26 @@ export const composerInstallCommand = (slugs: readonly string[]) =>
 /* Templates showcase                                                  */
 /* ------------------------------------------------------------------ */
 
-export const templatesEyebrow = 'Templates'
-export const templatesTitle = 'Payload CMS template concepts, built from installable blocks'
-export const templatesDescription =
-  'Explore complete Payload CMS and Next.js site concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate, music and more. Open every page in a live preview, then trace each section back to a typed block you can install today.'
-export const templatesMetadataTitle = 'Payload CMS Templates for Next.js | Concepts & Recipes'
-export const templatesMetadataDescription =
-  'Explore Payload CMS template concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate and more — preview every page and inspect the typed block recipe.'
+export const templatesEyebrow = englishMessages['Header']['nav']['templates']
+export const templatesTitle = englishMessages['Templates']['title']
+export const templatesDescription = englishMessages['Templates']['description']
+export const templatesMetadataTitle = englishMessages['Templates']['metadataTitle']
+export const templatesMetadataDescription = englishMessages['Templates']['metadataDescription']
 
 export const templateCategoryLabels = {
   agency: 'Agency',
   civic: 'Civic',
   commerce: 'Commerce',
-  education: 'Education',
+  education: englishMessages['Templates']['categories']['education'],
   event: 'Event',
   fintech: 'Fintech',
-  healthcare: 'Healthcare',
-  marketplace: 'Marketplace',
+  healthcare: englishMessages['Templates']['categories']['healthcare'],
+  marketplace: englishMessages['Templates']['categories']['marketplace'],
   music: 'Music',
-  nonprofit: 'Nonprofit',
-  portfolio: 'Portfolio',
-  'real-estate': 'Real estate',
-  restaurant: 'Restaurant',
+  nonprofit: englishMessages['Templates']['categories']['nonprofit'],
+  portfolio: englishMessages['Templates']['categories']['portfolio'],
+  'real-estate': englishMessages['Templates']['categories']['real-estate'],
+  restaurant: englishMessages['Templates']['categories']['restaurant'],
   saas: 'SaaS',
   trade: 'Trade',
 } as const
@@ -498,29 +486,29 @@ export const templatesRecipeIntro =
 /* Community close — templates grow the same way the catalog does: in the
    open, from real needs, with no waitlist or capture in between. */
 export const templatesContribution = {
-  heading: 'Templates are decided in the open',
+  heading: englishMessages['Templates']['communityHeading'],
   intro:
     'These concepts exist to answer one question with the community: should full-site templates become installable? The recipes, the fictional brands, and the installer RFC all live in the public repository — nothing gated, no email capture.',
   links: [
     {
-      description: 'Read the showcase source — every recipe is plain data in the repository.',
+      description: englishMessages['Templates']['contributionRepositoryDescription'],
       external: true,
       href: githubRepoUrl,
-      label: 'Browse the repository',
+      label: englishMessages['Templates']['contributionRepository'],
     },
     {
       description:
         'Should the curated concept copy become seedable? The proposal, what already works, and the open questions.',
       external: true,
       href: `${githubRepoUrl}/blob/main/rfcs/0001-installable-templates.md`,
-      label: 'Read the installer RFC',
+      label: englishMessages['Templates']['contributionRfc'],
     },
     {
       description:
         'Tell us which template, page, or block recipe you would actually ship — or propose a new one.',
       external: true,
       href: githubIssuesUrl,
-      label: 'Open an issue',
+      label: englishMessages['Landing']['community']['issue'],
     },
   ],
 } as const
@@ -533,17 +521,17 @@ export const surfaceLinks = [
   {
     description: 'Architecture, install behavior, support matrix, and component contracts.',
     href: '/docs',
-    title: 'Documentation',
+    title: englishMessages['Common']['documentation'],
   },
   {
     description: 'Current components with exact commands and contracts.',
     href: '/components',
-    title: 'Component catalog',
+    title: englishMessages['Common']['componentCatalog'],
   },
   {
     description: 'What payload-components add wires, step by step.',
     href: '/docs/installation',
-    title: 'Install workflow',
+    title: englishMessages['Footer']['installWorkflow'],
   },
 ] as const
 
@@ -551,12 +539,12 @@ export const communityLinks = [
   {
     description: 'Source, issues, roadmap, and contribution discussion live in the open.',
     href: githubRepoUrl,
-    label: 'GitHub repository',
+    label: englishMessages['Header']['github'],
   },
   {
     description: 'Suggest a component, report install drift, or help shape the registry contract.',
     href: githubIssuesUrl,
-    label: 'Open an issue',
+    label: englishMessages['Landing']['community']['issue'],
   },
 ] as const
 
@@ -574,12 +562,12 @@ const footerComponentCategoryLinks = (Object.keys(componentCategories) as Compon
 export const footerColumns = [
   {
     links: [
-      { href: '/components', label: 'Component catalog' },
-      { href: '/templates', label: 'Template concepts' },
-      { href: '/docs', label: 'Documentation' },
-      { href: '/docs/installation', label: 'Install workflow' },
-      { href: '/docs/architecture', label: 'Architecture' },
-      { href: aiDiscoveryRoute, label: 'AI discovery' },
+      { href: '/components', label: englishMessages['Common']['componentCatalog'] },
+      { href: '/templates', label: englishMessages['Footer']['templateConcepts'] },
+      { href: '/docs', label: englishMessages['Common']['documentation'] },
+      { href: '/docs/installation', label: englishMessages['Footer']['installWorkflow'] },
+      { href: '/docs/architecture', label: englishMessages['Footer']['architecture'] },
+      { href: aiDiscoveryRoute, label: englishMessages['Footer']['aiDiscovery'] },
     ],
     title: 'Product',
   },
@@ -588,19 +576,23 @@ export const footerColumns = [
       ...footerComponentCategoryLinks,
       { accent: true, href: '/components', label: `All ${componentEntries.length} components` },
     ],
-    title: 'Components',
+    title: englishMessages['Header']['nav']['components'],
   },
   {
     links: [
       { href: '/about', label: 'About' },
-      { href: '/brand-guide', label: 'Brand Guide' },
+      { href: '/brand-guide', label: englishMessages['Common']['brandGuide'] },
       { external: true, href: githubRepoUrl, label: 'GitHub' },
-      { external: true, href: githubIssuesUrl, label: 'Open an issue' },
+      {
+        external: true,
+        href: githubIssuesUrl,
+        label: englishMessages['Landing']['community']['issue'],
+      },
       { external: true, href: `${githubRepoUrl}/releases`, label: 'Releases' },
-      { href: feedRoute, label: 'Updates feed' },
-      { href: '/docs/contributing', label: 'Contributing' },
+      { href: feedRoute, label: englishMessages['Footer']['updates'] },
+      { href: '/docs/contributing', label: englishMessages['Footer']['contributing'] },
       { href: '/privacy', label: 'Privacy' },
-      { external: true, href: '/r/registry.json', label: 'Registry JSON' },
+      { external: true, href: '/r/registry.json', label: englishMessages['Footer']['registry'] },
     ],
     title: 'Project',
   },

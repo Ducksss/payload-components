@@ -6,12 +6,19 @@ on:
     paths:
       - messages/en.json
       - crowdin.yml
+      - tools/i18n/**
       - .github/workflows/crowdin.yml
   workflow_dispatch:
+    inputs:
+      import_existing:
+        description: 'One-time import of existing repository translations as unapproved suggestions'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 concurrency:
   group: crowdin-translations
@@ -25,22 +32,67 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Upload source and download translations
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10.24.0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Validate and preserve current translations
+        run: |
+          pnpm i18n:check
+          mkdir -p "$RUNNER_TEMP/crowdin-baseline"
+          cp -R messages "$RUNNER_TEMP/crowdin-baseline/messages"
+
+      - name: Upload English source and optionally bootstrap existing translations
         uses: crowdin/github-action@8f01d54f70f1713ee3f09d82c2bbb2daeac28689 # v2
         with:
           upload_sources: true
-          upload_translations: false
-          download_translations: true
-          create_pull_request: true
-          pull_request_base_branch_name: dev
-          localization_branch_name: codex/crowdin-translations
-          pull_request_title: 'chore(i18n): sync Crowdin translations'
-          pull_request_body: |
-            Automated translation catalogue update from Crowdin.
-
-            Machine-translated routes remain `noindex` until their locale is marked reviewed in `messages/status.json`.
-          commit_message: 'chore(i18n): sync Crowdin translations'
+          upload_translations: ${{ inputs.import_existing || false }}
+          auto_approve_imported: false
+          import_eq_suggestions: false
+          download_translations: false
+          push_translations: false
+          create_pull_request: false
         env:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download translated strings only
+        uses: crowdin/github-action@8f01d54f70f1713ee3f09d82c2bbb2daeac28689 # v2
+        with:
+          upload_sources: false
+          upload_translations: false
+          download_translations: true
+          skip_untranslated_strings: true
+          push_translations: false
+          create_pull_request: false
+        env:
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      - name: Preserve absent translations and reject invalid exports
+        run: |
+          pnpm exec tsx tools/i18n/sync-crowdin.ts "$RUNNER_TEMP/crowdin-baseline"
+          pnpm exec prettier --write messages/locales
+          pnpm i18n:check
+
+      - name: Open a reviewable translation PR
+        if: github.ref == 'refs/heads/dev'
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash tools/i18n/publish-crowdin.sh
+
+      # GITHUB_TOKEN-created PRs do not emit another pull_request workflow run.
+      # Dispatch the real release and smoke gates on the translation branch.
+      - name: Run all PR gates on the translation commit
+        if: steps.pr.outputs.pr_number
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run registry-verification.yml --ref codex/crowdin-translations

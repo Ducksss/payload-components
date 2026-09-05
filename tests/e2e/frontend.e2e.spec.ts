@@ -729,6 +729,25 @@ test.describe('Light shadcn frontend', () => {
     })
   }
 
+  test('searches Chinese catalog copy while keeping install identifiers stable', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 375, height: 812 })
+    await page.goto(`${baseURL}/zh/components?q=${encodeURIComponent('基础首屏')}`)
+    const card = page.locator('article#hero-basic')
+    await expect(card.getByRole('link', { name: '基础首屏', exact: true })).toHaveAttribute(
+      'href',
+      '/zh/docs/components/hero-basic',
+    )
+    await expect(card.locator('code')).toHaveText('hero-basic')
+    await card.getByRole('button', { name: '将 hero-basic 加入安装命令', exact: true }).click()
+    await expect(
+      page.getByText('npx payload-components add hero-basic', { exact: true }).last(),
+    ).toBeVisible()
+    const overflow = await expectNoHorizontalOverflow(page, '/zh/components')
+    expect(overflow.offenders, overflow.message).toEqual([])
+  })
+
   test('switches locale explicitly while preserving the route, query, and hash', async ({
     page,
   }) => {
