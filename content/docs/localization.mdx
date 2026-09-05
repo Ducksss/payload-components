@@ -236,7 +236,15 @@ npx payload-components update --accept-localization-policy-change
 ```
 
 That flag changes installed source and records policy version `semantic-v1`; it never
-opens or migrates your database.
+opens or migrates your database. The update replaces the known legacy shared helper and
+reconciles component files even when their manifest version is unchanged, then regenerates
+types and the admin import map. Because every localized block imports the same helper,
+all remaining legacy owners must be updated together. A targeted update that leaves another
+legacy owner behind is refused before files change.
+
+A helper with local edits or unknown contents is preserved, including with `--force`.
+Reconcile your edits with the current `localizeFields.ts` source before retrying; older
+installers did not record helper ownership, so the CLI cannot safely infer your intent.
 
 `payload-components doctor` reports both halves once you have them, and names whichever
 one is missing:

@@ -6,7 +6,7 @@ import type { ComponentManifest, InstallStateEntry, RegistryDefinition } from '.
 
 import { isBlockConfigFile, localizeBlockConfigSource } from './project'
 import { readSafeProjectFile, resolveSafeProjectPath } from './safe-path'
-import { commitFileChanges, isPathInside, readJsonFile, repoRoot } from './utils'
+import { commitFileChanges, isPathInside, readJsonFile, repoRoot, type FileChange } from './utils'
 
 const registryDefinitionPath = path.join(repoRoot, 'payload-components', 'registry.json')
 const installBaselinesPath = path.join(repoRoot, 'payload-components', 'install-baselines.json')
@@ -93,11 +93,13 @@ export const resolveCanonicalFiles = async (registryItemName: string) => {
  * is staged, then committed as one rollback-capable batch. Dependency and
  * wiring reconciliation still runs through add's idempotent pipeline. */
 export const replaceCanonicalComponentFiles = async ({
+  additionalChanges = [],
   cwd,
   deleteFiles = [],
   localized = false,
   manifest,
 }: {
+  additionalChanges?: FileChange[]
   cwd: string
   deleteFiles?: string[]
   localized?: boolean
@@ -138,7 +140,7 @@ export const replaceCanonicalComponentFiles = async ({
     changes.push({ content: null, filePath: absolutePath })
   }
 
-  await commitFileChanges(changes, { cwd })
+  await commitFileChanges([...changes, ...additionalChanges], { cwd })
 }
 
 export const resolveCanonicalFileHashes = async ({

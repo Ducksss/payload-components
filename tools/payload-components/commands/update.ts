@@ -9,6 +9,7 @@ import {
 } from '../component-files'
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest } from '../manifest'
+import { prepareLocalizationHelper } from '../localization-helper'
 import { readSafeProjectFile } from '../safe-path'
 import { loadState } from '../state'
 
@@ -424,17 +425,27 @@ export const updateCommand = async ({
     return true
   }
 
+  let helperChanges = plans.some((plan) => plan.localized)
+    ? await prepareLocalizationHelper({
+        acceptLegacyPolicyChange: acceptLocalizationPolicyChange,
+        cwd,
+        migratingComponents: plans.map((plan) => plan.componentName),
+      })
+    : []
+
   for (const plan of plans) {
     const manifest = await loadManifest(plan.componentName)
     const replacedFiles = [...plan.files, ...plan.blockedFiles]
     const currentFiles = new Set(manifest.files)
 
     await replaceCanonicalComponentFiles({
+      additionalChanges: helperChanges,
       cwd,
       deleteFiles: replacedFiles.filter((projectPath) => !currentFiles.has(projectPath)),
       localized: plan.localized,
       manifest,
     })
+    helperChanges = []
 
     await addCommand({
       ...(plan.localizationPolicyChange ? { acceptLocalizationPolicyChange: true } : {}),

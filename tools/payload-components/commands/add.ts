@@ -22,9 +22,9 @@ import {
 } from '../project'
 import {
   compareInstalledFiles,
-  copySharedSourceFile,
   resolveRecordedFileHashes,
 } from '../component-files'
+import { ensureLocalizationHelper, prepareLocalizationHelper } from '../localization-helper'
 import { installNamespacedItem, isNamespacedItem } from '../namespaced'
 import { runPostInstallScript } from '../post-install'
 import { buildRegistry, installRegistryDependencies, installRegistryItem } from '../registry'
@@ -410,7 +410,11 @@ const installComponent = async ({
     return
   }
 
+  if (effectiveLocalized) await prepareLocalizationHelper({ cwd })
+
   if (
+    prewrittenFiles.length === 0 &&
+    !acceptLocalizationPolicyChange &&
     installedEntry?.manifestVersion === manifest.version &&
     installedEntry.registryItemName === manifest.registryItemName &&
     installedEntry.status === 'installed' &&
@@ -573,7 +577,7 @@ const installComponent = async ({
 
   if (effectiveLocalized) {
     await executeStage('fragment-apply', async () => {
-      await copySharedSourceFile({ cwd, projectPath: LOCALIZE_HELPER_FILE })
+      await ensureLocalizationHelper(cwd)
 
       const localizedFiles = await applyLocalizedFields({
         configFiles: plan.files.filter((filePath) => isBlockConfigFile(filePath)),
