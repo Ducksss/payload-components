@@ -25,6 +25,16 @@ describe('Crowdin export safety', () => {
     ).toEqual({ title: '您好', description: '世界' })
   })
 
+  it('treats Crowdin JSON empty values as untranslated while retaining unknown keys for validation', () => {
+    expect(
+      mergeCrowdinMessages(
+        { title: 'Hello', newDraft: 'New sentence' },
+        { title: '你好' },
+        { title: '', newDraft: ' ', unknown: '' },
+      ),
+    ).toEqual({ title: '你好', unknown: '' })
+  })
+
   it('rejects English replacement even when the English source changed', () => {
     expect(
       translationRegressions({

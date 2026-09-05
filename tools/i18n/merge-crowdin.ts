@@ -20,7 +20,14 @@ export function mergeCrowdinMessages(
   // keys, but retain unknown downloaded keys so validation can reject them.
   return {
     ...Object.fromEntries(Object.entries(previous).filter(([key]) => key in english)),
-    ...downloaded,
+    // Crowdin's JSON exporter represents untranslated strings as empty values
+    // even with skip_untranslated_strings. Treat those as absent, never as a
+    // request to erase an existing translation. Unknown keys still fail checks.
+    ...Object.fromEntries(
+      Object.entries(downloaded).filter(
+        ([key, value]) => !(key in english) || value.trim().length > 0,
+      ),
+    ),
   }
 }
 
