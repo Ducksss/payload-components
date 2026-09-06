@@ -748,8 +748,9 @@ test.describe('Light shadcn frontend', () => {
         maxRedirects: 0,
       })
       expect(response.status()).toBe(307)
-      expect(new URL(response.headers().location).pathname).toBe(resource)
-      expect(new URL(response.headers().location).search).toBe('?source=saved')
+      const destination = new URL(response.headers().location, response.url())
+      expect(destination.pathname).toBe(resource)
+      expect(destination.search).toBe('?source=saved')
     })
   }
 
