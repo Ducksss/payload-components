@@ -514,6 +514,7 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
            * stays on the reserved .example domain. */
           componentSlug: 'call-to-action-signup',
           content: {
+            action: '/shop-account',
             description:
               'Tell us the shop’s name and where it stands. Dolly reads every application and answers inside two working days.',
             emailPlaceholder: 'you@yourshop.example',
@@ -731,6 +732,7 @@ export const marketplaceWholesaleTemplate: TemplateShowcase = {
            * side of the ledger. */
           componentSlug: 'call-to-action-signup',
           content: {
+            action: '/maker-application',
             description:
               'Send the address of your work — a site, a feed, a folder of honest photographs. A person answers within the week.',
             emailPlaceholder: 'you@yourstudio.example',

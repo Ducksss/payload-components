@@ -188,6 +188,56 @@ describe('fresh Payload smoke component selection', () => {
     ).toThrow(/cannot be used together/)
   })
 
+  it('includes every registry item in direct delivery while keeping file-only components out of Page wiring', async () => {
+    const registry = JSON.parse(
+      await readFile(path.join(repoRoot, 'payload-components/registry.json'), 'utf8'),
+    ) as { items: Array<{ name: string; type: string }> }
+    const defaults = await smokeHarness.resolveSmokeInstallGroups(smokeHarness.parseSmokeArgs([]))
+    expect(defaults.directComponents).toEqual(registry.items.map((item) => item.name).sort())
+    expect(defaults.pageComponents).toEqual(
+      registry.items
+        .filter((item) => item.type === 'registry:block')
+        .map((item) => item.name)
+        .sort(),
+    )
+    const shards = await Promise.all(
+      Array.from({ length: smokeHarness.SMOKE_SHARD_COUNT }, (_, index) =>
+        smokeHarness.resolveSmokeInstallGroups(
+          smokeHarness.parseSmokeArgs(['--shard-index', String(index)]),
+        ),
+      ),
+    )
+    const delivered = shards.flatMap((shard) => shard.directComponents)
+    expect(delivered.sort()).toEqual(defaults.directComponents)
+    expect(new Set(delivered).size).toBe(delivered.length)
+    for (const article of ['author-card', 'post-hero']) {
+      expect(defaults.directComponents).toContain(article)
+      expect(defaults.pageComponents).not.toContain(article)
+    }
+  })
+
+  it('keeps explicit file-only smoke selections on direct delivery without Page seeds', async () => {
+    const articleOnly = await smokeHarness.resolveSmokeInstallGroups(
+      smokeHarness.parseSmokeArgs([
+        '--components',
+        'post-hero,author-card',
+        '--scenario',
+        'website',
+      ]),
+    )
+    expect(articleOnly).toEqual({
+      directComponents: ['author-card', 'post-hero'],
+      pageComponents: [],
+    })
+    const mixed = await smokeHarness.resolveSmokeInstallGroups(
+      smokeHarness.parseSmokeArgs(['--components', 'post-hero,hero-basic']),
+    )
+    expect(mixed).toEqual({
+      directComponents: ['hero-basic', 'post-hero'],
+      pageComponents: ['hero-basic'],
+    })
+  })
+
   it('scaffolds the website template by default and the blank one for the bare scenario', () => {
     const base = { projectName: 'p' }
 

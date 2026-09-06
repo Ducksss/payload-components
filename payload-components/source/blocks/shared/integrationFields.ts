@@ -24,11 +24,13 @@ export const integrationFields: Field[] = [
   {
     name: 'heading',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
   {
     name: 'subtext',
     type: 'textarea',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
   {
     name: 'integrations',
@@ -49,15 +51,18 @@ export const integrationFields: Field[] = [
       {
         name: 'name',
         type: 'text',
+        custom: { payloadComponents: { localization: 'global' } },
         required: true,
       },
       {
         name: 'description',
         type: 'textarea',
+        custom: { payloadComponents: { localization: 'localized' } },
       },
       {
         name: 'href',
         type: 'text',
+        custom: { payloadComponents: { localization: 'global' } },
       },
     ],
   },

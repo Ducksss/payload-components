@@ -133,7 +133,7 @@ idempotent, a name that is already installed is a no-op rather than an error.
 | ------------- | --------------------------------------------------------------------------------------- |
 | `--dry-run`   | Print the plan — files, wiring, dependencies, post-install commands — and change nothing |
 | `--demo`      | After a successful install, write the reviewable demo seed script                        |
-| `--localized` | Mark the block's text fields `localized: true` for Payload localization                  |
+| `--localized` | Apply the block's explicit semantic localization policies                              |
 
 ### Install from another registry
 
@@ -208,7 +208,7 @@ npx payload-components localize --locales en,zh
 It inserts a `localization` block into your `buildConfig({ ... })` call — labelled in each
 language, `rtl` where the script needs it — copies
 `src/blocks/shared/localizeFields.ts`, wraps each installed block config's field list in
-it, and records the choice in install state so `update` re-applies the wrapper rather than
+it, and records policy version `semantic-v1` in install state so `update` re-applies the wrapper rather than
 reinstalling a config without it.
 
 | Flag                      | Effect                                                                      |
@@ -308,11 +308,13 @@ install drift.
 ```bash
 npx payload-components update
 npx payload-components update hero-basic --force
+npx payload-components update --accept-localization-policy-change
 ```
 
-Re-installs recorded components at the version this CLI ships. Files are deleted first so
-the registry install rewrites them — `add` treats a present file as satisfied, which is
-right for a fresh install and wrong for an upgrade.
+Re-installs recorded components at the version this CLI ships. Canonical source replacements
+and retired-file deletions are staged, then committed as one rollback-capable batch; `add` then
+reconciles dependencies, wiring, generators, and state through its idempotent stages. A failed
+upgrade no longer creates a window where the live component source is simply missing.
 
 **Local edits are protected.** A component with a modified file is skipped, listed by name,
 and the command exits non-zero. Pass `--force` to overwrite it, or copy your edits out
@@ -330,10 +332,17 @@ the manifest declares and exits non-zero until you pass `--accept-breaking`.
 npx payload-components update --accept-breaking
 ```
 
-These are two different decisions and they have two different flags: `--force` means
-"discard my local edits", `--accept-breaking` means "I have migrated my content".
+These are separate decisions with separate flags: `--force` means "discard my local
+edits", while `--accept-breaking` means "I have migrated the manifest's content change".
 
-With no names, `update` targets every component that is behind or left in a partial state.
+Legacy localized installs have a third guard. They used field-type inference, which could
+localize URLs, prices, or form actions. After migrating those stored values back to global
+fields, `--accept-localization-policy-change` adopts the explicit `semantic-v1` policies.
+The CLI updates source and state only; it never migrates the database.
+
+With no names, `update` targets every component that is behind, left in a partial state, or
+recorded as localized under the legacy policy. A current non-localized install is not rewritten
+merely because older state predates the localization-policy field.
 `--dry-run` prints the plan.
 
 ### Changelogs
@@ -360,9 +369,9 @@ newest entry also appears on its docs page once it has moved past its first rele
 ### remove
 
 ```bash
-npx payload-components remove hero-basic
 npx payload-components remove hero-basic --dry-run
-npx payload-components remove hero-basic --force
+npx payload-components remove hero-basic --accept-stored-content
+npx payload-components remove hero-basic --force --accept-stored-content
 ```
 
 The inverse of an install: it deletes the files this component owns, unregisters the block,
@@ -381,8 +390,10 @@ Three things it deliberately does not do:
   `hero-basic` while `hero-video` is installed leaves the shared hero field base in place even
   if a retained component's current manifest moved or disappeared.
 - **Package dependencies stay.** The CLI cannot know whether your own code adopted them.
-- **Stored content is untouched.** Existing Page documents keep their block data. Delete
-  those blocks in the admin before publishing.
+- **Stored content is untouched.** Existing Page documents keep their block data. A real
+  removal therefore stops until you pass `--accept-stored-content`, confirming that you
+  migrated or deleted those blocks in the admin. This consent is independent from `--force`,
+  which only accepts source-ownership risk.
 
 Removal is idempotent, and a repeat run that changes nothing skips the generators instead of
 spending minutes regenerating for no effect.
@@ -428,12 +439,14 @@ install would change — instead of guessing at component names.
 pnpm payload-components new hero-split
 ```
 
-Scaffolds a whole component bundle in a checkout of this repository: the block source,
+This is repository-only contributor tooling and is not part of the published consumer CLI.
+It scaffolds a whole component bundle in a checkout of this repository: the block source,
 manifest, registry item, doc page, and demo twin, plus entries in the demos registry, the
-docs sidebar, the CLI help list, and the README inventory table.
+docs sidebar, generated site-catalog projection, and README inventory table. Consumer CLI
+help derives its component list from the registry at runtime.
 
-It then prints what it deliberately did **not** decide — where the component belongs in
-`componentEntries` (catalog order is ranked, not chronological), its `dbName` abbreviation
+It then prints what it deliberately did **not** decide — its editorial entry in
+`src/lib/component-catalog.ts`, its `dbName` abbreviation
 with a uniqueness check against every existing block, the Content model prose, and the demo
 sample content. See
 [the component template README](https://github.com/Ducksss/payload-components/blob/main/payload-components/templates/component-template/README.md)
@@ -493,7 +506,10 @@ It copies eight files and registers two collections in your Payload config:
 | `src/blocks/RenderBlocks.tsx` | the renderer map installs wire into |
 
 The result is the official starter's shape, which is why a scaffolded project then detects
-as `payload-website-starter` rather than as a target of its own.
+as `payload-website-starter` rather than as a target of its own. The CLI records only files
+whose bytes came from this scaffold. Matching starter files are adopted; custom existing
+implementations stay unowned. A later `init --scaffold` updates pristine managed files and
+reports local edits, while `init --scaffold --force` explicitly replaces those managed edits.
 
 <Callout type="warn">
   **Set up Tailwind and shadcn first.** Every installed block is Tailwind-classed, and
@@ -512,8 +528,10 @@ as `payload-website-starter` rather than as a target of its own.
 </Callout>
 
 <Callout type="warn">
-  These files are a starting point, not a framework. They are yours after install — the CLI
-  does not track or update them, and they are intentionally thinner than the official
+  These files are a starting point, not a framework. Files created or adopted by the
+  scaffold are lifecycle-managed: later runs update pristine copies and preserve local
+  edits unless you pass `--force`. Custom implementations that did not match the scaffold
+  stay yours and unowned. The managed files are intentionally thinner than the official
   Payload website starter's versions (no Button dependency in `CMSLink`, no image-size
   variants in `Media`). If you are starting a content site from scratch, the website starter
   itself is still the better base.

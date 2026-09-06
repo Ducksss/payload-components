@@ -75,7 +75,8 @@ export function CollectionBrowser({
           if (next.page !== request.page || next.category !== request.category) {
             const href = collectionHref(window.location.search, queryKey, next)
             window.history.replaceState(window.history.state, '', href)
-            setSearch(window.location.search)
+            previous = JSON.stringify({ category: next.category, page: next.page })
+            window.dispatchEvent(new Event(navigationEvent))
           }
         } catch {
           if (active && ticket === sequence) setError(true)

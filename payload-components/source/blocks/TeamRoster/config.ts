@@ -29,6 +29,7 @@ export const TeamRoster: Block = {
         {
           name: 'label',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
         {

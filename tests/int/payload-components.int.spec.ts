@@ -319,7 +319,7 @@ describe('payload-components add', () => {
 
       const parsedState = await readInstallState(fixtureDir)
 
-      expect(parsedState.version).toBe(3)
+      expect(parsedState.version).toBe(4)
       expect(Object.keys(parsedState.components[manifest.name].fileHashes).sort()).toEqual(
         [...manifest.files].sort(),
       )

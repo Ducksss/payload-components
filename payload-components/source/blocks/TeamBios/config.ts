@@ -15,6 +15,7 @@ export const TeamBios: Block = {
     {
       name: 'description',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'members',
@@ -33,6 +34,7 @@ export const TeamBios: Block = {
         {
           name: 'bio',
           type: 'textarea',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],

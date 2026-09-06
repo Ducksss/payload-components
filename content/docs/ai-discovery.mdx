@@ -41,12 +41,12 @@ reviewable source establish that claim.
 | `/feed.xml`                              | Dated RSS updates from blog frontmatter                        | `src/app/feed.xml/route.ts`, `content/blog/*.mdx`                                                    |
 | `/llms.txt`                              | Concise project map, primary links, supported stack, FAQ       | `src/app/llms.txt/route.ts`, `src/lib/site.ts`                                                       |
 | `/llms-full.txt`                         | Compiled docs and blog content in one text response            | `src/app/llms-full.txt/route.ts`, Fumadocs collections                                               |
-| `/docs/<slug>.md` and content endpoints  | Page-level markdown representation                             | `src/proxy.ts`, `src/app/llms.mdx/docs/[[...slug]]/route.ts`                                         |
-| `/blog/<slug>.md` | Blog text with author and publication date | `src/lib/blog-source.ts`, `src/app/llms.mdx/blog/[slug]/content.md/route.ts` |
-| `/templates/<slug>.md` | Template block recipe, install command, and page plan | `src/lib/template-markdown.ts`, `src/app/llms.mdx/templates/[slug]/content.md/route.ts` |
+| `/docs/<slug>.md` and content endpoints  | Page-level markdown representation                             | `src/proxy.ts`, `src/app/[locale]/llms.mdx/docs/[[...slug]]/route.ts`                                         |
+| `/blog/<slug>.md` | Blog text with author and publication date | `src/lib/blog-source.ts`, `src/app/[locale]/llms.mdx/blog/[slug]/content.md/route.ts` |
+| `/templates/<slug>.md` | Template block recipe, install command, and page plan | `src/lib/template-markdown.ts`, `src/app/[locale]/llms.mdx/templates/[slug]/content.md/route.ts` |
 | `/api/search`                            | Search index built from the same docs source                   | `src/app/api/search/route.ts`                                                                        |
 | JSON-LD                                  | Stable project, software, catalog, article, blog, and FAQ IDs  | `src/lib/structured-data.ts`, page routes                                                            |
-| canonical, Open Graph, and RSS metadata  | Browser/search identity and sharing declarations               | `src/app/layout.tsx`, route metadata                                                                 |
+| canonical, Open Graph, and RSS metadata  | Browser/search identity and sharing declarations               | `src/app/[locale]/layout.tsx`, route metadata                                                                 |
 | `/r/registry.json` and `/r/<name>.json`  | Public install contract and embedded source evidence           | `payload-components/registry.json`, generated `public/r` output                                      |
 | GitHub repository                        | Source, issues, releases, tests, license, and contribution log | repository metadata and workflows                                                                   |
 

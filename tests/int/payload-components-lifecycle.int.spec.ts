@@ -226,11 +226,27 @@ describe('remove', () => {
     expect((await loadState(fixtureDir)).components['hero-basic']).toBeDefined()
   })
 
+  it('requires stored Page content to be handled before code removal', async () => {
+    const { fixtureDir } = await installFixture(['hero-basic'])
+    const configPath = path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts')
+
+    await expect(removeCommand({ componentName: 'hero-basic', cwd: fixtureDir })).rejects.toThrow(
+      '--accept-stored-content',
+    )
+
+    expect(await exists(configPath)).toBe(true)
+    expect((await loadState(fixtureDir)).components['hero-basic']).toBeDefined()
+  })
+
   it('deletes owned files, unwires the block, and drops the state record', async () => {
     const { fixtureDir } = await installFixture(['hero-basic'])
     const read = captureStdout()
 
-    await removeCommand({ componentName: 'hero-basic', cwd: fixtureDir })
+    await removeCommand({
+      acceptStoredContent: true,
+      componentName: 'hero-basic',
+      cwd: fixtureDir,
+    })
 
     expect(read()).toContain('removed "hero-basic"')
     expect(await exists(path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts'))).toBe(false)
@@ -255,7 +271,11 @@ describe('remove', () => {
     const { fixtureDir } = await installFixture(['hero-basic', 'hero-video'])
     const read = captureStdout()
 
-    await removeCommand({ componentName: 'hero-basic', cwd: fixtureDir })
+    await removeCommand({
+      acceptStoredContent: true,
+      componentName: 'hero-basic',
+      cwd: fixtureDir,
+    })
 
     expect(read()).toContain('src/blocks/shared/heroFields.ts (keep — still used by hero-video)')
     expect(await exists(path.join(fixtureDir, 'src/blocks/shared/heroFields.ts'))).toBe(true)
@@ -285,7 +305,12 @@ describe('remove', () => {
     expect((await loadState(fixtureDir)).components['hero-basic']).toBeDefined()
 
     const read = captureStdout()
-    await removeCommand({ componentName: 'hero-basic', cwd: fixtureDir, force: true })
+    await removeCommand({
+      acceptStoredContent: true,
+      componentName: 'hero-basic',
+      cwd: fixtureDir,
+      force: true,
+    })
 
     expect(read()).toContain('local edits discarded by --force')
     expect(await exists(configPath)).toBe(false)
@@ -304,7 +329,12 @@ describe('remove', () => {
     )
     expect(await exists(configPath)).toBe(true)
 
-    await removeCommand({ componentName: 'hero-basic', cwd: fixtureDir, force: true })
+    await removeCommand({
+      acceptStoredContent: true,
+      componentName: 'hero-basic',
+      cwd: fixtureDir,
+      force: true,
+    })
 
     expect(await exists(configPath)).toBe(false)
   })
@@ -323,7 +353,11 @@ describe('remove', () => {
     await saveState(fixtureDir, state)
 
     const read = captureStdout()
-    await removeCommand({ componentName: 'hero-basic', cwd: fixtureDir })
+    await removeCommand({
+      acceptStoredContent: true,
+      componentName: 'hero-basic',
+      cwd: fixtureDir,
+    })
 
     expect(read()).toContain(`${sharedPath} (keep — still used by retired-hero)`)
     expect(await exists(path.join(fixtureDir, sharedPath))).toBe(true)
@@ -351,7 +385,11 @@ describe('remove', () => {
     const { fixtureDir } = await installFixture(['hero-basic'])
 
     captureStdout()
-    await removeCommand({ componentName: 'hero-basic', cwd: fixtureDir })
+    await removeCommand({
+      acceptStoredContent: true,
+      componentName: 'hero-basic',
+      cwd: fixtureDir,
+    })
     await expect(
       removeCommand({ componentName: 'hero-basic', cwd: fixtureDir }),
     ).resolves.toBeUndefined()
@@ -362,7 +400,11 @@ describe('remove', () => {
     const { fixtureDir } = await installFixture(['hero-basic'])
 
     captureStdout()
-    await removeCommand({ componentName: 'hero-basic', cwd: fixtureDir })
+    await removeCommand({
+      acceptStoredContent: true,
+      componentName: 'hero-basic',
+      cwd: fixtureDir,
+    })
 
     const read = captureStdout()
 

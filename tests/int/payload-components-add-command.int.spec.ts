@@ -45,7 +45,7 @@ const detectedProject: DetectedProject = {
 
 const defaultState: InstallState = {
   components: {},
-  version: 3,
+  version: 4,
 }
 
 const fixtureDirs: string[] = []
@@ -454,7 +454,7 @@ describe('payload-components add command orchestration', () => {
             targetId: 'payload-website-starter',
           },
         },
-        version: 3,
+        version: 4,
       },
     })
 
@@ -500,6 +500,7 @@ describe('payload-components add command orchestration', () => {
               lastAttemptAt: '2026-04-16T00:00:00.000Z',
               lastError: null,
               localized: true,
+              localizationPolicy: 'semantic-v1',
               manifestVersion: '0.1.0',
               patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
               registryItemName: 'hero-basic',
@@ -507,7 +508,7 @@ describe('payload-components add command orchestration', () => {
               targetId: 'payload-website-starter',
             },
           },
-          version: 3,
+          version: 4,
         },
       })
 
@@ -561,7 +562,7 @@ describe('payload-components add command orchestration', () => {
             targetId: 'payload-website-starter',
           },
         },
-        version: 3,
+        version: 4,
       },
     })
 

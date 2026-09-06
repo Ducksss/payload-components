@@ -26,11 +26,13 @@ export const ComparatorTable: Block = {
         {
           name: 'name',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
         {
           name: 'badge',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           admin: {
             description: 'Optional pill above the plan name, e.g. "Most popular".',
           },
@@ -61,6 +63,7 @@ export const ComparatorTable: Block = {
         {
           name: 'groupLabel',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           admin: {
             description: 'Optional section heading rendered as a divider row above this feature.',
           },
@@ -68,13 +71,15 @@ export const ComparatorTable: Block = {
         {
           name: 'feature',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
         {
           name: 'values',
           type: 'array',
           admin: {
-            description: 'One cell per plan, in the same order as Plans. Tick "included" for a checkmark, or set a label for a text value.',
+            description:
+              'One cell per plan, in the same order as Plans. Tick "included" for a checkmark, or set a label for a text value.',
           },
           fields: [
             {
@@ -84,6 +89,7 @@ export const ComparatorTable: Block = {
             {
               name: 'label',
               type: 'text',
+              custom: { payloadComponents: { localization: 'localized' } },
             },
           ],
         },

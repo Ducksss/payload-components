@@ -19,14 +19,15 @@ application with no Payload database. The installable component source targets s
 Payload v3 application. Importing target code into the site would collapse that boundary and make a
 documentation deploy depend on a CMS runtime it does not own.
 
-Demo twins let the catalog show real component design without crossing that line. A twin is a static,
-site-only preview that contains the installable component's visual class tokens while using fixture
-content and no Payload imports.
+Demo twins let the catalog show the installable component's design without crossing that line. A
+twin is a static, site-only specimen that preserves the source component's visual class groups
+while using fixture content and no Payload imports. It is explicitly a mirror, not the consumer
+component running inside the docs site.
 
 <BlogFigure
   src="/blog/demo-twins/figure-01-architecture-mirror.svg"
-  alt="A one-way class token contract connecting installable Payload source to a site-only demo twin while each remains in its own runtime"
-  caption="The token-presence guard keeps every source class token represented in the twin without requiring identical token sets or a runtime dependency."
+  alt="A one-way class group contract connecting installable Payload source to a site-only demo twin while each remains in its own runtime"
+  caption="The class-group guard keeps each source style group attached to one preview element without requiring a consumer-runtime dependency."
 />
 
 ## Why not render the source directly?
@@ -48,25 +49,27 @@ consumer fixtures where Payload behavior belongs.
 The twin pays a small duplication cost to keep deployments independent and the component contract
 honest.
 
-## Keep source class tokens present
+## Keep source class groups on one element
 
-The key rule is that every visual class token found in the source component is also present in the
-demo. An integration test reads both files and enforces that one-way containment. Change a spacing
-class, grid breakpoint, radius, or typography token in source, and the corresponding twin must carry
-it in the same pull request.
+The key rule is that every visual class group found in the source component stays inside one class
+expression on a demo element. An integration test reads both files and enforces that one-way
+containment, including conditional and template-literal classes. Change a spacing class, grid
+breakpoint, radius, or typography token in source, and the corresponding twin must carry it in the
+same pull request.
 
 The guard does not require identical control flow or identical token sets. Target source can narrow
 Payload relationships, render real links, and handle wrapper props. The twin can use small static
-arrays and demo-only layout classes. What should not drift is the source styling users are evaluating
-in the catalog.
+arrays and interleave a few demo-only layout classes. What should not drift is the source styling
+users are evaluating in the catalog. Keeping each sequence on one element avoids the old
+false positive where individual tokens could be scattered across unrelated markup.
 
 This rule makes the preview useful as design evidence. Without it, the site could advertise one
 component and install another.
 
 <BlogFigure
   src="/blog/demo-twins/figure-02-source-preview.webp"
-  alt="A structure-only Hero Basic demo fixture beside the Hero Basic documentation Code tab and the real class-token mirror assertion from the demo-twin integration test"
-  caption="The preview is explicitly labeled as fixture content; the source and test panels show how the docs site mirrors shipped class tokens without importing the Payload runtime."
+  alt="A structure-only Hero Basic demo fixture beside the Hero Basic documentation Code tab and the per-element class-group mirror assertion from the demo-twin integration test"
+  caption="The preview is explicitly labeled as fixture content; the source and test panels show how the docs site mirrors every shipped per-element class group without importing the Payload runtime."
 />
 
 ## Keep the twin out of the accessibility tree
@@ -100,8 +103,8 @@ The preview route has no database and no live editor content. That keeps capture
 
 Three checks protect different facts:
 
-1. **Class-token containment:** every source class token is present in the twin, which may also have
-   demo-only tokens.
+1. **Class-group containment:** every source class group stays on one twin element, which may also
+   have demo-only tokens.
 2. **Visual standards:** both rely on named color, radius, spacing, tracking, and font tokens.
 3. **Visual regression:** the rendered twin matches a committed platform baseline.
 

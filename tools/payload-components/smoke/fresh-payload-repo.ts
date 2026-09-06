@@ -9,11 +9,7 @@ import { chromium } from '@playwright/test'
 
 import { BASE_BUNDLE_FILES } from '../base-bundle'
 import { loadManifest } from '../manifest'
-import {
-  runCommand as runBoundedCommand,
-  shadcnCliPackage,
-  terminateProcessTree,
-} from '../utils'
+import { runCommand as runBoundedCommand, shadcnCliPackage, terminateProcessTree } from '../utils'
 import type { ComponentManifest } from '../types'
 
 export const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000
@@ -81,7 +77,7 @@ const manifestDir = path.join(repoRoot, 'payload-components', 'manifests')
 const registryDefinitionPath = path.join(repoRoot, 'payload-components', 'registry.json')
 
 export const DEFAULT_SMOKE_EXCLUSION_REASON =
-  'Fresh Payload smoke installs page blocks only. Explicit file-only article components are covered by direct-shadcn delivery, lifecycle, render, and compile checks in tests/int/article-components.int.spec.tsx.'
+  'Fresh Payload page wiring installs page blocks only. File-only article components join direct URL delivery and have lifecycle, render, and compile checks in tests/int/article-components.int.spec.tsx.'
 
 export type DefaultSmokeSelection = {
   components: string[]
@@ -137,13 +133,23 @@ export const getDefaultSmokeSelection = async (): Promise<DefaultSmokeSelection>
     .map((manifest) => manifest.name)
     .sort()
   for (const manifest of allManifests.filter((entry) => entry.installMode === 'file-only')) {
-    if (!registry.items.some((item) => item.name === manifest.name && item.type === 'registry:component')) {
+    if (
+      !registry.items.some(
+        (item) => item.name === manifest.name && item.type === 'registry:component',
+      )
+    ) {
       throw new Error(`File-only manifest "${manifest.name}" must match a registry:component item.`)
     }
   }
   for (const exclusion of exclusions) {
-    if (!allManifests.some((manifest) => manifest.name === exclusion.name && manifest.installMode === 'file-only')) {
-      throw new Error(`Excluded registry item "${exclusion.name}" needs an explicit file-only manifest.`)
+    if (
+      !allManifests.some(
+        (manifest) => manifest.name === exclusion.name && manifest.installMode === 'file-only',
+      )
+    ) {
+      throw new Error(
+        `Excluded registry item "${exclusion.name}" needs an explicit file-only manifest.`,
+      )
     }
   }
 
@@ -294,6 +300,25 @@ export const resolveSmokeComponents = async (options: SmokeOptions) => {
   const slugs = await getInstallableComponentSlugs()
 
   return typeof options.shardIndex === 'number' ? getSmokeShard(slugs, options.shardIndex) : slugs
+}
+
+/* Page wiring and direct delivery have separate inventories: file-only article
+ * components must reach shadcn without ever entering a Page layout or seed. */
+export const resolveSmokeInstallGroups = async (options: SmokeOptions) => {
+  const selected = await resolveSmokeComponents(options)
+  const selectedManifests = await Promise.all(selected.map((slug) => loadManifest(slug)))
+  const pageComponents = selectedManifests
+    .filter((manifest) => manifest.installMode !== 'file-only')
+    .map((manifest) => manifest.name)
+  if (options.components) return { directComponents: selected, pageComponents }
+
+  const fileOnly = (await getDefaultSmokeSelection()).exclusions.map((entry) => entry.name)
+  const directArticles =
+    typeof options.shardIndex === 'number' ? getSmokeShard(fileOnly, options.shardIndex) : fileOnly
+  return {
+    directComponents: [...new Set([...selected, ...directArticles])].sort(),
+    pageComponents,
+  }
 }
 
 export const getCreatePayloadAppArgs = ({
@@ -946,11 +971,9 @@ const assertRouteRendersWithPlaywright = async ({
     })
 
     for (const manifest of manifests) {
-      await page
-        .locator(`#block-smoke-${manifest.name}`)
-        .waitFor({
-          timeout: Math.min(timeoutMs, 60_000),
-        })
+      await page.locator(`#block-smoke-${manifest.name}`).waitFor({
+        timeout: Math.min(timeoutMs, 60_000),
+      })
     }
   } finally {
     await browser.close()
@@ -1061,7 +1084,7 @@ const runBarePayloadBaseBundleSmoke = async ({
   const bareStylesPath = path.join(targetPath, 'src', 'app', '(frontend)', 'styles.css')
   const bareStyles = await readFile(bareStylesPath, 'utf8').catch(() => '')
 
-  if (!bareStyles.includes('@import \'tailwindcss\'')) {
+  if (!bareStyles.includes("@import 'tailwindcss'")) {
     await writeFile(bareStylesPath, `@import 'tailwindcss';\n\n${bareStyles}`, 'utf8')
   }
 
@@ -1284,8 +1307,7 @@ const runFreshPayloadRepoSmoke = async ({
   }
 }
 
-export const normalizeSmokeDatabaseConnectionString = (value?: string) =>
-  value?.trim() || undefined
+export const normalizeSmokeDatabaseConnectionString = (value?: string) => value?.trim() || undefined
 
 export const smokeEnvForTarget = ({
   databaseUrl,
@@ -1321,8 +1343,12 @@ export const runSmoke = async (options: SmokeOptions) => {
   let success = false
 
   try {
-    const components = await resolveSmokeComponents(options)
+    const { directComponents, pageComponents: components } =
+      await resolveSmokeInstallGroups(options)
     const manifests = await Promise.all(components.map((component) => loadManifest(component)))
+    const directManifests = await Promise.all(
+      directComponents.map((component) => loadManifest(component)),
+    )
 
     summary.stageLog.push('registry-build-and-check')
     await runCommand({
@@ -1350,26 +1376,28 @@ export const runSmoke = async (options: SmokeOptions) => {
 
     if (options.scenario !== 'bare') {
       summary.directTargetPath = await runDirectShadcnUrlSmoke({
-        components,
-        manifests,
+        components: directComponents,
+        manifests: directManifests,
         registryUrl: summary.registryUrl,
         stageLog: summary.stageLog,
         tempRoot,
         timeoutMs: options.timeoutMs,
       })
 
-      const freshResult = await runFreshPayloadRepoSmoke({
-        dbConnectionString: process.env.POSTGRES_URL,
-        components,
-        manifests,
-        stageLog: summary.stageLog,
-        tarballPath,
-        tempRoot,
-        timeoutMs: options.timeoutMs,
-      })
+      if (components.length > 0) {
+        const freshResult = await runFreshPayloadRepoSmoke({
+          dbConnectionString: process.env.POSTGRES_URL,
+          components,
+          manifests,
+          stageLog: summary.stageLog,
+          tarballPath,
+          tempRoot,
+          timeoutMs: options.timeoutMs,
+        })
 
-      summary.routeUrl = freshResult.routeUrl
-      summary.targetPath = freshResult.targetPath
+        summary.routeUrl = freshResult.routeUrl
+        summary.targetPath = freshResult.targetPath
+      }
     }
 
     if (options.scenario !== 'website') {

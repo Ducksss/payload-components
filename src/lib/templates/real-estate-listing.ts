@@ -507,6 +507,7 @@ export const realEstateListingTemplate: TemplateShowcase = {
            * exactly that about mailing lists. */
           componentSlug: 'call-to-action-signup',
           content: {
+            action: '/register-search',
             description:
               'Tell us what you are looking for and you will hear about the right homes before they reach this page. No lists you did not ask for — Davey rings, once, when it is actually right.',
             emailPlaceholder: 'you@yourhouse.example',

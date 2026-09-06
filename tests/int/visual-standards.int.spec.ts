@@ -336,7 +336,10 @@ describe('Component visual standards', () => {
   })
 
   it('keeps the brand guide from copying CSS token values by hand', async () => {
-    const source = await readFile(path.join(repoRoot, 'src/app/brand-guide/page.tsx'), 'utf8')
+    const source = await readFile(
+      path.join(repoRoot, 'src/app/[locale]/brand-guide/page.tsx'),
+      'utf8',
+    )
 
     expect(source).not.toMatch(/value:\s*['"`](?:oklch\(|-?\d+(?:\.\d+)?(?:rem|em)|0(?:deg)?)/)
   })
@@ -354,8 +357,8 @@ describe('Component visual standards', () => {
       'src/components/site/Logomark.tsx',
       'public/favicon.svg',
       'src/app/opengraph-image.tsx',
-      'src/app/templates/opengraph-image.tsx',
-      'src/app/templates/[slug]/opengraph-image.tsx',
+      'src/app/[locale]/templates/opengraph-image.tsx',
+      'src/app/[locale]/templates/[slug]/opengraph-image.tsx',
     ]
 
     /* Attribute order and quoting differ per file (JSX vs. an SVG string vs. the

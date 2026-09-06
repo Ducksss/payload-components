@@ -76,7 +76,7 @@ describe('payload-components doctor orchestration', () => {
         [heroManifest.name]: stateEntryFor(heroManifest),
         [featureManifest.name]: stateEntryFor(featureManifest),
       },
-      version: 3,
+      version: 4,
     }
     const resolveInstallPlan = vi
       .fn()

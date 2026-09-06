@@ -22,6 +22,7 @@ export const HeroKinetic: Block = {
         {
           name: 'label',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],
@@ -35,6 +36,7 @@ export const HeroKinetic: Block = {
     {
       name: 'imageCaption',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'proofItems',
@@ -46,6 +48,7 @@ export const HeroKinetic: Block = {
         {
           name: 'label',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],

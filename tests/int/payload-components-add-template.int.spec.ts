@@ -19,7 +19,7 @@ afterEach(async () => {
   vi.restoreAllMocks()
 })
 
-const setup = async () => {
+const setup = async ({ failPlanFor }: { failPlanFor?: string } = {}) => {
   const addCommand = vi.fn().mockResolvedValue(undefined)
   const warnWhenNoLocalesDeclared = vi.fn().mockResolvedValue(undefined)
   const output: string[] = []
@@ -28,6 +28,26 @@ const setup = async () => {
     addCommand,
     warnWhenNoLocalesDeclared,
   }))
+  if (failPlanFor) {
+    vi.doMock('../../tools/payload-components/install-plan', async () => {
+      const actual = await vi.importActual<
+        typeof import('../../tools/payload-components/install-plan')
+      >('../../tools/payload-components/install-plan')
+
+      return {
+        ...actual,
+        resolveInstallPlan: vi.fn(
+          async (options: Parameters<typeof actual.resolveInstallPlan>[0]) => {
+            if (options.manifest.name === failPlanFor) {
+              throw new Error(`preflight failed for ${failPlanFor}`)
+            }
+
+            return await actual.resolveInstallPlan(options)
+          },
+        ),
+      }
+    })
+  }
   vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
     output.push(String(chunk))
     return true
@@ -141,6 +161,18 @@ describe('add-template', () => {
     await expect(
       addTemplateCommand({ cwd: process.cwd(), templateSlug: 'portfolio-solo' }),
     ).rejects.toThrow()
+    expect(addCommand).not.toHaveBeenCalled()
+  })
+
+  it('preflights the final block before installing the first one', async () => {
+    const template = await loadTemplateManifest('portfolio-solo')
+    const failPlanFor = template.components.at(-1)!
+    const { addCommand, addTemplateCommand } = await setup({ failPlanFor })
+    const fixtureDir = await makeFixture()
+
+    await expect(
+      addTemplateCommand({ cwd: fixtureDir, templateSlug: 'portfolio-solo' }),
+    ).rejects.toThrow(`preflight failed for ${failPlanFor}`)
     expect(addCommand).not.toHaveBeenCalled()
   })
 })

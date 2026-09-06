@@ -12,16 +12,17 @@ export const EmbedBasic: Block = {
     {
       name: 'url',
       type: 'text',
+      custom: { payloadComponents: { localization: 'global' } },
       required: true,
       validate: validateEmbedUrl,
       admin: {
-        description:
-          'Approved HTTPS embed URL (e.g. https://www.youtube.com/embed/VIDEO_ID).',
+        description: 'Approved HTTPS embed URL (e.g. https://www.youtube.com/embed/VIDEO_ID).',
       },
     },
     {
       name: 'title',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
       required: true,
       admin: {
         description: 'Accessible title announced to screen readers for the embedded frame.',
@@ -42,6 +43,7 @@ export const EmbedBasic: Block = {
     {
       name: 'caption',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'allowFullscreen',

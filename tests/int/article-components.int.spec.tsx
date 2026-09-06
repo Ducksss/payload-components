@@ -188,6 +188,18 @@ describe('file-only article components', () => {
     120_000,
   )
 
+  it('skips file-only content before semantic localization policy checks', async () => {
+    const { fixtureDir } = await createInstallFixture('post-hero', { preseedSource: true })
+    tempDirs.push(fixtureDir)
+    await cli(fixtureDir, 'add', 'post-hero')
+    const output = await cli(fixtureDir, 'localize', 'post-hero', '--locales', 'en,zh', '--dry-run')
+    expect(output.stdout).toContain('accepts content as props')
+    expect(output.stdout).not.toContain('Semantic localization policies are missing')
+    const plan = await cli(fixtureDir, 'remove', 'post-hero', '--dry-run')
+    expect(plan.stdout).toContain('none owned by this file-only component')
+    expect(plan.stdout).not.toContain('migrate or delete this block data')
+  }, 30_000)
+
   it('refuses editor-only flags before creating project files', async () => {
     const cwd = await mkdtemp(path.join(os.tmpdir(), 'article-flags-'))
     tempDirs.push(cwd)

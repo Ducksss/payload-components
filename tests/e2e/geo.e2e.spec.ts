@@ -65,9 +65,7 @@ test.describe('AI-readable documentation surfaces', () => {
       /^<\?xml version="1.0" encoding="UTF-8"\?>\n<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9" xmlns:xhtml="http:\/\/www.w3.org\/1999\/xhtml">/,
     )
     expect(sitemapBody).toContain(`<loc>${baseURL}/</loc>`)
-    expect(sitemapBody).toContain(
-      `<xhtml:link rel="alternate" hreflang="zh-CN" href="${baseURL}/zh/docs/installation" />`,
-    )
+    expect(sitemapBody).not.toContain('hreflang="zh-CN"')
     expect(sitemapBody).toContain(
       `<xhtml:link rel="alternate" hreflang="en" href="${baseURL}/docs/installation" />`,
     )

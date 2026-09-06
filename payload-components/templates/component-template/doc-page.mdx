@@ -10,7 +10,7 @@ icon: LayoutGrid
 
   • The header (title + description + at-a-glance chips + prev/next + Copy Page) renders
     automatically for /docs/components/* via ComponentDocHeader. Do NOT add an <h1> or repeat the description.
-  • `title` MUST equal the component's title in componentEntries (src/lib/site.ts) — the e2e component-page loop
+  • `title` MUST equal the component's title in componentEntries (src/lib/component-catalog.ts) — the e2e component-page loop
     asserts H1 === component.title. `icon` is any Lucide name.
   • <ComponentWiring>, <ComponentUsage>, <ComponentRequirements>, <ComponentFamily> are DATA-DRIVEN from the manifest /
     registry — the MDX stays thin and they can't drift. The only hand-authored section is the

@@ -28,7 +28,7 @@ test.beforeAll(async () => {
         const load = async ({ page, category }) => {
           await new Promise(resolve => setTimeout(resolve, 150))
           if (category === 'broken') throw new Error('Network unavailable')
-          return data(page, category)
+          return data(Math.min(page || 1, 3), category)
         }
         const root = createRoot(document.getElementById('root'))
         const render = () => root.render(<>
@@ -135,4 +135,21 @@ test('a server refresh supersedes an in-flight action without retaining loading 
   await expect(first.locator('article')).toHaveText('All page 2')
   await expect(first.getByText('Loading posts…')).toHaveCount(0)
   await expect(first.locator('[aria-busy]')).toHaveAttribute('aria-busy', 'false')
+})
+
+test('canonicalizes a stale bookmark across peer blocks before their next navigation', async ({
+  page,
+}) => {
+  await page.goto('https://collection.test/blog?collection-first-page=99&locale=zh')
+  await page.addScriptTag({ content: script })
+  const first = page.locator('#collection-first')
+  const second = page.locator('#collection-second')
+  await expect(first.locator('article')).toHaveText('All page 3')
+  await expect(page).toHaveURL(/collection-first-page=3/)
+  await second.getByRole('link', { name: 'Next', exact: true }).click()
+  await expect(second.locator('article')).toHaveText('All page 2')
+  expect(new URL(page.url()).searchParams.get('collection-first-page')).toBe('3')
+  await page.goBack()
+  await expect(first.locator('article')).toHaveText('All page 3')
+  await expect(second.locator('article')).toHaveText('All page 1')
 })

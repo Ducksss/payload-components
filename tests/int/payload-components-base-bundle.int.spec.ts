@@ -7,9 +7,15 @@ import { afterEach, describe, expect, it } from 'vitest'
 import {
   BASE_BUNDLE_FILES,
   copyBaseBundle,
+  getBaseBundleVersion,
+  inspectBaseBundle,
   registerBaseCollections,
+  syncBaseBundle,
 } from '../../tools/payload-components/base-bundle'
+import { hashSource } from '../../tools/payload-components/component-files'
 import { detectProject } from '../../tools/payload-components/project'
+import { initCommand } from '../../tools/payload-components/commands/init'
+import { loadState } from '../../tools/payload-components/state'
 
 /* A bare `create-payload-app` project fails detection before any of the starter
  * primitives matter: it has no blocks renderer and no Pages collection carrying
@@ -34,7 +40,12 @@ const makeBareProject = async ({ config }: { config?: string } = {}) => {
       path.join(dir, 'package.json'),
       `${JSON.stringify(
         {
-          dependencies: { next: '^16.0.0', payload: '^3.0.0' },
+          dependencies: {
+            clsx: '^2.1.1',
+            next: '^16.0.0',
+            payload: '^3.0.0',
+            'tailwind-merge': '^3.4.0',
+          },
           name: 'bare-payload-app',
           private: true,
         },
@@ -135,6 +146,109 @@ describe('the starter base bundle', () => {
 
     expect(second.created).toEqual([])
     expect(second.skipped).toEqual([...BASE_BUNDLE_FILES])
+  })
+
+  it('updates owned primitives, but protects local edits until --force', async () => {
+    const cwd = await makeBareProject()
+    const first = await syncBaseBundle({ cwd })
+    const version = await getBaseBundleVersion()
+    const projectPath = 'src/utilities/ui.ts'
+    const absolutePath = path.join(cwd, projectPath)
+    const edited = `${await readFile(absolutePath, 'utf8')}\n// consumer edit\n`
+
+    await writeFile(absolutePath, edited, 'utf8')
+
+    const protectedRun = await syncBaseBundle({
+      cwd,
+      recordedFileHashes: first.fileHashes,
+    })
+
+    expect(protectedRun.modified).toContain(projectPath)
+    await expect(readFile(absolutePath, 'utf8')).resolves.toBe(edited)
+    await expect(
+      inspectBaseBundle({
+        cwd,
+        installed: {
+          fileHashes: protectedRun.fileHashes,
+          installedAt: '2026-09-02T00:00:00.000Z',
+          lastAttemptAt: '2026-09-02T00:00:00.000Z',
+          version,
+        },
+      }),
+    ).resolves.toMatchObject({ isClean: false, modifiedFiles: [projectPath] })
+
+    const forcedRun = await syncBaseBundle({
+      cwd,
+      force: true,
+      recordedFileHashes: protectedRun.fileHashes,
+    })
+
+    expect(forcedRun.updated).toContain(projectPath)
+    expect(await readFile(absolutePath, 'utf8')).not.toBe(edited)
+  })
+
+  it('removes retired owned files only when clean or explicitly forced', async () => {
+    const cwd = await makeBareProject()
+    const retiredPath = 'src/retired-base.ts'
+    const absolutePath = path.join(cwd, retiredPath)
+    const original = 'export const retired = true\n'
+    const edited = `${original}// consumer edit\n`
+
+    await writeFile(absolutePath, edited, 'utf8')
+
+    const protectedRun = await syncBaseBundle({
+      cwd,
+      recordedFileHashes: { [retiredPath]: hashSource(original) },
+    })
+
+    expect(protectedRun.modified).toContain(retiredPath)
+    await expect(readFile(absolutePath, 'utf8')).resolves.toBe(edited)
+
+    const forcedRun = await syncBaseBundle({
+      cwd,
+      force: true,
+      recordedFileHashes: protectedRun.fileHashes,
+    })
+
+    expect(forcedRun.removed).toContain(retiredPath)
+    await expect(readFile(absolutePath, 'utf8')).rejects.toMatchObject({ code: 'ENOENT' })
+  })
+
+  it('records scaffold ownership for diff, doctor, and later upgrades', async () => {
+    const cwd = await makeBareProject()
+
+    await initCommand({ cwd, scaffold: true })
+
+    const state = await loadState(cwd)
+
+    expect(state.version).toBe(4)
+    expect(state.base?.version).toBe(await getBaseBundleVersion())
+    expect(Object.keys(state.base?.fileHashes ?? {})).toEqual([...BASE_BUNDLE_FILES].sort())
+  })
+
+  it('rejects incompatible dependencies before writing scaffold files or state', async () => {
+    const cwd = await makeBareProject()
+    const packageJsonPath = path.join(cwd, 'package.json')
+    const configPath = path.join(cwd, 'src', 'payload.config.ts')
+    const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as {
+      dependencies: Record<string, string>
+    }
+    const configBefore = await readFile(configPath, 'utf8')
+
+    packageJson.dependencies['tailwind-merge'] = '^2.0.0'
+    await writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`, 'utf8')
+
+    await expect(initCommand({ cwd, scaffold: true })).rejects.toThrow(
+      'does not satisfy the required range "^3.0.0"',
+    )
+
+    await expect(
+      readFile(path.join(cwd, 'src', 'blocks', 'RenderBlocks.tsx'), 'utf8'),
+    ).rejects.toMatchObject({ code: 'ENOENT' })
+    await expect(
+      readFile(path.join(cwd, '.payload-components', 'state.json'), 'utf8'),
+    ).rejects.toMatchObject({ code: 'ENOENT' })
+    await expect(readFile(configPath, 'utf8')).resolves.toBe(configBefore)
   })
 })
 

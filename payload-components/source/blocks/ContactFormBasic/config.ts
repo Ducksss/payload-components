@@ -10,11 +10,22 @@ export const ContactFormBasic: Block = {
   interfaceName: 'ContactFormBasicBlock',
   labels: { singular: 'Contact Form Basic', plural: 'Contact Form Basic Blocks' },
   fields: [
-    { name: 'title', type: 'text', required: true, defaultValue: 'Let’s talk.' },
-    { name: 'description', type: 'textarea' },
+    {
+      name: 'title',
+      type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
+      required: true,
+      defaultValue: 'Let’s talk.',
+    },
+    {
+      name: 'description',
+      type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
+    },
     {
       name: 'action',
       type: 'text',
+      custom: { payloadComponents: { localization: 'global' } },
       required: true,
       validate: validateSameOriginFormAction,
       admin: {
@@ -22,16 +33,42 @@ export const ContactFormBasic: Block = {
           'Your same-origin endpoint, such as /api/contact. Accepts multipart form data and returns JSON { success: true } after accepting the message.',
       },
     },
-    { name: 'submitLabel', type: 'text', defaultValue: 'Send message' },
+    {
+      name: 'submitLabel',
+      type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
+      defaultValue: 'Send message',
+    },
     {
       name: 'successMessage',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
       required: true,
       defaultValue: 'Thanks for reaching out. Your message has been received.',
     },
-    { name: 'nameLabel', type: 'text', defaultValue: 'Name' },
-    { name: 'emailLabel', type: 'text', defaultValue: 'Email' },
-    { name: 'organizationLabel', type: 'text', defaultValue: 'Organization' },
-    { name: 'messageLabel', type: 'text', defaultValue: 'Message' },
+    {
+      name: 'nameLabel',
+      type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
+      defaultValue: 'Name',
+    },
+    {
+      name: 'emailLabel',
+      type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
+      defaultValue: 'Email',
+    },
+    {
+      name: 'organizationLabel',
+      type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
+      defaultValue: 'Organization',
+    },
+    {
+      name: 'messageLabel',
+      type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
+      defaultValue: 'Message',
+    },
   ],
 }

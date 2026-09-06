@@ -19,7 +19,7 @@ import { TemplateTrackedLink } from '@/components/site/templates/TemplateTracked
  * text beside it.
  *
  * Its own client island (plain string props) so TemplateRecipe stays a server
- * component — that file reads componentEntries from @/lib/site, which must not
+ * component — that file reads the component-catalog projection through @/lib/site, which must not
  * follow a hover animation into the browser bundle.
  *
  * No [data-template-motion] here on purpose: the RESTING variant already is the

@@ -81,6 +81,7 @@ export const CollectionQuery: Block = {
     {
       name: 'queryKey',
       type: 'text',
+      custom: { payloadComponents: { localization: 'global' } },
       defaultValue: 'posts',
       admin: {
         description:
@@ -90,6 +91,7 @@ export const CollectionQuery: Block = {
     {
       name: 'emptyMessage',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
       defaultValue: 'No posts found. Try another category or check back soon.',
     },
     {

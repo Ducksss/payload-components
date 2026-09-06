@@ -16,7 +16,7 @@ export const mcpCommand = async ({
   output?: NodeJS.WritableStream
 }) => {
   const server = createMcpServer({ cwd })
-  /* Bound up front: a tool handler may swap process.stdout.write while it runs. */
+  /* Bound up front so the transport stays independent from command output. */
   const writeLine = (value: string) => {
     output.write(`${value}\n`)
   }

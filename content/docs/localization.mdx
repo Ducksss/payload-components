@@ -48,7 +48,7 @@ npx payload-components localize --locales en,zh
 
   </Step>
   <Step>
-    **Marks the installed blocks' text localized.** It copies
+    **Applies the installed blocks' semantic field policies.** It copies
     `src/blocks/shared/localizeFields.ts` and wraps each installed block config's field
     list in it — the same transform `add --localized` applies:
 
@@ -95,19 +95,24 @@ npx payload-components localize --locales en,gsw
 
 ## What gets marked localized
 
-`localizeFields` marks the leaf fields an editor writes prose into — `text`, `textarea`,
-and `richText` — and recurses through the containers those fields live in. Because the
-wrap sits outside the shared family base's spread, one call covers shared and variant
-fields together.
+Every shipped `text`, `textarea`, and `richText` field declares an explicit
+`custom.payloadComponents.localization` policy. `localizeFields` marks only fields whose
+policy is `localized`, and recurses through the containers those fields live in. Storage
+type is not treated as meaning: a heading and a URL may both be `text`, but the URL stays
+global. Because the wrap sits outside the shared family base's spread, one call covers
+shared and variant fields together.
 
 Three deliberate limits:
 
 - Containers are never marked. Payload rejects a localized field nested inside a localized
   parent, so localizing only leaves keeps every combination valid.
 - A field that already declares `localized` is left exactly as you wrote it.
-- `select`, `upload`, `relationship`, `number`, and link `url` fields stay single-value.
-  Per-locale media or link targets are a content-modelling decision, not a mechanical
-  default — set those by hand.
+- Fields marked `global` and unmarked fields stay single-value. The shipped policies keep
+  URLs, form actions, prices, metrics, contact values, and identifiers global. Fields from
+  consumer helpers are unmarked by default, which is deliberately conservative.
+- `select`, `upload`, `relationship`, `number`, and `checkbox` fields also stay
+  single-value. Per-locale media or targets are a content-modelling decision — set those
+  by hand.
 
 ## Installing a block already localized
 
@@ -220,6 +225,18 @@ language.
   backfill existing values. Back up the database and explicitly migrate them into the default
   locale before applying the schema change, and run `--dry-run` first.
 </Callout>
+
+Localized installs created before the semantic policy was introduced used field-type
+inference, so some operational `text` values may already have per-locale storage. Updates
+refuse to change that schema silently. Migrate those values to their global field first,
+then opt in:
+
+```bash
+npx payload-components update --accept-localization-policy-change
+```
+
+That flag changes installed source and records policy version `semantic-v1`; it never
+opens or migrates your database.
 
 `payload-components doctor` reports both halves once you have them, and names whichever
 one is missing:
