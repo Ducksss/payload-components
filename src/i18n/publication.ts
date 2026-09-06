@@ -5,7 +5,7 @@ import {
   localeDetails,
   localeAlternates,
   localizeHref,
-  siteLocales,
+  publishedSiteLocales,
   splitLocalePathname,
   type SiteLocale,
 } from '@/i18n/config'
@@ -36,7 +36,7 @@ function normalizedPath(pathname: string) {
 
 export function reviewedLocalesFor(pathname: string): SiteLocale[] {
   const path = normalizedPath(pathname)
-  return siteLocales.filter(
+  return publishedSiteLocales.filter(
     (locale) => locale === defaultSiteLocale || reviewed[locale]?.includes(path),
   )
 }

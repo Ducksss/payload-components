@@ -17,6 +17,7 @@ on:
         default: 'components-visual'
         type: choice
         options:
+          - frontend
           - components-visual
           - template-visual
           - blog-visual
@@ -88,7 +89,7 @@ jobs:
         run: |
           set -euo pipefail
           case "$SPEC" in
-            components-visual|template-visual|blog-visual)
+            frontend|components-visual|template-visual|blog-visual)
               spec_args=("$SPEC")
               ;;
             all-visual)

@@ -24,6 +24,13 @@ export const siteLocales = [
 ] as const
 
 export type SiteLocale = (typeof siteLocales)[number]
+// Saved catalogs are not a commitment to publish or manually maintain a locale.
+// Expand only after a no-cost Crowdin workflow and native review are verified.
+export const publishedSiteLocales: readonly SiteLocale[] = ['en']
+
+export function isPublishedSiteLocale(value: string | null | undefined): value is SiteLocale {
+  return publishedSiteLocales.includes(value as SiteLocale)
+}
 export type SiteDirection = 'ltr' | 'rtl'
 export type SiteScript = 'arabic' | 'cjk' | 'cyrillic' | 'hebrew' | 'latin' | 'thai'
 

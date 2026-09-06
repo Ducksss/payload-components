@@ -9,7 +9,7 @@ import {
   defaultSiteLocale,
   localeDetails,
   normalizeSiteLocale,
-  siteLocales,
+  publishedSiteLocales,
   type SiteLocale,
 } from '@/i18n/config'
 
@@ -17,7 +17,7 @@ export const fumadocsI18n = defineI18n({
   defaultLanguage: defaultSiteLocale,
   // Keep English URLs stable while publishing every translation under /<locale>.
   hideLocale: 'default-locale',
-  languages: [...siteLocales],
+  languages: [...publishedSiteLocales],
   // Until every long-form page has a reviewed translation, the localized
   // route remains complete and falls back to the canonical English source.
   fallbackLanguage: 'en',

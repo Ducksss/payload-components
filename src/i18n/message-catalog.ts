@@ -2,7 +2,7 @@ import englishMessages from '../../messages/en.json'
 
 import { allowsCatalogFallback } from './catalog-policy'
 
-import { defaultSiteLocale, type SiteLocale } from '@/i18n/config'
+import { defaultSiteLocale, isPublishedSiteLocale, type SiteLocale } from '@/i18n/config'
 
 export type MessageTree = { [key: string]: MessageTree | string }
 
@@ -54,7 +54,13 @@ function withCatalogFallback(
       const fullKey = prefix ? `${prefix}.${key}` : key
       const localized = translated[key]
       if (typeof value === 'string') {
-        return [key, localized ?? (allowsCatalogFallback(locale, fullKey) ? value : localized)]
+        return [
+          key,
+          localized ??
+            (!isPublishedSiteLocale(locale) || allowsCatalogFallback(locale, fullKey)
+              ? value
+              : localized),
+        ]
       }
       return [
         key,

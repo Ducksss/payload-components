@@ -67,16 +67,16 @@ Fragment patching is **text-anchor based** — it finds anchors like `const bloc
 
 **Install targets are path-resolved.** `support-matrix.json` declares, per target, candidate paths and required anchors for each host file role (`renderBlocks`, `pagesLayout`); `detectProject` resolves them into `DetectedProject.hostFiles`, and `applyPayloadFragments` / `removePayloadFragments` / `verifyInstalledPayloadFragments` patch **those** paths. Manifests still declare the canonical starter paths in `recovery.patchedFiles`; `resolveRecoveryPatchedFiles` maps them onto the resolved ones. `payload-website-starter` is matched first; `payload-blocks-app` covers the same shape at non-starter paths (flat `Pages.ts`, no `src/`). A bare `create-payload-app` becomes supported after `init --scaffold` installs and registers the lifecycle-managed starter base (`Pages`, `Media`, `RenderBlocks`, `CMSLink`, `linkGroup`, and `cn`).
 
-**Site translations** are separate from consumer Payload localization. `messages/en.json`
-is the canonical source for translated site copy, including catalogue titles, descriptions,
-and target labels under `Components.<slug>`. `src/lib/site.ts` and
-`src/lib/component-catalog.ts` expose English projections for existing contracts; keep
-identifiers and install data in TypeScript. Chinese, Japanese, and Korean catalogue prose is complete; other
-locales use the narrow English fallback defined in `src/i18n/catalog-policy.ts` until their
-catalogue translations are ready. Draft translations directly in locale JSON; no paid
-provider is required. See `messages/README.md` for the no-cost workflow, Crowdin bootstrap, export
-validation, and native-review publication rules. Never replace real locale values with
-English to make key checks pass.
+**Site translations** are separate from consumer Payload localization. Maintain
+English site copy in `messages/en.json`, including `Components.<slug>` catalog
+labels. `src/lib/site.ts` and `src/lib/component-catalog.ts` expose English
+projections; keep technical identifiers in TypeScript. The public site is
+English-only via `publishedSiteLocales` in `src/i18n/config.ts`. Saved locale
+catalogs remain inactive drafts, not a manual translation maintenance commitment.
+Do not generate manual batches to keep them in parity. Release checks validate
+English and published locales; `pnpm i18n:check --drafts` is the optional draft
+readiness check. Crowdin is manual-only until a no-cost automated workflow is
+verified. See `messages/README.md` for activation and native-review requirements.
 
 **Localization / i18n:** Payload internationalization has two halves that are each inert without the other, and the CLI owns both.
 

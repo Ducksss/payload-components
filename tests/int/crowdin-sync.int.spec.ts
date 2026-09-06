@@ -1,4 +1,4 @@
-import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -13,6 +13,28 @@ const dirs: string[] = []
 afterEach(async () => {
   await Promise.all(dirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })))
 })
+
+async function writeFixtureMessages(dir: string) {
+  const { catalogs } = await loadCatalogs()
+  const folder = path.join(dir, 'messages/locales')
+  await mkdir(folder, { recursive: true })
+  await writeFile(
+    path.join(dir, 'messages/en.json'),
+    JSON.stringify({
+      Common: { copy: 'Copy' },
+      Components: { 'hero-basic': { title: 'Hero Basic' } },
+    }),
+  )
+  for (const locale of Object.keys(catalogs)) {
+    await writeFile(
+      path.join(folder, `${locale}.json`),
+      JSON.stringify({
+        Common: { copy: locale === 'zh' ? '复制' : `copy-${locale}` },
+        Components: { 'hero-basic': { title: locale === 'zh' ? '基础首屏' : `hero-${locale}` } },
+      }),
+    )
+  }
+}
 
 describe('Crowdin export safety', () => {
   it('preserves omitted translations, replaces translated values, and drops retired keys', () => {
@@ -74,12 +96,15 @@ describe('Crowdin export safety', () => {
   it('merges a sparse export on disk without losing previously translated strings', async () => {
     const dir = await mkdtemp(path.join(os.tmpdir(), 'crowdin-export-'))
     dirs.push(dir)
-    await cp(path.join(process.cwd(), 'messages'), path.join(dir, 'messages'), { recursive: true })
+    const baseline = await mkdtemp(path.join(os.tmpdir(), 'crowdin-baseline-'))
+    dirs.push(baseline)
+    await writeFixtureMessages(baseline)
+    await writeFixtureMessages(dir)
     await writeFile(
       path.join(dir, 'messages/locales/zh.json'),
       JSON.stringify({ Common: { copy: '复制内容' } }),
     )
-    await mergeCrowdinExport(process.cwd(), dir)
+    await mergeCrowdinExport(baseline, dir)
     const output = flattenMessages(
       JSON.parse(await readFile(path.join(dir, 'messages/locales/zh.json'), 'utf8')),
     )
@@ -92,11 +117,14 @@ describe('Crowdin export safety', () => {
   it('validates the entire export before writing merged files', async () => {
     const dir = await mkdtemp(path.join(os.tmpdir(), 'crowdin-invalid-'))
     dirs.push(dir)
-    await cp(path.join(process.cwd(), 'messages'), path.join(dir, 'messages'), { recursive: true })
+    const baseline = await mkdtemp(path.join(os.tmpdir(), 'crowdin-baseline-'))
+    dirs.push(baseline)
+    await writeFixtureMessages(baseline)
+    await writeFixtureMessages(dir)
     const file = path.join(dir, 'messages/locales/zh.json')
     const invalid = JSON.stringify({ Common: { copy: 'Copy' } })
     await writeFile(file, invalid)
-    await expect(mergeCrowdinExport(process.cwd(), dir)).rejects.toThrow(
+    await expect(mergeCrowdinExport(baseline, dir)).rejects.toThrow(
       'replaced an existing translation with English',
     )
     expect(await readFile(file, 'utf8')).toBe(invalid)
@@ -104,17 +132,12 @@ describe('Crowdin export safety', () => {
 })
 
 describe('catalog translation rollout', () => {
-  it('uses stable registry slugs with complete English, Chinese, Japanese, and Korean copy', async () => {
+  it('uses stable registry slugs with complete English copy', async () => {
     const en = flattenMessages(await getSiteMessages('en'))
-    const { catalogs } = await loadCatalogs()
     for (const entry of [...componentEntries, ...upcomingComponents]) {
       for (const field of ['title', 'description', 'target'] as const) {
         const key = `Components.${entry.slug}.${field}`
         expect(en[key]).toBe(entry[field])
-        for (const locale of ['zh', 'ja', 'ko'] as const) {
-          expect(catalogs[locale][key], `${locale}:${key}`).toBeTruthy()
-          expect(catalogs[locale][key], `${locale}:${key}`).not.toBe(en[key])
-        }
       }
     }
     expect(componentEntries[0].command).toBe('npx payload-components add hero-basic')
@@ -131,7 +154,7 @@ describe('catalog translation rollout', () => {
     const broken = structuredClone(catalogs)
     delete broken.zh['Components.hero-basic.title']
     delete broken.ja['Common.copy']
-    const errors = validateCatalogs(english, broken)
+    const errors = validateCatalogs(english, broken, ['zh', 'ja'])
     expect(errors).toContain('zh:Components.hero-basic.title is missing')
     expect(errors).toContain('ja:Common.copy is missing')
   })

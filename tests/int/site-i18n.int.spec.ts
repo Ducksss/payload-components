@@ -14,6 +14,8 @@ import {
   localeDetails,
   localizeHref,
   siteLocales,
+  publishedSiteLocales,
+  isPublishedSiteLocale,
   splitLocalePathname,
 } from '../../src/i18n/config'
 import { getSiteMessages } from '../../src/i18n/message-catalog'
@@ -62,6 +64,9 @@ describe('site internationalization', () => {
       'et',
       'fi',
     ])
+    expect(publishedSiteLocales).toEqual(['en'])
+    expect(isPublishedSiteLocale('en')).toBe(true)
+    expect(isPublishedSiteLocale('zh')).toBe(false)
     expect(localeDetails.en.htmlLang).toBe('en')
     expect(localeDetails.zh.htmlLang).toBe('zh-CN')
     expect(localeDetails.zh.openGraphLocale).toBe('zh_CN')
@@ -220,7 +225,7 @@ describe('site internationalization', () => {
     expect(isLocaleNeutralPath('/og/blog/example/image.png')).toBe(false)
   })
 
-  it('keeps every localized message key and argument in parity with English', async () => {
+  it('keeps published message keys and arguments in parity with English', async () => {
     const catalogs = await Promise.all(
       siteLocales.map(
         async (locale) => [locale, (await getSiteMessages(locale)) as Messages] as const,
@@ -237,7 +242,7 @@ describe('site internationalization', () => {
 
     expect(englishKeys.length).toBeGreaterThan(100)
 
-    for (const locale of siteLocales.filter((item) => item !== 'en')) {
+    for (const locale of publishedSiteLocales.filter((item) => item !== 'en')) {
       const localized = flattenMessages(catalogByLocale[locale])
       expect(Object.keys(localized).sort(), locale).toEqual(englishKeys)
 
@@ -258,7 +263,6 @@ describe('site internationalization', () => {
 
     for (const category of Object.keys(componentCategories)) {
       expect(english[`CatalogBrowser.categories.${category}`], category).toBeTruthy()
-      expect(chinese[`CatalogBrowser.categories.${category}`], category).toBeTruthy()
     }
 
     const translate = createTranslator({ locale: 'en', messages: englishMessages }) as unknown as (
@@ -295,12 +299,27 @@ describe('site internationalization', () => {
     )
   })
 
-  it('keeps every Crowdin catalogue structurally compatible with English', async () => {
+  it('validates published catalogs while retaining inactive drafts', async () => {
     const { catalogs, english } = await loadCatalogs(repoRoot)
 
     expect(validateCatalogs(english, catalogs)).toEqual([])
-    expect(Object.keys(catalogs.zh)).toEqual(Object.keys(english))
     expect(Object.keys(catalogs)).toEqual(siteLocales.slice(1))
+  })
+
+  it('allows English-only copy changes without requiring archived translations', async () => {
+    const { catalogs, english } = await loadCatalogs(repoRoot)
+    const changedEnglish = {
+      ...english,
+      'Common.newMessage': 'A new English message for {name}',
+      'Common.copy': 'Copy {item}',
+    }
+    expect(validateCatalogs(changedEnglish, catalogs)).toEqual([])
+    expect(validateCatalogs(changedEnglish, catalogs, ['ja'])).toContain(
+      'ja:Common.newMessage is missing',
+    )
+    expect(validateCatalogs({ ...english, broken: '{unclosed' }, catalogs)).toEqual(
+      expect.arrayContaining([expect.stringContaining('en:broken is not valid ICU')]),
+    )
   })
 
   it('rejects translation artifacts before they reach a page', async () => {
@@ -316,16 +335,16 @@ describe('site internationalization', () => {
       },
     }
 
-    expect(validateCatalogs(english, markedCatalogs)).toContain(
+    expect(validateCatalogs(english, markedCatalogs, ['ja'])).toContain(
       'ja:Header.language contains a translation transport marker',
     )
-    expect(validateCatalogs(english, markedCatalogs)).toContain(
+    expect(validateCatalogs(english, markedCatalogs, ['ja'])).toContain(
       'ja:Catalog.description removes protected term "Payload CMS"',
     )
-    expect(validateCatalogs(english, markedCatalogs)).toContain(
+    expect(validateCatalogs(english, markedCatalogs, ['ja'])).toContain(
       'ja:Templates.metadataDescription adds an unexpected line break',
     )
-    expect(validateCatalogs(english, markedCatalogs)).toContain(
+    expect(validateCatalogs(english, markedCatalogs, ['ja'])).toContain(
       'ja:Templates.tablet contains a numeric translation artifact',
     )
   })

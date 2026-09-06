@@ -78,7 +78,7 @@ export async function mergeCrowdinExport(baselineRoot: string, cwd = process.cwd
       }),
     )
   }
-  errors.push(...validateCatalogs(english, catalogs))
+  errors.push(...validateCatalogs(english, catalogs, translatedSiteLocales))
   if (errors.length)
     throw new Error(`Crowdin export rejected before publication:\n${errors.join('\n')}`)
   for (const locale of translatedSiteLocales) {

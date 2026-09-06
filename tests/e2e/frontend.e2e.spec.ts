@@ -699,141 +699,59 @@ test.describe('Light shadcn frontend', () => {
     })
   }
 
-  const localizedOverflowRoutes = [
-    { h1: /安装 Payload 区块.*接好线，不只是复制。/, path: '/zh' },
-    { h1: 'Introduction', path: '/zh/docs' },
-    { h1: /77 个 Payload CMS 组件与类型化区块/, path: '/zh/components' },
-    { h1: '由可安装区块组成的 Payload CMS 模板概念', path: '/zh/templates' },
-    { h1: 'Payload CMS block and installer guides', path: '/zh/blog' },
-    { h1: 'Why Payload Components exists', path: '/zh/about' },
-    { h1: '一起完善编辑内容发布系统。', path: '/zh/roadmap/editorial' },
-  ]
-
-  for (const localizedRoute of localizedOverflowRoutes) {
-    test(`localized route ${localizedRoute.path} uses Chinese chrome without overflow`, async ({
-      page,
-    }) => {
-      await page.goto(`${baseURL}${localizedRoute.path}`, { waitUntil: 'domcontentloaded' })
-
-      await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
-      await expect(page.getByRole('heading', { level: 1, name: localizedRoute.h1 })).toBeVisible()
-      await expect(
-        page.getByRole('navigation').getByRole('link', { name: '组件' }),
-      ).toHaveAttribute('href', '/zh/components')
-
-      await page.evaluate(() => document.fonts.ready)
-      const hasHorizontalOverflow = await page.evaluate(
-        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-      )
-      expect(hasHorizontalOverflow).toBe(false)
-    })
-  }
-
-  for (const catalog of [
-    { locale: 'zh', title: '基础首屏', add: '将 hero-basic 加入安装命令' },
-    { locale: 'ja', title: '基本のヒーロー', add: 'インストールコマンドにhero-basicを追加' },
-    { locale: 'ko', title: '기본 히어로', add: '설치 명령어에 hero-basic 추가' },
-  ]) {
-    test(`searches ${catalog.locale} catalog copy while keeping install identifiers stable`, async ({
+  for (const locale of ['zh', 'ja', 'ko', 'ar']) {
+    test(`redirects inactive ${locale} catalog links to English without losing location`, async ({
       page,
     }) => {
       await page.setViewportSize({ width: 375, height: 812 })
-      await page.goto(
-        `${baseURL}/${catalog.locale}/components?q=${encodeURIComponent(catalog.title)}`,
-      )
-      const card = page.locator('article#hero-basic')
-      await expect(card.getByRole('link', { name: catalog.title, exact: true })).toHaveAttribute(
-        'href',
-        `/${catalog.locale}/docs/components/hero-basic`,
-      )
-      await expect(card.locator('code')).toHaveText('hero-basic')
-      await card.getByRole('button', { name: catalog.add, exact: true }).click()
+      await page.goto(`${baseURL}/${locale}/components?q=hero#hero-basic`)
+      await expect(page).toHaveURL(`${baseURL}/components?q=hero#hero-basic`)
+      await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+      await expect(page.locator('html')).toHaveAttribute('dir', 'ltr')
       await expect(
-        page.getByText('npx payload-components add hero-basic', { exact: true }).last(),
+        page.locator('article#hero-basic').getByRole('link', { name: 'Hero Basic', exact: true }),
       ).toBeVisible()
-      await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-        'content',
-        'noindex, follow',
-      )
-      const overflow = await expectNoHorizontalOverflow(page, `/${catalog.locale}/components`)
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/components$/)
+      await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveCount(0)
+      await expect(page.getByRole('combobox', { name: 'Language', exact: true })).toHaveCount(0)
+      const overflow = await expectNoHorizontalOverflow(page, '/components')
       expect(overflow.offenders, overflow.message).toEqual([])
     })
   }
 
-  test('switches locale explicitly while preserving the route, query, and hash', async ({
+  test('does not offer inactive languages on desktop or in mobile navigation', async ({ page }) => {
+    await page.goto(`${baseURL}/docs`)
+    await expect(page.locator('form[action="/locale"]')).toHaveCount(0)
+    await page.setViewportSize({ width: 320, height: 800 })
+    await page.getByRole('button', { name: 'Open navigation', exact: true }).click()
+    await expect(page.locator('#mobile-navigation')).toBeVisible()
+    await expect(page.locator('form[action="/locale"]')).toHaveCount(0)
+  })
+
+  test('language endpoint falls back to English and preserves route, query, and hash', async ({
     page,
   }) => {
-    await page.goto(`${baseURL}/zh/components?q=hero#hero-basic`)
-
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/zh\/components$/)
-    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
-      'href',
-      /\/components$/,
-    )
-    await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveCount(0)
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow')
-
-    await page.getByLabel('语言').first().selectOption('en')
+    const destination = '/ja/components?q=hero#hero-basic'
+    await page.goto(`${baseURL}/locale?locale=ja&returnTo=${encodeURIComponent(destination)}`)
     await expect(page).toHaveURL(`${baseURL}/components?q=hero#hero-basic`)
     await expect(page.locator('html')).toHaveAttribute('lang', 'en')
-
-    await page.getByLabel('Language').first().selectOption('zh')
-    await expect(page).toHaveURL(`${baseURL}/zh/components?q=hero#hero-basic`)
-    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
   })
 
-  test('renders RTL and CJK locales with localized routing and stable layout', async ({ page }) => {
-    await page.setViewportSize({ width: 320, height: 800 })
-    await page.goto(`${baseURL}/ar/components?q=hero#hero-basic`)
-
-    await expect(page.locator('html')).toHaveAttribute('lang', 'ar')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-    await expect(page.locator('html')).toHaveAttribute('data-script', 'arabic')
-    await expect(page.locator('link[rel="alternate"][hreflang="ja"]')).toHaveCount(0)
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow')
-
-    const trigger = page.getByRole('button', { name: 'افتح التنقل' })
-    await trigger.click()
-    const switcher = page.locator('#mobile-navigation').getByRole('combobox', { name: 'اللغة' })
-    await expect(switcher.locator('option')).toHaveCount(22)
-    await switcher.selectOption('ja')
-
-    await expect(page).toHaveURL(`${baseURL}/ja/components?q=hero#hero-basic`)
-    await expect(page.locator('html')).toHaveAttribute('lang', 'ja')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr')
-    await expect(page.locator('html')).toHaveAttribute('data-script', 'cjk')
-
-    await page.evaluate(() => document.fonts.ready)
-    const hasHorizontalOverflow = await page.evaluate(
-      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-    )
-    expect(hasHorizontalOverflow).toBe(false)
-  })
-
-  test('keeps English fallback content LTR inside RTL localized chrome', async ({ page }) => {
-    await page.goto(`${baseURL}/ar/docs`, { waitUntil: 'domcontentloaded' })
-
-    await expect(page.locator('html')).toHaveAttribute('lang', 'ar')
-    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
-
-    const content = page.getByRole('main')
-    await expect(content).toHaveAttribute('lang', 'en')
-    await expect(content).toHaveAttribute('dir', 'ltr')
-    await expect(content).toHaveAttribute('data-content-script', 'latin')
-    await expect(content).toHaveCSS('direction', 'ltr')
-  })
-
-  test('uses script-safe editorial emphasis on the Chinese roadmap', async ({ page }) => {
-    await page.goto(`${baseURL}/zh/roadmap/editorial`, { waitUntil: 'domcontentloaded' })
-
-    const content = page.getByRole('main')
-    await expect(content).toHaveAttribute('data-content-script', 'cjk')
-
-    const accent = page
-      .getByRole('heading', { level: 1, name: '一起完善编辑内容发布系统。' })
-      .locator('.script-aware-serif-accent')
-    await expect(accent).toHaveCSS('font-style', 'normal')
-  })
+  for (const resource of [
+    '/docs',
+    '/docs/architecture.md',
+    '/llms.mdx/docs/architecture/content.md',
+    '/og/docs/architecture/image.png',
+  ]) {
+    test(`inactive locale redirects the ${resource} resource`, async ({ request }) => {
+      const response = await request.get(`${baseURL}/zh${resource}?source=saved`, {
+        maxRedirects: 0,
+      })
+      expect(response.status()).toBe(307)
+      expect(new URL(response.headers().location).pathname).toBe(resource)
+      expect(new URL(response.headers().location).search).toBe('?source=saved')
+    })
+  }
 
   test('drives the responsive component preview frame', async ({ page }) => {
     await page.goto(`${baseURL}/docs/components/hero-basic`)
@@ -882,16 +800,14 @@ test.describe('Light shadcn frontend', () => {
     expect(mobileNavOverflow.offenders, mobileNavOverflow.message).toEqual([])
   })
 
-  test('mobile GitHub link localizes its accessible name without translating the brand', async ({
-    page,
-  }) => {
+  test('saved-locale docs retain an accessible English mobile GitHub link', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 })
     await page.goto(`${baseURL}/zh/docs`)
 
-    await page.getByRole('button', { name: '打开导航' }).click()
+    await page.getByRole('button', { name: 'Open navigation' }).click()
     const githubLink = page
       .locator('#mobile-navigation')
-      .getByRole('link', { name: 'GitHub 代码库' })
+      .getByRole('link', { name: 'GitHub repository' })
 
     await expect(githubLink).toBeVisible()
     await expect(githubLink).toHaveText('GitHub')

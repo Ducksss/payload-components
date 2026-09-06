@@ -1,91 +1,81 @@
 # Site translations
 
-`en.json` is the canonical source catalogue. Site code refers to stable keys
-such as `Landing.hero.headline`; changing a sentence never requires editing the
-same React component in every language.
+`en.json` is the canonical source catalog. Maintain English copy here using
+stable message keys; site components read it through `next-intl`, and existing
+English data exports read the same source.
 
-Translation drafts can be authored directly in `messages/locales/<locale>.json`
-and submitted as a normal pull request. A paid service is not required. Crowdin
-provides optional translation memory and contributor review. The `Crowdin translations` workflow uploads English changes and opens a
-draft PR into `dev`. Downloads omit untranslated strings; a local merge retains
-existing translations absent from the export. ICU, required keys, and regressions
-from translated text back to English are checked before a PR can be created.
-The full Registry Verification workflow is explicitly dispatched on the bot
-branch, because PRs created with `GITHUB_TOKEN` do not trigger PR workflows. Configure these repository secrets before running it:
+## Publication scope
 
-- `CROWDIN_PROJECT_ID`
-- `CROWDIN_PERSONAL_TOKEN`
+The public site is **English-only**. `publishedSiteLocales` in
+`src/i18n/config.ts` controls routing, page generation, the language selector,
+and validation. With one published language, the selector is hidden. Links to
+saved draft locales redirect temporarily to the corresponding English URL,
+preserving the query string and browser fragment.
 
-Bootstrap an existing project once by manually running `Crowdin translations`
-with `import_existing: true`. This uploads the committed catalogues as unapproved
-suggestions, skipping values identical to English. Leave it off on routine runs
-so repository imports cannot compete with contributor review in Crowdin.
+`siteLocales` and `messages/locales/*.json` retain the 21 existing draft catalogs
+for possible future use. Their presence does not publish a language or commit
+maintainers to translating every English change. Do not generate additional
+manual translation batches just to fill their gaps. No paid provider or Crowdin
+credits are required to build or maintain the English site.
 
-Perfect-match translation-memory reuse is enabled in Crowdin. New sentences are
-drafted in the repository without purchasing translation credits or enabling a
-paid provider. Automated machine pre-translation is optional, not a prerequisite
-for maintaining or shipping translations. The workflow does not buy credits,
-configure provider credentials, or approve drafts.
-The site never calls a translation service while handling a visitor request.
+The CLI's consumer Payload localization is separate and remains available.
+This publication policy only applies to this documentation website.
 
-## No-cost draft workflow
+## Validation
 
-1. Read the current English message and its UI context, then translate the whole
-   sentence under the same key in the locale JSON. Preserve technical names,
-   commands, paths, ICU arguments, and rich-text tags.
-2. Add only the intended missing strings. Keep existing translations unless the
-   change explicitly corrects them; do not copy English into untranslated keys.
-3. Run `pnpm i18n:check` and inspect the localized page, including mobile layout
-   and search. Include the translated keys and languages in the PR description.
-4. Keep AI-assisted drafts unreviewed in `status.json`. A native reviewer must
-   review the whole resource before its publication status changes. A valid JSON
-   file or passing ICU check does not establish linguistic accuracy.
-
-Crowdin can remain the optional place for contributors to review those drafts.
-Do not re-import all repository translations on every run: the one-time bootstrap
-is not a routine synchronization policy and can compete with contributor edits.
-
-Every non-English route is treated as machine translated and emitted with
-`noindex` until a native reviewer explicitly marks that locale and resource as
-reviewed in `status.json`. Long-form docs and blog articles fall back to English
-until translated source files exist; fallback pages are never advertised as
-translated search results.
-
-Run the offline contract check before merging a Crowdin PR:
+Run the normal release check after changing English copy:
 
 ```bash
 pnpm i18n:check
 ```
 
-The checker requires valid ICU, matching argument types and tags, and
-every plural category required by each locale's `Intl.PluralRules`. Preserve
-commands, paths, product names, and every `{argument}` during review.
+It validates English ICU and published translations only. Missing or stale
+translations in inactive drafts do not require manual maintenance. PR CI also
+checks published locales for translation loss against `I18N_BASE_REF`.
 
-The Fumadocs documentation shell follows the same publication rule. Chinese uses
-the upstream Fumadocs language pack; every unreviewed locale uses the explicit
-English fallback rather than shipping duplicated English labels under a locale
-name. Long-form MDX and hard-coded showcase content also fall back to English
-until a reviewed translation exists.
+Before considering a draft for publication, explicitly check draft compatibility:
 
-## Copy ownership and rollout
+```bash
+pnpm i18n:check --drafts
+```
 
-`Components.<registry-slug>.{title,description,target}` owns catalogue copy for
-both installable and planned entries. `src/lib/component-catalog.ts` keeps stable
-slugs, categories, field names, and install contracts; its English projection and
-`src/lib/site.ts` read the source catalogue instead of duplicating copy. React
-renders messages through `next-intl`. Keep commands, paths, identifiers, and
-product names out of translation changes. Long-form articles stay in MDX.
+This checks draft keys, ICU arguments, rich-text tags, protected technical terms,
+and locale-specific plural categories against current English. It may fail as
+English evolves; that is a reason to keep the draft unpublished. Preserve
+commands, paths, product names, and every `{argument}` in translations.
 
-English, Chinese, Japanese, and Korean have complete catalogue prose. The other existing locales
-retain their translated shell and explicitly fall back to English for absent
-`Components` keys; English is never copied into their JSON files to pretend a
-translation exists. This one staged namespace is declared in
-`src/i18n/catalog-policy.ts`; every other missing key is an error. Add reviewed
-locale coverage there as catalogue translations become available. Non-English drafts
-are still unreviewed; passing structure and browser checks does not establish
-native-language editorial review.
+## Parked Crowdin integration
 
-`I18N_BASE_REF=<git-ref> pnpm i18n:check` additionally rejects loss of existing
-translations or replacement with English, including in the staged namespace.
-PR CI compares against its base commit. The Crowdin merger performs the same
-comparison against a snapshot taken immediately before export.
+The `Crowdin translations` workflow is manual-only until a reliable no-cost
+translation workflow is verified. English edits do not automatically trigger a
+translation job or create a manual translation queue. The site never calls a
+translation service during a visitor request.
+
+The existing integration is retained for that verification. It uses the
+`CROWDIN_PROJECT_ID` and `CROWDIN_PERSONAL_TOKEN` repository secrets. Its optional
+`import_existing` input bootstraps existing catalogs as unapproved suggestions;
+do not re-import all drafts on every run because that can compete with
+contributor edits. No workflow buys credits or approves translations.
+
+Downloads preserve translations absent from sparse or empty exports. The merger
+validates all exported catalogs and rejects translation loss, English replacements,
+and invalid ICU before opening a draft PR. It dispatches Registry Verification
+explicitly because bot-created PRs do not trigger normal PR workflows.
+
+## Enabling another language
+
+Enable a language only after verifying that a no-cost Crowdin workflow can keep
+it current, its required messages pass validation, and a native reviewer can
+review its published resources. Add it to `publishedSiteLocales`, test its routes
+and mobile layout, and update the relevant tests in the same change. Restore
+automatic Crowdin source uploads only once that workflow is proven.
+
+Native review is recorded per resource in `status.json`; automation does not
+set it. Machine and fallback resources remain `noindex` until reviewed.
+Long-form articles stay in MDX and need their own translated source before they
+can be advertised as translated content.
+
+`Components.<registry-slug>.{title,description,target}` owns catalog display copy.
+Keep technical slugs, categories, field names, and install contracts in TypeScript.
+Existing drafts remain saved; structural validation alone does not establish
+native-language editorial quality.

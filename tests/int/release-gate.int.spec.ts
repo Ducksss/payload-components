@@ -355,6 +355,7 @@ describe('package publish guard', () => {
     }
 
     expect(parsed.on?.workflow_dispatch?.inputs?.spec?.options).toEqual([
+      'frontend',
       'components-visual',
       'template-visual',
       'blog-visual',

@@ -1,13 +1,8 @@
 name: Crowdin translations
 
 on:
-  push:
-    branches: [dev]
-    paths:
-      - messages/en.json
-      - crowdin.yml
-      - tools/i18n/**
-      - .github/workflows/crowdin.yml
+  # Paused until a no-cost automated translation workflow is verified.
+  # Source edits must not create a manual translation maintenance queue.
   workflow_dispatch:
     inputs:
       import_existing:

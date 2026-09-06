@@ -1,6 +1,6 @@
 import { defineRouting } from 'next-intl/routing'
 
-import { defaultSiteLocale, siteLocales } from '@/i18n/config'
+import { defaultSiteLocale, publishedSiteLocales } from '@/i18n/config'
 
 /**
  * Public locale URLs are explicit, except English which keeps the project's
@@ -13,5 +13,5 @@ export const routing = defineRouting({
   defaultLocale: defaultSiteLocale,
   localeDetection: false,
   localePrefix: 'as-needed',
-  locales: siteLocales,
+  locales: publishedSiteLocales,
 })
