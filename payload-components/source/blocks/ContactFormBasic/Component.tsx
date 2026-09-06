@@ -15,7 +15,15 @@ type Props = ContactFormBasicBlockData & {
   disableInnerContainer?: boolean
 }
 
-export const ContactFormBasicBlock: React.FC<Props> = ({
+export const ContactFormBasicBlock: React.FC<Props> = (props) => {
+  // A new block or destination starts a new form. Keeping its state and DOM in
+  // a keyed instance prevents an older request from clearing or acknowledging
+  // a replacement form during live preview or another parent update.
+  const identity = JSON.stringify([props.id, getSafeFormAction(props.action)])
+  return <ContactFormInstance {...props} key={identity} />
+}
+
+const ContactFormInstance: React.FC<Props> = ({
   action,
   className,
   description,

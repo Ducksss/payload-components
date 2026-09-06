@@ -130,6 +130,29 @@ async function componentInstallContract(page: SourcePage) {
     'Re-running the install converges: existing wiring is detected and skipped, and install state is recorded in `.payload-components/state.json`.',
     '',
     `Requirements: target ${manifest.supportedTargets.join(', ')}; Payload v${manifest.supports.payloadMajors.join(' / v')}; Next.js ${manifest.supports.nextMajors.join(' / ')}; shadcn UI dependencies: ${deps.length ? deps.join(', ') : 'none'}.`,
+    ...(manifest.requires?.projectFiles.length
+      ? [
+          '',
+          '### Project prerequisites',
+          '',
+          'The CLI checks these requirements before installing:',
+          ...manifest.requires.projectFiles.flatMap((requirement) => [
+            '',
+            `- **${requirement.label}**: ${requirement.paths.map((file) => `\`${file}\``).join(' or ')}.`,
+            ...(requirement.anchors?.length
+              ? [
+                  `  Required source anchors: ${requirement.anchors.map((anchor) => `\`${anchor}\``).join(', ')}.`,
+                ]
+              : []),
+            ...(requirement.collectionIdentifiers?.length
+              ? [
+                  `  Register ${requirement.collectionIdentifiers.map((identifier) => `\`${identifier}\``).join(' and ')} directly in the \`buildConfig\` collections array.`,
+                ]
+              : []),
+            `  ${requirement.help}`,
+          ]),
+        ]
+      : []),
     '',
     fileOnly
       ? 'Template usage: import the installed component in your article template and pass public content as props. It does not appear in the Payload block picker.'

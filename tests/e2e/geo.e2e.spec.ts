@@ -210,6 +210,22 @@ test.describe('AI-readable documentation surfaces', () => {
     ]) {
       for (const prefix of ['', '/zh']) {
         const path = `${prefix}/${surface}/${slug}`
+        const publishedPath = `/${surface}/${slug}`
+        if (prefix) {
+          // Saved language URLs must converge on the currently published
+          // English page, including direct machine-readable routes.
+          for (const route of [
+            path,
+            `${path}.md`,
+            `${prefix}/llms.mdx/${surface}/${slug}/content.md`,
+          ]) {
+            const redirect = await request.get(`${baseURL}${route}`, { maxRedirects: 0 })
+            expect(redirect.status()).toBe(307)
+            expect(new URL(redirect.headers().location, baseURL).pathname).toBe(
+              route.slice(prefix.length),
+            )
+          }
+        }
         const direct = await request.get(
           `${baseURL}${prefix}/llms.mdx/${surface}/${slug}/content.md`,
         )
@@ -230,9 +246,10 @@ test.describe('AI-readable documentation surfaces', () => {
         expect(html.headers()['vary'].toLowerCase()).toContain('accept')
         expect(html.headers()['content-type']).toContain('text/html')
         await page.goto(`${baseURL}${path}`)
+        await expect(page).toHaveURL(`${baseURL}${publishedPath}`)
         await expect(page.locator('link[rel="alternate"][type="text/markdown"]')).toHaveAttribute(
           'href',
-          `${baseURL}${path}.md`,
+          `${baseURL}${publishedPath}.md`,
         )
       }
       expect((await request.get(`${baseURL}/${surface}/missing-markdown-page.md`)).status()).toBe(

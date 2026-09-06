@@ -804,6 +804,52 @@ describe('Fumadocs site shell', () => {
     expect(sources[0]?.code).toContain("slug: 'heroBasic'")
   })
 
+  it('preserves actionable Collection Query prerequisites in machine-readable docs', async () => {
+    vi.doMock('collections/server', () => ({
+      docs: {
+        toFumadocsSource: () => ({
+          files: ['collection-query', 'hero-basic'].map((slug) => ({
+            type: 'page',
+            path: `components/${slug}.mdx`,
+            data: {
+              title: slug,
+              getText: async () => `<ComponentRequirements slug="${slug}" />`,
+            },
+          })),
+        }),
+      },
+    }))
+    const { getLLMText, source } = await import('../../src/lib/source')
+    const queryPage = source.getPage(['components', 'collection-query'])
+    const heroPage = source.getPage(['components', 'hero-basic'])
+    expect(queryPage).toBeDefined()
+    expect(heroPage).toBeDefined()
+    if (!queryPage || !heroPage) throw new Error('Missing component markdown fixture')
+
+    const markdown = await getLLMText(queryPage)
+    expect(markdown).toContain('### Project prerequisites')
+    expect(markdown).toContain('**Posts collection**: `src/collections/Posts/index.ts`')
+    expect(markdown).toContain("`slug: 'posts'`")
+    expect(markdown).toContain("`name: 'publishedAt'`")
+    expect(markdown).toContain('**Posts and Categories registration**: `src/payload.config.ts`')
+    expect(markdown).toContain('Required source anchors: `buildConfig`')
+    expect(markdown).toContain(
+      'Register `Posts` and `Categories` directly in the `buildConfig` collections array.',
+    )
+    expect(markdown).toContain(
+      '**Categories collection**: `src/collections/Categories.ts` or `src/collections/Categories/index.ts`',
+    )
+    expect(markdown).toContain("`slug: 'categories'`")
+    expect(markdown).toContain(
+      'Computed collection lists cannot be verified; expose a literal array before installing.',
+    )
+    expect(markdown).toContain('Add or restore the official website starter Categories collection')
+    const heroMarkdown = await getLLMText(heroPage)
+    expect(heroMarkdown).not.toContain('### Project prerequisites')
+    expect(heroMarkdown).toContain('## Install contract')
+    expect(heroMarkdown).toContain('Admin usage: add the `HeroBasic` block')
+  })
+
   it('turns the top search component pages into distinct tracked install entries', async () => {
     const pages = [
       {

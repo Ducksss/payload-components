@@ -109,4 +109,31 @@ describe('component-specific host prerequisites', () => {
     )
     expect(manifest.requires?.projectFiles).toHaveLength(3)
   }, 120_000)
+
+  it('refuses an update with missing prerequisites before replacing source or install state', async () => {
+    const { fixtureDir: cwd } = await fixture()
+    const command = (...args: string[]) =>
+      runCommand({
+        command: process.execPath,
+        args: [path.join(root, 'bin/payload-components.mjs'), ...args, '--cwd', cwd],
+        cwd: root,
+        captureOutput: true,
+        timeoutMs: 60_000,
+      })
+    await command('add', 'collection-query')
+    const config = path.join(cwd, 'src/blocks/CollectionQuery/config.ts')
+    const edited = `${await readFile(config, 'utf8')}\n// Consumer customization to retain if preflight fails.\n`
+    await writeFile(config, edited)
+    const statePath = path.join(cwd, '.payload-components/state.json')
+    const state = await readFile(statePath, 'utf8')
+    await rm(path.join(cwd, 'src/collections/Categories.ts'))
+
+    const failure = await command('update', 'collection-query', '--force').catch(
+      (error: Error & { stderr: string }) => error,
+    )
+    expect(failure).toBeInstanceOf(Error)
+    expect((failure as Error & { stderr: string }).stderr).toContain('Categories collection')
+    expect(await readFile(config, 'utf8')).toBe(edited)
+    expect(await readFile(statePath, 'utf8')).toBe(state)
+  }, 120_000)
 })

@@ -11,6 +11,7 @@ import {
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest } from '../manifest'
 import { prepareLocalizationHelper } from '../localization-helper'
+import { assertManifestProjectRequirements } from '../project'
 import { readSafeProjectFile } from '../safe-path'
 import { getStatePath, loadState } from '../state'
 
@@ -420,6 +421,15 @@ export const updateCommand = async ({
   }
 
   plans.splice(0, plans.length, ...eligiblePlans)
+
+  // Check every selected install before replacing any source. The delegated
+  // add checks again, but by then canonical replacements have been committed.
+  for (const plan of plans) {
+    await assertManifestProjectRequirements({
+      cwd,
+      manifest: await loadManifest(plan.componentName),
+    })
+  }
 
   printHeader(formatPlan({ breaking, cwd, dryRun, plans, skipped }))
 
