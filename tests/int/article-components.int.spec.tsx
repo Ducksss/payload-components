@@ -6,7 +6,7 @@ import Ajv2020 from 'ajv/dist/2020.js'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import ts from 'typescript'
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { AuthorCard } from '../../payload-components/source/components/AuthorCard/Component'
 import { PostHero } from '../../payload-components/source/components/PostHero/Component'
@@ -125,6 +125,53 @@ describe('file-only article components', () => {
     expect(
       renderToStaticMarkup(<AuthorCard name="Alex" avatar={<span>Avatar</span>} label="作者" />),
     ).toContain('Avatar')
+  })
+
+  it('renders post-card dates identically on servers and browsers in different timezones', async () => {
+    const source = await readFile(
+      path.join(root, 'payload-components/source/blocks/shared/PostCard.tsx'),
+      'utf8',
+    )
+    const compiled = ts.transpileModule(source, {
+      compilerOptions: {
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES2022,
+        jsx: ts.JsxEmit.React,
+        esModuleInterop: true,
+      },
+    }).outputText
+    const exports: {
+      PostCard?: React.ComponentType<{ post: { title: string; slug: string; publishedAt: string } }>
+    } = {}
+    const primitive = ({ children }: { children?: React.ReactNode }) => <div>{children}</div>
+    new Function('require', 'exports', compiled)((id: string) => {
+      if (id === 'react') return React
+      if (id === 'next/link') return primitive
+      if (id === '@/components/Media') return { Media: primitive }
+      if (id === '@/utilities/ui') return { cn: () => '' }
+      if (id === '@/components/ui/badge') return { Badge: primitive }
+      if (id === '@/components/ui/card')
+        return Object.fromEntries(
+          ['Card', 'CardContent', 'CardDescription', 'CardHeader', 'CardTitle'].map((name) => [
+            name,
+            primitive,
+          ]),
+        )
+      throw new Error(`Unexpected PostCard dependency: ${id}`)
+    }, exports)
+    const PostCard = exports.PostCard!
+    try {
+      const renders = ['UTC', 'America/Los_Angeles', 'Asia/Singapore'].map((timeZone) => {
+        vi.stubEnv('TZ', timeZone)
+        return renderToStaticMarkup(
+          <PostCard post={{ title: 'Post', slug: 'post', publishedAt: '2026-08-13T00:30:00Z' }} />,
+        )
+      })
+      expect(new Set(renders).size).toBe(1)
+      expect(renders[0]).toContain('Aug 13, 2026')
+    } finally {
+      vi.unstubAllEnvs()
+    }
   })
 
   it.each(['post-hero', 'author-card'])(

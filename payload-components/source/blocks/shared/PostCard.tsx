@@ -70,6 +70,7 @@ export function PostCard({
                   day: 'numeric',
                   month: 'short',
                   year: 'numeric',
+                  timeZone: 'UTC',
                 }).format(publishedAt)}
               </time>
             ) : null}
