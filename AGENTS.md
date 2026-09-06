@@ -71,9 +71,10 @@ Fragment patching is **text-anchor based** — it finds anchors like `const bloc
 is the canonical source for translated site copy, including catalogue titles, descriptions,
 and target labels under `Components.<slug>`. `src/lib/site.ts` and
 `src/lib/component-catalog.ts` expose English projections for existing contracts; keep
-identifiers and install data in TypeScript. Chinese catalogue prose is complete; other
+identifiers and install data in TypeScript. Chinese, Japanese, and Korean catalogue prose is complete; other
 locales use the narrow English fallback defined in `src/i18n/catalog-policy.ts` until their
-catalogue translations are ready. See `messages/README.md` for Crowdin bootstrap, export
+catalogue translations are ready. Draft translations directly in locale JSON; no paid
+provider is required. See `messages/README.md` for the no-cost workflow, Crowdin bootstrap, export
 validation, and native-review publication rules. Never replace real locale values with
 English to make key checks pass.
 

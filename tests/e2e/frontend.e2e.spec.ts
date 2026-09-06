@@ -729,24 +729,36 @@ test.describe('Light shadcn frontend', () => {
     })
   }
 
-  test('searches Chinese catalog copy while keeping install identifiers stable', async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 375, height: 812 })
-    await page.goto(`${baseURL}/zh/components?q=${encodeURIComponent('基础首屏')}`)
-    const card = page.locator('article#hero-basic')
-    await expect(card.getByRole('link', { name: '基础首屏', exact: true })).toHaveAttribute(
-      'href',
-      '/zh/docs/components/hero-basic',
-    )
-    await expect(card.locator('code')).toHaveText('hero-basic')
-    await card.getByRole('button', { name: '将 hero-basic 加入安装命令', exact: true }).click()
-    await expect(
-      page.getByText('npx payload-components add hero-basic', { exact: true }).last(),
-    ).toBeVisible()
-    const overflow = await expectNoHorizontalOverflow(page, '/zh/components')
-    expect(overflow.offenders, overflow.message).toEqual([])
-  })
+  for (const catalog of [
+    { locale: 'zh', title: '基础首屏', add: '将 hero-basic 加入安装命令' },
+    { locale: 'ja', title: '基本のヒーロー', add: 'インストールコマンドにhero-basicを追加' },
+    { locale: 'ko', title: '기본 히어로', add: '설치 명령어에 hero-basic 추가' },
+  ]) {
+    test(`searches ${catalog.locale} catalog copy while keeping install identifiers stable`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 375, height: 812 })
+      await page.goto(
+        `${baseURL}/${catalog.locale}/components?q=${encodeURIComponent(catalog.title)}`,
+      )
+      const card = page.locator('article#hero-basic')
+      await expect(card.getByRole('link', { name: catalog.title, exact: true })).toHaveAttribute(
+        'href',
+        `/${catalog.locale}/docs/components/hero-basic`,
+      )
+      await expect(card.locator('code')).toHaveText('hero-basic')
+      await card.getByRole('button', { name: catalog.add, exact: true }).click()
+      await expect(
+        page.getByText('npx payload-components add hero-basic', { exact: true }).last(),
+      ).toBeVisible()
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+        'content',
+        'noindex, follow',
+      )
+      const overflow = await expectNoHorizontalOverflow(page, `/${catalog.locale}/components`)
+      expect(overflow.offenders, overflow.message).toEqual([])
+    })
+  }
 
   test('switches locale explicitly while preserving the route, query, and hash', async ({
     page,

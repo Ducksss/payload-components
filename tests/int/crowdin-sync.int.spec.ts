@@ -104,14 +104,17 @@ describe('Crowdin export safety', () => {
 })
 
 describe('catalog translation rollout', () => {
-  it('uses stable registry slugs with complete English and Chinese copy', async () => {
+  it('uses stable registry slugs with complete English, Chinese, Japanese, and Korean copy', async () => {
     const en = flattenMessages(await getSiteMessages('en'))
-    const zh = flattenMessages(await getSiteMessages('zh'))
+    const { catalogs } = await loadCatalogs()
     for (const entry of [...componentEntries, ...upcomingComponents]) {
       for (const field of ['title', 'description', 'target'] as const) {
         const key = `Components.${entry.slug}.${field}`
         expect(en[key]).toBe(entry[field])
-        expect(zh[key], key).not.toBe(en[key])
+        for (const locale of ['zh', 'ja', 'ko'] as const) {
+          expect(catalogs[locale][key], `${locale}:${key}`).toBeTruthy()
+          expect(catalogs[locale][key], `${locale}:${key}`).not.toBe(en[key])
+        }
       }
     }
     expect(componentEntries[0].command).toBe('npx payload-components add hero-basic')
@@ -121,8 +124,8 @@ describe('catalog translation rollout', () => {
   it('allows English fallback only for catalog prose in the other draft locales', async () => {
     const { english, catalogs } = await loadCatalogs()
     expect(validateCatalogs(english, catalogs)).toEqual([])
-    expect(catalogs.ja['Components.hero-basic.title']).toBeUndefined()
-    expect(flattenMessages(await getSiteMessages('ja'))['Components.hero-basic.title']).toBe(
+    expect(catalogs.fr['Components.hero-basic.title']).toBeUndefined()
+    expect(flattenMessages(await getSiteMessages('fr'))['Components.hero-basic.title']).toBe(
       'Hero Basic',
     )
     const broken = structuredClone(catalogs)
