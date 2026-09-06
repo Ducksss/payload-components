@@ -323,6 +323,10 @@
     {
       "slug": "author-card",
       "version": "0.1.0"
+    },
+    {
+      "slug": "newsletter-callout",
+      "version": "0.1.0"
     }
   ],
   "version": 1

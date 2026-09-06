@@ -9,6 +9,7 @@ import ts from 'typescript'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { AuthorCard } from '../../payload-components/source/components/AuthorCard/Component'
+import { NewsletterCallout } from '../../payload-components/source/components/NewsletterCallout/Component'
 import { PostHero } from '../../payload-components/source/components/PostHero/Component'
 import { buildRegistryForCheck } from '../../tools/payload-components/check-public-registry'
 import { loadManifest } from '../../tools/payload-components/manifest'
@@ -57,7 +58,7 @@ describe('file-only article components', () => {
 
   it('typechecks the actual distributed components against React without Payload stubs', () => {
     const program = ts.createProgram(
-      ['AuthorCard', 'PostHero'].map((name) =>
+      ['AuthorCard', 'NewsletterCallout', 'PostHero'].map((name) =>
         path.join(root, 'payload-components/source/components', name, 'Component.tsx'),
       ),
       {
@@ -127,6 +128,25 @@ describe('file-only article components', () => {
     ).toContain('Avatar')
   })
 
+  it('renders an accessible newsletter form for a consumer-owned endpoint', () => {
+    const html = renderToStaticMarkup(
+      <NewsletterCallout
+        id="newsletter"
+        title="Keep reading"
+        description="Get new articles."
+        action="/api/newsletter"
+        legalText="Unsubscribe anytime."
+      />,
+    )
+    expect(html).toContain('action="/api/newsletter"')
+    expect(html).toContain('method="post"')
+    expect(html).toContain('type="email"')
+    expect(html).toContain('autoComplete="email"')
+    expect(html).toContain('required=""')
+    expect(html).toContain('for="newsletter-email"')
+    expect(html).toContain('aria-labelledby="newsletter-title"')
+  })
+
   it('renders post-card dates identically on servers and browsers in different timezones', async () => {
     const source = await readFile(
       path.join(root, 'payload-components/source/blocks/shared/PostCard.tsx'),
@@ -174,7 +194,7 @@ describe('file-only article components', () => {
     }
   })
 
-  it.each(['post-hero', 'author-card'])(
+  it.each(['post-hero', 'author-card', 'newsletter-callout'])(
     'delivers %s through direct shadcn and tracks/removes it without host edits',
     async (slug) => {
       const { fixtureDir, manifest } = await createInstallFixture(slug)
@@ -213,7 +233,13 @@ describe('file-only article components', () => {
       })
       for (const file of manifest.files) {
         expect(await readFile(path.join(fixtureDir, file), 'utf8')).toContain(
-          `export function ${slug === 'post-hero' ? 'PostHero' : 'AuthorCard'}`,
+          `export function ${
+            {
+              'post-hero': 'PostHero',
+              'author-card': 'AuthorCard',
+              'newsletter-callout': 'NewsletterCallout',
+            }[slug]
+          }`,
         )
       }
       await cli(fixtureDir, 'add', slug)

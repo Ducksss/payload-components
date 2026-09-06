@@ -309,12 +309,13 @@ this table is verified against the same source by a focused test.
 | `contact-form-basic`      | `npx payload-components add contact-form-basic`      |
 | `post-hero`               | `npx payload-components add post-hero`               |
 | `author-card`             | `npx payload-components add author-card`             |
+| `newsletter-callout`      | `npx payload-components add newsletter-callout`      |
 
 <!-- COMPONENT-INVENTORY:END -->
 
 Collection Query supplies grid, list, and featured Posts layouts with category
 filters and pagination. Contact Form Basic submits to an endpoint you own.
-Post Hero and Author Card are file-only article components: compose them in your
+Post Hero, Author Card, and Newsletter Callout are file-only article components: compose them in your
 post template; their installs do not edit Pages or run Payload generators.
 See the [visual install walkthrough](/content/docs/install-walkthrough.mdx) for
 catalog discovery, a representative install, the resulting diff, and doctor.

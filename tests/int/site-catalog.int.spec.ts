@@ -12,7 +12,11 @@ import {
 describe('generated site component catalog', () => {
   it('separates installed article surfaces from the remaining public roadmap', () => {
     const articles = componentEntries.filter((component) => component.family === 'posts')
-    expect(articles.map((component) => component.slug)).toEqual(['post-hero', 'author-card'])
+    expect(articles.map((component) => component.slug)).toEqual([
+      'post-hero',
+      'author-card',
+      'newsletter-callout',
+    ])
     expect(componentEntries.filter((component) => component.family === 'pages')).toHaveLength(79)
     expect(upcomingComponents.map((component) => component.slug)).toEqual(['related-posts'])
     expect(

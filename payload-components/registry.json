@@ -3424,6 +3424,32 @@
         }
       ],
       "registryDependencies": []
+    },
+    {
+      "name": "newsletter-callout",
+      "type": "registry:component",
+      "title": "Newsletter Callout",
+      "description": "A newsletter signup callout with a consumer-owned form endpoint.",
+      "docs": "File-only article template component. Import NewsletterCallout from @/components/NewsletterCallout/Component and pass the content explicitly. Your application owns the form endpoint and subscriber handling. Direct install: pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/newsletter-callout.json Optional tracked install in a supported Payload project: payload-components add newsletter-callout.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add newsletter-callout",
+          "postInstall": [],
+          "requiresPayloadComponentWrapper": false,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/components/NewsletterCallout/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/NewsletterCallout/Component.tsx"
+        }
+      ],
+      "registryDependencies": []
     }
   ]
 }
