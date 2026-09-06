@@ -3,6 +3,7 @@ import path from 'node:path'
 import {
   compareInstalledFiles,
   hashSource,
+  prepareCanonicalComponentFiles,
   replaceCanonicalComponentFiles,
   resolveCanonicalFileHashes,
   resolveRecordedFileHashes,
@@ -11,10 +12,10 @@ import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest } from '../manifest'
 import { prepareLocalizationHelper } from '../localization-helper'
 import { readSafeProjectFile } from '../safe-path'
-import { loadState } from '../state'
+import { getStatePath, loadState } from '../state'
 
 import type { ChangelogEntry } from '../types'
-import { printHeader } from '../utils'
+import { commitFileChanges, printHeader, type FileChange } from '../utils'
 
 import { addCommand } from './add'
 
@@ -362,7 +363,8 @@ export const updateCommand = async ({
           cwd,
           filePath: path.join(cwd, projectPath),
         }).catch(() => undefined)
-        const installedHash = installedSource === undefined ? undefined : hashSource(installedSource)
+        const installedHash =
+          installedSource === undefined ? undefined : hashSource(installedSource)
         const prospectiveHash = prospectiveHashes?.[projectPath]
         const conflictingOwners = otherOwners
           .filter(({ canonicalHash, hash, name }) => {
@@ -425,7 +427,7 @@ export const updateCommand = async ({
     return true
   }
 
-  let helperChanges = plans.some((plan) => plan.localized)
+  const helperChanges = plans.some((plan) => plan.localized)
     ? await prepareLocalizationHelper({
         acceptLegacyPolicyChange: acceptLocalizationPolicyChange,
         cwd,
@@ -433,19 +435,68 @@ export const updateCommand = async ({
       })
     : []
 
+  // A shared policy change affects every owner immediately. Stage all accepted
+  // source updates and their recoverable partial baselines before any generator
+  // runs, so a failed first install cannot strand the remaining legacy configs.
+  if (helperChanges.length > 0) {
+    const changes = new Map<string, FileChange>()
+    const pendingState = await loadState(cwd)
+    for (const plan of plans) {
+      const manifest = await loadManifest(plan.componentName)
+      const currentFiles = new Set(manifest.files)
+      const prepared = await prepareCanonicalComponentFiles({
+        cwd,
+        deleteFiles: [...plan.files, ...plan.blockedFiles].filter(
+          (file) => !currentFiles.has(file),
+        ),
+        localized: plan.localized,
+        manifest,
+      })
+      for (const change of prepared) {
+        const existing = changes.get(change.filePath)
+        if (existing && existing.content !== change.content) {
+          throw new Error(`Conflicting shared-file replacements: ${change.filePath}`)
+        }
+        changes.set(change.filePath, change)
+      }
+      pendingState.components[plan.componentName] = {
+        ...pendingState.components[plan.componentName],
+        fileHashes: Object.fromEntries(
+          prepared
+            .filter((change) => change.content !== null)
+            .map((change) => [
+              path.relative(cwd, change.filePath).split(path.sep).join('/'),
+              hashSource(change.content!),
+            ]),
+        ),
+        localizationPolicy: 'semantic-v1',
+        lastError: null,
+        status: 'partial',
+      }
+    }
+    await commitFileChanges(
+      [
+        ...changes.values(),
+        ...helperChanges,
+        { filePath: getStatePath(cwd), content: `${JSON.stringify(pendingState, null, 2)}\n` },
+      ],
+      { cwd },
+    )
+  }
+
   for (const plan of plans) {
     const manifest = await loadManifest(plan.componentName)
     const replacedFiles = [...plan.files, ...plan.blockedFiles]
     const currentFiles = new Set(manifest.files)
 
-    await replaceCanonicalComponentFiles({
-      additionalChanges: helperChanges,
-      cwd,
-      deleteFiles: replacedFiles.filter((projectPath) => !currentFiles.has(projectPath)),
-      localized: plan.localized,
-      manifest,
-    })
-    helperChanges = []
+    if (helperChanges.length === 0) {
+      await replaceCanonicalComponentFiles({
+        cwd,
+        deleteFiles: replacedFiles.filter((projectPath) => !currentFiles.has(projectPath)),
+        localized: plan.localized,
+        manifest,
+      })
+    }
 
     await addCommand({
       ...(plan.localizationPolicyChange ? { acceptLocalizationPolicyChange: true } : {}),

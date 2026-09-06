@@ -140,4 +140,49 @@ describe('real update → add localization migration', { timeout: 30_000 }, () =
       ),
     ).toBe(true)
   })
+
+  it('commits every owner before generators run and resumes a failed migration without force', async () => {
+    const { cwd, manifests } = await legacyInstall(['hero-basic', 'faq-card'])
+    const before = await loadState(cwd)
+    const canonical = new Map<string, string>()
+    for (const manifest of manifests) {
+      for (const file of manifest.files) {
+        const filePath = path.join(cwd, file)
+        const source = canonical.get(file) ?? (await readFile(filePath, 'utf8'))
+        canonical.set(file, source)
+        // Real pre-semantic sources have no explicit per-field storage policy.
+        const legacy = source.replace(
+          /\s*custom: \{ payloadComponents: \{ localization: '(?:localized|global)' \} \},/g,
+          '',
+        )
+        await writeFile(filePath, legacy)
+        before.components[manifest.name].fileHashes[file] = hashSource(legacy)
+      }
+    }
+    await saveState(cwd, before)
+    const packagePath = path.join(cwd, 'package.json')
+    const originalPackage = await readFile(packagePath, 'utf8')
+    const pkg = JSON.parse(originalPackage)
+    pkg.scripts['generate:types'] = 'node -e "process.exit(1)"'
+    await writeFile(packagePath, JSON.stringify(pkg))
+
+    await expect(updateCommand({ cwd, acceptLocalizationPolicyChange: true })).rejects.toThrow()
+    for (const [file, source] of canonical) {
+      expect(await readFile(path.join(cwd, file), 'utf8'), file).toBe(source)
+    }
+    expect(await readFile(path.join(cwd, LOCALIZE_HELPER_FILE), 'utf8')).toBe(
+      await readFile('payload-components/source/blocks/shared/localizeFields.ts', 'utf8'),
+    )
+    expect(
+      Object.values((await loadState(cwd)).components).every((entry) => entry.status === 'partial'),
+    ).toBe(true)
+
+    await writeFile(packagePath, originalPackage)
+    expect(await updateCommand({ cwd })).toBe(true)
+    expect(
+      Object.values((await loadState(cwd)).components).every(
+        (entry) => entry.status === 'installed',
+      ),
+    ).toBe(true)
+  })
 })
