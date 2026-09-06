@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# Block} other {# Blöcke}}",
       "browseFamily": "Durchsuchen {family}",
       "allComponents": "Alle {count} Komponenten durchsuchen",
-      "postComponents": "Komponenten veröffentlichen · In Entwicklung",
+      "postComponents": "Artikelkomponenten entdecken",
       "familyCount": "Installierbar",
       "familyName": "Seitenblöcke",
       "familyDescription": "Blöcke für den Pages-Layout-Builder – installiert mit vollständiger Verkabelung: Sammlungskonfiguration, Renderzuordnung, generierte Typen, Importzuordnung."

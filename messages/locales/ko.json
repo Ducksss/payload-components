@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, other {블록 #개}}",
       "browseFamily": "찾아보기 {family}",
       "allComponents": "{count} 구성요소 모두 찾아보기",
-      "postComponents": "포스트 구성 요소 · 개발 중",
+      "postComponents": "기사 컴포넌트 둘러보기",
       "familyCount": "설치 가능",
       "familyName": "페이지 블록",
       "familyDescription": "페이지 레이아웃 빌더용 블록 — 컬렉션 구성, 렌더 매핑, 생성된 유형, 가져오기 맵 등 전체 연결과 함께 설치됩니다."

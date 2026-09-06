@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, other {#ブロック}}",
       "browseFamily": "{family}を参照",
       "allComponents": "すべての{count}コンポーネントを参照",
-      "postComponents": "ポストコンポーネント · 開発中",
+      "postComponents": "記事コンポーネントを見る",
       "familyCount": "インストール可能",
       "familyName": "ページブロック",
       "familyDescription": "Pages レイアウト ビルダーのブロック — コレクション構成、レンダリング マッピング、生成されたタイプ、インポート マップの完全な配線でインストールされます。"

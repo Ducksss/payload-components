@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# blok} few {# bloki} many {# bloków} other {# bloku}}",
       "browseFamily": "Przeglądaj {family}",
       "allComponents": "Przeglądaj wszystkie komponenty {count}",
-      "postComponents": "Komponenty pocztowe · W przygotowaniu",
+      "postComponents": "Przeglądaj komponenty artykułów",
       "familyCount": "Możliwość instalacji",
       "familyName": "Bloki stron",
       "familyDescription": "Bloki do kreatora układów Pages — instalowane z pełnym okablowaniem: konfiguracja kolekcji, mapowanie renderowania, wygenerowane typy, import mapy."

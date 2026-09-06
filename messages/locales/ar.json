@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, zero {لا كتل} one {كتلة واحدة} two {كتلتان} few {# كتل} many {# كتلة} other {# كتلة}}",
       "browseFamily": "تصفح {family}",
       "allComponents": "تصفح جميع مكونات {count}",
-      "postComponents": "مكونات المشاركة · قيد التطوير",
+      "postComponents": "تصفح مكونات المقالات",
       "familyCount": "قابل للتثبيت",
       "familyName": "كتل الصفحة",
       "familyDescription": "الكتل الخاصة بمنشئ تخطيط الصفحات - مثبتة بأسلاك كاملة: تكوين المجموعة، ورسم الخرائط، والأنواع التي تم إنشاؤها، واستيراد الخريطة."

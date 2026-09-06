@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# bloc} many {# blocs} other {# blocs}}",
       "browseFamily": "Parcourir {family}",
       "allComponents": "Parcourir tous les composants {count}",
-      "postComponents": "Composants du poste · En développement",
+      "postComponents": "Parcourir les composants d’articles",
       "familyCount": "Installable",
       "familyName": "Blocs de pages",
       "familyDescription": "Blocs pour le générateur de mise en page Pages — installés avec un câblage complet : configuration de la collection, mappage de rendu, types générés, carte d'importation."

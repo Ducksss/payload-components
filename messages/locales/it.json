@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# blocco} many {# blocchi} other {# blocchi}}",
       "browseFamily": "Sfoglia {family}",
       "allComponents": "Sfoglia tutti i componenti {count}",
-      "postComponents": "Componenti del post · In fase di sviluppo",
+      "postComponents": "Esplora i componenti per articoli",
       "familyCount": "Installabile",
       "familyName": "Blocchi di pagine",
       "familyDescription": "Blocchi per il generatore di layout di Pages: installati con cablaggio completo: configurazione della raccolta, mappatura del rendering, tipi generati, mappa di importazione."

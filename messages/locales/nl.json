@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# blok} other {# blokken}}",
       "browseFamily": "Blader door {family}",
       "allComponents": "Blader door alle {count} componenten",
-      "postComponents": "Postcomponenten · In ontwikkeling",
+      "postComponents": "Artikelcomponenten bekijken",
       "familyCount": "Installeerbaar",
       "familyName": "Paginablokken",
       "familyDescription": "Blokken voor de Pages-lay-outbouwer — geïnstalleerd met volledige bedrading: verzamelingsconfiguratie, rendertoewijzing, gegenereerde typen, importkaart."

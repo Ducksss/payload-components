@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# blokk} other {# blokk}}",
       "browseFamily": "Böngészés {family}",
       "allComponents": "Az összes {count} összetevő böngészése",
-      "postComponents": "Bejegyzéskomponensek · Fejlesztés alatt",
+      "postComponents": "Cikkkomponensek böngészése",
       "familyCount": "Telepíthető",
       "familyName": "Oldalblokkok",
       "familyDescription": "Az Oldalak elrendezéskészítőjének blokkok – teljes vezetékezéssel telepítve: gyűjteménykonfiguráció, renderelési leképezés, generált típusok, térkép importálása."

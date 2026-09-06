@@ -160,7 +160,7 @@
       "blockCount": "{count, plural, other {# 个区块}}",
       "browseFamily": "浏览{family}",
       "allComponents": "浏览全部 {count} 个组件",
-      "postComponents": "文章组件 · 开发中",
+      "postComponents": "浏览文章组件",
       "familyCount": "可安装",
       "familyName": "页面区块",
       "familyDescription": "面向 Pages 布局构建器的区块，安装时完成全部接线：集合配置、渲染映射、类型生成和导入映射。"

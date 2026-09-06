@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# lohko} other {# lohkoa}}",
       "browseFamily": "Selaa {family}",
       "allComponents": "Selaa kaikkia {count} komponentteja",
-      "postComponents": "Postkomponentit · Kehityksessä",
+      "postComponents": "Selaa artikkelikomponentteja",
       "familyCount": "Asennettavissa",
       "familyName": "Sivulohkot",
       "familyDescription": "Sivujen asettelun rakennustyökalun lohkot – asennettu täydellä johdotuksella: kokoelmamääritykset, renderöintikartoitus, luodut tyypit, tuontikartta."

@@ -160,7 +160,7 @@
       "blockCount": "{count, plural, one {# block} other {# blocks}}",
       "browseFamily": "Browse {family}",
       "allComponents": "Browse all {count} components",
-      "postComponents": "Post components · In development",
+      "postComponents": "Browse article components",
       "familyCount": "Installable",
       "familyName": "Page blocks",
       "familyDescription": "Blocks for the Pages layout builder — installed with full wiring: collection config, render mapping, generated types, import map."

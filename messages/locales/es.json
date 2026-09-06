@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# bloque} many {# bloques} other {# bloques}}",
       "browseFamily": "Explorar {family}",
       "allComponents": "Explorar todos los componentes {count}",
-      "postComponents": "Componentes de la publicación · En desarrollo",
+      "postComponents": "Explorar componentes de artículos",
       "familyCount": "Instalable",
       "familyName": "Bloques de página",
       "familyDescription": "Bloques para el generador de diseño de páginas: instalados con cableado completo: configuración de colección, mapeo de renderizado, tipos generados, mapa de importación."

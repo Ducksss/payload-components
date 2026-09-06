@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, other {# khối}}",
       "browseFamily": "Duyệt {family}",
       "allComponents": "Duyệt qua tất cả các thành phần {count}",
-      "postComponents": "Đăng thành phần · Đang phát triển",
+      "postComponents": "Khám phá các thành phần bài viết",
       "familyCount": "Có thể cài đặt",
       "familyName": "Khối trang",
       "familyDescription": "Các khối dành cho trình tạo bố cục Trang — được cài đặt với hệ thống dây đầy đủ: cấu hình bộ sưu tập, ánh xạ hiển thị, các loại được tạo, nhập bản đồ."

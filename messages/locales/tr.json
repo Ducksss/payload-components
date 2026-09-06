@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# blok} other {# blok}}",
       "browseFamily": "Gözat {family}",
       "allComponents": "Tüm {count} bileşenlerine göz atın",
-      "postComponents": "Post bileşenleri · Geliştirme aşamasında",
+      "postComponents": "Makale bileşenlerine göz at",
       "familyCount": "Kurulabilir",
       "familyName": "Sayfa blokları",
       "familyDescription": "Sayfa düzeni oluşturucu için bloklar — tam kablolamayla kurulur: koleksiyon yapılandırması, oluşturma eşlemesi, oluşturulan türler, içe aktarma haritası."

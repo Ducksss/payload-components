@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# בלוק} two {# בלוקים} other {# בלוקים}}",
       "browseFamily": "עיין ב-{family}",
       "allComponents": "עיין בכל הרכיבים {count}",
-      "postComponents": "רכיבי פוסט · בפיתוח",
+      "postComponents": "עיון ברכיבי מאמרים",
       "familyCount": "ניתן להתקנה",
       "familyName": "חסימות דפים",
       "familyDescription": "בלוקים עבור בונה פריסת דפים - מותקן עם חיווט מלא: תצורת אוסף, מיפוי רנדר, סוגים שנוצרו, מפת ייבוא."

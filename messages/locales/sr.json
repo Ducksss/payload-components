@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# blok} few {# bloka} other {# blokova}}",
       "browseFamily": "Прегледај {family}",
       "allComponents": "Прегледај све {count} компоненте",
-      "postComponents": "Пост компоненте · У развоју",
+      "postComponents": "Прегледајте компоненте чланака",
       "familyCount": "Може се инсталирати",
       "familyName": "Блокови странице",
       "familyDescription": "Блокови за прављење распореда страница — инсталирани са комплетним ожичењем: конфигурација колекције, мапирање рендеровања, генерисани типови, мапа увоза."

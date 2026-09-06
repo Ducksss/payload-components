@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# plokk} other {# plokki}}",
       "browseFamily": "Sirvi {family}",
       "allComponents": "Sirvige kõiki {count} komponente",
-      "postComponents": "Komponentide postitamine · Arendamisel",
+      "postComponents": "Sirvi artiklikomponente",
       "familyCount": "Paigaldatav",
       "familyName": "Leheküljeplokid",
       "familyDescription": "Lehekülgede paigutuse koostaja plokid – installitud täieliku juhtmestikuga: kogumise konfiguratsioon, renderdamise vastendamine, genereeritud tüübid, impordikaart."

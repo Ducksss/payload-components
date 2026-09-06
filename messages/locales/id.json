@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, other {# blok}}",
       "browseFamily": "Telusuri {family}",
       "allComponents": "Jelajahi semua komponen {count}",
-      "postComponents": "Posting komponen · Dalam pengembangan",
+      "postComponents": "Jelajahi komponen artikel",
       "familyCount": "Dapat dipasang",
       "familyName": "Blok halaman",
       "familyDescription": "Blok untuk pembuat tata letak Halaman — dipasang dengan kabel lengkap: konfigurasi koleksi, pemetaan render, tipe yang dihasilkan, impor peta."

@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# bloco} many {# blocos} other {# blocos}}",
       "browseFamily": "Navegar em {family}",
       "allComponents": "Navegar por todos os {count} componentes",
-      "postComponents": "Componentes da postagem · Em desenvolvimento",
+      "postComponents": "Explorar componentes de artigos",
       "familyCount": "Instalável",
       "familyName": "Blocos de páginas",
       "familyDescription": "Blocos para o construtor de layout Pages — instalados com fiação completa: configuração de coleção, mapeamento de renderização, tipos gerados, mapa de importação."
