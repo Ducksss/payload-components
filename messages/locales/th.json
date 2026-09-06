@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, other {# บล็อก}}",
       "browseFamily": "เรียกดู {family}",
       "allComponents": "เรียกดูส่วนประกอบ {count} ทั้งหมด",
-      "postComponents": "โพสต์ส่วนประกอบ · อยู่ระหว่างการพัฒนา",
+      "postComponents": "เรียกดูคอมโพเนนต์บทความ",
       "familyCount": "ติดตั้งได้",
       "familyName": "บล็อกหน้า",
       "familyDescription": "บล็อกสำหรับตัวสร้างเลย์เอาต์ของ Pages — ติดตั้งพร้อมการเดินสายแบบเต็ม: การกำหนดค่าคอลเลกชัน, การแมปการเรนเดอร์, ประเภทที่สร้างขึ้น, การนำเข้าแผนที่"
@@ -231,7 +231,8 @@
       "index": "ดัชนี",
       "author": "ผู้เขียน",
       "newsletter": "จดหมายข่าว",
-      "related": "ที่เกี่ยวข้อง"
+      "related": "ที่เกี่ยวข้อง",
+      "query": "คิวรีคอลเลกชัน"
     },
     "composerAdd": "เพิ่ม {slug} ในคำสั่งติดตั้ง",
     "composerRemove": "ลบ {slug} ออกจากคำสั่งติดตั้ง",
@@ -259,10 +260,10 @@
   },
   "EditorialRoadmap": {
     "metadataTitle": "Editorial component roadmap | Payload Components",
-    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "metadataDescription": "Explore the remaining proposed open-source components for production Payload CMS publishing experiences.",
     "eyebrow": "Payload Components / Roadmap",
     "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
-    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "intro": "Help shape the remaining editorial components. Post Hero and Author Card are now installable, while Collection Query covers archive, list, and featured layouts. Every accepted proposal will ship in the public MIT registry.",
     "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
@@ -270,7 +271,7 @@
     "suiteTitle": "Designed as one publication.",
     "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
-    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionTitle": "What comes next for publishing.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
     "benefitsEyebrow": "How it ships",
     "benefitsTitle": "Built in public, as one system.",
@@ -406,7 +407,8 @@
     "privacy": "ความเป็นส่วนตัว",
     "registry": "ทะเบียน JSON",
     "license": "MIT ได้รับใบอนุญาต · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · เปิดรีจิสทรี"
+    "stack": "Payload v3 · Next.js App Router · เปิดรีจิสทรี",
+    "changelog": "บันทึกการเปลี่ยนแปลงคอมโพเนนต์"
   },
   "Maintainer": {
     "body": "ฉันสร้าง payload-components เพราะการติดตั้งบล็อก Payload ไม่เคยเป็นการคัดลอกและวาง - มันเป็นการแก้ไขสี่ครั้งหลังจากนั้น CLI มีอยู่ ดังนั้นโปรเจ็กต์ที่ 2 และโปรเจ็กต์ที่ 10 จึงเดินสายไฟได้ฟรี อ่านแหล่งที่มาของโปรแกรมติดตั้งก่อนที่คุณจะเชื่อถือ จัดส่งมันMITคือประเด็น",
@@ -474,5 +476,11 @@
     "label": "สถานะการแปล",
     "machine": "หน้านี้แปลด้วยเครื่องและยังไม่ได้รับการตรวจทานโดยเจ้าของภาษา",
     "viewEnglish": "ดูต้นฉบับภาษาอังกฤษ"
+  },
+  "Changelog": {
+    "generated": "สร้างระหว่างการบิลด์จากบันทึกการเปลี่ยนแปลงที่บันทึกไว้ {entries} รายการในไฟล์กำหนดคอมโพเนนต์ {components} ไฟล์",
+    "latest": "ล่าสุด",
+    "breaking": "การเปลี่ยนแปลงที่ไม่เข้ากัน",
+    "migration": "การย้ายข้อมูล"
   }
 }

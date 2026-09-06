@@ -407,7 +407,7 @@ describe('the shipped localizeFields helper', () => {
       visit(source)
     }
 
-    expect(leaves).toBe(177)
+    expect(leaves).toBe(188)
     expect(missing).toEqual([])
   })
 })

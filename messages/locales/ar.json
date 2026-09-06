@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, zero {لا كتل} one {كتلة واحدة} two {كتلتان} few {# كتل} many {# كتلة} other {# كتلة}}",
       "browseFamily": "تصفح {family}",
       "allComponents": "تصفح جميع مكونات {count}",
-      "postComponents": "مكونات المشاركة · قيد التطوير",
+      "postComponents": "تصفح مكونات المقالات",
       "familyCount": "قابل للتثبيت",
       "familyName": "كتل الصفحة",
       "familyDescription": "الكتل الخاصة بمنشئ تخطيط الصفحات - مثبتة بأسلاك كاملة: تكوين المجموعة، ورسم الخرائط، والأنواع التي تم إنشاؤها، واستيراد الخريطة."
@@ -231,7 +231,8 @@
       "index": "الفهرس",
       "author": "المؤلف",
       "newsletter": "النشرة الإخبارية",
-      "related": "ذات صلة"
+      "related": "ذات صلة",
+      "query": "استعلام المجموعة"
     },
     "composerAdd": "أضف {slug} إلى أمر التثبيت",
     "composerRemove": "قم بإزالة {slug} من أمر التثبيت",
@@ -259,10 +260,10 @@
   },
   "EditorialRoadmap": {
     "metadataTitle": "Editorial component roadmap | Payload Components",
-    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "metadataDescription": "Explore the remaining proposed open-source components for production Payload CMS publishing experiences.",
     "eyebrow": "Payload Components / Roadmap",
     "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
-    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "intro": "Help shape the remaining editorial components. Post Hero and Author Card are now installable, while Collection Query covers archive, list, and featured layouts. Every accepted proposal will ship in the public MIT registry.",
     "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
@@ -270,7 +271,7 @@
     "suiteTitle": "Designed as one publication.",
     "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
-    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionTitle": "What comes next for publishing.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
     "benefitsEyebrow": "How it ships",
     "benefitsTitle": "Built in public, as one system.",
@@ -406,7 +407,8 @@
     "privacy": "الخصوصية",
     "registry": "التسجيل JSON",
     "license": "MIT مرخص · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · فتح التسجيل"
+    "stack": "Payload v3 · Next.js App Router · فتح التسجيل",
+    "changelog": "سجل تغييرات المكونات"
   },
   "Maintainer": {
     "body": "لقد أنشأت payload-components لأن تثبيت كتلة Payload لم يكن أبدًا عبارة عن نسخ ولصق - بل كان التعديلات الأربعة اللاحقة. CLI موجود لذا المشروع الثاني والعاشر يحصلان على هذه الأسلاك مجانًا. اقرأ مصدر أداة التثبيت قبل أن تثق به؛ شحنه MIT هو النقطة.",
@@ -474,5 +476,11 @@
     "label": "حالة الترجمة",
     "machine": "تُرجمت هذه الصفحة آليًا ولم يراجعها متحدث أصلي بعد.",
     "viewEnglish": "عرض المصدر الإنجليزي"
+  },
+  "Changelog": {
+    "generated": "أُنشئت أثناء البناء من {entries} سجل تغييرات محفوظًا عبر {components} ملفات تعريف للمكونات.",
+    "latest": "الأحدث",
+    "breaking": "تغيير غير متوافق",
+    "migration": "ترحيل البيانات"
   }
 }

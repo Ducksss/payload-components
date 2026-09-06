@@ -1,5 +1,6 @@
 import { getLLMText, source } from '@/lib/source'
 import { getBlogLLMText, getBlogPages } from '@/lib/blog-source'
+import { getTemplateLLMText } from '@/lib/template-markdown'
 import {
   blogRoute,
   faqEntries,
@@ -43,6 +44,8 @@ export async function GET() {
       (template) =>
         `- ${template.title} (${siteUrl}${templateDetailHref(template.slug)}): ${templateInstallCommand(template)} — ${template.summary}`,
     ),
+    '',
+    ...templateShowcases.map((template) => getTemplateLLMText(template)),
     '',
     '## FAQ',
     ...faqEntries.flatMap((entry) => [`### ${entry.question}`, entry.answer, '']),

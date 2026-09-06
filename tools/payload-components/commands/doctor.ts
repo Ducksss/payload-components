@@ -9,6 +9,7 @@ import { loadManifest } from '../manifest'
 import { formatLocaleList, resolveLocales } from '../locales'
 import {
   assertManifestSupport,
+  checkManifestProjectRequirements,
   detectProject,
   readPayloadLocalization,
   verifyInstalledManifestFiles,
@@ -145,6 +146,19 @@ const checkRecordedComponent = async ({
 }) => {
   let isHealthy = true
   let plan: Awaited<ReturnType<typeof resolveInstallPlan>>
+
+  const requirementFailures = await checkManifestProjectRequirements({ cwd, manifest })
+
+  if (requirementFailures.length === 0) {
+    if (manifest.requires?.projectFiles.length) {
+      log('ok', `${componentName}: project prerequisites`, componentName)
+    }
+  } else {
+    isHealthy = false
+    for (const failure of requirementFailures) {
+      log('error', `${componentName}: ${failure.message}`, componentName)
+    }
+  }
 
   try {
     plan = await resolveInstallPlan({ cwd, manifest })
@@ -318,7 +332,12 @@ const checkLocalization = async ({
   project: DetectedProject
   state: Awaited<ReturnType<typeof loadState>>
 }) => {
-  const recorded = Object.entries(state.components)
+  const recorded = [] as Array<[string, (typeof state.components)[string]]>
+  for (const entry of Object.entries(state.components)) {
+    // Missing catalog entries are reported by the inventory check; do not hide them here.
+    const manifest = await loadManifest(entry[0]).catch(() => null)
+    if (manifest?.installMode !== 'file-only') recorded.push(entry)
+  }
   const localized = recorded.filter(([, entry]) => entry.localized === true).map(([name]) => name)
   const legacyPolicy = recorded
     .filter(

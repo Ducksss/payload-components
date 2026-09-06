@@ -54,8 +54,14 @@ Start every release from a clean branch and keep the registry source, manifests,
 For slower confidence against the live registry, run the fresh Payload smoke with the deployed URL template:
 
 ```bash
-pnpm test:fresh -- --registry-url 'https://www.payload-components.xyz/r/{name}.json'
+pnpm test:public-registry
 ```
+
+Pass the lower-level `test:fresh` command a `--shard-index` or `--components` selection when debugging one scheduled shard.
+
+The direct-delivery stage creates a new external target containing only `package.json`, `components.json`, TypeScript path aliases, and Tailwind CSS. It then runs `pnpm dlx shadcn@latest add <public-item-url>` for every selected live item and verifies every declared file plus each public shadcn UI dependency. It never copies this repository into the target, so undeclared files cannot make the smoke pass accidentally.
+
+Direct shadcn installs are intentionally file-only: they do not register blocks in `Pages`, update `RenderBlocks`, run Payload generators, or record installer state. Use `payload-components add` for that wiring.
 
 <Callout type="warn">
   `public/r` is generated output. Do not fix a public registry issue by editing generated files

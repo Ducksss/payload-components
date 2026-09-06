@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, other {# khối}}",
       "browseFamily": "Duyệt {family}",
       "allComponents": "Duyệt qua tất cả các thành phần {count}",
-      "postComponents": "Đăng thành phần · Đang phát triển",
+      "postComponents": "Khám phá các thành phần bài viết",
       "familyCount": "Có thể cài đặt",
       "familyName": "Khối trang",
       "familyDescription": "Các khối dành cho trình tạo bố cục Trang — được cài đặt với hệ thống dây đầy đủ: cấu hình bộ sưu tập, ánh xạ hiển thị, các loại được tạo, nhập bản đồ."
@@ -231,7 +231,8 @@
       "index": "Chỉ mục",
       "author": "Tác giả",
       "newsletter": "Bản tin",
-      "related": "Liên quan"
+      "related": "Liên quan",
+      "query": "Truy vấn bộ sưu tập"
     },
     "composerAdd": "Thêm {slug} vào lệnh cài đặt",
     "composerRemove": "Xóa {slug} khỏi lệnh cài đặt",
@@ -259,10 +260,10 @@
   },
   "EditorialRoadmap": {
     "metadataTitle": "Editorial component roadmap | Payload Components",
-    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "metadataDescription": "Explore the remaining proposed open-source components for production Payload CMS publishing experiences.",
     "eyebrow": "Payload Components / Roadmap",
     "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
-    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "intro": "Help shape the remaining editorial components. Post Hero and Author Card are now installable, while Collection Query covers archive, list, and featured layouts. Every accepted proposal will ship in the public MIT registry.",
     "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
@@ -270,7 +271,7 @@
     "suiteTitle": "Designed as one publication.",
     "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
-    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionTitle": "What comes next for publishing.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
     "benefitsEyebrow": "How it ships",
     "benefitsTitle": "Built in public, as one system.",
@@ -406,7 +407,8 @@
     "privacy": "Quyền riêng tư",
     "registry": "Đăng ký JSON",
     "license": "MIT được cấp phép · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · mở đăng ký"
+    "stack": "Payload v3 · Next.js App Router · mở đăng ký",
+    "changelog": "Nhật ký thay đổi thành phần"
   },
   "Maintainer": {
     "body": "Tôi đã xây dựng payload-components vì việc cài đặt khối Payload chưa bao giờ là sao chép-dán — mà là bốn lần chỉnh sửa sau đó. CLI tồn tại nên dự án thứ hai và dự án thứ mười sẽ nhận được hệ thống dây điện đó miễn phí. Đọc nguồn trình cài đặt trước khi bạn tin cậy nó; vận chuyển nó MIT là vấn đề.",
@@ -474,5 +476,11 @@
     "label": "Trạng thái bản dịch",
     "machine": "Trang này được dịch bằng máy và chưa được người bản ngữ kiểm duyệt.",
     "viewEnglish": "Xem bản gốc tiếng Anh"
+  },
+  "Changelog": {
+    "generated": "Được tạo khi dựng từ {entries} bản ghi thay đổi đã lưu trong {components} tệp kê khai thành phần.",
+    "latest": "Mới nhất",
+    "breaking": "Thay đổi không tương thích",
+    "migration": "Di chuyển dữ liệu"
   }
 }

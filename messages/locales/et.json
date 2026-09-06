@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# plokk} other {# plokki}}",
       "browseFamily": "Sirvi {family}",
       "allComponents": "Sirvige kõiki {count} komponente",
-      "postComponents": "Komponentide postitamine · Arendamisel",
+      "postComponents": "Sirvi artiklikomponente",
       "familyCount": "Paigaldatav",
       "familyName": "Leheküljeplokid",
       "familyDescription": "Lehekülgede paigutuse koostaja plokid – installitud täieliku juhtmestikuga: kogumise konfiguratsioon, renderdamise vastendamine, genereeritud tüübid, impordikaart."
@@ -231,7 +231,8 @@
       "index": "Indeks",
       "author": "Autor",
       "newsletter": "Uudiskiri",
-      "related": "Seotud"
+      "related": "Seotud",
+      "query": "Kollektsiooni päring"
     },
     "composerAdd": "Lisage installikäsule {slug}",
     "composerRemove": "Eemaldage installikäsult {slug}",
@@ -259,10 +260,10 @@
   },
   "EditorialRoadmap": {
     "metadataTitle": "Editorial component roadmap | Payload Components",
-    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "metadataDescription": "Explore the remaining proposed open-source components for production Payload CMS publishing experiences.",
     "eyebrow": "Payload Components / Roadmap",
     "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
-    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "intro": "Help shape the remaining editorial components. Post Hero and Author Card are now installable, while Collection Query covers archive, list, and featured layouts. Every accepted proposal will ship in the public MIT registry.",
     "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
@@ -270,7 +271,7 @@
     "suiteTitle": "Designed as one publication.",
     "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
-    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionTitle": "What comes next for publishing.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
     "benefitsEyebrow": "How it ships",
     "benefitsTitle": "Built in public, as one system.",
@@ -406,7 +407,8 @@
     "privacy": "Privaatsus",
     "registry": "Registry JSON",
     "license": "MIT litsentsitud · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · ava register"
+    "stack": "Payload v3 · Next.js App Router · ava register",
+    "changelog": "Komponentide muudatuste logi"
   },
   "Maintainer": {
     "body": "Ma ehitasin payload-components, sest ploki Payload installimine ei olnud kunagi kopeeri-kleebi – see oli neli muudatust pärast. CLI on olemas, nii et teine ​​ja kümnes projekt saavad selle juhtmestiku tasuta. Lugege installeri allikat enne kui usaldate seda; Selle MIT saatmine on asja mõte.",
@@ -474,5 +476,11 @@
     "label": "Tõlke olek",
     "machine": "See leht on masintõlgitud ja emakeelne kõneleja pole seda veel üle vaadanud.",
     "viewEnglish": "Vaata ingliskeelset allikat"
+  },
+  "Changelog": {
+    "generated": "Koostamise ajal loodud {entries} salvestatud muudatuse kirjest {components} komponendi manifestis.",
+    "latest": "Uusim",
+    "breaking": "Ühildumatu muudatus",
+    "migration": "Andmete migreerimine"
   }
 }

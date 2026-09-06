@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# bloque} many {# bloques} other {# bloques}}",
       "browseFamily": "Explorar {family}",
       "allComponents": "Explorar todos los componentes {count}",
-      "postComponents": "Componentes de la publicación · En desarrollo",
+      "postComponents": "Explorar componentes de artículos",
       "familyCount": "Instalable",
       "familyName": "Bloques de página",
       "familyDescription": "Bloques para el generador de diseño de páginas: instalados con cableado completo: configuración de colección, mapeo de renderizado, tipos generados, mapa de importación."
@@ -231,7 +231,8 @@
       "index": "Índice",
       "author": "Autor",
       "newsletter": "Boletín",
-      "related": "Relacionados"
+      "related": "Relacionados",
+      "query": "Consulta de colección"
     },
     "composerAdd": "Agregue {slug} al comando de instalación",
     "composerRemove": "Eliminar {slug} del comando de instalación",
@@ -259,10 +260,10 @@
   },
   "EditorialRoadmap": {
     "metadataTitle": "Editorial component roadmap | Payload Components",
-    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "metadataDescription": "Explore the remaining proposed open-source components for production Payload CMS publishing experiences.",
     "eyebrow": "Payload Components / Roadmap",
     "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
-    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "intro": "Help shape the remaining editorial components. Post Hero and Author Card are now installable, while Collection Query covers archive, list, and featured layouts. Every accepted proposal will ship in the public MIT registry.",
     "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
@@ -270,7 +271,7 @@
     "suiteTitle": "Designed as one publication.",
     "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
-    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionTitle": "What comes next for publishing.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
     "benefitsEyebrow": "How it ships",
     "benefitsTitle": "Built in public, as one system.",
@@ -406,7 +407,8 @@
     "privacy": "Privacidad",
     "registry": "Registro JSON",
     "license": "MIT licenciado · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · registro abierto"
+    "stack": "Payload v3 · Next.js App Router · registro abierto",
+    "changelog": "Registro de cambios de componentes"
   },
   "Maintainer": {
     "body": "Construí payload-components porque instalar un bloque Payload nunca fue copiar y pegar, fueron las cuatro ediciones posteriores. El CLI existe, por lo que el segundo proyecto y el décimo obtienen ese cableado de forma gratuita. Lea la fuente del instalador antes de confiar en él; enviarlo MIT es el punto.",
@@ -474,5 +476,11 @@
     "label": "Estado de la traducción",
     "machine": "Esta página se tradujo automáticamente y aún no ha sido revisada por un hablante nativo.",
     "viewEnglish": "Ver original en inglés"
+  },
+  "Changelog": {
+    "generated": "Generado durante la compilación a partir de {entries} registros de cambios guardados en {components} manifiestos de componentes.",
+    "latest": "Último",
+    "breaking": "Cambio incompatible",
+    "migration": "Migración de datos"
   }
 }

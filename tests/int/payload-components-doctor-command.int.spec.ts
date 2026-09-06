@@ -133,6 +133,24 @@ describe('payload-components doctor', () => {
     ).rejects.toThrow()
   }, 180000)
 
+  it('reports missing component-specific project prerequisites for recorded installs', async () => {
+    const { fixtureDir, manifest } = await createInstallFixture('collection-query', {
+      preseedSource: true,
+    })
+    tempDirs.push(fixtureDir)
+    await runAddCommand(fixtureDir, manifest.name)
+    await rm(path.join(fixtureDir, 'src', 'collections', 'Posts'), {
+      force: true,
+      recursive: true,
+    })
+
+    const result = await runDoctorCommand(fixtureDir)
+
+    expect(result.code).toBe(1)
+    expect(result.stdout).toContain('[error] collection-query: Posts collection:')
+    expect(result.stdout).toContain('none of src/collections/Posts/index.ts exists')
+  }, 180000)
+
   /* Internationalization only works when the config declares locales AND the
      installed blocks mark their text localized. Each half is silently inert
      without the other, so doctor names whichever one is missing. */

@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# blokk} other {# blokk}}",
       "browseFamily": "Böngészés {family}",
       "allComponents": "Az összes {count} összetevő böngészése",
-      "postComponents": "Bejegyzéskomponensek · Fejlesztés alatt",
+      "postComponents": "Cikkkomponensek böngészése",
       "familyCount": "Telepíthető",
       "familyName": "Oldalblokkok",
       "familyDescription": "Az Oldalak elrendezéskészítőjének blokkok – teljes vezetékezéssel telepítve: gyűjteménykonfiguráció, renderelési leképezés, generált típusok, térkép importálása."
@@ -231,7 +231,8 @@
       "index": "Index",
       "author": "Szerző",
       "newsletter": "Hírlevél",
-      "related": "Kapcsolódó"
+      "related": "Kapcsolódó",
+      "query": "Gyűjteménylekérdezés"
     },
     "composerAdd": "Adja hozzá a {slug}-t az install parancshoz",
     "composerRemove": "Távolítsa el a {slug}-t az install parancsból",
@@ -259,10 +260,10 @@
   },
   "EditorialRoadmap": {
     "metadataTitle": "Editorial component roadmap | Payload Components",
-    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "metadataDescription": "Explore the remaining proposed open-source components for production Payload CMS publishing experiences.",
     "eyebrow": "Payload Components / Roadmap",
     "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
-    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "intro": "Help shape the remaining editorial components. Post Hero and Author Card are now installable, while Collection Query covers archive, list, and featured layouts. Every accepted proposal will ship in the public MIT registry.",
     "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
@@ -270,7 +271,7 @@
     "suiteTitle": "Designed as one publication.",
     "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
-    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionTitle": "What comes next for publishing.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
     "benefitsEyebrow": "How it ships",
     "benefitsTitle": "Built in public, as one system.",
@@ -406,7 +407,8 @@
     "privacy": "Adatvédelem",
     "registry": "Registry JSON",
     "license": "MIT licencelve · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · rendszerleíró adatbázis megnyitása"
+    "stack": "Payload v3 · Next.js App Router · rendszerleíró adatbázis megnyitása",
+    "changelog": "Komponensek változásnaplója"
   },
   "Maintainer": {
     "body": "Megépítettem a payload-components-t, mert a Payload blokk telepítése soha nem volt másolás-beillesztés – ez a négy szerkesztés után történt. Az CLI létezik, így a második és a tizedik projekt ingyen kapja meg ezt a vezetéket. Olvassa el a telepítő forrását, mielőtt megbízik benne; szállítása a MIT a lényeg.",
@@ -474,5 +476,11 @@
     "label": "Fordítás állapota",
     "machine": "Ezt az oldalt gép fordította, és anyanyelvi lektor még nem ellenőrizte.",
     "viewEnglish": "Angol forrás megtekintése"
+  },
+  "Changelog": {
+    "generated": "A fordításkor készült {entries} mentett változásbejegyzésből, {components} komponensjegyzék alapján.",
+    "latest": "Legújabb",
+    "breaking": "Nem kompatibilis változás",
+    "migration": "Adatmigráció"
   }
 }

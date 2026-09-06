@@ -250,13 +250,13 @@
   useEffect(() =&gt; {
     // Respect the user&apos;s reduced-motion preference: skip the infinite scroll
     // and leave the row static (WCAG 2.2.2 Pause/Stop/Hide, 2.3.3).
-    if (shouldReduceMotion) return
+    if (shouldReduceMotion) {
+      translation.set(0)
+      return
+    }
 
-    const contentSize = width + gap
-    const from = reverse ? -contentSize / 2 : 0
-    const to = reverse ? 0 : -contentSize / 2
-
-    const controls = isTransitioning" data-evidence-truncated="true">
+    // IntersectionObserver-backed `useInView` stops the animation controls
+    // while the slider is off-screen. Restarting from the motion value avoids" data-evidence-truncated="true">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
   <text class="evidence-line" x="48" y="626">useReducedMotion() · useEffect(() =&gt; { · // Respect the user&apos;s</text>
 <text class="evidence-line" x="48" y="641">reduced-motion preference: skip the infinite scroll · // and leav …</text>

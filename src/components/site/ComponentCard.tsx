@@ -34,6 +34,7 @@ export function ComponentCard({
   selected?: boolean
 }) {
   const t = useTranslations('CatalogBrowser')
+  const componentT = useTranslations('Components')
 
   return (
     <article
@@ -56,7 +57,7 @@ export function ComponentCard({
               href={component.href}
               className="outline-none transition-colors before:absolute before:inset-0 before:z-10 before:content-[''] hover:text-brand"
             >
-              {component.title}
+              {componentT(`${component.slug}.title`)}
             </Link>
           </h3>
           <code className="mt-0.5 block truncate font-mono text-[10px] text-muted-foreground">

@@ -4,6 +4,7 @@ import { CallToActionBoxedDemo } from './CallToActionBoxedDemo'
 import { CallToActionCenteredDemo } from './CallToActionCenteredDemo'
 import { CallToActionSignupDemo } from './CallToActionSignupDemo'
 import { CallToActionSplitDemo } from './CallToActionSplitDemo'
+import { CollectionQueryDemo } from './CollectionQueryDemo'
 import { ComparatorGridDemo } from './ComparatorGridDemo'
 import { ComparatorStackDemo } from './ComparatorStackDemo'
 import { ComparatorTableDemo } from './ComparatorTableDemo'
@@ -77,6 +78,9 @@ import { TestimonialsQuoteDemo } from './TestimonialsQuoteDemo'
 import { TestimonialsRatingDemo } from './TestimonialsRatingDemo'
 import { TestimonialsSpotlightDemo } from './TestimonialsSpotlightDemo'
 import { TestimonialsWallDemo } from './TestimonialsWallDemo'
+import { ContactFormBasicDemo } from './ContactFormBasicDemo'
+import { PostHeroDemo } from './PostHeroDemo'
+import { AuthorCardDemo } from './AuthorCardDemo'
 
 /* Single source of truth mapping a component slug to its live demo twin. Shared by
  * the catalog preview thumbnails (ComponentPreviewThumb) and the docs-page live
@@ -91,6 +95,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'comparator-grid': ComparatorGridDemo,
   'comparator-stack': ComparatorStackDemo,
   'comparator-table': ComparatorTableDemo,
+  'collection-query': CollectionQueryDemo,
   'contact-channels': ContactChannelsDemo,
   'contact-routing-form': ContactRoutingFormDemo,
   'content-columns': ContentColumnsDemo,
@@ -161,6 +166,9 @@ export const demosBySlug: Record<string, ComponentType> = {
   'footer-columns': FooterColumnsDemo,
   'footer-simple': FooterSimpleDemo,
   'footer-centered': FooterCenteredDemo,
+  'contact-form-basic': ContactFormBasicDemo,
+  'post-hero': PostHeroDemo,
+  'author-card': AuthorCardDemo,
 }
 
 export function hasComponentDemo(slug: string) {

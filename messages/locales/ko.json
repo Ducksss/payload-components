@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, other {블록 #개}}",
       "browseFamily": "찾아보기 {family}",
       "allComponents": "{count} 구성요소 모두 찾아보기",
-      "postComponents": "포스트 구성 요소 · 개발 중",
+      "postComponents": "기사 컴포넌트 둘러보기",
       "familyCount": "설치 가능",
       "familyName": "페이지 블록",
       "familyDescription": "페이지 레이아웃 빌더용 블록 — 컬렉션 구성, 렌더 매핑, 생성된 유형, 가져오기 맵 등 전체 연결과 함께 설치됩니다."
@@ -231,7 +231,8 @@
       "index": "색인",
       "author": "작가",
       "newsletter": "뉴스레터",
-      "related": "관련"
+      "related": "관련",
+      "query": "컬렉션 쿼리"
     },
     "composerAdd": "설치 명령어에 {slug} 추가",
     "composerRemove": "설치 명령어에서 {slug} 삭제",
@@ -259,10 +260,10 @@
   },
   "EditorialRoadmap": {
     "metadataTitle": "Editorial component roadmap | Payload Components",
-    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "metadataDescription": "Explore the remaining proposed open-source components for production Payload CMS publishing experiences.",
     "eyebrow": "Payload Components / Roadmap",
     "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
-    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "intro": "Help shape the remaining editorial components. Post Hero and Author Card are now installable, while Collection Query covers archive, list, and featured layouts. Every accepted proposal will ship in the public MIT registry.",
     "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
@@ -270,7 +271,7 @@
     "suiteTitle": "Designed as one publication.",
     "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
-    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionTitle": "What comes next for publishing.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
     "benefitsEyebrow": "How it ships",
     "benefitsTitle": "Built in public, as one system.",
@@ -406,7 +407,8 @@
     "privacy": "개인정보 보호",
     "registry": "레지스트리 JSON",
     "license": "MIT 라이센스 · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · 오픈 레지스트리"
+    "stack": "Payload v3 · Next.js App Router · 오픈 레지스트리",
+    "changelog": "컴포넌트 변경 기록"
   },
   "Maintainer": {
     "body": "Payload 블록을 설치하는 것이 결코 복사-붙여넣기가 아니라 4번의 편집이었기 때문에 payload-components을 만들었습니다. CLI이 존재하므로 두 번째 프로젝트와 열 번째 프로젝트는 해당 배선을 무료로 얻습니다. 신뢰하기 전에 설치 프로그램 소스를 읽어 보십시오. 배송 MIT이 포인트입니다.",
@@ -474,5 +476,438 @@
     "label": "번역 상태",
     "machine": "이 페이지는 기계 번역되었으며 아직 원어민의 검토를 받지 않았습니다.",
     "viewEnglish": "영어 원문 보기"
+  },
+  "Changelog": {
+    "generated": "빌드 시 {components}개 컴포넌트 매니페스트에 저장된 {entries}개 변경 기록에서 생성됩니다.",
+    "latest": "최신",
+    "breaking": "호환성을 깨는 변경",
+    "migration": "데이터 마이그레이션"
+  },
+  "Components": {
+    "hero-basic": {
+      "title": "기본 히어로",
+      "description": "제목을 중심으로 구성한 마케팅 히어로입니다. CTA 링크, 신뢰 배지, Payload 블록 설정과 프런트엔드 렌더링을 포함합니다.",
+      "target": "히어로 섹션"
+    },
+    "hero-split": {
+      "title": "좌우 분할 히어로",
+      "description": "공통 히어로 문구와 편집자가 관리하는 비주얼을 조합한 2열 히어로입니다. 비주얼은 양쪽 중 원하는 곳에 배치할 수 있습니다.",
+      "target": "좌우 분할 히어로"
+    },
+    "hero-video": {
+      "title": "동영상 히어로",
+      "description": "편집자가 관리하는 미디어, CTA 링크, 신뢰 표시 문구를 갖춘 전체 너비 동영상 히어로입니다. 동작 줄이기 설정에서는 포스터 이미지로 대체합니다.",
+      "target": "동영상 히어로"
+    },
+    "hero-product-tilt": {
+      "title": "기울어진 제품 히어로",
+      "description": "정적인 원근 프레임을 사용한 중앙 정렬 제품 히어로입니다. CTA 링크, 신뢰 표시 문구와 편집자가 관리하는 미디어를 포함합니다.",
+      "target": "제품 히어로"
+    },
+    "hero-aurora": {
+      "title": "오로라 제품 히어로",
+      "description": "움직임에 중점을 둔 제품 히어로입니다. 움직이는 오로라 배경, 순차적으로 나타나는 제목, 포인터에 반응하는 시차 효과 미디어 패널과 실시간 지표 티커를 제공합니다.",
+      "target": "모션 히어로"
+    },
+    "hero-kinetic": {
+      "title": "역동적인 에디토리얼 히어로",
+      "description": "움직임에 중점을 둔 에디토리얼 히어로입니다. 줄 단위 마스크로 드러나는 글자, 영화 같은 미디어 패널과 스크롤 속도에 반응하는 흐르는 띠를 제공합니다.",
+      "target": "에디토리얼 모션 히어로"
+    },
+    "feature-bento": {
+      "title": "벤토형 기능 그리드",
+      "description": "강조된 셀을 중심으로 보조 셀을 배치한 비대칭 벤토형 그리드입니다.",
+      "target": "벤토형 그리드"
+    },
+    "feature-split": {
+      "title": "좌우 분할 기능 소개",
+      "description": "제목과 CTA 옆에 세로로 쌓은 기능 목록을 배치하는 2열 기능 소개 섹션입니다.",
+      "target": "좌우 분할 섹션"
+    },
+    "feature-steps": {
+      "title": "단계별 기능 소개",
+      "description": "사용 방법처럼 순서대로 설명해야 하는 기능 흐름에 적합한 번호가 붙은 단계 블록입니다.",
+      "target": "단계 섹션"
+    },
+    "feature-grid-basic": {
+      "title": "기본 기능 그리드",
+      "description": "텍스트 중심의 기능 그리드입니다. 반복 가능한 항목, 선택적 CTA 연결과 여러 번 실행해도 중복되지 않는 등록을 제공합니다.",
+      "target": "기능 소개 섹션"
+    },
+    "feature-accordion": {
+      "title": "기능 아코디언",
+      "description": "표시가 동기화되는 기능 아코디언입니다. 편집자가 선택하는 아이콘, 선택적 미디어와 CTA 링크를 포함합니다.",
+      "target": "기능 아코디언"
+    },
+    "feature-cards-media": {
+      "title": "미디어 기능 카드",
+      "description": "각각 독립된 미디어, 선택적 아이콘과 CTA 링크를 갖춘 2열 기능 레이아웃입니다.",
+      "target": "미디어 기능 카드"
+    },
+    "feature-icon-grid": {
+      "title": "아이콘 기능 그리드",
+      "description": "편집자가 선택하는 아이콘과 디자인 토큰으로 구성한 방사형 그리드 장식을 갖춘 조밀한 기능 그리드입니다.",
+      "target": "아이콘 기능 그리드"
+    },
+    "comparator-grid": {
+      "title": "비교 그리드",
+      "description": "기능 매트릭스 위에 가격 열을 배치한 요금제 비교 카드입니다. 강조 열과 요금제별 CTA를 제공합니다.",
+      "target": "가격 그리드"
+    },
+    "comparator-table": {
+      "title": "기능 비교표",
+      "description": "CTA가 있는 요금제 열 아래에 기능 행을 그룹별로 배치하는 등급별 비교표입니다. 기능 값은 체크 표시나 텍스트로 보여 줍니다.",
+      "target": "비교표"
+    },
+    "comparator-stack": {
+      "title": "세로형 요금제 비교",
+      "description": "요금제별 카드를 세로로 쌓은 비교 레이아웃입니다. 카드마다 가격, CTA와 기능 체크리스트를 제공합니다.",
+      "target": "요금제 카드"
+    },
+    "pricing-cards": {
+      "title": "가격 카드",
+      "description": "편집 가능한 요금제 카드 3개로 구성한 가격표입니다. 가격, 기간, 기능 목록과 CTA를 표시하고 한 요금제를 에메랄드색으로 강조합니다.",
+      "target": "가격 섹션"
+    },
+    "pricing-cards-muted": {
+      "title": "차분한 가격 카드",
+      "description": "부드럽고 차분한 카드 배경의 3열 가격표입니다. 한 요금제를 에메랄드색으로 강조합니다.",
+      "target": "가격 섹션"
+    },
+    "pricing-cards-cta": {
+      "title": "헤더 CTA 가격 카드",
+      "description": "각 요금제 헤더 안에 행동 유도 버튼을 배치한 3열 가격표입니다.",
+      "target": "가격 섹션"
+    },
+    "pricing-split": {
+      "title": "좌우 분할 가격표",
+      "description": "두 요금제를 나란히 배치한 가격 레이아웃입니다. 작은 입문 요금제 옆에 전체 기능 목록을 갖춘 큰 추천 요금제를 표시합니다.",
+      "target": "가격 섹션"
+    },
+    "pricing-enterprise": {
+      "title": "기업용 가격 패널",
+      "description": "하나의 넓은 기업용 가격 패널입니다. 가격과 CTA 옆에 포함 기능 목록과 편집 가능한 신뢰 로고 모음을 배치합니다.",
+      "target": "가격 섹션"
+    },
+    "call-to-action-centered": {
+      "title": "중앙 정렬 CTA",
+      "description": "제목, 보조 문구와 한두 개의 CTA 링크를 중앙에 배치한 행동 유도 블록입니다.",
+      "target": "행동 유도"
+    },
+    "call-to-action-boxed": {
+      "title": "상자형 CTA",
+      "description": "중첩 패널 안에 제목, 문구와 CTA 링크를 배치한 상자형 행동 유도 블록입니다.",
+      "target": "상자형 CTA"
+    },
+    "call-to-action-split": {
+      "title": "좌우 분할 CTA",
+      "description": "한쪽에는 제목과 문구를, 다른 쪽에는 CTA 링크와 안심을 주는 한 줄 문구를 배치한 행동 유도 블록입니다.",
+      "target": "좌우 분할 CTA"
+    },
+    "call-to-action-signup": {
+      "title": "가입 폼 CTA",
+      "description": "이메일을 수집하는 행동 유도 블록입니다. 제목, 문구와 동일 출처 엔드포인트로 전송하는 폼을 제공합니다.",
+      "target": "이메일 수집"
+    },
+    "contact-routing-form": {
+      "title": "연락 경로 선택 폼",
+      "description": "검증된 연락 채널과 동일 출처 엔드포인트로 전송하는, 구성이 고정된 접근성 높은 폼을 갖춘 연락처 섹션입니다.",
+      "target": "연락처 섹션"
+    },
+    "contact-channels": {
+      "title": "연락 채널",
+      "description": "폼 없이 구성한 연락처 섹션입니다. 제목, 보조 문구와 검증된 이메일·전화번호·URL 채널 그리드를 제공합니다.",
+      "target": "연락 채널"
+    },
+    "integration-orbit": {
+      "title": "궤도형 연동 로고",
+      "description": "주요 브랜드 마크를 둘러싼 동심원 위의 연동 로고가 마우스를 올리면 마크 주위를 회전합니다.",
+      "target": "연동 섹션"
+    },
+    "integration-marquee": {
+      "title": "흐르는 연동 로고",
+      "description": "주요 브랜드 마크 주위로 연동 로고 세 줄이 자동으로 흐르며 가장자리에서 점차 희미해집니다.",
+      "target": "연동 섹션"
+    },
+    "integration-connect": {
+      "title": "연결선 연동 로고",
+      "description": "중앙 브랜드 마크에 연결선으로 이어진 연동 로고입니다. 필요한 연결 작업을 포함한 Payload 블록으로 설치됩니다.",
+      "target": "연동 섹션"
+    },
+    "integration-cluster": {
+      "title": "모음형 연동 로고",
+      "description": "주요 브랜드 마크를 중심으로 연동 로고를 모은 중앙 정렬 레이아웃입니다. 제목과 CTA를 포함합니다.",
+      "target": "연동 섹션"
+    },
+    "integration-split": {
+      "title": "좌우 분할 연동 소개",
+      "description": "주요 마크를 중심으로 모은 로고와 제목, 보조 문구, CTA를 나란히 배치하는 2열 섹션입니다.",
+      "target": "연동 섹션"
+    },
+    "integration-grid": {
+      "title": "연동 카드 그리드",
+      "description": "로고, 이름, 설명과 자세히 보기 링크를 갖춘 반응형 연동 카드 그리드입니다. 필요한 연결 작업을 포함한 Payload 블록으로 설치됩니다.",
+      "target": "연동 섹션"
+    },
+    "integration-list": {
+      "title": "연동 목록",
+      "description": "로고, 이름, 설명과 추가 동작을 갖춘 연동 항목을 세로로 나열합니다. 필요한 연결 작업을 포함한 Payload 블록으로 설치됩니다.",
+      "target": "연동 섹션"
+    },
+    "integration-testimonial": {
+      "title": "고객 후기와 연동 소개",
+      "description": "고객 인용문과 연동 로고 카드 그리드를 조합한 2열 섹션입니다.",
+      "target": "연동 섹션"
+    },
+    "logo-cloud-marquee": {
+      "title": "흐르는 로고 모음",
+      "description": "편집 가능한 로고가 자동으로 흐르며 가장자리에서 점차 흐려지고 사라지는 로고 띠입니다.",
+      "target": "로고 모음"
+    },
+    "logo-cloud-hover": {
+      "title": "호버 로고 모음",
+      "description": "마우스를 올리면 로고 모음이 어두워지고 흐려지면서 하나의 행동 유도 문구가 나타납니다.",
+      "target": "로고 모음"
+    },
+    "logo-cloud-grid": {
+      "title": "로고 그리드",
+      "description": "제목 아래에 업로드한 편집 가능한 로고를 중앙 정렬하고 줄바꿈하여 배치합니다. 필요한 연결 작업을 포함한 Payload 블록으로 설치됩니다.",
+      "target": "로고 모음"
+    },
+    "logo-cloud-inline": {
+      "title": "한 줄 로고 모음",
+      "description": "편집 가능한 신뢰 로고 위에 라벨을 표시하는 간결한 띠 형태의 레이아웃입니다.",
+      "target": "로고 모음"
+    },
+    "logo-cloud-inline-wrap": {
+      "title": "줄바꿈 로고 모음",
+      "description": "라벨과 편집 가능한 신뢰 로고를 같은 줄에 두고 필요에 따라 줄바꿈하는 레이아웃입니다.",
+      "target": "로고 모음"
+    },
+    "testimonials-grid": {
+      "title": "고객 후기 그리드",
+      "description": "제목 아래에 인용 카드 반응형 그리드를 배치하는 후기 섹션입니다. 각 카드에는 작성자, 선택적 직함과 아바타를 표시합니다.",
+      "target": "고객 후기 섹션"
+    },
+    "testimonials-bento": {
+      "title": "벤토형 고객 후기",
+      "description": "큰 셀에 주요 후기를 배치하고 주변에 보조 후기를 놓는 비대칭 벤토형 그리드입니다.",
+      "target": "고객 후기 섹션"
+    },
+    "testimonials-wall": {
+      "title": "고객 후기 모음",
+      "description": "간결한 후기 카드를 여러 열의 메이슨리 레이아웃으로 촘촘하게 배치합니다. 각 카드에는 작성자, 선택적 직함과 아바타를 표시합니다.",
+      "target": "고객 후기 섹션"
+    },
+    "testimonials-rating": {
+      "title": "별점 고객 후기",
+      "description": "리뷰 카드를 반응형 그리드로 배치하는 후기 섹션입니다. 각 카드에는 별점, 인용문, 작성자, 선택적 직함과 아바타를 표시합니다.",
+      "target": "고객 후기 섹션"
+    },
+    "testimonials-spotlight": {
+      "title": "주요 고객 후기",
+      "description": "인용 부호, 큰 아바타, 작성자와 직함을 갖춘 후기 하나를 중앙에 크게 배치하여 신뢰를 전달합니다.",
+      "target": "고객 후기 섹션"
+    },
+    "testimonials-quote": {
+      "title": "인용형 고객 후기",
+      "description": "왼쪽 강조선, 작성자, 선택적 직함과 아바타를 곁들여 주요 후기 하나를 표시합니다.",
+      "target": "고객 후기 섹션"
+    },
+    "stats-proof": {
+      "title": "성과와 고객 후기",
+      "description": "설명, 눈에 띄는 텍스트 지표와 의미에 맞게 마크업한 고객 인용문을 함께 보여 주는 성과 섹션입니다.",
+      "target": "성과 섹션"
+    },
+    "stats-grid": {
+      "title": "성과 그리드",
+      "description": "제목과 소개 아래에 상단 구분선이 있는 열을 반응형 그리드로 배치하고 텍스트 지표를 큰 글자로 표시합니다.",
+      "target": "성과 섹션"
+    },
+    "stats-card": {
+      "title": "성과 카드",
+      "description": "중앙 정렬 제목 아래에 지표를 같은 너비의 열로 나눈 패널 하나를 배치합니다.",
+      "target": "성과 섹션"
+    },
+    "stats-inline": {
+      "title": "문장형 성과 목록",
+      "description": "제목과 소개 아래에 상단 구분선이 있는 행을 배치하고, 각 수치를 하나의 문장처럼 읽을 수 있게 표시합니다.",
+      "target": "성과 섹션"
+    },
+    "faq-split": {
+      "title": "좌우 분할 FAQ",
+      "description": "고정되어 따라오는 제목과 CTA 옆에 질문·답변 아코디언을 배치하는 2열 FAQ입니다.",
+      "target": "FAQ 섹션"
+    },
+    "faq-accordion": {
+      "title": "FAQ 아코디언",
+      "description": "질문·답변 항목을 중앙 정렬하고 선택적 CTA를 제공하는 아코디언입니다. FAQ 제품군의 기본형입니다.",
+      "target": "FAQ 섹션"
+    },
+    "faq-grouped": {
+      "title": "분류별 FAQ",
+      "description": "제목과 아이콘이 있는 카테고리별로 아코디언을 묶은 FAQ입니다.",
+      "target": "FAQ 섹션"
+    },
+    "faq-card": {
+      "title": "카드형 FAQ",
+      "description": "중앙 정렬 FAQ 아코디언을 카드로 감싸고 아래에 선택적 CTA를 배치합니다.",
+      "target": "FAQ 섹션"
+    },
+    "faq-icons": {
+      "title": "아이콘 FAQ",
+      "description": "고정된 허용 목록에서 질문마다 아이콘을 선택할 수 있는 FAQ 아코디언입니다.",
+      "target": "FAQ 섹션"
+    },
+    "faq-grid": {
+      "title": "FAQ 그리드",
+      "description": "질문·답변 카드를 2열로 배치한 정적 그리드입니다. 아코디언 없이 모든 답변이 항상 보입니다.",
+      "target": "FAQ 섹션"
+    },
+    "content-showcase": {
+      "title": "콘텐츠 쇼케이스",
+      "description": "소개, 전체 너비 이미지와 아이콘 기능을 4열로 배치한 그리드를 갖춘 중앙 정렬 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-image-lead": {
+      "title": "이미지 중심 콘텐츠",
+      "description": "전체 너비 이미지를 앞세우고 그 아래에 제목, 본문과 CTA를 2열로 배치하는 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-feature-split": {
+      "title": "좌우 분할 기능 콘텐츠",
+      "description": "측면 미디어 패널에 본문과 아이콘 기능 두 개를 조합한 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-feature-media": {
+      "title": "미디어 기능 콘텐츠",
+      "description": "프레임이 있는 미디어 패널 옆에 본문과 아이콘 기능 두 개를 배치하는 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-image-frame": {
+      "title": "이미지 프레임 콘텐츠",
+      "description": "소개와 여러 겹의 프레임으로 꾸민 스크린샷을 갖춘 중앙 정렬 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-split-rows": {
+      "title": "교차 배치 콘텐츠 행",
+      "description": "소개 아래에 미디어와 텍스트의 위치를 번갈아 바꾼 행을 배치하는 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-rows": {
+      "title": "세로형 콘텐츠 행",
+      "description": "소개 아래에 미디어와 텍스트를 동일한 구성의 행으로 쌓아 배치하는 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-stats": {
+      "title": "성과 포함 콘텐츠",
+      "description": "소개, 아이콘 기능 그리드와 성과 목록을 갖춘 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-quote": {
+      "title": "인용문 포함 콘텐츠",
+      "description": "미디어 패널에 본문과 출처를 표시한 발췌 인용문을 조합한 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-community": {
+      "title": "커뮤니티 콘텐츠",
+      "description": "제목, 본문과 커뮤니티 아바타 모음을 갖춘 중앙 정렬 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-columns": {
+      "title": "2열 콘텐츠",
+      "description": "제목과 본문 단락 및 CTA를 나란히 배치하는 콘텐츠 섹션입니다. 필요한 연결 작업을 포함한 Payload 블록으로 설치됩니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-list": {
+      "title": "용어 목록 콘텐츠",
+      "description": "세리프체 제목과 라벨이 있는 용어 목록을 조합한 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-list-columns": {
+      "title": "2열 용어 목록",
+      "description": "세리프체 제목과 라벨이 있는 2열 용어 목록을 갖춘 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "content-list-icons": {
+      "title": "아이콘 목록 콘텐츠",
+      "description": "세리프체 제목, 소개와 여러 열의 아이콘 목록을 갖춘 콘텐츠 섹션입니다.",
+      "target": "콘텐츠 섹션"
+    },
+    "team-grid": {
+      "title": "팀 그리드",
+      "description": "제목, 소개와 멤버 사진 카드 반응형 그리드를 갖춘 팀 섹션입니다. 마우스를 올리면 직함이 나타납니다.",
+      "target": "팀 섹션"
+    },
+    "team-bios": {
+      "title": "팀 약력",
+      "description": "인물 소개에 중점을 둔 팀 섹션입니다. 제목과 소개 아래에 아바타, 직함, 짧은 약력이 있는 멤버 카드를 2열로 배치합니다.",
+      "target": "팀 약력"
+    },
+    "team-roster": {
+      "title": "부서별 팀 명단",
+      "description": "멤버를 제목이 있는 부서로 묶고 부서마다 아바타, 이름과 직함을 그리드로 표시하는 팀 섹션입니다.",
+      "target": "팀 섹션"
+    },
+    "embed-basic": {
+      "title": "기본 임베드",
+      "description": "허용된 HTTPS 콘텐츠를 삽입하는 반응형 샌드박스 iframe 블록입니다. 화면 비율을 선택할 수 있습니다.",
+      "target": "임베드 / 미디어"
+    },
+    "footer-columns": {
+      "title": "다열 푸터",
+      "description": "브랜드 영역 옆에 제목이 있는 탐색 링크 열을 배치하고 저작권 표시 구분선으로 마무리합니다.",
+      "target": "푸터"
+    },
+    "footer-simple": {
+      "title": "간단한 푸터",
+      "description": "브랜드와 줄바꿈 가능한 링크 행을 한 줄에 배치하고 아래에 저작권을 표시하는 간결한 푸터입니다.",
+      "target": "푸터"
+    },
+    "footer-centered": {
+      "title": "중앙 정렬 푸터",
+      "description": "브랜드, 태그라인과 탐색 메뉴를 중앙 정렬하고 아래 구분선에 저작권과 정책 링크를 배치합니다.",
+      "target": "푸터"
+    },
+    "post-card": {
+      "title": "게시물 카드",
+      "description": "이미지, 카테고리, 날짜, 제목과 발췌문을 갖춘 게시물 카드입니다.",
+      "target": "아카이브 카드"
+    },
+    "post-archive": {
+      "title": "게시물 아카이브",
+      "description": "게시물 요약 배열을 렌더링하는 아카이브 그리드입니다.",
+      "target": "아카이브 그리드"
+    },
+    "post-hero": {
+      "title": "게시물 히어로",
+      "description": "카테고리, 작성자, 날짜와 요약을 갖춘 게시물 히어로입니다.",
+      "target": "게시물 헤더"
+    },
+    "featured-post": {
+      "title": "주요 게시물",
+      "description": "이미지, 카테고리와 날짜를 곁들여 주요 게시물을 표시합니다.",
+      "target": "목록의 주요 게시물"
+    },
+    "post-list": {
+      "title": "게시물 목록",
+      "description": "날짜, 카테고리와 설명을 표시하는 간결한 게시물 목록입니다.",
+      "target": "간결한 게시물 목록"
+    },
+    "author-card": {
+      "title": "작성자 카드",
+      "description": "기사 페이지와 작성자 표시 영역에 사용하는 프로필 카드입니다.",
+      "target": "작성자 소개"
+    },
+    "newsletter-callout": {
+      "title": "뉴스레터 안내",
+      "description": "게시물 페이지와 에디토리얼 영역에서 뉴스레터를 안내하는 블록입니다.",
+      "target": "독자 참여"
+    },
+    "related-posts": {
+      "title": "관련 게시물",
+      "description": "추천 글을 간결하게 보여 주는 관련 게시물 섹션입니다.",
+      "target": "게시물 푸터"
+    }
   }
 }

@@ -297,6 +297,10 @@
       "version": "0.1.0"
     },
     {
+      "slug": "collection-query",
+      "version": "0.1.0"
+    },
+    {
       "slug": "footer-columns",
       "version": "0.1.0"
     },
@@ -306,6 +310,18 @@
     },
     {
       "slug": "footer-centered",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "contact-form-basic",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "post-hero",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "author-card",
       "version": "0.1.0"
     }
   ],

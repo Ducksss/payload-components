@@ -134,7 +134,7 @@ export default async function EditorialRoadmapPage() {
                     {t('suiteEyebrow')}
                   </span>
                   <span className="font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground">
-                    01 — 08
+                    01 — {String(upcomingComponents.length).padStart(2, '0')}
                   </span>
                 </div>
                 <div className="py-14 sm:py-16">

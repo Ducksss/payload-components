@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# blok} few {# bloka} other {# blokova}}",
       "browseFamily": "Прегледај {family}",
       "allComponents": "Прегледај све {count} компоненте",
-      "postComponents": "Пост компоненте · У развоју",
+      "postComponents": "Прегледајте компоненте чланака",
       "familyCount": "Може се инсталирати",
       "familyName": "Блокови странице",
       "familyDescription": "Блокови за прављење распореда страница — инсталирани са комплетним ожичењем: конфигурација колекције, мапирање рендеровања, генерисани типови, мапа увоза."
@@ -231,7 +231,8 @@
       "index": "Индекс",
       "author": "Аутор",
       "newsletter": "Билтен",
-      "related": "Повезано"
+      "related": "Повезано",
+      "query": "Упит колекције"
     },
     "composerAdd": "Додајте {slug} наредби за инсталацију",
     "composerRemove": "Уклоните {slug} из команде за инсталацију",
@@ -259,10 +260,10 @@
   },
   "EditorialRoadmap": {
     "metadataTitle": "Editorial component roadmap | Payload Components",
-    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "metadataDescription": "Explore the remaining proposed open-source components for production Payload CMS publishing experiences.",
     "eyebrow": "Payload Components / Roadmap",
     "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
-    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "intro": "Help shape the remaining editorial components. Post Hero and Author Card are now installable, while Collection Query covers archive, list, and featured layouts. Every accepted proposal will ship in the public MIT registry.",
     "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
@@ -270,7 +271,7 @@
     "suiteTitle": "Designed as one publication.",
     "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
-    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionTitle": "What comes next for publishing.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
     "benefitsEyebrow": "How it ships",
     "benefitsTitle": "Built in public, as one system.",
@@ -406,7 +407,8 @@
     "privacy": "Приватност",
     "registry": "Регистар JSON",
     "license": "MIT лиценцирано · © 2026 Дуцкссс",
-    "stack": "Payload в3 · Next.js App Router · отвори регистар"
+    "stack": "Payload в3 · Next.js App Router · отвори регистар",
+    "changelog": "Дневник измена компоненти"
   },
   "Maintainer": {
     "body": "Направио сам payload-components јер инсталирање блока Payload никада није било копирање-пејст – то су биле четири измене после. CLI постоји тако да други пројекат, и десети, добијате то ожичење бесплатно. Прочитајте извор инсталатера пре него што му верујете; испорука MIT је поента.",
@@ -474,5 +476,11 @@
     "label": "Статус превода",
     "machine": "Ова страница је машински преведена и још је није прегледао изворни говорник.",
     "viewEnglish": "Погледај енглески извор"
+  },
+  "Changelog": {
+    "generated": "Генерисано током изградње из {entries} сачуваних записа измена у {components} манифестима компоненти.",
+    "latest": "Најновије",
+    "breaking": "Некомпатибилна измена",
+    "migration": "Миграција података"
   }
 }

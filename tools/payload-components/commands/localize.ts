@@ -2,9 +2,9 @@ import path from 'node:path'
 
 import {
   compareInstalledFiles,
-  copySharedSourceFile,
   resolveRecordedFileHashes,
 } from '../component-files'
+import { ensureLocalizationHelper, prepareLocalizationHelper } from '../localization-helper'
 import { buildInventory, selectInstalled } from '../inventory'
 import {
   formatLocaleList,
@@ -408,10 +408,20 @@ export const localizeCommand = async ({
     }
   }
 
-  const targets =
+  const requestedTargets =
     componentNames.length > 0
       ? installed.filter(({ name }) => componentNames.includes(name))
       : installed
+  const targets = [] as typeof requestedTargets
+  for (const entry of requestedTargets) {
+    const manifest = await loadManifest(entry.name)
+    if (manifest.installMode === 'file-only') {
+      printHeader(`payload-components: ${entry.name} accepts content as props; localize its data in your article template.`)
+    } else {
+      targets.push(entry)
+    }
+  }
+
   const missingPolicies = targets.filter(
     ({ name }) => state.components[name]?.localizationPolicy !== 'semantic-v1',
   )
@@ -457,6 +467,10 @@ export const localizeCommand = async ({
     return true
   }
 
+  if (plans.some((plan) => plan.pendingFiles.length + plan.blockedFiles.length + plan.alreadyWrapped.length > 0)) {
+    await prepareLocalizationHelper({ cwd })
+  }
+
   if (configPatch && (configPatch.kind === 'patched' || configPatch.kind === 'replaced')) {
     await writeSafeProjectFile({ contents: configPatch.source, cwd, filePath: configPath })
   }
@@ -467,7 +481,7 @@ export const localizeCommand = async ({
     const configFiles = [...plan.pendingFiles, ...plan.blockedFiles]
 
     if (configFiles.length > 0 || plan.alreadyWrapped.length > 0) {
-      await copySharedSourceFile({ cwd, projectPath: LOCALIZE_HELPER_FILE })
+      await ensureLocalizationHelper(cwd)
     }
 
     const rewrittenFiles = await applyLocalizedFields({ configFiles, cwd })

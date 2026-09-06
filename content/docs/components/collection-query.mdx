@@ -1,0 +1,85 @@
+---
+title: Collection Query
+description: Query the website starter Posts collection by category or manual selection, with visitor category filters and pagination, then render grid, list, or featured cards.
+icon: LayoutGrid
+---
+
+<ComponentPreview slug="collection-query" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add collection-query
+    ```
+  </Tab>
+  <Tab value="Manual">
+    Copy the files straight from the registry, then wire the Payload fragments by hand:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/collection-query.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="collection-query" />
+
+## Content model
+
+The block is deliberately scoped to the official website starter's `posts` and `categories` collections.
+
+<TypeTable
+  type={{
+    populateBy: { type: 'select', required: true, description: 'Use the latest matching posts or an editor-curated selection.' },
+    categories: { type: 'relationship (categories)', description: 'Optional category filter when querying the collection.' },
+    limit: { type: 'number', required: true, description: 'One to 24 posts per page when querying the collection.' },
+    enablePagination: { type: 'checkbox', description: 'Show Previous/Next controls and a page count. Off by default.' },
+    enableFilters: { type: 'checkbox', description: 'Show visitor category links. Editor-selected categories constrain both choices and results. Off by default.' },
+    emptyMessage: { type: 'text', description: 'Message shown when no accessible posts match.' },
+    queryKey: { type: 'text', description: 'Fallback URL namespace outside saved Page blocks; saved blocks use their unique ID.' },
+    sort: { type: 'select', required: true, description: 'Newest, oldest, title A–Z, or title Z–A.' },
+    selectedDocs: { type: 'relationship (posts)', description: 'Ordered manual post selection.' },
+    layout: { type: 'select', required: true, description: 'Grid, list, or featured presentation.' },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="collection-query" />
+
+Enable **Pagination** and **Filters** in the block to turn an index into a browsable archive.
+Changing a category resets that block to page one. Links preserve unrelated query parameters,
+including the state of other Collection Query blocks; browser Back/Forward restores the selection.
+The first 100 accessible categories, sorted by title, appear as choices. Select specific categories
+in the editor to curate a smaller filter bar. Manual selection preserves editor order and does
+not show filters or pagination.
+
+The block renders the first page on the server. Its installed client component loads bookmarked
+filter/page state after hydration using a server function; no additional API route or renderer
+patch is needed. Interaction requires JavaScript. Loading, empty results, and retryable errors
+have distinct accessible states. Public reads require published posts and honor Payload access
+control. Draft previews require both an authenticated user and Draft Mode, and still honor access.
+
+URLs use `collection-<block-id>-page` and `collection-<block-id>-category`; independently rendered
+instances without IDs use `collection-<queryKey>`, so give those instances unique keys.
+
+For server-rendered bookmarked pages (including without JavaScript), pass the route's awaited
+`searchParams` through your `RenderBlocks` component to the block's optional `searchParams` prop.
+For a localized route, also pass the resolved Payload `locale` prop. For example, inside your
+renderer:
+
+```tsx
+<CollectionQueryBlock {...block} searchParams={searchParams} locale={locale} />
+```
+
+The `searchParams` shape is `Record<string, string | string[] | undefined>`. If the route receives
+it as a Promise, await it in the route before passing it down. Without a `locale` prop, queries use
+Payload's default locale. Adapt the shared Post Card's `/posts/<slug>` link if your app uses a
+locale prefix or a different article route.
+
+## Requirements
+
+<ComponentRequirements slug="collection-query" />

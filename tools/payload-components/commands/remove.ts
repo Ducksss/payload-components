@@ -116,6 +116,7 @@ const formatPlan = ({
   dryRun,
   exclusiveFiles,
   forcedModifiedFiles,
+  fileOnly,
   postInstall,
   sharedFiles,
 }: {
@@ -124,6 +125,7 @@ const formatPlan = ({
   dryRun: boolean
   exclusiveFiles: string[]
   forcedModifiedFiles: string[]
+  fileOnly: boolean
   postInstall: string[]
   sharedFiles: Array<{ owners: string[]; projectPath: string }>
 }) => {
@@ -151,12 +153,12 @@ const formatPlan = ({
     lines.push(`  ${projectPath} (keep — still used by ${owners.join(', ')})`)
   }
 
-  lines.push('', 'Payload wiring:', `  ${verb}unregister the block and drop its imports`)
+  lines.push('', 'Payload wiring:', fileOnly ? '  none — composed by your article template' : `  ${verb}unregister the block and drop its imports`)
 
   lines.push(
     '',
     'Stored content:',
-    '  Page documents are not changed; migrate or delete this block data in /admin first',
+    fileOnly ? '  none owned by this file-only component; remove its template imports' : '  Page documents are not changed; migrate or delete this block data in /admin first',
   )
 
   lines.push('', 'Post-install commands:')
@@ -280,7 +282,7 @@ export const removeCommand = async ({
     )
   }
 
-  if (!dryRun && !acceptStoredContent) {
+  if (!dryRun && !acceptStoredContent && manifest.installMode !== 'file-only') {
     throw new Error(
       [
         `Removing "${componentName}" changes code, not stored Payload documents.`,
@@ -296,6 +298,7 @@ export const removeCommand = async ({
       cwd,
       dryRun,
       exclusiveFiles,
+      fileOnly: manifest.installMode === 'file-only',
       forcedModifiedFiles: force ? modifiedExclusiveFiles : [],
       postInstall: manifest.postInstall,
       sharedFiles,
@@ -365,7 +368,9 @@ export const removeCommand = async ({
       `payload-components: removed "${componentName}".`,
       `  Deleted ${deletedFiles.length} file${deletedFiles.length === 1 ? '' : 's'}, unwired ${unwiredFiles.length} host file${unwiredFiles.length === 1 ? '' : 's'}.`,
       `  Package dependencies were left installed — remove them yourself if nothing else uses them.`,
-      `  Stored Page documents were intentionally left unchanged (--accept-stored-content).`,
+      ...(manifest.installMode === 'file-only'
+        ? ['  Remove any remaining imports from your article template.']
+        : ['  Stored Page documents were intentionally left unchanged (--accept-stored-content).']),
     ].join('\n'),
   )
 }

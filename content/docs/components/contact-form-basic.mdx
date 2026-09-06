@@ -1,0 +1,64 @@
+---
+title: Contact Form Basic
+description: An accessible contact form with inline validation and confirmed submission feedback from your own endpoint.
+icon: Mail
+---
+
+<ComponentPreview slug="contact-form-basic" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    ```bash
+    npx payload-components add contact-form-basic
+    ```
+  </Tab>
+  <Tab value="Manual">
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/contact-form-basic.json
+    ```
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="contact-form-basic" />
+
+## Content model
+
+All editor fields belong to this block. The shared URL validator restricts the action to a same-origin path.
+
+<TypeTable
+  type={{
+    title: { type: 'text', required: true, description: 'Section heading.' },
+    description: { type: 'textarea', description: 'Supporting copy beside the form.' },
+    action: { type: 'text', required: true, description: 'Consumer-provided same-origin endpoint, such as /api/contact.' },
+    submitLabel: { type: 'text', description: 'Submit button label. Defaults to Send message.' },
+    successMessage: { type: 'textarea', required: true, description: 'Shown only after the endpoint acknowledges acceptance.' },
+    nameLabel: { type: 'text', description: 'Visible name input label.' },
+    emailLabel: { type: 'text', description: 'Visible email input label.' },
+    organizationLabel: { type: 'text', description: 'Visible optional organization input label.' },
+    messageLabel: { type: 'text', description: 'Visible message textarea label.' },
+  }}
+/>
+
+The fixed visitor fields are `name`, `email`, `organization`, and `message`. Name, email, and message are required. Name and organization accept up to 200 characters, email up to 254, and message up to 10,000. Labels are editable; required indicators and submission feedback can be translated in the installed source.
+
+## Usage
+
+<ComponentUsage slug="contact-form-basic" />
+
+Provide the submit endpoint in **your consumer project** before publishing. The block sends a `POST` with `multipart/form-data` containing the four visitor fields. Your handler should read `request.formData()`, validate these values on the server, and return a successful HTTP response with JSON `{ "success": true }` only after it accepts the message. Do not redirect: redirects, HTML responses, HTTP errors, and missing acknowledgements display a retry message and preserve the visitor's input. The request times out after 15 seconds; a timeout means delivery could not be confirmed, so your endpoint should handle retries appropriately.
+
+The form focuses the first invalid field, connects each validation message to its input, announces submission results, and disables controls while sending. With JavaScript disabled it falls back to a native form POST; your endpoint then controls the response page. A missing or unsafe action disables submission.
+
+This block installs no API route, email service, database collection, spam protection, or CRM integration. The endpoint owner is responsible for server-side validation, rate limiting, and delivery. For a contact section combining a form and multiple contact channels, see [Contact Routing Form](/docs/components/contact-routing-form).
+
+## Requirements
+
+<ComponentRequirements slug="contact-form-basic" />
+
+## In this family
+
+<ComponentFamily slug="contact-form-basic" />

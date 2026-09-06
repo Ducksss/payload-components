@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, other {# blok}}",
       "browseFamily": "Telusuri {family}",
       "allComponents": "Jelajahi semua komponen {count}",
-      "postComponents": "Posting komponen · Dalam pengembangan",
+      "postComponents": "Jelajahi komponen artikel",
       "familyCount": "Dapat dipasang",
       "familyName": "Blok halaman",
       "familyDescription": "Blok untuk pembuat tata letak Halaman — dipasang dengan kabel lengkap: konfigurasi koleksi, pemetaan render, tipe yang dihasilkan, impor peta."
@@ -231,7 +231,8 @@
       "index": "Indeks",
       "author": "Penulis",
       "newsletter": "Buletin",
-      "related": "Terkait"
+      "related": "Terkait",
+      "query": "Kueri koleksi"
     },
     "composerAdd": "Tambahkan {slug} ke perintah instal",
     "composerRemove": "Hapus {slug} dari perintah instal",
@@ -259,10 +260,10 @@
   },
   "EditorialRoadmap": {
     "metadataTitle": "Editorial component roadmap | Payload Components",
-    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "metadataDescription": "Explore the remaining proposed open-source components for production Payload CMS publishing experiences.",
     "eyebrow": "Payload Components / Roadmap",
     "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
-    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "intro": "Help shape the remaining editorial components. Post Hero and Author Card are now installable, while Collection Query covers archive, list, and featured layouts. Every accepted proposal will ship in the public MIT registry.",
     "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
@@ -270,7 +271,7 @@
     "suiteTitle": "Designed as one publication.",
     "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
-    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionTitle": "What comes next for publishing.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
     "benefitsEyebrow": "How it ships",
     "benefitsTitle": "Built in public, as one system.",
@@ -406,7 +407,8 @@
     "privacy": "Privasi",
     "registry": "Registri JSON",
     "license": "MIT berlisensi · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · buka registri"
+    "stack": "Payload v3 · Next.js App Router · buka registri",
+    "changelog": "Catatan perubahan komponen"
   },
   "Maintainer": {
     "body": "Saya membuat payload-components karena memasang blok Payload bukanlah proses salin-tempel — melainkan empat pengeditan setelahnya. CLI ada untuk proyek kedua, dan proyek kesepuluh, dapatkan kabel itu secara gratis. Baca sumber penginstal sebelum Anda mempercayainya; mengirimkannya MIT adalah intinya.",
@@ -474,5 +476,11 @@
     "label": "Status terjemahan",
     "machine": "Halaman ini diterjemahkan oleh mesin dan belum ditinjau oleh penutur asli.",
     "viewEnglish": "Lihat sumber bahasa Inggris"
+  },
+  "Changelog": {
+    "generated": "Dibuat saat build dari {entries} catatan perubahan tersimpan dalam {components} manifes komponen.",
+    "latest": "Terbaru",
+    "breaking": "Perubahan tidak kompatibel",
+    "migration": "Migrasi data"
   }
 }

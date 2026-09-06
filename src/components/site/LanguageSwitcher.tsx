@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { ArrowRight, Languages } from 'lucide-react'
 import { useRef } from 'react'
 
-import { localeDetails, normalizeSiteLocale, siteLocales } from '@/i18n/config'
+import { localeDetails, normalizeSiteLocale, publishedSiteLocales } from '@/i18n/config'
 import { cn } from '@/utilities/ui'
 
 export function LanguageSwitcher({ className }: { className?: string }) {
@@ -13,6 +13,8 @@ export function LanguageSwitcher({ className }: { className?: string }) {
   const pathname = usePathname()
   const t = useTranslations('Header')
   const returnTo = useRef<HTMLInputElement>(null)
+
+  if (publishedSiteLocales.length < 2) return null
 
   const preserveLocationSuffix = () => {
     if (returnTo.current) {
@@ -37,7 +39,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
         <span className="sr-only">{t('language')}</span>
         {/* Select/Listbox ownership is intentionally native: the OS popup, keyboard
             model, zoom behavior, and per-option language direction are preferable
-            to duplicating a 22-language listbox in site JavaScript. */}
+            to duplicating a language listbox in site JavaScript. */}
         <select
           aria-label={t('language')}
           className="h-full min-w-0 max-w-28 cursor-pointer appearance-none bg-transparent py-0 pe-2 ps-0 text-xs font-medium text-foreground outline-none"
@@ -48,7 +50,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
           }}
           value={locale}
         >
-          {siteLocales.map((item) => (
+          {publishedSiteLocales.map((item) => (
             <option
               key={item}
               value={item}

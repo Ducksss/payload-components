@@ -24,6 +24,13 @@ export const siteLocales = [
 ] as const
 
 export type SiteLocale = (typeof siteLocales)[number]
+// Saved catalogs are not a commitment to publish or manually maintain a locale.
+// Expand only after a no-cost Crowdin workflow and native review are verified.
+export const publishedSiteLocales: readonly SiteLocale[] = ['en']
+
+export function isPublishedSiteLocale(value: string | null | undefined): value is SiteLocale {
+  return publishedSiteLocales.includes(value as SiteLocale)
+}
 export type SiteDirection = 'ltr' | 'rtl'
 export type SiteScript = 'arabic' | 'cjk' | 'cyrillic' | 'hebrew' | 'latin' | 'thai'
 
@@ -246,6 +253,23 @@ const localeNeutralPrefixes = [
 export function isLocaleNeutralPath(pathname: string) {
   return localeNeutralPrefixes.some(
     (prefix) => pathname === prefix.slice(0, -1) || pathname.startsWith(prefix),
+  )
+}
+
+/* Chrome-free iframe targets. The embedding page already carries the site
+ * chrome and the general analytics stream, so anything mounted per-page here is
+ * either unreachable (a consent banner inside an iframe) or a double count.
+ *
+ * A localized preview is the same resource as its unprefixed form, and the
+ * localized template detail deliberately localizes its iframe URL. Classifying
+ * on the raw pathname therefore exempts only English — hence the split here
+ * rather than at each call site, so no caller can forget it. */
+export function isChromeFreePreviewPath(pathname: string): boolean {
+  const unlocalized = splitLocalePathname(pathname).pathname
+
+  return (
+    unlocalized.startsWith('/components/preview/') ||
+    /^\/templates\/[^/]+\/preview(\/|$)/.test(unlocalized)
   )
 }
 

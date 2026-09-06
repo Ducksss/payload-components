@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# lohko} other {# lohkoa}}",
       "browseFamily": "Selaa {family}",
       "allComponents": "Selaa kaikkia {count} komponentteja",
-      "postComponents": "Postkomponentit · Kehityksessä",
+      "postComponents": "Selaa artikkelikomponentteja",
       "familyCount": "Asennettavissa",
       "familyName": "Sivulohkot",
       "familyDescription": "Sivujen asettelun rakennustyökalun lohkot – asennettu täydellä johdotuksella: kokoelmamääritykset, renderöintikartoitus, luodut tyypit, tuontikartta."
@@ -231,7 +231,8 @@
       "index": "Hakemisto",
       "author": "Tekijä",
       "newsletter": "Uutiskirje",
-      "related": "Liittyy"
+      "related": "Liittyy",
+      "query": "Kokoelmakysely"
     },
     "composerAdd": "Lisää {slug} asennuskomentoon",
     "composerRemove": "Poista {slug} asennuskomennosta",
@@ -259,10 +260,10 @@
   },
   "EditorialRoadmap": {
     "metadataTitle": "Editorial component roadmap | Payload Components",
-    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "metadataDescription": "Explore the remaining proposed open-source components for production Payload CMS publishing experiences.",
     "eyebrow": "Payload Components / Roadmap",
     "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
-    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "intro": "Help shape the remaining editorial components. Post Hero and Author Card are now installable, while Collection Query covers archive, list, and featured layouts. Every accepted proposal will ship in the public MIT registry.",
     "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
@@ -270,7 +271,7 @@
     "suiteTitle": "Designed as one publication.",
     "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
-    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionTitle": "What comes next for publishing.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
     "benefitsEyebrow": "How it ships",
     "benefitsTitle": "Built in public, as one system.",
@@ -406,7 +407,8 @@
     "privacy": "Yksityisyys",
     "registry": "Rekisteri JSON",
     "license": "MIT lisensoitu · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · avaa rekisteri"
+    "stack": "Payload v3 · Next.js App Router · avaa rekisteri",
+    "changelog": "Komponenttien muutosloki"
   },
   "Maintainer": {
     "body": "Rakensin payload-components, koska Payload-lohkon asentaminen ei koskaan ollut copy-paste - se oli neljä muokkausta sen jälkeen. CLI on olemassa, joten toinen projekti ja kymmenes projekti saavat johdotuksen ilmaiseksi. Lue asennusohjelman lähde ennen kuin luotat siihen; toimitus sen MIT on pointti.",
@@ -474,5 +476,11 @@
     "label": "Käännöksen tila",
     "machine": "Tämä sivu on konekäännetty, eikä äidinkielinen puhuja ole vielä tarkistanut sitä.",
     "viewEnglish": "Näytä englanninkielinen lähde"
+  },
+  "Changelog": {
+    "generated": "Luotu koontivaiheessa {entries} tallennetusta muutosmerkinnästä {components} komponenttimanifestissa.",
+    "latest": "Uusin",
+    "breaking": "Yhteensopimaton muutos",
+    "migration": "Tietojen siirto"
   }
 }

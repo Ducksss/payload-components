@@ -75,6 +75,7 @@ export async function generateMetadata({ params }: { params: DetailParams }): Pr
     alternates: {
       canonical: publication.canonical,
       languages: publication.alternates,
+      types: { 'text/markdown': `${localizeHref(templateDetailHref(template.slug), locale)}.md` },
     },
     description: template.summary,
     openGraph: {

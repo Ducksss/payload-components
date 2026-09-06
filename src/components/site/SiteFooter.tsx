@@ -16,6 +16,7 @@ export function SiteFooter() {
     '/docs': t('documentation'),
     '/docs/installation': t('installWorkflow'),
     '/docs/architecture': t('architecture'),
+    '/docs/changelog': t('changelog'),
     '/docs/ai-discovery': t('aiDiscovery'),
   }
   const projectLabels: Record<string, string> = {

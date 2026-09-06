@@ -1737,6 +1737,128 @@ export const assertManifestSupport = (project: DetectedProject, manifest: Compon
   }
 }
 
+export type ProjectRequirementFailure = {
+  label: string
+  message: string
+}
+
+/* Retain exact quoted values while rejecting identical text hidden in a comment
+ * or string literal. Both masks preserve offsets and quote delimiters. */
+const hasActiveSourceAnchor = (source: string, anchor: string) => {
+  const masked = maskIgnoredSource(source)
+  const maskedAnchor = maskIgnoredSource(anchor)
+  let offset = source.indexOf(anchor)
+  while (offset !== -1) {
+    if (masked.slice(offset, offset + anchor.length) === maskedAnchor) return true
+    offset = source.indexOf(anchor, offset + 1)
+  }
+  return false
+}
+
+const missingCollectionRequirements = (source: string, identifiers: string[]): string[] => {
+  const config = findBuildConfigObject(source)
+  const unreadable = 'a statically readable buildConfig({ collections: [...] }) array (computed or shadowed collection lists cannot be verified)'
+  if (!config) return [unreadable]
+  const property = findDirectProperty({ object: config, propertyName: 'collections', source })
+  const shorthand = findDirectShorthand({ object: config, propertyName: 'collections', source })
+  const spread = findLastDirectSpread({ object: config, source })
+  const maskedSource = maskIgnoredSource(source)
+  if (!property || (shorthand && shorthand.start > property.start) ||
+      (spread !== undefined && spread > property.start) || maskedSource[property.valueStart] !== '[') {
+    return [unreadable]
+  }
+  // A later computed key could evaluate to "collections" and replace this list.
+  for (let index = property.start + 1; index < config.end; index += 1) {
+    if (maskedSource[index] === '[' && isDirectlyWithin(maskedSource, config.start + 1, index)) {
+      let before = index - 1
+      while (/\s/.test(maskedSource[before] ?? '')) before -= 1
+      if (maskedSource[before] === ',' || maskedSource[before] === '{') return [unreadable]
+    }
+  }
+  const end = findMatchingDelimiter({ close: ']', maskedSource, open: '[', start: property.valueStart })
+  if (end === -1 || !isDirectValueTerminated({ containerEnd: config.end, maskedSource, valueEnd: end })) return [unreadable]
+  const entries = findDirectArrayEntries({ end, maskedSource, start: property.valueStart })
+    .map((entry) => maskedSource.slice(entry.start, entry.end).trim())
+  return identifiers.filter((identifier) => !entries.includes(identifier))
+    .map((identifier) => `${identifier} directly in buildConfig.collections`)
+}
+
+/* Target detection proves the shared Pages/RenderBlocks shape. Data-driven
+ * blocks can require more without making that capability mandatory for every
+ * component, so manifests declare their own candidate files and anchors. */
+export const checkManifestProjectRequirements = async ({
+  cwd,
+  manifest,
+}: {
+  cwd: string
+  manifest: ComponentManifest
+}): Promise<ProjectRequirementFailure[]> => {
+  const failures: ProjectRequirementFailure[] = []
+
+  for (const requirement of manifest.requires?.projectFiles ?? []) {
+    const inspected: Array<{ missingAnchors: string[]; path: string }> = []
+    let matched = false
+
+    for (const candidate of requirement.paths) {
+      const source = await readSafeProjectFile({
+        cwd,
+        filePath: path.join(cwd, candidate),
+      }).catch(() => undefined)
+
+      if (source === undefined) continue
+
+      const missingAnchors = requirement.anchors.filter((anchor) => !hasActiveSourceAnchor(source, anchor))
+      if (requirement.collectionIdentifiers?.length) {
+        missingAnchors.push(...missingCollectionRequirements(source, requirement.collectionIdentifiers))
+      }
+
+      if (missingAnchors.length === 0) {
+        matched = true
+        break
+      }
+
+      inspected.push({ missingAnchors, path: candidate })
+    }
+
+    if (matched) continue
+
+    const detail =
+      inspected.length > 0
+        ? inspected
+            .map(
+              ({ missingAnchors, path: candidate }) =>
+                `${candidate} is missing ${missingAnchors.map((anchor) => `"${anchor}"`).join(', ')}`,
+            )
+            .join('; ')
+        : `none of ${requirement.paths.join(', ')} exists`
+
+    failures.push({
+      label: requirement.label,
+      message: `${requirement.label}: ${detail}. ${requirement.help}`,
+    })
+  }
+
+  return failures
+}
+
+export const assertManifestProjectRequirements = async ({
+  cwd,
+  manifest,
+}: {
+  cwd: string
+  manifest: ComponentManifest
+}) => {
+  const failures = await checkManifestProjectRequirements({ cwd, manifest })
+
+  if (failures.length > 0) {
+    throw new Error(
+      `Component "${manifest.name}" cannot be installed because its project prerequisites are missing:\n${failures
+        .map((failure) => `- ${failure.message}`)
+        .join('\n')}`,
+    )
+  }
+}
+
 export const applyPayloadFragments = async (
   cwd: string,
   fragments: PayloadFragment[],

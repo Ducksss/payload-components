@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# blok} other {# blok}}",
       "browseFamily": "Gözat {family}",
       "allComponents": "Tüm {count} bileşenlerine göz atın",
-      "postComponents": "Post bileşenleri · Geliştirme aşamasında",
+      "postComponents": "Makale bileşenlerine göz at",
       "familyCount": "Kurulabilir",
       "familyName": "Sayfa blokları",
       "familyDescription": "Sayfa düzeni oluşturucu için bloklar — tam kablolamayla kurulur: koleksiyon yapılandırması, oluşturma eşlemesi, oluşturulan türler, içe aktarma haritası."
@@ -231,7 +231,8 @@
       "index": "Dizin",
       "author": "Yazar",
       "newsletter": "Bülten",
-      "related": "İlgili"
+      "related": "İlgili",
+      "query": "Koleksiyon sorgusu"
     },
     "composerAdd": "Kurulum komutuna {slug} ekleyin",
     "composerRemove": "Kurulum komutundan {slug} karakterini kaldırın",
@@ -259,10 +260,10 @@
   },
   "EditorialRoadmap": {
     "metadataTitle": "Editorial component roadmap | Payload Components",
-    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "metadataDescription": "Explore the remaining proposed open-source components for production Payload CMS publishing experiences.",
     "eyebrow": "Payload Components / Roadmap",
     "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
-    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "intro": "Help shape the remaining editorial components. Post Hero and Author Card are now installable, while Collection Query covers archive, list, and featured layouts. Every accepted proposal will ship in the public MIT registry.",
     "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
@@ -270,7 +271,7 @@
     "suiteTitle": "Designed as one publication.",
     "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
-    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionTitle": "What comes next for publishing.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
     "benefitsEyebrow": "How it ships",
     "benefitsTitle": "Built in public, as one system.",
@@ -406,7 +407,8 @@
     "privacy": "Gizlilik",
     "registry": "Kayıt Defteri JSON",
     "license": "MIT lisanslı · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · kayıt defterini aç"
+    "stack": "Payload v3 · Next.js App Router · kayıt defterini aç",
+    "changelog": "Bileşen değişiklik günlüğü"
   },
   "Maintainer": {
     "body": "payload-components'ı oluşturdum çünkü Payload bloğu yüklemek hiçbir zaman kopyala-yapıştır işlemi olmadı - sonraki dört düzenlemeydi. CLI var, dolayısıyla ikinci ve onuncu proje bu kablolamayı ücretsiz olarak alacak. Güvenmeden önce yükleyici kaynağını okuyun; nakliyesi MIT önemli olan.",
@@ -474,5 +476,11 @@
     "label": "Çeviri durumu",
     "machine": "Bu sayfa makineyle çevrildi ve henüz ana dili konuşan biri tarafından incelenmedi.",
     "viewEnglish": "İngilizce kaynağı görüntüle"
+  },
+  "Changelog": {
+    "generated": "Derleme sırasında {components} bileşen bildirimindeki {entries} kayıtlı değişiklik kaydından oluşturulur.",
+    "latest": "En yeni",
+    "breaking": "Uyumsuz değişiklik",
+    "migration": "Veri geçişi"
   }
 }

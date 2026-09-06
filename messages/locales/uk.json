@@ -154,7 +154,7 @@
       "blockCount": "{count, plural, one {# блок} few {# блоки} many {# блоків} other {# блока}}",
       "browseFamily": "Огляд {family}",
       "allComponents": "Переглянути всі компоненти {count}",
-      "postComponents": "Компоненти публікації · У розробці",
+      "postComponents": "Переглянути компоненти статей",
       "familyCount": "Встановлюється",
       "familyName": "Блоки сторінок",
       "familyDescription": "Блоки для конструктора макетів сторінок — встановлено з повним підключенням: конфігурація колекції, відображення візуалізації, згенеровані типи, карта імпорту."
@@ -231,7 +231,8 @@
       "index": "Покажчик",
       "author": "Автор",
       "newsletter": "Розсилка",
-      "related": "Пов'язані"
+      "related": "Пов'язані",
+      "query": "Запит до колекції"
     },
     "composerAdd": "Додайте {slug} до команди встановлення",
     "composerRemove": "Видаліть {slug} з команди встановлення",
@@ -259,10 +260,10 @@
   },
   "EditorialRoadmap": {
     "metadataTitle": "Editorial component roadmap | Payload Components",
-    "metadataDescription": "Explore eight proposed open-source components for production Payload CMS publishing experiences.",
+    "metadataDescription": "Explore the remaining proposed open-source components for production Payload CMS publishing experiences.",
     "eyebrow": "Payload Components / Roadmap",
     "headline": "Help shape an <editorial>editorial publishing system.</editorial>",
-    "intro": "Eight proposed components for a coherent publishing experience from archive to article. Every accepted component will ship in the public MIT registry.",
+    "intro": "Help shape the remaining editorial components. Post Hero and Author Card are now installable, while Collection Query covers archive, list, and featured layouts. Every accepted proposal will ship in the public MIT registry.",
     "status": "Open source · Proposals",
     "seeCollection": "View the collection",
     "backToCatalog": "Back to the component catalog",
@@ -270,7 +271,7 @@
     "suiteTitle": "Designed as one publication.",
     "suiteDescription": "A public plan for one visual and implementation language across discovery, reading, authorship, and return visits.",
     "collectionEyebrow": "The collection",
-    "collectionTitle": "Eight parts. One publishing language.",
+    "collectionTitle": "What comes next for publishing.",
     "collectionIntro": "Each piece has a distinct editorial job. Together they form a coherent system from the first archive view to the final related story.",
     "benefitsEyebrow": "How it ships",
     "benefitsTitle": "Built in public, as one system.",
@@ -406,7 +407,8 @@
     "privacy": "Конфіденційність",
     "registry": "РеєстрJSON",
     "license": "MIT ліцензовано · © 2026 Ducksss",
-    "stack": "Payload v3 · Next.js App Router · відкритий реєстр"
+    "stack": "Payload v3 · Next.js App Router · відкритий реєстр",
+    "changelog": "Журнал змін компонентів"
   },
   "Maintainer": {
     "body": "Я створив payload-components, оскільки встановлення блоку Payload ніколи не було копіюванням і вставленням — це було чотири редагування після. CLI існує, тому другий проект і десятий отримають цю проводку безкоштовно. Прочитайте джерело інсталятора, перш ніж довіряти йому; відправити його MIT.",
@@ -474,5 +476,11 @@
     "label": "Статус перекладу",
     "machine": "Цю сторінку перекладено машинно й ще не перевірено носієм мови.",
     "viewEnglish": "Переглянути англійський оригінал"
+  },
+  "Changelog": {
+    "generated": "Згенеровано під час збірки з {entries} збережених записів змін у {components} маніфестах компонентів.",
+    "latest": "Найновіше",
+    "breaking": "Несумісна зміна",
+    "migration": "Міграція даних"
   }
 }

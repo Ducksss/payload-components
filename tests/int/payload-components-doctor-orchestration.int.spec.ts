@@ -106,6 +106,7 @@ describe('payload-components doctor orchestration', () => {
     }))
     vi.doMock('../../tools/payload-components/project', () => ({
       assertManifestSupport: vi.fn(),
+      checkManifestProjectRequirements: vi.fn().mockResolvedValue([]),
       detectProject: vi.fn().mockResolvedValue(detectedProject),
       verifyInstalledManifestFiles: vi.fn().mockResolvedValue({
         isValid: true,
