@@ -742,6 +742,11 @@ describe('Fumadocs site shell', () => {
     expect(contentSecurityPolicy).toContain("base-uri 'self'")
     expect(contentSecurityPolicy).toContain("form-action 'self'")
     expect(contentSecurityPolicy).toContain("frame-ancestors 'self'")
+    expect(contentSecurityPolicy).toContain('https://www.googletagmanager.com')
+    expect(contentSecurityPolicy).toContain('https://us.i.posthog.com')
+    expect(contentSecurityPolicy).toContain("frame-src 'self'")
+    expect(contentSecurityPolicy).toContain('https://*.youtube-nocookie.com')
+    expect(contentSecurityPolicy).not.toContain("'unsafe-eval'")
     expect(nextConfig.poweredByHeader).toBe(false)
 
     await expect(nextConfig.redirects?.()).resolves.toEqual([
@@ -1066,6 +1071,50 @@ describe('Fumadocs site shell', () => {
     }
   })
 
+  it('generates the docs changelog from structured component manifests', async () => {
+    const [page, docsMeta, llmsRoute, manifestReader] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'changelog.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'llms.txt', 'route.ts'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'lib', 'component-manifest.ts'), 'utf8'),
+    ])
+
+    expect(page).toContain('<ManifestChangelog />')
+    expect(page).not.toMatch(/v\d+\.\d+\.\d+/)
+    expect(docsMeta).toContain('"changelog"')
+    expect(llmsRoute).toContain('/docs/changelog')
+    expect(manifestReader).toContain('getAllComponentManifests')
+  })
+
+  it('pauses site and installable marquees while they are outside the viewport', async () => {
+    const [slider, observer, styles] = await Promise.all([
+      readFile(
+        path.join(
+          repoRoot,
+          'payload-components',
+          'source',
+          'components',
+          'ui',
+          'infinite-slider.tsx',
+        ),
+        'utf8',
+      ),
+      readFile(
+        path.join(repoRoot, 'src', 'components', 'site', 'demos', 'ViewportMarquee.tsx'),
+        'utf8',
+      ),
+      readFile(path.join(repoRoot, 'src', 'app', 'globals.css'), 'utf8'),
+    ])
+
+    expect(slider).toContain('useInView')
+    expect(slider).toContain('if (!isInView')
+    expect(observer).toContain('IntersectionObserver')
+    expect(observer).toContain('data-marquee-active')
+    expect(styles).toMatch(/\.logo-cloud-marquee-track[\s\S]*animation-play-state: paused/)
+    expect(styles).toContain("[data-marquee-active='true']")
+    expect(styles).toContain('animation-play-state: running')
+  })
+
   it('keeps catalog search local and docs copy factual', async () => {
     const catalog = await readFile(
       path.join(repoRoot, 'src/components/site/ComponentCatalogBrowser.tsx'),
@@ -1085,15 +1134,15 @@ describe('Fumadocs site shell', () => {
     expect(catalog).toContain('window.history.replaceState')
     expect(catalog).toContain("window.addEventListener('popstate'")
     expect(registry).not.toContain('sample content for docs and testing')
-    expect(catalogTitle).toBe('77 Payload CMS components and typed blocks')
+    expect(catalogTitle).toBe('81 Payload CMS components and typed blocks')
     expect(catalogDescription).toMatch(
       /heroes.*features.*pricing.*integrations.*stats.*FAQs.*content.*teams.*embeds.*footers/,
     )
-    expect(catalogDescription).toContain('Browse all 77')
+    expect(catalogDescription).toContain('Browse all 81')
     expect(catalogDescription).toContain('installable Payload CMS components')
     expect(catalogDescription).toContain('One CLI command')
     expect(catalogMetadataTitle).toContain('Payload CMS Components')
-    expect(catalogMetadataTitle).toContain('77')
+    expect(catalogMetadataTitle).toContain('81')
     expect(catalogMetadataDescription).toContain('npx payload-components add <component>')
     expect(catalogMetadataDescription).toContain('collection')
     expect(catalogMetadataDescription).toContain('renderer')
@@ -1120,7 +1169,7 @@ describe('Fumadocs site shell', () => {
 
     expect(homeMetadataTitle).toBe('Payload Components: Wired Payload CMS Blocks in One Command')
     expect(blogTitle).toBe('Payload CMS block and installer guides')
-    expect(catalogMetadataTitle).toBe('77 Payload CMS Components & Blocks | Catalog')
+    expect(catalogMetadataTitle).toBe('81 Payload CMS Components & Blocks | Catalog')
     expect(docsIndex).toContain('seoTitle: CLI setup and architecture')
     expect(docsIndex).toContain('title="Build and wire a block" href="/docs/payload-blocks"')
 
@@ -1134,7 +1183,7 @@ describe('Fumadocs site shell', () => {
     const aboutPage = await readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8')
 
     expect(componentFamilies.pages.countLabel).toBe('Installable')
-    expect(componentFamilies.posts.countLabel).toBe('In development')
+    expect(componentFamilies.posts.countLabel).toBe('Installable')
     expect(componentsIntro).toContain('No screenshots')
     expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Fifty-three page blocks')
   })

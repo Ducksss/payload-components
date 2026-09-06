@@ -65,7 +65,7 @@ Fragment patching is **text-anchor based** — it finds anchors like `const bloc
 
 **Install lifecycle:** `add` is not the only verb. `list` joins the catalog with `.payload-components/state.json`; `diff` compares recorded installs against the registry (content-normalized, so line endings are not drift) and exits non-zero on any drift; `update` deletes a component's files so the registry install rewrites them, refusing any component with local edits unless `--force`; `remove` is the exact inverse of `fragment-apply` plus deletion of the files no other recorded component ships (see `partitionOwnedFiles`). `remove` skips the generators when nothing actually changed. Shared logic lives in `inventory.ts` (catalog × state) and `component-files.ts` (canonical content + file ownership).
 
-**Install targets are path-resolved.** `support-matrix.json` declares, per target, candidate paths and required anchors for each host file role (`renderBlocks`, `pagesLayout`); `detectProject` resolves them into `DetectedProject.hostFiles`, and `applyPayloadFragments` / `removePayloadFragments` / `verifyInstalledPayloadFragments` patch **those** paths. Manifests still declare the canonical starter paths in `recovery.patchedFiles`; `resolveRecoveryPatchedFiles` maps them onto the resolved ones. `payload-website-starter` is matched first; `payload-blocks-app` covers the same shape at non-starter paths (flat `Pages.ts`, no `src/`). A truly bare `create-payload-app` is still unsupported: the block components import starter primitives (`@/components/Media`, `@/components/Link`, `@/fields/linkGroup`) that would have to ship as their own base bundle first.
+**Install targets are path-resolved.** `support-matrix.json` declares, per target, candidate paths and required anchors for each host file role (`renderBlocks`, `pagesLayout`); `detectProject` resolves them into `DetectedProject.hostFiles`, and `applyPayloadFragments` / `removePayloadFragments` / `verifyInstalledPayloadFragments` patch **those** paths. Manifests still declare the canonical starter paths in `recovery.patchedFiles`; `resolveRecoveryPatchedFiles` maps them onto the resolved ones. `payload-website-starter` is matched first; `payload-blocks-app` covers the same shape at non-starter paths (flat `Pages.ts`, no `src/`). A bare `create-payload-app` must first run the explicit `payload-components init --scaffold` command. It initializes shadcn, copies the starter base (Pages, Media, renderer, and starter primitives), and attempts collection registration while preserving existing files. `add` does not scaffold this host shape implicitly; run `doctor` and resolve any registration guidance before installing blocks.
 
 **Localization / i18n:** Payload internationalization has two halves that are each inert without the other, and the CLI owns both.
 
@@ -82,7 +82,15 @@ Two bookkeeping rules make the after-the-fact wrap safe. `recordLocalizedInstall
 **Two install modes:**
 
 - _payload-components-required_ page blocks (`hero-basic`, `feature-grid-basic`) — need the full wiring above.
-- _shadcn-native_ post components (in development) — file-only `shadcn add`, no Payload wiring.
+- _Posts-aware_ blocks and components — Collection Query is installed and wired
+  as a Pages block. Post Hero (`post-hero`) and Author Card (`author-card`) are explicit
+  file-only article template components under `source/components/`, composed with public
+  React props. Their manifests declare `installMode: 'file-only'`, empty fragments,
+  empty post-install tasks, and empty recovery paths. They support direct shadcn delivery
+  and tracked CLI installs in supported projects; they add no admin fields or Pages wiring.
+  `--demo` and `--localized` are rejected for these components, and localization is owned
+  by the template's data. File-only delivery, lifecycle, rendering, and real React
+  compilation are checked in `tests/int/article-components.int.spec.tsx`.
 
 **Registry generation:** `payload-components/registry.json` → `public/r` via `shadcn build` (`pnpm registry:build`); `pnpm test:registry` checks the generated output is reproducible.
 
@@ -202,7 +210,7 @@ family · {target}`, from `componentEntries`) on the left; Copy Page + prev/next
      hand-write the file tree or fragment list.
   4. `## Content model` — `<TypeTable>` of the block fields (+ a second table for array-item fields).
      The one hand-authored section; note which fields come from the shared family base vs the variant.
-  5. `## Usage` — `<ComponentUsage slug="<slug>" />`: the admin steps (add the block to a Page → fill → publish).
+  5. `## Usage` — `<ComponentUsage slug="<slug>" />`: the admin steps (add the block to a Page → fill → publish), or template-composition guidance for an explicit file-only component. Include a minimal React usage example in the MDX for file-only components.
   6. `## Requirements` — `<ComponentRequirements slug="<slug>" />`: target, Payload/Next majors, shadcn deps.
   7. `## In this family` — `<ComponentFamily slug="<slug>" />`: sibling variants. Include this section
      **only when the family has 2+ variants** (it renders nothing for a lone variant — omit the

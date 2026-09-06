@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react'
 
-import { animate, motion, useMotionValue, useReducedMotion } from 'motion/react'
+import { animate, motion, useInView, useMotionValue, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 
 import { cn } from '@/utilities/ui'
@@ -55,59 +55,61 @@ export function InfiniteSlider({
 }: InfiniteSliderProps) {
   const [currentSpeed, setCurrentSpeed] = useState(speed)
   const [ref, width] = useElementWidth()
+  const viewportRef = useRef<HTMLDivElement | null>(null)
+  const isInView = useInView(viewportRef, { amount: 'some' })
   const translation = useMotionValue(0)
-  const [isTransitioning, setIsTransitioning] = useState(false)
   const [key, setKey] = useState(0)
   const shouldReduceMotion = useReducedMotion()
 
   useEffect(() => {
     // Respect the user's reduced-motion preference: skip the infinite scroll
     // and leave the row static (WCAG 2.2.2 Pause/Stop/Hide, 2.3.3).
-    if (shouldReduceMotion) return
+    if (shouldReduceMotion) {
+      translation.set(0)
+      return
+    }
+
+    // IntersectionObserver-backed `useInView` stops the animation controls
+    // while the slider is off-screen. Restarting from the motion value avoids
+    // a visual jump when the section re-enters the viewport.
+    if (!isInView || width === 0 || currentSpeed <= 0) return
 
     const contentSize = width + gap
     const from = reverse ? -contentSize / 2 : 0
     const to = reverse ? 0 : -contentSize / 2
 
-    const controls = isTransitioning
-      ? animate(translation, [translation.get(), to], {
-          duration: Math.abs((translation.get() - to) / currentSpeed),
-          ease: 'linear',
-          onComplete: () => {
-            setIsTransitioning(false)
-            setKey((prev) => prev + 1)
-          },
-        })
-      : animate(translation, [from, to], {
-          duration: contentSize / currentSpeed,
-          ease: 'linear',
-          onRepeat: () => {
-            translation.set(from)
-          },
-          repeat: Infinity,
-          repeatDelay: 0,
-          repeatType: 'loop',
-        })
+    const current = translation.get()
+    const inRange = current >= -contentSize / 2 && current <= 0
+    const start = inRange ? current : from
+    if (!inRange || Math.abs(start - to) < 0.5) translation.set(from)
+
+    const actualStart = Math.abs(start - to) < 0.5 ? from : start
+    const controls = animate(translation, [actualStart, to], {
+      duration: Math.abs((actualStart - to) / currentSpeed) * 2,
+      ease: 'linear',
+      onComplete: () => {
+        translation.set(from)
+        setKey((previous) => previous + 1)
+      },
+    })
 
     return controls?.stop
-  }, [key, translation, currentSpeed, width, gap, isTransitioning, reverse, shouldReduceMotion])
+  }, [currentSpeed, gap, isInView, key, reverse, shouldReduceMotion, translation, width])
 
   const hoverProps =
     speedOnHover && !shouldReduceMotion
       ? {
           onHoverEnd: () => {
-            setIsTransitioning(true)
             setCurrentSpeed(speed)
           },
           onHoverStart: () => {
-            setIsTransitioning(true)
             setCurrentSpeed(speedOnHover)
           },
         }
       : {}
 
   return (
-    <div className={cn('overflow-hidden', className)}>
+    <div className={cn('overflow-hidden', className)} ref={viewportRef}>
       <motion.div
         className="flex w-max"
         ref={ref}

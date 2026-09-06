@@ -147,9 +147,13 @@ Current components:
   pricing-cards-cta
   pricing-split
   pricing-enterprise
+  collection-query
   footer-columns
   footer-simple
   footer-centered
+  contact-form-basic
+  post-hero
+  author-card
 `
 
 export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {

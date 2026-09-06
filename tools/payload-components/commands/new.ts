@@ -235,10 +235,13 @@ const appendDemoRegistryEntry = async (names: ComponentNames) => {
   const registryFile = path.join(demosDir, 'registry.ts')
   const source = await readSafeProjectFile({ cwd: repoRoot, filePath: registryFile })
   const demoName = `${names.pascal}Demo`
-  const importLine = `import { ${demoName} } from '@/components/site/demos/${demoName}'\n`
+  const importLine = `import { ${demoName} } from './${demoName}'\n`
   const lastImportEnd = source.lastIndexOf("'\n", source.indexOf('export')) + 2
   const withImport = `${source.slice(0, lastImportEnd)}${importLine}${source.slice(lastImportEnd)}`
-  const mapClose = withImport.lastIndexOf('\n}')
+  // The registry may export helpers after this flat map; the file's final brace
+  // belongs to those helpers, not necessarily demosBySlug.
+  const mapStart = withImport.search(/export const demosBySlug(?:\s*:[^=]+)?\s*=\s*\{/)
+  const mapClose = mapStart === -1 ? -1 : withImport.indexOf('\n}', mapStart)
 
   if (mapClose === -1) {
     throw new Error('Could not find the end of demosBySlug in the demo registry.')

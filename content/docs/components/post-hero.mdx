@@ -1,0 +1,108 @@
+---
+title: Post Hero
+description: An editorial article header with title, summary, categories, byline, date, and an optional image slot.
+icon: FileText
+---
+
+<ComponentPreview slug="post-hero" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    Track the file-only install in a supported Payload project:
+
+    ```bash
+    npx payload-components add post-hero
+    ```
+
+  </Tab>
+  <Tab value="Manual">
+    Copy the standalone React component directly. No Payload wiring is needed:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/post-hero.json
+    ```
+
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="post-hero" />
+
+## Content model
+
+These are React props supplied by your article template. This component adds no collection fields
+and does not query content. Your template owns data loading, access control, draft handling,
+and localization. Resolve relationship IDs before supplying public display data.
+
+<TypeTable
+  type={{
+    title: { type: 'string', required: true, description: 'The article heading; renders an h1.' },
+    description: { type: 'string | null', description: 'Optional summary below the title.' },
+    categories: {
+      type: 'readonly string[] | null',
+      description: 'Display names from populated categories.',
+    },
+    author: { type: 'string | null', description: 'Public author display name.' },
+    publishedAt: {
+      type: 'string | null',
+      description: 'ISO date, formatted in UTC. Invalid dates are omitted.',
+    },
+    locale: {
+      type: 'string',
+      default: 'en',
+      description: 'Date locale. Unsupported locale syntax falls back to English.',
+    },
+    image: {
+      type: 'ReactNode',
+      description: 'Optional image element; the template provides populated media and alt text.',
+    },
+    id: { type: 'string', description: 'Optional wrapper ID.' },
+    className: { type: 'string', description: 'Additional wrapper classes.' },
+    disableInnerContainer: {
+      type: 'boolean',
+      default: 'false',
+      description: 'Use the surrounding template container.',
+    },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="post-hero" />
+
+```tsx
+import { PostHero } from '@/components/PostHero/Component'
+import { Media } from '@/components/Media'
+import type { Post } from '@/payload-types'
+
+export function ArticleHeader({ post }: { post: Post }) {
+  return (
+    <PostHero
+      title={post.title}
+      description={post.meta?.description}
+      publishedAt={post.publishedAt}
+      categories={(post.categories ?? []).flatMap((category) =>
+        typeof category === 'object' && category?.title ? [category.title] : [],
+      )}
+      author={post.populatedAuthors
+        ?.map((author) => author.name)
+        .filter(Boolean)
+        .join(', ')}
+      image={
+        post.heroImage && typeof post.heroImage === 'object' ? (
+          <Media resource={post.heroImage} />
+        ) : undefined
+      }
+    />
+  )
+}
+```
+
+Replace the existing article heading with this header so the page retains a single h1. Request populated categories and media in your existing query; unpopulated relationship IDs are intentionally omitted. The image element owns its alt text and sizing.
+
+## Requirements
+
+<ComponentRequirements slug="post-hero" />

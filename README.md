@@ -303,11 +303,22 @@ drift from the registry.
 | `pricing-cards-cta`       | `npx payload-components add pricing-cards-cta`       |
 | `pricing-split`           | `npx payload-components add pricing-split`           |
 | `pricing-enterprise`      | `npx payload-components add pricing-enterprise`      |
+| `collection-query`        | `npx payload-components add collection-query`        |
 | `footer-columns`          | `npx payload-components add footer-columns`          |
 | `footer-simple`           | `npx payload-components add footer-simple`           |
 | `footer-centered`         | `npx payload-components add footer-centered`         |
+| `contact-form-basic`      | `npx payload-components add contact-form-basic`      |
+| `post-hero`               | `npx payload-components add post-hero`               |
+| `author-card`             | `npx payload-components add author-card`             |
 
 <!-- COMPONENT-INVENTORY:END -->
+
+Collection Query supplies grid, list, and featured Posts layouts with category
+filters and pagination. Contact Form Basic submits to an endpoint you own.
+Post Hero and Author Card are file-only article components: compose them in your
+post template; their installs do not edit Pages or run Payload generators.
+See the [visual install walkthrough](/content/docs/install-walkthrough.mdx) for
+catalog discovery, a representative install, the resulting diff, and doctor.
 
 Install several blocks in one command — `add` takes any number of names, and the
 catalog's composer builds the command for you as you tick components:

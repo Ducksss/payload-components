@@ -1,6 +1,7 @@
 import { logoCloudMarqueeDemoContent, type LogoCloudDemoContent } from '@/lib/demo-content'
 
 import { DemoLogoMark, demoLogos } from './DemoLogos'
+import { ViewportMarquee } from './ViewportMarquee'
 
 /* DEMO TWIN of payload-components/source/blocks/LogoCloudMarquee/Component.tsx
  * (logo-cloud-marquee@0.1.0). Class strings are copied verbatim from the
@@ -35,7 +36,7 @@ export function LogoCloudMarqueeDemo({
           </div>
 
           <div className="relative w-full py-6 md:w-[calc(100%-11rem)]">
-            <div className="overflow-hidden">
+            <ViewportMarquee className="overflow-hidden">
               <div className="logo-cloud-marquee-track flex w-max items-center gap-28">
                 {[...marqueeLogos, ...marqueeLogos].map((logo, index) => (
                   <div className="flex items-center justify-center" key={`${logo.name}-${index}`}>
@@ -43,7 +44,7 @@ export function LogoCloudMarqueeDemo({
                   </div>
                 ))}
               </div>
-            </div>
+            </ViewportMarquee>
 
             <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-card/80 to-transparent" />
             <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-card/80 to-transparent" />

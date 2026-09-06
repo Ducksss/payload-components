@@ -50,7 +50,20 @@ describe('fresh Payload smoke component selection', () => {
     const assignments = shards.flat()
 
     expect(installableSlugs).toEqual(registryBlockSlugs)
-    expect(installableSlugs).toEqual(manifestSlugs)
+    const manifests = await Promise.all(manifestSlugs.map((slug) => loadManifest(slug)))
+    expect(installableSlugs).toEqual(
+      manifests
+        .filter((manifest) => manifest.installMode !== 'file-only')
+        .map((manifest) => manifest.name),
+    )
+    expect(selection.exclusions.map((entry) => entry.name)).toEqual(
+      manifests
+        .filter((manifest) => manifest.installMode === 'file-only')
+        .map((manifest) => manifest.name),
+    )
+    expect(smokeHarness.DEFAULT_SMOKE_EXCLUSION_REASON).toContain(
+      'tests/int/article-components.int.spec.tsx',
+    )
     expect(selection.components).toEqual(installableSlugs)
     expect(
       [...selection.components, ...selection.exclusions.map((exclusion) => exclusion.name)].sort(),
@@ -119,6 +132,39 @@ describe('fresh Payload smoke component selection', () => {
       '--port',
       '4321',
     ])
+  })
+
+  it('uses shadcn latest against a minimal external target for direct URL delivery', async () => {
+    const targetPath = await mkdtemp(path.join(tmpdir(), 'payload-components-external-shadcn-'))
+    tempDirs.push(targetPath)
+
+    await smokeHarness.scaffoldExternalShadcnTarget(targetPath)
+
+    expect(
+      smokeHarness.getDirectShadcnAddArgs({
+        cwd: targetPath,
+        itemName: 'hero-basic',
+        registryUrl: 'https://www.payload-components.xyz/r/{name}.json',
+      }),
+    ).toEqual([
+      'dlx',
+      'shadcn@latest',
+      'add',
+      'https://www.payload-components.xyz/r/hero-basic.json',
+      '--cwd',
+      targetPath,
+      '--yes',
+      '--overwrite',
+    ])
+
+    await expect(readFile(path.join(targetPath, 'components.json'), 'utf8')).resolves.toContain(
+      '"ui": "@/components/ui"',
+    )
+    const packageJson = JSON.parse(
+      await readFile(path.join(targetPath, 'package.json'), 'utf8'),
+    ) as { dependencies?: Record<string, string> }
+    expect(packageJson.dependencies?.['payload-components']).toBeUndefined()
+    await expect(readFile(path.join(targetPath, 'src', 'blocks'))).rejects.toThrow()
   })
 
   it('resolves the default and CLI shard selections from registry-backed slugs', async () => {

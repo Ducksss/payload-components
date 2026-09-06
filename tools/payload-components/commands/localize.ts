@@ -417,6 +417,11 @@ export const localizeCommand = async ({
   const skipped: ComponentPlan[] = []
 
   for (const entry of targets) {
+    const manifest = await loadManifest(entry.name)
+    if (manifest.installMode === 'file-only') {
+      printHeader(`payload-components: ${entry.name} accepts content as props; localize its data in your article template.`)
+      continue
+    }
     const plan = await buildComponentPlan({ componentName: entry.name, cwd, state })
 
     if (plan.blockedFiles.length > 0 && !force) {

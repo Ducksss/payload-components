@@ -79,10 +79,14 @@ const createScaffoldRoot = async () => {
     writeFile(
       path.join(root, 'src', 'components', 'site', 'demos', 'registry.ts'),
       [
-        "import { HeroBasicDemo } from '@/components/site/demos/HeroBasicDemo'",
+        "import { HeroBasicDemo } from './HeroBasicDemo'",
         '',
-        'export const demosBySlug = {',
+        'export const demosBySlug: Record<string, unknown> = {',
         "  'hero-basic': HeroBasicDemo,",
+        '}',
+        '',
+        'export function hasComponentDemo(slug: string) {',
+        '  return slug in demosBySlug',
         '}',
         '',
       ].join('\n'),
@@ -230,8 +234,14 @@ describe('payload-components new', () => {
       SLUG,
     ])
     expect(JSON.parse(docsMeta).pages).toEqual(['hero-basic', SLUG])
-    expect(demoRegistry).toContain(`import { ${PASCAL}Demo }`)
-    expect(demoRegistry).toContain(`'${SLUG}': ${PASCAL}Demo,`)
+    expect(demoRegistry).toContain(`import { ${PASCAL}Demo } from './${PASCAL}Demo'`)
+    expect(demoRegistry).toContain(`'${SLUG}': ${PASCAL}Demo,\n}`)
+    expect(demoRegistry.indexOf(`'${SLUG}': ${PASCAL}Demo,`)).toBeLessThan(
+      demoRegistry.indexOf('export function hasComponentDemo'),
+    )
+    expect(demoRegistry).toContain(
+      'export function hasComponentDemo(slug: string) {\n  return slug in demosBySlug\n}',
+    )
     expect(cli).toContain(`\n  ${SLUG}\n`)
     expect(readme).toContain(`| \`${SLUG}\``)
     expect(readme).toContain(`npx payload-components add ${SLUG}`)

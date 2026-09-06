@@ -27,7 +27,20 @@ export type ChangelogEntry = {
   version: string
 }
 
+export type ProjectFileRequirement = {
+  /* Required direct entries in buildConfig({ collections: [...] }). */
+  collectionIdentifiers?: string[]
+  /* Every anchor must occur in at least one of the candidate files. */
+  anchors: string[]
+  /* Human-readable recovery guidance printed by add and doctor. */
+  help: string
+  label: string
+  /* Candidate paths are relative to the consumer project. */
+  paths: string[]
+}
+
 export type ComponentManifest = {
+  installMode?: 'page-block' | 'file-only'
   $schema?: string
   /* Newest first. Optional so an older manifest still loads. */
   changelog?: ChangelogEntry[]
@@ -40,6 +53,10 @@ export type ComponentManifest = {
   postInstall: string[]
   preview: {
     summary: string
+  }
+  /* Optional, component-specific host capabilities beyond the target shape. */
+  requires?: {
+    projectFiles: ProjectFileRequirement[]
   }
   recovery: {
     patchedFiles: string[]

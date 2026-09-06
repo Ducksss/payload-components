@@ -3,7 +3,11 @@ import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons'
 import type { Folder, Node, Root } from 'fumadocs-core/page-tree'
 import { docs } from 'collections/server'
 
-import { getComponentManifest, getComponentRegistryDependencies } from '@/lib/component-manifest'
+import {
+  getAllComponentManifests,
+  getComponentManifest,
+  getComponentRegistryDependencies,
+} from '@/lib/component-manifest'
 import { regroupComponentTree } from '@/lib/component-page-tree'
 import { defaultSiteLocale, localizeHref, type SiteLocale } from '@/i18n/config'
 import { fumadocsI18n } from '@/lib/i18n'
@@ -89,10 +93,12 @@ async function componentInstallContract(page: SourcePage) {
   const layout = manifest.payloadFragments.find((fragment) => fragment.kind === 'pagesLayout')
   const blockName = layout && 'blockName' in layout ? layout.blockName : manifest.name
 
-  const edits = [
-    `- Registers the block in \`${pagesPath}\``,
-    `- Maps the renderer in \`${renderPath}\``,
-  ]
+  const fileOnly = manifest.installMode === 'file-only'
+  const edits: string[] = []
+  if (layout) edits.push(`- Registers the block in \`${pagesPath}\``)
+  if (manifest.payloadFragments.some((fragment) => fragment.kind === 'renderBlocks')) {
+    edits.push(`- Maps the renderer in \`${renderPath}\``)
+  }
   if (manifest.postInstall.includes('generate:types')) {
     edits.push('- Regenerates types (`src/payload-types.ts`)')
   }
@@ -109,7 +115,9 @@ async function componentInstallContract(page: SourcePage) {
     '',
     ...manifest.files.map((file) => `- \`${file}\``),
     '',
-    `Wiring edits made by \`npx payload-components add ${manifest.name}\`:`,
+    fileOnly
+      ? 'File-only installation: no Pages registrations, renderer edits, or Payload generators.'
+      : `Wiring edits made by \`npx payload-components add ${manifest.name}\`:`,
     '',
     ...edits,
     '',
@@ -117,7 +125,9 @@ async function componentInstallContract(page: SourcePage) {
     '',
     `Requirements: target ${manifest.supportedTargets.join(', ')}; Payload v${manifest.supports.payloadMajors.join(' / v')}; Next.js ${manifest.supports.nextMajors.join(' / ')}; shadcn UI dependencies: ${deps.length ? deps.join(', ') : 'none'}.`,
     '',
-    `Admin usage: add the \`${blockName}\` block to a Page's layout, fill its fields, and publish — it renders through \`RenderBlocks\`, fully typed.`,
+    fileOnly
+      ? 'Template usage: import the installed component in your article template and pass public content as props. It does not appear in the Payload block picker.'
+      : `Admin usage: add the \`${blockName}\` block to a Page's layout, fill its fields, and publish — it renders through \`RenderBlocks\`, fully typed.`,
   ].join('\n')
 }
 
@@ -128,7 +138,20 @@ export async function getLLMText(page: SourcePage, locale: SiteLocale = defaultS
   const contract =
     page.slugs.length === 2 && page.slugs[0] === 'components'
       ? await componentInstallContract(page)
-      : ''
+      : page.slugs.length === 1 && page.slugs[0] === 'changelog'
+        ? '\n\n' +
+          (await getAllComponentManifests())
+            .flatMap((manifest) => [
+              `## ${manifest.title}`,
+              ...(manifest.changelog ?? []).flatMap((entry) => [
+                `### v${entry.version}${entry.breaking ? ' — Breaking' : ''}`,
+                entry.summary,
+                ...(entry.dataMigration ? [`Data migration: ${entry.dataMigration}`] : []),
+                '',
+              ]),
+            ])
+            .join('\n')
+        : ''
 
   return `# ${page.data.title} (${localizeHref(page.url, locale)})
 

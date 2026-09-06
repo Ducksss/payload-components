@@ -73,6 +73,7 @@
     "test:install": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int/payload-components.int.spec.ts tests/int/payload-components-registry.int.spec.ts tests/int/payload-components-add-command.int.spec.ts tests/int/payload-components-doctor-command.int.spec.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
     "test:pack": "cross-env NODE_OPTIONS=--no-deprecation RUN_PACK_TEST=1 vitest run --config ./vitest.config.mts tests/int/payload-components-pack.int.spec.ts",
+    "test:public-registry": "pnpm test:fresh -- --registry-url 'https://www.payload-components.xyz/r/{name}.json' --scenario website",
     "test:registry": "pnpm registry:check && pnpm registry:validate",
     "test:release": "pnpm lint && pnpm format:check && pnpm source:build && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm build:e2e && cross-env PLAYWRIGHT_SERVER_MODE=production pnpm run test:e2e"
   },
@@ -96,6 +97,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cross-env": "^10.1.0",
+    "esbuild": "0.28.1",
     "eslint": "^9.16.0",
     "eslint-config-next": "16.3.3",
     "fumadocs-core": "16.14.1",

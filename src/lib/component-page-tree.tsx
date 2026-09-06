@@ -6,6 +6,7 @@ import {
   ChartNoAxesCombined,
   CircleDollarSign,
   Columns2,
+  Database,
   ContactRound,
   FileText,
   Images,
@@ -82,6 +83,7 @@ const FAMILIES: { icon: ReactNode; key: string; label: string }[] = [
   { icon: <Pilcrow />, key: 'content', label: 'Content' },
   { icon: <Users />, key: 'team', label: 'Team' },
   { icon: <MonitorPlay />, key: 'embed', label: 'Embed' },
+  { icon: <Database />, key: 'collection-query', label: 'Collection query' },
   { icon: <PanelBottom />, key: 'footer', label: 'Footer' },
 ]
 

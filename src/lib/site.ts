@@ -20,6 +20,7 @@ import statsInlineManifest from '../../payload-components/manifests/stats-inline
 import footerColumnsManifest from '../../payload-components/manifests/footer-columns.json' with { type: 'json' }
 import footerSimpleManifest from '../../payload-components/manifests/footer-simple.json' with { type: 'json' }
 import footerCenteredManifest from '../../payload-components/manifests/footer-centered.json' with { type: 'json' }
+import collectionQueryManifest from '../../payload-components/manifests/collection-query.json' with { type: 'json' }
 
 const productionSiteUrl = 'https://www.payload-components.xyz'
 const configuredSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || productionSiteUrl).replace(
@@ -300,6 +301,7 @@ export const componentCategories = {
   content: { family: 'pages', label: 'Content' },
   team: { family: 'pages', label: 'Team' },
   embed: { family: 'pages', label: 'Embed' },
+  query: { family: 'pages', label: 'Collection query' },
   footer: { family: 'pages', label: 'Footer' },
   cards: { family: 'posts', label: 'Cards' },
   archive: { family: 'posts', label: 'Archive' },
@@ -661,6 +663,29 @@ export const componentEntries = [
     slug: 'call-to-action-signup',
     target: 'Email capture',
     title: 'Call To Action Signup',
+    version: '0.1.0',
+  },
+  {
+    category: 'contact',
+    command: 'npx payload-components add contact-form-basic',
+    description:
+      'An accessible contact form with inline validation and confirmed submission feedback from your own endpoint.',
+    family: 'pages',
+    fields: [
+      'title',
+      'description',
+      'action',
+      'submitLabel',
+      'successMessage',
+      'nameLabel',
+      'emailLabel',
+      'organizationLabel',
+      'messageLabel',
+    ],
+    href: '/docs/components/contact-form-basic',
+    slug: 'contact-form-basic',
+    target: 'Contact form',
+    title: 'Contact Form Basic',
     version: '0.1.0',
   },
   {
@@ -1306,6 +1331,19 @@ export const componentEntries = [
     version: '0.1.0',
   },
   {
+    category: 'query',
+    command: 'npx payload-components add collection-query',
+    description:
+      'A server-rendered Pages block that queries starter Posts by category or manual selection and shares one post-card renderer across three layouts.',
+    family: 'pages',
+    fields: ['populateBy', 'categories', 'limit', 'sort', 'selectedDocs', 'layout'],
+    href: '/docs/components/collection-query',
+    slug: 'collection-query',
+    target: 'Post query',
+    title: 'Collection Query',
+    version: collectionQueryManifest.version,
+  },
+  {
     category: 'footer',
     command: 'npx payload-components add footer-columns',
     description:
@@ -1344,69 +1382,37 @@ export const componentEntries = [
     title: 'Footer Centered',
     version: footerCenteredManifest.version,
   },
+  {
+    category: 'header',
+    command: 'npx payload-components add post-hero',
+    description: 'A post hero with category, author, date, and summary.',
+    fields: ['title', 'description', 'publishedAt', 'categories', 'author', 'image'],
+    family: 'posts',
+    href: '/docs/components/post-hero',
+    slug: 'post-hero',
+    target: 'Post header',
+    title: 'Post Hero',
+    version: '0.1.0',
+  },
+  {
+    category: 'author',
+    command: 'npx payload-components add author-card',
+    description: 'An author profile card for article pages and editorial bylines.',
+    fields: ['name', 'role', 'bio', 'avatar', 'href'],
+    family: 'posts',
+    href: '/docs/components/author-card',
+    slug: 'author-card',
+    target: 'Byline',
+    title: 'Author Card',
+    version: '0.1.0',
+  },
 ] as const
 
 export type ComponentEntry = (typeof componentEntries)[number]
 
-/* The in-development posts suite — real components from the registry roadmap,
-   shown as "Coming soon" until their installer coverage lands. */
+/* Remaining distinct article work. Collection Query covers grid/list/featured
+   listings; the existing signup block covers Page newsletters. */
 export const upcomingComponents = [
-  {
-    category: 'cards',
-    description: 'A post card with image, categories, date, title, and excerpt.',
-    family: 'posts',
-    slug: 'post-card',
-    target: 'Archive card',
-    title: 'Post Card',
-  },
-  {
-    category: 'archive',
-    description: 'An archive grid for rendering arrays of post summaries.',
-    family: 'posts',
-    slug: 'post-archive',
-    target: 'Archive grid',
-    title: 'Post Archive',
-  },
-  {
-    category: 'header',
-    description: 'A post hero with category, author, date, and summary.',
-    family: 'posts',
-    slug: 'post-hero',
-    target: 'Post header',
-    title: 'Post Hero',
-  },
-  {
-    category: 'index',
-    description: 'A featured post surface with image, category, and date.',
-    family: 'posts',
-    slug: 'featured-post',
-    target: 'Index spotlight',
-    title: 'Featured Post',
-  },
-  {
-    category: 'index',
-    description: 'A compact post list with dates, categories, and descriptions.',
-    family: 'posts',
-    slug: 'post-list',
-    target: 'Compact index',
-    title: 'Post List',
-  },
-  {
-    category: 'author',
-    description: 'An author profile card for article pages and editorial bylines.',
-    family: 'posts',
-    slug: 'author-card',
-    target: 'Byline',
-    title: 'Author Card',
-  },
-  {
-    category: 'newsletter',
-    description: 'A newsletter callout for post pages and editorial surfaces.',
-    family: 'posts',
-    slug: 'newsletter-callout',
-    target: 'Engagement',
-    title: 'Newsletter Callout',
-  },
   {
     category: 'related',
     description: 'A related-posts section for compact recommendations.',
@@ -1430,9 +1436,9 @@ export const componentFamilies = {
     name: 'Page blocks',
   },
   posts: {
-    countLabel: 'In development',
+    countLabel: 'Installable',
     description:
-      'Editorial surfaces for the Posts collection — component-level installs, no block wiring needed. In development.',
+      'File-only article surfaces composed in your post template. Post Hero and Author Card accept public content as props; Collection Query handles Pages-based article listings.',
     name: 'Post components',
   },
 } as const
@@ -1744,6 +1750,7 @@ export const footerColumns = [
       { href: '/docs', label: 'Documentation' },
       { href: '/docs/installation', label: 'Install workflow' },
       { href: '/docs/architecture', label: 'Architecture' },
+      { href: '/docs/changelog', label: 'Changelog' },
       { href: aiDiscoveryRoute, label: 'AI discovery' },
     ],
     title: 'Product',

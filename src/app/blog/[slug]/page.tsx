@@ -41,6 +41,7 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
       canonical,
       languages: localeAlternates(page.url),
       ...feedMetadataAlternates,
+      types: { ...feedMetadataAlternates.types, 'text/markdown': `${canonical}.md` },
     },
     openGraph: {
       ...siteOpenGraphDefaults,

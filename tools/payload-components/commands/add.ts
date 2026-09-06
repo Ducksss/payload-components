@@ -11,6 +11,7 @@ import { loadManifest } from '../manifest'
 import {
   applyLocalizedFields,
   applyPayloadFragments,
+  assertManifestProjectRequirements,
   assertManifestSupport,
   detectProject,
   isBlockConfigFile,
@@ -309,6 +310,7 @@ const installComponent = async ({
   const plan = await resolveInstallPlan({ cwd, manifest })
 
   assertManifestSupport(project, manifest)
+  await assertManifestProjectRequirements({ cwd, manifest })
 
   await checkDependencyRequirements({
     allowMissing: false,
@@ -579,6 +581,12 @@ const installComponent = async ({
 
   printHeader(`payload-components: installed "${manifest.name}" successfully.`)
 
+  if (manifest.installMode === 'file-only') {
+    printHeader(`payload-components: next — import "${manifest.name}" in your article template.
+  Usage: https://www.payload-components.xyz/docs/components/${manifest.name}`)
+    return
+  }
+
   const layoutFragment = plan.payloadFragments.find((fragment) => fragment.kind === 'pagesLayout')
   const blockName =
     layoutFragment && 'blockName' in layoutFragment ? layoutFragment.blockName : manifest.name
@@ -639,6 +647,13 @@ export const addCommand = async ({
       packageManager: project.packageManager,
     })
     return
+  }
+
+  if (demo || localized) {
+    const manifest = await loadManifest(componentName)
+    if (manifest.installMode === 'file-only') {
+      throw new Error(`"${componentName}" is a file-only article component. Pass localized content in your template; --demo and --localized apply only to editor-managed blocks.`)
+    }
   }
 
   await installComponent({ cwd, componentName, deferLocaleNotice, dryRun, localized })

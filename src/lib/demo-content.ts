@@ -156,6 +156,37 @@ export type CtaDemoContent = {
   submitLabel?: string
 }
 
+export type CollectionQueryDemoPost = {
+  categories: string[]
+  description: string
+  publishedAt: string
+  title: string
+}
+
+/* A committed fixture rather than a live Payload query: catalog previews stay
+   deterministic while the installed server component exercises the real DB. */
+export const collectionQueryDemoPosts: CollectionQueryDemoPost[] = [
+  {
+    categories: ['Engineering'],
+    description: 'A practical guide to keeping Payload block registration and rendering in sync.',
+    publishedAt: 'Aug 28, 2026',
+    title: 'The wiring after the copy',
+  },
+  {
+    categories: ['Design systems'],
+    description: 'How shared primitives keep editorial cards consistent across every query layout.',
+    publishedAt: 'Aug 19, 2026',
+    title: 'Build the card once',
+  },
+  {
+    categories: ['Payload CMS'],
+    description:
+      'Model category filters and manual curation without creating two competing blocks.',
+    publishedAt: 'Aug 7, 2026',
+    title: 'One query block, two workflows',
+  },
+]
+
 export const heroBasicDemoContent: HeroBasicDemoContent = {
   description:
     'Acme gives product teams hosted dashboards, usage reports, and alerting on one platform — wired to your data in an afternoon.',
@@ -1875,4 +1906,17 @@ export const pricingEnterpriseDemoContent: PricingDemoContent = {
     },
   ],
   title: 'Start managing your company smarter today.',
+}
+
+export const contactFormBasicDemoContent = {
+  blockType: 'contactFormBasic',
+  title: 'Good work starts with a conversation.',
+  description: 'Tell us what you have in mind. We’ll help you find the right next step.',
+  action: '/api/contact',
+  submitLabel: 'Send message',
+  successMessage: 'Thanks for reaching out. Your message has been received.',
+  nameLabel: 'Name',
+  emailLabel: 'Email',
+  organizationLabel: 'Organization',
+  messageLabel: 'Message',
 }

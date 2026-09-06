@@ -487,6 +487,7 @@
      reduced-motion guard below neutralizes it. */
   .logo-cloud-marquee-track {
     animation: logo-marquee 32s linear infinite;
+    animation-play-state: paused;
   }
 
   /* Integration Marquee: three duplicated logo rows, the middle one reversed.
@@ -494,10 +495,18 @@
      reduced-motion guard below neutralizes them. */
   .integration-marquee-track {
     animation: logo-marquee 36s linear infinite;
+    animation-play-state: paused;
   }
 
   .integration-marquee-track-reverse {
     animation: logo-marquee-reverse 36s linear infinite;
+    animation-play-state: paused;
+  }
+
+  [data-marquee-active='true'] > .logo-cloud-marquee-track,
+  [data-marquee-active='true'] > .integration-marquee-track,
+  [data-marquee-active='true'] > .integration-marquee-track-reverse {
+    animation-play-state: running;
   }
 
   /* Integration Orbit: rings spin only while the group is hovered, so nothing

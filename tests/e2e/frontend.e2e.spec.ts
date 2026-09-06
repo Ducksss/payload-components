@@ -697,7 +697,7 @@ test.describe('Light shadcn frontend', () => {
   const localizedOverflowRoutes = [
     { h1: /安装 Payload 区块.*接好线，不只是复制。/, path: '/zh' },
     { h1: 'Introduction', path: '/zh/docs' },
-    { h1: /77 个 Payload CMS 组件与类型化区块/, path: '/zh/components' },
+    { h1: /81 个 Payload CMS 组件与类型化区块/, path: '/zh/components' },
     { h1: '由可安装区块组成的 Payload CMS 模板概念', path: '/zh/templates' },
     { h1: 'Payload CMS 区块与安装器指南', path: '/zh/blog' },
     { h1: 'Why Payload Components exists', path: '/zh/about' },
@@ -942,7 +942,7 @@ test.describe('Light shadcn frontend', () => {
         title: new RegExp(homeMetadataTitle),
       },
       {
-        link: /Browse all 77 installable components/,
+        link: /Browse all 81 installable components/,
         path: '/blog',
         title: new RegExp(blogTitle),
       },
@@ -1084,24 +1084,33 @@ test.describe('Light shadcn frontend', () => {
   })
 
   test('links upcoming components to prefilled request issues', async ({ page }) => {
-    const component = upcomingComponents.find((entry) => entry.slug === 'post-card')!
+    const component = upcomingComponents[0]
 
     await page.goto(`${baseURL}/components?type=posts`)
 
     const requestLink = page.getByRole('link', { name: 'Request' }).first()
     await expect(requestLink).toBeVisible()
-    await expect(requestLink).toHaveAttribute(
-      'href',
-      new RegExp(
-        `/issues/new\\?${[
-          'area=New\\+component',
-          'proposal=Ship\\+Post\\+Card\\+%28post-card%29\\+as\\+a\\+Payload\\+Components\\+post\\+component\\.',
-          'template=feature_request\\.yml',
-          'title=%5Bfeature%5D\\+post-card',
-        ].join('.*')}`,
-      ),
-    )
+    const href = new URL((await requestLink.getAttribute('href'))!)
+    expect(href.pathname).toBe('/Ducksss/payload-components/issues/new')
+    expect(href.searchParams.get('template')).toBe('feature_request.yml')
+    expect(href.searchParams.get('title')).toBe(`[feature] ${component.slug}`)
+    expect(href.searchParams.get('proposal')).toContain(component.title)
     await expect(page.getByText(component.title).first()).toBeVisible()
+  })
+
+  test('shows installable article components in the Posts filter and composer', async ({
+    page,
+  }) => {
+    await page.goto(`${baseURL}/components?type=posts`)
+    await expect(page.getByRole('button', { name: composerAddLabel('post-hero') })).toBeVisible()
+    await expect(page.getByRole('button', { name: composerAddLabel('author-card') })).toBeVisible()
+    await expect(page.getByRole('button', { name: composerAddLabel('hero-basic') })).toHaveCount(0)
+    await page.getByRole('button', { name: composerAddLabel('post-hero') }).click()
+    await expect(page.getByRole('region', { name: composerTrayLabel })).toContainText(
+      'npx payload-components add post-hero',
+    )
+    await page.goto(`${baseURL}/docs/components/post-hero`)
+    await expect(page.getByText('Post component', { exact: true })).toBeVisible()
   })
 
   test('exposes every landing section, the catalog teaser, and the footer', async ({ page }) => {

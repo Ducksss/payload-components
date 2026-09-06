@@ -24,6 +24,8 @@ export async function ComponentRequirements({ slug }: { slug: string }) {
     Array.isArray(requirement) ? requirement.join(' or ') : requirement,
   )
 
+  const fileOnly = manifest.payloadFragments.length === 0
+
   const rows: { label: string; value: ReactNode }[] = [
     { label: 'Target', value: manifest.supportedTargets.join(', ') },
     { label: 'Payload', value: `v${manifest.supports.payloadMajors.join(' / v')}` },
@@ -44,6 +46,13 @@ export async function ComponentRequirements({ slug }: { slug: string }) {
         ))}
       </dl>
 
+      {fileOnly ? (
+        <p className="text-sm leading-6 text-muted-foreground">
+          Direct shadcn installation needs React 19 and Tailwind with your theme tokens; this
+          component has no Payload runtime imports. The targets above apply to CLI install tracking.
+        </p>
+      ) : null}
+
       {requiredFiles.length ? (
         <p className="text-sm leading-6 text-muted-foreground">
           Your project must already expose{' '}
@@ -53,10 +62,28 @@ export async function ComponentRequirements({ slug }: { slug: string }) {
               <code className="font-mono text-[13px] text-foreground/90">{file}</code>
             </span>
           ))}{' '}
-          — the surfaces <code className="font-mono text-[13px]">payload-components add</code>{' '}
-          patches. The CLI verifies this against the support matrix before touching anything.
+          — {fileOnly ? 'the host shape checked by' : 'the surfaces patched by'}{' '}
+          <code className="font-mono text-[13px]">payload-components add</code>. The CLI verifies
+          this against the support matrix before touching anything.
         </p>
       ) : null}
+
+      {manifest.requires?.projectFiles.map((requirement) => (
+        <p className="text-sm leading-6 text-muted-foreground" key={requirement.label}>
+          <strong className="font-medium text-foreground">{requirement.label}:</strong>{' '}
+          <code className="font-mono text-[13px] text-foreground/90">
+            {requirement.paths.join(' or ')}
+          </code>{' '}
+          must match the expected starter contract.{' '}
+          {requirement.collectionIdentifiers?.length ? (
+            <>
+              The config must register {requirement.collectionIdentifiers.join(' and ')} directly in
+              its collections array.{' '}
+            </>
+          ) : null}
+          {requirement.help}
+        </p>
+      ))}
     </div>
   )
 }

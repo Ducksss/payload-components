@@ -96,6 +96,12 @@
     "nextComponent": "Next component: {title}",
     "newIn": "New in {version}"
   },
+  "Changelog": {
+    "generated": "Generated at build time from {entries} committed changelog records across {components} component manifests.",
+    "latest": "Latest",
+    "breaking": "Breaking",
+    "migration": "Data migration"
+  },
   "HomeMetadata": {
     "title": "Payload Components: Wired Payload CMS Blocks in One Command",
     "description": "Install reusable Payload CMS blocks with one command, including collection config, render maps, generated types, and the admin import map for Next.js projects."
@@ -212,6 +218,7 @@
       "content": "Content",
       "team": "Team",
       "embed": "Embed",
+      "query": "Collection query",
       "footer": "Footer",
       "cards": "Cards",
       "archive": "Archive",
@@ -333,6 +340,7 @@
     "documentation": "Documentation",
     "installWorkflow": "Install workflow",
     "architecture": "Architecture",
+    "changelog": "Component changelog",
     "aiDiscovery": "AI discovery",
     "allComponents": "All {count} components",
     "about": "About",

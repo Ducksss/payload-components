@@ -30,6 +30,7 @@ import { ComponentFamily } from '@/components/site/ComponentFamily'
 import { ComponentRequirements } from '@/components/site/ComponentRequirements'
 import { ComponentUsage } from '@/components/site/ComponentUsage'
 import { ComponentWiring } from '@/components/site/ComponentWiring'
+import { ManifestChangelog } from '@/components/site/ManifestChangelog'
 import { RunnableCommand } from '@/components/site/RunnableCommand'
 import Link from '@/i18n/Link'
 import { localizeHref, normalizeSiteLocale } from '@/i18n/config'
@@ -87,6 +88,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     ComponentRequirements,
     ComponentUsage,
     ComponentWiring,
+    ManifestChangelog,
     RunnableCommand,
     Step,
     Steps,

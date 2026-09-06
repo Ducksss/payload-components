@@ -131,14 +131,31 @@ export function ComponentCatalogBrowser({
 
   const queriedPages = useMemo(
     () =>
-      pages.filter((component) =>
-        matches(
-          localQuery,
-          component.title,
-          component.slug,
-          component.description,
-          component.target,
-        ),
+      pages.filter(
+        (component) =>
+          component.family === 'pages' &&
+          matches(
+            localQuery,
+            component.title,
+            component.slug,
+            component.description,
+            component.target,
+          ),
+      ),
+    [pages, localQuery],
+  )
+  const queriedArticles = useMemo(
+    () =>
+      pages.filter(
+        (component) =>
+          component.family === 'posts' &&
+          matches(
+            localQuery,
+            component.title,
+            component.slug,
+            component.description,
+            component.target,
+          ),
       ),
     [pages, localQuery],
   )
@@ -157,7 +174,10 @@ export function ComponentCatalogBrowser({
   )
 
   const pagesCounts = useMemo(() => countByCategory(queriedPages), [queriedPages])
-  const postsCounts = useMemo(() => countByCategory(queriedPosts), [queriedPosts])
+  const postsCounts = useMemo(
+    () => countByCategory([...queriedArticles, ...queriedPosts]),
+    [queriedArticles, queriedPosts],
+  )
 
   const categorySlugs = useMemo(() => Object.keys(categories), [categories])
   const pagesCategories = categorySlugs.filter(
@@ -210,7 +230,11 @@ export function ComponentCatalogBrowser({
   const postsCards = queriedPosts.filter(
     (component) => !category || component.category === category,
   )
-  const visibleCount = (showPages ? pagesCards.length : 0) + (showPosts ? postsCards.length : 0)
+  const articleCards = queriedArticles.filter(
+    (component) => !category || component.category === category,
+  )
+  const visibleCount =
+    (showPages ? pagesCards.length : 0) + (showPosts ? postsCards.length + articleCards.length : 0)
 
   const familyGroups: {
     counts: Map<string, number>
@@ -231,7 +255,7 @@ export function ComponentCatalogBrowser({
       items: postsCategories,
       key: 'posts',
       meta: families.posts,
-      total: queriedPosts.length,
+      total: queriedPosts.length + queriedArticles.length,
     },
   ]
 
@@ -245,7 +269,7 @@ export function ComponentCatalogBrowser({
           <nav aria-label={t('filter')} className="flex flex-col gap-1">
             <FilterButton
               active={type === 'all' && !category}
-              count={queriedPages.length + queriedPosts.length}
+              count={queriedPages.length + queriedPosts.length + queriedArticles.length}
               label={t('allComponents')}
               onClick={() => updateParams({ type: '', category: '' })}
             />
@@ -323,7 +347,7 @@ export function ComponentCatalogBrowser({
             <div className="-mb-1 flex gap-2 overflow-x-auto pb-1 lg:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <FilterChip
                 active={type === 'all' && !category}
-                count={queriedPages.length + queriedPosts.length}
+                count={queriedPages.length + queriedPosts.length + queriedArticles.length}
                 label={t('all')}
                 onClick={() => updateParams({ type: '', category: '' })}
               />
@@ -394,6 +418,24 @@ export function ComponentCatalogBrowser({
                         </span>
                       </a>
                     ) : null}
+                  </div>
+                </div>
+              ) : null}
+
+              {showPosts && articleCards.length > 0 ? (
+                <div>
+                  {!category ? (
+                    <SectionDivider count={articleCards.length} name={families.posts.name} />
+                  ) : null}
+                  <div className="columns-1 gap-4 sm:columns-2 xl:columns-3">
+                    {articleCards.map((component) => (
+                      <ComponentCard
+                        key={component.slug}
+                        component={component}
+                        onToggleSelect={toggleSelected}
+                        selected={selected.includes(component.slug)}
+                      />
+                    ))}
                   </div>
                 </div>
               ) : null}

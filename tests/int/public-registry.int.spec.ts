@@ -4,6 +4,7 @@ import path from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
+import { loadManifest } from '../../tools/payload-components/manifest'
 import { shadcnCliPackage } from '../../tools/payload-components/utils'
 
 const repoRoot = process.cwd()
@@ -118,7 +119,10 @@ describe('public shadcn registry publication', () => {
     await expect(manifestNames()).resolves.toEqual(registry.items.map((item) => item.name).sort())
 
     for (const item of registry.items) {
-      expect(item.type).toBe('registry:block')
+      const manifest = await loadManifest(item.name)
+      expect(item.type).toBe(
+        manifest.installMode === 'file-only' ? 'registry:component' : 'registry:block',
+      )
       expect(item.title).toBeTruthy()
       expect(item.description).toBeTruthy()
       expect(item.docs).toContain(`payload-components add ${item.name}`)
@@ -128,9 +132,9 @@ describe('public shadcn registry publication', () => {
       )
       expect(item.meta?.payloadComponent).toMatchObject({
         installCommand: `payload-components add ${item.name}`,
-        postInstall: ['generate:types', 'generate:importmap'],
-        requiresPayloadComponentWrapper: true,
-        supportedTargets: ['payload-website-starter', 'payload-blocks-app'],
+        postInstall: manifest.postInstall,
+        requiresPayloadComponentWrapper: manifest.installMode !== 'file-only',
+        supportedTargets: manifest.supportedTargets,
       })
 
       expect(item.files?.length).toBeGreaterThan(0)

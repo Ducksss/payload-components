@@ -9,82 +9,73 @@ below group it rather than replace it. Anything not tracked as an issue is a
 direction, not a commitment. New contributors can start with
 [`good first issue`][gfi] or [`up-for-grabs`][ufg].
 
-## Current State
+## Current implementation
 
-- The registry ships 77 installable page blocks spanning the major
-  landing-page families, hero through footer (`payload-components/registry.json`
-  is the source of truth; the [catalog] renders the live inventory).
-  shadcn-native post components are scoped in the issue queue but none have
-  shipped yet.
-- The registry is listed in the official shadcn registry directory under the
-  `@payload-components` namespace ([#16], shipped 2026-06-24 via
-  shadcn-ui/ui#11006), so `shadcn add @payload-components/<item>` resolves.
-- `payload-components add` copies files, wires Payload, regenerates types, and
-  records install state. It takes any number of components in one command, and
-  `--localized` marks a block's text fields for Payload localization.
-- Recorded installs have a full lifecycle: `list`, `diff` (exits non-zero on
-  drift), `update` (never overwrites local edits without `--force`), and `remove`
-  (keeps shared family files a sibling variant still needs).
-- `add-template` installs every block a full-site template concept composes and
-  prints its page plan; it does not seed the curated content.
-- `payload-components doctor` checks supported project shape and install drift.
-- Install targets are path-resolved: `payload-website-starter` plus
-  `payload-blocks-app` for the same page-blocks shape at non-starter paths.
-- `payload-components mcp` exposes the registry to coding agents as a read-only
-  MCP server over stdio.
-- Fresh Payload smoke testing remains the slower confidence path for releases.
-- Anonymous analytics for install-copy and primary-link intent are collected;
-  no PII is captured.
+The registry contains 79 wired Page blocks and two file-only article components.
+The latest additions in this branch still require the release gate and promotion
+before they are available in the published CLI.
 
-## Priorities
+- `collection-query` provides grid, list, and featured Posts layouts, category
+  filters, pagination, manual selection, and an empty state. Its shared Post Card
+  is distributed with the block.
+- `contact-form-basic` provides an accessible contact form with validation,
+  submission feedback, and a consumer-owned endpoint.
+- `post-hero` and `author-card` install as files for article-template composition;
+  they do not patch Pages or run Payload generators.
+- The catalog separates installable Page blocks and article components.
+- The visual install walkthrough covers discovery, wrapper installation, the
+  resulting diff, doctor, and the limits of direct shadcn delivery.
+- Blog posts and template detail pages expose markdown twins; the component
+  changelog is generated from manifest release and migration records.
+- Marquees pause off-screen. Scheduled registry verification uses a clean
+  external target and public HTTPS registry URLs.
 
-Each priority links representative issues; the [full queue][issues] has the rest.
+The existing CLI includes install lifecycle commands, JSON doctor output,
+localization, starter scaffolding, templates, optional draft demo scripts, and
+read-only MCP discovery. These are existing capabilities rather than future
+roadmap items. The registry is listed under `@payload-components` in the official
+shadcn directory.
 
-1. Harden install recovery.
-   - Improve diagnostics when anchors move in `RenderBlocks.tsx` or
-     `Pages/index.ts` ([#121]).
-   - Keep retry behavior idempotent after partial installs.
-   - Expand supported project shapes only with fixtures and docs. The next real
-     step is a base bundle shipping the starter primitives installed blocks
-     import (`@/components/Media`, `@/components/Link`, `@/fields/linkGroup`,
-     `@/utilities/ui`), which is what a bare `create-payload-app` project lacks.
-   - Add machine-readable `doctor` output ([#19]); `list` and `diff` already
-     support `--json`.
+## Editorial backlog reconciliation
 
-2. Grow the catalog by complete bundles.
-   - Ship source, manifest, registry entry, docs, demo twin, and install coverage
-     together.
-   - Prefer families with real repeated use: CTA, content, team, integrations,
-     logos, and editorial post surfaces.
-   - Land the eight in-development post components ([#123]–[#126],
-     [#132]–[#135]); more heroes ([#136], [#137]), a contact form ([#116]), and
-     `pricing-basic` ([#24]) are scoped too — see [`enhancement`][enh].
-   - Let GitHub issues and real install feedback decide ordering.
+[#455] supersedes the blanket plan to ship eight separate file-only post
+components. Track outcomes, not duplicate implementations:
 
-3. Keep the public site and docs accurate.
-   - Keep README, component docs, LLM routes, and registry metadata aligned with
-     `payload-components/registry.json` — sync inventories ([#103]) and derive
-     counts from catalog data ([#131]).
-   - Document the anonymous analytics events ([#109]) and canonicalize manual
-     install URLs to the www host ([#112]).
-   - Avoid Payload runtime assumptions in the docs site.
-   - Keep visual standards token-based and snapshot-backed.
+| Earlier item                  | Current implementation or remaining scope                                                                                   |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `post-card` ([#123])          | Shared Post Card shipped with Collection Query; no separate registry item is needed.                                        |
+| `post-archive` ([#126])       | Collection Query grid layout.                                                                                               |
+| `post-list` ([#133])          | Collection Query list layout.                                                                                               |
+| `featured-post` ([#132])      | Collection Query featured layout.                                                                                           |
+| `post-hero` ([#124])          | File-only article header.                                                                                                   |
+| `author-card` ([#125])        | File-only article byline/profile.                                                                                           |
+| `newsletter-callout` ([#134]) | Existing `call-to-action-signup` covers Page signup; a distinct article surface needs a concrete unmet requirement.         |
+| `related-posts` ([#135])      | Still requires an explicit relationship-aware article contract; category filtering is not automatic related-post selection. |
 
-4. Tighten release confidence.
-   - Keep the PR gate fast enough for contributors.
-   - Run the full release gate before promotion.
-   - Run the fresh Payload smoke for pre-release and scheduled confidence;
-     include every installable item in its defaults ([#119]) and verify the live
-     registry matches local ([#105]).
-   - Run the packed CLI smoke before release-sensitive publishes ([#113]).
+Historical tickets can be reconciled on promotion once their replacement scope
+has been verified. A merged implementation does not silently satisfy the old
+file-only acceptance criteria of a ticket that now maps to a wired Page block.
+
+## Next priorities
+
+1. Validate and promote the complete current bundle, including fresh consumer
+   compilation and Linux component visual baselines.
+2. Add `related-posts` only with explicit source-post context and a documented
+   placement contract. Keep automatic recommendations separate from manual
+   selection.
+3. Finish smaller tracked site improvements: the hero H1 entrance ([#523]) and
+   promotion issue-completeness tooling ([#501]).
+4. Let real install feedback decide whether another hero variant ([#137]) or
+   additional collection browsing controls are useful.
 
 ## Exploring (not committed)
 
-Directions under consideration, not scheduled work:
-
-- Prove raw `shadcn` URL installs from a clean external project ([#15]) — the
-  fresh smoke's `--registry-url` path covers most of this; what remains is
-  closing the issue's exact acceptance criteria.
+- Lexical inline block installation needs its own verified editor anchor and
+  fixtures; it is separate from both Page blocks and article templates.
+- Comments require collection ownership, moderation, and spam handling. They
+  need a separate design rather than a presentational-component ticket.
+- Extend clean external shadcn delivery coverage as new registry item types are
+  introduced ([#15]).
 
 ## Not Planned
 
@@ -116,3 +107,10 @@ Directions under consideration, not scheduled work:
 [#135]: https://github.com/Ducksss/payload-components/issues/135
 [#136]: https://github.com/Ducksss/payload-components/issues/136
 [#137]: https://github.com/Ducksss/payload-components/issues/137
+[#455]: https://github.com/Ducksss/payload-components/issues/455
+[#124]: https://github.com/Ducksss/payload-components/issues/124
+[#125]: https://github.com/Ducksss/payload-components/issues/125
+[#133]: https://github.com/Ducksss/payload-components/issues/133
+[#134]: https://github.com/Ducksss/payload-components/issues/134
+[#523]: https://github.com/Ducksss/payload-components/issues/523
+[#501]: https://github.com/Ducksss/payload-components/issues/501

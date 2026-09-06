@@ -206,6 +206,8 @@ jobs:
           set -o pipefail
           if [ -n "$SMOKE_REGISTRY_URL" ]; then
             pnpm test:fresh -- --registry-url "$SMOKE_REGISTRY_URL" --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
+          elif [ "${{ github.event_name }}" = "schedule" ]; then
+            pnpm test:fresh -- --registry-url 'https://www.payload-components.xyz/r/{name}.json' --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
           else
             pnpm test:fresh -- --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
           fi

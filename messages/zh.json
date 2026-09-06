@@ -96,6 +96,12 @@
     "nextComponent": "下一个组件：{title}",
     "newIn": "{version} 新增"
   },
+  "Changelog": {
+    "generated": "构建时从 {components} 个组件清单中的 {entries} 条已提交更新记录自动生成。",
+    "latest": "最新",
+    "breaking": "破坏性变更",
+    "migration": "数据迁移"
+  },
   "HomeMetadata": {
     "title": "Payload Components：一条命令安装并接线 Payload CMS 区块",
     "description": "一条命令安装可复用的 Payload CMS 区块，同时完成集合配置、渲染映射、类型生成和 Next.js 管理后台导入映射。"
@@ -212,6 +218,7 @@
       "content": "内容",
       "team": "团队",
       "embed": "嵌入",
+      "query": "集合查询",
       "footer": "页脚",
       "cards": "卡片",
       "archive": "归档",
@@ -333,6 +340,7 @@
     "documentation": "文档",
     "installWorkflow": "安装流程",
     "architecture": "架构",
+    "changelog": "组件更新记录",
     "aiDiscovery": "AI 发现",
     "allComponents": "全部 {count} 个组件",
     "about": "关于",

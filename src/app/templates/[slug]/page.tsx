@@ -70,6 +70,7 @@ export async function generateMetadata({ params }: { params: DetailParams }): Pr
     alternates: {
       canonical,
       languages: localeAlternates(templateDetailHref(template.slug)),
+      types: { 'text/markdown': `${canonical}.md` },
     },
     description: template.summary,
     openGraph: {

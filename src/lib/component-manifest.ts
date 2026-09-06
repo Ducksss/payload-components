@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import type {
@@ -31,6 +31,17 @@ async function readJson<T>(...segments: string[]): Promise<T | null> {
 
 export function getComponentManifest(slug: string): Promise<ComponentManifest | null> {
   return readJson<ComponentManifest>('manifests', `${slug}.json`)
+}
+
+export async function getAllComponentManifests(): Promise<ComponentManifest[]> {
+  const manifestDirectory = path.join(process.cwd(), registryRoot, 'manifests')
+  const files = (await readdir(manifestDirectory)).filter((file) => file.endsWith('.json')).sort()
+
+  const manifests = await Promise.all(
+    files.map((file) => readJson<ComponentManifest>('manifests', file)),
+  )
+
+  return manifests.filter((manifest): manifest is ComponentManifest => manifest !== null)
 }
 
 export async function getComponentRegistryDependencies(slug: string): Promise<string[]> {
