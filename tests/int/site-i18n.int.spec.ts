@@ -8,11 +8,14 @@ import { unstable_doesMiddlewareMatch } from 'next/experimental/testing/server'
 import { describe, expect, it } from 'vitest'
 
 import {
+  isChromeFreePreviewPath,
   isLocaleNeutralPath,
   localeAlternates,
   localeDetails,
   localizeHref,
   siteLocales,
+  publishedSiteLocales,
+  isPublishedSiteLocale,
   splitLocalePathname,
 } from '../../src/i18n/config'
 import { getSiteMessages } from '../../src/i18n/message-catalog'
@@ -61,6 +64,9 @@ describe('site internationalization', () => {
       'et',
       'fi',
     ])
+    expect(publishedSiteLocales).toEqual(['en'])
+    expect(isPublishedSiteLocale('en')).toBe(true)
+    expect(isPublishedSiteLocale('zh')).toBe(false)
     expect(localeDetails.en.htmlLang).toBe('en')
     expect(localeDetails.zh.htmlLang).toBe('zh-CN')
     expect(localeDetails.zh.openGraphLocale).toBe('zh_CN')
@@ -89,6 +95,44 @@ describe('site internationalization', () => {
     expect(localizeHref('https://github.com/Ducksss/payload-components', 'zh')).toBe(
       'https://github.com/Ducksss/payload-components',
     )
+  })
+
+  it('treats chrome-free previews as chrome-free in every locale', async () => {
+    /* The guard used to compare usePathname() with an unprefixed literal, so a
+     * locale prefix exempted the route: /zh previews mounted the GA tag that
+     * their English equivalents suppress, double-counting every embedded view
+     * the localized template detail loads in its own localized iframe. */
+    for (const prefix of ['', '/en', '/zh', '/ar']) {
+      expect(isChromeFreePreviewPath(`${prefix}/components/preview/hero-basic`)).toBe(true)
+      expect(isChromeFreePreviewPath(`${prefix}/templates/saas-launch/preview`)).toBe(true)
+      expect(isChromeFreePreviewPath(`${prefix}/templates/saas-launch/preview/pricing`)).toBe(true)
+    }
+
+    // Chrome-carrying routes keep both the banner and the general stream.
+    for (const chromed of [
+      '/',
+      '/zh',
+      '/components',
+      '/zh/components',
+      '/components/previewer',
+      '/templates/saas-launch',
+      '/zh/templates/saas-launch',
+    ]) {
+      expect(isChromeFreePreviewPath(chromed)).toBe(false)
+    }
+
+    /* Both call sites must delegate rather than re-derive: the bug was one of
+     * the two forgetting to strip the prefix the other already stripped. */
+    const [analyticsShell, consentBanner] = await Promise.all([
+      readFile(path.join(repoRoot, 'src/components/site/AnalyticsShell.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/components/site/ConsentBanner.tsx'), 'utf8'),
+    ])
+
+    for (const source of [analyticsShell, consentBanner]) {
+      expect(source).toContain('isChromeFreePreviewPath(pathname)')
+      expect(source).not.toContain("'/components/preview/'")
+      expect(source).not.toContain('/preview(')
+    }
   })
 
   it('runs locale middleware for routes that begin with r without matching registry assets', () => {
@@ -181,7 +225,7 @@ describe('site internationalization', () => {
     expect(isLocaleNeutralPath('/og/blog/example/image.png')).toBe(false)
   })
 
-  it('keeps every localized message key and argument in parity with English', async () => {
+  it('keeps published message keys and arguments in parity with English', async () => {
     const catalogs = await Promise.all(
       siteLocales.map(
         async (locale) => [locale, (await getSiteMessages(locale)) as Messages] as const,
@@ -198,7 +242,7 @@ describe('site internationalization', () => {
 
     expect(englishKeys.length).toBeGreaterThan(100)
 
-    for (const locale of siteLocales.filter((item) => item !== 'en')) {
+    for (const locale of publishedSiteLocales.filter((item) => item !== 'en')) {
       const localized = flattenMessages(catalogByLocale[locale])
       expect(Object.keys(localized).sort(), locale).toEqual(englishKeys)
 
@@ -219,7 +263,6 @@ describe('site internationalization', () => {
 
     for (const category of Object.keys(componentCategories)) {
       expect(english[`CatalogBrowser.categories.${category}`], category).toBeTruthy()
-      expect(chinese[`CatalogBrowser.categories.${category}`], category).toBeTruthy()
     }
 
     const translate = createTranslator({ locale: 'en', messages: englishMessages }) as unknown as (
@@ -256,12 +299,27 @@ describe('site internationalization', () => {
     )
   })
 
-  it('keeps every Crowdin catalogue structurally compatible with English', async () => {
+  it('validates published catalogs while retaining inactive drafts', async () => {
     const { catalogs, english } = await loadCatalogs(repoRoot)
 
     expect(validateCatalogs(english, catalogs)).toEqual([])
-    expect(Object.keys(catalogs.zh)).toEqual(Object.keys(english))
     expect(Object.keys(catalogs)).toEqual(siteLocales.slice(1))
+  })
+
+  it('allows English-only copy changes without requiring archived translations', async () => {
+    const { catalogs, english } = await loadCatalogs(repoRoot)
+    const changedEnglish = {
+      ...english,
+      'Common.newMessage': 'A new English message for {name}',
+      'Common.copy': 'Copy {item}',
+    }
+    expect(validateCatalogs(changedEnglish, catalogs)).toEqual([])
+    expect(validateCatalogs(changedEnglish, catalogs, ['ja'])).toContain(
+      'ja:Common.newMessage is missing',
+    )
+    expect(validateCatalogs({ ...english, broken: '{unclosed' }, catalogs)).toEqual(
+      expect.arrayContaining([expect.stringContaining('en:broken is not valid ICU')]),
+    )
   })
 
   it('rejects translation artifacts before they reach a page', async () => {
@@ -277,16 +335,16 @@ describe('site internationalization', () => {
       },
     }
 
-    expect(validateCatalogs(english, markedCatalogs)).toContain(
+    expect(validateCatalogs(english, markedCatalogs, ['ja'])).toContain(
       'ja:Header.language contains a translation transport marker',
     )
-    expect(validateCatalogs(english, markedCatalogs)).toContain(
+    expect(validateCatalogs(english, markedCatalogs, ['ja'])).toContain(
       'ja:Catalog.description removes protected term "Payload CMS"',
     )
-    expect(validateCatalogs(english, markedCatalogs)).toContain(
+    expect(validateCatalogs(english, markedCatalogs, ['ja'])).toContain(
       'ja:Templates.metadataDescription adds an unexpected line break',
     )
-    expect(validateCatalogs(english, markedCatalogs)).toContain(
+    expect(validateCatalogs(english, markedCatalogs, ['ja'])).toContain(
       'ja:Templates.tablet contains a numeric translation artifact',
     )
   })

@@ -13,10 +13,10 @@ import { AnalyticsShell } from '@/components/site/AnalyticsShell'
 import { CommandCopyController } from '@/components/site/CommandCopyController'
 import { ConsentBanner } from '@/components/site/ConsentBanner'
 import {
-  isSiteLocale,
+  isPublishedSiteLocale,
   localeDetails,
   localizeHref,
-  siteLocales,
+  publishedSiteLocales,
   type SiteLocale,
 } from '@/i18n/config'
 import { getPublication, publicationRobots } from '@/i18n/publication'
@@ -47,11 +47,11 @@ type LocaleLayoutProps = {
 }
 
 export function generateStaticParams() {
-  return siteLocales.map((locale) => ({ locale }))
+  return publishedSiteLocales.map((locale) => ({ locale }))
 }
 
 function requireLocale(value: string): SiteLocale {
-  if (!isSiteLocale(value)) notFound()
+  if (!isPublishedSiteLocale(value)) notFound()
   return value
 }
 

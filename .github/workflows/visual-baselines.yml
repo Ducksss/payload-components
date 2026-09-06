@@ -17,10 +17,10 @@ on:
         default: 'components-visual'
         type: choice
         options:
+          - frontend
           - components-visual
           - template-visual
           - blog-visual
-          - frontend
           - all-visual
       update:
         # 'changed' (Playwright's own preset for a bare --update-snapshots) only

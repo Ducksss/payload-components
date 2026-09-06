@@ -559,6 +559,19 @@ test.describe('Template full previews (/templates/<slug>/preview/<page>)', () =>
     await expect(page.locator('script[src*="googletagmanager"]')).toHaveCount(0)
     await expect(page.locator('script#google-tag')).toHaveCount(0)
 
+    /* Localized previews are the same chrome-free resource, and the localized
+     * detail page loads a localized iframe URL — so a locale prefix must not
+     * exempt the route. It did: /zh previews mounted the tag that / suppressed. */
+    for (const localizedPreview of [
+      `/zh${templatePreviewHref(template.slug)}`,
+      '/zh/components/preview/hero-basic',
+    ]) {
+      await page.goto(`${baseURL}${localizedPreview}`)
+      await page.waitForLoadState('load')
+      await expect(page.locator('script[src*="googletagmanager"]')).toHaveCount(0)
+      await expect(page.locator('script#google-tag')).toHaveCount(0)
+    }
+
     // ...while the indexable gallery keeps the one Google tag.
     await page.goto(`${baseURL}/templates`)
     await expect(

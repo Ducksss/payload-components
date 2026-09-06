@@ -67,6 +67,17 @@ Fragment patching is **text-anchor based** — it finds anchors like `const bloc
 
 **Install targets are path-resolved.** `support-matrix.json` declares, per target, candidate paths and required anchors for each host file role (`renderBlocks`, `pagesLayout`); `detectProject` resolves them into `DetectedProject.hostFiles`, and `applyPayloadFragments` / `removePayloadFragments` / `verifyInstalledPayloadFragments` patch **those** paths. Manifests still declare the canonical starter paths in `recovery.patchedFiles`; `resolveRecoveryPatchedFiles` maps them onto the resolved ones. `payload-website-starter` is matched first; `payload-blocks-app` covers the same shape at non-starter paths (flat `Pages.ts`, no `src/`). A bare `create-payload-app` becomes supported after `init --scaffold` installs and registers the lifecycle-managed starter base (`Pages`, `Media`, `RenderBlocks`, `CMSLink`, `linkGroup`, and `cn`). `add` does not scaffold this host shape implicitly; follow any registration guidance and run `doctor` before installing blocks.
 
+**Site translations** are separate from consumer Payload localization. Maintain
+English site copy in `messages/en.json`, including `Components.<slug>` catalog
+labels. `src/lib/site.ts` and `src/lib/component-catalog.ts` expose English
+projections; keep technical identifiers in TypeScript. The public site is
+English-only via `publishedSiteLocales` in `src/i18n/config.ts`. Saved locale
+catalogs remain inactive drafts, not a manual translation maintenance commitment.
+Do not generate manual batches to keep them in parity. Release checks validate
+English and published locales; `pnpm i18n:check --drafts` is the optional draft
+readiness check. Crowdin is manual-only until a no-cost automated workflow is
+verified. See `messages/README.md` for activation and native-review requirements.
+
 **Localization / i18n:** Payload internationalization has two halves that are each inert without the other, and the CLI owns both.
 
 _Field level_ — `add <component> --localized` (and `add-template <slug> --localized`, which passes it to every block and emits the locale notice once via `deferLocaleNotice`) copies `payload-components/source/blocks/shared/localizeFields.ts` into the project and wraps the installed block config's top-level `fields` array in `localizeFields(...)`, which marks prose leaves (`text`, `textarea`, `richText`) localized and recurses containers without localizing them. The wrap sits outside the shared-base spread, so one call covers shared and variant fields. The choice is recorded in install state so `update` re-applies it.

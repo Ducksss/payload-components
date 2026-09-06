@@ -6,9 +6,12 @@ import { parse, TYPE, type MessageFormatElement } from '@formatjs/icu-messagefor
 import {
   defaultSiteLocale,
   localeDetails,
+  publishedSiteLocales,
   siteLocales,
   type SiteLocale,
 } from '../../src/i18n/config'
+
+import { allowsCatalogFallback } from '../../src/i18n/catalog-policy'
 
 export type FlatMessages = Record<string, string>
 export type MessageTree = { [key: string]: MessageTree | string }
@@ -117,13 +120,13 @@ function validateMessage(
   errors: string[],
   english: string,
   localized: string,
-  locale: Exclude<SiteLocale, 'en'>,
+  locale: SiteLocale,
   location: string,
 ) {
   if (!english.includes('\n') && localized.includes('\n')) {
     errors.push(`${location} adds an unexpected line break`)
   }
-  if (numericTranslationArtifact.test(localized)) {
+  if (locale !== 'en' && numericTranslationArtifact.test(localized)) {
     errors.push(`${location} contains a numeric translation artifact`)
   }
   for (const term of protectedTerms) {
@@ -182,11 +185,19 @@ function validateMessage(
 export function validateCatalogs(
   english: FlatMessages,
   catalogs: Record<Exclude<SiteLocale, 'en'>, FlatMessages>,
+  locales: readonly Exclude<SiteLocale, 'en'>[] = translatedSiteLocales.filter((locale) =>
+    publishedSiteLocales.includes(locale),
+  ),
 ): string[] {
   const errors: string[] = []
   const englishKeys = Object.keys(english)
 
-  for (const locale of translatedSiteLocales) {
+  for (const key of englishKeys) {
+    if (!english[key].trim()) errors.push(`en:${key} is empty`)
+    validateMessage(errors, english[key], english[key], 'en', `en:${key}`)
+  }
+
+  for (const locale of locales) {
     const localized = catalogs[locale] ?? {}
     const localizedKeys = Object.keys(localized)
 
@@ -194,11 +205,12 @@ export function validateCatalogs(
       errors.push(`${locale}:${key} has no English source message`)
     }
     for (const key of keyDifference(englishKeys, localizedKeys)) {
-      errors.push(`${locale}:${key} is missing`)
+      if (!allowsCatalogFallback(locale, key)) errors.push(`${locale}:${key} is missing`)
     }
 
     for (const key of englishKeys) {
       const value = localized[key]
+      if (value === undefined && allowsCatalogFallback(locale, key)) continue
       if (!value?.trim()) {
         errors.push(`${locale}:${key} is empty`)
         continue

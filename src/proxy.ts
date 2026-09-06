@@ -4,7 +4,7 @@ import createMiddleware from 'next-intl/middleware'
 import { NextResponse } from 'next/server'
 import { isMarkdownPreferred, rewritePath } from 'fumadocs-core/negotiation'
 
-import { isLocaleNeutralPath, splitLocalePathname } from '@/i18n/config'
+import { isLocaleNeutralPath, isPublishedSiteLocale, splitLocalePathname } from '@/i18n/config'
 import { routing } from '@/i18n/routing'
 import { docsContentRoute, docsRoute } from '@/lib/site'
 
@@ -33,6 +33,14 @@ export default function proxy(request: NextRequest) {
       response.headers.set('vary', vary ? `${vary}, Accept` : 'Accept')
     }
     return response
+  }
+
+  // Keep saved-language links usable without exposing an unmaintained locale.
+  // Temporary redirects allow a verified language to be enabled later.
+  if (!isPublishedSiteLocale(locale)) {
+    const destination = request.nextUrl.clone()
+    destination.pathname = pathname
+    return NextResponse.redirect(destination, 307)
   }
 
   const rewrite = (destination: string) => {
@@ -71,7 +79,9 @@ export const config = {
     // These public content routes contain a literal dot, so the general asset
     // exclusion below cannot discover the hidden default-locale segment.
     '/llms.mdx/:path*',
+    '/:locale/llms.mdx/:path*',
     '/og/:path*',
+    '/:locale/og/:path*',
     // Keep the exclusions scoped to complete first segments. A bare `r`
     // alternative also excludes every route beginning with that letter (for
     // example `/roadmap`), so those requests never reach locale middleware.
