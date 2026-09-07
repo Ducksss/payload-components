@@ -1218,15 +1218,15 @@ describe('Fumadocs site shell', () => {
     expect(catalog).toContain('window.history.replaceState')
     expect(catalog).toContain("window.addEventListener('popstate'")
     expect(registry).not.toContain('sample content for docs and testing')
-    expect(catalogTitle).toBe('81 Payload CMS components and typed blocks')
+    expect(catalogTitle).toBe('82 Payload CMS components and typed blocks')
     expect(catalogDescription).toMatch(
       /heroes.*features.*pricing.*integrations.*stats.*FAQs.*content.*teams.*embeds.*footers/,
     )
-    expect(catalogDescription).toContain('Browse all 81')
+    expect(catalogDescription).toContain('Browse all 82')
     expect(catalogDescription).toContain('installable Payload CMS components')
     expect(catalogDescription).toContain('One CLI command')
     expect(catalogMetadataTitle).toContain('Payload CMS Components')
-    expect(catalogMetadataTitle).toContain('81')
+    expect(catalogMetadataTitle).toContain('82')
     expect(catalogMetadataDescription).toContain('npx payload-components add <component>')
     expect(catalogMetadataDescription).toContain('collection')
     expect(catalogMetadataDescription).toContain('renderer')
@@ -1253,7 +1253,7 @@ describe('Fumadocs site shell', () => {
 
     expect(homeMetadataTitle).toBe('Payload Components: Wired Payload CMS Blocks in One Command')
     expect(blogTitle).toBe('Payload CMS block and installer guides')
-    expect(catalogMetadataTitle).toBe('81 Payload CMS Components & Blocks | Catalog')
+    expect(catalogMetadataTitle).toBe('82 Payload CMS Components & Blocks | Catalog')
     expect(docsIndex).toContain('seoTitle: CLI setup and architecture')
     expect(docsIndex).toContain('title="Build and wire a block" href="/docs/payload-blocks"')
 

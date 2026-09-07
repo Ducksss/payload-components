@@ -2233,6 +2233,13 @@
           "default": "e81d015b2d840b31ceda0f596dcf0c3057d6410b717f911dbfb35ec28dde8054"
         }
       }
+    },
+    "newsletter-callout": {
+      "0.1.0": {
+        "src/components/NewsletterCallout/Component.tsx": {
+          "default": "8152cbf145f5e2642caa788e9e0122654fdf5a54a74969e83eff53faddc2579d"
+        }
+      }
     }
   }
 }
