@@ -1,9 +1,8 @@
 import { defineConfig } from 'vitest/config'
-import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
   resolve: {
+    tsconfigPaths: true,
     alias: [
       {
         find: /^@\/blocks\/shared\/(.*)$/,
@@ -20,6 +19,7 @@ export default defineConfig({
     ],
   },
   test: {
+    maxWorkers: 2,
     environment: 'node',
     include: ['tests/int/**/*.int.spec.ts', 'tests/int/**/*.int.spec.tsx'],
   },

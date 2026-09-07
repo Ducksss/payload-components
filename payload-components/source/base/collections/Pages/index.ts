@@ -17,7 +17,7 @@ import type { CollectionConfig } from 'payload'
 export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
-    read: () => true,
+    read: ({ req: { user } }) => (user ? true : { _status: { equals: 'published' } }),
   },
   admin: {
     useAsTitle: 'title',

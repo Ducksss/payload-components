@@ -24,7 +24,7 @@ import {
  *   - animations: 'disabled' freezes anything still running at capture time.
  *   - awaiting document.fonts.ready avoids a pre-font-swap capture.
  *
- * Baselines are committed per platform; see ./support/visual-baselines.ts for
+ * Baselines use the Linux CI renderer; see ./support/visual-baselines.ts for
  * why, and for how the skip/coverage guards below behave. */
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
@@ -40,8 +40,7 @@ const slugs = [...registrySource.matchAll(/^\s+'([a-z0-9-]+)':/gm)].map((match) 
 
 const baselines: VisualBaselines = {
   label: 'component baselines',
-  mintHint:
-    'run the visual-baselines workflow, or locally: E2E_PORT=3100 pnpm test:e2e components-visual --update-snapshots',
+  mintHint: 'run the visual-baselines workflow on Linux',
   // Linux is the gate's renderer, so an unminted linux CI run is a real defect.
   requireMinted: process.platform === 'linux' && Boolean(process.env.CI),
   snapshotDir: new URL('./components-visual.e2e.spec.ts-snapshots/', import.meta.url),

@@ -141,8 +141,8 @@ describe('real update → add localization migration', { timeout: 30_000 }, () =
     ).toBe(true)
   })
 
-  it('commits every owner before generators run and resumes a failed migration without force', async () => {
-    const { cwd, manifests } = await legacyInstall(['hero-basic', 'faq-card'])
+  it('restores every owner after a failed migration and retries without force', async () => {
+    const { cwd, helper, manifests } = await legacyInstall(['hero-basic', 'faq-card'])
     const before = await loadState(cwd)
     const canonical = new Map<string, string>()
     for (const manifest of manifests) {
@@ -166,19 +166,22 @@ describe('real update → add localization migration', { timeout: 30_000 }, () =
     pkg.scripts['generate:types'] = 'node -e "process.exit(1)"'
     await writeFile(packagePath, JSON.stringify(pkg))
 
-    await expect(updateCommand({ cwd, acceptLocalizationPolicyChange: true })).rejects.toThrow()
-    for (const [file, source] of canonical) {
+    const beforeFiles = await Promise.all(
+      [...canonical.keys()].map(
+        async (file) => [file, await readFile(path.join(cwd, file), 'utf8')] as const,
+      ),
+    )
+    await expect(updateCommand({ cwd, acceptLocalizationPolicyChange: true })).rejects.toThrow(
+      'were restored',
+    )
+    for (const [file, source] of beforeFiles) {
       expect(await readFile(path.join(cwd, file), 'utf8'), file).toBe(source)
     }
-    expect(await readFile(path.join(cwd, LOCALIZE_HELPER_FILE), 'utf8')).toBe(
-      await readFile('payload-components/source/blocks/shared/localizeFields.ts', 'utf8'),
-    )
-    expect(
-      Object.values((await loadState(cwd)).components).every((entry) => entry.status === 'partial'),
-    ).toBe(true)
+    expect(await readFile(path.join(cwd, LOCALIZE_HELPER_FILE), 'utf8')).toBe(helper)
+    expect(await loadState(cwd)).toEqual(before)
 
     await writeFile(packagePath, originalPackage)
-    expect(await updateCommand({ cwd })).toBe(true)
+    expect(await updateCommand({ cwd, acceptLocalizationPolicyChange: true })).toBe(true)
     expect(
       Object.values((await loadState(cwd)).components).every(
         (entry) => entry.status === 'installed',

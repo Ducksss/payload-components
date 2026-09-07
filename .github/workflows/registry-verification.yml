@@ -21,10 +21,33 @@ env:
   NEXT_TELEMETRY_DISABLED: '1'
   I18N_BASE_REF: ${{ github.event.pull_request.base.sha || '' }}
 
+concurrency:
+  group: registry-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      consumer: ${{ steps.classify.outputs.consumer || 'true' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Classify pull request changes
+        id: classify
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_SHA" "$HEAD_SHA"
+          node tools/ci/classify-changes.mjs
+
   release-gate:
     if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
@@ -58,7 +81,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          pnpm test:release 2>&1 | tee payload-components-release.log
+          pnpm test:ci 2>&1 | tee payload-components-release.log
 
       - name: Upload failure artifacts
         if: failure()
@@ -72,7 +95,8 @@ jobs:
           if-no-files-found: ignore
 
   node-20-compat:
-    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: changes
+    if: needs.changes.outputs.consumer == 'true' && (github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -140,6 +164,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs:
+      - changes
       - quick-checks
       - release-gate
       - node-20-compat
@@ -148,22 +173,35 @@ jobs:
       - name: Require every release and smoke gate
         shell: bash
         run: |
-          if [[ "${{ needs.quick-checks.result }}" != "success" || \
-                "${{ needs.release-gate.result }}" != "success" || \
-                "${{ needs.node-20-compat.result }}" != "success" || \
-                "${{ needs.fresh-payload-smoke.result }}" != "success" ]]; then
-            echo "One or more required release gates failed or were skipped."
+          if [[ "${{ needs.changes.result }}" != "success" ||
+                "${{ needs.quick-checks.result }}" != "success" ||
+                "${{ needs.release-gate.result }}" != "success" ]]; then
+            echo "Required checks failed, were cancelled, or were skipped."
             exit 1
           fi
-          echo "All release gates and fresh-consumer shards passed."
+          expected=success
+          if [[ "${{ needs.changes.outputs.consumer }}" == "false" ]]; then expected=skipped; fi
+          if [[ "${{ needs.node-20-compat.result }}" != "$expected" ||
+                "${{ needs.fresh-payload-smoke.result }}" != "$expected" ]]; then
+            echo "Consumer checks did not reach the expected result: $expected"
+            exit 1
+          fi
+          echo "All required checks passed."
 
   fresh-payload-smoke:
+    needs: changes
+    if: needs.changes.outputs.consumer == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
-        shard-index: [0, 1, 2, 3]
+        include:
+          - { scenario: bare, shard-index: 0 }
+          - { scenario: website, shard-index: 0 }
+          - { scenario: website, shard-index: 1 }
+          - { scenario: website, shard-index: 2 }
+          - { scenario: website, shard-index: 3 }
     services:
       postgres:
         image: postgres:16
@@ -179,6 +217,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     env:
+      SMOKE_PAYLOAD_VERSION: ${{ github.event_name == 'schedule' && 'latest' || '3.88.0' }}
       CRON_SECRET: ci-cron-secret
       DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/payload_components
       NEXT_PUBLIC_SERVER_URL: http://localhost:3000
@@ -210,18 +249,18 @@ jobs:
         run: |
           set -o pipefail
           if [ -n "$SMOKE_REGISTRY_URL" ]; then
-            pnpm test:fresh -- --registry-url "$SMOKE_REGISTRY_URL" --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
+            pnpm test:fresh -- --scenario "${{ matrix.scenario }}" --registry-url "$SMOKE_REGISTRY_URL" --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
           elif [ "${{ github.event_name }}" = "schedule" ]; then
-            pnpm test:fresh -- --registry-url 'https://www.payload-components.xyz/r/{name}.json' --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
+            pnpm test:fresh -- --scenario "${{ matrix.scenario }}" --registry-url 'https://www.payload-components.xyz/r/{name}.json' --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
           else
-            pnpm test:fresh -- --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
+            pnpm test:fresh -- --scenario "${{ matrix.scenario }}" --shard-index "${{ matrix.shard-index }}" --keep-temp 2>&1 | tee payload-components-fresh.log
           fi
 
       - name: Upload failure artifacts
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: fresh-payload-artifacts-${{ matrix.shard-index }}
+          name: fresh-payload-artifacts-${{ matrix.scenario }}-${{ matrix.shard-index }}
           path: |
             payload-components-fresh.log
             playwright-report
