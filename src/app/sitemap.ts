@@ -46,6 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const docs: MetadataRoute.Sitemap = source.getPages('en').map((page) => ({
     changeFrequency: 'weekly',
+    ...(page.data?.lastModified ? { lastModified: page.data.lastModified } : {}),
     // The docs landing carries more weight than an individual guide.
     priority: page.url === '/docs' ? 0.8 : 0.7,
     ...localizedEntry(page.url),
