@@ -34,6 +34,13 @@
           "default": "0d48de9a8c4603cba6d8cab3e8466cd291ffb585479f34df1de4c004be4a894d"
         }
       }
+    },
+    "newsletter-callout": {
+      "0.1.0": {
+        "src/components/NewsletterCallout/Component.tsx": {
+          "default": "8152cbf145f5e2642caa788e9e0122654fdf5a54a74969e83eff53faddc2579d"
+        }
+      }
     }
   }
 }
