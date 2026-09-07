@@ -373,10 +373,10 @@ describe('Field Journal real UI capture contract', () => {
             sourcePath: undefined,
           },
           {
-            anchor: 'const missing = literals.flatMap',
+            anchor: 'const missing = literals.filter',
             fixture: undefined,
             kind: 'source',
-            label: 'Integration test · class-token mirror',
+            label: 'Integration test · per-element class mirror',
             registryItem: undefined,
             route: undefined,
             sourcePath: 'tests/int/demo-twins.int.spec.ts',
@@ -1088,8 +1088,8 @@ describe('Field Journal real UI capture contract', () => {
       const outsideSource = path.join(outsideRoot, 'outside.ts')
       const outsideOutput = path.join(outsideRoot, 'outside.webp')
       await Promise.all([
-        writeFile(insideSource, 'const missing = literals.flatMap((literal) => literal)\\n'),
-        writeFile(outsideSource, 'const missing = literals.flatMap((literal) => literal)\\n'),
+        writeFile(insideSource, 'const missing = literals.filter((literal) => literal)\\n'),
+        writeFile(outsideSource, 'const missing = literals.filter((literal) => literal)\\n'),
         writeFile(outsideOutput, 'outside'),
       ])
       await Promise.all([
@@ -1182,7 +1182,7 @@ describe('Field Journal real UI capture contract', () => {
       sourcePanel,
       {
         firstLine: 78,
-        lines: ['const missing = literals.flatMap((literal) => {'],
+        lines: ['const missing = literals.filter((literal) => {'],
       },
       'dGVzdA==',
     )
@@ -2006,7 +2006,9 @@ describe('Field Journal diagram renderer', () => {
     expect(motion).toContain('x: 0 → -contentSize / 2')
     expect(motion).toContain('effect returns; row stays static')
 
-    expect(text('demo-twins/figure-01-architecture-mirror.svg')).toContain('one-way token presence')
+    expect(text('demo-twins/figure-01-architecture-mirror.svg')).toContain(
+      'one-way class containment',
+    )
     expect(
       text('visual-regression-component-registry/figure-01-regression-pipeline.svg'),
     ).toContain('Zero baselines: bootstrap skip')
@@ -2062,8 +2064,8 @@ describe('Field Journal diagram renderer', () => {
         caption: ['Payload integration'],
       },
       'demo-twins': {
-        alt: ['one-way', 'class token'],
-        caption: ['token-presence guard'],
+        alt: ['one-way', 'class group'],
+        caption: ['class-group guard'],
       },
       hello: {
         alt: ['heroFields', 'registration', 'generated'],

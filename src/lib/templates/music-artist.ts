@@ -224,6 +224,7 @@ export const musicArtistTemplate: TemplateShowcase = {
            * funnel-shaped: what you get, how often, and nothing else. */
           componentSlug: 'call-to-action-signup',
           content: {
+            action: '/mailing-list',
             description:
               'One letter a month from Vesper, typed above the laundrette: where we are playing, what we are listening to, and the songs before anyone else hears them. No noise in between.',
             emailPlaceholder: 'you@thenightbus.example',
@@ -573,6 +574,7 @@ export const musicArtistTemplate: TemplateShowcase = {
            * early versions. Same stage-door band as every signup. */
           componentSlug: 'call-to-action-signup',
           content: {
+            action: '/mailing-list',
             description:
               'Demos, early versions, and the songs that never make the records go to the list first — usually with a note from whoever wrote them explaining what went wrong.',
             emailPlaceholder: 'you@thenightbus.example',
@@ -840,6 +842,7 @@ export const musicArtistTemplate: TemplateShowcase = {
            * the whole difference between a letter and a funnel. */
           componentSlug: 'call-to-action-signup',
           content: {
+            action: '/mailing-list',
             description:
               'One letter a month, no noise in between, and the early versions before anyone else. Leaving takes one click and no hard feelings — Vesper has said so in print.',
             emailPlaceholder: 'you@thenightbus.example',

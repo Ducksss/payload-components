@@ -1,23 +1,28 @@
 import { rm } from 'node:fs/promises'
 import path from 'node:path'
 
-import { prepareComponentInstall } from '../install-preflight'
-
-import { installManifestDependencies } from '../dependencies'
+import {
+  checkDependencyRequirements,
+  getRuntimePatchedFiles,
+  installManifestDependencies,
+} from '../dependencies'
+import { resolveInstallPlan } from '../install-plan'
+import { loadManifest } from '../manifest'
 import {
   applyLocalizedFields,
   applyPayloadFragments,
+  assertManifestProjectRequirements,
+  assertManifestSupport,
   detectProject,
   isBlockConfigFile,
   LOCALIZE_HELPER_FILE,
   readPayloadLocalization,
+  resolveRecoveryPatchedFiles,
   verifyInstalledManifestFiles,
+  verifyInstalledPayloadFragments,
 } from '../project'
-import {
-  compareInstalledFiles,
-  copySharedSourceFile,
-  resolveRecordedFileHashes,
-} from '../component-files'
+import { compareInstalledFiles, resolveRecordedFileHashes } from '../component-files'
+import { ensureLocalizationHelper, prepareLocalizationHelper } from '../localization-helper'
 import { installNamespacedItem, isNamespacedItem } from '../namespaced'
 import { runPostInstallScript } from '../post-install'
 import { buildRegistry, installRegistryDependencies, installRegistryItem } from '../registry'
@@ -286,36 +291,85 @@ export const warnWhenNoLocalesDeclared = async (options: {
 }
 
 const installComponent = async ({
+  acceptLocalizationPolicyChange,
   cwd,
   componentName,
   deferLocaleNotice,
-  allowVersionChange,
   dryRun,
   localized,
+  prewrittenFiles,
 }: {
+  acceptLocalizationPolicyChange: boolean
   cwd: string
   componentName: string
   /* Set by a caller installing several blocks at once, which reports the locale
      situation itself rather than repeating it per block. */
   deferLocaleNotice: boolean
-  allowVersionChange: boolean
   dryRun: boolean
   localized: boolean
+  prewrittenFiles: string[]
 }) => {
-  const { manifest, project, plan, dependencyCheck, fileCheck, fragmentCheck, patchedFiles } =
-    await prepareComponentInstall({ cwd, componentName })
+  const manifest = await loadManifest(componentName)
+  const project = await detectProject(cwd)
+  const plan = await resolveInstallPlan({ cwd, manifest })
+
+  assertManifestSupport(project, manifest)
+  await assertManifestProjectRequirements({ cwd, manifest })
+
+  await checkDependencyRequirements({
+    allowMissing: false,
+    cwd,
+    dependencies: plan.peerDependencies,
+    label: 'peerDependencies',
+  })
+
+  const dependencyCheck = await checkDependencyRequirements({
+    allowMissing: true,
+    cwd,
+    dependencies: plan.dependencies,
+    label: 'dependencies',
+  })
+  const fileCheck = await verifyInstalledManifestFiles({
+    cwd,
+    manifest: plan,
+  })
+  const fragmentCheck = await verifyInstalledPayloadFragments({
+    cwd,
+    hostFiles: project.hostFiles,
+    manifest: plan,
+  })
+  const patchedFiles = getRuntimePatchedFiles({
+    dependencies: plan.dependencies,
+    lockfilePath: project.lockfilePath,
+    recoveryPatchedFiles: resolveRecoveryPatchedFiles({
+      hostFiles: project.hostFiles,
+      recoveryPatchedFiles: plan.recovery.patchedFiles,
+    }),
+  })
   const existingState = await loadState(cwd)
   const installedEntry = existingState.components[manifest.name]
   if (
     installedEntry &&
     installedEntry.manifestVersion !== manifest.version &&
-    !allowVersionChange
+    prewrittenFiles.length === 0
   ) {
     throw new Error(
       `"${manifest.name}" is recorded at ${installedEntry.manifestVersion}, but this CLI ships ${manifest.version}. Run "payload-components update ${manifest.name}" to review and apply the upgrade. Existing source and state were preserved.`,
     )
   }
+
   const effectiveLocalized = localized || installedEntry?.localized === true
+
+  if (
+    installedEntry?.localized === true &&
+    installedEntry.localizationPolicy !== 'semantic-v1' &&
+    !acceptLocalizationPolicyChange
+  ) {
+    throw new Error(
+      `Component "${manifest.name}" uses the legacy type-inferred localization policy. Repair it through "payload-components update ${manifest.name} --accept-localization-policy-change" after migrating stored operational values; plain add cannot silently change that schema.`,
+    )
+  }
+
   const missingRegistryDependencies = fileCheck.missingRegistryDependencies ?? []
   const onDiskInstallValid =
     fileCheck.isValid && fragmentCheck.isValid && dependencyCheck.missing.length === 0
@@ -365,7 +419,15 @@ const installComponent = async ({
     return
   }
 
+  // Migration consent here only finalizes update's handoff. Update has already
+  // committed canonical field metadata and the shared helper together. Never
+  // forward that consent to this helper-only check: add may retain existing
+  // config files, so migrating just the helper could change their storage shape.
+  if (effectiveLocalized) await prepareLocalizationHelper({ cwd })
+
   if (
+    prewrittenFiles.length === 0 &&
+    !acceptLocalizationPolicyChange &&
     installedEntry?.manifestVersion === manifest.version &&
     installedEntry.registryItemName === manifest.registryItemName &&
     installedEntry.status === 'installed' &&
@@ -393,9 +455,25 @@ const installComponent = async ({
   }
 
   printHeader(`payload-components: installing "${manifest.name}" into ${cwd}`)
-  const rewrittenFiles = new Set(fileCheck.missingFiles)
+  const rewrittenFiles = new Set([...fileCheck.missingFiles, ...prewrittenFiles])
 
   if (installedEntry?.status === 'partial') {
+    /* An update may have committed canonical source before a later dependency,
+     * fragment, or generator stage failed. On a plain retry there is no in-memory
+     * prewrittenFiles hand-off, so recover it from exact canonical bytes instead
+     * of retaining the old release's hashes under the new manifest version. */
+    const canonicalReport = await compareInstalledFiles({
+      cwd,
+      localized: effectiveLocalized,
+      manifest: plan,
+    })
+
+    for (const comparison of canonicalReport.comparisons) {
+      if (comparison.status === 'unchanged') {
+        rewrittenFiles.add(comparison.projectPath)
+      }
+    }
+
     printHeader(
       formatPartialRetryNotice({
         componentName: manifest.name,
@@ -512,7 +590,7 @@ const installComponent = async ({
 
   if (effectiveLocalized) {
     await executeStage('fragment-apply', async () => {
-      await copySharedSourceFile({ cwd, projectPath: LOCALIZE_HELPER_FILE })
+      await ensureLocalizationHelper(cwd)
 
       const localizedFiles = await applyLocalizedFields({
         configFiles: plan.files.filter((filePath) => isBlockConfigFile(filePath)),
@@ -559,6 +637,12 @@ const installComponent = async ({
 
   printHeader(`payload-components: installed "${manifest.name}" successfully.`)
 
+  if (manifest.installMode === 'file-only') {
+    printHeader(`payload-components: next — import "${manifest.name}" in your article template.
+  Usage: https://www.payload-components.xyz/docs/components/${manifest.name}`)
+    return
+  }
+
   const layoutFragment = plan.payloadFragments.find((fragment) => fragment.kind === 'pagesLayout')
   const blockName =
     layoutFragment && 'blockName' in layoutFragment ? layoutFragment.blockName : manifest.name
@@ -575,23 +659,28 @@ const installComponent = async ({
 }
 
 export const addCommand = async ({
+  acceptLocalizationPolicyChange = false,
   cwd,
   componentName,
   deferLocaleNotice = false,
-  allowVersionChange = false,
   demo = false,
   dryRun = false,
   localized = false,
+  prewrittenFiles = [],
 }: {
+  /* Internal update hand-off after the operator accepted semantic-v1. */
+  // Internal update handoff after source + helper reconciliation; not an add CLI flag.
+  acceptLocalizationPolicyChange?: boolean
   cwd: string
   componentName: string
   /* For callers installing a whole set — see installComponent. */
-  /* Internal update pipeline only; never exposed as a CLI flag. */
-  allowVersionChange?: boolean
   deferLocaleNotice?: boolean
   demo?: boolean
   dryRun?: boolean
   localized?: boolean
+  /* Internal update hand-off: bytes already replaced transactionally before
+   * the idempotent dependency/wiring/post-install stages run. */
+  prewrittenFiles?: string[]
 }) => {
   /* `@scope/item` addresses someone else's registry. It has no manifest here, so
      none of the wrapper pipeline applies — hand it to shadcn and say plainly
@@ -624,13 +713,23 @@ export const addCommand = async ({
     return
   }
 
+  if (demo || localized) {
+    const manifest = await loadManifest(componentName)
+    if (manifest.installMode === 'file-only') {
+      throw new Error(
+        `"${componentName}" is a file-only article component. Pass localized content in your template; --demo and --localized apply only to editor-managed blocks.`,
+      )
+    }
+  }
+
   await installComponent({
+    acceptLocalizationPolicyChange,
     cwd,
     componentName,
     deferLocaleNotice,
-    allowVersionChange,
     dryRun,
     localized,
+    prewrittenFiles,
   })
 
   if (demo && !dryRun) {

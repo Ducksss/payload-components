@@ -23,10 +23,12 @@ export const statsFields: Field[] = [
   {
     name: 'eyebrow',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
   {
     name: 'title',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
 ]
@@ -35,11 +37,13 @@ export const statsMetricFields: Field[] = [
   {
     name: 'value',
     type: 'text',
+    custom: { payloadComponents: { localization: 'global' } },
     required: true,
   },
   {
     name: 'label',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
 ]

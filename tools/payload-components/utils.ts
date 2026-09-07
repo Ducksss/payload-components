@@ -1,12 +1,18 @@
 import { spawn, type ChildProcess } from 'node:child_process'
-import { existsSync, readFileSync } from 'node:fs'
-import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
+import { randomUUID } from 'node:crypto'
+import { constants as fsConstants, existsSync, readFileSync } from 'node:fs'
+import { chmod, copyFile, lstat, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import type { PackageManager } from './types'
 
-import { safeProjectFileExists } from './safe-path'
+import { writeCommandOutput } from './command-output'
+import {
+  ensureSafeProjectDirectory,
+  resolveSafeProjectPath,
+  safeProjectFileExists,
+} from './safe-path'
 
 // Resolve the directory that holds the bundled data assets (registry.json,
 // manifests, schema, support matrix, block source). This must work in two
@@ -158,24 +164,200 @@ export const readJsonFile = async <T>(filePath: string): Promise<T> => {
   return JSON.parse(raw) as T
 }
 
-let tempFileCounter = 0
+export type FileChange = {
+  content: string | null
+  filePath: string
+}
 
-export const writeJsonFile = async (filePath: string, value: unknown) => {
-  await mkdir(path.dirname(filePath), { recursive: true })
+/* Stage every replacement before touching a destination, then commit with
+ * sibling renames. If any rename fails, restore every destination already
+ * moved in this batch. This gives fragment/config/source mutations one failure
+ * boundary instead of exposing half of a multi-file edit. */
+export const commitFileChanges = async (
+  changes: FileChange[],
+  {
+    cleanupArtifact = (filePath: string) => rm(filePath, { force: true }),
+    cwd,
+  }: {
+    /** @internal Test seam for verifying post-commit cleanup failures. */
+    cleanupArtifact?: (filePath: string) => Promise<void>
+    cwd?: string
+  } = {},
+) => {
+  if (changes.length === 0) {
+    return
+  }
 
-  // Write to a sibling temp file then atomically rename into place, so a crash
-  // mid-write can't leave a truncated / unparseable JSON file behind. The
-  // pid + counter suffix keeps concurrent writes from colliding on the temp name.
-  tempFileCounter += 1
-  const tempPath = `${filePath}.${process.pid}.${tempFileCounter}.tmp`
+  const unique = new Set<string>()
+
+  for (const { filePath } of changes) {
+    if (unique.has(filePath)) {
+      throw new Error(`Cannot commit two changes for the same file: ${filePath}`)
+    }
+
+    unique.add(filePath)
+  }
+
+  const resolvedUnique = new Set<string>()
+  const staged: Array<{
+    backedUp: boolean
+    backupPath: string
+    content: string | null
+    existed: boolean
+    filePath: string
+    installed: boolean
+    mode?: number
+    preserveBackup: boolean
+    tempCreated: boolean
+    tempPath: string
+  }> = []
 
   try {
-    await writeFile(tempPath, `${JSON.stringify(value, null, 2)}\n`, 'utf8')
-    await rename(tempPath, filePath)
+    for (const { content, filePath: requestedPath } of changes) {
+      const initialPath = cwd
+        ? (await resolveSafeProjectPath({ cwd, targetPath: requestedPath })).path
+        : requestedPath
+
+      if (content !== null) {
+        if (cwd) {
+          await ensureSafeProjectDirectory({ cwd, directoryPath: path.dirname(initialPath) })
+        } else {
+          await mkdir(path.dirname(initialPath), { recursive: true })
+        }
+      }
+
+      const filePath = cwd
+        ? (await resolveSafeProjectPath({ cwd, targetPath: initialPath })).path
+        : initialPath
+
+      if (resolvedUnique.has(filePath)) {
+        throw new Error(`Cannot commit two changes for the same file: ${filePath}`)
+      }
+
+      resolvedUnique.add(filePath)
+      const suffix = `${process.pid}.${randomUUID()}`
+      const tempPath = `${filePath}.${suffix}.tmp`
+      const backupPath = `${filePath}.${suffix}.bak`
+      const existing = await lstat(filePath).catch((error: NodeJS.ErrnoException) => {
+        if (error.code === 'ENOENT') return undefined
+        throw error
+      })
+
+      if (existing && !existing.isFile()) {
+        throw new Error(`Refusing to replace a non-regular file: ${filePath}`)
+      }
+
+      const entry = {
+        backedUp: false,
+        backupPath,
+        content,
+        existed: existing !== undefined,
+        filePath,
+        installed: false,
+        ...(existing ? { mode: existing.mode } : {}),
+        preserveBackup: false,
+        tempCreated: false,
+        tempPath,
+      }
+      staged.push(entry)
+
+      if (content !== null) {
+        await writeFile(tempPath, content, { encoding: 'utf8', flag: 'wx' })
+        entry.tempCreated = true
+
+        if (existing) {
+          await chmod(tempPath, existing.mode)
+        }
+      }
+    }
   } catch (error) {
-    await rm(tempPath, { force: true })
+    await Promise.allSettled(
+      staged.flatMap(({ tempCreated, tempPath }) =>
+        tempCreated ? [cleanupArtifact(tempPath)] : [],
+      ),
+    )
     throw error
   }
+
+  try {
+    for (const entry of staged) {
+      if (cwd) {
+        await resolveSafeProjectPath({ cwd, targetPath: entry.filePath })
+      }
+
+      if (entry.existed) {
+        await copyFile(entry.filePath, entry.backupPath, fsConstants.COPYFILE_EXCL)
+        entry.backedUp = true
+
+        if (entry.mode !== undefined) {
+          await chmod(entry.backupPath, entry.mode)
+        }
+      }
+
+      if (entry.content !== null) {
+        await rename(entry.tempPath, entry.filePath)
+        entry.installed = true
+      } else if (entry.existed) {
+        await rm(entry.filePath, { force: true })
+        entry.installed = true
+      }
+    }
+  } catch (error) {
+    const rollbackErrors: Error[] = []
+
+    for (const entry of [...staged].reverse()) {
+      try {
+        if (entry.installed) {
+          if (cwd) {
+            await resolveSafeProjectPath({ cwd, targetPath: entry.filePath })
+          }
+
+          await rm(entry.filePath, { force: true })
+
+          if (entry.backedUp) {
+            await rename(entry.backupPath, entry.filePath)
+            entry.backedUp = false
+          }
+        }
+      } catch (rollbackError) {
+        entry.preserveBackup = entry.backedUp
+        rollbackErrors.push(
+          new Error(`Could not restore ${entry.filePath}; recovery backup: ${entry.backupPath}`, {
+            cause: rollbackError,
+          }),
+        )
+      }
+    }
+
+    if (rollbackErrors.length > 0) {
+      throw new AggregateError(
+        [error, ...rollbackErrors],
+        'The file transaction failed and could not be fully rolled back. Recovery backups were left beside the affected files.',
+      )
+    }
+
+    throw error
+  } finally {
+    /* Cleanup is best-effort. Once commit or rollback has established the
+     * destination state, an orphaned private artifact must not change that
+     * authoritative outcome or mask the error that caused a rollback. */
+    await Promise.allSettled(
+      staged.flatMap((entry) => [
+        ...(entry.tempCreated ? [cleanupArtifact(entry.tempPath)] : []),
+        ...(entry.backedUp && !entry.preserveBackup
+          ? [cleanupArtifact(entry.backupPath)]
+          : []),
+      ]),
+    )
+  }
+}
+
+export const writeTextFile = async (filePath: string, content: string) => {
+  await commitFileChanges([{ content, filePath }])
+}
+
+export const writeJsonFile = async (filePath: string, value: unknown) => {
+  await writeTextFile(filePath, `${JSON.stringify(value, null, 2)}\n`)
 }
 
 export const ensureDir = async (dirPath: string) => {
@@ -192,7 +374,9 @@ export const extractMajor = (version: string | undefined, dependencyName: string
   return Number(match[1])
 }
 
-export const detectPackageManagerDetails = async (cwd: string): Promise<{
+export const detectPackageManagerDetails = async (
+  cwd: string,
+): Promise<{
   lockfilePath: string
   packageManager: PackageManager
 }> => {
@@ -426,5 +610,5 @@ export const runCommand = async ({
 }
 
 export const printHeader = (message: string) => {
-  process.stdout.write(`\n${message}\n`)
+  writeCommandOutput(`\n${message}\n`)
 }

@@ -11,6 +11,15 @@ export async function ComponentUsage({ slug }: { slug: string }) {
   if (!manifest) return null
 
   const layout = manifest.payloadFragments.find((fragment) => fragment.kind === 'pagesLayout')
+  if (!layout) {
+    return (
+      <p>
+        Import the component into your article template and pass public display content as props.
+        The install adds no admin fields. Your template controls content loading and publishing.
+      </p>
+    )
+  }
+
   const blockName = layout && 'blockName' in layout ? layout.blockName : slug
 
   return (

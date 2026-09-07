@@ -1,6 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 
+import ts from 'typescript'
 import { describe, expect, it } from 'vitest'
 
 import { loadManifest } from '../../tools/payload-components/manifest'
@@ -8,12 +9,13 @@ import { loadManifest } from '../../tools/payload-components/manifest'
 const repoRoot = process.cwd()
 const demoRegistryPath = path.join(repoRoot, 'src', 'components', 'site', 'demos', 'registry.ts')
 
-/* The landing demo twins copy component markup verbatim (see the header
- * comment in each twin). This guard catches silent drift: every
- * Tailwind class inside every plain className="..." literal in the component
- * source must still appear in its twin. The component root's cn('container')
- * and inner-container conditionals are deliberate substitutions and use
- * cn(), so the literal regex skips them by construction. */
+/* Demo twins are backend-free visual specimens, not the installed components.
+ * This guard catches styling drift: every Tailwind class inside every plain
+ * className literal in the component source must still belong to one class
+ * expression on a twin element. This is stronger than the old file-wide
+ * token-presence check, which could pass after classes
+ * were scattered across unrelated elements. The root container is the one
+ * documented layout substitution. */
 
 type DemoPair = {
   component: string
@@ -60,8 +62,57 @@ const demoPairs = async (): Promise<DemoPair[]> => {
   )
 }
 
-const classLiterals = (source: string): string[] =>
-  [...source.matchAll(/className="([^"]+)"/g)].map((match) => match[1])
+const classStringGroups = (source: string, filePath: string): string[][] => {
+  const sourceFile = ts.createSourceFile(
+    filePath,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  )
+  const groups: string[][] = []
+
+  const visit = (node: ts.Node) => {
+    if (
+      ts.isJsxAttribute(node) &&
+      node.name.getText(sourceFile) === 'className' &&
+      node.initializer
+    ) {
+      const literals: string[] = []
+      const collectStrings = (classNode: ts.Node) => {
+        if (ts.isStringLiteral(classNode) || ts.isNoSubstitutionTemplateLiteral(classNode)) {
+          literals.push(classNode.text)
+          return
+        }
+
+        if (
+          ts.isTemplateHead(classNode) ||
+          ts.isTemplateMiddle(classNode) ||
+          ts.isTemplateTail(classNode)
+        ) {
+          if (classNode.text.trim()) literals.push(classNode.text)
+          return
+        }
+
+        ts.forEachChild(classNode, collectStrings)
+      }
+
+      collectStrings(node.initializer)
+      groups.push(literals)
+      return
+    }
+
+    ts.forEachChild(node, visit)
+  }
+
+  visit(sourceFile)
+  return groups
+}
+
+const tokenizeClasses = (literal: string) => literal.split(/\s+/).filter(Boolean)
+
+const containsClassGroup = (candidate: string[], expected: string[]) =>
+  expected.every((token) => candidate.includes(token))
 
 describe('Landing demo twins', () => {
   it('registers one demo twin for every manifest', async () => {
@@ -77,15 +128,21 @@ describe('Landing demo twins', () => {
         readFile(path.join(repoRoot, twin), 'utf8'),
       ])
 
-      const literals = classLiterals(componentSource)
+      /* The consumer root uses `container`; preview routes own their viewport
+       * and deliberately replace that one layout boundary. */
+      const literals = classStringGroups(componentSource, component)
+        .flat()
+        .filter((literal) => literal !== 'container')
+      const twinExpressions = classStringGroups(twinSource, twin).map((group) =>
+        group.flatMap(tokenizeClasses),
+      )
       expect(literals.length).toBeGreaterThan(0)
 
-      const missing = literals.flatMap((literal) =>
-        literal
-          .split(/\s+/)
-          .filter((token) => token && !twinSource.includes(token))
-          .map((token) => `${token} (from "${literal}")`),
-      )
+      const missing = literals.filter((literal) => {
+        const expected = tokenizeClasses(literal)
+
+        return !twinExpressions.some((candidate) => containsClassGroup(candidate, expected))
+      })
 
       expect(missing, `Twin ${twin} drifted from ${component} (${slug})`).toEqual([])
     }

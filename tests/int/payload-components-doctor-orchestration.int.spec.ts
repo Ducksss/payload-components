@@ -76,7 +76,7 @@ describe('payload-components doctor orchestration', () => {
         [heroManifest.name]: stateEntryFor(heroManifest),
         [featureManifest.name]: stateEntryFor(featureManifest),
       },
-      version: 3,
+      version: 4,
     }
     const resolveInstallPlan = vi
       .fn()
@@ -106,6 +106,7 @@ describe('payload-components doctor orchestration', () => {
     }))
     vi.doMock('../../tools/payload-components/project', () => ({
       assertManifestSupport: vi.fn(),
+      checkManifestProjectRequirements: vi.fn().mockResolvedValue([]),
       detectProject: vi.fn().mockResolvedValue(detectedProject),
       verifyInstalledManifestFiles: vi.fn().mockResolvedValue({
         isValid: true,

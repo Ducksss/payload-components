@@ -220,10 +220,9 @@ Browse the full, current set in the [component catalog][catalog-url].
 
 #### All components
 
-Every installable registry item, in catalog order. This table and the CLI's
-`Current components` help output are both verified against
-`payload-components/registry.json` by a focused test, so neither can silently
-drift from the registry.
+Every installable registry item, in catalog order. The CLI derives its
+`Current components` help output directly from `payload-components/registry.json`;
+this table is verified against the same source by a focused test.
 
 <!-- COMPONENT-INVENTORY:START -->
 
@@ -303,11 +302,22 @@ drift from the registry.
 | `pricing-cards-cta`       | `npx payload-components add pricing-cards-cta`       |
 | `pricing-split`           | `npx payload-components add pricing-split`           |
 | `pricing-enterprise`      | `npx payload-components add pricing-enterprise`      |
+| `collection-query`        | `npx payload-components add collection-query`        |
 | `footer-columns`          | `npx payload-components add footer-columns`          |
 | `footer-simple`           | `npx payload-components add footer-simple`           |
 | `footer-centered`         | `npx payload-components add footer-centered`         |
+| `contact-form-basic`      | `npx payload-components add contact-form-basic`      |
+| `post-hero`               | `npx payload-components add post-hero`               |
+| `author-card`             | `npx payload-components add author-card`             |
 
 <!-- COMPONENT-INVENTORY:END -->
+
+Collection Query supplies grid, list, and featured Posts layouts with category
+filters and pagination. Contact Form Basic submits to an endpoint you own.
+Post Hero and Author Card are file-only article components: compose them in your
+post template; their installs do not edit Pages or run Payload generators.
+See the [visual install walkthrough](/content/docs/install-walkthrough.mdx) for
+catalog discovery, a representative install, the resulting diff, and doctor.
 
 Install several blocks in one command — `add` takes any number of names, and the
 catalog's composer builds the command for you as you tick components:
@@ -367,7 +377,7 @@ npx payload-components list              # catalog vs what this project recorded
 npx payload-components diff              # version, file, and wiring drift
 npx payload-components update            # re-install anything behind this CLI
 npx payload-components localize          # declare locales and localize installed blocks
-npx payload-components remove hero-basic # delete owned files and unwire the block
+npx payload-components remove hero-basic --accept-stored-content # after migrating/removing stored blocks
 ```
 
 `diff` exits non-zero when anything has drifted, so CI can gate on it. `update`
@@ -376,7 +386,8 @@ never overwrites a file you have edited — it skips that component and exits
 non-zero until you pass `--force`. `remove` protects edited or unrecorded source
 unless you pass its own `--force`, and deletes only files no other recorded
 install owns, so a shared family base survives while a sibling variant is still
-installed; package dependencies are always left in place.
+installed. It also requires `--accept-stored-content`, because removing code does
+not migrate Page documents. Package dependencies are always left in place.
 `list` and `diff` accept `--json`, and `update` and `remove` accept `--dry-run`.
 
 Starting from a bare `create-payload-app` project? Lay down the base an install
@@ -387,9 +398,11 @@ needs — the Pages and Media collections, the blocks renderer, and the `cn` /
 npx payload-components init --scaffold
 ```
 
-Nothing is overwritten: files you already have are kept, and a re-run creates
-nothing. The result is the official starter's shape, so the project then detects
-as `payload-website-starter`.
+The base is recorded with content-addressed ownership in install state. Matching
+starter files are adopted, existing custom implementations are left unowned, and
+later runs update only pristine managed files. Locally edited managed files are
+kept until you explicitly pass `--force`. The result is the official starter's
+shape, so the project then detects as `payload-website-starter`.
 
 Check a target project without changing files:
 
@@ -696,6 +709,7 @@ a version and changelog bump for every affected component, then
 `pnpm registry:snapshot`. Existing published source baselines cannot be overwritten.
 
 New `init --scaffold` Pages collections restrict anonymous reads to published
-Pages. Existing consumer collections are intentionally preserved by scaffolding;
-if yours was scaffolded with `read: () => true`, apply the updated read callback
-from `payload-components/source/base/collections/Pages/index.ts` to protect drafts.
+Pages. Managed, unedited scaffolds pick up the fix when `init --scaffold` runs
+again. Unmanaged or locally edited collections are preserved; if yours uses
+`read: () => true`, apply the updated callback from
+`payload-components/source/base/collections/Pages/index.ts` to protect drafts.

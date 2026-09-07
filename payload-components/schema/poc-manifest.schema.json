@@ -66,7 +66,10 @@
     "supports": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["payloadMajors", "nextMajors"],
+      "required": [
+        "payloadMajors",
+        "nextMajors"
+      ],
       "properties": {
         "payloadMajors": {
           "type": "array",
@@ -98,7 +101,12 @@
           {
             "type": "object",
             "additionalProperties": false,
-            "required": ["kind", "importName", "importPath", "blockSlug"],
+            "required": [
+              "kind",
+              "importName",
+              "importPath",
+              "blockSlug"
+            ],
             "properties": {
               "kind": {
                 "const": "renderBlocks"
@@ -120,7 +128,12 @@
           {
             "type": "object",
             "additionalProperties": false,
-            "required": ["kind", "importName", "importPath", "blockName"],
+            "required": [
+              "kind",
+              "importName",
+              "importPath",
+              "blockName"
+            ],
             "properties": {
               "kind": {
                 "const": "pagesLayout"
@@ -140,39 +153,103 @@
             }
           }
         ]
-      },
-      "minItems": 1
+      }
     },
     "postInstall": {
       "type": "array",
       "items": {
-        "enum": ["generate:types", "generate:importmap"],
+        "enum": [
+          "generate:types",
+          "generate:importmap"
+        ],
         "type": "string"
-      },
-      "minItems": 1
+      }
     },
     "preview": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["summary"],
+      "required": [
+        "summary"
+      ],
       "properties": {
         "summary": {
           "type": "string"
         }
       }
     },
+    "requires": {
+      "description": "Component-specific capabilities the consumer project must already provide.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "projectFiles"
+      ],
+      "properties": {
+        "projectFiles": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "label",
+              "paths",
+              "anchors",
+              "help"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "paths": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "anchors": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "help": {
+                "type": "string",
+                "minLength": 1
+              },
+              "collectionIdentifiers": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$"
+                },
+                "description": "Required direct identifiers in a statically readable buildConfig collections array."
+              }
+            }
+          }
+        }
+      }
+    },
     "recovery": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["patchedFiles"],
+      "required": [
+        "patchedFiles"
+      ],
       "properties": {
         "patchedFiles": {
           "type": "array",
           "items": {
             "type": "string",
             "minLength": 1
-          },
-          "minItems": 1
+          }
         }
       }
     },
@@ -185,7 +262,10 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["version", "summary"],
+        "required": [
+          "version",
+          "summary"
+        ],
         "properties": {
           "version": {
             "type": "string",
@@ -207,6 +287,62 @@
         }
       },
       "minItems": 1
+    },
+    "installMode": {
+      "type": "string",
+      "enum": [
+        "page-block",
+        "file-only"
+      ],
+      "description": "File-only article template components have no Payload fragments or generators."
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "installMode"
+        ],
+        "properties": {
+          "installMode": {
+            "const": "file-only"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payloadFragments": {
+            "maxItems": 0
+          },
+          "postInstall": {
+            "maxItems": 0
+          },
+          "recovery": {
+            "properties": {
+              "patchedFiles": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "payloadFragments": {
+            "minItems": 1
+          },
+          "postInstall": {
+            "minItems": 1
+          },
+          "recovery": {
+            "properties": {
+              "patchedFiles": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

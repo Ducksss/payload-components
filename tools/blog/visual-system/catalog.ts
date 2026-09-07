@@ -685,9 +685,9 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     prompt: 'When source changes, update the twin in the same contribution.',
     primary: {
       kind: 'source',
-      label: 'Class-name fidelity assertion',
+      label: 'Per-element class fidelity assertion',
       path: 'tests/int/demo-twins.int.spec.ts',
-      anchor: 'const missing = literals.flatMap',
+      anchor: 'const missing = literals.filter',
       take: 8,
     },
     secondary: {

@@ -1,8 +1,12 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "call-to-action-signup",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "changelog": [
+    {
+      "version": "0.1.2",
+      "summary": "Version the current component and shared source, including explicit localization semantics where applicable."
+    },
     {
       "version": "0.1.1",
       "summary": "Restrict signup actions to same-origin paths and show a safe failure message when submission fails."
@@ -22,18 +26,10 @@
     "next": "^15.0.0 || ^16.0.0",
     "payload": "^3.0.0"
   },
-  "supportedTargets": [
-    "payload-website-starter",
-    "payload-blocks-app"
-  ],
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
   "supports": {
-    "payloadMajors": [
-      3
-    ],
-    "nextMajors": [
-      15,
-      16
-    ]
+    "payloadMajors": [3],
+    "nextMajors": [15, 16]
   },
   "files": [
     "src/blocks/shared/callToActionFields.ts",
@@ -56,15 +52,9 @@
     }
   ],
   "recovery": {
-    "patchedFiles": [
-      "src/blocks/RenderBlocks.tsx",
-      "src/collections/Pages/index.ts"
-    ]
+    "patchedFiles": ["src/blocks/RenderBlocks.tsx", "src/collections/Pages/index.ts"]
   },
-  "postInstall": [
-    "generate:types",
-    "generate:importmap"
-  ],
+  "postInstall": ["generate:types", "generate:importmap"],
   "preview": {
     "summary": "Email-capture call-to-action: heading, copy, and an inline signup form."
   },

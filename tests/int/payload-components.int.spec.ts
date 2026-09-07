@@ -33,6 +33,7 @@ type RegistryDefinition = {
 const representativeInstallComponents = [
   'call-to-action-split',
   'team-bios',
+  'contact-form-basic',
   'contact-channels',
   'contact-routing-form',
   'embed-basic',
@@ -54,6 +55,7 @@ const representativeInstallComponents = [
   'pricing-cards',
   'stats-proof',
   'stats-grid',
+  'collection-query',
   // The footer family is the only one that installs three shared files at once
   // (safeUrls → footerUrls → footerFields), so it covers transitive shared-file
   // ordering that no other representative exercises.
@@ -157,9 +159,12 @@ describe('payload-components manifests', () => {
   it('gives every SQL-backed block a short unique database name', async () => {
     const names = await manifestNames()
     const databaseNames = new Set<string>()
+    let blockCount = 0
 
     for (const name of names) {
       const manifest = await loadManifest(name)
+      if (!manifest.payloadFragments.some((fragment) => fragment.kind === 'pagesLayout')) continue
+      blockCount += 1
       const configPath = manifest.files.find((file) => file.endsWith('/config.ts'))
       expect(configPath, `${name} missing block config`).toBeTruthy()
       if (!configPath) continue
@@ -182,7 +187,7 @@ describe('payload-components manifests', () => {
       databaseNames.add(databaseName)
     }
 
-    expect(databaseNames.size).toBe(names.length)
+    expect(databaseNames.size).toBe(blockCount)
   })
 
   it('documents the copied-source database migration boundary', async () => {
@@ -283,6 +288,25 @@ describe('payload-components add', () => {
     ).resolves.toBeTruthy()
   })
 
+  it('rejects collection-query before writes when the starter Posts collection is absent', async () => {
+    const { fixtureDir } = await createInstallFixture('collection-query')
+    tempDirs.push(fixtureDir)
+    await rm(path.join(fixtureDir, 'src', 'collections', 'Posts'), {
+      force: true,
+      recursive: true,
+    })
+    const before = await snapshotFixtureFiles(fixtureDir)
+
+    const failure = await runAddCommand(fixtureDir, 'collection-query').catch(
+      (error: Error & { stderr?: string }) => error,
+    )
+    expect(failure).toBeInstanceOf(Error)
+    expect((failure as Error & { stderr?: string }).stderr).toMatch(
+      /Posts collection.*none of src\/collections\/Posts\/index\.ts exists/,
+    )
+    expect(await snapshotFixtureFiles(fixtureDir)).toEqual(before)
+  })
+
   it.each(representativeInstallComponents)(
     'installs %s into a supported repo and records state',
     async (componentName) => {
@@ -295,7 +319,7 @@ describe('payload-components add', () => {
 
       const parsedState = await readInstallState(fixtureDir)
 
-      expect(parsedState.version).toBe(3)
+      expect(parsedState.version).toBe(4)
       expect(Object.keys(parsedState.components[manifest.name].fileHashes).sort()).toEqual(
         [...manifest.files].sort(),
       )

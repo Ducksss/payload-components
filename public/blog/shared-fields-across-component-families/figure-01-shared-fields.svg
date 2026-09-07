@@ -254,17 +254,17 @@
   {
     name: &apos;eyebrow&apos;,
     type: &apos;text&apos;,
+    custom: { payloadComponents: { localization: &apos;localized&apos; } },
   },
   {
     name: &apos;title&apos;,
     type: &apos;text&apos;,
+    custom: { payloadComponents: { localization: &apos;localized&apos; } },
     required: true,
-  },
-  {
-    name: &apos;description&apos;," data-evidence-truncated="true">
+  }," data-evidence-truncated="true">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
   <text class="evidence-line" x="48" y="626">export const featureFields: Field[] = [ · { · name: &apos;eyebrow&apos;, ·</text>
-<text class="evidence-line" x="48" y="641">type: &apos;text&apos;, · }, · { · name: &apos;title&apos;, · type: &apos;text&apos;, · require …</text>
+<text class="evidence-line" x="48" y="641">type: &apos;text&apos;, · custom: { payloadComponents: { localization: …</text>
 </g>
   <g data-journal-part="prompt" data-prompt="Change the shared rule once and test every consumer.">
     <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>

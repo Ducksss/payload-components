@@ -17,6 +17,7 @@ on:
         default: 'components-visual'
         type: choice
         options:
+          - frontend
           - components-visual
           - template-visual
           - blog-visual
@@ -90,6 +91,9 @@ jobs:
           case "$SPEC" in
             components-visual|template-visual|blog-visual)
               spec_args=("$SPEC")
+              ;;
+            frontend)
+              spec_args=(frontend --grep 'landing page keeps its desktop and mobile visual contract')
               ;;
             all-visual)
               spec_args=(components-visual template-visual blog-visual)

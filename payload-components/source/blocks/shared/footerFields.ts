@@ -37,6 +37,7 @@ export const footerFields: Field[] = [
   {
     name: 'brandLabel',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
     admin: {
       description:
@@ -46,6 +47,7 @@ export const footerFields: Field[] = [
   {
     name: 'copyright',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
 ]
@@ -54,11 +56,13 @@ export const footerLinkFields: Field[] = [
   {
     name: 'label',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
   {
     name: 'href',
     type: 'text',
+    custom: { payloadComponents: { localization: 'global' } },
     required: true,
     validate: validateFooterHref,
   },

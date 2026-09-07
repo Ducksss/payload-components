@@ -1,8 +1,17 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "hero-product-tilt",
-  "version": "0.1.0",
-  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "version": "0.1.1",
+  "changelog": [
+    {
+      "version": "0.1.1",
+      "summary": "Version the current component and shared source, including explicit localization semantics where applicable."
+    },
+    {
+      "version": "0.1.0",
+      "summary": "Initial release."
+    }
+  ],
   "title": "Hero Product Tilt",
   "description": "A centered product hero with a static perspective frame, CTA links, proof labels, and editor-managed media.",
   "registryItemName": "hero-product-tilt",

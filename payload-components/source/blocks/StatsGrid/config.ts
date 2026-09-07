@@ -15,6 +15,7 @@ export const StatsGrid: Block = {
     {
       name: 'description',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'metrics',

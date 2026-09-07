@@ -1,13 +1,24 @@
 import path from 'node:path'
 
-import { BASE_BUNDLE_DEPENDENCIES, copyBaseBundle, registerBaseCollections } from '../base-bundle'
+import {
+  BASE_BUNDLE_DEPENDENCIES,
+  getBaseBundleVersion,
+  registerBaseCollections,
+  syncBaseBundle,
+} from '../base-bundle'
 import {
   assertSafePackageManagerTargets,
   checkDependencyRequirements,
   installManifestDependencies,
 } from '../dependencies'
 import { resolveSafeProjectPath, safeProjectFileExists } from '../safe-path'
-import { detectPackageManager, getShadcnCommand, printHeader, runCommand } from '../utils'
+import { loadState, recordBaseBundleState } from '../state'
+import {
+  detectPackageManager,
+  getShadcnCommand,
+  printHeader,
+  runCommand,
+} from '../utils'
 
 // Thin wrapper over `shadcn init` so a consumer can create the `components.json`
 // that `payload-components add` requires. We intentionally do NOT run this from
@@ -73,9 +84,11 @@ const findPayloadConfig = async (cwd: string) => {
 
 export const initCommand = async ({
   cwd,
+  force = false,
   scaffold = false,
 }: {
   cwd: string
+  force?: boolean
   scaffold?: boolean
 }) => {
   const packageManager = await runShadcnInit(cwd)
@@ -91,15 +104,16 @@ export const initCommand = async ({
     return
   }
 
-  const { created, skipped } = await copyBaseBundle({ cwd })
+  const state = await loadState(cwd)
+  const baseVersion = await getBaseBundleVersion()
   const configFileRelPath = await findPayloadConfig(cwd)
-
   const dependencyCheck = await checkDependencyRequirements({
     allowMissing: true,
     cwd,
     dependencies: BASE_BUNDLE_DEPENDENCIES,
     label: 'dependencies',
   })
+
   if (dependencyCheck.missing.length > 0) {
     await installManifestDependencies({
       cwd,
@@ -113,9 +127,28 @@ export const initCommand = async ({
     })
   }
 
+  /* Dependency compatibility is a precondition for the scaffold, not a later
+   * repair step. In particular, an incompatible declared version must fail
+   * before any managed files are written into the consumer project. */
+  const { adopted, created, fileHashes, kept, modified, removed, updated } = await syncBaseBundle({
+    cwd,
+    force,
+    recordedFileHashes: state.base?.fileHashes,
+  })
+
   const registration = configFileRelPath
     ? await registerBaseCollections({ configFileRelPath, cwd })
     : undefined
+  const recordedBaseVersion = modified.length > 0 && state.base ? state.base.version : baseVersion
+
+  await recordBaseBundleState({
+    cwd,
+    fileHashes,
+    installedAt: state.base?.installedAt,
+    /* A locally edited owned file was deliberately not upgraded. Retain the
+     * old contract version so diff/doctor continue to flag the incomplete run. */
+    version: recordedBaseVersion,
+  })
 
   printHeader(
     [
@@ -123,9 +156,28 @@ export const initCommand = async ({
       '',
       created.length > 0 ? 'Created:' : 'Created nothing — every file was already present.',
       ...created.map((filePath) => `  ${filePath}`),
-      ...(skipped.length > 0
-        ? ['', 'Kept your existing:', ...skipped.map((filePath) => `  ${filePath}`)]
+      ...(updated.length > 0
+        ? ['', 'Updated:', ...updated.map((filePath) => `  ${filePath}`)]
         : []),
+      ...(removed.length > 0
+        ? ['', 'Removed retired managed files:', ...removed.map((filePath) => `  ${filePath}`)]
+        : []),
+      ...(adopted.length > 0
+        ? ['', 'Adopted matching starter files:', ...adopted.map((filePath) => `  ${filePath}`)]
+        : []),
+      ...(kept.length > 0
+        ? ['', 'Kept your existing implementations:', ...kept.map((filePath) => `  ${filePath}`)]
+        : []),
+      ...(modified.length > 0
+        ? [
+            '',
+            'Kept locally edited managed files:',
+            ...modified.map((filePath) => `  ${filePath}`),
+            '  Re-run with --force only if those edits should be replaced by the current starter base.',
+          ]
+        : []),
+      '',
+      `Recorded starter base: ${recordedBaseVersion}`,
     ].join('\n'),
   )
 

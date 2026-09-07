@@ -3,6 +3,7 @@ import { resolveInstallPlan } from './install-plan'
 import { loadManifest } from './manifest'
 import {
   assertManifestSupport,
+  assertManifestProjectRequirements,
   detectProject,
   resolveRecoveryPatchedFiles,
   verifyInstalledManifestFiles,
@@ -21,6 +22,7 @@ export const prepareComponentInstall = async ({
   const plan = await resolveInstallPlan({ cwd, manifest })
 
   assertManifestSupport(project, manifest)
+  await assertManifestProjectRequirements({ cwd, manifest })
 
   await checkDependencyRequirements({
     allowMissing: false,

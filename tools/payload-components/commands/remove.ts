@@ -9,16 +9,15 @@ import { loadManifest } from '../manifest'
 import { runPostInstallScript } from '../post-install'
 import {
   detectProject,
-  removePayloadFragments,
+  preparePayloadFragmentRemoval,
   verifyInstalledPayloadFragments,
 } from '../project'
 import {
   readSafeProjectFile,
   removeSafeProjectDirectoryIfEmpty,
-  removeSafeProjectFile,
 } from '../safe-path'
 import { loadState, removeRecordedState } from '../state'
-import { isPathInside, printHeader } from '../utils'
+import { commitFileChanges, isPathInside, printHeader } from '../utils'
 
 const fileExists = async (cwd: string, filePath: string) => {
   try {
@@ -117,6 +116,7 @@ const formatPlan = ({
   dryRun,
   exclusiveFiles,
   forcedModifiedFiles,
+  fileOnly,
   postInstall,
   sharedFiles,
 }: {
@@ -125,6 +125,7 @@ const formatPlan = ({
   dryRun: boolean
   exclusiveFiles: string[]
   forcedModifiedFiles: string[]
+  fileOnly: boolean
   postInstall: string[]
   sharedFiles: Array<{ owners: string[]; projectPath: string }>
 }) => {
@@ -152,7 +153,13 @@ const formatPlan = ({
     lines.push(`  ${projectPath} (keep — still used by ${owners.join(', ')})`)
   }
 
-  lines.push('', 'Payload wiring:', `  ${verb}unregister the block and drop its imports`)
+  lines.push('', 'Payload wiring:', fileOnly ? '  none — composed by your article template' : `  ${verb}unregister the block and drop its imports`)
+
+  lines.push(
+    '',
+    'Stored content:',
+    fileOnly ? '  none owned by this file-only component; remove its template imports' : '  Page documents are not changed; migrate or delete this block data in /admin first',
+  )
 
   lines.push('', 'Post-install commands:')
 
@@ -182,11 +189,13 @@ const formatPlan = ({
  * map so the project compiles again. Package dependencies are intentionally
  * left in place — the CLI cannot know whether other code adopted them. */
 export const removeCommand = async ({
+  acceptStoredContent = false,
   componentName,
   cwd,
   dryRun = false,
   force = false,
 }: {
+  acceptStoredContent?: boolean
   componentName: string
   cwd: string
   dryRun?: boolean
@@ -273,12 +282,23 @@ export const removeCommand = async ({
     )
   }
 
+  if (!dryRun && !acceptStoredContent && manifest.installMode !== 'file-only') {
+    throw new Error(
+      [
+        `Removing "${componentName}" changes code, not stored Payload documents.`,
+        'Pages may still contain this block data and must be migrated or deleted in /admin before the code is removed.',
+        `Run "payload-components remove ${componentName} --dry-run" to review the code change, then re-run with --accept-stored-content after the documents are safe.`,
+      ].join('\n'),
+    )
+  }
+
   printHeader(
     formatPlan({
       componentName,
       cwd,
       dryRun,
       exclusiveFiles,
+      fileOnly: manifest.installMode === 'file-only',
       forcedModifiedFiles: force ? modifiedExclusiveFiles : [],
       postInstall: manifest.postInstall,
       sharedFiles,
@@ -290,26 +310,41 @@ export const removeCommand = async ({
   }
 
   const deletedFiles: string[] = []
+  const deletionChanges: Array<{ content: null; filePath: string }> = []
 
   for (const projectPath of exclusiveFiles) {
-    if (await removeSafeProjectFile({ cwd, filePath: path.join(cwd, projectPath) })) {
+    const absolutePath = path.join(cwd, projectPath)
+
+    if (!isPathInside(cwd, absolutePath)) {
+      throw new Error(`Refusing to delete "${projectPath}" because it resolves outside ${cwd}.`)
+    }
+
+    if (await fileExists(cwd, absolutePath)) {
       deletedFiles.push(projectPath)
     }
+
+    deletionChanges.push({ content: null, filePath: absolutePath })
   }
 
-  await pruneEmptyDirectories({ cwd, projectPaths: exclusiveFiles })
-
-  const unwiredFiles = await removePayloadFragments(
+  const fragmentRemoval = await preparePayloadFragmentRemoval(
     cwd,
     manifest.payloadFragments,
     project.hostFiles,
   )
+
+  await commitFileChanges([...deletionChanges, ...fragmentRemoval.changes], { cwd })
+
+  await pruneEmptyDirectories({ cwd, projectPaths: exclusiveFiles })
+
+  const unwiredFiles = fragmentRemoval.touchedFiles
   const changedProject = deletedFiles.length > 0 || unwiredFiles.length > 0
+  const needsPostInstall = changedProject || installed !== undefined
 
   /* Types and the import map only go stale when files or wiring actually
-     changed. A repeat removal touches nothing, so re-running the generators
-     would cost minutes of a consumer's time for no effect. */
-  if (changedProject) {
+     changed, or when a previous removal committed those changes but failed in a
+     generator before dropping state. A completed repeat has no state and still
+     skips the generators. */
+  if (needsPostInstall) {
     for (const script of manifest.postInstall) {
       printHeader(`payload-components: running ${script}`)
 
@@ -321,9 +356,7 @@ export const removeCommand = async ({
     }
   }
 
-  const wasRecorded = installed
-    ? await removeRecordedState({ componentName, cwd })
-    : false
+  const wasRecorded = installed ? await removeRecordedState({ componentName, cwd }) : false
 
   if (!changedProject && !wasRecorded) {
     printHeader(`payload-components: nothing to remove for "${componentName}".`)
@@ -335,7 +368,9 @@ export const removeCommand = async ({
       `payload-components: removed "${componentName}".`,
       `  Deleted ${deletedFiles.length} file${deletedFiles.length === 1 ? '' : 's'}, unwired ${unwiredFiles.length} host file${unwiredFiles.length === 1 ? '' : 's'}.`,
       `  Package dependencies were left installed — remove them yourself if nothing else uses them.`,
-      `  Existing Page documents keep their stored block data; delete those blocks in /admin before publishing.`,
+      ...(manifest.installMode === 'file-only'
+        ? ['  Remove any remaining imports from your article template.']
+        : ['  Stored Page documents were intentionally left unchanged (--accept-stored-content).']),
     ].join('\n'),
   )
 }

@@ -658,6 +658,7 @@ export const restaurantBistroTemplate: TemplateShowcase = {
            * the site. */
           componentSlug: 'call-to-action-signup',
           content: {
+            action: '/private-dining',
             description:
               'Tell us the date and the number, and Joan will come back within a day — usually the same afternoon, once the book opens at three.',
             emailPlaceholder: 'you@yourhouse.example',

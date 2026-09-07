@@ -1,5 +1,8 @@
 import { buildInventory } from '../inventory'
-import { detectProject } from '../project'
+import { checkDependencyRequirements } from '../dependencies'
+import { resolveInstallPlan } from '../install-plan'
+import { loadManifest } from '../manifest'
+import { assertManifestSupport, detectProject } from '../project'
 import { writeTemplateSeedScripts } from '../seed/template-seed'
 import { loadTemplateManifest, type TemplateInstallManifest } from '../templates'
 import { printHeader } from '../utils'
@@ -78,6 +81,26 @@ export const addTemplateCommand = async ({
   /* Fail on an unsupported repo shape before installing anything, rather than
      part-way through a 20-block template. */
   const project = await detectProject(cwd)
+
+  /* Resolve every manifest, registry dependency, target constraint, and peer
+   * dependency before the first block mutates the project. The install remains
+   * resumable component-by-component, but a bad twentieth block can no longer
+   * be discovered only after nineteen successful installs. */
+  await Promise.all(
+    template.components.map(async (componentName) => {
+      const manifest = await loadManifest(componentName)
+
+      assertManifestSupport(project, manifest)
+      const plan = await resolveInstallPlan({ cwd, manifest })
+
+      await checkDependencyRequirements({
+        allowMissing: false,
+        cwd,
+        dependencies: plan.peerDependencies,
+        label: 'peerDependencies',
+      })
+    }),
+  )
 
   const inventory = await buildInventory({ cwd })
   const installedNames = inventory.entries

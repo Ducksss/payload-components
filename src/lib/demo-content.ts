@@ -148,6 +148,7 @@ export type LogoCloudDemoContent = {
    demo-content shape: the shared title+description, optional CTA links for the
    centered/boxed variants, and the email-form labels for the signup variant. */
 export type CtaDemoContent = {
+  action?: string
   title: string
   assurance?: string
   description?: string
@@ -155,6 +156,37 @@ export type CtaDemoContent = {
   links?: { link: DemoLinkData }[]
   submitLabel?: string
 }
+
+export type CollectionQueryDemoPost = {
+  categories: string[]
+  description: string
+  publishedAt: string
+  title: string
+}
+
+/* A committed fixture rather than a live Payload query: catalog previews stay
+   deterministic while the installed server component exercises the real DB. */
+export const collectionQueryDemoPosts: CollectionQueryDemoPost[] = [
+  {
+    categories: ['Engineering'],
+    description: 'A practical guide to keeping Payload block registration and rendering in sync.',
+    publishedAt: 'Aug 28, 2026',
+    title: 'The wiring after the copy',
+  },
+  {
+    categories: ['Design systems'],
+    description: 'How shared primitives keep editorial cards consistent across every query layout.',
+    publishedAt: 'Aug 19, 2026',
+    title: 'Build the card once',
+  },
+  {
+    categories: ['Payload CMS'],
+    description:
+      'Model category filters and manual curation without creating two competing blocks.',
+    publishedAt: 'Aug 7, 2026',
+    title: 'One query block, two workflows',
+  },
+]
 
 export const heroBasicDemoContent: HeroBasicDemoContent = {
   description:
@@ -1069,6 +1101,7 @@ export const callToActionSplitDemoContent: CtaDemoContent = {
 }
 
 export const callToActionSignupDemoContent: CtaDemoContent = {
+  action: '/newsletter',
   description:
     'Join the Acme newsletter for product updates, changelog highlights, and the occasional deep dive.',
   emailPlaceholder: 'Your email address',
@@ -1875,4 +1908,17 @@ export const pricingEnterpriseDemoContent: PricingDemoContent = {
     },
   ],
   title: 'Start managing your company smarter today.',
+}
+
+export const contactFormBasicDemoContent = {
+  blockType: 'contactFormBasic',
+  title: 'Good work starts with a conversation.',
+  description: 'Tell us what you have in mind. We’ll help you find the right next step.',
+  action: '/api/contact',
+  submitLabel: 'Send message',
+  successMessage: 'Thanks for reaching out. Your message has been received.',
+  nameLabel: 'Name',
+  emailLabel: 'Email',
+  organizationLabel: 'Organization',
+  messageLabel: 'Message',
 }

@@ -1,9 +1,11 @@
 import type { NextRequest } from 'next/server'
 
+import createMiddleware from 'next-intl/middleware'
 import { NextResponse } from 'next/server'
 import { isMarkdownPreferred, rewritePath } from 'fumadocs-core/negotiation'
 
-import { localeRequestHeader, splitLocalePathname } from '@/i18n/config'
+import { isLocaleNeutralPath, isPublishedSiteLocale, splitLocalePathname } from '@/i18n/config'
+import { routing } from '@/i18n/routing'
 import { docsContentRoute, docsRoute } from '@/lib/site'
 
 const { rewrite: rewriteDocs } = rewritePath(
@@ -14,36 +16,75 @@ const { rewrite: rewriteSuffix } = rewritePath(
   `${docsRoute}{/*path}.md`,
   `${docsContentRoute}{/*path}/content.md`,
 )
+const internationalize = createMiddleware(routing)
+
+const markdownSurfaces = ['blog', 'templates'].map((surface) => ({
+  page: rewritePath(`/${surface}/:slug`, `/llms.mdx/${surface}/:slug/content.md`).rewrite,
+  suffix: rewritePath(`/${surface}/:slug.md`, `/llms.mdx/${surface}/:slug/content.md`).rewrite,
+}))
 
 export default function proxy(request: NextRequest) {
+  if (isLocaleNeutralPath(request.nextUrl.pathname)) return NextResponse.next()
+
   const { locale, pathname } = splitLocalePathname(request.nextUrl.pathname)
-  const requestHeaders = new Headers(request.headers)
-  requestHeaders.set(localeRequestHeader, locale)
-
-  const rewrite = (destination: string) => {
-    const url = new URL(destination, request.nextUrl)
-    url.search = request.nextUrl.search
-
-    return NextResponse.rewrite(url, {
-      request: { headers: requestHeaders },
-    })
+  const withMarkdownVary = (response: NextResponse) => {
+    if (/^\/(?:docs|blog|templates)(?:\/|$)/.test(pathname)) {
+      const vary = response.headers.get('vary')
+      response.headers.set('vary', vary ? `${vary}, Accept` : 'Accept')
+    }
+    return response
   }
 
-  const suffixResult = rewriteSuffix(pathname)
+  // Keep saved-language links usable without exposing an unmaintained locale.
+  // Temporary redirects allow a verified language to be enabled later.
+  if (!isPublishedSiteLocale(locale)) {
+    const destination = request.nextUrl.clone()
+    destination.pathname = pathname
+    return NextResponse.redirect(destination, 307)
+  }
+
+  const rewrite = (destination: string) => {
+    const url = new URL(`/${locale}${destination}`, request.nextUrl)
+    url.search = request.nextUrl.search
+    return withMarkdownVary(NextResponse.rewrite(url))
+  }
+
+  const suffixResult =
+    rewriteSuffix(pathname) || markdownSurfaces.map(({ suffix }) => suffix(pathname)).find(Boolean)
 
   if (suffixResult) {
     return rewrite(suffixResult)
   }
 
   if (isMarkdownPreferred(request)) {
-    const docsResult = rewriteDocs(pathname)
+    const docsResult =
+      rewriteDocs(pathname) || markdownSurfaces.map(({ page }) => page(pathname)).find(Boolean)
 
     if (docsResult) {
       return rewrite(docsResult)
     }
   }
 
-  if (locale === 'zh') return rewrite(pathname)
+  return withMarkdownVary(internationalize(request))
+}
 
-  return NextResponse.next({ request: { headers: requestHeaders } })
+export const config = {
+  matcher: [
+    '/docs/:path*',
+    '/:locale/docs/:path*',
+    '/blog/:slug.md',
+    '/:locale/blog/:slug.md',
+    '/templates/:slug.md',
+    '/:locale/templates/:slug.md',
+    // These public content routes contain a literal dot, so the general asset
+    // exclusion below cannot discover the hidden default-locale segment.
+    '/llms.mdx/:path*',
+    '/:locale/llms.mdx/:path*',
+    '/og/:path*',
+    '/:locale/og/:path*',
+    // Keep the exclusions scoped to complete first segments. A bare `r`
+    // alternative also excludes every route beginning with that letter (for
+    // example `/roadmap`), so those requests never reach locale middleware.
+    '/((?!api(?:/|$)|r(?:/|$)|_next(?:/|$)|_vercel(?:/|$)|.*\\..*).*)',
+  ],
 }

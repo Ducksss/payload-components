@@ -24,15 +24,18 @@ export const testimonialFields: Field[] = [
   {
     name: 'eyebrow',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
   {
     name: 'title',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
   {
     name: 'description',
     type: 'textarea',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
 ]
 
@@ -40,16 +43,19 @@ export const testimonialItemFields: Field[] = [
   {
     name: 'quote',
     type: 'textarea',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
   {
     name: 'author',
     type: 'text',
+    custom: { payloadComponents: { localization: 'global' } },
     required: true,
   },
   {
     name: 'role',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
   {
     name: 'avatar',

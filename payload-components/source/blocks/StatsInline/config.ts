@@ -15,6 +15,7 @@ export const StatsInline: Block = {
     {
       name: 'description',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'metrics',

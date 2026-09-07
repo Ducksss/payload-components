@@ -1,7 +1,6 @@
+import { assertInstallState } from './state-schema'
 import { realpath } from 'node:fs/promises'
 import path from 'node:path'
-
-import { assertInstallState } from './state-schema'
 
 import type {
   InstallError,
@@ -9,6 +8,7 @@ import type {
   InstallStateEntry,
   InstallStateV1,
   InstallStateV2,
+  InstallStateV3,
   InstallStage,
   ComponentManifest,
 } from './types'
@@ -23,12 +23,14 @@ import { readJsonFile, repoRoot } from './utils'
 // loads within a single process.
 const createDefaultState = (): InstallState => ({
   components: {},
-  version: 3,
+  version: 4,
 })
 
 const normalizeFileList = (files: string[]) => [...new Set(files)].sort()
 const normalizeFileHashes = (fileHashes: Record<string, string>) =>
-  Object.fromEntries(Object.entries(fileHashes).sort(([left], [right]) => left.localeCompare(right)))
+  Object.fromEntries(
+    Object.entries(fileHashes).sort(([left], [right]) => left.localeCompare(right)),
+  )
 
 const getManifestPath = (componentName: string) =>
   path.join(repoRoot, 'payload-components', 'manifests', `${componentName}.json`)
@@ -92,7 +94,7 @@ const migrateLegacyState = async (state: InstallStateV1): Promise<InstallState> 
 
   return {
     components: Object.fromEntries(migratedEntries),
-    version: 3,
+    version: 4,
   }
 }
 
@@ -103,11 +105,24 @@ const migrateV2State = (state: InstallStateV2): InstallState => ({
       { ...entry, fileHashes: {} },
     ]),
   ),
-  version: 3,
+  version: 4,
+})
+
+const migrateV3State = (state: InstallStateV3): InstallState => ({
+  components: state.components,
+  version: 4,
 })
 
 const normalizeState = (state: InstallState): InstallState => ({
-  version: 3,
+  ...(state.base
+    ? {
+        base: {
+          ...state.base,
+          fileHashes: normalizeFileHashes(state.base.fileHashes),
+        },
+      }
+    : {}),
+  version: 4,
   components: Object.fromEntries(
     Object.entries(state.components).map(([componentName, entry]) => [
       componentName,
@@ -151,6 +166,7 @@ const upsertEntry = ({
   lastAttemptAt,
   lastError,
   ...(localized ? { localized: true } : {}),
+  localizationPolicy: 'semantic-v1' as const,
   patchedFiles: normalizeFileList(patchedFiles),
   status,
 })
@@ -160,12 +176,11 @@ export const getStatePath = (cwd: string) => path.join(cwd, '.payload-components
 export const loadState = async (cwd: string): Promise<InstallState> => {
   const statePath = getStatePath(cwd)
 
-  let rawState: InstallState | InstallStateV1 | InstallStateV2
+  let rawState: InstallState | InstallStateV1 | InstallStateV2 | InstallStateV3
 
   try {
-    rawState = JSON.parse(
-      await readSafeProjectFile({ cwd, filePath: statePath }),
-    ) as InstallState | InstallStateV1 | InstallStateV2
+    rawState = JSON.parse(await readSafeProjectFile({ cwd, filePath: statePath })) as
+      InstallState | InstallStateV1 | InstallStateV2 | InstallStateV3
   } catch (error) {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
       return createDefaultState()
@@ -176,7 +191,7 @@ export const loadState = async (cwd: string): Promise<InstallState> => {
     }
 
     throw new Error(
-      `Cannot read install state at ${statePath}. The file was preserved. Restore it from a known-good backup before retrying; do not delete it or re-baseline edited source.`,
+      `Cannot read install state at ${statePath}. Refusing to discard recorded file ownership; repair or restore this JSON before retrying.`,
       { cause: error },
     )
   }
@@ -192,10 +207,16 @@ export const loadState = async (cwd: string): Promise<InstallState> => {
   }
 
   if (rawState.version === 3) {
+    return normalizeState(migrateV3State(rawState))
+  }
+
+  if (rawState.version === 4) {
     return normalizeState(rawState)
   }
 
-  throw new Error(`Unsupported payload-components state version "${String((rawState as { version?: unknown }).version)}".`)
+  throw new Error(
+    `Unsupported payload-components state version "${String((rawState as { version?: unknown }).version)}".`,
+  )
 }
 
 const saveStateUnlocked = async (cwd: string, state: InstallState) => {
@@ -238,7 +259,31 @@ const mutateState = async <T>(cwd: string, mutation: (state: InstallState) => Pr
 
 export const saveState = async (cwd: string, state: InstallState) => {
   await mutateState(cwd, (latest) => {
+    latest.base = state.base
     latest.components = state.components
+  })
+}
+
+export const recordBaseBundleState = async ({
+  cwd,
+  fileHashes,
+  installedAt,
+  version,
+}: {
+  cwd: string
+  fileHashes: Record<string, string>
+  installedAt?: string
+  version: string
+}) => {
+  await mutateState(cwd, (state) => {
+    const now = new Date().toISOString()
+
+    state.base = {
+      fileHashes: normalizeFileHashes(fileHashes),
+      installedAt: installedAt ?? state.base?.installedAt ?? now,
+      lastAttemptAt: now,
+      version,
+    }
   })
 }
 
@@ -460,6 +505,7 @@ export const recordLocalizedInstall = async ({
     }
 
     entry.localized = true
+    entry.localizationPolicy = 'semantic-v1'
     entry.lastAttemptAt = new Date().toISOString()
 
     for (const [projectPath, hash] of Object.entries(hashes)) {

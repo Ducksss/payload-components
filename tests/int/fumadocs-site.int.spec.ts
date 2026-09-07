@@ -10,6 +10,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('server-only', () => ({}))
+vi.mock('next/root-params', () => ({ locale: async () => 'en' }))
 /* Stamps every next/link anchor so a rendered assertion can tell a native <a>
    apart from the routed Link the two render identically to otherwise. */
 vi.mock('next/link', () => ({
@@ -142,7 +143,7 @@ describe('Fumadocs site shell', () => {
 
   it('keeps evergreen about and blog copy free of numeric catalog counts', async () => {
     const [aboutPage, helloPost] = await Promise.all([
-      readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', '[locale]', 'about', 'page.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'content', 'blog', 'hello.mdx'), 'utf8'),
     ])
 
@@ -426,7 +427,7 @@ describe('Fumadocs site shell', () => {
   it('keeps the GitHub mark independent from removed Lucide brand icons', async () => {
     const githubLinkSources = await Promise.all(
       [
-        'src/app/docs/layout.tsx',
+        'src/app/[locale]/docs/layout.tsx',
         'src/components/site/SiteFooter.tsx',
         'src/components/site/SiteHeader.tsx',
         'src/components/site/sections/CommunityCta.tsx',
@@ -501,9 +502,9 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, '.github', 'workflows', 'registry-verification.yml'), 'utf8'),
       readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),
       readFile(path.join(repoRoot, 'next.config.mjs'), 'utf8'),
-      readFile(path.join(repoRoot, 'src', 'app', 'docs', 'docs.css'), 'utf8'),
-      readFile(path.join(repoRoot, 'src', 'app', 'docs', 'layout.tsx'), 'utf8'),
-      readFile(path.join(repoRoot, 'src', 'app', 'layout.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', '[locale]', 'docs', 'docs.css'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', '[locale]', 'docs', 'layout.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', '[locale]', 'layout.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', 'globals.css'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'components', 'site', 'SiteHeader.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'components', 'site', 'CommandCopyButton.tsx'), 'utf8'),
@@ -512,14 +513,29 @@ describe('Fumadocs site shell', () => {
         'utf8',
       ),
       readFile(path.join(repoRoot, 'src', 'lib', 'source.ts'), 'utf8'),
-      readFile(path.join(repoRoot, 'src', 'app', 'docs', '[[...slug]]', 'page.tsx'), 'utf8'),
+      readFile(
+        path.join(repoRoot, 'src', 'app', '[locale]', 'docs', '[[...slug]]', 'page.tsx'),
+        'utf8',
+      ),
       readFile(path.join(repoRoot, 'src', 'app', 'api', 'search', 'route.ts'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', 'llms-full.txt', 'route.ts'), 'utf8'),
       readFile(
-        path.join(repoRoot, 'src', 'app', 'llms.mdx', 'docs', '[[...slug]]', 'route.ts'),
+        path.join(
+          repoRoot,
+          'src',
+          'app',
+          '[locale]',
+          'llms.mdx',
+          'docs',
+          '[[...slug]]',
+          'route.ts',
+        ),
         'utf8',
       ),
-      readFile(path.join(repoRoot, 'src', 'app', 'og', 'docs', '[...slug]', 'route.tsx'), 'utf8'),
+      readFile(
+        path.join(repoRoot, 'src', 'app', '[locale]', 'og', 'docs', '[...slug]', 'route.tsx'),
+        'utf8',
+      ),
       readFile(path.join(repoRoot, 'src', 'proxy.ts'), 'utf8'),
     ])
 
@@ -742,6 +758,11 @@ describe('Fumadocs site shell', () => {
     expect(contentSecurityPolicy).toContain("base-uri 'self'")
     expect(contentSecurityPolicy).toContain("form-action 'self'")
     expect(contentSecurityPolicy).toContain("frame-ancestors 'self'")
+    expect(contentSecurityPolicy).toContain('https://www.googletagmanager.com')
+    expect(contentSecurityPolicy).toContain('https://us.i.posthog.com')
+    expect(contentSecurityPolicy).toContain("frame-src 'self'")
+    expect(contentSecurityPolicy).toContain('https://*.youtube-nocookie.com')
+    expect(contentSecurityPolicy).not.toContain("'unsafe-eval'")
     expect(nextConfig.poweredByHeader).toBe(false)
 
     await expect(nextConfig.redirects?.()).resolves.toEqual([
@@ -781,6 +802,52 @@ describe('Fumadocs site shell', () => {
       'src/blocks/shared/heroFields.ts',
     ])
     expect(sources[0]?.code).toContain("slug: 'heroBasic'")
+  })
+
+  it('preserves actionable Collection Query prerequisites in machine-readable docs', async () => {
+    vi.doMock('collections/server', () => ({
+      docs: {
+        toFumadocsSource: () => ({
+          files: ['collection-query', 'hero-basic'].map((slug) => ({
+            type: 'page',
+            path: `components/${slug}.mdx`,
+            data: {
+              title: slug,
+              getText: async () => `<ComponentRequirements slug="${slug}" />`,
+            },
+          })),
+        }),
+      },
+    }))
+    const { getLLMText, source } = await import('../../src/lib/source')
+    const queryPage = source.getPage(['components', 'collection-query'])
+    const heroPage = source.getPage(['components', 'hero-basic'])
+    expect(queryPage).toBeDefined()
+    expect(heroPage).toBeDefined()
+    if (!queryPage || !heroPage) throw new Error('Missing component markdown fixture')
+
+    const markdown = await getLLMText(queryPage)
+    expect(markdown).toContain('### Project prerequisites')
+    expect(markdown).toContain('**Posts collection**: `src/collections/Posts/index.ts`')
+    expect(markdown).toContain("`slug: 'posts'`")
+    expect(markdown).toContain("`name: 'publishedAt'`")
+    expect(markdown).toContain('**Posts and Categories registration**: `src/payload.config.ts`')
+    expect(markdown).toContain('Required source anchors: `buildConfig`')
+    expect(markdown).toContain(
+      'Register `Posts` and `Categories` directly in the `buildConfig` collections array.',
+    )
+    expect(markdown).toContain(
+      '**Categories collection**: `src/collections/Categories.ts` or `src/collections/Categories/index.ts`',
+    )
+    expect(markdown).toContain("`slug: 'categories'`")
+    expect(markdown).toContain(
+      'Computed collection lists cannot be verified; expose a literal array before installing.',
+    )
+    expect(markdown).toContain('Add or restore the official website starter Categories collection')
+    const heroMarkdown = await getLLMText(heroPage)
+    expect(heroMarkdown).not.toContain('### Project prerequisites')
+    expect(heroMarkdown).toContain('## Install contract')
+    expect(heroMarkdown).toContain('Admin usage: add the `HeroBasic` block')
   })
 
   it('turns the top search component pages into distinct tracked install entries', async () => {
@@ -882,9 +949,9 @@ describe('Fumadocs site shell', () => {
 
   it('keeps blog routes wired to shared chrome and complete metadata', async () => {
     const [layoutSource, indexSource, postSource, sitemapSource] = await Promise.all([
-      readFile(path.join(repoRoot, 'src/app/blog/layout.tsx'), 'utf8'),
-      readFile(path.join(repoRoot, 'src/app/blog/page.tsx'), 'utf8'),
-      readFile(path.join(repoRoot, 'src/app/blog/[slug]/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/blog/layout.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/blog/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/blog/[slug]/page.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src/app/sitemap.ts'), 'utf8'),
     ])
     const { blogDescription, blogTitle } = await import('../../src/lib/site')
@@ -893,7 +960,7 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).toContain("namespace: 'Blog'")
     expect(indexSource).toContain("t('metadataTitle')")
     expect(indexSource).toContain("t('metadataDescription')")
-    expect(indexSource).toContain('blogSource.getPages(locale)')
+    expect(indexSource).toContain('blogSource.getPages(publication.contentLocale)')
     expect(indexSource).not.toContain(blogDescription)
     expect(blogTitle).toBe('Payload CMS block and installer guides')
     expect(blogDescription).toContain('Payload CMS v3 guides')
@@ -902,7 +969,9 @@ describe('Fumadocs site shell', () => {
     expect(indexSource).toContain("href: '/docs/payload-blocks'")
     expect(indexSource).toContain("href: '/blog/anatomy-of-an-install'")
     expect(indexSource).toContain('data-guide-gateway')
-    expect(indexSource).toContain("localeAlternates('/blog')")
+    expect(indexSource).toContain("getPublication('/blog', locale)")
+    expect(indexSource).toContain('languages: publication.alternates')
+    expect(indexSource).toContain('robots: publicationRobots(publication)')
     expect(collapse(indexSource)).toContain("twitter: { card: 'summary_large_image'")
     expect(postSource).toContain("type: 'article'")
     expect(postSource).toContain('publishedTime:')
@@ -1066,12 +1135,59 @@ describe('Fumadocs site shell', () => {
     }
   })
 
+  it('generates the docs changelog from structured component manifests', async () => {
+    const [page, docsMeta, llmsRoute, manifestReader] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'changelog.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'llms.txt', 'route.ts'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'lib', 'component-manifest.ts'), 'utf8'),
+    ])
+
+    expect(page).toContain('<ManifestChangelog />')
+    expect(page).not.toMatch(/v\d+\.\d+\.\d+/)
+    expect(docsMeta).toContain('"changelog"')
+    expect(llmsRoute).toContain('/docs/changelog')
+    expect(manifestReader).toContain('getAllComponentManifests')
+  })
+
+  it('pauses site and installable marquees while they are outside the viewport', async () => {
+    const [slider, observer, styles] = await Promise.all([
+      readFile(
+        path.join(
+          repoRoot,
+          'payload-components',
+          'source',
+          'components',
+          'ui',
+          'infinite-slider.tsx',
+        ),
+        'utf8',
+      ),
+      readFile(
+        path.join(repoRoot, 'src', 'components', 'site', 'demos', 'ViewportMarquee.tsx'),
+        'utf8',
+      ),
+      readFile(path.join(repoRoot, 'src', 'app', 'globals.css'), 'utf8'),
+    ])
+
+    expect(slider).toContain('useInView')
+    expect(slider).toContain('if (!isInView')
+    expect(observer).toContain('IntersectionObserver')
+    expect(observer).toContain('data-marquee-active')
+    expect(styles).toMatch(/\.logo-cloud-marquee-track[\s\S]*animation-play-state: paused/)
+    expect(styles).toContain("[data-marquee-active='true']")
+    expect(styles).toContain('animation-play-state: running')
+  })
+
   it('keeps catalog search local and docs copy factual', async () => {
     const catalog = await readFile(
       path.join(repoRoot, 'src/components/site/ComponentCatalogBrowser.tsx'),
       'utf8',
     )
-    const catalogPage = await readFile(path.join(repoRoot, 'src/app/components/page.tsx'), 'utf8')
+    const catalogPage = await readFile(
+      path.join(repoRoot, 'src/app/[locale]/components/page.tsx'),
+      'utf8',
+    )
     const registry = await readFile(path.join(repoRoot, 'content/docs/registry.mdx'), 'utf8')
     const {
       catalogBlocksGuideLinkLabel,
@@ -1085,15 +1201,15 @@ describe('Fumadocs site shell', () => {
     expect(catalog).toContain('window.history.replaceState')
     expect(catalog).toContain("window.addEventListener('popstate'")
     expect(registry).not.toContain('sample content for docs and testing')
-    expect(catalogTitle).toBe('77 Payload CMS components and typed blocks')
+    expect(catalogTitle).toBe('81 Payload CMS components and typed blocks')
     expect(catalogDescription).toMatch(
       /heroes.*features.*pricing.*integrations.*stats.*FAQs.*content.*teams.*embeds.*footers/,
     )
-    expect(catalogDescription).toContain('Browse all 77')
+    expect(catalogDescription).toContain('Browse all 81')
     expect(catalogDescription).toContain('installable Payload CMS components')
     expect(catalogDescription).toContain('One CLI command')
     expect(catalogMetadataTitle).toContain('Payload CMS Components')
-    expect(catalogMetadataTitle).toContain('77')
+    expect(catalogMetadataTitle).toContain('81')
     expect(catalogMetadataDescription).toContain('npx payload-components add <component>')
     expect(catalogMetadataDescription).toContain('collection')
     expect(catalogMetadataDescription).toContain('renderer')
@@ -1109,8 +1225,8 @@ describe('Fumadocs site shell', () => {
 
   it('gives nearby search surfaces distinct jobs and routes catalog intent to components', async () => {
     const [aboutPage, blogPage, docsIndex, installationGuide, homepage] = await Promise.all([
-      readFile(path.join(repoRoot, 'src/app/about/page.tsx'), 'utf8'),
-      readFile(path.join(repoRoot, 'src/app/blog/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/about/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/blog/page.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'content/docs/index.mdx'), 'utf8'),
       readFile(path.join(repoRoot, 'content/docs/installation.mdx'), 'utf8'),
       readFile(path.join(repoRoot, 'src/lib/site.ts'), 'utf8'),
@@ -1120,7 +1236,7 @@ describe('Fumadocs site shell', () => {
 
     expect(homeMetadataTitle).toBe('Payload Components: Wired Payload CMS Blocks in One Command')
     expect(blogTitle).toBe('Payload CMS block and installer guides')
-    expect(catalogMetadataTitle).toBe('77 Payload CMS Components & Blocks | Catalog')
+    expect(catalogMetadataTitle).toBe('81 Payload CMS Components & Blocks | Catalog')
     expect(docsIndex).toContain('seoTitle: CLI setup and architecture')
     expect(docsIndex).toContain('title="Build and wire a block" href="/docs/payload-blocks"')
 
@@ -1131,10 +1247,13 @@ describe('Fumadocs site shell', () => {
 
   it('keeps catalog page-block count copy aligned with installable components', async () => {
     const { componentFamilies, componentsIntro } = await import('../../src/lib/site')
-    const aboutPage = await readFile(path.join(repoRoot, 'src', 'app', 'about', 'page.tsx'), 'utf8')
+    const aboutPage = await readFile(
+      path.join(repoRoot, 'src', 'app', '[locale]', 'about', 'page.tsx'),
+      'utf8',
+    )
 
     expect(componentFamilies.pages.countLabel).toBe('Installable')
-    expect(componentFamilies.posts.countLabel).toBe('In development')
+    expect(componentFamilies.posts.countLabel).toBe('Installable')
     expect(componentsIntro).toContain('No screenshots')
     expect(`${componentsIntro}\n${aboutPage}`).not.toContain('Fifty-three page blocks')
   })
@@ -1164,9 +1283,9 @@ describe('Fumadocs site shell', () => {
     const [firstBlock, installation, aboutPage, siteSource, docsLayout] = await Promise.all([
       readFile(path.join(repoRoot, 'content/docs/first-block.mdx'), 'utf8'),
       readFile(path.join(repoRoot, 'content/docs/installation.mdx'), 'utf8'),
-      readFile(path.join(repoRoot, 'src/app/about/page.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/about/page.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src/lib/site.ts'), 'utf8'),
-      readFile(path.join(repoRoot, 'src/app/docs/layout.tsx'), 'utf8'),
+      readFile(path.join(repoRoot, 'src/app/[locale]/docs/layout.tsx'), 'utf8'),
     ])
     expect(firstBlock).toContain('href="/components"')
     expect(firstBlock).not.toContain('href="/docs/components"')

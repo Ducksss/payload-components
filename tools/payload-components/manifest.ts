@@ -13,7 +13,12 @@ import { isPathInside, readJsonFile, repoRoot } from './utils'
 
 import type { RegistryDefinition } from './types'
 
-const manifestSchemaPath = path.join(repoRoot, 'payload-components', 'schema', 'poc-manifest.schema.json')
+const manifestSchemaPath = path.join(
+  repoRoot,
+  'payload-components',
+  'schema',
+  'poc-manifest.schema.json',
+)
 const manifestDir = path.join(repoRoot, 'payload-components', 'manifests')
 const registryDefinitionPath = path.join(repoRoot, 'payload-components', 'registry.json')
 const componentNamePattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -24,7 +29,9 @@ const ajv = new Ajv2020({
 let validatorPromise: Promise<ValidateFunction<ComponentManifest>> | undefined
 
 const unknownComponentError = (componentName: string) =>
-  new Error(`Unknown component "${componentName}". Run "payload-components --help" to see available components.`)
+  new Error(
+    `Unknown component "${componentName}". Run "payload-components --help" to see available components.`,
+  )
 
 const assertSafeComponentName = (componentName: string) => {
   if (!componentNamePattern.test(componentName)) {
@@ -177,6 +184,12 @@ export const listComponentNames = async () => {
     .sort()
 }
 
+export const listRegistryComponentNames = async () => {
+  const registry = await readJsonFile<RegistryDefinition>(registryDefinitionPath)
+
+  return registry.items.map(({ name }) => name)
+}
+
 export const loadAllManifests = async () => {
   const componentNames = await listComponentNames()
 
@@ -203,11 +216,15 @@ export const loadManifest = async (componentName: string): Promise<ComponentMani
   }
 
   if (!semver.valid(manifest.version)) {
-    throw new Error(`Manifest "${componentName}" must declare a valid semantic version. Received "${manifest.version}".`)
+    throw new Error(
+      `Manifest "${componentName}" must declare a valid semantic version. Received "${manifest.version}".`,
+    )
   }
 
   if (manifest.name !== componentName) {
-    throw new Error(`Manifest "${componentName}" declares mismatched component name "${manifest.name}".`)
+    throw new Error(
+      `Manifest "${componentName}" declares mismatched component name "${manifest.name}".`,
+    )
   }
 
   validateDependencyMap({

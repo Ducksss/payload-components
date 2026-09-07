@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 
-import { localizeHref } from '@/i18n/config'
+import { localeAlternates, localizeHref } from '@/i18n/config'
 import { siteUrl } from '@/lib/site'
 import { source } from '@/lib/source'
 import { blogSource } from '@/lib/blog-source'
@@ -10,10 +10,12 @@ import { templateDetailHref, templateShowcases } from '@/lib/templates/registry'
 function localizedEntry(path: string) {
   return {
     alternates: {
-      languages: {
-        en: `${siteUrl}${localizeHref(path, 'en')}`,
-        'zh-CN': `${siteUrl}${localizeHref(path, 'zh')}`,
-      },
+      languages: Object.fromEntries(
+        Object.entries(localeAlternates(path)).map(([locale, href]) => [
+          locale,
+          `${siteUrl}${href}`,
+        ]),
+      ),
     },
     url: `${siteUrl}${localizeHref(path, 'en')}`,
   }
@@ -25,6 +27,7 @@ const staticRoutes = [
   { changeFrequency: 'weekly', path: '/', priority: 1 },
   { changeFrequency: 'weekly', path: '/components', priority: 0.9 },
   { changeFrequency: 'weekly', path: '/templates', priority: 0.8 },
+  { changeFrequency: 'monthly', path: '/roadmap/editorial', priority: 0.6 },
   { changeFrequency: 'monthly', path: '/about', priority: 0.5 },
   { changeFrequency: 'monthly', path: '/brand-guide', priority: 0.5 },
   { changeFrequency: 'yearly', path: '/privacy', priority: 0.3 },

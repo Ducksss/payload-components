@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="diagram-title diagram-description" class="diagram diagram--trace" data-mode="trace" data-series="open-source" data-issue="27">
-  <title id="diagram-title">Separate runtimes share a one-way visual token guard</title>
-  <desc id="diagram-description">Installable target code and site demo twins stay separate while the test requires every plain source class token to appear in its twin.</desc>
+  <title id="diagram-title">Separate runtimes share a one-way visual class guard</title>
+  <desc id="diagram-description">Installable target code and site demo twins stay separate while the test keeps each source class group attached to one preview element.</desc>
   <defs>
     <pattern id="journal-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
       <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e4e4e7" stroke-width="1" />
@@ -186,7 +186,7 @@
     <text class="folio-label" x="1152" y="47" text-anchor="end">FIELD NOTE 27 / 32</text>
   </g>
   <text class="kicker" x="48" y="86">SOURCE / PREVIEW MIRROR</text>
-  <text class="headline" x="48" y="119">Separate runtimes share a one-way visual token guard</text>
+  <text class="headline" x="48" y="119">Separate runtimes share a one-way visual class guard</text>
   <path class="accent-path" d="M 941 96 C 1004 83, 1054 105, 1138 81" />
   <circle class="registration" cx="1139" cy="81" r="8" />
   <g data-diagram-layer="edges">
@@ -241,9 +241,9 @@
   <rect class="node-card" x="180" y="392.2631578947368" width="840" height="138.73684210526315" rx="2" />
   <path class="node-rule" d="M 180 397.2631578947368 H 1020" />
   <text class="node-index" x="196" y="418.2631578947368">05</text>
-  <text class="node-title node-title--mono" x="223" y="419.2631578947368">Class-token guard</text>
-  <text class="node-body node-body--mono" data-role="body-line" x="196" y="449.2631578947368">Every source className token appears in its twin</text>
-<text class="node-body node-body--mono" data-role="body-line" x="196" y="465.2631578947368">one-way token presence, not runtime reuse</text>
+  <text class="node-title node-title--mono" x="223" y="419.2631578947368">Per-element class guard</text>
+  <text class="node-body node-body--mono" data-role="body-line" x="196" y="449.2631578947368">Each source class group stays on one twin element</text>
+<text class="node-body node-body--mono" data-role="body-line" x="196" y="465.2631578947368">one-way class containment, not runtime reuse</text>
 </g>
   </g>
   <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
@@ -251,17 +251,17 @@
     <text class="footer-label" x="48" y="571">PROVENANCE</text>
     <text class="provenance-line" x="48" y="590">tests/int/demo-twins.int.spec.ts</text>
   </g>
-  <g data-journal-part="evidence" data-evidence-excerpt="const missing = literals.flatMap((literal) =&gt;
-        literal
-          .split(/\s+/)
-          .filter((token) =&gt; token &amp;&amp; !twinSource.includes(token))
-          .map((token) =&gt; `${token} (from &quot;${literal}&quot;)`),
-      )
+  <g data-journal-part="evidence" data-evidence-excerpt="const missing = literals.filter((literal) =&gt; {
+        const expected = tokenizeClasses(literal)
 
-      expect(missing, `Twin ${twin} drifted from ${component} (${slug})`).toEqual([])" data-evidence-truncated="true">
+        return !twinExpressions.some((candidate) =&gt; containsClassGroup(candidate, expected))
+      })
+
+      expect(missing, `Twin ${twin} drifted from ${component} (${slug})`).toEqual([])
+    }" data-evidence-truncated="true">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
-  <text class="evidence-line" x="48" y="626">const missing = literals.flatMap((literal) =&gt; · literal ·</text>
-<text class="evidence-line" x="48" y="641">.split(/\s+/) · .filter((token) =&gt; token &amp;&amp; …</text>
+  <text class="evidence-line" x="48" y="626">const missing = literals.filter((literal) =&gt; { · const expected =</text>
+<text class="evidence-line" x="48" y="641">tokenizeClasses(literal) · return !twinExpressions.some((candidat …</text>
 </g>
   <g data-journal-part="prompt" data-prompt="When source changes, update the twin in the same contribution.">
     <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>

@@ -1,5 +1,7 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
+
 import { cn } from '@/utilities/ui'
 
 /* Brand-hue picker for the catalog wall.
@@ -16,21 +18,21 @@ import { cn } from '@/utilities/ui'
  * keys work and the group announces as a single control. */
 
 export const brandPresets = [
-  { hue: 165.6, label: 'Emerald' },
-  { hue: 230, label: 'Sky' },
-  { hue: 275, label: 'Indigo' },
-  { hue: 310, label: 'Violet' },
-  { hue: 10, label: 'Rose' },
-  { hue: 65, label: 'Amber' },
+  { hue: 165.6, key: 'emerald' },
+  { hue: 230, key: 'sky' },
+  { hue: 275, key: 'indigo' },
+  { hue: 310, key: 'violet' },
+  { hue: 10, key: 'rose' },
+  { hue: 65, key: 'amber' },
 ] as const
 
 /* Radius is the higher-leverage knob: most twins carry a rounded-* class while
    only a handful reference a brand token, and the whole radius scale derives
    from --radius. Values bracket the 0.625rem default. */
 export const radiusPresets = [
-  { label: 'Sharp', rem: 0 },
-  { label: 'Default', rem: 0.625 },
-  { label: 'Round', rem: 1.25 },
+  { key: 'sharp', rem: 0 },
+  { key: 'default', rem: 0.625 },
+  { key: 'round', rem: 1.25 },
 ] as const
 
 export const defaultBrandHue = brandPresets[0].hue
@@ -52,7 +54,7 @@ export function CatalogThemeControl({
   radiusRem: number
 }) {
   return (
-    <div className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2">
+    <div className="flex min-w-0 max-w-full flex-wrap items-center gap-x-4 gap-y-2">
       <BrandSwatches hue={hue} onChange={onHueChange} />
       <RadiusToggle onChange={onRadiusChange} radiusRem={radiusRem} />
     </div>
@@ -60,24 +62,27 @@ export function CatalogThemeControl({
 }
 
 function BrandSwatches({ hue, onChange }: { hue: number; onChange: (hue: number) => void }) {
+  const t = useTranslations('CatalogBrowser.theme')
+
   return (
     <fieldset className="flex shrink-0 items-center gap-2">
-      <legend className="sr-only">Preview the catalog in your brand colour</legend>
+      <legend className="sr-only">{t('brandLegend')}</legend>
       <span
         aria-hidden="true"
         className="hidden font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground sm:inline"
       >
-        Brand
+        {t('brandLabel')}
       </span>
       <div className="flex items-center gap-1.5">
         {brandPresets.map((preset) => {
           const active = preset.hue === hue
+          const label = t(`colors.${preset.key}`)
 
           return (
             <label
-              key={preset.label}
+              key={preset.key}
               className="relative cursor-pointer"
-              title={`Preview in ${preset.label}`}
+              title={t('previewBrand', { color: label })}
             >
               <input
                 type="radio"
@@ -87,7 +92,7 @@ function BrandSwatches({ hue, onChange }: { hue: number; onChange: (hue: number)
                 onChange={() => onChange(preset.hue)}
                 className="peer sr-only"
               />
-              <span className="sr-only">{preset.label}</span>
+              <span className="sr-only">{label}</span>
               <span
                 aria-hidden="true"
                 style={{ backgroundColor: swatchColor(preset.hue) }}
@@ -112,24 +117,27 @@ function RadiusToggle({
   onChange: (rem: number) => void
   radiusRem: number
 }) {
+  const t = useTranslations('CatalogBrowser.theme')
+
   return (
     <fieldset className="flex shrink-0 items-center gap-2">
-      <legend className="sr-only">Preview the catalog at a different corner radius</legend>
+      <legend className="sr-only">{t('radiusLegend')}</legend>
       <span
         aria-hidden="true"
         className="hidden font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground sm:inline"
       >
-        Radius
+        {t('radiusLabel')}
       </span>
       <div className="flex items-center gap-1 rounded-md border border-border bg-background p-0.5">
         {radiusPresets.map((preset) => {
           const active = preset.rem === radiusRem
+          const label = t(`radii.${preset.key}`)
 
           return (
             <label
-              key={preset.label}
+              key={preset.key}
               className="cursor-pointer"
-              title={`Preview at ${preset.label.toLowerCase()} corners`}
+              title={t('previewRadius', { style: label })}
             >
               <input
                 type="radio"
@@ -148,7 +156,7 @@ function RadiusToggle({
                     : 'text-muted-foreground hover:text-foreground',
                 )}
               >
-                {preset.label}
+                {label}
               </span>
             </label>
           )

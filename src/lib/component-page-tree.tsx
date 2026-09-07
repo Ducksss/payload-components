@@ -6,6 +6,7 @@ import {
   ChartNoAxesCombined,
   CircleDollarSign,
   Columns2,
+  Database,
   ContactRound,
   FileText,
   Images,
@@ -58,7 +59,7 @@ const MODES: { icon: ReactNode; key: InstallMode; label: string }[] = [
 ]
 
 /* Family taxonomy, in display order — ranked "landing-page essentials first" to match the
-   catalog (src/lib/site.ts componentCategories + componentEntries): lead with the universal
+   catalog (src/lib/component-catalog.ts componentCategories + componentEntries): lead with the universal
    sections every site builds first (Hero, Feature, Comparator/pricing, Call to action), then
    social-proof / ecosystem (Integration, Logo cloud, Testimonials, Stats), then support (FAQ), then
    the deep editorial Content set, then the niche utilities (Team, Embed), trailing with the chrome
@@ -82,6 +83,7 @@ const FAMILIES: { icon: ReactNode; key: string; label: string }[] = [
   { icon: <Pilcrow />, key: 'content', label: 'Content' },
   { icon: <Users />, key: 'team', label: 'Team' },
   { icon: <MonitorPlay />, key: 'embed', label: 'Embed' },
+  { icon: <Database />, key: 'collection-query', label: 'Collection query' },
   { icon: <PanelBottom />, key: 'footer', label: 'Footer' },
 ]
 

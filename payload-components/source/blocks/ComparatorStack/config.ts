@@ -26,19 +26,23 @@ export const ComparatorStack: Block = {
         {
           name: 'name',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
         {
           name: 'description',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
         },
         {
           name: 'price',
           type: 'text',
+          custom: { payloadComponents: { localization: 'global' } },
         },
         {
           name: 'period',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           admin: {
             description: 'Shown next to the price, e.g. "/month".',
           },
@@ -46,6 +50,7 @@ export const ComparatorStack: Block = {
         {
           name: 'badge',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           admin: {
             description: 'Optional pill beside the plan name, e.g. "Most popular".',
           },
@@ -72,6 +77,7 @@ export const ComparatorStack: Block = {
             {
               name: 'label',
               type: 'text',
+              custom: { payloadComponents: { localization: 'localized' } },
               required: true,
             },
             {
@@ -81,8 +87,10 @@ export const ComparatorStack: Block = {
             {
               name: 'value',
               type: 'text',
+              custom: { payloadComponents: { localization: 'localized' } },
               admin: {
-                description: 'Text value for this feature. Leave "included" unticked and this empty for an excluded feature.',
+                description:
+                  'Text value for this feature. Leave "included" unticked and this empty for an excluded feature.',
               },
             },
           ],

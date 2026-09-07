@@ -658,6 +658,11 @@ test.describe('Light shadcn frontend', () => {
       title: /About/,
     },
     {
+      h1: 'Help shape an editorial publishing system.',
+      path: '/roadmap/editorial',
+      title: /Editorial component roadmap/,
+    },
+    {
       h1: 'The Payload Components brand',
       path: '/brand-guide',
       title: /Brand Guide/,
@@ -694,58 +699,60 @@ test.describe('Light shadcn frontend', () => {
     })
   }
 
-  const localizedOverflowRoutes = [
-    { h1: /安装 Payload 区块.*接好线，不只是复制。/, path: '/zh' },
-    { h1: 'Introduction', path: '/zh/docs' },
-    { h1: /77 个 Payload CMS 组件与类型化区块/, path: '/zh/components' },
-    { h1: '由可安装区块组成的 Payload CMS 模板概念', path: '/zh/templates' },
-    { h1: 'Payload CMS 区块与安装器指南', path: '/zh/blog' },
-    { h1: 'Why Payload Components exists', path: '/zh/about' },
-  ]
-
-  for (const localizedRoute of localizedOverflowRoutes) {
-    test(`localized route ${localizedRoute.path} uses Chinese chrome without overflow`, async ({
+  for (const locale of ['zh', 'ja', 'ko', 'ar']) {
+    test(`redirects inactive ${locale} catalog links to English without losing location`, async ({
       page,
     }) => {
-      await page.goto(`${baseURL}${localizedRoute.path}`, { waitUntil: 'domcontentloaded' })
-
-      await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
-      await expect(page.getByRole('heading', { level: 1, name: localizedRoute.h1 })).toBeVisible()
+      await page.setViewportSize({ width: 375, height: 812 })
+      await page.goto(`${baseURL}/${locale}/components?q=hero#hero-basic`)
+      await expect(page).toHaveURL(`${baseURL}/components?q=hero#hero-basic`)
+      await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+      await expect(page.locator('html')).toHaveAttribute('dir', 'ltr')
       await expect(
-        page.getByRole('navigation').getByRole('link', { name: '组件' }),
-      ).toHaveAttribute('href', '/zh/components')
-
-      await page.evaluate(() => document.fonts.ready)
-      const hasHorizontalOverflow = await page.evaluate(
-        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-      )
-      expect(hasHorizontalOverflow).toBe(false)
+        page.locator('article#hero-basic').getByRole('link', { name: 'Hero Basic', exact: true }),
+      ).toBeVisible()
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/components$/)
+      await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveCount(0)
+      await expect(page.getByRole('combobox', { name: 'Language', exact: true })).toHaveCount(0)
+      const overflow = await expectNoHorizontalOverflow(page, '/components')
+      expect(overflow.offenders, overflow.message).toEqual([])
     })
   }
 
-  test('switches locale explicitly while preserving the route, query, and hash', async ({
+  test('does not offer inactive languages on desktop or in mobile navigation', async ({ page }) => {
+    await page.goto(`${baseURL}/docs`)
+    await expect(page.locator('form[action="/locale"]')).toHaveCount(0)
+    await page.setViewportSize({ width: 320, height: 800 })
+    await page.getByRole('button', { name: 'Open navigation', exact: true }).click()
+    await expect(page.locator('#mobile-navigation')).toBeVisible()
+    await expect(page.locator('form[action="/locale"]')).toHaveCount(0)
+  })
+
+  test('language endpoint falls back to English and preserves route, query, and hash', async ({
     page,
   }) => {
-    await page.goto(`${baseURL}/zh/components?q=hero#hero-basic`)
-
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/zh\/components$/)
-    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
-      'href',
-      /\/components$/,
-    )
-    await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveAttribute(
-      'href',
-      /\/zh\/components$/,
-    )
-
-    await page.getByLabel('语言').first().selectOption('en')
+    const destination = '/ja/components?q=hero#hero-basic'
+    await page.goto(`${baseURL}/locale?locale=ja&returnTo=${encodeURIComponent(destination)}`)
     await expect(page).toHaveURL(`${baseURL}/components?q=hero#hero-basic`)
     await expect(page.locator('html')).toHaveAttribute('lang', 'en')
-
-    await page.getByLabel('Language').first().selectOption('zh')
-    await expect(page).toHaveURL(`${baseURL}/zh/components?q=hero#hero-basic`)
-    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
   })
+
+  for (const resource of [
+    '/docs',
+    '/docs/architecture.md',
+    '/llms.mdx/docs/architecture/content.md',
+    '/og/docs/architecture/image.png',
+  ]) {
+    test(`inactive locale redirects the ${resource} resource`, async ({ request }) => {
+      const response = await request.get(`${baseURL}/zh${resource}?source=saved`, {
+        maxRedirects: 0,
+      })
+      expect(response.status()).toBe(307)
+      const destination = new URL(response.headers().location, response.url())
+      expect(destination.pathname).toBe(resource)
+      expect(destination.search).toBe('?source=saved')
+    })
+  }
 
   test('drives the responsive component preview frame', async ({ page }) => {
     await page.goto(`${baseURL}/docs/components/hero-basic`)
@@ -794,16 +801,14 @@ test.describe('Light shadcn frontend', () => {
     expect(mobileNavOverflow.offenders, mobileNavOverflow.message).toEqual([])
   })
 
-  test('mobile GitHub link localizes its accessible name without translating the brand', async ({
-    page,
-  }) => {
+  test('saved-locale docs retain an accessible English mobile GitHub link', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 })
     await page.goto(`${baseURL}/zh/docs`)
 
-    await page.getByRole('button', { name: '打开导航' }).click()
+    await page.getByRole('button', { name: 'Open navigation' }).click()
     const githubLink = page
       .locator('#mobile-navigation')
-      .getByRole('link', { name: 'GitHub 代码库' })
+      .getByRole('link', { name: 'GitHub repository' })
 
     await expect(githubLink).toBeVisible()
     await expect(githubLink).toHaveText('GitHub')
@@ -844,18 +849,21 @@ test.describe('Light shadcn frontend', () => {
       .locator('code:visible')
       .filter({ hasText: 'src/blocks/LogoCloudInlineWrap/Component.tsx' })
     await expect(path).toBeVisible()
-    const wraps = await path.evaluate((el) => {
-      const style = getComputedStyle(el)
-      const line = Number.parseFloat(style.lineHeight)
-      return {
-        breakable: style.overflowWrap === 'anywhere' || style.wordBreak === 'break-all',
-        multiline: el.getBoundingClientRect().height > line * 1.5,
-        fits: el.scrollWidth <= el.clientWidth,
-      }
-    })
-    expect(wraps.breakable).toBe(true)
-    expect(wraps.multiline).toBe(true)
-    expect(wraps.fits).toBe(true)
+    await page.evaluate(() => document.fonts.ready)
+    await expect
+      .poll(async () =>
+        path.evaluate((el) => {
+          const style = getComputedStyle(el)
+          const line = Number.parseFloat(style.lineHeight)
+
+          return {
+            breakable: style.overflowWrap === 'anywhere' || style.wordBreak === 'break-all',
+            fits: el.scrollWidth <= el.clientWidth,
+            multiline: el.getBoundingClientRect().height > line * 1.5,
+          }
+        }),
+      )
+      .toEqual({ breakable: true, fits: true, multiline: true })
     const ledgerOverflow = await expectNoHorizontalOverflow(page, 'the wiring ledger')
     expect(ledgerOverflow.offenders, ledgerOverflow.message).toEqual([])
     await expect(wiring).toBeVisible()
@@ -942,7 +950,7 @@ test.describe('Light shadcn frontend', () => {
         title: new RegExp(homeMetadataTitle),
       },
       {
-        link: /Browse all 77 installable components/,
+        link: /Browse all 81 installable components/,
         path: '/blog',
         title: new RegExp(blogTitle),
       },
@@ -1083,25 +1091,46 @@ test.describe('Light shadcn frontend', () => {
     ).toBeVisible()
   })
 
-  test('links upcoming components to prefilled request issues', async ({ page }) => {
-    const component = upcomingComponents.find((entry) => entry.slug === 'post-card')!
+  test('presents upcoming post components as public roadmap proposals', async ({ page }) => {
+    const component = upcomingComponents[0]
 
     await page.goto(`${baseURL}/components?type=posts`)
 
-    const requestLink = page.getByRole('link', { name: 'Request' }).first()
-    await expect(requestLink).toBeVisible()
-    await expect(requestLink).toHaveAttribute(
-      'href',
-      new RegExp(
-        `/issues/new\\?${[
-          'area=New\\+component',
-          'proposal=Ship\\+Post\\+Card\\+%28post-card%29\\+as\\+a\\+Payload\\+Components\\+post\\+component\\.',
-          'template=feature_request\\.yml',
-          'title=%5Bfeature%5D\\+post-card',
-        ].join('.*')}`,
-      ),
+    await expect(page.getByText('Concept preview', { exact: true })).toHaveCount(
+      upcomingComponents.length,
     )
     await expect(page.getByText(component.title).first()).toBeVisible()
+
+    const roadmapLink = page.getByRole('link', {
+      name: `View ${component.title} on the editorial roadmap`,
+    })
+    await expect(roadmapLink).toHaveAttribute('href', `/roadmap/editorial#${component.slug}`)
+
+    await roadmapLink.focus()
+    await expect(roadmapLink).toBeFocused()
+    await page.keyboard.press('Enter')
+    await expect(page).toHaveURL(`${baseURL}/roadmap/editorial#${component.slug}`)
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Help shape an editorial publishing system.',
+      }),
+    ).toBeVisible()
+  })
+
+  test('shows installable article components in the Posts filter and composer', async ({
+    page,
+  }) => {
+    await page.goto(`${baseURL}/components?type=posts`)
+    await expect(page.getByRole('button', { name: composerAddLabel('post-hero') })).toBeVisible()
+    await expect(page.getByRole('button', { name: composerAddLabel('author-card') })).toBeVisible()
+    await expect(page.getByRole('button', { name: composerAddLabel('hero-basic') })).toHaveCount(0)
+    await page.getByRole('button', { name: composerAddLabel('post-hero') }).click()
+    await expect(page.getByRole('region', { name: composerTrayLabel })).toContainText(
+      'npx payload-components add post-hero',
+    )
+    await page.goto(`${baseURL}/docs/components/post-hero`)
+    await expect(page.getByText('Post component', { exact: true })).toBeVisible()
   })
 
   test('exposes every landing section, the catalog teaser, and the footer', async ({ page }) => {

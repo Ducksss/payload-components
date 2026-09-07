@@ -367,12 +367,16 @@ describe('package publish guard', () => {
     }
 
     expect(parsed.on?.workflow_dispatch?.inputs?.spec?.options).toEqual([
+      'frontend',
       'components-visual',
       'template-visual',
       'blog-visual',
       'all-visual',
     ])
     expect(workflow).toContain('components-visual|template-visual|blog-visual)')
+    expect(workflow).toContain(
+      "spec_args=(frontend --grep 'landing page keeps its desktop and mobile visual contract')",
+    )
     expect(workflow).toContain('spec_args=(components-visual template-visual blog-visual)')
     expect(workflow).toContain('pnpm test:e2e "${spec_args[@]}"')
     expect(workflow).not.toMatch(/pnpm test:e2e \$SPEC/)
