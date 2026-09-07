@@ -723,6 +723,7 @@ test.describe('Light shadcn frontend', () => {
     await page.goto(`${baseURL}/docs`)
     await expect(page.locator('form[action="/locale"]')).toHaveCount(0)
     await page.setViewportSize({ width: 320, height: 800 })
+    await waitForCopyController(page)
     await page.getByRole('button', { name: 'Open navigation', exact: true }).click()
     await expect(page.locator('#mobile-navigation')).toBeVisible()
     await expect(page.locator('form[action="/locale"]')).toHaveCount(0)
@@ -804,6 +805,7 @@ test.describe('Light shadcn frontend', () => {
   test('saved-locale docs retain an accessible English mobile GitHub link', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 })
     await page.goto(`${baseURL}/zh/docs`)
+    await waitForCopyController(page)
 
     await page.getByRole('button', { name: 'Open navigation' }).click()
     const githubLink = page
@@ -1855,6 +1857,7 @@ test.describe('Reduced motion', () => {
 
   test('opens the Fumadocs search dialog from the docs shell', async ({ page }) => {
     await page.goto(`${baseURL}/docs`)
+    await waitForCopyController(page)
 
     const searchTrigger = page.getByRole('button', { name: /Search/ }).first()
     await searchTrigger.click()
