@@ -21,10 +21,7 @@ import {
   verifyInstalledManifestFiles,
   verifyInstalledPayloadFragments,
 } from '../project'
-import {
-  compareInstalledFiles,
-  resolveRecordedFileHashes,
-} from '../component-files'
+import { compareInstalledFiles, resolveRecordedFileHashes } from '../component-files'
 import { ensureLocalizationHelper, prepareLocalizationHelper } from '../localization-helper'
 import { installNamespacedItem, isNamespacedItem } from '../namespaced'
 import { runPostInstallScript } from '../post-install'
@@ -351,6 +348,16 @@ const installComponent = async ({
   })
   const existingState = await loadState(cwd)
   const installedEntry = existingState.components[manifest.name]
+  if (
+    installedEntry &&
+    installedEntry.manifestVersion !== manifest.version &&
+    prewrittenFiles.length === 0
+  ) {
+    throw new Error(
+      `"${manifest.name}" is recorded at ${installedEntry.manifestVersion}, but this CLI ships ${manifest.version}. Run "payload-components update ${manifest.name}" to review and apply the upgrade. Existing source and state were preserved.`,
+    )
+  }
+
   const effectiveLocalized = localized || installedEntry?.localized === true
 
   if (
@@ -709,7 +716,9 @@ export const addCommand = async ({
   if (demo || localized) {
     const manifest = await loadManifest(componentName)
     if (manifest.installMode === 'file-only') {
-      throw new Error(`"${componentName}" is a file-only article component. Pass localized content in your template; --demo and --localized apply only to editor-managed blocks.`)
+      throw new Error(
+        `"${componentName}" is a file-only article component. Pass localized content in your template; --demo and --localized apply only to editor-managed blocks.`,
+      )
     }
   }
 

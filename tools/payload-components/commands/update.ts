@@ -1,3 +1,6 @@
+import { prepareComponentInstall } from '../install-preflight'
+import { createUpdateBackup, discardUpdateBackup, restoreUpdateBackup } from '../update-backup'
+import { LOCALIZE_HELPER_FILE } from '../project'
 import path from 'node:path'
 
 import {
@@ -11,7 +14,6 @@ import {
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest } from '../manifest'
 import { prepareLocalizationHelper } from '../localization-helper'
-import { assertManifestProjectRequirements } from '../project'
 import { readSafeProjectFile } from '../safe-path'
 import { getStatePath, loadState } from '../state'
 
@@ -203,6 +205,7 @@ export const updateCommand = async ({
   cwd,
   dryRun = false,
   force = false,
+  recover = false,
 }: {
   acceptBreaking?: boolean
   acceptLocalizationPolicyChange?: boolean
@@ -210,7 +213,23 @@ export const updateCommand = async ({
   cwd: string
   dryRun?: boolean
   force?: boolean
+  recover?: boolean
 }) => {
+  if (recover) {
+    if (
+      componentNames.length ||
+      dryRun ||
+      force ||
+      acceptBreaking ||
+      acceptLocalizationPolicyChange
+    )
+      throw new Error('--recover cannot be combined with component names or other update flags.')
+    await restoreUpdateBackup(cwd)
+    printHeader(
+      'payload-components: restored saved files and install state. Reconcile package installs and custom generator side effects before retrying.',
+    )
+    return true
+  }
   const inventory = await buildInventory({ cwd })
   const state = await loadState(cwd)
   const recordedOwnership = await loadRecordedFileOwners(state)
@@ -422,14 +441,9 @@ export const updateCommand = async ({
 
   plans.splice(0, plans.length, ...eligiblePlans)
 
-  // Check every selected install before replacing any source. The delegated
-  // add checks again, but by then canonical replacements have been committed.
-  for (const plan of plans) {
-    await assertManifestProjectRequirements({
-      cwd,
-      manifest: await loadManifest(plan.componentName),
-    })
-  }
+  const preparedInstalls = await Promise.all(
+    plans.map((plan) => prepareComponentInstall({ cwd, componentName: plan.componentName })),
+  )
 
   printHeader(formatPlan({ breaking, cwd, dryRun, plans, skipped }))
 
@@ -445,77 +459,111 @@ export const updateCommand = async ({
       })
     : []
 
-  // A shared policy change affects every owner immediately. Stage all accepted
-  // source updates and their recoverable partial baselines before any generator
-  // runs, so a failed first install cannot strand the remaining legacy configs.
-  if (helperChanges.length > 0) {
-    const changes = new Map<string, FileChange>()
-    const pendingState = await loadState(cwd)
+  if (plans.length === 0) return skipped.length === 0 && breaking.length === 0
+  await createUpdateBackup(cwd, [
+    ...plans.flatMap((plan) => [...plan.files, ...plan.blockedFiles]),
+    ...helperChanges.map((change) => path.relative(cwd, change.filePath)),
+    ...preparedInstalls.flatMap(({ plan, project, patchedFiles }) => [
+      ...patchedFiles,
+      ...plan.registryDependencies.map(({ targetFile }) => targetFile),
+      'package.json',
+      project.lockfilePath,
+      'src/payload-types.ts',
+      'payload-types.ts',
+      'src/app/(payload)/admin/importMap.js',
+      'app/(payload)/admin/importMap.js',
+      LOCALIZE_HELPER_FILE,
+    ]),
+  ])
+  try {
+    // A shared policy change affects every owner immediately. Stage all accepted
+    // source updates and their recoverable partial baselines before any generator
+    // runs, so a failed first install cannot strand the remaining legacy configs.
+    if (helperChanges.length > 0) {
+      const changes = new Map<string, FileChange>()
+      const pendingState = await loadState(cwd)
+      for (const plan of plans) {
+        const manifest = await loadManifest(plan.componentName)
+        const currentFiles = new Set(manifest.files)
+        const prepared = await prepareCanonicalComponentFiles({
+          cwd,
+          deleteFiles: [...plan.files, ...plan.blockedFiles].filter(
+            (file) => !currentFiles.has(file),
+          ),
+          localized: plan.localized,
+          manifest,
+        })
+        for (const change of prepared) {
+          const existing = changes.get(change.filePath)
+          if (existing && existing.content !== change.content) {
+            throw new Error(`Conflicting shared-file replacements: ${change.filePath}`)
+          }
+          changes.set(change.filePath, change)
+        }
+        pendingState.components[plan.componentName] = {
+          ...pendingState.components[plan.componentName],
+          fileHashes: Object.fromEntries(
+            prepared
+              .filter((change) => change.content !== null)
+              .map((change) => [
+                path.relative(cwd, change.filePath).split(path.sep).join('/'),
+                hashSource(change.content!),
+              ]),
+          ),
+          localizationPolicy: 'semantic-v1',
+          lastError: null,
+          status: 'partial',
+        }
+      }
+      await commitFileChanges(
+        [
+          ...changes.values(),
+          ...helperChanges,
+          { filePath: getStatePath(cwd), content: `${JSON.stringify(pendingState, null, 2)}\n` },
+        ],
+        { cwd },
+      )
+    }
+
     for (const plan of plans) {
       const manifest = await loadManifest(plan.componentName)
+      const replacedFiles = [...plan.files, ...plan.blockedFiles]
       const currentFiles = new Set(manifest.files)
-      const prepared = await prepareCanonicalComponentFiles({
+
+      if (helperChanges.length === 0) {
+        await replaceCanonicalComponentFiles({
+          cwd,
+          deleteFiles: replacedFiles.filter((projectPath) => !currentFiles.has(projectPath)),
+          localized: plan.localized,
+          manifest,
+        })
+      }
+
+      await addCommand({
+        ...(plan.localizationPolicyChange ? { acceptLocalizationPolicyChange: true } : {}),
+        componentName: plan.componentName,
         cwd,
-        deleteFiles: [...plan.files, ...plan.blockedFiles].filter(
-          (file) => !currentFiles.has(file),
-        ),
         localized: plan.localized,
-        manifest,
-      })
-      for (const change of prepared) {
-        const existing = changes.get(change.filePath)
-        if (existing && existing.content !== change.content) {
-          throw new Error(`Conflicting shared-file replacements: ${change.filePath}`)
-        }
-        changes.set(change.filePath, change)
-      }
-      pendingState.components[plan.componentName] = {
-        ...pendingState.components[plan.componentName],
-        fileHashes: Object.fromEntries(
-          prepared
-            .filter((change) => change.content !== null)
-            .map((change) => [
-              path.relative(cwd, change.filePath).split(path.sep).join('/'),
-              hashSource(change.content!),
-            ]),
+        prewrittenFiles: manifest.files.filter((projectPath) =>
+          replacedFiles.includes(projectPath),
         ),
-        localizationPolicy: 'semantic-v1',
-        lastError: null,
-        status: 'partial',
-      }
+      })
     }
-    await commitFileChanges(
-      [
-        ...changes.values(),
-        ...helperChanges,
-        { filePath: getStatePath(cwd), content: `${JSON.stringify(pendingState, null, 2)}\n` },
-      ],
-      { cwd },
+
+    await discardUpdateBackup(cwd)
+  } catch (error) {
+    try {
+      await restoreUpdateBackup(cwd)
+    } catch (restoreError) {
+      throw new AggregateError(
+        [error, restoreError],
+        'Update failed and rollback could not finish. Backup retained; fix the filesystem error and run "payload-components update --recover".',
+      )
+    }
+    throw new Error(
+      `Update failed: ${error instanceof Error ? error.message : String(error)}. Saved source, host files and install state were restored. Reconcile package installs and custom generator side effects.`,
+      { cause: error },
     )
   }
-
-  for (const plan of plans) {
-    const manifest = await loadManifest(plan.componentName)
-    const replacedFiles = [...plan.files, ...plan.blockedFiles]
-    const currentFiles = new Set(manifest.files)
-
-    if (helperChanges.length === 0) {
-      await replaceCanonicalComponentFiles({
-        cwd,
-        deleteFiles: replacedFiles.filter((projectPath) => !currentFiles.has(projectPath)),
-        localized: plan.localized,
-        manifest,
-      })
-    }
-
-    await addCommand({
-      ...(plan.localizationPolicyChange ? { acceptLocalizationPolicyChange: true } : {}),
-      componentName: plan.componentName,
-      cwd,
-      localized: plan.localized,
-      prewrittenFiles: manifest.files.filter((projectPath) => replacedFiles.includes(projectPath)),
-    })
-  }
-
   return skipped.length === 0 && breaking.length === 0
 }

@@ -1,3 +1,4 @@
+import { assertNoPendingUpdate } from './update-backup'
 import { realpathSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -28,7 +29,7 @@ Usage:
   payload-components localize [component-name...] [--cwd <path>] [--locales <codes>]
                               [--default-locale <code>] [--no-fallback] [--dry-run] [--force]
   payload-components diff [component-name...] [--cwd <path>] [--json]
-  payload-components update [component-name...] [--cwd <path>] [--dry-run] [--force] [--accept-breaking] [--accept-localization-policy-change]
+  payload-components update [component-name...] [--cwd <path>] [--dry-run] [--force] [--accept-breaking] [--accept-localization-policy-change] [--recover]
   payload-components remove <component-name...> [--cwd <path>] [--dry-run] [--force] [--accept-stored-content]
   payload-components seed <component-name> [--cwd <path>]
   payload-components mcp [--cwd <path>]
@@ -54,6 +55,7 @@ Commands:
 Flags:
   --demo  After a successful add, write the demo seed script; with add-template, one per template page.
   --dry-run  Validate and preview an add, localize, update, or remove without changing files or running commands.
+  --recover  Restore an interrupted update backup; preserve subsequent edits first.
   --force  Let localize replace configured locales and wrap edited configs, update overwrite edits, remove delete unverifiable source, or init replace edited managed base files.
   --accept-breaking  Let update apply a version that changes content already stored in Payload.
   --accept-localization-policy-change  Adopt semantic field policies after migrating existing localized data.
@@ -96,6 +98,7 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
   let locales: string | undefined
   let localized = false
   let noFallback = false
+  let recover = false
   let scaffold = false
   const positional: string[] = []
 
@@ -227,6 +230,12 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
       continue
     }
 
+    if (current === '--recover') {
+      if (recover) throw new Error('--recover may only be specified once.')
+      recover = true
+      continue
+    }
+
     if (current === '--scaffold') {
       if (scaffold) {
         throw new Error('--scaffold may only be specified once.')
@@ -263,6 +272,7 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
     localized,
     noFallback,
     positional,
+    recover,
     scaffold,
   }
 }
@@ -346,6 +356,7 @@ export const runCli = async ({
         localized,
         noFallback,
         positional,
+        recover,
         scaffold,
       } = parseArgs(argv, defaultCwd)
       const [command, ...rest] = positional
@@ -361,7 +372,14 @@ export const runCli = async ({
           return await run()
         }
 
-        return await withProjectMutationLock({ cwd: mutationCwd, operation, run })
+        return await withProjectMutationLock({
+          cwd: mutationCwd,
+          operation,
+          run: async () => {
+            if (!recover) await assertNoPendingUpdate(mutationCwd)
+            return await run()
+          },
+        })
       }
 
       if (!command || help) {
@@ -381,7 +399,7 @@ export const runCli = async ({
         mcp: [],
         seed: [],
         templates: ['json'],
-        update: ['acceptBreaking', 'acceptLocalizationPolicyChange', 'dryRun', 'force'],
+        update: ['acceptBreaking', 'acceptLocalizationPolicyChange', 'dryRun', 'force', 'recover'],
       }
 
       if (allowedFlags[command]) {
@@ -390,6 +408,7 @@ export const runCli = async ({
           command,
           flags: {
             acceptBreaking,
+            recover,
             acceptLocalizationPolicyChange,
             acceptStoredContent,
             defaultLocale: Boolean(defaultLocale),
@@ -502,6 +521,7 @@ export const runCli = async ({
       if (command === 'update') {
         const isComplete = await runMutation('update', cwd, () =>
           commandHandlers.updateCommand({
+            ...(recover ? { recover } : {}),
             acceptBreaking,
             acceptLocalizationPolicyChange,
             componentNames: uniqueNames,

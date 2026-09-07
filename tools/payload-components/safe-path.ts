@@ -213,15 +213,17 @@ export const writeSafeProjectFile = async ({
   contents,
   cwd,
   filePath,
+  mode,
 }: {
   contents: FileContents
   cwd: string
   filePath: string
+  mode?: number
 }) => {
+  let writeMode = mode ?? 0o644
   const initial = await resolveSafeProjectPath({ cwd, targetPath: filePath })
   await ensureSafeProjectDirectory({ cwd, directoryPath: path.dirname(initial.path) })
   const resolved = await resolveSafeProjectPath({ cwd, targetPath: initial.path })
-  let mode = 0o644
 
   try {
     const existing = await lstat(resolved.path)
@@ -230,7 +232,7 @@ export const writeSafeProjectFile = async ({
       throw unsafePathError(filePath, 'the target is not a regular file')
     }
 
-    mode = existing.mode
+    if (mode === undefined) writeMode = existing.mode
   } catch (error) {
     if (!isMissing(error)) {
       throw error
@@ -245,7 +247,7 @@ export const writeSafeProjectFile = async ({
     handle = await open(
       tempPath,
       constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY | noFollow,
-      mode,
+      writeMode,
     )
     const openedStats = await handle.stat()
 
@@ -253,6 +255,7 @@ export const writeSafeProjectFile = async ({
       throw unsafePathError(filePath, 'the temporary target is not a regular file')
     }
 
+    if (mode !== undefined) await handle.chmod(mode)
     await handle.writeFile(contents)
     await handle.sync()
     await handle.close()

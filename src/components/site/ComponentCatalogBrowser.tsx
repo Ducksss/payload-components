@@ -1,7 +1,14 @@
 'use client'
 
 import { usePathname, useSearchParams } from 'next/navigation'
-import { type CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  type CSSProperties,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useTranslations } from 'next-intl'
 
 import { ArrowUpRight, Search, X } from 'lucide-react'
@@ -27,6 +34,7 @@ type ComponentCatalogBrowserProps = {
   families: { pages: FamilyMeta; posts: FamilyMeta }
   githubRepoUrl: string
   pages: ComponentEntry[]
+  previews: Record<string, ReactNode>
   posts: UpcomingComponent[]
 }
 
@@ -48,6 +56,7 @@ export function ComponentCatalogBrowser({
   githubRepoUrl,
   pages,
   posts,
+  previews,
 }: ComponentCatalogBrowserProps) {
   const t = useTranslations('CatalogBrowser')
   const pathname = usePathname()
@@ -385,6 +394,7 @@ export function ComponentCatalogBrowser({
                       <ComponentCard
                         key={component.slug}
                         component={component}
+                        preview={previews[component.slug]}
                         onToggleSelect={toggleSelected}
                         selected={selected.includes(component.slug)}
                       />
@@ -421,6 +431,7 @@ export function ComponentCatalogBrowser({
                       <ComponentCard
                         key={component.slug}
                         component={component}
+                        preview={previews[component.slug]}
                         onToggleSelect={toggleSelected}
                         selected={selected.includes(component.slug)}
                       />

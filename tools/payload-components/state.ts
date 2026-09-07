@@ -1,3 +1,4 @@
+import { assertInstallState } from './state-schema'
 import { realpath } from 'node:fs/promises'
 import path from 'node:path'
 
@@ -178,9 +179,8 @@ export const loadState = async (cwd: string): Promise<InstallState> => {
   let rawState: InstallState | InstallStateV1 | InstallStateV2 | InstallStateV3
 
   try {
-    rawState = JSON.parse(
-      await readSafeProjectFile({ cwd, filePath: statePath }),
-    ) as InstallState | InstallStateV1 | InstallStateV2 | InstallStateV3
+    rawState = JSON.parse(await readSafeProjectFile({ cwd, filePath: statePath })) as
+      InstallState | InstallStateV1 | InstallStateV2 | InstallStateV3
   } catch (error) {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
       return createDefaultState()
@@ -195,6 +195,8 @@ export const loadState = async (cwd: string): Promise<InstallState> => {
       { cause: error },
     )
   }
+
+  assertInstallState(rawState)
 
   if (rawState.version === 1) {
     return await migrateLegacyState(rawState)

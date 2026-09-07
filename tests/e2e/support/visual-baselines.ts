@@ -2,31 +2,9 @@ import { existsSync, readdirSync } from 'node:fs'
 
 import { expect, test, type TestInfo } from '@playwright/test'
 
-/* Shared platform-baseline guards for the visual specs (components, templates,
- * blog). Import these rather than re-implementing the dance a fourth time.
- *
- * Cross-platform rendering differs (a darwin dev box vs the linux CI image), so
- * every baseline is committed per platform as
- * `<stem>-<project>-<platform>.png` and a small maxDiffPixelRatio absorbs
- * sub-pixel noise. A platform's baselines have to be generated in that
- * platform's own renderer — linux output will never match darwin — which forces
- * the two rules every visual spec shares:
- *
- *   1. A case SKIPS while its current-platform baseline is absent, so a
- *      not-yet-minted platform stays green instead of failing the gate. It must
- *      never skip while explicitly updating, or `--update-snapshots` could
- *      never create that baseline in the first place.
- *   2. That skip would also hide a case shipped without a baseline, so once a
- *      platform has any baseline at all, the coverage guard fails loudly on the
- *      missing ones.
- *
- * Neither guard can see a baseline that exists but is STALE. A visual change
- * minted on only one platform leaves the other platform's committed image
- * showing the old render, and the gate stays green there because a stale
- * baseline is, by definition, the reference it compares against — that is how
- * the blog index kept a pre-redesign darwin baseline through a green `pr-gate`
- * (which only ever renders linux). Mint both platforms for every intended
- * visual change; see "Visual baselines" in CONTRIBUTING.md. */
+/* Linux CI is the canonical visual renderer. Other platforms still run
+ * browser behavior/accessibility checks, but skip screenshot comparisons.
+ * Mint intended visual changes with the visual-baselines workflow. */
 
 export type VisualBaselines = {
   /** Names these baselines in skip and failure messages, e.g. `component baselines`. */
@@ -54,6 +32,7 @@ const platformSuffix = (projectName: string) => `-${projectName}-${process.platf
  * once the platform is minted. Call it from a plain (non-page) test.
  */
 export const expectCompletePlatformBaselines = (baselines: VisualBaselines, stems: string[]) => {
+  test.skip(process.platform !== 'linux', 'Visual baselines use the Linux CI renderer.')
   const { config, project } = test.info()
   // Nothing to enforce while baselines are being (re)generated.
   test.skip(isUpdating(config.updateSnapshots), 'updating snapshots')
@@ -85,6 +64,7 @@ export const expectCompletePlatformBaselines = (baselines: VisualBaselines, stem
  * this run is the one minting it. Call it from inside the case's test body.
  */
 export const skipWithoutPlatformBaseline = (baselines: VisualBaselines, stem: string) => {
+  test.skip(process.platform !== 'linux', 'Visual baselines use the Linux CI renderer.')
   const { config, project } = test.info()
   const baseline = new URL(`${stem}${platformSuffix(project.name)}`, baselines.snapshotDir)
 

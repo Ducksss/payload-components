@@ -77,7 +77,9 @@
     "test:pack": "cross-env NODE_OPTIONS=--no-deprecation RUN_PACK_TEST=1 vitest run --config ./vitest.config.mts tests/int/payload-components-pack.int.spec.ts",
     "test:public-registry": "pnpm test:fresh -- --registry-url 'https://www.payload-components.xyz/r/{name}.json' --scenario website",
     "test:registry": "pnpm registry:check && pnpm registry:validate",
-    "test:release": "pnpm lint && pnpm format:check && pnpm i18n:check && pnpm source:build && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm build:e2e && cross-env PLAYWRIGHT_SERVER_MODE=production pnpm run test:e2e"
+    "test:release": "pnpm lint && pnpm format:check && pnpm i18n:check && pnpm source:build && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm build:e2e && cross-env PLAYWRIGHT_SERVER_MODE=production pnpm run test:e2e",
+    "registry:snapshot": "tsx tools/payload-components/snapshot-install-baselines.ts",
+    "test:ci": "pnpm i18n:check && pnpm source:build && pnpm test:registry && pnpm run test:int && pnpm build:e2e && cross-env PLAYWRIGHT_SERVER_MODE=production pnpm run test:e2e"
   },
   "dependencies": {
     "ajv": "^8.18.0",
@@ -124,7 +126,6 @@
     "tsx": "4.23.1",
     "typescript": "5.9.3",
     "vite": "8.2.1",
-    "vite-tsconfig-paths": "6.1.1",
     "vitest": "4.1.10",
     "yaml": "2.9.0",
     "zod": "4.4.3"
@@ -141,6 +142,8 @@
     "overrides": {
       "esbuild": "0.28.1",
       "fast-uri": "3.1.7",
+      "@humanfs/node@<0.16.8": "0.16.8",
+      "qs@<6.16.0": "6.16.0",
       "postcss": "8.5.23",
       "brace-expansion@<1.1.18": "1.1.18",
       "brace-expansion@>=4.0.0 <5.0.9": "5.0.9",

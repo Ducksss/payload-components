@@ -186,7 +186,10 @@ describe('MCP tools', () => {
     expect(detail.installed?.status).toBe('installed')
     expect(detail.installed?.updateAvailable).toBe(false)
     expect(detail.payloadWiring).toHaveLength(2)
-    expect(detail.version).toBe('0.1.0')
+    expect(detail.version).toBe(
+      (await (await import('../../tools/payload-components/manifest')).loadManifest('hero-basic'))
+        .version,
+    )
   })
 
   it('separates an unknown tool from a failure inside a known tool', async () => {

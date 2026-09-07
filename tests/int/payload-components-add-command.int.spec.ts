@@ -438,6 +438,33 @@ describe('payload-components add command orchestration', () => {
     expect(mocks.recordInstalledState).toHaveBeenCalledOnce()
   })
 
+  it('refuses to relabel old installed bytes as a newer component version', async () => {
+    const { addCommand, mocks } = await setup({
+      loadStateValue: {
+        version: 4,
+        components: {
+          'hero-basic': {
+            fileHashes: {},
+            installedAt: null,
+            lastAttemptAt: '2026-09-06',
+            lastError: null,
+            manifestVersion: '0.0.1',
+            patchedFiles: [],
+            registryItemName: 'hero-basic',
+            status: 'installed',
+            targetId: 'payload-website-starter',
+          },
+        },
+      },
+    })
+    await expect(addCommand({ cwd: '/tmp/fixture', componentName: 'hero-basic' })).rejects.toThrow(
+      'payload-components update hero-basic',
+    )
+    expect(mocks.recordInstalledState).not.toHaveBeenCalled()
+    expect(mocks.recordInstallAttempt).not.toHaveBeenCalled()
+    expect(mocks.installRegistryItem).not.toHaveBeenCalled()
+  })
+
   it('retries cleanly from a partial state when files and fragments are already present', async () => {
     const { addCommand, mocks } = await setup({
       loadStateValue: {

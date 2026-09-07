@@ -1,4 +1,4 @@
-import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { chmod, stat, access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -168,6 +168,10 @@ const installLegacyStatsProofV2 = async () => {
    refusal path off a stubbed inventory rather than rewriting a real manifest on
    disk — a crashed test must never leave the repo's manifests edited. */
 const setupBreaking = async () => {
+  const { fixtureDir, manifests } = await installFixture({
+    componentNames: ['hero-basic'],
+    recordedVersion: '0.1.0',
+  })
   const addCommand = vi.fn().mockResolvedValue(undefined)
   const output: string[] = []
   const breakingEntry = {
@@ -204,34 +208,7 @@ const setupBreaking = async () => {
     selectInstalled: (inventory: { entries: unknown[] }) => inventory.entries,
   }))
   vi.doMock('../../tools/payload-components/manifest', () => ({
-    loadManifest: vi.fn().mockResolvedValue({ files: [], version: '0.2.0' }),
-  }))
-  vi.doMock('../../tools/payload-components/component-files', () => ({
-    compareInstalledFiles: vi
-      .fn()
-      .mockResolvedValue({ comparisons: [], missing: [], modified: [] }),
-    resolveCanonicalFileHashes: vi.fn().mockResolvedValue({}),
-    resolveRecordedFileHashes: vi.fn().mockResolvedValue({}),
-    replaceCanonicalComponentFiles: vi.fn().mockResolvedValue(undefined),
-  }))
-  vi.doMock('../../tools/payload-components/state', () => ({
-    loadState: vi.fn().mockResolvedValue({
-      components: {
-        'hero-basic': {
-          fileHashes: {},
-          installedAt: null,
-          lastAttemptAt: '2026-04-16T00:00:00.000Z',
-          lastError: null,
-          localized: false,
-          manifestVersion: '0.1.0',
-          patchedFiles: [],
-          registryItemName: 'hero-basic',
-          status: 'installed',
-          targetId: 'payload-website-starter',
-        },
-      },
-      version: 4,
-    }),
+    loadManifest: vi.fn().mockResolvedValue({ ...manifests[0], version: '0.2.0' }),
   }))
   vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
     output.push(String(chunk))
@@ -240,7 +217,7 @@ const setupBreaking = async () => {
 
   const { updateCommand } = await import('../../tools/payload-components/commands/update')
 
-  return { addCommand, output, updateCommand }
+  return { addCommand, output, updateCommand, fixtureDir }
 }
 
 const exists = (filePath: string) =>
@@ -297,7 +274,9 @@ describe('update', () => {
         'src/blocks/HeroBasic/Component.tsx',
       ],
     })
-    expect(output.join('')).toContain('hero-basic: 0.0.9 → 0.1.0')
+    expect(output.join('')).toContain(
+      `hero-basic: 0.0.9 → ${(await (await import('../../tools/payload-components/manifest')).loadManifest('hero-basic')).version}`,
+    )
     expect(await exists(path.join(fixtureDir, 'src/blocks/FaqCard/config.ts'))).toBe(true)
   })
 
@@ -332,7 +311,9 @@ describe('update', () => {
         'src/blocks/StatsProof/Component.tsx',
       ],
     })
-    expect(output.join('')).toContain('stats-proof: 0.2.0 → 0.3.0')
+    expect(output.join('')).toContain(
+      `stats-proof: 0.2.0 → ${(await (await import('../../tools/payload-components/manifest')).loadManifest('stats-proof')).version}`,
+    )
     expect(output.join('')).not.toContain('skipped')
     expect(await exists(path.join(fixtureDir, 'src/blocks/StatsProof/config.ts'))).toBe(true)
     expect(await exists(path.join(fixtureDir, 'src/blocks/StatsProof/Component.tsx'))).toBe(true)
@@ -520,9 +501,9 @@ describe('update', () => {
   })
 
   it('holds back a breaking upgrade until it is explicitly accepted', async () => {
-    const { addCommand, output, updateCommand } = await setupBreaking()
+    const { addCommand, output, updateCommand, fixtureDir } = await setupBreaking()
 
-    const isComplete = await updateCommand({ cwd: '/tmp/project' })
+    const isComplete = await updateCommand({ cwd: fixtureDir })
 
     expect(addCommand).not.toHaveBeenCalled()
     expect(output.join('')).toContain('held back')
@@ -535,9 +516,9 @@ describe('update', () => {
   })
 
   it('applies a breaking upgrade under --accept-breaking', async () => {
-    const { addCommand, updateCommand } = await setupBreaking()
+    const { addCommand, updateCommand, fixtureDir } = await setupBreaking()
 
-    const isComplete = await updateCommand({ acceptBreaking: true, cwd: '/tmp/project' })
+    const isComplete = await updateCommand({ acceptBreaking: true, cwd: fixtureDir })
 
     expect(addCommand).toHaveBeenCalledOnce()
     expect(isComplete).toBe(true)
@@ -550,5 +531,75 @@ describe('update', () => {
     await expect(updateCommand({ componentNames: ['faq-card'], cwd: fixtureDir })).rejects.toThrow(
       'not recorded as installed',
     )
+  })
+})
+
+describe('update recovery', () => {
+  it('validates project support before removing any installed source or state', async () => {
+    const { fixtureDir, manifests } = await installFixture({
+      componentNames: ['hero-basic'],
+      recordedVersion: '0.0.1',
+    })
+    const { updateCommand, addCommand } = await setup()
+    const packagePath = path.join(fixtureDir, 'package.json')
+    const pkg = JSON.parse(await readFile(packagePath, 'utf8'))
+    pkg.dependencies.payload = '^2.0.0'
+    await writeFile(packagePath, JSON.stringify(pkg))
+    const files = [...manifests[0].files, '.payload-components/state.json']
+    const before = await Promise.all(
+      files.map((file) => readFile(path.join(fixtureDir, file), 'utf8')),
+    )
+    await expect(updateCommand({ cwd: fixtureDir })).rejects.toThrow()
+    expect(addCommand).not.toHaveBeenCalled()
+    expect(
+      await Promise.all(files.map((file) => readFile(path.join(fixtureDir, file), 'utf8'))),
+    ).toEqual(before)
+  })
+
+  it('restores source, host files and ownership when installation fails after writes', async () => {
+    const { fixtureDir, manifests } = await installFixture({
+      componentNames: ['hero-basic'],
+      recordedVersion: '0.0.1',
+    })
+    const { updateCommand, addCommand } = await setup()
+    const files = [
+      ...manifests[0].files,
+      ...manifests[0].recovery.patchedFiles,
+      '.payload-components/state.json',
+      'package.json',
+    ]
+    const before = await Promise.all(
+      files.map((file) => readFile(path.join(fixtureDir, file), 'utf8')),
+    )
+    addCommand.mockImplementation(async () => {
+      for (const file of files)
+        await writeFile(path.join(fixtureDir, file), 'interrupted replacement')
+      throw new Error('generator failed')
+    })
+    await expect(updateCommand({ cwd: fixtureDir })).rejects.toThrow('were restored')
+    expect(
+      await Promise.all(files.map((file) => readFile(path.join(fixtureDir, file), 'utf8'))),
+    ).toEqual(before)
+    expect(await exists(path.join(fixtureDir, '.payload-components/update-backup.json'))).toBe(
+      false,
+    )
+  })
+
+  it('keeps a durable backup across interruption and restores binary bytes on explicit recovery', async () => {
+    const { fixtureDir } = await installFixture({ componentNames: ['hero-basic'] })
+    const { createUpdateBackup, assertNoPendingUpdate, restoreUpdateBackup } =
+      await import('../../tools/payload-components/update-backup')
+    const filePath = path.join(fixtureDir, 'bun.lockb')
+    const original = Buffer.from([0, 255, 128, 12])
+    await writeFile(filePath, original, { mode: 0o600 })
+    await createUpdateBackup(fixtureDir, ['bun.lockb', 'new-file.ts'])
+    await writeFile(filePath, 'replacement')
+    await chmod(filePath, 0o644)
+    await writeFile(path.join(fixtureDir, 'new-file.ts'), 'new')
+    await expect(assertNoPendingUpdate(fixtureDir)).rejects.toThrow('update --recover')
+    await restoreUpdateBackup(fixtureDir)
+    expect(await readFile(filePath)).toEqual(original)
+    expect((await stat(filePath)).mode & 0o777).toBe(0o600)
+    expect(await exists(path.join(fixtureDir, 'new-file.ts'))).toBe(false)
   })
 })

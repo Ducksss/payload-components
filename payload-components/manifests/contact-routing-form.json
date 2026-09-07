@@ -1,8 +1,12 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "contact-routing-form",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "changelog": [
+    {
+      "version": "0.2.1",
+      "summary": "Version the current component and shared source, including explicit localization semantics where applicable."
+    },
     {
       "version": "0.2.0",
       "summary": "Moved the eyebrow/title/description heading and the channel shape onto the shared contactFields base now that the Contact family has a sibling variant. Field shape and stored data are unchanged."

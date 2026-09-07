@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Check, Plus } from 'lucide-react'
 
 import { CommandCopyButton } from '@/components/site/CommandCopyButton'
-import { ComponentPreviewThumb } from '@/components/site/ComponentPreviewThumb'
+import type { ReactNode } from 'react'
 import { type componentEntries } from '@/lib/site'
 import { cn } from '@/utilities/ui'
 
@@ -25,6 +25,7 @@ export function ComponentCard({
   component,
   onToggleSelect,
   selected,
+  preview,
 }: {
   className?: string
   component: Component
@@ -32,6 +33,7 @@ export function ComponentCard({
      keeps the card exactly as it renders elsewhere. */
   onToggleSelect?: (slug: string) => void
   selected?: boolean
+  preview: ReactNode
 }) {
   const t = useTranslations('CatalogBrowser')
   const componentT = useTranslations('Components')
@@ -48,7 +50,7 @@ export function ComponentCard({
         className,
       )}
     >
-      <ComponentPreviewThumb slug={component.slug} />
+      {preview}
 
       <div className="flex items-center justify-between gap-3 p-3">
         <div className="min-w-0 flex-1">

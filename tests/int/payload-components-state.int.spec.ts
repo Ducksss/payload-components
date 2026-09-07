@@ -370,4 +370,18 @@ describe('payload-components state', () => {
 
     expect(entries).toEqual(['state.json'])
   })
+  it.each([
+    { version: 99, components: {} },
+    { version: 3, components: [] },
+    { version: 3, components: { 'hero-basic': { status: 'installed' } } },
+  ])('refuses unsupported or malformed ownership state without replacing it', async (state) => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-state-'))
+    tempDirs.push(tempDir)
+    await mkdir(path.join(tempDir, '.payload-components'))
+    const file = path.join(tempDir, '.payload-components/state.json')
+    const source = JSON.stringify(state)
+    await writeFile(file, source)
+    await expect(loadState(tempDir)).rejects.toThrow()
+    expect(await readFile(file, 'utf8')).toBe(source)
+  })
 })

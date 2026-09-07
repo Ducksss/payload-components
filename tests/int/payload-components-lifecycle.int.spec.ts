@@ -90,7 +90,7 @@ const exists = (filePath: string) =>
 
 describe('list', () => {
   it('separates recorded installs from the rest of the catalog', async () => {
-    const { fixtureDir } = await installFixture(['hero-basic'])
+    const { fixtureDir, manifests } = await installFixture(['hero-basic'])
     const read = captureStdout()
 
     await listCommand({ cwd: fixtureDir })
@@ -98,7 +98,7 @@ describe('list', () => {
     const output = read()
 
     expect(output).toContain('Installed:')
-    expect(output).toMatch(/hero-basic\s+0\.1\.0 up to date/)
+    expect(output.replace(/\s+/g, ' ')).toContain(`hero-basic ${manifests[0].version} up to date`)
     expect(output).toContain('Available (')
     expect(output).toContain('  faq-card')
   })
@@ -128,11 +128,11 @@ describe('list', () => {
 
 describe('diff', () => {
   it('reports a clean tree for an untouched install', async () => {
-    const { fixtureDir } = await installFixture(['hero-basic'])
+    const { fixtureDir, manifests } = await installFixture(['hero-basic'])
     const read = captureStdout()
 
     await expect(diffCommand({ cwd: fixtureDir })).resolves.toBe(true)
-    expect(read()).toContain('hero-basic: clean (0.1.0)')
+    expect(read()).toContain(`hero-basic: clean (${manifests[0].version})`)
   })
 
   it('flags a locally edited file and a deleted file', async () => {

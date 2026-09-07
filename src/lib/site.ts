@@ -99,8 +99,6 @@ export const homeMetadataDescription = englishMessages['HomeMetadata']['descript
 /* Hero                                                                */
 /* ------------------------------------------------------------------ */
 
-export const heroEyebrow = englishMessages['Landing']['hero']['eyebrow']
-
 /* The H1 renders primary + accent as one accessible name; the e2e H1
    assertion consumes the concatenated heroHeadline. The OG card renders the
    two parts separately so it can set the accent in Instrument Serif italic
@@ -169,8 +167,6 @@ export const landingSections = {
 /* honest "works with" row is the supported stack.                      */
 /* ------------------------------------------------------------------ */
 
-export const stackBandLede = englishMessages['Landing']['stack']['lede']
-
 export const stackItems = [
   { detail: 'v3', label: 'Payload CMS' },
   { detail: '15 / 16', label: 'Next.js' },
@@ -189,8 +185,6 @@ export const receipts = [
   { icon: 'layers', label: 'Payload 3 · Next 15 / 16' },
   { icon: 'braces', label: 'Open registry JSON at /r/registry.json' },
 ] as const
-
-export const workflowIntro = englishMessages['Landing']['workflow']['intro']
 
 export const workflowSteps = [
   {
@@ -215,8 +209,6 @@ export const workflowSteps = [
 /* Rows mirror the manifest contract: recovery.patchedFiles plus the   */
 /* generate:types / generate:importmap postInstall steps.              */
 /* ------------------------------------------------------------------ */
-
-export const wiringIntro = englishMessages['Landing']['wiring']['intro']
 
 /* Caption under the boundary node map: which of the five a plain paste covers. */
 export const wiringMapCaption =
@@ -370,8 +362,6 @@ export const clientProjects: readonly ClientProject[] = [
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
-export const faqIntro = englishMessages['Landing']['faq']['intro']
-
 export const faqEntries = [
   {
     answer: `Yes — and built to stay that way. The registry, the CLI, all ${componentEntries.length} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.`,
@@ -417,8 +407,6 @@ export const faqEntries = [
 /* Community / CTA                                                     */
 /* ------------------------------------------------------------------ */
 
-export const communityIntro = englishMessages['Landing']['community']['intro']
-
 /* The quiet replacement for placeholder testimonial slots. */
 export const communityInvite = {
   href: githubIssuesUrl,
@@ -460,24 +448,6 @@ export const templatesDescription = englishMessages['Templates']['description']
 export const templatesMetadataTitle = englishMessages['Templates']['metadataTitle']
 export const templatesMetadataDescription = englishMessages['Templates']['metadataDescription']
 
-export const templateCategoryLabels = {
-  agency: 'Agency',
-  civic: 'Civic',
-  commerce: 'Commerce',
-  education: englishMessages['Templates']['categories']['education'],
-  event: 'Event',
-  fintech: 'Fintech',
-  healthcare: englishMessages['Templates']['categories']['healthcare'],
-  marketplace: englishMessages['Templates']['categories']['marketplace'],
-  music: 'Music',
-  nonprofit: englishMessages['Templates']['categories']['nonprofit'],
-  portfolio: englishMessages['Templates']['categories']['portfolio'],
-  'real-estate': englishMessages['Templates']['categories']['real-estate'],
-  restaurant: englishMessages['Templates']['categories']['restaurant'],
-  saas: 'SaaS',
-  trade: 'Trade',
-} as const
-
 /* Detail-page link back into the catalog: templates never gate anything — the
    recipe is the point, and every chip resolves to an installable block. */
 export const templatesRecipeIntro =
@@ -516,24 +486,6 @@ export const templatesContribution = {
 /* ------------------------------------------------------------------ */
 /* Shared navigation surfaces                                          */
 /* ------------------------------------------------------------------ */
-
-export const surfaceLinks = [
-  {
-    description: 'Architecture, install behavior, support matrix, and component contracts.',
-    href: '/docs',
-    title: englishMessages['Common']['documentation'],
-  },
-  {
-    description: 'Current components with exact commands and contracts.',
-    href: '/components',
-    title: englishMessages['Common']['componentCatalog'],
-  },
-  {
-    description: 'What payload-components add wires, step by step.',
-    href: '/docs/installation',
-    title: englishMessages['Footer']['installWorkflow'],
-  },
-] as const
 
 export const communityLinks = [
   {

@@ -2052,3 +2052,48 @@ export const verifyInstalledPayloadFragments = async ({
     missingFragments,
   }
 }
+
+
+/** Patch only the literal collections array directly owned by buildConfig.
+ * Comments, imports and nested plugin options are not registrations. */
+export const setBaseCollections = (source: string) => {
+  const object = findBuildConfigObject(source)
+  if (!object) return undefined
+  const maskedSource = maskIgnoredSource(source)
+  const property = findDirectProperty({ object, propertyName: 'collections', source })
+  if (!property || maskedSource[property.valueStart] !== '[') return undefined
+  const spread = findLastDirectSpread({ object, source })
+  const shorthand = findDirectShorthand({ object, propertyName: 'collections', source })
+  if ((spread !== undefined && spread > property.start) ||
+      (shorthand && shorthand.start > property.start)) return undefined
+  const end = findMatchingDelimiter({ close: ']', maskedSource, open: '[', start: property.valueStart })
+  if (end < 0 || !isDirectValueTerminated({ containerEnd: object.end, maskedSource, valueEnd: end })) return undefined
+  const entries = findDirectArrayEntries({ end, maskedSource, start: property.valueStart })
+    .map((entry) => maskedSource.slice(entry.start, entry.end).trim())
+  // A spread or factory could already contain these slugs. Refuse to guess.
+  if (entries.some((entry) => !/^[A-Za-z_$][\w$]*$/.test(entry))) return undefined
+  const imports: string[] = []
+  const missing: string[] = []
+  for (const name of ['Pages', 'Media']) {
+    const importPath = `./collections/${name}`
+    const range = findNamedImportRange({ importName: name, importPath, source })
+    let binding = name
+    if (range) {
+      const specifiers = maskedSource.slice(range.braceStart + 1, range.braceEnd).split(',').map((part) => part.trim())
+      const specifier = specifiers.find((part) => new RegExp(`^${name}(?:\\s+as\\s+[A-Za-z_$][\\w$]*)?$`).test(part))
+      if (!specifier) return undefined
+      binding = specifier.split(/\s+as\s+/)[1] ?? name
+    } else if (!entries.includes(name)) {
+      // An unrelated binding with this name would make a new import ambiguous.
+      if (new RegExp(`\\b${name}\\b`).test(maskedSource)) return undefined
+      imports.push(`import { ${name} } from '${importPath}'`)
+    }
+    if (!entries.includes(binding)) missing.push(binding)
+  }
+  if (!missing.length) return { source, registered: missing }
+  const insertAt = property.valueStart + 1
+  return {
+    source: `${imports.length ? `${imports.join('\n')}\n` : ''}${source.slice(0, insertAt)}${missing.join(', ')}, ${source.slice(insertAt)}`,
+    registered: missing,
+  }
+}

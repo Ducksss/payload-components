@@ -5,6 +5,7 @@ import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 
 import { JsonLd } from '@/components/seo/JsonLd'
+import { ComponentPreviewThumb } from '@/components/site/ComponentPreviewThumb'
 import { ComponentCatalogBrowser } from '@/components/site/ComponentCatalogBrowser'
 import { Eyebrow } from '@/components/site/section'
 import { SiteFooter } from '@/components/site/SiteFooter'
@@ -143,6 +144,12 @@ export default async function ComponentsPage() {
             githubRepoUrl={githubRepoUrl}
             pages={componentEntries.map(translateComponent)}
             posts={upcomingComponents.map(translateComponent)}
+            previews={Object.fromEntries(
+              componentEntries.map(({ slug }) => [
+                slug,
+                <ComponentPreviewThumb key={slug} slug={slug} />,
+              ]),
+            )}
           />
         </Suspense>
       </main>

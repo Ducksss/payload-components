@@ -1,11 +1,24 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "stats-proof",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "changelog": [
-    { "version": "0.3.0", "summary": "Moved the eyebrow/title heading and the metric shape onto the shared statsFields base now that the Stats family has sibling variants. Field shape and stored data are unchanged." },
-    { "version": "0.2.0", "summary": "Added an optional logoLabel text field that renders when no logo upload is set." },
-    { "version": "0.1.0", "summary": "Initial release." }
+    {
+      "version": "0.3.1",
+      "summary": "Version the current component and shared source, including explicit localization semantics where applicable."
+    },
+    {
+      "version": "0.3.0",
+      "summary": "Moved the eyebrow/title heading and the metric shape onto the shared statsFields base now that the Stats family has sibling variants. Field shape and stored data are unchanged."
+    },
+    {
+      "version": "0.2.0",
+      "summary": "Added an optional logoLabel text field that renders when no logo upload is set."
+    },
+    {
+      "version": "0.1.0",
+      "summary": "Initial release."
+    }
   ],
   "title": "Stats Proof",
   "description": "A proof section pairing narrative, prominent string metrics, and a semantic customer quote.",
