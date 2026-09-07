@@ -980,6 +980,14 @@ describe('Fumadocs site shell', () => {
   })
 
   it('publishes truthful sitemap freshness and a canonical RSS feed', async () => {
+    const [sitemapSource, sourceConfig] = await Promise.all([
+      readFile(path.join(repoRoot, 'src/app/sitemap.ts'), 'utf8'),
+      readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),
+    ])
+    expect(sourceConfig).toContain('lastModified: true')
+    expect(sitemapSource).not.toContain('releaseDates')
+    expect(sitemapSource).not.toContain('new Date()')
+
     const blogPages = [
       {
         data: {
@@ -1001,7 +1009,12 @@ describe('Fumadocs site shell', () => {
       },
     ]
     const sourceMock = () => ({
-      source: { getPages: () => [{ url: '/docs' }] },
+      source: {
+        getPages: () => [
+          { data: { lastModified: new Date('2026-08-30') }, url: '/docs' },
+          { data: {}, url: '/docs/undated' },
+        ],
+      },
     })
     const blogSourceMock = () => ({
       blogSource: { getPages: () => blogPages },
@@ -1022,10 +1035,14 @@ describe('Fumadocs site shell', () => {
     const entries = sitemap()
     const home = entries.find((entry) => entry.url === `${siteUrl}/`)
     const docs = entries.find((entry) => entry.url === `${siteUrl}/docs`)
+    const undatedDocs = entries.find((entry) => entry.url === `${siteUrl}/docs/undated`)
+    const template = entries.find((entry) => entry.url === `${siteUrl}/templates/saas-launch`)
     const blogPost = entries.find((entry) => entry.url === `${siteUrl}/blog/hello`)
 
     expect(home?.lastModified).toBeUndefined()
-    expect(docs?.lastModified).toBeUndefined()
+    expect(docs?.lastModified).toEqual(new Date('2026-08-30'))
+    expect(undatedDocs?.lastModified).toBeUndefined()
+    expect(template?.lastModified).toBeUndefined()
     expect(blogPost?.lastModified).toEqual(new Date('2026-06-18'))
 
     expect(feedModule.escapeXml(`<tag attr="value">Tom & Jerry's</tag>`)).toBe(
