@@ -33,6 +33,16 @@ Start every release from a clean branch and keep the registry source, manifests,
 
   </Step>
   <Step>
+    **Coordinate the CLI package with the site promotion.**
+
+    A site deploy does not publish the CLI. Component manifests and source ship inside the npm package, so new catalog commands require a new package version even when their public registry URLs already work.
+
+    Bump `package.json` on a feature PR into `dev`, run `pnpm test:pack`, and include the version in the production promotion. After that commit reaches `main`, publish a GitHub release whose tag is exactly `v<package.json version>` and points to the reviewed production commit. The Package Publish workflow verifies that relationship and runs the release and packed-artifact gates before publishing to npm.
+
+    Keep the release in progress until the workflow succeeds and `npm view payload-components@latest version` reports the intended version. Test the new commands from that exact published version in a clean supported project, then verify the live registry. If publishing fails, the site can be ahead of the CLI; resolve the failure before announcing the components as available through the CLI.
+
+  </Step>
+  <Step>
     **Verify the hosted registry after deploy.**
 
     ```bash
