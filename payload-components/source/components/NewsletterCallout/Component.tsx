@@ -37,7 +37,7 @@ export function NewsletterCallout({
     >
       <div className={disableInnerContainer ? undefined : 'container mx-auto px-6'}>
         <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-muted/40 p-6 sm:p-10">
-          <h2 id={id ? `${id}-title` : undefined} className="font-serif text-3xl tracking-title">
+          <h2 id={id ? `${id}-title` : undefined} className="font-serif text-3xl tracking-tight">
             {title}
           </h2>
           {description ? (

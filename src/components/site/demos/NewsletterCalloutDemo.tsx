@@ -4,7 +4,7 @@ export function NewsletterCalloutDemo() {
     <div aria-hidden="true" className="bg-background py-12 text-foreground">
       <div className="container mx-auto px-6">
         <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-muted/40 p-6 sm:p-10">
-          <p className="font-serif text-3xl tracking-title">Keep reading</p>
+          <p className="font-serif text-3xl tracking-tight">Keep reading</p>
           <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">
             Get the next article in your inbox.
           </p>
