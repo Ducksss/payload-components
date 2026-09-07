@@ -1,10 +1,10 @@
 import path from 'node:path'
 
-import {
-  compareInstalledFiles,
-  hashSource,
-  resolveRecordedFileHashes,
-} from '../component-files'
+import { prepareComponentInstall } from '../install-preflight'
+import { createUpdateBackup, discardUpdateBackup, restoreUpdateBackup } from '../update-backup'
+import { LOCALIZE_HELPER_FILE } from '../project'
+
+import { compareInstalledFiles, hashSource, resolveRecordedFileHashes } from '../component-files'
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest } from '../manifest'
 import { readSafeProjectFile, removeSafeProjectFile } from '../safe-path'
@@ -32,9 +32,7 @@ type RecordedFileOwner = {
   name: string
 }
 
-const loadRecordedFileOwners = async (
-  state: Awaited<ReturnType<typeof loadState>>,
-) => {
+const loadRecordedFileOwners = async (state: Awaited<ReturnType<typeof loadState>>) => {
   const entries = await Promise.all(
     Object.entries(state.components).map(async ([componentName, installed]) => {
       const manifest = await loadManifest(componentName).catch(() => undefined)
@@ -90,13 +88,10 @@ const formatPlan = ({
     lines.push(
       '',
       `${plan.componentName}: ${plan.recordedVersion} → ${plan.registryVersion}`,
-      ...plan.pendingChangelog.map(
-        (entry) => `  ${entry.version}: ${entry.summary}`,
-      ),
+      ...plan.pendingChangelog.map((entry) => `  ${entry.version}: ${entry.summary}`),
       ...plan.files.map((filePath) => `  ${filePath} (${verb}overwrite)`),
       ...plan.retainedFiles.map(
-        ({ owners, projectPath }) =>
-          `  ${projectPath} (keep — still used by ${owners.join(', ')})`,
+        ({ owners, projectPath }) => `  ${projectPath} (keep — still used by ${owners.join(', ')})`,
       ),
     )
 
@@ -150,9 +145,7 @@ const formatPlan = ({
       }
     }
 
-    lines.push(
-      `  Migrate your existing documents, then re-run with --accept-breaking.`,
-    )
+    lines.push(`  Migrate your existing documents, then re-run with --accept-breaking.`)
   }
 
   if (dryRun) {
@@ -173,13 +166,24 @@ export const updateCommand = async ({
   cwd,
   dryRun = false,
   force = false,
+  recover = false,
 }: {
   acceptBreaking?: boolean
   componentNames?: string[]
   cwd: string
   dryRun?: boolean
   force?: boolean
+  recover?: boolean
 }) => {
+  if (recover) {
+    if (componentNames.length || dryRun || force || acceptBreaking)
+      throw new Error('--recover cannot be combined with component names or other update flags.')
+    await restoreUpdateBackup(cwd)
+    printHeader(
+      'payload-components: restored the saved update files and install state. Reinstall package dependencies if the interrupted command changed node_modules, then retry the update.',
+    )
+    return
+  }
   const inventory = await buildInventory({ cwd })
   const state = await loadState(cwd)
   const recordedOwnership = await loadRecordedFileOwners(state)
@@ -280,8 +284,7 @@ export const updateCommand = async ({
       }
     }
 
-    const unresolvedOwnership =
-      recordedOwnership.unresolved.some((name) => name !== entry.name)
+    const unresolvedOwnership = recordedOwnership.unresolved.some((name) => name !== entry.name)
     const blockedFiles = [
       ...new Set([
         ...fileReport.modified,
@@ -326,12 +329,53 @@ export const updateCommand = async ({
     return
   }
 
-  for (const plan of plans) {
-    for (const projectPath of [...plan.files, ...plan.blockedFiles]) {
-      await removeSafeProjectFile({ cwd, filePath: path.join(cwd, projectPath) })
+  // Validate every selected component before deleting anything in the project.
+  const prepared = await Promise.all(
+    plans.map((plan) => prepareComponentInstall({ cwd, componentName: plan.componentName })),
+  )
+  if (plans.length) {
+    await createUpdateBackup(cwd, [
+      ...plans.flatMap((plan) => [...plan.files, ...plan.blockedFiles]),
+      ...prepared.flatMap(({ plan, project, patchedFiles }) => [
+        ...patchedFiles,
+        ...plan.registryDependencies.map(({ targetFile }) => targetFile),
+        'package.json',
+        project.lockfilePath,
+        // Standard Payload generator outputs; custom scripts may have other side effects.
+        'src/payload-types.ts',
+        'payload-types.ts',
+        'src/app/(payload)/admin/importMap.js',
+        'app/(payload)/admin/importMap.js',
+        LOCALIZE_HELPER_FILE,
+      ]),
+    ])
+    try {
+      for (const plan of plans) {
+        for (const projectPath of [...plan.files, ...plan.blockedFiles]) {
+          await removeSafeProjectFile({ cwd, filePath: path.join(cwd, projectPath) })
+        }
+        await addCommand({
+          componentName: plan.componentName,
+          cwd,
+          localized: plan.localized,
+          allowVersionChange: true,
+        })
+      }
+      await discardUpdateBackup(cwd)
+    } catch (error) {
+      try {
+        await restoreUpdateBackup(cwd)
+      } catch (restoreError) {
+        throw new AggregateError(
+          [error, restoreError],
+          'Update failed and rollback could not finish. The backup was retained; fix the filesystem error and run "payload-components update --recover".',
+        )
+      }
+      throw new Error(
+        `Update failed: ${error instanceof Error ? error.message : String(error)}. Saved source, host files and install state were restored. Package installs and custom generator side effects may need reconciliation.`,
+        { cause: error },
+      )
     }
-
-    await addCommand({ componentName: plan.componentName, cwd, localized: plan.localized })
   }
 
   if (skipped.length > 0 || breaking.length > 0) {

@@ -2,6 +2,8 @@ import { realpathSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { assertNoPendingUpdate } from './update-backup'
+
 import { addCommand } from './commands/add'
 import { addTemplateCommand } from './commands/add-template'
 import { diffCommand } from './commands/diff'
@@ -28,7 +30,7 @@ Usage:
   payload-components localize [component-name...] [--cwd <path>] [--locales <codes>]
                               [--default-locale <code>] [--no-fallback] [--dry-run] [--force]
   payload-components diff [component-name...] [--cwd <path>] [--json]
-  payload-components update [component-name...] [--cwd <path>] [--dry-run] [--force] [--accept-breaking]
+  payload-components update [component-name...] [--cwd <path>] [--dry-run] [--force] [--accept-breaking] [--recover]
   payload-components remove <component-name...> [--cwd <path>] [--dry-run] [--force]
   payload-components seed <component-name> [--cwd <path>]
   payload-components mcp [--cwd <path>]
@@ -57,6 +59,7 @@ Flags:
   --demo  After a successful add, write the demo seed script; with add-template, one per template page.
   --dry-run  Validate and preview an add, localize, update, or remove without changing files or running commands.
   --force  Let localize replace configured locales and wrap edited configs, let update overwrite edits, or let remove delete unverifiable source.
+  --recover  Restore files saved by an interrupted update; preserve any subsequent edits first.
   --accept-breaking  Let update apply a version that changes content already stored in Payload.
   --localized  Install the block, or every block of a template, with its text fields marked localized: true.
   --locales  Comma-separated locale codes for localize, e.g. --locales en,zh,pt-BR.
@@ -166,6 +169,7 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
   let locales: string | undefined
   let localized = false
   let noFallback = false
+  let recover = false
   let scaffold = false
   const positional: string[] = []
 
@@ -279,6 +283,12 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
       continue
     }
 
+    if (current === '--recover') {
+      if (recover) throw new Error('--recover may only be specified once.')
+      recover = true
+      continue
+    }
+
     if (current === '--scaffold') {
       if (scaffold) {
         throw new Error('--scaffold may only be specified once.')
@@ -313,6 +323,7 @@ export const parseArgs = (argv: string[], defaultCwd = process.cwd()) => {
     localized,
     noFallback,
     positional,
+    recover,
     scaffold,
   }
 }
@@ -393,6 +404,7 @@ export const runCli = async ({
     localized,
     noFallback,
     positional,
+    recover,
     scaffold,
   } = parseArgs(argv, defaultCwd)
   const [command, ...rest] = positional
@@ -408,7 +420,10 @@ export const runCli = async ({
       return await run()
     }
 
-    return await withProjectMutationLock({ cwd: mutationCwd, operation, run })
+    return await withProjectMutationLock({ cwd: mutationCwd, operation, run: async () => {
+      if (!recover) await assertNoPendingUpdate(mutationCwd)
+      return await run()
+    } })
   }
 
   if (!command || help) {
@@ -429,7 +444,7 @@ export const runCli = async ({
     new: [],
     seed: [],
     templates: ['json'],
-    update: ['acceptBreaking', 'dryRun', 'force'],
+    update: ['acceptBreaking', 'dryRun', 'force', 'recover'],
   }
 
   if (allowedFlags[command]) {
@@ -438,6 +453,7 @@ export const runCli = async ({
       command,
       flags: {
         acceptBreaking,
+        recover,
         defaultLocale: Boolean(defaultLocale),
         demo,
         dryRun,
@@ -556,6 +572,7 @@ export const runCli = async ({
         cwd,
         dryRun,
         force,
+        ...(recover ? { recover } : {}),
       }),
     )
     return

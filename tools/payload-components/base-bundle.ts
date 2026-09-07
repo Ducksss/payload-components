@@ -1,5 +1,6 @@
 import path from 'node:path'
 
+import { setBaseCollections } from './project'
 import { copySharedSourceFile } from './component-files'
 import { readSafeProjectFile, writeSafeProjectFile } from './safe-path'
 
@@ -32,8 +33,6 @@ export const BASE_BUNDLE_DEPENDENCIES = {
   clsx: '^2.1.1',
   'tailwind-merge': '^3.0.0',
 } as const
-
-const CONFIG_COLLECTIONS_ANCHOR = /collections:\s*\[/
 
 export const copyBaseBundle = async ({ cwd }: { cwd: string }) => {
   const created: string[] = []
@@ -68,31 +67,9 @@ export const registerBaseCollections = async ({
 }) => {
   const configPath = path.join(cwd, configFileRelPath)
   const source = await readSafeProjectFile({ cwd, filePath: configPath })
-  const anchor = CONFIG_COLLECTIONS_ANCHOR.exec(source)
-
-  if (!anchor || anchor.index === undefined) {
-    return { patched: false, reason: 'no-collections-array' as const }
-  }
-
-  const missing = (['Pages', 'Media'] as const).filter(
-    (collection) => !new RegExp(`\\b${collection}\\b`).test(source),
-  )
-
-  if (missing.length === 0) {
-    return { patched: false, reason: 'already-registered' as const }
-  }
-
-  const imports = missing
-    .map((collection) =>
-      collection === 'Pages'
-        ? "import { Pages } from './collections/Pages'"
-        : "import { Media } from './collections/Media'",
-    )
-    .join('\n')
-  const insertAt = anchor.index + anchor[0].length
-  const patched = `${imports}\n${source.slice(0, insertAt)}${missing.join(', ')}, ${source.slice(insertAt)}`
-
-  await writeSafeProjectFile({ contents: patched, cwd, filePath: configPath })
-
-  return { patched: true, reason: 'registered' as const, registered: missing }
+  const result = setBaseCollections(source)
+  if (!result) return { patched: false, reason: 'no-collections-array' as const }
+  if (!result.registered.length) return { patched: false, reason: 'already-registered' as const }
+  await writeSafeProjectFile({ contents: result.source, cwd, filePath: configPath })
+  return { patched: true, reason: 'registered' as const, registered: result.registered }
 }

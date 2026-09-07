@@ -96,8 +96,6 @@ export const homeMetadataDescription =
 /* Hero                                                                */
 /* ------------------------------------------------------------------ */
 
-export const heroEyebrow = 'Open-source Payload block registry'
-
 /* The H1 renders primary + accent as one accessible name; the e2e H1
    assertion consumes the concatenated heroHeadline. The OG card renders the
    two parts separately so it can set the accent in Instrument Serif italic
@@ -165,8 +163,6 @@ export const landingSections = {
 /* honest "works with" row is the supported stack.                      */
 /* ------------------------------------------------------------------ */
 
-export const stackBandLede = 'Installs into the stack you already run'
-
 export const stackItems = [
   { detail: 'v3', label: 'Payload CMS' },
   { detail: '15 / 16', label: 'Next.js' },
@@ -185,9 +181,6 @@ export const receipts = [
   { icon: 'layers', label: 'Payload 3 · Next 15 / 16' },
   { icon: 'braces', label: 'Open registry JSON at /r/registry.json' },
 ] as const
-
-export const workflowIntro =
-  'No scaffolds, no lock-in — plain source plus two scoped patches you can read.'
 
 export const workflowSteps = [
   {
@@ -212,9 +205,6 @@ export const workflowSteps = [
 /* Rows mirror the manifest contract: recovery.patchedFiles plus the   */
 /* generate:types / generate:importmap postInstall steps.              */
 /* ------------------------------------------------------------------ */
-
-export const wiringIntro =
-  'Copying the files is the easy part — the four edits after are where every block, every repo, loses the day.'
 
 /* Caption under the boundary node map: which of the five a plain paste covers. */
 export const wiringMapCaption =
@@ -661,7 +651,7 @@ export const componentEntries = [
     slug: 'call-to-action-signup',
     target: 'Email capture',
     title: 'Call To Action Signup',
-    version: '0.1.0',
+    version: '0.1.1',
   },
   {
     category: 'contact',
@@ -1536,9 +1526,6 @@ export const clientProjects: readonly ClientProject[] = [
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
-export const faqIntro =
-  'The short version of the docs. Every answer links back to something you can verify in the repository.'
-
 export const faqEntries = [
   {
     answer: `Yes — and built to stay that way. The registry, the CLI, all ${componentEntries.length} installable components, and this site are one MIT-licensed repository: no pricing, no license key, no gated tier. Payload Components is community-first by design — the catalog grows from real installs and contributions, not a paid roadmap.`,
@@ -1591,9 +1578,6 @@ export const faqEntries = [
 /* Community / CTA                                                     */
 /* ------------------------------------------------------------------ */
 
-export const communityIntro =
-  'The registry, the CLI, the components, and this site are one MIT-licensed repository. Read the installer before you trust it — that is the point.'
-
 /* The quiet replacement for placeholder testimonial slots. */
 export const communityInvite = {
   href: githubIssuesUrl,
@@ -1617,7 +1601,6 @@ export const catalogTemplatesLinkLabel = 'Explore Payload CMS template concepts'
    `payload-components add` takes any number of names, so the selection maps
    straight onto a single command rather than a list to run one at a time. */
 export const composerTrayLabel = 'Selected components'
-export const composerEmptyHint = 'Select components to build one install command'
 export const composerClearLabel = 'Clear selection'
 export const composerCopyLabel = 'Copy install command'
 export const composerAddLabel = (slug: string) => `Add ${slug} to the install command`
@@ -1629,31 +1612,12 @@ export const composerInstallCommand = (slugs: readonly string[]) =>
 /* Templates showcase                                                  */
 /* ------------------------------------------------------------------ */
 
-export const templatesEyebrow = 'Templates'
 export const templatesTitle = 'Payload CMS template concepts, built from installable blocks'
 export const templatesDescription =
   'Explore complete Payload CMS and Next.js site concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate, music and more. Open every page in a live preview, then trace each section back to a typed block you can install today.'
 export const templatesMetadataTitle = 'Payload CMS Templates for Next.js | Concepts & Recipes'
 export const templatesMetadataDescription =
   'Explore Payload CMS template concepts across fifteen verticals — SaaS, agency, commerce, healthcare, restaurant, real estate and more — preview every page and inspect the typed block recipe.'
-
-export const templateCategoryLabels = {
-  agency: 'Agency',
-  civic: 'Civic',
-  commerce: 'Commerce',
-  education: 'Education',
-  event: 'Event',
-  fintech: 'Fintech',
-  healthcare: 'Healthcare',
-  marketplace: 'Marketplace',
-  music: 'Music',
-  nonprofit: 'Nonprofit',
-  portfolio: 'Portfolio',
-  'real-estate': 'Real estate',
-  restaurant: 'Restaurant',
-  saas: 'SaaS',
-  trade: 'Trade',
-} as const
 
 /* Detail-page link back into the catalog: templates never gate anything — the
    recipe is the point, and every chip resolves to an installable block. */
@@ -1693,24 +1657,6 @@ export const templatesContribution = {
 /* ------------------------------------------------------------------ */
 /* Shared navigation surfaces                                          */
 /* ------------------------------------------------------------------ */
-
-export const surfaceLinks = [
-  {
-    description: 'Architecture, install behavior, support matrix, and component contracts.',
-    href: '/docs',
-    title: 'Documentation',
-  },
-  {
-    description: 'Current components with exact commands and contracts.',
-    href: '/components',
-    title: 'Component catalog',
-  },
-  {
-    description: 'What payload-components add wires, step by step.',
-    href: '/docs/installation',
-    title: 'Install workflow',
-  },
-] as const
 
 export const communityLinks = [
   {

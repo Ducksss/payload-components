@@ -1,18 +1,13 @@
 import path from 'node:path'
 
+import { BASE_BUNDLE_DEPENDENCIES, copyBaseBundle, registerBaseCollections } from '../base-bundle'
 import {
-  BASE_BUNDLE_DEPENDENCIES,
-  copyBaseBundle,
-  registerBaseCollections,
-} from '../base-bundle'
-import { assertSafePackageManagerTargets, installManifestDependencies } from '../dependencies'
+  assertSafePackageManagerTargets,
+  checkDependencyRequirements,
+  installManifestDependencies,
+} from '../dependencies'
 import { resolveSafeProjectPath, safeProjectFileExists } from '../safe-path'
-import {
-  detectPackageManager,
-  getShadcnCommand,
-  printHeader,
-  runCommand,
-} from '../utils'
+import { detectPackageManager, getShadcnCommand, printHeader, runCommand } from '../utils'
 
 // Thin wrapper over `shadcn init` so a consumer can create the `components.json`
 // that `payload-components add` requires. We intentionally do NOT run this from
@@ -29,7 +24,9 @@ const runShadcnInit = async (cwd: string) => {
   const componentsJsonPath = path.join(cwd, 'components.json')
 
   if (await safeProjectFileExists({ cwd, filePath: componentsJsonPath })) {
-    printHeader(`payload-components: components.json already exists in ${cwd}; skipping shadcn init.`)
+    printHeader(
+      `payload-components: components.json already exists in ${cwd}; skipping shadcn init.`,
+    )
 
     return packageManager
   }
@@ -97,10 +94,21 @@ export const initCommand = async ({
   const { created, skipped } = await copyBaseBundle({ cwd })
   const configFileRelPath = await findPayloadConfig(cwd)
 
-  if (created.length > 0) {
+  const dependencyCheck = await checkDependencyRequirements({
+    allowMissing: true,
+    cwd,
+    dependencies: BASE_BUNDLE_DEPENDENCIES,
+    label: 'dependencies',
+  })
+  if (dependencyCheck.missing.length > 0) {
     await installManifestDependencies({
       cwd,
-      dependencies: BASE_BUNDLE_DEPENDENCIES,
+      dependencies: Object.fromEntries(
+        dependencyCheck.missing.map((name) => [
+          name,
+          BASE_BUNDLE_DEPENDENCIES[name as keyof typeof BASE_BUNDLE_DEPENDENCIES],
+        ]),
+      ),
       packageManager,
     })
   }

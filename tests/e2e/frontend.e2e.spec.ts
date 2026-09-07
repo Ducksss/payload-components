@@ -1780,6 +1780,7 @@ test.describe('Reduced motion', () => {
   test.use({ contextOptions: { reducedMotion: 'reduce' } })
 
   test('landing page keeps its desktop and mobile visual contract', async ({ page }) => {
+    test.skip(process.platform !== 'linux', 'Visual baselines use the Linux CI renderer.')
     await page.goto(baseURL)
     await expect(page.getByRole('heading', { level: 1, name: heroHeadline })).toBeVisible()
     await page.evaluate(() => document.fonts.ready)

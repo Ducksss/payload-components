@@ -1,24 +1,17 @@
 import { rm } from 'node:fs/promises'
 import path from 'node:path'
 
-import {
-  checkDependencyRequirements,
-  getRuntimePatchedFiles,
-  installManifestDependencies,
-} from '../dependencies'
-import { resolveInstallPlan } from '../install-plan'
-import { loadManifest } from '../manifest'
+import { prepareComponentInstall } from '../install-preflight'
+
+import { installManifestDependencies } from '../dependencies'
 import {
   applyLocalizedFields,
   applyPayloadFragments,
-  assertManifestSupport,
   detectProject,
   isBlockConfigFile,
   LOCALIZE_HELPER_FILE,
   readPayloadLocalization,
-  resolveRecoveryPatchedFiles,
   verifyInstalledManifestFiles,
-  verifyInstalledPayloadFragments,
 } from '../project'
 import {
   compareInstalledFiles,
@@ -50,7 +43,8 @@ import type {
 
 import { seedCommand } from './seed'
 
-const formatStageError = (error: unknown) => (error instanceof Error ? error.message : 'Unknown error')
+const formatStageError = (error: unknown) =>
+  error instanceof Error ? error.message : 'Unknown error'
 
 const formatFileSummary = (files: string[]) => {
   if (files.length === 0) {
@@ -164,11 +158,13 @@ const formatDryRunPlan = ({
     'No files will be changed, no dependencies will be installed, and no commands will run.',
     '',
     'Component files:',
-    ...plan.files.map((filePath) =>
-      `  ${filePath} (${missingFiles.has(filePath) ? 'would create' : 'already present'})`,
+    ...plan.files.map(
+      (filePath) =>
+        `  ${filePath} (${missingFiles.has(filePath) ? 'would create' : 'already present'})`,
     ),
-    ...plan.registryDependencies.map(({ name, targetFile }) =>
-      `  ${targetFile} (${missingRegistryDependencies.has(targetFile) ? `would install registry dependency ${name}` : `registry dependency ${name} already present`})`,
+    ...plan.registryDependencies.map(
+      ({ name, targetFile }) =>
+        `  ${targetFile} (${missingRegistryDependencies.has(targetFile) ? `would install registry dependency ${name}` : `registry dependency ${name} already present`})`,
     ),
     '',
     'Payload wiring:',
@@ -293,6 +289,7 @@ const installComponent = async ({
   cwd,
   componentName,
   deferLocaleNotice,
+  allowVersionChange,
   dryRun,
   localized,
 }: {
@@ -301,47 +298,23 @@ const installComponent = async ({
   /* Set by a caller installing several blocks at once, which reports the locale
      situation itself rather than repeating it per block. */
   deferLocaleNotice: boolean
+  allowVersionChange: boolean
   dryRun: boolean
   localized: boolean
 }) => {
-  const manifest = await loadManifest(componentName)
-  const project = await detectProject(cwd)
-  const plan = await resolveInstallPlan({ cwd, manifest })
-
-  assertManifestSupport(project, manifest)
-
-  await checkDependencyRequirements({
-    allowMissing: false,
-    cwd,
-    dependencies: plan.peerDependencies,
-    label: 'peerDependencies',
-  })
-
-  const dependencyCheck = await checkDependencyRequirements({
-    allowMissing: true,
-    cwd,
-    dependencies: plan.dependencies,
-    label: 'dependencies',
-  })
-  const fileCheck = await verifyInstalledManifestFiles({
-    cwd,
-    manifest: plan,
-  })
-  const fragmentCheck = await verifyInstalledPayloadFragments({
-    cwd,
-    hostFiles: project.hostFiles,
-    manifest: plan,
-  })
-  const patchedFiles = getRuntimePatchedFiles({
-    dependencies: plan.dependencies,
-    lockfilePath: project.lockfilePath,
-    recoveryPatchedFiles: resolveRecoveryPatchedFiles({
-      hostFiles: project.hostFiles,
-      recoveryPatchedFiles: plan.recovery.patchedFiles,
-    }),
-  })
+  const { manifest, project, plan, dependencyCheck, fileCheck, fragmentCheck, patchedFiles } =
+    await prepareComponentInstall({ cwd, componentName })
   const existingState = await loadState(cwd)
   const installedEntry = existingState.components[manifest.name]
+  if (
+    installedEntry &&
+    installedEntry.manifestVersion !== manifest.version &&
+    !allowVersionChange
+  ) {
+    throw new Error(
+      `"${manifest.name}" is recorded at ${installedEntry.manifestVersion}, but this CLI ships ${manifest.version}. Run "payload-components update ${manifest.name}" to review and apply the upgrade. Existing source and state were preserved.`,
+    )
+  }
   const effectiveLocalized = localized || installedEntry?.localized === true
   const missingRegistryDependencies = fileCheck.missingRegistryDependencies ?? []
   const onDiskInstallValid =
@@ -413,7 +386,9 @@ const installComponent = async ({
       targetId: project.target.id,
     })
 
-    printHeader(`payload-components: "${manifest.name}" is already present. Recorded install state.`)
+    printHeader(
+      `payload-components: "${manifest.name}" is already present. Recorded install state.`,
+    )
     return
   }
 
@@ -469,7 +444,9 @@ const installComponent = async ({
   }
 
   if (fileCheck.missingFiles.length > 0) {
-    const registryOutputDir = await executeStage('registry-build', () => buildRegistry(project.packageManager))
+    const registryOutputDir = await executeStage('registry-build', () =>
+      buildRegistry(project.packageManager),
+    )
     const registryItemPath = path.join(registryOutputDir, `${manifest.registryItemName}.json`)
 
     try {
@@ -512,7 +489,10 @@ const installComponent = async ({
 
   if (dependencyCheck.missing.length > 0) {
     const missingDependencies = Object.fromEntries(
-      dependencyCheck.missing.map((dependencyName) => [dependencyName, plan.dependencies[dependencyName]]),
+      dependencyCheck.missing.map((dependencyName) => [
+        dependencyName,
+        plan.dependencies[dependencyName],
+      ]),
     )
 
     await executeStage('dependency-install', () =>
@@ -598,6 +578,7 @@ export const addCommand = async ({
   cwd,
   componentName,
   deferLocaleNotice = false,
+  allowVersionChange = false,
   demo = false,
   dryRun = false,
   localized = false,
@@ -605,6 +586,8 @@ export const addCommand = async ({
   cwd: string
   componentName: string
   /* For callers installing a whole set — see installComponent. */
+  /* Internal update pipeline only; never exposed as a CLI flag. */
+  allowVersionChange?: boolean
   deferLocaleNotice?: boolean
   demo?: boolean
   dryRun?: boolean
@@ -641,7 +624,14 @@ export const addCommand = async ({
     return
   }
 
-  await installComponent({ cwd, componentName, deferLocaleNotice, dryRun, localized })
+  await installComponent({
+    cwd,
+    componentName,
+    deferLocaleNotice,
+    allowVersionChange,
+    dryRun,
+    localized,
+  })
 
   if (demo && !dryRun) {
     await seedCommand({ cwd, componentName })

@@ -146,10 +146,22 @@ describe('release gate configuration', () => {
       'fresh-payload-smoke',
     ]
 
-    expect(workflow).toMatch(/fresh-payload-smoke:\n\s+runs-on:/)
-    expect(workflow).toMatch(/matrix:\n\s+shard-index: \[0, 1, 2, 3\]/)
+    expect(getWorkflowJob(workflow, 'fresh-payload-smoke')).toContain('needs: changes')
+    const parsed = parse(workflow)
+    const cases = parsed.jobs['fresh-payload-smoke'].strategy.matrix.include
+    expect(cases.filter((entry: { scenario: string }) => entry.scenario === 'bare')).toHaveLength(1)
+    expect(
+      cases
+        .filter((entry: { scenario: string }) => entry.scenario === 'website')
+        .map((entry: { 'shard-index': number }) => entry['shard-index']),
+    ).toEqual([0, 1, 2, 3])
+    expect(parsed.concurrency['cancel-in-progress']).toContain('pull_request')
+    expect(getWorkflowJob(workflow, 'release-gate')).toContain('pnpm test:ci')
+    expect(getWorkflowJob(workflow, 'release-gate')).not.toContain('pnpm test:release')
     expect(workflow).toContain('--shard-index "${{ matrix.shard-index }}"')
-    expect(workflow).toContain('fresh-payload-artifacts-${{ matrix.shard-index }}')
+    expect(workflow).toContain(
+      'fresh-payload-artifacts-${{ matrix.scenario }}-${{ matrix.shard-index }}',
+    )
     expect(workflow).toContain('SMOKE_REGISTRY_URL:')
     expect(workflow).not.toMatch(/^\s+REGISTRY_URL:/m)
     expect(getWorkflowJob(workflow, 'release-gate')).toContain('npm install --global bun@1.3.14')

@@ -184,7 +184,7 @@ describe('payload-components state', () => {
     expect(state.components['hero-basic'].installedAt).toBeTruthy()
   })
 
-  it('falls back to a clean state when state.json is corrupt', async () => {
+  it('preserves corrupt state and refuses to discard ownership', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-state-'))
     tempDirs.push(tempDir)
 
@@ -195,9 +195,10 @@ describe('payload-components state', () => {
       'utf8',
     )
 
-    const state = await loadState(tempDir)
-
-    expect(state).toEqual({ components: {}, version: 3 })
+    await expect(loadState(tempDir)).rejects.toThrow('The file was preserved')
+    expect(await readFile(path.join(tempDir, '.payload-components/state.json'), 'utf8')).toBe(
+      '{ \"components\": { half-written',
+    )
   })
 
   it('records normalized hashes for the files that actually landed on disk', async () => {
@@ -337,5 +338,19 @@ describe('payload-components state', () => {
     const entries = await readdir(path.join(tempDir, '.payload-components'))
 
     expect(entries).toEqual(['state.json'])
+  })
+  it.each([
+    { version: 99, components: {} },
+    { version: 3, components: [] },
+    { version: 3, components: { 'hero-basic': { status: 'installed' } } },
+  ])('refuses unsupported or malformed ownership state without replacing it', async (state) => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-state-'))
+    tempDirs.push(tempDir)
+    await mkdir(path.join(tempDir, '.payload-components'))
+    const file = path.join(tempDir, '.payload-components/state.json')
+    const source = JSON.stringify(state)
+    await writeFile(file, source)
+    await expect(loadState(tempDir)).rejects.toThrow()
+    expect(await readFile(file, 'utf8')).toBe(source)
   })
 })

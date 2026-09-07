@@ -282,13 +282,13 @@ export const resolveSmokeComponents = async (options: SmokeOptions) => {
 
 export const getCreatePayloadAppArgs = ({
   dbConnectionString,
-  payloadVersion,
+  payloadVersion = '3.88.0',
   projectName,
   template = 'website',
 }: CreatePayloadAppArgsInput) => {
   const args = [
     'dlx',
-    'create-payload-app@latest',
+    `create-payload-app@${payloadVersion}`,
     '-n',
     projectName,
     '-t',
@@ -360,7 +360,7 @@ const getRootPackage = async () =>
 
 const getLocalPayloadVersion = async () => {
   const pkg = await getRootPackage()
-  return pkg.dependencies?.payload ?? pkg.devDependencies?.payload
+  return process.env.SMOKE_PAYLOAD_VERSION ?? pkg.dependencies?.payload ?? pkg.devDependencies?.payload ?? '3.88.0'
 }
 
 const exists = async (filePath: string) => {

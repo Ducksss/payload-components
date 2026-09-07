@@ -110,6 +110,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       noFallback: false,
       positional: ['add', 'hero-basic'],
       scaffold: false,
+      recover: false,
     })
   })
 
@@ -131,6 +132,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       noFallback: false,
       positional: ['update', 'hero-basic', 'faq-card'],
       scaffold: false,
+      recover: false,
     })
 
     expect(cli.parseArgs?.(['list', '--json'], '/tmp/workspace')).toEqual({
@@ -145,7 +147,30 @@ describe('payload-components CLI parsing and orchestration', () => {
       noFallback: false,
       positional: ['list'],
       scaffold: false,
+      recover: false,
     })
+  })
+
+  it('routes explicit update recovery and rejects it on unrelated commands', async () => {
+    const commands = makeCommands()
+    await cli.runCli?.({
+      argv: ['update', '--recover'],
+      commands,
+      defaultCwd: '/tmp/workspace',
+      write: vi.fn(),
+    })
+    expect(commands.updateCommand).toHaveBeenCalledWith(
+      expect.objectContaining({ recover: true, cwd: '/tmp/workspace' }),
+    )
+    await expect(
+      cli.runCli?.({
+        argv: ['add', 'hero-basic', '--recover'],
+        commands,
+        defaultCwd: '/tmp/workspace',
+        write: vi.fn(),
+      }),
+    ).rejects.toThrow('--recover cannot be used')
+    expect(commands.addCommand).not.toHaveBeenCalled()
   })
 
   it('rejects unknown flags and missing --cwd values', () => {
@@ -572,6 +597,7 @@ describe('payload-components CLI parsing and orchestration', () => {
       noFallback: false,
       positional: ['localize', 'hero-basic'],
       scaffold: false,
+      recover: false,
     })
   })
 

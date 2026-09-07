@@ -1,6 +1,8 @@
 import { realpath } from 'node:fs/promises'
 import path from 'node:path'
 
+import { assertInstallState } from './state-schema'
+
 import type {
   InstallError,
   InstallState,
@@ -173,16 +175,13 @@ export const loadState = async (cwd: string): Promise<InstallState> => {
       throw error
     }
 
-    // A corrupt / half-written state file shouldn't wedge the CLI. Fall back to a
-    // clean slate — the per-stage dedup and verify logic keep a re-run idempotent.
-    process.stderr.write(
-      `payload-components: ignoring unreadable install state at ${statePath} (${
-        error instanceof Error ? error.message : String(error)
-      }); starting from a clean state.\n`,
+    throw new Error(
+      `Cannot read install state at ${statePath}. The file was preserved. Restore it from a known-good backup before retrying; do not delete it or re-baseline edited source.`,
+      { cause: error },
     )
-
-    return createDefaultState()
   }
+
+  assertInstallState(rawState)
 
   if (rawState.version === 1) {
     return await migrateLegacyState(rawState)

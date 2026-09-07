@@ -114,10 +114,16 @@ test.describe('Analytics consent gate', () => {
     await page.reload()
 
     await expect(page.locator(gatedScripts)).toHaveCount(0)
-    expect(await page.evaluate(() => window.localStorage.getItem('pc_distinct_id'))).toBeNull()
-    expect(
-      await page.evaluate(() => window.sessionStorage.getItem('pc_organic_entry_page')),
-    ).toBeNull()
+    // Server markup already omits gated scripts. Storage cleanup happens in
+    // useConsent's hydration effect, so script absence is not a readiness signal.
+    await expect
+      .poll(() =>
+        page.evaluate(() => ({
+          distinctId: window.localStorage.getItem('pc_distinct_id'),
+          entryPage: window.sessionStorage.getItem('pc_organic_entry_page'),
+        })),
+      )
+      .toEqual({ distinctId: null, entryPage: null })
 
     await context.close()
   })

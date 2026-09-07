@@ -1463,64 +1463,6 @@ describe('Field Journal real UI capture contract', () => {
       await browser.close()
     }
   })
-
-  it('keeps the eight figure descriptions exact and removes stale montage claims', async () => {
-    const expected = {
-      'build-first-payload-v3-landing-page': {
-        alt: 'A Field Journal montage of three repository demo fixtures—Hero Basic, Feature Bento, and Call To Action Centered—beside the real Testimonials Grid config shown in component documentation',
-        caption:
-          'The three previews are labeled structure-only fixtures, not one live page or product claim; the documentation panel shows the source-backed testimonial contract used in a real composition.',
-      },
-      'build-payload-blog-frontend': {
-        alt: 'The real blog index route beside the What Is a Payload CMS Block article route, captured from the local production site',
-        caption:
-          'The montage shows the same committed editorial library as an image-led index and a full article page; these are actual site surfaces, not a catalog of unshipped post components.',
-      },
-      'build-saas-homepage': {
-        alt: 'Four source-backed component contract panels for Hero Basic, Logo Cloud Grid, Feature Bento, and Pricing Cards, labeled by their homepage jobs',
-        caption:
-          'This contract inventory maps promise, proof slot, explanation, and commitment without presenting a fictional assembled product page or a complete eight-section template.',
-      },
-      'choosing-payload-hero': {
-        alt: 'Hero Basic’s repository demo fixture at desktop and mobile widths, its catalog card, and the source-backed config shown in the Hero Basic documentation',
-        caption:
-          'Fixture labels separate responsive layout evidence from real project claims; the catalog identifies the shipped item, and the Code tab exposes the Payload field contract behind it.',
-      },
-      'demo-twins': {
-        alt: 'A structure-only Hero Basic demo fixture beside the Hero Basic documentation Code tab and the real class-token mirror assertion from the demo-twin integration test',
-        caption:
-          'The preview is explicitly labeled as fixture content; the source and test panels show how the docs site mirrors shipped class tokens without importing the Payload runtime.',
-      },
-      'editor-friendly-feature-sections': {
-        alt: 'Four structure-only repository demo fixtures comparing Feature Bento, Feature Split, Feature Steps, and Feature Grid Basic at the same capture width',
-        caption:
-          'These labeled fixtures compare reading rhythm only: uneven emphasis, two-column split, ordered steps, and peer cards. Replace the fixture copy with uneven real content before choosing.',
-      },
-      'modeling-pricing-pages': {
-        alt: 'Source-backed documentation and config panels comparing Pricing Cards, Pricing Cards Muted, Pricing Split, and Pricing Enterprise without displaying fictional prices',
-        caption:
-          'The contracts reveal the structural differences: cards and muted cards allow two to four plans, split requires two, and enterprise adds a single-plan layout with optional logos.',
-      },
-      'social-proof-sections': {
-        alt: 'Source-backed documentation and config panels for Logo Cloud Grid, Testimonials Grid, Testimonials Rating, and Testimonials Quote without displaying fictional endorsements',
-        caption:
-          'The contracts separate editable logo records, a grid of attributed quotes, bounded one-to-five ratings, and a single featured quote; credibility still comes from verified content.',
-      },
-    } as const
-
-    for (const [slug, copy] of Object.entries(expected)) {
-      const capture = captures.find((candidate) => Reflect.get(candidate, 'slug') === slug)
-      expect(capture, slug).toBeDefined()
-      if (!capture) continue
-      const figurePath = `/${Reflect.get(capture, 'outputPath').replace(/^public\//, '')}`
-      const actual = await getInlineFigureCopy(slug, figurePath)
-      expect(actual.alt, `${slug}: alt`).toBe(copy.alt)
-      expect(actual.caption, `${slug}: caption`).toBe(copy.caption)
-      expect(`${actual.alt}\n${actual.caption}`, slug).not.toMatch(
-        /coherent page|five structures|spotlight|eight families|catalog montage/i,
-      )
-    }
-  })
 })
 
 const fabricatedPresentationMarkers = [

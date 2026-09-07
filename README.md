@@ -678,3 +678,24 @@ information.
 [tailwind-url]: https://tailwindcss.com
 [typescript-url]: https://www.typescriptlang.org
 [vitest-url]: https://vitest.dev
+
+### Installer recovery and component releases
+
+`add` repairs the recorded component version. To move to a newer version, use
+`payload-components update <name>`: it validates the selected projects and saves
+source, host files, package files and ownership before replacement. A failed
+update restores that snapshot. If the process was interrupted, preserve any edits
+made afterward, then run `payload-components update --recover` before retrying.
+The backup is `.payload-components/update-backup.json`. Package installation and
+custom generator side effects outside the saved paths may need reconciliation.
+Unreadable install state fails closed; restore it from a known-good backup instead
+of deleting it and losing file ownership.
+
+Maintainers: changing shipped component source (including a shared file) requires
+a version and changelog bump for every affected component, then
+`pnpm registry:snapshot`. Existing published source baselines cannot be overwritten.
+
+New `init --scaffold` Pages collections restrict anonymous reads to published
+Pages. Existing consumer collections are intentionally preserved by scaffolding;
+if yours was scaffolded with `read: () => true`, apply the updated read callback
+from `payload-components/source/base/collections/Pages/index.ts` to protect drafts.
