@@ -90,7 +90,7 @@ Freshness signals must come from maintained source data:
 - RSS `lastBuildDate` is the newest published post date, not request time or build time.
 - Blog sitemap entries use the corresponding post date.
 - The blog index can use the newest post date because its visible inventory changes with that post.
-- Evergreen marketing and docs pages omit `lastModified` until the project has authoritative per-page dates.
+- Docs dates come from Git history. Marketing and template pages omit the field.
 
 Never set every sitemap entry to `new Date()` during a build. That makes unchanged content appear new,
 weakens the meaning of the field, and prevents maintainers from distinguishing a real update.
