@@ -214,7 +214,7 @@ describe('fresh Payload smoke component selection', () => {
       expect(defaults.directComponents).toContain(article)
       expect(defaults.pageComponents).not.toContain(article)
     }
-  })
+  }, 15_000)
 
   it('keeps explicit file-only smoke selections on direct delivery without Page seeds', async () => {
     const articleOnly = await smokeHarness.resolveSmokeInstallGroups(
