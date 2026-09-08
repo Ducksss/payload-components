@@ -1,0 +1,28 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "newsletter-callout",
+  "version": "0.1.0",
+  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "title": "Newsletter Callout",
+  "description": "A newsletter signup callout with a consumer-owned form endpoint.",
+  "registryItemName": "newsletter-callout",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0",
+    "react": "^19.0.0"
+  },
+  "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
+  "supports": { "payloadMajors": [3], "nextMajors": [15, 16] },
+  "files": ["src/components/NewsletterCallout/Component.tsx"],
+  "payloadFragments": [],
+  "postInstall": [],
+  "preview": { "summary": "A newsletter signup callout with a consumer-owned form endpoint." },
+  "sampleContent": {
+    "title": "Keep reading",
+    "description": "Get new articles in your inbox.",
+    "action": "/api/newsletter"
+  },
+  "recovery": { "patchedFiles": [] },
+  "installMode": "file-only"
+}

@@ -808,6 +808,14 @@ const componentEditorialEntries = [
     target: englishMessages.Components['author-card'].target,
     title: englishMessages.Components['author-card'].title,
   },
+  {
+    category: 'newsletter',
+    description: englishMessages.Components['newsletter-callout'].description,
+    fields: ['title', 'description', 'action', 'emailPlaceholder', 'legalText'],
+    slug: 'newsletter-callout',
+    target: englishMessages.Components['newsletter-callout'].target,
+    title: englishMessages.Components['newsletter-callout'].title,
+  },
 ] as const
 
 const editorialBySlug = new Map<string, (typeof componentEditorialEntries)[number]>(
