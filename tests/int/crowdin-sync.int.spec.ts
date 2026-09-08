@@ -5,7 +5,12 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import { getSiteMessages } from '../../src/i18n/message-catalog'
 import { componentEntries, upcomingComponents } from '../../src/lib/component-catalog'
-import { flattenMessages, loadCatalogs, validateCatalogs } from '../../tools/i18n/catalog'
+import {
+  flattenMessages,
+  loadCatalogs,
+  translatedSiteLocales,
+  validateCatalogs,
+} from '../../tools/i18n/catalog'
 import { mergeCrowdinExport, mergeCrowdinMessages } from '../../tools/i18n/merge-crowdin'
 import { translationRegressions } from '../../tools/i18n/translation-regressions'
 
@@ -111,7 +116,7 @@ describe('Crowdin export safety', () => {
     expect(output['Common.copy']).toBe('复制内容')
     expect(output['Components.hero-basic.title']).toBe('基础首屏')
     const { english, catalogs } = await loadCatalogs(dir)
-    expect(validateCatalogs(english, catalogs)).toEqual([])
+    expect(validateCatalogs(english, catalogs, translatedSiteLocales)).toEqual([])
   })
 
   it('validates the entire export before writing merged files', async () => {
@@ -146,7 +151,7 @@ describe('catalog translation rollout', () => {
 
   it('allows English fallback only for catalog prose in the other draft locales', async () => {
     const { english, catalogs } = await loadCatalogs()
-    expect(validateCatalogs(english, catalogs)).toEqual([])
+    expect(validateCatalogs(english, catalogs, translatedSiteLocales)).toEqual([])
     expect(catalogs.fr['Components.hero-basic.title']).toBeUndefined()
     expect(flattenMessages(await getSiteMessages('fr'))['Components.hero-basic.title']).toBe(
       'Hero Basic',
