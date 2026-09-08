@@ -146,7 +146,7 @@ export function CatalogFamilyTeaser() {
           <ArrowRight className="size-4" aria-hidden="true" />
         </Link>
         <Link
-          href="/components"
+          href="/components?type=posts"
           className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
         >
           {t('postComponents')}

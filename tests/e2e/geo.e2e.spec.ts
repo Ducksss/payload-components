@@ -65,9 +65,7 @@ test.describe('AI-readable documentation surfaces', () => {
       /^<\?xml version="1.0" encoding="UTF-8"\?>\n<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9" xmlns:xhtml="http:\/\/www.w3.org\/1999\/xhtml">/,
     )
     expect(sitemapBody).toContain(`<loc>${baseURL}/</loc>`)
-    expect(sitemapBody).toContain(
-      `<xhtml:link rel="alternate" hreflang="zh-CN" href="${baseURL}/zh/docs/installation" />`,
-    )
+    expect(sitemapBody).not.toContain('hreflang="zh-CN"')
     expect(sitemapBody).toContain(
       `<xhtml:link rel="alternate" hreflang="en" href="${baseURL}/docs/installation" />`,
     )
@@ -202,6 +200,87 @@ test.describe('AI-readable documentation surfaces', () => {
     )
   })
 
+  test('blog and template markdown preserve content, negotiation, and indexing boundaries', async ({
+    page,
+    request,
+  }) => {
+    for (const [surface, slug, expected] of [
+      ['blog', 'hello', 'The itch that started this'],
+      ['templates', 'saas-launch', 'npx payload-components add-template saas-launch'],
+    ]) {
+      for (const prefix of ['', '/zh']) {
+        const path = `${prefix}/${surface}/${slug}`
+        const publishedPath = `/${surface}/${slug}`
+        if (prefix) {
+          // Saved language URLs must converge on the currently published
+          // English page, including direct machine-readable routes.
+          for (const route of [
+            path,
+            `${path}.md`,
+            `${prefix}/llms.mdx/${surface}/${slug}/content.md`,
+          ]) {
+            const redirect = await request.get(`${baseURL}${route}`, { maxRedirects: 0 })
+            expect(redirect.status()).toBe(307)
+            expect(new URL(redirect.headers().location, baseURL).pathname).toBe(
+              route.slice(prefix.length),
+            )
+          }
+        }
+        const direct = await request.get(
+          `${baseURL}${prefix}/llms.mdx/${surface}/${slug}/content.md`,
+        )
+        const suffix = await request.get(`${baseURL}${path}.md`)
+        const negotiated = await request.get(`${baseURL}${path}`, {
+          headers: { accept: 'text/markdown' },
+        })
+        for (const response of [direct, suffix, negotiated]) {
+          expect(response.status()).toBe(200)
+          expect(response.headers()['content-type']).toContain('text/markdown')
+          expect(response.headers()['x-robots-tag']).toBe('noindex')
+          expect(await response.text()).toContain(expected)
+        }
+        expect(await suffix.text()).toBe(await direct.text())
+        expect(await negotiated.text()).toBe(await direct.text())
+        expect(negotiated.headers()['vary'].toLowerCase()).toContain('accept')
+        const html = await request.get(`${baseURL}${path}`, { headers: { accept: 'text/html' } })
+        expect(html.headers()['vary'].toLowerCase()).toContain('accept')
+        expect(html.headers()['content-type']).toContain('text/html')
+        await page.goto(`${baseURL}${path}`)
+        await expect(page).toHaveURL(`${baseURL}${publishedPath}`)
+        await expect(page.locator('link[rel="alternate"][type="text/markdown"]')).toHaveAttribute(
+          'href',
+          `${baseURL}${publishedPath}.md`,
+        )
+      }
+      expect((await request.get(`${baseURL}/${surface}/missing-markdown-page.md`)).status()).toBe(
+        404,
+      )
+    }
+    const template = await request.get(`${baseURL}/templates/saas-launch.md`)
+    expect(await template.text()).toContain('## Page plan')
+    expect(await template.text()).toContain('curated copy shown here is not seeded')
+    const preview = await request.get(`${baseURL}/templates/saas-launch/preview`, {
+      headers: { accept: 'text/markdown' },
+    })
+    expect(preview.headers()['content-type']).toContain('text/html')
+  })
+
+  test('article markdown and changelog retain their actual install contracts', async ({
+    request,
+  }) => {
+    const article = await request.get(`${baseURL}/docs/components/post-hero.md`)
+    const text = await article.text()
+    expect(article.status()).toBe(200)
+    expect(text).toContain('File-only installation: no Pages registrations')
+    expect(text).toContain('Template usage: import the installed component')
+    expect(text).not.toContain('Registers the block in')
+    expect(text).not.toContain('Admin usage: add')
+    const changelog = await request.get(`${baseURL}/docs/changelog.md`)
+    expect(changelog.status()).toBe(200)
+    expect(await changelog.text()).toContain('## Post Hero')
+    expect(await changelog.text()).toContain('### v0.1.0')
+  })
+
   test('publishes a dated RSS feed and sitewide trust headers', async ({ page, request }) => {
     const [home, feed] = await Promise.all([
       request.get(`${baseURL}/`),
@@ -215,6 +294,9 @@ test.describe('AI-readable documentation surfaces', () => {
     expect(home.headers()['permissions-policy']).toBe(
       'camera=(), geolocation=(), microphone=(), payment=(), usb=()',
     )
+    expect(home.headers()['content-security-policy']).toContain("default-src 'self'")
+    expect(home.headers()['content-security-policy']).toContain("object-src 'none'")
+    expect(home.headers()['x-powered-by']).toBeUndefined()
 
     expect(feed.ok()).toBe(true)
     expect(feed.headers()['content-type']).toContain('application/rss+xml')

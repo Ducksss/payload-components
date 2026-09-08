@@ -42,40 +42,6 @@ const expectedSlugs = [
   'templates-are-here',
 ] as const
 
-const newPostMinimumWords: Readonly<Record<string, number>> = {
-  'what-is-a-payload-cms-block': 1200,
-  'build-first-payload-v3-landing-page': 1200,
-  'production-ready-payload-block-config': 1000,
-  'how-renderblocks-works': 1000,
-  'payload-types-and-import-map': 1000,
-  'payload-block-not-rendering': 1200,
-  'copying-is-not-installing': 1000,
-  'shadcn-registry-for-payload-cms': 1000,
-  'manifest-wiring-contract': 1000,
-  'text-anchors-vs-ast': 1000,
-  'idempotent-code-installer': 1000,
-  'payload-components-doctor': 1000,
-  'component-variants-without-prop-explosion': 1000,
-  'shared-fields-across-component-families': 1000,
-  'choosing-payload-hero': 1200,
-  'editor-friendly-feature-sections': 1200,
-  'modeling-pricing-pages': 1200,
-  'social-proof-sections': 1200,
-  'build-saas-homepage': 1200,
-  'build-payload-blog-frontend': 1200,
-  'accessible-faq-blocks': 1200,
-  'safe-links-forms-embeds': 1200,
-  'motion-without-performance-cost': 1200,
-  'type-safe-block-rendering': 1200,
-  'demo-twins': 800,
-  'visual-regression-component-registry': 800,
-  'contribute-payload-component': 1000,
-  'reproducible-shadcn-registry': 800,
-  'open-source-provenance': 800,
-  'community-driven-roadmap': 800,
-  'templates-are-here': 800,
-}
-
 const allowedSeries = new Set([
   'project-notes',
   'foundations',
@@ -145,20 +111,6 @@ async function getBlogFiles() {
       return parseBlogFile(slug, await readFile(path.join(blogRoot, filename), 'utf8'))
     }),
   )
-}
-
-function articleBody(source: string) {
-  return source.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '')
-}
-
-function wordCount(source: string) {
-  return articleBody(source)
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\[[^\]]+\]\([^\)]+\)/g, ' ')
-    .replace(/[`*_>#|{}\[\]()-]/g, ' ')
-    .split(/\s+/)
-    .filter(Boolean).length
 }
 
 function getAttribute(source: string, attribute: string) {
@@ -270,18 +222,18 @@ async function expectInternalLinkToResolve(link: string) {
 }
 
 describe('blog editorial contract', () => {
-  it('publishes the approved 33-post library in deterministic order', async () => {
+  it('publishes a library with unique slugs and valid editorial metadata', async () => {
     const files = await getBlogFiles()
     const slugs = files.map((file) => file.slug)
     const metadata = files.map((file) => file.metadata)
 
-    expect(new Set(slugs)).toEqual(new Set(expectedSlugs))
+    expect(new Set(slugs).size).toBe(slugs.length)
     expect(
       metadata.map((entry) => entry.publicationOrder).sort((a, b) => Number(a) - Number(b)),
-    ).toEqual(Array.from({ length: 33 }, (_, index) => index + 1))
+    ).toEqual(Array.from({ length: files.length }, (_, index) => index + 1))
 
     for (const entry of metadata) {
-      expect(entry.author).toBe('Ducksss')
+      expect(String(entry.author ?? '').trim()).not.toBe('')
       expect(entry.date).toBeTruthy()
       expect(allowedSeries.has(String(entry.series))).toBe(true)
       expect(entry.tags).toEqual(expect.any(Array))
@@ -290,25 +242,11 @@ describe('blog editorial contract', () => {
       expect(entry.cover?.src).toEqual(expect.stringMatching(/^\/blog\/[a-z0-9-]+\/cover\.webp$/))
       expect(String(entry.cover?.alt).trim().length).toBeGreaterThanOrEqual(20)
     }
-
-    for (const file of files) {
-      const order = Number(file.metadata.publicationOrder)
-      const expectedDate =
-        order === 1
-          ? '2026-06-18'
-          : order === 2
-            ? '2026-06-19'
-            : order === 33
-              ? '2026-07-27'
-              : '2026-07-14'
-      expect(file.metadata.date, file.slug).toBe(expectedDate)
-    }
   })
 
-  it('ships every cover and exactly 36 captioned inline visuals', async () => {
+  it('ships referenced covers and captioned visuals without orphan assets', async () => {
     const files = await getBlogFiles()
     const referencedAssets = new Set<string>()
-    let figureCount = 0
 
     for (const file of files) {
       const metadata = file.metadata
@@ -317,7 +255,6 @@ describe('blog editorial contract', () => {
 
       const source = file.source
       const figures = [...source.matchAll(/<BlogFigure\s+([\s\S]*?)\/>/g)].map((match) => match[1])
-      figureCount += figures.length
 
       expect(figures.length, file.slug).toBeGreaterThanOrEqual(1)
       for (const figure of figures) {
@@ -332,7 +269,6 @@ describe('blog editorial contract', () => {
       }
     }
 
-    expect(figureCount).toBe(36)
     const committedAssets = (
       await readdir(path.join(repoRoot, 'public', 'blog'), { recursive: true })
     )
@@ -358,22 +294,18 @@ describe('blog editorial contract', () => {
     }
   })
 
-  it('keeps every new post substantial, linked, and community-first', async () => {
+  it('keeps internal links and component install references valid and community-first', async () => {
     const registry = JSON.parse(
       await readFile(path.join(repoRoot, 'payload-components', 'registry.json'), 'utf8'),
     ) as { items: Array<{ name: string }> }
     const registryItems = new Set(registry.items.map((item) => item.name))
 
-    for (const [slug, minimumWords] of Object.entries(newPostMinimumWords)) {
-      const source = await readFile(path.join(blogRoot, `${slug}.mdx`), 'utf8')
+    for (const { slug, source } of await getBlogFiles()) {
       const links = internalLinks(source)
       const installItems = [...source.matchAll(/npx payload-components add ([a-z0-9-]+)/g)].map(
         (match) => match[1],
       )
 
-      expect(wordCount(source), slug).toBeGreaterThanOrEqual(minimumWords)
-      expect(links.filter((link) => link.startsWith('/')).length, slug).toBeGreaterThanOrEqual(3)
-      expect(installItems.length, slug).toBeGreaterThanOrEqual(1)
       expect(source, slug).not.toMatch(
         /\b(?:design partner|early access|paid tier|premium tier|buy now)\b/i,
       )

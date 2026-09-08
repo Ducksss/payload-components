@@ -120,6 +120,9 @@ export const assertSeedableInstall = async ({
   project: DetectedProject
 }) => {
   const manifest = await loadManifest(componentName)
+  if (manifest.installMode === 'file-only') {
+    throw new Error(`"${componentName}" is a file-only article component and has no editor block to seed. Compose it in your article template.`)
+  }
 
   assertManifestSupport(project, manifest)
   const plan = await resolveInstallPlan({ cwd, manifest })

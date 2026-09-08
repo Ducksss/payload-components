@@ -45,7 +45,7 @@ const detectedProject: DetectedProject = {
 
 const defaultState: InstallState = {
   components: {},
-  version: 3,
+  version: 4,
 }
 
 const fixtureDirs: string[] = []
@@ -107,7 +107,7 @@ describe('payload-components add command orchestration', () => {
       missing: [],
       modified: [],
     })
-    const copySharedSourceFile = vi.fn().mockResolvedValue(true)
+    const ensureLocalizationHelper = vi.fn().mockResolvedValue(true)
     const resolveRecordedFileHashes = vi.fn().mockResolvedValue({
       'src/blocks/HeroBasic/Component.tsx': 'component-hash',
       'src/blocks/HeroBasic/config.ts': 'config-hash',
@@ -158,10 +158,13 @@ describe('payload-components add command orchestration', () => {
       return {
         ...actual,
         compareInstalledFiles,
-        copySharedSourceFile,
         resolveRecordedFileHashes,
       }
     })
+    vi.doMock('../../tools/payload-components/localization-helper', () => ({
+      ensureLocalizationHelper,
+      prepareLocalizationHelper: vi.fn().mockResolvedValue([]),
+    }))
     vi.doMock('../../tools/payload-components/dependencies', () => ({
       checkDependencyRequirements,
       getRuntimePatchedFiles,
@@ -209,7 +212,7 @@ describe('payload-components add command orchestration', () => {
         installManifestDependencies,
         installRegistryDependencies,
         installRegistryItem,
-        copySharedSourceFile,
+        ensureLocalizationHelper,
         loadState,
         printHeader,
         recordInstallAttempt,
@@ -435,6 +438,33 @@ describe('payload-components add command orchestration', () => {
     expect(mocks.recordInstalledState).toHaveBeenCalledOnce()
   })
 
+  it('refuses to relabel old installed bytes as a newer component version', async () => {
+    const { addCommand, mocks } = await setup({
+      loadStateValue: {
+        version: 4,
+        components: {
+          'hero-basic': {
+            fileHashes: {},
+            installedAt: null,
+            lastAttemptAt: '2026-09-06',
+            lastError: null,
+            manifestVersion: '0.0.1',
+            patchedFiles: [],
+            registryItemName: 'hero-basic',
+            status: 'installed',
+            targetId: 'payload-website-starter',
+          },
+        },
+      },
+    })
+    await expect(addCommand({ cwd: '/tmp/fixture', componentName: 'hero-basic' })).rejects.toThrow(
+      'payload-components update hero-basic',
+    )
+    expect(mocks.recordInstalledState).not.toHaveBeenCalled()
+    expect(mocks.recordInstallAttempt).not.toHaveBeenCalled()
+    expect(mocks.installRegistryItem).not.toHaveBeenCalled()
+  })
+
   it('retries cleanly from a partial state when files and fragments are already present', async () => {
     const { addCommand, mocks } = await setup({
       loadStateValue: {
@@ -454,7 +484,7 @@ describe('payload-components add command orchestration', () => {
             targetId: 'payload-website-starter',
           },
         },
-        version: 3,
+        version: 4,
       },
     })
 
@@ -500,6 +530,7 @@ describe('payload-components add command orchestration', () => {
               lastAttemptAt: '2026-04-16T00:00:00.000Z',
               lastError: null,
               localized: true,
+              localizationPolicy: 'semantic-v1',
               manifestVersion: '0.1.0',
               patchedFiles: ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts'],
               registryItemName: 'hero-basic',
@@ -507,7 +538,7 @@ describe('payload-components add command orchestration', () => {
               targetId: 'payload-website-starter',
             },
           },
-          version: 3,
+          version: 4,
         },
       })
 
@@ -532,7 +563,7 @@ describe('payload-components add command orchestration', () => {
         configFiles: ['src/blocks/HeroBasic/config.ts'],
         cwd: '/tmp/fixture',
       })
-      expect(mocks.copySharedSourceFile).toHaveBeenCalledOnce()
+      expect(mocks.ensureLocalizationHelper).toHaveBeenCalledOnce()
       expect(mocks.recordInstallAttempt).toHaveBeenCalledWith(
         expect.objectContaining({ localized: true }),
       )
@@ -561,7 +592,7 @@ describe('payload-components add command orchestration', () => {
             targetId: 'payload-website-starter',
           },
         },
-        version: 3,
+        version: 4,
       },
     })
 

@@ -1,12 +1,15 @@
-import { readdir, readFile } from 'node:fs/promises'
+import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 
 import { checkDependencyRequirements } from '../dependencies'
+import { writeCommandOutput } from '../command-output'
+import { BASE_BUNDLE_DEPENDENCIES, inspectBaseBundle } from '../base-bundle'
 import { resolveInstallPlan } from '../install-plan'
 import { loadManifest } from '../manifest'
 import { formatLocaleList, resolveLocales } from '../locales'
 import {
   assertManifestSupport,
+  checkManifestProjectRequirements,
   detectProject,
   readPayloadLocalization,
   verifyInstalledManifestFiles,
@@ -14,6 +17,7 @@ import {
   LOCALIZE_HELPER_FILE,
 } from '../project'
 import { loadState } from '../state'
+import { readSafeProjectFile, safeProjectFileExists } from '../safe-path'
 import { repoRoot } from '../utils'
 
 import { getPayloadConfigFile } from './seed'
@@ -100,14 +104,14 @@ const loadKnownManifests = async () => {
 }
 
 const readPackageJson = async (cwd: string) =>
-  JSON.parse(await readFile(path.join(cwd, 'package.json'), 'utf8')) as PackageJson
+  JSON.parse(
+    await readSafeProjectFile({ cwd, filePath: path.join(cwd, 'package.json') }),
+  ) as PackageJson
 
 const checkPostInstallScripts = async (cwd: string, manifests: ComponentManifest[], log: Log) => {
   const packageJson = await readPackageJson(cwd)
   const scripts = packageJson.scripts ?? {}
-  const requiredScripts = [
-    ...new Set(manifests.flatMap((manifest) => manifest.postInstall)),
-  ].sort()
+  const requiredScripts = [...new Set(manifests.flatMap((manifest) => manifest.postInstall))].sort()
   let isHealthy = true
 
   for (const script of requiredScripts) {
@@ -143,6 +147,19 @@ const checkRecordedComponent = async ({
   let isHealthy = true
   let plan: Awaited<ReturnType<typeof resolveInstallPlan>>
 
+  const requirementFailures = await checkManifestProjectRequirements({ cwd, manifest })
+
+  if (requirementFailures.length === 0) {
+    if (manifest.requires?.projectFiles.length) {
+      log('ok', `${componentName}: project prerequisites`, componentName)
+    }
+  } else {
+    isHealthy = false
+    for (const failure of requirementFailures) {
+      log('error', `${componentName}: ${failure.message}`, componentName)
+    }
+  }
+
   try {
     plan = await resolveInstallPlan({ cwd, manifest })
   } catch (error) {
@@ -151,7 +168,11 @@ const checkRecordedComponent = async ({
       `${componentName}: ${error instanceof Error ? error.message : 'failed to resolve install plan'}`,
       componentName,
     )
-    log('warn', `Run "payload-components add ${componentName}" to retry the install.`, componentName)
+    log(
+      'warn',
+      `Run "payload-components add ${componentName}" to retry the install.`,
+      componentName,
+    )
     return false
   }
 
@@ -162,8 +183,16 @@ const checkRecordedComponent = async ({
       : ''
 
     log('error', `${componentName}: install is partial${errorSuffix}`, componentName)
-    log('warn', `${componentName}: owned component files ${formatRecordedFiles(manifest.files)}`, componentName)
-    log('warn', `${componentName}: patched host files ${formatRecordedFiles(entry.patchedFiles)}`, componentName)
+    log(
+      'warn',
+      `${componentName}: owned component files ${formatRecordedFiles(manifest.files)}`,
+      componentName,
+    )
+    log(
+      'warn',
+      `${componentName}: patched host files ${formatRecordedFiles(entry.patchedFiles)}`,
+      componentName,
+    )
   }
 
   if (entry.manifestVersion !== manifest.version) {
@@ -243,7 +272,11 @@ const checkRecordedComponent = async ({
     log('ok', `${componentName}: files`, componentName)
   } else {
     isHealthy = false
-    log('error', `${componentName}: missing files ${formatList(fileCheck.missingFiles)}`, componentName)
+    log(
+      'error',
+      `${componentName}: missing files ${formatList(fileCheck.missingFiles)}`,
+      componentName,
+    )
   }
 
   if (fileCheck.missingRegistryDependencies.length > 0) {
@@ -273,7 +306,11 @@ const checkRecordedComponent = async ({
   }
 
   if (!isHealthy) {
-    log('warn', `Run "payload-components add ${componentName}" to retry the install.`, componentName)
+    log(
+      'warn',
+      `Run "payload-components add ${componentName}" to retry the install.`,
+      componentName,
+    )
   }
 
   return isHealthy
@@ -295,15 +332,28 @@ const checkLocalization = async ({
   project: DetectedProject
   state: Awaited<ReturnType<typeof loadState>>
 }) => {
-  const recorded = Object.entries(state.components)
+  const recorded = [] as Array<[string, (typeof state.components)[string]]>
+  for (const entry of Object.entries(state.components)) {
+    // Missing catalog entries are reported by the inventory check; do not hide them here.
+    const manifest = await loadManifest(entry[0]).catch(() => null)
+    if (manifest?.installMode !== 'file-only') recorded.push(entry)
+  }
   const localized = recorded.filter(([, entry]) => entry.localized === true).map(([name]) => name)
+  const legacyPolicy = recorded
+    .filter(
+      ([, entry]) => entry.localized === true && entry.localizationPolicy !== 'semantic-v1',
+    )
+    .map(([name]) => name)
+  const missingPolicy = recorded
+    .filter(([, entry]) => entry.localizationPolicy !== 'semantic-v1')
+    .map(([name]) => name)
   const unlocalized = recorded.filter(([, entry]) => entry.localized !== true).map(([name]) => name)
 
   if (localized.length > 0) {
-    const helperPresent = await readFile(path.join(cwd, LOCALIZE_HELPER_FILE)).then(
-      () => true,
-      () => false,
-    )
+    const helperPresent = await safeProjectFileExists({
+      cwd,
+      filePath: path.join(cwd, LOCALIZE_HELPER_FILE),
+    })
 
     if (!helperPresent) {
       log(
@@ -312,6 +362,23 @@ const checkLocalization = async ({
         'localization',
       )
     }
+
+    if (legacyPolicy.length > 0) {
+      log(
+        'warn',
+        `localization: ${legacyPolicy.join(', ')} ${legacyPolicy.length === 1 ? 'uses' : 'use'} the legacy type-inferred field policy — migrate stored localized operational values, then run "payload-components update ${legacyPolicy.join(' ')} --accept-localization-policy-change"`,
+        'localization',
+      )
+    }
+  }
+
+  const safePolicyUpgrade = missingPolicy.filter((name) => !legacyPolicy.includes(name))
+  if (safePolicyUpgrade.length > 0) {
+    log(
+      'warn',
+      `localization: ${safePolicyUpgrade.join(', ')} ${safePolicyUpgrade.length === 1 ? 'is' : 'are'} missing semantic field metadata — run "payload-components update ${safePolicyUpgrade.join(' ')}" before localizing`,
+      'localization',
+    )
   }
 
   const configFileRelPath = await getPayloadConfigFile(project).catch(() => undefined)
@@ -320,7 +387,10 @@ const checkLocalization = async ({
     return
   }
 
-  const source = await readFile(path.join(cwd, configFileRelPath), 'utf8').catch(() => undefined)
+  const source = await readSafeProjectFile({
+    cwd,
+    filePath: path.join(cwd, configFileRelPath),
+  }).catch(() => undefined)
 
   if (source === undefined) {
     return
@@ -475,6 +545,59 @@ const inspectProject = async ({
 
     await checkLocalization({ cwd, log, project, state })
 
+    if (state.base) {
+      const base = await inspectBaseBundle({ cwd, installed: state.base })
+      const baseDependencies = await checkDependencyRequirements({
+        allowMissing: true,
+        cwd,
+        dependencies: BASE_BUNDLE_DEPENDENCIES,
+        label: 'dependencies',
+      }).catch((error) => {
+        log(
+          'error',
+          `starter base: ${error instanceof Error ? error.message : 'dependency check failed'}`,
+          'base',
+        )
+        return undefined
+      })
+
+      if (base.isClean) {
+        log('ok', 'starter base: managed files are current', 'base')
+      } else {
+        if (base.updateAvailable) {
+          log(
+            'error',
+            'starter base: a newer managed base ships with this CLI — run "payload-components init --scaffold"',
+            'base',
+          )
+        }
+
+        if (base.modifiedFiles.length > 0) {
+          log(
+            'error',
+            `starter base: locally modified managed files ${formatList(base.modifiedFiles)} — review them, then keep them or run "payload-components init --scaffold --force"`,
+            'base',
+          )
+        }
+
+        if (base.missingFiles.length > 0) {
+          log(
+            'error',
+            `starter base: missing managed files ${formatList(base.missingFiles)} — run "payload-components init --scaffold"`,
+            'base',
+          )
+        }
+      }
+
+      if (baseDependencies && baseDependencies.missing.length > 0) {
+        log(
+          'error',
+          `starter base: missing dependencies ${formatList(baseDependencies.missing)} — run "payload-components init --scaffold"`,
+          'base',
+        )
+      }
+    }
+
     const entries = Object.entries(state.components)
 
     if (entries.length === 0) {
@@ -530,7 +653,7 @@ export const doctorCommand = async ({
   const exitCode = resolveExitCode(findings)
   const report: DoctorReport = { components, exitCode, findings, healthy: exitCode === 0 }
 
-  process.stdout.write(json ? `${JSON.stringify(report, null, 2)}\n` : renderText(report))
+  writeCommandOutput(json ? `${JSON.stringify(report, null, 2)}\n` : renderText(report))
 
   return exitCode
 }

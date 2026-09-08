@@ -16,14 +16,18 @@ export const CallToActionSignup: Block = {
     {
       name: 'emailPlaceholder',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'submitLabel',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'action',
       type: 'text',
+      required: true,
+      custom: { payloadComponents: { localization: 'global' } },
       validate: validateSameOriginFormAction,
       admin: {
         description: 'Same-origin path where the email form posts, such as /api/newsletter.',

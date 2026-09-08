@@ -3127,6 +3127,62 @@
       ]
     },
     {
+      "name": "collection-query",
+      "type": "registry:block",
+      "title": "Collection Query",
+      "description": "A Pages block that queries the starter Posts collection by category or manual selection and renders grid, list, or featured cards.",
+      "registryDependencies": [
+        "badge",
+        "card"
+      ],
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add collection-query\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/collection-query.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add collection-query` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add collection-query",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/shared/PostCard.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/PostCard.tsx"
+        },
+        {
+          "path": "payload-components/source/blocks/CollectionQuery/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/CollectionQuery/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CollectionQuery/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/CollectionQuery/Component.tsx"
+        },
+        {
+          "path": "payload-components/source/blocks/CollectionQuery/Browser.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/CollectionQuery/Browser.tsx"
+        },
+        {
+          "path": "payload-components/source/blocks/CollectionQuery/query.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/CollectionQuery/query.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CollectionQuery/navigation.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/CollectionQuery/navigation.ts"
+        }
+      ]
+    },
+    {
       "name": "footer-columns",
       "type": "registry:block",
       "title": "Footer Columns",
@@ -3272,6 +3328,128 @@
           "target": "~/src/blocks/FooterCentered/Component.tsx"
         }
       ]
+    },
+    {
+      "name": "contact-form-basic",
+      "type": "registry:block",
+      "title": "Contact Form Basic",
+      "description": "An accessible contact form with name, email, organization, and message fields, inline validation, and confirmed submission feedback.",
+      "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add contact-form-basic\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/contact-form-basic.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add contact-form-basic` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add contact-form-basic",
+          "postInstall": [
+            "generate:types",
+            "generate:importmap"
+          ],
+          "requiresPayloadComponentWrapper": true,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/blocks/ContactFormBasic/config.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContactFormBasic/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContactFormBasic/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContactFormBasic/Component.tsx"
+        },
+        {
+          "path": "payload-components/source/blocks/ContactFormBasic/form.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContactFormBasic/form.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/shared/safeUrls.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/shared/safeUrls.ts"
+        }
+      ],
+      "registryDependencies": []
+    },
+    {
+      "name": "post-hero",
+      "type": "registry:component",
+      "title": "Post Hero",
+      "description": "An editorial article header with title, summary, categories, byline, date, and an optional image slot.",
+      "docs": "File-only article template component. Import PostHero from @/components/PostHero/Component and pass the content explicitly. No Pages or RenderBlocks edits and no generators. Direct install: pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/post-hero.json Optional tracked install in a supported Payload project: payload-components add post-hero.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add post-hero",
+          "postInstall": [],
+          "requiresPayloadComponentWrapper": false,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/components/PostHero/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/PostHero/Component.tsx"
+        }
+      ],
+      "registryDependencies": []
+    },
+    {
+      "name": "author-card",
+      "type": "registry:component",
+      "title": "Author Card",
+      "description": "An article author profile with optional avatar, role, biography, and profile link.",
+      "docs": "File-only article template component. Import AuthorCard from @/components/AuthorCard/Component and pass the content explicitly. No Pages or RenderBlocks edits and no generators. Direct install: pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/author-card.json Optional tracked install in a supported Payload project: payload-components add author-card.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add author-card",
+          "postInstall": [],
+          "requiresPayloadComponentWrapper": false,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/components/AuthorCard/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/AuthorCard/Component.tsx"
+        }
+      ],
+      "registryDependencies": []
+    },
+    {
+      "name": "newsletter-callout",
+      "type": "registry:component",
+      "title": "Newsletter Callout",
+      "description": "A newsletter signup callout with a consumer-owned form endpoint.",
+      "docs": "File-only article template component. Import NewsletterCallout from @/components/NewsletterCallout/Component and pass the content explicitly. Your application owns the form endpoint and subscriber handling. Direct install: pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/newsletter-callout.json Optional tracked install in a supported Payload project: payload-components add newsletter-callout.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add newsletter-callout",
+          "postInstall": [],
+          "requiresPayloadComponentWrapper": false,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/components/NewsletterCallout/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/NewsletterCallout/Component.tsx"
+        }
+      ],
+      "registryDependencies": []
     }
   ]
 }

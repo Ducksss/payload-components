@@ -31,11 +31,13 @@ export const ContentCommunity: Block = {
         {
           name: 'name',
           type: 'text',
+          custom: { payloadComponents: { localization: 'global' } },
           required: true,
         },
         {
           name: 'href',
           type: 'text',
+          custom: { payloadComponents: { localization: 'global' } },
         },
       ],
     },

@@ -84,6 +84,21 @@ Each wrapper manifest in `payload-components/manifests` defines:
 - post-install scripts
 - recovery metadata for patched files
 
+Article template components such as [Post Hero](/docs/components/post-hero) and
+[Author Card](/docs/components/author-card) declare `installMode: 'file-only'`.
+Their registry items use `registry:component`; fragments, post-install scripts, and
+recovery paths must all be empty. Other manifests keep the page-block requirements.
+Direct shadcn installation delivers these standalone React files; the wrapper additionally
+tracks them for `list`, `diff`, `update`, and `remove` in a supported Payload project.
+Neither route changes your Pages collection or renderer. Compose the component in your
+article template and supply public content as props.
+
+Data-driven blocks may also declare `requires.projectFiles`. Exact anchors must occur in
+active source, not comments or string fixtures. A `collectionIdentifiers` requirement checks
+that the named collections are direct entries in `buildConfig({ collections: [...] })`.
+Computed lists and later config overrides cannot be verified and are refused with recovery
+guidance. Collection Query requires both Posts and Categories and their config registration.
+
 ## Support matrix
 
 `payload-components/support-matrix.json` defines the target project shapes the installer understands.

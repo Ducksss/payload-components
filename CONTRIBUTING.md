@@ -117,54 +117,19 @@ shard locally with `pnpm test:fresh -- --shard-index 0`.
 
 ### Visual baselines
 
-`components-visual`, `templates-visual`, `blog-visual`, and the `frontend`
-landing snapshot compare against committed PNGs. Rendering differs per platform,
-so each baseline is committed twice — `*-chromium-darwin.png` (a macOS dev box)
-and `*-chromium-linux.png` (the CI renderer) — and a platform's images can only
-be generated on that platform.
+`components-visual`, `templates-visual`, `blog-visual`, and the landing screenshots
+compare against committed `*-chromium-linux.png` files. Linux CI is the canonical
+renderer. macOS and Windows run browser behavior and accessibility checks but skip
+screenshot comparisons, avoiding duplicate platform images and paired updates.
 
-**Any change that alters what a page renders must update both platforms in the
-same pull request.** Mint darwin locally, then mint linux with the
-`visual-baselines` workflow (`workflow_dispatch`; it opens a PR with the changed
-PNGs against your branch):
+For intended visual changes, run the `visual-baselines` workflow against your
+branch. It opens a PR containing the Linux PNGs. Review the images before merging;
+only keep changes the implementation explains. Use its `update: all` option when
+an intended change is smaller than the usual screenshot comparison tolerance.
 
-```sh
-E2E_PORT=3100 pnpm test:e2e <spec> --update-snapshots
-```
-
-This matters because nothing in CI can catch a half-mint. The specs' coverage
-guard fails on a _missing_ baseline, never a stale one, and `pr-gate` only ever
-renders linux — so a linux-only mint leaves the darwin image showing the old
-design, green on every PR, failing only for whoever next runs the gate on a Mac.
-
-A bare `--update-snapshots` is Playwright's `changed` preset, which rewrites only
-the baselines whose diff exceeded the tolerance. A deliberate visual change that
-lands _under_ it — most colour and spacing nudges do — is therefore skipped, and
-you get the same stale baseline the paragraph above warns about, this time
-without the missing file that would have told you. When the change is meant to be
-visible in the committed PNGs, mint with `--update-snapshots=all` and check the
-result:
-
-```sh
-E2E_PORT=3100 pnpm test:e2e <spec> --update-snapshots=all
-```
-
-`all` rewrites every baseline in the spec, including ones that merely drift
-sub-tolerance against your renderer, so commit the images the change actually
-explains rather than everything the run touched. (`visual-baselines` takes the
-same choice as its `update` input, and its PR needs the same cherry-pick.)
-
-Reviewer checklist: **a diff that touches `*-chromium-linux.png` without the
-matching `*-chromium-darwin.png` (or vice versa) is suspect** — either the other
-platform is now stale, or the change wasn't visual and the PNGs shouldn't be
-there at all. The paired-mint history is auditable with:
-
-```sh
-git log --format='COMMIT %h %s' --name-only -20 -- 'tests/e2e/*-snapshots/*'
-```
-
-Two follow-up commits (a local darwin mint, then the workflow's linux PR) are
-fine and normal; one platform alone, permanently, is the bug.
+The coverage guard fails Linux CI if any component or template lacks its baseline.
+A local non-Linux release gate is therefore incomplete visual validation; the PR
+must also pass the Linux gate.
 
 ### Template accessibility sweep
 
@@ -215,7 +180,7 @@ Pull requests should include:
 
 - A clear description of what changed and why.
 - Screenshots or short notes for visible UI changes.
-- Paired `*-chromium-darwin.png` and `*-chromium-linux.png` updates for any
+- Linux `*-chromium-linux.png` updates for any
   change that alters rendering (see [Visual baselines](#visual-baselines)).
 - The tests/checks you ran.
 - Notes about registry output, target project wiring, or fresh Payload smoke

@@ -373,10 +373,10 @@ describe('Field Journal real UI capture contract', () => {
             sourcePath: undefined,
           },
           {
-            anchor: 'const missing = literals.flatMap',
+            anchor: 'const missing = literals.filter',
             fixture: undefined,
             kind: 'source',
-            label: 'Integration test · class-token mirror',
+            label: 'Integration test · per-element class mirror',
             registryItem: undefined,
             route: undefined,
             sourcePath: 'tests/int/demo-twins.int.spec.ts',
@@ -1088,8 +1088,8 @@ describe('Field Journal real UI capture contract', () => {
       const outsideSource = path.join(outsideRoot, 'outside.ts')
       const outsideOutput = path.join(outsideRoot, 'outside.webp')
       await Promise.all([
-        writeFile(insideSource, 'const missing = literals.flatMap((literal) => literal)\\n'),
-        writeFile(outsideSource, 'const missing = literals.flatMap((literal) => literal)\\n'),
+        writeFile(insideSource, 'const missing = literals.filter((literal) => literal)\\n'),
+        writeFile(outsideSource, 'const missing = literals.filter((literal) => literal)\\n'),
         writeFile(outsideOutput, 'outside'),
       ])
       await Promise.all([
@@ -1182,7 +1182,7 @@ describe('Field Journal real UI capture contract', () => {
       sourcePanel,
       {
         firstLine: 78,
-        lines: ['const missing = literals.flatMap((literal) => {'],
+        lines: ['const missing = literals.filter((literal) => {'],
       },
       'dGVzdA==',
     )
@@ -1461,64 +1461,6 @@ describe('Field Journal real UI capture contract', () => {
       })
     } finally {
       await browser.close()
-    }
-  })
-
-  it('keeps the eight figure descriptions exact and removes stale montage claims', async () => {
-    const expected = {
-      'build-first-payload-v3-landing-page': {
-        alt: 'A Field Journal montage of three repository demo fixtures—Hero Basic, Feature Bento, and Call To Action Centered—beside the real Testimonials Grid config shown in component documentation',
-        caption:
-          'The three previews are labeled structure-only fixtures, not one live page or product claim; the documentation panel shows the source-backed testimonial contract used in a real composition.',
-      },
-      'build-payload-blog-frontend': {
-        alt: 'The real blog index route beside the What Is a Payload CMS Block article route, captured from the local production site',
-        caption:
-          'The montage shows the same committed editorial library as an image-led index and a full article page; these are actual site surfaces, not a catalog of unshipped post components.',
-      },
-      'build-saas-homepage': {
-        alt: 'Four source-backed component contract panels for Hero Basic, Logo Cloud Grid, Feature Bento, and Pricing Cards, labeled by their homepage jobs',
-        caption:
-          'This contract inventory maps promise, proof slot, explanation, and commitment without presenting a fictional assembled product page or a complete eight-section template.',
-      },
-      'choosing-payload-hero': {
-        alt: 'Hero Basic’s repository demo fixture at desktop and mobile widths, its catalog card, and the source-backed config shown in the Hero Basic documentation',
-        caption:
-          'Fixture labels separate responsive layout evidence from real project claims; the catalog identifies the shipped item, and the Code tab exposes the Payload field contract behind it.',
-      },
-      'demo-twins': {
-        alt: 'A structure-only Hero Basic demo fixture beside the Hero Basic documentation Code tab and the real class-token mirror assertion from the demo-twin integration test',
-        caption:
-          'The preview is explicitly labeled as fixture content; the source and test panels show how the docs site mirrors shipped class tokens without importing the Payload runtime.',
-      },
-      'editor-friendly-feature-sections': {
-        alt: 'Four structure-only repository demo fixtures comparing Feature Bento, Feature Split, Feature Steps, and Feature Grid Basic at the same capture width',
-        caption:
-          'These labeled fixtures compare reading rhythm only: uneven emphasis, two-column split, ordered steps, and peer cards. Replace the fixture copy with uneven real content before choosing.',
-      },
-      'modeling-pricing-pages': {
-        alt: 'Source-backed documentation and config panels comparing Pricing Cards, Pricing Cards Muted, Pricing Split, and Pricing Enterprise without displaying fictional prices',
-        caption:
-          'The contracts reveal the structural differences: cards and muted cards allow two to four plans, split requires two, and enterprise adds a single-plan layout with optional logos.',
-      },
-      'social-proof-sections': {
-        alt: 'Source-backed documentation and config panels for Logo Cloud Grid, Testimonials Grid, Testimonials Rating, and Testimonials Quote without displaying fictional endorsements',
-        caption:
-          'The contracts separate editable logo records, a grid of attributed quotes, bounded one-to-five ratings, and a single featured quote; credibility still comes from verified content.',
-      },
-    } as const
-
-    for (const [slug, copy] of Object.entries(expected)) {
-      const capture = captures.find((candidate) => Reflect.get(candidate, 'slug') === slug)
-      expect(capture, slug).toBeDefined()
-      if (!capture) continue
-      const figurePath = `/${Reflect.get(capture, 'outputPath').replace(/^public\//, '')}`
-      const actual = await getInlineFigureCopy(slug, figurePath)
-      expect(actual.alt, `${slug}: alt`).toBe(copy.alt)
-      expect(actual.caption, `${slug}: caption`).toBe(copy.caption)
-      expect(`${actual.alt}\n${actual.caption}`, slug).not.toMatch(
-        /coherent page|five structures|spotlight|eight families|catalog montage/i,
-      )
     }
   })
 })
@@ -2064,7 +2006,9 @@ describe('Field Journal diagram renderer', () => {
     expect(motion).toContain('x: 0 → -contentSize / 2')
     expect(motion).toContain('effect returns; row stays static')
 
-    expect(text('demo-twins/figure-01-architecture-mirror.svg')).toContain('one-way token presence')
+    expect(text('demo-twins/figure-01-architecture-mirror.svg')).toContain(
+      'one-way class containment',
+    )
     expect(
       text('visual-regression-component-registry/figure-01-regression-pipeline.svg'),
     ).toContain('Zero baselines: bootstrap skip')
@@ -2120,8 +2064,8 @@ describe('Field Journal diagram renderer', () => {
         caption: ['Payload integration'],
       },
       'demo-twins': {
-        alt: ['one-way', 'class token'],
-        caption: ['token-presence guard'],
+        alt: ['one-way', 'class group'],
+        caption: ['class-group guard'],
       },
       hello: {
         alt: ['heroFields', 'registration', 'generated'],

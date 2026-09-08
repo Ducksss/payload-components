@@ -45,7 +45,7 @@ const listFilesRecursive = async (dir: string, root = dir): Promise<string[]> =>
     await Promise.all(tempDirs.map((tempDir) => rm(tempDir, { force: true, recursive: true })))
   })
 
-  it('installs hero-basic via the bin from an installed tarball', async () => {
+  it('installs page blocks and article components via the published bin', async () => {
     const packDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-pack-'))
     const toolDir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-tool-'))
     tempDirs.push(packDir, toolDir)
@@ -139,6 +139,64 @@ const listFilesRecursive = async (dir: string, root = dir): Promise<string[]> =>
       component: manifest.name,
       pageId: null,
     })
+
+    // These commands are advertised by the 1.6 catalog. Exercise the installed
+    // artifact so missing bundled manifests or sources cannot pass unnoticed.
+    for (const slug of [
+      'collection-query',
+      'contact-form-basic',
+      'post-hero',
+      'author-card',
+      'newsletter-callout',
+    ]) {
+      const { fixtureDir: targetDir, manifest: component } = await createInstallFixture(slug)
+      tempDirs.push(targetDir)
+      const hosts = ['src/blocks/RenderBlocks.tsx', 'src/collections/Pages/index.ts']
+      const hostsBefore = await Promise.all(
+        hosts.map((file) => readFile(path.join(targetDir, file), 'utf8')),
+      )
+
+      if (component.installMode === 'file-only') {
+        const packagePath = path.join(targetDir, 'package.json')
+        const fixturePackage = JSON.parse(await readFile(packagePath, 'utf8'))
+        fixturePackage.scripts = {
+          'generate:types': 'node -e "process.exit(1)"',
+          'generate:importmap': 'node -e "process.exit(1)"',
+        }
+        await writeFile(packagePath, `${JSON.stringify(fixturePackage, null, 2)}\n`)
+      }
+
+      // Reinstall must preserve unique wiring and a complete install record.
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        await runCommand({
+          args: [cliEntry, 'add', slug, '--cwd', targetDir],
+          captureOutput: true,
+          command: process.execPath,
+          cwd: toolDir,
+          env: process.env,
+          timeoutMs: packCommandTimeoutMs,
+        })
+      }
+
+      if (component.installMode === 'file-only') {
+        expect(
+          await Promise.all(hosts.map((file) => readFile(path.join(targetDir, file), 'utf8'))),
+        ).toEqual(hostsBefore)
+        for (const file of component.files) {
+          expect((await readFile(path.join(targetDir, file), 'utf8')).length).toBeGreaterThan(0)
+        }
+        const state = JSON.parse(
+          await readFile(path.join(targetDir, '.payload-components/state.json'), 'utf8'),
+        )
+        expect(state.components[slug]).toMatchObject({
+          status: 'installed',
+          manifestVersion: component.version,
+          patchedFiles: [],
+        })
+      } else {
+        await expectInstalledComponents(targetDir, [component])
+      }
+    }
 
     // The install must not write into the package dir (it may be read-only under
     // a global npx cache); all writes go to an OS tmpdir and the target project.

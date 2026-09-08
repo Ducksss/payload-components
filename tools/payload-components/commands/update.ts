@@ -1,17 +1,24 @@
-import { readFile, rm } from 'node:fs/promises'
+import { prepareComponentInstall } from '../install-preflight'
+import { createUpdateBackup, discardUpdateBackup, restoreUpdateBackup } from '../update-backup'
+import { LOCALIZE_HELPER_FILE } from '../project'
 import path from 'node:path'
 
 import {
   compareInstalledFiles,
   hashSource,
+  prepareCanonicalComponentFiles,
+  replaceCanonicalComponentFiles,
+  resolveCanonicalFileHashes,
   resolveRecordedFileHashes,
 } from '../component-files'
 import { buildInventory, selectInstalled } from '../inventory'
 import { loadManifest } from '../manifest'
-import { loadState } from '../state'
+import { prepareLocalizationHelper } from '../localization-helper'
+import { readSafeProjectFile } from '../safe-path'
+import { getStatePath, loadState } from '../state'
 
 import type { ChangelogEntry } from '../types'
-import { isPathInside, printHeader } from '../utils'
+import { commitFileChanges, printHeader, type FileChange } from '../utils'
 
 import { addCommand } from './add'
 
@@ -21,6 +28,8 @@ type UpdatePlan = {
   componentName: string
   files: string[]
   localized: boolean
+  localizationPolicyChange: boolean
+  ownershipConflicts: Array<{ owners: string[]; projectPath: string }>
   pendingChangelog: ChangelogEntry[]
   recordedVersion: string
   registryVersion: string
@@ -28,13 +37,12 @@ type UpdatePlan = {
 }
 
 type RecordedFileOwner = {
+  canonicalHash?: string
   hash?: string
   name: string
 }
 
-const loadRecordedFileOwners = async (
-  state: Awaited<ReturnType<typeof loadState>>,
-) => {
+const loadRecordedFileOwners = async (state: Awaited<ReturnType<typeof loadState>>) => {
   const entries = await Promise.all(
     Object.entries(state.components).map(async ([componentName, installed]) => {
       const manifest = await loadManifest(componentName).catch(() => undefined)
@@ -43,8 +51,14 @@ const loadRecordedFileOwners = async (
         installed,
         manifest,
       })
+      const canonicalHashes = manifest
+        ? await resolveCanonicalFileHashes({
+            localized: installed.localized === true,
+            manifest,
+          })
+        : undefined
 
-      return { componentName, fileHashes, manifest }
+      return { canonicalHashes, componentName, fileHashes, manifest }
     }),
   )
   const owners = new Map<string, RecordedFileOwner[]>()
@@ -52,13 +66,17 @@ const loadRecordedFileOwners = async (
     .filter(({ fileHashes, manifest }) => !fileHashes && !manifest)
     .map(({ componentName }) => componentName)
 
-  for (const { componentName, fileHashes, manifest } of entries) {
+  for (const { canonicalHashes, componentName, fileHashes, manifest } of entries) {
     const ownedFiles = fileHashes ? Object.keys(fileHashes) : (manifest?.files ?? [])
 
     for (const projectPath of ownedFiles) {
       owners.set(projectPath, [
         ...(owners.get(projectPath) ?? []),
-        { hash: fileHashes?.[projectPath], name: componentName },
+        {
+          canonicalHash: canonicalHashes?.[projectPath],
+          hash: fileHashes?.[projectPath],
+          name: componentName,
+        },
       ])
     }
   }
@@ -90,13 +108,16 @@ const formatPlan = ({
     lines.push(
       '',
       `${plan.componentName}: ${plan.recordedVersion} → ${plan.registryVersion}`,
-      ...plan.pendingChangelog.map(
-        (entry) => `  ${entry.version}: ${entry.summary}`,
-      ),
+      ...(plan.localizationPolicyChange
+        ? [
+            '  localization policy: legacy type inference → semantic-v1',
+            '  no database migration will run; existing documents must already be migrated',
+          ]
+        : []),
+      ...plan.pendingChangelog.map((entry) => `  ${entry.version}: ${entry.summary}`),
       ...plan.files.map((filePath) => `  ${filePath} (${verb}overwrite)`),
       ...plan.retainedFiles.map(
-        ({ owners, projectPath }) =>
-          `  ${projectPath} (keep — still used by ${owners.join(', ')})`,
+        ({ owners, projectPath }) => `  ${projectPath} (keep — still used by ${owners.join(', ')})`,
       ),
     )
 
@@ -115,6 +136,19 @@ const formatPlan = ({
   }
 
   for (const plan of skipped) {
+    if (plan.ownershipConflicts.length > 0) {
+      lines.push(
+        '',
+        `${plan.componentName}: skipped — shared-file ownership conflict`,
+        ...plan.ownershipConflicts.map(
+          ({ owners, projectPath }) =>
+            `  ${projectPath} (retained owners do not accept these bytes: ${owners.join(', ')})`,
+        ),
+        `  Update the owning components together only when they ship identical bytes.`,
+      )
+      continue
+    }
+
     if (plan.baselineUnavailable) {
       lines.push(
         '',
@@ -150,9 +184,7 @@ const formatPlan = ({
       }
     }
 
-    lines.push(
-      `  Migrate your existing documents, then re-run with --accept-breaking.`,
-    )
+    lines.push(`  Migrate your existing documents, then re-run with --accept-breaking.`)
   }
 
   if (dryRun) {
@@ -162,24 +194,42 @@ const formatPlan = ({
   return lines.join('\n')
 }
 
-/* Re-install a recorded component at the version this CLI ships. Files are
- * deleted first so the registry install rewrites them: `add` treats present
- * files as satisfied, which is right for a fresh install and wrong for an
- * upgrade. Local edits are protected — a modified file blocks the component
- * until the caller passes --force. */
+/* Re-install a recorded component at the version this CLI ships. Source files
+ * are staged and replaced as one batch before add reconciles dependencies,
+ * wiring, generators, and state. Local edits are protected — a modified file
+ * blocks the component until the caller passes --force. */
 export const updateCommand = async ({
   acceptBreaking = false,
+  acceptLocalizationPolicyChange = false,
   componentNames = [],
   cwd,
   dryRun = false,
   force = false,
+  recover = false,
 }: {
   acceptBreaking?: boolean
+  acceptLocalizationPolicyChange?: boolean
   componentNames?: string[]
   cwd: string
   dryRun?: boolean
   force?: boolean
+  recover?: boolean
 }) => {
+  if (recover) {
+    if (
+      componentNames.length ||
+      dryRun ||
+      force ||
+      acceptBreaking ||
+      acceptLocalizationPolicyChange
+    )
+      throw new Error('--recover cannot be combined with component names or other update flags.')
+    await restoreUpdateBackup(cwd)
+    printHeader(
+      'payload-components: restored saved files and install state. Reconcile package installs and custom generator side effects before retrying.',
+    )
+    return true
+  }
   const inventory = await buildInventory({ cwd })
   const state = await loadState(cwd)
   const recordedOwnership = await loadRecordedFileOwners(state)
@@ -197,7 +247,13 @@ export const updateCommand = async ({
   const targets =
     componentNames.length > 0
       ? installed.filter(({ name }) => componentNames.includes(name))
-      : installed.filter((entry) => entry.updateAvailable || entry.installed?.status === 'partial')
+      : installed.filter(
+          (entry) =>
+            entry.updateAvailable ||
+            entry.installed?.status === 'partial' ||
+            (entry.installed?.localized === true &&
+              entry.installed.localizationPolicy !== 'semantic-v1'),
+        )
 
   if (targets.length === 0) {
     printHeader(
@@ -205,7 +261,7 @@ export const updateCommand = async ({
         ? `payload-components: no recorded components in ${cwd}. Nothing to update.`
         : `payload-components: all ${installed.length} recorded component${installed.length === 1 ? '' : 's'} are already at the version this CLI ships.`,
     )
-    return
+    return true
   }
 
   const plans: UpdatePlan[] = []
@@ -219,6 +275,15 @@ export const updateCommand = async ({
 
     if (!installedEntry) {
       throw new Error(`Component "${entry.name}" disappeared from install state while updating.`)
+    }
+
+    const localizationPolicyChange =
+      localized && installedEntry.localizationPolicy !== 'semantic-v1'
+
+    if (localizationPolicyChange && !acceptLocalizationPolicyChange) {
+      throw new Error(
+        `Component "${entry.name}" uses the legacy type-inferred localization policy. The semantic-v1 policy keeps URLs, form actions, prices, metrics, and identifiers global, which can change stored Payload data. Migrate existing documents first, then re-run with --accept-localization-policy-change. No database migration is run automatically.`,
+      )
     }
 
     const baselineHashes = await resolveRecordedFileHashes({
@@ -251,51 +316,17 @@ export const updateCommand = async ({
       localized,
       manifest: { files, registryItemName: manifest.registryItemName },
     })
-    const sharedBaselineConflicts: string[] = []
-
-    for (const projectPath of files) {
-      const otherOwners = (recordedOwnership.owners.get(projectPath) ?? []).filter(
-        ({ name }) => name !== entry.name,
-      )
-
-      if (otherOwners.length === 0) {
-        continue
-      }
-
-      const installedSource = await readFile(path.join(cwd, projectPath), 'utf8').catch(
-        () => undefined,
-      )
-
-      if (otherOwners.some(({ hash }) => !hash)) {
-        sharedBaselineConflicts.push(projectPath)
-        continue
-      }
-
-      if (
-        installedSource !== undefined &&
-        otherOwners.some(({ hash }) => hash !== hashSource(installedSource))
-      ) {
-        sharedBaselineConflicts.push(projectPath)
-      }
-    }
-
-    const unresolvedOwnership =
-      recordedOwnership.unresolved.some((name) => name !== entry.name)
-    const blockedFiles = [
-      ...new Set([
-        ...fileReport.modified,
-        ...sharedBaselineConflicts,
-        ...(unresolvedOwnership ? files : []),
-      ]),
-    ]
+    const blockedFiles = fileReport.modified
     const plan: UpdatePlan = {
-      baselineUnavailable: baselineHashes === undefined || unresolvedOwnership,
+      baselineUnavailable: baselineHashes === undefined,
       blockedFiles,
       componentName: entry.name,
       files: files.filter((filePath) => !blockedFiles.includes(filePath)),
       /* A localized install stays localized: re-running plain `add` would
          rewrite the config without the wrapper and silently drop it. */
       localized,
+      localizationPolicyChange,
+      ownershipConflicts: [],
       pendingChangelog: entry.pendingChangelog,
       recordedVersion: entry.installed?.manifestVersion ?? 'unknown',
       registryVersion: manifest.version,
@@ -319,27 +350,220 @@ export const updateCommand = async ({
     plans.push(plan)
   }
 
+  /* Shared-file consent is evaluated only after local-edit and breaking checks
+   * establish which components will really update. A targeted-but-skipped owner
+   * still counts as retained. Removing one conflicting plan can therefore make
+   * another unsafe, so repeat until the eligible set is stable. */
+  let eligiblePlans = plans
+
+  while (eligiblePlans.length > 0) {
+    const eligibleNames = new Set(eligiblePlans.map(({ componentName }) => componentName))
+    const nextEligible: UpdatePlan[] = []
+    let removedPlan = false
+
+    for (const plan of eligiblePlans) {
+      const manifest = await loadManifest(plan.componentName)
+      const prospectiveHashes = await resolveCanonicalFileHashes({
+        localized: plan.localized,
+        manifest,
+      })
+      const replacementFiles = [...new Set([...plan.files, ...plan.blockedFiles])]
+      const ownershipConflicts: Array<{ owners: string[]; projectPath: string }> = []
+
+      for (const projectPath of replacementFiles) {
+        const otherOwners = (recordedOwnership.owners.get(projectPath) ?? []).filter(
+          ({ name }) => name !== plan.componentName,
+        )
+
+        if (otherOwners.length === 0) {
+          continue
+        }
+
+        const installedSource = await readSafeProjectFile({
+          cwd,
+          filePath: path.join(cwd, projectPath),
+        }).catch(() => undefined)
+        const installedHash =
+          installedSource === undefined ? undefined : hashSource(installedSource)
+        const prospectiveHash = prospectiveHashes?.[projectPath]
+        const conflictingOwners = otherOwners
+          .filter(({ canonicalHash, hash, name }) => {
+            const ownerWillUpdate = eligibleNames.has(name)
+            const acceptedHash = ownerWillUpdate ? canonicalHash : hash
+
+            return (
+              !prospectiveHash ||
+              !acceptedHash ||
+              prospectiveHash !== acceptedHash ||
+              (!ownerWillUpdate && installedHash !== undefined && hash !== installedHash)
+            )
+          })
+          .map(({ name }) => name)
+
+        if (conflictingOwners.length > 0) {
+          ownershipConflicts.push({ owners: conflictingOwners.sort(), projectPath })
+        }
+      }
+
+      const unresolvedOwners = recordedOwnership.unresolved
+        .filter((name) => name !== plan.componentName)
+        .sort()
+
+      if (unresolvedOwners.length > 0) {
+        for (const projectPath of replacementFiles) {
+          const existing = ownershipConflicts.find(
+            (conflict) => conflict.projectPath === projectPath,
+          )
+
+          if (existing) {
+            existing.owners = [...new Set([...existing.owners, ...unresolvedOwners])].sort()
+          } else {
+            ownershipConflicts.push({ owners: unresolvedOwners, projectPath })
+          }
+        }
+      }
+
+      if (ownershipConflicts.length > 0) {
+        plan.ownershipConflicts = ownershipConflicts
+        skipped.push(plan)
+        removedPlan = true
+      } else {
+        nextEligible.push(plan)
+      }
+    }
+
+    eligiblePlans = nextEligible
+
+    if (!removedPlan) {
+      break
+    }
+  }
+
+  plans.splice(0, plans.length, ...eligiblePlans)
+
+  const preparedInstalls = await Promise.all(
+    plans.map((plan) => prepareComponentInstall({ cwd, componentName: plan.componentName })),
+  )
+
   printHeader(formatPlan({ breaking, cwd, dryRun, plans, skipped }))
 
   if (dryRun) {
-    return
+    return true
   }
 
-  for (const plan of plans) {
-    for (const projectPath of [...plan.files, ...plan.blockedFiles]) {
-      const absolutePath = path.join(cwd, projectPath)
+  const helperChanges = plans.some((plan) => plan.localized)
+    ? await prepareLocalizationHelper({
+        acceptLegacyPolicyChange: acceptLocalizationPolicyChange,
+        cwd,
+        migratingComponents: plans.map((plan) => plan.componentName),
+      })
+    : []
 
-      if (!isPathInside(cwd, absolutePath)) {
-        throw new Error(`Refusing to overwrite "${projectPath}" because it resolves outside ${cwd}.`)
+  if (plans.length === 0) return skipped.length === 0 && breaking.length === 0
+  await createUpdateBackup(cwd, [
+    ...plans.flatMap((plan) => [...plan.files, ...plan.blockedFiles]),
+    ...helperChanges.map((change) => path.relative(cwd, change.filePath)),
+    ...preparedInstalls.flatMap(({ plan, project, patchedFiles }) => [
+      ...patchedFiles,
+      ...plan.registryDependencies.map(({ targetFile }) => targetFile),
+      'package.json',
+      project.lockfilePath,
+      'src/payload-types.ts',
+      'payload-types.ts',
+      'src/app/(payload)/admin/importMap.js',
+      'app/(payload)/admin/importMap.js',
+      LOCALIZE_HELPER_FILE,
+    ]),
+  ])
+  try {
+    // A shared policy change affects every owner immediately. Stage all accepted
+    // source updates and their recoverable partial baselines before any generator
+    // runs, so a failed first install cannot strand the remaining legacy configs.
+    if (helperChanges.length > 0) {
+      const changes = new Map<string, FileChange>()
+      const pendingState = await loadState(cwd)
+      for (const plan of plans) {
+        const manifest = await loadManifest(plan.componentName)
+        const currentFiles = new Set(manifest.files)
+        const prepared = await prepareCanonicalComponentFiles({
+          cwd,
+          deleteFiles: [...plan.files, ...plan.blockedFiles].filter(
+            (file) => !currentFiles.has(file),
+          ),
+          localized: plan.localized,
+          manifest,
+        })
+        for (const change of prepared) {
+          const existing = changes.get(change.filePath)
+          if (existing && existing.content !== change.content) {
+            throw new Error(`Conflicting shared-file replacements: ${change.filePath}`)
+          }
+          changes.set(change.filePath, change)
+        }
+        pendingState.components[plan.componentName] = {
+          ...pendingState.components[plan.componentName],
+          fileHashes: Object.fromEntries(
+            prepared
+              .filter((change) => change.content !== null)
+              .map((change) => [
+                path.relative(cwd, change.filePath).split(path.sep).join('/'),
+                hashSource(change.content!),
+              ]),
+          ),
+          localizationPolicy: 'semantic-v1',
+          lastError: null,
+          status: 'partial',
+        }
       }
-
-      await rm(absolutePath, { force: true })
+      await commitFileChanges(
+        [
+          ...changes.values(),
+          ...helperChanges,
+          { filePath: getStatePath(cwd), content: `${JSON.stringify(pendingState, null, 2)}\n` },
+        ],
+        { cwd },
+      )
     }
 
-    await addCommand({ componentName: plan.componentName, cwd, localized: plan.localized })
-  }
+    for (const plan of plans) {
+      const manifest = await loadManifest(plan.componentName)
+      const replacedFiles = [...plan.files, ...plan.blockedFiles]
+      const currentFiles = new Set(manifest.files)
 
-  if (skipped.length > 0 || breaking.length > 0) {
-    process.exitCode = 1
+      if (helperChanges.length === 0) {
+        await replaceCanonicalComponentFiles({
+          cwd,
+          deleteFiles: replacedFiles.filter((projectPath) => !currentFiles.has(projectPath)),
+          localized: plan.localized,
+          manifest,
+        })
+      }
+
+      await addCommand({
+        ...(plan.localizationPolicyChange ? { acceptLocalizationPolicyChange: true } : {}),
+        componentName: plan.componentName,
+        cwd,
+        localized: plan.localized,
+        prewrittenFiles: manifest.files.filter((projectPath) =>
+          replacedFiles.includes(projectPath),
+        ),
+      })
+    }
+
+    await discardUpdateBackup(cwd)
+  } catch (error) {
+    try {
+      await restoreUpdateBackup(cwd)
+    } catch (restoreError) {
+      throw new AggregateError(
+        [error, restoreError],
+        'Update failed and rollback could not finish. Backup retained; fix the filesystem error and run "payload-components update --recover".',
+      )
+    }
+    throw new Error(
+      `Update failed: ${error instanceof Error ? error.message : String(error)}. Saved source, host files and install state were restored. Reconcile package installs and custom generator side effects.`,
+      { cause: error },
+    )
   }
+  return skipped.length === 0 && breaking.length === 0
 }

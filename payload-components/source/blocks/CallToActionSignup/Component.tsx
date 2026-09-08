@@ -24,7 +24,39 @@ export const CallToActionSignupBlock: React.FC<Props> = ({
   submitLabel,
   title,
 }) => {
-  const formAction = getSafeFormAction(action) ?? '#'
+  const formAction = getSafeFormAction(action)
+  const resolvedSubmitLabel = submitLabel || 'Get Started'
+  const configurationStatusId = React.useId()
+  const signupControl = (
+    <>
+      <div className="relative grid grid-cols-[1fr_auto] items-center rounded-frame border border-border/70 bg-background/80 pe-2">
+        <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-5 text-muted-foreground" />
+
+        <input
+          aria-describedby={formAction ? undefined : configurationStatusId}
+          aria-label={emailPlaceholder || 'Email address'}
+          autoComplete="email"
+          className="h-12 w-full bg-transparent ps-11 text-sm focus:outline-none"
+          disabled={!formAction}
+          name="email"
+          placeholder={emailPlaceholder || 'Your email address'}
+          required
+          type="email"
+        />
+
+        <Button disabled={!formAction} type="submit">
+          <span className="sr-only sm:not-sr-only">{resolvedSubmitLabel}</span>
+          <SendHorizonal className="size-4 sm:hidden" strokeWidth={2} aria-hidden="true" />
+        </Button>
+      </div>
+
+      {!formAction ? (
+        <p id={configurationStatusId} role="status" className="mt-2 text-sm text-muted-foreground">
+          Signup unavailable. Add a valid same-origin form action in Payload.
+        </p>
+      ) : null}
+    </>
+  )
 
   return (
     <section className={cn('container', className)} id={id ? `block-${id}` : undefined}>
@@ -40,26 +72,15 @@ export const CallToActionSignupBlock: React.FC<Props> = ({
             <p className="text-base leading-7 text-muted-foreground sm:text-lg">{description}</p>
           ) : null}
 
-          <form action={formAction} className="mt-2 w-full max-w-sm" method="post">
-            <div className="relative grid grid-cols-[1fr_auto] items-center rounded-frame border border-border/70 bg-background/80 pe-2">
-              <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-5 text-muted-foreground" />
-
-              <input
-                aria-label={emailPlaceholder || 'Email address'}
-                autoComplete="email"
-                className="h-12 w-full bg-transparent ps-11 text-sm focus:outline-none"
-                name="email"
-                placeholder={emailPlaceholder || 'Your email address'}
-                required
-                type="email"
-              />
-
-              <Button aria-label="Subscribe" type="submit">
-                <span className="hidden sm:block">{submitLabel || 'Get Started'}</span>
-                <SendHorizonal className="size-4 sm:hidden" strokeWidth={2} />
-              </Button>
+          {formAction ? (
+            <form action={formAction} className="mt-2 w-full max-w-sm" method="post">
+              {signupControl}
+            </form>
+          ) : (
+            <div className="mt-2 w-full max-w-sm" role="group">
+              {signupControl}
             </div>
-          </form>
+          )}
         </div>
       </div>
     </section>

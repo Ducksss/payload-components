@@ -1,0 +1,77 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "contact-form-basic",
+  "version": "0.1.0",
+  "changelog": [
+    {
+      "version": "0.1.0",
+      "summary": "Initial release."
+    }
+  ],
+  "title": "Contact Form Basic",
+  "description": "An accessible contact form with name, email, organization, and message fields, inline validation, and confirmed submission feedback.",
+  "registryItemName": "contact-form-basic",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": [
+    "payload-website-starter",
+    "payload-blocks-app"
+  ],
+  "supports": {
+    "payloadMajors": [
+      3
+    ],
+    "nextMajors": [
+      15,
+      16
+    ]
+  },
+  "files": [
+    "src/blocks/ContactFormBasic/config.ts",
+    "src/blocks/ContactFormBasic/Component.tsx",
+    "src/blocks/ContactFormBasic/form.ts",
+    "src/blocks/shared/safeUrls.ts"
+  ],
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "ContactFormBasicBlock",
+      "importPath": "@/blocks/ContactFormBasic/Component",
+      "blockSlug": "contactFormBasic"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "ContactFormBasic",
+      "importPath": "../../blocks/ContactFormBasic/config",
+      "blockName": "ContactFormBasic"
+    }
+  ],
+  "postInstall": [
+    "generate:types",
+    "generate:importmap"
+  ],
+  "preview": {
+    "summary": "A generous two-column contact section with editable labels and an accessible form."
+  },
+  "sampleContent": {
+    "blockType": "contactFormBasic",
+    "title": "Good work starts with a conversation.",
+    "description": "Tell us what you have in mind. We\u2019ll help you find the right next step.",
+    "action": "/api/contact",
+    "submitLabel": "Send message",
+    "successMessage": "Thanks for reaching out. Your message has been received.",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "organizationLabel": "Organization",
+    "messageLabel": "Message"
+  },
+  "recovery": {
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
+  }
+}

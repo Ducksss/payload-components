@@ -10,8 +10,8 @@ import { Section, SectionHeading } from '@/components/site/section'
 import { localizeHref, normalizeSiteLocale } from '@/i18n/config'
 import { landingSections } from '@/lib/site'
 
-/* The catalog — the real components rendered live (specimen first, dense
- * index second), no screenshots. */
+/* The catalog — backend-free, source-mirrored specimens rendered live
+ * (specimen first, dense index second), no screenshots. */
 export function CatalogSection() {
   const locale = normalizeSiteLocale(useLocale())
   const t = useTranslations('Landing.catalog')

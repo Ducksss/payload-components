@@ -18,10 +18,13 @@ export async function ComponentWiring({ slug }: { slug: string }) {
     patched.find((p) => p.includes('RenderBlocks')) ?? 'src/blocks/RenderBlocks.tsx'
   const sharedFile = manifest.files.find((file) => file.includes('/shared/'))
 
-  const edits: { action: string; file: string }[] = [
-    { action: 'Registers the block', file: pagesPath },
-    { action: 'Maps the renderer', file: renderPath },
-  ]
+  const edits: { action: string; file: string }[] = []
+  if (manifest.payloadFragments.some((fragment) => fragment.kind === 'pagesLayout')) {
+    edits.push({ action: 'Registers the block', file: pagesPath })
+  }
+  if (manifest.payloadFragments.some((fragment) => fragment.kind === 'renderBlocks')) {
+    edits.push({ action: 'Maps the renderer', file: renderPath })
+  }
   if (manifest.postInstall.includes('generate:types')) {
     edits.push({ action: 'Regenerates types', file: 'src/payload-types.ts' })
   }
@@ -58,49 +61,58 @@ export async function ComponentWiring({ slug }: { slug: string }) {
         </ul>
       </div>
 
-      <div>
-        <p className="mb-3 text-sm leading-6 text-muted-foreground">
-          …and makes {edits.length} edits to wire the block into your project:
-        </p>
-        <div className="overflow-hidden rounded-lg border border-border">
-          <table className="hidden w-full text-left text-sm sm:table">
-            <tbody className="divide-y divide-border">
+      {edits.length ? (
+        <div>
+          <p className="mb-3 text-sm leading-6 text-muted-foreground">
+            …and makes {edits.length} edits to wire the block into your project:
+          </p>
+          <div className="overflow-hidden rounded-lg border border-border">
+            <table className="hidden w-full text-left text-sm sm:table">
+              <tbody className="divide-y divide-border">
+                {edits.map((edit) => (
+                  <tr key={edit.action}>
+                    <td className="whitespace-nowrap px-4 py-2.5 font-medium text-foreground">
+                      {edit.action}
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <code className="font-mono text-[13px] text-muted-foreground">
+                        {edit.file}
+                      </code>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="divide-y divide-border sm:hidden">
               {edits.map((edit) => (
-                <tr key={edit.action}>
-                  <td className="whitespace-nowrap px-4 py-2.5 font-medium text-foreground">
-                    {edit.action}
-                  </td>
-                  <td className="px-4 py-2.5">
-                    <code className="font-mono text-[13px] text-muted-foreground">{edit.file}</code>
-                  </td>
-                </tr>
+                <div key={edit.action} className="flex flex-col gap-1 px-4 py-2.5 text-sm">
+                  <span className="font-medium">{edit.action}</span>
+                  <code className="break-all font-mono text-[13px] text-muted-foreground">
+                    {edit.file}
+                  </code>
+                </div>
               ))}
-            </tbody>
-          </table>
-          <div className="divide-y divide-border sm:hidden">
-            {edits.map((edit) => (
-              <div key={edit.action} className="flex flex-col gap-1 px-4 py-2.5 text-sm">
-                <span className="font-medium">{edit.action}</span>
-                <code className="break-all font-mono text-[13px] text-muted-foreground">
-                  {edit.file}
-                </code>
-              </div>
-            ))}
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <p className="text-sm leading-6 text-muted-foreground">
+          This file-only article component adds no Pages registration, renderer mapping, or
+          generated files. Compose it in your article template using the example below.
+        </p>
+      )}
 
       {sharedFile ? (
         <Callout type="info">
-          <code className="font-mono text-[13px]">{sharedFile.split('/').pop()}</code> is the shared
-          field core for this family — every variant composes it. Editing it updates each installed
-          block at once, and re-running an install never overwrites a copy you have changed.
+          <code className="font-mono text-[13px]">{sharedFile.split('/').pop()}</code> is shared
+          source for this component family. Components that install the same path reuse that local
+          copy, and re-running an install never overwrites a copy you have changed.
         </Callout>
       ) : null}
 
       <p className="text-sm leading-6 text-muted-foreground">
-        Re-running the install converges: it detects existing wiring, skips it, and records install
-        state in <code className="font-mono text-[13px]">.payload-components/state.json</code>.
+        Re-running the CLI install detects existing source and wiring, then records install state in{' '}
+        <code className="font-mono text-[13px]">.payload-components/state.json</code>.
       </p>
     </div>
   )

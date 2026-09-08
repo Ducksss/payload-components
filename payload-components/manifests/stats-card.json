@@ -1,8 +1,17 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "stats-card",
-  "version": "0.1.0",
-  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "version": "0.1.1",
+  "changelog": [
+    {
+      "version": "0.1.1",
+      "summary": "Version the current component and shared source, including explicit localization semantics where applicable."
+    },
+    {
+      "version": "0.1.0",
+      "summary": "Initial release."
+    }
+  ],
   "title": "Stats Card",
   "description": "A centred stats band whose metrics sit in one divided panel that splits into equal columns on wider screens, installed as a wired Payload block.",
   "registryItemName": "stats-card",

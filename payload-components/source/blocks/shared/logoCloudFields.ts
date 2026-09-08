@@ -21,6 +21,7 @@ export const logoCloudFields: Field[] = [
   {
     name: 'heading',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
   {
@@ -42,11 +43,13 @@ export const logoCloudFields: Field[] = [
       {
         name: 'name',
         type: 'text',
+        custom: { payloadComponents: { localization: 'global' } },
         required: true,
       },
       {
         name: 'href',
         type: 'text',
+        custom: { payloadComponents: { localization: 'global' } },
       },
     ],
   },

@@ -88,9 +88,10 @@ wired path.
 
 ## Write the fixed-shape component page
 
-Add `content/docs/components/<slug>.mdx` with title, description, and icon frontmatter. Add the entry
-to `componentEntries` in `src/lib/site.ts`; the docs header, catalog card, metadata chips, and tests
-derive from that source.
+Add `content/docs/components/<slug>.mdx` with title, description, and icon frontmatter. Add its
+editorial entry to `componentEditorialEntries` in `src/lib/component-catalog.ts`, then run
+`pnpm catalog:build`; the docs header, catalog card, metadata chips, and tests derive from that
+projection and the registry manifests.
 
 Follow the prescribed body order: ComponentPreview, Installation tabs, ComponentWiring, hand-authored
 Content model, ComponentUsage, ComponentRequirements, and ComponentFamily only when siblings exist.

@@ -1,8 +1,12 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "call-to-action-split",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "changelog": [
+    {
+      "version": "0.1.1",
+      "summary": "Version the current component and shared source, including explicit localization semantics where applicable."
+    },
     {
       "version": "0.1.0",
       "summary": "Initial release."

@@ -22,11 +22,13 @@ export const HeroAurora: Block = {
         {
           name: 'value',
           type: 'text',
+          custom: { payloadComponents: { localization: 'global' } },
           required: true,
         },
         {
           name: 'label',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],
@@ -40,6 +42,7 @@ export const HeroAurora: Block = {
     {
       name: 'imageCaption',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'proofItems',
@@ -51,6 +54,7 @@ export const HeroAurora: Block = {
         {
           name: 'label',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],

@@ -73,6 +73,17 @@ The component runtime is external. A component installs into a supported Payload
 - `Pages` collection layout fragments
 - `generate:types` and `generate:importmap` post-install tasks
 
+Post Hero and Author Card are explicit file-only exceptions for article templates. They
+install under `src/components/` and accept content through React props. Import them into
+your existing post template; they add no collection fields, Pages registrations, or
+`RenderBlocks` entries. Your template owns queries, public author data, draft handling,
+and localization. Collection Query remains a wired Pages block for article listings.
+
+A bare Payload app can establish the required host files with
+`payload-components init --scaffold` before installing blocks. This explicit setup copies
+the starter base and preserves existing files; follow its registration guidance and run
+`doctor` before adding components.
+
 ## CLI and database boundary
 
 `payload-components add <component>` owns five idempotent install stages in the

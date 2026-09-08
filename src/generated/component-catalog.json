@@ -1,0 +1,333 @@
+{
+  "components": [
+    {
+      "slug": "hero-basic",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "hero-split",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "hero-video",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "hero-product-tilt",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "hero-aurora",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "hero-kinetic",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "feature-grid-basic",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "feature-split",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "feature-bento",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "feature-steps",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "feature-accordion",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "feature-cards-media",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "feature-icon-grid",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "embed-basic",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "logo-cloud-grid",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "logo-cloud-hover",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "logo-cloud-marquee",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "logo-cloud-inline",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "logo-cloud-inline-wrap",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-columns",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-image-lead",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-feature-media",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-feature-split",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-showcase",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-quote",
+      "version": "0.2.1"
+    },
+    {
+      "slug": "content-community",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "integration-grid",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "integration-cluster",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "integration-split",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "integration-connect",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "integration-orbit",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "integration-list",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "integration-marquee",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "integration-testimonial",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-split-rows",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-rows",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-image-frame",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-stats",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-list",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-list-columns",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "content-list-icons",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "call-to-action-centered",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "call-to-action-boxed",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "call-to-action-split",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "call-to-action-signup",
+      "version": "0.1.2"
+    },
+    {
+      "slug": "contact-routing-form",
+      "version": "0.2.1"
+    },
+    {
+      "slug": "contact-channels",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "team-roster",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "team-grid",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "team-bios",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "faq-accordion",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "faq-split",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "faq-card",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "faq-icons",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "faq-grouped",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "faq-grid",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "comparator-table",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "comparator-grid",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "comparator-stack",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "testimonials-quote",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "testimonials-spotlight",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "testimonials-grid",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "testimonials-rating",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "testimonials-bento",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "testimonials-wall",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "stats-proof",
+      "version": "0.3.1"
+    },
+    {
+      "slug": "stats-grid",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "stats-card",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "stats-inline",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "pricing-cards",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "pricing-cards-muted",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "pricing-cards-cta",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "pricing-split",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "pricing-enterprise",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "collection-query",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "footer-columns",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "footer-simple",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "footer-centered",
+      "version": "0.1.1"
+    },
+    {
+      "slug": "contact-form-basic",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "post-hero",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "author-card",
+      "version": "0.1.0"
+    },
+    {
+      "slug": "newsletter-callout",
+      "version": "0.1.0"
+    }
+  ],
+  "version": 1
+}

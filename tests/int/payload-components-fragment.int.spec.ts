@@ -98,6 +98,21 @@ const pagesLayoutFragment: Extract<PayloadFragment, { kind: 'pagesLayout' }> = {
 }
 
 describe('applyPayloadFragments — renderBlocks', () => {
+  it('validates every host file before committing any of them', async () => {
+    const invalidPages = CANONICAL_PAGES_LAYOUT.replace("name: 'layout'", "name: 'body'")
+    const dir = await makeProject({
+      pagesLayout: invalidPages,
+      renderBlocks: CANONICAL_RENDER_BLOCKS,
+    })
+
+    await expect(
+      applyPayloadFragments(dir, [renderBlocksFragment, pagesLayoutFragment]),
+    ).rejects.toThrow('layout')
+
+    expect(await readRenderBlocks(dir)).toBe(CANONICAL_RENDER_BLOCKS)
+    expect(await readPagesLayout(dir)).toBe(invalidPages)
+  })
+
   it('wires the import and registration into the canonical blockComponents object', async () => {
     const dir = await makeProject({ renderBlocks: CANONICAL_RENDER_BLOCKS })
 

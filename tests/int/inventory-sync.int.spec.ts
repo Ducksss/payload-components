@@ -3,6 +3,8 @@ import path from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
+import { getUsage } from '../../tools/payload-components/cli'
+
 const repoRoot = process.cwd()
 
 const readRegistryNames = async (): Promise<string[]> => {
@@ -46,12 +48,9 @@ const extractReadmeInventoryNames = (source: string): string[] => {
 
 describe('documented component inventory stays in sync with the registry', () => {
   it('lists every registry item, in order, in the CLI help output', async () => {
-    const [registryNames, cliSource] = await Promise.all([
-      readRegistryNames(),
-      readFile(path.join(repoRoot, 'tools', 'payload-components', 'cli.ts'), 'utf8'),
-    ])
+    const [registryNames, cliHelp] = await Promise.all([readRegistryNames(), getUsage()])
 
-    expect(extractCliHelpNames(cliSource)).toEqual(registryNames)
+    expect(extractCliHelpNames(cliHelp)).toEqual(registryNames)
   })
 
   it('lists every registry item, in order, in the README inventory table', async () => {

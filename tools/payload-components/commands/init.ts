@@ -1,12 +1,18 @@
-import { access } from 'node:fs/promises'
 import path from 'node:path'
 
 import {
   BASE_BUNDLE_DEPENDENCIES,
-  copyBaseBundle,
+  getBaseBundleVersion,
   registerBaseCollections,
+  syncBaseBundle,
 } from '../base-bundle'
-import { installManifestDependencies } from '../dependencies'
+import {
+  assertSafePackageManagerTargets,
+  checkDependencyRequirements,
+  installManifestDependencies,
+} from '../dependencies'
+import { resolveSafeProjectPath, safeProjectFileExists } from '../safe-path'
+import { loadState, recordBaseBundleState } from '../state'
 import {
   detectPackageManager,
   getShadcnCommand,
@@ -26,14 +32,18 @@ const runShadcnInit = async (cwd: string) => {
      is already initialized, so re-running it would re-prompt for choices the
      project has made — and it would make `init --scaffold` non-idempotent for no
      reason. */
-  try {
-    await access(path.join(cwd, 'components.json'))
-    printHeader(`payload-components: components.json already exists in ${cwd}; skipping shadcn init.`)
+  const componentsJsonPath = path.join(cwd, 'components.json')
+
+  if (await safeProjectFileExists({ cwd, filePath: componentsJsonPath })) {
+    printHeader(
+      `payload-components: components.json already exists in ${cwd}; skipping shadcn init.`,
+    )
 
     return packageManager
-  } catch {
-    // Not initialized yet — fall through and run shadcn init.
   }
+
+  await resolveSafeProjectPath({ cwd, targetPath: componentsJsonPath })
+  await assertSafePackageManagerTargets({ cwd, packageManager })
 
   const shadcn = getShadcnCommand(packageManager)
 
@@ -49,9 +59,7 @@ const runShadcnInit = async (cwd: string) => {
      or a non-interactive shell that cannot answer one. Scaffolding on top of
      that would leave a project that still cannot install anything, while
      reporting success. Stop here instead. */
-  try {
-    await access(path.join(cwd, 'components.json'))
-  } catch {
+  if (!(await safeProjectFileExists({ cwd, filePath: componentsJsonPath }))) {
     throw new Error(
       [
         `shadcn init finished without creating components.json in ${cwd}.`,
@@ -66,11 +74,8 @@ const runShadcnInit = async (cwd: string) => {
 
 const findPayloadConfig = async (cwd: string) => {
   for (const candidate of ['src/payload.config.ts', 'payload.config.ts']) {
-    try {
-      await access(path.join(cwd, candidate))
+    if (await safeProjectFileExists({ cwd, filePath: path.join(cwd, candidate) })) {
       return candidate
-    } catch {
-      // Try the next candidate.
     }
   }
 
@@ -79,9 +84,11 @@ const findPayloadConfig = async (cwd: string) => {
 
 export const initCommand = async ({
   cwd,
+  force = false,
   scaffold = false,
 }: {
   cwd: string
+  force?: boolean
   scaffold?: boolean
 }) => {
   const packageManager = await runShadcnInit(cwd)
@@ -97,20 +104,51 @@ export const initCommand = async ({
     return
   }
 
-  const { created, skipped } = await copyBaseBundle({ cwd })
+  const state = await loadState(cwd)
+  const baseVersion = await getBaseBundleVersion()
   const configFileRelPath = await findPayloadConfig(cwd)
+  const dependencyCheck = await checkDependencyRequirements({
+    allowMissing: true,
+    cwd,
+    dependencies: BASE_BUNDLE_DEPENDENCIES,
+    label: 'dependencies',
+  })
 
-  if (created.length > 0) {
+  if (dependencyCheck.missing.length > 0) {
     await installManifestDependencies({
       cwd,
-      dependencies: BASE_BUNDLE_DEPENDENCIES,
+      dependencies: Object.fromEntries(
+        dependencyCheck.missing.map((name) => [
+          name,
+          BASE_BUNDLE_DEPENDENCIES[name as keyof typeof BASE_BUNDLE_DEPENDENCIES],
+        ]),
+      ),
       packageManager,
     })
   }
 
+  /* Dependency compatibility is a precondition for the scaffold, not a later
+   * repair step. In particular, an incompatible declared version must fail
+   * before any managed files are written into the consumer project. */
+  const { adopted, created, fileHashes, kept, modified, removed, updated } = await syncBaseBundle({
+    cwd,
+    force,
+    recordedFileHashes: state.base?.fileHashes,
+  })
+
   const registration = configFileRelPath
     ? await registerBaseCollections({ configFileRelPath, cwd })
     : undefined
+  const recordedBaseVersion = modified.length > 0 && state.base ? state.base.version : baseVersion
+
+  await recordBaseBundleState({
+    cwd,
+    fileHashes,
+    installedAt: state.base?.installedAt,
+    /* A locally edited owned file was deliberately not upgraded. Retain the
+     * old contract version so diff/doctor continue to flag the incomplete run. */
+    version: recordedBaseVersion,
+  })
 
   printHeader(
     [
@@ -118,9 +156,28 @@ export const initCommand = async ({
       '',
       created.length > 0 ? 'Created:' : 'Created nothing — every file was already present.',
       ...created.map((filePath) => `  ${filePath}`),
-      ...(skipped.length > 0
-        ? ['', 'Kept your existing:', ...skipped.map((filePath) => `  ${filePath}`)]
+      ...(updated.length > 0
+        ? ['', 'Updated:', ...updated.map((filePath) => `  ${filePath}`)]
         : []),
+      ...(removed.length > 0
+        ? ['', 'Removed retired managed files:', ...removed.map((filePath) => `  ${filePath}`)]
+        : []),
+      ...(adopted.length > 0
+        ? ['', 'Adopted matching starter files:', ...adopted.map((filePath) => `  ${filePath}`)]
+        : []),
+      ...(kept.length > 0
+        ? ['', 'Kept your existing implementations:', ...kept.map((filePath) => `  ${filePath}`)]
+        : []),
+      ...(modified.length > 0
+        ? [
+            '',
+            'Kept locally edited managed files:',
+            ...modified.map((filePath) => `  ${filePath}`),
+            '  Re-run with --force only if those edits should be replaced by the current starter base.',
+          ]
+        : []),
+      '',
+      `Recorded starter base: ${recordedBaseVersion}`,
     ].join('\n'),
   )
 

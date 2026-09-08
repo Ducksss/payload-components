@@ -4,7 +4,15 @@ import createNextIntlPlugin from 'next-intl/plugin'
 const deployFreshHeaders = [
   {
     key: 'Cache-Control',
-    value: 'public, max-age=0, stale-while-revalidate=30',
+    value: 'public, max-age=0, must-revalidate',
+  },
+  {
+    key: 'CDN-Cache-Control',
+    value: 'public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=604800',
+  },
+  {
+    key: 'Vercel-CDN-Cache-Control',
+    value: 'public, s-maxage=300, stale-while-revalidate=86400, stale-if-error=604800',
   },
 ]
 
@@ -22,7 +30,41 @@ const crawlMetadataHeaders = [
   },
 ]
 
+const isDevelopment = process.env.NODE_ENV === 'development'
+
+const postHogOrigin = (() => {
+  try {
+    const origin = new URL(process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com')
+      .origin
+
+    return origin.startsWith('https://') ? origin : null
+  } catch {
+    return null
+  }
+})()
+
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval' https://va.vercel-scripts.com" : ''} https://www.googletagmanager.com`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com",
+  "font-src 'self' data:",
+  `connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com${postHogOrigin ? ` ${postHogOrigin}` : ''}`,
+  "frame-src 'self' https://*.airtable.com https://*.google.com https://*.typeform.com https://*.vimeo.com https://*.youtube.com https://*.youtube-nocookie.com",
+  "media-src 'self' blob:",
+  "worker-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'self'",
+  "manifest-src 'self'",
+].join('; ')
+
 const securityHeaders = [
+  {
+    key: 'Content-Security-Policy',
+    value: contentSecurityPolicy,
+  },
   {
     key: 'Strict-Transport-Security',
     value: 'max-age=31536000; includeSubDomains',
@@ -48,6 +90,7 @@ const securityHeaders = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   devIndicators: false,
+  poweredByHeader: false,
   async headers() {
     return [
       {

@@ -487,6 +487,7 @@
      reduced-motion guard below neutralizes it. */
   .logo-cloud-marquee-track {
     animation: logo-marquee 32s linear infinite;
+    animation-play-state: paused;
   }
 
   /* Integration Marquee: three duplicated logo rows, the middle one reversed.
@@ -494,10 +495,18 @@
      reduced-motion guard below neutralizes them. */
   .integration-marquee-track {
     animation: logo-marquee 36s linear infinite;
+    animation-play-state: paused;
   }
 
   .integration-marquee-track-reverse {
     animation: logo-marquee-reverse 36s linear infinite;
+    animation-play-state: paused;
+  }
+
+  [data-marquee-active='true'] > .logo-cloud-marquee-track,
+  [data-marquee-active='true'] > .integration-marquee-track,
+  [data-marquee-active='true'] > .integration-marquee-track-reverse {
+    animation-play-state: running;
   }
 
   /* Integration Orbit: rings spin only while the group is hovered, so nothing
@@ -757,6 +766,26 @@
     font-style: italic;
     letter-spacing: -0.015em;
     color: var(--foreground);
+  }
+
+  /* Script-aware display type: Instrument Serif only contains Latin glyphs,
+     and tight Latin tracking harms Arabic, Hebrew, CJK, and Thai shaping. */
+  html[data-script='arabic'] .hero-headline,
+  html[data-script='hebrew'] .hero-headline,
+  html[data-script='cjk'] .hero-headline,
+  html[data-script='thai'] .hero-headline {
+    line-height: 1.08;
+    letter-spacing: 0;
+  }
+
+  [data-content-script='arabic'] .script-aware-serif-accent,
+  [data-content-script='hebrew'] .script-aware-serif-accent,
+  [data-content-script='cjk'] .script-aware-serif-accent,
+  [data-content-script='cyrillic'] .script-aware-serif-accent,
+  [data-content-script='thai'] .script-aware-serif-accent {
+    font-family: var(--font-sans);
+    font-style: normal;
+    letter-spacing: 0;
   }
 
   /* Product-proof window: soft ground shadow. The perpetual float loop was

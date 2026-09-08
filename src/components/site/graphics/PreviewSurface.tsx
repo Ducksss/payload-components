@@ -6,11 +6,11 @@ import { cn } from '@/utilities/ui'
 /* A framed live-preview surface — the generalised sibling of ComponentSpecimen.
  * Wraps a demo twin (sized by DemoFitFrame's zoom, so the card grows with the
  * twin) in the same "technical drawing" chrome: an optional mono file/label
- * header, a "rendered from source" badge, and an optional caption. The twin is
+ * header, a source-mirrored badge, and an optional caption. The twin is
  * presentational already; the surface reinforces aria-hidden and adds no
  * heading tags, so it never pollutes the page's h1/h2 outline. */
 export function PreviewSurface({
-  badge = 'Rendered from source',
+  badge = 'Source-mirrored specimen',
   caption,
   children,
   className,

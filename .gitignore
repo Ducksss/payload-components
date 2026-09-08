@@ -33,3 +33,7 @@ playwright/.cache/
 # OS/editor noise
 .DS_Store
 .claude/worktrees/
+
+# Linux CI is the canonical visual renderer.
+tests/e2e/*-snapshots/*-darwin.png
+tests/e2e/*-snapshots/*-win32.png

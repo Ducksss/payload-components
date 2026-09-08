@@ -1,0 +1,54 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "post-hero",
+  "version": "0.1.0",
+  "changelog": [
+    {
+      "version": "0.1.0",
+      "summary": "Initial release."
+    }
+  ],
+  "title": "Post Hero",
+  "description": "An editorial article header with title, summary, categories, byline, date, and an optional image slot.",
+  "registryItemName": "post-hero",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0",
+    "react": "^19.0.0"
+  },
+  "supportedTargets": [
+    "payload-website-starter",
+    "payload-blocks-app"
+  ],
+  "supports": {
+    "payloadMajors": [
+      3
+    ],
+    "nextMajors": [
+      15,
+      16
+    ]
+  },
+  "files": [
+    "src/components/PostHero/Component.tsx"
+  ],
+  "payloadFragments": [],
+  "postInstall": [],
+  "preview": {
+    "summary": "An editorial article header with title, summary, categories, byline, date, and an optional image slot."
+  },
+  "sampleContent": {
+    "title": "Build for the people who publish",
+    "author": "Alex Morgan",
+    "publishedAt": "2026-08-12T12:00:00Z",
+    "categories": [
+      "Field notes"
+    ],
+    "description": "Good publishing tools make room for the work that matters."
+  },
+  "recovery": {
+    "patchedFiles": []
+  },
+  "installMode": "file-only"
+}

@@ -3,6 +3,7 @@ import type { INSTALL_STAGES } from './constants'
 export type PackageManager = 'bun' | 'npm' | 'pnpm' | 'yarn'
 export type InstallStage = (typeof INSTALL_STAGES)[number]
 export type InstallStatus = 'installed' | 'partial'
+export type LocalizationPolicyVersion = 'semantic-v1'
 export type DependencyMap = Record<string, string>
 
 export type PayloadFragment =
@@ -27,7 +28,20 @@ export type ChangelogEntry = {
   version: string
 }
 
+export type ProjectFileRequirement = {
+  /* Required direct entries in buildConfig({ collections: [...] }). */
+  collectionIdentifiers?: string[]
+  /* Every anchor must occur in at least one of the candidate files. */
+  anchors: string[]
+  /* Human-readable recovery guidance printed by add and doctor. */
+  help: string
+  label: string
+  /* Candidate paths are relative to the consumer project. */
+  paths: string[]
+}
+
 export type ComponentManifest = {
+  installMode?: 'page-block' | 'file-only'
   $schema?: string
   /* Newest first. Optional so an older manifest still loads. */
   changelog?: ChangelogEntry[]
@@ -40,6 +54,10 @@ export type ComponentManifest = {
   postInstall: string[]
   preview: {
     summary: string
+  }
+  /* Optional, component-specific host capabilities beyond the target shape. */
+  requires?: {
+    projectFiles: ProjectFileRequirement[]
   }
   recovery: {
     patchedFiles: string[]
@@ -72,6 +90,9 @@ export type InstallStateEntry = {
   /* Present only when the component was installed with --localized, so state
    * files for ordinary installs are unchanged. */
   localized?: boolean
+  /* Versioned because changing a field from localized to global changes the
+   * shape of stored Payload data and must be an explicit consumer migration. */
+  localizationPolicy?: LocalizationPolicyVersion
   manifestVersion: string
   patchedFiles: string[]
   registryItemName: string
@@ -79,7 +100,23 @@ export type InstallStateEntry = {
   targetId: string
 }
 
+export type BaseBundleStateEntry = {
+  /* Only files whose bytes came from the scaffold are owned. Existing consumer
+   * implementations are deliberately absent, so later scaffold runs cannot
+   * claim or overwrite them. */
+  fileHashes: Record<string, string>
+  installedAt: string
+  lastAttemptAt: string
+  version: string
+}
+
 export type InstallState = {
+  base?: BaseBundleStateEntry
+  components: Record<string, InstallStateEntry>
+  version: 4
+}
+
+export type InstallStateV3 = {
   components: Record<string, InstallStateEntry>
   version: 3
 }

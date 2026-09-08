@@ -1,4 +1,4 @@
-import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { chmod, stat, access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -11,10 +11,10 @@ import type { InstallStateV2 } from '../../tools/payload-components/types'
 
 import { createInstallFixtureForComponents } from './payload-components-fixture'
 
-/* `update` deletes files so the registry install rewrites them, then delegates
- * to `add`. The delegation is stubbed here: what matters is which components it
- * decides to re-install, and that a locally edited file blocks the component
- * until --force. A real re-install is covered by the add-command specs. */
+/* `update` stages canonical source replacements, then delegates the remaining
+ * dependency/wiring/state reconciliation to `add`. The delegation is stubbed
+ * here: what matters is which components it re-installs, that live source never
+ * disappears between stages, and that local edits still require --force. */
 
 const fixtureDirs: string[] = []
 
@@ -22,14 +22,41 @@ afterEach(async () => {
   await Promise.all(fixtureDirs.splice(0).map((dir) => rm(dir, { force: true, recursive: true })))
   vi.resetModules()
   vi.restoreAllMocks()
+  vi.doUnmock('../../tools/payload-components/component-files')
+  vi.doUnmock('../../tools/payload-components/inventory')
+  vi.doUnmock('../../tools/payload-components/manifest')
+  vi.doUnmock('../../tools/payload-components/state')
   process.exitCode = undefined
 })
 
-const setup = async () => {
+const setup = async ({
+  canonicalHashOverrides = {},
+}: {
+  canonicalHashOverrides?: Record<string, Record<string, string>>
+} = {}) => {
   const addCommand = vi.fn().mockResolvedValue(undefined)
   const output: string[] = []
 
   vi.doMock('../../tools/payload-components/commands/add', () => ({ addCommand }))
+
+  if (Object.keys(canonicalHashOverrides).length > 0) {
+    vi.doMock('../../tools/payload-components/component-files', async () => {
+      const actual = await vi.importActual<
+        typeof import('../../tools/payload-components/component-files')
+      >('../../tools/payload-components/component-files')
+
+      return {
+        ...actual,
+        resolveCanonicalFileHashes: async (
+          options: Parameters<typeof actual.resolveCanonicalFileHashes>[0],
+        ) => ({
+          ...(await actual.resolveCanonicalFileHashes(options)),
+          ...canonicalHashOverrides[options.manifest.registryItemName],
+        }),
+      }
+    })
+  }
+
   vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
     output.push(String(chunk))
     return true
@@ -141,6 +168,10 @@ const installLegacyStatsProofV2 = async () => {
    refusal path off a stubbed inventory rather than rewriting a real manifest on
    disk — a crashed test must never leave the repo's manifests edited. */
 const setupBreaking = async () => {
+  const { fixtureDir, manifests } = await installFixture({
+    componentNames: ['hero-basic'],
+    recordedVersion: '0.1.0',
+  })
   const addCommand = vi.fn().mockResolvedValue(undefined)
   const output: string[] = []
   const breakingEntry = {
@@ -177,32 +208,7 @@ const setupBreaking = async () => {
     selectInstalled: (inventory: { entries: unknown[] }) => inventory.entries,
   }))
   vi.doMock('../../tools/payload-components/manifest', () => ({
-    loadManifest: vi.fn().mockResolvedValue({ files: [], version: '0.2.0' }),
-  }))
-  vi.doMock('../../tools/payload-components/component-files', () => ({
-    compareInstalledFiles: vi
-      .fn()
-      .mockResolvedValue({ comparisons: [], missing: [], modified: [] }),
-    resolveRecordedFileHashes: vi.fn().mockResolvedValue({}),
-  }))
-  vi.doMock('../../tools/payload-components/state', () => ({
-    loadState: vi.fn().mockResolvedValue({
-      components: {
-        'hero-basic': {
-          fileHashes: {},
-          installedAt: null,
-          lastAttemptAt: '2026-04-16T00:00:00.000Z',
-          lastError: null,
-          localized: false,
-          manifestVersion: '0.1.0',
-          patchedFiles: [],
-          registryItemName: 'hero-basic',
-          status: 'installed',
-          targetId: 'payload-website-starter',
-        },
-      },
-      version: 3,
-    }),
+    loadManifest: vi.fn().mockResolvedValue({ ...manifests[0], version: '0.2.0' }),
   }))
   vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
     output.push(String(chunk))
@@ -211,7 +217,7 @@ const setupBreaking = async () => {
 
   const { updateCommand } = await import('../../tools/payload-components/commands/update')
 
-  return { addCommand, output, updateCommand }
+  return { addCommand, output, updateCommand, fixtureDir }
 }
 
 const exists = (filePath: string) =>
@@ -231,6 +237,22 @@ describe('update', () => {
     expect(output.join('')).toContain('already at the version this CLI ships')
   })
 
+  it('does not rewrite a current non-localized install whose legacy state has no policy', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const { fixtureDir } = await installFixture({ componentNames: ['hero-basic'] })
+    const state = await loadState(fixtureDir)
+
+    state.components['hero-basic'].localized = false
+    delete state.components['hero-basic'].localizationPolicy
+    await saveState(fixtureDir, state)
+
+    await updateCommand({ cwd: fixtureDir })
+
+    expect(addCommand).not.toHaveBeenCalled()
+    expect(output.join('')).toContain('already at the version this CLI ships')
+    expect(await exists(path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts'))).toBe(true)
+  })
+
   it('re-installs only the components whose recorded version is behind', async () => {
     const { addCommand, output, updateCommand } = await setup()
     const { fixtureDir } = await installFixture({ componentNames: ['hero-basic', 'faq-card'] })
@@ -246,12 +268,19 @@ describe('update', () => {
       componentName: 'hero-basic',
       cwd: fixtureDir,
       localized: false,
+      prewrittenFiles: [
+        'src/blocks/shared/heroFields.ts',
+        'src/blocks/HeroBasic/config.ts',
+        'src/blocks/HeroBasic/Component.tsx',
+      ],
     })
-    expect(output.join('')).toContain('hero-basic: 0.0.9 → 0.1.0')
+    expect(output.join('')).toContain(
+      `hero-basic: 0.0.9 → ${(await (await import('../../tools/payload-components/manifest')).loadManifest('hero-basic')).version}`,
+    )
     expect(await exists(path.join(fixtureDir, 'src/blocks/FaqCard/config.ts'))).toBe(true)
   })
 
-  it('deletes the component files so the registry install rewrites them', async () => {
+  it('keeps canonical component files present while the remaining install stages run', async () => {
     const { addCommand, updateCommand } = await setup()
     const { fixtureDir } = await installFixture({
       componentNames: ['hero-basic'],
@@ -261,8 +290,8 @@ describe('update', () => {
     await updateCommand({ cwd: fixtureDir })
 
     expect(addCommand).toHaveBeenCalledOnce()
-    expect(await exists(path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts'))).toBe(false)
-    expect(await exists(path.join(fixtureDir, 'src/blocks/shared/heroFields.ts'))).toBe(false)
+    expect(await exists(path.join(fixtureDir, 'src/blocks/HeroBasic/config.ts'))).toBe(true)
+    expect(await exists(path.join(fixtureDir, 'src/blocks/shared/heroFields.ts'))).toBe(true)
   })
 
   it('updates a pristine stats-proof 0.2.0 install using its historical baseline', async () => {
@@ -276,11 +305,18 @@ describe('update', () => {
       componentName: 'stats-proof',
       cwd: fixtureDir,
       localized: false,
+      prewrittenFiles: [
+        'src/blocks/shared/statsFields.ts',
+        'src/blocks/StatsProof/config.ts',
+        'src/blocks/StatsProof/Component.tsx',
+      ],
     })
-    expect(output.join('')).toContain('stats-proof: 0.2.0 → 0.3.0')
+    expect(output.join('')).toContain(
+      `stats-proof: 0.2.0 → ${(await (await import('../../tools/payload-components/manifest')).loadManifest('stats-proof')).version}`,
+    )
     expect(output.join('')).not.toContain('skipped')
-    expect(await exists(path.join(fixtureDir, 'src/blocks/StatsProof/config.ts'))).toBe(false)
-    expect(await exists(path.join(fixtureDir, 'src/blocks/StatsProof/Component.tsx'))).toBe(false)
+    expect(await exists(path.join(fixtureDir, 'src/blocks/StatsProof/config.ts'))).toBe(true)
+    expect(await exists(path.join(fixtureDir, 'src/blocks/StatsProof/Component.tsx'))).toBe(true)
   })
 
   it('still protects a real local edit on top of stats-proof 0.2.0', async () => {
@@ -289,12 +325,12 @@ describe('update', () => {
     const configPath = path.join(fixtureDir, 'src/blocks/StatsProof/config.ts')
 
     await writeFile(configPath, `${await readFile(configPath, 'utf8')}\n// local tweak\n`, 'utf8')
-    await updateCommand({ cwd: fixtureDir })
+    const isComplete = await updateCommand({ cwd: fixtureDir })
 
     expect(addCommand).not.toHaveBeenCalled()
     expect(output.join('')).toContain('skipped — 1 locally modified file')
     expect(await exists(configPath)).toBe(true)
-    expect(process.exitCode).toBe(1)
+    expect(isComplete).toBe(false)
   })
 
   it('protects an edit to a shared file even when the target recorded the edited bytes', async () => {
@@ -312,12 +348,45 @@ describe('update', () => {
     state.components['hero-video'].manifestVersion = '0.0.9'
     await saveState(fixtureDir, state)
 
-    await updateCommand({ componentNames: ['hero-video'], cwd: fixtureDir })
+    const isComplete = await updateCommand({ componentNames: ['hero-video'], cwd: fixtureDir })
 
     expect(addCommand).not.toHaveBeenCalled()
     expect(await readFile(absoluteSharedPath, 'utf8')).toBe(editedSource)
-    expect(output.join('')).toContain(`${sharedPath} (modified)`)
-    expect(process.exitCode).toBe(1)
+    expect(output.join('')).toContain('skipped — shared-file ownership conflict')
+    expect(output.join('')).toContain(sharedPath)
+    expect(isComplete).toBe(false)
+  })
+
+  it('rejects prospective shared bytes that a retained owner does not accept, even under --force', async () => {
+    const sharedPath = 'src/blocks/shared/heroFields.ts'
+    const { addCommand, output, updateCommand } = await setup({
+      canonicalHashOverrides: {
+        'hero-video': { [sharedPath]: hashSource('// next hero-video-only shared source\n') },
+      },
+    })
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic', 'hero-video'],
+    })
+    const absoluteSharedPath = path.join(fixtureDir, sharedPath)
+    const before = await readFile(absoluteSharedPath, 'utf8')
+    const state = await loadState(fixtureDir)
+
+    state.components['hero-video'].manifestVersion = '0.0.9'
+    await saveState(fixtureDir, state)
+
+    const isComplete = await updateCommand({
+      componentNames: ['hero-video'],
+      cwd: fixtureDir,
+      force: true,
+    })
+
+    expect(addCommand).not.toHaveBeenCalled()
+    expect(await readFile(absoluteSharedPath, 'utf8')).toBe(before)
+    expect(output.join('')).toContain('skipped — shared-file ownership conflict')
+    expect(output.join('')).toContain(
+      `${sharedPath} (retained owners do not accept these bytes: hero-basic)`,
+    )
+    expect(isComplete).toBe(false)
   })
 
   it('keeps a retired file when another recorded component still owns it', async () => {
@@ -351,13 +420,13 @@ describe('update', () => {
 
     await writeFile(configPath, `${await readFile(configPath, 'utf8')}\n// local tweak\n`, 'utf8')
 
-    await updateCommand({ cwd: fixtureDir })
+    const isComplete = await updateCommand({ cwd: fixtureDir })
 
     expect(addCommand).not.toHaveBeenCalled()
     expect(await exists(configPath)).toBe(true)
     expect(output.join('')).toContain('skipped — 1 locally modified file')
     expect(output.join('')).toContain('Re-run with --force')
-    expect(process.exitCode).toBe(1)
+    expect(isComplete).toBe(false)
   })
 
   it('overwrites local edits under --force', async () => {
@@ -370,12 +439,49 @@ describe('update', () => {
 
     await writeFile(configPath, `${await readFile(configPath, 'utf8')}\n// local tweak\n`, 'utf8')
 
-    await updateCommand({ cwd: fixtureDir, force: true })
+    const isComplete = await updateCommand({ cwd: fixtureDir, force: true })
 
     expect(addCommand).toHaveBeenCalledOnce()
-    expect(await exists(configPath)).toBe(false)
+    expect(await exists(configPath)).toBe(true)
     expect(output.join('')).toContain('local edits discarded by --force')
-    expect(process.exitCode).toBeUndefined()
+    expect(isComplete).toBe(true)
+  })
+
+  it('requires explicit consent before replacing legacy type-inferred localization', async () => {
+    const { addCommand, output, updateCommand } = await setup()
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic'],
+    })
+    const state = await loadState(fixtureDir)
+
+    state.components['hero-basic'].localized = true
+    delete state.components['hero-basic'].localizationPolicy
+    await saveState(fixtureDir, state)
+
+    await expect(updateCommand({ cwd: fixtureDir })).rejects.toThrow(
+      '--accept-localization-policy-change',
+    )
+    expect(addCommand).not.toHaveBeenCalled()
+
+    await updateCommand({
+      acceptLocalizationPolicyChange: true,
+      cwd: fixtureDir,
+      force: true,
+    })
+
+    expect(addCommand).toHaveBeenCalledWith({
+      acceptLocalizationPolicyChange: true,
+      componentName: 'hero-basic',
+      cwd: fixtureDir,
+      localized: true,
+      prewrittenFiles: [
+        'src/blocks/shared/heroFields.ts',
+        'src/blocks/HeroBasic/config.ts',
+        'src/blocks/HeroBasic/Component.tsx',
+      ],
+    })
+    expect(output.join('')).toContain('legacy type inference → semantic-v1')
+    expect(output.join('')).toContain('no database migration will run')
   })
 
   it('changes nothing under --dry-run', async () => {
@@ -395,9 +501,9 @@ describe('update', () => {
   })
 
   it('holds back a breaking upgrade until it is explicitly accepted', async () => {
-    const { addCommand, output, updateCommand } = await setupBreaking()
+    const { addCommand, output, updateCommand, fixtureDir } = await setupBreaking()
 
-    await updateCommand({ cwd: '/tmp/project' })
+    const isComplete = await updateCommand({ cwd: fixtureDir })
 
     expect(addCommand).not.toHaveBeenCalled()
     expect(output.join('')).toContain('held back')
@@ -406,16 +512,16 @@ describe('update', () => {
       'migrate first: Rename the stored `heading` field to `title`.',
     )
     expect(output.join('')).toContain('re-run with --accept-breaking')
-    expect(process.exitCode).toBe(1)
+    expect(isComplete).toBe(false)
   })
 
   it('applies a breaking upgrade under --accept-breaking', async () => {
-    const { addCommand, updateCommand } = await setupBreaking()
+    const { addCommand, updateCommand, fixtureDir } = await setupBreaking()
 
-    await updateCommand({ acceptBreaking: true, cwd: '/tmp/project' })
+    const isComplete = await updateCommand({ acceptBreaking: true, cwd: fixtureDir })
 
     expect(addCommand).toHaveBeenCalledOnce()
-    expect(process.exitCode).toBeUndefined()
+    expect(isComplete).toBe(true)
   })
 
   it('rejects a component that is not recorded', async () => {
@@ -425,5 +531,75 @@ describe('update', () => {
     await expect(updateCommand({ componentNames: ['faq-card'], cwd: fixtureDir })).rejects.toThrow(
       'not recorded as installed',
     )
+  })
+})
+
+describe('update recovery', () => {
+  it('validates project support before removing any installed source or state', async () => {
+    const { fixtureDir, manifests } = await installFixture({
+      componentNames: ['hero-basic'],
+      recordedVersion: '0.0.1',
+    })
+    const { updateCommand, addCommand } = await setup()
+    const packagePath = path.join(fixtureDir, 'package.json')
+    const pkg = JSON.parse(await readFile(packagePath, 'utf8'))
+    pkg.dependencies.payload = '^2.0.0'
+    await writeFile(packagePath, JSON.stringify(pkg))
+    const files = [...manifests[0].files, '.payload-components/state.json']
+    const before = await Promise.all(
+      files.map((file) => readFile(path.join(fixtureDir, file), 'utf8')),
+    )
+    await expect(updateCommand({ cwd: fixtureDir })).rejects.toThrow()
+    expect(addCommand).not.toHaveBeenCalled()
+    expect(
+      await Promise.all(files.map((file) => readFile(path.join(fixtureDir, file), 'utf8'))),
+    ).toEqual(before)
+  })
+
+  it('restores source, host files and ownership when installation fails after writes', async () => {
+    const { fixtureDir, manifests } = await installFixture({
+      componentNames: ['hero-basic'],
+      recordedVersion: '0.0.1',
+    })
+    const { updateCommand, addCommand } = await setup()
+    const files = [
+      ...manifests[0].files,
+      ...manifests[0].recovery.patchedFiles,
+      '.payload-components/state.json',
+      'package.json',
+    ]
+    const before = await Promise.all(
+      files.map((file) => readFile(path.join(fixtureDir, file), 'utf8')),
+    )
+    addCommand.mockImplementation(async () => {
+      for (const file of files)
+        await writeFile(path.join(fixtureDir, file), 'interrupted replacement')
+      throw new Error('generator failed')
+    })
+    await expect(updateCommand({ cwd: fixtureDir })).rejects.toThrow('were restored')
+    expect(
+      await Promise.all(files.map((file) => readFile(path.join(fixtureDir, file), 'utf8'))),
+    ).toEqual(before)
+    expect(await exists(path.join(fixtureDir, '.payload-components/update-backup.json'))).toBe(
+      false,
+    )
+  })
+
+  it('keeps a durable backup across interruption and restores binary bytes on explicit recovery', async () => {
+    const { fixtureDir } = await installFixture({ componentNames: ['hero-basic'] })
+    const { createUpdateBackup, assertNoPendingUpdate, restoreUpdateBackup } =
+      await import('../../tools/payload-components/update-backup')
+    const filePath = path.join(fixtureDir, 'bun.lockb')
+    const original = Buffer.from([0, 255, 128, 12])
+    await writeFile(filePath, original, { mode: 0o600 })
+    await createUpdateBackup(fixtureDir, ['bun.lockb', 'new-file.ts'])
+    await writeFile(filePath, 'replacement')
+    await chmod(filePath, 0o644)
+    await writeFile(path.join(fixtureDir, 'new-file.ts'), 'new')
+    await expect(assertNoPendingUpdate(fixtureDir)).rejects.toThrow('update --recover')
+    await restoreUpdateBackup(fixtureDir)
+    expect(await readFile(filePath)).toEqual(original)
+    expect((await stat(filePath)).mode & 0o777).toBe(0o600)
+    expect(await exists(path.join(fixtureDir, 'new-file.ts'))).toBe(false)
   })
 })

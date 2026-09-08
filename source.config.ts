@@ -5,6 +5,9 @@ import { z } from 'zod'
 export const docs = defineDocs({
   dir: 'content/docs',
   docs: {
+    // Fumadocs exports the latest Git author date for each tracked source file.
+    // Unknown dates stay undefined, so the sitemap can omit them safely.
+    lastModified: true,
     schema: pageSchema.extend({
       seoTitle: z.string().optional(),
     }),

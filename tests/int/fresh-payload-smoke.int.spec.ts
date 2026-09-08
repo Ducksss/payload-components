@@ -50,7 +50,20 @@ describe('fresh Payload smoke component selection', () => {
     const assignments = shards.flat()
 
     expect(installableSlugs).toEqual(registryBlockSlugs)
-    expect(installableSlugs).toEqual(manifestSlugs)
+    const manifests = await Promise.all(manifestSlugs.map((slug) => loadManifest(slug)))
+    expect(installableSlugs).toEqual(
+      manifests
+        .filter((manifest) => manifest.installMode !== 'file-only')
+        .map((manifest) => manifest.name),
+    )
+    expect(selection.exclusions.map((entry) => entry.name)).toEqual(
+      manifests
+        .filter((manifest) => manifest.installMode === 'file-only')
+        .map((manifest) => manifest.name),
+    )
+    expect(smokeHarness.DEFAULT_SMOKE_EXCLUSION_REASON).toContain(
+      'tests/int/article-components.int.spec.tsx',
+    )
     expect(selection.components).toEqual(installableSlugs)
     expect(
       [...selection.components, ...selection.exclusions.map((exclusion) => exclusion.name)].sort(),
@@ -121,6 +134,39 @@ describe('fresh Payload smoke component selection', () => {
     ])
   })
 
+  it('uses shadcn latest against a minimal external target for direct URL delivery', async () => {
+    const targetPath = await mkdtemp(path.join(tmpdir(), 'payload-components-external-shadcn-'))
+    tempDirs.push(targetPath)
+
+    await smokeHarness.scaffoldExternalShadcnTarget(targetPath)
+
+    expect(
+      smokeHarness.getDirectShadcnAddArgs({
+        cwd: targetPath,
+        itemName: 'hero-basic',
+        registryUrl: 'https://www.payload-components.xyz/r/{name}.json',
+      }),
+    ).toEqual([
+      'dlx',
+      'shadcn@latest',
+      'add',
+      'https://www.payload-components.xyz/r/hero-basic.json',
+      '--cwd',
+      targetPath,
+      '--yes',
+      '--overwrite',
+    ])
+
+    await expect(readFile(path.join(targetPath, 'components.json'), 'utf8')).resolves.toContain(
+      '"ui": "@/components/ui"',
+    )
+    const packageJson = JSON.parse(
+      await readFile(path.join(targetPath, 'package.json'), 'utf8'),
+    ) as { dependencies?: Record<string, string> }
+    expect(packageJson.dependencies?.['payload-components']).toBeUndefined()
+    await expect(readFile(path.join(targetPath, 'src', 'blocks'))).rejects.toThrow()
+  })
+
   it('resolves the default and CLI shard selections from registry-backed slugs', async () => {
     const installableSlugs = await smokeHarness.getInstallableComponentSlugs()
     const defaultOptions = smokeHarness.parseSmokeArgs([])
@@ -140,6 +186,56 @@ describe('fresh Payload smoke component selection', () => {
     expect(() =>
       smokeHarness.parseSmokeArgs(['--components', 'hero-basic', '--shard-index', '0']),
     ).toThrow(/cannot be used together/)
+  })
+
+  it('includes every registry item in direct delivery while keeping file-only components out of Page wiring', async () => {
+    const registry = JSON.parse(
+      await readFile(path.join(repoRoot, 'payload-components/registry.json'), 'utf8'),
+    ) as { items: Array<{ name: string; type: string }> }
+    const defaults = await smokeHarness.resolveSmokeInstallGroups(smokeHarness.parseSmokeArgs([]))
+    expect(defaults.directComponents).toEqual(registry.items.map((item) => item.name).sort())
+    expect(defaults.pageComponents).toEqual(
+      registry.items
+        .filter((item) => item.type === 'registry:block')
+        .map((item) => item.name)
+        .sort(),
+    )
+    const shards = await Promise.all(
+      Array.from({ length: smokeHarness.SMOKE_SHARD_COUNT }, (_, index) =>
+        smokeHarness.resolveSmokeInstallGroups(
+          smokeHarness.parseSmokeArgs(['--shard-index', String(index)]),
+        ),
+      ),
+    )
+    const delivered = shards.flatMap((shard) => shard.directComponents)
+    expect(delivered.sort()).toEqual(defaults.directComponents)
+    expect(new Set(delivered).size).toBe(delivered.length)
+    for (const article of ['author-card', 'post-hero']) {
+      expect(defaults.directComponents).toContain(article)
+      expect(defaults.pageComponents).not.toContain(article)
+    }
+  }, 15_000)
+
+  it('keeps explicit file-only smoke selections on direct delivery without Page seeds', async () => {
+    const articleOnly = await smokeHarness.resolveSmokeInstallGroups(
+      smokeHarness.parseSmokeArgs([
+        '--components',
+        'post-hero,author-card',
+        '--scenario',
+        'website',
+      ]),
+    )
+    expect(articleOnly).toEqual({
+      directComponents: ['author-card', 'post-hero'],
+      pageComponents: [],
+    })
+    const mixed = await smokeHarness.resolveSmokeInstallGroups(
+      smokeHarness.parseSmokeArgs(['--components', 'post-hero,hero-basic']),
+    )
+    expect(mixed).toEqual({
+      directComponents: ['hero-basic', 'post-hero'],
+      pageComponents: ['hero-basic'],
+    })
   })
 
   it('scaffolds the website template by default and the blank one for the bare scenario', () => {

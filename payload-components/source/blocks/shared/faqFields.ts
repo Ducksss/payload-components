@@ -17,15 +17,18 @@ export const faqFields: Field[] = [
   {
     name: 'eyebrow',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
   {
     name: 'title',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
   {
     name: 'description',
     type: 'textarea',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
 ]
 
@@ -46,11 +49,13 @@ export const faqItemsField: Field = {
     {
       name: 'question',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
       required: true,
     },
     {
       name: 'answer',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
       required: true,
     },
   ],

@@ -1,15 +1,23 @@
+import ts from 'typescript'
+import * as dependencies from '../../tools/payload-components/dependencies'
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import {
   BASE_BUNDLE_FILES,
   copyBaseBundle,
+  getBaseBundleVersion,
+  inspectBaseBundle,
   registerBaseCollections,
+  syncBaseBundle,
 } from '../../tools/payload-components/base-bundle'
+import { hashSource } from '../../tools/payload-components/component-files'
 import { detectProject } from '../../tools/payload-components/project'
+import { initCommand } from '../../tools/payload-components/commands/init'
+import { loadState } from '../../tools/payload-components/state'
 
 /* A bare `create-payload-app` project fails detection before any of the starter
  * primitives matter: it has no blocks renderer and no Pages collection carrying
@@ -20,6 +28,7 @@ import { detectProject } from '../../tools/payload-components/project'
 const tempDirs: string[] = []
 
 afterEach(async () => {
+  vi.restoreAllMocks()
   await Promise.all(tempDirs.splice(0).map((dir) => rm(dir, { force: true, recursive: true })))
 })
 
@@ -34,7 +43,12 @@ const makeBareProject = async ({ config }: { config?: string } = {}) => {
       path.join(dir, 'package.json'),
       `${JSON.stringify(
         {
-          dependencies: { next: '^16.0.0', payload: '^3.0.0' },
+          dependencies: {
+            clsx: '^2.1.1',
+            next: '^16.0.0',
+            payload: '^3.0.0',
+            'tailwind-merge': '^3.4.0',
+          },
           name: 'bare-payload-app',
           private: true,
         },
@@ -136,6 +150,109 @@ describe('the starter base bundle', () => {
     expect(second.created).toEqual([])
     expect(second.skipped).toEqual([...BASE_BUNDLE_FILES])
   })
+
+  it('updates owned primitives, but protects local edits until --force', async () => {
+    const cwd = await makeBareProject()
+    const first = await syncBaseBundle({ cwd })
+    const version = await getBaseBundleVersion()
+    const projectPath = 'src/utilities/ui.ts'
+    const absolutePath = path.join(cwd, projectPath)
+    const edited = `${await readFile(absolutePath, 'utf8')}\n// consumer edit\n`
+
+    await writeFile(absolutePath, edited, 'utf8')
+
+    const protectedRun = await syncBaseBundle({
+      cwd,
+      recordedFileHashes: first.fileHashes,
+    })
+
+    expect(protectedRun.modified).toContain(projectPath)
+    await expect(readFile(absolutePath, 'utf8')).resolves.toBe(edited)
+    await expect(
+      inspectBaseBundle({
+        cwd,
+        installed: {
+          fileHashes: protectedRun.fileHashes,
+          installedAt: '2026-09-02T00:00:00.000Z',
+          lastAttemptAt: '2026-09-02T00:00:00.000Z',
+          version,
+        },
+      }),
+    ).resolves.toMatchObject({ isClean: false, modifiedFiles: [projectPath] })
+
+    const forcedRun = await syncBaseBundle({
+      cwd,
+      force: true,
+      recordedFileHashes: protectedRun.fileHashes,
+    })
+
+    expect(forcedRun.updated).toContain(projectPath)
+    expect(await readFile(absolutePath, 'utf8')).not.toBe(edited)
+  })
+
+  it('removes retired owned files only when clean or explicitly forced', async () => {
+    const cwd = await makeBareProject()
+    const retiredPath = 'src/retired-base.ts'
+    const absolutePath = path.join(cwd, retiredPath)
+    const original = 'export const retired = true\n'
+    const edited = `${original}// consumer edit\n`
+
+    await writeFile(absolutePath, edited, 'utf8')
+
+    const protectedRun = await syncBaseBundle({
+      cwd,
+      recordedFileHashes: { [retiredPath]: hashSource(original) },
+    })
+
+    expect(protectedRun.modified).toContain(retiredPath)
+    await expect(readFile(absolutePath, 'utf8')).resolves.toBe(edited)
+
+    const forcedRun = await syncBaseBundle({
+      cwd,
+      force: true,
+      recordedFileHashes: protectedRun.fileHashes,
+    })
+
+    expect(forcedRun.removed).toContain(retiredPath)
+    await expect(readFile(absolutePath, 'utf8')).rejects.toMatchObject({ code: 'ENOENT' })
+  })
+
+  it('records scaffold ownership for diff, doctor, and later upgrades', async () => {
+    const cwd = await makeBareProject()
+
+    await initCommand({ cwd, scaffold: true })
+
+    const state = await loadState(cwd)
+
+    expect(state.version).toBe(4)
+    expect(state.base?.version).toBe(await getBaseBundleVersion())
+    expect(Object.keys(state.base?.fileHashes ?? {})).toEqual([...BASE_BUNDLE_FILES].sort())
+  })
+
+  it('rejects incompatible dependencies before writing scaffold files or state', async () => {
+    const cwd = await makeBareProject()
+    const packageJsonPath = path.join(cwd, 'package.json')
+    const configPath = path.join(cwd, 'src', 'payload.config.ts')
+    const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as {
+      dependencies: Record<string, string>
+    }
+    const configBefore = await readFile(configPath, 'utf8')
+
+    packageJson.dependencies['tailwind-merge'] = '^2.0.0'
+    await writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`, 'utf8')
+
+    await expect(initCommand({ cwd, scaffold: true })).rejects.toThrow(
+      'does not satisfy the required range "^3.0.0"',
+    )
+
+    await expect(
+      readFile(path.join(cwd, 'src', 'blocks', 'RenderBlocks.tsx'), 'utf8'),
+    ).rejects.toMatchObject({ code: 'ENOENT' })
+    await expect(
+      readFile(path.join(cwd, '.payload-components', 'state.json'), 'utf8'),
+    ).rejects.toMatchObject({ code: 'ENOENT' })
+    await expect(readFile(configPath, 'utf8')).resolves.toBe(configBefore)
+  })
 })
 
 describe('registering the base collections', () => {
@@ -195,4 +312,89 @@ describe('registering the base collections', () => {
       "export default { secret: 'x' }\n",
     )
   })
+})
+
+describe('scaffold registration boundaries', () => {
+  it.each([
+    '// Pages and Media belong in collections: []\nexport default buildConfig({ plugins: [{ collections: [] }], collections: [] })',
+    "import { Pages } from './collections/Pages'\nimport { Media } from './collections/Media'\nexport default buildConfig({ collections: [] })",
+    "import { Pages as SitePages } from './collections/Pages'\nexport default buildConfig({ collections: [] })",
+  ])('registers actual collection membership: %s', async (config) => {
+    const cwd = await makeBareProject({ config })
+    expect(
+      (await registerBaseCollections({ cwd, configFileRelPath: 'src/payload.config.ts' })).patched,
+    ).toBe(true)
+    const first = await readFile(path.join(cwd, 'src/payload.config.ts'), 'utf8')
+    expect(first).toContain(
+      config.includes('as SitePages')
+        ? 'collections: [SitePages, Media, ]'
+        : 'collections: [Pages, Media, ]',
+    )
+    expect(
+      (await registerBaseCollections({ cwd, configFileRelPath: 'src/payload.config.ts' })).patched,
+    ).toBe(false)
+    expect(await readFile(path.join(cwd, 'src/payload.config.ts'), 'utf8')).toBe(first)
+  })
+  it.each([
+    'export default buildConfig({ collections: [...shared] })',
+    'export default buildConfig({ collections: [], ...overrides })',
+    'export default buildConfig({ plugins: [{ collections: [] }] })',
+    "import { Pages } from './other'\nexport default buildConfig({ collections: [] })",
+  ])('preserves ambiguous configurations: %s', async (config) => {
+    const cwd = await makeBareProject({ config })
+    expect(
+      (await registerBaseCollections({ cwd, configFileRelPath: 'src/payload.config.ts' })).patched,
+    ).toBe(false)
+    expect(await readFile(path.join(cwd, 'src/payload.config.ts'), 'utf8')).toBe(config)
+  })
+})
+
+it('retries missing base dependencies after an interrupted scaffold even when every source file exists', async () => {
+  const cwd = await makeBareProject()
+  await copyBaseBundle({ cwd })
+  const packagePath = path.join(cwd, 'package.json')
+  const initialPackage = JSON.parse(await readFile(packagePath, 'utf8'))
+  delete initialPackage.dependencies.clsx
+  delete initialPackage.dependencies['tailwind-merge']
+  await writeFile(packagePath, JSON.stringify(initialPackage))
+  vi.spyOn(process.stdout, 'write').mockReturnValue(true)
+  const install = vi
+    .spyOn(dependencies, 'installManifestDependencies')
+    .mockRejectedValueOnce(new Error('package download interrupted'))
+    .mockImplementation(async ({ dependencies: requested }) => {
+      const filePath = path.join(cwd, 'package.json')
+      const pkg = JSON.parse(await readFile(filePath, 'utf8'))
+      Object.assign(pkg.dependencies, requested)
+      await writeFile(filePath, JSON.stringify(pkg))
+    })
+  await expect(initCommand({ cwd, scaffold: true })).rejects.toThrow('download interrupted')
+  const files = await Promise.all(
+    BASE_BUNDLE_FILES.map((file) => readFile(path.join(cwd, file), 'utf8')),
+  )
+  await initCommand({ cwd, scaffold: true })
+  await initCommand({ cwd, scaffold: true })
+  expect(install).toHaveBeenCalledTimes(2)
+  expect(
+    await Promise.all(BASE_BUNDLE_FILES.map((file) => readFile(path.join(cwd, file), 'utf8'))),
+  ).toEqual(files)
+  const pkg = JSON.parse(await readFile(path.join(cwd, 'package.json'), 'utf8'))
+  expect(pkg.dependencies).toMatchObject({ clsx: '^2.1.1', 'tailwind-merge': '^3.0.0' })
+})
+
+it('restricts anonymous Page reads to published content while preserving authenticated draft access', async () => {
+  const source = await readFile('payload-components/source/base/collections/Pages/index.ts', 'utf8')
+  // Execute the actual shipped callback. Payload is a type-only import; the
+  // fresh-consumer smoke separately checks it against real Payload types.
+  const compiled = ts.transpileModule(source, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS },
+  }).outputText
+  const exports: {
+    Pages?: { access: { read: (args: unknown) => unknown }; versions: { drafts: boolean } }
+  } = {}
+  new Function('exports', compiled)(exports)
+  expect(exports.Pages?.versions.drafts).toBe(true)
+  expect(exports.Pages?.access.read({ req: { user: null } })).toEqual({
+    _status: { equals: 'published' },
+  })
+  expect(exports.Pages?.access.read({ req: { user: { id: 'editor' } } })).toBe(true)
 })

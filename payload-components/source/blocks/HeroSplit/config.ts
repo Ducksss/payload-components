@@ -40,6 +40,7 @@ export const HeroSplit: Block = {
         {
           name: 'label',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],

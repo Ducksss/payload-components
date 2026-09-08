@@ -1,0 +1,90 @@
+---
+title: Payload CMS UI components for websites
+seoTitle: Payload CMS UI components for websites
+description: Install typed Payload CMS UI blocks for Next.js pages, including collection, renderer, generated-type, and admin import-map wiring.
+icon: LayoutGrid
+---
+
+Use **Payload Components** when "Payload CMS UI components" means reusable website sections that editors manage through a Blocks field. The catalog contains typed frontend blocks for Payload v3 projects running Next.js 15 or 16.
+
+Each block installs as source code in your project. You keep control of its markup, fields, styles, and future changes.
+
+<Callout type="info" title="Website blocks, not admin extensions">
+  This library builds the public website UI. It does not extend Payload's admin
+  interface. Use Payload's official [`@payloadcms/ui`
+  package](https://payloadcms.com/docs/getting-started/concepts#packages) and
+  [Custom Components](https://payloadcms.com/docs/custom-components/overview)
+  guide for admin panels, custom views, or field controls.
+</Callout>
+
+## What a website UI block needs
+
+Payload's [Blocks field](https://payloadcms.com/docs/fields/blocks) lets editors assemble flexible page layouts. A working website block needs more than a React component.
+
+| Part | Job |
+| --- | --- |
+| Block config | Defines the content fields editors can manage. |
+| React component | Renders the saved content on the website. |
+| Pages registration | Adds the block to the page layout picker. |
+| Renderer mapping | Connects the saved `blockType` to its React component. |
+| Generated types | Keeps the Payload schema and TypeScript in sync. |
+| Admin import map | Keeps generated admin component imports current. |
+
+Payload Components packages the source and these project edits as one install.
+
+## Install a UI component
+
+Run the installer from a supported Payload project root:
+
+<RunnableCommand
+  command="npx payload-components add hero-basic"
+  label="Copy the hero-basic install command"
+  trackInstall
+  emphasis="primary"
+/>
+
+The CLI shows the planned changes, copies the block source, registers the block, updates `RenderBlocks`, and regenerates the required Payload artifacts. Review the result as a normal git diff.
+
+Use a dry run when you only want to inspect the plan:
+
+```bash
+npx payload-components add hero-basic --dry-run
+```
+
+<ComponentPreview slug="hero-basic" />
+
+## Choose a block by page job
+
+| Page job | Example components |
+| --- | --- |
+| Introduce the page | `hero-basic`, `hero-split`, `hero-video` |
+| Explain the offer | `feature-grid-basic`, `feature-bento`, `feature-icon-grid` |
+| Structure content | `content-columns`, `content-image-lead`, `content-list-icons` |
+| Build trust | `testimonials-grid`, `testimonials-spotlight`, `logo-cloud-grid` |
+| Ask for action | `call-to-action-centered`, `call-to-action-boxed`, `call-to-action-split` |
+
+Choose the block that matches the page's job. Then edit the installed source to match your design system.
+
+## Verify the installed block
+
+Run the project check after installation:
+
+```bash
+npx payload-components doctor
+```
+
+Then open a Page in the Payload admin. Add the block to its layout, complete its fields, and publish the page. The saved `blockType` should resolve through `RenderBlocks` and appear on the frontend.
+
+## Continue from here
+
+<Cards>
+  <Card icon={<Blocks />} title="Browse all components" href="/components">
+    Compare the available website blocks and open each live preview.
+  </Card>
+  <Card icon={<Workflow />} title="Build and wire a block" href="/docs/payload-blocks">
+    Follow the full Payload block model and rendering path.
+  </Card>
+  <Card icon={<LayoutPanelTop />} title="Use your first block" href="/docs/first-block">
+    Complete the editor journey from installation to a published page.
+  </Card>
+</Cards>

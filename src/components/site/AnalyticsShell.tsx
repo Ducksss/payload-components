@@ -3,6 +3,9 @@ import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { usePathname } from 'next/navigation'
 import Script from 'next/script'
+
+import { isChromeFreePreviewPath } from '@/i18n/config'
+
 import { AnalyticsPageview } from './AnalyticsPageview'
 import { useConsent } from './useConsent'
 
@@ -12,8 +15,7 @@ export function AnalyticsShell() {
   // Chrome-free iframe targets: embedding pages already carry analytics, so
   // mounting the general stream here would double-count every embedded view.
   // Template previews emit their own explicit template_* events instead.
-  if (pathname.startsWith('/components/preview/')) return null
-  if (/^\/templates\/[^/]+\/preview(\/|$)/.test(pathname)) return null
+  if (isChromeFreePreviewPath(pathname)) return null
 
   /* Two tiers, split by what each provider writes to the visitor's device.
    *

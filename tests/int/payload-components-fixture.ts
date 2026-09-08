@@ -76,6 +76,7 @@ const copyProjectFixture = async () => {
     mkdir(path.join(tempDir, 'src', 'app'), { recursive: true }),
     mkdir(path.join(tempDir, 'src', 'blocks'), { recursive: true }),
     mkdir(path.join(tempDir, 'src', 'collections', 'Pages'), { recursive: true }),
+    mkdir(path.join(tempDir, 'src', 'collections', 'Posts'), { recursive: true }),
     mkdir(path.join(tempDir, 'src', 'components', 'ui'), { recursive: true }),
   ])
 
@@ -145,7 +146,35 @@ const copyProjectFixture = async () => {
       'utf8',
     ),
     writeFile(path.join(tempDir, 'src', 'app', 'globals.css'), '@import "tailwindcss";\n', 'utf8'),
-    writeFile(path.join(tempDir, 'src', 'payload.config.ts'), 'export default {}\n', 'utf8'),
+    writeFile(
+      path.join(tempDir, 'src', 'payload.config.ts'),
+      "import { buildConfig } from 'payload'\nimport { Posts } from './collections/Posts'\nimport { Categories } from './collections/Categories'\n\nexport default buildConfig({ collections: [Posts, Categories] })\n",
+      'utf8',
+    ),
+    writeFile(
+      path.join(tempDir, 'src', 'collections', 'Categories.ts'),
+      "import type { CollectionConfig } from 'payload'\nexport const Categories: CollectionConfig = { slug: 'categories', fields: [{ name: 'title', type: 'text' }] }\n",
+      'utf8',
+    ),
+    writeFile(
+      path.join(tempDir, 'src', 'collections', 'Posts', 'index.ts'),
+      [
+        "import type { CollectionConfig } from 'payload'",
+        '',
+        'export const Posts: CollectionConfig = {',
+        "  slug: 'posts',",
+        '  defaultPopulate: { slug: true },',
+        '  fields: [',
+        "    { name: 'title', type: 'text' },",
+        "    { name: 'categories', type: 'relationship', relationTo: 'categories' },",
+        "    { name: 'publishedAt', type: 'date' },",
+        "    { name: 'slug', type: 'text' },",
+        '  ],',
+        '}',
+        '',
+      ].join('\n'),
+      'utf8',
+    ),
     writeFile(
       path.join(tempDir, 'src', 'components', 'ui', 'accordion.tsx'),
       [

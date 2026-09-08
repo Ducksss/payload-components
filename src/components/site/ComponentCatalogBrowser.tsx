@@ -1,7 +1,14 @@
 'use client'
 
 import { usePathname, useSearchParams } from 'next/navigation'
-import { type CSSProperties, useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  type CSSProperties,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useTranslations } from 'next-intl'
 
 import { ArrowUpRight, Search, X } from 'lucide-react'
@@ -27,6 +34,7 @@ type ComponentCatalogBrowserProps = {
   families: { pages: FamilyMeta; posts: FamilyMeta }
   githubRepoUrl: string
   pages: ComponentEntry[]
+  previews: Record<string, ReactNode>
   posts: UpcomingComponent[]
 }
 
@@ -42,23 +50,13 @@ function countByCategory(items: { category: string }[]) {
   return counts
 }
 
-function componentRequestUrl(repoUrl: string, component: UpcomingComponent) {
-  const params = new URLSearchParams({
-    area: 'New component',
-    proposal: `Ship ${component.title} (${component.slug}) as a Payload Components post component.`,
-    template: 'feature_request.yml',
-    title: `[feature] ${component.slug}`,
-  })
-
-  return `${repoUrl}/issues/new?${params.toString()}`
-}
-
 export function ComponentCatalogBrowser({
   categories,
   families,
   githubRepoUrl,
   pages,
   posts,
+  previews,
 }: ComponentCatalogBrowserProps) {
   const t = useTranslations('CatalogBrowser')
   const pathname = usePathname()
@@ -131,14 +129,31 @@ export function ComponentCatalogBrowser({
 
   const queriedPages = useMemo(
     () =>
-      pages.filter((component) =>
-        matches(
-          localQuery,
-          component.title,
-          component.slug,
-          component.description,
-          component.target,
-        ),
+      pages.filter(
+        (component) =>
+          component.family === 'pages' &&
+          matches(
+            localQuery,
+            component.title,
+            component.slug,
+            component.description,
+            component.target,
+          ),
+      ),
+    [pages, localQuery],
+  )
+  const queriedArticles = useMemo(
+    () =>
+      pages.filter(
+        (component) =>
+          component.family === 'posts' &&
+          matches(
+            localQuery,
+            component.title,
+            component.slug,
+            component.description,
+            component.target,
+          ),
       ),
     [pages, localQuery],
   )
@@ -157,7 +172,10 @@ export function ComponentCatalogBrowser({
   )
 
   const pagesCounts = useMemo(() => countByCategory(queriedPages), [queriedPages])
-  const postsCounts = useMemo(() => countByCategory(queriedPosts), [queriedPosts])
+  const postsCounts = useMemo(
+    () => countByCategory([...queriedArticles, ...queriedPosts]),
+    [queriedArticles, queriedPosts],
+  )
 
   const categorySlugs = useMemo(() => Object.keys(categories), [categories])
   const pagesCategories = categorySlugs.filter(
@@ -210,7 +228,11 @@ export function ComponentCatalogBrowser({
   const postsCards = queriedPosts.filter(
     (component) => !category || component.category === category,
   )
-  const visibleCount = (showPages ? pagesCards.length : 0) + (showPosts ? postsCards.length : 0)
+  const articleCards = queriedArticles.filter(
+    (component) => !category || component.category === category,
+  )
+  const visibleCount =
+    (showPages ? pagesCards.length : 0) + (showPosts ? postsCards.length + articleCards.length : 0)
 
   const familyGroups: {
     counts: Map<string, number>
@@ -231,7 +253,7 @@ export function ComponentCatalogBrowser({
       items: postsCategories,
       key: 'posts',
       meta: families.posts,
-      total: queriedPosts.length,
+      total: queriedPosts.length + queriedArticles.length,
     },
   ]
 
@@ -245,7 +267,7 @@ export function ComponentCatalogBrowser({
           <nav aria-label={t('filter')} className="flex flex-col gap-1">
             <FilterButton
               active={type === 'all' && !category}
-              count={queriedPages.length + queriedPosts.length}
+              count={queriedPages.length + queriedPosts.length + queriedArticles.length}
               label={t('allComponents')}
               onClick={() => updateParams({ type: '', category: '' })}
             />
@@ -299,14 +321,14 @@ export function ComponentCatalogBrowser({
                 <span className="sr-only">{t('search')}</span>
                 <Search
                   aria-hidden="true"
-                  className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                  className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
                 />
                 <input
                   type="search"
                   value={localQuery}
                   onChange={(event) => setLocalQuery(event.target.value)}
                   placeholder={t('search')}
-                  className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand/50 focus:ring-2 focus:ring-brand/15"
+                  className="w-full rounded-lg border border-border bg-background py-2 pe-3 ps-9 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand/50 focus:ring-2 focus:ring-brand/15"
                 />
               </label>
               <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
@@ -323,7 +345,7 @@ export function ComponentCatalogBrowser({
             <div className="-mb-1 flex gap-2 overflow-x-auto pb-1 lg:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <FilterChip
                 active={type === 'all' && !category}
-                count={queriedPages.length + queriedPosts.length}
+                count={queriedPages.length + queriedPosts.length + queriedArticles.length}
                 label={t('all')}
                 onClick={() => updateParams({ type: '', category: '' })}
               />
@@ -372,6 +394,7 @@ export function ComponentCatalogBrowser({
                       <ComponentCard
                         key={component.slug}
                         component={component}
+                        preview={previews[component.slug]}
                         onToggleSelect={toggleSelected}
                         selected={selected.includes(component.slug)}
                       />
@@ -398,6 +421,25 @@ export function ComponentCatalogBrowser({
                 </div>
               ) : null}
 
+              {showPosts && articleCards.length > 0 ? (
+                <div>
+                  {!category ? (
+                    <SectionDivider count={articleCards.length} name={families.posts.name} />
+                  ) : null}
+                  <div className="columns-1 gap-4 sm:columns-2 xl:columns-3">
+                    {articleCards.map((component) => (
+                      <ComponentCard
+                        key={component.slug}
+                        component={component}
+                        preview={previews[component.slug]}
+                        onToggleSelect={toggleSelected}
+                        selected={selected.includes(component.slug)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
               {showPosts && postsCards.length > 0 ? (
                 <div>
                   {!category ? (
@@ -412,7 +454,7 @@ export function ComponentCatalogBrowser({
                       <UpcomingComponentCard
                         key={component.slug}
                         component={component}
-                        requestHref={componentRequestUrl(githubRepoUrl, component)}
+                        roadmapHref={`/roadmap/editorial#${component.slug}`}
                       />
                     ))}
                   </div>

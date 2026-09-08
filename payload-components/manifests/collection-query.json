@@ -1,0 +1,120 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "collection-query",
+  "version": "0.1.0",
+  "changelog": [
+    {
+      "version": "0.1.0",
+      "summary": "Initial release."
+    }
+  ],
+  "title": "Collection Query",
+  "description": "A Pages block that queries Posts with category filters, pagination, manual selection, and grid, list, or featured cards.",
+  "registryItemName": "collection-query",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0"
+  },
+  "supportedTargets": [
+    "payload-website-starter"
+  ],
+  "supports": {
+    "payloadMajors": [
+      3
+    ],
+    "nextMajors": [
+      15,
+      16
+    ]
+  },
+  "files": [
+    "src/blocks/shared/PostCard.tsx",
+    "src/blocks/CollectionQuery/config.ts",
+    "src/blocks/CollectionQuery/Component.tsx",
+    "src/blocks/CollectionQuery/Browser.tsx",
+    "src/blocks/CollectionQuery/query.ts",
+    "src/blocks/CollectionQuery/navigation.ts"
+  ],
+  "requires": {
+    "projectFiles": [
+      {
+        "label": "Posts collection",
+        "paths": [
+          "src/collections/Posts/index.ts"
+        ],
+        "anchors": [
+          "slug: 'posts'",
+          "name: 'title'",
+          "name: 'categories'",
+          "name: 'publishedAt'",
+          "slug: true"
+        ],
+        "help": "Add or restore the official Payload website starter Posts collection before installing this query block."
+      },
+      {
+        "label": "Posts and Categories registration",
+        "paths": [
+          "src/payload.config.ts"
+        ],
+        "anchors": [
+          "buildConfig"
+        ],
+        "collectionIdentifiers": [
+          "Posts",
+          "Categories"
+        ],
+        "help": "Import Posts and Categories and include both directly in buildConfig({ collections: [Posts, Categories, ...] }). Computed collection lists cannot be verified; expose a literal array before installing."
+      },
+      {
+        "label": "Categories collection",
+        "paths": [
+          "src/collections/Categories.ts",
+          "src/collections/Categories/index.ts"
+        ],
+        "anchors": [
+          "slug: 'categories'",
+          "name: 'title'"
+        ],
+        "help": "Add or restore the official website starter Categories collection before installing the query block."
+      }
+    ]
+  },
+  "payloadFragments": [
+    {
+      "kind": "renderBlocks",
+      "importName": "CollectionQueryBlock",
+      "importPath": "@/blocks/CollectionQuery/Component",
+      "blockSlug": "collectionQuery"
+    },
+    {
+      "kind": "pagesLayout",
+      "importName": "CollectionQuery",
+      "importPath": "../../blocks/CollectionQuery/config",
+      "blockName": "CollectionQuery"
+    }
+  ],
+  "postInstall": [
+    "generate:types",
+    "generate:importmap"
+  ],
+  "preview": {
+    "summary": "Query Posts by category or manual selection, then render a grid, list, or featured editorial layout."
+  },
+  "sampleContent": {
+    "blockType": "collectionQuery",
+    "populateBy": "collection",
+    "limit": 3,
+    "sort": "-publishedAt",
+    "layout": "grid",
+    "enablePagination": true,
+    "enableFilters": true,
+    "emptyMessage": "No posts found. Try another category or check back soon."
+  },
+  "recovery": {
+    "patchedFiles": [
+      "src/blocks/RenderBlocks.tsx",
+      "src/collections/Pages/index.ts"
+    ]
+  }
+}

@@ -9,15 +9,14 @@ import {
 
 /* Blog index + article visual baselines, captured at one desktop and one mobile
  * width under reduced motion. See ./support/visual-baselines.ts for why
- * baselines are committed per platform and how the skip/coverage guards below
+ * baselines use the Linux CI renderer and how the skip/coverage guards below
  * behave. */
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 
 const baselines: VisualBaselines = {
   label: 'blog baselines',
-  mintHint:
-    'run the visual-baselines workflow, or locally: E2E_PORT=3100 pnpm test:e2e blog-visual --update-snapshots',
+  mintHint: 'run the visual-baselines workflow on Linux',
   // Linux is the gate's renderer, so an unminted linux CI run is a real defect.
   requireMinted: process.platform === 'linux' && Boolean(process.env.CI),
   snapshotDir: new URL('./blog-visual.e2e.spec.ts-snapshots/', import.meta.url),

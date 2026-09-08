@@ -35,7 +35,7 @@ export function ComponentFamily({ slug }: { slug: string }) {
             <div className="flex items-center justify-between gap-2">
               <code className="font-mono text-[13px] font-medium text-brand">{component.slug}</code>
               {current ? (
-                <span className="shrink-0 rounded-full border border-brand/30 bg-brand/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-brand">
+                <span className="shrink-0 rounded-full border border-brand/30 bg-brand/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-brand-600">
                   current
                 </span>
               ) : null}

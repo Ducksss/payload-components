@@ -1,0 +1,61 @@
+---
+title: Newsletter Callout
+description: A newsletter signup callout with a consumer-owned form endpoint.
+icon: MailPlus
+---
+
+<ComponentPreview slug="newsletter-callout" />
+
+## Installation
+
+```bash
+npx payload-components add newsletter-callout
+```
+
+For a direct file-only install:
+
+```bash
+pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/newsletter-callout.json
+```
+
+## What it installs
+
+<ComponentWiring slug="newsletter-callout" />
+
+## Content model
+
+The component renders a plain HTML form. Your application owns the endpoint, consent rules,
+submission response, and subscriber storage.
+
+<TypeTable
+  type={{
+    title: { type: 'string', required: true, description: 'Callout heading.' },
+    description: { type: 'string | null', description: 'Optional supporting copy.' },
+    action: { type: 'string', required: true, description: 'Consumer-owned form endpoint.' },
+    emailPlaceholder: { type: 'string', default: 'you@example.com' },
+    legalText: { type: 'string | null', description: 'Optional consent or privacy copy.' },
+    buttonLabel: { type: 'string', default: 'Subscribe' },
+    emailLabel: { type: 'string', default: 'Email address' },
+  }}
+/>
+
+## Usage
+
+```tsx
+import { NewsletterCallout } from '@/components/NewsletterCallout/Component'
+
+export function ArticleNewsletter() {
+  return (
+    <NewsletterCallout
+      title="Keep reading"
+      description="Get new articles in your inbox."
+      action="/api/newsletter"
+      legalText="No spam. Unsubscribe anytime."
+    />
+  )
+}
+```
+
+## Requirements
+
+<ComponentRequirements slug="newsletter-callout" />

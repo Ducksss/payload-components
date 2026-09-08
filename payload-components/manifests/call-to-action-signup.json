@@ -1,8 +1,21 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "call-to-action-signup",
-  "version": "0.1.0",
-  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "version": "0.1.2",
+  "changelog": [
+    {
+      "version": "0.1.2",
+      "summary": "Version the current component and shared source, including explicit localization semantics where applicable."
+    },
+    {
+      "version": "0.1.1",
+      "summary": "Restrict signup actions to same-origin paths and show a safe failure message when submission fails."
+    },
+    {
+      "version": "0.1.0",
+      "summary": "Initial release."
+    }
+  ],
   "title": "Call To Action Signup",
   "description": "An email-capture call-to-action Payload block: heading, copy, and a form that posts to a same-origin endpoint.",
   "registryItemName": "call-to-action-signup",

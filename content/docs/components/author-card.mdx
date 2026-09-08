@@ -1,0 +1,94 @@
+---
+title: Author Card
+description: An article author profile with optional avatar, role, biography, and profile link.
+icon: UserRound
+---
+
+<ComponentPreview slug="author-card" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    Track the file-only install in a supported Payload project:
+
+    ```bash
+    npx payload-components add author-card
+    ```
+
+  </Tab>
+  <Tab value="Manual">
+    Copy the standalone React component directly. No Payload wiring is needed:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/author-card.json
+    ```
+
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="author-card" />
+
+## Content model
+
+These are React props supplied by your article template. This component adds no collection fields
+and does not query content. Your template owns data loading, access control, draft handling,
+and localization. Resolve relationship IDs before supplying public display data.
+
+<TypeTable
+  type={{
+    name: { type: 'string', required: true, description: 'Public author display name.' },
+    role: { type: 'string | null', description: 'Optional job title or editorial role.' },
+    bio: { type: 'string | null', description: 'Plain-text biography.' },
+    avatar: {
+      type: 'ReactNode',
+      description: 'Optional avatar element. Otherwise initials are shown.',
+    },
+    href: {
+      type: 'string | null',
+      description: 'Optional profile path or HTTP(S) URL; unsafe URLs render as plain text.',
+    },
+    label: {
+      type: 'string',
+      default: 'About the author',
+      description:
+        'Visible profile label and accessible landmark name; translate in your template.',
+    },
+    id: { type: 'string', description: 'Optional wrapper ID.' },
+    className: { type: 'string', description: 'Additional wrapper classes.' },
+    disableInnerContainer: {
+      type: 'boolean',
+      default: 'false',
+      description: 'Use the surrounding template container.',
+    },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="author-card" />
+
+```tsx
+import { AuthorCard } from '@/components/AuthorCard/Component'
+
+// Compose after the article body in your existing post template.
+// Pass only public profile fields from your author data.
+export function ArticleAuthor() {
+  return (
+    <AuthorCard
+      name="Alex Morgan"
+      role="Editor & developer"
+      bio="Building thoughtful publishing tools and sharing what we learn."
+      href="/authors/alex-morgan"
+    />
+  )
+}
+```
+
+The starter author hook exposes names through populatedAuthors. Role, biography, avatar, and profile URLs are optional additions owned by your project; this install does not create an Authors collection or expose private Users fields. Pass your Media or Image element as avatar when available.
+
+## Requirements
+
+<ComponentRequirements slug="author-card" />

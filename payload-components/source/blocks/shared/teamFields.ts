@@ -22,10 +22,12 @@ export const teamFields: Field[] = [
   {
     name: 'eyebrow',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
   },
   {
     name: 'title',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
 ]
@@ -40,15 +42,18 @@ export const teamMemberFields: Field[] = [
   {
     name: 'name',
     type: 'text',
+    custom: { payloadComponents: { localization: 'global' } },
     required: true,
   },
   {
     name: 'role',
     type: 'text',
+    custom: { payloadComponents: { localization: 'localized' } },
     required: true,
   },
   {
     name: 'href',
     type: 'text',
+    custom: { payloadComponents: { localization: 'global' } },
   },
 ]

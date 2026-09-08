@@ -15,6 +15,7 @@ export const FooterColumns: Block = {
     {
       name: 'tagline',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
     },
     {
       name: 'groups',
@@ -30,6 +31,7 @@ export const FooterColumns: Block = {
         {
           name: 'name',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
           admin: {
             description: 'Column heading, and the accessible name for that group of links.',

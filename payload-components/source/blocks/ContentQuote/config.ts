@@ -20,11 +20,13 @@ export const ContentQuote: Block = {
     {
       name: 'quote',
       type: 'textarea',
+      custom: { payloadComponents: { localization: 'localized' } },
       required: true,
     },
     {
       name: 'citation',
       type: 'text',
+      custom: { payloadComponents: { localization: 'global' } },
       required: true,
     },
     {
@@ -38,6 +40,7 @@ export const ContentQuote: Block = {
     {
       name: 'logoLabel',
       type: 'text',
+      custom: { payloadComponents: { localization: 'localized' } },
       admin: {
         description:
           'Text wordmark used when no logo upload is set. Leave both empty for an unbadged quote.',

@@ -1,6 +1,6 @@
 {
   "name": "payload-components",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "MIT registry and CLI for installing wired Payload CMS blocks into Payload v3 + Next.js projects.",
   "keywords": [
     "payload",
@@ -50,10 +50,12 @@
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "build:cli": "cross-env NODE_OPTIONS=--no-deprecation tsup",
     "build:e2e": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/build-e2e.ts",
+    "catalog:build": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/build-site-catalog.ts",
     "dev": "cross-env NODE_OPTIONS='--no-deprecation --max-old-space-size=12288' next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "i18n:check": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/i18n/check.ts",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation eslint . --fix",
     "payload-components": "node ./bin/payload-components.mjs",
@@ -73,8 +75,11 @@
     "test:install": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int/payload-components.int.spec.ts tests/int/payload-components-registry.int.spec.ts tests/int/payload-components-add-command.int.spec.ts tests/int/payload-components-doctor-command.int.spec.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
     "test:pack": "cross-env NODE_OPTIONS=--no-deprecation RUN_PACK_TEST=1 vitest run --config ./vitest.config.mts tests/int/payload-components-pack.int.spec.ts",
+    "test:public-registry": "pnpm test:fresh -- --registry-url 'https://www.payload-components.xyz/r/{name}.json' --scenario website",
     "test:registry": "pnpm registry:check && pnpm registry:validate",
-    "test:release": "pnpm lint && pnpm format:check && pnpm source:build && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm build:e2e && cross-env PLAYWRIGHT_SERVER_MODE=production pnpm run test:e2e"
+    "test:release": "pnpm lint && pnpm format:check && pnpm i18n:check && pnpm source:build && pnpm exec tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm build:e2e && cross-env PLAYWRIGHT_SERVER_MODE=production pnpm run test:e2e",
+    "registry:snapshot": "tsx tools/payload-components/snapshot-install-baselines.ts",
+    "test:ci": "pnpm i18n:check && pnpm source:build && pnpm test:registry && pnpm run test:int && pnpm build:e2e && cross-env PLAYWRIGHT_SERVER_MODE=production pnpm run test:e2e"
   },
   "dependencies": {
     "ajv": "^8.18.0",
@@ -82,6 +87,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
+    "@formatjs/icu-messageformat-parser": "3.5.17",
     "@fumadocs/language": "0.2.4",
     "@playwright/test": "1.62.1",
     "@tailwindcss/postcss": "^4.3.3",
@@ -96,11 +102,12 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cross-env": "^10.1.0",
+    "esbuild": "0.28.1",
     "eslint": "^9.16.0",
     "eslint-config-next": "16.3.3",
-    "fumadocs-core": "16.14.1",
-    "fumadocs-mdx": "15.2.2",
-    "fumadocs-ui": "16.14.1",
+    "fumadocs-core": "16.15.7",
+    "fumadocs-mdx": "15.4.0",
+    "fumadocs-ui": "16.15.7",
     "geist": "^1.7.2",
     "lucide-react": "1.31.0",
     "motion": "12.43.0",
@@ -119,8 +126,8 @@
     "tsx": "4.23.1",
     "typescript": "5.9.3",
     "vite": "8.2.1",
-    "vite-tsconfig-paths": "6.1.1",
     "vitest": "4.1.10",
+    "yaml": "2.9.0",
     "zod": "4.4.3"
   },
   "engines": {
@@ -134,7 +141,9 @@
     ],
     "overrides": {
       "esbuild": "0.28.1",
-      "fast-uri": "3.1.5",
+      "fast-uri": "3.1.7",
+      "@humanfs/node@<0.16.8": "0.16.8",
+      "qs@<6.16.0": "6.16.0",
       "postcss": "8.5.23",
       "brace-expansion@<1.1.18": "1.1.18",
       "brace-expansion@>=4.0.0 <5.0.9": "5.0.9",

@@ -1,8 +1,17 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "footer-simple",
-  "version": "0.1.0",
-  "changelog": [{ "version": "0.1.0", "summary": "Initial release." }],
+  "version": "0.1.1",
+  "changelog": [
+    {
+      "version": "0.1.1",
+      "summary": "Version the current component and shared source, including explicit localization semantics where applicable."
+    },
+    {
+      "version": "0.1.0",
+      "summary": "Initial release."
+    }
+  ],
   "title": "Footer Simple",
   "description": "A compact site footer that keeps the brand and a single row of links on one line, with the copyright below, installed as a wired Payload block.",
   "registryItemName": "footer-simple",

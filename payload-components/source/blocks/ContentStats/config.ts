@@ -26,11 +26,13 @@ export const ContentStats: Block = {
         {
           name: 'title',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
         {
           name: 'description',
           type: 'textarea',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],
@@ -47,11 +49,13 @@ export const ContentStats: Block = {
         {
           name: 'value',
           type: 'text',
+          custom: { payloadComponents: { localization: 'global' } },
           required: true,
         },
         {
           name: 'label',
           type: 'text',
+          custom: { payloadComponents: { localization: 'localized' } },
           required: true,
         },
       ],

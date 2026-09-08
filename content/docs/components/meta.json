@@ -76,8 +76,13 @@
     "pricing-cards-cta",
     "pricing-split",
     "pricing-enterprise",
+    "collection-query",
     "footer-columns",
     "footer-simple",
-    "footer-centered"
+    "footer-centered",
+    "contact-form-basic",
+    "post-hero",
+    "author-card",
+    "newsletter-callout"
   ]
 }

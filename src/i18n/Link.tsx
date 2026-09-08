@@ -3,16 +3,21 @@ import type { ComponentProps } from 'react'
 import NextLink from 'next/link'
 import { useLocale } from 'next-intl'
 
-import { localizeHref, normalizeSiteLocale } from '@/i18n/config'
+import { localizeHref, normalizeSiteLocale, type SiteLocale } from '@/i18n/config'
 
-type LocalizedLinkProps = ComponentProps<typeof NextLink>
+type LocalizedLinkProps = Omit<ComponentProps<typeof NextLink>, 'locale'> & {
+  locale?: SiteLocale
+}
 
-/**
- * Locale-aware replacement for next/link. Registry assets and external URLs
- * remain language-neutral; public site routes retain the visitor's locale.
- */
-export default function LocalizedLink({ href, ...props }: LocalizedLinkProps) {
-  const locale = normalizeSiteLocale(useLocale())
+/** Locale-aware replacement for next/link, with an explicit locale escape for
+ * fallback notices that must lead to the canonical English resource. */
+export default function LocalizedLink({
+  href,
+  locale: requestedLocale,
+  ...props
+}: LocalizedLinkProps) {
+  const activeLocale = normalizeSiteLocale(useLocale())
+  const locale = requestedLocale ?? activeLocale
   const localizedHref =
     typeof href === 'string'
       ? localizeHref(href, locale)
