@@ -908,6 +908,16 @@
       "title": "相关文章",
       "description": "紧凑展示推荐文章的相关文章区域。",
       "target": "文章页尾"
+    },
+    "contact-form-basic": {
+      "title": "基础联系表单",
+      "description": "无障碍联系表单，提供行内验证，并根据你自己的端点返回的结果确认提交状态。",
+      "target": "联系表单"
+    },
+    "collection-query": {
+      "title": "集合查询",
+      "description": "服务端渲染的 Pages 区块，可按分类或手动选择查询入门模板中的文章，并在三种布局中共用一个文章卡片渲染器。",
+      "target": "文章查询"
     }
   }
 }
