@@ -107,12 +107,23 @@ Sitewide delivery headers currently provide:
 - MIME sniffing protection;
 - strict-origin cross-site referrer behavior;
 - same-origin framing, required so component preview pages can render inside this site's own frames;
-- a restricted permissions policy for camera, location, microphone, payment, and USB.
+- a restricted permissions policy for camera, location, microphone, payment, and USB;
+- an enforced Content Security Policy: first-party sources plus the consent-gated Google Analytics and
+  PostHog origins, same-origin frames only, and no plugins, inline event handlers, or foreign form
+  targets.
 
 The same-origin framing exception is intentional. Changing it to `DENY` would break the catalog's live
-preview contract. A Content Security Policy should be introduced only with route-aware verification of
-fonts, images, scripts, analytics, docs UI, and preview frames; an untested policy can make the site less
-accessible to users and crawlers.
+preview contract. `frame-ancestors 'self'` and `X-Frame-Options: SAMEORIGIN` state the same rule for
+current and older browsers. Script elements still allow `'unsafe-inline'`, because Next.js streams
+build-specific inline payload scripts into every static page. Hashes would change on every deploy, and
+nonces would force dynamic rendering.
+
+The policy has no report endpoint, because the site runs no backend. An untested policy can make the
+site less accessible to users and crawlers, so `tests/e2e/content-security-policy.e2e.spec.ts` checks
+it route by route instead. It covers the landing page, docs, catalog, both preview frames, templates,
+blog, and case study, with analytics consent declined and accepted, and it fails on any violation.
+When a page needs a new third-party origin, add it to `next.config.mjs` together with the pinned
+directives in `tests/int/fumadocs-site.int.spec.ts`.
 
 ## Local verification
 
@@ -122,6 +133,7 @@ Run the source compiler before type checks in a fresh worktree:
 pnpm source:build
 pnpm exec vitest run --config ./vitest.config.mts tests/int/fumadocs-site.int.spec.ts
 pnpm exec playwright test tests/e2e/geo.e2e.spec.ts
+pnpm exec playwright test tests/e2e/content-security-policy.e2e.spec.ts
 pnpm exec tsc --noEmit
 pnpm build
 ```

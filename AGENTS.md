@@ -293,6 +293,7 @@ pnpm build
 - e2e uses `E2E_PORT` (default `3100`) to avoid common local `3000` contention.
 - The site is **forced light** (`forcedTheme: 'light'`); there is no dark mode. The terminal/maintainer cards are intentionally dark surfaces via `--terminal-*` / `bg-foreground` tokens, not `dark:` variants.
 - Fonts (Geist Sans/Mono + Instrument Serif accent) load via `next/font` with their CSS variables on `<html>`. Keep them on `<html>` or the Tailwind v4 `@theme` font tokens silently break.
+- The site sends an enforced Content-Security-Policy from `next.config.mjs`. The browser blocks a new third-party script, frame, image, or analytics endpoint until its origin is added there and to the pinned directives in `tests/int/fumadocs-site.int.spec.ts`. `tests/e2e/content-security-policy.e2e.spec.ts` fails on any violation.
 
 ## Branch & release flow
 
