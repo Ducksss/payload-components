@@ -5,12 +5,29 @@
 @source '../../../../node_modules/fumadocs-ui/dist/**/*.js';
 
 /* This route imports Tailwind a second time (the Fumadocs preset needs its own
-   entry), so it regenerates every utility from the stock theme — including the
-   .container ladder, which tops out at the default 2xl of 96rem instead of the
-   86rem globals.css sets. Anything using .container therefore measured 1536px
-   wide here and 1376px on every other route; the shared SiteFooter is the
-   visible one today. Re-declaring the single breakpoint globals.css customises
-   keeps both Tailwind builds on one grid. */
+   entry), so its build re-emits the stock theme into the same `theme` layer
+   globals.css uses, loaded after it. Any token globals.css customises that the
+   stock theme or the preset also defines is overridden on every docs page
+   unless it is re-declared here with the same value — which
+   tests/int/fumadocs-site.int.spec.ts enforces.
+
+   - --breakpoint-2xl: the .container ladder otherwise tops out at the default
+     96rem, so the shared SiteFooter measured 1536px here and 1376px elsewhere.
+   - --font-*: the stock system stacks otherwise replace Geist Sans, Geist Mono
+     and Instrument Serif in docs prose, code, and the shared header. They are
+     declared on :root beside Tailwind's --default-font-family pair, which read
+     them through var(), so preflight's html font follows without a copy.
+   - --color-fd-error / --color-fd-success: default-colors.css otherwise paints
+     success callouts a second, brighter green instead of the brand emerald. */
 @theme {
   --breakpoint-2xl: 86rem;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, 'Times New Roman', serif;
+}
+
+@theme static {
+  --color-fd-error: var(--destructive);
+  --color-fd-success: var(--brand);
 }

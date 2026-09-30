@@ -87,6 +87,38 @@ async function pathExists(filePath: string) {
   }
 }
 
+/* The custom properties declared directly inside a stylesheet's `@theme`
+   blocks, each flagged when its block is `inline` (compiled into utilities,
+   never emitted as a variable). Nested blocks such as @keyframes are skipped. */
+function themeTokens(css: string) {
+  const source = css.replace(/\/\*[\s\S]*?\*\//g, '')
+  const tokens = new Map<string, { inline: boolean; value: string }>()
+
+  for (const opener of source.matchAll(/@theme\b([^{;]*)\{/g)) {
+    const inline = /\binline\b/.test(opener[1] ?? '')
+    let body = ''
+    let depth = 1
+
+    for (let cursor = opener.index + opener[0].length; depth > 0; cursor += 1) {
+      const char = source[cursor]
+      if (char === undefined) break
+      if (char === '{' || char === '}') {
+        depth += char === '{' ? 1 : -1
+        body += ';'
+      } else if (depth === 1) {
+        body += char
+      }
+    }
+
+    for (const declaration of body.split(';')) {
+      const match = /^(--[\w-]+)\s*:\s*([\s\S]+)$/.exec(declaration.trim())
+      if (match) tokens.set(match[1], { inline, value: match[2].replace(/\s+/g, ' ') })
+    }
+  }
+
+  return tokens
+}
+
 async function expectMetaEntriesResolve(directory: string) {
   const meta = await readJson<MetaFile>(path.join(directory, 'meta.json'))
 
@@ -590,6 +622,39 @@ describe('Fumadocs site shell', () => {
     expect(docsImageRoute).toContain('ImageResponse')
     expect(proxy).toContain('isMarkdownPreferred')
     expect(proxy).toContain('rewritePath')
+  })
+
+  it('re-declares every globals.css theme variable the docs Tailwind entry would shadow', async () => {
+    const read = (...segments: string[]) => readFile(path.join(repoRoot, ...segments), 'utf8')
+    /* docs.css's own Tailwind build emits these stock tokens into the same
+       `theme` layer as globals.css, later in the cascade: the default theme in
+       index.css (what `@import 'tailwindcss'` resolves to) plus the Fumadocs
+       stylesheets it imports that declare @theme. */
+    const [globals, docsCss, ...stockSheets] = await Promise.all([
+      read('src', 'app', 'globals.css'),
+      read('src', 'app', '[locale]', 'docs', 'docs.css'),
+      read('node_modules', 'tailwindcss', 'index.css'),
+      read('node_modules', 'fumadocs-ui', 'css', 'lib', 'default-colors.css'),
+      read('node_modules', 'fumadocs-ui', 'css', 'lib', 'base.css'),
+    ])
+    const stock = new Map(stockSheets.flatMap((sheet) => [...themeTokens(sheet)]))
+    const redeclared = themeTokens(docsCss)
+    /* Inline tokens never become variables, so only emitted ones can be
+       shadowed; a stock token with the same value (the 40–80rem breakpoints)
+       shadows nothing. */
+    const shadowed = [...themeTokens(globals)].filter(
+      ([token, { inline, value }]) =>
+        !inline && stock.has(token) && stock.get(token)?.value !== value,
+    )
+
+    expect(shadowed.map(([token]) => token)).toEqual(
+      expect.arrayContaining(['--breakpoint-2xl', '--font-sans', '--font-mono', '--font-serif']),
+    )
+    expect(
+      shadowed
+        .filter(([token, { value }]) => redeclared.get(token)?.value !== value)
+        .map(([token]) => token),
+    ).toEqual([])
   })
 
   it('cache-busts deploy-sensitive app responses without touching hashed assets', async () => {

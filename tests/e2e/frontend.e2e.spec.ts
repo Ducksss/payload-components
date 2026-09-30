@@ -1169,6 +1169,42 @@ test.describe('Light shadcn frontend', () => {
     await expect(sidebar.getByRole('button', { name: /Search/ })).toBeVisible()
   })
 
+  test('keeps the site typefaces and brand accents on docs routes', async ({ page }) => {
+    /* docs.css builds Tailwind a second time, and that build's stock theme used
+       to replace these tokens on every docs page. The landing loads globals.css
+       alone, so it is the reference; the docs values must resolve identically. */
+    const readTokens = () =>
+      page.evaluate(() => {
+        const root = getComputedStyle(document.documentElement)
+        const resolveColor = (value: string) => {
+          const probe = document.createElement('div')
+          probe.style.color = value
+          document.body.appendChild(probe)
+          const resolved = getComputedStyle(probe).color
+          probe.remove()
+          return resolved
+        }
+
+        return {
+          bodyFont: getComputedStyle(document.body).fontFamily,
+          error: resolveColor('var(--color-fd-error)'),
+          mono: root.getPropertyValue('--font-mono').trim(),
+          sans: root.getPropertyValue('--font-sans').trim(),
+          serif: root.getPropertyValue('--font-serif').trim(),
+          success: resolveColor('var(--color-fd-success)'),
+        }
+      })
+
+    await page.goto(baseURL)
+    const site = await readTokens()
+    expect(site.sans).toContain('Geist')
+    expect(site.mono).toContain('Geist')
+    expect(site.serif).toContain('Instrument Serif')
+
+    await page.goto(`${baseURL}/docs/installation`)
+    expect(await readTokens()).toEqual(site)
+  })
+
   test('exposes a working command copy control', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)
