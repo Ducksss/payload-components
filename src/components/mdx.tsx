@@ -10,6 +10,7 @@ import {
   Blocks,
   Boxes,
   Database,
+  DraftingCompass,
   GitPullRequest,
   Globe,
   Languages,
@@ -30,6 +31,18 @@ import { ComponentFamily } from '@/components/site/ComponentFamily'
 import { ComponentRequirements } from '@/components/site/ComponentRequirements'
 import { ComponentUsage } from '@/components/site/ComponentUsage'
 import { ComponentWiring } from '@/components/site/ComponentWiring'
+import {
+  DesignColophon,
+  DesignContents,
+  DesignDecision,
+  DesignLedger,
+  DesignPrinciple,
+  DesignPrinciples,
+  DesignQuote,
+  DesignRefusals,
+} from '@/components/site/design/DesignEditorial'
+import { DesignFrontispiece } from '@/components/site/design/DesignFrontispiece'
+import { DesignStudy } from '@/components/site/design/DesignStudies'
 import { ManifestChangelog } from '@/components/site/ManifestChangelog'
 import { RunnableCommand } from '@/components/site/RunnableCommand'
 import Link from '@/i18n/Link'
@@ -41,6 +54,7 @@ const icons = {
   Blocks,
   Boxes,
   Database,
+  DraftingCompass,
   GitPullRequest,
   Globe,
   Languages,
@@ -88,6 +102,17 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     ComponentRequirements,
     ComponentUsage,
     ComponentWiring,
+    // The /docs/design essay: plates, principles, and the decision ledger.
+    DesignColophon,
+    DesignContents,
+    DesignDecision,
+    DesignFrontispiece,
+    DesignLedger,
+    DesignPrinciple,
+    DesignPrinciples,
+    DesignQuote,
+    DesignRefusals,
+    DesignStudy,
     ManifestChangelog,
     RunnableCommand,
     Step,

@@ -16,6 +16,7 @@ import { createRelativeLink } from 'fumadocs-ui/mdx'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getMDXComponents } from '@/components/mdx'
 import { ComponentDocHeader } from '@/components/site/ComponentDocHeader'
+import { EditorialDocHeader } from '@/components/site/EditorialDocHeader'
 import Link from '@/i18n/Link'
 import { localizeHref, localeDetails } from '@/i18n/config'
 import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
@@ -175,6 +176,7 @@ export default async function Page({ params }: DocsPageProps) {
   return (
     <DocsPage
       {...publicationContentAttributes(publication)}
+      data-editorial={page.data.editorial ? '' : undefined}
       role="main"
       toc={page.data.toc}
       full={page.data.full || Boolean(component)}
@@ -191,6 +193,15 @@ export default async function Page({ params }: DocsPageProps) {
           prev={prev ? { href: prev.href, title: prev.title } : undefined}
           next={next ? { href: next.href, title: next.title } : undefined}
         />
+      ) : page.data.editorial ? (
+        <EditorialDocHeader
+          accent={page.data.editorial.accent}
+          description={page.data.description}
+          eyebrow={page.data.editorial.eyebrow}
+          githubUrl={githubUrl}
+          markdownUrl={markdownUrl}
+          title={page.data.title}
+        />
       ) : (
         <>
           <DocsTitle className="font-bold tracking-tight">{page.data.title}</DocsTitle>
@@ -201,7 +212,7 @@ export default async function Page({ params }: DocsPageProps) {
           </div>
         </>
       )}
-      <DocsBody>
+      <DocsBody className={page.data.editorial ? '@container' : undefined}>
         <MDX
           components={getMDXComponents({
             a: createRelativeLink(source, page, LocalizedMdxLink),
