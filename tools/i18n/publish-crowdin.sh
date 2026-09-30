@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # This branch belongs to the exporter. Contributor edits go through Crowdin or
-# a separate PR; only validated locale files from dev are committed here.
+# a separate PR; only validated locale files from main are committed here.
 branch=codex/crowdin-translations
 git add -- messages/locales/*.json
 if git diff --cached --quiet; then
@@ -23,11 +23,11 @@ Validated translation update from Crowdin. Missing export strings retain their e
 
 Machine translations remain unreviewed and noindex until a native reviewer marks the resource in messages/status.json. The full Registry Verification workflow is explicitly dispatched for this commit.
 BODY
-pr_number=$(gh pr list --base dev --head "$branch" --state open --json number --jq '.[0].number // empty')
+pr_number=$(gh pr list --base main --head "$branch" --state open --json number --jq '.[0].number // empty')
 if [ -n "$pr_number" ]; then
   gh pr edit "$pr_number" --title 'chore(i18n): sync Crowdin translations' --body-file "$body_file"
 else
-  gh pr create --base dev --head "$branch" --draft --title 'chore(i18n): sync Crowdin translations' --body-file "$body_file"
-  pr_number=$(gh pr list --base dev --head "$branch" --state open --json number --jq '.[0].number')
+  gh pr create --base main --head "$branch" --draft --title 'chore(i18n): sync Crowdin translations' --body-file "$body_file"
+  pr_number=$(gh pr list --base main --head "$branch" --state open --json number --jq '.[0].number')
 fi
 printf 'pr_number=%s\n' "$pr_number" >> "$GITHUB_OUTPUT"

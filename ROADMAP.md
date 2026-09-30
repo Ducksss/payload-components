@@ -12,8 +12,7 @@ direction, not a commitment. New contributors can start with
 ## Current implementation
 
 The registry contains 79 wired Page blocks and two file-only article components.
-The latest additions in this branch still require the release gate and promotion
-before they are available in the published CLI.
+Work merged into `main` reaches the published CLI with the next npm release.
 
 - `collection-query` provides grid, list, and featured Posts layouts, category
   filters, pagination, manual selection, and an empty state. Its shared Post Card
@@ -52,19 +51,18 @@ components. Track outcomes, not duplicate implementations:
 | `newsletter-callout` ([#134]) | Existing `call-to-action-signup` covers Page signup; a distinct article surface needs a concrete unmet requirement.         |
 | `related-posts` ([#135])      | Still requires an explicit relationship-aware article contract; category filtering is not automatic related-post selection. |
 
-Historical tickets can be reconciled on promotion once their replacement scope
+Historical tickets can be closed once their replacement scope
 has been verified. A merged implementation does not silently satisfy the old
 file-only acceptance criteria of a ticket that now maps to a wired Page block.
 
 ## Next priorities
 
-1. Validate and promote the complete current bundle, including fresh consumer
+1. Validate and release the complete current bundle, including fresh consumer
    compilation and Linux component visual baselines.
 2. Add `related-posts` only with explicit source-post context and a documented
    placement contract. Keep automatic recommendations separate from manual
    selection.
-3. Finish smaller tracked site improvements: the hero H1 entrance ([#523]) and
-   promotion issue-completeness tooling ([#501]).
+3. Finish the smaller tracked site improvement: the hero H1 entrance ([#523]).
 4. Let real install feedback decide whether another hero variant ([#137]) or
    additional collection browsing controls are useful.
 
@@ -113,4 +111,3 @@ file-only acceptance criteria of a ticket that now maps to a wired Page block.
 [#133]: https://github.com/Ducksss/payload-components/issues/133
 [#134]: https://github.com/Ducksss/payload-components/issues/134
 [#523]: https://github.com/Ducksss/payload-components/issues/523
-[#501]: https://github.com/Ducksss/payload-components/issues/501
