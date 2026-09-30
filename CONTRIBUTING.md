@@ -60,12 +60,11 @@ Local API.
 
 ## Branches
 
-- `main` is the production release line.
-- `dev` is the staging line where stable feature branches are collected.
+- `main` is the only long-lived branch and the production release line.
 - Fork the repository before contributing.
-- Create feature branches from `dev`.
-- Open pull requests into `dev`.
-- Maintainers promote from `dev` to `main` only after the release gate passes.
+- Create feature branches from `main`.
+- Open pull requests into `main`. They are squash-merged after the `pr-gate`
+  check passes and a maintainer approves.
 
 ## Verification
 
@@ -179,6 +178,8 @@ pnpm test:pack
 Pull requests should include:
 
 - A clear description of what changed and why.
+- A closing keyword such as `Closes #123` for each issue the pull request
+  resolves.
 - Screenshots or short notes for visible UI changes.
 - Linux `*-chromium-linux.png` updates for any
   change that alters rendering (see [Visual baselines](#visual-baselines)).

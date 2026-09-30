@@ -5,13 +5,11 @@ Security issues in Payload Components should be reported privately first.
 ## Supported Versions
 
 The latest `payload-components` release published to npm and the `main` branch
-are the supported lines. The `dev` branch is the staging line for validated
-changes before promotion to `main`. Older published versions are not patched —
-update to the latest release to receive security fixes.
+are the supported lines. Older published versions are not patched — update to
+the latest release to receive security fixes.
 
 Security fixes are branched from `main`, validated through the release gate,
-merged back to `main` (which is what releases publish from), and then carried
-forward to `dev`.
+and merged back to `main`, which is what releases publish from.
 
 ## Reporting a Vulnerability
 

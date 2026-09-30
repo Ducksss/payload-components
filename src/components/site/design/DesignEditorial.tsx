@@ -11,7 +11,7 @@ import { githubContentBranch, githubRepoUrl } from '@/lib/site'
  * rather than holding copy, so the headings stay real markdown headings (TOC,
  * search, anchors) and the /llms surfaces serialize the prose verbatim. Numbering
  * and the section/refusal/contents typography live in docs.css under
- * [data-editorial], next to the rules that restore the site faces. */
+ * [data-editorial]. */
 
 /* Backticks in a prop string render as inline code — enough for flag names. */
 function withInlineCode(text: string) {

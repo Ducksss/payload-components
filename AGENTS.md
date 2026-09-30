@@ -249,9 +249,8 @@ editorial:
 ```
 
 The docs page renders `EditorialDocHeader` and marks the article `data-editorial`. The scoped
-rules in `src/app/[locale]/docs/docs.css` number each `##`, set a `*single word*` in each heading in
-the serif accent, and restore the Geist and Instrument Serif faces that the docs route's second
-Tailwind import otherwise resets. The essay's pieces live in `src/components/site/design/` and wrap
+rules in `src/app/[locale]/docs/docs.css` (after its `fumadocs.css` import) number each `##` and
+set a `*single word*` in each heading in the serif accent. The essay's pieces live in `src/components/site/design/` and wrap
 authored MDX, so headings stay real markdown for the TOC, search, and `/llms*`. Every
 `DesignDecision` `receipt` must be a real file and every glyph must exist in `DesignGlyphs.tsx`
 (`tests/int/fumadocs-site.int.spec.ts` checks both). When a change makes or reverses a decision
@@ -297,8 +296,9 @@ pnpm build
 
 ## Branch & release flow
 
-- **`dev`** = integration branch; **`main`** = production (protected, gated by the `pr-gate` check). Work on a feature branch → open a PR into `dev` → promote `dev → main` via PR. Direct pushes to `main` are blocked.
-- **Put closing keywords in the promote PR body, not the feature PR.** GitHub fires `Closes #123` only when the commit carrying it lands on the default branch. Feature work is squashed onto `dev` and squashed again on promote, so a keyword written on a feature PR never reaches `main` and the issue silently stays open. The promote PR is the only one that merges into `main`, so its body is the reliable place for a keyword (GitHub also honors keywords in commit messages that land on `main`, but nothing reviews those). v1.4.0 is the worked example: #473 wrote `(closes #108)` in its table and #108 closed on merge, while #100, #101, and #121 shipped in the same release without a keyword on the promote and had to be closed by hand. When writing the promote body, add a keyword for every issue the cycle resolves. The `Promote Closing Keywords` workflow enforces the _presence_ of one: a `base: main` PR whose body carries neither a closing keyword nor the line `No issues closed this cycle.` fails, and editing the description re-runs the check without a new commit. It cannot tell whether the list is complete — #473 carried one keyword and still leaked three issues — so presence passing is not evidence that nothing was missed.
+- **`main`** is the only long-lived branch: production, protected, and gated by the required `pr-gate` check. Branch from `origin/main` → open a PR into `main` → it is squash-merged once `pr-gate` passes and a maintainer approves. Direct pushes to `main` are blocked. There is no `dev` branch: the `dev → main` promote flow was retired in September 2026, so older notes about promoting from `dev` are out of date.
+- **Put closing keywords in the PR that resolves the issue** (`Closes #123` in its description). Every PR merges straight into the default branch, so GitHub closes the issue on merge.
+- **Releases:** bump `package.json` above the version `npm view payload-components version` reports, in a PR into `main`. Once it merges, publish a GitHub release tagged exactly `v<version>` on that commit. The Package Publish workflow verifies the tag against `main`, runs the release and packed-artifact gates, and publishes to npm. The full checklist is in `content/docs/operations.mdx`.
 
 ## Deeper docs
 

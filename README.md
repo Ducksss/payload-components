@@ -568,7 +568,7 @@ Read [ROADMAP.md][roadmap-url] for the current direction, or use
 ## Community Examples
 
 Sites and projects built with Payload Components. If you shipped something with
-these blocks, add it here: open a [pull request][pull-requests-url] into `dev`
+these blocks, add it here: open a [pull request][pull-requests-url] into `main`
 that appends one row to the table.
 
 <!-- COMMUNITY-EXAMPLES:START -->
@@ -622,10 +622,10 @@ Community docs:
 Basic flow:
 
 1. Fork the project.
-2. Create a feature branch from `dev`.
+2. Create a feature branch from `main`.
 3. Make the change with focused tests.
 4. Run the relevant checks and note them in the pull request.
-5. Open a pull request into `dev`.
+5. Open a pull request into `main`.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

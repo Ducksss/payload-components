@@ -1,19 +1,6 @@
-@import 'tailwindcss';
-@import 'fumadocs-ui/css/lib/default-colors.css';
-@import 'fumadocs-ui/css/preset.css';
-
-@source '../../../../node_modules/fumadocs-ui/dist/**/*.js';
-
-/* This route imports Tailwind a second time (the Fumadocs preset needs its own
-   entry), so it regenerates every utility from the stock theme — including the
-   .container ladder, which tops out at the default 2xl of 96rem instead of the
-   86rem globals.css sets. Anything using .container therefore measured 1536px
-   wide here and 1376px on every other route; the shared SiteFooter is the
-   visible one today. Re-declaring the single breakpoint globals.css customises
-   keeps both Tailwind builds on one grid. */
-@theme {
-  --breakpoint-2xl: 86rem;
-}
+/* The Fumadocs Tailwind entry, shared with the blog so the two routes cannot
+   drift from globals.css separately. */
+@import '../../fumadocs.css';
 
 /* ------------------------------------------------------------------ */
 /* Editorial essays. Frontmatter `editorial` puts [data-editorial] on */
@@ -21,21 +8,10 @@
 /* makes the body a size container. Every value below reads a token.  */
 /* ------------------------------------------------------------------ */
 
-/* The second Tailwind entry also re-emits the font tokens, so on docs routes
-   font-sans/mono/serif resolve to the Fumadocs system stacks rather than the
-   Geist + Instrument Serif set globals.css declares. An essay is set as
-   carefully as it is written, so it restores the site faces for its subtree.
-   The --default-* pair is re-declared too: preflight reads those, and a custom
-   property resolves where it is declared, not where it is used. */
+/* The site faces come from ../../fumadocs.css, which restores Geist and
+   Instrument Serif on every docs route; the essay only adds its numbering. */
 [data-editorial] {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
-  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, 'Times New Roman', serif;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
-
   counter-reset: editorial-section;
-  font-family: var(--font-sans);
 }
 
 /* Section heads: a roman numeral eyebrow, display size, one serif word. The
