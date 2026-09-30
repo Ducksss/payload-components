@@ -87,7 +87,7 @@ jobs:
           retention-days: 7
 
       - name: Open a reviewable translation PR
-        if: github.ref == 'refs/heads/dev'
+        if: github.ref == 'refs/heads/main'
         id: pr
         env:
           GH_TOKEN: ${{ github.token }}

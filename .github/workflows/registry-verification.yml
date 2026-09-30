@@ -2,8 +2,7 @@ name: Registry Verification
 
 on:
   pull_request:
-  # Production safety net only. PRs into dev already run this gate, so re-running
-  # the full suite on every dev push just re-tests an already-verified change.
+  # Production safety net only. Every PR already runs this gate before it merges;
   # main is the deployed branch, so keep gating its (squash-merged) commits.
   push:
     branches:

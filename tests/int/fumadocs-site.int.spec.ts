@@ -539,7 +539,7 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'src', 'proxy.ts'), 'utf8'),
     ])
 
-    // The push gate is main-only: PRs into dev already run the full gate, so the
+    // The push gate is main-only: every PR already runs the full gate, so the
     // deployed branch is the only one worth re-gating on its squash-merge commit.
     expect(workflow).toContain('- main')
     expect(workflow).not.toContain('- prod')
