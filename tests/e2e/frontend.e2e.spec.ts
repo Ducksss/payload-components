@@ -663,6 +663,11 @@ test.describe('Light shadcn frontend', () => {
       title: /About/,
     },
     {
+      h1: 'Payload Components',
+      path: '/about/case-study',
+      title: /Design case study/,
+    },
+    {
       h1: 'Help shape an editorial publishing system.',
       path: '/roadmap/editorial',
       title: /Editorial component roadmap/,

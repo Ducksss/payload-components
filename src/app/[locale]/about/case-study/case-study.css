@@ -1,0 +1,302 @@
+/* ------------------------------------------------------------------ */
+/* /about/case-study — the portfolio plates.                          */
+/*                                                                    */
+/* Every scroll-linked plate runs on a CSS view timeline and is gated */
+/* twice: by support, and by prefers-reduced-motion: no-preference.   */
+/* Without either, each plate renders its finished composition, which */
+/* is also what the reduced-motion visual contract expects.           */
+/*                                                                    */
+/* Ancestors of a timeline subject clip with overflow: clip, never    */
+/* hidden: a hidden overflow makes a scroll container, and a view     */
+/* timeline inside one never progresses (see ParallaxController).     */
+/* Only transforms, translate/rotate/scale, and stroke offsets move.  */
+/* ------------------------------------------------------------------ */
+
+/* Cover: the second block keys home once, on load. 5 user units matches the
+   dashed trace CaseCover draws at the block's starting position. */
+@keyframes cs-key-home {
+  from {
+    transform: translate(5px, 5px);
+  }
+}
+
+.cs-key-home {
+  animation: cs-key-home 1100ms cubic-bezier(0.16, 1, 0.3, 1) 250ms both;
+}
+
+/* Work plane: a tilted surface of real twins. The drift below composes with
+   this through the separate `translate` property. */
+.cs-plane {
+  transform: translate(-50%, -50%) perspective(2600px) rotateX(34deg) rotateZ(-11deg);
+  transform-origin: center;
+}
+
+/* Filmstrip fallback (and phones): the frames stack as a list. */
+.cs-film-track {
+  display: grid;
+  width: 100%;
+  max-width: 86rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  list-style: none;
+}
+
+.cs-film-frame {
+  padding-block: 3rem;
+  border-top: 1px solid var(--border);
+}
+
+.cs-film-rail {
+  display: none;
+}
+
+@media (width >= 48rem) {
+  .cs-film-track {
+    padding-inline: 2rem;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes cs-draw {
+      from {
+        stroke-dashoffset: 100;
+      }
+
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes cs-pop {
+      from {
+        transform: scale(0);
+      }
+    }
+
+    /* Cover: the mark tips away as the cover leaves. */
+    @keyframes cs-cover-exit {
+      to {
+        rotate: -6deg;
+        scale: 0.9;
+        translate: 0 12%;
+      }
+    }
+
+    .cs-cover-mark {
+      animation: cs-cover-exit linear both;
+      animation-range: exit 0% exit 100%;
+      animation-timeline: view();
+    }
+
+    /* 01 — pasted scraps settle into a wired row. */
+    @keyframes cs-scatter {
+      from {
+        transform: translate(var(--sx), var(--sy)) rotate(var(--sr));
+      }
+
+      to {
+        transform: none;
+      }
+    }
+
+    @keyframes cs-solidify {
+      from {
+        stroke-dasharray: 9 8;
+      }
+
+      to {
+        stroke-dasharray: 9 0;
+      }
+    }
+
+    .cs-brief-plate {
+      view-timeline-name: --cs-brief;
+    }
+
+    .cs-scatter {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: cs-scatter linear both;
+      animation-range: entry 5% cover 38%;
+      animation-timeline: --cs-brief;
+    }
+
+    .cs-scatter-edge {
+      animation: cs-solidify linear both;
+      animation-range: entry 5% cover 38%;
+      animation-timeline: --cs-brief;
+    }
+
+    .cs-brief-wire {
+      stroke-dasharray: 100;
+      animation: cs-draw linear both;
+      animation-range: cover 36% cover 47%;
+      animation-timeline: --cs-brief;
+    }
+
+    .cs-check {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: cs-pop linear both;
+      animation-range: cover 44% cover 52%;
+      animation-timeline: --cs-brief;
+    }
+
+    /* 02 — the wire draws through the poster. */
+    .cs-idea-poster {
+      view-timeline-name: --cs-idea;
+    }
+
+    .cs-idea-wire {
+      stroke-dasharray: 100;
+      animation: cs-draw linear both;
+      animation-range: cover 12% cover 55%;
+      animation-timeline: --cs-idea;
+    }
+
+    /* 04 — Albers layers drift at their own depth. */
+    @keyframes cs-depth {
+      from {
+        translate: 0 calc(var(--depth) * 0.9rem);
+      }
+
+      to {
+        translate: 0 calc(var(--depth) * -0.9rem);
+      }
+    }
+
+    .cs-albers {
+      view-timeline-name: --cs-albers;
+    }
+
+    .cs-albers-layer {
+      animation: cs-depth linear both;
+      animation-range: cover 0% cover 100%;
+      animation-timeline: --cs-albers;
+    }
+
+    /* 05 — command ribbons slide against each other. */
+    @keyframes cs-ribbon {
+      from {
+        translate: 0 0;
+      }
+
+      to {
+        translate: -32% 0;
+      }
+    }
+
+    @keyframes cs-ribbon-reverse {
+      from {
+        translate: -32% 0;
+      }
+
+      to {
+        translate: 0 0;
+      }
+    }
+
+    .cs-ribbon {
+      view-timeline-name: --cs-ribbon;
+    }
+
+    .cs-ribbon-track {
+      animation: cs-ribbon linear both;
+      animation-range: cover 0% cover 100%;
+      animation-timeline: --cs-ribbon;
+    }
+
+    .cs-ribbon-track[data-reverse] {
+      animation-name: cs-ribbon-reverse;
+    }
+
+    /* 07 — the plane of twins drifts up through its frame. */
+    @keyframes cs-plane-drift {
+      from {
+        translate: 0 9%;
+      }
+
+      to {
+        translate: 0 -13%;
+      }
+    }
+
+    .cs-plane-frame {
+      view-timeline-name: --cs-plane;
+    }
+
+    .cs-plane {
+      animation: cs-plane-drift linear both;
+      animation-range: cover 0% cover 100%;
+      animation-timeline: --cs-plane;
+    }
+  }
+
+  /* 06 — the filmstrip pins and runs sideways, wide screens only. */
+  @media (prefers-reduced-motion: no-preference) and (width >= 64rem) {
+    @keyframes cs-film {
+      to {
+        transform: translateX(calc(-100% + 100cqw));
+      }
+    }
+
+    @keyframes cs-grow-x {
+      from {
+        transform: scaleX(0);
+      }
+    }
+
+    .cs-film {
+      height: 440svh;
+      view-timeline-name: --cs-film;
+    }
+
+    .cs-film-stage {
+      position: sticky;
+      top: 3.5rem;
+      display: flex;
+      height: calc(100svh - 3.5rem);
+      flex-direction: column;
+      justify-content: center;
+      gap: 3rem;
+      overflow-x: clip;
+      container-type: inline-size;
+    }
+
+    .cs-film-track {
+      display: flex;
+      width: max-content;
+      max-width: none;
+      margin: 0;
+      padding-inline: 6vw;
+      animation: cs-film linear both;
+      animation-range: contain 0% contain 100%;
+      animation-timeline: --cs-film;
+    }
+
+    .cs-film-frame {
+      width: min(74vw, 64rem);
+      padding: 0 4vw;
+      border-top: 0;
+      border-inline-start: 1px solid var(--border);
+    }
+
+    .cs-film-rail {
+      display: block;
+      height: 1px;
+      margin-inline: 6vw;
+      background: var(--border);
+    }
+
+    .cs-film-progress {
+      display: block;
+      height: 100%;
+      background: var(--brand);
+      transform-origin: left;
+      animation: cs-grow-x linear both;
+      animation-range: contain 0% contain 100%;
+      animation-timeline: --cs-film;
+    }
+  }
+}

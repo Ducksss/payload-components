@@ -29,6 +29,7 @@ const staticRoutes = [
   { changeFrequency: 'weekly', path: '/templates', priority: 0.8 },
   { changeFrequency: 'monthly', path: '/roadmap/editorial', priority: 0.6 },
   { changeFrequency: 'monthly', path: '/about', priority: 0.5 },
+  { changeFrequency: 'monthly', path: '/about/case-study', priority: 0.5 },
   { changeFrequency: 'monthly', path: '/brand-guide', priority: 0.5 },
   { changeFrequency: 'yearly', path: '/privacy', priority: 0.3 },
 ] as const satisfies ReadonlyArray<{

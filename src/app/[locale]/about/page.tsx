@@ -335,6 +335,16 @@ export default async function AboutPage() {
                   Read the docs
                 </Link>
               </div>
+              <Link
+                href="/about/case-study"
+                className="group mt-6 inline-flex items-center gap-2 text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
+              >
+                See how it was designed: the case study
+                <ArrowRight
+                  className="size-4 transition-transform group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </Link>
             </div>
 
             <MaintainerNote />

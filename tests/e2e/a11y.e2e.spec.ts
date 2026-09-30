@@ -30,6 +30,7 @@ const routes = [
   { name: 'editorial roadmap', path: '/roadmap/editorial' },
   { name: 'templates catalog', path: '/templates' },
   { name: 'about', path: '/about' },
+  { name: 'design case study', path: '/about/case-study' },
   { name: 'privacy', path: '/privacy' },
   { name: 'blog index', path: '/blog' },
   { name: 'project notes article', path: '/blog/hello' },
