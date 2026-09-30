@@ -181,7 +181,7 @@ export function DesignDecision({
             </span>
             <ArrowUpRight
               aria-hidden="true"
-              className="size-3 shrink-0 self-center transition-transform group-hover/receipt:-translate-y-px group-hover/receipt:translate-x-px"
+              className="size-3 shrink-0 self-center motion-safe:transition-transform motion-safe:group-hover/receipt:-translate-y-px motion-safe:group-hover/receipt:translate-x-px"
             />
           </a>
         </div>

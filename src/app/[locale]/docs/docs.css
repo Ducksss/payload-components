@@ -130,25 +130,30 @@
   content: 'P·' counter(design-principle, decimal-leading-zero);
 }
 
-.design-glyph :is(.design-glyph-key, .design-glyph-lift, .design-glyph-stamp, .design-glyph-caret) {
-  transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
+/* Hover nudges are decoration, so they exist only for visitors who allow
+   motion; under reduced motion each glyph stays in its drawn pose. */
+@media (prefers-reduced-motion: no-preference) {
+  .design-glyph
+    :is(.design-glyph-key, .design-glyph-lift, .design-glyph-stamp, .design-glyph-caret) {
+    transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
 
-.group:hover .design-glyph-key {
-  transform: translate(-3px, -3px);
-}
+  .group:hover .design-glyph-key {
+    transform: translate(-3px, -3px);
+  }
 
-.group:hover .design-glyph-lift {
-  transform: translateY(-5px);
-}
+  .group:hover .design-glyph-lift {
+    transform: translateY(-5px);
+  }
 
-.group:hover .design-glyph-caret {
-  transform: translateX(6px);
-}
+  .group:hover .design-glyph-caret {
+    transform: translateX(6px);
+  }
 
-.group:hover .design-glyph-stamp {
-  transform: rotate(-12deg);
-  transform-origin: 66px 66px;
+  .group:hover .design-glyph-stamp {
+    transform: rotate(-12deg);
+    transform-origin: 66px 66px;
+  }
 }
 
 /* Decision ledger: strip the prose list chrome; the wire fills as you read. */
