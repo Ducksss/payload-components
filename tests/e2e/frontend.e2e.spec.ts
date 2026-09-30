@@ -648,6 +648,11 @@ test.describe('Light shadcn frontend', () => {
       title: /Architecture/,
     },
     {
+      h1: 'Design philosophy',
+      path: '/docs/design',
+      title: /Design philosophy/,
+    },
+    {
       h1: catalogTitle,
       path: '/components',
       title: new RegExp(catalogMetadataTitle),

@@ -1,6 +1,6 @@
 // @vitest-environment node
 
-import { access, readdir, readFile } from 'node:fs/promises'
+import { access, readdir, readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
@@ -945,6 +945,33 @@ describe('Fumadocs site shell', () => {
 
   it('keeps docs navigation metadata pointed at real pages', async () => {
     await expectMetaEntriesResolve(path.join(repoRoot, 'content', 'docs'))
+  })
+
+  it('keeps the design essay discoverable and every receipt pointed at a real file', async () => {
+    const [essay, docsMeta, docsIndex] = await Promise.all([
+      readFile(path.join(repoRoot, 'content', 'docs', 'design.mdx'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'meta.json'), 'utf8'),
+      readFile(path.join(repoRoot, 'content', 'docs', 'index.mdx'), 'utf8'),
+    ])
+    const { designGlyphNames } = await import('../../src/components/site/design/DesignGlyphs')
+
+    expect(docsMeta).toContain('"design"')
+    expect(docsIndex).toContain('href="/docs/design"')
+    expect(essay).toContain('full: true')
+    expect(essay).toMatch(/editorial:\n\s+eyebrow: .+\n\s+accent: philosophy/)
+
+    /* Each decision links the file that enforces it. A receipt that 404s on
+       GitHub would turn the page's own "receipts over claims" into a claim. */
+    const receipts = [...essay.matchAll(/receipt="([^"]+)"/g)].map((match) => match[1])
+    expect(receipts.length).toBeGreaterThanOrEqual(10)
+    for (const receipt of receipts) {
+      const file = await stat(path.join(repoRoot, receipt)).catch(() => undefined)
+      expect(file?.isFile(), `receipt ${receipt} must be a tracked file`).toBe(true)
+    }
+
+    /* Glyph names are MDX strings, so a typo would silently draw nothing. */
+    const glyphs = [...essay.matchAll(/glyph="([^"]+)"/g)].map((match) => match[1])
+    expect([...glyphs].sort()).toEqual([...designGlyphNames].sort())
   })
 
   it('keeps blog routes wired to shared chrome and complete metadata', async () => {

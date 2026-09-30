@@ -23,6 +23,7 @@ const routes = [
   { name: 'landing', path: '/' },
   { name: 'docs index', path: '/docs' },
   { name: 'docs architecture', path: '/docs/architecture' },
+  { name: 'design philosophy essay', path: '/docs/design' },
   { name: 'signup component reference', path: '/docs/components/call-to-action-signup' },
   { name: 'component catalog', path: '/components' },
   { name: 'post component roadmap catalog', path: '/components?type=posts' },

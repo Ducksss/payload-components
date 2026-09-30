@@ -236,6 +236,27 @@ family · {target}`, from `componentEntries`) on the left; Copy Page + prev/next
   install-command substrings. Data-driven sections must scroll/stack inside their cards (no page
   overflow; the ledger stacks under `md`).
 
+## Editorial docs pages
+
+Long-form essays opt into an editorial layout from frontmatter. `/docs/design`, the design
+philosophy and decision ledger, is the reference:
+
+```yaml
+full: true
+editorial:
+  eyebrow: Principles and decisions
+  accent: philosophy # the one title word set in the serif accent
+```
+
+The docs page renders `EditorialDocHeader` and marks the article `data-editorial`. The scoped
+rules in `src/app/[locale]/docs/docs.css` number each `##`, set a `*single word*` in each heading in
+the serif accent, and restore the Geist and Instrument Serif faces that the docs route's second
+Tailwind import otherwise resets. The essay's pieces live in `src/components/site/design/` and wrap
+authored MDX, so headings stay real markdown for the TOC, search, and `/llms*`. Every
+`DesignDecision` `receipt` must be a real file and every glyph must exist in `DesignGlyphs.tsx`
+(`tests/int/fumadocs-site.int.spec.ts` checks both). When a change makes or reverses a decision
+the page records, update its entry in the same change.
+
 ## Payload Target Safety
 
 Payload code in this repo is target code for consumer projects. When editing it:

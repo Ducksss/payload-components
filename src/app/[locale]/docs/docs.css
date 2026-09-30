@@ -14,3 +14,265 @@
 @theme {
   --breakpoint-2xl: 86rem;
 }
+
+/* ------------------------------------------------------------------ */
+/* Editorial essays. Frontmatter `editorial` puts [data-editorial] on */
+/* the page article (src/app/[locale]/docs/[[...slug]]/page.tsx) and  */
+/* makes the body a size container. Every value below reads a token.  */
+/* ------------------------------------------------------------------ */
+
+/* The second Tailwind entry also re-emits the font tokens, so on docs routes
+   font-sans/mono/serif resolve to the Fumadocs system stacks rather than the
+   Geist + Instrument Serif set globals.css declares. An essay is set as
+   carefully as it is written, so it restores the site faces for its subtree.
+   The --default-* pair is re-declared too: preflight reads those, and a custom
+   property resolves where it is declared, not where it is used. */
+[data-editorial] {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, 'Times New Roman', serif;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+
+  counter-reset: editorial-section;
+  font-family: var(--font-sans);
+}
+
+/* Section heads: a roman numeral eyebrow, display size, one serif word. The
+   numeral carries empty alt text so headings keep their written names. */
+[data-editorial] > .prose > h2 {
+  counter-increment: editorial-section;
+  flex-wrap: wrap;
+  margin-block: 7rem 2.25rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+  font-size: clamp(2.1rem, 4.2vw, 3.25rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: var(--tracking-title);
+}
+
+[data-editorial] > .prose > h2::before {
+  content: counter(editorial-section, upper-roman);
+  content: counter(editorial-section, upper-roman) / '';
+  flex-basis: 100%;
+  margin-bottom: 1.25rem;
+  color: var(--brand);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  line-height: 1;
+}
+
+[data-editorial] :is(h2, blockquote) em {
+  font-family: var(--font-serif);
+  font-size: 1.06em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: var(--tracking-micro);
+}
+
+/* A reading measure for running prose; plates and ledgers take the full width. */
+[data-editorial] > .prose > :is(p, ul, ol) {
+  max-width: 44rem;
+}
+
+[data-editorial] > .prose > p:first-of-type {
+  max-width: 40rem;
+  color: var(--foreground);
+  font-size: clamp(1.15rem, 1.7vw, 1.35rem);
+  line-height: 1.6;
+  letter-spacing: var(--tracking-micro);
+}
+
+/* Contents: the section list as a book's index page. */
+[data-editorial] .design-contents ol {
+  counter-reset: design-contents;
+  display: grid;
+  column-gap: 2.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+  list-style: none;
+}
+
+@container (min-width: 40rem) {
+  [data-editorial] .design-contents ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 64rem) {
+  [data-editorial] .design-contents ol {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+[data-editorial] .design-contents li {
+  counter-increment: design-contents;
+  border-bottom: 1px solid var(--border);
+}
+
+[data-editorial] .design-contents a {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding-block: 0.95rem;
+  color: var(--foreground);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: var(--tracking-micro);
+  text-decoration: none;
+  transition: color 200ms ease-out;
+}
+
+[data-editorial] .design-contents a::before {
+  content: counter(design-contents, upper-roman);
+  content: counter(design-contents, upper-roman) / '';
+  min-width: 2.25rem;
+  color: var(--brand);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: var(--tracking-eyebrow);
+}
+
+[data-editorial] .design-contents a:hover {
+  color: var(--brand);
+}
+
+/* Principles: numbered by counter, glyphs nudge a part on hover. */
+[data-editorial] .design-principles {
+  counter-reset: design-principle;
+}
+
+[data-editorial] .design-principle {
+  counter-increment: design-principle;
+}
+
+[data-editorial] .design-principle-index::before {
+  content: 'P·' counter(design-principle, decimal-leading-zero);
+}
+
+.design-glyph :is(.design-glyph-key, .design-glyph-lift, .design-glyph-stamp, .design-glyph-caret) {
+  transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.group:hover .design-glyph-key {
+  transform: translate(-3px, -3px);
+}
+
+.group:hover .design-glyph-lift {
+  transform: translateY(-5px);
+}
+
+.group:hover .design-glyph-caret {
+  transform: translateX(6px);
+}
+
+.group:hover .design-glyph-stamp {
+  transform: rotate(-12deg);
+  transform-origin: 66px 66px;
+}
+
+/* Decision ledger: strip the prose list chrome; the wire fills as you read. */
+[data-editorial] .design-ledger > ol {
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--border);
+  list-style: none;
+}
+
+[data-editorial] .design-ledger > ol > li {
+  margin: 0;
+  padding-inline-start: 0;
+}
+
+.design-ledger-progress {
+  transform-origin: top;
+}
+
+@supports (animation-timeline: view()) {
+  .design-ledger-progress {
+    animation: design-ledger-fill linear both;
+    animation-timeline: view();
+    animation-range: contain 0% contain 100%;
+  }
+}
+
+@keyframes design-ledger-fill {
+  from {
+    transform: scaleY(0);
+  }
+
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* Refusals: what we will not ship, struck through in the one accent. Each item
+   is a strike plus one plain-text reason (the li is a grid of the two). */
+[data-editorial] .design-refusals ul {
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--border);
+  list-style: none;
+}
+
+[data-editorial] .design-refusals li {
+  display: grid;
+  align-items: baseline;
+  gap: 0.35rem 2.5rem;
+  padding-block: 1.35rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+@container (min-width: 48rem) {
+  [data-editorial] .design-refusals li {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+}
+
+[data-editorial] .design-refusals del {
+  color: var(--foreground);
+  font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-snug);
+  text-decoration-line: line-through;
+  text-decoration-color: var(--brand);
+  text-decoration-thickness: 2px;
+}
+
+/* Plate I: blocks settle into their stage once on load; the hidden edges of
+   the finished mark appear after it keys. The global reduced-motion guard in
+   globals.css collapses both to the finished drawing. */
+@keyframes design-key-in {
+  from {
+    transform: translate(var(--key-x, 20px), var(--key-y, 20px));
+  }
+}
+
+@keyframes design-key-reveal {
+  from {
+    opacity: 0;
+  }
+}
+
+.design-key {
+  animation: design-key-in 900ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--key-delay, 0ms) both;
+}
+
+.design-key-reveal {
+  animation: design-key-reveal 400ms ease-out 1300ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .design-ledger-progress {
+    animation: none;
+    transform: none;
+  }
+}

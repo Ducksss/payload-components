@@ -1,0 +1,250 @@
+---
+title: Design philosophy
+description: The thesis, principles, and decisions behind Payload Components — why it installs, reads, and looks the way it does, with a receipt for each.
+icon: DraftingCompass
+full: true
+editorial:
+  eyebrow: Principles and decisions
+  accent: philosophy
+---
+
+<DesignFrontispiece>
+  Plate i, the keying sequence. A Payload block is live once five artifacts exist; a copy lands
+  the first and leaves you the other four. The last stage is the logomark itself on its 24-unit
+  grid: two 8.4-unit blocks, offset by 6, overlapping by 2.4.
+</DesignFrontispiece>
+
+Payload Components is a registry and a CLI, and underneath both it is a set of opinions about what should happen when a tool edits your repository. This page writes them down: the thesis they start from, the principles that follow, the decisions those produced, and the visual language that carries them. When a new component, command, or page is in doubt, this is the page to argue with.
+
+<DesignContents>
+
+1. [The thesis](#the-thesis)
+2. [Six principles](#six-principles)
+3. [Decisions, with receipts](#decisions-with-receipts)
+4. [Visual language](#visual-language)
+5. [What we refuse](#what-we-refuse)
+6. [Colophon](#colophon)
+
+</DesignContents>
+
+## The *thesis*
+
+A Payload block is not installed when its files land. It is installed when your Pages collection registers it, `RenderBlocks` maps it, and the generated types and the admin import map both know it exists. That is five artifacts. A copy delivers the first and leaves you the other four.
+
+<DesignQuote cite="From About" href="/about">
+  The paste was never the *problem*. The edits after it were — and proving them, every single
+  time, was worse.
+</DesignQuote>
+
+So the project makes one promise and arranges everything around keeping it: finish the wiring, show every edit before it lands, prove it once for everyone, and never ask for trust it hasn't earned. The rest of this page is that promise, broken into the choices that keep it.
+
+## Six *principles*
+
+<DesignPrinciples>
+
+<DesignPrinciple glyph="wired">
+
+### Wired, not pasted
+
+Copying files is where an install starts, not where it ends. `payload-components add` registers the block, maps the renderer, and regenerates the types and import map in the same pass, so the block is live when the command finishes.
+
+</DesignPrinciple>
+
+<DesignPrinciple glyph="source">
+
+### Source you own
+
+Components land as plain TypeScript in your `src/`, not as a runtime package. Nothing upgrades behind your back: `diff` shows where your copy drifted from what shipped, and `update` refuses to overwrite local edits unless you pass `--force`.
+
+</DesignPrinciple>
+
+<DesignPrinciple glyph="diff">
+
+### One reviewable diff
+
+Every install is a set of edits you can read before you trust them. `--dry-run` prints the plan without writing, the result lands as an ordinary git diff, and install state in `.payload-components/state.json` makes each stage safe to retry.
+
+</DesignPrinciple>
+
+<DesignPrinciple glyph="proven">
+
+### Proven once, for everyone
+
+Wiring by hand means re-proving it by hand on every project. Here the proof lives in the registry — installer suites, compile checks of shipped code, and a fresh-repo smoke test — so each install inherits the evidence instead of redoing it.
+
+</DesignPrinciple>
+
+<DesignPrinciple glyph="catalog">
+
+### Choose by looking
+
+A structural variant is its own component — `hero-basic`, `hero-video`, `hero-split` — chosen in the catalog by how it looks, never through a CLI prompt. Anything an editor might switch on or off is a Payload field, not another component.
+
+</DesignPrinciple>
+
+<DesignPrinciple glyph="receipts">
+
+### Receipts over claims
+
+If it can't be checked, it doesn't go on the site. Copy links to the source, the manifest, or the test. The registry, the CLI, every component, and this site are one MIT repository: no pricing, no license keys, no gated tier.
+
+</DesignPrinciple>
+
+</DesignPrinciples>
+
+## Decisions, with *receipts*
+
+Principles are cheap until they cost something. Each decision below names what it replaced and links to the file that enforces it, so you can check it rather than take it on trust. [Architecture](/docs/architecture) shows how the pieces fit together.
+
+<DesignLedger>
+
+<DesignDecision code="01" area="Registry" instead="an interactive `--variant` prompt" receipt="payload-components/registry.json">
+
+### One variant, one registry item
+
+Every structural variant is its own registry item and manifest, and every name carries a suffix — there is no bare `hero`. The install pipeline stays keyed on one stable name, which keeps install state, retries, and recovery simple.
+
+</DesignDecision>
+
+<DesignDecision code="02" area="Registry" instead="`registryDependencies`, which resolve only public shadcn UI, so an internal name would 404" receipt="payload-components/source/blocks/shared/heroFields.ts">
+
+### Family code ships as files
+
+Code a family shares, like `heroFields.ts`, is a real source file that every variant lists in `files[]` and installs once to `src/blocks/shared/`. Edit it and every installed variant follows; re-running an install never overwrites your copy.
+
+</DesignDecision>
+
+<DesignDecision code="03" area="CLI" instead="guessing at a file shape it does not recognise" receipt="tools/payload-components/project.ts">
+
+### Patch by anchor, refuse when unsure
+
+Fragments are placed by finding text anchors such as `const blockComponents = {`, with a duplicate check before every insert. When an anchor is missing, the file is left unchanged and the CLI prints the exact lines it would have written, so the fallback is a paste, not a research task.
+
+</DesignDecision>
+
+<DesignDecision code="04" area="CLI" instead="an MCP SDK" receipt="tools/payload-components/mcp/server.ts">
+
+### Two runtime dependencies
+
+The published CLI ships `ajv` and `semver` and nothing else, so `npx payload-components` never drags a framework into your install. Its MCP server for coding agents is hand-rolled JSON-RPC over stdio, and every tool it exposes is read-only.
+
+</DesignDecision>
+
+<DesignDecision code="05" area="CLI" instead="elevated Local API calls hidden inside the installer" receipt="tools/payload-components/commands/seed.ts">
+
+### The CLI never opens your database
+
+Demo seeding writes a script you review and run yourself with your project's Payload CLI. It requires drafts, records the exact documents it owns, and never deletes media, so every elevated call sits in code you can read.
+
+</DesignDecision>
+
+<DesignDecision code="06" area="Registry" instead="editing a released version in place" receipt="payload-components/install-baselines.json">
+
+### Released source is immutable
+
+Changing a component's source means a version bump and changelog entry for every affected manifest, plus an appended source baseline. Published baselines are never rewritten, so the CLI can tell an upstream change from a local edit — and when it can't, it fails closed.
+
+</DesignDecision>
+
+<DesignDecision code="07" area="Site" instead="trusting review for code no gate had compiled" receipt="tests/int/payload-components-source-compiles.int.spec.ts">
+
+### Shipped code is compiled, not just read
+
+Component source is excluded from this repository's type-check, which is how v1.3.0 shipped a starter base that could not compile. A fast gate now parses every shipped starter file, applies real manifest fragments, and typechecks the result in the normal gate.
+
+</DesignDecision>
+
+<DesignDecision code="08" area="Site" instead="running consumer block code inside the docs site" receipt="tests/int/demo-twins.int.spec.ts">
+
+### Twins, not runtimes
+
+This site runs no Payload: no admin, no database, no `PAYLOAD_SECRET`. Catalog previews are demo twins — backend-free specimens that must repeat every class sequence of the component they stand in for, checked by test.
+
+</DesignDecision>
+
+<DesignDecision code="09" area="Brand" instead="a dark-mode toggle" receipt="src/app/globals.css">
+
+### Forced light, one dark surface
+
+The site ships a single light theme with no toggle. The terminal is the one permanent dark surface, painted from its own tokens, so it reads as the product sitting on the page rather than as a second theme.
+
+</DesignDecision>
+
+<DesignDecision code="10" area="Brand" instead="the `>` prompt-and-cursor mark it replaced" receipt="src/components/site/Logomark.tsx">
+
+### Two keyed blocks
+
+The mark is two equal squares overlapping on the diagonal: separate blocks fitted into one shape, which is what the CLI does. The union has no seam to lose, so the silhouette survives a 16px browser tab.
+
+</DesignDecision>
+
+<DesignDecision code="11" area="Site" instead="publishing machine translations as if they were reviewed" receipt="src/i18n/config.ts">
+
+### English is canonical
+
+The public site is English-only. Translation catalogs stay drafts until a native reviewer signs off on a path, because an honest English page is better than a confident wrong one.
+
+</DesignDecision>
+
+</DesignLedger>
+
+## Visual *language*
+
+The site is a workbench, not a showroom: white paper, zinc hairlines, black ink, and one emerald accent that appears only when something means yes — active, installed, linked. The [brand guide](/brand-guide) holds the full token sheet; these are the rules behind it.
+
+<DesignStudy kind="palette" plate="plate ii — homage to one accent">
+
+### Color
+
+Monochrome carries the structure and emerald carries meaning, so color never needs decoding. When the accessibility gate flagged muted text as short of AA, `--muted-foreground` was darkened to 46% lightness rather than excused.
+
+</DesignStudy>
+
+<DesignStudy kind="type" plate="plate iii — three faces, one voice">
+
+### Type
+
+Geist Sans does the work. Geist Mono holds anything you might copy — commands, paths, versions — so it looks copyable. Instrument Serif appears as one italic word per heading and never a paragraph: a single warm note in a technical voice.
+
+</DesignStudy>
+
+<DesignStudy kind="shape" plate="plate iv — containment, outside in">
+
+### Shape
+
+Radii step down as surfaces nest — frame, panel, card, inset, base — so a box inside a box reads as contained rather than stacked. Pills are kept for status and metadata, and nothing gets an arbitrary radius when a named one exists.
+
+</DesignStudy>
+
+<DesignStudy kind="motion" plate="plate v — out fast, settle long">
+
+### Motion
+
+Motion confirms; it never gates. Transitions run about 200 to 300ms, entrances play once, and under reduced motion the final state is simply there — the install replay still shows its whole transcript.
+
+</DesignStudy>
+
+## What we *refuse*
+
+A system is defined as much by what it leaves out. These stay out.
+
+<DesignRefusals>
+
+- ~~Gradient SaaS theatre~~ — color means something here, or it is not used.
+- ~~Pricing tiers, license keys, waitlists~~ — MIT end to end; success is adoption and pull requests.
+- ~~Fake logos and invented quotes~~ — nothing claims a user, a logo, or a quote it cannot point to.
+- ~~Flags for languages~~ — a language is not a country, so languages are named, never flagged.
+- ~~A second accent color~~ — emerald is the only hue; everything else is zinc.
+- ~~Ornamental dashboards~~ — a panel earns its place by showing something the product really does.
+
+</DesignRefusals>
+
+## *Colophon*
+
+<DesignColophon>
+
+Set in Geist Sans and Geist Mono, with Instrument Serif for one word per heading. Every plate on this page is inline SVG or plain HTML, drawn from two primitives — the logomark's rounded square and a hairline — and painted with the site's live tokens, so it changes when they do.
+
+Disagree with something? That is why it is written down. Open an [issue](https://github.com/Ducksss/payload-components/issues) or a pull request against `content/docs/design.mdx`; decisions are meant to be argued with.
+
+</DesignColophon>

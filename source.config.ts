@@ -10,6 +10,15 @@ export const docs = defineDocs({
     lastModified: true,
     schema: pageSchema.extend({
       seoTitle: z.string().optional(),
+      // Opt-in essay layout (e.g. /docs/design): EditorialDocHeader replaces the
+      // stock title with an eyebrow and a display <h1> that sets one word in the
+      // serif accent. The body gets `data-editorial` for its scoped styles.
+      editorial: z
+        .object({
+          accent: z.string().optional(),
+          eyebrow: z.string(),
+        })
+        .optional(),
     }),
     postprocess: {
       includeProcessedMarkdown: true,

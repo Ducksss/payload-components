@@ -19,6 +19,7 @@
     "---Reference---",
     "cli",
     "localization",
+    "design",
     "architecture",
     "payload-generate-importmap",
     "registry",
