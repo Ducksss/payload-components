@@ -341,7 +341,7 @@ export default async function AboutPage() {
               >
                 See how it was designed: the case study
                 <ArrowRight
-                  className="size-4 transition-transform group-hover:translate-x-0.5"
+                  className="size-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
                   aria-hidden="true"
                 />
               </Link>

@@ -100,7 +100,7 @@ export function CaseCredits() {
                   Read the design <Accent>philosophy</Accent>
                   <ArrowRight
                     aria-hidden="true"
-                    className="ms-3 inline size-[0.6em] align-baseline transition-transform group-hover:translate-x-2"
+                    className="ms-3 inline size-[0.6em] align-baseline motion-safe:transition-transform motion-safe:group-hover:translate-x-2"
                   />
                 </CaseHeading>
               </Link>
