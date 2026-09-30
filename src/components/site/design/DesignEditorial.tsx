@@ -111,10 +111,13 @@ export function DesignLedger({ children }: { children: ReactNode }) {
   return (
     <div className="design-ledger relative my-12">
       {/* The wire: a hairline down the index column that fills emerald as you
-          read (scroll-driven where supported, drawn in full everywhere else). */}
+          read (scroll-driven where supported, drawn in full everywhere else).
+          overflow-clip, not hidden: a hidden overflow is a scroll container,
+          and the fill's view() timeline would track this wrapper instead of
+          the page, so it would never progress. */}
       <span
         aria-hidden="true"
-        className="absolute inset-y-0 left-[5px] hidden w-px overflow-hidden bg-border @3xl:block"
+        className="absolute inset-y-0 left-[5px] hidden w-px overflow-clip bg-border @3xl:block"
       >
         <span className="design-ledger-progress absolute inset-0 bg-brand" />
       </span>

@@ -13,15 +13,18 @@
 /* ------------------------------------------------------------------ */
 
 /* Cover: the second block keys home once, on load. 5 user units matches the
-   dashed trace CaseCover draws at the block's starting position. */
+   dashed trace CaseCover draws at the block's starting position. Gated like
+   the scroll plates: under reduced motion the block simply rests at home. */
 @keyframes cs-key-home {
   from {
     transform: translate(5px, 5px);
   }
 }
 
-.cs-key-home {
-  animation: cs-key-home 1100ms cubic-bezier(0.16, 1, 0.3, 1) 250ms both;
+@media (prefers-reduced-motion: no-preference) {
+  .cs-key-home {
+    animation: cs-key-home 1100ms cubic-bezier(0.16, 1, 0.3, 1) 250ms both;
+  }
 }
 
 /* Work plane: a tilted surface of real twins. The drift below composes with

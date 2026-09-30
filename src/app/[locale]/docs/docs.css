@@ -248,8 +248,8 @@
 }
 
 /* Plate I: blocks settle into their stage once on load; the hidden edges of
-   the finished mark appear after it keys. The global reduced-motion guard in
-   globals.css collapses both to the finished drawing. */
+   the finished mark appear after it keys. Declared only for visitors who
+   allow motion, so reduced motion renders the finished drawing outright. */
 @keyframes design-key-in {
   from {
     transform: translate(var(--key-x, 20px), var(--key-y, 20px));
@@ -262,12 +262,14 @@
   }
 }
 
-.design-key {
-  animation: design-key-in 900ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--key-delay, 0ms) both;
-}
+@media (prefers-reduced-motion: no-preference) {
+  .design-key {
+    animation: design-key-in 900ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--key-delay, 0ms) both;
+  }
 
-.design-key-reveal {
-  animation: design-key-reveal 400ms ease-out 1300ms both;
+  .design-key-reveal {
+    animation: design-key-reveal 400ms ease-out 1300ms both;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
