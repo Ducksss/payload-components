@@ -1169,29 +1169,37 @@ test.describe('Light shadcn frontend', () => {
     await expect(sidebar.getByRole('button', { name: /Search/ })).toBeVisible()
   })
 
-  test('keeps the site typefaces and brand accents on docs routes', async ({ page }) => {
-    /* docs.css builds Tailwind a second time, and that build's stock theme used
-       to replace these tokens on every docs page. The landing loads globals.css
-       alone, so it is the reference; the docs values must resolve identically. */
+  test('keeps the site typefaces, accents, and radius scale on docs and blog routes', async ({
+    page,
+  }) => {
+    /* The docs and blog build Tailwind a second time (src/app/fumadocs.css), and
+       that build's stock theme used to replace these on every one of their
+       pages. The landing loads globals.css alone, so it is the reference; the
+       Fumadocs routes must resolve identically. */
     const readTokens = () =>
       page.evaluate(() => {
         const root = getComputedStyle(document.documentElement)
-        const resolveColor = (value: string) => {
-          const probe = document.createElement('div')
-          probe.style.color = value
-          document.body.appendChild(probe)
-          const resolved = getComputedStyle(probe).color
-          probe.remove()
+        const probe = (className: string, color = '') => {
+          const element = document.createElement('div')
+          element.className = className
+          element.style.color = color
+          document.body.appendChild(element)
+          const style = getComputedStyle(element)
+          const resolved = { color: style.color, radius: style.borderTopLeftRadius }
+          element.remove()
           return resolved
         }
 
         return {
           bodyFont: getComputedStyle(document.body).fontFamily,
-          error: resolveColor('var(--color-fd-error)'),
+          error: probe('', 'var(--color-fd-error)').color,
           mono: root.getPropertyValue('--font-mono').trim(),
+          radii: ['rounded-sm', 'rounded-md', 'rounded-lg', 'rounded-xl', 'rounded-2xl'].map(
+            (utility) => probe(utility).radius,
+          ),
           sans: root.getPropertyValue('--font-sans').trim(),
           serif: root.getPropertyValue('--font-serif').trim(),
-          success: resolveColor('var(--color-fd-success)'),
+          success: probe('', 'var(--color-fd-success)').color,
         }
       })
 
@@ -1200,9 +1208,14 @@ test.describe('Light shadcn frontend', () => {
     expect(site.sans).toContain('Geist')
     expect(site.mono).toContain('Geist')
     expect(site.serif).toContain('Instrument Serif')
+    /* A real scale, so equality below cannot pass on probes that all read 0px. */
+    const radii = site.radii.map((value) => Number.parseFloat(value))
+    expect(radii.every((value, index) => value > (radii[index - 1] ?? 0))).toBe(true)
 
-    await page.goto(`${baseURL}/docs/installation`)
-    expect(await readTokens()).toEqual(site)
+    for (const path of ['/docs/installation', '/blog/what-is-a-payload-cms-block']) {
+      await page.goto(`${baseURL}${path}`)
+      expect(await readTokens(), path).toEqual(site)
+    }
   })
 
   test('exposes a working command copy control', async ({ page, context }) => {

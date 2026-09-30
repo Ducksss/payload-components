@@ -517,6 +517,7 @@ describe('Fumadocs site shell', () => {
       sourceConfig,
       nextConfig,
       docsCss,
+      fumadocsEntry,
       docsLayout,
       rootLayout,
       globals,
@@ -535,6 +536,7 @@ describe('Fumadocs site shell', () => {
       readFile(path.join(repoRoot, 'source.config.ts'), 'utf8'),
       readFile(path.join(repoRoot, 'next.config.mjs'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', '[locale]', 'docs', 'docs.css'), 'utf8'),
+      readFile(path.join(repoRoot, 'src', 'app', 'fumadocs.css'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', '[locale]', 'docs', 'layout.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', '[locale]', 'layout.tsx'), 'utf8'),
       readFile(path.join(repoRoot, 'src', 'app', 'globals.css'), 'utf8'),
@@ -595,8 +597,9 @@ describe('Fumadocs site shell', () => {
     expect(docsLayout).not.toContain('defaultTheme')
     expect(docsLayout).not.toContain('forcedTheme')
     expect(docsLayout).toContain('activePath="/docs"')
-    expect(docsCss).toContain("@import 'tailwindcss'")
-    expect(docsCss).toContain("@import 'fumadocs-ui/css/preset.css'")
+    expect(docsCss).toContain("@import '../../fumadocs.css'")
+    expect(fumadocsEntry).toContain("@import 'tailwindcss'")
+    expect(fumadocsEntry).toContain("@import 'fumadocs-ui/css/preset.css'")
     expect(globals).not.toContain("@import 'fumadocs-ui/css/preset.css'")
     expect(siteHeader).toContain("'use client'")
     expect(siteHeader).toContain('usePathname')
@@ -624,37 +627,67 @@ describe('Fumadocs site shell', () => {
     expect(proxy).toContain('rewritePath')
   })
 
-  it('re-declares every globals.css theme variable the docs Tailwind entry would shadow', async () => {
-    const read = (...segments: string[]) => readFile(path.join(repoRoot, ...segments), 'utf8')
-    /* docs.css's own Tailwind build emits these stock tokens into the same
+  it('re-declares every globals.css theme token the Fumadocs Tailwind entries would override', async () => {
+    const read = (file: string) => readFile(path.join(repoRoot, file), 'utf8')
+    /* Inlines relative @imports, so a token counts wherever an entry keeps it
+       (docs.css and blog.css both delegate to src/app/fumadocs.css). */
+    const resolveImports = async (file: string): Promise<string> => {
+      const css = await read(file)
+      let resolved = css
+      for (const [statement, target] of css.matchAll(/@import\s+'(\.{1,2}\/[^']+\.css)'\s*;/g)) {
+        resolved = resolved.replace(
+          statement,
+          await resolveImports(path.join(path.dirname(file), target ?? '')),
+        )
+      }
+      return resolved
+    }
+    /* Each entry's own Tailwind build emits these stock tokens into the same
        `theme` layer as globals.css, later in the cascade: the default theme in
        index.css (what `@import 'tailwindcss'` resolves to) plus the Fumadocs
        stylesheets it imports that declare @theme. */
-    const [globals, docsCss, ...stockSheets] = await Promise.all([
-      read('src', 'app', 'globals.css'),
-      read('src', 'app', '[locale]', 'docs', 'docs.css'),
-      read('node_modules', 'tailwindcss', 'index.css'),
-      read('node_modules', 'fumadocs-ui', 'css', 'lib', 'default-colors.css'),
-      read('node_modules', 'fumadocs-ui', 'css', 'lib', 'base.css'),
+    const [globals, ...stockSheets] = await Promise.all([
+      read('src/app/globals.css'),
+      read('node_modules/tailwindcss/index.css'),
+      read('node_modules/fumadocs-ui/css/lib/default-colors.css'),
+      read('node_modules/fumadocs-ui/css/lib/base.css'),
     ])
     const stock = new Map(stockSheets.flatMap((sheet) => [...themeTokens(sheet)]))
-    const redeclared = themeTokens(docsCss)
-    /* Inline tokens never become variables, so only emitted ones can be
-       shadowed; a stock token with the same value (the 40–80rem breakpoints)
-       shadows nothing. */
-    const shadowed = [...themeTokens(globals)].filter(
+    /* An emitted token only collides when the stock value differs (the 40–80rem
+       breakpoints shadow nothing). An inline one always does: globals.css emits
+       no variable for it, and the entry's own utility for the same class
+       compiles to the stock variable and loads later. */
+    const collisions = [...themeTokens(globals)].filter(
       ([token, { inline, value }]) =>
-        !inline && stock.has(token) && stock.get(token)?.value !== value,
+        stock.has(token) && (inline || stock.get(token)?.value !== value),
     )
 
-    expect(shadowed.map(([token]) => token)).toEqual(
-      expect.arrayContaining(['--breakpoint-2xl', '--font-sans', '--font-mono', '--font-serif']),
+    expect(collisions.map(([token]) => token)).toEqual(
+      expect.arrayContaining([
+        '--breakpoint-2xl',
+        '--font-sans',
+        '--font-mono',
+        '--font-serif',
+        '--radius-lg',
+      ]),
     )
-    expect(
-      shadowed
-        .filter(([token, { value }]) => redeclared.get(token)?.value !== value)
-        .map(([token]) => token),
-    ).toEqual([])
+    for (const entry of ['src/app/[locale]/docs/docs.css', 'src/app/[locale]/blog/blog.css']) {
+      const css = await resolveImports(entry)
+      const redeclared = themeTokens(css)
+
+      expect.soft(css, entry).toContain("@import 'tailwindcss'")
+      expect
+        .soft(
+          collisions
+            .filter(([token, { inline, value }]) => {
+              const own = redeclared.get(token)
+              return !own || own.value !== value || own.inline !== inline
+            })
+            .map(([token]) => token),
+          entry,
+        )
+        .toEqual([])
+    }
   })
 
   it('cache-busts deploy-sensitive app responses without touching hashed assets', async () => {
