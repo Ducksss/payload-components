@@ -1,5 +1,7 @@
 import { expect, type BrowserContext, type Page, test } from '@playwright/test'
 
+import { mountGoogleTagOffline } from './consent'
+
 /* The Content-Security-Policy is enforced, and nothing reports on it. The site is
  * backend-free, so there is no report-to collector, and a production violation
  * would only ever reach one visitor's console. This spec is the feedback loop
@@ -15,7 +17,9 @@ import { expect, type BrowserContext, type Page, test } from '@playwright/test'
  *
  * Third parties are fulfilled locally. The browser applies the policy before a
  * request reaches the route handler, so a stubbed gtag.js still has to clear
- * script-src, while the suite stays offline and sends Google nothing. */
+ * script-src, while the suite stays offline and sends Google nothing. GA4 mounts
+ * on the production hosts only, so the walk opts this host back in through
+ * mountGoogleTagOffline; declining must still mount nothing. */
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 const isProductionE2E = process.env.PLAYWRIGHT_SERVER_MODE === 'production'
@@ -70,6 +74,7 @@ async function watchPolicy(context: BrowserContext) {
         ? route.fulfill({ body: '', contentType: 'text/javascript' })
         : route.fulfill({ status: 204 }),
   )
+  await mountGoogleTagOffline(context)
 
   return violations
 }
