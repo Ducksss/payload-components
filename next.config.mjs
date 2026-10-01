@@ -43,14 +43,32 @@ const postHogOrigin = (() => {
   }
 })()
 
+/* Enforced rather than report-only: the site is backend-free, so a report-to
+ * collector has nowhere to live, and reports that only reach a visitor's console
+ * cannot inform a rollout. tests/e2e/content-security-policy.e2e.spec.ts is the
+ * feedback loop instead: it fails on any violation across the site's surfaces,
+ * with analytics consent declined and accepted.
+ *
+ * Script elements keep 'unsafe-inline' because Next streams build-specific
+ * inline RSC payload scripts into every static page. Hashes would have to be
+ * listed per route and would change on every deploy, and nonces would force
+ * dynamic rendering. JSON-LD blocks are data, not script, so they need no
+ * allowance. script-src-attr 'none' still refuses inline event-handler
+ * attributes, which React never renders.
+ *
+ * Frames are same-origin only: the component and template previews. The Embed
+ * Basic catalog demo is a faux player, so no third-party frame ever loads. The
+ * third-party origins are the consent-gated GA4 tag and PostHog capture; Vercel
+ * Analytics and Speed Insights are same-origin outside development. */
 const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval' https://va.vercel-scripts.com" : ''} https://www.googletagmanager.com`,
+  "script-src-attr 'none'",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com",
+  "img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com",
   "font-src 'self' data:",
-  `connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com${postHogOrigin ? ` ${postHogOrigin}` : ''}`,
-  "frame-src 'self' https://*.airtable.com https://*.google.com https://*.typeform.com https://*.vimeo.com https://*.youtube.com https://*.youtube-nocookie.com",
+  `connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com${postHogOrigin ? ` ${postHogOrigin}` : ''}`,
+  "frame-src 'self'",
   "media-src 'self' blob:",
   "worker-src 'self' blob:",
   "object-src 'none'",
@@ -78,6 +96,8 @@ const securityHeaders = [
     value: 'strict-origin-when-cross-origin',
   },
   {
+    // CSP2+ browsers ignore this in favour of frame-ancestors 'self'; it gives
+    // older ones the same same-origin rule, so the previews frame in both.
     key: 'X-Frame-Options',
     value: 'SAMEORIGIN',
   },
