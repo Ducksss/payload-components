@@ -1,6 +1,6 @@
 // @vitest-environment node
 
-import { readFile } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { createTranslator } from 'next-intl'
@@ -13,6 +13,7 @@ import {
   localeAlternates,
   localeDetails,
   localizeHref,
+  publicPathname,
   siteLocales,
   publishedSiteLocales,
   isPublishedSiteLocale,
@@ -95,6 +96,38 @@ describe('site internationalization', () => {
     expect(localizeHref('https://github.com/Ducksss/payload-components', 'zh')).toBe(
       'https://github.com/Ducksss/payload-components',
     )
+  })
+
+  it('gives Fumadocs the public pathname on the server and in the browser', async () => {
+    /* A prerendered page reads its internal /en route from usePathname() on the
+     * server and the public URL in the browser. Fumadocs matched its chrome
+     * against the raw value, so every docs page failed hydration (React #418). */
+    expect(publicPathname('/en/docs')).toBe('/docs')
+    expect(publicPathname('/en/docs/components/hero-basic')).toBe('/docs/components/hero-basic')
+    expect(publicPathname('/en')).toBe('/')
+    expect(publicPathname('/docs')).toBe('/docs')
+    expect(publicPathname('/')).toBe('/')
+    expect(publicPathname('/zh/docs/installation')).toBe('/zh/docs/installation')
+    expect(publicPathname('/zh')).toBe('/zh')
+
+    /* The stock provider passes next/navigation's raw pathname to Fumadocs. */
+    const sourceFiles = (await readdir(path.join(repoRoot, 'src'), { recursive: true })).filter(
+      (file) => /\.tsx?$/.test(file),
+    )
+    const stockProviderImports: string[] = []
+    for (const file of sourceFiles) {
+      const source = await readFile(path.join(repoRoot, 'src', file), 'utf8')
+      if (/['"]fumadocs-ui\/provider\/next['"]/.test(source)) stockProviderImports.push(file)
+    }
+    expect(stockProviderImports).toEqual([])
+
+    for (const layout of ['docs', 'blog']) {
+      const source = await readFile(
+        path.join(repoRoot, 'src/app/[locale]', layout, 'layout.tsx'),
+        'utf8',
+      )
+      expect(source, layout).toContain('<FumadocsRootProvider')
+    }
   })
 
   it('treats chrome-free previews as chrome-free in every locale', async () => {
