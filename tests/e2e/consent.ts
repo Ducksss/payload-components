@@ -17,3 +17,39 @@ export async function grantConsent(context: BrowserContext) {
     }
   })
 }
+
+/* Every Google domain the Content-Security-Policy in next.config.mjs admits for
+ * GA4, across script-src, img-src, and connect-src, subdomains included.
+ * playwright.config.ts also makes Chromium resolve these to nothing. */
+export const googleTagDomains = [
+  'googletagmanager.com',
+  'google-analytics.com',
+  'analytics.google.com',
+]
+
+/* Fulfils every Google origin locally: gtag.js becomes an empty script and any
+ * collect request gets a 204. The browser applies the CSP before a request
+ * reaches the route, so a stub is held to the same policy as the real tag, but
+ * nothing leaves the machine. */
+export async function stubGoogleOrigins(context: BrowserContext) {
+  await context.route(
+    ({ hostname }) =>
+      googleTagDomains.some((domain) => hostname === domain || hostname.endsWith(`.${domain}`)),
+    (route) =>
+      route.request().resourceType() === 'script'
+        ? route.fulfill({ body: '', contentType: 'text/javascript' })
+        : route.fulfill({ status: 204 }),
+  )
+}
+
+/* GA4 mounts on the production hosts only, so on localhost granting consent
+ * mounts nothing from Google. Specs that assert on the tag opt back in here.
+ * The site's test hook is set only after every Google origin is stubbed, so the
+ * tag mounts and runs its inline snippet but never reaches the production
+ * property. Don't set __allowGoogleTagOnTestHost anywhere else. */
+export async function mountGoogleTagOffline(context: BrowserContext) {
+  await stubGoogleOrigins(context)
+  await context.addInitScript(() => {
+    window.__allowGoogleTagOnTestHost = true
+  })
+}

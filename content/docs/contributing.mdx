@@ -159,12 +159,15 @@ Three rules to preserve when touching any of this:
     `pc_consent=granted` for the specs that assert on analytics or capture visual
     baselines, so the banner stays out of snapshots. The undecided state is
     covered by `tests/e2e/consent.e2e.spec.ts`, and the axe suites deliberately
-    run *without* consent so the banner is held to the same a11y bar.
+    run *without* consent so the banner is held to the same a11y bar. Specs that
+    assert on the GA4 tag also call `mountGoogleTagOffline`, which stubs every
+    Google origin before it sets the site's test hook, so no e2e run sends a hit.
   </Step>
 </Steps>
 
-PostHog capture is additionally limited to the production hostnames, so local dev
-and preview deploys never send even after opting in.
+GA4 and PostHog are additionally limited to the production hostnames, so local
+dev and preview deploys never send even after opting in: `AnalyticsShell` does
+not mount the GA4 tag there, and PostHog skips its capture request.
 
 Never add user-entered content, secrets, account identity, install state, or
 cross-site profiling. A future event must name one user action, use a
