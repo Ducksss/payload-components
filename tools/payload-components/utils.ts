@@ -368,7 +368,9 @@ export const extractMajor = (version: string | undefined, dependencyName: string
   const match = version?.match(/(\d+)/)
 
   if (!match) {
-    throw new Error(`Unable to determine the installed major version for "${dependencyName}".`)
+    throw new Error(
+      `Unable to determine the installed major version for "${dependencyName}". Declare a version range for it in package.json, or install the project's dependencies so the installed version can be read.`,
+    )
   }
 
   return Number(match[1])

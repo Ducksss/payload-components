@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import semver from 'semver'
@@ -59,6 +60,59 @@ const getDeclaredDependencies = async (cwd: string) => {
   }
 }
 
+// npm package names, scoped or not. Nothing else is ever joined onto a path.
+const packageNamePattern = /^(?:@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/
+
+/* Reads the version the package manager actually installed. pnpm links
+ * node_modules/<name> into its store, so unlike the project-file reads this
+ * follows that symlink on purpose: it writes nothing and returns only a valid
+ * semver version, never file content. */
+const readInstalledVersion = async ({
+  cwd,
+  dependencyName,
+}: {
+  cwd: string
+  dependencyName: string
+}) => {
+  if (!packageNamePattern.test(dependencyName)) {
+    return undefined
+  }
+
+  try {
+    const manifest = JSON.parse(
+      await readFile(path.join(cwd, 'node_modules', dependencyName, PACKAGE_JSON_FILE), 'utf8'),
+    ) as { name?: unknown; version?: unknown }
+
+    return manifest.name === dependencyName && typeof manifest.version === 'string'
+      ? (semver.valid(manifest.version) ?? undefined)
+      : undefined
+  } catch {
+    return undefined
+  }
+}
+
+/* Some projects name a dependency without naming a version: create-payload-app
+ * --version latest writes "latest" for every Payload package, and workspaces use
+ * "workspace:*" or "catalog:". Those carry no major or range to check, so this
+ * falls back to the installed version. A declared range always wins, and an
+ * unversioned spec with nothing installed comes back unchanged for the caller
+ * to reject. */
+export const resolveDeclaredVersion = async ({
+  cwd,
+  declared,
+  dependencyName,
+}: {
+  cwd: string
+  declared: string | undefined
+  dependencyName: string
+}) => {
+  if (declared === undefined || (/\d/.test(declared) && semver.validRange(declared))) {
+    return declared
+  }
+
+  return (await readInstalledVersion({ cwd, dependencyName })) ?? declared
+}
+
 const validateDeclaredRange = ({
   dependencyName,
   installedRange,
@@ -72,7 +126,7 @@ const validateDeclaredRange = ({
 
   if (!normalizedRange) {
     throw new Error(
-      `Cannot validate installed ${label} entry "${dependencyName}" because the target project declares an invalid semver range "${installedRange}".`,
+      `Cannot validate installed ${label} entry "${dependencyName}" because the target project declares an invalid semver range "${installedRange}" and has no installed version to check instead. Install the project's dependencies, or declare a semver range.`,
     )
   }
 
@@ -115,9 +169,9 @@ export const checkDependencyRequirements = async ({
   const installed: Record<string, string> = {}
 
   for (const [dependencyName, requiredRange] of Object.entries(dependencies)) {
-    const installedRange = declaredDependencies[dependencyName]
+    const declaredRange = declaredDependencies[dependencyName]
 
-    if (!installedRange) {
+    if (!declaredRange) {
       if (allowMissing) {
         missing.push(dependencyName)
         continue
@@ -128,6 +182,9 @@ export const checkDependencyRequirements = async ({
       )
     }
 
+    const installedRange =
+      (await resolveDeclaredVersion({ cwd, declared: declaredRange, dependencyName })) ??
+      declaredRange
     const normalizedInstalledRange = validateDeclaredRange({
       dependencyName,
       installedRange,
@@ -135,8 +192,10 @@ export const checkDependencyRequirements = async ({
     })
 
     if (!semver.intersects(normalizedInstalledRange, requiredRange)) {
+      const installedNote = installedRange === declaredRange ? '' : ` (installed ${installedRange})`
+
       throw new Error(
-        `The target project declares ${label} package "${dependencyName}" as "${installedRange}", which does not satisfy the required range "${requiredRange}".`,
+        `The target project declares ${label} package "${dependencyName}" as "${declaredRange}"${installedNote}, which does not satisfy the required range "${requiredRange}".`,
       )
     }
 
