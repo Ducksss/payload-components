@@ -1179,6 +1179,27 @@ test.describe('Light shadcn frontend', () => {
     await expect(sidebar.getByRole('button', { name: /Search/ })).toBeVisible()
   })
 
+  test('hydrates docs pages without React errors', async ({ page }) => {
+    /* Docs pages are prerendered at their internal /en route and served at the
+       public URL. Fumadocs matched its chrome (the TOC trigger label, the
+       prev/next footer) against a pathname that read /en/docs in the static
+       HTML and /docs in the browser, so every docs page threw React #418 in
+       production. Dev renders on request and never showed it. */
+    const pageErrors: string[] = []
+    page.on('pageerror', (error) => pageErrors.push(error.message))
+
+    for (const path of [
+      '/docs',
+      '/docs/installation',
+      '/docs/components/hero-basic',
+      '/docs/design',
+    ]) {
+      await page.goto(`${baseURL}${path}`)
+      await waitForCopyController(page)
+      expect(pageErrors, path).toEqual([])
+    }
+  })
+
   test('keeps the site typefaces, accents, and radius scale on docs and blog routes', async ({
     page,
   }) => {

@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { RootProvider } from 'fumadocs-ui/provider/next'
-
+import { FumadocsRootProvider } from '@/components/site/FumadocsRootProvider'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { TranslationNotice } from '@/components/site/TranslationNotice'
@@ -13,7 +12,7 @@ export default async function BlogRootLayout({ children }: { children: ReactNode
   const locale = await getSiteLocale()
 
   return (
-    <RootProvider
+    <FumadocsRootProvider
       i18n={fumadocsI18nUI.provider(locale)}
       search={{ enabled: false }}
       theme={{
@@ -24,6 +23,6 @@ export default async function BlogRootLayout({ children }: { children: ReactNode
       <TranslationNotice pathname="/blog" />
       {children}
       <SiteFooter />
-    </RootProvider>
+    </FumadocsRootProvider>
   )
 }
