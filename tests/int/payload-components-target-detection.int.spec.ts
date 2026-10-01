@@ -242,6 +242,23 @@ describe('dependencies declared by dist-tag', () => {
       'declares peerDependencies package "payload" as "latest" (installed 3.90.2)',
     )
   })
+
+  it('treats a bare wildcard like a dist-tag', async () => {
+    const dir = await makeProject(starterFiles, { next: '16.0.0', payload: '*' })
+    const check = () =>
+      checkDependencyRequirements({
+        allowMissing: false,
+        cwd: dir,
+        dependencies: { payload: '^3.0.0' },
+        label: 'peerDependencies',
+      })
+
+    await expect(check()).rejects.toThrow('has no installed version to check instead')
+
+    await installPackage(dir, 'payload', '3.90.2')
+
+    await expect(check()).resolves.toMatchObject({ installed: { payload: '3.90.2' } })
+  })
 })
 
 describe('wiring a non-starter layout', () => {

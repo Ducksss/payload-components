@@ -91,12 +91,17 @@ const readInstalledVersion = async ({
   }
 }
 
+/* A spec names a version only when it is a semver range with a digit in it.
+ * "*" and "x" are valid ranges, but they match anything, so on their own they
+ * say nothing about what is installed. */
+const versionedRange = (spec: string) => (/\d/.test(spec) ? semver.validRange(spec) : null)
+
 /* Some projects name a dependency without naming a version: create-payload-app
- * --version latest writes "latest" for every Payload package, and workspaces use
- * "workspace:*" or "catalog:". Those carry no major or range to check, so this
- * falls back to the installed version. A declared range always wins, and an
- * unversioned spec with nothing installed comes back unchanged for the caller
- * to reject. */
+ * --version latest writes "latest" for every Payload package, workspaces use
+ * "workspace:*" or "catalog:", and some projects declare a bare "*". Those carry
+ * no major or range to check, so this falls back to the installed version. A
+ * declared range always wins, and an unversioned spec with nothing installed
+ * comes back unchanged for the caller to reject. */
 export const resolveDeclaredVersion = async ({
   cwd,
   declared,
@@ -106,7 +111,7 @@ export const resolveDeclaredVersion = async ({
   declared: string | undefined
   dependencyName: string
 }) => {
-  if (declared === undefined || (/\d/.test(declared) && semver.validRange(declared))) {
+  if (declared === undefined || versionedRange(declared)) {
     return declared
   }
 
@@ -122,11 +127,11 @@ const validateDeclaredRange = ({
   installedRange: string
   label: 'dependencies' | 'peerDependencies'
 }) => {
-  const normalizedRange = semver.validRange(installedRange)
+  const normalizedRange = versionedRange(installedRange)
 
   if (!normalizedRange) {
     throw new Error(
-      `Cannot validate installed ${label} entry "${dependencyName}" because the target project declares an invalid semver range "${installedRange}" and has no installed version to check instead. Install the project's dependencies, or declare a semver range.`,
+      `Cannot validate installed ${label} entry "${dependencyName}" because the target project declares "${installedRange}", which names no version, and has no installed version to check instead. Install the project's dependencies, or declare a semver range.`,
     )
   }
 
