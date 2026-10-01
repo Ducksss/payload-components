@@ -200,22 +200,22 @@ export default async function BrandGuidePage() {
             <div className="flex max-w-3xl flex-col items-start">
               <span
                 className="hero-reveal flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-4 py-1.5 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-muted-foreground backdrop-blur-sm"
-                style={{ animationDelay: '80ms' }}
+                style={{ animationDelay: '0ms' }}
               >
                 <span aria-hidden="true" className="hero-eyebrow-dot" />
                 Brand
               </span>
 
               <h1
-                className="hero-reveal mt-6 text-balance text-[clamp(2.4rem,6vw,4.25rem)] font-medium leading-[0.98] tracking-[-0.05em] text-foreground"
-                style={{ animationDelay: '180ms' }}
+                className="hero-rise mt-6 text-balance text-[clamp(2.4rem,6vw,4.25rem)] font-medium leading-[0.98] tracking-[-0.05em] text-foreground"
+                style={{ animationDelay: '60ms' }}
               >
                 The Payload Components <HeadingAccent>brand</HeadingAccent>
               </h1>
 
               <p
-                className="hero-reveal mt-5 max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg"
-                style={{ animationDelay: '340ms' }}
+                className="hero-rise mt-5 max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg"
+                style={{ animationDelay: '110ms' }}
               >
                 A light-first, shadcn-monochrome system with exactly one accent: emerald. Geist does
                 the work; an italic serif carries the single warm note. Everything here is a living
