@@ -139,7 +139,7 @@ Keep the tiers straight when adding a provider: the question is not whether the
 data feels sensitive, it is whether the provider writes to the device. If it sets
 a cookie or stores an id, it goes behind the gate.
 
-Three rules to preserve when touching any of this:
+Four rules to preserve when touching any of this:
 
 <Steps>
   <Step>
@@ -160,6 +160,18 @@ Three rules to preserve when touching any of this:
     baselines, so the banner stays out of snapshots. The undecided state is
     covered by `tests/e2e/consent.e2e.spec.ts`, and the axe suites deliberately
     run *without* consent so the banner is held to the same a11y bar.
+  </Step>
+  <Step>
+    **The banner ships hidden in the static HTML.** It renders on the server so a
+    first visit paints it with the page, not after hydration, where it would be
+    the late LCP element on phones. An inline script right after it reveals it
+    only for undecided visitors. That script is the read half of
+    `resolveConsent()` written as a string, so change the two together:
+    `tests/int/consent-reveal.int.spec.ts` holds them to the same answer. The
+    script waits for the banner's web font, so the swap cannot shift it, and it
+    records a click made before hydration for `setConsent()` to apply once React
+    takes over. Specs wait for the hydrated banner (`expectConsentBannerReady`),
+    not merely a visible one.
   </Step>
 </Steps>
 

@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
+import { expectConsentBannerReady } from './consent'
+
 /* Automated WCAG 2.2 A/AA pass on the public-facing surfaces. axe can't prove a
  * page is accessible, but it reliably catches the regressions that matter most
  * for a marketing/docs site — missing landmarks/labels, broken heading order,
@@ -10,14 +12,14 @@ import { expect, test } from '@playwright/test'
  *
  * Consent is deliberately not granted, so the undecided consent banner is part
  * of what gets checked — it is sitewide chrome and belongs to the same bar. That
- * only holds if axe waits for it: the banner is client-rendered and lands
- * 100-200ms AFTER document.fonts.ready, so analysing at fonts.ready alone
- * sampled the page before it existed and its coverage came down to how warm the
- * server was. Measured on this suite's own routes: absent at fonts.ready on /,
- * /components and /templates, present on a warm route. */
+ * only holds if axe sees the live banner. It used to be client-rendered and
+ * landed 100-200ms AFTER document.fonts.ready, so analysing at fonts.ready
+ * sampled the page before it existed (absent on /, /components and /templates,
+ * present on a warm route). It now ships in the server HTML and is in the tree
+ * from the first paint, but the wait is still for the hydrated banner, so axe
+ * always analyses the page in the state visitors settle in. */
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
-const consentBanner = '[data-consent-banner]'
 
 const routes = [
   { name: 'landing', path: '/' },
@@ -45,7 +47,7 @@ test.describe('Accessibility (axe-core, WCAG 2.2 A/AA)', () => {
   for (const route of routes) {
     test(`${route.name} has no A/AA violations`, async ({ page }) => {
       await page.goto(`${baseURL}${route.path}`)
-      await expect(page.locator(consentBanner)).toBeVisible()
+      await expectConsentBannerReady(page)
       await page.evaluate(() => document.fonts.ready)
 
       const results = await new AxeBuilder({ page })

@@ -111,6 +111,75 @@ function readStoredConsent(): ConsentState | null {
   }
 }
 
+/* The consent banner ships in the static HTML so a first visit paints it
+ * without waiting for hydration. The same HTML goes to every visitor, so the
+ * banner is hidden there until this attribute is on <html> (the rule lives in
+ * globals.css).
+ *
+ * ConsentBanner emits consentBannerRevealScript straight after its markup. The
+ * script sets the attribute exactly when resolveConsent() will return null: no
+ * privacy signal and no stored choice. It mirrors privacySignalOptOut() and
+ * readStoredConsent(), and it reads storage but never writes it; every write
+ * stays in setConsent(). tests/int/consent-reveal.int.spec.ts holds the two to
+ * the same answer. A visitor without JavaScript never gets the attribute, and
+ * with no script running there is nothing to consent to.
+ *
+ * The reveal also waits for the banner's web font, immediately if it is
+ * already loaded. Painted in the fallback face, the banner would reflow when
+ * the font swapped in: its line count changes at some widths, and because it
+ * is pinned to the bottom its contents move, which is layout shift on an
+ * element that has none today. It checks both weights the banner uses. If the
+ * font fails, or the Font Loading API does, the banner is revealed anyway.
+ *
+ * Until hydration the buttons have no React handler, so the script records a
+ * click on window[queuedConsentChoiceProperty] and hides the banner at once.
+ * ConsentBanner applies it through setConsent() when React takes over. If the
+ * bundle never arrives, the banner can still be dismissed, and nothing is
+ * stored, so the visitor is simply asked again next time. */
+export const consentUndecidedAttribute = 'data-consent-undecided'
+export const queuedConsentChoiceProperty = '__pcConsentChoice'
+
+export const consentBannerRevealScript = `(() => {
+  const nav = navigator
+  if (nav.globalPrivacyControl === true || nav.doNotTrack === '1' || window.doNotTrack === '1') return
+  let stored = null
+  try {
+    stored = window.localStorage.getItem(${JSON.stringify(consentStorageKey)})
+  } catch {}
+  if (stored === 'granted' || stored === 'denied') return
+  const root = document.documentElement
+  const banner = document.querySelector('[data-consent-banner]')
+  if (!banner) return
+  banner.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-consent-choice]')
+    if (!button || banner.getAttribute('data-consent-banner') !== 'pending') return
+    window[${JSON.stringify(queuedConsentChoiceProperty)}] = button.getAttribute('data-consent-choice')
+    root.removeAttribute(${JSON.stringify(consentUndecidedAttribute)})
+  })
+  const reveal = () => root.setAttribute(${JSON.stringify(consentUndecidedAttribute)}, '')
+  const fonts = document.fonts
+  if (!fonts) return reveal()
+  try {
+    const family = getComputedStyle(banner.querySelector('p')).fontFamily
+    const faces = ['400 14px ' + family, '500 14px ' + family]
+    if (faces.every((face) => fonts.check(face))) return reveal()
+    Promise.all(faces.map((face) => fonts.load(face))).then(reveal, reveal)
+  } catch {
+    reveal()
+  }
+})()`
+
+/* Hands over a choice clicked before hydration, once. Anything other than a
+ * valid state is ignored, and the property is cleared either way. */
+export function takeQueuedConsentChoice(): ConsentState | null {
+  const holder: Window & Partial<Record<typeof queuedConsentChoiceProperty, unknown>> = window
+  const choice = holder[queuedConsentChoiceProperty]
+
+  delete holder[queuedConsentChoiceProperty]
+
+  return choice === 'granted' || choice === 'denied' ? choice : null
+}
+
 /* Returns null when the visitor has not decided yet — callers must treat that
  * as "no consent" for mounting purposes, and as "show the banner" for UI. */
 export function resolveConsent(): ConsentState | null {

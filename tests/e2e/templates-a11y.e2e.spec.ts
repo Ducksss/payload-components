@@ -6,6 +6,7 @@ import {
   templatePreviewHref,
   templateShowcases,
 } from '../../src/lib/templates/registry'
+import { expectConsentBannerReady } from './consent'
 import { formatPaintedContrastReport, measurePaintedTextContrast } from './support/painted-contrast'
 
 /* Accessibility sweep across EVERY template concept — its /templates/<slug>
@@ -67,14 +68,15 @@ const viewports = [
    the same bar on these routes. Nothing here clicks, so the fixed banner cannot
    intercept anything.
 
-   The banner has to be WAITED for, though. It is client-rendered and lands
-   100-200ms after document.fonts.ready, so analysing at fonts.ready samples the
-   page before it exists — and that is exactly what happened: the same suite saw
-   it on a warm detail route and missed it on the gallery, making its coverage a
-   coin toss. The preview routes never mount it (AnalyticsShell returns null
-   there, which templates.e2e.spec.ts pins), so it is only awaited where it is
-   genuinely expected. */
-const CONSENT_BANNER = '[data-consent-banner]'
+   The banner has to be WAITED for, though. When it was client-rendered it
+   landed 100-200ms after document.fonts.ready, and the same suite saw it on a
+   warm detail route but missed it on the gallery, so its coverage was a coin
+   toss. It now ships in the server HTML, and the wait is for the hydrated
+   banner (expectConsentBannerReady), so axe sees the page in the state
+   visitors settle in. The preview
+   routes never mount it (AnalyticsShell returns null there, which
+   templates.e2e.spec.ts pins), so it is only awaited where it is genuinely
+   expected. */
 
 /* Every element the reveal choreography animates: the shared section wrapper,
    the detail-page content reveals ([data-template-motion]), and each concept's
@@ -140,9 +142,9 @@ async function expectSettledReveals(page: Page, label: string) {
 }
 
 async function settle(page: Page, { consentBanner = false } = {}) {
-  // Before fonts.ready: the banner mounting later would shift nothing, but axe
-  // must not run until it is actually in the tree.
-  if (consentBanner) await expect(page.locator(CONSENT_BANNER)).toBeVisible()
+  // Before fonts.ready: the banner is fixed, so waiting on it shifts nothing,
+  // but axe must not run until it has hydrated.
+  if (consentBanner) await expectConsentBannerReady(page)
   await page.evaluate(() => document.fonts.ready)
   /* Template pages carry real assets — decode the loaded ones so neither axe
      nor the painted-contrast capture races a paint. Only `complete` images:

@@ -1048,3 +1048,17 @@
     scroll-behavior: auto;
   }
 }
+
+/* The consent banner is in every page's static HTML, so a first visit paints
+   it without waiting for hydration. Until React has read consent the banner
+   is hidden. The inline script after it (ConsentBanner) reveals it, once its
+   font is ready, by marking <html>, and only for undecided visitors. A
+   returning visitor, a GPC/DNT visitor, or a visitor without JavaScript never
+   paints it. Hidden by default rather than shown by default, so a late or
+   missing script can only delay the banner, never flash it at someone who
+   already chose. Unlayered so no utility on the banner can outrank it. Once
+   React owns the banner it drops the pending value and this rule stops
+   applying. */
+html:not([data-consent-undecided]) [data-consent-banner='pending'] {
+  display: none;
+}

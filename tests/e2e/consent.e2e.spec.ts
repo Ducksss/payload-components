@@ -1,5 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
+
+import { expectConsentBannerReady } from './consent'
 
 /* The consent gate, exercised from a clean profile. Every other spec grants
  * consent up-front (tests/e2e/consent.ts), so this file is the only place the
@@ -17,10 +19,17 @@ const vercelScripts = 'script[src*="vercel"], script[src*="insights"]'
 
 const banner = '[data-consent-banner]'
 
+/* Refuses the site's own JavaScript bundles. What is left is the static HTML,
+ * its CSS and its inline scripts, so the page stays where a first visit stands
+ * before hydration, however long that takes on a real phone. */
+async function withoutHydration(page: Page) {
+  await page.route(/\/_next\/static\/.+\.js(?:\?|$)/, (route) => route.abort())
+}
+
 test.describe('Analytics consent gate', () => {
   test('withholds the cookie-setting providers until the visitor opts in', async ({ page }) => {
     await page.goto(baseURL)
-    await expect(page.locator(banner)).toBeVisible()
+    await expectConsentBannerReady(page)
 
     // Undecided means denied for anything that writes to the device.
     await expect(page.locator(gatedScripts)).toHaveCount(0)
@@ -35,7 +44,7 @@ test.describe('Analytics consent gate', () => {
     // Cookieless providers carry no consent requirement, and gating them would
     // blind Core Web Vitals on most traffic for no privacy gain.
     await page.goto(baseURL)
-    await expect(page.locator(banner)).toBeVisible()
+    await expectConsentBannerReady(page)
 
     await expect(page.locator(vercelScripts).first()).toBeAttached()
     // ...while still storing nothing on the device.
@@ -48,6 +57,9 @@ test.describe('Analytics consent gate', () => {
 
   test('accepting mounts the Google tag and persists the choice', async ({ page }) => {
     await page.goto(baseURL)
+    // The static banner is clickable before hydration, and that path has its
+    // own test below. These flows cover the live banner, so wait for React.
+    await expectConsentBannerReady(page)
     await page.getByRole('button', { name: 'Accept' }).click()
 
     await expect(page.locator(banner)).toHaveCount(0)
@@ -64,6 +76,7 @@ test.describe('Analytics consent gate', () => {
 
   test('declining keeps the cookie-setting providers off, permanently', async ({ page }) => {
     await page.goto(baseURL)
+    await expectConsentBannerReady(page)
     await page.getByRole('button', { name: 'Decline' }).click()
 
     await expect(page.locator(banner)).toHaveCount(0)
@@ -94,6 +107,91 @@ test.describe('Analytics consent gate', () => {
     await context.close()
   })
 
+  test('paints the banner from the static HTML, before hydration', async ({ page }) => {
+    /* Waiting for hydration to render the banner made it the late LCP element
+     * on phones, where its paragraph is larger than the H1. Shipped in the
+     * static HTML, it paints with the rest of the page. */
+    await withoutHydration(page)
+    await page.goto(baseURL)
+
+    await expect(page.locator(banner)).toBeVisible()
+    await expect(page.locator(banner)).toContainText('Analytics cookies')
+
+    // Even if the bundle never arrives, the banner can be dismissed. The inline
+    // script only records the click for React; it writes nothing itself.
+    await page.getByRole('button', { name: 'Decline' }).click()
+    await expect(page.locator(banner)).toBeHidden()
+    expect(await page.evaluate(() => window.localStorage.getItem('pc_consent'))).toBeNull()
+  })
+
+  test('a choice made before hydration is applied once React takes over', async ({ page }) => {
+    // Hold the bundles until the click has landed on the static banner.
+    let release = () => {}
+    const bundles = new Promise<void>((resolve) => {
+      release = resolve
+    })
+    await page.route(/\/_next\/static\/.+\.js(?:\?|$)/, async (route) => {
+      await bundles
+      await route.continue()
+    })
+
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' })
+    await expect(page.locator('[data-consent-banner="pending"]')).toBeVisible()
+    await page.getByRole('button', { name: 'Decline' }).click()
+    await expect(page.locator(banner)).toBeHidden()
+
+    release()
+
+    // setConsent() runs once React hydrates, and the banner unmounts.
+    await expect
+      .poll(() => page.evaluate(() => window.localStorage.getItem('pc_consent')))
+      .toBe('denied')
+    await expect(page.locator(banner)).toHaveCount(0)
+    await expect(page.locator(gatedScripts)).toHaveCount(0)
+  })
+
+  test('never paints the static banner for a visitor with nothing to decide', async ({
+    browser,
+  }) => {
+    /* Every visitor gets the same static HTML, so the banner is in it for
+     * everyone and hidden until the inline script reveals it. Hydration
+     * stays blocked, so a hidden banner here is the pre-paint gate alone,
+     * before React gets a chance to remove it. */
+    const visitors: Record<string, () => void> = {
+      'a stored opt-in': () => window.localStorage.setItem('pc_consent', 'granted'),
+      'a stored opt-out': () => window.localStorage.setItem('pc_consent', 'denied'),
+      'a browser privacy signal': () =>
+        Object.defineProperty(navigator, 'globalPrivacyControl', { get: () => true }),
+    }
+
+    for (const [visitor, prepare] of Object.entries(visitors)) {
+      const context = await browser.newContext()
+      await context.addInitScript(prepare)
+      const page = await context.newPage()
+      await withoutHydration(page)
+      await page.goto(baseURL)
+
+      await expect(page.locator(banner), visitor).toHaveCount(1)
+      await expect(page.locator(banner), visitor).toBeHidden()
+
+      await context.close()
+    }
+  })
+
+  test('a visitor without JavaScript is never asked', async ({ browser }) => {
+    // With no script running, nothing that needs consent can load, so the
+    // static banner stays hidden rather than offering buttons that do nothing.
+    const context = await browser.newContext({ javaScriptEnabled: false })
+    const page = await context.newPage()
+
+    await page.goto(baseURL)
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    await expect(page.locator(banner)).toHaveCount(1)
+    await expect(page.locator(banner)).toBeHidden()
+
+    await context.close()
+  })
+
   test('a privacy signal erases an identifier left by an earlier opt-in', async ({ browser }) => {
     // Opting in first, then turning GPC on, is the case that leaves a stale
     // pc_distinct_id behind: unused while denied, but enough to re-link the
@@ -102,6 +200,7 @@ test.describe('Analytics consent gate', () => {
     const page = await context.newPage()
 
     await page.goto(baseURL)
+    await expectConsentBannerReady(page)
     await page.getByRole('button', { name: 'Accept' }).click()
     await page.evaluate(() => window.localStorage.setItem('pc_distinct_id', 'pc_stale-id'))
     await page.evaluate(() =>
@@ -134,6 +233,7 @@ test.describe('Analytics consent gate', () => {
     const [first, second] = [await context.newPage(), await context.newPage()]
 
     await first.goto(baseURL)
+    await expectConsentBannerReady(first)
     await first.getByRole('button', { name: 'Accept' }).click()
     await second.goto(baseURL)
     await expect(second.locator('script#google-tag')).toHaveCount(1)
@@ -180,7 +280,7 @@ test.describe('Analytics consent gate', () => {
 
   test('the banner itself has no serious or critical a11y violations', async ({ page }) => {
     await page.goto(baseURL)
-    await expect(page.locator(banner)).toBeVisible()
+    await expectConsentBannerReady(page)
     await page.evaluate(() => document.fonts.ready)
 
     const results = await new AxeBuilder({ page })
