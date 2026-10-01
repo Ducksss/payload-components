@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test'
 
-import { grantConsent } from './consent'
+import { grantConsent, mountGoogleTagOffline } from './consent'
 
 import {
   blogTitle,
@@ -72,9 +72,13 @@ async function waitForCopyController(page: Page) {
 }
 
 /* File-level: every describe here wants the post-opt-in site. The analytics
-   assertions need the scripts mounted, and the landing snapshots are baselined
+   assertions need the scripts mounted, so the Google tag is mounted offline (GA4
+   only mounts on a production host), and the landing snapshots are baselined
    without the consent banner over them. The banner has its own spec. */
-test.beforeEach(async ({ context }) => grantConsent(context))
+test.beforeEach(async ({ context }) => {
+  await grantConsent(context)
+  await mountGoogleTagOffline(context)
+})
 
 test.describe('Light shadcn frontend', () => {
   test.beforeEach(async ({ context }) => {

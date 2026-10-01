@@ -1,13 +1,20 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
+import { mountGoogleTagOffline, stubGoogleOrigins } from './consent'
+
 /* The consent gate, exercised from a clean profile. Every other spec grants
  * consent up-front (tests/e2e/consent.ts), so this file is the only place the
  * undecided state is covered — keep it that way, and keep it strict.
  *
  * The gate is deliberately two-tier, and these specs pin the split: Vercel
  * Analytics and Speed Insights are cookieless and mount for everyone, while GA4
- * (own cookies) and PostHog (pc_distinct_id) wait for an explicit opt-in. */
+ * (own cookies) and PostHog (pc_distinct_id) wait for an explicit opt-in.
+ *
+ * GA4 also waits for a production host, so every test here mounts the tag
+ * offline (tests/e2e/consent.ts). Without that, each absence asserted below
+ * would pass on localhost for the wrong reason. One test leaves the hook out
+ * to pin the host gate itself. */
 
 const baseURL = `http://localhost:${process.env.E2E_PORT ?? '3100'}`
 const googleTagId = 'G-EMGRZ0H9R9'
@@ -18,6 +25,8 @@ const vercelScripts = 'script[src*="vercel"], script[src*="insights"]'
 const banner = '[data-consent-banner]'
 
 test.describe('Analytics consent gate', () => {
+  test.beforeEach(async ({ context }) => mountGoogleTagOffline(context))
+
   test('withholds the cookie-setting providers until the visitor opts in', async ({ page }) => {
     await page.goto(baseURL)
     await expect(page.locator(banner)).toBeVisible()
@@ -62,6 +71,49 @@ test.describe('Analytics consent gate', () => {
     await expect(page.locator('script#google-tag')).toHaveCount(1)
   })
 
+  test('keeps GA4 off every host but production, even after opting in', async ({ browser }) => {
+    /* Local dev, preview deploys and this suite must never write into the
+     * production property. This context leaves out the test hook the other
+     * tests set, but Google's origins are still stubbed, so a regression fails
+     * here without sending a hit. */
+    const context = await browser.newContext()
+    await stubGoogleOrigins(context)
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await context.addInitScript(() => {
+      const target = window as Window & { __gtagCalls?: unknown[][] }
+      const calls: unknown[][] = []
+
+      target.__gtagCalls = calls
+      window.__disablePostHogNetwork = true
+      window.__posthogEvents = []
+      // Stands in for a gtag defined by anything other than the site's tag.
+      window.gtag = (...args: Parameters<NonNullable<Window['gtag']>>) => {
+        calls.push(args)
+      }
+    })
+    const page = await context.newPage()
+    const recordedEvents = () =>
+      page.evaluate(() => (window.__posthogEvents ?? []).map(({ event }) => event))
+
+    await page.goto(baseURL)
+    await page.getByRole('button', { name: 'Accept' }).click()
+    // The PostHog stream mounts on consent alone, so its page view proves the
+    // opt-in reached AnalyticsShell before the absences below are checked.
+    await expect.poll(recordedEvents).toContain('$pageview')
+    await expect(page.locator(gatedScripts)).toHaveCount(0)
+    await expect(page.locator('script#google-tag')).toHaveCount(0)
+
+    // Tracked actions skip window.gtag off production, whoever defined it.
+    await expect(page.locator('html')).toHaveAttribute('data-copy-controller-ready', 'true')
+    await page.locator('.hero-shell button[data-copy-command]').click()
+    await expect.poll(recordedEvents).toContain('copy_install_command')
+    expect(
+      await page.evaluate(() => (window as Window & { __gtagCalls?: unknown[][] }).__gtagCalls),
+    ).toEqual([])
+
+    await context.close()
+  })
+
   test('declining keeps the cookie-setting providers off, permanently', async ({ page }) => {
     await page.goto(baseURL)
     await page.getByRole('button', { name: 'Decline' }).click()
@@ -80,6 +132,7 @@ test.describe('Analytics consent gate', () => {
     // Global Privacy Control is binding under the CCPA, so it is a decision in
     // its own right — the visitor should not be asked to make it again.
     const context = await browser.newContext()
+    await mountGoogleTagOffline(context)
     await context.addInitScript(() => {
       Object.defineProperty(navigator, 'globalPrivacyControl', { get: () => true })
     })
@@ -99,6 +152,7 @@ test.describe('Analytics consent gate', () => {
     // pc_distinct_id behind: unused while denied, but enough to re-link the
     // visitor to their old identity if they ever opt back in.
     const context = await browser.newContext()
+    await mountGoogleTagOffline(context)
     const page = await context.newPage()
 
     await page.goto(baseURL)
@@ -131,6 +185,7 @@ test.describe('Analytics consent gate', () => {
     // Two tabs share localStorage, so the storage event is the only signal the
     // second tab gets — and unmounting React there would leave gtag running.
     const context = await browser.newContext()
+    await mountGoogleTagOffline(context)
     const [first, second] = [await context.newPage(), await context.newPage()]
 
     await first.goto(baseURL)

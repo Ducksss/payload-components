@@ -1,8 +1,17 @@
 import { defineConfig, devices } from '@playwright/test'
 
+import { googleTagDomains } from './tests/e2e/consent'
+
 const e2ePort = process.env.E2E_PORT ?? '3100'
 const webServerCommand =
   process.env.PLAYWRIGHT_SERVER_MODE === 'production' ? 'pnpm start' : 'pnpm dev'
+/* A backstop behind the GA4 gate and the stubs in tests/e2e/consent.ts: Chromium
+   resolves Google's analytics hosts to nothing, so even a spec that mounted the
+   real tag could not send a hit to the production property. A route fulfilled
+   locally never needs DNS, so the stubs keep working. */
+const unresolvedGoogleTagHosts = googleTagDomains
+  .flatMap((domain) => [`MAP ${domain} ~NOTFOUND`, `MAP *.${domain} ~NOTFOUND`])
+  .join(', ')
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -26,7 +35,11 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'], channel: 'chromium' },
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: 'chromium',
+        launchOptions: { args: [`--host-resolver-rules=${unresolvedGoogleTagHosts}`] },
+      },
     },
     /* WebKit runs ONLY the `webkit-*` guards, never the whole suite. The visual
        baselines are per-project, so a full second engine would mean a second
