@@ -23,6 +23,10 @@ CLI, and Payload integration direction coherent.
 ## Local Setup
 
 Use Node.js `^20.19.0 || >=22.12.0` and pnpm `^9 || ^10`.
+`packageManager` in `package.json` pins pnpm 10.24.0, the version CI installs, and
+pnpm 10 or later switches to it automatically. Bump it together with every
+`pnpm/action-setup` `version:` in `.github/workflows`. The pin also keeps Dependabot
+on pnpm 10: its default pnpm 11 ignores the `pnpm` settings in `package.json`.
 TypeScript stays on 5.x until `vite-tsconfig-paths` stops pulling `tsconfck`
 with a `typescript@^5.0.0` peer range.
 
