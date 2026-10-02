@@ -291,6 +291,7 @@ pnpm build
 
 - Fresh worktree/clone: run `pnpm install` then **`pnpm source:build`** before `dev`/`tsc` (Fumadocs compiles `content/docs` → `.source/`; otherwise types fail on missing `.source/`).
 - e2e uses `E2E_PORT` (default `3100`) to avoid common local `3000` contention.
+- pnpm is pinned by `packageManager` (`pnpm@10.24.0`), the same version every workflow's `pnpm/action-setup` installs. Bump both together, because the action fails on a mismatch. Don't drop the pin: without it Dependabot runs its image default, pnpm 11, which ignores the `pnpm` field (`overrides`, `onlyBuiltDependencies`) and rejects `engines.pnpm`, so every npm update job fails.
 - The site is **forced light** (`forcedTheme: 'light'`); there is no dark mode. The terminal/maintainer cards are intentionally dark surfaces via `--terminal-*` / `bg-foreground` tokens, not `dark:` variants.
 - Fonts (Geist Sans/Mono + Instrument Serif accent) load via `next/font` with their CSS variables on `<html>`. Keep them on `<html>` or the Tailwind v4 `@theme` font tokens silently break.
 - The site sends an enforced Content-Security-Policy from `next.config.mjs`. The browser blocks a new third-party script, frame, image, or analytics endpoint until its origin is added there and to the pinned directives in `tests/int/fumadocs-site.int.spec.ts`. `tests/e2e/content-security-policy.e2e.spec.ts` fails on any violation.
