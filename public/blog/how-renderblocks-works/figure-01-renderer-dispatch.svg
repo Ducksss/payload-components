@@ -253,9 +253,9 @@
 </g>
   </g>
   <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
-  <g data-journal-part="provenance" data-provenance="tools/payload-components/project.ts">
+  <g data-journal-part="provenance" data-provenance="tools/payload-components/payload-fragments.ts">
     <text class="footer-label" x="48" y="571">PROVENANCE</text>
-    <text class="provenance-line" x="48" y="590">tools/payload-components/project.ts</text>
+    <text class="provenance-line" x="48" y="590">tools/payload-components/payload-fragments.ts</text>
   </g>
   <g data-journal-part="evidence" data-evidence-excerpt="const propertyLine = `  ${fragment.blockSlug}: ${fragment.importName},`
   /* Against the original source, never the in-memory patched copy: nothing is
