@@ -1,10 +1,11 @@
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { diffCommand } from '../../tools/payload-components/commands/diff'
+import { checkDependencyRequirements } from '../../tools/payload-components/dependencies'
 import { loadManifest } from '../../tools/payload-components/manifest'
 import {
   applyPayloadFragments,
@@ -60,7 +61,10 @@ const writeProjectFile = async (dir: string, relPath: string, content: string) =
   await writeFile(path.join(dir, relPath), content, 'utf8')
 }
 
-const makeProject = async (files: Record<string, string>) => {
+const makeProject = async (
+  files: Record<string, string>,
+  dependencies: Record<string, string> = { next: '^16.0.0', payload: '^3.0.0' },
+) => {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-target-'))
   tempDirs.push(dir)
 
@@ -68,7 +72,7 @@ const makeProject = async (files: Record<string, string>) => {
     path.join(dir, 'package.json'),
     `${JSON.stringify(
       {
-        dependencies: { next: '^16.0.0', payload: '^3.0.0' },
+        dependencies,
         name: 'target-fixture',
         private: true,
       },
@@ -178,6 +182,82 @@ describe('detectProject target resolution', () => {
     await expect(detectProject(dir)).rejects.toThrow(
       /payload-website-starter[\s\S]*payload-blocks-app/,
     )
+  })
+})
+
+/* create-payload-app --version latest writes "latest" for every Payload package,
+ * which names no major or range, so the installed version has to stand in. pnpm
+ * links node_modules/<name> into its store, hence the symlink. */
+const installPackage = async (dir: string, name: string, version: string) => {
+  const storePath = path.join('.pnpm', `${name}@${version}`, 'node_modules', name)
+
+  await mkdir(path.join(dir, 'node_modules', storePath), { recursive: true })
+  await writeFile(
+    path.join(dir, 'node_modules', storePath, 'package.json'),
+    `${JSON.stringify({ name, version })}\n`,
+    'utf8',
+  )
+  await symlink(storePath, path.join(dir, 'node_modules', name))
+}
+
+describe('dependencies declared by dist-tag', () => {
+  it('detects the project from the installed Payload version', async () => {
+    const dir = await makeProject(starterFiles, { next: '16.0.0', payload: 'latest' })
+    await installPackage(dir, 'payload', '3.90.2')
+
+    const project = await detectProject(dir)
+
+    expect(project.payloadMajor).toBe(3)
+    expect(project.target.id).toBe('payload-website-starter')
+  })
+
+  it('keeps a declared range over the installed version', async () => {
+    const dir = await makeProject(starterFiles)
+    await installPackage(dir, 'payload', '4.0.0')
+
+    expect((await detectProject(dir)).payloadMajor).toBe(3)
+  })
+
+  it('still rejects a dist-tag when nothing is installed', async () => {
+    const dir = await makeProject(starterFiles, { next: '16.0.0', payload: 'latest' })
+
+    await expect(detectProject(dir)).rejects.toThrow(
+      'Unable to determine the installed major version for "payload"',
+    )
+  })
+
+  it('checks peer ranges against the installed version', async () => {
+    const dir = await makeProject(starterFiles, { next: '16.0.0', payload: 'latest' })
+    await installPackage(dir, 'payload', '3.90.2')
+    const check = (payload: string) =>
+      checkDependencyRequirements({
+        allowMissing: false,
+        cwd: dir,
+        dependencies: { payload },
+        label: 'peerDependencies',
+      })
+
+    await expect(check('^3.0.0')).resolves.toMatchObject({ missing: [] })
+    await expect(check('^4.0.0')).rejects.toThrow(
+      'declares peerDependencies package "payload" as "latest" (installed 3.90.2)',
+    )
+  })
+
+  it('treats a bare wildcard like a dist-tag', async () => {
+    const dir = await makeProject(starterFiles, { next: '16.0.0', payload: '*' })
+    const check = () =>
+      checkDependencyRequirements({
+        allowMissing: false,
+        cwd: dir,
+        dependencies: { payload: '^3.0.0' },
+        label: 'peerDependencies',
+      })
+
+    await expect(check()).rejects.toThrow('has no installed version to check instead')
+
+    await installPackage(dir, 'payload', '3.90.2')
+
+    await expect(check()).resolves.toMatchObject({ installed: { payload: '3.90.2' } })
   })
 })
 

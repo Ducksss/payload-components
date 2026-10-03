@@ -14,6 +14,7 @@ type Gtag = (command: 'event', eventName: string, parameters?: AnalyticsProperti
 
 declare global {
   interface Window {
+    __allowGoogleTagOnTestHost?: boolean
     __disablePostHogNetwork?: boolean
     __posthogEvents?: PostHogTestEvent[]
     gtag?: Gtag
@@ -77,6 +78,16 @@ function isAnalyticsHost() {
   // Production hosts only. Local dev and preview deploys must never write into
   // the production dataset or leak unreleased route paths to a third party.
   return siteHostnames.has(hostname)
+}
+
+/* GA4 is held to the same rule. The e2e suite still has to prove the consent
+ * gate mounts the tag, so on localhost it sets __allowGoogleTagOnTestHost. Only
+ * tests/e2e/support/consent.ts sets it, after routing every Google origin to a local
+ * stub, so a test can mount the tag but never reach the production property. */
+export function isGoogleTagHost() {
+  if (typeof window === 'undefined') return false
+
+  return isAnalyticsHost() || window.__allowGoogleTagOnTestHost === true
 }
 
 /* AnalyticsShell already withholds every third-party mount until consent, so in
@@ -152,7 +163,8 @@ function trackEvent(
   /* Mirrors the two tiers in AnalyticsShell. Vercel is cookieless and mounted
    * for everyone, so its events need no opt-in; the event names and fields are
    * the enumerated vocabulary in content/docs/contributing.mdx, never free text.
-   * GA4 and PostHog below are consent-gated. */
+   * GA4 and PostHog below are consent-gated, and each sends from a production
+   * host only. */
   try {
     trackVercelEvent(eventName, properties)
   } catch {
@@ -162,7 +174,9 @@ function trackEvent(
   if (!analyticsAllowed()) return
 
   try {
-    window.gtag?.('event', eventName, properties)
+    // AnalyticsShell mounts the tag on a production host only. Re-checked for the
+    // reason given above analyticsAllowed: no caller may route around the gate.
+    if (isGoogleTagHost()) window.gtag?.('event', eventName, properties)
   } catch {
     // Analytics must never block the user action.
   }

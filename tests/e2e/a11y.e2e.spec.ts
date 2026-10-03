@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
-import { expectConsentBannerReady } from './consent'
+import { expectConsentBannerReady } from './support/consent'
 
 /* Automated WCAG 2.2 A/AA pass on the public-facing surfaces. axe can't prove a
  * page is accessible, but it reliably catches the regressions that matter most

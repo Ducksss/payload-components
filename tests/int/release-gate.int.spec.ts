@@ -296,7 +296,7 @@ describe('package publish guard', () => {
     expect(workflow).toContain('pnpm install --frozen-lockfile --ignore-scripts')
     expect(workflow).toContain('npm install --global bun@1.3.14')
     expect(workflow).toContain(
-      'pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10',
+      'pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0',
     )
     expect(workflow).not.toContain('pnpm/action-setup@v6')
 

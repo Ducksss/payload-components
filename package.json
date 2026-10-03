@@ -1,6 +1,6 @@
 {
   "name": "payload-components",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "MIT registry and CLI for installing wired Payload CMS blocks into Payload v3 + Next.js projects.",
   "keywords": [
     "payload",
@@ -104,14 +104,14 @@
     "cross-env": "^10.1.0",
     "esbuild": "0.28.1",
     "eslint": "^9.16.0",
-    "eslint-config-next": "16.3.3",
+    "eslint-config-next": "16.3.8",
     "fumadocs-core": "16.15.7",
     "fumadocs-mdx": "15.4.0",
     "fumadocs-ui": "16.15.7",
     "geist": "^1.7.2",
     "lucide-react": "1.31.0",
     "motion": "12.43.0",
-    "next": "16.3.3",
+    "next": "16.3.8",
     "next-intl": "4.14.2",
     "postcss": "8.5.23",
     "prettier": "3.9.6",
@@ -119,14 +119,14 @@
     "react-dom": "19.2.8",
     "server-only": "0.0.1",
     "shadcn": "4.18.0",
-    "sharp": "0.35.3",
+    "sharp": "0.35.5",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.3.3",
     "tsup": "^8.5.0",
     "tsx": "4.23.1",
     "typescript": "5.9.3",
     "vite": "8.2.1",
-    "vitest": "4.1.10",
+    "vitest": "4.1.11",
     "yaml": "2.9.0",
     "zod": "4.4.3"
   },
@@ -134,6 +134,7 @@
     "node": "^20.19.0 || >=22.12.0",
     "pnpm": "^9 || ^10"
   },
+  "packageManager": "pnpm@10.24.0",
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",
@@ -141,16 +142,14 @@
     ],
     "overrides": {
       "esbuild": "0.28.1",
-      "fast-uri": "3.1.7",
+      "fast-uri@<3.1.8": "3.1.8",
       "@humanfs/node@<0.16.8": "0.16.8",
       "qs@<6.16.0": "6.16.0",
       "postcss": "8.5.23",
-      "brace-expansion@<1.1.18": "1.1.18",
-      "brace-expansion@>=4.0.0 <5.0.9": "5.0.9",
+      "brace-expansion@<1.1.21": "1.1.21",
+      "brace-expansion@>=4.0.0 <5.0.12": "5.0.12",
       "ws@>=8.0.0 <8.21.0": "8.21.0",
-      "vite@>=8.0.0 <=8.0.15": "8.0.16",
-      "js-yaml@<4.3.1": "4.3.1",
-      "sharp@<0.35.3": "0.35.3",
+      "js-yaml@<4.3.2": "4.3.2",
       "@babel/core@<=7.29.0": "7.29.7"
     }
   }

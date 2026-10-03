@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
 
 import { DocsLayout } from 'fumadocs-ui/layouts/docs'
-import { RootProvider } from 'fumadocs-ui/provider/next'
 import { ArrowUpRight } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
 import { GitHubMark } from '@/components/site/GitHubMark'
 import { DocsSearchDialog, DocsSearchFocusCapture } from '@/components/site/DocsSearchDialog'
+import { FumadocsRootProvider } from '@/components/site/FumadocsRootProvider'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { TranslationNotice } from '@/components/site/TranslationNotice'
 import { baseOptions } from '@/lib/layout.shared'
@@ -21,7 +21,7 @@ export default async function DocsRootLayout({ children }: { children: ReactNode
   const t = await getTranslations({ locale, namespace: 'Docs' })
 
   return (
-    <RootProvider
+    <FumadocsRootProvider
       i18n={fumadocsI18nUI.provider(locale)}
       search={{ enabled: true, SearchDialog: DocsSearchDialog }}
       theme={{
@@ -72,6 +72,6 @@ export default async function DocsRootLayout({ children }: { children: ReactNode
       >
         {children}
       </DocsLayout>
-    </RootProvider>
+    </FumadocsRootProvider>
   )
 }

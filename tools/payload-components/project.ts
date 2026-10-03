@@ -12,6 +12,7 @@ import type {
 } from './types'
 
 import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from './constants'
+import { resolveDeclaredVersion } from './dependencies'
 import { readSafeProjectFile, safeProjectFileExists } from './safe-path'
 import {
   commitFileChanges,
@@ -860,8 +861,14 @@ export const detectProject = async (cwd: string): Promise<DetectedProject> => {
     ...packageJson.devDependencies,
     ...packageJson.dependencies,
   }
-  const payloadMajor = extractMajor(dependencies.payload, 'payload')
-  const nextMajor = extractMajor(dependencies.next, 'next')
+  const payloadMajor = extractMajor(
+    await resolveDeclaredVersion({ cwd, declared: dependencies.payload, dependencyName: 'payload' }),
+    'payload',
+  )
+  const nextMajor = extractMajor(
+    await resolveDeclaredVersion({ cwd, declared: dependencies.next, dependencyName: 'next' }),
+    'next',
+  )
   const { lockfilePath, packageManager } = await detectPackageManagerDetails(cwd)
 
   for (const target of supportMatrix.targets) {

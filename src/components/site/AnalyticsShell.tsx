@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import Script from 'next/script'
 
 import { isChromeFreePreviewPath } from '@/i18n/config'
+import { isGoogleTagHost } from '@/lib/analytics'
 
 import { AnalyticsPageview } from './AnalyticsPageview'
 import { useConsent } from './useConsent'
@@ -26,14 +27,20 @@ export function AnalyticsShell() {
    * GA4 sets its own cookies and auto-collects page views, and the PostHog
    * stream in AnalyticsPageview persists a pc_distinct_id. Both wait for an
    * explicit opt-in — gating our own events while GA4 loaded anyway would be
-   * privacy theatre. */
+   * privacy theatre.
+   *
+   * GA4 also waits for a production host, the rule PostHog's capture follows in
+   * analytics.ts: local dev, preview deploys and the e2e suite must never write
+   * into the production property. Consent is only 'granted' after useConsent's
+   * client effect, so the host check never runs on the server. */
   const optedIn = consent === 'granted'
+  const googleTag = optedIn && isGoogleTagHost()
 
   return (
     <>
       <Analytics />
       <SpeedInsights />
-      {optedIn ? (
+      {googleTag ? (
         <>
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=G-EMGRZ0H9R9"
@@ -43,9 +50,9 @@ export function AnalyticsShell() {
             id="google-tag"
             strategy="afterInteractive"
           >{`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-EMGRZ0H9R9');`}</Script>
-          <AnalyticsPageview />
         </>
       ) : null}
+      {optedIn ? <AnalyticsPageview /> : null}
     </>
   )
 }

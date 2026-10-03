@@ -37,6 +37,13 @@ A component proposal should arrive complete — incomplete components don't ship
   </Step>
 </Steps>
 
+In a checkout of this repository, `pnpm payload-components new <slug>` scaffolds every
+mechanical file of that bundle and prints the decisions it leaves to you. The
+[component template README](https://github.com/Ducksss/payload-components/blob/main/payload-components/component-template/README.md)
+walks through the full workflow, and
+[CONTRIBUTING.md](https://github.com/Ducksss/payload-components/blob/main/CONTRIBUTING.md)
+lists the checks to run before you open a pull request.
+
 ## Attribution
 
 If a component's layout is adapted from an external open-source design — for example [tailark/blocks](https://github.com/tailark/blocks) (MIT) — credit it in **two** places so provenance survives both in the repo and in what ships to consumers:
@@ -155,11 +162,13 @@ Four rules to preserve when touching any of this:
     place would keep the visitor identifiable on their next visit.
   </Step>
   <Step>
-    **Tests grant consent explicitly.** `tests/e2e/consent.ts` seeds
+    **Tests grant consent explicitly.** `tests/e2e/support/consent.ts` seeds
     `pc_consent=granted` for the specs that assert on analytics or capture visual
     baselines, so the banner stays out of snapshots. The undecided state is
     covered by `tests/e2e/consent.e2e.spec.ts`, and the axe suites deliberately
-    run *without* consent so the banner is held to the same a11y bar.
+    run *without* consent so the banner is held to the same a11y bar. Specs that
+    assert on the GA4 tag also call `mountGoogleTagOffline`, which stubs every
+    Google origin before it sets the site's test hook, so no e2e run sends a hit.
   </Step>
   <Step>
     **The banner ships hidden in the static HTML.** It renders on the server so a
@@ -175,8 +184,9 @@ Four rules to preserve when touching any of this:
   </Step>
 </Steps>
 
-PostHog capture is additionally limited to the production hostnames, so local dev
-and preview deploys never send even after opting in.
+GA4 and PostHog are additionally limited to the production hostnames, so local
+dev and preview deploys never send even after opting in: `AnalyticsShell` does
+not mount the GA4 tag there, and PostHog skips its capture request.
 
 Never add user-entered content, secrets, account identity, install state, or
 cross-site profiling. A future event must name one user action, use a

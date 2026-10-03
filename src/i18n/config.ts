@@ -291,6 +291,17 @@ export function localizeHref(href: string, locale: SiteLocale): string {
 }
 
 /**
+ * The URL a visitor's browser shows for a route pathname. A statically
+ * prerendered page reports its internal route (`/en/docs`) from usePathname()
+ * on the server, but the public URL the proxy served it at (`/docs`) in the
+ * browser. Markup derived from the pathname must use this form on both sides,
+ * or hydration fails.
+ */
+export function publicPathname(pathname: string): string {
+  return localizeHref(pathname, splitLocalePathname(pathname).locale)
+}
+
+/**
  * Only English is indexable until a locale has an explicit, native-reviewed
  * publication record. Callers may pass those reviewed locales; machine and
  * fallback routes must never be advertised as search alternates.

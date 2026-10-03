@@ -97,22 +97,22 @@ export default async function AboutPage() {
             <div className="flex max-w-3xl flex-col items-start">
               <span
                 className="hero-reveal flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-4 py-1.5 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-muted-foreground backdrop-blur-sm"
-                style={{ animationDelay: '80ms' }}
+                style={{ animationDelay: '0ms' }}
               >
                 <span aria-hidden="true" className="hero-eyebrow-dot" />
                 About
               </span>
 
               <h1
-                className="hero-reveal mt-6 text-balance text-[clamp(2.4rem,6vw,4.25rem)] font-medium leading-[0.98] tracking-[-0.05em] text-foreground"
-                style={{ animationDelay: '180ms' }}
+                className="hero-rise mt-6 text-balance text-[clamp(2.4rem,6vw,4.25rem)] font-medium leading-[0.98] tracking-[-0.05em] text-foreground"
+                style={{ animationDelay: '60ms' }}
               >
                 Why Payload Components <HeadingAccent>exists</HeadingAccent>
               </h1>
 
               <p
-                className="hero-reveal mt-5 max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg"
-                style={{ animationDelay: '340ms' }}
+                className="hero-rise mt-5 max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg"
+                style={{ animationDelay: '110ms' }}
               >
                 Payload Components comes out of years of freelance Payload work — and the tax every
                 one of those projects paid: rebuilding the same blocks, rewiring them by hand, and

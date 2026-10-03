@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test'
 
-import { grantConsent } from './consent'
+import { grantConsent, mountGoogleTagOffline } from './support/consent'
 
 import {
   templateDetailHref,
@@ -549,8 +549,11 @@ test.describe('Template full previews (/templates/<slug>/preview/<page>)', () =>
     expect(deepSegments?.status()).toBe(404)
   })
 
-  test('preview routes never mount the general analytics stream', async ({ page }) => {
+  test('preview routes never mount the general analytics stream', async ({ context, page }) => {
     const template = templateShowcases[0]
+    /* GA4 only mounts on a production host, so without this the absences below
+     * would pass on localhost for the wrong reason. The tag mounts offline. */
+    await mountGoogleTagOffline(context)
 
     await page.goto(`${baseURL}${templatePreviewHref(template.slug)}`)
     await expect(page.locator('[data-template-canvas]')).toBeVisible()

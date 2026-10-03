@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const repoRoot = process.cwd()
 const analyticsPath = path.join(repoRoot, 'src', 'lib', 'analytics.ts')
@@ -94,5 +94,92 @@ describe('public anonymous analytics contract', () => {
     expect(privacyMessages).toContain('never contains a query string or raw referrer')
     expect(contributingDocs).toContain('Leaving `NEXT_PUBLIC_POSTHOG_KEY` unset')
     expect(envExample).toContain('Leave unset to disable PostHog capture')
+  })
+})
+
+/* A browser just complete enough for trackEvent, opted in, on the given host.
+ * PostHog's network is disabled so a key set in the shell cannot send. */
+function stubOptedInBrowser(hostname: string, { testHook = false } = {}) {
+  const storage = (entries: Record<string, string> = {}) => {
+    const values = new Map(Object.entries(entries))
+
+    return {
+      getItem: (key: string) => values.get(key) ?? null,
+      removeItem: (key: string) => void values.delete(key),
+      setItem: (key: string, value: string) => void values.set(key, value),
+    }
+  }
+  const gtag = vi.fn()
+
+  vi.stubGlobal('window', {
+    __allowGoogleTagOnTestHost: testHook,
+    __disablePostHogNetwork: true,
+    gtag,
+    localStorage: storage({ pc_consent: 'granted' }),
+    location: { hash: '', hostname, origin: `https://${hostname}`, pathname: '/', search: '' },
+    sessionStorage: storage(),
+  })
+  vi.stubGlobal('document', { referrer: '' })
+
+  return gtag
+}
+
+/* The e2e suite can only run on localhost, so it cannot see GA4 working on the
+ * real hosts. These pin both sides of the production-host gate. */
+describe('GA4 production-host gate', () => {
+  const productionHosts = ['payload-components.xyz', 'www.payload-components.xyz']
+  const otherHosts = [
+    'localhost',
+    '127.0.0.1',
+    'payload-components-git-main-ducksss.vercel.app',
+    'preview.payload-components.xyz',
+    'payload-components.xyz.example.com',
+  ]
+  const installCommand = 'npx payload-components add hero-basic'
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('mounts the tag on the production hosts only, or behind the e2e hook', async () => {
+    const { isGoogleTagHost } = await import('../../src/lib/analytics')
+
+    // Server render: there is no host to check, so nothing mounts.
+    expect(isGoogleTagHost()).toBe(false)
+
+    for (const hostname of productionHosts) {
+      stubOptedInBrowser(hostname)
+      expect(isGoogleTagHost(), hostname).toBe(true)
+    }
+
+    for (const hostname of otherHosts) {
+      stubOptedInBrowser(hostname)
+      expect(isGoogleTagHost(), hostname).toBe(false)
+    }
+
+    stubOptedInBrowser('localhost', { testHook: true })
+    expect(isGoogleTagHost()).toBe(true)
+  })
+
+  it('sends opted-in events to gtag from the production hosts only', async () => {
+    const { trackInstallCommandCopy } = await import('../../src/lib/analytics')
+
+    for (const hostname of productionHosts) {
+      const gtag = stubOptedInBrowser(hostname)
+
+      trackInstallCommandCopy(installCommand)
+      expect(gtag, hostname).toHaveBeenCalledWith('event', 'copy_install_command', {
+        command: installCommand,
+        component: 'hero-basic',
+        source_path: '/',
+      })
+    }
+
+    for (const hostname of otherHosts) {
+      const gtag = stubOptedInBrowser(hostname)
+
+      trackInstallCommandCopy(installCommand)
+      expect(gtag, hostname).not.toHaveBeenCalled()
+    }
   })
 })

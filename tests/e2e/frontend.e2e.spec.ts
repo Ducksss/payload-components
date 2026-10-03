@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test'
 
-import { grantConsent } from './consent'
+import { grantConsent, mountGoogleTagOffline } from './support/consent'
 
 import {
   blogTitle,
@@ -72,9 +72,13 @@ async function waitForCopyController(page: Page) {
 }
 
 /* File-level: every describe here wants the post-opt-in site. The analytics
-   assertions need the scripts mounted, and the landing snapshots are baselined
+   assertions need the scripts mounted, so the Google tag is mounted offline (GA4
+   only mounts on a production host), and the landing snapshots are baselined
    without the consent banner over them. The banner has its own spec. */
-test.beforeEach(async ({ context }) => grantConsent(context))
+test.beforeEach(async ({ context }) => {
+  await grantConsent(context)
+  await mountGoogleTagOffline(context)
+})
 
 test.describe('Light shadcn frontend', () => {
   test.beforeEach(async ({ context }) => {
@@ -1177,6 +1181,27 @@ test.describe('Light shadcn frontend', () => {
     await expect(sidebar.getByRole('button', { name: 'Page blocks' })).toBeVisible()
     await expect(sidebar.getByRole('button', { name: 'Feature' })).toBeVisible()
     await expect(sidebar.getByRole('button', { name: /Search/ })).toBeVisible()
+  })
+
+  test('hydrates docs pages without React errors', async ({ page }) => {
+    /* Docs pages are prerendered at their internal /en route and served at the
+       public URL. Fumadocs matched its chrome (the TOC trigger label, the
+       prev/next footer) against a pathname that read /en/docs in the static
+       HTML and /docs in the browser, so every docs page threw React #418 in
+       production. Dev renders on request and never showed it. */
+    const pageErrors: string[] = []
+    page.on('pageerror', (error) => pageErrors.push(error.message))
+
+    for (const path of [
+      '/docs',
+      '/docs/installation',
+      '/docs/components/hero-basic',
+      '/docs/design',
+    ]) {
+      await page.goto(`${baseURL}${path}`)
+      await waitForCopyController(page)
+      expect(pageErrors, path).toEqual([])
+    }
   })
 
   test('keeps the site typefaces, accents, and radius scale on docs and blog routes', async ({

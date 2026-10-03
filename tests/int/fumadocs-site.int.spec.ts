@@ -71,6 +71,47 @@ type RedirectRule = {
   source: string
 }
 
+/* next.config.mjs, loaded fresh, so a stubbed env reaches its module scope. */
+async function loadNextConfig() {
+  vi.resetModules()
+
+  const { default: nextConfig } = (await import(
+    pathToFileURL(path.join(repoRoot, 'next.config.mjs')).href
+  )) as {
+    default: {
+      headers?: () => Promise<HeaderRule[]>
+      poweredByHeader?: boolean
+      redirects?: () => Promise<RedirectRule[]>
+    }
+  }
+
+  return nextConfig
+}
+
+/* Directive name → source list. Browsers honour only the first occurrence of a
+   directive, so a duplicate would silently change the policy; refuse it here. */
+function parseContentSecurityPolicy(policy: string | undefined) {
+  const directives = (policy ?? '')
+    .split(';')
+    .map((directive) => directive.trim().split(/\s+/))
+    .filter(([name]) => name)
+  const names = directives.map(([name]) => name)
+
+  expect(new Set(names).size, `duplicate CSP directive in: ${policy}`).toBe(names.length)
+
+  return Object.fromEntries(directives.map(([name, ...sources]) => [name, sources]))
+}
+
+async function loadContentSecurityPolicy() {
+  const headerRules = (await (await loadNextConfig()).headers?.()) ?? []
+
+  return parseContentSecurityPolicy(
+    headerRules
+      .flatMap((rule) => rule.headers)
+      .find((header) => header.key === 'Content-Security-Policy')?.value,
+  )
+}
+
 type MetaFile = {
   pages?: Array<string | { pages?: string[]; title?: string }>
   title?: string
@@ -691,15 +732,7 @@ describe('Fumadocs site shell', () => {
   })
 
   it('cache-busts deploy-sensitive app responses without touching hashed assets', async () => {
-    const { default: nextConfig } = (await import(
-      pathToFileURL(path.join(repoRoot, 'next.config.mjs')).href
-    )) as {
-      default: {
-        headers?: () => Promise<HeaderRule[]>
-        poweredByHeader?: boolean
-        redirects?: () => Promise<RedirectRule[]>
-      }
-    }
+    const nextConfig = await loadNextConfig()
 
     const headerRules = await nextConfig.headers?.()
     const cacheRules = headerRules?.filter((rule) =>
@@ -833,10 +866,7 @@ describe('Fumadocs site shell', () => {
     ).toEqual({
       source: '/:path*',
       headers: [
-        {
-          key: 'Content-Security-Policy',
-          value: expect.stringContaining("default-src 'self'; script-src 'self' 'unsafe-inline'"),
-        },
+        { key: 'Content-Security-Policy', value: expect.any(String) },
         { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
         { key: 'X-Content-Type-Options', value: 'nosniff' },
         { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
@@ -848,19 +878,46 @@ describe('Fumadocs site shell', () => {
       ],
     })
 
-    const contentSecurityPolicy = headerRules
+    const policyHeaders = headerRules
       ?.flatMap((rule) => rule.headers)
-      .find((header) => header.key === 'Content-Security-Policy')?.value
+      .filter((header) => header.key.startsWith('Content-Security-Policy'))
 
-    expect(contentSecurityPolicy).toContain("object-src 'none'")
-    expect(contentSecurityPolicy).toContain("base-uri 'self'")
-    expect(contentSecurityPolicy).toContain("form-action 'self'")
-    expect(contentSecurityPolicy).toContain("frame-ancestors 'self'")
-    expect(contentSecurityPolicy).toContain('https://www.googletagmanager.com')
-    expect(contentSecurityPolicy).toContain('https://us.i.posthog.com')
-    expect(contentSecurityPolicy).toContain("frame-src 'self'")
-    expect(contentSecurityPolicy).toContain('https://*.youtube-nocookie.com')
-    expect(contentSecurityPolicy).not.toContain("'unsafe-eval'")
+    /* One enforced policy. A second CSP header would intersect with the first,
+       and a Report-Only one would only ever reach a visitor's console. */
+    expect(policyHeaders?.map((header) => header.key)).toEqual(['Content-Security-Policy'])
+
+    /* Exact on purpose: widening any source list is a security decision that
+       should have to change this test. Every entry was browser-audited; see the
+       comment above contentSecurityPolicy in next.config.mjs. */
+    expect(parseContentSecurityPolicy(policyHeaders?.[0]?.value)).toEqual({
+      'default-src': ["'self'"],
+      'script-src': ["'self'", "'unsafe-inline'", 'https://www.googletagmanager.com'],
+      'script-src-attr': ["'none'"],
+      'style-src': ["'self'", "'unsafe-inline'"],
+      'img-src': [
+        "'self'",
+        'data:',
+        'blob:',
+        'https://*.google-analytics.com',
+        'https://*.googletagmanager.com',
+      ],
+      'font-src': ["'self'", 'data:'],
+      'connect-src': [
+        "'self'",
+        'https://*.google-analytics.com',
+        'https://*.analytics.google.com',
+        'https://*.googletagmanager.com',
+        'https://us.i.posthog.com',
+      ],
+      'frame-src': ["'self'"],
+      'media-src': ["'self'", 'blob:'],
+      'worker-src': ["'self'", 'blob:'],
+      'object-src': ["'none'"],
+      'base-uri': ["'self'"],
+      'form-action': ["'self'"],
+      'frame-ancestors': ["'self'"],
+      'manifest-src': ["'self'"],
+    })
     expect(nextConfig.poweredByHeader).toBe(false)
 
     await expect(nextConfig.redirects?.()).resolves.toEqual([
@@ -877,6 +934,39 @@ describe('Fumadocs site shell', () => {
         permanent: true,
       },
     ])
+  })
+
+  it('derives the CSP dev and PostHog allowances from the build environment', async () => {
+    // React's development build needs eval, and Vercel's debug scripts come from
+    // its CDN; neither allowance may leak into a production build.
+    vi.stubEnv('NODE_ENV', 'development')
+    expect((await loadContentSecurityPolicy())['script-src']).toEqual([
+      "'self'",
+      "'unsafe-inline'",
+      "'unsafe-eval'",
+      'https://va.vercel-scripts.com',
+      'https://www.googletagmanager.com',
+    ])
+    vi.unstubAllEnvs()
+
+    /* The capture origin follows NEXT_PUBLIC_POSTHOG_HOST, which analytics.ts
+       posts to, so a self-hosted or EU project is not silently blocked. Only an
+       HTTPS origin is admitted; a path-only host is same-origin and needs none. */
+    const analyticsSources = [
+      "'self'",
+      'https://*.google-analytics.com',
+      'https://*.analytics.google.com',
+      'https://*.googletagmanager.com',
+    ]
+    for (const [host, expected] of [
+      ['https://eu.i.posthog.com', [...analyticsSources, 'https://eu.i.posthog.com']],
+      ['https://ph.example.com/ingest/', [...analyticsSources, 'https://ph.example.com']],
+      ['http://ph.example.com', analyticsSources],
+      ['/ingest', analyticsSources],
+    ] as const) {
+      vi.stubEnv('NEXT_PUBLIC_POSTHOG_HOST', host)
+      expect((await loadContentSecurityPolicy())['connect-src'], host).toEqual(expected)
+    }
   })
 
   it('loads component docs data from the component registry tree', async () => {

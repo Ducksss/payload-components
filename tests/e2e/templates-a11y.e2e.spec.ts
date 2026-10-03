@@ -6,7 +6,7 @@ import {
   templatePreviewHref,
   templateShowcases,
 } from '../../src/lib/templates/registry'
-import { expectConsentBannerReady } from './consent'
+import { expectConsentBannerReady } from './support/consent'
 import { formatPaintedContrastReport, measurePaintedTextContrast } from './support/painted-contrast'
 
 /* Accessibility sweep across EVERY template concept — its /templates/<slug>
