@@ -1,6 +1,6 @@
 import { expect, type BrowserContext, type Page, test } from '@playwright/test'
 
-import { mountGoogleTagOffline } from './consent'
+import { mountGoogleTagOffline } from './support/consent'
 
 /* The Content-Security-Policy is enforced, and nothing reports on it. The site is
  * backend-free, so there is no report-to collector, and a production violation

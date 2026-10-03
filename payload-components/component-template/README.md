@@ -1,6 +1,6 @@
 # Component Template
 
-Copy this template when starting a new in-repo component. It is the internal source of truth for naming, file layout, and the minimal block/component shape that future components should follow.
+`pnpm payload-components new <slug>` scaffolds a new in-repo component from these files. They are the internal source of truth for naming, file layout, and the minimal block/component shape that future components should follow. This is repository-only contributor tooling: it is not part of the npm package.
 
 ## Naming Map
 
@@ -67,7 +67,7 @@ Do not wire internal shared modules through `registryDependencies` — that reso
 `doc-page.mdx` is the **fixed component doc-page format** (mirrors the shadcn component docs). Copy it to
 `content/docs/components/<slug>.mdx`. The page header — title, description, at-a-glance chips, prev/next
 arrows, Copy Page — is rendered automatically for `/docs/components/*` by `ComponentDocHeader`
-(`src/app/docs/[[...slug]]/page.tsx`), so the MDX has **no `<h1>` and no repeated description**.
+(`src/app/[locale]/docs/[[...slug]]/page.tsx`), so the MDX has **no `<h1>` and no repeated description**.
 Body order is fixed and nothing precedes the preview:
 
 1. `<ComponentPreview slug="<slug>" />` — live Preview / Code tabs (Code = every installed file:
@@ -120,8 +120,9 @@ doc page, and installer tests, together. Work in this order:
    `componentEditorialEntries` (`src/lib/component-catalog.ts`) beside its family. The generator
    already refreshes `src/generated/component-catalog.json`; rerun `pnpm catalog:build` after any
    later registry-order or manifest-version edit. Registry order drives the catalog and docs prev/next arrows; version,
-   command, route, and family are derived. `componentsIntro`, `componentFamilies.pages.countLabel`,
-   `src/app/about/page.tsx`, and `src/app/not-found.tsx` are all derived now — do not hand-edit them.
+   command, route, and family are derived. Site component counts and lists are derived from
+   `componentEntries` — the `{count}` placeholders in `messages/en.json` and the 404 page's
+   known-component list — so never hand-edit a number into them.
    CLI help derives `Current components:` from the registry; only the
    `<!-- COMPONENT-INVENTORY -->` table in `README.md` remains a documented projection and is
    asserted by `tests/int/inventory-sync.int.spec.ts`. Fresh smoke discovers
@@ -150,5 +151,5 @@ doc page, and installer tests, together. Work in this order:
    pnpm test:fresh -- --shard-index 3
    ```
 
-   See the workspace [Verification Suite](../../README.md#verification-suite) for what the
+   See the workspace [Verification Suite](../README.md#verification-suite) for what the
    deterministic release gate and fresh-consumer validation each prove.

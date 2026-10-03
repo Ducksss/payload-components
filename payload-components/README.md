@@ -19,7 +19,7 @@ Every installable page block must keep all of the following true — the release
 
 Brittle repo patching or unreliable generation is a release blocker, not a rough edge: fixes to the install contract land before catalog growth.
 
-Workspace reality: `payload-components add` installs components, `payload-components add --dry-run` validates and prints the same file, wiring, dependency, command, and state plan without mutating the target, `payload-components seed` writes an opt-in demo script for a fully installed component, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` delegates to `shadcn init` to create the `components.json` baseline for targets missing it. `payload-components add` expects that baseline and does not run init automatically as a side effect.
+Workspace reality: `payload-components add` installs components, `payload-components add --dry-run` validates and prints the same file, wiring, dependency, command, and state plan without mutating the target, `payload-components seed` writes an opt-in demo script for a fully installed component, `payload-components doctor` diagnoses target projects without changing files, and `payload-components init` delegates to `shadcn init` to create the `components.json` baseline for targets missing it. `payload-components add` expects that baseline and does not run init automatically as a side effect; `init --scaffold` additionally lays down the managed starter base a bare Payload app needs. `list`, `diff`, `update`, `remove`, `localize`, `templates`, `add-template`, and `mcp` complete the lifecycle — the [CLI reference](https://www.payload-components.xyz/docs/cli) covers every command and flag.
 
 ## Demo seed contract
 
@@ -89,20 +89,58 @@ Namespace consumers can configure:
 
 Then install with `pnpm dlx shadcn@latest add @payload-components/hero-basic` or any other registry item.
 
+### shadcn directory listing
+
+**Status: listed.** The registry is published under the `@payload-components` namespace and is live in
+the [official shadcn registry directory](https://ui.shadcn.com/docs/directory) — merged upstream in
+[shadcn-ui/ui#11006](https://github.com/shadcn-ui/ui/pull/11006) (2026-06-24), so people can discover it
+and run `shadcn add @payload-components/<item>`. `pnpm registry:validate` schema-checks every item
+against the vendored shadcn schemas (`tools/payload-components/schemas/`) and runs inside the release gate.
+
+The live entry in `apps/v4/registry/directory.json` upstream:
+
+```json
+{
+  "name": "@payload-components",
+  "homepage": "https://www.payload-components.xyz",
+  "url": "https://www.payload-components.xyz/r/{name}.json",
+  "description": "MIT registry of typed Payload CMS blocks for Payload v3 + Next.js. Each block installs as reviewable source; the companion CLI also wires collection config, RenderBlocks, types, and the admin import map.",
+  "logo": "<svg …/>"
+}
+```
+
+**This entry is a copy, not a feed** — upstream stores those five fields verbatim, so nothing here
+propagates. Changing the homepage, the description, or the logomark means another PR to `shadcn-ui/ui`.
+
+**Known drift:** the `logo` upstream is still the retired `P` mark. The logomark became two keyed blocks
+on 2026-07-31 (`public/favicon.svg` is canonical), after the directory PR merged. Worth a follow-up PR;
+it is cosmetic and only visible on their directory page.
+
+The URLs must resolve before any such PR — their CI runs `validate:registries` against the live site:
+
+```bash
+curl -fsSL https://www.payload-components.xyz/r/registry.json    # 200
+curl -fsSL https://www.payload-components.xyz/r/hero-basic.json   # 200, embeds file content
+```
+
+Entries are a flat JSON array sorted alphabetically by `name`; keep the literal `{name}` placeholder in
+`url`. `logo` is not schema-required but every entry carries one, so treat it as required in practice.
+
 ## Installed Source and Database Migrations
 
-`payload-components add` does not overwrite installed component source. Registry changes affect
-new installs only unless a maintainer explicitly ports a source diff into an existing Payload app.
-That ownership boundary keeps repeat installs idempotent and preserves consumer customizations.
+`payload-components add` does not overwrite installed component source. Registry changes reach an
+existing install only through `payload-components update` — which refuses locally edited files
+unless `--force` — or when a maintainer ports a source diff by hand. That ownership boundary keeps
+repeat installs idempotent and preserves consumer customizations.
 
 When an adopted source change adds or changes a persisted database identifier such as `dbName`,
 the SQL-backed consumer project must own the migration. The registry cannot safely infer the app's
 collection slug, block-field path, database adapter, schema, existing table names, or migration
-history. After porting the source diff, run `pnpm payload migrate:create <migration-name>` in the
+history. After updating or porting the source change, run `pnpm payload migrate:create <migration-name>` in the
 consumer app. Review the generated DDL to ensure it will rename rather than drop and recreate the
 existing tables, indexes, or enums; replace destructive DDL with an explicit rename or backfill.
 Test the migration against a backup or staging database, then run it before deploying the updated
-config. Existing installs that do not port the source change keep their installed config and require
+config. Existing installs that do not take the source change keep their installed config and require
 no registry-driven migration.
 
 ## Verification Suite
@@ -160,8 +198,10 @@ verification only proves file delivery and shadcn UI dependency delivery; Payloa
 `pnpm test:release` runs lint, source generation, TypeScript, registry checks, integration tests, a
 production build, and Playwright against `next start`. It is the deterministic site and registry
 release gate; it does not run or replace the four fresh-consumer shards. The required PR `pr-gate`
-passes only when `quick-checks`, `test:release`, compatibility checks, and every fresh shard
-succeed.
+passes only when `quick-checks` and `test:release` succeed. For any change that can affect
+consumers it also requires the Node 20 compatibility check and every fresh shard. Site- and
+docs-only changes skip those jobs (`tools/ci/classify-changes.mjs` decides), and the gate fails
+whenever their result does not match that classification.
 
 ## Current Contract
 
@@ -178,7 +218,9 @@ Manifests now define:
 
 ## Component Template
 
-The reusable starter for future components lives in `templates/component-template/`.
+The reusable starter for future components lives in `component-template/`.
+`pnpm payload-components new <slug>` scaffolds a component from it; its README is the full
+add-a-component workflow. It is repository-only tooling and is not part of the npm package.
 
 Use it to keep these conventions consistent:
 
@@ -192,7 +234,8 @@ The template includes:
 - `manifest.json`
 - `config.ts`
 - `Component.tsx`
-- an internal authoring note
+- `doc-page.mdx`, the fixed component doc-page format
+- `README.md`, the authoring, accessibility, and add-a-component workflow notes
 
 Normalized component blocks should:
 
@@ -207,19 +250,25 @@ Normalized component blocks should:
 - `source/`: Payload-target component source consumed by registry generation
 - `../public/r/`: ignored, generated public shadcn registry artifacts
 - `manifests/`: component manifests for the shipped and in-progress components
+- `install-baselines.json`: immutable per-version source hashes, appended by `pnpm registry:snapshot`
 - `schema/poc-manifest.schema.json`: manifest validation schema
 - `support-matrix.json`: the supported repo-shape contract
-- `templates/component-template/`: internal scaffolds for future component authoring
+- `templates/*.json`: generated full-site template install contracts (`pnpm templates:build`)
+- `component-template/`: internal scaffold for future component authoring (not published)
+- `PROVENANCE.md`: upstream layout provenance and the tailark/blocks drift ledger
 
 ## Manual Smoke Test
 
+Run the in-repo CLI against a separate supported Payload project with the global `--cwd` flag.
+Without it, the CLI targets the current directory — this repository, which is not a Payload app.
+
 ```bash
-pnpm payload-components add hero-basic
-pnpm payload-components add feature-grid-basic
-pnpm payload-components add content-columns
-pnpm payload-components add logo-cloud-grid
-pnpm payload-components add integration-grid
-pnpm payload-components doctor
+pnpm payload-components add hero-basic --cwd ../my-payload-app
+pnpm payload-components add feature-grid-basic --cwd ../my-payload-app
+pnpm payload-components add content-columns --cwd ../my-payload-app
+pnpm payload-components add logo-cloud-grid --cwd ../my-payload-app
+pnpm payload-components add integration-grid --cwd ../my-payload-app
+pnpm payload-components doctor --cwd ../my-payload-app
 ```
 
 `payload-components doctor` checks the supported project shape, required post-install scripts, and recorded install state. It exits non-zero when a recorded component is partial or drifted from disk.
@@ -236,12 +285,12 @@ registry source, so a registry upgrade is not mistaken for a consumer edit. Stat
 CLI releases migrates in memory; unknown legacy baselines are protected unless the operator
 explicitly accepts the overwrite or removal with `--force`.
 
-Use this sequence to debug recovery:
+Use this sequence from the consumer project root to debug recovery:
 
 ```bash
-pnpm payload-components doctor
-pnpm payload-components add hero-basic
-pnpm payload-components doctor
+npx payload-components doctor
+npx payload-components add hero-basic
+npx payload-components doctor
 ```
 
 Owned component files are the files the wrapper installs, such as

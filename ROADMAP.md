@@ -11,7 +11,7 @@ direction, not a commitment. New contributors can start with
 
 ## Current implementation
 
-The registry contains 79 wired Page blocks and two file-only article components.
+The registry contains 79 wired Page blocks and three file-only article components.
 Work merged into `main` reaches the published CLI with the next npm release.
 
 - `collection-query` provides grid, list, and featured Posts layouts, category
@@ -19,8 +19,8 @@ Work merged into `main` reaches the published CLI with the next npm release.
   is distributed with the block.
 - `contact-form-basic` provides an accessible contact form with validation,
   submission feedback, and a consumer-owned endpoint.
-- `post-hero` and `author-card` install as files for article-template composition;
-  they do not patch Pages or run Payload generators.
+- `post-hero`, `author-card`, and `newsletter-callout` install as files for
+  article-template composition; they do not patch Pages or run Payload generators.
 - The catalog separates installable Page blocks and article components.
 - The visual install walkthrough covers discovery, wrapper installation, the
   resulting diff, doctor, and the limits of direct shadcn delivery.
@@ -48,7 +48,7 @@ components. Track outcomes, not duplicate implementations:
 | `featured-post` ([#132])      | Collection Query featured layout.                                                                                           |
 | `post-hero` ([#124])          | File-only article header.                                                                                                   |
 | `author-card` ([#125])        | File-only article byline/profile.                                                                                           |
-| `newsletter-callout` ([#134]) | Existing `call-to-action-signup` covers Page signup; a distinct article surface needs a concrete unmet requirement.         |
+| `newsletter-callout` ([#134]) | File-only article signup surface; Page signup stays with `call-to-action-signup`.                                           |
 | `related-posts` ([#135])      | Still requires an explicit relationship-aware article contract; category filtering is not automatic related-post selection. |
 
 Historical tickets can be closed once their replacement scope
@@ -62,8 +62,7 @@ file-only acceptance criteria of a ticket that now maps to a wired Page block.
 2. Add `related-posts` only with explicit source-post context and a documented
    placement contract. Keep automatic recommendations separate from manual
    selection.
-3. Finish the smaller tracked site improvement: the hero H1 entrance ([#523]).
-4. Let real install feedback decide whether another hero variant ([#137]) or
+3. Let real install feedback decide whether another hero variant ([#137]) or
    additional collection browsing controls are useful.
 
 ## Exploring (not committed)
@@ -72,8 +71,8 @@ file-only acceptance criteria of a ticket that now maps to a wired Page block.
   fixtures; it is separate from both Page blocks and article templates.
 - Comments require collection ownership, moderation, and spam handling. They
   need a separate design rather than a presentational-component ticket.
-- Extend clean external shadcn delivery coverage as new registry item types are
-  introduced ([#15]).
+- Extend the clean external shadcn delivery check (proven in [#15]) as new
+  registry item types are introduced.
 
 ## Not Planned
 
@@ -82,32 +81,16 @@ file-only acceptance criteria of a ticket that now maps to a wired Page block.
 - No broad repo-shape support without a reproducible fixture.
 
 [issues]: https://github.com/Ducksss/payload-components/issues
-[catalog]: https://www.payload-components.xyz/components
 [gfi]: https://github.com/Ducksss/payload-components/labels/good%20first%20issue
 [ufg]: https://github.com/Ducksss/payload-components/labels/up-for-grabs
-[enh]: https://github.com/Ducksss/payload-components/labels/enhancement
 [#15]: https://github.com/Ducksss/payload-components/issues/15
-[#16]: https://github.com/Ducksss/payload-components/issues/16
-[#19]: https://github.com/Ducksss/payload-components/issues/19
-[#24]: https://github.com/Ducksss/payload-components/issues/24
-[#103]: https://github.com/Ducksss/payload-components/issues/103
-[#105]: https://github.com/Ducksss/payload-components/issues/105
-[#109]: https://github.com/Ducksss/payload-components/issues/109
-[#112]: https://github.com/Ducksss/payload-components/issues/112
-[#113]: https://github.com/Ducksss/payload-components/issues/113
-[#116]: https://github.com/Ducksss/payload-components/issues/116
-[#119]: https://github.com/Ducksss/payload-components/issues/119
-[#121]: https://github.com/Ducksss/payload-components/issues/121
 [#123]: https://github.com/Ducksss/payload-components/issues/123
-[#126]: https://github.com/Ducksss/payload-components/issues/126
-[#131]: https://github.com/Ducksss/payload-components/issues/131
-[#132]: https://github.com/Ducksss/payload-components/issues/132
-[#135]: https://github.com/Ducksss/payload-components/issues/135
-[#136]: https://github.com/Ducksss/payload-components/issues/136
-[#137]: https://github.com/Ducksss/payload-components/issues/137
-[#455]: https://github.com/Ducksss/payload-components/issues/455
 [#124]: https://github.com/Ducksss/payload-components/issues/124
 [#125]: https://github.com/Ducksss/payload-components/issues/125
+[#126]: https://github.com/Ducksss/payload-components/issues/126
+[#132]: https://github.com/Ducksss/payload-components/issues/132
 [#133]: https://github.com/Ducksss/payload-components/issues/133
 [#134]: https://github.com/Ducksss/payload-components/issues/134
-[#523]: https://github.com/Ducksss/payload-components/issues/523
+[#135]: https://github.com/Ducksss/payload-components/issues/135
+[#137]: https://github.com/Ducksss/payload-components/issues/137
+[#455]: https://github.com/Ducksss/payload-components/issues/455

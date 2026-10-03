@@ -17,7 +17,7 @@ import type { FileChange } from '../utils'
  * Content model prose, and demo sample copy need human judgment. Registry order,
  * versions, commands, and routes are mechanical projections. */
 
-const templateDir = path.join(repoRoot, 'payload-components', 'templates', 'component-template')
+const templateDir = path.join(repoRoot, 'payload-components', 'component-template')
 const sourceBlocksDir = path.join(repoRoot, 'payload-components', 'source', 'blocks')
 const manifestsDir = path.join(repoRoot, 'payload-components', 'manifests')
 const componentDocsDir = path.join(repoRoot, 'content', 'docs', 'components')

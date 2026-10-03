@@ -37,6 +37,13 @@ A component proposal should arrive complete — incomplete components don't ship
   </Step>
 </Steps>
 
+In a checkout of this repository, `pnpm payload-components new <slug>` scaffolds every
+mechanical file of that bundle and prints the decisions it leaves to you. The
+[component template README](https://github.com/Ducksss/payload-components/blob/main/payload-components/component-template/README.md)
+walks through the full workflow, and
+[CONTRIBUTING.md](https://github.com/Ducksss/payload-components/blob/main/CONTRIBUTING.md)
+lists the checks to run before you open a pull request.
+
 ## Attribution
 
 If a component's layout is adapted from an external open-source design — for example [tailark/blocks](https://github.com/tailark/blocks) (MIT) — credit it in **two** places so provenance survives both in the repo and in what ships to consumers:
@@ -155,7 +162,7 @@ Three rules to preserve when touching any of this:
     place would keep the visitor identifiable on their next visit.
   </Step>
   <Step>
-    **Tests grant consent explicitly.** `tests/e2e/consent.ts` seeds
+    **Tests grant consent explicitly.** `tests/e2e/support/consent.ts` seeds
     `pc_consent=granted` for the specs that assert on analytics or capture visual
     baselines, so the banner stays out of snapshots. The undecided state is
     covered by `tests/e2e/consent.e2e.spec.ts`, and the axe suites deliberately

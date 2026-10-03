@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { grantConsent } from './consent'
+import { grantConsent } from './support/consent'
 
 import { templatePreviewHref, templateShowcases } from '../../src/lib/templates/registry'
 import {
