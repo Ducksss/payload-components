@@ -1,11 +1,11 @@
 import { defineConfig, devices } from '@playwright/test'
 
-import { googleTagDomains } from './tests/e2e/consent'
+import { googleTagDomains } from './tests/e2e/support/consent'
 
 const e2ePort = process.env.E2E_PORT ?? '3100'
 const webServerCommand =
   process.env.PLAYWRIGHT_SERVER_MODE === 'production' ? 'pnpm start' : 'pnpm dev'
-/* A backstop behind the GA4 gate and the stubs in tests/e2e/consent.ts: Chromium
+/* A backstop behind the GA4 gate and the stubs in tests/e2e/support/consent.ts: Chromium
    resolves Google's analytics hosts to nothing, so even a spec that mounted the
    real tag could not send a hit to the production property. A route fulfilled
    locally never needs DNS, so the stubs keep working. */

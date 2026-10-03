@@ -195,7 +195,7 @@ describe('payload-components manifests', () => {
       readFile(path.join(repoRoot, 'payload-components', 'README.md'), 'utf8'),
       readFile(path.join(repoRoot, 'content', 'docs', 'registry.mdx'), 'utf8'),
       readFile(
-        path.join(repoRoot, 'payload-components', 'templates', 'component-template', 'README.md'),
+        path.join(repoRoot, 'payload-components', 'component-template', 'README.md'),
         'utf8',
       ),
     ])

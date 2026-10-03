@@ -740,7 +740,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     primary: {
       kind: 'source',
       label: 'Add-a-component workflow',
-      path: 'payload-components/templates/component-template/README.md',
+      path: 'payload-components/component-template/README.md',
       anchor: 'Every component ships as one bundle',
       take: 5,
     },

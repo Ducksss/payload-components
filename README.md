@@ -57,7 +57,19 @@
         <li><a href="#run-this-repo-locally">Run This Repo Locally</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li>
+      <a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#install-several-blocks-or-a-template">Install Several Blocks Or A Template</a></li>
+        <li><a href="#localize-a-project">Localize A Project</a></li>
+        <li><a href="#maintain-an-install">Maintain An Install</a></li>
+        <li><a href="#start-from-a-bare-payload-app">Start From A Bare Payload App</a></li>
+        <li><a href="#seed-demo-content">Seed Demo Content</a></li>
+        <li><a href="#use-it-from-a-coding-agent">Use It From A Coding Agent</a></li>
+        <li><a href="#how-an-install-works">How An Install Works</a></li>
+      </ul>
+    </li>
+    <li><a href="#all-components">All Components</a></li>
     <li><a href="#package-releases">Package Releases</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#community-examples">Community Examples</a></li>
@@ -83,8 +95,9 @@ A plain `shadcn add` copies files. `payload-components add` goes further:
 
 This repository has two jobs:
 
-- the Fumadocs-powered Next.js site for the landing page, docs, component
-  catalog, search, Open Graph images, and AI-readable text surfaces;
+- the Fumadocs-powered Next.js site for the landing page, docs, blog, component
+  catalog, template showcases, search, Open Graph images, and AI-readable text
+  surfaces;
 - the `payload-components` registry and CLI that install blocks into consumer
   Payload projects.
 
@@ -132,18 +145,23 @@ open source, no pricing tiers, no license keys, no gated component access.
 
 ### What Lives Here
 
-| Path                               | Purpose                                                     |
-| ---------------------------------- | ----------------------------------------------------------- |
-| `src/app`                          | Next.js routes, homepage, catalog, docs, search, and OG     |
-| `src/components/site`              | Site UI, landing sections, install replay, cards, and demos |
-| `src/lib/site.ts`                  | Shared site copy, component entries, FAQ, and demo data     |
-| `content/docs`                     | Fumadocs MDX documentation                                  |
-| `payload-components/registry.json` | Source shadcn registry definition                           |
-| `payload-components/source`        | Payload target source files shipped into consumer repos     |
-| `payload-components/manifests`     | Install metadata, fragments, post-install tasks, recovery   |
-| `tools/payload-components`         | CLI implementation for `payload-components add`             |
-| `bin/payload-components.mjs`       | CLI executable entrypoint                                   |
-| `tests`                            | Playwright E2E and Vitest integration coverage              |
+| Path                               | Purpose                                                                   |
+| ---------------------------------- | ------------------------------------------------------------------------- |
+| `src/app`                          | Next.js routes: landing, docs, catalog, blog, templates, search, and OG   |
+| `src/components/site`              | Site UI, landing sections, install replay, demo twins, template showcases |
+| `src/lib`                          | Site copy (`site.ts`), catalog context, template recipes, content sources |
+| `content/docs`, `content/blog`     | Fumadocs MDX documentation and blog posts                                 |
+| `messages`                         | Site translation catalogs; English is canonical                           |
+| `payload-components/registry.json` | Source shadcn registry definition                                         |
+| `payload-components/source`        | Payload target source files shipped into consumer repos                   |
+| `payload-components/manifests`     | Install metadata, fragments, post-install tasks, recovery                 |
+| `payload-components/templates`     | Generated install contracts for the full-site templates                   |
+| `tools/payload-components`         | CLI implementation for `payload-components add`                           |
+| `bin/payload-components.mjs`       | CLI entrypoint for working in this repo                                   |
+| `tests`                            | Playwright E2E and Vitest integration coverage                            |
+| `rfcs`, `docs`                     | Design proposals and dated maintainer records                             |
+
+[AGENTS.md](./AGENTS.md) has the full repository map and the contracts each area must keep.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -171,40 +189,6 @@ The preview lists the component files, `RenderBlocks.tsx` renderer mapping,
 `Pages/index.ts` block registration, package dependencies, and post-install
 commands the real install would use.
 
-To also write a prefilled demo script after the install succeeds, opt in with
-`--demo`, then run the generated TypeScript through your project's Payload CLI:
-
-```sh
-npx payload-components add hero-basic --demo
-pnpm exec payload run payload-components/seed-hero-basic.ts
-```
-
-For a component that is already installed, the standalone command writes the
-same script:
-
-```sh
-npx payload-components seed hero-basic
-pnpm exec payload run payload-components/seed-hero-basic.ts
-```
-
-`seed` requires a healthy installed-state record, compatible dependencies, every
-manifest and registry-dependency file, and all Payload wiring fragments. It
-writes the reviewable script plus a private ownership record under
-`.payload-components/demo-state/`. The generated script requires Pages drafts
-before querying or changing content, then creates a component-specific **draft**
-Page at `/payload-components-demo-hero-basic`; it never publishes the demo. A
-rerun updates only the exact Page ID recorded locally after verifying its
-tokenized block marker. Placeholder media is reused only by its recorded ID and
-is never deduplicated or deleted automatically. Before each create, the script
-atomically journals a unique operation token; after an interruption it can
-adopt only the single Page or Media carrying that exact private token and record
-its returned ID before continuing. Any collision or missing,
-mismatched, or unreadable ownership record stops before unsafe mutation. The CLI
-atomically replaces only its version-marked generated script and refuses unowned
-files or pre-existing symlinks. The operator-run script deliberately uses
-`overrideAccess: true`, with `overrideLock: false` for updates, so review it in
-git and run it only against the intended database.
-
 Good first installs:
 
 | Component            | Use it for                   |
@@ -216,9 +200,264 @@ Good first installs:
 | `logo-cloud-grid`    | A trust-logo wall            |
 | `integration-grid`   | Integration cards            |
 
-Browse the full, current set in the [component catalog][catalog-url].
+Browse the full, current set in the [component catalog][catalog-url], or jump to
+[All Components](#all-components) for every install command.
 
-#### All components
+Collection Query supplies grid, list, and featured Posts layouts with category
+filters and pagination. Contact Form Basic submits to an endpoint you own.
+Post Hero, Author Card, and Newsletter Callout are file-only article components:
+compose them in your post template; their installs do not edit Pages or run
+Payload generators. See the [visual install walkthrough][install-walkthrough-url]
+for catalog discovery, a representative install, the resulting diff, and doctor.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Run This Repo Locally
+
+Use these steps to run the docs site and registry tooling.
+
+Prerequisites:
+
+- Node.js `^20.19.0 || >=22.12.0`
+- pnpm `^9 || ^10` (`packageManager` pins the exact version CI uses)
+
+Install and start:
+
+```sh
+git clone https://github.com/Ducksss/payload-components.git
+cd payload-components
+pnpm install --frozen-lockfile --ignore-workspace
+pnpm source:build
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+Useful local routes:
+
+| Route                         | Purpose                       |
+| ----------------------------- | ----------------------------- |
+| `/`                           | Product and docs homepage     |
+| `/docs`                       | Fumadocs documentation        |
+| `/components`                 | Component catalog             |
+| `/templates`                  | Full-site template showcases  |
+| `/blog`                       | Project blog                  |
+| `/api/search`                 | Fumadocs search endpoint      |
+| `/llms.txt`, `/llms-full.txt` | AI-readable project summaries |
+| `/r/registry.json`            | Generated public registry     |
+
+Before opening a pull request, run the checks that match your change.
+[CONTRIBUTING.md](./CONTRIBUTING.md#verification) maps each kind of change to
+its focused checks; `pnpm test:release` runs the full local release gate.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Usage
+
+Run every command from the root of the target Payload project. The
+[CLI reference][cli-reference-url] documents each command and flag.
+
+### Install Several Blocks Or A Template
+
+Install several blocks in one command — `add` takes any number of names, and the
+catalog's composer builds the command for you as you tick components:
+
+```sh
+npx payload-components add hero-basic faq-card pricing-cards
+```
+
+Install every block a full-site template concept composes, then assemble its
+pages in the admin:
+
+```sh
+npx payload-components templates
+npx payload-components add-template saas-launch
+```
+
+`add-template` installs and wires the whole block set and prints which blocks
+each page uses. Add `--demo` to also write one seed script per page, each
+creating a draft Page from the blocks that page composes. Seeded content is each
+block's own sample content, not the curated copy shown on the site.
+
+### Localize A Project
+
+Make the project multilingual — English, Chinese, or any language tag Payload
+accepts:
+
+```sh
+npx payload-components localize --locales en,zh
+```
+
+`localize` sets both halves of Payload internationalization, which have to agree
+before an editor sees a locale switcher. It declares the locales in your
+`buildConfig({ ... })` call (labelled in each language, `rtl` where the script
+needs it), installs `src/blocks/shared/localizeFields.ts` and wraps every
+installed block config's field list in it so the shared family base is covered
+too, and records the choice in install state so `update` keeps the wrapper. Every
+step is idempotent — re-run it after installing more blocks, and drop `--locales`
+to keep the ones already declared.
+
+`--default-locale` picks the canonical locale, `--no-fallback` lets an
+untranslated locale render empty, and `--dry-run` prints the whole plan without
+touching a file. A config it cannot read, a `localization` block that already
+declares something else, and a locally edited block config are all reported and
+skipped rather than rewritten; `--force` overrides the last two. A single block, or
+every block of a template, can also be installed localized in one step with
+`npx payload-components add hero-basic --localized` or
+`npx payload-components add-template saas-launch --localized` — the same
+field-level transform without the config half.
+
+Turning on localization changes how Payload stores the affected fields, so
+migrate existing data before adopting it on a populated collection. The
+[internationalization guide][localization-guide-url] covers locale choice,
+right-to-left scripts, and front-end queries.
+
+### Maintain An Install
+
+Recorded installs have a full lifecycle, not just a first run:
+
+```sh
+npx payload-components list              # catalog vs what this project recorded
+npx payload-components diff              # version, file, and wiring drift
+npx payload-components update            # re-install anything behind this CLI
+npx payload-components localize          # declare locales and localize installed blocks
+npx payload-components doctor            # project shape, wiring, and recorded installs
+npx payload-components remove hero-basic --accept-stored-content # after migrating/removing stored blocks
+```
+
+`diff` exits non-zero when anything has drifted, so CI can gate on it. `update`
+compares against the source hashes captured at the last successful install and
+never overwrites a file you have edited — it skips that component and exits
+non-zero until you pass `--force`. `remove` protects edited or unrecorded source
+unless you pass its own `--force`, and deletes only files no other recorded
+install owns, so a shared family base survives while a sibling variant is still
+installed. It also requires `--accept-stored-content`, because removing code does
+not migrate Page documents. Package dependencies are always left in place.
+`list` and `diff` accept `--json`, and `update` and `remove` accept `--dry-run`.
+
+`add` repairs the recorded component version; it never upgrades one. To move to a
+newer version, run `payload-components update <name>`: it validates the selected
+components and saves source, host files, package files, and ownership to
+`.payload-components/update-backup.json` before replacing anything, and a failed
+update restores that snapshot. If the process was interrupted, preserve any edits
+made afterward, then run `payload-components update --recover` before retrying.
+Package installation and custom generator side effects outside the saved paths
+may need reconciliation. Unreadable install state fails closed; restore it from a
+known-good backup instead of deleting it and losing file ownership.
+
+`doctor` changes no files. It validates the supported project shape, resolves
+which files carry the wiring, and checks required post-install scripts and any
+recorded `.payload-components/state.json` installs.
+
+### Start From A Bare Payload App
+
+Starting from a bare `create-payload-app` project? Lay down the base an install
+needs — the Pages and Media collections, the blocks renderer, and the `cn` /
+`CMSLink` / `Media` / `linkGroup` primitives every block imports:
+
+```sh
+npx payload-components init --scaffold
+```
+
+The base is recorded with content-addressed ownership in install state. Matching
+starter files are adopted, existing custom implementations are left unowned, and
+later runs update only pristine managed files. Locally edited managed files are
+kept until you explicitly pass `--force`. The result is the official starter's
+shape, so the project then detects as `payload-website-starter`.
+
+Scaffolded Pages collections restrict anonymous reads to published Pages.
+Managed, unedited scaffolds from older releases pick up that fix when
+`init --scaffold` runs again; unmanaged or locally edited collections are
+preserved. If yours still uses `read: () => true`, apply the updated callback from
+`payload-components/source/base/collections/Pages/index.ts` to protect drafts.
+
+### Seed Demo Content
+
+Demo scripts are opt-in. `add <component> --demo` writes one after the install
+succeeds, and `seed <component>` writes the same script for a component that is
+already installed. Run the generated TypeScript through your project's Payload
+CLI; the CLI prints the exact command for your package manager:
+
+```sh
+npx payload-components add hero-basic --demo
+pnpm exec payload run payload-components/seed-hero-basic.ts
+```
+
+Neither command opens a database. `seed` rejects partial installs and verifies
+the recorded install, dependencies, files, and Payload wiring before it writes
+the reviewable script plus a private ownership record under
+`.payload-components/demo-state/`. The script requires Pages drafts and creates a
+**draft** Page at `/payload-components-demo-hero-basic`; it never publishes the
+demo. Reruns update only the exact Page and Media IDs recorded locally, an
+interrupted run adopts only the document carrying its private operation token,
+and placeholder media is never deleted. The script deliberately uses
+`overrideAccess: true`, with `overrideLock: false` for updates, so review it in
+git and run it only against the intended database. [Seed Payload CMS
+safely][seed-guide-url] covers the full ownership model.
+
+### Use It From A Coding Agent
+
+`payload-components mcp` runs a Model Context Protocol server over stdio so an
+agent can browse the registry, read a component's install contract, and preview
+what an install would change:
+
+```jsonc
+// .mcp.json / your client's MCP config
+{
+  "mcpServers": {
+    "payload-components": {
+      "command": "npx",
+      "args": ["-y", "payload-components", "mcp"],
+    },
+  },
+}
+```
+
+Every tool is read-only by design. The server answers _which block and what will
+it change_; installing stays an explicit `payload-components add` run in your
+shell, where the diff is visible and approvable.
+
+### How An Install Works
+
+The installer runs five idempotent stages:
+
+1. Build or resolve the public registry item.
+2. Add component files through the shadcn registry.
+3. Install required dependencies.
+4. Apply Payload fragments for collection registration and renderer mapping.
+5. Run post-install scripts for generated types and the admin import map.
+
+Install state is written to `.payload-components/state.json` inside the
+consumer project, so partial installs are visible and retries can converge. A
+successful install also records normalized hashes for its owned source files;
+`diff`, `update`, and `remove` use that install-time baseline to distinguish an
+upstream release from a consumer edit.
+
+#### Recovering An Interrupted Install
+
+If a stage fails, the component is recorded as `partial` and `payload-components add`
+prints the failed stage, the last error, and the safest retry command. Fix the
+reported cause, then rerun the same command from the project root:
+
+```sh
+npx payload-components add hero-basic
+npx payload-components doctor
+```
+
+Review the git diff before editing anything by hand. The CLI distinguishes two
+kinds of files: _owned component files_ (listed from the manifest, such as the
+files under `src/blocks/HeroBasic/`) are safe to re-create by retrying, while
+_patched host files_ are project files the installer edited and may hold your own
+work — normally `src/blocks/RenderBlocks.tsx`, `src/collections/Pages/index.ts`,
+`package.json`, and the package manager lockfile.
+
+Prefer forward fixes over deletion. Do not delete patched host files to recover.
+Use `payload-components doctor` to see the failed stage, missing files, missing
+Payload fragments, and the owned/patched file breakdown before and after retrying.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## All Components
 
 Every installable registry item, in catalog order. The CLI derives its
 `Current components` help output directly from `payload-components/registry.json`;
@@ -312,231 +551,6 @@ this table is verified against the same source by a focused test.
 | `newsletter-callout`      | `npx payload-components add newsletter-callout`      |
 
 <!-- COMPONENT-INVENTORY:END -->
-
-Collection Query supplies grid, list, and featured Posts layouts with category
-filters and pagination. Contact Form Basic submits to an endpoint you own.
-Post Hero, Author Card, and Newsletter Callout are file-only article components: compose them in your
-post template; their installs do not edit Pages or run Payload generators.
-See the [visual install walkthrough](/content/docs/install-walkthrough.mdx) for
-catalog discovery, a representative install, the resulting diff, and doctor.
-
-Install several blocks in one command — `add` takes any number of names, and the
-catalog's composer builds the command for you as you tick components:
-
-```sh
-npx payload-components add hero-basic faq-card pricing-cards
-```
-
-Install every block a full-site template concept composes, then assemble its
-pages in the admin:
-
-```sh
-npx payload-components templates
-npx payload-components add-template saas-launch
-```
-
-`add-template` installs and wires the whole block set and prints which blocks
-each page uses. Add `--demo` to also write one seed script per page, each
-creating a draft Page from the blocks that page composes. Seeded content is each
-block's own sample content, not the curated copy shown on the site.
-
-Make the project multilingual — English, Chinese, or any language tag Payload
-accepts:
-
-```sh
-npx payload-components localize --locales en,zh
-```
-
-`localize` sets both halves of Payload internationalization, which have to agree
-before an editor sees a locale switcher. It declares the locales in your
-`buildConfig({ ... })` call (labelled in each language, `rtl` where the script
-needs it), installs `src/blocks/shared/localizeFields.ts` and wraps every
-installed block config's field list in it so the shared family base is covered
-too, and records the choice in install state so `update` keeps the wrapper. Every
-step is idempotent — re-run it after installing more blocks, and drop `--locales`
-to keep the ones already declared.
-
-`--default-locale` picks the canonical locale, `--no-fallback` lets an
-untranslated locale render empty, and `--dry-run` prints the whole plan without
-touching a file. A config it cannot read, a `localization` block that already
-declares something else, and a locally edited block config are all reported and
-skipped rather than rewritten; `--force` overrides the last two. A single block, or
-every block of a template, can also be installed localized in one step with
-`npx payload-components add hero-basic --localized` or
-`npx payload-components add-template saas-launch --localized` — the same
-field-level transform without the config half.
-
-Turning on localization changes how Payload stores the affected fields, so
-migrate existing data before adopting it on a populated collection.
-
-#### Maintain an install
-
-Recorded installs have a full lifecycle, not just a first run:
-
-```sh
-npx payload-components list              # catalog vs what this project recorded
-npx payload-components diff              # version, file, and wiring drift
-npx payload-components update            # re-install anything behind this CLI
-npx payload-components localize          # declare locales and localize installed blocks
-npx payload-components remove hero-basic --accept-stored-content # after migrating/removing stored blocks
-```
-
-`diff` exits non-zero when anything has drifted, so CI can gate on it. `update`
-compares against the source hashes captured at the last successful install and
-never overwrites a file you have edited — it skips that component and exits
-non-zero until you pass `--force`. `remove` protects edited or unrecorded source
-unless you pass its own `--force`, and deletes only files no other recorded
-install owns, so a shared family base survives while a sibling variant is still
-installed. It also requires `--accept-stored-content`, because removing code does
-not migrate Page documents. Package dependencies are always left in place.
-`list` and `diff` accept `--json`, and `update` and `remove` accept `--dry-run`.
-
-Starting from a bare `create-payload-app` project? Lay down the base an install
-needs — the Pages and Media collections, the blocks renderer, and the `cn` /
-`CMSLink` / `Media` / `linkGroup` primitives every block imports:
-
-```sh
-npx payload-components init --scaffold
-```
-
-The base is recorded with content-addressed ownership in install state. Matching
-starter files are adopted, existing custom implementations are left unowned, and
-later runs update only pristine managed files. Locally edited managed files are
-kept until you explicitly pass `--force`. The result is the official starter's
-shape, so the project then detects as `payload-website-starter`.
-
-Check a target project without changing files:
-
-```sh
-npx payload-components doctor
-```
-
-`doctor` validates the supported project shape, resolves which files carry the
-wiring, and checks required post-install scripts and any recorded
-`.payload-components/state.json` installs.
-
-#### Use it from a coding agent
-
-`payload-components mcp` runs a Model Context Protocol server over stdio so an
-agent can browse the registry, read a component's install contract, and preview
-what an install would change:
-
-```jsonc
-// .mcp.json / your client's MCP config
-{
-  "mcpServers": {
-    "payload-components": {
-      "command": "npx",
-      "args": ["-y", "payload-components", "mcp"],
-    },
-  },
-}
-```
-
-Every tool is read-only by design. The server answers _which block and what will
-it change_; installing stays an explicit `payload-components add` run in your
-shell, where the diff is visible and approvable.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Run This Repo Locally
-
-Use these steps to run the docs site and registry tooling.
-
-Prerequisites:
-
-- Node.js `^20.19.0 || >=22.12.0`
-- pnpm `^9 || ^10`
-
-Install and start:
-
-```sh
-git clone https://github.com/Ducksss/payload-components.git
-cd payload-components
-pnpm install --frozen-lockfile --ignore-workspace
-pnpm source:build
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-Useful local routes:
-
-| Route                         | Purpose                       |
-| ----------------------------- | ----------------------------- |
-| `/`                           | Product and docs homepage     |
-| `/docs`                       | Fumadocs documentation        |
-| `/components`                 | Component catalog             |
-| `/api/search`                 | Fumadocs search endpoint      |
-| `/llms.txt`, `/llms-full.txt` | AI-readable project summaries |
-| `/r/registry.json`            | Generated public registry     |
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Usage
-
-The installer runs five idempotent stages:
-
-1. Build or resolve the public registry item.
-2. Add component files through the shadcn registry.
-3. Install required dependencies.
-4. Apply Payload fragments for collection registration and renderer mapping.
-5. Run post-install scripts for generated types and the admin import map.
-
-Install state is written to `.payload-components/state.json` inside the
-consumer project, so partial installs are visible and retries can converge. A
-successful install also records normalized hashes for its owned source files;
-`diff`, `update`, and `remove` use that install-time baseline to distinguish an
-upstream release from a consumer edit.
-
-Demo scripts are separate and opt-in. `add <component> --demo` writes one only
-after those install stages and installed-state recording succeed;
-`seed <component>` rejects recorded partial installs and verifies the installed
-state, dependencies, manifest and registry-dependency files, and Payload
-fragments again. Its separate private demo-state file records the IDs the
-operator-run script may update.
-Neither command opens a database. The CLI prints the package-manager-specific
-`payload run` command that performs the database work in your project.
-
-### Recovering an interrupted install
-
-If a stage fails, the component is recorded as `partial` and `payload-components add`
-prints the failed stage, the last error, and the safest retry command. Fix the
-reported cause, then rerun the same command from the project root:
-
-```sh
-npx payload-components add hero-basic
-npx payload-components doctor
-```
-
-Review the git diff before editing anything by hand. The CLI distinguishes two
-kinds of files: _owned component files_ (listed from the manifest, such as the
-files under `src/blocks/HeroBasic/`) are safe to re-create by retrying, while
-_patched host files_ are project files the installer edited and may hold your own
-work — normally `src/blocks/RenderBlocks.tsx`, `src/collections/Pages/index.ts`,
-`package.json`, and the package manager lockfile.
-
-Prefer forward fixes over deletion. Do not delete patched host files to recover.
-Use `payload-components doctor` to see the failed stage, missing files, missing
-Payload fragments, and the owned/patched file breakdown before and after retrying.
-
-Useful checks while changing this repo:
-
-| Check                             | When to run                                                                                          |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `pnpm lint`                       | After code changes to catch lint errors.                                                             |
-| `pnpm source:build`               | After docs/frontmatter changes, or before type-checking a fresh checkout; compiles Fumadocs content. |
-| `pnpm exec tsc --noEmit`          | After TypeScript changes, to type-check without writing build output.                                |
-| `pnpm test:registry`              | After registry changes; checks schema validity and generated-output reproducibility.                 |
-| `pnpm run test:int`               | After installer, manifest, docs, or source changes; covers those contracts.                          |
-| `E2E_PORT=3100 pnpm run test:e2e` | After changes to site or browser behavior.                                                           |
-| `pnpm build`                      | Before shipping, to validate the production build.                                                   |
-
-Run the full local release gate before shipping:
-
-```sh
-pnpm test:release
-```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -659,6 +673,7 @@ information.
 
 [best-readme-template-url]: https://github.com/othneildrew/Best-README-Template
 [catalog-url]: https://www.payload-components.xyz/components
+[cli-reference-url]: https://www.payload-components.xyz/docs/cli
 [code-of-conduct-url]: ./CODE_OF_CONDUCT.md
 [contributing-url]: ./CONTRIBUTING.md
 [contributors-shield]: https://img.shields.io/github/contributors/Ducksss/payload-components.svg?style=for-the-badge
@@ -668,10 +683,12 @@ information.
 [fumadocs-url]: https://fumadocs.dev
 [good-first-issue-url]: https://github.com/Ducksss/payload-components/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22
 [help-wanted-url]: https://github.com/Ducksss/payload-components/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22
+[install-walkthrough-url]: https://www.payload-components.xyz/docs/install-walkthrough
 [issues-shield]: https://img.shields.io/github/issues/Ducksss/payload-components.svg?style=for-the-badge
 [issues-url]: https://github.com/Ducksss/payload-components/issues
 [license-shield]: https://img.shields.io/github/license/Ducksss/payload-components.svg?style=for-the-badge
 [license-url]: https://github.com/Ducksss/payload-components/blob/main/LICENSE
+[localization-guide-url]: https://www.payload-components.xyz/docs/localization
 [next-url]: https://nextjs.org
 [npm-shield]: https://img.shields.io/npm/v/payload-components.svg?style=for-the-badge
 [npm-url]: https://www.npmjs.com/package/payload-components
@@ -684,6 +701,7 @@ information.
 [roadmap-url]: ./ROADMAP.md
 [security-advisories-url]: https://github.com/Ducksss/payload-components/security/advisories
 [security-url]: ./SECURITY.md
+[seed-guide-url]: https://www.payload-components.xyz/docs/payload-cms-seed
 [shadcn-url]: https://ui.shadcn.com/docs/registry
 [site-url]: https://www.payload-components.xyz
 [stars-shield]: https://img.shields.io/github/stars/Ducksss/payload-components.svg?style=for-the-badge
@@ -692,25 +710,3 @@ information.
 [tailwind-url]: https://tailwindcss.com
 [typescript-url]: https://www.typescriptlang.org
 [vitest-url]: https://vitest.dev
-
-### Installer recovery and component releases
-
-`add` repairs the recorded component version. To move to a newer version, use
-`payload-components update <name>`: it validates the selected projects and saves
-source, host files, package files and ownership before replacement. A failed
-update restores that snapshot. If the process was interrupted, preserve any edits
-made afterward, then run `payload-components update --recover` before retrying.
-The backup is `.payload-components/update-backup.json`. Package installation and
-custom generator side effects outside the saved paths may need reconciliation.
-Unreadable install state fails closed; restore it from a known-good backup instead
-of deleting it and losing file ownership.
-
-Maintainers: changing shipped component source (including a shared file) requires
-a version and changelog bump for every affected component, then
-`pnpm registry:snapshot`. Existing published source baselines cannot be overwritten.
-
-New `init --scaffold` Pages collections restrict anonymous reads to published
-Pages. Managed, unedited scaffolds pick up the fix when `init --scaffold` runs
-again. Unmanaged or locally edited collections are preserved; if yours uses
-`read: () => true`, apply the updated callback from
-`payload-components/source/base/collections/Pages/index.ts` to protect drafts.

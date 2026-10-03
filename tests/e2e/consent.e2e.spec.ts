@@ -1,10 +1,10 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
-import { mountGoogleTagOffline, stubGoogleOrigins } from './consent'
+import { mountGoogleTagOffline, stubGoogleOrigins } from './support/consent'
 
 /* The consent gate, exercised from a clean profile. Every other spec grants
- * consent up-front (tests/e2e/consent.ts), so this file is the only place the
+ * consent up-front (tests/e2e/support/consent.ts), so this file is the only place the
  * undecided state is covered — keep it that way, and keep it strict.
  *
  * The gate is deliberately two-tier, and these specs pin the split: Vercel
@@ -12,7 +12,7 @@ import { mountGoogleTagOffline, stubGoogleOrigins } from './consent'
  * (own cookies) and PostHog (pc_distinct_id) wait for an explicit opt-in.
  *
  * GA4 also waits for a production host, so every test here mounts the tag
- * offline (tests/e2e/consent.ts). Without that, each absence asserted below
+ * offline (tests/e2e/support/consent.ts). Without that, each absence asserted below
  * would pass on localhost for the wrong reason. One test leaves the hook out
  * to pin the host gate itself. */
 

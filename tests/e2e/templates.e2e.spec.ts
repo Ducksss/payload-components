@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test'
 
-import { grantConsent, mountGoogleTagOffline } from './consent'
+import { grantConsent, mountGoogleTagOffline } from './support/consent'
 
 import {
   templateDetailHref,

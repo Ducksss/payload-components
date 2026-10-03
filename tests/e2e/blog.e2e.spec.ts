@@ -3,7 +3,7 @@ import path from 'node:path'
 
 import { expect, test } from '@playwright/test'
 
-import { grantConsent } from './consent'
+import { grantConsent } from './support/consent'
 
 import { blogTitle } from '../../src/lib/site'
 

@@ -29,18 +29,25 @@ The Payload block code under `payload-components/source/` is **target code** —
 
 ## Repo map
 
-| Path                                                       | Purpose                                                                                                                                                                                                                      |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/app/`                                                 | Routes: `/` (landing), `/docs/[[...slug]]` (Fumadocs), `/components` (catalog), `/about`, `/api/search`, `llms.txt` · `llms-full.txt` · `llms.mdx` (AI surfaces), `og/` + `opengraph-image`                                  |
-| `src/components/site/`                                     | Site UI: `SiteHeader`/`SiteFooter`, `HeroProductFrame` + `HeroInstallReplay` (the install replay), `WiringLedger`, `ComponentSpecimen`/`ComponentCard`/`ComponentGrid`, `Faq`, `CommandCopyButton`, `section.tsx`            |
-| `src/components/site/sections/`                            | Landing sections (Hero, StackBand, Tax, Workflow, Wiring, Catalog, Faq, CommunityCta). `src/app/page.tsx` just orchestrates these                                                                                            |
-| `src/components/site/demos/`                               | **Demo twins** — backend-free specimens that mirror installable source styling without importing consumer-runtime code (see Core flows)                                                                                      |
-| `src/lib/site.ts`                                          | Site copy/data (hero text, FAQ, landing-section headings, terminal demo lines). Component catalog editorial context lives in `src/lib/component-catalog.ts`; `src/generated/component-catalog.json` projects manifest facts. |
-| `content/docs/`                                            | Fumadocs MDX (index, architecture, installation, registry, contributing, `components/*`); page tree via `meta.json`                                                                                                          |
-| `payload-components/`                                      | `registry.json` (source shadcn registry), `source/` (component target code), `manifests/*.json` (wiring contract), `schema/`, `support-matrix.json`, `templates/*.json` (**generated** template install contracts)           |
-| `tools/payload-components/` + `bin/payload-components.mjs` | The published CLI plus repository-only contributor routing (`new`); project detection, fragment patching, install state, registry build/check                                                                                |
-| `tests/`                                                   | `e2e/` (Playwright) + `int/` (Vitest) — the contract (below)                                                                                                                                                                 |
-| `public/r/`                                                | Generated public registry — **gitignored build output**, never hand-edit                                                                                                                                                     |
+| Path                                                       | Purpose                                                                                                                                                                                                                                                        |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/[locale]/`                                        | Page routes: `/` (landing), `/docs/[[...slug]]` (Fumadocs), `/components` (catalog) + `/components/preview/<slug>`, `/templates`, `/blog`, `/about`, `/brand-guide`, `/privacy`, `/roadmap/editorial`, `llms.mdx` (per-page markdown), `og/` image routes      |
+| `src/app/`                                                 | Locale-free routes: `api/search`, `llms.txt` · `llms-full.txt` (AI surfaces), `feed.xml`, `sitemap.ts`, `robots.ts`, `opengraph-image`; `globals.css` + `fumadocs.css`; `_fonts/` (vendored OG fonts)                                                          |
+| `src/components/site/`                                     | Site UI: `SiteHeader`/`SiteFooter`, `HeroProductFrame` + `HeroInstallReplay` (the install replay), `WiringLedger`, `ComponentSpecimen`/`ComponentCard`/`ComponentGrid`, `Faq`, `CommandCopyButton`, `section.tsx`                                              |
+| `src/components/site/sections/`                            | Landing sections (Hero, StackBand, Tax, Workflow, Wiring, Catalog, Faq, CommunityCta). `src/app/[locale]/page.tsx` just orchestrates these                                                                                                                     |
+| `src/components/site/demos/`                               | **Demo twins** — backend-free specimens that mirror installable source styling without importing consumer-runtime code (see Core flows)                                                                                                                        |
+| `src/components/site/templates/`                           | Template showcase renderer plus one folder per concept (sections + its own `theme.css`)                                                                                                                                                                        |
+| `src/lib/site.ts`                                          | Site copy/data (hero text, FAQ, landing-section headings, terminal demo lines). Component catalog editorial context lives in `src/lib/component-catalog.ts`; `src/generated/component-catalog.json` projects manifest facts.                                   |
+| `src/lib/templates/`                                       | Template concept recipes; `pnpm templates:build` projects them into `payload-components/templates/*.json`                                                                                                                                                      |
+| `messages/` + `src/i18n/`                                  | Site translation catalogs (English canonical) and locale routing — see "Site translations" below and `messages/README.md`                                                                                                                                      |
+| `content/docs/`                                            | Fumadocs MDX, grouped in `meta.json` into Get Started, Components (`components/*`), Guides, Reference, and Project                                                                                                                                             |
+| `content/blog/`                                            | Blog posts (MDX); covers and figures are generated by `tools/blog`                                                                                                                                                                                             |
+| `payload-components/`                                      | `registry.json` (source shadcn registry), `source/` (component target code), `manifests/*.json` (wiring contract), `schema/`, `support-matrix.json`, `templates/*.json` (**generated** template install contracts), `component-template/` (scaffold for `new`) |
+| `tools/payload-components/` + `bin/payload-components.mjs` | The published CLI plus repository-only contributor routing (`new`); project detection, fragment patching, install state, registry build/check                                                                                                                  |
+| `tools/` (other)                                           | `blog/` (figures + covers), `templates/` (template contracts + captures), `i18n/` (catalog checks, Crowdin), `ci/` (PR change classifier), `showcase/`, `run-e2e.ts`                                                                                           |
+| `tests/`                                                   | `e2e/` (Playwright; helpers in `e2e/support/`) + `int/` (Vitest) — the contract (below)                                                                                                                                                                        |
+| `public/r/`                                                | Generated public registry — **gitignored build output**, never hand-edit                                                                                                                                                                                       |
+| `rfcs/`, `docs/`                                           | Design proposals, and dated maintainer records (audits, historical plans) — context, not current guidance                                                                                                                                                      |
 
 ## Core flows
 
@@ -96,8 +103,8 @@ Two bookkeeping rules make the after-the-fact wrap safe. `recordLocalizedInstall
 
 - _payload-components-required_ page blocks (`hero-basic`, `feature-grid-basic`) — need the full wiring above.
 - _Posts-aware_ blocks and components — Collection Query is installed and wired
-  as a Pages block. Post Hero (`post-hero`) and Author Card (`author-card`) are explicit
-  file-only article template components under `source/components/`, composed with public
+  as a Pages block. Post Hero (`post-hero`), Author Card (`author-card`), and Newsletter Callout
+  (`newsletter-callout`) are explicit file-only article template components under `source/components/`, composed with public
   React props. Their manifests declare `installMode: 'file-only'`, empty fragments,
   empty post-install tasks, and empty recovery paths. They support direct shadcn delivery
   and tracked CLI installs in supported projects; they add no admin fields or Pages wiring.
@@ -120,6 +127,9 @@ Two bookkeeping rules make the after-the-fact wrap safe. `recordLocalizedInstall
 | Landing layout / visuals | `src/components/site/sections/` + `src/app/globals.css`                                                                                                                                                                                                                                                                                                                                                                                             |
 | Docs content             | `content/docs/`                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | CLI behavior             | `tools/payload-components/`                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Blog post                | `content/blog/<slug>.mdx`; regenerate its figures and cover with the `pnpm blog:visuals*` scripts (`tools/blog/`)                                                                                                                                                                                                                                                                                                                                   |
+| Template concept         | `src/lib/templates/` + `src/components/site/templates/<slug>/`, then `pnpm templates:build`                                                                                                                                                                                                                                                                                                                                                         |
+| Site translations        | `messages/en.json` (English is canonical; see `messages/README.md`)                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ## The contract you must not break
 
@@ -153,40 +163,10 @@ If you add a `landingSections` key, render its `<h2>` in the same change. Most c
 
 ## shadcn registry directory listing
 
-**Status: listed.** The registry is published under the `@payload-components` namespace and is live in
-the [official shadcn registry directory](https://ui.shadcn.com/docs/directory) — merged upstream in
-[shadcn-ui/ui#11006](https://github.com/shadcn-ui/ui/pull/11006) (2026-06-24), so people can discover it
-and run `shadcn add @payload-components/<item>`. `pnpm registry:validate` schema-checks every item
-against the vendored shadcn schemas (`tools/payload-components/schemas/`) and runs inside the release gate.
-
-The live entry in `apps/v4/registry/directory.json` upstream:
-
-```json
-{
-  "name": "@payload-components",
-  "homepage": "https://www.payload-components.xyz",
-  "url": "https://www.payload-components.xyz/r/{name}.json",
-  "description": "MIT registry of typed Payload CMS blocks for Payload v3 + Next.js. Each block installs as reviewable source; the companion CLI also wires collection config, RenderBlocks, types, and the admin import map.",
-  "logo": "<svg …/>"
-}
-```
-
-**This entry is a copy, not a feed** — upstream stores those five fields verbatim, so nothing here
-propagates. Changing the homepage, the description, or the logomark means another PR to `shadcn-ui/ui`.
-
-**Known drift:** the `logo` upstream is still the retired `P` mark. The logomark became two keyed blocks
-on 2026-07-31 (`public/favicon.svg` is canonical), after the directory PR merged. Worth a follow-up PR;
-it is cosmetic and only visible on their directory page.
-
-The URLs must resolve before any such PR — their CI runs `validate:registries` against the live site:
-
-```bash
-curl -fsSL https://www.payload-components.xyz/r/registry.json    # 200
-curl -fsSL https://www.payload-components.xyz/r/hero-basic.json   # 200, embeds file content
-```
-
-Entries are a flat JSON array sorted alphabetically by `name`; keep the literal `{name}` placeholder in
-`url`. `logo` is not schema-required but every entry carries one, so treat it as required in practice.
+The registry is listed under `@payload-components` in the official shadcn directory. That upstream
+entry is a verbatim copy, not a feed: changing the homepage, description, or logomark means a PR to
+`shadcn-ui/ui`. The entry, its known logo drift, and the pre-PR URL checks are in
+`payload-components/README.md` → "shadcn directory listing".
 
 ## Variants and Shared Code
 
@@ -203,7 +183,7 @@ This is the canonical model for every component family. `content/docs/architectu
 Every component doc page (`content/docs/components/<slug>.mdx`) follows one fixed shape — a shadcn-style
 component page. Match it exactly when adding or editing a component; do not invent per-component layouts.
 
-- **Header is automatic.** `src/app/docs/[[...slug]]/page.tsx` detects `/docs/components/*` and renders
+- **Header is automatic.** `src/app/[locale]/docs/[[...slug]]/page.tsx` detects `/docs/components/*` and renders
   `ComponentDocHeader` — title + description + at-a-glance chips (`v{version} · Page block · {Family}
 family · {target}`, from `componentEntries`) on the left; Copy Page + prev/next arrows (catalog order)
   on the right. The component **must** be in `componentEntries` (`src/lib/component-catalog.ts`). Do **not** add an `<h1>` or
@@ -304,10 +284,16 @@ pnpm build
 
 ## Deeper docs
 
-- `README.md` — quickstart and what-lives-where.
-- `CONTRIBUTING.md` — local setup, good first contributions, PR checklist.
-- `payload-components/README.md` — the registry/manifest contract in depth.
-- `content/docs/{architecture,installation,registry}.mdx` — the user-facing system docs.
+- `README.md` — quickstart, CLI usage, and the component inventory (also the npm package page).
+- `CONTRIBUTING.md` — local setup, focused checks, visual baselines, PR checklist.
+- `payload-components/README.md` — the registry/manifest contract, verification layers, and the shadcn directory listing.
+- `payload-components/component-template/README.md` — the add-a-component workflow and accessibility bar.
+- `payload-components/PROVENANCE.md` — upstream layout provenance and the tailark/blocks drift ledger.
+- `messages/README.md` — site translation and publication policy.
+- `DESIGN.md` — design-system tokens and visual rules; `src/app/globals.css` is canonical for values.
+- `ROADMAP.md` — current priorities and what is not planned.
+- `content/docs/{architecture,installation,registry,cli,operations}.mdx` — the user-facing system docs and the release runbook.
+- `rfcs/` and `docs/` — design proposals and dated maintainer records; read them for history, not for current rules.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

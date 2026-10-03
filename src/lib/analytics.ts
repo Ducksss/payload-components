@@ -82,7 +82,7 @@ function isAnalyticsHost() {
 
 /* GA4 is held to the same rule. The e2e suite still has to prove the consent
  * gate mounts the tag, so on localhost it sets __allowGoogleTagOnTestHost. Only
- * tests/e2e/consent.ts sets it, after routing every Google origin to a local
+ * tests/e2e/support/consent.ts sets it, after routing every Google origin to a local
  * stub, so a test can mount the tag but never reach the production property. */
 export function isGoogleTagHost() {
   if (typeof window === 'undefined') return false

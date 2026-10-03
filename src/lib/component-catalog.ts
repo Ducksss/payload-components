@@ -870,7 +870,7 @@ export const componentFamilies = {
   posts: {
     countLabel: 'Installable',
     description:
-      'File-only article surfaces composed in your post template. Post Hero and Author Card accept public content as props; Collection Query handles Pages-based article listings.',
+      'File-only article surfaces composed in your post template. Post Hero, Author Card, and Newsletter Callout accept public content as props; Collection Query handles Pages-based article listings.',
     name: 'Post components',
   },
 } as const

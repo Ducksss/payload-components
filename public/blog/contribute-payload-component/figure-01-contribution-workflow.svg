@@ -272,9 +272,9 @@
 </g>
   </g>
   <rect class="footer-paper" x="36" y="546" width="1128" height="105" rx="2" />
-  <g data-journal-part="provenance" data-provenance="payload-components/templates/component-template/README.md">
+  <g data-journal-part="provenance" data-provenance="payload-components/component-template/README.md">
     <text class="footer-label" x="48" y="571">PROVENANCE</text>
-    <text class="provenance-line" x="48" y="590">payload-components/templates/component-template/README.md</text>
+    <text class="provenance-line" x="48" y="590">payload-components/component-template/README.md</text>
   </g>
   <g data-journal-part="evidence" data-evidence-excerpt="Every component ships as one bundle — source, manifest, registry entry, demo twin, catalog/ledger sync,
 doc page, and installer tests, together. Work in this order:

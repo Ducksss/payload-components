@@ -32,10 +32,13 @@ with a `typescript@^5.0.0` peer range.
 
 ```sh
 pnpm install --frozen-lockfile --ignore-workspace
+pnpm source:build
 pnpm dev
 ```
 
-Open `http://localhost:3000`.
+Open `http://localhost:3000`. `pnpm source:build` compiles `content/docs` into
+`.source/`; rerun it in a fresh clone or worktree before `pnpm dev` or
+`pnpm exec tsc --noEmit`, or types fail on the missing generated source.
 
 The docs site does not require Postgres, Payload admin routes, collections,
 globals, a database adapter, or `PAYLOAD_SECRET`. Copy `.env.example` to `.env`
@@ -53,9 +56,15 @@ only when you need to override site metadata URLs or the GitHub content branch.
 - Do not reintroduce Payload runtime routes, database adapters, waitlist APIs,
   or `PAYLOAD_SECRET` requirements for the docs site.
 - Generated registry output belongs in ignored `public/r`.
+- Start a new component with `pnpm payload-components new <slug>`. It writes the
+  mechanical files and prints the decisions it leaves to you; the full workflow is
+  in `payload-components/component-template/README.md`.
 - New or edited components must meet the accessibility checklist in
-  `payload-components/templates/component-template/README.md` (label association,
+  `payload-components/component-template/README.md` (label association,
   `autocomplete` tokens, reduced-motion, and accessible link/image names).
+- Changing shipped component source, including a shared file, requires a version
+  and changelog bump in every affected manifest, then `pnpm registry:snapshot`.
+  Published source baselines are immutable; the snapshot refuses to overwrite one.
 
 When editing Payload target code, use real Payload types, keep block configs
 explicit, preserve optional wrapper props, pass `req` to nested Payload
@@ -138,7 +147,7 @@ must also pass the Linux gate.
 
 `templates-a11y` runs axe (WCAG 2.1 A/AA) over the `/templates` gallery and over
 every concept's detail page and full preview at 1280 and 390. It is its own
-Playwright batch and is data-driven from `src/lib/templates/registry`, so
+Playwright batch and is data-driven from `src/lib/templates/registry.ts`, so
 registering a concept is all it takes to cover it. Two things about it are easy
 to get wrong when extending it:
 

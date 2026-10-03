@@ -33,5 +33,10 @@
     "next.config.mjs",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "dist", "payload-components/source", "payload-components/templates"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "payload-components/source",
+    "payload-components/component-template"
+  ]
 }

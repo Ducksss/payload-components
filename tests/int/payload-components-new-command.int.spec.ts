@@ -41,8 +41,8 @@ const createScaffoldRoot = async () => {
      against, and one real block so the dbName uniqueness scan has something to
      collide with. */
   await cp(
-    path.join(repoRoot, 'payload-components', 'templates', 'component-template'),
-    path.join(root, 'payload-components', 'templates', 'component-template'),
+    path.join(repoRoot, 'payload-components', 'component-template'),
+    path.join(root, 'payload-components', 'component-template'),
     { recursive: true },
   )
   await cp(

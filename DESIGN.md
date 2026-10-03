@@ -51,7 +51,7 @@ A maintainer's workbench after a careful install: the source diff, terminal tran
 
 - **Audience and primary job:** Payload CMS and Next.js developers choosing, installing, and auditing source-distributed blocks.
 - **Target market(s) and evidence:** Global developer audience. Supported locales follow observed site traffic; geography never determines language automatically.
-- **Locale(s) and language policy:** English is canonical. The switcher exposes 22 autonyms. Core catalogues may be machine translated and visibly labelled; long-form untranslated resources show English fallback. Non-English resources remain `noindex` until a native reviewer marks that exact path reviewed in `messages/status.json`.
+- **Locale(s) and language policy:** English is canonical and currently the only published locale (`publishedSiteLocales` in `src/i18n/config.ts`), so the language switcher is hidden; 21 saved draft catalogues stay inactive (see `messages/README.md`). Once another locale is published, the switcher lists autonyms, core catalogues may be machine translated and visibly labelled, long-form untranslated resources show English fallback, and non-English resources remain `noindex` until a native reviewer marks that exact path reviewed in `messages/status.json`.
 - **Usage scene:** Desktop-first technical evaluation with frequent mobile reference use; information is dense but must remain scannable and copyable.
 - **Register:** Brand-editorial on landing and templates; familiar documentation/product utility in docs, catalog filters, and controls.
 - **Memorable signature:** Dark terminal product frames and wiring ledgers that make “wired, not pasted” tangible.
