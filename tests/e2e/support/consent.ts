@@ -1,4 +1,4 @@
-import type { BrowserContext } from '@playwright/test'
+import { expect, type BrowserContext, type Page } from '@playwright/test'
 
 /* The site mounts no analytics until a visitor opts in, and shows a consent
  * banner while the choice is undecided. Specs that assert on the analytics
@@ -52,4 +52,14 @@ export async function mountGoogleTagOffline(context: BrowserContext) {
   await context.addInitScript(() => {
     window.__allowGoogleTagOnTestHost = true
   })
+}
+
+/* The banner ships in the server HTML, so for an undecided visitor it is visible
+ * before hydration, marked data-consent-banner="pending" until React has read
+ * consent. Visibility alone therefore no longer proves the page has hydrated.
+ * Specs that need the live banner (axe runs, assertions about what an undecided
+ * visit mounts) wait for the pending value to go. Otherwise they could pass
+ * against the pre-hydration page, where nothing has had a chance to mount. */
+export async function expectConsentBannerReady(page: Page) {
+  await expect(page.locator('[data-consent-banner=""]')).toBeVisible()
 }
