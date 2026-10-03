@@ -141,7 +141,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     primary: {
       kind: 'source',
       label: 'Renderer map insertion',
-      path: 'tools/payload-components/project.ts',
+      path: 'tools/payload-components/payload-fragments.ts',
       anchor: 'const propertyLine',
       take: 11,
     },
@@ -287,7 +287,7 @@ const catalogEntries: readonly BlogVisualEntry[] = [
     primary: {
       kind: 'source',
       label: 'Scoped text patcher',
-      path: 'tools/payload-components/project.ts',
+      path: 'tools/payload-components/payload-fragments.ts',
       anchor: 'applyRenderBlocksFragment',
       take: 11,
     },
