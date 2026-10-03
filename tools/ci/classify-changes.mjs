@@ -4,11 +4,13 @@ import { pathToFileURL } from 'node:url'
 
 // Only skip known site/documentation changes. Unknown paths fail conservatively
 // into consumer coverage, including tooling, manifests, workflows and lockfiles.
+// Add a path only when neither the published CLI nor the fresh-Payload smoke reads it.
+const siteOnlyPrefix = /^(src|content|messages|public|docs|rfcs|tests\/e2e)\//
+const siteOnlyRootFile =
+  /^((README|CONTRIBUTING|AGENTS|CLAUDE|ROADMAP|DESIGN|SECURITY|CODE_OF_CONDUCT)\.md|LICENSE)$/
+
 export const needsConsumerChecks = (files) =>
-  files.some((file) => {
-    if (/^(src\/|content\/|messages\/|public\/|docs\/|tests\/e2e\/)/.test(file)) return false
-    return !/^(README\.md|CONTRIBUTING\.md|AGENTS\.md|CLAUDE\.md|LICENSE)$/.test(file)
-  })
+  files.some((file) => !siteOnlyPrefix.test(file) && !siteOnlyRootFile.test(file))
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const files = execFileSync(
