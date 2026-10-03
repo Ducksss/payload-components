@@ -57,7 +57,7 @@ const canonicalDiagramPath = (figurePath: string) =>
   /^\/blog\/[a-z0-9-]+\/figure-\d{2}-[a-z0-9-]+\.svg$/.test(figurePath) &&
   path.posix.normalize(figurePath) === figurePath
 
-export const effectiveDiagramEdges = (
+const effectiveDiagramEdges = (
   definition: Pick<DiagramDefinition, 'edges' | 'rows'>,
 ): readonly DiagramEdge[] => {
   if (definition.edges) return definition.edges
@@ -766,7 +766,7 @@ export const renderDiagramSvg = (diagram: HydratedDiagram): string => {
 
 const themeColors = new Set(Object.values(journalTheme).map((color) => color.toLowerCase()))
 
-export const validateRenderedDiagram = ({ diagram, svg }: RenderedDiagram): void => {
+const validateRenderedDiagram = ({ diagram, svg }: RenderedDiagram): void => {
   const context = diagram.path
   const bytes = Buffer.byteLength(svg)
 

@@ -21,7 +21,7 @@ export type CoverArtifacts = {
   secondary: CoverArtifact
 }
 
-const escapeHtml = (value: string) =>
+export const escapeHtml = (value: string) =>
   value
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
@@ -29,7 +29,8 @@ const escapeHtml = (value: string) =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;')
 
-const seriesLabel = (series: BlogVisualEntry['series']) => series.replaceAll('-', ' ').toUpperCase()
+export const seriesLabel = (series: BlogVisualEntry['series']) =>
+  series.replaceAll('-', ' ').toUpperCase()
 
 const evidenceDensity = (lineCount: number) => {
   if (lineCount <= 6) return 'code-sheet--roomy'

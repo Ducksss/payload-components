@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import sharp, { type OverlayOptions } from 'sharp'
 
 import { blogVisualCatalog } from './visual-system/catalog'
+import { escapeXml } from './visual-system/diagram-template'
 
 import type { FigureMode } from './visual-system/types'
 
@@ -42,14 +43,6 @@ export type ContactSheetResult = {
   outputPath: string
   width: number
 }
-
-const escapeXml = (value: string) =>
-  value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&apos;')
 
 const cellWidth = () => Math.floor((pageWidth - outerPadding * 2 - gap * (columns - 1)) / columns)
 

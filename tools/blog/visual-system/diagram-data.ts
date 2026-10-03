@@ -3,7 +3,7 @@ import { blogVisualCatalog } from './catalog'
 
 import type { BlogVisualSeries, FigureMode } from './types'
 
-export type DiagramNodeKind = 'code' | 'standard' | 'terminal'
+type DiagramNodeKind = 'code' | 'standard' | 'terminal'
 
 export type DiagramNode = {
   body: string

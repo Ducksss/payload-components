@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { chromium, type Browser, type Locator, type Page } from '@playwright/test'
 import sharp from 'sharp'
 
+import { escapeHtml, seriesLabel } from './visual-system/cover-template'
 import { journalThemeCss } from './visual-system/theme'
 
 const repoRoot = path.resolve(import.meta.dirname, '../..')
@@ -487,16 +488,6 @@ export const captures = [
     title: 'The mirror is a testable repository contract',
   },
 ] as const satisfies readonly FigureCapture[]
-
-const escapeHtml = (value: string) =>
-  value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;')
-
-const seriesLabel = (series: CaptureSeries) => series.replaceAll('-', ' ').toUpperCase()
 
 const dataUrlPattern = /^data:image\/png;base64,[A-Za-z0-9+/]+=*$/
 
@@ -1062,20 +1053,14 @@ const captureCatalogCard = async (browser: Browser, baseURL: string, panel: Cata
   }
 }
 
-export const clipCaptureAroundTarget = async (
+const clipCaptureAroundTarget = async (
   page: Page,
   target: ReturnType<Page['locator']>,
   {
-    boundary,
-    contentEnd,
-    contentStart,
     height,
     horizontalPadding = 10,
     verticalPadding = 58,
   }: {
-    boundary?: Locator
-    contentEnd?: Locator
-    contentStart?: Locator
     height: number
     horizontalPadding?: number
     verticalPadding?: number
@@ -1083,80 +1068,8 @@ export const clipCaptureAroundTarget = async (
 ) => {
   await target.scrollIntoViewIfNeeded()
   const box = await target.boundingBox()
-  const boundaryBox = boundary ? await boundary.boundingBox() : null
-  const contentStartBox = contentStart ? await contentStart.boundingBox() : null
-  const contentEndBox = contentEnd ? await contentEnd.boundingBox() : null
   const viewport = page.viewportSize()
   if (!box || !viewport) throw new Error('Capture target has no measurable bounds.')
-  if (boundary && !boundaryBox) {
-    throw new Error('Capture boundary has no measurable bounds.')
-  }
-  if ((contentStart && !contentStartBox) || (contentEnd && !contentEndBox)) {
-    throw new Error('Capture content bounds have no measurable bounds.')
-  }
-
-  if (boundary && boundaryBox) {
-    const boundaryPng = await boundary.screenshot({
-      animations: 'disabled',
-      type: 'png',
-    })
-    const metadata = await sharp(boundaryPng).metadata()
-    if (!metadata.width || !metadata.height) {
-      throw new Error('Capture boundary screenshot has no measurable dimensions.')
-    }
-
-    let contentTop = Math.max(0, (contentStartBox?.y ?? boundaryBox.y) - boundaryBox.y)
-    let contentBottom = Math.min(
-      boundaryBox.height,
-      (contentEndBox
-        ? contentEndBox.y + contentEndBox.height
-        : boundaryBox.y + boundaryBox.height) - boundaryBox.y,
-    )
-    const raw = await sharp(boundaryPng).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
-    const darkRows: number[] = []
-    for (let row = 0; row < raw.info.height; row += 1) {
-      let dark = 0
-      let sampled = 0
-      for (let column = 0; column < raw.info.width; column += 4) {
-        const offset = (row * raw.info.width + column) * raw.info.channels
-        const red = raw.data[offset]
-        const green = raw.data[offset + 1]
-        const blue = raw.data[offset + 2]
-        if (red < 70 && green < 70 && blue < 80) dark += 1
-        sampled += 1
-      }
-      if (sampled > 0 && dark / sampled >= 0.35) darkRows.push(row)
-    }
-    if (darkRows.length > 0) {
-      const scaleY = metadata.height / boundaryBox.height
-      const darkTop = darkRows[0] / scaleY
-      const darkBottom = (darkRows.at(-1)! + 1) / scaleY
-      contentTop = Math.max(contentTop, darkTop)
-      contentBottom = Math.min(contentBottom, darkBottom)
-    }
-    const contentHeight = Math.max(1, contentBottom - contentTop)
-    const cssHeight = Math.min(height, contentHeight)
-    const cssWidth = Math.min(boundaryBox.width, Math.max(1, box.width + horizontalPadding * 2))
-    const relativeTop = box.y - boundaryBox.y - verticalPadding
-    const relativeLeft = box.x - boundaryBox.x - horizontalPadding
-    const cssTop = Math.min(
-      Math.max(contentTop, relativeTop),
-      Math.max(contentTop, contentBottom - cssHeight),
-    )
-    const cssLeft = Math.min(Math.max(0, relativeLeft), Math.max(0, boundaryBox.width - cssWidth))
-    const scaleX = metadata.width / boundaryBox.width
-    const scaleY = metadata.height / boundaryBox.height
-    const extract = {
-      height: Math.max(1, Math.min(metadata.height, Math.round(cssHeight * scaleY))),
-      left: Math.max(0, Math.round(cssLeft * scaleX)),
-      top: Math.max(0, Math.round(cssTop * scaleY)),
-      width: Math.max(1, Math.min(metadata.width, Math.round(cssWidth * scaleX))),
-    }
-    extract.width = Math.min(extract.width, metadata.width - extract.left)
-    extract.height = Math.min(extract.height, metadata.height - extract.top)
-
-    return sharp(boundaryPng).extract(extract).png().toBuffer()
-  }
 
   const x = Math.max(0, box.x - horizontalPadding)
   const y = Math.max(0, box.y - verticalPadding)
@@ -1174,21 +1087,14 @@ export const clipCaptureAroundTarget = async (
   })
 }
 
-export function selectDocsCodeLineWindow(
-  lines: readonly DocsCodeLine[],
-  anchorIndex: number,
-  maxRows = docsCodeCanvas.maxRows,
-) {
+export function selectDocsCodeLineWindow(lines: readonly DocsCodeLine[], anchorIndex: number) {
   if (!Number.isInteger(anchorIndex) || anchorIndex < 0 || anchorIndex >= lines.length) {
     throw new Error(
       `Docs-code anchor index ${anchorIndex} is outside ${lines.length} source lines.`,
     )
   }
-  if (!Number.isInteger(maxRows) || maxRows < 1) {
-    throw new Error(`Docs-code maxRows must be a positive integer, received ${maxRows}.`)
-  }
 
-  const rowCount = Math.min(maxRows, lines.length)
+  const rowCount = Math.min(docsCodeCanvas.maxRows, lines.length)
   let start = Math.max(0, anchorIndex - Math.floor((rowCount - 1) / 2))
   const end = Math.min(lines.length, start + rowCount)
   start = Math.max(0, end - rowCount)
