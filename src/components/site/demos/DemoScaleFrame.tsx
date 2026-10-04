@@ -7,7 +7,9 @@ import { cn } from '@/utilities/ui'
  * so the block renders with its real desktop type ramp at a believable
  * "site width" while fitting any card or panel. The caller sets the
  * visible height via className; transformed content contributes no
- * layout height, so the absolute inner layer is simply clipped. */
+ * layout height, so the absolute inner layer is simply clipped.
+ * preview-scope keeps the twin on the component tokens inside branded chrome
+ * (globals.css section 4). */
 export function DemoScaleFrame({
   children,
   className,
@@ -18,7 +20,10 @@ export function DemoScaleFrame({
   return (
     <div
       aria-hidden="true"
-      className={cn('pointer-events-none relative select-none overflow-hidden', className)}
+      className={cn(
+        'preview-scope pointer-events-none relative select-none overflow-hidden',
+        className,
+      )}
     >
       <div className="absolute left-0 top-0 w-[200%] origin-top-left scale-[0.5]">{children}</div>
     </div>

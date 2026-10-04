@@ -30,8 +30,11 @@ export function SiteFooter() {
     'Registry JSON': t('registry'),
   }
 
+  /* data-brand: site chrome on every route that has a footer, so it wears the
+     Datasheet brand (globals.css section 4) — the hairline and accent links
+     below read --brand, which is trace green in here. */
   return (
-    <footer className="border-t border-border bg-muted/40">
+    <footer data-brand="datasheet" className="border-t border-border bg-muted/40">
       {/* Quiet emerald hairline tying the footer to the brand accent. */}
       <div
         aria-hidden="true"
@@ -65,7 +68,7 @@ export function SiteFooter() {
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             {footerColumns.map((column, columnIndex) => (
               <div key={column.title}>
-                <h3 className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-muted-foreground">
+                <h3 className="ds-label text-muted-foreground">
                   {columnIndex === 0
                     ? t('product')
                     : columnIndex === 1
@@ -136,9 +139,7 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted-foreground">{t('license')}</p>
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-            {t('stack')}
-          </p>
+          <p className="ds-label text-muted-foreground">{t('stack')}</p>
         </div>
       </div>
     </footer>

@@ -69,7 +69,37 @@
      category while clearing WCAG AA. */
   --syntax-variable: #953800;
 
+  /* Datasheet brand layer: the site chrome's accent (section 4 maps it onto
+     --brand inside [data-brand]). Trace is #0B6B4F, the drawing's one green:
+     6.5:1 on white, so it is safe for text. Tints share its hue; --wire is
+     the unlit copper and silkscreen of the drawings, ink at 24% on paper. */
+  --trace: oklch(47% 0.094 166.5deg);
+  --trace-50: oklch(97.6% 0.012 166.5deg);
+  --trace-100: oklch(94.6% 0.026 166.5deg);
+  --trace-200: oklch(89% 0.045 166.5deg);
+  --trace-600: oklch(40% 0.075 166.5deg);
+  --wire: color-mix(in oklab, var(--foreground) 24%, var(--background));
+
+  /* The mark is two blocks, so it keeps the blocks' emerald wherever it sits.
+     Resolved here, before any brand scope recolours --brand for its chrome. */
+  --mark: var(--brand);
+
   --radius: 0.625rem;
+
+  /* The component tokens, snapshotted for .preview-scope (section 4) to
+     restore inside branded chrome. Custom properties inherit their computed
+     value, so each snapshot carries exactly what :root resolves — including
+     the lab() form the build compiles these oklch() colours to. A restore
+     written as oklch() would be the same colour on a different conversion
+     path, a level or two off on screen. */
+  --component-font-sans: var(--font-sans);
+  --component-font-mono: var(--font-mono);
+  --component-brand: var(--brand);
+  --component-brand-50: var(--brand-50);
+  --component-brand-100: var(--brand-100);
+  --component-brand-200: var(--brand-200);
+  --component-brand-600: var(--brand-600);
+  --component-radius: var(--radius);
 
   /* The shared SiteHeader sits above the Fumadocs layout; this is the
      supported offset hook (same mechanism as fumadocs' <Banner>). */
@@ -135,6 +165,13 @@
   --color-brand-100: var(--brand-100);
   --color-brand-200: var(--brand-200);
   --color-brand-600: var(--brand-600);
+  --color-trace: var(--trace);
+  --color-trace-50: var(--trace-50);
+  --color-trace-100: var(--trace-100);
+  --color-trace-200: var(--trace-200);
+  --color-trace-600: var(--trace-600);
+  --color-wire: var(--wire);
+  --color-mark: var(--mark);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
@@ -184,6 +221,12 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --font-serif: var(--font-instrument-serif), ui-serif, Georgia, 'Times New Roman', serif;
+
+  /* Datasheet brand faces (site chrome only; section 4). Archivo is one
+     variable file on weight AND width, so the condensed display type and the
+     text face are the same download, run through font-stretch. */
+  --font-display: var(--font-archivo), 'Arial Narrow', Arial, sans-serif;
+  --font-spec: var(--font-azeret-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   /* Letter-spacing scale — names for the tracking-[…] arbitraries used across
      the blocks; values match the originals exactly (a pure refactor). Additive
@@ -242,20 +285,8 @@
 /* Landing hero keyframes (ported from payload-components.xyz).
    Transform + opacity only — no blur(): animating a filter forces a
    per-frame raster of the (large) hero text/frame and pushes LCP, so the
-   "lift" is carried by translate alone. */
-@keyframes hero-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* hero-reveal without the fade, for hero text that can be LCP (see .hero-rise). */
+   "lift" is carried by translate alone. Hero bands rise without fading at
+   all (see .hero-rise). */
 @keyframes hero-rise {
   from {
     transform: translateY(16px);
@@ -293,20 +324,6 @@
   100% {
     opacity: 0;
     transform: translateX(370%);
-  }
-}
-
-@keyframes hero-dot-pulse {
-  0% {
-    box-shadow: 0 0 0 0 oklch(50.8% 0.118 165.6deg / 30%);
-  }
-
-  70% {
-    box-shadow: 0 0 0 8px transparent;
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 transparent;
   }
 }
 
@@ -384,6 +401,58 @@
   to {
     stroke-dashoffset: 0;
     opacity: 1;
+  }
+}
+
+/* Datasheet pinout (landing hero), run once: each trace draws from its output
+   pin to the connector with a short bright pulse ahead of it, and its pad
+   lights as it lands. Stroke, fill and transform only. The resting state of
+   every element is the finished drawing, so these only ever run from an
+   earlier frame toward it. */
+@keyframes pinout-draw {
+  from {
+    stroke-dashoffset: 100;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pinout-pulse {
+  from {
+    stroke-dashoffset: 12;
+  }
+
+  to {
+    stroke-dashoffset: -104;
+  }
+}
+
+@keyframes pinout-light {
+  from {
+    fill: var(--background);
+  }
+}
+
+@keyframes pinout-solder {
+  0% {
+    fill: var(--background);
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(1.35);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pinout-label {
+  from {
+    fill: var(--muted-foreground);
   }
 }
 
@@ -472,26 +541,331 @@
     padding-inline: 1.25rem;
   }
 
-  /* Catalog brand preview. The brand ramp is a single OKLCH hue held at fixed
-     lightness and chroma, so rotating --preview-hue recolours a demo twin
-     without moving any contrast ratio — the a11y gate holds at every hue.
-     @theme inline is what lets the override land: bg-brand compiles to
-     var(--brand) resolved at the use site, not to a value frozen at :root.
-     The var() fallbacks keep this class inert until ComponentCatalogBrowser
-     sets the variable, so an unthemed preview stays emerald. Scoped to the
-     preview surface on purpose — site chrome keeps the brand accent. */
-  .preview-themed {
-    --brand: oklch(50.8% 0.118 var(--preview-hue, 165.6deg));
-    --brand-50: oklch(97.6% 0.018 var(--preview-hue, 165.6deg));
-    --brand-100: oklch(94.6% 0.044 var(--preview-hue, 165.6deg));
-    --brand-200: oklch(89% 0.072 var(--preview-hue, 165.6deg));
-    --brand-600: oklch(44% 0.112 var(--preview-hue, 165.6deg));
+  /* ---------------------------------------------------------------- */
+  /* 4. Brand layer. The site chrome wears the Datasheet brand; the     */
+  /*    blocks it shows do not. Two scopes, kept as mirror images:       */
+  /*                                                                    */
+  /*    [data-brand='datasheet'] — header, footer, and the landing,      */
+  /*    about and brand-guide <main>. Remaps the component tokens the    */
+  /*    chrome already uses (fonts, the --brand ramp) onto the brand.    */
+  /*                                                                    */
+  /*    .preview-scope — every surface that renders a demo twin: the     */
+  /*    preview route, DemoFitFrame / DemoScaleFrame, the wall, the      */
+  /*    specimen. Restores every token the brand scope remaps from its   */
+  /*    :root snapshot (--component-*), so a twin inside branded chrome  */
+  /*    renders exactly as it installs, and exactly as its visual        */
+  /*    baseline. Never nest it inside a template theme: template shells */
+  /*    set these tokens themselves.                                      */
+  /*                                                                    */
+  /*    tests/int/brand-layer.int.spec.ts fails if a token is remapped   */
+  /*    here without being restored below, or restored from anything but */
+  /*    its own :root snapshot.                                          */
+  /* ---------------------------------------------------------------- */
+
+  [data-brand='datasheet'] {
+    --font-sans: var(--font-display);
+    --font-mono: var(--font-spec);
+    --default-font-family: var(--font-sans);
+    --default-mono-font-family: var(--font-mono);
+    --brand: var(--trace);
+    --brand-50: var(--trace-50);
+    --brand-100: var(--trace-100);
+    --brand-200: var(--trace-200);
+    --brand-600: var(--trace-600);
+
+    font-family: var(--font-sans);
+  }
+
+  /* The component tokens, restored from their :root snapshots. The catalog's
+     preview knobs ride on top: --preview-brand* (from .preview-themed below)
+     and --preview-radius (set by ComponentCatalogBrowser) win where they are
+     set, and are absent everywhere else, so an unthemed twin renders on the
+     exact :root values. @theme inline is what lets the override land:
+     bg-brand compiles to var(--brand) resolved at the use site, not to a value
+     frozen at :root. Nesting is idempotent: an inner scope resolves the same
+     snapshots and the same inherited knobs. */
+  .preview-scope {
+    --font-sans: var(--component-font-sans);
+    --font-mono: var(--component-font-mono);
+    --default-font-family: var(--font-sans);
+    --default-mono-font-family: var(--font-mono);
+    --brand: var(--preview-brand, var(--component-brand));
+    --brand-50: var(--preview-brand-50, var(--component-brand-50));
+    --brand-100: var(--preview-brand-100, var(--component-brand-100));
+    --brand-200: var(--preview-brand-200, var(--component-brand-200));
+    --brand-600: var(--preview-brand-600, var(--component-brand-600));
 
     /* Radius reaches far more of the catalog than the accent does: most twins
        carry a rounded-* class, only a handful reference a brand token. The
        whole scale (sm-xl and the named container radii) derives from --radius,
        so this one line restyles every block. */
-    --radius: var(--preview-radius, 0.625rem);
+    --radius: var(--preview-radius, var(--component-radius));
+
+    font-family: var(--font-sans);
+  }
+
+  /* Catalog brand preview. The brand ramp is a single OKLCH hue held at fixed
+     lightness and chroma, so rotating --preview-hue recolours a demo twin
+     without moving any contrast ratio — the a11y gate holds at every hue. The
+     var() fallback keeps it emerald until ComponentCatalogBrowser sets the
+     hue. Only the catalog cards carry it (beside .preview-scope), so the site
+     chrome around them keeps its own accent. */
+  .preview-themed {
+    --preview-brand: oklch(50.8% 0.118 var(--preview-hue, 165.6deg));
+    --preview-brand-50: oklch(97.6% 0.018 var(--preview-hue, 165.6deg));
+    --preview-brand-100: oklch(94.6% 0.044 var(--preview-hue, 165.6deg));
+    --preview-brand-200: oklch(89% 0.072 var(--preview-hue, 165.6deg));
+    --preview-brand-600: oklch(44% 0.112 var(--preview-hue, 165.6deg));
+  }
+
+  /* Datasheet type roles. Archivo covers display and text in one file: the
+     headings run condensed through its width axis. */
+  .ds-display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: 68%;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+
+  .ds-label {
+    font-family: var(--font-spec);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Shared section chrome takes the Datasheet roles inside the brand scope
+     and keeps its Geist styling on the pages that are not branded yet. The
+     one italic-serif accent word per heading becomes plain heading type: the
+     span stays, so heading names and the unbranded pages are untouched. */
+  [data-brand='datasheet'] .type-heading {
+    font-size: clamp(2.125rem, 1.35rem + 2.4vw, 3.25rem);
+    font-weight: 760;
+    font-stretch: 75%;
+    line-height: 1;
+    letter-spacing: -0.015em;
+  }
+
+  [data-brand='datasheet'] .type-eyebrow {
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+  }
+
+  [data-brand='datasheet'] .script-aware-serif-accent {
+    font: inherit;
+    letter-spacing: inherit;
+  }
+
+  /* Paper, not atmosphere: the emerald bloom and graph grid behind the hero
+     bands give way to the drawing itself. */
+  [data-brand='datasheet'] .hero-shell::before,
+  [data-brand='datasheet'] .hero-shell::after,
+  [data-brand='datasheet'] .hero-atmosphere {
+    display: none;
+  }
+
+  /* Datasheet pinout drawing (DatasheetPinout). Phones get their own drawing
+     below 48rem; the ten-pin part shrunk to a phone is unreadable. */
+  .pinout {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .pinout-desktop {
+    display: none;
+  }
+
+  @media (width >= 48rem) {
+    .pinout-phone {
+      display: none;
+    }
+
+    .pinout-desktop {
+      display: block;
+    }
+  }
+
+  .pinout-dot {
+    fill: color-mix(in oklab, var(--foreground) 16%, var(--background));
+  }
+
+  .pinout-chip {
+    fill: var(--background);
+    stroke: var(--foreground);
+    stroke-width: 1.5;
+  }
+
+  .pinout-chip-dot {
+    fill: var(--foreground);
+  }
+
+  .pinout-marking rect {
+    fill: none;
+    stroke: var(--foreground);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .pinout-leg {
+    fill: var(--background);
+    stroke: var(--foreground);
+    stroke-width: 1.25;
+  }
+
+  .pinout-leg-out {
+    fill: var(--trace);
+  }
+
+  .pinout-silk {
+    fill: none;
+    stroke: var(--wire);
+    stroke-width: 1;
+  }
+
+  .pinout-lead {
+    fill: none;
+    stroke: var(--foreground);
+    stroke-width: 1.25;
+  }
+
+  .pinout-lead-end {
+    fill: var(--background);
+    stroke: var(--foreground);
+    stroke-width: 1.25;
+  }
+
+  .pinout-text {
+    font-family: var(--font-spec);
+    fill: var(--foreground);
+  }
+
+  .pinout-head,
+  .pinout-ref {
+    font-size: 10.5px;
+    fill: var(--muted-foreground);
+  }
+
+  .pinout-head {
+    letter-spacing: 0.08em;
+  }
+
+  .pinout-pin {
+    font-size: 10px;
+    fill: var(--muted-foreground);
+  }
+
+  .pinout-label {
+    font-size: 13px;
+  }
+
+  .pinout-label-phone {
+    font-size: 12px;
+  }
+
+  .pinout-part {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 800;
+    font-stretch: 68%;
+    letter-spacing: 0.01em;
+  }
+
+  .pinout-part-phone {
+    font-size: 22px;
+  }
+
+  .pinout-maker {
+    font-size: 11px;
+  }
+
+  .pinout-rev {
+    font-size: 10px;
+    fill: var(--muted-foreground);
+  }
+
+  .pinout-net-base {
+    fill: none;
+    stroke: var(--wire);
+    stroke-width: 1.25;
+  }
+
+  .pinout-wire {
+    fill: none;
+    stroke: var(--trace);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 100 100;
+    transition: stroke-width 200ms;
+  }
+
+  /* Parked past the end of its path, so it is invisible at rest. */
+  .pinout-pulse {
+    fill: none;
+    stroke: var(--success);
+    stroke-width: 3.25;
+    stroke-linecap: round;
+    stroke-dasharray: 10 200;
+    stroke-dashoffset: -110;
+  }
+
+  .pinout-pad {
+    fill: var(--trace);
+    stroke: var(--trace);
+    stroke-width: 2;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .pinout-hole {
+    fill: var(--background);
+  }
+
+  /* Probing: pointing at a trace lights that connection and dims the rest. */
+  .pinout-net {
+    transition: opacity 200ms;
+  }
+
+  .pinout:has(.pinout-net:hover) .pinout-net:not(:hover) {
+    opacity: 0.25;
+  }
+
+  .pinout-net:hover .pinout-wire {
+    stroke-width: 3.5;
+  }
+
+  .pinout-net:hover .pinout-out {
+    font-weight: 600;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pinout-wire {
+      animation: pinout-draw 560ms cubic-bezier(0.55, 0, 0.3, 1) calc(240ms + var(--pin) * 170ms)
+        both;
+    }
+
+    .pinout-pulse {
+      animation: pinout-pulse 560ms cubic-bezier(0.55, 0, 0.3, 1) calc(240ms + var(--pin) * 170ms)
+        both;
+    }
+
+    .pinout-leg-out {
+      animation: pinout-light 160ms linear calc(240ms + var(--pin) * 170ms) both;
+    }
+
+    .pinout-pad {
+      animation: pinout-solder 300ms cubic-bezier(0.3, 1.5, 0.5, 1) calc(720ms + var(--pin) * 170ms)
+        both;
+    }
+
+    .pinout-out {
+      animation: pinout-label 240ms ease-out calc(720ms + var(--pin) * 170ms) both;
+    }
   }
 
   /* Logo Cloud Marquee twin: scrolls the duplicated logo track. The global
@@ -608,6 +982,32 @@
     display: block;
   }
 
+  /* The Datasheet primary action's one shine: a white glint crosses the key
+     on hover — light within the palette, transform-only, never on its own. */
+  .copy-button-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .copy-button-sheen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 35%,
+      oklch(100% 0 0deg / 45%) 50%,
+      transparent 65%
+    );
+    transform: translateX(-120%);
+    transition: transform 700ms cubic-bezier(0.3, 0.7, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .copy-button-sheen:hover::after {
+    transform: translateX(120%);
+  }
+
   /* ---------------------------------------------------------------- */
   /* Landing hero — ported from the deployed payload-components.xyz   */
   /* hero (landing.module.css), re-expressed on this token system.    */
@@ -684,20 +1084,13 @@
     opacity: 0.26;
   }
 
-  /* Staggered load reveal. Short, near-zero-delay, transform+opacity only:
-     the inline per-element delays stay tiny so above-the-fold content
-     paints almost immediately. */
-  .hero-reveal {
-    animation: hero-reveal 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  }
-
-  /* Hero text that can be the LCP element rises without fading: the
-     headline, and on /about and /brand-guide the lead paragraph, which is
-     larger than the headline on phones. Chrome skips text painted at
-     opacity 0 when it picks the LCP element, and the fade never repaints it,
-     so faded text counted only if a late font swap repainted it. Same
-     duration, curve, and inline delay as the reveals around it, so it keeps
-     its turn in the stagger. */
+  /* Staggered hero entrance, transform-only, with tiny inline delays so the
+     band paints almost immediately. Nothing in a hero fades any more:
+     Chrome skips text painted at opacity 0 when it picks the LCP element (and
+     the headline, or on phones the lead paragraph, is that element), and axe
+     samples the page mid-entrance, where a fading row of links or a filled
+     button reads as low contrast. The fading .hero-reveal this replaced was
+     dropped with the Datasheet hero. */
   .hero-rise {
     animation: hero-rise 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
@@ -767,27 +1160,6 @@
     .wall-card-frame::after {
       height: 2.75rem;
     }
-  }
-
-  .hero-eyebrow-dot {
-    display: inline-block;
-    width: 0.42rem;
-    height: 0.42rem;
-    border-radius: 9999px;
-    background: var(--brand);
-    box-shadow: 0 0 0 0 oklch(50.8% 0.118 165.6deg / 30%);
-    animation: hero-dot-pulse 2.4s ease-out infinite;
-  }
-
-  /* Editorial accent: the second clause set in an italic serif, the one
-     warm typographic note against Geist. Looser tracking than the tight
-     sans H1 so the serif can breathe. */
-  .hero-headline-accent {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-style: italic;
-    letter-spacing: -0.015em;
-    color: var(--foreground);
   }
 
   /* Script-aware display type: Instrument Serif only contains Latin glyphs,

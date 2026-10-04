@@ -51,7 +51,9 @@ function PlaneCard({ slug }: { slug: string }) {
         </span>
       </p>
       <div className="wall-card-frame relative flex h-[216px] items-center overflow-hidden rounded-lg bg-background shadow-frame">
-        <div className="w-[1280px] shrink-0 origin-left scale-[0.3]">
+        {/* preview-scope: twins render on the component tokens wherever they
+            sit (globals.css section 4). */}
+        <div className="preview-scope w-[1280px] shrink-0 origin-left scale-[0.3]">
           <Demo />
         </div>
       </div>

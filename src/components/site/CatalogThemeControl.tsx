@@ -38,7 +38,7 @@ export const radiusPresets = [
 export const defaultBrandHue = brandPresets[0].hue
 export const defaultRadiusRem = radiusPresets[1].rem
 
-/* Mirrors the --brand stop in .preview-themed so a swatch renders the exact
+/* Mirrors the --preview-brand stop in .preview-themed so a swatch renders the exact
    colour the previews will take. */
 const swatchColor = (hue: number) => `oklch(50.8% 0.118 ${hue}deg)`
 

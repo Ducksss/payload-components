@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 
-import { Instrument_Serif } from 'next/font/google'
+import { Archivo, Azeret_Mono, Instrument_Serif } from 'next/font/google'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import { NextIntlClientProvider } from 'next-intl'
@@ -39,6 +39,26 @@ const instrumentSerif = Instrument_Serif({
   style: 'italic',
   variable: '--font-instrument-serif',
   display: 'swap',
+})
+
+/* The Datasheet brand faces for the site chrome (globals.css section 4).
+   Archivo loads its width axis as well as weight: the condensed display type
+   is the same file run through font-stretch. Previews and templates never
+   paint these — .preview-scope restores Geist around every demo twin. */
+const archivo = Archivo({
+  subsets: ['latin'],
+  axes: ['wdth'],
+  variable: '--font-archivo',
+  display: 'swap',
+})
+
+/* Not preloaded: it only sets labels and commands, which swap in place with
+   no layout shift, so its bytes stay off the headline's critical path. */
+const azeretMono = Azeret_Mono({
+  subsets: ['latin'],
+  variable: '--font-azeret-mono',
+  display: 'swap',
+  preload: false,
 })
 
 type LocaleLayoutProps = {
@@ -143,7 +163,7 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
       suppressHydrationWarning
       /* Font variables live on <html>: the @theme font tokens reference them
          and custom properties substitute var() at the declaring element. */
-      className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable} ${archivo.variable} ${azeretMono.variable}`}
     >
       <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
         {/* Scroll-reveal elements ship their hidden `initial` state as inline

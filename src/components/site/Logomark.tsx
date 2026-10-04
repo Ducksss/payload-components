@@ -6,8 +6,10 @@ import { cn } from '@/utilities/ui'
    they read as separate blocks that have been fitted into one shape, which is
    the whole product: blocks that arrive already wired, not pasted. The union
    is deliberate; there is no seam to lose at 16px, so the silhouette survives
-   a browser tab. Emerald square with a `--brand-foreground` glyph via
-   currentColor — never recolored or gradiented. Decorative: the wordmark text
+   a browser tab. Emerald square (`--mark`, the blocks' emerald, which the
+   Datasheet brand scope deliberately does not remap) with a
+   `--brand-foreground` glyph via currentColor — never recolored or
+   gradiented. Decorative: the wordmark text
    carries the accessible name, so this is aria-hidden. Five copies of this
    geometry must stay in sync: public/favicon.svg, public/favicon.ico (three
    BMP entries, regenerated from the SVG), and the inline MARK_SVG in
@@ -18,7 +20,7 @@ export function Logomark({ className }: { className?: string }) {
     <span
       aria-hidden="true"
       className={cn(
-        'flex size-6 shrink-0 items-center justify-center rounded-md bg-brand text-brand-foreground',
+        'flex size-6 shrink-0 items-center justify-center rounded-md bg-mark text-brand-foreground',
         className,
       )}
     >
