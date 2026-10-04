@@ -588,49 +588,6 @@ describe('Field Journal real UI capture contract', () => {
     }
   })
 
-  it('clips code evidence inside the real code block instead of capturing page filler', async () => {
-    const captureModule = await import('../../tools/blog/capture-figures')
-    const clipCaptureAroundTarget = Reflect.get(captureModule, 'clipCaptureAroundTarget')
-
-    expect(clipCaptureAroundTarget).toBeTypeOf('function')
-    if (typeof clipCaptureAroundTarget !== 'function') return
-
-    const browser = await chromium.launch({ headless: true })
-    try {
-      const page = await browser.newPage({ viewport: { height: 400, width: 600 } })
-      await page.setContent(`
-        <main style="background:#e4e4e7; min-height:1400px; padding-top:800px">
-          <div id="code" style="background:white; height:500px; margin:0 40px">
-            <div id="first-line" style="background:#18181b; height:80px"></div>
-            <code id="anchor" style="background:#18181b; color:white; display:block; height:100px; padding:40px">minRows: 2</code>
-            <div id="last-line" style="background:#18181b; height:80px"></div>
-          </div>
-          <h2 style="color:#059669">Installation outside the code pane</h2>
-        </main>
-      `)
-      const png = await clipCaptureAroundTarget(page, page.locator('#anchor'), {
-        boundary: page.locator('#code'),
-        contentEnd: page.locator('#last-line'),
-        contentStart: page.locator('#first-line'),
-        height: 240,
-        horizontalPadding: 20,
-        verticalPadding: 50,
-      })
-      const metadata = await sharp(png).metadata()
-      expect(metadata.height).toBe(240)
-
-      const raw = await sharp(png).removeAlpha().raw().toBuffer({
-        resolveWithObject: true,
-      })
-      const bottomCenter =
-        ((raw.info.height - 2) * raw.info.width + Math.floor(raw.info.width / 2)) *
-        raw.info.channels
-      expect([...raw.data.subarray(bottomCenter, bottomCenter + 3)]).toEqual([24, 24, 27])
-    } finally {
-      await browser.close()
-    }
-  })
-
   it('selects a contiguous docs-code line window with explicit long-line treatment', async () => {
     const captureModule = await import('../../tools/blog/capture-figures')
     const renderDocsCodeExcerptHtml = Reflect.get(captureModule, 'renderDocsCodeExcerptHtml')

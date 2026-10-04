@@ -8,7 +8,7 @@ export type BlogVisualSeries =
 
 export type FigureMode = 'see' | 'trace' | 'inspect' | 'join'
 
-export type RouteCapture = {
+type RouteCapture = {
   columns: number
   position: 'bottom' | 'center' | 'top'
   selectors: readonly string[]
@@ -29,7 +29,7 @@ export type Artifact =
       after: readonly string[]
     }
 
-export type BlogFigureVisual = {
+type BlogFigureVisual = {
   path: string
   mode: FigureMode
 }
