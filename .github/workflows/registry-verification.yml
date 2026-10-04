@@ -266,3 +266,85 @@ jobs:
             test-results
             /tmp/payload-components-fresh-smoke-*
           if-no-files-found: ignore
+
+  # Early warning for the next Payload major. The nightly smoke above follows
+  # Payload `latest`, so nothing else exercises Payload 4 before it ships. This
+  # runs the same scenarios against the current `payload@canary` and never fails
+  # the run, because canaries also break for upstream reasons. It is not a
+  # pr-gate dependency.
+  payload-canary-smoke:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { scenario: bare, shard-index: 0 }
+          - { scenario: website, shard-index: 0 }
+          - { scenario: website, shard-index: 1 }
+          - { scenario: website, shard-index: 2 }
+          - { scenario: website, shard-index: 3 }
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: payload_components
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      CRON_SECRET: ci-cron-secret
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/payload_components
+      NEXT_PUBLIC_SERVER_URL: http://localhost:3000
+      PAYLOAD_SECRET: ci-payload-secret
+      POSTGRES_URL: postgresql://postgres:postgres@127.0.0.1:5432/payload_components
+      PREVIEW_SECRET: ci-preview-secret
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: 10.24.0
+
+      # Payload 4 requires Node.js 24.15 or newer.
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec playwright install --with-deps chromium
+
+      - name: Resolve the current Payload canary
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(npm view payload@canary version)"
+          test -n "$version"
+          echo "SMOKE_PAYLOAD_VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Fresh Payload canary smoke
+        shell: bash
+        run: |
+          set -o pipefail
+          echo "Payload canary: $SMOKE_PAYLOAD_VERSION"
+          pnpm test:fresh -- --scenario "${{ matrix.scenario }}" --shard-index "${{ matrix.shard-index }}" 2>&1 | tee payload-components-canary.log
+
+      - name: Upload failure log
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: payload-canary-smoke-${{ matrix.scenario }}-${{ matrix.shard-index }}
+          path: payload-components-canary.log
+          if-no-files-found: ignore
