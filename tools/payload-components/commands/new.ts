@@ -122,7 +122,9 @@ const collectUsedDbNames = async () => {
   return used
 }
 
-const buildManifest = (names: ComponentNames) =>
+// Exported so tests/int/payload-components-support-matrix.int.spec.ts can hold
+// new manifests to the support matrix.
+export const buildManifest = (names: ComponentNames) =>
   `${JSON.stringify(
     {
       $schema: '../schema/poc-manifest.schema.json',
@@ -133,9 +135,9 @@ const buildManifest = (names: ComponentNames) =>
       description: `TODO: one sentence on what ${names.title} is for.`,
       registryItemName: names.slug,
       dependencies: {},
-      peerDependencies: { next: '^15.0.0 || ^16.0.0', payload: '^3.0.0' },
+      peerDependencies: { next: '^15.0.0 || ^16.0.0', payload: '^3.0.0 || ^4.0.0-0' },
       supportedTargets: ['payload-website-starter', 'payload-blocks-app'],
-      supports: { payloadMajors: [3], nextMajors: [15, 16] },
+      supports: { payloadMajors: [3, 4], nextMajors: [15, 16] },
       files: [`src/blocks/${names.pascal}/config.ts`, `src/blocks/${names.pascal}/Component.tsx`],
       payloadFragments: [
         {

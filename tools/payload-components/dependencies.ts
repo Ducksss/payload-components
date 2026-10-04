@@ -196,7 +196,11 @@ export const checkDependencyRequirements = async ({
       label,
     })
 
-    if (!semver.intersects(normalizedInstalledRange, requiredRange)) {
+    /* includePrerelease: without it semver tests each comparator on its own, so
+     * "<5.0.0-0" rejects 4.0.0-canary.37 and an installed prerelease never
+     * intersects "^4.0.0-0" even though it satisfies it. The "-0" bounds on
+     * every required range keep prereleases inside their own major. */
+    if (!semver.intersects(normalizedInstalledRange, requiredRange, { includePrerelease: true })) {
       const installedNote = installedRange === declaredRange ? '' : ` (installed ${installedRange})`
 
       throw new Error(

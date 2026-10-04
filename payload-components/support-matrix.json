@@ -3,8 +3,8 @@
   "targets": [
     {
       "id": "payload-website-starter",
-      "description": "Payload v3 + Next.js App Router projects laid out like the official website starter: page layout blocks rendered through src/blocks/RenderBlocks.tsx and registered in src/collections/Pages/index.ts.",
-      "allowedPayloadMajors": [3],
+      "description": "Payload v3 or v4 + Next.js App Router projects laid out like the official website starter: page layout blocks rendered through src/blocks/RenderBlocks.tsx and registered in src/collections/Pages/index.ts.",
+      "allowedPayloadMajors": [3, 4],
       "allowedNextMajors": [15, 16],
       "requiredFiles": ["components.json", "src/payload.config.ts"],
       "hostFiles": {
@@ -20,8 +20,8 @@
     },
     {
       "id": "payload-blocks-app",
-      "description": "Payload v3 + Next.js App Router projects that keep the same page-blocks shape at non-starter paths — a flat Pages collection file, a renderer under src/components, or a repo without a src directory. Requires the starter's cn utility at utilities/ui because installed block components import it.",
-      "allowedPayloadMajors": [3],
+      "description": "Payload v3 or v4 + Next.js App Router projects that keep the same page-blocks shape at non-starter paths — a flat Pages collection file, a renderer under src/components, or a repo without a src directory. Requires the starter's cn utility at utilities/ui because installed block components import it.",
+      "allowedPayloadMajors": [3, 4],
       "allowedNextMajors": [15, 16],
       "requiredFiles": [
         "components.json",

@@ -2,7 +2,7 @@ import { mkdir, readdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { loadManifest } from '../../tools/payload-components/manifest'
 import * as smokeHarness from '../../tools/payload-components/smoke/fresh-payload-repo'
@@ -248,6 +248,49 @@ describe('fresh Payload smoke component selection', () => {
     expect(smokeHarness.getCreatePayloadAppArgs({ ...base, template: 'blank' })).not.toContain(
       'website',
     )
+  })
+
+  it('passes the pinned Payload version with the flag each create-payload-app major reads', () => {
+    /* v4 renamed --version to --payload-version, and both CLIs silently ignore
+       the flag they do not know, so the wrong one scaffolds an unpinned project. */
+    expect(smokeHarness.getCreatePayloadAppVersionArgs('3.88.0')).toEqual(['--version', '3.88.0'])
+    expect(smokeHarness.getCreatePayloadAppVersionArgs('4.0.0-canary.37')).toEqual([
+      '--payload-version',
+      '4.0.0-canary.37',
+    ])
+    expect(smokeHarness.getCreatePayloadAppVersionArgs('latest')).toEqual([
+      '--version',
+      'latest',
+      '--payload-version',
+      'latest',
+    ])
+
+    const v4Args = smokeHarness.getCreatePayloadAppArgs({
+      payloadVersion: '4.0.0-canary.37',
+      projectName: 'p',
+      templateRef: 'v4.0.0-canary.37',
+    })
+    expect(v4Args).not.toContain('--version')
+    expect(v4Args.slice(-2)).toEqual(['--branch', 'v4.0.0-canary.37'])
+    expect(smokeHarness.getCreatePayloadAppArgs({ projectName: 'p' })).not.toContain('--branch')
+  })
+
+  it('pins a v4 template to its release tag only when the tag exists', async () => {
+    /* v4 downloads its template from main, which can call APIs the pinned
+       packages do not have yet; v3 already uses its CLI's 3.x branch. */
+    const tagged = vi.fn(async () => true)
+    const untagged = vi.fn(async () => false)
+
+    await expect(smokeHarness.resolvePayloadTemplateRef('4.0.0-canary.37', tagged)).resolves.toBe(
+      'v4.0.0-canary.37',
+    )
+    expect(tagged).toHaveBeenCalledWith('v4.0.0-canary.37')
+    await expect(
+      smokeHarness.resolvePayloadTemplateRef('4.0.0-canary.12', untagged),
+    ).resolves.toBeUndefined()
+    await expect(smokeHarness.resolvePayloadTemplateRef('3.88.0', tagged)).resolves.toBeUndefined()
+    await expect(smokeHarness.resolvePayloadTemplateRef('canary', tagged)).resolves.toBeUndefined()
+    expect(tagged).toHaveBeenCalledTimes(1)
   })
 
   it('parses --scenario and defaults to running both', () => {

@@ -18,6 +18,10 @@ export const Pages: CollectionConfig = {
   slug: 'pages',
   access: {
     read: ({ req: { user } }) => (user ? true : { _status: { equals: 'published' } }),
+    /* Payload 3 already requires a signed-in user to read versions. Payload 4
+       inherits `read` instead, which would let visitors list every previously
+       published version, including content later edited out. */
+    readVersions: ({ req: { user } }) => Boolean(user),
   },
   admin: {
     useAsTitle: 'title',

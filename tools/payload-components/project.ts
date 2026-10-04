@@ -8,6 +8,7 @@ import type {
   ResolvedHostFiles,
   ResolvedRegistryDependency,
   SupportMatrix,
+  SupportedTarget,
 } from './types'
 
 import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from './constants'
@@ -165,6 +166,26 @@ export const detectProject = async (cwd: string): Promise<DetectedProject> => {
       payloadMajor,
       target,
     }
+  }
+
+  /* A major no target accepts is the real reason nothing matched. Reported as a
+   * file-shape problem, it sends people to rearrange files (or run init) in a
+   * project whose layout is fine. */
+  const supportedMajors = (pick: (target: SupportedTarget) => number[]) =>
+    [...new Set(supportMatrix.targets.flatMap(pick))].sort((left, right) => left - right)
+  const payloadMajors = supportedMajors((target) => target.allowedPayloadMajors)
+  const nextMajors = supportedMajors((target) => target.allowedNextMajors)
+
+  if (!payloadMajors.includes(payloadMajor)) {
+    throw new Error(
+      `Unsupported Payload major version ${payloadMajor} in ${cwd}. This version of payload-components supports Payload ${payloadMajors.map((major) => `v${major}`).join(', ')}.`,
+    )
+  }
+
+  if (!nextMajors.includes(nextMajor)) {
+    throw new Error(
+      `Unsupported Next.js major version ${nextMajor} in ${cwd}. This version of payload-components supports Next.js ${nextMajors.join(', ')}.`,
+    )
   }
 
   const componentsJsonPresent = await readSafeProjectFile({

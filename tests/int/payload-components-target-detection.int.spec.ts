@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { diffCommand } from '../../tools/payload-components/commands/diff'
 import { checkDependencyRequirements } from '../../tools/payload-components/dependencies'
-import { loadManifest } from '../../tools/payload-components/manifest'
+import { listComponentNames, loadManifest } from '../../tools/payload-components/manifest'
 import {
   applyPayloadFragments,
   detectProject,
@@ -258,6 +258,79 @@ describe('dependencies declared by dist-tag', () => {
     await installPackage(dir, 'payload', '3.90.2')
 
     await expect(check()).resolves.toMatchObject({ installed: { payload: '3.90.2' } })
+  })
+})
+
+/* create-payload-app pins every Payload package to the exact version it
+ * scaffolds, so a Payload 4 canary project declares "4.0.0-canary.N". Detection
+ * and every manifest's peer range have to accept that alongside v3, and a major
+ * no target supports has to be named as such, not reported as a file shape. */
+describe('Payload major support', () => {
+  const canaryDependencies = { next: '16.3.8', payload: '4.0.0-canary.37', react: '19.3.0' }
+  const checkPeers = (cwd: string, dependencies: Record<string, string>) =>
+    checkDependencyRequirements({
+      allowMissing: false,
+      cwd,
+      dependencies,
+      label: 'peerDependencies',
+    })
+
+  it('detects a project pinned to a Payload 4 prerelease', async () => {
+    const dir = await makeProject(starterFiles, canaryDependencies)
+    const project = await detectProject(dir)
+
+    expect(project.payloadMajor).toBe(4)
+    expect(project.target.id).toBe('payload-website-starter')
+  })
+
+  it('accepts Payload 3 and a Payload 4 prerelease against every manifest peer range', async () => {
+    const v3 = await makeProject(starterFiles, {
+      next: '16.0.0',
+      payload: '3.88.0',
+      react: '19.0.0',
+    })
+    const v4 = await makeProject(starterFiles, canaryDependencies)
+
+    /* Declared majors are held to support-matrix.json by
+       payload-components-support-matrix.int.spec.ts; this proves the runtime
+       peer check accepts real installs of both majors. */
+    for (const name of await listComponentNames()) {
+      const manifest = await loadManifest(name)
+
+      await expect(checkPeers(v3, manifest.peerDependencies), name).resolves.toMatchObject({
+        missing: [],
+      })
+      await expect(checkPeers(v4, manifest.peerDependencies), name).resolves.toMatchObject({
+        installed: { payload: '4.0.0-canary.37' },
+        missing: [],
+      })
+    }
+  })
+
+  it('keeps a prerelease inside its own major', async () => {
+    const dir = await makeProject(starterFiles, canaryDependencies)
+
+    await expect(checkPeers(dir, { payload: '^3.0.0' })).rejects.toThrow(
+      'does not satisfy the required range "^3.0.0"',
+    )
+    await expect(checkPeers(dir, { payload: '^5.0.0-0' })).rejects.toThrow(
+      'does not satisfy the required range "^5.0.0-0"',
+    )
+  })
+
+  it('names an unsupported Payload major instead of blaming the file shape', async () => {
+    const dir = await makeProject(starterFiles, { next: '^16.0.0', payload: '^2.0.0' })
+    const error = await captureRejection(detectProject(dir))
+
+    expect(error.message).toContain('Unsupported Payload major version 2')
+    expect(error.message).toContain('supports Payload v3, v4')
+    expect(error.message).not.toContain('Unsupported project shape')
+  })
+
+  it('names an unsupported Next.js major', async () => {
+    const dir = await makeProject(starterFiles, { next: '^14.0.0', payload: '^3.0.0' })
+
+    await expect(detectProject(dir)).rejects.toThrow('Unsupported Next.js major version 14')
   })
 })
 
