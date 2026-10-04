@@ -136,9 +136,12 @@ renderer. macOS and Windows run browser behavior and accessibility checks but sk
 screenshot comparisons, avoiding duplicate platform images and paired updates.
 
 For intended visual changes, run the `visual-baselines` workflow against your
-branch. It opens a PR containing the Linux PNGs. Review the images before merging;
-only keep changes the implementation explains. Use its `update: all` option when
-an intended change is smaller than the usual screenshot comparison tolerance.
+branch. Set its `spec` input to the suite you changed (`components-visual`,
+`templates-visual`, `blog-visual`, or `frontend` for the landing screenshots), or
+to `all-visual` for the three `*-visual` suites at once. It opens a PR containing
+the Linux PNGs. Review the images before merging; only keep changes the
+implementation explains. Use its `update: all` option when an intended change is
+smaller than the usual screenshot comparison tolerance.
 
 The coverage guard fails Linux CI if any component or template lacks its baseline.
 A local non-Linux release gate is therefore incomplete visual validation; the PR

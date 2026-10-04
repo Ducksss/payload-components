@@ -375,17 +375,51 @@ describe('package publish guard', () => {
     expect(parsed.on?.workflow_dispatch?.inputs?.spec?.options).toEqual([
       'frontend',
       'components-visual',
-      'template-visual',
+      'templates-visual',
       'blog-visual',
       'all-visual',
     ])
-    expect(workflow).toContain('components-visual|template-visual|blog-visual)')
+    expect(workflow).toContain('components-visual|templates-visual|blog-visual)')
     expect(workflow).toContain(
       "spec_args=(frontend --grep 'landing page keeps its desktop and mobile visual contract')",
     )
-    expect(workflow).toContain('spec_args=(components-visual template-visual blog-visual)')
+    expect(workflow).toContain('spec_args=(components-visual templates-visual blog-visual)')
     expect(workflow).toContain('pnpm test:e2e "${spec_args[@]}"')
     expect(workflow).not.toMatch(/pnpm test:e2e \$SPEC/)
+  })
+
+  it('points every visual-baseline spec choice at a real e2e spec file', async () => {
+    const workflow = await readFile(
+      path.join(repoRoot, '.github', 'workflows', 'visual-baselines.yml'),
+      'utf8',
+    )
+    const parsed = parse(workflow) as {
+      on?: { workflow_dispatch?: { inputs?: { spec?: { options?: string[] } } } }
+    }
+    const e2eFiles = await readdir(path.join(repoRoot, 'tests', 'e2e'))
+    const visualSpecs = e2eFiles
+      .map((file) => /^(.+-visual)\.e2e\.spec\.ts$/.exec(file)?.[1])
+      .filter((spec) => spec !== undefined)
+      .sort()
+
+    // `pnpm test:e2e` hands each choice to Playwright as a file-path regex. A
+    // filter that matches no spec fails alone ("No tests found") and is silently
+    // dropped beside filters that do match, which is how `template-visual` kept
+    // all-visual from ever minting a template baseline.
+    for (const spec of parsed.on?.workflow_dispatch?.inputs?.spec?.options ?? []) {
+      if (spec === 'all-visual') continue
+
+      expect(e2eFiles, `spec choice ${spec} must name a tests/e2e spec`).toContain(
+        `${spec}.e2e.spec.ts`,
+      )
+    }
+
+    const allVisual = /^\s*all-visual\)\s*spec_args=\(([^)]*)\)/m.exec(workflow)?.[1]
+
+    expect(
+      allVisual?.trim().split(/\s+/).sort(),
+      'all-visual must mint every *-visual spec',
+    ).toEqual(visualSpecs)
   })
 
   it('disables persisted checkout credentials and authenticates writes one command at a time', async () => {
