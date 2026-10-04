@@ -3,8 +3,8 @@ import { useLocale, useTranslations } from 'next-intl'
 
 import { ArrowUpRight } from 'lucide-react'
 
-import { CommandCopyButton } from '@/components/site/CommandCopyButton'
 import { GitHubMark } from '@/components/site/GitHubMark'
+import { InstallCommand } from '@/components/site/InstallCommand'
 import { MaintainerNote } from '@/components/site/MaintainerNote'
 import { Reveal } from '@/components/site/motion/Reveal'
 import { Eyebrow, HeadingAccent, Section } from '@/components/site/section'
@@ -27,24 +27,17 @@ export function CommunityCta() {
       <div className="relative grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
         <div className="flex flex-col items-start">
           <Eyebrow>{t('eyebrow')}</Eyebrow>
-          <h2 className="mt-4 text-balance text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-[2.6rem]">
+          <h2 className="type-heading mt-4 text-balance text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-[2.6rem]">
             {t('heading')} <HeadingAccent>{t('accent')}</HeadingAccent>.
           </h2>
           <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">{t('intro')}</p>
 
-          <div className="mt-7 grid w-full max-w-xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border border-border bg-background py-1 pl-5 pr-1 shadow-card">
-            <code
-              tabIndex={0}
-              className="overflow-x-auto whitespace-nowrap font-mono text-xs text-foreground/90 sm:text-[13px]"
-            >
-              {primaryInstallCommand}
-            </code>
-            <CommandCopyButton
-              command={primaryInstallCommand}
-              emphasis="primary"
-              label={t('copy')}
-            />
-          </div>
+          {/* The same Datasheet install field as the hero. */}
+          <InstallCommand
+            className="mt-7 max-w-[36rem]"
+            command={primaryInstallCommand}
+            label={t('copy')}
+          />
 
           <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm">
             <Link

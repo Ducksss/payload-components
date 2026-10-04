@@ -12,7 +12,11 @@ export function CommandCopyButton({
   trackInstall = true,
 }: {
   command: string
-  emphasis?: 'default' | 'primary'
+  /* `brand` is the Datasheet hero's primary action: a solid --brand key (trace
+     green inside the brand scope) that drops to its icon on phones, where the
+     command needs the width. Both `primary` and `brand` are the page-level
+     primary CTA. */
+  emphasis?: 'default' | 'primary' | 'brand'
   /* Call sites that name the command they copy pass their own label; the bare
      control falls back to the shared, translated "Copy". */
   label?: string
@@ -21,7 +25,7 @@ export function CommandCopyButton({
 }) {
   const t = useTranslations('Common')
   const resolvedLabel = label ?? t('copy')
-  const primary = emphasis === 'primary'
+  const primary = emphasis !== 'default'
 
   return (
     <button
@@ -33,14 +37,19 @@ export function CommandCopyButton({
       aria-label={ariaLabel}
       className={cn(
         'copy-button inline-flex shrink-0 items-center justify-center gap-1.5 border font-medium transition-[transform,background-color,border-color,box-shadow,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        primary
-          ? 'h-11 rounded-full border-primary bg-primary px-4 text-sm text-primary-foreground shadow-[0_16px_36px_-20px_rgba(15,23,42,0.72)] hover:-translate-y-px hover:bg-primary/90 hover:shadow-[0_20px_44px_-20px_rgba(15,23,42,0.78)] motion-reduce:transform-none data-[copied=true]:border-brand data-[copied=true]:bg-brand data-[copied=true]:text-brand-foreground'
-          : 'h-8 rounded-md border-border bg-background px-2.5 font-mono text-xs text-muted-foreground hover:bg-secondary hover:text-foreground data-[copied=true]:border-brand/40 data-[copied=true]:bg-brand/10 data-[copied=true]:text-brand',
+        emphasis === 'primary' &&
+          'h-11 rounded-full border-primary bg-primary px-4 text-sm text-primary-foreground shadow-[0_16px_36px_-20px_rgba(15,23,42,0.72)] hover:-translate-y-px hover:bg-primary/90 hover:shadow-[0_20px_44px_-20px_rgba(15,23,42,0.78)] motion-reduce:transform-none data-[copied=true]:border-brand data-[copied=true]:bg-brand data-[copied=true]:text-brand-foreground',
+        emphasis === 'brand' &&
+          'copy-button-sheen h-11 rounded-sm border-brand bg-brand px-4 text-sm font-semibold text-brand-foreground hover:border-brand-600 hover:bg-brand-600 max-sm:w-11 max-sm:px-0 data-[copied=true]:border-brand-600 data-[copied=true]:bg-brand-600',
+        emphasis === 'default' &&
+          'h-8 rounded-md border-border bg-background px-2.5 font-mono text-xs text-muted-foreground hover:bg-secondary hover:text-foreground data-[copied=true]:border-brand/40 data-[copied=true]:bg-brand/10 data-[copied=true]:text-brand',
       )}
     >
       <Copy className="copy-icon-idle size-3.5" aria-hidden="true" />
       <Check className="copy-icon-done size-3.5" aria-hidden="true" />
-      <span data-copy-label>{resolvedLabel}</span>
+      <span className={emphasis === 'brand' ? 'max-sm:sr-only' : undefined} data-copy-label>
+        {resolvedLabel}
+      </span>
     </button>
   )
 }

@@ -11,9 +11,11 @@ export function Wordmark({
   return (
     <span className="flex items-center gap-2.5">
       <Logomark />
+      {/* Set in the Datasheet display face at text width: the lockup lives
+          only in site chrome (header, footer, brand guide). */}
       <span
         className={cn(
-          'text-[15px] font-semibold tracking-tight text-foreground',
+          'font-display text-[15px] font-[650] tracking-[-0.005em] text-foreground',
           mobileIconOnly && 'hidden sm:inline',
         )}
       >

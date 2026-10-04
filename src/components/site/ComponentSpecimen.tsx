@@ -20,9 +20,11 @@ export function ComponentSpecimen() {
         </span>
       </div>
 
+      {/* preview-scope: the twin keeps the component tokens inside the
+          branded landing (globals.css section 4). */}
       <div
         aria-hidden="true"
-        className="pointer-events-none select-none px-4 py-6 sm:px-6 sm:py-8 xl:py-10 xl:pl-44 xl:pr-10"
+        className="preview-scope pointer-events-none select-none px-4 py-6 sm:px-6 sm:py-8 xl:py-10 xl:pl-44 xl:pr-10"
       >
         <FeatureGridBasicDemo annotate />
       </div>

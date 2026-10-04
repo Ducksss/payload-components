@@ -66,8 +66,13 @@ export function SiteHeader({ activePath }: { activePath?: (typeof navLinks)[numb
      id="main" on its own landmark. */
   const skipTarget = activePath === '/docs' ? '#nd-page' : '#main'
 
+  /* data-brand: the header is site chrome on every route, docs and blog
+     included, so it always wears the Datasheet brand (globals.css section 4). */
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
+    <header
+      data-brand="datasheet"
+      className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/70"
+    >
       <a
         href={skipTarget}
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-2.5 focus:z-50 focus:rounded-md focus:bg-background focus:px-3 focus:py-1.5 focus:text-sm focus:font-medium focus:text-foreground"
@@ -101,7 +106,7 @@ export function SiteHeader({ activePath }: { activePath?: (typeof navLinks)[numb
                 href={localizeHref(item.href, locale)}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'rounded-md px-3 py-1.5 text-sm transition-colors',
+                  'rounded-md px-3 py-1.5 text-[0.9375rem] font-medium transition-colors',
                   focusRing,
                   active
                     ? 'bg-secondary text-foreground'
@@ -159,7 +164,7 @@ export function SiteHeader({ activePath }: { activePath?: (typeof navLinks)[numb
                 onClick={() => setOpen(false)}
                 aria-current={activePath === item.href ? 'page' : undefined}
                 className={cn(
-                  'rounded-md px-3 py-2 text-sm transition-colors',
+                  'rounded-md px-3 py-2 text-[0.9375rem] font-medium transition-colors',
                   focusRing,
                   activePath === item.href
                     ? 'bg-secondary text-foreground'
@@ -179,7 +184,7 @@ export function SiteHeader({ activePath }: { activePath?: (typeof navLinks)[numb
               rel="noreferrer"
               aria-label={t('github')}
               className={cn(
-                'rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground',
+                'rounded-md px-3 py-2 text-[0.9375rem] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground',
                 focusRing,
               )}
             >

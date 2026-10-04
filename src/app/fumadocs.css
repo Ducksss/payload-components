@@ -17,7 +17,11 @@
    - --font-*: the stock system stacks otherwise replace Geist Sans, Geist Mono
      and Instrument Serif in prose, code, and the shared header. They sit on
      :root beside Tailwind's --default-font-family pair, which read them
-     through var(), so preflight's html font follows without a copy.
+     through var(), so preflight's html font follows without a copy. The two
+     Datasheet brand faces (--font-display, --font-spec) are not stock tokens,
+     so nothing here shadows them, but they are declared too: the shared
+     header and footer wear them on every docs and blog page, and this build's
+     own font-display / font-spec utilities must resolve exactly as the site's.
    - --color-fd-error / --color-fd-success: default-colors.css otherwise paints
      success callouts a second, brighter green instead of the brand emerald.
    - --radius-*: globals.css inlines these, so there is no variable to shadow,
@@ -30,6 +34,8 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --font-serif: var(--font-instrument-serif), ui-serif, Georgia, 'Times New Roman', serif;
+  --font-display: var(--font-archivo), 'Arial Narrow', Arial, sans-serif;
+  --font-spec: var(--font-azeret-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
 }
 
 @theme static {

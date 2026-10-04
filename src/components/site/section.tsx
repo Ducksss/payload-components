@@ -2,11 +2,14 @@ import type { ReactNode } from 'react'
 
 import { cn } from '@/utilities/ui'
 
+/* `type-eyebrow` and `type-heading` are hooks for the Datasheet roles that
+   apply inside [data-brand] (globals.css section 4); on unbranded pages they
+   add nothing and these helpers keep their Geist styling. */
 export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <p
       className={cn(
-        'flex items-center gap-2.5 font-mono text-xs font-medium uppercase tracking-eyebrow text-muted-foreground',
+        'type-eyebrow flex items-center gap-2.5 font-mono text-xs font-medium uppercase tracking-eyebrow text-muted-foreground',
         className,
       )}
     >
@@ -62,7 +65,7 @@ export function SectionHeading({
       {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
       <h2
         id={id}
-        className="mt-4 text-balance text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-[2.6rem]"
+        className="type-heading mt-4 text-balance text-3xl font-semibold leading-[1.08] tracking-[-0.045em] text-foreground sm:text-[2.6rem]"
       >
         {renderHeading(heading, accentWord)}
       </h2>

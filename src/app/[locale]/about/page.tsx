@@ -89,22 +89,29 @@ export default async function AboutPage() {
       <SiteHeader activePath="/about" />
       <TranslationNotice pathname="/about" />
 
-      <main {...publicationContentAttributes(publication)} id="main" className="flex-1">
+      {/* data-brand: the about page wears the Datasheet brand (globals.css
+          section 4). */}
+      <main
+        {...publicationContentAttributes(publication)}
+        data-brand="datasheet"
+        id="main"
+        className="flex-1"
+      >
         <section className="hero-shell overflow-hidden border-b border-border/60">
           <div aria-hidden="true" className="hero-atmosphere" />
 
           <div className="container relative py-16 sm:py-20 lg:py-24">
             <div className="flex max-w-3xl flex-col items-start">
               <span
-                className="hero-reveal flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-4 py-1.5 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-muted-foreground backdrop-blur-sm"
+                className="hero-rise ds-label flex items-center gap-2 text-muted-foreground"
                 style={{ animationDelay: '0ms' }}
               >
-                <span aria-hidden="true" className="hero-eyebrow-dot" />
+                <span aria-hidden="true" className="size-1.5 rounded-full bg-brand" />
                 About
               </span>
 
               <h1
-                className="hero-rise mt-6 text-balance text-[clamp(2.4rem,6vw,4.25rem)] font-medium leading-[0.98] tracking-[-0.05em] text-foreground"
+                className="hero-rise ds-display mt-6 text-balance text-[clamp(2.75rem,7.5vw,5rem)] text-foreground"
                 style={{ animationDelay: '60ms' }}
               >
                 Why Payload Components <HeadingAccent>exists</HeadingAccent>

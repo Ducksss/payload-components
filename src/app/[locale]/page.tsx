@@ -70,7 +70,14 @@ export default async function HomePage() {
       <SiteHeader />
       <TranslationNotice pathname="/" />
 
-      <main {...publicationContentAttributes(publication)} id="main" className="flex-1">
+      {/* data-brand: the landing wears the Datasheet brand; every demo twin in
+          it renders inside .preview-scope (globals.css section 4). */}
+      <main
+        {...publicationContentAttributes(publication)}
+        data-brand="datasheet"
+        id="main"
+        className="flex-1"
+      >
         <HeroSection />
         <StackBand />
         <WiringSection />

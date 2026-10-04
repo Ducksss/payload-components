@@ -166,9 +166,12 @@ function WallCard({ slug }: { slug: string }) {
           the page height depend on how each twin happens to wrap, and on mobile
           the wall sits above ~17,000px of page, so a 1px wobble relayouts
           everything under it. Content is centred so the shorter blocks read as
-          deliberately framed rather than stranded in dead space. */}
+          deliberately framed rather than stranded in dead space.
+
+          preview-scope: the twin keeps the component tokens (Geist, emerald)
+          while the caption above it wears the site's Datasheet brand. */}
       <div className="wall-card-frame relative flex h-[180px] items-center overflow-hidden rounded-[0.7rem] bg-background shadow-frame sm:h-[256px] lg:h-[216px]">
-        <div className="w-[1280px] shrink-0 origin-left scale-[0.18046875] sm:scale-[0.2578125] lg:scale-[0.3]">
+        <div className="preview-scope w-[1280px] shrink-0 origin-left scale-[0.18046875] sm:scale-[0.2578125] lg:scale-[0.3]">
           <Demo />
         </div>
       </div>

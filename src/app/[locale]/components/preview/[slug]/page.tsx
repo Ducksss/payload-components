@@ -31,9 +31,14 @@ export default async function ComponentPreviewPage({
 
   /* No min-h-screen: the docs frame measures this document's height to size its
      iframe, so the page must collapse to its content (a forced full-viewport
-     height leaves dead space under short blocks like the hero). */
+     height leaves dead space under short blocks like the hero).
+
+     preview-scope pins the component tokens (Geist, emerald, base radius)
+     explicitly. Nothing branded wraps this route today, so it changes no pixel;
+     it keeps the visual baselines safe if the brand layer ever moves up to
+     <body> (globals.css section 4). */
   return (
-    <main className="bg-background px-4 py-8 sm:px-6 sm:py-10">
+    <main className="preview-scope bg-background px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto w-full max-w-5xl">
         <Demo />
       </div>
