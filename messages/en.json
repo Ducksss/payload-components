@@ -32,7 +32,7 @@
   },
   "Consent": {
     "title": "Analytics cookies",
-    "description": "We use Google Analytics and PostHog to see which components and docs people actually use. Decline and neither one loads — no cookie, no identifier. Page-speed measurement runs either way and stores nothing.",
+    "description": "Google Analytics and PostHog show us which components and docs get used. Decline and neither loads: no cookie, no identifier. Page-speed checks run either way and store nothing.",
     "privacy": "Privacy",
     "decline": "Decline",
     "accept": "Accept"
