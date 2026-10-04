@@ -3450,6 +3450,32 @@
         }
       ],
       "registryDependencies": []
+    },
+    {
+      "name": "related-posts",
+      "type": "registry:component",
+      "title": "Related Posts",
+      "description": "A compact end-of-post list of related articles your template selects; the current post is always excluded.",
+      "docs": "File-only article template component. Import RelatedPosts from @/components/RelatedPosts/Component at the end of your post template, pass the current post as currentHref, and pass the posts your template selected. It does no querying or recommendation. No Pages or RenderBlocks edits and no generators. Direct install: pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/related-posts.json Optional tracked install in a supported Payload project: payload-components add related-posts.",
+      "meta": {
+        "payloadComponent": {
+          "installCommand": "payload-components add related-posts",
+          "postInstall": [],
+          "requiresPayloadComponentWrapper": false,
+          "supportedTargets": [
+            "payload-website-starter",
+            "payload-blocks-app"
+          ]
+        }
+      },
+      "files": [
+        {
+          "path": "payload-components/source/components/RelatedPosts/Component.tsx",
+          "type": "registry:file",
+          "target": "~/src/components/RelatedPosts/Component.tsx"
+        }
+      ],
+      "registryDependencies": []
     }
   ]
 }

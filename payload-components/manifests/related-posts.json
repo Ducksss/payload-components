@@ -1,0 +1,69 @@
+{
+  "$schema": "../schema/poc-manifest.schema.json",
+  "name": "related-posts",
+  "version": "0.1.0",
+  "changelog": [
+    {
+      "version": "0.1.0",
+      "summary": "Initial release."
+    }
+  ],
+  "title": "Related Posts",
+  "description": "A compact end-of-post list of related articles your template selects; the current post is always excluded.",
+  "registryItemName": "related-posts",
+  "dependencies": {},
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "payload": "^3.0.0",
+    "react": "^19.0.0"
+  },
+  "supportedTargets": [
+    "payload-website-starter",
+    "payload-blocks-app"
+  ],
+  "supports": {
+    "payloadMajors": [
+      3
+    ],
+    "nextMajors": [
+      15,
+      16
+    ]
+  },
+  "files": [
+    "src/components/RelatedPosts/Component.tsx"
+  ],
+  "payloadFragments": [],
+  "postInstall": [],
+  "preview": {
+    "summary": "A compact end-of-post list of related articles your template selects; the current post is always excluded."
+  },
+  "sampleContent": {
+    "title": "Related posts",
+    "currentHref": "/posts/build-for-the-people-who-publish",
+    "posts": [
+      {
+        "title": "Write the brief before the block",
+        "href": "/posts/write-the-brief-before-the-block",
+        "excerpt": "Editors know what a page needs to say. Start there, then decide which fields the block deserves.",
+        "publishedAt": "2026-08-28T12:00:00Z"
+      },
+      {
+        "title": "Drafts are a feature, not a state",
+        "href": "/posts/drafts-are-a-feature",
+        "excerpt": "Preview, review, and schedule changes without a second CMS or a staging copy of the site.",
+        "publishedAt": "2026-08-19T12:00:00Z"
+      },
+      {
+        "title": "Fewer fields, better pages",
+        "href": "/posts/fewer-fields-better-pages",
+        "excerpt": "Every optional field is a decision you hand to an editor. Make fewer of them, and make them count.",
+        "publishedAt": "2026-08-07T12:00:00Z"
+      }
+    ]
+  },
+  "recovery": {
+    "patchedFiles": []
+  },
+  "installMode": "file-only"
+}

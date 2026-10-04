@@ -16,9 +16,14 @@ describe('generated site component catalog', () => {
       'post-hero',
       'author-card',
       'newsletter-callout',
+      'related-posts',
     ])
     expect(componentEntries.filter((component) => component.family === 'pages')).toHaveLength(79)
-    expect(upcomingComponents.map((component) => component.slug)).toEqual(['related-posts'])
+    // Every proposed post component ships; nothing installable may also be listed as upcoming.
+    expect(upcomingComponents).toEqual([])
+    expect(componentEntries.find((component) => component.slug === 'related-posts')?.category).toBe(
+      'related',
+    )
     expect(
       componentEntries.find((component) => component.slug === 'collection-query')?.category,
     ).toBe('query')

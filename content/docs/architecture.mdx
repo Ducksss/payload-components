@@ -73,12 +73,13 @@ The component runtime is external. A component installs into a supported Payload
 - `Pages` collection layout fragments
 - `generate:types` and `generate:importmap` post-install tasks
 
-Post Hero, Author Card, and Newsletter Callout are explicit file-only exceptions for article
-templates. They install under `src/components/` and accept content through React props. Import
-them into your existing post template; they add no collection fields, Pages registrations, or
-`RenderBlocks` entries. Your template owns queries, public author data, draft handling,
-localization, and the newsletter signup endpoint. Collection Query remains a wired Pages block
-for article listings.
+Post Hero, Author Card, Newsletter Callout, and Related Posts are explicit file-only exceptions
+for article templates. They install under `src/components/` and accept content through React
+props. Import them into your existing post template; they add no collection fields, Pages
+registrations, or `RenderBlocks` entries. Your template owns queries, public author data, draft
+handling, localization, the newsletter signup endpoint, and which related posts to show: Related
+Posts takes the current post's `currentHref` and renders only the posts it is given. Collection
+Query remains a wired Pages block for article listings.
 
 A bare Payload app can establish the required host files with
 `payload-components init --scaffold` before installing blocks. This explicit setup copies

@@ -327,6 +327,10 @@
     {
       "slug": "newsletter-callout",
       "version": "0.1.0"
+    },
+    {
+      "slug": "related-posts",
+      "version": "0.1.0"
     }
   ],
   "version": 1

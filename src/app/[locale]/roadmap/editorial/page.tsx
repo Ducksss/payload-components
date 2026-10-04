@@ -59,13 +59,15 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function EditorialRoadmapPage() {
   const locale = await getSiteLocale()
   const publication = getPublication('/roadmap/editorial', locale)
-  const [t, commonT] = await Promise.all([
+  const [t, commonT, browserT] = await Promise.all([
     getTranslations({
       locale: publication.contentLocale,
       namespace: 'EditorialRoadmap',
     }),
     getTranslations({ locale, namespace: 'Common' }),
+    getTranslations({ locale: publication.contentLocale, namespace: 'CatalogBrowser' }),
   ])
+  const hasProposals = upcomingComponents.length > 0
   const structuredData = graph(
     breadcrumbNode([
       { name: commonT('home'), path: localizeHref('/', locale) },
@@ -133,9 +135,11 @@ export default async function EditorialRoadmapPage() {
                     <CircleDashed className="size-3.5 text-brand" aria-hidden="true" />
                     {t('suiteEyebrow')}
                   </span>
-                  <span className="font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground">
-                    01 — {String(upcomingComponents.length).padStart(2, '0')}
-                  </span>
+                  {hasProposals ? (
+                    <span className="font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground">
+                      01 — {String(upcomingComponents.length).padStart(2, '0')}
+                    </span>
+                  ) : null}
                 </div>
                 <div className="py-14 sm:py-16">
                   <p aria-hidden="true" className="font-serif text-7xl leading-none text-brand">
@@ -148,17 +152,19 @@ export default async function EditorialRoadmapPage() {
                     {t('suiteDescription')}
                   </p>
                 </div>
-                <div className="grid grid-cols-4 border-y border-foreground/15 py-4">
-                  {upcomingComponents.map((component, index) => (
-                    <span
-                      key={component.slug}
-                      title={component.title}
-                      className="text-center font-mono text-[10px] text-foreground/60"
-                    >
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                  ))}
-                </div>
+                {hasProposals ? (
+                  <div className="grid grid-cols-4 border-y border-foreground/15 py-4">
+                    {upcomingComponents.map((component, index) => (
+                      <span
+                        key={component.slug}
+                        title={component.title}
+                        className="text-center font-mono text-[10px] text-foreground/60"
+                      >
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
               </aside>
             </div>
           </div>
@@ -177,28 +183,46 @@ export default async function EditorialRoadmapPage() {
             </p>
           </div>
 
-          <ol className="mt-12 border-y border-foreground/15">
-            {upcomingComponents.map((component, index) => (
-              <li
-                id={component.slug}
-                key={component.slug}
-                className="grid scroll-mt-24 grid-cols-12 gap-x-4 gap-y-3 border-b border-foreground/10 py-7 last:border-b-0 sm:gap-x-6 lg:items-baseline"
+          {hasProposals ? (
+            <ol className="mt-12 border-y border-foreground/15">
+              {upcomingComponents.map((component, index) => (
+                <li
+                  id={component.slug}
+                  key={component.slug}
+                  className="grid scroll-mt-24 grid-cols-12 gap-x-4 gap-y-3 border-b border-foreground/10 py-7 last:border-b-0 sm:gap-x-6 lg:items-baseline"
+                >
+                  <span className="col-span-2 font-mono text-[10px] font-medium tracking-eyebrow text-brand-600 sm:col-span-1">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <h3 className="col-span-10 font-serif text-2xl font-normal leading-none text-foreground sm:col-span-4 sm:text-3xl">
+                    {component.title}
+                  </h3>
+                  <p className="col-span-10 col-start-3 text-sm leading-6 text-muted-foreground sm:col-span-5 sm:col-start-auto">
+                    {component.description}
+                  </p>
+                  <span className="col-span-10 col-start-3 font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground sm:col-span-2 sm:col-start-auto sm:text-right">
+                    {component.target}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            /* Every proposal has shipped: invite the next one instead of an empty list. */
+            <div className="mt-12 flex flex-col items-start gap-5 border-y border-foreground/15 py-7 sm:flex-row sm:items-center sm:justify-between">
+              <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+                {browserT('proposal')}
+              </p>
+              <a
+                href={contributionHref}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-sm text-sm font-semibold text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
               >
-                <span className="col-span-2 font-mono text-[10px] font-medium tracking-eyebrow text-brand-600 sm:col-span-1">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <h3 className="col-span-10 font-serif text-2xl font-normal leading-none text-foreground sm:col-span-4 sm:text-3xl">
-                  {component.title}
-                </h3>
-                <p className="col-span-10 col-start-3 text-sm leading-6 text-muted-foreground sm:col-span-5 sm:col-start-auto">
-                  {component.description}
-                </p>
-                <span className="col-span-10 col-start-3 font-mono text-[10px] uppercase tracking-eyebrow text-muted-foreground sm:col-span-2 sm:col-start-auto sm:text-right">
-                  {component.target}
-                </span>
-              </li>
-            ))}
-          </ol>
+                {browserT('issue')}
+                <ArrowUpRight className="size-4" aria-hidden="true" />
+              </a>
+            </div>
+          )}
         </Section>
 
         <Section className="bg-muted/35">

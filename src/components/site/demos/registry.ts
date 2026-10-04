@@ -82,6 +82,7 @@ import { ContactFormBasicDemo } from './ContactFormBasicDemo'
 import { PostHeroDemo } from './PostHeroDemo'
 import { AuthorCardDemo } from './AuthorCardDemo'
 import { NewsletterCalloutDemo } from './NewsletterCalloutDemo'
+import { RelatedPostsDemo } from './RelatedPostsDemo'
 
 /* Single source of truth mapping a component slug to its live demo twin. Shared by
  * the catalog preview thumbnails (ComponentPreviewThumb) and the docs-page live
@@ -171,6 +172,7 @@ export const demosBySlug: Record<string, ComponentType> = {
   'post-hero': PostHeroDemo,
   'author-card': AuthorCardDemo,
   'newsletter-callout': NewsletterCalloutDemo,
+  'related-posts': RelatedPostsDemo,
 }
 
 export function hasComponentDemo(slug: string) {

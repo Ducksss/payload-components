@@ -210,7 +210,7 @@ describe('fresh Payload smoke component selection', () => {
     const delivered = shards.flatMap((shard) => shard.directComponents)
     expect(delivered.sort()).toEqual(defaults.directComponents)
     expect(new Set(delivered).size).toBe(delivered.length)
-    for (const article of ['author-card', 'post-hero']) {
+    for (const article of ['author-card', 'post-hero', 'related-posts']) {
       expect(defaults.directComponents).toContain(article)
       expect(defaults.pageComponents).not.toContain(article)
     }

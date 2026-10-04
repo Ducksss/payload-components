@@ -103,9 +103,9 @@ Two bookkeeping rules make the after-the-fact wrap safe. `recordLocalizedInstall
 
 - _payload-components-required_ page blocks (`hero-basic`, `feature-grid-basic`) — need the full wiring above.
 - _Posts-aware_ blocks and components — Collection Query is installed and wired
-  as a Pages block. Post Hero (`post-hero`), Author Card (`author-card`), and Newsletter Callout
-  (`newsletter-callout`) are explicit file-only article template components under `source/components/`, composed with public
-  React props. Their manifests declare `installMode: 'file-only'`, empty fragments,
+  as a Pages block. Post Hero (`post-hero`), Author Card (`author-card`), Newsletter Callout
+  (`newsletter-callout`), and Related Posts (`related-posts`) are explicit file-only article template components under `source/components/`, composed with public
+  React props. Related Posts takes an explicit `currentHref` and the posts the template selected; it never queries or recommends. Their manifests declare `installMode: 'file-only'`, empty fragments,
   empty post-install tasks, and empty recovery paths. They support direct shadcn delivery
   and tracked CLI installs in supported projects; they add no admin fields or Pages wiring.
   `--demo` and `--localized` are rejected for these components, and localization is owned

@@ -816,6 +816,14 @@ const componentEditorialEntries = [
     target: englishMessages.Components['newsletter-callout'].target,
     title: englishMessages.Components['newsletter-callout'].title,
   },
+  {
+    category: 'related',
+    description: englishMessages.Components['related-posts'].description,
+    fields: ['title', 'currentHref', 'posts'],
+    slug: 'related-posts',
+    target: englishMessages.Components['related-posts'].target,
+    title: englishMessages.Components['related-posts'].title,
+  },
 ] as const
 
 const editorialBySlug = new Map<string, (typeof componentEditorialEntries)[number]>(
@@ -844,20 +852,21 @@ if (componentEntries.length !== componentEditorialEntries.length) {
 
 export type ComponentEntry = (typeof componentEntries)[number]
 
-/* The planned posts suite is a set of public proposals that will ship through
- * the same source, manifest, docs, and installer workflow as the MIT registry. */
-export const upcomingComponents = [
-  {
-    category: 'related',
-    description: englishMessages.Components['related-posts'].description,
-    family: 'posts',
-    slug: 'related-posts',
-    target: englishMessages.Components['related-posts'].target,
-    title: englishMessages.Components['related-posts'].title,
-  },
-] as const
+export type UpcomingComponent = {
+  category: ComponentCategory
+  description: string
+  family: (typeof componentCategories)[ComponentCategory]['family']
+  slug: string
+  target: string
+  title: string
+}
 
-export type UpcomingComponent = (typeof upcomingComponents)[number]
+/* Public proposals that will ship through the same source, manifest, docs, and
+ * installer workflow as the MIT registry. Every proposed post component is
+ * installable today, so the list is empty and the catalog and editorial roadmap
+ * render their no-proposal states. The explicit type keeps those surfaces typed
+ * while the list is empty. */
+export const upcomingComponents: readonly UpcomingComponent[] = []
 
 export const componentsIntro = englishMessages['Landing']['catalog']['intro']
 
@@ -870,7 +879,7 @@ export const componentFamilies = {
   posts: {
     countLabel: 'Installable',
     description:
-      'File-only article surfaces composed in your post template. Post Hero, Author Card, and Newsletter Callout accept public content as props; Collection Query handles Pages-based article listings.',
+      'File-only article surfaces composed in your post template. Post Hero, Author Card, Newsletter Callout, and Related Posts accept public content as props; Collection Query handles Pages-based article listings.',
     name: 'Post components',
   },
 } as const
