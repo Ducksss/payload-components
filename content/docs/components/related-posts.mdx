@@ -1,0 +1,137 @@
+---
+title: Related Posts
+description: A compact end-of-post list of related articles your template selects; the current post is always excluded.
+icon: Newspaper
+---
+
+<ComponentPreview slug="related-posts" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    Track the file-only install in a supported Payload project:
+
+    ```bash
+    npx payload-components add related-posts
+    ```
+
+  </Tab>
+  <Tab value="Manual">
+    Copy the standalone React component directly. No Payload wiring is needed:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/related-posts.json
+    ```
+
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="related-posts" />
+
+## Content model
+
+These are React props supplied by your post template. This component adds no collection fields
+and does not query, rank, or recommend content: your template selects the posts and passes them
+in display order. Resolve relationship IDs before supplying public display data.
+
+<TypeTable
+  type={{
+    currentHref: {
+      type: 'string',
+      required: true,
+      description:
+        'Path or URL of the post this section is placed on, in the same form as each post href. That post is never listed.',
+    },
+    posts: {
+      type: 'readonly RelatedPost[]',
+      required: true,
+      description:
+        'The posts your template selected, in display order. Unsafe hrefs and repeats are skipped; nothing renders when no posts remain.',
+    },
+    title: {
+      type: 'string',
+      default: 'Related posts',
+      description: 'Section heading; renders an h2. Translate it in your template.',
+    },
+    locale: {
+      type: 'string',
+      default: 'en',
+      description: 'Date locale. Unsupported locale syntax falls back to English.',
+    },
+    id: { type: 'string', description: 'Optional wrapper ID; it also prefixes the heading ID.' },
+    className: { type: 'string', description: 'Additional wrapper classes.' },
+    disableInnerContainer: {
+      type: 'boolean',
+      default: 'false',
+      description: 'Use the surrounding template container.',
+    },
+  }}
+/>
+
+Each entry in `posts` carries:
+
+<TypeTable
+  type={{
+    title: { type: 'string', required: true, description: 'Post title; renders an h3 link.' },
+    href: {
+      type: 'string',
+      required: true,
+      description: 'A site path such as /posts/slug, or an HTTP(S) URL. Other values are skipped.',
+    },
+    excerpt: { type: 'string | null', description: 'Optional summary, clamped to three lines.' },
+    publishedAt: {
+      type: 'string | null',
+      description: 'ISO date, formatted in UTC. Invalid dates are omitted.',
+    },
+    image: {
+      type: 'ReactNode',
+      description: 'Optional image element; the template provides populated media and alt text.',
+    },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="related-posts" />
+
+```tsx
+import { RelatedPosts } from '@/components/RelatedPosts/Component'
+import { Media } from '@/components/Media'
+import type { Post } from '@/payload-types'
+
+// Render once at the end of your post template, after the article body.
+export function ArticleRelatedPosts({ post }: { post: Post }) {
+  return (
+    <RelatedPosts
+      currentHref={`/posts/${post.slug}`}
+      posts={(post.relatedPosts ?? []).flatMap((related) =>
+        typeof related === 'object' && related?.slug
+          ? [
+              {
+                title: related.title,
+                href: `/posts/${related.slug}`,
+                excerpt: related.meta?.description,
+                publishedAt: related.publishedAt,
+                image:
+                  related.meta?.image && typeof related.meta.image === 'object' ? (
+                    <Media resource={related.meta.image} />
+                  ) : undefined,
+              },
+            ]
+          : [],
+      )}
+    />
+  )
+}
+```
+
+Place it once per post, after the article body and any author card. It renders a section labelled by its h2, with an h3 per post, so the page keeps the single h1 from your post header. When no posts remain after the current post, unsafe hrefs, and repeats are removed, it renders nothing, so the template needs no empty check. The Payload website starter ships its own `RelatedPosts` in `@/blocks/RelatedPosts/Component`. This install leaves that file alone, so swap the import in your post page or alias one of the two.
+
+Selection stays in your template. The example reads the starter's manually curated `relatedPosts` relationship, which its post query populates at `depth: 2`. Automatic recommendations, such as recent posts that share a category, belong in a separate query that passes its results through the same `posts` prop. This component never queries, ranks, or fills the list.
+
+## Requirements
+
+<ComponentRequirements slug="related-posts" />

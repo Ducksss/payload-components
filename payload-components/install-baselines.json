@@ -2240,6 +2240,13 @@
           "default": "8152cbf145f5e2642caa788e9e0122654fdf5a54a74969e83eff53faddc2579d"
         }
       }
+    },
+    "related-posts": {
+      "0.1.0": {
+        "src/components/RelatedPosts/Component.tsx": {
+          "default": "cc5179c1e309420dd24bb376750ced30c4f377dc62f677455d2e04f3d2451c51"
+        }
+      }
     }
   }
 }

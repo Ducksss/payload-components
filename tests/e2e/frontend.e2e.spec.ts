@@ -1108,6 +1108,7 @@ test.describe('Light shadcn frontend', () => {
   })
 
   test('presents upcoming post components as public roadmap proposals', async ({ page }) => {
+    test.skip(upcomingComponents.length === 0, 'Every proposed post component is installable.')
     const component = upcomingComponents[0]
 
     await page.goto(`${baseURL}/components?type=posts`)
@@ -1134,12 +1135,39 @@ test.describe('Light shadcn frontend', () => {
     ).toBeVisible()
   })
 
+  test('keeps the editorial roadmap coherent once every proposal has shipped', async ({ page }) => {
+    test.skip(upcomingComponents.length > 0, 'Open proposals are listed instead.')
+
+    await page.goto(`${baseURL}/components?type=posts`)
+    await expect(page.getByRole('button', { name: composerAddLabel('post-hero') })).toBeVisible()
+    await expect(page.getByText('Concept preview', { exact: true })).toHaveCount(0)
+
+    await page.goto(`${baseURL}/roadmap/editorial`)
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Help shape an editorial publishing system.',
+      }),
+    ).toBeVisible()
+    const collection = page.locator('#collection')
+    // No empty proposal list: the section invites the next proposal instead.
+    await expect(collection.getByRole('list')).toHaveCount(0)
+    await expect(collection.getByText(/Propose the next one\.$/)).toBeVisible()
+    await expect(collection.getByRole('link', { name: 'Open an issue' })).toHaveAttribute(
+      'href',
+      /\/issues\/new\?template=feature_request\.yml/,
+    )
+  })
+
   test('shows installable article components in the Posts filter and composer', async ({
     page,
   }) => {
     await page.goto(`${baseURL}/components?type=posts`)
     await expect(page.getByRole('button', { name: composerAddLabel('post-hero') })).toBeVisible()
     await expect(page.getByRole('button', { name: composerAddLabel('author-card') })).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: composerAddLabel('related-posts') }),
+    ).toBeVisible()
     await expect(page.getByRole('button', { name: composerAddLabel('hero-basic') })).toHaveCount(0)
     await page.getByRole('button', { name: composerAddLabel('post-hero') }).click()
     await expect(page.getByRole('region', { name: composerTrayLabel })).toContainText(

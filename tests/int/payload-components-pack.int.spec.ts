@@ -140,7 +140,7 @@ const listFilesRecursive = async (dir: string, root = dir): Promise<string[]> =>
       pageId: null,
     })
 
-    // These commands are advertised by the 1.6 catalog. Exercise the installed
+    // These commands are advertised by the catalog. Exercise the installed
     // artifact so missing bundled manifests or sources cannot pass unnoticed.
     for (const slug of [
       'collection-query',
@@ -148,6 +148,7 @@ const listFilesRecursive = async (dir: string, root = dir): Promise<string[]> =>
       'post-hero',
       'author-card',
       'newsletter-callout',
+      'related-posts',
     ]) {
       const { fixtureDir: targetDir, manifest: component } = await createInstallFixture(slug)
       tempDirs.push(targetDir)

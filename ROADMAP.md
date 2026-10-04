@@ -11,7 +11,7 @@ direction, not a commitment. New contributors can start with
 
 ## Current implementation
 
-The registry contains 79 wired Page blocks and three file-only article components.
+The registry contains 79 wired Page blocks and four file-only article components.
 Work merged into `main` reaches the published CLI with the next npm release.
 
 - `collection-query` provides grid, list, and featured Posts layouts, category
@@ -19,8 +19,9 @@ Work merged into `main` reaches the published CLI with the next npm release.
   is distributed with the block.
 - `contact-form-basic` provides an accessible contact form with validation,
   submission feedback, and a consumer-owned endpoint.
-- `post-hero`, `author-card`, and `newsletter-callout` install as files for
-  article-template composition; they do not patch Pages or run Payload generators.
+- `post-hero`, `author-card`, `newsletter-callout`, and `related-posts` install as
+  files for article-template composition; they do not patch Pages or run Payload
+  generators.
 - The catalog separates installable Page blocks and article components.
 - The visual install walkthrough covers discovery, wrapper installation, the
   resulting diff, doctor, and the limits of direct shadcn delivery.
@@ -40,16 +41,16 @@ shadcn directory.
 [#455] supersedes the blanket plan to ship eight separate file-only post
 components. Track outcomes, not duplicate implementations:
 
-| Earlier item                  | Current implementation or remaining scope                                                                                   |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `post-card` ([#123])          | Shared Post Card shipped with Collection Query; no separate registry item is needed.                                        |
-| `post-archive` ([#126])       | Collection Query grid layout.                                                                                               |
-| `post-list` ([#133])          | Collection Query list layout.                                                                                               |
-| `featured-post` ([#132])      | Collection Query featured layout.                                                                                           |
-| `post-hero` ([#124])          | File-only article header.                                                                                                   |
-| `author-card` ([#125])        | File-only article byline/profile.                                                                                           |
-| `newsletter-callout` ([#134]) | File-only article signup surface; Page signup stays with `call-to-action-signup`.                                           |
-| `related-posts` ([#135])      | Still requires an explicit relationship-aware article contract; category filtering is not automatic related-post selection. |
+| Earlier item                  | Current implementation or remaining scope                                                                             |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `post-card` ([#123])          | Shared Post Card shipped with Collection Query; no separate registry item is needed.                                  |
+| `post-archive` ([#126])       | Collection Query grid layout.                                                                                         |
+| `post-list` ([#133])          | Collection Query list layout.                                                                                         |
+| `featured-post` ([#132])      | Collection Query featured layout.                                                                                     |
+| `post-hero` ([#124])          | File-only article header.                                                                                             |
+| `author-card` ([#125])        | File-only article byline/profile.                                                                                     |
+| `newsletter-callout` ([#134]) | File-only article signup surface; Page signup stays with `call-to-action-signup`.                                     |
+| `related-posts` ([#135])      | File-only end-of-post list: the template passes `currentHref` and the posts it selected; no automatic recommendation. |
 
 Historical tickets can be closed once their replacement scope
 has been verified. A merged implementation does not silently satisfy the old
@@ -59,11 +60,10 @@ file-only acceptance criteria of a ticket that now maps to a wired Page block.
 
 1. Validate and release the complete current bundle, including fresh consumer
    compilation and Linux component visual baselines.
-2. Add `related-posts` only with explicit source-post context and a documented
-   placement contract. Keep automatic recommendations separate from manual
-   selection.
-3. Let real install feedback decide whether another hero variant ([#137]) or
-   additional collection browsing controls are useful.
+2. Let real install feedback decide whether another hero variant ([#137]) or
+   additional collection browsing controls are useful. Automatic related-post
+   recommendations stay a separate, template-owned query; `related-posts` only
+   renders the posts it is given.
 
 ## Exploring (not committed)
 

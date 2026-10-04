@@ -11,6 +11,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest
 import { AuthorCard } from '../../payload-components/source/components/AuthorCard/Component'
 import { NewsletterCallout } from '../../payload-components/source/components/NewsletterCallout/Component'
 import { PostHero } from '../../payload-components/source/components/PostHero/Component'
+import { RelatedPosts } from '../../payload-components/source/components/RelatedPosts/Component'
 import { buildRegistryForCheck } from '../../tools/payload-components/check-public-registry'
 import { loadManifest } from '../../tools/payload-components/manifest'
 import { runCommand } from '../../tools/payload-components/utils'
@@ -58,7 +59,7 @@ describe('file-only article components', () => {
 
   it('typechecks the actual distributed components against React without Payload stubs', () => {
     const program = ts.createProgram(
-      ['AuthorCard', 'NewsletterCallout', 'PostHero'].map((name) =>
+      ['AuthorCard', 'NewsletterCallout', 'PostHero', 'RelatedPosts'].map((name) =>
         path.join(root, 'payload-components/source/components', name, 'Component.tsx'),
       ),
       {
@@ -147,6 +148,102 @@ describe('file-only article components', () => {
     expect(html).toContain('aria-labelledby="newsletter-title"')
   })
 
+  it('renders the selected posts in order and never lists the current post', () => {
+    const html = renderToStaticMarkup(
+      <RelatedPosts
+        id="related"
+        currentHref="/posts/current"
+        posts={[
+          { title: 'The current post', href: '/posts/current/#comments' },
+          {
+            title: 'First pick',
+            href: '/posts/first',
+            excerpt: 'A summary',
+            publishedAt: '2026-08-12T23:30:00-04:00',
+            image: <span>Cover</span>,
+          },
+          { title: 'Second pick', href: 'https://example.com/posts/second' },
+          { title: 'Repeated pick', href: '/posts/first/' },
+          { title: 'Script pick', href: 'javascript:alert(1)' },
+          { title: 'Protocol-relative pick', href: '//evil.example/posts/third' },
+          { title: '   ', href: '/posts/untitled' },
+        ]}
+      />,
+    )
+    expect(html).toContain('aria-labelledby="related-title"')
+    expect(html).toContain('id="related-title"')
+    expect(html).toContain('Related posts')
+    expect(html.match(/<h2\b/g)).toHaveLength(1)
+    expect(html.match(/<h3\b/g)).toHaveLength(2)
+    expect(html.indexOf('First pick')).toBeLessThan(html.indexOf('Second pick'))
+    expect(html).toContain('href="/posts/first"')
+    expect(html).toContain('href="https://example.com/posts/second"')
+    for (const skipped of ['The current post', 'Repeated pick', 'Script pick', 'evil.example']) {
+      expect(html).not.toContain(skipped)
+    }
+    expect(html).not.toContain('/posts/untitled')
+    expect(html).toContain('A summary')
+    expect(html).toContain('Cover')
+    expect(html).toContain('Aug 13, 2026')
+    expect(html).toContain('dateTime="2026-08-13T03:30:00.000Z"')
+  })
+
+  it('renders nothing once the current post and unusable entries are removed', () => {
+    expect(renderToStaticMarkup(<RelatedPosts currentHref="/posts/only" posts={[]} />)).toBe('')
+    expect(
+      renderToStaticMarkup(
+        <RelatedPosts
+          currentHref="/posts/only"
+          posts={[{ title: 'Only', href: '/posts/only/' }]}
+        />,
+      ),
+    ).toBe('')
+    expect(
+      renderToStaticMarkup(
+        <RelatedPosts
+          currentHref="https://example.com/posts/only"
+          posts={[
+            { title: 'Only', href: 'https://EXAMPLE.com/posts/only#top' },
+            { title: 'Unsafe', href: 'data:text/html,bad' },
+          ]}
+        />,
+      ),
+    ).toBe('')
+    // A query string names a different post, so it is never treated as the current one.
+    const queried = renderToStaticMarkup(
+      <RelatedPosts
+        currentHref="/blog?post=1"
+        posts={[
+          { title: 'One', href: '/blog?post=1' },
+          { title: 'Two', href: '/blog?post=2' },
+        ]}
+      />,
+    )
+    expect(queried).not.toContain('>One<')
+    expect(queried).toContain('>Two<')
+  })
+
+  it('labels the related section and formats dates in the template locale', () => {
+    const html = renderToStaticMarkup(
+      <RelatedPosts
+        title="関連記事"
+        currentHref="/posts/a"
+        locale="not_a_locale"
+        posts={[
+          { title: 'B', href: '/posts/b', publishedAt: '2026-08-12' },
+          { title: 'C', href: '/posts/c', publishedAt: 'invalid' },
+        ]}
+      />,
+    )
+    const headingId = /aria-labelledby="([^"]+)"/.exec(html)?.[1]
+    expect(headingId).toBeTruthy()
+    expect(html).toContain(`<h2 id="${headingId}"`)
+    expect(html).toContain('関連記事')
+    expect(html).toContain('Aug 12, 2026')
+    expect(html.match(/<time\b/g)).toHaveLength(1)
+    expect(html).not.toContain('Invalid Date')
+  })
+
   it('renders post-card dates identically on servers and browsers in different timezones', async () => {
     const source = await readFile(
       path.join(root, 'payload-components/source/blocks/shared/PostCard.tsx'),
@@ -194,7 +291,7 @@ describe('file-only article components', () => {
     }
   })
 
-  it.each(['post-hero', 'author-card', 'newsletter-callout'])(
+  it.each(['post-hero', 'author-card', 'newsletter-callout', 'related-posts'])(
     'delivers %s through direct shadcn and tracks/removes it without host edits',
     async (slug) => {
       const { fixtureDir, manifest } = await createInstallFixture(slug)
@@ -238,6 +335,7 @@ describe('file-only article components', () => {
               'post-hero': 'PostHero',
               'author-card': 'AuthorCard',
               'newsletter-callout': 'NewsletterCallout',
+              'related-posts': 'RelatedPosts',
             }[slug]
           }`,
         )
@@ -276,13 +374,17 @@ describe('file-only article components', () => {
   it('refuses editor-only flags before creating project files', async () => {
     const cwd = await mkdtemp(path.join(os.tmpdir(), 'article-flags-'))
     tempDirs.push(cwd)
-    for (const flag of ['--localized', '--demo']) {
-      const error = await cli(cwd, 'add', 'post-hero', flag).catch(
-        (error: Error & { stderr: string }) => error,
-      )
-      expect(error).toBeInstanceOf(Error)
-      expect((error as Error & { stderr: string }).stderr).toContain('file-only article component')
+    for (const slug of ['post-hero', 'related-posts']) {
+      for (const flag of ['--localized', '--demo']) {
+        const error = await cli(cwd, 'add', slug, flag).catch(
+          (error: Error & { stderr: string }) => error,
+        )
+        expect(error).toBeInstanceOf(Error)
+        expect((error as Error & { stderr: string }).stderr).toContain(
+          'file-only article component',
+        )
+      }
+      expect((await loadManifest(slug)).files).toHaveLength(1)
     }
-    expect((await loadManifest('post-hero')).files).toHaveLength(1)
   })
 })
