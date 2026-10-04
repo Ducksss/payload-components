@@ -36,6 +36,7 @@ type CreatePayloadAppArgsInput = {
   payloadVersion?: string
   projectName: string
   template?: 'blank' | 'website'
+  templateRef?: string
 }
 
 type DirectShadcnAddArgsInput = {
@@ -321,11 +322,69 @@ export const resolveSmokeInstallGroups = async (options: SmokeOptions) => {
   }
 }
 
+const getVersionMajor = (version: string) => {
+  const major = /^(\d+)\./.exec(version)?.[1]
+
+  return major === undefined ? undefined : Number(major)
+}
+
+/* create-payload-app 4 renamed --version to --payload-version. Both CLIs parse
+ * arguments permissively, so the other major's flag is silently dropped: v4
+ * would fall back to its default dist-tag and scaffold whatever that resolves
+ * to, not the pinned version. A dist-tag names no major, so it gets both flags;
+ * each CLI ignores the one it does not know, and the explicit -n wins over the
+ * stray positionals that leaves behind. */
+export const getCreatePayloadAppVersionArgs = (payloadVersion: string) => {
+  const major = getVersionMajor(payloadVersion)
+
+  if (major === undefined) {
+    return ['--version', payloadVersion, '--payload-version', payloadVersion]
+  }
+
+  return major >= 4 ? ['--payload-version', payloadVersion] : ['--version', payloadVersion]
+}
+
+const payloadRepositoryUrl = 'https://github.com/payloadcms/payload.git'
+
+const payloadTagExists = async (tag: string) =>
+  runBoundedCommand({
+    args: ['ls-remote', '--exit-code', '--tags', payloadRepositoryUrl, `refs/tags/${tag}`],
+    captureOutput: true,
+    command: 'git',
+    cwd: repoRoot,
+    timeoutMs: 60_000,
+  }).then(
+    () => true,
+    () => false,
+  )
+
+/* create-payload-app 4 downloads its template from the payloadcms/payload main
+ * branch rather than from the release it installs, so a pinned canary got a
+ * newer template calling APIs its packages did not have yet. Pin the template
+ * to the release's own tag when there is one. Not every prerelease is tagged
+ * (4.0.0-canary.37 is the first canary that is), so an untagged version keeps
+ * the CLI default, and v3 keeps the 3.x branch its CLI already uses. */
+export const resolvePayloadTemplateRef = async (
+  payloadVersion: string,
+  tagExists: (tag: string) => Promise<boolean> = payloadTagExists,
+) => {
+  const major = getVersionMajor(payloadVersion)
+
+  if (major === undefined || major < 4) {
+    return undefined
+  }
+
+  const tag = `v${payloadVersion}`
+
+  return (await tagExists(tag)) ? tag : undefined
+}
+
 export const getCreatePayloadAppArgs = ({
   dbConnectionString,
   payloadVersion = '3.88.0',
   projectName,
   template = 'website',
+  templateRef,
 }: CreatePayloadAppArgsInput) => {
   const args = [
     'dlx',
@@ -347,7 +406,11 @@ export const getCreatePayloadAppArgs = ({
   args.push('--use-pnpm', '--no-agent', '--no-git')
 
   if (payloadVersion) {
-    args.push('--version', payloadVersion)
+    args.push(...getCreatePayloadAppVersionArgs(payloadVersion))
+  }
+
+  if (templateRef) {
+    args.push('--branch', templateRef)
   }
 
   return args
@@ -1023,6 +1086,7 @@ const runBarePayloadBaseBundleSmoke = async ({
   stageLog.push('bare-payload-base-bundle-smoke')
 
   const payloadVersion = await getLocalPayloadVersion()
+  const templateRef = await resolvePayloadTemplateRef(payloadVersion)
   const projectName = 'payload-components-bare-target'
   const targetPath = path.join(tempRoot, projectName)
   const normalizedDbConnectionString = normalizeSmokeDatabaseConnectionString(dbConnectionString)
@@ -1033,6 +1097,7 @@ const runBarePayloadBaseBundleSmoke = async ({
       payloadVersion,
       projectName,
       template: 'blank',
+      templateRef,
     }),
     command: 'pnpm',
     cwd: tempRoot,
@@ -1171,6 +1236,7 @@ const runFreshPayloadRepoSmoke = async ({
   stageLog.push('fresh-payload-repo-smoke')
 
   const payloadVersion = await getLocalPayloadVersion()
+  const templateRef = await resolvePayloadTemplateRef(payloadVersion)
   const projectName = 'payload-components-smoke-target'
   const targetPath = path.join(tempRoot, projectName)
   const normalizedDbConnectionString = normalizeSmokeDatabaseConnectionString(dbConnectionString)
@@ -1181,6 +1247,7 @@ const runFreshPayloadRepoSmoke = async ({
       dbConnectionString: normalizedDbConnectionString,
       payloadVersion,
       projectName,
+      templateRef,
     }),
     command: 'pnpm',
     cwd: tempRoot,
