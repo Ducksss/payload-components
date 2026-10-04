@@ -26,12 +26,18 @@ import { cn } from '@/utilities/ui'
  * 16px on a 390px viewport, a 1.125x boost that is cosmetic and does not break
  * the masonry. ComponentWall's 0.18 zoom laid out at 1280px and boosted 3.1x,
  * which DID collapse it. If this frame's zoom ever drops much below 0.5, re-check
- * it in WebKit — the boost scales with layoutWidth/viewport, not with the zoom. */
+ * it in WebKit — the boost scales with layoutWidth/viewport, not with the zoom.
+ *
+ * preview-scope: the twin renders on the component tokens even when the frame
+ * sits in branded site chrome (globals.css section 4). */
 export function DemoFitFrame({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div
       aria-hidden="true"
-      className={cn('pointer-events-none relative select-none overflow-hidden', className)}
+      className={cn(
+        'preview-scope pointer-events-none relative select-none overflow-hidden',
+        className,
+      )}
     >
       <div className="w-full [zoom:0.5]">{children}</div>
     </div>

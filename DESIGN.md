@@ -10,6 +10,7 @@ colors:
   border: 'oklch(92% 0.004 286.3deg)'
   brand: 'oklch(50.8% 0.118 165.6deg)'
   brand-50: 'oklch(97.6% 0.018 165.6deg)'
+  trace: 'oklch(47% 0.094 166.5deg)'
   destructive: 'oklch(57.7% 0.245 27.3deg)'
   terminal: 'oklch(16.5% 0.008 285.8deg)'
 typography:
@@ -19,6 +20,10 @@ typography:
     fontFamily: 'Geist Mono, ui-monospace, SFMono-Regular, Menlo, monospace'
   accent:
     fontFamily: 'Instrument Serif, ui-serif, Georgia, Times New Roman, serif'
+  display:
+    fontFamily: 'Archivo, Arial Narrow, Arial, sans-serif'
+  spec:
+    fontFamily: 'Azeret Mono, ui-monospace, SFMono-Regular, Menlo, monospace'
 rounded:
   DEFAULT: '0.625rem'
   inset: '1rem'
@@ -59,13 +64,22 @@ A maintainer's workbench after a careful install: the source diff, terminal tran
 - **Anti-references:** No generic gradient SaaS theatre, pricing-funnel language, ornamental dashboards, or flag-based language selection.
 - **Token ownership/runtime mapping:** This file mirrors the implemented system. `src/app/globals.css` is canonical for values and Tailwind mappings; visual standards and browser suites are the drift gates.
 
+## Brand layer and preview scope
+
+Two layers share one light page. The **site chrome** — the header and footer on every route, plus the landing, `/about` and `/brand-guide` — wears the _Datasheet_ brand: it is drawn like a component datasheet, in Archivo, Azeret Mono, and one trace green. The **blocks** it shows keep the component tokens below (Geist, emerald `brand`, the base radius), because that is what installs.
+
+- `[data-brand='datasheet']` (globals.css section 4) marks branded chrome. It remaps the tokens the chrome already uses — `--font-sans`, `--font-mono` and the `--brand` ramp — onto the brand faces and `trace`, so existing utilities follow without per-class edits.
+- `.preview-scope` restores every token the brand scope remaps. It sits on every surface that renders a demo twin: the preview route, `DemoFitFrame`, `DemoScaleFrame`, the hero wall, and the specimen. A twin inside branded chrome therefore renders exactly as it installs, and exactly as its visual baseline. `tests/int/brand-layer.int.spec.ts` keeps the two scopes mirror images, and the frontend e2e suite checks the landing's twins at runtime.
+- Never put `.preview-scope` inside a template shell: template themes set these tokens themselves.
+- The mark is two blocks, so it keeps the blocks' emerald (`--mark`) wherever it sits.
+
 ## Colors
 
-The site is forced light: white and zinc-like neutral surfaces carry almost all structure, with thin `border` dividers and AA-safe `muted-foreground` text. Emerald `brand` is the single expressive hue for active state, links, status dots, and soft `brand-50` notices. Destructive red is reserved for actual errors. `terminal` is an intentional permanent dark product surface, not a second theme. Focus rings must remain visible on both white and tinted surfaces.
+The site is forced light: white and zinc-like neutral surfaces carry almost all structure, with thin `border` dividers and AA-safe `muted-foreground` text. Each layer has one expressive green. In the site chrome it is `trace` (#0B6B4F, 6.5:1 on white) for drawings, pads, links, and the primary action, with `wire` for unlit traces and silkscreen. In the blocks it is emerald `brand`, for active state, links, status dots, and soft `brand-50` notices. Destructive red is reserved for actual errors. `terminal` is an intentional permanent dark product surface, not a second theme. Focus rings must remain visible on both white and tinted surfaces.
 
 ## Typography
 
-Geist Sans owns prose and controls; Geist Mono owns commands, paths, versions, metadata, and ledger labels. Instrument Serif is limited to one italic Latin accent word in expressive headings. It must not be applied to Arabic, Hebrew, CJK, Cyrillic, or Thai text; localized headings may omit the accent. Platform sans fallbacks provide script coverage. Keep prose near 60–75 characters, allow balanced headings only where line breaking remains stable, avoid uppercase transformations on non-Latin copy, and let Japanese browser kinsoku rules operate without manual spaces or italics. Ruby is not currently used.
+In the site chrome, Archivo sets display and text from one variable file: headings run condensed through its width axis (`.ds-display`, `font-stretch` 68–75%), and text runs at normal width. Azeret Mono carries commands, part numbers, and labels (`.ds-label`). In the blocks, Geist Sans owns prose and controls; Geist Mono owns commands, paths, versions, metadata, and ledger labels. Instrument Serif is limited to one italic Latin accent word in expressive block and unbranded-page headings; inside the brand scope the accent word is set as plain heading type. It must not be applied to Arabic, Hebrew, CJK, Cyrillic, or Thai text; localized headings may omit the accent. Platform sans fallbacks provide script coverage. Keep prose near 60–75 characters, allow balanced headings only where line breaking remains stable, avoid uppercase transformations on non-Latin copy, and let Japanese browser kinsoku rules operate without manual spaces or italics. Ruby is not currently used.
 
 ## Layout
 

@@ -1225,15 +1225,21 @@ test.describe('Light shadcn frontend', () => {
           return resolved
         }
 
+        const header = document.querySelector('body > header')
+
         return {
           bodyFont: getComputedStyle(document.body).fontFamily,
+          /* The Datasheet brand faces, and the shared header that wears them. */
+          display: root.getPropertyValue('--font-display').trim(),
           error: probe('', 'var(--color-fd-error)').color,
+          headerFont: header ? getComputedStyle(header).fontFamily : '',
           mono: root.getPropertyValue('--font-mono').trim(),
           radii: ['rounded-sm', 'rounded-md', 'rounded-lg', 'rounded-xl', 'rounded-2xl'].map(
             (utility) => probe(utility).radius,
           ),
           sans: root.getPropertyValue('--font-sans').trim(),
           serif: root.getPropertyValue('--font-serif').trim(),
+          spec: root.getPropertyValue('--font-spec').trim(),
           success: probe('', 'var(--color-fd-success)').color,
         }
       })
@@ -1243,6 +1249,10 @@ test.describe('Light shadcn frontend', () => {
     expect(site.sans).toContain('Geist')
     expect(site.mono).toContain('Geist')
     expect(site.serif).toContain('Instrument Serif')
+    expect(site.display).toContain('Archivo')
+    expect(site.spec).toContain('Azeret Mono')
+    expect(site.headerFont).toContain('Archivo')
+    expect(site.bodyFont).toContain('Geist')
     /* A real scale, so equality below cannot pass on probes that all read 0px. */
     const radii = site.radii.map((value) => Number.parseFloat(value))
     expect(radii.every((value, index) => value > (radii[index - 1] ?? 0))).toBe(true)
@@ -1250,6 +1260,84 @@ test.describe('Light shadcn frontend', () => {
     for (const path of ['/docs/installation', '/blog/what-is-a-payload-cms-block']) {
       await page.goto(`${baseURL}${path}`)
       expect(await readTokens(), path).toEqual(site)
+    }
+  })
+
+  test('keeps every demo twin on the component tokens inside the branded landing', async ({
+    page,
+  }) => {
+    /* The landing wears the Datasheet brand ([data-brand]: Archivo, Azeret
+       Mono, the --brand ramp remapped to trace green), and every twin in it
+       sits in a .preview-scope that restores the component tokens. The visual
+       baselines only see the chrome-free preview routes, so this is the check
+       that a twin INSIDE the chrome still renders as it installs. */
+    await page.goto(baseURL)
+    await page.evaluate(() => document.fonts.ready)
+
+    const report = await page.evaluate(() => {
+      const resolve = (host: Element, property: 'color' | 'fontFamily', value: string) => {
+        const probe = document.createElement('span')
+        if (property === 'color') probe.style.color = value
+        host.appendChild(probe)
+        const resolved = getComputedStyle(probe)[property]
+        probe.remove()
+        return resolved
+      }
+      const chrome = document.querySelector('main[data-brand]')
+      const scopes = [...document.querySelectorAll('main[data-brand] .preview-scope')]
+      const leaks: string[] = []
+
+      for (const scope of scopes) {
+        for (const element of scope.querySelectorAll('*')) {
+          if (element.children.length > 0 || !element.textContent?.trim()) continue
+          const family = getComputedStyle(element).fontFamily
+          if (/Archivo|Azeret/.test(family)) leaks.push(`${element.tagName}: ${family}`)
+        }
+      }
+
+      return {
+        chromeBrand: chrome ? resolve(chrome, 'color', 'var(--brand)') : '',
+        chromeFont: chrome ? resolve(chrome, 'fontFamily', '') : '',
+        componentBrand: resolve(document.body, 'color', 'var(--brand)'),
+        componentFont: getComputedStyle(document.body).fontFamily,
+        headline: getComputedStyle(document.querySelector('h1') as Element).fontFamily,
+        leaks: leaks.slice(0, 10),
+        scopeBrands: [...new Set(scopes.map((scope) => resolve(scope, 'color', 'var(--brand)')))],
+        scopeFonts: [...new Set(scopes.map((scope) => resolve(scope, 'fontFamily', '')))],
+        scopes: scopes.length,
+      }
+    })
+
+    /* The chrome really is branded, so the equalities below are not vacuous. */
+    expect(report.headline).toContain('Archivo')
+    expect(report.chromeFont).toContain('Archivo')
+    expect(report.chromeBrand).not.toBe(report.componentBrand)
+
+    /* The wall's eighteen cards twice over, the specimen, the family teaser and
+       the workflow surfaces. */
+    expect(report.scopes).toBeGreaterThan(20)
+    expect(report.leaks).toEqual([])
+    expect(report.scopeFonts).toEqual([report.componentFont])
+    expect(report.scopeBrands).toEqual([report.componentBrand])
+  })
+
+  test('draws hero-basic as a datasheet pinout in the hero', async ({ page }) => {
+    const hero = page.locator('.hero-shell')
+
+    for (const viewport of [
+      { drawing: '.pinout-desktop', height: 900, width: 1440 },
+      { drawing: '.pinout-phone', height: 844, width: 390 },
+    ]) {
+      await page.setViewportSize({ height: viewport.height, width: viewport.width })
+      await page.goto(baseURL)
+
+      /* Decorative: the headline and command carry the claim in text. */
+      const drawing = hero.locator(`svg${viewport.drawing}`)
+      await expect(drawing).toBeVisible()
+      await expect(drawing).toHaveAttribute('aria-hidden', 'true')
+      /* Five fields in, five artifacts out. */
+      await expect(drawing.locator('.pinout-net')).toHaveCount(5)
+      await expect(drawing.locator('.pinout-leg:not(.pinout-leg-out)')).toHaveCount(5)
     }
   })
 

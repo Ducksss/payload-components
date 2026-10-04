@@ -17,9 +17,10 @@ export function ComponentPreviewThumb({ slug }: { slug: string }) {
 
   return (
     /* preview-themed rebuilds the brand ramp from --preview-hue (set by the
-       catalog's brand control). Inert when the variable is unset, so the doc
-       pages and the landing keep rendering these twins in emerald. */
-    <div className="preview-themed relative overflow-hidden border-b border-border bg-muted/40">
+       catalog's brand control), and preview-scope applies it, with the
+       component tokens everywhere else (globals.css section 4). Inert when the
+       variable is unset, so these twins render in emerald by default. */
+    <div className="preview-scope preview-themed relative overflow-hidden border-b border-border bg-muted/40">
       {/* zoom-based frame self-sizes to the twin; the hover lift rides on the
           frame's transform and is reduced-motion safe. */}
       <DemoFitFrame className="max-h-[26rem] transition-transform duration-500 ease-out [mask-image:linear-gradient(to_bottom,black_93%,transparent)] group-hover:scale-[1.01] motion-reduce:transform-none motion-reduce:transition-none">

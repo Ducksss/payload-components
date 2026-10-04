@@ -66,6 +66,18 @@ const baseSwatches: readonly Swatch[] = [
   { className: 'bg-border', name: 'Border', token: '--border' },
 ]
 
+/* The site chrome's accent. Inside [data-brand] the --brand ramp resolves to
+   these, so the chrome's existing brand utilities draw in trace. */
+const traceSwatches: readonly Swatch[] = [
+  { className: 'bg-trace', name: 'Trace', token: '--trace', dark: true },
+  { className: 'bg-trace-600', name: 'Trace 600', token: '--trace-600', dark: true },
+  { className: 'bg-trace-200', name: 'Trace 200', token: '--trace-200' },
+  { className: 'bg-trace-100', name: 'Trace 100', token: '--trace-100' },
+  { className: 'bg-wire', name: 'Wire', token: '--wire' },
+]
+
+/* The component tokens. Rendered inside .preview-scope, so --brand shows the
+   emerald the blocks install with rather than the chrome's trace. */
 const brandSwatches: readonly Swatch[] = [
   { className: 'bg-brand', name: 'Brand', token: '--brand', dark: true },
   { className: 'bg-brand-600', name: 'Brand 600', token: '--brand-600', dark: true },
@@ -192,22 +204,30 @@ export default async function BrandGuidePage() {
       <SiteHeader />
       <TranslationNotice pathname="/brand-guide" />
 
-      <main {...publicationContentAttributes(publication)} id="main" className="flex-1">
+      {/* data-brand: the brand guide wears the Datasheet brand it documents
+          (globals.css section 4); its component-token specimens sit in
+          .preview-scope so they show what the blocks actually install. */}
+      <main
+        {...publicationContentAttributes(publication)}
+        data-brand="datasheet"
+        id="main"
+        className="flex-1"
+      >
         <section className="hero-shell overflow-hidden border-b border-border/60">
           <div aria-hidden="true" className="hero-atmosphere" />
 
           <div className="container relative py-16 sm:py-20 lg:py-24">
             <div className="flex max-w-3xl flex-col items-start">
               <span
-                className="hero-reveal flex items-center gap-2 rounded-full border border-border/70 bg-background/90 px-4 py-1.5 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-muted-foreground backdrop-blur-sm"
+                className="hero-rise ds-label flex items-center gap-2 text-muted-foreground"
                 style={{ animationDelay: '0ms' }}
               >
-                <span aria-hidden="true" className="hero-eyebrow-dot" />
+                <span aria-hidden="true" className="size-1.5 rounded-full bg-brand" />
                 Brand
               </span>
 
               <h1
-                className="hero-rise mt-6 text-balance text-[clamp(2.4rem,6vw,4.25rem)] font-medium leading-[0.98] tracking-[-0.05em] text-foreground"
+                className="hero-rise ds-display mt-6 text-balance text-[clamp(2.75rem,7.5vw,5rem)] text-foreground"
                 style={{ animationDelay: '60ms' }}
               >
                 The Payload Components <HeadingAccent>brand</HeadingAccent>
@@ -217,8 +237,9 @@ export default async function BrandGuidePage() {
                 className="hero-rise mt-5 max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg"
                 style={{ animationDelay: '110ms' }}
               >
-                A light-first, shadcn-monochrome system with exactly one accent: emerald. Geist does
-                the work; an italic serif carries the single warm note. Everything here is a living
+                Two layers, one light page. The site is drawn like a datasheet — Archivo, Azeret
+                Mono, and one trace green. The blocks it shows keep their own component tokens —
+                Geist and emerald — because that is what installs. Everything here is a living
                 reference for the tokens that ship in the codebase.
               </p>
             </div>
@@ -231,7 +252,7 @@ export default async function BrandGuidePage() {
             accentWord="wordmark"
             eyebrow="Identity"
             heading="The mark and wordmark"
-            intro="The logo is two blocks keyed together in an emerald square, set beside the wordmark in Geist. It reads as what the CLI does — separate blocks fitted into one page, wired rather than pasted."
+            intro="The logo is two blocks keyed together in an emerald square, set beside the wordmark in Archivo. It reads as what the CLI does — separate blocks fitted into one page, wired rather than pasted."
           />
 
           <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
@@ -254,22 +275,28 @@ export default async function BrandGuidePage() {
                     aria-hidden="true"
                     className="mt-2 size-1.5 shrink-0 rounded-full bg-brand"
                   />
-                  Keep the mark emerald (<code className="font-mono text-[12px]">--brand</code>) on
-                  a light surface; never recolor or gradient it.
+                  {/* One flex item, or each text run around the code becomes
+                      its own column once the line wraps. */}
+                  <span>
+                    Keep the mark emerald (
+                    <code className="whitespace-nowrap font-mono text-[12px]">--mark</code>) on a
+                    light surface; never recolor or gradient it. It is two blocks, so it keeps the
+                    blocks&apos; green wherever it sits.
+                  </span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span
                     aria-hidden="true"
                     className="mt-2 size-1.5 shrink-0 rounded-full bg-brand"
                   />
-                  Emerald is the only accent — don&apos;t introduce a second brand color.
+                  One green per layer: trace for the site, emerald for the blocks. Never a third.
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span
                     aria-hidden="true"
                     className="mt-2 size-1.5 shrink-0 rounded-full bg-brand"
                   />
-                  The wordmark stays in Geist at its semibold tracking-tight weight.
+                  The wordmark is set in Archivo at weight 650, at text width.
                 </li>
               </ul>
             </div>
@@ -279,10 +306,10 @@ export default async function BrandGuidePage() {
         {/* Color */}
         <Section className="bg-muted/40">
           <SectionHeading
-            accentWord="emerald"
+            accentWord="green"
             eyebrow="Color"
-            heading="Monochrome, with one emerald accent"
-            intro="A neutral shadcn scale carries the interface. Emerald and its tints appear sparingly — slugs, checks, active dots, the hero bloom. The terminal product-frame keeps its own dark surface regardless of page theme."
+            heading="Monochrome, with one green per layer"
+            intro="A neutral shadcn scale carries the interface. The site draws its accents in trace green — traces, pads, links, the primary action. The blocks keep emerald, the green they install with, and every preview shows it. The terminal product-frame keeps its own dark surface regardless of page theme."
           />
 
           <div className="mt-10 flex flex-col gap-10">
@@ -297,9 +324,18 @@ export default async function BrandGuidePage() {
 
             <div>
               <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
-                Emerald accent &amp; tints
+                Trace · the site chrome
               </p>
               <div className="mt-4">
+                <SwatchGrid swatches={traceSwatches} />
+              </div>
+            </div>
+
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
+                Emerald · the component tokens
+              </p>
+              <div className="preview-scope mt-4">
                 <SwatchGrid swatches={brandSwatches} />
               </div>
             </div>
@@ -328,38 +364,57 @@ export default async function BrandGuidePage() {
         {/* Typography */}
         <Section>
           <SectionHeading
-            accentWord="serif"
+            accentWord="Archivo"
             eyebrow="Typography"
-            heading="Geist, with an italic serif accent"
-            intro="Geist Sans is the workhorse for headings and body; Geist Mono carries commands, tokens, and eyebrows. Instrument Serif italic is the single warm note — one accent word per heading, never a paragraph."
+            heading="Archivo for the site, Geist for the blocks"
+            intro="Archivo sets the site, display and text alike: the headings run condensed through its width axis, so both are one file. Azeret Mono carries commands, part numbers, and labels. The blocks keep Geist Sans, Geist Mono, and an Instrument Serif italic accent — previews render them as they install."
           />
 
           <div className="mt-10 flex flex-col gap-4">
             <div className="rounded-card border border-border bg-card p-6 sm:p-8">
               <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
-                Geist Sans · --font-sans
+                Archivo, condensed · --font-display
               </p>
-              <p className="mt-4 font-sans text-4xl font-medium tracking-[-0.04em] text-foreground">
+              <p className="ds-display mt-4 text-5xl text-foreground">
                 Install Payload blocks wired, not pasted.
               </p>
             </div>
 
             <div className="rounded-card border border-border bg-card p-6 sm:p-8">
               <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
-                Instrument Serif italic · --font-serif
+                Azeret Mono · --font-spec
               </p>
-              <p className="mt-4 font-serif text-4xl font-normal italic tracking-[-0.015em] text-foreground">
-                The one warm typographic note
+              <p className="mt-4 font-spec text-xl text-foreground/85">
+                npx payload-components add hero-basic
               </p>
             </div>
 
-            <div className="rounded-card border border-border bg-card p-6 sm:p-8">
-              <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
-                Geist Mono · --font-mono
-              </p>
-              <p className="mt-4 font-mono text-xl text-foreground/85">
-                npx payload-components add hero-basic
-              </p>
+            {/* The component faces, shown on the component tokens. */}
+            <div className="preview-scope grid grid-cols-1 gap-4 lg:grid-cols-3">
+              <div className="rounded-card border border-border bg-card p-6 sm:p-8">
+                <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
+                  Blocks · Geist Sans · --font-sans
+                </p>
+                <p className="mt-4 font-sans text-3xl font-medium tracking-[-0.04em] text-foreground">
+                  Ship customer dashboards
+                </p>
+              </div>
+
+              <div className="rounded-card border border-border bg-card p-6 sm:p-8">
+                <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
+                  Blocks · Instrument Serif · --font-serif
+                </p>
+                <p className="mt-4 font-serif text-3xl font-normal italic tracking-[-0.015em] text-foreground">
+                  The one warm note
+                </p>
+              </div>
+
+              <div className="rounded-card border border-border bg-card p-6 sm:p-8">
+                <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">
+                  Blocks · Geist Mono · --font-mono
+                </p>
+                <p className="mt-4 font-mono text-lg text-foreground/85">add hero-basic</p>
+              </div>
             </div>
           </div>
         </Section>
@@ -370,10 +425,10 @@ export default async function BrandGuidePage() {
             accentWord="scales"
             eyebrow="Tokens"
             heading="Tracking, radius, and shadow scales"
-            intro="Named utilities replace one-off arbitraries across the blocks. The samples here are rendered by the live tokens in globals.css."
+            intro="Named utilities replace one-off arbitraries across the blocks. The samples here are rendered by the live tokens in globals.css, on the component tokens the blocks use."
           />
 
-          <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+          <div className="preview-scope mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
             {/* Tracking */}
             <div className="rounded-card border border-border bg-card p-6 sm:p-8">
               <p className="font-mono text-[11px] uppercase tracking-eyebrow text-muted-foreground">

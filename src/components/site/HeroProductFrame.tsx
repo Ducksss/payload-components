@@ -123,7 +123,9 @@ export function HeroProductFrame() {
               </div>
 
               <div className="overflow-hidden rounded-2xl border border-background/10 bg-black/30">
-                <code className="block px-4 py-4 font-mono text-[13px] leading-7">
+                {/* 12px: the Datasheet mono (Azeret) runs ~7% wider than
+                    Geist Mono, so this keeps the transcript's measure. */}
+                <code className="block px-4 py-4 font-mono text-xs leading-7">
                   <span className="terminal-row">
                     <span
                       className="terminal-line terminal-typed font-medium text-background/95"
