@@ -1,5 +1,11 @@
 {
-  "ignoredFiles": ["public/blog/**", "public/favicon.svg", "tests/e2e/**"],
+  "ignoredFiles": [
+    "public/blog/**",
+    "public/favicon.svg",
+    "tests/e2e/**",
+    "public/templates/*/posters/**",
+    "public/docs/walkthrough/**"
+  ],
   "aggressiveCompression": "false",
   "minKBReduced": 50
 }
