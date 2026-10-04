@@ -39,6 +39,8 @@ Start every release from a clean branch and keep the registry source, manifests,
 
     Bump `package.json` in a pull request into `main` and run `pnpm test:pack` before it merges. After that commit reaches `main`, publish a GitHub release whose tag is exactly `v<package.json version>` and points to the reviewed production commit. The Package Publish workflow verifies that relationship and runs the release and packed-artifact gates before publishing to npm.
 
+    npm authenticates the publish through trusted publishing (OIDC). The package's trusted publisher on npmjs.com must name `Ducksss` / `payload-components`, the workflow file `package-publish.yml`, and the environment `npm-production`, all matched exactly. The `NPM_TOKEN` secret is only a fallback. If it is used, it must be a granular token with write access and two-factor bypass, and it expires within 90 days.
+
     Keep the release in progress until the workflow succeeds and `npm view payload-components@latest version` reports the intended version. Test the new commands from that exact published version in a clean supported project, then verify the live registry. If publishing fails, the site can be ahead of the CLI; resolve the failure before announcing the components as available through the CLI.
 
   </Step>

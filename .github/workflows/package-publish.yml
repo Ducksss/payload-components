@@ -87,6 +87,13 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
 
+      # npm trusted publishing needs npm 11.5.1 or later, and Node 22 still bundles
+      # npm 10. With a trusted publisher configured on npmjs.com, npm signs in with
+      # this job's OIDC token (id-token: write) and adds provenance itself. It
+      # falls back to NPM_TOKEN only if that fails.
+      - name: Install an npm that supports trusted publishing
+        run: npm install --global npm@11.21.0
+
       - name: Publish to npm
         shell: bash
         run: |

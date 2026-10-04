@@ -299,6 +299,12 @@ describe('package publish guard', () => {
       'pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0',
     )
     expect(workflow).not.toContain('pnpm/action-setup@v6')
+    // Trusted publishing (OIDC) needs npm 11.5.1+ before the publish step runs.
+    expect(workflow).toContain('id-token: write')
+    expect(workflow.indexOf('npm install --global npm@11.21.0')).toBeGreaterThan(-1)
+    expect(workflow.indexOf('npm install --global npm@11.21.0')).toBeLessThan(
+      workflow.indexOf('npm publish --provenance'),
+    )
 
     const fetchCandidateIndex = workflow.indexOf('Fetch candidate release tag')
     const trustedInstallIndex = workflow.indexOf('Install trusted guard dependencies')
