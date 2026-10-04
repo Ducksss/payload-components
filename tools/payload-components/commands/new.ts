@@ -122,7 +122,9 @@ const collectUsedDbNames = async () => {
   return used
 }
 
-const buildManifest = (names: ComponentNames) =>
+// Exported so tests/int/payload-components-support-matrix.int.spec.ts can hold
+// new manifests to the support matrix.
+export const buildManifest = (names: ComponentNames) =>
   `${JSON.stringify(
     {
       $schema: '../schema/poc-manifest.schema.json',

@@ -291,10 +291,12 @@ describe('Payload major support', () => {
     })
     const v4 = await makeProject(starterFiles, canaryDependencies)
 
+    /* Declared majors are held to support-matrix.json by
+       payload-components-support-matrix.int.spec.ts; this proves the runtime
+       peer check accepts real installs of both majors. */
     for (const name of await listComponentNames()) {
       const manifest = await loadManifest(name)
 
-      expect(manifest.supports.payloadMajors, name).toEqual([3, 4])
       await expect(checkPeers(v3, manifest.peerDependencies), name).resolves.toMatchObject({
         missing: [],
       })
