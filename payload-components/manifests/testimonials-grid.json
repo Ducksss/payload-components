@@ -17,13 +17,13 @@
   "registryItemName": "testimonials-grid",
   "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
   "supports": {
-    "payloadMajors": [3],
+    "payloadMajors": [3, 4],
     "nextMajors": [15, 16]
   },
   "dependencies": {},
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
-    "payload": "^3.0.0"
+    "payload": "^3.0.0 || ^4.0.0-0"
   },
   "files": [
     "src/blocks/shared/testimonialFields.ts",

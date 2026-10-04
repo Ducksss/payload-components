@@ -133,9 +133,9 @@ const buildManifest = (names: ComponentNames) =>
       description: `TODO: one sentence on what ${names.title} is for.`,
       registryItemName: names.slug,
       dependencies: {},
-      peerDependencies: { next: '^15.0.0 || ^16.0.0', payload: '^3.0.0' },
+      peerDependencies: { next: '^15.0.0 || ^16.0.0', payload: '^3.0.0 || ^4.0.0-0' },
       supportedTargets: ['payload-website-starter', 'payload-blocks-app'],
-      supports: { payloadMajors: [3], nextMajors: [15, 16] },
+      supports: { payloadMajors: [3, 4], nextMajors: [15, 16] },
       files: [`src/blocks/${names.pascal}/config.ts`, `src/blocks/${names.pascal}/Component.tsx`],
       payloadFragments: [
         {

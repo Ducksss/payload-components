@@ -14,14 +14,15 @@
   "dependencies": {},
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
-    "payload": "^3.0.0"
+    "payload": "^3.0.0 || ^4.0.0-0"
   },
   "supportedTargets": [
     "payload-website-starter"
   ],
   "supports": {
     "payloadMajors": [
-      3
+      3,
+      4
     ],
     "nextMajors": [
       15,

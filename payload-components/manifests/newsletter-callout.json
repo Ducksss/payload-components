@@ -9,11 +9,11 @@
   "dependencies": {},
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
-    "payload": "^3.0.0",
+    "payload": "^3.0.0 || ^4.0.0-0",
     "react": "^19.0.0"
   },
   "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
-  "supports": { "payloadMajors": [3], "nextMajors": [15, 16] },
+  "supports": { "payloadMajors": [3, 4], "nextMajors": [15, 16] },
   "files": ["src/components/NewsletterCallout/Component.tsx"],
   "payloadFragments": [],
   "postInstall": [],
