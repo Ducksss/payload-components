@@ -452,6 +452,16 @@ sample content. See
 [the component template README](https://github.com/Ducksss/payload-components/blob/main/payload-components/component-template/README.md)
 for the full workflow.
 
+```bash
+pnpm payload-components new author-bio --file-only
+```
+
+`--file-only` scaffolds a file-only article component instead, like Post Hero or Related
+Posts: one React component under `src/components/` with no Payload wiring, a file-only
+manifest whose Payload and Next.js support comes from the support matrix, the file-only doc
+page with a React usage example, and the catalog copy. It prints the Posts category, catalog
+copy, and test updates it leaves to you.
+
 ## Set up and diagnose
 
 ```bash

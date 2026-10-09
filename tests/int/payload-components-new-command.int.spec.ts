@@ -1,10 +1,18 @@
-import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { spawnSync } from 'node:child_process'
+import { cp, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import * as prettier from 'prettier'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { deriveComponentNames } from '../../tools/payload-components/commands/new'
+import {
+  buildManifest,
+  deriveComponentNames,
+  deriveSupport,
+} from '../../tools/payload-components/commands/new'
+
+import type { SupportMatrix } from '../../tools/payload-components/types'
 
 /* `new` writes into the repository it is run from, so this spec runs it against a
  * throwaway copy of that layout instead of the real checkout — vitest runs spec
@@ -19,6 +27,15 @@ const SLUG = 'aa-scaffold-probe'
 const PASCAL = 'AaScaffoldProbe'
 
 const tempDirs: string[] = []
+
+/* The static import above loads commands/new against the real repoRoot. Every
+   test that mocks repoRoot then imports it again, which only yields a fresh,
+   mocked module once the registry is reset. Resetting here, rather than relying
+   on an earlier test's afterEach, keeps a filtered run (-t) or a reordered file
+   from scaffolding into the real checkout. */
+beforeEach(() => {
+  vi.resetModules()
+})
 
 afterEach(async () => {
   await Promise.all(tempDirs.splice(0).map((dir) => rm(dir, { force: true, recursive: true })))
@@ -35,6 +52,8 @@ const createScaffoldRoot = async () => {
   await mkdir(path.join(root, 'payload-components', 'manifests'), { recursive: true })
   await mkdir(path.join(root, 'content', 'docs', 'components'), { recursive: true })
   await mkdir(path.join(root, 'src', 'components', 'site', 'demos'), { recursive: true })
+  await mkdir(path.join(root, 'src', 'lib'), { recursive: true })
+  await mkdir(path.join(root, 'messages'), { recursive: true })
   await mkdir(path.join(root, 'tools', 'payload-components'), { recursive: true })
 
   /* Real inputs: the canonical scaffold, the schema the manifest is validated
@@ -59,6 +78,15 @@ const createScaffoldRoot = async () => {
     path.join(repoRoot, 'payload-components', 'manifests', 'hero-basic.json'),
     path.join(root, 'payload-components', 'manifests', 'hero-basic.json'),
   )
+  /* What the --file-only path reads: the support matrix its manifest is derived
+     from, and the catalog copy and Posts entries it appends to. */
+  for (const segments of [
+    ['payload-components', 'support-matrix.json'],
+    ['messages', 'en.json'],
+    ['src', 'lib', 'component-catalog.ts'],
+  ]) {
+    await cp(path.join(repoRoot, ...segments), path.join(root, ...segments))
+  }
 
   await Promise.all([
     writeFile(
@@ -127,7 +155,10 @@ const createScaffoldRoot = async () => {
   return root
 }
 
-const runScaffold = async (root: string) => {
+const runScaffold = async (
+  root: string,
+  { componentSlug = SLUG, fileOnly = false }: { componentSlug?: string; fileOnly?: boolean } = {},
+) => {
   vi.doMock('../../tools/payload-components/utils', async () => {
     const actual = await vi.importActual<typeof import('../../tools/payload-components/utils')>(
       '../../tools/payload-components/utils',
@@ -145,9 +176,18 @@ const runScaffold = async (root: string) => {
 
   const { newCommand } = await import('../../tools/payload-components/commands/new')
 
-  await newCommand({ componentSlug: SLUG })
+  await newCommand({ componentSlug, fileOnly })
 
   return { newCommand, output: output.join('') }
+}
+
+/* The inventory table's data rows, header to the blank line that closes it. */
+const inventoryTable = (readme: string) => {
+  const lines = readme.split('\n')
+  const header = lines.findIndex((line) => line.startsWith('| Component'))
+  const close = lines.indexOf('', header)
+
+  return { close, lines, rows: lines.slice(header + 2, close) }
 }
 
 const readRootFile = (root: string, ...segments: string[]) =>
@@ -354,4 +394,349 @@ describe('payload-components new', () => {
       await expect(readRootFile(root, ...segments)).rejects.toMatchObject({ code: 'ENOENT' })
     }
   })
+})
+
+describe('payload-components new: README inventory row', () => {
+  it("inserts the row as the table's last row, not after the blank line that closes it", async () => {
+    const root = await createScaffoldRoot()
+
+    await runScaffold(root)
+
+    const { close, lines, rows } = inventoryTable(await readRootFile(root, 'README.md'))
+
+    /* Prettier keeps one blank line between the table and the end marker. The row
+       used to land after that line, where markdown no longer reads it as a row. */
+    expect(rows).toEqual([
+      '| `hero-basic` | `npx payload-components add hero-basic` |',
+      `| \`${SLUG}\`| \`npx payload-components add ${SLUG}\`|`,
+    ])
+    expect(lines[close + 1]).toBe('<!-- COMPONENT-INVENTORY:END -->')
+  })
+
+  it('pads the row to the existing column widths', async () => {
+    const root = await createScaffoldRoot()
+
+    /* The repository table is wider than any slug, so new rows align with it. */
+    await writeFile(
+      path.join(root, 'README.md'),
+      [
+        '<!-- COMPONENT-INVENTORY:START -->',
+        '',
+        '| Component                 | Install command                                        |',
+        '| ------------------------- | ------------------------------------------------------ |',
+        '| `hero-basic`              | `npx payload-components add hero-basic`                |',
+        '',
+        '<!-- COMPONENT-INVENTORY:END -->',
+        '',
+      ].join('\n'),
+      'utf8',
+    )
+    await runScaffold(root)
+
+    const { rows } = inventoryTable(await readRootFile(root, 'README.md'))
+
+    expect(rows.at(-1)).toBe(
+      `| \`${SLUG}\`       | \`npx payload-components add ${SLUG}\`         |`,
+    )
+    expect(new Set(rows.map((row) => row.length)).size).toBe(1)
+  })
+})
+
+describe('payload-components new: Pages-block path', () => {
+  it('still scaffolds from the block templates and leaves the file-only targets alone', async () => {
+    const root = await createScaffoldRoot()
+    const untouched = [
+      ['messages', 'en.json'],
+      ['src', 'lib', 'component-catalog.ts'],
+    ]
+    const before = await Promise.all(untouched.map((segments) => readRootFile(root, ...segments)))
+
+    await runScaffold(root)
+
+    const template = (file: string) =>
+      readRootFile(repoRoot, 'payload-components', 'component-template', file).then((source) =>
+        source
+          .replaceAll('ExampleBasicBlock', `${PASCAL}Block`)
+          .replaceAll('ExampleBasic', PASCAL)
+          .replaceAll('exampleBasic', 'aaScaffoldProbe')
+          .replaceAll('example-basic', SLUG)
+          .replaceAll('Example Basic', 'Aa Scaffold Probe'),
+      )
+
+    expect(
+      await readRootFile(root, 'payload-components', 'source', 'blocks', PASCAL, 'config.ts'),
+    ).toBe(await template('config.ts'))
+    expect(
+      await readRootFile(root, 'payload-components', 'source', 'blocks', PASCAL, 'Component.tsx'),
+    ).toBe(await template('Component.tsx'))
+    expect(await readRootFile(root, 'content', 'docs', 'components', `${SLUG}.mdx`)).toBe(
+      await template('doc-page.mdx'),
+    )
+    expect(await readRootFile(root, 'payload-components', 'manifests', `${SLUG}.json`)).toBe(
+      buildManifest(deriveComponentNames(SLUG)),
+    )
+    expect(
+      await readRootFile(root, 'src', 'components', 'site', 'demos', `${PASCAL}Demo.tsx`),
+    ).toContain('<section aria-hidden="true" className="container">')
+
+    const item = JSON.parse(
+      await readRootFile(root, 'payload-components', 'registry.json'),
+    ).items.at(-1)
+    expect(item.type).toBe('registry:block')
+    expect(item.meta.payloadComponent.postInstall).toEqual(['generate:types', 'generate:importmap'])
+
+    await expect(
+      Promise.all(untouched.map((segments) => readRootFile(root, ...segments))),
+    ).resolves.toEqual(before)
+    await expect(
+      readdir(path.join(root, 'payload-components', 'source', 'components')),
+    ).rejects.toMatchObject({ code: 'ENOENT' })
+  })
+})
+
+describe('payload-components new --file-only', () => {
+  const FILE_SLUG = 'author-probe'
+  const FILE_PASCAL = 'AuthorProbe'
+
+  it('scaffolds a file-only article component the real loader accepts', async () => {
+    const root = await createScaffoldRoot()
+
+    await runScaffold(root, { componentSlug: FILE_SLUG, fileOnly: true })
+
+    const { loadManifest } = await import('../../tools/payload-components/manifest')
+    const manifest = await loadManifest(FILE_SLUG)
+
+    expect(manifest).toMatchObject({
+      files: [`src/components/${FILE_PASCAL}/Component.tsx`],
+      installMode: 'file-only',
+      name: FILE_SLUG,
+      payloadFragments: [],
+      postInstall: [],
+      recovery: { patchedFiles: [] },
+      registryItemName: FILE_SLUG,
+      version: '0.1.0',
+    })
+
+    const item = JSON.parse(
+      await readRootFile(root, 'payload-components', 'registry.json'),
+    ).items.at(-1)
+    expect(item).toMatchObject({
+      files: [
+        {
+          path: `payload-components/source/components/${FILE_PASCAL}/Component.tsx`,
+          target: `~/src/components/${FILE_PASCAL}/Component.tsx`,
+          type: 'registry:file',
+        },
+      ],
+      meta: {
+        payloadComponent: {
+          installCommand: `payload-components add ${FILE_SLUG}`,
+          postInstall: [],
+          requiresPayloadComponentWrapper: false,
+        },
+      },
+      name: FILE_SLUG,
+      registryDependencies: [],
+      type: 'registry:component',
+    })
+    expect(item.docs).toContain(`payload-components add ${FILE_SLUG}`)
+    expect(item.docs).toContain(`/r/${FILE_SLUG}.json`)
+
+    const component = await readRootFile(
+      root,
+      'payload-components',
+      'source',
+      'components',
+      FILE_PASCAL,
+      'Component.tsx',
+    )
+    expect(component).toContain(`export function ${FILE_PASCAL}(`)
+    for (const prop of ['id?: string', 'className?: string', 'disableInnerContainer?: boolean']) {
+      expect(component).toContain(prop)
+    }
+    expect(component).not.toMatch(/from '@\/|from 'next|from 'payload/)
+    await expect(
+      readdir(path.join(root, 'payload-components', 'source', 'blocks', FILE_PASCAL)),
+    ).rejects.toMatchObject({ code: 'ENOENT' })
+  })
+
+  it('derives Payload and Next.js support from the support matrix', async () => {
+    const root = await createScaffoldRoot()
+    const matrixPath = path.join(root, 'payload-components', 'support-matrix.json')
+    const matrix = JSON.parse(await readFile(matrixPath, 'utf8')) as SupportMatrix
+
+    /* A matrix that moves on must move the scaffold with it. */
+    for (const target of matrix.targets) {
+      target.allowedPayloadMajors = [...target.allowedPayloadMajors, 5]
+    }
+    await writeFile(matrixPath, `${JSON.stringify(matrix, null, 2)}\n`, 'utf8')
+    await runScaffold(root, { componentSlug: FILE_SLUG, fileOnly: true })
+
+    const manifest = JSON.parse(
+      await readRootFile(root, 'payload-components', 'manifests', `${FILE_SLUG}.json`),
+    )
+    expect(manifest.supports).toEqual({ payloadMajors: [3, 4, 5], nextMajors: [15, 16] })
+    expect(manifest.peerDependencies).toEqual({
+      next: '^15.0.0 || ^16.0.0',
+      payload: '^3.0.0 || ^4.0.0 || ^5.0.0-0',
+      react: '^19.0.0',
+    })
+    expect(manifest.supportedTargets).toEqual(matrix.targets.map((target) => target.id))
+    expect(manifest.supports).toEqual(deriveSupport(matrix).supports)
+  })
+
+  it('appends the catalog projections and lands every file prettier-clean', async () => {
+    const root = await createScaffoldRoot()
+    const { output } = await runScaffold(root, { componentSlug: FILE_SLUG, fileOnly: true })
+
+    const [registry, demoRegistry, docsMeta, readme, siteCatalog, messages, catalog, twin, doc] =
+      await Promise.all([
+        readRootFile(root, 'payload-components', 'registry.json'),
+        readRootFile(root, 'src', 'components', 'site', 'demos', 'registry.ts'),
+        readRootFile(root, 'content', 'docs', 'components', 'meta.json'),
+        readRootFile(root, 'README.md'),
+        readRootFile(root, 'src', 'generated', 'component-catalog.json'),
+        readRootFile(root, 'messages', 'en.json'),
+        readRootFile(root, 'src', 'lib', 'component-catalog.ts'),
+        readRootFile(root, 'src', 'components', 'site', 'demos', `${FILE_PASCAL}Demo.tsx`),
+        readRootFile(root, 'content', 'docs', 'components', `${FILE_SLUG}.mdx`),
+      ])
+
+    expect(JSON.parse(registry).items.map(({ name }: { name: string }) => name)).toEqual([
+      'hero-basic',
+      FILE_SLUG,
+    ])
+    expect(demoRegistry).toContain(`'${FILE_SLUG}': ${FILE_PASCAL}Demo,\n}`)
+    expect(JSON.parse(docsMeta).pages).toEqual(['hero-basic', FILE_SLUG])
+    expect(inventoryTable(readme).rows.at(-1)).toContain(`\`${FILE_SLUG}\``)
+    expect(JSON.parse(siteCatalog).components.at(-1)).toEqual({
+      slug: FILE_SLUG,
+      version: '0.1.0',
+    })
+
+    /* The catalog label, and a Posts entry whose category the slug names. */
+    expect(JSON.parse(messages).Components[FILE_SLUG]).toMatchObject({ title: 'Author Probe' })
+    expect(catalog).toContain(
+      [
+        '  {',
+        "    category: 'author',",
+        `    description: englishMessages.Components['${FILE_SLUG}'].description,`,
+        "    fields: ['title', 'description'],",
+        `    slug: '${FILE_SLUG}',`,
+        `    target: englishMessages.Components['${FILE_SLUG}'].target,`,
+        `    title: englishMessages.Components['${FILE_SLUG}'].title,`,
+        '  },',
+        '] as const',
+      ].join('\n'),
+    )
+
+    /* The doc page is the file-only format: a React usage example, no Pages steps. */
+    expect(doc).toMatch(/^---\ntitle: Author Probe\n/)
+    expect(doc.match(/^## .+$/gm)).toEqual([
+      '## Installation',
+      '## What it installs',
+      '## Content model',
+      '## Usage',
+      '## Requirements',
+    ])
+    expect(doc).toContain(`<ComponentUsage slug="${FILE_SLUG}" />`)
+    expect(doc).toContain(`import { ${FILE_PASCAL} } from '@/components/${FILE_PASCAL}/Component'`)
+    expect(doc).toContain(`npx payload-components add ${FILE_SLUG}`)
+    expect(doc).toContain(`/r/${FILE_SLUG}.json`)
+
+    /* The twin mirrors every class group of the scaffolded component, stays
+       presentational, and is reached only through demosBySlug, which every
+       surface renders inside .preview-scope. */
+    const component = await readRootFile(
+      root,
+      'payload-components',
+      'source',
+      'components',
+      FILE_PASCAL,
+      'Component.tsx',
+    )
+    const classGroups = [...component.matchAll(/className=(?:"([^"]+)"|\{([^}]*)\})/g)].flatMap(
+      ([, literal, expression]) =>
+        literal
+          ? [literal]
+          : [...(expression ?? '').matchAll(/'([^']+)'/g)]
+              .map(([, value]) => value)
+              .filter((value) => value.trim()),
+    )
+    expect(classGroups.length).toBeGreaterThan(3)
+    for (const group of classGroups) {
+      expect(twin).toContain(`className="${group}"`)
+    }
+    expect(twin).toContain('aria-hidden="true"')
+    expect(twin.replace(/\/\*[\s\S]*?\*\//g, '')).not.toMatch(/<(a|button|h[1-6])[\s>]/)
+
+    /* format:check runs over these files, so the scaffold must not leave work for it. */
+    for (const [file, source] of [
+      ['src/lib/component-catalog.ts', catalog],
+      ['messages/en.json', messages],
+      [`src/components/site/demos/${FILE_PASCAL}Demo.tsx`, twin],
+      ['src/components/site/demos/registry.ts', demoRegistry],
+    ] as const) {
+      const options = await prettier.resolveConfig(path.join(repoRoot, file))
+      await expect(
+        prettier.check(source, { ...options, filepath: path.join(repoRoot, file) }),
+        `${file} is not prettier-clean`,
+      ).resolves.toBe(true)
+    }
+
+    expect(output).toContain('as a file-only article component')
+    expect(output).toContain("uses category\n   'author', matched from the slug")
+    expect(output).toContain('zh has no English fallback')
+    expect(output).toContain('pnpm registry:snapshot')
+    expect(output).not.toContain('dbName')
+  })
+
+  it('prints the Posts entry when no word of the slug names a Posts category', async () => {
+    const root = await createScaffoldRoot()
+    const catalogBefore = await readRootFile(root, 'src', 'lib', 'component-catalog.ts')
+    const { output } = await runScaffold(root, { componentSlug: 'reading-time', fileOnly: true })
+
+    expect(await readRootFile(root, 'src', 'lib', 'component-catalog.ts')).toBe(catalogBefore)
+    expect(output).toContain("     category: 'TODO',")
+    expect(output).toContain('(cards, archive, header, index, author, newsletter, related)')
+    expect(output).not.toContain('  src/lib/component-catalog.ts\n')
+  })
+
+  it('keeps an existing catalog label and titles the doc page with it', async () => {
+    const root = await createScaffoldRoot()
+    const messagesPath = path.join(root, 'messages', 'en.json')
+    const messages = JSON.parse(await readFile(messagesPath, 'utf8'))
+
+    messages.Components['related-probe'] = {
+      title: 'Related Reading',
+      description: 'A planned related-reading list.',
+      target: 'Post footer',
+    }
+    await writeFile(messagesPath, `${JSON.stringify(messages, null, 2)}\n`, 'utf8')
+    const before = await readFile(messagesPath, 'utf8')
+    const { output } = await runScaffold(root, { componentSlug: 'related-probe', fileOnly: true })
+
+    expect(await readFile(messagesPath, 'utf8')).toBe(before)
+    expect(await readRootFile(root, 'content', 'docs', 'components', 'related-probe.mdx')).toMatch(
+      /^---\ntitle: Related Reading\n/,
+    )
+    expect(output).toContain('already existed and was kept')
+  })
+
+  it('accepts --file-only on the contributor command line and refuses other flags', () => {
+    const run = (...args: string[]) =>
+      spawnSync(process.execPath, [path.join(repoRoot, 'bin', 'payload-components.mjs'), ...args], {
+        cwd: repoRoot,
+        encoding: 'utf8',
+      })
+
+    /* Both fail during argument parsing, before the command touches any file. */
+    const unknown = run('new', 'author-probe', '--file')
+    expect(unknown.status).toBe(1)
+    expect(unknown.stderr).toContain('does not accept "--file". Its only option is --file-only.')
+
+    const missing = run('new', '--file-only')
+    expect(missing.status).toBe(1)
+    expect(missing.stderr).toContain('payload-components new requires a component name')
+  }, 30_000)
 })

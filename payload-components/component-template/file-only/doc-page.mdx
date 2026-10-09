@@ -1,0 +1,80 @@
+---
+title: Example Basic
+description: TODO one sentence on what Example Basic is for.
+icon: FileText
+---
+
+{/*
+  Written by `pnpm payload-components new example-basic --file-only`. The format is the fixed
+  component page in AGENTS.md → "Component doc page format", in its file-only form: there are no
+  Pages-block Usage steps; <ComponentUsage> prints the template-composition note and the MDX
+  carries a minimal React usage example.
+  • `title` MUST equal the component's title in componentEntries (src/lib/component-catalog.ts).
+  • Keep the install commands and Content model prose in MDX (the /llms* surfaces serialize it).
+*/}
+
+<ComponentPreview slug="example-basic" />
+
+## Installation
+
+<Tabs items={['Command', 'Manual']}>
+  <Tab value="Command">
+    Track the file-only install in a supported Payload project:
+
+    ```bash
+    npx payload-components add example-basic
+    ```
+
+  </Tab>
+  <Tab value="Manual">
+    Copy the standalone React component directly. No Payload wiring is needed:
+
+    ```bash
+    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/example-basic.json
+    ```
+
+  </Tab>
+</Tabs>
+
+## What it installs
+
+<ComponentWiring slug="example-basic" />
+
+## Content model
+
+These are React props supplied by your post template. This component adds no collection fields
+and does not query content. Your template owns data loading, access control, draft handling,
+and localization.
+
+<TypeTable
+  type={{
+    title: { type: 'string', required: true, description: 'Section heading; renders an h2.' },
+    description: { type: 'string | null', description: 'Optional supporting copy.' },
+    id: { type: 'string', description: 'Optional wrapper ID; it also prefixes the heading ID.' },
+    className: { type: 'string', description: 'Additional wrapper classes.' },
+    disableInnerContainer: {
+      type: 'boolean',
+      default: 'false',
+      description: 'Use the surrounding template container.',
+    },
+  }}
+/>
+
+## Usage
+
+<ComponentUsage slug="example-basic" />
+
+```tsx
+import { ExampleBasic } from '@/components/ExampleBasic/Component'
+
+// Compose it in your existing post template and pass public content as props.
+export function ArticleExampleBasic() {
+  return <ExampleBasic title="TODO: heading" description="TODO: supporting copy." />
+}
+```
+
+TODO: say where this component goes in the post template, and what the template owns.
+
+## Requirements
+
+<ComponentRequirements slug="example-basic" />

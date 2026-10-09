@@ -4,7 +4,11 @@ import path from 'node:path'
 import semver from 'semver'
 import { describe, expect, it } from 'vitest'
 
-import { buildManifest, deriveComponentNames } from '../../tools/payload-components/commands/new'
+import {
+  buildFileOnlyManifest,
+  buildManifest,
+  deriveComponentNames,
+} from '../../tools/payload-components/commands/new'
 import { listComponentNames, loadManifest } from '../../tools/payload-components/manifest'
 import { repoRoot } from '../../tools/payload-components/utils'
 
@@ -124,6 +128,15 @@ describe('manifests agree with the support matrix', () => {
     ) as ManifestSupport
 
     expect(supportProblems(await readSupportMatrix(), scaffolded)).toEqual([])
+  })
+
+  it('manifests written by `new --file-only` agree with the support matrix', async () => {
+    const matrix = await readSupportMatrix()
+    const scaffolded = JSON.parse(
+      buildFileOnlyManifest(deriveComponentNames('support-matrix-guard'), matrix),
+    ) as ManifestSupport
+
+    expect(supportProblems(matrix, scaffolded)).toEqual([])
   })
 
   it('flags a manifest that stops short of a major its targets allow', async () => {

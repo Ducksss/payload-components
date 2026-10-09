@@ -56,9 +56,10 @@ only when you need to override site metadata URLs or the GitHub content branch.
 - Do not reintroduce Payload runtime routes, database adapters, waitlist APIs,
   or `PAYLOAD_SECRET` requirements for the docs site.
 - Generated registry output belongs in ignored `public/r`.
-- Start a new component with `pnpm payload-components new <slug>`. It writes the
-  mechanical files and prints the decisions it leaves to you; the full workflow is
-  in `payload-components/component-template/README.md`.
+- Start a new component with `pnpm payload-components new <slug>`, or
+  `pnpm payload-components new <slug> --file-only` for a file-only article
+  component. It writes the mechanical files and prints the decisions it leaves to
+  you; the full workflow is in `payload-components/component-template/README.md`.
 - New or edited components must meet the accessibility checklist in
   `payload-components/component-template/README.md` (label association,
   `autocomplete` tokens, reduced-motion, and accessible link/image names).
