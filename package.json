@@ -110,7 +110,7 @@
     "fumadocs-ui": "16.15.18",
     "geist": "^1.7.2",
     "lucide-react": "1.31.0",
-    "motion": "12.43.0",
+    "motion": "14.0.0",
     "next": "16.3.8",
     "next-intl": "4.14.2",
     "postcss": "8.5.23",
