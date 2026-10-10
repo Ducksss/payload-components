@@ -5,7 +5,7 @@ import { createSiteCatalog, siteCatalogPath } from '../build-site-catalog'
 import { readSafeProjectFile } from '../safe-path'
 import { commitFileChanges, isPathInside, printHeader, repoRoot } from '../utils'
 
-import type { ComponentManifest, RegistryDefinition } from '../types'
+import type { ComponentManifest, RegistryDefinition, SupportMatrix } from '../types'
 import type { FileChange } from '../utils'
 
 /* Scaffolds a component bundle in THIS repo — the authoring side, not the
@@ -15,14 +15,22 @@ import type { FileChange } from '../utils'
  *
  * The split is deliberate. Editorial catalog context, dbName abbreviations,
  * Content model prose, and demo sample copy need human judgment. Registry order,
- * versions, commands, and routes are mechanical projections. */
+ * versions, commands, and routes are mechanical projections.
+ *
+ * `--file-only` scaffolds an article template component instead of a Pages
+ * block (see newFileOnlyCommand below); the block path is the default. */
 
 const templateDir = path.join(repoRoot, 'payload-components', 'component-template')
+const fileOnlyTemplateDir = path.join(templateDir, 'file-only')
 const sourceBlocksDir = path.join(repoRoot, 'payload-components', 'source', 'blocks')
+const sourceComponentsDir = path.join(repoRoot, 'payload-components', 'source', 'components')
 const manifestsDir = path.join(repoRoot, 'payload-components', 'manifests')
 const componentDocsDir = path.join(repoRoot, 'content', 'docs', 'components')
 const demosDir = path.join(repoRoot, 'src', 'components', 'site', 'demos')
 const registryPath = path.join(repoRoot, 'payload-components', 'registry.json')
+const supportMatrixPath = path.join(repoRoot, 'payload-components', 'support-matrix.json')
+const messagesPath = path.join(repoRoot, 'messages', 'en.json')
+const catalogSourcePath = path.join(repoRoot, 'src', 'lib', 'component-catalog.ts')
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 /* dbName is capped at 18 characters and must be unique across the catalog. */
@@ -214,14 +222,17 @@ const buildRegistryItem = (names: ComponentNames) => ({
 /* registry.json is prettier-ignored, so the item is serialized to match the
    surrounding two-space style and spliced in before the closing bracket rather
    than round-tripped through JSON.parse. */
-const prepareRegistryItem = async (names: ComponentNames): Promise<PreparedFile> => {
+const prepareRegistryItem = async (
+  names: ComponentNames,
+  item: object = buildRegistryItem(names),
+): Promise<PreparedFile> => {
   const source = await readSafeProjectFile({ cwd: repoRoot, filePath: registryPath })
 
   if (source.includes(`"name": "${names.slug}"`)) {
     throw new Error(`registry.json already has an item named "${names.slug}".`)
   }
 
-  const serialized = JSON.stringify(buildRegistryItem(names), null, 2)
+  const serialized = JSON.stringify(item, null, 2)
     .split('\n')
     .map((line) => `    ${line}`)
     .join('\n')
@@ -286,12 +297,23 @@ const prepareDocsMetaEntry = async (names: ComponentNames): Promise<PreparedFile
 const prepareReadmeInventoryRow = async (names: ComponentNames): Promise<PreparedFile> => {
   const readmePath = path.join(repoRoot, 'README.md')
   const source = await readSafeProjectFile({ cwd: repoRoot, filePath: readmePath })
+  const start = source.indexOf('<!-- COMPONENT-INVENTORY:START -->')
   const end = source.indexOf('\n<!-- COMPONENT-INVENTORY:END -->')
 
   if (end === -1) {
     throw new Error('Could not find the COMPONENT-INVENTORY end marker in README.md.')
   }
 
+  /* The table is followed by a blank line before the end marker (prettier keeps
+     one), so the row goes directly after the table's last line. Inserting at the
+     marker put it after the blank line, outside the table. */
+  const tableEnd = source.lastIndexOf('\n|', end)
+
+  if (tableEnd === -1 || tableEnd < start) {
+    throw new Error('Could not find the component inventory table in README.md.')
+  }
+
+  const insertAt = source.indexOf('\n', tableEnd + 1)
   const rows = source.slice(0, end).split('\n')
   const lastRow = [...rows].reverse().find((line) => line.startsWith('| `'))
   const width = lastRow ? lastRow.split('|')[1].length : names.slug.length + 4
@@ -303,7 +325,7 @@ const prepareReadmeInventoryRow = async (names: ComponentNames): Promise<Prepare
      neighbouring line the next time anyone reformats the table. */
   return {
     change: {
-      content: `${source.slice(0, end)}\n|${nameCell}|${commandCell}|${source.slice(end)}`,
+      content: `${source.slice(0, insertAt)}\n|${nameCell}|${commandCell}|${source.slice(insertAt)}`,
       filePath: readmePath,
     },
     relativePath: path.relative(repoRoot, readmePath),
@@ -349,8 +371,19 @@ const formatCuratedSteps = (names: ComponentNames, dbNameIsFree: boolean) =>
     'Then: pnpm registry:build && pnpm test:registry && pnpm run test:int',
   ].join('\n')
 
-export const newCommand = async ({ componentSlug }: { componentSlug: string }) => {
+export const newCommand = async ({
+  componentSlug,
+  fileOnly = false,
+}: {
+  componentSlug: string
+  fileOnly?: boolean
+}) => {
   const names = deriveComponentNames(componentSlug)
+
+  if (fileOnly) {
+    return newFileOnlyCommand(names)
+  }
+
   const [configTemplate, componentTemplate, docTemplate, usedDbNames] = await Promise.all([
     readFile(path.join(templateDir, 'config.ts'), 'utf8'),
     readFile(path.join(templateDir, 'Component.tsx'), 'utf8'),
@@ -446,3 +479,346 @@ const buildDemoTwin = (names: ComponentNames) =>
     '}',
     '',
   ].join('\n')
+
+/* ------------------------------------------------------------------------ */
+/* File-only article components (`new <slug> --file-only`)                   */
+/* ------------------------------------------------------------------------ */
+
+/* The shape post-hero, author-card, newsletter-callout, and related-posts ship:
+ * one React component under source/components, composed by the consumer's post
+ * template with public props. installMode 'file-only' means no Payload fragments,
+ * no post-install generators, and no recovery paths; the registry item is a
+ * registry:component. Everything here is a projection of the slug and the
+ * support matrix; the category, copy, and real props stay curated decisions. */
+
+/* Support comes straight from support-matrix.json, so a new Payload or Next.js
+ * major reaches scaffolded manifests without a code change. Majors are the union
+ * of every target's; each peer range admits its majors' stable lines, and the
+ * newest Payload major also admits prereleases, because create-payload-app pins
+ * exact canaries. tests/int/payload-components-support-matrix.int.spec.ts holds
+ * the result to the matrix. */
+export const deriveSupport = (matrix: SupportMatrix) => {
+  const majors = (allowed: (target: SupportMatrix['targets'][number]) => number[]) =>
+    [...new Set(matrix.targets.flatMap(allowed))].sort((left, right) => left - right)
+  const caretRange = (list: number[], newestPrereleases: boolean) =>
+    list
+      .map((major, index) =>
+        newestPrereleases && index === list.length - 1 ? `^${major}.0.0-0` : `^${major}.0.0`,
+      )
+      .join(' || ')
+  const payloadMajors = majors((target) => target.allowedPayloadMajors)
+  const nextMajors = majors((target) => target.allowedNextMajors)
+
+  return {
+    peerDependencies: {
+      next: caretRange(nextMajors, false),
+      payload: caretRange(payloadMajors, true),
+    },
+    supportedTargets: matrix.targets.map((target) => target.id),
+    supports: { payloadMajors, nextMajors },
+  }
+}
+
+/* React is not part of the support matrix; every file-only component is a React
+ * 19 component, as the shipped ones declare. */
+const FILE_ONLY_REACT_PEER = '^19.0.0'
+
+export const buildFileOnlyManifest = (names: ComponentNames, matrix: SupportMatrix) => {
+  const support = deriveSupport(matrix)
+
+  return `${JSON.stringify(
+    {
+      $schema: '../schema/poc-manifest.schema.json',
+      name: names.slug,
+      version: '0.1.0',
+      changelog: [{ version: '0.1.0', summary: 'Initial release.' }],
+      title: names.title,
+      description: `TODO: one sentence on what ${names.title} is for.`,
+      registryItemName: names.slug,
+      dependencies: {},
+      peerDependencies: { ...support.peerDependencies, react: FILE_ONLY_REACT_PEER },
+      supportedTargets: support.supportedTargets,
+      supports: support.supports,
+      files: [`src/components/${names.pascal}/Component.tsx`],
+      payloadFragments: [],
+      postInstall: [],
+      preview: { summary: `TODO: one sentence of preview copy for ${names.title}.` },
+      sampleContent: { title: `TODO: sample heading for ${names.title}.` },
+      recovery: { patchedFiles: [] },
+      installMode: 'file-only',
+    },
+    null,
+    2,
+  )}\n`
+}
+
+const buildFileOnlyRegistryItem = (names: ComponentNames, supportedTargets: string[]) => ({
+  name: names.slug,
+  type: 'registry:component',
+  title: names.title,
+  description: `TODO: one sentence on what ${names.title} is for.`,
+  docs: `File-only article template component. Import ${names.pascal} from @/components/${names.pascal}/Component and pass the content explicitly. No Pages or RenderBlocks edits and no generators. Direct install: pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/${names.slug}.json Optional tracked install in a supported Payload project: payload-components add ${names.slug}.`,
+  meta: {
+    payloadComponent: {
+      installCommand: `payload-components add ${names.slug}`,
+      postInstall: [],
+      requiresPayloadComponentWrapper: false,
+      supportedTargets,
+    },
+  },
+  files: [
+    {
+      path: `payload-components/source/components/${names.pascal}/Component.tsx`,
+      type: 'registry:file',
+      target: `~/src/components/${names.pascal}/Component.tsx`,
+    },
+  ],
+  registryDependencies: [],
+})
+
+type CatalogLabel = { description: string; target: string; title: string }
+
+/* Catalog copy lives in messages/en.json. Components.<slug> is the one namespace
+ * the Crowdin gate lets most draft locales fall back to English; zh has no
+ * fallback, and the scaffold never writes a stand-in translation, so the printed
+ * steps send that to Crowdin. An existing label, such as one written for a former
+ * upcoming entry, is kept as written. en.json round-trips through JSON.stringify
+ * byte for byte, so it is rewritten rather than spliced. */
+const prepareCatalogLabel = async (
+  names: ComponentNames,
+): Promise<{ file?: PreparedFile; label: CatalogLabel }> => {
+  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: messagesPath })
+  const messages = JSON.parse(source) as { Components?: Record<string, CatalogLabel> }
+
+  if (!messages.Components) {
+    throw new Error('Could not find the Components namespace in messages/en.json.')
+  }
+
+  const existing = messages.Components[names.slug]
+
+  if (existing) {
+    return { label: existing }
+  }
+
+  const label: CatalogLabel = {
+    title: names.title,
+    description: `TODO: one catalog sentence on what ${names.title} is for.`,
+    target: 'TODO: where it sits in a post, for example Post footer',
+  }
+  messages.Components[names.slug] = label
+
+  return {
+    file: {
+      change: { content: `${JSON.stringify(messages, null, 2)}\n`, filePath: messagesPath },
+      relativePath: path.relative(repoRoot, messagesPath),
+    },
+    label,
+  }
+}
+
+/* The Posts section of componentEditorialEntries. Its category is a curated
+ * decision: a new Posts category also needs a CatalogBrowser.categories label in
+ * every draft locale (tests/int/crowdin-sync.int.spec.ts), so the scaffold never
+ * invents one. When a word of the slug names an existing Posts category
+ * (author-*, newsletter-*, related-*), the entry is written with it; otherwise it
+ * is printed for the author to place. */
+const preparePostsCatalogEntry = async (
+  names: ComponentNames,
+): Promise<{ category?: string; file?: PreparedFile; postsCategories: string[] }> => {
+  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: catalogSourcePath })
+  const categoriesStart = source.indexOf('export const componentCategories = {')
+  const categoriesEnd = source.indexOf('\n} as const', categoriesStart)
+  const entriesEnd = source.indexOf('\n] as const\n\nconst editorialBySlug')
+
+  if (categoriesStart === -1 || categoriesEnd === -1 || entriesEnd === -1) {
+    throw new Error(
+      'Could not find componentCategories and componentEditorialEntries in src/lib/component-catalog.ts.',
+    )
+  }
+
+  if (source.includes(`slug: '${names.slug}',`)) {
+    throw new Error(`src/lib/component-catalog.ts already has an entry for "${names.slug}".`)
+  }
+
+  const postsCategories = [
+    ...source
+      .slice(categoriesStart, categoriesEnd)
+      .matchAll(/^ {2}([a-z][a-z0-9]*): \{\n {4}family: 'posts',/gm),
+  ].map((match) => match[1])
+  const category = names.slug.split('-').find((word) => postsCategories.includes(word))
+
+  if (!category) {
+    return { postsCategories }
+  }
+
+  const entry = [
+    '  {',
+    `    category: '${category}',`,
+    `    description: englishMessages.Components['${names.slug}'].description,`,
+    `    fields: ['title', 'description'],`,
+    `    slug: '${names.slug}',`,
+    `    target: englishMessages.Components['${names.slug}'].target,`,
+    `    title: englishMessages.Components['${names.slug}'].title,`,
+    '  },',
+  ].join('\n')
+
+  return {
+    category,
+    file: {
+      change: {
+        content: `${source.slice(0, entriesEnd)}\n${entry}${source.slice(entriesEnd)}`,
+        filePath: catalogSourcePath,
+      },
+      relativePath: path.relative(repoRoot, catalogSourcePath),
+    },
+    postsCategories,
+  }
+}
+
+const formatFileOnlyCuratedSteps = (
+  names: ComponentNames,
+  {
+    category,
+    labelReused,
+    postsCategories,
+  }: { category?: string; labelReused: boolean; postsCategories: string[] },
+) =>
+  [
+    '',
+    'Now the parts that need a decision — none of these were written for you:',
+    '',
+    ...(category
+      ? [
+          `1. src/lib/component-catalog.ts → the Posts entry for ${names.slug} uses category`,
+          `   '${category}', matched from the slug. Confirm it, or move it to another Posts`,
+          `   category (${postsCategories.join(', ')}).`,
+        ]
+      : [
+          `1. src/lib/component-catalog.ts → componentEditorialEntries: add ${names.slug} after`,
+          '   the last Posts entry. No word of the slug names a Posts category, so pick one',
+          `   (${postsCategories.join(', ')}):`,
+          '',
+          '   {',
+          `     category: 'TODO',`,
+          `     description: englishMessages.Components['${names.slug}'].description,`,
+          `     fields: ['title', 'description'],`,
+          `     slug: '${names.slug}',`,
+          `     target: englishMessages.Components['${names.slug}'].target,`,
+          `     title: englishMessages.Components['${names.slug}'].title,`,
+          '   },',
+        ]),
+    '   A new Posts category also needs componentCategories and a CatalogBrowser.categories',
+    '   label in every draft locale (tests/int/crowdin-sync.int.spec.ts).',
+    '',
+    ...(labelReused
+      ? [`2. messages/en.json → Components.${names.slug} already existed and was kept; check it.`]
+      : [
+          `2. messages/en.json → Components.${names.slug}: replace the TODO description and target.`,
+          '   zh has no English fallback (src/i18n/catalog-policy.ts), so',
+          `   messages/locales/zh.json needs Components.${names.slug} translated through Crowdin or`,
+          '   a native reviewer; tests/int/crowdin-sync.int.spec.ts fails until it is.',
+        ]),
+    '',
+    `3. payload-components/source/components/${names.pascal}/Component.tsx → the real props and`,
+    `   markup. Keep src/components/site/demos/${names.pascal}Demo.tsx mirroring every class group.`,
+    '',
+    '4. Fill every TODO in the manifest, the registry item, and the doc page: description,',
+    '   preview.summary, sampleContent, the Content model TypeTable, the usage example, and',
+    '   where the component goes in the post template.',
+    '',
+    '5. tests/int/article-components.int.spec.tsx → add it to the React typecheck list and the',
+    '   direct shadcn delivery and lifecycle it.each, and add a render test. Update the literal',
+    '   catalog counts in tests/int/fumadocs-site.int.spec.ts and the Posts list in',
+    '   tests/int/site-catalog.int.spec.ts.',
+    '',
+    '6. Visual baselines cannot be generated here — dispatch the visual-baselines workflow',
+    '   for components-visual, and for frontend too if the footer gains a category link.',
+    '',
+    'Then, once the source is final: pnpm registry:snapshot && pnpm registry:build &&',
+    'pnpm test:registry && pnpm run test:int',
+  ].join('\n')
+
+const newFileOnlyCommand = async (names: ComponentNames) => {
+  const [componentTemplate, demoTemplate, docTemplate, matrixSource] = await Promise.all([
+    readFile(path.join(fileOnlyTemplateDir, 'Component.tsx'), 'utf8'),
+    readFile(path.join(fileOnlyTemplateDir, 'Demo.tsx'), 'utf8'),
+    readFile(path.join(fileOnlyTemplateDir, 'doc-page.mdx'), 'utf8'),
+    readSafeProjectFile({ cwd: repoRoot, filePath: supportMatrixPath }),
+  ])
+  const matrix = JSON.parse(matrixSource) as SupportMatrix
+  const manifestSource = buildFileOnlyManifest(names, matrix)
+  const catalogLabel = await prepareCatalogLabel(names)
+  const catalogEntry = await preparePostsCatalogEntry(names)
+  /* The doc page title must equal the catalog title (the component-page e2e loop
+     asserts H1 === title), which an existing label may spell differently. */
+  const docPage = renameTemplate(docTemplate, names).replace(
+    /^title: .*$/m,
+    `title: ${catalogLabel.label.title}`,
+  )
+
+  const written = await Promise.all([
+    prepareNewFile(
+      path.join(sourceComponentsDir, names.pascal, 'Component.tsx'),
+      renameTemplate(componentTemplate, names),
+    ),
+    prepareNewFile(path.join(manifestsDir, `${names.slug}.json`), manifestSource),
+    prepareNewFile(path.join(componentDocsDir, `${names.slug}.mdx`), docPage),
+    prepareNewFile(
+      path.join(demosDir, `${names.pascal}Demo.tsx`),
+      renameTemplate(demoTemplate, names),
+    ),
+  ])
+
+  const appended = [
+    ...(await Promise.all([
+      prepareRegistryItem(
+        names,
+        buildFileOnlyRegistryItem(names, deriveSupport(matrix).supportedTargets),
+      ),
+      prepareDemoRegistryEntry(names),
+      prepareDocsMetaEntry(names),
+      prepareReadmeInventoryRow(names),
+    ])),
+    ...(catalogLabel.file ? [catalogLabel.file] : []),
+    ...(catalogEntry.file ? [catalogEntry.file] : []),
+  ]
+  const registry = JSON.parse(appended[0].change.content!) as RegistryDefinition
+  const manifest = JSON.parse(manifestSource) as ComponentManifest
+  const catalog = await createSiteCatalog({
+    manifestOverrides: { [names.slug]: manifest },
+    registry,
+  })
+  const generated: PreparedFile = {
+    change: {
+      content: `${JSON.stringify(catalog, null, 2)}\n`,
+      filePath: siteCatalogPath,
+    },
+    relativePath: path.relative(repoRoot, siteCatalogPath),
+  }
+
+  /* Same all-or-nothing commit as the block path. */
+  await commitFileChanges(
+    [...written, ...appended, generated].map(({ change }) => change),
+    { cwd: repoRoot },
+  )
+
+  printHeader(
+    [
+      `payload-components: scaffolded "${names.slug}" as a file-only article component.`,
+      '',
+      'Created:',
+      ...written.map(({ relativePath }) => `  ${relativePath}`),
+      '',
+      'Appended:',
+      ...appended.map(({ relativePath }) => `  ${relativePath}`),
+      '',
+      'Generated:',
+      `  ${generated.relativePath}`,
+      formatFileOnlyCuratedSteps(names, {
+        category: catalogEntry.category,
+        labelReused: !catalogLabel.file,
+        postsCategories: catalogEntry.postsCategories,
+      }),
+    ].join('\n'),
+  )
+}

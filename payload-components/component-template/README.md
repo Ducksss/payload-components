@@ -16,6 +16,25 @@
 - `Component.tsx` → `payload-components/source/blocks/<Component>/Component.tsx`
 - `doc-page.mdx` → `content/docs/components/<slug>.mdx` (the fixed component doc-page format)
 
+### File-only article components (`new <slug> --file-only`)
+
+For a component composed in a post template rather than a Pages block, such as `post-hero` or
+`related-posts`, the scaffold reads `file-only/` instead:
+
+- `file-only/Component.tsx` → `payload-components/source/components/<Component>/Component.tsx`
+  (public React props plus `id`, `className`, and `disableInnerContainer`; React only, so it
+  compiles in any consumer)
+- `file-only/Demo.tsx` → `src/components/site/demos/<Component>Demo.tsx` (mirrors every class
+  group of the component; every surface renders it inside `.preview-scope`)
+- `file-only/doc-page.mdx` → `content/docs/components/<slug>.mdx` (the file-only page: a React
+  usage example instead of Pages-block steps)
+
+The manifest is generated rather than copied. It has `installMode: 'file-only'`, no fragments,
+post-install tasks, or recovery paths, and Payload and Next.js support derived from
+`support-matrix.json`. The scaffold also adds the `Components.<slug>` label to `messages/en.json`,
+and adds the Posts entry to `src/lib/component-catalog.ts` when a word of the slug names an
+existing Posts category; otherwise it prints that entry for you to place.
+
 ## Authoring Rules
 
 - Keep block configs explicit: `slug`, `interfaceName`, `labels.singular`, and `labels.plural`.
