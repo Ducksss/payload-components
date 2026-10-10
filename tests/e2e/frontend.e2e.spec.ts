@@ -2064,7 +2064,9 @@ test.describe('Reduced motion', () => {
     await searchTrigger.click()
 
     await expect(page.getByRole('dialog')).toBeVisible()
-    await expect(page.getByRole('dialog').getByRole('textbox')).toBeFocused()
+    // fumadocs-ui 16.15.18 exposes the search input as a combobox
+    // (aria-autocomplete=list, aria-controls the result list).
+    await expect(page.getByRole('dialog').getByRole('combobox', { name: 'Search' })).toBeFocused()
 
     await page.keyboard.press('Escape')
 
