@@ -1,12 +1,21 @@
 name: Visual Baselines
 
-# Mints per-platform Playwright visual baselines. The default targets the
-# component registry; pass `blog-visual` to mint the editorial index/article
-# suite. CI runs on linux, so committed darwin baselines silently skip there
-# (a baseline must be generated in the renderer it is compared against). Run this
-# workflow on a branch to generate the linux `*-chromium-linux.png` baselines in
-# the same environment the release gate uses, then merge the PR it opens so the
-# 38-component visual suite actually compares on every subsequent gate run.
+# Mints the Linux Playwright visual baselines. Linux CI is the canonical
+# renderer (other platforms skip screenshot comparisons), so a baseline must be
+# generated here, in the environment the release gate compares in. Run this
+# workflow on a branch, review the `*-chromium-linux.png` PR it opens against
+# that branch, and keep only the image changes the branch explains.
+#
+# `spec` picks what to mint. Every choice but `all-visual` is the name of the
+# e2e spec it runs (`tests/e2e/<spec>.e2e.spec.ts`), and must stay that way:
+# Playwright reads it as a file-path regex, so a name that matches no spec
+# fails alone with "No tests found" and is silently dropped from `all-visual`.
+# tests/int/release-gate.int.spec.ts checks both.
+#   components-visual  every component preview (the default)
+#   templates-visual   every template showcase page
+#   blog-visual        the blog index and article
+#   frontend           only the landing page's desktop and mobile screenshots
+#   all-visual         components-visual, templates-visual and blog-visual
 
 on:
   workflow_dispatch:
@@ -19,7 +28,7 @@ on:
         options:
           - frontend
           - components-visual
-          - template-visual
+          - templates-visual
           - blog-visual
           - all-visual
       update:
@@ -89,14 +98,14 @@ jobs:
         run: |
           set -euo pipefail
           case "$SPEC" in
-            components-visual|template-visual|blog-visual)
+            components-visual|templates-visual|blog-visual)
               spec_args=("$SPEC")
               ;;
             frontend)
               spec_args=(frontend --grep 'landing page keeps its desktop and mobile visual contract')
               ;;
             all-visual)
-              spec_args=(components-visual template-visual blog-visual)
+              spec_args=(components-visual templates-visual blog-visual)
               ;;
             *)
               echo "Unsupported visual baseline spec: $SPEC" >&2
