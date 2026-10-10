@@ -16,7 +16,7 @@
   "description": "An auto-scrolling marquee of editable logos with edge fades, installed as a wired Payload block.",
   "registryItemName": "logo-cloud-marquee",
   "dependencies": {
-    "motion": "^12.0.0"
+    "motion": "^12.0.0 || ^13.0.0"
   },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
