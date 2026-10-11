@@ -47,7 +47,7 @@ export async function ComponentRequirements({ slug }: { slug: string }) {
           ? nextValues[0]
           : compatibility.map((entry) => (
               <span className="block" key={entry.payloadMajor}>
-                {formatPairedNext(entry)} with v{entry.payloadMajor}
+                {`${formatPairedNext(entry)} with v${entry.payloadMajor}`}
               </span>
             )),
     },
