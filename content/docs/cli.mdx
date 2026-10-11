@@ -55,6 +55,11 @@ and media setup. A blank app can also accept Payload Components, but it needs th
 See Payload's [installation documentation](https://payloadcms.com/docs/getting-started/installation)
 for the current runtime requirements and starter choices.
 
+`create-payload-app@latest` scaffolds Payload v3. Payload v4 is in beta
+(`create-payload-app@beta`), and Payload Components supports it experimentally on Next.js 16.2.6
+or newer with Node.js 24.15 or newer. Payload v3 stays the fully supported path; the
+[installation requirements](/docs/installation#requirements) list both pairs.
+
 ### Generate TypeScript types
 
 Run type generation after changing collections, globals, or block fields:
@@ -246,8 +251,12 @@ On a template the locale notice is printed once for the run, not once per block.
 exactly as you wrote it. That includes a config with no `buildConfig({ ... })` call, a
 `localization` value it cannot safely replace (such as a reference, assertion, or later
 spread), and an existing direct `localization` block that declares something else
-(`--force` replaces that last shape). A block config with local edits is skipped the same
-way, because wrapping it would re-baseline your edit as pristine.
+(`--force` replaces that last shape). "Something else" is judged by meaning, not
+formatting: a block with the same locale codes and writing direction, default locale, and
+fallback (Payload's default is `true`) is a clean no-op whatever its property order, quote
+style, or labels — such as the single-`en` block the Payload v4 blank template ships. A
+block config with local edits is skipped the same way, because wrapping it would
+re-baseline your edit as pristine.
 
 <Callout type="warn">
   Turning on localization changes how Payload stores the affected fields. Payload does not
@@ -476,10 +485,16 @@ health check — see [Installation](/docs/installation#doctor). `seed` writes th
 script for an already-installed component.
 
 `doctor --json` emits the same run as a structured report. Every finding carries a `scope`
-(`project`, `scripts`, `state`, or a component name) so a CI job can group results without
-parsing prose, and the exit code separates the two failures that need different responses:
-**2** means the project itself cannot accept installs, **1** means the project is fine but a
-recorded install has drifted.
+(`project`, `scripts`, `state`, `runtime`, or a component name) so a CI job can group
+results without parsing prose, and the exit code separates the two failures that need
+different responses: **2** means the project itself cannot accept installs, **1** means the
+project is fine but a recorded install has drifted.
+
+On a Payload v4 project, `doctor` also checks the minimums detection cannot see, because it
+works in majors: it warns when the Node.js running it is older than 24.15, or when the
+installed (or exactly pinned) `next` is older than 16.2.6. Those are `runtime` warnings, so
+they do not change the exit code. A Payload v4 project on Next.js 15 is refused outright,
+as a project error.
 
 ## Supported project shapes
 

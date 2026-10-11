@@ -177,6 +177,14 @@ export const stackItems = [
 
 export type StackItem = (typeof stackItems)[number]
 
+/* The band names the fully supported stack. Payload v4 is supported
+ * experimentally and pairs with Next.js 16 only (payloadMajorSupport in
+ * payload-components/support-matrix.json), so text surfaces state it on its own
+ * line instead of folding it into the band's cross product.
+ * tests/int/fumadocs-site.int.spec.ts holds it to the matrix. */
+export const experimentalStackItem =
+  'Payload CMS v4 (experimental): Next.js 16.2.6 or newer, Node.js 24.15 or newer'
+
 /* Receipts strip — every line is verifiable in this repository. */
 export const receipts = [
   { icon: 'scale', label: 'MIT licensed, end to end' },

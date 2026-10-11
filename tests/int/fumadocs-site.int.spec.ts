@@ -1036,6 +1036,50 @@ describe('Fumadocs site shell', () => {
     expect(heroMarkdown).not.toContain('### Project prerequisites')
     expect(heroMarkdown).toContain('## Install contract')
     expect(heroMarkdown).toContain('Admin usage: add the `HeroBasic` block')
+    /* Next.js majors are listed per Payload major, never as a cross product. */
+    expect(heroMarkdown).toContain(
+      'Payload v3 with Next.js 15 / 16; Payload v4 (experimental) with Next.js 16 (16.2.6 or newer) and Node.js 24.15 or newer;',
+    )
+  })
+
+  it('pairs Next.js majors with each Payload major on component pages', async () => {
+    const {
+      describeExperimentalSupport,
+      formatPairedNext,
+      formatPayloadMajor,
+      getComponentManifest,
+      getPayloadCompatibility,
+    } = await import('../../src/lib/component-manifest')
+    const manifest = await getComponentManifest('hero-basic')
+
+    if (!manifest) throw new Error('Missing hero-basic manifest')
+
+    const compatibility = await getPayloadCompatibility(manifest)
+
+    expect(compatibility).toEqual([
+      { experimental: false, minimumVersions: {}, nextMajors: [15, 16], payloadMajor: 3 },
+      {
+        experimental: true,
+        minimumVersions: { next: '16.2.6', node: '24.15.0' },
+        nextMajors: [16],
+        payloadMajor: 4,
+      },
+    ])
+    expect(compatibility.map(formatPayloadMajor)).toEqual(['v3', 'v4 (experimental)'])
+    expect(compatibility.map(formatPairedNext)).toEqual(['15 / 16', '16 (16.2.6 or newer)'])
+    expect(describeExperimentalSupport(compatibility[1])).toBe(
+      'Payload v4 support is experimental: it needs Next.js 16 (16.2.6 or newer) and Node.js 24.15 or newer.',
+    )
+
+    /* The stack line /llms.txt prints is prose, so hold it to the matrix. */
+    const { experimentalStackItem } = await import('../../src/lib/site')
+    const [, { minimumVersions, payloadMajor }] = compatibility
+
+    expect(experimentalStackItem).toContain(`Payload CMS v${payloadMajor} (experimental)`)
+    expect(experimentalStackItem).toContain(`Next.js ${minimumVersions.next} or newer`)
+    expect(experimentalStackItem).toContain(
+      `Node.js ${minimumVersions.node?.replace(/\.0$/, '')} or newer`,
+    )
   })
 
   it('turns the top search component pages into distinct tracked install entries', async () => {

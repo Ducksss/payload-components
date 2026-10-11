@@ -4,9 +4,11 @@ import type { Folder, Node, Root } from 'fumadocs-core/page-tree'
 import { docs } from 'collections/server'
 
 import {
+  describePayloadCompatibility,
   getAllComponentManifests,
   getComponentManifest,
   getComponentRegistryDependencies,
+  getPayloadCompatibility,
 } from '@/lib/component-manifest'
 import { regroupComponentTree } from '@/lib/component-page-tree'
 import {
@@ -90,7 +92,10 @@ async function componentInstallContract(page: SourcePage) {
 
   if (!manifest) return ''
 
-  const deps = await getComponentRegistryDependencies(manifest.name)
+  const [deps, compatibility] = await Promise.all([
+    getComponentRegistryDependencies(manifest.name),
+    getPayloadCompatibility(manifest),
+  ])
   const patched = manifest.recovery.patchedFiles
   const pagesPath =
     patched.find((p) => p.includes('collections/Pages')) ?? 'src/collections/Pages/index.ts'
@@ -129,7 +134,7 @@ async function componentInstallContract(page: SourcePage) {
     '',
     'Re-running the install converges: existing wiring is detected and skipped, and install state is recorded in `.payload-components/state.json`.',
     '',
-    `Requirements: target ${manifest.supportedTargets.join(', ')}; Payload v${manifest.supports.payloadMajors.join(' / v')}; Next.js ${manifest.supports.nextMajors.join(' / ')}; shadcn UI dependencies: ${deps.length ? deps.join(', ') : 'none'}.`,
+    `Requirements: target ${manifest.supportedTargets.join(', ')}; ${compatibility.map(describePayloadCompatibility).join('; ')}; shadcn UI dependencies: ${deps.length ? deps.join(', ') : 'none'}.`,
     ...(manifest.requires?.projectFiles.length
       ? [
           '',

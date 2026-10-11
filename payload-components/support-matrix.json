@@ -3,9 +3,17 @@
   "targets": [
     {
       "id": "payload-website-starter",
-      "description": "Payload v3 or v4 + Next.js App Router projects laid out like the official website starter: page layout blocks rendered through src/blocks/RenderBlocks.tsx and registered in src/collections/Pages/index.ts.",
+      "description": "Payload v3 (Next.js 15 or 16) or experimental Payload v4 (Next.js 16) App Router projects laid out like the official website starter: page layout blocks rendered through src/blocks/RenderBlocks.tsx and registered in src/collections/Pages/index.ts.",
       "allowedPayloadMajors": [3, 4],
       "allowedNextMajors": [15, 16],
+      "payloadMajorSupport": {
+        "3": { "nextMajors": [15, 16] },
+        "4": {
+          "experimental": true,
+          "minimumVersions": { "next": "16.2.6", "node": "24.15.0" },
+          "nextMajors": [16]
+        }
+      },
       "requiredFiles": ["components.json", "src/payload.config.ts"],
       "hostFiles": {
         "renderBlocks": {
@@ -20,9 +28,17 @@
     },
     {
       "id": "payload-blocks-app",
-      "description": "Payload v3 or v4 + Next.js App Router projects that keep the same page-blocks shape at non-starter paths — a flat Pages collection file, a renderer under src/components, or a repo without a src directory. Requires the starter's cn utility at utilities/ui because installed block components import it.",
+      "description": "Payload v3 (Next.js 15 or 16) or experimental Payload v4 (Next.js 16) App Router projects that keep the same page-blocks shape at non-starter paths — a flat Pages collection file, a renderer under src/components, or a repo without a src directory. Requires the starter's cn utility at utilities/ui because installed block components import it.",
       "allowedPayloadMajors": [3, 4],
       "allowedNextMajors": [15, 16],
+      "payloadMajorSupport": {
+        "3": { "nextMajors": [15, 16] },
+        "4": {
+          "experimental": true,
+          "minimumVersions": { "next": "16.2.6", "node": "24.15.0" },
+          "nextMajors": [16]
+        }
+      },
       "requiredFiles": [
         "components.json",
         ["src/payload.config.ts", "payload.config.ts"],

@@ -5,7 +5,7 @@ description: Set up the Payload Components CLI, understand its project wiring, a
 icon: Rocket
 ---
 
-Payload Components is an open-source, community-first registry and CLI that installs Payload CMS blocks into your **Payload v3 + Next.js** project — **wired, not pasted**.
+Payload Components is an open-source, community-first registry and CLI that installs Payload CMS blocks into your **Payload v3 + Next.js** project — **wired, not pasted**. Payload v4 support is experimental and needs Next.js 16 ([requirements](/docs/installation#requirements)).
 
 <Callout type="info" title="What makes a component more than a copy-paste block">
   A plain `shadcn add` only copies files. `payload-components add` also does the Payload
@@ -25,9 +25,9 @@ npx payload-components add hero-basic
 The CLI verifies project shape, installs the registry item, applies Payload layout fragments, runs post-install tasks, and records install state.
 
 <Callout type="warn">
-  Run this inside a supported **Payload v3 + Next.js App Router** project — not
-  against this docs repo. [Installation](/docs/installation) lists the requirements
-  the installer checks before it touches anything.
+  Run this inside a supported **Payload v3 (or experimental v4) + Next.js App Router**
+  project — not against this docs repo. [Installation](/docs/installation) lists the
+  version pairs and requirements the installer checks before it touches anything.
 </Callout>
 
 ## Explore the docs

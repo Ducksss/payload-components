@@ -2,8 +2,8 @@
 
 Thanks for helping improve Payload Components. This repository contains a
 Fumadocs-powered Next.js site plus registry tooling for installing Payload CMS
-blocks into supported Payload v3 projects. The website itself is not a
-Payload CMS runtime app.
+blocks into supported Payload v3 projects (and, experimentally, Payload v4).
+The website itself is not a Payload CMS runtime app.
 
 ## Good First Contributions
 

@@ -2,14 +2,21 @@ import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promise
 import os from 'node:os'
 import path from 'node:path'
 
+import semver from 'semver'
 import { afterEach, describe, expect, it } from 'vitest'
+
+import { checkRuntimeRequirements } from '../../tools/payload-components/commands/doctor'
 
 import {
   createInstallFixture,
   createInstallFixtureForComponents,
 } from './payload-components-fixture'
 
-import type { ComponentManifest, InstallState } from '../../tools/payload-components/types'
+import type {
+  ComponentManifest,
+  InstallState,
+  SupportMatrix,
+} from '../../tools/payload-components/types'
 import { runCommand } from '../../tools/payload-components/utils'
 
 const repoRoot = process.cwd()
@@ -571,5 +578,159 @@ describe('payload-components doctor --json', () => {
           status === 'error' && ['project', 'scripts', 'state'].includes(scope),
       ),
     ).toBe(false)
+  }, 180000)
+})
+
+/* Payload 4 runs on Node.js 24.15 and Next.js 16.2.6 or newer. Detection works
+ * in majors and cannot see either, so doctor reports them from the support
+ * matrix, as warnings. A Next.js major the matrix does not pair with Payload 4
+ * is refused by detection, which doctor reports as a project error. */
+describe('payload-components doctor on Payload 4', () => {
+  const payload4Dirs: string[] = []
+
+  afterEach(async () => {
+    await Promise.all(
+      payload4Dirs.splice(0).map((dir) => rm(dir, { force: true, recursive: true })),
+    )
+  })
+
+  const readStarterTarget = async () => {
+    const matrix = JSON.parse(
+      await readFile(path.join(repoRoot, 'payload-components', 'support-matrix.json'), 'utf8'),
+    ) as SupportMatrix
+
+    return matrix.targets[0]
+  }
+
+  const makePackageDir = async (dependencies: Record<string, string>) => {
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'payload-components-runtime-'))
+    payload4Dirs.push(dir)
+    await writeFile(
+      path.join(dir, 'package.json'),
+      `${JSON.stringify({ dependencies }, null, 2)}\n`,
+      'utf8',
+    )
+
+    return dir
+  }
+
+  const usePayload4 = async (fixtureDir: string, next: string) => {
+    const packageJsonPath = path.join(fixtureDir, 'package.json')
+    const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as {
+      dependencies?: Record<string, string>
+    }
+
+    packageJson.dependencies = { ...packageJson.dependencies, next, payload: '4.0.0-beta.0' }
+    await writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`, 'utf8')
+  }
+
+  it('warns when Node.js is below the Payload 4 minimum', async () => {
+    const cwd = await makePackageDir({ next: '16.2.6', payload: '4.0.0-beta.0' })
+    const project = { payloadMajor: 4, target: await readStarterTarget() }
+
+    await expect(
+      checkRuntimeRequirements({ cwd, nodeVersion: '24.14.1', project }),
+    ).resolves.toEqual([
+      {
+        message:
+          'runtime: Payload 4 (experimental) needs Node.js 24.15.0 or newer, but this is Node.js 24.14.1 — upgrade Node.js',
+        status: 'warn',
+      },
+      {
+        message: "runtime: Next.js 16.2.6 meets Payload 4 (experimental)'s minimum of 16.2.6",
+        status: 'ok',
+      },
+    ])
+    await expect(
+      checkRuntimeRequirements({ cwd, nodeVersion: '24.15.0', project }),
+    ).resolves.toContainEqual({
+      message: "runtime: Node.js 24.15.0 meets Payload 4 (experimental)'s minimum of 24.15.0",
+      status: 'ok',
+    })
+  })
+
+  it('warns when Next.js is below the Payload 4 minimum, and skips a range it cannot pin', async () => {
+    const project = { payloadMajor: 4, target: await readStarterTarget() }
+    const pinned = await makePackageDir({ next: '16.1.0', payload: '4.0.0-beta.0' })
+    const ranged = await makePackageDir({ next: '^16.0.0', payload: '4.0.0-beta.0' })
+
+    await expect(
+      checkRuntimeRequirements({ cwd: pinned, nodeVersion: '24.15.0', project }),
+    ).resolves.toContainEqual({
+      message:
+        'runtime: Payload 4 (experimental) needs Next.js 16.2.6 or newer, but this project has Next.js 16.1.0 — upgrade the next package',
+      status: 'warn',
+    })
+    /* "^16.0.0" with nothing installed could resolve either side of 16.2.6. */
+    const findings = await checkRuntimeRequirements({
+      cwd: ranged,
+      nodeVersion: '24.15.0',
+      project,
+    })
+
+    expect(findings.map(({ message }) => message)).toEqual([
+      "runtime: Node.js 24.15.0 meets Payload 4 (experimental)'s minimum of 24.15.0",
+    ])
+  })
+
+  it('reports nothing for Payload 3, which sets no minimums', async () => {
+    const cwd = await makePackageDir({ next: '15.0.0', payload: '3.90.2' })
+
+    await expect(
+      checkRuntimeRequirements({
+        cwd,
+        nodeVersion: '20.9.0',
+        project: { payloadMajor: 3, target: await readStarterTarget() },
+      }),
+    ).resolves.toEqual([])
+  })
+
+  it('reports the runtime findings in the doctor report without failing it', async () => {
+    const { fixtureDir } = await createInstallFixture('hero-basic')
+    payload4Dirs.push(fixtureDir)
+    await usePayload4(fixtureDir, '16.1.0')
+
+    const result = await runDoctorCommand(fixtureDir, ['--json'])
+    const report = JSON.parse(result.stdout) as {
+      findings: Array<{ message: string; scope: string; status: string }>
+    }
+    const node = process.versions.node
+
+    /* The command reads the Node.js it runs on, so the expectation follows the
+       runner; the branch it does not take is pinned by the tests above. */
+    expect(result.code).toBe(0)
+    expect(report.findings.filter(({ scope }) => scope === 'runtime')).toEqual([
+      semver.gte(node, '24.15.0')
+        ? {
+            message: `runtime: Node.js ${node} meets Payload 4 (experimental)'s minimum of 24.15.0`,
+            scope: 'runtime',
+            status: 'ok',
+          }
+        : {
+            message: `runtime: Payload 4 (experimental) needs Node.js 24.15.0 or newer, but this is Node.js ${node} — upgrade Node.js`,
+            scope: 'runtime',
+            status: 'warn',
+          },
+      {
+        message:
+          'runtime: Payload 4 (experimental) needs Next.js 16.2.6 or newer, but this project has Next.js 16.1.0 — upgrade the next package',
+        scope: 'runtime',
+        status: 'warn',
+      },
+    ])
+  }, 180000)
+
+  it('fails a Payload 4 project on Next.js 15 as a project error', async () => {
+    const { fixtureDir } = await createInstallFixture('hero-basic')
+    payload4Dirs.push(fixtureDir)
+    await usePayload4(fixtureDir, '15.5.4')
+
+    const result = await runDoctorCommand(fixtureDir)
+
+    expect(result.code).toBe(2)
+    expect(result.stdout).toContain(
+      '[error] project: Unsupported Next.js major version 15 for Payload v4',
+    )
+    expect(result.stdout).toContain('Payload v4 with Next.js 16')
   }, 180000)
 })

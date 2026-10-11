@@ -24,6 +24,11 @@ export const blogId = `${siteUrl}/blog#blog`
 
 const logoUrl = `${siteUrl}/favicon.svg`
 
+/* Payload v4 pairs with Next.js 16 only, so the two majors are listed apart
+   rather than as one cross product (support-matrix.json, payloadMajorSupport). */
+const softwareRequirements =
+  'Payload CMS v3 with Next.js 15 or 16; Payload CMS v4 (experimental) with Next.js 16.2.6 or newer and Node.js 24.15 or newer'
+
 /* Each localized /<locale>/blog route is a separate entity: it carries its own canonical URL,
    language, and copy, so a post published under one must not claim membership
    of the other. The English id stays `blogId` so sitewide references are stable. */
@@ -76,7 +81,7 @@ export function softwareApplicationNode(): Node {
     publisher: { '@id': organizationId },
     runtimePlatform: 'Node.js',
     softwareHelp: `${siteUrl}/docs/installation`,
-    softwareRequirements: 'Payload CMS v3, Next.js 15 or 16',
+    softwareRequirements,
     url: `${siteUrl}/`,
   }
 }
@@ -205,7 +210,7 @@ export function catalogItemListNode(): Node {
         isPartOf: { '@id': softwareId },
         name: component.title,
         programmingLanguage: 'TypeScript',
-        runtimePlatform: 'Payload CMS v3, Next.js',
+        runtimePlatform: 'Payload CMS v3 or v4 (experimental), Next.js',
         url: `${siteUrl}${component.href}`,
       },
       position: index + 1,
@@ -249,7 +254,7 @@ export function componentSoftwareApplicationNode(
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     operatingSystem: 'Node.js (macOS, Linux, Windows)',
     publisher: { '@id': organizationId },
-    softwareRequirements: 'Payload CMS v3, Next.js 15 or 16',
+    softwareRequirements,
     softwareVersion: component.version,
     url: `${siteUrl}${component.href}`,
   }

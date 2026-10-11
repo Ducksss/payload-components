@@ -73,6 +73,12 @@ npx payload-components add pricing-cards
 npx payload-components localize
 ```
 
+An existing `localization` block that means the same as `--locales` asks for — the same
+locale codes and writing direction, default locale, and fallback — is left alone, however
+it is formatted or ordered and whatever labels it uses. The Payload v4 blank template's
+single-`en` block is one: `localize --locales en` keeps it. A block that declares different
+locales is kept too, but the command exits non-zero until you pass `--force` to replace it.
+
 ## Choosing locales
 
 | Flag                       | Effect                                                                     |

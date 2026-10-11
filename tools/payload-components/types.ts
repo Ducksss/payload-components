@@ -158,12 +158,31 @@ export type HostFileRequirement = {
 /* Each entry must exist. An array means "any one of these paths". */
 export type RequiredFile = string | string[]
 
+/* What one Payload major needs from the rest of the stack. A target's
+ * allowedNextMajors is the union across all of its Payload majors, and that
+ * union is all a reader of the original matrix sees. An entry narrows it for
+ * one Payload major: Payload 4 dropped Next.js 15, Payload 3 kept it. */
+export type PayloadMajorSupport = {
+  /* Supported, but not yet stable upstream. Docs label it; the CLI installs it
+     like any other major. */
+  experimental?: boolean
+  /* The lowest versions this Payload major runs on. Detection works in majors,
+     so these are reported by doctor rather than refused. */
+  minimumVersions?: { next?: string; node?: string }
+  /* A subset of the target's allowedNextMajors. */
+  nextMajors: number[]
+}
+
 export type SupportedTarget = {
   allowedNextMajors: number[]
   allowedPayloadMajors: number[]
   description: string
   hostFiles: Record<HostFileRole, HostFileRequirement>
   id: string
+  /* Keyed by Payload major ("3", "4"). Optional: a Payload major without an
+     entry pairs with every allowed Next.js major, which is what a matrix
+     written before this field existed means. */
+  payloadMajorSupport?: Record<string, PayloadMajorSupport>
   requiredFiles: RequiredFile[]
 }
 

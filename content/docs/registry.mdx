@@ -103,6 +103,15 @@ guidance. Collection Query requires both Posts and Categories and their config r
 
 `payload-components/support-matrix.json` defines the target project shapes the installer understands.
 
+Each target lists the Payload and Next.js majors it accepts (`allowedPayloadMajors`,
+`allowedNextMajors`). Those lists are unions, not a cross product: `payloadMajorSupport`
+narrows the Next.js majors per Payload major and records that major's minimum versions.
+Payload v3 pairs with Next.js 15 or 16. Payload v4 is experimental, pairs with Next.js 16
+only, and needs Next.js 16.2.6 and Node.js 24.15 or newer. Detection refuses a pair the
+matrix does not list, and `doctor` warns below the minimum versions. A Payload major with no
+`payloadMajorSupport` entry pairs with every allowed Next.js major, which is how a matrix
+written before the field existed still reads.
+
 <Callout type="info">
   The current support matrix is intentionally narrow. New project shapes
   should be added only when the installer can verify them with tests.

@@ -9,6 +9,7 @@ import { checkDependencyRequirements } from '../../tools/payload-components/depe
 import { listComponentNames, loadManifest } from '../../tools/payload-components/manifest'
 import {
   applyPayloadFragments,
+  assertManifestSupport,
   detectProject,
   removePayloadFragments,
   resolveRecoveryPatchedFiles,
@@ -331,6 +332,41 @@ describe('Payload major support', () => {
     const dir = await makeProject(starterFiles, { next: '^14.0.0', payload: '^3.0.0' })
 
     await expect(detectProject(dir)).rejects.toThrow('Unsupported Next.js major version 14')
+  })
+
+  /* Payload 4 dropped Next.js 15. Both majors are supported on their own, so
+   * the refusal has to name the pairing rather than either major alone, and
+   * never fall through to the file-shape error. */
+  it('refuses Payload 4 with Next.js 15 and names the pairs that work', async () => {
+    const dir = await makeProject(starterFiles, { next: '15.5.4', payload: '4.0.0-beta.0' })
+    const error = await captureRejection(detectProject(dir))
+
+    expect(error.message).toContain('Unsupported Next.js major version 15 for Payload v4')
+    expect(error.message).toContain(
+      'supports Payload v3 with Next.js 15, 16; Payload v4 with Next.js 16',
+    )
+    expect(error.message).not.toContain('Unsupported project shape')
+  })
+
+  it('keeps Next.js 15 for Payload 3', async () => {
+    const dir = await makeProject(starterFiles, { next: '15.5.4', payload: '3.90.2' })
+    const project = await detectProject(dir)
+
+    expect(project).toMatchObject({ nextMajor: 15, payloadMajor: 3 })
+    expect(project.target.id).toBe('payload-website-starter')
+  })
+
+  it('refuses a manifest install for a pair the detected target does not support', async () => {
+    const dir = await makeProject(starterFiles, canaryDependencies)
+    const project = await detectProject(dir)
+    const manifest = await loadManifest('hero-basic')
+
+    expect(() => assertManifestSupport(project, manifest)).not.toThrow()
+    /* Detection never hands this pair over; the check holds on its own for any
+       caller that builds a project another way. */
+    expect(() => assertManifestSupport({ ...project, nextMajor: 15 }, manifest)).toThrow(
+      'Component "hero-basic" does not support Next.js major version 15 with Payload major version 4.',
+    )
   })
 })
 

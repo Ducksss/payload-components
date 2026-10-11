@@ -118,7 +118,7 @@ const formatPlan = ({
     lines.push(
       configOutcome.matches
         ? `  ${configFileRelPath} (already declares exactly these locales)`
-        : `  ${configFileRelPath} (skipped — already declares a different localization block)`,
+        : `  ${configFileRelPath} (skipped — already declares a different localization block; --force replaces it)`,
     )
   } else if (configOutcome.kind === 'kept') {
     lines.push(`  ${configFileRelPath} (unchanged — keeping the locales it already declares)`)

@@ -1,7 +1,9 @@
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 
-import { checkDependencyRequirements } from '../dependencies'
+import semver from 'semver'
+
+import { checkDependencyRequirements, resolveConcreteVersion } from '../dependencies'
 import { writeCommandOutput } from '../command-output'
 import { BASE_BUNDLE_DEPENDENCIES, inspectBaseBundle } from '../base-bundle'
 import { resolveInstallPlan } from '../install-plan'
@@ -18,6 +20,7 @@ import {
 } from '../project'
 import { loadState } from '../state'
 import { readSafeProjectFile, safeProjectFileExists } from '../safe-path'
+import { getPayloadMajorSupport } from '../support-matrix'
 import { repoRoot } from '../utils'
 
 import { getPayloadConfigFile } from './seed'
@@ -506,6 +509,74 @@ const logProjectSummary = (project: DetectedProject, log: Log) => {
   log('ok', `wiring: ${project.hostFiles.renderBlocks} + ${project.hostFiles.pagesLayout}`)
 }
 
+export type RuntimeFinding = { message: string; status: Exclude<DoctorStatus, 'error'> }
+
+/* Some Payload majors need more than a major of Next.js: Payload 4 runs on
+ * Node.js 24.15 and Next.js 16.2.6 or newer. Detection works in majors, so the
+ * support matrix's minimum versions are reported here, as warnings, instead of
+ * refusing installs. Node.js is the runtime this command runs on; Next.js is the
+ * installed version, or an exact declared one. A range with nothing installed
+ * cannot be checked, so it is not reported. */
+export const checkRuntimeRequirements = async ({
+  cwd,
+  nodeVersion,
+  project,
+}: {
+  cwd: string
+  nodeVersion: string
+  project: Pick<DetectedProject, 'payloadMajor' | 'target'>
+}): Promise<RuntimeFinding[]> => {
+  const support = getPayloadMajorSupport(project.target, project.payloadMajor)
+  const minimums = support?.minimumVersions
+
+  if (!minimums) {
+    return []
+  }
+
+  const payload = `Payload ${project.payloadMajor}${support.experimental ? ' (experimental)' : ''}`
+  const checks = [
+    {
+      found: nodeVersion,
+      has: 'this is',
+      minimum: minimums.node,
+      name: 'Node.js',
+      upgrade: 'Node.js',
+    },
+    {
+      found: minimums.next
+        ? await resolveConcreteVersion({ cwd, dependencyName: 'next' })
+        : undefined,
+      has: 'this project has',
+      minimum: minimums.next,
+      name: 'Next.js',
+      upgrade: 'the next package',
+    },
+  ]
+  const findings: RuntimeFinding[] = []
+
+  for (const { found, has, minimum, name, upgrade } of checks) {
+    const version = found ? semver.valid(found) : null
+
+    if (!minimum || !version) {
+      continue
+    }
+
+    findings.push(
+      semver.lt(version, minimum)
+        ? {
+            message: `runtime: ${payload} needs ${name} ${minimum} or newer, but ${has} ${name} ${version} — upgrade ${upgrade}`,
+            status: 'warn',
+          }
+        : {
+            message: `runtime: ${name} ${version} meets ${payload}'s minimum of ${minimum}`,
+            status: 'ok',
+          },
+    )
+  }
+
+  return findings
+}
+
 const inspectProject = async ({
   components,
   cwd,
@@ -519,6 +590,14 @@ const inspectProject = async ({
     const [project, manifests] = await Promise.all([detectProject(cwd), loadKnownManifests()])
 
     logProjectSummary(project, log)
+
+    for (const { message, status } of await checkRuntimeRequirements({
+      cwd,
+      nodeVersion: process.versions.node,
+      project,
+    })) {
+      log(status, message, 'runtime')
+    }
 
     for (const manifest of manifests) {
       try {

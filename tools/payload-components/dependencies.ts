@@ -118,6 +118,28 @@ export const resolveDeclaredVersion = async ({
   return (await readInstalledVersion({ cwd, dependencyName })) ?? declared
 }
 
+/* The one version a project runs, for minimum-version checks that a range
+ * cannot answer: what the package manager installed, else an exact version the
+ * project declares. Undefined when neither says, e.g. "^16.0.0" with nothing
+ * installed. */
+export const resolveConcreteVersion = async ({
+  cwd,
+  dependencyName,
+}: {
+  cwd: string
+  dependencyName: string
+}) => {
+  const installed = await readInstalledVersion({ cwd, dependencyName })
+
+  if (installed) {
+    return installed
+  }
+
+  const declared = (await getDeclaredDependencies(cwd))[dependencyName]
+
+  return declared ? (semver.valid(declared) ?? undefined) : undefined
+}
+
 const validateDeclaredRange = ({
   dependencyName,
   installedRange,
