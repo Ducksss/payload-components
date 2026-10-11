@@ -12,9 +12,10 @@
   <p><strong>Payload CMS blocks, wired - not pasted.</strong></p>
   <p>
     Payload Components is an MIT, community-first registry and CLI for
-    installing typed Payload CMS blocks into Payload v3 + Next.js projects.
-    It copies the files, wires Payload config, regenerates generated artifacts,
-    and leaves the whole install as a reviewable git diff.
+    installing typed Payload CMS blocks into Payload v3 + Next.js projects,
+    with experimental Payload v4 support. It copies the files, wires Payload
+    config, regenerates generated artifacts, and leaves the whole install as a
+    reviewable git diff.
   </p>
   <p>
     <a href="https://www.payload-components.xyz/docs"><strong>Explore the docs</strong></a>
@@ -84,6 +85,14 @@
 
 Payload Components installs Payload CMS blocks into supported Payload v3 +
 Next.js projects.
+
+| Payload | Next.js             | Support                                    |
+| ------- | ------------------- | ------------------------------------------ |
+| v3      | 15 or 16            | Fully supported                            |
+| v4      | 16, 16.2.6 or newer | Experimental; needs Node.js 24.15 or newer |
+
+Payload v4 support tracks Payload's prereleases. The CLI refuses a Payload v4
+project on Next.js 15, and `doctor` warns below the Next.js and Node.js minimums.
 
 A plain `shadcn add` copies files. `payload-components add` goes further:
 
@@ -172,7 +181,8 @@ working on this repository.
 
 ### Use A Component
 
-Run the CLI from the root of a supported Payload v3 + Next.js project:
+Run the CLI from the root of a supported Payload v3 (or experimental v4) +
+Next.js project:
 
 ```sh
 npx payload-components add hero-basic

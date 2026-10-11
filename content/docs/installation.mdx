@@ -24,12 +24,17 @@ For a visual tour of the catalog, install commands, reviewable diff, and doctor 
   If a requirement is missing, it stops rather than leaving a half-wired repo.
 </Callout>
 
-Your project must run these majors:
+Your project must run one of these pairs:
 
-| Dependency | Version       |
-| ---------- | ------------- |
-| `payload`  | v3            |
-| `next`     | v15 or v16    |
+| `payload` | `next`                | Support                                    |
+| --------- | --------------------- | ------------------------------------------ |
+| v3        | v15 or v16            | Fully supported                            |
+| v4        | v16, 16.2.6 or newer  | Experimental; needs Node.js 24.15 or newer |
+
+Payload v4 dropped Next.js 15, so the installer refuses a Payload v4 project on Next.js 15.
+It checks majors only: run `npx payload-components doctor` to see whether a Payload v4 project
+also meets the Next.js 16.2.6 and Node.js 24.15 minimums. Payload v4 support tracks Payload's
+prereleases, so expect rough edges; Payload v3 stays the fully supported path.
 
 …and it must already contain the website-style block layout the installer patches into:
 
@@ -140,7 +145,7 @@ The wrapper CLI owns the Payload-specific work that direct registry installation
 
 <Steps>
   <Step>
-    **Validate the target project shape** — refuse to touch a repo that isn't a supported Payload v3 + Next.js project.
+    **Validate the target project shape** — refuse to touch a repo that isn't a supported Payload + Next.js pair (Payload v3 on Next.js 15 or 16, or experimental Payload v4 on Next.js 16) with the expected layout.
   </Step>
   <Step>**`registry-build`** builds the checked-in manifest, then **`registry-add`** adds the registry item and installs its source files.</Step>
   <Step>
@@ -166,7 +171,8 @@ npx payload-components doctor
 `doctor` validates the supported project shape, required post-install scripts,
 and recorded component installs in `.payload-components/state.json`. It exits
 non-zero when files, Payload fragments, dependency declarations, or install state
-need attention.
+need attention. On a Payload v4 project it also warns when Node.js is older than
+24.15 or `next` is older than 16.2.6.
 
 <Callout type="info">
   Already have a block file that is not appearing in the editor or on the page?

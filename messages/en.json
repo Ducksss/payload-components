@@ -464,7 +464,7 @@
       },
       "six": {
         "question": "Which projects are supported today?",
-        "answer": "Payload v3 + Next.js 15/16 projects shaped like the official website starter — rendering layout blocks through src/blocks/RenderBlocks.tsx and registering page blocks in src/collections/Pages/index.ts. The CLI checks your project against the published support matrix before touching anything."
+        "answer": "Payload v3 + Next.js 15/16 projects shaped like the official website starter — rendering layout blocks through src/blocks/RenderBlocks.tsx and registering page blocks in src/collections/Pages/index.ts. Payload v4 is supported experimentally on Next.js 16.2.6 or newer with Node.js 24.15 or newer. The CLI checks your project against the published support matrix before touching anything."
       },
       "seven": {
         "question": "Why not just run npx shadcn add?",
