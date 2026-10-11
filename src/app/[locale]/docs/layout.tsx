@@ -16,6 +16,13 @@ import { getLocalizedPageTree } from '@/lib/source'
 
 import './docs.css'
 
+/* data-brand: the docs sidebar is site chrome, so it wears the Datasheet brand
+   (globals.css section 4), like the page headers, table of contents and page
+   footer (docs/[[...slug]]/page.tsx); the reading column stays on Geist.
+   Spread, because Fumadocs types its slots as element props, which have no
+   data attributes. */
+const datasheetBrand = { 'data-brand': 'datasheet' } as const
+
 export default async function DocsRootLayout({ children }: { children: ReactNode }) {
   const locale = await getSiteLocale()
   const t = await getTranslations({ locale, namespace: 'Docs' })
@@ -40,6 +47,7 @@ export default async function DocsRootLayout({ children }: { children: ReactNode
         tree={getLocalizedPageTree(locale)}
         themeSwitch={{ enabled: false }}
         sidebar={{
+          ...datasheetBrand,
           banner: (
             <div
               key="docs-version-banner"

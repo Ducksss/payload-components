@@ -93,9 +93,12 @@ export default async function BlogIndex() {
   )
 
   return (
+    /* data-brand: the blog index is all chrome — header, guides, post cards —
+       so it wears the Datasheet brand (globals.css section 4). */
     <main
       {...publicationContentAttributes(publication)}
       id="main"
+      data-brand="datasheet"
       className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16"
     >
       <JsonLd data={blogStructuredData} />
@@ -103,7 +106,7 @@ export default async function BlogIndex() {
         <p className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand-600">
           {t('eyebrow')}
         </p>
-        <h1 className="mt-3 text-balance text-4xl font-semibold tracking-display text-foreground sm:text-5xl">
+        <h1 className="type-display mt-3 text-balance text-4xl font-semibold tracking-display text-foreground sm:text-5xl">
           {t('metadataTitle')}
         </h1>
         <p className="mt-4 max-w-3xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg">

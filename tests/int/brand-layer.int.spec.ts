@@ -131,17 +131,24 @@ describe('Datasheet brand layer', () => {
     expect(drift).toEqual([])
   })
 
-  it('keeps the mark on the blocks emerald, outside the brand remap', async () => {
-    const [globals, logomark] = await Promise.all([
+  it('keeps the mark on the blocks emerald, outside the brand remap, in every copy', async () => {
+    const [globals, logomark, favicon, ogMark] = await Promise.all([
       read('src/app/globals.css'),
       read('src/components/site/Logomark.tsx'),
+      read('public/favicon.svg'),
+      read('src/lib/og/mark.ts'),
     ])
     const brand = ruleDeclarations(globals, "[data-brand='datasheet']")
+    const preview = ruleDeclarations(globals, '.preview-scope')
 
+    /* Snapshotted on :root, so neither scope can recolour it. */
     expect(ruleDeclarations(globals, ':root').get('--mark')).toBe('var(--brand)')
     expect(brand.has('--mark')).toBe(false)
+    expect(preview.has('--mark')).toBe(false)
     expect(logomark).toContain('bg-mark')
     expect(logomark).not.toMatch(/\bbg-brand\b/)
+    /* The favicon and the OG cards carry the same green as a hex literal. */
+    for (const copy of [favicon, ogMark]) expect(copy).toMatch(/fill="#059669"/)
   })
 
   it('renders every demo twin outside the templates through a preview scope', async () => {
@@ -194,7 +201,7 @@ describe('Datasheet hero drawing', () => {
       ),
     ]
 
-    expect(heroDatasheet.fields).toEqual(declared)
+    expect(heroDatasheet.inputs.map((pin) => pin.label)).toEqual(declared)
   })
 
   it('traces out exactly what the manifest installs', async () => {

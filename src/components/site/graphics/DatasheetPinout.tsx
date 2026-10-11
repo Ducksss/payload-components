@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
 
 import { heroDatasheet } from '@/lib/datasheet'
+import { cn } from '@/utilities/ui'
 
 /* The hero's drawing: hero-basic as a ten-pin part on a datasheet. Its five
  * real fields come in on the left (pins 1–5), and pins 6–10 trace out to the
@@ -19,7 +20,8 @@ import { heroDatasheet } from '@/lib/datasheet'
  * phone is unreadable, so phones get the part turned on its side, redrawn at
  * its real size. */
 
-const { fields, license, outputs, slug, version } = heroDatasheet
+const { inputs, license, outputs, slug, version } = heroDatasheet
+const fields = inputs.map((pin) => pin.label)
 const partLabel = slug.toUpperCase()
 
 /* Vertical pitch of the desktop pins, and of the pads on the connector. */
@@ -291,9 +293,10 @@ function PhonePinout() {
   )
 }
 
+/* pinout-live: the landing's drawing is the one that draws itself in. */
 export function DatasheetPinout({ className }: { className?: string }) {
   return (
-    <div className={className}>
+    <div className={cn('pinout-live', className)}>
       <PhonePinout />
       <DesktopPinout />
     </div>

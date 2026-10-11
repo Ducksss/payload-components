@@ -102,19 +102,23 @@ export default async function BlogPost({ params }: BlogPostProps) {
       className="mx-auto w-full max-w-6xl px-4 py-12 md:px-8 md:py-16"
     >
       <JsonLd data={structuredData} />
+      {/* data-brand: the back link, the article header and the related posts
+          are chrome and wear the Datasheet brand; the article body below the
+          cover stays on Geist, like the docs reading column. */}
       <Link
         href="/blog"
+        data-brand="datasheet"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="size-4" aria-hidden="true" />
         {t('back')}
       </Link>
 
-      <header className="mt-7 max-w-4xl">
+      <header data-brand="datasheet" className="mt-7 max-w-4xl">
         <span className="inline-flex rounded-full border border-brand/20 bg-brand-50 px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-micro text-brand-600">
           {t(`series.${page.data.series}`)}
         </span>
-        <h1 className="mt-5 text-4xl font-semibold leading-[1.05] tracking-display text-foreground sm:text-5xl md:text-6xl">
+        <h1 className="type-display mt-5 text-4xl font-semibold leading-[1.05] tracking-display text-foreground sm:text-5xl md:text-6xl">
           {page.data.title}
         </h1>
         {page.data.description ? (

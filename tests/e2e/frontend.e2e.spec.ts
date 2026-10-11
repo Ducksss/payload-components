@@ -1369,6 +1369,62 @@ test.describe('Light shadcn frontend', () => {
     }
   })
 
+  test('opens every component page’s install section with its datasheet', async ({ page }) => {
+    /* The drawing comes from the manifest (outputs) and the block config or
+       props type (inputs); tests/int/datasheet.int.spec.ts checks the data for
+       every component. This checks that it renders, per layout: a wired block
+       and a file-only component, on the drawing's own two layouts. */
+    const cases = [
+      {
+        caption:
+          'Fig. 1 Pinout of PC-HERO-BASIC: 5 fields in (pins 1–4 from the shared heroFields base), 5 outputs to your project.',
+        nets: 5,
+        slug: 'hero-basic',
+      },
+      {
+        caption: 'Fig. 1 Pinout of PC-RELATED-POSTS: 4 props in, 1 output to your project.',
+        nets: 1,
+        slug: 'related-posts',
+      },
+    ]
+
+    for (const viewport of [
+      { drawing: '.pinout-desktop', height: 900, width: 1440 },
+      { drawing: '.pinout-phone', height: 844, width: 390 },
+    ]) {
+      await page.setViewportSize({ height: viewport.height, width: viewport.width })
+      for (const { caption, nets, slug } of cases) {
+        await page.goto(`${baseURL}/docs/components/${slug}`)
+        const figure = page.locator('figure.datasheet-figure')
+        const drawing = figure.locator(`svg${viewport.drawing}`)
+
+        await expect(drawing, `${slug} ${viewport.width}`).toBeVisible()
+        await expect(drawing).toHaveAttribute('aria-hidden', 'true')
+        await expect(drawing.locator('.pinout-net')).toHaveCount(nets)
+        await expect(figure.locator('figcaption')).toHaveText(caption)
+      }
+    }
+  })
+
+  test('brands the docs and blog chrome and keeps their reading columns on Geist', async ({
+    page,
+  }) => {
+    const font = (selector: string) =>
+      page.locator(selector).first().evaluate((element) => getComputedStyle(element).fontFamily)
+
+    await page.goto(`${baseURL}/docs/installation`)
+    expect(await font('#nd-sidebar')).toContain('Archivo')
+    expect(await font('#nd-page h1')).toContain('Archivo')
+    expect(await font('#nd-page .prose p')).toContain('Geist')
+
+    await page.goto(`${baseURL}/blog/what-is-a-payload-cms-block`)
+    expect(await font('main h1')).toContain('Archivo')
+    expect(await font('main article p')).toContain('Geist')
+
+    await page.goto(`${baseURL}/components`)
+    expect(await font('main h1')).toContain('Archivo')
+  })
+
   test('exposes a working command copy control', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await page.goto(baseURL)

@@ -95,7 +95,15 @@ export default async function ComponentsPage() {
       <SiteHeader activePath="/components" />
       <TranslationNotice pathname="/components" />
 
-      <main {...publicationContentAttributes(publication)} id="main" className="flex-1">
+      {/* data-brand: the catalog's own chrome (header, filters, card text) wears
+          the Datasheet brand; every card's twin sits in .preview-scope via
+          ComponentPreviewThumb, so the previews keep the component tokens. */}
+      <main
+        {...publicationContentAttributes(publication)}
+        id="main"
+        data-brand="datasheet"
+        className="flex-1"
+      >
         <section className="relative overflow-hidden border-b border-border">
           <div
             aria-hidden="true"
@@ -104,7 +112,7 @@ export default async function ComponentsPage() {
           <div className="container relative flex flex-col gap-4 py-8 sm:flex-row sm:items-end sm:justify-between sm:py-10">
             <div className="max-w-2xl">
               <Eyebrow>{t('eyebrow')}</Eyebrow>
-              <h1 className="mt-3 text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl">
+              <h1 className="type-display mt-3 text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl">
                 {t('title', { count: componentEntries.length })}
               </h1>
               <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">

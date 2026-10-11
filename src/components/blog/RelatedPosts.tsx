@@ -9,7 +9,12 @@ export function RelatedPosts({ page }: { page: BlogPage }) {
   if (related.length === 0) return null
 
   return (
-    <section aria-labelledby="related-posts-title" className="mt-16 border-t border-border pt-10">
+    /* data-brand: chrome after the article, so it wears the Datasheet brand. */
+    <section
+      aria-labelledby="related-posts-title"
+      data-brand="datasheet"
+      className="mt-16 border-t border-border pt-10"
+    >
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
           <p className="font-mono text-[11px] font-medium uppercase tracking-eyebrow text-brand-600">
