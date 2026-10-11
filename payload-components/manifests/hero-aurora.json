@@ -16,7 +16,7 @@
   "description": "A motion-first product hero with an animated aurora field, staggered headline reveal, pointer-parallax media panel, and a live metric ticker.",
   "registryItemName": "hero-aurora",
   "dependencies": {
-    "motion": "^12.0.0 || ^13.0.0"
+    "motion": "^12.0.0 || ^13.0.0 || ^14.0.0"
   },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
