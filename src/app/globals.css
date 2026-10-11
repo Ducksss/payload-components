@@ -94,9 +94,11 @@
   --trace-600: oklch(40% 0.075 166.5deg);
   --wire: color-mix(in oklab, var(--foreground) 24%, var(--background));
 
-  /* The mark is two blocks, so it keeps the blocks' emerald wherever it sits.
-     Resolved here, before any brand scope recolours --brand for its chrome. */
-  --mark: var(--brand);
+  /* The mark is the site's signature, so it wears the site's one green: trace,
+     the same #0B6B4F as public/favicon.svg and the OG cards. It is its own
+     token, outside the brand remap, so it reads the same in branded chrome,
+     on unbranded pages and beside the emerald blocks. */
+  --mark: var(--trace);
 
   --radius: 0.625rem;
 

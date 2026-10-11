@@ -369,7 +369,7 @@ describe('Component visual standards', () => {
             tag[0].match(new RegExp(`\\b${name}=["']([^"']+)["']`))?.[1]
           return ['x', 'y', 'width', 'height', 'rx'].map(attribute)
         })
-        // Drop the enclosing emerald plate (no x/y) — only the glyph rects matter.
+        // Drop the enclosing trace plate (no x/y) — only the glyph rects matter.
         .filter(([x, y]) => x !== undefined && y !== undefined)
         .map((values) => values.join(','))
 

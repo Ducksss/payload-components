@@ -6,8 +6,8 @@ import { cn } from '@/utilities/ui'
    they read as separate blocks that have been fitted into one shape, which is
    the whole product: blocks that arrive already wired, not pasted. The union
    is deliberate; there is no seam to lose at 16px, so the silhouette survives
-   a browser tab. Emerald square (`--mark`, the blocks' emerald, which the
-   Datasheet brand scope deliberately does not remap) with a `--brand-foreground` glyph via
+   a browser tab. Trace-green square (`--mark`, #0B6B4F, its own token so no
+   brand scope can recolour it) with a `--brand-foreground` glyph via
    currentColor — never recolored or gradiented. Decorative: the wordmark text
    carries the accessible name, so this is aria-hidden. Four copies of this
    geometry must stay in sync (tests/int/visual-standards.int.spec.ts reads

@@ -71,7 +71,7 @@ Two layers share one light page. The **site chrome** wears the _Datasheet_ brand
 - `[data-brand='datasheet']` (globals.css section 4) marks branded chrome. It remaps the tokens the chrome already uses — `--font-sans`, `--font-mono` and the `--brand` ramp — onto the brand faces and `trace`, so existing utilities follow without per-class edits.
 - `.preview-scope` restores every token the brand scope remaps. It sits on every surface that renders a demo twin: the preview route, `DemoFitFrame`, `DemoScaleFrame`, the hero wall, and the specimen. A twin inside branded chrome therefore renders exactly as it installs, and exactly as its visual baseline. `tests/int/brand-layer.int.spec.ts` keeps the two scopes mirror images, and the frontend e2e suite checks the landing's twins at runtime.
 - Never put `.preview-scope` inside a template shell: template themes set these tokens themselves.
-- The mark is two blocks, so it keeps the blocks' emerald (`--mark`) wherever it sits.
+- The mark signs the site, so it wears trace (`--mark`, #0B6B4F) — in the header, `public/favicon.svg` and `.ico`, and every OG card. It is its own token outside both scopes, so no scope recolours it.
 - **Datasheets.** Every component is drawn as a part: a dual-in-line chip whose left pins are its inputs (the block config's fields, or a file-only component's props) and whose right pins trace out to "J1 · your project", one pad per file the install writes. The landing hero draws `hero-basic`; each `/docs/components/<slug>` page opens "What it installs" with its own (`PartPinout`, data from `src/lib/component-datasheet.ts`, captioned in text); and the social cards are pages of the same datasheet (`src/lib/og/`). Unused pins are drawn NC, as on a real part.
 
 ## Colors
