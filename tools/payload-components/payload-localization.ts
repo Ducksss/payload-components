@@ -264,8 +264,8 @@ const findLocalizationProperty = ({
 export type LocalizationConfigPatch =
   | { block: string; kind: 'patched'; source: string }
   | { block: string; kind: 'replaced'; previous: string; source: string }
-  /* `matches` distinguishes "already exactly this" (a clean no-op) from
-   * "something else is configured" (needs an explicit --force). */
+  /* `matches` distinguishes "already means this" (a clean no-op, however it is
+   * formatted) from "something else is configured" (needs an explicit --force). */
   | { existing: string; kind: 'already-configured'; matches: boolean }
   | { kind: 'existing-unreadable' }
   | { kind: 'no-build-config' }
@@ -301,7 +301,17 @@ export const setPayloadLocalization = ({
     const replacementWithComma = block.trimStart()
     const replacementWithoutComma = replacementWithComma.replace(/,$/, '')
 
-    const matches = previous === replacementWithoutComma
+    /* By meaning, not bytes: the Payload 4 blank template already declares
+     * `locales: [{ code: 'en', label: 'English' }], fallback: true,
+     * defaultLocale: 'en'`, which is what `--locales en` asks for in another
+     * order. The rendered block is read back with the same scanner, so both
+     * sides go through one parser. */
+    const matches =
+      previous === replacementWithoutComma ||
+      isSameLocalization(
+        readLocalizationMeaning(source),
+        readLocalizationMeaning(`buildConfig({\n${block}\n})`),
+      )
 
     if (matches || !force) {
       return { existing: previous, kind: 'already-configured', matches }
@@ -400,6 +410,32 @@ const readDirectString = ({
   return value.includes('\\') ? undefined : value
 }
 
+/* `true` or `false` written out as the whole value, else undefined. */
+const readDirectBoolean = ({
+  containerEnd,
+  maskedSource,
+  valueStart,
+}: {
+  containerEnd: number
+  maskedSource: string
+  valueStart: number
+}) => {
+  const [literal] = /^(?:true|false)\b/.exec(maskedSource.slice(valueStart)) ?? []
+
+  return literal &&
+    isDirectValueTerminated({
+      containerEnd,
+      maskedSource,
+      valueEnd: valueStart + literal.length - 1,
+    })
+    ? literal === 'true'
+    : undefined
+}
+
+/* One locale as Payload sanitizes it. A bare string is `rtl: false`; `rtl` is
+ * undefined when the entry computes it. */
+type LiteralLocale = { bare: boolean; code: string; rtl: boolean | undefined }
+
 /* A literal locale array is enumerable only when every direct entry has one
  * statically readable code. Any spread or computed entry makes the whole set
  * runtime-computed; returning a known prefix as complete would be worse than
@@ -414,7 +450,7 @@ const readLiteralLocaleArray = ({
   start: number
 }) => {
   const maskedSource = maskIgnoredSource(source)
-  const locales: string[] = []
+  const locales: LiteralLocale[] = []
 
   for (const entry of findDirectArrayEntries({ end, maskedSource, start })) {
     const directString = readDirectString({
@@ -425,7 +461,7 @@ const readLiteralLocaleArray = ({
     })
 
     if (directString !== undefined) {
-      locales.push(directString)
+      locales.push({ bare: true, code: directString, rtl: false })
       continue
     }
 
@@ -458,28 +494,51 @@ const readLiteralLocaleArray = ({
     }
 
     const codeProperty = findDirectProperty({ object, propertyName: 'code', source })
-    const code = codeProperty
-      ? readDirectString({
-          containerEnd: object.end,
-          maskedSource,
-          source,
-          valueStart: codeProperty.valueStart,
-        })
-      : undefined
+    const codeShorthand = findDirectShorthand({ object, propertyName: 'code', source })
+    const code =
+      codeProperty && (!codeShorthand || codeShorthand.start < codeProperty.start)
+        ? readDirectString({
+            containerEnd: object.end,
+            maskedSource,
+            source,
+            valueStart: codeProperty.valueStart,
+          })
+        : undefined
 
     if (code === undefined) {
       return undefined
     }
 
-    locales.push(code)
+    const rtlProperty = findDirectProperty({ object, propertyName: 'rtl', source })
+    const rtlShorthand = findDirectShorthand({ object, propertyName: 'rtl', source })
+    const rtl =
+      rtlShorthand && (!rtlProperty || rtlShorthand.start > rtlProperty.start)
+        ? undefined
+        : rtlProperty
+          ? readDirectBoolean({
+              containerEnd: object.end,
+              maskedSource,
+              valueStart: rtlProperty.valueStart,
+            })
+          : false
+
+    locales.push({ bare: false, code, rtl })
   }
 
   return locales
 }
 
-/* Read back what the config declares, for reporting only — doctor says how many
- * locales a project has, and localize prints the set it is about to keep. */
-export const readPayloadLocalization = (source: string): ReadLocalization | undefined => {
+/* Everything the reader learns about the localization block. The public
+ * ReadLocalization is the reporting projection of it; the locale entries and
+ * the fallback status are what comparing two blocks by meaning needs. */
+type InspectedLocalization = {
+  fallbackStatus: 'absent' | 'computed' | 'literal'
+  /* Set only when the locale array is literal. */
+  literalLocales?: LiteralLocale[]
+  read: ReadLocalization
+}
+
+const inspectPayloadLocalization = (source: string): InspectedLocalization | undefined => {
   const configObject = findBuildConfigObject(source)
 
   if (!configObject) {
@@ -498,11 +557,14 @@ export const readPayloadLocalization = (source: string): ReadLocalization | unde
       /^false\b/.test(maskIgnoredSource(source).slice(property.valueStart))
 
     return {
-      defaultLocaleStatus: disabled ? 'absent' : 'computed',
-      disabled,
-      locales: [],
-      localesEnumerable: disabled,
-      localesStatus: disabled ? 'absent' : 'computed',
+      fallbackStatus: disabled ? 'absent' : 'computed',
+      read: {
+        defaultLocaleStatus: disabled ? 'absent' : 'computed',
+        disabled,
+        locales: [],
+        localesEnumerable: disabled,
+        localesStatus: disabled ? 'absent' : 'computed',
+      },
     }
   }
 
@@ -546,12 +608,29 @@ export const readPayloadLocalization = (source: string): ReadLocalization | unde
         : 'literal'
   const fallbackProperty = findDirectProperty({ object, propertyName: 'fallback', source })
   const fallbackShorthand = findDirectShorthand({ object, propertyName: 'fallback', source })
+  const effectiveFallbackProperty =
+    fallbackShorthand && (!fallbackProperty || fallbackShorthand.start > fallbackProperty.start)
+      ? undefined
+      : fallbackProperty
+  const fallbackComputedBySpread =
+    lastSpread !== undefined &&
+    (!effectiveFallbackProperty || effectiveFallbackProperty.start < lastSpread)
   const fallbackValue =
-    fallbackProperty &&
-    (!fallbackShorthand || fallbackProperty.start > fallbackShorthand.start) &&
-    (lastSpread === undefined || fallbackProperty.start > lastSpread)
-      ? /^(true|false)\b/.exec(maskedSource.slice(fallbackProperty.valueStart))?.[1]
+    effectiveFallbackProperty && !fallbackComputedBySpread
+      ? readDirectBoolean({
+          containerEnd: object.end,
+          maskedSource,
+          valueStart: effectiveFallbackProperty.valueStart,
+        })
       : undefined
+  const fallbackStatus: InspectedLocalization['fallbackStatus'] =
+    fallbackComputedBySpread || (!effectiveFallbackProperty && fallbackShorthand)
+      ? 'computed'
+      : !effectiveFallbackProperty
+        ? 'absent'
+        : fallbackValue === undefined
+          ? 'computed'
+          : 'literal'
   const localesProperty = findDirectProperty({ object, propertyName: 'locales', source })
   const localesShorthand = findDirectShorthand({ object, propertyName: 'locales', source })
   const effectiveLocalesProperty =
@@ -561,7 +640,7 @@ export const readPayloadLocalization = (source: string): ReadLocalization | unde
   const localesComputedBySpread =
     lastSpread !== undefined &&
     (!effectiveLocalesProperty || effectiveLocalesProperty.start < lastSpread)
-  let locales: string[] = []
+  let literalLocales: LiteralLocale[] | undefined
   let localesStatus: ReadLocalization['localesStatus'] = localesComputedBySpread
     ? 'computed'
     : effectiveLocalesProperty
@@ -587,14 +666,13 @@ export const readPayloadLocalization = (source: string): ReadLocalization | unde
           valueEnd: arrayEnd,
         })
       ) {
-        const literalLocales = readLiteralLocaleArray({
+        literalLocales = readLiteralLocaleArray({
           end: arrayEnd,
           source,
           start: effectiveLocalesProperty.valueStart,
         })
 
         if (literalLocales) {
-          locales = literalLocales
           localesStatus = 'literal'
         }
       }
@@ -602,12 +680,85 @@ export const readPayloadLocalization = (source: string): ReadLocalization | unde
   }
 
   return {
-    ...(defaultLocale ? { defaultLocale } : {}),
-    defaultLocaleStatus,
-    disabled: false,
-    ...(fallbackValue ? { fallback: fallbackValue === 'true' } : {}),
-    locales,
-    localesEnumerable: localesStatus !== 'computed',
-    localesStatus,
+    fallbackStatus,
+    ...(literalLocales ? { literalLocales } : {}),
+    read: {
+      ...(defaultLocale ? { defaultLocale } : {}),
+      defaultLocaleStatus,
+      disabled: false,
+      ...(fallbackValue === undefined ? {} : { fallback: fallbackValue }),
+      locales: literalLocales?.map(({ code }) => code) ?? [],
+      localesEnumerable: localesStatus !== 'computed',
+      localesStatus,
+    },
   }
 }
+
+/* Read back what the config declares, for reporting only — doctor says how many
+ * locales a project has, and localize prints the set it is about to keep. */
+export const readPayloadLocalization = (source: string): ReadLocalization | undefined =>
+  inspectPayloadLocalization(source)?.read
+
+/* What a localization block means once Payload sanitizes it: which locale codes
+ * exist and which read right to left, the default locale, and whether fallback
+ * is on (Payload defaults it to true). Labels are display text, and properties
+ * the CLI never writes (a locale's fallbackLocale, filterAvailableLocales) are
+ * left to the config, so neither decides equivalence. Undefined unless every
+ * compared part is a literal and the block is well formed: a duplicated code, a
+ * computed value, a default outside the locale list, or bare strings mixed with
+ * locale objects (Payload reads every entry the way it reads the first) cannot
+ * be equivalent to anything. */
+type LocalizationMeaning = {
+  defaultLocale: string
+  fallback: boolean
+  /* code → rtl */
+  locales: Map<string, boolean>
+}
+
+const readLocalizationMeaning = (source: string): LocalizationMeaning | undefined => {
+  const inspected = inspectPayloadLocalization(source)
+
+  if (
+    !inspected?.literalLocales ||
+    inspected.read.disabled ||
+    inspected.fallbackStatus === 'computed' ||
+    inspected.read.defaultLocaleStatus !== 'literal' ||
+    !inspected.read.defaultLocale
+  ) {
+    return undefined
+  }
+
+  const locales = new Map<string, boolean>()
+  const [first] = inspected.literalLocales
+
+  for (const { bare, code, rtl } of inspected.literalLocales) {
+    if (rtl === undefined || locales.has(code) || bare !== first?.bare) {
+      return undefined
+    }
+
+    locales.set(code, rtl)
+  }
+
+  if (!locales.has(inspected.read.defaultLocale)) {
+    return undefined
+  }
+
+  return {
+    defaultLocale: inspected.read.defaultLocale,
+    fallback: inspected.read.fallback ?? true,
+    locales,
+  }
+}
+
+/* Same meaning, whatever the formatting, property order, locale order or quote
+ * style. Two unreadable blocks are never the same. */
+const isSameLocalization = (
+  left: LocalizationMeaning | undefined,
+  right: LocalizationMeaning | undefined,
+) =>
+  left !== undefined &&
+  right !== undefined &&
+  left.defaultLocale === right.defaultLocale &&
+  left.fallback === right.fallback &&
+  left.locales.size === right.locales.size &&
+  [...left.locales].every(([code, rtl]) => right.locales.get(code) === rtl)

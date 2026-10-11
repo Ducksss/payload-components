@@ -1,22 +1,33 @@
 import type { ReactNode } from 'react'
 
 import {
+  describeExperimentalSupport,
+  formatPairedNext,
+  formatPayloadMajor,
   getComponentManifest,
   getComponentRegistryDependencies,
+  getPayloadCompatibility,
   getSupportTarget,
 } from '@/lib/component-manifest'
 
 /* Backs <ComponentRequirements slug="…" /> — honest, manifest-driven compatibility:
- * supported target, Payload/Next majors, and the shadcn UI it pulls in. */
+ * supported target, Payload/Next majors, and the shadcn UI it pulls in. Next.js
+ * majors are listed per Payload major, because the pairing is not a cross
+ * product: Payload v4 runs on Next.js 16 only. */
 export async function ComponentRequirements({ slug }: { slug: string }) {
   const manifest = await getComponentManifest(slug)
 
   if (!manifest) return null
 
-  const [deps, target] = await Promise.all([
+  const [deps, target, compatibility] = await Promise.all([
     getComponentRegistryDependencies(slug),
     getSupportTarget(manifest.supportedTargets[0] ?? ''),
+    getPayloadCompatibility(manifest),
   ])
+  const experimental = compatibility.filter((entry) => entry.experimental)
+  const stable = compatibility.filter((entry) => !entry.experimental)
+  /* One line when every Payload major pairs the same way, as before Payload v4. */
+  const nextValues = [...new Set(compatibility.map(formatPairedNext))]
 
   /* A target may accept a file at more than one path (src/ vs repo root); show
    * every accepted path rather than only the first. */
@@ -28,8 +39,18 @@ export async function ComponentRequirements({ slug }: { slug: string }) {
 
   const rows: { label: string; value: ReactNode }[] = [
     { label: 'Target', value: manifest.supportedTargets.join(', ') },
-    { label: 'Payload', value: `v${manifest.supports.payloadMajors.join(' / v')}` },
-    { label: 'Next.js', value: manifest.supports.nextMajors.join(' / ') },
+    { label: 'Payload', value: compatibility.map(formatPayloadMajor).join(' / ') },
+    {
+      label: 'Next.js',
+      value:
+        nextValues.length === 1
+          ? nextValues[0]
+          : compatibility.map((entry) => (
+              <span className="block" key={entry.payloadMajor}>
+                {formatPairedNext(entry)} with v{entry.payloadMajor}
+              </span>
+            )),
+    },
     { label: 'shadcn UI', value: deps.length ? deps.join(', ') : 'none' },
   ]
 
@@ -45,6 +66,15 @@ export async function ComponentRequirements({ slug }: { slug: string }) {
           </div>
         ))}
       </dl>
+
+      {experimental.length ? (
+        <p className="text-sm leading-6 text-muted-foreground">
+          {experimental.map(describeExperimentalSupport).join(' ')}
+          {stable.length
+            ? ` Payload ${stable.map(formatPayloadMajor).join(' and ')} stays fully supported.`
+            : ''}
+        </p>
+      ) : null}
 
       {fileOnly ? (
         <p className="text-sm leading-6 text-muted-foreground">

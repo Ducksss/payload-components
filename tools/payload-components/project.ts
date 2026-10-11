@@ -15,6 +15,7 @@ import { PAGES_LAYOUT_FILE, RENDER_BLOCKS_FILE } from './constants'
 import { resolveDeclaredVersion } from './dependencies'
 import { getAbsolutePath, normalizeFileList } from './project-paths'
 import { readSafeProjectFile, safeProjectFileExists } from './safe-path'
+import { describeSupportedPairs, pairedNextMajors, targetSupportsPair } from './support-matrix'
 import {
   findBuildConfigObject,
   findDirectArrayEntries,
@@ -138,11 +139,7 @@ export const detectProject = async (cwd: string): Promise<DetectedProject> => {
   const { lockfilePath, packageManager } = await detectPackageManagerDetails(cwd)
 
   for (const target of supportMatrix.targets) {
-    if (!target.allowedPayloadMajors.includes(payloadMajor)) {
-      continue
-    }
-
-    if (!target.allowedNextMajors.includes(nextMajor)) {
+    if (!targetSupportsPair(target, { nextMajor, payloadMajor })) {
       continue
     }
 
@@ -185,6 +182,13 @@ export const detectProject = async (cwd: string): Promise<DetectedProject> => {
   if (!nextMajors.includes(nextMajor)) {
     throw new Error(
       `Unsupported Next.js major version ${nextMajor} in ${cwd}. This version of payload-components supports Next.js ${nextMajors.join(', ')}.`,
+    )
+  }
+
+  /* Both majors are supported, just not together: Payload 4 dropped Next.js 15. */
+  if (!supportedMajors((target) => pairedNextMajors(target, payloadMajor)).includes(nextMajor)) {
+    throw new Error(
+      `Unsupported Next.js major version ${nextMajor} for Payload v${payloadMajor} in ${cwd}. This version of payload-components supports ${describeSupportedPairs(supportMatrix.targets)}.`,
     )
   }
 
@@ -280,6 +284,14 @@ export const assertManifestSupport = (project: DetectedProject, manifest: Compon
   if (!manifest.supports.nextMajors.includes(project.nextMajor)) {
     throw new Error(
       `Component "${manifest.name}" does not support Next.js major version ${project.nextMajor}.`,
+    )
+  }
+
+  /* A manifest lists majors, not pairs; the target says which Next.js majors go
+   * with which Payload major. Detection already applies this to the project. */
+  if (!targetSupportsPair(project.target, project)) {
+    throw new Error(
+      `Component "${manifest.name}" does not support Next.js major version ${project.nextMajor} with Payload major version ${project.payloadMajor}.`,
     )
   }
 }

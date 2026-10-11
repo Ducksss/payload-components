@@ -433,6 +433,175 @@ describe('setPayloadLocalization', () => {
   })
 })
 
+/* An existing block that means what --locales asks for is a no-op, however it
+ * is written. Payload 4's blank template ships a single-`en` block in its own
+ * property order, so comparing bytes refused `localize --locales en` there. Only
+ * the meaning Payload sanitizes is compared: locale codes and their writing
+ * direction, the default locale, and fallback (true when omitted). Anything
+ * else still refuses without --force, and a block whose meaning cannot be read
+ * is never called equivalent. */
+describe('setPayloadLocalization compares an existing block by meaning', () => {
+  const requestFor =
+    (codes: string[], options: { defaultLocale?: string; fallback?: boolean } = {}) =>
+    (indent: string) => {
+      const { defaultLocale, locales } = resolveLocales({
+        codes,
+        defaultLocale: options.defaultLocale,
+      })
+
+      return renderLocalizationBlock({
+        defaultLocale,
+        fallback: options.fallback ?? true,
+        indent,
+        locales,
+      })
+    }
+  const configWith = (block: string[]) =>
+    ['export default buildConfig({', '  collections: [],', ...block, '})', ''].join('\n')
+
+  /* What create-payload-app writes for a Payload 4 blank project. */
+  const payload4Blank = configWith([
+    '  localization: {',
+    "    locales: [{ code: 'en', label: 'English' }],",
+    '    fallback: true,',
+    "    defaultLocale: 'en',",
+    '  },',
+  ])
+
+  it('treats the Payload 4 blank template block as the same request', () => {
+    expect(
+      setPayloadLocalization({ renderBlock: requestFor(['en']), source: payload4Blank }),
+    ).toMatchObject({ kind: 'already-configured', matches: true })
+    /* Equivalent is a no-op even under --force: there is nothing to replace. */
+    expect(
+      setPayloadLocalization({
+        force: true,
+        renderBlock: requestFor(['en']),
+        source: payload4Blank,
+      }),
+    ).toMatchObject({ kind: 'already-configured', matches: true })
+  })
+
+  it.each([
+    [
+      'one line with double quotes',
+      [`  localization: { defaultLocale: "en", locales: ["en", "zh"] },`],
+    ],
+    [
+      'reordered locales, comments, and a trailing comma',
+      [
+        '  localization: {',
+        '    // ordered for the admin menu',
+        "    locales: ['zh', 'en',],",
+        "    defaultLocale: 'en', /* the site default */",
+        '    fallback: true,',
+        '  },',
+      ],
+    ],
+    [
+      'labels of its own and options the CLI never writes',
+      [
+        '  localization: {',
+        "    defaultLocale: 'en',",
+        '    filterAvailableLocales: ({ locales }) => locales,',
+        "    locales: [{ code: 'en', label: 'EN' }, { code: 'zh', label: '中文', fallbackLocale: 'en' }],",
+        '  },',
+      ],
+    ],
+  ])('ignores %s', (_, block) => {
+    expect(
+      setPayloadLocalization({ renderBlock: requestFor(['en', 'zh']), source: configWith(block) }),
+    ).toMatchObject({ kind: 'already-configured', matches: true })
+  })
+
+  it.each([
+    ['another locale set', ["  localization: { defaultLocale: 'en', locales: ['en', 'fr'] },"]],
+    ['another default locale', ["  localization: { defaultLocale: 'zh', locales: ['en', 'zh'] },"]],
+    [
+      'fallback turned off',
+      ["  localization: { defaultLocale: 'en', fallback: false, locales: ['en', 'zh'] },"],
+    ],
+  ])('still refuses %s without --force', (_, block) => {
+    const source = configWith(block)
+
+    expect(setPayloadLocalization({ renderBlock: requestFor(['en', 'zh']), source })).toMatchObject(
+      { kind: 'already-configured', matches: false },
+    )
+    expect(
+      setPayloadLocalization({ force: true, renderBlock: requestFor(['en', 'zh']), source }),
+    ).toMatchObject({ kind: 'replaced' })
+  })
+
+  it('compares writing direction, which a bare locale string leaves left to right', () => {
+    const request = requestFor(['en', 'ar'])
+
+    expect(
+      setPayloadLocalization({
+        renderBlock: request,
+        source: configWith(["  localization: { defaultLocale: 'en', locales: ['en', 'ar'] },"]),
+      }),
+    ).toMatchObject({ kind: 'already-configured', matches: false })
+    expect(
+      setPayloadLocalization({
+        renderBlock: request,
+        source: configWith([
+          '  localization: {',
+          "    defaultLocale: 'en',",
+          "    locales: [{ code: 'en', label: 'English' }, { code: 'ar', label: 'Arabic', rtl: true }],",
+          '  },',
+        ]),
+      }),
+    ).toMatchObject({ kind: 'already-configured', matches: true })
+  })
+
+  /* Each block would read as the request if the reader skipped that check. */
+  it.each([
+    ['a duplicated locale code', ['en'], "{ defaultLocale: 'en', locales: ['en', 'en'] }"],
+    [
+      /* Payload reads every entry the way it reads the first one. */
+      'bare strings mixed with locale objects',
+      ['en', 'zh'],
+      "{ defaultLocale: 'en', locales: ['en', { code: 'zh', label: '简体中文' }] }",
+    ],
+    ['no default locale', ['en'], "{ locales: ['en'] }"],
+    ['computed locales', ['en'], "{ defaultLocale: 'en', locales: getLocales() }"],
+    [
+      'a computed fallback',
+      ['en'],
+      "{ defaultLocale: 'en', fallback: isProduction, locales: ['en'] }",
+    ],
+    [
+      'a fallback that only starts with a literal',
+      ['en'],
+      "{ defaultLocale: 'en', fallback: true && isProduction, locales: ['en'] }",
+    ],
+    [
+      'a computed writing direction',
+      ['en'],
+      "{ defaultLocale: 'en', locales: [{ code: 'en', label: 'English', rtl: isRtl }] }",
+    ],
+  ])('never calls a malformed or computed block equivalent: %s', (_, codes, block) => {
+    expect(
+      setPayloadLocalization({
+        renderBlock: requestFor(codes),
+        source: configWith([`  localization: ${block},`]),
+      }),
+    ).toMatchObject({ kind: 'already-configured', matches: false })
+  })
+
+  it('still refuses a block it cannot read, even with --force', () => {
+    expect(
+      setPayloadLocalization({
+        force: true,
+        renderBlock: requestFor(['en']),
+        source: configWith([
+          "  localization: { defaultLocale: 'en', fallback: true, locales: ['en'] } as const,",
+        ]),
+      }),
+    ).toEqual({ kind: 'existing-unreadable' })
+  })
+})
+
 describe('readPayloadLocalization', () => {
   it('reads the object form, the shorthand array form, and reports neither', () => {
     expect(
@@ -984,5 +1153,42 @@ describe('localizeCommand', () => {
     expect(await readConfig(fixtureDir)).toBe('export default {}\n')
     expect(output()).toContain('no buildConfig({ ... }) call found')
     expect(isComplete).toBe(false)
+  })
+
+  it('accepts the Payload 4 blank template block as already localized', async () => {
+    /* create-payload-app's Payload 4 blank template declares one locale in its
+       own property order. Asking for that same locale is a clean no-op. */
+    const payload4Blank = CONFIG_SOURCE.replace(
+      '  collections: [Pages],',
+      [
+        '  collections: [Pages],',
+        '  localization: {',
+        "    locales: [{ code: 'en', label: 'English' }],",
+        '    fallback: true,',
+        "    defaultLocale: 'en',",
+        '  },',
+      ].join('\n'),
+    )
+    const { fixtureDir } = await installFixture({
+      componentNames: ['hero-basic'],
+      configSource: payload4Blank,
+    })
+    const { localizeCommand, output } = await setup()
+
+    const isComplete = await localizeCommand({ cwd: fixtureDir, locales: 'en' })
+
+    expect(isComplete).toBe(true)
+    expect(await readConfig(fixtureDir)).toBe(payload4Blank)
+    expect(output()).toContain('already declares exactly these locales')
+    expect(await readBlockConfig(fixtureDir, 'HeroBasic')).toContain('localizeFields')
+
+    /* Adding a locale is a different block, and still needs --force. */
+    const isWidened = await localizeCommand({ cwd: fixtureDir, locales: 'en,zh' })
+
+    expect(isWidened).toBe(false)
+    expect(await readConfig(fixtureDir)).toBe(payload4Blank)
+    expect(output()).toContain(
+      'already declares a different localization block; --force replaces it',
+    )
   })
 })
