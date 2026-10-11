@@ -1410,7 +1410,10 @@ test.describe('Light shadcn frontend', () => {
     page,
   }) => {
     const font = (selector: string) =>
-      page.locator(selector).first().evaluate((element) => getComputedStyle(element).fontFamily)
+      page
+        .locator(selector)
+        .first()
+        .evaluate((element) => getComputedStyle(element).fontFamily)
 
     await page.goto(`${baseURL}/docs/installation`)
     expect(await font('#nd-sidebar')).toContain('Archivo')
