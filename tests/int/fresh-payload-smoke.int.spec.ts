@@ -381,6 +381,67 @@ describe('fresh Payload smoke component selection', () => {
     await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(false)
     await expect(readFile(buttonPath, 'utf8')).resolves.toBe(source)
   })
+
+  it('types the generated theme selector handler for Radix Select 2.4', async () => {
+    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-template-'))
+    const selectorPath = path.join(
+      tempDir,
+      'src',
+      'providers',
+      'Theme',
+      'ThemeSelector',
+      'index.tsx',
+    )
+    tempDirs.push(tempDir)
+    await mkdir(path.dirname(selectorPath), { recursive: true })
+    await writeFile(
+      selectorPath,
+      [
+        "  const onThemeChange = (themeToSet: Theme & 'auto') => {",
+        '    setTheme(themeToSet)',
+        '  }',
+        '',
+        '    <Select onValueChange={onThemeChange} value={value}>',
+        '',
+      ].join('\n'),
+    )
+
+    await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(true)
+    await expect(readFile(selectorPath, 'utf8')).resolves.toBe(
+      [
+        "  const onThemeChange = (themeToSet: Theme | 'auto') => {",
+        '    setTheme(themeToSet)',
+        '  }',
+        '',
+        "    <Select onValueChange={(value) => onThemeChange(value as Theme | 'auto')} value={value}>",
+        '',
+      ].join('\n'),
+    )
+    await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(false)
+  })
+
+  it('leaves a theme selector that Payload has already fixed unchanged', async () => {
+    const tempDir = await mkdtemp(path.join(tmpdir(), 'payload-components-smoke-template-'))
+    const selectorPath = path.join(
+      tempDir,
+      'src',
+      'providers',
+      'Theme',
+      'ThemeSelector',
+      'index.tsx',
+    )
+    const source = [
+      '  const onThemeChange = (themeToSet: string) => {',
+      '    <Select onValueChange={onThemeChange} value={value}>',
+      '',
+    ].join('\n')
+    tempDirs.push(tempDir)
+    await mkdir(path.dirname(selectorPath), { recursive: true })
+    await writeFile(selectorPath, source)
+
+    await expect(smokeHarness.applyFreshPayloadTemplateCompatibility(tempDir)).resolves.toBe(false)
+    await expect(readFile(selectorPath, 'utf8')).resolves.toBe(source)
+  })
 })
 
 describe('fresh Payload smoke seed generation', () => {
