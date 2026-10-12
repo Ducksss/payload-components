@@ -165,7 +165,7 @@ describe('Datasheet brand layer', () => {
     const sources = await Promise.all(
       files.map(async (file) => ({ file, source: await read(file) })),
     )
-    const scoped = ['preview-scope', 'DemoFitFrame', 'DemoScaleFrame', 'PreviewSurface']
+    const scoped = ['preview-scope', 'DemoFitFrame', 'DemoScaleFrame']
     const iframed = ['ComponentPreviewFrame']
 
     const unscoped = sources

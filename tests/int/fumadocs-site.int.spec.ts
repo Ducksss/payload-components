@@ -504,7 +504,7 @@ describe('Fumadocs site shell', () => {
         'src/components/site/SiteFooter.tsx',
         'src/components/site/SiteHeader.tsx',
         'src/components/site/sections/CommunityCta.tsx',
-        'src/components/site/sections/HeroSection.tsx',
+        'src/components/site/sections/BenchSection.tsx',
       ].map((filePath) => readFile(path.join(repoRoot, filePath), 'utf8')),
     )
 

@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react'
+
 import type { Datasheet } from '@/lib/datasheet'
 
 /* Any component as a part on its datasheet: a dual-in-line chip whose left
@@ -23,6 +25,11 @@ const PHONE_LABEL_SIZE = 11
 const PART_SIZE = 20
 
 const labelWidth = (text: string, size = LABEL_SIZE) => text.length * size * MONO_ADVANCE
+
+/* Each input label and output net carries its place in its own sequence, so a
+   scene can light pins and draw traces one at a time from a single progress
+   value (the landing bench does). Inert everywhere else. */
+const order = (index: number, count: number) => ({ '--i': index, '--n': count }) as CSSProperties
 
 function chipOutline(x0: number, y0: number, x1: number, y1: number) {
   const cx = (x0 + x1) / 2
@@ -123,7 +130,8 @@ function DesktopPinout({ datasheet }: { datasheet: Datasheet }) {
           <g key={`in-${row}`}>
             <rect className="pinout-leg" height={9} width={leg} x={x0 - leg} y={y - 4.5} />
             <text
-              className={`pinout-text pinout-label${label ? '' : ' pinout-nc'}`}
+              className={`pinout-text pinout-label${label ? ' pinout-in' : ' pinout-nc'}`}
+              style={label ? order(row, inputs.length) : undefined}
               textAnchor="end"
               x={labelEnd}
               y={y + 4}
@@ -165,7 +173,7 @@ function DesktopPinout({ datasheet }: { datasheet: Datasheet }) {
             ? `M${x1 + leg} ${y}H${padX}`
             : `M${x1 + leg} ${y}H${jog}L${jog + Math.abs(rise)} ${pad}H${padX}`
         return (
-          <g className="pinout-net" key={`out-${row}`}>
+          <g className="pinout-net" key={`out-${row}`} style={order(index, outputs.length)}>
             <path className="pinout-net-base" d={path} />
             <path className="pinout-wire" d={path} pathLength={100} />
             <rect className="pinout-leg pinout-leg-out" height={9} width={leg} x={x1} y={y - 4.5} />
@@ -257,7 +265,12 @@ function PhonePinout({ datasheet }: { datasheet: Datasheet }) {
           <g key={label}>
             <path className="pinout-lead" d={`M${x} ${y0 - 14}V${top + 2.5}`} />
             <circle className="pinout-lead-end" cx={x} cy={top} r={2.5} />
-            <text className="pinout-text pinout-label pinout-label-phone" x={x + 8} y={top + 4}>
+            <text
+              className="pinout-text pinout-label pinout-label-phone pinout-in"
+              style={order(index, inputs.length)}
+              x={x + 8}
+              y={top + 4}
+            >
               {label}
             </text>
             <rect className="pinout-leg" height={14} width={9} x={x - 4.5} y={y0 - 14} />
@@ -270,7 +283,7 @@ function PhonePinout({ datasheet }: { datasheet: Datasheet }) {
         const pad = padY(index)
         const path = `M${x} ${y1 + 14}V${pad}`
         return (
-          <g className="pinout-net" key={output}>
+          <g className="pinout-net" key={output} style={order(index, outputs.length)}>
             <path className="pinout-net-base" d={path} />
             <path className="pinout-wire" d={path} pathLength={100} />
             <rect className="pinout-leg pinout-leg-out" height={14} width={9} x={x - 4.5} y={y1} />
