@@ -476,7 +476,7 @@ const exists = async (filePath: string) => {
   }
 }
 
-export const applyFreshPayloadTemplateCompatibility = async (targetPath: string) => {
+const addButtonClientBoundary = async (targetPath: string) => {
   const buttonPath = path.join(targetPath, 'src', 'components', 'ui', 'button.tsx')
 
   if (!(await exists(buttonPath))) return false
@@ -496,6 +496,48 @@ export const applyFreshPayloadTemplateCompatibility = async (targetPath: string)
   )
 
   return true
+}
+
+const neverTypedThemeParameter = "(themeToSet: Theme & 'auto')"
+const neverTypedThemeHandler = '<Select onValueChange={onThemeChange}'
+
+const typeThemeSelectorHandler = async (targetPath: string) => {
+  const selectorPath = path.join(targetPath, 'src', 'providers', 'Theme', 'ThemeSelector', 'index.tsx')
+
+  if (!(await exists(selectorPath))) return false
+
+  const source = await readFile(selectorPath, 'utf8')
+
+  if (!source.includes(neverTypedThemeParameter) || !source.includes(neverTypedThemeHandler)) {
+    return false
+  }
+
+  // The website template types the theme handler's parameter as `Theme & 'auto'`,
+  // which is `never`. @radix-ui/react-select 2.4.0 declares onValueChange as a
+  // function-typed property instead of a method, so TypeScript now checks the
+  // handler strictly and the generated project fails `tsc --noEmit`. Widen the
+  // parameter and narrow the Select's string where the handler is passed.
+  await writeFile(
+    selectorPath,
+    source
+      .replace(neverTypedThemeParameter, "(themeToSet: Theme | 'auto')")
+      .replace(
+        neverTypedThemeHandler,
+        "<Select onValueChange={(value) => onThemeChange(value as Theme | 'auto')}",
+      ),
+  )
+  console.log(
+    '[payload-components smoke] typed the generated Payload theme selector for Radix Select 2.4',
+  )
+
+  return true
+}
+
+export const applyFreshPayloadTemplateCompatibility = async (targetPath: string) => {
+  const addedButtonBoundary = await addButtonClientBoundary(targetPath)
+  const typedThemeSelector = await typeThemeSelectorHandler(targetPath)
+
+  return addedButtonBoundary || typedThemeSelector
 }
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
