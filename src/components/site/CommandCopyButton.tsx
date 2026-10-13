@@ -13,9 +13,11 @@ export function CommandCopyButton({
 }: {
   command: string
   /* `brand` is the Datasheet hero's primary action: a solid --brand key (trace
-     green inside the brand scope) that drops to its icon on phones, where the
-     command needs the width. Both `primary` and `brand` are the page-level
-     primary CTA. */
+     green inside the brand scope) that drops to its icon whenever its install
+     field's content box is narrower than 34rem (the command plus the full
+     label), where the command needs the width. That is a container query, so
+     `brand` must sit inside an `@container` (InstallCommand is one). Both
+     `primary` and `brand` are the page-level primary CTA. */
   emphasis?: 'default' | 'primary' | 'brand'
   /* Call sites that name the command they copy pass their own label; the bare
      control falls back to the shared, translated "Copy". */
@@ -40,14 +42,14 @@ export function CommandCopyButton({
         emphasis === 'primary' &&
           'h-11 rounded-full border-primary bg-primary px-4 text-sm text-primary-foreground shadow-[0_16px_36px_-20px_rgba(15,23,42,0.72)] hover:-translate-y-px hover:bg-primary/90 hover:shadow-[0_20px_44px_-20px_rgba(15,23,42,0.78)] motion-reduce:transform-none data-[copied=true]:border-brand data-[copied=true]:bg-brand data-[copied=true]:text-brand-foreground',
         emphasis === 'brand' &&
-          'copy-button-sheen h-11 rounded-sm border-brand bg-brand px-4 text-sm font-semibold text-brand-foreground hover:border-brand-600 hover:bg-brand-600 max-sm:w-11 max-sm:px-0 data-[copied=true]:border-brand-600 data-[copied=true]:bg-brand-600',
+          'copy-button-sheen h-11 rounded-sm border-brand bg-brand px-4 text-sm font-semibold text-brand-foreground hover:border-brand-600 hover:bg-brand-600 @max-[34rem]:w-11 @max-[34rem]:px-0 data-[copied=true]:border-brand-600 data-[copied=true]:bg-brand-600',
         emphasis === 'default' &&
           'h-8 rounded-md border-border bg-background px-2.5 font-mono text-xs text-muted-foreground hover:bg-secondary hover:text-foreground data-[copied=true]:border-brand/40 data-[copied=true]:bg-brand/10 data-[copied=true]:text-brand',
       )}
     >
       <Copy className="copy-icon-idle size-3.5" aria-hidden="true" />
       <Check className="copy-icon-done size-3.5" aria-hidden="true" />
-      <span className={emphasis === 'brand' ? 'max-sm:sr-only' : undefined} data-copy-label>
+      <span className={emphasis === 'brand' ? '@max-[34rem]:sr-only' : undefined} data-copy-label>
         {resolvedLabel}
       </span>
     </button>

@@ -338,6 +338,44 @@ test.describe('Light shadcn frontend', () => {
     expect(benchOverflow.offenders, benchOverflow.message).toEqual([])
   })
 
+  /* The command is the call to action, so no width may clip it. The bench
+     puts it in a half-width column, which on a 1024-1366px laptop is too
+     narrow for the command beside the full "Copy install command" label; the
+     key drops to its icon there (a container query on the field), as on
+     phones. */
+  test('shows the whole install command at every width', async ({ page }) => {
+    await page.goto(baseURL)
+    await page.evaluate(() => document.fonts.ready)
+    const commands = [
+      page.locator('.hero-shell code').first(),
+      page.locator(`#${landingSections.community.id} code`).first(),
+    ]
+
+    for (const width of [390, 768, 1024, 1280, 1366, 1440]) {
+      await page.setViewportSize({ height: 900, width })
+      for (const command of commands) {
+        await expect(command).toHaveText(primaryInstallCommand)
+        await expect
+          .poll(() => command.evaluate((el) => el.scrollWidth - el.clientWidth), {
+            message: `${width}px clips the install command`,
+          })
+          .toBeLessThanOrEqual(0)
+      }
+    }
+
+    /* Where the field has the room (the hero at 1440px), the key keeps its
+       full label rather than collapsing early. */
+    await page.setViewportSize({ height: 900, width: 1440 })
+    await expect
+      .poll(() =>
+        page
+          .locator('.hero-shell [data-copy-label]')
+          .first()
+          .evaluate((label) => getComputedStyle(label).position),
+      )
+      .not.toBe('absolute')
+  })
+
   test('the bench installs hero-basic as the page scrolls', async ({ page }) => {
     await page.setViewportSize({ height: 900, width: 1440 })
     await page.goto(baseURL)
