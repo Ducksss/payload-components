@@ -2,6 +2,20 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Archivo's size-adjusted fallback, for the self-hosted face in
+   src/app/[locale]/layout.tsx: Arial scaled to Archivo Regular's metrics, the
+   values next/font/google generated when Archivo came from Google. Keeps the
+   pre-swap headline the size it has always been, so the swap shifts nothing
+   new. */
+@font-face {
+  font-family: 'Archivo Fallback';
+  src: local('Arial');
+  ascent-override: 88.96%;
+  descent-override: 21.28%;
+  line-gap-override: 0%;
+  size-adjust: 98.7%;
+}
+
 /* ------------------------------------------------------------------ */
 /* 1. Raw brand tokens — light shadcn monochrome with one emerald     */
 /*    accent. The site ships a single forced-light theme, so these    */
@@ -80,9 +94,11 @@
   --trace-600: oklch(40% 0.075 166.5deg);
   --wire: color-mix(in oklab, var(--foreground) 24%, var(--background));
 
-  /* The mark is two blocks, so it keeps the blocks' emerald wherever it sits.
-     Resolved here, before any brand scope recolours --brand for its chrome. */
-  --mark: var(--brand);
+  /* The mark is the site's signature, so it wears the site's one green: trace,
+     the same #0B6B4F as public/favicon.svg and the OG cards. It is its own
+     token, outside the brand remap, so it reads the same in branded chrome,
+     on unbranded pages and beside the emerald blocks. */
+  --mark: var(--trace);
 
   --radius: 0.625rem;
 
@@ -649,6 +665,16 @@
     letter-spacing: -0.015em;
   }
 
+  /* Page titles in the branded docs, blog and catalog headers: the display
+     face run condensed at the size each page already sets. The title may
+     carry data-brand itself (a Fumadocs slot), hence the second selector. */
+  [data-brand='datasheet'] .type-display,
+  .type-display[data-brand='datasheet'] {
+    font-weight: 760;
+    font-stretch: 75%;
+    letter-spacing: -0.005em;
+  }
+
   [data-brand='datasheet'] .type-eyebrow {
     font-size: 0.6875rem;
     letter-spacing: 0.08em;
@@ -843,29 +869,106 @@
     font-weight: 600;
   }
 
+  /* Only the landing's drawing (.pinout-live) draws itself in; the docs
+     datasheets are reference drawings and stay still. */
   @media (prefers-reduced-motion: no-preference) {
-    .pinout-wire {
+    .pinout-live .pinout-wire {
       animation: pinout-draw 560ms cubic-bezier(0.55, 0, 0.3, 1) calc(240ms + var(--pin) * 170ms)
         both;
     }
 
-    .pinout-pulse {
+    .pinout-live .pinout-pulse {
       animation: pinout-pulse 560ms cubic-bezier(0.55, 0, 0.3, 1) calc(240ms + var(--pin) * 170ms)
         both;
     }
 
-    .pinout-leg-out {
+    .pinout-live .pinout-leg-out {
       animation: pinout-light 160ms linear calc(240ms + var(--pin) * 170ms) both;
     }
 
-    .pinout-pad {
+    .pinout-live .pinout-pad {
       animation: pinout-solder 300ms cubic-bezier(0.3, 1.5, 0.5, 1) calc(720ms + var(--pin) * 170ms)
         both;
     }
 
-    .pinout-out {
+    .pinout-live .pinout-out {
       animation: pinout-label 240ms ease-out calc(720ms + var(--pin) * 170ms) both;
     }
+  }
+
+  /* Per-component datasheets (PartPinout) on /docs/components/<slug>. The
+     drawing switches on its own width, not the viewport's: the docs column is
+     narrow beside the sidebar long before the viewport is a phone's. Labels
+     are a size smaller than the hero's, and NC pins read as unused. */
+  .datasheet-figure {
+    margin: 0;
+    padding: 1.25rem 1rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--background);
+  }
+
+  .pinout-sheet {
+    container-type: inline-size;
+  }
+
+  .pinout-sheet .pinout-phone {
+    display: block;
+    margin-inline: auto;
+    max-width: 22.375rem;
+  }
+
+  .pinout-sheet .pinout-desktop {
+    display: none;
+    margin-inline: auto;
+  }
+
+  @container (width >= 40rem) {
+    .pinout-sheet .pinout-phone {
+      display: none;
+    }
+
+    .pinout-sheet .pinout-desktop {
+      display: block;
+    }
+  }
+
+  .pinout-sheet .pinout-label {
+    font-size: 12px;
+  }
+
+  .pinout-sheet .pinout-label-phone {
+    font-size: 11px;
+  }
+
+  .pinout-sheet .pinout-part {
+    font-size: 20px;
+  }
+
+  .pinout-sheet .pinout-part-phone {
+    font-size: 18px;
+  }
+
+  .pinout-nc {
+    fill: var(--muted-foreground);
+  }
+
+  .datasheet-caption {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted-foreground);
+    font-family: var(--font-spec);
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .datasheet-caption-ref {
+    margin-inline-end: 0.5rem;
+    color: var(--foreground);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   /* Logo Cloud Marquee twin: scrolls the duplicated logo track. The global

@@ -1,11 +1,13 @@
 import { Callout } from 'fumadocs-ui/components/callout'
 
+import { ComponentDatasheet } from '@/components/site/ComponentDatasheet'
 import { getComponentManifest } from '@/lib/component-manifest'
 
 /* Backs <ComponentWiring slug="…" /> — the factual "what it installs & wires" reference,
- * driven entirely by the component manifest so it can't drift from what installs. States
- * which files land and which edits the install makes; the "wired, not pasted" pitch
- * lives on the landing page, not here. */
+ * driven entirely by the component manifest so it can't drift from what installs. It
+ * opens on the component's datasheet pinout (inputs in, install outputs out), then
+ * states which files land and which edits the install makes; the "wired, not pasted"
+ * pitch lives on the landing page, not here. */
 export async function ComponentWiring({ slug }: { slug: string }) {
   const manifest = await getComponentManifest(slug)
 
@@ -37,6 +39,7 @@ export async function ComponentWiring({ slug }: { slug: string }) {
 
   return (
     <div className="not-prose my-6 flex flex-col gap-5">
+      <ComponentDatasheet slug={slug} />
       <div>
         <p className="mb-3 text-sm leading-6 text-muted-foreground">
           Copies {manifest.files.length} source {manifest.files.length === 1 ? 'file' : 'files'}{' '}

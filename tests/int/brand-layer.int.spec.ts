@@ -131,17 +131,29 @@ describe('Datasheet brand layer', () => {
     expect(drift).toEqual([])
   })
 
-  it('keeps the mark on the blocks emerald, outside the brand remap', async () => {
-    const [globals, logomark] = await Promise.all([
+  it('keeps the mark on trace green, outside the brand remap, in every copy', async () => {
+    const [globals, logomark, favicon, ogMark] = await Promise.all([
       read('src/app/globals.css'),
       read('src/components/site/Logomark.tsx'),
+      read('public/favicon.svg'),
+      read('src/lib/og/mark.ts'),
     ])
     const brand = ruleDeclarations(globals, "[data-brand='datasheet']")
+    const preview = ruleDeclarations(globals, '.preview-scope')
 
-    expect(ruleDeclarations(globals, ':root').get('--mark')).toBe('var(--brand)')
+    /* Its own token on :root, so neither scope can recolour it: the header in
+       branded chrome and the same header above an unbranded page match. */
+    expect(ruleDeclarations(globals, ':root').get('--mark')).toBe('var(--trace)')
+    expect(ruleDeclarations(globals, ':root').get('--trace')).toBe('oklch(47% 0.094 166.5deg)')
     expect(brand.has('--mark')).toBe(false)
+    expect(preview.has('--mark')).toBe(false)
     expect(logomark).toContain('bg-mark')
     expect(logomark).not.toMatch(/\bbg-brand\b/)
+    /* The favicon and the OG cards carry the same green as a hex literal. */
+    for (const copy of [favicon, ogMark]) {
+      expect(copy).toMatch(/fill="#0B6B4F"/)
+      expect(copy).not.toMatch(/#059669/i)
+    }
   })
 
   it('renders every demo twin outside the templates through a preview scope', async () => {
@@ -194,7 +206,7 @@ describe('Datasheet hero drawing', () => {
       ),
     ]
 
-    expect(heroDatasheet.fields).toEqual(declared)
+    expect(heroDatasheet.inputs.map((pin) => pin.label)).toEqual(declared)
   })
 
   it('traces out exactly what the manifest installs', async () => {

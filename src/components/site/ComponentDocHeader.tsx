@@ -7,7 +7,11 @@ import { ArrowLeft, ArrowRight } from 'lucide-react'
 /* shadcn-style header for component doc pages (rendered by src/app/docs/[[...slug]]/page.tsx
  * for /docs/components/*): title + description on the left; Copy Page controls and
  * prev/next arrows (walking the catalog order) on the right. The <h1> stays the
- * page title — the e2e component-page loop asserts H1 === component.title. */
+ * page title — the e2e component-page loop asserts H1 === component.title.
+ *
+ * It is the title block of the component's datasheet, so it wears the Datasheet
+ * brand: the part line (part number · revision · licence) above a condensed
+ * title, and the at-a-glance chips set in Azeret Mono. */
 
 type ComponentNav = { href: string; title: string }
 
@@ -52,6 +56,7 @@ export function ComponentDocHeader({
   latestChange,
   markdownUrl,
   next,
+  part,
   prev,
   title,
 }: {
@@ -63,15 +68,23 @@ export function ComponentDocHeader({
   latestChange?: { summary: string; version: string }
   markdownUrl: string
   next?: ComponentNav
+  /* `PC-HERO-BASIC · Rev 0.1.1 · MIT`, from the manifest. */
+  part?: string
   prev?: ComponentNav
   title: string
 }) {
   const t = useTranslations('Docs')
 
   return (
-    <div className="mb-6 flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-start sm:justify-between">
+    <div
+      data-brand="datasheet"
+      className="mb-6 flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-start sm:justify-between"
+    >
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{title}</h1>
+        {part ? <p className="ds-label text-muted-foreground">{part}</p> : null}
+        <h1 className="type-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          {title}
+        </h1>
         {description ? (
           <p className="max-w-2xl text-base leading-7 text-muted-foreground">{description}</p>
         ) : null}

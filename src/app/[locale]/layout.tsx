@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 
-import { Archivo, Azeret_Mono, Instrument_Serif } from 'next/font/google'
+import { Azeret_Mono, Instrument_Serif } from 'next/font/google'
+import localFont from 'next/font/local'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import { NextIntlClientProvider } from 'next-intl'
@@ -42,12 +43,31 @@ const instrumentSerif = Instrument_Serif({
 })
 
 /* The Datasheet brand faces for the site chrome (globals.css section 4).
-   Archivo loads its width axis as well as weight: the condensed display type
-   is the same file run through font-stretch. Previews and templates never
-   paint these — .preview-scope restores Geist around every demo twin. */
-const archivo = Archivo({
-  subsets: ['latin'],
-  axes: ['wdth'],
+   Previews and templates never paint these — .preview-scope restores Geist
+   around every demo twin.
+
+   Archivo is self-hosted as one trimmed variable file: the widths the chrome
+   sets (wdth 62–100, where Google serves 62–125) over Latin and its
+   punctuation — 61 KB against Google's 90 KB, so the preloaded headline font
+   costs phones less. Dropping the wide half of the axis removes whole delta
+   regions without rescaling any, so every width keeps Google's metrics. The
+   condensed display type is the same file run through font-stretch, which is
+   why the face declares its width range. src/app/_fonts/README.md records how
+   it was cut. next/font/local names the family after this binding, so it is
+   spelled as the font is: the e2e brand checks read "Archivo" off the
+   computed family.
+
+   The size-adjusted fallback is declared by hand in globals.css with the
+   metrics next/font/google used for Archivo. Generated from this file, they
+   would be measured at its default instance (SemiBold), so the swap from
+   Arial would shift the headline more than it does today. */
+const Archivo = localFont({
+  src: '../_fonts/Archivo-Variable-Latin.woff2',
+  weight: '100 900',
+  style: 'normal',
+  declarations: [{ prop: 'font-stretch', value: '62% 100%' }],
+  adjustFontFallback: false,
+  fallback: ['Archivo Fallback'],
   variable: '--font-archivo',
   display: 'swap',
 })
@@ -163,7 +183,7 @@ export default async function RootLayout({ children, params }: LocaleLayoutProps
       suppressHydrationWarning
       /* Font variables live on <html>: the @theme font tokens reference them
          and custom properties substitute var() at the declaring element. */
-      className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable} ${archivo.variable} ${azeretMono.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable} ${Archivo.variable} ${azeretMono.variable}`}
     >
       <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
         {/* Scroll-reveal elements ship their hidden `initial` state as inline

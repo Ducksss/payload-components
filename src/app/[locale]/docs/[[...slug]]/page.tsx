@@ -39,6 +39,12 @@ import {
   techArticleNode,
 } from '@/lib/structured-data'
 
+/* data-brand: the docs chrome around the reading column — this header, the
+   table of contents and the prev/next footer — wears the Datasheet brand
+   (globals.css section 4); the MDX body stays on Geist. Spread, because
+   Fumadocs types its slots as element props, which have no data attributes. */
+const datasheetBrand = { 'data-brand': 'datasheet' } as const
+
 type DocsPageProps = {
   params: Promise<{
     slug?: string[]
@@ -180,10 +186,18 @@ export default async function Page({ params }: DocsPageProps) {
       role="main"
       toc={page.data.toc}
       full={page.data.full || Boolean(component)}
+      footer={{ ...datasheetBrand, className: undefined }}
+      tableOfContent={{ container: { ...datasheetBrand, className: undefined } }}
+      tableOfContentPopover={{ container: { ...datasheetBrand, className: undefined } }}
     >
       <JsonLd data={structuredData} />
       {component ? (
         <ComponentDocHeader
+          part={
+            manifest
+              ? `PC-${manifest.name.toUpperCase()} · Rev ${manifest.version} · MIT`
+              : undefined
+          }
           title={page.data.title}
           description={page.data.description}
           chips={chips}
@@ -204,9 +218,13 @@ export default async function Page({ params }: DocsPageProps) {
         />
       ) : (
         <>
-          <DocsTitle className="font-bold tracking-tight">{page.data.title}</DocsTitle>
-          <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
-          <div className="flex flex-row items-center gap-2 border-b pb-6">
+          <DocsTitle {...datasheetBrand} className="type-display font-bold tracking-tight">
+            {page.data.title}
+          </DocsTitle>
+          <DocsDescription {...datasheetBrand} className="mb-0">
+            {page.data.description}
+          </DocsDescription>
+          <div {...datasheetBrand} className="flex flex-row items-center gap-2 border-b pb-6">
             <MarkdownCopyButton markdownUrl={markdownUrl} />
             <ViewOptionsPopover markdownUrl={markdownUrl} githubUrl={githubUrl} />
           </div>

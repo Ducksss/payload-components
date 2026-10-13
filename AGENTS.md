@@ -186,7 +186,7 @@ Every component doc page (`content/docs/components/<slug>.mdx`) follows one fixe
 component page. Match it exactly when adding or editing a component; do not invent per-component layouts.
 
 - **Header is automatic.** `src/app/[locale]/docs/[[...slug]]/page.tsx` detects `/docs/components/*` and renders
-  `ComponentDocHeader` — title + description + at-a-glance chips (`v{version} · Page block · {Family}
+  `ComponentDocHeader` — a part line (`PC-<SLUG> · Rev <version> · MIT`) + title + description + at-a-glance chips (`v{version} · Page block · {Family}
 family · {target}`, from `componentEntries`) on the left; Copy Page + prev/next arrows (catalog order)
   on the right. The component **must** be in `componentEntries` (`src/lib/component-catalog.ts`). Do **not** add an `<h1>` or
   repeat the description in the MDX body — frontmatter drives both.
@@ -201,9 +201,11 @@ family · {target}`, from `componentEntries`) on the left; Copy Page + prev/next
      `src/lib/component-source.ts`) tabs. A new component **must** register a demo twin, or the preview is empty.
   2. `## Installation` — `<Tabs items={['Command', 'Manual']}>`: Command = `npx payload-components add
 <slug>`; Manual = the direct `pnpm dlx shadcn@latest add …/r/<slug>.json` URL.
-  3. `## What it installs` — `<ComponentWiring slug="<slug>" />`: the copied files + a factual table of the
-     edits the install makes (register the block, map the renderer, regenerate types + import map) +
-     shared-base callout + idempotency note, all from the manifest. State facts — **not** a
+  3. `## What it installs` — `<ComponentWiring slug="<slug>" />`: the component's datasheet pinout
+     (inputs read from its block config or props type by `src/lib/component-datasheet.ts`, outputs from
+     the manifest), then the copied files + a factual table of the edits the install makes (register
+     the block, map the renderer, regenerate types + import map) + shared-base callout + idempotency
+     note, all from the manifest. State facts — **not** a
      shadcn comparison; that pitch belongs on the landing, not the reference. Do **not**
      hand-write the file tree or fragment list.
   4. `## Content model` — `<TypeTable>` of the block fields (+ a second table for array-item fields).
@@ -275,7 +277,7 @@ pnpm build
 - e2e uses `E2E_PORT` (default `3100`) to avoid common local `3000` contention.
 - pnpm is pinned by `packageManager` (`pnpm@10.24.0`), the same version every workflow's `pnpm/action-setup` installs. Bump both together, because the action fails on a mismatch. Don't drop the pin: without it Dependabot runs its image default, pnpm 11, which ignores the `pnpm` field (`overrides`, `onlyBuiltDependencies`) and rejects `engines.pnpm`, so every npm update job fails.
 - The site is **forced light** (`forcedTheme: 'light'`); there is no dark mode. The terminal/maintainer cards are intentionally dark surfaces via `--terminal-*` / `bg-foreground` tokens, not `dark:` variants.
-- Fonts (Geist Sans/Mono + Instrument Serif accent for the blocks; Archivo + Azeret Mono for the Datasheet site chrome) load via `next/font` with their CSS variables on `<html>`. Keep them on `<html>` or the Tailwind v4 `@theme` font tokens silently break.
+- Fonts (Geist Sans/Mono + Instrument Serif accent for the blocks; Archivo + Azeret Mono for the Datasheet site chrome) load via `next/font` with their CSS variables on `<html>`. Keep them on `<html>` or the Tailwind v4 `@theme` font tokens silently break. Archivo is self-hosted (`next/font/local`, a trimmed variable file in `src/app/_fonts`, recipe in its README); the OG cards use static TrueType instances from the same folder, and every glyph a card draws must exist in one of them (`tests/int/datasheet.int.spec.ts`).
 - **Brand layer vs preview scope** (`DESIGN.md`, globals.css section 4): `[data-brand='datasheet']` remaps fonts and the `--brand` ramp for site chrome; `.preview-scope` restores them around every demo twin. A new surface that renders a twin must sit in `.preview-scope` (or `DemoFitFrame` / `DemoScaleFrame` / `PreviewSurface`), never inside a template shell — `tests/int/brand-layer.int.spec.ts` enforces both.
 - The site sends an enforced Content-Security-Policy from `next.config.mjs`. The browser blocks a new third-party script, frame, image, or analytics endpoint until its origin is added there and to the pinned directives in `tests/int/fumadocs-site.int.spec.ts`. `tests/e2e/content-security-policy.e2e.spec.ts` fails on any violation.
 

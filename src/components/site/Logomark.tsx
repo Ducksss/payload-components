@@ -6,15 +6,14 @@ import { cn } from '@/utilities/ui'
    they read as separate blocks that have been fitted into one shape, which is
    the whole product: blocks that arrive already wired, not pasted. The union
    is deliberate; there is no seam to lose at 16px, so the silhouette survives
-   a browser tab. Emerald square (`--mark`, the blocks' emerald, which the
-   Datasheet brand scope deliberately does not remap) with a
-   `--brand-foreground` glyph via currentColor — never recolored or
-   gradiented. Decorative: the wordmark text
-   carries the accessible name, so this is aria-hidden. Five copies of this
-   geometry must stay in sync: public/favicon.svg, public/favicon.ico (three
-   BMP entries, regenerated from the SVG), and the inline MARK_SVG in
-   src/app/opengraph-image.tsx, src/app/templates/opengraph-image.tsx, and
-   src/app/templates/[slug]/opengraph-image.tsx. */
+   a browser tab. Trace-green square (`--mark`, #0B6B4F, its own token so no
+   brand scope can recolour it) with a `--brand-foreground` glyph via
+   currentColor — never recolored or gradiented. Decorative: the wordmark text
+   carries the accessible name, so this is aria-hidden. Four copies of this
+   geometry must stay in sync (tests/int/visual-standards.int.spec.ts reads
+   them): public/favicon.svg, public/favicon.ico (three BMP entries, rendered
+   from the SVG), and MARK_SVG in src/lib/og/mark.ts, which every OG card
+   shares. */
 export function Logomark({ className }: { className?: string }) {
   return (
     <span

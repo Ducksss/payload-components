@@ -345,20 +345,19 @@ describe('Component visual standards', () => {
   })
 
   /* The logomark is drawn as geometry, and that geometry is duplicated by hand
-     in five files — there is no shared module, because the favicon and the three
-     OG routes each need a standalone string (Satori rasterizes a data URI; the
-     favicon is served as a file). Nothing else notices when one copy is missed:
-     the mark is ~0.04% of a full-page screenshot, well under the visual suite's
-     1% tolerance, so a stale favicon or OG card ships green. When the mark last
-     changed, the source comment claimed two copies and three were missed. This
-     reads the two rects out of every copy and fails unless all five agree. */
+     — the favicon is served as a file and Satori rasterizes a standalone SVG
+     string, so neither can import the component. The OG cards share one copy
+     (src/lib/og/mark.ts); the favicon.ico is rendered from favicon.svg. Nothing
+     else notices when one copy is missed: the mark is ~0.04% of a full-page
+     screenshot, well under the visual suite's 1% tolerance, so a stale favicon
+     or OG card ships green. When the mark last changed, the source comment
+     claimed two copies and three were missed. This reads the two rects out of
+     every copy and fails unless they all agree. */
   it('keeps every copy of the logomark geometry identical', async () => {
     const markFiles = [
       'src/components/site/Logomark.tsx',
       'public/favicon.svg',
-      'src/app/opengraph-image.tsx',
-      'src/app/[locale]/templates/opengraph-image.tsx',
-      'src/app/[locale]/templates/[slug]/opengraph-image.tsx',
+      'src/lib/og/mark.ts',
     ]
 
     /* Attribute order and quoting differ per file (JSX vs. an SVG string vs. the
@@ -370,7 +369,7 @@ describe('Component visual standards', () => {
             tag[0].match(new RegExp(`\\b${name}=["']([^"']+)["']`))?.[1]
           return ['x', 'y', 'width', 'height', 'rx'].map(attribute)
         })
-        // Drop the enclosing emerald plate (no x/y) — only the glyph rects matter.
+        // Drop the enclosing trace plate (no x/y) — only the glyph rects matter.
         .filter(([x, y]) => x !== undefined && y !== undefined)
         .map((values) => values.join(','))
 

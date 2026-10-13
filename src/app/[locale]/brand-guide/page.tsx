@@ -252,7 +252,7 @@ export default async function BrandGuidePage() {
             accentWord="wordmark"
             eyebrow="Identity"
             heading="The mark and wordmark"
-            intro="The logo is two blocks keyed together in an emerald square, set beside the wordmark in Archivo. It reads as what the CLI does — separate blocks fitted into one page, wired rather than pasted."
+            intro="The logo is two blocks keyed together in a trace-green square, set beside the wordmark in Archivo. It reads as what the CLI does — separate blocks fitted into one page, wired rather than pasted."
           />
 
           <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
@@ -278,10 +278,11 @@ export default async function BrandGuidePage() {
                   {/* One flex item, or each text run around the code becomes
                       its own column once the line wraps. */}
                   <span>
-                    Keep the mark emerald (
-                    <code className="whitespace-nowrap font-mono text-[12px]">--mark</code>) on a
-                    light surface; never recolor or gradient it. It is two blocks, so it keeps the
-                    blocks&apos; green wherever it sits.
+                    Keep the mark trace green (
+                    <code className="whitespace-nowrap font-mono text-[12px]">--mark</code>,
+                    #0B6B4F) on a light surface; never recolor or gradient it. It signs the site, so
+                    it wears the site&apos;s green — in the header, the favicon and every share
+                    card.
                   </span>
                 </li>
                 <li className="flex items-start gap-2.5">
