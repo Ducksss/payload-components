@@ -59,7 +59,7 @@ A maintainer's workbench after a careful install: the source diff, terminal tran
 - **Locale(s) and language policy:** English is canonical and currently the only published locale (`publishedSiteLocales` in `src/i18n/config.ts`), so the language switcher is hidden; 21 saved draft catalogues stay inactive (see `messages/README.md`). Once another locale is published, the switcher lists autonyms, core catalogues may be machine translated and visibly labelled, long-form untranslated resources show English fallback, and non-English resources remain `noindex` until a native reviewer marks that exact path reviewed in `messages/status.json`.
 - **Usage scene:** Desktop-first technical evaluation with frequent mobile reference use; information is dense but must remain scannable and copyable.
 - **Register:** Brand-editorial on landing and templates; familiar documentation/product utility in docs, catalog filters, and controls.
-- **Memorable signature:** Dark terminal product frames and wiring ledgers that make “wired, not pasted” tangible.
+- **Memorable signature:** The bench: one part on the landing, wired as you scroll — its fields light, five traces land on the files an install writes, and the block renders. “Wired, not pasted”, shown by doing it.
 - **Restraint:** Navigation, language selection, search, code, consent, and install actions prioritize convention and accessibility.
 - **Anti-references:** No generic gradient SaaS theatre, pricing-funnel language, ornamental dashboards, or flag-based language selection.
 - **Token ownership/runtime mapping:** This file mirrors the implemented system. `src/app/globals.css` is canonical for values and Tailwind mappings; visual standards and browser suites are the drift gates.
@@ -69,7 +69,7 @@ A maintainer's workbench after a careful install: the source diff, terminal tran
 Two layers share one light page. The **site chrome** wears the _Datasheet_ brand: it is drawn like a component datasheet, in Archivo, Azeret Mono, and one trace green. That is the header and footer on every route; the landing, `/about`, `/brand-guide`, the catalog and the blog index whole; and on the docs and blog articles, the chrome around the reading column — the sidebar, page headers, table of contents, prev/next footer and related posts. The docs and article bodies stay on Geist, as familiar reading type. The **blocks** the site shows keep the component tokens below (Geist, emerald `brand`, the base radius), because that is what installs.
 
 - `[data-brand='datasheet']` (globals.css section 4) marks branded chrome. It remaps the tokens the chrome already uses — `--font-sans`, `--font-mono` and the `--brand` ramp — onto the brand faces and `trace`, so existing utilities follow without per-class edits.
-- `.preview-scope` restores every token the brand scope remaps. It sits on every surface that renders a demo twin: the preview route, `DemoFitFrame`, `DemoScaleFrame`, the hero wall, and the specimen. A twin inside branded chrome therefore renders exactly as it installs, and exactly as its visual baseline. `tests/int/brand-layer.int.spec.ts` keeps the two scopes mirror images, and the frontend e2e suite checks the landing's twins at runtime.
+- `.preview-scope` restores every token the brand scope remaps. It sits on every surface that renders a demo twin: the preview route, `DemoFitFrame` (which the landing bench uses), and `DemoScaleFrame`. A twin inside branded chrome therefore renders exactly as it installs, and exactly as its visual baseline. `tests/int/brand-layer.int.spec.ts` keeps the two scopes mirror images, and the frontend e2e suite checks the landing's twins at runtime.
 - Never put `.preview-scope` inside a template shell: template themes set these tokens themselves.
 - The mark signs the site, so it wears trace (`--mark`, #0B6B4F) — in the header, `public/favicon.svg` and `.ico`, and every OG card. It is its own token outside both scopes, so no scope recolours it.
 - **Datasheets.** Every component is drawn as a part: a dual-in-line chip whose left pins are its inputs (the block config's fields, or a file-only component's props) and whose right pins trace out to "J1 · your project", one pad per file the install writes. The landing hero draws `hero-basic`; each `/docs/components/<slug>` page opens "What it installs" with its own (`PartPinout`, data from `src/lib/component-datasheet.ts`, captioned in text); and the social cards are pages of the same datasheet (`src/lib/og/`). Unused pins are drawn NC, as on a real part.
@@ -118,7 +118,7 @@ Lucide is the canonical icon family, using outline strokes at 14–20px for cont
 
 ### Motion
 
-Motion is brief and functional: small hover lifts and reveal transitions around 200–300ms. It must be interruptible and cannot gate disclosure, navigation, or core content. Under reduced motion, final content and the complete terminal transcript remain visible.
+Motion is brief and functional: small hover lifts and reveal transitions around 200–300ms. It must be interruptible and cannot gate disclosure, navigation, or core content. Under reduced motion, final content stays visible: the landing bench lays every step out, fully wired, instead of pinning.
 
 ### Content and data visualization
 

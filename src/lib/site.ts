@@ -157,10 +157,49 @@ export const frameInstalledFiles = [
 export const landingSections = {
   community: { heading: 'Open source, end to end.', id: 'community' },
   faq: { heading: englishMessages['Landing']['faq']['heading'], id: 'faq' },
-  components: { heading: englishMessages['Landing']['catalog']['heading'], id: 'components' },
-  wiring: { heading: englishMessages['Landing']['wiring']['heading'], id: 'wiring' },
-  workflow: { heading: englishMessages['Landing']['workflow']['heading'], id: 'workflow' },
+  templates: { heading: 'Or start from a whole site.', id: 'templates' },
 } as const
+
+/* The bench: the landing's one scene. Scrolling through it installs hero-basic
+ * in four steps, then swaps the part on the bench. English-only copy kept in
+ * code rather than messages/en.json: the public site is English-only, and new
+ * message keys fail the Crowdin gate until every draft locale carries them.
+ * `title` is split so the trace-coloured phrase can be set apart; the parts
+ * join into the plain heading text. */
+export const benchSteps = [
+  {
+    body: 'hero-basic asks for an eyebrow, a title, a description, links and proof items. The solid ones are required.',
+    kicker: 'The fields',
+    title: ['Your editors get ', 'five fields.', ''],
+  },
+  {
+    body: 'It registers the block in your Pages collection, maps it in RenderBlocks.tsx, and has Payload regenerate its types and import map.',
+    kicker: 'The wiring',
+    title: ['One command makes ', 'the four edits', ' after the copy.'],
+  },
+  {
+    body: 'Three source files, two patches, two regenerated files. One diff you review like any other PR.',
+    kicker: 'The block',
+    title: ['And it renders ', 'on your page.', ''],
+  },
+  {
+    body: 'Heroes, pricing, testimonials, FAQs, footers and article components. Every one is wired the same way.',
+    kicker: 'The catalog',
+    title: [`${componentEntries.length} parts. `, 'Same command.', ''],
+  },
+] as const
+
+/* The parts the bench cycles through in its last step, after hero-basic. */
+export const benchTour = [
+  'hero-basic',
+  'pricing-cards',
+  'testimonials-bento',
+  'feature-bento',
+  'faq-split',
+  'integration-orbit',
+  'post-hero',
+  'footer-columns',
+] as const
 
 /* ------------------------------------------------------------------ */
 /* Stack band — what components install into. No customer logos; the    */

@@ -3,13 +3,10 @@ import { getTranslations } from 'next-intl/server'
 
 import { JsonLd } from '@/components/seo/JsonLd'
 import { ParallaxController } from '@/components/site/ParallaxController'
-import { CatalogSection } from '@/components/site/sections/CatalogSection'
+import { BenchSection } from '@/components/site/sections/BenchSection'
 import { CommunityCta } from '@/components/site/sections/CommunityCta'
 import { FaqSection } from '@/components/site/sections/FaqSection'
-import { HeroSection } from '@/components/site/sections/HeroSection'
-import { StackBand } from '@/components/site/sections/StackBand'
-import { WiringSection } from '@/components/site/sections/WiringSection'
-import { WorkflowSection } from '@/components/site/sections/WorkflowSection'
+import { TemplatesSection } from '@/components/site/sections/TemplatesSection'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { TranslationNotice } from '@/components/site/TranslationNotice'
@@ -51,8 +48,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /* SoftwareApplication answers "what is Payload Components" for AI engines; FAQPage
    mirrors the on-page FAQ (both read from faqEntries) for rich results. */
-/* Landing arc: claim → stack → the install boundary (problem + proof) → how it
- * works → the catalog live → questions → open-source close. */
+/* The landing is one scene and three footnotes: the bench (claim, then one
+ * block installed as you scroll, then the catalog), whole-site templates,
+ * questions, and the open-source close. */
 export default async function HomePage() {
   const locale = await getSiteLocale()
   const publication = getPublication('/', locale)
@@ -78,11 +76,8 @@ export default async function HomePage() {
         id="main"
         className="flex-1"
       >
-        <HeroSection />
-        <StackBand />
-        <WiringSection />
-        <WorkflowSection />
-        <CatalogSection />
+        <BenchSection />
+        <TemplatesSection />
         <FaqSection />
         <CommunityCta />
       </main>

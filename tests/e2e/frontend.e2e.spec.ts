@@ -24,7 +24,8 @@ import {
   componentEntries,
   landingSections,
   primaryInstallCommand,
-  terminalDemoLines,
+  benchSteps,
+  benchTour,
   upcomingComponents,
 } from '../../src/lib/site'
 
@@ -318,149 +319,130 @@ test.describe('Light shadcn frontend', () => {
     await page.goto(baseURL)
 
     const headline = page.getByRole('heading', { level: 1, name: heroHeadline })
-    const heroStack = page.locator('.hero-shell > .container').first()
-    const wall = page.locator('.component-wall')
-
     await expect(headline).toBeVisible()
-    await expect(wall).toBeAttached()
 
     const headlineSize = await headline.evaluate((element) =>
       Number.parseFloat(getComputedStyle(element).fontSize),
     )
-    const stackPaddingTop = await heroStack.evaluate((element) =>
-      Number.parseFloat(getComputedStyle(element).paddingTop),
-    )
-
     expect(headlineSize).toBeLessThanOrEqual(88.1)
-    expect(stackPaddingTop).toBe(64)
 
-    /* The command has to survive above the fold — the wall is proof, not the
-       pitch, so it may never push the CTA row off a 900px-tall viewport. */
+    /* The command has to survive above the fold: the bench is the proof, not
+       the pitch, so it may never push the CTA row off a 900px-tall viewport. */
     const ctaBottom = await page
       .getByRole('button', { name: 'Copy install command' })
       .first()
       .evaluate((element) => element.getBoundingClientRect().bottom)
     expect(ctaBottom).toBeLessThan(900)
 
-    /* The wall is full-bleed and tilted; it must still never scroll the page
-       sideways. */
-    const wallOverflow = await expectNoHorizontalOverflow(page, 'the landing hero wall')
-    expect(wallOverflow.offenders, wallOverflow.message).toEqual([])
+    const benchOverflow = await expectNoHorizontalOverflow(page, 'the landing bench')
+    expect(benchOverflow.offenders, benchOverflow.message).toEqual([])
   })
 
-  test('the hero wall renders real catalog twins and states the catalog size', async ({ page }) => {
+  /* The command is the call to action, so no width may clip it. The bench
+     puts it in a half-width column, which on a 1024-1366px laptop is too
+     narrow for the command beside the full "Copy install command" label; the
+     key drops to its icon there (a container query on the field), as on
+     phones. */
+  test('shows the whole install command at every width', async ({ page }) => {
+    await page.goto(baseURL)
+    await page.evaluate(() => document.fonts.ready)
+    const commands = [
+      page.locator('.hero-shell code').first(),
+      page.locator(`#${landingSections.community.id} code`).first(),
+    ]
+
+    for (const width of [390, 768, 1024, 1280, 1366, 1440]) {
+      await page.setViewportSize({ height: 900, width })
+      for (const command of commands) {
+        await expect(command).toHaveText(primaryInstallCommand)
+        await expect
+          .poll(() => command.evaluate((el) => el.scrollWidth - el.clientWidth), {
+            message: `${width}px clips the install command`,
+          })
+          .toBeLessThanOrEqual(0)
+      }
+    }
+
+    /* Where the field has the room (the hero at 1440px), the key keeps its
+       full label rather than collapsing early. */
+    await page.setViewportSize({ height: 900, width: 1440 })
+    await expect
+      .poll(() =>
+        page
+          .locator('.hero-shell [data-copy-label]')
+          .first()
+          .evaluate((label) => getComputedStyle(label).position),
+      )
+      .not.toBe('absolute')
+  })
+
+  test('the bench installs hero-basic as the page scrolls', async ({ page }) => {
+    await page.setViewportSize({ height: 900, width: 1440 })
     await page.goto(baseURL)
 
-    const wall = page.locator('.component-wall')
-    await expect(wall).toBeAttached()
+    const bench = page.locator('#bench')
+    await expect(bench).toHaveAttribute('data-step', '0')
 
-    /* Three bands, each duplicated once so the marquee can loop seamlessly. */
-    await expect(page.locator('.component-wall .wall-band')).toHaveCount(3)
+    /* Pinned on a wide, tall, motion-allowed viewport: the stage sticks under
+       the header while the section scrolls past. */
+    expect(
+      await bench.locator('.bench-stage').evaluate((stage) => getComputedStyle(stage).position),
+    ).toBe('sticky')
 
-    /* The wall is decorative; the count beside it is the accessible statement,
-       and it is derived from the registry so it can never drift. */
+    const scrollTo = (fraction: number) =>
+      bench.evaluate((element, value) => {
+        const section = element as HTMLElement
+        const stage = section.firstElementChild as HTMLElement
+        window.scrollTo(0, section.offsetTop + value * (section.offsetHeight - stage.offsetHeight))
+      }, fraction)
+
+    const wired = () =>
+      bench
+        .locator('.bench-board [data-active] svg.pinout-desktop .pinout-wire')
+        .evaluateAll(
+          (wires) =>
+            wires.filter((wire) => Number.parseFloat(getComputedStyle(wire).strokeDashoffset) < 1)
+              .length,
+        )
+
+    /* Before the wiring step no trace is drawn; after it, all five are. */
+    await scrollTo(0.18)
+    await expect(bench).toHaveAttribute('data-step', '1')
+    expect(await wired()).toBe(0)
+
+    await scrollTo(0.62)
+    await expect(bench).toHaveAttribute('data-step', '3')
+    await expect.poll(wired).toBe(5)
+    await expect(bench.locator('.bench-page [data-active] .bench-twin')).toBeVisible()
+
+    /* The last step puts other parts on the bench. */
+    await scrollTo(0.97)
+    await expect(bench).toHaveAttribute('data-step', '4')
     await expect(
-      page.getByText(`${componentEntries.length} blocks`, { exact: false }).first(),
-    ).toBeVisible()
-
-    /* Decorative duplicates must not reach the accessibility tree. */
-    await expect(wall).toHaveAttribute('aria-hidden', 'true')
+      bench.locator('.bench-board [data-active]').getByText('PC-HERO-BASIC'),
+    ).toHaveCount(0)
   })
 
-  /* The wall's fit is curated from measured heights, and a curated fit is exactly
-     the kind that rots silently. It was first measured only at 1440px, where it
-     was correct, while 14 of 18 cards were being guillotined mid-sentence on a
-     phone. Any change to a twin's demo content can push a block past its frame
-     again, and none of that is visible in a desktop review — so the fit is
-     asserted, at the widths that broke. */
-  for (const wallViewport of [
-    { height: 844, label: 'phone', width: 390 },
-    { height: 1024, label: 'tablet', width: 768 },
-    { height: 900, label: 'desktop', width: 1440 },
-  ]) {
-    test(`keeps every wall card inside its frame on ${wallViewport.label}`, async ({ page }) => {
-      await page.setViewportSize({ height: wallViewport.height, width: wallViewport.width })
-      await page.goto(baseURL)
-      await expect(page.locator('.component-wall')).toBeAttached()
-
-      const measured = await page.evaluate(() => {
-        /* The wall is tilted and scaled as a whole, and a rotated box reports an
-           axis-aligned bounding box larger than itself — by an amount that grows
-           with width, so frame and content would inflate by different amounts and
-           every reading would be wrong. Neutralised for measurement only. */
-        const tilt = document.querySelector('.component-wall > div')
-        if (tilt instanceof HTMLElement) {
-          tilt.style.rotate = '0deg'
-          tilt.style.scale = '1'
-        }
-
-        return [...document.querySelectorAll('.wall-card-frame')].map((frame) => {
-          const content = frame.firstElementChild
-          const label = frame.parentElement?.querySelector('p')?.textContent?.trim() ?? '?'
-
-          /* Both rects are read in the same coordinate space, so the CSS zoom on
-             the content child is already reflected in its height. */
-          return {
-            label,
-            overrun: Math.round(
-              (content?.getBoundingClientRect().height ?? 0) - frame.getBoundingClientRect().height,
-            ),
-          }
-        })
-      })
-
-      expect(measured.length).toBeGreaterThan(0)
-
-      /* Three twins (content-quote, content-feature-media, content-feature-split)
-         render their own stacked variant below 1024px however wide the wall lays
-         them out — viewport media queries, not container queries — so a residual
-         overrun is expected, and the frame's bottom fade dissolves it rather than
-         cutting it. Measured worst case: 32px on a phone against a 28px fade,
-         44px on a tablet against a 44px one, and nothing at all on desktop.
-
-         The 50px ceiling sits just above that 44px worst case. It was 60px, but
-         44-60 was a band where a card could quietly lose a line and still pass,
-         and twin content does drift — TestimonialsBentoDemo changed height in the
-         very promote that shipped this. 50px still absorbs an ordinary copy edit
-         while catching the class of regression this exists for: a block losing a
-         paragraph, 88px in the tablet band and 165px on a phone before the
-         per-breakpoint zoom. If a legitimate content change trips it, re-measure
-         and move the frame, not the ceiling. */
-      const worst = measured.reduce((a, b) => (b.overrun > a.overrun ? b : a))
-      expect(
-        worst.overrun,
-        `"${worst.label}" overruns its frame by ${worst.overrun}px`,
-      ).toBeLessThanOrEqual(50)
-    })
-  }
-
-  test('keeps the wall frame fade that dissolves an overrun', async ({ page }) => {
-    await page.setViewportSize({ height: 844, width: 390 })
+  test('the bench states its facts in text and keeps drawings out of the a11y tree', async ({
+    page,
+  }) => {
     await page.goto(baseURL)
 
-    const readFadeHeight = () =>
-      page
-        .locator('.wall-card-frame')
-        .first()
-        .evaluate((frame) => getComputedStyle(frame, '::after').height)
+    const bench = page.locator('#bench')
+    await expect(bench.getByText(`${componentEntries.length} blocks`).first()).toBeAttached()
 
-    /* The other half of the overflow fix, and the half that already went missing
-       once: the fade was dropped while the cards were briefly natural-height and
-       not restored when they went back to fixed heights, turning every overrun
-       back into a hard cut. Without it, the ceiling above is all that stands
-       between a content tweak and a guillotined block. */
-    expect(Number.parseFloat(await readFadeHeight())).toBeGreaterThan(8)
+    for (const step of benchSteps) {
+      await expect(
+        bench.getByRole('heading', { level: 2, name: step.title.join('') }),
+      ).toBeAttached()
+    }
 
-    /* The tablet band gets its own taller fade, and it needs its own assertion:
-       the phone check above runs outside the 640–1023px query, so deleting the
-       override would still pass it — and pass the overrun ceiling too, since the
-       measured 44px tablet residue sits under that deliberately loose 50px. Left
-       unpinned, the one band where residue meets the fade exactly is the one band
-       with no coverage. Exact, not a floor: 2.75rem at the default root size, and
-       the whole point is that it matches the overrun rather than merely exceeding
-       the phone value. */
-    await page.setViewportSize({ height: 1024, width: 768 })
-    expect(await readFadeHeight()).toBe('44px')
+    /* The ledger is the drawing's outputs, as text. */
+    await expect(bench.locator('.bench-ledger li')).toHaveCount(5)
+
+    for (const decorative of await bench.locator('svg.pinout, .bench-twin').all()) {
+      await expect(decorative).toHaveAttribute('aria-hidden', 'true')
+    }
   })
 
   test('renders the light token-driven homepage', async ({ page }) => {
@@ -1184,10 +1166,10 @@ test.describe('Light shadcn frontend', () => {
       await expect(page.getByRole('heading', { level: 2, name: section.heading })).toBeVisible()
     }
 
-    // The catalog section teases page families with live previews instead of
-    // listing every component as a text row; the full index lives at /components.
-    await expect(page.getByRole('heading', { name: 'Page blocks' })).toBeVisible()
-    await expect(page.getByRole('link', { name: /Browse all \d+ components/ })).toBeVisible()
+    // The bench ends on the catalog; the full index lives at /components.
+    await expect(
+      page.getByRole('link', { name: `Browse ${componentEntries.length} blocks` }),
+    ).toBeAttached()
     await expect(page.locator('code', { hasText: primaryInstallCommand }).first()).toBeVisible()
 
     await expect(page.getByRole('contentinfo')).toBeVisible()
@@ -1341,9 +1323,8 @@ test.describe('Light shadcn frontend', () => {
     expect(report.chromeFont).toContain('Archivo')
     expect(report.chromeBrand).not.toBe(report.componentBrand)
 
-    /* The wall's eighteen cards twice over, the specimen, the family teaser and
-       the workflow surfaces. */
-    expect(report.scopes).toBeGreaterThan(20)
+    /* One rendered twin per part the bench can put on the page. */
+    expect(report.scopes).toBe(benchTour.length)
     expect(report.leaks).toEqual([])
     expect(report.scopeFonts).toEqual([report.componentFont])
     expect(report.scopeBrands).toEqual([report.componentBrand])
@@ -1360,7 +1341,7 @@ test.describe('Light shadcn frontend', () => {
       await page.goto(baseURL)
 
       /* Decorative: the headline and command carry the claim in text. */
-      const drawing = hero.locator(`svg${viewport.drawing}`)
+      const drawing = hero.locator(`.bench-board [data-active] svg${viewport.drawing}`)
       await expect(drawing).toBeVisible()
       await expect(drawing).toHaveAttribute('aria-hidden', 'true')
       /* Five fields in, five artifacts out. */
@@ -1630,12 +1611,12 @@ test.describe('Light shadcn frontend', () => {
   })
 
   test('copies a catalog family-card command', async ({ page, context }) => {
-    // feature-bento is the Features family's representative card in the landing
-    // teaser; its command differs from the hero's primaryInstallCommand.
+    // feature-bento's card on /components; its command differs from the hero's
+    // primaryInstallCommand.
     const catalogComponent = componentEntries.find((entry) => entry.slug === 'feature-bento')!
 
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-    await page.goto(baseURL)
+    await page.goto(`${baseURL}/components`)
     await waitForCopyController(page)
     await page.locator(`#${catalogComponent.slug}`).getByRole('button', { name: 'Copy' }).click()
 
@@ -2095,24 +2076,31 @@ test.describe('Reduced motion', () => {
     })
   })
 
-  test('terminal replay renders its final transcript without animation', async ({ page }) => {
+  test('the bench lays out every step, fully wired, without motion', async ({ page }) => {
+    await page.setViewportSize({ height: 900, width: 1440 })
     await page.goto(baseURL)
 
-    const lastLine = terminalDemoLines[terminalDemoLines.length - 1]
-    await expect(page.getByText(lastLine.text).first()).toBeVisible()
+    /* Reduced motion never pins the scene: every step is in the open and the
+       part is drawn wired from the first paint. */
+    const bench = page.locator('#bench')
+    expect(
+      await bench.locator('.bench-stage').evaluate((stage) => getComputedStyle(stage).position),
+    ).not.toBe('sticky')
 
-    /* The replay moved out of the hero and into the workflow section, where
-       "run the command" is the actual subject. (Its Replay control stays
-       motion-reduce:hidden — a replay does nothing visible here, so the
-       control hides rather than lying.) */
-    const workflow = page.locator(`#${landingSections.workflow.id}`)
-    await expect(workflow.locator('.product-frame')).toBeVisible()
-    await expect(
-      workflow.getByRole('button', { name: 'Replay the install animation' }),
-    ).toBeHidden()
+    for (const step of benchSteps) {
+      await expect(
+        bench.getByRole('heading', { level: 2, name: step.title.join('') }),
+      ).toBeVisible()
+    }
 
-    const workflowOverflow = await expectNoHorizontalOverflow(page, 'the workflow section')
-    expect(workflowOverflow.offenders, workflowOverflow.message).toEqual([])
+    const offsets = await bench
+      .locator('.bench-board [data-active] svg.pinout-desktop .pinout-wire')
+      .evaluateAll((wires) => wires.map((wire) => getComputedStyle(wire).strokeDashoffset))
+    expect(offsets).toHaveLength(5)
+    expect(offsets.every((offset) => Number.parseFloat(offset) === 0)).toBe(true)
+
+    const benchOverflow = await expectNoHorizontalOverflow(page, 'the bench, stacked')
+    expect(benchOverflow.offenders, benchOverflow.message).toEqual([])
   })
 
   test('opens the Fumadocs search dialog from the docs shell', async ({ page }) => {

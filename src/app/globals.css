@@ -313,70 +313,6 @@
   }
 }
 
-@keyframes hero-proof-enter {
-  from {
-    opacity: 0;
-    transform: translateY(28px) scale(0.99);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Ends fully transparent so the reduced-motion collapse (duration → 0,
-   iteration → 1, parked on the 100% frame) hides the sweep entirely. */
-@keyframes wall-sweep {
-  0% {
-    opacity: 0;
-    transform: translateX(-30%);
-  }
-
-  14% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateX(370%);
-  }
-}
-
-@keyframes terminal-type {
-  from {
-    width: 0;
-  }
-
-  to {
-    width: var(--line-width);
-  }
-}
-
-@keyframes terminal-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(2px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes proof-spawn {
-  from {
-    opacity: 0;
-    transform: translateY(22px) scale(0.985);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
 /* Install-replay materialize: demo-twin parts "print" in over the
    fading skeleton. `both` fill is load-bearing — the reduced-motion
    guard zeroes durations, so the end state (skeleton hidden, twin
@@ -393,17 +329,6 @@
   }
 }
 
-@keyframes skeleton-fade {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-
 /* Emerald wiring strokes drawing from the terminal's success line into the
    materialized twin — the literal "wired, not pasted." `both` fill plus a
    fully-drawn end state keep the frame complete under reduced-motion and at
@@ -417,99 +342,6 @@
   to {
     stroke-dashoffset: 0;
     opacity: 1;
-  }
-}
-
-/* Datasheet pinout (landing hero), run once: each trace draws from its output
-   pin to the connector with a short bright pulse ahead of it, and its pad
-   lights as it lands. Stroke, fill and transform only. The resting state of
-   every element is the finished drawing, so these only ever run from an
-   earlier frame toward it. */
-@keyframes pinout-draw {
-  from {
-    stroke-dashoffset: 100;
-  }
-
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes pinout-pulse {
-  from {
-    stroke-dashoffset: 12;
-  }
-
-  to {
-    stroke-dashoffset: -104;
-  }
-}
-
-@keyframes pinout-light {
-  from {
-    fill: var(--background);
-  }
-}
-
-@keyframes pinout-solder {
-  0% {
-    fill: var(--background);
-    transform: scale(1);
-  }
-
-  45% {
-    transform: scale(1.35);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes pinout-label {
-  from {
-    fill: var(--muted-foreground);
-  }
-}
-
-/* Emerald "current" — a stream of soft dots flowing command → artifact. The
-   dash period (2.5 + 8.5 = 11, in pathLength-100 units) is the loop distance,
-   so one cycle is seamless. */
-@keyframes wiring-dash-flow {
-  to {
-    stroke-dashoffset: -11;
-  }
-}
-
-/* One-time entry reveal for the interactive canvas: nodes lift in, edges draw
-   from the command outward, ports pop at the join. */
-@keyframes wiring-node-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.96);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes wiring-edge-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes wiring-port-in {
-  from {
-    opacity: 0;
-    transform: scale(0);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
   }
 }
 
@@ -716,10 +548,6 @@
     }
   }
 
-  .pinout-dot {
-    fill: color-mix(in oklab, var(--foreground) 16%, var(--background));
-  }
-
   .pinout-chip {
     fill: var(--background);
     stroke: var(--foreground);
@@ -830,16 +658,6 @@
     transition: stroke-width 200ms;
   }
 
-  /* Parked past the end of its path, so it is invisible at rest. */
-  .pinout-pulse {
-    fill: none;
-    stroke: var(--success);
-    stroke-width: 3.25;
-    stroke-linecap: round;
-    stroke-dasharray: 10 200;
-    stroke-dashoffset: -110;
-  }
-
   .pinout-pad {
     fill: var(--trace);
     stroke: var(--trace);
@@ -867,33 +685,6 @@
 
   .pinout-net:hover .pinout-out {
     font-weight: 600;
-  }
-
-  /* Only the landing's drawing (.pinout-live) draws itself in; the docs
-     datasheets are reference drawings and stay still. */
-  @media (prefers-reduced-motion: no-preference) {
-    .pinout-live .pinout-wire {
-      animation: pinout-draw 560ms cubic-bezier(0.55, 0, 0.3, 1) calc(240ms + var(--pin) * 170ms)
-        both;
-    }
-
-    .pinout-live .pinout-pulse {
-      animation: pinout-pulse 560ms cubic-bezier(0.55, 0, 0.3, 1) calc(240ms + var(--pin) * 170ms)
-        both;
-    }
-
-    .pinout-live .pinout-leg-out {
-      animation: pinout-light 160ms linear calc(240ms + var(--pin) * 170ms) both;
-    }
-
-    .pinout-live .pinout-pad {
-      animation: pinout-solder 300ms cubic-bezier(0.3, 1.5, 0.5, 1) calc(720ms + var(--pin) * 170ms)
-        both;
-    }
-
-    .pinout-live .pinout-out {
-      animation: pinout-label 240ms ease-out calc(720ms + var(--pin) * 170ms) both;
-    }
   }
 
   /* Per-component datasheets (PartPinout) on /docs/components/<slug>. The
@@ -969,6 +760,373 @@
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* The bench (BenchSection + BenchScroll): the landing's one scene.  */
+  /*                                                                  */
+  /* By default every step is laid out in the open and the part is    */
+  /* fully wired: phones, reduced motion, no JavaScript, short        */
+  /* windows. Where the scene can be read as one (the query below,    */
+  /* mirrored in BenchScroll), it pins under the header and scrolling */
+  /* drives it through four values BenchScroll sets on the section:   */
+  /* data-step, --f (input pins lit), --w (traces wired), --p.        */
+  /* The choice is made by media query at first paint and never by    */
+  /* hydration, so the first screen cannot shift.                     */
+  /* ---------------------------------------------------------------- */
+
+  .bench {
+    position: relative;
+    background-image: radial-gradient(
+      circle,
+      color-mix(in oklab, var(--foreground) 11%, var(--background)) 1px,
+      transparent 1.2px
+    );
+    background-size: 1.5rem 1.5rem;
+  }
+
+  .bench-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'intro' 'board' 's1' 's2' 'ledger' 's3' 'page' 's4';
+    gap: 2.75rem;
+    padding-block: 2.5rem 4.5rem;
+  }
+
+  .bench-intro {
+    grid-area: intro;
+  }
+
+  .bench-step-1 {
+    grid-area: s1;
+  }
+
+  .bench-step-2 {
+    grid-area: s2;
+  }
+
+  .bench-step-3 {
+    grid-area: s3;
+  }
+
+  .bench-step-4 {
+    grid-area: s4;
+  }
+
+  .bench-board {
+    grid-area: board;
+    border: 1px solid var(--border);
+    background: var(--background);
+    padding: 0.875rem 0.875rem 0.5rem;
+  }
+
+  .bench-board .pinout-sheet {
+    margin-top: 0.75rem;
+  }
+
+  .bench-ledger {
+    grid-area: ledger;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .bench-ledger li {
+    position: relative;
+    display: grid;
+    gap: 0.3125rem;
+    align-content: start;
+    padding: 0.5rem 0.625rem 0.625rem;
+    border: 1px solid var(--brand);
+    background: var(--brand-50);
+  }
+
+  .bench-ledger code {
+    font-size: 0.65rem;
+    overflow-wrap: normal;
+  }
+
+  .bench-ledger-detail {
+    color: var(--brand);
+    font-weight: 600;
+  }
+
+  .bench-page {
+    grid-area: page;
+    min-width: 0;
+  }
+
+  .bench-twin {
+    border: 1px solid var(--border);
+    background: var(--background);
+    box-shadow: var(--shadow-frame);
+  }
+
+  .bench-headline {
+    font-size: clamp(3rem, 13vw, 5.25rem);
+  }
+
+  .bench-step-title {
+    font-size: clamp(2.25rem, 8vw, 3.75rem);
+  }
+
+  .bench-field {
+    padding: 0.25rem 0.5rem;
+    border: 1px dashed color-mix(in oklab, var(--foreground) 45%, var(--background));
+    color: var(--muted-foreground);
+  }
+
+  .bench-field.is-required {
+    border-style: solid;
+    border-color: var(--foreground);
+    color: var(--foreground);
+  }
+
+  /* Only the part on the bench shows: hero-basic, until the last step. */
+  .bench-part:not([data-active]) {
+    display: none;
+  }
+
+  .bench-hint,
+  .bench-progress {
+    display: none;
+  }
+
+  .bench-reel {
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0 0 0.5rem;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+
+  .bench-reel > li {
+    flex: none;
+    width: min(18rem, 78vw);
+    scroll-snap-align: start;
+  }
+
+  @media (width >= 40rem) {
+    .bench-ledger {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
+  /* Wide, but stacked (reduced motion, no JavaScript, short windows): words on
+     the left, the part and what it writes on the right. */
+  @media (width >= 64rem) {
+    .bench-grid {
+      grid-template-columns: minmax(0, 11fr) minmax(0, 13fr);
+      grid-template-areas:
+        'intro board'
+        'intro ledger'
+        's1 page'
+        's2 page'
+        's3 page'
+        's4 page';
+      column-gap: 3.5rem;
+      row-gap: 2.5rem;
+      align-items: start;
+    }
+
+    .bench-headline {
+      font-size: clamp(3.5rem, 5.6vw, 5.25rem);
+    }
+
+    .bench-step-title {
+      font-size: clamp(2.5rem, 3.6vw, 3.5rem);
+    }
+  }
+
+  @media (scripting: enabled) and (width >= 64rem) and (height >= 42rem) and (prefers-reduced-motion: no-preference) {
+    /* The scroll track: 4.6 screens of scrolling for one pinned stage. */
+    .bench {
+      height: 460vh;
+    }
+
+    .bench-stage {
+      position: sticky;
+      top: 3.5rem;
+      height: calc(100vh - 3.5rem);
+      overflow: hidden;
+    }
+
+    .bench-grid {
+      height: 100%;
+      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-areas:
+        'words board'
+        'words lower';
+      padding-block: 2rem 1.75rem;
+      row-gap: 1rem;
+    }
+
+    .bench-intro,
+    .bench-step {
+      grid-area: words;
+      align-self: center;
+      transition:
+        opacity 350ms ease,
+        translate 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .bench:not([data-step='0']) .bench-intro,
+    .bench-step {
+      opacity: 0;
+      translate: 0 1rem;
+      pointer-events: none;
+    }
+
+    .bench[data-step='1'] .bench-step-1,
+    .bench[data-step='2'] .bench-step-2,
+    .bench[data-step='3'] .bench-step-3,
+    .bench[data-step='4'] .bench-step-4 {
+      opacity: 1;
+      translate: none;
+      pointer-events: auto;
+    }
+
+    /* The intro leaves upward, the step arrives from below. Never the reverse:
+       the headline is at rest on the first screen. */
+    .bench:not([data-step='0']) .bench-intro {
+      translate: 0 -0.75rem;
+    }
+
+    .bench-board {
+      height: min(54vh, 31rem);
+    }
+
+    .bench-board .bench-part {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      height: 100%;
+      min-height: 0;
+    }
+
+    .bench-board .bench-part:not([data-active]) {
+      display: none;
+    }
+
+    .bench-board .pinout-sheet {
+      min-height: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    .bench-board .pinout {
+      max-height: 100%;
+      width: auto;
+      max-width: 100%;
+    }
+
+    .bench-ledger,
+    .bench-page {
+      grid-area: lower;
+      min-height: 0;
+      transition:
+        opacity 350ms ease,
+        translate 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .bench-page {
+      overflow: hidden;
+      mask-image: linear-gradient(to bottom, black 82%, transparent);
+    }
+
+    .bench:is([data-step='0'], [data-step='1'], [data-step='2']) .bench-page,
+    .bench:is([data-step='3'], [data-step='4']) .bench-ledger {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .bench:is([data-step='0'], [data-step='1'], [data-step='2']) .bench-page {
+      translate: 0 1.5rem;
+    }
+
+    /* Scroll draws the part. Each input label and net carries --i (its place)
+       and --n (how many); a pin is lit, or a trace drawn, once the progress
+       value has passed its place. `* 1000 - 999` turns "this trace has fully
+       landed" into a 0/1 switch for the solder pad. */
+    .bench .pinout-in {
+      opacity: calc(0.35 + 0.65 * clamp(0, var(--f, 0) * var(--n) - var(--i), 1));
+      transition: opacity 200ms;
+    }
+
+    .bench .pinout-wire {
+      stroke-dashoffset: calc(100 - clamp(0, var(--w, 0) * var(--n) - var(--i), 1) * 100);
+    }
+
+    .bench .pinout-pad {
+      fill-opacity: clamp(0, (var(--w, 0) * var(--n) - var(--i)) * 1000 - 999, 1);
+    }
+
+    .bench .pinout-out {
+      opacity: calc(0.4 + 0.6 * clamp(0, (var(--w, 0) * var(--n) - var(--i)) * 1000 - 999, 1));
+    }
+
+    .bench-ledger li {
+      border-color: var(--border);
+      background: var(--background);
+      transition:
+        border-color 200ms,
+        background-color 200ms;
+    }
+
+    .bench-ledger-detail {
+      color: var(--muted-foreground);
+    }
+
+    /* A ledger row fills once its trace has landed. */
+    .bench-ledger li::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border: 1px solid var(--brand);
+      background: color-mix(in oklab, var(--brand-50) 70%, transparent);
+      opacity: clamp(0, (var(--w, 0) * var(--n) - var(--i)) * 1000 - 999, 1);
+      transition: opacity 200ms;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .bench-ledger li {
+      isolation: isolate;
+    }
+
+    .bench-hint {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-top: 1.75rem;
+    }
+
+    .bench-hint i {
+      display: block;
+      width: 1.5px;
+      height: 1.75rem;
+      background: var(--foreground);
+    }
+
+    .bench-progress {
+      display: block;
+      position: absolute;
+      inset: auto 0 0;
+      height: 3px;
+      background: var(--border);
+    }
+
+    .bench-progress i {
+      display: block;
+      height: 100%;
+      width: calc(var(--p, 0) * 100%);
+      background: var(--brand);
+    }
   }
 
   /* Logo Cloud Marquee twin: scrolls the duplicated logo track. The global
@@ -1198,73 +1356,6 @@
     animation: hero-rise 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
 
-  .hero-proof-enter {
-    position: relative;
-    z-index: 1;
-    animation: hero-proof-enter 620ms cubic-bezier(0.18, 0.82, 0.2, 1) 120ms both;
-  }
-
-  /* Component-wall entrance. Deliberately CSS rather than motion: a motion
-     `initial` state ships as inline opacity:0 in the SSR HTML, so the hero's
-     centrepiece would be invisible until hydration (and forever without JS).
-     The drift on top of this IS motion — it needs to pause, which a keyframe
-     cannot do. Both are transform+opacity, and the global reduced-motion rule
-     collapses this one to its final frame. */
-  .wall-band {
-    animation: hero-proof-enter 700ms cubic-bezier(0.18, 0.82, 0.2, 1)
-      calc(160ms + var(--wall-delay, 0ms)) both;
-  }
-
-  .wall-sweep {
-    animation: wall-sweep 1500ms cubic-bezier(0.6, 0, 0.3, 1) 700ms 1 both;
-  }
-
-  /* The wall dissolves on all four edges rather than being clipped by a
-     rectangle. A real alpha mask (not stacked from-background gradient
-     overlays) because the hero atmosphere is an emerald wash, not flat white —
-     an opaque overlay leaves a visible seam against it, and the intersect of
-     two linear masks fades the tilted rows over whatever sits behind them. */
-  .component-wall {
-    -webkit-mask-image:
-      linear-gradient(to right, transparent 0%, black 11%, black 89%, transparent 100%),
-      linear-gradient(to bottom, black 0%, black 84%, transparent 100%);
-    mask-image:
-      linear-gradient(to right, transparent 0%, black 11%, black 89%, transparent 100%),
-      linear-gradient(to bottom, black 0%, black 84%, transparent 100%);
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
-  }
-
-  /* Safety valve. The wall's slug set is curated so every twin fits its frame,
-     but that fit is a property of the twins' CONTENT — and content changes
-     (dev's content-quote logoLabel already moved one). Without this, the next
-     such change silently guillotines a block mid-sentence again; with it, an
-     overrun dissolves instead. Invisible when nothing overflows, since the
-     gradient then falls over the card's own background. */
-  .wall-card-frame::after {
-    content: '';
-    position: absolute;
-    inset-inline: 0;
-    bottom: 0;
-    height: 1.75rem;
-    pointer-events: none;
-    background: linear-gradient(to top, var(--background), transparent);
-  }
-
-  /* Tablet only. Between 640px and 1024px the twins switch to their own stacked
-     variants, and the tallest three (content-quote, content-feature-media,
-     content-feature-split) land ~44px past even the taller frame this band uses
-     — against ~25px on a phone. Measured, not guessed: 88/80/79px over a 212px
-     frame before that frame grew. The valve is widened to match so the residue
-     falls inside the gradient instead of at a hard edge, and only here: 1.75rem
-     is already more than enough on phone and desktop, and a fade this tall would
-     eat into the shorter cards that fit. */
-  @media (min-width: 40rem) and (max-width: 63.9375rem) {
-    .wall-card-frame::after {
-      height: 2.75rem;
-    }
-  }
-
   /* Script-aware display type: Instrument Serif only contains Latin glyphs,
      and tight Latin tracking harms Arabic, Hebrew, CJK, and Thai shaping. */
   html[data-script='arabic'] .hero-headline,
@@ -1304,39 +1395,6 @@
     z-index: -1;
   }
 
-  /* Frame terminal: per-line typing/reveal driven by CSS vars set    */
-  /* inline (--line-width, --line-duration, --line-delay).            */
-  .terminal-row {
-    display: block;
-    min-height: 1.75rem;
-  }
-
-  .terminal-line {
-    display: inline-block;
-    max-width: 100%;
-    width: var(--line-width);
-    overflow: hidden;
-    white-space: nowrap;
-    vertical-align: bottom;
-  }
-
-  .terminal-typed {
-    width: 0;
-    animation: terminal-type var(--line-duration) steps(40, end) var(--line-delay) both;
-  }
-
-  .terminal-reveal {
-    opacity: 0;
-    animation: terminal-reveal var(--line-duration) ease-out var(--line-delay) both;
-  }
-
-  /* Sequenced spawn-in for frame panels (--spawn-delay inline). */
-  .spawn-in {
-    opacity: 0;
-    transform: translateY(22px) scale(0.985);
-    animation: proof-spawn 620ms cubic-bezier(0.18, 0.82, 0.2, 1) var(--spawn-delay, 0ms) both;
-  }
-
   /* Demo-twin parts rising in during the install replay. */
   .twin-rise {
     opacity: 0;
@@ -1366,11 +1424,6 @@
     }
   }
 
-  /* The "before" skeleton yielding to the materialized twin. */
-  .skeleton-fade {
-    animation: skeleton-fade 300ms ease-out var(--spawn-delay, 0ms) both;
-  }
-
   /* Tactile hover lift for card/preview surfaces. Transform + shadow only;
      the reduced-motion guard zeroes the transition (the lift still applies on
      hover, just without the ease). */
@@ -1383,106 +1436,6 @@
   .hover-lift:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-frame);
-  }
-
-  /* Interactive wiring canvas (React Flow) — decorative, only mounts on
-     motion-enabled desktop. Custom nodes/edges carry all styling, so the base
-     React Flow chrome is neutralised to the card surface. */
-  .wiring-canvas .react-flow {
-    background: transparent;
-  }
-
-  .wiring-canvas .react-flow__handle {
-    width: 1px;
-    height: 1px;
-    min-width: 0;
-    min-height: 0;
-    border: 0;
-    background: transparent;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .wiring-canvas .react-flow__attribution {
-    display: none;
-  }
-
-  .wiring-canvas .react-flow__node {
-    cursor: grab;
-  }
-
-  .wiring-canvas .react-flow__node.dragging {
-    cursor: grabbing;
-  }
-
-  /* Tactile depth — CSS 3D only (no WebGL). Transform is applied only on
-     hover/active (a resting transform on node content breaks React Flow's node
-     measurement); --rx/--ry track the pointer (set per-node on mousemove). */
-  .wiring-3d {
-    transition: transform 160ms cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-
-  .wiring-3d:hover,
-  .wiring-3d.is-active {
-    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(14px);
-  }
-
-  /* Staggered entry reveal (plays once on scroll-in via .is-revealed). */
-  .wiring-canvas .wiring-reveal {
-    opacity: 0;
-  }
-
-  .wiring-canvas.is-revealed .wiring-reveal {
-    animation: wiring-node-in 560ms cubic-bezier(0.2, 0.74, 0.24, 1) both;
-    animation-delay: calc(var(--i, 0) * 70ms);
-  }
-
-  .wiring-edge-base {
-    stroke-dasharray: 100;
-    stroke-dashoffset: 100;
-  }
-
-  .wiring-canvas.is-revealed .wiring-edge-base {
-    animation: wiring-edge-draw 620ms cubic-bezier(0.65, 0, 0.35, 1) both;
-    animation-delay: calc(140ms + var(--i, 0) * 70ms);
-  }
-
-  .wiring-port {
-    opacity: 0;
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-
-  .wiring-canvas.is-revealed .wiring-port {
-    animation: wiring-port-in 360ms ease both;
-    animation-delay: calc(560ms + var(--i, 0) * 70ms);
-  }
-
-  /* Soft emerald glow on the spotlighted edge (static, thin path — not a
-     large animated raster, so it stays inside the LCP guardrail). */
-  .wiring-edge-glow {
-    filter: drop-shadow(0 0 5px color-mix(in oklch, var(--brand) 55%, transparent));
-  }
-
-  /* Emerald "current": a stream of dots. Hidden until the draw finishes, then
-     fades in; paused unless the canvas is onscreen (.is-flowing) so nothing
-     perpetually composites offscreen. The global reduced-motion guard stops it
-     too, and it only ever mounts on motion-enabled desktop. */
-  .wiring-flow-dash {
-    stroke-dasharray: 2.5 8.5;
-    stroke-dashoffset: 0;
-    opacity: 0;
-    animation: wiring-dash-flow 0.85s linear infinite;
-    animation-play-state: paused;
-  }
-
-  .wiring-canvas.is-revealed .wiring-flow-dash {
-    opacity: 0.9;
-    transition: opacity 400ms ease calc(700ms + var(--i, 0) * 70ms);
-  }
-
-  .wiring-canvas.is-revealed.is-flowing .wiring-flow-dash {
-    animation-play-state: running;
   }
 }
 
