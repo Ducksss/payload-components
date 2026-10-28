@@ -16,7 +16,7 @@
   "description": "A two-column feature layout with independent media, optional icons, and CTA links.",
   "registryItemName": "feature-cards-media",
   "dependencies": {
-    "lucide-react": "^0.563.0"
+    "lucide-react": ">=0.563.0 <2.0.0"
   },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",

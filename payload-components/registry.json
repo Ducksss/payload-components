@@ -916,6 +916,9 @@
       "registryDependencies": [
         "badge"
       ],
+      "dependencies": [
+        "lucide-react"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add content-feature-media\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-feature-media.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add content-feature-media` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
@@ -962,6 +965,9 @@
       "registryDependencies": [
         "badge"
       ],
+      "dependencies": [
+        "lucide-react"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add content-feature-split\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-feature-split.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add content-feature-split` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
@@ -1007,6 +1013,9 @@
       "description": "Payload content block: a centered intro, a full-width image, and a four-up feature grid.",
       "registryDependencies": [
         "badge"
+      ],
+      "dependencies": [
+        "lucide-react"
       ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add content-showcase\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-showcase.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add content-showcase` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
@@ -1329,6 +1338,9 @@
       "title": "Integration List",
       "description": "A vertical list of integration rows with logo, name, description, and an add action.",
       "registryDependencies": [],
+      "dependencies": [
+        "lucide-react"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add integration-list\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-list.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add integration-list` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
@@ -1579,6 +1591,9 @@
       "registryDependencies": [
         "badge"
       ],
+      "dependencies": [
+        "lucide-react"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add content-stats\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-stats.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add content-stats` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
@@ -1696,6 +1711,9 @@
       "description": "Payload content block: a serif heading and intro above a multi-column icon list.",
       "registryDependencies": [
         "badge"
+      ],
+      "dependencies": [
+        "lucide-react"
       ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add content-list-icons\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-list-icons.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add content-list-icons` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
@@ -2260,6 +2278,9 @@
         "accordion",
         "badge"
       ],
+      "dependencies": [
+        "lucide-react"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add faq-icons\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-icons.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add faq-icons` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
@@ -2306,6 +2327,9 @@
       "registryDependencies": [
         "accordion",
         "badge"
+      ],
+      "dependencies": [
+        "lucide-react"
       ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add faq-grouped\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-grouped.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add faq-grouped` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
@@ -2395,6 +2419,9 @@
       "registryDependencies": [
         "badge"
       ],
+      "dependencies": [
+        "lucide-react"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-table\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-table.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-table` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
@@ -2437,6 +2464,9 @@
         "badge",
         "card"
       ],
+      "dependencies": [
+        "lucide-react"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-grid\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-grid.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-grid` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
@@ -2478,6 +2508,9 @@
       "registryDependencies": [
         "badge",
         "card"
+      ],
+      "dependencies": [
+        "lucide-react"
       ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add comparator-stack\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-stack.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add comparator-stack` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
@@ -2557,6 +2590,9 @@
       "title": "Testimonials Spotlight",
       "description": "Payload testimonials block: a single centered testimonial with a quote-mark, large avatar, author, and role.",
       "registryDependencies": [],
+      "dependencies": [
+        "lucide-react"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-spotlight\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-spotlight.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-spotlight` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
@@ -2638,6 +2674,9 @@
       "description": "Payload testimonials block: a responsive grid of review cards, each with a star rating, quote, author, optional role, and avatar.",
       "registryDependencies": [
         "badge"
+      ],
+      "dependencies": [
+        "lucide-react"
       ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add testimonials-rating\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/testimonials-rating.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add testimonials-rating` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
@@ -2927,6 +2966,9 @@
         "badge",
         "card"
       ],
+      "dependencies": [
+        "lucide-react"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-cards\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-cards.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-cards` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
@@ -2968,6 +3010,9 @@
       "registryDependencies": [
         "badge",
         "card"
+      ],
+      "dependencies": [
+        "lucide-react"
       ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-cards-muted\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-cards-muted.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-cards-muted` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
@@ -3011,6 +3056,9 @@
         "badge",
         "card"
       ],
+      "dependencies": [
+        "lucide-react"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-cards-cta\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-cards-cta.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-cards-cta` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
@@ -3052,6 +3100,9 @@
       "registryDependencies": [
         "badge"
       ],
+      "dependencies": [
+        "lucide-react"
+      ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-split\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-split.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-split` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {
         "payloadComponent": {
@@ -3092,6 +3143,9 @@
       "description": "Single wide enterprise pricing panel with an editable trust-logo wall.",
       "registryDependencies": [
         "badge"
+      ],
+      "dependencies": [
+        "lucide-react"
       ],
       "docs": "Payload Components installs this as a Payload CMS block for the Payload website starter shape.\n\nRecommended install:\n\n```bash\npnpm payload-components add pricing-enterprise\n```\n\nDirect shadcn install URL:\n\n```bash\npnpm dlx shadcn@latest add https://<your-domain>/r/pricing-enterprise.json\n```\n\nDirect shadcn installs only copy the block source files and shadcn UI dependencies. Use `payload-components add pricing-enterprise` when you also want Payload layout registration, `RenderBlocks` wiring, `generate:types`, and `generate:importmap` handled for you.",
       "meta": {

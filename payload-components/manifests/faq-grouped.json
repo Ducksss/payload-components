@@ -15,7 +15,9 @@
   "title": "FAQ Grouped",
   "description": "An FAQ split into titled, icon-tagged category groups of accordions, installed as a wired Payload block.",
   "registryItemName": "faq-grouped",
-  "dependencies": {},
+  "dependencies": {
+    "lucide-react": ">=0.563.0 <2.0.0"
+  },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
     "payload": "^3.0.0 || ^4.0.0-0"

@@ -18,6 +18,7 @@ type RegistryFile = {
 
 type RegistryItem = {
   $schema?: string
+  dependencies?: string[]
   description?: string
   docs?: string
   files?: RegistryFile[]
@@ -81,6 +82,29 @@ const registryDependenciesFromImports = async (item: RegistryItem) => {
   return [...dependencies].sort()
 }
 
+/* Packages every supported host already provides: the declared peers, React,
+ * and Payload's generated config alias. Anything else a shipped file imports
+ * must be declared, or a project without it (a bare `init --scaffold` app, a
+ * direct shadcn install) receives code that cannot compile. */
+const hostProvidedPackages = new Set(['@payload-config', 'next', 'payload', 'react'])
+
+const npmDependenciesFromImports = async (item: RegistryItem) => {
+  const dependencies = new Set<string>()
+
+  for (const file of item.files ?? []) {
+    const source = await readFile(path.join(repoRoot, file.path), 'utf8')
+
+    for (const match of source.matchAll(/\bfrom\s+'([^'.][^']*)'/g)) {
+      if (match[1].startsWith('@/')) continue
+      const segments = match[1].split('/')
+      const packageName = match[1].startsWith('@') ? segments.slice(0, 2).join('/') : segments[0]
+      if (!hostProvidedPackages.has(packageName)) dependencies.add(packageName)
+    }
+  }
+
+  return [...dependencies].sort()
+}
+
 describe('public shadcn registry publication', () => {
   it('has deterministic scripts for building, checking, and publishing registry artifacts', async () => {
     const packageJson = await readJson<{
@@ -117,6 +141,7 @@ describe('public shadcn registry publication', () => {
       name: 'payload-components',
     })
     await expect(manifestNames()).resolves.toEqual(registry.items.map((item) => item.name).sort())
+    const rangesByPackage = new Map<string, Set<string>>()
 
     for (const item of registry.items) {
       const manifest = await loadManifest(item.name)
@@ -130,6 +155,12 @@ describe('public shadcn registry publication', () => {
       await expect(registryDependenciesFromImports(item)).resolves.toEqual(
         [...(item.registryDependencies ?? [])].sort(),
       )
+      const importedPackages = await npmDependenciesFromImports(item)
+      expect([...(item.dependencies ?? [])].sort(), item.name).toEqual(importedPackages)
+      expect(Object.keys(manifest.dependencies).sort(), item.name).toEqual(importedPackages)
+      for (const [packageName, range] of Object.entries(manifest.dependencies)) {
+        rangesByPackage.set(packageName, (rangesByPackage.get(packageName) ?? new Set()).add(range))
+      }
       expect(item.meta?.payloadComponent).toMatchObject({
         installCommand: `payload-components add ${item.name}`,
         postInstall: manifest.postInstall,
@@ -151,6 +182,11 @@ describe('public shadcn registry publication', () => {
         expect(target).toBe(file.path.replace(/^payload-components\/source/, '~/src'))
         expect(file.type).toBe('registry:file')
       }
+    }
+
+    // One range per package, so `add` cannot accept a version for one item and refuse it for another.
+    for (const [packageName, ranges] of rangesByPackage) {
+      expect([...ranges], packageName).toHaveLength(1)
     }
   })
 

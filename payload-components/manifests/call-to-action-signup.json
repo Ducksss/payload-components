@@ -20,7 +20,7 @@
   "description": "An email-capture call-to-action Payload block: heading, copy, and a form that posts to a same-origin endpoint.",
   "registryItemName": "call-to-action-signup",
   "dependencies": {
-    "lucide-react": "^0.563.0"
+    "lucide-react": ">=0.563.0 <2.0.0"
   },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",

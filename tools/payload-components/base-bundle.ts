@@ -218,6 +218,14 @@ export const copyBaseBundle = async ({ cwd }: { cwd: string }) => {
   }
 }
 
+/* The bundle always lands under src/, but the config may sit at the repo root,
+ * so the import is relative to wherever the config file lives. */
+export const getBaseCollectionsImportBase = (configFileRelPath: string) => {
+  const configDir = path.posix.dirname(configFileRelPath.split(path.sep).join('/'))
+  const relative = path.posix.relative(configDir, 'src/collections')
+  return relative.startsWith('.') ? relative : `./${relative}`
+}
+
 /* Register the two collections in the project's Payload config.
  *
  * Text-anchored like the rest of the installer's patching, and idempotent: a
@@ -234,7 +242,7 @@ export const registerBaseCollections = async ({
 }) => {
   const configPath = path.join(cwd, configFileRelPath)
   const source = await readSafeProjectFile({ cwd, filePath: configPath })
-  const result = setBaseCollections(source)
+  const result = setBaseCollections(source, getBaseCollectionsImportBase(configFileRelPath))
   if (!result) return { patched: false, reason: 'no-collections-array' as const }
   if (!result.registered.length) return { patched: false, reason: 'already-registered' as const }
   await writeSafeProjectFile({ contents: result.source, cwd, filePath: configPath })

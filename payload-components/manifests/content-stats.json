@@ -15,7 +15,9 @@
   "title": "Content Stats",
   "description": "A content section with an intro, a grid of icon features, and a stats list, installed as a wired Payload block.",
   "registryItemName": "content-stats",
-  "dependencies": {},
+  "dependencies": {
+    "lucide-react": ">=0.563.0 <2.0.0"
+  },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
     "payload": "^3.0.0 || ^4.0.0-0"

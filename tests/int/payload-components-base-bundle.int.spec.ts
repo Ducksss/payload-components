@@ -273,6 +273,25 @@ describe('registering the base collections', () => {
     expect(config).toContain('collections: [Pages, Media, ]')
   })
 
+  it('imports the scaffolded collections relative to a root-level config', async () => {
+    const cwd = await makeBareProject()
+    await writeFile(
+      path.join(cwd, 'payload.config.ts'),
+      await readFile(path.join(cwd, 'src', 'payload.config.ts'), 'utf8'),
+    )
+    await rm(path.join(cwd, 'src', 'payload.config.ts'))
+
+    const result = await registerBaseCollections({ configFileRelPath: 'payload.config.ts', cwd })
+
+    expect(result).toMatchObject({ patched: true, registered: ['Pages', 'Media'] })
+    const config = await readFile(path.join(cwd, 'payload.config.ts'), 'utf8')
+    expect(config).toContain("import { Pages } from './src/collections/Pages'")
+    expect(config).toContain("import { Media } from './src/collections/Media'")
+    // The bundle writes the targets those imports name.
+    expect(BASE_BUNDLE_FILES).toContain('src/collections/Pages/index.ts')
+    expect(BASE_BUNDLE_FILES).toContain('src/collections/Media.ts')
+  })
+
   it('leaves a config that already registers them alone', async () => {
     const cwd = await makeBareProject({
       config: [
