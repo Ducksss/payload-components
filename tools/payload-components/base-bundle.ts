@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { setBaseCollections } from './project'
+import { findNamedImportRange } from './source-scanner'
 import { hashSource } from './component-files'
 import { readSafeProjectFile, safeProjectFileExists, writeSafeProjectFile } from './safe-path'
 import type { BaseBundleStateEntry } from './types'
@@ -244,7 +245,42 @@ export const registerBaseCollections = async ({
   const source = await readSafeProjectFile({ cwd, filePath: configPath })
   const result = setBaseCollections(source, getBaseCollectionsImportBase(configFileRelPath))
   if (!result) return { patched: false, reason: 'no-collections-array' as const }
-  if (!result.registered.length) return { patched: false, reason: 'already-registered' as const }
+  const staleImports = await findStaleCollectionImports({ configFileRelPath, cwd, source })
+  if (!result.registered.length) {
+    return { patched: false, reason: 'already-registered' as const, staleImports }
+  }
   await writeSafeProjectFile({ contents: result.source, cwd, filePath: configPath })
-  return { patched: true, reason: 'registered' as const, registered: result.registered }
+  return { patched: true, reason: 'registered' as const, registered: result.registered, staleImports }
+}
+
+/* Before the import base followed the config file, a root-level config was given
+ * `./collections/<Name>` imports that resolve nowhere. A re-run sees the names as
+ * registered, so name the broken imports instead of reporting success. */
+const findStaleCollectionImports = async ({
+  configFileRelPath,
+  cwd,
+  source,
+}: {
+  configFileRelPath: string
+  cwd: string
+  source: string
+}) => {
+  const importBase = getBaseCollectionsImportBase(configFileRelPath)
+  if (importBase === './collections') return []
+  const collectionsDir = path.join(cwd, path.dirname(configFileRelPath), 'collections')
+  const stale: Array<{ from: string; name: string; to: string }> = []
+
+  for (const name of ['Pages', 'Media']) {
+    const from = `./collections/${name}`
+    if (!findNamedImportRange({ importName: name, importPath: from, source })) continue
+    const target = path.join(collectionsDir, name)
+    const candidates = ['.ts', '.tsx', '/index.ts', '/index.tsx'].map((suffix) => target + suffix)
+    let resolves = false
+    for (const filePath of candidates) {
+      if (await safeProjectFileExists({ cwd, filePath })) resolves = true
+    }
+    if (!resolves) stale.push({ from, name, to: `${importBase}/${name}` })
+  }
+
+  return stale
 }

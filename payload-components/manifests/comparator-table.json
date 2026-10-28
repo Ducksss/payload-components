@@ -16,7 +16,7 @@
   "description": "A tiered feature-comparison table Payload block: plan columns with CTAs and grouped feature rows whose cells are checkmarks or text values.",
   "registryItemName": "comparator-table",
   "dependencies": {
-    "lucide-react": ">=0.563.0 <2.0.0"
+    "lucide-react": ">=0.378.0 <2.0.0"
   },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",

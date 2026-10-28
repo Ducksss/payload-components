@@ -16,7 +16,7 @@
   "description": "A plan-column comparison Payload block: pricing columns in a bordered card over a feature matrix, with a highlighted column and per-plan CTAs.",
   "registryItemName": "comparator-grid",
   "dependencies": {
-    "lucide-react": ">=0.563.0 <2.0.0"
+    "lucide-react": ">=0.378.0 <2.0.0"
   },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",

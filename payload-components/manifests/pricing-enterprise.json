@@ -16,7 +16,7 @@
   "description": "A single wide enterprise pricing panel with an included-features list and an editable wall of trust logos, installed as a wired Payload block.",
   "registryItemName": "pricing-enterprise",
   "dependencies": {
-    "lucide-react": ">=0.563.0 <2.0.0"
+    "lucide-react": ">=0.378.0 <2.0.0"
   },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",

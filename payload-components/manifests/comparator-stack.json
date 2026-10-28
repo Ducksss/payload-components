@@ -16,7 +16,7 @@
   "description": "A stacked plan-card comparison Payload block: one card per plan with its own price, CTA, and per-plan feature checklist.",
   "registryItemName": "comparator-stack",
   "dependencies": {
-    "lucide-react": ">=0.563.0 <2.0.0"
+    "lucide-react": ">=0.378.0 <2.0.0"
   },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",

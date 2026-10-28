@@ -209,6 +209,16 @@ export const initCommand = async ({
     )
   }
 
+  if (registration?.staleImports?.length) {
+    printHeader(
+      [
+        `payload-components: ${configFileRelPath} imports collections from a path that does not exist`,
+        '  (an earlier scaffold wrote it). Change each import:',
+        ...registration.staleImports.map(({ from, to }) => `    '${from}' → '${to}'`),
+      ].join('\n'),
+    )
+  }
+
   printHeader(
     [
       'payload-components: next',

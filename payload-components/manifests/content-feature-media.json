@@ -16,7 +16,7 @@
   "description": "A content section pairing body copy and two icon features beside a framed media panel, installed as a wired Payload block.",
   "registryItemName": "content-feature-media",
   "dependencies": {
-    "lucide-react": ">=0.563.0 <2.0.0"
+    "lucide-react": ">=0.378.0 <2.0.0"
   },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",

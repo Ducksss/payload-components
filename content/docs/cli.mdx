@@ -366,10 +366,13 @@ to run until you resolve it:
 npx payload-components update --recover
 ```
 
-`--recover` restores the saved source, host files, and install state, then deletes the backup.
-It takes no component names or other flags. Preserve any edits made since the interrupted
-update first, because they are overwritten, and reconcile package installs or custom generator
-side effects yourself before retrying.
+`--recover` resets every path the backup lists to its state before the update, then deletes the
+backup. That covers more than component source: host files, install state, `package.json`, the
+lockfile, both possible `payload-types.ts` locations, and the admin import map. A listed path that
+did not exist before the update is deleted, even if you created it since. It takes no component
+names or other flags. Before running it, copy out any edits and any new files at those paths made
+since the interrupted update, then reconcile package installs or custom generator side effects
+yourself before retrying.
 
 ### Changelogs
 

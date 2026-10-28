@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs'
 import { readdir, readFile, rm } from 'node:fs/promises'
 import path from 'node:path'
 
+import semver from 'semver'
 import { describe, expect, it } from 'vitest'
 
 import { loadManifest } from '../../tools/payload-components/manifest'
@@ -141,7 +142,9 @@ describe('public shadcn registry publication', () => {
       name: 'payload-components',
     })
     await expect(manifestNames()).resolves.toEqual(registry.items.map((item) => item.name).sort())
-    const rangesByPackage = new Map<string, Set<string>>()
+    const { devDependencies } = await readJson<{ devDependencies: Record<string, string> }>(
+      path.join(repoRoot, 'package.json'),
+    )
 
     for (const item of registry.items) {
       const manifest = await loadManifest(item.name)
@@ -158,8 +161,15 @@ describe('public shadcn registry publication', () => {
       const importedPackages = await npmDependenciesFromImports(item)
       expect([...(item.dependencies ?? [])].sort(), item.name).toEqual(importedPackages)
       expect(Object.keys(manifest.dependencies).sort(), item.name).toEqual(importedPackages)
+      /* Floors follow the icons or APIs each item uses (lucide-react: 0.378.0, the oldest
+         website-template pin; 0.418.0 where IdCard is imported). The ceiling must still admit
+         the version this repo builds against, so a range cannot strand current releases. */
       for (const [packageName, range] of Object.entries(manifest.dependencies)) {
-        rangesByPackage.set(packageName, (rangesByPackage.get(packageName) ?? new Set()).add(range))
+        const repoVersion = semver.minVersion(devDependencies[packageName] ?? '')
+        expect(repoVersion, `${item.name}: ${packageName} is not a devDependency`).toBeTruthy()
+        expect(semver.satisfies(repoVersion!, range), `${item.name}: ${packageName}@${range}`).toBe(
+          true,
+        )
       }
       expect(item.meta?.payloadComponent).toMatchObject({
         installCommand: `payload-components add ${item.name}`,
@@ -182,11 +192,6 @@ describe('public shadcn registry publication', () => {
         expect(target).toBe(file.path.replace(/^payload-components\/source/, '~/src'))
         expect(file.type).toBe('registry:file')
       }
-    }
-
-    // One range per package, so `add` cannot accept a version for one item and refuse it for another.
-    for (const [packageName, ranges] of rangesByPackage) {
-      expect([...ranges], packageName).toHaveLength(1)
     }
   })
 
