@@ -39,6 +39,11 @@ existing Posts category; otherwise it prints that entry for you to place.
 
 - Keep block configs explicit: `slug`, `interfaceName`, `labels.singular`, and `labels.plural`.
 - Prefer shared field helpers like `linkGroup` before inventing component-specific primitives.
+- Give every `text`, `textarea`, and `richText` field an explicit localization policy:
+  `custom: { payloadComponents: { localization: 'localized' } }` for editorial copy, `'global'` for
+  URLs, identifiers, and prices. `--localized` and `localize` localize only fields marked
+  `'localized'`, and `tests/int/payload-components-localization.int.spec.ts` fails on a missing policy
+  and pins the total leaf count, so raise that count by the fields you add.
 - Keep the block component server-first.
 - Replace the temporary scaffold prop type in `Component.tsx` with the generated `@/payload-types` block type after wiring the block and running `generate:types`.
 - Preserve the optional wrapper props surface:
@@ -154,8 +159,8 @@ doc page, and installer tests, together. Work in this order:
 7. **Tests** — the demo-twin and public-registry specs are data-driven off the manifests directory, so
    they pick a new component up automatically; only `representativeInstallComponents` in
    `tests/int/payload-components.int.spec.ts` needs a manual entry, and only for a new family. Bump the
-   literal component count pinned in `tests/int/fumadocs-site.int.spec.ts` and
-   `tests/e2e/frontend.e2e.spec.ts`.
+   literal component count pinned in `tests/int/fumadocs-site.int.spec.ts` (the e2e suite derives its
+   count from `componentEntries`).
 8. **Verify** — `pnpm registry:build`, then the gate: `pnpm lint && pnpm source:build && pnpm exec
    tsc --noEmit && pnpm test:registry && pnpm run test:int && pnpm build:e2e && cross-env
    PLAYWRIGHT_SERVER_MODE=production pnpm run test:e2e`

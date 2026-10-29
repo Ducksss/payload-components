@@ -44,7 +44,7 @@ const formatPlan = ({
       ? [
           '',
           'Localization:',
-          `  every block's text fields marked localized: true (${template.components.length} configs)`,
+          `  every block's editorial text fields marked localized: true (${template.components.length} configs)`,
         ]
       : []),
   ]

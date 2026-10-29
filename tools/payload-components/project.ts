@@ -455,8 +455,10 @@ export const verifyInstalledManifestFiles = async ({
 }
 
 /** Patch only the literal collections array directly owned by buildConfig.
- * Comments, imports and nested plugin options are not registrations. */
-export const setBaseCollections = (source: string) => {
+ * Comments, imports and nested plugin options are not registrations.
+ * `collectionsImportBase` is the scaffolded collections directory as seen from
+ * the config file, e.g. `./src/collections` for a root-level config. */
+export const setBaseCollections = (source: string, collectionsImportBase = './collections') => {
   const object = findBuildConfigObject(source)
   if (!object) return undefined
   const maskedSource = maskIgnoredSource(source)
@@ -475,7 +477,7 @@ export const setBaseCollections = (source: string) => {
   const imports: string[] = []
   const missing: string[] = []
   for (const name of ['Pages', 'Media']) {
-    const importPath = `./collections/${name}`
+    const importPath = `${collectionsImportBase}/${name}`
     const range = findNamedImportRange({ importName: name, importPath, source })
     let binding = name
     if (range) {

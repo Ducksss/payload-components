@@ -60,7 +60,7 @@ Flags:
   --accept-breaking  Let update apply a version that changes content already stored in Payload.
   --accept-localization-policy-change  Adopt semantic field policies after migrating existing localized data.
   --accept-stored-content  Confirm that stored Page blocks were migrated or removed before their component code is removed.
-  --localized  Install the block, or every block of a template, with its text fields marked localized: true.
+  --localized  Install the block, or every block of a template, with its editorial text fields marked localized: true (URLs, prices, and identifiers stay global).
   --locales  Comma-separated locale codes for localize, e.g. --locales en,zh,pt-BR.
   --default-locale  The canonical locale for localized values; defaults to the first --locales entry.
   --no-fallback  Let localize write fallback: false, so an empty locale renders empty.

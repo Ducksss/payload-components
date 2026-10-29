@@ -472,20 +472,24 @@ export const templatesContribution = {
       description: englishMessages['Templates']['contributionRepositoryDescription'],
       external: true,
       href: githubRepoUrl,
+      id: 'repository',
       label: englishMessages['Templates']['contributionRepository'],
     },
     {
-      description:
-        'Should the curated concept copy become seedable? The proposal, what already works, and the open questions.',
+      description: englishMessages['Templates']['contributionRfcDescription'],
       external: true,
       href: `${githubRepoUrl}/blob/main/rfcs/0001-installable-templates.md`,
+      id: 'rfc',
       label: englishMessages['Templates']['contributionRfc'],
     },
     {
+      /* English-only: a new Templates key needs a Crowdin round first
+         (tests/int/crowdin-sync.int.spec.ts). */
       description:
         'Tell us which template, page, or block recipe you would actually ship — or propose a new one.',
       external: true,
       href: githubIssuesUrl,
+      id: 'issue',
       label: englishMessages['Landing']['community']['issue'],
     },
   ],

@@ -15,7 +15,9 @@
   "title": "Content List Icons",
   "description": "A serif-headed content section with an intro and a multi-column icon list, installed as a wired Payload block.",
   "registryItemName": "content-list-icons",
-  "dependencies": {},
+  "dependencies": {
+    "lucide-react": ">=0.378.0 <2.0.0"
+  },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
     "payload": "^3.0.0 || ^4.0.0-0"

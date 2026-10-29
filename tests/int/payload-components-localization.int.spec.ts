@@ -40,6 +40,72 @@ afterEach(async () => {
   await Promise.all(tempDirs.splice(0).map((dir) => rm(dir, { force: true, recursive: true })))
 })
 
+const propertyNamed = (object: ts.ObjectLiteralExpression, name: string) =>
+  object.properties.find(
+    (property): property is ts.PropertyAssignment =>
+      ts.isPropertyAssignment(property) &&
+      (ts.isIdentifier(property.name) || ts.isStringLiteral(property.name)) &&
+      property.name.text === name,
+  )
+
+/* Read the policy where localizeFields reads it: custom.payloadComponents.localization. */
+const authoredPolicy = (custom: ts.PropertyAssignment | undefined) => {
+  const payloadComponents =
+    custom && ts.isObjectLiteralExpression(custom.initializer)
+      ? propertyNamed(custom.initializer, 'payloadComponents')
+      : undefined
+  const localization =
+    payloadComponents && ts.isObjectLiteralExpression(payloadComponents.initializer)
+      ? propertyNamed(payloadComponents.initializer, 'localization')
+      : undefined
+  return localization && ts.isStringLiteral(localization.initializer)
+    ? localization.initializer.text
+    : undefined
+}
+
+/* Every persisted text leaf must say whether it is editorial copy ('localized')
+ * or data such as a URL or price ('global'); localizeFields reads that policy. */
+const findTextLeavesWithoutPolicy = async ({ files, root }: { files: string[]; root: string }) => {
+  const missing: string[] = []
+  let leaves = 0
+
+  for (const file of files) {
+    const text = await readFile(file, 'utf8')
+    const source = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
+
+    const visit = (node: ts.Node) => {
+      if (ts.isObjectLiteralExpression(node)) {
+        const properties = new Map(
+          node.properties.flatMap((property) =>
+            ts.isPropertyAssignment(property) && ts.isIdentifier(property.name)
+              ? [[property.name.text, property] as const]
+              : [],
+          ),
+        )
+        const type = properties.get('type')
+        const name = properties.get('name')
+        if (
+          type &&
+          ts.isStringLiteral(type.initializer) &&
+          ['richText', 'text', 'textarea'].includes(type.initializer.text) &&
+          name &&
+          ts.isStringLiteral(name.initializer)
+        ) {
+          leaves += 1
+          const policy = authoredPolicy(properties.get('custom'))
+          if (policy !== 'global' && policy !== 'localized') {
+            missing.push(`${path.relative(root, file)}:${name.initializer.text}`)
+          }
+        }
+      }
+      ts.forEachChild(node, visit)
+    }
+    visit(source)
+  }
+
+  return { leaves, missing }
+}
+
 const CONFIG_SOURCE = [
   "import type { Block } from 'payload'",
   '',
@@ -369,45 +435,43 @@ describe('the shipped localizeFields helper', () => {
     const files = entries
       .filter((entry) => entry.isFile() && entry.name.endsWith('.ts'))
       .map((entry) => path.join(entry.parentPath, entry.name))
-    const missing: string[] = []
-    let leaves = 0
-
-    for (const file of files) {
-      const text = await readFile(file, 'utf8')
-      const source = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
-
-      const visit = (node: ts.Node) => {
-        if (ts.isObjectLiteralExpression(node)) {
-          const properties = new Map(
-            node.properties.flatMap((property) =>
-              ts.isPropertyAssignment(property) && ts.isIdentifier(property.name)
-                ? [[property.name.text, property] as const]
-                : [],
-            ),
-          )
-          const type = properties.get('type')
-          const name = properties.get('name')
-          if (
-            type &&
-            ts.isStringLiteral(type.initializer) &&
-            ['richText', 'text', 'textarea'].includes(type.initializer.text) &&
-            name &&
-            ts.isStringLiteral(name.initializer)
-          ) {
-            leaves += 1
-            const custom = properties.get('custom')
-            const policySource = custom?.initializer.getText(source) ?? ''
-            if (!/localization:\s*'(global|localized)'/.test(policySource)) {
-              missing.push(`${path.relative(sourceRoot, file)}:${name.initializer.text}`)
-            }
-          }
-        }
-        ts.forEachChild(node, visit)
-      }
-      visit(source)
-    }
+    const { leaves, missing } = await findTextLeavesWithoutPolicy({ files, root: sourceRoot })
 
     expect(leaves).toBe(188)
+    expect(missing).toEqual([])
+  })
+
+  it('only accepts a policy at custom.payloadComponents.localization', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'payload-components-policy-'))
+    tempDirs.push(root)
+    const file = path.join(root, 'config.ts')
+    await writeFile(
+      file,
+      [
+        'export const fields = [',
+        "  { name: 'kept', type: 'text', custom: { payloadComponents: { localization: 'global' } } },",
+        "  { name: 'misplaced', type: 'text', custom: { other: { localization: 'localized' } } },",
+        "  { name: 'unknown', type: 'text', custom: { payloadComponents: { localization: 'maybe' } } },",
+        ']',
+        '',
+      ].join('\n'),
+    )
+
+    await expect(findTextLeavesWithoutPolicy({ files: [file], root })).resolves.toEqual({
+      leaves: 3,
+      missing: ['config.ts:misplaced', 'config.ts:unknown'],
+    })
+  })
+
+  it('scaffolds new components with a policy on every text field', async () => {
+    // `payload-components new` copies this template, so a gap here fails the test above.
+    const templateRoot = path.join(process.cwd(), 'payload-components', 'component-template')
+    const { leaves, missing } = await findTextLeavesWithoutPolicy({
+      files: [path.join(templateRoot, 'config.ts')],
+      root: templateRoot,
+    })
+
+    expect(leaves).toBeGreaterThan(0)
     expect(missing).toEqual([])
   })
 })

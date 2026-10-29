@@ -132,7 +132,9 @@ The [component catalog](/components) builds this command for you: tick component
 browse and copy the single command from the tray at the bottom.
 
 Repeats are collapsed, and each name is installed exactly once. Because every stage is
-idempotent, a name that is already installed is a no-op rather than an error.
+idempotent, re-adding a name already installed at the version this CLI ships is a no-op. If
+the recorded version differs, which happens after you upgrade the CLI, `add` stops and points
+you to `update`, which reviews local edits and breaking changes before it rewrites anything.
 
 | Flag          | Effect                                                                                  |
 | ------------- | --------------------------------------------------------------------------------------- |
@@ -302,8 +304,9 @@ fails closed when it cannot prove one, instead of guessing whether an upstream c
 local edit.
 
 Mutating CLI invocations lock the target project for their full operation, including host-file
-patches and state writes. A second `add`, `update`, `remove`, `seed`, or `init` against the same
-project exits with the active command and PID instead of racing a read-modify-write step.
+patches and state writes. A second `add`, `add-template`, `update`, `remove`, `localize`, `seed`,
+or `init` against the same project exits with the active command and PID instead of racing a
+read-modify-write step.
 
 When a component is behind, `diff` also prints the changelog entries the upgrade would
 apply, and the migration any breaking entry demands — `0.1.0 → 0.2.0` on its own is not a
@@ -353,6 +356,23 @@ With no names, `update` targets every component that is behind, left in a partia
 recorded as localized under the legacy policy. A current non-localized install is not rewritten
 merely because older state predates the localization-policy field.
 `--dry-run` prints the plan.
+
+**Interrupted updates are recoverable.** Before it writes, `update` saves every file it will
+touch to `.payload-components/update-backup.json`. A caught failure restores them on its own.
+If the process is killed instead, the backup stays behind and every mutating command refuses
+to run until you resolve it:
+
+```bash
+npx payload-components update --recover
+```
+
+`--recover` resets every path the backup lists to its state before the update, then deletes the
+backup. That covers more than component source: host files, install state, `package.json`, the
+lockfile, both possible `payload-types.ts` locations, and the admin import map. A listed path that
+did not exist before the update is deleted, even if you created it since. It takes no component
+names or other flags. Before running it, copy out any edits and any new files at those paths made
+since the interrupted update, then reconcile package installs or custom generator side effects
+yourself before retrying.
 
 ### Changelogs
 
@@ -485,7 +505,7 @@ health check — see [Installation](/docs/installation#doctor). `seed` writes th
 script for an already-installed component.
 
 `doctor --json` emits the same run as a structured report. Every finding carries a `scope`
-(`project`, `scripts`, `state`, `runtime`, or a component name) so a CI job can group
+(`project`, `scripts`, `state`, `runtime`, `base`, `localization`, or a component name) so a CI job can group
 results without parsing prose, and the exit code separates the two failures that need
 different responses: **2** means the project itself cannot accept installs, **1** means the
 project is fine but a recorded install has drifted.
@@ -522,7 +542,7 @@ It copies eight files and registers two collections in your Payload config:
 
 | File | Why it is needed |
 | --- | --- |
-| `src/utilities/ui.ts` | `cn()` — imported by 69 of the shipped source files |
+| `src/utilities/ui.ts` | `cn()` — the class-name helper most shipped source files import |
 | `src/fields/link.ts`, `src/fields/linkGroup.ts` | the link field blocks compose for their calls to action |
 | `src/components/Link/index.tsx` | `CMSLink`, which renders a stored link |
 | `src/components/Media/index.tsx` | `Media`, which renders an upload |

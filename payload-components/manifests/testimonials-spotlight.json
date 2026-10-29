@@ -20,7 +20,9 @@
     "payloadMajors": [3, 4],
     "nextMajors": [15, 16]
   },
-  "dependencies": {},
+  "dependencies": {
+    "lucide-react": ">=0.378.0 <2.0.0"
+  },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
     "payload": "^3.0.0 || ^4.0.0-0"

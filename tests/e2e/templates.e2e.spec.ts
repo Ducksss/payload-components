@@ -15,6 +15,7 @@ import {
 } from '../../src/lib/templates/types'
 import {
   catalogTemplatesLinkLabel,
+  templatesContribution,
   templatesDescription,
   templatesMetadataDescription,
   templatesMetadataTitle,
@@ -114,6 +115,16 @@ test.describe('Templates gallery (/templates)', () => {
       'href',
       '/templates',
     )
+  })
+
+  test('labels each contribution link with its own copy', async ({ page }) => {
+    await page.goto(`${baseURL}/templates`)
+
+    for (const link of templatesContribution.links) {
+      const card = page.locator(`main a[href="${link.href}"]`).filter({ hasText: link.label })
+      await expect(card).toHaveCount(1)
+      await expect(card).toContainText(link.description)
+    }
   })
 
   test('shows no install, waitlist, or price UI', async ({ page }) => {

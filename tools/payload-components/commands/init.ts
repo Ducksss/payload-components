@@ -3,6 +3,7 @@ import path from 'node:path'
 import {
   BASE_BUNDLE_DEPENDENCIES,
   getBaseBundleVersion,
+  getBaseCollectionsImportBase,
   registerBaseCollections,
   syncBaseBundle,
 } from '../base-bundle'
@@ -201,9 +202,19 @@ export const initCommand = async ({
       [
         `payload-components: could not find a "collections: [" array in ${configFileRelPath}.`,
         '  Add Pages and Media to your config by hand:',
-        "    import { Pages } from './collections/Pages'",
-        "    import { Media } from './collections/Media'",
+        `    import { Pages } from '${getBaseCollectionsImportBase(configFileRelPath)}/Pages'`,
+        `    import { Media } from '${getBaseCollectionsImportBase(configFileRelPath)}/Media'`,
         '    collections: [Pages, Media],',
+      ].join('\n'),
+    )
+  }
+
+  if (registration?.staleImports?.length) {
+    printHeader(
+      [
+        `payload-components: ${configFileRelPath} imports collections from a path that does not exist`,
+        '  (an earlier scaffold wrote it). Change each import:',
+        ...registration.staleImports.map(({ from, to }) => `    '${from}' → '${to}'`),
       ].join('\n'),
     )
   }

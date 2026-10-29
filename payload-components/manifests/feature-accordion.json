@@ -16,7 +16,7 @@
   "description": "A synchronized feature accordion with editor-selected icons, optional media, and CTA links.",
   "registryItemName": "feature-accordion",
   "dependencies": {
-    "lucide-react": "^0.563.0"
+    "lucide-react": ">=0.418.0 <2.0.0"
   },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",

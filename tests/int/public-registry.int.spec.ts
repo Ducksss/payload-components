@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs'
 import { readdir, readFile, rm } from 'node:fs/promises'
 import path from 'node:path'
 
+import semver from 'semver'
 import { describe, expect, it } from 'vitest'
 
 import { loadManifest } from '../../tools/payload-components/manifest'
@@ -18,6 +19,7 @@ type RegistryFile = {
 
 type RegistryItem = {
   $schema?: string
+  dependencies?: string[]
   description?: string
   docs?: string
   files?: RegistryFile[]
@@ -81,6 +83,29 @@ const registryDependenciesFromImports = async (item: RegistryItem) => {
   return [...dependencies].sort()
 }
 
+/* Packages every supported host already provides: the declared peers, React,
+ * and Payload's generated config alias. Anything else a shipped file imports
+ * must be declared, or a project without it (a bare `init --scaffold` app, a
+ * direct shadcn install) receives code that cannot compile. */
+const hostProvidedPackages = new Set(['@payload-config', 'next', 'payload', 'react'])
+
+const npmDependenciesFromImports = async (item: RegistryItem) => {
+  const dependencies = new Set<string>()
+
+  for (const file of item.files ?? []) {
+    const source = await readFile(path.join(repoRoot, file.path), 'utf8')
+
+    for (const match of source.matchAll(/\bfrom\s+'([^'.][^']*)'/g)) {
+      if (match[1].startsWith('@/')) continue
+      const segments = match[1].split('/')
+      const packageName = match[1].startsWith('@') ? segments.slice(0, 2).join('/') : segments[0]
+      if (!hostProvidedPackages.has(packageName)) dependencies.add(packageName)
+    }
+  }
+
+  return [...dependencies].sort()
+}
+
 describe('public shadcn registry publication', () => {
   it('has deterministic scripts for building, checking, and publishing registry artifacts', async () => {
     const packageJson = await readJson<{
@@ -117,6 +142,9 @@ describe('public shadcn registry publication', () => {
       name: 'payload-components',
     })
     await expect(manifestNames()).resolves.toEqual(registry.items.map((item) => item.name).sort())
+    const { devDependencies } = await readJson<{ devDependencies: Record<string, string> }>(
+      path.join(repoRoot, 'package.json'),
+    )
 
     for (const item of registry.items) {
       const manifest = await loadManifest(item.name)
@@ -130,6 +158,19 @@ describe('public shadcn registry publication', () => {
       await expect(registryDependenciesFromImports(item)).resolves.toEqual(
         [...(item.registryDependencies ?? [])].sort(),
       )
+      const importedPackages = await npmDependenciesFromImports(item)
+      expect([...(item.dependencies ?? [])].sort(), item.name).toEqual(importedPackages)
+      expect(Object.keys(manifest.dependencies).sort(), item.name).toEqual(importedPackages)
+      /* Floors follow the icons or APIs each item uses (lucide-react: 0.378.0, the oldest
+         website-template pin; 0.418.0 where IdCard is imported). The ceiling must still admit
+         the version this repo builds against, so a range cannot strand current releases. */
+      for (const [packageName, range] of Object.entries(manifest.dependencies)) {
+        const repoVersion = semver.minVersion(devDependencies[packageName] ?? '')
+        expect(repoVersion, `${item.name}: ${packageName} is not a devDependency`).toBeTruthy()
+        expect(semver.satisfies(repoVersion!, range), `${item.name}: ${packageName}@${range}`).toBe(
+          true,
+        )
+      }
       expect(item.meta?.payloadComponent).toMatchObject({
         installCommand: `payload-components add ${item.name}`,
         postInstall: manifest.postInstall,

@@ -273,6 +273,61 @@ describe('registering the base collections', () => {
     expect(config).toContain('collections: [Pages, Media, ]')
   })
 
+  it('imports the scaffolded collections relative to a root-level config', async () => {
+    const cwd = await makeBareProject()
+    await writeFile(
+      path.join(cwd, 'payload.config.ts'),
+      await readFile(path.join(cwd, 'src', 'payload.config.ts'), 'utf8'),
+    )
+    await rm(path.join(cwd, 'src', 'payload.config.ts'))
+
+    const result = await registerBaseCollections({ configFileRelPath: 'payload.config.ts', cwd })
+
+    expect(result).toMatchObject({ patched: true, registered: ['Pages', 'Media'] })
+    const config = await readFile(path.join(cwd, 'payload.config.ts'), 'utf8')
+    expect(config).toContain("import { Pages } from './src/collections/Pages'")
+    expect(config).toContain("import { Media } from './src/collections/Media'")
+    // The bundle writes the targets those imports name.
+    expect(BASE_BUNDLE_FILES).toContain('src/collections/Pages/index.ts')
+    expect(BASE_BUNDLE_FILES).toContain('src/collections/Media.ts')
+    expect(result.staleImports).toEqual([])
+  })
+
+  it('names root-level imports an earlier scaffold pointed at the wrong directory', async () => {
+    const cwd = await makeBareProject()
+    const config = [
+      "import { buildConfig } from 'payload'",
+      "import { Pages } from './collections/Pages'",
+      "import { Media } from './collections/Media'",
+      '',
+      'export default buildConfig({',
+      '  collections: [Pages, Media],',
+      '})',
+      '',
+    ].join('\n')
+    await writeFile(path.join(cwd, 'payload.config.ts'), config)
+    await rm(path.join(cwd, 'src', 'payload.config.ts'))
+
+    const result = await registerBaseCollections({ configFileRelPath: 'payload.config.ts', cwd })
+
+    expect(result).toMatchObject({
+      reason: 'already-registered',
+      staleImports: [
+        { from: './collections/Pages', name: 'Pages', to: './src/collections/Pages' },
+        { from: './collections/Media', name: 'Media', to: './src/collections/Media' },
+      ],
+    })
+    await expect(readFile(path.join(cwd, 'payload.config.ts'), 'utf8')).resolves.toBe(config)
+
+    // The consumer's own root-level collections are not stale.
+    await mkdir(path.join(cwd, 'collections', 'Pages'), { recursive: true })
+    await writeFile(path.join(cwd, 'collections', 'Pages', 'index.ts'), 'export const Pages = {}\n')
+    await writeFile(path.join(cwd, 'collections', 'Media.ts'), 'export const Media = {}\n')
+    await expect(
+      registerBaseCollections({ configFileRelPath: 'payload.config.ts', cwd }),
+    ).resolves.toMatchObject({ staleImports: [] })
+  })
+
   it('leaves a config that already registers them alone', async () => {
     const cwd = await makeBareProject({
       config: [
