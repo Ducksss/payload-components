@@ -245,15 +245,15 @@
   </g>
   <g data-journal-part="evidence" data-evidence-excerpt="dbName: &apos;pc_her_bas&apos;,
   interfaceName: &apos;HeroBasicBlock&apos;,
+  admin: {
+    group: &apos;Hero&apos;,
+  },
   fields: [
     // Shared hero core (eyebrow, title, description, CTA links). Variant-specific
-    // fields follow; edit the shared shape in @/blocks/shared/heroFields.
-    ...heroFields,
-    {
-      name: &apos;proofItems&apos;," data-evidence-truncated="true">
+    // fields follow; edit the shared shape in @/blocks/shared/heroFields." data-evidence-truncated="true">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
-  <text class="evidence-line" x="48" y="626">dbName: &apos;pc_her_bas&apos;, · interfaceName: &apos;HeroBasicBlock&apos;, · fields: [</text>
-<text class="evidence-line" x="48" y="641">· // Shared hero core (eyebrow, title, description, CTA links). …</text>
+  <text class="evidence-line" x="48" y="626">dbName: &apos;pc_her_bas&apos;, · interfaceName: &apos;HeroBasicBlock&apos;, · admin: {</text>
+<text class="evidence-line" x="48" y="641">· group: &apos;Hero&apos;, · }, · fields: [ · // Shared hero core (eyebrow, …</text>
 </g>
   <g data-journal-part="prompt" data-prompt="Leave a clearer map for the next builder.">
     <text class="footer-label" x="744" y="571">QUESTION FOR THE NEXT BUILDER</text>

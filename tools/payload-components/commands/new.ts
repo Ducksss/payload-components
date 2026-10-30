@@ -1,6 +1,8 @@
 import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 
+import semver from 'semver'
+
 import { createSiteCatalog, siteCatalogPath } from '../build-site-catalog'
 import { readSafeProjectFile } from '../safe-path'
 import { commitFileChanges, isPathInside, printHeader, repoRoot } from '../utils'
@@ -105,10 +107,15 @@ const prepareNewFile = async (filePath: string, contents: string): Promise<Prepa
   }
 }
 
-/* Every dbName already in the catalog, so a suggestion can be checked rather
-   than guessed at. A collision silently breaks the database mapping. */
-const collectUsedDbNames = async () => {
-  const used = new Set<string>()
+type DrawerGroup = { group: string; words: string[] }
+
+/* What the catalog's block configs already settle, read once. Every dbName, so
+   a suggestion can be checked rather than guessed at: a collision silently
+   breaks the database mapping. And every admin.group, with the slug words of
+   the block that declares it, so a new variant joins its family's heading. */
+const collectBlockConfigFacts = async () => {
+  const usedDbNames = new Set<string>()
+  const groups: DrawerGroup[] = []
   const entries = await readdir(sourceBlocksDir, { withFileTypes: true })
 
   for (const entry of entries) {
@@ -120,14 +127,46 @@ const collectUsedDbNames = async () => {
       path.join(sourceBlocksDir, entry.name, 'config.ts'),
       'utf8',
     ).catch(() => '')
-    const match = /dbName:\s*'([^']+)'/.exec(config)
+    const dbName = /dbName:\s*'([^']+)'/.exec(config)
+    const group = /^ {2}admin:\s*\{\s*group:\s*'([^']+)'/m.exec(config)
 
-    if (match) {
-      used.add(match[1])
+    if (dbName) {
+      usedDbNames.add(dbName[1])
+    }
+
+    if (group) {
+      groups.push({
+        group: group[1],
+        words: entry.name.split(/(?=[A-Z])/).map((word) => word.toLowerCase()),
+      })
     }
   }
 
-  return used
+  return { groups, usedDbNames }
+}
+
+/* The Blocks Drawer heading for a new block. A variant takes the group of the
+   existing block it shares the most leading slug words with, the way FAMILIES
+   in src/lib/component-page-tree.tsx matches a slug prefix. A new family falls
+   back to its capitalized first word, as familyOfSlug does; the int suite holds
+   every config's group to its family label either way. */
+export const deriveDrawerGroup = (slug: string, groups: DrawerGroup[]) => {
+  const words = slug.split('-')
+  let best = { group: '', shared: 0 }
+
+  for (const sibling of groups) {
+    let shared = 0
+
+    while (shared < words.length && words[shared] === sibling.words[shared]) {
+      shared += 1
+    }
+
+    if (shared > best.shared) {
+      best = { group: sibling.group, shared }
+    }
+  }
+
+  return best.group || words[0][0].toUpperCase() + words[0].slice(1)
 }
 
 // Exported so tests/int/payload-components-support-matrix.int.spec.ts can hold
@@ -143,7 +182,7 @@ export const buildManifest = (names: ComponentNames) =>
       description: `TODO: one sentence on what ${names.title} is for.`,
       registryItemName: names.slug,
       dependencies: {},
-      peerDependencies: { next: '^15.0.0 || ^16.0.0', payload: '^3.0.0 || ^4.0.0-0' },
+      peerDependencies: { next: '^15.0.0 || ^16.0.0', payload: '^3.25.0 || ^4.0.0-0' },
       supportedTargets: ['payload-website-starter', 'payload-blocks-app'],
       supports: { payloadMajors: [3, 4], nextMajors: [15, 16] },
       files: [`src/blocks/${names.pascal}/config.ts`, `src/blocks/${names.pascal}/Component.tsx`],
@@ -332,7 +371,7 @@ const prepareReadmeInventoryRow = async (names: ComponentNames): Promise<Prepare
   }
 }
 
-const formatCuratedSteps = (names: ComponentNames, dbNameIsFree: boolean) =>
+const formatCuratedSteps = (names: ComponentNames, dbNameIsFree: boolean, drawerGroup: string) =>
   [
     '',
     'Now the parts that need a decision — none of these were written for you:',
@@ -368,6 +407,8 @@ const formatCuratedSteps = (names: ComponentNames, dbNameIsFree: boolean) =>
     '6. Only if this is a new family: src/lib/component-catalog.ts componentCategories,',
     '   src/lib/component-page-tree.tsx FAMILIES, CatalogFamilyTeaser familyRepresentatives,',
     '   and tests/int/payload-components.int.spec.ts representativeInstallComponents.',
+    `   The config's admin.group was set to "${drawerGroup}"; it must equal the family's`,
+    '   FAMILIES label, which is what editors see as the Blocks Drawer heading.',
     '',
     '7. Visual baselines cannot be generated here — run',
     `   pnpm test:e2e components-visual --update-snapshots for darwin, and the`,
@@ -389,18 +430,23 @@ export const newCommand = async ({
     return newFileOnlyCommand(names)
   }
 
-  const [configTemplate, componentTemplate, docTemplate, usedDbNames] = await Promise.all([
-    readFile(path.join(templateDir, 'config.ts'), 'utf8'),
-    readFile(path.join(templateDir, 'Component.tsx'), 'utf8'),
-    readFile(path.join(templateDir, 'doc-page.mdx'), 'utf8'),
-    collectUsedDbNames(),
-  ])
+  const [configTemplate, componentTemplate, docTemplate, { groups, usedDbNames }] =
+    await Promise.all([
+      readFile(path.join(templateDir, 'config.ts'), 'utf8'),
+      readFile(path.join(templateDir, 'Component.tsx'), 'utf8'),
+      readFile(path.join(templateDir, 'doc-page.mdx'), 'utf8'),
+      collectBlockConfigFacts(),
+    ])
 
+  const drawerGroup = deriveDrawerGroup(names.slug, groups)
   const manifestSource = buildManifest(names)
   const written = await Promise.all([
     prepareNewFile(
       path.join(sourceBlocksDir, names.pascal, 'config.ts'),
-      renameTemplate(configTemplate, names),
+      renameTemplate(configTemplate, names).replace(
+        "group: 'Example',",
+        `group: '${drawerGroup}',`,
+      ),
     ),
     prepareNewFile(
       path.join(sourceBlocksDir, names.pascal, 'Component.tsx'),
@@ -454,7 +500,7 @@ export const newCommand = async ({
       '',
       'Generated:',
       `  ${generated.relativePath}`,
-      formatCuratedSteps(names, !usedDbNames.has(names.dbNameSuggestion)),
+      formatCuratedSteps(names, !usedDbNames.has(names.dbNameSuggestion), drawerGroup),
     ].join('\n'),
   )
 }
@@ -505,10 +551,21 @@ const buildDemoTwin = (names: ComponentNames) =>
 export const deriveSupport = (matrix: SupportMatrix) => {
   const majors = (allowed: (target: SupportMatrix['targets'][number]) => number[]) =>
     [...new Set(matrix.targets.flatMap(allowed))].sort((left, right) => left - right)
-  const caretRange = (list: number[], newestPrereleases: boolean) =>
+  /* A major's range starts at its oldest supported release: the highest
+     minimumVersions.payload any target sets for it, else x.0.0. */
+  const payloadFloor = (major: number) =>
+    matrix.targets
+      .map((target) => target.payloadMajorSupport?.[String(major)]?.minimumVersions?.payload)
+      .filter((version): version is string => Boolean(version))
+      .sort(semver.rcompare)[0] ?? `${major}.0.0`
+  const caretRange = (
+    list: number[],
+    newestPrereleases: boolean,
+    floor = (major: number) => `${major}.0.0`,
+  ) =>
     list
       .map((major, index) =>
-        newestPrereleases && index === list.length - 1 ? `^${major}.0.0-0` : `^${major}.0.0`,
+        newestPrereleases && index === list.length - 1 ? `^${floor(major)}-0` : `^${floor(major)}`,
       )
       .join(' || ')
   const payloadMajors = majors((target) => target.allowedPayloadMajors)
@@ -517,7 +574,7 @@ export const deriveSupport = (matrix: SupportMatrix) => {
   return {
     peerDependencies: {
       next: caretRange(nextMajors, false),
-      payload: caretRange(payloadMajors, true),
+      payload: caretRange(payloadMajors, true, payloadFloor),
     },
     supportedTargets: matrix.targets.map((target) => target.id),
     supports: { payloadMajors, nextMajors },

@@ -38,6 +38,11 @@ existing Posts category; otherwise it prints that entry for you to place.
 ## Authoring Rules
 
 - Keep block configs explicit: `slug`, `interfaceName`, `labels.singular`, and `labels.plural`.
+- Set `admin.group`, right after `interfaceName`, to the family's label in `FAMILIES`
+  (`src/lib/component-page-tree.tsx`). It is the heading editors see in Payload's Blocks Drawer.
+  `new` copies it from the nearest sibling variant; for a new family it writes the capitalized
+  first slug word, so confirm it matches the label you add. Do not add `admin.images` yet: it
+  needs Payload 3.79 (see `payload-components/README.md` → "Admin Blocks Drawer").
 - Prefer shared field helpers like `linkGroup` before inventing component-specific primitives.
 - Give every `text`, `textarea`, and `richText` field an explicit localization policy:
   `custom: { payloadComponents: { localization: 'localized' } }` for editorial copy, `'global'` for

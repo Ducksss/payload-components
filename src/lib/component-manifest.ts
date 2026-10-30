@@ -61,7 +61,7 @@ export async function getSupportTarget(id: string): Promise<SupportedTarget | nu
  * tools/payload-components/support-matrix.ts without importing CLI code. */
 export type PayloadCompatibility = {
   experimental: boolean
-  minimumVersions: { next?: string; node?: string }
+  minimumVersions: { next?: string; node?: string; payload?: string }
   nextMajors: number[]
   payloadMajor: number
 }
@@ -92,8 +92,19 @@ export async function getPayloadCompatibility(
 /* "24.15.0" reads as "24.15"; a patch that matters ("16.2.6") stays. */
 const shortVersion = (version: string) => version.replace(/\.0$/, '')
 
-export const formatPayloadMajor = ({ experimental, payloadMajor }: PayloadCompatibility) =>
-  `v${payloadMajor}${experimental ? ' (experimental)' : ''}`
+/* "v3 (3.25 or newer)", "v4 (experimental)". */
+export const formatPayloadMajor = ({
+  experimental,
+  minimumVersions,
+  payloadMajor,
+}: PayloadCompatibility) => {
+  const notes = [
+    experimental ? 'experimental' : undefined,
+    minimumVersions.payload ? `${shortVersion(minimumVersions.payload)} or newer` : undefined,
+  ].filter(Boolean)
+
+  return `v${payloadMajor}${notes.length ? ` (${notes.join(', ')})` : ''}`
+}
 
 /* "15 / 16", or "16 (16.2.6 or newer)" when the Payload major sets a minimum. */
 export const formatPairedNext = ({ minimumVersions, nextMajors }: PayloadCompatibility) =>

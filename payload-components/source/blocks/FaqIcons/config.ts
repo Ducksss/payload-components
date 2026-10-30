@@ -9,6 +9,9 @@ export const FaqIcons: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_faq_ico',
   interfaceName: 'FaqIconsBlock',
+  admin: {
+    group: 'FAQ',
+  },
   fields: [
     // Shared FAQ core (eyebrow, title, description). The item shape adds a
     // per-question icon, so this variant defines its own items array rather

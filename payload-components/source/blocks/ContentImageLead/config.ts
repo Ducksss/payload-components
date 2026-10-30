@@ -9,6 +9,9 @@ export const ContentImageLead: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_con_ima_lea',
   interfaceName: 'ContentImageLeadBlock',
+  admin: {
+    group: 'Content',
+  },
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/contentFields.

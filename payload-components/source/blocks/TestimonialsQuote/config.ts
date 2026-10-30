@@ -8,6 +8,9 @@ export const TestimonialsQuote: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_tes_quo',
   interfaceName: 'TestimonialsQuoteBlock',
+  admin: {
+    group: 'Testimonials',
+  },
   fields: [
     // A single featured testimonial — the shared one-quote shape (quote, author,
     // optional role, optional avatar). Edit the shared shape in

@@ -6,6 +6,9 @@ export const ContentList: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_con_lis',
   interfaceName: 'ContentListBlock',
+  admin: {
+    group: 'Content',
+  },
   fields: [
     {
       name: 'eyebrow',

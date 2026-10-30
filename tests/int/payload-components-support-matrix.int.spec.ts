@@ -40,6 +40,13 @@ const readSupportMatrix = () => readJson<SupportMatrix>('payload-components', 's
 const sortedMajors = (lists: number[][]) =>
   [...new Set(lists.flat())].sort((left, right) => left - right)
 
+/* The oldest release of a Payload major that any of these targets supports. */
+const payloadFloor = (targets: SupportMatrix['targets'], major: number) =>
+  targets
+    .map((target) => getPayloadMajorSupport(target, major)?.minimumVersions?.payload)
+    .filter((version): version is string => Boolean(version))
+    .sort(semver.rcompare)[0] ?? `${major}.0.0`
+
 const supportProblems = (matrix: SupportMatrix, manifest: ManifestSupport) => {
   const problems: string[] = []
   const targets = manifest.supportedTargets.flatMap((id) => {
@@ -74,11 +81,21 @@ const supportProblems = (matrix: SupportMatrix, manifest: ManifestSupport) => {
       continue
     }
 
-    /* Admitting a major means covering its whole stable line. */
+    /* Admitting a major means covering its whole stable line from the oldest
+       release the matrix supports, and nothing older: Payload 3 starts at the
+       3.25 that block configs need for admin.group. */
     for (const major of allowed[dependency]) {
-      if (!semver.subset(`^${major}.0.0`, range)) {
+      const floor = dependency === 'payload' ? payloadFloor(targets, major) : `${major}.0.0`
+
+      if (!semver.subset(`^${floor}`, range)) {
         problems.push(
           `peerDependencies.${dependency} "${range}" does not admit ${dependency} ${major}`,
+        )
+      }
+
+      if (floor !== `${major}.0.0` && semver.intersects(range, `>=${major}.0.0 <${floor}`)) {
+        problems.push(
+          `peerDependencies.${dependency} "${range}" admits ${dependency} below ${floor}`,
         )
       }
     }
@@ -161,6 +178,21 @@ describe('manifests agree with the support matrix', () => {
       ]),
     )
   })
+
+  it('flags a manifest that admits Payload 3 releases below the matrix minimum', async () => {
+    /* The range every manifest declared before admin.group. Kept as a fixture
+       so the floor guard can never pass vacuously. */
+    const problems = supportProblems(await readSupportMatrix(), {
+      name: 'below-floor',
+      peerDependencies: { next: '^15.0.0 || ^16.0.0', payload: '^3.0.0 || ^4.0.0-0' },
+      supportedTargets: ['payload-website-starter', 'payload-blocks-app'],
+      supports: { nextMajors: [15, 16], payloadMajors: [3, 4] },
+    })
+
+    expect(problems).toEqual([
+      'peerDependencies.payload "^3.0.0 || ^4.0.0-0" admits payload below 3.25.0',
+    ])
+  })
 })
 
 /* Payload and Next.js majors are not a cross product. Payload 4 needs Next.js
@@ -202,6 +234,15 @@ const pairingProblems = (matrix: SupportMatrix) => {
       if (node !== undefined && !semver.valid(node)) {
         problems.push(`${where} sets minimum Node.js ${node}, which is not a version`)
       }
+
+      const { payload } = support.minimumVersions ?? {}
+
+      if (
+        payload !== undefined &&
+        !(semver.valid(payload) && semver.major(payload) === Number(key))
+      ) {
+        problems.push(`${where} sets minimum Payload ${payload}, outside Payload ${key}`)
+      }
     }
 
     const paired = sortedMajors(
@@ -231,6 +272,11 @@ describe('Payload and Next.js majors pair per Payload major', () => {
         { 3: [15, 16], 4: [16] },
       )
       expect(getPayloadMajorSupport(target, 3)?.experimental, target.id).toBeFalsy()
+      /* Block configs set admin.group, which Payload's Block type gained in
+         3.25.0; older Payload 3 types reject it and fail the project's tsc. */
+      expect(getPayloadMajorSupport(target, 3)?.minimumVersions, target.id).toEqual({
+        payload: '3.25.0',
+      })
       expect(getPayloadMajorSupport(target, 4), target.id).toMatchObject({
         experimental: true,
         minimumVersions: { next: '16.2.6', node: '24.15.0' },

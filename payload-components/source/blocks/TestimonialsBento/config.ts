@@ -8,6 +8,9 @@ export const TestimonialsBento: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_tes_ben',
   interfaceName: 'TestimonialsBentoBlock',
+  admin: {
+    group: 'Testimonials',
+  },
   fields: [
     // Shared testimonials heading (eyebrow, title, description). Edit the shared
     // shape in @/blocks/shared/testimonialFields to update every variant.

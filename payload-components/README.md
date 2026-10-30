@@ -143,6 +143,35 @@ Test the migration against a backup or staging database, then run it before depl
 config. Existing installs that do not take the source change keep their installed config and require
 no registry-driven migration.
 
+## Admin Blocks Drawer
+
+Payload's admin lists a Pages layout's blocks in the Blocks Drawer. An editor who installs twenty of
+ours should not face twenty identical tiles, so every block config sets `admin.group` to its
+family's label from `FAMILIES` in `src/lib/component-page-tree.tsx` (Hero, Feature, Pricing, Call to
+action, and so on). That is the same heading the catalog and docs sidebar use. The label is a plain
+string, short and stable: renaming it moves blocks between drawer headings for every consumer.
+`tests/int/blocks-drawer-group.int.spec.ts` holds every config to its family label, and
+`payload-components new` copies the group from the nearest sibling variant.
+
+`admin.group` arrived in Payload 3.25.0. On older Payload 3 types it is an unknown property, and the
+consumer's `tsc` (and so `next build`) fails. So the support matrix sets
+`payloadMajorSupport["3"].minimumVersions.payload` to `3.25.0`. Every manifest declares
+`peerDependencies.payload` as `^3.25.0 || ^4.0.0-0`, and `doctor` warns below the floor.
+`tests/int/payload-components-support-matrix.int.spec.ts` fails a manifest range that starts
+anywhere else.
+
+Pictures are deliberately not shipped yet. Payload's `admin.images` (`thumbnail` for the drawer at
+3:2, `icon` at 20×20 for Lexical menus) arrived in 3.79.0, so using it means either a 3.79 floor or
+install-time gating by the CLI. A thumbnail also has to reach the host somehow:
+
+- Registry files must target `~/src/...`, which rules out a file in `public/`.
+- An absolute URL on payload-components.xyz would add a runtime dependency on this site, a request
+  from every editor's browser, and a host CSP entry.
+
+The best candidate is an SVG `data:` URI exported from a module under `~/src/blocks/<Name>/`: text
+only, offline, and same-origin. The deprecated top-level `imageURL` compiles everywhere but is
+marked for removal in favour of `admin.images`, so it is not used.
+
 ## Verification Suite
 
 Use all three verification layers. They prove different properties and are not substitutes for
@@ -240,6 +269,7 @@ The template includes:
 Normalized component blocks should:
 
 - declare explicit `labels.singular` and `labels.plural`
+- set `admin.group` to the family's `FAMILIES` label (see [Admin Blocks Drawer](#admin-blocks-drawer))
 - stay server-first unless interactivity is required
 - type their real shipped component props from generated `@/payload-types`
 - preserve optional wrapper props for `id`, `className`, and `disableInnerContainer`

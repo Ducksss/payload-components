@@ -8,6 +8,9 @@ export const StatsCard: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_sta_car',
   interfaceName: 'StatsCardBlock',
+  admin: {
+    group: 'Stats',
+  },
   fields: [
     // Shared stats core (eyebrow, title). Variant-specific fields follow; edit the
     // shared shape in @/blocks/shared/statsFields.

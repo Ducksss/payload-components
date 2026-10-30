@@ -673,14 +673,38 @@ describe('payload-components doctor on Payload 4', () => {
     ])
   })
 
-  it('reports nothing for Payload 3, which sets no minimums', async () => {
-    const cwd = await makePackageDir({ next: '15.0.0', payload: '3.90.2' })
+  it('checks only the Payload 3.25 floor for Payload 3, which sets no Node.js or Next.js minimum', async () => {
+    const project = { payloadMajor: 3, target: await readStarterTarget() }
 
     await expect(
       checkRuntimeRequirements({
-        cwd,
+        cwd: await makePackageDir({ next: '15.0.0', payload: '3.90.2' }),
         nodeVersion: '20.9.0',
-        project: { payloadMajor: 3, target: await readStarterTarget() },
+        project,
+      }),
+    ).resolves.toEqual([
+      { message: "runtime: Payload 3.90.2 meets Payload 3's minimum of 3.25.0", status: 'ok' },
+    ])
+    /* Block configs set admin.group, which older Payload 3 types reject. */
+    await expect(
+      checkRuntimeRequirements({
+        cwd: await makePackageDir({ next: '15.0.0', payload: '3.24.0' }),
+        nodeVersion: '20.9.0',
+        project,
+      }),
+    ).resolves.toEqual([
+      {
+        message:
+          'runtime: Payload 3 needs Payload 3.25.0 or newer, but this project has Payload 3.24.0 — upgrade the payload package',
+        status: 'warn',
+      },
+    ])
+    /* A range with nothing installed names no one version to compare. */
+    await expect(
+      checkRuntimeRequirements({
+        cwd: await makePackageDir({ next: '15.0.0', payload: '^3.0.0' }),
+        nodeVersion: '20.9.0',
+        project,
       }),
     ).resolves.toEqual([])
   })

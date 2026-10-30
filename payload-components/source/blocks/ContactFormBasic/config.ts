@@ -8,6 +8,9 @@ export const ContactFormBasic: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_con_for_bas',
   interfaceName: 'ContactFormBasicBlock',
+  admin: {
+    group: 'Contact',
+  },
   labels: { singular: 'Contact Form Basic', plural: 'Contact Form Basic Blocks' },
   fields: [
     {

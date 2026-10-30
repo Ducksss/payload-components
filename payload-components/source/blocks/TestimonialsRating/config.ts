@@ -8,6 +8,9 @@ export const TestimonialsRating: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_tes_rat',
   interfaceName: 'TestimonialsRatingBlock',
+  admin: {
+    group: 'Testimonials',
+  },
   fields: [
     // Shared testimonials heading (eyebrow, title, description). Edit the shared
     // shape in @/blocks/shared/testimonialFields to update every variant.

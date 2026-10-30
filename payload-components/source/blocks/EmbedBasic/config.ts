@@ -8,6 +8,9 @@ export const EmbedBasic: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_emb_bas',
   interfaceName: 'EmbedBasicBlock',
+  admin: {
+    group: 'Embed',
+  },
   fields: [
     {
       name: 'url',
