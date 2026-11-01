@@ -86,10 +86,10 @@
 Payload Components installs Payload CMS blocks into supported Payload v3 +
 Next.js projects.
 
-| Payload | Next.js           | Support                                      |
-| ------- | ----------------- | -------------------------------------------- |
-| v3      | 15 or 16          | Fully supported                              |
-| v4      | 16, 16.4 or newer | Experimental; needs Node.js 24.22.1 or newer |
+| Payload | Next.js       | Support                                      |
+| ------- | ------------- | -------------------------------------------- |
+| v3      | 15 or 16      | Fully supported                              |
+| v4      | 16.4 or newer | Experimental; needs Node.js 24.22.1 or newer |
 
 Payload v4 support tracks Payload's prereleases. The CLI refuses a Payload v4
 project on Next.js 15, and `doctor` warns below the Next.js and Node.js minimums.
