@@ -581,7 +581,7 @@ describe('payload-components doctor --json', () => {
   }, 180000)
 })
 
-/* Payload 4 runs on Node.js 24.15 and Next.js 16.2.6 or newer. Detection works
+/* Payload 4 runs on Node.js 24.22.1 and Next.js 16.4.0 or newer. Detection works
  * in majors and cannot see either, so doctor reports them from the support
  * matrix, as warnings. A Next.js major the matrix does not pair with Payload 4
  * is refused by detection, which doctor reports as a project error. */
@@ -625,7 +625,7 @@ describe('payload-components doctor on Payload 4', () => {
   }
 
   it('warns when Node.js is below the Payload 4 minimum', async () => {
-    const cwd = await makePackageDir({ next: '16.2.6', payload: '4.0.0-beta.0' })
+    const cwd = await makePackageDir({ next: '16.4.0', payload: '4.0.0-beta.0' })
     const project = { payloadMajor: 4, target: await readStarterTarget() }
 
     await expect(
@@ -633,18 +633,18 @@ describe('payload-components doctor on Payload 4', () => {
     ).resolves.toEqual([
       {
         message:
-          'runtime: Payload 4 (experimental) needs Node.js 24.15.0 or newer, but this is Node.js 24.14.1 — upgrade Node.js',
+          'runtime: Payload 4 (experimental) needs Node.js 24.22.1 or newer, but this is Node.js 24.14.1 — upgrade Node.js',
         status: 'warn',
       },
       {
-        message: "runtime: Next.js 16.2.6 meets Payload 4 (experimental)'s minimum of 16.2.6",
+        message: "runtime: Next.js 16.4.0 meets Payload 4 (experimental)'s minimum of 16.4.0",
         status: 'ok',
       },
     ])
     await expect(
-      checkRuntimeRequirements({ cwd, nodeVersion: '24.15.0', project }),
+      checkRuntimeRequirements({ cwd, nodeVersion: '24.22.1', project }),
     ).resolves.toContainEqual({
-      message: "runtime: Node.js 24.15.0 meets Payload 4 (experimental)'s minimum of 24.15.0",
+      message: "runtime: Node.js 24.22.1 meets Payload 4 (experimental)'s minimum of 24.22.1",
       status: 'ok',
     })
   })
@@ -655,21 +655,21 @@ describe('payload-components doctor on Payload 4', () => {
     const ranged = await makePackageDir({ next: '^16.0.0', payload: '4.0.0-beta.0' })
 
     await expect(
-      checkRuntimeRequirements({ cwd: pinned, nodeVersion: '24.15.0', project }),
+      checkRuntimeRequirements({ cwd: pinned, nodeVersion: '24.22.1', project }),
     ).resolves.toContainEqual({
       message:
-        'runtime: Payload 4 (experimental) needs Next.js 16.2.6 or newer, but this project has Next.js 16.1.0 — upgrade the next package',
+        'runtime: Payload 4 (experimental) needs Next.js 16.4.0 or newer, but this project has Next.js 16.1.0 — upgrade the next package',
       status: 'warn',
     })
-    /* "^16.0.0" with nothing installed could resolve either side of 16.2.6. */
+    /* "^16.0.0" with nothing installed could resolve either side of 16.4.0. */
     const findings = await checkRuntimeRequirements({
       cwd: ranged,
-      nodeVersion: '24.15.0',
+      nodeVersion: '24.22.1',
       project,
     })
 
     expect(findings.map(({ message }) => message)).toEqual([
-      "runtime: Node.js 24.15.0 meets Payload 4 (experimental)'s minimum of 24.15.0",
+      "runtime: Node.js 24.22.1 meets Payload 4 (experimental)'s minimum of 24.22.1",
     ])
   })
 
@@ -700,20 +700,20 @@ describe('payload-components doctor on Payload 4', () => {
        runner; the branch it does not take is pinned by the tests above. */
     expect(result.code).toBe(0)
     expect(report.findings.filter(({ scope }) => scope === 'runtime')).toEqual([
-      semver.gte(node, '24.15.0')
+      semver.gte(node, '24.22.1')
         ? {
-            message: `runtime: Node.js ${node} meets Payload 4 (experimental)'s minimum of 24.15.0`,
+            message: `runtime: Node.js ${node} meets Payload 4 (experimental)'s minimum of 24.22.1`,
             scope: 'runtime',
             status: 'ok',
           }
         : {
-            message: `runtime: Payload 4 (experimental) needs Node.js 24.15.0 or newer, but this is Node.js ${node} — upgrade Node.js`,
+            message: `runtime: Payload 4 (experimental) needs Node.js 24.22.1 or newer, but this is Node.js ${node} — upgrade Node.js`,
             scope: 'runtime',
             status: 'warn',
           },
       {
         message:
-          'runtime: Payload 4 (experimental) needs Next.js 16.2.6 or newer, but this project has Next.js 16.1.0 — upgrade the next package',
+          'runtime: Payload 4 (experimental) needs Next.js 16.4.0 or newer, but this project has Next.js 16.1.0 — upgrade the next package',
         scope: 'runtime',
         status: 'warn',
       },

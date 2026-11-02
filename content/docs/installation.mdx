@@ -26,14 +26,14 @@ For a visual tour of the catalog, install commands, reviewable diff, and doctor 
 
 Your project must run one of these pairs:
 
-| `payload` | `next`                | Support                                    |
-| --------- | --------------------- | ------------------------------------------ |
-| v3        | v15 or v16            | Fully supported                            |
-| v4        | v16, 16.2.6 or newer  | Experimental; needs Node.js 24.15 or newer |
+| `payload` | `next`         | Support                                      |
+| --------- | -------------- | -------------------------------------------- |
+| v3        | v15 or v16     | Fully supported                              |
+| v4        | v16.4 or newer | Experimental; needs Node.js 24.22.1 or newer |
 
 Payload v4 dropped Next.js 15, so the installer refuses a Payload v4 project on Next.js 15.
 It checks majors only: run `npx payload-components doctor` to see whether a Payload v4 project
-also meets the Next.js 16.2.6 and Node.js 24.15 minimums. Payload v4 support tracks Payload's
+also meets the Next.js 16.4 and Node.js 24.22.1 minimums. Payload v4 support tracks Payload's
 prereleases, so expect rough edges; Payload v3 stays the fully supported path.
 
 …and it must already contain the website-style block layout the installer patches into:
@@ -172,7 +172,7 @@ npx payload-components doctor
 and recorded component installs in `.payload-components/state.json`. It exits
 non-zero when files, Payload fragments, dependency declarations, or install state
 need attention. On a Payload v4 project it also warns when Node.js is older than
-24.15 or `next` is older than 16.2.6.
+24.22.1 or `next` is older than 16.4.
 
 <Callout type="info">
   Already have a block file that is not appearing in the editor or on the page?

@@ -10,7 +10,7 @@
         "3": { "nextMajors": [15, 16] },
         "4": {
           "experimental": true,
-          "minimumVersions": { "next": "16.2.6", "node": "24.15.0" },
+          "minimumVersions": { "next": "16.4.0", "node": "24.22.1" },
           "nextMajors": [16]
         }
       },
@@ -35,7 +35,7 @@
         "3": { "nextMajors": [15, 16] },
         "4": {
           "experimental": true,
-          "minimumVersions": { "next": "16.2.6", "node": "24.15.0" },
+          "minimumVersions": { "next": "16.4.0", "node": "24.22.1" },
           "nextMajors": [16]
         }
       },
