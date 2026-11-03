@@ -196,7 +196,7 @@ describe('manifests agree with the support matrix', () => {
 })
 
 /* Payload and Next.js majors are not a cross product. Payload 4 needs Next.js
- * 16.2.6 or newer and dropped Next.js 15, so each target narrows its Next.js
+ * 16.4 or newer and dropped Next.js 15, so each target narrows its Next.js
  * majors per Payload major through payloadMajorSupport, which detection,
  * assertManifestSupport, doctor, and the docs all read. The lists stay
  * internally consistent: a pairing may only name majors its target allows, and
@@ -279,7 +279,7 @@ describe('Payload and Next.js majors pair per Payload major', () => {
       })
       expect(getPayloadMajorSupport(target, 4), target.id).toMatchObject({
         experimental: true,
-        minimumVersions: { next: '16.2.6', node: '24.15.0' },
+        minimumVersions: { next: '16.4.0', node: '24.22.1' },
       })
     }
   })

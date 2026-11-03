@@ -56,8 +56,8 @@ See Payload's [installation documentation](https://payloadcms.com/docs/getting-s
 for the current runtime requirements and starter choices.
 
 `create-payload-app@latest` scaffolds Payload v3. Payload v4 is in beta
-(`create-payload-app@beta`), and Payload Components supports it experimentally on Next.js 16.2.6
-or newer with Node.js 24.15 or newer. Payload v3 stays the fully supported path; the
+(`create-payload-app@beta`), and Payload Components supports it experimentally on Next.js 16.4
+or newer with Node.js 24.22.1 or newer. Payload v3 stays the fully supported path; the
 [installation requirements](/docs/installation#requirements) list both pairs.
 
 ### Generate TypeScript types
@@ -511,8 +511,8 @@ different responses: **2** means the project itself cannot accept installs, **1*
 project is fine but a recorded install has drifted.
 
 On a Payload v4 project, `doctor` also checks the minimums detection cannot see, because it
-works in majors: it warns when the Node.js running it is older than 24.15, or when the
-installed (or exactly pinned) `next` is older than 16.2.6. Those are `runtime` warnings, so
+works in majors: it warns when the Node.js running it is older than 24.22.1, or when the
+installed (or exactly pinned) `next` is older than 16.4. Those are `runtime` warnings, so
 they do not change the exit code. A Payload v4 project on Next.js 15 is refused outright,
 as a project error.
 

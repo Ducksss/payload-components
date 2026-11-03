@@ -1038,7 +1038,7 @@ describe('Fumadocs site shell', () => {
     expect(heroMarkdown).toContain('Admin usage: add the `HeroBasic` block')
     /* Next.js majors are listed per Payload major, never as a cross product. */
     expect(heroMarkdown).toContain(
-      'Payload v3 (3.25 or newer) with Next.js 15 / 16; Payload v4 (experimental) with Next.js 16 (16.2.6 or newer) and Node.js 24.15 or newer;',
+      'Payload v3 (3.25 or newer) with Next.js 15 / 16; Payload v4 (experimental) with Next.js 16 (16.4 or newer) and Node.js 24.22.1 or newer;',
     )
   })
 
@@ -1065,7 +1065,7 @@ describe('Fumadocs site shell', () => {
       },
       {
         experimental: true,
-        minimumVersions: { next: '16.2.6', node: '24.15.0' },
+        minimumVersions: { next: '16.4.0', node: '24.22.1' },
         nextMajors: [16],
         payloadMajor: 4,
       },
@@ -1074,9 +1074,9 @@ describe('Fumadocs site shell', () => {
       'v3 (3.25 or newer)',
       'v4 (experimental)',
     ])
-    expect(compatibility.map(formatPairedNext)).toEqual(['15 / 16', '16 (16.2.6 or newer)'])
+    expect(compatibility.map(formatPairedNext)).toEqual(['15 / 16', '16 (16.4 or newer)'])
     expect(describeExperimentalSupport(compatibility[1])).toBe(
-      'Payload v4 support is experimental: it needs Next.js 16 (16.2.6 or newer) and Node.js 24.15 or newer.',
+      'Payload v4 support is experimental: it needs Next.js 16 (16.4 or newer) and Node.js 24.22.1 or newer.',
     )
 
     /* The stack line /llms.txt prints is prose, so hold it to the matrix. */

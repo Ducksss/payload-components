@@ -89,7 +89,7 @@ export async function getPayloadCompatibility(
   })
 }
 
-/* "24.15.0" reads as "24.15"; a patch that matters ("16.2.6") stays. */
+/* "16.4.0" reads as "16.4"; a patch that matters ("24.22.1") stays. */
 const shortVersion = (version: string) => version.replace(/\.0$/, '')
 
 /* "v3 (3.25 or newer)", "v4 (experimental)". */
@@ -106,7 +106,7 @@ export const formatPayloadMajor = ({
   return `v${payloadMajor}${notes.length ? ` (${notes.join(', ')})` : ''}`
 }
 
-/* "15 / 16", or "16 (16.2.6 or newer)" when the Payload major sets a minimum. */
+/* "15 / 16", or "16 (16.4 or newer)" when the Payload major sets a minimum. */
 export const formatPairedNext = ({ minimumVersions, nextMajors }: PayloadCompatibility) =>
   `${nextMajors.join(' / ')}${
     minimumVersions.next ? ` (${shortVersion(minimumVersions.next)} or newer)` : ''
@@ -115,7 +115,7 @@ export const formatPairedNext = ({ minimumVersions, nextMajors }: PayloadCompati
 const formatNodeMinimum = ({ minimumVersions }: PayloadCompatibility) =>
   minimumVersions.node ? `Node.js ${shortVersion(minimumVersions.node)} or newer` : undefined
 
-/* "Payload v4 (experimental) with Next.js 16 (16.2.6 or newer) and Node.js 24.15
+/* "Payload v4 (experimental) with Next.js 16 (16.4 or newer) and Node.js 24.22.1
  * or newer" — one fragment per Payload major, for prose and markdown. */
 export const describePayloadCompatibility = (compatibility: PayloadCompatibility) =>
   [
@@ -125,8 +125,8 @@ export const describePayloadCompatibility = (compatibility: PayloadCompatibility
     .filter(Boolean)
     .join(' and ')
 
-/* "Payload v4 support is experimental: it needs Next.js 16 (16.2.6 or newer) and
- * Node.js 24.15 or newer." */
+/* "Payload v4 support is experimental: it needs Next.js 16 (16.4 or newer) and
+ * Node.js 24.22.1 or newer." */
 export const describeExperimentalSupport = (compatibility: PayloadCompatibility) =>
   `Payload v${compatibility.payloadMajor} support is experimental: it needs ${[
     `Next.js ${formatPairedNext(compatibility)}`,

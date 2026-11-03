@@ -27,7 +27,7 @@ const logoUrl = `${siteUrl}/favicon.svg`
 /* Payload v4 pairs with Next.js 16 only, so the two majors are listed apart
    rather than as one cross product (support-matrix.json, payloadMajorSupport). */
 const softwareRequirements =
-  'Payload CMS v3 with Next.js 15 or 16; Payload CMS v4 (experimental) with Next.js 16.2.6 or newer and Node.js 24.15 or newer'
+  'Payload CMS v3 with Next.js 15 or 16; Payload CMS v4 (experimental) with Next.js 16.4 or newer and Node.js 24.22.1 or newer'
 
 /* Each localized /<locale>/blog route is a separate entity: it carries its own canonical URL,
    language, and copy, so a post published under one must not claim membership

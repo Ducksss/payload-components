@@ -183,7 +183,7 @@ export type StackItem = (typeof stackItems)[number]
  * line instead of folding it into the band's cross product.
  * tests/int/fumadocs-site.int.spec.ts holds it to the matrix. */
 export const experimentalStackItem =
-  'Payload CMS v4 (experimental): Next.js 16.2.6 or newer, Node.js 24.15 or newer'
+  'Payload CMS v4 (experimental): Next.js 16.4.0 or newer, Node.js 24.22.1 or newer'
 
 /* Receipts strip — every line is verifiable in this repository. */
 export const receipts = [

@@ -269,10 +269,10 @@ jobs:
 
   # Early warning for the next Payload major. The nightly smoke above follows
   # Payload `latest`, so nothing else exercises Payload 4 before it ships. This
-  # runs the same scenarios against the current `payload@canary` and never fails
-  # the run, because canaries also break for upstream reasons. It is not a
-  # pr-gate dependency.
-  payload-canary-smoke:
+  # runs the same scenarios against the newest published Payload, whichever
+  # dist-tag carries it, and never fails the run, because prereleases also break
+  # for upstream reasons. It is not a pr-gate dependency.
+  payload-newest-smoke:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -316,7 +316,7 @@ jobs:
         with:
           version: 10.24.0
 
-      # Payload 4 requires Node.js 24.15 or newer.
+      # Payload 4 requires Node.js 24.22.1 or newer.
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
@@ -326,25 +326,41 @@ jobs:
 
       - run: pnpm exec playwright install --with-deps chromium
 
-      - name: Resolve the current Payload canary
+      # Payload moves its prerelease line between dist-tags (canary, then beta,
+      # maybe rc), and the tag it leaves stops moving: `canary` froze at
+      # 4.0.0-canary.39 once 4.0.0-beta.0 shipped. Take the highest major any of
+      # these tags points at, `latest` included, then the build in it published
+      # last, so the job follows each hand-off and the major's release. Not
+      # semver order alone: that ranks 4.0.0-canary.39 above 4.0.0-beta.6.
+      - name: Resolve the newest Payload release
         shell: bash
         run: |
           set -euo pipefail
-          version="$(npm view payload@canary version)"
+          version="$(npm view payload dist-tags time --json | node -e '
+            const semver = require("semver")
+            const { "dist-tags": tags, time } = JSON.parse(require("fs").readFileSync(0, "utf8"))
+            const versions = ["canary", "beta", "rc", "latest"]
+              .map((tag) => tags[tag])
+              .filter((version) => semver.valid(version) && time[version])
+            const newest = (left, right) =>
+              semver.major(right) - semver.major(left) || Date.parse(time[right]) - Date.parse(time[left])
+            console.log(versions.sort(newest)[0] ?? "")
+          ')"
           test -n "$version"
           echo "SMOKE_PAYLOAD_VERSION=$version" >> "$GITHUB_ENV"
 
-      - name: Fresh Payload canary smoke
+      - name: Fresh newest-Payload smoke
         shell: bash
         run: |
           set -o pipefail
-          echo "Payload canary: $SMOKE_PAYLOAD_VERSION"
-          pnpm test:fresh -- --scenario "${{ matrix.scenario }}" --shard-index "${{ matrix.shard-index }}" 2>&1 | tee payload-components-canary.log
+          echo "Payload: $SMOKE_PAYLOAD_VERSION"
+          node --version
+          pnpm test:fresh -- --scenario "${{ matrix.scenario }}" --shard-index "${{ matrix.shard-index }}" 2>&1 | tee payload-components-newest.log
 
       - name: Upload failure log
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: payload-canary-smoke-${{ matrix.scenario }}-${{ matrix.shard-index }}
-          path: payload-components-canary.log
+          name: payload-newest-smoke-${{ matrix.scenario }}-${{ matrix.shard-index }}
+          path: payload-components-newest.log
           if-no-files-found: ignore
