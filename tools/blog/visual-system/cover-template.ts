@@ -32,8 +32,10 @@ export const escapeHtml = (value: string) =>
 export const seriesLabel = (series: BlogVisualEntry['series']) =>
   series.replaceAll('-', ' ').toUpperCase()
 
+/* Roomy type fits five full-width lines in the smallest primary card; a sixth
+   (hero-basic's registry item since it ships thumbnail.ts) overflows it. */
 const evidenceDensity = (lineCount: number) => {
-  if (lineCount <= 6) return 'code-sheet--roomy'
+  if (lineCount <= 5) return 'code-sheet--roomy'
   if (lineCount <= 14) return 'code-sheet--regular'
   if (lineCount <= 20) return 'code-sheet--compact'
   return 'code-sheet--dense'

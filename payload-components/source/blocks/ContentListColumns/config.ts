@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { contentListColumnsThumbnail } from './thumbnail'
+
 export const ContentListColumns: Block = {
   slug: 'contentListColumns',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -8,6 +10,9 @@ export const ContentListColumns: Block = {
   interfaceName: 'ContentListColumnsBlock',
   admin: {
     group: 'Content',
+    images: {
+      thumbnail: contentListColumnsThumbnail,
+    },
   },
   fields: [
     {

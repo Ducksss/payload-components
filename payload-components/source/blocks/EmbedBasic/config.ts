@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { validateEmbedUrl } from '@/blocks/shared/safeUrls'
 
+import { embedBasicThumbnail } from './thumbnail'
+
 export const EmbedBasic: Block = {
   slug: 'embedBasic',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const EmbedBasic: Block = {
   interfaceName: 'EmbedBasicBlock',
   admin: {
     group: 'Embed',
+    images: {
+      thumbnail: embedBasicThumbnail,
+    },
   },
   fields: [
     {

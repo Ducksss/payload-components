@@ -153,24 +153,38 @@ string, short and stable: renaming it moves blocks between drawer headings for e
 `tests/int/blocks-drawer-group.int.spec.ts` holds every config to its family label, and
 `payload-components new` copies the group from the nearest sibling variant.
 
-`admin.group` arrived in Payload 3.25.0. On older Payload 3 types it is an unknown property, and the
-consumer's `tsc` (and so `next build`) fails. So the support matrix sets
-`payloadMajorSupport["3"].minimumVersions.payload` to `3.25.0`. Every manifest declares
-`peerDependencies.payload` as `^3.25.0 || ^4.0.0-0`, and `doctor` warns below the floor.
+Every tile also shows a picture of its block's layout: `admin.images.thumbnail`, which Payload draws
+full-bleed in a 3:2 box about 180px wide. The picture is a schematic, not a screenshot. A
+screenshot shrinks to noise at that size, and a binary file cannot ship as registry text. Each
+block ships `~/src/blocks/<Name>/thumbnail.ts`, which exports `{ alt: '', url }` with an SVG
+`data:` URI. That keeps it text only, offline, and same-origin: no file in `public/` (registry
+files must target `~/src/...`) and no request to payload-components.xyz from every editor's
+browser. The alt text is empty on purpose: the drawer prints the block's label under its
+picture, and Payload passes `alt` straight to the `<img>`, so a missing alt would make screen
+readers announce the data URI.
+
+The SVG is generated, never hand-drawn. `tools/payload-components/block-thumbnail-recipes.ts`
+describes each block's demo twin as a short recipe of layout primitives (headline bars, copy
+bars, pills, cards, media) from `block-thumbnails.ts`, and `pnpm thumbnails:build` renders every
+recipe into its `thumbnail.ts`. A taller layout gets a wider canvas, not a squashed one, so bars
+and pills keep one size across the drawer. Colours are fixed, light-first, and monochrome with the
+emerald accent, because an `<img>` cannot read the admin theme; Payload's own placeholder
+picture is fixed-colour too. When a block's layout changes, change its recipe in the same PR
+(the twin rule applies to the picture too) and rebuild. `tests/int/blocks-drawer-thumbnails.int.spec.ts`
+fails while a committed `thumbnail.ts` differs from its recipe's output, and `new` copies the
+nearest sibling's recipe. `admin.images.icon` (20×20, for Lexical block menus) is not set: these
+are Pages layout blocks, not Lexical blocks.
+
+`admin.group` arrived in Payload 3.25.0 and `admin.images` in 3.79.0. On older Payload 3 types
+they are unknown properties, and the consumer's `tsc` (and so `next build`) fails. So the support
+matrix sets `payloadMajorSupport["3"].minimumVersions.payload` to `3.79.0`. Every manifest
+declares `peerDependencies.payload` as `^3.79.0 || ^4.0.0-0`, and `doctor` warns below the floor.
 `tests/int/payload-components-support-matrix.int.spec.ts` fails a manifest range that starts
-anywhere else.
-
-Pictures are deliberately not shipped yet. Payload's `admin.images` (`thumbnail` for the drawer at
-3:2, `icon` at 20×20 for Lexical menus) arrived in 3.79.0, so using it means either a 3.79 floor or
-install-time gating by the CLI. A thumbnail also has to reach the host somehow:
-
-- Registry files must target `~/src/...`, which rules out a file in `public/`.
-- An absolute URL on payload-components.xyz would add a runtime dependency on this site, a request
-  from every editor's browser, and a host CSP entry.
-
-The best candidate is an SVG `data:` URI exported from a module under `~/src/blocks/<Name>/`: text
-only, offline, and same-origin. The deprecated top-level `imageURL` compiles everywhere but is
-marked for removal in favour of `admin.images`, so it is not used.
+anywhere else. The alternative was to keep 3.25 and have `add` strip `admin.images` below 3.79,
+recorded in install state like `--localized`. It was rejected because direct shadcn installs
+would still ship source that fails to compile, and `diff`, `update`, and the install baselines
+would all have to learn a second source transform. The deprecated top-level `imageURL` compiles
+everywhere but is marked for removal in favour of `admin.images`, so it is not used.
 
 ## Verification Suite
 
@@ -269,7 +283,8 @@ The template includes:
 Normalized component blocks should:
 
 - declare explicit `labels.singular` and `labels.plural`
-- set `admin.group` to the family's `FAMILIES` label (see [Admin Blocks Drawer](#admin-blocks-drawer))
+- set `admin.group` to the family's `FAMILIES` label and `admin.images.thumbnail` to the generated
+  `thumbnail.ts` export (see [Admin Blocks Drawer](#admin-blocks-drawer))
 - stay server-first unless interactivity is required
 - type their real shipped component props from generated `@/payload-types`
 - preserve optional wrapper props for `id`, `className`, and `disableInnerContainer`

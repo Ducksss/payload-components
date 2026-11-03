@@ -2,11 +2,16 @@ import type { Block } from 'payload'
 
 import { linkGroup } from '@/fields/linkGroup'
 
+import { exampleBasicThumbnail } from './thumbnail'
+
 export const ExampleBasic: Block = {
   slug: 'exampleBasic',
   interfaceName: 'ExampleBasicBlock',
   admin: {
     group: 'Example',
+    images: {
+      thumbnail: exampleBasicThumbnail,
+    },
   },
   fields: [
     {

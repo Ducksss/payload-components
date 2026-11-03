@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { heroFields } from '@/blocks/shared/heroFields'
 
+import { heroSplitThumbnail } from './thumbnail'
+
 export const HeroSplit: Block = {
   slug: 'heroSplit',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const HeroSplit: Block = {
   interfaceName: 'HeroSplitBlock',
   admin: {
     group: 'Hero',
+    images: {
+      thumbnail: heroSplitThumbnail,
+    },
   },
   fields: [
     // Shared hero core (eyebrow, title, description, CTA links). Variant-specific

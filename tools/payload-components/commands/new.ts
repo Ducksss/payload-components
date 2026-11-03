@@ -3,6 +3,8 @@ import path from 'node:path'
 
 import semver from 'semver'
 
+import { blockThumbnailRecipes, templateThumbnailRecipe } from '../block-thumbnail-recipes'
+import { blockThumbnailModule } from '../block-thumbnails'
 import { createSiteCatalog, siteCatalogPath } from '../build-site-catalog'
 import { readSafeProjectFile } from '../safe-path'
 import { commitFileChanges, isPathInside, printHeader, repoRoot } from '../utils'
@@ -33,6 +35,12 @@ const registryPath = path.join(repoRoot, 'payload-components', 'registry.json')
 const supportMatrixPath = path.join(repoRoot, 'payload-components', 'support-matrix.json')
 const messagesPath = path.join(repoRoot, 'messages', 'en.json')
 const catalogSourcePath = path.join(repoRoot, 'src', 'lib', 'component-catalog.ts')
+const thumbnailRecipesPath = path.join(
+  repoRoot,
+  'tools',
+  'payload-components',
+  'block-thumbnail-recipes.ts',
+)
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 /* dbName is capped at 18 characters and must be unique across the catalog. */
@@ -182,10 +190,14 @@ export const buildManifest = (names: ComponentNames) =>
       description: `TODO: one sentence on what ${names.title} is for.`,
       registryItemName: names.slug,
       dependencies: {},
-      peerDependencies: { next: '^15.0.0 || ^16.0.0', payload: '^3.25.0 || ^4.0.0-0' },
+      peerDependencies: { next: '^15.0.0 || ^16.0.0', payload: '^3.79.0 || ^4.0.0-0' },
       supportedTargets: ['payload-website-starter', 'payload-blocks-app'],
       supports: { payloadMajors: [3, 4], nextMajors: [15, 16] },
-      files: [`src/blocks/${names.pascal}/config.ts`, `src/blocks/${names.pascal}/Component.tsx`],
+      files: [
+        `src/blocks/${names.pascal}/config.ts`,
+        `src/blocks/${names.pascal}/thumbnail.ts`,
+        `src/blocks/${names.pascal}/Component.tsx`,
+      ],
       payloadFragments: [
         {
           kind: 'renderBlocks',
@@ -249,6 +261,11 @@ const buildRegistryItem = (names: ComponentNames) => ({
       path: `payload-components/source/blocks/${names.pascal}/config.ts`,
       type: 'registry:file',
       target: `~/src/blocks/${names.pascal}/config.ts`,
+    },
+    {
+      path: `payload-components/source/blocks/${names.pascal}/thumbnail.ts`,
+      type: 'registry:file',
+      target: `~/src/blocks/${names.pascal}/thumbnail.ts`,
     },
     {
       path: `payload-components/source/blocks/${names.pascal}/Component.tsx`,
@@ -371,7 +388,85 @@ const prepareReadmeInventoryRow = async (names: ComponentNames): Promise<Prepare
   }
 }
 
-const formatCuratedSteps = (names: ComponentNames, dbNameIsFree: boolean, drawerGroup: string) =>
+/* The existing block slug sharing the most leading words with a new one, the
+   way its drawer group is chosen. Undefined for a new family. */
+export const nearestRecipeSibling = (slug: string, recipeSlugs: string[]) => {
+  const words = slug.split('-')
+  let best = { shared: 0, slug: '' }
+
+  for (const candidate of recipeSlugs) {
+    const candidateWords = candidate.split('-')
+    let shared = 0
+
+    while (shared < words.length && words[shared] === candidateWords[shared]) {
+      shared += 1
+    }
+
+    if (shared > best.shared) {
+      best = { shared, slug: candidate }
+    }
+  }
+
+  return best.slug || undefined
+}
+
+/* The Blocks Drawer picture for a new block starts as its nearest sibling's
+   layout recipe, or the template's recipe for a new family; the contributor then
+   redraws it to match the twin. The recipe map is spliced as text so the copy
+   keeps the sibling's formatting: the entry for key K runs from its `  'K': `
+   line to the next key or the map's closing brace. */
+const planThumbnailRecipe = async (names: ComponentNames) => {
+  const source = await readSafeProjectFile({ cwd: repoRoot, filePath: thumbnailRecipesPath })
+  const mapStart = source.indexOf('export const blockThumbnailRecipes')
+  const mapClose = mapStart === -1 ? -1 : source.indexOf('\n}\n', mapStart)
+
+  if (mapClose === -1) {
+    throw new Error('Could not find blockThumbnailRecipes in block-thumbnail-recipes.ts.')
+  }
+
+  const entries = [...source.slice(mapStart, mapClose).matchAll(/^ {2}'([a-z0-9-]+)': /gm)].map(
+    (match) => ({ slug: match[1], start: mapStart + match.index }),
+  )
+
+  const others = entries.map(({ slug }) => slug).filter((slug) => slug !== names.slug)
+  const sibling = nearestRecipeSibling(names.slug, others)
+  const siblingIndex = entries.findIndex(({ slug }) => slug === sibling)
+  const insertAt =
+    siblingIndex === -1 ? mapClose + 1 : (entries[siblingIndex + 1]?.start ?? mapClose + 1)
+  const entry =
+    siblingIndex === -1
+      ? `  '${names.slug}': templateThumbnailRecipe,\n`
+      : source
+          .slice(entries[siblingIndex].start, insertAt)
+          .replace(`  '${sibling}': `, `  '${names.slug}': `)
+
+  return {
+    /* Checked only when the splice is needed, after the new files: an existing
+       component is reported by the files it would overwrite. */
+    prepare: (): PreparedFile => {
+      if (others.length !== entries.length) {
+        throw new Error(`block-thumbnail-recipes.ts already has a recipe for "${names.slug}".`)
+      }
+
+      return {
+        change: {
+          content: `${source.slice(0, insertAt)}${entry}${source.slice(insertAt)}`,
+          filePath: thumbnailRecipesPath,
+        },
+        relativePath: path.relative(repoRoot, thumbnailRecipesPath),
+      }
+    },
+    recipe: (sibling && blockThumbnailRecipes[sibling]) || templateThumbnailRecipe,
+    sibling,
+  }
+}
+
+const formatCuratedSteps = (
+  names: ComponentNames,
+  dbNameIsFree: boolean,
+  drawerGroup: string,
+  thumbnailSibling: string | undefined,
+) =>
   [
     '',
     'Now the parts that need a decision — none of these were written for you:',
@@ -410,7 +505,11 @@ const formatCuratedSteps = (names: ComponentNames, dbNameIsFree: boolean, drawer
     `   The config's admin.group was set to "${drawerGroup}"; it must equal the family's`,
     '   FAMILIES label, which is what editors see as the Blocks Drawer heading.',
     '',
-    '7. Visual baselines cannot be generated here — run',
+    `7. tools/payload-components/block-thumbnail-recipes.ts → the '${names.slug}' recipe was`,
+    `   copied from ${thumbnailSibling ? `'${thumbnailSibling}'` : 'the template recipe'}. Redraw it to match the demo twin, then run`,
+    '   pnpm thumbnails:build to regenerate its thumbnail.ts (the Blocks Drawer picture).',
+    '',
+    '8. Visual baselines cannot be generated here — run',
     `   pnpm test:e2e components-visual --update-snapshots for darwin, and the`,
     '   visual-baselines workflow for linux.',
     '',
@@ -439,6 +538,7 @@ export const newCommand = async ({
     ])
 
   const drawerGroup = deriveDrawerGroup(names.slug, groups)
+  const thumbnail = await planThumbnailRecipe(names)
   const manifestSource = buildManifest(names)
   const written = await Promise.all([
     prepareNewFile(
@@ -447,6 +547,10 @@ export const newCommand = async ({
         "group: 'Example',",
         `group: '${drawerGroup}',`,
       ),
+    ),
+    prepareNewFile(
+      path.join(sourceBlocksDir, names.pascal, 'thumbnail.ts'),
+      blockThumbnailModule({ camel: names.camel, recipe: thumbnail.recipe, title: names.title }),
     ),
     prepareNewFile(
       path.join(sourceBlocksDir, names.pascal, 'Component.tsx'),
@@ -460,12 +564,15 @@ export const newCommand = async ({
     prepareNewFile(path.join(demosDir, `${names.pascal}Demo.tsx`), buildDemoTwin(names)),
   ])
 
-  const appended = await Promise.all([
-    prepareRegistryItem(names),
-    prepareDemoRegistryEntry(names),
-    prepareDocsMetaEntry(names),
-    prepareReadmeInventoryRow(names),
-  ])
+  const appended = [
+    ...(await Promise.all([
+      prepareRegistryItem(names),
+      prepareDemoRegistryEntry(names),
+      prepareDocsMetaEntry(names),
+      prepareReadmeInventoryRow(names),
+    ])),
+    thumbnail.prepare(),
+  ]
   const registry = JSON.parse(appended[0].change.content!) as RegistryDefinition
   const manifest = JSON.parse(manifestSource) as ComponentManifest
   const catalog = await createSiteCatalog({
@@ -500,7 +607,12 @@ export const newCommand = async ({
       '',
       'Generated:',
       `  ${generated.relativePath}`,
-      formatCuratedSteps(names, !usedDbNames.has(names.dbNameSuggestion), drawerGroup),
+      formatCuratedSteps(
+        names,
+        !usedDbNames.has(names.dbNameSuggestion),
+        drawerGroup,
+        thumbnail.sibling,
+      ),
     ].join('\n'),
   )
 }

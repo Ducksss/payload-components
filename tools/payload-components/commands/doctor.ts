@@ -513,7 +513,7 @@ export type RuntimeFinding = { message: string; status: Exclude<DoctorStatus, 'e
 
 /* Some Payload majors need more than a major of Next.js: Payload 4 runs on
  * Node.js 24.22.1 and Next.js 16.4 or newer, and Payload 3 blocks need Payload
- * 3.25 or newer for admin.group. Detection works in majors, so the support
+ * 3.79 or newer for admin.images. Detection works in majors, so the support
  * matrix's minimum versions are reported here, as warnings, instead of
  * refusing installs. Node.js is the runtime this command runs on; Next.js and
  * Payload are the installed version, or an exact declared one. A range with

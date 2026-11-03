@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { validateSameOriginFormAction } from '@/blocks/shared/safeUrls'
 
+import { contactFormBasicThumbnail } from './thumbnail'
+
 export const ContactFormBasic: Block = {
   slug: 'contactFormBasic',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const ContactFormBasic: Block = {
   interfaceName: 'ContactFormBasicBlock',
   admin: {
     group: 'Contact',
+    images: {
+      thumbnail: contactFormBasicThumbnail,
+    },
   },
   labels: { singular: 'Contact Form Basic', plural: 'Contact Form Basic Blocks' },
   fields: [

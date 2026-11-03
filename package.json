@@ -69,6 +69,7 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "templates:build": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/templates/build-install-manifests.ts",
     "templates:capture": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/templates/capture.ts",
+    "thumbnails:build": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/build-block-thumbnails.ts",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "tsx tools/run-e2e.ts",
     "test:fresh": "cross-env NODE_OPTIONS=--no-deprecation tsx tools/payload-components/smoke/fresh-payload-repo.ts",

@@ -10,15 +10,13 @@ import { deriveDrawerGroup } from '../../tools/payload-components/commands/new'
  * editor who installs twenty of ours should see them under the same family
  * headings the catalog and docs sidebar use, so every shipped config's group is
  * its FAMILIES label (src/lib/component-page-tree.tsx). `admin.group` arrived in
- * Payload 3.25.0, which is why the support matrix sets that Payload 3 floor.
- *
- * Pictures are deliberately absent: `admin.images` needs Payload 3.79.0, so it
- * waits for a decision on the floor and on how a thumbnail reaches the host.
- * See payload-components/README.md → "Admin Blocks Drawer". */
+ * Payload 3.25.0; the pictures beside it (`admin.images`, 3.79.0) are held to
+ * their recipes in blocks-drawer-thumbnails.int.spec.ts. See
+ * payload-components/README.md → "Admin Blocks Drawer". */
 
 const blocksDir = path.join(process.cwd(), 'payload-components', 'source', 'blocks')
 
-const GROUP = /^ {2}admin: \{\n {4}group: '([^']+)',\n {2}\},$/m
+const GROUP = /^ {2}admin: \{\n {4}group: '([^']+)',\n/m
 
 const readBlockConfigs = async () => {
   const entries = await readdir(blocksDir, { withFileTypes: true })
@@ -48,14 +46,15 @@ describe('Blocks Drawer groups', () => {
     expect(mismatched).toEqual([])
   })
 
-  it('sets the group beside the block identifiers, never pictures', async () => {
+  it('sets the group beside the block identifiers', async () => {
     for (const { name, source } of await readBlockConfigs()) {
       /* One top-level admin object, right after interfaceName, so the
          localize wrap's top-level fields anchor and the docs walkthrough keep
-         reading the same shape. */
+         reading the same shape. The deprecated top-level imageURL stays out:
+         pictures go through admin.images. */
       expect(source, name).toMatch(/^ {2}interfaceName: '\w+',\n {2}admin: \{\n/m)
       expect(source.match(/^ {2}admin:/gm), name).toHaveLength(1)
-      expect(source, name).not.toMatch(/\bimages\s*:|\bimageURL\s*:/)
+      expect(source, name).not.toMatch(/\bimageURL\s*:|\bimageAltText\s*:/)
     }
   })
 

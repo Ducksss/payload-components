@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 import { featureFields } from '@/blocks/shared/featureFields'
 import { linkGroup } from '@/fields/linkGroup'
 
+import { featureGridBasicThumbnail } from './thumbnail'
+
 export const FeatureGridBasic: Block = {
   slug: 'featureGridBasic',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -11,6 +13,9 @@ export const FeatureGridBasic: Block = {
   interfaceName: 'FeatureGridBasicBlock',
   admin: {
     group: 'Feature',
+    images: {
+      thumbnail: featureGridBasicThumbnail,
+    },
   },
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields

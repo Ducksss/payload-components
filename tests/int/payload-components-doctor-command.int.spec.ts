@@ -673,7 +673,7 @@ describe('payload-components doctor on Payload 4', () => {
     ])
   })
 
-  it('checks only the Payload 3.25 floor for Payload 3, which sets no Node.js or Next.js minimum', async () => {
+  it('checks only the Payload 3.79 floor for Payload 3, which sets no Node.js or Next.js minimum', async () => {
     const project = { payloadMajor: 3, target: await readStarterTarget() }
 
     await expect(
@@ -683,19 +683,19 @@ describe('payload-components doctor on Payload 4', () => {
         project,
       }),
     ).resolves.toEqual([
-      { message: "runtime: Payload 3.90.2 meets Payload 3's minimum of 3.25.0", status: 'ok' },
+      { message: "runtime: Payload 3.90.2 meets Payload 3's minimum of 3.79.0", status: 'ok' },
     ])
     /* Block configs set admin.group, which older Payload 3 types reject. */
     await expect(
       checkRuntimeRequirements({
-        cwd: await makePackageDir({ next: '15.0.0', payload: '3.24.0' }),
+        cwd: await makePackageDir({ next: '15.0.0', payload: '3.78.0' }),
         nodeVersion: '20.9.0',
         project,
       }),
     ).resolves.toEqual([
       {
         message:
-          'runtime: Payload 3 needs Payload 3.25.0 or newer, but this project has Payload 3.24.0 — upgrade the payload package',
+          'runtime: Payload 3 needs Payload 3.79.0 or newer, but this project has Payload 3.78.0 — upgrade the payload package',
         status: 'warn',
       },
     ])

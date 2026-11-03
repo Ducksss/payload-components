@@ -38,6 +38,11 @@
           "target": "~/src/blocks/HeroBasic/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/HeroBasic/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroBasic/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/HeroBasic/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/HeroBasic/Component.tsx"
@@ -77,6 +82,11 @@
           "path": "payload-components/source/blocks/HeroSplit/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/HeroSplit/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroSplit/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroSplit/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/HeroSplit/Component.tsx",
@@ -128,6 +138,11 @@
           "target": "~/src/blocks/HeroVideo/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/HeroVideo/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroVideo/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/HeroVideo/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/HeroVideo/Component.tsx"
@@ -167,6 +182,11 @@
           "path": "payload-components/source/blocks/HeroProductTilt/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/HeroProductTilt/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroProductTilt/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroProductTilt/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/HeroProductTilt/Component.tsx",
@@ -213,6 +233,11 @@
           "target": "~/src/blocks/HeroAurora/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/HeroAurora/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroAurora/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/HeroAurora/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/HeroAurora/Component.tsx"
@@ -253,6 +278,11 @@
           "path": "payload-components/source/blocks/HeroKinetic/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/HeroKinetic/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/HeroKinetic/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/HeroKinetic/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/HeroKinetic/Component.tsx",
@@ -297,6 +327,11 @@
           "target": "~/src/blocks/FeatureGridBasic/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/FeatureGridBasic/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureGridBasic/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/FeatureGridBasic/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureGridBasic/Component.tsx"
@@ -337,6 +372,11 @@
           "path": "payload-components/source/blocks/FeatureSplit/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureSplit/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FeatureSplit/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureSplit/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/FeatureSplit/Component.tsx",
@@ -381,6 +421,11 @@
           "target": "~/src/blocks/FeatureBento/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/FeatureBento/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureBento/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/FeatureBento/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureBento/Component.tsx"
@@ -421,6 +466,11 @@
           "path": "payload-components/source/blocks/FeatureSteps/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureSteps/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FeatureSteps/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureSteps/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/FeatureSteps/Component.tsx",
@@ -473,6 +523,11 @@
           "target": "~/src/blocks/FeatureAccordion/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/FeatureAccordion/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureAccordion/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/FeatureAccordion/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureAccordion/Component.tsx"
@@ -521,6 +576,11 @@
           "path": "payload-components/source/blocks/FeatureCardsMedia/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureCardsMedia/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FeatureCardsMedia/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureCardsMedia/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/FeatureCardsMedia/Component.tsx",
@@ -573,6 +633,11 @@
           "target": "~/src/blocks/FeatureIconGrid/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/FeatureIconGrid/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FeatureIconGrid/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/FeatureIconGrid/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FeatureIconGrid/Component.tsx"
@@ -605,6 +670,11 @@
           "path": "payload-components/source/blocks/EmbedBasic/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/EmbedBasic/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/EmbedBasic/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/EmbedBasic/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/EmbedBasic/Component.tsx",
@@ -651,6 +721,11 @@
           "target": "~/src/blocks/LogoCloudGrid/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/LogoCloudGrid/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudGrid/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/LogoCloudGrid/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/LogoCloudGrid/Component.tsx"
@@ -688,6 +763,11 @@
           "path": "payload-components/source/blocks/LogoCloudHover/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/LogoCloudHover/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/LogoCloudHover/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudHover/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/LogoCloudHover/Component.tsx",
@@ -742,6 +822,11 @@
           "target": "~/src/blocks/LogoCloudMarquee/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/LogoCloudMarquee/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudMarquee/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/LogoCloudMarquee/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/LogoCloudMarquee/Component.tsx"
@@ -781,6 +866,11 @@
           "target": "~/src/blocks/LogoCloudInline/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/LogoCloudInline/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudInline/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/LogoCloudInline/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/LogoCloudInline/Component.tsx"
@@ -818,6 +908,11 @@
           "path": "payload-components/source/blocks/LogoCloudInlineWrap/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/LogoCloudInlineWrap/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/LogoCloudInlineWrap/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/LogoCloudInlineWrap/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/LogoCloudInlineWrap/Component.tsx",
@@ -861,6 +956,11 @@
           "target": "~/src/blocks/ContentColumns/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ContentColumns/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentColumns/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ContentColumns/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ContentColumns/Component.tsx"
@@ -900,6 +1000,11 @@
           "path": "payload-components/source/blocks/ContentImageLead/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/ContentImageLead/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentImageLead/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentImageLead/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/ContentImageLead/Component.tsx",
@@ -951,6 +1056,11 @@
           "target": "~/src/blocks/ContentFeatureMedia/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ContentFeatureMedia/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentFeatureMedia/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ContentFeatureMedia/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ContentFeatureMedia/Component.tsx"
@@ -998,6 +1108,11 @@
           "path": "payload-components/source/blocks/ContentFeatureSplit/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/ContentFeatureSplit/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentFeatureSplit/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentFeatureSplit/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/ContentFeatureSplit/Component.tsx",
@@ -1049,6 +1164,11 @@
           "target": "~/src/blocks/ContentShowcase/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ContentShowcase/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentShowcase/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ContentShowcase/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ContentShowcase/Component.tsx"
@@ -1088,6 +1208,11 @@
           "path": "payload-components/source/blocks/ContentQuote/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/ContentQuote/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentQuote/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentQuote/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/ContentQuote/Component.tsx",
@@ -1131,6 +1256,11 @@
           "target": "~/src/blocks/ContentCommunity/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ContentCommunity/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentCommunity/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ContentCommunity/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ContentCommunity/Component.tsx"
@@ -1168,6 +1298,11 @@
           "path": "payload-components/source/blocks/IntegrationGrid/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/IntegrationGrid/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/IntegrationGrid/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/IntegrationGrid/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/IntegrationGrid/Component.tsx",
@@ -1209,6 +1344,11 @@
           "target": "~/src/blocks/IntegrationCluster/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/IntegrationCluster/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/IntegrationCluster/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/IntegrationCluster/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/IntegrationCluster/Component.tsx"
@@ -1246,6 +1386,11 @@
           "path": "payload-components/source/blocks/IntegrationSplit/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/IntegrationSplit/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/IntegrationSplit/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/IntegrationSplit/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/IntegrationSplit/Component.tsx",
@@ -1287,6 +1432,11 @@
           "target": "~/src/blocks/IntegrationConnect/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/IntegrationConnect/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/IntegrationConnect/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/IntegrationConnect/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/IntegrationConnect/Component.tsx"
@@ -1324,6 +1474,11 @@
           "path": "payload-components/source/blocks/IntegrationOrbit/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/IntegrationOrbit/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/IntegrationOrbit/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/IntegrationOrbit/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/IntegrationOrbit/Component.tsx",
@@ -1366,6 +1521,11 @@
           "path": "payload-components/source/blocks/IntegrationList/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/IntegrationList/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/IntegrationList/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/IntegrationList/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/IntegrationList/Component.tsx",
@@ -1415,6 +1575,11 @@
           "target": "~/src/blocks/IntegrationMarquee/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/IntegrationMarquee/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/IntegrationMarquee/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/IntegrationMarquee/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/IntegrationMarquee/Component.tsx"
@@ -1452,6 +1617,11 @@
           "path": "payload-components/source/blocks/IntegrationTestimonial/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/IntegrationTestimonial/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/IntegrationTestimonial/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/IntegrationTestimonial/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/IntegrationTestimonial/Component.tsx",
@@ -1495,6 +1665,11 @@
           "target": "~/src/blocks/ContentSplitRows/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ContentSplitRows/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentSplitRows/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ContentSplitRows/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ContentSplitRows/Component.tsx"
@@ -1536,6 +1711,11 @@
           "target": "~/src/blocks/ContentRows/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ContentRows/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentRows/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ContentRows/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ContentRows/Component.tsx"
@@ -1575,6 +1755,11 @@
           "path": "payload-components/source/blocks/ContentImageFrame/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/ContentImageFrame/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentImageFrame/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentImageFrame/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/ContentImageFrame/Component.tsx",
@@ -1626,6 +1811,11 @@
           "target": "~/src/blocks/ContentStats/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ContentStats/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentStats/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ContentStats/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ContentStats/Component.tsx"
@@ -1662,6 +1852,11 @@
           "target": "~/src/blocks/ContentList/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ContentList/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentList/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ContentList/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ContentList/Component.tsx"
@@ -1696,6 +1891,11 @@
           "path": "payload-components/source/blocks/ContentListColumns/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/ContentListColumns/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContentListColumns/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentListColumns/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/ContentListColumns/Component.tsx",
@@ -1742,6 +1942,11 @@
           "target": "~/src/blocks/ContentListIcons/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ContentListIcons/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContentListIcons/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ContentListIcons/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ContentListIcons/Component.tsx"
@@ -1779,6 +1984,11 @@
           "path": "payload-components/source/blocks/CallToActionCentered/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/CallToActionCentered/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CallToActionCentered/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/CallToActionCentered/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/CallToActionCentered/Component.tsx",
@@ -1820,6 +2030,11 @@
           "target": "~/src/blocks/CallToActionBoxed/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/CallToActionBoxed/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/CallToActionBoxed/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/CallToActionBoxed/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/CallToActionBoxed/Component.tsx"
@@ -1857,6 +2072,11 @@
           "path": "payload-components/source/blocks/CallToActionSplit/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/CallToActionSplit/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CallToActionSplit/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/CallToActionSplit/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/CallToActionSplit/Component.tsx",
@@ -1906,6 +2126,11 @@
           "path": "payload-components/source/blocks/CallToActionSignup/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/CallToActionSignup/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CallToActionSignup/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/CallToActionSignup/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/CallToActionSignup/Component.tsx",
@@ -1962,6 +2187,11 @@
           "target": "~/src/blocks/ContactRoutingForm/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ContactRoutingForm/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContactRoutingForm/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ContactRoutingForm/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ContactRoutingForm/Component.tsx"
@@ -2013,6 +2243,11 @@
           "target": "~/src/blocks/ContactChannels/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ContactChannels/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContactChannels/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ContactChannels/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ContactChannels/Component.tsx"
@@ -2052,6 +2287,11 @@
           "path": "payload-components/source/blocks/TeamRoster/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/TeamRoster/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TeamRoster/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TeamRoster/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/TeamRoster/Component.tsx",
@@ -2095,6 +2335,11 @@
           "target": "~/src/blocks/TeamGrid/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/TeamGrid/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TeamGrid/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/TeamGrid/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/TeamGrid/Component.tsx"
@@ -2134,6 +2379,11 @@
           "path": "payload-components/source/blocks/TeamBios/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/TeamBios/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TeamBios/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TeamBios/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/TeamBios/Component.tsx",
@@ -2178,6 +2428,11 @@
           "target": "~/src/blocks/FaqAccordion/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/FaqAccordion/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FaqAccordion/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/FaqAccordion/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FaqAccordion/Component.tsx"
@@ -2218,6 +2473,11 @@
           "path": "payload-components/source/blocks/FaqSplit/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/FaqSplit/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FaqSplit/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FaqSplit/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/FaqSplit/Component.tsx",
@@ -2261,6 +2521,11 @@
           "path": "payload-components/source/blocks/FaqCard/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/FaqCard/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FaqCard/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FaqCard/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/FaqCard/Component.tsx",
@@ -2313,6 +2578,11 @@
           "target": "~/src/blocks/FaqIcons/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/FaqIcons/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FaqIcons/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/FaqIcons/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FaqIcons/Component.tsx"
@@ -2363,6 +2633,11 @@
           "target": "~/src/blocks/FaqGrouped/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/FaqGrouped/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FaqGrouped/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/FaqGrouped/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FaqGrouped/Component.tsx"
@@ -2403,6 +2678,11 @@
           "path": "payload-components/source/blocks/FaqGrid/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/FaqGrid/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FaqGrid/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FaqGrid/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/FaqGrid/Component.tsx",
@@ -2447,6 +2727,11 @@
           "path": "payload-components/source/blocks/ComparatorTable/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/ComparatorTable/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ComparatorTable/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ComparatorTable/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/ComparatorTable/Component.tsx",
@@ -2494,6 +2779,11 @@
           "target": "~/src/blocks/ComparatorGrid/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ComparatorGrid/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ComparatorGrid/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ComparatorGrid/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ComparatorGrid/Component.tsx"
@@ -2539,6 +2829,11 @@
           "target": "~/src/blocks/ComparatorStack/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/ComparatorStack/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ComparatorStack/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/ComparatorStack/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/ComparatorStack/Component.tsx"
@@ -2576,6 +2871,11 @@
           "path": "payload-components/source/blocks/TestimonialsQuote/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/TestimonialsQuote/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsQuote/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsQuote/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/TestimonialsQuote/Component.tsx",
@@ -2620,6 +2920,11 @@
           "target": "~/src/blocks/TestimonialsSpotlight/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/TestimonialsSpotlight/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsSpotlight/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/TestimonialsSpotlight/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/TestimonialsSpotlight/Component.tsx"
@@ -2659,6 +2964,11 @@
           "path": "payload-components/source/blocks/TestimonialsGrid/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/TestimonialsGrid/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsGrid/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsGrid/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/TestimonialsGrid/Component.tsx",
@@ -2705,6 +3015,11 @@
           "target": "~/src/blocks/TestimonialsRating/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/TestimonialsRating/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsRating/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/TestimonialsRating/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/TestimonialsRating/Component.tsx"
@@ -2744,6 +3059,11 @@
           "path": "payload-components/source/blocks/TestimonialsBento/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/TestimonialsBento/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/TestimonialsBento/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsBento/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/TestimonialsBento/Component.tsx",
@@ -2787,6 +3107,11 @@
           "target": "~/src/blocks/TestimonialsWall/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/TestimonialsWall/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/TestimonialsWall/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/TestimonialsWall/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/TestimonialsWall/Component.tsx"
@@ -2826,6 +3151,11 @@
           "path": "payload-components/source/blocks/StatsProof/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/StatsProof/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/StatsProof/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/StatsProof/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/StatsProof/Component.tsx",
@@ -2869,6 +3199,11 @@
           "target": "~/src/blocks/StatsGrid/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/StatsGrid/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/StatsGrid/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/StatsGrid/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/StatsGrid/Component.tsx"
@@ -2910,6 +3245,11 @@
           "target": "~/src/blocks/StatsCard/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/StatsCard/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/StatsCard/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/StatsCard/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/StatsCard/Component.tsx"
@@ -2949,6 +3289,11 @@
           "path": "payload-components/source/blocks/StatsInline/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/StatsInline/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/StatsInline/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/StatsInline/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/StatsInline/Component.tsx",
@@ -2996,6 +3341,11 @@
           "target": "~/src/blocks/PricingCards/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/PricingCards/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCards/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/PricingCards/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/PricingCards/Component.tsx"
@@ -3039,6 +3389,11 @@
           "path": "payload-components/source/blocks/PricingCardsMuted/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/PricingCardsMuted/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingCardsMuted/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCardsMuted/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/PricingCardsMuted/Component.tsx",
@@ -3086,6 +3441,11 @@
           "target": "~/src/blocks/PricingCardsCta/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/PricingCardsCta/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingCardsCta/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/PricingCardsCta/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/PricingCardsCta/Component.tsx"
@@ -3128,6 +3488,11 @@
           "path": "payload-components/source/blocks/PricingSplit/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/PricingSplit/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/PricingSplit/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingSplit/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/PricingSplit/Component.tsx",
@@ -3174,6 +3539,11 @@
           "target": "~/src/blocks/PricingEnterprise/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/PricingEnterprise/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/PricingEnterprise/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/PricingEnterprise/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/PricingEnterprise/Component.tsx"
@@ -3213,6 +3583,11 @@
           "path": "payload-components/source/blocks/CollectionQuery/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/CollectionQuery/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/CollectionQuery/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/CollectionQuery/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/CollectionQuery/Component.tsx",
@@ -3279,6 +3654,11 @@
           "target": "~/src/blocks/FooterColumns/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/FooterColumns/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FooterColumns/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/FooterColumns/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FooterColumns/Component.tsx"
@@ -3326,6 +3706,11 @@
           "path": "payload-components/source/blocks/FooterSimple/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/FooterSimple/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/FooterSimple/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FooterSimple/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/FooterSimple/Component.tsx",
@@ -3377,6 +3762,11 @@
           "target": "~/src/blocks/FooterCentered/config.ts"
         },
         {
+          "path": "payload-components/source/blocks/FooterCentered/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/FooterCentered/thumbnail.ts"
+        },
+        {
           "path": "payload-components/source/blocks/FooterCentered/Component.tsx",
           "type": "registry:file",
           "target": "~/src/blocks/FooterCentered/Component.tsx"
@@ -3408,6 +3798,11 @@
           "path": "payload-components/source/blocks/ContactFormBasic/config.ts",
           "type": "registry:file",
           "target": "~/src/blocks/ContactFormBasic/config.ts"
+        },
+        {
+          "path": "payload-components/source/blocks/ContactFormBasic/thumbnail.ts",
+          "type": "registry:file",
+          "target": "~/src/blocks/ContactFormBasic/thumbnail.ts"
         },
         {
           "path": "payload-components/source/blocks/ContactFormBasic/Component.tsx",

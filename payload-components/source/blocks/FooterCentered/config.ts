@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { footerFields, footerLinkFields } from '@/blocks/shared/footerFields'
 
+import { footerCenteredThumbnail } from './thumbnail'
+
 export const FooterCentered: Block = {
   slug: 'footerCentered',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const FooterCentered: Block = {
   interfaceName: 'FooterCenteredBlock',
   admin: {
     group: 'Footer',
+    images: {
+      thumbnail: footerCenteredThumbnail,
+    },
   },
   fields: [
     // Shared footer core (logo, brandLabel, copyright). Variant-specific fields

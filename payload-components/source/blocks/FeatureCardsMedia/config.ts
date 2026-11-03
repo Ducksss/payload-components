@@ -4,6 +4,8 @@ import { featureFields } from '@/blocks/shared/featureFields'
 import { createFeatureIconField } from '@/blocks/shared/featureIcons'
 import { linkGroup } from '@/fields/linkGroup'
 
+import { featureCardsMediaThumbnail } from './thumbnail'
+
 export const FeatureCardsMedia: Block = {
   slug: 'featureCardsMedia',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -12,6 +14,9 @@ export const FeatureCardsMedia: Block = {
   interfaceName: 'FeatureCardsMediaBlock',
   admin: {
     group: 'Feature',
+    images: {
+      thumbnail: featureCardsMediaThumbnail,
+    },
   },
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields

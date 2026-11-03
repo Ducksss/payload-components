@@ -4,7 +4,7 @@ import path from 'node:path'
 /**
  * Reads every source file a component installs, as text, for the docs preview's "Code"
  * tab — the Payload block `config.ts` (the schema), the frontend `Component.tsx`,
- * and any shared `*Fields.ts`. Resolved through `payload-components/registry.json` (the
+ * any shared `*Fields.ts`, and the generated drawer `thumbnail.ts`. Resolved through `payload-components/registry.json` (the
  * source of truth for each component's files) so it never drifts from what installs.
  *
  * Reads the target code as a string to *display* it — it never imports or executes
@@ -20,9 +20,16 @@ export type ComponentSourceFile = { code: string; lang: string; title: string }
 const registryRoot = 'payload-components'
 const registrySourcePrefix = `${registryRoot}/source/`
 
-/* Block schema first, then the renderer, then shared field bases. */
+/* Block schema first, then the renderer, then shared field bases, and the
+   generated Blocks Drawer picture last. */
 const fileRank = (target: string) =>
-  target.endsWith('config.ts') ? 0 : target.endsWith('Component.tsx') ? 1 : 2
+  target.endsWith('config.ts')
+    ? 0
+    : target.endsWith('Component.tsx')
+      ? 1
+      : target.endsWith('/thumbnail.ts')
+        ? 3
+        : 2
 
 const isPathInside = (parentPath: string, childPath: string) => {
   const relative = path.relative(path.resolve(parentPath), path.resolve(childPath))

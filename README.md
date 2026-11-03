@@ -181,7 +181,7 @@ working on this repository.
 
 ### Use A Component
 
-Run the CLI from the root of a supported Payload v3.25+ (or experimental v4) +
+Run the CLI from the root of a supported Payload v3.79+ (or experimental v4) +
 Next.js project:
 
 ```sh

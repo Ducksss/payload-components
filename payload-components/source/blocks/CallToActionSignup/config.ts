@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 import { callToActionFields } from '@/blocks/shared/callToActionFields'
 import { validateSameOriginFormAction } from '@/blocks/shared/safeUrls'
 
+import { callToActionSignupThumbnail } from './thumbnail'
+
 export const CallToActionSignup: Block = {
   slug: 'callToActionSignup',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -11,6 +13,9 @@ export const CallToActionSignup: Block = {
   interfaceName: 'CallToActionSignupBlock',
   admin: {
     group: 'Call to action',
+    images: {
+      thumbnail: callToActionSignupThumbnail,
+    },
   },
   fields: [
     // Shared call-to-action core (title, description). Variant-specific fields

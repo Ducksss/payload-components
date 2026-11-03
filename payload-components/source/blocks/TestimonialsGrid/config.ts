@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { testimonialFields, testimonialItemFields } from '@/blocks/shared/testimonialFields'
 
+import { testimonialsGridThumbnail } from './thumbnail'
+
 export const TestimonialsGrid: Block = {
   slug: 'testimonialsGrid',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const TestimonialsGrid: Block = {
   interfaceName: 'TestimonialsGridBlock',
   admin: {
     group: 'Testimonials',
+    images: {
+      thumbnail: testimonialsGridThumbnail,
+    },
   },
   fields: [
     // Shared testimonials heading (eyebrow, title, description). Edit the shared

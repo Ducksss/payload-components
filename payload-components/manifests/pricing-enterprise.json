@@ -1,8 +1,12 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "pricing-enterprise",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "changelog": [
+    {
+      "version": "0.3.0",
+      "summary": "Shows a picture of the block's layout in the admin Blocks Drawer (admin.images.thumbnail). Needs Payload 3.79 or newer."
+    },
     {
       "version": "0.2.0",
       "summary": "Lists the block under the Pricing heading in the admin Blocks Drawer (admin.group). Needs Payload 3.25 or newer."
@@ -24,7 +28,7 @@
   },
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
-    "payload": "^3.25.0 || ^4.0.0-0"
+    "payload": "^3.79.0 || ^4.0.0-0"
   },
   "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
   "supports": {
@@ -34,6 +38,7 @@
   "files": [
     "src/blocks/shared/pricingFields.ts",
     "src/blocks/PricingEnterprise/config.ts",
+    "src/blocks/PricingEnterprise/thumbnail.ts",
     "src/blocks/PricingEnterprise/Component.tsx"
   ],
   "payloadFragments": [

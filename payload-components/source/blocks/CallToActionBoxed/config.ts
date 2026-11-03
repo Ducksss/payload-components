@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 import { callToActionFields } from '@/blocks/shared/callToActionFields'
 import { linkGroup } from '@/fields/linkGroup'
 
+import { callToActionBoxedThumbnail } from './thumbnail'
+
 export const CallToActionBoxed: Block = {
   slug: 'callToActionBoxed',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -11,6 +13,9 @@ export const CallToActionBoxed: Block = {
   interfaceName: 'CallToActionBoxedBlock',
   admin: {
     group: 'Call to action',
+    images: {
+      thumbnail: callToActionBoxedThumbnail,
+    },
   },
   fields: [
     // Shared call-to-action core (title, description). Variant-specific fields

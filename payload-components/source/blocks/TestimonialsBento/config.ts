@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { testimonialFields, testimonialItemFields } from '@/blocks/shared/testimonialFields'
 
+import { testimonialsBentoThumbnail } from './thumbnail'
+
 export const TestimonialsBento: Block = {
   slug: 'testimonialsBento',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const TestimonialsBento: Block = {
   interfaceName: 'TestimonialsBentoBlock',
   admin: {
     group: 'Testimonials',
+    images: {
+      thumbnail: testimonialsBentoThumbnail,
+    },
   },
   fields: [
     // Shared testimonials heading (eyebrow, title, description). Edit the shared

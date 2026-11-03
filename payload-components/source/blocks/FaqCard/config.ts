@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 import { faqFields, faqItemsField } from '@/blocks/shared/faqFields'
 import { linkGroup } from '@/fields/linkGroup'
 
+import { faqCardThumbnail } from './thumbnail'
+
 export const FaqCard: Block = {
   slug: 'faqCard',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -11,6 +13,9 @@ export const FaqCard: Block = {
   interfaceName: 'FaqCardBlock',
   admin: {
     group: 'FAQ',
+    images: {
+      thumbnail: faqCardThumbnail,
+    },
   },
   fields: [
     // Shared FAQ core (eyebrow, title, description). Variant-specific fields

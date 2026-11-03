@@ -4,6 +4,8 @@ import { featureFields } from '@/blocks/shared/featureFields'
 import { createFeatureIconField } from '@/blocks/shared/featureIcons'
 import { linkGroup } from '@/fields/linkGroup'
 
+import { featureAccordionThumbnail } from './thumbnail'
+
 export const FeatureAccordion: Block = {
   slug: 'featureAccordion',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -12,6 +14,9 @@ export const FeatureAccordion: Block = {
   interfaceName: 'FeatureAccordionBlock',
   admin: {
     group: 'Feature',
+    images: {
+      thumbnail: featureAccordionThumbnail,
+    },
   },
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields

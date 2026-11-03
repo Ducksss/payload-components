@@ -36,12 +36,17 @@ import type { Block } from 'payload'
 
 import { heroFields } from '@/blocks/shared/heroFields'
 
+import { heroBasicThumbnail } from './thumbnail'
+
 export const HeroBasic: Block = {
   slug: 'heroBasic',
   dbName: 'pc_her_bas',
   interfaceName: 'HeroBasicBlock',
   admin: {
     group: 'Hero',
+    images: {
+      thumbnail: heroBasicThumbnail,
+    },
   },
   fields: [
     ...heroFields,
@@ -75,6 +80,9 @@ Those properties each have a downstream effect:
 - `labels.singular: 'Hero Basic'` is the name editors see in the block picker.
 - `admin.group: 'Hero'` lists the block under a Hero heading in that picker, beside its sibling
   variants. Payload added the option in 3.25.
+- `admin.images.thumbnail` is the picture on the block's tile in that picker: a small layout
+  schematic shipped as an SVG data URI in `thumbnail.ts`, so it needs no file in `public/`.
+  Payload added the option in 3.79.
 - `fields` define both the admin controls and the shape passed to the frontend component.
 
 Choose stable identifiers before storing production content. The shipped config keeps a short `dbName`; changing an installed block's stored identifiers later requires a content migration.

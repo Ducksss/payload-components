@@ -130,7 +130,7 @@ export const terminalDemoLines = [
     kind: 'step',
     text: `resolved hero-basic@${heroBasicComponent.version} · payload-website-starter`,
   },
-  { kind: 'step', text: 'copied 3 block source files into src/blocks/' },
+  { kind: 'step', text: 'copied 4 block source files into src/blocks/' },
   { kind: 'step', text: 'registered block in src/collections/Pages/index.ts' },
   { kind: 'step', text: 'wired render mapping in src/blocks/RenderBlocks.tsx' },
   { kind: 'step', text: 'ran payload generate:types' },
@@ -145,6 +145,7 @@ export type TerminalLine = (typeof terminalDemoLines)[number]
 export const frameInstalledFiles = [
   'src/blocks/shared/heroFields.ts',
   'src/blocks/HeroBasic/config.ts',
+  'src/blocks/HeroBasic/thumbnail.ts',
   'src/blocks/HeroBasic/Component.tsx',
   'src/payload-types.ts — regenerated',
   'admin importMap.js — regenerated',
@@ -239,7 +240,7 @@ export const wiringLedger = {
       artifact: 'Block source',
       baseline: 'copied',
       component: 'copied',
-      path: 'src/blocks/{shared/heroFields.ts, HeroBasic/config.ts, HeroBasic/Component.tsx}',
+      path: 'src/blocks/{shared/heroFields.ts, HeroBasic/config.ts, HeroBasic/thumbnail.ts, HeroBasic/Component.tsx}',
     },
     {
       artifact: 'Collection schema',

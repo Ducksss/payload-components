@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { iconField } from '@/blocks/shared/contentIcons'
 
+import { contentListIconsThumbnail } from './thumbnail'
+
 export const ContentListIcons: Block = {
   slug: 'contentListIcons',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const ContentListIcons: Block = {
   interfaceName: 'ContentListIconsBlock',
   admin: {
     group: 'Content',
+    images: {
+      thumbnail: contentListIconsThumbnail,
+    },
   },
   fields: [
     {

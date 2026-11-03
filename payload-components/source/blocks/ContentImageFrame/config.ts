@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { contentFields } from '@/blocks/shared/contentFields'
 
+import { contentImageFrameThumbnail } from './thumbnail'
+
 export const ContentImageFrame: Block = {
   slug: 'contentImageFrame',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const ContentImageFrame: Block = {
   interfaceName: 'ContentImageFrameBlock',
   admin: {
     group: 'Content',
+    images: {
+      thumbnail: contentImageFrameThumbnail,
+    },
   },
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

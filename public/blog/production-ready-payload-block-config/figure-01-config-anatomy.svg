@@ -257,7 +257,7 @@
   interfaceName: &apos;HeroBasicBlock&apos;,
   admin: {
     group: &apos;Hero&apos;,
-  }," data-evidence-truncated="true">
+    images: {" data-evidence-truncated="true">
   <text class="footer-label" x="48" y="607">EVIDENCE EXCERPT</text>
   <text class="evidence-line" x="48" y="626">export const HeroBasic: Block = { · slug: &apos;heroBasic&apos;, · // Existing</text>
 <text class="evidence-line" x="48" y="641">apps must migrate stored data before adopting this identifier: · …</text>

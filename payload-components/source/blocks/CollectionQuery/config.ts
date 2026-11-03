@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { collectionQueryThumbnail } from './thumbnail'
+
 export const CollectionQuery: Block = {
   slug: 'collectionQuery',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -8,6 +10,9 @@ export const CollectionQuery: Block = {
   interfaceName: 'CollectionQueryBlock',
   admin: {
     group: 'Collection query',
+    images: {
+      thumbnail: collectionQueryThumbnail,
+    },
   },
   fields: [
     {

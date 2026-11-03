@@ -4,6 +4,8 @@ import { featureFields } from '@/blocks/shared/featureFields'
 import { createFeatureIconField } from '@/blocks/shared/featureIcons'
 import { linkGroup } from '@/fields/linkGroup'
 
+import { featureIconGridThumbnail } from './thumbnail'
+
 export const FeatureIconGrid: Block = {
   slug: 'featureIconGrid',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -12,6 +14,9 @@ export const FeatureIconGrid: Block = {
   interfaceName: 'FeatureIconGridBlock',
   admin: {
     group: 'Feature',
+    images: {
+      thumbnail: featureIconGridThumbnail,
+    },
   },
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields

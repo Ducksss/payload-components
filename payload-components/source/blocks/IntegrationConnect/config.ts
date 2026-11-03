@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { integrationFeaturedMark, integrationFields } from '@/blocks/shared/integrationFields'
 
+import { integrationConnectThumbnail } from './thumbnail'
+
 export const IntegrationConnect: Block = {
   slug: 'integrationConnect',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const IntegrationConnect: Block = {
   interfaceName: 'IntegrationConnectBlock',
   admin: {
     group: 'Integration',
+    images: {
+      thumbnail: integrationConnectThumbnail,
+    },
   },
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

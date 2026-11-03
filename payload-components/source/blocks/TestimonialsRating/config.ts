@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { testimonialFields, testimonialItemFields } from '@/blocks/shared/testimonialFields'
 
+import { testimonialsRatingThumbnail } from './thumbnail'
+
 export const TestimonialsRating: Block = {
   slug: 'testimonialsRating',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const TestimonialsRating: Block = {
   interfaceName: 'TestimonialsRatingBlock',
   admin: {
     group: 'Testimonials',
+    images: {
+      thumbnail: testimonialsRatingThumbnail,
+    },
   },
   fields: [
     // Shared testimonials heading (eyebrow, title, description). Edit the shared
