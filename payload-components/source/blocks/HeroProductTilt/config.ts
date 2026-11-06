@@ -8,6 +8,9 @@ export const HeroProductTilt: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_hero_prod_tilt',
   interfaceName: 'HeroProductTiltBlock',
+  admin: {
+    group: 'Hero',
+  },
   fields: [
     // Shared hero core (eyebrow, title, description, CTA links). Variant-specific
     // fields follow; edit the shared shape in @/blocks/shared/heroFields.

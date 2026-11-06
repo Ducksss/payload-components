@@ -5,6 +5,9 @@ import { linkGroup } from '@/fields/linkGroup'
 export const ExampleBasic: Block = {
   slug: 'exampleBasic',
   interfaceName: 'ExampleBasicBlock',
+  admin: {
+    group: 'Example',
+  },
   fields: [
     {
       name: 'eyebrow',

@@ -1,8 +1,12 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "integration-orbit",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "changelog": [
+    {
+      "version": "0.2.0",
+      "summary": "Lists the block under the Integration heading in the admin Blocks Drawer (admin.group). Needs Payload 3.25 or newer."
+    },
     {
       "version": "0.1.1",
       "summary": "Version the current component and shared source, including explicit localization semantics where applicable."
@@ -18,7 +22,7 @@
   "dependencies": {},
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
-    "payload": "^3.0.0 || ^4.0.0-0"
+    "payload": "^3.25.0 || ^4.0.0-0"
   },
   "supportedTargets": ["payload-website-starter", "payload-blocks-app"],
   "supports": {

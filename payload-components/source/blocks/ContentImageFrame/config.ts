@@ -8,6 +8,9 @@ export const ContentImageFrame: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_con_ima_fra',
   interfaceName: 'ContentImageFrameBlock',
+  admin: {
+    group: 'Content',
+  },
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/contentFields.

@@ -9,6 +9,9 @@ export const FaqGrouped: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_faq_gro',
   interfaceName: 'FaqGroupedBlock',
+  admin: {
+    group: 'FAQ',
+  },
   fields: [
     // Shared FAQ core (eyebrow, title, description). This variant buckets
     // questions under titled, icon-tagged groups, so it defines a nested

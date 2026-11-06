@@ -9,6 +9,9 @@ export const FaqCard: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_faq_car',
   interfaceName: 'FaqCardBlock',
+  admin: {
+    group: 'FAQ',
+  },
   fields: [
     // Shared FAQ core (eyebrow, title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/faqFields.

@@ -8,6 +8,9 @@ export const FooterColumns: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_foo_col',
   interfaceName: 'FooterColumnsBlock',
+  admin: {
+    group: 'Footer',
+  },
   fields: [
     // Shared footer core (logo, brandLabel, copyright). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/footerFields.

@@ -9,6 +9,9 @@ export const CallToActionCentered: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_cal_to_act_cen',
   interfaceName: 'CallToActionCenteredBlock',
+  admin: {
+    group: 'Call to action',
+  },
   fields: [
     // Shared call-to-action core (title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/callToActionFields.

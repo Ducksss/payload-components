@@ -9,6 +9,9 @@ export const FeatureBento: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_fea_ben',
   interfaceName: 'FeatureBentoBlock',
+  admin: {
+    group: 'Feature',
+  },
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/featureFields.

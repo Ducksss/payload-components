@@ -8,6 +8,9 @@ export const TeamGrid: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_tea_gri',
   interfaceName: 'TeamGridBlock',
+  admin: {
+    group: 'Team',
+  },
   fields: [
     // Shared team core (eyebrow, title). Variant-specific fields follow; edit the
     // shared shape in @/blocks/shared/teamFields.

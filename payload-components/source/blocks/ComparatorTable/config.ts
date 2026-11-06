@@ -9,6 +9,9 @@ export const ComparatorTable: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_com_tab',
   interfaceName: 'ComparatorTableBlock',
+  admin: {
+    group: 'Comparator',
+  },
   fields: [
     // Shared comparator header (title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/comparatorFields.

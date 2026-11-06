@@ -8,6 +8,9 @@ export const PricingCards: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_pri_car',
   interfaceName: 'PricingCardsBlock',
+  admin: {
+    group: 'Pricing',
+  },
   fields: [
     // Shared pricing heading (eyebrow, title, description). Variant-specific
     // fields follow; edit the shared shape in @/blocks/shared/pricingFields.

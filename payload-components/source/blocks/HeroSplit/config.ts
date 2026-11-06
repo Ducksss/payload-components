@@ -8,6 +8,9 @@ export const HeroSplit: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_hero_spl',
   interfaceName: 'HeroSplitBlock',
+  admin: {
+    group: 'Hero',
+  },
   fields: [
     // Shared hero core (eyebrow, title, description, CTA links). Variant-specific
     // fields follow; edit the shared shape in @/blocks/shared/heroFields.

@@ -8,6 +8,9 @@ export const TestimonialsSpotlight: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_tes_spo',
   interfaceName: 'TestimonialsSpotlightBlock',
+  admin: {
+    group: 'Testimonials',
+  },
   fields: [
     // A single centered testimonial — the shared one-quote shape (quote, author,
     // optional role, optional avatar). Edit the shared shape in

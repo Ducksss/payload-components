@@ -9,6 +9,9 @@ export const ContactRoutingForm: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_contact_route',
   interfaceName: 'ContactRoutingFormBlock',
+  admin: {
+    group: 'Contact',
+  },
   fields: [
     // Shared contact core (eyebrow, title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/contactFields.

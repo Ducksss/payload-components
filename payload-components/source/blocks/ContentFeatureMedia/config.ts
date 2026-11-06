@@ -9,6 +9,9 @@ export const ContentFeatureMedia: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_con_fea_med',
   interfaceName: 'ContentFeatureMediaBlock',
+  admin: {
+    group: 'Content',
+  },
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/contentFields.

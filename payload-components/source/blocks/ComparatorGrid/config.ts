@@ -9,6 +9,9 @@ export const ComparatorGrid: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_com_gri',
   interfaceName: 'ComparatorGridBlock',
+  admin: {
+    group: 'Comparator',
+  },
   fields: [
     // Shared comparator header (title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/comparatorFields.
