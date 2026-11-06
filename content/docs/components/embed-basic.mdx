@@ -8,24 +8,15 @@ icon: MonitorPlay
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add embed-basic
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="embed-basic"
+  command="npx payload-components add embed-basic"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/embed-basic.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/embed-basic.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="embed-basic" />
+<ComponentUsage slug="embed-basic" />
 
 ## Content model
 
@@ -58,9 +49,9 @@ and a narrowed permissions policy.
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="embed-basic" />
+<ComponentWiring slug="embed-basic" />
 
 ## Requirements
 

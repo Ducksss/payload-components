@@ -8,24 +8,15 @@ icon: Wallet
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add pricing-cards-muted
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="pricing-cards-muted"
+  command="npx payload-components add pricing-cards-muted"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-cards-muted.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-cards-muted.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="pricing-cards-muted" />
+<ComponentUsage slug="pricing-cards-muted" />
 
 ## Content model
 
@@ -60,9 +51,9 @@ Each item in `plans` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="pricing-cards-muted" />
+<ComponentWiring slug="pricing-cards-muted" />
 
 ## Requirements
 

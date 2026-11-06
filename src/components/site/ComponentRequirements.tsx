@@ -14,6 +14,12 @@ import {
  * supported target, Payload/Next majors, and the shadcn UI it pulls in. Next.js
  * majors are listed per Payload major, because the pairing is not a cross
  * product: Payload v4 runs on Next.js 16 only. */
+
+/* wrap-anywhere keeps a path whole when it fits a line and splits it only in a
+ * phone column, where the alternative is page overflow. */
+const code = 'wrap-anywhere font-mono text-[13px] text-foreground'
+const paragraph = 'max-w-prose text-sm leading-6 text-muted-foreground'
+
 export async function ComponentRequirements({ slug }: { slug: string }) {
   const manifest = await getComponentManifest(slug)
 
@@ -37,7 +43,7 @@ export async function ComponentRequirements({ slug }: { slug: string }) {
 
   const fileOnly = manifest.payloadFragments.length === 0
 
-  const rows: { label: string; value: ReactNode }[] = [
+  const cells: { label: string; value: ReactNode }[] = [
     { label: 'Target', value: manifest.supportedTargets.join(', ') },
     { label: 'Payload', value: compatibility.map(formatPayloadMajor).join(' / ') },
     {
@@ -51,24 +57,34 @@ export async function ComponentRequirements({ slug }: { slug: string }) {
               </span>
             )),
     },
-    { label: 'shadcn UI', value: deps.length ? deps.join(', ') : 'none' },
+    {
+      label: 'shadcn UI',
+      value: deps.length
+        ? deps.map((dep, index) => (
+            <span key={dep}>
+              {index > 0 ? ', ' : ''}
+              <code className={code}>{dep}</code>
+            </span>
+          ))
+        : 'None',
+    },
   ]
 
   return (
-    <div className="not-prose my-6 flex flex-col gap-4">
+    <div className="not-prose flex flex-col gap-4">
       <dl className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
-        {rows.map((row) => (
-          <div key={row.label} className="flex flex-col gap-1 bg-background p-4">
-            <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              {row.label}
+        {cells.map((cell) => (
+          <div className="flex flex-col gap-1 bg-background p-5" key={cell.label}>
+            <dt className="font-mono text-xs uppercase tracking-eyebrow text-muted-foreground">
+              {cell.label}
             </dt>
-            <dd className="font-mono text-sm text-foreground">{row.value}</dd>
+            <dd className="text-sm leading-6 text-foreground">{cell.value}</dd>
           </div>
         ))}
       </dl>
 
       {experimental.length ? (
-        <p className="text-sm leading-6 text-muted-foreground">
+        <p className={paragraph}>
           {experimental.map(describeExperimentalSupport).join(' ')}
           {stable.length
             ? ` Payload ${stable.map(formatPayloadMajor).join(' and ')} stays fully supported.`
@@ -77,33 +93,36 @@ export async function ComponentRequirements({ slug }: { slug: string }) {
       ) : null}
 
       {fileOnly ? (
-        <p className="text-sm leading-6 text-muted-foreground">
+        <p className={paragraph}>
           Direct shadcn installation needs React 19 and Tailwind with your theme tokens; this
           component has no Payload runtime imports. The targets above apply to CLI install tracking.
         </p>
       ) : null}
 
       {requiredFiles.length ? (
-        <p className="text-sm leading-6 text-muted-foreground">
+        <p className={paragraph}>
           Your project must already expose{' '}
           {requiredFiles.map((file, index) => (
             <span key={file}>
               {index > 0 ? ', ' : ''}
-              <code className="font-mono text-[13px] text-foreground/90">{file}</code>
+              <code className={code}>{file}</code>
             </span>
-          ))}{' '}
-          — {fileOnly ? 'the host shape checked by' : 'the surfaces patched by'}{' '}
-          <code className="font-mono text-[13px]">payload-components add</code>. The CLI verifies
-          this against the support matrix before touching anything.
+          ))}
+          , {fileOnly ? 'the host shape checked by' : 'the surfaces patched by'}{' '}
+          <code className={code}>payload-components add</code>. The CLI verifies this against the
+          support matrix before touching anything.
         </p>
       ) : null}
 
       {manifest.requires?.projectFiles.map((requirement) => (
-        <p className="text-sm leading-6 text-muted-foreground" key={requirement.label}>
+        <p className={paragraph} key={requirement.label}>
           <strong className="font-medium text-foreground">{requirement.label}:</strong>{' '}
-          <code className="font-mono text-[13px] text-foreground/90">
-            {requirement.paths.join(' or ')}
-          </code>{' '}
+          {requirement.paths.map((path, index) => (
+            <span key={path}>
+              {index > 0 ? ' or ' : ''}
+              <code className={code}>{path}</code>
+            </span>
+          ))}{' '}
           must match the expected starter contract.{' '}
           {requirement.collectionIdentifiers?.length ? (
             <>

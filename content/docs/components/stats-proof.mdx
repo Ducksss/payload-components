@@ -8,24 +8,15 @@ icon: ChartNoAxesCombined
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add stats-proof
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="stats-proof"
+  command="npx payload-components add stats-proof"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-proof.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-proof.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="stats-proof" />
+<ComponentUsage slug="stats-proof" />
 
 ## Content model
 
@@ -59,9 +50,9 @@ Each item in `metrics` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="stats-proof" />
+<ComponentWiring slug="stats-proof" />
 
 ## Requirements
 

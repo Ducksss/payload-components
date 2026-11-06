@@ -8,24 +8,15 @@ icon: ContactRound
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add contact-routing-form
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="contact-routing-form"
+  command="npx payload-components add contact-routing-form"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/contact-routing-form.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/contact-routing-form.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="contact-routing-form" />
+<ComponentUsage slug="contact-routing-form" />
 
 ## Content model
 
@@ -65,9 +56,9 @@ Each item in `channels` carries:
 each with a clear English default. Name, email, and message are required inputs; organization and
 phone are optional. The form also includes an off-screen `website` honeypot.
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="contact-routing-form" />
+<ComponentWiring slug="contact-routing-form" />
 
 ## Requirements
 

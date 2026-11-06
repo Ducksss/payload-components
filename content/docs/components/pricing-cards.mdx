@@ -8,24 +8,15 @@ icon: CircleDollarSign
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add pricing-cards
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="pricing-cards"
+  command="npx payload-components add pricing-cards"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-cards.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-cards.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="pricing-cards" />
+<ComponentUsage slug="pricing-cards" />
 
 ## Content model
 
@@ -60,9 +51,9 @@ Each item in `plans` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="pricing-cards" />
+<ComponentWiring slug="pricing-cards" />
 
 ## Requirements
 

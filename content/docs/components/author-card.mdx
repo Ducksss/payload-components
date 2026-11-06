@@ -8,28 +8,34 @@ icon: UserRound
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    Track the file-only install in a supported Payload project:
+<ComponentInstall
+  slug="author-card"
+  command="npx payload-components add author-card"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/author-card.json"
+/>
 
-    ```bash
-    npx payload-components add author-card
-    ```
+## Usage
 
-  </Tab>
-  <Tab value="Manual">
-    Copy the standalone React component directly. No Payload wiring is needed:
+<ComponentUsage slug="author-card" />
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/author-card.json
-    ```
+```tsx
+import { AuthorCard } from '@/components/AuthorCard/Component'
 
-  </Tab>
-</Tabs>
+// Compose after the article body in your existing post template.
+// Pass only public profile fields from your author data.
+export function ArticleAuthor() {
+  return (
+    <AuthorCard
+      name="Alex Morgan"
+      role="Editor & developer"
+      bio="Building thoughtful publishing tools and sharing what we learn."
+      href="/authors/alex-morgan"
+    />
+  )
+}
+```
 
-## What it installs
-
-<ComponentWiring slug="author-card" />
+The starter author hook exposes names through populatedAuthors. Role, biography, avatar, and profile URLs are optional additions owned by your project; this install does not create an Authors collection or expose private Users fields. Pass your Media or Image element as avatar when available.
 
 ## Content model
 
@@ -66,28 +72,9 @@ and localization. Resolve relationship IDs before supplying public display data.
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="author-card" />
-
-```tsx
-import { AuthorCard } from '@/components/AuthorCard/Component'
-
-// Compose after the article body in your existing post template.
-// Pass only public profile fields from your author data.
-export function ArticleAuthor() {
-  return (
-    <AuthorCard
-      name="Alex Morgan"
-      role="Editor & developer"
-      bio="Building thoughtful publishing tools and sharing what we learn."
-      href="/authors/alex-morgan"
-    />
-  )
-}
-```
-
-The starter author hook exposes names through populatedAuthors. Role, biography, avatar, and profile URLs are optional additions owned by your project; this install does not create an Authors collection or expose private Users fields. Pass your Media or Image element as avatar when available.
+<ComponentWiring slug="author-card" />
 
 ## Requirements
 

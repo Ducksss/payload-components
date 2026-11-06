@@ -186,37 +186,57 @@ Every component doc page (`content/docs/components/<slug>.mdx`) follows one fixe
 component page. Match it exactly when adding or editing a component; do not invent per-component layouts.
 
 - **Header is automatic.** `src/app/[locale]/docs/[[...slug]]/page.tsx` detects `/docs/components/*` and renders
-  `ComponentDocHeader` — title + description + at-a-glance chips (`v{version} · Page block · {Family}
-family · {target}`, from `componentEntries`) on the left; Copy Page + prev/next arrows (catalog order)
-  on the right. The component **must** be in `componentEntries` (`src/lib/component-catalog.ts`). Do **not** add an `<h1>` or
-  repeat the description in the MDX body — frontmatter drives both.
+  `ComponentDocHeader` — title + one-sentence description + a quiet meta line (`v{version} · Page block ·
+{target}`, from `componentEntries`) on the left; Copy Page + prev/next arrows (catalog order) on the right.
+  Component pages keep the Fumadocs right-rail table of contents (they are not `full`), so every `##`/`###`
+  heading in the MDX is a jump target. The component **must** be in `componentEntries`
+  (`src/lib/component-catalog.ts`). Do **not** add an `<h1>` or repeat the description in the MDX body —
+  frontmatter drives both.
 - **Frontmatter:** `title` (must equal the component's `componentEntries` title — the e2e component-page loop asserts
   `H1 === component.title`), `description`, `icon` (any Lucide name).
 - **The rich sections are data-driven from the manifest/registry** (via `src/lib/component-manifest.ts`),
   so the MDX stays thin and the sections can't drift from what installs. Body order, nothing above
   the preview:
-  1. `<ComponentPreview slug="<slug>" />` — **Preview** (demo twin from
-     `src/components/site/demos/registry.ts`) + **Code** (every installed source file — `config.ts`,
-     `Component.tsx`, shared `*Fields.ts` — read at build via `getComponentSources` in
-     `src/lib/component-source.ts`) tabs. A new component **must** register a demo twin, or the preview is empty.
-  2. `## Installation` — `<Tabs items={['Command', 'Manual']}>`: Command = `npx payload-components add
-<slug>`; Manual = the direct `pnpm dlx shadcn@latest add …/r/<slug>.json` URL.
-  3. `## What it installs` — `<ComponentWiring slug="<slug>" />`: the copied files + a factual table of the
-     edits the install makes (register the block, map the renderer, regenerate types + import map) +
-     shared-base callout + idempotency note, all from the manifest. State facts — **not** a
-     shadcn comparison; that pitch belongs on the landing, not the reference. Do **not**
-     hand-write the file tree or fragment list.
-  4. `## Content model` — `<TypeTable>` of the block fields (+ a second table for array-item fields).
+  1. `<ComponentPreview slug="<slug>" />` — the live demo twin (from
+     `src/components/site/demos/registry.ts`) in the responsive frame, with a **code peek** beneath it:
+     the first lines of `config.ts` fade out under a "View code" button that expands every installed
+     source file (`config.ts`, `Component.tsx`, shared `*Fields.ts`, read at build via
+     `getComponentSources` in `src/lib/component-source.ts`). A new component **must** register a demo
+     twin, or the preview is empty.
+  2. `## Installation` — `<ComponentInstall slug="<slug>" command="npx payload-components add <slug>"
+manual="pnpm dlx shadcn@latest add …/r/<slug>.json" />`: the package-manager switcher (npm is the
+     default and what the primary copy button copies) plus the manual registry command. Both commands
+     stay literal props so the markdown surfaces keep them.
+  3. `## Usage` — `<ComponentUsage slug="<slug>" />`: what the editor sees — a static mock of the admin
+     block form built from the manifest's `sampleContent` — and the add → fill → publish line, or the
+     template-composition note for a file-only component (those also carry a minimal React usage
+     example in the MDX).
+  4. `## Examples` — **optional.** One `###` heading per content state registered for the slug in
+     `src/components/site/demos/states.ts`, a one-sentence summary, then
+     `<ComponentExample slug="<slug>" state="<id>" />` (a toolbar-less live preview of that state at
+     `/components/preview/<slug>/<state>` plus a peek of the block data an editor would enter). Headings
+     and summaries live in the MDX so the table of contents and `/llms*` see them. Omit the section
+     when the slug has no states.
+  5. `## Content model` — `<TypeTable>` of the block fields (+ a second table for array-item fields).
      The one hand-authored section; note which fields come from the shared family base vs the variant.
-  5. `## Usage` — `<ComponentUsage slug="<slug>" />`: the admin steps (add the block to a Page → fill → publish), or template-composition guidance for an explicit file-only component. Include a minimal React usage example in the MDX for file-only components.
-  6. `## Requirements` — `<ComponentRequirements slug="<slug>" />`: target, Payload/Next majors, shadcn deps.
-  7. `## In this family` — `<ComponentFamily slug="<slug>" />`: sibling variants. Include this section
-     **only when the family has 2+ variants** (it renders nothing for a lone variant — omit the
-     heading too, e.g. `embed-basic` and `collection-query` have none).
+  6. `## What it installs` — `<ComponentWiring slug="<slug>" />`: the Payload composition tree, the
+     installed file tree, and a factual ledger of the edits the install makes (register the block, map
+     the renderer, regenerate types + import map) + shared-base note + idempotency note, all from the
+     manifest. State facts — **not** a shadcn comparison; that pitch belongs on the landing, not the
+     reference. Do **not** hand-write the file tree or fragment list.
+  7. `## Requirements` — `<ComponentRequirements slug="<slug>" />`: target, Payload/Next majors, shadcn deps.
+  8. `## In this family` — `<ComponentFamily slug="<slug>" />`: sibling variants with live thumbnails.
+     Include this section **only when the family has 2+ variants** (it renders nothing for a lone
+     variant — omit the heading too, e.g. `embed-basic` and `collection-query` have none).
 - **Keep the install command and Content-model prose in MDX**, never in page chrome — the `/llms*`
-  and per-page markdown surfaces serialize MDX, and `tests/e2e/geo.e2e.spec.ts` pins exact
-  install-command substrings. Data-driven sections must scroll/stack inside their cards (no page
-  overflow; the ledger stacks under `md`).
+  and per-page markdown surfaces serialize MDX (JSX tags with their props verbatim), and
+  `tests/e2e/geo.e2e.spec.ts` pins exact install-command substrings. Data-driven sections must
+  scroll/stack inside their cards (no page overflow; ledgers stack under `md`).
+- **Rewriting the corpus:** the section order is enforced by shape, not by a generator — when the
+  shape changes, rewrite every `content/docs/components/*.mdx`, both
+  `payload-components/component-template/**/doc-page.mdx` scaffolds, and the pins in
+  `tests/int/fumadocs-site.int.spec.ts` / `tests/int/payload-components-new-command.int.spec.ts` in
+  the same change.
 
 ## Editorial docs pages
 

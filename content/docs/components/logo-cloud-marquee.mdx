@@ -8,27 +8,15 @@ icon: GalleryHorizontalEnd
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add logo-cloud-marquee
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="logo-cloud-marquee"
+  command="npx payload-components add logo-cloud-marquee"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/logo-cloud-marquee.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/logo-cloud-marquee.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="logo-cloud-marquee" />
-
-This variant also installs the shared `InfiniteSlider` and `ProgressiveBlur` client components and
-adds the `motion` package — the marquee animation runs on the client.
+<ComponentUsage slug="logo-cloud-marquee" />
 
 ## Content model
 
@@ -59,9 +47,12 @@ Each item in `logos` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="logo-cloud-marquee" />
+<ComponentWiring slug="logo-cloud-marquee" />
+
+This variant also installs the shared `InfiniteSlider` and `ProgressiveBlur` client components and
+adds the `motion` package — the marquee animation runs on the client.
 
 ## Requirements
 

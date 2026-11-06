@@ -8,24 +8,15 @@ icon: GalleryHorizontalEnd
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add feature-cards-media
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="feature-cards-media"
+  command="npx payload-components add feature-cards-media"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-cards-media.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-cards-media.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="feature-cards-media" />
+<ComponentUsage slug="feature-cards-media" />
 
 ## Content model
 
@@ -57,9 +48,9 @@ Each item in `items` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="feature-cards-media" />
+<ComponentWiring slug="feature-cards-media" />
 
 ## Requirements
 

@@ -8,24 +8,15 @@ icon: Star
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add testimonials-rating
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="testimonials-rating"
+  command="npx payload-components add testimonials-rating"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/testimonials-rating.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/testimonials-rating.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="testimonials-rating" />
+<ComponentUsage slug="testimonials-rating" />
 
 ## Content model
 
@@ -58,9 +49,9 @@ Each item in `testimonials` carries a star rating plus the shared one-quote shap
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="testimonials-rating" />
+<ComponentWiring slug="testimonials-rating" />
 
 ## Requirements
 

@@ -17,31 +17,26 @@ icon: LayoutGrid
     Content model TypeTable (field descriptions need a human).
   • <ComponentPreview> only renders if the slug is registered in src/components/site/demos/registry.ts.
   • Keep the install command + Content-model prose in MDX (the /llms* + per-page-markdown surfaces
-    serialize this file and geo.e2e pins the install command).
+    serialize this file and geo.e2e pins the install command). <ComponentInstall> takes both
+    commands as props so they stay literal in this file.
+  • Optional `## Examples` (between Usage and Content model): one `###` per content state registered
+    in src/components/site/demos/states.ts, a one-sentence summary, then
+    <ComponentExample slug="…" state="…" />. Omit the section when the slug has no states.
 */}
 
 <ComponentPreview slug="example-basic" />
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add example-basic
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="example-basic"
+  command="npx payload-components add example-basic"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/example-basic.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/example-basic.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="example-basic" />
+<ComponentUsage slug="example-basic" />
 
 ## Content model
 
@@ -70,9 +65,9 @@ Each item in `items` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="example-basic" />
+<ComponentWiring slug="example-basic" />
 
 ## Requirements
 

@@ -8,24 +8,15 @@ icon: Columns2
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add integration-split
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="integration-split"
+  command="npx payload-components add integration-split"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-split.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-split.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="integration-split" />
+<ComponentUsage slug="integration-split" />
 
 ## Content model
 
@@ -70,9 +61,9 @@ Each item in `integrations` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="integration-split" />
+<ComponentWiring slug="integration-split" />
 
 ## Requirements
 

@@ -8,24 +8,15 @@ icon: Boxes
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add integration-cluster
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="integration-cluster"
+  command="npx payload-components add integration-cluster"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-cluster.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-cluster.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="integration-cluster" />
+<ComponentUsage slug="integration-cluster" />
 
 ## Content model
 
@@ -70,9 +61,9 @@ Each item in `integrations` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="integration-cluster" />
+<ComponentWiring slug="integration-cluster" />
 
 ## Requirements
 

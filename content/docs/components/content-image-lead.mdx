@@ -9,27 +9,15 @@ icon: Image
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    <RunnableCommand
-      command="npx payload-components add content-image-lead"
-      label="Copy the content-image-lead install command"
-      trackInstall
-      emphasis="primary"
-    />
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="content-image-lead"
+  command="npx payload-components add content-image-lead"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-image-lead.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-image-lead.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="content-image-lead" />
+<ComponentUsage slug="content-image-lead" />
 
 ## Content model
 
@@ -58,9 +46,9 @@ Each item in `paragraphs` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="content-image-lead" />
+<ComponentWiring slug="content-image-lead" />
 
 ## Requirements
 

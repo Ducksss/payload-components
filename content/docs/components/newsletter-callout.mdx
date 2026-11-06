@@ -8,35 +8,10 @@ icon: MailPlus
 
 ## Installation
 
-```bash
-npx payload-components add newsletter-callout
-```
-
-For a direct file-only install:
-
-```bash
-pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/newsletter-callout.json
-```
-
-## What it installs
-
-<ComponentWiring slug="newsletter-callout" />
-
-## Content model
-
-The component renders a plain HTML form. Your application owns the endpoint, consent rules,
-submission response, and subscriber storage.
-
-<TypeTable
-  type={{
-    title: { type: 'string', required: true, description: 'Callout heading.' },
-    description: { type: 'string | null', description: 'Optional supporting copy.' },
-    action: { type: 'string', required: true, description: 'Consumer-owned form endpoint.' },
-    emailPlaceholder: { type: 'string', default: 'you@example.com' },
-    legalText: { type: 'string | null', description: 'Optional consent or privacy copy.' },
-    buttonLabel: { type: 'string', default: 'Subscribe' },
-    emailLabel: { type: 'string', default: 'Email address' },
-  }}
+<ComponentInstall
+  slug="newsletter-callout"
+  command="npx payload-components add newsletter-callout"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/newsletter-callout.json"
 />
 
 ## Usage
@@ -55,6 +30,27 @@ export function ArticleNewsletter() {
   )
 }
 ```
+
+## Content model
+
+The component renders a plain HTML form. Your application owns the endpoint, consent rules,
+submission response, and subscriber storage.
+
+<TypeTable
+  type={{
+    title: { type: 'string', required: true, description: 'Callout heading.' },
+    description: { type: 'string | null', description: 'Optional supporting copy.' },
+    action: { type: 'string', required: true, description: 'Consumer-owned form endpoint.' },
+    emailPlaceholder: { type: 'string', default: 'you@example.com' },
+    legalText: { type: 'string | null', description: 'Optional consent or privacy copy.' },
+    buttonLabel: { type: 'string', default: 'Subscribe' },
+    emailLabel: { type: 'string', default: 'Email address' },
+  }}
+/>
+
+## What it installs
+
+<ComponentWiring slug="newsletter-callout" />
 
 ## Requirements
 

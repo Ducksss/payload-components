@@ -8,24 +8,15 @@ icon: Grid3x3
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add logo-cloud-grid
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="logo-cloud-grid"
+  command="npx payload-components add logo-cloud-grid"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/logo-cloud-grid.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/logo-cloud-grid.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="logo-cloud-grid" />
+<ComponentUsage slug="logo-cloud-grid" />
 
 ## Content model
 
@@ -56,9 +47,9 @@ Each item in `logos` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="logo-cloud-grid" />
+<ComponentWiring slug="logo-cloud-grid" />
 
 ## Requirements
 

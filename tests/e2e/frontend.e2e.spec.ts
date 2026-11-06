@@ -860,7 +860,10 @@ test.describe('Light shadcn frontend', () => {
   test('component wiring paths and actions wrap at 390px', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 })
     await page.goto(`${baseURL}/docs/components/logo-cloud-inline-wrap`)
-    const wiring = page.getByText('What it installs', { exact: false }).locator('..')
+    /* The heading by id: component pages now carry the right-rail table of
+       contents, whose "What it installs" link would otherwise make a text
+       locator ambiguous. */
+    const wiring = page.locator('h2#what-it-installs')
     const path = page
       .locator('code:visible')
       .filter({ hasText: 'src/blocks/LogoCloudInlineWrap/Component.tsx' })

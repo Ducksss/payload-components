@@ -259,3 +259,72 @@
     transform: none;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Docs shell widths. Fumadocs reads these on #nd-docs-layout and     */
+/* reserves a grid column for each; the stock 268px sidebar + 268px   */
+/* TOC left a 744px article at 1280px. 16rem + 12rem keep the right-  */
+/* rail TOC on every laptop and give the article 52rem at 1280px.     */
+/* ------------------------------------------------------------------ */
+
+@media (width >= 48rem) {
+  #nd-docs-layout {
+    --fd-sidebar-width: 16rem;
+  }
+}
+
+/* Only when a page renders a rail (or its placeholder): `full` pages
+   have neither, and their main column keeps the space. */
+@media (width >= 80rem) {
+  #nd-docs-layout:has(#nd-toc, #nd-toc-placeholder) {
+    --fd-toc-width: 12rem;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Component reference pages. page.tsx puts [data-component-page] on  */
+/* the article for /docs/components/<slug>; every rule below reads a  */
+/* token and keeps the 4pt grid.                                      */
+/* ------------------------------------------------------------------ */
+
+/* A wider article than a guide page (900px): previews and ledgers use it;
+   running prose is capped at a reading measure further down. */
+[data-component-page] {
+  max-width: 60rem;
+}
+
+/* Each `##` reads as a chapter: a hairline, 2rem of air, then the heading. */
+[data-component-page] .prose > h2 {
+  margin-top: 4rem;
+  margin-bottom: 1.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+@media (width < 48rem) {
+  [data-component-page] .prose > h2 {
+    margin-top: 3rem;
+  }
+}
+
+[data-component-page] .prose > h3 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Data-driven sections and the install panel are `not-prose` blocks; one
+   consistent rhythm between them and the prose around them. */
+[data-component-page] .prose > .not-prose {
+  margin-block: 1.5rem;
+}
+
+/* The header's hairline sits 1rem (article gap) + 1rem above the preview. */
+[data-component-page] .prose > :first-child {
+  margin-top: 1rem;
+}
+
+/* A reading measure for running prose; tables, panels and ledgers take the
+   full width. */
+[data-component-page] .prose > :is(p, ul, ol) {
+  max-width: 44rem;
+}

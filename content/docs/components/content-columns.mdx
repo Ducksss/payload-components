@@ -8,24 +8,15 @@ icon: Columns2
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add content-columns
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="content-columns"
+  command="npx payload-components add content-columns"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-columns.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-columns.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="content-columns" />
+<ComponentUsage slug="content-columns" />
 
 ## Content model
 
@@ -52,9 +43,9 @@ Each item in `paragraphs` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="content-columns" />
+<ComponentWiring slug="content-columns" />
 
 ## Requirements
 

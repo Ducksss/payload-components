@@ -8,24 +8,15 @@ icon: Boxes
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add faq-grouped
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="faq-grouped"
+  command="npx payload-components add faq-grouped"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-grouped.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-grouped.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="faq-grouped" />
+<ComponentUsage slug="faq-grouped" />
 
 ## Content model
 
@@ -60,9 +51,9 @@ Each group in `groups` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="faq-grouped" />
+<ComponentWiring slug="faq-grouped" />
 
 ## Requirements
 

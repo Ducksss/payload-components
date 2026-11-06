@@ -8,24 +8,15 @@ icon: MessageSquare
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add testimonials-spotlight
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="testimonials-spotlight"
+  command="npx payload-components add testimonials-spotlight"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/testimonials-spotlight.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/testimonials-spotlight.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="testimonials-spotlight" />
+<ComponentUsage slug="testimonials-spotlight" />
 
 ## Content model
 
@@ -41,9 +32,9 @@ base (`src/blocks/shared/testimonialFields.ts`), used here as a single centered 
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="testimonials-spotlight" />
+<ComponentWiring slug="testimonials-spotlight" />
 
 ## Requirements
 

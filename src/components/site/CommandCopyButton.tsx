@@ -14,9 +14,11 @@ export function CommandCopyButton({
   command: string
   /* `brand` is the Datasheet hero's primary action: a solid --brand key (trace
      green inside the brand scope) that drops to its icon on phones, where the
-     command needs the width. Both `primary` and `brand` are the page-level
-     primary CTA. */
-  emphasis?: 'default' | 'primary' | 'brand'
+     command needs the width. `solid` is the reference pages' primary action: the
+     same key at control height (h-9, rounded-md) and flat — no lift, no shadow —
+     so it sits inside a panel. `primary`, `brand` and `solid` are all the
+     page-level primary CTA. */
+  emphasis?: 'default' | 'primary' | 'brand' | 'solid'
   /* Call sites that name the command they copy pass their own label; the bare
      control falls back to the shared, translated "Copy". */
   label?: string
@@ -41,6 +43,8 @@ export function CommandCopyButton({
           'h-11 rounded-full border-primary bg-primary px-4 text-sm text-primary-foreground shadow-[0_16px_36px_-20px_rgba(15,23,42,0.72)] hover:-translate-y-px hover:bg-primary/90 hover:shadow-[0_20px_44px_-20px_rgba(15,23,42,0.78)] motion-reduce:transform-none data-[copied=true]:border-brand data-[copied=true]:bg-brand data-[copied=true]:text-brand-foreground',
         emphasis === 'brand' &&
           'copy-button-sheen h-11 rounded-sm border-brand bg-brand px-4 text-sm font-semibold text-brand-foreground hover:border-brand-600 hover:bg-brand-600 max-sm:w-11 max-sm:px-0 data-[copied=true]:border-brand-600 data-[copied=true]:bg-brand-600',
+        emphasis === 'solid' &&
+          'h-9 rounded-md border-primary bg-primary px-4 text-sm text-primary-foreground hover:bg-primary/90 data-[copied=true]:border-brand data-[copied=true]:bg-brand data-[copied=true]:text-brand-foreground',
         emphasis === 'default' &&
           'h-8 rounded-md border-border bg-background px-2.5 font-mono text-xs text-muted-foreground hover:bg-secondary hover:text-foreground data-[copied=true]:border-brand/40 data-[copied=true]:bg-brand/10 data-[copied=true]:text-brand',
       )}

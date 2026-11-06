@@ -8,24 +8,15 @@ icon: Grid3x3
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add comparator-table
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="comparator-table"
+  command="npx payload-components add comparator-table"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-table.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-table.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="comparator-table" />
+<ComponentUsage slug="comparator-table" />
 
 ## Content model
 
@@ -64,9 +55,9 @@ Each item in `features` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="comparator-table" />
+<ComponentWiring slug="comparator-table" />
 
 ## Requirements
 

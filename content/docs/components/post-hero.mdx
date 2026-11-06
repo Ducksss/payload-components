@@ -8,28 +8,45 @@ icon: FileText
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    Track the file-only install in a supported Payload project:
+<ComponentInstall
+  slug="post-hero"
+  command="npx payload-components add post-hero"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/post-hero.json"
+/>
 
-    ```bash
-    npx payload-components add post-hero
-    ```
+## Usage
 
-  </Tab>
-  <Tab value="Manual">
-    Copy the standalone React component directly. No Payload wiring is needed:
+<ComponentUsage slug="post-hero" />
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/post-hero.json
-    ```
+```tsx
+import { PostHero } from '@/components/PostHero/Component'
+import { Media } from '@/components/Media'
+import type { Post } from '@/payload-types'
 
-  </Tab>
-</Tabs>
+export function ArticleHeader({ post }: { post: Post }) {
+  return (
+    <PostHero
+      title={post.title}
+      description={post.meta?.description}
+      publishedAt={post.publishedAt}
+      categories={(post.categories ?? []).flatMap((category) =>
+        typeof category === 'object' && category?.title ? [category.title] : [],
+      )}
+      author={post.populatedAuthors
+        ?.map((author) => author.name)
+        .filter(Boolean)
+        .join(', ')}
+      image={
+        post.heroImage && typeof post.heroImage === 'object' ? (
+          <Media resource={post.heroImage} />
+        ) : undefined
+      }
+    />
+  )
+}
+```
 
-## What it installs
-
-<ComponentWiring slug="post-hero" />
+Replace the existing article heading with this header so the page retains a single h1. Request populated categories and media in your existing query; unpopulated relationship IDs are intentionally omitted. The image element owns its alt text and sizing.
 
 ## Content model
 
@@ -69,39 +86,9 @@ and localization. Resolve relationship IDs before supplying public display data.
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="post-hero" />
-
-```tsx
-import { PostHero } from '@/components/PostHero/Component'
-import { Media } from '@/components/Media'
-import type { Post } from '@/payload-types'
-
-export function ArticleHeader({ post }: { post: Post }) {
-  return (
-    <PostHero
-      title={post.title}
-      description={post.meta?.description}
-      publishedAt={post.publishedAt}
-      categories={(post.categories ?? []).flatMap((category) =>
-        typeof category === 'object' && category?.title ? [category.title] : [],
-      )}
-      author={post.populatedAuthors
-        ?.map((author) => author.name)
-        .filter(Boolean)
-        .join(', ')}
-      image={
-        post.heroImage && typeof post.heroImage === 'object' ? (
-          <Media resource={post.heroImage} />
-        ) : undefined
-      }
-    />
-  )
-}
-```
-
-Replace the existing article heading with this header so the page retains a single h1. Request populated categories and media in your existing query; unpopulated relationship IDs are intentionally omitted. The image element owns its alt text and sizing.
+<ComponentWiring slug="post-hero" />
 
 ## Requirements
 

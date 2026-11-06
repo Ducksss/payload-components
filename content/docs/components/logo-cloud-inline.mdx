@@ -8,24 +8,15 @@ icon: AlignStartHorizontal
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add logo-cloud-inline
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="logo-cloud-inline"
+  command="npx payload-components add logo-cloud-inline"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/logo-cloud-inline.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/logo-cloud-inline.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="logo-cloud-inline" />
+<ComponentUsage slug="logo-cloud-inline" />
 
 ## Content model
 
@@ -56,9 +47,9 @@ Each item in `logos` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="logo-cloud-inline" />
+<ComponentWiring slug="logo-cloud-inline" />
 
 ## Requirements
 

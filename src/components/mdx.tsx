@@ -27,7 +27,9 @@ import { useLocale } from 'next-intl'
 
 import { BlogFigure } from '@/components/blog/BlogFigure'
 import { ComponentDocPreview } from '@/components/site/ComponentDocPreview'
+import { ComponentExample } from '@/components/site/ComponentExample'
 import { ComponentFamily } from '@/components/site/ComponentFamily'
+import { ComponentInstall } from '@/components/site/ComponentInstall'
 import { ComponentRequirements } from '@/components/site/ComponentRequirements'
 import { ComponentUsage } from '@/components/site/ComponentUsage'
 import { ComponentWiring } from '@/components/site/ComponentWiring'
@@ -97,7 +99,9 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     // Kit doc-page sections (data-driven from the manifest/registry) — see the
     // "Component doc page format" in AGENTS.md. <ComponentPreview>/<ComponentWiring>/<ComponentUsage>/
     // <ComponentRequirements>/<ComponentFamily slug="…" />.
+    ComponentExample,
     ComponentFamily,
+    ComponentInstall,
     ComponentPreview: ComponentDocPreview,
     ComponentRequirements,
     ComponentUsage,
