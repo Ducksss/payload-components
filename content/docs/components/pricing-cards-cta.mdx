@@ -8,24 +8,15 @@ icon: BadgeDollarSign
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add pricing-cards-cta
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="pricing-cards-cta"
+  command="npx payload-components add pricing-cards-cta"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-cards-cta.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-cards-cta.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="pricing-cards-cta" />
+<ComponentUsage slug="pricing-cards-cta" />
 
 ## Content model
 
@@ -60,9 +51,9 @@ Each item in `plans` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="pricing-cards-cta" />
+<ComponentWiring slug="pricing-cards-cta" />
 
 ## Requirements
 

@@ -8,24 +8,41 @@ icon: MessagesSquare
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add faq-accordion
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="faq-accordion"
+  command="npx payload-components add faq-accordion"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-accordion.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-accordion.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
+<ComponentUsage slug="faq-accordion" />
 
-<ComponentWiring slug="faq-accordion" />
+## Examples
+
+### Minimal
+
+Just a heading and the questions. Leave the optional fields empty and the block tightens up.
+
+<ComponentExample slug="faq-accordion" state="minimal" />
+
+### With a support CTA
+
+Add one or two links and a support CTA row appears under the answers — the first link is the primary button, the second an outline.
+
+<ComponentExample slug="faq-accordion" state="with-cta" />
+
+### Long-form answers
+
+Long answers keep their measure: the column stays at a readable width and every answer wraps under its question.
+
+<ComponentExample slug="faq-accordion" state="long-form" />
+
+### A single question
+
+The block holds up with a single question, so it works as a one-off callout as well as a full FAQ.
+
+<ComponentExample slug="faq-accordion" state="single" />
 
 ## Content model
 
@@ -55,9 +72,9 @@ Each item in `items` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="faq-accordion" />
+<ComponentWiring slug="faq-accordion" />
 
 ## Requirements
 

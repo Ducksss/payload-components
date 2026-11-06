@@ -21,7 +21,6 @@ import Link from '@/i18n/Link'
 import { localizeHref, localeDetails } from '@/i18n/config'
 import { getPublication, publicationContentAttributes, publicationRobots } from '@/i18n/publication'
 import { getComponentManifest } from '@/lib/component-manifest'
-import { familyOfSlug } from '@/lib/component-page-tree'
 import { getSiteLocale } from '@/lib/i18n'
 import {
   componentEntries,
@@ -128,7 +127,9 @@ export default async function Page({ params }: DocsPageProps) {
   crumbs.push({ name: page.data.title, path: localizeHref(page.url, locale) })
 
   /* Component doc pages (/docs/components/<slug>) carry per-component SoftwareApplication
-     detail (from the registry entry) plus a custom header with prev/next and at-a-glance chips. */
+     detail (from the registry entry) plus a custom header with prev/next and a meta line.
+     They keep the right-rail table of contents (`full` stays an editorial opt-in) and
+     mark the article [data-component-page] for the section rhythm in docs.css. */
   const component =
     slug?.length === 2 && slug[0] === 'components'
       ? componentEntries.find((entry) => entry.slug === slug[1])
@@ -142,24 +143,19 @@ export default async function Page({ params }: DocsPageProps) {
   const next =
     index >= 0 && index < componentEntries.length - 1 ? componentEntries[index + 1] : undefined
 
-  /* The newest changelog entry, so the version chip carries meaning instead of
-     just a number. Suppressed while a component is still on its first release. */
+  /* The one quiet meta line under the component title: version, kind, and the
+     install target (the manifest's first supported target, e.g.
+     payload-website-starter). The family is not repeated — the sidebar already
+     groups by it. */
   const manifest = component ? await getComponentManifest(component.slug) : null
-  const [newestChange] = manifest?.changelog ?? []
-  const latestChange =
-    newestChange && (manifest?.changelog?.length ?? 0) > 1
-      ? { summary: newestChange.summary, version: newestChange.version }
+  const meta =
+    component && manifest
+      ? {
+          kind: component.family === 'pages' ? 'Page block' : 'Post component',
+          target: manifest.supportedTargets[0] ?? component.target,
+          version: component.version,
+        }
       : undefined
-
-  /* At-a-glance chips under the component title. */
-  const chips = component
-    ? [
-        `v${component.version}`,
-        component.family === 'pages' ? 'Page block' : 'Post component',
-        `${familyOfSlug(component.slug).label} family`,
-        component.target,
-      ]
-    : []
 
   const structuredData = graph(
     breadcrumbNode(crumbs),
@@ -176,20 +172,20 @@ export default async function Page({ params }: DocsPageProps) {
   return (
     <DocsPage
       {...publicationContentAttributes(publication)}
+      data-component-page={component ? '' : undefined}
       data-editorial={page.data.editorial ? '' : undefined}
       role="main"
       toc={page.data.toc}
-      full={page.data.full || Boolean(component)}
+      full={page.data.full}
     >
       <JsonLd data={structuredData} />
       {component ? (
         <ComponentDocHeader
           title={page.data.title}
           description={page.data.description}
-          chips={chips}
+          meta={meta}
           markdownUrl={markdownUrl}
           githubUrl={githubUrl}
-          latestChange={latestChange}
           prev={prev ? { href: prev.href, title: prev.title } : undefined}
           next={next ? { href: next.href, title: next.title } : undefined}
         />

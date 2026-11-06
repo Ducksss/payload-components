@@ -8,24 +8,29 @@ icon: Columns2
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add faq-split
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="faq-split"
+  command="npx payload-components add faq-split"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-split.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-split.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
+<ComponentUsage slug="faq-split" />
 
-<ComponentWiring slug="faq-split" />
+## Examples
+
+### Minimal
+
+Heading on the left, questions on the right, nothing else. Leave the optional fields empty and the left column shrinks to the title.
+
+<ComponentExample slug="faq-split" state="minimal" />
+
+### With a support CTA
+
+Links render under the heading in the left column, so the CTA sits beside the questions rather than below them.
+
+<ComponentExample slug="faq-split" state="with-cta" />
 
 ## Content model
 
@@ -55,9 +60,9 @@ Each item in `items` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="faq-split" />
+<ComponentWiring slug="faq-split" />
 
 ## Requirements
 

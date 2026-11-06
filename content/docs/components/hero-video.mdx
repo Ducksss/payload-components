@@ -8,24 +8,15 @@ icon: Video
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add hero-video
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="hero-video"
+  command="npx payload-components add hero-video"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-video.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-video.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="hero-video" />
+<ComponentUsage slug="hero-video" />
 
 ## Content model
 
@@ -52,9 +43,9 @@ define this full-bleed media variant.
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="hero-video" />
+<ComponentWiring slug="hero-video" />
 
 ## Requirements
 

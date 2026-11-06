@@ -8,24 +8,15 @@ icon: Mail
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add contact-channels
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="contact-channels"
+  command="npx payload-components add contact-channels"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/contact-channels.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/contact-channels.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="contact-channels" />
+<ComponentUsage slug="contact-channels" />
 
 ## Content model
 
@@ -64,9 +55,9 @@ Each item in `channels` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="contact-channels" />
+<ComponentWiring slug="contact-channels" />
 
 ## Requirements
 

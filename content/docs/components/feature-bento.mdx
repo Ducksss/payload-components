@@ -8,24 +8,15 @@ icon: LayoutDashboard
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add feature-bento
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="feature-bento"
+  command="npx payload-components add feature-bento"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-bento.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-bento.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="feature-bento" />
+<ComponentUsage slug="feature-bento" />
 
 ## Content model
 
@@ -55,9 +46,9 @@ Each item in `items` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="feature-bento" />
+<ComponentWiring slug="feature-bento" />
 
 ## Requirements
 

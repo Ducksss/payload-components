@@ -8,24 +8,15 @@ icon: GalleryHorizontalEnd
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add content-split-rows
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="content-split-rows"
+  command="npx payload-components add content-split-rows"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-split-rows.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-split-rows.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="content-split-rows" />
+<ComponentUsage slug="content-split-rows" />
 
 ## Content model
 
@@ -59,9 +50,9 @@ Each item in `rows` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="content-split-rows" />
+<ComponentWiring slug="content-split-rows" />
 
 ## Requirements
 

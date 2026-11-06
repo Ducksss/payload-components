@@ -8,24 +8,15 @@ icon: Quote
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add testimonials-quote
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="testimonials-quote"
+  command="npx payload-components add testimonials-quote"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/testimonials-quote.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/testimonials-quote.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="testimonials-quote" />
+<ComponentUsage slug="testimonials-quote" />
 
 ## Content model
 
@@ -41,9 +32,9 @@ base (`src/blocks/shared/testimonialFields.ts`), used here as a single featured 
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="testimonials-quote" />
+<ComponentWiring slug="testimonials-quote" />
 
 ## Requirements
 

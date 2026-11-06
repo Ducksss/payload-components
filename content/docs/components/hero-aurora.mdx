@@ -8,24 +8,15 @@ icon: Sparkles
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add hero-aurora
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="hero-aurora"
+  command="npx payload-components add hero-aurora"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-aurora.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-aurora.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="hero-aurora" />
+<ComponentUsage slug="hero-aurora" />
 
 ## Content model
 
@@ -61,9 +52,9 @@ theme scope.
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="hero-aurora" />
+<ComponentWiring slug="hero-aurora" />
 
 ## Requirements
 

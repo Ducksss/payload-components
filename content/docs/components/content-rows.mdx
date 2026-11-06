@@ -8,24 +8,15 @@ icon: ListOrdered
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add content-rows
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="content-rows"
+  command="npx payload-components add content-rows"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-rows.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-rows.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="content-rows" />
+<ComponentUsage slug="content-rows" />
 
 ## Content model
 
@@ -59,9 +50,9 @@ Each item in `rows` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="content-rows" />
+<ComponentWiring slug="content-rows" />
 
 ## Requirements
 

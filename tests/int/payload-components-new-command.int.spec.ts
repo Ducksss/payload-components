@@ -656,11 +656,12 @@ describe('payload-components new --file-only', () => {
     expect(doc).toMatch(/^---\ntitle: Author Probe\n/)
     expect(doc.match(/^## .+$/gm)).toEqual([
       '## Installation',
-      '## What it installs',
-      '## Content model',
       '## Usage',
+      '## Content model',
+      '## What it installs',
       '## Requirements',
     ])
+    expect(doc).toContain(`<ComponentInstall\n  slug="${FILE_SLUG}"`)
     expect(doc).toContain(`<ComponentUsage slug="${FILE_SLUG}" />`)
     expect(doc).toContain(`import { ${FILE_PASCAL} } from '@/components/${FILE_PASCAL}/Component'`)
     expect(doc).toContain(`npx payload-components add ${FILE_SLUG}`)

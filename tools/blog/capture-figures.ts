@@ -1367,16 +1367,21 @@ const captureDocsCode = async (
   })
 
   try {
-    const codeTab = page.getByRole('tab', { exact: true, name: 'Code' }).first()
-    await codeTab.click()
+    /* The main preview keeps its code behind a "View code" disclosure (the
+       peek band under the live frame, ComponentDocPreview → ComponentCodePeek);
+       the expanded region is the element the button controls, id
+       `<slug>-code`. Example windows use "View data", so the exact name keeps
+       this on the installed-source viewer. */
+    const viewCode = page.getByRole('button', { exact: true, name: 'View code' }).first()
+    await viewCode.click()
 
     const activePanel = page
-      .locator('[role="tabpanel"]:visible')
+      .locator(`#${panel.registryItem}-code:visible`)
       .filter({ has: page.getByRole('button', { name: 'Copy code' }) })
     const panelCount = await activePanel.count()
     if (panelCount !== 1) {
       throw new Error(
-        `${panel.label} active Code panel matched ${panelCount} elements; expected exactly one.`,
+        `${panel.label} expanded code region matched ${panelCount} elements; expected exactly one.`,
       )
     }
 

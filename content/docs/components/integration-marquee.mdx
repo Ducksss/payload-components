@@ -8,24 +8,15 @@ icon: GalleryHorizontalEnd
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add integration-marquee
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="integration-marquee"
+  command="npx payload-components add integration-marquee"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-marquee.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-marquee.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="integration-marquee" />
+<ComponentUsage slug="integration-marquee" />
 
 ## Content model
 
@@ -67,9 +58,9 @@ Each item in `integrations` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="integration-marquee" />
+<ComponentWiring slug="integration-marquee" />
 
 ## Requirements
 

@@ -8,24 +8,15 @@ icon: Users
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add content-community
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="content-community"
+  command="npx payload-components add content-community"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-community.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-community.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="content-community" />
+<ComponentUsage slug="content-community" />
 
 ## Content model
 
@@ -58,9 +49,9 @@ Each item in `avatars` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="content-community" />
+<ComponentWiring slug="content-community" />
 
 ## Requirements
 

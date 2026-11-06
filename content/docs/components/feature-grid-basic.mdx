@@ -8,24 +8,15 @@ icon: LayoutGrid
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add feature-grid-basic
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="feature-grid-basic"
+  command="npx payload-components add feature-grid-basic"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-grid-basic.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-grid-basic.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="feature-grid-basic" />
+<ComponentUsage slug="feature-grid-basic" />
 
 ## Content model
 
@@ -55,9 +46,9 @@ Each item in `items` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="feature-grid-basic" />
+<ComponentWiring slug="feature-grid-basic" />
 
 ## Requirements
 

@@ -8,24 +8,15 @@ icon: Columns2
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add comparator-grid
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="comparator-grid"
+  command="npx payload-components add comparator-grid"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-grid.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/comparator-grid.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="comparator-grid" />
+<ComponentUsage slug="comparator-grid" />
 
 ## Content model
 
@@ -65,9 +56,9 @@ Each item in `features` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="comparator-grid" />
+<ComponentWiring slug="comparator-grid" />
 
 ## Requirements
 

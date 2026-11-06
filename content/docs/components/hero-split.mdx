@@ -8,24 +8,15 @@ icon: Columns2
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add hero-split
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="hero-split"
+  command="npx payload-components add hero-split"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-split.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-split.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="hero-split" />
+<ComponentUsage slug="hero-split" />
 
 ## Content model
 
@@ -64,9 +55,9 @@ page is a layout decision an editor makes per block — not a different kind of 
 screens the visual always leads, since a stacked hero that opens with prose pushes the image
 below the fold for no gain.
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="hero-split" />
+<ComponentWiring slug="hero-split" />
 
 ## Requirements
 
