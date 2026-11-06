@@ -26,10 +26,16 @@ For a visual tour of the catalog, install commands, reviewable diff, and doctor 
 
 Your project must run one of these pairs:
 
-| `payload` | `next`         | Support                                      |
-| --------- | -------------- | -------------------------------------------- |
-| v3        | v15 or v16     | Fully supported                              |
-| v4        | v16.4 or newer | Experimental; needs Node.js 24.22.1 or newer |
+| `payload`         | `next`         | Support                                      |
+| ----------------- | -------------- | -------------------------------------------- |
+| v3, 3.25 or newer | v15 or v16     | Fully supported                              |
+| v4                | v16.4 or newer | Experimental; needs Node.js 24.22.1 or newer |
+
+Every block sets `admin.group`, so the admin Blocks Drawer lists it under its family heading
+(Hero, Pricing, FAQ, and so on). Payload added that option in 3.25, and older Payload 3 types
+reject it, so a project on an earlier release fails its type check. The component peer ranges
+start at 3.25: `add` refuses a project that declares an older exact version, and `doctor` warns
+when the installed version is older.
 
 Payload v4 dropped Next.js 15, so the installer refuses a Payload v4 project on Next.js 15.
 It checks majors only: run `npx payload-components doctor` to see whether a Payload v4 project

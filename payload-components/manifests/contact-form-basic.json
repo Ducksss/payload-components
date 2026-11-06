@@ -1,8 +1,12 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "contact-form-basic",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "changelog": [
+    {
+      "version": "0.2.0",
+      "summary": "Lists the block under the Contact heading in the admin Blocks Drawer (admin.group). Needs Payload 3.25 or newer."
+    },
     {
       "version": "0.1.0",
       "summary": "Initial release."
@@ -14,7 +18,7 @@
   "dependencies": {},
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
-    "payload": "^3.0.0 || ^4.0.0-0"
+    "payload": "^3.25.0 || ^4.0.0-0"
   },
   "supportedTargets": [
     "payload-website-starter",

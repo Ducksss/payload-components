@@ -10,6 +10,9 @@ export const FeatureIconGrid: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_feat_icon_grid',
   interfaceName: 'FeatureIconGridBlock',
+  admin: {
+    group: 'Feature',
+  },
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/featureFields.

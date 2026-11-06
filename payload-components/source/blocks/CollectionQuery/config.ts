@@ -6,6 +6,9 @@ export const CollectionQuery: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_col_que',
   interfaceName: 'CollectionQueryBlock',
+  admin: {
+    group: 'Collection query',
+  },
   fields: [
     {
       name: 'populateBy',

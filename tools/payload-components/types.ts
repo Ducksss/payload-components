@@ -167,8 +167,10 @@ export type PayloadMajorSupport = {
      like any other major. */
   experimental?: boolean
   /* The lowest versions this Payload major runs on. Detection works in majors,
-     so these are reported by doctor rather than refused. */
-  minimumVersions?: { next?: string; node?: string }
+     so these are reported by doctor rather than refused. `payload` is the
+     oldest release of the major itself; every manifest's peer range starts
+     there, which is where the add-time refusal comes from. */
+  minimumVersions?: { next?: string; node?: string; payload?: string }
   /* A subset of the target's allowedNextMajors. */
   nextMajors: number[]
 }

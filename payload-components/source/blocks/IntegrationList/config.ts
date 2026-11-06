@@ -8,6 +8,9 @@ export const IntegrationList: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_int_lis',
   interfaceName: 'IntegrationListBlock',
+  admin: {
+    group: 'Integration',
+  },
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared
     // shape in @/blocks/shared/integrationFields to update every integration variant.

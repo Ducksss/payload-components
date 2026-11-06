@@ -8,6 +8,9 @@ export const LogoCloudInlineWrap: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_log_clo_inl_wra',
   interfaceName: 'LogoCloudInlineWrapBlock',
+  admin: {
+    group: 'Logo cloud',
+  },
   fields: [
     // Shared logo-cloud core (heading + logos). Edit the shared shape in
     // @/blocks/shared/logoCloudFields to update every logo-cloud variant.

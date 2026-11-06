@@ -8,6 +8,9 @@ export const HeroBasic: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_her_bas',
   interfaceName: 'HeroBasicBlock',
+  admin: {
+    group: 'Hero',
+  },
   fields: [
     // Shared hero core (eyebrow, title, description, CTA links). Variant-specific
     // fields follow; edit the shared shape in @/blocks/shared/heroFields.

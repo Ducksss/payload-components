@@ -8,6 +8,9 @@ export const TeamBios: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_tea_bio',
   interfaceName: 'TeamBiosBlock',
+  admin: {
+    group: 'Team',
+  },
   fields: [
     // Shared team core (eyebrow, title). Variant-specific fields follow; edit the
     // shared shape in @/blocks/shared/teamFields.

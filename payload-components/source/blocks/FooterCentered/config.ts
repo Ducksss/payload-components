@@ -8,6 +8,9 @@ export const FooterCentered: Block = {
   // https://www.payload-components.xyz/docs/registry#installed-source-and-migrations
   dbName: 'pc_foo_cen',
   interfaceName: 'FooterCenteredBlock',
+  admin: {
+    group: 'Footer',
+  },
   fields: [
     // Shared footer core (logo, brandLabel, copyright). Variant-specific fields
     // follow; edit the shared shape in @/blocks/shared/footerFields.

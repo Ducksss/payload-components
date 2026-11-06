@@ -256,6 +256,27 @@ describe('payload-components new', () => {
     expect(config).toContain("slug: 'aaScaffoldProbe'")
     expect(config).toContain(`interfaceName: '${PASCAL}Block'`)
     expect(config).not.toContain('ExampleBasic')
+    /* No existing block shares a slug word, so it is a new family: the first
+       word, capitalized, as familyOfSlug falls back to. */
+    expect(config).toContain("admin: {\n    group: 'Aa',\n  },")
+  })
+
+  it('files a new variant under its family’s Blocks Drawer group', async () => {
+    const root = await createScaffoldRoot()
+    const { output } = await runScaffold(root, { componentSlug: 'hero-probe' })
+
+    const config = await readRootFile(
+      root,
+      'payload-components',
+      'source',
+      'blocks',
+      'HeroProbe',
+      'config.ts',
+    )
+
+    /* HeroBasic is the scaffold root's one real block, so the group comes from it. */
+    expect(config).toContain("admin: {\n    group: 'Hero',\n  },")
+    expect(output).toContain('admin.group was set to "Hero"')
   })
 
   it('appends to every mechanical list, keeping each file parseable', async () => {
@@ -460,7 +481,8 @@ describe('payload-components new: Pages-block path', () => {
           .replaceAll('ExampleBasic', PASCAL)
           .replaceAll('exampleBasic', 'aaScaffoldProbe')
           .replaceAll('example-basic', SLUG)
-          .replaceAll('Example Basic', 'Aa Scaffold Probe'),
+          .replaceAll('Example Basic', 'Aa Scaffold Probe')
+          .replace("group: 'Example',", "group: 'Aa',"),
       )
 
     expect(
@@ -578,7 +600,7 @@ describe('payload-components new --file-only', () => {
     expect(manifest.supports).toEqual({ payloadMajors: [3, 4, 5], nextMajors: [15, 16] })
     expect(manifest.peerDependencies).toEqual({
       next: '^15.0.0 || ^16.0.0',
-      payload: '^3.0.0 || ^4.0.0 || ^5.0.0-0',
+      payload: '^3.25.0 || ^4.0.0 || ^5.0.0-0',
       react: '^19.0.0',
     })
     expect(manifest.supportedTargets).toEqual(matrix.targets.map((target) => target.id))
