@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { teamFields, teamMemberFields } from '@/blocks/shared/teamFields'
 
+import { teamBiosThumbnail } from './thumbnail'
+
 export const TeamBios: Block = {
   slug: 'teamBios',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const TeamBios: Block = {
   interfaceName: 'TeamBiosBlock',
   admin: {
     group: 'Team',
+    images: {
+      thumbnail: teamBiosThumbnail,
+    },
   },
   fields: [
     // Shared team core (eyebrow, title). Variant-specific fields follow; edit the

@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 import { comparatorFields } from '@/blocks/shared/comparatorFields'
 import { linkGroup } from '@/fields/linkGroup'
 
+import { comparatorGridThumbnail } from './thumbnail'
+
 export const ComparatorGrid: Block = {
   slug: 'comparatorGrid',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -11,6 +13,9 @@ export const ComparatorGrid: Block = {
   interfaceName: 'ComparatorGridBlock',
   admin: {
     group: 'Comparator',
+    images: {
+      thumbnail: comparatorGridThumbnail,
+    },
   },
   fields: [
     // Shared comparator header (title, description). Variant-specific fields

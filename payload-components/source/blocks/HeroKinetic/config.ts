@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { heroFields } from '@/blocks/shared/heroFields'
 
+import { heroKineticThumbnail } from './thumbnail'
+
 export const HeroKinetic: Block = {
   slug: 'heroKinetic',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const HeroKinetic: Block = {
   interfaceName: 'HeroKineticBlock',
   admin: {
     group: 'Hero',
+    images: {
+      thumbnail: heroKineticThumbnail,
+    },
   },
   fields: [
     // Shared hero core (eyebrow, title, description, CTA links). Variant-specific

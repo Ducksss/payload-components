@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { statsFields, statsMetricFields } from '@/blocks/shared/statsFields'
 
+import { statsGridThumbnail } from './thumbnail'
+
 export const StatsGrid: Block = {
   slug: 'statsGrid',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const StatsGrid: Block = {
   interfaceName: 'StatsGridBlock',
   admin: {
     group: 'Stats',
+    images: {
+      thumbnail: statsGridThumbnail,
+    },
   },
   fields: [
     // Shared stats core (eyebrow, title). Variant-specific fields follow; edit the

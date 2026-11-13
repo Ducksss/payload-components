@@ -1,0 +1,45 @@
+/* Team Roster's picture in Payload's admin Blocks Drawer (admin.images.thumbnail,
+ * Payload 3.79 or newer): a 3:2 layout schematic as an SVG data URI, so it needs
+ * no file in public/ and no network request. The drawer names every block under
+ * its picture, so the picture is decorative and its alt text is empty. */
+const svg = [
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 256">',
+  '<rect x="0" y="0" width="384" height="256" fill="#fafafa"/>',
+  '<rect x="28" y="30" width="60" height="14" rx="7" fill="#ffffff" stroke="#e4e4e7" stroke-width="1.5"/>',
+  '<rect x="40" y="35" width="36" height="4" rx="2" fill="#a1a1aa"/>',
+  '<rect x="28" y="54" width="164" height="15" rx="7.5" fill="#27272a"/>',
+  '<rect x="28" y="79" width="49.2" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="28" y="90" width="328" height="1.5" fill="#e4e4e7"/>',
+  '<circle cx="64.5" cy="113.5" r="12" fill="#e4e4e7"/>',
+  '<rect x="42.6" y="130.5" width="43.8" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="46.3" y="142.5" width="36.5" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<circle cx="149.5" cy="113.5" r="12" fill="#e4e4e7"/>',
+  '<rect x="127.6" y="130.5" width="43.8" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="131.3" y="142.5" width="36.5" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<circle cx="234.5" cy="113.5" r="12" fill="#e4e4e7"/>',
+  '<rect x="212.6" y="130.5" width="43.8" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="216.3" y="142.5" width="36.5" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<circle cx="319.5" cy="113.5" r="12" fill="#e4e4e7"/>',
+  '<rect x="297.6" y="130.5" width="43.8" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="301.3" y="142.5" width="36.5" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="28" y="157.5" width="49.2" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="28" y="168.5" width="328" height="1.5" fill="#e4e4e7"/>',
+  '<circle cx="64.5" cy="192" r="12" fill="#e4e4e7"/>',
+  '<rect x="42.6" y="209" width="43.8" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="46.3" y="221" width="36.5" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<circle cx="149.5" cy="192" r="12" fill="#e4e4e7"/>',
+  '<rect x="127.6" y="209" width="43.8" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="131.3" y="221" width="36.5" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<circle cx="234.5" cy="192" r="12" fill="#e4e4e7"/>',
+  '<rect x="212.6" y="209" width="43.8" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="216.3" y="221" width="36.5" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<circle cx="319.5" cy="192" r="12" fill="#e4e4e7"/>',
+  '<rect x="297.6" y="209" width="43.8" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="301.3" y="221" width="36.5" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '</svg>',
+].join('')
+
+export const teamRosterThumbnail = {
+  alt: '',
+  url: `data:image/svg+xml,${encodeURIComponent(svg)}`,
+}

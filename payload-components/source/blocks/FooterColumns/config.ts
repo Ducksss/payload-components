@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { footerFields, footerLinkFields } from '@/blocks/shared/footerFields'
 
+import { footerColumnsThumbnail } from './thumbnail'
+
 export const FooterColumns: Block = {
   slug: 'footerColumns',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const FooterColumns: Block = {
   interfaceName: 'FooterColumnsBlock',
   admin: {
     group: 'Footer',
+    images: {
+      thumbnail: footerColumnsThumbnail,
+    },
   },
   fields: [
     // Shared footer core (logo, brandLabel, copyright). Variant-specific fields

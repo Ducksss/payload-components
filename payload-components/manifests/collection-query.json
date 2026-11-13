@@ -1,8 +1,12 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "collection-query",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "changelog": [
+    {
+      "version": "0.3.0",
+      "summary": "Shows a picture of the block's layout in the admin Blocks Drawer (admin.images.thumbnail). Needs Payload 3.79 or newer."
+    },
     {
       "version": "0.2.0",
       "summary": "Lists the block under the Collection query heading in the admin Blocks Drawer (admin.group). Needs Payload 3.25 or newer."
@@ -18,7 +22,7 @@
   "dependencies": {},
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
-    "payload": "^3.25.0 || ^4.0.0-0"
+    "payload": "^3.79.0 || ^4.0.0-0"
   },
   "supportedTargets": [
     "payload-website-starter"
@@ -36,6 +40,7 @@
   "files": [
     "src/blocks/shared/PostCard.tsx",
     "src/blocks/CollectionQuery/config.ts",
+    "src/blocks/CollectionQuery/thumbnail.ts",
     "src/blocks/CollectionQuery/Component.tsx",
     "src/blocks/CollectionQuery/Browser.tsx",
     "src/blocks/CollectionQuery/query.ts",

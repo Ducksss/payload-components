@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 import { contentFields } from '@/blocks/shared/contentFields'
 import { iconField } from '@/blocks/shared/contentIcons'
 
+import { contentStatsThumbnail } from './thumbnail'
+
 export const ContentStats: Block = {
   slug: 'contentStats',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -11,6 +13,9 @@ export const ContentStats: Block = {
   interfaceName: 'ContentStatsBlock',
   admin: {
     group: 'Content',
+    images: {
+      thumbnail: contentStatsThumbnail,
+    },
   },
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

@@ -83,7 +83,7 @@ const supportProblems = (matrix: SupportMatrix, manifest: ManifestSupport) => {
 
     /* Admitting a major means covering its whole stable line from the oldest
        release the matrix supports, and nothing older: Payload 3 starts at the
-       3.25 that block configs need for admin.group. */
+       3.79 that block configs need for admin.images. */
     for (const major of allowed[dependency]) {
       const floor = dependency === 'payload' ? payloadFloor(targets, major) : `${major}.0.0`
 
@@ -190,7 +190,7 @@ describe('manifests agree with the support matrix', () => {
     })
 
     expect(problems).toEqual([
-      'peerDependencies.payload "^3.0.0 || ^4.0.0-0" admits payload below 3.25.0',
+      'peerDependencies.payload "^3.0.0 || ^4.0.0-0" admits payload below 3.79.0',
     ])
   })
 })
@@ -272,10 +272,10 @@ describe('Payload and Next.js majors pair per Payload major', () => {
         { 3: [15, 16], 4: [16] },
       )
       expect(getPayloadMajorSupport(target, 3)?.experimental, target.id).toBeFalsy()
-      /* Block configs set admin.group, which Payload's Block type gained in
-         3.25.0; older Payload 3 types reject it and fail the project's tsc. */
+      /* Block configs set admin.images, which Payload's Block type gained in
+         3.79.0; older Payload 3 types reject it and fail the project's tsc. */
       expect(getPayloadMajorSupport(target, 3)?.minimumVersions, target.id).toEqual({
-        payload: '3.25.0',
+        payload: '3.79.0',
       })
       expect(getPayloadMajorSupport(target, 4), target.id).toMatchObject({
         experimental: true,

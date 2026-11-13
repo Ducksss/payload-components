@@ -1,0 +1,47 @@
+/* Comparator Table's picture in Payload's admin Blocks Drawer (admin.images.thumbnail,
+ * Payload 3.79 or newer): a 3:2 layout schematic as an SVG data URI, so it needs
+ * no file in public/ and no network request. The drawer names every block under
+ * its picture, so the picture is decorative and its alt text is empty. */
+const svg = [
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 372 248">',
+  '<rect x="0" y="0" width="372" height="248" fill="#fafafa"/>',
+  '<rect x="28" y="30.3" width="208.6" height="15" rx="7.5" fill="#27272a"/>',
+  '<rect x="28" y="53.3" width="227.5" height="6" rx="3" fill="#d4d4d8"/>',
+  '<rect x="28" y="73.3" width="316" height="144.5" rx="8" fill="#ffffff" stroke="#e4e4e7" stroke-width="1.5"/>',
+  '<rect x="132.3" y="85.3" width="30.5" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="118.5" y="98.3" width="36" height="15" rx="4" fill="#27272a"/>',
+  '<rect x="160.5" y="108.3" width="16" height="5" rx="2.5" fill="#d4d4d8"/>',
+  '<rect x="209.3" y="85.3" width="30.5" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="195.5" y="98.3" width="36" height="15" rx="4" fill="#27272a"/>',
+  '<rect x="237.5" y="108.3" width="16" height="5" rx="2.5" fill="#d4d4d8"/>',
+  '<rect x="286.3" y="85.3" width="30.5" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="272.5" y="98.3" width="36" height="15" rx="4" fill="#27272a"/>',
+  '<rect x="314.5" y="108.3" width="16" height="5" rx="2.5" fill="#d4d4d8"/>',
+  '<rect x="40" y="123.3" width="292" height="1.5" fill="#e4e4e7"/>',
+  '<rect x="40" y="134.8" width="36.6" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<path d="M143 138.3l2.5 2.5l4.5 -5" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  '<path d="M220 138.3l2.5 2.5l4.5 -5" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  '<path d="M297 138.3l2.5 2.5l4.5 -5" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  '<rect x="40" y="151.8" width="36.6" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="135.3" y="151.8" width="24.4" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="212.3" y="151.8" width="24.4" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="289.3" y="151.8" width="24.4" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="40" y="166.8" width="36.6" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<path d="M143 170.3l2.5 2.5l4.5 -5" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  '<path d="M220 170.3l2.5 2.5l4.5 -5" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  '<path d="M297 170.3l2.5 2.5l4.5 -5" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  '<rect x="40" y="183.8" width="36.6" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="135.3" y="183.8" width="24.4" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="212.3" y="183.8" width="24.4" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="289.3" y="183.8" width="24.4" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="40" y="198.8" width="36.6" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<path d="M143 202.3l2.5 2.5l4.5 -5" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  '<path d="M220 202.3l2.5 2.5l4.5 -5" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  '<path d="M297 202.3l2.5 2.5l4.5 -5" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  '</svg>',
+].join('')
+
+export const comparatorTableThumbnail = {
+  alt: '',
+  url: `data:image/svg+xml,${encodeURIComponent(svg)}`,
+}

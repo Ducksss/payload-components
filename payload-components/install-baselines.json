@@ -49,6 +49,21 @@
         "src/blocks/ContentQuote/Component.tsx": {
           "default": "7c80de76a930d9daabcdbe12be01028b492668fca6c4670b97670a6d58b53932"
         }
+      },
+      "0.4.0": {
+        "src/blocks/shared/contentFields.ts": {
+          "default": "3fc35d9634aefdc709aa80e2b058ffbe91cf088b9cee526ccccdde53a7bbcedb"
+        },
+        "src/blocks/ContentQuote/config.ts": {
+          "default": "d79024526f8d09bc4c4b22261b73a059eb02b5ca325c2c69d14285df76875ca3",
+          "localized": "ef28ea8d0e4262f3a9b400af1a5d9f810c3fc05ab688f5bd4658768987c171d9"
+        },
+        "src/blocks/ContentQuote/thumbnail.ts": {
+          "default": "e5cd88aa6c15a0bbb594f6596cd0470043e8869d53dfda153582a8ede65cdfab"
+        },
+        "src/blocks/ContentQuote/Component.tsx": {
+          "default": "7c80de76a930d9daabcdbe12be01028b492668fca6c4670b97670a6d58b53932"
+        }
       }
     },
     "stats-proof": {
@@ -101,6 +116,21 @@
         "src/blocks/StatsProof/config.ts": {
           "default": "ab75249a03287c33be45ed4decc225f6072120597e8c9a2fcd9a9360276673bf",
           "localized": "7d97ed8d1b0f8d7c8713e08e6510667eebc0a80fd51ccb1e3e131f4a63062bc5"
+        },
+        "src/blocks/StatsProof/Component.tsx": {
+          "default": "0d48de9a8c4603cba6d8cab3e8466cd291ffb585479f34df1de4c004be4a894d"
+        }
+      },
+      "0.5.0": {
+        "src/blocks/shared/statsFields.ts": {
+          "default": "fd980590c2a9370a726ffd9e5f10741c7d6d58e6da2101f6c4c6923bde982277"
+        },
+        "src/blocks/StatsProof/config.ts": {
+          "default": "95a4df26bc63b880bfe393376fdc02d159ec77e09ab322072c00be14b6800bce",
+          "localized": "95de3742e89cfe8c2e315e0c16d361be7c44f88cef3f5143357f9d374cfd031e"
+        },
+        "src/blocks/StatsProof/thumbnail.ts": {
+          "default": "7023e9ffd962ddd87a14958800998d8ff67ca326b594f00cd7f3ec1ae3efb967"
         },
         "src/blocks/StatsProof/Component.tsx": {
           "default": "0d48de9a8c4603cba6d8cab3e8466cd291ffb585479f34df1de4c004be4a894d"
@@ -167,6 +197,24 @@
         "src/blocks/CallToActionSignup/Component.tsx": {
           "default": "ec410ea5832acd404be0347ceafa77cd4a05631393d49adfa69681251113fa03"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/callToActionFields.ts": {
+          "default": "1de97e3ab8559d2b593668fa39e4f36fc879a0eeec7bef8cc8092b013a8eeead"
+        },
+        "src/blocks/shared/safeUrls.ts": {
+          "default": "71f887ac1a7f5aaf09ecef00cbd96ef7119e399da6af81ed0939ee2ac0d002c8"
+        },
+        "src/blocks/CallToActionSignup/config.ts": {
+          "default": "2a2290e7a33dffaaeb386fc981c56a1403730bc9f8f37a58f7af35a92d9aac17",
+          "localized": "930cd6a2defd00d4bc55702e603b336e215383c83d863e28472b239960fabcac"
+        },
+        "src/blocks/CallToActionSignup/thumbnail.ts": {
+          "default": "e2e083d2a294a3986e74bf65e38eb9809c4453892250cf5aa2697835db1a55b3"
+        },
+        "src/blocks/CallToActionSignup/Component.tsx": {
+          "default": "ec410ea5832acd404be0347ceafa77cd4a05631393d49adfa69681251113fa03"
+        }
       }
     },
     "call-to-action-boxed": {
@@ -201,6 +249,21 @@
         "src/blocks/CallToActionBoxed/config.ts": {
           "default": "82ccf8a38d603bc43a4981da16ed634e2801aba7485dfcd6190faa52a0297909",
           "localized": "674418c3040a001a560441dd9f87f7ae7fe24662ac8951a24a64302c3f576b37"
+        },
+        "src/blocks/CallToActionBoxed/Component.tsx": {
+          "default": "7ef0bad8dadd460eee05dbe598c0a489101041b39e0c5ef45becdbc93d956ca9"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/callToActionFields.ts": {
+          "default": "1de97e3ab8559d2b593668fa39e4f36fc879a0eeec7bef8cc8092b013a8eeead"
+        },
+        "src/blocks/CallToActionBoxed/config.ts": {
+          "default": "ed54183af620a1145a842f1344beb34be466f8297fe38a643c9cb48cb30319c2",
+          "localized": "3ddc7a38ee0b4842537e2a9ca5424b11115f90a8640de8eaa6ec842c7cf39709"
+        },
+        "src/blocks/CallToActionBoxed/thumbnail.ts": {
+          "default": "79feac09c57d324087529494c6f303ba552f42375d0e278fb7d6526477ae4658"
         },
         "src/blocks/CallToActionBoxed/Component.tsx": {
           "default": "7ef0bad8dadd460eee05dbe598c0a489101041b39e0c5ef45becdbc93d956ca9"
@@ -243,6 +306,21 @@
         "src/blocks/CallToActionCentered/Component.tsx": {
           "default": "cd1fddbaff2a52c2dd9d3073e43a1f18a3fbaf43c456c98f131db7078de3f2f8"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/callToActionFields.ts": {
+          "default": "1de97e3ab8559d2b593668fa39e4f36fc879a0eeec7bef8cc8092b013a8eeead"
+        },
+        "src/blocks/CallToActionCentered/config.ts": {
+          "default": "bb0fb9366c557f52eea04d580e09278ea358b631fe4e9b8445e89f6d78a83fdc",
+          "localized": "0fda1ec0602ff974e130eb601c45b6ee480e07da4792b661dfe44f52055fe675"
+        },
+        "src/blocks/CallToActionCentered/thumbnail.ts": {
+          "default": "a372afc595eb785bf1d5358b72126bd4e2848d391e9c4de914b7861365de887f"
+        },
+        "src/blocks/CallToActionCentered/Component.tsx": {
+          "default": "cd1fddbaff2a52c2dd9d3073e43a1f18a3fbaf43c456c98f131db7078de3f2f8"
+        }
       }
     },
     "call-to-action-split": {
@@ -277,6 +355,21 @@
         "src/blocks/CallToActionSplit/config.ts": {
           "default": "9efea7e5134fb4957bf4274582a9528940bdfcdc50aa4d5572bc5cfdba319957",
           "localized": "5d231d6b420789bbc85b89463d7f218e8dac882bf8a95c37325f3083449d06f3"
+        },
+        "src/blocks/CallToActionSplit/Component.tsx": {
+          "default": "26d3b79c942238f53e787134dc3ce2c6f65ec6f1272cd9235b6e18e888938ac2"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/callToActionFields.ts": {
+          "default": "1de97e3ab8559d2b593668fa39e4f36fc879a0eeec7bef8cc8092b013a8eeead"
+        },
+        "src/blocks/CallToActionSplit/config.ts": {
+          "default": "afd6186bd240d68a7071ee31444ab6d15ee797155bc2c40a5f18010faa8389d0",
+          "localized": "38dc7eb3515dc042dafb3a60c0e412fdbc1f1c029b1ed27e5f7ed3bc3a85d62a"
+        },
+        "src/blocks/CallToActionSplit/thumbnail.ts": {
+          "default": "df0dba20217afae0a2da7a64d5f085c301642a6d0a712bf989e204e2b3d9bfe8"
         },
         "src/blocks/CallToActionSplit/Component.tsx": {
           "default": "26d3b79c942238f53e787134dc3ce2c6f65ec6f1272cd9235b6e18e888938ac2"
@@ -319,6 +412,21 @@
         "src/blocks/ComparatorGrid/Component.tsx": {
           "default": "be584588adb6de0ad360d42338997c7746ba4ea067c5ca1b3ef408eedf48b9a3"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/comparatorFields.ts": {
+          "default": "096f28e1665c36a9345223db6b0dc33d47e5b806d28057cc9daeefbc76d184fd"
+        },
+        "src/blocks/ComparatorGrid/config.ts": {
+          "default": "316a8ce6a2d02ac4e14a8f590479cd2d6caa5700aba923b49b172ed8f3f379b7",
+          "localized": "30bd666c21ee0fa41ea3702893dca0fe324e705c57ed025cefa883a46d422da5"
+        },
+        "src/blocks/ComparatorGrid/thumbnail.ts": {
+          "default": "5e0db8fbd758ee50acf1880a830f685947c25accd3c9761e0caaeba225b74395"
+        },
+        "src/blocks/ComparatorGrid/Component.tsx": {
+          "default": "be584588adb6de0ad360d42338997c7746ba4ea067c5ca1b3ef408eedf48b9a3"
+        }
       }
     },
     "comparator-stack": {
@@ -357,6 +465,21 @@
         "src/blocks/ComparatorStack/Component.tsx": {
           "default": "a596f37bf014a5ba28ff6c603ff350eebf345e4975bcb533538feb716187b0a5"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/comparatorFields.ts": {
+          "default": "096f28e1665c36a9345223db6b0dc33d47e5b806d28057cc9daeefbc76d184fd"
+        },
+        "src/blocks/ComparatorStack/config.ts": {
+          "default": "cf6e00bfe1bd4afc086eeed1f332613223c2732e0e8117c4a227681d0d3bbff5",
+          "localized": "4a28661ff5198091edd03b809a8a87b3e6b305c242bcbb487950e8dd7b63ce42"
+        },
+        "src/blocks/ComparatorStack/thumbnail.ts": {
+          "default": "3da63531b70fc907eb1c35e49517326168f08a638fd429617a9f60e3d522ef7d"
+        },
+        "src/blocks/ComparatorStack/Component.tsx": {
+          "default": "a596f37bf014a5ba28ff6c603ff350eebf345e4975bcb533538feb716187b0a5"
+        }
       }
     },
     "comparator-table": {
@@ -391,6 +514,21 @@
         "src/blocks/ComparatorTable/config.ts": {
           "default": "4b064f1f2483ed3320ec8eb25713cbffd8ad2015e426197a63142c95199a872f",
           "localized": "ef4377e37b34d23bfcd292d94a9de612d083a5af0d5d44c47b3e57f42adf4c62"
+        },
+        "src/blocks/ComparatorTable/Component.tsx": {
+          "default": "825b894d7313736b11baf5f74e8111a28385dac4dbc4e7fe04580910fdef0501"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/comparatorFields.ts": {
+          "default": "096f28e1665c36a9345223db6b0dc33d47e5b806d28057cc9daeefbc76d184fd"
+        },
+        "src/blocks/ComparatorTable/config.ts": {
+          "default": "514fadb902ddf62b095dc2efd6386a7e1bea2b28f14a0bd0b44085a443910c45",
+          "localized": "cb3a52a16c6b79e4138ce766342af8a65ec968e719baddaa54dfc4858662836c"
+        },
+        "src/blocks/ComparatorTable/thumbnail.ts": {
+          "default": "d1ad59305a604b084b8a67c92f865246005a95f86f69914239fae99cd46e19bc"
         },
         "src/blocks/ComparatorTable/Component.tsx": {
           "default": "825b894d7313736b11baf5f74e8111a28385dac4dbc4e7fe04580910fdef0501"
@@ -451,6 +589,27 @@
         "src/blocks/ContactChannels/Component.tsx": {
           "default": "a798ba86bbf43e3b0dd9860fb64f306c2dbd564b9218a441a382502bebce3e6d"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/safeUrls.ts": {
+          "default": "71f887ac1a7f5aaf09ecef00cbd96ef7119e399da6af81ed0939ee2ac0d002c8"
+        },
+        "src/blocks/shared/contactUrls.ts": {
+          "default": "cda60620a4728ccbc98d2ecd73303dda503df5e1504e84edea2a37c288cba4c5"
+        },
+        "src/blocks/shared/contactFields.ts": {
+          "default": "ee7606c6813207420c6a259ba26803c49a4c1a6c8ff38ae5dde9f2d53206182b"
+        },
+        "src/blocks/ContactChannels/config.ts": {
+          "default": "b994036604afaf78abaaf8760e2404d46ed4bccc1d0418357f3267a34c2c45ac",
+          "localized": "f72775c4d06fce776c0f25d2285e258c32de6d8d4c5e7195929fb2d2b4a49428"
+        },
+        "src/blocks/ContactChannels/thumbnail.ts": {
+          "default": "547a2cedc615f0583c20f5c3fc9a97c123d202f0c5b188e184bb57c569b9da0b"
+        },
+        "src/blocks/ContactChannels/Component.tsx": {
+          "default": "a798ba86bbf43e3b0dd9860fb64f306c2dbd564b9218a441a382502bebce3e6d"
+        }
       }
     },
     "contact-routing-form": {
@@ -507,6 +666,27 @@
         "src/blocks/ContactRoutingForm/Component.tsx": {
           "default": "e31cab2a58a466853942b75051c9cebd68305383efa88d09f66380c741b73511"
         }
+      },
+      "0.4.0": {
+        "src/blocks/shared/safeUrls.ts": {
+          "default": "71f887ac1a7f5aaf09ecef00cbd96ef7119e399da6af81ed0939ee2ac0d002c8"
+        },
+        "src/blocks/shared/contactUrls.ts": {
+          "default": "cda60620a4728ccbc98d2ecd73303dda503df5e1504e84edea2a37c288cba4c5"
+        },
+        "src/blocks/shared/contactFields.ts": {
+          "default": "ee7606c6813207420c6a259ba26803c49a4c1a6c8ff38ae5dde9f2d53206182b"
+        },
+        "src/blocks/ContactRoutingForm/config.ts": {
+          "default": "4a5cd8885a7f5f0520191eaefc2ec3ff26c176d107132632360cc93ff1dab8fd",
+          "localized": "83a97ce5a85da88da05dbffa0cd9d8376bbd94baeba9c82280a33608b35c246c"
+        },
+        "src/blocks/ContactRoutingForm/thumbnail.ts": {
+          "default": "5fdff6ebbb7c1a0c11b0f9f14d2bc3c91ed9f01dd9c1083c28fae3dc7340376e"
+        },
+        "src/blocks/ContactRoutingForm/Component.tsx": {
+          "default": "e31cab2a58a466853942b75051c9cebd68305383efa88d09f66380c741b73511"
+        }
       }
     },
     "content-columns": {
@@ -545,6 +725,21 @@
         "src/blocks/ContentColumns/Component.tsx": {
           "default": "66b101b3af023b8f56e98928edab6d3529c72b1f88d8977c674cd9c2b54c4304"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/contentFields.ts": {
+          "default": "3fc35d9634aefdc709aa80e2b058ffbe91cf088b9cee526ccccdde53a7bbcedb"
+        },
+        "src/blocks/ContentColumns/config.ts": {
+          "default": "d81a9997301936c484f29c065e94199f690d0f2d62e3590e7add05f9f817073b",
+          "localized": "19b4b0f743faabffd1615190b6528302cba9b1b05f4f3bbe4dfcb45763e8d6d4"
+        },
+        "src/blocks/ContentColumns/thumbnail.ts": {
+          "default": "e33ce5c16a03b487028884d2651ed51d29220bfc1860753ec9b19e27d4e20db0"
+        },
+        "src/blocks/ContentColumns/Component.tsx": {
+          "default": "66b101b3af023b8f56e98928edab6d3529c72b1f88d8977c674cd9c2b54c4304"
+        }
       }
     },
     "content-community": {
@@ -579,6 +774,21 @@
         "src/blocks/ContentCommunity/config.ts": {
           "default": "70ee514a88119738206a3f15dd3b2cc3ef527b2555c53d203abe4b4d8f653311",
           "localized": "f48f4b5eb7a831df26e8ead91a8dc9d91204a3b9c013389b83ac7e74643776bc"
+        },
+        "src/blocks/ContentCommunity/Component.tsx": {
+          "default": "0550117ad8e217fb83b014be1ce009a138960361fead51d8ad8428e8b4ee9a3f"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/contentFields.ts": {
+          "default": "3fc35d9634aefdc709aa80e2b058ffbe91cf088b9cee526ccccdde53a7bbcedb"
+        },
+        "src/blocks/ContentCommunity/config.ts": {
+          "default": "a8a2e9d0fa33e5b4644099a2bc49cd3430a26f47ab23620d012e7929d64cc842",
+          "localized": "d8f76a7252774293cc94e63eb7f5c4b1b71debc98f92ae3510878e09392a3b24"
+        },
+        "src/blocks/ContentCommunity/thumbnail.ts": {
+          "default": "0bc39633dc7cfa24efd611a686539edc47b9d1e3d44f194c5b83dd19de72686b"
         },
         "src/blocks/ContentCommunity/Component.tsx": {
           "default": "0550117ad8e217fb83b014be1ce009a138960361fead51d8ad8428e8b4ee9a3f"
@@ -630,6 +840,24 @@
         "src/blocks/ContentFeatureMedia/Component.tsx": {
           "default": "d15af293675eb38a23bcf8f0f799963c351923669f0108cbf6dd0a036e217d6d"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/contentFields.ts": {
+          "default": "3fc35d9634aefdc709aa80e2b058ffbe91cf088b9cee526ccccdde53a7bbcedb"
+        },
+        "src/blocks/shared/contentIcons.ts": {
+          "default": "6cb42dc611185e6aa34c89a4c9f2f8c500149f3437a4d642b36caa062fd6836c"
+        },
+        "src/blocks/ContentFeatureMedia/config.ts": {
+          "default": "ed145284a2883b0aaca10321e3a6e8a54f26fd773933f65b20ca8da315153dc4",
+          "localized": "f989132d422e1bdefb30c2d7289848e0e7eb3cb511f461de4fa6e51c22a2996c"
+        },
+        "src/blocks/ContentFeatureMedia/thumbnail.ts": {
+          "default": "e2763888da558fcf0acd9540deed9875a202c232d0a45c5fd575ccfa5c3cf472"
+        },
+        "src/blocks/ContentFeatureMedia/Component.tsx": {
+          "default": "d15af293675eb38a23bcf8f0f799963c351923669f0108cbf6dd0a036e217d6d"
+        }
       }
     },
     "content-feature-split": {
@@ -677,6 +905,24 @@
         "src/blocks/ContentFeatureSplit/Component.tsx": {
           "default": "98db453ac702718b6c4f79be26dc2336b1e16667b5eaa62d684f4c6d4944f4d9"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/contentFields.ts": {
+          "default": "3fc35d9634aefdc709aa80e2b058ffbe91cf088b9cee526ccccdde53a7bbcedb"
+        },
+        "src/blocks/shared/contentIcons.ts": {
+          "default": "6cb42dc611185e6aa34c89a4c9f2f8c500149f3437a4d642b36caa062fd6836c"
+        },
+        "src/blocks/ContentFeatureSplit/config.ts": {
+          "default": "608965a1c85b0636b68a30779a34dda910dc4875279272447e61774960447e1a",
+          "localized": "89e5d25b7cafa7542f37b6ea2db207c8cf48e08980a4c5fc36dd1a18deaa5e47"
+        },
+        "src/blocks/ContentFeatureSplit/thumbnail.ts": {
+          "default": "fc70d1b20dff529c5b5742109707563a9bf606374ec351e38ea6c25093b3871b"
+        },
+        "src/blocks/ContentFeatureSplit/Component.tsx": {
+          "default": "98db453ac702718b6c4f79be26dc2336b1e16667b5eaa62d684f4c6d4944f4d9"
+        }
       }
     },
     "content-image-frame": {
@@ -711,6 +957,21 @@
         "src/blocks/ContentImageFrame/config.ts": {
           "default": "34343e0b04bb4062e3ec840caa83cfa76916a8abd9792765b73a656807f02e77",
           "localized": "45b9e55aec631681876fe2ec10c09f936727ce2e4c53502c99fdea77561d442d"
+        },
+        "src/blocks/ContentImageFrame/Component.tsx": {
+          "default": "d6e69245ee8528d73a73ce33ca7819436f6ad94852a7ddba7afbae47ee8644d5"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/contentFields.ts": {
+          "default": "3fc35d9634aefdc709aa80e2b058ffbe91cf088b9cee526ccccdde53a7bbcedb"
+        },
+        "src/blocks/ContentImageFrame/config.ts": {
+          "default": "1bccabe2fd5ae2fe3b12b04e4e9bbbd2b52421340314132208710f99a6acb024",
+          "localized": "28cbe554ea063571f8e9f34f9de40763f01482afb332bd7e7016aa64fd766b30"
+        },
+        "src/blocks/ContentImageFrame/thumbnail.ts": {
+          "default": "eadd32434f9f1689a0806670bb8f94cac55415c924bfb167788ed083b904526c"
         },
         "src/blocks/ContentImageFrame/Component.tsx": {
           "default": "d6e69245ee8528d73a73ce33ca7819436f6ad94852a7ddba7afbae47ee8644d5"
@@ -753,6 +1014,21 @@
         "src/blocks/ContentImageLead/Component.tsx": {
           "default": "070f09145e41180988149aeeacf7c21028fa0d36ac37dd502d70883cd1196990"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/contentFields.ts": {
+          "default": "3fc35d9634aefdc709aa80e2b058ffbe91cf088b9cee526ccccdde53a7bbcedb"
+        },
+        "src/blocks/ContentImageLead/config.ts": {
+          "default": "a8d16af19ff93f318cf26e5094309fb7b40904e0832e3148a74c19d253e8a6cb",
+          "localized": "7277f6ec42fd99c678d2cc3bbee5d5e30987787db25514186afd344ff2029cb0"
+        },
+        "src/blocks/ContentImageLead/thumbnail.ts": {
+          "default": "1372629857a541a20d9dd4a191e298cb3721b4cf293d21026137e83ed54e8fb3"
+        },
+        "src/blocks/ContentImageLead/Component.tsx": {
+          "default": "070f09145e41180988149aeeacf7c21028fa0d36ac37dd502d70883cd1196990"
+        }
       }
     },
     "content-list": {
@@ -782,6 +1058,18 @@
         "src/blocks/ContentList/Component.tsx": {
           "default": "51065337b3886a047cb98dd41891e2a9aff7ebfa51b251fc802535b706bd8e1d"
         }
+      },
+      "0.3.0": {
+        "src/blocks/ContentList/config.ts": {
+          "default": "f60291166211466b7548f5ace419611e81439ccdf3093f162edad18b1a0e9e04",
+          "localized": "9a74d8d03e64903e3b0301848bbaf395ef959ca00a2b3abb15b50fd5ce5aacb3"
+        },
+        "src/blocks/ContentList/thumbnail.ts": {
+          "default": "4a20eb370d46f20c245ea26d0dda94af09df40f68015f4541f7338fba0eba3b1"
+        },
+        "src/blocks/ContentList/Component.tsx": {
+          "default": "51065337b3886a047cb98dd41891e2a9aff7ebfa51b251fc802535b706bd8e1d"
+        }
       }
     },
     "content-list-columns": {
@@ -807,6 +1095,18 @@
         "src/blocks/ContentListColumns/config.ts": {
           "default": "f6c8e8c71c87b97aec22bd9d2e90d102dc071216bf7e3938f131d8fefb29e0be",
           "localized": "ab7ed02e29e6de5c3df7693468c443c7fc02edae2a10e76efa8620ff7ccec8c7"
+        },
+        "src/blocks/ContentListColumns/Component.tsx": {
+          "default": "de0d4424c900938c683724e68b2f6d1d021ed692b3de5c85b12568812b29da16"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/ContentListColumns/config.ts": {
+          "default": "e20f53b98e192c0cd8d3bbb4d88b615b604a299333d02d586b044aab055b2318",
+          "localized": "b22abc3eb94a349cbac078b0fb0379a3361981624e10cfea92e2cdbf8bc2811f"
+        },
+        "src/blocks/ContentListColumns/thumbnail.ts": {
+          "default": "fc7b17fe55b92723e674c13993c1e6726674583287e02365f43c537b6e45d8e1"
         },
         "src/blocks/ContentListColumns/Component.tsx": {
           "default": "de0d4424c900938c683724e68b2f6d1d021ed692b3de5c85b12568812b29da16"
@@ -849,6 +1149,21 @@
         "src/blocks/ContentListIcons/Component.tsx": {
           "default": "52e658808e429b66f4e389a9ad7a2d68138f40ef49e67c7ea817860c57cd80bb"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/contentIcons.ts": {
+          "default": "6cb42dc611185e6aa34c89a4c9f2f8c500149f3437a4d642b36caa062fd6836c"
+        },
+        "src/blocks/ContentListIcons/config.ts": {
+          "default": "2c7f386d947e3a5a67010c133192f6baa01c7ac7c4cb52bd3d9908ed6a9d9d80",
+          "localized": "2587a846e08b287fc0f756c10a1ec881fa501bf61db635bcca21587efad7c82b"
+        },
+        "src/blocks/ContentListIcons/thumbnail.ts": {
+          "default": "2a8d9bf08ee00a92198386f4dfd5c75b0ef86691f41fd77aba381bd4f0a9cf16"
+        },
+        "src/blocks/ContentListIcons/Component.tsx": {
+          "default": "52e658808e429b66f4e389a9ad7a2d68138f40ef49e67c7ea817860c57cd80bb"
+        }
       }
     },
     "content-rows": {
@@ -883,6 +1198,21 @@
         "src/blocks/ContentRows/config.ts": {
           "default": "4eab38b9b9fdefed6acccdf62c460c7b9a504c67a64a9de25912a682a9bb2d6f",
           "localized": "df7048521750c2641f76a77e22cbd6ffb3c61b83ac18787d449fe8ad8f7dd928"
+        },
+        "src/blocks/ContentRows/Component.tsx": {
+          "default": "c3a65c1c4ce15edd8b7f6a821413bf24970f0e17c8e51361cdf31e7bf69d25f7"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/contentFields.ts": {
+          "default": "3fc35d9634aefdc709aa80e2b058ffbe91cf088b9cee526ccccdde53a7bbcedb"
+        },
+        "src/blocks/ContentRows/config.ts": {
+          "default": "5cb4b1e6fc940665a4a9143b8461363dcb2a0de557c60385f32698d4a18a3c69",
+          "localized": "35d5324090ca43d8e2bb86b47402c180f69a29ce854965c5734e2fe32d6614de"
+        },
+        "src/blocks/ContentRows/thumbnail.ts": {
+          "default": "8b7e02f2816d04a0529d0009fc791eaed04808c2ca104336bfbe4f705c80bb6e"
         },
         "src/blocks/ContentRows/Component.tsx": {
           "default": "c3a65c1c4ce15edd8b7f6a821413bf24970f0e17c8e51361cdf31e7bf69d25f7"
@@ -934,6 +1264,24 @@
         "src/blocks/ContentShowcase/Component.tsx": {
           "default": "e76e4c4145f113baa5cd681d8c732b7f7bd7c5e42d9fee9ede28c8e42beac16f"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/contentFields.ts": {
+          "default": "3fc35d9634aefdc709aa80e2b058ffbe91cf088b9cee526ccccdde53a7bbcedb"
+        },
+        "src/blocks/shared/contentIcons.ts": {
+          "default": "6cb42dc611185e6aa34c89a4c9f2f8c500149f3437a4d642b36caa062fd6836c"
+        },
+        "src/blocks/ContentShowcase/config.ts": {
+          "default": "66b4117a4a1668fc14ec2d1879d2eca34a9053175f62ee01a69f36b614430c29",
+          "localized": "9490e0743e888511dac7a1cf26ca615b21f539a3cd4b137a806cce250a79a0c6"
+        },
+        "src/blocks/ContentShowcase/thumbnail.ts": {
+          "default": "b4ec60e4da99aaeb0235d3d362cca09c6eb83cc2a127e48e6733f8f2163c0795"
+        },
+        "src/blocks/ContentShowcase/Component.tsx": {
+          "default": "e76e4c4145f113baa5cd681d8c732b7f7bd7c5e42d9fee9ede28c8e42beac16f"
+        }
       }
     },
     "content-split-rows": {
@@ -968,6 +1316,21 @@
         "src/blocks/ContentSplitRows/config.ts": {
           "default": "757bb24e7fa4df0a59f4be05818b8246cd9aa7ccf01ad2013dbbba9dc9f48652",
           "localized": "882607292803bf8a0c300fe2b897f380f1b66dc0766915d4d9900114138e64d4"
+        },
+        "src/blocks/ContentSplitRows/Component.tsx": {
+          "default": "cec3f090f269fd64c01415a827fcc9bd9d73c8bb9af1a78a8568e97a8e026c82"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/contentFields.ts": {
+          "default": "3fc35d9634aefdc709aa80e2b058ffbe91cf088b9cee526ccccdde53a7bbcedb"
+        },
+        "src/blocks/ContentSplitRows/config.ts": {
+          "default": "371e22b2691693813bd32bc9440c1b799a896731fcb3640e796481c07c3fd174",
+          "localized": "ae7bbd4993b0c47974039741f1ec9fcbc7f1fee37339e85ac2e90eb0cb9b2f23"
+        },
+        "src/blocks/ContentSplitRows/thumbnail.ts": {
+          "default": "46347e95a842bf1311673ceda5bf9c25c52e23b057ce9894e8969272fc7f0d5e"
         },
         "src/blocks/ContentSplitRows/Component.tsx": {
           "default": "cec3f090f269fd64c01415a827fcc9bd9d73c8bb9af1a78a8568e97a8e026c82"
@@ -1019,6 +1382,24 @@
         "src/blocks/ContentStats/Component.tsx": {
           "default": "674d63f50e3e9441eb6db9f6e697c130a2b2709cf8ac0a8cb49915c4c7dc6c33"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/contentFields.ts": {
+          "default": "3fc35d9634aefdc709aa80e2b058ffbe91cf088b9cee526ccccdde53a7bbcedb"
+        },
+        "src/blocks/shared/contentIcons.ts": {
+          "default": "6cb42dc611185e6aa34c89a4c9f2f8c500149f3437a4d642b36caa062fd6836c"
+        },
+        "src/blocks/ContentStats/config.ts": {
+          "default": "32922e04ead1e282aa5d18768cd2dcc0c07b8d23e27b7c47b246412b024251af",
+          "localized": "ba2301f329cea277aa41b501a051a4071fb91420726c5dfcac7eb56c2eb1a6d8"
+        },
+        "src/blocks/ContentStats/thumbnail.ts": {
+          "default": "1f3125ed79943a6e826873f82efb64a91636e6a9cacd95e37833721a027042f6"
+        },
+        "src/blocks/ContentStats/Component.tsx": {
+          "default": "674d63f50e3e9441eb6db9f6e697c130a2b2709cf8ac0a8cb49915c4c7dc6c33"
+        }
       }
     },
     "embed-basic": {
@@ -1050,6 +1431,21 @@
         "src/blocks/EmbedBasic/config.ts": {
           "default": "307e4100e26e8392dfcda4f2f8abba6da71bb37f1d573ec286082f23899cdebf",
           "localized": "08ef3829170d025ede75a22e5373ea42a5b1c3efc955c5de6e0ed27083fbb56e"
+        },
+        "src/blocks/EmbedBasic/Component.tsx": {
+          "default": "bba329597528e01187da76e4a80035f2090959bd1d9989c130daed72509c8457"
+        },
+        "src/blocks/shared/safeUrls.ts": {
+          "default": "71f887ac1a7f5aaf09ecef00cbd96ef7119e399da6af81ed0939ee2ac0d002c8"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/EmbedBasic/config.ts": {
+          "default": "69029c60bffd04a9c82973a187e78bcf93e17682d69f64a0afde9777133c15b2",
+          "localized": "561780b3dcbfc3d557a7e275282014b4a6b9713cc4856e6d63b0e4eb509f770f"
+        },
+        "src/blocks/EmbedBasic/thumbnail.ts": {
+          "default": "52b06d32ba3c86995d1b57c04e192c721791d93bb818b4a625ef6d805f71146b"
         },
         "src/blocks/EmbedBasic/Component.tsx": {
           "default": "bba329597528e01187da76e4a80035f2090959bd1d9989c130daed72509c8457"
@@ -1095,6 +1491,21 @@
         "src/blocks/FaqAccordion/Component.tsx": {
           "default": "fbefb95c49ca911f1394120ed9173e49fc3d870906398f9a59bf308b268196dd"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/faqFields.ts": {
+          "default": "4e1768159b1ebc2a56bc989bab249310d341997e868ab1bf6e13dae930890776"
+        },
+        "src/blocks/FaqAccordion/config.ts": {
+          "default": "f6862d9c23e8a5c7c5486083356419e8e583301af141a34c1db5054c75c302af",
+          "localized": "b7f55a68a613d9d593786a51124b814e434facf1dd608dc03180554653ff5ab9"
+        },
+        "src/blocks/FaqAccordion/thumbnail.ts": {
+          "default": "7412396884364bf6af2b9cf61c2698c9eb34243ab0911d763911a22152210a51"
+        },
+        "src/blocks/FaqAccordion/Component.tsx": {
+          "default": "fbefb95c49ca911f1394120ed9173e49fc3d870906398f9a59bf308b268196dd"
+        }
       }
     },
     "faq-card": {
@@ -1133,6 +1544,21 @@
         "src/blocks/FaqCard/Component.tsx": {
           "default": "0a58e86c9df2d2115c8f8df4fb8c2745733e30730093cd8c10a98dac7a59bd0b"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/faqFields.ts": {
+          "default": "4e1768159b1ebc2a56bc989bab249310d341997e868ab1bf6e13dae930890776"
+        },
+        "src/blocks/FaqCard/config.ts": {
+          "default": "f2c53a02fda4879f0af990cb3a2bb07daeae7a26f7d802490a6db9f573bab5d6",
+          "localized": "500d05b2eccf4960766125a7644cb6b2aa58e4334a520dafa9c16694f90afdf7"
+        },
+        "src/blocks/FaqCard/thumbnail.ts": {
+          "default": "6e528385b6ffede661eca5eace14a5a733da9ded249832ac50c09849e4e2e727"
+        },
+        "src/blocks/FaqCard/Component.tsx": {
+          "default": "0a58e86c9df2d2115c8f8df4fb8c2745733e30730093cd8c10a98dac7a59bd0b"
+        }
       }
     },
     "faq-grid": {
@@ -1167,6 +1593,21 @@
         "src/blocks/FaqGrid/config.ts": {
           "default": "4f33d1ddbefa1ea6e5455021ffbb9e6042a170cac3fc570417b305b7bbb9ca53",
           "localized": "efd24091395e52854e69bd4c0f64c57c97e22d2892bc03a848b1be13967abb5a"
+        },
+        "src/blocks/FaqGrid/Component.tsx": {
+          "default": "2b83c9b1aea7824960f5f88f49bb1f71d45022a66ad9213531a041c856f612b9"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/faqFields.ts": {
+          "default": "4e1768159b1ebc2a56bc989bab249310d341997e868ab1bf6e13dae930890776"
+        },
+        "src/blocks/FaqGrid/config.ts": {
+          "default": "91764b86b043454ae80ad4b62654ef54d908c9b12f0c35f31abafa06f30121fe",
+          "localized": "6e9870548ad468c16ac56e4824ce729f2f620f0b371c0f28be46b3deeb848045"
+        },
+        "src/blocks/FaqGrid/thumbnail.ts": {
+          "default": "b84ecc36f24a8b4ac03d47d190010a90b429f91ef3d2b421b79fcae2761e4fa0"
         },
         "src/blocks/FaqGrid/Component.tsx": {
           "default": "2b83c9b1aea7824960f5f88f49bb1f71d45022a66ad9213531a041c856f612b9"
@@ -1218,6 +1659,24 @@
         "src/blocks/FaqGrouped/Component.tsx": {
           "default": "37567e9d5622adfd2f9ff1745346dc9e3019db24179d04e85d85541c6a712301"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/faqFields.ts": {
+          "default": "4e1768159b1ebc2a56bc989bab249310d341997e868ab1bf6e13dae930890776"
+        },
+        "src/blocks/shared/faqIcons.ts": {
+          "default": "91f7463efb54bc92720aaa23b67dee5691943e6697c0b589edbdaf329a73b8e7"
+        },
+        "src/blocks/FaqGrouped/config.ts": {
+          "default": "2933be52e9f1e04c836dbf4fb8b043d14797e07fbc000cf8d3e6560b5123b2d9",
+          "localized": "a6a5f1d402b002ea6f45954240c4e7ec3d974afcf2a2ecf55a039509a28e8589"
+        },
+        "src/blocks/FaqGrouped/thumbnail.ts": {
+          "default": "06bc8bbe25a3be0f21d9a9590428a6ecb7cf1d9113c6e99193b73075dad119a3"
+        },
+        "src/blocks/FaqGrouped/Component.tsx": {
+          "default": "37567e9d5622adfd2f9ff1745346dc9e3019db24179d04e85d85541c6a712301"
+        }
       }
     },
     "faq-icons": {
@@ -1265,6 +1724,24 @@
         "src/blocks/FaqIcons/Component.tsx": {
           "default": "a2c6a5315f731229c87c34f5ae8ae5b2982c4d2ca309a8e379cc4ce0bcbe0997"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/faqFields.ts": {
+          "default": "4e1768159b1ebc2a56bc989bab249310d341997e868ab1bf6e13dae930890776"
+        },
+        "src/blocks/shared/faqIcons.ts": {
+          "default": "91f7463efb54bc92720aaa23b67dee5691943e6697c0b589edbdaf329a73b8e7"
+        },
+        "src/blocks/FaqIcons/config.ts": {
+          "default": "2b94cea45afad01ba62b075cc91c8c5af608cd69bd20134cff0dbd70084f76a5",
+          "localized": "94e1d5fb090a5e861e053144416431f5b22bf897ec70b6cbf9e2b584e21848b7"
+        },
+        "src/blocks/FaqIcons/thumbnail.ts": {
+          "default": "4ee0e6b61aa242f38de5df77758ff5553bc8f41170199c96ae2c6cd80fb2a42a"
+        },
+        "src/blocks/FaqIcons/Component.tsx": {
+          "default": "a2c6a5315f731229c87c34f5ae8ae5b2982c4d2ca309a8e379cc4ce0bcbe0997"
+        }
       }
     },
     "faq-split": {
@@ -1299,6 +1776,21 @@
         "src/blocks/FaqSplit/config.ts": {
           "default": "c3be85b0128ad4184e626503f6c08ac7c43417f64949411e09b6a6618fafe860",
           "localized": "b9efd5bb1b8c4b8a658f28af8f1953e797d77b0eb52265efa78b73877bdcb37e"
+        },
+        "src/blocks/FaqSplit/Component.tsx": {
+          "default": "5fc0f8c5a3127901247d8e3e85c98dc855a665ea7cf8b97e12f1889c3562449d"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/faqFields.ts": {
+          "default": "4e1768159b1ebc2a56bc989bab249310d341997e868ab1bf6e13dae930890776"
+        },
+        "src/blocks/FaqSplit/config.ts": {
+          "default": "b8509f4a41dd8270775afad1950b58094aec3052ffca741972d960bad972773f",
+          "localized": "43385b4267a8d1af77896042ab55be6ec3f7f3e96818a7f1ba1a9046adcb5259"
+        },
+        "src/blocks/FaqSplit/thumbnail.ts": {
+          "default": "458011f566b3d13df851ecf9131e896dbeffb7f1fd747ef0f3658ffc9cd4541f"
         },
         "src/blocks/FaqSplit/Component.tsx": {
           "default": "5fc0f8c5a3127901247d8e3e85c98dc855a665ea7cf8b97e12f1889c3562449d"
@@ -1350,6 +1842,24 @@
         "src/blocks/FeatureAccordion/Component.tsx": {
           "default": "7ab161ee2110c77cd10307ad92db9413b4165b63f893a3d3225ac98f471a0e18"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/featureFields.ts": {
+          "default": "ff4dd2e95bb3b03f61ef08c7d461f23e3d5b0710adfb85e28a3fca9a11392fc6"
+        },
+        "src/blocks/shared/featureIcons.ts": {
+          "default": "ee9005056145fbf7b8adfc6f4a46dd28d8af368613aebf2de8ec947d8ebac809"
+        },
+        "src/blocks/FeatureAccordion/config.ts": {
+          "default": "95998091efd3661af641f055214ddbe3e8dafa1f392ffef18fa7a8b237d4d73f",
+          "localized": "dcbeb0ed9726ef65a2c02ba2123b63d868c3d2075a8ce3428c41c67b2720f131"
+        },
+        "src/blocks/FeatureAccordion/thumbnail.ts": {
+          "default": "03b948751d318276d38770dfaf127e8b18a4251356fd15d351adc9f7b8039488"
+        },
+        "src/blocks/FeatureAccordion/Component.tsx": {
+          "default": "7ab161ee2110c77cd10307ad92db9413b4165b63f893a3d3225ac98f471a0e18"
+        }
       }
     },
     "feature-bento": {
@@ -1384,6 +1894,21 @@
         "src/blocks/FeatureBento/config.ts": {
           "default": "b06ca17b7056266f1609e838ff2162dd728bbde9596bd9be9b97d6e0edf8621f",
           "localized": "b2794abe7f36f4506de5a9741b4fb29259c6dde35e4dce88e8101fc79b231eaf"
+        },
+        "src/blocks/FeatureBento/Component.tsx": {
+          "default": "5043a7490312a07b0e8da4275b6871dcc8c92aa4eceeb532ec0462ca21b730f4"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/featureFields.ts": {
+          "default": "ff4dd2e95bb3b03f61ef08c7d461f23e3d5b0710adfb85e28a3fca9a11392fc6"
+        },
+        "src/blocks/FeatureBento/config.ts": {
+          "default": "09000f603a03d24e779290100dcae0d848481a940a03320a71d49ad17aff0223",
+          "localized": "fd4606566362e6862b71b8d6606a60261aca5e346e044c2641f3f788f41ed373"
+        },
+        "src/blocks/FeatureBento/thumbnail.ts": {
+          "default": "196fed048e1ede2a631eaf0d66f2022f819f7fe7a4e3d7a53b1acf9f6ca2362c"
         },
         "src/blocks/FeatureBento/Component.tsx": {
           "default": "5043a7490312a07b0e8da4275b6871dcc8c92aa4eceeb532ec0462ca21b730f4"
@@ -1435,6 +1960,24 @@
         "src/blocks/FeatureCardsMedia/Component.tsx": {
           "default": "f40b5980684ca6f4bfc8296cacd88cf9d00cfa5861017bd7fb007e0f05611428"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/featureFields.ts": {
+          "default": "ff4dd2e95bb3b03f61ef08c7d461f23e3d5b0710adfb85e28a3fca9a11392fc6"
+        },
+        "src/blocks/shared/featureIcons.ts": {
+          "default": "ee9005056145fbf7b8adfc6f4a46dd28d8af368613aebf2de8ec947d8ebac809"
+        },
+        "src/blocks/FeatureCardsMedia/config.ts": {
+          "default": "ad79bfbff05ee836fcb0eef083a63de27c46a0187d511676af7358ebf9a70bd4",
+          "localized": "e3c8325dfc5dee7c45d0dff9536452e8999c1236fe1b476737794003b70d709d"
+        },
+        "src/blocks/FeatureCardsMedia/thumbnail.ts": {
+          "default": "a6ed4ad56d4fe0b3d5e8776d1ef96e2f49ebea78c9a80597ec7f097e14bc32af"
+        },
+        "src/blocks/FeatureCardsMedia/Component.tsx": {
+          "default": "f40b5980684ca6f4bfc8296cacd88cf9d00cfa5861017bd7fb007e0f05611428"
+        }
       }
     },
     "feature-grid-basic": {
@@ -1469,6 +2012,21 @@
         "src/blocks/FeatureGridBasic/config.ts": {
           "default": "01386aee8f6a2d6d81dd392a63ea1bdf9bc28decbd6dbba1db3bd2a888b3f97b",
           "localized": "8d14e8544c4b8b0b657b1802cd3c89c072f86b2e9c097182a929bf74f0a9e85d"
+        },
+        "src/blocks/FeatureGridBasic/Component.tsx": {
+          "default": "07b77f175b520b8c011854532e5b608ffcc3ceabf1cab50c47418ff2fb2a78c2"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/featureFields.ts": {
+          "default": "ff4dd2e95bb3b03f61ef08c7d461f23e3d5b0710adfb85e28a3fca9a11392fc6"
+        },
+        "src/blocks/FeatureGridBasic/config.ts": {
+          "default": "160f4d790fb9cf8bcf79ef9c5969a6895593c4a1284b0c6e72f5e98d008d8555",
+          "localized": "c6e3a24b0c6765df4dd2db88e3814d58de8f7cfba27347ef59674a2a99c384d0"
+        },
+        "src/blocks/FeatureGridBasic/thumbnail.ts": {
+          "default": "8e9337a92bf7c68f592bb4137a491c568f312cce9db8f5841d907e921bd54e90"
         },
         "src/blocks/FeatureGridBasic/Component.tsx": {
           "default": "07b77f175b520b8c011854532e5b608ffcc3ceabf1cab50c47418ff2fb2a78c2"
@@ -1520,6 +2078,24 @@
         "src/blocks/FeatureIconGrid/Component.tsx": {
           "default": "58e3a7f289f250474c88197bbdb6715ee50f13c57d1d4ba2e153b01bb2d41d28"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/featureFields.ts": {
+          "default": "ff4dd2e95bb3b03f61ef08c7d461f23e3d5b0710adfb85e28a3fca9a11392fc6"
+        },
+        "src/blocks/shared/featureIcons.ts": {
+          "default": "ee9005056145fbf7b8adfc6f4a46dd28d8af368613aebf2de8ec947d8ebac809"
+        },
+        "src/blocks/FeatureIconGrid/config.ts": {
+          "default": "7d60a85b5d05f9976381cb310e83147d28d659a17369873ee142266015eba95b",
+          "localized": "2cc5aca06b24a23acd677edd9ec2752a24ea51d58b6cb554f983e757759e1d50"
+        },
+        "src/blocks/FeatureIconGrid/thumbnail.ts": {
+          "default": "9c0bf7ad72006d5ca794d61ff2c7d43977a2aa1b62bd016c026465bff4756195"
+        },
+        "src/blocks/FeatureIconGrid/Component.tsx": {
+          "default": "58e3a7f289f250474c88197bbdb6715ee50f13c57d1d4ba2e153b01bb2d41d28"
+        }
       }
     },
     "feature-split": {
@@ -1558,6 +2134,21 @@
         "src/blocks/FeatureSplit/Component.tsx": {
           "default": "2bc8dd59332a2d09d0516033bad7587cb7b8d7f53ffddb64f22d7f9500d8b414"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/featureFields.ts": {
+          "default": "ff4dd2e95bb3b03f61ef08c7d461f23e3d5b0710adfb85e28a3fca9a11392fc6"
+        },
+        "src/blocks/FeatureSplit/config.ts": {
+          "default": "0709e6ec19831f91b25e560603eed1c6cfc5ce71565eef5ae9ba65564075cf15",
+          "localized": "d74264472fd03528852c75320f9ba0cc38f6bc282846f132bf265844e5a65f29"
+        },
+        "src/blocks/FeatureSplit/thumbnail.ts": {
+          "default": "2dcf0b79f0562e01e6c025977353acec7a1e775662e17eb175c05aff41546eb6"
+        },
+        "src/blocks/FeatureSplit/Component.tsx": {
+          "default": "2bc8dd59332a2d09d0516033bad7587cb7b8d7f53ffddb64f22d7f9500d8b414"
+        }
       }
     },
     "feature-steps": {
@@ -1592,6 +2183,21 @@
         "src/blocks/FeatureSteps/config.ts": {
           "default": "768a5004b03316b6fa5bddb99ba55c16218a0d1cbeb57c90914a120fbdeb9080",
           "localized": "a1a424a074c05e119b12849d77fadb52589e2e800fead903ecfd8a383d8a38bb"
+        },
+        "src/blocks/FeatureSteps/Component.tsx": {
+          "default": "22105bfb3c17cce491169e510dff72d6bdd5e543d06cad5526e0ccb25de9ce72"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/featureFields.ts": {
+          "default": "ff4dd2e95bb3b03f61ef08c7d461f23e3d5b0710adfb85e28a3fca9a11392fc6"
+        },
+        "src/blocks/FeatureSteps/config.ts": {
+          "default": "0db2c52d05ead0e804474d157ca03d5a75d085d453912356042b531e9ace57b0",
+          "localized": "5692d0edc9f97ed230e24a832d75ceaee05c56a29c96a4eb82e1a632da4a4cce"
+        },
+        "src/blocks/FeatureSteps/thumbnail.ts": {
+          "default": "d89769c190f5e9e5b779b43acec1b715be6332140d540c3075e905f97be563ea"
         },
         "src/blocks/FeatureSteps/Component.tsx": {
           "default": "22105bfb3c17cce491169e510dff72d6bdd5e543d06cad5526e0ccb25de9ce72"
@@ -1652,6 +2258,27 @@
         "src/blocks/FooterCentered/Component.tsx": {
           "default": "b7223e465a054e28841ee964e55ae8246348f8895becae94c13d335734baaef1"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/safeUrls.ts": {
+          "default": "71f887ac1a7f5aaf09ecef00cbd96ef7119e399da6af81ed0939ee2ac0d002c8"
+        },
+        "src/blocks/shared/footerUrls.ts": {
+          "default": "2cd3a45d442c208d85799dfce96db08b020bd133288a269de8bcbbb39e3f5e3b"
+        },
+        "src/blocks/shared/footerFields.ts": {
+          "default": "00ed95a79f97bc81a32559dee09cb0706df64d3437b2e8b85ca3fd72e5093c29"
+        },
+        "src/blocks/FooterCentered/config.ts": {
+          "default": "66acedf70a03ca346187786846f8ba09dc317dd62bb8badb1e91a7beef381755",
+          "localized": "ab96244a8729230fa89f7b5b9ce8513596f0354acdde51559d97ce47d38b7f13"
+        },
+        "src/blocks/FooterCentered/thumbnail.ts": {
+          "default": "5f25fd332a79b964a69327fa977a7b34227c04519eb7d16cc5d954be7f3c7537"
+        },
+        "src/blocks/FooterCentered/Component.tsx": {
+          "default": "b7223e465a054e28841ee964e55ae8246348f8895becae94c13d335734baaef1"
+        }
       }
     },
     "footer-columns": {
@@ -1704,6 +2331,27 @@
         "src/blocks/FooterColumns/config.ts": {
           "default": "8eb337d9e1db38cc62213591bab7250398a499afae9a4dd56f05c8df082eb8d9",
           "localized": "35a37cf628f9d87b60e9805b1a911f711dd9997d9b81b54dbe7eb4a93de73510"
+        },
+        "src/blocks/FooterColumns/Component.tsx": {
+          "default": "0e72a702feab8857da7d63c919725042c73976aab4d03239a577151c81a8ef17"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/safeUrls.ts": {
+          "default": "71f887ac1a7f5aaf09ecef00cbd96ef7119e399da6af81ed0939ee2ac0d002c8"
+        },
+        "src/blocks/shared/footerUrls.ts": {
+          "default": "2cd3a45d442c208d85799dfce96db08b020bd133288a269de8bcbbb39e3f5e3b"
+        },
+        "src/blocks/shared/footerFields.ts": {
+          "default": "00ed95a79f97bc81a32559dee09cb0706df64d3437b2e8b85ca3fd72e5093c29"
+        },
+        "src/blocks/FooterColumns/config.ts": {
+          "default": "79c1fce3c107261a5e4927e17ca4416c8b0ded66b856292674759a1c7eda6704",
+          "localized": "c3d3bbee5e944e0ca378957bf1c0f22d6a8db02fd9ca0628f50f698c32cbd02e"
+        },
+        "src/blocks/FooterColumns/thumbnail.ts": {
+          "default": "ebf5ae87650d11258994c1b9aef5906907fb891e23717de39a0e2b692244042e"
         },
         "src/blocks/FooterColumns/Component.tsx": {
           "default": "0e72a702feab8857da7d63c919725042c73976aab4d03239a577151c81a8ef17"
@@ -1764,6 +2412,27 @@
         "src/blocks/FooterSimple/Component.tsx": {
           "default": "dde10fc4f5b61dbfa4c8effa22f3f1afef9ab4519411fc8b88b4f40e6da77a22"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/safeUrls.ts": {
+          "default": "71f887ac1a7f5aaf09ecef00cbd96ef7119e399da6af81ed0939ee2ac0d002c8"
+        },
+        "src/blocks/shared/footerUrls.ts": {
+          "default": "2cd3a45d442c208d85799dfce96db08b020bd133288a269de8bcbbb39e3f5e3b"
+        },
+        "src/blocks/shared/footerFields.ts": {
+          "default": "00ed95a79f97bc81a32559dee09cb0706df64d3437b2e8b85ca3fd72e5093c29"
+        },
+        "src/blocks/FooterSimple/config.ts": {
+          "default": "2ddf2dbaa3097ca554b315830221a03a7c444794f1ef45904196d1c434248b51",
+          "localized": "090db7da34b26a99f7511a7c9995f2458c05039ceae1e03dacfb15027c4d5853"
+        },
+        "src/blocks/FooterSimple/thumbnail.ts": {
+          "default": "2f5f75994c50f0faf088681b00985e95f2d5a4c7fd119c47b07c6c4d9940cf97"
+        },
+        "src/blocks/FooterSimple/Component.tsx": {
+          "default": "dde10fc4f5b61dbfa4c8effa22f3f1afef9ab4519411fc8b88b4f40e6da77a22"
+        }
       }
     },
     "hero-aurora": {
@@ -1798,6 +2467,21 @@
         "src/blocks/HeroAurora/config.ts": {
           "default": "4c91a884093ae4711095e6084422b3f4e033fe4d339e2d6d0ed8ccd1a9942000",
           "localized": "5bf9589dc91a70ada4506e355d4d00c86a7f3749ca3bcad795dfb92fbe7b24b9"
+        },
+        "src/blocks/HeroAurora/Component.tsx": {
+          "default": "af439b2057e45e5f87ffe8bad78a36e58f96e4438aec9e5080187c26fb3bc5f2"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/heroFields.ts": {
+          "default": "3138aa00f34fe09b48ef449e18357c701ba5611ab9c5687955fd63cfd7057065"
+        },
+        "src/blocks/HeroAurora/config.ts": {
+          "default": "ecab7c81ff8b1a01e6baa7fa3c646f8c93ae1d01ce0122176d5ae9b4822e7656",
+          "localized": "ef1c257072bf678fb24059dc05f4c39ee374a9a469ee23752fcfda66433dcb5c"
+        },
+        "src/blocks/HeroAurora/thumbnail.ts": {
+          "default": "ea22d932a1f788945105fd809f7131b5d4c48451c320d1cef67c56ff86f866c6"
         },
         "src/blocks/HeroAurora/Component.tsx": {
           "default": "af439b2057e45e5f87ffe8bad78a36e58f96e4438aec9e5080187c26fb3bc5f2"
@@ -1840,6 +2524,21 @@
         "src/blocks/HeroBasic/Component.tsx": {
           "default": "e95720ff9dcdb06c159fca2eab669f3141993928b22959b62d9c3388444ec910"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/heroFields.ts": {
+          "default": "3138aa00f34fe09b48ef449e18357c701ba5611ab9c5687955fd63cfd7057065"
+        },
+        "src/blocks/HeroBasic/config.ts": {
+          "default": "36a9cd29b5438b5a18c4d4d8685595e135e2376505ffefd5ef8cf40629e8725c",
+          "localized": "9da0c541a1abbbe76c6c847db730802da7f10ffa65393aea966cff8fe24490bc"
+        },
+        "src/blocks/HeroBasic/thumbnail.ts": {
+          "default": "1c831c962fbdb1767c73d9da560abb7b5e7b91edecac00bf3b80ac5bd73a9d27"
+        },
+        "src/blocks/HeroBasic/Component.tsx": {
+          "default": "e95720ff9dcdb06c159fca2eab669f3141993928b22959b62d9c3388444ec910"
+        }
       }
     },
     "hero-kinetic": {
@@ -1874,6 +2573,21 @@
         "src/blocks/HeroKinetic/config.ts": {
           "default": "db03ae85891cb2d0da2935e4044c046c9b2dc9447fcfa08ea64d928d146280e8",
           "localized": "10aaf7007f0886333987ebc04cab419c1f5e816421e7b765299a3187b1677ec9"
+        },
+        "src/blocks/HeroKinetic/Component.tsx": {
+          "default": "cf48f4e96cd9406d55aa7e08049978834a36b096a6211abf0d9cb08f96e38873"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/heroFields.ts": {
+          "default": "3138aa00f34fe09b48ef449e18357c701ba5611ab9c5687955fd63cfd7057065"
+        },
+        "src/blocks/HeroKinetic/config.ts": {
+          "default": "0eb3c153c683ebb42c96435fc447e9bfa7f42146941987dba4fc013f033e8169",
+          "localized": "c8d19223574de309419538abb281c1739527e2c7d16766b4931accef4c7cff88"
+        },
+        "src/blocks/HeroKinetic/thumbnail.ts": {
+          "default": "00665f7aa2f0cb68979b46ff70f61e93cbae782d3b22cab5f46cc40433ff4046"
         },
         "src/blocks/HeroKinetic/Component.tsx": {
           "default": "cf48f4e96cd9406d55aa7e08049978834a36b096a6211abf0d9cb08f96e38873"
@@ -1916,6 +2630,21 @@
         "src/blocks/HeroProductTilt/Component.tsx": {
           "default": "dba0304437a64241cd4c27d0d13b67aa4dd9ddfbe80fb65d883572689448c98f"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/heroFields.ts": {
+          "default": "3138aa00f34fe09b48ef449e18357c701ba5611ab9c5687955fd63cfd7057065"
+        },
+        "src/blocks/HeroProductTilt/config.ts": {
+          "default": "bb893e560a0cea51ec49f472d3c7e6ce8465ca49a56c7cabe1e6e87598266c81",
+          "localized": "03659b8e5a66a5a0167b5c77f48fba086e9c746cde13df394a4894cffa56214e"
+        },
+        "src/blocks/HeroProductTilt/thumbnail.ts": {
+          "default": "abdc8f5de3fd71b58a0a87489ddb3e5957b1c3ef82f1537a16c70fd871d0b84b"
+        },
+        "src/blocks/HeroProductTilt/Component.tsx": {
+          "default": "dba0304437a64241cd4c27d0d13b67aa4dd9ddfbe80fb65d883572689448c98f"
+        }
       }
     },
     "hero-split": {
@@ -1950,6 +2679,21 @@
         "src/blocks/HeroSplit/config.ts": {
           "default": "b378431daad79947ffd8fc7d9cefe0774a14474394051568cc86bde3ecac5ca9",
           "localized": "ff58004de57c6bfd135fdeccb1207c9de9e3fedacb3855b4eb1d2c8496d66107"
+        },
+        "src/blocks/HeroSplit/Component.tsx": {
+          "default": "f435e887c309aef6eb4049f2ddeb7f8a6a51abc0f4c064f1ea0975a709059e4b"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/heroFields.ts": {
+          "default": "3138aa00f34fe09b48ef449e18357c701ba5611ab9c5687955fd63cfd7057065"
+        },
+        "src/blocks/HeroSplit/config.ts": {
+          "default": "1f85d6f2d28abbef0eb01a1fa181797cc1558dff184223cc153472a5719c254d",
+          "localized": "e1351721b0e9ed628dcb6e202450ba3d35cb18b251895f514022a63ab55a3371"
+        },
+        "src/blocks/HeroSplit/thumbnail.ts": {
+          "default": "5e327b3cb2a8fcdc957a69c90899c7a1f0c1327bf7eb9c699f7bae1774aff1e8"
         },
         "src/blocks/HeroSplit/Component.tsx": {
           "default": "f435e887c309aef6eb4049f2ddeb7f8a6a51abc0f4c064f1ea0975a709059e4b"
@@ -2001,6 +2745,24 @@
         "src/blocks/HeroVideo/Component.tsx": {
           "default": "e8e0c6db74784beb344ed3054049a23d4298b2afae9e3d1cd2c612b23675e054"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/heroFields.ts": {
+          "default": "3138aa00f34fe09b48ef449e18357c701ba5611ab9c5687955fd63cfd7057065"
+        },
+        "src/blocks/HeroVideo/Video.tsx": {
+          "default": "3bec65a859b454fe89f7aa0d7aafee1037d99ab31adc53799091bf0c32a37fc2"
+        },
+        "src/blocks/HeroVideo/config.ts": {
+          "default": "44285d551987bb64c3ff218dd5d81e895b64e7de66ef8c484e53172811544071",
+          "localized": "e55261302dcc5978d455e920e6c1445af7495754683aba5c4f61c50aaed5d842"
+        },
+        "src/blocks/HeroVideo/thumbnail.ts": {
+          "default": "8fe02eaa8e288f2ced58df3b997cd90cf9a6b9e297e2b9e589c3e455c8667959"
+        },
+        "src/blocks/HeroVideo/Component.tsx": {
+          "default": "e8e0c6db74784beb344ed3054049a23d4298b2afae9e3d1cd2c612b23675e054"
+        }
       }
     },
     "integration-cluster": {
@@ -2035,6 +2797,21 @@
         "src/blocks/IntegrationCluster/config.ts": {
           "default": "f4dab62c30306f8105c97d8e2f653e49e87d3128cc583f83fbdd6f0b099ab82d",
           "localized": "59ba82ea83d2005181668c6e3d4fab722d3e406458a1ab685dc158562bd1505d"
+        },
+        "src/blocks/IntegrationCluster/Component.tsx": {
+          "default": "dc27b63a1ae600e20e2ecb1d9985dd23ef14d56cffa60aaa9b44b1df9deff93d"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/integrationFields.ts": {
+          "default": "c7da6535684930720567ceb234853ba6b6d81ef2e0213153d499a2d21ee6132f"
+        },
+        "src/blocks/IntegrationCluster/config.ts": {
+          "default": "cd96b5dff17f66b3aeb6ae4fc13430e9242a8413cd955efa1909e0d6a88251e4",
+          "localized": "73d033b81aa652c0f2375a399394543baf3586e466f722e842b6508b5b7e93d2"
+        },
+        "src/blocks/IntegrationCluster/thumbnail.ts": {
+          "default": "54ce34533a7240844948cf59dca474b85c831d4e50805dffb88474b84fee78b9"
         },
         "src/blocks/IntegrationCluster/Component.tsx": {
           "default": "dc27b63a1ae600e20e2ecb1d9985dd23ef14d56cffa60aaa9b44b1df9deff93d"
@@ -2077,6 +2854,21 @@
         "src/blocks/IntegrationConnect/Component.tsx": {
           "default": "f9ca122c9d01ee1b3188aca01241a99a5e1ac0507217722c868a4c3e3f48c990"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/integrationFields.ts": {
+          "default": "c7da6535684930720567ceb234853ba6b6d81ef2e0213153d499a2d21ee6132f"
+        },
+        "src/blocks/IntegrationConnect/config.ts": {
+          "default": "b7c22056a7f8eca59c5ec5a8270aabc9a46fab1cf89d7705b3be6aa7d2bf073c",
+          "localized": "3fe93e1208dc498f1aed9b579dc848d50e257557c46d74fae0bdaca17276ba1e"
+        },
+        "src/blocks/IntegrationConnect/thumbnail.ts": {
+          "default": "0f8e2237cbe2d8dc55bf40784f133fdfd8b6dd318753def64520e753d6331bd7"
+        },
+        "src/blocks/IntegrationConnect/Component.tsx": {
+          "default": "f9ca122c9d01ee1b3188aca01241a99a5e1ac0507217722c868a4c3e3f48c990"
+        }
       }
     },
     "integration-grid": {
@@ -2115,6 +2907,21 @@
         "src/blocks/IntegrationGrid/Component.tsx": {
           "default": "1176eb126fd1e6820cfd1e84be4fb3075b4f47edd4a3660ec1d52248c5d900e4"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/integrationFields.ts": {
+          "default": "c7da6535684930720567ceb234853ba6b6d81ef2e0213153d499a2d21ee6132f"
+        },
+        "src/blocks/IntegrationGrid/config.ts": {
+          "default": "d9170d3eed952d7e46ff90fd82cce757723e7a8889faada3a3044b70e025e48c",
+          "localized": "202711d59247af6407b3b54510ec43628e953fa83b2c1540bedb2d5a499b7fe5"
+        },
+        "src/blocks/IntegrationGrid/thumbnail.ts": {
+          "default": "437b850d898528c138985585b7f34e8d7422c822f8851e9f32551ab4bbb14c4a"
+        },
+        "src/blocks/IntegrationGrid/Component.tsx": {
+          "default": "1176eb126fd1e6820cfd1e84be4fb3075b4f47edd4a3660ec1d52248c5d900e4"
+        }
       }
     },
     "integration-list": {
@@ -2149,6 +2956,21 @@
         "src/blocks/IntegrationList/config.ts": {
           "default": "e0af8797f5b827795dc88cf7c2093979d06e93e3b420aa93c792c8158fab9628",
           "localized": "51d9f2570a170b402039b58fea99db017076b67a8d37b0fa0a80c31cbc207266"
+        },
+        "src/blocks/IntegrationList/Component.tsx": {
+          "default": "9c83d6b2deb11036cfe57078aa830fa6876749cd681bd6a47a657d7f4b27946b"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/integrationFields.ts": {
+          "default": "c7da6535684930720567ceb234853ba6b6d81ef2e0213153d499a2d21ee6132f"
+        },
+        "src/blocks/IntegrationList/config.ts": {
+          "default": "c641c6c607790ff01ad26a2a979b73f8ecb6aa8f4c5a38eca94889260b0ef678",
+          "localized": "e7b8209b2d2202c99322df63a5395b3d7a2f7c177e631b3f64c0fea886cb6dbc"
+        },
+        "src/blocks/IntegrationList/thumbnail.ts": {
+          "default": "c36732ace669a2b26d65160009b60cfd397e19aec01d4686632167ceafa3df1d"
         },
         "src/blocks/IntegrationList/Component.tsx": {
           "default": "9c83d6b2deb11036cfe57078aa830fa6876749cd681bd6a47a657d7f4b27946b"
@@ -2200,6 +3022,24 @@
         "src/blocks/IntegrationMarquee/Component.tsx": {
           "default": "85858fcdde0723d10de7ea277846e3fa8bd04b4039251cb588a2403423760c2a"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/integrationFields.ts": {
+          "default": "c7da6535684930720567ceb234853ba6b6d81ef2e0213153d499a2d21ee6132f"
+        },
+        "src/components/ui/infinite-slider.tsx": {
+          "default": "3da0a2ff04697a930cf702b52d1dab2f4ff4b5c0a659a160a6f5a7171e2dba53"
+        },
+        "src/blocks/IntegrationMarquee/config.ts": {
+          "default": "a417321cd3c815fe0bd73b8565e659a8c4cc2e2a8d0159d96feb0466ace55e09",
+          "localized": "a29b42b95d2bb211b7b90444d1f6218133fe4dc5edb0025e27db398626910948"
+        },
+        "src/blocks/IntegrationMarquee/thumbnail.ts": {
+          "default": "99962ef40b9a07d78216b18ce9ada54f1a048368acfafedbccff5bb500ad7891"
+        },
+        "src/blocks/IntegrationMarquee/Component.tsx": {
+          "default": "85858fcdde0723d10de7ea277846e3fa8bd04b4039251cb588a2403423760c2a"
+        }
       }
     },
     "integration-orbit": {
@@ -2234,6 +3074,21 @@
         "src/blocks/IntegrationOrbit/config.ts": {
           "default": "23179ff46fa54bc8fb90f8591f8fb5a54f414af8967bcec61a8a242205f0792c",
           "localized": "e979811f2dc098b8f86e8b64670d27c87ad64492e669bba20faee2a9a1638844"
+        },
+        "src/blocks/IntegrationOrbit/Component.tsx": {
+          "default": "65774a948b24b7d10aa7d450d7913eeb3cbe9b976329d366310120152eda419b"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/integrationFields.ts": {
+          "default": "c7da6535684930720567ceb234853ba6b6d81ef2e0213153d499a2d21ee6132f"
+        },
+        "src/blocks/IntegrationOrbit/config.ts": {
+          "default": "888ad5c851f1a319f36826fa149c20ce265903ac7a7d362cf3e59a1ae72fa3b6",
+          "localized": "51fcfa4d75115eaf525dc4214a1259218917239e9ea5c61292469243c39b1fdd"
+        },
+        "src/blocks/IntegrationOrbit/thumbnail.ts": {
+          "default": "57c6468e01fefa9d85caeda83da59c19d7aa193844825e730a17ac9eab495980"
         },
         "src/blocks/IntegrationOrbit/Component.tsx": {
           "default": "65774a948b24b7d10aa7d450d7913eeb3cbe9b976329d366310120152eda419b"
@@ -2276,6 +3131,21 @@
         "src/blocks/IntegrationSplit/Component.tsx": {
           "default": "d7df416ff62ae04d7e23ba2bd3dba4fd6456201a73960d4e0cd8d774b431abf8"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/integrationFields.ts": {
+          "default": "c7da6535684930720567ceb234853ba6b6d81ef2e0213153d499a2d21ee6132f"
+        },
+        "src/blocks/IntegrationSplit/config.ts": {
+          "default": "0fb79f3f2d8bca83575fbb502e1da71dc82aa6c916d0c5cea4d5fbc9fe1d930b",
+          "localized": "cf31d175689a67a325922bbc943b41df804bb981be0e5e03d89e58b26c0c9e9b"
+        },
+        "src/blocks/IntegrationSplit/thumbnail.ts": {
+          "default": "0e28a2db0559a6840aa5bf7ef06f41a0354c08ed2fac3f55faadaeffab51e07d"
+        },
+        "src/blocks/IntegrationSplit/Component.tsx": {
+          "default": "d7df416ff62ae04d7e23ba2bd3dba4fd6456201a73960d4e0cd8d774b431abf8"
+        }
       }
     },
     "integration-testimonial": {
@@ -2310,6 +3180,21 @@
         "src/blocks/IntegrationTestimonial/config.ts": {
           "default": "8b8c834e5859b28ec925d2460c2f519c19fd17d962cc8abc0ec2dc4d78defddf",
           "localized": "f766c8a096df43c8292d3c0d59f09e46c1a19429cce03c762b516b6db71f87c1"
+        },
+        "src/blocks/IntegrationTestimonial/Component.tsx": {
+          "default": "4e3b4b7ca4b23d1b8966ea30655008b58b3d88b54bf2c305a541b6a4e36a6e4a"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/integrationFields.ts": {
+          "default": "c7da6535684930720567ceb234853ba6b6d81ef2e0213153d499a2d21ee6132f"
+        },
+        "src/blocks/IntegrationTestimonial/config.ts": {
+          "default": "b20a3c8c115838bd22770053d1c383814a33b80df92c6e9f0e634cf041cd6034",
+          "localized": "9a29e6f990c22c230ff7fb88002465a4755a3a74f5ce89d68750460d87274f1f"
+        },
+        "src/blocks/IntegrationTestimonial/thumbnail.ts": {
+          "default": "e44a5c4cf08e8dfcb626188f4c51c2e8521bfba1043eb1c20b92a48477ecada8"
         },
         "src/blocks/IntegrationTestimonial/Component.tsx": {
           "default": "4e3b4b7ca4b23d1b8966ea30655008b58b3d88b54bf2c305a541b6a4e36a6e4a"
@@ -2352,6 +3237,21 @@
         "src/blocks/LogoCloudGrid/Component.tsx": {
           "default": "8a25b7dee6df86feb421369ef7c9477dda8acd6f3b4bc3ed7b6a581f9e351896"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/logoCloudFields.ts": {
+          "default": "8b362a8e39d5891ca8d236ca25fb7f1036394b7c0afa40192dd2595f1b2b09e2"
+        },
+        "src/blocks/LogoCloudGrid/config.ts": {
+          "default": "91f18530f570e47a1a74b67c9ca2702b0c317db82dcdb811ea27168191fc2375",
+          "localized": "cbc80cb7b9a5e811a553eae37607d2796beb929626dc4c9abf7dae24b78f2bf6"
+        },
+        "src/blocks/LogoCloudGrid/thumbnail.ts": {
+          "default": "e20dc82cbeca96177de2de900a0316ce35d190b566ca1597344cc83a8770b960"
+        },
+        "src/blocks/LogoCloudGrid/Component.tsx": {
+          "default": "8a25b7dee6df86feb421369ef7c9477dda8acd6f3b4bc3ed7b6a581f9e351896"
+        }
       }
     },
     "logo-cloud-hover": {
@@ -2386,6 +3286,21 @@
         "src/blocks/LogoCloudHover/config.ts": {
           "default": "81cce42812ffa65d574fe40eac2934b040f5f45acc19e40ba6b7f533f46c1222",
           "localized": "476af3098cfd2d4017c7b6fdb9ff5e0041f11dba8209a0d63abad70f46cc909b"
+        },
+        "src/blocks/LogoCloudHover/Component.tsx": {
+          "default": "7c53879cecc1889294150684a0c835bf1103841e623c4cf12896757c8d7986a3"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/logoCloudFields.ts": {
+          "default": "8b362a8e39d5891ca8d236ca25fb7f1036394b7c0afa40192dd2595f1b2b09e2"
+        },
+        "src/blocks/LogoCloudHover/config.ts": {
+          "default": "b4942ace98c1eb828b05f85635d6c6552989ed4a632d9c27d5d41342df526b53",
+          "localized": "87e33781a30247fa299bdef5ef0cf4cd1cdf810620dd58a4844f419396186f18"
+        },
+        "src/blocks/LogoCloudHover/thumbnail.ts": {
+          "default": "5ab0b0190d8670e3dc370f47a89cf1b7bc6f08b2c85c568802fc60338ee7dca2"
         },
         "src/blocks/LogoCloudHover/Component.tsx": {
           "default": "7c53879cecc1889294150684a0c835bf1103841e623c4cf12896757c8d7986a3"
@@ -2428,6 +3343,21 @@
         "src/blocks/LogoCloudInline/Component.tsx": {
           "default": "6a0d23ad57abacecc8081248c1c2233cb8916730d80ca7c3ff35b88dbb5772b9"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/logoCloudFields.ts": {
+          "default": "8b362a8e39d5891ca8d236ca25fb7f1036394b7c0afa40192dd2595f1b2b09e2"
+        },
+        "src/blocks/LogoCloudInline/config.ts": {
+          "default": "e8c5f2090bf37eda4c5bca9ce367596931caf84da37682544a0dc23f98f74c64",
+          "localized": "00a3a5f1ff28f48b16b0c91360f3b09fa6bc92794ba52a1501f48ee7c7a15c3d"
+        },
+        "src/blocks/LogoCloudInline/thumbnail.ts": {
+          "default": "eded2fb7ce7d80a7b6cd2cc479c18bf1ec2fc4c9f4ff762147cb1112d0778aa1"
+        },
+        "src/blocks/LogoCloudInline/Component.tsx": {
+          "default": "6a0d23ad57abacecc8081248c1c2233cb8916730d80ca7c3ff35b88dbb5772b9"
+        }
       }
     },
     "logo-cloud-inline-wrap": {
@@ -2462,6 +3392,21 @@
         "src/blocks/LogoCloudInlineWrap/config.ts": {
           "default": "2a2f11905c1434e17e11202f81296ef5e9ecdce4e28f66357e16070bd8b129a2",
           "localized": "e0ae317b6879c7fa46fdea5a5814de1c90fbfd89d29f9a41f59dd859c0289291"
+        },
+        "src/blocks/LogoCloudInlineWrap/Component.tsx": {
+          "default": "68d04a927f113f2b146359fb506680716bd8a72f5a87c674ba8a8563b3182837"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/logoCloudFields.ts": {
+          "default": "8b362a8e39d5891ca8d236ca25fb7f1036394b7c0afa40192dd2595f1b2b09e2"
+        },
+        "src/blocks/LogoCloudInlineWrap/config.ts": {
+          "default": "3140dcfa5b47cd3d91bb769449c870dd10719e08ac28f8c40f6c4568cf321e07",
+          "localized": "1b71cc1002bb4b034c7f38720045f841b9f9c01f7fd8da4e82da865ddff72f8c"
+        },
+        "src/blocks/LogoCloudInlineWrap/thumbnail.ts": {
+          "default": "c53aedf9b1b75f6cba78286f23e7621f763578c4dbafbed190485835e594d4fb"
         },
         "src/blocks/LogoCloudInlineWrap/Component.tsx": {
           "default": "68d04a927f113f2b146359fb506680716bd8a72f5a87c674ba8a8563b3182837"
@@ -2522,6 +3467,27 @@
         "src/blocks/LogoCloudMarquee/Component.tsx": {
           "default": "e071983744f7ddaa1723488f6558f032d2ad7c15283386977878e59085318562"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/logoCloudFields.ts": {
+          "default": "8b362a8e39d5891ca8d236ca25fb7f1036394b7c0afa40192dd2595f1b2b09e2"
+        },
+        "src/components/ui/infinite-slider.tsx": {
+          "default": "3da0a2ff04697a930cf702b52d1dab2f4ff4b5c0a659a160a6f5a7171e2dba53"
+        },
+        "src/components/ui/progressive-blur.tsx": {
+          "default": "c95273e53fa13e46b9ac7173b1927f125c900a52cacb14ee8281583cdafa9b4a"
+        },
+        "src/blocks/LogoCloudMarquee/config.ts": {
+          "default": "6a7b8d98cfebb1fad26591d6307681af56418518420a0e702aa0a5ee7bc153f3",
+          "localized": "490ee2f3f7228434c25da714cde1967e38392caf4c402a772ca1e14070e48ed5"
+        },
+        "src/blocks/LogoCloudMarquee/thumbnail.ts": {
+          "default": "b92ac261d3c26647f772d7fbf2ecdec5cf7b70cdf2d4bec532e529621686f189"
+        },
+        "src/blocks/LogoCloudMarquee/Component.tsx": {
+          "default": "e071983744f7ddaa1723488f6558f032d2ad7c15283386977878e59085318562"
+        }
       }
     },
     "pricing-cards": {
@@ -2556,6 +3522,21 @@
         "src/blocks/PricingCards/config.ts": {
           "default": "342b04c9342078f357cc635dff613e74dc2b9ee2567b0c9a3946087bf428b295",
           "localized": "5d84e966bd7b4e654eb65d3603b4c5144c523419901146a1dcb1b634ad1bf09b"
+        },
+        "src/blocks/PricingCards/Component.tsx": {
+          "default": "3ea1ddd6838068e09dec1c3803bc17e80d702bdec752fde22b1a68d7f9112c7d"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/pricingFields.ts": {
+          "default": "ac152ed7dd5e5b1b78f3a276bb35190616c4214a184e67a775ca4bc6e3aedbe1"
+        },
+        "src/blocks/PricingCards/config.ts": {
+          "default": "0cd42213d3af3ac35e13fa8706fe67d3b56b6c3febd10f9d379ce6d15d411b9a",
+          "localized": "1d0ae6ca67a333e5c3598ba7fd579d94ac338010ea939ec3c3b596211733bc29"
+        },
+        "src/blocks/PricingCards/thumbnail.ts": {
+          "default": "dc2304856c4028797fbf048894b8a0189e23977ec0551a2f859c08df3d641b9c"
         },
         "src/blocks/PricingCards/Component.tsx": {
           "default": "3ea1ddd6838068e09dec1c3803bc17e80d702bdec752fde22b1a68d7f9112c7d"
@@ -2598,6 +3579,21 @@
         "src/blocks/PricingCardsCta/Component.tsx": {
           "default": "ae34b42b750ed345a675824832c7338e6b735bd2eac665d960401843920a9552"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/pricingFields.ts": {
+          "default": "ac152ed7dd5e5b1b78f3a276bb35190616c4214a184e67a775ca4bc6e3aedbe1"
+        },
+        "src/blocks/PricingCardsCta/config.ts": {
+          "default": "8d51b0247ab9454887380a05544a2c7bf883e370ecb6b2db8e7df8e2332144ef",
+          "localized": "76d64a8c447fe34d1a89489173c2eb627aeb22d4d298e829459bfb1a442f6ae4"
+        },
+        "src/blocks/PricingCardsCta/thumbnail.ts": {
+          "default": "8d46a3f2001033b457e4fcf48cea0432504981d5dd0f466cc68ddbc56c0dd892"
+        },
+        "src/blocks/PricingCardsCta/Component.tsx": {
+          "default": "ae34b42b750ed345a675824832c7338e6b735bd2eac665d960401843920a9552"
+        }
       }
     },
     "pricing-cards-muted": {
@@ -2632,6 +3628,21 @@
         "src/blocks/PricingCardsMuted/config.ts": {
           "default": "031bde8cfee0f009958a0a994024dcefedc10b3681c027070921db6c75e65072",
           "localized": "29ec3275d8092a9a0ea4de6cf370f2f746371436ec763b72ce629721d22417d0"
+        },
+        "src/blocks/PricingCardsMuted/Component.tsx": {
+          "default": "b2573f1e87e1903291df0dae507c7e2a2b01f3b4819f5fcc95da550a324f6ec2"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/pricingFields.ts": {
+          "default": "ac152ed7dd5e5b1b78f3a276bb35190616c4214a184e67a775ca4bc6e3aedbe1"
+        },
+        "src/blocks/PricingCardsMuted/config.ts": {
+          "default": "513046fd8077e0351e3d122d1d01421aba4e0c17f7c4b41158e2460a4c70dc00",
+          "localized": "588becda16751669e9ef6625360cf6f2bee03347f509bdb38f7bb3ad32245064"
+        },
+        "src/blocks/PricingCardsMuted/thumbnail.ts": {
+          "default": "4c09878a4d409408518c26c008ce4fa73949bbf6ff2786757fb02c0123b0456c"
         },
         "src/blocks/PricingCardsMuted/Component.tsx": {
           "default": "b2573f1e87e1903291df0dae507c7e2a2b01f3b4819f5fcc95da550a324f6ec2"
@@ -2674,6 +3685,21 @@
         "src/blocks/PricingEnterprise/Component.tsx": {
           "default": "213f74be523207a3ab6f7052d11399e48f834ad9810bbba0c65afe40c9a1da86"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/pricingFields.ts": {
+          "default": "ac152ed7dd5e5b1b78f3a276bb35190616c4214a184e67a775ca4bc6e3aedbe1"
+        },
+        "src/blocks/PricingEnterprise/config.ts": {
+          "default": "6397914ace1b24e66c2160962d0c928083e9ff5d267e2fbf0f5cd2a2310de224",
+          "localized": "a8f34faa8c2f854a682c722fff3d80f29b0e27f8501ef3102bc1833e2dd8e15a"
+        },
+        "src/blocks/PricingEnterprise/thumbnail.ts": {
+          "default": "281a556d8c5e3c64621d344e708325b7f53dae8ad2b23e26451ce9b2aaf04e25"
+        },
+        "src/blocks/PricingEnterprise/Component.tsx": {
+          "default": "213f74be523207a3ab6f7052d11399e48f834ad9810bbba0c65afe40c9a1da86"
+        }
       }
     },
     "pricing-split": {
@@ -2708,6 +3734,21 @@
         "src/blocks/PricingSplit/config.ts": {
           "default": "2ea6c42a3430ab9ce9636bb00adcdf4963f671908bcad83099b40947da9b9544",
           "localized": "0821152972b81b63647fda7bf5fa0782053fafee7be633de70fedfcdcb3bfb54"
+        },
+        "src/blocks/PricingSplit/Component.tsx": {
+          "default": "982492485d14b92ca4c6a6d2d8b95f0738a47e9197cb3db51c54245c34da96e0"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/pricingFields.ts": {
+          "default": "ac152ed7dd5e5b1b78f3a276bb35190616c4214a184e67a775ca4bc6e3aedbe1"
+        },
+        "src/blocks/PricingSplit/config.ts": {
+          "default": "64d1f107930a94d21a7993aa461c39f7f7362c4980b0e8a04aefa96b44d365f9",
+          "localized": "15a03c034b59ca8da2dbae4b20cb20326d07efcfa810404ec304d0a327ae11bd"
+        },
+        "src/blocks/PricingSplit/thumbnail.ts": {
+          "default": "c51b3034ad48b8af4a6b95a14ebafb1f8d3e8ba84faa276ce650a0c0584c65b1"
         },
         "src/blocks/PricingSplit/Component.tsx": {
           "default": "982492485d14b92ca4c6a6d2d8b95f0738a47e9197cb3db51c54245c34da96e0"
@@ -2750,6 +3791,21 @@
         "src/blocks/StatsCard/Component.tsx": {
           "default": "227e82a20edea734fd5289df9dc4364a16bb11c508f4ee692e2ad3c226c95b7a"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/statsFields.ts": {
+          "default": "fd980590c2a9370a726ffd9e5f10741c7d6d58e6da2101f6c4c6923bde982277"
+        },
+        "src/blocks/StatsCard/config.ts": {
+          "default": "5fdea613d4478737a8ab4e49360e3e8bc125cdc7906e70dd1c2b8618acdc70bb",
+          "localized": "b92a4bf374a31beee26d7f0fd46d3c923f4ec0ca0acd7e5fad1008660b8792f3"
+        },
+        "src/blocks/StatsCard/thumbnail.ts": {
+          "default": "9ecaa908d84d01c8ed8efd7d98fdd50c95e852df053d9438a0919fa30dcbbb0e"
+        },
+        "src/blocks/StatsCard/Component.tsx": {
+          "default": "227e82a20edea734fd5289df9dc4364a16bb11c508f4ee692e2ad3c226c95b7a"
+        }
       }
     },
     "stats-grid": {
@@ -2784,6 +3840,21 @@
         "src/blocks/StatsGrid/config.ts": {
           "default": "c226889c223d971c8aee751278f61f27839a80fcd1f85d00c68896f41e8149a3",
           "localized": "8b2443450177b63ffc392f0385090b454d98dcf332122d08336e21735042e262"
+        },
+        "src/blocks/StatsGrid/Component.tsx": {
+          "default": "575d85cb92bc747eabb1e6de86f1e8070a961b2d64ed8dc68fbaf6f9bb954c9d"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/statsFields.ts": {
+          "default": "fd980590c2a9370a726ffd9e5f10741c7d6d58e6da2101f6c4c6923bde982277"
+        },
+        "src/blocks/StatsGrid/config.ts": {
+          "default": "731de7d932338cd6ec4bd22a3571ec16d07158429eb43953719ed701c2bb276a",
+          "localized": "bb60df6d37dfc27d6227352dafe0f949940349d7e17c94e55cbadebe70bd8dbc"
+        },
+        "src/blocks/StatsGrid/thumbnail.ts": {
+          "default": "e07742df38adcb708ab5c9905a40d7334cb36af9000975c13761bd9ad71d10da"
         },
         "src/blocks/StatsGrid/Component.tsx": {
           "default": "575d85cb92bc747eabb1e6de86f1e8070a961b2d64ed8dc68fbaf6f9bb954c9d"
@@ -2826,6 +3897,21 @@
         "src/blocks/StatsInline/Component.tsx": {
           "default": "c392a49329a89523dfb3f57272d461bc9ef23f4585e91ab16abbc90047b3d864"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/statsFields.ts": {
+          "default": "fd980590c2a9370a726ffd9e5f10741c7d6d58e6da2101f6c4c6923bde982277"
+        },
+        "src/blocks/StatsInline/config.ts": {
+          "default": "39e0aafc592554bcf43ef7a953f63c70c83bf82f47fa86f21d9ddad40cec3f09",
+          "localized": "18c5beda45a14b2324cd8961f9fb9b20bc33e5c8a235d85552876bd44c01dd69"
+        },
+        "src/blocks/StatsInline/thumbnail.ts": {
+          "default": "9714f18b606b2be05e21d58ba67b0df69ff41e83f1d68620a7396713ee805950"
+        },
+        "src/blocks/StatsInline/Component.tsx": {
+          "default": "c392a49329a89523dfb3f57272d461bc9ef23f4585e91ab16abbc90047b3d864"
+        }
       }
     },
     "team-bios": {
@@ -2860,6 +3946,21 @@
         "src/blocks/TeamBios/config.ts": {
           "default": "2199a2b02e7067adbd6de33e190bcd8ae8b3289dd689ccddb177a29fb4d906c3",
           "localized": "7d33f560cf2196d697b99ba00e72c7b7d949f4384dd85fc39fc7c4305825ac77"
+        },
+        "src/blocks/TeamBios/Component.tsx": {
+          "default": "8e5cf868abbfee57b74a27958ac35df39dfa2a0a21e58f274c7b0332dd4ef106"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/teamFields.ts": {
+          "default": "fca2956c93e6b2db69d52decd954a663616a5fe66391e92d8fc89f1ffc5085f6"
+        },
+        "src/blocks/TeamBios/config.ts": {
+          "default": "f03dab33388ee4f6bd26b1d8cbb0daa4c41a077fd42cd00e157af6415a8b4f4e",
+          "localized": "c5379f0a9d86d81c9522146bda24418c49985d37ef60a30c8d3be8b3f283fa45"
+        },
+        "src/blocks/TeamBios/thumbnail.ts": {
+          "default": "358c0a0c16569ef5dc2bdbbf7701097df1095445858bb28425611b2fdc2bbf55"
         },
         "src/blocks/TeamBios/Component.tsx": {
           "default": "8e5cf868abbfee57b74a27958ac35df39dfa2a0a21e58f274c7b0332dd4ef106"
@@ -2902,6 +4003,21 @@
         "src/blocks/TeamGrid/Component.tsx": {
           "default": "7010a13516e1f28f699e289bee21a432437e48df9f753aca9574356889287779"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/teamFields.ts": {
+          "default": "fca2956c93e6b2db69d52decd954a663616a5fe66391e92d8fc89f1ffc5085f6"
+        },
+        "src/blocks/TeamGrid/config.ts": {
+          "default": "f69393589f83a16162c6b23e2c5e5ad7eff4a7ac9d3a88ecbf1b8c6225dfdd7b",
+          "localized": "49ba57f58b345d1b3adbfc631ec8388af8ecd9e73ef58bce2f4ccc7555247ee8"
+        },
+        "src/blocks/TeamGrid/thumbnail.ts": {
+          "default": "a1fbabe3fd950d12b0ec06cc4376d03904fadf8888e1df8a1d19a1961a7d46fd"
+        },
+        "src/blocks/TeamGrid/Component.tsx": {
+          "default": "7010a13516e1f28f699e289bee21a432437e48df9f753aca9574356889287779"
+        }
       }
     },
     "team-roster": {
@@ -2936,6 +4052,21 @@
         "src/blocks/TeamRoster/config.ts": {
           "default": "6ec0ad7c31cfb5bc7d1aff071d513c2b31b07c095eb2270ea8917df4a6d11054",
           "localized": "2bb9161448e95008b9cb6e0057a830a71279c42d540ea7d2120f455cf7f29976"
+        },
+        "src/blocks/TeamRoster/Component.tsx": {
+          "default": "395daa2c2ca38e4d6ba72b5ab630efded6b152a7d0bbba3a5573b4dac5ecc32d"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/teamFields.ts": {
+          "default": "fca2956c93e6b2db69d52decd954a663616a5fe66391e92d8fc89f1ffc5085f6"
+        },
+        "src/blocks/TeamRoster/config.ts": {
+          "default": "289248a5b0583a7cdbc32b9aa657861fd1432118e3e083554128f81b9057473c",
+          "localized": "e90eb31b39b66258ccbe60f1c8e793c71d3c278ea916733c97df33f76a694778"
+        },
+        "src/blocks/TeamRoster/thumbnail.ts": {
+          "default": "5c8231c58dc59abf3cec4eae75e073d9bc3d9d0f6230a833a546cad9441b03cd"
         },
         "src/blocks/TeamRoster/Component.tsx": {
           "default": "395daa2c2ca38e4d6ba72b5ab630efded6b152a7d0bbba3a5573b4dac5ecc32d"
@@ -2978,6 +4109,21 @@
         "src/blocks/TestimonialsBento/Component.tsx": {
           "default": "fe2e7acaa72e1701ebd9c7be53745c251c83f1aa256ac6f1175736ce18201d65"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/testimonialFields.ts": {
+          "default": "78f85fa296b5651b35f307c2b53ae088bc107597f5fafcfde7d7385a10c6ee7e"
+        },
+        "src/blocks/TestimonialsBento/config.ts": {
+          "default": "e304a5ea7b2399298edfac2120b9aca2a795c08eef746881cc6f828d57bcfa1b",
+          "localized": "1316d89f58ae49f326ad3a70bb6abfab2d75912674f18e20b72017beff684bc5"
+        },
+        "src/blocks/TestimonialsBento/thumbnail.ts": {
+          "default": "ad8d3bcb3688945a2d3a1431a931133e652f4ea25c37639ecb3b00c8c3534fdc"
+        },
+        "src/blocks/TestimonialsBento/Component.tsx": {
+          "default": "fe2e7acaa72e1701ebd9c7be53745c251c83f1aa256ac6f1175736ce18201d65"
+        }
       }
     },
     "testimonials-grid": {
@@ -3012,6 +4158,21 @@
         "src/blocks/TestimonialsGrid/config.ts": {
           "default": "6da4a23184d70af26edfb552c823f997688e3b9242b12a9f8604083c559c59e5",
           "localized": "93aa932dfe7c117ac55560f8740bfaa4f2b3f39d49df72fa8e286556e96e69a3"
+        },
+        "src/blocks/TestimonialsGrid/Component.tsx": {
+          "default": "522ee69f4547bcb542dfc15765bd11e79e32d31c1abdec96ede968b5a93e2bc6"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/testimonialFields.ts": {
+          "default": "78f85fa296b5651b35f307c2b53ae088bc107597f5fafcfde7d7385a10c6ee7e"
+        },
+        "src/blocks/TestimonialsGrid/config.ts": {
+          "default": "1c607cadd5fd2ac90a2a7061e277df09ff03f43be0c057e92765724a3ff516f8",
+          "localized": "5ee300c77b5b36884d6137e487af023b78b7b6d32f1805a79658bdf3e1e70672"
+        },
+        "src/blocks/TestimonialsGrid/thumbnail.ts": {
+          "default": "8c94028d217577d0466b6847d8c9dc3815e6201fa2e14942b036b68a45d25b6f"
         },
         "src/blocks/TestimonialsGrid/Component.tsx": {
           "default": "522ee69f4547bcb542dfc15765bd11e79e32d31c1abdec96ede968b5a93e2bc6"
@@ -3054,6 +4215,21 @@
         "src/blocks/TestimonialsQuote/Component.tsx": {
           "default": "37384af54c56d02267c2ef7a994d087a9cf6563b58d95010ea6153fbbbda11d2"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/testimonialFields.ts": {
+          "default": "78f85fa296b5651b35f307c2b53ae088bc107597f5fafcfde7d7385a10c6ee7e"
+        },
+        "src/blocks/TestimonialsQuote/config.ts": {
+          "default": "4f27035467ddf4bac3c6e00daa52c11ee9d2b8548459dddf613c93d48ae84d40",
+          "localized": "0544247f604262cac6d97bd26845e25104bb23f92a15e6e8b4ced8ab309eeae9"
+        },
+        "src/blocks/TestimonialsQuote/thumbnail.ts": {
+          "default": "334b238245f3ec0aabf1d89963132df69458c9eb5767c8fab830fa52bb434709"
+        },
+        "src/blocks/TestimonialsQuote/Component.tsx": {
+          "default": "37384af54c56d02267c2ef7a994d087a9cf6563b58d95010ea6153fbbbda11d2"
+        }
       }
     },
     "testimonials-rating": {
@@ -3088,6 +4264,21 @@
         "src/blocks/TestimonialsRating/config.ts": {
           "default": "e84be01f03de1a54d56939231df66da65458eb6d09811be71bc22ac34c19580a",
           "localized": "b7bef16d43f6492f56ee2d588bb437d4699bfbcbf0140ae56aa19c1acce3f524"
+        },
+        "src/blocks/TestimonialsRating/Component.tsx": {
+          "default": "07c78fd662c500455f090ffebd7a25c93d87809457fc40ec0436d95f8bb75f64"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/testimonialFields.ts": {
+          "default": "78f85fa296b5651b35f307c2b53ae088bc107597f5fafcfde7d7385a10c6ee7e"
+        },
+        "src/blocks/TestimonialsRating/config.ts": {
+          "default": "bab4b940bfab93705ce252096598f5710857a01fad87d6152a1f0f584e63c2a8",
+          "localized": "ccebef14e76f4e309095bee0470fd1dac9a6043c37755e7e30757fd2cc6fe82f"
+        },
+        "src/blocks/TestimonialsRating/thumbnail.ts": {
+          "default": "6c5a9ed8c7cc3bae668ec1767072b214c48b0b839fec2495e8b0b7e67e485f85"
         },
         "src/blocks/TestimonialsRating/Component.tsx": {
           "default": "07c78fd662c500455f090ffebd7a25c93d87809457fc40ec0436d95f8bb75f64"
@@ -3130,6 +4321,21 @@
         "src/blocks/TestimonialsSpotlight/Component.tsx": {
           "default": "85d42aba871d8694f61f2e0eb4c056e042f2789b63484cc006701c8e59a9d206"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/testimonialFields.ts": {
+          "default": "78f85fa296b5651b35f307c2b53ae088bc107597f5fafcfde7d7385a10c6ee7e"
+        },
+        "src/blocks/TestimonialsSpotlight/config.ts": {
+          "default": "ef0adbd6b85fdbb8a87ea66dd511beaf63b9928f23b82138cea359ec29db99f9",
+          "localized": "6d9d65d7baeda50bcb4ed1c3d02cfa4b67d1418e11388c5d4b1ef75128d2fd2b"
+        },
+        "src/blocks/TestimonialsSpotlight/thumbnail.ts": {
+          "default": "29b43ffbac35c50fd00e6b1326d3511d2a4fe53f090f312eee8ae0de7a0246a6"
+        },
+        "src/blocks/TestimonialsSpotlight/Component.tsx": {
+          "default": "85d42aba871d8694f61f2e0eb4c056e042f2789b63484cc006701c8e59a9d206"
+        }
       }
     },
     "testimonials-wall": {
@@ -3164,6 +4370,21 @@
         "src/blocks/TestimonialsWall/config.ts": {
           "default": "c128fb810406e49d152bdba10f14c014b429dad5b668cbd3a0d3a88679a5c847",
           "localized": "5b5e15fd97934b54346d1f6933746f359a541e989c87af20314b6f796a05c367"
+        },
+        "src/blocks/TestimonialsWall/Component.tsx": {
+          "default": "37f2df3dfa8ae69342e40654642ce6173b4321eedb6e18854537f53e9e9623a9"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/shared/testimonialFields.ts": {
+          "default": "78f85fa296b5651b35f307c2b53ae088bc107597f5fafcfde7d7385a10c6ee7e"
+        },
+        "src/blocks/TestimonialsWall/config.ts": {
+          "default": "0bdbc9d3ce3ca222d7e5f4b9c85d9471da10ceaf17702b2df7ffd71db33cc342",
+          "localized": "69f455bdf772b27bcd9435c64c4556d5b717df58ab7c6840939eb319c0a9e7aa"
+        },
+        "src/blocks/TestimonialsWall/thumbnail.ts": {
+          "default": "63ec78cd196063cdec3ec632592cc105af7499037eb1024b0f58760ee1a5b948"
         },
         "src/blocks/TestimonialsWall/Component.tsx": {
           "default": "37f2df3dfa8ae69342e40654642ce6173b4321eedb6e18854537f53e9e9623a9"
@@ -3219,6 +4440,30 @@
         "src/blocks/CollectionQuery/navigation.ts": {
           "default": "996b548718d4ad69b8390b4ee8e43b0ff9813127d75efd13e974e84729733764"
         }
+      },
+      "0.3.0": {
+        "src/blocks/shared/PostCard.tsx": {
+          "default": "d271ee20d5e2297d1df97e170e61f7f345c50b5f57d55fbf34e2ee4959ceab6b"
+        },
+        "src/blocks/CollectionQuery/config.ts": {
+          "default": "8455638012443020f34188f06f13bdba619d1060b7ea015bf82f18daa248e3a1",
+          "localized": "7e81da29882afaf44eafdfcabe9221cb75ffadb2ba1a8c59067152462039da87"
+        },
+        "src/blocks/CollectionQuery/thumbnail.ts": {
+          "default": "0df1d927e8aefbaf4baa317af67eb5f036170c76adb62be8c2001deb8b550879"
+        },
+        "src/blocks/CollectionQuery/Component.tsx": {
+          "default": "6eca77d737a7b793a7dd15e9852f5dba0f0129f59564adb8e4a4e87b20328539"
+        },
+        "src/blocks/CollectionQuery/Browser.tsx": {
+          "default": "095b8c664307231e7c3d2392429c281d6c630fa24fc31c5ca5f4446493b96b67"
+        },
+        "src/blocks/CollectionQuery/query.ts": {
+          "default": "9b92dada231ce912d28df3015d366e5b7e0e2ca83511f4e1b0effa1d9063966a"
+        },
+        "src/blocks/CollectionQuery/navigation.ts": {
+          "default": "996b548718d4ad69b8390b4ee8e43b0ff9813127d75efd13e974e84729733764"
+        }
       }
     },
     "contact-form-basic": {
@@ -3241,6 +4486,24 @@
         "src/blocks/ContactFormBasic/config.ts": {
           "default": "225e6d4158acf5491ebc4c90122baa71836bc02d7bd63c359514d7aff78c0b6d",
           "localized": "9b05ecd897d6c10486bf0d5407c07c34ba9f1cc88da994ec61838d986cce04b3"
+        },
+        "src/blocks/ContactFormBasic/Component.tsx": {
+          "default": "f8879bb3dffe38204b197c7cfd38e578da677b4826a172e420f80f789d26c29e"
+        },
+        "src/blocks/ContactFormBasic/form.ts": {
+          "default": "e5ee79e29b1fa7adb8ecca4f1607cad167b4b1bf145d02cf91a660ec3fbd9ad2"
+        },
+        "src/blocks/shared/safeUrls.ts": {
+          "default": "71f887ac1a7f5aaf09ecef00cbd96ef7119e399da6af81ed0939ee2ac0d002c8"
+        }
+      },
+      "0.3.0": {
+        "src/blocks/ContactFormBasic/config.ts": {
+          "default": "2b4f632a2e7d0cbaa1f1295863b9996565fe2eba8a5e21c678628938998238d4",
+          "localized": "814f497c00a8781dd6a96cd85227761431fb6b5d308fcbffa021dcd49485ea43"
+        },
+        "src/blocks/ContactFormBasic/thumbnail.ts": {
+          "default": "627ae5ee49138c4cf901cd2466920c9444806f07ddd26922e1d4b450973a4e2b"
         },
         "src/blocks/ContactFormBasic/Component.tsx": {
           "default": "f8879bb3dffe38204b197c7cfd38e578da677b4826a172e420f80f789d26c29e"

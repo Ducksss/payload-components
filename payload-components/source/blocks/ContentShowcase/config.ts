@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 import { contentFields } from '@/blocks/shared/contentFields'
 import { iconField } from '@/blocks/shared/contentIcons'
 
+import { contentShowcaseThumbnail } from './thumbnail'
+
 export const ContentShowcase: Block = {
   slug: 'contentShowcase',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -11,6 +13,9 @@ export const ContentShowcase: Block = {
   interfaceName: 'ContentShowcaseBlock',
   admin: {
     group: 'Content',
+    images: {
+      thumbnail: contentShowcaseThumbnail,
+    },
   },
   fields: [
     // Shared content core (eyebrow, title, paragraphs). Variant-specific fields

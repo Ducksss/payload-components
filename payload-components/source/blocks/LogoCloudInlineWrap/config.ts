@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { logoCloudFields } from '@/blocks/shared/logoCloudFields'
 
+import { logoCloudInlineWrapThumbnail } from './thumbnail'
+
 export const LogoCloudInlineWrap: Block = {
   slug: 'logoCloudInlineWrap',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const LogoCloudInlineWrap: Block = {
   interfaceName: 'LogoCloudInlineWrapBlock',
   admin: {
     group: 'Logo cloud',
+    images: {
+      thumbnail: logoCloudInlineWrapThumbnail,
+    },
   },
   fields: [
     // Shared logo-cloud core (heading + logos). Edit the shared shape in

@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 import { faqFields, faqItemsField } from '@/blocks/shared/faqFields'
 import { linkGroup } from '@/fields/linkGroup'
 
+import { faqAccordionThumbnail } from './thumbnail'
+
 export const FaqAccordion: Block = {
   slug: 'faqAccordion',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -11,6 +13,9 @@ export const FaqAccordion: Block = {
   interfaceName: 'FaqAccordionBlock',
   admin: {
     group: 'FAQ',
+    images: {
+      thumbnail: faqAccordionThumbnail,
+    },
   },
   fields: [
     // Shared FAQ core (eyebrow, title, description). Variant-specific fields

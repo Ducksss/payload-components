@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 import { contactChannelFields, contactFields } from '@/blocks/shared/contactFields'
 import { validateSameOriginFormAction } from '@/blocks/shared/safeUrls'
 
+import { contactRoutingFormThumbnail } from './thumbnail'
+
 export const ContactRoutingForm: Block = {
   slug: 'contactRoutingForm',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -11,6 +13,9 @@ export const ContactRoutingForm: Block = {
   interfaceName: 'ContactRoutingFormBlock',
   admin: {
     group: 'Contact',
+    images: {
+      thumbnail: contactRoutingFormThumbnail,
+    },
   },
   fields: [
     // Shared contact core (eyebrow, title, description). Variant-specific fields

@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 import { featureFields } from '@/blocks/shared/featureFields'
 import { linkGroup } from '@/fields/linkGroup'
 
+import { featureSplitThumbnail } from './thumbnail'
+
 export const FeatureSplit: Block = {
   slug: 'featureSplit',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -11,6 +13,9 @@ export const FeatureSplit: Block = {
   interfaceName: 'FeatureSplitBlock',
   admin: {
     group: 'Feature',
+    images: {
+      thumbnail: featureSplitThumbnail,
+    },
   },
   fields: [
     // Shared feature core (eyebrow, title, description). Variant-specific fields

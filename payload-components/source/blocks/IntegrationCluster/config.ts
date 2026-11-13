@@ -3,6 +3,8 @@ import type { Block } from 'payload'
 import { integrationFeaturedMark, integrationFields } from '@/blocks/shared/integrationFields'
 import { linkGroup } from '@/fields/linkGroup'
 
+import { integrationClusterThumbnail } from './thumbnail'
+
 export const IntegrationCluster: Block = {
   slug: 'integrationCluster',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -11,6 +13,9 @@ export const IntegrationCluster: Block = {
   interfaceName: 'IntegrationClusterBlock',
   admin: {
     group: 'Integration',
+    images: {
+      thumbnail: integrationClusterThumbnail,
+    },
   },
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

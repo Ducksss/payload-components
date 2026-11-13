@@ -1,8 +1,12 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "call-to-action-split",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "changelog": [
+    {
+      "version": "0.3.0",
+      "summary": "Shows a picture of the block's layout in the admin Blocks Drawer (admin.images.thumbnail). Needs Payload 3.79 or newer."
+    },
     {
       "version": "0.2.0",
       "summary": "Lists the block under the Call to action heading in the admin Blocks Drawer (admin.group). Needs Payload 3.25 or newer."
@@ -22,7 +26,7 @@
   "dependencies": {},
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
-    "payload": "^3.25.0 || ^4.0.0-0"
+    "payload": "^3.79.0 || ^4.0.0-0"
   },
   "supportedTargets": [
     "payload-website-starter",
@@ -41,6 +45,7 @@
   "files": [
     "src/blocks/shared/callToActionFields.ts",
     "src/blocks/CallToActionSplit/config.ts",
+    "src/blocks/CallToActionSplit/thumbnail.ts",
     "src/blocks/CallToActionSplit/Component.tsx"
   ],
   "payloadFragments": [

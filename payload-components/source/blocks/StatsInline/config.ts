@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { statsFields, statsMetricFields } from '@/blocks/shared/statsFields'
 
+import { statsInlineThumbnail } from './thumbnail'
+
 export const StatsInline: Block = {
   slug: 'statsInline',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const StatsInline: Block = {
   interfaceName: 'StatsInlineBlock',
   admin: {
     group: 'Stats',
+    images: {
+      thumbnail: statsInlineThumbnail,
+    },
   },
   fields: [
     // Shared stats core (eyebrow, title). Variant-specific fields follow; edit the

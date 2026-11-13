@@ -58,6 +58,7 @@ describe('curated Tailark ports', () => {
       'src/blocks/shared/heroFields.ts',
       'src/blocks/HeroVideo/Video.tsx',
       'src/blocks/HeroVideo/config.ts',
+      'src/blocks/HeroVideo/thumbnail.ts',
       'src/blocks/HeroVideo/Component.tsx',
     ])
     expect(docs).toContain('npx payload-components add hero-video')
@@ -89,6 +90,7 @@ describe('curated Tailark ports', () => {
     expect(JSON.parse(manifest).files).toEqual([
       'src/blocks/shared/heroFields.ts',
       'src/blocks/HeroProductTilt/config.ts',
+      'src/blocks/HeroProductTilt/thumbnail.ts',
       'src/blocks/HeroProductTilt/Component.tsx',
     ])
     expect(docs).toContain('npx payload-components add hero-product-tilt')
@@ -123,6 +125,7 @@ describe('curated Tailark ports', () => {
       'src/blocks/shared/featureFields.ts',
       'src/blocks/shared/featureIcons.ts',
       'src/blocks/FeatureAccordion/config.ts',
+      'src/blocks/FeatureAccordion/thumbnail.ts',
       'src/blocks/FeatureAccordion/Component.tsx',
     ])
     expect(docs).toContain('npx payload-components add feature-accordion')
@@ -151,6 +154,7 @@ describe('curated Tailark ports', () => {
       'src/blocks/shared/featureFields.ts',
       'src/blocks/shared/featureIcons.ts',
       'src/blocks/FeatureCardsMedia/config.ts',
+      'src/blocks/FeatureCardsMedia/thumbnail.ts',
       'src/blocks/FeatureCardsMedia/Component.tsx',
     ])
     expect(docs).toContain('npx payload-components add feature-cards-media')
@@ -180,6 +184,7 @@ describe('curated Tailark ports', () => {
       'src/blocks/shared/featureFields.ts',
       'src/blocks/shared/featureIcons.ts',
       'src/blocks/FeatureIconGrid/config.ts',
+      'src/blocks/FeatureIconGrid/thumbnail.ts',
       'src/blocks/FeatureIconGrid/Component.tsx',
     ])
     expect(docs).toContain('npx payload-components add feature-icon-grid')
@@ -219,6 +224,7 @@ describe('curated Tailark ports', () => {
     expect(JSON.parse(manifest).files).toEqual([
       'src/blocks/shared/statsFields.ts',
       'src/blocks/StatsProof/config.ts',
+      'src/blocks/StatsProof/thumbnail.ts',
       'src/blocks/StatsProof/Component.tsx',
     ])
     expect(config).toContain("from '@/blocks/shared/statsFields'")
@@ -263,6 +269,7 @@ describe('curated Tailark ports', () => {
       'src/blocks/shared/contactUrls.ts',
       'src/blocks/shared/contactFields.ts',
       'src/blocks/ContactRoutingForm/config.ts',
+      'src/blocks/ContactRoutingForm/thumbnail.ts',
       'src/blocks/ContactRoutingForm/Component.tsx',
     ])
     expect(docs).toContain('npx payload-components add contact-routing-form')

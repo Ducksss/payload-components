@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { logoCloudFields } from '@/blocks/shared/logoCloudFields'
 
+import { logoCloudMarqueeThumbnail } from './thumbnail'
+
 export const LogoCloudMarquee: Block = {
   slug: 'logoCloudMarquee',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const LogoCloudMarquee: Block = {
   interfaceName: 'LogoCloudMarqueeBlock',
   admin: {
     group: 'Logo cloud',
+    images: {
+      thumbnail: logoCloudMarqueeThumbnail,
+    },
   },
   fields: [
     // Shared logo-cloud core (heading + logos). Edit the shared shape in

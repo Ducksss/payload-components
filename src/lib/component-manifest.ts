@@ -92,7 +92,7 @@ export async function getPayloadCompatibility(
 /* "16.4.0" reads as "16.4"; a patch that matters ("24.22.1") stays. */
 const shortVersion = (version: string) => version.replace(/\.0$/, '')
 
-/* "v3 (3.25 or newer)", "v4 (experimental)". */
+/* "v3 (3.79 or newer)", "v4 (experimental)". */
 export const formatPayloadMajor = ({
   experimental,
   minimumVersions,

@@ -13,6 +13,8 @@
 
 - `manifest.json` → `payload-components/manifests/<slug>.json`
 - `config.ts` → `payload-components/source/blocks/<Component>/config.ts`
+- `thumbnail.ts` → `payload-components/source/blocks/<Component>/thumbnail.ts` (generated: `new`
+  renders it from a layout recipe; see the authoring rule below)
 - `Component.tsx` → `payload-components/source/blocks/<Component>/Component.tsx`
 - `doc-page.mdx` → `content/docs/components/<slug>.mdx` (the fixed component doc-page format)
 
@@ -41,8 +43,13 @@ existing Posts category; otherwise it prints that entry for you to place.
 - Set `admin.group`, right after `interfaceName`, to the family's label in `FAMILIES`
   (`src/lib/component-page-tree.tsx`). It is the heading editors see in Payload's Blocks Drawer.
   `new` copies it from the nearest sibling variant; for a new family it writes the capitalized
-  first slug word, so confirm it matches the label you add. Do not add `admin.images` yet: it
-  needs Payload 3.79 (see `payload-components/README.md` → "Admin Blocks Drawer").
+  first slug word, so confirm it matches the label you add.
+- Set `admin.images.thumbnail` to the block's `thumbnail.ts` export: the picture on its Blocks
+  Drawer tile (Payload 3.79 or newer). Never edit `thumbnail.ts` by hand. Its SVG is rendered from
+  the block's recipe in `tools/payload-components/block-thumbnail-recipes.ts`, which `new` copies
+  from the nearest sibling (or the template recipe for a new family). Redraw the recipe to match
+  the demo twin, then run `pnpm thumbnails:build` (see `payload-components/README.md` → "Admin
+  Blocks Drawer").
 - Prefer shared field helpers like `linkGroup` before inventing component-specific primitives.
 - Give every `text`, `textarea`, and `richText` field an explicit localization policy:
   `custom: { payloadComponents: { localization: 'localized' } }` for editorial copy, `'global'` for

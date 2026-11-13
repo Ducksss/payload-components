@@ -271,6 +271,7 @@ describe('update', () => {
       prewrittenFiles: [
         'src/blocks/shared/heroFields.ts',
         'src/blocks/HeroBasic/config.ts',
+        'src/blocks/HeroBasic/thumbnail.ts',
         'src/blocks/HeroBasic/Component.tsx',
       ],
     })
@@ -308,6 +309,7 @@ describe('update', () => {
       prewrittenFiles: [
         'src/blocks/shared/statsFields.ts',
         'src/blocks/StatsProof/config.ts',
+        'src/blocks/StatsProof/thumbnail.ts',
         'src/blocks/StatsProof/Component.tsx',
       ],
     })
@@ -477,6 +479,7 @@ describe('update', () => {
       prewrittenFiles: [
         'src/blocks/shared/heroFields.ts',
         'src/blocks/HeroBasic/config.ts',
+        'src/blocks/HeroBasic/thumbnail.ts',
         'src/blocks/HeroBasic/Component.tsx',
       ],
     })

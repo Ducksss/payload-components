@@ -1,8 +1,12 @@
 {
   "$schema": "../schema/poc-manifest.schema.json",
   "name": "contact-routing-form",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "changelog": [
+    {
+      "version": "0.4.0",
+      "summary": "Shows a picture of the block's layout in the admin Blocks Drawer (admin.images.thumbnail). Needs Payload 3.79 or newer."
+    },
     {
       "version": "0.3.0",
       "summary": "Lists the block under the Contact heading in the admin Blocks Drawer (admin.group). Needs Payload 3.25 or newer."
@@ -26,7 +30,7 @@
   "dependencies": {},
   "peerDependencies": {
     "next": "^15.0.0 || ^16.0.0",
-    "payload": "^3.25.0 || ^4.0.0-0"
+    "payload": "^3.79.0 || ^4.0.0-0"
   },
   "supportedTargets": [
     "payload-website-starter",
@@ -47,6 +51,7 @@
     "src/blocks/shared/contactUrls.ts",
     "src/blocks/shared/contactFields.ts",
     "src/blocks/ContactRoutingForm/config.ts",
+    "src/blocks/ContactRoutingForm/thumbnail.ts",
     "src/blocks/ContactRoutingForm/Component.tsx"
   ],
   "payloadFragments": [

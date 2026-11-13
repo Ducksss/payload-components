@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { contactChannelFields, contactFields } from '@/blocks/shared/contactFields'
 
+import { contactChannelsThumbnail } from './thumbnail'
+
 export const ContactChannels: Block = {
   slug: 'contactChannels',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const ContactChannels: Block = {
   interfaceName: 'ContactChannelsBlock',
   admin: {
     group: 'Contact',
+    images: {
+      thumbnail: contactChannelsThumbnail,
+    },
   },
   fields: [
     // Shared contact core (eyebrow, title, description). Variant-specific fields

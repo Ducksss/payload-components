@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { statsFields, statsMetricFields } from '@/blocks/shared/statsFields'
 
+import { statsProofThumbnail } from './thumbnail'
+
 export const StatsProof: Block = {
   slug: 'statsProof',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const StatsProof: Block = {
   interfaceName: 'StatsProofBlock',
   admin: {
     group: 'Stats',
+    images: {
+      thumbnail: statsProofThumbnail,
+    },
   },
   fields: [
     // Shared stats core (eyebrow, title). Variant-specific fields follow; edit the

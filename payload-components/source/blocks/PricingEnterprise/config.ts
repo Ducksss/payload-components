@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { planFields, pricingFields } from '@/blocks/shared/pricingFields'
 
+import { pricingEnterpriseThumbnail } from './thumbnail'
+
 export const PricingEnterprise: Block = {
   slug: 'pricingEnterprise',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const PricingEnterprise: Block = {
   interfaceName: 'PricingEnterpriseBlock',
   admin: {
     group: 'Pricing',
+    images: {
+      thumbnail: pricingEnterpriseThumbnail,
+    },
   },
   fields: [
     // Shared pricing heading (eyebrow, title, description). Variant-specific

@@ -2,6 +2,8 @@ import type { Block } from 'payload'
 
 import { integrationFeaturedMark, integrationFields } from '@/blocks/shared/integrationFields'
 
+import { integrationOrbitThumbnail } from './thumbnail'
+
 export const IntegrationOrbit: Block = {
   slug: 'integrationOrbit',
   // Existing apps must migrate stored data before adopting this identifier:
@@ -10,6 +12,9 @@ export const IntegrationOrbit: Block = {
   interfaceName: 'IntegrationOrbitBlock',
   admin: {
     group: 'Integration',
+    images: {
+      thumbnail: integrationOrbitThumbnail,
+    },
   },
   fields: [
     // Shared integration core (heading + subtext + integrations). Edit the shared

@@ -1,0 +1,47 @@
+/* Team Bios's picture in Payload's admin Blocks Drawer (admin.images.thumbnail,
+ * Payload 3.79 or newer): a 3:2 layout schematic as an SVG data URI, so it needs
+ * no file in public/ and no network request. The drawer names every block under
+ * its picture, so the picture is decorative and its alt text is empty. */
+const svg = [
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 456 304">',
+  '<rect x="0" y="0" width="456" height="304" fill="#fafafa"/>',
+  '<rect x="28" y="30" width="60" height="14" rx="7" fill="#ffffff" stroke="#e4e4e7" stroke-width="1.5"/>',
+  '<rect x="40" y="35" width="36" height="4" rx="2" fill="#a1a1aa"/>',
+  '<rect x="28" y="52" width="264" height="15" rx="7.5" fill="#27272a"/>',
+  '<rect x="28" y="75" width="288" height="6" rx="3" fill="#d4d4d8"/>',
+  '<rect x="28" y="86" width="178.6" height="6" rx="3" fill="#d4d4d8"/>',
+  '<rect x="28" y="106" width="196" height="80" rx="8" fill="#ffffff" stroke="#e4e4e7" stroke-width="1.5"/>',
+  '<circle cx="49" cy="127" r="9" fill="#e4e4e7"/>',
+  '<rect x="64" y="119" width="103.6" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="64" y="130" width="74" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="40" y="144" width="154.8" height="6" rx="3" fill="#d4d4d8"/>',
+  '<rect x="40" y="155" width="96" height="6" rx="3" fill="#d4d4d8"/>',
+  '<rect x="40" y="169" width="34.4" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="232" y="106" width="196" height="80" rx="8" fill="#ffffff" stroke="#e4e4e7" stroke-width="1.5"/>',
+  '<circle cx="253" cy="127" r="9" fill="#e4e4e7"/>',
+  '<rect x="268" y="119" width="103.6" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="268" y="130" width="74" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="244" y="144" width="154.8" height="6" rx="3" fill="#d4d4d8"/>',
+  '<rect x="244" y="155" width="96" height="6" rx="3" fill="#d4d4d8"/>',
+  '<rect x="244" y="169" width="34.4" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="28" y="194" width="196" height="80" rx="8" fill="#ffffff" stroke="#e4e4e7" stroke-width="1.5"/>',
+  '<circle cx="49" cy="215" r="9" fill="#e4e4e7"/>',
+  '<rect x="64" y="207" width="103.6" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="64" y="218" width="74" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="40" y="232" width="154.8" height="6" rx="3" fill="#d4d4d8"/>',
+  '<rect x="40" y="243" width="96" height="6" rx="3" fill="#d4d4d8"/>',
+  '<rect x="40" y="257" width="34.4" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="232" y="194" width="196" height="80" rx="8" fill="#ffffff" stroke="#e4e4e7" stroke-width="1.5"/>',
+  '<circle cx="253" cy="215" r="9" fill="#e4e4e7"/>',
+  '<rect x="268" y="207" width="103.6" height="7" rx="3.5" fill="#27272a"/>',
+  '<rect x="268" y="218" width="74" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '<rect x="244" y="232" width="154.8" height="6" rx="3" fill="#d4d4d8"/>',
+  '<rect x="244" y="243" width="96" height="6" rx="3" fill="#d4d4d8"/>',
+  '<rect x="244" y="257" width="34.4" height="5" rx="2.5" fill="#a1a1aa"/>',
+  '</svg>',
+].join('')
+
+export const teamBiosThumbnail = {
+  alt: '',
+  url: `data:image/svg+xml,${encodeURIComponent(svg)}`,
+}

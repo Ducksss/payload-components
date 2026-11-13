@@ -84,6 +84,8 @@ const createScaffoldRoot = async () => {
     ['payload-components', 'support-matrix.json'],
     ['messages', 'en.json'],
     ['src', 'lib', 'component-catalog.ts'],
+    /* The Blocks Drawer picture recipes a new block's entry is copied into. */
+    ['tools', 'payload-components', 'block-thumbnail-recipes.ts'],
   ]) {
     await cp(path.join(repoRoot, ...segments), path.join(root, ...segments))
   }
@@ -234,6 +236,7 @@ describe('payload-components new', () => {
     expect(manifest.changelog).toEqual([{ summary: 'Initial release.', version: '0.1.0' }])
     expect(manifest.files).toEqual([
       `src/blocks/${PASCAL}/config.ts`,
+      `src/blocks/${PASCAL}/thumbnail.ts`,
       `src/blocks/${PASCAL}/Component.tsx`,
     ])
   })
@@ -258,7 +261,30 @@ describe('payload-components new', () => {
     expect(config).not.toContain('ExampleBasic')
     /* No existing block shares a slug word, so it is a new family: the first
        word, capitalized, as familyOfSlug falls back to. */
-    expect(config).toContain("admin: {\n    group: 'Aa',\n  },")
+    expect(config).toContain("admin: {\n    group: 'Aa',\n    images: {\n")
+    expect(config).toContain(`thumbnail: aaScaffoldProbeThumbnail,`)
+    expect(config).toContain("import { aaScaffoldProbeThumbnail } from './thumbnail'")
+  })
+
+  it('gives a new family the template’s drawer picture and recipe', async () => {
+    const root = await createScaffoldRoot()
+    const { output } = await runScaffold(root)
+    const [thumbnail, template, recipes] = await Promise.all([
+      readRootFile(root, 'payload-components', 'source', 'blocks', PASCAL, 'thumbnail.ts'),
+      readRootFile(repoRoot, 'payload-components', 'component-template', 'thumbnail.ts'),
+      readRootFile(root, 'tools', 'payload-components', 'block-thumbnail-recipes.ts'),
+    ])
+
+    /* The template thumbnail.ts is the template recipe rendered, so a new
+       family's picture is that file renamed. */
+    expect(thumbnail).toBe(
+      template
+        .replaceAll('exampleBasic', 'aaScaffoldProbe')
+        .replaceAll('Example Basic', 'Aa Scaffold Probe'),
+    )
+    expect(recipes).toContain(`  '${SLUG}': templateThumbnailRecipe,\n}\n`)
+    expect(output).toContain(`the '${SLUG}' recipe was`)
+    expect(output).toContain('copied from the template recipe')
   })
 
   it('files a new variant under its family’s Blocks Drawer group', async () => {
@@ -275,8 +301,40 @@ describe('payload-components new', () => {
     )
 
     /* HeroBasic is the scaffold root's one real block, so the group comes from it. */
-    expect(config).toContain("admin: {\n    group: 'Hero',\n  },")
+    expect(config).toContain("admin: {\n    group: 'Hero',\n")
     expect(output).toContain('admin.group was set to "Hero"')
+
+    /* The picture starts as the nearest hero's recipe, spliced in right after
+       that sibling's entry and rendered with it. */
+    const recipes = await readRootFile(
+      root,
+      'tools',
+      'payload-components',
+      'block-thumbnail-recipes.ts',
+    )
+    const sibling = /the 'hero-probe' recipe was\n {3}copied from '([a-z-]+)'/.exec(output)?.[1]
+    expect(sibling).toMatch(/^hero-/)
+    const entries = [...recipes.matchAll(/^ {2}'([a-z0-9-]+)': /gm)].map((match) => match[1])
+    expect(entries[entries.indexOf(sibling!) + 1]).toBe('hero-probe')
+    const thumbnail = await readRootFile(
+      root,
+      'payload-components',
+      'source',
+      'blocks',
+      'HeroProbe',
+      'thumbnail.ts',
+    )
+    const siblingThumbnail = await readRootFile(
+      repoRoot,
+      'payload-components',
+      'source',
+      'blocks',
+      sibling!.replace(/(^|-)([a-z])/g, (_, __, letter: string) => letter.toUpperCase()),
+      'thumbnail.ts',
+    )
+    expect(thumbnail.split('const svg = ')[1].split('export')[0]).toBe(
+      siblingThumbnail.split('const svg = ')[1].split('export')[0],
+    )
   })
 
   it('appends to every mechanical list, keeping each file parseable', async () => {
@@ -600,7 +658,7 @@ describe('payload-components new --file-only', () => {
     expect(manifest.supports).toEqual({ payloadMajors: [3, 4, 5], nextMajors: [15, 16] })
     expect(manifest.peerDependencies).toEqual({
       next: '^15.0.0 || ^16.0.0',
-      payload: '^3.25.0 || ^4.0.0 || ^5.0.0-0',
+      payload: '^3.79.0 || ^4.0.0 || ^5.0.0-0',
       react: '^19.0.0',
     })
     expect(manifest.supportedTargets).toEqual(matrix.targets.map((target) => target.id))
