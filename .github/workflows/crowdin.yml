@@ -45,7 +45,7 @@ jobs:
           cp -R messages "$RUNNER_TEMP/crowdin-baseline/messages"
 
       - name: Upload English source and optionally bootstrap existing translations
-        uses: crowdin/github-action@959dc74ac104447731cba99a016f85d0ae719788 # v3.5.0
+        uses: crowdin/github-action@d651c77756acbe11a31d77a6fb79d8a239e1e05a # v3.6.0
         with:
           user: auto
           upload_sources: true
@@ -60,7 +60,7 @@ jobs:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
       - name: Download translated strings only
-        uses: crowdin/github-action@959dc74ac104447731cba99a016f85d0ae719788 # v3.5.0
+        uses: crowdin/github-action@d651c77756acbe11a31d77a6fb79d8a239e1e05a # v3.6.0
         with:
           user: auto
           upload_sources: false
