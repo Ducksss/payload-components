@@ -1,22 +1,41 @@
 import { Callout } from 'fumadocs-ui/components/callout'
 
+import { CompositionTree, InstalledFileTree } from '@/components/site/ComponentComposition'
+import { deriveComposition } from '@/lib/component-composition'
 import { getComponentManifest } from '@/lib/component-manifest'
 
-/* Backs <ComponentWiring slug="…" /> — the factual "what it installs & wires" reference,
- * driven entirely by the component manifest so it can't drift from what installs. States
- * which files land and which edits the install makes; the "wired, not pasted" pitch
- * lives on the landing page, not here. */
+/* Backs <ComponentWiring slug="…" /> — the "What it installs" reference, driven
+ * entirely by the component manifest so it can't drift from what installs. Three
+ * calm parts in one column: how the block hangs together in Payload (a
+ * composition tree from sampleContent), the files that land (grouped by
+ * directory), and the ledger of edits the install makes. Facts only; the
+ * "wired, not pasted" pitch lives on the landing page. */
+
+/* wrap-anywhere keeps a path whole when it fits a line and splits it only in a
+ * phone column. The composition panel's path rows keep break-all instead: the
+ * 390px e2e pin reads one of them and expects it to wrap. */
+const code = 'wrap-anywhere font-mono text-[13px] text-foreground'
+
+function Eyebrow({ children }: { children: string }) {
+  return (
+    <p className="font-mono text-xs uppercase tracking-eyebrow text-muted-foreground">{children}</p>
+  )
+}
+
 export async function ComponentWiring({ slug }: { slug: string }) {
   const manifest = await getComponentManifest(slug)
 
   if (!manifest) return null
 
+  const { componentName, fileOnly, root } = deriveComposition(manifest)
   const patched = manifest.recovery.patchedFiles
   const pagesPath =
     patched.find((p) => p.includes('collections/Pages')) ?? 'src/collections/Pages/index.ts'
   const renderPath =
     patched.find((p) => p.includes('RenderBlocks')) ?? 'src/blocks/RenderBlocks.tsx'
-  const sharedFile = manifest.files.find((file) => file.includes('/shared/'))
+  const sharedFiles = manifest.files.filter((file) => file.includes('/shared/'))
+  const configFile = manifest.files.find((file) => file.endsWith('/config.ts'))
+  const componentFile = manifest.files.find((file) => file.endsWith('/Component.tsx'))
 
   const edits: { action: string; file: string }[] = []
   if (manifest.payloadFragments.some((fragment) => fragment.kind === 'pagesLayout')) {
@@ -35,85 +54,101 @@ export async function ComponentWiring({ slug }: { slug: string }) {
     })
   }
 
+  const fileCount = `${manifest.files.length} ${manifest.files.length === 1 ? 'file' : 'files'}`
+
   return (
-    <div className="not-prose my-6 flex flex-col gap-5">
-      <div>
-        <p className="mb-3 text-sm leading-6 text-muted-foreground">
-          Copies {manifest.files.length} source {manifest.files.length === 1 ? 'file' : 'files'}{' '}
-          into your project:
-        </p>
-        <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-lg border border-border bg-muted/30">
-          {manifest.files.map((file) => (
-            <li
-              key={file}
-              className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
-            >
-              <code className="min-w-0 break-all font-mono text-[13px] text-foreground/90">
-                {file}
-              </code>
-              {file === sharedFile ? (
-                <span className="shrink-0 rounded-full border border-border bg-background px-2 py-0.5 font-mono text-[10px] uppercase tracking-micro text-muted-foreground">
-                  shared
-                </span>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div className="not-prose flex flex-col gap-8">
+      <section className="flex flex-col gap-3">
+        <Eyebrow>Composition</Eyebrow>
+        <CompositionTree
+          files={
+            fileOnly
+              ? [{ label: 'Props', path: componentFile ?? manifest.files[0] }]
+              : [
+                  ...(configFile ? [{ label: 'Fields', path: configFile }] : []),
+                  { label: 'Render', path: componentFile ?? manifest.files[0] },
+                ]
+          }
+          lead={
+            fileOnly
+              ? 'How the component sits in your template'
+              : 'How the block hangs together in Payload'
+          }
+          root={root}
+        />
+      </section>
 
-      {edits.length ? (
-        <div>
-          <p className="mb-3 text-sm leading-6 text-muted-foreground">
-            …and makes {edits.length} edits to wire the block into your project:
-          </p>
-          <div className="overflow-hidden rounded-lg border border-border">
-            <table className="hidden w-full text-left text-sm sm:table">
-              <tbody className="divide-y divide-border">
+      <section className="flex flex-col gap-3">
+        <Eyebrow>Files</Eyebrow>
+        <p className="max-w-prose text-sm leading-6 text-muted-foreground">
+          Copies {fileCount} into your project.
+          {sharedFiles.length ? ' Files tagged shared are reused across the family.' : ''}
+        </p>
+        <InstalledFileTree files={manifest.files} shared={sharedFiles} />
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <Eyebrow>Edits</Eyebrow>
+        {edits.length ? (
+          <>
+            <p className="max-w-prose text-sm leading-6 text-muted-foreground">
+              Wires {componentName} into the project in {edits.length} places.
+            </p>
+            <div className="overflow-hidden rounded-lg border border-border">
+              <table className="hidden w-full text-left text-sm md:table">
+                <tbody className="divide-y divide-border">
+                  {edits.map((edit) => (
+                    <tr key={edit.action}>
+                      <td className="whitespace-nowrap px-5 py-3 font-medium leading-6 text-foreground">
+                        {edit.action}
+                      </td>
+                      <td className="px-5 py-3 leading-6">
+                        <code className="break-all font-mono text-[13px] text-muted-foreground">
+                          {edit.file}
+                        </code>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <ul className="divide-y divide-border md:hidden">
                 {edits.map((edit) => (
-                  <tr key={edit.action}>
-                    <td className="whitespace-nowrap px-4 py-2.5 font-medium text-foreground">
-                      {edit.action}
-                    </td>
-                    <td className="px-4 py-2.5">
-                      <code className="font-mono text-[13px] text-muted-foreground">
-                        {edit.file}
-                      </code>
-                    </td>
-                  </tr>
+                  <li className="flex flex-col gap-1 px-5 py-3 text-sm" key={edit.action}>
+                    <span className="font-medium leading-6 text-foreground">{edit.action}</span>
+                    <code className="break-all font-mono text-[13px] leading-6 text-muted-foreground">
+                      {edit.file}
+                    </code>
+                  </li>
                 ))}
-              </tbody>
-            </table>
-            <div className="divide-y divide-border sm:hidden">
-              {edits.map((edit) => (
-                <div key={edit.action} className="flex flex-col gap-1 px-4 py-2.5 text-sm">
-                  <span className="font-medium">{edit.action}</span>
-                  <code className="break-all font-mono text-[13px] text-muted-foreground">
-                    {edit.file}
-                  </code>
-                </div>
-              ))}
+              </ul>
             </div>
-          </div>
-        </div>
-      ) : (
-        <p className="text-sm leading-6 text-muted-foreground">
-          This file-only article component adds no Pages registration, renderer mapping, or
-          generated files. Compose it in your article template using the example below.
+          </>
+        ) : (
+          <p className="max-w-prose text-sm leading-6 text-muted-foreground">
+            Nothing is registered or generated. This file-only component is composed in your
+            template, not added through the admin.
+          </p>
+        )}
+
+        {sharedFiles.length ? (
+          <Callout className="my-0 rounded-lg" type="info">
+            {sharedFiles.map((file, index) => (
+              <span key={file}>
+                {index > 0 ? ' and ' : ''}
+                <code className="font-mono text-[13px]">{file.split('/').pop()}</code>
+              </span>
+            ))}{' '}
+            {sharedFiles.length === 1 ? 'is' : 'are'} shared source for this component family.
+            Components that install the same path reuse your local copy, and re-running an install
+            never overwrites a copy you have changed.
+          </Callout>
+        ) : null}
+
+        <p className="max-w-prose text-sm leading-6 text-muted-foreground">
+          Re-running the install detects existing source and wiring, then records install state in{' '}
+          <code className={code}>.payload-components/state.json</code>.
         </p>
-      )}
-
-      {sharedFile ? (
-        <Callout type="info">
-          <code className="font-mono text-[13px]">{sharedFile.split('/').pop()}</code> is shared
-          source for this component family. Components that install the same path reuse that local
-          copy, and re-running an install never overwrites a copy you have changed.
-        </Callout>
-      ) : null}
-
-      <p className="text-sm leading-6 text-muted-foreground">
-        Re-running the CLI install detects existing source and wiring, then records install state in{' '}
-        <code className="font-mono text-[13px]">.payload-components/state.json</code>.
-      </p>
+      </section>
     </div>
   )
 }

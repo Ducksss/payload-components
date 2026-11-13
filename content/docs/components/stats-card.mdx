@@ -8,24 +8,15 @@ icon: ChartNoAxesCombined
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add stats-card
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="stats-card"
+  command="npx payload-components add stats-card"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-card.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-card.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="stats-card" />
+<ComponentUsage slug="stats-card" />
 
 ## Content model
 
@@ -50,9 +41,9 @@ Each item in `metrics` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="stats-card" />
+<ComponentWiring slug="stats-card" />
 
 ## Requirements
 

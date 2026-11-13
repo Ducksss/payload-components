@@ -8,24 +8,15 @@ icon: Image
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add content-image-frame
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="content-image-frame"
+  command="npx payload-components add content-image-frame"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-image-frame.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-image-frame.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="content-image-frame" />
+<ComponentUsage slug="content-image-frame" />
 
 ## Content model
 
@@ -46,9 +37,9 @@ specific to this variant. The image is framed inside a rounded backdrop.
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="content-image-frame" />
+<ComponentWiring slug="content-image-frame" />
 
 ## Requirements
 

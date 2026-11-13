@@ -8,24 +8,15 @@ icon: Orbit
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add integration-orbit
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="integration-orbit"
+  command="npx payload-components add integration-orbit"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-orbit.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-orbit.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="integration-orbit" />
+<ComponentUsage slug="integration-orbit" />
 
 ## Content model
 
@@ -67,9 +58,9 @@ Each item in `integrations` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="integration-orbit" />
+<ComponentWiring slug="integration-orbit" />
 
 ## Requirements
 

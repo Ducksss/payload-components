@@ -8,24 +8,15 @@ icon: Network
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add integration-connect
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="integration-connect"
+  command="npx payload-components add integration-connect"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-connect.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-connect.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="integration-connect" />
+<ComponentUsage slug="integration-connect" />
 
 ## Content model
 
@@ -66,9 +57,9 @@ Each item in `integrations` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="integration-connect" />
+<ComponentWiring slug="integration-connect" />
 
 ## Requirements
 

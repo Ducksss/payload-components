@@ -8,24 +8,15 @@ icon: Building2
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add pricing-enterprise
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="pricing-enterprise"
+  command="npx payload-components add pricing-enterprise"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-enterprise.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-enterprise.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="pricing-enterprise" />
+<ComponentUsage slug="pricing-enterprise" />
 
 ## Content model
 
@@ -75,9 +66,9 @@ Each item in `logos` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="pricing-enterprise" />
+<ComponentWiring slug="pricing-enterprise" />
 
 ## Requirements
 

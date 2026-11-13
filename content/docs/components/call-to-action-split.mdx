@@ -8,24 +8,15 @@ icon: SquareStack
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add call-to-action-split
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="call-to-action-split"
+  command="npx payload-components add call-to-action-split"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/call-to-action-split.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/call-to-action-split.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="call-to-action-split" />
+<ComponentUsage slug="call-to-action-split" />
 
 ## Content model
 
@@ -52,9 +43,9 @@ Each item in `links` carries a `link` group with the standard Payload link field
 `url`, `label`, `newTab`, `appearance`). The first link renders as the default button and an
 `outline` appearance renders as the secondary action.
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="call-to-action-split" />
+<ComponentWiring slug="call-to-action-split" />
 
 ## Requirements
 

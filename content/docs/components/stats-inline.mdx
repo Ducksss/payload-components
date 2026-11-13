@@ -8,24 +8,15 @@ icon: ChartNoAxesCombined
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add stats-inline
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="stats-inline"
+  command="npx payload-components add stats-inline"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-inline.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/stats-inline.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="stats-inline" />
+<ComponentUsage slug="stats-inline" />
 
 ## Content model
 
@@ -51,9 +42,9 @@ Each item in `metrics` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="stats-inline" />
+<ComponentWiring slug="stats-inline" />
 
 ## Requirements
 

@@ -8,24 +8,15 @@ icon: List
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add integration-list
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="integration-list"
+  command="npx payload-components add integration-list"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-list.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/integration-list.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="integration-list" />
+<ComponentUsage slug="integration-list" />
 
 ## Content model
 
@@ -62,9 +53,9 @@ Each item in `integrations` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="integration-list" />
+<ComponentWiring slug="integration-list" />
 
 ## Requirements
 

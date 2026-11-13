@@ -8,24 +8,15 @@ icon: MousePointerClick
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add logo-cloud-hover
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="logo-cloud-hover"
+  command="npx payload-components add logo-cloud-hover"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/logo-cloud-hover.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/logo-cloud-hover.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="logo-cloud-hover" />
+<ComponentUsage slug="logo-cloud-hover" />
 
 ## Content model
 
@@ -61,9 +52,9 @@ Each item in `logos` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="logo-cloud-hover" />
+<ComponentWiring slug="logo-cloud-hover" />
 
 ## Requirements
 

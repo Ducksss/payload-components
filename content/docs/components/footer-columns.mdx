@@ -8,24 +8,18 @@ icon: PanelBottom
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add footer-columns
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="footer-columns"
+  command="npx payload-components add footer-columns"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/footer-columns.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/footer-columns.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
+<ComponentUsage slug="footer-columns" />
 
-<ComponentWiring slug="footer-columns" />
+Footer blocks render inside the Pages layout like every other block. To use one as site-wide chrome
+instead, render the component directly in your root layout and pass it content from a global.
 
 ## Content model
 
@@ -62,12 +56,9 @@ Each item in `links` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="footer-columns" />
-
-Footer blocks render inside the Pages layout like every other block. To use one as site-wide chrome
-instead, render the component directly in your root layout and pass it content from a global.
+<ComponentWiring slug="footer-columns" />
 
 ## Requirements
 

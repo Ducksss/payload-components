@@ -8,24 +8,15 @@ icon: MessagesSquare
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add faq-icons
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="faq-icons"
+  command="npx payload-components add faq-icons"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-icons.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/faq-icons.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="faq-icons" />
+<ComponentUsage slug="faq-icons" />
 
 ## Content model
 
@@ -56,9 +47,9 @@ Each item in `items` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="faq-icons" />
+<ComponentWiring slug="faq-icons" />
 
 ## Requirements
 

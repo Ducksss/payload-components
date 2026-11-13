@@ -8,24 +8,15 @@ icon: LayoutPanelTop
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add hero-basic
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="hero-basic"
+  command="npx payload-components add hero-basic"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-basic.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-basic.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="hero-basic" />
+<ComponentUsage slug="hero-basic" />
 
 ## Content model
 
@@ -49,9 +40,9 @@ variant.
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="hero-basic" />
+<ComponentWiring slug="hero-basic" />
 
 ## Requirements
 

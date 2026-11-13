@@ -8,24 +8,18 @@ icon: PanelBottom
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add footer-centered
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="footer-centered"
+  command="npx payload-components add footer-centered"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/footer-centered.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/footer-centered.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
+<ComponentUsage slug="footer-centered" />
 
-<ComponentWiring slug="footer-centered" />
+Footer blocks render inside the Pages layout like every other block. To use one as site-wide chrome
+instead, render the component directly in your root layout and pass it content from a global.
 
 ## Content model
 
@@ -53,12 +47,9 @@ Each item in `links` and `legalLinks` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="footer-centered" />
-
-Footer blocks render inside the Pages layout like every other block. To use one as site-wide chrome
-instead, render the component directly in your root layout and pass it content from a global.
+<ComponentWiring slug="footer-centered" />
 
 ## Requirements
 

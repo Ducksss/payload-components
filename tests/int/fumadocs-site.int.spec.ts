@@ -1120,12 +1120,13 @@ describe('Fumadocs site shell', () => {
 
       expect(source).toContain(`seoTitle: ${page.seoTitle}`)
       expect(source).toContain(`description: ${page.description}`)
+      /* The install block is one data-driven tag; the two commands stay literal props so the
+         markdown surfaces keep them, and ComponentInstall derives the tracked primary copy
+         button ("Copy the <slug> install command") from the slug. */
+      expect(source).toContain(`<ComponentInstall\n  slug="${page.slug}"`)
       expect(source).toContain(`command="npx payload-components add ${page.slug}"`)
-      expect(source).toContain(`label="Copy the ${page.slug} install command"`)
-      expect(source).toContain('trackInstall')
-      expect(source).toContain('emphasis="primary"')
       expect(source).toContain(
-        `pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/${page.slug}.json`,
+        `manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/${page.slug}.json"`,
       )
       expect(source).toContain(`<ComponentWiring slug="${page.slug}" />`)
       expect(source.trim().endsWith(`<ComponentFamily slug="${page.slug}" />`)).toBe(true)

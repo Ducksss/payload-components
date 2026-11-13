@@ -8,24 +8,15 @@ icon: LayoutDashboard
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add content-stats
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="content-stats"
+  command="npx payload-components add content-stats"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-stats.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-stats.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="content-stats" />
+<ComponentUsage slug="content-stats" />
 
 ## Content model
 
@@ -62,9 +53,9 @@ Each item in `features` carries `icon` (a Lucide name: zap · cpu · lock · spa
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="content-stats" />
+<ComponentWiring slug="content-stats" />
 
 ## Requirements
 

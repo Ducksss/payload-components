@@ -99,20 +99,28 @@ arrows, Copy Page — is rendered automatically for `/docs/components/*` by `Com
 (`src/app/[locale]/docs/[[...slug]]/page.tsx`), so the MDX has **no `<h1>` and no repeated description**.
 Body order is fixed and nothing precedes the preview:
 
-1. `<ComponentPreview slug="<slug>" />` — live Preview / Code tabs (Code = every installed file:
-   `config.ts`, `Component.tsx`, shared `*Fields.ts`).
-2. `## Installation` — `<Tabs items={['Command', 'Manual']}>`.
-3. `## What it installs` — `<ComponentWiring slug="<slug>" />`: copied files + a factual table of the edits
-   the install makes (register / map / regenerate) + the shared-base callout + idempotency, all from
-   the manifest. State facts, not a shadcn comparison (that lives on the landing).
-4. `## Content model` — `<TypeTable>` of the fields (+ a second table for array-item fields). The one
+1. `<ComponentPreview slug="<slug>" />` — the live preview with a code peek beneath it (the first
+   lines of `config.ts`, expanding to every installed file: `config.ts`, `Component.tsx`, shared
+   `*Fields.ts`).
+2. `## Installation` — `<ComponentInstall slug command manual />`: the package-manager switcher
+   (npm default) plus the manual shadcn registry command. Both commands stay literal props so the
+   markdown surfaces keep them.
+3. `## Usage` — `<ComponentUsage slug="<slug>" />`: what the editor sees (the admin form, built from
+   the manifest's sample content) and the add → fill → publish line; file-only components carry a
+   minimal React usage example in the MDX.
+4. `## Examples` — optional. One `###` per content state in `src/components/site/demos/states.ts`,
+   a one-sentence summary, then `<ComponentExample slug="<slug>" state="<id>" />`. Omit the whole
+   section when the slug has no states.
+5. `## Content model` — `<TypeTable>` of the fields (+ a second table for array-item fields). The one
    hand-authored section; note shared-base vs variant fields.
-5. `## Usage` — `<ComponentUsage slug="<slug>" />`: the admin steps (add the block to a Page → fill → publish).
-6. `## Requirements` — `<ComponentRequirements slug="<slug>" />`: target, Payload/Next majors, shadcn deps.
-7. `## In this family` — `<ComponentFamily slug="<slug>" />`: sibling variants. Include **only when the
-   family has 2+ variants** (renders nothing for a lone one; omit the heading too).
+6. `## What it installs` — `<ComponentWiring slug="<slug>" />`: the composition tree, the installed
+   file tree, and the factual ledger of edits (register / map / regenerate) + the shared-base note +
+   idempotency, all from the manifest. State facts, not a shadcn comparison (that lives on the landing).
+7. `## Requirements` — `<ComponentRequirements slug="<slug>" />`: target, Payload/Next majors, shadcn deps.
+8. `## In this family` — `<ComponentFamily slug="<slug>" />`: sibling variants with live thumbnails.
+   Include **only when the family has 2+ variants** (renders nothing for a lone one; omit the heading too).
 
-`<ComponentWiring>`/`<ComponentUsage>`/`<ComponentRequirements>`/`<ComponentFamily>` are **data-driven** from the
+`<ComponentInstall>`/`<ComponentWiring>`/`<ComponentUsage>`/`<ComponentRequirements>`/`<ComponentFamily>` are **data-driven** from the
 manifest/registry (`src/lib/component-manifest.ts`), so the MDX stays thin and the sections never drift.
 Full spec: `AGENTS.md` → "Component doc page format".
 

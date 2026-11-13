@@ -8,24 +8,15 @@ icon: ListOrdered
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add feature-steps
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="feature-steps"
+  command="npx payload-components add feature-steps"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-steps.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/feature-steps.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="feature-steps" />
+<ComponentUsage slug="feature-steps" />
 
 ## Content model
 
@@ -55,9 +46,9 @@ Each item in `items` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="feature-steps" />
+<ComponentWiring slug="feature-steps" />
 
 ## Requirements
 

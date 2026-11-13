@@ -8,24 +8,15 @@ icon: Columns2
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add pricing-split
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="pricing-split"
+  command="npx payload-components add pricing-split"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-split.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/pricing-split.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="pricing-split" />
+<ComponentUsage slug="pricing-split" />
 
 ## Content model
 
@@ -61,9 +52,9 @@ Each item in `plans` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="pricing-split" />
+<ComponentWiring slug="pricing-split" />
 
 ## Requirements
 

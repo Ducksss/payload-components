@@ -8,27 +8,15 @@ icon: MailPlus
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add call-to-action-signup
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="call-to-action-signup"
+  command="npx payload-components add call-to-action-signup"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/call-to-action-signup.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/call-to-action-signup.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="call-to-action-signup" />
-
-This variant also installs the shadcn `button` component and adds `lucide-react` for the form's mail and
-send icons. The form is server-rendered — set `action` to a same-origin handler such as `/api/newsletter`.
+<ComponentUsage slug="call-to-action-signup" />
 
 ## Content model
 
@@ -45,9 +33,12 @@ this variant.
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="call-to-action-signup" />
+<ComponentWiring slug="call-to-action-signup" />
+
+This variant also installs the shadcn `button` component and adds `lucide-react` for the form's mail and
+send icons. The form is server-rendered — set `action` to a same-origin handler such as `/api/newsletter`.
 
 ## Requirements
 

@@ -8,24 +8,15 @@ icon: Grid3x3
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add content-list-columns
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="content-list-columns"
+  command="npx payload-components add content-list-columns"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-list-columns.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/content-list-columns.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="content-list-columns" />
+<ComponentUsage slug="content-list-columns" />
 
 ## Content model
 
@@ -53,9 +44,9 @@ Each item in `items` carries:
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="content-list-columns" />
+<ComponentWiring slug="content-list-columns" />
 
 ## Requirements
 

@@ -8,24 +8,15 @@ icon: SquareStack
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add call-to-action-boxed
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="call-to-action-boxed"
+  command="npx payload-components add call-to-action-boxed"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/call-to-action-boxed.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/call-to-action-boxed.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="call-to-action-boxed" />
+<ComponentUsage slug="call-to-action-boxed" />
 
 ## Content model
 
@@ -41,9 +32,9 @@ for higher emphasis.
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="call-to-action-boxed" />
+<ComponentWiring slug="call-to-action-boxed" />
 
 ## Requirements
 

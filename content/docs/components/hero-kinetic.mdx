@@ -8,24 +8,15 @@ icon: Wind
 
 ## Installation
 
-<Tabs items={['Command', 'Manual']}>
-  <Tab value="Command">
-    ```bash
-    npx payload-components add hero-kinetic
-    ```
-  </Tab>
-  <Tab value="Manual">
-    Copy the files straight from the registry, then wire the Payload fragments by hand:
+<ComponentInstall
+  slug="hero-kinetic"
+  command="npx payload-components add hero-kinetic"
+  manual="pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-kinetic.json"
+/>
 
-    ```bash
-    pnpm dlx shadcn@latest add https://www.payload-components.xyz/r/hero-kinetic.json
-    ```
-  </Tab>
-</Tabs>
+## Usage
 
-## What it installs
-
-<ComponentWiring slug="hero-kinetic" />
+<ComponentUsage slug="hero-kinetic" />
 
 ## Content model
 
@@ -59,9 +50,9 @@ line masks itself and sets the closing word in the theme's serif accent — no e
   }}
 />
 
-## Usage
+## What it installs
 
-<ComponentUsage slug="hero-kinetic" />
+<ComponentWiring slug="hero-kinetic" />
 
 ## Requirements
 
